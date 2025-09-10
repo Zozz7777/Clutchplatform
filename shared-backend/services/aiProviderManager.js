@@ -51,8 +51,8 @@ class AIProviderManager {
         isAvailable: true,
         lastError: null,
         errorCount: 0,
-        maxErrors: 3,
-        cooldownTime: 300000, // 5 minutes
+        maxErrors: 5,
+        cooldownTime: 600000, // 10 minutes
         lastUsed: null,
         usageCount: 0
       },
@@ -66,8 +66,8 @@ class AIProviderManager {
         isAvailable: true,
         lastError: null,
         errorCount: 0,
-        maxErrors: 3,
-        cooldownTime: 300000, // 5 minutes
+        maxErrors: 5,
+        cooldownTime: 600000, // 10 minutes
         lastUsed: null,
         usageCount: 0
       },
@@ -85,8 +85,8 @@ class AIProviderManager {
         isAvailable: true,
         lastError: null,
         errorCount: 0,
-        maxErrors: 3,
-        cooldownTime: 300000, // 5 minutes
+        maxErrors: 5,
+        cooldownTime: 600000, // 10 minutes
         lastUsed: null,
         usageCount: 0
       },
@@ -102,8 +102,8 @@ class AIProviderManager {
         isAvailable: true,
         lastError: null,
         errorCount: 0,
-        maxErrors: 3,
-        cooldownTime: 300000, // 5 minutes
+        maxErrors: 5,
+        cooldownTime: 600000, // 10 minutes
         lastUsed: null,
         usageCount: 0
       },
@@ -121,8 +121,8 @@ class AIProviderManager {
         isAvailable: true,
         lastError: null,
         errorCount: 0,
-        maxErrors: 3,
-        cooldownTime: 300000, // 5 minutes
+        maxErrors: 5,
+        cooldownTime: 600000, // 10 minutes
         lastUsed: null,
         usageCount: 0
       }

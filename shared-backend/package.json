@@ -24,7 +24,12 @@
     "fix:vulnerabilities": "node scripts/fix-npm-vulnerabilities.js",
     "security:audit": "npm audit && node scripts/fix-npm-vulnerabilities.js",
     "check:autonomous": "node scripts/check-autonomous-system-status.js",
-    "status:full": "node scripts/check-autonomous-system-status.js"
+    "status:full": "node scripts/check-autonomous-system-status.js",
+    "optimize:memory": "node scripts/optimize-memory.js",
+    "reset:circuit-breaker": "node scripts/reset-circuit-breaker.js",
+    "optimize:system": "node scripts/optimize-memory.js && node scripts/reset-circuit-breaker.js",
+    "health:check": "node scripts/system-health-check.js",
+    "health:fix": "node scripts/system-health-check.js"
   },
   "keywords": [
     "clutch",

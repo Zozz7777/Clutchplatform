@@ -53,8 +53,8 @@ class ProductionSafeAI {
       failures: 0,
       lastFailure: null,
       isOpen: false,
-      threshold: 5,
-      timeout: 300000 // 5 minutes
+      threshold: 10, // Increased threshold
+      timeout: 600000 // 10 minutes
     };
   }
 

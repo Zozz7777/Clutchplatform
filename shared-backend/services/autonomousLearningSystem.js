@@ -649,6 +649,48 @@ Focus on insights that can drive business value and align with organizational go
     return {};
   }
 
+  /**
+   * Enhance decision-making models based on recent operations
+   */
+  async enhanceDecisionModels(recentOperations) {
+    try {
+      this.logger.info('🧠 Enhancing decision-making models...');
+      
+      // Analyze successful operations to improve decision models
+      const successfulOps = recentOperations.filter(op => op.success);
+      const failedOps = recentOperations.filter(op => !op.success);
+      
+      // Update decision weights based on success/failure patterns
+      if (successfulOps.length > 0) {
+        await this.updateDecisionWeights(successfulOps, 'success');
+      }
+      
+      if (failedOps.length > 0) {
+        await this.updateDecisionWeights(failedOps, 'failure');
+      }
+      
+      // Store enhanced models
+      this.learningData.decisionModels = {
+        lastUpdated: new Date(),
+        successRate: successfulOps.length / recentOperations.length,
+        totalOperations: recentOperations.length
+      };
+      
+      this.logger.info('✅ Decision models enhanced successfully');
+    } catch (error) {
+      this.logger.error('Error enhancing decision models:', error);
+    }
+  }
+
+  /**
+   * Update decision weights based on operation outcomes
+   */
+  async updateDecisionWeights(operations, outcome) {
+    // This would implement actual decision weight updates
+    // For now, just log the operation
+    this.logger.info(`Updating decision weights for ${operations.length} ${outcome} operations`);
+  }
+
   async updatePerformancePatterns(operations) {
     // Update performance patterns based on operations
   }
@@ -763,6 +805,60 @@ Focus on insights that can drive business value and align with organizational go
 
   async updateLearningMetrics() {
     // Update learning performance metrics
+  }
+
+  /**
+   * Enhance decision-making models based on recent operations
+   */
+  async enhanceDecisionModels(recentOperations) {
+    try {
+      this.logger.info('🧠 Enhancing decision-making models...');
+      
+      const successfulOps = recentOperations.filter(op => op.success);
+      const failedOps = recentOperations.filter(op => !op.success);
+      
+      if (successfulOps.length > 0) {
+        await this.updateDecisionWeights(successfulOps, 'success');
+      }
+      
+      if (failedOps.length > 0) {
+        await this.updateDecisionWeights(failedOps, 'failure');
+      }
+      
+      // Update learning data
+      this.learningData.decisionModels = {
+        lastUpdated: new Date(),
+        successRate: successfulOps.length / recentOperations.length,
+        totalOperations: recentOperations.length
+      };
+      
+      this.logger.info('✅ Decision models enhanced successfully');
+    } catch (error) {
+      this.logger.error('Error enhancing decision models:', error);
+    }
+  }
+
+  /**
+   * Update decision weights based on operation outcomes
+   */
+  async updateDecisionWeights(operations, outcome) {
+    try {
+      // Update decision weights based on success/failure patterns
+      const weightAdjustment = outcome === 'success' ? 0.1 : -0.1;
+      
+      // Update weights for different operation types
+      operations.forEach(op => {
+        if (this.learningData.decisionWeights[op.type]) {
+          this.learningData.decisionWeights[op.type] += weightAdjustment;
+          // Keep weights between 0 and 1
+          this.learningData.decisionWeights[op.type] = Math.max(0, Math.min(1, this.learningData.decisionWeights[op.type]));
+        }
+      });
+      
+      this.logger.info(`📊 Updated decision weights for ${outcome} operations`);
+    } catch (error) {
+      this.logger.error('Error updating decision weights:', error);
+    }
   }
 }
 
