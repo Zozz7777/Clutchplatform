@@ -220,8 +220,12 @@ class AIProviderManager {
    */
   async generateResponse(prompt, options = {}) {
     try {
+      // Filter out any timeout parameter that might cause issues with AI providers
+      const cleanOptions = { ...options };
+      delete cleanOptions.timeout;
+      
       // Check cache first
-      const cachedResponse = await this.responseCache.get(prompt, options);
+      const cachedResponse = await this.responseCache.get(prompt, cleanOptions);
       if (cachedResponse) {
         this.logger.info('💾 Using cached AI response');
         return {
@@ -244,14 +248,14 @@ class AIProviderManager {
         try {
           this.logger.info(`🤖 Using ${provider.name} for AI request (attempt ${attempt + 1})`);
           
-          const response = await this.callProvider(providerName, prompt, options);
+          const response = await this.callProvider(providerName, prompt, cleanOptions);
           
           // Update usage statistics
           provider.lastUsed = Date.now();
           provider.usageCount++;
           
           // Cache the response for future use
-          await this.responseCache.set(prompt, response, options);
+          await this.responseCache.set(prompt, response, cleanOptions);
           
           this.logger.info(`✅ Successfully got response from ${provider.name}`);
           return {
@@ -340,8 +344,7 @@ class AIProviderManager {
           }
         ],
         max_tokens: options.maxTokens || provider.maxTokens,
-        temperature: options.temperature || provider.temperature,
-        timeout: 30000 // 30 second timeout
+        temperature: options.temperature || provider.temperature
       });
 
       if (!response || !response.choices || !response.choices[0] || !response.choices[0].message) {

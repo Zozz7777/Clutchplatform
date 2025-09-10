@@ -3,13 +3,11 @@
  * Handles AI-powered recommendations, predictions, and analysis
  */
 
-const OpenAI = require('openai');
+const AIProviderManager = require('./aiProviderManager');
 
 class AIRecommendationService {
     constructor() {
-        this.openai = new OpenAI({
-            apiKey: process.env.OPENAI_API_KEY
-        });
+        this.aiProviderManager = new AIProviderManager();
         this.isInitialized = false;
         this.recommendationCache = new Map();
         this.cacheTTL = 30 * 60 * 1000; // 30 minutes
@@ -17,12 +15,12 @@ class AIRecommendationService {
 
     async initialize() {
         try {
-            if (!process.env.OPENAI_API_KEY) {
-                throw new Error('OpenAI API key is required');
+            // Test AI provider connection
+            const testResponse = await this.aiProviderManager.generateResponse('Test connection', { maxTokens: 10 });
+            
+            if (!testResponse.success) {
+                throw new Error('AI Provider connection failed');
             }
-
-            // Test OpenAI connection
-            await this.openai.models.list();
             
             this.isInitialized = true;
             console.log('✅ AI Recommendation Service initialized');
@@ -65,24 +63,17 @@ class AIRecommendationService {
         try {
             const prompt = this.buildRecommendationPrompt(userId, context);
             
-            const completion = await this.openai.chat.completions.create({
-                model: "gpt-3.5-turbo",
-                messages: [
-                    {
-                        role: "system",
-                        content: "You are an automotive service recommendation AI. Provide helpful, relevant recommendations for car maintenance and services."
-                    },
-                    {
-                        role: "user",
-                        content: prompt
-                    }
-                ],
-                max_tokens: 500,
+            const aiResponse = await this.aiProviderManager.generateResponse(prompt, {
+                systemPrompt: "You are an automotive service recommendation AI. Provide helpful, relevant recommendations for car maintenance and services.",
+                maxTokens: 500,
                 temperature: 0.7
             });
 
-            const response = completion.choices[0].message.content;
-            return this.parseRecommendations(response);
+            if (!aiResponse.success) {
+                throw new Error(`AI recommendation generation failed: ${aiResponse.error}`);
+            }
+
+            return this.parseRecommendations(aiResponse.response);
         } catch (error) {
             console.error('❌ Failed to generate recommendations:', error);
             return this.getFallbackRecommendations();
@@ -181,24 +172,17 @@ class AIRecommendationService {
 
             const prompt = this.buildMaintenancePredictionPrompt(vehicleData, historicalData);
             
-            const completion = await this.openai.chat.completions.create({
-                model: "gpt-3.5-turbo",
-                messages: [
-                    {
-                        role: "system",
-                        content: "You are an automotive maintenance prediction AI. Analyze vehicle data and predict when maintenance will be needed."
-                    },
-                    {
-                        role: "user",
-                        content: prompt
-                    }
-                ],
-                max_tokens: 400,
+            const aiResponse = await this.aiProviderManager.generateResponse(prompt, {
+                systemPrompt: "You are an automotive maintenance prediction AI. Analyze vehicle data and predict when maintenance will be needed.",
+                maxTokens: 400,
                 temperature: 0.5
             });
 
-            const response = completion.choices[0].message.content;
-            return this.parseMaintenancePrediction(response);
+            if (!aiResponse.success) {
+                throw new Error(`AI maintenance prediction failed: ${aiResponse.error}`);
+            }
+
+            return this.parseMaintenancePrediction(aiResponse.response);
         } catch (error) {
             console.error('❌ Failed to predict maintenance:', error);
             return this.getFallbackMaintenancePrediction();
@@ -262,24 +246,19 @@ class AIRecommendationService {
                 await this.initialize();
             }
 
-            const completion = await this.openai.chat.completions.create({
-                model: "gpt-3.5-turbo",
-                messages: [
-                    {
-                        role: "system",
-                        content: "You are a sentiment analysis AI. Analyze the sentiment of automotive service reviews and feedback."
-                    },
-                    {
-                        role: "user",
-                        content: `Analyze the sentiment of this text: "${text}"\nContext: ${context}\n\nRespond with JSON: {"sentiment": "positive/negative/neutral", "confidence": 0.0-1.0, "keywords": ["word1", "word2"]}`
-                    }
-                ],
-                max_tokens: 200,
+            const prompt = `Analyze the sentiment of this text: "${text}"\nContext: ${context}\n\nRespond with JSON: {"sentiment": "positive/negative/neutral", "confidence": 0.0-1.0, "keywords": ["word1", "word2"]}`;
+
+            const aiResponse = await this.aiProviderManager.generateResponse(prompt, {
+                systemPrompt: "You are a sentiment analysis AI. Analyze the sentiment of automotive service reviews and feedback.",
+                maxTokens: 200,
                 temperature: 0.3
             });
 
-            const response = completion.choices[0].message.content;
-            return this.parseSentimentAnalysis(response);
+            if (!aiResponse.success) {
+                throw new Error(`AI sentiment analysis failed: ${aiResponse.error}`);
+            }
+
+            return this.parseSentimentAnalysis(aiResponse.response);
         } catch (error) {
             console.error('❌ Failed to analyze sentiment:', error);
             return {
@@ -317,17 +296,23 @@ class AIRecommendationService {
                 await this.initialize();
             }
 
-            const completion = await this.openai.chat.completions.create({
-                model,
-                messages,
-                max_tokens: 1000,
-                temperature
+            // Convert messages to prompt format
+            const prompt = messages.map(msg => `${msg.role}: ${msg.content}`).join('\n');
+
+            const aiResponse = await this.aiProviderManager.generateResponse(prompt, {
+                systemPrompt: "You are a helpful AI assistant for automotive services.",
+                maxTokens: 1000,
+                temperature: temperature
             });
 
+            if (!aiResponse.success) {
+                throw new Error(`AI chat completion failed: ${aiResponse.error}`);
+            }
+
             return {
-                content: completion.choices[0].message.content,
-                model,
-                usage: completion.usage
+                content: aiResponse.response,
+                model: aiResponse.model,
+                usage: { prompt_tokens: 0, completion_tokens: 0, total_tokens: 0 } // Placeholder
             };
         } catch (error) {
             console.error('❌ Failed to get chat completion:', error);
@@ -341,30 +326,20 @@ class AIRecommendationService {
                 await this.initialize();
             }
 
-            const completion = await this.openai.chat.completions.create({
-                model: "gpt-4-vision-preview",
-                messages: [
-                    {
-                        role: "user",
-                        content: [
-                            {
-                                type: "text",
-                                text: `Analyze this automotive image for ${analysisType}. Provide detailed analysis including any issues, damage, or maintenance needs.`
-                            },
-                            {
-                                type: "image_url",
-                                image_url: {
-                                    url: imageUrl
-                                }
-                            }
-                        ]
-                    }
-                ],
-                max_tokens: 500
+            const prompt = `Analyze this automotive image for ${analysisType}. Provide detailed analysis including any issues, damage, or maintenance needs. Image URL: ${imageUrl}`;
+
+            const aiResponse = await this.aiProviderManager.generateResponse(prompt, {
+                systemPrompt: "You are an automotive image analysis AI. Analyze images for issues, damage, and maintenance needs.",
+                maxTokens: 500,
+                temperature: 0.3
             });
 
+            if (!aiResponse.success) {
+                throw new Error(`AI image analysis failed: ${aiResponse.error}`);
+            }
+
             return {
-                analysis: completion.choices[0].message.content,
+                analysis: aiResponse.response,
                 type: analysisType,
                 timestamp: new Date()
             };
@@ -383,7 +358,7 @@ class AIRecommendationService {
         return {
             isInitialized: this.isInitialized,
             cacheSize: this.recommendationCache.size,
-            openaiConfigured: !!process.env.OPENAI_API_KEY,
+            aiProviderStats: this.aiProviderManager.getProviderStats(),
             lastActivity: new Date()
         };
     }

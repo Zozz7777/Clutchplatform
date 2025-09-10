@@ -10,12 +10,12 @@ const { OpenAI } = require('openai');
 const winston = require('winston');
 const cron = require('node-cron');
 const EnterpriseAIDeveloper = require('./enterpriseAIDeveloper');
+const AIProviderManager = require('./aiProviderManager');
 
 class AIMonitoringAgent {
   constructor() {
-    this.openai = new OpenAI({
-      apiKey: process.env.OPENAI_API_KEY || 'your-openai-api-key'
-    });
+    // Initialize AI Provider Manager for multi-provider support
+    this.aiProviderManager = new AIProviderManager();
     
     this.logger = winston.createLogger({
       level: 'info',
@@ -775,13 +775,17 @@ class AIMonitoringAgent {
     4. Priority fixes needed
     `;
 
-    const response = await this.openai.chat.completions.create({
-      model: 'gpt-4',
-      messages: [{ role: 'user', content: prompt }],
-      max_tokens: 1000
+    const aiResponse = await this.aiProviderManager.generateResponse(prompt, {
+      systemPrompt: 'You are an expert system analyst. Analyze system issues and provide actionable insights.',
+      maxTokens: 1000,
+      temperature: 0.3
     });
 
-    return response.choices[0].message.content;
+    if (!aiResponse.success) {
+      throw new Error(`AI analysis failed: ${aiResponse.error}`);
+    }
+
+    return aiResponse.response;
   } catch (error) {
     this.logger.error('Failed to generate AI insights:', error);
     return 'Unable to generate insights at this time';
