@@ -80,6 +80,28 @@ router.get('/status', authenticateToken, requireRole(['admin', 'developer']), as
 });
 
 /**
+ * Get AI Team Documentation
+ */
+router.get('/documentation', authenticateToken, requireRole(['admin', 'developer']), async (req, res) => {
+  try {
+    const documentation = autonomousSystem.getAITeamDocumentation();
+    
+    res.json({
+      success: true,
+      data: documentation,
+      timestamp: new Date()
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      error: 'GET_DOCUMENTATION_FAILED',
+      message: 'Failed to get AI team documentation',
+      details: error.message
+    });
+  }
+});
+
+/**
  * Get team status
  */
 router.get('/team/status', authenticateToken, requireRole(['admin', 'developer']), async (req, res) => {
