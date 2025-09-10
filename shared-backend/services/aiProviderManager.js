@@ -23,6 +23,14 @@ class AIProviderManager {
       ]
     });
 
+    // Clear any timeout-related environment variables that might cause issues
+    delete process.env.OPENAI_TIMEOUT;
+    delete process.env.ANTHROPIC_TIMEOUT;
+    delete process.env.GEMINI_TIMEOUT;
+    delete process.env.DEEPSEEK_TIMEOUT;
+    delete process.env.GROK_TIMEOUT;
+    delete process.env.AI_TIMEOUT;
+
     // Validate API keys on initialization
     this.validateApiKeys();
 
@@ -33,7 +41,8 @@ class AIProviderManager {
       openai: {
         name: 'OpenAI GPT-4',
         client: new OpenAI({
-          apiKey: process.env.OPENAI_API_KEY
+          apiKey: process.env.OPENAI_API_KEY,
+          timeout: undefined
         }),
         model: 'gpt-4o-mini',
         maxTokens: 4000,
@@ -66,7 +75,8 @@ class AIProviderManager {
         name: 'DeepSeek Chat',
         client: new OpenAI({
           apiKey: process.env.DEEPSEEK_API_KEY,
-          baseURL: 'https://api.deepseek.com/v1'
+          baseURL: 'https://api.deepseek.com/v1',
+          timeout: undefined
         }),
         model: 'deepseek-chat',
         maxTokens: 4000,
@@ -101,7 +111,8 @@ class AIProviderManager {
         name: 'xAI Grok',
         client: new OpenAI({
           apiKey: process.env.GROK_API_KEY,
-          baseURL: 'https://api.x.ai/v1'
+          baseURL: 'https://api.x.ai/v1',
+          timeout: undefined
         }),
         model: 'grok-2-1212',
         maxTokens: 4000,
