@@ -4,8 +4,8 @@
     "engines": {
       "google": {
         "enabled": true,
-        "apiKey": "YOUR_GOOGLE_SEARCH_API_KEY",
-        "searchEngineId": "YOUR_GOOGLE_SEARCH_ENGINE_ID",
+        "apiKey": "AIzaSyDs1ez68BYi0rgFzUB0czWfxrdbP0TQeOY",
+        "searchEngineId": "a604b4cf264484ae4",
         "dailyLimit": 100,
         "timeout": 10000
       },
