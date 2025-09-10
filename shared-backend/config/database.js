@@ -280,6 +280,19 @@ const getCollection = async (collectionName) => {
     if (!db) {
       await connectToDatabase();
     }
+    
+    // Wait for database to be properly initialized
+    let retries = 0;
+    const maxRetries = 10;
+    while (!db && retries < maxRetries) {
+      await new Promise(resolve => setTimeout(resolve, 1000));
+      retries++;
+    }
+    
+    if (!db) {
+      throw new Error('Database connection not established after retries');
+    }
+    
     return db.collection(collectionName);
   } catch (error) {
     console.error(`❌ Error getting collection ${collectionName}:`, error);
