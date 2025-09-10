@@ -1,0 +1,41 @@
+# Large executable files and build artifacts
+Clutch-Auto-Parts-System-Fixed/
+Clutch-Auto-Parts-System-Folder/
+*.exe
+*.dll
+*.pak
+*.bin
+*.dat
+
+# Environment files
+.env
+.env.local
+.env.test
+.env.production
+
+# Logs
+logs/
+*.log
+
+# Cache directories
+cache/
+node_modules/
+
+# OS generated files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# IDE files
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Temporary files
+*.tmp
+*.temp

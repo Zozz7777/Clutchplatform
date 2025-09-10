@@ -1,0 +1,508 @@
+{
+  "info": {
+    "name": "Clutch Platform API Collection",
+    "description": "Comprehensive API testing collection for all Clutch platform endpoints",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "version": "1.0.0"
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:5000",
+      "type": "string"
+    },
+    {
+      "key": "adminToken",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "userToken",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "partnerToken",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "userId",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "vehicleId",
+      "value": "",
+      "type": "string"
+    }
+  ],
+  "auth": {
+    "type": "bearer",
+    "bearer": [
+      {
+        "key": "token",
+        "value": "{{adminToken}}",
+        "type": "string"
+      }
+    ]
+  },
+  "item": [
+    {
+      "name": "🔐 Authentication & Authorization",
+      "item": [
+        {
+          "name": "User Login",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"admin@clutch.com\",\n  \"password\": \"admin123\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/auth/login",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "auth", "login"]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "if (pm.response.code === 200) {",
+                  "    const response = pm.response.json();",
+                  "    pm.collectionVariables.set('adminToken', response.data.token);",
+                  "    pm.collectionVariables.set('userId', response.data.user.id);",
+                  "}"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "User Registration",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"test@clutch.com\",\n  \"password\": \"test123\",\n  \"name\": \"Test User\",\n  \"phone\": \"+1234567890\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/auth/register",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "auth", "register"]
+            }
+          }
+        },
+        {
+          "name": "Get Current User",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/auth/me",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "auth", "me"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "🏢 B2B Services",
+      "item": [
+        {
+          "name": "Get White-Label Configurations",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/b2b/whitelabel",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "b2b", "whitelabel"]
+            }
+          }
+        },
+        {
+          "name": "Create White-Label Configuration",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"clientId\": \"client_003\",\n  \"clientName\": \"New Auto Group\",\n  \"branding\": {\n    \"logo\": \"https://example.com/logo3.png\",\n    \"colors\": {\n      \"primary\": \"#FF0000\",\n      \"secondary\": \"#00FF00\"\n    },\n    \"companyName\": \"New Auto Services\"\n  },\n  \"features\": [\"dashboard\", \"analytics\", \"mobile_app\"]\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/b2b/whitelabel",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "b2b", "whitelabel"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "📱 Partner Mobile App",
+      "item": [
+        {
+          "name": "Partner Login",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"partner@autocenter.com\",\n  \"password\": \"partner123\",\n  \"deviceInfo\": {\n    \"deviceId\": \"device_001\",\n    \"platform\": \"android\",\n    \"version\": \"1.0.0\"\n  }\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/partners-mobile/auth/login",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "partners-mobile", "auth", "login"]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "if (pm.response.code === 200) {",
+                  "    const response = pm.response.json();",
+                  "    pm.collectionVariables.set('partnerToken', response.data.token);",
+                  "}"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Get Partner Orders",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{partnerToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/partners-mobile/orders?status=completed&page=1&limit=20",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "partners-mobile", "orders"],
+              "query": [
+                {
+                  "key": "status",
+                  "value": "completed"
+                },
+                {
+                  "key": "page",
+                  "value": "1"
+                },
+                {
+                  "key": "limit",
+                  "value": "20"
+                }
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "🚗 Clutch Mobile App",
+      "item": [
+        {
+          "name": "User Login",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"john.doe@email.com\",\n  \"password\": \"user123\",\n  \"deviceInfo\": {\n    \"deviceId\": \"device_002\",\n    \"platform\": \"ios\",\n    \"version\": \"1.0.0\"\n  }\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/clutch-mobile/auth/login",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "clutch-mobile", "auth", "login"]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "if (pm.response.code === 200) {",
+                  "    const response = pm.response.json();",
+                  "    pm.collectionVariables.set('userToken', response.data.token);",
+                  "}"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Get User Vehicles",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{userToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/clutch-mobile/vehicles",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "clutch-mobile", "vehicles"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "🔌 OBD Integration",
+      "item": [
+        {
+          "name": "Connect OBD Device",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{userToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"vehicleId\": \"{{vehicleId}}\",\n  \"deviceId\": \"obd_device_001\",\n  \"deviceType\": \"generic\",\n  \"bluetoothAddress\": \"00:11:22:33:44:55\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/obd/connect",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "obd", "connect"]
+            }
+          }
+        },
+        {
+          "name": "Start Diagnostic Scan",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{userToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"vehicleId\": \"{{vehicleId}}\",\n  \"scanType\": \"full\",\n  \"includeHistory\": true\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/obd/scan/start",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "obd", "scan", "start"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "🏥 Car Health System",
+      "item": [
+        {
+          "name": "Get Car Health Overview",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{userToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/car-health/overview?vehicleId={{vehicleId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "car-health", "overview"],
+              "query": [
+                {
+                  "key": "vehicleId",
+                  "value": "{{vehicleId}}"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Get Part Health Details",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{userToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/car-health/parts/part_001",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "car-health", "parts", "part_001"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "📊 Analytics & Dashboard",
+      "item": [
+        {
+          "name": "Get Dashboard Overview",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/dashboard/user/overview",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "dashboard", "user", "overview"]
+            }
+          }
+        },
+        {
+          "name": "Get Business Intelligence Metrics",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/business-intelligence/metrics",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "business-intelligence", "metrics"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "🔒 Security & Access Control",
+      "item": [
+        {
+          "name": "Test Role-Based Access (Admin)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/hr/employees",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "hr", "employees"]
+            }
+          }
+        },
+        {
+          "name": "Test Role-Based Access (User - Should Fail)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{userToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/hr/employees",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "hr", "employees"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "📈 Performance Testing",
+      "item": [
+        {
+          "name": "Health Check",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/health-enhanced",
+              "host": ["{{baseUrl}}"],
+              "path": ["health-enhanced"]
+            }
+          }
+        },
+        {
+          "name": "Detailed Health Check",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/health-enhanced/detailed",
+              "host": ["{{baseUrl}}"],
+              "path": ["health-enhanced", "detailed"]
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

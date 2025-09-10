@@ -1,0 +1,64 @@
+{
+  "render": {
+    "apiKey": "${RENDER_API_KEY}",
+    "ownerId": "tea-d2jk88ruibrs73do5sjg",
+    "baseUrl": "https://api.render.com/v1"
+  },
+  "monitoring": {
+    "pollInterval": 30000,
+    "maxLogs": 1000,
+    "logLevel": "info",
+    "services": [
+      {
+        "name": "Clutch website",
+        "type": "static_site",
+        "id": "srv-d2k98rn5r7bs73ejeg3g"
+      },
+      {
+        "name": "clutch-frontend",
+        "type": "web_service",
+        "id": "srv-d2k6b86r433s73fk0er0"
+      },
+      {
+        "name": "clutch-backend",
+        "type": "web_service",
+        "id": "srv-d2k69hbe5dus738savj0"
+      }
+    ]
+  },
+  "filters": {
+    "includeLevels": [
+      "error",
+      "warn",
+      "info"
+    ],
+    "excludePatterns": [
+      "health check",
+      "ping",
+      "favicon"
+    ],
+    "includePatterns": [
+      "authentication",
+      "database",
+      "api",
+      "error",
+      "deployment"
+    ]
+  },
+  "output": {
+    "console": true,
+    "file": {
+      "enabled": true,
+      "path": "./logs",
+      "maxSize": "10MB",
+      "maxFiles": 5
+    },
+    "webhook": {
+      "enabled": false,
+      "url": "${WEBHOOK_URL}",
+      "headers": {
+        "Authorization": "Bearer ${WEBHOOK_TOKEN}"
+      }
+    }
+  }
+}

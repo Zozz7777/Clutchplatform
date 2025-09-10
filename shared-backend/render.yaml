@@ -1,0 +1,266 @@
+services:
+  - type: web
+    name: clutch-main-nk7x
+    env: node
+    plan: starter
+    rootDir: shared-backend
+    buildCommand: npm install
+    startCommand: npm start
+    envVars:
+      # NODE ENVIRONMENT & SERVER CONFIGURATION
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: 5000
+      - key: HOST
+        value: 0.0.0.0
+      - key: DEBUG
+        value: false
+      - key: ENABLE_LOGGING
+        value: true
+      - key: ENABLE_METRICS
+        value: true
+      - key: ENABLE_EMULATORS
+        value: false
+
+                  # DATABASE CONFIGURATION
+            - key: MONGODB_URI
+              value: "mongodb+srv://ziadabdelmageed1:I174HSKpqf6iNBKd@clutch.qkgvstq.mongodb.net/clutch?retryWrites=true&w=majority&appName=Clutch"
+            - key: MONGODB_URI_PROD
+              value: "mongodb+srv://ziadabdelmageed1:I174HSKpqf6iNBKd@clutch.qkgvstq.mongodb.net/clutch?retryWrites=true&w=majority&appName=Clutch"
+            - key: MONGODB_DB
+              value: "clutch"
+
+      # JWT CONFIGURATION
+      - key: JWT_SECRET
+        value: "clutch_platform_jwt_secret_2024_super_secure_key_for_production_use_only"
+      - key: JWT_EXPIRES_IN
+        value: "7d"
+      - key: JWT_REFRESH_SECRET
+        value: "clutch_platform_refresh_jwt_secret_2024_super_secure_key_for_production_use_only"
+      - key: JWT_REFRESH_EXPIRES_IN
+        value: "30d"
+      - key: JWT_COOKIE_EXPIRES_IN
+        value: "7"
+
+      # CORS CONFIGURATION
+      - key: CORS_ORIGIN
+        value: "https://clutch-a2f49.web.app,https://admin.yourclutch.com,https://yourclutch.com"
+      - key: CORS_CREDENTIALS
+        value: true
+      - key: ALLOWED_ORIGINS
+        value: "https://clutch-a2f49.web.app,https://admin.yourclutch.com,https://yourclutch.com"
+
+      # RATE LIMITING & SECURITY
+      - key: RATE_LIMIT_WINDOW_MS
+        value: "900000"
+      - key: RATE_LIMIT_MAX_REQUESTS
+        value: "1000"
+      - key: AUTH_RATE_LIMIT_MAX
+        value: "50"
+      - key: UPLOAD_RATE_LIMIT_MAX
+        value: "20"
+      - key: PAYMENT_RATE_LIMIT_MAX
+        value: "30"
+
+      # DATABASE CONNECTION OPTIONS
+      - key: DB_MAX_POOL_SIZE
+        value: "10"
+      - key: DB_MIN_POOL_SIZE
+        value: "2"
+      - key: DB_CONNECT_TIMEOUT_MS
+        value: "30000"
+      - key: DB_SOCKET_TIMEOUT_MS
+        value: "45000"
+
+      # REDIS CONFIGURATION
+      - key: REDIS_URL
+        value: "redis://redis-18769.c280.us-central1-2.gce.redns.redis-cloud.com:18769"
+      - key: REDIS_USERNAME
+        value: "default"
+      - key: REDIS_PASSWORD
+        value: "1f1KghLl0pOXlh4JwNRwoGjaZbV6fHi6"
+      - key: REDIS_TTL
+        value: "3600"
+      - key: CACHE_TTL
+        value: "3600"
+
+      # FIREBASE ADMIN SDK CONFIGURATION
+      - key: FIREBASE_ADMIN_PROJECT_ID
+        value: "clutch-a2f49"
+      - key: FIREBASE_ADMIN_PRIVATE_KEY_ID
+        value: "6c880888b9b3b911e1056ab072d96d5b7dfbccf0"
+      - key: FIREBASE_ADMIN_PRIVATE_KEY
+        value: "-----BEGIN PRIVATE KEY-----\nMIIEvQIBADANBgkqhkiG9w0BAQEFAASCBKcwggSjAgEAAoIBAQCkzY4q00oHGq7e\njFEMgHgXRxxOS74RcDHQ+ZFYSX7TmaDoM0b3DUsiTthXdixYrEDGzTI7HklKZAbG\nCSj8Pd9+bMEiX6WIMTRXUzHBvOlOUD18JS4YL+chqnabfwe17MmBieQRS8r4m1xz\n40fnGS/DevBhqmZXYqtpOrnXGmcL2XWvmVF0yaHmRsGUgezA9YcXkV8dtYNVEssF\n9NNuZXmY1V8WZUgpWU52i53RcESOGrJeRM3YAbTySUuW68lHWSKWwCj65d0aUC1U\n5GgY5A/kM14mjjs34UWrGCIszn++4nD3wQrUT7wAY3AktOxQLW4lmTfyCrrwHrsY\nq6u51891AgMBAAECggEABb6mmIaR+4pqExboElv+E62mZnJMd1YmXmb8soupUJ33\n1nBHJoB/oHwIHZBgflzOyz9G43msS1wOQmP6WkSb4E/RMa4M2qEAdpTPVLYNme3B\nHu063Jv63hkPll8IuUY+RfY1DYdLVXww7lc7X+poWFOWQolKlPw7BmmGJeHlOqv1\nE/chfA82RoYBEzZ2YutmVRyj/6D5xjWHHxQj2nbw6gawAy+T1uRvFLrgExpf7YGn\npjED186p+jT00TGf+t58NorhyO77gvzFhjLmdLv3kS3/IqiQKv7DbaBJDmUvlEy3\nUYqOVwH7ySaikL66km99cY1f9Yesadd1tiy/c421AQKBgQDR5mr+Sy3XgggB/EMD\n64R8g/mZUccJez+t4qZXcD/u3T5IPcs0WR3G3bTyfgkWyO4VQFej5JyLJ4U8rCh7\nmyXgPr6HodtMnd7S08DmyctyNpI+d89r9dbtmtdVK/QBKQlqcW5e20JVlEKMcZVH\nV7CbnInUWPo155KUr0nGpJzU9QKBgQDI/4/9hxmm5fqMlVP3MMtG61anV53cKZPD\nXcW5KmCOCs4M1LnJk81EHmsdLkLP4Kz14qDnS5XSO2SjCvyL3cpcuw5spPzX3xRX\nwyZ1FFRdrQGEA7hiuMZxyyT9Vjc6AawFNQmtpYgg39a84m+QOKJ86svfNdIqNRr2\nxXGgBT6AgQKBgQDKtBS7g2q/5olJMY6eaIHHpcQTto/arjWu/WTaqEJ1sR+GsHZf\nFXjWJiGq1OB+KokR6NM6KXqsP/xBvZhS1l/bkXx6i2q3MPaQ74Io3tQkdmMBBL9B\naWaoi5JMZGf9/t1i+Cw4WtJSxx0FeGNLRHn/rUrF0S/BguNhx24d8barSQKBgGs2\nDgrwXhltAFiuaiwm5ba9XupBzN0bfEqwIQAkf34ke0XSzgqcgNe91eqpu0+AiyFY\nsfTNl2uc7JAfExhTxFX0HLyMwKUww3wQhtnabynMV0ugZGCcKJWYAvHyY+DX9XaN\nlMz/x32ph7QWn+VwoBM7dmVoIuMKkohgRrxRL8aBAoGAXiM9+fPEECKWfWZm1ds6\nsCKbmgBcG6QpZhdy+eDbORF+zD0dhsvGacRZMmAi6B32UlHOMbhFjssKl4Esw3ub\nGj8RAuufBaEaVWhLJ6ppGOA8/zK6LExLBmkRhEh23o9a6nBU53JwlJdu3W5rhF4/\nRwPG6U/1X1Jxuv/d2/Qouj4=\n-----END PRIVATE KEY-----\n"
+      - key: FIREBASE_ADMIN_CLIENT_EMAIL
+        value: "firebase-adminsdk-yna3z@clutch-a2f49.iam.gserviceaccount.com"
+      - key: FIREBASE_ADMIN_CLIENT_ID
+        value: "100297619729394765261"
+      - key: FIREBASE_ADMIN_AUTH_URI
+        value: "https://accounts.google.com/o/oauth2/auth"
+      - key: FIREBASE_ADMIN_TOKEN_URI
+        value: "https://oauth2.googleapis.com/token"
+      - key: FIREBASE_ADMIN_AUTH_PROVIDER_X509_CERT_URL
+        value: "https://www.googleapis.com/oauth2/v1/certs"
+      - key: FIREBASE_ADMIN_CLIENT_X509_CERT_URL
+        value: "https://www.googleapis.com/robot/v1/metadata/x509/firebase-adminsdk-yna3z%40clutch-a2f49.iam.gserviceaccount.com"
+      - key: FIREBASE_STORAGE_BUCKET
+        value: "clutch-a2f49.appspot.com"
+
+      # FIREBASE CONFIGURATION
+      - key: FIREBASE_PROJECT_ID
+        value: "clutch-a2f49"
+      - key: FIREBASE_VAPID_KEY
+        sync: false
+      - key: FCM_SERVER_KEY
+        sync: false
+      - key: FCM_DEFAULT_ICON
+        value: "notification_icon.png"
+      - key: FCM_DEFAULT_COLOR
+        value: "#FF6B35"
+
+      # EGYPTIAN PAYMENT PROVIDER CONFIGURATION (PAYMOB)
+      - key: PAYMOB_API_KEY
+        sync: false
+      - key: PAYMOB_INTEGRATION_ID
+        sync: false
+      - key: PAYMOB_IFRAME_ID
+        sync: false
+      - key: PAYMOB_HMAC_SECRET
+        sync: false
+      - key: PAYMOB_WEBHOOK_SECRET
+        sync: false
+      - key: PAYMOB_SUCCESS_URL
+        value: "https://clutch-a2f49.web.app/payment/success"
+      - key: PAYMOB_FAILURE_URL
+        value: "https://clutch-a2f49.web.app/payment/failure"
+
+      # EGYPTIAN SMS PROVIDER CONFIGURATION
+      - key: SMS_PROVIDER_API_KEY
+        sync: false
+      - key: SMS_PROVIDER_SENDER_ID
+        value: "CLUTCH"
+      - key: SMS_PROVIDER_BASE_URL
+        value: "https://api.egyptian-sms-provider.com"
+
+      # EMAIL CONFIGURATION
+      - key: SMTP_HOST
+        value: "smtp.gmail.com"
+      - key: SMTP_PORT
+        value: "587"
+      - key: SMTP_USER
+        sync: false
+      - key: SMTP_PASS
+        sync: false
+      - key: EMAIL_FROM
+        value: "noreply@clutch.com"
+      - key: EMAIL_FROM_NAME
+        value: "Clutch Platform"
+
+      # FILE STORAGE CONFIGURATION
+      - key: MAX_FILE_SIZE
+        value: "10485760"
+      - key: UPLOAD_PATH
+        value: "./uploads"
+      - key: CLOUDINARY_CLOUD_NAME
+        sync: false
+      - key: CLOUDINARY_API_KEY
+        sync: false
+      - key: CLOUDINARY_API_SECRET
+        sync: false
+
+      # LOGGING CONFIGURATION
+      - key: LOG_LEVEL
+        value: "info"
+      - key: LOG_FILE_PATH
+        value: "./logs"
+      - key: LOG_MAX_SIZE
+        value: "5242880"
+      - key: LOG_MAX_FILES
+        value: "5"
+      - key: LOG_ROTATION_ENABLED
+        value: true
+      - key: LOG_CLEANUP_ENABLED
+        value: true
+      - key: LOG_RETENTION_DAYS
+        value: "30"
+
+      # SECURITY HEADERS
+      - key: HELMET_CONTENT_SECURITY_POLICY
+        value: true
+      - key: HELMET_HIDE_POWERED_BY
+        value: true
+      - key: HELMET_FRAMEGUARD
+        value: true
+      - key: HELMET_XSS_PROTECTION
+        value: true
+
+      # BUSINESS LOGIC CONFIGURATION
+      - key: JOB_MATCHING_RADIUS_KM
+        value: "50"
+      - key: JOB_MATCHING_TIMEOUT_MS
+        value: "30000"
+      - key: JOB_AUTO_ASSIGNMENT_ENABLED
+        value: true
+      - key: BOOKING_ADVANCE_BOOKING_DAYS
+        value: "30"
+      - key: BOOKING_CANCELLATION_HOURS
+        value: "24"
+      - key: BOOKING_RESCHEDULE_HOURS
+        value: "2"
+
+      # API VERSIONING
+      - key: API_VERSION
+        value: "v1"
+      - key: API_DEPRECATION_WARNING_DAYS
+        value: "30"
+
+      # BRANDING & CUSTOMIZATION
+      - key: BRAND_NAME
+        value: "Clutch"
+      - key: BRAND_LOGO_URL
+        value: "https://clutch.com/logo.png"
+      - key: BRAND_COLOR_PRIMARY
+        value: "#FF6B35"
+      - key: BRAND_COLOR_SECONDARY
+        value: "#4ECDC4"
+      - key: DEFAULT_LANGUAGE
+        value: "en"
+      - key: DEFAULT_TIMEZONE
+        value: "UTC"
+      - key: SUPPORTED_LANGUAGES
+        value: "en,es,fr,de,ar"
+
+      # MAINTENANCE MODE
+      - key: MAINTENANCE_MODE
+        value: false
+      - key: MAINTENANCE_MESSAGE
+        value: "System is under maintenance. Please try again later."
+      - key: MAINTENANCE_ALLOWED_IPS
+        value: "127.0.0.1,::1"
+
+      # DEBUG & DEVELOPMENT
+      - key: DEBUG
+        value: false
+      - key: DEBUG_LEVEL
+        value: "info"
+      - key: SHOW_ERROR_DETAILS
+        value: false
+      - key: ENABLE_SWAGGER_UI
+        value: true
+      - key: ENABLE_API_DOCS
+        value: true
+
+      # FEATURE FLAGS
+      - key: FEATURE_AI_RECOMMENDATIONS_ENABLED
+        value: true
+      - key: FEATURE_CHAT_ENABLED
+        value: true
+      - key: FEATURE_LOYALTY_PROGRAM_ENABLED
+        value: true
+      - key: FEATURE_VIDEO_CALLS_ENABLED
+        value: false
+
+    healthCheckPath: /health
+    autoDeploy: true
+    region: oregon
