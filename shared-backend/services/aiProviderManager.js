@@ -54,7 +54,11 @@ class AIProviderManager {
         maxErrors: 5,
         cooldownTime: 600000, // 10 minutes
         lastUsed: null,
-        usageCount: 0
+        usageCount: 0,
+        backoffDelay: 1000,
+        maxBackoffDelay: 30000,
+        backoffMultiplier: 2,
+        lastRequestTime: 0
       },
       gemini: {
         name: 'Google Gemini Pro',
@@ -69,7 +73,11 @@ class AIProviderManager {
         maxErrors: 5,
         cooldownTime: 600000, // 10 minutes
         lastUsed: null,
-        usageCount: 0
+        usageCount: 0,
+        backoffDelay: 1000,
+        maxBackoffDelay: 30000,
+        backoffMultiplier: 2,
+        lastRequestTime: 0
       },
       deepseek: {
         name: 'DeepSeek Chat',
@@ -88,7 +96,11 @@ class AIProviderManager {
         maxErrors: 5,
         cooldownTime: 600000, // 10 minutes
         lastUsed: null,
-        usageCount: 0
+        usageCount: 0,
+        backoffDelay: 1000,
+        maxBackoffDelay: 30000,
+        backoffMultiplier: 2,
+        lastRequestTime: 0
       },
       anthropic: {
         name: 'Anthropic Claude',
@@ -105,7 +117,11 @@ class AIProviderManager {
         maxErrors: 5,
         cooldownTime: 600000, // 10 minutes
         lastUsed: null,
-        usageCount: 0
+        usageCount: 0,
+        backoffDelay: 1000,
+        maxBackoffDelay: 30000,
+        backoffMultiplier: 2,
+        lastRequestTime: 0
       },
       grok: {
         name: 'xAI Grok',
@@ -124,7 +140,11 @@ class AIProviderManager {
         maxErrors: 5,
         cooldownTime: 600000, // 10 minutes
         lastUsed: null,
-        usageCount: 0
+        usageCount: 0,
+        backoffDelay: 1000,
+        maxBackoffDelay: 30000,
+        backoffMultiplier: 2,
+        lastRequestTime: 0
       }
     };
 
@@ -317,19 +337,54 @@ class AIProviderManager {
   async callProvider(providerName, prompt, options = {}) {
     const provider = this.providers[providerName];
     
-    switch (providerName) {
-      case 'openai':
-        return await this.callOpenAI(provider, prompt, options);
-      case 'gemini':
-        return await this.callGemini(provider, prompt, options);
-      case 'deepseek':
-        return await this.callDeepSeek(provider, prompt, options);
-      case 'anthropic':
-        return await this.callAnthropic(provider, prompt, options);
-      case 'grok':
-        return await this.callGrok(provider, prompt, options);
-      default:
-        throw new Error(`Unknown provider: ${providerName}`);
+    // Implement exponential backoff
+    const currentTime = Date.now();
+    const timeSinceLastRequest = currentTime - provider.lastRequestTime;
+    
+    if (timeSinceLastRequest < provider.backoffDelay) {
+      const waitTime = provider.backoffDelay - timeSinceLastRequest;
+      this.logger.info(`⏳ Waiting ${waitTime}ms before retrying ${provider.name} (exponential backoff)`);
+      await new Promise(resolve => setTimeout(resolve, waitTime));
+    }
+    
+    // Update last request time
+    provider.lastRequestTime = Date.now();
+    
+    try {
+      let result;
+      switch (providerName) {
+        case 'openai':
+          result = await this.callOpenAI(provider, prompt, options);
+          break;
+        case 'gemini':
+          result = await this.callGemini(provider, prompt, options);
+          break;
+        case 'deepseek':
+          result = await this.callDeepSeek(provider, prompt, options);
+          break;
+        case 'anthropic':
+          result = await this.callAnthropic(provider, prompt, options);
+          break;
+        case 'grok':
+          result = await this.callGrok(provider, prompt, options);
+          break;
+        default:
+          throw new Error(`Unknown provider: ${providerName}`);
+      }
+      
+      // Reset backoff delay on successful request
+      provider.backoffDelay = 1000;
+      return result;
+      
+    } catch (error) {
+      // Increase backoff delay for next request
+      provider.backoffDelay = Math.min(
+        provider.backoffDelay * provider.backoffMultiplier,
+        provider.maxBackoffDelay
+      );
+      
+      this.logger.warn(`⚠️ ${provider.name} failed, increasing backoff delay to ${provider.backoffDelay}ms`);
+      throw error;
     }
   }
 
@@ -646,6 +701,30 @@ class AIProviderManager {
     
     this.fallbackChain.push(name);
     this.logger.info(`➕ Added new AI provider: ${name}`);
+  }
+
+  /**
+   * Reset circuit breaker for a specific provider
+   */
+  resetCircuitBreaker(providerName) {
+    const provider = this.providers[providerName];
+    if (provider) {
+      provider.isAvailable = true;
+      provider.errorCount = 0;
+      provider.lastError = null;
+      provider.backoffDelay = 1000;
+      this.logger.info(`🔄 Circuit breaker reset for ${provider.name}`);
+    }
+  }
+
+  /**
+   * Reset all circuit breakers
+   */
+  resetAllCircuitBreakers() {
+    Object.keys(this.providers).forEach(providerName => {
+      this.resetCircuitBreaker(providerName);
+    });
+    this.logger.info('🔄 All AI provider circuit breakers reset');
   }
 }
 

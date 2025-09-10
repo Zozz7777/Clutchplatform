@@ -33,11 +33,20 @@ class AIMonitoringAgent {
       backendUrl: process.env.BACKEND_URL || 'https://clutch-main-nk7x.onrender.com',
       adminUrl: process.env.ADMIN_URL || 'https://admin.yourclutch.com',
       renderApiKey: process.env.RENDER_API_KEY,
-      renderServiceId: process.env.RENDER_SERVICE_ID,
+      renderServiceId: process.env.RENDER_SERVICE_ID || 'clutch-main-nk7x', // Fallback to correct service ID
       checkInterval: process.env.AI_CHECK_INTERVAL || '*/5 * * * *', // Every 5 minutes
       maxRetries: 3,
       autoFixEnabled: process.env.AI_AUTO_FIX_ENABLED === 'true'
     };
+
+    // Log configuration for debugging
+    this.logger.info('AI Monitoring Agent Configuration:', {
+      backendUrl: this.config.backendUrl,
+      adminUrl: this.config.adminUrl,
+      renderApiKey: this.config.renderApiKey ? '***configured***' : 'not configured',
+      renderServiceId: this.config.renderServiceId,
+      autoFixEnabled: this.config.autoFixEnabled
+    });
 
     this.issuePatterns = {
       database: [

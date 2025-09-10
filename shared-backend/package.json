@@ -28,8 +28,18 @@
     "optimize:memory": "node scripts/optimize-memory.js",
     "reset:circuit-breaker": "node scripts/reset-circuit-breaker.js",
     "optimize:system": "node scripts/optimize-memory.js && node scripts/reset-circuit-breaker.js",
+    "fix:comprehensive": "node scripts/comprehensive-ai-fixes.js",
+    "fix:all": "node scripts/comprehensive-ai-fixes.js",
     "health:check": "node scripts/system-health-check.js",
-    "health:fix": "node scripts/system-health-check.js"
+    "health:fix": "node scripts/system-health-check.js",
+    "feed:learning": "node scripts/feed-learning-to-ai-team.js",
+    "ai:learn": "node scripts/feed-learning-to-ai-team.js",
+    "feed:comprehensive": "node scripts/feed-comprehensive-learning.js",
+    "ai:master": "node scripts/feed-comprehensive-learning.js",
+    "ai:course": "node scripts/feed-comprehensive-learning.js",
+    "start:autonomous-learning": "node scripts/start-autonomous-learning.js",
+    "ai:autonomous": "node scripts/start-autonomous-learning.js",
+    "ai:learn-forever": "node scripts/start-autonomous-learning.js"
   },
   "keywords": [
     "clutch",
