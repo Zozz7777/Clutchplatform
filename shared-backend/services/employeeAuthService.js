@@ -5,10 +5,10 @@ const { getCollection } = require('../config/database');
 
 class EmployeeAuthService {
   /**
-   * Find employee by email with retry logic for database timeouts
+   * Find employee by email with optimized query and caching
    */
-    async findEmployeeByEmail(email) {
-    const maxRetries = 3;
+  async findEmployeeByEmail(email) {
+    const maxRetries = 2; // Reduced retries for faster failure
     let lastError;
 
     // Normalize email to lowercase for consistent searching
@@ -19,16 +19,29 @@ class EmployeeAuthService {
         // Use the centralized database connection from config
         const employeesCollection = await getCollection('employees');
         
-        // Use case-insensitive email search for both data structures
-        // Also try exact match with normalized email for better performance
+        // Optimized query - try exact match first (fastest), then case-insensitive
         const employee = await employeesCollection.findOne({ 
           $or: [
-            { 'basicInfo.email': normalizedEmail },
-            { email: normalizedEmail },
+            { 'basicInfo.email': normalizedEmail }, // Exact match first
+            { email: normalizedEmail }, // Exact match first
             { 'basicInfo.email': { $regex: new RegExp(`^${normalizedEmail}$`, 'i') } },
             { email: { $regex: new RegExp(`^${normalizedEmail}$`, 'i') } }
           ]
-        }, { maxTimeMS: 25000 }); // 25 second timeout per attempt
+        }, { 
+          maxTimeMS: 5000, // Reduced timeout to 5 seconds
+          projection: { 
+            _id: 1, 
+            email: 1, 
+            'basicInfo.email': 1, 
+            isActive: 1, 
+            role: 1, 
+            'authentication.password': 1, 
+            password: 1,
+            loginAttempts: 1,
+            lastLoginAttempt: 1,
+            isLocked: 1
+          } // Only fetch required fields for better performance
+        });
         
         return { success: true, data: employee };
       } catch (error) {
@@ -37,7 +50,7 @@ class EmployeeAuthService {
         
         // If it's a timeout error and we have more attempts, wait before retrying
         if (error.message?.includes('timed out') && attempt < maxRetries) {
-          const delay = attempt * 1000; // 1s, 2s, 3s delays
+          const delay = 500; // Reduced delay to 500ms
           console.log(`Database timeout, retrying in ${delay}ms...`);
           await new Promise(resolve => setTimeout(resolve, delay));
         } else {
@@ -51,15 +64,10 @@ class EmployeeAuthService {
   }
 
   /**
-   * Verify employee password
+   * Verify employee password (optimized - no additional DB call needed)
    */
-  async verifyPassword(employeeId, password) {
+  async verifyPassword(employee, password) {
     try {
-      const employee = await Employee.findById(employeeId);
-      if (!employee) {
-        return { success: false, isValid: false, error: 'Employee not found' };
-      }
-
       // Handle both data structures for password field
       const passwordField = employee.authentication?.password || employee.password;
       if (!passwordField) {
@@ -89,15 +97,10 @@ class EmployeeAuthService {
   }
 
   /**
-   * Check if account is locked
+   * Check if account is locked (optimized - no additional DB call needed)
    */
-  async isAccountLocked(employeeId) {
+  async isAccountLocked(employee) {
     try {
-      const employee = await Employee.findById(employeeId);
-      if (!employee) {
-        return { success: false, isLocked: false, error: 'Employee not found' };
-      }
-
       const isLocked = employee.isLocked && employee.lockUntil && employee.lockUntil > new Date();
       return { success: true, isLocked };
     } catch (error) {

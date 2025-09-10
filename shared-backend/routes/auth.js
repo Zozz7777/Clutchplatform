@@ -61,8 +61,8 @@ router.post('/employee-login', rateLimit.authRateLimit, validateUserLogin, async
             });
         }
 
-        // Check if account is locked
-        const lockResult = await employeeAuthService.isAccountLocked(employee._id);
+        // Check if account is locked (optimized - no additional DB call)
+        const lockResult = await employeeAuthService.isAccountLocked(employee);
         if (lockResult.success && lockResult.isLocked) {
             return res.status(423).json({
                 success: false,
@@ -71,9 +71,9 @@ router.post('/employee-login', rateLimit.authRateLimit, validateUserLogin, async
             });
         }
 
-        // Verify password
+        // Verify password (optimized - no additional DB call)
         console.log('Verifying password for employee:', employee._id);
-        const passwordResult = await employeeAuthService.verifyPassword(employee._id, password);
+        const passwordResult = await employeeAuthService.verifyPassword(employee, password);
         if (!passwordResult.success || !passwordResult.isValid) {
             console.log('Password verification failed for employee:', employee._id);
             // Update login attempts

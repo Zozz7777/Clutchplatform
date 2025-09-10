@@ -10,6 +10,11 @@ const winston = require('winston');
 
 class AIResponseCache {
   constructor() {
+    // Singleton pattern to prevent multiple instances
+    if (AIResponseCache.instance) {
+      return AIResponseCache.instance;
+    }
+    
     this.logger = winston.createLogger({
       level: 'info',
       format: winston.format.combine(
@@ -46,6 +51,7 @@ class AIResponseCache {
     };
 
     this.initializeCache();
+    AIResponseCache.instance = this;
   }
 
   /**
