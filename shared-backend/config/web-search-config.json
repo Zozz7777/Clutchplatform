@@ -1,0 +1,61 @@
+{
+  "webSearch": {
+    "enabled": true,
+    "engines": {
+      "google": {
+        "enabled": true,
+        "apiKey": "YOUR_GOOGLE_SEARCH_API_KEY",
+        "searchEngineId": "YOUR_GOOGLE_SEARCH_ENGINE_ID",
+        "dailyLimit": 100,
+        "timeout": 10000
+      },
+      "duckduckgo": {
+        "enabled": true,
+        "timeout": 10000,
+        "noLimit": true
+      },
+      "stackoverflow": {
+        "enabled": true,
+        "timeout": 10000,
+        "dailyLimit": 10000
+      },
+      "github": {
+        "enabled": true,
+        "timeout": 10000,
+        "hourlyLimit": 5000
+      }
+    },
+    "searchSettings": {
+      "maxResults": 10,
+      "timeout": 15000,
+      "retryAttempts": 3,
+      "retryDelay": 1000
+    },
+    "fallback": {
+      "enabled": true,
+      "useMockResults": true,
+      "mockResultsCount": 3
+    }
+  },
+  "knowledgeBase": {
+    "enabled": true,
+    "dataFile": "./data/knowledge-base.json",
+    "searchSettings": {
+      "maxResults": 5,
+      "relevanceThreshold": 0.7
+    }
+  },
+  "researchFirst": {
+    "enabled": true,
+    "priority": [
+      "knowledge_base",
+      "web_search",
+      "ai_api"
+    ],
+    "confidenceThresholds": {
+      "knowledge_base": 0.8,
+      "web_search": 0.6,
+      "ai_api": 0.3
+    }
+  }
+}

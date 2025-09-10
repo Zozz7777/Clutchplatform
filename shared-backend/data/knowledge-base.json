@@ -1,0 +1,362 @@
+{
+  "backendDevelopment": {
+    "nodejs": {
+      "basics": {
+        "title": "Node.js Fundamentals",
+        "content": "Node.js is a JavaScript runtime built on Chrome's V8 JavaScript engine. Key concepts include event-driven, non-blocking I/O, and the event loop. Use require() for CommonJS modules or import/export for ES6 modules.",
+        "examples": [
+          "const express = require('express');",
+          "const app = express();",
+          "app.listen(3000, () => console.log('Server running on port 3000'));"
+        ],
+        "bestPractices": [
+          "Use async/await instead of callbacks",
+          "Handle errors properly with try-catch",
+          "Use environment variables for configuration",
+          "Implement proper logging"
+        ]
+      },
+      "performance": {
+        "title": "Node.js Performance Optimization",
+        "content": "Optimize Node.js applications by using clustering, worker threads, caching, and proper memory management. Monitor performance with tools like clinic.js and 0x.",
+        "techniques": [
+          "Use PM2 for process management",
+          "Implement Redis for caching",
+          "Use compression middleware",
+          "Optimize database queries",
+          "Use connection pooling"
+        ]
+      },
+      "security": {
+        "title": "Node.js Security Best Practices",
+        "content": "Secure Node.js applications by implementing authentication, authorization, input validation, and security headers. Use helmet.js for security middleware.",
+        "practices": [
+          "Use HTTPS in production",
+          "Implement rate limiting",
+          "Validate and sanitize inputs",
+          "Use JWT for authentication",
+          "Implement CORS properly",
+          "Use environment variables for secrets"
+        ]
+      }
+    },
+    "express": {
+      "routing": {
+        "title": "Express.js Routing",
+        "content": "Express.js provides a robust routing system. Use app.use() for middleware, app.get(), app.post(), etc. for HTTP methods, and router() for modular routing.",
+        "examples": [
+          "app.get('/users', (req, res) => { res.json(users); });",
+          "app.post('/users', (req, res) => { /* create user */ });",
+          "const router = express.Router(); router.get('/profile', handler);"
+        ]
+      },
+      "middleware": {
+        "title": "Express.js Middleware",
+        "content": "Middleware functions execute during the request-response cycle. They can modify request/response objects, end the cycle, or call the next middleware.",
+        "types": [
+          "Application-level middleware",
+          "Router-level middleware",
+          "Error-handling middleware",
+          "Built-in middleware",
+          "Third-party middleware"
+        ]
+      },
+      "errorHandling": {
+        "title": "Express.js Error Handling",
+        "content": "Implement proper error handling with try-catch blocks, error middleware, and custom error classes. Use winston for logging errors.",
+        "patterns": [
+          "Use async error wrapper",
+          "Implement global error handler",
+          "Log errors with context",
+          "Return appropriate HTTP status codes"
+        ]
+      }
+    },
+    "mongodb": {
+      "nativeDriver": {
+        "title": "MongoDB Native Driver",
+        "content": "Use MongoDB native driver for direct database operations. Connect using MongoClient, use collections for CRUD operations, and implement proper error handling.",
+        "examples": [
+          "const { MongoClient } = require('mongodb');",
+          "const client = new MongoClient(uri);",
+          "await client.connect();",
+          "const collection = client.db('mydb').collection('users');"
+        ]
+      },
+      "queries": {
+        "title": "MongoDB Query Optimization",
+        "content": "Optimize MongoDB queries by using proper indexes, limiting results, using projection, and implementing aggregation pipelines for complex operations.",
+        "techniques": [
+          "Create appropriate indexes",
+          "Use findOne() for single documents",
+          "Implement pagination",
+          "Use aggregation for complex queries",
+          "Monitor query performance"
+        ]
+      },
+      "aggregation": {
+        "title": "MongoDB Aggregation Pipeline",
+        "content": "Use aggregation pipeline for complex data processing. Common stages include $match, $group, $sort, $limit, and $project.",
+        "examples": [
+          "db.users.aggregate([{ $match: { age: { $gte: 18 } } }, { $group: { _id: '$city', count: { $sum: 1 } } }])"
+        ]
+      }
+    },
+    "authentication": {
+      "jwt": {
+        "title": "JWT Authentication",
+        "content": "JSON Web Tokens provide stateless authentication. Use jsonwebtoken library to create and verify tokens. Store tokens securely and implement refresh token mechanism.",
+        "implementation": [
+          "Generate JWT with user data",
+          "Verify JWT in middleware",
+          "Implement token refresh",
+          "Handle token expiration",
+          "Secure token storage"
+        ]
+      },
+      "oauth": {
+        "title": "OAuth 2.0 Implementation",
+        "content": "Implement OAuth 2.0 for third-party authentication. Use passport.js for OAuth strategies and handle authorization flows properly.",
+        "flows": [
+          "Authorization Code Flow",
+          "Client Credentials Flow",
+          "Implicit Flow",
+          "Resource Owner Password Credentials Flow"
+        ]
+      }
+    },
+    "api": {
+      "rest": {
+        "title": "RESTful API Design",
+        "content": "Design RESTful APIs with proper HTTP methods, status codes, and resource naming. Use consistent URL patterns and implement proper error responses.",
+        "principles": [
+          "Use HTTP methods correctly",
+          "Implement proper status codes",
+          "Use consistent URL patterns",
+          "Version your APIs",
+          "Document your APIs"
+        ]
+      },
+      "graphql": {
+        "title": "GraphQL Implementation",
+        "content": "GraphQL provides a single endpoint for data fetching. Use Apollo Server or express-graphql for implementation. Define schemas and resolvers properly.",
+        "concepts": [
+          "Schema definition",
+          "Resolvers",
+          "Queries and mutations",
+          "Subscriptions",
+          "Data loaders"
+        ]
+      }
+    },
+    "testing": {
+      "unit": {
+        "title": "Unit Testing",
+        "content": "Write unit tests for individual functions and modules. Use Jest or Mocha for testing framework. Mock dependencies and test edge cases.",
+        "tools": [
+          "Jest",
+          "Mocha",
+          "Chai",
+          "Sinon",
+          "Supertest"
+        ]
+      },
+      "integration": {
+        "title": "Integration Testing",
+        "content": "Test integration between different parts of the application. Use Supertest for API testing and test database interactions.",
+        "approaches": [
+          "API endpoint testing",
+          "Database integration testing",
+          "Third-party service testing",
+          "End-to-end testing"
+        ]
+      }
+    },
+    "deployment": {
+      "docker": {
+        "title": "Docker Containerization",
+        "content": "Containerize Node.js applications using Docker. Create optimized Dockerfiles, use multi-stage builds, and implement proper health checks.",
+        "bestPractices": [
+          "Use official Node.js base images",
+          "Implement multi-stage builds",
+          "Use .dockerignore",
+          "Set proper user permissions",
+          "Implement health checks"
+        ]
+      },
+      "kubernetes": {
+        "title": "Kubernetes Deployment",
+        "content": "Deploy Node.js applications on Kubernetes. Use deployments, services, and ingress for proper orchestration. Implement horizontal pod autoscaling.",
+        "resources": [
+          "Deployments",
+          "Services",
+          "Ingress",
+          "ConfigMaps",
+          "Secrets",
+          "HorizontalPodAutoscaler"
+        ]
+      }
+    }
+  },
+  "security": {
+    "authentication": {
+      "title": "Authentication Security",
+      "content": "Implement secure authentication with proper password hashing, session management, and multi-factor authentication.",
+      "practices": [
+        "Use bcrypt for password hashing",
+        "Implement session timeout",
+        "Use secure cookies",
+        "Implement MFA",
+        "Rate limit login attempts"
+      ]
+    },
+    "authorization": {
+      "title": "Authorization Patterns",
+      "content": "Implement proper authorization with role-based access control (RBAC) and attribute-based access control (ABAC).",
+      "patterns": [
+        "Role-based access control",
+        "Attribute-based access control",
+        "JWT-based authorization",
+        "OAuth scopes",
+        "API key authorization"
+      ]
+    },
+    "dataProtection": {
+      "title": "Data Protection",
+      "content": "Protect sensitive data with encryption, data masking, and proper access controls. Implement GDPR compliance measures.",
+      "measures": [
+        "Encrypt sensitive data",
+        "Implement data masking",
+        "Use secure communication",
+        "Implement audit logging",
+        "Data retention policies"
+      ]
+    }
+  },
+  "databases": {
+    "mongodb": {
+      "title": "MongoDB Best Practices",
+      "content": "Optimize MongoDB performance with proper indexing, query optimization, and connection management.",
+      "optimizations": [
+        "Create appropriate indexes",
+        "Use compound indexes",
+        "Implement connection pooling",
+        "Monitor query performance",
+        "Use aggregation pipelines"
+      ]
+    },
+    "redis": {
+      "title": "Redis Caching",
+      "content": "Use Redis for caching, session storage, and real-time features. Implement proper cache invalidation strategies.",
+      "useCases": [
+        "Application caching",
+        "Session storage",
+        "Rate limiting",
+        "Real-time features",
+        "Message queuing"
+      ]
+    }
+  },
+  "apis": {
+    "design": {
+      "title": "API Design Principles",
+      "content": "Design APIs with consistency, versioning, and proper error handling. Use OpenAPI/Swagger for documentation.",
+      "principles": [
+        "Consistent naming",
+        "Proper HTTP status codes",
+        "API versioning",
+        "Error handling",
+        "Rate limiting",
+        "Documentation"
+      ]
+    },
+    "integration": {
+      "title": "API Integration",
+      "content": "Integrate with third-party APIs using proper error handling, retry mechanisms, and circuit breakers.",
+      "patterns": [
+        "Retry with exponential backoff",
+        "Circuit breaker pattern",
+        "Bulkhead pattern",
+        "Timeout handling",
+        "Fallback mechanisms"
+      ]
+    }
+  },
+  "deployment": {
+    "production": {
+      "title": "Production Deployment",
+      "content": "Deploy applications to production with proper monitoring, logging, and error handling. Use CI/CD pipelines.",
+      "requirements": [
+        "Environment configuration",
+        "Health checks",
+        "Monitoring and alerting",
+        "Log aggregation",
+        "Error tracking",
+        "Performance monitoring"
+      ]
+    },
+    "scaling": {
+      "title": "Application Scaling",
+      "content": "Scale applications horizontally and vertically. Use load balancers, caching, and database optimization.",
+      "strategies": [
+        "Horizontal scaling",
+        "Vertical scaling",
+        "Load balancing",
+        "Caching strategies",
+        "Database sharding",
+        "CDN implementation"
+      ]
+    }
+  },
+  "troubleshooting": {
+    "commonIssues": {
+      "title": "Common Backend Issues",
+      "content": "Common issues include memory leaks, database connection problems, and performance bottlenecks.",
+      "solutions": [
+        "Memory leak detection",
+        "Database connection pooling",
+        "Query optimization",
+        "Error handling",
+        "Logging and monitoring"
+      ]
+    },
+    "debugging": {
+      "title": "Debugging Techniques",
+      "content": "Debug applications using proper logging, profiling tools, and error tracking services.",
+      "tools": [
+        "Winston for logging",
+        "Node.js profiler",
+        "Chrome DevTools",
+        "New Relic",
+        "DataDog",
+        "Sentry"
+      ]
+    }
+  },
+  "bestPractices": {
+    "codeQuality": {
+      "title": "Code Quality",
+      "content": "Maintain high code quality with linting, testing, and code reviews. Use TypeScript for type safety.",
+      "practices": [
+        "ESLint configuration",
+        "Prettier formatting",
+        "Unit testing",
+        "Code reviews",
+        "TypeScript usage",
+        "Documentation"
+      ]
+    },
+    "performance": {
+      "title": "Performance Best Practices",
+      "content": "Optimize application performance with proper caching, database optimization, and monitoring.",
+      "optimizations": [
+        "Database indexing",
+        "Query optimization",
+        "Caching strategies",
+        "Connection pooling",
+        "Memory management",
+        "Async operations"
+      ]
+    }
+  }
+}

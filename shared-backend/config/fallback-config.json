@@ -1,0 +1,18 @@
+{
+  "aiProviders": {
+    "fallbackMode": true,
+    "gracefulDegradation": true,
+    "webSearchFallback": true,
+    "mockMode": true,
+    "retryAttempts": 3,
+    "retryDelay": 5000,
+    "circuitBreakerThreshold": 10,
+    "circuitBreakerTimeout": 300000
+  },
+  "autonomousSystem": {
+    "continueWithoutAI": true,
+    "useWebSearch": true,
+    "useKnowledgeBase": true,
+    "reducedFunctionality": true
+  }
+}

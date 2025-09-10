@@ -11,6 +11,17 @@ const AIResponseCache = require('./aiResponseCache');
 
 class AIProviderManager {
   constructor() {
+    // Research-first mode configuration
+    this.researchFirstMode = process.env.AI_RESEARCH_FIRST_MODE === 'true' || true;
+    this.knowledgeBaseFirst = process.env.AI_KNOWLEDGE_BASE_FIRST === 'true' || true;
+    this.webSearchEnabled = process.env.AI_WEB_SEARCH_ENABLED === 'true' || true;
+    this.maxAIApiUsage = process.env.AI_MAX_API_USAGE || 0.05; // Only 5% of tasks should use AI API
+    
+    // Fallback mode configuration
+    this.fallbackMode = process.env.AI_FALLBACK_MODE === 'true' || true;
+    this.gracefulDegradation = process.env.AI_GRACEFUL_DEGRADATION === 'true' || true;
+    this.webSearchFallback = process.env.AI_WEB_SEARCH_FALLBACK === 'true' || true;
+    
     this.logger = winston.createLogger({
       level: 'info',
       format: winston.format.combine(
@@ -727,5 +738,57 @@ class AIProviderManager {
     this.logger.info('🔄 All AI provider circuit breakers reset');
   }
 }
+
+
+  /**
+   * Determine if AI API should be used based on research-first approach
+   */
+  shouldUseAIAPI(problem, context = {}) {
+    // Always try research first
+    if (this.researchFirstMode) {
+      // Check if problem can be solved with knowledge base
+      if (this.knowledgeBaseFirst && this.canSolveWithKnowledgeBase(problem)) {
+        return false;
+      }
+      
+      // Check if problem can be solved with web search
+      if (this.webSearchEnabled && this.canSolveWithWebSearch(problem)) {
+        return false;
+      }
+    }
+    
+    // Only use AI API for complex problems that can't be solved with research
+    return this.isComplexProblem(problem);
+  }
+
+  canSolveWithKnowledgeBase(problem) {
+    // Check if problem is in knowledge base
+    const knowledgeBaseTerms = [
+      'node.js', 'express', 'mongodb', 'authentication', 'jwt', 'api', 'rest',
+      'error handling', 'middleware', 'routing', 'security', 'deployment'
+    ];
+    
+    return knowledgeBaseTerms.some(term => 
+      problem.toLowerCase().includes(term)
+    );
+  }
+
+  canSolveWithWebSearch(problem) {
+    // Most problems can be solved with web search
+    return true;
+  }
+
+  isComplexProblem(problem) {
+    // Only use AI API for very complex problems
+    const complexTerms = [
+      'machine learning', 'ai', 'neural network', 'deep learning',
+      'complex algorithm', 'advanced optimization'
+    ];
+    
+    return complexTerms.some(term => 
+      problem.toLowerCase().includes(term)
+    );
+  }
+
 
 module.exports = AIProviderManager;

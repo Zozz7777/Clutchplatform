@@ -8,6 +8,7 @@ const winston = require('winston');
 const fs = require('fs').promises;
 const path = require('path');
 const AdvancedKnowledgeBase = require('./advancedKnowledgeBase');
+const RealWebSearchService = require('./realWebSearchService');
 
 class AutonomousLearningAcademy {
   constructor() {
@@ -52,6 +53,9 @@ class AutonomousLearningAcademy {
 
     // Initialize advanced knowledge base
     this.advancedKnowledgeBase = new AdvancedKnowledgeBase();
+    
+    // Initialize real web search service
+    this.webSearchService = new RealWebSearchService();
 
     this.initializeKnowledgeBase();
   }
@@ -241,8 +245,8 @@ class AutonomousLearningAcademy {
     try {
       this.logger.info(`🔍 Searching web for: ${query}`);
       
-      // Simulate web search results (in production, integrate with actual search APIs)
-      const searchResults = await this.simulateWebSearch(query, context);
+      // Use real web search service
+      const searchResults = await this.webSearchService.search(query, context);
       
       this.logger.info(`✅ Found ${searchResults.length} search results`);
       return searchResults;
@@ -253,37 +257,6 @@ class AutonomousLearningAcademy {
     }
   }
 
-  /**
-   * Simulate web search with relevant results
-   */
-  async simulateWebSearch(query, context) {
-    // In production, this would integrate with actual search APIs
-    const mockResults = [
-      {
-        title: `${query} - Best Practices Guide`,
-        url: `https://example.com/${query.replace(/\s+/g, '-')}`,
-        snippet: `Comprehensive guide on ${query} with examples and best practices for backend development.`,
-        source: 'documentation',
-        relevance: 0.95
-      },
-      {
-        title: `${query} - Stack Overflow Solutions`,
-        url: `https://stackoverflow.com/questions/tagged/${query.replace(/\s+/g, '-')}`,
-        snippet: `Common solutions and troubleshooting for ${query} issues in Node.js and Express.`,
-        source: 'stackoverflow',
-        relevance: 0.90
-      },
-      {
-        title: `${query} - GitHub Examples`,
-        url: `https://github.com/search?q=${query.replace(/\s+/g, '+')}`,
-        snippet: `Open source examples and implementations of ${query} in various projects.`,
-        source: 'github',
-        relevance: 0.85
-      }
-    ];
-
-    return mockResults;
-  }
 
   /**
    * Research-first approach for problem solving

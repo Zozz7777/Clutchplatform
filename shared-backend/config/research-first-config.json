@@ -1,0 +1,42 @@
+{
+  "researchFirst": {
+    "enabled": true,
+    "priority": [
+      "knowledge_base",
+      "web_search",
+      "ai_api"
+    ],
+    "thresholds": {
+      "knowledge_base": 0.8,
+      "web_search": 0.6,
+      "ai_api": 0.3
+    },
+    "maxAIApiUsage": 0.05,
+    "fallbackToAI": true
+  },
+  "knowledgeBase": {
+    "enabled": true,
+    "dataFile": "./data/knowledge-base.json",
+    "searchSettings": {
+      "maxResults": 5,
+      "relevanceThreshold": 0.7
+    }
+  },
+  "webSearch": {
+    "enabled": true,
+    "engines": [
+      "duckduckgo",
+      "stackoverflow",
+      "github"
+    ],
+    "maxResults": 10,
+    "timeout": 15000
+  },
+  "monitoring": {
+    "enabled": true,
+    "logResearchFirst": true,
+    "trackAIApiUsage": true,
+    "alertOnHighAIApiUsage": true,
+    "highUsageThreshold": 0.1
+  }
+}

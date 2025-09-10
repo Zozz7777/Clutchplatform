@@ -1,0 +1,16 @@
+{
+  "development": {
+    "mockAIResponses": true,
+    "useWebSearch": true,
+    "useKnowledgeBase": true,
+    "skipAPIValidation": true,
+    "reducedLogging": false
+  },
+  "production": {
+    "mockAIResponses": false,
+    "useWebSearch": true,
+    "useKnowledgeBase": true,
+    "skipAPIValidation": false,
+    "reducedLogging": true
+  }
+}

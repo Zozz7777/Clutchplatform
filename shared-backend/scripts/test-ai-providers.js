@@ -1,160 +1,179 @@
 #!/usr/bin/env node
 
 /**
- * Test Script for AI Provider Manager
- * Tests all AI providers and fallback functionality
+ * AI Providers Test Script
+ * Tests all configured AI providers to ensure they're working correctly
  */
 
-const AIProviderManager = require('../services/aiProviderManager');
-const winston = require('winston');
+require('dotenv').config();
+const axios = require('axios');
 
-// Setup logger
-const logger = winston.createLogger({
-  level: 'info',
-  format: winston.format.combine(
-    winston.format.timestamp(),
-    winston.format.colorize(),
-    winston.format.simple()
-  ),
-  transports: [
-    new winston.transports.Console()
-  ]
-});
+const AI_PROVIDERS = [
+  {
+    name: 'OpenAI',
+    key: 'OPENAI_API_KEY',
+    testUrl: 'https://api.openai.com/v1/models',
+    headers: (apiKey) => ({ 'Authorization': `Bearer ${apiKey}` })
+  },
+  {
+    name: 'Google Gemini',
+    key: 'GEMINI_API_KEY',
+    testUrl: 'https://generativelanguage.googleapis.com/v1/models',
+    headers: (apiKey) => ({ 'X-Goog-Api-Key': apiKey })
+  },
+  {
+    name: 'DeepSeek',
+    key: 'DEEPSEEK_API_KEY',
+    testUrl: 'https://api.deepseek.com/v1/models',
+    headers: (apiKey) => ({ 'Authorization': `Bearer ${apiKey}` })
+  },
+  {
+    name: 'Anthropic Claude',
+    key: 'ANTHROPIC_API_KEY',
+    testUrl: 'https://api.anthropic.com/v1/messages',
+    headers: (apiKey) => ({ 'x-api-key': apiKey, 'Content-Type': 'application/json' }),
+    testData: {
+      model: 'claude-3-haiku-20240307',
+      max_tokens: 10,
+      messages: [{ role: 'user', content: 'Hello' }]
+    }
+  },
+  {
+    name: 'Grok (X.AI)',
+    key: 'GROK_API_KEY',
+    testUrl: 'https://api.x.ai/v1/models',
+    headers: (apiKey) => ({ 'Authorization': `Bearer ${apiKey}` })
+  }
+];
 
-async function testAIProviders() {
-  logger.info('🚀 Starting AI Provider Manager Test...');
+async function testAIProvider(provider) {
+  const apiKey = process.env[provider.key];
   
-  const aiManager = new AIProviderManager();
-  
-  // Test 1: Health Check
-  logger.info('\n📊 Testing Provider Health Check...');
+  if (!apiKey || apiKey.includes('your_') || apiKey.includes('test_')) {
+    return {
+      name: provider.name,
+      status: 'not_configured',
+      message: 'API key not configured or using placeholder value'
+    };
+  }
+
   try {
-    const healthResults = await aiManager.healthCheck();
-    logger.info('Health Check Results:');
-    Object.entries(healthResults).forEach(([provider, result]) => {
-      const status = result.status === 'healthy' ? '✅' : '❌';
-      logger.info(`  ${status} ${provider}: ${result.status}`);
-      if (result.error) {
-        logger.warn(`    Error: ${result.error}`);
+    const config = {
+      method: 'GET',
+      url: provider.testUrl,
+      headers: provider.headers(apiKey),
+      timeout: 10000
+    };
+
+    // For Anthropic, we need to use POST with test data
+    if (provider.name === 'Anthropic Claude') {
+      config.method = 'POST';
+      config.data = provider.testData;
+    }
+
+    const response = await axios(config);
+    
+    return {
+      name: provider.name,
+      status: 'working',
+      message: 'API key is valid and working',
+      details: `Status: ${response.status}, Models available: ${response.data?.data?.length || 'N/A'}`
+    };
+  } catch (error) {
+    let status = 'error';
+    let message = 'API key test failed';
+    
+    if (error.response) {
+      const statusCode = error.response.status;
+      if (statusCode === 401) {
+        status = 'invalid_key';
+        message = 'Invalid API key';
+      } else if (statusCode === 429) {
+        status = 'rate_limited';
+        message = 'Rate limited - API key is valid but quota exceeded';
+      } else if (statusCode === 403) {
+        status = 'forbidden';
+        message = 'API key valid but access forbidden';
+      } else {
+        message = `HTTP ${statusCode}: ${error.response.data?.error?.message || error.message}`;
       }
-    });
-  } catch (error) {
-    logger.error('Health check failed:', error);
-  }
-  
-  // Test 2: Provider Statistics
-  logger.info('\n📈 Getting Provider Statistics...');
-  const stats = aiManager.getProviderStats();
-  logger.info('Provider Statistics:');
-  logger.info(`  Current Provider: ${stats.currentProvider}`);
-  logger.info(`  Fallback Chain: ${stats.fallbackChain.join(' → ')}`);
-  
-  Object.entries(stats.providers).forEach(([name, provider]) => {
-    logger.info(`  ${name}:`);
-    logger.info(`    Available: ${provider.isAvailable ? '✅' : '❌'}`);
-    logger.info(`    Usage Count: ${provider.usageCount}`);
-    logger.info(`    Error Count: ${provider.errorCount}`);
-  });
-  
-  // Test 3: Simple AI Request
-  logger.info('\n🤖 Testing Simple AI Request...');
-  const testPrompt = "Respond with 'AI Provider Test Successful' if you can process this request.";
-  
-  try {
-    const response = await aiManager.generateResponse(testPrompt, {
-      maxTokens: 50,
-      temperature: 0.1
-    });
-    
-    if (response.success) {
-      logger.info(`✅ AI Request Successful!`);
-      logger.info(`  Provider: ${response.provider}`);
-      logger.info(`  Model: ${response.model}`);
-      logger.info(`  Response: ${response.response.substring(0, 100)}...`);
-    } else {
-      logger.error(`❌ AI Request Failed: ${response.error}`);
+    } else if (error.code === 'ENOTFOUND' || error.code === 'ECONNREFUSED') {
+      status = 'network_error';
+      message = 'Network error - check internet connection';
+    } else if (error.code === 'ECONNABORTED') {
+      status = 'timeout';
+      message = 'Request timeout';
     }
-  } catch (error) {
-    logger.error('AI request test failed:', error);
+
+    return {
+      name: provider.name,
+      status,
+      message,
+      error: error.message
+    };
   }
-  
-  // Test 4: Fallback Test (Simulate OpenAI failure)
-  logger.info('\n🔄 Testing Fallback Mechanism...');
-  
-  // Mark OpenAI as unavailable to test fallback
-  aiManager.markProviderUnavailable('openai', new Error('Simulated rate limit'));
-  
-  try {
-    const fallbackResponse = await aiManager.generateResponse(testPrompt, {
-      maxTokens: 50,
-      temperature: 0.1
-    });
-    
-    if (fallbackResponse.success) {
-      logger.info(`✅ Fallback Successful!`);
-      logger.info(`  Fallback Provider: ${fallbackResponse.provider}`);
-      logger.info(`  Model: ${fallbackResponse.model}`);
-    } else {
-      logger.error(`❌ Fallback Failed: ${fallbackResponse.error}`);
-    }
-  } catch (error) {
-    logger.error('Fallback test failed:', error);
-  }
-  
-  // Test 5: Enterprise Analysis Test
-  logger.info('\n🏢 Testing Enterprise Analysis...');
-  const enterprisePrompt = `
-  Analyze this backend issue and provide a solution:
-  
-  Issue: Database connection timeout errors occurring frequently
-  Environment: Production Node.js application with MongoDB
-  Symptoms: 500 errors, slow response times, connection pool exhaustion
-  
-  Provide a comprehensive analysis and solution.
-  `;
-  
-  try {
-    const enterpriseResponse = await aiManager.generateResponse(enterprisePrompt, {
-      systemPrompt: 'You are an expert enterprise backend developer. Provide detailed, production-ready solutions with proper error handling and monitoring.',
-      maxTokens: 1000,
-      temperature: 0.3
-    });
-    
-    if (enterpriseResponse.success) {
-      logger.info(`✅ Enterprise Analysis Successful!`);
-      logger.info(`  Provider: ${enterpriseResponse.provider}`);
-      logger.info(`  Model: ${enterpriseResponse.model}`);
-      logger.info(`  Analysis Length: ${enterpriseResponse.response.length} characters`);
-      logger.info(`  Analysis Preview: ${enterpriseResponse.response.substring(0, 200)}...`);
-    } else {
-      logger.error(`❌ Enterprise Analysis Failed: ${enterpriseResponse.error}`);
-    }
-  } catch (error) {
-    logger.error('Enterprise analysis test failed:', error);
-  }
-  
-  // Test 6: Final Statistics
-  logger.info('\n📊 Final Provider Statistics...');
-  const finalStats = aiManager.getProviderStats();
-  Object.entries(finalStats.providers).forEach(([name, provider]) => {
-    logger.info(`  ${name}:`);
-    logger.info(`    Available: ${provider.isAvailable ? '✅' : '❌'}`);
-    logger.info(`    Usage Count: ${provider.usageCount}`);
-    logger.info(`    Error Count: ${provider.errorCount}`);
-    if (provider.lastUsed) {
-      logger.info(`    Last Used: ${new Date(provider.lastUsed).toISOString()}`);
-    }
-  });
-  
-  logger.info('\n🎉 AI Provider Manager Test Complete!');
 }
 
-// Run the test
+async function testAllAIProviders() {
+  console.log('🧪 Testing AI Providers Configuration');
+  console.log('=====================================\n');
+
+  const results = [];
+  
+  for (const provider of AI_PROVIDERS) {
+    console.log(`Testing ${provider.name}...`);
+    const result = await testAIProvider(provider);
+    results.push(result);
+    
+    // Display result
+    const statusIcon = {
+      'working': '✅',
+      'not_configured': '⚠️ ',
+      'invalid_key': '❌',
+      'rate_limited': '⏳',
+      'forbidden': '🚫',
+      'network_error': '🌐',
+      'timeout': '⏰',
+      'error': '❌'
+    }[result.status] || '❓';
+    
+    console.log(`${statusIcon} ${result.name}: ${result.message}`);
+    if (result.details) {
+      console.log(`   ${result.details}`);
+    }
+    if (result.error) {
+      console.log(`   Error: ${result.error}`);
+    }
+    console.log('');
+  }
+
+  // Summary
+  console.log('📊 Test Summary');
+  console.log('===============');
+  
+  const working = results.filter(r => r.status === 'working').length;
+  const configured = results.filter(r => r.status !== 'not_configured').length;
+  const total = results.length;
+
+  console.log(`✅ Working: ${working}/${total}`);
+  console.log(`🔧 Configured: ${configured}/${total}`);
+  console.log(`⚠️  Not configured: ${total - configured}/${total}`);
+
+  if (working === 0) {
+    console.log('\n❌ No AI providers are working! The autonomous backend system will not function properly.');
+    console.log('📝 Please run: npm run setup-ai-keys to configure your API keys.');
+  } else if (working < total) {
+    console.log('\n⚠️  Some AI providers are not working. The system will use fallback mechanisms.');
+  } else {
+    console.log('\n🎉 All AI providers are working correctly!');
+  }
+
+  return results;
+}
+
+// Run tests if called directly
 if (require.main === module) {
-  testAIProviders().catch(error => {
-    logger.error('Test failed:', error);
-    process.exit(1);
-  });
+  testAllAIProviders().catch(console.error);
 }
 
-module.exports = { testAIProviders };
+module.exports = { testAllAIProviders, testAIProvider };

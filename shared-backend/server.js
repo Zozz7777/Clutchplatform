@@ -864,50 +864,7 @@ async function startServer() {
     const HOST = process.env.HOST || '0.0.0.0';
 
     console.log('🚀 Starting HTTP server...');
-    const server = 
-// Comprehensive error handling middleware
-app.use((error, req, res, next) => {
-  logger.error('Server error:', {
-    error: error.message,
-    stack: error.stack,
-    url: req.url,
-    method: req.method,
-    timestamp: new Date()
-  });
-
-  // Don't expose internal errors in production
-  const isDevelopment = process.env.NODE_ENV === 'development';
-  
-  if (error.status === 404) {
-    return res.status(404).json({
-      success: false,
-      error: 'Endpoint not found',
-      message: 'The requested endpoint does not exist'
-    });
-  }
-
-  if (error.status >= 500) {
-    return res.status(500).json({
-      success: false,
-      error: 'Internal server error',
-      message: isDevelopment ? error.message : 'An internal error occurred',
-      ...(isDevelopment && { stack: error.stack })
-    });
-  }
-
-  res.status(error.status || 500).json({
-    success: false,
-    error: error.message || 'Unknown error occurred'
-  });
-});
-
-app.listen(PORT, HOST, () => {
-      logger.info(`🚀 Clutch Platform API server running on ${HOST}:${PORT}`);
-      logger.info(`📊 Environment: ${process.env.NODE_ENV || 'development'}`);
-      logger.info(`🔗 API Version: ${process.env.API_VERSION || 'v1'}`);
-      logger.info(`📚 API Documentation: ${process.env.ENABLE_API_DOCS === 'true' ? `http://${HOST}:${PORT}/api-docs` : 'Disabled'}`);
-      logger.info(`🏥 Health Check: http://${HOST}:${PORT}/health`);
-    });
+    const server = http.createServer(app);
 
     // Initialize WebSocket server
     try {
@@ -917,6 +874,15 @@ app.listen(PORT, HOST, () => {
     } catch (error) {
       logger.error('❌ WebSocket server initialization failed:', error);
     }
+
+    // Start the server
+    server.listen(PORT, HOST, () => {
+      logger.info(`🚀 Clutch Platform API server running on ${HOST}:${PORT}`);
+      logger.info(`📊 Environment: ${process.env.NODE_ENV || 'development'}`);
+      logger.info(`🔗 API Version: ${process.env.API_VERSION || 'v1'}`);
+      logger.info(`📚 API Documentation: ${process.env.ENABLE_API_DOCS === 'true' ? `http://${HOST}:${PORT}/api-docs` : 'Disabled'}`);
+      logger.info(`🏥 Health Check: http://${HOST}:${PORT}/health`);
+    });
 
     // Handle server errors
     server.on('error', (error) => {

@@ -39,7 +39,11 @@
     "ai:course": "node scripts/feed-comprehensive-learning.js",
     "start:autonomous-learning": "node scripts/start-autonomous-learning.js",
     "ai:autonomous": "node scripts/start-autonomous-learning.js",
-    "ai:learn-forever": "node scripts/start-autonomous-learning.js"
+    "ai:learn-forever": "node scripts/start-autonomous-learning.js",
+    "setup:ai-keys": "node scripts/setup-ai-api-keys.js",
+    "test:ai-providers": "node scripts/test-ai-providers.js",
+    "analyze:ai-approach": "node scripts/analyze-ai-approach.js",
+    "fix:research-first": "node scripts/fix-research-first-approach.js"
   },
   "keywords": [
     "clutch",
