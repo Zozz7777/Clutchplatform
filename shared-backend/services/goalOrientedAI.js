@@ -648,6 +648,13 @@ Provide your decision with detailed reasoning and expected impact on each goal.
     return [];
   }
 
+  /**
+   * Get all active goals
+   */
+  getAllGoals() {
+    return this.goals;
+  }
+
   getGoalProgressSummary() {
     return Object.fromEntries(this.performanceTracking.goalProgress);
   }
