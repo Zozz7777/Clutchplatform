@@ -620,8 +620,6 @@ class AutonomousLearningFeed {
       this.saveLearningData();
     }, 5 * 60 * 1000);
   }
-}
-
 
   /**
    * Process comprehensive fixes and feed to learning system

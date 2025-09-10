@@ -1,0 +1,149 @@
+{
+  "timestamp": "2025-09-10T22:13:22.231Z",
+  "totalSolutions": 8,
+  "categories": [
+    "infrastructure",
+    "configuration",
+    "architecture",
+    "knowledge",
+    "search",
+    "monitoring",
+    "analysis"
+  ],
+  "severities": [
+    "high",
+    "critical",
+    "medium"
+  ],
+  "tags": [
+    "websocket",
+    "socket.io",
+    "server",
+    "initialization",
+    "port",
+    "conflict",
+    "process",
+    "kill",
+    "api-keys",
+    "configuration",
+    "fallback",
+    "degradation",
+    "research-first",
+    "knowledge-base",
+    "web-search",
+    "ai-api",
+    "backend-development",
+    "experience",
+    "learning",
+    "google",
+    "duckduckgo",
+    "stackoverflow",
+    "github",
+    "monitoring",
+    "ai-api-usage",
+    "alerting",
+    "analysis",
+    "diagnosis",
+    "root-cause",
+    "action-plan"
+  ],
+  "solutions": [
+    {
+      "id": "websocket-fix-001",
+      "type": "WebSocket Initialization Error",
+      "category": "infrastructure",
+      "severity": "high",
+      "tags": [
+        "websocket",
+        "socket.io",
+        "server",
+        "initialization"
+      ]
+    },
+    {
+      "id": "port-conflict-fix-002",
+      "type": "Port Conflict Error",
+      "category": "infrastructure",
+      "severity": "high",
+      "tags": [
+        "port",
+        "conflict",
+        "process",
+        "kill"
+      ]
+    },
+    {
+      "id": "api-keys-fix-003",
+      "type": "Missing AI API Keys",
+      "category": "configuration",
+      "severity": "critical",
+      "tags": [
+        "api-keys",
+        "configuration",
+        "fallback",
+        "degradation"
+      ]
+    },
+    {
+      "id": "research-first-fix-004",
+      "type": "API-First Approach Issue",
+      "category": "architecture",
+      "severity": "high",
+      "tags": [
+        "research-first",
+        "knowledge-base",
+        "web-search",
+        "ai-api"
+      ]
+    },
+    {
+      "id": "knowledge-base-fix-005",
+      "type": "Missing Knowledge Base",
+      "category": "knowledge",
+      "severity": "high",
+      "tags": [
+        "knowledge-base",
+        "backend-development",
+        "experience",
+        "learning"
+      ]
+    },
+    {
+      "id": "web-search-fix-006",
+      "type": "Mock Web Search",
+      "category": "search",
+      "severity": "medium",
+      "tags": [
+        "web-search",
+        "google",
+        "duckduckgo",
+        "stackoverflow",
+        "github"
+      ]
+    },
+    {
+      "id": "monitoring-fix-007",
+      "type": "Research-First Monitoring",
+      "category": "monitoring",
+      "severity": "medium",
+      "tags": [
+        "monitoring",
+        "research-first",
+        "ai-api-usage",
+        "alerting"
+      ]
+    },
+    {
+      "id": "analysis-fix-008",
+      "type": "AI Approach Analysis",
+      "category": "analysis",
+      "severity": "medium",
+      "tags": [
+        "analysis",
+        "diagnosis",
+        "root-cause",
+        "action-plan"
+      ]
+    }
+  ]
+}

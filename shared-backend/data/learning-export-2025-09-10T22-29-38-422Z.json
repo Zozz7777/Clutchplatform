@@ -1,0 +1,241 @@
+{
+  "exportTimestamp": "2025-09-10T22:29:38.424Z",
+  "learningData": {
+    "solutions": [
+      {
+        "id": "websocket-fix-001",
+        "type": "WebSocket Initialization Error",
+        "problem": "WebSocket initialization error: Error: You are trying to attach socket.io to an express request handler function. Please pass a http.Server instance.",
+        "solution": "Fixed by ensuring realTimeService.initializeSocketServer() is called with the http.Server instance created by http.createServer(app)",
+        "code": "\n// Fixed WebSocket initialization in server.js\nconst server = http.createServer(app);\ntry {\n  const realTimeService = require('./services/realTimeService');\n  realTimeService.initializeSocketServer(server); // Pass the http.Server instance\n  logger.info('🔌 WebSocket server initialized successfully');\n} catch (error) {\n  logger.error('❌ WebSocket server initialization failed:', error);\n}\nserver.listen(PORT, HOST, () => {\n  logger.info(`🚀 Clutch Platform API server running on ${HOST}:${PORT}`);\n});\n      ",
+        "category": "infrastructure",
+        "severity": "high",
+        "tags": [
+          "websocket",
+          "socket.io",
+          "server",
+          "initialization"
+        ],
+        "learnedAt": "2025-09-10T22:13:22.207Z",
+        "source": "human_expert",
+        "confidence": 1,
+        "usageCount": 0,
+        "successRate": 1
+      },
+      {
+        "id": "port-conflict-fix-002",
+        "type": "Port Conflict Error",
+        "problem": "Uncaught Exception: { message: 'listen EADDRINUSE: address already in use 0.0.0.0:5000'",
+        "solution": "Fixed by identifying and killing the process using port 5000 using netstat and taskkill commands",
+        "code": "\n// Commands to fix port conflict\nnetstat -ano | findstr :5000  // Find process using port 5000\ntaskkill /PID <PID> /F        // Kill the process\n      ",
+        "category": "infrastructure",
+        "severity": "high",
+        "tags": [
+          "port",
+          "conflict",
+          "process",
+          "kill"
+        ],
+        "learnedAt": "2025-09-10T22:13:22.213Z",
+        "source": "human_expert",
+        "confidence": 1,
+        "usageCount": 0,
+        "successRate": 1
+      },
+      {
+        "id": "api-keys-fix-003",
+        "type": "Missing AI API Keys",
+        "problem": "⚠️ Missing API keys: OPENAI_API_KEY, GEMINI_API_KEY, DEEPSEEK_API_KEY, ANTHROPIC_API_KEY, GROK_API_KEY",
+        "solution": "Created comprehensive API key setup system with fallback configuration and graceful degradation",
+        "code": "\n// API Key Configuration\nOPENAI_API_KEY=sk-proj-...\nGEMINI_API_KEY=AIzaSy...\nDEEPSEEK_API_KEY=sk-f1c...\nANTHROPIC_API_KEY=sk-ant-...\nGROK_API_KEY=xai-...\n\n// Fallback configuration for graceful degradation\nconst fallbackConfig = {\n  aiProviders: {\n    fallbackMode: true,\n    gracefulDegradation: true,\n    webSearchFallback: true,\n    mockMode: process.env.NODE_ENV === 'development'\n  }\n};\n      ",
+        "category": "configuration",
+        "severity": "critical",
+        "tags": [
+          "api-keys",
+          "configuration",
+          "fallback",
+          "degradation"
+        ],
+        "learnedAt": "2025-09-10T22:13:22.215Z",
+        "source": "human_expert",
+        "confidence": 1,
+        "usageCount": 0,
+        "successRate": 1
+      },
+      {
+        "id": "research-first-fix-004",
+        "type": "API-First Approach Issue",
+        "problem": "AI team using API-first approach instead of research-first approach",
+        "solution": "Implemented comprehensive research-first approach with knowledge base, web search, and minimal AI API usage",
+        "code": "\n// Research-First Approach Implementation\nasync researchSolution(problem, context = {}) {\n  // Step 1: Check knowledge base first\n  const knowledgeBaseResult = await this.searchKnowledgeBase(problem);\n  if (knowledgeBaseResult) {\n    return { source: 'knowledge_base', solution: knowledgeBaseResult, confidence: 0.9 };\n  }\n\n  // Step 2: Search web for additional information\n  const webResults = await this.searchWeb(problem, context);\n  if (webResults && webResults.length > 0) {\n    return { source: 'web_research', solution: webResults[0], confidence: 0.8 };\n  }\n\n  // Step 3: Only use AI API for complex problems\n  return { source: 'ai_api_recommended', solution: 'Complex problem requiring AI assistance', confidence: 0.3 };\n}\n      ",
+        "category": "architecture",
+        "severity": "high",
+        "tags": [
+          "research-first",
+          "knowledge-base",
+          "web-search",
+          "ai-api"
+        ],
+        "learnedAt": "2025-09-10T22:13:22.218Z",
+        "source": "human_expert",
+        "confidence": 1,
+        "usageCount": 0,
+        "successRate": 1
+      },
+      {
+        "id": "knowledge-base-fix-005",
+        "type": "Missing Knowledge Base",
+        "problem": "Knowledge base data file not found - forcing reliance on external AI APIs",
+        "solution": "Created comprehensive knowledge base with 15+ years of backend development experience",
+        "code": "\n// Knowledge Base Structure\n{\n  \"backendDevelopment\": {\n    \"nodejs\": { \"basics\": {...}, \"performance\": {...}, \"security\": {...} },\n    \"express\": { \"routing\": {...}, \"middleware\": {...}, \"errorHandling\": {...} },\n    \"mongodb\": { \"nativeDriver\": {...}, \"queries\": {...}, \"aggregation\": {...} },\n    \"authentication\": { \"jwt\": {...}, \"oauth\": {...} },\n    \"api\": { \"rest\": {...}, \"graphql\": {...} },\n    \"testing\": { \"unit\": {...}, \"integration\": {...} },\n    \"deployment\": { \"docker\": {...}, \"kubernetes\": {...} }\n  },\n  \"security\": { \"authentication\": {...}, \"authorization\": {...}, \"dataProtection\": {...} },\n  \"databases\": { \"mongodb\": {...}, \"redis\": {...} },\n  \"apis\": { \"design\": {...}, \"integration\": {...} },\n  \"deployment\": { \"production\": {...}, \"scaling\": {...} },\n  \"troubleshooting\": { \"commonIssues\": {...}, \"debugging\": {...} },\n  \"bestPractices\": { \"codeQuality\": {...}, \"performance\": {...} }\n}\n      ",
+        "category": "knowledge",
+        "severity": "high",
+        "tags": [
+          "knowledge-base",
+          "backend-development",
+          "experience",
+          "learning"
+        ],
+        "learnedAt": "2025-09-10T22:13:22.220Z",
+        "source": "human_expert",
+        "confidence": 1,
+        "usageCount": 0,
+        "successRate": 1
+      },
+      {
+        "id": "web-search-fix-006",
+        "type": "Mock Web Search",
+        "problem": "Web search using mock results instead of real web search",
+        "solution": "Implemented real web search service with multiple search engines and proper error handling",
+        "code": "\n// Real Web Search Service\nclass RealWebSearchService {\n  async search(query, context = {}) {\n    const results = [];\n    const searchPromises = [];\n\n    // Google Custom Search (if configured)\n    if (this.searchEngines.google.enabled && this.searchEngines.google.apiKey) {\n      searchPromises.push(this.searchGoogle(query, context));\n    }\n\n    // DuckDuckGo (no API key required)\n    if (this.searchEngines.duckduckgo.enabled) {\n      searchPromises.push(this.searchDuckDuckGo(query, context));\n    }\n\n    // Stack Overflow (for technical queries)\n    if (this.searchEngines.stackoverflow.enabled && this.isTechnicalQuery(query)) {\n      searchPromises.push(this.searchStackOverflow(query, context));\n    }\n\n    // GitHub (for code-related queries)\n    if (this.searchEngines.github.enabled && this.isCodeQuery(query)) {\n      searchPromises.push(this.searchGitHub(query, context));\n    }\n\n    const searchResults = await Promise.allSettled(searchPromises);\n    // Process and return results...\n  }\n}\n      ",
+        "category": "search",
+        "severity": "medium",
+        "tags": [
+          "web-search",
+          "google",
+          "duckduckgo",
+          "stackoverflow",
+          "github"
+        ],
+        "learnedAt": "2025-09-10T22:13:22.223Z",
+        "source": "human_expert",
+        "confidence": 1,
+        "usageCount": 0,
+        "successRate": 1
+      },
+      {
+        "id": "monitoring-fix-007",
+        "type": "Research-First Monitoring",
+        "problem": "No monitoring of research-first vs API-first approach usage",
+        "solution": "Created comprehensive monitoring system to track and alert on approach usage",
+        "code": "\n// Research-First Monitoring\nclass ResearchFirstMonitoring {\n  recordResearchFirstRequest(source, success = true) {\n    this.stats.totalRequests++;\n    \n    switch (source) {\n      case 'knowledge_base': this.stats.knowledgeBaseRequests++; break;\n      case 'web_search': this.stats.webSearchRequests++; break;\n      case 'ai_api': this.stats.aiApiRequests++; break;\n    }\n\n    if (success && source !== 'ai_api') {\n      this.stats.researchFirstSuccess++;\n    }\n\n    // Alert if AI API usage is too high\n    if (this.getStats().aiApiUsageRate > 10) {\n      this.logger.warn('High AI API usage detected', {\n        aiApiUsageRate: this.getStats().aiApiUsageRate.toFixed(2) + '%',\n        threshold: '10%'\n      });\n    }\n  }\n}\n      ",
+        "category": "monitoring",
+        "severity": "medium",
+        "tags": [
+          "monitoring",
+          "research-first",
+          "ai-api-usage",
+          "alerting"
+        ],
+        "learnedAt": "2025-09-10T22:13:22.227Z",
+        "source": "human_expert",
+        "confidence": 1,
+        "usageCount": 0,
+        "successRate": 1
+      },
+      {
+        "id": "analysis-fix-008",
+        "type": "AI Approach Analysis",
+        "problem": "No way to analyze why AI team uses API-first approach",
+        "solution": "Created comprehensive analysis system to diagnose approach issues and provide solutions",
+        "code": "\n// AI Approach Analysis\nasync function analyzeAIApproach() {\n  const analysis = {\n    issues: [],\n    findings: [],\n    recommendations: []\n  };\n\n  // Check API Keys Configuration\n  const apiKeysStatus = checkAPIKeysConfiguration();\n  \n  // Check Research-First Implementation\n  const researchImplementation = checkResearchFirstImplementation();\n  \n  // Check Web Search Service\n  const webSearchStatus = checkWebSearchService();\n  \n  // Check Knowledge Base Status\n  const knowledgeBaseStatus = checkKnowledgeBaseStatus();\n  \n  // Check AI Provider Manager Configuration\n  const aiProviderStatus = checkAIProviderManagerConfiguration();\n  \n  // Analyze Recent Logs\n  const logsAnalysis = await analyzeRecentLogs();\n\n  return { analysis, rootCauses: identifyRootCauses(analysis), actionPlan: generateActionPlan(analysis) };\n}\n      ",
+        "category": "analysis",
+        "severity": "medium",
+        "tags": [
+          "analysis",
+          "diagnosis",
+          "root-cause",
+          "action-plan"
+        ],
+        "learnedAt": "2025-09-10T22:13:22.230Z",
+        "source": "human_expert",
+        "confidence": 1,
+        "usageCount": 0,
+        "successRate": 1
+      }
+    ],
+    "statistics": {
+      "totalSolutions": 8,
+      "categories": {
+        "infrastructure": 2,
+        "configuration": 1,
+        "architecture": 1,
+        "knowledge": 1,
+        "search": 1,
+        "monitoring": 1,
+        "analysis": 1
+      },
+      "severities": {
+        "high": 4,
+        "critical": 1,
+        "medium": 3
+      },
+      "tags": {
+        "websocket": 1,
+        "socket.io": 1,
+        "server": 1,
+        "initialization": 1,
+        "port": 1,
+        "conflict": 1,
+        "process": 1,
+        "kill": 1,
+        "api-keys": 1,
+        "configuration": 1,
+        "fallback": 1,
+        "degradation": 1,
+        "research-first": 2,
+        "knowledge-base": 2,
+        "web-search": 2,
+        "ai-api": 1,
+        "backend-development": 1,
+        "experience": 1,
+        "learning": 1,
+        "google": 1,
+        "duckduckgo": 1,
+        "stackoverflow": 1,
+        "github": 1,
+        "monitoring": 1,
+        "ai-api-usage": 1,
+        "alerting": 1,
+        "analysis": 1,
+        "diagnosis": 1,
+        "root-cause": 1,
+        "action-plan": 1
+      },
+      "lastUpdated": "2025-09-10T22:13:22.230Z"
+    }
+  },
+  "feedData": {
+    "feedId": "continuous-learning-feed-001",
+    "startTime": "2025-09-10T22:17:18.152Z",
+    "totalFeeds": 0,
+    "categories": {},
+    "lastFeedTime": null,
+    "activeLearning": true,
+    "learningSessions": []
+  },
+  "summary": {
+    "totalSolutions": 8,
+    "totalFeeds": 0,
+    "categories": [
+      "infrastructure",
+      "configuration",
+      "architecture",
+      "knowledge",
+      "search",
+      "monitoring",
+      "analysis"
+    ],
+    "lastFeedTime": null
+  }
+}
