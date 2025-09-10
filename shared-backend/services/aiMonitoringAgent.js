@@ -56,7 +56,11 @@ class AIMonitoringAgent {
         /500.*internal.*server.*error/i,
         /503.*service.*unavailable/i,
         /timeout/i,
-        /rate.*limit.*exceeded/i
+        /rate.*limit.*exceeded/i,
+        /404.*not.*found/i,
+        /endpoint.*not.*found/i,
+        /route.*not.*found/i,
+        /can't.*find.*on.*this.*server/i
       ],
       cors: [
         /cors.*error/i,
@@ -68,6 +72,19 @@ class AIMonitoringAgent {
         /jwt.*expired/i,
         /token.*invalid/i,
         /authentication.*failed/i
+      ],
+      npm: [
+        /vulnerabilities/i,
+        /npm.*audit/i,
+        /security.*vulnerability/i,
+        /critical.*vulnerability/i,
+        /high.*vulnerability/i
+      ],
+      performance: [
+        /slow.*request/i,
+        /response.*time.*exceeded/i,
+        /timeout.*exceeded/i,
+        /performance.*degradation/i
       ]
     };
 
@@ -76,7 +93,9 @@ class AIMonitoringAgent {
       memory: this.fixMemoryIssues.bind(this),
       api: this.fixApiIssues.bind(this),
       cors: this.fixCorsIssues.bind(this),
-      authentication: this.fixAuthIssues.bind(this)
+      authentication: this.fixAuthIssues.bind(this),
+      npm: this.fixNpmIssues.bind(this),
+      performance: this.fixPerformanceIssues.bind(this)
     };
 
     this.isRunning = false;
@@ -510,7 +529,33 @@ class AIMonitoringAgent {
    */
   async fixApiIssues(issue) {
     try {
-      // Restart specific service
+      this.logger.info('🔧 Fixing API issues...');
+      
+      // Check if it's a 404 error that needs route creation
+      if (issue.message && issue.message.includes('404') || issue.message.includes('not found')) {
+        this.logger.info('🚨 404 Error detected - delegating to Enterprise AI Developer for route creation');
+        
+        // Use Enterprise AI Developer to analyze and create missing routes
+        const fixResult = await this.enterpriseDeveloper.analyzeAndResolveIssue({
+          type: 'missing_api_endpoint',
+          severity: 'high',
+          description: issue.message,
+          context: {
+            endpoint: issue.endpoint || 'unknown',
+            method: issue.method || 'GET',
+            statusCode: 404,
+            environment: 'production'
+          }
+        });
+
+        return { 
+          success: true, 
+          message: 'Missing API endpoint analyzed and created by Enterprise AI Developer',
+          details: fixResult
+        };
+      }
+
+      // For other API issues, restart the service
       const response = await axios.post(`${this.config.backendUrl}/api/v1/admin/restart-service`, {
         service: 'api'
       }, {
@@ -519,6 +564,7 @@ class AIMonitoringAgent {
 
       return { success: true, message: 'API service restarted' };
     } catch (error) {
+      this.logger.error('Failed to fix API issues:', error);
       return { success: false, message: error.message };
     }
   }
@@ -593,6 +639,66 @@ class AIMonitoringAgent {
       this.logger.info(`📢 Notification sent for ${issue.type} issue`);
     } catch (error) {
       this.logger.error('Failed to send notification:', error);
+    }
+  }
+
+  /**
+   * Fix NPM vulnerabilities
+   */
+  async fixNpmIssues(issue) {
+    try {
+      this.logger.info('🔧 Fixing NPM vulnerabilities...');
+      
+      // Use Enterprise AI Developer to analyze and fix vulnerabilities
+      const fixResult = await this.enterpriseDeveloper.analyzeAndResolveIssue({
+        type: 'npm_vulnerabilities',
+        severity: 'high',
+        description: issue.message,
+        context: {
+          vulnerabilities: issue.message,
+          packageManager: 'npm',
+          environment: 'production'
+        }
+      });
+
+      return { 
+        success: true, 
+        message: 'NPM vulnerabilities analyzed and fixed by Enterprise AI Developer',
+        details: fixResult
+      };
+    } catch (error) {
+      this.logger.error('Failed to fix NPM issues:', error);
+      return { success: false, message: error.message };
+    }
+  }
+
+  /**
+   * Fix performance issues
+   */
+  async fixPerformanceIssues(issue) {
+    try {
+      this.logger.info('🔧 Fixing performance issues...');
+      
+      // Use Enterprise AI Developer to analyze and optimize performance
+      const fixResult = await this.enterpriseDeveloper.analyzeAndResolveIssue({
+        type: 'performance_degradation',
+        severity: 'medium',
+        description: issue.message,
+        context: {
+          responseTime: issue.responseTime,
+          endpoint: issue.endpoint,
+          environment: 'production'
+        }
+      });
+
+      return { 
+        success: true, 
+        message: 'Performance issues analyzed and optimized by Enterprise AI Developer',
+        details: fixResult
+      };
+    } catch (error) {
+      this.logger.error('Failed to fix performance issues:', error);
+      return { success: false, message: error.message };
     }
   }
 

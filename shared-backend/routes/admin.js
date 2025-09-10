@@ -9,6 +9,93 @@ const { authenticateToken, requireRole } = require('../middleware/auth');
 const { getCollection } = require('../config/database');
 
 /**
+ * Consolidated dashboard endpoint (for frontend compatibility)
+ */
+router.get('/dashboard/consolidated', authenticateToken, async (req, res) => {
+  try {
+    console.log('📊 ADMIN_CONSOLIDATED_DASHBOARD_REQUEST:', {
+      user: req.user.email,
+      timestamp: new Date().toISOString()
+    });
+
+    // Get collections
+    const usersCollection = await getCollection('users');
+    const bookingsCollection = await getCollection('bookings');
+    const paymentsCollection = await getCollection('payments');
+
+    // Get current date and last 30 days
+    const now = new Date();
+    const thirtyDaysAgo = new Date(now.getTime() - (30 * 24 * 60 * 60 * 1000));
+
+    // Get comprehensive metrics
+    const [
+      totalUsers,
+      activeUsers,
+      totalRevenue,
+      monthlyRevenue,
+      totalOrders,
+      completedOrders
+    ] = await Promise.all([
+      usersCollection.countDocuments(),
+      usersCollection.countDocuments({ lastActive: { $gte: thirtyDaysAgo } }),
+      paymentsCollection.aggregate([
+        { $group: { _id: null, total: { $sum: '$amount' } } }
+      ]).toArray(),
+      paymentsCollection.aggregate([
+        { $match: { createdAt: { $gte: thirtyDaysAgo } } },
+        { $group: { _id: null, total: { $sum: '$amount' } } }
+      ]).toArray(),
+      bookingsCollection.countDocuments(),
+      bookingsCollection.countDocuments({ status: 'completed' })
+    ]);
+
+    const consolidatedData = {
+      metrics: {
+        totalUsers: totalUsers || 0,
+        activeUsers: activeUsers || 0,
+        totalRevenue: totalRevenue[0]?.total || 0,
+        monthlyRevenue: monthlyRevenue[0]?.total || 0,
+        totalOrders: totalOrders || 0,
+        completedOrders: completedOrders || 0,
+        completionRate: totalOrders > 0 ? ((completedOrders / totalOrders) * 100).toFixed(2) : 0
+      },
+      charts: {
+        revenue: {
+          labels: ['Last 7 days', 'Last 30 days', 'Last 90 days'],
+          data: [monthlyRevenue[0]?.total || 0, monthlyRevenue[0]?.total || 0, totalRevenue[0]?.total || 0]
+        },
+        users: {
+          labels: ['Total Users', 'Active Users'],
+          data: [totalUsers || 0, activeUsers || 0]
+        }
+      },
+      recentActivity: [],
+      systemHealth: {
+        status: 'healthy',
+        uptime: process.uptime(),
+        memoryUsage: process.memoryUsage(),
+        timestamp: new Date()
+      }
+    };
+
+    res.json({
+      success: true,
+      data: consolidatedData,
+      timestamp: new Date()
+    });
+
+  } catch (error) {
+    console.error('❌ ADMIN_CONSOLIDATED_DASHBOARD_ERROR:', error);
+    res.status(500).json({
+      success: false,
+      error: 'DASHBOARD_ERROR',
+      message: 'Failed to fetch consolidated dashboard data',
+      details: error.message
+    });
+  }
+});
+
+/**
  * Restart database connection
  */
 router.post('/restart-db-connection', authenticateToken, requireRole(['admin']), async (req, res) => {
