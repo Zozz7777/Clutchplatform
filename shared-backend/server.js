@@ -570,9 +570,12 @@ app.use((req, res, next) => {
     console.log('🔧 Adding fallback routes for reverse proxy compatibility');
     if (process.env.NODE_ENV === 'production' || process.env.ENABLE_RATE_LIMITING === 'true') {
       app.use('/auth', authRateLimit, authRoutes);
+      app.use('/admin', adminRateLimit, adminRoutes);
     } else {
       app.use('/auth', authRoutes);
+      app.use('/admin', adminRoutes);
     }
+    app.use('/dashboard', dashboardRoutes);
   }
   app.use(`${apiPrefix}/users`, userRoutes);
   app.use(`${apiPrefix}/errors`, errorRoutes);
