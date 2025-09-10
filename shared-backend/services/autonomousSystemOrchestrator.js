@@ -132,8 +132,12 @@ class AutonomousSystemOrchestrator {
         
         this.logger.info('✅ AI Team Documentation loaded successfully');
         
-        // Share documentation with all AI team members
-        await this.shareDocumentationWithTeam();
+        // Share documentation with all AI team members (with error handling)
+        try {
+          await this.shareDocumentationWithTeam();
+        } catch (shareError) {
+          this.logger.warn('⚠️ Failed to share documentation with team, but continuing:', shareError.message);
+        }
         
       } else {
         this.logger.warn('⚠️ AI Team Documentation file not found');
@@ -155,9 +159,13 @@ class AutonomousSystemOrchestrator {
       
       // Share with autonomous team
       if (this.autonomousTeam && this.autonomousTeam.teamMembers) {
-        for (const member of this.autonomousTeam.teamMembers) {
-          if (member.loadDocumentation) {
-            await member.loadDocumentation(this.aiTeamDocumentation);
+        // teamMembers is an object, not an array, so we need to iterate over its values
+        const teamMembers = this.autonomousTeam.teamMembers;
+        if (typeof teamMembers === 'object' && teamMembers !== null) {
+          for (const [key, member] of Object.entries(teamMembers)) {
+            if (member && typeof member === 'object' && member.loadDocumentation) {
+              await member.loadDocumentation(this.aiTeamDocumentation);
+            }
           }
         }
       }
@@ -246,8 +254,12 @@ class AutonomousSystemOrchestrator {
       this.logger.info('🚀 Starting Autonomous System Orchestrator...');
       this.logger.info('🎯 Initializing world-class backend team for 24/7 operation...');
 
-      // Load AI Team Documentation first
-      await this.loadAITeamDocumentation();
+      // Load AI Team Documentation first (with error handling)
+      try {
+        await this.loadAITeamDocumentation();
+      } catch (docError) {
+        this.logger.warn('⚠️ Failed to load AI Team Documentation, but continuing startup:', docError.message);
+      }
 
       this.systemState.isRunning = true;
       this.systemState.startTime = new Date();

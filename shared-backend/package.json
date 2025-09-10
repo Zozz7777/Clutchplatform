@@ -4,7 +4,7 @@
   "description": "Clutch Auto Parts Backend System with Autonomous AI Team",
   "main": "server.js",
   "scripts": {
-    "start": "node scripts/startup-with-auto-setup.js",
+    "start": "node server.js",
     "dev": "nodemon server.js",
     "start:autonomous": "node scripts/start-autonomous-system.js",
     "postdeploy": "node scripts/render-deployment-hook.js",
