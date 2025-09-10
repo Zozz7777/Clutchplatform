@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Clutch - The Future of Car Care</title>
+    <meta name="description" content="Clutch connects you to a new era of automotive service. On-demand, transparent, and powered by intelligent tech.">
+    
+    <!-- Dynamic Favicon based on color scheme -->
+    <link rel="icon" type="image/svg+xml" href="LogoRed.svg" id="favicon-red">
+    <link rel="icon" type="image/svg+xml" href="LogoWhite.svg" id="favicon-white">
+    
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+    
+    <!-- CSS -->
+    <link rel="stylesheet" href="styles.css">
+    
+    <!-- Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-RCTHXQVDNQ"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', 'G-RCTHXQVDNQ');
+    </script>
+    
+    <!-- Particle.js for background effects -->
+    <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-logo">
+                <img src="LogoRed.svg" alt="Clutch Logo" class="logo-svg">
+            </div>
+            <div class="nav-links">
+                <a href="#home" class="nav-link" data-en="Home" data-ar="الرئيسية">Home</a>
+                <a href="#services" class="nav-link" data-en="Services" data-ar="الخدمات">Services</a>
+                <a href="#mission" class="nav-link" data-en="Mission" data-ar="مهمتنا">Mission</a>
+                <a href="#download" class="nav-link" data-en="Download" data-ar="تحميل">Download</a>
+                <a href="#contact" class="nav-link" data-en="Contact" data-ar="اتصل بنا">Contact</a>
+            </div>
+            <div class="language-switcher">
+                <button class="lang-btn active" data-lang="en">English</button>
+                <button class="lang-btn" data-lang="ar">العربية</button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section id="home" class="hero">
+        <div id="particles-js" class="particles-bg"></div>
+        <!-- Car Parts Background Animation -->
+        <div class="car-parts-bg">
+            <div class="part part-1">🔧</div>
+            <div class="part part-2">⚙️</div>
+            <div class="part part-3">🔩</div>
+            <div class="part part-4">⚡</div>
+            <div class="part part-5">🛠️</div>
+            <div class="part part-6">🔋</div>
+        </div>
+        <div class="hero-content">
+            <div class="hero-text">
+                <h1 class="hero-title">
+                    <span class="title-line" data-en="Your Car's" data-ar="صديق سيارتك">Your Car's</span>
+                    <span class="title-line highlight" data-en="Best Friend" data-ar="الأفضل">Best Friend</span>
+                </h1>
+                <p class="hero-subtitle" data-en="Clutch connects you to a new era of automotive service. On-demand, transparent, and powered by intelligent tech." data-ar="كلتش يربطك بعصر جديد من الخدمات السياراتية. عند الطلب، شفاف، ويعمل بالذكاء الاصطناعي.">
+                    Clutch connects you to a new era of automotive service. On-demand, transparent, and powered by intelligent tech.
+                </p>
+                <div class="hero-buttons">
+                    <button class="btn btn-primary" data-en="Get the App" data-ar="احصل على التطبيق">Get the App</button>
+                    <button class="btn btn-secondary" data-en="Careers" data-ar="وظائف">Careers</button>
+                </div>
+            </div>
+            <div class="hero-visual">
+                <div class="floating-card">
+                    <div class="card-glow"></div>
+                    <div class="card-content">
+                        <div class="app-preview">
+                            <div class="phone-mockup">
+                                <div class="screen">
+                                    <img src="Clutch App Ui_page-0027.jpg" alt="Clutch App UI" class="app-ui-image">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Services Section -->
+    <section id="services" class="services">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title" data-en="Intelligent Service, Made Simple." data-ar="خدمة ذكية، مبسطة.">Intelligent Service, Made Simple.</h2>
+                <p class="section-subtitle" data-en="Experience automotive care reimagined through cutting-edge technology" data-ar="اختبر رعاية السيارات بإعادة تصورها من خلال التكنولوجيا المتطورة">Experience automotive care reimagined through cutting-edge technology</p>
+            </div>
+            <div class="services-grid">
+                <div class="service-card">
+                    <div class="service-icon-wrapper">
+                        <div class="service-icon-bg">
+                            <svg viewBox="0 0 24 24" fill="currentColor" class="service-svg">
+                                <path d="M12,2L13.09,8.26L22,9L13.09,9.74L12,16L10.91,9.74L2,9L10.91,8.26L12,2Z"/>
+                            </svg>
+                        </div>
+                    </div>
+                    <h3 class="service-title" data-en="Parts at Your Fingertips" data-ar="قطع غيار في متناول يدك">Parts at Your Fingertips</h3>
+                    <p class="service-description" data-en="Finding the right part shouldn't be a chore. We connect you to a vast network of suppliers, making it easy to get the exact parts you need, delivered straight to you." data-ar="العثور على القطعة المناسبة لا يجب أن يكون مهمة شاقة. نحن نربطك بشبكة واسعة من الموردين، مما يسهل عليك الحصول على القطع التي تحتاجها، مع توصيلها مباشرة إليك.">Finding the right part shouldn't be a chore. We connect you to a vast network of suppliers, making it easy to get the exact parts you need, delivered straight to you.</p>
+                </div>
+                <div class="service-card">
+                    <div class="service-icon-wrapper">
+                        <div class="service-icon-bg">
+                            <svg viewBox="0 0 24 24" fill="currentColor" class="service-svg">
+                                <path d="M20,4H4C2.89,4 2,4.89 2,6V18C2,19.11 2.89,20 4,20H20C21.11,20 22,19.11 22,18V6C22,4.89 21.11,4 20,4M20,18H4V12H20V18M20,8H4V6H20V8Z"/>
+                            </svg>
+                        </div>
+                    </div>
+                    <h3 class="service-title" data-en="Pay Your Way" data-ar="ادفع بالطريقة التي تريدها">Pay Your Way</h3>
+                    <p class="service-description" data-en="Enjoy flexible payment options designed for you. Pay in full, or split your service cost over time, giving you the freedom to manage your budget without compromise." data-ar="استمتع بخيارات دفع مرنة مصممة لك. ادفع بالكامل، أو قسّم تكلفة الخدمة على الوقت، مما يمنحك الحرية في إدارة ميزانيتك دون تنازل.">Enjoy flexible payment options designed for you. Pay in full, or split your service cost over time, giving you the freedom to manage your budget without compromise.</p>
+                </div>
+                <div class="service-card">
+                    <div class="service-icon-wrapper">
+                        <div class="service-icon-bg">
+                            <svg viewBox="0 0 24 24" fill="currentColor" class="service-svg">
+                                <path d="M12,2A10,10 0 0,1 22,12A10,10 0 0,1 12,22A10,10 0 0,1 2,12A10,10 0 0,1 12,2M12,4A8,8 0 0,0 4,12A8,8 0 0,0 12,20A8,8 0 0,0 20,12A8,8 0 0,0 12,4M12,6A6,6 0 0,1 18,12A6,6 0 0,1 12,18A6,6 0 0,1 6,12A6,6 0 0,1 12,6M12,8A4,4 0 0,0 8,12A4,4 0 0,0 12,16A4,4 0 0,0 16,12A4,4 0 0,0 12,8Z"/>
+                            </svg>
+                        </div>
+                    </div>
+                    <h3 class="service-title" data-en="Service You Can Trust" data-ar="خدمة يمكنك الوثوق بها">Service You Can Trust</h3>
+                    <p class="service-description" data-en="Every mechanic on our platform is rated and reviewed by real customers. See transparent ratings and read honest feedback to choose a professional you can count on." data-ar="كل ميكانيكي على منصتنا يتم تقييمه ومراجعته من قبل عملاء حقيقيين. شاهد التقييمات الشفافة واقرأ التعليقات الصادقة لاختيار محترف يمكنك الاعتماد عليه.">Every mechanic on our platform is rated and reviewed by real customers. See transparent ratings and read honest feedback to choose a professional you can count on.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Mission Section -->
+    <section id="mission" class="mission">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title" data-en="Our Mission: Drive with Confidence." data-ar="مهمتنا: قُد بثقة.">Our Mission: Drive with Confidence.</h2>
+                <p class="section-subtitle" data-en="Revolutionizing automotive service through intelligent technology and trusted partnerships" data-ar="ثورة في الخدمات السياراتية من خلال التكنولوجيا الذكية والشراكات الموثوقة">Revolutionizing automotive service through intelligent technology and trusted partnerships</p>
+            </div>
+            <div class="mission-content">
+                <div class="mission-text">
+                    <p class="mission-description" data-en="To revolutionize automotive service by connecting customers with verified mechanics through a smart, data-driven platform. We will become the leading platform for seamless, efficient, and reliable automotive care worldwide." data-ar="لإحداث ثورة في الخدمات السياراتية من خلال ربط العملاء بميكانيكيين موثقين عبر منصة ذكية تعتمد على البيانات. سنصبح المنصة الرائدة للرعاية السياراتية السلسة والفعالة والموثوقة في جميع أنحاء العالم.">To revolutionize automotive service by connecting customers with verified mechanics through a smart, data-driven platform. We will become the leading platform for seamless, efficient, and reliable automotive care worldwide.</p>
+                    <div class="stats-grid">
+                        <div class="stat-item">
+                            <div class="stat-number">10K+</div>
+                            <div class="stat-label" data-en="Happy Customers" data-ar="عميل سعيد">Happy Customers</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-number">500+</div>
+                            <div class="stat-label" data-en="Verified Mechanics" data-ar="ميكانيكي موثق">Verified Mechanics</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-number">99.9%</div>
+                            <div class="stat-label" data-en="Satisfaction Rate" data-ar="معدل الرضا">Satisfaction Rate</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="mission-visual">
+                    <div class="geometric-pattern">
+                        <div class="pattern-line"></div>
+                        <div class="pattern-line"></div>
+                        <div class="pattern-line"></div>
+                        <div class="pattern-dot"></div>
+                        <div class="pattern-dot"></div>
+                        <div class="pattern-dot"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Download Section -->
+    <section id="download" class="download">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title" data-en="Experience the Future. Download Now." data-ar="اختبر المستقبل. حمل الآن.">Experience the Future. Download Now.</h2>
+                <p class="section-subtitle" data-en="Join thousands of drivers who trust Clutch for their automotive needs" data-ar="انضم إلى آلاف السائقين الذين يثقون بكلتش لاحتياجاتهم السياراتية">Join thousands of drivers who trust Clutch for their automotive needs</p>
+            </div>
+            <div class="download-options">
+                <a href="#" class="store-button">
+                    <svg class="store-icon" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M3,20.5V3.5C3,2.91 3.34,2.39 3.84,2.15L13.69,12L3.84,21.85C3.34,21.61 3,21.09 3,20.5M16.81,15.12L6.05,21.34L14.54,12.85L16.81,15.12M20.16,10.81C20.5,11.08 20.75,11.5 20.75,12C20.75,12.5 20.53,12.9 20.18,13.18L17.89,14.5L15.39,12L17.89,9.5L20.16,10.81M6.05,2.66L16.81,8.88L14.54,11.15L6.05,2.66Z"/>
+                    </svg>
+                    <div class="store-text">
+                        <div class="store-label" data-en="GET IT FROM" data-ar="احصل عليه من">GET IT FROM</div>
+                        <div class="store-name" data-en="Google Play" data-ar="جوجل بلاي">Google Play</div>
+                    </div>
+                </a>
+                <a href="#" class="store-button">
+                    <svg class="store-icon" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M18.71,19.5C17.88,20.74 17,21.95 15.66,21.97C14.32,22 13.89,21.18 12.37,21.18C10.84,21.18 10.37,21.95 9.1,22C7.79,21.95 6.8,20.76 5.96,19.5C4.25,17 2.94,12.45 4.7,9.39C5.57,7.87 7.13,6.91 8.82,6.88C10.1,6.86 11.32,7.75 12.11,7.75C12.89,7.75 14.37,6.68 15.92,6.84C16.57,6.87 18.39,7.1 19.56,8.82C19.47,8.88 17.39,10.1 17.41,12.63C17.44,15.65 20.06,16.66 20.09,16.67C20.06,16.74 19.67,18.11 18.71,19.5M13,3.5C13.92,2.57 14.56,1.25 14.38,0C13.31,0.08 11.92,0.7 11,1.63C10.08,2.55 9.31,3.92 9.5,5.15C10.69,5.25 12.08,4.42 13,3.5Z"/>
+                    </svg>
+                    <div class="store-text">
+                        <div class="store-label" data-en="Download From" data-ar="حمل من">Download From</div>
+                        <div class="store-name" data-en="Apple App Store" data-ar="متجر آبل للتطبيقات">Apple App Store</div>
+                    </div>
+                </a>
+                <a href="#" class="store-button">
+                    <img src="Samsung_Logo.svg" alt="Samsung Logo" class="store-logo">
+                    <div class="store-text">
+                        <div class="store-label" data-en="Available From" data-ar="متوفر من">Available From</div>
+                        <div class="store-name" data-en="Samsung Galaxy Store" data-ar="متجر سامسونج جالكسي">Samsung Galaxy Store</div>
+                    </div>
+                </a>
+                <a href="#" class="store-button">
+                    <img src="Huawei_Standard_logo.svg" alt="Huawei Logo" class="store-logo">
+                    <div class="store-text">
+                        <div class="store-label" data-en="Get it From" data-ar="احصل عليه من">Get it From</div>
+                        <div class="store-name" data-en="Huawei AppGallery" data-ar="معرض هواوي للتطبيقات">Huawei AppGallery</div>
+                    </div>
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact Section -->
+    <section id="contact" class="contact">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title" data-en="Join the Network of Tomorrow." data-ar="انضم إلى شبكة الغد.">Join the Network of Tomorrow.</h2>
+                <p class="section-subtitle" data-en="Join the platform that is empowering mechanics and revolutionizing the industry." data-ar="انضم إلى المنصة التي تمكّن الميكانيكيين وتحدث ثورة في الصناعة.">Join the platform that is empowering mechanics and revolutionizing the industry.</p>
+            </div>
+            <div class="contact-content">
+                <div class="contact-form">
+                    <form class="form" id="contactForm" action="https://formspree.io/f/myzprdjo" method="POST">
+                        <div class="form-group">
+                            <input type="text" id="name" name="name" class="form-input" data-en-placeholder="Your Name" data-ar-placeholder="اسمك" placeholder="Your Name" required>
+                            <label for="name" class="form-label" data-en="Your Name" data-ar="اسمك">Your Name</label>
+                        </div>
+                        <div class="form-group">
+                            <input type="text" id="business" name="business" class="form-input" data-en-placeholder="Business Name" data-ar-placeholder="اسم العمل" placeholder="Business Name" required>
+                            <label for="business" class="form-label" data-en="Business Name" data-ar="اسم العمل">Business Name</label>
+                        </div>
+                        <div class="form-group">
+                            <input type="email" id="email" name="email" class="form-input" data-en-placeholder="Email Address" data-ar-placeholder="عنوان البريد الإلكتروني" placeholder="Email Address" required>
+                            <label for="email" class="form-label" data-en="Email Address" data-ar="عنوان البريد الإلكتروني">Email Address</label>
+                            <div class="error-text" id="emailError" style="display: none;" data-en="Please enter a valid email address" data-ar="يرجى إدخال عنوان بريد إلكتروني صحيح">Please enter a valid email address</div>
+                        </div>
+                        <div class="form-group">
+                            <input type="tel" id="phone" name="phone" class="form-input" data-en-placeholder="Phone Number" data-ar-placeholder="رقم الهاتف" placeholder="Phone Number" required>
+                            <label for="phone" class="form-label" data-en="Phone Number" data-ar="رقم الهاتف">Phone Number</label>
+                            <div class="error-text" id="phoneError" style="display: none;" data-en="Please enter a valid phone number" data-ar="يرجى إدخال رقم هاتف صحيح">Please enter a valid phone number</div>
+                        </div>
+                        <div class="form-group">
+                            <select id="area" name="area" class="form-input form-select" required>
+                                <option value="" data-en="Select Area" data-ar="اختر المنطقة">Select Area</option>
+                                <option value="cairo" data-en="Cairo" data-ar="القاهرة">Cairo</option>
+                                <option value="giza" data-en="Giza" data-ar="الجيزة">Giza</option>
+                                <option value="alexandria" data-en="Alexandria" data-ar="الإسكندرية">Alexandria</option>
+                                <option value="new-cairo" data-en="New Cairo" data-ar="القاهرة الجديدة">New Cairo</option>
+                                <option value="6th-october" data-en="6th of October" data-ar="6 أكتوبر">6th of October</option>
+                                <option value="nasr-city" data-en="Nasr City" data-ar="مدينة نصر">Nasr City</option>
+                                <option value="heliopolis" data-en="Heliopolis" data-ar="مصر الجديدة">Heliopolis</option>
+                                <option value="maadi" data-en="Maadi" data-ar="المعادي">Maadi</option>
+                                <option value="zamalek" data-en="Zamalek" data-ar="الزمالك">Zamalek</option>
+                                <option value="other" data-en="Other" data-ar="أخرى">Other</option>
+                            </select>
+                            <label for="area" class="form-label" data-en="Area" data-ar="المنطقة">Area</label>
+                        </div>
+                        <div class="form-group">
+                            <textarea id="message" name="message" class="form-textarea" data-en-placeholder="Tell us about your business" data-ar-placeholder="أخبرنا عن عملك" placeholder="Tell us about your business" rows="4" required></textarea>
+                            <label for="message" class="form-label" data-en="Message" data-ar="الرسالة">Message</label>
+                        </div>
+                        <!-- Formspree Configuration -->
+                        <input type="hidden" name="_replyto" value="ziad@yourclutch.com">
+                        <input type="hidden" name="_subject" value="New Contact Form Submission from Clutch Website">
+                        <input type="hidden" name="_captcha" value="false">
+                        <input type="hidden" name="_cc" value="partners@yourclutch.com">
+                        <button type="submit" class="btn btn-primary btn-full" id="submitBtn" data-en="Send Message" data-ar="إرسال الرسالة">Send Message</button>
+                    </form>
+                    <div id="formMessage" class="form-message" style="display: none;"></div>
+                </div>
+                <div class="contact-info">
+                    <div class="info-item">
+                        <div class="info-icon">📍</div>
+                        <div class="info-text">
+                            <h4 data-en="Headquarters" data-ar="المقر الرئيسي">Headquarters</h4>
+                            <p>5th settlement, newcairo, egypt</p>
+                        </div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-icon">📧</div>
+                        <div class="info-text">
+                            <h4 data-en="Email" data-ar="البريد الإلكتروني">Email</h4>
+                            <p>partners@yourclutch.com</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-bottom">
+                <p>&copy; 2025 ZGarage. All rights reserved. <span data-en="Drive with Confidence." data-ar="قُد بثقة.">Drive with Confidence.</span></p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Configuration -->
+    <script src="config.js"></script>
+    <!-- JavaScript -->
+    <script src="script.js"></script>
+</body>
+</html>

@@ -1,0 +1,488 @@
+/* Arabic Fonts and Typography */
+
+/* Import Google Fonts for Arabic */
+@import url('https://fonts.googleapis.com/css2?family=Cairo:wght@200;300;400;500;600;700;800;900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Amiri:ital,wght@0,400;0,700;1,400;1,700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Scheherazade+New:wght@400;500;600;700&display=swap');
+
+/* Arabic Font Stack */
+:root {
+    --arabic-font-primary: 'Cairo', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    --arabic-font-secondary: 'Amiri', 'Times New Roman', serif;
+    --arabic-font-display: 'Scheherazade New', 'Times New Roman', serif;
+    
+    /* Arabic Typography Scale */
+    --arabic-font-size-xs: 0.75rem;    /* 12px */
+    --arabic-font-size-sm: 0.875rem;   /* 14px */
+    --arabic-font-size-base: 1rem;     /* 16px */
+    --arabic-font-size-lg: 1.125rem;   /* 18px */
+    --arabic-font-size-xl: 1.25rem;    /* 20px */
+    --arabic-font-size-2xl: 1.5rem;    /* 24px */
+    --arabic-font-size-3xl: 1.875rem;  /* 30px */
+    --arabic-font-size-4xl: 2.25rem;   /* 36px */
+    --arabic-font-size-5xl: 3rem;      /* 48px */
+    
+    /* Arabic Line Heights */
+    --arabic-line-height-tight: 1.25;
+    --arabic-line-height-snug: 1.375;
+    --arabic-line-height-normal: 1.5;
+    --arabic-line-height-relaxed: 1.625;
+    --arabic-line-height-loose: 2;
+    
+    /* Arabic Letter Spacing */
+    --arabic-letter-spacing-tighter: -0.05em;
+    --arabic-letter-spacing-tight: -0.025em;
+    --arabic-letter-spacing-normal: 0em;
+    --arabic-letter-spacing-wide: 0.025em;
+    --arabic-letter-spacing-wider: 0.05em;
+    --arabic-letter-spacing-widest: 0.1em;
+}
+
+/* Arabic Typography Classes */
+.arabic-text {
+    font-family: var(--arabic-font-primary);
+    direction: rtl;
+    text-align: right;
+    line-height: var(--arabic-line-height-normal);
+}
+
+.arabic-text-display {
+    font-family: var(--arabic-font-display);
+    font-weight: 700;
+    line-height: var(--arabic-line-height-tight);
+}
+
+.arabic-text-body {
+    font-family: var(--arabic-font-primary);
+    font-size: var(--arabic-font-size-base);
+    line-height: var(--arabic-line-height-relaxed);
+}
+
+.arabic-text-caption {
+    font-family: var(--arabic-font-primary);
+    font-size: var(--arabic-font-size-sm);
+    line-height: var(--arabic-line-height-normal);
+    color: #6c757d;
+}
+
+/* Arabic Font Sizes */
+.arabic-text-xs { font-size: var(--arabic-font-size-xs); }
+.arabic-text-sm { font-size: var(--arabic-font-size-sm); }
+.arabic-text-base { font-size: var(--arabic-font-size-base); }
+.arabic-text-lg { font-size: var(--arabic-font-size-lg); }
+.arabic-text-xl { font-size: var(--arabic-font-size-xl); }
+.arabic-text-2xl { font-size: var(--arabic-font-size-2xl); }
+.arabic-text-3xl { font-size: var(--arabic-font-size-3xl); }
+.arabic-text-4xl { font-size: var(--arabic-font-size-4xl); }
+.arabic-text-5xl { font-size: var(--arabic-font-size-5xl); }
+
+/* Arabic Font Weights */
+.arabic-font-thin { font-weight: 100; }
+.arabic-font-extralight { font-weight: 200; }
+.arabic-font-light { font-weight: 300; }
+.arabic-font-normal { font-weight: 400; }
+.arabic-font-medium { font-weight: 500; }
+.arabic-font-semibold { font-weight: 600; }
+.arabic-font-bold { font-weight: 700; }
+.arabic-font-extrabold { font-weight: 800; }
+.arabic-font-black { font-weight: 900; }
+
+/* Arabic Line Heights */
+.arabic-leading-tight { line-height: var(--arabic-line-height-tight); }
+.arabic-leading-snug { line-height: var(--arabic-line-height-snug); }
+.arabic-leading-normal { line-height: var(--arabic-line-height-normal); }
+.arabic-leading-relaxed { line-height: var(--arabic-line-height-relaxed); }
+.arabic-leading-loose { line-height: var(--arabic-line-height-loose); }
+
+/* Arabic Letter Spacing */
+.arabic-tracking-tighter { letter-spacing: var(--arabic-letter-spacing-tighter); }
+.arabic-tracking-tight { letter-spacing: var(--arabic-letter-spacing-tight); }
+.arabic-tracking-normal { letter-spacing: var(--arabic-letter-spacing-normal); }
+.arabic-tracking-wide { letter-spacing: var(--arabic-letter-spacing-wide); }
+.arabic-tracking-wider { letter-spacing: var(--arabic-letter-spacing-wider); }
+.arabic-tracking-widest { letter-spacing: var(--arabic-letter-spacing-widest); }
+
+/* Arabic Text Alignment */
+.arabic-text-right { text-align: right; }
+.arabic-text-center { text-align: center; }
+.arabic-text-left { text-align: left; }
+.arabic-text-justify { text-align: justify; }
+
+/* Arabic Text Decoration */
+.arabic-underline { text-decoration: underline; }
+.arabic-overline { text-decoration: overline; }
+.arabic-line-through { text-decoration: line-through; }
+.arabic-no-underline { text-decoration: none; }
+
+/* Arabic Text Transform */
+.arabic-uppercase { text-transform: uppercase; }
+.arabic-lowercase { text-transform: lowercase; }
+.arabic-capitalize { text-transform: capitalize; }
+.arabic-normal-case { text-transform: none; }
+
+/* Arabic Text Overflow */
+.arabic-truncate {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.arabic-clip {
+    overflow: hidden;
+    text-overflow: clip;
+    white-space: nowrap;
+}
+
+/* Arabic Word Break */
+.arabic-break-normal { word-break: normal; }
+.arabic-break-words { word-break: break-word; }
+.arabic-break-all { word-break: break-all; }
+
+/* Arabic White Space */
+.arabic-whitespace-normal { white-space: normal; }
+.arabic-whitespace-nowrap { white-space: nowrap; }
+.arabic-whitespace-pre { white-space: pre; }
+.arabic-whitespace-pre-line { white-space: pre-line; }
+.arabic-whitespace-pre-wrap { white-space: pre-wrap; }
+
+/* Arabic Text Selection */
+.arabic-select-none { user-select: none; }
+.arabic-select-text { user-select: text; }
+.arabic-select-all { user-select: all; }
+.arabic-select-auto { user-select: auto; }
+
+/* Arabic Typography for Specific Elements */
+.arabic-heading {
+    font-family: var(--arabic-font-primary);
+    font-weight: 700;
+    line-height: var(--arabic-line-height-tight);
+    direction: rtl;
+    text-align: right;
+}
+
+.arabic-heading-1 {
+    font-size: var(--arabic-font-size-4xl);
+    font-weight: 800;
+    line-height: var(--arabic-line-height-tight);
+}
+
+.arabic-heading-2 {
+    font-size: var(--arabic-font-size-3xl);
+    font-weight: 700;
+    line-height: var(--arabic-line-height-tight);
+}
+
+.arabic-heading-3 {
+    font-size: var(--arabic-font-size-2xl);
+    font-weight: 600;
+    line-height: var(--arabic-line-height-snug);
+}
+
+.arabic-heading-4 {
+    font-size: var(--arabic-font-size-xl);
+    font-weight: 600;
+    line-height: var(--arabic-line-height-snug);
+}
+
+.arabic-heading-5 {
+    font-size: var(--arabic-font-size-lg);
+    font-weight: 500;
+    line-height: var(--arabic-line-height-normal);
+}
+
+.arabic-heading-6 {
+    font-size: var(--arabic-font-size-base);
+    font-weight: 500;
+    line-height: var(--arabic-line-height-normal);
+}
+
+/* Arabic Paragraph Styles */
+.arabic-paragraph {
+    font-family: var(--arabic-font-primary);
+    font-size: var(--arabic-font-size-base);
+    line-height: var(--arabic-line-height-relaxed);
+    direction: rtl;
+    text-align: right;
+    margin-bottom: 1rem;
+}
+
+.arabic-paragraph-large {
+    font-size: var(--arabic-font-size-lg);
+    line-height: var(--arabic-line-height-loose);
+}
+
+.arabic-paragraph-small {
+    font-size: var(--arabic-font-size-sm);
+    line-height: var(--arabic-line-height-normal);
+}
+
+/* Arabic List Styles */
+.arabic-list {
+    font-family: var(--arabic-font-primary);
+    direction: rtl;
+    text-align: right;
+    padding-right: 1.5rem;
+    padding-left: 0;
+}
+
+.arabic-list-item {
+    margin-bottom: 0.5rem;
+    line-height: var(--arabic-line-height-relaxed);
+}
+
+/* Arabic Quote Styles */
+.arabic-quote {
+    font-family: var(--arabic-font-secondary);
+    font-style: italic;
+    font-size: var(--arabic-font-size-lg);
+    line-height: var(--arabic-line-height-loose);
+    direction: rtl;
+    text-align: right;
+    border-right: 4px solid #667eea;
+    padding-right: 1rem;
+    margin: 1rem 0;
+    color: #5a6c7d;
+}
+
+/* Arabic Code Styles */
+.arabic-code {
+    font-family: 'Courier New', monospace;
+    font-size: var(--arabic-font-size-sm);
+    background: #f8f9fa;
+    padding: 0.25rem 0.5rem;
+    border-radius: 4px;
+    direction: ltr;
+    text-align: left;
+}
+
+.arabic-code-block {
+    font-family: 'Courier New', monospace;
+    font-size: var(--arabic-font-size-sm);
+    background: #f8f9fa;
+    padding: 1rem;
+    border-radius: 8px;
+    direction: ltr;
+    text-align: left;
+    overflow-x: auto;
+    margin: 1rem 0;
+}
+
+/* Arabic Form Styles */
+.arabic-form-label {
+    font-family: var(--arabic-font-primary);
+    font-weight: 500;
+    font-size: var(--arabic-font-size-sm);
+    direction: rtl;
+    text-align: right;
+    margin-bottom: 0.5rem;
+    display: block;
+}
+
+.arabic-form-input {
+    font-family: var(--arabic-font-primary);
+    font-size: var(--arabic-font-size-base);
+    direction: rtl;
+    text-align: right;
+}
+
+.arabic-form-input::placeholder {
+    font-family: var(--arabic-font-primary);
+    direction: rtl;
+    text-align: right;
+    opacity: 0.6;
+}
+
+/* Arabic Button Styles */
+.arabic-button {
+    font-family: var(--arabic-font-primary);
+    font-weight: 500;
+    direction: rtl;
+    text-align: center;
+}
+
+/* Arabic Table Styles */
+.arabic-table {
+    font-family: var(--arabic-font-primary);
+    direction: rtl;
+}
+
+.arabic-table th,
+.arabic-table td {
+    text-align: right;
+    direction: rtl;
+}
+
+/* Arabic Navigation Styles */
+.arabic-nav {
+    font-family: var(--arabic-font-primary);
+    direction: rtl;
+}
+
+.arabic-nav-link {
+    text-align: right;
+    direction: rtl;
+}
+
+/* Arabic Card Styles */
+.arabic-card {
+    font-family: var(--arabic-font-primary);
+    direction: rtl;
+}
+
+.arabic-card-header {
+    text-align: right;
+}
+
+.arabic-card-body {
+    text-align: right;
+}
+
+.arabic-card-footer {
+    text-align: right;
+}
+
+/* Arabic Alert Styles */
+.arabic-alert {
+    font-family: var(--arabic-font-primary);
+    direction: rtl;
+    text-align: right;
+}
+
+/* Arabic Badge Styles */
+.arabic-badge {
+    font-family: var(--arabic-font-primary);
+    direction: rtl;
+    text-align: center;
+}
+
+/* Arabic Progress Styles */
+.arabic-progress {
+    direction: rtl;
+}
+
+/* Arabic Modal Styles */
+.arabic-modal {
+    font-family: var(--arabic-font-primary);
+    direction: rtl;
+}
+
+.arabic-modal-header {
+    text-align: right;
+}
+
+.arabic-modal-body {
+    text-align: right;
+}
+
+.arabic-modal-footer {
+    text-align: right;
+}
+
+/* Arabic Tooltip Styles */
+.arabic-tooltip {
+    font-family: var(--arabic-font-primary);
+    direction: rtl;
+    text-align: right;
+}
+
+/* Arabic Popover Styles */
+.arabic-popover {
+    font-family: var(--arabic-font-primary);
+    direction: rtl;
+    text-align: right;
+}
+
+/* Arabic Dropdown Styles */
+.arabic-dropdown {
+    font-family: var(--arabic-font-primary);
+    direction: rtl;
+    text-align: right;
+}
+
+/* Arabic Pagination Styles */
+.arabic-pagination {
+    direction: rtl;
+}
+
+/* Arabic Breadcrumb Styles */
+.arabic-breadcrumb {
+    font-family: var(--arabic-font-primary);
+    direction: rtl;
+}
+
+/* Arabic Tab Styles */
+.arabic-tab {
+    font-family: var(--arabic-font-primary);
+    direction: rtl;
+    text-align: right;
+}
+
+/* Arabic Accordion Styles */
+.arabic-accordion {
+    font-family: var(--arabic-font-primary);
+    direction: rtl;
+}
+
+.arabic-accordion-header {
+    text-align: right;
+}
+
+.arabic-accordion-body {
+    text-align: right;
+}
+
+/* Arabic Carousel Styles */
+.arabic-carousel {
+    font-family: var(--arabic-font-primary);
+    direction: rtl;
+}
+
+/* Arabic Offcanvas Styles */
+.arabic-offcanvas {
+    font-family: var(--arabic-font-primary);
+    direction: rtl;
+}
+
+/* Arabic Spinner Styles */
+.arabic-spinner {
+    font-family: var(--arabic-font-primary);
+}
+
+/* Arabic Close Button Styles */
+.arabic-close {
+    font-family: var(--arabic-font-primary);
+}
+
+/* Arabic Collapse Styles */
+.arabic-collapse {
+    font-family: var(--arabic-font-primary);
+    direction: rtl;
+    text-align: right;
+}
+
+/* Arabic Scrollbar Styles */
+.arabic-scrollbar {
+    direction: rtl;
+}
+
+/* Arabic Print Styles */
+@media print {
+    .arabic-print {
+        font-family: var(--arabic-font-primary);
+        direction: rtl;
+        text-align: right;
+    }
+    
+    .arabic-print-heading {
+        font-family: var(--arabic-font-primary);
+        font-weight: 700;
+        direction: rtl;
+        text-align: right;
+    }
+    
+    .arabic-print-body {
+        font-family: var(--arabic-font-primary);
+        direction: rtl;
+        text-align: right;
+    }
+}

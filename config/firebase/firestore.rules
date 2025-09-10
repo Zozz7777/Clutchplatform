@@ -1,0 +1,73 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Production Security Rules
+    
+    // Users collection - users can read their own data, admins can read all
+    match /users/{userId} {
+      allow read: if request.auth != null && 
+        (request.auth.uid == userId || 
+         request.auth.token.role == 'superadmin' || 
+         request.auth.token.role == 'operations');
+      allow write: if request.auth != null && 
+        (request.auth.uid == userId || 
+         request.auth.token.role == 'superadmin');
+    }
+    
+    // Mechanics collection - operations team can manage
+    match /mechanics/{mechanicId} {
+      allow read: if request.auth != null && 
+        (request.auth.token.role == 'superadmin' || 
+         request.auth.token.department == 'operations');
+      allow write: if request.auth != null && 
+        (request.auth.token.role == 'superadmin' || 
+         request.auth.token.department == 'operations');
+    }
+    
+    // Bookings collection - users can read their own, operations can manage all
+    match /bookings/{bookingId} {
+      allow read: if request.auth != null && 
+        (resource.data.userId == request.auth.uid || 
+         request.auth.token.role == 'superadmin' || 
+         request.auth.token.department == 'operations');
+      allow write: if request.auth != null && 
+        (request.auth.token.role == 'superadmin' || 
+         request.auth.token.department == 'operations');
+    }
+    
+    // Notifications collection - users can read their own, admins can send
+    match /notifications/{notificationId} {
+      allow read: if request.auth != null && 
+        (resource.data.userId == request.auth.uid || 
+         request.auth.token.role == 'superadmin');
+      allow write: if request.auth != null && 
+        (request.auth.token.role == 'superadmin' || 
+         request.auth.token.department == 'marketing');
+    }
+    
+    // Documents collection - department-based access
+    match /documents/{documentId} {
+      allow read: if request.auth != null && 
+        (resource.data.department == request.auth.token.department || 
+         request.auth.token.role == 'superadmin');
+      allow write: if request.auth != null && 
+        (resource.data.department == request.auth.token.department || 
+         request.auth.token.role == 'superadmin');
+    }
+    
+    // Files collection - users can access their own files
+    match /files/{fileId} {
+      allow read: if request.auth != null && 
+        (resource.data.uploadedBy == request.auth.uid || 
+         request.auth.token.role == 'superadmin');
+      allow write: if request.auth != null && 
+        (resource.data.uploadedBy == request.auth.uid || 
+         request.auth.token.role == 'superadmin');
+    }
+    
+    // Default deny all
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}

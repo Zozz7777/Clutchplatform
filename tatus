@@ -1,0 +1,17 @@
+[33mcommit f8aebf2f84354b7265d8997d3886592f14bc1fcb[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mmain[m[33m, [m[1;31morigin/main[m[33m, [m[1;31morigin/HEAD[m[33m)[m
+Author: Ziad Abdelmageed <ziad@clutch.com>
+Date:   Wed Aug 27 00:05:35 2025 +0300
+
+    fix: Correct SVG import relative paths for deployment
+    
+    - Fix relative paths from components/dialogs/refer-earn to assets/svg (../../../assets/svg/)
+    - Fix relative paths from views/front-pages/help-center to assets/svg (../../../../assets/svg/front-pages/help-center/)
+    - Fix relative paths from views/front-pages/landing-page to assets/svg (../../../../assets/svg/front-pages/landing-page/)
+    - Ensure all SVG imports use correct relative paths for proper module resolution during build
+
+dashboard/web_dashboard/client/src/components/dialogs/refer-earn/index.tsx
+dashboard/web_dashboard/client/src/views/front-pages/help-center/Articles.tsx
+dashboard/web_dashboard/client/src/views/front-pages/help-center/KeepLearning.tsx
+dashboard/web_dashboard/client/src/views/front-pages/landing-page/CustomerReviews.tsx
+dashboard/web_dashboard/client/src/views/front-pages/landing-page/ProductStat.tsx
+dashboard/web_dashboard/client/src/views/front-pages/landing-page/UsefulFeature.tsx

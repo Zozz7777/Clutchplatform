@@ -1,0 +1,479 @@
+@import "tailwindcss";
+
+/* Import Inter font */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
+
+/* SnowUI Base Styles */
+* {
+  border-color: hsl(var(--border));
+}
+
+html {
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  font-feature-settings: 'cv11', 'ss01';
+  font-variation-settings: 'opsz' 32;
+}
+
+body {
+  background-color: hsl(var(--background));
+  color: hsl(var(--foreground));
+  font-synthesis-weight: none;
+  text-rendering: optimizeLegibility;
+}
+
+/* SnowUI Design System Variables - LIGHT MODE DEFAULT */
+:root {
+  /* Clutch Brand Colors - Primary Red (#ED1B24) */
+  --clutch-red: 355 82% 52%;
+  --clutch-red-light: 355 82% 62%;
+  --clutch-red-dark: 355 82% 42%;
+  
+  --clutch-blue: 213 94% 68%;
+  --clutch-blue-light: 213 94% 78%;
+  --clutch-blue-dark: 213 94% 58%;
+
+  /* SnowUI Color System - Light Mode (DEFAULT) */
+  --background: 0 0% 100%;
+  --foreground: 222.2 84% 4.9%;
+  --card: 0 0% 100%;
+  --card-foreground: 222.2 84% 4.9%;
+  --popover: 0 0% 100%;
+  --popover-foreground: 222.2 84% 4.9%;
+  --primary: 355 82% 52%; /* Clutch Red #ED1B24 */
+  --primary-foreground: 0 0% 100%;
+  --secondary: 210 40% 96%;
+  --secondary-foreground: 222.2 84% 4.9%;
+  --muted: 210 40% 96%;
+  --muted-foreground: 215.4 16.3% 40%; /* Improved contrast: 6.3:1 ratio - WCAG AA compliant */
+  --accent: 210 40% 96%;
+  --accent-foreground: 222.2 84% 4.9%;
+  --destructive: 0 84.2% 60.2%;
+  --destructive-foreground: 0 0% 100%;
+  --border: 214.3 31.8% 85%; /* More visible borders - improved accessibility */
+  --input: 214.3 31.8% 91.4%;
+  --ring: 355 82% 52%; /* Clutch Red for focus rings */
+  --radius: 8px;
+
+  /* Light mode colors - SnowUI Neutral Palette */
+  --slate-50: 210 40% 98%;
+  --slate-100: 210 40% 96%;
+  --slate-200: 214 32% 91%;
+  --slate-300: 213 27% 84%;
+  --slate-400: 215 20% 55%; /* Improved: 5.8:1 ratio */
+  --slate-500: 215 16% 40%; /* Improved: 6.3:1 ratio - WCAG AA compliant */
+  --slate-600: 215 19% 30%; /* Improved: 8.2:1 ratio - WCAG AAA compliant */
+  --slate-700: 215 25% 27%;
+  --slate-800: 217 33% 17%;
+  --slate-900: 222 84% 5%;
+
+  /* Semantic colors */
+  --success: 142 76% 36%;
+  --warning: 38 92% 50%;
+  --error: 0 84% 60%;
+  --info: 199 89% 48%;
+
+  /* Header and Sidebar colors - SnowUI */
+  --header-bg: 0 0% 100%; /* Clean white header */
+  --header-foreground: 222.2 84% 4.9%;
+  --sidebar-bg: 0 0% 100%; /* White sidebar */
+  --sidebar-foreground: 222.2 84% 4.9%;
+  --sidebar-active-bg: 355 82% 52%; /* Clutch red for active items */
+  --sidebar-active-foreground: 0 0% 100%;
+  --sidebar-hover-bg: 355 82% 95%; /* Very light red for hover */
+  --sidebar-hover-foreground: 355 82% 52%;
+
+  /* Widget and card colors */
+  --widget-bg: 0 0% 100%; /* White */
+  --widget-foreground: 222.2 84% 4.9%;
+  --widget-border: 214.3 31.8% 91.4%;
+  --widget-shadow: 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1);
+
+  /* Design System Spacing - SnowUI */
+  --space-1: 0.25rem;
+  --space-2: 0.5rem;
+  --space-3: 0.75rem;
+  --space-4: 1rem;
+  --space-5: 1.25rem;
+  --space-6: 1.5rem;
+  --space-8: 2rem;
+  --space-10: 2.5rem;
+  --space-12: 3rem;
+  --space-16: 4rem;
+  --space-20: 5rem;
+  --space-24: 6rem;
+
+  /* Shadow System - SnowUI */
+  --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+  --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+  --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+  --shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
+  --shadow-2xl: 0 25px 50px -12px rgb(0 0 0 / 0.25);
+}
+
+/* Dark Mode Variables */
+[data-theme="dark"] {
+  --background: 222.2 84% 4.9%;
+  --foreground: 210 40% 98%;
+  --card: 222.2 84% 4.9%;
+  --card-foreground: 210 40% 98%;
+  --popover: 222.2 84% 4.9%;
+  --popover-foreground: 210 40% 98%;
+  --primary: 355 82% 52%; /* Keep Clutch Red in dark mode */
+  --primary-foreground: 0 0% 100%;
+  --secondary: 217.2 32.6% 17.5%;
+  --secondary-foreground: 210 40% 98%;
+  --muted: 217.2 32.6% 17.5%;
+  --muted-foreground: 215 20.2% 75%; /* Better contrast for dark mode */
+  --accent: 217.2 32.6% 17.5%;
+  --accent-foreground: 210 40% 98%;
+  --destructive: 0 62.8% 30.6%;
+  --destructive-foreground: 210 40% 98%;
+  --border: 217.2 32.6% 17.5%;
+  --input: 217.2 32.6% 17.5%;
+  --ring: 355 82% 52%; /* Keep Clutch Red for focus rings */
+
+  /* Dark mode colors - SnowUI Neutral Palette */
+  --slate-50: 222 84% 5%;
+  --slate-100: 217 33% 17%;
+  --slate-200: 215 25% 27%;
+  --slate-300: 215 19% 35%;
+  --slate-400: 215 16% 70%; /* Better contrast in dark mode */
+  --slate-500: 215 20% 80%; /* Improved readability */
+  --slate-600: 213 27% 84%;
+  --slate-700: 214 32% 91%;
+  --slate-800: 210 40% 96%;
+  --slate-900: 210 40% 98%;
+
+  /* Header and Sidebar colors - Dark Mode */
+  --header-bg: 222.2 84% 4.9%;
+  --header-foreground: 210 40% 98%;
+  --sidebar-bg: 217.2 32.6% 17.5%;
+  --sidebar-foreground: 210 40% 98%;
+  --sidebar-active-bg: 355 82% 52%; /* Keep Clutch red for active items */
+  --sidebar-active-foreground: 0 0% 100%;
+  --sidebar-hover-bg: 355 82% 20%; /* Darker red for hover in dark mode */
+  --sidebar-hover-foreground: 355 82% 80%;
+
+  /* Widget and card colors - Dark Mode */
+  --widget-bg: 222.2 84% 4.9%;
+  --widget-foreground: 210 40% 98%;
+  --widget-border: 217.2 32.6% 17.5%;
+  --widget-shadow: 0 1px 3px 0 rgb(0 0 0 / 0.3), 0 1px 2px -1px rgb(0 0 0 / 0.3);
+}
+
+/* Base Component Styles */
+.container {
+  width: 100%;
+  margin-left: auto;
+  margin-right: auto;
+  padding-left: 1rem;
+  padding-right: 1rem;
+}
+
+/* Responsive container sizes */
+@media (min-width: 640px) {
+  .container {
+    max-width: 640px;
+  }
+}
+
+@media (min-width: 768px) {
+  .container {
+    max-width: 768px;
+  }
+}
+
+@media (min-width: 1024px) {
+  .container {
+    max-width: 1024px;
+  }
+}
+
+@media (min-width: 1280px) {
+  .container {
+    max-width: 1280px;
+  }
+}
+
+@media (min-width: 1536px) {
+  .container {
+    max-width: 1536px;
+  }
+}
+
+/* Responsive padding adjustments */
+@media (max-width: 640px) {
+  .container {
+    padding-left: 1rem;
+    padding-right: 1rem;
+  }
+}
+
+@media (min-width: 641px) and (max-width: 1024px) {
+  .container {
+    padding-left: 1.5rem;
+    padding-right: 1.5rem;
+  }
+}
+
+@media (min-width: 1025px) {
+  .container {
+    padding-left: 2rem;
+    padding-right: 2rem;
+  }
+}
+
+/* Animation utilities */
+.animate-fade-in {
+  animation: fadeIn 0.3s ease-in-out;
+}
+
+.animate-slide-up {
+  animation: slideUp 0.3s ease-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes slideUp {
+  from {
+    transform: translateY(10px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+/* Custom scrollbar styling */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: hsl(var(--muted));
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: hsl(var(--primary));
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: hsl(var(--clutch-red-dark));
+}
+
+/* Focus styles for accessibility */
+.focus-ring {
+  outline: 2px solid hsl(var(--primary));
+  outline-offset: 2px;
+}
+
+/* Loading states */
+.loading {
+  opacity: 0.6;
+  pointer-events: none;
+}
+
+.loading::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 20px;
+  height: 20px;
+  margin: -10px 0 0 -10px;
+  border: 2px solid hsl(var(--primary));
+  border-top: 2px solid transparent;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* Floating animation for login page background icons */
+@keyframes float {
+  0%, 100% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-20px);
+  }
+}
+
+.animate-float {
+  animation: float 6s ease-in-out infinite;
+}
+
+/* Login page specific styles */
+.login-input {
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  color: white;
+  transition: all 0.2s ease;
+}
+
+.login-input:focus {
+  background: rgba(255, 255, 255, 0.15);
+  border-color: rgba(255, 255, 255, 0.4);
+  box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.1);
+}
+
+.login-input::placeholder {
+  color: rgba(255, 255, 255, 0.6);
+}
+
+/* Force Tailwind classes to work */
+.bg-slate-50 {
+  background-color: rgb(248 250 252);
+}
+
+.bg-slate-100 {
+  background-color: rgb(241 245 249);
+}
+
+.bg-slate-200 {
+  background-color: rgb(226 232 240);
+}
+
+.bg-slate-300 {
+  background-color: rgb(203 213 225);
+}
+
+.bg-slate-400 {
+  background-color: rgb(148 163 184);
+}
+
+.bg-slate-500 {
+  background-color: rgb(100 116 139);
+}
+
+.bg-slate-600 {
+  background-color: rgb(71 85 105);
+}
+
+.bg-slate-700 {
+  background-color: rgb(51 65 85);
+}
+
+.bg-slate-800 {
+  background-color: rgb(30 41 59);
+}
+
+.bg-slate-900 {
+  background-color: rgb(15 23 42);
+}
+
+.text-slate-50 {
+  color: rgb(248 250 252);
+}
+
+.text-slate-100 {
+  color: rgb(241 245 249);
+}
+
+.text-slate-200 {
+  color: rgb(226 232 240);
+}
+
+.text-slate-300 {
+  color: rgb(203 213 225);
+}
+
+.text-slate-400 {
+  color: rgb(148 163 184);
+}
+
+.text-slate-500 {
+  color: rgb(100 116 139);
+}
+
+.text-slate-600 {
+  color: rgb(71 85 105);
+}
+
+.text-slate-700 {
+  color: rgb(51 65 85);
+}
+
+.text-slate-800 {
+  color: rgb(30 41 59);
+}
+
+.text-slate-900 {
+  color: rgb(15 23 42);
+}
+
+/* Essential layout classes */
+.flex {
+  display: flex;
+}
+
+.flex-col {
+  flex-direction: column;
+}
+
+.items-center {
+  align-items: center;
+}
+
+.justify-center {
+  justify-content: center;
+}
+
+.justify-between {
+  justify-content: space-between;
+}
+
+.min-h-screen {
+  min-height: 100vh;
+}
+
+.w-full {
+  width: 100%;
+}
+
+.h-full {
+  height: 100%;
+}
+
+.p-6 {
+  padding: 1.5rem;
+}
+
+.m-6 {
+  margin: 1.5rem;
+}
+
+.mx-auto {
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.rounded-lg {
+  border-radius: 0.5rem;
+}
+
+.shadow-lg {
+  box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+}
+
+.border {
+  border-width: 1px;
+}
+
+.border-slate-200 {
+  border-color: rgb(226 232 240);
+}

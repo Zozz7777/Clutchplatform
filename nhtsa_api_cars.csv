@@ -1,0 +1,301 @@
+brand,model,year,price,mileage,fuel_type,transmission,engine_size,color,url,description
+Bmw,128i,2015,"$15,000","95,000 km",Gasoline,Automatic,2.0L,White,https://example.com/cars/bmw/128i-2015,2015 Bmw 128i in excellent condition.
+Bmw,128i,2016,"$17,000","85,000 km",Gasoline,Automatic,2.0L,White,https://example.com/cars/bmw/128i-2016,2016 Bmw 128i in excellent condition.
+Bmw,128i,2017,"$19,000","75,000 km",Gasoline,Automatic,2.0L,White,https://example.com/cars/bmw/128i-2017,2017 Bmw 128i in excellent condition.
+Bmw,128i,2018,"$21,000","65,000 km",Gasoline,Automatic,2.0L,White,https://example.com/cars/bmw/128i-2018,2018 Bmw 128i in excellent condition.
+Bmw,128i,2019,"$23,000","55,000 km",Gasoline,Automatic,2.0L,White,https://example.com/cars/bmw/128i-2019,2019 Bmw 128i in excellent condition.
+Bmw,128i,2020,"$25,000","45,000 km",Gasoline,Automatic,2.0L,White,https://example.com/cars/bmw/128i-2020,2020 Bmw 128i in excellent condition.
+Bmw,128i,2021,"$27,000","35,000 km",Gasoline,Automatic,2.0L,White,https://example.com/cars/bmw/128i-2021,2021 Bmw 128i in excellent condition.
+Bmw,128i,2022,"$29,000","25,000 km",Gasoline,Automatic,2.0L,White,https://example.com/cars/bmw/128i-2022,2022 Bmw 128i in excellent condition.
+Bmw,128i,2023,"$31,000","15,000 km",Gasoline,Automatic,2.0L,White,https://example.com/cars/bmw/128i-2023,2023 Bmw 128i in excellent condition.
+Bmw,128i,2024,"$33,000","5,000 km",Gasoline,Automatic,2.0L,White,https://example.com/cars/bmw/128i-2024,2024 Bmw 128i in excellent condition.
+Bmw,135i,2015,"$15,000","95,000 km",Gasoline,Automatic,2.0L,White,https://example.com/cars/bmw/135i-2015,2015 Bmw 135i in excellent condition.
+Bmw,135i,2016,"$17,000","85,000 km",Gasoline,Automatic,2.0L,White,https://example.com/cars/bmw/135i-2016,2016 Bmw 135i in excellent condition.
+Bmw,135i,2017,"$19,000","75,000 km",Gasoline,Automatic,2.0L,White,https://example.com/cars/bmw/135i-2017,2017 Bmw 135i in excellent condition.
+Bmw,135i,2018,"$21,000","65,000 km",Gasoline,Automatic,2.0L,White,https://example.com/cars/bmw/135i-2018,2018 Bmw 135i in excellent condition.
+Bmw,135i,2019,"$23,000","55,000 km",Gasoline,Automatic,2.0L,White,https://example.com/cars/bmw/135i-2019,2019 Bmw 135i in excellent condition.
+Bmw,135i,2020,"$25,000","45,000 km",Gasoline,Automatic,2.0L,White,https://example.com/cars/bmw/135i-2020,2020 Bmw 135i in excellent condition.
+Bmw,135i,2021,"$27,000","35,000 km",Gasoline,Automatic,2.0L,White,https://example.com/cars/bmw/135i-2021,2021 Bmw 135i in excellent condition.
+Bmw,135i,2022,"$29,000","25,000 km",Gasoline,Automatic,2.0L,White,https://example.com/cars/bmw/135i-2022,2022 Bmw 135i in excellent condition.
+Bmw,135i,2023,"$31,000","15,000 km",Gasoline,Automatic,2.0L,White,https://example.com/cars/bmw/135i-2023,2023 Bmw 135i in excellent condition.
+Bmw,135i,2024,"$33,000","5,000 km",Gasoline,Automatic,2.0L,White,https://example.com/cars/bmw/135i-2024,2024 Bmw 135i in excellent condition.
+Bmw,328i,2015,"$15,000","95,000 km",Gasoline,Automatic,2.0L,White,https://example.com/cars/bmw/328i-2015,2015 Bmw 328i in excellent condition.
+Bmw,328i,2016,"$17,000","85,000 km",Gasoline,Automatic,2.0L,White,https://example.com/cars/bmw/328i-2016,2016 Bmw 328i in excellent condition.
+Bmw,328i,2017,"$19,000","75,000 km",Gasoline,Automatic,2.0L,White,https://example.com/cars/bmw/328i-2017,2017 Bmw 328i in excellent condition.
+Bmw,328i,2018,"$21,000","65,000 km",Gasoline,Automatic,2.0L,White,https://example.com/cars/bmw/328i-2018,2018 Bmw 328i in excellent condition.
+Bmw,328i,2019,"$23,000","55,000 km",Gasoline,Automatic,2.0L,White,https://example.com/cars/bmw/328i-2019,2019 Bmw 328i in excellent condition.
+Bmw,328i,2020,"$25,000","45,000 km",Gasoline,Automatic,2.0L,White,https://example.com/cars/bmw/328i-2020,2020 Bmw 328i in excellent condition.
+Bmw,328i,2021,"$27,000","35,000 km",Gasoline,Automatic,2.0L,White,https://example.com/cars/bmw/328i-2021,2021 Bmw 328i in excellent condition.
+Bmw,328i,2022,"$29,000","25,000 km",Gasoline,Automatic,2.0L,White,https://example.com/cars/bmw/328i-2022,2022 Bmw 328i in excellent condition.
+Bmw,328i,2023,"$31,000","15,000 km",Gasoline,Automatic,2.0L,White,https://example.com/cars/bmw/328i-2023,2023 Bmw 328i in excellent condition.
+Bmw,328i,2024,"$33,000","5,000 km",Gasoline,Automatic,2.0L,White,https://example.com/cars/bmw/328i-2024,2024 Bmw 328i in excellent condition.
+Bmw,M3,2015,"$15,000","95,000 km",Gasoline,Automatic,2.0L,White,https://example.com/cars/bmw/m3-2015,2015 Bmw M3 in excellent condition.
+Bmw,M3,2016,"$17,000","85,000 km",Gasoline,Automatic,2.0L,White,https://example.com/cars/bmw/m3-2016,2016 Bmw M3 in excellent condition.
+Bmw,M3,2017,"$19,000","75,000 km",Gasoline,Automatic,2.0L,White,https://example.com/cars/bmw/m3-2017,2017 Bmw M3 in excellent condition.
+Bmw,M3,2018,"$21,000","65,000 km",Gasoline,Automatic,2.0L,White,https://example.com/cars/bmw/m3-2018,2018 Bmw M3 in excellent condition.
+Bmw,M3,2019,"$23,000","55,000 km",Gasoline,Automatic,2.0L,White,https://example.com/cars/bmw/m3-2019,2019 Bmw M3 in excellent condition.
+Bmw,M3,2020,"$25,000","45,000 km",Gasoline,Automatic,2.0L,White,https://example.com/cars/bmw/m3-2020,2020 Bmw M3 in excellent condition.
+Bmw,M3,2021,"$27,000","35,000 km",Gasoline,Automatic,2.0L,White,https://example.com/cars/bmw/m3-2021,2021 Bmw M3 in excellent condition.
+Bmw,M3,2022,"$29,000","25,000 km",Gasoline,Automatic,2.0L,White,https://example.com/cars/bmw/m3-2022,2022 Bmw M3 in excellent condition.
+Bmw,M3,2023,"$31,000","15,000 km",Gasoline,Automatic,2.0L,White,https://example.com/cars/bmw/m3-2023,2023 Bmw M3 in excellent condition.
+Bmw,M3,2024,"$33,000","5,000 km",Gasoline,Automatic,2.0L,White,https://example.com/cars/bmw/m3-2024,2024 Bmw M3 in excellent condition.
+Bmw,335i,2015,"$15,000","95,000 km",Gasoline,Automatic,2.0L,White,https://example.com/cars/bmw/335i-2015,2015 Bmw 335i in excellent condition.
+Bmw,335i,2016,"$17,000","85,000 km",Gasoline,Automatic,2.0L,White,https://example.com/cars/bmw/335i-2016,2016 Bmw 335i in excellent condition.
+Bmw,335i,2017,"$19,000","75,000 km",Gasoline,Automatic,2.0L,White,https://example.com/cars/bmw/335i-2017,2017 Bmw 335i in excellent condition.
+Bmw,335i,2018,"$21,000","65,000 km",Gasoline,Automatic,2.0L,White,https://example.com/cars/bmw/335i-2018,2018 Bmw 335i in excellent condition.
+Bmw,335i,2019,"$23,000","55,000 km",Gasoline,Automatic,2.0L,White,https://example.com/cars/bmw/335i-2019,2019 Bmw 335i in excellent condition.
+Bmw,335i,2020,"$25,000","45,000 km",Gasoline,Automatic,2.0L,White,https://example.com/cars/bmw/335i-2020,2020 Bmw 335i in excellent condition.
+Bmw,335i,2021,"$27,000","35,000 km",Gasoline,Automatic,2.0L,White,https://example.com/cars/bmw/335i-2021,2021 Bmw 335i in excellent condition.
+Bmw,335i,2022,"$29,000","25,000 km",Gasoline,Automatic,2.0L,White,https://example.com/cars/bmw/335i-2022,2022 Bmw 335i in excellent condition.
+Bmw,335i,2023,"$31,000","15,000 km",Gasoline,Automatic,2.0L,White,https://example.com/cars/bmw/335i-2023,2023 Bmw 335i in excellent condition.
+Bmw,335i,2024,"$33,000","5,000 km",Gasoline,Automatic,2.0L,White,https://example.com/cars/bmw/335i-2024,2024 Bmw 335i in excellent condition.
+Audi,TT,2015,"$15,000","95,000 km",Gasoline,Automatic,2.0L,White,https://example.com/cars/audi/tt-2015,2015 Audi TT in excellent condition.
+Audi,TT,2016,"$17,000","85,000 km",Gasoline,Automatic,2.0L,White,https://example.com/cars/audi/tt-2016,2016 Audi TT in excellent condition.
+Audi,TT,2017,"$19,000","75,000 km",Gasoline,Automatic,2.0L,White,https://example.com/cars/audi/tt-2017,2017 Audi TT in excellent condition.
+Audi,TT,2018,"$21,000","65,000 km",Gasoline,Automatic,2.0L,White,https://example.com/cars/audi/tt-2018,2018 Audi TT in excellent condition.
+Audi,TT,2019,"$23,000","55,000 km",Gasoline,Automatic,2.0L,White,https://example.com/cars/audi/tt-2019,2019 Audi TT in excellent condition.
+Audi,TT,2020,"$25,000","45,000 km",Gasoline,Automatic,2.0L,White,https://example.com/cars/audi/tt-2020,2020 Audi TT in excellent condition.
+Audi,TT,2021,"$27,000","35,000 km",Gasoline,Automatic,2.0L,White,https://example.com/cars/audi/tt-2021,2021 Audi TT in excellent condition.
+Audi,TT,2022,"$29,000","25,000 km",Gasoline,Automatic,2.0L,White,https://example.com/cars/audi/tt-2022,2022 Audi TT in excellent condition.
+Audi,TT,2023,"$31,000","15,000 km",Gasoline,Automatic,2.0L,White,https://example.com/cars/audi/tt-2023,2023 Audi TT in excellent condition.
+Audi,TT,2024,"$33,000","5,000 km",Gasoline,Automatic,2.0L,White,https://example.com/cars/audi/tt-2024,2024 Audi TT in excellent condition.
+Audi,A4,2015,"$15,000","95,000 km",Gasoline,Automatic,2.0L,White,https://example.com/cars/audi/a4-2015,2015 Audi A4 in excellent condition.
+Audi,A4,2016,"$17,000","85,000 km",Gasoline,Automatic,2.0L,White,https://example.com/cars/audi/a4-2016,2016 Audi A4 in excellent condition.
+Audi,A4,2017,"$19,000","75,000 km",Gasoline,Automatic,2.0L,White,https://example.com/cars/audi/a4-2017,2017 Audi A4 in excellent condition.
+Audi,A4,2018,"$21,000","65,000 km",Gasoline,Automatic,2.0L,White,https://example.com/cars/audi/a4-2018,2018 Audi A4 in excellent condition.
+Audi,A4,2019,"$23,000","55,000 km",Gasoline,Automatic,2.0L,White,https://example.com/cars/audi/a4-2019,2019 Audi A4 in excellent condition.
+Audi,A4,2020,"$25,000","45,000 km",Gasoline,Automatic,2.0L,White,https://example.com/cars/audi/a4-2020,2020 Audi A4 in excellent condition.
+Audi,A4,2021,"$27,000","35,000 km",Gasoline,Automatic,2.0L,White,https://example.com/cars/audi/a4-2021,2021 Audi A4 in excellent condition.
+Audi,A4,2022,"$29,000","25,000 km",Gasoline,Automatic,2.0L,White,https://example.com/cars/audi/a4-2022,2022 Audi A4 in excellent condition.
+Audi,A4,2023,"$31,000","15,000 km",Gasoline,Automatic,2.0L,White,https://example.com/cars/audi/a4-2023,2023 Audi A4 in excellent condition.
+Audi,A4,2024,"$33,000","5,000 km",Gasoline,Automatic,2.0L,White,https://example.com/cars/audi/a4-2024,2024 Audi A4 in excellent condition.
+Audi,S4,2015,"$15,000","95,000 km",Gasoline,Automatic,2.0L,White,https://example.com/cars/audi/s4-2015,2015 Audi S4 in excellent condition.
+Audi,S4,2016,"$17,000","85,000 km",Gasoline,Automatic,2.0L,White,https://example.com/cars/audi/s4-2016,2016 Audi S4 in excellent condition.
+Audi,S4,2017,"$19,000","75,000 km",Gasoline,Automatic,2.0L,White,https://example.com/cars/audi/s4-2017,2017 Audi S4 in excellent condition.
+Audi,S4,2018,"$21,000","65,000 km",Gasoline,Automatic,2.0L,White,https://example.com/cars/audi/s4-2018,2018 Audi S4 in excellent condition.
+Audi,S4,2019,"$23,000","55,000 km",Gasoline,Automatic,2.0L,White,https://example.com/cars/audi/s4-2019,2019 Audi S4 in excellent condition.
+Audi,S4,2020,"$25,000","45,000 km",Gasoline,Automatic,2.0L,White,https://example.com/cars/audi/s4-2020,2020 Audi S4 in excellent condition.
+Audi,S4,2021,"$27,000","35,000 km",Gasoline,Automatic,2.0L,White,https://example.com/cars/audi/s4-2021,2021 Audi S4 in excellent condition.
+Audi,S4,2022,"$29,000","25,000 km",Gasoline,Automatic,2.0L,White,https://example.com/cars/audi/s4-2022,2022 Audi S4 in excellent condition.
+Audi,S4,2023,"$31,000","15,000 km",Gasoline,Automatic,2.0L,White,https://example.com/cars/audi/s4-2023,2023 Audi S4 in excellent condition.
+Audi,S4,2024,"$33,000","5,000 km",Gasoline,Automatic,2.0L,White,https://example.com/cars/audi/s4-2024,2024 Audi S4 in excellent condition.
+Audi,A6,2015,"$15,000","95,000 km",Gasoline,Automatic,2.0L,White,https://example.com/cars/audi/a6-2015,2015 Audi A6 in excellent condition.
+Audi,A6,2016,"$17,000","85,000 km",Gasoline,Automatic,2.0L,White,https://example.com/cars/audi/a6-2016,2016 Audi A6 in excellent condition.
+Audi,A6,2017,"$19,000","75,000 km",Gasoline,Automatic,2.0L,White,https://example.com/cars/audi/a6-2017,2017 Audi A6 in excellent condition.
+Audi,A6,2018,"$21,000","65,000 km",Gasoline,Automatic,2.0L,White,https://example.com/cars/audi/a6-2018,2018 Audi A6 in excellent condition.
+Audi,A6,2019,"$23,000","55,000 km",Gasoline,Automatic,2.0L,White,https://example.com/cars/audi/a6-2019,2019 Audi A6 in excellent condition.
+Audi,A6,2020,"$25,000","45,000 km",Gasoline,Automatic,2.0L,White,https://example.com/cars/audi/a6-2020,2020 Audi A6 in excellent condition.
+Audi,A6,2021,"$27,000","35,000 km",Gasoline,Automatic,2.0L,White,https://example.com/cars/audi/a6-2021,2021 Audi A6 in excellent condition.
+Audi,A6,2022,"$29,000","25,000 km",Gasoline,Automatic,2.0L,White,https://example.com/cars/audi/a6-2022,2022 Audi A6 in excellent condition.
+Audi,A6,2023,"$31,000","15,000 km",Gasoline,Automatic,2.0L,White,https://example.com/cars/audi/a6-2023,2023 Audi A6 in excellent condition.
+Audi,A6,2024,"$33,000","5,000 km",Gasoline,Automatic,2.0L,White,https://example.com/cars/audi/a6-2024,2024 Audi A6 in excellent condition.
+Audi,RS 6,2015,"$15,000","95,000 km",Gasoline,Automatic,2.0L,White,https://example.com/cars/audi/rs-6-2015,2015 Audi RS 6 in excellent condition.
+Audi,RS 6,2016,"$17,000","85,000 km",Gasoline,Automatic,2.0L,White,https://example.com/cars/audi/rs-6-2016,2016 Audi RS 6 in excellent condition.
+Audi,RS 6,2017,"$19,000","75,000 km",Gasoline,Automatic,2.0L,White,https://example.com/cars/audi/rs-6-2017,2017 Audi RS 6 in excellent condition.
+Audi,RS 6,2018,"$21,000","65,000 km",Gasoline,Automatic,2.0L,White,https://example.com/cars/audi/rs-6-2018,2018 Audi RS 6 in excellent condition.
+Audi,RS 6,2019,"$23,000","55,000 km",Gasoline,Automatic,2.0L,White,https://example.com/cars/audi/rs-6-2019,2019 Audi RS 6 in excellent condition.
+Audi,RS 6,2020,"$25,000","45,000 km",Gasoline,Automatic,2.0L,White,https://example.com/cars/audi/rs-6-2020,2020 Audi RS 6 in excellent condition.
+Audi,RS 6,2021,"$27,000","35,000 km",Gasoline,Automatic,2.0L,White,https://example.com/cars/audi/rs-6-2021,2021 Audi RS 6 in excellent condition.
+Audi,RS 6,2022,"$29,000","25,000 km",Gasoline,Automatic,2.0L,White,https://example.com/cars/audi/rs-6-2022,2022 Audi RS 6 in excellent condition.
+Audi,RS 6,2023,"$31,000","15,000 km",Gasoline,Automatic,2.0L,White,https://example.com/cars/audi/rs-6-2023,2023 Audi RS 6 in excellent condition.
+Audi,RS 6,2024,"$33,000","5,000 km",Gasoline,Automatic,2.0L,White,https://example.com/cars/audi/rs-6-2024,2024 Audi RS 6 in excellent condition.
+Mercedes-Benz,Sprinter,2015,"$15,000","95,000 km",Gasoline,Automatic,2.0L,White,https://example.com/cars/mercedes-benz/sprinter-2015,2015 Mercedes-Benz Sprinter in excellent condition.
+Mercedes-Benz,Sprinter,2016,"$17,000","85,000 km",Gasoline,Automatic,2.0L,White,https://example.com/cars/mercedes-benz/sprinter-2016,2016 Mercedes-Benz Sprinter in excellent condition.
+Mercedes-Benz,Sprinter,2017,"$19,000","75,000 km",Gasoline,Automatic,2.0L,White,https://example.com/cars/mercedes-benz/sprinter-2017,2017 Mercedes-Benz Sprinter in excellent condition.
+Mercedes-Benz,Sprinter,2018,"$21,000","65,000 km",Gasoline,Automatic,2.0L,White,https://example.com/cars/mercedes-benz/sprinter-2018,2018 Mercedes-Benz Sprinter in excellent condition.
+Mercedes-Benz,Sprinter,2019,"$23,000","55,000 km",Gasoline,Automatic,2.0L,White,https://example.com/cars/mercedes-benz/sprinter-2019,2019 Mercedes-Benz Sprinter in excellent condition.
+Mercedes-Benz,Sprinter,2020,"$25,000","45,000 km",Gasoline,Automatic,2.0L,White,https://example.com/cars/mercedes-benz/sprinter-2020,2020 Mercedes-Benz Sprinter in excellent condition.
+Mercedes-Benz,Sprinter,2021,"$27,000","35,000 km",Gasoline,Automatic,2.0L,White,https://example.com/cars/mercedes-benz/sprinter-2021,2021 Mercedes-Benz Sprinter in excellent condition.
+Mercedes-Benz,Sprinter,2022,"$29,000","25,000 km",Gasoline,Automatic,2.0L,White,https://example.com/cars/mercedes-benz/sprinter-2022,2022 Mercedes-Benz Sprinter in excellent condition.
+Mercedes-Benz,Sprinter,2023,"$31,000","15,000 km",Gasoline,Automatic,2.0L,White,https://example.com/cars/mercedes-benz/sprinter-2023,2023 Mercedes-Benz Sprinter in excellent condition.
+Mercedes-Benz,Sprinter,2024,"$33,000","5,000 km",Gasoline,Automatic,2.0L,White,https://example.com/cars/mercedes-benz/sprinter-2024,2024 Mercedes-Benz Sprinter in excellent condition.
+Mercedes-Benz,SL-Class,2015,"$15,000","95,000 km",Gasoline,Automatic,2.0L,White,https://example.com/cars/mercedes-benz/sl-class-2015,2015 Mercedes-Benz SL-Class in excellent condition.
+Mercedes-Benz,SL-Class,2016,"$17,000","85,000 km",Gasoline,Automatic,2.0L,White,https://example.com/cars/mercedes-benz/sl-class-2016,2016 Mercedes-Benz SL-Class in excellent condition.
+Mercedes-Benz,SL-Class,2017,"$19,000","75,000 km",Gasoline,Automatic,2.0L,White,https://example.com/cars/mercedes-benz/sl-class-2017,2017 Mercedes-Benz SL-Class in excellent condition.
+Mercedes-Benz,SL-Class,2018,"$21,000","65,000 km",Gasoline,Automatic,2.0L,White,https://example.com/cars/mercedes-benz/sl-class-2018,2018 Mercedes-Benz SL-Class in excellent condition.
+Mercedes-Benz,SL-Class,2019,"$23,000","55,000 km",Gasoline,Automatic,2.0L,White,https://example.com/cars/mercedes-benz/sl-class-2019,2019 Mercedes-Benz SL-Class in excellent condition.
+Mercedes-Benz,SL-Class,2020,"$25,000","45,000 km",Gasoline,Automatic,2.0L,White,https://example.com/cars/mercedes-benz/sl-class-2020,2020 Mercedes-Benz SL-Class in excellent condition.
+Mercedes-Benz,SL-Class,2021,"$27,000","35,000 km",Gasoline,Automatic,2.0L,White,https://example.com/cars/mercedes-benz/sl-class-2021,2021 Mercedes-Benz SL-Class in excellent condition.
+Mercedes-Benz,SL-Class,2022,"$29,000","25,000 km",Gasoline,Automatic,2.0L,White,https://example.com/cars/mercedes-benz/sl-class-2022,2022 Mercedes-Benz SL-Class in excellent condition.
+Mercedes-Benz,SL-Class,2023,"$31,000","15,000 km",Gasoline,Automatic,2.0L,White,https://example.com/cars/mercedes-benz/sl-class-2023,2023 Mercedes-Benz SL-Class in excellent condition.
+Mercedes-Benz,SL-Class,2024,"$33,000","5,000 km",Gasoline,Automatic,2.0L,White,https://example.com/cars/mercedes-benz/sl-class-2024,2024 Mercedes-Benz SL-Class in excellent condition.
+Mercedes-Benz,SLK-Class,2015,"$15,000","95,000 km",Gasoline,Automatic,2.0L,White,https://example.com/cars/mercedes-benz/slk-class-2015,2015 Mercedes-Benz SLK-Class in excellent condition.
+Mercedes-Benz,SLK-Class,2016,"$17,000","85,000 km",Gasoline,Automatic,2.0L,White,https://example.com/cars/mercedes-benz/slk-class-2016,2016 Mercedes-Benz SLK-Class in excellent condition.
+Mercedes-Benz,SLK-Class,2017,"$19,000","75,000 km",Gasoline,Automatic,2.0L,White,https://example.com/cars/mercedes-benz/slk-class-2017,2017 Mercedes-Benz SLK-Class in excellent condition.
+Mercedes-Benz,SLK-Class,2018,"$21,000","65,000 km",Gasoline,Automatic,2.0L,White,https://example.com/cars/mercedes-benz/slk-class-2018,2018 Mercedes-Benz SLK-Class in excellent condition.
+Mercedes-Benz,SLK-Class,2019,"$23,000","55,000 km",Gasoline,Automatic,2.0L,White,https://example.com/cars/mercedes-benz/slk-class-2019,2019 Mercedes-Benz SLK-Class in excellent condition.
+Mercedes-Benz,SLK-Class,2020,"$25,000","45,000 km",Gasoline,Automatic,2.0L,White,https://example.com/cars/mercedes-benz/slk-class-2020,2020 Mercedes-Benz SLK-Class in excellent condition.
+Mercedes-Benz,SLK-Class,2021,"$27,000","35,000 km",Gasoline,Automatic,2.0L,White,https://example.com/cars/mercedes-benz/slk-class-2021,2021 Mercedes-Benz SLK-Class in excellent condition.
+Mercedes-Benz,SLK-Class,2022,"$29,000","25,000 km",Gasoline,Automatic,2.0L,White,https://example.com/cars/mercedes-benz/slk-class-2022,2022 Mercedes-Benz SLK-Class in excellent condition.
+Mercedes-Benz,SLK-Class,2023,"$31,000","15,000 km",Gasoline,Automatic,2.0L,White,https://example.com/cars/mercedes-benz/slk-class-2023,2023 Mercedes-Benz SLK-Class in excellent condition.
+Mercedes-Benz,SLK-Class,2024,"$33,000","5,000 km",Gasoline,Automatic,2.0L,White,https://example.com/cars/mercedes-benz/slk-class-2024,2024 Mercedes-Benz SLK-Class in excellent condition.
+Mercedes-Benz,E-Class,2015,"$15,000","95,000 km",Gasoline,Automatic,2.0L,White,https://example.com/cars/mercedes-benz/e-class-2015,2015 Mercedes-Benz E-Class in excellent condition.
+Mercedes-Benz,E-Class,2016,"$17,000","85,000 km",Gasoline,Automatic,2.0L,White,https://example.com/cars/mercedes-benz/e-class-2016,2016 Mercedes-Benz E-Class in excellent condition.
+Mercedes-Benz,E-Class,2017,"$19,000","75,000 km",Gasoline,Automatic,2.0L,White,https://example.com/cars/mercedes-benz/e-class-2017,2017 Mercedes-Benz E-Class in excellent condition.
+Mercedes-Benz,E-Class,2018,"$21,000","65,000 km",Gasoline,Automatic,2.0L,White,https://example.com/cars/mercedes-benz/e-class-2018,2018 Mercedes-Benz E-Class in excellent condition.
+Mercedes-Benz,E-Class,2019,"$23,000","55,000 km",Gasoline,Automatic,2.0L,White,https://example.com/cars/mercedes-benz/e-class-2019,2019 Mercedes-Benz E-Class in excellent condition.
+Mercedes-Benz,E-Class,2020,"$25,000","45,000 km",Gasoline,Automatic,2.0L,White,https://example.com/cars/mercedes-benz/e-class-2020,2020 Mercedes-Benz E-Class in excellent condition.
+Mercedes-Benz,E-Class,2021,"$27,000","35,000 km",Gasoline,Automatic,2.0L,White,https://example.com/cars/mercedes-benz/e-class-2021,2021 Mercedes-Benz E-Class in excellent condition.
+Mercedes-Benz,E-Class,2022,"$29,000","25,000 km",Gasoline,Automatic,2.0L,White,https://example.com/cars/mercedes-benz/e-class-2022,2022 Mercedes-Benz E-Class in excellent condition.
+Mercedes-Benz,E-Class,2023,"$31,000","15,000 km",Gasoline,Automatic,2.0L,White,https://example.com/cars/mercedes-benz/e-class-2023,2023 Mercedes-Benz E-Class in excellent condition.
+Mercedes-Benz,E-Class,2024,"$33,000","5,000 km",Gasoline,Automatic,2.0L,White,https://example.com/cars/mercedes-benz/e-class-2024,2024 Mercedes-Benz E-Class in excellent condition.
+Mercedes-Benz,CLS-Class,2015,"$15,000","95,000 km",Gasoline,Automatic,2.0L,White,https://example.com/cars/mercedes-benz/cls-class-2015,2015 Mercedes-Benz CLS-Class in excellent condition.
+Mercedes-Benz,CLS-Class,2016,"$17,000","85,000 km",Gasoline,Automatic,2.0L,White,https://example.com/cars/mercedes-benz/cls-class-2016,2016 Mercedes-Benz CLS-Class in excellent condition.
+Mercedes-Benz,CLS-Class,2017,"$19,000","75,000 km",Gasoline,Automatic,2.0L,White,https://example.com/cars/mercedes-benz/cls-class-2017,2017 Mercedes-Benz CLS-Class in excellent condition.
+Mercedes-Benz,CLS-Class,2018,"$21,000","65,000 km",Gasoline,Automatic,2.0L,White,https://example.com/cars/mercedes-benz/cls-class-2018,2018 Mercedes-Benz CLS-Class in excellent condition.
+Mercedes-Benz,CLS-Class,2019,"$23,000","55,000 km",Gasoline,Automatic,2.0L,White,https://example.com/cars/mercedes-benz/cls-class-2019,2019 Mercedes-Benz CLS-Class in excellent condition.
+Mercedes-Benz,CLS-Class,2020,"$25,000","45,000 km",Gasoline,Automatic,2.0L,White,https://example.com/cars/mercedes-benz/cls-class-2020,2020 Mercedes-Benz CLS-Class in excellent condition.
+Mercedes-Benz,CLS-Class,2021,"$27,000","35,000 km",Gasoline,Automatic,2.0L,White,https://example.com/cars/mercedes-benz/cls-class-2021,2021 Mercedes-Benz CLS-Class in excellent condition.
+Mercedes-Benz,CLS-Class,2022,"$29,000","25,000 km",Gasoline,Automatic,2.0L,White,https://example.com/cars/mercedes-benz/cls-class-2022,2022 Mercedes-Benz CLS-Class in excellent condition.
+Mercedes-Benz,CLS-Class,2023,"$31,000","15,000 km",Gasoline,Automatic,2.0L,White,https://example.com/cars/mercedes-benz/cls-class-2023,2023 Mercedes-Benz CLS-Class in excellent condition.
+Mercedes-Benz,CLS-Class,2024,"$33,000","5,000 km",Gasoline,Automatic,2.0L,White,https://example.com/cars/mercedes-benz/cls-class-2024,2024 Mercedes-Benz CLS-Class in excellent condition.
+Toyota,Scion xA,2015,"$15,000","95,000 km",Gasoline,Automatic,2.0L,White,https://example.com/cars/toyota/scion-xa-2015,2015 Toyota Scion xA in excellent condition.
+Toyota,Scion xA,2016,"$17,000","85,000 km",Gasoline,Automatic,2.0L,White,https://example.com/cars/toyota/scion-xa-2016,2016 Toyota Scion xA in excellent condition.
+Toyota,Scion xA,2017,"$19,000","75,000 km",Gasoline,Automatic,2.0L,White,https://example.com/cars/toyota/scion-xa-2017,2017 Toyota Scion xA in excellent condition.
+Toyota,Scion xA,2018,"$21,000","65,000 km",Gasoline,Automatic,2.0L,White,https://example.com/cars/toyota/scion-xa-2018,2018 Toyota Scion xA in excellent condition.
+Toyota,Scion xA,2019,"$23,000","55,000 km",Gasoline,Automatic,2.0L,White,https://example.com/cars/toyota/scion-xa-2019,2019 Toyota Scion xA in excellent condition.
+Toyota,Scion xA,2020,"$25,000","45,000 km",Gasoline,Automatic,2.0L,White,https://example.com/cars/toyota/scion-xa-2020,2020 Toyota Scion xA in excellent condition.
+Toyota,Scion xA,2021,"$27,000","35,000 km",Gasoline,Automatic,2.0L,White,https://example.com/cars/toyota/scion-xa-2021,2021 Toyota Scion xA in excellent condition.
+Toyota,Scion xA,2022,"$29,000","25,000 km",Gasoline,Automatic,2.0L,White,https://example.com/cars/toyota/scion-xa-2022,2022 Toyota Scion xA in excellent condition.
+Toyota,Scion xA,2023,"$31,000","15,000 km",Gasoline,Automatic,2.0L,White,https://example.com/cars/toyota/scion-xa-2023,2023 Toyota Scion xA in excellent condition.
+Toyota,Scion xA,2024,"$33,000","5,000 km",Gasoline,Automatic,2.0L,White,https://example.com/cars/toyota/scion-xa-2024,2024 Toyota Scion xA in excellent condition.
+Toyota,Scion tC,2015,"$15,000","95,000 km",Gasoline,Automatic,2.0L,White,https://example.com/cars/toyota/scion-tc-2015,2015 Toyota Scion tC in excellent condition.
+Toyota,Scion tC,2016,"$17,000","85,000 km",Gasoline,Automatic,2.0L,White,https://example.com/cars/toyota/scion-tc-2016,2016 Toyota Scion tC in excellent condition.
+Toyota,Scion tC,2017,"$19,000","75,000 km",Gasoline,Automatic,2.0L,White,https://example.com/cars/toyota/scion-tc-2017,2017 Toyota Scion tC in excellent condition.
+Toyota,Scion tC,2018,"$21,000","65,000 km",Gasoline,Automatic,2.0L,White,https://example.com/cars/toyota/scion-tc-2018,2018 Toyota Scion tC in excellent condition.
+Toyota,Scion tC,2019,"$23,000","55,000 km",Gasoline,Automatic,2.0L,White,https://example.com/cars/toyota/scion-tc-2019,2019 Toyota Scion tC in excellent condition.
+Toyota,Scion tC,2020,"$25,000","45,000 km",Gasoline,Automatic,2.0L,White,https://example.com/cars/toyota/scion-tc-2020,2020 Toyota Scion tC in excellent condition.
+Toyota,Scion tC,2021,"$27,000","35,000 km",Gasoline,Automatic,2.0L,White,https://example.com/cars/toyota/scion-tc-2021,2021 Toyota Scion tC in excellent condition.
+Toyota,Scion tC,2022,"$29,000","25,000 km",Gasoline,Automatic,2.0L,White,https://example.com/cars/toyota/scion-tc-2022,2022 Toyota Scion tC in excellent condition.
+Toyota,Scion tC,2023,"$31,000","15,000 km",Gasoline,Automatic,2.0L,White,https://example.com/cars/toyota/scion-tc-2023,2023 Toyota Scion tC in excellent condition.
+Toyota,Scion tC,2024,"$33,000","5,000 km",Gasoline,Automatic,2.0L,White,https://example.com/cars/toyota/scion-tc-2024,2024 Toyota Scion tC in excellent condition.
+Toyota,Corolla,2015,"$15,000","95,000 km",Gasoline,Automatic,2.0L,White,https://example.com/cars/toyota/corolla-2015,2015 Toyota Corolla in excellent condition.
+Toyota,Corolla,2016,"$17,000","85,000 km",Gasoline,Automatic,2.0L,White,https://example.com/cars/toyota/corolla-2016,2016 Toyota Corolla in excellent condition.
+Toyota,Corolla,2017,"$19,000","75,000 km",Gasoline,Automatic,2.0L,White,https://example.com/cars/toyota/corolla-2017,2017 Toyota Corolla in excellent condition.
+Toyota,Corolla,2018,"$21,000","65,000 km",Gasoline,Automatic,2.0L,White,https://example.com/cars/toyota/corolla-2018,2018 Toyota Corolla in excellent condition.
+Toyota,Corolla,2019,"$23,000","55,000 km",Gasoline,Automatic,2.0L,White,https://example.com/cars/toyota/corolla-2019,2019 Toyota Corolla in excellent condition.
+Toyota,Corolla,2020,"$25,000","45,000 km",Gasoline,Automatic,2.0L,White,https://example.com/cars/toyota/corolla-2020,2020 Toyota Corolla in excellent condition.
+Toyota,Corolla,2021,"$27,000","35,000 km",Gasoline,Automatic,2.0L,White,https://example.com/cars/toyota/corolla-2021,2021 Toyota Corolla in excellent condition.
+Toyota,Corolla,2022,"$29,000","25,000 km",Gasoline,Automatic,2.0L,White,https://example.com/cars/toyota/corolla-2022,2022 Toyota Corolla in excellent condition.
+Toyota,Corolla,2023,"$31,000","15,000 km",Gasoline,Automatic,2.0L,White,https://example.com/cars/toyota/corolla-2023,2023 Toyota Corolla in excellent condition.
+Toyota,Corolla,2024,"$33,000","5,000 km",Gasoline,Automatic,2.0L,White,https://example.com/cars/toyota/corolla-2024,2024 Toyota Corolla in excellent condition.
+Toyota,Prius,2015,"$15,000","95,000 km",Gasoline,Automatic,2.0L,White,https://example.com/cars/toyota/prius-2015,2015 Toyota Prius in excellent condition.
+Toyota,Prius,2016,"$17,000","85,000 km",Gasoline,Automatic,2.0L,White,https://example.com/cars/toyota/prius-2016,2016 Toyota Prius in excellent condition.
+Toyota,Prius,2017,"$19,000","75,000 km",Gasoline,Automatic,2.0L,White,https://example.com/cars/toyota/prius-2017,2017 Toyota Prius in excellent condition.
+Toyota,Prius,2018,"$21,000","65,000 km",Gasoline,Automatic,2.0L,White,https://example.com/cars/toyota/prius-2018,2018 Toyota Prius in excellent condition.
+Toyota,Prius,2019,"$23,000","55,000 km",Gasoline,Automatic,2.0L,White,https://example.com/cars/toyota/prius-2019,2019 Toyota Prius in excellent condition.
+Toyota,Prius,2020,"$25,000","45,000 km",Gasoline,Automatic,2.0L,White,https://example.com/cars/toyota/prius-2020,2020 Toyota Prius in excellent condition.
+Toyota,Prius,2021,"$27,000","35,000 km",Gasoline,Automatic,2.0L,White,https://example.com/cars/toyota/prius-2021,2021 Toyota Prius in excellent condition.
+Toyota,Prius,2022,"$29,000","25,000 km",Gasoline,Automatic,2.0L,White,https://example.com/cars/toyota/prius-2022,2022 Toyota Prius in excellent condition.
+Toyota,Prius,2023,"$31,000","15,000 km",Gasoline,Automatic,2.0L,White,https://example.com/cars/toyota/prius-2023,2023 Toyota Prius in excellent condition.
+Toyota,Prius,2024,"$33,000","5,000 km",Gasoline,Automatic,2.0L,White,https://example.com/cars/toyota/prius-2024,2024 Toyota Prius in excellent condition.
+Toyota,Scion xB,2015,"$15,000","95,000 km",Gasoline,Automatic,2.0L,White,https://example.com/cars/toyota/scion-xb-2015,2015 Toyota Scion xB in excellent condition.
+Toyota,Scion xB,2016,"$17,000","85,000 km",Gasoline,Automatic,2.0L,White,https://example.com/cars/toyota/scion-xb-2016,2016 Toyota Scion xB in excellent condition.
+Toyota,Scion xB,2017,"$19,000","75,000 km",Gasoline,Automatic,2.0L,White,https://example.com/cars/toyota/scion-xb-2017,2017 Toyota Scion xB in excellent condition.
+Toyota,Scion xB,2018,"$21,000","65,000 km",Gasoline,Automatic,2.0L,White,https://example.com/cars/toyota/scion-xb-2018,2018 Toyota Scion xB in excellent condition.
+Toyota,Scion xB,2019,"$23,000","55,000 km",Gasoline,Automatic,2.0L,White,https://example.com/cars/toyota/scion-xb-2019,2019 Toyota Scion xB in excellent condition.
+Toyota,Scion xB,2020,"$25,000","45,000 km",Gasoline,Automatic,2.0L,White,https://example.com/cars/toyota/scion-xb-2020,2020 Toyota Scion xB in excellent condition.
+Toyota,Scion xB,2021,"$27,000","35,000 km",Gasoline,Automatic,2.0L,White,https://example.com/cars/toyota/scion-xb-2021,2021 Toyota Scion xB in excellent condition.
+Toyota,Scion xB,2022,"$29,000","25,000 km",Gasoline,Automatic,2.0L,White,https://example.com/cars/toyota/scion-xb-2022,2022 Toyota Scion xB in excellent condition.
+Toyota,Scion xB,2023,"$31,000","15,000 km",Gasoline,Automatic,2.0L,White,https://example.com/cars/toyota/scion-xb-2023,2023 Toyota Scion xB in excellent condition.
+Toyota,Scion xB,2024,"$33,000","5,000 km",Gasoline,Automatic,2.0L,White,https://example.com/cars/toyota/scion-xb-2024,2024 Toyota Scion xB in excellent condition.
+Honda,Accord,2015,"$15,000","95,000 km",Gasoline,Automatic,2.0L,White,https://example.com/cars/honda/accord-2015,2015 Honda Accord in excellent condition.
+Honda,Accord,2016,"$17,000","85,000 km",Gasoline,Automatic,2.0L,White,https://example.com/cars/honda/accord-2016,2016 Honda Accord in excellent condition.
+Honda,Accord,2017,"$19,000","75,000 km",Gasoline,Automatic,2.0L,White,https://example.com/cars/honda/accord-2017,2017 Honda Accord in excellent condition.
+Honda,Accord,2018,"$21,000","65,000 km",Gasoline,Automatic,2.0L,White,https://example.com/cars/honda/accord-2018,2018 Honda Accord in excellent condition.
+Honda,Accord,2019,"$23,000","55,000 km",Gasoline,Automatic,2.0L,White,https://example.com/cars/honda/accord-2019,2019 Honda Accord in excellent condition.
+Honda,Accord,2020,"$25,000","45,000 km",Gasoline,Automatic,2.0L,White,https://example.com/cars/honda/accord-2020,2020 Honda Accord in excellent condition.
+Honda,Accord,2021,"$27,000","35,000 km",Gasoline,Automatic,2.0L,White,https://example.com/cars/honda/accord-2021,2021 Honda Accord in excellent condition.
+Honda,Accord,2022,"$29,000","25,000 km",Gasoline,Automatic,2.0L,White,https://example.com/cars/honda/accord-2022,2022 Honda Accord in excellent condition.
+Honda,Accord,2023,"$31,000","15,000 km",Gasoline,Automatic,2.0L,White,https://example.com/cars/honda/accord-2023,2023 Honda Accord in excellent condition.
+Honda,Accord,2024,"$33,000","5,000 km",Gasoline,Automatic,2.0L,White,https://example.com/cars/honda/accord-2024,2024 Honda Accord in excellent condition.
+Honda,Civic,2015,"$15,000","95,000 km",Gasoline,Automatic,2.0L,White,https://example.com/cars/honda/civic-2015,2015 Honda Civic in excellent condition.
+Honda,Civic,2016,"$17,000","85,000 km",Gasoline,Automatic,2.0L,White,https://example.com/cars/honda/civic-2016,2016 Honda Civic in excellent condition.
+Honda,Civic,2017,"$19,000","75,000 km",Gasoline,Automatic,2.0L,White,https://example.com/cars/honda/civic-2017,2017 Honda Civic in excellent condition.
+Honda,Civic,2018,"$21,000","65,000 km",Gasoline,Automatic,2.0L,White,https://example.com/cars/honda/civic-2018,2018 Honda Civic in excellent condition.
+Honda,Civic,2019,"$23,000","55,000 km",Gasoline,Automatic,2.0L,White,https://example.com/cars/honda/civic-2019,2019 Honda Civic in excellent condition.
+Honda,Civic,2020,"$25,000","45,000 km",Gasoline,Automatic,2.0L,White,https://example.com/cars/honda/civic-2020,2020 Honda Civic in excellent condition.
+Honda,Civic,2021,"$27,000","35,000 km",Gasoline,Automatic,2.0L,White,https://example.com/cars/honda/civic-2021,2021 Honda Civic in excellent condition.
+Honda,Civic,2022,"$29,000","25,000 km",Gasoline,Automatic,2.0L,White,https://example.com/cars/honda/civic-2022,2022 Honda Civic in excellent condition.
+Honda,Civic,2023,"$31,000","15,000 km",Gasoline,Automatic,2.0L,White,https://example.com/cars/honda/civic-2023,2023 Honda Civic in excellent condition.
+Honda,Civic,2024,"$33,000","5,000 km",Gasoline,Automatic,2.0L,White,https://example.com/cars/honda/civic-2024,2024 Honda Civic in excellent condition.
+Honda,Pilot,2015,"$15,000","95,000 km",Gasoline,Automatic,2.0L,White,https://example.com/cars/honda/pilot-2015,2015 Honda Pilot in excellent condition.
+Honda,Pilot,2016,"$17,000","85,000 km",Gasoline,Automatic,2.0L,White,https://example.com/cars/honda/pilot-2016,2016 Honda Pilot in excellent condition.
+Honda,Pilot,2017,"$19,000","75,000 km",Gasoline,Automatic,2.0L,White,https://example.com/cars/honda/pilot-2017,2017 Honda Pilot in excellent condition.
+Honda,Pilot,2018,"$21,000","65,000 km",Gasoline,Automatic,2.0L,White,https://example.com/cars/honda/pilot-2018,2018 Honda Pilot in excellent condition.
+Honda,Pilot,2019,"$23,000","55,000 km",Gasoline,Automatic,2.0L,White,https://example.com/cars/honda/pilot-2019,2019 Honda Pilot in excellent condition.
+Honda,Pilot,2020,"$25,000","45,000 km",Gasoline,Automatic,2.0L,White,https://example.com/cars/honda/pilot-2020,2020 Honda Pilot in excellent condition.
+Honda,Pilot,2021,"$27,000","35,000 km",Gasoline,Automatic,2.0L,White,https://example.com/cars/honda/pilot-2021,2021 Honda Pilot in excellent condition.
+Honda,Pilot,2022,"$29,000","25,000 km",Gasoline,Automatic,2.0L,White,https://example.com/cars/honda/pilot-2022,2022 Honda Pilot in excellent condition.
+Honda,Pilot,2023,"$31,000","15,000 km",Gasoline,Automatic,2.0L,White,https://example.com/cars/honda/pilot-2023,2023 Honda Pilot in excellent condition.
+Honda,Pilot,2024,"$33,000","5,000 km",Gasoline,Automatic,2.0L,White,https://example.com/cars/honda/pilot-2024,2024 Honda Pilot in excellent condition.
+Honda,CR-V,2015,"$15,000","95,000 km",Gasoline,Automatic,2.0L,White,https://example.com/cars/honda/cr-v-2015,2015 Honda CR-V in excellent condition.
+Honda,CR-V,2016,"$17,000","85,000 km",Gasoline,Automatic,2.0L,White,https://example.com/cars/honda/cr-v-2016,2016 Honda CR-V in excellent condition.
+Honda,CR-V,2017,"$19,000","75,000 km",Gasoline,Automatic,2.0L,White,https://example.com/cars/honda/cr-v-2017,2017 Honda CR-V in excellent condition.
+Honda,CR-V,2018,"$21,000","65,000 km",Gasoline,Automatic,2.0L,White,https://example.com/cars/honda/cr-v-2018,2018 Honda CR-V in excellent condition.
+Honda,CR-V,2019,"$23,000","55,000 km",Gasoline,Automatic,2.0L,White,https://example.com/cars/honda/cr-v-2019,2019 Honda CR-V in excellent condition.
+Honda,CR-V,2020,"$25,000","45,000 km",Gasoline,Automatic,2.0L,White,https://example.com/cars/honda/cr-v-2020,2020 Honda CR-V in excellent condition.
+Honda,CR-V,2021,"$27,000","35,000 km",Gasoline,Automatic,2.0L,White,https://example.com/cars/honda/cr-v-2021,2021 Honda CR-V in excellent condition.
+Honda,CR-V,2022,"$29,000","25,000 km",Gasoline,Automatic,2.0L,White,https://example.com/cars/honda/cr-v-2022,2022 Honda CR-V in excellent condition.
+Honda,CR-V,2023,"$31,000","15,000 km",Gasoline,Automatic,2.0L,White,https://example.com/cars/honda/cr-v-2023,2023 Honda CR-V in excellent condition.
+Honda,CR-V,2024,"$33,000","5,000 km",Gasoline,Automatic,2.0L,White,https://example.com/cars/honda/cr-v-2024,2024 Honda CR-V in excellent condition.
+Honda,Ridgeline,2015,"$15,000","95,000 km",Gasoline,Automatic,2.0L,White,https://example.com/cars/honda/ridgeline-2015,2015 Honda Ridgeline in excellent condition.
+Honda,Ridgeline,2016,"$17,000","85,000 km",Gasoline,Automatic,2.0L,White,https://example.com/cars/honda/ridgeline-2016,2016 Honda Ridgeline in excellent condition.
+Honda,Ridgeline,2017,"$19,000","75,000 km",Gasoline,Automatic,2.0L,White,https://example.com/cars/honda/ridgeline-2017,2017 Honda Ridgeline in excellent condition.
+Honda,Ridgeline,2018,"$21,000","65,000 km",Gasoline,Automatic,2.0L,White,https://example.com/cars/honda/ridgeline-2018,2018 Honda Ridgeline in excellent condition.
+Honda,Ridgeline,2019,"$23,000","55,000 km",Gasoline,Automatic,2.0L,White,https://example.com/cars/honda/ridgeline-2019,2019 Honda Ridgeline in excellent condition.
+Honda,Ridgeline,2020,"$25,000","45,000 km",Gasoline,Automatic,2.0L,White,https://example.com/cars/honda/ridgeline-2020,2020 Honda Ridgeline in excellent condition.
+Honda,Ridgeline,2021,"$27,000","35,000 km",Gasoline,Automatic,2.0L,White,https://example.com/cars/honda/ridgeline-2021,2021 Honda Ridgeline in excellent condition.
+Honda,Ridgeline,2022,"$29,000","25,000 km",Gasoline,Automatic,2.0L,White,https://example.com/cars/honda/ridgeline-2022,2022 Honda Ridgeline in excellent condition.
+Honda,Ridgeline,2023,"$31,000","15,000 km",Gasoline,Automatic,2.0L,White,https://example.com/cars/honda/ridgeline-2023,2023 Honda Ridgeline in excellent condition.
+Honda,Ridgeline,2024,"$33,000","5,000 km",Gasoline,Automatic,2.0L,White,https://example.com/cars/honda/ridgeline-2024,2024 Honda Ridgeline in excellent condition.
+Ford,Crown Victoria,2015,"$15,000","95,000 km",Gasoline,Automatic,2.0L,White,https://example.com/cars/ford/crown-victoria-2015,2015 Ford Crown Victoria in excellent condition.
+Ford,Crown Victoria,2016,"$17,000","85,000 km",Gasoline,Automatic,2.0L,White,https://example.com/cars/ford/crown-victoria-2016,2016 Ford Crown Victoria in excellent condition.
+Ford,Crown Victoria,2017,"$19,000","75,000 km",Gasoline,Automatic,2.0L,White,https://example.com/cars/ford/crown-victoria-2017,2017 Ford Crown Victoria in excellent condition.
+Ford,Crown Victoria,2018,"$21,000","65,000 km",Gasoline,Automatic,2.0L,White,https://example.com/cars/ford/crown-victoria-2018,2018 Ford Crown Victoria in excellent condition.
+Ford,Crown Victoria,2019,"$23,000","55,000 km",Gasoline,Automatic,2.0L,White,https://example.com/cars/ford/crown-victoria-2019,2019 Ford Crown Victoria in excellent condition.
+Ford,Crown Victoria,2020,"$25,000","45,000 km",Gasoline,Automatic,2.0L,White,https://example.com/cars/ford/crown-victoria-2020,2020 Ford Crown Victoria in excellent condition.
+Ford,Crown Victoria,2021,"$27,000","35,000 km",Gasoline,Automatic,2.0L,White,https://example.com/cars/ford/crown-victoria-2021,2021 Ford Crown Victoria in excellent condition.
+Ford,Crown Victoria,2022,"$29,000","25,000 km",Gasoline,Automatic,2.0L,White,https://example.com/cars/ford/crown-victoria-2022,2022 Ford Crown Victoria in excellent condition.
+Ford,Crown Victoria,2023,"$31,000","15,000 km",Gasoline,Automatic,2.0L,White,https://example.com/cars/ford/crown-victoria-2023,2023 Ford Crown Victoria in excellent condition.
+Ford,Crown Victoria,2024,"$33,000","5,000 km",Gasoline,Automatic,2.0L,White,https://example.com/cars/ford/crown-victoria-2024,2024 Ford Crown Victoria in excellent condition.
+Ford,Focus,2015,"$15,000","95,000 km",Gasoline,Automatic,2.0L,White,https://example.com/cars/ford/focus-2015,2015 Ford Focus in excellent condition.
+Ford,Focus,2016,"$17,000","85,000 km",Gasoline,Automatic,2.0L,White,https://example.com/cars/ford/focus-2016,2016 Ford Focus in excellent condition.
+Ford,Focus,2017,"$19,000","75,000 km",Gasoline,Automatic,2.0L,White,https://example.com/cars/ford/focus-2017,2017 Ford Focus in excellent condition.
+Ford,Focus,2018,"$21,000","65,000 km",Gasoline,Automatic,2.0L,White,https://example.com/cars/ford/focus-2018,2018 Ford Focus in excellent condition.
+Ford,Focus,2019,"$23,000","55,000 km",Gasoline,Automatic,2.0L,White,https://example.com/cars/ford/focus-2019,2019 Ford Focus in excellent condition.
+Ford,Focus,2020,"$25,000","45,000 km",Gasoline,Automatic,2.0L,White,https://example.com/cars/ford/focus-2020,2020 Ford Focus in excellent condition.
+Ford,Focus,2021,"$27,000","35,000 km",Gasoline,Automatic,2.0L,White,https://example.com/cars/ford/focus-2021,2021 Ford Focus in excellent condition.
+Ford,Focus,2022,"$29,000","25,000 km",Gasoline,Automatic,2.0L,White,https://example.com/cars/ford/focus-2022,2022 Ford Focus in excellent condition.
+Ford,Focus,2023,"$31,000","15,000 km",Gasoline,Automatic,2.0L,White,https://example.com/cars/ford/focus-2023,2023 Ford Focus in excellent condition.
+Ford,Focus,2024,"$33,000","5,000 km",Gasoline,Automatic,2.0L,White,https://example.com/cars/ford/focus-2024,2024 Ford Focus in excellent condition.
+Ford,Fusion,2015,"$15,000","95,000 km",Gasoline,Automatic,2.0L,White,https://example.com/cars/ford/fusion-2015,2015 Ford Fusion in excellent condition.
+Ford,Fusion,2016,"$17,000","85,000 km",Gasoline,Automatic,2.0L,White,https://example.com/cars/ford/fusion-2016,2016 Ford Fusion in excellent condition.
+Ford,Fusion,2017,"$19,000","75,000 km",Gasoline,Automatic,2.0L,White,https://example.com/cars/ford/fusion-2017,2017 Ford Fusion in excellent condition.
+Ford,Fusion,2018,"$21,000","65,000 km",Gasoline,Automatic,2.0L,White,https://example.com/cars/ford/fusion-2018,2018 Ford Fusion in excellent condition.
+Ford,Fusion,2019,"$23,000","55,000 km",Gasoline,Automatic,2.0L,White,https://example.com/cars/ford/fusion-2019,2019 Ford Fusion in excellent condition.
+Ford,Fusion,2020,"$25,000","45,000 km",Gasoline,Automatic,2.0L,White,https://example.com/cars/ford/fusion-2020,2020 Ford Fusion in excellent condition.
+Ford,Fusion,2021,"$27,000","35,000 km",Gasoline,Automatic,2.0L,White,https://example.com/cars/ford/fusion-2021,2021 Ford Fusion in excellent condition.
+Ford,Fusion,2022,"$29,000","25,000 km",Gasoline,Automatic,2.0L,White,https://example.com/cars/ford/fusion-2022,2022 Ford Fusion in excellent condition.
+Ford,Fusion,2023,"$31,000","15,000 km",Gasoline,Automatic,2.0L,White,https://example.com/cars/ford/fusion-2023,2023 Ford Fusion in excellent condition.
+Ford,Fusion,2024,"$33,000","5,000 km",Gasoline,Automatic,2.0L,White,https://example.com/cars/ford/fusion-2024,2024 Ford Fusion in excellent condition.
+Ford,Mustang,2015,"$15,000","95,000 km",Gasoline,Automatic,2.0L,White,https://example.com/cars/ford/mustang-2015,2015 Ford Mustang in excellent condition.
+Ford,Mustang,2016,"$17,000","85,000 km",Gasoline,Automatic,2.0L,White,https://example.com/cars/ford/mustang-2016,2016 Ford Mustang in excellent condition.
+Ford,Mustang,2017,"$19,000","75,000 km",Gasoline,Automatic,2.0L,White,https://example.com/cars/ford/mustang-2017,2017 Ford Mustang in excellent condition.
+Ford,Mustang,2018,"$21,000","65,000 km",Gasoline,Automatic,2.0L,White,https://example.com/cars/ford/mustang-2018,2018 Ford Mustang in excellent condition.
+Ford,Mustang,2019,"$23,000","55,000 km",Gasoline,Automatic,2.0L,White,https://example.com/cars/ford/mustang-2019,2019 Ford Mustang in excellent condition.
+Ford,Mustang,2020,"$25,000","45,000 km",Gasoline,Automatic,2.0L,White,https://example.com/cars/ford/mustang-2020,2020 Ford Mustang in excellent condition.
+Ford,Mustang,2021,"$27,000","35,000 km",Gasoline,Automatic,2.0L,White,https://example.com/cars/ford/mustang-2021,2021 Ford Mustang in excellent condition.
+Ford,Mustang,2022,"$29,000","25,000 km",Gasoline,Automatic,2.0L,White,https://example.com/cars/ford/mustang-2022,2022 Ford Mustang in excellent condition.
+Ford,Mustang,2023,"$31,000","15,000 km",Gasoline,Automatic,2.0L,White,https://example.com/cars/ford/mustang-2023,2023 Ford Mustang in excellent condition.
+Ford,Mustang,2024,"$33,000","5,000 km",Gasoline,Automatic,2.0L,White,https://example.com/cars/ford/mustang-2024,2024 Ford Mustang in excellent condition.
+Ford,Taurus,2015,"$15,000","95,000 km",Gasoline,Automatic,2.0L,White,https://example.com/cars/ford/taurus-2015,2015 Ford Taurus in excellent condition.
+Ford,Taurus,2016,"$17,000","85,000 km",Gasoline,Automatic,2.0L,White,https://example.com/cars/ford/taurus-2016,2016 Ford Taurus in excellent condition.
+Ford,Taurus,2017,"$19,000","75,000 km",Gasoline,Automatic,2.0L,White,https://example.com/cars/ford/taurus-2017,2017 Ford Taurus in excellent condition.
+Ford,Taurus,2018,"$21,000","65,000 km",Gasoline,Automatic,2.0L,White,https://example.com/cars/ford/taurus-2018,2018 Ford Taurus in excellent condition.
+Ford,Taurus,2019,"$23,000","55,000 km",Gasoline,Automatic,2.0L,White,https://example.com/cars/ford/taurus-2019,2019 Ford Taurus in excellent condition.
+Ford,Taurus,2020,"$25,000","45,000 km",Gasoline,Automatic,2.0L,White,https://example.com/cars/ford/taurus-2020,2020 Ford Taurus in excellent condition.
+Ford,Taurus,2021,"$27,000","35,000 km",Gasoline,Automatic,2.0L,White,https://example.com/cars/ford/taurus-2021,2021 Ford Taurus in excellent condition.
+Ford,Taurus,2022,"$29,000","25,000 km",Gasoline,Automatic,2.0L,White,https://example.com/cars/ford/taurus-2022,2022 Ford Taurus in excellent condition.
+Ford,Taurus,2023,"$31,000","15,000 km",Gasoline,Automatic,2.0L,White,https://example.com/cars/ford/taurus-2023,2023 Ford Taurus in excellent condition.
+Ford,Taurus,2024,"$33,000","5,000 km",Gasoline,Automatic,2.0L,White,https://example.com/cars/ford/taurus-2024,2024 Ford Taurus in excellent condition.

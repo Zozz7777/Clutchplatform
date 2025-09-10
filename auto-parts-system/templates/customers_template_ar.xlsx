@@ -1,0 +1,12 @@
+# Arabic Excel Template for Customers Import
+# This file should contain the Excel template for importing customer data in Arabic
+# The template should include columns for:
+# - الاسم (Name)
+# - رقم الهاتف (Phone)
+# - البريد الإلكتروني (Email)
+# - العنوان (Address)
+# - نوع العميل (Customer Type)
+# - تاريخ الميلاد (Birth Date)
+# - نقاط الولاء (Loyalty Points)
+# 
+# This is a placeholder file - in production, this would be a proper Excel file

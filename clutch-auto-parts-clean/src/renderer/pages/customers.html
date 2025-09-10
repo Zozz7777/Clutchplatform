@@ -1,0 +1,334 @@
+<!-- Customer Management Page -->
+<div class="customers-page">
+    <div class="page-header">
+        <h1 class="page-title">إدارة العملاء</h1>
+        <div class="page-actions">
+            <button class="btn btn-primary" id="add-customer-btn">
+                <span class="btn-icon">➕</span>
+                إضافة عميل
+            </button>
+            <button class="btn btn-secondary" id="import-customers-btn">
+                <span class="btn-icon">📥</span>
+                استيراد عملاء
+            </button>
+            <button class="btn btn-secondary" id="export-customers-btn">
+                <span class="btn-icon">📤</span>
+                تصدير العملاء
+            </button>
+        </div>
+    </div>
+
+    <!-- Customer Statistics -->
+    <div class="customer-stats">
+        <div class="stat-card">
+            <div class="stat-icon">👥</div>
+            <div class="stat-content">
+                <div class="stat-value" id="total-customers-count">0</div>
+                <div class="stat-label">إجمالي العملاء</div>
+            </div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-icon">💰</div>
+            <div class="stat-content">
+                <div class="stat-value" id="total-customer-sales">0</div>
+                <div class="stat-label">إجمالي المبيعات</div>
+            </div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-icon">🆕</div>
+            <div class="stat-content">
+                <div class="stat-value" id="new-customers-today">0</div>
+                <div class="stat-label">عملاء جدد اليوم</div>
+            </div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-icon">⭐</div>
+            <div class="stat-content">
+                <div class="stat-value" id="vip-customers-count">0</div>
+                <div class="stat-label">عملاء VIP</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Search and Filter Section -->
+    <div class="search-filter-section">
+        <div class="search-box">
+            <input type="text" id="customer-search" placeholder="البحث في العملاء..." class="form-control">
+            <button class="search-btn" id="customer-search-btn">
+                <span class="search-icon">🔍</span>
+            </button>
+        </div>
+        
+        <div class="filter-controls">
+            <select id="customer-type-filter" class="form-control">
+                <option value="">جميع الأنواع</option>
+                <option value="individual">فردي</option>
+                <option value="company">شركة</option>
+                <option value="vip">VIP</option>
+            </select>
+            
+            <select id="customer-status-filter" class="form-control">
+                <option value="">جميع الحالات</option>
+                <option value="active">نشط</option>
+                <option value="inactive">غير نشط</option>
+                <option value="blocked">محظور</option>
+            </select>
+            
+            <select id="customer-location-filter" class="form-control">
+                <option value="">جميع المناطق</option>
+            </select>
+            
+            <button class="btn btn-outline" id="clear-customer-filters-btn">
+                <span class="btn-icon">🗑️</span>
+                مسح الفلاتر
+            </button>
+        </div>
+    </div>
+
+    <!-- Customers Table -->
+    <div class="table-container">
+        <table class="data-table" id="customers-table">
+            <thead>
+                <tr>
+                    <th class="sortable" data-sort="name">الاسم</th>
+                    <th class="sortable" data-sort="phone">الهاتف</th>
+                    <th class="sortable" data-sort="email">البريد الإلكتروني</th>
+                    <th class="sortable" data-sort="customer_type">النوع</th>
+                    <th class="sortable" data-sort="total_purchases">إجمالي المشتريات</th>
+                    <th class="sortable" data-sort="last_purchase">آخر شراء</th>
+                    <th class="sortable" data-sort="status">الحالة</th>
+                    <th>الإجراءات</th>
+                </tr>
+            </thead>
+            <tbody id="customers-tbody">
+                <!-- Dynamic content will be loaded here -->
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Pagination -->
+    <div class="pagination-container">
+        <div class="pagination-info">
+            <span id="customers-pagination-info">عرض 1-10 من 100 عميل</span>
+        </div>
+        <div class="pagination-controls">
+            <button class="btn btn-outline" id="customers-prev-page-btn" disabled>
+                <span class="btn-icon">←</span>
+                السابق
+            </button>
+            <div class="page-numbers" id="customers-page-numbers">
+                <!-- Dynamic page numbers will be loaded here -->
+            </div>
+            <button class="btn btn-outline" id="customers-next-page-btn">
+                التالي
+                <span class="btn-icon">→</span>
+            </button>
+        </div>
+    </div>
+</div>
+
+<!-- Add/Edit Customer Modal -->
+<div id="customer-modal" class="modal-overlay" style="display: none;">
+    <div class="modal large-modal">
+        <div class="modal-header">
+            <h3 class="modal-title" id="customer-modal-title">إضافة عميل جديد</h3>
+            <button class="modal-close" id="customer-modal-close">&times;</button>
+        </div>
+        <div class="modal-body">
+            <form id="customer-form" class="customer-form">
+                <div class="form-section">
+                    <h4 class="section-title">المعلومات الأساسية</h4>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="customer-name" class="form-label">الاسم *</label>
+                            <input type="text" id="customer-name" name="name" class="form-control" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="customer-type" class="form-label">نوع العميل *</label>
+                            <select id="customer-type" name="customer_type" class="form-control" required>
+                                <option value="">اختر النوع</option>
+                                <option value="individual">فردي</option>
+                                <option value="company">شركة</option>
+                                <option value="vip">VIP</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="customer-phone" class="form-label">رقم الهاتف *</label>
+                            <input type="tel" id="customer-phone" name="phone" class="form-control" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="customer-email" class="form-label">البريد الإلكتروني</label>
+                            <input type="email" id="customer-email" name="email" class="form-control">
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="customer-id-number" class="form-label">رقم الهوية</label>
+                            <input type="text" id="customer-id-number" name="id_number" class="form-control">
+                        </div>
+                        <div class="form-group">
+                            <label for="customer-birth-date" class="form-label">تاريخ الميلاد</label>
+                            <input type="date" id="customer-birth-date" name="birth_date" class="form-control">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-section">
+                    <h4 class="section-title">معلومات الاتصال</h4>
+                    <div class="form-group">
+                        <label for="customer-address" class="form-label">العنوان</label>
+                        <textarea id="customer-address" name="address" class="form-control" rows="3"></textarea>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="customer-city" class="form-label">المدينة</label>
+                            <input type="text" id="customer-city" name="city" class="form-control">
+                        </div>
+                        <div class="form-group">
+                            <label for="customer-area" class="form-label">المنطقة</label>
+                            <input type="text" id="customer-area" name="area" class="form-control">
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="customer-postal-code" class="form-label">الرمز البريدي</label>
+                            <input type="text" id="customer-postal-code" name="postal_code" class="form-control">
+                        </div>
+                        <div class="form-group">
+                            <label for="customer-country" class="form-label">البلد</label>
+                            <input type="text" id="customer-country" name="country" class="form-control" value="مصر">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-section">
+                    <h4 class="section-title">معلومات إضافية</h4>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="customer-occupation" class="form-label">المهنة</label>
+                            <input type="text" id="customer-occupation" name="occupation" class="form-control">
+                        </div>
+                        <div class="form-group">
+                            <label for="customer-company" class="form-label">الشركة</label>
+                            <input type="text" id="customer-company" name="company" class="form-control">
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="customer-credit-limit" class="form-label">حد الائتمان</label>
+                            <input type="number" id="customer-credit-limit" name="credit_limit" class="form-control" min="0" step="0.01">
+                        </div>
+                        <div class="form-group">
+                            <label for="customer-discount-percentage" class="form-label">نسبة الخصم (%)</label>
+                            <input type="number" id="customer-discount-percentage" name="discount_percentage" class="form-control" min="0" max="100" step="0.01">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="customer-notes" class="form-label">ملاحظات</label>
+                        <textarea id="customer-notes" name="notes" class="form-control" rows="3"></textarea>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="checkbox-label">
+                                <input type="checkbox" id="customer-is-vip" name="is_vip">
+                                <span class="checkmark"></span>
+                                عميل VIP
+                            </label>
+                        </div>
+                        <div class="form-group">
+                            <label class="checkbox-label">
+                                <input type="checkbox" id="customer-is-active" name="is_active" checked>
+                                <span class="checkmark"></span>
+                                نشط
+                            </label>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" id="customer-modal-cancel">إلغاء</button>
+            <button type="button" class="btn btn-primary" id="customer-modal-save">حفظ</button>
+        </div>
+    </div>
+</div>
+
+<!-- Customer Details Modal -->
+<div id="customer-details-modal" class="modal-overlay" style="display: none;">
+    <div class="modal large-modal">
+        <div class="modal-header">
+            <h3 class="modal-title">تفاصيل العميل</h3>
+            <button class="modal-close" id="customer-details-modal-close">&times;</button>
+        </div>
+        <div class="modal-body">
+            <div class="customer-details" id="customer-details-content">
+                <!-- Customer details will be loaded here -->
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" id="customer-details-close">إغلاق</button>
+            <button type="button" class="btn btn-primary" id="customer-details-edit">تعديل</button>
+        </div>
+    </div>
+</div>
+
+<!-- Customer Sales History Modal -->
+<div id="customer-sales-modal" class="modal-overlay" style="display: none;">
+    <div class="modal large-modal">
+        <div class="modal-header">
+            <h3 class="modal-title">تاريخ مبيعات العميل</h3>
+            <button class="modal-close" id="customer-sales-modal-close">&times;</button>
+        </div>
+        <div class="modal-body">
+            <div class="customer-sales-summary">
+                <div class="sales-stats">
+                    <div class="stat-item">
+                        <span class="stat-label">إجمالي المبيعات:</span>
+                        <span class="stat-value" id="customer-total-sales">0</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-label">عدد المعاملات:</span>
+                        <span class="stat-value" id="customer-transactions-count">0</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-label">متوسط قيمة الشراء:</span>
+                        <span class="stat-value" id="customer-avg-purchase">0</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-label">آخر شراء:</span>
+                        <span class="stat-value" id="customer-last-purchase">-</span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="customer-sales-table">
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>رقم الفاتورة</th>
+                            <th>التاريخ</th>
+                            <th>المبلغ</th>
+                            <th>طريقة الدفع</th>
+                            <th>الحالة</th>
+                        </tr>
+                    </thead>
+                    <tbody id="customer-sales-tbody">
+                        <!-- Sales history will be loaded here -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" id="customer-sales-close">إغلاق</button>
+        </div>
+    </div>
+</div>

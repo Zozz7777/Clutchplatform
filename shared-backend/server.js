@@ -180,6 +180,7 @@ const adminRoutes = require('./routes/admin');
 const aiAgentRoutes = require('./routes/ai-agent');
 const autonomousSystemRoutes = require('./routes/autonomous-system');
 const learningSystemRoutes = require('./routes/learning-system');
+const autonomousDashboardRoutes = require('./routes/autonomous-dashboard');
 
 // Import missing route files
 const auditLogRoutes = require('./routes/auditLog');

@@ -1,0 +1,43 @@
+{
+  "name": "clutch-platform",
+  "version": "1.0.0",
+  "description": "Clutch Automotive Services Platform",
+  "main": "index.js",
+  "scripts": {
+    "start": "cd shared-backend && npm start",
+    "dev": "cd shared-backend && npm run dev",
+    "start-backend": "cd shared-backend && npm start",
+    "start-admin": "cd clutch-admin && npm run dev",
+    "start-all": "concurrently \"npm run start-backend\" \"npm run start-admin\"",
+    "install-all": "npm install && cd shared-backend && npm install && cd ../clutch-admin && npm install",
+    "build": "npm install --legacy-peer-deps && cd shared-backend && npm install --legacy-peer-deps",
+    "build-all": "cd shared-backend && npm run build && cd ../clutch-admin && npm run build",
+    "check-collections": "node scripts/check-and-create-collections.js",
+    "test-enhanced-features": "node scripts/test-enhanced-features.js",
+    "test:enhanced": "node scripts/test-enhanced-features.js",
+    "test-mobile-features": "node scripts/test-mobile-features.js",
+    "test:mobile": "node scripts/test-mobile-features.js",
+    "test-all-enhancements": "node scripts/test-all-enhancements.js",
+    "test-next-level-features": "node scripts/test-next-level-features.js",
+    "test:all": "npm run test-enhanced-features && npm run test-mobile-features && npm run test-all-enhancements && npm run test-next-level-features"
+  },
+  "keywords": [
+    "clutch",
+    "automotive",
+    "platform",
+    "mongodb",
+    "nodejs"
+  ],
+  "author": "Clutch Team",
+  "license": "MIT",
+  "dependencies": {
+    "concurrently": "^8.2.2"
+  },
+  "devDependencies": {
+    "nodemon": "^3.0.1"
+  },
+  "engines": {
+    "node": ">=18.0.0",
+    "npm": ">=8.0.0"
+  }
+}

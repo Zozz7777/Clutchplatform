@@ -1,0 +1,348 @@
+<!-- Performance Monitoring & Testing Page -->
+<div class="performance-page">
+    <div class="page-header">
+        <h1 class="page-title">مراقبة الأداء والاختبار</h1>
+        <div class="page-actions">
+            <button class="btn btn-primary" id="run-performance-tests-btn">
+                <span class="btn-icon">🧪</span>
+                تشغيل الاختبارات
+            </button>
+            <button class="btn btn-secondary" id="optimize-system-btn">
+                <span class="btn-icon">⚡</span>
+                تحسين النظام
+            </button>
+            <button class="btn btn-secondary" id="export-performance-report-btn">
+                <span class="btn-icon">📊</span>
+                تصدير التقرير
+            </button>
+        </div>
+    </div>
+
+    <!-- Performance Overview -->
+    <div class="performance-overview">
+        <div class="overview-stats">
+            <div class="stat-card">
+                <div class="stat-icon">⏱️</div>
+                <div class="stat-content">
+                    <div class="stat-value" id="load-time">0ms</div>
+                    <div class="stat-label">وقت التحميل</div>
+                    <div class="stat-status" id="load-time-status">جيد</div>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon">💾</div>
+                <div class="stat-content">
+                    <div class="stat-value" id="memory-usage">0MB</div>
+                    <div class="stat-label">استخدام الذاكرة</div>
+                    <div class="stat-status" id="memory-status">جيد</div>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon">🗄️</div>
+                <div class="stat-content">
+                    <div class="stat-value" id="database-queries">0</div>
+                    <div class="stat-label">استعلامات قاعدة البيانات</div>
+                    <div class="stat-status" id="database-status">جيد</div>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon">🌐</div>
+                <div class="stat-content">
+                    <div class="stat-value" id="api-calls">0</div>
+                    <div class="stat-label">استدعاءات API</div>
+                    <div class="stat-status" id="api-status">جيد</div>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon">⚡</div>
+                <div class="stat-content">
+                    <div class="stat-value" id="response-time">0ms</div>
+                    <div class="stat-label">وقت الاستجابة</div>
+                    <div class="stat-status" id="response-status">جيد</div>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon">💾</div>
+                <div class="stat-content">
+                    <div class="stat-value" id="cache-hit-rate">0%</div>
+                    <div class="stat-label">معدل التخزين المؤقت</div>
+                    <div class="stat-status" id="cache-status">جيد</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Performance Tabs -->
+    <div class="performance-tabs">
+        <div class="tab-navigation">
+            <button class="tab-btn active" data-tab="monitoring">المراقبة</button>
+            <button class="tab-btn" data-tab="testing">الاختبارات</button>
+            <button class="tab-btn" data-tab="optimization">التحسين</button>
+            <button class="tab-btn" data-tab="reports">التقارير</button>
+        </div>
+
+        <!-- Monitoring Tab -->
+        <div class="tab-content active" id="monitoring-tab">
+            <div class="monitoring-grid">
+                <div class="monitoring-chart">
+                    <h4>استخدام الذاكرة</h4>
+                    <canvas id="memory-usage-chart"></canvas>
+                </div>
+                <div class="monitoring-chart">
+                    <h4>وقت الاستجابة</h4>
+                    <canvas id="response-time-chart"></canvas>
+                </div>
+                <div class="monitoring-chart">
+                    <h4>استعلامات قاعدة البيانات</h4>
+                    <canvas id="database-queries-chart"></canvas>
+                </div>
+                <div class="monitoring-chart">
+                    <h4>معدل الأخطاء</h4>
+                    <canvas id="error-rate-chart"></canvas>
+                </div>
+            </div>
+
+            <div class="performance-alerts">
+                <h4>تنبيهات الأداء</h4>
+                <div class="alerts-list" id="performance-alerts-list">
+                    <!-- Performance alerts will be loaded here -->
+                </div>
+            </div>
+        </div>
+
+        <!-- Testing Tab -->
+        <div class="tab-content" id="testing-tab">
+            <div class="testing-controls">
+                <div class="test-categories">
+                    <h4>فئات الاختبارات</h4>
+                    <div class="test-category-grid">
+                        <div class="test-category-card" data-category="database">
+                            <div class="category-icon">🗄️</div>
+                            <div class="category-content">
+                                <h5>قاعدة البيانات</h5>
+                                <p>اختبار أداء استعلامات قاعدة البيانات</p>
+                            </div>
+                        </div>
+                        <div class="test-category-card" data-category="api">
+                            <div class="category-icon">🌐</div>
+                            <div class="category-content">
+                                <h5>API</h5>
+                                <p>اختبار سرعة استدعاءات API</p>
+                            </div>
+                        </div>
+                        <div class="test-category-card" data-category="memory">
+                            <div class="category-icon">💾</div>
+                            <div class="category-content">
+                                <h5>الذاكرة</h5>
+                                <p>اختبار إدارة الذاكرة</p>
+                            </div>
+                        </div>
+                        <div class="test-category-card" data-category="cache">
+                            <div class="category-icon">⚡</div>
+                            <div class="category-content">
+                                <h5>التخزين المؤقت</h5>
+                                <p>اختبار أداء التخزين المؤقت</p>
+                            </div>
+                        </div>
+                        <div class="test-category-card" data-category="dom">
+                            <div class="category-icon">📄</div>
+                            <div class="category-content">
+                                <h5>DOM</h5>
+                                <p>اختبار عمليات DOM</p>
+                            </div>
+                        </div>
+                        <div class="test-category-card" data-category="all">
+                            <div class="category-icon">🧪</div>
+                            <div class="category-content">
+                                <h5>جميع الاختبارات</h5>
+                                <p>تشغيل جميع الاختبارات</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="test-results">
+                    <h4>نتائج الاختبارات</h4>
+                    <div class="test-results-list" id="test-results-list">
+                        <!-- Test results will be loaded here -->
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Optimization Tab -->
+        <div class="tab-content" id="optimization-tab">
+            <div class="optimization-grid">
+                <div class="optimization-section">
+                    <h4>تحسين قاعدة البيانات</h4>
+                    <div class="optimization-options">
+                        <div class="optimization-option">
+                            <label class="checkbox-label">
+                                <input type="checkbox" id="optimize-indexes" checked>
+                                <span class="checkmark"></span>
+                                إنشاء فهارس قاعدة البيانات
+                            </label>
+                        </div>
+                        <div class="optimization-option">
+                            <label class="checkbox-label">
+                                <input type="checkbox" id="optimize-settings" checked>
+                                <span class="checkmark"></span>
+                                تحسين إعدادات قاعدة البيانات
+                            </label>
+                        </div>
+                        <div class="optimization-option">
+                            <label class="checkbox-label">
+                                <input type="checkbox" id="analyze-performance" checked>
+                                <span class="checkmark"></span>
+                                تحليل أداء قاعدة البيانات
+                            </label>
+                        </div>
+                    </div>
+                    <button class="btn btn-primary" id="optimize-database-btn">تحسين قاعدة البيانات</button>
+                </div>
+
+                <div class="optimization-section">
+                    <h4>تحسين الذاكرة</h4>
+                    <div class="optimization-options">
+                        <div class="optimization-option">
+                            <label class="checkbox-label">
+                                <input type="checkbox" id="cleanup-memory" checked>
+                                <span class="checkmark"></span>
+                                تنظيف الذاكرة
+                            </label>
+                        </div>
+                        <div class="optimization-option">
+                            <label class="checkbox-label">
+                                <input type="checkbox" id="optimize-cache" checked>
+                                <span class="checkmark"></span>
+                                تحسين التخزين المؤقت
+                            </label>
+                        </div>
+                        <div class="optimization-option">
+                            <label class="checkbox-label">
+                                <input type="checkbox" id="optimize-listeners" checked>
+                                <span class="checkmark"></span>
+                                تحسين مستمعي الأحداث
+                            </label>
+                        </div>
+                    </div>
+                    <button class="btn btn-primary" id="optimize-memory-btn">تحسين الذاكرة</button>
+                </div>
+
+                <div class="optimization-section">
+                    <h4>تحسين الأداء</h4>
+                    <div class="optimization-options">
+                        <div class="optimization-option">
+                            <label class="checkbox-label">
+                                <input type="checkbox" id="optimize-dom" checked>
+                                <span class="checkmark"></span>
+                                تحسين عمليات DOM
+                            </label>
+                        </div>
+                        <div class="optimization-option">
+                            <label class="checkbox-label">
+                                <input type="checkbox" id="optimize-rendering" checked>
+                                <span class="checkmark"></span>
+                                تحسين العرض
+                            </label>
+                        </div>
+                        <div class="optimization-option">
+                            <label class="checkbox-label">
+                                <input type="checkbox" id="optimize-network" checked>
+                                <span class="checkmark"></span>
+                                تحسين الشبكة
+                            </label>
+                        </div>
+                    </div>
+                    <button class="btn btn-primary" id="optimize-performance-btn">تحسين الأداء</button>
+                </div>
+            </div>
+
+            <div class="optimization-recommendations">
+                <h4>توصيات التحسين</h4>
+                <div class="recommendations-list" id="optimization-recommendations">
+                    <!-- Optimization recommendations will be loaded here -->
+                </div>
+            </div>
+        </div>
+
+        <!-- Reports Tab -->
+        <div class="tab-content" id="reports-tab">
+            <div class="reports-grid">
+                <div class="report-section">
+                    <h4>تقرير الأداء الحالي</h4>
+                    <div class="current-performance-report" id="current-performance-report">
+                        <!-- Current performance report will be loaded here -->
+                    </div>
+                </div>
+
+                <div class="report-section">
+                    <h4>تقرير الأداء المتوسط</h4>
+                    <div class="average-performance-report" id="average-performance-report">
+                        <!-- Average performance report will be loaded here -->
+                    </div>
+                </div>
+
+                <div class="report-section">
+                    <h4>تاريخ الأداء</h4>
+                    <div class="performance-history-chart">
+                        <canvas id="performance-history-chart"></canvas>
+                    </div>
+                </div>
+
+                <div class="report-section">
+                    <h4>مقارنة الأداء</h4>
+                    <div class="performance-comparison" id="performance-comparison">
+                        <!-- Performance comparison will be loaded here -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Performance Test Results Modal -->
+<div id="test-results-modal" class="modal-overlay" style="display: none;">
+    <div class="modal large-modal">
+        <div class="modal-header">
+            <h3 class="modal-title">نتائج الاختبارات</h3>
+            <button class="modal-close" id="test-results-modal-close">&times;</button>
+        </div>
+        <div class="modal-body">
+            <div class="test-results-summary" id="test-results-summary">
+                <!-- Test results summary will be loaded here -->
+            </div>
+            <div class="test-results-details" id="test-results-details">
+                <!-- Detailed test results will be loaded here -->
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" id="test-results-close">إغلاق</button>
+            <button type="button" class="btn btn-primary" id="export-test-results-btn">تصدير النتائج</button>
+        </div>
+    </div>
+</div>
+
+<!-- Performance Optimization Modal -->
+<div id="optimization-modal" class="modal-overlay" style="display: none;">
+    <div class="modal">
+        <div class="modal-header">
+            <h3 class="modal-title">تحسين الأداء</h3>
+            <button class="modal-close" id="optimization-modal-close">&times;</button>
+        </div>
+        <div class="modal-body">
+            <div class="optimization-progress">
+                <div class="progress-bar">
+                    <div class="progress-fill" id="optimization-progress-fill"></div>
+                </div>
+                <div class="progress-text" id="optimization-progress-text">جاري التحسين...</div>
+            </div>
+            <div class="optimization-steps" id="optimization-steps">
+                <!-- Optimization steps will be loaded here -->
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" id="optimization-cancel">إلغاء</button>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Clutch Admin - Login Test</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .form-group {
+            margin-bottom: 20px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        input {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 16px;
+        }
+        button {
+            background-color: #007bff;
+            color: white;
+            padding: 12px 24px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            margin-right: 10px;
+            margin-bottom: 10px;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        .status {
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: 4px;
+            font-family: monospace;
+            white-space: pre-wrap;
+        }
+        .success { background-color: #d4edda; border: 1px solid #c3e6cb; color: #155724; }
+        .error { background-color: #f8d7da; border: 1px solid #f5c6cb; color: #721c24; }
+        .info { background-color: #d1ecf1; border: 1px solid #bee5eb; color: #0c5460; }
+        .credential-buttons {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Clutch Admin - Login Test</h1>
+        <p>Test different login credentials to find the working ones.</p>
+        
+        <div class="form-group">
+            <label for="email">Email:</label>
+            <input type="email" id="email" placeholder="Enter email">
+        </div>
+        
+        <div class="form-group">
+            <label for="password">Password:</label>
+            <input type="password" id="password" placeholder="Enter password">
+        </div>
+        
+        <div class="credential-buttons">
+            <button onclick="setCredentials('ziad@YourClutch.com', '4955698*Z*z')">Use Ziad (Existing - Working)</button>
+            <button onclick="setCredentials('admin@clutch.com', 'admin123')">Use Admin (Created)</button>
+        </div>
+        
+        <button onclick="testLogin()">Test Login</button>
+        <button onclick="testAPI()">Test API Call</button>
+        <button onclick="clearTokens()">Clear Tokens</button>
+        <button onclick="checkAuthStatus()">Check Auth Status</button>
+        
+        <div id="status" class="status info">
+            Ready to test login...
+        </div>
+    </div>
+
+    <script>
+        const API_BASE_URL = 'https://clutch-main-nk7x.onrender.com/api/v1';
+        
+        function log(message, type = 'info') {
+            const status = document.getElementById('status');
+            const timestamp = new Date().toISOString();
+            status.innerHTML += `[${timestamp}] ${message}\n`;
+            status.className = `status ${type}`;
+        }
+        
+        function clearLog() {
+            document.getElementById('status').innerHTML = '';
+        }
+
+        function setCredentials(email, password) {
+            document.getElementById('email').value = email;
+            document.getElementById('password').value = password;
+            log(`Set credentials: ${email}`);
+        }
+
+        async function delay(ms) {
+            return new Promise(resolve => setTimeout(resolve, ms));
+        }
+
+        async function testLogin() {
+            clearLog();
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+            
+            log(`Testing login with: ${email}`);
+            
+            try {
+                const response = await fetch(`${API_BASE_URL}/auth/employee-login`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ email, password })
+                });
+                
+                const data = await response.json();
+                
+                if (response.ok && data.success) {
+                    log(`✅ Login successful!`, 'success');
+                    log(`User: ${JSON.stringify(data.data.user, null, 2)}`);
+                    log(`Token: ${data.data.token.substring(0, 50)}...`);
+                    
+                    // Store tokens
+                    localStorage.setItem('auth-token', data.data.token);
+                    localStorage.setItem('refresh-token', data.data.refreshToken);
+                    log(`✅ Tokens stored in localStorage`);
+                    
+                } else {
+                    log(`❌ Login failed: ${data.message || data.error}`, 'error');
+                }
+                
+            } catch (error) {
+                log(`❌ Login error: ${error.message}`, 'error');
+            }
+        }
+
+        async function testAPI() {
+            clearLog();
+            const token = localStorage.getItem('auth-token');
+            
+            if (!token) {
+                log(`❌ No token found. Please login first.`, 'error');
+                return;
+            }
+            
+            log(`Testing API call with token: ${token.substring(0, 50)}...`);
+            
+            try {
+                const response = await fetch(`${API_BASE_URL}/admin/test-auth`, {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    }
+                });
+                
+                const data = await response.json();
+                
+                if (response.ok) {
+                    log(`✅ API call successful!`, 'success');
+                    log(`Response: ${JSON.stringify(data, null, 2)}`);
+                } else {
+                    log(`❌ API call failed: ${response.status} - ${data.message || data.error}`, 'error');
+                }
+                
+            } catch (error) {
+                log(`❌ API call error: ${error.message}`, 'error');
+            }
+        }
+
+        function clearTokens() {
+            clearLog();
+            localStorage.removeItem('auth-token');
+            localStorage.removeItem('refresh-token');
+            log(`✅ Tokens cleared from localStorage`, 'success');
+        }
+
+        function checkAuthStatus() {
+            clearLog();
+            const token = localStorage.getItem('auth-token');
+            const refreshToken = localStorage.getItem('refresh-token');
+            
+            log(`Auth Status Check:`, 'info');
+            log(`Token: ${token ? token.substring(0, 50) + '...' : 'None'}`);
+            log(`Refresh Token: ${refreshToken ? refreshToken.substring(0, 50) + '...' : 'None'}`);
+            log(`All localStorage keys: ${Object.keys(localStorage).join(', ')}`);
+        }
+
+        // Check auth status on page load
+        window.onload = function() {
+            checkAuthStatus();
+        };
+    </script>
+</body>
+</html>

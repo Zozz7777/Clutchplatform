@@ -1,0 +1,14 @@
+# Arabic Excel Template for Inventory Import
+# This file should contain the Excel template for importing inventory data in Arabic
+# The template should include columns for:
+# - اسم المنتج (Product Name)
+# - الرقم المرجعي (Reference Number)
+# - الفئة (Category)
+# - الكمية (Quantity)
+# - سعر البيع (Selling Price)
+# - سعر التكلفة (Cost Price)
+# - الحد الأدنى (Minimum Stock)
+# - الباركود (Barcode)
+# - الوصف (Description)
+# 
+# This is a placeholder file - in production, this would be a proper Excel file

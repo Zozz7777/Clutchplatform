@@ -1,0 +1,369 @@
+<!-- AI Insights Dashboard Page -->
+<div class="ai-insights-page">
+    <div class="page-header">
+        <h1 class="page-title">ذكاء اصطناعي و تحليلات</h1>
+        <div class="page-actions">
+            <button class="btn btn-primary" id="refresh-ai-data-btn">
+                <span class="btn-icon">🔄</span>
+                تحديث البيانات
+            </button>
+            <button class="btn btn-secondary" id="ai-settings-btn">
+                <span class="btn-icon">⚙️</span>
+                إعدادات الذكاء الاصطناعي
+            </button>
+        </div>
+    </div>
+
+    <!-- AI Service Status -->
+    <div class="ai-status-section">
+        <h3 class="section-title">حالة خدمات الذكاء الاصطناعي</h3>
+        <div class="ai-services-grid" id="ai-services-grid">
+            <!-- AI services status will be loaded here -->
+        </div>
+    </div>
+
+    <!-- AI Insights Overview -->
+    <div class="ai-insights-overview">
+        <div class="insight-card">
+            <div class="insight-icon">📈</div>
+            <div class="insight-content">
+                <div class="insight-title">توقع المبيعات</div>
+                <div class="insight-value" id="sales-prediction-value">-</div>
+                <div class="insight-description">للشهر القادم</div>
+            </div>
+        </div>
+        <div class="insight-card">
+            <div class="insight-icon">🎯</div>
+            <div class="insight-content">
+                <div class="insight-title">تحسين الأسعار</div>
+                <div class="insight-value" id="price-optimization-value">-</div>
+                <div class="insight-description">فرصة زيادة الأرباح</div>
+            </div>
+        </div>
+        <div class="insight-card">
+            <div class="insight-icon">📦</div>
+            <div class="insight-content">
+                <div class="insight-title">تحسين المخزون</div>
+                <div class="insight-value" id="inventory-optimization-value">-</div>
+                <div class="insight-description">توصيات المخزون</div>
+            </div>
+        </div>
+        <div class="insight-card">
+            <div class="insight-icon">👥</div>
+            <div class="insight-content">
+                <div class="insight-title">تحليل العملاء</div>
+                <div class="insight-value" id="customer-insights-value">-</div>
+                <div class="insight-description">رؤى العملاء</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- AI Analytics Tabs -->
+    <div class="ai-analytics-tabs">
+        <div class="tab-navigation">
+            <button class="tab-btn active" data-tab="demand-forecast">توقع الطلب</button>
+            <button class="tab-btn" data-tab="price-optimization">تحسين الأسعار</button>
+            <button class="tab-btn" data-tab="inventory-optimization">تحسين المخزون</button>
+            <button class="tab-btn" data-tab="customer-insights">رؤى العملاء</button>
+            <button class="tab-btn" data-tab="market-analysis">تحليل السوق</button>
+            <button class="tab-btn" data-tab="recommendations">التوصيات</button>
+        </div>
+
+        <!-- Demand Forecast Tab -->
+        <div class="tab-content active" id="demand-forecast-tab">
+            <div class="tab-header">
+                <h3>توقع الطلب على المنتجات</h3>
+                <div class="tab-controls">
+                    <select id="forecast-period" class="form-control">
+                        <option value="7">7 أيام</option>
+                        <option value="30" selected>30 يوم</option>
+                        <option value="90">90 يوم</option>
+                    </select>
+                    <button class="btn btn-primary" id="generate-forecast-btn">توليد التوقع</button>
+                </div>
+            </div>
+            <div class="forecast-chart-container">
+                <canvas id="demand-forecast-chart"></canvas>
+            </div>
+            <div class="forecast-table-container">
+                <table class="data-table" id="forecast-table">
+                    <thead>
+                        <tr>
+                            <th>المنتج</th>
+                            <th>الطلب المتوقع</th>
+                            <th>مستوى الثقة</th>
+                            <th>التوصية</th>
+                        </tr>
+                    </thead>
+                    <tbody id="forecast-tbody">
+                        <!-- Forecast data will be loaded here -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Price Optimization Tab -->
+        <div class="tab-content" id="price-optimization-tab">
+            <div class="tab-header">
+                <h3>تحسين الأسعار</h3>
+                <div class="tab-controls">
+                    <button class="btn btn-primary" id="optimize-prices-btn">تحسين الأسعار</button>
+                    <button class="btn btn-secondary" id="apply-price-changes-btn">تطبيق التغييرات</button>
+                </div>
+            </div>
+            <div class="price-optimization-grid">
+                <div class="optimization-summary">
+                    <h4>ملخص التحسين</h4>
+                    <div class="summary-stats">
+                        <div class="stat-item">
+                            <span class="stat-label">إجمالي زيادة الأرباح المتوقعة:</span>
+                            <span class="stat-value" id="profit-increase">-</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-label">عدد المنتجات المحسنة:</span>
+                            <span class="stat-value" id="optimized-products-count">-</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-label">متوسط زيادة السعر:</span>
+                            <span class="stat-value" id="avg-price-increase">-</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="price-changes-table">
+                    <table class="data-table" id="price-changes-table">
+                        <thead>
+                            <tr>
+                                <th>المنتج</th>
+                                <th>السعر الحالي</th>
+                                <th>السعر المقترح</th>
+                                <th>التغيير</th>
+                                <th>التأثير المتوقع</th>
+                                <th>الإجراء</th>
+                            </tr>
+                        </thead>
+                        <tbody id="price-changes-tbody">
+                            <!-- Price changes will be loaded here -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- Inventory Optimization Tab -->
+        <div class="tab-content" id="inventory-optimization-tab">
+            <div class="tab-header">
+                <h3>تحسين المخزون</h3>
+                <div class="tab-controls">
+                    <button class="btn btn-primary" id="optimize-inventory-btn">تحسين المخزون</button>
+                </div>
+            </div>
+            <div class="inventory-optimization-grid">
+                <div class="optimization-recommendations">
+                    <h4>توصيات المخزون</h4>
+                    <div class="recommendations-list" id="inventory-recommendations">
+                        <!-- Recommendations will be loaded here -->
+                    </div>
+                </div>
+                <div class="inventory-alerts">
+                    <h4>تنبيهات المخزون</h4>
+                    <div class="alerts-list" id="inventory-alerts">
+                        <!-- Alerts will be loaded here -->
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Customer Insights Tab -->
+        <div class="tab-content" id="customer-insights-tab">
+            <div class="tab-header">
+                <h3>رؤى العملاء</h3>
+                <div class="tab-controls">
+                    <button class="btn btn-primary" id="generate-customer-insights-btn">توليد الرؤى</button>
+                </div>
+            </div>
+            <div class="customer-insights-grid">
+                <div class="customer-segmentation">
+                    <h4>تقسيم العملاء</h4>
+                    <div class="segmentation-chart">
+                        <canvas id="customer-segmentation-chart"></canvas>
+                    </div>
+                </div>
+                <div class="customer-behavior">
+                    <h4>سلوك العملاء</h4>
+                    <div class="behavior-insights" id="customer-behavior-insights">
+                        <!-- Behavior insights will be loaded here -->
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Market Analysis Tab -->
+        <div class="tab-content" id="market-analysis-tab">
+            <div class="tab-header">
+                <h3>تحليل السوق</h3>
+                <div class="tab-controls">
+                    <select id="market-category" class="form-control">
+                        <option value="">جميع الفئات</option>
+                        <option value="auto_parts">قطع غيار سيارات</option>
+                        <option value="tools">أدوات</option>
+                        <option value="lubricants">زيوت ومواد تشحيم</option>
+                    </select>
+                    <button class="btn btn-primary" id="analyze-market-btn">تحليل السوق</button>
+                </div>
+            </div>
+            <div class="market-analysis-grid">
+                <div class="market-trends">
+                    <h4>اتجاهات السوق</h4>
+                    <div class="trends-chart">
+                        <canvas id="market-trends-chart"></canvas>
+                    </div>
+                </div>
+                <div class="trending-products">
+                    <h4>المنتجات الرائجة</h4>
+                    <div class="trending-list" id="trending-products-list">
+                        <!-- Trending products will be loaded here -->
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Recommendations Tab -->
+        <div class="tab-content" id="recommendations-tab">
+            <div class="tab-header">
+                <h3>التوصيات الذكية</h3>
+                <div class="tab-controls">
+                    <button class="btn btn-primary" id="generate-recommendations-btn">توليد التوصيات</button>
+                </div>
+            </div>
+            <div class="recommendations-grid">
+                <div class="product-recommendations">
+                    <h4>توصيات المنتجات</h4>
+                    <div class="recommendations-list" id="product-recommendations-list">
+                        <!-- Product recommendations will be loaded here -->
+                    </div>
+                </div>
+                <div class="cross-sell-recommendations">
+                    <h4>توصيات البيع المتبادل</h4>
+                    <div class="cross-sell-list" id="cross-sell-recommendations-list">
+                        <!-- Cross-sell recommendations will be loaded here -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- AI Alerts Section -->
+    <div class="ai-alerts-section">
+        <h3 class="section-title">تنبيهات الذكاء الاصطناعي</h3>
+        <div class="alerts-container" id="ai-alerts-container">
+            <!-- AI alerts will be loaded here -->
+        </div>
+    </div>
+</div>
+
+<!-- AI Settings Modal -->
+<div id="ai-settings-modal" class="modal-overlay" style="display: none;">
+    <div class="modal large-modal">
+        <div class="modal-header">
+            <h3 class="modal-title">إعدادات الذكاء الاصطناعي</h3>
+            <button class="modal-close" id="ai-settings-modal-close">&times;</button>
+        </div>
+        <div class="modal-body">
+            <div class="ai-settings-form">
+                <div class="form-section">
+                    <h4 class="section-title">إعدادات التوقع</h4>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="forecast-sensitivity" class="form-label">حساسية التوقع</label>
+                            <select id="forecast-sensitivity" class="form-control">
+                                <option value="low">منخفضة</option>
+                                <option value="medium" selected>متوسطة</option>
+                                <option value="high">عالية</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="forecast-horizon" class="form-label">أفق التوقع (أيام)</label>
+                            <input type="number" id="forecast-horizon" class="form-control" value="30" min="7" max="365">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-section">
+                    <h4 class="section-title">إعدادات تحسين الأسعار</h4>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="price-optimization-aggressiveness" class="form-label">عدوانية التحسين</label>
+                            <select id="price-optimization-aggressiveness" class="form-control">
+                                <option value="conservative">محافظ</option>
+                                <option value="moderate" selected>معتدل</option>
+                                <option value="aggressive">عدواني</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="max-price-increase" class="form-label">الحد الأقصى لزيادة السعر (%)</label>
+                            <input type="number" id="max-price-increase" class="form-control" value="20" min="0" max="100">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-section">
+                    <h4 class="section-title">إعدادات المخزون</h4>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="inventory-optimization-frequency" class="form-label">تكرار التحسين</label>
+                            <select id="inventory-optimization-frequency" class="form-control">
+                                <option value="daily">يومي</option>
+                                <option value="weekly" selected>أسبوعي</option>
+                                <option value="monthly">شهري</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="stockout-threshold" class="form-label">عتبة نفاد المخزون (أيام)</label>
+                            <input type="number" id="stockout-threshold" class="form-control" value="7" min="1" max="30">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-section">
+                    <h4 class="section-title">إعدادات التنبيهات</h4>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="checkbox-label">
+                                <input type="checkbox" id="enable-demand-alerts" checked>
+                                <span class="checkmark"></span>
+                                تفعيل تنبيهات الطلب
+                            </label>
+                        </div>
+                        <div class="form-group">
+                            <label class="checkbox-label">
+                                <input type="checkbox" id="enable-price-alerts" checked>
+                                <span class="checkmark"></span>
+                                تفعيل تنبيهات الأسعار
+                            </label>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="checkbox-label">
+                                <input type="checkbox" id="enable-inventory-alerts" checked>
+                                <span class="checkmark"></span>
+                                تفعيل تنبيهات المخزون
+                            </label>
+                        </div>
+                        <div class="form-group">
+                            <label class="checkbox-label">
+                                <input type="checkbox" id="enable-market-alerts" checked>
+                                <span class="checkmark"></span>
+                                تفعيل تنبيهات السوق
+                            </label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" id="ai-settings-cancel">إلغاء</button>
+            <button type="button" class="btn btn-primary" id="ai-settings-save">حفظ الإعدادات</button>
+        </div>
+    </div>
+</div>

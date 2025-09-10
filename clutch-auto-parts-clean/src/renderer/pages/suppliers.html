@@ -1,0 +1,410 @@
+<!-- Supplier Management Page -->
+<div class="suppliers-page">
+    <div class="page-header">
+        <h1 class="page-title">إدارة الموردين</h1>
+        <div class="page-actions">
+            <button class="btn btn-primary" id="add-supplier-btn">
+                <span class="btn-icon">➕</span>
+                إضافة مورد
+            </button>
+            <button class="btn btn-secondary" id="import-suppliers-btn">
+                <span class="btn-icon">📥</span>
+                استيراد موردين
+            </button>
+            <button class="btn btn-secondary" id="export-suppliers-btn">
+                <span class="btn-icon">📤</span>
+                تصدير الموردين
+            </button>
+        </div>
+    </div>
+
+    <!-- Supplier Statistics -->
+    <div class="supplier-stats">
+        <div class="stat-card">
+            <div class="stat-icon">🏢</div>
+            <div class="stat-content">
+                <div class="stat-value" id="total-suppliers-count">0</div>
+                <div class="stat-label">إجمالي الموردين</div>
+            </div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-icon">📦</div>
+            <div class="stat-content">
+                <div class="stat-value" id="total-purchases-amount">0</div>
+                <div class="stat-label">إجمالي المشتريات</div>
+            </div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-icon">⏰</div>
+            <div class="stat-content">
+                <div class="stat-value" id="pending-orders-count">0</div>
+                <div class="stat-label">طلبات معلقة</div>
+            </div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-icon">⭐</div>
+            <div class="stat-content">
+                <div class="stat-value" id="preferred-suppliers-count">0</div>
+                <div class="stat-label">موردين مفضلين</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Search and Filter Section -->
+    <div class="search-filter-section">
+        <div class="search-box">
+            <input type="text" id="supplier-search" placeholder="البحث في الموردين..." class="form-control">
+            <button class="search-btn" id="supplier-search-btn">
+                <span class="search-icon">🔍</span>
+            </button>
+        </div>
+        
+        <div class="filter-controls">
+            <select id="supplier-category-filter" class="form-control">
+                <option value="">جميع الفئات</option>
+            </select>
+            
+            <select id="supplier-status-filter" class="form-control">
+                <option value="">جميع الحالات</option>
+                <option value="active">نشط</option>
+                <option value="inactive">غير نشط</option>
+                <option value="blocked">محظور</option>
+            </select>
+            
+            <select id="supplier-rating-filter" class="form-control">
+                <option value="">جميع التقييمات</option>
+                <option value="5">5 نجوم</option>
+                <option value="4">4 نجوم</option>
+                <option value="3">3 نجوم</option>
+                <option value="2">2 نجوم</option>
+                <option value="1">1 نجمة</option>
+            </select>
+            
+            <button class="btn btn-outline" id="clear-supplier-filters-btn">
+                <span class="btn-icon">🗑️</span>
+                مسح الفلاتر
+            </button>
+        </div>
+    </div>
+
+    <!-- Suppliers Table -->
+    <div class="table-container">
+        <table class="data-table" id="suppliers-table">
+            <thead>
+                <tr>
+                    <th class="sortable" data-sort="name">اسم المورد</th>
+                    <th class="sortable" data-sort="contact_person">الشخص المسؤول</th>
+                    <th class="sortable" data-sort="phone">الهاتف</th>
+                    <th class="sortable" data-sort="email">البريد الإلكتروني</th>
+                    <th class="sortable" data-sort="category">الفئة</th>
+                    <th class="sortable" data-sort="rating">التقييم</th>
+                    <th class="sortable" data-sort="total_purchases">إجمالي المشتريات</th>
+                    <th class="sortable" data-sort="status">الحالة</th>
+                    <th>الإجراءات</th>
+                </tr>
+            </thead>
+            <tbody id="suppliers-tbody">
+                <!-- Dynamic content will be loaded here -->
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Pagination -->
+    <div class="pagination-container">
+        <div class="pagination-info">
+            <span id="suppliers-pagination-info">عرض 1-10 من 100 مورد</span>
+        </div>
+        <div class="pagination-controls">
+            <button class="btn btn-outline" id="suppliers-prev-page-btn" disabled>
+                <span class="btn-icon">←</span>
+                السابق
+            </button>
+            <div class="page-numbers" id="suppliers-page-numbers">
+                <!-- Dynamic page numbers will be loaded here -->
+            </div>
+            <button class="btn btn-outline" id="suppliers-next-page-btn">
+                التالي
+                <span class="btn-icon">→</span>
+            </button>
+        </div>
+    </div>
+</div>
+
+<!-- Add/Edit Supplier Modal -->
+<div id="supplier-modal" class="modal-overlay" style="display: none;">
+    <div class="modal large-modal">
+        <div class="modal-header">
+            <h3 class="modal-title" id="supplier-modal-title">إضافة مورد جديد</h3>
+            <button class="modal-close" id="supplier-modal-close">&times;</button>
+        </div>
+        <div class="modal-body">
+            <form id="supplier-form" class="supplier-form">
+                <div class="form-section">
+                    <h4 class="section-title">المعلومات الأساسية</h4>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="supplier-name" class="form-label">اسم المورد *</label>
+                            <input type="text" id="supplier-name" name="name" class="form-control" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="supplier-category" class="form-label">فئة المورد *</label>
+                            <select id="supplier-category" name="category" class="form-control" required>
+                                <option value="">اختر الفئة</option>
+                                <option value="auto_parts">قطع غيار سيارات</option>
+                                <option value="tools">أدوات</option>
+                                <option value="lubricants">زيوت ومواد تشحيم</option>
+                                <option value="accessories">إكسسوارات</option>
+                                <option value="general">عام</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="supplier-contact-person" class="form-label">الشخص المسؤول *</label>
+                            <input type="text" id="supplier-contact-person" name="contact_person" class="form-control" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="supplier-phone" class="form-label">رقم الهاتف *</label>
+                            <input type="tel" id="supplier-phone" name="phone" class="form-control" required>
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="supplier-email" class="form-label">البريد الإلكتروني</label>
+                            <input type="email" id="supplier-email" name="email" class="form-control">
+                        </div>
+                        <div class="form-group">
+                            <label for="supplier-website" class="form-label">الموقع الإلكتروني</label>
+                            <input type="url" id="supplier-website" name="website" class="form-control">
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="supplier-tax-number" class="form-label">الرقم الضريبي</label>
+                            <input type="text" id="supplier-tax-number" name="tax_number" class="form-control">
+                        </div>
+                        <div class="form-group">
+                            <label for="supplier-commercial-registration" class="form-label">رقم السجل التجاري</label>
+                            <input type="text" id="supplier-commercial-registration" name="commercial_registration" class="form-control">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-section">
+                    <h4 class="section-title">معلومات الاتصال</h4>
+                    <div class="form-group">
+                        <label for="supplier-address" class="form-label">العنوان</label>
+                        <textarea id="supplier-address" name="address" class="form-control" rows="3"></textarea>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="supplier-city" class="form-label">المدينة</label>
+                            <input type="text" id="supplier-city" name="city" class="form-control">
+                        </div>
+                        <div class="form-group">
+                            <label for="supplier-area" class="form-label">المنطقة</label>
+                            <input type="text" id="supplier-area" name="area" class="form-control">
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="supplier-postal-code" class="form-label">الرمز البريدي</label>
+                            <input type="text" id="supplier-postal-code" name="postal_code" class="form-control">
+                        </div>
+                        <div class="form-group">
+                            <label for="supplier-country" class="form-label">البلد</label>
+                            <input type="text" id="supplier-country" name="country" class="form-control" value="مصر">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-section">
+                    <h4 class="section-title">معلومات العمل</h4>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="supplier-payment-terms" class="form-label">شروط الدفع</label>
+                            <select id="supplier-payment-terms" name="payment_terms" class="form-control">
+                                <option value="">اختر شروط الدفع</option>
+                                <option value="cash">نقدي</option>
+                                <option value="30_days">30 يوم</option>
+                                <option value="60_days">60 يوم</option>
+                                <option value="90_days">90 يوم</option>
+                                <option value="custom">مخصص</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="supplier-delivery-time" class="form-label">وقت التسليم (أيام)</label>
+                            <input type="number" id="supplier-delivery-time" name="delivery_time" class="form-control" min="0">
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="supplier-minimum-order" class="form-label">الحد الأدنى للطلب</label>
+                            <input type="number" id="supplier-minimum-order" name="minimum_order" class="form-control" min="0" step="0.01">
+                        </div>
+                        <div class="form-group">
+                            <label for="supplier-discount-percentage" class="form-label">نسبة الخصم (%)</label>
+                            <input type="number" id="supplier-discount-percentage" name="discount_percentage" class="form-control" min="0" max="100" step="0.01">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="supplier-notes" class="form-label">ملاحظات</label>
+                        <textarea id="supplier-notes" name="notes" class="form-control" rows="3"></textarea>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="checkbox-label">
+                                <input type="checkbox" id="supplier-is-preferred" name="is_preferred">
+                                <span class="checkmark"></span>
+                                مورد مفضل
+                            </label>
+                        </div>
+                        <div class="form-group">
+                            <label class="checkbox-label">
+                                <input type="checkbox" id="supplier-is-active" name="is_active" checked>
+                                <span class="checkmark"></span>
+                                نشط
+                            </label>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" id="supplier-modal-cancel">إلغاء</button>
+            <button type="button" class="btn btn-primary" id="supplier-modal-save">حفظ</button>
+        </div>
+    </div>
+</div>
+
+<!-- Supplier Details Modal -->
+<div id="supplier-details-modal" class="modal-overlay" style="display: none;">
+    <div class="modal large-modal">
+        <div class="modal-header">
+            <h3 class="modal-title">تفاصيل المورد</h3>
+            <button class="modal-close" id="supplier-details-modal-close">&times;</button>
+        </div>
+        <div class="modal-body">
+            <div class="supplier-details" id="supplier-details-content">
+                <!-- Supplier details will be loaded here -->
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" id="supplier-details-close">إغلاق</button>
+            <button type="button" class="btn btn-primary" id="supplier-details-edit">تعديل</button>
+        </div>
+    </div>
+</div>
+
+<!-- Supplier Products Modal -->
+<div id="supplier-products-modal" class="modal-overlay" style="display: none;">
+    <div class="modal large-modal">
+        <div class="modal-header">
+            <h3 class="modal-title">منتجات المورد</h3>
+            <button class="modal-close" id="supplier-products-modal-close">&times;</button>
+        </div>
+        <div class="modal-body">
+            <div class="supplier-products-summary">
+                <div class="products-stats">
+                    <div class="stat-item">
+                        <span class="stat-label">إجمالي المنتجات:</span>
+                        <span class="stat-value" id="supplier-total-products">0</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-label">متوسط السعر:</span>
+                        <span class="stat-value" id="supplier-avg-price">0</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-label">أعلى سعر:</span>
+                        <span class="stat-value" id="supplier-max-price">0</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-label">أقل سعر:</span>
+                        <span class="stat-value" id="supplier-min-price">0</span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="supplier-products-table">
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>اسم المنتج</th>
+                            <th>الفئة</th>
+                            <th>الباركود</th>
+                            <th>السعر</th>
+                            <th>الكمية المتاحة</th>
+                            <th>آخر تحديث</th>
+                        </tr>
+                    </thead>
+                    <tbody id="supplier-products-tbody">
+                        <!-- Products will be loaded here -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" id="supplier-products-close">إغلاق</button>
+        </div>
+    </div>
+</div>
+
+<!-- Supplier Purchase History Modal -->
+<div id="supplier-purchases-modal" class="modal-overlay" style="display: none;">
+    <div class="modal large-modal">
+        <div class="modal-header">
+            <h3 class="modal-title">تاريخ مشتريات المورد</h3>
+            <button class="modal-close" id="supplier-purchases-modal-close">&times;</button>
+        </div>
+        <div class="modal-body">
+            <div class="supplier-purchases-summary">
+                <div class="purchases-stats">
+                    <div class="stat-item">
+                        <span class="stat-label">إجمالي المشتريات:</span>
+                        <span class="stat-value" id="supplier-total-purchases">0</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-label">عدد الطلبات:</span>
+                        <span class="stat-value" id="supplier-orders-count">0</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-label">متوسط قيمة الطلب:</span>
+                        <span class="stat-value" id="supplier-avg-order">0</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-label">آخر طلب:</span>
+                        <span class="stat-value" id="supplier-last-order">-</span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="supplier-purchases-table">
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>رقم الطلب</th>
+                            <th>التاريخ</th>
+                            <th>المبلغ</th>
+                            <th>حالة الدفع</th>
+                            <th>حالة التسليم</th>
+                        </tr>
+                    </thead>
+                    <tbody id="supplier-purchases-tbody">
+                        <!-- Purchase history will be loaded here -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" id="supplier-purchases-close">إغلاق</button>
+        </div>
+    </div>
+</div>

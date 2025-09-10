@@ -1,0 +1,390 @@
+<!-- Sales Management Page -->
+<div class="sales-page">
+    <div class="page-header">
+        <h1 class="page-title">المبيعات</h1>
+        <div class="page-actions">
+            <button class="btn btn-primary" id="new-sale-btn">
+                <span class="btn-icon">💰</span>
+                بيع جديد
+            </button>
+            <button class="btn btn-secondary" id="quick-sale-btn">
+                <span class="btn-icon">⚡</span>
+                بيع سريع
+            </button>
+            <button class="btn btn-secondary" id="sales-report-btn">
+                <span class="btn-icon">📊</span>
+                تقرير المبيعات
+            </button>
+        </div>
+    </div>
+
+    <!-- Sales Statistics -->
+    <div class="sales-stats">
+        <div class="stat-card">
+            <div class="stat-icon">💰</div>
+            <div class="stat-content">
+                <div class="stat-value" id="today-sales-amount">0</div>
+                <div class="stat-label">مبيعات اليوم</div>
+            </div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-icon">📦</div>
+            <div class="stat-content">
+                <div class="stat-value" id="today-sales-count">0</div>
+                <div class="stat-label">عدد المبيعات</div>
+            </div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-icon">👥</div>
+            <div class="stat-content">
+                <div class="stat-value" id="today-customers">0</div>
+                <div class="stat-label">العملاء</div>
+            </div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-icon">📈</div>
+            <div class="stat-content">
+                <div class="stat-value" id="sales-growth">0%</div>
+                <div class="stat-label">نمو المبيعات</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Sales Filters -->
+    <div class="sales-filters">
+        <div class="filter-group">
+            <label for="date-from" class="filter-label">من تاريخ:</label>
+            <input type="date" id="date-from" class="form-control">
+        </div>
+        <div class="filter-group">
+            <label for="date-to" class="filter-label">إلى تاريخ:</label>
+            <input type="date" id="date-to" class="form-control">
+        </div>
+        <div class="filter-group">
+            <label for="payment-status-filter" class="filter-label">حالة الدفع:</label>
+            <select id="payment-status-filter" class="form-control">
+                <option value="">جميع الحالات</option>
+                <option value="paid">مدفوع</option>
+                <option value="pending">في الانتظار</option>
+                <option value="cancelled">ملغي</option>
+            </select>
+        </div>
+        <div class="filter-group">
+            <label for="customer-filter" class="filter-label">العميل:</label>
+            <select id="customer-filter" class="form-control">
+                <option value="">جميع العملاء</option>
+            </select>
+        </div>
+        <button class="btn btn-outline" id="apply-filters-btn">
+            <span class="btn-icon">🔍</span>
+            تطبيق الفلاتر
+        </button>
+        <button class="btn btn-outline" id="clear-filters-btn">
+            <span class="btn-icon">🗑️</span>
+            مسح الفلاتر
+        </button>
+    </div>
+
+    <!-- Sales Table -->
+    <div class="table-container">
+        <table class="data-table" id="sales-table">
+            <thead>
+                <tr>
+                    <th class="sortable" data-sort="invoice_number">رقم الفاتورة</th>
+                    <th class="sortable" data-sort="customer_name">العميل</th>
+                    <th class="sortable" data-sort="total_amount">المبلغ</th>
+                    <th class="sortable" data-sort="payment_method">طريقة الدفع</th>
+                    <th class="sortable" data-sort="payment_status">حالة الدفع</th>
+                    <th class="sortable" data-sort="created_at">التاريخ</th>
+                    <th>الإجراءات</th>
+                </tr>
+            </thead>
+            <tbody id="sales-tbody">
+                <!-- Dynamic content will be loaded here -->
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Pagination -->
+    <div class="pagination-container">
+        <div class="pagination-info">
+            <span id="sales-pagination-info">عرض 1-10 من 100 مبيعة</span>
+        </div>
+        <div class="pagination-controls">
+            <button class="btn btn-outline" id="sales-prev-page-btn" disabled>
+                <span class="btn-icon">←</span>
+                السابق
+            </button>
+            <div class="page-numbers" id="sales-page-numbers">
+                <!-- Dynamic page numbers will be loaded here -->
+            </div>
+            <button class="btn btn-outline" id="sales-next-page-btn">
+                التالي
+                <span class="btn-icon">→</span>
+            </button>
+        </div>
+    </div>
+</div>
+
+<!-- New Sale Modal -->
+<div id="new-sale-modal" class="modal-overlay" style="display: none;">
+    <div class="modal large-modal">
+        <div class="modal-header">
+            <h3 class="modal-title">بيع جديد</h3>
+            <button class="modal-close" id="new-sale-modal-close">&times;</button>
+        </div>
+        <div class="modal-body">
+            <div class="sale-form-container">
+                <!-- Customer Selection -->
+                <div class="form-section">
+                    <h4 class="section-title">معلومات العميل</h4>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="sale-customer" class="form-label">العميل</label>
+                            <select id="sale-customer" class="form-control">
+                                <option value="">عميل نقدي</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="sale-customer-name" class="form-label">اسم العميل</label>
+                            <input type="text" id="sale-customer-name" class="form-control" placeholder="اسم العميل">
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="sale-customer-phone" class="form-label">رقم الهاتف</label>
+                            <input type="tel" id="sale-customer-phone" class="form-control" placeholder="رقم الهاتف">
+                        </div>
+                        <div class="form-group">
+                            <button class="btn btn-secondary" id="add-customer-btn">
+                                <span class="btn-icon">➕</span>
+                                إضافة عميل
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Items Selection -->
+                <div class="form-section">
+                    <h4 class="section-title">الأصناف</h4>
+                    <div class="items-search">
+                        <input type="text" id="item-search" class="form-control" placeholder="البحث عن صنف...">
+                        <button class="btn btn-primary" id="add-item-to-sale-btn">
+                            <span class="btn-icon">➕</span>
+                            إضافة
+                        </button>
+                    </div>
+                    
+                    <div class="sale-items" id="sale-items">
+                        <!-- Sale items will be added here -->
+                    </div>
+                </div>
+
+                <!-- Payment Section -->
+                <div class="form-section">
+                    <h4 class="section-title">الدفع</h4>
+                    <div class="payment-summary">
+                        <div class="summary-row">
+                            <span class="summary-label">المجموع الفرعي:</span>
+                            <span class="summary-value" id="subtotal-amount">0.00</span>
+                        </div>
+                        <div class="summary-row">
+                            <span class="summary-label">الضريبة:</span>
+                            <span class="summary-value" id="tax-amount">0.00</span>
+                        </div>
+                        <div class="summary-row">
+                            <span class="summary-label">الخصم:</span>
+                            <span class="summary-value" id="discount-amount">0.00</span>
+                        </div>
+                        <div class="summary-row total">
+                            <span class="summary-label">المجموع الكلي:</span>
+                            <span class="summary-value" id="total-amount">0.00</span>
+                        </div>
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="payment-method" class="form-label">طريقة الدفع *</label>
+                            <select id="payment-method" class="form-control" required>
+                                <option value="">اختر طريقة الدفع</option>
+                                <option value="cash">نقدي</option>
+                                <option value="visa">فيزا</option>
+                                <option value="instapay">إنستاباي</option>
+                                <option value="vodafone_cash">فودافون كاش</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="discount-percentage" class="form-label">نسبة الخصم (%)</label>
+                            <input type="number" id="discount-percentage" class="form-control" min="0" max="100" step="0.01">
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="sale-notes" class="form-label">ملاحظات</label>
+                        <textarea id="sale-notes" class="form-control" rows="3" placeholder="ملاحظات إضافية..."></textarea>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" id="new-sale-cancel">إلغاء</button>
+            <button type="button" class="btn btn-primary" id="new-sale-save">حفظ البيع</button>
+        </div>
+    </div>
+</div>
+
+<!-- Quick Sale Modal -->
+<div id="quick-sale-modal" class="modal-overlay" style="display: none;">
+    <div class="modal">
+        <div class="modal-header">
+            <h3 class="modal-title">بيع سريع</h3>
+            <button class="modal-close" id="quick-sale-modal-close">&times;</button>
+        </div>
+        <div class="modal-body">
+            <div class="quick-sale-form">
+                <div class="form-group">
+                    <label for="quick-item-barcode" class="form-label">باركود الصنف</label>
+                    <input type="text" id="quick-item-barcode" class="form-control" placeholder="امسح الباركود أو أدخل الرقم">
+                </div>
+                
+                <div class="form-group">
+                    <label for="quick-item-quantity" class="form-label">الكمية</label>
+                    <input type="number" id="quick-item-quantity" class="form-control" min="1" value="1">
+                </div>
+                
+                <div class="form-group">
+                    <label for="quick-payment-method" class="form-label">طريقة الدفع</label>
+                    <select id="quick-payment-method" class="form-control">
+                        <option value="cash">نقدي</option>
+                        <option value="visa">فيزا</option>
+                        <option value="instapay">إنستاباي</option>
+                        <option value="vodafone_cash">فودافون كاش</option>
+                    </select>
+                </div>
+                
+                <div class="quick-sale-summary">
+                    <div class="summary-row">
+                        <span class="summary-label">الصنف:</span>
+                        <span class="summary-value" id="quick-item-name">-</span>
+                    </div>
+                    <div class="summary-row">
+                        <span class="summary-label">السعر:</span>
+                        <span class="summary-value" id="quick-item-price">0.00</span>
+                    </div>
+                    <div class="summary-row">
+                        <span class="summary-label">الكمية:</span>
+                        <span class="summary-value" id="quick-item-quantity-display">1</span>
+                    </div>
+                    <div class="summary-row total">
+                        <span class="summary-label">المجموع:</span>
+                        <span class="summary-value" id="quick-total-amount">0.00</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" id="quick-sale-cancel">إلغاء</button>
+            <button type="button" class="btn btn-primary" id="quick-sale-complete">إتمام البيع</button>
+        </div>
+    </div>
+</div>
+
+<!-- Sale Details Modal -->
+<div id="sale-details-modal" class="modal-overlay" style="display: none;">
+    <div class="modal large-modal">
+        <div class="modal-header">
+            <h3 class="modal-title">تفاصيل البيع</h3>
+            <button class="modal-close" id="sale-details-modal-close">&times;</button>
+        </div>
+        <div class="modal-body">
+            <div class="sale-details" id="sale-details-content">
+                <!-- Sale details will be loaded here -->
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" id="sale-details-close">إغلاق</button>
+            <button type="button" class="btn btn-primary" id="print-receipt-btn">
+                <span class="btn-icon">🖨️</span>
+                طباعة الفاتورة
+            </button>
+        </div>
+    </div>
+</div>
+
+<!-- Receipt Template -->
+<div id="receipt-template" class="receipt-template" style="display: none;">
+    <div class="receipt">
+        <div class="receipt-header">
+            <div class="shop-logo">
+                <img id="receipt-logo" src="" alt="Shop Logo">
+            </div>
+            <div class="shop-info">
+                <h3 id="receipt-shop-name">اسم المتجر</h3>
+                <p id="receipt-shop-address">عنوان المتجر</p>
+                <p id="receipt-shop-phone">رقم الهاتف</p>
+            </div>
+        </div>
+        
+        <div class="receipt-body">
+            <div class="receipt-title">فاتورة بيع</div>
+            <div class="receipt-info">
+                <div class="info-row">
+                    <span class="info-label">رقم الفاتورة:</span>
+                    <span class="info-value" id="receipt-invoice-number">-</span>
+                </div>
+                <div class="info-row">
+                    <span class="info-label">التاريخ:</span>
+                    <span class="info-value" id="receipt-date">-</span>
+                </div>
+                <div class="info-row">
+                    <span class="info-label">الوقت:</span>
+                    <span class="info-value" id="receipt-time">-</span>
+                </div>
+                <div class="info-row">
+                    <span class="info-label">العميل:</span>
+                    <span class="info-value" id="receipt-customer">-</span>
+                </div>
+            </div>
+            
+            <div class="receipt-items">
+                <div class="items-header">
+                    <div class="item-name">الصنف</div>
+                    <div class="item-qty">الكمية</div>
+                    <div class="item-price">السعر</div>
+                    <div class="item-total">المجموع</div>
+                </div>
+                <div class="items-list" id="receipt-items-list">
+                    <!-- Items will be added here -->
+                </div>
+            </div>
+            
+            <div class="receipt-summary">
+                <div class="summary-row">
+                    <span class="summary-label">المجموع الفرعي:</span>
+                    <span class="summary-value" id="receipt-subtotal">0.00</span>
+                </div>
+                <div class="summary-row">
+                    <span class="summary-label">الضريبة:</span>
+                    <span class="summary-value" id="receipt-tax">0.00</span>
+                </div>
+                <div class="summary-row">
+                    <span class="summary-label">الخصم:</span>
+                    <span class="summary-value" id="receipt-discount">0.00</span>
+                </div>
+                <div class="summary-row total">
+                    <span class="summary-label">المجموع الكلي:</span>
+                    <span class="summary-value" id="receipt-total">0.00</span>
+                </div>
+                <div class="summary-row">
+                    <span class="summary-label">طريقة الدفع:</span>
+                    <span class="summary-value" id="receipt-payment-method">-</span>
+                </div>
+            </div>
+        </div>
+        
+        <div class="receipt-footer">
+            <p id="receipt-footer-text">شكراً لزيارتكم</p>
+            <p class="receipt-print-time" id="receipt-print-time">-</p>
+        </div>
+    </div>
+</div>

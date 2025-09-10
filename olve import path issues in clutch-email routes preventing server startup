@@ -1,0 +1,31 @@
+[1mdiff --git a/shared-backend/routes/clutch-email.js b/shared-backend/routes/clutch-email.js[m
+[1mindex bf6b7ab..b7f673f 100644[m
+[1m--- a/shared-backend/routes/clutch-email.js[m
+[1m+++ b/shared-backend/routes/clutch-email.js[m
+[36m@@ -1,6 +1,7 @@[m
+ const express = require('express');[m
+ const ClutchEmailServer = require('../services/clutch-email-server');[m
+[31m-const logger = require('../utils/logger');[m
+[32m+[m[32mconst { logger } = require('../config/logger');[m
+[32m+[m[32mconst { getCollection } = require('../config/database');[m
+ const emailServer = new ClutchEmailServer();[m
+ const router = express.Router();[m
+ [m
+[36m@@ -94,7 +95,7 @@[m [mrouter.post('/auth/logout', validateSession, async (req, res) => {[m
+     const sessionId = req.headers['x-session-id'] || req.cookies?.sessionId;[m
+     [m
+     // Remove session from database[m
+[31m-    const sessionsCollection = await require('../utils/database').getCollection('email_sessions');[m
+[32m+[m[32m    const sessionsCollection = await getCollection('email_sessions');[m
+     await sessionsCollection.deleteOne({ sessionId });[m
+     [m
+     // Clear cookie[m
+[36m@@ -156,7 +157,7 @@[m [mrouter.get('/accounts/:userId', validateSession, async (req, res) => {[m
+       });[m
+     }[m
+ [m
+[31m-    const accountsCollection = await require('../utils/database').getCollection('email_accounts');[m
+[32m+[m[32m    const accountsCollection = await getCollection('email_accounts');[m
+     const account = await accountsCollection.findOne({ userId });[m
+     [m
+     if (!account) {[m

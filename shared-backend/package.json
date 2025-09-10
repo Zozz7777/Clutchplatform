@@ -4,9 +4,11 @@
   "description": "Clutch Auto Parts Backend System with Autonomous AI Team",
   "main": "server.js",
   "scripts": {
-    "start": "node server.js",
+    "start": "node scripts/startup-with-auto-setup.js",
     "dev": "nodemon server.js",
     "start:autonomous": "node scripts/start-autonomous-system.js",
+    "postdeploy": "node scripts/render-deployment-hook.js",
+    "auto-setup": "node scripts/auto-setup-on-deployment.js",
     "test": "jest",
     "test:watch": "jest --watch",
     "test:coverage": "jest --coverage",
