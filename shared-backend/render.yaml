@@ -32,6 +32,10 @@ services:
         value: true
       - key: METRICS_ENABLED
         value: true
+      - key: RENDER_API_KEY
+        value: rnd_doKGnCKkYU14TRLGtbfShyYGoMOk
+      - key: RENDER_SERVICE_ID
+        value: clutch-main-nk7x
     # Auto-deploy from main branch
     autoDeploy: true
     branch: main
@@ -45,7 +49,7 @@ services:
     # DEEPSEEK_API_KEY
     # ANTHROPIC_API_KEY
     # GROK_API_KEY
-    # RENDER_API_KEY
-    # RENDER_SERVICE_ID
+    # RENDER_API_KEY (Required for Render log monitoring)
+    # RENDER_SERVICE_ID (Required for Render log monitoring - set to: clutch-main-nk7x)
     # BACKEND_URL
     # ADMIN_URL
