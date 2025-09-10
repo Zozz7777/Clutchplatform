@@ -7,6 +7,7 @@ const axios = require('axios');
 const winston = require('winston');
 const fs = require('fs').promises;
 const path = require('path');
+const AdvancedKnowledgeBase = require('./advancedKnowledgeBase');
 
 class AutonomousLearningAcademy {
   constructor() {
@@ -48,6 +49,9 @@ class AutonomousLearningAcademy {
       lastUpdated: new Date(),
       totalLearningHours: 0
     };
+
+    // Initialize advanced knowledge base
+    this.advancedKnowledgeBase = new AdvancedKnowledgeBase();
 
     this.initializeKnowledgeBase();
   }
@@ -381,8 +385,8 @@ class AutonomousLearningAcademy {
     this.logger.info('🎓 Delivering comprehensive backend development course...');
 
     const course = {
-      title: "Complete Backend Development Mastery Course",
-      duration: "40 hours",
+      title: "Complete Backend Development Mastery Course - 15+ Years Experience",
+      duration: "200+ hours",
       modules: [
         {
           id: "backend_fundamentals",
