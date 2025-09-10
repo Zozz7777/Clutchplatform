@@ -737,8 +737,6 @@ class AIProviderManager {
     });
     this.logger.info('🔄 All AI provider circuit breakers reset');
   }
-}
-
 
   /**
    * Determine if AI API should be used based on research-first approach
@@ -789,6 +787,6 @@ class AIProviderManager {
       problem.toLowerCase().includes(term)
     );
   }
-
+}
 
 module.exports = AIProviderManager;
