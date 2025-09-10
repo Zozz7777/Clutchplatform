@@ -45,6 +45,27 @@ async function initializeServices() {
       logger.info('ℹ️ AI Monitoring Agent disabled (set AI_MONITORING_ENABLED=true to enable)');
     }
 
+    // Initialize Autonomous System Orchestrator
+    if (process.env.AI_MONITORING_ENABLED === 'true' || process.env.NODE_ENV === 'production') {
+      logger.info('🎭 Initializing Autonomous System Orchestrator...');
+      const AutonomousSystemOrchestrator = require('../services/autonomousSystemOrchestrator');
+      const autonomousSystem = new AutonomousSystemOrchestrator();
+      
+      // Start autonomous system in background
+      setImmediate(async () => {
+        try {
+          const result = await autonomousSystem.start();
+          logger.info('✅ Autonomous System Orchestrator started successfully');
+          logger.info(`🎯 System Status: ${result.success ? 'Active' : 'Failed'}`);
+          logger.info(`👥 Team Members: ${result.components || 'Unknown'} components initialized`);
+        } catch (error) {
+          logger.error('❌ Failed to start Autonomous System Orchestrator:', error);
+        }
+      });
+    } else {
+      logger.info('ℹ️ Autonomous System Orchestrator disabled (set AI_MONITORING_ENABLED=true to enable)');
+    }
+
     // Initialize Autonomous Dashboard Orchestrator
     logger.info('🎛️ Initializing Autonomous Dashboard Orchestrator...');
     const dashboardOrchestrator = new AutonomousDashboardOrchestrator();

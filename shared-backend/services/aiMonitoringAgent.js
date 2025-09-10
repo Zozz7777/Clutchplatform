@@ -649,23 +649,53 @@ class AIMonitoringAgent {
     try {
       this.logger.info('🔧 Fixing NPM vulnerabilities...');
       
-      // Use Enterprise AI Developer to analyze and fix vulnerabilities
-      const fixResult = await this.enterpriseDeveloper.analyzeAndResolveIssue({
-        type: 'npm_vulnerabilities',
-        severity: 'high',
-        description: issue.message,
-        context: {
-          vulnerabilities: issue.message,
-          packageManager: 'npm',
-          environment: 'production'
+      // First, try to run the automated vulnerability fix script
+      try {
+        const { exec } = require('child_process');
+        const { promisify } = require('util');
+        const execAsync = promisify(exec);
+        
+        this.logger.info('🚀 Running automated NPM vulnerability fix...');
+        const { stdout, stderr } = await execAsync('npm run fix:vulnerabilities');
+        
+        if (stdout) {
+          this.logger.info('📊 Vulnerability fix output:', stdout);
         }
-      });
+        if (stderr) {
+          this.logger.warn('⚠️ Vulnerability fix warnings:', stderr);
+        }
+        
+        this.logger.success('✅ Automated NPM vulnerability fix completed');
+        
+      } catch (scriptError) {
+        this.logger.warn('⚠️ Automated fix script failed, using AI analysis...');
+        
+        // Fallback to Enterprise AI Developer analysis
+        const fixResult = await this.enterpriseDeveloper.analyzeAndResolveIssue({
+          type: 'npm_vulnerabilities',
+          severity: 'high',
+          description: issue.message,
+          context: {
+            vulnerabilities: issue.message,
+            packageManager: 'npm',
+            environment: 'production',
+            scriptError: scriptError.message
+          }
+        });
+
+        return { 
+          success: true, 
+          message: 'NPM vulnerabilities analyzed and fixed by Enterprise AI Developer',
+          details: fixResult
+        };
+      }
 
       return { 
         success: true, 
-        message: 'NPM vulnerabilities analyzed and fixed by Enterprise AI Developer',
-        details: fixResult
+        message: 'NPM vulnerabilities fixed using automated script',
+        details: { method: 'automated_script', timestamp: new Date() }
       };
+      
     } catch (error) {
       this.logger.error('Failed to fix NPM issues:', error);
       return { success: false, message: error.message };

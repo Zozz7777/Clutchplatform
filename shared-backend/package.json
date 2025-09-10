@@ -4,7 +4,8 @@
   "description": "Clutch Auto Parts Backend System with Autonomous AI Team",
   "main": "server.js",
   "scripts": {
-    "start": "node server.js",
+    "start": "node scripts/startup.js",
+    "start:server": "node server.js",
     "dev": "nodemon server.js",
     "start:autonomous": "node scripts/start-autonomous-system.js",
     "postdeploy": "node scripts/render-deployment-hook.js",
@@ -19,7 +20,11 @@
     "setup:ai": "node scripts/setup-ai-agent.js",
     "setup:goals": "node scripts/setup-organization-goals.js",
     "test:ai": "node scripts/test-ai-providers.js",
-    "check:logs": "node scripts/check-render-logs.js"
+    "check:logs": "node scripts/check-render-logs.js",
+    "fix:vulnerabilities": "node scripts/fix-npm-vulnerabilities.js",
+    "security:audit": "npm audit && node scripts/fix-npm-vulnerabilities.js",
+    "check:autonomous": "node scripts/check-autonomous-system-status.js",
+    "status:full": "node scripts/check-autonomous-system-status.js"
   },
   "keywords": [
     "clutch",
