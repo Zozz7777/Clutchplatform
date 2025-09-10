@@ -11,5 +11,9 @@ services:
         value: 3000
       - key: NEXT_PUBLIC_API_URL
         value: https://clutch-main-nk7x.onrender.com/api/v1
+      - key: NEXT_PUBLIC_AUTONOMOUS_DASHBOARD_ENABLED
+        value: true
+      - key: NEXT_PUBLIC_AUTONOMOUS_DASHBOARD_URL
+        value: https://clutch-main-nk7x.onrender.com/api/v1/autonomous-dashboard
     healthCheckPath: /
     autoDeploy: true

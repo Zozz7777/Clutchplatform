@@ -694,6 +694,9 @@ app.use(`${apiPrefix}/autonomous-system`, autonomousSystemRoutes);
 // Learning System routes
 app.use(`${apiPrefix}/learning-system`, learningSystemRoutes);
 
+// Autonomous Dashboard routes
+app.use(`${apiPrefix}/autonomous-dashboard`, autonomousDashboardRoutes);
+
 // Mount missing routes
 app.use(`${apiPrefix}/audit-logs`, auditLogRoutes);
 app.use(`${apiPrefix}/corporate-accounts`, corporateAccountRoutes);

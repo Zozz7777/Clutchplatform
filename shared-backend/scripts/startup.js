@@ -8,6 +8,7 @@
 const { connectToDatabase } = require('../config/database');
 const { logger } = require('../config/logger');
 const AIMonitoringAgent = require('../services/aiMonitoringAgent');
+const AutonomousDashboardOrchestrator = require('../services/autonomousDashboardOrchestrator');
 
 async function initializeServices() {
   try {
@@ -43,6 +44,26 @@ async function initializeServices() {
     } else {
       logger.info('ℹ️ AI Monitoring Agent disabled (set AI_MONITORING_ENABLED=true to enable)');
     }
+
+    // Initialize Autonomous Dashboard Orchestrator
+    logger.info('🎛️ Initializing Autonomous Dashboard Orchestrator...');
+    const dashboardOrchestrator = new AutonomousDashboardOrchestrator();
+    
+    // Start dashboard orchestrator in background
+    setImmediate(async () => {
+      try {
+        await dashboardOrchestrator.initializeDashboard();
+        logger.info('✅ Autonomous Dashboard Orchestrator started successfully');
+        
+        // Log dashboard status
+        const status = dashboardOrchestrator.getDashboardStatus();
+        logger.info(`📊 Dashboard Status: Active=${status.orchestrator.active}, Health=${status.orchestrator.status}`);
+        logger.info(`🔧 Data Sources: ${Object.keys(status.dataSources).length} configured`);
+        logger.info(`💡 Analytics: ${status.analytics.insightsCount} insights generated`);
+      } catch (error) {
+        logger.error('❌ Failed to start Autonomous Dashboard Orchestrator:', error);
+      }
+    });
     
     // Start the main server
     logger.info('🌐 Starting HTTP server...');

@@ -29,7 +29,9 @@ import {
   ChevronUp,
   Activity,
   Smartphone,
-  Mail
+  Mail,
+  Brain,
+  Zap
 } from 'lucide-react'
 import { useAuthStore, useUIStore } from '@/store'
 import { useTheme } from 'next-themes'
@@ -110,6 +112,13 @@ const navigationItems = [
     href: '/dashboard-consolidated',
     icon: LayoutDashboard,
     badge: null
+  },
+  {
+    title: 'Autonomous Dashboard',
+    href: '/autonomous-dashboard',
+    icon: Brain,
+    badge: 'AI',
+    description: 'Self-healing, AI-powered analytics'
   },
   {
     title: 'Platform Operations',
