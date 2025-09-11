@@ -97,7 +97,7 @@ export function useUserPreferences() {
     setPreferences(prev => ({
       ...prev,
       [key]: {
-        ...prev[key],
+        ...(prev[key] as object),
         [nestedKey]: value
       }
     }))

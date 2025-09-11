@@ -26,62 +26,9 @@ import { formatCurrency, formatNumber } from '@/lib/utils'
 import ApiErrorHandler from '@/components/error-handlers/api-error-handler'
 import DashboardWidget from '@/components/dashboard/dashboard-widget'
 import SimpleChart from '@/components/charts/simple-chart'
-import { DataContext, StatusIndicator, MetricCard } from '@/components/dashboard/data-context'
+import DataContext, { StatusIndicator, MetricCard } from '@/components/dashboard/data-context'
 
-// Metric Card Component
-const MetricCard = ({ 
-  title, 
-  value, 
-  growth, 
-  icon: Icon, 
-  color = 'blue',
-  format = 'number'
-}: {
-  title: string
-  value: number
-  growth?: number
-  icon: any
-  color?: string
-  format?: 'number' | 'currency'
-}) => {
-  const colorClasses = {
-    blue: 'text-clutch-secondary bg-clutch-secondary-100',
-    green: 'text-success bg-success-100',
-    red: 'text-clutch-primary bg-clutch-primary-100',
-    yellow: 'text-warning bg-warning-100',
-    purple: 'text-info bg-info-100'
-  }
-
-  const displayValue = format === 'currency' ? formatCurrency(value) : formatNumber(value)
-
-  return (
-    <SnowCard>
-      <SnowCardContent className="p-6">
-        <div className="flex items-center justify-between">
-          <div>
-            <p className="text-sm font-medium text-muted-foreground">{title}</p>
-            <p className="text-2xl font-bold">{displayValue}</p>
-            {growth !== undefined && (
-              <div className="flex items-center mt-1">
-                {growth >= 0 ? (
-                  <TrendingUp className="h-4 w-4 text-green-500 mr-1" />
-                ) : (
-                  <TrendingDown className="h-4 w-4 text-red-500 mr-1" />
-                )}
-                <span className={`text-sm ${growth >= 0 ? 'text-green-600' : 'text-red-600'}`}>
-                  {Math.abs(growth)}%
-                </span>
-              </div>
-            )}
-          </div>
-          <div className={`p-3 rounded-full ${colorClasses[color as keyof typeof colorClasses]}`}>
-            <Icon className="h-6 w-6" />
-          </div>
-        </div>
-      </SnowCardContent>
-    </SnowCard>
-  )
-}
+// Using MetricCard from data-context.tsx
 
 // Activity Item Component
 const ActivityItem = ({ activity }: { activity: any }) => {
@@ -234,7 +181,7 @@ export default function ConsolidatedDashboardPage() {
   return (
     <DataContext
       title="Dashboard Overview"
-      lastUpdated={lastUpdated}
+      lastUpdated={lastUpdated || undefined}
       onRefresh={refreshData}
       timeRange="Last 30 days"
       totalRecords={metrics?.users.total || 0}

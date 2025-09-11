@@ -766,7 +766,13 @@ const UserMenuDropdown = ({ isOpen, onClose }: { isOpen: boolean; onClose: () =>
 }
 
 // Header Component
-const Header = () => {
+const Header = ({ 
+  onSearchClick, 
+  onKeyboardShortcutsClick 
+}: { 
+  onSearchClick: () => void
+  onKeyboardShortcutsClick: () => void
+}) => {
   const { sidebarCollapsed, toggleSidebar, notifications } = useUIStore()
   const { user } = useAuthStore()
   const { theme, setTheme, resolvedTheme } = useTheme()
@@ -774,8 +780,6 @@ const Header = () => {
   const [notificationsOpen, setNotificationsOpen] = useState(false)
   const [userMenuOpen, setUserMenuOpen] = useState(false)
   const [searchQuery, setSearchQuery] = useState('')
-  const [showSearch, setShowSearch] = useState(false)
-  const [showKeyboardShortcuts, setShowKeyboardShortcuts] = useState(false)
   const router = useRouter()
 
   // Initialize keyboard shortcuts
@@ -789,12 +793,12 @@ const Header = () => {
   // Listen for keyboard shortcuts events
   useEffect(() => {
     const handleKeyboardShortcutsEvent = () => {
-      setShowKeyboardShortcuts(true)
+      onKeyboardShortcutsClick()
     }
 
     window.addEventListener('open-keyboard-shortcuts', handleKeyboardShortcutsEvent)
     return () => window.removeEventListener('open-keyboard-shortcuts', handleKeyboardShortcutsEvent)
-  }, [])
+  }, [onKeyboardShortcutsClick])
 
   const toggleTheme = () => {
     if (mounted) {
@@ -813,11 +817,11 @@ const Header = () => {
   }
 
   const handleSearchClick = () => {
-    setShowSearch(true)
+    onSearchClick()
   }
 
   const handleKeyboardShortcutsClick = () => {
-    setShowKeyboardShortcuts(true)
+    onKeyboardShortcutsClick()
   }
 
   const handleSearch = (e: React.FormEvent) => {
@@ -960,6 +964,8 @@ const Header = () => {
 const DashboardLayout = ({ children }: { children: React.ReactNode }) => {
   const { sidebarCollapsed } = useUIStore()
   const [selectedParent, setSelectedParent] = useState<string | null>(null)
+  const [showSearch, setShowSearch] = useState(false)
+  const [showKeyboardShortcuts, setShowKeyboardShortcuts] = useState(false)
 
   return (
     <div className="min-h-screen bg-slate-50">
@@ -973,7 +979,10 @@ const DashboardLayout = ({ children }: { children: React.ReactNode }) => {
               : 'ml-64'
         }`}
       >
-        <Header />
+        <Header 
+          onSearchClick={() => setShowSearch(true)}
+          onKeyboardShortcutsClick={() => setShowKeyboardShortcuts(true)}
+        />
         <main id="main-content" role="main" tabIndex={-1} className="p-6 min-h-screen">
           <div className="max-w-8xl mx-auto">
             <Breadcrumbs />

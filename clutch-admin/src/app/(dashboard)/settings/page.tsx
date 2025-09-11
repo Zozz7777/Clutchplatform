@@ -3,7 +3,7 @@
 import React from 'react'
 import { Palette, Bell, Layout } from 'lucide-react'
 import { SnowCard, SnowCardContent, SnowCardHeader, SnowCardTitle } from '@/components/ui/snow-card'
-import { DataContext } from '@/components/dashboard/data-context'
+import DataContext from '@/components/dashboard/data-context'
 import { useUserPreferences } from '@/hooks/use-user-preferences'
 import ThemeSelector from '@/components/theme/theme-toggle'
 
