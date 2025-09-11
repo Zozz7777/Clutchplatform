@@ -42,13 +42,13 @@ class AutonomousDashboardOrchestrator {
     // Data sources configuration
     this.dataSources = {
       backend: {
-        url: process.env.BACKEND_URL || 'https://clutch-main-nk7x.onrender.com',
+        url: process.env.BACKEND_URL || (process.env.NODE_ENV === 'development' ? `http://localhost:${process.env.PORT || 5000}` : 'https://clutch-main-nk7x.onrender.com'),
         endpoints: [
           '/api/v1/analytics',
           '/api/v1/users',
           '/api/v1/transactions',
           '/api/v1/performance',
-          '/api/v1/health'
+          '/health'
         ],
         lastFetch: null,
         status: 'unknown'

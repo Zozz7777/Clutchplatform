@@ -86,10 +86,11 @@ const systemRoutes = require('./routes/system');
 const settingsRoutes = require('./routes/settings');
 const uploadRoutes = require('./routes/upload');
 // Import health routes with error handling
-let healthRoutes, healthEnhancedRoutes;
+let healthRoutes, healthEnhancedRoutes, healthEnhancedAutonomousRoutes;
 try {
   healthRoutes = require('./routes/health');
   healthEnhancedRoutes = require('./routes/health-enhanced');
+  healthEnhancedAutonomousRoutes = require('./routes/health-enhanced-autonomous');
 } catch (error) {
   console.error('❌ Error importing health routes:', error.message);
   // Create fallback health routes
@@ -109,6 +110,7 @@ try {
   });
   healthRoutes = fallbackRouter;
   healthEnhancedRoutes = fallbackRouter;
+  healthEnhancedAutonomousRoutes = fallbackRouter;
 }
 
 // Import new comprehensive platform routes
@@ -315,7 +317,7 @@ function setupApp() {
   }));
 
   // CORS configuration (explicit allow-list only; credentials disabled by default)
-  const allowedOrigins = (process.env.ALLOWED_ORIGINS || '')
+  const allowedOrigins = (process.env.ALLOWED_ORIGINS || 'https://admin.yourclutch.com,https://clutch-main-nk7x.onrender.com,http://localhost:3000,http://localhost:3001')
     .split(',')
     .map(o => o.trim())
     .filter(Boolean);
@@ -600,6 +602,7 @@ app.use((req, res, next) => {
   app.use(`${apiPrefix}/upload`, uploadRoutes);
   app.use('/health', healthRoutes);
   app.use('/health-enhanced', healthEnhancedRoutes);
+  app.use('/health-autonomous', healthEnhancedAutonomousRoutes);
 
   // New comprehensive platform routes
   app.use(`${apiPrefix}/b2b`, b2bRoutes);
@@ -796,13 +799,7 @@ app.get('/api/v1/admin/dashboard/consolidated', (req, res) => {
   });
 });
 
-app.get('/api/v1/auth/employee-me', (req, res) => {
-  res.status(401).json({
-    success: false,
-    message: 'Authentication required',
-    error: 'No valid token provided'
-  });
-});
+// Removed fallback route - proper endpoint exists in auth routes
 
 app.get('/api/v1/autonomous-dashboard/data', (req, res) => {
   res.status(200).json({
@@ -829,11 +826,21 @@ app.get('/api/v1/autonomous-dashboard/status', (req, res) => {
 
 // 404 handler
   app.use('*', (req, res) => {
+    console.log(`❌ 404 - Endpoint not found: ${req.method} ${req.originalUrl}`);
+    console.log(`❌ Available routes: /health, /api/v1/auth/*, /api/v1/admin/*, etc.`);
+    
     res.status(404).json({
       success: false,
       error: 'ENDPOINT_NOT_FOUND',
       message: `Can't find ${req.originalUrl} on this server!`,
-      timestamp: new Date().toISOString()
+      timestamp: new Date().toISOString(),
+      availableEndpoints: [
+        '/health',
+        '/api/v1/auth/employee-login',
+        '/api/v1/auth/employee-me',
+        '/api/v1/admin/dashboard/consolidated',
+        '/api/v1/performance/client-metrics'
+      ]
     });
   });
 
@@ -910,22 +917,22 @@ async function startServer() {
     console.log('🚀 Starting HTTP server...');
     const server = http.createServer(app);
 
-    // Initialize WebSocket server
-    try {
-      const realTimeService = require('./services/realTimeService');
-      realTimeService.initializeSocketServer(server);
-      logger.info('🔌 WebSocket server initialized successfully');
-    } catch (error) {
-      logger.error('❌ WebSocket server initialization failed:', error);
-    }
-
-    // Start the server
+    // Start the server first
     server.listen(PORT, HOST, () => {
       logger.info(`🚀 Clutch Platform API server running on ${HOST}:${PORT}`);
       logger.info(`📊 Environment: ${process.env.NODE_ENV || 'development'}`);
       logger.info(`🔗 API Version: ${process.env.API_VERSION || 'v1'}`);
       logger.info(`📚 API Documentation: ${process.env.ENABLE_API_DOCS === 'true' ? `http://${HOST}:${PORT}/api-docs` : 'Disabled'}`);
       logger.info(`🏥 Health Check: http://${HOST}:${PORT}/health`);
+      
+      // Initialize WebSocket server after server is listening
+      try {
+        const realTimeService = require('./services/realTimeService');
+        realTimeService.initializeSocketServer(server);
+        logger.info('🔌 WebSocket server initialized successfully');
+      } catch (error) {
+        logger.error('❌ WebSocket server initialization failed:', error);
+      }
     });
 
     // Handle server errors
@@ -1043,9 +1050,42 @@ function startKeepAliveService() {
   console.log(`✅ Keep-alive service started successfully`);
 }
 
-startServer().catch(error => {
-  console.error('❌ Failed to start server:', error);
-  process.exit(1);
+// Enhanced Autonomous System Startup
+async function initializeEnhancedAutonomousSystem() {
+  try {
+    console.log('🤖 Initializing Enhanced Autonomous System...');
+    
+    const EnhancedAutonomousSystemStartup = require('./scripts/startup-enhanced-autonomous-system');
+    const startup = new EnhancedAutonomousSystemStartup();
+    
+    const results = await startup.initialize();
+    
+    if (results.success) {
+      console.log('✅ Enhanced Autonomous System initialized successfully');
+      console.log('📊 System Status:', results.components);
+      
+      if (results.warnings.length > 0) {
+        console.log('⚠️ Warnings:', results.warnings);
+      }
+    } else {
+      console.error('❌ Enhanced Autonomous System initialization failed');
+      console.error('Errors:', results.errors);
+    }
+    
+    return results;
+  } catch (error) {
+    console.error('❌ Enhanced Autonomous System initialization error:', error);
+    return { success: false, error: error.message };
+  }
+}
+
+// Start the server with enhanced autonomous system
+initializeEnhancedAutonomousSystem().then(() => {
+  startServer();
+}).catch((error) => {
+  console.error('❌ Failed to initialize Enhanced Autonomous System:', error);
+  console.log('🔄 Starting server without enhanced autonomous system...');
+  startServer();
 });
 
 // Start keep-alive service after server is ready

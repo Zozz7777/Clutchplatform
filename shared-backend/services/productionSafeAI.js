@@ -375,6 +375,16 @@ class ProductionSafeAI {
   }
 
   /**
+   * Reset circuit breaker
+   */
+  resetCircuitBreaker() {
+    this.circuitBreaker.isOpen = false;
+    this.circuitBreaker.failures = 0;
+    this.circuitBreaker.lastFailure = null;
+    this.logger.info('🔄 Circuit breaker reset');
+  }
+
+  /**
    * Get safety statistics
    */
   getSafetyStats() {

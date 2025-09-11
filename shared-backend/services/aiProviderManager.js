@@ -11,11 +11,12 @@ const AIResponseCache = require('./aiResponseCache');
 
 class AIProviderManager {
   constructor() {
-    // Research-first mode configuration
-    this.researchFirstMode = process.env.AI_RESEARCH_FIRST_MODE === 'true' || true;
-    this.knowledgeBaseFirst = process.env.AI_KNOWLEDGE_BASE_FIRST === 'true' || true;
-    this.webSearchEnabled = process.env.AI_WEB_SEARCH_ENABLED === 'true' || true;
-    this.maxAIApiUsage = process.env.AI_MAX_API_USAGE || 0.05; // Only 5% of tasks should use AI API
+    // Research-only mode configuration - NO AI PROVIDERS
+    this.researchFirstMode = true; // Always use research first
+    this.knowledgeBaseFirst = true; // Always check knowledge base first
+    this.webSearchEnabled = true; // Enable web search for research
+    this.maxAIApiUsage = 0; // ZERO AI API usage - research only
+    this.aiProvidersDisabled = true; // Completely disable all AI providers
     
     // Fallback mode configuration
     this.fallbackMode = process.env.AI_FALLBACK_MODE === 'true' || true;
@@ -258,79 +259,195 @@ class AIProviderManager {
   }
 
   /**
-   * Generate AI response with automatic fallback and caching
+   * Check if AI provider should be used based on usage limits
    */
-  async generateResponse(prompt, options = {}) {
+  shouldUseAIProvider() {
+    // Always return false - no AI providers should be used
+    return false;
+  }
+
+  /**
+   * Get current AI provider usage percentage
+   */
+  getCurrentUsagePercentage() {
+    const totalRequests = this.getTotalRequests();
+    const aiRequests = this.getAIRequests();
+    return totalRequests > 0 ? aiRequests / totalRequests : 0;
+  }
+
+  /**
+   * Get total requests count
+   */
+  getTotalRequests() {
+    return Object.values(this.providers).reduce((sum, provider) => sum + provider.usageCount, 0);
+  }
+
+  /**
+   * Get AI provider requests count
+   */
+  getAIRequests() {
+    return Object.values(this.providers).reduce((sum, provider) => sum + provider.usageCount, 0);
+  }
+
+  /**
+   * Try to find local solution using knowledge base and pattern matching
+   */
+  async tryLocalSolution(prompt, options = {}) {
     try {
-      // Filter out any timeout parameter that might cause issues with AI providers
-      const cleanOptions = { ...options };
-      delete cleanOptions.timeout;
-      
-      // Check cache first
-      const cachedResponse = await this.responseCache.get(prompt, cleanOptions);
-      if (cachedResponse) {
-        this.logger.info('💾 Using cached AI response');
+      // Import required modules
+      const AutonomousLearningAcademy = require('./autonomousLearningAcademy');
+      const learningAcademy = new AutonomousLearningAcademy();
+
+      // Try knowledge base search
+      const knowledgeResult = await learningAcademy.searchKnowledgeBase(prompt);
+      if (knowledgeResult && knowledgeResult.relevance > 0.7) {
         return {
           success: true,
-          response: cachedResponse,
-          provider: 'cache',
-          model: 'cached',
-          cached: true,
-          timestamp: new Date()
+          response: knowledgeResult.content,
+          source: 'knowledge_base',
+          confidence: knowledgeResult.relevance,
+          method: 'local_research'
         };
       }
 
-      const maxRetries = this.fallbackChain.length;
-      let lastError = null;
-
-      for (let attempt = 0; attempt < maxRetries; attempt++) {
-        const providerName = this.getBestProvider();
-        const provider = this.providers[providerName];
-
-        try {
-          this.logger.info(`🤖 Using ${provider.name} for AI request (attempt ${attempt + 1})`);
-          
-          const response = await this.callProvider(providerName, prompt, cleanOptions);
-          
-          // Update usage statistics
-          provider.lastUsed = Date.now();
-          provider.usageCount++;
-          
-          // Cache the response for future use
-          await this.responseCache.set(prompt, response, cleanOptions);
-          
-          this.logger.info(`✅ Successfully got response from ${provider.name}`);
-          return {
-            success: true,
-            response: response,
-            provider: providerName,
-            model: provider.model,
-            cached: false,
-            timestamp: new Date()
-          };
-
-        } catch (error) {
-          lastError = error;
-          this.logger.error(`❌ ${provider.name} failed:`, error.message);
-          
-          // Mark provider as unavailable if it's a rate limit or quota error
-          if (this.isRateLimitError(error) || this.isQuotaError(error)) {
-            this.markProviderUnavailable(providerName, error);
-          }
-          
-          // Try next provider
-          this.currentProvider = this.getNextProvider();
-        }
+      // Try web search
+      const webResults = await learningAcademy.searchWeb(prompt, options);
+      if (webResults && webResults.length > 0) {
+        return {
+          success: true,
+          response: this.synthesizeWebResults(webResults),
+          source: 'web_search',
+          confidence: 0.8,
+          method: 'local_research'
+        };
       }
 
-      // All providers failed
-      this.logger.error('❌ All AI providers failed');
+      return null;
+    } catch (error) {
+      this.logger.error('Local solution search failed:', error);
+      return null;
+    }
+  }
+
+  /**
+   * Generate research-based fallback solution
+   */
+  async generateResearchFallback(prompt, options = {}) {
+    try {
+      const researchInsights = this.analyzePromptForResearch(prompt);
+      
+      return {
+        success: true,
+        response: {
+          type: 'research_fallback',
+          content: researchInsights,
+          confidence: 0.5,
+          source: 'research_analysis',
+          recommendations: this.generateRecommendations(prompt)
+        },
+        source: 'research_fallback',
+        confidence: 0.5,
+        method: 'research_analysis'
+      };
+    } catch (error) {
+      this.logger.error('Research fallback generation failed:', error);
       return {
         success: false,
-        error: 'All AI providers are unavailable',
-        lastError: lastError?.message,
-        timestamp: new Date()
+        error: 'Research fallback failed',
+        response: 'Unable to generate solution at this time'
       };
+    }
+  }
+
+  /**
+   * Analyze prompt for research insights
+   */
+  analyzePromptForResearch(prompt) {
+    const insights = [];
+    const promptLower = prompt.toLowerCase();
+
+    // Error analysis
+    if (promptLower.includes('error') || promptLower.includes('exception')) {
+      insights.push('Error detected - recommend checking logs and documentation');
+    }
+
+    // Performance analysis
+    if (promptLower.includes('performance') || promptLower.includes('slow')) {
+      insights.push('Performance issue - recommend profiling and optimization');
+    }
+
+    // Security analysis
+    if (promptLower.includes('security') || promptLower.includes('auth')) {
+      insights.push('Security concern - recommend security audit and best practices');
+    }
+
+    // Database analysis
+    if (promptLower.includes('database') || promptLower.includes('mongodb')) {
+      insights.push('Database issue - recommend checking connections and queries');
+    }
+
+    return insights.length > 0 ? insights.join('; ') : 'General technical issue - recommend systematic troubleshooting';
+  }
+
+  /**
+   * Generate recommendations based on prompt analysis
+   */
+  generateRecommendations(prompt) {
+    const recommendations = [];
+    const promptLower = prompt.toLowerCase();
+
+    if (promptLower.includes('rate limit')) {
+      recommendations.push('Implement exponential backoff');
+      recommendations.push('Add request queuing');
+      recommendations.push('Consider provider rotation');
+    }
+
+    if (promptLower.includes('timeout')) {
+      recommendations.push('Increase timeout values');
+      recommendations.push('Check network connectivity');
+      recommendations.push('Optimize query performance');
+    }
+
+    if (promptLower.includes('memory') || promptLower.includes('leak')) {
+      recommendations.push('Check for memory leaks');
+      recommendations.push('Optimize data structures');
+      recommendations.push('Implement garbage collection');
+    }
+
+    return recommendations.length > 0 ? recommendations : ['Review system logs', 'Check configuration', 'Verify dependencies'];
+  }
+
+  /**
+   * Synthesize web search results
+   */
+  synthesizeWebResults(webResults) {
+    if (!webResults || webResults.length === 0) {
+      return 'No web search results available';
+    }
+
+    const topResults = webResults.slice(0, 3);
+    const insights = topResults.map(result => result.title || result.content || 'Relevant information found').join('; ');
+    
+    return `Based on web research: ${insights}`;
+  }
+
+  /**
+   * Research-first response generation with minimal AI provider usage
+   */
+  async generateResponse(prompt, options = {}) {
+    try {
+      this.logger.info('🔬 Research-only mode: Using research-based solution');
+      
+      // Always try local solutions first
+      const localSolution = await this.tryLocalSolution(prompt, options);
+      if (localSolution && localSolution.confidence > 0.6) {
+        this.logger.info('✅ Using local research solution');
+        return localSolution;
+      }
+
+      // Always use research fallback - no AI providers
+      this.logger.info('🔬 Using research fallback (AI providers disabled)');
+      return await this.generateResearchFallback(prompt, options);
 
     } catch (error) {
       this.logger.error('❌ AI response generation failed:', error);

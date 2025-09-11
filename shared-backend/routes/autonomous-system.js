@@ -5,11 +5,11 @@
 
 const express = require('express');
 const router = express.Router();
-const AutonomousSystemOrchestrator = require('../services/autonomousSystemOrchestrator');
+const EnhancedAutonomousSystemOrchestrator = require('../services/enhancedAutonomousSystemOrchestrator');
 const { authenticateToken, requireRole } = require('../middleware/auth');
 
-// Initialize autonomous system orchestrator
-const autonomousSystem = new AutonomousSystemOrchestrator();
+// Initialize enhanced autonomous system orchestrator
+const autonomousSystem = new EnhancedAutonomousSystemOrchestrator();
 
 /**
  * Start the autonomous system

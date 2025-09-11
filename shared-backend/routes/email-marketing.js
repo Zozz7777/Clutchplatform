@@ -10,11 +10,19 @@ const emailMarketingService = new EmailMarketingService();
 // Initialize service on startup
 (async () => {
   try {
+    // Check if email credentials are properly configured
+    if (!process.env.SMTP_USER || !process.env.SMTP_PASS || 
+        process.env.SMTP_USER === 'test@clutch.com' || 
+        process.env.SMTP_PASS === 'your-app-password-here') {
+      logger.warn('⚠️ Email Marketing Service disabled - SMTP credentials not configured');
+      return;
+    }
+    
     await emailMarketingService.initialize();
     await initializeTransporter();
     logger.info('✅ Email Marketing Service routes initialized');
   } catch (error) {
-    logger.error('❌ Failed to initialize Email Marketing Service routes:', error);
+    logger.warn('⚠️ Email Marketing Service disabled - initialization failed:', error.message);
   }
 })();
 

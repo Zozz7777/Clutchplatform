@@ -1,114 +1,63 @@
 #!/usr/bin/env node
 
 /**
- * Circuit Breaker Reset Script
- * Resets the circuit breaker and optimizes AI operations
+ * Reset Circuit Breaker Script
+ * Fixes the circuit breaker issue that's preventing the autonomous system from working
  */
 
-const winston = require('winston');
+const path = require('path');
+const fs = require('fs');
 
-const logger = winston.createLogger({
-  level: 'info',
-  format: winston.format.combine(
-    winston.format.timestamp(),
-    winston.format.json()
-  ),
-  transports: [
-    new winston.transports.Console()
-  ]
-});
+// Add the project root to the module path
+const projectRoot = path.join(__dirname, '..');
+require('dotenv').config({ path: path.join(projectRoot, '.env') });
+
+const ProductionSafeAI = require('../services/productionSafeAI');
+const AIProviderManager = require('../services/aiProviderManager');
 
 async function resetCircuitBreaker() {
-  try {
-    logger.info('🔄 Resetting circuit breaker...');
-    
-    // Import the production safe AI wrapper
-    const ProductionSafeAI = require('../services/productionSafeAI');
-    const productionSafeAI = new ProductionSafeAI();
-    
-    // Reset circuit breaker
-    productionSafeAI.circuitBreaker.failures = 0;
-    productionSafeAI.circuitBreaker.lastFailure = null;
-    productionSafeAI.circuitBreaker.isOpen = false;
-    
-    logger.info('✅ Circuit breaker reset successfully');
-    
-    // Get current status
-    const status = productionSafeAI.getSystemStatus();
-    logger.info('📊 System Status:', {
-      circuitBreakerStatus: status.circuitBreakerStatus,
-      failures: status.failures,
-      lastFailure: status.lastFailure
-    });
-    
-    return { success: true, message: 'Circuit breaker reset successfully' };
-  } catch (error) {
-    logger.error('❌ Failed to reset circuit breaker:', error);
-    return { success: false, error: error.message };
-  }
-}
-
-async function optimizeMemoryUsage() {
-  try {
-    logger.info('🧹 Optimizing memory usage...');
-    
-    // Force garbage collection if available
-    if (global.gc) {
-      global.gc();
-      logger.info('✅ Garbage collection triggered');
-    }
-    
-    // Clear any cached data
-    const AIResponseCache = require('../services/aiResponseCache');
-    const cache = new AIResponseCache();
-    cache.clearCache();
-    logger.info('✅ AI response cache cleared');
-    
-    // Get current memory usage
-    const memUsage = process.memoryUsage();
-    const memUsageMB = {
-      rss: Math.round(memUsage.rss / 1024 / 1024),
-      heapTotal: Math.round(memUsage.heapTotal / 1024 / 1024),
-      heapUsed: Math.round(memUsage.heapUsed / 1024 / 1024),
-      external: Math.round(memUsage.external / 1024 / 1024)
-    };
-    
-    logger.info('📊 Memory Usage (MB):', memUsageMB);
-    
-    return { success: true, message: 'Memory optimization completed', memoryUsage: memUsageMB };
-  } catch (error) {
-    logger.error('❌ Failed to optimize memory usage:', error);
-    return { success: false, error: error.message };
-  }
-}
-
-async function main() {
-  logger.info('🚀 Starting system optimization...');
+  console.log('🔄 Resetting Circuit Breaker...');
   
   try {
-    // Reset circuit breaker
-    const circuitResult = await resetCircuitBreaker();
-    if (!circuitResult.success) {
-      throw new Error(`Circuit breaker reset failed: ${circuitResult.error}`);
+    // Reset ProductionSafeAI circuit breaker
+    const productionSafeAI = new ProductionSafeAI();
+    productionSafeAI.resetCircuitBreaker();
+    console.log('✅ ProductionSafeAI circuit breaker reset');
+    
+    // Reset AI Provider Manager circuit breakers
+    const aiProviderManager = new AIProviderManager();
+    aiProviderManager.resetAllCircuitBreakers();
+    console.log('✅ AI Provider Manager circuit breakers reset');
+    
+    // Reset any Redis-based circuit breakers
+    try {
+      const redis = require('redis');
+      const client = redis.createClient({
+        url: process.env.REDIS_URL || 'redis://localhost:6379'
+      });
+      
+      await client.connect();
+      
+      // Reset performance optimization circuit breakers
+      const keys = await client.keys('circuit_breaker_*');
+      if (keys.length > 0) {
+        await client.del(keys);
+        console.log(`✅ Reset ${keys.length} Redis circuit breakers`);
+      }
+      
+      await client.quit();
+    } catch (redisError) {
+      console.log('⚠️ Redis not available, skipping Redis circuit breaker reset');
     }
     
-    // Optimize memory usage
-    const memoryResult = await optimizeMemoryUsage();
-    if (!memoryResult.success) {
-      throw new Error(`Memory optimization failed: ${memoryResult.error}`);
-    }
+    console.log('🎉 Circuit breaker reset completed successfully!');
+    console.log('🚀 The autonomous system should now work properly');
     
-    logger.info('✅ System optimization completed successfully');
-    process.exit(0);
   } catch (error) {
-    logger.error('❌ System optimization failed:', error);
+    console.error('❌ Error resetting circuit breaker:', error);
     process.exit(1);
   }
 }
 
-// Run if called directly
-if (require.main === module) {
-  main();
-}
-
-module.exports = { resetCircuitBreaker, optimizeMemoryUsage };
+// Run the reset
+resetCircuitBreaker();

@@ -560,7 +560,8 @@ Please provide executable code and specific implementation steps.
   async getPerformanceMetrics() {
     try {
       // Get API response times
-      const response = await axios.get(`${process.env.BACKEND_URL}/api/v1/health`, {
+      const backendUrl = process.env.BACKEND_URL || `http://localhost:${process.env.PORT || 5000}`;
+      const response = await axios.get(`${backendUrl}/health`, {
         timeout: 5000
       });
       
@@ -685,7 +686,8 @@ Please provide executable code and specific implementation steps.
 
   async runHealthChecks() {
     try {
-      const response = await axios.get(`${process.env.BACKEND_URL}/health`, {
+      const backendUrl = process.env.BACKEND_URL || `http://localhost:${process.env.PORT || 5000}`;
+      const response = await axios.get(`${backendUrl}/health`, {
         timeout: 10000
       });
       return { success: response.status === 200, status: response.status };

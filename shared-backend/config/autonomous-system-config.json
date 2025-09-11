@@ -1,0 +1,131 @@
+{
+  "autonomousSystem": {
+    "researchFirstMode": true,
+    "maxAIProviderUsage": 0,
+    "gracefulDegradation": true,
+    "webSearchEnabled": true,
+    "knowledgeBaseFirst": true,
+    "fallbackMode": true,
+    "autoHealingEnabled": true,
+    "continuousLearning": true,
+    "performanceOptimization": true,
+    "aiProvidersDisabled": true
+  },
+  "aiProviders": {
+    "openai": {
+      "enabled": false,
+      "priority": 1,
+      "maxErrors": 5,
+      "cooldownTime": 600000,
+      "backoffDelay": 1000,
+      "maxBackoffDelay": 30000
+    },
+    "gemini": {
+      "enabled": false,
+      "priority": 2,
+      "maxErrors": 5,
+      "cooldownTime": 600000,
+      "backoffDelay": 1000,
+      "maxBackoffDelay": 30000
+    },
+    "deepseek": {
+      "enabled": false,
+      "priority": 3,
+      "maxErrors": 5,
+      "cooldownTime": 600000,
+      "backoffDelay": 1000,
+      "maxBackoffDelay": 30000
+    },
+    "anthropic": {
+      "enabled": false,
+      "priority": 4,
+      "maxErrors": 5,
+      "cooldownTime": 600000,
+      "backoffDelay": 1000,
+      "maxBackoffDelay": 30000
+    },
+    "grok": {
+      "enabled": false,
+      "priority": 5,
+      "maxErrors": 5,
+      "cooldownTime": 600000,
+      "backoffDelay": 1000,
+      "maxBackoffDelay": 30000
+    }
+  },
+  "healthMonitoring": {
+    "enabled": true,
+    "intervals": {
+      "database": 30000,
+      "api": 15000,
+      "memory": 10000,
+      "cpu": 10000,
+      "disk": 60000,
+      "network": 30000
+    },
+    "thresholds": {
+      "memory": 85,
+      "cpu": 80,
+      "disk": 90,
+      "responseTime": 5000
+    }
+  },
+  "learningSystem": {
+    "enabled": true,
+    "knowledgeBaseSize": 1000,
+    "learningHistorySize": 10000,
+    "patternMatchingEnabled": true,
+    "webSearchEnabled": true,
+    "continuousLearning": true
+  },
+  "performanceOptimization": {
+    "enabled": true,
+    "intervals": {
+      "systemMonitoring": 30000,
+      "performanceOptimization": 300000,
+      "continuousLearning": 600000
+    },
+    "thresholds": {
+      "successRate": 0.8,
+      "aiProviderUsage": 0.05,
+      "memoryUsage": 1000
+    }
+  },
+  "selfHealing": {
+    "enabled": true,
+    "actions": {
+      "memory_high": {
+        "action": "restart_application",
+        "threshold": 90,
+        "cooldown": 300000
+      },
+      "cpu_high": {
+        "action": "optimize_processes",
+        "threshold": 85,
+        "cooldown": 180000
+      },
+      "database_connection": {
+        "action": "restart_database_connection",
+        "threshold": 0,
+        "cooldown": 60000
+      },
+      "api_timeout": {
+        "action": "restart_api_server",
+        "threshold": 0,
+        "cooldown": 120000
+      }
+    }
+  },
+  "logging": {
+    "level": "info",
+    "fileLogging": true,
+    "consoleLogging": true,
+    "logFiles": {
+      "orchestrator": "logs/enhanced-orchestrator.log",
+      "health": "logs/backend-health.log",
+      "learning": "logs/enhanced-learning.log",
+      "patternMatching": "logs/pattern-matching.log",
+      "aiProvider": "logs/ai-provider-manager.log"
+    }
+  }
+}

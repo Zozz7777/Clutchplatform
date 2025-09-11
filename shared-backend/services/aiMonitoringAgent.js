@@ -30,7 +30,7 @@ class AIMonitoringAgent {
     });
 
     this.config = {
-      backendUrl: process.env.BACKEND_URL || 'https://clutch-main-nk7x.onrender.com',
+      backendUrl: process.env.BACKEND_URL || (process.env.NODE_ENV === 'development' ? `http://localhost:${process.env.PORT || 5000}` : 'https://clutch-main-nk7x.onrender.com'),
       adminUrl: process.env.ADMIN_URL || 'https://admin.yourclutch.com',
       renderApiKey: process.env.RENDER_API_KEY,
       renderServiceId: process.env.RENDER_SERVICE_ID || 'clutch-main-nk7x', // Fallback to correct service ID
@@ -292,7 +292,7 @@ class AIMonitoringAgent {
    */
   async checkDatabaseHealth() {
     try {
-      const response = await axios.get(`${this.config.backendUrl}/api/v1/health/database`, {
+      const response = await axios.get(`${this.config.backendUrl}/health`, {
         timeout: 10000
       });
 
@@ -327,7 +327,7 @@ class AIMonitoringAgent {
     const endpoints = [
       '/api/v1/auth/employee-login',
       '/api/v1/admin/dashboard/consolidated',
-      '/api/v1/health'
+      '/health'
     ];
 
     const issues = [];

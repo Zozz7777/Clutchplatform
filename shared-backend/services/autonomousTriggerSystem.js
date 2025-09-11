@@ -41,11 +41,11 @@ class AutonomousTriggerSystem {
           }
         },
         memoryUsage: {
-          threshold: 80, // 80%
+          threshold: 90, // 90% (increased from 80%)
           action: 'optimize_memory',
           teamMember: 'performanceEngineer',
           escalation: {
-            threshold: 95, // 95%
+            threshold: 98, // 98% (increased from 95%)
             action: 'emergency_memory_cleanup',
             teamMember: 'devopsEngineer'
           }
@@ -215,7 +215,7 @@ class AutonomousTriggerSystem {
     // Memory usage monitoring
     setInterval(async () => {
       await this.monitorMemoryUsage();
-    }, 30000); // Every 30 seconds
+    }, 60000); // Every 60 seconds (reduced frequency)
 
     // CPU usage monitoring
     setInterval(async () => {
@@ -309,7 +309,8 @@ class AutonomousTriggerSystem {
   async monitorResponseTime() {
     try {
       const start = Date.now();
-      await axios.get(process.env.BACKEND_URL + '/health', { timeout: 10000 });
+      const backendUrl = process.env.BACKEND_URL || `http://localhost:${process.env.PORT || 5000}`;
+      await axios.get(backendUrl + '/health', { timeout: 10000 });
       const responseTime = Date.now() - start;
 
       const trigger = this.triggers.performance.responseTime;

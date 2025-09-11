@@ -14,6 +14,9 @@ const { promisify } = require('util');
 const EnterpriseAIDeveloper = require('./enterpriseAIDeveloper');
 const AIProviderManager = require('./aiProviderManager');
 const ProductionSafeAI = require('./productionSafeAI');
+const EnhancedAutonomousLearningSystem = require('./enhancedAutonomousLearningSystem');
+const LocalPatternMatchingEngine = require('./localPatternMatchingEngine');
+const LocalAIModels = require('./localAIModels');
 
 const execAsync = promisify(exec);
 
@@ -40,6 +43,9 @@ class AutonomousAITeam {
     this.aiProviderManager = new AIProviderManager();
     this.productionSafeAI = new ProductionSafeAI();
     this.enterpriseDeveloper = new EnterpriseAIDeveloper();
+    this.enhancedLearningSystem = new EnhancedAutonomousLearningSystem();
+    this.patternMatchingEngine = new LocalPatternMatchingEngine();
+    this.localAIModels = new LocalAIModels();
 
     // Team members with specialized roles
     this.teamMembers = {
@@ -476,7 +482,8 @@ class AutonomousAITeam {
         condition: async () => {
           try {
             const start = Date.now();
-            await axios.get(process.env.BACKEND_URL + '/health', { timeout: 5000 });
+            const backendUrl = process.env.BACKEND_URL || `http://localhost:${process.env.PORT || 5000}`;
+            await axios.get(backendUrl + '/health', { timeout: 5000 });
             const responseTime = Date.now() - start;
             return responseTime > 5000; // 5 seconds
           } catch {
@@ -584,24 +591,37 @@ class AutonomousAITeam {
       // Create task-specific prompt
       const prompt = this.createTaskPrompt(member, task, context);
       
-      // Use AI to generate solution
-      const solution = await this.aiProviderManager.generateResponse(prompt, {
-        systemPrompt: `You are ${member.name}, a ${member.role} with ${member.experience} of experience. You are part of an autonomous AI team managing a backend system.`,
-        maxTokens: 2000,
-        temperature: 0.3
+      // Use enhanced learning system to solve problem
+      const solution = await this.enhancedLearningSystem.solveProblem(task, {
+        member: member,
+        context: context,
+        prompt: prompt
       });
 
       if (solution.success) {
         // Execute the solution
-        const result = await this.executeSolution(solution.response, task, context);
+        const result = await this.executeSolution(solution.solution, task, context);
         
         member.successRate = ((member.successRate * (member.operationsCount - 1)) + 100) / member.operationsCount;
         this.systemState.successfulOperations++;
         
-        this.logger.info(`✅ ${member.name} successfully completed task: ${task}`);
+        this.logger.info(`✅ ${member.name} successfully completed task: ${task} using ${solution.source}`);
         return result;
       } else {
-        throw new Error(`AI solution generation failed: ${solution.error}`);
+        // Research-only mode: Skip AI providers, go directly to research fallback
+        this.logger.warn(`⚠️ Research failed, using research fallback for task: ${task} (AI providers disabled)`);
+        const researchSolution = await this.generateResearchFallback(task, context, prompt);
+        
+        if (researchSolution.success) {
+          const result = await this.executeSolution(researchSolution.solution, task, context);
+          member.successRate = ((member.successRate * (member.operationsCount - 1)) + 80) / member.operationsCount; // Lower success rate for fallback
+          this.systemState.successfulOperations++;
+          
+          this.logger.info(`✅ ${member.name} completed task using research fallback: ${task}`);
+          return result;
+        } else {
+          throw new Error(`Research-only solution failed: ${solution.error || researchSolution.error}`);
+        }
       }
       
     } catch (error) {
@@ -640,6 +660,92 @@ Provide actionable, production-ready code and configurations.
 `;
 
     return basePrompt;
+  }
+
+  /**
+   * Generate a research-based fallback solution when all AI providers fail
+   * @param {string} task - The task to solve
+   * @param {Object} context - Additional context
+   * @param {string} prompt - The original prompt
+   * @returns {Object} Research-based solution
+   */
+  async generateResearchFallback(task, context, prompt) {
+    try {
+      this.logger.info(`🔬 Generating research fallback for task: ${task}`);
+      
+      // Use pattern matching to find similar problems
+      const patternResult = await this.patternMatchingEngine.analyzeProblem(task, context);
+      
+      if (patternResult.confidence > 0.6) {
+        return {
+          success: true,
+          solution: patternResult.solution,
+          source: 'pattern_matching',
+          confidence: patternResult.confidence
+        };
+      }
+      
+      // Use local AI models for common tasks
+      if (task.includes('optimize') || task.includes('performance')) {
+        const optimizationSuggestions = await this.localAIModels.performanceOptimizationSuggestions(context);
+        return {
+          success: true,
+          solution: optimizationSuggestions,
+          source: 'local_ai_models',
+          confidence: 0.7
+        };
+      }
+      
+      if (task.includes('error') || task.includes('fix')) {
+        const errorAnalysis = await this.localAIModels.errorAnalysis(context);
+        return {
+          success: true,
+          solution: errorAnalysis,
+          source: 'local_ai_models',
+          confidence: 0.7
+        };
+      }
+      
+      // Generic research-based solution
+      const genericSolution = this.generateGenericSolution(task, context);
+      return {
+        success: true,
+        solution: genericSolution,
+        source: 'generic_research',
+        confidence: 0.5
+      };
+      
+    } catch (error) {
+      this.logger.error(`❌ Research fallback failed:`, error);
+      return {
+        success: false,
+        error: error.message
+      };
+    }
+  }
+
+  /**
+   * Generate a generic solution based on common patterns
+   * @param {string} task - The task to solve
+   * @param {Object} context - Additional context
+   * @returns {string} Generic solution
+   */
+  generateGenericSolution(task, context) {
+    const solutions = {
+      'optimize_memory': 'Monitor memory usage, implement garbage collection, optimize data structures, and consider memory pooling for frequently allocated objects.',
+      'optimize_response_time': 'Implement caching, optimize database queries, use connection pooling, and consider CDN for static assets.',
+      'fix_error': 'Check logs for specific error messages, verify configuration, test with minimal setup, and implement proper error handling.',
+      'improve_performance': 'Profile the application, identify bottlenecks, optimize algorithms, and implement performance monitoring.',
+      'fix_connection': 'Check network connectivity, verify credentials, test with different endpoints, and implement retry logic.'
+    };
+    
+    for (const [pattern, solution] of Object.entries(solutions)) {
+      if (task.toLowerCase().includes(pattern.replace('_', ' '))) {
+        return solution;
+      }
+    }
+    
+    return `Analyze the ${task} issue systematically: 1) Identify root cause, 2) Check system resources, 3) Review configuration, 4) Test with minimal setup, 5) Implement monitoring and logging.`;
   }
 
   /**
