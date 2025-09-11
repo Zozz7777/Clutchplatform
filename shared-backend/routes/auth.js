@@ -140,7 +140,7 @@ router.post('/employee-login', rateLimit.authRateLimit, validateUserLogin, async
             type: 'refresh',
             tokenType: 'refresh'
         };
-        const refreshToken = jwt.sign(refreshTokenPayload, process.env.JWT_SECRET, {
+        const refreshToken = jwt.sign(refreshTokenPayload, process.env.JWT_REFRESH_SECRET || process.env.JWT_SECRET, {
             expiresIn: '7d' // 7 days
         });
 
@@ -1102,7 +1102,7 @@ router.post('/refresh-token', async (req, res) => {
 
         // Verify the refresh token and rotate
         try {
-            const decoded = jwt.verify(refreshToken, process.env.JWT_SECRET);
+            const decoded = jwt.verify(refreshToken, process.env.JWT_REFRESH_SECRET || process.env.JWT_SECRET);
             const employeeId = decoded.userId;
             
             // Get employee to include updated role information
@@ -1132,7 +1132,7 @@ router.post('/refresh-token', async (req, res) => {
             }
 
             // Rotate refresh token: issue a new one and invalidate the old one
-            const newRefreshToken = jwt.sign({ userId: employee._id, type: 'refresh' }, process.env.JWT_SECRET, { expiresIn: '7d' });
+            const newRefreshToken = jwt.sign({ userId: employee._id, type: 'refresh' }, process.env.JWT_REFRESH_SECRET || process.env.JWT_SECRET, { expiresIn: '7d' });
             try {
                 const { getCollection } = require('../config/database');
                 const refreshTokens = await getCollection('refresh_tokens');
