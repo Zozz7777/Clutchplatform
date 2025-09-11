@@ -173,20 +173,34 @@ class AutonomousBackendHealthMonitor {
     try {
       const startTime = Date.now();
       
-      // Check local API endpoint
+      // Check the correct health endpoint
       const port = process.env.PORT || 5000;
-      const response = await axios.get(`http://localhost:${port}/health`, {
-        timeout: 5000
+      const baseUrl = process.env.NODE_ENV === 'production' 
+        ? 'https://clutch-main-nk7x.onrender.com'
+        : `http://localhost:${port}`;
+      
+      const response = await axios.get(`${baseUrl}/health`, {
+        timeout: 5000,
+        validateStatus: (status) => status < 500
       });
       
       const responseTime = Date.now() - startTime;
       
-      return {
-        status: response.status === 200 && responseTime < 2000 ? 'healthy' : 'degraded',
-        responseTime,
-        statusCode: response.status,
-        details: 'API endpoint responding'
-      };
+      if (response.status === 200) {
+        return {
+          status: responseTime < 2000 ? 'healthy' : 'degraded',
+          responseTime,
+          statusCode: response.status,
+          details: 'API endpoint responding correctly'
+        };
+      } else {
+        return {
+          status: 'degraded',
+          responseTime,
+          statusCode: response.status,
+          details: 'API endpoint responding with errors'
+        };
+      }
     } catch (error) {
       return {
         status: 'unhealthy',
