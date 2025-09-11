@@ -5,13 +5,35 @@
 
 const express = require('express');
 const router = express.Router();
-const AutonomousDashboardOrchestrator = require('../services/autonomousDashboardOrchestrator');
+
+// Simple test endpoint
+router.get('/test', (req, res) => {
+  res.json({
+    success: true,
+    message: 'Autonomous dashboard routes are working',
+    timestamp: new Date()
+  });
+});
+
+// Try to require the orchestrator, but don't fail if it doesn't work
+let AutonomousDashboardOrchestrator;
+try {
+  AutonomousDashboardOrchestrator = require('../services/autonomousDashboardOrchestrator');
+} catch (error) {
+  console.error('Failed to load AutonomousDashboardOrchestrator:', error.message);
+  AutonomousDashboardOrchestrator = null;
+}
 
 // Initialize dashboard orchestrator
 let dashboardOrchestrator;
 
 // Initialize orchestrator if not already done
 const initializeOrchestrator = () => {
+  if (!AutonomousDashboardOrchestrator) {
+    console.log('AutonomousDashboardOrchestrator not available, using fallback data');
+    return null;
+  }
+  
   if (!dashboardOrchestrator) {
     try {
       dashboardOrchestrator = new AutonomousDashboardOrchestrator();
