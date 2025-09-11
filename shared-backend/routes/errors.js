@@ -26,7 +26,7 @@ router.get('/frontend', async (req, res) => {
       .limit(parseInt(limit))
       .toArray();
     
-    // Calculate summary
+    // Calculate summary with defensive programming
     const summary = {
       total: errors.length,
       severityCounts: {
@@ -37,13 +37,24 @@ router.get('/frontend', async (req, res) => {
       }
     };
     
-    res.json({
+    // Ensure we always return a valid structure
+    const response = {
       success: true,
       data: {
-        errors,
-        summary
+        errors: errors || [],
+        summary: summary || {
+          total: 0,
+          severityCounts: {
+            critical: 0,
+            high: 0,
+            medium: 0,
+            low: 0
+          }
+        }
       }
-    });
+    };
+    
+    res.json(response);
   } catch (error) {
     res.status(500).json({
       success: false,
