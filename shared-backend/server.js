@@ -829,36 +829,7 @@ app.get('/api/v1/admin/dashboard/consolidated', (req, res) => {
   });
 });
 
-// Add missing routes that are causing 404s
-app.get('/operations', (req, res) => {
-  res.status(200).json({
-    success: true,
-    data: {
-      message: 'Operations endpoint - redirecting to platform overview',
-      redirect: '/operations/platform-overview'
-    }
-  });
-});
-
-app.get('/monitoring', (req, res) => {
-  res.status(200).json({
-    success: true,
-    data: {
-      message: 'Monitoring endpoint - redirecting to system alerts',
-      redirect: '/monitoring/alerts'
-    }
-  });
-});
-
-app.get('/analytics', (req, res) => {
-  res.status(200).json({
-    success: true,
-    data: {
-      message: 'Analytics endpoint - redirecting to overview',
-      redirect: '/analytics/overview'
-    }
-  });
-});
+// Removed fallback routes - using actual route files instead
 
 // Removed duplicate fallback routes - proper endpoints exist in route files
 
