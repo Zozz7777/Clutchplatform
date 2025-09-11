@@ -79,8 +79,8 @@ router.get('/dashboard/consolidated', authenticateToken, async (req, res) => {
       metrics: {
         totalUsers: totalUsers || 0,
         activeUsers: activeUsers || 0,
-        totalRevenue: totalRevenue[0]?.total || 0,
-        monthlyRevenue: monthlyRevenue[0]?.total || 0,
+        totalRevenue: (totalRevenue && totalRevenue[0] && totalRevenue[0].total) ? totalRevenue[0].total : 0,
+        monthlyRevenue: (monthlyRevenue && monthlyRevenue[0] && monthlyRevenue[0].total) ? monthlyRevenue[0].total : 0,
         totalOrders: totalOrders || 0,
         completedOrders: completedOrders || 0,
         completionRate: totalOrders > 0 ? ((completedOrders / totalOrders) * 100).toFixed(2) : 0
@@ -88,7 +88,11 @@ router.get('/dashboard/consolidated', authenticateToken, async (req, res) => {
       charts: {
         revenue: {
           labels: ['Last 7 days', 'Last 30 days', 'Last 90 days'],
-          data: [monthlyRevenue[0]?.total || 0, monthlyRevenue[0]?.total || 0, totalRevenue[0]?.total || 0]
+          data: [
+            (monthlyRevenue && monthlyRevenue[0] && monthlyRevenue[0].total) ? monthlyRevenue[0].total : 0,
+            (monthlyRevenue && monthlyRevenue[0] && monthlyRevenue[0].total) ? monthlyRevenue[0].total : 0,
+            (totalRevenue && totalRevenue[0] && totalRevenue[0].total) ? totalRevenue[0].total : 0
+          ]
         },
         users: {
           labels: ['Total Users', 'Active Users'],
