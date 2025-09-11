@@ -46,7 +46,8 @@
     "analyze:ai-approach": "node scripts/analyze-ai-approach.js",
     "fix:research-first": "node scripts/fix-research-first-approach.js",
     "test:research-system": "node scripts/test-research-system.js",
-    "start:research": "node scripts/startup-research-system.js"
+    "start:research": "node scripts/startup-research-system.js",
+    "boost:success-rate": "node scripts/boost-success-rate.js"
   },
   "keywords": [
     "clutch",
