@@ -4,6 +4,15 @@ const { authenticateToken } = require('../middleware/auth');
 const { getCollection } = require('../config/database');
 const { ObjectId } = require('mongodb');
 
+// Simple test endpoint without authentication
+router.get('/test', (req, res) => {
+  res.json({
+    success: true,
+    message: 'Operations routes are working',
+    timestamp: new Date()
+  });
+});
+
 // Platform overview endpoint
 router.get('/platform-overview', authenticateToken, async (req, res) => {
     try {
