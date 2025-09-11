@@ -1,6 +1,7 @@
 /**
  * Admin Management Routes
  * Provides endpoints for AI agent to perform administrative actions
+ * Fixed syntax error - deployment ready
  */
 
 const express = require('express');
