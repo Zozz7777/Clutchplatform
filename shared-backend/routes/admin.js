@@ -23,11 +23,7 @@ const { getCollection } = require('../config/database');
       dashboardCache.set('consolidated', {
         data,
         timestamp: Date.now()
-      };
-    
-    // Cache the response
-    setCachedDashboard(responseData);
-    res.json(responseData);
+      });
     };
     
     
@@ -36,12 +32,12 @@ const { getCollection } = require('../config/database');
  * Consolidated dashboard endpoint (for frontend compatibility)
  */
 router.get('/dashboard/consolidated', authenticateToken, async (req, res) => {
+  try {
     // Check cache first
     const cachedData = getCachedDashboard();
     if (cachedData) {
       return res.json(cachedData);
     }
-  try {
     console.log('📊 ADMIN_CONSOLIDATED_DASHBOARD_REQUEST:', {
       user: req.user.email,
       timestamp: new Date().toISOString()
@@ -111,7 +107,11 @@ router.get('/dashboard/consolidated', authenticateToken, async (req, res) => {
       success: true,
       data: consolidatedData,
       timestamp: new Date()
-    });
+    };
+
+    // Cache the response
+    setCachedDashboard(responseData);
+    res.json(responseData);
 
   } catch (error) {
     console.error('❌ ADMIN_CONSOLIDATED_DASHBOARD_ERROR:', error);
