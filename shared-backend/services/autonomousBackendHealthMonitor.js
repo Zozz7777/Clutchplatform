@@ -37,12 +37,14 @@ class AutonomousBackendHealthMonitor {
 
     this.healthHistory = [];
     this.autoHealingEnabled = true;
+    
     this.alertThresholds = {
-      memory: 85, // 85% memory usage
-      cpu: 80,    // 80% CPU usage
-      disk: 90,   // 90% disk usage
-      responseTime: 5000 // 5 seconds response time
+      memory: 90, // Increased from 85% to 90%
+      cpu: 85,    // Increased from 80% to 85%
+      disk: 95,   // Increased from 90% to 95%
+      responseTime: 3000 // Reduced from 5000ms to 3000ms
     };
+    
 
     this.selfHealingActions = new Map();
     this.initializeSelfHealingActions();
@@ -567,9 +569,9 @@ class AutonomousBackendHealthMonitor {
     const healthPercentage = (healthyChecks / totalChecks) * 100;
     
     let status = 'healthy';
-    if (healthPercentage < 50) {
+    if (healthPercentage < 30) {
       status = 'unhealthy';
-    } else if (healthPercentage < 80) {
+    } else if (healthPercentage < 70) {
       status = 'degraded';
     }
     

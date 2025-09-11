@@ -1,4 +1,15 @@
 const { MongoClient } = require('mongodb');
+    // Connection pooling configuration
+    const poolOptions = {
+      maxPoolSize: 10, // Maximum number of connections in the pool
+      minPoolSize: 2,  // Minimum number of connections in the pool
+      maxIdleTimeMS: 30000, // Close connections after 30 seconds of inactivity
+      serverSelectionTimeoutMS: 5000, // How long to try selecting a server
+      socketTimeoutMS: 45000, // How long a send or receive on a socket can take
+      bufferMaxEntries: 0, // Disable mongoose buffering
+      bufferCommands: false, // Disable mongoose buffering
+    };
+    
 require('dotenv').config();
 
 let db = null;

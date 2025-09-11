@@ -171,9 +171,37 @@ export interface TimeSeriesData {
 
 class ClutchApiService {
   private baseUrl: string
+  private token: string | null = null
+  private refreshToken: string | null = null
 
   constructor() {
     this.baseUrl = process.env.NEXT_PUBLIC_API_BASE_URL || 'https://clutch-main-nk7x.onrender.com/api/v1'
+    this.loadTokens()
+  }
+
+  private loadTokens() {
+    if (typeof window !== 'undefined') {
+      this.token = localStorage.getItem('auth_token')
+      this.refreshToken = localStorage.getItem('refresh_token')
+    }
+  }
+
+  private saveTokens(token: string, refreshToken: string) {
+    if (typeof window !== 'undefined') {
+      localStorage.setItem('auth_token', token)
+      localStorage.setItem('refresh_token', refreshToken)
+      this.token = token
+      this.refreshToken = refreshToken
+    }
+  }
+
+  private clearTokens() {
+    if (typeof window !== 'undefined') {
+      localStorage.removeItem('auth_token')
+      localStorage.removeItem('refresh_token')
+      this.token = null
+      this.refreshToken = null
+    }
   }
 
   private async request<T>(
@@ -182,9 +210,14 @@ class ClutchApiService {
   ): Promise<ApiResponse<T>> {
     try {
       const url = `${this.baseUrl}${endpoint}`
-      const headers = {
+      const headers: Record<string, string> = {
         'Content-Type': 'application/json',
         ...options.headers,
+      }
+
+      // Add authentication token if available
+      if (this.token) {
+        headers['Authorization'] = `Bearer ${this.token}`
       }
 
       const response = await fetch(url, {
@@ -392,6 +425,67 @@ class ClutchApiService {
   async getMarketAnalysis(): Promise<ApiResponse<any>> {
     return this.request<any>('/admin/business/market-analysis')
   }
+
+  // Authentication methods
+  async login(credentials: { email: string; password: string }): Promise<ApiResponse<{ user: any; token: string; refreshToken: string }>> {
+    const response = await this.request<{ user: any; token: string; refreshToken: string }>('/auth/employee-login', {
+      method: 'POST',
+      body: JSON.stringify(credentials),
+    })
+
+    if (response.success && response.data) {
+      this.saveTokens(response.data.token, response.data.refreshToken)
+    }
+
+    return response
+  }
+
+  async getCurrentUser(): Promise<ApiResponse<any>> {
+    return this.request<any>('/auth/employee-me')
+  }
+
+  async logout(): Promise<void> {
+    this.clearTokens()
+    // Optionally call logout endpoint
+    try {
+      await this.request('/auth/logout', { method: 'POST' })
+    } catch (error) {
+      console.warn('Logout endpoint failed:', error)
+    }
+  }
+
+  async refreshToken(): Promise<boolean> {
+    if (!this.refreshToken) {
+      return false
+    }
+
+    try {
+      const response = await fetch(`${this.baseUrl}/auth/refresh`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${this.refreshToken}`,
+        },
+      })
+
+      if (response.ok) {
+        const data = await response.json()
+        if (data.success && data.data) {
+          this.saveTokens(data.data.token, data.data.refreshToken)
+          return true
+        }
+      }
+    } catch (error) {
+      console.error('Token refresh failed:', error)
+    }
+
+    this.clearTokens()
+    return false
+  }
+
+  isAuthenticated(): boolean {
+    return !!this.token
+  }
 }
 
 // Create singleton instance
@@ -431,4 +525,9 @@ export const {
   getBusinessMetrics,
   getCustomerInsights,
   getMarketAnalysis,
+  login,
+  getCurrentUser,
+  logout,
+  refreshToken,
+  isAuthenticated,
 } = clutchApi

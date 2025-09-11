@@ -102,3 +102,24 @@ module.exports = {
   ForbiddenError,
   NotFoundError
 };
+
+    // Add timeout handling for slow requests
+    const timeoutHandler = (req, res, next) => {
+      const timeout = 30000; // 30 seconds timeout
+      
+      req.setTimeout(timeout, () => {
+        if (!res.headersSent) {
+          res.status(408).json({
+            success: false,
+            error: 'REQUEST_TIMEOUT',
+            message: 'Request timed out after 30 seconds',
+            timestamp: new Date().toISOString()
+          });
+        }
+      });
+      
+      next();
+    };
+    
+    module.exports.timeoutHandler = timeoutHandler;
+    

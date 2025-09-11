@@ -7,11 +7,40 @@ const express = require('express');
 const router = express.Router();
 const { authenticateToken, requireRole } = require('../middleware/auth');
 const { getCollection } = require('../config/database');
+    // Dashboard response caching
+    const dashboardCache = new Map();
+    const DASHBOARD_CACHE_TTL = 2 * 60 * 1000; // 2 minutes
+    
+    const getCachedDashboard = () => {
+      const cached = dashboardCache.get('consolidated');
+      if (cached && Date.now() - cached.timestamp < DASHBOARD_CACHE_TTL) {
+        return cached.data;
+      }
+      return null;
+    };
+    
+    const setCachedDashboard = (data) => {
+      dashboardCache.set('consolidated', {
+        data,
+        timestamp: Date.now()
+      };
+    
+    // Cache the response
+    setCachedDashboard(responseData);
+    res.json(responseData);
+    };
+    
+    
 
 /**
  * Consolidated dashboard endpoint (for frontend compatibility)
  */
 router.get('/dashboard/consolidated', authenticateToken, async (req, res) => {
+    // Check cache first
+    const cachedData = getCachedDashboard();
+    if (cachedData) {
+      return res.json(cachedData);
+    }
   try {
     console.log('📊 ADMIN_CONSOLIDATED_DASHBOARD_REQUEST:', {
       user: req.user.email,
@@ -78,7 +107,7 @@ router.get('/dashboard/consolidated', authenticateToken, async (req, res) => {
       }
     };
 
-    res.json({
+    const responseData = {
       success: true,
       data: consolidatedData,
       timestamp: new Date()

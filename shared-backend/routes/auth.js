@@ -9,6 +9,36 @@ const rateLimit = require('../middleware/rateLimit');
 const { validateUserLogin } = require('../middleware/validation');
 const userService = require("../services/userService");
 const { getCollection } = require('../config/database');
+    // Add employee caching to reduce database queries
+    const employeeCache = new Map();
+    const CACHE_TTL = 5 * 60 * 1000; // 5 minutes
+    
+    const getCachedEmployee = async (email) => {
+      const cached = employeeCache.get(email);
+      if (cached && Date.now() - cached.timestamp < CACHE_TTL) {
+        return cached.employee;
+      }
+      return null;
+    };
+    
+    const setCachedEmployee = (email, employee) => {
+      employeeCache.set(email, {
+        employee,
+        timestamp: Date.now()
+      });
+    };
+    
+    // Clear cache periodically
+    setInterval(() => {
+      const now = Date.now();
+      for (const [email, cached] of employeeCache.entries()) {
+        if (now - cached.timestamp > CACHE_TTL) {
+          employeeCache.delete(email);
+        }
+      }
+    }, CACHE_TTL);
+    
+    
 
 // ==================== EMPLOYEE AUTHENTICATION ROUTES ====================
 

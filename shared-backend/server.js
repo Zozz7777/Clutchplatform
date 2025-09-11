@@ -50,6 +50,7 @@ const { apmMiddleware } = require('./middleware/monitoring');
 const { cdnMiddleware } = require('./middleware/cdn');
 const { sseMiddleware } = require('./middleware/realtime');
 const { timeoutMiddleware } = require('./middleware/timeout');
+const cacheMiddleware = require('./middleware/cache');
 
 // Import new enhanced middleware
 const { 
@@ -488,6 +489,7 @@ app.use((req, res, next) => {
   app.use(morganMiddleware());
   app.use(requestLoggingMiddleware());
   app.use(performanceMiddleware());
+  app.use(cacheMiddleware.middleware());
 
   // Health routes (not versioned) - must be before API versioning middleware
   // Mount health routes
@@ -799,30 +801,7 @@ app.get('/api/v1/admin/dashboard/consolidated', (req, res) => {
   });
 });
 
-// Removed fallback route - proper endpoint exists in auth routes
-
-app.get('/api/v1/autonomous-dashboard/data', (req, res) => {
-  res.status(200).json({
-    success: true,
-    message: 'Autonomous dashboard data',
-    data: {
-      status: 'operational',
-      timestamp: new Date().toISOString()
-    }
-  });
-});
-
-app.get('/api/v1/autonomous-dashboard/status', (req, res) => {
-  res.status(200).json({
-    success: true,
-    message: 'Autonomous dashboard status',
-    data: {
-      status: 'operational',
-      timestamp: new Date().toISOString()
-    }
-  });
-});
-
+// Removed duplicate fallback routes - proper endpoints exist in route files
 
 // 404 handler
   app.use('*', (req, res) => {
