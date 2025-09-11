@@ -340,7 +340,7 @@ class DeploymentHealthCheck {
     this.baseUrl = process.env.RENDER_URL || 'https://clutch-main-nk7x.onrender.com';
     this.endpoints = [
       '/health',
-      '/api/v1/health',
+      '/health',
       '/api/v1/auth/employee-login',
       '/api/v1/admin/dashboard/consolidated',
       '/api/v1/autonomous-dashboard/status'

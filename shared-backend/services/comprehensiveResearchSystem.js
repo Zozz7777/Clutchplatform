@@ -5,7 +5,7 @@ const FixedHealthMonitor = require('./fixedHealthMonitor');
 
 class ComprehensiveResearchSystem {
   constructor() {
-    this.logger = require('./logger');
+    this.logger = require('../config/logger').logger;
     
     // Initialize all research-based components
     this.researchAI = new ResearchBasedAI();

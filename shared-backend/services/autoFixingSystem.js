@@ -3,7 +3,7 @@ const path = require('path');
 
 class AutoFixingSystem {
   constructor() {
-    this.logger = require('./logger');
+    this.logger = require('../config/logger').logger;
     this.fixStrategies = new Map();
     this.fixHistory = [];
     this.successRate = 0;

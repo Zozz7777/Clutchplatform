@@ -44,7 +44,9 @@
     "setup:ai-keys": "node scripts/setup-ai-api-keys.js",
     "test:ai-providers": "node scripts/test-ai-providers.js",
     "analyze:ai-approach": "node scripts/analyze-ai-approach.js",
-    "fix:research-first": "node scripts/fix-research-first-approach.js"
+    "fix:research-first": "node scripts/fix-research-first-approach.js",
+    "test:research-system": "node scripts/test-research-system.js",
+    "start:research": "node scripts/startup-research-system.js"
   },
   "keywords": [
     "clutch",

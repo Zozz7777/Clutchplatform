@@ -338,22 +338,22 @@ class ComprehensiveFixSystem {
         .feedErrorPattern('api', '500_internal_server_error', {
           severity: 'critical',
           context: 'core_endpoints',
-          endpoints: ['/api/v1/health', '/api/v1/auth/employee-login', '/api/v1/admin/dashboard/consolidated']
+          endpoints: ['/health', '/api/v1/auth/employee-login', '/api/v1/admin/dashboard/consolidated']
         })
         .feedErrorPattern('api', '502_bad_gateway', {
           severity: 'critical',
           context: 'backend_communication',
-          endpoints: ['/api/v1/health/db']
+          endpoints: ['/health']
         })
         .feedSolution('api', 'improved_error_handling', 0.8, {
           solution: 'Implement comprehensive error handling with retry mechanisms',
           steps: ['Add retry logic', 'Improve error messages', 'Add circuit breakers', 'Monitor endpoint health'],
           prerequisites: ['Error handling middleware', 'Retry mechanism', 'Health monitoring']
         })
-        .feedAPIErrorPattern('/api/v1/health', '500', 'retry_with_backoff', 0.8)
+        .feedAPIErrorPattern('/health', '500', 'retry_with_backoff', 0.8)
         .feedAPIErrorPattern('/api/v1/auth/employee-login', '500', 'database_connection_retry', 0.7)
         .feedAPIErrorPattern('/api/v1/admin/dashboard/consolidated', '500', 'service_restart', 0.6)
-        .feedAPIErrorPattern('/api/v1/health/db', '502', 'database_connection_check', 0.9);
+        .feedAPIErrorPattern('/health', '502', 'database_connection_check', 0.9);
 
       this.fixesApplied.push({
         type: 'api_error_handling',
@@ -389,7 +389,7 @@ class ComprehensiveFixSystem {
         .feedErrorPattern('database', 'connection_failure', {
           severity: 'critical',
           context: 'health_check',
-          endpoint: '/api/v1/health/db'
+          endpoint: '/health'
         })
         .feedErrorPattern('database', 'health_check_failure', {
           severity: 'high',

@@ -3,7 +3,7 @@ const AutoFixingSystem = require('./autoFixingSystem');
 
 class ResearchBasedAI {
   constructor() {
-    this.logger = require('./logger');
+    this.logger = require('../config/logger').logger;
     this.googleResearch = new GoogleResearchEngine();
     this.autoFixing = new AutoFixingSystem();
     this.knowledgeBase = new Map();

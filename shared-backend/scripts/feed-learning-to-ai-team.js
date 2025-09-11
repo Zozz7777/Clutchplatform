@@ -129,8 +129,8 @@ async function feedLearningToAITeam() {
 
     // Feed API error patterns
     learningFeed
-      .feedAPIErrorPattern('/api/v1/health', '500', 'service_restart', 0.8)
-      .feedAPIErrorPattern('/api/v1/health/db', '502', 'database_connection_retry', 0.9)
+      .feedAPIErrorPattern('/health', '500', 'service_restart', 0.8)
+      .feedAPIErrorPattern('/health', '502', 'database_connection_retry', 0.9)
       .feedAPIErrorPattern('/api/v1/auth/employee-login', '500', 'database_query_optimization', 0.7)
       .feedAPIErrorPattern('/api/v1/admin/dashboard/consolidated', '500', 'service_health_check', 0.8)
       .feedAPIErrorPattern('/auth/employee-me', '404', 'route_priority_fix', 0.9);

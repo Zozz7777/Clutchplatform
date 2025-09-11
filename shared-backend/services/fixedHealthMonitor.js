@@ -2,7 +2,7 @@ const axios = require('axios');
 
 class FixedHealthMonitor {
   constructor() {
-    this.logger = require('./logger');
+    this.logger = require('../config/logger').logger;
     this.healthChecks = new Map();
     this.healthStatus = {
       overall: 'unknown',

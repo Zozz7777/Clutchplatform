@@ -1050,41 +1050,51 @@ function startKeepAliveService() {
   console.log(`✅ Keep-alive service started successfully`);
 }
 
-// Enhanced Autonomous System Startup
-async function initializeEnhancedAutonomousSystem() {
+// Research-Based AI System Startup
+async function initializeResearchBasedSystem() {
   try {
-    console.log('🤖 Initializing Enhanced Autonomous System...');
+    console.log('🔬 Initializing Research-Based AI System...');
     
-    const EnhancedAutonomousSystemStartup = require('./scripts/startup-enhanced-autonomous-system');
-    const startup = new EnhancedAutonomousSystemStartup();
+    const ComprehensiveResearchSystem = require('./services/comprehensiveResearchSystem');
+    const researchSystem = new ComprehensiveResearchSystem();
     
-    const results = await startup.initialize();
+    const success = await researchSystem.initializeSystem();
     
-    if (results.success) {
-      console.log('✅ Enhanced Autonomous System initialized successfully');
-      console.log('📊 System Status:', results.components);
+    if (success) {
+      console.log('✅ Research-Based AI System initialized successfully');
       
-      if (results.warnings.length > 0) {
-        console.log('⚠️ Warnings:', results.warnings);
-      }
+      // Make the system globally available
+      global.researchSystem = researchSystem;
+      
+      // Test the system
+      const testResult = await researchSystem.solveProblem("Database connection test");
+      console.log(`🧪 System test: ${testResult.success ? 'PASSED' : 'FAILED'}`);
+      
+      // Get system status
+      const status = researchSystem.getSystemStatus();
+      console.log('📊 System Status:', {
+        initialized: status.initialized,
+        health: status.health.overall,
+        metrics: status.metrics
+      });
+      
+      return { success: true, system: researchSystem };
     } else {
-      console.error('❌ Enhanced Autonomous System initialization failed');
-      console.error('Errors:', results.errors);
+      console.error('❌ Research-Based AI System initialization failed');
+      return { success: false, error: 'Initialization failed' };
     }
-    
-    return results;
   } catch (error) {
-    console.error('❌ Enhanced Autonomous System initialization error:', error);
+    console.error('❌ Research-Based AI System initialization error:', error);
     return { success: false, error: error.message };
   }
 }
 
-// Start the server with enhanced autonomous system
-initializeEnhancedAutonomousSystem().then(() => {
+// Start the server with research-based AI system
+initializeResearchBasedSystem().then(() => {
   startServer();
 }).catch((error) => {
-  console.error('❌ Failed to initialize Enhanced Autonomous System:', error);
-  console.log('🔄 Starting server without enhanced autonomous system...');
+  console.error('❌ Failed to initialize Research-Based AI System:', error);
+  console.log('🔄 Starting server without research-based AI system...');
   startServer();
 });
 
