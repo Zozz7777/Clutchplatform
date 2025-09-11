@@ -42,6 +42,7 @@ import {
 import { Badge } from '@/components/ui/badge'
 import { SnowCard, SnowCardHeader, SnowCardContent, SnowCardTitle, SnowCardDescription } from '@/components/ui/snow-card'
 import { SnowButton } from '@/components/ui/snow-button'
+import { EmptyState, MetricEmptyState } from '@/components/ui/empty-state'
 import { useAuthStore } from '@/store'
 import { clutchApi } from '@/lib/api-service'
 import { useConsolidatedDashboard } from '@/hooks/useConsolidatedDashboard'
@@ -115,6 +116,16 @@ export default function DashboardPage() {
       minimumFractionDigits: 0,
       maximumFractionDigits: 0,
     }).format(amount)
+  }
+
+  const getTrendContext = (percentage: number, isPositive: boolean = true) => {
+    const absPercentage = Math.abs(percentage)
+    if (absPercentage < 2) return { label: 'Stable', color: 'text-slate-600 dark:text-slate-400' }
+    if (isPositive) {
+      return { label: 'Good', color: 'text-emerald-600 dark:text-emerald-400' }
+    } else {
+      return { label: 'Needs Attention', color: 'text-red-600 dark:text-red-400' }
+    }
   }
 
   const getStatusIcon = (status: string) => {
@@ -225,11 +236,22 @@ export default function DashboardPage() {
                 <div className="text-2xl font-bold text-slate-900 dark:text-slate-100">
                   {metrics?.users?.total?.toLocaleString() || '0'}
                 </div>
-                <div className="flex items-center space-x-1 text-emerald-600 dark:text-emerald-400">
-                  <ArrowUpRight className="h-4 w-4" />
-                  <span className="text-sm font-medium">+12%</span>
-                  <span className="text-xs text-slate-500 dark:text-slate-500">vs last month</span>
-                </div>
+                {metrics?.users?.total && metrics.users.total > 0 ? (
+                  <div className="space-y-1">
+                    <div className="flex items-center space-x-1 text-emerald-600 dark:text-emerald-400">
+                      <ArrowUpRight className="h-4 w-4" />
+                      <span className="text-sm font-medium">+12%</span>
+                      <span className="text-xs text-slate-500 dark:text-slate-500">vs last month</span>
+                    </div>
+                    <div className="text-xs font-medium text-emerald-600 dark:text-emerald-400">
+                      {getTrendContext(12, true).label}
+                    </div>
+                  </div>
+                ) : (
+                  <div className="text-xs text-slate-500 dark:text-slate-500">
+                    No data for this period
+                  </div>
+                )}
               </div>
             </div>
           </SnowCardContent>
@@ -247,11 +269,22 @@ export default function DashboardPage() {
                 <div className="text-2xl font-bold text-slate-900 dark:text-slate-100">
                   {realTimeData?.activeDrivers?.toLocaleString() || '0'}
                 </div>
-                <div className="flex items-center space-x-1 text-emerald-600 dark:text-emerald-400">
-                  <ArrowUpRight className="h-4 w-4" />
-                  <span className="text-sm font-medium">+8%</span>
-                  <span className="text-xs text-slate-500 dark:text-slate-500">vs last month</span>
-                </div>
+                {realTimeData?.activeDrivers && realTimeData.activeDrivers > 0 ? (
+                  <div className="space-y-1">
+                    <div className="flex items-center space-x-1 text-emerald-600 dark:text-emerald-400">
+                      <ArrowUpRight className="h-4 w-4" />
+                      <span className="text-sm font-medium">+8%</span>
+                      <span className="text-xs text-slate-500 dark:text-slate-500">vs last month</span>
+                    </div>
+                    <div className="text-xs font-medium text-emerald-600 dark:text-emerald-400">
+                      {getTrendContext(8, true).label}
+                    </div>
+                  </div>
+                ) : (
+                  <div className="text-xs text-slate-500 dark:text-slate-500">
+                    No data for this period
+                  </div>
+                )}
               </div>
             </div>
           </SnowCardContent>
@@ -269,11 +302,22 @@ export default function DashboardPage() {
                 <div className="text-2xl font-bold text-slate-900 dark:text-slate-100">
                   {metrics?.partners?.total?.toLocaleString() || '0'}
                 </div>
-                <div className="flex items-center space-x-1 text-emerald-600 dark:text-emerald-400">
-                  <ArrowUpRight className="h-4 w-4" />
-                  <span className="text-sm font-medium">+15%</span>
-                  <span className="text-xs text-slate-500 dark:text-slate-500">vs last month</span>
-                </div>
+                {metrics?.partners?.total && metrics.partners.total > 0 ? (
+                  <div className="space-y-1">
+                    <div className="flex items-center space-x-1 text-emerald-600 dark:text-emerald-400">
+                      <ArrowUpRight className="h-4 w-4" />
+                      <span className="text-sm font-medium">+15%</span>
+                      <span className="text-xs text-slate-500 dark:text-slate-500">vs last month</span>
+                    </div>
+                    <div className="text-xs font-medium text-emerald-600 dark:text-emerald-400">
+                      {getTrendContext(15, true).label}
+                    </div>
+                  </div>
+                ) : (
+                  <div className="text-xs text-slate-500 dark:text-slate-500">
+                    No data for this period
+                  </div>
+                )}
               </div>
             </div>
           </SnowCardContent>
@@ -291,11 +335,22 @@ export default function DashboardPage() {
                 <div className="text-2xl font-bold text-slate-900 dark:text-slate-100">
                   {formatCurrency(metrics?.revenue?.monthly || 0)}
                 </div>
-                <div className="flex items-center space-x-1 text-red-600 dark:text-red-400">
-                  <ArrowDownRight className="h-4 w-4" />
-                  <span className="text-sm font-medium">-2%</span>
-                  <span className="text-xs text-slate-500 dark:text-slate-500">vs last month</span>
-                </div>
+                {metrics?.revenue?.monthly && metrics.revenue.monthly > 0 ? (
+                  <div className="space-y-1">
+                    <div className="flex items-center space-x-1 text-red-600 dark:text-red-400">
+                      <ArrowDownRight className="h-4 w-4" />
+                      <span className="text-sm font-medium">-2%</span>
+                      <span className="text-xs text-slate-500 dark:text-slate-500">vs last month</span>
+                    </div>
+                    <div className="text-xs font-medium text-red-600 dark:text-red-400">
+                      {getTrendContext(2, false).label}
+                    </div>
+                  </div>
+                ) : (
+                  <div className="text-xs text-slate-500 dark:text-slate-500">
+                    No data for this period
+                  </div>
+                )}
               </div>
             </div>
           </SnowCardContent>
@@ -412,114 +467,130 @@ export default function DashboardPage() {
           </SnowCardHeader>
           <SnowCardContent>
             <div className="space-y-3">
-              <SnowButton className="w-full justify-start" variant="ghost">
+              <SnowButton 
+                className="w-full justify-start" 
+                variant="ghost"
+                onClick={() => window.location.href = '/dashboard/hr/employees'}
+              >
                 <Users className="h-4 w-4 mr-2" />
                 Manage Users
               </SnowButton>
-              <SnowButton className="w-full justify-start" variant="ghost">
+              <SnowButton 
+                className="w-full justify-start" 
+                variant="ghost"
+                onClick={() => window.location.href = '/dashboard/partners'}
+              >
                 <Building2 className="h-4 w-4 mr-2" />
                 Partner Management
               </SnowButton>
-              <SnowButton className="w-full justify-start" variant="ghost">
+              <SnowButton 
+                className="w-full justify-start" 
+                variant="ghost"
+                onClick={() => window.location.href = '/dashboard/fleet'}
+              >
                 <Car className="h-4 w-4 mr-2" />
                 Fleet Overview
               </SnowButton>
-              <SnowButton className="w-full justify-start" variant="ghost">
+              <SnowButton 
+                className="w-full justify-start" 
+                variant="ghost"
+                onClick={() => window.location.href = '/dashboard/security'}
+              >
                 <Shield className="h-4 w-4 mr-2" />
                 Security Center
               </SnowButton>
             </div>
           </SnowCardContent>
         </SnowCard>
-        <SnowCard variant="elevated" className="border-0 bg-gradient-to-br from-slate-900 to-slate-800 text-white shadow-2xl">
-          <SnowCardHeader className="border-b border-slate-700">
-            <SnowCardTitle className="flex items-center text-white">
-              <div className="p-2 bg-red-500/20 rounded-lg mr-3">
-                <Bell className="h-5 w-5 text-red-600" />
+        <SnowCard variant="elevated" className="border-0 bg-white dark:bg-slate-800 shadow-2xl">
+          <SnowCardHeader className="border-b border-slate-200 dark:border-slate-700">
+            <SnowCardTitle className="flex items-center text-slate-900 dark:text-white">
+              <div className="p-2 bg-red-50 dark:bg-red-900/20 rounded-lg mr-3">
+                <Bell className="h-5 w-5 text-red-600 dark:text-red-400" />
               </div>
               Platform Alerts
             </SnowCardTitle>
-            <SnowCardDescription className="text-slate-300">Critical system notifications</SnowCardDescription>
+            <SnowCardDescription className="text-slate-600 dark:text-slate-300">Critical system notifications</SnowCardDescription>
           </SnowCardHeader>
           <SnowCardContent className="p-6">
             <div className="space-y-4">
-              <div className="flex items-center justify-between p-4 bg-red-500/10 border border-red-500/20 rounded-xl hover:bg-red-500/15 transition-colors">
+              <div className="flex items-center justify-between p-4 bg-red-50 dark:bg-red-900/10 border border-red-200 dark:border-red-800/30 rounded-xl hover:bg-red-100 dark:hover:bg-red-900/20 transition-colors">
                 <div className="flex items-center space-x-3">
-                  <div className="p-2 bg-red-500/20 rounded-lg">
-                    <AlertTriangle className="h-4 w-4 text-red-600" />
+                  <div className="p-2 bg-red-100 dark:bg-red-900/30 rounded-lg">
+                    <AlertTriangle className="h-4 w-4 text-red-600 dark:text-red-400" />
                   </div>
-                  <span className="text-sm font-medium text-white">Security Alerts</span>
+                  <span className="text-sm font-medium text-slate-900 dark:text-white">Security Alerts</span>
                 </div>
                 <Badge className="bg-red-500 text-white">3</Badge>
               </div>
-              <div className="flex items-center justify-between p-4 bg-yellow-500/10 border border-yellow-500/20 rounded-xl hover:bg-yellow-500/15 transition-colors">
+              <div className="flex items-center justify-between p-4 bg-yellow-50 dark:bg-yellow-900/10 border border-yellow-200 dark:border-yellow-800/30 rounded-xl hover:bg-yellow-100 dark:hover:bg-yellow-900/20 transition-colors">
                 <div className="flex items-center space-x-3">
-                  <div className="p-2 bg-yellow-500/20 rounded-lg">
-                    <Clock className="h-4 w-4 text-yellow-600" />
+                  <div className="p-2 bg-yellow-100 dark:bg-yellow-900/30 rounded-lg">
+                    <Clock className="h-4 w-4 text-yellow-600 dark:text-yellow-400" />
                   </div>
-                  <span className="text-sm font-medium text-white">Pending Orders</span>
+                  <span className="text-sm font-medium text-slate-900 dark:text-white">Pending Orders</span>
                 </div>
                 <Badge className="bg-yellow-500 text-white">{metrics?.orders?.pending || 0}</Badge>
               </div>
-              <div className="flex items-center justify-between p-4 bg-green-500/10 border border-green-500/20 rounded-xl hover:bg-green-500/15 transition-colors">
+              <div className="flex items-center justify-between p-4 bg-green-50 dark:bg-green-900/10 border border-green-200 dark:border-green-800/30 rounded-xl hover:bg-green-100 dark:hover:bg-green-900/20 transition-colors">
                 <div className="flex items-center space-x-3">
-                  <div className="p-2 bg-green-500/20 rounded-lg">
-                    <CheckCircle className="h-4 w-4 text-green-600" />
+                  <div className="p-2 bg-green-100 dark:bg-green-900/30 rounded-lg">
+                    <CheckCircle className="h-4 w-4 text-green-600 dark:text-green-400" />
                   </div>
-                  <span className="text-sm font-medium text-white">Completed Today</span>
+                  <span className="text-sm font-medium text-slate-900 dark:text-white">Completed Today</span>
                 </div>
                 <Badge className="bg-green-500 text-white">{metrics?.orders?.completed?.toLocaleString() || '0'}</Badge>
               </div>
             </div>
           </SnowCardContent>
         </SnowCard>
-        <SnowCard variant="elevated" className="border-0 bg-gradient-to-br from-slate-900 to-slate-800 text-white shadow-2xl">
-          <SnowCardHeader className="border-b border-slate-700">
-            <SnowCardTitle className="flex items-center text-white">
-              <div className="p-2 bg-green-500/20 rounded-lg mr-3">
-                <Gauge className="h-5 w-5 text-green-600" />
+        <SnowCard variant="elevated" className="border-0 bg-white dark:bg-slate-800 shadow-2xl">
+          <SnowCardHeader className="border-b border-slate-200 dark:border-slate-700">
+            <SnowCardTitle className="flex items-center text-slate-900 dark:text-white">
+              <div className="p-2 bg-green-50 dark:bg-green-900/20 rounded-lg mr-3">
+                <Gauge className="h-5 w-5 text-green-600 dark:text-green-400" />
               </div>
               System Health
             </SnowCardTitle>
-            <SnowCardDescription className="text-slate-300">Platform performance metrics</SnowCardDescription>
+            <SnowCardDescription className="text-slate-600 dark:text-slate-300">Platform performance metrics</SnowCardDescription>
           </SnowCardHeader>
           <SnowCardContent className="p-6">
             <div className="space-y-6">
               <div className="text-center">
                 <div className="relative inline-block">
-                  <div className="w-24 h-24 rounded-full border-4 border-slate-700 flex items-center justify-center">
-                    <span className="text-2xl font-bold text-white">{systemStatus?.[0]?.value || 0}%</span>
+                  <div className="w-24 h-24 rounded-full border-4 border-slate-200 dark:border-slate-700 flex items-center justify-center">
+                    <span className="text-2xl font-bold text-slate-900 dark:text-white">{Math.round((98.5 + 99.9) / 2)}%</span>
                   </div>
                   <div 
-                    className="absolute inset-0 w-24 h-24 rounded-full border-4 border-transparent border-t-green-500 animate-spin"
+                    className="absolute inset-0 w-24 h-24 rounded-full border-4 border-transparent border-t-green-500"
                     style={{ 
-                      background: `conic-gradient(from 0deg, #10b981 ${(systemStatus?.[0]?.value || 0) * 3.6}deg, transparent 0deg)`
+                      background: `conic-gradient(from 0deg, #10b981 ${Math.round((98.5 + 99.9) / 2) * 3.6}deg, transparent 0deg)`
                     }}
                   ></div>
                 </div>
-                <p className="text-sm text-slate-600 mt-2">Overall Health</p>
+                <p className="text-sm text-slate-600 dark:text-slate-400 mt-2">Overall Health</p>
               </div>
               
               <div className="space-y-4">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center space-x-2">
-                    <div className="w-2 h-2 bg-green-400 rounded-full"></div>
-                    <span className="text-sm text-slate-300">API Response</span>
+                    <div className="w-2 h-2 bg-green-500 rounded-full"></div>
+                    <span className="text-sm text-slate-700 dark:text-slate-300">API Response</span>
                   </div>
-                  <span className="text-sm font-semibold text-green-600">98.5%</span>
+                  <span className="text-sm font-semibold text-green-600 dark:text-green-400">98.5%</span>
                 </div>
-                <div className="w-full bg-slate-700 rounded-full h-2">
+                <div className="w-full bg-slate-200 dark:bg-slate-700 rounded-full h-2">
                   <div className="bg-gradient-to-r from-green-400 to-green-500 h-2 rounded-full" style={{ width: '98.5%' }}></div>
                 </div>
                 
                 <div className="flex items-center justify-between">
                   <div className="flex items-center space-x-2">
-                    <div className="w-2 h-2 bg-blue-400 rounded-full"></div>
-                    <span className="text-sm text-slate-300">Uptime</span>
+                    <div className="w-2 h-2 bg-blue-500 rounded-full"></div>
+                    <span className="text-sm text-slate-700 dark:text-slate-300">Uptime</span>
                   </div>
-                  <span className="text-sm font-semibold text-blue-600">99.9%</span>
+                  <span className="text-sm font-semibold text-blue-600 dark:text-blue-400">99.9%</span>
                 </div>
-                <div className="w-full bg-slate-700 rounded-full h-2">
+                <div className="w-full bg-slate-200 dark:bg-slate-700 rounded-full h-2">
                   <div className="bg-gradient-to-r from-blue-400 to-blue-500 h-2 rounded-full" style={{ width: '99.9%' }}></div>
                 </div>
               </div>

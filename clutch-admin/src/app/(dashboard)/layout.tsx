@@ -474,7 +474,7 @@ const Sidebar = ({
   return (
     <>
              <div
-         className={`fixed left-0 top-0 z-40 h-screen bg-white border-r border-slate-200 shadow-sm transition-all duration-300 ${
+         className={`fixed left-0 top-0 z-40 h-screen bg-white dark:bg-slate-900 border-r border-slate-200 dark:border-slate-700 shadow-sm transition-all duration-300 ${
            selectedParent ? 'w-16' : (sidebarCollapsed ? 'w-16' : 'w-64')
          }`}
        >
@@ -490,7 +490,7 @@ const Sidebar = ({
                   {!sidebarCollapsed && !selectedParent && (
                     <button
                       onClick={() => toggleCategory(category)}
-                      className="w-full flex items-center justify-between px-2 py-1.5 text-xs font-semibold text-slate-500 uppercase tracking-wider hover:text-slate-700 transition-colors"
+                      className="w-full flex items-center justify-between px-2 py-1.5 text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider hover:text-slate-700 dark:hover:text-slate-300 transition-colors"
                     >
                       <span>{categoryLabel}</span>
                       <ChevronDown 
@@ -516,7 +516,7 @@ const Sidebar = ({
                               className={`w-full flex items-center px-3 py-2.5 text-sm font-medium rounded-lg transition-all group ${
                                 isActive || isSelected
                                   ? 'bg-clutch-primary text-white shadow-sm'
-                                  : 'text-slate-700 hover:bg-clutch-primary-50 hover:text-slate-900'}`}
+                                  : 'text-slate-700 dark:text-slate-300 hover:bg-clutch-primary-50 dark:hover:bg-slate-800 hover:text-slate-900 dark:hover:text-white'}`}
                             >
                               <item.icon className={`h-5 w-5 mr-3 flex-shrink-0 transition-colors ${
                                 isActive || isSelected ? 'text-white' : 'text-slate-700 group-hover:text-slate-800'}`} />
@@ -802,7 +802,7 @@ const Header = ({
 
   const toggleTheme = () => {
     if (mounted) {
-      setTheme(resolvedTheme === 'dark' ? 'light' : 'dark')
+      setTheme(theme === 'dark' ? 'light' : theme === 'light' ? 'dark' : 'light')
     }
   }
 
@@ -837,17 +837,17 @@ const Header = ({
   const currentTheme = mounted ? resolvedTheme : 'light'
 
   return (
-    <header className="sticky top-0 z-30 bg-white border-b border-slate-200 shadow-sm">
+    <header className="sticky top-0 z-30 bg-white dark:bg-slate-900 border-b border-slate-200 dark:border-slate-700 shadow-sm">
       <div className="flex h-16 items-center justify-between px-6">
         <div className="flex items-center space-x-6">
           <SnowButton
             variant="ghost"
             size="sm"
             onClick={toggleSidebar}
-            className="h-9 w-9 p-0 hover:bg-slate-50 transition-colors"
+            className="h-9 w-9 p-0 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
             aria-label="Toggle sidebar"
           >
-            <Menu className="h-4 w-4" />
+            <Menu className="h-4 w-4 text-slate-600 dark:text-slate-300" />
           </SnowButton>
           <Link href="/dashboard" className="flex items-center space-x-2">
             <div className="w-8 h-8 flex items-center justify-center">
@@ -857,21 +857,21 @@ const Header = ({
                 <Image src="/Logo Red.svg" alt="Clutch Logo" width={32} height={32} priority />
               )}
             </div>
-            <span className="text-xl font-bold text-foreground">Clutch Admin</span>
+            <span className="text-xl font-bold text-slate-900 dark:text-white">Clutch Admin</span>
           </Link>
           <div className="hidden md:flex items-center space-x-3">
             <div className="relative">
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-slate-400" />
               <SnowInput
                 placeholder="Search anything..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 onClick={handleSearchClick}
-                className="pl-10 pr-12 w-80 h-9 bg-slate-100 border-slate-200 focus:ring-2 focus:ring-clutch-primary focus:border-clutch-primary transition-all cursor-pointer"
+                className="pl-10 pr-12 w-80 h-9 bg-slate-50 dark:bg-slate-800 border-slate-200 dark:border-slate-600 text-slate-900 dark:text-white placeholder-slate-500 dark:placeholder-slate-400 focus:ring-2 focus:ring-clutch-primary focus:border-clutch-primary transition-all cursor-pointer"
                 readOnly
               />
               <div className="absolute right-3 top-1/2 transform -translate-y-1/2">
-                <kbd className="px-1.5 py-0.5 text-xs font-mono bg-white border border-slate-300 rounded shadow-sm">
+                <kbd className="px-1.5 py-0.5 text-xs font-mono bg-white dark:bg-slate-700 border border-slate-300 dark:border-slate-600 rounded shadow-sm text-slate-600 dark:text-slate-300">
                   /
                 </kbd>
               </div>
@@ -884,48 +884,53 @@ const Header = ({
             variant="ghost"
             size="sm"
             onClick={handleKeyboardShortcutsClick}
-            className="h-9 px-3 border-slate-200 hover:bg-slate-50 transition-colors"
+            className="h-9 px-3 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
             aria-label="Keyboard Shortcuts"
             title="Keyboard Shortcuts (Ctrl + ?)"
           >
-            <HelpCircle className="h-4 w-4 mr-2" />
-            <span className="hidden sm:inline">Help</span>
+            <HelpCircle className="h-4 w-4 mr-2 text-slate-600 dark:text-slate-300" />
+            <span className="hidden sm:inline text-slate-700 dark:text-slate-200">Help</span>
           </SnowButton>
           
           <SnowButton
-            variant="outline"
+            variant="ghost"
             size="sm"
             onClick={() => router.push('/dashboard/chat')}
-            className="h-9 px-3 border-slate-200 hover:bg-slate-50 transition-colors"
+            className="h-9 px-3 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
             aria-label="Team Chat"
           >
-            <MessageSquare className="h-4 w-4 mr-2" />
-            <span className="hidden sm:inline">Chat</span>
+            <MessageSquare className="h-4 w-4 mr-2 text-slate-600 dark:text-slate-300" />
+            <span className="hidden sm:inline text-slate-700 dark:text-slate-200">Chat</span>
           </SnowButton>
           <SnowButton
             variant="ghost"
             size="sm"
             onClick={toggleTheme}
-            className="h-9 w-9 p-0 hover:bg-slate-50 transition-colors"
+            className="h-9 w-9 p-0 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
             aria-label="Toggle theme"
+            title={`Switch to ${mounted && theme === 'dark' ? 'light' : 'dark'} mode`}
           >
-            {currentTheme === 'dark' ? (
-              <Sun className="h-4 w-4" />
+            {mounted ? (
+              theme === 'dark' ? (
+                <Sun className="h-4 w-4 text-slate-600 dark:text-slate-300" />
+              ) : (
+                <Moon className="h-4 w-4 text-slate-600 dark:text-slate-300" />
+              )
             ) : (
-              <Moon className="h-4 w-4" />
+              <div className="h-4 w-4 bg-slate-200 rounded animate-pulse" />
             )}
           </SnowButton>
           <SnowButton
             variant="ghost"
             size="sm"
             onClick={toggleNotifications}
-            className="h-9 w-9 p-0 relative hover:bg-slate-50 transition-colors"
+            className="h-9 w-9 p-0 relative hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
             aria-label="Notifications"
             aria-haspopup="dialog"
             aria-expanded={notificationsOpen}
             aria-controls="notifications-popup"
           >
-            <Bell className="h-4 w-4" />
+            <Bell className="h-4 w-4 text-slate-600 dark:text-slate-300" />
             {notifications.length > 0 && (
               <span className="absolute -top-1 -right-1 h-5 w-5 bg-clutch-primary rounded-full text-xs text-white flex items-center justify-center font-medium">
                 {notifications.length > 9 ? '9+' : notifications.length}
