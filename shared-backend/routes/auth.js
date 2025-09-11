@@ -308,9 +308,10 @@ router.get('/employee-me', authenticateToken, async (req, res) => {
         
         // Find employee by ID using native MongoDB driver
         const { getCollection } = require('../config/database');
+        const { ObjectId } = require('mongodb');
         const employeesCollection = await getCollection('employees');
         const employee = await employeesCollection.findOne(
-            { _id: employeeId },
+            { _id: new ObjectId(employeeId) },
             { projection: { password: 0 } }
         );
 
