@@ -790,6 +790,7 @@ app.use(`${apiPrefix}/two-factor-auth`, twoFactorAuthRoutes);
   app.use('/autonomous-dashboard', autonomousDashboardRoutes);
   app.use('/support', supportRoutes);
   app.use('/operations', operationsRoutes);
+  app.use('/hr', hrRoutes);
 
   
 // Fallback routes for missing endpoints
