@@ -77,7 +77,7 @@
     "@testing-library/react": "^16.3.0",
     "@testing-library/user-event": "^14.6.1",
     "@types/jest": "^30.0.0",
-    "eslint": "^8.57.0",
+    "eslint": "^8.57.1",
     "eslint-config-next": "^14.2.32",
     "jest": "^28.1.0",
     "jest-environment-jsdom": "^27.0.0",

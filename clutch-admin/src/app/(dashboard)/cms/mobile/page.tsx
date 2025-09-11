@@ -134,9 +134,13 @@ export default function MobileCMSPage() {
 
   const getTypeIcon = (type: string) => {
     switch (type) {
+      // eslint-disable-next-line jsx-a11y/alt-text
       case 'image': return <Image className="h-4 w-4" />
+      // eslint-disable-next-line jsx-a11y/alt-text
       case 'video': return <Video className="h-4 w-4" />
+      // eslint-disable-next-line jsx-a11y/alt-text
       case 'audio': return <Music className="h-4 w-4" />
+      // eslint-disable-next-line jsx-a11y/alt-text
       default: return <FileText className="h-4 w-4" />
     }
   }
@@ -388,6 +392,7 @@ export default function MobileCMSPage() {
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">Media Assets</CardTitle>
+            {/* eslint-disable-next-line jsx-a11y/alt-text */}
             <Image className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>

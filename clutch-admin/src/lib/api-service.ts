@@ -212,7 +212,7 @@ class ClutchApiService {
       const url = `${this.baseUrl}${endpoint}`
       const headers: Record<string, string> = {
         'Content-Type': 'application/json',
-        ...options.headers,
+        ...(options.headers as Record<string, string>),
       }
 
       // Add authentication token if available
@@ -454,7 +454,7 @@ class ClutchApiService {
     }
   }
 
-  async refreshToken(): Promise<boolean> {
+  async refreshAuthToken(): Promise<boolean> {
     if (!this.refreshToken) {
       return false
     }
@@ -528,6 +528,6 @@ export const {
   login,
   getCurrentUser,
   logout,
-  refreshToken,
+  refreshAuthToken,
   isAuthenticated,
 } = clutchApi

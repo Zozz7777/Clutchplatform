@@ -118,10 +118,15 @@ export default function MediaLibraryPage() {
 
   const getTypeIcon = (type: string) => {
     switch (type) {
+      // eslint-disable-next-line jsx-a11y/alt-text
       case 'image': return <Image className="h-4 w-4" />
+      // eslint-disable-next-line jsx-a11y/alt-text
       case 'video': return <Video className="h-4 w-4" />
+      // eslint-disable-next-line jsx-a11y/alt-text
       case 'audio': return <Music className="h-4 w-4" />
+      // eslint-disable-next-line jsx-a11y/alt-text
       case 'document': return <FileText className="h-4 w-4" />
+      // eslint-disable-next-line jsx-a11y/alt-text
       default: return <FileText className="h-4 w-4" />
     }
   }
@@ -242,12 +247,16 @@ export default function MediaLibraryPage() {
             <Card key={file.id} className="overflow-hidden">
               <div className="aspect-square bg-gray-100 flex items-center justify-center">
                 {file.type === 'image' ? (
+                  // eslint-disable-next-line jsx-a11y/alt-text
                   <Image className="h-12 w-12 text-gray-400" />
                 ) : file.type === 'video' ? (
+                  // eslint-disable-next-line jsx-a11y/alt-text
                   <Video className="h-12 w-12 text-gray-400" />
                 ) : file.type === 'audio' ? (
+                  // eslint-disable-next-line jsx-a11y/alt-text
                   <Music className="h-12 w-12 text-gray-400" />
                 ) : (
+                  // eslint-disable-next-line jsx-a11y/alt-text
                   <FileText className="h-12 w-12 text-gray-400" />
                 )}
               </div>
@@ -363,6 +372,7 @@ export default function MediaLibraryPage() {
         <CardContent>
           <div className="grid gap-4 md:grid-cols-3">
             <div className="text-center p-4 border rounded-lg">
+              {/* eslint-disable-next-line jsx-a11y/alt-text */}
               <Image className="h-8 w-8 mx-auto mb-2 text-blue-600" />
               <h3 className="font-semibold">Most Used Type</h3>
               <p className="text-sm text-muted-foreground">Images (71%)</p>
