@@ -15,6 +15,15 @@ const supportRateLimit = createSmartRateLimit({
 // Apply rate limiting to all support routes
 router.use(supportRateLimit);
 
+// Simple test endpoint without authentication
+router.get('/test', (req, res) => {
+  res.json({
+    success: true,
+    message: 'Support routes are working',
+    timestamp: new Date()
+  });
+});
+
 // ==================== SUPPORT TICKETS ====================
 
 // Get support tickets
