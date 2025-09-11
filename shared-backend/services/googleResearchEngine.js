@@ -3,7 +3,7 @@ const cheerio = require('cheerio');
 
 class GoogleResearchEngine {
   constructor() {
-    this.logger = require('../config/logger');
+    this.logger = require('../config/logger').logger;
     this.researchCache = new Map();
     this.cacheTimeout = 300000; // 5 minutes
     this.maxResults = 10;
