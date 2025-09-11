@@ -24,6 +24,9 @@ import { Badge } from '@/components/ui/badge'
 import { useConsolidatedDashboard } from '@/hooks/useConsolidatedDashboard'
 import { formatCurrency, formatNumber } from '@/lib/utils'
 import ApiErrorHandler from '@/components/error-handlers/api-error-handler'
+import DashboardWidget from '@/components/dashboard/dashboard-widget'
+import SimpleChart from '@/components/charts/simple-chart'
+import { DataContext, StatusIndicator, MetricCard } from '@/components/dashboard/data-context'
 
 // Metric Card Component
 const MetricCard = ({ 
@@ -42,11 +45,11 @@ const MetricCard = ({
   format?: 'number' | 'currency'
 }) => {
   const colorClasses = {
-    blue: 'text-blue-600 bg-blue-100',
-    green: 'text-green-600 bg-green-100',
-    red: 'text-red-600 bg-red-100',
-    yellow: 'text-yellow-600 bg-yellow-100',
-    purple: 'text-purple-600 bg-purple-100'
+    blue: 'text-clutch-secondary bg-clutch-secondary-100',
+    green: 'text-success bg-success-100',
+    red: 'text-clutch-primary bg-clutch-primary-100',
+    yellow: 'text-warning bg-warning-100',
+    purple: 'text-info bg-info-100'
   }
 
   const displayValue = format === 'currency' ? formatCurrency(value) : formatNumber(value)
@@ -102,23 +105,23 @@ const ActivityItem = ({ activity }: { activity: any }) => {
     switch (status.toLowerCase()) {
       case 'completed':
       case 'success':
-        return 'bg-green-100 text-green-800'
+        return 'bg-success-100 text-success-dark'
       case 'pending':
       case 'processing':
-        return 'bg-yellow-100 text-yellow-800'
+        return 'bg-warning-100 text-warning-dark'
       case 'failed':
       case 'error':
-        return 'bg-red-100 text-red-800'
+        return 'bg-error-100 text-error-dark'
       default:
-        return 'bg-blue-100 text-blue-800'
+        return 'bg-info-100 text-info-dark'
     }
   }
 
   return (
-    <div className="flex items-center space-x-3 p-3 hover:bg-gray-50 rounded-lg transition-colors">
+    <div className="flex items-center space-x-3 p-3 hover:bg-slate-50 rounded-lg transition-colors">
       {getStatusIcon(activity.status)}
       <div className="flex-1 min-w-0">
-        <p className="text-sm font-medium text-gray-900">{activity.action}</p>
+        <p className="text-sm font-medium text-slate-900">{activity.action}</p>
         <p className="text-sm text-slate-600 truncate">{activity.description}</p>
       </div>
       <div className="flex items-center space-x-2">
@@ -151,22 +154,22 @@ const ServiceStatus = ({ service }: { service: any }) => {
   const getStatusColor = (status: string) => {
     switch (status.toLowerCase()) {
       case 'online':
-        return 'bg-green-100 text-green-800'
+        return 'bg-success-100 text-success-dark'
       case 'offline':
-        return 'bg-red-100 text-red-800'
+        return 'bg-error-100 text-error-dark'
       case 'warning':
-        return 'bg-yellow-100 text-yellow-800'
+        return 'bg-warning-100 text-warning-dark'
       default:
-        return 'bg-blue-100 text-blue-800'
+        return 'bg-info-100 text-info-dark'
     }
   }
 
   return (
-    <div className="flex items-center justify-between p-3 hover:bg-gray-50 rounded-lg transition-colors">
+    <div className="flex items-center justify-between p-3 hover:bg-slate-50 rounded-lg transition-colors">
       <div className="flex items-center space-x-3">
         {getStatusIcon(service.status)}
         <div>
-          <p className="text-sm font-medium text-gray-900">{service.name}</p>
+          <p className="text-sm font-medium text-slate-900">{service.name}</p>
           <p className="text-xs text-slate-600">Uptime: {service.uptime}</p>
         </div>
       </div>
@@ -196,8 +199,8 @@ export default function ConsolidatedDashboardPage() {
     return (
       <div className="flex items-center justify-center min-h-screen">
         <div className="text-center">
-          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-red-500 mx-auto mb-4"></div>
-          <p className="text-gray-600">Loading dashboard data...</p>
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-clutch-primary mx-auto mb-4"></div>
+          <p className="text-slate-600">Loading dashboard data...</p>
         </div>
       </div>
     )
@@ -218,7 +221,7 @@ export default function ConsolidatedDashboardPage() {
     return (
       <div className="p-6">
         <div className="text-center">
-          <p className="text-gray-600">No dashboard data available</p>
+          <p className="text-slate-600">No dashboard data available</p>
           <SnowButton onClick={refreshData} className="mt-4">
             <RefreshCw className="h-4 w-4 mr-2" />
             Retry
@@ -229,129 +232,117 @@ export default function ConsolidatedDashboardPage() {
   }
 
   return (
-    <div className="p-6 space-y-6">
-      <div className="flex items-center justify-between">
-        <div>
-          <h1 className="text-3xl font-bold text-gray-900">Dashboard</h1>
-          <p className="text-slate-700">
-            Last updated: {lastUpdated?.toLocaleString()}
-          </p>
+    <DataContext
+      title="Dashboard Overview"
+      lastUpdated={lastUpdated}
+      onRefresh={refreshData}
+      timeRange="Last 30 days"
+      totalRecords={metrics?.users.total || 0}
+    >
+      <div className="space-y-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+          <MetricCard
+            title="Total Users"
+            value={metrics?.users.total || 0}
+            change={metrics?.users.growth}
+            trend={metrics?.users.growth && metrics.users.growth > 0 ? 'up' : 'down'}
+            format="number"
+          />
+          <MetricCard
+            title="Total Orders"
+            value={metrics?.orders.total || 0}
+            change={metrics?.orders.growth}
+            trend={metrics?.orders.growth && metrics.orders.growth > 0 ? 'up' : 'down'}
+            format="number"
+          />
+          <MetricCard
+            title="Monthly Revenue"
+            value={metrics?.revenue.monthly || 0}
+            change={metrics?.revenue.growth}
+            trend={metrics?.revenue.growth && metrics.revenue.growth > 0 ? 'up' : 'down'}
+            format="currency"
+          />
+          <MetricCard
+            title="Active Vehicles"
+            value={metrics?.vehicles.available || 0}
+            format="number"
+          />
         </div>
-        <SnowButton onClick={refreshData} variant="outline">
-          <RefreshCw className="h-4 w-4 mr-2" />
-          Refresh
-        </SnowButton>
-      </div>
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-        <MetricCard
-          title="Total Users"
-          value={metrics?.users.total || 0}
-          growth={metrics?.users.growth}
-          icon={Users}
-          color="blue"
-        />
-        <MetricCard
-          title="Total Orders"
-          value={metrics?.orders.total || 0}
-          growth={metrics?.orders.growth}
-          icon={ShoppingCart}
-          color="green"
-        />
-        <MetricCard
-          title="Monthly Revenue"
-          value={metrics?.revenue.monthly || 0}
-          growth={metrics?.revenue.growth}
-          icon={PoundSterling}
-          color="purple"
-          format="currency"
-        />
-        <MetricCard
-          title="Active Vehicles"
-          value={metrics?.vehicles.available || 0}
-          icon={Car}
-          color="red"
-        />
-      </div>
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <MetricCard
-          title="Total Services"
-          value={metrics?.services.total || 0}
-          icon={Wrench}
-          color="yellow"
-        />
-        <MetricCard
-          title="Active Partners"
-          value={metrics?.partners.active || 0}
-          icon={Handshake}
-          color="green"
-        />
-        <MetricCard
-          title="Pending Orders"
-          value={metrics?.orders.pending || 0}
-          icon={Clock}
-          color="yellow"
-        />
-      </div>
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <SnowCard>
-          <SnowCardHeader>
-            <SnowCardTitle>Recent Activity</SnowCardTitle>
-            <SnowCardDescription>
-              Latest system activities and updates
-            </SnowCardDescription>
-          </SnowCardHeader>
-          <SnowCardContent>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <MetricCard
+            title="Total Services"
+            value={metrics?.services.total || 0}
+            format="number"
+          />
+          <MetricCard
+            title="Active Partners"
+            value={metrics?.partners.active || 0}
+            format="number"
+          />
+          <MetricCard
+            title="Pending Orders"
+            value={metrics?.orders.pending || 0}
+            format="number"
+          />
+        </div>
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          <DashboardWidget
+            title="Recent Activity"
+            onRefresh={refreshData}
+            size="medium"
+          >
             <div className="space-y-2">
               {activityLogs.slice(0, 5).map((activity, index) => (
                 <ActivityItem key={activity.id || index} activity={activity} />
               ))}
               {activityLogs.length === 0 && (
-                <p className="text-center text-slate-600 py-4">No recent activity</p>
+                <div className="text-center py-8">
+                  <div className="text-slate-500 mb-2">No recent activity</div>
+                  <div className="text-sm text-slate-400">Activity will appear here as it happens</div>
+                </div>
               )}
             </div>
-          </SnowCardContent>
-        </SnowCard>
-        <SnowCard>
-          <SnowCardHeader>
-            <SnowCardTitle>Platform Services</SnowCardTitle>
-            <SnowCardDescription>
-              Status of all platform services
-            </SnowCardDescription>
-          </SnowCardHeader>
-          <SnowCardContent>
-            <div className="space-y-2">
+          </DashboardWidget>
+          
+          <DashboardWidget
+            title="Platform Services"
+            onRefresh={refreshData}
+            size="medium"
+          >
+            <div className="space-y-3">
               {platformServices.map((service, index) => (
-                <ServiceStatus key={service.name || index} service={service} />
+                <StatusIndicator
+                  key={service.name || index}
+                  status={service.status === 'online' ? 'online' : service.status === 'warning' ? 'warning' : 'error'}
+                  label={service.name}
+                  value={`Uptime: ${service.uptime}`}
+                />
               ))}
             </div>
-          </SnowCardContent>
-        </SnowCard>
-      </div>
-      <SnowCard>
-        <SnowCardHeader>
-          <SnowCardTitle>System Status</SnowCardTitle>
-          <SnowCardDescription>
-            Current system performance metrics
-          </SnowCardDescription>
-        </SnowCardHeader>
-        <SnowCardContent>
+          </DashboardWidget>
+        </div>
+        <DashboardWidget
+          title="System Status"
+          onRefresh={refreshData}
+          size="large"
+        >
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
             {systemStatus.map((status, index) => (
-              <div key={status.name || index} className="text-center p-4 bg-gray-50 rounded-lg">
-                <p className="text-sm text-gray-600">{status.name}</p>
-                <p className="text-2xl font-bold text-gray-900">
+              <div key={status.name || index} className="text-center p-4 bg-slate-50 rounded-lg">
+                <p className="text-sm text-slate-600">{status.name}</p>
+                <p className="text-2xl font-bold text-slate-900">
                   {status.value}{status.unit}
                 </p>
                 <Badge className={`mt-2 ${
-                  status.status === 'normal' ? 'bg-green-100 text-green-800' : 'bg-yellow-100 text-yellow-800'
+                  status.status === 'normal' ? 'bg-success-100 text-success-dark' : 'bg-warning-100 text-warning-dark'
                 }`}>
                   {status.status}
                 </Badge>
               </div>
             ))}
           </div>
-        </SnowCardContent>
-      </SnowCard>
-    </div>
+        </DashboardWidget>
+      </div>
+    </DataContext>
   )
 }

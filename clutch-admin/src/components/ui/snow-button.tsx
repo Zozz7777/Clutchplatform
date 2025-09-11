@@ -6,19 +6,20 @@ import { cva, type VariantProps } from 'class-variance-authority'
 import { cn } from '@/lib/utils'
 
 const snowButtonVariants = cva(
-  'inline-flex items-center justify-center whitespace-nowrap rounded-lg text-sm font-medium transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-500 focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 ring-offset-background active:scale-[0.98]',
+  'inline-flex items-center justify-center whitespace-nowrap rounded-lg text-sm font-medium transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-clutch-primary focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 ring-offset-background active:scale-[0.98]',
   {
     variants: {
       variant: {
-        default: 'bg-gradient-to-r from-red-600 to-red-500 text-white shadow-sm hover:from-red-700 hover:to-red-600 hover:shadow-md hover:scale-105',
-        destructive: 'bg-red-500 text-white shadow-sm hover:bg-red-600 hover:shadow-md',
-        outline: 'border border-red-200 dark:border-red-700 bg-white text-red-800 dark:text-red-300 shadow-sm hover:bg-red-25 hover:text-red-900 dark:hover:bg-red-950/20 hover:shadow-md', /* Improved contrast */
-        secondary: 'bg-red-100 dark:bg-red-900/20 text-red-900 dark:text-red-100 shadow-sm hover:bg-red-200 dark:hover:bg-red-900/40 hover:shadow-md',
-        ghost: 'text-red-800 dark:text-red-300 hover:bg-red-100 dark:hover:bg-red-900/20 hover:text-red-900 dark:hover:text-red-100', /* Better base contrast */
-        link: 'text-red-600 underline-offset-4 hover:underline hover:text-red-700',
-        success: 'bg-emerald-500 text-white shadow-sm hover:bg-emerald-600 hover:shadow-md',
-        warning: 'bg-amber-500 text-white shadow-sm hover:bg-amber-600 hover:shadow-md',
-        gradient: 'bg-gradient-to-r from-red-600 to-red-500 text-white shadow-sm hover:from-red-700 hover:to-red-600 hover:shadow-md hover:scale-105',
+        default: 'bg-clutch-primary text-white shadow-sm hover:bg-clutch-primary-dark hover:shadow-md hover:scale-105',
+        destructive: 'bg-error text-white shadow-sm hover:bg-error-dark hover:shadow-md',
+        outline: 'border border-clutch-primary-100 bg-white text-clutch-primary-900 shadow-sm hover:bg-clutch-primary-50 hover:text-clutch-primary-dark hover:shadow-md',
+        secondary: 'bg-clutch-primary-100 text-clutch-primary-900 shadow-sm hover:bg-clutch-primary-200 hover:shadow-md',
+        ghost: 'text-slate-700 hover:bg-slate-100 hover:text-slate-900',
+        link: 'text-clutch-primary underline-offset-4 hover:underline hover:text-clutch-primary-dark',
+        success: 'bg-success text-white shadow-sm hover:bg-success-dark hover:shadow-md',
+        warning: 'bg-warning text-white shadow-sm hover:bg-warning-dark hover:shadow-md',
+        info: 'bg-info text-white shadow-sm hover:bg-info-dark hover:shadow-md',
+        gradient: 'bg-gradient-to-r from-clutch-primary to-clutch-primary-light text-white shadow-sm hover:from-clutch-primary-dark hover:to-clutch-primary hover:shadow-md hover:scale-105',
       },
       size: {
         default: 'h-10 px-4 py-2',

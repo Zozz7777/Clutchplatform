@@ -5,19 +5,20 @@ import { cva, type VariantProps } from 'class-variance-authority'
 import { cn } from '@/lib/utils'
 
 const snowCardVariants = cva(
-  'rounded-xl border bg-white bg-white text-slate-900 dark:text-slate-100 transition-all duration-300 hover:shadow-lg',
+  'rounded-xl border bg-white text-slate-900 dark:text-slate-100 transition-all duration-300 hover:shadow-lg',
   {
     variants: {
       variant: {
-        default: 'border-red-200/30 dark:border-red-800/30 shadow-sm hover:shadow-xl hover:border-red-300/50 dark:hover:border-red-700/50',
-        elevated: 'border-red-200/30 dark:border-red-800/30 shadow-lg hover:shadow-2xl hover:border-red-300/50 dark:hover:border-red-700/50',
-        outline: 'border-red-200 dark:border-red-700',
+        default: 'border-slate-200 shadow-sm hover:shadow-xl hover:border-slate-300',
+        elevated: 'border-slate-200 shadow-lg hover:shadow-2xl hover:border-slate-300',
+        outline: 'border-slate-300',
         ghost: 'border-transparent shadow-none',
-        primary: 'border-red-300/40 bg-gradient-to-br from-red-50/80 to-white dark:from-red-950/30 dark:to-slate-900',
-        success: 'border-emerald-200 dark:border-emerald-800 bg-emerald-50 dark:bg-emerald-950/50',
-        warning: 'border-amber-200 dark:border-amber-800 bg-amber-50 dark:bg-amber-950/50',
-        destructive: 'border-red-300 dark:border-red-700 bg-red-50 dark:bg-red-950/50',
-        dark: 'bg-slate-800 bg-white border-slate-700 border-slate-200 text-white shadow-lg',
+        primary: 'border-clutch-primary-100 bg-clutch-primary-50',
+        success: 'border-success-100 bg-success-50',
+        warning: 'border-warning-100 bg-warning-50',
+        error: 'border-error-100 bg-error-50',
+        info: 'border-info-100 bg-info-50',
+        dark: 'bg-slate-800 border-slate-700 text-white shadow-lg',
       },
       size: {
         default: 'p-6',
@@ -68,10 +69,10 @@ const SnowCardTitle = React.forwardRef<
 >(({ className, icon, children, ...props }, ref) => (
   <h3
     ref={ref}
-    className={cn('text-xl font-semibold leading-none tracking-tight text-slate-900 dark:text-slate-100 flex items-center gap-2', className)}
+    className={cn('text-xl font-semibold leading-tight tracking-tight text-slate-900 dark:text-slate-100 flex items-center gap-2', className)}
     {...props}
   >
-    {icon && <span className="text-red-500">{icon}</span>}
+    {icon && <span className="text-clutch-primary">{icon}</span>}
     {children}
   </h3>
 ))
@@ -83,7 +84,7 @@ const SnowCardDescription = React.forwardRef<
 >(({ className, ...props }, ref) => (
   <p
     ref={ref}
-    className={cn('text-sm text-slate-600 text-slate-600', className)}
+    className={cn('text-sm text-slate-600 dark:text-slate-400 leading-relaxed', className)}
     {...props}
   />
 ))

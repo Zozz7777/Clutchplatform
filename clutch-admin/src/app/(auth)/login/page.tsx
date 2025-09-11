@@ -196,7 +196,7 @@ function LoginForm() {
                  )}
                  <SnowButton
                    type="submit"
-                   className="w-full h-10 bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 text-white font-semibold rounded-lg transition-all duration-200 transform hover:scale-[1.02] active:scale-[0.98] shadow-lg hover:shadow-xl mt-3"
+                   className="w-full h-10 bg-clutch-primary hover:bg-clutch-primary-dark text-white font-semibold rounded-lg transition-all duration-200 transform hover:scale-[1.02] active:scale-[0.98] shadow-lg hover:shadow-xl mt-3"
                    disabled={isLoading}
                  >
                   {isLoading ? (
@@ -262,7 +262,7 @@ export default function LoginPage() {
     <Suspense fallback={
       <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 flex items-center justify-center">
         <div className="text-center">
-          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-red-500 mx-auto mb-3"></div>
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-clutch-primary mx-auto mb-3"></div>
           <p className="text-white text-base">Loading Clutch Admin...</p>
         </div>
       </div>

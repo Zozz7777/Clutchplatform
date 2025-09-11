@@ -10,7 +10,21 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
-        // Clutch Brand Colors - Updated to match SnowUI
+        // Enhanced Clutch Brand Colors
+        'clutch': {
+          primary: 'hsl(var(--clutch-primary))',
+          'primary-light': 'hsl(var(--clutch-primary-light))',
+          'primary-dark': 'hsl(var(--clutch-primary-dark))',
+          'primary-50': 'hsl(var(--clutch-primary-50))',
+          'primary-100': 'hsl(var(--clutch-primary-100))',
+          'primary-900': 'hsl(var(--clutch-primary-900))',
+          secondary: 'hsl(var(--clutch-secondary))',
+          'secondary-light': 'hsl(var(--clutch-secondary-light))',
+          'secondary-dark': 'hsl(var(--clutch-secondary-dark))',
+          'secondary-50': 'hsl(var(--clutch-secondary-50))',
+          'secondary-100': 'hsl(var(--clutch-secondary-100))',
+        },
+        // Legacy support
         'clutch-red': {
           DEFAULT: '#ED1B24',
           50: '#FEF2F2',
@@ -26,9 +40,9 @@ const config: Config = {
           950: '#450A0A',
         },
         'clutch-blue': {
-          DEFAULT: 'hsl(var(--clutch-blue))',
-          light: 'hsl(var(--clutch-blue-light))',
-          dark: 'hsl(var(--clutch-blue-dark))',
+          DEFAULT: 'hsl(var(--clutch-secondary))',
+          light: 'hsl(var(--clutch-secondary-light))',
+          dark: 'hsl(var(--clutch-secondary-dark))',
         },
         // SnowUI Design System Colors
         snow: {
@@ -57,11 +71,35 @@ const config: Config = {
           800: 'hsl(var(--slate-800))',
           900: 'hsl(var(--slate-900))',
         },
-        // Semantic Colors
-        success: 'hsl(var(--success))',
-        warning: 'hsl(var(--warning))',
-        error: 'hsl(var(--error))',
-        info: 'hsl(var(--info))',
+        // Enhanced Semantic Colors
+        success: {
+          DEFAULT: 'hsl(var(--success))',
+          light: 'hsl(var(--success-light))',
+          dark: 'hsl(var(--success-dark))',
+          50: 'hsl(var(--success-50))',
+          100: 'hsl(var(--success-100))',
+        },
+        warning: {
+          DEFAULT: 'hsl(var(--warning))',
+          light: 'hsl(var(--warning-light))',
+          dark: 'hsl(var(--warning-dark))',
+          50: 'hsl(var(--warning-50))',
+          100: 'hsl(var(--warning-100))',
+        },
+        error: {
+          DEFAULT: 'hsl(var(--error))',
+          light: 'hsl(var(--error-light))',
+          dark: 'hsl(var(--error-dark))',
+          50: 'hsl(var(--error-50))',
+          100: 'hsl(var(--error-100))',
+        },
+        info: {
+          DEFAULT: 'hsl(var(--info))',
+          light: 'hsl(var(--info-light))',
+          dark: 'hsl(var(--info-dark))',
+          50: 'hsl(var(--info-50))',
+          100: 'hsl(var(--info-100))',
+        },
         // Background Colors
         background: "hsl(var(--background))",
         foreground: "hsl(var(--foreground))",
@@ -107,6 +145,7 @@ const config: Config = {
         mono: ['var(--font-geist-mono)', 'monospace'],
       },
       spacing: {
+        '0': 'var(--space-0)',
         '1': 'var(--space-1)',
         '2': 'var(--space-2)',
         '3': 'var(--space-3)',
@@ -119,9 +158,36 @@ const config: Config = {
         '16': 'var(--space-16)',
         '20': 'var(--space-20)',
         '24': 'var(--space-24)',
+        '32': 'var(--space-32)',
         '64': '16rem', // 256px
-        '80': '20rem', // 320px (16 + 64)
+        '80': '20rem', // 320px
         '128': '32rem', // 512px
+      },
+      fontSize: {
+        'xs': 'var(--font-size-xs)',
+        'sm': 'var(--font-size-sm)',
+        'base': 'var(--font-size-base)',
+        'lg': 'var(--font-size-lg)',
+        'xl': 'var(--font-size-xl)',
+        '2xl': 'var(--font-size-2xl)',
+        '3xl': 'var(--font-size-3xl)',
+        '4xl': 'var(--font-size-4xl)',
+        '5xl': 'var(--font-size-5xl)',
+      },
+      fontWeight: {
+        'light': 'var(--font-weight-light)',
+        'normal': 'var(--font-weight-normal)',
+        'medium': 'var(--font-weight-medium)',
+        'semibold': 'var(--font-weight-semibold)',
+        'bold': 'var(--font-weight-bold)',
+        'extrabold': 'var(--font-weight-extrabold)',
+      },
+      lineHeight: {
+        'tight': 'var(--line-height-tight)',
+        'snug': 'var(--line-height-snug)',
+        'normal': 'var(--line-height-normal)',
+        'relaxed': 'var(--line-height-relaxed)',
+        'loose': 'var(--line-height-loose)',
       },
       boxShadow: {
         'sm': 'var(--shadow-sm)',
