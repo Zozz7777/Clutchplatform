@@ -121,7 +121,8 @@ class PerformanceMonitor {
       
       // Only send if we have meaningful data
       if (metrics.apiResponseTimes.length > 0 || metrics.userInteractions > 0) {
-        const response = await fetch('/api/v1/performance/client-metrics', {
+        const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api/v1'
+        const response = await fetch(`${apiUrl}/performance/client-metrics`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',

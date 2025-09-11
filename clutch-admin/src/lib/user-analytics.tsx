@@ -340,7 +340,8 @@ export class UserAnalytics {
   // Send event to analytics service
   private async sendEvent(event: AnalyticsEvent) {
     try {
-      await fetch('/api/analytics/events', {
+      const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api/v1'
+      await fetch(`${apiUrl}/analytics/events`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(event)
@@ -353,7 +354,8 @@ export class UserAnalytics {
   // Send session to analytics service
   private async sendSession(session: UserSession) {
     try {
-      await fetch('/api/analytics/sessions', {
+      const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api/v1'
+      await fetch(`${apiUrl}/analytics/sessions`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(session)

@@ -380,7 +380,8 @@ export class UserFeedbackManager {
 
   private async sendToServer(feedback: FeedbackItem): Promise<void> {
     // This would send feedback to your backend API
-    const response = await fetch('/api/feedback', {
+    const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api/v1'
+    const response = await fetch(`${apiUrl}/feedback`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',

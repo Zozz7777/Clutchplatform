@@ -43,7 +43,7 @@ class ErrorTracker {
 
   constructor(config: Partial<ErrorTrackerConfig> = {}) {
     this.config = {
-      apiEndpoint: process.env.NEXT_PUBLIC_API_URL + '/api/v1/errors/frontend' || '/api/v1/errors/frontend',
+      apiEndpoint: (process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api/v1') + '/errors/frontend',
       batchSize: 10,
       flushInterval: 5000, // 5 seconds
       maxRetries: 3,

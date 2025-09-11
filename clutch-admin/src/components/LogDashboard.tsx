@@ -38,7 +38,8 @@ export function LogDashboard() {
   // Fetch errors from backend
   const fetchErrors = async () => {
     try {
-      const response = await fetch('/api/v1/errors/frontend?limit=50');
+      const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api/v1'
+      const response = await fetch(`${apiUrl}/errors/frontend?limit=50`);
       const data = await response.json();
       
       if (data.success) {

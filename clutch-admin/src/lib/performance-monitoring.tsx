@@ -356,7 +356,8 @@ export class PerformanceMonitor {
   // Send error report to monitoring service
   private async sendErrorReport(error: ErrorReport) {
     try {
-      await fetch('/api/monitoring/errors', {
+      const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api/v1'
+      await fetch(`${apiUrl}/monitoring/errors`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(error)
@@ -396,7 +397,8 @@ export class PerformanceMonitor {
   // Send analytics data
   private async sendAnalytics(event: string, data: any) {
     try {
-      await fetch('/api/monitoring/analytics', {
+      const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api/v1'
+      await fetch(`${apiUrl}/monitoring/analytics`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
