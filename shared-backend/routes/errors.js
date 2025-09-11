@@ -9,6 +9,49 @@ const { performanceMonitor } = require('../middleware/performanceMonitor');
  * Receives and stores console errors from admin.yourclutch.com
  */
 
+// Get frontend errors
+router.get('/frontend', async (req, res) => {
+  try {
+    const { limit = 50, level = 'all' } = req.query;
+    const collection = await getCollection('frontend_errors');
+    
+    let filter = {};
+    if (level !== 'all') {
+      filter.severity = level;
+    }
+    
+    const errors = await collection
+      .find(filter)
+      .sort({ receivedAt: -1 })
+      .limit(parseInt(limit))
+      .toArray();
+    
+    // Calculate summary
+    const summary = {
+      total: errors.length,
+      severityCounts: {
+        critical: errors.filter(e => e.severity === 'critical').length,
+        high: errors.filter(e => e.severity === 'high').length,
+        medium: errors.filter(e => e.severity === 'medium').length,
+        low: errors.filter(e => e.severity === 'low').length
+      }
+    };
+    
+    res.json({
+      success: true,
+      data: {
+        errors,
+        summary
+      }
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      error: error.message
+    });
+  }
+});
+
 // Store frontend errors
 router.post('/frontend', async (req, res) => {
   const startTime = Date.now();

@@ -791,6 +791,7 @@ app.use(`${apiPrefix}/two-factor-auth`, twoFactorAuthRoutes);
   app.use('/support', supportRoutes);
   app.use('/operations', operationsRoutes);
   app.use('/hr', hrRoutes);
+  app.use('/errors', errorRoutes);
 
   
 // Fallback routes for missing endpoints

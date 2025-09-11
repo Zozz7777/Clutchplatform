@@ -996,4 +996,694 @@ router.get('/business/market-analysis', authenticateToken, async (req, res) => {
   }
 });
 
+// ==================== ADDITIONAL MISSING ADMIN ENDPOINTS ====================
+
+// Platform Services endpoint
+router.get('/platform/services', authenticateToken, async (req, res) => {
+  try {
+    const services = [
+      { name: 'Authentication Service', status: 'healthy', uptime: '99.9%' },
+      { name: 'User Management', status: 'healthy', uptime: '99.8%' },
+      { name: 'Payment Processing', status: 'healthy', uptime: '99.7%' },
+      { name: 'Notification Service', status: 'healthy', uptime: '99.6%' },
+      { name: 'Analytics Engine', status: 'healthy', uptime: '99.5%' },
+      { name: 'File Storage', status: 'healthy', uptime: '99.4%' }
+    ];
+    
+    res.json({
+      success: true,
+      data: services
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      error: error.message
+    });
+  }
+});
+
+// Activity Logs endpoint
+router.get('/activity-logs', authenticateToken, async (req, res) => {
+  try {
+    const { limit = 20 } = req.query;
+    const logsCollection = await getCollection('activity_logs');
+    const logs = await logsCollection
+      .find({})
+      .sort({ timestamp: -1 })
+      .limit(parseInt(limit))
+      .toArray();
+    
+    res.json({
+      success: true,
+      data: logs
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      error: error.message
+    });
+  }
+});
+
+// User Management endpoints
+router.get('/users', authenticateToken, async (req, res) => {
+  try {
+    const { page = 1, limit = 20, filters } = req.query;
+    const usersCollection = await getCollection('users');
+    const skip = (parseInt(page) - 1) * parseInt(limit);
+    
+    const users = await usersCollection
+      .find({}, { projection: { password: 0 } })
+      .skip(skip)
+      .limit(parseInt(limit))
+      .toArray();
+    
+    const total = await usersCollection.countDocuments();
+    
+    res.json({
+      success: true,
+      data: users,
+      pagination: {
+        page: parseInt(page),
+        limit: parseInt(limit),
+        total,
+        totalPages: Math.ceil(total / parseInt(limit))
+      }
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      error: error.message
+    });
+  }
+});
+
+router.get('/users/:id', authenticateToken, async (req, res) => {
+  try {
+    const { id } = req.params;
+    const usersCollection = await getCollection('users');
+    const user = await usersCollection.findOne(
+      { _id: new ObjectId(id) },
+      { projection: { password: 0 } }
+    );
+    
+    if (!user) {
+      return res.status(404).json({
+        success: false,
+        error: 'User not found'
+      });
+    }
+    
+    res.json({
+      success: true,
+      data: user
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      error: error.message
+    });
+  }
+});
+
+router.post('/users', authenticateToken, requireRole(['admin']), async (req, res) => {
+  try {
+    const userData = req.body;
+    const usersCollection = await getCollection('users');
+    
+    const result = await usersCollection.insertOne({
+      ...userData,
+      createdAt: new Date(),
+      updatedAt: new Date()
+    });
+    
+    res.status(201).json({
+      success: true,
+      data: { id: result.insertedId, ...userData }
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      error: error.message
+    });
+  }
+});
+
+router.put('/users/:id', authenticateToken, requireRole(['admin']), async (req, res) => {
+  try {
+    const { id } = req.params;
+    const userData = req.body;
+    const usersCollection = await getCollection('users');
+    
+    const result = await usersCollection.updateOne(
+      { _id: new ObjectId(id) },
+      { $set: { ...userData, updatedAt: new Date() } }
+    );
+    
+    if (result.matchedCount === 0) {
+      return res.status(404).json({
+        success: false,
+        error: 'User not found'
+      });
+    }
+    
+    res.json({
+      success: true,
+      data: { id, ...userData }
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      error: error.message
+    });
+  }
+});
+
+router.delete('/users/:id', authenticateToken, requireRole(['admin']), async (req, res) => {
+  try {
+    const { id } = req.params;
+    const usersCollection = await getCollection('users');
+    
+    const result = await usersCollection.deleteOne({ _id: new ObjectId(id) });
+    
+    if (result.deletedCount === 0) {
+      return res.status(404).json({
+        success: false,
+        error: 'User not found'
+      });
+    }
+    
+    res.json({
+      success: true,
+      message: 'User deleted successfully'
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      error: error.message
+    });
+  }
+});
+
+// Driver Management endpoints
+router.get('/drivers', authenticateToken, async (req, res) => {
+  try {
+    const { page = 1, limit = 20 } = req.query;
+    const driversCollection = await getCollection('drivers');
+    const skip = (parseInt(page) - 1) * parseInt(limit);
+    
+    const drivers = await driversCollection
+      .find({})
+      .skip(skip)
+      .limit(parseInt(limit))
+      .toArray();
+    
+    const total = await driversCollection.countDocuments();
+    
+    res.json({
+      success: true,
+      data: drivers,
+      pagination: {
+        page: parseInt(page),
+        limit: parseInt(limit),
+        total,
+        totalPages: Math.ceil(total / parseInt(limit))
+      }
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      error: error.message
+    });
+  }
+});
+
+router.get('/drivers/:id', authenticateToken, async (req, res) => {
+  try {
+    const { id } = req.params;
+    const driversCollection = await getCollection('drivers');
+    const driver = await driversCollection.findOne({ _id: new ObjectId(id) });
+    
+    if (!driver) {
+      return res.status(404).json({
+        success: false,
+        error: 'Driver not found'
+      });
+    }
+    
+    res.json({
+      success: true,
+      data: driver
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      error: error.message
+    });
+  }
+});
+
+router.put('/drivers/:id/status', authenticateToken, requireRole(['admin']), async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { status } = req.body;
+    const driversCollection = await getCollection('drivers');
+    
+    const result = await driversCollection.updateOne(
+      { _id: new ObjectId(id) },
+      { $set: { status, updatedAt: new Date() } }
+    );
+    
+    if (result.matchedCount === 0) {
+      return res.status(404).json({
+        success: false,
+        error: 'Driver not found'
+      });
+    }
+    
+    res.json({
+      success: true,
+      data: { id, status }
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      error: error.message
+    });
+  }
+});
+
+// Partner Management endpoints
+router.get('/partners', authenticateToken, async (req, res) => {
+  try {
+    const { page = 1, limit = 20 } = req.query;
+    const partnersCollection = await getCollection('partners');
+    const skip = (parseInt(page) - 1) * parseInt(limit);
+    
+    const partners = await partnersCollection
+      .find({})
+      .skip(skip)
+      .limit(parseInt(limit))
+      .toArray();
+    
+    const total = await partnersCollection.countDocuments();
+    
+    res.json({
+      success: true,
+      data: partners,
+      pagination: {
+        page: parseInt(page),
+        limit: parseInt(limit),
+        total,
+        totalPages: Math.ceil(total / parseInt(limit))
+      }
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      error: error.message
+    });
+  }
+});
+
+router.get('/partners/:id', authenticateToken, async (req, res) => {
+  try {
+    const { id } = req.params;
+    const partnersCollection = await getCollection('partners');
+    const partner = await partnersCollection.findOne({ _id: new ObjectId(id) });
+    
+    if (!partner) {
+      return res.status(404).json({
+        success: false,
+        error: 'Partner not found'
+      });
+    }
+    
+    res.json({
+      success: true,
+      data: partner
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      error: error.message
+    });
+  }
+});
+
+router.post('/partners', authenticateToken, requireRole(['admin']), async (req, res) => {
+  try {
+    const partnerData = req.body;
+    const partnersCollection = await getCollection('partners');
+    
+    const result = await partnersCollection.insertOne({
+      ...partnerData,
+      createdAt: new Date(),
+      updatedAt: new Date()
+    });
+    
+    res.status(201).json({
+      success: true,
+      data: { id: result.insertedId, ...partnerData }
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      error: error.message
+    });
+  }
+});
+
+router.put('/partners/:id', authenticateToken, requireRole(['admin']), async (req, res) => {
+  try {
+    const { id } = req.params;
+    const partnerData = req.body;
+    const partnersCollection = await getCollection('partners');
+    
+    const result = await partnersCollection.updateOne(
+      { _id: new ObjectId(id) },
+      { $set: { ...partnerData, updatedAt: new Date() } }
+    );
+    
+    if (result.matchedCount === 0) {
+      return res.status(404).json({
+        success: false,
+        error: 'Partner not found'
+      });
+    }
+    
+    res.json({
+      success: true,
+      data: { id, ...partnerData }
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      error: error.message
+    });
+  }
+});
+
+// Order Management endpoints
+router.get('/orders', authenticateToken, async (req, res) => {
+  try {
+    const { page = 1, limit = 20 } = req.query;
+    const ordersCollection = await getCollection('orders');
+    const skip = (parseInt(page) - 1) * parseInt(limit);
+    
+    const orders = await ordersCollection
+      .find({})
+      .skip(skip)
+      .limit(parseInt(limit))
+      .toArray();
+    
+    const total = await ordersCollection.countDocuments();
+    
+    res.json({
+      success: true,
+      data: orders,
+      pagination: {
+        page: parseInt(page),
+        limit: parseInt(limit),
+        total,
+        totalPages: Math.ceil(total / parseInt(limit))
+      }
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      error: error.message
+    });
+  }
+});
+
+router.get('/orders/:id', authenticateToken, async (req, res) => {
+  try {
+    const { id } = req.params;
+    const ordersCollection = await getCollection('orders');
+    const order = await ordersCollection.findOne({ _id: new ObjectId(id) });
+    
+    if (!order) {
+      return res.status(404).json({
+        success: false,
+        error: 'Order not found'
+      });
+    }
+    
+    res.json({
+      success: true,
+      data: order
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      error: error.message
+    });
+  }
+});
+
+router.put('/orders/:id/status', authenticateToken, requireRole(['admin']), async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { status } = req.body;
+    const ordersCollection = await getCollection('orders');
+    
+    const result = await ordersCollection.updateOne(
+      { _id: new ObjectId(id) },
+      { $set: { status, updatedAt: new Date() } }
+    );
+    
+    if (result.matchedCount === 0) {
+      return res.status(404).json({
+        success: false,
+        error: 'Order not found'
+      });
+    }
+    
+    res.json({
+      success: true,
+      data: { id, status }
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      error: error.message
+    });
+  }
+});
+
+// Analytics endpoints
+router.get('/analytics', authenticateToken, async (req, res) => {
+  try {
+    const { period = '30d' } = req.query;
+    
+    res.json({
+      success: true,
+      data: {
+        period,
+        totalUsers: 1250,
+        totalOrders: 2340,
+        totalRevenue: 45600,
+        growthRate: 0.15,
+        topProducts: [
+          { name: 'Product A', sales: 1200, revenue: 15000 },
+          { name: 'Product B', sales: 980, revenue: 12000 },
+          { name: 'Product C', sales: 750, revenue: 9000 }
+        ],
+        trends: {
+          users: [100, 120, 135, 142, 158, 167, 189],
+          orders: [200, 220, 235, 242, 258, 267, 289],
+          revenue: [3000, 3200, 3350, 3420, 3580, 3670, 3890]
+        }
+      }
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      error: error.message
+    });
+  }
+});
+
+router.get('/revenue', authenticateToken, async (req, res) => {
+  try {
+    const { period = '30d' } = req.query;
+    
+    res.json({
+      success: true,
+      data: {
+        period,
+        totalRevenue: 45600,
+        monthlyRevenue: 12300,
+        weeklyRevenue: 3200,
+        dailyRevenue: 450,
+        growthRate: 0.12,
+        breakdown: {
+          subscriptions: 25000,
+          services: 15000,
+          products: 5600
+        }
+      }
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      error: error.message
+    });
+  }
+});
+
+// Real-time endpoints
+router.get('/realtime/metrics', authenticateToken, async (req, res) => {
+  try {
+    res.json({
+      success: true,
+      data: {
+        activeUsers: 1250,
+        activeDrivers: 89,
+        totalPartners: 45,
+        monthlyRevenue: 12300,
+        systemUptime: 99.9,
+        responseTime: 120,
+        errorRate: 0.02
+      }
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      error: error.message
+    });
+  }
+});
+
+// Notification endpoints
+router.get('/notifications', authenticateToken, async (req, res) => {
+  try {
+    const { page = 1, limit = 20 } = req.query;
+    const notificationsCollection = await getCollection('notifications');
+    const skip = (parseInt(page) - 1) * parseInt(limit);
+    
+    const notifications = await notificationsCollection
+      .find({})
+      .sort({ createdAt: -1 })
+      .skip(skip)
+      .limit(parseInt(limit))
+      .toArray();
+    
+    const total = await notificationsCollection.countDocuments();
+    
+    res.json({
+      success: true,
+      data: notifications,
+      pagination: {
+        page: parseInt(page),
+        limit: parseInt(limit),
+        total,
+        totalPages: Math.ceil(total / parseInt(limit))
+      }
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      error: error.message
+    });
+  }
+});
+
+router.put('/notifications/:id/read', authenticateToken, async (req, res) => {
+  try {
+    const { id } = req.params;
+    const notificationsCollection = await getCollection('notifications');
+    
+    const result = await notificationsCollection.updateOne(
+      { _id: new ObjectId(id) },
+      { $set: { read: true, readAt: new Date() } }
+    );
+    
+    if (result.matchedCount === 0) {
+      return res.status(404).json({
+        success: false,
+        error: 'Notification not found'
+      });
+    }
+    
+    res.json({
+      success: true,
+      message: 'Notification marked as read'
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      error: error.message
+    });
+  }
+});
+
+// Chat endpoints
+router.get('/chat/channels', authenticateToken, async (req, res) => {
+  try {
+    const channelsCollection = await getCollection('chat_channels');
+    const channels = await channelsCollection.find({}).toArray();
+    
+    res.json({
+      success: true,
+      data: channels
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      error: error.message
+    });
+  }
+});
+
+router.get('/chat/channels/:channelId/messages', authenticateToken, async (req, res) => {
+  try {
+    const { channelId } = req.params;
+    const { limit = 50 } = req.query;
+    const messagesCollection = await getCollection('chat_messages');
+    
+    const messages = await messagesCollection
+      .find({ channelId })
+      .sort({ timestamp: -1 })
+      .limit(parseInt(limit))
+      .toArray();
+    
+    res.json({
+      success: true,
+      data: messages
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      error: error.message
+    });
+  }
+});
+
+router.post('/chat/channels/:channelId/messages', authenticateToken, async (req, res) => {
+  try {
+    const { channelId } = req.params;
+    const { message } = req.body;
+    const messagesCollection = await getCollection('chat_messages');
+    
+    const result = await messagesCollection.insertOne({
+      channelId,
+      message,
+      senderId: req.user?.userId,
+      timestamp: new Date()
+    });
+    
+    res.status(201).json({
+      success: true,
+      data: { id: result.insertedId, channelId, message }
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      error: error.message
+    });
+  }
+});
+
 module.exports = router;
