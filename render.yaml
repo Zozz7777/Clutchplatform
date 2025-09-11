@@ -4,7 +4,7 @@ services:
     env: node
     plan: starter
     rootDir: shared-backend
-    buildCommand: npm install --legacy-peer-deps && node scripts/deploy-setup.js
+    buildCommand: npm install --legacy-peer-deps
     startCommand: npm start
     envVars:
       # NODE ENVIRONMENT & SERVER CONFIGURATION
@@ -287,4 +287,5 @@ services:
 
     healthCheckPath: /health
     autoDeploy: true
+    branch: main
     region: oregon

@@ -1,8 +1,5 @@
 const express = require('express');
 const router = express.Router();
-const { logger } = require('../config/logger');
-const { getCollection } = require('../config/database');
-const { performanceMonitor } = require('../middleware/performanceMonitor');
 
 /**
  * Frontend Error Tracking Routes

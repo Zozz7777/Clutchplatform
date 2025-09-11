@@ -829,6 +829,21 @@ app.get('/api/v1/admin/dashboard/consolidated', (req, res) => {
   });
 });
 
+// GitHub webhook endpoint for testing auto-deployment
+app.post('/webhook/github', (req, res) => {
+  console.log('🔔 GitHub webhook received:', {
+    headers: req.headers,
+    body: req.body,
+    timestamp: new Date().toISOString()
+  });
+  
+  res.json({
+    success: true,
+    message: 'Webhook received',
+    timestamp: new Date().toISOString()
+  });
+});
+
 // Removed fallback routes - using actual route files instead
 
 // Removed duplicate fallback routes - proper endpoints exist in route files
