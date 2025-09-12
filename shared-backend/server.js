@@ -3687,6 +3687,1544 @@ app.post('/finance/invoices', (req, res) => {
   }
 });
 
+// Security endpoints
+app.get('/security/sessions', (req, res) => {
+  try {
+    console.log('🧪 Security sessions endpoint called:', {
+      method: req.method,
+      path: req.path,
+      query: req.query,
+      timestamp: new Date().toISOString()
+    });
+    
+    const sessionsData = {
+      success: true,
+      data: [
+        {
+          id: '1',
+          userId: 'user_001',
+          userEmail: 'john@company.com',
+          device: 'Chrome on Windows',
+          ipAddress: '192.168.1.100',
+          location: 'New York, NY',
+          status: 'active',
+          lastActivity: new Date().toISOString(),
+          createdAt: new Date(Date.now() - 2 * 60 * 60 * 1000).toISOString()
+        },
+        {
+          id: '2',
+          userId: 'user_002',
+          userEmail: 'sarah@company.com',
+          device: 'Safari on Mac',
+          ipAddress: '192.168.1.101',
+          location: 'San Francisco, CA',
+          status: 'active',
+          lastActivity: new Date().toISOString(),
+          createdAt: new Date(Date.now() - 30 * 60 * 1000).toISOString()
+        }
+      ],
+      timestamp: new Date().toISOString()
+    };
+    
+    res.json(sessionsData);
+  } catch (error) {
+    console.error('❌ Security sessions endpoint error:', error);
+    res.status(500).json({
+      success: false,
+      error: error.message,
+      timestamp: new Date().toISOString()
+    });
+  }
+});
+
+app.get('/security/metrics', (req, res) => {
+  try {
+    console.log('🧪 Security metrics endpoint called:', {
+      method: req.method,
+      path: req.path,
+      timestamp: new Date().toISOString()
+    });
+    
+    const metricsData = {
+      success: true,
+      data: {
+        totalSessions: 1250,
+        activeSessions: 45,
+        failedLogins: 12,
+        blockedIPs: 3,
+        securityScore: 95,
+        lastSecurityScan: new Date().toISOString(),
+        threatsDetected: 0,
+        vulnerabilities: 2
+      },
+      timestamp: new Date().toISOString()
+    };
+    
+    res.json(metricsData);
+  } catch (error) {
+    console.error('❌ Security metrics endpoint error:', error);
+    res.status(500).json({
+      success: false,
+      error: error.message,
+      timestamp: new Date().toISOString()
+    });
+  }
+});
+
+app.get('/auth/roles', (req, res) => {
+  try {
+    console.log('🧪 Auth roles endpoint called:', {
+      method: req.method,
+      path: req.path,
+      timestamp: new Date().toISOString()
+    });
+    
+    const rolesData = {
+      success: true,
+      data: [
+        {
+          id: '1',
+          name: 'admin',
+          displayName: 'Administrator',
+          permissions: ['read', 'write', 'delete', 'manage_users'],
+          description: 'Full system access',
+          userCount: 5
+        },
+        {
+          id: '2',
+          name: 'manager',
+          displayName: 'Manager',
+          permissions: ['read', 'write'],
+          description: 'Management level access',
+          userCount: 15
+        },
+        {
+          id: '3',
+          name: 'user',
+          displayName: 'User',
+          permissions: ['read'],
+          description: 'Basic user access',
+          userCount: 150
+        }
+      ],
+      timestamp: new Date().toISOString()
+    };
+    
+    res.json(rolesData);
+  } catch (error) {
+    console.error('❌ Auth roles endpoint error:', error);
+    res.status(500).json({
+      success: false,
+      error: error.message,
+      timestamp: new Date().toISOString()
+    });
+  }
+});
+
+app.get('/auth/users', (req, res) => {
+  try {
+    console.log('🧪 Auth users endpoint called:', {
+      method: req.method,
+      path: req.path,
+      query: req.query,
+      timestamp: new Date().toISOString()
+    });
+    
+    const usersData = {
+      success: true,
+      data: [
+        {
+          id: '1',
+          email: 'john@company.com',
+          name: 'John Smith',
+          role: 'admin',
+          status: 'active',
+          lastLogin: new Date().toISOString(),
+          createdAt: new Date().toISOString()
+        },
+        {
+          id: '2',
+          email: 'sarah@company.com',
+          name: 'Sarah Johnson',
+          role: 'manager',
+          status: 'active',
+          lastLogin: new Date().toISOString(),
+          createdAt: new Date().toISOString()
+        }
+      ],
+      timestamp: new Date().toISOString()
+    };
+    
+    res.json(usersData);
+  } catch (error) {
+    console.error('❌ Auth users endpoint error:', error);
+    res.status(500).json({
+      success: false,
+      error: error.message,
+      timestamp: new Date().toISOString()
+    });
+  }
+});
+
+app.post('/auth/roles', (req, res) => {
+  try {
+    console.log('🧪 Auth roles POST endpoint called:', {
+      method: req.method,
+      path: req.path,
+      body: req.body,
+      timestamp: new Date().toISOString()
+    });
+    
+    const roleData = {
+      success: true,
+      data: {
+        id: 'new_role_id',
+        ...req.body,
+        userCount: 0,
+        createdAt: new Date().toISOString()
+      },
+      message: 'Role created successfully',
+      timestamp: new Date().toISOString()
+    };
+    
+    res.json(roleData);
+  } catch (error) {
+    console.error('❌ Auth roles POST endpoint error:', error);
+    res.status(500).json({
+      success: false,
+      error: error.message,
+      timestamp: new Date().toISOString()
+    });
+  }
+});
+
+app.post('/auth/users/:userId/roles', (req, res) => {
+  try {
+    console.log('🧪 Auth user roles assignment endpoint called:', {
+      method: req.method,
+      path: req.path,
+      params: req.params,
+      body: req.body,
+      timestamp: new Date().toISOString()
+    });
+    
+    const assignmentData = {
+      success: true,
+      data: {
+        userId: req.params.userId,
+        roleId: req.body.roleId,
+        assignedAt: new Date().toISOString()
+      },
+      message: 'Role assigned successfully',
+      timestamp: new Date().toISOString()
+    };
+    
+    res.json(assignmentData);
+  } catch (error) {
+    console.error('❌ Auth user roles assignment endpoint error:', error);
+    res.status(500).json({
+      success: false,
+      error: error.message,
+      timestamp: new Date().toISOString()
+    });
+  }
+});
+
+// 2FA Security endpoints
+app.get('/security/2fa/stats', (req, res) => {
+  try {
+    console.log('🧪 Security 2FA stats endpoint called:', {
+      method: req.method,
+      path: req.path,
+      timestamp: new Date().toISOString()
+    });
+    
+    const statsData = {
+      success: true,
+      data: {
+        totalUsers: 150,
+        enabled2FA: 120,
+        disabled2FA: 30,
+        enrollmentRate: 80,
+        lastWeekEnrollments: 15,
+        lastMonthEnrollments: 45
+      },
+      timestamp: new Date().toISOString()
+    };
+    
+    res.json(statsData);
+  } catch (error) {
+    console.error('❌ Security 2FA stats endpoint error:', error);
+    res.status(500).json({
+      success: false,
+      error: error.message,
+      timestamp: new Date().toISOString()
+    });
+  }
+});
+
+app.get('/security/2fa/methods', (req, res) => {
+  try {
+    console.log('🧪 Security 2FA methods endpoint called:', {
+      method: req.method,
+      path: req.path,
+      timestamp: new Date().toISOString()
+    });
+    
+    const methodsData = {
+      success: true,
+      data: [
+        {
+          id: '1',
+          name: 'SMS',
+          enabled: true,
+          userCount: 85,
+          description: 'Text message verification'
+        },
+        {
+          id: '2',
+          name: 'Authenticator App',
+          enabled: true,
+          userCount: 65,
+          description: 'TOTP authenticator app'
+        },
+        {
+          id: '3',
+          name: 'Email',
+          enabled: true,
+          userCount: 45,
+          description: 'Email verification'
+        }
+      ],
+      timestamp: new Date().toISOString()
+    };
+    
+    res.json(methodsData);
+  } catch (error) {
+    console.error('❌ Security 2FA methods endpoint error:', error);
+    res.status(500).json({
+      success: false,
+      error: error.message,
+      timestamp: new Date().toISOString()
+    });
+  }
+});
+
+app.get('/security/2fa/events', (req, res) => {
+  try {
+    console.log('🧪 Security 2FA events endpoint called:', {
+      method: req.method,
+      path: req.path,
+      timestamp: new Date().toISOString()
+    });
+    
+    const eventsData = {
+      success: true,
+      data: [
+        {
+          id: '1',
+          userId: 'user_001',
+          event: '2fa_enabled',
+          method: 'SMS',
+          timestamp: new Date().toISOString(),
+          ipAddress: '192.168.1.100',
+          status: 'success'
+        },
+        {
+          id: '2',
+          userId: 'user_002',
+          event: '2fa_verification',
+          method: 'Authenticator App',
+          timestamp: new Date().toISOString(),
+          ipAddress: '192.168.1.101',
+          status: 'success'
+        }
+      ],
+      timestamp: new Date().toISOString()
+    };
+    
+    res.json(eventsData);
+  } catch (error) {
+    console.error('❌ Security 2FA events endpoint error:', error);
+    res.status(500).json({
+      success: false,
+      error: error.message,
+      timestamp: new Date().toISOString()
+    });
+  }
+});
+
+app.get('/security/2fa/policies', (req, res) => {
+  try {
+    console.log('🧪 Security 2FA policies endpoint called:', {
+      method: req.method,
+      path: req.path,
+      timestamp: new Date().toISOString()
+    });
+    
+    const policiesData = {
+      success: true,
+      data: [
+        {
+          id: '1',
+          name: 'Mandatory 2FA',
+          description: 'All admin users must enable 2FA',
+          scope: 'admin',
+          enabled: true,
+          enforcementDate: new Date().toISOString()
+        },
+        {
+          id: '2',
+          name: 'Optional 2FA',
+          description: 'Regular users can optionally enable 2FA',
+          scope: 'user',
+          enabled: true,
+          enforcementDate: new Date().toISOString()
+        }
+      ],
+      timestamp: new Date().toISOString()
+    };
+    
+    res.json(policiesData);
+  } catch (error) {
+    console.error('❌ Security 2FA policies endpoint error:', error);
+    res.status(500).json({
+      success: false,
+      error: error.message,
+      timestamp: new Date().toISOString()
+    });
+  }
+});
+
+// Analytics endpoints
+app.get('/analytics/reports', (req, res) => {
+  try {
+    console.log('🧪 Analytics reports endpoint called:', {
+      method: req.method,
+      path: req.path,
+      timestamp: new Date().toISOString()
+    });
+    
+    const reportsData = {
+      success: true,
+      data: [
+        {
+          id: '1',
+          name: 'User Engagement Report',
+          type: 'engagement',
+          status: 'completed',
+          generatedDate: new Date().toISOString(),
+          downloadUrl: '/reports/user-engagement.pdf',
+          metrics: {
+            totalUsers: 1250,
+            activeUsers: 890,
+            engagementRate: 71.2
+          }
+        },
+        {
+          id: '2',
+          name: 'Revenue Analytics',
+          type: 'revenue',
+          status: 'completed',
+          generatedDate: new Date().toISOString(),
+          downloadUrl: '/reports/revenue-analytics.pdf',
+          metrics: {
+            totalRevenue: 125000,
+            monthlyGrowth: 12.5,
+            averageOrderValue: 45.80
+          }
+        }
+      ],
+      timestamp: new Date().toISOString()
+    };
+    
+    res.json(reportsData);
+  } catch (error) {
+    console.error('❌ Analytics reports endpoint error:', error);
+    res.status(500).json({
+      success: false,
+      error: error.message,
+      timestamp: new Date().toISOString()
+    });
+  }
+});
+
+app.get('/analytics/reports/:id', (req, res) => {
+  try {
+    console.log('🧪 Analytics report detail endpoint called:', {
+      method: req.method,
+      path: req.path,
+      params: req.params,
+      timestamp: new Date().toISOString()
+    });
+    
+    const reportData = {
+      success: true,
+      data: {
+        id: req.params.id,
+        name: 'User Engagement Report',
+        type: 'engagement',
+        status: 'completed',
+        generatedDate: new Date().toISOString(),
+        downloadUrl: '/reports/user-engagement.pdf',
+        metrics: {
+          totalUsers: 1250,
+          activeUsers: 890,
+          engagementRate: 71.2
+        },
+        charts: {
+          userGrowth: [120, 135, 110, 140, 160, 180, 200],
+          engagementTrends: [65, 68, 70, 72, 71, 73, 75]
+        }
+      },
+      timestamp: new Date().toISOString()
+    };
+    
+    res.json(reportData);
+  } catch (error) {
+    console.error('❌ Analytics report detail endpoint error:', error);
+    res.status(500).json({
+      success: false,
+      error: error.message,
+      timestamp: new Date().toISOString()
+    });
+  }
+});
+
+app.get('/analytics/reports/:id/download', (req, res) => {
+  try {
+    console.log('🧪 Analytics report download endpoint called:', {
+      method: req.method,
+      path: req.path,
+      params: req.params,
+      timestamp: new Date().toISOString()
+    });
+    
+    const downloadData = {
+      success: true,
+      data: {
+        downloadUrl: `/downloads/report-${req.params.id}.pdf`,
+        filename: `report-${req.params.id}.pdf`,
+        size: '2.3MB',
+        expiresAt: new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString()
+      },
+      message: 'Report download link generated successfully',
+      timestamp: new Date().toISOString()
+    };
+    
+    res.json(downloadData);
+  } catch (error) {
+    console.error('❌ Analytics report download endpoint error:', error);
+    res.status(500).json({
+      success: false,
+      error: error.message,
+      timestamp: new Date().toISOString()
+    });
+  }
+});
+
+app.get('/analytics/predictive', (req, res) => {
+  try {
+    console.log('🧪 Analytics predictive endpoint called:', {
+      method: req.method,
+      path: req.path,
+      timestamp: new Date().toISOString()
+    });
+    
+    const predictiveData = {
+      success: true,
+      data: [
+        {
+          id: '1',
+          name: 'Customer Churn Prediction',
+          type: 'churn',
+          accuracy: 87.5,
+          status: 'active',
+          lastUpdated: new Date().toISOString(),
+          predictions: {
+            highRisk: 25,
+            mediumRisk: 45,
+            lowRisk: 180
+          }
+        },
+        {
+          id: '2',
+          name: 'Revenue Forecasting',
+          type: 'revenue',
+          accuracy: 92.3,
+          status: 'active',
+          lastUpdated: new Date().toISOString(),
+          predictions: {
+            nextMonth: 135000,
+            nextQuarter: 420000,
+            nextYear: 1650000
+          }
+        }
+      ],
+      timestamp: new Date().toISOString()
+    };
+    
+    res.json(predictiveData);
+  } catch (error) {
+    console.error('❌ Analytics predictive endpoint error:', error);
+    res.status(500).json({
+      success: false,
+      error: error.message,
+      timestamp: new Date().toISOString()
+    });
+  }
+});
+
+app.get('/analytics/predictive/:id', (req, res) => {
+  try {
+    console.log('🧪 Analytics predictive detail endpoint called:', {
+      method: req.method,
+      path: req.path,
+      params: req.params,
+      timestamp: new Date().toISOString()
+    });
+    
+    const predictiveData = {
+      success: true,
+      data: {
+        id: req.params.id,
+        name: 'Customer Churn Prediction',
+        type: 'churn',
+        accuracy: 87.5,
+        status: 'active',
+        lastUpdated: new Date().toISOString(),
+        predictions: {
+          highRisk: 25,
+          mediumRisk: 45,
+          lowRisk: 180
+        },
+        model: {
+          algorithm: 'Random Forest',
+          features: ['usage_frequency', 'support_tickets', 'payment_history'],
+          trainingData: '12 months'
+        }
+      },
+      timestamp: new Date().toISOString()
+    };
+    
+    res.json(predictiveData);
+  } catch (error) {
+    console.error('❌ Analytics predictive detail endpoint error:', error);
+    res.status(500).json({
+      success: false,
+      error: error.message,
+      timestamp: new Date().toISOString()
+    });
+  }
+});
+
+app.post('/analytics/predictive/:id/analyze', (req, res) => {
+  try {
+    console.log('🧪 Analytics predictive analyze endpoint called:', {
+      method: req.method,
+      path: req.path,
+      params: req.params,
+      body: req.body,
+      timestamp: new Date().toISOString()
+    });
+    
+    const analysisData = {
+      success: true,
+      data: {
+        analysisId: 'analysis_001',
+        modelId: req.params.id,
+        status: 'completed',
+        results: {
+          accuracy: 89.2,
+          confidence: 0.92,
+          insights: [
+            'Customer engagement is the strongest predictor',
+            'Payment delays increase churn risk by 3.2x',
+            'Support ticket volume correlates with retention'
+          ]
+        },
+        completedAt: new Date().toISOString()
+      },
+      message: 'Analysis completed successfully',
+      timestamp: new Date().toISOString()
+    };
+    
+    res.json(analysisData);
+  } catch (error) {
+    console.error('❌ Analytics predictive analyze endpoint error:', error);
+    res.status(500).json({
+      success: false,
+      error: error.message,
+      timestamp: new Date().toISOString()
+    });
+  }
+});
+
+app.get('/analytics/department', (req, res) => {
+  try {
+    console.log('🧪 Analytics department endpoint called:', {
+      method: req.method,
+      path: req.path,
+      timestamp: new Date().toISOString()
+    });
+    
+    const departmentData = {
+      success: true,
+      data: [
+        {
+          id: '1',
+          name: 'Engineering',
+          head: 'John Smith',
+          employeeCount: 45,
+          budget: 2500000,
+          performance: 4.5,
+          projects: 12,
+          lastReview: new Date().toISOString()
+        },
+        {
+          id: '2',
+          name: 'Marketing',
+          head: 'Sarah Johnson',
+          employeeCount: 15,
+          budget: 800000,
+          performance: 4.2,
+          projects: 8,
+          lastReview: new Date().toISOString()
+        }
+      ],
+      timestamp: new Date().toISOString()
+    };
+    
+    res.json(departmentData);
+  } catch (error) {
+    console.error('❌ Analytics department endpoint error:', error);
+    res.status(500).json({
+      success: false,
+      error: error.message,
+      timestamp: new Date().toISOString()
+    });
+  }
+});
+
+app.get('/analytics/department/:id', (req, res) => {
+  try {
+    console.log('🧪 Analytics department detail endpoint called:', {
+      method: req.method,
+      path: req.path,
+      params: req.params,
+      timestamp: new Date().toISOString()
+    });
+    
+    const departmentData = {
+      success: true,
+      data: {
+        id: req.params.id,
+        name: 'Engineering',
+        head: 'John Smith',
+        employeeCount: 45,
+        budget: 2500000,
+        performance: 4.5,
+        projects: 12,
+        lastReview: new Date().toISOString(),
+        metrics: {
+          productivity: 92,
+          satisfaction: 4.5,
+          turnover: 5.2,
+          budgetUtilization: 87
+        }
+      },
+      timestamp: new Date().toISOString()
+    };
+    
+    res.json(departmentData);
+  } catch (error) {
+    console.error('❌ Analytics department detail endpoint error:', error);
+    res.status(500).json({
+      success: false,
+      error: error.message,
+      timestamp: new Date().toISOString()
+    });
+  }
+});
+
+app.get('/analytics/department/:id/employees', (req, res) => {
+  try {
+    console.log('🧪 Analytics department employees endpoint called:', {
+      method: req.method,
+      path: req.path,
+      params: req.params,
+      timestamp: new Date().toISOString()
+    });
+    
+    const employeesData = {
+      success: true,
+      data: [
+        {
+          id: '1',
+          name: 'John Smith',
+          position: 'Senior Developer',
+          performance: 4.8,
+          projects: 3,
+          joinDate: new Date().toISOString()
+        },
+        {
+          id: '2',
+          name: 'Mike Johnson',
+          position: 'DevOps Engineer',
+          performance: 4.6,
+          projects: 2,
+          joinDate: new Date().toISOString()
+        }
+      ],
+      timestamp: new Date().toISOString()
+    };
+    
+    res.json(employeesData);
+  } catch (error) {
+    console.error('❌ Analytics department employees endpoint error:', error);
+    res.status(500).json({
+      success: false,
+      error: error.message,
+      timestamp: new Date().toISOString()
+    });
+  }
+});
+
+app.post('/analytics/department', (req, res) => {
+  try {
+    console.log('🧪 Analytics department POST endpoint called:', {
+      method: req.method,
+      path: req.path,
+      body: req.body,
+      timestamp: new Date().toISOString()
+    });
+    
+    const departmentData = {
+      success: true,
+      data: {
+        id: 'new_department_id',
+        ...req.body,
+        employeeCount: 0,
+        projects: 0,
+        performance: 0,
+        createdAt: new Date().toISOString()
+      },
+      message: 'Department created successfully',
+      timestamp: new Date().toISOString()
+    };
+    
+    res.json(departmentData);
+  } catch (error) {
+    console.error('❌ Analytics department POST endpoint error:', error);
+    res.status(500).json({
+      success: false,
+      error: error.message,
+      timestamp: new Date().toISOString()
+    });
+  }
+});
+
+app.get('/dashboard/stats', (req, res) => {
+  try {
+    console.log('🧪 Dashboard stats endpoint called:', {
+      method: req.method,
+      path: req.path,
+      query: req.query,
+      timestamp: new Date().toISOString()
+    });
+    
+    const type = req.query.type || 'general';
+    
+    let statsData;
+    switch (type) {
+      case 'revenue':
+        statsData = {
+          success: true,
+          data: {
+            total: 125000,
+            monthly: 34000,
+            weekly: 8500,
+            daily: 1200,
+            growth: 12.5
+          }
+        };
+        break;
+      case 'users':
+        statsData = {
+          success: true,
+          data: {
+            total: 1250,
+            active: 890,
+            new: 45,
+            growth: 8.2
+          }
+        };
+        break;
+      case 'bookings':
+        statsData = {
+          success: true,
+          data: {
+            total: 2340,
+            pending: 125,
+            completed: 2100,
+            cancelled: 115,
+            growth: 15.3
+          }
+        };
+        break;
+      default:
+        statsData = {
+          success: true,
+          data: {
+            revenue: 125000,
+            users: 1250,
+            bookings: 2340,
+            growth: 12.5
+          }
+        };
+    }
+    
+    statsData.timestamp = new Date().toISOString();
+    res.json(statsData);
+  } catch (error) {
+    console.error('❌ Dashboard stats endpoint error:', error);
+    res.status(500).json({
+      success: false,
+      error: error.message,
+      timestamp: new Date().toISOString()
+    });
+  }
+});
+
+// Partners endpoints
+app.get('/partners/performance', (req, res) => {
+  try {
+    console.log('🧪 Partners performance endpoint called:', {
+      method: req.method,
+      path: req.path,
+      timestamp: new Date().toISOString()
+    });
+    
+    const performanceData = {
+      success: true,
+      data: {
+        totalPartners: 45,
+        activePartners: 38,
+        totalRevenue: 125000,
+        averagePerformance: 4.2,
+        topPerformers: [
+          {
+            id: '1',
+            name: 'Auto Solutions Pro',
+            revenue: 15000,
+            rating: 4.8,
+            orders: 125
+          },
+          {
+            id: '2',
+            name: 'Fleet Management Co',
+            revenue: 12000,
+            rating: 4.6,
+            orders: 98
+          }
+        ],
+        metrics: {
+          satisfaction: 4.2,
+          retention: 85,
+          growth: 12.5
+        }
+      },
+      timestamp: new Date().toISOString()
+    };
+    
+    res.json(performanceData);
+  } catch (error) {
+    console.error('❌ Partners performance endpoint error:', error);
+    res.status(500).json({
+      success: false,
+      error: error.message,
+      timestamp: new Date().toISOString()
+    });
+  }
+});
+
+app.get('/partners/commissions', (req, res) => {
+  try {
+    console.log('🧪 Partners commissions endpoint called:', {
+      method: req.method,
+      path: req.path,
+      timestamp: new Date().toISOString()
+    });
+    
+    const commissionsData = {
+      success: true,
+      data: [
+        {
+          id: '1',
+          partnerId: 'partner_001',
+          partnerName: 'Auto Solutions Pro',
+          amount: 1500,
+          percentage: 10,
+          status: 'pending',
+          period: '2024-01',
+          dueDate: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString(),
+          orders: 25
+        },
+        {
+          id: '2',
+          partnerId: 'partner_002',
+          partnerName: 'Fleet Management Co',
+          amount: 1200,
+          percentage: 10,
+          status: 'paid',
+          period: '2024-01',
+          paidDate: new Date().toISOString(),
+          orders: 20
+        }
+      ],
+      timestamp: new Date().toISOString()
+    };
+    
+    res.json(commissionsData);
+  } catch (error) {
+    console.error('❌ Partners commissions endpoint error:', error);
+    res.status(500).json({
+      success: false,
+      error: error.message,
+      timestamp: new Date().toISOString()
+    });
+  }
+});
+
+app.post('/partners/commission/:id/invoice', (req, res) => {
+  try {
+    console.log('🧪 Partners commission invoice endpoint called:', {
+      method: req.method,
+      path: req.path,
+      params: req.params,
+      body: req.body,
+      timestamp: new Date().toISOString()
+    });
+    
+    const invoiceData = {
+      success: true,
+      data: {
+        invoiceId: 'INV-COMM-001',
+        commissionId: req.params.id,
+        amount: 1500,
+        status: 'generated',
+        generatedAt: new Date().toISOString(),
+        downloadUrl: '/invoices/commission-INV-COMM-001.pdf'
+      },
+      message: 'Commission invoice generated successfully',
+      timestamp: new Date().toISOString()
+    };
+    
+    res.json(invoiceData);
+  } catch (error) {
+    console.error('❌ Partners commission invoice endpoint error:', error);
+    res.status(500).json({
+      success: false,
+      error: error.message,
+      timestamp: new Date().toISOString()
+    });
+  }
+});
+
+// Users endpoints
+app.get('/users/analytics', (req, res) => {
+  try {
+    console.log('🧪 Users analytics endpoint called:', {
+      method: req.method,
+      path: req.path,
+      query: req.query,
+      timestamp: new Date().toISOString()
+    });
+    
+    const period = req.query.period || 'month';
+    
+    const analyticsData = {
+      success: true,
+      data: {
+        totalUsers: 1250,
+        activeUsers: 890,
+        newUsers: 45,
+        retentionRate: 78.5,
+        engagementRate: 65.2,
+        churnRate: 3.2,
+        period: period,
+        trends: {
+          userGrowth: [120, 135, 110, 140, 160, 180, 200],
+          engagement: [65, 68, 70, 72, 71, 73, 75],
+          retention: [80, 82, 78, 85, 83, 87, 89]
+        },
+        demographics: {
+          ageGroups: {
+            '18-25': 25,
+            '26-35': 35,
+            '36-45': 28,
+            '46+': 12
+          },
+          locations: {
+            'North America': 45,
+            'Europe': 30,
+            'Asia': 20,
+            'Other': 5
+          }
+        }
+      },
+      timestamp: new Date().toISOString()
+    };
+    
+    res.json(analyticsData);
+  } catch (error) {
+    console.error('❌ Users analytics endpoint error:', error);
+    res.status(500).json({
+      success: false,
+      error: error.message,
+      timestamp: new Date().toISOString()
+    });
+  }
+});
+
+app.get('/users/segments', (req, res) => {
+  try {
+    console.log('🧪 Users segments endpoint called:', {
+      method: req.method,
+      path: req.path,
+      query: req.query,
+      timestamp: new Date().toISOString()
+    });
+    
+    const segmentsData = {
+      success: true,
+      data: [
+        {
+          id: '1',
+          name: 'High Value Customers',
+          criteria: 'Revenue > $1000',
+          userCount: 125,
+          averageValue: 2500,
+          growth: 15.2
+        },
+        {
+          id: '2',
+          name: 'Frequent Users',
+          criteria: 'Orders > 10',
+          userCount: 340,
+          averageValue: 850,
+          growth: 8.5
+        },
+        {
+          id: '3',
+          name: 'At Risk',
+          criteria: 'Last login > 30 days',
+          userCount: 89,
+          averageValue: 450,
+          growth: -5.2
+        }
+      ],
+      timestamp: new Date().toISOString()
+    };
+    
+    res.json(segmentsData);
+  } catch (error) {
+    console.error('❌ Users segments endpoint error:', error);
+    res.status(500).json({
+      success: false,
+      error: error.message,
+      timestamp: new Date().toISOString()
+    });
+  }
+});
+
+app.get('/users/top-users', (req, res) => {
+  try {
+    console.log('🧪 Users top users endpoint called:', {
+      method: req.method,
+      path: req.path,
+      query: req.query,
+      timestamp: new Date().toISOString()
+    });
+    
+    const topUsersData = {
+      success: true,
+      data: [
+        {
+          id: '1',
+          name: 'John Smith',
+          email: 'john@example.com',
+          totalSpent: 2500,
+          orders: 25,
+          lastOrder: new Date().toISOString(),
+          rating: 4.8
+        },
+        {
+          id: '2',
+          name: 'Sarah Johnson',
+          email: 'sarah@example.com',
+          totalSpent: 2200,
+          orders: 22,
+          lastOrder: new Date().toISOString(),
+          rating: 4.7
+        },
+        {
+          id: '3',
+          name: 'Mike Wilson',
+          email: 'mike@example.com',
+          totalSpent: 1800,
+          orders: 18,
+          lastOrder: new Date().toISOString(),
+          rating: 4.6
+        }
+      ],
+      timestamp: new Date().toISOString()
+    };
+    
+    res.json(topUsersData);
+  } catch (error) {
+    console.error('❌ Users top users endpoint error:', error);
+    res.status(500).json({
+      success: false,
+      error: error.message,
+      timestamp: new Date().toISOString()
+    });
+  }
+});
+
+// Support endpoints
+app.get('/support/tickets', (req, res) => {
+  try {
+    console.log('🧪 Support tickets endpoint called:', {
+      method: req.method,
+      path: req.path,
+      timestamp: new Date().toISOString()
+    });
+    
+    const ticketsData = {
+      success: true,
+      data: [
+        {
+          id: '1',
+          title: 'Login Issue',
+          description: 'Unable to access account',
+          status: 'open',
+          priority: 'high',
+          customer: 'john@example.com',
+          assignedTo: 'support_agent_1',
+          createdAt: new Date().toISOString(),
+          updatedAt: new Date().toISOString()
+        },
+        {
+          id: '2',
+          title: 'Payment Problem',
+          description: 'Payment not processing',
+          status: 'in_progress',
+          priority: 'medium',
+          customer: 'sarah@example.com',
+          assignedTo: 'support_agent_2',
+          createdAt: new Date().toISOString(),
+          updatedAt: new Date().toISOString()
+        }
+      ],
+      timestamp: new Date().toISOString()
+    };
+    
+    res.json(ticketsData);
+  } catch (error) {
+    console.error('❌ Support tickets endpoint error:', error);
+    res.status(500).json({
+      success: false,
+      error: error.message,
+      timestamp: new Date().toISOString()
+    });
+  }
+});
+
+app.get('/support/metrics', (req, res) => {
+  try {
+    console.log('🧪 Support metrics endpoint called:', {
+      method: req.method,
+      path: req.path,
+      timestamp: new Date().toISOString()
+    });
+    
+    const metricsData = {
+      success: true,
+      data: {
+        totalTickets: 1250,
+        openTickets: 45,
+        resolvedTickets: 1150,
+        averageResolutionTime: '2.5 hours',
+        customerSatisfaction: 4.6,
+        firstResponseTime: '15 minutes',
+        resolutionRate: 92,
+        trends: {
+          ticketVolume: [45, 52, 38, 48, 55, 62, 68],
+          resolutionTime: [2.1, 2.3, 2.0, 2.4, 2.2, 2.6, 2.5],
+          satisfaction: [4.5, 4.6, 4.4, 4.7, 4.5, 4.8, 4.6]
+        }
+      },
+      timestamp: new Date().toISOString()
+    };
+    
+    res.json(metricsData);
+  } catch (error) {
+    console.error('❌ Support metrics endpoint error:', error);
+    res.status(500).json({
+      success: false,
+      error: error.message,
+      timestamp: new Date().toISOString()
+    });
+  }
+});
+
+// Projects endpoints
+app.get('/projects/time', (req, res) => {
+  try {
+    console.log('🧪 Projects time endpoint called:', {
+      method: req.method,
+      path: req.path,
+      timestamp: new Date().toISOString()
+    });
+    
+    const timeData = {
+      success: true,
+      data: [
+        {
+          id: '1',
+          projectId: 'project_001',
+          projectName: 'Website Redesign',
+          employeeId: 'emp_001',
+          employeeName: 'John Smith',
+          hours: 8.5,
+          date: new Date().toISOString(),
+          description: 'Frontend development work',
+          status: 'approved'
+        },
+        {
+          id: '2',
+          projectId: 'project_002',
+          projectName: 'API Integration',
+          employeeId: 'emp_002',
+          employeeName: 'Sarah Johnson',
+          hours: 6.0,
+          date: new Date().toISOString(),
+          description: 'Backend API development',
+          status: 'pending'
+        }
+      ],
+      timestamp: new Date().toISOString()
+    };
+    
+    res.json(timeData);
+  } catch (error) {
+    console.error('❌ Projects time endpoint error:', error);
+    res.status(500).json({
+      success: false,
+      error: error.message,
+      timestamp: new Date().toISOString()
+    });
+  }
+});
+
+app.get('/projects/:id', (req, res) => {
+  try {
+    console.log('🧪 Projects detail endpoint called:', {
+      method: req.method,
+      path: req.path,
+      params: req.params,
+      timestamp: new Date().toISOString()
+    });
+    
+    const projectData = {
+      success: true,
+      data: {
+        id: req.params.id,
+        name: 'Website Redesign',
+        description: 'Complete redesign of company website',
+        status: 'in_progress',
+        startDate: new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toISOString(),
+        endDate: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString(),
+        budget: 50000,
+        spent: 25000,
+        progress: 50,
+        team: [
+          {
+            id: 'emp_001',
+            name: 'John Smith',
+            role: 'Lead Developer',
+            hours: 120
+          },
+          {
+            id: 'emp_002',
+            name: 'Sarah Johnson',
+            role: 'UI Designer',
+            hours: 80
+          }
+        ],
+        milestones: [
+          {
+            id: '1',
+            name: 'Design Phase',
+            status: 'completed',
+            dueDate: new Date().toISOString()
+          },
+          {
+            id: '2',
+            name: 'Development Phase',
+            status: 'in_progress',
+            dueDate: new Date(Date.now() + 15 * 24 * 60 * 60 * 1000).toISOString()
+          }
+        ]
+      },
+      timestamp: new Date().toISOString()
+    };
+    
+    res.json(projectData);
+  } catch (error) {
+    console.error('❌ Projects detail endpoint error:', error);
+    res.status(500).json({
+      success: false,
+      error: error.message,
+      timestamp: new Date().toISOString()
+    });
+  }
+});
+
+// Marketing endpoints
+app.get('/marketing/campaigns', (req, res) => {
+  try {
+    console.log('🧪 Marketing campaigns endpoint called:', {
+      method: req.method,
+      path: req.path,
+      timestamp: new Date().toISOString()
+    });
+    
+    const campaignsData = {
+      success: true,
+      data: [
+        {
+          id: '1',
+          name: 'Summer Sale 2024',
+          type: 'email',
+          status: 'active',
+          startDate: new Date().toISOString(),
+          endDate: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString(),
+          budget: 10000,
+          spent: 3500,
+          impressions: 125000,
+          clicks: 2500,
+          conversions: 125,
+          roi: 2.5
+        },
+        {
+          id: '2',
+          name: 'New User Onboarding',
+          type: 'automation',
+          status: 'active',
+          startDate: new Date().toISOString(),
+          endDate: new Date(Date.now() + 90 * 24 * 60 * 60 * 1000).toISOString(),
+          budget: 5000,
+          spent: 1200,
+          impressions: 45000,
+          clicks: 1800,
+          conversions: 90,
+          roi: 3.2
+        }
+      ],
+      timestamp: new Date().toISOString()
+    };
+    
+    res.json(campaignsData);
+  } catch (error) {
+    console.error('❌ Marketing campaigns endpoint error:', error);
+    res.status(500).json({
+      success: false,
+      error: error.message,
+      timestamp: new Date().toISOString()
+    });
+  }
+});
+
+app.get('/marketing/automation/workflows', (req, res) => {
+  try {
+    console.log('🧪 Marketing automation workflows endpoint called:', {
+      method: req.method,
+      path: req.path,
+      timestamp: new Date().toISOString()
+    });
+    
+    const workflowsData = {
+      success: true,
+      data: [
+        {
+          id: '1',
+          name: 'Welcome Series',
+          trigger: 'user_signup',
+          status: 'active',
+          subscribers: 1250,
+          openRate: 65.2,
+          clickRate: 12.8,
+          createdAt: new Date().toISOString(),
+          steps: [
+            {
+              id: '1',
+              name: 'Welcome Email',
+              type: 'email',
+              delay: 'immediate',
+              status: 'active'
+            },
+            {
+              id: '2',
+              name: 'Feature Introduction',
+              type: 'email',
+              delay: '1 day',
+              status: 'active'
+            }
+          ]
+        },
+        {
+          id: '2',
+          name: 'Abandoned Cart Recovery',
+          trigger: 'cart_abandoned',
+          status: 'active',
+          subscribers: 890,
+          openRate: 45.8,
+          clickRate: 8.5,
+          createdAt: new Date().toISOString(),
+          steps: [
+            {
+              id: '1',
+              name: 'Reminder Email',
+              type: 'email',
+              delay: '1 hour',
+              status: 'active'
+            },
+            {
+              id: '2',
+              name: 'Discount Offer',
+              type: 'email',
+              delay: '24 hours',
+              status: 'active'
+            }
+          ]
+        }
+      ],
+      timestamp: new Date().toISOString()
+    };
+    
+    res.json(workflowsData);
+  } catch (error) {
+    console.error('❌ Marketing automation workflows endpoint error:', error);
+    res.status(500).json({
+      success: false,
+      error: error.message,
+      timestamp: new Date().toISOString()
+    });
+  }
+});
+
 // 404 handler will be added after all routes are registered
 
 // Async function to start the server
