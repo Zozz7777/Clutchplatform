@@ -15,7 +15,7 @@ const generalRateLimit = rateLimit({
 // Auth rate limiter (more permissive for development)
 const authRateLimit = rateLimit({
   windowMs: 15 * 60 * 1000, // 15 minutes
-  max: process.env.NODE_ENV === 'development' ? 50 : 10, // More permissive in development
+  max: process.env.NODE_ENV === 'development' ? 100 : 20, // Much more permissive
   message: {
     error: 'Too many authentication attempts, please try again later.',
     retryAfter: '15 minutes'
@@ -23,8 +23,19 @@ const authRateLimit = rateLimit({
   standardHeaders: true,
   legacyHeaders: false,
   skip: (req) => {
-    // Skip rate limiting for health checks and ping endpoints
-    return req.path.includes('/health') || req.path.includes('/ping');
+    // Skip rate limiting for health checks, ping endpoints, and test endpoints
+    const shouldSkip = req.path.includes('/health') || 
+           req.path.includes('/ping') || 
+           req.path.includes('/test') ||
+           req.path.includes('/employee-login');
+    
+    if (shouldSkip) {
+      console.log('🚫 Rate limiter skipping:', req.path);
+    } else {
+      console.log('⏱️ Rate limiter applying to:', req.path);
+    }
+    
+    return shouldSkip;
   }
 });
 
