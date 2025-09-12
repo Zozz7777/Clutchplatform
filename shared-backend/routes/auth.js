@@ -45,6 +45,12 @@ const { getCollection } = require('../config/database');
 // Test endpoint to verify auth routes are accessible
 router.get('/test', (req, res) => {
     console.log('🧪 Auth test endpoint called:', { path: req.path, method: req.method });
+    console.log('🧪 Auth test endpoint - Request details:', {
+        url: req.url,
+        originalUrl: req.originalUrl,
+        baseUrl: req.baseUrl,
+        headers: req.headers
+    });
     res.json({
         success: true,
         message: 'Auth routes are working correctly',

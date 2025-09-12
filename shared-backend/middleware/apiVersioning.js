@@ -18,8 +18,11 @@ class APIVersioningMiddleware {
    */
   createVersionMiddleware(version) {
     return (req, res, next) => {
+      console.log('🔍 API Versioning Middleware called:', { path: req.path, method: req.method });
+      
       // Only apply versioning to API routes
       if (!req.path.startsWith('/api/')) {
+        console.log('🔍 API Versioning: Skipping non-API route:', req.path);
         return next();
       }
       
