@@ -319,8 +319,8 @@ function setupApp() {
     crossOriginResourcePolicy: { policy: "cross-origin" }
   }));
 
-  // CORS configuration (explicit allow-list only; credentials disabled by default)
-  const allowedOrigins = (process.env.ALLOWED_ORIGINS || 'https://admin.yourclutch.com,https://clutch-main-nk7x.onrender.com,http://localhost:3000,http://localhost:3001')
+  // CORS configuration (more permissive for development and testing)
+  const allowedOrigins = (process.env.ALLOWED_ORIGINS || 'https://admin.yourclutch.com,https://clutch-main-nk7x.onrender.com,http://localhost:3000,http://localhost:3001,http://localhost:5173,http://localhost:8080')
     .split(',')
     .map(o => o.trim())
     .filter(Boolean);
@@ -335,9 +335,13 @@ function setupApp() {
   app.use(cors({
     origin: function (origin, callback) {
       try {
-        // Allow requests with no origin (mobile apps/curl) only if explicitly enabled
+        // Allow requests with no origin (mobile apps/curl) in development
         if (!origin) {
-          if (process.env.CORS_ALLOW_NO_ORIGIN === 'true') return callback(null, true);
+          if (process.env.NODE_ENV === 'development' || process.env.CORS_ALLOW_NO_ORIGIN === 'true') {
+            console.log('✅ CORS allowing request with no origin (development mode)');
+            return callback(null, true);
+          }
+          console.log('❌ CORS blocking request with no origin');
           return callback(new Error('Origin required'));
         }
         
@@ -354,9 +358,15 @@ function setupApp() {
           console.log(`✅ CORS allowed for origin: ${origin}`);
           callback(null, true);
         } else {
-          console.log(`❌ CORS blocked request from: ${origin}`);
-          console.log(`❌ Allowed origins: ${allowedOrigins.join(', ')}`);
-          callback(new Error('Not allowed by CORS'));
+          // In development, be more permissive
+          if (process.env.NODE_ENV === 'development') {
+            console.log(`⚠️ CORS allowing origin in development: ${origin}`);
+            callback(null, true);
+          } else {
+            console.log(`❌ CORS blocked request from: ${origin}`);
+            console.log(`❌ Allowed origins: ${allowedOrigins.join(', ')}`);
+            callback(new Error('Not allowed by CORS'));
+          }
         }
       } catch (error) {
         console.error('❌ CORS middleware error:', error);

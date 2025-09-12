@@ -42,6 +42,17 @@ const { getCollection } = require('../config/database');
 
 // ==================== EMPLOYEE AUTHENTICATION ROUTES ====================
 
+// Test endpoint to verify auth routes are accessible
+router.get('/test', (req, res) => {
+    res.json({
+        success: true,
+        message: 'Auth routes are working correctly',
+        timestamp: new Date().toISOString(),
+        path: req.path,
+        method: req.method
+    });
+});
+
 // Employee Login
 router.post('/employee-login', rateLimit.authRateLimit, validateUserLogin, async (req, res) => {
     try {

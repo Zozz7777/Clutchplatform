@@ -5,12 +5,9 @@ const { getRedisClient } = require('../config/redis');
 const authenticateToken = async (req, res, next) => {
   try {
     // Skip auth for public endpoints
-    if (req.path === '/login' || req.path === '/register' || req.path === '/health' || req.path === '/test' || req.path === '/ping' || req.path === '/webhook/github') {
-      return next();
-    }
-    
-    // Skip auth for testing endpoints
-    if (req.path.includes('/test') || req.path.includes('/health')) {
+    const publicPaths = ['/login', '/register', '/employee-login', '/create-employee', '/health', '/test', '/ping', '/webhook/github'];
+    if (publicPaths.includes(req.path) || req.path.includes('/test') || req.path.includes('/health')) {
+      console.log('🔓 Skipping auth for public endpoint:', req.path);
       return next();
     }
     
