@@ -48,6 +48,7 @@ const aiMlRoutes = require('./routes/ai-ml');
 const mediaManagementRoutes = require('./routes/media-management');
 const feedbackSystemRoutes = require('./routes/feedback-system');
 const revenueAnalyticsRoutes = require('./routes/revenue-analytics');
+const legalRoutes = require('./routes/legal');
 
 // Initialize Express app
 const app = express();
@@ -183,6 +184,7 @@ app.use(`${apiPrefix}/ai-ml`, aiMlRoutes);
 app.use(`${apiPrefix}/media-management`, mediaManagementRoutes);
 app.use(`${apiPrefix}/feedback-system`, feedbackSystemRoutes);
 app.use(`${apiPrefix}/revenue-analytics`, revenueAnalyticsRoutes);
+app.use(`${apiPrefix}/legal`, legalRoutes);
 
 // Fallback routes
 app.use('/auth', authRoutes);

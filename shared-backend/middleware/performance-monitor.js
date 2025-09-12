@@ -164,15 +164,42 @@ class PerformanceMonitor {
   // Update database metrics
   async updateDatabaseMetrics() {
     try {
-      // Temporarily disabled to prevent deployment errors
-      // TODO: Re-enable once database connection is properly configured
+      const { client } = require('../config/database');
+      const dbClient = client();
+      
+      if (dbClient && dbClient.db) {
+        const database = dbClient.db();
+        if (database && database.admin) {
+          const serverStatus = await database.admin().serverStatus();
+          this.metrics.database.connectionPool = {
+            active: serverStatus.connections?.current || 0,
+            idle: serverStatus.connections?.available || 0,
+            total: (serverStatus.connections?.current || 0) + (serverStatus.connections?.available || 0)
+          };
+        } else {
+          // Fallback if admin() is not available
+          this.metrics.database.connectionPool = {
+            active: 0,
+            idle: 0,
+            total: 0
+          };
+        }
+      } else {
+        // Fallback if client is not available
+        this.metrics.database.connectionPool = {
+          active: 0,
+          idle: 0,
+          total: 0
+        };
+      }
+    } catch (error) {
+      console.error('Error updating database metrics:', error);
+      // Set fallback values on error
       this.metrics.database.connectionPool = {
         active: 0,
         idle: 0,
         total: 0
       };
-    } catch (error) {
-      console.error('Error updating database metrics:', error);
     }
   }
 
