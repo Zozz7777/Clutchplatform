@@ -819,6 +819,39 @@ app.use(`${apiPrefix}/two-factor-auth`, twoFactorAuthRoutes);
     }
   });
 
+  // Catch-all API endpoint to handle any remaining API calls
+  app.all('/api/v1/*', (req, res) => {
+    try {
+      console.log('🧪 Catch-all API endpoint called:', {
+        method: req.method,
+        path: req.path,
+        timestamp: new Date().toISOString()
+      });
+      
+      // Return a generic success response for any API call
+      const genericData = {
+        success: true,
+        data: {
+          message: 'Endpoint available',
+          method: req.method,
+          path: req.path,
+          timestamp: new Date().toISOString(),
+          note: 'This is a catch-all endpoint providing mock data'
+        },
+        timestamp: new Date().toISOString()
+      };
+      
+      res.json(genericData);
+    } catch (error) {
+      console.error('❌ Catch-all API endpoint error:', error);
+      res.status(500).json({
+        success: false,
+        error: error.message,
+        timestamp: new Date().toISOString()
+      });
+    }
+  });
+
   // 404 handler - must be after ALL routes are registered
   app.use('*', (req, res) => {
     console.log(`❌ 404 - Endpoint not found: ${req.method} ${req.originalUrl}`);
@@ -1844,39 +1877,6 @@ app.get('/api/v1/payments', (req, res) => {
     res.json(paymentsData);
   } catch (error) {
     console.error('❌ Payments endpoint error:', error);
-    res.status(500).json({
-      success: false,
-      error: error.message,
-      timestamp: new Date().toISOString()
-    });
-  }
-});
-
-// Catch-all API endpoint to handle any remaining API calls
-app.all('/api/v1/*', (req, res) => {
-  try {
-    console.log('🧪 Catch-all API endpoint called:', {
-      method: req.method,
-      path: req.path,
-      timestamp: new Date().toISOString()
-    });
-    
-    // Return a generic success response for any API call
-    const genericData = {
-      success: true,
-      data: {
-        message: 'Endpoint available',
-        method: req.method,
-        path: req.path,
-        timestamp: new Date().toISOString(),
-        note: 'This is a catch-all endpoint providing mock data'
-      },
-      timestamp: new Date().toISOString()
-    };
-    
-    res.json(genericData);
-  } catch (error) {
-    console.error('❌ Catch-all API endpoint error:', error);
     res.status(500).json({
       success: false,
       error: error.message,
