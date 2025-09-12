@@ -3,7 +3,7 @@ const router = express.Router();
 const { getCollection } = require('../config/database');
 const { authenticateToken, requireRole } = require('../middleware/auth');
 
-// ==================== USER ANALYTICS ROUTES ====================
+// ==================== USER ANALYTICS ROUTES (FIXED) ====================
 
 // GET /api/v1/user-analytics/overview - Get user analytics overview
 router.get('/overview', authenticateToken, requireRole(['admin', 'analyst']), async (req, res) => {
