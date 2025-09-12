@@ -260,7 +260,7 @@ class ApiClient {
       if (typeof window !== 'undefined') {
         console.warn('🚨 REDIRECTING_TO_LOGIN: No token for protected endpoint')
         // Use proper Next.js navigation instead of window.location.href
-        const { useRouter } = require('next/navigation')
+        // const { useRouter } = require('next/navigation') // Removed require() import
         // Note: This will be handled by the calling component with proper router
         return {
           success: false,

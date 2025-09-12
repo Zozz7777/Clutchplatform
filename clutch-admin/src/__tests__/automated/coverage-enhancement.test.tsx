@@ -9,6 +9,7 @@ import { AnalyticsPage } from '@/app/(dashboard)/analytics/page';
 import { FinancePage } from '@/app/(dashboard)/finance/page';
 import { HrPage } from '@/app/(dashboard)/hr/page';
 import { SettingsPage } from '@/app/(dashboard)/settings/page';
+import { ErrorBoundary } from '@/components/ui/error-boundary';
 
 // Mock authentication
 jest.mock('@/store', () => ({

@@ -265,7 +265,7 @@ class ConsolidatedApiService {
         }
       } else {
         this.circuitBreakerOpen = false
-        console.log('🔄 CIRCUIT_BREAKER_RESET: Attempting requests again')
+        // Circuit breaker reset - attempting requests again
       }
     }
 

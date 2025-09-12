@@ -719,3 +719,651 @@ router.get('/export', authenticateToken, requireRole(['admin']), async (req, res
 });
 
 module.exports = router;
+
+// GET /api/v1/user-analytics/overview - Get user analytics overview
+router.get('/overview', authenticateToken, requireRole(['admin', 'manager']), async (req, res) => {
+  try {
+    console.log('📊 Fetching user analytics overview');
+    
+    const { startDate, endDate } = req.query;
+    const usersCollection = await getCollection('users');
+    const sessionsCollection = await getCollection('user_sessions');
+    const activitiesCollection = await getCollection('user_activities');
+    
+    // Build date filter
+    const dateFilter = {};
+    if (startDate || endDate) {
+      dateFilter.createdAt = {};
+      if (startDate) dateFilter.createdAt.$gte = new Date(startDate);
+      if (endDate) dateFilter.createdAt.$lte = new Date(endDate);
+    }
+    
+    // Get analytics
+    const [
+      totalUsers,
+      activeUsers,
+      newUsers,
+      userGrowth,
+      topCountries,
+      userRoles,
+      sessionStats,
+      activityStats
+    ] = await Promise.all([
+      // Total users
+      usersCollection.countDocuments(),
+      
+      // Active users (last 30 days)
+      usersCollection.countDocuments({
+        lastActiveAt: { $gte: new Date(Date.now() - 30 * 24 * 60 * 60 * 1000) }
+      }),
+      
+      // New users in period
+      usersCollection.countDocuments(dateFilter),
+      
+      // User growth over time
+      usersCollection.aggregate([
+        { $match: dateFilter },
+        {
+          $group: {
+            _id: {
+              year: { $year: '$createdAt' },
+              month: { $month: '$createdAt' },
+              day: { $dayOfMonth: '$createdAt' }
+            },
+            count: { $sum: 1 }
+          }
+        },
+        { $sort: { '_id.year': 1, '_id.month': 1, '_id.day': 1 } }
+      ]).toArray(),
+      
+      // Top countries
+      usersCollection.aggregate([
+        { $match: { country: { $exists: true, $ne: null } } },
+        { $group: { _id: '$country', count: { $sum: 1 } } },
+        { $sort: { count: -1 } },
+        { $limit: 10 }
+      ]).toArray(),
+      
+      // User roles distribution
+      usersCollection.aggregate([
+        { $group: { _id: '$role', count: { $sum: 1 } } },
+        { $sort: { count: -1 } }
+      ]).toArray(),
+      
+      // Session statistics
+      sessionsCollection.aggregate([
+        { $match: dateFilter },
+        {
+          $group: {
+            _id: null,
+            totalSessions: { $sum: 1 },
+            avgSessionDuration: { $avg: '$duration' },
+            totalDuration: { $sum: '$duration' }
+          }
+        }
+      ]).toArray(),
+      
+      // Activity statistics
+      activitiesCollection.aggregate([
+        { $match: dateFilter },
+        {
+          $group: {
+            _id: '$action',
+            count: { $sum: 1 }
+          }
+        },
+        { $sort: { count: -1 } },
+        { $limit: 10 }
+      ]).toArray()
+    ]);
+    
+    const overview = {
+      users: {
+        total: totalUsers,
+        active: activeUsers,
+        new: newUsers,
+        growth: userGrowth
+      },
+      demographics: {
+        topCountries,
+        roles: userRoles
+      },
+      sessions: sessionStats[0] || {
+        totalSessions: 0,
+        avgSessionDuration: 0,
+        totalDuration: 0
+      },
+      activities: activityStats
+    };
+    
+    res.json({
+      success: true,
+      data: overview,
+      timestamp: new Date().toISOString()
+    });
+    
+  } catch (error) {
+    console.error('❌ Error fetching user analytics overview:', error);
+    res.status(500).json({
+      success: false,
+      error: 'FETCH_OVERVIEW_FAILED',
+      message: 'Failed to fetch user analytics overview'
+    });
+  }
+});
+
+// GET /api/v1/user-analytics/users - Get detailed user analytics
+router.get('/users', authenticateToken, requireRole(['admin', 'manager']), async (req, res) => {
+  try {
+    console.log('👥 Fetching detailed user analytics');
+    
+    const { 
+      page = 1, 
+      limit = 20, 
+      role, 
+      country, 
+      status,
+      startDate,
+      endDate
+    } = req.query;
+    
+    const skip = (page - 1) * limit;
+    const usersCollection = await getCollection('users');
+    
+    // Build query
+    const query = {};
+    if (role) query.role = role;
+    if (country) query.country = country;
+    if (status) query.status = status;
+    
+    // Date filter
+    if (startDate || endDate) {
+      query.createdAt = {};
+      if (startDate) query.createdAt.$gte = new Date(startDate);
+      if (endDate) query.createdAt.$lte = new Date(endDate);
+    }
+    
+    // Get users with pagination
+    const users = await usersCollection
+      .find(query)
+      .sort({ createdAt: -1 })
+      .skip(skip)
+      .limit(parseInt(limit))
+      .toArray();
+    
+    // Get total count
+    const total = await usersCollection.countDocuments(query);
+    
+    // Get additional user stats
+    const userStats = await Promise.all(
+      users.map(async (user) => {
+        const sessionsCollection = await getCollection('user_sessions');
+        const activitiesCollection = await getCollection('user_activities');
+        
+        const [sessionCount, lastSession, activityCount] = await Promise.all([
+          sessionsCollection.countDocuments({ userId: user._id }),
+          sessionsCollection.findOne(
+            { userId: user._id },
+            { sort: { createdAt: -1 } }
+          ),
+          activitiesCollection.countDocuments({ userId: user._id })
+        ]);
+        
+        return {
+          ...user,
+          stats: {
+            sessionCount,
+            lastSession: lastSession?.createdAt || null,
+            activityCount
+          }
+        };
+      })
+    );
+    
+    res.json({
+      success: true,
+      data: {
+        users: userStats,
+        pagination: {
+          page: parseInt(page),
+          limit: parseInt(limit),
+          total,
+          pages: Math.ceil(total / limit)
+        }
+      },
+      timestamp: new Date().toISOString()
+    });
+    
+  } catch (error) {
+    console.error('❌ Error fetching user analytics:', error);
+    res.status(500).json({
+      success: false,
+      error: 'FETCH_USERS_FAILED',
+      message: 'Failed to fetch user analytics'
+    });
+  }
+});
+
+// GET /api/v1/user-analytics/sessions - Get session analytics
+router.get('/sessions', authenticateToken, requireRole(['admin', 'manager']), async (req, res) => {
+  try {
+    console.log('🔄 Fetching session analytics');
+    
+    const { 
+      page = 1, 
+      limit = 20, 
+      userId,
+      startDate,
+      endDate
+    } = req.query;
+    
+    const skip = (page - 1) * limit;
+    const sessionsCollection = await getCollection('user_sessions');
+    
+    // Build query
+    const query = {};
+    if (userId) query.userId = userId;
+    
+    // Date filter
+    if (startDate || endDate) {
+      query.createdAt = {};
+      if (startDate) query.createdAt.$gte = new Date(startDate);
+      if (endDate) query.createdAt.$lte = new Date(endDate);
+    }
+    
+    // Get sessions with pagination
+    const sessions = await sessionsCollection
+      .find(query)
+      .sort({ createdAt: -1 })
+      .skip(skip)
+      .limit(parseInt(limit))
+      .toArray();
+    
+    // Get total count
+    const total = await sessionsCollection.countDocuments(query);
+    
+    // Get session statistics
+    const sessionStats = await sessionsCollection.aggregate([
+      { $match: query },
+      {
+        $group: {
+          _id: null,
+          totalSessions: { $sum: 1 },
+          avgDuration: { $avg: '$duration' },
+          totalDuration: { $sum: '$duration' },
+          uniqueUsers: { $addToSet: '$userId' }
+        }
+      }
+    ]).toArray();
+    
+    const stats = sessionStats[0] || {
+      totalSessions: 0,
+      avgDuration: 0,
+      totalDuration: 0,
+      uniqueUsers: []
+    };
+    
+    res.json({
+      success: true,
+      data: {
+        sessions,
+        pagination: {
+          page: parseInt(page),
+          limit: parseInt(limit),
+          total,
+          pages: Math.ceil(total / limit)
+        },
+        statistics: {
+          ...stats,
+          uniqueUserCount: stats.uniqueUsers.length
+        }
+      },
+      timestamp: new Date().toISOString()
+    });
+    
+  } catch (error) {
+    console.error('❌ Error fetching session analytics:', error);
+    res.status(500).json({
+      success: false,
+      error: 'FETCH_SESSIONS_FAILED',
+      message: 'Failed to fetch session analytics'
+    });
+  }
+});
+
+// GET /api/v1/user-analytics/activities - Get user activity analytics
+router.get('/activities', authenticateToken, requireRole(['admin', 'manager']), async (req, res) => {
+  try {
+    console.log('📈 Fetching user activity analytics');
+    
+    const { 
+      page = 1, 
+      limit = 20, 
+      userId,
+      action,
+      startDate,
+      endDate
+    } = req.query;
+    
+    const skip = (page - 1) * limit;
+    const activitiesCollection = await getCollection('user_activities');
+    
+    // Build query
+    const query = {};
+    if (userId) query.userId = userId;
+    if (action) query.action = action;
+    
+    // Date filter
+    if (startDate || endDate) {
+      query.createdAt = {};
+      if (startDate) query.createdAt.$gte = new Date(startDate);
+      if (endDate) query.createdAt.$lte = new Date(endDate);
+    }
+    
+    // Get activities with pagination
+    const activities = await activitiesCollection
+      .find(query)
+      .sort({ createdAt: -1 })
+      .skip(skip)
+      .limit(parseInt(limit))
+      .toArray();
+    
+    // Get total count
+    const total = await activitiesCollection.countDocuments(query);
+    
+    // Get activity statistics
+    const activityStats = await activitiesCollection.aggregate([
+      { $match: query },
+      {
+        $group: {
+          _id: '$action',
+          count: { $sum: 1 },
+          uniqueUsers: { $addToSet: '$userId' }
+        }
+      },
+      { $sort: { count: -1 } }
+    ]).toArray();
+    
+    res.json({
+      success: true,
+      data: {
+        activities,
+        pagination: {
+          page: parseInt(page),
+          limit: parseInt(limit),
+          total,
+          pages: Math.ceil(total / limit)
+        },
+        statistics: activityStats.map(stat => ({
+          action: stat._id,
+          count: stat.count,
+          uniqueUsers: stat.uniqueUsers.length
+        }))
+      },
+      timestamp: new Date().toISOString()
+    });
+    
+  } catch (error) {
+    console.error('❌ Error fetching activity analytics:', error);
+    res.status(500).json({
+      success: false,
+      error: 'FETCH_ACTIVITIES_FAILED',
+      message: 'Failed to fetch activity analytics'
+    });
+  }
+});
+
+// GET /api/v1/user-analytics/retention - Get user retention analytics
+router.get('/retention', authenticateToken, requireRole(['admin', 'manager']), async (req, res) => {
+  try {
+    console.log('📊 Fetching user retention analytics');
+    
+    const { period = '30d' } = req.query;
+    const usersCollection = await getCollection('users');
+    const sessionsCollection = await getCollection('user_sessions');
+    
+    // Calculate period in days
+    const periodDays = parseInt(period.replace('d', ''));
+    const periodMs = periodDays * 24 * 60 * 60 * 1000;
+    
+    // Get retention data
+    const retentionData = await usersCollection.aggregate([
+      {
+        $match: {
+          createdAt: { $gte: new Date(Date.now() - periodMs) }
+        }
+      },
+      {
+        $lookup: {
+          from: 'user_sessions',
+          localField: '_id',
+          foreignField: 'userId',
+          as: 'sessions'
+        }
+      },
+      {
+        $project: {
+          userId: '$_id',
+          createdAt: 1,
+          sessions: 1,
+          hasReturned: {
+            $gt: [{ $size: '$sessions' }, 1]
+          },
+          daysSinceFirstSession: {
+            $divide: [
+              { $subtract: ['$$NOW', '$createdAt'] },
+              1000 * 60 * 60 * 24
+            ]
+          }
+        }
+      },
+      {
+        $group: {
+          _id: {
+            $floor: '$daysSinceFirstSession'
+          },
+          totalUsers: { $sum: 1 },
+          returningUsers: {
+            $sum: { $cond: ['$hasReturned', 1, 0] }
+          }
+        }
+      },
+      { $sort: { '_id': 1 } }
+    ]).toArray();
+    
+    // Calculate retention rates
+    const retentionRates = retentionData.map(day => ({
+      day: day._id,
+      totalUsers: day.totalUsers,
+      returningUsers: day.returningUsers,
+      retentionRate: day.totalUsers > 0 ? 
+        Math.round((day.returningUsers / day.totalUsers) * 100 * 100) / 100 : 0
+    }));
+    
+    res.json({
+      success: true,
+      data: {
+        period: period,
+        retentionRates,
+        summary: {
+          totalUsers: retentionData.reduce((sum, day) => sum + day.totalUsers, 0),
+          totalReturning: retentionData.reduce((sum, day) => sum + day.returningUsers, 0),
+          avgRetentionRate: retentionRates.length > 0 ? 
+            Math.round((retentionRates.reduce((sum, day) => sum + day.retentionRate, 0) / retentionRates.length) * 100) / 100 : 0
+        }
+      },
+      timestamp: new Date().toISOString()
+    });
+    
+  } catch (error) {
+    console.error('❌ Error fetching retention analytics:', error);
+    res.status(500).json({
+      success: false,
+      error: 'FETCH_RETENTION_FAILED',
+      message: 'Failed to fetch retention analytics'
+    });
+  }
+});
+
+// GET /api/v1/user-analytics/engagement - Get user engagement metrics
+router.get('/engagement', authenticateToken, requireRole(['admin', 'manager']), async (req, res) => {
+  try {
+    console.log('📈 Fetching user engagement metrics');
+    
+    const { startDate, endDate } = req.query;
+    const usersCollection = await getCollection('users');
+    const activitiesCollection = await getCollection('user_activities');
+    const sessionsCollection = await getCollection('user_sessions');
+    
+    // Build date filter
+    const dateFilter = {};
+    if (startDate || endDate) {
+      dateFilter.createdAt = {};
+      if (startDate) dateFilter.createdAt.$gte = new Date(startDate);
+      if (endDate) dateFilter.createdAt.$lte = new Date(endDate);
+    }
+    
+    // Get engagement metrics
+    const [
+      dailyActiveUsers,
+      weeklyActiveUsers,
+      monthlyActiveUsers,
+      avgSessionDuration,
+      avgActivitiesPerUser,
+      topActions,
+      engagementByHour
+    ] = await Promise.all([
+      // Daily Active Users
+      sessionsCollection.distinct('userId', {
+        ...dateFilter,
+        createdAt: { $gte: new Date(Date.now() - 24 * 60 * 60 * 1000) }
+      }),
+      
+      // Weekly Active Users
+      sessionsCollection.distinct('userId', {
+        ...dateFilter,
+        createdAt: { $gte: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000) }
+      }),
+      
+      // Monthly Active Users
+      sessionsCollection.distinct('userId', {
+        ...dateFilter,
+        createdAt: { $gte: new Date(Date.now() - 30 * 24 * 60 * 60 * 1000) }
+      }),
+      
+      // Average session duration
+      sessionsCollection.aggregate([
+        { $match: dateFilter },
+        { $group: { _id: null, avgDuration: { $avg: '$duration' } } }
+      ]).toArray(),
+      
+      // Average activities per user
+      activitiesCollection.aggregate([
+        { $match: dateFilter },
+        { $group: { _id: '$userId', activityCount: { $sum: 1 } } },
+        { $group: { _id: null, avgActivities: { $avg: '$activityCount' } } }
+      ]).toArray(),
+      
+      // Top actions
+      activitiesCollection.aggregate([
+        { $match: dateFilter },
+        { $group: { _id: '$action', count: { $sum: 1 } } },
+        { $sort: { count: -1 } },
+        { $limit: 10 }
+      ]).toArray(),
+      
+      // Engagement by hour
+      activitiesCollection.aggregate([
+        { $match: dateFilter },
+        {
+          $group: {
+            _id: { $hour: '$createdAt' },
+            count: { $sum: 1 }
+          }
+        },
+        { $sort: { '_id': 1 } }
+      ]).toArray()
+    ]);
+    
+    const engagement = {
+      activeUsers: {
+        daily: dailyActiveUsers.length,
+        weekly: weeklyActiveUsers.length,
+        monthly: monthlyActiveUsers.length
+      },
+      sessionMetrics: {
+        avgDuration: avgSessionDuration[0]?.avgDuration || 0
+      },
+      activityMetrics: {
+        avgPerUser: avgActivitiesPerUser[0]?.avgActivities || 0,
+        topActions,
+        byHour: engagementByHour
+      }
+    };
+    
+    res.json({
+      success: true,
+      data: engagement,
+      timestamp: new Date().toISOString()
+    });
+    
+  } catch (error) {
+    console.error('❌ Error fetching engagement metrics:', error);
+    res.status(500).json({
+      success: false,
+      error: 'FETCH_ENGAGEMENT_FAILED',
+      message: 'Failed to fetch engagement metrics'
+    });
+  }
+});
+
+// POST /api/v1/user-analytics/track - Track user activity
+router.post('/track', authenticateToken, async (req, res) => {
+  try {
+    console.log('📊 Tracking user activity:', req.body);
+    
+    const { action, details = {}, metadata = {} } = req.body;
+    
+    if (!action) {
+      return res.status(400).json({
+        success: false,
+        error: 'VALIDATION_ERROR',
+        message: 'Action is required'
+      });
+    }
+    
+    const activitiesCollection = await getCollection('user_activities');
+    
+    const activity = {
+      userId: req.user.id,
+      action,
+      details,
+      metadata,
+      userAgent: req.headers['user-agent'] || '',
+      ip: req.ip || req.connection.remoteAddress,
+      createdAt: new Date()
+    };
+    
+    const result = await activitiesCollection.insertOne(activity);
+    
+    res.status(201).json({
+      success: true,
+      data: {
+        id: result.insertedId,
+        ...activity
+      },
+      message: 'Activity tracked successfully',
+      timestamp: new Date().toISOString()
+    });
+    
+  } catch (error) {
+    console.error('❌ Error tracking activity:', error);
+    res.status(500).json({
+      success: false,
+      error: 'TRACK_ACTIVITY_FAILED',
+      message: 'Failed to track activity'
+    });
+  }
+});
+
+module.exports = router;

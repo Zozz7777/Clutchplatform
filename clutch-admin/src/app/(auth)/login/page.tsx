@@ -213,9 +213,12 @@ function LoginForm() {
              <div className="text-center mt-3">
                <p className="text-slate-400 text-xs">
                  Need help?{' '}
-                 <a href="#" className="text-red-400 hover:text-red-300 transition-colors duration-200">
+                 <button 
+                   onClick={() => window.open('mailto:support@clutch.com?subject=Login Support Request', '_blank')}
+                   className="text-red-400 hover:text-red-300 transition-colors duration-200 underline"
+                 >
                    Contact support
-                 </a>
+                 </button>
                </p>
              </div>
           </div>

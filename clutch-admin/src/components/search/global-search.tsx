@@ -50,7 +50,7 @@ interface AISearchProps {
   className?: string
 }
 
-export function GlobalSearch({
+function GlobalSearch({
   onResultSelect,
   onSuggestionSelect,
   placeholder = "Search anything...",
@@ -563,3 +563,5 @@ export function AdvancedFilterBuilder({
     </Card>
   )
 }
+
+export default GlobalSearch

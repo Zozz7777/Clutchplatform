@@ -12,16 +12,21 @@ import { ToastProvider } from '@/components/ui/toast'
 import { ClientWrapper } from '@/components/client-wrapper'
 import { AccessibilityProvider } from '@/components/accessibility/accessibility-provider'
 import { sessionManager } from '@/lib/session-manager'
+import { serviceWorkerManager } from '@/utils/performance-optimization'
 
 /**
  * App Providers - Centralized provider setup
  * Combines all context providers for the application
  */
 export function AppProviders({ children }: { children: React.ReactNode }) {
-  // Initialize session manager
+  // Initialize session manager and service worker
   React.useEffect(() => {
     sessionManager.startMonitoring()
-    return () => sessionManager.destroy()
+    serviceWorkerManager.register()
+    
+    return () => {
+      sessionManager.destroy()
+    }
   }, [])
 
   return (

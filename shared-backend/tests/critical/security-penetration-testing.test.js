@@ -554,7 +554,7 @@ describe('Critical Security Testing - Penetration Testing and Vulnerability Scan
     test('should handle malicious payloads', async () => {
       const maliciousPayloads = [
         { name: '<script>alert("XSS")</script>' },
-        { email: 'test@example.com'; DROP TABLE users; --' },
+        { email: 'test@example.com\'; DROP TABLE users; --' },
         { role: { $where: "this.password == 'admin'" } }
       ];
       

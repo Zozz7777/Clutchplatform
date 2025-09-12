@@ -82,7 +82,7 @@ class SessionManager {
     this.lastActivity = Date.now()
     this.warningShown = false
 
-    console.log('🔄 Starting session monitoring...')
+    // Starting session monitoring
 
     // Start refresh interval
     this.startRefreshInterval()
@@ -100,7 +100,7 @@ class SessionManager {
 
     this.isMonitoring = false
 
-    console.log('⏹️ Stopping session monitoring...')
+    // Stopping session monitoring
 
     // Clear all timeouts
     this.clearTimeouts()
@@ -110,7 +110,7 @@ class SessionManager {
   private pauseMonitoring() {
     if (!this.isMonitoring) return
 
-    console.log('⏸️ Pausing session monitoring...')
+    // Pausing session monitoring
     this.clearTimeouts()
   }
 
@@ -118,7 +118,7 @@ class SessionManager {
   private resumeMonitoring() {
     if (!this.isMonitoring) return
 
-    console.log('▶️ Resuming session monitoring...')
+    // Resuming session monitoring
     this.startMonitoring()
   }
 
@@ -150,7 +150,7 @@ class SessionManager {
       const timeSinceActivity = now - this.lastActivity
 
       if (timeSinceActivity > this.config.maxInactivityTime) {
-        console.log('⚠️ User inactive for too long, showing warning...')
+        // User inactive for too long, showing warning
         this.showInactivityWarning()
       } else {
         // Check again in 1 minute
@@ -169,7 +169,7 @@ class SessionManager {
     this.warningShown = true
 
     // Show warning toast
-    const { showToast } = require('@/components/ui/toast')
+    // const { showToast } = require('@/components/ui/toast') // Removed require() import
     showToast.warning(
       'Session Timeout Warning',
       'You will be logged out due to inactivity. Click anywhere to continue your session.',
@@ -199,7 +199,7 @@ class SessionManager {
         throw new Error('Session validation failed')
       }
 
-      console.log('✅ Session refreshed successfully')
+      // Session refreshed successfully
     } catch (error) {
       console.error('❌ Session refresh failed:', error)
       throw error
@@ -208,7 +208,7 @@ class SessionManager {
 
   // Handle session timeout
   private handleSessionTimeout() {
-    console.log('⏰ Session timeout - logging out user')
+    // Session timeout - logging out user
     
     this.stopMonitoring()
     
@@ -217,7 +217,7 @@ class SessionManager {
     clearUser()
     
     // Show timeout message
-    const { showToast } = require('@/components/ui/toast')
+    // const { showToast } = require('@/components/ui/toast') // Removed require() import
     showToast.error(
       'Session Expired',
       'Your session has expired due to inactivity. Please log in again.'
@@ -251,7 +251,7 @@ class SessionManager {
   extendSession() {
     if (!this.isMonitoring) return
 
-    console.log('⏰ Extending session...')
+    // Extending session
     
     this.updateActivity()
     

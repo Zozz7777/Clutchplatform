@@ -64,7 +64,7 @@ class AuthManager {
 
     this.refreshPromise = new Promise<string>(async (resolve, reject) => {
       try {
-        console.log('🔄 Starting token refresh...')
+        // Starting token refresh
         
         const response = await apiClient.refreshAuthToken()
         
@@ -80,7 +80,7 @@ class AuthManager {
             setUser(user)
           }
           
-          console.log('✅ Token refresh successful')
+          // Token refresh successful
           resolve(token)
         } else {
           console.error('❌ Token refresh failed:', response.message)
