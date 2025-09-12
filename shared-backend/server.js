@@ -813,6 +813,30 @@ app.use(`${apiPrefix}/two-factor-auth`, twoFactorAuthRoutes);
     });
   });
 
+  // GitHub webhook endpoint for testing auto-deployment
+  app.post('/webhook/github', (req, res) => {
+    try {
+      console.log('🔔 GitHub webhook received:', {
+        headers: req.headers,
+        body: req.body,
+        timestamp: new Date().toISOString()
+      });
+      
+      res.json({
+        success: true,
+        message: 'Webhook received',
+        timestamp: new Date().toISOString()
+      });
+    } catch (error) {
+      console.error('❌ Webhook error:', error);
+      res.status(500).json({
+        success: false,
+        error: error.message,
+        timestamp: new Date().toISOString()
+      });
+    }
+  });
+
   // 404 handler - must be after ALL routes are registered
   app.use('*', (req, res) => {
     console.log(`❌ 404 - Endpoint not found: ${req.method} ${req.originalUrl}`);
@@ -835,67 +859,7 @@ app.use(`${apiPrefix}/two-factor-auth`, twoFactorAuthRoutes);
     });
   });
 
-  
-// Fallback routes for missing endpoints
-app.get('/api/v1/admin/dashboard/consolidated', (req, res) => {
-  res.status(200).json({
-    success: true,
-    data: {
-      metrics: {
-        users: { total: 1250, active: 890, growth: 0.15 },
-        orders: { total: 2340, pending: 45, completed: 2295, growth: 0.12 },
-        revenue: { total: 45600, monthly: 12300, weekly: 3200, daily: 450, growth: 0.18 },
-        vehicles: { total: 150, available: 120, inService: 30 },
-        services: { total: 25, active: 22, completed: 3 },
-        partners: { total: 45, active: 38, pending: 7 }
-      },
-      recentOrders: [],
-      activityLogs: [],
-      platformServices: [
-        { name: 'Authentication', status: 'healthy', uptime: '99.9%' },
-        { name: 'Database', status: 'healthy', uptime: '99.8%' },
-        { name: 'API Gateway', status: 'healthy', uptime: '99.7%' }
-      ],
-      systemStatus: [
-        { name: 'CPU Usage', value: 45, unit: '%', status: 'healthy' },
-        { name: 'Memory Usage', value: 62, unit: '%', status: 'healthy' },
-        { name: 'Disk Usage', value: 38, unit: '%', status: 'healthy' }
-      ],
-      realTimeData: {
-        totalUsers: 1250,
-        activeDrivers: 89,
-        totalPartners: 45,
-        monthlyRevenue: 12300
-      }
-    }
-  });
-});
-
-// Test endpoints will be registered with other routes
-
-// GitHub webhook endpoint for testing auto-deployment
-app.post('/webhook/github', (req, res) => {
-  try {
-    console.log('🔔 GitHub webhook received:', {
-      headers: req.headers,
-      body: req.body,
-      timestamp: new Date().toISOString()
-    });
-    
-    res.json({
-      success: true,
-      message: 'Webhook received',
-      timestamp: new Date().toISOString()
-    });
-  } catch (error) {
-    console.error('❌ Webhook error:', error);
-    res.status(500).json({
-      success: false,
-      error: error.message,
-      timestamp: new Date().toISOString()
-    });
-  }
-});
+  // All routes are now properly registered above
 
 // Removed fallback routes - using actual route files instead
 
