@@ -1,33 +1,23 @@
 'use client'
 
 import React, { useState } from 'react'
-import { useRouter, usePathname } from 'next/navigation'
-import { useLocale, useTranslations } from 'next-intl'
 import { SnowButton } from '@/components/ui/snow-button'
 import { Globe, Check } from 'lucide-react'
-import { locales, localeNames, localeFlags, type Locale } from '@/i18n/config'
+import { useI18n } from '@/contexts/i18n-context'
 
-const languages = locales.map(locale => ({
-  code: locale,
-  name: localeNames[locale],
-  flag: localeFlags[locale]
-}))
+const languages = [
+  { code: 'en' as const, name: 'English', flag: '🇺🇸' },
+  { code: 'ar' as const, name: 'العربية', flag: '🇸🇦' }
+]
 
 export default function LanguageToggle() {
   const [isOpen, setIsOpen] = useState(false)
-  const router = useRouter()
-  const pathname = usePathname()
-  const locale = useLocale()
-  const t = useTranslations('languages')
+  const { locale, setLocale, t } = useI18n()
 
   const currentLanguage = languages.find(lang => lang.code === locale)
 
-  const handleLanguageChange = (newLocale: Locale) => {
-    // Remove the current locale from the pathname
-    const pathWithoutLocale = pathname.replace(`/${locale}`, '') || '/'
-    
-    // Navigate to the new locale
-    router.push(`/${newLocale}${pathWithoutLocale}`)
+  const handleLanguageChange = (newLocale: 'en' | 'ar') => {
+    setLocale(newLocale)
     setIsOpen(false)
   }
 
@@ -58,7 +48,7 @@ export default function LanguageToggle() {
               {languages.map((language) => (
                 <button
                   key={language.code}
-                  onClick={() => handleLanguageChange(language.code as Locale)}
+                  onClick={() => handleLanguageChange(language.code)}
                   className={`w-full flex items-center justify-between px-4 py-3 text-sm hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors ${
                     locale === language.code 
                       ? 'text-clutch-primary dark:text-clutch-primary' 

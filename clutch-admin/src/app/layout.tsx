@@ -5,8 +5,7 @@ import "./globals.css";
 import { ErrorBoundary } from "@/components/ErrorBoundary";
 import { ErrorTrackerProvider } from "@/contexts/ErrorTrackerContext";
 import { ThemeProvider } from "next-themes";
-import { NextIntlClientProvider } from 'next-intl';
-import { getMessages } from 'next-intl/server';
+import { I18nProvider } from '@/contexts/i18n-context';
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -23,17 +22,15 @@ export const metadata: Metadata = {
   },
 };
 
-export default async function RootLayout({
+export default function RootLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
-  const messages = await getMessages();
-
   return (
     <html suppressHydrationWarning>
       <body className={inter.className}>
-        <NextIntlClientProvider messages={messages}>
+        <I18nProvider>
           <ThemeProvider
             attribute="class"
             defaultTheme="light"
@@ -46,7 +43,7 @@ export default async function RootLayout({
               </ErrorTrackerProvider>
             </ErrorBoundary>
           </ThemeProvider>
-        </NextIntlClientProvider>
+        </I18nProvider>
       </body>
     </html>
   );

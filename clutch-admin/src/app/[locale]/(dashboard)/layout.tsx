@@ -51,7 +51,7 @@ import KeyboardShortcutsModal from '@/components/modals/keyboard-shortcuts-modal
 import GlobalSearch from '@/components/search/global-search'
 import ThemeToggle from '@/components/theme/theme-toggle'
 import LanguageToggle from '@/components/language/language-toggle'
-import { useTranslations } from 'next-intl'
+import { useI18n } from '@/contexts/i18n-context'
 
 // Loading Component
 const LoadingSpinner = () => (
@@ -783,7 +783,7 @@ const Header = ({
   const [userMenuOpen, setUserMenuOpen] = useState(false)
   const [searchQuery, setSearchQuery] = useState('')
   const router = useRouter()
-  const t = useTranslations('header')
+  const { t } = useI18n()
 
   // Initialize keyboard shortcuts
   useKeyboardShortcuts()
@@ -866,7 +866,7 @@ const Header = ({
             <div className="relative">
               <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-slate-400" />
               <SnowInput
-                placeholder={t('searchPlaceholder')}
+                placeholder={t('header.searchPlaceholder')}
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 onClick={handleSearchClick}
@@ -892,7 +892,7 @@ const Header = ({
             title="Keyboard Shortcuts (Ctrl + ?)"
           >
             <HelpCircle className="h-4 w-4 mr-2 text-slate-600 dark:text-slate-300" />
-            <span className="hidden sm:inline text-slate-700 dark:text-slate-200">{t('help')}</span>
+            <span className="hidden sm:inline text-slate-700 dark:text-slate-200">{t('header.help')}</span>
           </SnowButton>
           
           <SnowButton
@@ -903,7 +903,7 @@ const Header = ({
             aria-label="Team Chat"
           >
             <MessageSquare className="h-4 w-4 mr-2 text-slate-600 dark:text-slate-300" />
-            <span className="hidden sm:inline text-slate-700 dark:text-slate-200">{t('chat')}</span>
+            <span className="hidden sm:inline text-slate-700 dark:text-slate-200">{t('header.chat')}</span>
           </SnowButton>
           
           {/* Language Toggle */}

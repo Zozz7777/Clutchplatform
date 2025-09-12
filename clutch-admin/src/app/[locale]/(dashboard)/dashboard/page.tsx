@@ -1,7 +1,7 @@
 ﻿'use client'
 
 import React, { useState, useEffect } from 'react'
-import { useTranslations } from 'next-intl'
+import { useI18n } from '@/contexts/i18n-context'
 import { 
   TrendingUp, 
   TrendingDown, 
@@ -77,8 +77,7 @@ export default function DashboardPage() {
   const { user } = useAuthStore()
   const [currentTime, setCurrentTime] = useState(new Date())
   const responsive = useResponsive()
-  const t = useTranslations('dashboard')
-  const tHeader = useTranslations('header')
+  const { t } = useI18n()
 
   // Use consolidated dashboard hook instead of multiple separate API calls
   const {
@@ -123,11 +122,11 @@ export default function DashboardPage() {
 
   const getTrendContext = (percentage: number, isPositive: boolean = true) => {
     const absPercentage = Math.abs(percentage)
-    if (absPercentage < 2) return { label: t('stable'), color: 'text-slate-600 dark:text-slate-400' }
+    if (absPercentage < 2) return { label: t('dashboard.stable'), color: 'text-slate-600 dark:text-slate-400' }
     if (isPositive) {
-      return { label: t('good'), color: 'text-emerald-600 dark:text-emerald-400' }
+      return { label: t('dashboard.good'), color: 'text-emerald-600 dark:text-emerald-400' }
     } else {
-      return { label: t('needsAttention'), color: 'text-red-600 dark:text-red-400' }
+      return { label: t('dashboard.needsAttention'), color: 'text-red-600 dark:text-red-400' }
     }
   }
 
@@ -182,26 +181,26 @@ export default function DashboardPage() {
               <div className="flex items-center space-x-4">
                 <div className="flex items-center space-x-2 px-3 py-1.5 bg-emerald-50 dark:bg-emerald-900/20 rounded-full">
                   <div className="h-2.5 w-2.5 bg-emerald-500 rounded-full animate-pulse"></div>
-                  <span className="text-sm font-medium text-emerald-700 dark:text-emerald-400">{t('systemOnline')}</span>
+                  <span className="text-sm font-medium text-emerald-700 dark:text-emerald-400">{t('dashboard.systemOnline')}</span>
                 </div>
                 <div className="flex items-center space-x-2 px-3 py-1.5 bg-blue-50 dark:bg-blue-900/20 rounded-full">
                   <Sparkles className="h-4 w-4 text-blue-600 dark:text-blue-400" />
-                  <span className="text-sm font-medium text-blue-700 dark:text-blue-400">{t('aiEnabled')}</span>
+                  <span className="text-sm font-medium text-blue-700 dark:text-blue-400">{t('dashboard.aiEnabled')}</span>
                 </div>
               </div>
               <div>
                 <h1 className="text-3xl font-bold text-slate-900 dark:text-slate-100 mb-2">
-                  {t('title')}
+                  {t('dashboard.title')}
                 </h1>
                 <p className="text-slate-700 max-w-2xl">
-                  {t('welcome', { name: user?.fullName || 'Administrator' })}
+                  {t('dashboard.welcome', { name: user?.fullName || 'Administrator' })}
                 </p>
               </div>
             </div>
             <div className="text-right space-y-3">
               <div className="flex items-center justify-end space-x-2">
                 <div className="h-2 w-2 bg-emerald-500 rounded-full animate-pulse"></div>
-                <span className="text-sm font-mono text-slate-600 text-slate-600">{t('realTime')}</span>
+                <span className="text-sm font-mono text-slate-600 text-slate-600">{t('dashboard.realTime')}</span>
               </div>
               <div className="space-y-1">
                 <p className="text-sm text-slate-500 dark:text-slate-500 font-mono">
@@ -233,7 +232,7 @@ export default function DashboardPage() {
                   <div className="p-2 bg-blue-50 dark:bg-blue-900/20 rounded-lg">
                     <Users className="h-5 w-5 text-blue-600 dark:text-blue-400" />
                   </div>
-                  <span className="text-sm font-medium text-slate-600 text-slate-600">{t('totalUsers')}</span>
+                  <span className="text-sm font-medium text-slate-600 text-slate-600">{t('dashboard.totalUsers')}</span>
                 </div>
                 <div className="text-2xl font-bold text-slate-900 dark:text-slate-100">
                   {metrics?.users?.total?.toLocaleString() || '0'}
@@ -243,7 +242,7 @@ export default function DashboardPage() {
                     <div className="flex items-center space-x-1 text-emerald-600 dark:text-emerald-400">
                       <ArrowUpRight className="h-4 w-4" />
                       <span className="text-sm font-medium">+12%</span>
-                      <span className="text-xs text-slate-500 dark:text-slate-500">{t('vsLastMonth')}</span>
+                      <span className="text-xs text-slate-500 dark:text-slate-500">{t('dashboard.vsLastMonth')}</span>
                     </div>
                     <div className="text-xs font-medium text-emerald-600 dark:text-emerald-400">
                       {getTrendContext(12, true).label}
@@ -251,7 +250,7 @@ export default function DashboardPage() {
                   </div>
                 ) : (
                     <div className="text-xs text-slate-500 dark:text-slate-500">
-                      {t('noDataForPeriod')}
+                      {t('dashboard.noDataForPeriod')}
                     </div>
                 )}
               </div>
@@ -266,7 +265,7 @@ export default function DashboardPage() {
                   <div className="p-2 bg-primary/10 rounded-lg">
                     <Car className="h-5 w-5 text-primary" />
                   </div>
-                  <span className="text-sm font-medium text-slate-600 text-slate-600">{t('activeDrivers')}</span>
+                  <span className="text-sm font-medium text-slate-600 text-slate-600">{t('dashboard.activeDrivers')}</span>
                 </div>
                 <div className="text-2xl font-bold text-slate-900 dark:text-slate-100">
                   {realTimeData?.activeDrivers?.toLocaleString() || '0'}
@@ -276,7 +275,7 @@ export default function DashboardPage() {
                     <div className="flex items-center space-x-1 text-emerald-600 dark:text-emerald-400">
                       <ArrowUpRight className="h-4 w-4" />
                       <span className="text-sm font-medium">+8%</span>
-                      <span className="text-xs text-slate-500 dark:text-slate-500">{t('vsLastMonth')}</span>
+                      <span className="text-xs text-slate-500 dark:text-slate-500">{t('dashboard.vsLastMonth')}</span>
                     </div>
                     <div className="text-xs font-medium text-emerald-600 dark:text-emerald-400">
                       {getTrendContext(8, true).label}
@@ -284,7 +283,7 @@ export default function DashboardPage() {
                   </div>
                 ) : (
                     <div className="text-xs text-slate-500 dark:text-slate-500">
-                      {t('noDataForPeriod')}
+                      {t('dashboard.noDataForPeriod')}
                     </div>
                 )}
               </div>
@@ -299,7 +298,7 @@ export default function DashboardPage() {
                   <div className="p-2 bg-purple-50 dark:bg-purple-900/20 rounded-lg">
                     <Building2 className="h-5 w-5 text-purple-600 dark:text-purple-400" />
                   </div>
-                  <span className="text-sm font-medium text-slate-600 text-slate-600">{t('totalPartners')}</span>
+                  <span className="text-sm font-medium text-slate-600 text-slate-600">{t('dashboard.totalPartners')}</span>
                 </div>
                 <div className="text-2xl font-bold text-slate-900 dark:text-slate-100">
                   {metrics?.partners?.total?.toLocaleString() || '0'}
@@ -309,7 +308,7 @@ export default function DashboardPage() {
                     <div className="flex items-center space-x-1 text-emerald-600 dark:text-emerald-400">
                       <ArrowUpRight className="h-4 w-4" />
                       <span className="text-sm font-medium">+15%</span>
-                      <span className="text-xs text-slate-500 dark:text-slate-500">{t('vsLastMonth')}</span>
+                      <span className="text-xs text-slate-500 dark:text-slate-500">{t('dashboard.vsLastMonth')}</span>
                     </div>
                     <div className="text-xs font-medium text-emerald-600 dark:text-emerald-400">
                       {getTrendContext(15, true).label}
@@ -317,7 +316,7 @@ export default function DashboardPage() {
                   </div>
                 ) : (
                     <div className="text-xs text-slate-500 dark:text-slate-500">
-                      {t('noDataForPeriod')}
+                      {t('dashboard.noDataForPeriod')}
                     </div>
                 )}
               </div>
@@ -332,7 +331,7 @@ export default function DashboardPage() {
                   <div className="p-2 bg-emerald-50 dark:bg-emerald-900/20 rounded-lg">
                     <PoundSterling className="h-5 w-5 text-emerald-600 dark:text-emerald-400" />
                   </div>
-                  <span className="text-sm font-medium text-slate-600 text-slate-600">{t('monthlyRevenue')}</span>
+                  <span className="text-sm font-medium text-slate-600 text-slate-600">{t('dashboard.monthlyRevenue')}</span>
                 </div>
                 <div className="text-2xl font-bold text-slate-900 dark:text-slate-100">
                   {formatCurrency(metrics?.revenue?.monthly || 0)}
@@ -342,7 +341,7 @@ export default function DashboardPage() {
                     <div className="flex items-center space-x-1 text-red-600 dark:text-red-400">
                       <ArrowDownRight className="h-4 w-4" />
                       <span className="text-sm font-medium">-2%</span>
-                      <span className="text-xs text-slate-500 dark:text-slate-500">{t('vsLastMonth')}</span>
+                      <span className="text-xs text-slate-500 dark:text-slate-500">{t('dashboard.vsLastMonth')}</span>
                     </div>
                     <div className="text-xs font-medium text-red-600 dark:text-red-400">
                       {getTrendContext(2, false).label}
@@ -350,7 +349,7 @@ export default function DashboardPage() {
                   </div>
                 ) : (
                     <div className="text-xs text-slate-500 dark:text-slate-500">
-                      {t('noDataForPeriod')}
+                      {t('dashboard.noDataForPeriod')}
                     </div>
                 )}
               </div>
@@ -365,9 +364,9 @@ export default function DashboardPage() {
               <div className="p-2 bg-blue-50 dark:bg-blue-900/20 rounded-lg">
                 <Server className="h-5 w-5 text-blue-600 dark:text-blue-400" />
               </div>
-              <SnowCardTitle>{t('platformServices')}</SnowCardTitle>
+              <SnowCardTitle>{t('dashboard.platformServices')}</SnowCardTitle>
             </div>
-            <SnowCardDescription>{t('platformServicesDesc')}</SnowCardDescription>
+            <SnowCardDescription>{t('dashboard.platformServicesDesc')}</SnowCardDescription>
           </SnowCardHeader>
           <SnowCardContent>
             <div className="space-y-4">
@@ -419,9 +418,9 @@ export default function DashboardPage() {
               <div className="p-2 bg-purple-50 dark:bg-purple-900/20 rounded-lg">
                 <Activity className="h-5 w-5 text-purple-600 dark:text-purple-400" />
               </div>
-              <SnowCardTitle>{t('liveActivityFeed')}</SnowCardTitle>
+              <SnowCardTitle>{t('dashboard.liveActivityFeed')}</SnowCardTitle>
             </div>
-            <SnowCardDescription>{t('liveActivityFeedDesc')}</SnowCardDescription>
+            <SnowCardDescription>{t('dashboard.liveActivityFeedDesc')}</SnowCardDescription>
           </SnowCardHeader>
           <SnowCardContent>
             <div className="space-y-3 max-h-96 overflow-y-auto">
@@ -450,8 +449,8 @@ export default function DashboardPage() {
                   <div className="w-12 h-12 bg-slate-100 bg-slate-100 rounded-full flex items-center justify-center mx-auto mb-4">
                     <Activity className="h-6 w-6 text-slate-600" />
                   </div>
-                  <p className="text-slate-600 text-slate-600 font-medium">{t('noRecentActivity')}</p>
-                  <p className="text-sm text-slate-500 dark:text-slate-500 mt-1">{t('activityWillAppear')}</p>
+                  <p className="text-slate-600 text-slate-600 font-medium">{t('dashboard.noRecentActivity')}</p>
+                  <p className="text-sm text-slate-500 dark:text-slate-500 mt-1">{t('dashboard.activityWillAppear')}</p>
                 </div>
               )}
             </div>
@@ -463,9 +462,9 @@ export default function DashboardPage() {
               <div className="p-2 bg-orange-50 dark:bg-orange-900/20 rounded-lg">
                 <Zap className="h-5 w-5 text-orange-600 dark:text-orange-400" />
               </div>
-              <SnowCardTitle>{t('quickActions')}</SnowCardTitle>
+              <SnowCardTitle>{t('dashboard.quickActions')}</SnowCardTitle>
             </div>
-            <SnowCardDescription>{t('quickActionsDesc')}</SnowCardDescription>
+            <SnowCardDescription>{t('dashboard.quickActionsDesc')}</SnowCardDescription>
           </SnowCardHeader>
           <SnowCardContent>
             <div className="space-y-3">
@@ -475,7 +474,7 @@ export default function DashboardPage() {
                 onClick={() => window.location.href = '/dashboard/hr/employees'}
               >
                 <Users className="h-4 w-4 mr-2" />
-{t('manageUsers')}
+{t('dashboard.manageUsers')}
               </SnowButton>
               <SnowButton 
                 className="w-full justify-start" 
@@ -483,7 +482,7 @@ export default function DashboardPage() {
                 onClick={() => window.location.href = '/dashboard/partners'}
               >
                 <Building2 className="h-4 w-4 mr-2" />
-{t('partnerManagement')}
+{t('dashboard.partnerManagement')}
               </SnowButton>
               <SnowButton 
                 className="w-full justify-start" 
@@ -491,7 +490,7 @@ export default function DashboardPage() {
                 onClick={() => window.location.href = '/dashboard/fleet'}
               >
                 <Car className="h-4 w-4 mr-2" />
-{t('fleetOverview')}
+{t('dashboard.fleetOverview')}
               </SnowButton>
               <SnowButton 
                 className="w-full justify-start" 
@@ -499,7 +498,7 @@ export default function DashboardPage() {
                 onClick={() => window.location.href = '/dashboard/security'}
               >
                 <Shield className="h-4 w-4 mr-2" />
-{t('securityCenter')}
+{t('dashboard.securityCenter')}
               </SnowButton>
             </div>
           </SnowCardContent>
@@ -510,9 +509,9 @@ export default function DashboardPage() {
               <div className="p-2 bg-red-50 dark:bg-red-900/20 rounded-lg mr-3">
                 <Bell className="h-5 w-5 text-red-600 dark:text-red-400" />
               </div>
-{t('platformAlerts')}
+{t('dashboard.platformAlerts')}
             </SnowCardTitle>
-            <SnowCardDescription className="text-slate-600 dark:text-slate-300">{t('platformAlertsDesc')}</SnowCardDescription>
+            <SnowCardDescription className="text-slate-600 dark:text-slate-300">{t('dashboard.platformAlertsDesc')}</SnowCardDescription>
           </SnowCardHeader>
           <SnowCardContent className="p-6">
             <div className="space-y-4">
@@ -521,7 +520,7 @@ export default function DashboardPage() {
                   <div className="p-2 bg-red-100 dark:bg-red-900/30 rounded-lg">
                     <AlertTriangle className="h-4 w-4 text-red-600 dark:text-red-400" />
                   </div>
-                  <span className="text-sm font-medium text-slate-900 dark:text-white">{t('securityAlerts')}</span>
+                  <span className="text-sm font-medium text-slate-900 dark:text-white">{t('dashboard.securityAlerts')}</span>
                 </div>
                 <Badge className="bg-red-500 text-white">3</Badge>
               </div>
@@ -530,7 +529,7 @@ export default function DashboardPage() {
                   <div className="p-2 bg-yellow-100 dark:bg-yellow-900/30 rounded-lg">
                     <Clock className="h-4 w-4 text-yellow-600 dark:text-yellow-400" />
                   </div>
-                  <span className="text-sm font-medium text-slate-900 dark:text-white">{t('pendingOrders')}</span>
+                  <span className="text-sm font-medium text-slate-900 dark:text-white">{t('dashboard.pendingOrders')}</span>
                 </div>
                 <Badge className="bg-yellow-500 text-white">{metrics?.orders?.pending || 0}</Badge>
               </div>
@@ -539,7 +538,7 @@ export default function DashboardPage() {
                   <div className="p-2 bg-green-100 dark:bg-green-900/30 rounded-lg">
                     <CheckCircle className="h-4 w-4 text-green-600 dark:text-green-400" />
                   </div>
-                  <span className="text-sm font-medium text-slate-900 dark:text-white">{t('completedToday')}</span>
+                  <span className="text-sm font-medium text-slate-900 dark:text-white">{t('dashboard.completedToday')}</span>
                 </div>
                 <Badge className="bg-green-500 text-white">{metrics?.orders?.completed?.toLocaleString() || '0'}</Badge>
               </div>
@@ -552,9 +551,9 @@ export default function DashboardPage() {
               <div className="p-2 bg-green-50 dark:bg-green-900/20 rounded-lg mr-3">
                 <Gauge className="h-5 w-5 text-green-600 dark:text-green-400" />
               </div>
-{t('systemHealth')}
+{t('dashboard.systemHealth')}
             </SnowCardTitle>
-            <SnowCardDescription className="text-slate-600 dark:text-slate-300">{t('systemHealthDesc')}</SnowCardDescription>
+            <SnowCardDescription className="text-slate-600 dark:text-slate-300">{t('dashboard.systemHealthDesc')}</SnowCardDescription>
           </SnowCardHeader>
           <SnowCardContent className="p-6">
             <div className="space-y-6">
@@ -570,14 +569,14 @@ export default function DashboardPage() {
                     }}
                   ></div>
                 </div>
-                <p className="text-sm text-slate-600 dark:text-slate-400 mt-2">{t('overallHealth')}</p>
+                <p className="text-sm text-slate-600 dark:text-slate-400 mt-2">{t('dashboard.overallHealth')}</p>
               </div>
               
               <div className="space-y-4">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center space-x-2">
                     <div className="w-2 h-2 bg-green-500 rounded-full"></div>
-                    <span className="text-sm text-slate-700 dark:text-slate-300">{t('apiResponse')}</span>
+                    <span className="text-sm text-slate-700 dark:text-slate-300">{t('dashboard.apiResponse')}</span>
                   </div>
                   <span className="text-sm font-semibold text-green-600 dark:text-green-400">98.5%</span>
                 </div>
@@ -588,7 +587,7 @@ export default function DashboardPage() {
                 <div className="flex items-center justify-between">
                   <div className="flex items-center space-x-2">
                     <div className="w-2 h-2 bg-blue-500 rounded-full"></div>
-                    <span className="text-sm text-slate-700 dark:text-slate-300">{t('uptime')}</span>
+                    <span className="text-sm text-slate-700 dark:text-slate-300">{t('dashboard.uptime')}</span>
                   </div>
                   <span className="text-sm font-semibold text-blue-600 dark:text-blue-400">99.9%</span>
                 </div>
