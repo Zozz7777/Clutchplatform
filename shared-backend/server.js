@@ -383,16 +383,6 @@ function setupApp() {
     maxAge: 86400 // Cache preflight response for 24 hours
   }));
 
-  // Explicit OPTIONS request handler for all routes (CORS preflight)
-  app.options('*', (req, res) => {
-    console.log('🔍 OPTIONS preflight request:', { path: req.path, origin: req.headers.origin });
-    res.header('Access-Control-Allow-Origin', req.headers.origin || '*');
-    res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, PATCH, OPTIONS');
-    res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization, X-Requested-With, x-session-token, X-API-Version, X-Correlation-ID, Accept, Origin');
-    res.header('Access-Control-Allow-Credentials', 'true');
-    res.header('Access-Control-Max-Age', '86400');
-    res.status(200).end();
-  });
 
 // Add request logging middleware AFTER CORS with sensitive data redaction
 app.use((req, res, next) => {
@@ -826,6 +816,23 @@ app.use(`${apiPrefix}/two-factor-auth`, twoFactorAuthRoutes);
   app.get('/test-routing', (req, res) => {
     console.log('🧪 Test routing endpoint called');
     res.json({ success: true, message: 'Basic routing works', timestamp: new Date().toISOString() });
+  });
+
+  // Add a simple auth test route at the top level
+  app.get('/auth-test', (req, res) => {
+    console.log('🧪 Top-level auth test endpoint called');
+    res.json({ success: true, message: 'Top-level auth test works', timestamp: new Date().toISOString() });
+  });
+
+  // Add OPTIONS handler at the top level for all routes
+  app.options('*', (req, res) => {
+    console.log('🔍 Top-level OPTIONS handler called:', { path: req.path, origin: req.headers.origin });
+    res.header('Access-Control-Allow-Origin', req.headers.origin || '*');
+    res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, PATCH, OPTIONS');
+    res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization, X-Requested-With, x-session-token, X-API-Version, X-Correlation-ID, Accept, Origin');
+    res.header('Access-Control-Allow-Credentials', 'true');
+    res.header('Access-Control-Max-Age', '86400');
+    res.status(200).end();
   });
   app.use('/dashboard', dashboardRoutes);
   app.use('/autonomous-dashboard', autonomousDashboardRoutes);
