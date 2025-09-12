@@ -940,6 +940,31 @@ app.post('/webhook/github', (req, res) => {
   }
 });
 
+// Simple admin test endpoint at top level
+app.get('/api/v1/admin/test', (req, res) => {
+  try {
+    console.log('🧪 Admin test endpoint called:', {
+      method: req.method,
+      path: req.path,
+      timestamp: new Date().toISOString()
+    });
+    
+    res.json({
+      success: true,
+      message: 'Admin test endpoint working',
+      timestamp: new Date().toISOString(),
+      environment: process.env.NODE_ENV
+    });
+  } catch (error) {
+    console.error('❌ Admin test endpoint error:', error);
+    res.status(500).json({
+      success: false,
+      error: error.message,
+      timestamp: new Date().toISOString()
+    });
+  }
+});
+
 // 404 handler will be added after all routes are registered
 
 // Async function to start the server
