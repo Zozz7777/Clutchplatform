@@ -170,7 +170,17 @@
       "tmp": ">=0.2.3"
     },
     "forever": {
-      "micromatch": ">=4.0.8"
+      "micromatch": ">=4.0.8",
+      "flatiron": {
+        "broadway": {
+          "nconf": ">=0.11.4"
+        }
+      }
+    },
+    "inquirer": {
+      "external-editor": {
+        "tmp": ">=0.2.3"
+      }
     }
   },
   "repository": {
