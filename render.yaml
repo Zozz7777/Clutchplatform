@@ -121,15 +121,15 @@ services:
 
       # EGYPTIAN PAYMENT PROVIDER CONFIGURATION (PAYMOB)
       - key: PAYMOB_API_KEY
-        sync: false
+        value: "dummy_key_for_development"
       - key: PAYMOB_INTEGRATION_ID
-        sync: false
+        value: "dummy_integration_id"
       - key: PAYMOB_IFRAME_ID
-        sync: false
+        value: "dummy_iframe_id"
       - key: PAYMOB_HMAC_SECRET
-        sync: false
+        value: "dummy_hmac_secret"
       - key: PAYMOB_WEBHOOK_SECRET
-        sync: false
+        value: "dummy_webhook_secret"
       - key: PAYMOB_SUCCESS_URL
         value: "https://clutch-a2f49.web.app/payment/success"
       - key: PAYMOB_FAILURE_URL
@@ -137,7 +137,7 @@ services:
 
       # EGYPTIAN SMS PROVIDER CONFIGURATION
       - key: SMS_PROVIDER_API_KEY
-        sync: false
+        value: "dummy_sms_api_key"
       - key: SMS_PROVIDER_SENDER_ID
         value: "CLUTCH"
       - key: SMS_PROVIDER_BASE_URL
@@ -149,9 +149,9 @@ services:
       - key: SMTP_PORT
         value: "587"
       - key: SMTP_USER
-        sync: false
+        value: "dummy_smtp_user"
       - key: SMTP_PASS
-        sync: false
+        value: "dummy_smtp_pass"
       - key: EMAIL_FROM
         value: "noreply@clutch.com"
       - key: EMAIL_FROM_NAME
@@ -163,11 +163,11 @@ services:
       - key: UPLOAD_PATH
         value: "./uploads"
       - key: CLOUDINARY_CLOUD_NAME
-        sync: false
+        value: "dummy_cloudinary_name"
       - key: CLOUDINARY_API_KEY
-        sync: false
+        value: "dummy_cloudinary_key"
       - key: CLOUDINARY_API_SECRET
-        sync: false
+        value: "dummy_cloudinary_secret"
 
       # LOGGING CONFIGURATION
       - key: LOG_LEVEL
@@ -269,7 +269,7 @@ services:
       - key: AI_CHECK_INTERVAL
         value: "*/5 * * * *"
       - key: OPENAI_API_KEY
-        sync: false
+        value: "dummy_openai_key"
       - key: GEMINI_API_KEY
         value: "AIzaSyCbn88mb8wYU6kjmL7rReymMsoHhYrYYRE"
       - key: DEEPSEEK_API_KEY

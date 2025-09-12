@@ -829,19 +829,37 @@ app.get('/api/v1/admin/dashboard/consolidated', (req, res) => {
   });
 });
 
-// GitHub webhook endpoint for testing auto-deployment
-app.post('/webhook/github', (req, res) => {
-  console.log('🔔 GitHub webhook received:', {
-    headers: req.headers,
-    body: req.body,
-    timestamp: new Date().toISOString()
-  });
-  
+// Simple test endpoint
+app.get('/test', (req, res) => {
   res.json({
     success: true,
-    message: 'Webhook received',
+    message: 'Test endpoint working',
     timestamp: new Date().toISOString()
   });
+});
+
+// GitHub webhook endpoint for testing auto-deployment
+app.post('/webhook/github', (req, res) => {
+  try {
+    console.log('🔔 GitHub webhook received:', {
+      headers: req.headers,
+      body: req.body,
+      timestamp: new Date().toISOString()
+    });
+    
+    res.json({
+      success: true,
+      message: 'Webhook received',
+      timestamp: new Date().toISOString()
+    });
+  } catch (error) {
+    console.error('❌ Webhook error:', error);
+    res.status(500).json({
+      success: false,
+      error: error.message,
+      timestamp: new Date().toISOString()
+    });
+  }
 });
 
 // Removed fallback routes - using actual route files instead
