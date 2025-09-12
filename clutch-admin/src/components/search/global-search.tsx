@@ -48,16 +48,29 @@ interface AISearchProps {
   onSuggestionSelect?: (suggestion: SearchSuggestion) => void
   placeholder?: string
   className?: string
+  isOpen?: boolean
+  onClose?: () => void
 }
 
 function GlobalSearch({
   onResultSelect,
   onSuggestionSelect,
   placeholder = "Search anything...",
-  className = ""
+  className = "",
+  isOpen: externalIsOpen,
+  onClose: externalOnClose
 }: AISearchProps) {
   const [query, setQuery] = useState('')
-  const [isOpen, setIsOpen] = useState(false)
+  const [internalIsOpen, setInternalIsOpen] = useState(false)
+  const isOpen = externalIsOpen !== undefined ? externalIsOpen : internalIsOpen
+  
+  const handleClose = () => {
+    if (externalOnClose) {
+      externalOnClose()
+    } else {
+      setInternalIsOpen(false)
+    }
+  }
   const [results, setResults] = useState<SearchResult[]>([])
   const [suggestions, setSuggestions] = useState<SearchSuggestion[]>([])
   const [isLoading, setIsLoading] = useState(false)
@@ -236,15 +249,15 @@ function GlobalSearch({
         e.preventDefault()
         if (selectedIndex >= 0 && selectedIndex < results.length) {
           onResultSelect?.(results[selectedIndex])
-          setIsOpen(false)
+          handleClose()
         } else if (selectedIndex >= results.length) {
           const suggestionIndex = selectedIndex - results.length
           onSuggestionSelect?.(suggestions[suggestionIndex])
-          setIsOpen(false)
+          handleClose()
         }
         break
       case 'Escape':
-        setIsOpen(false)
+        handleClose()
         setQuery('')
         setResults([])
         setSuggestions([])
@@ -254,9 +267,9 @@ function GlobalSearch({
 
   // Handle result selection
   const handleResultSelect = useCallback((result: SearchResult) => {
-    onResultSelect?.(result)
-    setIsOpen(false)
-    setQuery('')
+        onResultSelect?.(result)
+        handleClose()
+        setQuery('')
   }, [onResultSelect])
 
   // Handle suggestion selection
