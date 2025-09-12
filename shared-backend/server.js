@@ -1,7 +1,20 @@
 const express = require('express');
 const cors = require('cors');
 const rateLimit = require('express-rate-limit');
+const compression = require('compression');
 require('dotenv').config();
+
+// Import performance monitoring
+const { 
+  requestPerformanceMiddleware, 
+  databaseQueryMiddleware,
+  trackError 
+} = require('./middleware/performance-monitor');
+const { 
+  optimizationMiddleware,
+  setCache,
+  getCache 
+} = require('./middleware/performance-optimizer');
 
 // Import database connection
 const { connectToDatabase } = require('./config/database');
@@ -29,6 +42,14 @@ const app = express();
 
 // Trust proxy
 app.set('trust proxy', 1);
+
+// Performance monitoring middleware
+app.use(requestPerformanceMiddleware());
+app.use(databaseQueryMiddleware());
+app.use(optimizationMiddleware());
+
+// Compression middleware
+app.use(compression());
 
 // Basic CORS
 app.use(cors({
@@ -182,6 +203,29 @@ app.options('*', (req, res) => {
   res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization, X-Requested-With, x-session-token, X-API-Version, X-Correlation-ID, Accept, Origin');
   res.header('Access-Control-Allow-Credentials', 'true');
   res.status(200).end();
+});
+
+// Global error handler
+app.use((err, req, res, next) => {
+  console.error('❌ Global error handler:', err);
+  
+  // Track error for performance monitoring
+  trackError(err, { 
+    endpoint: req.path, 
+    method: req.method,
+    userAgent: req.get('User-Agent'),
+    ip: req.ip
+  });
+  
+  // Don't leak error details in production
+  const isDevelopment = process.env.NODE_ENV === 'development';
+  
+  res.status(err.status || 500).json({
+    success: false,
+    error: err.name || 'INTERNAL_SERVER_ERROR',
+    message: isDevelopment ? err.message : 'Internal server error',
+    ...(isDevelopment && { stack: err.stack })
+  });
 });
 
 // 404 handler

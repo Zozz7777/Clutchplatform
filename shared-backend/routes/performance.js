@@ -2,8 +2,203 @@ const express = require('express');
 const router = express.Router();
 const { getCollection } = require('../config/database');
 const { authenticateToken, requireRole } = require('../middleware/auth');
+const { 
+  performanceMonitor, 
+  getMetrics, 
+  getSummary,
+  trackError,
+  trackDatabaseQuery
+} = require('../middleware/performance-monitor');
+const {
+  performanceOptimizer,
+  getCacheStats,
+  getOptimizationRecommendations,
+  optimizeMemory,
+  optimizeDatabaseConnections
+} = require('../middleware/performance-optimizer');
 
 // ==================== PERFORMANCE & SCALABILITY ROUTES ====================
+
+// GET /api/v1/performance/monitor - Get comprehensive performance metrics
+router.get('/monitor', authenticateToken, requireRole(['admin', 'devops']), async (req, res) => {
+  try {
+    console.log('📊 Fetching comprehensive performance metrics');
+    
+    const metrics = getMetrics();
+    const summary = getSummary();
+    const cacheStats = getCacheStats();
+    const recommendations = getOptimizationRecommendations();
+    
+    res.json({
+      success: true,
+      data: {
+        metrics,
+        summary,
+        cache: cacheStats,
+        recommendations,
+        timestamp: new Date().toISOString()
+      },
+      message: 'Performance metrics retrieved successfully',
+      timestamp: new Date().toISOString()
+    });
+    
+  } catch (error) {
+    console.error('❌ Error fetching performance metrics:', error);
+    trackError(error, { endpoint: '/performance/monitor' });
+    res.status(500).json({
+      success: false,
+      error: 'FETCH_METRICS_FAILED',
+      message: 'Failed to fetch performance metrics'
+    });
+  }
+});
+
+// GET /api/v1/performance/health - Get system health status
+router.get('/health', authenticateToken, async (req, res) => {
+  try {
+    console.log('🏥 Checking system health');
+    
+    const summary = getSummary();
+    const healthScore = summary.health;
+    
+    let status = 'healthy';
+    if (healthScore < 70) status = 'critical';
+    else if (healthScore < 85) status = 'warning';
+    
+    res.json({
+      success: true,
+      data: {
+        status,
+        healthScore,
+        summary,
+        timestamp: new Date().toISOString()
+      },
+      message: 'System health check completed',
+      timestamp: new Date().toISOString()
+    });
+    
+  } catch (error) {
+    console.error('❌ Error checking system health:', error);
+    trackError(error, { endpoint: '/performance/health' });
+    res.status(500).json({
+      success: false,
+      error: 'HEALTH_CHECK_FAILED',
+      message: 'Failed to check system health'
+    });
+  }
+});
+
+// POST /api/v1/performance/optimize - Trigger performance optimization
+router.post('/optimize', authenticateToken, requireRole(['admin', 'devops']), async (req, res) => {
+  try {
+    console.log('⚡ Triggering performance optimization');
+    
+    const { type = 'all' } = req.body;
+    const results = {};
+    
+    if (type === 'all' || type === 'memory') {
+      optimizeMemory();
+      results.memory = 'Memory optimization completed';
+    }
+    
+    if (type === 'all' || type === 'database') {
+      await optimizeDatabaseConnections();
+      results.database = 'Database optimization completed';
+    }
+    
+    if (type === 'all' || type === 'cache') {
+      performanceOptimizer.clearOldCacheEntries();
+      results.cache = 'Cache optimization completed';
+    }
+    
+    res.json({
+      success: true,
+      data: {
+        type,
+        results,
+        recommendations: getOptimizationRecommendations()
+      },
+      message: 'Performance optimization completed',
+      timestamp: new Date().toISOString()
+    });
+    
+  } catch (error) {
+    console.error('❌ Error optimizing performance:', error);
+    trackError(error, { endpoint: '/performance/optimize' });
+    res.status(500).json({
+      success: false,
+      error: 'OPTIMIZATION_FAILED',
+      message: 'Failed to optimize performance'
+    });
+  }
+});
+
+// GET /api/v1/performance/alerts - Get performance alerts
+router.get('/alerts', authenticateToken, requireRole(['admin', 'devops']), async (req, res) => {
+  try {
+    console.log('🚨 Fetching performance alerts');
+    
+    const metrics = getMetrics();
+    const alerts = [];
+    
+    // Check for performance issues
+    if (metrics.requests.avgResponseTime > 1000) {
+      alerts.push({
+        type: 'performance',
+        severity: 'high',
+        message: `Average response time is ${Math.round(metrics.requests.avgResponseTime)}ms (threshold: 1000ms)`,
+        timestamp: new Date().toISOString()
+      });
+    }
+    
+    if (metrics.memory.heapUsed / metrics.memory.heapTotal > 0.8) {
+      alerts.push({
+        type: 'memory',
+        severity: 'high',
+        message: `Memory usage is ${Math.round((metrics.memory.heapUsed / metrics.memory.heapTotal) * 100)}% (threshold: 80%)`,
+        timestamp: new Date().toISOString()
+      });
+    }
+    
+    if (metrics.database.slowQueries.length > 10) {
+      alerts.push({
+        type: 'database',
+        severity: 'medium',
+        message: `${metrics.database.slowQueries.length} slow queries detected`,
+        timestamp: new Date().toISOString()
+      });
+    }
+    
+    if (metrics.errors.total > 0) {
+      alerts.push({
+        type: 'errors',
+        severity: 'medium',
+        message: `${metrics.errors.total} errors detected`,
+        timestamp: new Date().toISOString()
+      });
+    }
+    
+    res.json({
+      success: true,
+      data: {
+        alerts,
+        totalAlerts: alerts.length,
+        criticalAlerts: alerts.filter(a => a.severity === 'high').length
+      },
+      message: 'Performance alerts retrieved successfully',
+      timestamp: new Date().toISOString()
+    });
+    
+  } catch (error) {
+    console.error('❌ Error fetching performance alerts:', error);
+    trackError(error, { endpoint: '/performance/alerts' });
+    res.status(500).json({
+      success: false,
+      error: 'FETCH_ALERTS_FAILED',
+      message: 'Failed to fetch performance alerts'
+    });
+  }
+});
 
 // GET /api/v1/performance/database/optimization - Database optimization recommendations
 router.get('/database/optimization', authenticateToken, requireRole(['admin', 'dba']), async (req, res) => {

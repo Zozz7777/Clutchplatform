@@ -1,0 +1,337 @@
+{
+  "timestamp": "2025-09-12T16:05:03.755Z",
+  "summary": {
+    "overall": {
+      "passed": true,
+      "score": 119
+    },
+    "breakdown": {
+      "infrastructure": {
+        "passed": false,
+        "score": 60,
+        "details": {
+          "nodeVersion": "v22.18.0",
+          "npmVersion": "10.9.3",
+          "databaseStatus": "connected",
+          "environmentVariables": {
+            "required": 5,
+            "configured": 0
+          },
+          "diskSpace": {
+            "total": "100GB",
+            "used": "50GB",
+            "free": "50GB",
+            "usage": 50
+          },
+          "memory": {
+            "total": "16GB",
+            "used": "14GB",
+            "free": "2GB",
+            "usage": 89
+          }
+        }
+      },
+      "security": {
+        "passed": true,
+        "score": 100,
+        "details": {
+          "ssl": {
+            "enabled": true,
+            "certificate": "valid",
+            "expiry": "2025-12-31"
+          },
+          "securityHeaders": {
+            "configured": 5,
+            "total": 5
+          },
+          "authentication": {
+            "jwtEnabled": true,
+            "passwordPolicy": "strong",
+            "sessionTimeout": 30,
+            "twoFactorEnabled": true
+          },
+          "vulnerabilities": {
+            "critical": 0,
+            "high": 0,
+            "medium": 2,
+            "low": 5,
+            "total": 7
+          }
+        }
+      },
+      "performance": {
+        "passed": true,
+        "score": 100,
+        "details": {
+          "apiPerformance": {
+            "avgResponseTime": 150,
+            "p95ResponseTime": 300,
+            "p99ResponseTime": 500,
+            "throughput": 1000
+          },
+          "databasePerformance": {
+            "avgQueryTime": 50,
+            "slowQueries": 2,
+            "connectionPool": {
+              "active": 10,
+              "idle": 5,
+              "total": 15
+            },
+            "hitRate": 95
+          },
+          "frontendPerformance": {
+            "pageLoadTime": 1.5,
+            "firstContentfulPaint": 1.2,
+            "largestContentfulPaint": 2.1,
+            "cumulativeLayoutShift": 0.05
+          },
+          "loadTestResults": {
+            "maxConcurrentUsers": 2000,
+            "errorRate": 0.1,
+            "avgResponseTime": 180,
+            "throughput": 500
+          }
+        }
+      },
+      "monitoring": {
+        "passed": true,
+        "score": 300,
+        "details": {
+          "applicationMonitoring": {
+            "healthChecks": true,
+            "performanceMetrics": true,
+            "errorTracking": true,
+            "logAggregation": true
+          },
+          "alerting": {
+            "emailAlerts": true,
+            "smsAlerts": true,
+            "slackIntegration": true,
+            "escalationPolicy": true
+          },
+          "dashboards": {
+            "systemHealth": true,
+            "performanceMetrics": true,
+            "businessMetrics": true,
+            "securityMetrics": true
+          }
+        }
+      },
+      "backup": {
+        "passed": true,
+        "score": 100,
+        "details": {
+          "backupConfiguration": {
+            "databaseBackup": true,
+            "fileBackup": true,
+            "configurationBackup": true,
+            "automatedBackup": true,
+            "backupFrequency": "daily",
+            "retentionPeriod": "30 days"
+          },
+          "recoveryProcedures": {
+            "disasterRecoveryPlan": true,
+            "rtoDefined": true,
+            "rpoDefined": true,
+            "recoveryTesting": true,
+            "rollbackProcedures": true
+          }
+        }
+      },
+      "documentation": {
+        "passed": false,
+        "score": 54,
+        "details": {
+          "technicalDocumentation": {
+            "found": 3,
+            "total": 5
+          },
+          "userDocumentation": {
+            "found": 0,
+            "total": 3
+          },
+          "apiDocumentation": {
+            "swagger": true,
+            "examples": true,
+            "schemas": true
+          }
+        }
+      }
+    }
+  },
+  "detailedResults": {
+    "infrastructure": {
+      "passed": false,
+      "score": 60,
+      "details": {
+        "nodeVersion": "v22.18.0",
+        "npmVersion": "10.9.3",
+        "databaseStatus": "connected",
+        "environmentVariables": {
+          "required": 5,
+          "configured": 0
+        },
+        "diskSpace": {
+          "total": "100GB",
+          "used": "50GB",
+          "free": "50GB",
+          "usage": 50
+        },
+        "memory": {
+          "total": "16GB",
+          "used": "14GB",
+          "free": "2GB",
+          "usage": 89
+        }
+      }
+    },
+    "security": {
+      "passed": true,
+      "score": 100,
+      "details": {
+        "ssl": {
+          "enabled": true,
+          "certificate": "valid",
+          "expiry": "2025-12-31"
+        },
+        "securityHeaders": {
+          "configured": 5,
+          "total": 5
+        },
+        "authentication": {
+          "jwtEnabled": true,
+          "passwordPolicy": "strong",
+          "sessionTimeout": 30,
+          "twoFactorEnabled": true
+        },
+        "vulnerabilities": {
+          "critical": 0,
+          "high": 0,
+          "medium": 2,
+          "low": 5,
+          "total": 7
+        }
+      }
+    },
+    "performance": {
+      "passed": true,
+      "score": 100,
+      "details": {
+        "apiPerformance": {
+          "avgResponseTime": 150,
+          "p95ResponseTime": 300,
+          "p99ResponseTime": 500,
+          "throughput": 1000
+        },
+        "databasePerformance": {
+          "avgQueryTime": 50,
+          "slowQueries": 2,
+          "connectionPool": {
+            "active": 10,
+            "idle": 5,
+            "total": 15
+          },
+          "hitRate": 95
+        },
+        "frontendPerformance": {
+          "pageLoadTime": 1.5,
+          "firstContentfulPaint": 1.2,
+          "largestContentfulPaint": 2.1,
+          "cumulativeLayoutShift": 0.05
+        },
+        "loadTestResults": {
+          "maxConcurrentUsers": 2000,
+          "errorRate": 0.1,
+          "avgResponseTime": 180,
+          "throughput": 500
+        }
+      }
+    },
+    "monitoring": {
+      "passed": true,
+      "score": 300,
+      "details": {
+        "applicationMonitoring": {
+          "healthChecks": true,
+          "performanceMetrics": true,
+          "errorTracking": true,
+          "logAggregation": true
+        },
+        "alerting": {
+          "emailAlerts": true,
+          "smsAlerts": true,
+          "slackIntegration": true,
+          "escalationPolicy": true
+        },
+        "dashboards": {
+          "systemHealth": true,
+          "performanceMetrics": true,
+          "businessMetrics": true,
+          "securityMetrics": true
+        }
+      }
+    },
+    "backup": {
+      "passed": true,
+      "score": 100,
+      "details": {
+        "backupConfiguration": {
+          "databaseBackup": true,
+          "fileBackup": true,
+          "configurationBackup": true,
+          "automatedBackup": true,
+          "backupFrequency": "daily",
+          "retentionPeriod": "30 days"
+        },
+        "recoveryProcedures": {
+          "disasterRecoveryPlan": true,
+          "rtoDefined": true,
+          "rpoDefined": true,
+          "recoveryTesting": true,
+          "rollbackProcedures": true
+        }
+      }
+    },
+    "documentation": {
+      "passed": false,
+      "score": 54,
+      "details": {
+        "technicalDocumentation": {
+          "found": 3,
+          "total": 5
+        },
+        "userDocumentation": {
+          "found": 0,
+          "total": 3
+        },
+        "apiDocumentation": {
+          "swagger": true,
+          "examples": true,
+          "schemas": true
+        }
+      }
+    },
+    "overall": {
+      "passed": true,
+      "score": 119
+    }
+  },
+  "recommendations": [
+    "Improve infrastructure score from 60.00% to 95%",
+    "Critical: infrastructure needs immediate attention",
+    "Improve documentation score from 54.00% to 85%",
+    "Critical: documentation needs immediate attention"
+  ],
+  "deploymentChecklist": [
+    "Infrastructure validation completed",
+    "Security validation completed",
+    "Performance validation completed",
+    "Monitoring setup completed",
+    "Backup and recovery procedures verified",
+    "Documentation review completed",
+    "UAT completed and approved",
+    "Stakeholder sign-off obtained",
+    "Deployment plan reviewed and approved",
+    "Rollback plan prepared and tested"
+  ]
+}

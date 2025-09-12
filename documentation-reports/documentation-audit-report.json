@@ -1,0 +1,275 @@
+{
+  "timestamp": "2025-09-12T16:05:04.019Z",
+  "summary": {
+    "overall": {
+      "score": 35,
+      "status": "FAILED"
+    },
+    "breakdown": {
+      "technical": {
+        "score": 40,
+        "issues": [
+          "Missing required document: ARCHITECTURE.md",
+          "Missing required document: TECHNICAL_SPECIFICATIONS.md",
+          "Missing required document: DATABASE_SCHEMA.md",
+          "Missing required document: API_DOCUMENTATION.md"
+        ],
+        "recommendations": [
+          "Create ARCHITECTURE.md with comprehensive technical information",
+          "Create TECHNICAL_SPECIFICATIONS.md with comprehensive technical information",
+          "Create DATABASE_SCHEMA.md with comprehensive technical information",
+          "Create API_DOCUMENTATION.md with comprehensive technical information",
+          "Consider creating SECURITY_GUIDE.md for comprehensive documentation",
+          "Consider creating PERFORMANCE_GUIDE.md for comprehensive documentation",
+          "Consider creating MONITORING_GUIDE.md for comprehensive documentation",
+          "Consider creating BACKUP_RECOVERY_GUIDE.md for comprehensive documentation"
+        ]
+      },
+      "user": {
+        "score": 20,
+        "issues": [
+          "Missing required user document: USER_MANUAL.md",
+          "Missing required user document: ADMIN_GUIDE.md",
+          "Missing required user document: TROUBLESHOOTING_GUIDE.md",
+          "Missing required user document: FAQ.md"
+        ],
+        "recommendations": [
+          "Create USER_MANUAL.md with user-friendly instructions",
+          "Create ADMIN_GUIDE.md with user-friendly instructions",
+          "Create TROUBLESHOOTING_GUIDE.md with user-friendly instructions",
+          "Create FAQ.md with user-friendly instructions"
+        ]
+      },
+      "api": {
+        "score": 20,
+        "issues": [
+          "Missing API documentation"
+        ],
+        "recommendations": [
+          "Create comprehensive API documentation with examples",
+          "Consider creating Swagger/OpenAPI documentation"
+        ]
+      },
+      "deployment": {
+        "score": 50,
+        "issues": [
+          "Missing required deployment document: ENVIRONMENT_SETUP.md",
+          "Missing required deployment document: CONFIGURATION_GUIDE.md",
+          "Missing required deployment document: MAINTENANCE_GUIDE.md"
+        ],
+        "recommendations": [
+          "Create ENVIRONMENT_SETUP.md with detailed deployment instructions",
+          "Create CONFIGURATION_GUIDE.md with detailed deployment instructions",
+          "Create MAINTENANCE_GUIDE.md with detailed deployment instructions",
+          "Consider creating docker-compose.yml for deployment automation",
+          "Consider creating Dockerfile for deployment automation",
+          "Consider creating scripts/deploy.sh for deployment automation"
+        ]
+      },
+      "testing": {
+        "score": 45,
+        "issues": [
+          "Missing required testing document: UAT_PREPARATION_GUIDE.md",
+          "Missing required testing document: TESTING_STRATEGY.md",
+          "Missing required testing document: QUALITY_ASSURANCE_GUIDE.md"
+        ],
+        "recommendations": [
+          "Create UAT_PREPARATION_GUIDE.md with comprehensive testing information",
+          "Create TESTING_STRATEGY.md with comprehensive testing information",
+          "Create QUALITY_ASSURANCE_GUIDE.md with comprehensive testing information",
+          "Consider creating jest.config.js for testing configuration",
+          "Consider creating playwright.config.ts for testing configuration",
+          "Consider creating cypress.config.js for testing configuration",
+          "Consider creating k6-load-test.js for testing configuration"
+        ]
+      }
+    }
+  },
+  "detailedResults": {
+    "technical": {
+      "score": 40,
+      "issues": [
+        "Missing required document: ARCHITECTURE.md",
+        "Missing required document: TECHNICAL_SPECIFICATIONS.md",
+        "Missing required document: DATABASE_SCHEMA.md",
+        "Missing required document: API_DOCUMENTATION.md"
+      ],
+      "recommendations": [
+        "Create ARCHITECTURE.md with comprehensive technical information",
+        "Create TECHNICAL_SPECIFICATIONS.md with comprehensive technical information",
+        "Create DATABASE_SCHEMA.md with comprehensive technical information",
+        "Create API_DOCUMENTATION.md with comprehensive technical information",
+        "Consider creating SECURITY_GUIDE.md for comprehensive documentation",
+        "Consider creating PERFORMANCE_GUIDE.md for comprehensive documentation",
+        "Consider creating MONITORING_GUIDE.md for comprehensive documentation",
+        "Consider creating BACKUP_RECOVERY_GUIDE.md for comprehensive documentation"
+      ]
+    },
+    "user": {
+      "score": 20,
+      "issues": [
+        "Missing required user document: USER_MANUAL.md",
+        "Missing required user document: ADMIN_GUIDE.md",
+        "Missing required user document: TROUBLESHOOTING_GUIDE.md",
+        "Missing required user document: FAQ.md"
+      ],
+      "recommendations": [
+        "Create USER_MANUAL.md with user-friendly instructions",
+        "Create ADMIN_GUIDE.md with user-friendly instructions",
+        "Create TROUBLESHOOTING_GUIDE.md with user-friendly instructions",
+        "Create FAQ.md with user-friendly instructions"
+      ]
+    },
+    "api": {
+      "score": 20,
+      "issues": [
+        "Missing API documentation"
+      ],
+      "recommendations": [
+        "Create comprehensive API documentation with examples",
+        "Consider creating Swagger/OpenAPI documentation"
+      ]
+    },
+    "deployment": {
+      "score": 50,
+      "issues": [
+        "Missing required deployment document: ENVIRONMENT_SETUP.md",
+        "Missing required deployment document: CONFIGURATION_GUIDE.md",
+        "Missing required deployment document: MAINTENANCE_GUIDE.md"
+      ],
+      "recommendations": [
+        "Create ENVIRONMENT_SETUP.md with detailed deployment instructions",
+        "Create CONFIGURATION_GUIDE.md with detailed deployment instructions",
+        "Create MAINTENANCE_GUIDE.md with detailed deployment instructions",
+        "Consider creating docker-compose.yml for deployment automation",
+        "Consider creating Dockerfile for deployment automation",
+        "Consider creating scripts/deploy.sh for deployment automation"
+      ]
+    },
+    "testing": {
+      "score": 45,
+      "issues": [
+        "Missing required testing document: UAT_PREPARATION_GUIDE.md",
+        "Missing required testing document: TESTING_STRATEGY.md",
+        "Missing required testing document: QUALITY_ASSURANCE_GUIDE.md"
+      ],
+      "recommendations": [
+        "Create UAT_PREPARATION_GUIDE.md with comprehensive testing information",
+        "Create TESTING_STRATEGY.md with comprehensive testing information",
+        "Create QUALITY_ASSURANCE_GUIDE.md with comprehensive testing information",
+        "Consider creating jest.config.js for testing configuration",
+        "Consider creating playwright.config.ts for testing configuration",
+        "Consider creating cypress.config.js for testing configuration",
+        "Consider creating k6-load-test.js for testing configuration"
+      ]
+    },
+    "overall": {
+      "score": 35,
+      "status": "FAILED"
+    }
+  },
+  "recommendations": [
+    "Improve technical documentation score from 40.00% to 80%+",
+    "Address 4 issues in technical documentation",
+    "Improve user documentation score from 20.00% to 80%+",
+    "Address 4 issues in user documentation",
+    "Improve api documentation score from 20.00% to 80%+",
+    "Address 1 issues in api documentation",
+    "Improve deployment documentation score from 50.00% to 80%+",
+    "Address 3 issues in deployment documentation",
+    "Improve testing documentation score from 45.00% to 80%+",
+    "Address 3 issues in testing documentation"
+  ],
+  "actionItems": [
+    {
+      "category": "technical",
+      "issue": "Missing required document: ARCHITECTURE.md",
+      "priority": "High",
+      "status": "Open"
+    },
+    {
+      "category": "technical",
+      "issue": "Missing required document: TECHNICAL_SPECIFICATIONS.md",
+      "priority": "High",
+      "status": "Open"
+    },
+    {
+      "category": "technical",
+      "issue": "Missing required document: DATABASE_SCHEMA.md",
+      "priority": "High",
+      "status": "Open"
+    },
+    {
+      "category": "technical",
+      "issue": "Missing required document: API_DOCUMENTATION.md",
+      "priority": "High",
+      "status": "Open"
+    },
+    {
+      "category": "user",
+      "issue": "Missing required user document: USER_MANUAL.md",
+      "priority": "High",
+      "status": "Open"
+    },
+    {
+      "category": "user",
+      "issue": "Missing required user document: ADMIN_GUIDE.md",
+      "priority": "High",
+      "status": "Open"
+    },
+    {
+      "category": "user",
+      "issue": "Missing required user document: TROUBLESHOOTING_GUIDE.md",
+      "priority": "High",
+      "status": "Open"
+    },
+    {
+      "category": "user",
+      "issue": "Missing required user document: FAQ.md",
+      "priority": "High",
+      "status": "Open"
+    },
+    {
+      "category": "api",
+      "issue": "Missing API documentation",
+      "priority": "High",
+      "status": "Open"
+    },
+    {
+      "category": "deployment",
+      "issue": "Missing required deployment document: ENVIRONMENT_SETUP.md",
+      "priority": "High",
+      "status": "Open"
+    },
+    {
+      "category": "deployment",
+      "issue": "Missing required deployment document: CONFIGURATION_GUIDE.md",
+      "priority": "High",
+      "status": "Open"
+    },
+    {
+      "category": "deployment",
+      "issue": "Missing required deployment document: MAINTENANCE_GUIDE.md",
+      "priority": "High",
+      "status": "Open"
+    },
+    {
+      "category": "testing",
+      "issue": "Missing required testing document: UAT_PREPARATION_GUIDE.md",
+      "priority": "High",
+      "status": "Open"
+    },
+    {
+      "category": "testing",
+      "issue": "Missing required testing document: TESTING_STRATEGY.md",
+      "priority": "High",
+      "status": "Open"
+    },
+    {
+      "category": "testing",
+      "issue": "Missing required testing document: QUALITY_ASSURANCE_GUIDE.md",
+      "priority": "High",
+      "status": "Open"
+    }
+  ]
+}
