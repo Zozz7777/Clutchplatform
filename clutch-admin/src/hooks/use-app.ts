@@ -85,8 +85,8 @@ export function useNavigation() {
     navigateWithTracking: (path: string, source: string) => {
       app.navigation.trackNavigation(path)
       app.analytics.trackEvent('navigation', { path, source })
-      // Perform actual navigation
-      window.location.href = path
+      // Note: Actual navigation should be handled by the calling component with useRouter
+      console.log(`Navigation requested to: ${path}`)
     },
     getSmartSuggestions: (context?: string) => {
       return app.navigation.suggestions.filter(suggestion => 

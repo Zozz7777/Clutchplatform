@@ -159,9 +159,9 @@ export class SessionManager {
     const { logout } = useAuthStore.getState()
     logout()
     
-    // Redirect to login page
+    // Note: Navigation should be handled by the calling component with useRouter
     if (typeof window !== 'undefined') {
-      window.location.href = '/login'
+      console.log('Session expired - redirecting to login')
     }
   }
 

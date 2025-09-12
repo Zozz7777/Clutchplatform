@@ -4,7 +4,7 @@ import "./globals.css";
 // import { AuthProvider } from "@/contexts/AuthContext";
 import { ErrorBoundary } from "@/components/ErrorBoundary";
 import { ErrorTrackerProvider } from "@/contexts/ErrorTrackerContext";
-import { ThemeProvider } from "next-themes";
+import { ThemeProvider } from "@/components/theme-provider";
 import { I18nProvider } from '@/contexts/i18n-context';
 
 const inter = Inter({ subsets: ["latin"] });
@@ -33,9 +33,9 @@ export default function RootLayout({
         <I18nProvider>
           <ThemeProvider
             attribute="class"
-            defaultTheme="light"
+            defaultTheme="system"
             enableSystem={true}
-            disableTransitionOnChange={false}
+            disableTransitionOnChange={true}
           >
             <ErrorBoundary>
               <ErrorTrackerProvider>

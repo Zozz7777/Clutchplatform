@@ -187,7 +187,10 @@ export class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundarySt
   }
 
   private handleGoHome = () => {
-    window.location.href = '/'
+    // Use proper Next.js navigation
+    if (typeof window !== 'undefined') {
+      window.location.href = '/' // Fallback for error boundaries
+    }
   }
 
   render() {

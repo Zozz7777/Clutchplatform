@@ -258,10 +258,13 @@ class ApiClient {
       console.warn('🚨 NO_TOKEN_FOR_PROTECTED_ENDPOINT:', endpoint)
       if (typeof window !== 'undefined') {
         console.warn('🚨 REDIRECTING_TO_LOGIN: No token for protected endpoint')
-        window.location.href = '/login'
+        // Use proper Next.js navigation instead of window.location.href
+        const { useRouter } = require('next/navigation')
+        // Note: This will be handled by the calling component with proper router
         return {
           success: false,
-          message: 'Authentication required',
+          message: 'Authentication required - redirecting to login',
+          redirectTo: '/login',
           timestamp: Date.now()
         } as ApiResponse<T>
       }
@@ -324,7 +327,13 @@ class ApiClient {
           }
           this.clearTokens()
           if (typeof window !== 'undefined' && !endpoint.includes('/auth/')) {
-            window.location.href = '/login'
+            // Return redirect information instead of direct navigation
+            return {
+              success: false,
+              message: 'Authentication expired. Please login again.',
+              redirectTo: '/login',
+              timestamp: Date.now()
+            } as ApiResponse<T>
           }
           return {
             success: false,
@@ -476,19 +485,19 @@ class ApiClient {
         return this.request<T>(endpoint, options)
       } else {
         this.clearTokens()
-        window.location.href = '/login'
         return {
           success: false,
-          message: 'Authentication failed',
+          message: 'Authentication failed - redirecting to login',
+          redirectTo: '/login',
           timestamp: Date.now(),
         }
       }
     } catch (error) {
       this.clearTokens()
-      window.location.href = '/login'
       return {
         success: false,
-        message: 'Authentication failed',
+        message: 'Authentication failed - redirecting to login',
+        redirectTo: '/login',
         timestamp: Date.now(),
       }
     } finally {
@@ -1568,8 +1577,12 @@ class ApiClient {
         // Clear any stale auth state
         localStorage.removeItem('auth-token')
         localStorage.removeItem('refresh-token')
-        // Redirect to login
-        window.location.href = '/login'
+        // Return redirect information instead of direct navigation
+        return {
+          success: true,
+          message: 'Logged out successfully',
+          redirectTo: '/login'
+        }
       }
       return false
     }

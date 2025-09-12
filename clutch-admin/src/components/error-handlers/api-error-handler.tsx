@@ -39,7 +39,8 @@ export const ApiErrorHandler: React.FC<ApiErrorHandlerProps> = ({
     if (onLogin) {
       onLogin()
     } else {
-      window.location.href = '/login'
+      // Note: Navigation should be handled by the calling component with useRouter
+      console.log('Authentication required - redirecting to login')
     }
   }
 

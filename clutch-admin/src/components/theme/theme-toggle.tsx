@@ -6,7 +6,25 @@ import { SnowButton } from '@/components/ui/snow-button'
 import { useTheme } from 'next-themes'
 
 export default function ThemeToggle() {
-  const { theme, setTheme } = useTheme()
+  const { theme, setTheme, resolvedTheme } = useTheme()
+  const [mounted, setMounted] = React.useState(false)
+
+  React.useEffect(() => {
+    setMounted(true)
+  }, [])
+
+  if (!mounted) {
+    return (
+      <SnowButton
+        variant="ghost"
+        size="sm"
+        className="h-9 w-9 p-0"
+        disabled
+      >
+        <Sun className="h-4 w-4" />
+      </SnowButton>
+    )
+  }
 
   const themes = [
     { value: 'light', label: 'Light', icon: Sun },
@@ -22,6 +40,9 @@ export default function ThemeToggle() {
     setTheme(themes[nextIndex].value)
   }
 
+  // Use resolved theme for icon display (accounts for system theme)
+  const displayIcon = resolvedTheme === 'dark' ? Moon : Sun
+
   return (
     <SnowButton
       variant="ghost"
@@ -30,7 +51,7 @@ export default function ThemeToggle() {
       className="h-9 w-9 p-0"
       title={`Current theme: ${currentTheme.label}. Click to switch to ${themes[(themes.findIndex(t => t.value === theme) + 1) % themes.length].label}`}
     >
-      <currentTheme.icon className="h-4 w-4" />
+      <displayIcon className="h-4 w-4" />
     </SnowButton>
   )
 }
@@ -38,6 +59,15 @@ export default function ThemeToggle() {
 // Theme selector dropdown for more options
 export function ThemeSelector() {
   const { theme, setTheme } = useTheme()
+  const [mounted, setMounted] = React.useState(false)
+
+  React.useEffect(() => {
+    setMounted(true)
+  }, [])
+
+  if (!mounted) {
+    return <div className="space-y-1">Loading themes...</div>
+  }
 
   const themes = [
     { value: 'light', label: 'Light', icon: Sun, description: 'Light theme for daytime use' },
@@ -56,14 +86,14 @@ export function ThemeSelector() {
             className={`w-full flex items-center space-x-3 px-3 py-2 text-left rounded-lg transition-colors ${
               theme === themeOption.value
                 ? 'bg-clutch-primary text-white'
-                : 'text-slate-700 hover:bg-slate-100'
+                : 'text-slate-700 hover:bg-slate-100 dark:text-slate-300 dark:hover:bg-slate-800'
             }`}
           >
             <Icon className="h-4 w-4" />
             <div className="flex-1">
               <div className="text-sm font-medium">{themeOption.label}</div>
               <div className={`text-xs ${
-                theme === themeOption.value ? 'text-white/80' : 'text-slate-500'
+                theme === themeOption.value ? 'text-white/80' : 'text-slate-500 dark:text-slate-400'
               }`}>
                 {themeOption.description}
               </div>

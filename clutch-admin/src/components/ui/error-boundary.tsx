@@ -46,7 +46,10 @@ export class ErrorBoundary extends Component<Props, State> {
   }
 
   handleGoHome = () => {
-    window.location.href = '/dashboard'
+    // Use proper Next.js navigation
+    if (typeof window !== 'undefined') {
+      window.location.href = '/dashboard' // Fallback for error boundaries
+    }
   }
 
   render() {

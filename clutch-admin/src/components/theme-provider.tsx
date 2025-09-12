@@ -19,12 +19,25 @@ export function ThemeProvider({
   disableTransitionOnChange = true,
   ...props 
 }: ThemeProviderProps) {
+  const [mounted, setMounted] = React.useState(false)
+
+  React.useEffect(() => {
+    setMounted(true)
+  }, [])
+
+  // Prevent hydration mismatch by not rendering until mounted
+  if (!mounted) {
+    return <>{children}</>
+  }
+
   return (
     <NextThemesProvider
       attribute={attribute}
       defaultTheme={defaultTheme}
       enableSystem={enableSystem}
       disableTransitionOnChange={disableTransitionOnChange}
+      storageKey="clutch-admin-theme"
+      themes={['light', 'dark', 'system']}
       {...props}
     >
       {children}

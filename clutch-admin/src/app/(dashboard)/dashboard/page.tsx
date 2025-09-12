@@ -1,6 +1,7 @@
 ﻿'use client'
 
 import React, { useState, useEffect } from 'react'
+import { useRouter } from 'next/navigation'
 import { 
   TrendingUp, 
   TrendingDown, 
@@ -74,6 +75,7 @@ interface ActivityLog {
 
 export default function DashboardPage() {
   const { user } = useAuthStore()
+  const router = useRouter()
   const [currentTime, setCurrentTime] = useState(new Date())
   const responsive = useResponsive()
 
@@ -490,7 +492,7 @@ export default function DashboardPage() {
               <SnowButton 
                 className="w-full justify-start" 
                 variant="ghost"
-                onClick={() => window.location.href = '/dashboard/hr/employees'}
+                onClick={() => router.push('/dashboard/hr/employees')}
               >
                 <Users className="h-4 w-4 mr-2" />
                 Manage Users
@@ -498,7 +500,7 @@ export default function DashboardPage() {
               <SnowButton 
                 className="w-full justify-start" 
                 variant="ghost"
-                onClick={() => window.location.href = '/dashboard/partners'}
+                onClick={() => router.push('/dashboard/partners')}
               >
                 <Building2 className="h-4 w-4 mr-2" />
                 Partner Management
@@ -506,7 +508,7 @@ export default function DashboardPage() {
               <SnowButton 
                 className="w-full justify-start" 
                 variant="ghost"
-                onClick={() => window.location.href = '/dashboard/fleet'}
+                onClick={() => router.push('/dashboard/fleet')}
               >
                 <Car className="h-4 w-4 mr-2" />
                 Fleet Overview
@@ -514,7 +516,7 @@ export default function DashboardPage() {
               <SnowButton 
                 className="w-full justify-start" 
                 variant="ghost"
-                onClick={() => window.location.href = '/dashboard/security'}
+                onClick={() => router.push('/dashboard/security')}
               >
                 <Shield className="h-4 w-4 mr-2" />
                 Security Center

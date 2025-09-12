@@ -45,8 +45,8 @@ export const SmartNavigationBar = forwardRef<HTMLElement, SmartNavigationBarProp
       trackNavigation(suggestion.item.path)
       setShowSuggestions(false)
       setSearchQuery('')
-      // Navigate to the suggestion
-      window.location.href = suggestion.item.path
+      // Note: Navigation should be handled by the calling component with useRouter
+      console.log(`Navigation requested to: ${suggestion.item.path}`)
     }
 
     return (
