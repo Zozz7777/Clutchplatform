@@ -42,6 +42,18 @@ interface Article {
   tags: string[]
 }
 
+interface Category {
+  id: string
+  name: string
+  count: number
+}
+
+interface Search {
+  id: string
+  query: string
+  count: number
+}
+
 export default function KnowledgeBasePage() {
   const [searchQuery, setSearchQuery] = useState('')
   const [selectedCategory, setSelectedCategory] = useState('all')
@@ -58,7 +70,7 @@ export default function KnowledgeBasePage() {
   const toast = useToast()
 
   // Fallback data structure
-  const categories = knowledgeBaseData?.data?.categories || [
+  const categories: Category[] = knowledgeBaseData?.data?.categories || [
     { id: 'all', name: 'All Articles', count: 0 },
     { id: 'getting-started', name: 'Getting Started', count: 0 },
     { id: 'account', name: 'Account Management', count: 0 },
@@ -68,7 +80,7 @@ export default function KnowledgeBasePage() {
   ]
 
   const articles: Article[] = knowledgeBaseData?.data?.articles || []
-  const popularSearches = knowledgeBaseData?.data?.popularSearches || []
+  const popularSearches: Search[] = knowledgeBaseData?.data?.popularSearches || []
 
   const getStatusColor = (status: string) => {
     switch (status) {
@@ -80,7 +92,7 @@ export default function KnowledgeBasePage() {
   }
 
   const filteredArticles = articles.filter((article: Article) => {
-    const matchesSearch = article.title.toLowerCase().includes(searchTerm.toLowerCase())
+    const matchesSearch = article.title.toLowerCase().includes(searchQuery.toLowerCase())
     const matchesCategory = selectedCategory === 'all' || article.category === selectedCategory
     return matchesSearch && matchesCategory
   })
@@ -239,10 +251,10 @@ export default function KnowledgeBasePage() {
                   {popularSearches.map((search, index) => (
                     <button
                       key={index}
-                      onClick={() => setSearchQuery(search)}
+                      onClick={() => setSearchQuery(search.query)}
                       className="w-full text-left px-3 py-2 text-sm text-slate-600 hover:bg-slate-100 dark:text-slate-400 dark:hover:bg-slate-800 rounded-lg transition-colors"
                     >
-                      {search}
+                      {search.query}
                     </button>
                   ))}
                 </div>

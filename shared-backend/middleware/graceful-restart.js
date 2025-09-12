@@ -9,6 +9,7 @@ class GracefulRestartManager {
     this.activeConnections = new Set();
     this.restartQueue = [];
     this.healthCheckInterval = null;
+    this.lastRestartTime = 0;
     this.setupSignalHandlers();
     this.setupHealthMonitoring();
   }
@@ -64,10 +65,16 @@ class GracefulRestartManager {
     const memUsage = process.memoryUsage();
     const heapUsageRatio = memUsage.heapUsed / memUsage.heapTotal;
     
-    // If memory usage is too high, queue for restart
-    if (heapUsageRatio > 0.9) {
-      console.log('⚠️ High memory usage detected. Queuing for restart...');
-      this.queueRestart('high_memory_usage', { heapUsageRatio });
+    // Only restart if memory usage is critically high (95%+) and we haven't restarted recently
+    const timeSinceLastRestart = Date.now() - (this.lastRestartTime || 0);
+    const restartCooldown = 5 * 60 * 1000; // 5 minutes cooldown
+    
+    if (heapUsageRatio > 0.95 && timeSinceLastRestart > restartCooldown) {
+      console.log('⚠️ Critical memory usage detected. Queuing for restart...');
+      this.queueRestart('critical_memory_usage', { heapUsageRatio });
+    } else if (heapUsageRatio > 0.9) {
+      // Just log high memory usage without restarting
+      console.log(`🧹 High memory usage: ${(heapUsageRatio * 100).toFixed(1)}% - monitoring...`);
     }
 
     // Check for too many active connections
@@ -202,6 +209,9 @@ class GracefulRestartManager {
     console.log(`🔄 Starting graceful restart: ${reason}`, metadata);
 
     try {
+      // Update last restart time
+      this.lastRestartTime = Date.now();
+      
       // Perform graceful shutdown first
       await this.gracefulShutdown(reason);
 

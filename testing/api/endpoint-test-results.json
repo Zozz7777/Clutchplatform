@@ -1,0 +1,1991 @@
+{
+  "total": 186,
+  "passed": 0,
+  "failed": 186,
+  "skipped": 0,
+  "details": [
+    {
+      "name": "Root endpoint",
+      "method": "GET",
+      "path": "/",
+      "status": "FAILED",
+      "statusCode": 503,
+      "duration": 576,
+      "error": "Request failed with status code 503",
+      "timestamp": "2025-09-12T19:30:05.543Z"
+    },
+    {
+      "name": "Health check",
+      "method": "GET",
+      "path": "/health",
+      "status": "FAILED",
+      "statusCode": 503,
+      "duration": 243,
+      "error": "Request failed with status code 503",
+      "timestamp": "2025-09-12T19:30:05.789Z"
+    },
+    {
+      "name": "Ping endpoint",
+      "method": "GET",
+      "path": "/ping",
+      "status": "FAILED",
+      "statusCode": 503,
+      "duration": 659,
+      "error": "Request failed with status code 503",
+      "timestamp": "2025-09-12T19:30:06.449Z"
+    },
+    {
+      "name": "API info",
+      "method": "GET",
+      "path": "/api",
+      "status": "FAILED",
+      "statusCode": 503,
+      "duration": 277,
+      "error": "Request failed with status code 503",
+      "timestamp": "2025-09-12T19:30:06.726Z"
+    },
+    {
+      "name": "API version",
+      "method": "GET",
+      "path": "/api/v1",
+      "status": "FAILED",
+      "statusCode": 503,
+      "duration": 258,
+      "error": "Request failed with status code 503",
+      "timestamp": "2025-09-12T19:30:06.984Z"
+    },
+    {
+      "name": "Health check",
+      "method": "GET",
+      "path": "/health",
+      "status": "FAILED",
+      "statusCode": 503,
+      "duration": 231,
+      "error": "Request failed with status code 503",
+      "timestamp": "2025-09-12T19:30:07.215Z"
+    },
+    {
+      "name": "Health detailed",
+      "method": "GET",
+      "path": "/health/detailed",
+      "status": "FAILED",
+      "statusCode": 503,
+      "duration": 264,
+      "error": "Request failed with status code 503",
+      "timestamp": "2025-09-12T19:30:07.479Z"
+    },
+    {
+      "name": "Health database",
+      "method": "GET",
+      "path": "/health/database",
+      "status": "FAILED",
+      "statusCode": 503,
+      "duration": 273,
+      "error": "Request failed with status code 503",
+      "timestamp": "2025-09-12T19:30:07.753Z"
+    },
+    {
+      "name": "Health redis",
+      "method": "GET",
+      "path": "/health/redis",
+      "status": "FAILED",
+      "statusCode": 503,
+      "duration": 262,
+      "error": "Request failed with status code 503",
+      "timestamp": "2025-09-12T19:30:08.015Z"
+    },
+    {
+      "name": "Health services",
+      "method": "GET",
+      "path": "/health/services",
+      "status": "FAILED",
+      "statusCode": 503,
+      "duration": 265,
+      "error": "Request failed with status code 503",
+      "timestamp": "2025-09-12T19:30:08.280Z"
+    },
+    {
+      "name": "Health metrics",
+      "method": "GET",
+      "path": "/health/metrics",
+      "status": "FAILED",
+      "statusCode": 503,
+      "duration": 259,
+      "error": "Request failed with status code 503",
+      "timestamp": "2025-09-12T19:30:08.540Z"
+    },
+    {
+      "name": "User registration",
+      "method": "POST",
+      "path": "/api/v1/auth/register",
+      "status": "FAILED",
+      "statusCode": 503,
+      "duration": 287,
+      "error": "Request failed with status code 503",
+      "timestamp": "2025-09-12T19:30:08.828Z"
+    },
+    {
+      "name": "User registration validation",
+      "method": "POST",
+      "path": "/api/v1/auth/register",
+      "status": "FAILED",
+      "statusCode": 503,
+      "duration": 259,
+      "error": "Request failed with status code 503",
+      "timestamp": "2025-09-12T19:30:09.088Z"
+    },
+    {
+      "name": "User login",
+      "method": "POST",
+      "path": "/api/v1/auth/login",
+      "status": "FAILED",
+      "statusCode": 503,
+      "duration": 259,
+      "error": "Request failed with status code 503",
+      "timestamp": "2025-09-12T19:30:09.347Z"
+    },
+    {
+      "name": "User login invalid",
+      "method": "POST",
+      "path": "/api/v1/auth/login",
+      "status": "FAILED",
+      "statusCode": 503,
+      "duration": 262,
+      "error": "Request failed with status code 503",
+      "timestamp": "2025-09-12T19:30:09.609Z"
+    },
+    {
+      "name": "Forgot password",
+      "method": "POST",
+      "path": "/api/v1/auth/forgot-password",
+      "status": "FAILED",
+      "statusCode": 503,
+      "duration": 258,
+      "error": "Request failed with status code 503",
+      "timestamp": "2025-09-12T19:30:09.867Z"
+    },
+    {
+      "name": "Reset password",
+      "method": "POST",
+      "path": "/api/v1/auth/reset-password",
+      "status": "FAILED",
+      "statusCode": 503,
+      "duration": 260,
+      "error": "Request failed with status code 503",
+      "timestamp": "2025-09-12T19:30:10.127Z"
+    },
+    {
+      "name": "Change password",
+      "method": "POST",
+      "path": "/api/v1/auth/change-password",
+      "status": "FAILED",
+      "statusCode": 503,
+      "duration": 264,
+      "error": "Request failed with status code 503",
+      "timestamp": "2025-09-12T19:30:10.392Z"
+    },
+    {
+      "name": "Refresh token",
+      "method": "POST",
+      "path": "/api/v1/auth/refresh",
+      "status": "FAILED",
+      "statusCode": 503,
+      "duration": 263,
+      "error": "Request failed with status code 503",
+      "timestamp": "2025-09-12T19:30:10.656Z"
+    },
+    {
+      "name": "Verify token",
+      "method": "POST",
+      "path": "/api/v1/auth/verify",
+      "status": "FAILED",
+      "statusCode": 503,
+      "duration": 255,
+      "error": "Request failed with status code 503",
+      "timestamp": "2025-09-12T19:30:10.912Z"
+    },
+    {
+      "name": "Logout",
+      "method": "POST",
+      "path": "/api/v1/auth/logout",
+      "status": "FAILED",
+      "statusCode": 503,
+      "duration": 231,
+      "error": "Request failed with status code 503",
+      "timestamp": "2025-09-12T19:30:11.144Z"
+    },
+    {
+      "name": "Get profile",
+      "method": "GET",
+      "path": "/api/v1/auth/profile",
+      "status": "FAILED",
+      "statusCode": 503,
+      "duration": 258,
+      "error": "Request failed with status code 503",
+      "timestamp": "2025-09-12T19:30:11.402Z"
+    },
+    {
+      "name": "Update profile",
+      "method": "PUT",
+      "path": "/api/v1/auth/profile",
+      "status": "FAILED",
+      "statusCode": 503,
+      "duration": 266,
+      "error": "Request failed with status code 503",
+      "timestamp": "2025-09-12T19:30:11.669Z"
+    },
+    {
+      "name": "Delete profile",
+      "method": "DELETE",
+      "path": "/api/v1/auth/profile",
+      "status": "FAILED",
+      "statusCode": 503,
+      "duration": 258,
+      "error": "Request failed with status code 503",
+      "timestamp": "2025-09-12T19:30:11.927Z"
+    },
+    {
+      "name": "Get all users",
+      "method": "GET",
+      "path": "/api/v1/admin/users",
+      "status": "FAILED",
+      "statusCode": 503,
+      "duration": 261,
+      "error": "Request failed with status code 503",
+      "timestamp": "2025-09-12T19:30:12.190Z"
+    },
+    {
+      "name": "Get user by ID",
+      "method": "GET",
+      "path": "/api/v1/admin/users/test-user-id",
+      "status": "FAILED",
+      "statusCode": 503,
+      "duration": 257,
+      "error": "Request failed with status code 503",
+      "timestamp": "2025-09-12T19:30:12.447Z"
+    },
+    {
+      "name": "Create user",
+      "method": "POST",
+      "path": "/api/v1/admin/users",
+      "status": "FAILED",
+      "statusCode": 503,
+      "duration": 255,
+      "error": "Request failed with status code 503",
+      "timestamp": "2025-09-12T19:30:12.702Z"
+    },
+    {
+      "name": "Update user",
+      "method": "PUT",
+      "path": "/api/v1/admin/users/test-user-id",
+      "status": "FAILED",
+      "statusCode": 503,
+      "duration": 237,
+      "error": "Request failed with status code 503",
+      "timestamp": "2025-09-12T19:30:12.940Z"
+    },
+    {
+      "name": "Delete user",
+      "method": "DELETE",
+      "path": "/api/v1/admin/users/test-user-id",
+      "status": "FAILED",
+      "statusCode": 503,
+      "duration": 257,
+      "error": "Request failed with status code 503",
+      "timestamp": "2025-09-12T19:30:13.197Z"
+    },
+    {
+      "name": "Get all shops",
+      "method": "GET",
+      "path": "/api/v1/admin/shops",
+      "status": "FAILED",
+      "statusCode": 503,
+      "duration": 246,
+      "error": "Request failed with status code 503",
+      "timestamp": "2025-09-12T19:30:13.444Z"
+    },
+    {
+      "name": "Get shop by ID",
+      "method": "GET",
+      "path": "/api/v1/admin/shops/test-shop-id",
+      "status": "FAILED",
+      "statusCode": 503,
+      "duration": 230,
+      "error": "Request failed with status code 503",
+      "timestamp": "2025-09-12T19:30:13.674Z"
+    },
+    {
+      "name": "Create shop",
+      "method": "POST",
+      "path": "/api/v1/admin/shops",
+      "status": "FAILED",
+      "statusCode": 503,
+      "duration": 265,
+      "error": "Request failed with status code 503",
+      "timestamp": "2025-09-12T19:30:13.939Z"
+    },
+    {
+      "name": "Update shop",
+      "method": "PUT",
+      "path": "/api/v1/admin/shops/test-shop-id",
+      "status": "FAILED",
+      "statusCode": 503,
+      "duration": 253,
+      "error": "Request failed with status code 503",
+      "timestamp": "2025-09-12T19:30:14.193Z"
+    },
+    {
+      "name": "Delete shop",
+      "method": "DELETE",
+      "path": "/api/v1/admin/shops/test-shop-id",
+      "status": "FAILED",
+      "statusCode": 503,
+      "duration": 249,
+      "error": "Request failed with status code 503",
+      "timestamp": "2025-09-12T19:30:14.443Z"
+    },
+    {
+      "name": "Get all parts",
+      "method": "GET",
+      "path": "/api/v1/admin/parts",
+      "status": "FAILED",
+      "statusCode": 503,
+      "duration": 254,
+      "error": "Request failed with status code 503",
+      "timestamp": "2025-09-12T19:30:14.697Z"
+    },
+    {
+      "name": "Get part by ID",
+      "method": "GET",
+      "path": "/api/v1/admin/parts/test-part-id",
+      "status": "FAILED",
+      "statusCode": 503,
+      "duration": 297,
+      "error": "Request failed with status code 503",
+      "timestamp": "2025-09-12T19:30:14.994Z"
+    },
+    {
+      "name": "Create part",
+      "method": "POST",
+      "path": "/api/v1/admin/parts",
+      "status": "FAILED",
+      "statusCode": 503,
+      "duration": 254,
+      "error": "Request failed with status code 503",
+      "timestamp": "2025-09-12T19:30:15.249Z"
+    },
+    {
+      "name": "Update part",
+      "method": "PUT",
+      "path": "/api/v1/admin/parts/test-part-id",
+      "status": "FAILED",
+      "statusCode": 503,
+      "duration": 253,
+      "error": "Request failed with status code 503",
+      "timestamp": "2025-09-12T19:30:15.502Z"
+    },
+    {
+      "name": "Delete part",
+      "method": "DELETE",
+      "path": "/api/v1/admin/parts/test-part-id",
+      "status": "FAILED",
+      "statusCode": 503,
+      "duration": 261,
+      "error": "Request failed with status code 503",
+      "timestamp": "2025-09-12T19:30:15.763Z"
+    },
+    {
+      "name": "Get all orders",
+      "method": "GET",
+      "path": "/api/v1/admin/orders",
+      "status": "FAILED",
+      "statusCode": 503,
+      "duration": 265,
+      "error": "Request failed with status code 503",
+      "timestamp": "2025-09-12T19:30:16.029Z"
+    },
+    {
+      "name": "Get order by ID",
+      "method": "GET",
+      "path": "/api/v1/admin/orders/test-order-id",
+      "status": "FAILED",
+      "statusCode": 503,
+      "duration": 259,
+      "error": "Request failed with status code 503",
+      "timestamp": "2025-09-12T19:30:16.288Z"
+    },
+    {
+      "name": "Create order",
+      "method": "POST",
+      "path": "/api/v1/admin/orders",
+      "status": "FAILED",
+      "statusCode": 503,
+      "duration": 258,
+      "error": "Request failed with status code 503",
+      "timestamp": "2025-09-12T19:30:16.547Z"
+    },
+    {
+      "name": "Update order",
+      "method": "PUT",
+      "path": "/api/v1/admin/orders/test-order-id",
+      "status": "FAILED",
+      "statusCode": 503,
+      "duration": 201,
+      "error": "Request failed with status code 503",
+      "timestamp": "2025-09-12T19:30:16.748Z"
+    },
+    {
+      "name": "Delete order",
+      "method": "DELETE",
+      "path": "/api/v1/admin/orders/test-order-id",
+      "status": "FAILED",
+      "statusCode": 503,
+      "duration": 264,
+      "error": "Request failed with status code 503",
+      "timestamp": "2025-09-12T19:30:17.012Z"
+    },
+    {
+      "name": "Get system stats",
+      "method": "GET",
+      "path": "/api/v1/admin/stats",
+      "status": "FAILED",
+      "statusCode": 503,
+      "duration": 281,
+      "error": "Request failed with status code 503",
+      "timestamp": "2025-09-12T19:30:17.293Z"
+    },
+    {
+      "name": "Get system logs",
+      "method": "GET",
+      "path": "/api/v1/admin/logs",
+      "status": "FAILED",
+      "statusCode": 503,
+      "duration": 233,
+      "error": "Request failed with status code 503",
+      "timestamp": "2025-09-12T19:30:17.527Z"
+    },
+    {
+      "name": "Get system health",
+      "method": "GET",
+      "path": "/api/v1/admin/health",
+      "status": "FAILED",
+      "statusCode": 503,
+      "duration": 253,
+      "error": "Request failed with status code 503",
+      "timestamp": "2025-09-12T19:30:17.781Z"
+    },
+    {
+      "name": "Get system config",
+      "method": "GET",
+      "path": "/api/v1/admin/config",
+      "status": "FAILED",
+      "statusCode": 503,
+      "duration": 262,
+      "error": "Request failed with status code 503",
+      "timestamp": "2025-09-12T19:30:18.043Z"
+    },
+    {
+      "name": "Update system config",
+      "method": "PUT",
+      "path": "/api/v1/admin/config",
+      "status": "FAILED",
+      "statusCode": 503,
+      "duration": 275,
+      "error": "Request failed with status code 503",
+      "timestamp": "2025-09-12T19:30:18.318Z"
+    },
+    {
+      "name": "Get performance metrics",
+      "method": "GET",
+      "path": "/api/v1/performance/metrics",
+      "status": "FAILED",
+      "statusCode": 503,
+      "duration": 254,
+      "error": "Request failed with status code 503",
+      "timestamp": "2025-09-12T19:30:18.573Z"
+    },
+    {
+      "name": "Get response times",
+      "method": "GET",
+      "path": "/api/v1/performance/response-times",
+      "status": "FAILED",
+      "statusCode": 503,
+      "duration": 258,
+      "error": "Request failed with status code 503",
+      "timestamp": "2025-09-12T19:30:18.832Z"
+    },
+    {
+      "name": "Get throughput",
+      "method": "GET",
+      "path": "/api/v1/performance/throughput",
+      "status": "FAILED",
+      "statusCode": 503,
+      "duration": 260,
+      "error": "Request failed with status code 503",
+      "timestamp": "2025-09-12T19:30:19.092Z"
+    },
+    {
+      "name": "Get error rates",
+      "method": "GET",
+      "path": "/api/v1/performance/error-rates",
+      "status": "FAILED",
+      "statusCode": 503,
+      "duration": 287,
+      "error": "Request failed with status code 503",
+      "timestamp": "2025-09-12T19:30:19.380Z"
+    },
+    {
+      "name": "Get resource usage",
+      "method": "GET",
+      "path": "/api/v1/performance/resources",
+      "status": "FAILED",
+      "statusCode": 503,
+      "duration": 266,
+      "error": "Request failed with status code 503",
+      "timestamp": "2025-09-12T19:30:19.646Z"
+    },
+    {
+      "name": "Get database performance",
+      "method": "GET",
+      "path": "/api/v1/performance/database",
+      "status": "FAILED",
+      "statusCode": 503,
+      "duration": 258,
+      "error": "Request failed with status code 503",
+      "timestamp": "2025-09-12T19:30:19.904Z"
+    },
+    {
+      "name": "Get cache performance",
+      "method": "GET",
+      "path": "/api/v1/performance/cache",
+      "status": "FAILED",
+      "statusCode": 503,
+      "duration": 255,
+      "error": "Request failed with status code 503",
+      "timestamp": "2025-09-12T19:30:20.160Z"
+    },
+    {
+      "name": "Get API performance",
+      "method": "GET",
+      "path": "/api/v1/performance/api",
+      "status": "FAILED",
+      "statusCode": 503,
+      "duration": 230,
+      "error": "Request failed with status code 503",
+      "timestamp": "2025-09-12T19:30:20.390Z"
+    },
+    {
+      "name": "Get all users",
+      "method": "GET",
+      "path": "/api/v1/users",
+      "status": "FAILED",
+      "statusCode": 503,
+      "duration": 257,
+      "error": "Request failed with status code 503",
+      "timestamp": "2025-09-12T19:30:20.650Z"
+    },
+    {
+      "name": "Get users by ID",
+      "method": "GET",
+      "path": "/api/v1/users/test-id",
+      "status": "FAILED",
+      "statusCode": 503,
+      "duration": 256,
+      "error": "Request failed with status code 503",
+      "timestamp": "2025-09-12T19:30:20.906Z"
+    },
+    {
+      "name": "Create users",
+      "method": "POST",
+      "path": "/api/v1/users",
+      "status": "FAILED",
+      "statusCode": 503,
+      "duration": 252,
+      "error": "Request failed with status code 503",
+      "timestamp": "2025-09-12T19:30:21.158Z"
+    },
+    {
+      "name": "Update users",
+      "method": "PUT",
+      "path": "/api/v1/users/test-id",
+      "status": "FAILED",
+      "statusCode": 503,
+      "duration": 233,
+      "error": "Request failed with status code 503",
+      "timestamp": "2025-09-12T19:30:21.392Z"
+    },
+    {
+      "name": "Delete users",
+      "method": "DELETE",
+      "path": "/api/v1/users/test-id",
+      "status": "FAILED",
+      "statusCode": 503,
+      "duration": 235,
+      "error": "Request failed with status code 503",
+      "timestamp": "2025-09-12T19:30:21.627Z"
+    },
+    {
+      "name": "Bulk create users",
+      "method": "POST",
+      "path": "/api/v1/users/bulk",
+      "status": "FAILED",
+      "statusCode": 503,
+      "duration": 253,
+      "error": "Request failed with status code 503",
+      "timestamp": "2025-09-12T19:30:21.880Z"
+    },
+    {
+      "name": "Bulk update users",
+      "method": "PUT",
+      "path": "/api/v1/users/bulk",
+      "status": "FAILED",
+      "statusCode": 503,
+      "duration": 233,
+      "error": "Request failed with status code 503",
+      "timestamp": "2025-09-12T19:30:22.113Z"
+    },
+    {
+      "name": "Bulk delete users",
+      "method": "DELETE",
+      "path": "/api/v1/users/bulk",
+      "status": "FAILED",
+      "statusCode": 503,
+      "duration": 269,
+      "error": "Request failed with status code 503",
+      "timestamp": "2025-09-12T19:30:22.382Z"
+    },
+    {
+      "name": "Get all shops",
+      "method": "GET",
+      "path": "/api/v1/shops",
+      "status": "FAILED",
+      "statusCode": 503,
+      "duration": 255,
+      "error": "Request failed with status code 503",
+      "timestamp": "2025-09-12T19:30:22.638Z"
+    },
+    {
+      "name": "Get shops by ID",
+      "method": "GET",
+      "path": "/api/v1/shops/test-id",
+      "status": "FAILED",
+      "statusCode": 503,
+      "duration": 266,
+      "error": "Request failed with status code 503",
+      "timestamp": "2025-09-12T19:30:22.904Z"
+    },
+    {
+      "name": "Create shops",
+      "method": "POST",
+      "path": "/api/v1/shops",
+      "status": "FAILED",
+      "statusCode": 503,
+      "duration": 260,
+      "error": "Request failed with status code 503",
+      "timestamp": "2025-09-12T19:30:23.165Z"
+    },
+    {
+      "name": "Update shops",
+      "method": "PUT",
+      "path": "/api/v1/shops/test-id",
+      "status": "FAILED",
+      "statusCode": 503,
+      "duration": 252,
+      "error": "Request failed with status code 503",
+      "timestamp": "2025-09-12T19:30:23.418Z"
+    },
+    {
+      "name": "Delete shops",
+      "method": "DELETE",
+      "path": "/api/v1/shops/test-id",
+      "status": "FAILED",
+      "statusCode": 503,
+      "duration": 231,
+      "error": "Request failed with status code 503",
+      "timestamp": "2025-09-12T19:30:23.649Z"
+    },
+    {
+      "name": "Bulk create shops",
+      "method": "POST",
+      "path": "/api/v1/shops/bulk",
+      "status": "FAILED",
+      "statusCode": 503,
+      "duration": 257,
+      "error": "Request failed with status code 503",
+      "timestamp": "2025-09-12T19:30:23.906Z"
+    },
+    {
+      "name": "Bulk update shops",
+      "method": "PUT",
+      "path": "/api/v1/shops/bulk",
+      "status": "FAILED",
+      "statusCode": 503,
+      "duration": 264,
+      "error": "Request failed with status code 503",
+      "timestamp": "2025-09-12T19:30:24.170Z"
+    },
+    {
+      "name": "Bulk delete shops",
+      "method": "DELETE",
+      "path": "/api/v1/shops/bulk",
+      "status": "FAILED",
+      "statusCode": 503,
+      "duration": 253,
+      "error": "Request failed with status code 503",
+      "timestamp": "2025-09-12T19:30:24.424Z"
+    },
+    {
+      "name": "Get all parts",
+      "method": "GET",
+      "path": "/api/v1/parts",
+      "status": "FAILED",
+      "statusCode": 503,
+      "duration": 266,
+      "error": "Request failed with status code 503",
+      "timestamp": "2025-09-12T19:30:24.691Z"
+    },
+    {
+      "name": "Get parts by ID",
+      "method": "GET",
+      "path": "/api/v1/parts/test-id",
+      "status": "FAILED",
+      "statusCode": 503,
+      "duration": 226,
+      "error": "Request failed with status code 503",
+      "timestamp": "2025-09-12T19:30:24.917Z"
+    },
+    {
+      "name": "Create parts",
+      "method": "POST",
+      "path": "/api/v1/parts",
+      "status": "FAILED",
+      "statusCode": 503,
+      "duration": 231,
+      "error": "Request failed with status code 503",
+      "timestamp": "2025-09-12T19:30:25.148Z"
+    },
+    {
+      "name": "Update parts",
+      "method": "PUT",
+      "path": "/api/v1/parts/test-id",
+      "status": "FAILED",
+      "statusCode": 503,
+      "duration": 240,
+      "error": "Request failed with status code 503",
+      "timestamp": "2025-09-12T19:30:25.389Z"
+    },
+    {
+      "name": "Delete parts",
+      "method": "DELETE",
+      "path": "/api/v1/parts/test-id",
+      "status": "FAILED",
+      "statusCode": 503,
+      "duration": 232,
+      "error": "Request failed with status code 503",
+      "timestamp": "2025-09-12T19:30:25.621Z"
+    },
+    {
+      "name": "Bulk create parts",
+      "method": "POST",
+      "path": "/api/v1/parts/bulk",
+      "status": "FAILED",
+      "statusCode": 503,
+      "duration": 269,
+      "error": "Request failed with status code 503",
+      "timestamp": "2025-09-12T19:30:25.890Z"
+    },
+    {
+      "name": "Bulk update parts",
+      "method": "PUT",
+      "path": "/api/v1/parts/bulk",
+      "status": "FAILED",
+      "statusCode": 503,
+      "duration": 257,
+      "error": "Request failed with status code 503",
+      "timestamp": "2025-09-12T19:30:26.148Z"
+    },
+    {
+      "name": "Bulk delete parts",
+      "method": "DELETE",
+      "path": "/api/v1/parts/bulk",
+      "status": "FAILED",
+      "statusCode": 503,
+      "duration": 275,
+      "error": "Request failed with status code 503",
+      "timestamp": "2025-09-12T19:30:26.423Z"
+    },
+    {
+      "name": "Get all orders",
+      "method": "GET",
+      "path": "/api/v1/orders",
+      "status": "FAILED",
+      "statusCode": 503,
+      "duration": 255,
+      "error": "Request failed with status code 503",
+      "timestamp": "2025-09-12T19:30:26.679Z"
+    },
+    {
+      "name": "Get orders by ID",
+      "method": "GET",
+      "path": "/api/v1/orders/test-id",
+      "status": "FAILED",
+      "statusCode": 503,
+      "duration": 272,
+      "error": "Request failed with status code 503",
+      "timestamp": "2025-09-12T19:30:26.951Z"
+    },
+    {
+      "name": "Create orders",
+      "method": "POST",
+      "path": "/api/v1/orders",
+      "status": "FAILED",
+      "statusCode": 503,
+      "duration": 258,
+      "error": "Request failed with status code 503",
+      "timestamp": "2025-09-12T19:30:27.209Z"
+    },
+    {
+      "name": "Update orders",
+      "method": "PUT",
+      "path": "/api/v1/orders/test-id",
+      "status": "FAILED",
+      "statusCode": 503,
+      "duration": 227,
+      "error": "Request failed with status code 503",
+      "timestamp": "2025-09-12T19:30:27.437Z"
+    },
+    {
+      "name": "Delete orders",
+      "method": "DELETE",
+      "path": "/api/v1/orders/test-id",
+      "status": "FAILED",
+      "statusCode": 503,
+      "duration": 259,
+      "error": "Request failed with status code 503",
+      "timestamp": "2025-09-12T19:30:27.696Z"
+    },
+    {
+      "name": "Bulk create orders",
+      "method": "POST",
+      "path": "/api/v1/orders/bulk",
+      "status": "FAILED",
+      "statusCode": 503,
+      "duration": 264,
+      "error": "Request failed with status code 503",
+      "timestamp": "2025-09-12T19:30:27.960Z"
+    },
+    {
+      "name": "Bulk update orders",
+      "method": "PUT",
+      "path": "/api/v1/orders/bulk",
+      "status": "FAILED",
+      "statusCode": 503,
+      "duration": 272,
+      "error": "Request failed with status code 503",
+      "timestamp": "2025-09-12T19:30:28.232Z"
+    },
+    {
+      "name": "Bulk delete orders",
+      "method": "DELETE",
+      "path": "/api/v1/orders/bulk",
+      "status": "FAILED",
+      "statusCode": 503,
+      "duration": 267,
+      "error": "Request failed with status code 503",
+      "timestamp": "2025-09-12T19:30:28.499Z"
+    },
+    {
+      "name": "Get all customers",
+      "method": "GET",
+      "path": "/api/v1/customers",
+      "status": "FAILED",
+      "statusCode": 503,
+      "duration": 235,
+      "error": "Request failed with status code 503",
+      "timestamp": "2025-09-12T19:30:28.735Z"
+    },
+    {
+      "name": "Get customers by ID",
+      "method": "GET",
+      "path": "/api/v1/customers/test-id",
+      "status": "FAILED",
+      "statusCode": 503,
+      "duration": 237,
+      "error": "Request failed with status code 503",
+      "timestamp": "2025-09-12T19:30:28.973Z"
+    },
+    {
+      "name": "Create customers",
+      "method": "POST",
+      "path": "/api/v1/customers",
+      "status": "FAILED",
+      "statusCode": 503,
+      "duration": 259,
+      "error": "Request failed with status code 503",
+      "timestamp": "2025-09-12T19:30:29.232Z"
+    },
+    {
+      "name": "Update customers",
+      "method": "PUT",
+      "path": "/api/v1/customers/test-id",
+      "status": "FAILED",
+      "statusCode": 503,
+      "duration": 262,
+      "error": "Request failed with status code 503",
+      "timestamp": "2025-09-12T19:30:29.495Z"
+    },
+    {
+      "name": "Delete customers",
+      "method": "DELETE",
+      "path": "/api/v1/customers/test-id",
+      "status": "FAILED",
+      "statusCode": 503,
+      "duration": 267,
+      "error": "Request failed with status code 503",
+      "timestamp": "2025-09-12T19:30:29.762Z"
+    },
+    {
+      "name": "Bulk create customers",
+      "method": "POST",
+      "path": "/api/v1/customers/bulk",
+      "status": "FAILED",
+      "statusCode": 503,
+      "duration": 253,
+      "error": "Request failed with status code 503",
+      "timestamp": "2025-09-12T19:30:30.015Z"
+    },
+    {
+      "name": "Bulk update customers",
+      "method": "PUT",
+      "path": "/api/v1/customers/bulk",
+      "status": "FAILED",
+      "statusCode": 503,
+      "duration": 262,
+      "error": "Request failed with status code 503",
+      "timestamp": "2025-09-12T19:30:30.277Z"
+    },
+    {
+      "name": "Bulk delete customers",
+      "method": "DELETE",
+      "path": "/api/v1/customers/bulk",
+      "status": "FAILED",
+      "statusCode": 503,
+      "duration": 262,
+      "error": "Request failed with status code 503",
+      "timestamp": "2025-09-12T19:30:30.540Z"
+    },
+    {
+      "name": "Get all inventory",
+      "method": "GET",
+      "path": "/api/v1/inventory",
+      "status": "FAILED",
+      "statusCode": 503,
+      "duration": 255,
+      "error": "Request failed with status code 503",
+      "timestamp": "2025-09-12T19:30:30.796Z"
+    },
+    {
+      "name": "Get inventory by ID",
+      "method": "GET",
+      "path": "/api/v1/inventory/test-id",
+      "status": "FAILED",
+      "statusCode": 503,
+      "duration": 266,
+      "error": "Request failed with status code 503",
+      "timestamp": "2025-09-12T19:30:31.062Z"
+    },
+    {
+      "name": "Create inventory",
+      "method": "POST",
+      "path": "/api/v1/inventory",
+      "status": "FAILED",
+      "statusCode": 503,
+      "duration": 252,
+      "error": "Request failed with status code 503",
+      "timestamp": "2025-09-12T19:30:31.315Z"
+    },
+    {
+      "name": "Update inventory",
+      "method": "PUT",
+      "path": "/api/v1/inventory/test-id",
+      "status": "FAILED",
+      "statusCode": 503,
+      "duration": 236,
+      "error": "Request failed with status code 503",
+      "timestamp": "2025-09-12T19:30:31.551Z"
+    },
+    {
+      "name": "Delete inventory",
+      "method": "DELETE",
+      "path": "/api/v1/inventory/test-id",
+      "status": "FAILED",
+      "statusCode": 503,
+      "duration": 255,
+      "error": "Request failed with status code 503",
+      "timestamp": "2025-09-12T19:30:31.806Z"
+    },
+    {
+      "name": "Bulk create inventory",
+      "method": "POST",
+      "path": "/api/v1/inventory/bulk",
+      "status": "FAILED",
+      "statusCode": 503,
+      "duration": 265,
+      "error": "Request failed with status code 503",
+      "timestamp": "2025-09-12T19:30:32.072Z"
+    },
+    {
+      "name": "Bulk update inventory",
+      "method": "PUT",
+      "path": "/api/v1/inventory/bulk",
+      "status": "FAILED",
+      "statusCode": 503,
+      "duration": 232,
+      "error": "Request failed with status code 503",
+      "timestamp": "2025-09-12T19:30:32.306Z"
+    },
+    {
+      "name": "Bulk delete inventory",
+      "method": "DELETE",
+      "path": "/api/v1/inventory/bulk",
+      "status": "FAILED",
+      "statusCode": 503,
+      "duration": 258,
+      "error": "Request failed with status code 503",
+      "timestamp": "2025-09-12T19:30:32.603Z"
+    },
+    {
+      "name": "Get all reports",
+      "method": "GET",
+      "path": "/api/v1/reports",
+      "status": "FAILED",
+      "statusCode": 503,
+      "duration": 233,
+      "error": "Request failed with status code 503",
+      "timestamp": "2025-09-12T19:30:32.864Z"
+    },
+    {
+      "name": "Get reports by ID",
+      "method": "GET",
+      "path": "/api/v1/reports/test-id",
+      "status": "FAILED",
+      "statusCode": 503,
+      "duration": 277,
+      "error": "Request failed with status code 503",
+      "timestamp": "2025-09-12T19:30:33.162Z"
+    },
+    {
+      "name": "Create reports",
+      "method": "POST",
+      "path": "/api/v1/reports",
+      "status": "FAILED",
+      "statusCode": 503,
+      "duration": 261,
+      "error": "Request failed with status code 503",
+      "timestamp": "2025-09-12T19:30:33.424Z"
+    },
+    {
+      "name": "Update reports",
+      "method": "PUT",
+      "path": "/api/v1/reports/test-id",
+      "status": "FAILED",
+      "statusCode": 503,
+      "duration": 260,
+      "error": "Request failed with status code 503",
+      "timestamp": "2025-09-12T19:30:33.685Z"
+    },
+    {
+      "name": "Delete reports",
+      "method": "DELETE",
+      "path": "/api/v1/reports/test-id",
+      "status": "FAILED",
+      "statusCode": 503,
+      "duration": 231,
+      "error": "Request failed with status code 503",
+      "timestamp": "2025-09-12T19:30:33.917Z"
+    },
+    {
+      "name": "Bulk create reports",
+      "method": "POST",
+      "path": "/api/v1/reports/bulk",
+      "status": "FAILED",
+      "statusCode": 503,
+      "duration": 257,
+      "error": "Request failed with status code 503",
+      "timestamp": "2025-09-12T19:30:34.175Z"
+    },
+    {
+      "name": "Bulk update reports",
+      "method": "PUT",
+      "path": "/api/v1/reports/bulk",
+      "status": "FAILED",
+      "statusCode": 503,
+      "duration": 228,
+      "error": "Request failed with status code 503",
+      "timestamp": "2025-09-12T19:30:34.404Z"
+    },
+    {
+      "name": "Bulk delete reports",
+      "method": "DELETE",
+      "path": "/api/v1/reports/bulk",
+      "status": "FAILED",
+      "statusCode": 503,
+      "duration": 270,
+      "error": "Request failed with status code 503",
+      "timestamp": "2025-09-12T19:30:34.677Z"
+    },
+    {
+      "name": "404 Not Found",
+      "method": "GET",
+      "path": "/api/v1/nonexistent",
+      "status": "FAILED",
+      "statusCode": 503,
+      "duration": 256,
+      "error": "Request failed with status code 503",
+      "timestamp": "2025-09-12T19:30:34.935Z"
+    },
+    {
+      "name": "405 Method Not Allowed",
+      "method": "PATCH",
+      "path": "/health",
+      "status": "FAILED",
+      "statusCode": 503,
+      "duration": 257,
+      "error": "Request failed with status code 503",
+      "timestamp": "2025-09-12T19:30:35.192Z"
+    },
+    {
+      "name": "400 Bad Request",
+      "method": "POST",
+      "path": "/api/v1/auth/login",
+      "status": "FAILED",
+      "statusCode": 503,
+      "duration": 238,
+      "error": "Request failed with status code 503",
+      "timestamp": "2025-09-12T19:30:35.430Z"
+    },
+    {
+      "name": "401 Unauthorized",
+      "method": "GET",
+      "path": "/api/v1/admin/users",
+      "status": "FAILED",
+      "statusCode": 503,
+      "duration": 255,
+      "error": "Request failed with status code 503",
+      "timestamp": "2025-09-12T19:30:35.685Z"
+    },
+    {
+      "name": "403 Forbidden",
+      "method": "GET",
+      "path": "/api/v1/admin/users",
+      "status": "FAILED",
+      "statusCode": 503,
+      "duration": 255,
+      "error": "Request failed with status code 503",
+      "timestamp": "2025-09-12T19:30:35.940Z"
+    },
+    {
+      "name": "422 Unprocessable Entity",
+      "method": "POST",
+      "path": "/api/v1/users",
+      "status": "FAILED",
+      "statusCode": 503,
+      "duration": 256,
+      "error": "Request failed with status code 503",
+      "timestamp": "2025-09-12T19:30:36.196Z"
+    },
+    {
+      "name": "429 Too Many Requests",
+      "method": "GET",
+      "path": "/health",
+      "status": "FAILED",
+      "statusCode": 503,
+      "duration": 254,
+      "error": "Request failed with status code 503",
+      "timestamp": "2025-09-12T19:30:36.450Z"
+    },
+    {
+      "name": "500 Internal Server Error",
+      "method": "GET",
+      "path": "/api/v1/error",
+      "status": "FAILED",
+      "statusCode": 503,
+      "duration": 255,
+      "error": "Request failed with status code 503",
+      "timestamp": "2025-09-12T19:30:36.706Z"
+    },
+    {
+      "name": "Rate limit test (10 requests)",
+      "method": "GET",
+      "path": "/health",
+      "status": "PASSED",
+      "statusCode": "RATE_LIMIT_TEST",
+      "duration": 2399,
+      "successCount": 0,
+      "errorCount": 10,
+      "timestamp": "2025-09-12T19:30:39.106Z"
+    },
+    {
+      "name": "Rate limit test (50 requests)",
+      "method": "GET",
+      "path": "/ping",
+      "status": "PASSED",
+      "statusCode": "RATE_LIMIT_TEST",
+      "duration": 12249,
+      "successCount": 0,
+      "errorCount": 50,
+      "timestamp": "2025-09-12T19:30:51.356Z"
+    },
+    {
+      "name": "Rate limit test (100 requests)",
+      "method": "GET",
+      "path": "/api/v1/performance/metrics",
+      "status": "PASSED",
+      "statusCode": "RATE_LIMIT_TEST",
+      "duration": 24496,
+      "successCount": 0,
+      "errorCount": 100,
+      "timestamp": "2025-09-12T19:31:15.854Z"
+    },
+    {
+      "name": "Security headers check",
+      "method": "GET",
+      "path": "/health",
+      "status": "FAILED",
+      "statusCode": 503,
+      "error": "Request failed with status code 503",
+      "timestamp": "2025-09-12T19:31:16.121Z"
+    },
+    {
+      "name": "API v1",
+      "method": "GET",
+      "path": "/api/v1",
+      "status": "FAILED",
+      "statusCode": 503,
+      "duration": 260,
+      "error": "Request failed with status code 503",
+      "timestamp": "2025-09-12T19:31:16.382Z"
+    },
+    {
+      "name": "API v2",
+      "method": "GET",
+      "path": "/api/v2",
+      "status": "FAILED",
+      "statusCode": 503,
+      "duration": 254,
+      "error": "Request failed with status code 503",
+      "timestamp": "2025-09-12T19:31:16.636Z"
+    },
+    {
+      "name": "API latest",
+      "method": "GET",
+      "path": "/api/latest",
+      "status": "FAILED",
+      "statusCode": 503,
+      "duration": 235,
+      "error": "Request failed with status code 503",
+      "timestamp": "2025-09-12T19:31:16.871Z"
+    },
+    {
+      "name": "API without version",
+      "method": "GET",
+      "path": "/api",
+      "status": "FAILED",
+      "statusCode": 503,
+      "duration": 279,
+      "error": "Request failed with status code 503",
+      "timestamp": "2025-09-12T19:31:17.151Z"
+    },
+    {
+      "name": "users pagination - page 1",
+      "method": "GET",
+      "path": "/api/v1/users?page=1&limit=10",
+      "status": "FAILED",
+      "statusCode": 503,
+      "duration": 252,
+      "error": "Request failed with status code 503",
+      "timestamp": "2025-09-12T19:31:17.404Z"
+    },
+    {
+      "name": "users pagination - page 2",
+      "method": "GET",
+      "path": "/api/v1/users?page=2&limit=10",
+      "status": "FAILED",
+      "statusCode": 503,
+      "duration": 206,
+      "error": "Request failed with status code 503",
+      "timestamp": "2025-09-12T19:31:17.610Z"
+    },
+    {
+      "name": "users pagination - large limit",
+      "method": "GET",
+      "path": "/api/v1/users?page=1&limit=1000",
+      "status": "FAILED",
+      "statusCode": 503,
+      "duration": 255,
+      "error": "Request failed with status code 503",
+      "timestamp": "2025-09-12T19:31:17.866Z"
+    },
+    {
+      "name": "users pagination - invalid page",
+      "method": "GET",
+      "path": "/api/v1/users?page=0&limit=10",
+      "status": "FAILED",
+      "statusCode": 503,
+      "duration": 254,
+      "error": "Request failed with status code 503",
+      "timestamp": "2025-09-12T19:31:18.120Z"
+    },
+    {
+      "name": "users pagination - invalid limit",
+      "method": "GET",
+      "path": "/api/v1/users?page=1&limit=0",
+      "status": "FAILED",
+      "statusCode": 503,
+      "duration": 292,
+      "error": "Request failed with status code 503",
+      "timestamp": "2025-09-12T19:31:18.412Z"
+    },
+    {
+      "name": "shops pagination - page 1",
+      "method": "GET",
+      "path": "/api/v1/shops?page=1&limit=10",
+      "status": "FAILED",
+      "statusCode": 503,
+      "duration": 257,
+      "error": "Request failed with status code 503",
+      "timestamp": "2025-09-12T19:31:18.670Z"
+    },
+    {
+      "name": "shops pagination - page 2",
+      "method": "GET",
+      "path": "/api/v1/shops?page=2&limit=10",
+      "status": "FAILED",
+      "statusCode": 503,
+      "duration": 254,
+      "error": "Request failed with status code 503",
+      "timestamp": "2025-09-12T19:31:18.924Z"
+    },
+    {
+      "name": "shops pagination - large limit",
+      "method": "GET",
+      "path": "/api/v1/shops?page=1&limit=1000",
+      "status": "FAILED",
+      "statusCode": 503,
+      "duration": 259,
+      "error": "Request failed with status code 503",
+      "timestamp": "2025-09-12T19:31:19.183Z"
+    },
+    {
+      "name": "shops pagination - invalid page",
+      "method": "GET",
+      "path": "/api/v1/shops?page=0&limit=10",
+      "status": "FAILED",
+      "statusCode": 503,
+      "duration": 255,
+      "error": "Request failed with status code 503",
+      "timestamp": "2025-09-12T19:31:19.439Z"
+    },
+    {
+      "name": "shops pagination - invalid limit",
+      "method": "GET",
+      "path": "/api/v1/shops?page=1&limit=0",
+      "status": "FAILED",
+      "statusCode": 503,
+      "duration": 257,
+      "error": "Request failed with status code 503",
+      "timestamp": "2025-09-12T19:31:19.697Z"
+    },
+    {
+      "name": "parts pagination - page 1",
+      "method": "GET",
+      "path": "/api/v1/parts?page=1&limit=10",
+      "status": "FAILED",
+      "statusCode": 503,
+      "duration": 211,
+      "error": "Request failed with status code 503",
+      "timestamp": "2025-09-12T19:31:19.908Z"
+    },
+    {
+      "name": "parts pagination - page 2",
+      "method": "GET",
+      "path": "/api/v1/parts?page=2&limit=10",
+      "status": "FAILED",
+      "statusCode": 503,
+      "duration": 253,
+      "error": "Request failed with status code 503",
+      "timestamp": "2025-09-12T19:31:20.161Z"
+    },
+    {
+      "name": "parts pagination - large limit",
+      "method": "GET",
+      "path": "/api/v1/parts?page=1&limit=1000",
+      "status": "FAILED",
+      "statusCode": 503,
+      "duration": 229,
+      "error": "Request failed with status code 503",
+      "timestamp": "2025-09-12T19:31:20.391Z"
+    },
+    {
+      "name": "parts pagination - invalid page",
+      "method": "GET",
+      "path": "/api/v1/parts?page=0&limit=10",
+      "status": "FAILED",
+      "statusCode": 503,
+      "duration": 256,
+      "error": "Request failed with status code 503",
+      "timestamp": "2025-09-12T19:31:20.647Z"
+    },
+    {
+      "name": "parts pagination - invalid limit",
+      "method": "GET",
+      "path": "/api/v1/parts?page=1&limit=0",
+      "status": "FAILED",
+      "statusCode": 503,
+      "duration": 262,
+      "error": "Request failed with status code 503",
+      "timestamp": "2025-09-12T19:31:20.909Z"
+    },
+    {
+      "name": "orders pagination - page 1",
+      "method": "GET",
+      "path": "/api/v1/orders?page=1&limit=10",
+      "status": "FAILED",
+      "statusCode": 503,
+      "duration": 228,
+      "error": "Request failed with status code 503",
+      "timestamp": "2025-09-12T19:31:21.138Z"
+    },
+    {
+      "name": "orders pagination - page 2",
+      "method": "GET",
+      "path": "/api/v1/orders?page=2&limit=10",
+      "status": "FAILED",
+      "statusCode": 503,
+      "duration": 254,
+      "error": "Request failed with status code 503",
+      "timestamp": "2025-09-12T19:31:21.392Z"
+    },
+    {
+      "name": "orders pagination - large limit",
+      "method": "GET",
+      "path": "/api/v1/orders?page=1&limit=1000",
+      "status": "FAILED",
+      "statusCode": 503,
+      "duration": 235,
+      "error": "Request failed with status code 503",
+      "timestamp": "2025-09-12T19:31:21.627Z"
+    },
+    {
+      "name": "orders pagination - invalid page",
+      "method": "GET",
+      "path": "/api/v1/orders?page=0&limit=10",
+      "status": "FAILED",
+      "statusCode": 503,
+      "duration": 259,
+      "error": "Request failed with status code 503",
+      "timestamp": "2025-09-12T19:31:21.887Z"
+    },
+    {
+      "name": "orders pagination - invalid limit",
+      "method": "GET",
+      "path": "/api/v1/orders?page=1&limit=0",
+      "status": "FAILED",
+      "statusCode": 503,
+      "duration": 258,
+      "error": "Request failed with status code 503",
+      "timestamp": "2025-09-12T19:31:22.145Z"
+    },
+    {
+      "name": "users filter by name",
+      "method": "GET",
+      "path": "/api/v1/users?filter=name:test",
+      "status": "FAILED",
+      "statusCode": 503,
+      "duration": 254,
+      "error": "Request failed with status code 503",
+      "timestamp": "2025-09-12T19:31:22.400Z"
+    },
+    {
+      "name": "users sort by name",
+      "method": "GET",
+      "path": "/api/v1/users?sort=name:asc",
+      "status": "FAILED",
+      "statusCode": 503,
+      "duration": 272,
+      "error": "Request failed with status code 503",
+      "timestamp": "2025-09-12T19:31:22.673Z"
+    },
+    {
+      "name": "users sort by date",
+      "method": "GET",
+      "path": "/api/v1/users?sort=createdAt:desc",
+      "status": "FAILED",
+      "statusCode": 503,
+      "duration": 238,
+      "error": "Request failed with status code 503",
+      "timestamp": "2025-09-12T19:31:22.912Z"
+    },
+    {
+      "name": "users multiple filters",
+      "method": "GET",
+      "path": "/api/v1/users?filter=status:active&filter=type:premium",
+      "status": "FAILED",
+      "statusCode": 503,
+      "duration": 203,
+      "error": "Request failed with status code 503",
+      "timestamp": "2025-09-12T19:31:23.115Z"
+    },
+    {
+      "name": "users complex query",
+      "method": "GET",
+      "path": "/api/v1/users?filter=name:test&sort=createdAt:desc&page=1&limit=20",
+      "status": "FAILED",
+      "statusCode": 503,
+      "duration": 255,
+      "error": "Request failed with status code 503",
+      "timestamp": "2025-09-12T19:31:23.370Z"
+    },
+    {
+      "name": "shops filter by name",
+      "method": "GET",
+      "path": "/api/v1/shops?filter=name:test",
+      "status": "FAILED",
+      "statusCode": 503,
+      "duration": 202,
+      "error": "Request failed with status code 503",
+      "timestamp": "2025-09-12T19:31:23.573Z"
+    },
+    {
+      "name": "shops sort by name",
+      "method": "GET",
+      "path": "/api/v1/shops?sort=name:asc",
+      "status": "FAILED",
+      "statusCode": 503,
+      "duration": 263,
+      "error": "Request failed with status code 503",
+      "timestamp": "2025-09-12T19:31:23.836Z"
+    },
+    {
+      "name": "shops sort by date",
+      "method": "GET",
+      "path": "/api/v1/shops?sort=createdAt:desc",
+      "status": "FAILED",
+      "statusCode": 503,
+      "duration": 252,
+      "error": "Request failed with status code 503",
+      "timestamp": "2025-09-12T19:31:24.088Z"
+    },
+    {
+      "name": "shops multiple filters",
+      "method": "GET",
+      "path": "/api/v1/shops?filter=status:active&filter=type:premium",
+      "status": "FAILED",
+      "statusCode": 503,
+      "duration": 255,
+      "error": "Request failed with status code 503",
+      "timestamp": "2025-09-12T19:31:24.344Z"
+    },
+    {
+      "name": "shops complex query",
+      "method": "GET",
+      "path": "/api/v1/shops?filter=name:test&sort=createdAt:desc&page=1&limit=20",
+      "status": "FAILED",
+      "statusCode": 503,
+      "duration": 252,
+      "error": "Request failed with status code 503",
+      "timestamp": "2025-09-12T19:31:24.596Z"
+    },
+    {
+      "name": "parts filter by name",
+      "method": "GET",
+      "path": "/api/v1/parts?filter=name:test",
+      "status": "FAILED",
+      "statusCode": 503,
+      "duration": 200,
+      "error": "Request failed with status code 503",
+      "timestamp": "2025-09-12T19:31:24.797Z"
+    },
+    {
+      "name": "parts sort by name",
+      "method": "GET",
+      "path": "/api/v1/parts?sort=name:asc",
+      "status": "FAILED",
+      "statusCode": 503,
+      "duration": 223,
+      "error": "Request failed with status code 503",
+      "timestamp": "2025-09-12T19:31:25.020Z"
+    },
+    {
+      "name": "parts sort by date",
+      "method": "GET",
+      "path": "/api/v1/parts?sort=createdAt:desc",
+      "status": "FAILED",
+      "statusCode": 503,
+      "duration": 262,
+      "error": "Request failed with status code 503",
+      "timestamp": "2025-09-12T19:31:25.282Z"
+    },
+    {
+      "name": "parts multiple filters",
+      "method": "GET",
+      "path": "/api/v1/parts?filter=status:active&filter=type:premium",
+      "status": "FAILED",
+      "statusCode": 503,
+      "duration": 256,
+      "error": "Request failed with status code 503",
+      "timestamp": "2025-09-12T19:31:25.539Z"
+    },
+    {
+      "name": "parts complex query",
+      "method": "GET",
+      "path": "/api/v1/parts?filter=name:test&sort=createdAt:desc&page=1&limit=20",
+      "status": "FAILED",
+      "statusCode": 503,
+      "duration": 206,
+      "error": "Request failed with status code 503",
+      "timestamp": "2025-09-12T19:31:25.746Z"
+    },
+    {
+      "name": "orders filter by name",
+      "method": "GET",
+      "path": "/api/v1/orders?filter=name:test",
+      "status": "FAILED",
+      "statusCode": 503,
+      "duration": 252,
+      "error": "Request failed with status code 503",
+      "timestamp": "2025-09-12T19:31:25.999Z"
+    },
+    {
+      "name": "orders sort by name",
+      "method": "GET",
+      "path": "/api/v1/orders?sort=name:asc",
+      "status": "FAILED",
+      "statusCode": 503,
+      "duration": 208,
+      "error": "Request failed with status code 503",
+      "timestamp": "2025-09-12T19:31:26.207Z"
+    },
+    {
+      "name": "orders sort by date",
+      "method": "GET",
+      "path": "/api/v1/orders?sort=createdAt:desc",
+      "status": "FAILED",
+      "statusCode": 503,
+      "duration": 258,
+      "error": "Request failed with status code 503",
+      "timestamp": "2025-09-12T19:31:26.465Z"
+    },
+    {
+      "name": "orders multiple filters",
+      "method": "GET",
+      "path": "/api/v1/orders?filter=status:active&filter=type:premium",
+      "status": "FAILED",
+      "statusCode": 503,
+      "duration": 258,
+      "error": "Request failed with status code 503",
+      "timestamp": "2025-09-12T19:31:26.723Z"
+    },
+    {
+      "name": "orders complex query",
+      "method": "GET",
+      "path": "/api/v1/orders?filter=name:test&sort=createdAt:desc&page=1&limit=20",
+      "status": "FAILED",
+      "statusCode": 503,
+      "duration": 259,
+      "error": "Request failed with status code 503",
+      "timestamp": "2025-09-12T19:31:26.983Z"
+    },
+    {
+      "name": "Upload image",
+      "method": "POST",
+      "path": "/api/v1/upload/image",
+      "status": "FAILED",
+      "statusCode": "ERROR",
+      "error": "Failed to execute 'append' on 'FormData': parameter 2 is not of type 'Blob'",
+      "timestamp": "2025-09-12T19:31:26.984Z"
+    },
+    {
+      "name": "Upload document",
+      "method": "POST",
+      "path": "/api/v1/upload/document",
+      "status": "FAILED",
+      "statusCode": "ERROR",
+      "error": "Failed to execute 'append' on 'FormData': parameter 2 is not of type 'Blob'",
+      "timestamp": "2025-09-12T19:31:26.985Z"
+    },
+    {
+      "name": "Upload CSV",
+      "method": "POST",
+      "path": "/api/v1/upload/csv",
+      "status": "FAILED",
+      "statusCode": "ERROR",
+      "error": "Failed to execute 'append' on 'FormData': parameter 2 is not of type 'Blob'",
+      "timestamp": "2025-09-12T19:31:26.985Z"
+    },
+    {
+      "name": "Upload large file",
+      "method": "POST",
+      "path": "/api/v1/upload/large",
+      "status": "FAILED",
+      "statusCode": "ERROR",
+      "error": "Failed to execute 'append' on 'FormData': parameter 2 is not of type 'Blob'",
+      "timestamp": "2025-09-12T19:31:26.985Z"
+    },
+    {
+      "name": "Upload invalid file type",
+      "method": "POST",
+      "path": "/api/v1/upload/image",
+      "status": "FAILED",
+      "statusCode": "ERROR",
+      "error": "Failed to execute 'append' on 'FormData': parameter 2 is not of type 'Blob'",
+      "timestamp": "2025-09-12T19:31:26.986Z"
+    },
+    {
+      "name": "WebSocket connection",
+      "method": "WS",
+      "path": "/ws",
+      "status": "SKIPPED",
+      "statusCode": "WS_NOT_IMPLEMENTED",
+      "wsUrl": "wss://clutch-main-nk7x.onrender.com/ws",
+      "timestamp": "2025-09-12T19:31:26.986Z"
+    },
+    {
+      "name": "WebSocket with auth",
+      "method": "WS",
+      "path": "/ws/auth",
+      "status": "SKIPPED",
+      "statusCode": "WS_NOT_IMPLEMENTED",
+      "wsUrl": "wss://clutch-main-nk7x.onrender.com/ws/auth",
+      "timestamp": "2025-09-12T19:31:26.987Z"
+    },
+    {
+      "name": "WebSocket notifications",
+      "method": "WS",
+      "path": "/ws/notifications",
+      "status": "SKIPPED",
+      "statusCode": "WS_NOT_IMPLEMENTED",
+      "wsUrl": "wss://clutch-main-nk7x.onrender.com/ws/notifications",
+      "timestamp": "2025-09-12T19:31:26.987Z"
+    },
+    {
+      "name": "WebSocket real-time data",
+      "method": "WS",
+      "path": "/ws/realtime",
+      "status": "SKIPPED",
+      "statusCode": "WS_NOT_IMPLEMENTED",
+      "wsUrl": "wss://clutch-main-nk7x.onrender.com/ws/realtime",
+      "timestamp": "2025-09-12T19:31:26.987Z"
+    },
+    {
+      "name": "Batch create users",
+      "method": "POST",
+      "path": "/api/v1/batch/users",
+      "status": "FAILED",
+      "statusCode": 503,
+      "duration": 262,
+      "error": "Request failed with status code 503",
+      "timestamp": "2025-09-12T19:31:27.250Z"
+    },
+    {
+      "name": "Batch update parts",
+      "method": "POST",
+      "path": "/api/v1/batch/parts",
+      "status": "FAILED",
+      "statusCode": 503,
+      "duration": 260,
+      "error": "Request failed with status code 503",
+      "timestamp": "2025-09-12T19:31:27.511Z"
+    },
+    {
+      "name": "Batch delete orders",
+      "method": "POST",
+      "path": "/api/v1/batch/orders",
+      "status": "FAILED",
+      "statusCode": 503,
+      "duration": 205,
+      "error": "Request failed with status code 503",
+      "timestamp": "2025-09-12T19:31:27.717Z"
+    },
+    {
+      "name": "Batch mixed operations",
+      "method": "POST",
+      "path": "/api/v1/batch/mixed",
+      "status": "FAILED",
+      "statusCode": 503,
+      "duration": 256,
+      "error": "Request failed with status code 503",
+      "timestamp": "2025-09-12T19:31:27.973Z"
+    },
+    {
+      "name": "Global search",
+      "method": "GET",
+      "path": "/api/v1/search?q=test",
+      "status": "FAILED",
+      "statusCode": 503,
+      "duration": 252,
+      "error": "Request failed with status code 503",
+      "timestamp": "2025-09-12T19:31:28.226Z"
+    },
+    {
+      "name": "Search users",
+      "method": "GET",
+      "path": "/api/v1/search/users?q=john",
+      "status": "FAILED",
+      "statusCode": 503,
+      "duration": 255,
+      "error": "Request failed with status code 503",
+      "timestamp": "2025-09-12T19:31:28.482Z"
+    },
+    {
+      "name": "Search parts",
+      "method": "GET",
+      "path": "/api/v1/search/parts?q=brake",
+      "status": "FAILED",
+      "statusCode": 503,
+      "duration": 276,
+      "error": "Request failed with status code 503",
+      "timestamp": "2025-09-12T19:31:28.758Z"
+    },
+    {
+      "name": "Search orders",
+      "method": "GET",
+      "path": "/api/v1/search/orders?q=order123",
+      "status": "FAILED",
+      "statusCode": 503,
+      "duration": 257,
+      "error": "Request failed with status code 503",
+      "timestamp": "2025-09-12T19:31:29.015Z"
+    },
+    {
+      "name": "Advanced search",
+      "method": "GET",
+      "path": "/api/v1/search/advanced?q=test&type=user&category=premium",
+      "status": "FAILED",
+      "statusCode": 503,
+      "duration": 227,
+      "error": "Request failed with status code 503",
+      "timestamp": "2025-09-12T19:31:29.242Z"
+    },
+    {
+      "name": "Search suggestions",
+      "method": "GET",
+      "path": "/api/v1/search/suggestions?q=bra",
+      "status": "FAILED",
+      "statusCode": 503,
+      "duration": 236,
+      "error": "Request failed with status code 503",
+      "timestamp": "2025-09-12T19:31:29.478Z"
+    },
+    {
+      "name": "Sales report",
+      "method": "GET",
+      "path": "/api/v1/reports/sales",
+      "status": "FAILED",
+      "statusCode": 503,
+      "duration": 252,
+      "error": "Request failed with status code 503",
+      "timestamp": "2025-09-12T19:31:29.732Z"
+    },
+    {
+      "name": "Inventory report",
+      "method": "GET",
+      "path": "/api/v1/reports/inventory",
+      "status": "FAILED",
+      "statusCode": 503,
+      "duration": 208,
+      "error": "Request failed with status code 503",
+      "timestamp": "2025-09-12T19:31:29.940Z"
+    },
+    {
+      "name": "User activity report",
+      "method": "GET",
+      "path": "/api/v1/reports/user-activity",
+      "status": "FAILED",
+      "statusCode": 503,
+      "duration": 231,
+      "error": "Request failed with status code 503",
+      "timestamp": "2025-09-12T19:31:30.172Z"
+    },
+    {
+      "name": "Performance report",
+      "method": "GET",
+      "path": "/api/v1/reports/performance",
+      "status": "FAILED",
+      "statusCode": 503,
+      "duration": 206,
+      "error": "Request failed with status code 503",
+      "timestamp": "2025-09-12T19:31:30.378Z"
+    },
+    {
+      "name": "Custom report",
+      "method": "POST",
+      "path": "/api/v1/reports/custom",
+      "status": "FAILED",
+      "statusCode": 503,
+      "duration": 265,
+      "error": "Request failed with status code 503",
+      "timestamp": "2025-09-12T19:31:30.644Z"
+    },
+    {
+      "name": "Export report",
+      "method": "GET",
+      "path": "/api/v1/reports/export?type=sales&format=csv",
+      "status": "FAILED",
+      "statusCode": 503,
+      "duration": 232,
+      "error": "Request failed with status code 503",
+      "timestamp": "2025-09-12T19:31:30.877Z"
+    },
+    {
+      "name": "OBD integration",
+      "method": "GET",
+      "path": "/api/v1/integration/obd",
+      "status": "FAILED",
+      "statusCode": 503,
+      "duration": 272,
+      "error": "Request failed with status code 503",
+      "timestamp": "2025-09-12T19:31:31.150Z"
+    },
+    {
+      "name": "Car health check",
+      "method": "POST",
+      "path": "/api/v1/integration/car-health",
+      "status": "FAILED",
+      "statusCode": 503,
+      "duration": 256,
+      "error": "Request failed with status code 503",
+      "timestamp": "2025-09-12T19:31:31.407Z"
+    },
+    {
+      "name": "External API sync",
+      "method": "POST",
+      "path": "/api/v1/integration/sync",
+      "status": "FAILED",
+      "statusCode": 503,
+      "duration": 211,
+      "error": "Request failed with status code 503",
+      "timestamp": "2025-09-12T19:31:31.618Z"
+    },
+    {
+      "name": "Webhook endpoint",
+      "method": "POST",
+      "path": "/api/v1/integration/webhook",
+      "status": "FAILED",
+      "statusCode": 503,
+      "duration": 259,
+      "error": "Request failed with status code 503",
+      "timestamp": "2025-09-12T19:31:31.878Z"
+    },
+    {
+      "name": "Third-party auth",
+      "method": "POST",
+      "path": "/api/v1/integration/auth",
+      "status": "FAILED",
+      "statusCode": 503,
+      "duration": 261,
+      "error": "Request failed with status code 503",
+      "timestamp": "2025-09-12T19:31:32.140Z"
+    }
+  ]
+}

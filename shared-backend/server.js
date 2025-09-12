@@ -351,7 +351,7 @@ async function startServer() {
       } catch (error) {
         console.error('❌ Error in performance tuning:', error);
       }
-    }, 60000); // Run every minute
+    }, 300000); // Run every 5 minutes to reduce memory pressure
 
     // Enhanced graceful shutdown (handled by graceful restart manager)
     console.log('✅ Graceful restart manager initialized');
