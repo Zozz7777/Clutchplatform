@@ -212,88 +212,90 @@ const twoFactorAuthRoutes = require('./routes/twoFactorAuth');
 // Initialize Express app
 const app = express();
 
+// CRITICAL: Health endpoints must be available immediately, before any middleware
+// Trust proxy for rate limiting
+app.set('trust proxy', 1);
+
+// CRITICAL: Ping endpoint must be the very first thing to bypass all middleware
+app.get('/health/ping', (req, res) => {
+  try {
+    console.log('🏥 Health ping endpoint called (bypassing all middleware)');
+    res.status(200).json({
+      success: true,
+      data: {
+        status: 'pong',
+        timestamp: new Date().toISOString(),
+        uptime: process.uptime(),
+        environment: process.env.NODE_ENV || 'development'
+      }
+    });
+  } catch (error) {
+    console.error('🏥 Health ping error:', error);
+    res.status(200).json({
+      success: true,
+      data: {
+        status: 'pong',
+        timestamp: new Date().toISOString(),
+        uptime: process.uptime()
+      }
+    });
+  }
+});
+
+// Alternative ping endpoint with different path
+app.get('/ping', (req, res) => {
+  try {
+    console.log('🏥 Alternative ping endpoint called (bypassing all middleware)');
+    res.status(200).json({
+      success: true,
+      data: {
+        status: 'pong',
+        timestamp: new Date().toISOString(),
+        uptime: process.uptime(),
+        environment: process.env.NODE_ENV || 'development'
+      }
+    });
+  } catch (error) {
+    console.error('🏥 Alternative ping error:', error);
+    res.status(200).json({
+      success: true,
+      data: {
+        status: 'pong',
+        timestamp: new Date().toISOString(),
+        uptime: process.uptime()
+      }
+    });
+  }
+});
+
+// Simple health endpoint
+app.get('/health', (req, res) => {
+  try {
+    console.log('🏥 Health endpoint called (bypassing all middleware)');
+    res.status(200).json({
+      success: true,
+      data: {
+        status: 'healthy',
+        timestamp: new Date().toISOString(),
+        uptime: process.uptime(),
+        environment: process.env.NODE_ENV || 'development'
+      }
+    });
+  } catch (error) {
+    console.error('🏥 Health endpoint error:', error);
+    res.status(200).json({
+      success: true,
+      data: {
+        status: 'healthy',
+        timestamp: new Date().toISOString(),
+        uptime: process.uptime()
+      }
+    });
+  }
+});
+
 // Setup middleware and routes
 function setupApp() {
-  // Trust proxy for rate limiting
-  app.set('trust proxy', 1);
-
-  // CRITICAL: Ping endpoint must be the very first thing to bypass all middleware
-  app.get('/health/ping', (req, res) => {
-    try {
-      console.log('🏥 Health ping endpoint called (bypassing all middleware)');
-      res.status(200).json({
-        success: true,
-        data: {
-          status: 'pong',
-          timestamp: new Date().toISOString(),
-          uptime: process.uptime(),
-          environment: process.env.NODE_ENV || 'development'
-        }
-      });
-    } catch (error) {
-      console.error('🏥 Health ping error:', error);
-      res.status(200).json({
-        success: true,
-        data: {
-          status: 'pong',
-          timestamp: new Date().toISOString(),
-          uptime: process.uptime()
-        }
-      });
-    }
-  });
-
-  // Alternative ping endpoint with different path
-  app.get('/ping', (req, res) => {
-    try {
-      console.log('🏥 Alternative ping endpoint called (bypassing all middleware)');
-      res.status(200).json({
-        success: true,
-        data: {
-          status: 'pong',
-          timestamp: new Date().toISOString(),
-          uptime: process.uptime(),
-          environment: process.env.NODE_ENV || 'development'
-        }
-      });
-    } catch (error) {
-      console.error('🏥 Alternative ping error:', error);
-      res.status(200).json({
-        success: true,
-        data: {
-          status: 'pong',
-          timestamp: new Date().toISOString(),
-          uptime: process.uptime()
-        }
-      });
-    }
-  });
-
-  // Simple health endpoint
-  app.get('/health', (req, res) => {
-    try {
-      console.log('🏥 Health endpoint called (bypassing all middleware)');
-      res.status(200).json({
-        success: true,
-        data: {
-          status: 'healthy',
-          timestamp: new Date().toISOString(),
-          uptime: process.uptime(),
-          environment: process.env.NODE_ENV || 'development'
-        }
-      });
-    } catch (error) {
-      console.error('🏥 Health endpoint error:', error);
-      res.status(200).json({
-        success: true,
-        data: {
-          status: 'healthy',
-          timestamp: new Date().toISOString(),
-          uptime: process.uptime()
-        }
-      });
-    }
-  });
 
   // Performance monitoring middleware (early in the chain)
   app.use(performanceMonitor);
