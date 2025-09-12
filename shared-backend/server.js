@@ -2459,6 +2459,1234 @@ app.get('/errors/frontend', (req, res) => {
   }
 });
 
+// Dashboard admin overview endpoint
+app.get('/dashboard/admin/overview', (req, res) => {
+  try {
+    console.log('🧪 Dashboard admin overview endpoint called:', {
+      method: req.method,
+      path: req.path,
+      timestamp: new Date().toISOString()
+    });
+    
+    const overviewData = {
+      success: true,
+      data: {
+        summary: {
+          totalUsers: 1250,
+          activeUsers: 890,
+          totalOrders: 2340,
+          totalRevenue: 45600,
+          systemHealth: 'healthy',
+          uptime: process.uptime()
+        },
+        metrics: {
+          userGrowth: 0.15,
+          orderGrowth: 0.12,
+          revenueGrowth: 0.18,
+          systemLoad: 0.45
+        },
+        recentActivity: [
+          {
+            id: '1',
+            action: 'New user registered',
+            timestamp: new Date().toISOString(),
+            status: 'success'
+          },
+          {
+            id: '2',
+            action: 'Order completed',
+            timestamp: new Date().toISOString(),
+            status: 'success'
+          }
+        ],
+        charts: {
+          userGrowth: [120, 135, 110, 140, 160, 180, 200],
+          revenue: [1200, 1350, 1100, 1400, 1600, 1800, 2000],
+          orders: [45, 52, 38, 48, 55, 62, 68]
+        }
+      },
+      timestamp: new Date().toISOString()
+    };
+    
+    res.json(overviewData);
+  } catch (error) {
+    console.error('❌ Dashboard admin overview endpoint error:', error);
+    res.status(500).json({
+      success: false,
+      error: error.message,
+      timestamp: new Date().toISOString()
+    });
+  }
+});
+
+// CRM endpoints
+app.get('/crm/deals', (req, res) => {
+  try {
+    console.log('🧪 CRM deals endpoint called:', {
+      method: req.method,
+      path: req.path,
+      timestamp: new Date().toISOString()
+    });
+    
+    const dealsData = {
+      success: true,
+      data: [
+        {
+          id: '1',
+          title: 'Enterprise Partnership',
+          value: 50000,
+          stage: 'negotiation',
+          probability: 75,
+          customer: 'TechCorp Inc.',
+          expectedCloseDate: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString(),
+          createdAt: new Date().toISOString()
+        },
+        {
+          id: '2',
+          title: 'Fleet Management Contract',
+          value: 25000,
+          stage: 'proposal',
+          probability: 60,
+          customer: 'Logistics Pro',
+          expectedCloseDate: new Date(Date.now() + 45 * 24 * 60 * 60 * 1000).toISOString(),
+          createdAt: new Date().toISOString()
+        }
+      ],
+      timestamp: new Date().toISOString()
+    };
+    
+    res.json(dealsData);
+  } catch (error) {
+    console.error('❌ CRM deals endpoint error:', error);
+    res.status(500).json({
+      success: false,
+      error: error.message,
+      timestamp: new Date().toISOString()
+    });
+  }
+});
+
+app.get('/crm/leads', (req, res) => {
+  try {
+    console.log('🧪 CRM leads endpoint called:', {
+      method: req.method,
+      path: req.path,
+      timestamp: new Date().toISOString()
+    });
+    
+    const leadsData = {
+      success: true,
+      data: [
+        {
+          id: '1',
+          name: 'John Smith',
+          email: 'john@example.com',
+          company: 'Auto Solutions',
+          phone: '+1234567890',
+          status: 'qualified',
+          source: 'website',
+          score: 85,
+          createdAt: new Date().toISOString()
+        },
+        {
+          id: '2',
+          name: 'Sarah Johnson',
+          email: 'sarah@fleetcorp.com',
+          company: 'FleetCorp',
+          phone: '+1234567891',
+          status: 'contacted',
+          source: 'referral',
+          score: 92,
+          createdAt: new Date().toISOString()
+        }
+      ],
+      timestamp: new Date().toISOString()
+    };
+    
+    res.json(leadsData);
+  } catch (error) {
+    console.error('❌ CRM leads endpoint error:', error);
+    res.status(500).json({
+      success: false,
+      error: error.message,
+      timestamp: new Date().toISOString()
+    });
+  }
+});
+
+app.get('/crm/customers', (req, res) => {
+  try {
+    console.log('🧪 CRM customers endpoint called:', {
+      method: req.method,
+      path: req.path,
+      timestamp: new Date().toISOString()
+    });
+    
+    const customersData = {
+      success: true,
+      data: [
+        {
+          _id: '1',
+          name: 'Premium Auto Services',
+          email: 'contact@premiumauto.com',
+          phone: '+1234567890',
+          address: '123 Main St, City, State',
+          status: 'active',
+          totalOrders: 45,
+          totalSpent: 12500,
+          lastOrderDate: new Date().toISOString(),
+          createdAt: new Date().toISOString()
+        },
+        {
+          _id: '2',
+          name: 'City Fleet Management',
+          email: 'fleet@cityfleet.com',
+          phone: '+1234567891',
+          address: '456 Fleet Ave, City, State',
+          status: 'active',
+          totalOrders: 78,
+          totalSpent: 23400,
+          lastOrderDate: new Date().toISOString(),
+          createdAt: new Date().toISOString()
+        }
+      ],
+      timestamp: new Date().toISOString()
+    };
+    
+    res.json(customersData);
+  } catch (error) {
+    console.error('❌ CRM customers endpoint error:', error);
+    res.status(500).json({
+      success: false,
+      error: error.message,
+      timestamp: new Date().toISOString()
+    });
+  }
+});
+
+app.post('/crm/customers', (req, res) => {
+  try {
+    console.log('🧪 CRM customers POST endpoint called:', {
+      method: req.method,
+      path: req.path,
+      body: req.body,
+      timestamp: new Date().toISOString()
+    });
+    
+    const customerData = {
+      success: true,
+      data: {
+        _id: 'new_customer_id',
+        ...req.body,
+        createdAt: new Date().toISOString()
+      },
+      message: 'Customer created successfully',
+      timestamp: new Date().toISOString()
+    };
+    
+    res.json(customerData);
+  } catch (error) {
+    console.error('❌ CRM customers POST endpoint error:', error);
+    res.status(500).json({
+      success: false,
+      error: error.message,
+      timestamp: new Date().toISOString()
+    });
+  }
+});
+
+app.get('/crm/pipeline/:id', (req, res) => {
+  try {
+    console.log('🧪 CRM pipeline detail endpoint called:', {
+      method: req.method,
+      path: req.path,
+      params: req.params,
+      timestamp: new Date().toISOString()
+    });
+    
+    const pipelineData = {
+      success: true,
+      data: {
+        id: req.params.id,
+        title: 'Enterprise Partnership',
+        value: 50000,
+        stage: 'negotiation',
+        probability: 75,
+        customer: 'TechCorp Inc.',
+        expectedCloseDate: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString(),
+        notes: 'High priority deal with potential for expansion',
+        activities: [
+          {
+            id: '1',
+            type: 'call',
+            description: 'Initial discovery call',
+            date: new Date().toISOString(),
+            outcome: 'positive'
+          }
+        ],
+        createdAt: new Date().toISOString()
+      },
+      timestamp: new Date().toISOString()
+    };
+    
+    res.json(pipelineData);
+  } catch (error) {
+    console.error('❌ CRM pipeline detail endpoint error:', error);
+    res.status(500).json({
+      success: false,
+      error: error.message,
+      timestamp: new Date().toISOString()
+    });
+  }
+});
+
+// HR endpoints
+app.get('/hr/recruitment', (req, res) => {
+  try {
+    console.log('🧪 HR recruitment endpoint called:', {
+      method: req.method,
+      path: req.path,
+      timestamp: new Date().toISOString()
+    });
+    
+    const recruitmentData = {
+      success: true,
+      data: [
+        {
+          id: '1',
+          name: 'Alex Johnson',
+          email: 'alex@example.com',
+          position: 'Senior Developer',
+          status: 'interview',
+          experience: '5 years',
+          skills: ['JavaScript', 'React', 'Node.js'],
+          appliedDate: new Date().toISOString(),
+          score: 88
+        },
+        {
+          id: '2',
+          name: 'Maria Garcia',
+          email: 'maria@example.com',
+          position: 'DevOps Engineer',
+          status: 'screening',
+          experience: '3 years',
+          skills: ['Docker', 'Kubernetes', 'AWS'],
+          appliedDate: new Date().toISOString(),
+          score: 92
+        }
+      ],
+      timestamp: new Date().toISOString()
+    };
+    
+    res.json(recruitmentData);
+  } catch (error) {
+    console.error('❌ HR recruitment endpoint error:', error);
+    res.status(500).json({
+      success: false,
+      error: error.message,
+      timestamp: new Date().toISOString()
+    });
+  }
+});
+
+app.get('/hr/recruitment/:id', (req, res) => {
+  try {
+    console.log('🧪 HR recruitment detail endpoint called:', {
+      method: req.method,
+      path: req.path,
+      params: req.params,
+      timestamp: new Date().toISOString()
+    });
+    
+    const candidateData = {
+      success: true,
+      data: {
+        id: req.params.id,
+        name: 'Alex Johnson',
+        email: 'alex@example.com',
+        position: 'Senior Developer',
+        status: 'interview',
+        experience: '5 years',
+        skills: ['JavaScript', 'React', 'Node.js'],
+        appliedDate: new Date().toISOString(),
+        score: 88,
+        resume: 'resume_url_here',
+        interviews: [
+          {
+            id: '1',
+            type: 'technical',
+            date: new Date().toISOString(),
+            interviewer: 'John Doe',
+            feedback: 'Strong technical skills'
+          }
+        ],
+        notes: 'Excellent candidate with relevant experience'
+      },
+      timestamp: new Date().toISOString()
+    };
+    
+    res.json(candidateData);
+  } catch (error) {
+    console.error('❌ HR recruitment detail endpoint error:', error);
+    res.status(500).json({
+      success: false,
+      error: error.message,
+      timestamp: new Date().toISOString()
+    });
+  }
+});
+
+app.get('/hr/performance', (req, res) => {
+  try {
+    console.log('🧪 HR performance endpoint called:', {
+      method: req.method,
+      path: req.path,
+      timestamp: new Date().toISOString()
+    });
+    
+    const performanceData = {
+      success: true,
+      data: [
+        {
+          id: '1',
+          employeeId: 'emp_001',
+          name: 'John Smith',
+          department: 'Engineering',
+          rating: 4.5,
+          goals: [
+            { id: '1', title: 'Complete project A', status: 'completed', progress: 100 },
+            { id: '2', title: 'Learn new technology', status: 'in_progress', progress: 75 }
+          ],
+          lastReview: new Date().toISOString(),
+          nextReview: new Date(Date.now() + 90 * 24 * 60 * 60 * 1000).toISOString()
+        },
+        {
+          id: '2',
+          employeeId: 'emp_002',
+          name: 'Sarah Johnson',
+          department: 'Marketing',
+          rating: 4.2,
+          goals: [
+            { id: '1', title: 'Increase brand awareness', status: 'in_progress', progress: 60 },
+            { id: '2', title: 'Launch campaign', status: 'completed', progress: 100 }
+          ],
+          lastReview: new Date().toISOString(),
+          nextReview: new Date(Date.now() + 90 * 24 * 60 * 60 * 1000).toISOString()
+        }
+      ],
+      timestamp: new Date().toISOString()
+    };
+    
+    res.json(performanceData);
+  } catch (error) {
+    console.error('❌ HR performance endpoint error:', error);
+    res.status(500).json({
+      success: false,
+      error: error.message,
+      timestamp: new Date().toISOString()
+    });
+  }
+});
+
+app.get('/hr/performance/summary', (req, res) => {
+  try {
+    console.log('🧪 HR performance summary endpoint called:', {
+      method: req.method,
+      path: req.path,
+      timestamp: new Date().toISOString()
+    });
+    
+    const summaryData = {
+      success: true,
+      data: {
+        totalEmployees: 150,
+        averageRating: 4.3,
+        highPerformers: 45,
+        needsImprovement: 8,
+        departmentBreakdown: [
+          { department: 'Engineering', averageRating: 4.5, count: 60 },
+          { department: 'Marketing', averageRating: 4.2, count: 25 },
+          { department: 'Sales', averageRating: 4.4, count: 35 },
+          { department: 'Support', averageRating: 4.1, count: 30 }
+        ],
+        trends: {
+          monthlyImprovement: 0.2,
+          goalCompletionRate: 78,
+          reviewCompletionRate: 95
+        }
+      },
+      timestamp: new Date().toISOString()
+    };
+    
+    res.json(summaryData);
+  } catch (error) {
+    console.error('❌ HR performance summary endpoint error:', error);
+    res.status(500).json({
+      success: false,
+      error: error.message,
+      timestamp: new Date().toISOString()
+    });
+  }
+});
+
+app.get('/hr/employees/:id', (req, res) => {
+  try {
+    console.log('🧪 HR employee detail endpoint called:', {
+      method: req.method,
+      path: req.path,
+      params: req.params,
+      timestamp: new Date().toISOString()
+    });
+    
+    const employeeData = {
+      success: true,
+      data: {
+        _id: req.params.id,
+        name: 'John Smith',
+        email: 'john@company.com',
+        department: 'Engineering',
+        position: 'Senior Developer',
+        hireDate: new Date(Date.now() - 365 * 24 * 60 * 60 * 1000).toISOString(),
+        salary: 85000,
+        status: 'active',
+        manager: 'Jane Doe',
+        skills: ['JavaScript', 'React', 'Node.js', 'Python'],
+        performance: {
+          rating: 4.5,
+          lastReview: new Date().toISOString(),
+          goals: [
+            { title: 'Complete project A', status: 'completed', progress: 100 },
+            { title: 'Learn new technology', status: 'in_progress', progress: 75 }
+          ]
+        },
+        contact: {
+          phone: '+1234567890',
+          address: '123 Main St, City, State'
+        }
+      },
+      timestamp: new Date().toISOString()
+    };
+    
+    res.json(employeeData);
+  } catch (error) {
+    console.error('❌ HR employee detail endpoint error:', error);
+    res.status(500).json({
+      success: false,
+      error: error.message,
+      timestamp: new Date().toISOString()
+    });
+  }
+});
+
+// Fleet endpoints
+app.post('/fleet/tracking/start', (req, res) => {
+  try {
+    console.log('🧪 Fleet tracking start endpoint called:', {
+      method: req.method,
+      path: req.path,
+      body: req.body,
+      timestamp: new Date().toISOString()
+    });
+    
+    const trackingData = {
+      success: true,
+      data: {
+        trackingId: 'track_001',
+        status: 'started',
+        startTime: new Date().toISOString(),
+        vehicles: ['vehicle_001', 'vehicle_002'],
+        message: 'Fleet tracking started successfully'
+      },
+      timestamp: new Date().toISOString()
+    };
+    
+    res.json(trackingData);
+  } catch (error) {
+    console.error('❌ Fleet tracking start endpoint error:', error);
+    res.status(500).json({
+      success: false,
+      error: error.message,
+      timestamp: new Date().toISOString()
+    });
+  }
+});
+
+app.post('/fleet/tracking/stop', (req, res) => {
+  try {
+    console.log('🧪 Fleet tracking stop endpoint called:', {
+      method: req.method,
+      path: req.path,
+      body: req.body,
+      timestamp: new Date().toISOString()
+    });
+    
+    const trackingData = {
+      success: true,
+      data: {
+        trackingId: 'track_001',
+        status: 'stopped',
+        stopTime: new Date().toISOString(),
+        totalDistance: 150.5,
+        totalTime: '2h 30m',
+        message: 'Fleet tracking stopped successfully'
+      },
+      timestamp: new Date().toISOString()
+    };
+    
+    res.json(trackingData);
+  } catch (error) {
+    console.error('❌ Fleet tracking stop endpoint error:', error);
+    res.status(500).json({
+      success: false,
+      error: error.message,
+      timestamp: new Date().toISOString()
+    });
+  }
+});
+
+app.get('/fleet/maintenance', (req, res) => {
+  try {
+    console.log('🧪 Fleet maintenance endpoint called:', {
+      method: req.method,
+      path: req.path,
+      timestamp: new Date().toISOString()
+    });
+    
+    const maintenanceData = {
+      success: true,
+      data: [
+        {
+          id: '1',
+          vehicleId: 'vehicle_001',
+          vehicleName: 'Fleet Vehicle 001',
+          type: 'scheduled',
+          description: 'Oil change and filter replacement',
+          status: 'completed',
+          scheduledDate: new Date().toISOString(),
+          completedDate: new Date().toISOString(),
+          cost: 150,
+          technician: 'John Smith',
+          mileage: 45000
+        },
+        {
+          id: '2',
+          vehicleId: 'vehicle_002',
+          vehicleName: 'Fleet Vehicle 002',
+          type: 'repair',
+          description: 'Brake pad replacement',
+          status: 'in_progress',
+          scheduledDate: new Date().toISOString(),
+          cost: 300,
+          technician: 'Mike Johnson',
+          mileage: 52000
+        }
+      ],
+      timestamp: new Date().toISOString()
+    };
+    
+    res.json(maintenanceData);
+  } catch (error) {
+    console.error('❌ Fleet maintenance endpoint error:', error);
+    res.status(500).json({
+      success: false,
+      error: error.message,
+      timestamp: new Date().toISOString()
+    });
+  }
+});
+
+app.get('/fleet/drivers/:id', (req, res) => {
+  try {
+    console.log('🧪 Fleet driver detail endpoint called:', {
+      method: req.method,
+      path: req.path,
+      params: req.params,
+      timestamp: new Date().toISOString()
+    });
+    
+    const driverData = {
+      success: true,
+      data: {
+        _id: req.params.id,
+        name: 'John Driver',
+        email: 'john.driver@company.com',
+        phone: '+1234567890',
+        licenseNumber: 'DL123456789',
+        licenseExpiry: new Date(Date.now() + 365 * 24 * 60 * 60 * 1000).toISOString(),
+        status: 'active',
+        rating: 4.8,
+        totalTrips: 1250,
+        totalDistance: 45000,
+        joinDate: new Date(Date.now() - 2 * 365 * 24 * 60 * 60 * 1000).toISOString(),
+        vehicle: {
+          id: 'vehicle_001',
+          make: 'Toyota',
+          model: 'Camry',
+          year: 2022,
+          plateNumber: 'ABC123'
+        },
+        performance: {
+          averageRating: 4.8,
+          onTimeRate: 95,
+          safetyScore: 98
+        }
+      },
+      timestamp: new Date().toISOString()
+    };
+    
+    res.json(driverData);
+  } catch (error) {
+    console.error('❌ Fleet driver detail endpoint error:', error);
+    res.status(500).json({
+      success: false,
+      error: error.message,
+      timestamp: new Date().toISOString()
+    });
+  }
+});
+
+app.post('/fleet/drivers', (req, res) => {
+  try {
+    console.log('🧪 Fleet drivers POST endpoint called:', {
+      method: req.method,
+      path: req.path,
+      body: req.body,
+      timestamp: new Date().toISOString()
+    });
+    
+    const driverData = {
+      success: true,
+      data: {
+        _id: 'new_driver_id',
+        ...req.body,
+        status: 'active',
+        joinDate: new Date().toISOString(),
+        rating: 0,
+        totalTrips: 0,
+        totalDistance: 0
+      },
+      message: 'Driver added successfully',
+      timestamp: new Date().toISOString()
+    };
+    
+    res.json(driverData);
+  } catch (error) {
+    console.error('❌ Fleet drivers POST endpoint error:', error);
+    res.status(500).json({
+      success: false,
+      error: error.message,
+      timestamp: new Date().toISOString()
+    });
+  }
+});
+
+app.get('/fleet/analytics', (req, res) => {
+  try {
+    console.log('🧪 Fleet analytics endpoint called:', {
+      method: req.method,
+      path: req.path,
+      timestamp: new Date().toISOString()
+    });
+    
+    const analyticsData = {
+      success: true,
+      data: {
+        summary: {
+          totalVehicles: 150,
+          activeVehicles: 142,
+          totalDrivers: 180,
+          activeDrivers: 165,
+          totalTrips: 12500,
+          totalDistance: 450000,
+          averageRating: 4.7
+        },
+        metrics: {
+          utilizationRate: 85,
+          fuelEfficiency: 12.5,
+          maintenanceCost: 2500,
+          driverSatisfaction: 4.7,
+          customerSatisfaction: 4.8
+        },
+        trends: {
+          tripsGrowth: 15,
+          revenueGrowth: 12,
+          efficiencyImprovement: 8
+        },
+        charts: {
+          dailyTrips: [45, 52, 38, 48, 55, 62, 68],
+          fuelConsumption: [120, 135, 110, 140, 160, 180, 200],
+          maintenanceCosts: [2500, 2800, 2200, 3000, 2600, 2900, 3200]
+        }
+      },
+      timestamp: new Date().toISOString()
+    };
+    
+    res.json(analyticsData);
+  } catch (error) {
+    console.error('❌ Fleet analytics endpoint error:', error);
+    res.status(500).json({
+      success: false,
+      error: error.message,
+      timestamp: new Date().toISOString()
+    });
+  }
+});
+
+app.get('/system/alerts', (req, res) => {
+  try {
+    console.log('🧪 System alerts endpoint called:', {
+      method: req.method,
+      path: req.path,
+      timestamp: new Date().toISOString()
+    });
+    
+    const alertsData = {
+      success: true,
+      data: [
+        {
+          id: '1',
+          type: 'warning',
+          title: 'High CPU Usage',
+          message: 'Server CPU usage is above 80%',
+          severity: 'medium',
+          timestamp: new Date().toISOString(),
+          status: 'active'
+        },
+        {
+          id: '2',
+          type: 'info',
+          title: 'Scheduled Maintenance',
+          message: 'System maintenance scheduled for tonight',
+          severity: 'low',
+          timestamp: new Date().toISOString(),
+          status: 'active'
+        },
+        {
+          id: '3',
+          type: 'error',
+          title: 'Database Connection Issue',
+          message: 'Unable to connect to primary database',
+          severity: 'high',
+          timestamp: new Date().toISOString(),
+          status: 'resolved'
+        }
+      ],
+      timestamp: new Date().toISOString()
+    };
+    
+    res.json(alertsData);
+  } catch (error) {
+    console.error('❌ System alerts endpoint error:', error);
+    res.status(500).json({
+      success: false,
+      error: error.message,
+      timestamp: new Date().toISOString()
+    });
+  }
+});
+
+// Finance endpoints
+app.get('/finance/subscriptions', (req, res) => {
+  try {
+    console.log('🧪 Finance subscriptions endpoint called:', {
+      method: req.method,
+      path: req.path,
+      timestamp: new Date().toISOString()
+    });
+    
+    const subscriptionsData = {
+      success: true,
+      data: [
+        {
+          id: '1',
+          name: 'Premium Plan',
+          company: 'TechCorp Inc.',
+          plan: 'premium',
+          status: 'active',
+          amount: 299,
+          billingCycle: 'monthly',
+          nextBillingDate: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString(),
+          startDate: new Date().toISOString(),
+          features: ['Unlimited users', 'Advanced analytics', 'Priority support']
+        },
+        {
+          id: '2',
+          name: 'Enterprise Plan',
+          company: 'FleetCorp',
+          plan: 'enterprise',
+          status: 'active',
+          amount: 999,
+          billingCycle: 'monthly',
+          nextBillingDate: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString(),
+          startDate: new Date().toISOString(),
+          features: ['Unlimited everything', 'Custom integrations', '24/7 support']
+        }
+      ],
+      timestamp: new Date().toISOString()
+    };
+    
+    res.json(subscriptionsData);
+  } catch (error) {
+    console.error('❌ Finance subscriptions endpoint error:', error);
+    res.status(500).json({
+      success: false,
+      error: error.message,
+      timestamp: new Date().toISOString()
+    });
+  }
+});
+
+app.post('/finance/subscriptions', (req, res) => {
+  try {
+    console.log('🧪 Finance subscriptions POST endpoint called:', {
+      method: req.method,
+      path: req.path,
+      body: req.body,
+      timestamp: new Date().toISOString()
+    });
+    
+    const subscriptionData = {
+      success: true,
+      data: {
+        id: 'new_subscription_id',
+        ...req.body,
+        status: 'active',
+        startDate: new Date().toISOString(),
+        nextBillingDate: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString()
+      },
+      message: 'Subscription created successfully',
+      timestamp: new Date().toISOString()
+    };
+    
+    res.json(subscriptionData);
+  } catch (error) {
+    console.error('❌ Finance subscriptions POST endpoint error:', error);
+    res.status(500).json({
+      success: false,
+      error: error.message,
+      timestamp: new Date().toISOString()
+    });
+  }
+});
+
+app.get('/finance/subscriptions/:id', (req, res) => {
+  try {
+    console.log('🧪 Finance subscription detail endpoint called:', {
+      method: req.method,
+      path: req.path,
+      params: req.params,
+      timestamp: new Date().toISOString()
+    });
+    
+    const subscriptionData = {
+      success: true,
+      data: {
+        id: req.params.id,
+        name: 'Premium Plan',
+        company: 'TechCorp Inc.',
+        plan: 'premium',
+        status: 'active',
+        amount: 299,
+        billingCycle: 'monthly',
+        nextBillingDate: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString(),
+        startDate: new Date().toISOString(),
+        features: ['Unlimited users', 'Advanced analytics', 'Priority support'],
+        paymentHistory: [
+          {
+            id: '1',
+            amount: 299,
+            date: new Date().toISOString(),
+            status: 'paid'
+          }
+        ]
+      },
+      timestamp: new Date().toISOString()
+    };
+    
+    res.json(subscriptionData);
+  } catch (error) {
+    console.error('❌ Finance subscription detail endpoint error:', error);
+    res.status(500).json({
+      success: false,
+      error: error.message,
+      timestamp: new Date().toISOString()
+    });
+  }
+});
+
+app.get('/finance/reports', (req, res) => {
+  try {
+    console.log('🧪 Finance reports endpoint called:', {
+      method: req.method,
+      path: req.path,
+      timestamp: new Date().toISOString()
+    });
+    
+    const reportsData = {
+      success: true,
+      data: [
+        {
+          id: '1',
+          name: 'Monthly Revenue Report',
+          type: 'revenue',
+          period: '2024-01',
+          status: 'completed',
+          generatedDate: new Date().toISOString(),
+          totalRevenue: 125000,
+          downloadUrl: '/reports/monthly-revenue-2024-01.pdf'
+        },
+        {
+          id: '2',
+          name: 'Expense Analysis',
+          type: 'expense',
+          period: '2024-01',
+          status: 'completed',
+          generatedDate: new Date().toISOString(),
+          totalExpenses: 45000,
+          downloadUrl: '/reports/expense-analysis-2024-01.pdf'
+        }
+      ],
+      timestamp: new Date().toISOString()
+    };
+    
+    res.json(reportsData);
+  } catch (error) {
+    console.error('❌ Finance reports endpoint error:', error);
+    res.status(500).json({
+      success: false,
+      error: error.message,
+      timestamp: new Date().toISOString()
+    });
+  }
+});
+
+app.get('/finance/payments', (req, res) => {
+  try {
+    console.log('🧪 Finance payments endpoint called:', {
+      method: req.method,
+      path: req.path,
+      timestamp: new Date().toISOString()
+    });
+    
+    const paymentsData = {
+      success: true,
+      data: [
+        {
+          id: '1',
+          amount: 299,
+          currency: 'USD',
+          status: 'completed',
+          method: 'credit_card',
+          customer: 'TechCorp Inc.',
+          description: 'Monthly subscription payment',
+          date: new Date().toISOString(),
+          transactionId: 'txn_123456789'
+        },
+        {
+          id: '2',
+          amount: 1500,
+          currency: 'USD',
+          status: 'pending',
+          method: 'bank_transfer',
+          customer: 'FleetCorp',
+          description: 'Service payment',
+          date: new Date().toISOString(),
+          transactionId: 'txn_987654321'
+        }
+      ],
+      timestamp: new Date().toISOString()
+    };
+    
+    res.json(paymentsData);
+  } catch (error) {
+    console.error('❌ Finance payments endpoint error:', error);
+    res.status(500).json({
+      success: false,
+      error: error.message,
+      timestamp: new Date().toISOString()
+    });
+  }
+});
+
+app.get('/finance/invoices', (req, res) => {
+  try {
+    console.log('🧪 Finance invoices endpoint called:', {
+      method: req.method,
+      path: req.path,
+      timestamp: new Date().toISOString()
+    });
+    
+    const invoicesData = {
+      success: true,
+      data: [
+        {
+          _id: '1',
+          invoiceNumber: 'INV-2024-001',
+          customer: 'TechCorp Inc.',
+          amount: 299,
+          status: 'paid',
+          dueDate: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString(),
+          issueDate: new Date().toISOString(),
+          items: [
+            {
+              description: 'Premium Plan Subscription',
+              quantity: 1,
+              rate: 299,
+              amount: 299
+            }
+          ]
+        },
+        {
+          _id: '2',
+          invoiceNumber: 'INV-2024-002',
+          customer: 'FleetCorp',
+          amount: 1500,
+          status: 'pending',
+          dueDate: new Date(Date.now() + 15 * 24 * 60 * 60 * 1000).toISOString(),
+          issueDate: new Date().toISOString(),
+          items: [
+            {
+              description: 'Fleet Management Services',
+              quantity: 1,
+              rate: 1500,
+              amount: 1500
+            }
+          ]
+        }
+      ],
+      timestamp: new Date().toISOString()
+    };
+    
+    res.json(invoicesData);
+  } catch (error) {
+    console.error('❌ Finance invoices endpoint error:', error);
+    res.status(500).json({
+      success: false,
+      error: error.message,
+      timestamp: new Date().toISOString()
+    });
+  }
+});
+
+app.get('/finance/invoices/:id', (req, res) => {
+  try {
+    console.log('🧪 Finance invoice detail endpoint called:', {
+      method: req.method,
+      path: req.path,
+      params: req.params,
+      timestamp: new Date().toISOString()
+    });
+    
+    const invoiceData = {
+      success: true,
+      data: {
+        _id: req.params.id,
+        invoiceNumber: 'INV-2024-001',
+        customer: 'TechCorp Inc.',
+        amount: 299,
+        status: 'paid',
+        dueDate: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString(),
+        issueDate: new Date().toISOString(),
+        items: [
+          {
+            description: 'Premium Plan Subscription',
+            quantity: 1,
+            rate: 299,
+            amount: 299
+          }
+        ],
+        paymentHistory: [
+          {
+            id: '1',
+            amount: 299,
+            date: new Date().toISOString(),
+            method: 'credit_card',
+            status: 'completed'
+          }
+        ]
+      },
+      timestamp: new Date().toISOString()
+    };
+    
+    res.json(invoiceData);
+  } catch (error) {
+    console.error('❌ Finance invoice detail endpoint error:', error);
+    res.status(500).json({
+      success: false,
+      error: error.message,
+      timestamp: new Date().toISOString()
+    });
+  }
+});
+
+app.get('/finance/invoices/:id/export', (req, res) => {
+  try {
+    console.log('🧪 Finance invoice export endpoint called:', {
+      method: req.method,
+      path: req.path,
+      params: req.params,
+      query: req.query,
+      timestamp: new Date().toISOString()
+    });
+    
+    const format = req.query.format || 'pdf';
+    
+    const exportData = {
+      success: true,
+      data: {
+        downloadUrl: `/exports/invoice-${req.params.id}.${format}`,
+        format: format,
+        size: '2.5MB',
+        generatedAt: new Date().toISOString()
+      },
+      message: `Invoice exported successfully as ${format.toUpperCase()}`,
+      timestamp: new Date().toISOString()
+    };
+    
+    res.json(exportData);
+  } catch (error) {
+    console.error('❌ Finance invoice export endpoint error:', error);
+    res.status(500).json({
+      success: false,
+      error: error.message,
+      timestamp: new Date().toISOString()
+    });
+  }
+});
+
+app.post('/finance/invoices', (req, res) => {
+  try {
+    console.log('🧪 Finance invoices POST endpoint called:', {
+      method: req.method,
+      path: req.path,
+      body: req.body,
+      timestamp: new Date().toISOString()
+    });
+    
+    const invoiceData = {
+      success: true,
+      data: {
+        _id: 'new_invoice_id',
+        invoiceNumber: `INV-2024-${Date.now()}`,
+        ...req.body,
+        status: 'draft',
+        issueDate: new Date().toISOString()
+      },
+      message: 'Invoice created successfully',
+      timestamp: new Date().toISOString()
+    };
+    
+    res.json(invoiceData);
+  } catch (error) {
+    console.error('❌ Finance invoices POST endpoint error:', error);
+    res.status(500).json({
+      success: false,
+      error: error.message,
+      timestamp: new Date().toISOString()
+    });
+  }
+});
+
 // 404 handler will be added after all routes are registered
 
 // Async function to start the server

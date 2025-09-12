@@ -142,6 +142,16 @@ export default function ConsolidatedDashboardPage() {
     realTimeData
   } = useConsolidatedDashboard()
 
+  // Fallback data structure to prevent undefined errors
+  const safeMetrics = metrics || {
+    users: { total: 0, active: 0, growth: 0 },
+    orders: { total: 0, pending: 0, completed: 0, growth: 0 },
+    revenue: { total: 0, monthly: 0, weekly: 0, daily: 0, growth: 0 },
+    vehicles: { total: 0, available: 0, inService: 0 },
+    services: { total: 0, active: 0, completed: 0 },
+    partners: { total: 0, active: 0, pending: 0 }
+  }
+
   if (isLoading) {
     return (
       <div className="flex items-center justify-center min-h-screen">

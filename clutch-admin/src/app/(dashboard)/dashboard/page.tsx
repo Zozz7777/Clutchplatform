@@ -92,6 +92,26 @@ export default function DashboardPage() {
     realTimeData
   } = useConsolidatedDashboard()
 
+  // Fallback data structure to prevent undefined errors
+  const safeMetrics = metrics || {
+    users: { total: 0, active: 0, growth: 0 },
+    orders: { total: 0, pending: 0, completed: 0, growth: 0 },
+    revenue: { total: 0, monthly: 0, weekly: 0, daily: 0, growth: 0 },
+    vehicles: { total: 0, available: 0, inService: 0 },
+    services: { total: 0, active: 0, completed: 0 },
+    partners: { total: 0, active: 0, pending: 0 }
+  }
+
+  const safeRealTimeData = realTimeData || {
+    totalUsers: 0,
+    activeDrivers: 0,
+    totalPartners: 0,
+    monthlyRevenue: 0
+  }
+
+  const safeRecentActivity = activityLogs || []
+  const safePlatformStatus = platformServices || []
+
   // Map consolidated data to expected format
   const recentActivity = activityLogs || []
   const platformStatus: PlatformService[] = (platformServices || []).map(service => ({
@@ -234,9 +254,9 @@ export default function DashboardPage() {
                   <span className="text-sm font-medium text-slate-600 text-slate-600">Total Users</span>
                 </div>
                 <div className="text-2xl font-bold text-slate-900 dark:text-slate-100">
-                  {metrics?.users?.total?.toLocaleString() || '0'}
+                  {safeMetrics.users.total.toLocaleString()}
                 </div>
-                {metrics?.users?.total && metrics.users.total > 0 ? (
+                {safeMetrics.users.total > 0 ? (
                   <div className="space-y-1">
                     <div className="flex items-center space-x-1 text-emerald-600 dark:text-emerald-400">
                       <ArrowUpRight className="h-4 w-4" />
@@ -267,9 +287,9 @@ export default function DashboardPage() {
                   <span className="text-sm font-medium text-slate-600 text-slate-600">Active Drivers</span>
                 </div>
                 <div className="text-2xl font-bold text-slate-900 dark:text-slate-100">
-                  {realTimeData?.activeDrivers?.toLocaleString() || '0'}
+                  {safeRealTimeData.activeDrivers.toLocaleString()}
                 </div>
-                {realTimeData?.activeDrivers && realTimeData.activeDrivers > 0 ? (
+                {safeRealTimeData.activeDrivers > 0 ? (
                   <div className="space-y-1">
                     <div className="flex items-center space-x-1 text-emerald-600 dark:text-emerald-400">
                       <ArrowUpRight className="h-4 w-4" />
@@ -300,9 +320,9 @@ export default function DashboardPage() {
                   <span className="text-sm font-medium text-slate-600 text-slate-600">Total Partners</span>
                 </div>
                 <div className="text-2xl font-bold text-slate-900 dark:text-slate-100">
-                  {metrics?.partners?.total?.toLocaleString() || '0'}
+                  {safeMetrics.partners.total.toLocaleString()}
                 </div>
-                {metrics?.partners?.total && metrics.partners.total > 0 ? (
+                {safeMetrics.partners.total > 0 ? (
                   <div className="space-y-1">
                     <div className="flex items-center space-x-1 text-emerald-600 dark:text-emerald-400">
                       <ArrowUpRight className="h-4 w-4" />
@@ -333,9 +353,9 @@ export default function DashboardPage() {
                   <span className="text-sm font-medium text-slate-600 text-slate-600">Monthly Revenue</span>
                 </div>
                 <div className="text-2xl font-bold text-slate-900 dark:text-slate-100">
-                  {formatCurrency(metrics?.revenue?.monthly || 0)}
+                  {formatCurrency(safeMetrics.revenue.monthly)}
                 </div>
-                {metrics?.revenue?.monthly && metrics.revenue.monthly > 0 ? (
+                {safeMetrics.revenue.monthly > 0 ? (
                   <div className="space-y-1">
                     <div className="flex items-center space-x-1 text-red-600 dark:text-red-400">
                       <ArrowDownRight className="h-4 w-4" />
@@ -530,7 +550,7 @@ export default function DashboardPage() {
                   </div>
                   <span className="text-sm font-medium text-slate-900 dark:text-white">Pending Orders</span>
                 </div>
-                <Badge className="bg-yellow-500 text-white">{metrics?.orders?.pending || 0}</Badge>
+                <Badge className="bg-yellow-500 text-white">{safeMetrics.orders.pending}</Badge>
               </div>
               <div className="flex items-center justify-between p-4 bg-green-50 dark:bg-green-900/10 border border-green-200 dark:border-green-800/30 rounded-xl hover:bg-green-100 dark:hover:bg-green-900/20 transition-colors">
                 <div className="flex items-center space-x-3">
@@ -539,7 +559,7 @@ export default function DashboardPage() {
                   </div>
                   <span className="text-sm font-medium text-slate-900 dark:text-white">Completed Today</span>
                 </div>
-                <Badge className="bg-green-500 text-white">{metrics?.orders?.completed?.toLocaleString() || '0'}</Badge>
+                <Badge className="bg-green-500 text-white">{safeMetrics.orders.completed.toLocaleString()}</Badge>
               </div>
             </div>
           </SnowCardContent>
