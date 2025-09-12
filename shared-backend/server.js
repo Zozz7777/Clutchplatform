@@ -15,6 +15,11 @@ const incidentsRoutes = require('./routes/incidents');
 const mobileCmsRoutes = require('./routes/mobile-cms');
 const userAnalyticsRoutes = require('./routes/user-analytics');
 const autoPartsRoutes = require('./routes/auto-parts');
+const autoPartsAdvancedRoutes = require('./routes/auto-parts-advanced');
+const authAdvancedRoutes = require('./routes/auth-advanced');
+const realtimeRoutes = require('./routes/realtime');
+const performanceRoutes = require('./routes/performance');
+const aiMlRoutes = require('./routes/ai-ml');
 
 // Initialize Express app
 const app = express();
@@ -134,6 +139,11 @@ app.use(`${apiPrefix}/incidents`, incidentsRoutes);
 app.use(`${apiPrefix}/mobile-cms`, mobileCmsRoutes);
 app.use(`${apiPrefix}/user-analytics`, userAnalyticsRoutes);
 app.use(`${apiPrefix}/auto-parts`, autoPartsRoutes);
+app.use(`${apiPrefix}/auto-parts/advanced`, autoPartsAdvancedRoutes);
+app.use(`${apiPrefix}/auth-advanced`, authAdvancedRoutes);
+app.use(`${apiPrefix}/realtime`, realtimeRoutes);
+app.use(`${apiPrefix}/performance`, performanceRoutes);
+app.use(`${apiPrefix}/ai-ml`, aiMlRoutes);
 
 // Fallback routes
 app.use('/auth', authRoutes);

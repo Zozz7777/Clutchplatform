@@ -181,7 +181,9 @@ class ConsolidatedApiService {
   private circuitBreakerOpenTime = 0
 
   constructor() {
-    this.baseUrl = process.env.NEXT_PUBLIC_API_BASE_URL || 'https://clutch-main-nk7x.onrender.com/api/v1'
+    // Fix API endpoint configuration - ensure proper /api/v1 prefix
+    const baseUrl = process.env.NEXT_PUBLIC_API_BASE_URL || 'https://clutch-main-nk7x.onrender.com'
+    this.baseUrl = baseUrl.endsWith('/api/v1') ? baseUrl : `${baseUrl}/api/v1`
     this.loadTokens()
   }
 
@@ -822,6 +824,215 @@ class ConsolidatedApiService {
 }
 
 // Create singleton instance
+class ConsolidatedApiService {
+  // System Health & Operations
+  async getSystemHealth(): Promise<ApiResponse<{
+    metrics: Array<{
+      name: string
+      value: string
+      status: 'healthy' | 'warning' | 'error'
+      icon?: string
+      trend: string
+    }>
+    services: Array<{
+      name: string
+      status: 'healthy' | 'warning' | 'error'
+      uptime: string
+      responseTime: string
+    }>
+    alerts: Array<{
+      id: number
+      type: 'info' | 'warning' | 'error'
+      message: string
+      timestamp: string
+      severity: 'low' | 'medium' | 'high'
+    }>
+  }>> {
+    return this.request('/operations/system-health')
+  }
+
+  async getPerformanceMetrics(): Promise<ApiResponse<{
+    cpu: number
+    memory: number
+    disk: number
+    network: number
+    responseTime: number
+    throughput: number
+    errorRate: number
+  }>> {
+    return this.request('/operations/performance')
+  }
+
+  async getAPIAnalytics(): Promise<ApiResponse<{
+    totalRequests: number
+    successRate: number
+    averageResponseTime: number
+    errorRate: number
+    topEndpoints: Array<{
+      endpoint: string
+      requests: number
+      avgResponseTime: number
+    }>
+  }>> {
+    return this.request('/operations/api-analytics')
+  }
+
+  async exportSystemHealthReport(): Promise<ApiResponse<{ downloadUrl: string }>> {
+    return this.request('/operations/export-health-report', {
+      method: 'POST'
+    })
+  }
+
+  // Support System
+  async getSupportTickets(): Promise<ApiResponse<Array<{
+    id: string
+    title: string
+    status: 'open' | 'in-progress' | 'resolved' | 'closed'
+    priority: 'low' | 'medium' | 'high' | 'urgent'
+    assignee?: string
+    createdAt: string
+    updatedAt: string
+  }>>> {
+    return this.request('/support/tickets')
+  }
+
+  async getLiveChatSessions(): Promise<ApiResponse<Array<{
+    id: string
+    customerName: string
+    status: 'active' | 'waiting' | 'ended'
+    startTime: string
+    duration: number
+    agent?: string
+  }>>> {
+    return this.request('/support/live-chat')
+  }
+
+  async getCustomerFeedback(): Promise<ApiResponse<Array<{
+    id: string
+    rating: number
+    comment: string
+    category: string
+    createdAt: string
+    resolved: boolean
+  }>>> {
+    return this.request('/support/feedback')
+  }
+
+  // Revenue Analytics
+  async getRevenueForecasting(): Promise<ApiResponse<{
+    currentMonth: number
+    projectedMonth: number
+    growthRate: number
+    forecast: Array<{
+      month: string
+      projected: number
+      actual?: number
+    }>
+  }>> {
+    return this.request('/revenue/forecasting')
+  }
+
+  async getPricingAnalytics(): Promise<ApiResponse<{
+    totalRevenue: number
+    averageOrderValue: number
+    pricingTiers: Array<{
+      tier: string
+      revenue: number
+      customers: number
+    }>
+  }>> {
+    return this.request('/revenue/pricing')
+  }
+
+  async getSubscriptionMetrics(): Promise<ApiResponse<{
+    totalSubscriptions: number
+    activeSubscriptions: number
+    churnRate: number
+    mrr: number
+    arr: number
+  }>> {
+    return this.request('/revenue/subscriptions')
+  }
+
+  // User Management
+  async getUserSegments(): Promise<ApiResponse<Array<{
+    id: string
+    name: string
+    criteria: string
+    userCount: number
+    createdAt: string
+  }>>> {
+    return this.request('/users/segments')
+  }
+
+  async getUserJourney(): Promise<ApiResponse<{
+    stages: Array<{
+      stage: string
+      users: number
+      conversionRate: number
+    }>
+    funnel: Array<{
+      step: string
+      users: number
+      dropoff: number
+    }>
+  }>> {
+    return this.request('/users/journey')
+  }
+
+  async getUserCohorts(): Promise<ApiResponse<Array<{
+    cohort: string
+    size: number
+    retention: Array<{
+      period: number
+      rate: number
+    }>
+  }>>> {
+    return this.request('/users/cohorts')
+  }
+
+  // Monitoring
+  async getSystemAlerts(): Promise<ApiResponse<Array<{
+    id: string
+    type: 'system' | 'performance' | 'security'
+    severity: 'low' | 'medium' | 'high' | 'critical'
+    message: string
+    timestamp: string
+    resolved: boolean
+  }>>> {
+    return this.request('/monitoring/alerts')
+  }
+
+  async getIncidentManagement(): Promise<ApiResponse<Array<{
+    id: string
+    title: string
+    status: 'investigating' | 'identified' | 'monitoring' | 'resolved'
+    severity: 'low' | 'medium' | 'high' | 'critical'
+    startTime: string
+    endTime?: string
+    description: string
+  }>>> {
+    return this.request('/monitoring/incidents')
+  }
+
+  async getHealthDashboard(): Promise<ApiResponse<{
+    overallHealth: 'healthy' | 'warning' | 'critical'
+    services: Array<{
+      name: string
+      status: 'up' | 'down' | 'degraded'
+      uptime: number
+      responseTime: number
+    }>
+    metrics: {
+      availability: number
+      performance: number
+      reliability: number
+    }
+  }>> {
+    return this.request('/monitoring/health')
+  }
+}
+
 export const apiClient = new ConsolidatedApiService()
 
 // Export individual API functions for convenience

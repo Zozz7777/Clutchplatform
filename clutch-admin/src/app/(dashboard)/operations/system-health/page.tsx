@@ -1,9 +1,11 @@
 'use client'
 
-import React from 'react'
+import React, { useState, useEffect } from 'react'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
+import { SnowCard, SnowCardHeader, SnowCardContent, SnowCardTitle, SnowCardDescription } from '@/components/ui/snow-card'
+import { SnowButton } from '@/components/ui/snow-button'
 import { 
   Activity, 
   AlertTriangle, 
@@ -14,91 +16,80 @@ import {
   Cpu, 
   HardDrive,
   Wifi,
-  Shield
+  Shield,
+  RefreshCw,
+  TrendingUp,
+  TrendingDown,
+  Zap,
+  Eye,
+  Download
 } from 'lucide-react'
+import { apiClient } from '@/lib/consolidated-api'
+import { useToast } from '@/components/ui/toast'
+import { DataLoadingWrapper, ErrorState, EmptyState } from '@/components/ui/loading-states'
 
+// Enhanced System Health Page with Real-time Data
 export default function SystemHealthPage() {
-  const systemMetrics = [
-    {
-      name: 'CPU Usage',
-      value: '45%',
-      status: 'healthy',
-      icon: Cpu,
-      trend: '+2%'
-    },
-    {
-      name: 'Memory Usage',
-      value: '68%',
-      status: 'warning',
-      icon: Database,
-      trend: '+5%'
-    },
-    {
-      name: 'Disk Usage',
-      value: '32%',
-      status: 'healthy',
-      icon: HardDrive,
-      trend: '+1%'
-    },
-    {
-      name: 'Network Latency',
-      value: '12ms',
-      status: 'healthy',
-      icon: Wifi,
-      trend: '-3ms'
-    }
-  ]
+  const [systemMetrics, setSystemMetrics] = useState([])
+  const [services, setServices] = useState([])
+  const [alerts, setAlerts] = useState([])
+  const [isLoading, setIsLoading] = useState(true)
+  const [error, setError] = useState(null)
+  const [lastUpdated, setLastUpdated] = useState(new Date())
+  const [autoRefresh, setAutoRefresh] = useState(true)
+  const toast = useToast()
 
-  const services = [
-    {
-      name: 'API Gateway',
-      status: 'healthy',
-      uptime: '99.9%',
-      responseTime: '45ms'
-    },
-    {
-      name: 'Database',
-      status: 'healthy',
-      uptime: '99.8%',
-      responseTime: '12ms'
-    },
-    {
-      name: 'Authentication',
-      status: 'warning',
-      uptime: '98.5%',
-      responseTime: '89ms'
-    },
-    {
-      name: 'File Storage',
-      status: 'healthy',
-      uptime: '99.7%',
-      responseTime: '23ms'
+  // Fetch system health data
+  const fetchSystemHealth = async () => {
+    try {
+      setIsLoading(true)
+      const response = await apiClient.getSystemHealth()
+      
+      if (response.success && response.data) {
+        setSystemMetrics(response.data.metrics || [])
+        setServices(response.data.services || [])
+        setAlerts(response.data.alerts || [])
+        setLastUpdated(new Date())
+      } else {
+        throw new Error(response.message || 'Failed to fetch system health data')
+      }
+    } catch (err) {
+      console.error('Error fetching system health:', err)
+      setError(err.message)
+      toast.error('Failed to load system health data', err.message)
+    } finally {
+      setIsLoading(false)
     }
-  ]
+  }
 
-  const alerts = [
-    {
-      id: 1,
-      type: 'warning',
-      message: 'High memory usage detected on server-03',
-      timestamp: '2 minutes ago',
-      severity: 'medium'
-    },
-    {
-      id: 2,
-      type: 'info',
-      message: 'Scheduled maintenance completed successfully',
-      timestamp: '1 hour ago',
-      severity: 'low'
-    },
-    {
-      id: 3,
-      type: 'error',
-      message: 'Authentication service experiencing delays',
-      timestamp: '3 hours ago',
-      severity: 'high'
+  // Auto-refresh functionality
+  useEffect(() => {
+    fetchSystemHealth()
+    
+    if (autoRefresh) {
+      const interval = setInterval(fetchSystemHealth, 30000) // Refresh every 30 seconds
+      return () => clearInterval(interval)
     }
-  ]
+  }, [autoRefresh])
+
+  // Manual refresh
+  const handleRefresh = () => {
+    fetchSystemHealth()
+  }
+
+  // Export system health report
+  const handleExport = async () => {
+    try {
+      const response = await apiClient.exportSystemHealthReport()
+      if (response.success) {
+        toast.success('System health report exported successfully')
+      } else {
+        throw new Error(response.message || 'Export failed')
+      }
+    } catch (err) {
+      toast.error('Failed to export report', err.message)
+    }
+  }
 
   const getStatusColor = (status: string) => {
     switch (status) {
@@ -118,48 +109,124 @@ export default function SystemHealthPage() {
     }
   }
 
+  if (error) {
+    return (
+      <div className="space-y-6">
+        <div className="flex items-center justify-between">
+          <div>
+            <h1 className="text-3xl font-bold tracking-tight">System Health</h1>
+            <p className="text-muted-foreground">
+              Monitor system performance and health metrics
+            </p>
+          </div>
+        </div>
+        <ErrorState 
+          error={error} 
+          onRetry={handleRefresh}
+          title="Failed to load system health data"
+          description="We couldn't load the system health metrics. Please try again."
+        />
+      </div>
+    )
+  }
+
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-3xl font-bold tracking-tight">System Health</h1>
           <p className="text-muted-foreground">
-            Monitor system performance and health metrics
+            Real-time system performance and health monitoring
           </p>
         </div>
-        <Button>
-          <Activity className="mr-2 h-4 w-4" />
-          Refresh Metrics
-        </Button>
+        <div className="flex gap-3">
+          <div className="flex items-center gap-2">
+            <div className={`w-2 h-2 rounded-full ${autoRefresh ? 'bg-green-500' : 'bg-gray-400'}`} />
+            <span className="text-sm text-muted-foreground">
+              Auto-refresh {autoRefresh ? 'ON' : 'OFF'}
+            </span>
+          </div>
+          <p className="text-sm text-muted-foreground flex items-center">
+            <Clock className="h-4 w-4 mr-1" />
+            Last updated: {lastUpdated.toLocaleTimeString()}
+          </p>
+          <SnowButton 
+            variant="outline" 
+            onClick={handleRefresh} 
+            disabled={isLoading}
+          >
+            <RefreshCw className={`h-4 w-4 mr-2 ${isLoading ? 'animate-spin' : ''}`} />
+            Refresh
+          </SnowButton>
+          <SnowButton variant="outline" onClick={handleExport}>
+            <Download className="h-4 w-4 mr-2" />
+            Export Report
+          </SnowButton>
+        </div>
       </div>
 
       {/* System Metrics */}
-      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-        {systemMetrics.map((metric) => {
-          const Icon = metric.icon
-          return (
-            <Card key={metric.name}>
-              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                <CardTitle className="text-sm font-medium">
-                  {metric.name}
-                </CardTitle>
-                <Icon className="h-4 w-4 text-muted-foreground" />
-              </CardHeader>
-              <CardContent>
-                <div className="text-2xl font-bold">{metric.value}</div>
-                <div className="flex items-center space-x-2">
-                  <Badge className={getStatusColor(metric.status)}>
-                    {metric.status}
-                  </Badge>
-                  <p className="text-xs text-muted-foreground">
-                    {metric.trend} from last hour
-                  </p>
-                </div>
-              </CardContent>
-            </Card>
-          )
-        })}
-      </div>
+      <DataLoadingWrapper
+        data={systemMetrics}
+        isLoading={isLoading}
+        error={null}
+        loadingComponent={
+          <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+            {Array.from({ length: 4 }).map((_, i) => (
+              <SnowCard key={i} variant="dark">
+                <SnowCardContent className="p-6">
+                  <div className="animate-pulse">
+                    <div className="h-4 bg-slate-300 rounded w-3/4 mb-2"></div>
+                    <div className="h-8 bg-slate-300 rounded w-1/2 mb-2"></div>
+                    <div className="h-3 bg-slate-300 rounded w-full"></div>
+                  </div>
+                </SnowCardContent>
+              </SnowCard>
+            ))}
+          </div>
+        }
+        emptyComponent={
+          <EmptyState
+            title="No system metrics available"
+            description="System metrics are not currently available. Please try refreshing."
+            action={
+              <SnowButton onClick={handleRefresh}>
+                <RefreshCw className="h-4 w-4 mr-2" />
+                Refresh Metrics
+              </SnowButton>
+            }
+          />
+        }
+      >
+        {(metrics) => (
+          <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+            {metrics.map((metric) => {
+              const Icon = metric.icon || Activity
+              return (
+                <SnowCard key={metric.name} variant="dark">
+                  <SnowCardContent className="p-6">
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <p className="text-sm font-medium text-blue-300">{metric.name}</p>
+                        <p className="text-2xl font-bold text-white">{metric.value}</p>
+                        <div className="flex items-center space-x-2 mt-1">
+                          <Badge className={getStatusColor(metric.status)}>
+                            {metric.status}
+                          </Badge>
+                          <p className="text-xs text-blue-100">
+                            {metric.trend} from last hour
+                          </p>
+                        </div>
+                      </div>
+                      <Icon className="h-8 w-8 text-blue-200" />
+                    </div>
+                  </SnowCardContent>
+                </SnowCard>
+              )
+            })}
+          </div>
+        )}
+      </DataLoadingWrapper>
 
       <div className="grid gap-6 md:grid-cols-2">
         {/* Services Status */}
