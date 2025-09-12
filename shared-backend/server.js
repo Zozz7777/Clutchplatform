@@ -20,6 +20,9 @@ const authAdvancedRoutes = require('./routes/auth-advanced');
 const realtimeRoutes = require('./routes/realtime');
 const performanceRoutes = require('./routes/performance');
 const aiMlRoutes = require('./routes/ai-ml');
+const mediaManagementRoutes = require('./routes/media-management');
+const feedbackSystemRoutes = require('./routes/feedback-system');
+const revenueAnalyticsRoutes = require('./routes/revenue-analytics');
 
 // Initialize Express app
 const app = express();
@@ -144,6 +147,9 @@ app.use(`${apiPrefix}/auth-advanced`, authAdvancedRoutes);
 app.use(`${apiPrefix}/realtime`, realtimeRoutes);
 app.use(`${apiPrefix}/performance`, performanceRoutes);
 app.use(`${apiPrefix}/ai-ml`, aiMlRoutes);
+app.use(`${apiPrefix}/media-management`, mediaManagementRoutes);
+app.use(`${apiPrefix}/feedback-system`, feedbackSystemRoutes);
+app.use(`${apiPrefix}/revenue-analytics`, revenueAnalyticsRoutes);
 
 // Fallback routes
 app.use('/auth', authRoutes);

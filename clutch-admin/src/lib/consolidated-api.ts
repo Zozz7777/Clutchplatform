@@ -821,10 +821,6 @@ class ConsolidatedApiService {
   getToken(): string | null {
     return this.token
   }
-}
-
-// Create singleton instance
-class ConsolidatedApiService {
   // System Health & Operations
   async getSystemHealth(): Promise<ApiResponse<{
     metrics: Array<{
