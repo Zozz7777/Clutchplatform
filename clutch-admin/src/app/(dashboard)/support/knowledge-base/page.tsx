@@ -110,17 +110,12 @@ export default function KnowledgeBasePage() {
             <p className="text-slate-600 dark:text-slate-400">Manage help articles and documentation</p>
           </div>
         </div>
-        <Card>
-          <CardContent className="p-6">
-            <div className="text-center">
-              <p className="text-red-600 dark:text-red-400 mb-4">Failed to load knowledge base data</p>
-              <Button onClick={() => refetch()} variant="outline">
-                <RefreshCw className="h-4 w-4 mr-2" />
-                Retry
-              </Button>
-            </div>
-          </CardContent>
-        </Card>
+        <ErrorState 
+          error={error} 
+          onRetry={() => refetch()}
+          title="Failed to load knowledge base"
+          description="We couldn't load the knowledge base data. Please try again."
+        />
       </div>
     )
   }
@@ -256,83 +251,89 @@ export default function KnowledgeBasePage() {
               </CardTitle>
             </CardHeader>
             <CardContent>
-              {isLoading ? (
-                <div className="space-y-4">
-                  {Array.from({ length: 5 }).map((_, i) => (
-                    <CardSkeleton key={i} />
-                  ))}
-                </div>
-              ) : filteredArticles.length === 0 ? (
-                <div className="text-center py-12">
-                  <FileText className="h-12 w-12 text-slate-400 mx-auto mb-4" />
-                  <h3 className="text-lg font-medium text-slate-900 dark:text-slate-100 mb-2">
-                    No articles found
-                  </h3>
-                  <p className="text-slate-600 dark:text-slate-400 mb-4">
-                    {searchQuery ? 'Try adjusting your search terms' : 'Get started by creating your first article'}
-                  </p>
-                  <Button>
-                    <Plus className="h-4 w-4 mr-2" />
-                    Create Article
-                  </Button>
-                </div>
-              ) : (
-                <div className="space-y-4">
-                  {filteredArticles.map((article) => (
-                    <div
-                      key={article.id}
-                      className="border border-slate-200 dark:border-slate-700 rounded-lg p-4 hover:shadow-md transition-shadow"
-                    >
-                      <div className="flex items-start justify-between">
-                        <div className="flex-1">
-                          <div className="flex items-center space-x-2 mb-2">
-                            <h3 className="font-semibold text-slate-900 dark:text-slate-100">
-                              {article.title}
-                            </h3>
-                            <Badge className={getStatusColor(article.status)}>
-                              {article.status}
-                            </Badge>
+              <DataLoadingWrapper
+                data={filteredArticles}
+                isLoading={isLoading}
+                error={null}
+                loadingComponent={
+                  <div className="space-y-4">
+                    {Array.from({ length: 5 }).map((_, i) => (
+                      <ArticleSkeleton key={i} />
+                    ))}
+                  </div>
+                }
+                emptyComponent={
+                  <EmptyState
+                    title="No articles found"
+                    description={searchQuery ? 'Try adjusting your search terms' : 'Get started by creating your first article'}
+                    icon={FileText}
+                    action={
+                      <Button onClick={() => handleCreateArticle({ title: 'New Article', category: 'getting-started', status: 'draft' })}>
+                        <Plus className="h-4 w-4 mr-2" />
+                        Create Article
+                      </Button>
+                    }
+                  />
+                }
+              >
+                {(articles) => (
+                  <div className="space-y-4">
+                    {articles.map((article) => (
+                      <div
+                        key={article.id}
+                        className="border border-slate-200 dark:border-slate-700 rounded-lg p-4 hover:shadow-md transition-shadow"
+                      >
+                        <div className="flex items-start justify-between">
+                          <div className="flex-1">
+                            <div className="flex items-center space-x-2 mb-2">
+                              <h3 className="font-semibold text-slate-900 dark:text-slate-100">
+                                {article.title}
+                              </h3>
+                              <Badge className={getStatusColor(article.status)}>
+                                {article.status}
+                              </Badge>
+                            </div>
+                            <div className="flex items-center space-x-4 text-sm text-slate-600 dark:text-slate-400">
+                              <span className="flex items-center">
+                                <Eye className="h-4 w-4 mr-1" />
+                                {article.views} views
+                              </span>
+                              <span className="flex items-center">
+                                <ThumbsUp className="h-4 w-4 mr-1" />
+                                {article.helpful} helpful
+                              </span>
+                              <span>Updated {article.lastUpdated}</span>
+                              <span>by {article.author}</span>
+                            </div>
                           </div>
-                          <div className="flex items-center space-x-4 text-sm text-slate-600 dark:text-slate-400">
-                            <span className="flex items-center">
-                              <Eye className="h-4 w-4 mr-1" />
-                              {article.views} views
-                            </span>
-                            <span className="flex items-center">
-                              <ThumbsUp className="h-4 w-4 mr-1" />
-                              {article.helpful} helpful
-                            </span>
-                            <span>Updated {article.lastUpdated}</span>
-                            <span>by {article.author}</span>
+                          <div className="flex items-center space-x-2">
+                            <Button variant="ghost" size="sm">
+                              <Eye className="h-4 w-4" />
+                            </Button>
+                            <Button 
+                              variant="ghost" 
+                              size="sm"
+                              onClick={() => handleUpdateArticle(article.id, { ...article, status: 'published' })}
+                              disabled={updateArticleMutation.isPending}
+                            >
+                              <Edit className="h-4 w-4" />
+                            </Button>
+                            <Button 
+                              variant="ghost" 
+                              size="sm" 
+                              className="text-red-600 hover:text-red-700"
+                              onClick={() => handleDeleteArticle(article.id)}
+                              disabled={deleteArticleMutation.isPending}
+                            >
+                              <Trash2 className="h-4 w-4" />
+                            </Button>
                           </div>
-                        </div>
-                        <div className="flex items-center space-x-2">
-                          <Button variant="ghost" size="sm">
-                            <Eye className="h-4 w-4" />
-                          </Button>
-                          <Button 
-                            variant="ghost" 
-                            size="sm"
-                            onClick={() => handleUpdateArticle(article.id, { ...article, status: 'published' })}
-                            disabled={updateArticleMutation.isPending}
-                          >
-                            <Edit className="h-4 w-4" />
-                          </Button>
-                          <Button 
-                            variant="ghost" 
-                            size="sm" 
-                            className="text-red-600 hover:text-red-700"
-                            onClick={() => handleDeleteArticle(article.id)}
-                            disabled={deleteArticleMutation.isPending}
-                          >
-                            <Trash2 className="h-4 w-4" />
-                          </Button>
                         </div>
                       </div>
-                    </div>
-                  ))}
-                </div>
-              )}
+                    ))}
+                  </div>
+                )}
+              </DataLoadingWrapper>
             </CardContent>
           </Card>
         </div>

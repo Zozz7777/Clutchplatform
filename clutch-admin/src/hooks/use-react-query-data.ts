@@ -3,6 +3,7 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import { apiClient } from '@/lib/consolidated-api'
 import { queryKeys } from '@/lib/react-query-setup'
+import { handleError } from '@/utils/error-handling'
 
 // Enhanced data fetching hooks using React Query
 export function useKnowledgeBase() {

@@ -8,6 +8,7 @@ import { AnimationProvider } from '@/lib/animation-system'
 import { QueryErrorBoundary } from '@/lib/react-query-setup'
 import { PageErrorBoundary } from '@/lib/error-boundaries'
 import { ThemeProvider } from '@/components/theme-provider'
+import { ToastProvider } from '@/components/ui/toast'
 import { ClientWrapper } from '@/components/client-wrapper'
 
 /**
@@ -18,19 +19,21 @@ export function AppProviders({ children }: { children: React.ReactNode }) {
   return (
     <QueryErrorBoundary>
       <ReactQueryProvider>
-        <ResponsiveProvider>
-          <NavigationProvider>
-            <AnimationProvider>
-              <PageErrorBoundary>
-                <ClientWrapper>
-                  <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
-                    {children}
-                  </ThemeProvider>
-                </ClientWrapper>
-              </PageErrorBoundary>
-            </AnimationProvider>
-          </NavigationProvider>
-        </ResponsiveProvider>
+        <ToastProvider>
+          <ResponsiveProvider>
+            <NavigationProvider>
+              <AnimationProvider>
+                <PageErrorBoundary>
+                  <ClientWrapper>
+                    <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
+                      {children}
+                    </ThemeProvider>
+                  </ClientWrapper>
+                </PageErrorBoundary>
+              </AnimationProvider>
+            </NavigationProvider>
+          </ResponsiveProvider>
+        </ToastProvider>
       </ReactQueryProvider>
     </QueryErrorBoundary>
   )

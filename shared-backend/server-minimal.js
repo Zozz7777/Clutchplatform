@@ -9,8 +9,6 @@ const { connectToDatabase } = require('./config/database');
 const authRoutes = require('./routes/auth');
 const healthRoutes = require('./routes/health');
 const adminRoutes = require('./routes/admin');
-const knowledgeBaseRoutes = require('./routes/knowledge-base');
-const incidentsRoutes = require('./routes/incidents');
 
 // Initialize Express app
 const app = express();
@@ -66,8 +64,6 @@ console.log('🔧 Mounting routes...');
 app.use(`${apiPrefix}/auth`, authRoutes);
 app.use('/health', healthRoutes);
 app.use(`${apiPrefix}/admin`, adminRoutes);
-app.use(`${apiPrefix}/knowledge-base`, knowledgeBaseRoutes);
-app.use(`${apiPrefix}/incidents`, incidentsRoutes);
 
 // Fallback routes
 app.use('/auth', authRoutes);
