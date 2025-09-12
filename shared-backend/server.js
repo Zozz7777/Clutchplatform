@@ -803,6 +803,12 @@ app.use(`${apiPrefix}/two-factor-auth`, twoFactorAuthRoutes);
     app.use('/admin', adminRoutes);
     console.log('✅ Fallback auth routes mounted without rate limiting at /auth');
   }
+  
+  // Add a simple test route to verify basic routing works
+  app.get('/test-routing', (req, res) => {
+    console.log('🧪 Test routing endpoint called');
+    res.json({ success: true, message: 'Basic routing works', timestamp: new Date().toISOString() });
+  });
   app.use('/dashboard', dashboardRoutes);
   app.use('/autonomous-dashboard', autonomousDashboardRoutes);
   app.use('/support', supportRoutes);
