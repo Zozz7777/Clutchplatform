@@ -574,9 +574,15 @@ app.use((req, res, next) => {
   app.use('/api', createVersionMiddleware(process.env.API_VERSION || 'v1'));
 
   // Core business routes
-  // Apply auth rate limiting only in production or when explicitly enabled
+  // Apply auth rate limiting only when explicitly enabled (not in deployment mode)
   console.log('🔧 Mounting auth routes at:', `${apiPrefix}/auth`);
-  if (process.env.NODE_ENV === 'production' || process.env.ENABLE_RATE_LIMITING === 'true') {
+  console.log('🔧 Environment check:', { 
+    NODE_ENV: process.env.NODE_ENV, 
+    ENABLE_RATE_LIMITING: process.env.ENABLE_RATE_LIMITING,
+    shouldApplyRateLimit: process.env.ENABLE_RATE_LIMITING === 'true'
+  });
+  
+  if (process.env.ENABLE_RATE_LIMITING === 'true') {
     app.use(`${apiPrefix}/auth`, authRateLimit, authRoutes);
     console.log('✅ Auth routes mounted with rate limiting');
   } else {
@@ -794,7 +800,7 @@ app.use(`${apiPrefix}/two-factor-auth`, twoFactorAuthRoutes);
 
   // Fallback routes for requests without /api/v1 prefix (for reverse proxy compatibility)
   console.log('🔧 Adding fallback routes for reverse proxy compatibility');
-  if (process.env.NODE_ENV === 'production' || process.env.ENABLE_RATE_LIMITING === 'true') {
+  if (process.env.ENABLE_RATE_LIMITING === 'true') {
     app.use('/auth', authRateLimit, authRoutes);
     app.use('/admin', adminRateLimit, adminRoutes);
     console.log('✅ Fallback auth routes mounted with rate limiting at /auth');
