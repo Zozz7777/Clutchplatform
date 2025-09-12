@@ -5,20 +5,28 @@ const compression = require('compression');
 require('dotenv').config();
 
 // Import performance monitoring
-const { 
-  requestPerformanceMiddleware, 
+const {
+  requestPerformanceMiddleware,
   databaseQueryMiddleware,
-  trackError 
+  trackError
 } = require('./middleware/performance-monitor');
-const { 
+const {
   optimizationMiddleware,
   setCache,
-  getCache 
+  getCache
 } = require('./middleware/performance-optimizer');
-const { 
+
+// Import graceful restart handling
+const {
   gracefulRestartManager,
-  trackConnection 
+  trackConnection
 } = require('./middleware/graceful-restart');
+
+// Import performance tuning
+const {
+  performanceTuner,
+  analyzeAndTune
+} = require('./middleware/performance-tuning');
 
 // Import database connection
 const { connectToDatabase } = require('./config/database');
@@ -300,8 +308,27 @@ async function startServer() {
       trackConnection(socket);
     });
 
+    // Setup performance monitoring and tuning
+    setInterval(async () => {
+      try {
+        const memUsage = process.memoryUsage();
+        const metrics = {
+          memoryUsage: memUsage.heapUsed / memUsage.heapTotal,
+          avgResponseTime: 0, // Would be calculated from performance monitor
+          errorRate: 0, // Would be calculated from error tracking
+          throughput: 0, // Would be calculated from request tracking
+          dbQueryTime: 0 // Would be calculated from database monitor
+        };
+        
+        await analyzeAndTune(metrics);
+      } catch (error) {
+        console.error('❌ Error in performance tuning:', error);
+      }
+    }, 60000); // Run every minute
+
     // Enhanced graceful shutdown (handled by graceful restart manager)
     console.log('✅ Graceful restart manager initialized');
+    console.log('✅ Performance tuning system initialized');
 
   } catch (error) {
     console.error('❌ Failed to start server:', error);

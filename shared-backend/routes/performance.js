@@ -1,5 +1,6 @@
 const express = require('express');
 const router = express.Router();
+const { LoadTester } = require('../testing/load-testing');
 const { getCollection } = require('../config/database');
 const { authenticateToken, requireRole } = require('../middleware/auth');
 const { 
@@ -921,6 +922,139 @@ router.get('/load-test', authenticateToken, requireRole(['admin', 'devops']), as
       success: false,
       error: 'LOAD_TEST_FAILED',
       message: 'Failed to start load test'
+    });
+  }
+});
+
+// POST /api/v1/performance/load-test/advanced - Advanced load testing with custom scenarios
+router.post('/load-test/advanced', authenticateToken, requireRole(['admin']), async (req, res) => {
+  try {
+    const { 
+      concurrency = 10, 
+      duration = 60000, 
+      baseUrl = 'http://localhost:5000',
+      scenarios = [],
+      rampUpTime = 10000
+    } = req.body;
+
+    console.log('🚀 Starting advanced load test...', { concurrency, duration, baseUrl });
+
+    const loadTester = new LoadTester({
+      concurrency,
+      duration,
+      baseUrl,
+      rampUpTime
+    });
+
+    // Run load test in background
+    loadTester.runLoadTest(scenarios).then(results => {
+      console.log('✅ Advanced load test completed:', results);
+      
+      // Store results in database
+      const collection = getCollection('performance_metrics');
+      collection.insertOne({
+        type: 'load_test_advanced',
+        results,
+        report: loadTester.generateReport(),
+        timestamp: new Date()
+      });
+    }).catch(error => {
+      console.error('❌ Advanced load test failed:', error);
+    });
+
+    res.json({
+      success: true,
+      data: {
+        concurrency,
+        duration,
+        baseUrl,
+        scenarios: scenarios.length,
+        status: 'running'
+      },
+      message: 'Advanced load test started in background',
+      timestamp: new Date().toISOString()
+    });
+
+  } catch (error) {
+    console.error('❌ Error starting advanced load test:', error);
+    res.status(500).json({
+      success: false,
+      error: 'ADVANCED_LOAD_TEST_FAILED',
+      message: 'Failed to start advanced load test'
+    });
+  }
+});
+
+// GET /api/v1/performance/load-test/results - Get load test results
+router.get('/load-test/results', authenticateToken, requireRole(['admin', 'manager']), async (req, res) => {
+  try {
+    const collection = getCollection('performance_metrics');
+    const results = await collection
+      .find({ 
+        type: { $in: ['load_test', 'load_test_advanced'] }
+      })
+      .sort({ timestamp: -1 })
+      .limit(20)
+      .toArray();
+
+    res.json({
+      success: true,
+      data: results
+    });
+  } catch (error) {
+    console.error('Error getting load test results:', error);
+    res.status(500).json({
+      success: false,
+      error: 'INTERNAL_SERVER_ERROR',
+      message: 'Failed to get load test results'
+    });
+  }
+});
+
+// POST /api/v1/performance/tuning/trigger - Trigger performance tuning
+router.post('/tuning/trigger', authenticateToken, requireRole(['admin']), async (req, res) => {
+  try {
+    const { metrics } = req.body;
+    
+    console.log('🔧 Triggering performance tuning...');
+    
+    const { performanceTuner } = require('../middleware/performance-tuning');
+    const tuningResults = await performanceTuner.analyzeAndTune(metrics);
+    
+    res.json({
+      success: true,
+      data: tuningResults,
+      message: 'Performance tuning completed',
+      timestamp: new Date().toISOString()
+    });
+    
+  } catch (error) {
+    console.error('❌ Error triggering performance tuning:', error);
+    res.status(500).json({
+      success: false,
+      error: 'TUNING_FAILED',
+      message: 'Failed to trigger performance tuning'
+    });
+  }
+});
+
+// GET /api/v1/performance/tuning/stats - Get tuning statistics
+router.get('/tuning/stats', authenticateToken, requireRole(['admin', 'manager']), async (req, res) => {
+  try {
+    const { performanceTuner } = require('../middleware/performance-tuning');
+    const stats = performanceTuner.getTuningStats();
+    
+    res.json({
+      success: true,
+      data: stats
+    });
+    
+  } catch (error) {
+    console.error('❌ Error getting tuning stats:', error);
+    res.status(500).json({
+      success: false,
+      error: 'INTERNAL_SERVER_ERROR',
+      message: 'Failed to get tuning statistics'
     });
   }
 });

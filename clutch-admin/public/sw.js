@@ -1,18 +1,22 @@
-// Service Worker for Clutch Admin Frontend
-// Provides offline support and caching
-
+// Service Worker for Clutch Admin
 const CACHE_NAME = 'clutch-admin-v1'
-const STATIC_CACHE_NAME = 'clutch-admin-static-v1'
-const DYNAMIC_CACHE_NAME = 'clutch-admin-dynamic-v1'
+const STATIC_CACHE = 'clutch-static-v1'
+const DYNAMIC_CACHE = 'clutch-dynamic-v1'
 
-// Files to cache for offline use
+// Files to cache for offline support
 const STATIC_FILES = [
   '/',
   '/dashboard',
-  '/offline',
+  '/login',
   '/manifest.json',
-  '/icons/icon-192x192.png',
-  '/icons/icon-512x512.png'
+  '/offline.html'
+]
+
+// API endpoints to cache
+const API_CACHE_PATTERNS = [
+  /\/api\/v1\/auth\/me/,
+  /\/api\/v1\/dashboard\/stats/,
+  /\/api\/v1\/users\/profile/
 ]
 
 // Install event - cache static files
@@ -20,7 +24,7 @@ self.addEventListener('install', (event) => {
   console.log('Service Worker installing...')
   
   event.waitUntil(
-    caches.open(STATIC_CACHE_NAME)
+    caches.open(STATIC_CACHE)
       .then((cache) => {
         console.log('Caching static files...')
         return cache.addAll(STATIC_FILES)
@@ -44,7 +48,7 @@ self.addEventListener('activate', (event) => {
       .then((cacheNames) => {
         return Promise.all(
           cacheNames.map((cacheName) => {
-            if (cacheName !== STATIC_CACHE_NAME && cacheName !== DYNAMIC_CACHE_NAME) {
+            if (cacheName !== STATIC_CACHE && cacheName !== DYNAMIC_CACHE) {
               console.log('Deleting old cache:', cacheName)
               return caches.delete(cacheName)
             }
@@ -58,7 +62,7 @@ self.addEventListener('activate', (event) => {
   )
 })
 
-// Fetch event - serve cached content when offline
+// Fetch event - implement caching strategies
 self.addEventListener('fetch', (event) => {
   const { request } = event
   const url = new URL(request.url)
@@ -68,176 +72,99 @@ self.addEventListener('fetch', (event) => {
     return
   }
 
-  // Skip external requests
-  if (url.origin !== location.origin) {
-    return
-  }
-
   // Handle different types of requests
-  if (request.destination === 'document') {
-    // HTML pages - try network first, fallback to cache
-    event.respondWith(handleDocumentRequest(request))
-  } else if (request.destination === 'script' || request.destination === 'style') {
-    // Static assets - cache first, fallback to network
-    event.respondWith(handleStaticAssetRequest(request))
-  } else if (request.destination === 'image') {
-    // Images - cache first, fallback to network
-    event.respondWith(handleImageRequest(request))
-  } else if (url.pathname.startsWith('/api/')) {
-    // API requests - network first, fallback to cache
-    event.respondWith(handleApiRequest(request))
+  if (isStaticFile(request)) {
+    // Static files - cache first strategy
+    event.respondWith(cacheFirst(request))
+  } else if (isAPIRequest(request)) {
+    // API requests - network first with cache fallback
+    event.respondWith(networkFirst(request))
+  } else if (isImageRequest(request)) {
+    // Images - cache first with network fallback
+    event.respondWith(cacheFirst(request))
   } else {
-    // Other requests - network first, fallback to cache
-    event.respondWith(handleGenericRequest(request))
+    // Other requests - network first
+    event.respondWith(networkFirst(request))
   }
 })
 
-// Handle document requests (HTML pages)
-async function handleDocumentRequest(request) {
+// Cache first strategy
+async function cacheFirst(request) {
   try {
-    // Try network first
-    const networkResponse = await fetch(request)
-    
-    if (networkResponse.ok) {
-      // Cache successful responses
-      const cache = await caches.open(DYNAMIC_CACHE_NAME)
-      cache.put(request, networkResponse.clone())
-      return networkResponse
-    }
-    
-    throw new Error('Network response not ok')
-  } catch (error) {
-    console.log('Network failed for document, trying cache:', request.url)
-    
-    // Try cache
     const cachedResponse = await caches.match(request)
     if (cachedResponse) {
       return cachedResponse
     }
-    
-    // Fallback to offline page
-    return caches.match('/offline')
+
+    const networkResponse = await fetch(request)
+    if (networkResponse.ok) {
+      const cache = await caches.open(STATIC_CACHE)
+      cache.put(request, networkResponse.clone())
+    }
+    return networkResponse
+  } catch (error) {
+    console.error('Cache first strategy failed:', error)
+    return new Response('Offline content not available', {
+      status: 503,
+      statusText: 'Service Unavailable'
+    })
   }
 }
 
-// Handle static asset requests (JS, CSS)
-async function handleStaticAssetRequest(request) {
-  // Try cache first
-  const cachedResponse = await caches.match(request)
-  if (cachedResponse) {
-    return cachedResponse
-  }
-  
+// Network first strategy
+async function networkFirst(request) {
   try {
-    // Try network
     const networkResponse = await fetch(request)
     
     if (networkResponse.ok) {
-      // Cache successful responses
-      const cache = await caches.open(STATIC_CACHE_NAME)
+      const cache = await caches.open(DYNAMIC_CACHE)
       cache.put(request, networkResponse.clone())
     }
     
     return networkResponse
   } catch (error) {
-    console.log('Failed to fetch static asset:', request.url)
-    throw error
-  }
-}
-
-// Handle image requests
-async function handleImageRequest(request) {
-  // Try cache first
-  const cachedResponse = await caches.match(request)
-  if (cachedResponse) {
-    return cachedResponse
-  }
-  
-  try {
-    // Try network
-    const networkResponse = await fetch(request)
+    console.log('Network failed, trying cache:', error)
     
-    if (networkResponse.ok) {
-      // Cache successful responses
-      const cache = await caches.open(DYNAMIC_CACHE_NAME)
-      cache.put(request, networkResponse.clone())
-    }
-    
-    return networkResponse
-  } catch (error) {
-    console.log('Failed to fetch image:', request.url)
-    // Return a placeholder image or throw error
-    throw error
-  }
-}
-
-// Handle API requests
-async function handleApiRequest(request) {
-  try {
-    // Try network first
-    const networkResponse = await fetch(request)
-    
-    if (networkResponse.ok) {
-      // Cache GET requests only
-      if (request.method === 'GET') {
-        const cache = await caches.open(DYNAMIC_CACHE_NAME)
-        cache.put(request, networkResponse.clone())
-      }
-      return networkResponse
-    }
-    
-    throw new Error('API request failed')
-  } catch (error) {
-    console.log('Network failed for API, trying cache:', request.url)
-    
-    // Try cache for GET requests
-    if (request.method === 'GET') {
-      const cachedResponse = await caches.match(request)
-      if (cachedResponse) {
-        return cachedResponse
-      }
-    }
-    
-    // Return offline response for API requests
-    return new Response(
-      JSON.stringify({ 
-        error: 'Offline', 
-        message: 'This request is not available offline' 
-      }),
-      {
-        status: 503,
-        statusText: 'Service Unavailable',
-        headers: { 'Content-Type': 'application/json' }
-      }
-    )
-  }
-}
-
-// Handle generic requests
-async function handleGenericRequest(request) {
-  try {
-    // Try network first
-    const networkResponse = await fetch(request)
-    
-    if (networkResponse.ok) {
-      // Cache successful responses
-      const cache = await caches.open(DYNAMIC_CACHE_NAME)
-      cache.put(request, networkResponse.clone())
-      return networkResponse
-    }
-    
-    throw new Error('Network response not ok')
-  } catch (error) {
-    console.log('Network failed, trying cache:', request.url)
-    
-    // Try cache
     const cachedResponse = await caches.match(request)
     if (cachedResponse) {
       return cachedResponse
     }
     
-    throw error
+    // Return offline page for navigation requests
+    if (request.mode === 'navigate') {
+      return caches.match('/offline.html')
+    }
+    
+    return new Response('Offline', {
+      status: 503,
+      statusText: 'Service Unavailable'
+    })
   }
+}
+
+// Helper functions
+function isStaticFile(request) {
+  const url = new URL(request.url)
+  return url.pathname.endsWith('.js') ||
+         url.pathname.endsWith('.css') ||
+         url.pathname.endsWith('.png') ||
+         url.pathname.endsWith('.jpg') ||
+         url.pathname.endsWith('.jpeg') ||
+         url.pathname.endsWith('.gif') ||
+         url.pathname.endsWith('.svg') ||
+         url.pathname.endsWith('.ico') ||
+         url.pathname.endsWith('.woff') ||
+         url.pathname.endsWith('.woff2')
+}
+
+function isAPIRequest(request) {
+  const url = new URL(request.url)
+  return url.pathname.startsWith('/api/')
+}
+
+function isImageRequest(request) {
+  const url = new URL(request.url)
+  return url.pathname.match(/\.(jpg|jpeg|png|gif|svg|webp)$/i)
 }
 
 // Background sync for offline actions
@@ -249,28 +176,24 @@ self.addEventListener('sync', (event) => {
   }
 })
 
-// Background sync implementation
 async function doBackgroundSync() {
   try {
-    // Get pending offline actions from IndexedDB
-    const pendingActions = await getPendingOfflineActions()
+    // Get pending actions from IndexedDB
+    const pendingActions = await getPendingActions()
     
     for (const action of pendingActions) {
       try {
-        // Retry the action
-        const response = await fetch(action.url, {
+        await fetch(action.url, {
           method: action.method,
           headers: action.headers,
           body: action.body
         })
         
-        if (response.ok) {
-          // Remove from pending actions
-          await removePendingOfflineAction(action.id)
-          console.log('Successfully synced offline action:', action.id)
-        }
+        // Remove from pending actions
+        await removePendingAction(action.id)
+        console.log('Synced action:', action.id)
       } catch (error) {
-        console.log('Failed to sync offline action:', action.id, error)
+        console.error('Failed to sync action:', action.id, error)
       }
     }
   } catch (error) {
@@ -278,14 +201,14 @@ async function doBackgroundSync() {
   }
 }
 
-// Push notification handling
+// Push notifications
 self.addEventListener('push', (event) => {
   console.log('Push notification received:', event)
   
   const options = {
-    body: event.data ? event.data.text() : 'New notification',
-    icon: '/icons/icon-192x192.png',
-    badge: '/icons/icon-192x192.png',
+    body: event.data ? event.data.text() : 'New notification from Clutch Admin',
+    icon: '/icon-192x192.png',
+    badge: '/badge-72x72.png',
     vibrate: [100, 50, 100],
     data: {
       dateOfArrival: Date.now(),
@@ -294,13 +217,13 @@ self.addEventListener('push', (event) => {
     actions: [
       {
         action: 'explore',
-        title: 'View',
-        icon: '/icons/icon-192x192.png'
+        title: 'View Details',
+        icon: '/icon-192x192.png'
       },
       {
         action: 'close',
         title: 'Close',
-        icon: '/icons/icon-192x192.png'
+        icon: '/icon-192x192.png'
       }
     ]
   }
@@ -310,49 +233,83 @@ self.addEventListener('push', (event) => {
   )
 })
 
-// Notification click handling
+// Notification click handler
 self.addEventListener('notificationclick', (event) => {
   console.log('Notification clicked:', event)
   
   event.notification.close()
   
   if (event.action === 'explore') {
-    // Open the app
+    event.waitUntil(
+      clients.openWindow('/dashboard')
+    )
+  } else if (event.action === 'close') {
+    // Just close the notification
+  } else {
+    // Default action - open the app
     event.waitUntil(
       clients.openWindow('/')
     )
   }
 })
 
-// Helper functions for IndexedDB operations
-async function getPendingOfflineActions() {
+// IndexedDB helpers for offline storage
+async function getPendingActions() {
   // This would interact with IndexedDB to get pending actions
   // For now, return empty array
   return []
 }
 
-async function removePendingOfflineAction(actionId) {
+async function removePendingAction(actionId) {
   // This would remove the action from IndexedDB
   console.log('Removing pending action:', actionId)
 }
 
-// Cache management utilities
-async function clearOldCaches() {
-  const cacheNames = await caches.keys()
-  const oldCaches = cacheNames.filter(name => 
-    name.startsWith('clutch-admin-') && 
-    name !== STATIC_CACHE_NAME && 
-    name !== DYNAMIC_CACHE_NAME
-  )
+// Message handling for communication with main thread
+self.addEventListener('message', (event) => {
+  console.log('Service Worker received message:', event.data)
   
-  return Promise.all(
-    oldCaches.map(cacheName => caches.delete(cacheName))
-  )
-}
+  if (event.data && event.data.type === 'SKIP_WAITING') {
+    self.skipWaiting()
+  }
+  
+  if (event.data && event.data.type === 'GET_VERSION') {
+    event.ports[0].postMessage({ version: CACHE_NAME })
+  }
+})
 
-// Periodic cache cleanup
-setInterval(() => {
-  clearOldCaches().then(() => {
-    console.log('Old caches cleaned up')
-  })
-}, 24 * 60 * 60 * 1000) // Run daily
+// Periodic background sync (if supported)
+self.addEventListener('periodicsync', (event) => {
+  console.log('Periodic sync triggered:', event.tag)
+  
+  if (event.tag === 'content-sync') {
+    event.waitUntil(doPeriodicSync())
+  }
+})
+
+async function doPeriodicSync() {
+  try {
+    // Sync critical data periodically
+    console.log('Performing periodic sync...')
+    
+    // This would sync important data like user preferences, cached content, etc.
+    const criticalEndpoints = [
+      '/api/v1/auth/me',
+      '/api/v1/dashboard/stats'
+    ]
+    
+    for (const endpoint of criticalEndpoints) {
+      try {
+        const response = await fetch(endpoint)
+        if (response.ok) {
+          const cache = await caches.open(DYNAMIC_CACHE)
+          cache.put(endpoint, response.clone())
+        }
+      } catch (error) {
+        console.error('Failed to sync endpoint:', endpoint, error)
+      }
+    }
+  } catch (error) {
+    console.error('Periodic sync failed:', error)
+  }
+}
