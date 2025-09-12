@@ -28,11 +28,36 @@ import { apiClient } from '@/lib/consolidated-api'
 import { useToast } from '@/components/ui/toast'
 import { DataLoadingWrapper, ErrorState, EmptyState } from '@/components/ui/loading-states'
 
+// Type definitions
+interface SystemMetric {
+  name: string
+  value: string | number
+  change: number
+  status: 'healthy' | 'warning' | 'error'
+  icon?: any
+  trend?: string
+}
+
+interface Service {
+  name: string
+  status: 'healthy' | 'warning' | 'error'
+  uptime: string
+  responseTime: number
+}
+
+interface Alert {
+  id: string
+  message: string
+  severity: 'low' | 'medium' | 'high'
+  timestamp: Date
+  type: 'healthy' | 'warning' | 'error'
+}
+
 // Enhanced System Health Page with Real-time Data
 export default function SystemHealthPage() {
-  const [systemMetrics, setSystemMetrics] = useState([])
-  const [services, setServices] = useState([])
-  const [alerts, setAlerts] = useState([])
+  const [systemMetrics, setSystemMetrics] = useState<SystemMetric[]>([])
+  const [services, setServices] = useState<Service[]>([])
+  const [alerts, setAlerts] = useState<Alert[]>([])
   const [isLoading, setIsLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
   const [lastUpdated, setLastUpdated] = useState(new Date())
@@ -88,7 +113,8 @@ export default function SystemHealthPage() {
         throw new Error(response.message || 'Export failed')
       }
     } catch (err) {
-      toast.error('Failed to export report', err.message)
+      const errorMessage = err instanceof Error ? err.message : 'An unknown error occurred'
+      toast.error('Failed to export report', errorMessage)
     }
   }
 
@@ -282,7 +308,7 @@ export default function SystemHealthPage() {
                       {alert.severity}
                     </Badge>
                     <p className="text-xs text-muted-foreground">
-                      {alert.timestamp}
+                      {alert.timestamp.toLocaleString()}
                     </p>
                   </div>
                 </div>

@@ -198,6 +198,31 @@ app.get('/test', (req, res) => {
   });
 });
 
+// Root endpoint handler
+app.get('/', (req, res) => {
+  console.log('🏠 Root endpoint called');
+  res.json({
+    success: true,
+    message: 'Clutch API Server is running',
+    version: '1.0.0',
+    environment: process.env.NODE_ENV || 'development',
+    timestamp: new Date().toISOString(),
+    endpoints: {
+      health: '/health',
+      ping: '/ping',
+      auth: '/api/v1/auth/*',
+      admin: '/api/v1/admin/*',
+      performance: '/api/v1/performance/*'
+    }
+  });
+});
+
+// Handle HEAD requests for root
+app.head('/', (req, res) => {
+  console.log('🏠 HEAD request to root endpoint');
+  res.status(200).end();
+});
+
 app.get('/auth-test', (req, res) => {
   console.log('🧪 Auth test endpoint called');
   res.json({ 

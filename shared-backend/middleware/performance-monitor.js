@@ -164,9 +164,10 @@ class PerformanceMonitor {
   // Update database metrics
   async updateDatabaseMetrics() {
     try {
-      const db = require('../config/database').getDatabase();
-      if (db && db.admin) {
-        const serverStatus = await db.admin().serverStatus();
+      const { db } = require('../config/database');
+      const database = db();
+      if (database && database.admin) {
+        const serverStatus = await database.admin().serverStatus();
         this.metrics.database.connectionPool = {
           active: serverStatus.connections?.current || 0,
           idle: serverStatus.connections?.available || 0,

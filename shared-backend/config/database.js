@@ -270,7 +270,10 @@ const createIndexSafely = async (collectionName, index, options = {}) => {
     );
     
     if (indexExists) {
-      console.log(`⚠️  Index already exists for ${collectionName}, skipping...`);
+      // Only log in development to reduce production noise
+      if (process.env.NODE_ENV === 'development') {
+        console.log(`⚠️  Index already exists for ${collectionName}, skipping...`);
+      }
       return;
     }
     
@@ -278,7 +281,10 @@ const createIndexSafely = async (collectionName, index, options = {}) => {
     console.log(`✅ Index created for ${collectionName}: ${JSON.stringify(index)}`);
   } catch (error) {
     if (error.code === 85) { // Index already exists
-      console.log(`⚠️  Index already exists for ${collectionName}, skipping...`);
+      // Only log in development to reduce production noise
+      if (process.env.NODE_ENV === 'development') {
+        console.log(`⚠️  Index already exists for ${collectionName}, skipping...`);
+      }
     } else {
       throw error;
     }
