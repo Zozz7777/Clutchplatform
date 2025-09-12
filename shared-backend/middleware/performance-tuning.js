@@ -226,14 +226,15 @@ class PerformanceTuner {
   // Optimize database queries
   async optimizeDatabaseQueries() {
     try {
-      const db = require('../config/database').getDatabase();
+      const { db } = require('../config/database');
+      const database = db();
       if (!db) return;
 
       // Create indexes for common queries
       const collections = ['auto_parts_inventory', 'auto_parts_orders', 'knowledge_base_articles'];
       
       for (const collectionName of collections) {
-        const collection = db.collection(collectionName);
+        const collection = database.collection(collectionName);
         
         // Create common indexes
         await collection.createIndex({ createdAt: -1 });
@@ -291,7 +292,8 @@ class PerformanceTuner {
   // Create missing indexes
   async createMissingIndexes() {
     try {
-      const db = require('../config/database').getDatabase();
+      const { db } = require('../config/database');
+      const database = db();
       if (!db) return;
 
       // Create indexes for performance-critical queries
@@ -306,7 +308,7 @@ class PerformanceTuner {
 
       for (const { collection, index } of indexes) {
         try {
-          await db.collection(collection).createIndex(index);
+          await database.collection(collection).createIndex(index);
           console.log(`✅ Index created: ${collection}`, index);
         } catch (error) {
           if (!error.message.includes('already exists')) {

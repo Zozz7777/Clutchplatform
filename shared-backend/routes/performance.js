@@ -212,16 +212,17 @@ router.get('/database/optimization', authenticateToken, requireRole(['admin', 'd
   try {
     console.log('🗄️ Analyzing database performance and generating optimization recommendations');
     
-    const db = require('../config/database').getDatabase();
+    const { db } = require('../config/database');
+    const database = db();
     
     // Get database statistics
-    const stats = await db.stats();
+    const stats = await database.stats();
     
     // Analyze collections
-    const collections = await db.listCollections().toArray();
+    const collections = await database.listCollections().toArray();
     const collectionAnalysis = await Promise.all(
       collections.map(async (collection) => {
-        const coll = db.collection(collection.name);
+        const coll = database.collection(collection.name);
         const collStats = await coll.stats();
         
         // Get index information
@@ -296,8 +297,9 @@ router.post('/database/indexes', authenticateToken, requireRole(['admin', 'dba']
       });
     }
     
-    const db = require('../config/database').getDatabase();
-    const coll = db.collection(collection);
+    const { db } = require('../config/database');
+    const database = db();
+    const coll = database.collection(collection);
     
     const results = [];
     

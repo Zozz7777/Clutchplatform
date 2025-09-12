@@ -360,7 +360,8 @@ class PerformanceOptimizer {
   // Database connection optimization
   async optimizeDatabaseConnections() {
     try {
-      const db = require('../config/database').getDatabase();
+      const { db } = require('../config/database');
+      const database = db();
       if (db && db.admin) {
         // Get current connection stats
         const serverStatus = await db.admin().serverStatus();

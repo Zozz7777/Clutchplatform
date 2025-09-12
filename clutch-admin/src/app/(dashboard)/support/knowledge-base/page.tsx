@@ -27,6 +27,21 @@ import {
   TrendingUp
 } from 'lucide-react'
 
+// Type definitions
+interface Article {
+  id: string
+  title: string
+  content: string
+  category: string
+  status: 'published' | 'draft' | 'archived'
+  author: string
+  createdAt: Date
+  updatedAt: Date
+  views: number
+  helpful: number
+  tags: string[]
+}
+
 export default function KnowledgeBasePage() {
   const [searchQuery, setSearchQuery] = useState('')
   const [selectedCategory, setSelectedCategory] = useState('all')
@@ -43,7 +58,7 @@ export default function KnowledgeBasePage() {
   const toast = useToast()
 
   // Fallback data structure
-  const categories = knowledgeBaseData?.categories || [
+  const categories = knowledgeBaseData?.data?.categories || [
     { id: 'all', name: 'All Articles', count: 0 },
     { id: 'getting-started', name: 'Getting Started', count: 0 },
     { id: 'account', name: 'Account Management', count: 0 },
@@ -52,8 +67,8 @@ export default function KnowledgeBasePage() {
     { id: 'mobile', name: 'Mobile App', count: 0 }
   ]
 
-  const articles = knowledgeBaseData?.articles || []
-  const popularSearches = knowledgeBaseData?.popularSearches || []
+  const articles: Article[] = knowledgeBaseData?.data?.articles || []
+  const popularSearches = knowledgeBaseData?.data?.popularSearches || []
 
   const getStatusColor = (status: string) => {
     switch (status) {
@@ -64,8 +79,8 @@ export default function KnowledgeBasePage() {
     }
   }
 
-  const filteredArticles = articles.filter(article => {
-    const matchesSearch = article.title.toLowerCase().includes(searchQuery.toLowerCase())
+  const filteredArticles = articles.filter((article: Article) => {
+    const matchesSearch = article.title.toLowerCase().includes(searchTerm.toLowerCase())
     const matchesCategory = selectedCategory === 'all' || article.category === selectedCategory
     return matchesSearch && matchesCategory
   })

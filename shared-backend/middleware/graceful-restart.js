@@ -241,11 +241,11 @@ class GracefulRestartManager {
   // Close database connections gracefully
   async closeDatabaseConnections() {
     try {
-      const { getDatabase } = require('../config/database');
-      const db = getDatabase();
+      const { client } = require('../config/database');
+      const dbClient = client();
       
-      if (db) {
-        await db.close();
+      if (dbClient) {
+        await dbClient.close();
         console.log('✅ Database connections closed');
       }
     } catch (error) {
