@@ -834,7 +834,19 @@ app.get('/test', (req, res) => {
   res.json({
     success: true,
     message: 'Test endpoint working',
-    timestamp: new Date().toISOString()
+    timestamp: new Date().toISOString(),
+    environment: process.env.NODE_ENV,
+    uptime: process.uptime()
+  });
+});
+
+// API test endpoint
+app.get('/api/v1/test', (req, res) => {
+  res.json({
+    success: true,
+    message: 'API test endpoint working',
+    timestamp: new Date().toISOString(),
+    environment: process.env.NODE_ENV
   });
 });
 
@@ -866,26 +878,6 @@ app.post('/webhook/github', (req, res) => {
 
 // Removed duplicate fallback routes - proper endpoints exist in route files
 
-// 404 handler
-  app.use('*', (req, res) => {
-    console.log(`❌ 404 - Endpoint not found: ${req.method} ${req.originalUrl}`);
-    console.log(`❌ Available routes: /health, /api/v1/auth/*, /api/v1/admin/*, etc.`);
-    
-    res.status(404).json({
-      success: false,
-      error: 'ENDPOINT_NOT_FOUND',
-      message: `Can't find ${req.originalUrl} on this server!`,
-      timestamp: new Date().toISOString(),
-      availableEndpoints: [
-        '/health',
-        '/api/v1/auth/employee-login',
-        '/api/v1/auth/employee-me',
-        '/api/v1/admin/dashboard/consolidated',
-        '/api/v1/performance/client-metrics'
-      ]
-    });
-  });
-
   // Global error handling middleware (exclude health endpoints)
   app.use((err, req, res, next) => {
     // Skip error handling for health endpoints
@@ -904,6 +896,28 @@ app.post('/webhook/github', (req, res) => {
     enhancedErrorHandler(err, req, res, next);
   });
 }
+
+// 404 handler - must be after all routes
+app.use('*', (req, res) => {
+  console.log(`❌ 404 - Endpoint not found: ${req.method} ${req.originalUrl}`);
+  console.log(`❌ Available routes: /health, /api/v1/auth/*, /api/v1/admin/*, etc.`);
+  
+  res.status(404).json({
+    success: false,
+    error: 'ENDPOINT_NOT_FOUND',
+    message: `Can't find ${req.originalUrl} on this server!`,
+    timestamp: new Date().toISOString(),
+    availableEndpoints: [
+      '/health',
+      '/test',
+      '/webhook/github',
+      '/api/v1/auth/employee-login',
+      '/api/v1/auth/employee-me',
+      '/api/v1/admin/dashboard/consolidated',
+      '/api/v1/performance/client-metrics'
+    ]
+  });
+});
 
 // Async function to start the server
 async function startServer() {

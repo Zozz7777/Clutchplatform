@@ -5,7 +5,12 @@ const { getRedisClient } = require('../config/redis');
 const authenticateToken = async (req, res, next) => {
   try {
     // Skip auth for public endpoints
-    if (req.path === '/login' || req.path === '/register' || req.path === '/health' || req.path === '/test' || req.path === '/ping') {
+    if (req.path === '/login' || req.path === '/register' || req.path === '/health' || req.path === '/test' || req.path === '/ping' || req.path === '/webhook/github') {
+      return next();
+    }
+    
+    // Skip auth for testing endpoints
+    if (req.path.includes('/test') || req.path.includes('/health')) {
       return next();
     }
     
