@@ -486,6 +486,247 @@ class ClutchApiService {
   isAuthenticated(): boolean {
     return !!this.token
   }
+
+  // Knowledge Base APIs
+  async getKnowledgeBase(): Promise<ApiResponse<any>> {
+    return this.request('/admin/knowledge-base')
+  }
+
+  async createKnowledgeBaseArticle(data: any): Promise<ApiResponse<any>> {
+    return this.request('/admin/knowledge-base', {
+      method: 'POST',
+      body: JSON.stringify(data)
+    })
+  }
+
+  async updateKnowledgeBaseArticle(id: string, data: any): Promise<ApiResponse<any>> {
+    return this.request(`/admin/knowledge-base/${id}`, {
+      method: 'PUT',
+      body: JSON.stringify(data)
+    })
+  }
+
+  async deleteKnowledgeBaseArticle(id: string): Promise<ApiResponse<any>> {
+    return this.request(`/admin/knowledge-base/${id}`, {
+      method: 'DELETE'
+    })
+  }
+
+  // Incident Management APIs
+  async getIncidents(): Promise<ApiResponse<any>> {
+    return this.request('/admin/incidents')
+  }
+
+  async createIncident(data: any): Promise<ApiResponse<any>> {
+    return this.request('/admin/incidents', {
+      method: 'POST',
+      body: JSON.stringify(data)
+    })
+  }
+
+  async updateIncident(id: string, data: any): Promise<ApiResponse<any>> {
+    return this.request(`/admin/incidents/${id}`, {
+      method: 'PUT',
+      body: JSON.stringify(data)
+    })
+  }
+
+  async resolveIncident(id: string): Promise<ApiResponse<any>> {
+    return this.request(`/admin/incidents/${id}/resolve`, {
+      method: 'POST'
+    })
+  }
+
+  // Mobile Crashes APIs
+  async getMobileCrashes(): Promise<ApiResponse<any>> {
+    return this.request('/admin/mobile/crashes')
+  }
+
+  async getMobileCrashDetails(id: string): Promise<ApiResponse<any>> {
+    return this.request(`/admin/mobile/crashes/${id}`)
+  }
+
+  async resolveMobileCrash(id: string): Promise<ApiResponse<any>> {
+    return this.request(`/admin/mobile/crashes/${id}/resolve`, {
+      method: 'POST'
+    })
+  }
+
+  // Mobile Content Management APIs
+  async getMobileContent(): Promise<ApiResponse<any>> {
+    return this.request('/admin/cms/mobile')
+  }
+
+  async createMobileContent(data: any): Promise<ApiResponse<any>> {
+    return this.request('/admin/cms/mobile', {
+      method: 'POST',
+      body: JSON.stringify(data)
+    })
+  }
+
+  async updateMobileContent(id: string, data: any): Promise<ApiResponse<any>> {
+    return this.request(`/admin/cms/mobile/${id}`, {
+      method: 'PUT',
+      body: JSON.stringify(data)
+    })
+  }
+
+  async deleteMobileContent(id: string): Promise<ApiResponse<any>> {
+    return this.request(`/admin/cms/mobile/${id}`, {
+      method: 'DELETE'
+    })
+  }
+
+  // Feature Flags APIs
+  async getFeatureFlags(): Promise<ApiResponse<any>> {
+    return this.request('/admin/feature-flags')
+  }
+
+  async createFeatureFlag(data: any): Promise<ApiResponse<any>> {
+    return this.request('/admin/feature-flags', {
+      method: 'POST',
+      body: JSON.stringify(data)
+    })
+  }
+
+  async updateFeatureFlag(id: string, data: any): Promise<ApiResponse<any>> {
+    return this.request(`/admin/feature-flags/${id}`, {
+      method: 'PUT',
+      body: JSON.stringify(data)
+    })
+  }
+
+  async toggleFeatureFlag(id: string, enabled: boolean): Promise<ApiResponse<any>> {
+    return this.request(`/admin/feature-flags/${id}/toggle`, {
+      method: 'POST',
+      body: JSON.stringify({ enabled })
+    })
+  }
+
+  // Media Library APIs
+  async getMediaLibrary(): Promise<ApiResponse<any>> {
+    return this.request('/admin/cms/media')
+  }
+
+  async uploadMedia(file: File): Promise<ApiResponse<any>> {
+    const formData = new FormData()
+    formData.append('file', file)
+    return this.request('/admin/cms/media/upload', {
+      method: 'POST',
+      body: formData
+    })
+  }
+
+  async deleteMedia(id: string): Promise<ApiResponse<any>> {
+    return this.request(`/admin/cms/media/${id}`, {
+      method: 'DELETE'
+    })
+  }
+
+  // User Segments APIs
+  async getUserSegments(): Promise<ApiResponse<any>> {
+    return this.request('/admin/users/segments')
+  }
+
+  async createUserSegment(data: any): Promise<ApiResponse<any>> {
+    return this.request('/admin/users/segments', {
+      method: 'POST',
+      body: JSON.stringify(data)
+    })
+  }
+
+  async updateUserSegment(id: string, data: any): Promise<ApiResponse<any>> {
+    return this.request(`/admin/users/segments/${id}`, {
+      method: 'PUT',
+      body: JSON.stringify(data)
+    })
+  }
+
+  async deleteUserSegment(id: string): Promise<ApiResponse<any>> {
+    return this.request(`/admin/users/segments/${id}`, {
+      method: 'DELETE'
+    })
+  }
+
+  // User Cohorts APIs
+  async getUserCohorts(): Promise<ApiResponse<any>> {
+    return this.request('/admin/users/cohorts')
+  }
+
+  async createUserCohort(data: any): Promise<ApiResponse<any>> {
+    return this.request('/admin/users/cohorts', {
+      method: 'POST',
+      body: JSON.stringify(data)
+    })
+  }
+
+  async updateUserCohort(id: string, data: any): Promise<ApiResponse<any>> {
+    return this.request(`/admin/users/cohorts/${id}`, {
+      method: 'PUT',
+      body: JSON.stringify(data)
+    })
+  }
+
+  async deleteUserCohort(id: string): Promise<ApiResponse<any>> {
+    return this.request(`/admin/users/cohorts/${id}`, {
+      method: 'DELETE'
+    })
+  }
+
+  // Feedback APIs
+  async getFeedback(): Promise<ApiResponse<any>> {
+    return this.request('/admin/support/feedback')
+  }
+
+  async updateFeedbackStatus(id: string, status: string): Promise<ApiResponse<any>> {
+    return this.request(`/admin/support/feedback/${id}/status`, {
+      method: 'PUT',
+      body: JSON.stringify({ status })
+    })
+  }
+
+  async replyToFeedback(id: string, reply: string): Promise<ApiResponse<any>> {
+    return this.request(`/admin/support/feedback/${id}/reply`, {
+      method: 'POST',
+      body: JSON.stringify({ reply })
+    })
+  }
+
+  // Pricing Analytics APIs
+  async getPricingAnalytics(): Promise<ApiResponse<any>> {
+    return this.request('/admin/revenue/pricing')
+  }
+
+  async updatePricingPlan(id: string, data: any): Promise<ApiResponse<any>> {
+    return this.request(`/admin/revenue/pricing/${id}`, {
+      method: 'PUT',
+      body: JSON.stringify(data)
+    })
+  }
+
+  // Revenue Forecasting APIs
+  async getRevenueForecasting(): Promise<ApiResponse<any>> {
+    return this.request('/admin/revenue/forecasting')
+  }
+
+  async updateRevenueForecast(data: any): Promise<ApiResponse<any>> {
+    return this.request('/admin/revenue/forecasting', {
+      method: 'PUT',
+      body: JSON.stringify(data)
+    })
+  }
+
+  // SEO Management APIs
+  async getSEOManagement(): Promise<ApiResponse<any>> {
+    return this.request('/admin/cms/seo')
+  }
+
+  async updateSEOSettings(data: any): Promise<ApiResponse<any>> {
+    return this.request('/admin/cms/seo', {
+      method: 'PUT',
+      body: JSON.stringify(data)
+    })
+  }
 }
 
 // Create singleton instance

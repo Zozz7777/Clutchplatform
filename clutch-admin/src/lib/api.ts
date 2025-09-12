@@ -7,6 +7,7 @@ export interface ApiResponse<T = any> {
   message?: string
   error?: string
   timestamp?: number
+  redirectTo?: string
   pagination?: {
     page: number
     limit: number
@@ -1568,7 +1569,7 @@ class ApiClient {
   }
 
   // Check authentication status and redirect if needed
-  checkAuthStatus(): boolean {
+  checkAuthStatus(): boolean | ApiResponse {
     this.loadTokens()
     
     if (!this.token) {
