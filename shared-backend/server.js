@@ -11,6 +11,9 @@ const healthRoutes = require('./routes/health');
 const adminRoutes = require('./routes/admin');
 const knowledgeBaseRoutes = require('./routes/knowledge-base');
 const incidentsRoutes = require('./routes/incidents');
+const mobileCmsRoutes = require('./routes/mobile-cms');
+const userAnalyticsRoutes = require('./routes/user-analytics');
+const autoPartsRoutes = require('./routes/auto-parts');
 
 // Initialize Express app
 const app = express();
@@ -26,9 +29,72 @@ app.use(cors({
   allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With', 'x-session-token', 'X-API-Version', 'X-Correlation-ID', 'Accept', 'Origin']
 }));
 
-// Body parsing
-app.use(express.json({ limit: '10mb' }));
+// Security middleware
+app.use(helmet({
+  contentSecurityPolicy: {
+    directives: {
+      defaultSrc: ["'self'"],
+      styleSrc: ["'self'", "'unsafe-inline'"],
+      scriptSrc: ["'self'"],
+      imgSrc: ["'self'", "data:", "https:"],
+    },
+  },
+  crossOriginEmbedderPolicy: false
+}));
+
+// Rate limiting
+const limiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: process.env.NODE_ENV === 'development' ? 1000 : 100, // limit each IP
+  message: { error: 'Too many requests from this IP, please try again later.' },
+  standardHeaders: true,
+  legacyHeaders: false,
+});
+
+app.use(limiter);
+
+// Body parsing with security enhancements
+app.use(express.json({ 
+  limit: '10mb',
+  verify: (req, res, buf) => {
+    try {
+      JSON.parse(buf);
+    } catch (e) {
+      res.status(400).json({
+        success: false,
+        error: 'INVALID_JSON',
+        message: 'Invalid JSON format'
+      });
+      throw new Error('Invalid JSON');
+    }
+  }
+}));
 app.use(express.urlencoded({ extended: true, limit: '10mb' }));
+
+// Input validation and XSS protection middleware
+app.use((req, res, next) => {
+  // Basic XSS protection
+  const sanitizeInput = (obj) => {
+    if (typeof obj === 'string') {
+      return obj.replace(/<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi, '');
+    }
+    if (typeof obj === 'object' && obj !== null) {
+      for (let key in obj) {
+        obj[key] = sanitizeInput(obj[key]);
+      }
+    }
+    return obj;
+  };
+  
+  if (req.body) {
+    req.body = sanitizeInput(req.body);
+  }
+  if (req.query) {
+    req.query = sanitizeInput(req.query);
+  }
+  
+  next();
+});
 
 // CRITICAL: Health endpoints first
 app.get('/health/ping', (req, res) => {
@@ -68,6 +134,9 @@ app.use('/health', healthRoutes);
 app.use(`${apiPrefix}/admin`, adminRoutes);
 app.use(`${apiPrefix}/knowledge-base`, knowledgeBaseRoutes);
 app.use(`${apiPrefix}/incidents`, incidentsRoutes);
+app.use(`${apiPrefix}/mobile-cms`, mobileCmsRoutes);
+app.use(`${apiPrefix}/user-analytics`, userAnalyticsRoutes);
+app.use(`${apiPrefix}/auto-parts`, autoPartsRoutes);
 
 // Fallback routes
 app.use('/auth', authRoutes);
@@ -190,5 +259,33 @@ async function startServer() {
 if (require.main === module) {
   startServer();
 }
+
+module.exports = { app, startServer };
+
+
+module.exports = { app, startServer };
+
+  startServer();
+}
+
+module.exports = { app, startServer };
+
+
+module.exports = { app, startServer };
+
+if (require.main === module) {
+  startServer();
+}
+
+module.exports = { app, startServer };
+
+
+module.exports = { app, startServer };
+
+  startServer();
+}
+
+module.exports = { app, startServer };
+
 
 module.exports = { app, startServer };

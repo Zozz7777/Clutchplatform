@@ -8,6 +8,7 @@
 
 import { rateLimiters } from '@/utils/rate-limiter'
 import { performanceMonitor } from '@/utils/performanceMonitor'
+import { authManager } from './auth-manager'
 
 // Unified API Response Interface
 export interface ApiResponse<T = any> {
@@ -221,61 +222,28 @@ class ConsolidatedApiService {
     endpoint: string,
     options: RequestInit
   ): Promise<ApiResponse<T>> {
-    if (this.isRefreshing) {
-      return new Promise((resolve) => {
-        this.refreshSubscribers.push((token: string) => {
-          options.headers = {
-            ...options.headers,
-            Authorization: `Bearer ${token}`,
-          }
-          resolve(this.request<T>(endpoint, options))
-        })
-      })
-    }
-
-    this.isRefreshing = true
-
     try {
-      const response = await fetch(`${this.baseUrl}/auth/refresh`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ refreshToken: this.refreshToken }),
-      })
-
-      const data = await response.json()
-
-      if (response.ok && data.success) {
-        const responseData = data.data as { token: string; refreshToken: string }
-        this.setTokens(responseData.token, responseData.refreshToken)
-        this.refreshSubscribers.forEach((callback) => callback(responseData.token))
-        this.refreshSubscribers = []
-
-        options.headers = {
-          ...options.headers,
-          Authorization: `Bearer ${responseData.token}`,
-        }
-        return this.request<T>(endpoint, options)
-      } else {
-        this.clearTokens()
-        return {
-          success: false,
-          message: 'Authentication failed - redirecting to login',
-          redirectTo: '/login',
-          timestamp: Date.now(),
-        }
+      // Use the new auth manager for token refresh
+      const newToken = await authManager.queueTokenRefresh()
+      
+      // Update headers with new token
+      options.headers = {
+        ...options.headers,
+        Authorization: `Bearer ${newToken}`,
       }
+      
+      // Retry the original request
+      return this.request<T>(endpoint, options)
     } catch (error) {
-      this.clearTokens()
+      console.error('Token refresh failed:', error)
+      authManager.handleAuthError(error)
+      
       return {
         success: false,
         message: 'Authentication failed - redirecting to login',
         redirectTo: '/login',
         timestamp: Date.now(),
       }
-    } finally {
-      this.isRefreshing = false
     }
   }
 
