@@ -965,6 +965,60 @@ app.get('/api/v1/admin/test', (req, res) => {
   }
 });
 
+// Critical admin dashboard endpoint at top level
+app.get('/api/v1/admin/dashboard/consolidated', (req, res) => {
+  try {
+    console.log('🧪 Admin dashboard endpoint called:', {
+      method: req.method,
+      path: req.path,
+      timestamp: new Date().toISOString()
+    });
+    
+    // Return comprehensive mock data for the dashboard
+    const mockData = {
+      success: true,
+      data: {
+        metrics: {
+          users: { total: 1250, active: 890, growth: 0.15 },
+          orders: { total: 2340, pending: 45, completed: 2295, growth: 0.12 },
+          revenue: { total: 45600, monthly: 12300, weekly: 3200, daily: 450, growth: 0.18 },
+          vehicles: { total: 150, available: 120, inService: 30 },
+          services: { total: 25, active: 22, completed: 3 },
+          partners: { total: 45, active: 38, pending: 7 }
+        },
+        recentOrders: [],
+        activityLogs: [],
+        platformServices: [
+          { name: 'Authentication', status: 'healthy', uptime: '99.9%' },
+          { name: 'Database', status: 'healthy', uptime: '99.8%' },
+          { name: 'API Gateway', status: 'healthy', uptime: '99.7%' }
+        ],
+        systemStatus: [
+          { name: 'CPU Usage', value: 45, unit: '%', status: 'healthy' },
+          { name: 'Memory Usage', value: 62, unit: '%', status: 'healthy' },
+          { name: 'Disk Usage', value: 38, unit: '%', status: 'healthy' }
+        ],
+        realTimeData: {
+          totalUsers: 1250,
+          activeDrivers: 89,
+          totalPartners: 45,
+          monthlyRevenue: 12300
+        }
+      },
+      timestamp: new Date().toISOString()
+    };
+    
+    res.json(mockData);
+  } catch (error) {
+    console.error('❌ Admin dashboard endpoint error:', error);
+    res.status(500).json({
+      success: false,
+      error: error.message,
+      timestamp: new Date().toISOString()
+    });
+  }
+});
+
 // 404 handler will be added after all routes are registered
 
 // Async function to start the server
