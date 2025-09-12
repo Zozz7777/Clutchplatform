@@ -5,6 +5,8 @@ import "./globals.css";
 import { ErrorBoundary } from "@/components/ErrorBoundary";
 import { ErrorTrackerProvider } from "@/contexts/ErrorTrackerContext";
 import { ThemeProvider } from "next-themes";
+import { NextIntlClientProvider } from 'next-intl';
+import { getMessages } from 'next-intl/server';
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -21,26 +23,30 @@ export const metadata: Metadata = {
   },
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
+  const messages = await getMessages();
+
   return (
-    <html lang="en" suppressHydrationWarning>
+    <html suppressHydrationWarning>
       <body className={inter.className}>
-        <ThemeProvider
-          attribute="class"
-          defaultTheme="light"
-          enableSystem={true}
-          disableTransitionOnChange={false}
-        >
-          <ErrorBoundary>
-            <ErrorTrackerProvider>
-              {children}
-            </ErrorTrackerProvider>
-          </ErrorBoundary>
-        </ThemeProvider>
+        <NextIntlClientProvider messages={messages}>
+          <ThemeProvider
+            attribute="class"
+            defaultTheme="light"
+            enableSystem={true}
+            disableTransitionOnChange={false}
+          >
+            <ErrorBoundary>
+              <ErrorTrackerProvider>
+                {children}
+              </ErrorTrackerProvider>
+            </ErrorBoundary>
+          </ThemeProvider>
+        </NextIntlClientProvider>
       </body>
     </html>
   );
