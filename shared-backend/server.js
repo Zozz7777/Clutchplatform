@@ -852,27 +852,7 @@ app.use(`${apiPrefix}/two-factor-auth`, twoFactorAuthRoutes);
     }
   });
 
-  // 404 handler - must be after ALL routes are registered
-  app.use('*', (req, res) => {
-    console.log(`❌ 404 - Endpoint not found: ${req.method} ${req.originalUrl}`);
-    console.log(`❌ Available routes: /health, /api/v1/auth/*, /api/v1/admin/*, etc.`);
-    
-    res.status(404).json({
-      success: false,
-      error: 'ENDPOINT_NOT_FOUND',
-      message: `Can't find ${req.originalUrl} on this server!`,
-      timestamp: new Date().toISOString(),
-      availableEndpoints: [
-        '/health',
-        '/test',
-        '/webhook/github',
-        '/api/v1/auth/employee-login',
-        '/api/v1/auth/employee-me',
-        '/api/v1/admin/dashboard/consolidated',
-        '/api/v1/performance/client-metrics'
-      ]
-    });
-  });
+  // 404 handler moved to the very end after all routes
 
   // All routes are now properly registered above
 
@@ -5225,7 +5205,39 @@ app.get('/marketing/automation/workflows', (req, res) => {
   }
 });
 
-// 404 handler will be added after all routes are registered
+// 404 handler - must be the very last route
+app.use('*', (req, res) => {
+  console.log(`❌ 404 - Endpoint not found: ${req.method} ${req.originalUrl}`);
+  console.log(`❌ Available routes: /health, /api/v1/auth/*, /api/v1/admin/*, etc.`);
+  
+  res.status(404).json({
+    success: false,
+    error: 'ENDPOINT_NOT_FOUND',
+    message: `Can't find ${req.originalUrl} on this server!`,
+    timestamp: new Date().toISOString(),
+    availableEndpoints: [
+      '/health',
+      '/test',
+      '/webhook/github',
+      '/api/v1/auth/employee-login',
+      '/api/v1/auth/employee-me',
+      '/api/v1/admin/dashboard/consolidated',
+      '/api/v1/performance/client-metrics',
+      '/crm/*',
+      '/hr/*',
+      '/fleet/*',
+      '/finance/*',
+      '/security/*',
+      '/analytics/*',
+      '/partners/*',
+      '/users/*',
+      '/support/*',
+      '/projects/*',
+      '/marketing/*',
+      '/dashboard/*'
+    ]
+  });
+});
 
 // Async function to start the server
 async function startServer() {
