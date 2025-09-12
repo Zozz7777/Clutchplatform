@@ -793,6 +793,28 @@ app.use(`${apiPrefix}/two-factor-auth`, twoFactorAuthRoutes);
   app.use('/hr', hrRoutes);
   app.use('/errors', errorRoutes);
 
+  // 404 handler - must be after ALL routes are registered
+  app.use('*', (req, res) => {
+    console.log(`❌ 404 - Endpoint not found: ${req.method} ${req.originalUrl}`);
+    console.log(`❌ Available routes: /health, /api/v1/auth/*, /api/v1/admin/*, etc.`);
+    
+    res.status(404).json({
+      success: false,
+      error: 'ENDPOINT_NOT_FOUND',
+      message: `Can't find ${req.originalUrl} on this server!`,
+      timestamp: new Date().toISOString(),
+      availableEndpoints: [
+        '/health',
+        '/test',
+        '/webhook/github',
+        '/api/v1/auth/employee-login',
+        '/api/v1/auth/employee-me',
+        '/api/v1/admin/dashboard/consolidated',
+        '/api/v1/performance/client-metrics'
+      ]
+    });
+  });
+
   
 // Fallback routes for missing endpoints
 app.get('/api/v1/admin/dashboard/consolidated', (req, res) => {
@@ -897,27 +919,7 @@ app.post('/webhook/github', (req, res) => {
   });
 }
 
-// 404 handler - must be after all routes
-app.use('*', (req, res) => {
-  console.log(`❌ 404 - Endpoint not found: ${req.method} ${req.originalUrl}`);
-  console.log(`❌ Available routes: /health, /api/v1/auth/*, /api/v1/admin/*, etc.`);
-  
-  res.status(404).json({
-    success: false,
-    error: 'ENDPOINT_NOT_FOUND',
-    message: `Can't find ${req.originalUrl} on this server!`,
-    timestamp: new Date().toISOString(),
-    availableEndpoints: [
-      '/health',
-      '/test',
-      '/webhook/github',
-      '/api/v1/auth/employee-login',
-      '/api/v1/auth/employee-me',
-      '/api/v1/admin/dashboard/consolidated',
-      '/api/v1/performance/client-metrics'
-    ]
-  });
-});
+// 404 handler will be added after all routes are registered
 
 // Async function to start the server
 async function startServer() {
