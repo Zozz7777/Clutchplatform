@@ -1,10 +1,5 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  i18n: {
-    locales: ['en', 'ar'],
-    defaultLocale: 'en',
-    localeDetection: false
-  },
   env: {
     PORT: process.env.PORT || '3000',
   },
