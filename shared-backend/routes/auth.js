@@ -42,6 +42,17 @@ const { getCollection } = require('../config/database');
 
 // ==================== EMPLOYEE AUTHENTICATION ROUTES ====================
 
+// Handle OPTIONS requests for CORS preflight
+router.options('*', (req, res) => {
+    console.log('🔍 Auth OPTIONS preflight request:', { path: req.path, origin: req.headers.origin });
+    res.header('Access-Control-Allow-Origin', req.headers.origin || '*');
+    res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, PATCH, OPTIONS');
+    res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization, X-Requested-With, x-session-token, X-API-Version, X-Correlation-ID, Accept, Origin');
+    res.header('Access-Control-Allow-Credentials', 'true');
+    res.header('Access-Control-Max-Age', '86400');
+    res.status(200).end();
+});
+
 // Test endpoint to verify auth routes are accessible
 router.get('/test', (req, res) => {
     console.log('🧪 Auth test endpoint called:', { path: req.path, method: req.method });

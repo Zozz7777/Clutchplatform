@@ -321,7 +321,7 @@ function setupApp() {
   }));
 
   // CORS configuration (more permissive for development and testing)
-  const allowedOrigins = (process.env.ALLOWED_ORIGINS || 'https://admin.yourclutch.com,https://clutch-main-nk7x.onrender.com,http://localhost:3000,http://localhost:3001,http://localhost:5173,http://localhost:8080')
+  const allowedOrigins = (process.env.ALLOWED_ORIGINS || 'https://admin.yourclutch.com,https://yourclutch.com,https://clutch-main-nk7x.onrender.com,http://localhost:3000,http://localhost:3001,http://localhost:5173,http://localhost:8080,http://10.0.2.2:8080,http://127.0.0.1:8080')
     .split(',')
     .map(o => o.trim())
     .filter(Boolean);
@@ -382,6 +382,17 @@ function setupApp() {
     preflightContinue: false,
     maxAge: 86400 // Cache preflight response for 24 hours
   }));
+
+  // Explicit OPTIONS request handler for all routes (CORS preflight)
+  app.options('*', (req, res) => {
+    console.log('🔍 OPTIONS preflight request:', { path: req.path, origin: req.headers.origin });
+    res.header('Access-Control-Allow-Origin', req.headers.origin || '*');
+    res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, PATCH, OPTIONS');
+    res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization, X-Requested-With, x-session-token, X-API-Version, X-Correlation-ID, Accept, Origin');
+    res.header('Access-Control-Allow-Credentials', 'true');
+    res.header('Access-Control-Max-Age', '86400');
+    res.status(200).end();
+  });
 
 // Add request logging middleware AFTER CORS with sensitive data redaction
 app.use((req, res, next) => {
