@@ -24,7 +24,7 @@ export default function NotFound() {
               <div className="w-24 h-24 mx-auto mb-4 relative">
                 <div className="w-full h-full rounded-full bg-gradient-to-br from-red-500 to-red-600 flex items-center justify-center shadow-lg overflow-hidden">
                   <Image
-                    src="/logowhite.png"
+                    src="/Logo White.png"
                     alt="Clutch Logo"
                     width={48}
                     height={48}

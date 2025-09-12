@@ -104,15 +104,15 @@ function LoginForm() {
          <div className="flex-1 flex flex-col justify-center items-center px-4 py-4">
            <div className="text-center mb-4">
              <div className="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-br from-red-500 to-red-600 rounded-2xl shadow-2xl mb-4 border border-red-400/30">
-               <img
-                 src="/logowhite.png"
-                 alt="Clutch Logo"
-                 className="w-10 h-10 object-contain"
-                 onError={(e) => {
-                   const target = e.target as HTMLImageElement;
-                   target.src = "/logowhite.png";
-                 }}
-               />
+                  <img
+                    src="/Logo White.png"
+                    alt="Clutch Logo"
+                    className="w-10 h-10 object-contain"
+                    onError={(e) => {
+                      const target = e.target as HTMLImageElement;
+                      target.src = "/Logo White.png";
+                    }}
+                  />
              </div>
              <p className="text-sm lg:text-base text-slate-300 max-w-md mx-auto leading-relaxed">
                Sign in to drive the automotive revolution

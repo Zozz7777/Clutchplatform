@@ -538,11 +538,33 @@ class ApiClient {
           timestamp: Date.now()
         }
       }
-    } catch (error) {
+    } catch (error: any) {
       console.error('Employee login failed:', error)
+      
+      // Handle CORS errors specifically
+      if (error instanceof TypeError && error.message.includes('Failed to fetch')) {
+        return {
+          success: false,
+          message: 'Network error: Unable to connect to the server. Please check your internet connection and try again.',
+          error: 'NETWORK_ERROR',
+          timestamp: Date.now()
+        }
+      }
+      
+      // Handle CORS errors
+      if (error.message && error.message.includes('CORS')) {
+        return {
+          success: false,
+          message: 'Cross-origin request blocked. Please contact support if this issue persists.',
+          error: 'CORS_ERROR',
+          timestamp: Date.now()
+        }
+      }
+      
       return {
         success: false,
-        message: 'Login failed due to network error',
+        message: error.message || 'Login failed due to network error',
+        error: error.code || 'UNKNOWN_ERROR',
         timestamp: Date.now()
       }
     }
