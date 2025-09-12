@@ -90,84 +90,84 @@ export function useDataFetching<T>(
 // Specific hooks for different data types
 export function useKnowledgeBase() {
   return useDataFetching(
-    () => clutchApi.getKnowledgeBase(),
+    () => apiClient.getKnowledgeBase(),
     { refetchInterval: 300000 } // 5 minutes
   )
 }
 
 export function useIncidents() {
   return useDataFetching(
-    () => clutchApi.getIncidents(),
+    () => apiClient.getIncidents(),
     { refetchInterval: 60000 } // 1 minute
   )
 }
 
 export function useMobileCrashes() {
   return useDataFetching(
-    () => clutchApi.getMobileCrashes(),
+    () => apiClient.getMobileCrashes(),
     { refetchInterval: 30000 } // 30 seconds
   )
 }
 
 export function useMobileContent() {
   return useDataFetching(
-    () => clutchApi.getMobileContent(),
+    () => apiClient.getMobileContent(),
     { refetchInterval: 300000 } // 5 minutes
   )
 }
 
 export function useFeatureFlags() {
   return useDataFetching(
-    () => clutchApi.getFeatureFlags(),
+    () => apiClient.getFeatureFlags(),
     { refetchInterval: 60000 } // 1 minute
   )
 }
 
 export function useMediaLibrary() {
   return useDataFetching(
-    () => clutchApi.getMediaLibrary(),
+    () => apiClient.getMediaLibrary(),
     { refetchInterval: 300000 } // 5 minutes
   )
 }
 
 export function useUserSegments() {
   return useDataFetching(
-    () => clutchApi.getUserSegments(),
+    () => apiClient.getUserSegments(),
     { refetchInterval: 300000 } // 5 minutes
   )
 }
 
 export function useUserCohorts() {
   return useDataFetching(
-    () => clutchApi.getUserCohorts(),
+    () => apiClient.getUserCohorts(),
     { refetchInterval: 300000 } // 5 minutes
   )
 }
 
 export function useFeedback() {
   return useDataFetching(
-    () => clutchApi.getFeedback(),
+    () => apiClient.getFeedback(),
     { refetchInterval: 60000 } // 1 minute
   )
 }
 
 export function usePricingAnalytics() {
   return useDataFetching(
-    () => clutchApi.getPricingAnalytics(),
+    () => apiClient.getPricingAnalytics(),
     { refetchInterval: 300000 } // 5 minutes
   )
 }
 
 export function useRevenueForecasting() {
   return useDataFetching(
-    () => clutchApi.getRevenueForecasting(),
+    () => apiClient.getRevenueForecasting(),
     { refetchInterval: 300000 } // 5 minutes
   )
 }
 
 export function useSEOManagement() {
   return useDataFetching(
-    () => clutchApi.getSEOManagement(),
+    () => apiClient.getSEOManagement(),
     { refetchInterval: 300000 } // 5 minutes
   )
 }

@@ -6,7 +6,9 @@ import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Skeleton, ListSkeleton, CardSkeleton } from '@/components/ui/skeleton'
-import { useKnowledgeBase } from '@/hooks/use-data-fetching'
+import { DataLoadingWrapper, ErrorState, EmptyState, ArticleSkeleton } from '@/components/ui/loading-states'
+import { useToast } from '@/components/ui/toast'
+import { useKnowledgeBase, useCreateKnowledgeBaseArticle, useUpdateKnowledgeBaseArticle, useDeleteKnowledgeBaseArticle } from '@/hooks/use-react-query-data'
 import { 
   Search, 
   Plus, 
@@ -31,6 +33,14 @@ export default function KnowledgeBasePage() {
 
   // Fetch data from API
   const { data: knowledgeBaseData, isLoading, error, refetch } = useKnowledgeBase()
+  
+  // Mutation hooks for CRUD operations
+  const createArticleMutation = useCreateKnowledgeBaseArticle()
+  const updateArticleMutation = useUpdateKnowledgeBaseArticle()
+  const deleteArticleMutation = useDeleteKnowledgeBaseArticle()
+  
+  // Toast notifications
+  const toast = useToast()
 
   // Fallback data structure
   const categories = knowledgeBaseData?.categories || [
@@ -59,6 +69,37 @@ export default function KnowledgeBasePage() {
     const matchesCategory = selectedCategory === 'all' || article.category === selectedCategory
     return matchesSearch && matchesCategory
   })
+
+  // Handler functions for CRUD operations
+  const handleCreateArticle = async (articleData: any) => {
+    try {
+      await createArticleMutation.mutateAsync(articleData)
+      toast.success('Article created successfully!')
+    } catch (error) {
+      console.error('Failed to create article:', error)
+      toast.error('Failed to create article', 'Please try again later.')
+    }
+  }
+
+  const handleUpdateArticle = async (id: string, articleData: any) => {
+    try {
+      await updateArticleMutation.mutateAsync({ id, data: articleData })
+      toast.success('Article updated successfully!')
+    } catch (error) {
+      console.error('Failed to update article:', error)
+      toast.error('Failed to update article', 'Please try again later.')
+    }
+  }
+
+  const handleDeleteArticle = async (id: string) => {
+    try {
+      await deleteArticleMutation.mutateAsync(id)
+      toast.success('Article deleted successfully!')
+    } catch (error) {
+      console.error('Failed to delete article:', error)
+      toast.error('Failed to delete article', 'Please try again later.')
+    }
+  }
 
   if (error) {
     return (
@@ -97,9 +138,12 @@ export default function KnowledgeBasePage() {
             <RefreshCw className="h-4 w-4 mr-2" />
             Refresh
           </Button>
-          <Button>
+          <Button 
+            onClick={() => handleCreateArticle({ title: 'New Article', category: 'getting-started', status: 'draft' })}
+            disabled={createArticleMutation.isPending}
+          >
             <Plus className="h-4 w-4 mr-2" />
-            New Article
+            {createArticleMutation.isPending ? 'Creating...' : 'New Article'}
           </Button>
         </div>
       </div>
@@ -266,10 +310,21 @@ export default function KnowledgeBasePage() {
                           <Button variant="ghost" size="sm">
                             <Eye className="h-4 w-4" />
                           </Button>
-                          <Button variant="ghost" size="sm">
+                          <Button 
+                            variant="ghost" 
+                            size="sm"
+                            onClick={() => handleUpdateArticle(article.id, { ...article, status: 'published' })}
+                            disabled={updateArticleMutation.isPending}
+                          >
                             <Edit className="h-4 w-4" />
                           </Button>
-                          <Button variant="ghost" size="sm" className="text-red-600 hover:text-red-700">
+                          <Button 
+                            variant="ghost" 
+                            size="sm" 
+                            className="text-red-600 hover:text-red-700"
+                            onClick={() => handleDeleteArticle(article.id)}
+                            disabled={deleteArticleMutation.isPending}
+                          >
                             <Trash2 className="h-4 w-4" />
                           </Button>
                         </div>

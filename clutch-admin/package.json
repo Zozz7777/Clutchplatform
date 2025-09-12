@@ -9,7 +9,20 @@
     "lint": "next lint",
     "postinstall": "echo 'Dependencies installed successfully'",
     "prebuild": "echo 'Starting build process...'",
-    "postbuild": "echo 'Build completed successfully!'"
+    "postbuild": "echo 'Build completed successfully!'",
+    "test": "jest",
+    "test:watch": "jest --watch",
+    "test:coverage": "jest --coverage",
+    "test:unit": "jest --testPathPattern=unit",
+    "test:integration": "jest --testPathPattern=integration",
+    "test:e2e": "playwright test",
+    "test:e2e:ui": "playwright test --ui",
+    "test:accessibility": "jest --testPathPattern=accessibility",
+    "test:performance": "jest --testPathPattern=performance",
+    "test:all": "npm run test:unit && npm run test:integration && npm run test:e2e",
+    "test:ci": "npm run test:coverage && npm run test:e2e",
+    "test:regression": "jest --testPathPattern=regression",
+    "test:auto-parts": "jest --testPathPattern=auto-parts"
   },
   "dependencies": {
     "@emotion/is-prop-valid": "^1.3.1",
@@ -73,14 +86,21 @@
     "zustand": "^5.0.8"
   },
   "devDependencies": {
+    "@playwright/test": "^1.40.0",
     "@testing-library/jest-dom": "^6.8.0",
     "@testing-library/react": "^16.3.0",
     "@testing-library/user-event": "^14.6.1",
     "@types/jest": "^30.0.0",
+    "axe-core": "^4.8.0",
     "eslint": "^8.57.1",
     "eslint-config-next": "^14.2.32",
     "jest": "^28.1.0",
+    "jest-axe": "^8.0.0",
     "jest-environment-jsdom": "^27.0.0",
-    "msw": "^2.11.1"
+    "jest-performance": "^1.0.0",
+    "lighthouse": "^11.0.0",
+    "msw": "^2.11.1",
+    "puppeteer": "^21.0.0",
+    "web-vitals": "^3.5.0"
   }
 }

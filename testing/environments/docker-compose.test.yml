@@ -1,0 +1,195 @@
+version: '3.8'
+
+services:
+  # Test Database
+  test-mongodb:
+    image: mongo:7.0
+    container_name: clutch-test-mongodb
+    ports:
+      - "27018:27017"
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: test_user
+      MONGO_INITDB_ROOT_PASSWORD: test_password
+      MONGO_INITDB_DATABASE: clutch_test
+    volumes:
+      - test-mongodb-data:/data/db
+      - ./scripts/init-mongo-test.js:/docker-entrypoint-initdb.d/init-mongo-test.js:ro
+    networks:
+      - test-network
+
+  # Test Redis
+  test-redis:
+    image: redis:7.2-alpine
+    container_name: clutch-test-redis
+    ports:
+      - "6380:6379"
+    volumes:
+      - test-redis-data:/data
+    networks:
+      - test-network
+
+  # Test Backend API
+  test-backend:
+    build:
+      context: ../shared-backend
+      dockerfile: Dockerfile.test
+    container_name: clutch-test-backend
+    ports:
+      - "5001:5000"
+    environment:
+      - NODE_ENV=test
+      - TEST_DB_URL=mongodb://test-mongodb:27017/clutch_test
+      - TEST_REDIS_URL=redis://test-redis:6379
+    depends_on:
+      - test-mongodb
+      - test-redis
+    volumes:
+      - ../shared-backend:/app
+      - /app/node_modules
+    networks:
+      - test-network
+
+  # Test Admin Dashboard
+  test-admin:
+    build:
+      context: ../clutch-admin
+      dockerfile: Dockerfile.test
+    container_name: clutch-test-admin
+    ports:
+      - "3001:3000"
+    environment:
+      - NODE_ENV=test
+      - NEXT_PUBLIC_API_URL=http://test-backend:5000
+    depends_on:
+      - test-backend
+    volumes:
+      - ../clutch-admin:/app
+      - /app/node_modules
+    networks:
+      - test-network
+
+  # Test Database for Desktop App
+  test-sqlite:
+    image: alpine:latest
+    container_name: clutch-test-sqlite
+    volumes:
+      - test-sqlite-data:/data
+    networks:
+      - test-network
+
+  # Selenium Grid Hub
+  selenium-hub:
+    image: selenium/hub:4.15.0
+    container_name: clutch-test-selenium-hub
+    ports:
+      - "4444:4444"
+    networks:
+      - test-network
+
+  # Chrome Browser
+  selenium-chrome:
+    image: selenium/node-chrome:4.15.0
+    container_name: clutch-test-chrome
+    shm_size: 2gb
+    depends_on:
+      - selenium-hub
+    environment:
+      - HUB_HOST=selenium-hub
+      - HUB_PORT=4444
+    networks:
+      - test-network
+
+  # Firefox Browser
+  selenium-firefox:
+    image: selenium/node-firefox:4.15.0
+    container_name: clutch-test-firefox
+    shm_size: 2gb
+    depends_on:
+      - selenium-hub
+    environment:
+      - HUB_HOST=selenium-hub
+      - HUB_PORT=4444
+    networks:
+      - test-network
+
+  # Mobile Testing - Android Emulator
+  android-emulator:
+    image: budtmo/docker-android:emulator_11.0
+    container_name: clutch-test-android
+    privileged: true
+    ports:
+      - "6080:6080"  # noVNC
+      - "5554:5554"  # ADB
+      - "5555:5555"  # ADB
+    environment:
+      - EMULATOR_DEVICE=Samsung Galaxy S10
+      - WEB_VNC=true
+    volumes:
+      - android-data:/root/.android
+    networks:
+      - test-network
+
+  # Test Data Generator
+  test-data-generator:
+    build:
+      context: .
+      dockerfile: Dockerfile.data-generator
+    container_name: clutch-test-data-generator
+    depends_on:
+      - test-mongodb
+      - test-backend
+    environment:
+      - TEST_DB_URL=mongodb://test-mongodb:27017/clutch_test
+      - TEST_API_URL=http://test-backend:5000
+    volumes:
+      - ./data:/app/data
+    networks:
+      - test-network
+
+  # Performance Testing
+  artillery:
+    image: artilleryio/artillery:latest
+    container_name: clutch-test-artillery
+    depends_on:
+      - test-backend
+    environment:
+      - TARGET_URL=http://test-backend:5000
+    volumes:
+      - ./performance:/app/performance
+    networks:
+      - test-network
+
+  # Security Testing
+  zap-proxy:
+    image: owasp/zap2docker-stable:latest
+    container_name: clutch-test-zap
+    ports:
+      - "8080:8080"
+    depends_on:
+      - test-backend
+    environment:
+      - ZAP_PROXY=true
+    networks:
+      - test-network
+
+  # Test Reporter
+  test-reporter:
+    image: node:18-alpine
+    container_name: clutch-test-reporter
+    volumes:
+      - ./reports:/app/reports
+      - ./scripts:/app/scripts
+    working_dir: /app
+    command: ["node", "scripts/generate-test-report.js"]
+    networks:
+      - test-network
+
+volumes:
+  test-mongodb-data:
+  test-redis-data:
+  test-sqlite-data:
+  android-data:
+
+networks:
+  test-network:
+    driver: bridge
