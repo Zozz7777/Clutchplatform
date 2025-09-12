@@ -793,55 +793,7 @@ app.use(`${apiPrefix}/two-factor-auth`, twoFactorAuthRoutes);
   app.use('/hr', hrRoutes);
   app.use('/errors', errorRoutes);
 
-  // Test endpoints for debugging
-  app.get('/test', (req, res) => {
-    try {
-      console.log('🧪 Test endpoint called:', {
-        method: req.method,
-        path: req.path,
-        timestamp: new Date().toISOString()
-      });
-      
-      res.json({
-        success: true,
-        message: 'Test endpoint working',
-        timestamp: new Date().toISOString(),
-        environment: process.env.NODE_ENV,
-        uptime: process.uptime()
-      });
-    } catch (error) {
-      console.error('❌ Test endpoint error:', error);
-      res.status(500).json({
-        success: false,
-        error: error.message,
-        timestamp: new Date().toISOString()
-      });
-    }
-  });
-
-  app.get('/api/v1/test', (req, res) => {
-    try {
-      console.log('🧪 API test endpoint called:', {
-        method: req.method,
-        path: req.path,
-        timestamp: new Date().toISOString()
-      });
-      
-      res.json({
-        success: true,
-        message: 'API test endpoint working',
-        timestamp: new Date().toISOString(),
-        environment: process.env.NODE_ENV
-      });
-    } catch (error) {
-      console.error('❌ API test endpoint error:', error);
-      res.status(500).json({
-        success: false,
-        error: error.message,
-        timestamp: new Date().toISOString()
-      });
-    }
-  });
+  // Test endpoints moved to top level to avoid middleware conflicts
 
   // GitHub webhook endpoint for testing auto-deployment
   app.post('/webhook/github', (req, res) => {
@@ -913,6 +865,80 @@ app.use(`${apiPrefix}/two-factor-auth`, twoFactorAuthRoutes);
     enhancedErrorHandler(err, req, res, next);
   });
 }
+
+// Test endpoints at top level to avoid middleware conflicts
+app.get('/test', (req, res) => {
+  try {
+    console.log('🧪 Test endpoint called:', {
+      method: req.method,
+      path: req.path,
+      timestamp: new Date().toISOString()
+    });
+    
+    res.json({
+      success: true,
+      message: 'Test endpoint working',
+      timestamp: new Date().toISOString(),
+      environment: process.env.NODE_ENV,
+      uptime: process.uptime()
+    });
+  } catch (error) {
+    console.error('❌ Test endpoint error:', error);
+    res.status(500).json({
+      success: false,
+      error: error.message,
+      timestamp: new Date().toISOString()
+    });
+  }
+});
+
+app.get('/api/v1/test', (req, res) => {
+  try {
+    console.log('🧪 API test endpoint called:', {
+      method: req.method,
+      path: req.path,
+      timestamp: new Date().toISOString()
+    });
+    
+    res.json({
+      success: true,
+      message: 'API test endpoint working',
+      timestamp: new Date().toISOString(),
+      environment: process.env.NODE_ENV
+    });
+  } catch (error) {
+    console.error('❌ API test endpoint error:', error);
+    res.status(500).json({
+      success: false,
+      error: error.message,
+      timestamp: new Date().toISOString()
+    });
+  }
+});
+
+// GitHub webhook endpoint at top level
+app.post('/webhook/github', (req, res) => {
+  try {
+    console.log('🔔 GitHub webhook received:', {
+      headers: req.headers,
+      body: req.body,
+      timestamp: new Date().toISOString()
+    });
+    
+    res.json({
+      success: true,
+      message: 'Webhook received',
+      timestamp: new Date().toISOString()
+    });
+  } catch (error) {
+    console.error('❌ Webhook error:', error);
+    res.status(500).json({
+      success: false,
+      error: error.message,
+      timestamp: new Date().toISOString()
+    });
+  }
+});
 
 // 404 handler will be added after all routes are registered
 
