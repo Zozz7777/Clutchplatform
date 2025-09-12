@@ -105,12 +105,12 @@ function LoginForm() {
            <div className="text-center mb-4">
              <div className="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-br from-red-500 to-red-600 rounded-2xl shadow-2xl mb-4 border border-red-400/30">
                <img
-                 src="/Logo White.png"
+                 src="/logowhite.png"
                  alt="Clutch Logo"
                  className="w-10 h-10 object-contain"
                  onError={(e) => {
                    const target = e.target as HTMLImageElement;
-                   target.src = "/LogoWhite.svg";
+                   target.src = "/logowhite.png";
                  }}
                />
              </div>

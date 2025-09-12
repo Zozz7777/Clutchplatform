@@ -1885,6 +1885,122 @@ app.get('/api/v1/payments', (req, res) => {
   }
 });
 
+// Frontend routes without /api/v1 prefix for compatibility
+app.get('/operations', (req, res) => {
+  try {
+    console.log('🧪 Operations endpoint called:', {
+      method: req.method,
+      path: req.path,
+      timestamp: new Date().toISOString()
+    });
+    
+    const operationsData = {
+      success: true,
+      data: {
+        platformOverview: {
+          totalServices: 25,
+          activeServices: 23,
+          totalUsers: 1250,
+          systemHealth: 'healthy'
+        },
+        recentActivity: [
+          {
+            id: '1',
+            action: 'Service started',
+            timestamp: new Date().toISOString(),
+            status: 'success'
+          }
+        ]
+      },
+      timestamp: new Date().toISOString()
+    };
+    
+    res.json(operationsData);
+  } catch (error) {
+    console.error('❌ Operations endpoint error:', error);
+    res.status(500).json({
+      success: false,
+      error: error.message,
+      timestamp: new Date().toISOString()
+    });
+  }
+});
+
+app.get('/monitoring', (req, res) => {
+  try {
+    console.log('🧪 Monitoring endpoint called:', {
+      method: req.method,
+      path: req.path,
+      timestamp: new Date().toISOString()
+    });
+    
+    const monitoringData = {
+      success: true,
+      data: {
+        systemStatus: 'healthy',
+        uptime: process.uptime(),
+        memoryUsage: process.memoryUsage(),
+        cpuUsage: process.cpuUsage(),
+        activeConnections: 45,
+        responseTime: 45
+      },
+      timestamp: new Date().toISOString()
+    };
+    
+    res.json(monitoringData);
+  } catch (error) {
+    console.error('❌ Monitoring endpoint error:', error);
+    res.status(500).json({
+      success: false,
+      error: error.message,
+      timestamp: new Date().toISOString()
+    });
+  }
+});
+
+app.get('/monitoring/dashboard', (req, res) => {
+  try {
+    console.log('🧪 Monitoring dashboard endpoint called:', {
+      method: req.method,
+      path: req.path,
+      timestamp: new Date().toISOString()
+    });
+    
+    const dashboardData = {
+      success: true,
+      data: {
+        overview: {
+          systemHealth: 'healthy',
+          uptime: process.uptime(),
+          totalRequests: 1250,
+          errorRate: 0.02
+        },
+        metrics: {
+          responseTime: 45,
+          throughput: 120,
+          memoryUsage: 0.65,
+          cpuUsage: 0.45
+        },
+        alerts: [],
+        charts: {
+          responseTime: [45, 42, 48, 44, 46, 43, 47],
+          throughput: [120, 115, 125, 118, 122, 119, 124]
+        }
+      },
+      timestamp: new Date().toISOString()
+    };
+    
+    res.json(dashboardData);
+  } catch (error) {
+    console.error('❌ Monitoring dashboard endpoint error:', error);
+    res.status(500).json({
+      success: false,
+      error: error.message,
+      timestamp: new Date().toISOString()
+    });
+  }
+});
+
 // 404 handler will be added after all routes are registered
 
 // Async function to start the server

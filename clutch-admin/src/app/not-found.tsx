@@ -2,6 +2,7 @@
 
 import React from 'react'
 import Link from 'next/link'
+import Image from 'next/image'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
 import { Home, ArrowLeft, Search, HelpCircle } from 'lucide-react'
@@ -21,8 +22,14 @@ export default function NotFound() {
             {/* Clutch Logo */}
             <div className="mb-8">
               <div className="w-24 h-24 mx-auto mb-4 relative">
-                <div className="w-full h-full rounded-full bg-gradient-to-br from-red-500 to-red-600 flex items-center justify-center shadow-lg">
-                  <span className="text-white font-bold text-2xl">C</span>
+                <div className="w-full h-full rounded-full bg-gradient-to-br from-red-500 to-red-600 flex items-center justify-center shadow-lg overflow-hidden">
+                  <Image
+                    src="/logowhite.png"
+                    alt="Clutch Logo"
+                    width={48}
+                    height={48}
+                    className="w-12 h-12 object-contain"
+                  />
                 </div>
                 <div className="absolute -top-2 -right-2 w-6 h-6 bg-red-500 rounded-full flex items-center justify-center">
                   <span className="text-white text-xs font-bold">!</span>
