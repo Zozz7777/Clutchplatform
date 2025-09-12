@@ -391,7 +391,7 @@ router.post('/contracts', authenticateToken, requireRole(['admin', 'legal']), va
 });
 
 // Update contract
-router.put('/contracts/:id', authenticateToken, requireRole(['admin', 'legal']), validate('contractUpdate'), async (req, res) => {
+router.put('/contracts/:id', authenticateToken, requireRole(['admin', 'legal']), validate('contract'), async (req, res) => {
   try {
     const { id } = req.params;
     const updateData = {
@@ -601,7 +601,7 @@ router.post('/policies', authenticateToken, requireRole(['admin', 'legal']), val
 });
 
 // Update policy
-router.put('/policies/:id', authenticateToken, requireRole(['admin', 'legal']), validate('policyUpdate'), async (req, res) => {
+router.put('/policies/:id', authenticateToken, requireRole(['admin', 'legal']), validate('policy'), async (req, res) => {
   try {
     const { id } = req.params;
     const updateData = {
