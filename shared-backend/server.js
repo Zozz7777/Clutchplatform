@@ -296,6 +296,7 @@ app.get('/health', (req, res) => {
 
 // Setup middleware and routes
 function setupApp() {
+  console.log('🔧 setupApp() function started...');
 
   // Performance monitoring middleware (early in the chain)
   app.use(performanceMonitor);
@@ -5289,7 +5290,9 @@ async function startServer() {
     console.log('✅ Database connection established');
 
     // Setup the Express app
+    console.log('🔧 About to call setupApp()...');
     setupApp();
+    console.log('✅ setupApp() completed successfully');
 
     // Graceful shutdown
     process.on('SIGTERM', () => {
