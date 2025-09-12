@@ -274,31 +274,3 @@ if (require.main === module) {
 }
 
 module.exports = { app, startServer };
-
-
-module.exports = { app, startServer };
-
-  startServer();
-}
-
-module.exports = { app, startServer };
-
-
-module.exports = { app, startServer };
-
-if (require.main === module) {
-  startServer();
-}
-
-module.exports = { app, startServer };
-
-
-module.exports = { app, startServer };
-
-  startServer();
-}
-
-module.exports = { app, startServer };
-
-
-module.exports = { app, startServer };
