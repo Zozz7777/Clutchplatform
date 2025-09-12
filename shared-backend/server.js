@@ -242,6 +242,41 @@ app.get('/health/ping', (req, res) => {
   }
 });
 
+// CRITICAL: Simple auth test endpoint that bypasses all middleware
+app.get('/auth-simple', (req, res) => {
+  try {
+    console.log('🧪 Simple auth test endpoint called (bypassing all middleware)');
+    res.status(200).json({
+      success: true,
+      message: 'Simple auth test works - bypassing all middleware',
+      timestamp: new Date().toISOString()
+    });
+  } catch (error) {
+    console.error('🧪 Simple auth test error:', error);
+    res.status(500).json({
+      success: false,
+      error: error.message,
+      timestamp: new Date().toISOString()
+    });
+  }
+});
+
+// CRITICAL: Simple OPTIONS handler that bypasses all middleware
+app.options('/auth-simple', (req, res) => {
+  try {
+    console.log('🔍 Simple OPTIONS handler called (bypassing all middleware)');
+    res.header('Access-Control-Allow-Origin', req.headers.origin || '*');
+    res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, PATCH, OPTIONS');
+    res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization, X-Requested-With, x-session-token, X-API-Version, X-Correlation-ID, Accept, Origin');
+    res.header('Access-Control-Allow-Credentials', 'true');
+    res.header('Access-Control-Max-Age', '86400');
+    res.status(200).end();
+  } catch (error) {
+    console.error('🔍 Simple OPTIONS error:', error);
+    res.status(500).end();
+  }
+});
+
 // Alternative ping endpoint with different path
 app.get('/ping', (req, res) => {
   try {
