@@ -1,234 +1,565 @@
 'use client'
 
-import React, { useState, useEffect, useRef } from 'react'
-import { Search, X, Command, ArrowRight } from 'lucide-react'
-import { SnowInput } from '@/components/ui/snow-input'
-import { SnowButton } from '@/components/ui/snow-button'
-import { SnowCard, SnowCardContent } from '@/components/ui/snow-card'
-import { useRouter } from 'next/navigation'
+import React, { useState, useCallback, useMemo, useRef, useEffect } from 'react'
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
+import { Button } from '@/components/ui/button'
+import { Badge } from '@/components/ui/badge'
+import { 
+  Search, 
+  X, 
+  Clock, 
+  Star, 
+  TrendingUp, 
+  Filter,
+  Command,
+  ArrowRight,
+  History,
+  Lightbulb,
+  Zap
+} from 'lucide-react'
+import { useToast } from '@/components/ui/toast'
 
-interface SearchResult {
+// Search result types
+export interface SearchResult {
   id: string
   title: string
   description: string
-  href: string
+  type: 'page' | 'user' | 'document' | 'action' | 'setting'
   category: string
-  icon?: React.ComponentType<{ className?: string }>
+  url?: string
+  icon?: React.ReactNode
+  relevance: number
+  lastAccessed?: Date
+  tags?: string[]
 }
 
-interface GlobalSearchProps {
-  isOpen: boolean
-  onClose: () => void
+// Search suggestion types
+export interface SearchSuggestion {
+  id: string
+  text: string
+  type: 'recent' | 'popular' | 'ai' | 'shortcut'
+  category?: string
+  action?: () => void
 }
 
-export default function GlobalSearch({ isOpen, onClose }: GlobalSearchProps) {
+// AI-powered search interface
+interface AISearchProps {
+  onResultSelect?: (result: SearchResult) => void
+  onSuggestionSelect?: (suggestion: SearchSuggestion) => void
+  placeholder?: string
+  className?: string
+}
+
+export function GlobalSearch({
+  onResultSelect,
+  onSuggestionSelect,
+  placeholder = "Search anything...",
+  className = ""
+}: AISearchProps) {
   const [query, setQuery] = useState('')
+  const [isOpen, setIsOpen] = useState(false)
   const [results, setResults] = useState<SearchResult[]>([])
-  const [selectedIndex, setSelectedIndex] = useState(0)
+  const [suggestions, setSuggestions] = useState<SearchSuggestion[]>([])
   const [isLoading, setIsLoading] = useState(false)
+  const [selectedIndex, setSelectedIndex] = useState(-1)
+  const [searchHistory, setSearchHistory] = useState<string[]>([])
+  const [popularSearches, setPopularSearches] = useState<string[]>([])
+  
   const inputRef = useRef<HTMLInputElement>(null)
-  const router = useRouter()
+  const resultsRef = useRef<HTMLDivElement>(null)
+  const toast = useToast()
 
-  // Static search data - these are actual pages in the application
-  const searchData: SearchResult[] = [
-    // Dashboard
-    { id: '1', title: 'Dashboard', description: 'Main dashboard overview', href: '/dashboard-consolidated', category: 'Core' },
-    { id: '2', title: 'Autonomous Dashboard', description: 'AI-powered analytics dashboard', href: '/autonomous-dashboard', category: 'Core' },
+  // Mock AI-powered search function
+  const performAISearch = useCallback(async (searchQuery: string): Promise<SearchResult[]> => {
+    // Simulate AI processing delay
+    await new Promise(resolve => setTimeout(resolve, 300))
     
-    // Operations
-    { id: '3', title: 'Operations', description: 'Platform operations and monitoring', href: '/operations/platform-overview', category: 'Operations' },
-    { id: '4', title: 'System Health', description: 'Monitor system health and performance', href: '/operations/system-health', category: 'Operations' },
-    { id: '5', title: 'Performance Monitoring', description: 'Track system performance metrics', href: '/operations/performance', category: 'Operations' },
-    
-    // Analytics
-    { id: '6', title: 'Analytics', description: 'Business intelligence and analytics', href: '/analytics/overview', category: 'Analytics' },
-    { id: '7', title: 'User Analytics', description: 'User behavior and engagement metrics', href: '/users/analytics', category: 'Analytics' },
-    { id: '8', title: 'Revenue Analytics', description: 'Revenue tracking and forecasting', href: '/revenue/analytics', category: 'Analytics' },
-    
-    // Users & CRM
-    { id: '9', title: 'Users', description: 'User management and analytics', href: '/users/analytics', category: 'Customers' },
-    { id: '10', title: 'CRM', description: 'Customer relationship management', href: '/crm/customers', category: 'Customers' },
-    { id: '11', title: 'Support', description: 'Customer support and tickets', href: '/support/tickets', category: 'Customers' },
-    
-    // Fleet
-    { id: '12', title: 'Fleet Management', description: 'Vehicle and driver management', href: '/fleet/overview', category: 'Fleet' },
-    { id: '13', title: 'Vehicle Tracking', description: 'Real-time vehicle tracking', href: '/fleet/tracking', category: 'Fleet' },
-    
-    // Settings
-    { id: '14', title: 'Settings', description: 'System and user settings', href: '/settings', category: 'Settings' },
-    { id: '15', title: 'Profile', description: 'User profile management', href: '/settings/profile', category: 'Settings' },
-  ]
+    // Mock AI-powered results based on query
+    const mockResults: SearchResult[] = [
+      {
+        id: '1',
+        title: 'Dashboard Analytics',
+        description: 'View comprehensive analytics and metrics for your dashboard',
+        type: 'page',
+        category: 'Analytics',
+        url: '/dashboard',
+        relevance: 0.95,
+        tags: ['analytics', 'metrics', 'dashboard']
+      },
+      {
+        id: '2',
+        title: 'User Management',
+        description: 'Manage users, roles, and permissions across the platform',
+        type: 'page',
+        category: 'Users',
+        url: '/users',
+        relevance: 0.88,
+        tags: ['users', 'management', 'roles']
+      },
+      {
+        id: '3',
+        title: 'System Settings',
+        description: 'Configure system-wide settings and preferences',
+        type: 'setting',
+        category: 'Settings',
+        url: '/settings',
+        relevance: 0.82,
+        tags: ['settings', 'configuration', 'system']
+      },
+      {
+        id: '4',
+        title: 'Export Data',
+        description: 'Export data in various formats (CSV, PDF, Excel)',
+        type: 'action',
+        category: 'Actions',
+        relevance: 0.75,
+        tags: ['export', 'data', 'download']
+      }
+    ]
 
+    // Filter results based on query relevance
+    return mockResults.filter(result => 
+      result.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      result.description.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      result.tags?.some(tag => tag.toLowerCase().includes(searchQuery.toLowerCase()))
+    )
+  }, [])
+
+  // Generate AI-powered suggestions
+  const generateAISuggestions = useCallback(async (searchQuery: string): Promise<SearchSuggestion[]> => {
+    if (!searchQuery.trim()) {
+      return [
+        ...searchHistory.slice(0, 5).map(term => ({
+          id: `recent-${term}`,
+          text: term,
+          type: 'recent' as const,
+          category: 'Recent Searches'
+        })),
+        ...popularSearches.slice(0, 3).map(term => ({
+          id: `popular-${term}`,
+          text: term,
+          type: 'popular' as const,
+          category: 'Popular'
+        }))
+      ]
+    }
+
+    // Simulate AI suggestion generation
+    await new Promise(resolve => setTimeout(resolve, 200))
+    
+    const aiSuggestions: SearchSuggestion[] = [
+      {
+        id: 'ai-1',
+        text: `Show me ${searchQuery} analytics`,
+        type: 'ai',
+        category: 'AI Suggestion'
+      },
+      {
+        id: 'ai-2',
+        text: `Create new ${searchQuery}`,
+        type: 'ai',
+        category: 'AI Suggestion'
+      },
+      {
+        id: 'ai-3',
+        text: `Export ${searchQuery} data`,
+        type: 'ai',
+        category: 'AI Suggestion'
+      }
+    ]
+
+    return aiSuggestions
+  }, [searchHistory, popularSearches])
+
+  // Handle search
+  const handleSearch = useCallback(async (searchQuery: string) => {
+    if (!searchQuery.trim()) {
+      setResults([])
+      setSuggestions([])
+      return
+    }
+
+    setIsLoading(true)
+    try {
+      const [searchResults, aiSuggestions] = await Promise.all([
+        performAISearch(searchQuery),
+        generateAISuggestions(searchQuery)
+      ])
+      
+      setResults(searchResults)
+      setSuggestions(aiSuggestions)
+      
+      // Add to search history
+      setSearchHistory(prev => {
+        const newHistory = [searchQuery, ...prev.filter(term => term !== searchQuery)]
+        return newHistory.slice(0, 10) // Keep last 10 searches
+      })
+    } catch (error) {
+      console.error('Search failed:', error)
+      toast.error('Search failed', 'Please try again')
+    } finally {
+      setIsLoading(false)
+    }
+  }, [performAISearch, generateAISuggestions, toast])
+
+  // Debounced search
+  const debouncedSearch = useMemo(() => {
+    let timeoutId: NodeJS.Timeout
+    return (searchQuery: string) => {
+      clearTimeout(timeoutId)
+      timeoutId = setTimeout(() => handleSearch(searchQuery), 300)
+    }
+  }, [handleSearch])
+
+  // Handle input change
+  const handleInputChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value
+    setQuery(value)
+    setSelectedIndex(-1)
+    debouncedSearch(value)
+  }, [debouncedSearch])
+
+  // Handle keyboard navigation
+  const handleKeyDown = useCallback((e: React.KeyboardEvent) => {
+    const totalItems = results.length + suggestions.length
+    
+    switch (e.key) {
+      case 'ArrowDown':
+        e.preventDefault()
+        setSelectedIndex(prev => (prev + 1) % totalItems)
+        break
+      case 'ArrowUp':
+        e.preventDefault()
+        setSelectedIndex(prev => (prev - 1 + totalItems) % totalItems)
+        break
+      case 'Enter':
+        e.preventDefault()
+        if (selectedIndex >= 0 && selectedIndex < results.length) {
+          onResultSelect?.(results[selectedIndex])
+          setIsOpen(false)
+        } else if (selectedIndex >= results.length) {
+          const suggestionIndex = selectedIndex - results.length
+          onSuggestionSelect?.(suggestions[suggestionIndex])
+          setIsOpen(false)
+        }
+        break
+      case 'Escape':
+        setIsOpen(false)
+        setQuery('')
+        setResults([])
+        setSuggestions([])
+        break
+    }
+  }, [selectedIndex, results, suggestions, onResultSelect, onSuggestionSelect])
+
+  // Handle result selection
+  const handleResultSelect = useCallback((result: SearchResult) => {
+    onResultSelect?.(result)
+    setIsOpen(false)
+    setQuery('')
+  }, [onResultSelect])
+
+  // Handle suggestion selection
+  const handleSuggestionSelect = useCallback((suggestion: SearchSuggestion) => {
+    setQuery(suggestion.text)
+    onSuggestionSelect?.(suggestion)
+    handleSearch(suggestion.text)
+  }, [onSuggestionSelect, handleSearch])
+
+  // Focus management
   useEffect(() => {
     if (isOpen && inputRef.current) {
       inputRef.current.focus()
     }
   }, [isOpen])
 
-  useEffect(() => {
-    if (query.length < 2) {
-      setResults([])
-      return
-    }
-
-    setIsLoading(true)
-    
-    // Simulate API delay
-    const timer = setTimeout(() => {
-      const filtered = searchData.filter(item =>
-        item.title.toLowerCase().includes(query.toLowerCase()) ||
-        item.description.toLowerCase().includes(query.toLowerCase()) ||
-        item.category.toLowerCase().includes(query.toLowerCase())
-      )
-      setResults(filtered)
-      setIsLoading(false)
-    }, 150)
-
-    return () => clearTimeout(timer)
-  }, [query])
-
+  // Keyboard shortcut
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
-      if (!isOpen) return
-
-      switch (e.key) {
-        case 'Escape':
-          onClose()
-          break
-        case 'ArrowDown':
-          e.preventDefault()
-          setSelectedIndex(prev => Math.min(prev + 1, results.length - 1))
-          break
-        case 'ArrowUp':
-          e.preventDefault()
-          setSelectedIndex(prev => Math.max(prev - 1, 0))
-          break
-        case 'Enter':
-          e.preventDefault()
-          if (results[selectedIndex]) {
-            handleResultClick(results[selectedIndex])
-          }
-          break
+      if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
+        e.preventDefault()
+        setIsOpen(true)
       }
     }
 
     document.addEventListener('keydown', handleKeyDown)
     return () => document.removeEventListener('keydown', handleKeyDown)
-  }, [isOpen, results, selectedIndex, onClose])
-
-  const handleResultClick = (result: SearchResult) => {
-    router.push(result.href)
-    onClose()
-    setQuery('')
-    setResults([])
-  }
-
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setQuery(e.target.value)
-    setSelectedIndex(0)
-  }
-
-  if (!isOpen) return null
+  }, [])
 
   return (
-    <div className="fixed inset-0 z-50 flex items-start justify-center pt-20 bg-black bg-opacity-50">
-      <div className="w-full max-w-2xl mx-4">
-        <SnowCard className="shadow-2xl">
-          <SnowCardContent className="p-0">
-            {/* Search Input */}
-            <div className="flex items-center space-x-3 p-4 border-b border-slate-200">
-              <Search className="h-5 w-5 text-slate-400" />
-              <SnowInput
-                ref={inputRef}
-                value={query}
-                onChange={handleInputChange}
-                placeholder="Search anything..."
-                className="flex-1 border-0 shadow-none focus:ring-0 text-lg"
-              />
-              <div className="flex items-center space-x-2">
-                <kbd className="px-2 py-1 text-xs font-mono bg-slate-100 border border-slate-300 rounded">
-                  ESC
-                </kbd>
-                <SnowButton
-                  variant="ghost"
-                  size="sm"
-                  onClick={onClose}
-                  className="h-8 w-8 p-0"
-                >
-                  <X className="h-4 w-4" />
-                </SnowButton>
-              </div>
-            </div>
+    <>
+      {/* Search Trigger */}
+      <Button
+        variant="outline"
+        onClick={() => setIsOpen(true)}
+        className={`flex items-center gap-2 ${className}`}
+      >
+        <Search className="h-4 w-4" />
+        <span className="hidden sm:inline">Search...</span>
+        <kbd className="hidden sm:inline-flex h-5 select-none items-center gap-1 rounded border bg-muted px-1.5 font-mono text-[10px] font-medium text-muted-foreground opacity-100">
+          <Command className="h-3 w-3" />K
+        </kbd>
+      </Button>
 
-            {/* Results */}
-            <div className="max-h-96 overflow-y-auto">
-              {isLoading ? (
-                <div className="p-8 text-center">
-                  <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-clutch-primary mx-auto mb-2"></div>
-                  <p className="text-sm text-slate-500">Searching...</p>
-                </div>
-              ) : query.length < 2 ? (
-                <div className="p-8 text-center">
-                  <Search className="h-12 w-12 text-slate-300 mx-auto mb-4" />
-                  <p className="text-sm text-slate-500 mb-2">Start typing to search</p>
-                  <p className="text-xs text-slate-400">
-                    Search for pages, features, and more
-                  </p>
-                </div>
-              ) : results.length === 0 ? (
-                <div className="p-8 text-center">
-                  <Search className="h-12 w-12 text-slate-300 mx-auto mb-4" />
-                  <p className="text-sm text-slate-500 mb-2">No results found</p>
-                  <p className="text-xs text-slate-400">
-                    Try different keywords or check your spelling
-                  </p>
-                </div>
-              ) : (
-                <div className="py-2">
-                  {results.map((result, index) => (
-                    <button
-                      key={result.id}
-                      onClick={() => handleResultClick(result)}
-                      className={`w-full flex items-center space-x-3 px-4 py-3 text-left hover:bg-slate-50 transition-colors ${
-                        index === selectedIndex ? 'bg-clutch-primary-50' : ''
-                      }`}
+      {/* Search Modal */}
+      {isOpen && (
+        <div className="fixed inset-0 z-50 flex items-start justify-center pt-16">
+          {/* Backdrop */}
+          <div
+            className="absolute inset-0 bg-black bg-opacity-50"
+            onClick={() => setIsOpen(false)}
+          />
+
+          {/* Search Container */}
+          <div className="relative w-full max-w-2xl mx-4">
+            <Card className="shadow-lg">
+              <CardContent className="p-0">
+                {/* Search Input */}
+                <div className="flex items-center gap-2 p-4 border-b">
+                  <Search className="h-5 w-5 text-muted-foreground" />
+                  <input
+                    ref={inputRef}
+                    type="text"
+                    value={query}
+                    onChange={handleInputChange}
+                    onKeyDown={handleKeyDown}
+                    placeholder={placeholder}
+                    className="flex-1 text-lg border-0 outline-none bg-transparent"
+                    autoComplete="off"
+                  />
+                  {query && (
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => {
+                        setQuery('')
+                        setResults([])
+                        setSuggestions([])
+                      }}
                     >
-                      <div className="flex-1">
-                        <div className="flex items-center space-x-2">
-                          <span className="text-sm font-medium text-slate-900">
-                            {result.title}
-                          </span>
-                          <span className="text-xs text-slate-500 bg-slate-100 px-2 py-0.5 rounded">
-                            {result.category}
-                          </span>
-                        </div>
-                        <p className="text-xs text-slate-600 mt-1">
-                          {result.description}
-                        </p>
-                      </div>
-                      <ArrowRight className="h-4 w-4 text-slate-400" />
-                    </button>
-                  ))}
+                      <X className="h-4 w-4" />
+                    </Button>
+                  )}
                 </div>
-              )}
-            </div>
 
-            {/* Footer */}
-            {results.length > 0 && (
-              <div className="px-4 py-3 border-t border-slate-200 bg-slate-50">
-                <div className="flex items-center justify-between text-xs text-slate-500">
-                  <div className="flex items-center space-x-4">
-                    <span>↑↓ Navigate</span>
-                    <span>↵ Select</span>
-                    <span>ESC Close</span>
-                  </div>
-                  <span>{results.length} result{results.length !== 1 ? 's' : ''}</span>
+                {/* Search Results */}
+                <div ref={resultsRef} className="max-h-96 overflow-y-auto">
+                  {isLoading ? (
+                    <div className="p-4 text-center">
+                      <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-blue-600 mx-auto mb-2" />
+                      <p className="text-sm text-muted-foreground">Searching...</p>
+                    </div>
+                  ) : (
+                    <>
+                      {/* Results */}
+                      {results.length > 0 && (
+                        <div className="p-2">
+                          <div className="px-2 py-1 text-xs font-medium text-muted-foreground uppercase tracking-wide">
+                            Results
+                          </div>
+                          {results.map((result, index) => (
+                            <button
+                              key={result.id}
+                              onClick={() => handleResultSelect(result)}
+                              className={`w-full text-left p-2 rounded-md hover:bg-slate-100 dark:hover:bg-slate-800 flex items-center gap-3 ${
+                                index === selectedIndex ? 'bg-slate-100 dark:bg-slate-800' : ''
+                              }`}
+                            >
+                              <div className="flex-shrink-0">
+                                {result.icon || <Search className="h-4 w-4 text-muted-foreground" />}
+                              </div>
+                              <div className="flex-1 min-w-0">
+                                <div className="font-medium text-sm">{result.title}</div>
+                                <div className="text-xs text-muted-foreground truncate">
+                                  {result.description}
+                                </div>
+                                <div className="flex items-center gap-2 mt-1">
+                                  <Badge variant="outline" className="text-xs">
+                                    {result.category}
+                                  </Badge>
+                                  {result.tags?.slice(0, 2).map(tag => (
+                                    <Badge key={tag} variant="secondary" className="text-xs">
+                                      {tag}
+                                    </Badge>
+                                  ))}
+                                </div>
+                              </div>
+                              <ArrowRight className="h-4 w-4 text-muted-foreground" />
+                            </button>
+                          ))}
+                        </div>
+                      )}
+
+                      {/* Suggestions */}
+                      {suggestions.length > 0 && (
+                        <div className="p-2 border-t">
+                          <div className="px-2 py-1 text-xs font-medium text-muted-foreground uppercase tracking-wide">
+                            Suggestions
+                          </div>
+                          {suggestions.map((suggestion, index) => (
+                            <button
+                              key={suggestion.id}
+                              onClick={() => handleSuggestionSelect(suggestion)}
+                              className={`w-full text-left p-2 rounded-md hover:bg-slate-100 dark:hover:bg-slate-800 flex items-center gap-3 ${
+                                index + results.length === selectedIndex ? 'bg-slate-100 dark:bg-slate-800' : ''
+                              }`}
+                            >
+                              <div className="flex-shrink-0">
+                                {suggestion.type === 'recent' && <History className="h-4 w-4 text-muted-foreground" />}
+                                {suggestion.type === 'popular' && <TrendingUp className="h-4 w-4 text-muted-foreground" />}
+                                {suggestion.type === 'ai' && <Lightbulb className="h-4 w-4 text-blue-500" />}
+                                {suggestion.type === 'shortcut' && <Zap className="h-4 w-4 text-yellow-500" />}
+                              </div>
+                              <div className="flex-1 min-w-0">
+                                <div className="font-medium text-sm">{suggestion.text}</div>
+                                {suggestion.category && (
+                                  <div className="text-xs text-muted-foreground">
+                                    {suggestion.category}
+                                  </div>
+                                )}
+                              </div>
+                            </button>
+                          ))}
+                        </div>
+                      )}
+
+                      {/* No Results */}
+                      {!isLoading && results.length === 0 && suggestions.length === 0 && query && (
+                        <div className="p-4 text-center">
+                          <Search className="h-8 w-8 text-muted-foreground mx-auto mb-2" />
+                          <p className="text-sm text-muted-foreground">No results found for "{query}"</p>
+                          <p className="text-xs text-muted-foreground mt-1">
+                            Try different keywords or check your spelling
+                          </p>
+                        </div>
+                      )}
+                    </>
+                  )}
                 </div>
-              </div>
-            )}
-          </SnowCardContent>
-        </SnowCard>
-      </div>
-    </div>
+
+                {/* Search Tips */}
+                <div className="p-3 border-t bg-slate-50 dark:bg-slate-800">
+                  <div className="flex items-center justify-between text-xs text-muted-foreground">
+                    <div className="flex items-center gap-4">
+                      <span>↑↓ Navigate</span>
+                      <span>↵ Select</span>
+                      <span>Esc Close</span>
+                    </div>
+                    <div className="flex items-center gap-1">
+                      <Command className="h-3 w-3" />
+                      <span>K</span>
+                    </div>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+        </div>
+      )}
+    </>
+  )
+}
+
+// Advanced filter builder
+export function AdvancedFilterBuilder({
+  onFiltersChange,
+  className = ""
+}: {
+  onFiltersChange: (filters: any[]) => void
+  className?: string
+}) {
+  const [filters, setFilters] = useState<any[]>([])
+  const [availableFields, setAvailableFields] = useState([
+    { key: 'title', label: 'Title', type: 'text' },
+    { key: 'category', label: 'Category', type: 'select', options: ['Analytics', 'Users', 'Settings'] },
+    { key: 'date', label: 'Date', type: 'date' },
+    { key: 'status', label: 'Status', type: 'select', options: ['Active', 'Inactive', 'Pending'] }
+  ])
+
+  const addFilter = useCallback(() => {
+    setFilters(prev => [...prev, {
+      id: Date.now(),
+      field: availableFields[0].key,
+      operator: 'equals',
+      value: ''
+    }])
+  }, [availableFields])
+
+  const updateFilter = useCallback((id: number, updates: any) => {
+    setFilters(prev => prev.map(filter => 
+      filter.id === id ? { ...filter, ...updates } : filter
+    ))
+  }, [])
+
+  const removeFilter = useCallback((id: number) => {
+    setFilters(prev => prev.filter(filter => filter.id !== id))
+  }, [])
+
+  useEffect(() => {
+    onFiltersChange(filters)
+  }, [filters, onFiltersChange])
+
+  return (
+    <Card className={className}>
+      <CardHeader>
+        <CardTitle className="flex items-center gap-2">
+          <Filter className="h-5 w-5" />
+          Advanced Filters
+        </CardTitle>
+      </CardHeader>
+      <CardContent>
+        <div className="space-y-4">
+          {filters.map((filter) => (
+            <div key={filter.id} className="flex items-center gap-2 p-3 border rounded-lg">
+              <select
+                value={filter.field}
+                onChange={(e) => updateFilter(filter.id, { field: e.target.value })}
+                className="px-3 py-2 border border-slate-300 rounded-md"
+              >
+                {availableFields.map(field => (
+                  <option key={field.key} value={field.key}>
+                    {field.label}
+                  </option>
+                ))}
+              </select>
+              
+              <select
+                value={filter.operator}
+                onChange={(e) => updateFilter(filter.id, { operator: e.target.value })}
+                className="px-3 py-2 border border-slate-300 rounded-md"
+              >
+                <option value="equals">Equals</option>
+                <option value="contains">Contains</option>
+                <option value="startsWith">Starts with</option>
+                <option value="endsWith">Ends with</option>
+                <option value="gt">Greater than</option>
+                <option value="lt">Less than</option>
+              </select>
+              
+              <input
+                type="text"
+                value={filter.value}
+                onChange={(e) => updateFilter(filter.id, { value: e.target.value })}
+                placeholder="Value"
+                className="flex-1 px-3 py-2 border border-slate-300 rounded-md"
+              />
+              
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => removeFilter(filter.id)}
+              >
+                <X className="h-4 w-4" />
+              </Button>
+            </div>
+          ))}
+          
+          <Button variant="outline" onClick={addFilter} className="w-full">
+            <Filter className="h-4 w-4 mr-2" />
+            Add Filter
+          </Button>
+        </div>
+      </CardContent>
+    </Card>
   )
 }

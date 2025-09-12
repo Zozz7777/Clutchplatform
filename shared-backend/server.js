@@ -15,6 +15,10 @@ const {
   setCache,
   getCache 
 } = require('./middleware/performance-optimizer');
+const { 
+  gracefulRestartManager,
+  trackConnection 
+} = require('./middleware/graceful-restart');
 
 // Import database connection
 const { connectToDatabase } = require('./config/database');
@@ -284,27 +288,20 @@ async function startServer() {
     // Start HTTP server
     const PORT = process.env.PORT || 5000;
     const server = app.listen(PORT, () => {
-      console.log(`🚀 Minimal server running on port ${PORT}`);
+      console.log(`🚀 Enhanced server running on port ${PORT}`);
       console.log(`🌍 Environment: ${process.env.NODE_ENV || 'development'}`);
       console.log(`📊 Health check: http://localhost:${PORT}/health/ping`);
+      console.log(`⚡ Performance monitoring: http://localhost:${PORT}/api/v1/performance/monitor`);
+      console.log(`🔄 Graceful restart: SIGUSR2 or SIGHUP`);
     });
 
-    // Graceful shutdown
-    process.on('SIGTERM', () => {
-      console.log('🛑 SIGTERM received. Shutting down gracefully...');
-      server.close(() => {
-        console.log('✅ Server closed');
-        process.exit(0);
-      });
+    // Track server connections for graceful restart
+    server.on('connection', (socket) => {
+      trackConnection(socket);
     });
 
-    process.on('SIGINT', () => {
-      console.log('🛑 SIGINT received. Shutting down gracefully...');
-      server.close(() => {
-        console.log('✅ Server closed');
-        process.exit(0);
-      });
-    });
+    // Enhanced graceful shutdown (handled by graceful restart manager)
+    console.log('✅ Graceful restart manager initialized');
 
   } catch (error) {
     console.error('❌ Failed to start server:', error);

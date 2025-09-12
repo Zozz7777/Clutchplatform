@@ -16,6 +16,12 @@ const {
   optimizeMemory,
   optimizeDatabaseConnections
 } = require('../middleware/performance-optimizer');
+const {
+  performanceTuner,
+  analyzeAndTune,
+  getTuningStats
+} = require('../middleware/performance-tuning');
+const { gracefulRestartManager } = require('../middleware/graceful-restart');
 
 // ==================== PERFORMANCE & SCALABILITY ROUTES ====================
 
@@ -762,5 +768,161 @@ function generateShardingRecommendations(stats) {
   
   return recommendations;
 }
+
+// POST /api/v1/performance/tune - Trigger performance tuning analysis
+router.post('/tune', authenticateToken, requireRole(['admin', 'devops']), async (req, res) => {
+  try {
+    console.log('🔧 Triggering performance tuning analysis');
+    
+    const metrics = getMetrics();
+    const tuningResults = await analyzeAndTune(metrics);
+    
+    res.json({
+      success: true,
+      data: {
+        metrics,
+        tuningResults,
+        timestamp: new Date().toISOString()
+      },
+      message: 'Performance tuning analysis completed',
+      timestamp: new Date().toISOString()
+    });
+    
+  } catch (error) {
+    console.error('❌ Error in performance tuning:', error);
+    trackError(error, { endpoint: '/performance/tune' });
+    res.status(500).json({
+      success: false,
+      error: 'TUNING_FAILED',
+      message: 'Failed to perform tuning analysis'
+    });
+  }
+});
+
+// GET /api/v1/performance/tuning-stats - Get performance tuning statistics
+router.get('/tuning-stats', authenticateToken, requireRole(['admin', 'devops']), async (req, res) => {
+  try {
+    console.log('📊 Fetching performance tuning statistics');
+    
+    const tuningStats = getTuningStats();
+    const restartStats = gracefulRestartManager.getRestartStats();
+    
+    res.json({
+      success: true,
+      data: {
+        tuning: tuningStats,
+        restart: restartStats,
+        timestamp: new Date().toISOString()
+      },
+      message: 'Performance tuning statistics retrieved successfully',
+      timestamp: new Date().toISOString()
+    });
+    
+  } catch (error) {
+    console.error('❌ Error fetching tuning statistics:', error);
+    trackError(error, { endpoint: '/performance/tuning-stats' });
+    res.status(500).json({
+      success: false,
+      error: 'FETCH_TUNING_STATS_FAILED',
+      message: 'Failed to fetch tuning statistics'
+    });
+  }
+});
+
+// POST /api/v1/performance/restart - Trigger graceful server restart
+router.post('/restart', authenticateToken, requireRole(['admin']), async (req, res) => {
+  try {
+    console.log('🔄 Triggering graceful server restart');
+    
+    const { reason = 'manual_restart', metadata = {} } = req.body;
+    
+    // Check if ready for restart
+    if (!gracefulRestartManager.isReadyForRestart()) {
+      return res.status(409).json({
+        success: false,
+        error: 'RESTART_NOT_READY',
+        message: 'Server is not ready for restart. Too many active connections.',
+        data: {
+          activeConnections: gracefulRestartManager.getRestartStats().activeConnections
+        }
+      });
+    }
+    
+    // Trigger restart
+    gracefulRestartManager.triggerRestart(reason, metadata);
+    
+    res.json({
+      success: true,
+      data: {
+        reason,
+        metadata,
+        restartStats: gracefulRestartManager.getRestartStats()
+      },
+      message: 'Graceful restart initiated',
+      timestamp: new Date().toISOString()
+    });
+    
+  } catch (error) {
+    console.error('❌ Error triggering restart:', error);
+    trackError(error, { endpoint: '/performance/restart' });
+    res.status(500).json({
+      success: false,
+      error: 'RESTART_FAILED',
+      message: 'Failed to trigger graceful restart'
+    });
+  }
+});
+
+// GET /api/v1/performance/load-test - Run load test (development only)
+router.get('/load-test', authenticateToken, requireRole(['admin', 'devops']), async (req, res) => {
+  try {
+    console.log('🚀 Running load test');
+    
+    // Only allow in development or staging
+    if (process.env.NODE_ENV === 'production') {
+      return res.status(403).json({
+        success: false,
+        error: 'LOAD_TEST_FORBIDDEN',
+        message: 'Load testing is not allowed in production environment'
+      });
+    }
+    
+    const { LoadTester } = require('../testing/load-testing');
+    const { concurrency = 5, duration = 30000 } = req.query;
+    
+    const tester = new LoadTester({
+      baseUrl: `${req.protocol}://${req.get('host')}`,
+      concurrency: parseInt(concurrency),
+      duration: parseInt(duration)
+    });
+    
+    // Run load test in background
+    tester.runLoadTest().then(results => {
+      console.log('✅ Load test completed:', results.summary);
+    }).catch(error => {
+      console.error('❌ Load test failed:', error);
+    });
+    
+    res.json({
+      success: true,
+      data: {
+        concurrency: parseInt(concurrency),
+        duration: parseInt(duration),
+        status: 'running'
+      },
+      message: 'Load test started in background',
+      timestamp: new Date().toISOString()
+    });
+    
+  } catch (error) {
+    console.error('❌ Error starting load test:', error);
+    trackError(error, { endpoint: '/performance/load-test' });
+    res.status(500).json({
+      success: false,
+      error: 'LOAD_TEST_FAILED',
+      message: 'Failed to start load test'
+    });
+  }
+});
 
 module.exports = router;
