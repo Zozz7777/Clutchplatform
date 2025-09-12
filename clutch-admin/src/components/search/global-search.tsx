@@ -29,29 +29,29 @@ export default function GlobalSearch({ isOpen, onClose }: GlobalSearchProps) {
   const inputRef = useRef<HTMLInputElement>(null)
   const router = useRouter()
 
-  // Mock search data - in a real app, this would come from an API
+  // Static search data - these are actual pages in the application
   const searchData: SearchResult[] = [
     // Dashboard
     { id: '1', title: 'Dashboard', description: 'Main dashboard overview', href: '/dashboard-consolidated', category: 'Core' },
     { id: '2', title: 'Autonomous Dashboard', description: 'AI-powered analytics dashboard', href: '/autonomous-dashboard', category: 'Core' },
     
     // Operations
-    { id: '3', title: 'Operations', description: 'Platform operations and monitoring', href: '/operations', category: 'Operations' },
+    { id: '3', title: 'Operations', description: 'Platform operations and monitoring', href: '/operations/platform-overview', category: 'Operations' },
     { id: '4', title: 'System Health', description: 'Monitor system health and performance', href: '/operations/system-health', category: 'Operations' },
     { id: '5', title: 'Performance Monitoring', description: 'Track system performance metrics', href: '/operations/performance', category: 'Operations' },
     
     // Analytics
-    { id: '6', title: 'Analytics', description: 'Business intelligence and analytics', href: '/analytics', category: 'Analytics' },
-    { id: '7', title: 'User Analytics', description: 'User behavior and engagement metrics', href: '/users', category: 'Analytics' },
-    { id: '8', title: 'Revenue Analytics', description: 'Revenue tracking and forecasting', href: '/revenue', category: 'Analytics' },
+    { id: '6', title: 'Analytics', description: 'Business intelligence and analytics', href: '/analytics/overview', category: 'Analytics' },
+    { id: '7', title: 'User Analytics', description: 'User behavior and engagement metrics', href: '/users/analytics', category: 'Analytics' },
+    { id: '8', title: 'Revenue Analytics', description: 'Revenue tracking and forecasting', href: '/revenue/analytics', category: 'Analytics' },
     
     // Users & CRM
-    { id: '9', title: 'Users', description: 'User management and analytics', href: '/users', category: 'Customers' },
-    { id: '10', title: 'CRM', description: 'Customer relationship management', href: '/crm', category: 'Customers' },
-    { id: '11', title: 'Support', description: 'Customer support and tickets', href: '/support', category: 'Customers' },
+    { id: '9', title: 'Users', description: 'User management and analytics', href: '/users/analytics', category: 'Customers' },
+    { id: '10', title: 'CRM', description: 'Customer relationship management', href: '/crm/customers', category: 'Customers' },
+    { id: '11', title: 'Support', description: 'Customer support and tickets', href: '/support/tickets', category: 'Customers' },
     
     // Fleet
-    { id: '12', title: 'Fleet Management', description: 'Vehicle and driver management', href: '/fleet', category: 'Fleet' },
+    { id: '12', title: 'Fleet Management', description: 'Vehicle and driver management', href: '/fleet/overview', category: 'Fleet' },
     { id: '13', title: 'Vehicle Tracking', description: 'Real-time vehicle tracking', href: '/fleet/tracking', category: 'Fleet' },
     
     // Settings

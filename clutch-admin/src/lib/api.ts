@@ -42,7 +42,7 @@ class ApiClient {
   private refreshSubscribers: Array<(token: string) => void> = []
   private lastRequestTime = 0
   private requestDelay = 100 // 100ms delay between requests to avoid rate limiting
-  private useMockAuth = process.env.NODE_ENV === 'development' && process.env.NEXT_PUBLIC_USE_MOCK_AUTH === 'true'
+  private useMockAuth = false // Force real API calls - mock auth disabled
   private consecutiveErrors = 0
   private maxConsecutiveErrors = 5
   private circuitBreakerTimeout = 30000 // 30 seconds
