@@ -793,6 +793,26 @@ app.use(`${apiPrefix}/two-factor-auth`, twoFactorAuthRoutes);
   app.use('/hr', hrRoutes);
   app.use('/errors', errorRoutes);
 
+  // Test endpoints for debugging
+  app.get('/test', (req, res) => {
+    res.json({
+      success: true,
+      message: 'Test endpoint working',
+      timestamp: new Date().toISOString(),
+      environment: process.env.NODE_ENV,
+      uptime: process.uptime()
+    });
+  });
+
+  app.get('/api/v1/test', (req, res) => {
+    res.json({
+      success: true,
+      message: 'API test endpoint working',
+      timestamp: new Date().toISOString(),
+      environment: process.env.NODE_ENV
+    });
+  });
+
   // 404 handler - must be after ALL routes are registered
   app.use('*', (req, res) => {
     console.log(`❌ 404 - Endpoint not found: ${req.method} ${req.originalUrl}`);
@@ -851,26 +871,7 @@ app.get('/api/v1/admin/dashboard/consolidated', (req, res) => {
   });
 });
 
-// Simple test endpoint
-app.get('/test', (req, res) => {
-  res.json({
-    success: true,
-    message: 'Test endpoint working',
-    timestamp: new Date().toISOString(),
-    environment: process.env.NODE_ENV,
-    uptime: process.uptime()
-  });
-});
-
-// API test endpoint
-app.get('/api/v1/test', (req, res) => {
-  res.json({
-    success: true,
-    message: 'API test endpoint working',
-    timestamp: new Date().toISOString(),
-    environment: process.env.NODE_ENV
-  });
-});
+// Test endpoints will be registered with other routes
 
 // GitHub webhook endpoint for testing auto-deployment
 app.post('/webhook/github', (req, res) => {
