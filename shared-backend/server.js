@@ -575,10 +575,13 @@ app.use((req, res, next) => {
 
   // Core business routes
   // Apply auth rate limiting only in production or when explicitly enabled
+  console.log('🔧 Mounting auth routes at:', `${apiPrefix}/auth`);
   if (process.env.NODE_ENV === 'production' || process.env.ENABLE_RATE_LIMITING === 'true') {
     app.use(`${apiPrefix}/auth`, authRateLimit, authRoutes);
+    console.log('✅ Auth routes mounted with rate limiting');
   } else {
     app.use(`${apiPrefix}/auth`, authRoutes);
+    console.log('✅ Auth routes mounted without rate limiting');
   }
 
   app.use(`${apiPrefix}/users`, userRoutes);
@@ -794,9 +797,11 @@ app.use(`${apiPrefix}/two-factor-auth`, twoFactorAuthRoutes);
   if (process.env.NODE_ENV === 'production' || process.env.ENABLE_RATE_LIMITING === 'true') {
     app.use('/auth', authRateLimit, authRoutes);
     app.use('/admin', adminRateLimit, adminRoutes);
+    console.log('✅ Fallback auth routes mounted with rate limiting at /auth');
   } else {
     app.use('/auth', authRoutes);
     app.use('/admin', adminRoutes);
+    console.log('✅ Fallback auth routes mounted without rate limiting at /auth');
   }
   app.use('/dashboard', dashboardRoutes);
   app.use('/autonomous-dashboard', autonomousDashboardRoutes);
