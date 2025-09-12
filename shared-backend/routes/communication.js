@@ -4,6 +4,8 @@ const { authenticateToken, requireRole } = require('../middleware/auth');
 const { createSmartRateLimit } = require('../middleware/smartRateLimit');
 const { validate } = require('../middleware/inputValidation');
 const { logger } = require('../config/logger');
+const { getCollection } = require('../config/database');
+const { ObjectId } = require('mongodb');
 
 // Rate limiting
 const communicationRateLimit = createSmartRateLimit({
@@ -15,216 +17,359 @@ const communicationRateLimit = createSmartRateLimit({
 // Apply rate limiting to all communication routes
 router.use(communicationRateLimit);
 
-// ==================== COMMUNICATION ROUTES ====================
+// ==================== COMMUNICATION SYSTEM ====================
 
 // Get all communications
-router.get('/', authenticateToken, requireRole(['admin', 'hr', 'operations']), communicationRateLimit, async (req, res) => {
+router.get('/', authenticateToken, requireRole(['admin', 'hr', 'operations']), async (req, res) => {
   try {
-    res.json({ success: true, message: 'Communication routes - Implementation pending', data: [] });
+    const { page = 1, limit = 20, type, status, search } = req.query;
+    const skip = (page - 1) * limit;
+    
+    const collection = await getCollection('communications');
+    
+    // Build query
+    const query = {};
+    if (type) query.type = type;
+    if (status) query.status = status;
+    if (search) {
+      query.$or = [
+        { subject: { $regex: search, $options: 'i' } },
+        { content: { $regex: search, $options: 'i' } },
+        { recipientEmail: { $regex: search, $options: 'i' } }
+      ];
+    }
+    
+    const [communications, total] = await Promise.all([
+      collection
+        .find(query)
+        .sort({ createdAt: -1 })
+        .skip(skip)
+        .limit(parseInt(limit))
+        .toArray(),
+      collection.countDocuments(query)
+    ]);
+    
+    res.json({
+      success: true,
+      data: {
+        communications,
+        pagination: {
+          page: parseInt(page),
+          limit: parseInt(limit),
+          total,
+          pages: Math.ceil(total / limit)
+        }
+      },
+      timestamp: new Date().toISOString()
+    });
   } catch (error) {
     logger.error('Error getting communications:', error);
-    res.status(500).json({ error: 'Failed to get communications' });
+    res.status(500).json({ 
+      success: false,
+      error: 'FETCH_COMMUNICATIONS_FAILED',
+      message: 'Failed to get communications' 
+    });
   }
 });
 
 // Get communication by ID
-router.get('/:id', authenticateToken, requireRole(['admin', 'hr', 'operations']), communicationRateLimit, async (req, res) => {
+router.get('/:id', authenticateToken, requireRole(['admin', 'hr', 'operations']), async (req, res) => {
   try {
-    res.json({ success: true, message: 'Get communication by ID - Implementation pending', data: {} });
+    const { id } = req.params;
+    const collection = await getCollection('communications');
+    
+    const communication = await collection.findOne({ _id: new ObjectId(id) });
+    
+    if (!communication) {
+      return res.status(404).json({
+        success: false,
+        error: 'COMMUNICATION_NOT_FOUND',
+        message: 'Communication not found'
+      });
+    }
+    
+    res.json({
+      success: true,
+      data: communication,
+      timestamp: new Date().toISOString()
+    });
   } catch (error) {
     logger.error('Error getting communication:', error);
-    res.status(500).json({ error: 'Failed to get communication' });
+    res.status(500).json({ 
+      success: false,
+      error: 'FETCH_COMMUNICATION_FAILED',
+      message: 'Failed to get communication' 
+    });
   }
 });
 
 // Create new communication
-router.post('/', authenticateToken, requireRole(['admin', 'hr', 'operations']), communicationRateLimit, validate('communication'), async (req, res) => {
+router.post('/', authenticateToken, requireRole(['admin', 'hr', 'operations']), validate('communication'), async (req, res) => {
   try {
-    res.json({ success: true, message: 'Create communication - Implementation pending', data: {} });
+    const { 
+      type, 
+      subject, 
+      content, 
+      recipientEmail, 
+      recipientName, 
+      priority = 'normal',
+      scheduledAt,
+      status = 'draft'
+    } = req.body;
+    
+    if (!type || !subject || !content || !recipientEmail) {
+      return res.status(400).json({
+        success: false,
+        error: 'VALIDATION_ERROR',
+        message: 'Type, subject, content, and recipient email are required'
+      });
+    }
+    
+    const collection = await getCollection('communications');
+    
+    const communication = {
+      type,
+      subject,
+      content,
+      recipientEmail,
+      recipientName: recipientName || '',
+      priority,
+      scheduledAt: scheduledAt ? new Date(scheduledAt) : null,
+      status,
+      sentBy: req.user.id,
+      createdAt: new Date(),
+      updatedAt: new Date()
+    };
+    
+    const result = await collection.insertOne(communication);
+    
+    res.status(201).json({
+      success: true,
+      data: {
+        id: result.insertedId,
+        ...communication
+      },
+      message: 'Communication created successfully',
+      timestamp: new Date().toISOString()
+    });
   } catch (error) {
     logger.error('Error creating communication:', error);
-    res.status(500).json({ error: 'Failed to create communication' });
+    res.status(500).json({ 
+      success: false,
+      error: 'CREATE_COMMUNICATION_FAILED',
+      message: 'Failed to create communication' 
+    });
   }
 });
 
 // Update communication
-router.put('/:id', authenticateToken, requireRole(['admin', 'hr', 'operations']), communicationRateLimit, validate('communicationUpdate'), async (req, res) => {
+router.put('/:id', authenticateToken, requireRole(['admin', 'hr', 'operations']), validate('communicationUpdate'), async (req, res) => {
   try {
-    res.json({ success: true, message: 'Update communication - Implementation pending', data: {} });
+    const { id } = req.params;
+    const updateData = {
+      ...req.body,
+      updatedAt: new Date(),
+      updatedBy: req.user.id
+    };
+    
+    const collection = await getCollection('communications');
+    
+    const result = await collection.updateOne(
+      { _id: new ObjectId(id) },
+      { $set: updateData }
+    );
+    
+    if (result.matchedCount === 0) {
+      return res.status(404).json({
+        success: false,
+        error: 'COMMUNICATION_NOT_FOUND',
+        message: 'Communication not found'
+      });
+    }
+    
+    const updatedCommunication = await collection.findOne({ _id: new ObjectId(id) });
+    
+    res.json({
+      success: true,
+      data: updatedCommunication,
+      message: 'Communication updated successfully',
+      timestamp: new Date().toISOString()
+    });
   } catch (error) {
     logger.error('Error updating communication:', error);
-    res.status(500).json({ error: 'Failed to update communication' });
+    res.status(500).json({ 
+      success: false,
+      error: 'UPDATE_COMMUNICATION_FAILED',
+      message: 'Failed to update communication' 
+    });
   }
 });
 
 // Delete communication
-router.delete('/:id', authenticateToken, requireRole(['admin', 'hr']), communicationRateLimit, async (req, res) => {
+router.delete('/:id', authenticateToken, requireRole(['admin', 'hr', 'operations']), async (req, res) => {
   try {
-    res.json({ success: true, message: 'Delete communication - Implementation pending' });
+    const { id } = req.params;
+    const collection = await getCollection('communications');
+    
+    const result = await collection.deleteOne({ _id: new ObjectId(id) });
+    
+    if (result.deletedCount === 0) {
+      return res.status(404).json({
+        success: false,
+        error: 'COMMUNICATION_NOT_FOUND',
+        message: 'Communication not found'
+      });
+    }
+    
+    res.json({
+      success: true,
+      message: 'Communication deleted successfully',
+      timestamp: new Date().toISOString()
+    });
   } catch (error) {
     logger.error('Error deleting communication:', error);
-    res.status(500).json({ error: 'Failed to delete communication' });
+    res.status(500).json({ 
+      success: false,
+      error: 'DELETE_COMMUNICATION_FAILED',
+      message: 'Failed to delete communication' 
+    });
   }
 });
 
-// ==================== MESSAGE ROUTES ====================
-
-// Get all messages
-router.get('/messages', authenticateToken, requireRole(['admin', 'hr', 'operations']), communicationRateLimit, async (req, res) => {
+// Send communication
+router.post('/:id/send', authenticateToken, requireRole(['admin', 'hr', 'operations']), async (req, res) => {
   try {
-    res.json({ success: true, message: 'Get messages - Implementation pending', data: [] });
+    const { id } = req.params;
+    const collection = await getCollection('communications');
+    
+    const communication = await collection.findOne({ _id: new ObjectId(id) });
+    
+    if (!communication) {
+      return res.status(404).json({
+        success: false,
+        error: 'COMMUNICATION_NOT_FOUND',
+        message: 'Communication not found'
+      });
+    }
+    
+    if (communication.status === 'sent') {
+      return res.status(400).json({
+        success: false,
+        error: 'ALREADY_SENT',
+        message: 'Communication has already been sent'
+      });
+    }
+    
+    // Update status to sent
+    await collection.updateOne(
+      { _id: new ObjectId(id) },
+      { 
+        $set: { 
+          status: 'sent',
+          sentAt: new Date(),
+          updatedAt: new Date()
+        }
+      }
+    );
+    
+    res.json({
+      success: true,
+      message: 'Communication sent successfully',
+      timestamp: new Date().toISOString()
+    });
   } catch (error) {
-    logger.error('Error getting messages:', error);
-    res.status(500).json({ error: 'Failed to get messages' });
+    logger.error('Error sending communication:', error);
+    res.status(500).json({ 
+      success: false,
+      error: 'SEND_COMMUNICATION_FAILED',
+      message: 'Failed to send communication' 
+    });
   }
 });
 
-// Send message
-router.post('/messages', authenticateToken, requireRole(['admin', 'hr', 'operations']), communicationRateLimit, validate('message'), async (req, res) => {
+// Get communication templates
+router.get('/templates', authenticateToken, requireRole(['admin', 'hr', 'operations']), async (req, res) => {
   try {
-    res.json({ success: true, message: 'Send message - Implementation pending', data: {} });
+    const { type, category } = req.query;
+    const collection = await getCollection('communication_templates');
+    
+    const query = {};
+    if (type) query.type = type;
+    if (category) query.category = category;
+    
+    const templates = await collection
+      .find(query)
+      .sort({ name: 1 })
+      .toArray();
+    
+    res.json({
+      success: true,
+      data: templates,
+      timestamp: new Date().toISOString()
+    });
   } catch (error) {
-    logger.error('Error sending message:', error);
-    res.status(500).json({ error: 'Failed to send message' });
+    logger.error('Error getting communication templates:', error);
+    res.status(500).json({ 
+      success: false,
+      error: 'FETCH_TEMPLATES_FAILED',
+      message: 'Failed to get communication templates' 
+    });
   }
 });
 
-// ==================== MEETING ROUTES ====================
-
-// Get all meetings
-router.get('/meetings', authenticateToken, requireRole(['admin', 'hr', 'operations']), communicationRateLimit, async (req, res) => {
+// Create communication template
+router.post('/templates', authenticateToken, requireRole(['admin', 'hr']), validate('template'), async (req, res) => {
   try {
-    res.json({ success: true, message: 'Get meetings - Implementation pending', data: [] });
+    const { name, type, category, subject, content, variables = [] } = req.body;
+    
+    if (!name || !type || !subject || !content) {
+      return res.status(400).json({
+        success: false,
+        error: 'VALIDATION_ERROR',
+        message: 'Name, type, subject, and content are required'
+      });
+    }
+    
+    const collection = await getCollection('communication_templates');
+    
+    const template = {
+      name,
+      type,
+      category: category || 'general',
+      subject,
+      content,
+      variables,
+      createdBy: req.user.id,
+      createdAt: new Date(),
+      updatedAt: new Date()
+    };
+    
+    const result = await collection.insertOne(template);
+    
+    res.status(201).json({
+      success: true,
+      data: {
+        id: result.insertedId,
+        ...template
+      },
+      message: 'Communication template created successfully',
+      timestamp: new Date().toISOString()
+    });
   } catch (error) {
-    logger.error('Error getting meetings:', error);
-    res.status(500).json({ error: 'Failed to get meetings' });
+    logger.error('Error creating communication template:', error);
+    res.status(500).json({ 
+      success: false,
+      error: 'CREATE_TEMPLATE_FAILED',
+      message: 'Failed to create communication template' 
+    });
   }
 });
 
-// Schedule meeting
-router.post('/meetings', authenticateToken, requireRole(['admin', 'hr', 'operations']), communicationRateLimit, validate('meeting'), async (req, res) => {
+// Get communication analytics
+router.get('/analytics/overview', authenticateToken, requireRole(['admin', 'hr', 'analytics']), async (req, res) => {
   try {
-    res.json({ success: true, message: 'Schedule meeting - Implementation pending', data: {} });
-  } catch (error) {
-    logger.error('Error scheduling meeting:', error);
-    res.status(500).json({ error: 'Failed to schedule meeting' });
-  }
-});
-
-// ==================== ANNOUNCEMENT ROUTES ====================
-
-// Get all announcements
-router.get('/announcements', authenticateToken, requireRole(['admin', 'hr', 'operations']), communicationRateLimit, async (req, res) => {
-  try {
-    res.json({ success: true, message: 'Get announcements - Implementation pending', data: [] });
-  } catch (error) {
-    logger.error('Error getting announcements:', error);
-    res.status(500).json({ error: 'Failed to get announcements' });
-  }
-});
-
-// Create announcement
-router.post('/announcements', authenticateToken, requireRole(['admin', 'hr']), communicationRateLimit, validate('announcement'), async (req, res) => {
-  try {
-    res.json({ success: true, message: 'Create announcement - Implementation pending', data: {} });
-  } catch (error) {
-    logger.error('Error creating announcement:', error);
-    res.status(500).json({ error: 'Failed to create announcement' });
-  }
-});
-
-// ==================== DOCUMENT COLLABORATION ROUTES ====================
-
-// Get all documents
-router.get('/documents', authenticateToken, requireRole(['admin', 'hr', 'operations']), communicationRateLimit, async (req, res) => {
-  try {
-    res.json({ success: true, message: 'Get documents - Implementation pending', data: [] });
-  } catch (error) {
-    logger.error('Error getting documents:', error);
-    res.status(500).json({ error: 'Failed to get documents' });
-  }
-});
-
-// Upload document
-router.post('/documents', authenticateToken, requireRole(['admin', 'hr', 'operations']), communicationRateLimit, validate('document'), async (req, res) => {
-  try {
-    res.json({ success: true, message: 'Upload document - Implementation pending', data: {} });
-  } catch (error) {
-    logger.error('Error uploading document:', error);
-    res.status(500).json({ error: 'Failed to upload document' });
-  }
-});
-
-// ==================== POLL ROUTES ====================
-
-// Get all polls
-router.get('/polls', authenticateToken, requireRole(['admin', 'hr', 'operations']), communicationRateLimit, async (req, res) => {
-  try {
-    res.json({ success: true, message: 'Get polls - Implementation pending', data: [] });
-  } catch (error) {
-    logger.error('Error getting polls:', error);
-    res.status(500).json({ error: 'Failed to get polls' });
-  }
-});
-
-// Create poll
-router.post('/polls', authenticateToken, requireRole(['admin', 'hr']), communicationRateLimit, validate('poll'), async (req, res) => {
-  try {
-    res.json({ success: true, message: 'Create poll - Implementation pending', data: {} });
-  } catch (error) {
-    logger.error('Error creating poll:', error);
-    res.status(500).json({ error: 'Failed to create poll' });
-  }
-});
-
-// Vote on poll
-router.post('/polls/:id/vote', authenticateToken, requireRole(['admin', 'hr', 'operations']), communicationRateLimit, validate('vote'), async (req, res) => {
-  try {
-    res.json({ success: true, message: 'Vote on poll - Implementation pending', data: {} });
-  } catch (error) {
-    logger.error('Error voting on poll:', error);
-    res.status(500).json({ error: 'Failed to vote on poll' });
-  }
-});
-
-// ==================== EVENT ROUTES ====================
-
-// Get all events
-router.get('/events', authenticateToken, requireRole(['admin', 'hr', 'operations']), communicationRateLimit, async (req, res) => {
-  try {
-    res.json({ success: true, message: 'Get events - Implementation pending', data: [] });
-  } catch (error) {
-    logger.error('Error getting events:', error);
-    res.status(500).json({ error: 'Failed to get events' });
-  }
-});
-
-// Create event
-router.post('/events', authenticateToken, requireRole(['admin', 'hr']), communicationRateLimit, validate('event'), async (req, res) => {
-  try {
-    res.json({ success: true, message: 'Create event - Implementation pending', data: {} });
-  } catch (error) {
-    logger.error('Error creating event:', error);
-    res.status(500).json({ error: 'Failed to create event' });
-  }
-});
-
-// RSVP to event
-router.post('/events/:id/rsvp', authenticateToken, requireRole(['admin', 'hr', 'operations']), communicationRateLimit, validate('rsvp'), async (req, res) => {
-  try {
-    res.json({ success: true, message: 'RSVP to event - Implementation pending', data: {} });
-  } catch (error) {
-    logger.error('Error RSVPing to event:', error);
-    res.status(500).json({ error: 'Failed to RSVP to event' });
-  }
-});
-
-// ==================== MEETING METRICS ROUTES ====================
-
-// Get meeting metrics and analytics
-router.get('/meetings/metrics', authenticateToken, requireRole(['admin', 'hr', 'operations']), communicationRateLimit, async (req, res) => {
-  try {
-    const { startDate, endDate, department } = req.query;
+    const { startDate, endDate } = req.query;
+    const collection = await getCollection('communications');
     
     // Build date filter
     const dateFilter = {};
@@ -234,31 +379,52 @@ router.get('/meetings/metrics', authenticateToken, requireRole(['admin', 'hr', '
       if (endDate) dateFilter.createdAt.$lte = new Date(endDate);
     }
     
-    // Build department filter
-    if (department) {
-      dateFilter.department = department;
-    }
-
-    // Mock metrics data (replace with actual database queries)
-    const metrics = {
-      totalMeetings: 0,
-      upcomingMeetings: 0,
-      completedMeetings: 0,
-      averageDuration: 0,
-      attendanceRate: 0,
-      departmentBreakdown: {},
-      monthlyTrend: [],
-      topParticipants: []
-    };
-
+    const [
+      totalCommunications,
+      communicationsByType,
+      communicationsByStatus,
+      communicationsByPriority,
+      sentCommunications
+    ] = await Promise.all([
+      collection.countDocuments(dateFilter),
+      collection.aggregate([
+        { $match: dateFilter },
+        { $group: { _id: '$type', count: { $sum: 1 } } }
+      ]).toArray(),
+      collection.aggregate([
+        { $match: dateFilter },
+        { $group: { _id: '$status', count: { $sum: 1 } } }
+      ]).toArray(),
+      collection.aggregate([
+        { $match: dateFilter },
+        { $group: { _id: '$priority', count: { $sum: 1 } } }
+      ]).toArray(),
+      collection.countDocuments({ ...dateFilter, status: 'sent' })
+    ]);
+    
     res.json({
       success: true,
-      data: metrics,
-      filters: { startDate, endDate, department }
+      data: {
+        overview: {
+          totalCommunications,
+          sentCommunications,
+          pendingCommunications: totalCommunications - sentCommunications
+        },
+        breakdown: {
+          byType: communicationsByType,
+          byStatus: communicationsByStatus,
+          byPriority: communicationsByPriority
+        }
+      },
+      timestamp: new Date().toISOString()
     });
   } catch (error) {
-    logger.error('Error getting meeting metrics:', error);
-    res.status(500).json({ error: 'Failed to get meeting metrics' });
+    logger.error('Error getting communication analytics:', error);
+    res.status(500).json({ 
+      success: false,
+      error: 'FETCH_COMMUNICATION_ANALYTICS_FAILED',
+      message: 'Failed to get communication analytics' 
+    });
   }
 });
 

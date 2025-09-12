@@ -34,7 +34,7 @@ export default function SystemHealthPage() {
   const [services, setServices] = useState([])
   const [alerts, setAlerts] = useState([])
   const [isLoading, setIsLoading] = useState(true)
-  const [error, setError] = useState(null)
+  const [error, setError] = useState<string | null>(null)
   const [lastUpdated, setLastUpdated] = useState(new Date())
   const [autoRefresh, setAutoRefresh] = useState(true)
   const toast = useToast()
@@ -55,8 +55,9 @@ export default function SystemHealthPage() {
       }
     } catch (err) {
       console.error('Error fetching system health:', err)
-      setError(err.message)
-      toast.error('Failed to load system health data', err.message)
+      const errorMessage = err instanceof Error ? err.message : 'An unknown error occurred'
+      setError(errorMessage)
+      toast.error('Failed to load system health data', errorMessage)
     } finally {
       setIsLoading(false)
     }

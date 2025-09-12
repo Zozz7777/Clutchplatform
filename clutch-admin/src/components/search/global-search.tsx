@@ -291,7 +291,7 @@ function GlobalSearch({
     const handleKeyDown = (e: KeyboardEvent) => {
       if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
         e.preventDefault()
-        setIsOpen(true)
+        setInternalIsOpen(true)
       }
     }
 
@@ -304,7 +304,7 @@ function GlobalSearch({
       {/* Search Trigger */}
       <Button
         variant="outline"
-        onClick={() => setIsOpen(true)}
+        onClick={() => setInternalIsOpen(true)}
         className={`flex items-center gap-2 ${className}`}
       >
         <Search className="h-4 w-4" />
@@ -320,7 +320,7 @@ function GlobalSearch({
           {/* Backdrop */}
           <div
             className="absolute inset-0 bg-black bg-opacity-50"
-            onClick={() => setIsOpen(false)}
+            onClick={handleClose}
           />
 
           {/* Search Container */}
