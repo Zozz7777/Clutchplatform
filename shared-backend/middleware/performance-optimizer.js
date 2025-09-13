@@ -329,12 +329,12 @@ class PerformanceOptimizer {
     const memUsage = process.memoryUsage();
     const heapUsageRatio = memUsage.heapUsed / memUsage.heapTotal;
     
-    // Aggressive memory optimization for high usage
-    if (heapUsageRatio > 0.85) {
-      console.log(`🧹 Memory optimized: ${Math.round(heapUsageRatio * 100)}% heap usage`);
+    // EMERGENCY memory optimization for critical usage
+    if (heapUsageRatio > 0.80) {
+      console.log(`🧹 High memory usage: ${Math.round(heapUsageRatio * 100)}% - monitoring...`);
       
-      // Clear cache if memory usage is high
-      if (heapUsageRatio > 0.90) {
+      // Level 1: Clear cache at 80%
+      if (heapUsageRatio > 0.80) {
         this.cache.clear();
         this.cacheStats = {
           hits: 0,
@@ -345,11 +345,83 @@ class PerformanceOptimizer {
         console.log('🧹 Cache cleared due to high memory usage');
       }
       
-      // Force garbage collection if available
-      if (global.gc && heapUsageRatio > 0.95) {
+      // Level 2: Force garbage collection at 85%
+      if (global.gc && heapUsageRatio > 0.85) {
         global.gc();
         console.log('🧹 Forced garbage collection');
       }
+      
+      // Level 3: Emergency cleanup at 90%
+      if (heapUsageRatio > 0.90) {
+        this.emergencyMemoryCleanup();
+      }
+      
+      // Level 4: Critical cleanup at 95%
+      if (heapUsageRatio > 0.95) {
+        this.criticalMemoryCleanup();
+      }
+    }
+  }
+
+  // Emergency memory cleanup procedures
+  emergencyMemoryCleanup() {
+    console.log('🚨 EMERGENCY: Performing emergency memory cleanup');
+    
+    try {
+      // Clear all caches
+      this.cache.clear();
+      
+      // Clear any global caches if they exist
+      if (global.cache) {
+        global.cache.clear();
+      }
+      
+      // Force multiple garbage collection cycles
+      if (global.gc) {
+        for (let i = 0; i < 3; i++) {
+          global.gc();
+        }
+      }
+      
+      // Reset cache stats
+      this.cacheStats = {
+        hits: 0,
+        misses: 0,
+        size: 0,
+        maxSize: 500 // Reduce max cache size
+      };
+      
+      console.log('✅ Emergency memory cleanup completed');
+    } catch (error) {
+      console.error('❌ Emergency memory cleanup failed:', error);
+    }
+  }
+
+  // Critical memory cleanup procedures
+  criticalMemoryCleanup() {
+    console.log('🚨 CRITICAL: Performing critical memory cleanup');
+    
+    try {
+      // Emergency cleanup first
+      this.emergencyMemoryCleanup();
+      
+      // Clear any remaining references
+      this.optimizationRules.clear();
+      
+      // Force aggressive garbage collection
+      if (global.gc) {
+        for (let i = 0; i < 5; i++) {
+          global.gc();
+        }
+      }
+      
+      // Reinitialize with minimal settings
+      this.setupOptimizationRules();
+      this.cacheStats.maxSize = 100; // Drastically reduce cache size
+      
+      console.log('✅ Critical memory cleanup completed');
+    } catch (error) {
+      console.error('❌ Critical memory cleanup failed:', error);
     }
   }
 
