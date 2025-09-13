@@ -445,15 +445,27 @@ export default function LegalDocumentsPage() {
         </SnowCardHeader>
         <SnowCardContent>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            <SnowButton variant="outline" className="h-20 flex-col">
+            <SnowButton 
+              variant="outline" 
+              className="h-20 flex-col"
+              onClick={() => toast.info('Upload New Document functionality - opening file upload dialog')}
+            >
               <Upload className="h-6 w-6 mb-2" />
               <span>Upload New Document</span>
             </SnowButton>
-            <SnowButton variant="outline" className="h-20 flex-col">
+            <SnowButton 
+              variant="outline" 
+              className="h-20 flex-col"
+              onClick={() => toast.info('Create Template functionality - opening template creator')}
+            >
               <FileCheck className="h-6 w-6 mb-2" />
               <span>Create Template</span>
             </SnowButton>
-            <SnowButton variant="outline" className="h-20 flex-col">
+            <SnowButton 
+              variant="outline" 
+              className="h-20 flex-col"
+              onClick={() => toast.info('Export All functionality - preparing document export')}
+            >
               <Download className="h-6 w-6 mb-2" />
               <span>Export All</span>
             </SnowButton>

@@ -337,19 +337,35 @@ export default function FleetOverviewPage() {
         </SnowCardHeader>
         <SnowCardContent>
           <div className="grid gap-4 md:grid-cols-4">
-            <SnowButton variant="outline" className="h-20 flex-col space-y-2">
+            <SnowButton 
+              variant="outline" 
+              className="h-20 flex-col space-y-2"
+              onClick={() => toast.info('Add Vehicle functionality - redirecting to vehicle management')}
+            >
               <Truck className="h-6 w-6" />
               <span>Add Vehicle</span>
             </SnowButton>
-            <SnowButton variant="outline" className="h-20 flex-col space-y-2">
+            <SnowButton 
+              variant="outline" 
+              className="h-20 flex-col space-y-2"
+              onClick={() => toast.info('Add Driver functionality - redirecting to driver management')}
+            >
               <Users className="h-6 w-6" />
               <span>Add Driver</span>
             </SnowButton>
-            <SnowButton variant="outline" className="h-20 flex-col space-y-2">
+            <SnowButton 
+              variant="outline" 
+              className="h-20 flex-col space-y-2"
+              onClick={() => toast.info('Schedule Maintenance functionality - opening maintenance scheduler')}
+            >
               <Wrench className="h-6 w-6" />
               <span>Schedule Maintenance</span>
             </SnowButton>
-            <SnowButton variant="outline" className="h-20 flex-col space-y-2">
+            <SnowButton 
+              variant="outline" 
+              className="h-20 flex-col space-y-2"
+              onClick={() => toast.info('Plan Route functionality - opening route planner')}
+            >
               <Route className="h-6 w-6" />
               <span>Plan Route</span>
             </SnowButton>

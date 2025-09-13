@@ -43,7 +43,9 @@ const mockRefreshToken = 'mock-refresh-token-' + Date.now()
 // Mock API responses
 export const mockAuth = {
   login: async (credentials: { email: string; password: string }): Promise<MockAuthResponse> => {
-    console.log('🔧 MOCK_AUTH: Login attempt', credentials.email)
+    if (process.env.NODE_ENV === 'development') {
+      console.log('🔧 MOCK_AUTH: Login attempt', credentials.email)
+    }
     
     // Simulate network delay
     await new Promise(resolve => setTimeout(resolve, 500))
@@ -67,7 +69,9 @@ export const mockAuth = {
   },
 
   getCurrentUser: async (): Promise<MockAuthResponse> => {
-    console.log('🔧 MOCK_AUTH: Getting current user')
+    if (process.env.NODE_ENV === 'development') {
+      console.log('🔧 MOCK_AUTH: Getting current user')
+    }
     
     // Simulate network delay
     await new Promise(resolve => setTimeout(resolve, 300))
@@ -83,7 +87,9 @@ export const mockAuth = {
   },
 
   refreshToken: async (refreshToken: string): Promise<MockAuthResponse> => {
-    console.log('🔧 MOCK_AUTH: Refreshing token')
+    if (process.env.NODE_ENV === 'development') {
+      console.log('🔧 MOCK_AUTH: Refreshing token')
+    }
     
     // Simulate network delay
     await new Promise(resolve => setTimeout(resolve, 300))
@@ -176,7 +182,9 @@ export const mockApiData = {
 // Mock API client methods
 export const mockApiClient = {
   get: async <T>(endpoint: string): Promise<T> => {
-    console.log('🔧 MOCK_API: GET', endpoint)
+    if (process.env.NODE_ENV === 'development') {
+      console.log('🔧 MOCK_API: GET', endpoint)
+    }
     
     // Simulate network delay
     await new Promise(resolve => setTimeout(resolve, 200))
@@ -197,7 +205,9 @@ export const mockApiClient = {
   },
 
   post: async <T>(endpoint: string, data: any): Promise<T> => {
-    console.log('🔧 MOCK_API: POST', endpoint, data)
+    if (process.env.NODE_ENV === 'development') {
+      console.log('🔧 MOCK_API: POST', endpoint, data)
+    }
     
     // Simulate network delay
     await new Promise(resolve => setTimeout(resolve, 300))
@@ -210,7 +220,9 @@ export const mockApiClient = {
   },
 
   put: async <T>(endpoint: string, data: any): Promise<T> => {
-    console.log('🔧 MOCK_API: PUT', endpoint, data)
+    if (process.env.NODE_ENV === 'development') {
+      console.log('🔧 MOCK_API: PUT', endpoint, data)
+    }
     
     // Simulate network delay
     await new Promise(resolve => setTimeout(resolve, 300))
@@ -223,7 +235,9 @@ export const mockApiClient = {
   },
 
   delete: async <T>(endpoint: string): Promise<T> => {
-    console.log('🔧 MOCK_API: DELETE', endpoint)
+    if (process.env.NODE_ENV === 'development') {
+      console.log('🔧 MOCK_API: DELETE', endpoint)
+    }
     
     // Simulate network delay
     await new Promise(resolve => setTimeout(resolve, 300))

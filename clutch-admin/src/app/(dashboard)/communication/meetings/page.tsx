@@ -517,19 +517,35 @@ export default function CommunicationMeetingsPage() {
         </SnowCardHeader>
         <SnowCardContent>
           <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-            <SnowButton variant="outline" className="h-20 flex-col">
+            <SnowButton 
+              variant="outline" 
+              className="h-20 flex-col"
+              onClick={() => toast.info('Schedule Meeting functionality - opening meeting scheduler')}
+            >
               <Plus className="h-6 w-6 mb-2" />
               <span>Schedule Meeting</span>
             </SnowButton>
-            <SnowButton variant="outline" className="h-20 flex-col">
+            <SnowButton 
+              variant="outline" 
+              className="h-20 flex-col"
+              onClick={() => toast.info('Start Meeting functionality - launching video conference')}
+            >
               <Video className="h-6 w-6 mb-2" />
               <span>Start Meeting</span>
             </SnowButton>
-            <SnowButton variant="outline" className="h-20 flex-col">
+            <SnowButton 
+              variant="outline" 
+              className="h-20 flex-col"
+              onClick={() => toast.info('Meeting Templates functionality - opening template library')}
+            >
               <FileText className="h-6 w-6 mb-2" />
               <span>Meeting Templates</span>
             </SnowButton>
-            <SnowButton variant="outline" className="h-20 flex-col">
+            <SnowButton 
+              variant="outline" 
+              className="h-20 flex-col"
+              onClick={() => toast.info('Export Calendar functionality - preparing calendar export')}
+            >
               <Download className="h-6 w-6 mb-2" />
               <span>Export Calendar</span>
             </SnowButton>

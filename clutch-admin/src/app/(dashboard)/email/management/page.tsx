@@ -47,6 +47,7 @@ import { SnowButton } from '@/components/ui/snow-button'
 import { SnowCard, SnowCardContent, SnowCardHeader, SnowCardTitle, SnowCardDescription } from '@/components/ui/snow-card'
 import { SnowInput } from '@/components/ui/snow-input'
 import { useAuthStore } from '@/store'
+import { toast } from 'sonner'
 
 // Types
 interface EmailStats {
@@ -515,6 +516,26 @@ const AccountManagement = ({ accounts }: { accounts: EmailAccount[] }) => {
 
 // Quick Actions Component
 const QuickActions = () => {
+  const handleAddUser = () => {
+    toast.info('Add User functionality - redirecting to user management')
+    // In a real app, this would navigate to user management or open a modal
+  }
+
+  const handleBulkEmail = () => {
+    toast.info('Bulk Email functionality - opening bulk email composer')
+    // In a real app, this would open a bulk email composer
+  }
+
+  const handleCreateFolder = () => {
+    toast.info('Create Folder functionality - opening folder creation dialog')
+    // In a real app, this would open a folder creation dialog
+  }
+
+  const handleExportData = () => {
+    toast.info('Export Data functionality - preparing data export')
+    // In a real app, this would trigger data export
+  }
+
   return (
     <SnowCard>
       <SnowCardHeader>
@@ -525,19 +546,19 @@ const QuickActions = () => {
       </SnowCardHeader>
       <SnowCardContent>
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-          <SnowButton variant="outline" className="flex-col h-auto py-4">
+          <SnowButton variant="outline" className="flex-col h-auto py-4" onClick={handleAddUser}>
             <UserPlus className="h-6 w-6 mb-2" />
             <span className="text-sm">Add User</span>
           </SnowButton>
-          <SnowButton variant="outline" className="flex-col h-auto py-4">
+          <SnowButton variant="outline" className="flex-col h-auto py-4" onClick={handleBulkEmail}>
             <MailPlus className="h-6 w-6 mb-2" />
             <span className="text-sm">Bulk Email</span>
           </SnowButton>
-          <SnowButton variant="outline" className="flex-col h-auto py-4">
+          <SnowButton variant="outline" className="flex-col h-auto py-4" onClick={handleCreateFolder}>
             <FolderPlus className="h-6 w-6 mb-2" />
             <span className="text-sm">Create Folder</span>
           </SnowButton>
-          <SnowButton variant="outline" className="flex-col h-auto py-4">
+          <SnowButton variant="outline" className="flex-col h-auto py-4" onClick={handleExportData}>
             <Download className="h-6 w-6 mb-2" />
             <span className="text-sm">Export Data</span>
           </SnowButton>
@@ -743,7 +764,9 @@ export default function EmailManagementPage() {
       // setSystemHealth(healthData)
       
       // For now, use mock data
-      console.log('Loading email management data...')
+      if (process.env.NODE_ENV === 'development') {
+        console.log('Loading email management data...')
+      }
     } catch (error) {
       console.error('Failed to load email management data:', error)
     } finally {
