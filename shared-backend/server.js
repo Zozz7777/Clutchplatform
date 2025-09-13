@@ -163,6 +163,7 @@ const nextLevelFeaturesRoutes = require('./routes/nextLevelFeatures');
 const analyticsBackupRoutes = require('./routes/analytics-backup');
 const communicationBackupRoutes = require('./routes/communication-backup');
 const userAnalyticsBackupRoutes = require('./routes/user-analytics-backup');
+const endpointTesterRoutes = require('./routes/endpoint-tester');
 
 // Initialize Express app
 const app = express();
@@ -438,6 +439,7 @@ app.use(`${apiPrefix}/next-level-features`, nextLevelFeaturesRoutes);
 app.use(`${apiPrefix}/analytics-backup`, analyticsBackupRoutes);
 app.use(`${apiPrefix}/communication-backup`, communicationBackupRoutes);
 app.use(`${apiPrefix}/user-analytics-backup`, userAnalyticsBackupRoutes);
+app.use(`${apiPrefix}/endpoint-tester`, endpointTesterRoutes);
 
 // Fallback routes
 app.use('/auth', authRoutes);
@@ -716,6 +718,14 @@ async function startServer() {
       console.log(`📊 Health check: https://clutch-main-nk7x.onrender.com/health/ping`);
       console.log(`⚡ Performance monitoring: https://clutch-main-nk7x.onrender.com/api/v1/performance/monitor`);
       console.log(`🔄 Graceful restart: SIGUSR2 or SIGHUP`);
+      
+      // Run endpoint testing in production to generate logs
+      if (process.env.NODE_ENV === 'production') {
+        console.log(`🧪 Starting endpoint testing for Render logs...`);
+        setTimeout(() => {
+          require('./scripts/test-endpoints-on-render.js');
+        }, 5000); // Wait 5 seconds after server start
+      }
     });
 
     // Track server connections for graceful restart
