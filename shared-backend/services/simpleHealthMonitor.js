@@ -39,6 +39,11 @@ class SimpleHealthMonitor {
     this.logger.info('✅ Simple health monitoring started successfully');
   }
 
+  // Alias for compatibility with EnhancedAutonomousSystemOrchestrator
+  startMonitoring() {
+    return this.startHealthMonitoring();
+  }
+
   performOverallHealthCheck() {
     try {
       const checks = Object.values(this.healthChecks);
