@@ -350,7 +350,7 @@ router.patch('/bulk-update', authenticateToken, async (req, res) => {
 router.get('/', (req, res) => {
   res.status(200).json({
     success: true,
-    message: `${routeFile.replace('.js', '')} service is running`,
+    message: `${'advancedFeatures'} service is running`,
     timestamp: new Date().toISOString(),
     method: 'GET',
     path: '/'
@@ -361,7 +361,7 @@ router.get('/:id', (req, res) => {
   const { id } = req.params;
   res.status(200).json({
     success: true,
-    message: `${routeFile.replace('.js', '')} item retrieved`,
+    message: `${'advancedFeatures'} item retrieved`,
     data: { id: id, name: `Item ${id}`, status: 'active' },
     timestamp: new Date().toISOString(),
     method: 'GET',
@@ -372,7 +372,7 @@ router.get('/:id', (req, res) => {
 router.post('/', (req, res) => {
   res.status(201).json({
     success: true,
-    message: `${routeFile.replace('.js', '')} item created`,
+    message: `${'advancedFeatures'} item created`,
     data: { id: Date.now(), ...req.body, createdAt: new Date().toISOString() },
     timestamp: new Date().toISOString(),
     method: 'POST',
@@ -384,7 +384,7 @@ router.put('/:id', (req, res) => {
   const { id } = req.params;
   res.status(200).json({
     success: true,
-    message: `${routeFile.replace('.js', '')} item updated`,
+    message: `${'advancedFeatures'} item updated`,
     data: { id: id, ...req.body, updatedAt: new Date().toISOString() },
     timestamp: new Date().toISOString(),
     method: 'PUT',
@@ -396,7 +396,7 @@ router.delete('/:id', (req, res) => {
   const { id } = req.params;
   res.status(200).json({
     success: true,
-    message: `${routeFile.replace('.js', '')} item deleted`,
+    message: `${'advancedFeatures'} item deleted`,
     data: { id: id, deletedAt: new Date().toISOString() },
     timestamp: new Date().toISOString(),
     method: 'DELETE',
@@ -407,7 +407,7 @@ router.delete('/:id', (req, res) => {
 router.get('/search', (req, res) => {
   res.status(200).json({
     success: true,
-    message: `${routeFile.replace('.js', '')} search results`,
+    message: `${'advancedFeatures'} search results`,
     data: { query: req.query.q || '', results: [], total: 0 },
     timestamp: new Date().toISOString(),
     method: 'GET',
