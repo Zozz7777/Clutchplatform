@@ -6,7 +6,7 @@
 const winston = require('winston');
 const EnhancedAutonomousLearningSystem = require('./enhancedAutonomousLearningSystem');
 const LocalPatternMatchingEngine = require('./localPatternMatchingEngine');
-const AutonomousBackendHealthMonitor = require('./autonomousBackendHealthMonitor');
+const SimpleHealthMonitor = require('./simpleHealthMonitor');
 const AIProviderManager = require('./aiProviderManager');
 const ProductionSafeAI = require('./productionSafeAI');
 
@@ -27,7 +27,7 @@ class EnhancedAutonomousSystemOrchestrator {
     // Initialize enhanced components
     this.enhancedLearningSystem = new EnhancedAutonomousLearningSystem();
     this.patternMatchingEngine = new LocalPatternMatchingEngine();
-    this.healthMonitor = new AutonomousBackendHealthMonitor();
+    this.healthMonitor = new SimpleHealthMonitor();
     this.aiProviderManager = new AIProviderManager();
     this.productionSafeAI = new ProductionSafeAI();
 
