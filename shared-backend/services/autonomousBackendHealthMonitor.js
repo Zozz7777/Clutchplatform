@@ -27,12 +27,12 @@ class AutonomousBackendHealthMonitor {
     });
 
     this.healthChecks = {
-      database: { enabled: true, interval: 30000, lastCheck: null, status: 'unknown' },
-      api: { enabled: true, interval: 15000, lastCheck: null, status: 'unknown' },
-      memory: { enabled: true, interval: 10000, lastCheck: null, status: 'unknown' },
-      cpu: { enabled: true, interval: 10000, lastCheck: null, status: 'unknown' },
-      disk: { enabled: true, interval: 60000, lastCheck: null, status: 'unknown' },
-      network: { enabled: true, interval: 30000, lastCheck: null, status: 'unknown' }
+      database: { enabled: true, interval: 300000, lastCheck: null, status: 'unknown' }, // 5 minutes
+      api: { enabled: true, interval: 300000, lastCheck: null, status: 'unknown' }, // 5 minutes
+      memory: { enabled: true, interval: 60000, lastCheck: null, status: 'unknown' }, // 1 minute
+      cpu: { enabled: true, interval: 120000, lastCheck: null, status: 'unknown' }, // 2 minutes
+      disk: { enabled: true, interval: 600000, lastCheck: null, status: 'unknown' }, // 10 minutes
+      network: { enabled: true, interval: 300000, lastCheck: null, status: 'unknown' } // 5 minutes
     };
 
     this.healthHistory = [];
@@ -683,9 +683,9 @@ class AutonomousBackendHealthMonitor {
     
     this.healthHistory.push(record);
     
-    // Keep only last 1000 records
-    if (this.healthHistory.length > 1000) {
-      this.healthHistory = this.healthHistory.slice(-1000);
+    // Keep only last 100 records to save memory
+    if (this.healthHistory.length > 100) {
+      this.healthHistory = this.healthHistory.slice(-100);
     }
   }
 

@@ -329,10 +329,27 @@ class PerformanceOptimizer {
     const memUsage = process.memoryUsage();
     const heapUsageRatio = memUsage.heapUsed / memUsage.heapTotal;
     
-    // Disable automatic memory optimization to prevent restarts
-    if (heapUsageRatio > 0.99) {
-      // Only log critical memory usage, don't optimize
-      console.log(`ðŸ§¹ High memory usage: ${Math.round(heapUsageRatio * 100)}% - monitoring only`);
+    // Aggressive memory optimization for high usage
+    if (heapUsageRatio > 0.85) {
+      console.log(`🧹 Memory optimized: ${Math.round(heapUsageRatio * 100)}% heap usage`);
+      
+      // Clear cache if memory usage is high
+      if (heapUsageRatio > 0.90) {
+        this.cache.clear();
+        this.cacheStats = {
+          hits: 0,
+          misses: 0,
+          size: 0,
+          maxSize: 1000
+        };
+        console.log('🧹 Cache cleared due to high memory usage');
+      }
+      
+      // Force garbage collection if available
+      if (global.gc && heapUsageRatio > 0.95) {
+        global.gc();
+        console.log('🧹 Forced garbage collection');
+      }
     }
   }
 
@@ -428,7 +445,7 @@ class PerformanceOptimizer {
   optimizationMiddleware() {
     return (req, res, next) => {
       // Disable automatic memory optimization to prevent restarts
-      // this.optimizeMemory();
+      this.optimizeMemory();
       
       // Add optimization headers
       res.setHeader('X-Optimization-Enabled', 'true');

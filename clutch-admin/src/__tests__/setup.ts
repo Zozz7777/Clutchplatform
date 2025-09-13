@@ -6,7 +6,7 @@
 import '@testing-library/jest-dom'
 import { configure } from '@testing-library/react'
 import { setupServer } from 'msw/node'
-import { rest } from 'msw'
+import { http, HttpResponse } from 'msw'
 
 // Configure testing library
 configure({
@@ -17,85 +17,73 @@ configure({
 // Mock API handlers
 const handlers = [
   // Mock authentication
-  rest.post('/api/auth/login', (req, res, ctx) => {
-    return res(
-      ctx.json({
-        user: {
-          id: '1',
-          email: 'test@example.com',
-          fullName: 'Test User',
-          role: 'admin'
-        },
-        token: 'mock-token'
-      })
-    )
+  http.post('/api/auth/login', () => {
+    return HttpResponse.json({
+      user: {
+        id: '1',
+        email: 'test@example.com',
+        fullName: 'Test User',
+        role: 'admin'
+      },
+      token: 'mock-token'
+    })
   }),
 
   // Mock dashboard data
-  rest.get('/api/dashboard/metrics', (req, res, ctx) => {
-    return res(
-      ctx.json({
-        totalUsers: 12345,
-        revenue: 45678,
-        activeSessions: 2456,
-        conversionRate: 3.2
-      })
-    )
+  http.get('/api/dashboard/metrics', () => {
+    return HttpResponse.json({
+      totalUsers: 12345,
+      revenue: 45678,
+      activeSessions: 2456,
+      conversionRate: 3.2
+    })
   }),
 
   // Mock user data
-  rest.get('/api/users', (req, res, ctx) => {
-    return res(
-      ctx.json({
-        users: Array.from({ length: 100 }, (_, i) => ({
-          id: i + 1,
-          name: `User ${i + 1}`,
-          email: `user${i + 1}@example.com`,
-          role: ['Admin', 'User', 'Manager', 'Guest'][i % 4],
-          status: ['Active', 'Inactive', 'Pending'][i % 3]
-        })),
-        total: 100
-      })
-    )
+  http.get('/api/users', () => {
+    return HttpResponse.json({
+      users: Array.from({ length: 100 }, (_, i) => ({
+        id: i + 1,
+        name: `User ${i + 1}`,
+        email: `user${i + 1}@example.com`,
+        role: ['Admin', 'User', 'Manager', 'Guest'][i % 4],
+        status: ['Active', 'Inactive', 'Pending'][i % 3]
+      })),
+      total: 100
+    })
   }),
 
   // Mock navigation data
-  rest.get('/api/navigation', (req, res, ctx) => {
-    return res(
-      ctx.json({
-        items: [
-          { id: 'dashboard', label: 'Dashboard', path: '/dashboard' },
-          { id: 'users', label: 'Users', path: '/users' },
-          { id: 'settings', label: 'Settings', path: '/settings' }
-        ]
-      })
-    )
+  http.get('/api/navigation', () => {
+    return HttpResponse.json({
+      items: [
+        { id: 'dashboard', label: 'Dashboard', path: '/dashboard' },
+        { id: 'users', label: 'Users', path: '/users' },
+        { id: 'settings', label: 'Settings', path: '/settings' }
+      ]
+    })
   }),
 
   // Mock performance data
-  rest.get('/api/performance', (req, res, ctx) => {
-    return res(
-      ctx.json({
-        metrics: {
-          loadTime: 1200,
-          renderTime: 800,
-          memoryUsage: 45.6,
-          cpuUsage: 23.4
-        }
-      })
-    )
+  http.get('/api/performance', () => {
+    return HttpResponse.json({
+      metrics: {
+        loadTime: 1200,
+        renderTime: 800,
+        memoryUsage: 45.6,
+        cpuUsage: 23.4
+      }
+    })
   }),
 
   // Mock analytics data
-  rest.get('/api/analytics', (req, res, ctx) => {
-    return res(
-      ctx.json({
-        events: [
-          { id: 1, name: 'page_view', timestamp: new Date().toISOString() },
-          { id: 2, name: 'button_click', timestamp: new Date().toISOString() }
-        ]
-      })
-    )
+  http.get('/api/analytics', () => {
+    return HttpResponse.json({
+      events: [
+        { id: 1, name: 'page_view', timestamp: new Date().toISOString() },
+        { id: 2, name: 'button_click', timestamp: new Date().toISOString() }
+      ]
+    })
   })
 ]
 

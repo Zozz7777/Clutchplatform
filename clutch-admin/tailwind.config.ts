@@ -10,8 +10,31 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
-        // Enhanced Clutch Brand Colors
+        // Clutch Brand Colors - Red & White
         'clutch': {
+          // Primary brand red
+          'red-50': '#FEF2F2',
+          'red-100': '#FEE2E2',
+          'red-200': '#FECACA',
+          'red-300': '#FCA5A5',
+          'red-400': '#F87171',
+          'red-500': '#ED1B24', // Primary brand red
+          'red-600': '#DC2626',
+          'red-700': '#B91C1C',
+          'red-800': '#991B1B',
+          'red-900': '#7F1D1D',
+          // White shades
+          'white-50': '#FFFFFF',
+          'white-100': '#FEFEFE',
+          'white-200': '#FDFDFD',
+          'white-300': '#FCFCFC',
+          'white-400': '#FAFAFA',
+          'white-500': '#F8F8F8',
+          'white-600': '#F5F5F5',
+          'white-700': '#F0F0F0',
+          'white-800': '#E5E5E5',
+          'white-900': '#D1D1D1',
+          // Legacy support
           primary: 'hsl(var(--clutch-primary))',
           'primary-light': 'hsl(var(--clutch-primary-light))',
           'primary-dark': 'hsl(var(--clutch-primary-dark))',
@@ -23,29 +46,6 @@ const config: Config = {
           'secondary-dark': 'hsl(var(--clutch-secondary-dark))',
           'secondary-50': 'hsl(var(--clutch-secondary-50))',
           'secondary-100': 'hsl(var(--clutch-secondary-100))',
-        },
-        // Clutch Brand Colors - Red & White
-        'clutch': {
-          'red-50': '#FEF2F2',
-          'red-100': '#FEE2E2',
-          'red-200': '#FECACA',
-          'red-300': '#FCA5A5',
-          'red-400': '#F87171',
-          'red-500': '#ED1B24', // Primary brand red
-          'red-600': '#DC2626',
-          'red-700': '#B91C1C',
-          'red-800': '#991B1B',
-          'red-900': '#7F1D1D',
-          'white-50': '#FFFFFF',
-          'white-100': '#FEFEFE',
-          'white-200': '#FDFDFD',
-          'white-300': '#FCFCFC',
-          'white-400': '#FAFAFA',
-          'white-500': '#F8F8F8',
-          'white-600': '#F5F5F5',
-          'white-700': '#F0F0F0',
-          'white-800': '#E5E5E5',
-          'white-900': '#D1D1D1',
         },
         // Luxury color palette (keeping for compatibility)
         'luxury': {
