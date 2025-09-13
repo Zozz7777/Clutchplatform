@@ -329,7 +329,7 @@ export default function KnowledgeBasePage() {
                                 <ThumbsUp className="h-4 w-4 mr-1" />
                                 {article.helpful} helpful
                               </span>
-                              <span>Updated {article.lastUpdated}</span>
+                              <span>Updated {article.updatedAt.toLocaleDateString()}</span>
                               <span>by {article.author}</span>
                             </div>
                           </div>

@@ -53,27 +53,27 @@ class GracefulRestartManager {
     });
   }
 
-  // Setup health monitoring for restart decisions
-  setupHealthMonitoring() {
-    this.healthCheckInterval = setInterval(() => {
-      this.checkSystemHealth();
-    }, 30000); // Check every 30 seconds
-  }
+    // Setup health monitoring for restart decisions
+    setupHealthMonitoring() {
+      this.healthCheckInterval = setInterval(() => {
+        this.checkSystemHealth();
+      }, 120000); // Check every 2 minutes to reduce overhead
+    }
 
   // Check system health for restart decisions
   checkSystemHealth() {
     const memUsage = process.memoryUsage();
     const heapUsageRatio = memUsage.heapUsed / memUsage.heapTotal;
     
-    // Only restart if memory usage is critically high (95%+) and we haven't restarted recently
+    // With 512MB RAM, we can be more lenient with memory thresholds
     const timeSinceLastRestart = Date.now() - (this.lastRestartTime || 0);
-    const restartCooldown = 5 * 60 * 1000; // 5 minutes cooldown
+    const restartCooldown = 10 * 60 * 1000; // 10 minutes cooldown (increased)
     
-    if (heapUsageRatio > 0.95 && timeSinceLastRestart > restartCooldown) {
+    if (heapUsageRatio > 0.99 && timeSinceLastRestart > restartCooldown) {
       console.log('⚠️ Critical memory usage detected. Queuing for restart...');
       this.queueRestart('critical_memory_usage', { heapUsageRatio });
-    } else if (heapUsageRatio > 0.9) {
-      // Just log high memory usage without restarting
+    } else if (heapUsageRatio > 0.90) {
+      // Log high memory usage without restarting (increased threshold)
       console.log(`🧹 High memory usage: ${(heapUsageRatio * 100).toFixed(1)}% - monitoring...`);
     }
 

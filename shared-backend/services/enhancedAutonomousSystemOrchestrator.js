@@ -113,11 +113,12 @@ class EnhancedAutonomousSystemOrchestrator {
       try {
         await this.performSystemHealthCheck();
         await this.updatePerformanceMetrics();
-        await this.optimizeSystemResources();
+        // Disable automatic resource optimization to prevent restarts
+        // await this.optimizeSystemResources();
       } catch (error) {
         this.logger.error('❌ System monitoring error:', error);
       }
-    }, 30000); // Every 30 seconds
+    }, 300000); // Every 5 minutes instead of 30 seconds
   }
 
   /**
@@ -126,11 +127,13 @@ class EnhancedAutonomousSystemOrchestrator {
   startPerformanceOptimization() {
     setInterval(async () => {
       try {
-        await this.performPerformanceOptimization();
+        // Disable automatic performance optimization to prevent restarts
+        // await this.performPerformanceOptimization();
+        this.logger.info('⚡ Performance optimization skipped to prevent restarts');
       } catch (error) {
         this.logger.error('❌ Performance optimization error:', error);
       }
-    }, 300000); // Every 5 minutes
+    }, 600000); // Every 10 minutes
   }
 
   /**
@@ -155,11 +158,13 @@ class EnhancedAutonomousSystemOrchestrator {
       this.systemState.lastHealthCheck = new Date();
 
       if (healthStatus.overall.status === 'unhealthy') {
-        this.logger.warn('🚨 System health check failed - initiating recovery');
-        await this.initiateSystemRecovery();
+        this.logger.warn('🚨 System health check failed - monitoring only (no recovery)');
+        // Disable automatic recovery to prevent restarts
+        // await this.initiateSystemRecovery();
       } else if (healthStatus.overall.status === 'degraded') {
-        this.logger.warn('⚠️ System health degraded - optimizing resources');
-        await this.optimizeSystemResources();
+        this.logger.warn('⚠️ System health degraded - monitoring only (no optimization)');
+        // Disable automatic optimization to prevent restarts
+        // await this.optimizeSystemResources();
       }
 
       this.logger.info(`📊 System health: ${healthStatus.overall.status} (${healthStatus.overall.healthPercentage}%)`);

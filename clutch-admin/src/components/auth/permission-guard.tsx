@@ -3,7 +3,56 @@
 import React from 'react'
 import { useAuthStore } from '@/store'
 import { rbacManager, Permission, Role } from '@/lib/rbac'
+import { UserRole } from '@/types'
 import { AlertTriangle, Lock } from 'lucide-react'
+
+// Type mapping function to convert UserRole to Role
+const mapUserRoleToRole = (userRole: UserRole): Role => {
+  switch (userRole) {
+    case 'admin':
+      return Role.ADMIN
+    case 'manager':
+      return Role.MANAGER
+    case 'employee':
+      return Role.EMPLOYEE
+    case 'viewer':
+      return Role.VIEWER
+    default:
+      return Role.VIEWER
+  }
+}
+
+// Type mapping function to convert string permissions to Permission enum
+const mapStringPermissionsToPermission = (permissions: string[]): Permission[] => {
+  return permissions.map(permission => {
+    // Map common permission strings to Permission enum values
+    switch (permission) {
+      case 'create_user':
+        return Permission.CREATE_USER
+      case 'read_user':
+        return Permission.READ_USER
+      case 'update_user':
+        return Permission.UPDATE_USER
+      case 'delete_user':
+        return Permission.DELETE_USER
+      case 'create_content':
+        return Permission.CREATE_CONTENT
+      case 'read_content':
+        return Permission.READ_CONTENT
+      case 'update_content':
+        return Permission.UPDATE_CONTENT
+      case 'delete_content':
+        return Permission.DELETE_CONTENT
+      case 'view_analytics':
+        return Permission.VIEW_ANALYTICS
+      case 'export_analytics':
+        return Permission.EXPORT_ANALYTICS
+      default:
+        // For unknown permissions, try to match by string value
+        return permission as Permission
+    }
+  }).filter(Boolean) as Permission[]
+}
 
 interface PermissionGuardProps {
   children: React.ReactNode
@@ -33,7 +82,15 @@ export function PermissionGuard({
   // Set current user in RBAC manager
   React.useEffect(() => {
     if (user) {
-      rbacManager.setUser(user)
+      // Convert UserRole to Role enum and permissions
+      const mappedUser = {
+        id: user.id,
+        email: user.email,
+        role: mapUserRoleToRole(user.role),
+        permissions: mapStringPermissionsToPermission(user.permissions),
+        websitePermissions: user.permissions
+      }
+      rbacManager.setUser(mappedUser)
     }
   }, [user])
 
@@ -105,7 +162,15 @@ export function usePermissions() {
   
   React.useEffect(() => {
     if (user) {
-      rbacManager.setUser(user)
+      // Convert UserRole to Role enum and permissions
+      const mappedUser = {
+        id: user.id,
+        email: user.email,
+        role: mapUserRoleToRole(user.role),
+        permissions: mapStringPermissionsToPermission(user.permissions),
+        websitePermissions: user.permissions
+      }
+      rbacManager.setUser(mappedUser)
     }
   }, [user])
 

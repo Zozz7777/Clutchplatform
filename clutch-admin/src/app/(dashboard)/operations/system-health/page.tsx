@@ -32,25 +32,24 @@ import { DataLoadingWrapper, ErrorState, EmptyState } from '@/components/ui/load
 interface SystemMetric {
   name: string
   value: string | number
-  change: number
   status: 'healthy' | 'warning' | 'error'
-  icon?: any
-  trend?: string
+  icon?: string
+  trend: string
 }
 
 interface Service {
   name: string
   status: 'healthy' | 'warning' | 'error'
   uptime: string
-  responseTime: number
+  responseTime: string
 }
 
 interface Alert {
-  id: string
+  id: number
   message: string
   severity: 'low' | 'medium' | 'high'
-  timestamp: Date
-  type: 'healthy' | 'warning' | 'error'
+  timestamp: string
+  type: 'info' | 'warning' | 'error'
 }
 
 // Enhanced System Health Page with Real-time Data

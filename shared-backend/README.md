@@ -574,17 +574,15 @@ npm run seed:notifications
 #### **Health Checks**
 
 - **System Health**: `/health` - Complete system status
-- **Lightweight Ping**: `/health/ping` - Keep-alive endpoint
+- **Lightweight Ping**: `/health/ping` - Health monitoring endpoint
 - **Database Health**: `/health/database` - Database connectivity
 - **Detailed Health**: `/health/detailed` - Comprehensive system check
 
 #### **Keep-Alive Service**
 
-- **Automatic**: Starts in production environments
-- **Interval**: 14 minutes (prevents Render timeout)
-- **Endpoint**: `/health/ping`
-- **Logging**: Console logs with timestamps
-- **Fallback**: External keep-alive script available
+- **Status**: ❌ REMOVED - No longer needed with upgraded backend resources
+- **Reason**: Backend now has 512MB RAM, 0.5 CPU, and no sleep time
+- **Health Endpoints**: Still available for monitoring (`/health`, `/health/ping`, `/ping`)
 
 #### **Log Monitoring System**
 

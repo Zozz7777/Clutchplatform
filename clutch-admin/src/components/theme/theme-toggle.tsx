@@ -51,7 +51,7 @@ export default function ThemeToggle() {
       className="h-9 w-9 p-0"
       title={`Current theme: ${currentTheme.label}. Click to switch to ${themes[(themes.findIndex(t => t.value === theme) + 1) % themes.length].label}`}
     >
-      <displayIcon className="h-4 w-4" />
+      {React.createElement(displayIcon, { className: "h-4 w-4" })}
     </SnowButton>
   )
 }

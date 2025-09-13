@@ -100,7 +100,7 @@ export function MultiStepForm({
 
   // Handle data change
   const handleDataChange = useCallback((newData: any) => {
-    setFormData(prev => ({ ...prev, ...newData }))
+    setFormData((prev: any) => ({ ...prev, ...newData }))
     setIsDirty(true)
   }, [])
 

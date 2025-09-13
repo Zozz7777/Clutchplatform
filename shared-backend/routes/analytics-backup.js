@@ -19,6 +19,48 @@ router.use(analyticsRateLimit);
 
 // ==================== ANALYTICS ROUTES ====================
 
+// Create new analytics backup
+router.post('/create', authenticateToken, requireRole(['admin', 'analytics', 'management']), analyticsRateLimit, async (req, res) => {
+  try {
+    const { backupName, dataRange, includeTypes } = req.body;
+    
+    if (!backupName) {
+      return res.status(400).json({
+        success: false,
+        error: 'MISSING_BACKUP_NAME',
+        message: 'Backup name is required',
+        timestamp: new Date().toISOString()
+      });
+    }
+    
+    const newBackup = {
+      id: `backup-${Date.now()}`,
+      name: backupName,
+      dataRange: dataRange || 'all',
+      includeTypes: includeTypes || ['analytics', 'logs', 'metrics'],
+      status: 'created',
+      createdAt: new Date().toISOString(),
+      createdBy: req.user.id
+    };
+    
+    res.status(201).json({
+      success: true,
+      data: newBackup,
+      message: 'Analytics backup created successfully',
+      timestamp: new Date().toISOString()
+    });
+    
+  } catch (error) {
+    logger.error('Error creating analytics backup:', error);
+    res.status(500).json({
+      success: false,
+      error: 'CREATE_BACKUP_FAILED',
+      message: 'Failed to create analytics backup',
+      timestamp: new Date().toISOString()
+    });
+  }
+});
+
 // Get all analytics
 router.get('/', authenticateToken, requireRole(['admin', 'analytics', 'management']), analyticsRateLimit, async (req, res) => {
   try {

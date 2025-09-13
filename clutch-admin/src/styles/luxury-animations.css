@@ -1,0 +1,475 @@
+/* Luxury Animations - Premium Grade CSS Animations */
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@100;200;300;400;500;600;700;800;900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700;800;900&display=swap');
+
+/* Luxury Keyframes */
+@keyframes luxury-float {
+  0%, 100% { 
+    transform: translateY(0px) rotate(0deg); 
+  }
+  33% { 
+    transform: translateY(-10px) rotate(1deg); 
+  }
+  66% { 
+    transform: translateY(-5px) rotate(-1deg); 
+  }
+}
+
+@keyframes luxury-glow {
+  0%, 100% { 
+    box-shadow: 0 0 5px rgba(245, 158, 11, 0.3);
+  }
+  50% { 
+    box-shadow: 0 0 20px rgba(245, 158, 11, 0.6), 0 0 30px rgba(245, 158, 11, 0.4);
+  }
+}
+
+@keyframes luxury-shimmer {
+  0% { 
+    transform: translateX(-100%); 
+  }
+  100% { 
+    transform: translateX(100%); 
+  }
+}
+
+@keyframes luxury-pulse {
+  0%, 100% { 
+    opacity: 1; 
+    transform: scale(1);
+  }
+  50% { 
+    opacity: 0.8; 
+    transform: scale(1.05);
+  }
+}
+
+@keyframes luxury-bounce {
+  0%, 20%, 53%, 80%, 100% { 
+    transform: translate3d(0,0,0); 
+  }
+  40%, 43% { 
+    transform: translate3d(0, -30px, 0); 
+  }
+  70% { 
+    transform: translate3d(0, -15px, 0); 
+  }
+  90% { 
+    transform: translate3d(0, -4px, 0); 
+  }
+}
+
+@keyframes luxury-slideInUp {
+  0% { 
+    transform: translateY(100%); 
+    opacity: 0; 
+  }
+  100% { 
+    transform: translateY(0); 
+    opacity: 1; 
+  }
+}
+
+@keyframes luxury-slideInDown {
+  0% { 
+    transform: translateY(-100%); 
+    opacity: 0; 
+  }
+  100% { 
+    transform: translateY(0); 
+    opacity: 1; 
+  }
+}
+
+@keyframes luxury-slideInLeft {
+  0% { 
+    transform: translateX(-100%); 
+    opacity: 0; 
+  }
+  100% { 
+    transform: translateX(0); 
+    opacity: 1; 
+  }
+}
+
+@keyframes luxury-slideInRight {
+  0% { 
+    transform: translateX(100%); 
+    opacity: 0; 
+  }
+  100% { 
+    transform: translateX(0); 
+    opacity: 1; 
+  }
+}
+
+@keyframes luxury-scaleIn {
+  0% { 
+    transform: scale(0.9); 
+    opacity: 0; 
+  }
+  100% { 
+    transform: scale(1); 
+    opacity: 1; 
+  }
+}
+
+@keyframes luxury-rotateIn {
+  0% { 
+    transform: rotate(-180deg); 
+    opacity: 0; 
+  }
+  100% { 
+    transform: rotate(0deg); 
+    opacity: 1; 
+  }
+}
+
+@keyframes luxury-fadeIn {
+  0% { 
+    opacity: 0; 
+  }
+  100% { 
+    opacity: 1; 
+  }
+}
+
+@keyframes luxury-fadeOut {
+  0% { 
+    opacity: 1; 
+  }
+  100% { 
+    opacity: 0; 
+  }
+}
+
+@keyframes luxury-sparkle {
+  0%, 100% { 
+    opacity: 0; 
+    transform: scale(0.8);
+  }
+  50% { 
+    opacity: 1; 
+    transform: scale(1.2);
+  }
+}
+
+@keyframes luxury-rainbow {
+  0% { 
+    background-position: 0% 50%; 
+  }
+  50% { 
+    background-position: 100% 50%; 
+  }
+  100% { 
+    background-position: 0% 50%; 
+  }
+}
+
+@keyframes luxury-neon {
+  0%, 100% { 
+    text-shadow: 0 0 5px rgba(245, 158, 11, 0.5), 0 0 10px rgba(245, 158, 11, 0.3);
+  }
+  50% { 
+    text-shadow: 0 0 10px rgba(245, 158, 11, 0.8), 0 0 20px rgba(245, 158, 11, 0.6), 0 0 30px rgba(245, 158, 11, 0.4);
+  }
+}
+
+@keyframes luxury-gradient {
+  0% { 
+    background-position: 0% 50%; 
+  }
+  50% { 
+    background-position: 100% 50%; 
+  }
+  100% { 
+    background-position: 0% 50%; 
+  }
+}
+
+/* Luxury Animation Classes */
+.animate-luxury-float {
+  animation: luxury-float 6s ease-in-out infinite;
+}
+
+.animate-luxury-glow {
+  animation: luxury-glow 2s ease-in-out infinite;
+}
+
+.animate-luxury-shimmer {
+  animation: luxury-shimmer 2s ease-in-out infinite;
+}
+
+.animate-luxury-pulse {
+  animation: luxury-pulse 2s ease-in-out infinite;
+}
+
+.animate-luxury-bounce {
+  animation: luxury-bounce 1s ease-in-out infinite;
+}
+
+.animate-luxury-slideInUp {
+  animation: luxury-slideInUp 0.5s ease-out;
+}
+
+.animate-luxury-slideInDown {
+  animation: luxury-slideInDown 0.5s ease-out;
+}
+
+.animate-luxury-slideInLeft {
+  animation: luxury-slideInLeft 0.5s ease-out;
+}
+
+.animate-luxury-slideInRight {
+  animation: luxury-slideInRight 0.5s ease-out;
+}
+
+.animate-luxury-scaleIn {
+  animation: luxury-scaleIn 0.3s ease-out;
+}
+
+.animate-luxury-rotateIn {
+  animation: luxury-rotateIn 0.5s ease-out;
+}
+
+.animate-luxury-fadeIn {
+  animation: luxury-fadeIn 0.3s ease-out;
+}
+
+.animate-luxury-fadeOut {
+  animation: luxury-fadeOut 0.3s ease-out;
+}
+
+.animate-luxury-sparkle {
+  animation: luxury-sparkle 1.5s ease-in-out infinite;
+}
+
+.animate-luxury-rainbow {
+  animation: luxury-rainbow 3s ease-in-out infinite;
+}
+
+.animate-luxury-neon {
+  animation: luxury-neon 2s ease-in-out infinite;
+}
+
+.animate-luxury-gradient {
+  animation: luxury-gradient 3s ease-in-out infinite;
+}
+
+/* Luxury Hover Effects */
+.luxury-hover-lift {
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.luxury-hover-lift:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+}
+
+.luxury-hover-glow {
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.luxury-hover-glow:hover {
+  box-shadow: 0 0 20px rgba(245, 158, 11, 0.4);
+}
+
+.luxury-hover-scale {
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.luxury-hover-scale:hover {
+  transform: scale(1.05);
+}
+
+.luxury-hover-rotate {
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.luxury-hover-rotate:hover {
+  transform: rotate(5deg);
+}
+
+/* Luxury Glass Morphism */
+.luxury-glass {
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.luxury-glass-dark {
+  background: rgba(0, 0, 0, 0.1);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+/* Luxury Gradients */
+.luxury-gradient-gold {
+  background: linear-gradient(135deg, #f59e0b, #d97706, #b45309);
+}
+
+.luxury-gradient-platinum {
+  background: linear-gradient(135deg, #64748b, #475569, #334155);
+}
+
+.luxury-gradient-emerald {
+  background: linear-gradient(135deg, #10b981, #059669, #047857);
+}
+
+.luxury-gradient-sapphire {
+  background: linear-gradient(135deg, #3b82f6, #2563eb, #1d4ed8);
+}
+
+.luxury-gradient-ruby {
+  background: linear-gradient(135deg, #ef4444, #dc2626, #b91c1c);
+}
+
+.luxury-gradient-rainbow {
+  background: linear-gradient(45deg, #f59e0b, #ef4444, #8b5cf6, #3b82f6, #10b981);
+  background-size: 300% 300%;
+  animation: luxury-gradient 3s ease-in-out infinite;
+}
+
+/* Luxury Text Effects */
+.luxury-text-glow {
+  text-shadow: 0 0 10px rgba(245, 158, 11, 0.5);
+}
+
+.luxury-text-gradient {
+  background: linear-gradient(135deg, #f59e0b, #d97706);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.luxury-text-neon {
+  color: #f59e0b;
+  text-shadow: 0 0 5px rgba(245, 158, 11, 0.5), 0 0 10px rgba(245, 158, 11, 0.3);
+  animation: luxury-neon 2s ease-in-out infinite;
+}
+
+/* Luxury Shadows */
+.luxury-shadow-gold {
+  box-shadow: 0 20px 25px -5px rgba(245, 158, 11, 0.1), 0 10px 10px -5px rgba(245, 158, 11, 0.04);
+}
+
+.luxury-shadow-platinum {
+  box-shadow: 0 20px 25px -5px rgba(100, 116, 139, 0.1), 0 10px 10px -5px rgba(100, 116, 139, 0.04);
+}
+
+.luxury-shadow-emerald {
+  box-shadow: 0 20px 25px -5px rgba(16, 185, 129, 0.1), 0 10px 10px -5px rgba(16, 185, 129, 0.04);
+}
+
+.luxury-shadow-sapphire {
+  box-shadow: 0 20px 25px -5px rgba(59, 130, 246, 0.1), 0 10px 10px -5px rgba(59, 130, 246, 0.04);
+}
+
+.luxury-shadow-ruby {
+  box-shadow: 0 20px 25px -5px rgba(239, 68, 68, 0.1), 0 10px 10px -5px rgba(239, 68, 68, 0.04);
+}
+
+/* Luxury Borders */
+.luxury-border-gold {
+  border: 2px solid rgba(245, 158, 11, 0.3);
+}
+
+.luxury-border-glow {
+  border: 2px solid rgba(245, 158, 11, 0.5);
+  box-shadow: 0 0 10px rgba(245, 158, 11, 0.3);
+}
+
+/* Luxury Scrollbar */
+.luxury-scrollbar::-webkit-scrollbar {
+  width: 8px;
+}
+
+.luxury-scrollbar::-webkit-scrollbar-track {
+  background: rgba(0, 0, 0, 0.1);
+  border-radius: 4px;
+}
+
+.luxury-scrollbar::-webkit-scrollbar-thumb {
+  background: linear-gradient(135deg, #f59e0b, #d97706);
+  border-radius: 4px;
+}
+
+.luxury-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(135deg, #d97706, #b45309);
+}
+
+/* Luxury Loading Spinner */
+.luxury-spinner {
+  width: 40px;
+  height: 40px;
+  border: 4px solid rgba(245, 158, 11, 0.1);
+  border-left: 4px solid #f59e0b;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* Luxury Focus States */
+.luxury-focus:focus {
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(245, 158, 11, 0.3);
+  border-color: #f59e0b;
+}
+
+/* Luxury Selection */
+.luxury-selection::selection {
+  background: rgba(245, 158, 11, 0.3);
+  color: #1f2937;
+}
+
+/* Luxury Transitions */
+.luxury-transition {
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.luxury-transition-fast {
+  transition: all 0.15s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.luxury-transition-slow {
+  transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Luxury Responsive Design */
+@media (max-width: 768px) {
+  .luxury-mobile-hidden {
+    display: none;
+  }
+  
+  .luxury-mobile-full {
+    width: 100%;
+  }
+}
+
+/* Luxury Dark Mode Support */
+@media (prefers-color-scheme: dark) {
+  .luxury-glass {
+    background: rgba(0, 0, 0, 0.2);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+  }
+  
+  .luxury-text-glow {
+    text-shadow: 0 0 10px rgba(245, 158, 11, 0.8);
+  }
+}
+
+/* Luxury Print Styles */
+@media print {
+  .luxury-no-print {
+    display: none !important;
+  }
+  
+  .luxury-print-only {
+    display: block !important;
+  }
+}

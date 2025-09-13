@@ -69,16 +69,13 @@ class AuthManager {
         const response = await apiClient.refreshAuthToken()
         
         if (response.success && response.data) {
-          const { token, refreshToken, user } = response.data
+          const { token, refreshToken } = response.data
           
           // Update tokens in API client
           apiClient.setTokens(token, refreshToken)
           
-          // Update user data in store
-          const { setUser } = useAuthStore.getState()
-          if (user) {
-            setUser(user)
-          }
+          // Update user data in store - user data should be fetched separately
+          // Note: User data should be fetched separately after token refresh
           
           // Token refresh successful
           resolve(token)
@@ -147,8 +144,8 @@ class AuthManager {
   // Clear authentication state
   private clearAuth() {
     apiClient.clearTokens()
-    const { clearUser } = useAuthStore.getState()
-    clearUser()
+    const { setUser } = useAuthStore.getState()
+    setUser(null as any) // Clear user by setting to null
   }
 
   // Check if token is expired or about to expire

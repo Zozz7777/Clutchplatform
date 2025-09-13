@@ -18,7 +18,7 @@ import {
   Copy,
   Edit
 } from 'lucide-react'
-import { InteractiveChart, ChartDataPoint, ChartSeries, chartPresets } from '@/components/charts/interactive-chart'
+import { InteractiveChart, ChartDataPoint, ChartSeries, ChartConfig, chartPresets } from '@/components/charts/interactive-chart'
 import { useRealtimeData } from '@/lib/websocket-service'
 
 // Widget types
@@ -215,7 +215,7 @@ export function Widget({
 
 // Chart Widget Component
 function ChartWidget({ widget, data }: { widget: WidgetData; data: any }) {
-  const chartConfig = widget.config.config || chartPresets.revenue
+  const chartConfig: ChartConfig = (widget.config.config as ChartConfig) || chartPresets.revenue
   const chartData: ChartSeries[] = data || [
     {
       name: 'Revenue',

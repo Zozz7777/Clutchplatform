@@ -1,0 +1,1771 @@
+{
+  "summary": {
+    "totalErrors": 186,
+    "errorBreakdown": {
+      "400": 8,
+      "401": 0,
+      "403": 0,
+      "404": 56,
+      "500": 4,
+      "connection": 118,
+      "other": 0
+    }
+  },
+  "detailedErrors": {
+    "400": [
+      {
+        "method": "POST",
+        "endpoint": "/api/v1/clutch-email/accounts",
+        "status": "400",
+        "responseTime": 4
+      },
+      {
+        "method": "GET",
+        "endpoint": "/api/v1/customers/",
+        "status": "400",
+        "responseTime": 4
+      },
+      {
+        "method": "POST",
+        "endpoint": "/api/v1/enhanced-auth/biometric-verify",
+        "status": "400",
+        "responseTime": 4
+      },
+      {
+        "method": "POST",
+        "endpoint": "/api/v1/errors/frontend",
+        "status": "400",
+        "responseTime": 146
+      },
+      {
+        "method": "POST",
+        "endpoint": "/api/v1/clutch-email/accounts",
+        "status": "400",
+        "responseTime": 4
+      },
+      {
+        "method": "GET",
+        "endpoint": "/api/v1/customers/",
+        "status": "400",
+        "responseTime": 4
+      },
+      {
+        "method": "POST",
+        "endpoint": "/api/v1/enhanced-auth/biometric-verify",
+        "status": "400",
+        "responseTime": 4
+      },
+      {
+        "method": "POST",
+        "endpoint": "/api/v1/errors/frontend",
+        "status": "400",
+        "responseTime": 146
+      }
+    ],
+    "401": [],
+    "403": [],
+    "404": [
+      {
+        "method": "GET",
+        "endpoint": "/api/v1/carParts/",
+        "status": "404",
+        "responseTime": 6
+      },
+      {
+        "method": "POST",
+        "endpoint": "/api/v1/carParts/",
+        "status": "404",
+        "responseTime": 14
+      },
+      {
+        "method": "GET",
+        "endpoint": "/api/v1/carParts/search/query",
+        "status": "404",
+        "responseTime": 9
+      },
+      {
+        "method": "GET",
+        "endpoint": "/api/v1/carParts/low-stock/list",
+        "status": "404",
+        "responseTime": 7
+      },
+      {
+        "method": "GET",
+        "endpoint": "/api/v1/carParts/stats/overview",
+        "status": "404",
+        "responseTime": 7
+      },
+      {
+        "method": "GET",
+        "endpoint": "/api/v1/corporateAccount/",
+        "status": "404",
+        "responseTime": 14
+      },
+      {
+        "method": "POST",
+        "endpoint": "/api/v1/corporateAccount/",
+        "status": "404",
+        "responseTime": 7
+      },
+      {
+        "method": "GET",
+        "endpoint": "/api/v1/deviceToken/",
+        "status": "404",
+        "responseTime": 6
+      },
+      {
+        "method": "GET",
+        "endpoint": "/api/v1/digitalWallet/",
+        "status": "404",
+        "responseTime": 16
+      },
+      {
+        "method": "POST",
+        "endpoint": "/api/v1/enhancedFeatures/real-time/booking-update",
+        "status": "404",
+        "responseTime": 8
+      },
+      {
+        "method": "POST",
+        "endpoint": "/api/v1/enhancedFeatures/real-time/notification",
+        "status": "404",
+        "responseTime": 5
+      },
+      {
+        "method": "GET",
+        "endpoint": "/api/v1/enhancedFeatures/real-time/statistics",
+        "status": "404",
+        "responseTime": 6
+      },
+      {
+        "method": "POST",
+        "endpoint": "/api/v1/enhancedFeatures/payments/process",
+        "status": "404",
+        "responseTime": 9
+      },
+      {
+        "method": "POST",
+        "endpoint": "/api/v1/enhancedFeatures/payments/subscription",
+        "status": "404",
+        "responseTime": 5
+      },
+      {
+        "method": "POST",
+        "endpoint": "/api/v1/enhancedFeatures/payments/plan",
+        "status": "404",
+        "responseTime": 7
+      },
+      {
+        "method": "POST",
+        "endpoint": "/api/v1/enhancedFeatures/payments/split",
+        "status": "404",
+        "responseTime": 7
+      },
+      {
+        "method": "POST",
+        "endpoint": "/api/v1/enhancedFeatures/payments/invoice",
+        "status": "404",
+        "responseTime": 7
+      },
+      {
+        "method": "POST",
+        "endpoint": "/api/v1/enhancedFeatures/payments/refund",
+        "status": "404",
+        "responseTime": 7
+      },
+      {
+        "method": "GET",
+        "endpoint": "/api/v1/enhancedFeatures/payments/statistics",
+        "status": "404",
+        "responseTime": 7
+      },
+      {
+        "method": "GET",
+        "endpoint": "/api/v1/enhancedFeatures/recommendations/services",
+        "status": "404",
+        "responseTime": 6
+      },
+      {
+        "method": "POST",
+        "endpoint": "/api/v1/enhancedFeatures/recommendations/maintenance",
+        "status": "404",
+        "responseTime": 8
+      },
+      {
+        "method": "POST",
+        "endpoint": "/api/v1/enhancedFeatures/recommendations/pricing",
+        "status": "404",
+        "responseTime": 9
+      },
+      {
+        "method": "GET",
+        "endpoint": "/api/v1/enhancedFeatures/analytics/realtime",
+        "status": "404",
+        "responseTime": 7
+      },
+      {
+        "method": "GET",
+        "endpoint": "/api/v1/enhancedFeatures/analytics/predictive",
+        "status": "404",
+        "responseTime": 6
+      },
+      {
+        "method": "GET",
+        "endpoint": "/api/v1/enhancedFeatures/analytics/business-intelligence",
+        "status": "404",
+        "responseTime": 5
+      },
+      {
+        "method": "GET",
+        "endpoint": "/api/v1/enhancedFeatures/analytics/kpi",
+        "status": "404",
+        "responseTime": 7
+      },
+      {
+        "method": "GET",
+        "endpoint": "/api/v1/enhancedFeatures/analytics/insights",
+        "status": "404",
+        "responseTime": 5
+      },
+      {
+        "method": "GET",
+        "endpoint": "/api/v1/enterpriseAuth/",
+        "status": "404",
+        "responseTime": 39
+      },
+      {
+        "method": "GET",
+        "endpoint": "/api/v1/carParts/",
+        "status": "404",
+        "responseTime": 6
+      },
+      {
+        "method": "POST",
+        "endpoint": "/api/v1/carParts/",
+        "status": "404",
+        "responseTime": 14
+      },
+      {
+        "method": "GET",
+        "endpoint": "/api/v1/carParts/search/query",
+        "status": "404",
+        "responseTime": 9
+      },
+      {
+        "method": "GET",
+        "endpoint": "/api/v1/carParts/low-stock/list",
+        "status": "404",
+        "responseTime": 7
+      },
+      {
+        "method": "GET",
+        "endpoint": "/api/v1/carParts/stats/overview",
+        "status": "404",
+        "responseTime": 7
+      },
+      {
+        "method": "GET",
+        "endpoint": "/api/v1/corporateAccount/",
+        "status": "404",
+        "responseTime": 14
+      },
+      {
+        "method": "POST",
+        "endpoint": "/api/v1/corporateAccount/",
+        "status": "404",
+        "responseTime": 7
+      },
+      {
+        "method": "GET",
+        "endpoint": "/api/v1/deviceToken/",
+        "status": "404",
+        "responseTime": 6
+      },
+      {
+        "method": "GET",
+        "endpoint": "/api/v1/digitalWallet/",
+        "status": "404",
+        "responseTime": 16
+      },
+      {
+        "method": "POST",
+        "endpoint": "/api/v1/enhancedFeatures/real-time/booking-update",
+        "status": "404",
+        "responseTime": 8
+      },
+      {
+        "method": "POST",
+        "endpoint": "/api/v1/enhancedFeatures/real-time/notification",
+        "status": "404",
+        "responseTime": 5
+      },
+      {
+        "method": "GET",
+        "endpoint": "/api/v1/enhancedFeatures/real-time/statistics",
+        "status": "404",
+        "responseTime": 6
+      },
+      {
+        "method": "POST",
+        "endpoint": "/api/v1/enhancedFeatures/payments/process",
+        "status": "404",
+        "responseTime": 9
+      },
+      {
+        "method": "POST",
+        "endpoint": "/api/v1/enhancedFeatures/payments/subscription",
+        "status": "404",
+        "responseTime": 5
+      },
+      {
+        "method": "POST",
+        "endpoint": "/api/v1/enhancedFeatures/payments/plan",
+        "status": "404",
+        "responseTime": 7
+      },
+      {
+        "method": "POST",
+        "endpoint": "/api/v1/enhancedFeatures/payments/split",
+        "status": "404",
+        "responseTime": 7
+      },
+      {
+        "method": "POST",
+        "endpoint": "/api/v1/enhancedFeatures/payments/invoice",
+        "status": "404",
+        "responseTime": 7
+      },
+      {
+        "method": "POST",
+        "endpoint": "/api/v1/enhancedFeatures/payments/refund",
+        "status": "404",
+        "responseTime": 7
+      },
+      {
+        "method": "GET",
+        "endpoint": "/api/v1/enhancedFeatures/payments/statistics",
+        "status": "404",
+        "responseTime": 7
+      },
+      {
+        "method": "GET",
+        "endpoint": "/api/v1/enhancedFeatures/recommendations/services",
+        "status": "404",
+        "responseTime": 6
+      },
+      {
+        "method": "POST",
+        "endpoint": "/api/v1/enhancedFeatures/recommendations/maintenance",
+        "status": "404",
+        "responseTime": 8
+      },
+      {
+        "method": "POST",
+        "endpoint": "/api/v1/enhancedFeatures/recommendations/pricing",
+        "status": "404",
+        "responseTime": 9
+      },
+      {
+        "method": "GET",
+        "endpoint": "/api/v1/enhancedFeatures/analytics/realtime",
+        "status": "404",
+        "responseTime": 7
+      },
+      {
+        "method": "GET",
+        "endpoint": "/api/v1/enhancedFeatures/analytics/predictive",
+        "status": "404",
+        "responseTime": 6
+      },
+      {
+        "method": "GET",
+        "endpoint": "/api/v1/enhancedFeatures/analytics/business-intelligence",
+        "status": "404",
+        "responseTime": 5
+      },
+      {
+        "method": "GET",
+        "endpoint": "/api/v1/enhancedFeatures/analytics/kpi",
+        "status": "404",
+        "responseTime": 7
+      },
+      {
+        "method": "GET",
+        "endpoint": "/api/v1/enhancedFeatures/analytics/insights",
+        "status": "404",
+        "responseTime": 5
+      },
+      {
+        "method": "GET",
+        "endpoint": "/api/v1/enterpriseAuth/",
+        "status": "404",
+        "responseTime": 39
+      }
+    ],
+    "500": [
+      {
+        "method": "POST",
+        "endpoint": "/api/v1/clutch-email/auth/login",
+        "status": "500",
+        "responseTime": 334
+      },
+      {
+        "method": "GET",
+        "endpoint": "/api/v1/clutch-email/health",
+        "status": "500",
+        "responseTime": 38
+      },
+      {
+        "method": "POST",
+        "endpoint": "/api/v1/clutch-email/auth/login",
+        "status": "500",
+        "responseTime": 334
+      },
+      {
+        "method": "GET",
+        "endpoint": "/api/v1/clutch-email/health",
+        "status": "500",
+        "responseTime": 38
+      }
+    ],
+    "connection": [
+      {
+        "method": "GET",
+        "endpoint": "/api/v1/errors/frontend/stats",
+        "status": "ERROR",
+        "responseTime": 390
+      },
+      {
+        "method": "GET",
+        "endpoint": "/api/v1/errors/frontend/stream",
+        "status": "ERROR",
+        "responseTime": 53
+      },
+      {
+        "method": "DELETE",
+        "endpoint": "/api/v1/errors/frontend/cleanup",
+        "status": "ERROR",
+        "responseTime": 84
+      },
+      {
+        "method": "GET",
+        "endpoint": "/api/v1/featureFlags/",
+        "status": "ERROR",
+        "responseTime": 5
+      },
+      {
+        "method": "GET",
+        "endpoint": "/api/v1/featureFlags/enabled",
+        "status": "ERROR",
+        "responseTime": 52
+      },
+      {
+        "method": "POST",
+        "endpoint": "/api/v1/featureFlags/",
+        "status": "ERROR",
+        "responseTime": 37
+      },
+      {
+        "method": "GET",
+        "endpoint": "/api/v1/featureFlags/groups",
+        "status": "ERROR",
+        "responseTime": 6
+      },
+      {
+        "method": "POST",
+        "endpoint": "/api/v1/featureFlags/bulk-update",
+        "status": "ERROR",
+        "responseTime": 11
+      },
+      {
+        "method": "GET",
+        "endpoint": "/api/v1/featureFlags/export/configuration",
+        "status": "ERROR",
+        "responseTime": 4
+      },
+      {
+        "method": "POST",
+        "endpoint": "/api/v1/featureFlags/import/configuration",
+        "status": "ERROR",
+        "responseTime": 3
+      },
+      {
+        "method": "GET",
+        "endpoint": "/api/v1/featureFlags/status",
+        "status": "ERROR",
+        "responseTime": 3
+      },
+      {
+        "method": "GET",
+        "endpoint": "/api/v1/featureFlags/dashboard",
+        "status": "ERROR",
+        "responseTime": 4
+      },
+      {
+        "method": "GET",
+        "endpoint": "/api/v1/featureFlags/stats",
+        "status": "ERROR",
+        "responseTime": 3
+      },
+      {
+        "method": "GET",
+        "endpoint": "/api/v1/featureFlags/user-groups",
+        "status": "ERROR",
+        "responseTime": 3
+      },
+      {
+        "method": "GET",
+        "endpoint": "/api/v1/featureFlags/geographic-regions",
+        "status": "ERROR",
+        "responseTime": 5
+      },
+      {
+        "method": "GET",
+        "endpoint": "/api/v1/featureFlags/recent-activity",
+        "status": "ERROR",
+        "responseTime": 11
+      },
+      {
+        "method": "GET",
+        "endpoint": "/api/v1/feedback-system/feedback",
+        "status": "ERROR",
+        "responseTime": 4
+      },
+      {
+        "method": "POST",
+        "endpoint": "/api/v1/feedback-system/feedback",
+        "status": "ERROR",
+        "responseTime": 3
+      },
+      {
+        "method": "GET",
+        "endpoint": "/api/v1/feedback-system/analytics",
+        "status": "ERROR",
+        "responseTime": 3
+      },
+      {
+        "method": "GET",
+        "endpoint": "/api/v1/feedback-system/surveys",
+        "status": "ERROR",
+        "responseTime": 4
+      },
+      {
+        "method": "POST",
+        "endpoint": "/api/v1/feedback-system/surveys",
+        "status": "ERROR",
+        "responseTime": 3
+      },
+      {
+        "method": "GET",
+        "endpoint": "/api/v1/feedback/",
+        "status": "ERROR",
+        "responseTime": 3
+      },
+      {
+        "method": "POST",
+        "endpoint": "/api/v1/feedback/",
+        "status": "ERROR",
+        "responseTime": 2
+      },
+      {
+        "method": "GET",
+        "endpoint": "/api/v1/feedback/open/list",
+        "status": "ERROR",
+        "responseTime": 4
+      },
+      {
+        "method": "GET",
+        "endpoint": "/api/v1/feedback/stats/overview",
+        "status": "ERROR",
+        "responseTime": 3
+      },
+      {
+        "method": "GET",
+        "endpoint": "/api/v1/feedback/search/query",
+        "status": "ERROR",
+        "responseTime": 3
+      },
+      {
+        "method": "GET",
+        "endpoint": "/api/v1/finance/invoices",
+        "status": "ERROR",
+        "responseTime": 3
+      },
+      {
+        "method": "POST",
+        "endpoint": "/api/v1/finance/invoices",
+        "status": "ERROR",
+        "responseTime": 3
+      },
+      {
+        "method": "GET",
+        "endpoint": "/api/v1/finance/expenses",
+        "status": "ERROR",
+        "responseTime": 3
+      },
+      {
+        "method": "GET",
+        "endpoint": "/api/v1/finance/payments",
+        "status": "ERROR",
+        "responseTime": 3
+      },
+      {
+        "method": "GET",
+        "endpoint": "/api/v1/finance/analytics",
+        "status": "ERROR",
+        "responseTime": 3
+      },
+      {
+        "method": "GET",
+        "endpoint": "/api/v1/fleet/health-check",
+        "status": "ERROR",
+        "responseTime": 3
+      },
+      {
+        "method": "GET",
+        "endpoint": "/api/v1/fleet/",
+        "status": "ERROR",
+        "responseTime": 5
+      },
+      {
+        "method": "POST",
+        "endpoint": "/api/v1/fleet/",
+        "status": "ERROR",
+        "responseTime": 2
+      },
+      {
+        "method": "GET",
+        "endpoint": "/api/v1/fleet/routes",
+        "status": "ERROR",
+        "responseTime": 4
+      },
+      {
+        "method": "POST",
+        "endpoint": "/api/v1/fleet/routes",
+        "status": "ERROR",
+        "responseTime": 4
+      },
+      {
+        "method": "GET",
+        "endpoint": "/api/v1/fleet/maintenance",
+        "status": "ERROR",
+        "responseTime": 4
+      },
+      {
+        "method": "POST",
+        "endpoint": "/api/v1/fleet/maintenance",
+        "status": "ERROR",
+        "responseTime": 9
+      },
+      {
+        "method": "GET",
+        "endpoint": "/api/v1/fleet/drivers",
+        "status": "ERROR",
+        "responseTime": 3
+      },
+      {
+        "method": "POST",
+        "endpoint": "/api/v1/fleet/drivers",
+        "status": "ERROR",
+        "responseTime": 3
+      },
+      {
+        "method": "GET",
+        "endpoint": "/api/v1/fleetVehicle/",
+        "status": "ERROR",
+        "responseTime": 3
+      },
+      {
+        "method": "GET",
+        "endpoint": "/api/v1/gpsDevice/",
+        "status": "ERROR",
+        "responseTime": 3
+      },
+      {
+        "method": "GET",
+        "endpoint": "/api/v1/health-enhanced-autonomous/",
+        "status": "ERROR",
+        "responseTime": 4
+      },
+      {
+        "method": "GET",
+        "endpoint": "/api/v1/health-enhanced-autonomous/ping",
+        "status": "ERROR",
+        "responseTime": 4
+      },
+      {
+        "method": "GET",
+        "endpoint": "/api/v1/health-enhanced-autonomous/status",
+        "status": "ERROR",
+        "responseTime": 4
+      },
+      {
+        "method": "GET",
+        "endpoint": "/api/v1/health-enhanced-autonomous/monitor",
+        "status": "ERROR",
+        "responseTime": 4
+      },
+      {
+        "method": "GET",
+        "endpoint": "/api/v1/health-enhanced-autonomous/learning",
+        "status": "ERROR",
+        "responseTime": 4
+      },
+      {
+        "method": "GET",
+        "endpoint": "/api/v1/health-enhanced-autonomous/performance",
+        "status": "ERROR",
+        "responseTime": 5
+      },
+      {
+        "method": "POST",
+        "endpoint": "/api/v1/health-enhanced-autonomous/recover",
+        "status": "ERROR",
+        "responseTime": 4
+      },
+      {
+        "method": "POST",
+        "endpoint": "/api/v1/health-enhanced-autonomous/solve",
+        "status": "ERROR",
+        "responseTime": 3
+      },
+      {
+        "method": "GET",
+        "endpoint": "/api/v1/health-enhanced-autonomous/config",
+        "status": "ERROR",
+        "responseTime": 4
+      },
+      {
+        "method": "GET",
+        "endpoint": "/api/v1/health-enhanced/health",
+        "status": "ERROR",
+        "responseTime": 5
+      },
+      {
+        "method": "GET",
+        "endpoint": "/api/v1/health-enhanced/health/detailed",
+        "status": "ERROR",
+        "responseTime": 5
+      },
+      {
+        "method": "GET",
+        "endpoint": "/health/ping",
+        "status": "ERROR",
+        "responseTime": 2
+      },
+      {
+        "method": "GET",
+        "endpoint": "/health/",
+        "status": "ERROR",
+        "responseTime": 3
+      },
+      {
+        "method": "GET",
+        "endpoint": "/health/database",
+        "status": "ERROR",
+        "responseTime": 4
+      },
+      {
+        "method": "GET",
+        "endpoint": "/health/detailed",
+        "status": "ERROR",
+        "responseTime": 4
+      },
+      {
+        "method": "GET",
+        "endpoint": "/health/email-status",
+        "status": "ERROR",
+        "responseTime": 4
+      },
+      {
+        "method": "GET",
+        "endpoint": "/health/firebase-status",
+        "status": "ERROR",
+        "responseTime": 4
+      },
+      {
+        "method": "GET",
+        "endpoint": "/api/v1/errors/frontend/stats",
+        "status": "ERROR",
+        "responseTime": 390
+      },
+      {
+        "method": "GET",
+        "endpoint": "/api/v1/errors/frontend/stream",
+        "status": "ERROR",
+        "responseTime": 53
+      },
+      {
+        "method": "DELETE",
+        "endpoint": "/api/v1/errors/frontend/cleanup",
+        "status": "ERROR",
+        "responseTime": 84
+      },
+      {
+        "method": "GET",
+        "endpoint": "/api/v1/featureFlags/",
+        "status": "ERROR",
+        "responseTime": 5
+      },
+      {
+        "method": "GET",
+        "endpoint": "/api/v1/featureFlags/enabled",
+        "status": "ERROR",
+        "responseTime": 52
+      },
+      {
+        "method": "POST",
+        "endpoint": "/api/v1/featureFlags/",
+        "status": "ERROR",
+        "responseTime": 37
+      },
+      {
+        "method": "GET",
+        "endpoint": "/api/v1/featureFlags/groups",
+        "status": "ERROR",
+        "responseTime": 6
+      },
+      {
+        "method": "POST",
+        "endpoint": "/api/v1/featureFlags/bulk-update",
+        "status": "ERROR",
+        "responseTime": 11
+      },
+      {
+        "method": "GET",
+        "endpoint": "/api/v1/featureFlags/export/configuration",
+        "status": "ERROR",
+        "responseTime": 4
+      },
+      {
+        "method": "POST",
+        "endpoint": "/api/v1/featureFlags/import/configuration",
+        "status": "ERROR",
+        "responseTime": 3
+      },
+      {
+        "method": "GET",
+        "endpoint": "/api/v1/featureFlags/status",
+        "status": "ERROR",
+        "responseTime": 3
+      },
+      {
+        "method": "GET",
+        "endpoint": "/api/v1/featureFlags/dashboard",
+        "status": "ERROR",
+        "responseTime": 4
+      },
+      {
+        "method": "GET",
+        "endpoint": "/api/v1/featureFlags/stats",
+        "status": "ERROR",
+        "responseTime": 3
+      },
+      {
+        "method": "GET",
+        "endpoint": "/api/v1/featureFlags/user-groups",
+        "status": "ERROR",
+        "responseTime": 3
+      },
+      {
+        "method": "GET",
+        "endpoint": "/api/v1/featureFlags/geographic-regions",
+        "status": "ERROR",
+        "responseTime": 5
+      },
+      {
+        "method": "GET",
+        "endpoint": "/api/v1/featureFlags/recent-activity",
+        "status": "ERROR",
+        "responseTime": 11
+      },
+      {
+        "method": "GET",
+        "endpoint": "/api/v1/feedback-system/feedback",
+        "status": "ERROR",
+        "responseTime": 4
+      },
+      {
+        "method": "POST",
+        "endpoint": "/api/v1/feedback-system/feedback",
+        "status": "ERROR",
+        "responseTime": 3
+      },
+      {
+        "method": "GET",
+        "endpoint": "/api/v1/feedback-system/analytics",
+        "status": "ERROR",
+        "responseTime": 3
+      },
+      {
+        "method": "GET",
+        "endpoint": "/api/v1/feedback-system/surveys",
+        "status": "ERROR",
+        "responseTime": 4
+      },
+      {
+        "method": "POST",
+        "endpoint": "/api/v1/feedback-system/surveys",
+        "status": "ERROR",
+        "responseTime": 3
+      },
+      {
+        "method": "GET",
+        "endpoint": "/api/v1/feedback/",
+        "status": "ERROR",
+        "responseTime": 3
+      },
+      {
+        "method": "POST",
+        "endpoint": "/api/v1/feedback/",
+        "status": "ERROR",
+        "responseTime": 2
+      },
+      {
+        "method": "GET",
+        "endpoint": "/api/v1/feedback/open/list",
+        "status": "ERROR",
+        "responseTime": 4
+      },
+      {
+        "method": "GET",
+        "endpoint": "/api/v1/feedback/stats/overview",
+        "status": "ERROR",
+        "responseTime": 3
+      },
+      {
+        "method": "GET",
+        "endpoint": "/api/v1/feedback/search/query",
+        "status": "ERROR",
+        "responseTime": 3
+      },
+      {
+        "method": "GET",
+        "endpoint": "/api/v1/finance/invoices",
+        "status": "ERROR",
+        "responseTime": 3
+      },
+      {
+        "method": "POST",
+        "endpoint": "/api/v1/finance/invoices",
+        "status": "ERROR",
+        "responseTime": 3
+      },
+      {
+        "method": "GET",
+        "endpoint": "/api/v1/finance/expenses",
+        "status": "ERROR",
+        "responseTime": 3
+      },
+      {
+        "method": "GET",
+        "endpoint": "/api/v1/finance/payments",
+        "status": "ERROR",
+        "responseTime": 3
+      },
+      {
+        "method": "GET",
+        "endpoint": "/api/v1/finance/analytics",
+        "status": "ERROR",
+        "responseTime": 3
+      },
+      {
+        "method": "GET",
+        "endpoint": "/api/v1/fleet/health-check",
+        "status": "ERROR",
+        "responseTime": 3
+      },
+      {
+        "method": "GET",
+        "endpoint": "/api/v1/fleet/",
+        "status": "ERROR",
+        "responseTime": 5
+      },
+      {
+        "method": "POST",
+        "endpoint": "/api/v1/fleet/",
+        "status": "ERROR",
+        "responseTime": 2
+      },
+      {
+        "method": "GET",
+        "endpoint": "/api/v1/fleet/routes",
+        "status": "ERROR",
+        "responseTime": 4
+      },
+      {
+        "method": "POST",
+        "endpoint": "/api/v1/fleet/routes",
+        "status": "ERROR",
+        "responseTime": 4
+      },
+      {
+        "method": "GET",
+        "endpoint": "/api/v1/fleet/maintenance",
+        "status": "ERROR",
+        "responseTime": 4
+      },
+      {
+        "method": "POST",
+        "endpoint": "/api/v1/fleet/maintenance",
+        "status": "ERROR",
+        "responseTime": 9
+      },
+      {
+        "method": "GET",
+        "endpoint": "/api/v1/fleet/drivers",
+        "status": "ERROR",
+        "responseTime": 3
+      },
+      {
+        "method": "POST",
+        "endpoint": "/api/v1/fleet/drivers",
+        "status": "ERROR",
+        "responseTime": 3
+      },
+      {
+        "method": "GET",
+        "endpoint": "/api/v1/fleetVehicle/",
+        "status": "ERROR",
+        "responseTime": 3
+      },
+      {
+        "method": "GET",
+        "endpoint": "/api/v1/gpsDevice/",
+        "status": "ERROR",
+        "responseTime": 3
+      },
+      {
+        "method": "GET",
+        "endpoint": "/api/v1/health-enhanced-autonomous/",
+        "status": "ERROR",
+        "responseTime": 4
+      },
+      {
+        "method": "GET",
+        "endpoint": "/api/v1/health-enhanced-autonomous/ping",
+        "status": "ERROR",
+        "responseTime": 4
+      },
+      {
+        "method": "GET",
+        "endpoint": "/api/v1/health-enhanced-autonomous/status",
+        "status": "ERROR",
+        "responseTime": 4
+      },
+      {
+        "method": "GET",
+        "endpoint": "/api/v1/health-enhanced-autonomous/monitor",
+        "status": "ERROR",
+        "responseTime": 4
+      },
+      {
+        "method": "GET",
+        "endpoint": "/api/v1/health-enhanced-autonomous/learning",
+        "status": "ERROR",
+        "responseTime": 4
+      },
+      {
+        "method": "GET",
+        "endpoint": "/api/v1/health-enhanced-autonomous/performance",
+        "status": "ERROR",
+        "responseTime": 5
+      },
+      {
+        "method": "POST",
+        "endpoint": "/api/v1/health-enhanced-autonomous/recover",
+        "status": "ERROR",
+        "responseTime": 4
+      },
+      {
+        "method": "POST",
+        "endpoint": "/api/v1/health-enhanced-autonomous/solve",
+        "status": "ERROR",
+        "responseTime": 3
+      },
+      {
+        "method": "GET",
+        "endpoint": "/api/v1/health-enhanced-autonomous/config",
+        "status": "ERROR",
+        "responseTime": 4
+      },
+      {
+        "method": "GET",
+        "endpoint": "/api/v1/health-enhanced/health",
+        "status": "ERROR",
+        "responseTime": 5
+      },
+      {
+        "method": "GET",
+        "endpoint": "/api/v1/health-enhanced/health/detailed",
+        "status": "ERROR",
+        "responseTime": 5
+      },
+      {
+        "method": "GET",
+        "endpoint": "/health/ping",
+        "status": "ERROR",
+        "responseTime": 2
+      },
+      {
+        "method": "GET",
+        "endpoint": "/health/",
+        "status": "ERROR",
+        "responseTime": 3
+      },
+      {
+        "method": "GET",
+        "endpoint": "/health/database",
+        "status": "ERROR",
+        "responseTime": 4
+      },
+      {
+        "method": "GET",
+        "endpoint": "/health/detailed",
+        "status": "ERROR",
+        "responseTime": 4
+      },
+      {
+        "method": "GET",
+        "endpoint": "/health/email-status",
+        "status": "ERROR",
+        "responseTime": 4
+      },
+      {
+        "method": "GET",
+        "endpoint": "/health/firebase-status",
+        "status": "ERROR",
+        "responseTime": 4
+      }
+    ],
+    "other": []
+  },
+  "routeAnalysis": {
+    "clutch-email": {
+      "total": 9,
+      "errors": {
+        "400": 3,
+        "404": 0,
+        "500": 6,
+        "connection": 0,
+        "other": 0
+      }
+    },
+    "customers": {
+      "total": 3,
+      "errors": {
+        "400": 3,
+        "404": 0,
+        "500": 0,
+        "connection": 0,
+        "other": 0
+      }
+    },
+    "enhanced-auth": {
+      "total": 3,
+      "errors": {
+        "400": 3,
+        "404": 0,
+        "500": 0,
+        "connection": 0,
+        "other": 0
+      }
+    },
+    "errors": {
+      "total": 12,
+      "errors": {
+        "400": 3,
+        "404": 0,
+        "500": 0,
+        "connection": 9,
+        "other": 0
+      }
+    },
+    "carParts": {
+      "total": 15,
+      "errors": {
+        "400": 0,
+        "404": 15,
+        "500": 0,
+        "connection": 0,
+        "other": 0
+      }
+    },
+    "corporateAccount": {
+      "total": 6,
+      "errors": {
+        "400": 0,
+        "404": 6,
+        "500": 0,
+        "connection": 0,
+        "other": 0
+      }
+    },
+    "deviceToken": {
+      "total": 3,
+      "errors": {
+        "400": 0,
+        "404": 3,
+        "500": 0,
+        "connection": 0,
+        "other": 0
+      }
+    },
+    "digitalWallet": {
+      "total": 3,
+      "errors": {
+        "400": 0,
+        "404": 3,
+        "500": 0,
+        "connection": 0,
+        "other": 0
+      }
+    },
+    "enhancedFeatures": {
+      "total": 54,
+      "errors": {
+        "400": 0,
+        "404": 54,
+        "500": 0,
+        "connection": 0,
+        "other": 0
+      }
+    },
+    "enterpriseAuth": {
+      "total": 3,
+      "errors": {
+        "400": 0,
+        "404": 3,
+        "500": 0,
+        "connection": 0,
+        "other": 0
+      }
+    },
+    "featureFlags": {
+      "total": 39,
+      "errors": {
+        "400": 0,
+        "404": 0,
+        "500": 0,
+        "connection": 39,
+        "other": 0
+      }
+    },
+    "feedback-system": {
+      "total": 15,
+      "errors": {
+        "400": 0,
+        "404": 0,
+        "500": 0,
+        "connection": 15,
+        "other": 0
+      }
+    },
+    "feedback": {
+      "total": 15,
+      "errors": {
+        "400": 0,
+        "404": 0,
+        "500": 0,
+        "connection": 15,
+        "other": 0
+      }
+    },
+    "finance": {
+      "total": 15,
+      "errors": {
+        "400": 0,
+        "404": 0,
+        "500": 0,
+        "connection": 15,
+        "other": 0
+      }
+    },
+    "fleet": {
+      "total": 27,
+      "errors": {
+        "400": 0,
+        "404": 0,
+        "500": 0,
+        "connection": 27,
+        "other": 0
+      }
+    },
+    "fleetVehicle": {
+      "total": 3,
+      "errors": {
+        "400": 0,
+        "404": 0,
+        "500": 0,
+        "connection": 3,
+        "other": 0
+      }
+    },
+    "gpsDevice": {
+      "total": 3,
+      "errors": {
+        "400": 0,
+        "404": 0,
+        "500": 0,
+        "connection": 3,
+        "other": 0
+      }
+    },
+    "health-enhanced-autonomous": {
+      "total": 27,
+      "errors": {
+        "400": 0,
+        "404": 0,
+        "500": 0,
+        "connection": 27,
+        "other": 0
+      }
+    },
+    "health-enhanced": {
+      "total": 6,
+      "errors": {
+        "400": 0,
+        "404": 0,
+        "500": 0,
+        "connection": 6,
+        "other": 0
+      }
+    },
+    "undefined": {
+      "total": 18,
+      "errors": {
+        "400": 0,
+        "404": 0,
+        "500": 0,
+        "connection": 18,
+        "other": 0
+      }
+    }
+  },
+  "recommendations": [
+    {
+      "category": "404 Errors",
+      "priority": "HIGH",
+      "issues": [
+        "Routes exist in code but not mounted in server.js",
+        "Route paths may be incorrectly defined",
+        "Missing route handlers in Express app"
+      ],
+      "solutions": [
+        "Check server.js for missing app.use() statements",
+        "Verify route file exports and path definitions",
+        "Ensure all route files are properly required and mounted",
+        "Check for typos in route paths"
+      ],
+      "affectedRoutes": [
+        "/api/v1/carParts/",
+        "/api/v1/carParts/",
+        "/api/v1/carParts/search/query",
+        "/api/v1/carParts/low-stock/list",
+        "/api/v1/carParts/stats/overview",
+        "/api/v1/corporateAccount/",
+        "/api/v1/corporateAccount/",
+        "/api/v1/deviceToken/",
+        "/api/v1/digitalWallet/",
+        "/api/v1/enhancedFeatures/real-time/booking-update"
+      ]
+    },
+    {
+      "category": "500 Errors",
+      "priority": "CRITICAL",
+      "issues": [
+        "Server-side errors in route handlers",
+        "Database connection issues",
+        "Missing dependencies or middleware",
+        "Unhandled exceptions in route logic"
+      ],
+      "solutions": [
+        "Add proper error handling in route handlers",
+        "Check database connections and queries",
+        "Verify all required middleware is installed",
+        "Add try-catch blocks around async operations",
+        "Check for missing environment variables"
+      ],
+      "affectedRoutes": [
+        "/api/v1/clutch-email/auth/login",
+        "/api/v1/clutch-email/health"
+      ]
+    },
+    {
+      "category": "Connection Errors",
+      "priority": "HIGH",
+      "issues": [
+        "Routes not responding or timing out",
+        "Server overload or memory issues",
+        "Network connectivity problems",
+        "Route handlers hanging or not responding"
+      ],
+      "solutions": [
+        "Add timeout middleware to prevent hanging requests",
+        "Implement proper error handling and response mechanisms",
+        "Check server memory usage and performance",
+        "Add request logging to identify hanging routes",
+        "Implement circuit breaker pattern for failing routes"
+      ],
+      "affectedRoutes": [
+        "/api/v1/errors/frontend/stats",
+        "/api/v1/errors/frontend/stream",
+        "/api/v1/errors/frontend/cleanup",
+        "/api/v1/featureFlags/",
+        "/api/v1/featureFlags/enabled",
+        "/api/v1/featureFlags/",
+        "/api/v1/featureFlags/groups",
+        "/api/v1/featureFlags/bulk-update",
+        "/api/v1/featureFlags/export/configuration",
+        "/api/v1/featureFlags/import/configuration"
+      ]
+    },
+    {
+      "category": "400 Errors",
+      "priority": "MEDIUM",
+      "issues": [
+        "Invalid request data or missing required fields",
+        "Validation errors in request body",
+        "Incorrect request format or parameters"
+      ],
+      "solutions": [
+        "Improve input validation middleware",
+        "Add better error messages for validation failures",
+        "Check request body structure and required fields",
+        "Implement proper request sanitization"
+      ],
+      "affectedRoutes": [
+        "/api/v1/clutch-email/accounts",
+        "/api/v1/customers/",
+        "/api/v1/enhanced-auth/biometric-verify",
+        "/api/v1/errors/frontend"
+      ]
+    },
+    {
+      "category": "404 Errors",
+      "priority": "HIGH",
+      "issues": [
+        "Routes exist in code but not mounted in server.js",
+        "Route paths may be incorrectly defined",
+        "Missing route handlers in Express app"
+      ],
+      "solutions": [
+        "Check server.js for missing app.use() statements",
+        "Verify route file exports and path definitions",
+        "Ensure all route files are properly required and mounted",
+        "Check for typos in route paths"
+      ],
+      "affectedRoutes": [
+        "/api/v1/carParts/",
+        "/api/v1/carParts/",
+        "/api/v1/carParts/search/query",
+        "/api/v1/carParts/low-stock/list",
+        "/api/v1/carParts/stats/overview",
+        "/api/v1/corporateAccount/",
+        "/api/v1/corporateAccount/",
+        "/api/v1/deviceToken/",
+        "/api/v1/digitalWallet/",
+        "/api/v1/enhancedFeatures/real-time/booking-update"
+      ]
+    },
+    {
+      "category": "500 Errors",
+      "priority": "CRITICAL",
+      "issues": [
+        "Server-side errors in route handlers",
+        "Database connection issues",
+        "Missing dependencies or middleware",
+        "Unhandled exceptions in route logic"
+      ],
+      "solutions": [
+        "Add proper error handling in route handlers",
+        "Check database connections and queries",
+        "Verify all required middleware is installed",
+        "Add try-catch blocks around async operations",
+        "Check for missing environment variables"
+      ],
+      "affectedRoutes": [
+        "/api/v1/clutch-email/auth/login",
+        "/api/v1/clutch-email/health",
+        "/api/v1/clutch-email/auth/login",
+        "/api/v1/clutch-email/health"
+      ]
+    },
+    {
+      "category": "Connection Errors",
+      "priority": "HIGH",
+      "issues": [
+        "Routes not responding or timing out",
+        "Server overload or memory issues",
+        "Network connectivity problems",
+        "Route handlers hanging or not responding"
+      ],
+      "solutions": [
+        "Add timeout middleware to prevent hanging requests",
+        "Implement proper error handling and response mechanisms",
+        "Check server memory usage and performance",
+        "Add request logging to identify hanging routes",
+        "Implement circuit breaker pattern for failing routes"
+      ],
+      "affectedRoutes": [
+        "/api/v1/errors/frontend/stats",
+        "/api/v1/errors/frontend/stream",
+        "/api/v1/errors/frontend/cleanup",
+        "/api/v1/featureFlags/",
+        "/api/v1/featureFlags/enabled",
+        "/api/v1/featureFlags/",
+        "/api/v1/featureFlags/groups",
+        "/api/v1/featureFlags/bulk-update",
+        "/api/v1/featureFlags/export/configuration",
+        "/api/v1/featureFlags/import/configuration"
+      ]
+    },
+    {
+      "category": "400 Errors",
+      "priority": "MEDIUM",
+      "issues": [
+        "Invalid request data or missing required fields",
+        "Validation errors in request body",
+        "Incorrect request format or parameters"
+      ],
+      "solutions": [
+        "Improve input validation middleware",
+        "Add better error messages for validation failures",
+        "Check request body structure and required fields",
+        "Implement proper request sanitization"
+      ],
+      "affectedRoutes": [
+        "/api/v1/clutch-email/accounts",
+        "/api/v1/customers/",
+        "/api/v1/enhanced-auth/biometric-verify",
+        "/api/v1/errors/frontend",
+        "/api/v1/clutch-email/accounts",
+        "/api/v1/customers/",
+        "/api/v1/enhanced-auth/biometric-verify",
+        "/api/v1/errors/frontend"
+      ]
+    }
+  ],
+  "topProblematicRoutes": [
+    {
+      "route": "enhancedFeatures",
+      "totalErrors": 54,
+      "errorBreakdown": {
+        "400": 0,
+        "404": 54,
+        "500": 0,
+        "connection": 0,
+        "other": 0
+      }
+    },
+    {
+      "route": "featureFlags",
+      "totalErrors": 39,
+      "errorBreakdown": {
+        "400": 0,
+        "404": 0,
+        "500": 0,
+        "connection": 39,
+        "other": 0
+      }
+    },
+    {
+      "route": "fleet",
+      "totalErrors": 27,
+      "errorBreakdown": {
+        "400": 0,
+        "404": 0,
+        "500": 0,
+        "connection": 27,
+        "other": 0
+      }
+    },
+    {
+      "route": "health-enhanced-autonomous",
+      "totalErrors": 27,
+      "errorBreakdown": {
+        "400": 0,
+        "404": 0,
+        "500": 0,
+        "connection": 27,
+        "other": 0
+      }
+    },
+    {
+      "route": "undefined",
+      "totalErrors": 18,
+      "errorBreakdown": {
+        "400": 0,
+        "404": 0,
+        "500": 0,
+        "connection": 18,
+        "other": 0
+      }
+    },
+    {
+      "route": "carParts",
+      "totalErrors": 15,
+      "errorBreakdown": {
+        "400": 0,
+        "404": 15,
+        "500": 0,
+        "connection": 0,
+        "other": 0
+      }
+    },
+    {
+      "route": "feedback-system",
+      "totalErrors": 15,
+      "errorBreakdown": {
+        "400": 0,
+        "404": 0,
+        "500": 0,
+        "connection": 15,
+        "other": 0
+      }
+    },
+    {
+      "route": "feedback",
+      "totalErrors": 15,
+      "errorBreakdown": {
+        "400": 0,
+        "404": 0,
+        "500": 0,
+        "connection": 15,
+        "other": 0
+      }
+    },
+    {
+      "route": "finance",
+      "totalErrors": 15,
+      "errorBreakdown": {
+        "400": 0,
+        "404": 0,
+        "500": 0,
+        "connection": 15,
+        "other": 0
+      }
+    },
+    {
+      "route": "errors",
+      "totalErrors": 12,
+      "errorBreakdown": {
+        "400": 3,
+        "404": 0,
+        "500": 0,
+        "connection": 9,
+        "other": 0
+      }
+    },
+    {
+      "route": "clutch-email",
+      "totalErrors": 9,
+      "errorBreakdown": {
+        "400": 3,
+        "404": 0,
+        "500": 6,
+        "connection": 0,
+        "other": 0
+      }
+    },
+    {
+      "route": "corporateAccount",
+      "totalErrors": 6,
+      "errorBreakdown": {
+        "400": 0,
+        "404": 6,
+        "500": 0,
+        "connection": 0,
+        "other": 0
+      }
+    },
+    {
+      "route": "health-enhanced",
+      "totalErrors": 6,
+      "errorBreakdown": {
+        "400": 0,
+        "404": 0,
+        "500": 0,
+        "connection": 6,
+        "other": 0
+      }
+    },
+    {
+      "route": "customers",
+      "totalErrors": 3,
+      "errorBreakdown": {
+        "400": 3,
+        "404": 0,
+        "500": 0,
+        "connection": 0,
+        "other": 0
+      }
+    },
+    {
+      "route": "enhanced-auth",
+      "totalErrors": 3,
+      "errorBreakdown": {
+        "400": 3,
+        "404": 0,
+        "500": 0,
+        "connection": 0,
+        "other": 0
+      }
+    },
+    {
+      "route": "deviceToken",
+      "totalErrors": 3,
+      "errorBreakdown": {
+        "400": 0,
+        "404": 3,
+        "500": 0,
+        "connection": 0,
+        "other": 0
+      }
+    },
+    {
+      "route": "digitalWallet",
+      "totalErrors": 3,
+      "errorBreakdown": {
+        "400": 0,
+        "404": 3,
+        "500": 0,
+        "connection": 0,
+        "other": 0
+      }
+    },
+    {
+      "route": "enterpriseAuth",
+      "totalErrors": 3,
+      "errorBreakdown": {
+        "400": 0,
+        "404": 3,
+        "500": 0,
+        "connection": 0,
+        "other": 0
+      }
+    },
+    {
+      "route": "fleetVehicle",
+      "totalErrors": 3,
+      "errorBreakdown": {
+        "400": 0,
+        "404": 0,
+        "500": 0,
+        "connection": 3,
+        "other": 0
+      }
+    },
+    {
+      "route": "gpsDevice",
+      "totalErrors": 3,
+      "errorBreakdown": {
+        "400": 0,
+        "404": 0,
+        "500": 0,
+        "connection": 3,
+        "other": 0
+      }
+    }
+  ]
+}

@@ -46,6 +46,14 @@ const validationSchemas = {
     body('items.*.price').isNumeric().withMessage('Item price must be a number'),
     body('items.*.quantity').isInt({ min: 1 }).withMessage('Item quantity must be at least 1')
   ],
+  template: [
+    body('name').isString().notEmpty().withMessage('Template name is required'),
+    body('type').isString().notEmpty().withMessage('Template type is required'),
+    body('category').optional().isString(),
+    body('subject').optional().isString(),
+    body('content').isString().notEmpty().withMessage('Template content is required'),
+    body('variables').optional().isArray()
+  ],
   refund: [
     body('transactionId').isString().notEmpty().withMessage('Transaction ID is required'),
     body('amount').isNumeric().withMessage('Amount must be a number'),

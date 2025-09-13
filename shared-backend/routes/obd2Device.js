@@ -2,6 +2,15 @@
 const router = express.Router();
 const { authenticateToken } = require('../middleware/auth');
 
+// Public test endpoint
+router.get('/test', (req, res) => {
+  res.json({
+    success: true,
+    message: 'OBD2 Device routes are working',
+    timestamp: new Date().toISOString()
+  });
+});
+
 router.get('/', authenticateToken, async (req, res) => {
   try {
     res.json({

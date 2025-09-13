@@ -78,7 +78,7 @@ interface AdvancedDataTableProps<T = any> {
   className?: string
 }
 
-export function AdvancedDataTable<T = any>({
+export function AdvancedDataTable<T extends object = any>({
   columns,
   data,
   loading = false,
@@ -143,8 +143,8 @@ export function AdvancedDataTable<T = any>({
     const column = columns.find(col => col.key === key)
     if (!column?.sortable) return
 
-    const newDirection = sortConfig?.key === key && sortConfig.direction === 'asc' ? 'desc' : 'asc'
-    const newSortConfig = { key, direction: newDirection }
+    const newDirection: 'asc' | 'desc' = sortConfig?.key === key && sortConfig.direction === 'asc' ? 'desc' : 'asc'
+    const newSortConfig: SortConfig = { key, direction: newDirection }
     
     setSortConfig(newSortConfig)
     onSort?.(newSortConfig)
@@ -364,7 +364,10 @@ export function AdvancedDataTable<T = any>({
                   <>
                     {/* Virtual scrolling spacer */}
                     <tr style={{ height: scrollTop }} />
-                    {visibleRows.map(({ row, index }) => (
+                    {visibleRows.map((item, idx) => {
+                      const row = 'row' in item ? (item as { row: T; index: number }).row : item as T
+                      const index = 'index' in item ? (item as { row: T; index: number }).index : idx
+                      return (
                       <tr key={index} className="hover:bg-slate-50 dark:hover:bg-slate-800">
                         {visibleColumnsData.map((column) => (
                           <td
@@ -373,13 +376,14 @@ export function AdvancedDataTable<T = any>({
                             style={{ height: rowHeight }}
                           >
                             {column.render ? 
-                              column.render(row[column.key], row, index) : 
-                              row[column.key]
+                              column.render((row as any)[column.key], row, index) : 
+                              (row as any)[column.key]
                             }
                           </td>
                         ))}
                       </tr>
-                    ))}
+                      )
+                    })}
                     {/* Virtual scrolling spacer */}
                     <tr style={{ height: (data.data.length - Math.ceil(scrollTop / rowHeight) - Math.ceil(containerHeight / rowHeight)) * rowHeight }} />
                   </>
@@ -392,8 +396,8 @@ export function AdvancedDataTable<T = any>({
                           className="px-4 py-3 text-sm border-b"
                         >
                           {column.render ? 
-                            column.render(row[column.key], row, index) : 
-                            row[column.key]
+                            column.render((row as any)[column.key], row, index) : 
+                            (row as any)[column.key]
                           }
                         </td>
                       ))}

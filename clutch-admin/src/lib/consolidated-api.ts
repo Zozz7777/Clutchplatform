@@ -194,7 +194,7 @@ class ConsolidatedApiService {
     }
   }
 
-  private setTokens(token: string, refreshToken: string) {
+  public setTokens(token: string, refreshToken: string) {
     this.token = token
     this.refreshToken = refreshToken
     if (typeof window !== 'undefined') {
@@ -203,7 +203,7 @@ class ConsolidatedApiService {
     }
   }
 
-  private clearTokens() {
+  public clearTokens() {
     this.token = null
     this.refreshToken = null
     if (typeof window !== 'undefined') {
@@ -502,10 +502,7 @@ class ConsolidatedApiService {
     return this.request('/admin/analytics/revenue')
   }
 
-  // System Health APIs
-  async getSystemHealth(): Promise<ApiResponse<any>> {
-    return this.request('/admin/system/health')
-  }
+  // System Health APIs (removed duplicate - see line 825 for the main implementation)
 
   async getSystemLogs(): Promise<ApiResponse<any[]>> {
     return this.request('/admin/system/logs')
@@ -718,10 +715,7 @@ class ConsolidatedApiService {
     })
   }
 
-  // User Cohorts APIs
-  async getUserCohorts(): Promise<ApiResponse<any>> {
-    return this.request('/admin/users/cohorts')
-  }
+  // User Cohorts APIs (removed duplicate - see line 966 for the main implementation)
 
   async createUserCohort(data: any): Promise<ApiResponse<any>> {
     return this.request('/admin/users/cohorts', {
@@ -762,10 +756,7 @@ class ConsolidatedApiService {
     })
   }
 
-  // Pricing Analytics APIs
-  async getPricingAnalytics(): Promise<ApiResponse<any>> {
-    return this.request('/admin/revenue/pricing')
-  }
+  // Pricing Analytics APIs (removed duplicate - see line 925 for the main implementation)
 
   async updatePricingPlan(id: string, data: any): Promise<ApiResponse<any>> {
     return this.request(`/admin/revenue/pricing/${id}`, {
@@ -774,10 +765,7 @@ class ConsolidatedApiService {
     })
   }
 
-  // Revenue Forecasting APIs
-  async getRevenueForecasting(): Promise<ApiResponse<any>> {
-    return this.request('/admin/revenue/forecasting')
-  }
+  // Revenue Forecasting APIs (removed duplicate - see line 912 for the main implementation)
 
   async updateRevenueForecast(data: any): Promise<ApiResponse<any>> {
     return this.request('/admin/revenue/forecasting', {
@@ -950,16 +938,6 @@ class ConsolidatedApiService {
     return this.request('/revenue/subscriptions')
   }
 
-  // User Management
-  async getUserSegments(): Promise<ApiResponse<Array<{
-    id: string
-    name: string
-    criteria: string
-    userCount: number
-    createdAt: string
-  }>>> {
-    return this.request('/users/segments')
-  }
 
   async getUserJourney(): Promise<ApiResponse<{
     stages: Array<{

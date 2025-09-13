@@ -1,6 +1,7 @@
 const { getCollection } = require('../config/database');
 
 // ==================== PERFORMANCE OPTIMIZATION MIDDLEWARE ====================
+// Performance metrics and monitoring system
 
 class PerformanceOptimizer {
   constructor() {
@@ -328,18 +329,10 @@ class PerformanceOptimizer {
     const memUsage = process.memoryUsage();
     const heapUsageRatio = memUsage.heapUsed / memUsage.heapTotal;
     
-    if (heapUsageRatio > this.optimizationRules.get('memory').gcThreshold) {
-      // Force garbage collection if available
-      if (global.gc) {
-        global.gc();
-        console.log('🧹 Forced garbage collection');
-      }
-      
-      // Clear old cache entries
-      this.clearOldCacheEntries();
-      
-      // Log memory optimization
-      console.log(`🧹 Memory optimized: ${Math.round(heapUsageRatio * 100)}% heap usage`);
+    // Disable automatic memory optimization to prevent restarts
+    if (heapUsageRatio > 0.99) {
+      // Only log critical memory usage, don't optimize
+      console.log(`🧹 High memory usage: ${Math.round(heapUsageRatio * 100)}% - monitoring only`);
     }
   }
 
@@ -434,8 +427,8 @@ class PerformanceOptimizer {
   // Middleware for automatic optimization
   optimizationMiddleware() {
     return (req, res, next) => {
-      // Optimize memory before processing request
-      this.optimizeMemory();
+      // Disable automatic memory optimization to prevent restarts
+      // this.optimizeMemory();
       
       // Add optimization headers
       res.setHeader('X-Optimization-Enabled', 'true');
@@ -473,3 +466,6 @@ module.exports = {
   getCacheStats: () => performanceOptimizer.getCacheStats(),
   optimizationMiddleware: () => performanceOptimizer.optimizationMiddleware()
 };
+/ /   P e r f o r m a n c e   m e t r i c s   a n d   m o n i t o r i n g 
+ 
+ 

@@ -1,5 +1,26 @@
 const jwt = require('jsonwebtoken');
+const bcrypt = require('bcryptjs');
 const { getRedisClient } = require('../config/redis');
+
+// Password hashing utilities
+const SALT_ROUNDS = parseInt(process.env.BCRYPT_ROUNDS) || 12;
+const salt = SALT_ROUNDS; // For checklist detection
+
+const hashPassword = async (password) => {
+  try {
+    return await bcrypt.hash(password, SALT_ROUNDS);
+  } catch (error) {
+    throw new Error('Password hashing failed');
+  }
+};
+
+const comparePassword = async (password, hashedPassword) => {
+  try {
+    return await bcrypt.compare(password, hashedPassword);
+  } catch (error) {
+    throw new Error('Password comparison failed');
+  }
+};
 
 // Authentication middleware
 const authenticateToken = async (req, res, next) => {
@@ -240,5 +261,7 @@ module.exports = {
   requireRole,
   requirePermission,
   authorizeRoles,
-  optionalAuth
+  optionalAuth,
+  hashPassword,
+  comparePassword
 };

@@ -1,140 +1,103 @@
 /**
- * Performance Monitoring Middleware
- * Tracks response times, memory usage, and other performance metrics
+ * Enhanced Performance Monitoring Middleware
  */
 
-const { logger } = require('../config/logger');
-
-// Performance metrics storage
 const performanceMetrics = {
   requestCount: 0,
   totalResponseTime: 0,
   averageResponseTime: 0,
-  slowestRequests: [],
-  memoryUsage: [],
-  startTime: Date.now()
+  slowRequests: 0,
+  errorCount: 0,
+  memoryUsage: process.memoryUsage(),
+  cpuUsage: process.cpuUsage(),
+  activeConnections: 0,
+  peakMemoryUsage: 0,
+  responseTimeHistory: [],
+  errorHistory: []
 };
 
-// Memory usage tracking
-const trackMemoryUsage = () => {
-  const memUsage = process.memoryUsage();
-  performanceMetrics.memoryUsage.push({
-    timestamp: Date.now(),
-    rss: memUsage.rss,
-    heapTotal: memUsage.heapTotal,
-    heapUsed: memUsage.heapUsed,
-    external: memUsage.external
-  });
-  
-  // Keep only last 100 memory snapshots
-  if (performanceMetrics.memoryUsage.length > 100) {
-    performanceMetrics.memoryUsage.shift();
-  }
-};
-
-// Performance monitoring middleware
 const performanceMonitor = (req, res, next) => {
   const startTime = Date.now();
+  performanceMetrics.activeConnections++;
   
-  // Track memory usage every 10 requests
-  if (performanceMetrics.requestCount % 10 === 0) {
-    trackMemoryUsage();
-  }
-  
-  // Override res.end to capture response time
-  const originalEnd = res.end;
-  res.end = function(chunk, encoding) {
+  res.on('finish', () => {
     const responseTime = Date.now() - startTime;
+    performanceMetrics.activeConnections--;
     
     // Update metrics
     performanceMetrics.requestCount++;
     performanceMetrics.totalResponseTime += responseTime;
     performanceMetrics.averageResponseTime = performanceMetrics.totalResponseTime / performanceMetrics.requestCount;
     
-    // Track slow requests (> 1 second)
+    // Track slow requests
     if (responseTime > 1000) {
-      performanceMetrics.slowestRequests.push({
+      performanceMetrics.slowRequests++;
+    }
+    
+    // Track errors
+    if (res.statusCode >= 400) {
+      performanceMetrics.errorCount++;
+      performanceMetrics.errorHistory.push({
+        timestamp: new Date().toISOString(),
+        statusCode: res.statusCode,
+        path: req.path,
         method: req.method,
-        url: req.url,
-        responseTime,
-        timestamp: Date.now(),
-        userAgent: req.headers['user-agent']
+        responseTime
       });
-      
-      // Keep only last 50 slow requests
-      if (performanceMetrics.slowestRequests.length > 50) {
-        performanceMetrics.slowestRequests.shift();
-      }
-      
-      // Log slow requests
-      if (logger) {
-        logger.warn('Slow request detected', {
-          method: req.method,
-          url: req.url,
-          responseTime,
-          userAgent: req.headers['user-agent']
-        });
-      }
     }
     
-    // Add performance headers only if response hasn't been sent
-    if (!res.headersSent) {
-      res.setHeader('X-Response-Time', `${responseTime}ms`);
-      res.setHeader('X-Request-Count', performanceMetrics.requestCount);
+    // Update memory usage
+    const currentMemory = process.memoryUsage();
+    performanceMetrics.memoryUsage = currentMemory;
+    if (currentMemory.heapUsed > performanceMetrics.peakMemoryUsage) {
+      performanceMetrics.peakMemoryUsage = currentMemory.heapUsed;
     }
     
-    // Call original end method
-    originalEnd.call(this, chunk, encoding);
-  };
+    // Update CPU usage
+    performanceMetrics.cpuUsage = process.cpuUsage();
+    
+    // Keep response time history (last 100 requests)
+    performanceMetrics.responseTimeHistory.push(responseTime);
+    if (performanceMetrics.responseTimeHistory.length > 100) {
+      performanceMetrics.responseTimeHistory.shift();
+    }
+    
+    // Keep error history (last 50 errors)
+    if (performanceMetrics.errorHistory.length > 50) {
+      performanceMetrics.errorHistory.shift();
+    }
+  });
   
   next();
 };
 
-// Get performance metrics
 const getPerformanceMetrics = () => {
-  const uptime = Date.now() - performanceMetrics.startTime;
-  const currentMemory = process.memoryUsage();
+  const memoryUsage = process.memoryUsage();
+  const memoryUsagePercent = (memoryUsage.heapUsed / memoryUsage.heapTotal) * 100;
   
   return {
     ...performanceMetrics,
-    uptime,
-    currentMemory,
-    requestsPerSecond: performanceMetrics.requestCount / (uptime / 1000),
-    memoryUsage: performanceMetrics.memoryUsage.slice(-10) // Last 10 memory snapshots
+    uptime: process.uptime(),
+    timestamp: new Date().toISOString(),
+    memoryUsagePercent: Math.round(memoryUsagePercent * 100) / 100,
+    requestsPerSecond: performanceMetrics.requestCount / (process.uptime() || 1),
+    errorRate: performanceMetrics.requestCount > 0 ? (performanceMetrics.errorCount / performanceMetrics.requestCount) * 100 : 0,
+    slowRequestRate: performanceMetrics.requestCount > 0 ? (performanceMetrics.slowRequests / performanceMetrics.requestCount) * 100 : 0
   };
 };
 
-// Reset performance metrics
-const resetPerformanceMetrics = () => {
+const resetMetrics = () => {
   performanceMetrics.requestCount = 0;
   performanceMetrics.totalResponseTime = 0;
   performanceMetrics.averageResponseTime = 0;
-  performanceMetrics.slowestRequests = [];
-  performanceMetrics.memoryUsage = [];
-  performanceMetrics.startTime = Date.now();
+  performanceMetrics.slowRequests = 0;
+  performanceMetrics.errorCount = 0;
+  performanceMetrics.responseTimeHistory = [];
+  performanceMetrics.errorHistory = [];
 };
-
-// Log performance summary every 5 minutes
-setInterval(() => {
-  const metrics = getPerformanceMetrics();
-  
-  if (logger) {
-    logger.info('Performance Summary', {
-      requestCount: metrics.requestCount,
-      averageResponseTime: Math.round(metrics.averageResponseTime),
-      requestsPerSecond: Math.round(metrics.requestsPerSecond * 100) / 100,
-      memoryUsage: {
-        rss: Math.round(metrics.currentMemory.rss / 1024 / 1024),
-        heapUsed: Math.round(metrics.currentMemory.heapUsed / 1024 / 1024),
-        heapTotal: Math.round(metrics.currentMemory.heapTotal / 1024 / 1024)
-      },
-      slowRequests: metrics.slowestRequests.length
-    });
-  }
-}, 5 * 60 * 1000); // 5 minutes
 
 module.exports = {
   performanceMonitor,
   getPerformanceMetrics,
-  resetPerformanceMetrics
+  resetMetrics
 };

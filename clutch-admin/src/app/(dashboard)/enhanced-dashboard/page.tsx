@@ -1,7 +1,8 @@
 'use client'
 
 import React, { useEffect, useState } from 'react'
-import { useApp } from '@/hooks/use-app'
+import { useAuth } from '@/contexts/AuthContext'
+import { dashboardApi, usersApi } from '@/lib/real-api-service'
 import { AdaptiveContainer } from '@/components/responsive/adaptive-layout'
 import { AdaptiveGrid } from '@/components/responsive/adaptive-layout'
 import { AdaptiveFlex } from '@/components/responsive/adaptive-layout'
@@ -36,88 +37,206 @@ import {
   Eye,
   Edit,
   Trash2,
-  MoreHorizontal
+  MoreHorizontal,
+  RefreshCw,
+  Loader2
 } from 'lucide-react'
+import { toast } from 'sonner'
 
-// Mock data
-const mockMetrics = [
-  { id: 1, title: 'Total Users', value: '12,345', change: '+12%', trend: 'up', icon: Users },
-  { id: 2, title: 'Revenue', value: '$45,678', change: '+8%', trend: 'up', icon: DollarSign },
-  { id: 3, title: 'Active Sessions', value: '2,456', change: '-3%', trend: 'down', icon: Activity },
-  { id: 4, title: 'Conversion Rate', value: '3.2%', change: '+15%', trend: 'up', icon: TrendingUp }
-]
+// Types for dashboard data
+interface DashboardMetrics {
+  totalUsers: number
+  activeUsers: number
+  totalRevenue: number
+  monthlyRevenue: number
+  conversionRate: number
+  averageOrderValue: number
+  totalOrders: number
+  activeDrivers: number
+}
 
-const mockRecentActivity = [
-  { id: 1, user: 'John Doe', action: 'Created new project', time: '2 minutes ago', type: 'success' },
-  { id: 2, user: 'Jane Smith', action: 'Updated user profile', time: '5 minutes ago', type: 'info' },
-  { id: 3, user: 'Mike Johnson', action: 'Deleted old data', time: '10 minutes ago', type: 'warning' },
-  { id: 4, user: 'Sarah Wilson', action: 'Completed task', time: '15 minutes ago', type: 'success' },
-  { id: 5, user: 'Tom Brown', action: 'Added new feature', time: '20 minutes ago', type: 'info' }
-]
+interface ActivityItem {
+  id: string
+  user: string
+  action: string
+  time: string
+  type: 'success' | 'warning' | 'info' | 'error'
+  timestamp: string
+}
 
-const mockAlerts = [
-  { id: 1, title: 'System Update Available', message: 'A new system update is ready to install', type: 'info', priority: 'medium' },
-  { id: 2, title: 'High CPU Usage', message: 'Server CPU usage is above 80%', type: 'warning', priority: 'high' },
-  { id: 3, title: 'Backup Completed', message: 'Daily backup completed successfully', type: 'success', priority: 'low' }
-]
+interface AlertItem {
+  id: string
+  title: string
+  message: string
+  type: 'info' | 'warning' | 'error' | 'success'
+  priority: 'low' | 'medium' | 'high'
+  timestamp: string
+}
 
-const mockTableData = Array.from({ length: 1000 }, (_, i) => ({
-  id: i + 1,
-  name: `User ${i + 1}`,
-  email: `user${i + 1}@example.com`,
-  role: ['Admin', 'User', 'Manager', 'Guest'][i % 4],
-  status: ['Active', 'Inactive', 'Pending'][i % 3],
-  lastLogin: new Date(Date.now() - Math.random() * 30 * 24 * 60 * 60 * 1000).toLocaleDateString()
-}))
+interface User {
+  id: number
+  name: string
+  email: string
+  role: string
+  status: 'Active' | 'Inactive' | 'Pending'
+  lastLogin: string
+  avatar?: string
+}
 
 export default function EnhancedDashboard() {
-  const { responsive, navigation, analytics, performance } = useApp()
+  const { user: currentUser } = useAuth()
   const [isLoading, setIsLoading] = useState(true)
+  const [isRefreshing, setIsRefreshing] = useState(false)
   const [selectedMetric, setSelectedMetric] = useState<number | null>(null)
   const [showModal, setShowModal] = useState(false)
-  const [tableData, setTableData] = useState(mockTableData)
+  const [error, setError] = useState<string | null>(null)
+  
+  // Dashboard data state
+  const [metrics, setMetrics] = useState<DashboardMetrics | null>(null)
+  const [recentActivity, setRecentActivity] = useState<ActivityItem[]>([])
+  const [alerts, setAlerts] = useState<AlertItem[]>([])
+  const [users, setUsers] = useState<User[]>([])
+  const [usersLoading, setUsersLoading] = useState(false)
 
-  // Track page load performance
-  useEffect(() => {
-    const startTime = window.performance.now()
-    
-    // Simulate data loading
-    setTimeout(() => {
+  // Load dashboard data
+  const loadDashboardData = async (showRefreshIndicator = false) => {
+    try {
+      if (showRefreshIndicator) {
+        setIsRefreshing(true)
+      } else {
+        setIsLoading(true)
+      }
+      setError(null)
+
+      // Load all dashboard data in parallel
+      const [metricsResponse, activityResponse, alertsResponse] = await Promise.all([
+        dashboardApi.getMetrics(),
+        dashboardApi.getRecentActivity(10),
+        dashboardApi.getAlerts()
+      ])
+
+      // Handle metrics
+      if (metricsResponse.success && metricsResponse.data) {
+        setMetrics(metricsResponse.data as any)
+      } else {
+        console.error('Failed to load metrics:', metricsResponse.message)
+      }
+
+      // Handle recent activity
+      if (activityResponse.success && activityResponse.data) {
+        setRecentActivity((activityResponse.data as any).logs || [])
+      } else {
+        console.error('Failed to load recent activity:', activityResponse.message)
+      }
+
+      // Handle alerts
+      if (alertsResponse.success && alertsResponse.data) {
+        setAlerts((alertsResponse.data as any).alerts || [])
+      } else {
+        console.error('Failed to load alerts:', alertsResponse.message)
+      }
+
+    } catch (error) {
+      console.error('Failed to load dashboard data:', error)
+      setError('Failed to load dashboard data. Please try again.')
+      toast.error('Dashboard Error', {
+        description: 'Failed to load dashboard data. Please refresh the page.'
+      })
+    } finally {
       setIsLoading(false)
-      const loadTime = window.performance.now() - startTime
-      // Track the event using the performance monitoring system
-      console.log('Dashboard loaded in:', loadTime, 'ms')
-    }, 1000)
+      setIsRefreshing(false)
+    }
+  }
 
-    // Track page view
-    analytics.trackEvent('page_view', { 
-      page: '/enhanced-dashboard', 
-      title: 'Enhanced Dashboard' 
+  // Load users data
+  const loadUsers = async () => {
+    try {
+      setUsersLoading(true)
+      const response = await usersApi.getUsers({ limit: 100 })
+      
+      if (response.success && response.data) {
+        setUsers((response.data as any).users || [])
+      } else {
+        console.error('Failed to load users:', response.message)
+        toast.error('Failed to load users', {
+          description: response.message || 'Please try again.'
+        })
+      }
+    } catch (error) {
+      console.error('Failed to load users:', error)
+      toast.error('Failed to load users', {
+        description: 'Please try again.'
+      })
+    } finally {
+      setUsersLoading(false)
+    }
+  }
+
+  // Initial data load
+  useEffect(() => {
+    loadDashboardData()
+    loadUsers()
+  }, [])
+
+  // Handle refresh
+  const handleRefresh = async () => {
+    await loadDashboardData(true)
+    await loadUsers()
+    toast.success('Dashboard refreshed', {
+      description: 'All data has been updated.'
     })
-  }, [analytics, performance])
+  }
 
   // Handle metric click
   const handleMetricClick = (metricId: number) => {
     setSelectedMetric(metricId)
-    analytics.trackEvent('metric_click', { metricId })
+    toast.info('Metric Selected', {
+      description: 'You can view detailed analytics for this metric.'
+    })
   }
 
   // Handle table row click
-  const handleTableRowClick = (row: any) => {
-    analytics.trackEvent('table_row_click', { userId: row.id })
+  const handleTableRowClick = (row: User) => {
+    toast.info('User Selected', {
+      description: `Viewing details for ${row.name}`
+    })
   }
 
   // Handle alert dismiss
-  const handleAlertDismiss = (alertId: number) => {
-    analytics.trackEvent('alert_dismiss', { alertId })
+  const handleAlertDismiss = (alertId: string) => {
+    setAlerts(prev => prev.filter(alert => alert.id !== alertId))
+    toast.success('Alert dismissed', {
+      description: 'The alert has been removed from your dashboard.'
+    })
+  }
+
+  // Handle export users
+  const handleExportUsers = async () => {
+    try {
+      const success = await usersApi.exportUsers('csv')
+      if (success) {
+        toast.success('Export started', {
+          description: 'Your user data is being exported.'
+        })
+      } else {
+        toast.error('Export failed', {
+          description: 'Failed to export user data. Please try again.'
+        })
+      }
+    } catch (error) {
+      console.error('Export error:', error)
+      toast.error('Export failed', {
+        description: 'Please try again.'
+      })
+    }
   }
 
   // Render metric card
-  const renderMetricCard = (metric: any) => (
+  const renderMetricCard = (metric: any, index: number) => (
     <AnimatedCard
       key={metric.id}
       animation="fadeIn"
-      delay={metric.id * 100}
+      delay={index * 100}
       hoverAnimation="lift"
       clickAnimation="scale"
       onClick={() => handleMetricClick(metric.id)}
@@ -128,14 +247,17 @@ export default function EnhancedDashboard() {
           <div>
             <p className="text-sm font-medium text-gray-600">{metric.title}</p>
             <p className="text-2xl font-bold text-gray-900">{metric.value}</p>
+            <div className="flex items-center mt-1">
+              <span className={`text-sm font-medium ${
+                metric.trend === 'up' ? 'text-green-600' : 'text-red-600'
+              }`}>
+                {metric.change}
+              </span>
+              <span className="text-xs text-gray-500 ml-1">vs last month</span>
+            </div>
           </div>
           <div className="flex items-center space-x-2">
             <metric.icon className="h-8 w-8 text-primary" />
-            <span className={`text-sm font-medium ${
-              metric.trend === 'up' ? 'text-green-600' : 'text-red-600'
-            }`}>
-              {metric.change}
-            </span>
           </div>
         </div>
       </div>
@@ -143,11 +265,11 @@ export default function EnhancedDashboard() {
   )
 
   // Render activity item
-  const renderActivityItem = (activity: any) => (
+  const renderActivityItem = (activity: ActivityItem) => (
     <AnimatedCard
       key={activity.id}
       animation="slideInUp"
-      delay={activity.id * 50}
+      delay={parseInt(activity.id) * 50}
       hoverAnimation="glow"
       className="mb-3"
     >
@@ -156,6 +278,7 @@ export default function EnhancedDashboard() {
           <div className={`w-2 h-2 rounded-full ${
             activity.type === 'success' ? 'bg-green-500' :
             activity.type === 'warning' ? 'bg-yellow-500' :
+            activity.type === 'error' ? 'bg-red-500' :
             'bg-blue-500'
           }`} />
           <div className="flex-1">
@@ -169,7 +292,7 @@ export default function EnhancedDashboard() {
   )
 
   // Render alert card
-  const renderAlertCard = (alert: any) => (
+  const renderAlertCard = (alert: AlertItem) => (
     <GestureCard
       key={alert.id}
       className="mb-3"
@@ -179,18 +302,27 @@ export default function EnhancedDashboard() {
           <div className={`w-2 h-2 rounded-full mt-2 ${
             alert.type === 'success' ? 'bg-green-500' :
             alert.type === 'warning' ? 'bg-yellow-500' :
+            alert.type === 'error' ? 'bg-red-500' :
             'bg-blue-500'
           }`} />
           <div className="flex-1">
             <h4 className="text-sm font-medium text-gray-900">{alert.title}</h4>
             <p className="text-sm text-gray-600 mt-1">{alert.message}</p>
-            <span className={`inline-block px-2 py-1 text-xs font-medium rounded-full mt-2 ${
-              alert.priority === 'high' ? 'bg-red-100 text-red-800' :
-              alert.priority === 'medium' ? 'bg-yellow-100 text-yellow-800' :
-              'bg-green-100 text-green-800'
-            }`}>
-              {alert.priority}
-            </span>
+            <div className="flex items-center justify-between mt-2">
+              <span className={`inline-block px-2 py-1 text-xs font-medium rounded-full ${
+                alert.priority === 'high' ? 'bg-red-100 text-red-800' :
+                alert.priority === 'medium' ? 'bg-yellow-100 text-yellow-800' :
+                'bg-green-100 text-green-800'
+              }`}>
+                {alert.priority}
+              </span>
+              <button
+                onClick={() => handleAlertDismiss(alert.id)}
+                className="text-xs text-gray-400 hover:text-gray-600"
+              >
+                Dismiss
+              </button>
+            </div>
           </div>
         </div>
       </div>
@@ -198,14 +330,16 @@ export default function EnhancedDashboard() {
   )
 
   // Render table row
-  const renderTableRow = (row: any) => (
+  const renderTableRow = (row: User) => (
     <div
       key={row.id}
       className="flex items-center space-x-4 p-4 border-b border-gray-200 hover:bg-gray-50 cursor-pointer"
       onClick={() => handleTableRowClick(row)}
     >
       <div className="w-8 h-8 bg-primary rounded-full flex items-center justify-center">
-        <span className="text-white text-sm font-medium">{row.id}</span>
+        <span className="text-white text-sm font-medium">
+          {row.name.charAt(0).toUpperCase()}
+        </span>
       </div>
       <div className="flex-1">
         <p className="text-sm font-medium text-gray-900">{row.name}</p>
@@ -238,6 +372,14 @@ export default function EnhancedDashboard() {
       </div>
     </div>
   )
+
+  // Prepare metrics data
+  const metricsData = metrics ? [
+    { id: 1, title: 'Total Users', value: metrics.totalUsers.toLocaleString(), change: '+12%', trend: 'up', icon: Users },
+    { id: 2, title: 'Monthly Revenue', value: `$${metrics.monthlyRevenue.toLocaleString()}`, change: '+8%', trend: 'up', icon: DollarSign },
+    { id: 3, title: 'Active Users', value: metrics.activeUsers.toLocaleString(), change: '-3%', trend: 'down', icon: Activity },
+    { id: 4, title: 'Conversion Rate', value: `${(metrics.conversionRate * 100).toFixed(1)}%`, change: '+15%', trend: 'up', icon: TrendingUp }
+  ] : []
 
   if (isLoading) {
     return (
@@ -275,15 +417,48 @@ export default function EnhancedDashboard() {
     )
   }
 
+  if (error) {
+    return (
+      <AdaptiveContainer>
+        <div className="text-center py-12">
+          <AlertCircle className="h-12 w-12 text-red-500 mx-auto mb-4" />
+          <h3 className="text-lg font-semibold text-gray-900 mb-2">Failed to Load Dashboard</h3>
+          <p className="text-gray-600 mb-4">{error}</p>
+          <button
+            onClick={() => loadDashboardData()}
+            className="px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary-dark transition-colors"
+          >
+            Try Again
+          </button>
+        </div>
+      </AdaptiveContainer>
+    )
+  }
+
   return (
     <AdaptiveContainer>
       <div className="space-y-6">
         <div className="flex items-center justify-between">
           <div>
             <h1 className="text-2xl font-bold text-gray-900">Enhanced Dashboard</h1>
-            <p className="text-gray-600">Welcome back! Here's what's happening with your platform.</p>
+            <p className="text-gray-600">
+              Welcome back, {currentUser?.name}! Here's what's happening with your platform.
+            </p>
           </div>
           <div className="flex items-center space-x-3">
+            <AccessibleButton
+              variant="secondary"
+              onClick={handleRefresh}
+              ariaLabel="Refresh dashboard data"
+              disabled={isRefreshing}
+            >
+              {isRefreshing ? (
+                <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+              ) : (
+                <RefreshCw className="h-4 w-4 mr-2" />
+              )}
+              Refresh
+            </AccessibleButton>
             <AccessibleButton
               variant="secondary"
               onClick={() => setShowModal(true)}
@@ -294,7 +469,7 @@ export default function EnhancedDashboard() {
             </AccessibleButton>
             <AdvancedButton
               variant="primary"
-              onClick={() => analytics.trackEvent('new_item_click')}
+              onClick={() => toast.info('New Item', { description: 'This feature will be implemented soon.' })}
               loading={false}
             >
               <Plus className="h-4 w-4 mr-2" />
@@ -302,9 +477,11 @@ export default function EnhancedDashboard() {
             </AdvancedButton>
           </div>
         </div>
+
         <AdaptiveGrid columns={{ xs: 1, sm: 2, lg: 4 }} gap={{ xs: '1rem', lg: '1.5rem' }}>
-          {mockMetrics.map(renderMetricCard)}
+          {metricsData.map(renderMetricCard)}
         </AdaptiveGrid>
+
         <AdaptiveGrid columns={{ xs: 1, lg: 3 }} gap={{ xs: '1rem', lg: '1.5rem' }}>
           <div className="lg:col-span-2">
             <AnimatedCard animation="fadeIn" delay={500}>
@@ -316,7 +493,14 @@ export default function EnhancedDashboard() {
                   </button>
                 </div>
                 <div className="space-y-3">
-                  {mockRecentActivity.map(renderActivityItem)}
+                  {recentActivity.length > 0 ? (
+                    recentActivity.map(renderActivityItem)
+                  ) : (
+                    <div className="text-center py-8 text-gray-500">
+                      <Activity className="h-8 w-8 mx-auto mb-2" />
+                      <p>No recent activity</p>
+                    </div>
+                  )}
                 </div>
               </div>
             </AnimatedCard>
@@ -331,12 +515,20 @@ export default function EnhancedDashboard() {
                   </button>
                 </div>
                 <div className="space-y-3">
-                  {mockAlerts.map(renderAlertCard)}
+                  {alerts.length > 0 ? (
+                    alerts.map(renderAlertCard)
+                  ) : (
+                    <div className="text-center py-8 text-gray-500">
+                      <CheckCircle className="h-8 w-8 mx-auto mb-2" />
+                      <p>No alerts</p>
+                    </div>
+                  )}
                 </div>
               </div>
             </AnimatedCard>
           </div>
         </AdaptiveGrid>
+
         <AnimatedCard animation="fadeIn" delay={700}>
           <div className="p-6">
             <div className="flex items-center justify-between mb-6">
@@ -353,27 +545,49 @@ export default function EnhancedDashboard() {
                 <button className="p-2 text-gray-400 hover:text-gray-600">
                   <Filter className="h-4 w-4" />
                 </button>
-                <button className="p-2 text-gray-400 hover:text-gray-600">
+                <button 
+                  onClick={handleExportUsers}
+                  className="p-2 text-gray-400 hover:text-gray-600"
+                  title="Export users"
+                >
                   <Download className="h-4 w-4" />
                 </button>
               </div>
             </div>
             
-            <VirtualScrollTable
-              data={tableData}
-              columns={[
-                { key: 'id', title: 'ID', width: 60 },
-                { key: 'name', title: 'User', width: 200 },
-                { key: 'email', title: 'Email', width: 250 },
-                { key: 'role', title: 'Role', width: 100 },
-                { key: 'status', title: 'Status', width: 100 },
-                { key: 'lastLogin', title: 'Last Login', width: 150 }
-              ]}
-              itemHeight={80}
-              className="border border-gray-200 rounded-lg overflow-hidden"
-            />
+            {usersLoading ? (
+              <div className="space-y-3">
+                {Array.from({ length: 5 }).map((_, i) => (
+                  <div key={i} className="flex items-center space-x-4 p-4 border-b border-gray-200">
+                    <SkeletonLoader width={32} height={32} className="rounded-full" />
+                    <div className="flex-1">
+                      <SkeletonLoader width="60%" height={16} />
+                      <SkeletonLoader width="40%" height={14} />
+                    </div>
+                    <SkeletonLoader width={60} height={20} />
+                    <SkeletonLoader width={60} height={20} />
+                    <SkeletonLoader width={80} height={14} />
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <VirtualScrollTable
+                data={users}
+                columns={[
+                  { key: 'id', title: 'ID', width: 60 },
+                  { key: 'name', title: 'User', width: 200 },
+                  { key: 'email', title: 'Email', width: 250 },
+                  { key: 'role', title: 'Role', width: 100 },
+                  { key: 'status', title: 'Status', width: 100 },
+                  { key: 'lastLogin', title: 'Last Login', width: 150 }
+                ]}
+                itemHeight={80}
+                className="border border-gray-200 rounded-lg overflow-hidden"
+              />
+            )}
           </div>
         </AnimatedCard>
+
         <AccessibleModal
           isOpen={showModal}
           onClose={() => setShowModal(false)}

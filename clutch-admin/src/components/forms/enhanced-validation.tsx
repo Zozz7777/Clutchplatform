@@ -472,7 +472,7 @@ export function useAutoSave<T>(
   const [isSaving, setIsSaving] = useState(false)
   const [lastSaved, setLastSaved] = useState<Date | null>(null)
   const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false)
-  const saveTimeoutRef = useRef<NodeJS.Timeout>()
+  const saveTimeoutRef = useRef<NodeJS.Timeout | null>(null)
 
   const save = useCallback(async () => {
     if (!hasUnsavedChanges) return

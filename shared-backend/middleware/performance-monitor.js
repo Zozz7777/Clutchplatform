@@ -122,8 +122,8 @@ class PerformanceMonitor {
     this.metrics.requests.total++;
     this.metrics.requests.responseTimes.push(duration);
     
-    // Keep only last 1000 response times for average calculation
-    if (this.metrics.requests.responseTimes.length > 1000) {
+    // Keep only last 100 response times for average calculation to reduce memory
+    if (this.metrics.requests.responseTimes.length > 100) {
       this.metrics.requests.responseTimes.shift();
     }
     

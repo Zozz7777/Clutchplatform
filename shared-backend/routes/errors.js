@@ -6,6 +6,146 @@ const router = express.Router();
  * Receives and stores console errors from admin.yourclutch.com
  */
 
+// POST /api/v1/errors/frontend - Log frontend errors
+router.post('/frontend', async (req, res) => {
+  try {
+    const { message, severity, type, stack, url, userAgent, userId, sessionId } = req.body;
+    
+    if (!message) {
+      return res.status(400).json({
+        success: false,
+        error: 'MISSING_ERROR_MESSAGE',
+        message: 'Error message is required',
+        timestamp: new Date().toISOString()
+      });
+    }
+    
+    const errorLog = {
+      id: `error-${Date.now()}`,
+      message,
+      severity: severity || 'medium',
+      type: type || 'error',
+      stack: stack || '',
+      url: url || '',
+      userAgent: userAgent || '',
+      userId: userId || null,
+      sessionId: sessionId || null,
+      timestamp: new Date().toISOString()
+    };
+    
+    res.status(201).json({
+      success: true,
+      data: errorLog,
+      message: 'Frontend error logged successfully',
+      timestamp: new Date().toISOString()
+    });
+    
+  } catch (error) {
+    console.error('Error logging frontend error:', error);
+    res.status(500).json({
+      success: false,
+      error: 'LOG_ERROR_FAILED',
+      message: 'Failed to log frontend error',
+      timestamp: new Date().toISOString()
+    });
+  }
+});
+
+// POST /api/v1/errors/backend - Log backend errors
+router.post('/backend', async (req, res) => {
+  try {
+    const { message, severity, type, stack, endpoint, method, userId, sessionId } = req.body;
+    
+    if (!message) {
+      return res.status(400).json({
+        success: false,
+        error: 'MISSING_ERROR_MESSAGE',
+        message: 'Error message is required',
+        timestamp: new Date().toISOString()
+      });
+    }
+    
+    const errorLog = {
+      id: `error-${Date.now()}`,
+      message,
+      severity: severity || 'high',
+      type: type || 'error',
+      stack: stack || '',
+      endpoint: endpoint || '',
+      method: method || '',
+      userId: userId || null,
+      sessionId: sessionId || null,
+      timestamp: new Date().toISOString()
+    };
+    
+    res.status(201).json({
+      success: true,
+      data: errorLog,
+      message: 'Backend error logged successfully',
+      timestamp: new Date().toISOString()
+    });
+    
+  } catch (error) {
+    console.error('Error logging backend error:', error);
+    res.status(500).json({
+      success: false,
+      error: 'LOG_ERROR_FAILED',
+      message: 'Failed to log backend error',
+      timestamp: new Date().toISOString()
+    });
+  }
+});
+
+// GET /api/v1/errors/logs - Get error logs
+router.get('/logs', async (req, res) => {
+  try {
+    const { limit = 50, level = 'all', type = 'all' } = req.query;
+    
+    const mockLogs = [
+      {
+        id: 'log-1',
+        message: 'Sample error log',
+        severity: 'medium',
+        type: 'error',
+        timestamp: new Date().toISOString(),
+        source: 'frontend'
+      },
+      {
+        id: 'log-2',
+        message: 'Sample warning log',
+        severity: 'low',
+        type: 'warning',
+        timestamp: new Date().toISOString(),
+        source: 'backend'
+      }
+    ];
+    
+    res.json({
+      success: true,
+      data: {
+        logs: mockLogs,
+        pagination: {
+          page: 1,
+          limit: parseInt(limit),
+          total: mockLogs.length,
+          pages: 1
+        }
+      },
+      message: 'Error logs retrieved successfully',
+      timestamp: new Date().toISOString()
+    });
+    
+  } catch (error) {
+    console.error('Error fetching error logs:', error);
+    res.status(500).json({
+      success: false,
+      error: 'FETCH_LOGS_FAILED',
+      message: 'Failed to fetch error logs',
+      timestamp: new Date().toISOString()
+    });
+  }
+});
+
 // Get frontend errors
 router.get('/frontend', async (req, res) => {
   try {

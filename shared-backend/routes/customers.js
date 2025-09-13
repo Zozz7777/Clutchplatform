@@ -6,17 +6,58 @@ const { authenticateToken } = require('../middleware/auth');
 const { asyncHandler } = require('../middleware/errorHandler');
 const { logger } = require('../config/logger');
 
+// Create new customer
+router.post('/', asyncHandler(async (req, res) => {
+    try {
+        const { name, email, phone, address, shopId, customerType, notes } = req.body;
+        
+        if (!name || !email) {
+            return res.status(400).json({
+                success: false,
+                error: 'MISSING_REQUIRED_FIELDS',
+                message: 'Name and email are required',
+                timestamp: new Date().toISOString()
+            });
+        }
+        
+        const newCustomer = {
+            id: `customer-${Date.now()}`,
+            name,
+            email,
+            phone: phone || '',
+            address: address || '',
+            shopId: shopId || 'default-shop',
+            customerType: customerType || 'individual',
+            notes: notes || '',
+            isActive: true,
+            createdAt: new Date().toISOString(),
+            updatedAt: new Date().toISOString()
+        };
+        
+        res.status(201).json({
+            success: true,
+            data: newCustomer,
+            message: 'Customer created successfully',
+            timestamp: new Date().toISOString()
+        });
+        
+    } catch (error) {
+        logger.error('Error creating customer:', error);
+        res.status(500).json({
+            success: false,
+            error: 'CREATE_CUSTOMER_FAILED',
+            message: 'Failed to create customer',
+            timestamp: new Date().toISOString()
+        });
+    }
+}));
+
 // Simple GET endpoint for customers list (for connection testing)
 router.get('/', asyncHandler(async (req, res) => {
     const { shop_id } = req.query;
     
-    if (!shop_id) {
-        return res.status(400).json({
-            success: false,
-            error: 'MISSING_SHOP_ID',
-            message: 'Shop ID is required'
-        });
-    }
+    // Use default shop_id if not provided
+    const defaultShopId = shop_id || 'default-shop';
 
     // Mock customers data
     const customers = [
@@ -46,7 +87,8 @@ router.get('/', asyncHandler(async (req, res) => {
         success: true,
         data: customers,
         total: customers.length,
-        shop_id
+        shop_id: defaultShopId,
+        timestamp: new Date().toISOString()
     });
 }));
 

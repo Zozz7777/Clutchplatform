@@ -56,7 +56,7 @@ class PerformanceTuner {
     });
 
     this.optimizationTriggers.set('memory_optimization', {
-      condition: (metrics) => metrics.memoryUsage > 0.8,
+      condition: (metrics) => metrics.memoryUsage > 0.95,
       action: () => this.optimizeMemory(),
       priority: 'high'
     });
@@ -84,8 +84,8 @@ class PerformanceTuner {
       timestamp: new Date()
     });
 
-    // Keep only last 100 entries
-    if (this.performanceHistory.length > 100) {
+    // Keep only last 20 entries to reduce memory usage
+    if (this.performanceHistory.length > 20) {
       this.performanceHistory.shift();
     }
 
@@ -152,7 +152,14 @@ class PerformanceTuner {
     // Force garbage collection if available
     if (global.gc) {
       global.gc();
-      optimizations.push('Garbage collection triggered');
+      global.gc(); // Run twice for better cleanup
+      optimizations.push('Garbage collection triggered (2x)');
+    }
+    
+    // Clear performance history to free memory
+    if (this.performanceHistory.length > 10) {
+      this.performanceHistory = this.performanceHistory.slice(-5);
+      optimizations.push('Performance history cleared');
     }
     
     // Clear old cache entries

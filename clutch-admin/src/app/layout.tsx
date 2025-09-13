@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
-// import { AuthProvider } from "@/contexts/AuthContext";
+import { AuthProvider } from "@/contexts/AuthContext";
 import { ErrorBoundary } from "@/components/ErrorBoundary";
 import { ErrorTrackerProvider } from "@/contexts/ErrorTrackerContext";
 import { ThemeProvider } from "@/components/theme-provider";
@@ -37,11 +37,13 @@ export default function RootLayout({
             enableSystem={true}
             disableTransitionOnChange={true}
           >
-            <ErrorBoundary>
-              <ErrorTrackerProvider>
-                {children}
-              </ErrorTrackerProvider>
-            </ErrorBoundary>
+            <AuthProvider>
+              <ErrorBoundary>
+                <ErrorTrackerProvider>
+                  {children}
+                </ErrorTrackerProvider>
+              </ErrorBoundary>
+            </AuthProvider>
           </ThemeProvider>
         </I18nProvider>
       </body>

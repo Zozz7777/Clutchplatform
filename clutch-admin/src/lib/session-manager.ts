@@ -3,6 +3,7 @@
 import { authManager } from './auth-manager'
 import { useAuthStore } from '@/store'
 import { handleError } from '@/utils/error-handling'
+import { showToast } from '@/components/ui/toast'
 
 interface SessionConfig {
   sessionTimeout: number // in milliseconds
@@ -172,17 +173,7 @@ class SessionManager {
     // const { showToast } = require('@/components/ui/toast') // Removed require() import
     showToast.warning(
       'Session Timeout Warning',
-      'You will be logged out due to inactivity. Click anywhere to continue your session.',
-      {
-        duration: 10000,
-        action: {
-          label: 'Continue Session',
-          onClick: () => {
-            this.updateActivity()
-            this.startSessionTimeout()
-          }
-        }
-      }
+      'You will be logged out due to inactivity. Click anywhere to continue your session.'
     )
 
     // Set warning timeout
@@ -213,8 +204,8 @@ class SessionManager {
     this.stopMonitoring()
     
     // Clear user data
-    const { clearUser } = useAuthStore.getState()
-    clearUser()
+    const { setUser } = useAuthStore.getState()
+    setUser(null as any) // Clear user by setting to null
     
     // Show timeout message
     // const { showToast } = require('@/components/ui/toast') // Removed require() import

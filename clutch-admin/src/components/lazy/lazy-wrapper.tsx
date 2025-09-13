@@ -48,12 +48,12 @@ export function LazyWrapper({
   errorFallback: ErrorFallbackComponent = ErrorFallback,
   className 
 }: LazyWrapperProps) {
+  const ErrorFallback = ({ error, retry }: { error: any; retry: any }) => (
+    <ErrorFallbackComponent error={error} retry={retry} />
+  )
+
   return (
-    <ErrorBoundary
-      fallback={({ error, retry }) => (
-        <ErrorFallbackComponent error={error} retry={retry} />
-      )}
-    >
+    <ErrorBoundary fallback={<ErrorFallback error={null} retry={() => {}} />}>
       <Suspense fallback={fallback || <LoadingFallback className={className} />}>
         {children}
       </Suspense>

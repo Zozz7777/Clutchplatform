@@ -38,6 +38,13 @@ import { useTheme } from 'next-themes'
 // Legacy components removed - using SnowUI components only
 import { SnowButton } from '@/components/ui/snow-button'
 import { SnowInput } from '@/components/ui/snow-input'
+// Luxury components
+import { LuxuryButton } from '@/components/ui/luxury-button'
+import { LuxuryInput } from '@/components/ui/luxury-input'
+import { LuxuryCard } from '@/components/ui/luxury-card'
+import LuxuryAvatar from '@/components/ui/luxury-avatar'
+import LuxuryBadge from '@/components/ui/luxury-badge'
+import LuxuryTooltip from '@/components/ui/luxury-tooltip'
 import { usePathname, useRouter } from 'next/navigation'
 import Link from 'next/link'
 import Image from 'next/image'
@@ -403,22 +410,32 @@ const navigationItems = [
       { title: 'Profile', href: '/settings/profile' },
       { title: 'System', href: '/settings/system' }
     ]
+  },
+
+  // Luxury Showcase
+  {
+    title: 'Luxury Showcase',
+    href: '/luxury-showcase',
+    icon: Zap,
+    badge: 'NEW',
+    category: 'settings',
+    children: []
   }
 ]
 
-// Sidebar Component with Category Grouping
-const Sidebar = ({ 
-  selectedParent, 
-  setSelectedParent 
-}: { 
-  selectedParent: string | null; 
-  setSelectedParent: (value: string | null) => void; 
-}) => {
-  const { sidebarCollapsed, toggleSidebar } = useUIStore()
-  const { user, logout } = useAuthStore()
-  const pathname = usePathname()
-  const router = useRouter()
-  const [expandedCategories, setExpandedCategories] = useState<Set<string>>(new Set(['core', 'operations']))
+     // Redesigned Sidebar Component with Enhanced UX
+     const Sidebar = ({ 
+       selectedParent, 
+       setSelectedParent 
+     }: { 
+       selectedParent: string | null; 
+       setSelectedParent: (value: string | null) => void; 
+     }) => {
+       const { sidebarCollapsed, toggleSidebar } = useUIStore()
+       const { user, logout } = useAuthStore()
+       const pathname = usePathname()
+       const router = useRouter()
+       const [expandedCategories, setExpandedCategories] = useState<Set<string>>(new Set(['core', 'operations']))
 
   const handleLogout = async () => {
     await logout()
@@ -471,13 +488,34 @@ const Sidebar = ({
 
 
 
-  return (
-    <>
-             <div
-         className={`fixed left-0 top-0 z-40 h-screen bg-white dark:bg-slate-900 border-r border-slate-200 dark:border-slate-700 shadow-sm transition-all duration-300 ${
-           selectedParent ? 'w-16' : (sidebarCollapsed ? 'w-16' : 'w-64')
-         }`}
-       >
+       return (
+         <>
+           {/* Enhanced Main Sidebar */}
+           <div
+             className={`fixed left-0 top-0 z-40 h-screen bg-white dark:bg-slate-900 border-r border-slate-200 dark:border-slate-700 shadow-lg transition-all duration-300 ${
+               selectedParent ? 'w-16' : (sidebarCollapsed ? 'w-16' : 'w-64')
+             }`}
+           >
+             {/* Sidebar Header with Logo */}
+             <div className="flex h-16 items-center justify-between px-4 border-b border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800">
+               {!sidebarCollapsed && !selectedParent && (
+                 <div className="flex items-center space-x-2">
+                   <div className="w-8 h-8 bg-clutch-primary rounded-lg flex items-center justify-center">
+                     <span className="text-white font-bold text-sm">C</span>
+                   </div>
+                   <span className="text-lg font-semibold text-slate-900 dark:text-white">
+                     Clutch
+                   </span>
+                 </div>
+               )}
+               <button
+                 onClick={toggleSidebar}
+                 className="p-1.5 hover:bg-slate-100 dark:hover:bg-slate-700 rounded-lg transition-colors"
+                 aria-label="Toggle sidebar"
+               >
+                 <Menu className="h-4 w-4 text-slate-600 dark:text-slate-300" />
+               </button>
+             </div>
         <nav className="flex-1 overflow-y-auto py-4 mt-16">
           <div className="space-y-2 px-3">
             {Object.entries(groupedItems).map(([category, items]) => {
@@ -554,23 +592,24 @@ const Sidebar = ({
             })}
           </div>
         </nav>
-        {!sidebarCollapsed && !selectedParent && (
-          <div className="border-t border-slate-200 p-4 bg-slate-50">
-            <div className="flex items-center space-x-3">
-              <div className="w-8 h-8 bg-clutch-primary rounded-full flex items-center justify-center">
-                <User className="h-4 w-4 text-white" />
-              </div>
-              <div className="flex-1 min-w-0">
-                <p className="text-sm font-medium text-foreground truncate">
-                  {user?.fullName || 'User'}
-                </p>
-                <p className="text-xs text-muted-foreground truncate">
-                  {user?.email || 'user@example.com'}
-                </p>
-              </div>
-            </div>
-          </div>
-        )}
+             {/* Enhanced User Section */}
+             {!sidebarCollapsed && !selectedParent && (
+               <div className="border-t border-slate-200 dark:border-slate-700 p-4 bg-slate-50 dark:bg-slate-800">
+                 <div className="flex items-center space-x-3">
+                   <div className="w-8 h-8 bg-clutch-primary rounded-full flex items-center justify-center">
+                     <User className="h-4 w-4 text-white" />
+                   </div>
+                   <div className="flex-1 min-w-0">
+                     <p className="text-sm font-medium text-slate-900 dark:text-white truncate">
+                       {user?.fullName || 'User'}
+                     </p>
+                     <p className="text-xs text-slate-600 dark:text-slate-400 truncate">
+                       {user?.email || 'user@example.com'}
+                     </p>
+                   </div>
+                 </div>
+               </div>
+             )}
       </div>
       {selectedParent && (
         <div className="fixed left-16 top-0 z-30 h-screen w-64 bg-white border-r border-slate-200 shadow-sm transition-all duration-300">
@@ -765,22 +804,25 @@ const UserMenuDropdown = ({ isOpen, onClose }: { isOpen: boolean; onClose: () =>
   )
 }
 
-// Header Component
-const Header = ({ 
-  onSearchClick, 
-  onKeyboardShortcutsClick 
-}: { 
-  onSearchClick: () => void
-  onKeyboardShortcutsClick: () => void
-}) => {
-  const { sidebarCollapsed, toggleSidebar, notifications } = useUIStore()
-  const { user } = useAuthStore()
-  const { theme, setTheme, resolvedTheme } = useTheme()
-  const [mounted, setMounted] = useState(false)
-  const [notificationsOpen, setNotificationsOpen] = useState(false)
-  const [userMenuOpen, setUserMenuOpen] = useState(false)
-  const [searchQuery, setSearchQuery] = useState('')
-  const router = useRouter()
+     // Enhanced Header Component with Improved UX
+     const Header = ({ 
+       onSearchClick, 
+       onKeyboardShortcutsClick 
+     }: { 
+       onSearchClick: () => void
+       onKeyboardShortcutsClick: () => void
+     }) => {
+       const { sidebarCollapsed, toggleSidebar, notifications } = useUIStore()
+       const { user } = useAuthStore()
+       const { theme, setTheme, resolvedTheme } = useTheme()
+       const [mounted, setMounted] = useState(false)
+       const [notificationsOpen, setNotificationsOpen] = useState(false)
+       const [userMenuOpen, setUserMenuOpen] = useState(false)
+       const [searchQuery, setSearchQuery] = useState('')
+       const [searchResults, setSearchResults] = useState<any[]>([])
+       const [showSearchResults, setShowSearchResults] = useState(false)
+       const router = useRouter()
+       const pathname = usePathname()
 
   // Initialize keyboard shortcuts
   useKeyboardShortcuts()
@@ -833,124 +875,210 @@ const Header = ({
     }
   }
 
-  // Don't render logo until theme is mounted to prevent hydration mismatch
-  const currentTheme = mounted ? resolvedTheme : 'light'
+       // Generate breadcrumbs from pathname
+       const generateBreadcrumbs = () => {
+         const segments = pathname.split('/').filter(Boolean)
+         const breadcrumbs: Array<{ label: string; href: string; isLast?: boolean }> = []
+         
+         // Add home
+         breadcrumbs.push({ label: 'Home', href: '/dashboard' })
+         
+         // Add path segments
+         let currentPath = ''
+         segments.forEach((segment, index) => {
+           currentPath += `/${segment}`
+           const label = segment
+             .split('-')
+             .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+             .join(' ')
+           
+           breadcrumbs.push({
+             label,
+             href: currentPath,
+             isLast: index === segments.length - 1
+           })
+         })
+         
+         return breadcrumbs
+       }
 
-  return (
-    <header className="sticky top-0 z-30 bg-white dark:bg-slate-900 border-b border-slate-200 dark:border-slate-700 shadow-sm">
-      <div className="flex h-16 items-center justify-between px-6">
-        <div className="flex items-center space-x-6">
-          <SnowButton
-            variant="ghost"
-            size="sm"
-            onClick={toggleSidebar}
-            className="h-9 w-9 p-0 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
-            aria-label="Toggle sidebar"
-          >
-            <Menu className="h-4 w-4 text-slate-600 dark:text-slate-300" />
-          </SnowButton>
-          <Link href="/dashboard" className="flex items-center space-x-2">
-            <div className="w-8 h-8 flex items-center justify-center">
-              {currentTheme === 'dark' ? (
-                <Image src="/LogoWhite.svg" alt="Clutch Logo" width={32} height={32} priority />
-              ) : (
-                <Image src="/Logo Red.svg" alt="Clutch Logo" width={32} height={32} priority />
-              )}
-            </div>
-            <span className="text-xl font-bold text-slate-900 dark:text-white">Clutch Admin</span>
-          </Link>
-          <div className="hidden md:flex items-center space-x-3">
-            <div className="relative">
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-slate-400" />
-              <SnowInput
-                placeholder="Search anything..."
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                onClick={handleSearchClick}
-                className="pl-10 pr-12 w-80 h-9 bg-slate-50 dark:bg-slate-800 border-slate-200 dark:border-slate-600 text-slate-900 dark:text-white placeholder-slate-500 dark:placeholder-slate-400 focus:ring-2 focus:ring-clutch-primary focus:border-clutch-primary transition-all cursor-pointer"
-                readOnly
-              />
-              <div className="absolute right-3 top-1/2 transform -translate-y-1/2">
-                <kbd className="px-1.5 py-0.5 text-xs font-mono bg-white dark:bg-slate-700 border border-slate-300 dark:border-slate-600 rounded shadow-sm text-slate-600 dark:text-slate-300">
-                  /
-                </kbd>
-              </div>
-            </div>
-          </div>
+       const breadcrumbs = generateBreadcrumbs()
+
+       // Handle search
+       const handleSearchQuery = async (query: string) => {
+         if (query.trim().length < 2) {
+           setSearchResults([])
+           setShowSearchResults(false)
+           return
+         }
+
+         // Mock search results - replace with real search API
+         const mockResults = [
+           { title: 'Dashboard', href: '/dashboard', type: 'page' },
+           { title: 'User Analytics', href: '/users/analytics', type: 'page' },
+           { title: 'Fleet Management', href: '/fleet/overview', type: 'page' },
+           { title: 'CRM Customers', href: '/crm/customers', type: 'page' },
+           { title: 'Settings', href: '/settings/system', type: 'page' }
+         ].filter(result => 
+           result.title.toLowerCase().includes(query.toLowerCase())
+         )
+
+         setSearchResults(mockResults)
+         setShowSearchResults(true)
+       }
+
+       // Handle search input change
+       const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+         const query = e.target.value
+         setSearchQuery(query)
+         handleSearchQuery(query)
+       }
+
+       // Handle search result click
+       const handleSearchResultClick = (href: string) => {
+         router.push(href)
+         setSearchQuery('')
+         setShowSearchResults(false)
+       }
+
+       // Don't render logo until theme is mounted to prevent hydration mismatch
+       const currentTheme = mounted ? resolvedTheme : 'light'
+
+       return (
+         <header className="sticky top-0 z-30 bg-white dark:bg-slate-900 border-b border-slate-200 dark:border-slate-700 shadow-sm">
+           <div className="flex h-16 items-center justify-between px-6">
+             <div className="flex items-center space-x-4">
+               <button
+                 onClick={toggleSidebar}
+                 className="p-2 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg transition-colors"
+                 aria-label="Toggle sidebar"
+               >
+                 <Menu className="h-5 w-5 text-slate-600 dark:text-slate-300" />
+               </button>
+               
+               {/* Enhanced Breadcrumbs */}
+               <nav className="flex items-center space-x-1 text-sm text-slate-500 dark:text-slate-400">
+                 {breadcrumbs.map((breadcrumb, index) => (
+                   <React.Fragment key={breadcrumb.href}>
+                     {index > 0 && <span className="mx-1">/</span>}
+                     {breadcrumb.isLast ? (
+                       <span className="text-slate-900 dark:text-white font-medium">
+                         {breadcrumb.label}
+                       </span>
+                     ) : (
+                       <Link
+                         href={breadcrumb.href}
+                         className="hover:text-slate-700 dark:hover:text-slate-300 transition-colors"
+                       >
+                         {breadcrumb.label}
+                       </Link>
+                     )}
+                   </React.Fragment>
+                 ))}
+               </nav>
+               {/* Enhanced Search */}
+               <div className="relative" data-dropdown>
+                 <div className="relative">
+                   <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-slate-400" />
+                   <input
+                     type="text"
+                     placeholder="Search anything..."
+                     value={searchQuery}
+                     onChange={handleSearchChange}
+                     className="w-80 pl-10 pr-4 py-2 border border-slate-300 dark:border-slate-600 rounded-lg focus:ring-2 focus:ring-clutch-primary focus:border-transparent bg-white dark:bg-slate-800 text-slate-900 dark:text-white"
+                   />
+                 </div>
+                 
+                 {/* Search Results */}
+                 {showSearchResults && searchResults.length > 0 && (
+                   <div className="absolute top-full left-0 right-0 mt-1 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg shadow-lg z-50">
+                     <div className="py-2">
+                       {searchResults.map((result, index) => (
+                         <button
+                           key={index}
+                           onClick={() => handleSearchResultClick(result.href)}
+                           className="w-full px-4 py-2 text-left hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors"
+                         >
+                           <div className="flex items-center space-x-3">
+                             <div className="w-2 h-2 bg-clutch-primary rounded-full"></div>
+                             <div>
+                               <p className="text-sm font-medium text-slate-900 dark:text-white">
+                                 {result.title}
+                               </p>
+                               <p className="text-xs text-slate-500 dark:text-slate-400">
+                                 {result.href}
+                               </p>
+                             </div>
+                           </div>
+                         </button>
+                       ))}
+                     </div>
+                   </div>
+                 )}
+               </div>
         </div>
-        <div className="flex items-center space-x-3">
-          {/* Keyboard Shortcuts Button */}
-          <SnowButton
-            variant="ghost"
-            size="sm"
-            onClick={handleKeyboardShortcutsClick}
-            className="h-9 px-3 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
-            aria-label="Keyboard Shortcuts"
-            title="Keyboard Shortcuts (Ctrl + ?)"
-          >
-            <HelpCircle className="h-4 w-4 mr-2 text-slate-600 dark:text-slate-300" />
-            <span className="hidden sm:inline text-slate-700 dark:text-slate-200">Help</span>
-          </SnowButton>
-          
-          <SnowButton
-            variant="ghost"
-            size="sm"
-            onClick={() => router.push('/dashboard/chat')}
-            className="h-9 px-3 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
-            aria-label="Team Chat"
-          >
-            <MessageSquare className="h-4 w-4 mr-2 text-slate-600 dark:text-slate-300" />
-            <span className="hidden sm:inline text-slate-700 dark:text-slate-200">Chat</span>
-          </SnowButton>
-          <SnowButton
-            variant="ghost"
-            size="sm"
-            onClick={toggleTheme}
-            className="h-9 w-9 p-0 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
-            aria-label="Toggle theme"
-            title={`Switch to ${mounted && theme === 'dark' ? 'light' : 'dark'} mode`}
-          >
-            {mounted ? (
-              theme === 'dark' ? (
-                <Sun className="h-4 w-4 text-slate-600 dark:text-slate-300" />
-              ) : (
-                <Moon className="h-4 w-4 text-slate-600 dark:text-slate-300" />
-              )
-            ) : (
-              <div className="h-4 w-4 bg-slate-200 rounded animate-pulse" />
-            )}
-          </SnowButton>
-          <SnowButton
-            variant="ghost"
-            size="sm"
-            onClick={toggleNotifications}
-            className="h-9 w-9 p-0 relative hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
-            aria-label="Notifications"
-            aria-haspopup="dialog"
-            aria-expanded={notificationsOpen}
-            aria-controls="notifications-popup"
-          >
-            <Bell className="h-4 w-4 text-slate-600 dark:text-slate-300" />
-            {notifications.length > 0 && (
-              <span className="absolute -top-1 -right-1 h-5 w-5 bg-clutch-primary rounded-full text-xs text-white flex items-center justify-center font-medium">
-                {notifications.length > 9 ? '9+' : notifications.length}
-              </span>
-            )}
-          </SnowButton>
-          <SnowButton
-            variant="ghost"
-            size="sm"
-            onClick={toggleUserMenu}
-            className="h-9 w-9 p-0 hover:bg-slate-50 transition-colors"
-            aria-label="User menu"
-            aria-haspopup="menu"
-            aria-expanded={userMenuOpen}
-            aria-controls="user-menu-dropdown"
-          >
-            <div className="w-6 h-6 bg-clutch-primary rounded-full flex items-center justify-center">
-              <User className="h-3 w-3 text-white" />
-            </div>
-          </SnowButton>
+             <div className="flex items-center space-x-4">
+               {/* Help */}
+               <button
+                 onClick={() => router.push('/help')}
+                 className="p-2 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg transition-colors"
+                 title="Help & Support"
+               >
+                 <HelpCircle className="h-5 w-5 text-slate-600 dark:text-slate-300" />
+               </button>
+
+               {/* Chat */}
+               <button
+                 onClick={() => router.push('/chat')}
+                 className="p-2 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg transition-colors"
+                 title="Team Chat"
+               >
+                 <MessageSquare className="h-5 w-5 text-slate-600 dark:text-slate-300" />
+               </button>
+               {/* Theme Toggle */}
+               <button
+                 onClick={toggleTheme}
+                 className="p-2 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg transition-colors"
+                 title={`Switch to ${mounted && theme === 'dark' ? 'light' : 'dark'} mode`}
+               >
+                 {mounted ? (
+                   theme === 'dark' ? (
+                     <Sun className="h-5 w-5 text-slate-600 dark:text-slate-300" />
+                   ) : (
+                     <Moon className="h-5 w-5 text-slate-600 dark:text-slate-300" />
+                   )
+                 ) : (
+                   <div className="h-5 w-5 bg-slate-200 rounded animate-pulse" />
+                 )}
+               </button>
+               {/* Notifications */}
+               <div className="relative" data-dropdown>
+                 <button
+                   onClick={toggleNotifications}
+                   className="relative p-2 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg transition-colors"
+                   aria-label="Notifications"
+                 >
+                   <Bell className="h-5 w-5 text-slate-600 dark:text-slate-300" />
+                   {notifications.length > 0 && (
+                     <span className="absolute -top-1 -right-1 h-5 w-5 bg-clutch-primary rounded-full text-xs text-white flex items-center justify-center font-medium">
+                       {notifications.length > 9 ? '9+' : notifications.length}
+                     </span>
+                   )}
+                 </button>
+               </div>
+               {/* User Menu */}
+               <div className="relative" data-dropdown>
+                 <button
+                   onClick={toggleUserMenu}
+                   className="flex items-center space-x-2 p-2 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg transition-colors"
+                   aria-label="User menu"
+                 >
+                   <div className="w-8 h-8 bg-clutch-primary rounded-full flex items-center justify-center">
+                     <User className="h-4 w-4 text-white" />
+                   </div>
+                   <ChevronDown className="h-4 w-4 text-slate-600 dark:text-slate-300" />
+                 </button>
+               </div>
         </div>
       </div>
       <NotificationsPopup 

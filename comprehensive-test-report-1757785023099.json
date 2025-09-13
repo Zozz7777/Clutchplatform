@@ -1,0 +1,1311 @@
+{
+  "summary": {
+    "totalTests": 143,
+    "passed": 0,
+    "failed": 143,
+    "successRate": "0.00%",
+    "totalTime": "358312ms",
+    "timestamp": "2025-09-13T17:37:03.091Z"
+  },
+  "routes": {
+    "total": 51,
+    "passed": 0,
+    "failed": 51,
+    "successRate": "0.00%"
+  },
+  "middleware": {
+    "Rate Limiting": {
+      "success": true,
+      "rateLimited": false,
+      "totalRequests": 10,
+      "statusCodes": [
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null
+      ]
+    },
+    "Authentication": {
+      "success": false
+    },
+    "CORS": {
+      "success": false
+    },
+    "Request Timeout": {
+      "success": false
+    },
+    "Error Handling": {
+      "success": false
+    }
+  },
+  "database": {
+    "MongoDB Connection": {
+      "success": false
+    },
+    "Collections Access": {
+      "success": false,
+      "testedCollections": 4,
+      "successfulCollections": 0,
+      "results": [
+        {
+          "collection": "/api/v1/knowledge-base/articles",
+          "success": false
+        },
+        {
+          "collection": "/api/v1/incidents/",
+          "success": false
+        },
+        {
+          "collection": "/api/v1/carParts/",
+          "success": false
+        },
+        {
+          "collection": "/api/v1/customers/",
+          "success": false
+        }
+      ]
+    },
+    "Indexes": {
+      "success": false,
+      "queryTime": 5013
+    }
+  },
+  "system": {
+    "Health Endpoint": {
+      "success": false
+    },
+    "System Monitoring": {
+      "success": false
+    },
+    "Performance Metrics": {
+      "success": true,
+      "avgResponseTime": 0,
+      "slowRequests": 0,
+      "totalRequests": 4
+    },
+    "Memory Usage": {
+      "success": false,
+      "isResponsive": false
+    }
+  },
+  "security": {
+    "SQL Injection Protection": {
+      "success": false,
+      "totalAttempts": 3,
+      "blockedAttempts": 0,
+      "results": [
+        {
+          "input": "'; DROP TABLE users; --",
+          "blocked": false
+        },
+        {
+          "input": "' OR '1'='1",
+          "blocked": false
+        },
+        {
+          "input": "'; INSERT INTO users VALUES ('hacker', 'password'); --",
+          "blocked": false
+        }
+      ]
+    },
+    "XSS Protection": {
+      "success": false,
+      "totalAttempts": 3,
+      "blockedAttempts": 0
+    },
+    "Input Validation": {
+      "success": false,
+      "totalInputs": 4,
+      "validatedInputs": 0
+    },
+    "Authentication Bypass": {
+      "success": false,
+      "totalAttempts": 3,
+      "blockedAttempts": 0
+    }
+  },
+  "performance": {
+    "avgResponseTime": 0,
+    "slowestEndpoint": null,
+    "fastestEndpoint": null
+  },
+  "errors": [
+    {
+      "method": "GET",
+      "path": "/health",
+      "expected": 200,
+      "actual": "ERROR",
+      "error": "Request timeout after 30 seconds"
+    },
+    {
+      "method": "GET",
+      "path": "/health/ping",
+      "expected": 200,
+      "actual": "ERROR",
+      "error": "Request timeout after 30 seconds"
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/performance/monitor",
+      "expected": [
+        200,
+        401
+      ],
+      "actual": "ERROR",
+      "error": "Request timeout after 30 seconds"
+    },
+    {
+      "method": "POST",
+      "path": "/api/v1/auth/login",
+      "expected": [
+        200,
+        400
+      ],
+      "actual": "ERROR",
+      "error": "Request timeout after 30 seconds"
+    },
+    {
+      "method": "POST",
+      "path": "/api/v1/auth/register",
+      "expected": [
+        200,
+        400
+      ],
+      "actual": "ERROR",
+      "error": "Request timeout after 30 seconds"
+    },
+    {
+      "method": "POST",
+      "path": "/api/v1/auth/logout",
+      "expected": [
+        200,
+        401
+      ],
+      "actual": "ERROR",
+      "error": "Request timeout after 30 seconds"
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/auth/profile",
+      "expected": [
+        200,
+        401,
+        404
+      ],
+      "actual": "ERROR",
+      "error": "Request timeout after 30 seconds"
+    },
+    {
+      "method": "POST",
+      "path": "/api/v1/enhanced-auth/biometric-setup",
+      "expected": [
+        200,
+        400
+      ],
+      "actual": "ERROR",
+      "error": "Request timeout after 30 seconds"
+    },
+    {
+      "method": "POST",
+      "path": "/api/v1/enhanced-auth/biometric-verify",
+      "expected": [
+        200,
+        400
+      ],
+      "actual": "ERROR",
+      "error": "Request timeout after 30 seconds"
+    },
+    {
+      "method": "POST",
+      "path": "/api/v1/enhanced-auth/2fa/setup",
+      "expected": [
+        200,
+        400
+      ],
+      "actual": "ERROR",
+      "error": "Request timeout after 30 seconds"
+    },
+    {
+      "method": "POST",
+      "path": "/api/v1/enhanced-auth/2fa/verify",
+      "expected": [
+        200,
+        400
+      ],
+      "actual": "ERROR",
+      "error": "Request timeout after 30 seconds"
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/knowledge-base/articles",
+      "expected": 200,
+      "actual": "ERROR",
+      "error": "Request timeout after 30 seconds"
+    },
+    {
+      "method": "POST",
+      "path": "/api/v1/knowledge-base/articles",
+      "expected": [
+        200,
+        400
+      ],
+      "actual": "ERROR",
+      "error": "Request timeout after 30 seconds"
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/knowledge-base/search",
+      "expected": 200,
+      "actual": "ERROR",
+      "error": "Request timeout after 30 seconds"
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/knowledge-base/categories",
+      "expected": 200,
+      "actual": "ERROR",
+      "error": "Request timeout after 30 seconds"
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/incidents/",
+      "expected": 200,
+      "actual": "ERROR",
+      "error": "Request timeout after 30 seconds"
+    },
+    {
+      "method": "POST",
+      "path": "/api/v1/incidents/",
+      "expected": [
+        200,
+        400
+      ],
+      "actual": "ERROR",
+      "error": "Request timeout after 30 seconds"
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/incidents/status",
+      "expected": 200,
+      "actual": "ERROR",
+      "error": "Request timeout after 30 seconds"
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/incidents/test-id",
+      "expected": 200,
+      "actual": "ERROR",
+      "error": "Request timeout after 30 seconds"
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/carParts/",
+      "expected": 200,
+      "actual": "ERROR",
+      "error": "Request timeout after 30 seconds"
+    },
+    {
+      "method": "POST",
+      "path": "/api/v1/carParts/",
+      "expected": [
+        200,
+        400
+      ],
+      "actual": "ERROR",
+      "error": "Request timeout after 30 seconds"
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/carParts/search",
+      "expected": 200,
+      "actual": "ERROR",
+      "error": "Request timeout after 30 seconds"
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/carParts/categories",
+      "expected": 200,
+      "actual": "ERROR",
+      "error": "Request timeout after 30 seconds"
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/carParts/brands",
+      "expected": 200,
+      "actual": "ERROR",
+      "error": "Request timeout after 30 seconds"
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/enhancedFeatures/",
+      "expected": 200,
+      "actual": "ERROR",
+      "error": "Request timeout after 30 seconds"
+    },
+    {
+      "method": "POST",
+      "path": "/api/v1/enhancedFeatures/",
+      "expected": [
+        200,
+        400
+      ],
+      "actual": "ERROR",
+      "error": "Request timeout after 30 seconds"
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/corporateAccount/",
+      "expected": 200,
+      "actual": "ERROR",
+      "error": "Request timeout after 30 seconds"
+    },
+    {
+      "method": "POST",
+      "path": "/api/v1/corporateAccount/",
+      "expected": [
+        200,
+        400
+      ],
+      "actual": "ERROR",
+      "error": "Request timeout after 30 seconds"
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/deviceToken/",
+      "expected": 200,
+      "actual": "ERROR",
+      "error": "Request timeout after 30 seconds"
+    },
+    {
+      "method": "POST",
+      "path": "/api/v1/deviceToken/",
+      "expected": [
+        200,
+        400
+      ],
+      "actual": "ERROR",
+      "error": "Request timeout after 30 seconds"
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/digitalWallet/",
+      "expected": 200,
+      "actual": "ERROR",
+      "error": "Request timeout after 30 seconds"
+    },
+    {
+      "method": "POST",
+      "path": "/api/v1/digitalWallet/",
+      "expected": [
+        200,
+        400
+      ],
+      "actual": "ERROR",
+      "error": "Request timeout after 30 seconds"
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/featureFlags/",
+      "expected": 200,
+      "actual": "ERROR",
+      "error": "Request timeout after 30 seconds"
+    },
+    {
+      "method": "POST",
+      "path": "/api/v1/featureFlags/",
+      "expected": [
+        200,
+        400
+      ],
+      "actual": "ERROR",
+      "error": "Request timeout after 30 seconds"
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/featureFlags/test-flag",
+      "expected": 200,
+      "actual": "ERROR",
+      "error": "Request timeout after 30 seconds"
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/fleet/",
+      "expected": 200,
+      "actual": "ERROR",
+      "error": "Request timeout after 30 seconds"
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/fleet/vehicles",
+      "expected": 200,
+      "actual": "ERROR",
+      "error": "Request timeout after 30 seconds"
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/fleet/drivers",
+      "expected": 200,
+      "actual": "ERROR",
+      "error": "Request timeout after 30 seconds"
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/customers/",
+      "expected": 200,
+      "actual": "ERROR",
+      "error": "Request timeout after 30 seconds"
+    },
+    {
+      "method": "POST",
+      "path": "/api/v1/customers/",
+      "expected": [
+        200,
+        400
+      ],
+      "actual": "ERROR",
+      "error": "Request timeout after 30 seconds"
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/analytics-backup/",
+      "expected": 200,
+      "actual": "ERROR",
+      "error": "Request timeout after 30 seconds"
+    },
+    {
+      "method": "POST",
+      "path": "/api/v1/analytics-backup/create",
+      "expected": [
+        200,
+        400
+      ],
+      "actual": "ERROR",
+      "error": "Request timeout after 30 seconds"
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/performance/",
+      "expected": 200,
+      "actual": "ERROR",
+      "error": "Request timeout after 30 seconds"
+    },
+    {
+      "method": "POST",
+      "path": "/api/v1/performance/optimize",
+      "expected": [
+        200,
+        400
+      ],
+      "actual": "ERROR",
+      "error": "Request timeout after 30 seconds"
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/errors/logs",
+      "expected": 200,
+      "actual": "ERROR",
+      "error": "Request timeout after 30 seconds"
+    },
+    {
+      "method": "POST",
+      "path": "/api/v1/errors/frontend",
+      "expected": [
+        200,
+        400
+      ],
+      "actual": "ERROR",
+      "error": "Request timeout after 30 seconds"
+    },
+    {
+      "method": "POST",
+      "path": "/api/v1/errors/backend",
+      "expected": [
+        200,
+        400
+      ],
+      "actual": "ERROR",
+      "error": "Request timeout after 30 seconds"
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/clutch-email/health",
+      "expected": [
+        200,
+        503
+      ],
+      "actual": "ERROR",
+      "error": "Request timeout after 30 seconds"
+    },
+    {
+      "method": "POST",
+      "path": "/api/v1/clutch-email/auth/login",
+      "expected": [
+        200,
+        400,
+        503
+      ],
+      "actual": "ERROR",
+      "error": "Request timeout after 30 seconds"
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/health-enhanced-autonomous/",
+      "expected": 200,
+      "actual": "ERROR",
+      "error": "Request timeout after 30 seconds"
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/health-enhanced-autonomous/status",
+      "expected": 200,
+      "actual": "ERROR",
+      "error": "Request timeout after 30 seconds"
+    },
+    {
+      "method": "GET",
+      "path": "/health",
+      "expected": [
+        200,
+        429
+      ],
+      "actual": "ERROR",
+      "error": "Request timeout after 30 seconds"
+    },
+    {
+      "method": "GET",
+      "path": "/health",
+      "expected": [
+        200,
+        429
+      ],
+      "actual": "ERROR",
+      "error": "Request timeout after 30 seconds"
+    },
+    {
+      "method": "GET",
+      "path": "/health",
+      "expected": [
+        200,
+        429
+      ],
+      "actual": "ERROR",
+      "error": "Request timeout after 30 seconds"
+    },
+    {
+      "method": "GET",
+      "path": "/health",
+      "expected": [
+        200,
+        429
+      ],
+      "actual": "ERROR",
+      "error": "Request timeout after 30 seconds"
+    },
+    {
+      "method": "GET",
+      "path": "/health",
+      "expected": [
+        200,
+        429
+      ],
+      "actual": "ERROR",
+      "error": "Request timeout after 30 seconds"
+    },
+    {
+      "method": "GET",
+      "path": "/health",
+      "expected": [
+        200,
+        429
+      ],
+      "actual": "ERROR",
+      "error": "Request timeout after 30 seconds"
+    },
+    {
+      "method": "GET",
+      "path": "/health",
+      "expected": [
+        200,
+        429
+      ],
+      "actual": "ERROR",
+      "error": "Request timeout after 30 seconds"
+    },
+    {
+      "method": "GET",
+      "path": "/health",
+      "expected": [
+        200,
+        429
+      ],
+      "actual": "ERROR",
+      "error": "Request timeout after 30 seconds"
+    },
+    {
+      "method": "GET",
+      "path": "/health",
+      "expected": [
+        200,
+        429
+      ],
+      "actual": "ERROR",
+      "error": "Request timeout after 30 seconds"
+    },
+    {
+      "method": "GET",
+      "path": "/health",
+      "expected": [
+        200,
+        429
+      ],
+      "actual": "ERROR",
+      "error": "Request timeout after 30 seconds"
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/auth/profile",
+      "expected": [
+        401,
+        404
+      ],
+      "actual": "ERROR",
+      "error": "Request timeout after 30 seconds"
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/auth/profile",
+      "expected": [
+        401,
+        404
+      ],
+      "actual": "ERROR",
+      "error": "Request timeout after 30 seconds"
+    },
+    {
+      "method": "GET",
+      "path": "/health",
+      "expected": 200,
+      "actual": "ERROR",
+      "error": "Request timeout after 30 seconds"
+    },
+    {
+      "method": "GET",
+      "path": "/health",
+      "expected": 200,
+      "actual": "ERROR",
+      "error": "Request timeout after 30 seconds"
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/nonexistent",
+      "expected": 404,
+      "actual": "ERROR",
+      "error": "Request timeout after 30 seconds"
+    },
+    {
+      "method": "POST",
+      "path": "/api/v1/auth/login",
+      "expected": [
+        400,
+        422
+      ],
+      "actual": "ERROR",
+      "error": "Request timeout after 30 seconds"
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/knowledge-base/articles",
+      "expected": 200,
+      "actual": "ERROR",
+      "error": "Request timeout after 30 seconds"
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/knowledge-base/articles",
+      "expected": 200,
+      "actual": "ERROR",
+      "error": "Request timeout after 30 seconds"
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/incidents/",
+      "expected": 200,
+      "actual": "ERROR",
+      "error": "Request timeout after 30 seconds"
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/customers/",
+      "expected": 200,
+      "actual": "ERROR",
+      "error": "Request timeout after 30 seconds"
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/carParts/",
+      "expected": 200,
+      "actual": "ERROR",
+      "error": "Request timeout after 30 seconds"
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/knowledge-base/articles",
+      "expected": 200,
+      "actual": "ERROR",
+      "error": "Request timeout after 30 seconds"
+    },
+    {
+      "method": "GET",
+      "path": "/health",
+      "expected": 200,
+      "actual": "ERROR",
+      "error": "Request timeout after 30 seconds"
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/performance/monitor",
+      "expected": [
+        200,
+        401
+      ],
+      "actual": "ERROR",
+      "error": "Request timeout after 30 seconds"
+    },
+    {
+      "method": "GET",
+      "path": "/health",
+      "expected": 200,
+      "actual": "ERROR",
+      "error": "Request timeout after 30 seconds"
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/knowledge-base/articles",
+      "expected": 200,
+      "actual": "ERROR",
+      "error": "Request timeout after 30 seconds"
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/incidents/",
+      "expected": 200,
+      "actual": "ERROR",
+      "error": "Request timeout after 30 seconds"
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/carParts/",
+      "expected": 200,
+      "actual": "ERROR",
+      "error": "Request timeout after 30 seconds"
+    },
+    {
+      "method": "GET",
+      "path": "/health",
+      "expected": 200,
+      "actual": "ERROR",
+      "error": "Request timeout after 30 seconds"
+    },
+    {
+      "method": "GET",
+      "path": "/health",
+      "expected": 200,
+      "actual": "ERROR",
+      "error": "Request timeout after 30 seconds"
+    },
+    {
+      "method": "GET",
+      "path": "/health",
+      "expected": 200,
+      "actual": "ERROR",
+      "error": "Request timeout after 30 seconds"
+    },
+    {
+      "method": "GET",
+      "path": "/health",
+      "expected": 200,
+      "actual": "ERROR",
+      "error": "Request timeout after 30 seconds"
+    },
+    {
+      "method": "GET",
+      "path": "/health",
+      "expected": 200,
+      "actual": "ERROR",
+      "error": "Request timeout after 30 seconds"
+    },
+    {
+      "method": "GET",
+      "path": "/health",
+      "expected": 200,
+      "actual": "ERROR",
+      "error": "Request timeout after 30 seconds"
+    },
+    {
+      "method": "GET",
+      "path": "/health",
+      "expected": 200,
+      "actual": "ERROR",
+      "error": "Request timeout after 30 seconds"
+    },
+    {
+      "method": "GET",
+      "path": "/health",
+      "expected": 200,
+      "actual": "ERROR",
+      "error": "Request timeout after 30 seconds"
+    },
+    {
+      "method": "GET",
+      "path": "/health",
+      "expected": 200,
+      "actual": "ERROR",
+      "error": "Request timeout after 30 seconds"
+    },
+    {
+      "method": "GET",
+      "path": "/health",
+      "expected": 200,
+      "actual": "ERROR",
+      "error": "Request timeout after 30 seconds"
+    },
+    {
+      "method": "GET",
+      "path": "/health",
+      "expected": 200,
+      "actual": "ERROR",
+      "error": "Request timeout after 30 seconds"
+    },
+    {
+      "method": "GET",
+      "path": "/health",
+      "expected": 200,
+      "actual": "ERROR",
+      "error": "Request timeout after 30 seconds"
+    },
+    {
+      "method": "GET",
+      "path": "/health",
+      "expected": 200,
+      "actual": "ERROR",
+      "error": "Request timeout after 30 seconds"
+    },
+    {
+      "method": "GET",
+      "path": "/health",
+      "expected": 200,
+      "actual": "ERROR",
+      "error": "Request timeout after 30 seconds"
+    },
+    {
+      "method": "GET",
+      "path": "/health",
+      "expected": 200,
+      "actual": "ERROR",
+      "error": "Request timeout after 30 seconds"
+    },
+    {
+      "method": "GET",
+      "path": "/health",
+      "expected": 200,
+      "actual": "ERROR",
+      "error": "Request timeout after 30 seconds"
+    },
+    {
+      "method": "GET",
+      "path": "/health",
+      "expected": 200,
+      "actual": "ERROR",
+      "error": "Request timeout after 30 seconds"
+    },
+    {
+      "method": "GET",
+      "path": "/health",
+      "expected": 200,
+      "actual": "ERROR",
+      "error": "Request timeout after 30 seconds"
+    },
+    {
+      "method": "GET",
+      "path": "/health",
+      "expected": 200,
+      "actual": "ERROR",
+      "error": "Request timeout after 30 seconds"
+    },
+    {
+      "method": "GET",
+      "path": "/health",
+      "expected": 200,
+      "actual": "ERROR",
+      "error": "Request timeout after 30 seconds"
+    },
+    {
+      "method": "GET",
+      "path": "/health",
+      "expected": 200,
+      "actual": "ERROR",
+      "error": "Request timeout after 30 seconds"
+    },
+    {
+      "method": "GET",
+      "path": "/health",
+      "expected": 200,
+      "actual": "ERROR",
+      "error": "Request timeout after 30 seconds"
+    },
+    {
+      "method": "GET",
+      "path": "/health",
+      "expected": 200,
+      "actual": "ERROR",
+      "error": "Request timeout after 30 seconds"
+    },
+    {
+      "method": "GET",
+      "path": "/health",
+      "expected": 200,
+      "actual": "ERROR",
+      "error": "Request timeout after 30 seconds"
+    },
+    {
+      "method": "GET",
+      "path": "/health",
+      "expected": 200,
+      "actual": "ERROR",
+      "error": "Request timeout after 30 seconds"
+    },
+    {
+      "method": "GET",
+      "path": "/health",
+      "expected": 200,
+      "actual": "ERROR",
+      "error": "Request timeout after 30 seconds"
+    },
+    {
+      "method": "GET",
+      "path": "/health",
+      "expected": 200,
+      "actual": "ERROR",
+      "error": "Request timeout after 30 seconds"
+    },
+    {
+      "method": "GET",
+      "path": "/health",
+      "expected": 200,
+      "actual": "ERROR",
+      "error": "Request timeout after 30 seconds"
+    },
+    {
+      "method": "GET",
+      "path": "/health",
+      "expected": 200,
+      "actual": "ERROR",
+      "error": "Request timeout after 30 seconds"
+    },
+    {
+      "method": "GET",
+      "path": "/health",
+      "expected": 200,
+      "actual": "ERROR",
+      "error": "Request timeout after 30 seconds"
+    },
+    {
+      "method": "GET",
+      "path": "/health",
+      "expected": 200,
+      "actual": "ERROR",
+      "error": "Request timeout after 30 seconds"
+    },
+    {
+      "method": "GET",
+      "path": "/health",
+      "expected": 200,
+      "actual": "ERROR",
+      "error": "Request timeout after 30 seconds"
+    },
+    {
+      "method": "GET",
+      "path": "/health",
+      "expected": 200,
+      "actual": "ERROR",
+      "error": "Request timeout after 30 seconds"
+    },
+    {
+      "method": "GET",
+      "path": "/health",
+      "expected": 200,
+      "actual": "ERROR",
+      "error": "Request timeout after 30 seconds"
+    },
+    {
+      "method": "GET",
+      "path": "/health",
+      "expected": 200,
+      "actual": "ERROR",
+      "error": "Request timeout after 30 seconds"
+    },
+    {
+      "method": "GET",
+      "path": "/health",
+      "expected": 200,
+      "actual": "ERROR",
+      "error": "Request timeout after 30 seconds"
+    },
+    {
+      "method": "GET",
+      "path": "/health",
+      "expected": 200,
+      "actual": "ERROR",
+      "error": "Request timeout after 30 seconds"
+    },
+    {
+      "method": "GET",
+      "path": "/health",
+      "expected": 200,
+      "actual": "ERROR",
+      "error": "Request timeout after 30 seconds"
+    },
+    {
+      "method": "GET",
+      "path": "/health",
+      "expected": 200,
+      "actual": "ERROR",
+      "error": "Request timeout after 30 seconds"
+    },
+    {
+      "method": "GET",
+      "path": "/health",
+      "expected": 200,
+      "actual": "ERROR",
+      "error": "Request timeout after 30 seconds"
+    },
+    {
+      "method": "GET",
+      "path": "/health",
+      "expected": 200,
+      "actual": "ERROR",
+      "error": "Request timeout after 30 seconds"
+    },
+    {
+      "method": "GET",
+      "path": "/health",
+      "expected": 200,
+      "actual": "ERROR",
+      "error": "Request timeout after 30 seconds"
+    },
+    {
+      "method": "GET",
+      "path": "/health",
+      "expected": 200,
+      "actual": "ERROR",
+      "error": "Request timeout after 30 seconds"
+    },
+    {
+      "method": "GET",
+      "path": "/health",
+      "expected": 200,
+      "actual": "ERROR",
+      "error": "Request timeout after 30 seconds"
+    },
+    {
+      "method": "GET",
+      "path": "/health",
+      "expected": 200,
+      "actual": "ERROR",
+      "error": "Request timeout after 30 seconds"
+    },
+    {
+      "method": "GET",
+      "path": "/health",
+      "expected": 200,
+      "actual": "ERROR",
+      "error": "Request timeout after 30 seconds"
+    },
+    {
+      "method": "GET",
+      "path": "/health",
+      "expected": 200,
+      "actual": "ERROR",
+      "error": "Request timeout after 30 seconds"
+    },
+    {
+      "method": "GET",
+      "path": "/health",
+      "expected": 200,
+      "actual": "ERROR",
+      "error": "Request timeout after 30 seconds"
+    },
+    {
+      "method": "GET",
+      "path": "/health",
+      "expected": 200,
+      "actual": "ERROR",
+      "error": "Request timeout after 30 seconds"
+    },
+    {
+      "method": "GET",
+      "path": "/health",
+      "expected": 200,
+      "actual": "ERROR",
+      "error": "Request timeout after 30 seconds"
+    },
+    {
+      "method": "GET",
+      "path": "/health",
+      "expected": 200,
+      "actual": "ERROR",
+      "error": "Request timeout after 30 seconds"
+    },
+    {
+      "method": "POST",
+      "path": "/api/v1/auth/login",
+      "expected": [
+        400,
+        401,
+        422
+      ],
+      "actual": "ERROR",
+      "error": "Request timeout after 30 seconds"
+    },
+    {
+      "method": "POST",
+      "path": "/api/v1/auth/login",
+      "expected": [
+        400,
+        401,
+        422
+      ],
+      "actual": "ERROR",
+      "error": "Request timeout after 30 seconds"
+    },
+    {
+      "method": "POST",
+      "path": "/api/v1/auth/login",
+      "expected": [
+        400,
+        401,
+        422
+      ],
+      "actual": "ERROR",
+      "error": "Request timeout after 30 seconds"
+    },
+    {
+      "method": "POST",
+      "path": "/api/v1/auth/login",
+      "expected": [
+        400,
+        401,
+        422
+      ],
+      "actual": "ERROR",
+      "error": "Request timeout after 30 seconds"
+    },
+    {
+      "method": "POST",
+      "path": "/api/v1/auth/login",
+      "expected": [
+        400,
+        401,
+        422
+      ],
+      "actual": "ERROR",
+      "error": "Request timeout after 30 seconds"
+    },
+    {
+      "method": "POST",
+      "path": "/api/v1/auth/login",
+      "expected": [
+        400,
+        401,
+        422
+      ],
+      "actual": "ERROR",
+      "error": "Request timeout after 30 seconds"
+    },
+    {
+      "method": "POST",
+      "path": "/api/v1/auth/login",
+      "expected": [
+        400,
+        422
+      ],
+      "actual": "ERROR",
+      "error": "Request timeout after 30 seconds"
+    },
+    {
+      "method": "POST",
+      "path": "/api/v1/auth/login",
+      "expected": [
+        400,
+        422
+      ],
+      "actual": "ERROR",
+      "error": "Request timeout after 30 seconds"
+    },
+    {
+      "method": "POST",
+      "path": "/api/v1/auth/login",
+      "expected": [
+        400,
+        422
+      ],
+      "actual": "ERROR",
+      "error": "Request timeout after 30 seconds"
+    },
+    {
+      "method": "POST",
+      "path": "/api/v1/auth/login",
+      "expected": [
+        400,
+        422
+      ],
+      "actual": "ERROR",
+      "error": "Request timeout after 30 seconds"
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/admin/dashboard",
+      "expected": [
+        401,
+        403,
+        404
+      ],
+      "actual": "ERROR",
+      "error": "Request timeout after 30 seconds"
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/auth/profile",
+      "expected": [
+        401,
+        403,
+        404
+      ],
+      "actual": "ERROR",
+      "error": "Request timeout after 30 seconds"
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/corporateAccount/",
+      "expected": [
+        401,
+        403,
+        404
+      ],
+      "actual": "ERROR",
+      "error": "Request timeout after 30 seconds"
+    }
+  ],
+  "recommendations": [
+    "Fix 143 failing tests before deployment",
+    "High number of errors detected - review error handling",
+    "Authentication middleware needs attention",
+    "Database connection issues detected"
+  ]
+}

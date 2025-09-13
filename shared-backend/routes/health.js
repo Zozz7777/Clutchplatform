@@ -14,7 +14,7 @@ try {
   connectDB = async () => { throw new Error('Database not available'); };
 }
 
-// Lightweight ping endpoint for keep-alive service
+// Lightweight ping endpoint for health monitoring
 router.get('/ping', (req, res) => {
     try {
         console.log('🏥 Health route ping endpoint called');
