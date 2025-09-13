@@ -67,14 +67,29 @@ const sendWebhookAlert = async (alert) => {
 };
 
 const checkSystemHealth = () => {
-  const memoryUsage = process.memoryUsage();
-  const memoryUsagePercent = (memoryUsage.heapUsed / memoryUsage.heapTotal) * 100;
+  const { getSystemMemoryUsage, getV8HeapUsage } = require('../utils/memory-monitor');
   
-  // Memory checks
-  if (memoryUsagePercent > alertThresholds.memory.critical) {
-    addAlert('memory', `Critical memory usage: ${memoryUsagePercent.toFixed(1)}%`, 'critical', { usage: memoryUsagePercent });
-  } else if (memoryUsagePercent > alertThresholds.memory.warning) {
-    addAlert('memory', `High memory usage: ${memoryUsagePercent.toFixed(1)}%`, 'warning', { usage: memoryUsagePercent });
+  const systemMemory = getSystemMemoryUsage();
+  const v8Heap = getV8HeapUsage();
+  
+  // Use CORRECT system memory usage for alerts
+  const systemMemoryPercent = systemMemory.usagePercentage;
+  const heapUsagePercent = v8Heap.heapUsagePercentage;
+  
+  // System memory checks (the important ones)
+  if (systemMemoryPercent > alertThresholds.memory.critical) {
+    addAlert('memory', `Critical SYSTEM memory usage: ${systemMemoryPercent.toFixed(1)}% (Heap: ${heapUsagePercent.toFixed(1)}%)`, 'critical', { 
+      systemUsage: systemMemoryPercent,
+      heapUsage: heapUsagePercent 
+    });
+  } else if (systemMemoryPercent > alertThresholds.memory.warning) {
+    addAlert('memory', `High SYSTEM memory usage: ${systemMemoryPercent.toFixed(1)}% (Heap: ${heapUsagePercent.toFixed(1)}%)`, 'warning', { 
+      systemUsage: systemMemoryPercent,
+      heapUsage: heapUsagePercent 
+    });
+  } else {
+    // Log healthy memory status
+    console.log(`✅ Memory healthy - System: ${systemMemoryPercent.toFixed(1)}%, Heap: ${heapUsagePercent.toFixed(1)}%`);
   }
   
   // CPU checks
