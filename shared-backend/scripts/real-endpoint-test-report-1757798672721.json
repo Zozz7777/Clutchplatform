@@ -1,0 +1,511 @@
+{
+  "timestamp": "2025-09-13T21:24:32.721Z",
+  "summary": {
+    "total": 98,
+    "successful": 82,
+    "failed": 16,
+    "successRate": "83.67%"
+  },
+  "errors": {
+    "400": [
+      {
+        "endpoint": "POST /api/v1/auth/refresh",
+        "status": 400,
+        "name": "Auth Refresh"
+      },
+      {
+        "endpoint": "POST /api/v1/auth/reset-password",
+        "status": 400,
+        "name": "Reset Password"
+      },
+      {
+        "endpoint": "POST /api/v1/fleet/drivers",
+        "status": 400,
+        "name": "Add Driver"
+      },
+      {
+        "endpoint": "GET /api/v1/orders",
+        "status": 400,
+        "name": "Orders List"
+      },
+      {
+        "endpoint": "POST /api/v1/orders",
+        "status": 400,
+        "name": "Create Order"
+      }
+    ],
+    "401": [],
+    "403": [],
+    "404": [
+      {
+        "endpoint": "PUT /api/v1/fleet/vehicles/1",
+        "status": 404,
+        "name": "Update Vehicle"
+      },
+      {
+        "endpoint": "DELETE /api/v1/fleet/vehicles/1",
+        "status": 404,
+        "name": "Delete Vehicle"
+      },
+      {
+        "endpoint": "POST /api/v1/upload/images",
+        "status": 404,
+        "name": "Image Upload"
+      },
+      {
+        "endpoint": "GET /api/v1/search",
+        "status": 404,
+        "name": "Global Search"
+      },
+      {
+        "endpoint": "POST /api/v1/system/restart",
+        "status": 404,
+        "name": "System Restart"
+      },
+      {
+        "endpoint": "GET /api/v1/search/orders",
+        "status": 404,
+        "name": "Search Orders"
+      },
+      {
+        "endpoint": "POST /api/v1/webhooks/payment",
+        "status": 404,
+        "name": "Payment Webhook"
+      },
+      {
+        "endpoint": "PUT /api/v1/settings",
+        "status": 404,
+        "name": "Update Settings"
+      },
+      {
+        "endpoint": "POST /api/v1/webhooks/notification",
+        "status": 404,
+        "name": "Notification Webhook"
+      },
+      {
+        "endpoint": "GET /api/v1/search/users",
+        "status": 404,
+        "name": "Search Users"
+      },
+      {
+        "endpoint": "GET /api/v1/search/products",
+        "status": 404,
+        "name": "Search Products"
+      }
+    ],
+    "500": [],
+    "other": []
+  },
+  "successful": [
+    {
+      "endpoint": "POST /api/v1/auth/register",
+      "status": 201,
+      "name": "Auth Register"
+    },
+    {
+      "endpoint": "GET /ping",
+      "status": 200,
+      "name": "Ping"
+    },
+    {
+      "endpoint": "POST /api/v1/auth/login",
+      "status": 200,
+      "name": "Auth Login"
+    },
+    {
+      "endpoint": "GET /health",
+      "status": 200,
+      "name": "Health Check"
+    },
+    {
+      "endpoint": "DELETE /api/v1/users/1",
+      "status": 200,
+      "name": "Delete User"
+    },
+    {
+      "endpoint": "GET /api/v1/users",
+      "status": 200,
+      "name": "Users List"
+    },
+    {
+      "endpoint": "GET /api/v1/fleet/vehicles/1",
+      "status": 401,
+      "name": "Vehicle by ID"
+    },
+    {
+      "endpoint": "POST /api/v1/auth/forgot-password",
+      "status": 200,
+      "name": "Forgot Password"
+    },
+    {
+      "endpoint": "GET /api/v1/users/profile",
+      "status": 200,
+      "name": "User Profile"
+    },
+    {
+      "endpoint": "GET /api/v1/users/1",
+      "status": 200,
+      "name": "User by ID"
+    },
+    {
+      "endpoint": "PUT /api/v1/users/1",
+      "status": 200,
+      "name": "Update User"
+    },
+    {
+      "endpoint": "GET /api/v1/fleet/vehicles",
+      "status": 200,
+      "name": "Fleet Vehicles"
+    },
+    {
+      "endpoint": "PUT /api/v1/users/profile",
+      "status": 200,
+      "name": "Update Profile"
+    },
+    {
+      "endpoint": "GET /",
+      "status": 200,
+      "name": "Root"
+    },
+    {
+      "endpoint": "POST /api/v1/auth/logout",
+      "status": 200,
+      "name": "Auth Logout"
+    },
+    {
+      "endpoint": "GET /health/ping",
+      "status": 200,
+      "name": "Health Ping"
+    },
+    {
+      "endpoint": "POST /api/v1/fleet/vehicles",
+      "status": 401,
+      "name": "Add Vehicle"
+    },
+    {
+      "endpoint": "POST /api/v1/payments",
+      "status": 401,
+      "name": "Process Payment"
+    },
+    {
+      "endpoint": "GET /api/v1/fleet/drivers",
+      "status": 200,
+      "name": "Fleet Drivers"
+    },
+    {
+      "endpoint": "GET /api/v1/payments",
+      "status": 401,
+      "name": "Payments List"
+    },
+    {
+      "endpoint": "PUT /api/v1/fleet/drivers/1",
+      "status": 200,
+      "name": "Update Driver"
+    },
+    {
+      "endpoint": "GET /api/v1/fleet/drivers/1",
+      "status": 401,
+      "name": "Driver by ID"
+    },
+    {
+      "endpoint": "GET /api/v1/bookings/1",
+      "status": 401,
+      "name": "Booking by ID"
+    },
+    {
+      "endpoint": "GET /api/v1/bookings",
+      "status": 401,
+      "name": "Bookings List"
+    },
+    {
+      "endpoint": "PUT /api/v1/communication/notifications/1",
+      "status": 401,
+      "name": "Mark Notification Read"
+    },
+    {
+      "endpoint": "DELETE /api/v1/payments/1",
+      "status": 200,
+      "name": "Refund Payment"
+    },
+    {
+      "endpoint": "GET /api/v1/communication/chat",
+      "status": 401,
+      "name": "Chat Messages"
+    },
+    {
+      "endpoint": "GET /api/v1/payments/1",
+      "status": 401,
+      "name": "Payment by ID"
+    },
+    {
+      "endpoint": "DELETE /api/v1/fleet/drivers/1",
+      "status": 401,
+      "name": "Delete Driver"
+    },
+    {
+      "endpoint": "PUT /api/v1/payments/1",
+      "status": 401,
+      "name": "Update Payment"
+    },
+    {
+      "endpoint": "PUT /api/v1/bookings/1",
+      "status": 401,
+      "name": "Update Booking"
+    },
+    {
+      "endpoint": "GET /api/v1/communication/notifications",
+      "status": 401,
+      "name": "Notifications"
+    },
+    {
+      "endpoint": "DELETE /api/v1/bookings/1",
+      "status": 200,
+      "name": "Cancel Booking"
+    },
+    {
+      "endpoint": "POST /api/v1/bookings",
+      "status": 401,
+      "name": "Create Booking"
+    },
+    {
+      "endpoint": "POST /api/v1/communication/chat",
+      "status": 401,
+      "name": "Send Message"
+    },
+    {
+      "endpoint": "GET /api/v1/services",
+      "status": 401,
+      "name": "Services List"
+    },
+    {
+      "endpoint": "GET /api/v1/analytics/metrics",
+      "status": 401,
+      "name": "Analytics Metrics"
+    },
+    {
+      "endpoint": "GET /api/v1/admin/stats",
+      "status": 200,
+      "name": "Admin Stats"
+    },
+    {
+      "endpoint": "DELETE /api/v1/products/1",
+      "status": 200,
+      "name": "Delete Product"
+    },
+    {
+      "endpoint": "GET /api/v1/performance/metrics",
+      "status": 200,
+      "name": "Performance Metrics"
+    },
+    {
+      "endpoint": "GET /api/v1/services/1",
+      "status": 401,
+      "name": "Service by ID"
+    },
+    {
+      "endpoint": "GET /api/v1/admin/users",
+      "status": 401,
+      "name": "Admin Users"
+    },
+    {
+      "endpoint": "PUT /api/v1/products/1",
+      "status": 401,
+      "name": "Update Product"
+    },
+    {
+      "endpoint": "GET /api/v1/analytics/dashboard",
+      "status": 401,
+      "name": "Analytics Dashboard"
+    },
+    {
+      "endpoint": "GET /api/v1/products/1",
+      "status": 401,
+      "name": "Product by ID"
+    },
+    {
+      "endpoint": "POST /api/v1/products",
+      "status": 401,
+      "name": "Create Product"
+    },
+    {
+      "endpoint": "GET /api/v1/admin/users/1",
+      "status": 401,
+      "name": "Admin User by ID"
+    },
+    {
+      "endpoint": "GET /api/v1/performance/health",
+      "status": 200,
+      "name": "Performance Health"
+    },
+    {
+      "endpoint": "GET /api/v1/analytics/reports",
+      "status": 401,
+      "name": "Analytics Reports"
+    },
+    {
+      "endpoint": "PUT /api/v1/services/1",
+      "status": 401,
+      "name": "Update Service"
+    },
+    {
+      "endpoint": "GET /api/v1/admin/dashboard",
+      "status": 200,
+      "name": "Admin Dashboard"
+    },
+    {
+      "endpoint": "DELETE /api/v1/services/1",
+      "status": 200,
+      "name": "Delete Service"
+    },
+    {
+      "endpoint": "GET /api/v1/products",
+      "status": 401,
+      "name": "Products List"
+    },
+    {
+      "endpoint": "GET /api/v1/performance/monitor",
+      "status": 401,
+      "name": "Performance Monitor"
+    },
+    {
+      "endpoint": "POST /api/v1/services",
+      "status": 401,
+      "name": "Create Service"
+    },
+    {
+      "endpoint": "GET /api/v1/customers",
+      "status": 200,
+      "name": "Customers List"
+    },
+    {
+      "endpoint": "GET /api/v1/settings",
+      "status": 401,
+      "name": "Settings"
+    },
+    {
+      "endpoint": "GET /api/v1/inventory/1",
+      "status": 200,
+      "name": "Inventory Item by ID"
+    },
+    {
+      "endpoint": "GET /api/v1/reports/inventory",
+      "status": 401,
+      "name": "Inventory Report"
+    },
+    {
+      "endpoint": "PUT /api/v1/customers/1",
+      "status": 200,
+      "name": "Update Customer"
+    },
+    {
+      "endpoint": "DELETE /api/v1/inventory/1",
+      "status": 200,
+      "name": "Remove Inventory Item"
+    },
+    {
+      "endpoint": "GET /api/v1/orders/1",
+      "status": 200,
+      "name": "Order by ID"
+    },
+    {
+      "endpoint": "DELETE /api/v1/orders/1",
+      "status": 200,
+      "name": "Cancel Order"
+    },
+    {
+      "endpoint": "GET /api/v1/reports/customers",
+      "status": 401,
+      "name": "Customers Report"
+    },
+    {
+      "endpoint": "PUT /api/v1/inventory/1",
+      "status": 200,
+      "name": "Update Inventory"
+    },
+    {
+      "endpoint": "GET /api/v1/reports/financial",
+      "status": 401,
+      "name": "Financial Report"
+    },
+    {
+      "endpoint": "GET /api/v1/inventory",
+      "status": 200,
+      "name": "Inventory List"
+    },
+    {
+      "endpoint": "PUT /api/v1/orders/1",
+      "status": 200,
+      "name": "Update Order"
+    },
+    {
+      "endpoint": "POST /api/v1/inventory",
+      "status": 201,
+      "name": "Add Inventory Item"
+    },
+    {
+      "endpoint": "GET /api/v1/customers/1",
+      "status": 200,
+      "name": "Customer by ID"
+    },
+    {
+      "endpoint": "POST /api/v1/customers",
+      "status": 201,
+      "name": "Add Customer"
+    },
+    {
+      "endpoint": "DELETE /api/v1/customers/1",
+      "status": 200,
+      "name": "Delete Customer"
+    },
+    {
+      "endpoint": "GET /api/v1/reports/sales",
+      "status": 401,
+      "name": "Sales Report"
+    },
+    {
+      "endpoint": "GET /api/v1/settings/notifications",
+      "status": 401,
+      "name": "Notification Settings"
+    },
+    {
+      "endpoint": "PUT /api/v1/settings/notifications",
+      "status": 401,
+      "name": "Update Notification Settings"
+    },
+    {
+      "endpoint": "GET /api/v1/system/status",
+      "status": 200,
+      "name": "System Status"
+    },
+    {
+      "endpoint": "GET /api/v1/system/info",
+      "status": 200,
+      "name": "System Info"
+    },
+    {
+      "endpoint": "POST /api/v1/mobile/sync",
+      "status": 401,
+      "name": "Mobile Sync"
+    },
+    {
+      "endpoint": "GET /api/v1/system/logs",
+      "status": 401,
+      "name": "System Logs"
+    },
+    {
+      "endpoint": "POST /api/v1/upload",
+      "status": 401,
+      "name": "File Upload"
+    },
+    {
+      "endpoint": "GET /api/v1/mobile/version",
+      "status": 200,
+      "name": "Mobile Version"
+    },
+    {
+      "endpoint": "GET /api/v1/mobile/config",
+      "status": 200,
+      "name": "Mobile Config"
+    }
+  ]
+}

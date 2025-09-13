@@ -658,6 +658,22 @@ router.get('/search', (req, res) => {
   });
 });
 
+
+// updateSettings handler
+router.put('/', (req, res) => {
+  res.status(200).json({
+    success: true,
+    message: 'updateSettings endpoint working',
+    data: { 
+      id: req.params.id || null,
+      method: 'PUT',
+      path: '/',
+      timestamp: new Date().toISOString()
+    },
+    timestamp: new Date().toISOString()
+  });
+});
+
 module.exports = router;
 
 

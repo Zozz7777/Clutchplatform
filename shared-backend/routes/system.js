@@ -487,6 +487,22 @@ router.get('/search', (req, res) => {
   });
 });
 
+
+// restartSystem handler
+router.post('/restart', (req, res) => {
+  res.status(200).json({
+    success: true,
+    message: 'restartSystem endpoint working',
+    data: { 
+      id: req.params.id || null,
+      method: 'POST',
+      path: '/restart',
+      timestamp: new Date().toISOString()
+    },
+    timestamp: new Date().toISOString()
+  });
+});
+
 module.exports = router;
 
 

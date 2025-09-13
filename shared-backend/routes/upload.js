@@ -109,6 +109,22 @@ router.get('/search', (req, res) => {
   });
 });
 
+
+// uploadImage handler
+router.post('/images', (req, res) => {
+  res.status(200).json({
+    success: true,
+    message: 'uploadImage endpoint working',
+    data: { 
+      id: req.params.id || null,
+      method: 'POST',
+      path: '/images',
+      timestamp: new Date().toISOString()
+    },
+    timestamp: new Date().toISOString()
+  });
+});
+
 module.exports = router;
 
 

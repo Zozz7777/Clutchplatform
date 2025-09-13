@@ -164,6 +164,8 @@ const analyticsBackupRoutes = require('./routes/analytics-backup');
 const communicationBackupRoutes = require('./routes/communication-backup');
 const userAnalyticsBackupRoutes = require('./routes/user-analytics-backup');
 const endpointTesterRoutes = require('./routes/endpoint-tester');
+const searchRoutes = require('./routes/search');
+const webhooksRoutes = require('./routes/webhooks');
 
 // Initialize Express app
 const app = express();
@@ -440,6 +442,8 @@ app.use(`${apiPrefix}/analytics-backup`, analyticsBackupRoutes);
 app.use(`${apiPrefix}/communication-backup`, communicationBackupRoutes);
 app.use(`${apiPrefix}/user-analytics-backup`, userAnalyticsBackupRoutes);
 app.use(`${apiPrefix}/endpoint-tester`, endpointTesterRoutes);
+app.use(`${apiPrefix}/search`, searchRoutes);
+app.use(`${apiPrefix}/webhooks`, webhooksRoutes);
 
 // Fallback routes
 app.use('/auth', authRoutes);
