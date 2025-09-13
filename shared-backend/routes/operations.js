@@ -1,5 +1,6 @@
 const express = require('express');
 const router = express.Router();
+const { authenticateToken } = require('../middleware/auth');
 
 // Simple test endpoint without authentication
 router.get('/test', (req, res) => {
