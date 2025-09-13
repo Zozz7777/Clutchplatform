@@ -41,64 +41,69 @@ export function AuthGuard({ children, fallback }: AuthGuardProps) {
     checkAuth()
   }, [isAuthenticated, refreshUser])
 
-  // Show loading while checking authentication
-  if (isLoading || isChecking) {
-    return (
-      <div className="min-h-screen flex items-center justify-center bg-slate-50 bg-white">
-        <SnowCard className="w-full max-w-md">
-          <SnowCardHeader className="text-center">
-            <div className="mx-auto mb-4">
-              <Loader2 className="h-8 w-8 animate-spin text-primary" />
-            </div>
-            <SnowCardTitle>Checking Authentication</SnowCardTitle>
-            <SnowCardDescription>
-              Please wait while we verify your credentials...
-            </SnowCardDescription>
-          </SnowCardHeader>
-        </SnowCard>
-      </div>
-    )
+  // Always call hooks in the same order, then handle conditional rendering
+  const renderContent = () => {
+    // Show loading while checking authentication
+    if (isLoading || isChecking) {
+      return (
+        <div className="min-h-screen flex items-center justify-center bg-slate-50 bg-white">
+          <SnowCard className="w-full max-w-md">
+            <SnowCardHeader className="text-center">
+              <div className="mx-auto mb-4">
+                <Loader2 className="h-8 w-8 animate-spin text-primary" />
+              </div>
+              <SnowCardTitle>Checking Authentication</SnowCardTitle>
+              <SnowCardDescription>
+                Please wait while we verify your credentials...
+              </SnowCardDescription>
+            </SnowCardHeader>
+          </SnowCard>
+        </div>
+      )
+    }
+
+    // If not authenticated, redirect to login
+    if (!isAuthenticated || !user) {
+      // Use setTimeout to avoid hydration issues
+      setTimeout(() => {
+        router.push('/login')
+      }, 0)
+
+      return (
+        <div className="min-h-screen flex items-center justify-center bg-slate-50 bg-white">
+          <SnowCard className="w-full max-w-md">
+            <SnowCardHeader className="text-center">
+              <div className="mx-auto mb-4">
+                <Shield className="h-8 w-8 text-red-500" />
+              </div>
+              <SnowCardTitle>Authentication Required</SnowCardTitle>
+              <SnowCardDescription>
+                You need to be logged in to access this page.
+              </SnowCardDescription>
+            </SnowCardHeader>
+            <SnowCardContent className="text-center">
+              <SnowButton 
+                onClick={() => router.push('/login')}
+                className="w-full"
+              >
+                Go to Login
+              </SnowButton>
+            </SnowCardContent>
+          </SnowCard>
+        </div>
+      )
+    }
+
+    // If custom fallback is provided, use it
+    if (fallback) {
+      return <>{fallback}</>
+    }
+
+    // User is authenticated, render children
+    return <>{children}</>
   }
 
-  // If not authenticated, redirect to login
-  if (!isAuthenticated || !user) {
-    // Use setTimeout to avoid hydration issues
-    setTimeout(() => {
-      router.push('/login')
-    }, 0)
-
-    return (
-      <div className="min-h-screen flex items-center justify-center bg-slate-50 bg-white">
-        <SnowCard className="w-full max-w-md">
-          <SnowCardHeader className="text-center">
-            <div className="mx-auto mb-4">
-              <Shield className="h-8 w-8 text-red-500" />
-            </div>
-            <SnowCardTitle>Authentication Required</SnowCardTitle>
-            <SnowCardDescription>
-              You need to be logged in to access this page.
-            </SnowCardDescription>
-          </SnowCardHeader>
-          <SnowCardContent className="text-center">
-            <SnowButton 
-              onClick={() => router.push('/login')}
-              className="w-full"
-            >
-              Go to Login
-            </SnowButton>
-          </SnowCardContent>
-        </SnowCard>
-      </div>
-    )
-  }
-
-  // If custom fallback is provided, use it
-  if (fallback) {
-    return <>{fallback}</>
-  }
-
-  // User is authenticated, render children
-  return <>{children}</>
+  return renderContent()
 }
 
 // Higher-order component for protecting routes
