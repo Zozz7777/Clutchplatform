@@ -47,7 +47,7 @@ export function RealTimeNotifications({ className }: RealTimeNotificationsProps)
   useEffect(() => {
     const connectWebSocket = () => {
       try {
-        const wsUrl = process.env.NEXT_PUBLIC_WS_URL || 'ws://localhost:3001'
+        const wsUrl = process.env.NEXT_PUBLIC_WS_URL || 'wss://clutch-main-nk7x.onrender.com'
         const socket = new WebSocket(`${wsUrl}/notifications`)
         
         socket.onopen = () => {

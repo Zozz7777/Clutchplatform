@@ -39,7 +39,7 @@ class AuthService {
   private userKey = 'clutch_admin_user'
 
   constructor() {
-    this.baseURL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001/api'
+    this.baseURL = process.env.NEXT_PUBLIC_API_URL || 'https://clutch-main-nk7x.onrender.com/api'
   }
 
   /**

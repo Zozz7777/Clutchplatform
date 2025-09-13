@@ -3,7 +3,7 @@ import { test, expect } from '@playwright/test';
 test.describe('Critical User Acceptance Testing - Stakeholder Validation', () => {
   test.beforeEach(async ({ page }) => {
     // Navigate to the application
-    await page.goto('http://localhost:3000');
+    await page.goto('https://clutch-main-nk7x.onrender.com');
   });
 
   test.describe('Business User Scenarios', () => {
@@ -276,7 +276,7 @@ test.describe('Critical User Acceptance Testing - Stakeholder Validation', () =>
   test.describe('Cross-Browser Compatibility', () => {
     test('should work correctly in Chrome', async ({ page }) => {
       // Test basic functionality in Chrome
-      await page.goto('http://localhost:3000');
+      await page.goto('https://clutch-main-nk7x.onrender.com');
       await page.fill('[data-testid="email-input"]', 'test@clutch.com');
       await page.fill('[data-testid="password-input"]', 'test123');
       await page.click('[data-testid="login-button"]');
@@ -286,7 +286,7 @@ test.describe('Critical User Acceptance Testing - Stakeholder Validation', () =>
 
     test('should work correctly in Firefox', async ({ page }) => {
       // Test basic functionality in Firefox
-      await page.goto('http://localhost:3000');
+      await page.goto('https://clutch-main-nk7x.onrender.com');
       await page.fill('[data-testid="email-input"]', 'test@clutch.com');
       await page.fill('[data-testid="password-input"]', 'test123');
       await page.click('[data-testid="login-button"]');
@@ -296,7 +296,7 @@ test.describe('Critical User Acceptance Testing - Stakeholder Validation', () =>
 
     test('should work correctly in Safari', async ({ page }) => {
       // Test basic functionality in Safari
-      await page.goto('http://localhost:3000');
+      await page.goto('https://clutch-main-nk7x.onrender.com');
       await page.fill('[data-testid="email-input"]', 'test@clutch.com');
       await page.fill('[data-testid="password-input"]', 'test123');
       await page.click('[data-testid="login-button"]');
@@ -309,7 +309,7 @@ test.describe('Critical User Acceptance Testing - Stakeholder Validation', () =>
     test('should load within acceptable time', async ({ page }) => {
       const startTime = Date.now();
       
-      await page.goto('http://localhost:3000');
+      await page.goto('https://clutch-main-nk7x.onrender.com');
       await page.fill('[data-testid="email-input"]', 'test@clutch.com');
       await page.fill('[data-testid="password-input"]', 'test123');
       await page.click('[data-testid="login-button"]');
@@ -326,7 +326,7 @@ test.describe('Critical User Acceptance Testing - Stakeholder Validation', () =>
     test('should be responsive on different screen sizes', async ({ page }) => {
       // Test desktop
       await page.setViewportSize({ width: 1920, height: 1080 });
-      await page.goto('http://localhost:3000');
+      await page.goto('https://clutch-main-nk7x.onrender.com');
       await expect(page.locator('[data-testid="desktop-layout"]')).toBeVisible();
       
       // Test tablet
@@ -344,7 +344,7 @@ test.describe('Critical User Acceptance Testing - Stakeholder Validation', () =>
       // Test network error
       await page.route('**/api/v1/**', route => route.abort());
       
-      await page.goto('http://localhost:3000');
+      await page.goto('https://clutch-main-nk7x.onrender.com');
       await page.fill('[data-testid="email-input"]', 'test@clutch.com');
       await page.fill('[data-testid="password-input"]', 'test123');
       await page.click('[data-testid="login-button"]');
@@ -356,7 +356,7 @@ test.describe('Critical User Acceptance Testing - Stakeholder Validation', () =>
 
   test.describe('Accessibility Compliance', () => {
     test('should be keyboard navigable', async ({ page }) => {
-      await page.goto('http://localhost:3000');
+      await page.goto('https://clutch-main-nk7x.onrender.com');
       
       // Test tab navigation
       await page.keyboard.press('Tab');
@@ -374,7 +374,7 @@ test.describe('Critical User Acceptance Testing - Stakeholder Validation', () =>
     });
 
     test('should have proper ARIA labels', async ({ page }) => {
-      await page.goto('http://localhost:3000');
+      await page.goto('https://clutch-main-nk7x.onrender.com');
       
       // Check for ARIA labels
       await expect(page.locator('[data-testid="email-input"]')).toHaveAttribute('aria-label');
@@ -383,7 +383,7 @@ test.describe('Critical User Acceptance Testing - Stakeholder Validation', () =>
     });
 
     test('should have proper heading structure', async ({ page }) => {
-      await page.goto('http://localhost:3000');
+      await page.goto('https://clutch-main-nk7x.onrender.com');
       
       // Check heading hierarchy
       const h1 = page.locator('h1');

@@ -356,7 +356,7 @@ export class PerformanceMonitor {
   // Send error report to monitoring service
   private async sendErrorReport(error: ErrorReport) {
     try {
-      const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api/v1'
+      const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'https://clutch-main-nk7x.onrender.com/api/v1'
       await fetch(`${apiUrl}/monitoring/errors`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -397,7 +397,7 @@ export class PerformanceMonitor {
   // Send analytics data
   private async sendAnalytics(event: string, data: any) {
     try {
-      const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api/v1'
+      const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'https://clutch-main-nk7x.onrender.com/api/v1'
       await fetch(`${apiUrl}/monitoring/analytics`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },

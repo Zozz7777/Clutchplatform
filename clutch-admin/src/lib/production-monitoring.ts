@@ -99,9 +99,9 @@ export class ProductionMonitor {
 
   constructor(config?: MonitoringConfig) {
     this.config = config || {
-      prometheusEndpoint: process.env.PROMETHEUS_ENDPOINT || 'http://localhost:9090',
-      grafanaUrl: process.env.GRAFANA_URL || 'http://localhost:3001',
-      alertManagerUrl: process.env.ALERT_MANAGER_URL || 'http://localhost:9093',
+      prometheusEndpoint: process.env.PROMETHEUS_ENDPOINT || 'https://clutch-main-nk7x.onrender.com:9090',
+      grafanaUrl: process.env.GRAFANA_URL || 'https://clutch-main-nk7x.onrender.com:3001',
+      alertManagerUrl: process.env.ALERT_MANAGER_URL || 'https://clutch-main-nk7x.onrender.com:9093',
       logLevel: (process.env.LOG_LEVEL as any) || 'info',
       sampleRate: parseFloat(process.env.PERFORMANCE_SAMPLE_RATE || '0.1'),
       enablePerformanceMonitoring: process.env.NEXT_PUBLIC_PERFORMANCE_MONITORING === 'true',

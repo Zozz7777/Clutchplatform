@@ -38,7 +38,7 @@ export function LogDashboard() {
   // Fetch errors from backend
   const fetchErrors = async () => {
     try {
-      const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api/v1'
+      const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'https://clutch-main-nk7x.onrender.com/api/v1'
       const response = await fetch(`${apiUrl}/errors/frontend?limit=50`);
       const data = await response.json();
       
