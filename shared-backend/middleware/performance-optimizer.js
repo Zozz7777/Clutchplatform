@@ -1,4 +1,4 @@
-const { getCollection } = require('../config/database');
+﻿const { getCollection } = require('../config/database');
 
 // ==================== PERFORMANCE OPTIMIZATION MIDDLEWARE ====================
 // Performance metrics and monitoring system
@@ -332,7 +332,7 @@ class PerformanceOptimizer {
     // Disable automatic memory optimization to prevent restarts
     if (heapUsageRatio > 0.99) {
       // Only log critical memory usage, don't optimize
-      console.log(`🧹 High memory usage: ${Math.round(heapUsageRatio * 100)}% - monitoring only`);
+      console.log(`ðŸ§¹ High memory usage: ${Math.round(heapUsageRatio * 100)}% - monitoring only`);
     }
   }
 
@@ -362,7 +362,7 @@ class PerformanceOptimizer {
         
         // Optimize connection pool if needed
         if (connections.current > connections.available * 2) {
-          console.log('🔧 Optimizing database connections');
+          console.log('ðŸ”§ Optimizing database connections');
           // In a real implementation, you would adjust connection pool settings
         }
       }
@@ -466,6 +466,5 @@ module.exports = {
   getCacheStats: () => performanceOptimizer.getCacheStats(),
   optimizationMiddleware: () => performanceOptimizer.optimizationMiddleware()
 };
-/ /   P e r f o r m a n c e   m e t r i c s   a n d   m o n i t o r i n g 
- 
- 
+
+// Performance metrics and monitoring

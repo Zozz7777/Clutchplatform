@@ -27,6 +27,11 @@ const addAlert = (type, message, severity = 'warning', metadata = {}) => {
     resolved: false
   };
   
+  // Ensure the severity array exists
+  if (!alerts[severity]) {
+    alerts[severity] = [];
+  }
+  
   alerts[severity].push(alert);
   
   // Keep only last 100 alerts

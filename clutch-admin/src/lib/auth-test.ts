@@ -199,7 +199,7 @@ export class AuthTester {
         return
       }
 
-      const response = await authService.refreshToken(refreshToken)
+      const response = await authService.refreshToken()
 
       this.addResult({
         test: 'Token Refresh',
@@ -306,5 +306,4 @@ export function runAuthTests(): Promise<AuthTestResult[]> {
 // Make it available globally for browser console testing
 if (typeof window !== 'undefined') {
   (window as any).runAuthTests = runAuthTests
-  (window as any).authTester = authTester
 }

@@ -102,7 +102,7 @@ const LuxuryRating: React.FC<LuxuryRatingProps> = ({
     }
   };
 
-  const IconComponent = getVariantIcon();
+  const IconComponent = getVariantIcon() as React.ComponentType<any>;
   const sizeClasses = getSizeClasses();
   const colorClasses = getColorClasses();
 

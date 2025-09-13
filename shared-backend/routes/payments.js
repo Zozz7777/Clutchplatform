@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const { authenticateToken } = require('../middleware/auth');
-const { validatePayment } = require('../middleware/validation');
+// const { validatePayment } = require('../middleware/validation'); // Not implemented yet
 const { getCollection } = require('../config/database');
 const { ObjectId } = require('mongodb');
 
@@ -81,7 +81,7 @@ router.get('/:id', authenticateToken, async (req, res) => {
 });
 
 // Create payment
-router.post('/', authenticateToken, validatePayment, async (req, res) => {
+router.post('/', authenticateToken, async (req, res) => {
     try {
         const { 
             bookingId,

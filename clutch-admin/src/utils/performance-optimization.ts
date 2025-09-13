@@ -1,5 +1,6 @@
 'use client'
 
+import React from 'react'
 import { performanceMonitor } from './performance-monitor'
 
 // Code splitting utilities

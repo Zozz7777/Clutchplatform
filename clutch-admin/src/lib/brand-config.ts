@@ -400,7 +400,8 @@ export const brandCustomizer = new BrandCustomizer()
 
 // Helper functions
 export function getBrandColor(color: keyof BrandColors): string {
-  return getCurrentBrandConfig().colors[color]
+  const colorValue = getCurrentBrandConfig().colors[color]
+  return typeof colorValue === 'string' ? colorValue : colorValue[500] || colorValue[600] || Object.values(colorValue)[0]
 }
 
 export function getBrandLogo(theme: 'light' | 'dark' = 'light'): string {

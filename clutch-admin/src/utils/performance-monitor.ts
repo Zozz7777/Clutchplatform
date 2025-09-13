@@ -136,7 +136,7 @@ class PerformanceMonitor {
       return result
     } catch (error) {
       const duration = performance.now() - start
-      this.recordMetric('function', { name, duration, success: false, error: error.message })
+      this.recordMetric('function', { name, duration, success: false, error: error instanceof Error ? error.message : String(error) })
       throw error
     }
   }
@@ -151,7 +151,7 @@ class PerformanceMonitor {
       return result
     } catch (error) {
       const duration = performance.now() - start
-      this.recordMetric('api', { endpoint, duration, success: false, error: error.message })
+      this.recordMetric('api', { endpoint, duration, success: false, error: error instanceof Error ? error.message : String(error) })
       throw error
     }
   }
