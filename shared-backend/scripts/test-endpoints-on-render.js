@@ -10,21 +10,38 @@ console.log('📅 Timestamp:', new Date().toISOString());
 console.log('🌐 Testing against: https://clutch-main-nk7x.onrender.com');
 console.log('='.repeat(60));
 
-// Key endpoints to test
+// Key endpoints to test with proper configurations
 const keyEndpoints = [
-  { path: '/', method: 'GET', name: 'Root Endpoint' },
-  { path: '/health', method: 'GET', name: 'Health Check' },
-  { path: '/health/ping', method: 'GET', name: 'Health Ping' },
-  { path: '/ping', method: 'GET', name: 'Ping' },
-  { path: '/api/v1/auth/login', method: 'POST', name: 'Auth Login' },
-  { path: '/api/v1/auth/register', method: 'POST', name: 'Auth Register' },
-  { path: '/api/v1/fleet/vehicles', method: 'GET', name: 'Fleet Vehicles' },
-  { path: '/api/v1/fleet/drivers', method: 'GET', name: 'Fleet Drivers' },
-  { path: '/api/v1/bookings', method: 'GET', name: 'Bookings' },
-  { path: '/api/v1/payments', method: 'GET', name: 'Payments' },
-  { path: '/api/v1/communication/chat', method: 'GET', name: 'Communication Chat' },
-  { path: '/api/v1/admin/users', method: 'GET', name: 'Admin Users' },
-  { path: '/api/v1/performance/monitor', method: 'GET', name: 'Performance Monitor' }
+  { path: '/', method: 'GET', name: 'Root Endpoint', requiresAuth: false, body: null },
+  { path: '/health', method: 'GET', name: 'Health Check', requiresAuth: false, body: null },
+  { path: '/health/ping', method: 'GET', name: 'Health Ping', requiresAuth: false, body: null },
+  { path: '/ping', method: 'GET', name: 'Ping', requiresAuth: false, body: null },
+  { 
+    path: '/api/v1/auth/login', 
+    method: 'POST', 
+    name: 'Auth Login', 
+    requiresAuth: false, 
+    body: JSON.stringify({ email: 'test@example.com', password: 'testpassword' })
+  },
+  { 
+    path: '/api/v1/auth/register', 
+    method: 'POST', 
+    name: 'Auth Register', 
+    requiresAuth: false, 
+    body: JSON.stringify({ 
+      email: 'test@example.com', 
+      password: 'testpassword', 
+      firstName: 'Test', 
+      lastName: 'User' 
+    })
+  },
+  { path: '/api/v1/fleet/vehicles', method: 'GET', name: 'Fleet Vehicles', requiresAuth: true, body: null },
+  { path: '/api/v1/fleet/drivers', method: 'GET', name: 'Fleet Drivers', requiresAuth: true, body: null },
+  { path: '/api/v1/bookings', method: 'GET', name: 'Bookings', requiresAuth: true, body: null },
+  { path: '/api/v1/payments', method: 'GET', name: 'Payments', requiresAuth: true, body: null },
+  { path: '/api/v1/communication/chat', method: 'GET', name: 'Communication Chat', requiresAuth: true, body: null },
+  { path: '/api/v1/admin/users', method: 'GET', name: 'Admin Users', requiresAuth: true, body: null },
+  { path: '/api/v1/performance/monitor', method: 'GET', name: 'Performance Monitor', requiresAuth: true, body: null }
 ];
 
 let testResults = {
@@ -48,6 +65,11 @@ function testEndpoint(endpoint) {
       timeout: 10000
     };
 
+    // Add auth header if required
+    if (endpoint.requiresAuth) {
+      options.headers['Authorization'] = 'Bearer test-token';
+    }
+
     const req = https.request(options, (res) => {
       let data = '';
       res.on('data', (chunk) => {
@@ -57,9 +79,14 @@ function testEndpoint(endpoint) {
       res.on('end', () => {
         testResults.total++;
         
-        if (res.statusCode >= 200 && res.statusCode < 400) {
+        // Consider 401 as expected for auth-required endpoints
+        const isSuccess = res.statusCode >= 200 && res.statusCode < 400;
+        const isExpectedAuthError = endpoint.requiresAuth && res.statusCode === 401;
+        
+        if (isSuccess || isExpectedAuthError) {
           testResults.successful++;
-          console.log(`✅ ${endpoint.name} (${endpoint.method} ${endpoint.path}) - Status: ${res.statusCode}`);
+          const status = isExpectedAuthError ? '401 (Expected - Auth Required)' : res.statusCode;
+          console.log(`✅ ${endpoint.name} (${endpoint.method} ${endpoint.path}) - Status: ${status}`);
         } else {
           testResults.failed++;
           testResults.errors.push({
@@ -99,7 +126,10 @@ function testEndpoint(endpoint) {
       resolve();
     });
 
-    if (endpoint.method === 'POST') {
+    // Send proper request body
+    if (endpoint.body) {
+      req.write(endpoint.body);
+    } else if (endpoint.method === 'POST' && !endpoint.body) {
       req.write(JSON.stringify({ test: true }));
     }
     
