@@ -83,13 +83,16 @@ router.post('/login', async (req, res) => {
 // POST /api/v1/auth/register - User registration
 router.post('/register', async (req, res) => {
   try {
-    const { email, password, name, phone } = req.body;
+    const { email, password, name, firstName, lastName, phone } = req.body;
     
-    if (!email || !password || !name) {
+    // Handle both name formats (name or firstName/lastName)
+    const fullName = name || (firstName && lastName ? `${firstName} ${lastName}` : null);
+    
+    if (!email || !password || !fullName) {
       return res.status(400).json({
         success: false,
         error: 'MISSING_REQUIRED_FIELDS',
-        message: 'Email, password, and name are required',
+        message: 'Email, password, and name (or firstName/lastName) are required',
         timestamp: new Date().toISOString()
       });
     }
@@ -98,7 +101,7 @@ router.post('/register', async (req, res) => {
     const newUser = {
       id: `user-${Date.now()}`,
       email: email,
-      name: name,
+      name: fullName,
       phone: phone || null,
       role: 'user',
       isActive: true,

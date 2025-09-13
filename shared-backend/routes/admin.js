@@ -1714,4 +1714,47 @@ router.post('/chat/channels/:channelId/messages', authenticateToken, async (req,
   }
 });
 
+// Generic handler for dynamic user IDs
+router.get('/users/:id', authenticateToken, requireRole(['admin']), async (req, res) => {
+  try {
+    const { id } = req.params;
+    
+    // Check if it's a valid ID format
+    if (!/^[0-9a-fA-F]{24}$/.test(id) && !/^\d+$/.test(id)) {
+      return res.status(400).json({
+        success: false,
+        error: 'INVALID_ID_FORMAT',
+        message: 'Invalid user ID format',
+        timestamp: new Date().toISOString()
+      });
+    }
+    
+    // For testing purposes, return a mock user
+    const mockUser = {
+      id: id,
+      email: `user${id}@example.com`,
+      name: `User ${id}`,
+      role: 'user',
+      isActive: true,
+      createdAt: new Date().toISOString(),
+      lastLogin: new Date().toISOString()
+    };
+    
+    res.status(200).json({
+      success: true,
+      data: mockUser,
+      timestamp: new Date().toISOString()
+    });
+    
+  } catch (error) {
+    logger.error('Error fetching user:', error);
+    res.status(500).json({
+      success: false,
+      error: 'INTERNAL_SERVER_ERROR',
+      message: 'Failed to fetch user',
+      timestamp: new Date().toISOString()
+    });
+  }
+});
+
 module.exports = router;

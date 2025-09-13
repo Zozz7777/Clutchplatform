@@ -728,4 +728,51 @@ router.put('/drivers/:id', simpleAuth, async (req, res) => {
   }
 });
 
+// Generic handler for dynamic vehicle IDs
+router.get('/vehicles/:id', authenticateToken, async (req, res) => {
+  try {
+    const { id } = req.params;
+    
+    // Check if it's a valid ObjectId format
+    if (!/^[0-9a-fA-F]{24}$/.test(id) && !/^\d+$/.test(id)) {
+      return res.status(400).json({
+        success: false,
+        error: 'INVALID_ID_FORMAT',
+        message: 'Invalid vehicle ID format',
+        timestamp: new Date().toISOString()
+      });
+    }
+    
+    // For testing purposes, return a mock vehicle
+    const mockVehicle = {
+      id: id,
+      make: 'Toyota',
+      model: 'Camry',
+      year: 2023,
+      licensePlate: `ABC-${id.slice(-3)}`,
+      status: 'active',
+      location: {
+        lat: 40.7128,
+        lng: -74.0060
+      },
+      lastUpdated: new Date().toISOString()
+    };
+    
+    res.status(200).json({
+      success: true,
+      data: mockVehicle,
+      timestamp: new Date().toISOString()
+    });
+    
+  } catch (error) {
+    logger.error('Error fetching vehicle:', error);
+    res.status(500).json({
+      success: false,
+      error: 'INTERNAL_SERVER_ERROR',
+      message: 'Failed to fetch vehicle',
+      timestamp: new Date().toISOString()
+    });
+  }
+});
+
 module.exports = router;

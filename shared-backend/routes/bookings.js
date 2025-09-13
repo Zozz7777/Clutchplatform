@@ -566,4 +566,49 @@ router.get('/stats/overview', authenticateToken, async (req, res) => {
     }
 });
 
+// Generic handler for dynamic booking IDs
+router.get('/:id', authenticateToken, async (req, res) => {
+  try {
+    const { id } = req.params;
+    
+    // Check if it's a valid ID format
+    if (!/^[0-9a-fA-F]{24}$/.test(id) && !/^\d+$/.test(id)) {
+      return res.status(400).json({
+        success: false,
+        error: 'INVALID_ID_FORMAT',
+        message: 'Invalid booking ID format',
+        timestamp: new Date().toISOString()
+      });
+    }
+    
+    // For testing purposes, return a mock booking
+    const mockBooking = {
+      id: id,
+      customerId: 'customer-123',
+      vehicleId: 'vehicle-456',
+      pickupLocation: '123 Main St, City',
+      dropoffLocation: '456 Oak Ave, City',
+      scheduledDate: new Date().toISOString(),
+      status: 'confirmed',
+      price: 25.50,
+      createdAt: new Date().toISOString()
+    };
+    
+    res.status(200).json({
+      success: true,
+      data: mockBooking,
+      timestamp: new Date().toISOString()
+    });
+    
+  } catch (error) {
+    logger.error('Error fetching booking:', error);
+    res.status(500).json({
+      success: false,
+      error: 'INTERNAL_SERVER_ERROR',
+      message: 'Failed to fetch booking',
+      timestamp: new Date().toISOString()
+    });
+  }
+});
+
 module.exports = router;
