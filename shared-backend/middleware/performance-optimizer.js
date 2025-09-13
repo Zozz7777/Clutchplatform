@@ -326,24 +326,24 @@ class PerformanceOptimizer {
 
   // Memory optimization
   optimizeMemory() {
-    const { getSystemMemoryUsage, getV8HeapUsage } = require('../utils/memory-monitor');
+    const { getRenderCompatibleMemoryUsage, getV8HeapUsage } = require('../utils/memory-monitor');
     
-    const systemMemory = getSystemMemoryUsage();
+    const renderMemory = getRenderCompatibleMemoryUsage();
     const v8Heap = getV8HeapUsage();
     
-    // Use CORRECT system memory usage for optimization decisions
-    const systemMemoryPercent = systemMemory.usagePercentage;
+    // Use Render-compatible memory usage for optimization decisions
+    const renderMemoryPercent = renderMemory.usagePercentage;
     const heapUsagePercent = v8Heap.heapUsagePercentage;
     
-    // Log both system and heap usage for clarity
-    console.log(`🧹 Memory Status - System: ${systemMemoryPercent}%, Node.js Heap: ${heapUsagePercent}%`);
+    // Log both Render-compatible and heap usage for clarity
+    console.log(`🧹 Memory Status - Render Compatible: ${renderMemoryPercent}%, Node.js Heap: ${heapUsagePercent}%`);
     
-    // Only optimize if system memory is actually high (not just heap)
-    if (systemMemoryPercent > 80) {
-      console.log(`🧹 High SYSTEM memory usage: ${systemMemoryPercent}% - monitoring...`);
+    // Only optimize if Render-compatible memory is actually high
+    if (renderMemoryPercent > 80) {
+      console.log(`🧹 High RENDER memory usage: ${renderMemoryPercent}% - monitoring...`);
       
-      // Level 1: Clear cache at 80% system memory
-      if (systemMemoryPercent > 80) {
+      // Level 1: Clear cache at 80% memory
+      if (renderMemoryPercent > 80) {
         this.cache.clear();
         this.cacheStats = {
           hits: 0,
@@ -351,26 +351,26 @@ class PerformanceOptimizer {
           size: 0,
           maxSize: 1000
         };
-        console.log('🧹 Cache cleared due to high system memory usage');
+        console.log('🧹 Cache cleared due to high memory usage');
       }
       
-      // Level 2: Force garbage collection at 85% system memory
-      if (global.gc && systemMemoryPercent > 85) {
+      // Level 2: Force garbage collection at 85% memory
+      if (global.gc && renderMemoryPercent > 85) {
         global.gc();
         console.log('🧹 Forced garbage collection');
       }
       
-      // Level 3: Emergency cleanup at 90% system memory
-      if (systemMemoryPercent > 90) {
+      // Level 3: Emergency cleanup at 90% memory
+      if (renderMemoryPercent > 90) {
         this.emergencyMemoryCleanup();
       }
       
-      // Level 4: Critical cleanup at 95% system memory
-      if (systemMemoryPercent > 95) {
+      // Level 4: Critical cleanup at 95% memory
+      if (renderMemoryPercent > 95) {
         this.criticalMemoryCleanup();
       }
     } else if (heapUsagePercent > 90) {
-      // Only optimize heap if it's extremely high (90%+) and system memory is fine
+      // Only optimize heap if it's extremely high (90%+) and memory is fine
       console.log(`🧹 High Node.js heap usage: ${heapUsagePercent}% - optimizing heap only`);
       
       if (global.gc) {
@@ -379,7 +379,7 @@ class PerformanceOptimizer {
       }
     } else {
       // Memory is healthy
-      console.log(`✅ Memory healthy - System: ${systemMemoryPercent}%, Heap: ${heapUsagePercent}%`);
+      console.log(`✅ Memory healthy - Render Compatible: ${renderMemoryPercent}%, Heap: ${heapUsagePercent}%`);
     }
   }
 

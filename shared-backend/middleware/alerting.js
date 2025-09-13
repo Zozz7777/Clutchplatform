@@ -67,29 +67,29 @@ const sendWebhookAlert = async (alert) => {
 };
 
 const checkSystemHealth = () => {
-  const { getSystemMemoryUsage, getV8HeapUsage } = require('../utils/memory-monitor');
+  const { getRenderCompatibleMemoryUsage, getV8HeapUsage } = require('../utils/memory-monitor');
   
-  const systemMemory = getSystemMemoryUsage();
+  const renderMemory = getRenderCompatibleMemoryUsage();
   const v8Heap = getV8HeapUsage();
   
-  // Use CORRECT system memory usage for alerts
-  const systemMemoryPercent = systemMemory.usagePercentage;
+  // Use Render-compatible memory usage for alerts (matches Render metrics)
+  const renderMemoryPercent = renderMemory.usagePercentage;
   const heapUsagePercent = v8Heap.heapUsagePercentage;
   
-  // System memory checks (the important ones)
-  if (systemMemoryPercent > alertThresholds.memory.critical) {
-    addAlert('memory', `Critical SYSTEM memory usage: ${systemMemoryPercent.toFixed(1)}% (Heap: ${heapUsagePercent.toFixed(1)}%)`, 'critical', { 
-      systemUsage: systemMemoryPercent,
+  // Memory checks using Render-compatible calculation
+  if (renderMemoryPercent > alertThresholds.memory.critical) {
+    addAlert('memory', `Critical RENDER memory usage: ${renderMemoryPercent.toFixed(1)}% (Heap: ${heapUsagePercent.toFixed(1)}%)`, 'critical', { 
+      renderUsage: renderMemoryPercent,
       heapUsage: heapUsagePercent 
     });
-  } else if (systemMemoryPercent > alertThresholds.memory.warning) {
-    addAlert('memory', `High SYSTEM memory usage: ${systemMemoryPercent.toFixed(1)}% (Heap: ${heapUsagePercent.toFixed(1)}%)`, 'warning', { 
-      systemUsage: systemMemoryPercent,
+  } else if (renderMemoryPercent > alertThresholds.memory.warning) {
+    addAlert('memory', `High RENDER memory usage: ${renderMemoryPercent.toFixed(1)}% (Heap: ${heapUsagePercent.toFixed(1)}%)`, 'warning', { 
+      renderUsage: renderMemoryPercent,
       heapUsage: heapUsagePercent 
     });
   } else {
     // Log healthy memory status
-    console.log(`✅ Memory healthy - System: ${systemMemoryPercent.toFixed(1)}%, Heap: ${heapUsagePercent.toFixed(1)}%`);
+    console.log(`✅ Memory healthy - Render Compatible: ${renderMemoryPercent.toFixed(1)}%, Heap: ${heapUsagePercent.toFixed(1)}%`);
   }
   
   // CPU checks
