@@ -365,46 +365,56 @@ export function useOfflineSupport() {
 export const OfflineIndicator: React.FC = () => {
   const { offlineStatus } = useOfflineSupport()
 
-  if (!offlineStatus.isOffline) {
-    return null
+  // Always call hooks in the same order, then handle conditional rendering
+  const renderContent = () => {
+    if (!offlineStatus.isOffline) {
+      return null
+    }
+
+    return (
+      <div className="fixed top-0 left-0 right-0 z-50 bg-yellow-500 text-yellow-900 px-4 py-2 text-center text-sm font-medium">
+        <div className="flex items-center justify-center gap-2">
+          <div className="w-2 h-2 bg-yellow-900 rounded-full animate-pulse" />
+          You're offline. Changes will be synced when you're back online.
+        </div>
+      </div>
+    )
   }
 
-  return (
-    <div className="fixed top-0 left-0 right-0 z-50 bg-yellow-500 text-yellow-900 px-4 py-2 text-center text-sm font-medium">
-      <div className="flex items-center justify-center gap-2">
-        <div className="w-2 h-2 bg-yellow-900 rounded-full animate-pulse" />
-        You're offline. Changes will be synced when you're back online.
-      </div>
-    </div>
-  )
+  return renderContent()
 }
 
 // Sync status component
 export const SyncStatus: React.FC = () => {
   const { syncQueue, syncNow } = useOfflineSupport()
 
-  if (syncQueue.length === 0) {
-    return null
+  // Always call hooks in the same order, then handle conditional rendering
+  const renderContent = () => {
+    if (syncQueue.length === 0) {
+      return null
+    }
+
+    return (
+      <div className="fixed bottom-4 right-4 z-50 bg-white border border-gray-200 rounded-lg shadow-lg p-4">
+        <div className="flex items-center gap-3">
+          <div className="flex items-center gap-2">
+            <div className="w-2 h-2 bg-blue-500 rounded-full animate-pulse" />
+            <span className="text-sm font-medium text-gray-700">
+              {syncQueue.length} item{syncQueue.length !== 1 ? 's' : ''} pending sync
+            </span>
+          </div>
+          <button
+            onClick={syncNow}
+            className="px-3 py-1 text-xs bg-blue-500 text-white rounded hover:bg-blue-600 transition-colors"
+          >
+            Sync Now
+          </button>
+        </div>
+      </div>
+    )
   }
 
-  return (
-    <div className="fixed bottom-4 right-4 z-50 bg-white border border-gray-200 rounded-lg shadow-lg p-4">
-      <div className="flex items-center gap-3">
-        <div className="flex items-center gap-2">
-          <div className="w-2 h-2 bg-blue-500 rounded-full animate-pulse" />
-          <span className="text-sm font-medium text-gray-700">
-            {syncQueue.length} item{syncQueue.length !== 1 ? 's' : ''} pending sync
-          </span>
-        </div>
-        <button
-          onClick={syncNow}
-          className="px-3 py-1 text-xs bg-blue-500 text-white rounded hover:bg-blue-600 transition-colors"
-        >
-          Sync Now
-        </button>
-      </div>
-    </div>
-  )
+  return renderContent()
 }
 
 // Offline-aware data fetching hook
