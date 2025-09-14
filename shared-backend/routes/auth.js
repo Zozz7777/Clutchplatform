@@ -140,6 +140,200 @@ router.post('/employee-login', async (req, res) => {
   }
 });
 
+// GET /api/v1/auth/me - Get current user
+router.get('/me', authenticateToken, async (req, res) => {
+  try {
+    const userId = req.user.userId;
+    
+    // Mock user data - in production, fetch from database
+    const user = {
+      id: userId,
+      email: req.user.email,
+      name: 'Current User',
+      role: req.user.role,
+      isActive: true,
+      lastLogin: new Date().toISOString()
+    };
+    
+    res.json({
+      success: true,
+      data: { user },
+      message: 'User data retrieved successfully',
+      timestamp: new Date().toISOString()
+    });
+    
+  } catch (error) {
+    logger.error('❌ Get current user error:', error);
+    res.status(500).json({
+      success: false,
+      error: 'GET_USER_FAILED',
+      message: 'Failed to get user data',
+      timestamp: new Date().toISOString()
+    });
+  }
+});
+
+// POST /api/v1/auth/refresh - Refresh token
+router.post('/refresh', async (req, res) => {
+  try {
+    const { refreshToken } = req.body;
+    
+    if (!refreshToken) {
+      return res.status(400).json({
+        success: false,
+        error: 'MISSING_REFRESH_TOKEN',
+        message: 'Refresh token is required',
+        timestamp: new Date().toISOString()
+      });
+    }
+    
+    // Mock refresh token validation - in production, validate against database
+    const newToken = jwt.sign(
+      { 
+        userId: 'user-123', 
+        email: 'user@example.com', 
+        role: 'user' 
+      },
+      process.env.JWT_SECRET || 'test-secret',
+      { expiresIn: '24h' }
+    );
+    
+    res.json({
+      success: true,
+      data: {
+        token: newToken,
+        refreshToken: `refresh_${Date.now()}`,
+        expiresIn: '24h'
+      },
+      message: 'Token refreshed successfully',
+      timestamp: new Date().toISOString()
+    });
+    
+  } catch (error) {
+    logger.error('❌ Token refresh error:', error);
+    res.status(500).json({
+      success: false,
+      error: 'REFRESH_FAILED',
+      message: 'Token refresh failed',
+      timestamp: new Date().toISOString()
+    });
+  }
+});
+
+// POST /api/v1/auth/refresh-token - Alternative refresh endpoint
+router.post('/refresh-token', async (req, res) => {
+  try {
+    const { refreshToken } = req.body;
+    
+    if (!refreshToken) {
+      return res.status(400).json({
+        success: false,
+        error: 'MISSING_REFRESH_TOKEN',
+        message: 'Refresh token is required',
+        timestamp: new Date().toISOString()
+      });
+    }
+    
+    // Mock refresh token validation
+    const newToken = jwt.sign(
+      { 
+        userId: 'user-123', 
+        email: 'user@example.com', 
+        role: 'user' 
+      },
+      process.env.JWT_SECRET || 'test-secret',
+      { expiresIn: '24h' }
+    );
+    
+    res.json({
+      success: true,
+      data: {
+        token: newToken,
+        refreshToken: `refresh_${Date.now()}`,
+        expiresIn: '24h'
+      },
+      message: 'Token refreshed successfully',
+      timestamp: new Date().toISOString()
+    });
+    
+  } catch (error) {
+    logger.error('❌ Token refresh error:', error);
+    res.status(500).json({
+      success: false,
+      error: 'REFRESH_FAILED',
+      message: 'Token refresh failed',
+      timestamp: new Date().toISOString()
+    });
+  }
+});
+
+// GET /api/v1/auth/current-user - Get current user (alternative endpoint)
+router.get('/current-user', authenticateToken, async (req, res) => {
+  try {
+    const userId = req.user.userId;
+    
+    // Mock user data
+    const user = {
+      id: userId,
+      email: req.user.email,
+      name: 'Current User',
+      role: req.user.role,
+      isActive: true,
+      lastLogin: new Date().toISOString()
+    };
+    
+    res.json({
+      success: true,
+      data: { user },
+      message: 'Current user data retrieved successfully',
+      timestamp: new Date().toISOString()
+    });
+    
+  } catch (error) {
+    logger.error('❌ Get current user error:', error);
+    res.status(500).json({
+      success: false,
+      error: 'GET_CURRENT_USER_FAILED',
+      message: 'Failed to get current user data',
+      timestamp: new Date().toISOString()
+    });
+  }
+});
+
+// GET /api/v1/auth/employee-me - Get current employee
+router.get('/employee-me', authenticateToken, async (req, res) => {
+  try {
+    const userId = req.user.userId;
+    
+    // Mock employee data
+    const employee = {
+      id: userId,
+      email: req.user.email,
+      name: 'Current Employee',
+      role: req.user.role,
+      department: 'IT',
+      isActive: true,
+      lastLogin: new Date().toISOString()
+    };
+    
+    res.json({
+      success: true,
+      data: { employee },
+      message: 'Employee data retrieved successfully',
+      timestamp: new Date().toISOString()
+    });
+    
+  } catch (error) {
+    logger.error('❌ Get employee error:', error);
+    res.status(500).json({
+      success: false,
+      error: 'GET_EMPLOYEE_FAILED',
+      message: 'Failed to get employee data',
+      timestamp: new Date().toISOString()
+    });
+  }
+});
+
 // POST /api/v1/auth/register - User registration
 router.post('/register', async (req, res) => {
   try {
