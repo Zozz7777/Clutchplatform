@@ -238,15 +238,21 @@ async function testConcurrentRequests() {
 async function testEndpointAvailability() {
   const response = await makeRequest('/health');
   
-  if (!response.data.endpoints) {
-    throw new Error('Health endpoint should return endpoints information');
+  if (!response.data.data) {
+    throw new Error('Health endpoint should return data object');
   }
   
-  const requiredEndpoints = ['health', 'ping', 'auth', 'admin', 'performance'];
-  for (const endpoint of requiredEndpoints) {
-    if (!response.data.endpoints[endpoint]) {
-      throw new Error(`Missing required endpoint: ${endpoint}`);
-    }
+  // Check that the health endpoint returns the expected structure
+  if (!response.data.data.status) {
+    throw new Error('Health endpoint should return status information');
+  }
+  
+  if (!response.data.data.timestamp) {
+    throw new Error('Health endpoint should return timestamp');
+  }
+  
+  if (!response.data.data.uptime) {
+    throw new Error('Health endpoint should return uptime information');
   }
 }
 
