@@ -1,8 +1,8 @@
 'use client'
 
-import React, { useState, useEffect } from 'react'
-import Link from 'next/link'
+import React, { useState } from 'react'
 import { usePathname, useRouter } from 'next/navigation'
+import Link from 'next/link'
 import { 
   LayoutDashboard, 
   Users, 
@@ -16,11 +16,8 @@ import {
   Menu,
   X,
   ChevronDown,
-  ChevronRight,
   User,
   LogOut,
-  Sun,
-  Moon,
   Building2,
   Handshake,
   Megaphone,
@@ -35,324 +32,799 @@ import {
   Mail,
   Brain,
   Zap,
-  Truck,
-  MapPin,
-  Wrench,
-  Route,
-  Car,
-  Star,
-  StarOff,
+  Scale,
+  Gavel,
+  CreditCard,
+  TrendingUp,
+  UserCheck,
+  Briefcase,
+  Target,
+  Globe,
+  Lock,
+  Eye,
+  Database,
+  PieChart,
+  LineChart,
+  BarChart,
+  TrendingDown,
+  DollarSign,
+  Receipt,
+  Calculator,
+  FileSpreadsheet,
+  Banknote,
+  Percent,
+  Clock,
+  Calendar as CalendarIcon,
+  UserPlus,
+  UserMinus,
+  Award,
+  BookOpen,
+  GraduationCap,
+  ClipboardList,
+  CheckSquare,
+  Square,
+  AlertTriangle,
+  Info,
+  CheckCircle,
+  XCircle,
   Plus,
-  Filter
+  Edit,
+  Trash2,
+  MoreHorizontal,
+  Filter,
+  Download,
+  Upload,
+  RefreshCw,
+  Save,
+  Copy,
+  Share,
+  ExternalLink,
+  ArrowRight,
+  ArrowLeft,
+  ChevronRight,
+  ChevronLeft,
+  Home,
+  Search as SearchIcon,
+  Star,
+  Heart,
+  Bookmark,
+  Flag,
+  Tag,
+  Hash,
+  AtSign,
+  Phone,
+  MapPin,
+  Globe as GlobeIcon,
+  Link as LinkIcon,
+  Image,
+  Video,
+  Music,
+  File,
+  Archive,
+  Folder,
+  FolderOpen as FolderOpenIcon,
+  HardDrive,
+  Server,
+  Cloud,
+  Wifi,
+  Bluetooth,
+  Battery,
+  Volume2,
+  VolumeX,
+  Mic,
+  MicOff,
+  Camera,
+  CameraOff,
+  Monitor,
+  Smartphone as SmartphoneIcon,
+  Tablet,
+  Laptop,
+  Printer,
+  Keyboard,
+  Mouse,
+  Headphones,
+  Speaker,
+  Tv,
+  Radio,
+  Gamepad2,
+  Joystick,
+  Dice1,
+  Dice2,
+  Dice3,
+  Dice4,
+  Dice5,
+  Dice6,
+  Play,
+  Pause,
+  SkipBack,
+  SkipForward,
+  Repeat,
+  Shuffle,
+  Volume1,
+  Volume2 as Volume2Icon,
+  Maximize,
+  Minimize,
+  RotateCcw,
+  RotateCw,
+  Move,
+  Move3d,
+  ZoomIn,
+  ZoomOut,
+  Focus,
+  Crop,
+  Scissors,
+  Palette,
+  Brush,
+  PenTool,
+  Eraser,
+  Highlighter,
+  Type,
+  AlignLeft,
+  AlignCenter,
+  AlignRight,
+  AlignJustify,
+  Bold,
+  Italic,
+  Underline,
+  Strikethrough,
+  Code,
+  Link2,
+  Unlink,
+  List,
+  ListOrdered,
+  Quote,
+  Indent,
+  Outdent,
+  Table,
+  Grid,
+  Columns,
+  Rows,
+  Layout,
+  Sidebar as SidebarIcon,
+  PanelLeft,
+  PanelRight,
+  PanelTop,
+  PanelBottom,
+  Split,
+  Merge,
+  Layers,
+  Box,
+  Package,
+  Container,
+  Archive as ArchiveIcon,
+  Inbox,
+  Send,
+  Mail as MailIcon,
+  MailOpen,
+  MailCheck,
+  MailX,
+  MailWarning,
+  MailPlus,
+  MailMinus,
+  MailQuestion,
+  MailSearch,
 } from 'lucide-react'
 import { useAuthStore, useUIStore } from '@/store'
-import { useTheme } from 'next-themes'
-import { SnowButton } from '@/components/ui/snow-button'
-import { toast } from 'sonner'
 
-// New simplified navigation structure
-const navigationSections = [
+// Navigation Items with all required modules
+const navigationItems = [
+  // Core Dashboard
   {
-    id: 'dashboard',
     title: 'Dashboard',
+    href: '/dashboard-consolidated',
     icon: LayoutDashboard,
-    href: '/dashboard',
+    badge: null,
+    category: 'core',
+    description: 'Main dashboard overview'
+  },
+  {
+    title: 'Autonomous Dashboard',
+    href: '/autonomous-dashboard',
+    icon: Brain,
+    badge: 'AI',
+    category: 'core',
+    description: 'AI-powered analytics'
+  },
+
+  // Operations & Monitoring
+  {
+    title: 'Operations',
+    href: '/operations',
+    icon: Activity,
+    badge: null,
+    category: 'operations',
+    description: 'Platform operations',
     children: [
-      { title: 'Overview', href: '/dashboard' },
-      { title: 'Analytics', href: '/analytics/overview' },
+      { title: 'Platform Overview', href: '/operations/platform-overview' },
+      { title: 'System Health', href: '/operations/system-health' },
+      { title: 'Performance Monitoring', href: '/operations/performance' },
+      { title: 'API Analytics', href: '/operations/api-analytics' }
+    ]
+  },
+  {
+    title: 'Monitoring',
+    href: '/monitoring',
+    icon: Shield,
+    badge: null,
+    category: 'operations',
+    description: 'System monitoring',
+    children: [
+      { title: 'System Alerts', href: '/monitoring/alerts' },
+      { title: 'Performance Metrics', href: '/monitoring/performance' },
+      { title: 'Incident Management', href: '/monitoring/incidents' },
+      { title: 'Health Dashboard', href: '/monitoring/health' }
+    ]
+  },
+
+  // Business Intelligence & Analytics
+  {
+    title: 'Analytics',
+    href: '/analytics',
+    icon: BarChart3,
+    badge: null,
+    category: 'analytics',
+    description: 'Business analytics',
+    children: [
+      { title: 'Overview', href: '/analytics/overview' },
+      { title: 'Department', href: '/analytics/department' },
+      { title: 'Predictive', href: '/analytics/predictive' },
       { title: 'Reports', href: '/analytics/reports' }
     ]
   },
   {
-    id: 'operations',
-    title: 'Operations',
-    icon: Activity,
-    href: '/operations',
+    title: 'Business Intelligence',
+    href: '/business-intelligence',
+    icon: TrendingUp,
+    badge: 'NEW',
+    category: 'analytics',
+    description: 'Advanced BI tools'
+  },
+  {
+    title: 'Revenue Analytics',
+    href: '/revenue',
+    icon: DollarSign,
+    badge: null,
+    category: 'analytics',
+    description: 'Revenue insights',
     children: [
-      { title: 'Fleet Management', href: '/fleet/overview' },
-      { title: 'Monitoring', href: '/monitoring/health' },
-      { title: 'Maintenance', href: '/fleet/maintenance' }
+      { title: 'Revenue Overview', href: '/revenue/analytics' },
+      { title: 'Revenue Forecasting', href: '/revenue/forecasting' },
+      { title: 'Pricing Analytics', href: '/revenue/pricing' },
+      { title: 'Subscription Metrics', href: '/revenue/subscriptions' }
     ]
   },
   {
-    id: 'customers',
-    title: 'Customer Management',
+    title: 'User Analytics',
+    href: '/users',
     icon: Users,
+    badge: null,
+    category: 'analytics',
+    description: 'User behavior analytics',
+    children: [
+      { title: 'User Analytics', href: '/users/analytics' },
+      { title: 'User Segmentation', href: '/users/segments' },
+      { title: 'User Journey', href: '/users/journey' },
+      { title: 'Cohort Analysis', href: '/users/cohorts' }
+    ]
+  },
+
+  // Customer Management
+  {
+    title: 'CRM',
     href: '/crm',
+    icon: ShoppingCart,
+    badge: null,
+    category: 'customers',
+    description: 'Customer relationship management',
     children: [
-      { title: 'CRM', href: '/crm/customers' },
-      { title: 'Support', href: '/support/tickets' },
-      { title: 'Communications', href: '/communication/messages' }
+      { title: 'CRM Dashboard', href: '/crm/dashboard' },
+      { title: 'Customer Database', href: '/crm/customers' },
+      { title: 'Lead Management', href: '/crm/leads' },
+      { title: 'Deal Pipeline', href: '/crm/deals' },
+      { title: 'Sales Analytics', href: '/crm/analytics' },
+      { title: 'Marketing Automation', href: '/crm/marketing' },
+      { title: 'Customer Support', href: '/crm/support' },
+      { title: 'CRM Reports', href: '/crm/reports' }
     ]
   },
   {
-    id: 'business',
-    title: 'Business',
+    title: 'Support',
+    href: '/support',
+    icon: MessageSquare,
+    badge: null,
+    category: 'customers',
+    description: 'Customer support',
+    children: [
+      { title: 'Support Tickets', href: '/support/tickets' },
+      { title: 'Live Chat', href: '/support/live-chat' },
+      { title: 'Knowledge Base', href: '/support/knowledge-base' },
+      { title: 'Customer Feedback', href: '/support/feedback' }
+    ]
+  },
+
+  // Fleet & Operations
+  {
+    title: 'Fleet Management',
+    href: '/fleet',
     icon: Building2,
-    href: '/finance',
+    badge: null,
+    category: 'fleet',
+    description: 'Fleet operations',
     children: [
-      { title: 'Finance', href: '/finance/invoices' },
-      { title: 'HR', href: '/hr/employees' },
-      { title: 'Partners', href: '/partners/directory' }
+      { title: 'Fleet Overview', href: '/fleet/overview' },
+      { title: 'Vehicle Tracking', href: '/fleet/tracking' },
+      { title: 'Driver Management', href: '/fleet/drivers' },
+      { title: 'Maintenance', href: '/fleet/maintenance' },
+      { title: 'Route Optimization', href: '/fleet/routes' },
+      { title: 'Cost Analytics', href: '/fleet/analytics' }
     ]
   },
+
+  // AI & Technology
   {
-    id: 'technology',
-    title: 'Technology',
-    icon: Brain,
+    title: 'AI & ML',
     href: '/ai',
+    icon: Brain,
+    badge: 'AI',
+    category: 'technology',
+    description: 'Artificial intelligence',
     children: [
-      { title: 'AI & ML', href: '/ai/dashboard' },
-      { title: 'Mobile Apps', href: '/mobile/operations' },
-      { title: 'Integrations', href: '/enterprise/api' }
+      { title: 'AI Dashboard', href: '/ai/dashboard' },
+      { title: 'Predictive Analytics', href: '/ai/predictive' },
+      { title: 'Recommendations', href: '/ai/recommendations' },
+      { title: 'Model Management', href: '/ai/models' },
+      { title: 'Fraud Detection', href: '/ai/fraud' }
     ]
   },
   {
-    id: 'administration',
-    title: 'Administration',
-    icon: Settings,
-    href: '/settings',
+    title: 'Mobile Apps',
+    href: '/mobile',
+    icon: Smartphone,
+    badge: null,
+    category: 'technology',
+    description: 'Mobile app management',
     children: [
-      { title: 'Security', href: '/security/audit' },
-      { title: 'Settings', href: '/settings/system' },
-      { title: 'Users', href: '/users/analytics' }
+      { title: 'App Operations', href: '/mobile/operations' },
+      { title: 'App Store Management', href: '/mobile/app-store' },
+      { title: 'Push Notifications', href: '/mobile/notifications' },
+      { title: 'Feature Flags', href: '/mobile/feature-flags' },
+      { title: 'Crash Analytics', href: '/mobile/crashes' }
+    ]
+  },
+
+  // Business Operations
+  {
+    title: 'Finance',
+    href: '/finance',
+    icon: CreditCard,
+    badge: null,
+    category: 'business',
+    description: 'Financial management',
+    children: [
+      { title: 'Financial Dashboard', href: '/finance/dashboard' },
+      { title: 'Invoice Management', href: '/finance/invoices' },
+      { title: 'Expense Tracking', href: '/finance/expenses' },
+      { title: 'Payment Processing', href: '/finance/payments' },
+      { title: 'Budget Planning', href: '/finance/budget' },
+      { title: 'Financial Reports', href: '/finance/reports' },
+      { title: 'Tax Management', href: '/finance/tax' },
+      { title: 'Revenue Analytics', href: '/finance/revenue' }
+    ]
+  },
+  {
+    title: 'HR Management',
+    href: '/hr',
+    icon: UserCheck,
+    badge: null,
+    category: 'business',
+    description: 'Human resources',
+    children: [
+      { title: 'Employee Dashboard', href: '/hr/dashboard' },
+      { title: 'Employee Directory', href: '/hr/employees' },
+      { title: 'Department Management', href: '/hr/departments' },
+      { title: 'Recruitment', href: '/hr/recruitment' },
+      { title: 'Performance Tracking', href: '/hr/performance' },
+      { title: 'Payroll Management', href: '/hr/payroll' },
+      { title: 'Training & Development', href: '/hr/training' },
+      { title: 'HR Analytics', href: '/hr/analytics' }
+    ]
+  },
+  {
+    title: 'Legal & Compliance',
+    href: '/legal',
+    icon: Scale,
+    badge: null,
+    category: 'business',
+    description: 'Legal management',
+    children: [
+      { title: 'Legal Dashboard', href: '/legal/dashboard' },
+      { title: 'Contract Management', href: '/legal/contracts' },
+      { title: 'Compliance Monitoring', href: '/legal/compliance' },
+      { title: 'Document Management', href: '/legal/documents' },
+      { title: 'Case Management', href: '/legal/cases' },
+      { title: 'Risk Assessment', href: '/legal/risk' },
+      { title: 'Legal Analytics', href: '/legal/analytics' }
+    ]
+  },
+  {
+    title: 'Partners',
+    href: '/partners',
+    icon: Handshake,
+    badge: null,
+    category: 'business',
+    description: 'Partner management',
+    children: [
+      { title: 'Partner Directory', href: '/partners/directory' },
+      { title: 'Commission', href: '/partners/commission' },
+      { title: 'Performance', href: '/partners/performance' }
+    ]
+  },
+
+  // Marketing & Content
+  {
+    title: 'Marketing',
+    href: '/marketing',
+    icon: Megaphone,
+    badge: null,
+    category: 'marketing',
+    description: 'Marketing campaigns',
+    children: [
+      { title: 'Campaigns', href: '/marketing/campaigns' },
+      { title: 'Analytics', href: '/marketing/analytics' },
+      { title: 'Automation', href: '/marketing/automation' }
+    ]
+  },
+  {
+    title: 'Content Management',
+    href: '/cms',
+    icon: FileText,
+    badge: null,
+    category: 'marketing',
+    description: 'Content management',
+    children: [
+      { title: 'Website Content', href: '/cms/website' },
+      { title: 'Mobile App Content', href: '/cms/mobile' },
+      { title: 'Help Articles', href: '/cms/help' },
+      { title: 'Media Library', href: '/cms/media' },
+      { title: 'SEO Management', href: '/cms/seo' }
+    ]
+  },
+
+  // Enterprise & Security
+  {
+    title: 'Enterprise',
+    href: '/enterprise',
+    icon: Building2,
+    badge: 'B2B',
+    category: 'enterprise',
+    description: 'Enterprise features',
+    children: [
+      { title: 'Multi-tenant', href: '/enterprise/multi-tenant' },
+      { title: 'White-label', href: '/enterprise/white-label' },
+      { title: 'API Management', href: '/enterprise/api' },
+      { title: 'Corporate Accounts', href: '/enterprise/accounts' },
+      { title: 'Webhooks', href: '/enterprise/webhooks' }
+    ]
+  },
+  {
+    title: 'Security',
+    href: '/security',
+    icon: Lock,
+    badge: 'SEC',
+    category: 'enterprise',
+    description: 'Security management',
+    children: [
+      { title: '2FA Management', href: '/security/2fa' },
+      { title: 'Biometric Auth', href: '/security/biometric' },
+      { title: 'Audit Logs', href: '/security/audit' },
+      { title: 'Session Management', href: '/security/sessions' },
+      { title: 'Compliance', href: '/security/compliance' }
+    ]
+  },
+
+  // Communication & Collaboration
+  {
+    title: 'Team Chat',
+    href: '/chat',
+    icon: MessageSquare,
+    badge: 'NEW',
+    category: 'communication',
+    description: 'Team communication',
+    children: [
+      { title: 'Chat Dashboard', href: '/chat/dashboard' },
+      { title: 'Direct Messages', href: '/chat/messages' },
+      { title: 'Channels', href: '/chat/channels' },
+      { title: 'File Sharing', href: '/chat/files' },
+      { title: 'Video Calls', href: '/chat/video' },
+      { title: 'Chat Analytics', href: '/chat/analytics' }
+    ]
+  },
+  {
+    title: 'Email',
+    href: '/email',
+    icon: Mail,
+    badge: null,
+    category: 'communication',
+    description: 'Email management',
+    children: [
+      { title: 'Email Client', href: '/email' },
+      { title: 'Management', href: '/email/management' }
+    ]
+  },
+  {
+    title: 'Communication',
+    href: '/communication',
+    icon: MessageSquare,
+    badge: null,
+    category: 'communication',
+    description: 'Communication tools',
+    children: [
+      { title: 'Messages', href: '/communication/messages' },
+      { title: 'Announcements', href: '/communication/announcements' },
+      { title: 'Meetings', href: '/communication/meetings' }
+    ]
+  },
+
+  // Project Management
+  {
+    title: 'Projects',
+    href: '/projects',
+    icon: FolderOpen,
+    badge: null,
+    category: 'projects',
+    description: 'Project management',
+    children: [
+      { title: 'Project List', href: '/projects/list' },
+      { title: 'Tasks', href: '/projects/tasks' },
+      { title: 'Time Tracking', href: '/projects/time' }
+    ]
+  },
+
+  // Settings
+  {
+    title: 'Settings',
+    href: '/settings',
+    icon: Settings,
+    badge: null,
+    category: 'settings',
+    description: 'System settings',
+    children: [
+      { title: 'Profile', href: '/settings/profile' },
+      { title: 'System', href: '/settings/system' }
     ]
   }
 ]
 
-interface NewSidebarProps {
-  isCollapsed: boolean
-  onToggle: () => void
+// Category labels
+const categoryLabels = {
+  core: 'Core',
+  operations: 'Operations',
+  analytics: 'Analytics',
+  customers: 'Customers',
+  fleet: 'Fleet',
+  technology: 'Technology',
+  business: 'Business',
+  marketing: 'Marketing',
+  enterprise: 'Enterprise',
+  communication: 'Communication',
+  projects: 'Projects',
+  settings: 'Settings'
 }
 
-export function NewSidebar({ isCollapsed, onToggle }: NewSidebarProps) {
-  const { user, logout } = useAuthStore()
+interface NewSidebarProps {
+  selectedParent: string | null
+  setSelectedParent: (value: string | null) => void
+}
+
+export default function NewSidebar({ selectedParent, setSelectedParent }: NewSidebarProps) {
   const { sidebarCollapsed, toggleSidebar } = useUIStore()
+  const { user, logout } = useAuthStore()
   const pathname = usePathname()
   const router = useRouter()
-  const { theme, setTheme } = useTheme()
-  
-  const [expandedSections, setExpandedSections] = useState<Set<string>>(new Set(['dashboard']))
-  const [searchQuery, setSearchQuery] = useState('')
-  const [favorites, setFavorites] = useState<string[]>(['dashboard', 'fleet-overview', 'crm-customers'])
-  const [filteredSections, setFilteredSections] = useState(navigationSections)
-
-  // Filter sections based on search query
-  useEffect(() => {
-    if (searchQuery.trim()) {
-      const filtered = navigationSections.filter(section => 
-        section.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        section.children.some(child => 
-          child.title.toLowerCase().includes(searchQuery.toLowerCase())
-        )
-      )
-      setFilteredSections(filtered)
-    } else {
-      setFilteredSections(navigationSections)
-    }
-  }, [searchQuery])
+  const [expandedCategories, setExpandedCategories] = useState<Set<string>>(new Set(['core', 'operations']))
 
   const handleLogout = async () => {
     await logout()
     router.push('/login')
-    toast.success('Logged out successfully')
   }
 
-  const toggleSection = (sectionId: string) => {
-    const newExpanded = new Set(expandedSections)
-    if (newExpanded.has(sectionId)) {
-      newExpanded.delete(sectionId)
+  const handleCategoryClick = (item: typeof navigationItems[0], event: React.MouseEvent) => {
+    if (item.children && item.children.length > 0) {
+      setSelectedParent(selectedParent === item.href ? null : item.href)
     } else {
-      newExpanded.add(sectionId)
+      router.push(item.href)
     }
-    setExpandedSections(newExpanded)
   }
 
-  const toggleFavorite = (pageId: string) => {
-    const newFavorites = favorites.includes(pageId)
-      ? favorites.filter(id => id !== pageId)
-      : [...favorites, pageId]
-    setFavorites(newFavorites)
-    toast.success(favorites.includes(pageId) ? 'Removed from favorites' : 'Added to favorites')
+  const toggleCategory = (category: string) => {
+    const newExpanded = new Set(expandedCategories)
+    if (newExpanded.has(category)) {
+      newExpanded.delete(category)
+    } else {
+      newExpanded.add(category)
+    }
+    setExpandedCategories(newExpanded)
   }
 
-  const isActive = (href: string) => {
-    return pathname === href || pathname.startsWith(href + '/')
-  }
-
-  const isFavorite = (pageId: string) => {
-    return favorites.includes(pageId)
-  }
+  // Group items by category
+  const groupedItems = navigationItems.reduce((acc, item) => {
+    const category = item.category || 'other'
+    if (!acc[category]) {
+      acc[category] = []
+    }
+    acc[category].push(item)
+    return acc
+  }, {} as Record<string, typeof navigationItems>)
 
   return (
-    <div className={`fixed left-0 top-0 z-40 h-screen bg-white dark:bg-slate-900 border-r border-slate-200 dark:border-slate-700 shadow-sm transition-all duration-300 ${
-      isCollapsed ? 'w-16' : 'w-64'
-    }`}>
-      {/* Header */}
-      <div className="flex items-center justify-between p-4 border-b border-slate-200 dark:border-slate-700">
-        {!isCollapsed && (
+    <>
+      {/* Main Sidebar */}
+      <div
+        className={`fixed left-0 top-0 z-40 h-screen bg-white dark:bg-clutch-gray-700 border-r border-clutch-gray-200 dark:border-clutch-gray-600 shadow-lg transition-all duration-300 ${
+          selectedParent ? 'w-16' : (sidebarCollapsed ? 'w-16' : 'w-64')
+        }`}
+      >
+        {/* Sidebar Header */}
+        <div className="flex h-16 items-center justify-between px-4 border-b border-clutch-gray-200 dark:border-clutch-gray-600 bg-clutch-gray-50 dark:bg-clutch-gray-800">
+          {!sidebarCollapsed && !selectedParent && (
           <div className="flex items-center space-x-2">
-            <div className="w-8 h-8 bg-clutch-primary rounded-lg flex items-center justify-center">
-              <span className="text-white font-bold text-sm">C</span>
+              <div className="w-8 h-8 bg-clutch-red-500 rounded-lg flex items-center justify-center">
+                <Building2 className="h-5 w-5 text-white" />
             </div>
-            <span className="font-semibold text-slate-900 dark:text-white">Clutch Admin</span>
+              <span className="text-lg font-semibold text-clutch-gray-700 dark:text-white">
+                Clutch Admin
+              </span>
           </div>
         )}
         <button
-          onClick={onToggle}
-          className="p-2 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg transition-colors"
+            onClick={toggleSidebar}
+            className="p-1.5 hover:bg-clutch-gray-100 dark:hover:bg-clutch-gray-600 rounded-lg transition-colors"
+            aria-label="Toggle sidebar"
         >
-          {isCollapsed ? <ChevronRight className="h-4 w-4" /> : <ChevronDown className="h-4 w-4" />}
+            <Menu className="h-4 w-4 text-clutch-gray-600 dark:text-clutch-gray-300" />
         </button>
       </div>
 
-      {/* Search */}
-      {!isCollapsed && (
-        <div className="p-4 border-b border-slate-200 dark:border-slate-700">
-          <div className="relative">
-            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-slate-400" />
-            <input
-              type="text"
-              placeholder="Search pages..."
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full pl-10 pr-4 py-2 border border-slate-300 dark:border-slate-600 rounded-lg focus:ring-2 focus:ring-clutch-primary focus:border-transparent bg-white dark:bg-slate-800 text-slate-900 dark:text-white"
-            />
-          </div>
-        </div>
-      )}
-
       {/* Navigation */}
-      <nav className="flex-1 overflow-y-auto p-4">
-        <div className="space-y-2">
-          {filteredSections.map((section) => {
-            const isExpanded = expandedSections.has(section.id)
-            const hasActiveChild = section.children.some(child => isActive(child.href))
-            const isSectionActive = isActive(section.href)
+        <nav className="flex-1 overflow-y-auto py-4 mt-16">
+          <div className="space-y-2 px-3">
+            {Object.entries(groupedItems).map(([category, items]) => {
+              const isExpanded = expandedCategories.has(category)
+              const categoryLabel = categoryLabels[category as keyof typeof categoryLabels] || category
 
             return (
-              <div key={section.id} className="space-y-1">
-                {/* Section Header */}
+                <div key={category} className="space-y-1">
+                  {/* Category Header */}
+                  {!sidebarCollapsed && !selectedParent && (
                 <button
-                  onClick={() => toggleSection(section.id)}
-                  className={`w-full flex items-center justify-between px-3 py-2 text-sm font-medium rounded-lg transition-all ${
-                    isSectionActive || hasActiveChild
-                      ? 'bg-clutch-primary text-white'
-                      : 'text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800'
-                  }`}
-                >
-                  <div className="flex items-center space-x-3">
-                    <section.icon className="h-5 w-5" />
-                    {!isCollapsed && <span>{section.title}</span>}
-                  </div>
-                  {!isCollapsed && (
-                    <ChevronDown className={`h-4 w-4 transition-transform ${
+                      onClick={() => toggleCategory(category)}
+                      className="w-full flex items-center justify-between px-2 py-1.5 text-xs font-semibold text-clutch-gray-500 dark:text-clutch-gray-400 uppercase tracking-wider hover:text-clutch-gray-700 dark:hover:text-clutch-gray-300 transition-colors"
+                    >
+                      <span>{categoryLabel}</span>
+                      <ChevronDown 
+                        className={`h-3 w-3 transition-transform duration-200 ${
                       isExpanded ? 'rotate-180' : ''
-                    }`} />
+                        }`} 
+                      />
+                    </button>
                   )}
-                </button>
 
-                {/* Section Children */}
-                {!isCollapsed && isExpanded && (
-                  <div className="ml-6 space-y-1">
-                    {section.children.map((child) => {
-                      const childIsActive = isActive(child.href)
-                      const childId = child.href.replace('/', '').replace('/', '-')
+                  {/* Category Items */}
+                  {(!sidebarCollapsed && !selectedParent && isExpanded) || (sidebarCollapsed || selectedParent) ? (
+                    <div className="space-y-1">
+                      {items.map((item) => {
+                        const isActive = pathname === item.href || pathname.startsWith(item.href + '/')
+                        const hasChildren = item.children && item.children.length > 0
+                        const isSelected = selectedParent === item.href
                       
                       return (
-                        <div key={child.href} className="flex items-center space-x-2">
-                          <Link
-                            href={child.href}
-                            className={`flex-1 px-3 py-2 text-sm rounded-lg transition-all ${
-                              childIsActive
-                                ? 'bg-clutch-primary-50 text-clutch-primary-900 dark:bg-clutch-primary-900/20 dark:text-clutch-primary-100'
-                                : 'text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800'
-                            }`}
-                          >
-                            {child.title}
-                          </Link>
-                          <button
-                            onClick={() => toggleFavorite(childId)}
-                            className="p-1 hover:bg-slate-100 dark:hover:bg-slate-800 rounded transition-colors"
-                          >
-                            {isFavorite(childId) ? (
-                              <Star className="h-4 w-4 text-yellow-500 fill-current" />
-                            ) : (
-                              <StarOff className="h-4 w-4 text-slate-400" />
+                          <div key={item.href}>
+                            <button
+                              onClick={(e) => handleCategoryClick(item, e)}
+                              className={`w-full flex items-center px-3 py-2.5 text-sm font-medium rounded-lg transition-all group ${
+                                isActive || isSelected
+                                  ? 'bg-clutch-red-500 text-white shadow-sm'
+                                  : 'text-clutch-gray-700 dark:text-clutch-gray-300 hover:bg-clutch-red-50 dark:hover:bg-clutch-gray-800 hover:text-clutch-gray-900 dark:hover:text-white'
+                              }`}
+                            >
+                              <item.icon className={`h-5 w-5 mr-3 flex-shrink-0 transition-colors ${
+                                isActive || isSelected ? 'text-white' : 'text-clutch-gray-700 group-hover:text-clutch-gray-800'
+                              }`} />
+                              {!sidebarCollapsed && !selectedParent && (
+                                <>
+                                  <span className="flex-1 text-left">{item.title}</span>
+                                  {hasChildren && (
+                                    <ChevronDown 
+                                      className={`h-4 w-4 transition-transform duration-200 ${
+                                        isSelected ? 'rotate-180' : ''
+                                      }`} 
+                                    />
+                                  )}
+                                  {item.badge && (
+                                    <span className={`ml-2 inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium ${
+                                      item.badge === 'NEW' ? 'bg-green-100 text-green-800' :
+                                      item.badge === 'AI' ? 'bg-blue-100 text-blue-800' :
+                                      item.badge === 'B2B' ? 'bg-purple-100 text-purple-800' :
+                                      item.badge === 'SEC' ? 'bg-orange-100 text-orange-800' :
+                                      'bg-clutch-gray-100 text-clutch-gray-700'
+                                    }`}>
+                                      {item.badge}
+                                    </span>
+                                  )}
+                                </>
                             )}
                           </button>
                         </div>
                       )
                     })}
                   </div>
-                )}
+                  ) : null}
               </div>
             )
           })}
         </div>
       </nav>
 
-      {/* Favorites */}
-      {!isCollapsed && favorites.length > 0 && (
-        <div className="p-4 border-t border-slate-200 dark:border-slate-700">
-          <h3 className="text-sm font-medium text-slate-700 dark:text-slate-300 mb-2 flex items-center space-x-2">
-            <Star className="h-4 w-4 text-yellow-500" />
-            <span>Favorites</span>
-          </h3>
-          <div className="space-y-1">
-            {favorites.map((favorite) => {
-              const section = navigationSections.find(s => 
-                s.children.some(c => c.href.replace('/', '').replace('/', '-') === favorite)
-              )
-              const child = section?.children.find(c => 
-                c.href.replace('/', '').replace('/', '-') === favorite
-              )
-              
-              if (!child) return null
-              
-              return (
-                <Link
-                  key={favorite}
-                  href={child.href}
-                  className={`flex items-center space-x-2 px-2 py-1 text-sm rounded transition-colors ${
-                    isActive(child.href)
-                      ? 'bg-clutch-primary-50 text-clutch-primary-900 dark:bg-clutch-primary-900/20 dark:text-clutch-primary-100'
-                      : 'text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800'
-                  }`}
-                >
-                  <span className="truncate">{child.title}</span>
-                </Link>
-              )
-            })}
-          </div>
-        </div>
-      )}
-
       {/* User Section */}
-      {!isCollapsed && (
-        <div className="p-4 border-t border-slate-200 dark:border-slate-700">
+        {!sidebarCollapsed && !selectedParent && (
+          <div className="border-t border-clutch-gray-200 dark:border-clutch-gray-600 p-4 bg-clutch-gray-50 dark:bg-clutch-gray-800">
           <div className="flex items-center space-x-3">
-            <div className="w-8 h-8 bg-clutch-primary rounded-full flex items-center justify-center">
+              <div className="w-8 h-8 bg-clutch-red-500 rounded-full flex items-center justify-center">
               <User className="h-4 w-4 text-white" />
             </div>
             <div className="flex-1 min-w-0">
-              <p className="text-sm font-medium text-slate-900 dark:text-white truncate">
+                <p className="text-sm font-medium text-clutch-gray-900 dark:text-white truncate">
                 {user?.fullName || 'User'}
               </p>
-              <p className="text-xs text-slate-500 dark:text-slate-400 truncate">
+                <p className="text-xs text-clutch-gray-600 dark:text-clutch-gray-400 truncate">
                 {user?.email || 'user@example.com'}
               </p>
+              </div>
             </div>
+          </div>
+        )}
+      </div>
+
+      {/* Sub-sidebar */}
+      {selectedParent && (
+        <div className="fixed left-16 top-0 z-30 h-screen w-64 bg-white dark:bg-clutch-gray-700 border-r border-clutch-gray-200 dark:border-clutch-gray-600 shadow-sm transition-all duration-300">
+          <div className="flex h-full flex-col">
+            <div className="border-b border-clutch-gray-200 dark:border-clutch-gray-600 p-4 mt-16 bg-clutch-gray-50 dark:bg-clutch-gray-800">
+              <div className="flex items-center justify-between">
+                <h3 className="text-sm font-semibold text-clutch-gray-900 dark:text-white">
+                  {navigationItems.find(item => item.href === selectedParent)?.title}
+                </h3>
             <button
-              onClick={handleLogout}
-              className="p-1 hover:bg-slate-100 dark:hover:bg-slate-800 rounded transition-colors"
-              title="Logout"
+                  onClick={() => setSelectedParent(null)}
+                  className="h-7 w-7 p-0 hover:bg-clutch-gray-100 dark:hover:bg-clutch-gray-600 rounded-lg transition-colors flex items-center justify-center"
             >
-              <LogOut className="h-4 w-4 text-slate-500" />
+                  <X className="h-4 w-4" />
             </button>
+              </div>
+            </div>
+            <nav className="flex-1 overflow-y-auto py-4">
+              <div className="space-y-1 px-3">
+                {navigationItems.find(item => item.href === selectedParent)?.children?.map((child) => {
+                  const isChildActive = pathname === child.href
+                  return (
+                    <Link
+                      key={child.href}
+                      href={child.href}
+                      className={`block w-full px-3 py-2.5 text-sm font-medium rounded-lg transition-all ${
+                        isChildActive
+                          ? 'bg-clutch-red-500 text-white shadow-sm'
+                          : 'text-clutch-gray-700 dark:text-clutch-gray-300 hover:bg-clutch-red-50 dark:hover:bg-clutch-gray-800 hover:text-clutch-gray-900 dark:hover:text-white'
+                      }`}
+                    >
+                      {child.title}
+                    </Link>
+                  )
+                })}
+              </div>
+            </nav>
           </div>
         </div>
       )}
-    </div>
+    </>
   )
 }

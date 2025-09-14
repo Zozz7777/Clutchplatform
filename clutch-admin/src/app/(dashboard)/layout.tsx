@@ -35,16 +35,8 @@ import {
 } from 'lucide-react'
 import { useAuthStore, useUIStore } from '@/store'
 import { useTheme } from 'next-themes'
-// Legacy components removed - using SnowUI components only
-import { SnowButton } from '@/components/ui/snow-button'
-import { SnowInput } from '@/components/ui/snow-input'
-// Luxury components
-import { LuxuryButton } from '@/components/ui/luxury-button'
-import { LuxuryInput } from '@/components/ui/luxury-input'
-import { LuxuryCard } from '@/components/ui/luxury-card'
-import LuxuryAvatar from '@/components/ui/luxury-avatar'
-import LuxuryBadge from '@/components/ui/luxury-badge'
-import LuxuryTooltip from '@/components/ui/luxury-tooltip'
+// New components
+import NewSidebar from '@/components/layout/new-sidebar'
 import { usePathname, useRouter } from 'next/navigation'
 import Link from 'next/link'
 import Image from 'next/image'
@@ -56,6 +48,7 @@ import { NotificationProvider } from '@/components/notifications/notification-pr
 import { useKeyboardShortcuts } from '@/hooks/use-keyboard-shortcuts'
 import KeyboardShortcutsModal from '@/components/modals/keyboard-shortcuts-modal'
 import GlobalSearch from '@/components/search/global-search'
+import { SnowButton } from '@/components/ui/snow-button'
 import ThemeToggle from '@/components/theme/theme-toggle'
 
 // Loading Component
@@ -1126,7 +1119,7 @@ const DashboardLayout = ({ children }: { children: React.ReactNode }) => {
 
   return (
     <div className="min-h-screen bg-slate-50">
-      <Sidebar selectedParent={selectedParent} setSelectedParent={setSelectedParent} />
+      <NewSidebar selectedParent={selectedParent} setSelectedParent={setSelectedParent} />
       <div
         className={`transition-all duration-300 ${
           selectedParent 

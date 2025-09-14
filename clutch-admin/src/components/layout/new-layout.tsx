@@ -3,7 +3,7 @@
 import React, { useState, useEffect } from 'react'
 import { usePathname, useRouter } from 'next/navigation'
 import { useAuthStore, useUIStore } from '@/store'
-import { NewSidebar } from './new-sidebar'
+import NewSidebar from './new-sidebar'
 import { NewHeader } from './new-header'
 import { SnowCard } from '@/components/ui/snow-card'
 import { SnowButton } from '@/components/ui/snow-button'
@@ -100,8 +100,8 @@ export function NewLayout({ children }: NewLayoutProps) {
     <div className="min-h-screen bg-slate-50 dark:bg-slate-900">
       {/* Sidebar */}
       <NewSidebar 
-        isCollapsed={sidebarCollapsed}
-        onToggle={handleToggleSidebar}
+        selectedParent={selectedParent}
+        setSelectedParent={setSelectedParent}
       />
       
       {/* Main Content */}
