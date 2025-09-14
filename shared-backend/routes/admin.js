@@ -20,33 +20,77 @@ router.get('/', (req, res) => {
 router.get('/dashboard/consolidated', authenticateToken, requireRole(['admin']), async (req, res) => {
   try {
     const dashboardData = {
-      overview: {
-        totalUsers: 1250,
-        activeUsers: 980,
-        totalRevenue: 125000,
-        monthlyGrowth: 12.5,
-        systemHealth: 98.5
-      },
       metrics: {
-        userEngagement: 85.2,
-        conversionRate: 3.4,
-        averageSessionTime: 8.5,
-        bounceRate: 25.1
+        users: {
+          total: 1250,
+          active: 980,
+          growth: 12.5
+        },
+        orders: {
+          total: 3420,
+          pending: 45,
+          completed: 3375,
+          growth: 8.2
+        },
+        revenue: {
+          total: 125000,
+          monthly: 25000,
+          weekly: 6250,
+          daily: 892,
+          growth: 15.3
+        },
+        vehicles: {
+          total: 150,
+          available: 142,
+          inService: 8
+        },
+        services: {
+          total: 89,
+          active: 67,
+          completed: 22
+        },
+        partners: {
+          total: 45,
+          active: 38,
+          pending: 7
+        }
       },
-      recentActivity: [
-        { id: 1, type: 'user_registration', message: 'New user registered', timestamp: new Date().toISOString() },
-        { id: 2, type: 'payment_received', message: 'Payment of $150 received', timestamp: new Date().toISOString() },
-        { id: 3, type: 'system_alert', message: 'High CPU usage detected', timestamp: new Date().toISOString() }
+      recentOrders: [
+        { id: '1', customer: { name: 'John Doe' }, vehicle: { model: 'Toyota Camry' }, status: 'completed', createdAt: new Date().toISOString(), total: 150 },
+        { id: '2', customer: { name: 'Jane Smith' }, vehicle: { model: 'Honda Civic' }, status: 'pending', createdAt: new Date().toISOString(), total: 200 },
+        { id: '3', customer: { name: 'Bob Johnson' }, vehicle: { model: 'Ford Focus' }, status: 'completed', createdAt: new Date().toISOString(), total: 175 }
       ],
-      charts: {
-        revenue: { labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May'], data: [10000, 12000, 15000, 18000, 20000] },
-        users: { labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May'], data: [100, 150, 200, 250, 300] }
+      activityLogs: [
+        { id: '1', type: 'user_registration', action: 'New user registered', description: 'John Doe registered for the service', timestamp: new Date().toISOString(), status: 'completed' },
+        { id: '2', type: 'payment_received', action: 'Payment processed', description: 'Payment of $150 received from Jane Smith', timestamp: new Date().toISOString(), status: 'completed' },
+        { id: '3', type: 'system_alert', action: 'System monitoring', description: 'High CPU usage detected on server', timestamp: new Date().toISOString(), status: 'pending' },
+        { id: '4', type: 'order_completed', action: 'Order completed', description: 'Service order #1234 completed successfully', timestamp: new Date().toISOString(), status: 'completed' },
+        { id: '5', type: 'maintenance_scheduled', action: 'Maintenance scheduled', description: 'Vehicle maintenance scheduled for tomorrow', timestamp: new Date().toISOString(), status: 'processing' }
+      ],
+      platformServices: [
+        { name: 'API Gateway', status: 'online', uptime: '99.9%' },
+        { name: 'Database', status: 'online', uptime: '99.8%' },
+        { name: 'Authentication', status: 'online', uptime: '99.7%' },
+        { name: 'File Storage', status: 'warning', uptime: '98.5%' },
+        { name: 'Email Service', status: 'online', uptime: '99.6%' }
+      ],
+      systemStatus: [
+        { name: 'CPU Usage', value: 45, unit: '%', status: 'normal' },
+        { name: 'Memory Usage', value: 67, unit: '%', status: 'normal' },
+        { name: 'Disk Usage', value: 23, unit: '%', status: 'normal' },
+        { name: 'Network Latency', value: 12, unit: 'ms', status: 'normal' }
+      ],
+      realTimeData: {
+        totalUsers: 1250,
+        activeDrivers: 45,
+        totalPartners: 38,
+        monthlyRevenue: 25000
       }
     };
 
     res.json({
       success: true,
-      data: { dashboard: dashboardData },
+      data: dashboardData,
       message: 'Consolidated dashboard data retrieved successfully',
       timestamp: new Date().toISOString()
     });
@@ -2778,6 +2822,592 @@ router.get('/system/maintenance', authenticateToken, requireRole(['admin']), asy
       success: false,
       error: 'GET_SYSTEM_MAINTENANCE_FAILED',
       message: 'Failed to get system maintenance information',
+      timestamp: new Date().toISOString()
+    });
+  }
+});
+
+// ============================================================================
+// ADDITIONAL MISSING ADMIN ENDPOINTS
+// ============================================================================
+
+// GET /admin/activity/recent - Get recent admin activity
+router.get('/activity/recent', authenticateToken, requireRole(['admin']), async (req, res) => {
+  try {
+    const { limit = 20, type } = req.query;
+    
+    const recentActivity = [
+      {
+        id: 'activity-1',
+        type: 'user_action',
+        user: 'admin@example.com',
+        action: 'created_user',
+        target: 'user-123',
+        timestamp: new Date().toISOString(),
+        details: 'Created new user account',
+        metadata: { userId: 'user-123', role: 'employee' }
+      },
+      {
+        id: 'activity-2',
+        type: 'system_action',
+        user: 'system',
+        action: 'backup_completed',
+        target: 'database',
+        timestamp: new Date(Date.now() - 3600000).toISOString(),
+        details: 'Daily backup completed successfully',
+        metadata: { size: '2.5GB', duration: '15 minutes' }
+      }
+    ];
+
+    res.json({
+      success: true,
+      data: { activities: recentActivity },
+      message: 'Recent admin activity retrieved successfully',
+      timestamp: new Date().toISOString()
+    });
+
+  } catch (error) {
+    logger.error('❌ Get recent admin activity error:', error);
+    res.status(500).json({
+      success: false,
+      error: 'GET_RECENT_ADMIN_ACTIVITY_FAILED',
+      message: 'Failed to get recent admin activity',
+      timestamp: new Date().toISOString()
+    });
+  }
+});
+
+// GET /admin/analytics/export - Export admin analytics data
+router.get('/analytics/export', authenticateToken, requireRole(['admin', 'analyst']), async (req, res) => {
+  try {
+    const { format = 'json', dateFrom, dateTo, metrics } = req.query;
+    
+    const exportData = {
+      format: format,
+      dateRange: { from: dateFrom, to: dateTo },
+      metrics: metrics ? metrics.split(',') : ['users', 'orders', 'revenue'],
+      data: {
+        users: { total: 1250, active: 980, new: 45 },
+        orders: { total: 3420, completed: 3375, pending: 45 },
+        revenue: { total: 125000, monthly: 25000, growth: 15.3 }
+      },
+      exportedAt: new Date().toISOString(),
+      exportedBy: req.user.email
+    };
+
+    res.json({
+      success: true,
+      data: { export: exportData },
+      message: 'Admin analytics data exported successfully',
+      timestamp: new Date().toISOString()
+    });
+
+  } catch (error) {
+    logger.error('❌ Export admin analytics error:', error);
+    res.status(500).json({
+      success: false,
+      error: 'EXPORT_ADMIN_ANALYTICS_FAILED',
+      message: 'Failed to export admin analytics data',
+      timestamp: new Date().toISOString()
+    });
+  }
+});
+
+// GET /admin/analytics/revenue - Get revenue analytics
+router.get('/analytics/revenue', authenticateToken, requireRole(['admin', 'finance']), async (req, res) => {
+  try {
+    const { period = '30d', breakdown } = req.query;
+    
+    const revenueAnalytics = {
+      period: period,
+      overview: {
+        total: 125000,
+        monthly: 25000,
+        weekly: 6250,
+        daily: 892,
+        growth: 15.3,
+        trend: 'up'
+      },
+      breakdown: breakdown ? {
+        byService: [
+          { service: 'Oil Change', revenue: 45000, percentage: 36.0 },
+          { service: 'Brake Service', revenue: 32000, percentage: 25.6 },
+          { service: 'Engine Repair', revenue: 28000, percentage: 22.4 },
+          { service: 'Other', revenue: 20000, percentage: 16.0 }
+        ],
+        byLocation: [
+          { location: 'Downtown', revenue: 50000, percentage: 40.0 },
+          { location: 'Suburbs', revenue: 45000, percentage: 36.0 },
+          { location: 'Airport', revenue: 30000, percentage: 24.0 }
+        ]
+      } : null,
+      trends: {
+        daily: [
+          { date: '2024-09-08', revenue: 850 },
+          { date: '2024-09-09', revenue: 920 },
+          { date: '2024-09-10', revenue: 780 },
+          { date: '2024-09-11', revenue: 1100 },
+          { date: '2024-09-12', revenue: 950 },
+          { date: '2024-09-13', revenue: 1050 },
+          { date: '2024-09-14', revenue: 892 }
+        ]
+      }
+    };
+
+    res.json({
+      success: true,
+      data: { analytics: revenueAnalytics },
+      message: 'Revenue analytics retrieved successfully',
+      timestamp: new Date().toISOString()
+    });
+
+  } catch (error) {
+    logger.error('❌ Get revenue analytics error:', error);
+    res.status(500).json({
+      success: false,
+      error: 'GET_REVENUE_ANALYTICS_FAILED',
+      message: 'Failed to get revenue analytics',
+      timestamp: new Date().toISOString()
+    });
+  }
+});
+
+// GET /admin/analytics/users - Get user analytics
+router.get('/analytics/users', authenticateToken, requireRole(['admin', 'user_manager']), async (req, res) => {
+  try {
+    const { period = '30d', segment } = req.query;
+    
+    const userAnalytics = {
+      period: period,
+      segment: segment || 'all',
+      overview: {
+        total: 1250,
+        active: 980,
+        new: 45,
+        churned: 12,
+        retention: 78.5
+      },
+      demographics: {
+        ageGroups: [
+          { group: '18-24', count: 250, percentage: 20.0 },
+          { group: '25-34', count: 450, percentage: 36.0 },
+          { group: '35-44', count: 300, percentage: 24.0 },
+          { group: '45+', count: 250, percentage: 20.0 }
+        ],
+        locations: [
+          { location: 'North America', count: 600, percentage: 48.0 },
+          { location: 'Europe', count: 350, percentage: 28.0 },
+          { location: 'Asia', count: 200, percentage: 16.0 },
+          { location: 'Other', count: 100, percentage: 8.0 }
+        ]
+      },
+      behavior: {
+        averageSessionTime: 8.5,
+        pagesPerSession: 4.2,
+        bounceRate: 25.1,
+        returnRate: 65.8
+      },
+      trends: {
+        daily: [
+          { date: '2024-09-08', users: 45, active: 38 },
+          { date: '2024-09-09', users: 52, active: 44 },
+          { date: '2024-09-10', users: 38, active: 32 },
+          { date: '2024-09-11', users: 61, active: 52 },
+          { date: '2024-09-12', users: 48, active: 41 },
+          { date: '2024-09-13', users: 55, active: 47 },
+          { date: '2024-09-14', users: 49, active: 42 }
+        ]
+      }
+    };
+
+    res.json({
+      success: true,
+      data: { analytics: userAnalytics },
+      message: 'User analytics retrieved successfully',
+      timestamp: new Date().toISOString()
+    });
+
+  } catch (error) {
+    logger.error('❌ Get user analytics error:', error);
+    res.status(500).json({
+      success: false,
+      error: 'GET_USER_ANALYTICS_FAILED',
+      message: 'Failed to get user analytics',
+      timestamp: new Date().toISOString()
+    });
+  }
+});
+
+// GET /admin/business/customer-insights - Get customer insights
+router.get('/business/customer-insights', authenticateToken, requireRole(['admin', 'business_analyst']), async (req, res) => {
+  try {
+    const { period = '30d', segment } = req.query;
+    
+    const customerInsights = {
+      period: period,
+      segment: segment || 'all',
+      overview: {
+        totalCustomers: 1250,
+        activeCustomers: 980,
+        newCustomers: 45,
+        churnedCustomers: 12,
+        customerSatisfaction: 4.2
+      },
+      insights: [
+        {
+          type: 'trend',
+          title: 'Customer Growth',
+          description: 'Customer base growing at 12.5% monthly',
+          impact: 'positive',
+          confidence: 0.85
+        },
+        {
+          type: 'pattern',
+          title: 'Peak Usage Hours',
+          description: 'Most customers use service between 9-11 AM',
+          impact: 'neutral',
+          confidence: 0.92
+        },
+        {
+          type: 'opportunity',
+          title: 'Upsell Potential',
+          description: '25% of customers could benefit from premium services',
+          impact: 'positive',
+          confidence: 0.78
+        }
+      ],
+      segments: [
+        {
+          name: 'High Value',
+          count: 125,
+          percentage: 10.0,
+          characteristics: ['High spending', 'Frequent usage', 'Long tenure'],
+          recommendations: ['Premium services', 'Loyalty programs']
+        },
+        {
+          name: 'At Risk',
+          count: 45,
+          percentage: 3.6,
+          characteristics: ['Decreasing usage', 'Support tickets', 'Payment issues'],
+          recommendations: ['Retention campaigns', 'Support outreach']
+        }
+      ],
+      satisfaction: {
+        overall: 4.2,
+        byService: [
+          { service: 'Oil Change', rating: 4.5 },
+          { service: 'Brake Service', rating: 4.3 },
+          { service: 'Engine Repair', rating: 4.1 },
+          { service: 'Other', rating: 4.0 }
+        ],
+        trends: [
+          { date: '2024-09-08', rating: 4.1 },
+          { date: '2024-09-09', rating: 4.2 },
+          { date: '2024-09-10', rating: 4.3 },
+          { date: '2024-09-11', rating: 4.2 },
+          { date: '2024-09-12', rating: 4.4 },
+          { date: '2024-09-13', rating: 4.2 },
+          { date: '2024-09-14', rating: 4.2 }
+        ]
+      }
+    };
+
+    res.json({
+      success: true,
+      data: { insights: customerInsights },
+      message: 'Customer insights retrieved successfully',
+      timestamp: new Date().toISOString()
+    });
+
+  } catch (error) {
+    logger.error('❌ Get customer insights error:', error);
+    res.status(500).json({
+      success: false,
+      error: 'GET_CUSTOMER_INSIGHTS_FAILED',
+      message: 'Failed to get customer insights',
+      timestamp: new Date().toISOString()
+    });
+  }
+});
+
+// GET /admin/business/market - Get market analysis
+router.get('/business/market', authenticateToken, requireRole(['admin', 'business_analyst']), async (req, res) => {
+  try {
+    const { region, period = '30d' } = req.query;
+    
+    const marketAnalysis = {
+      region: region || 'global',
+      period: period,
+      overview: {
+        marketSize: 50000000,
+        marketShare: 2.5,
+        growthRate: 8.2,
+        competition: 'moderate'
+      },
+      trends: [
+        {
+          trend: 'Electric Vehicle Adoption',
+          impact: 'high',
+          description: 'Growing demand for EV maintenance services',
+          opportunity: 'Expand EV service capabilities'
+        },
+        {
+          trend: 'Mobile Service Growth',
+          impact: 'medium',
+          description: 'Customers prefer on-site service delivery',
+          opportunity: 'Invest in mobile service fleet'
+        },
+        {
+          trend: 'Digital Integration',
+          impact: 'high',
+          description: 'Customers expect digital booking and tracking',
+          opportunity: 'Enhance digital platform features'
+        }
+      ],
+      competitors: [
+        {
+          name: 'Competitor A',
+          marketShare: 15.2,
+          strengths: ['Brand recognition', 'Wide network'],
+          weaknesses: ['High prices', 'Slow service']
+        },
+        {
+          name: 'Competitor B',
+          marketShare: 12.8,
+          strengths: ['Low prices', 'Fast service'],
+          weaknesses: ['Limited locations', 'Quality concerns']
+        }
+      ],
+      opportunities: [
+        {
+          opportunity: 'Premium Services',
+          potential: 'high',
+          description: 'High-end customers willing to pay for premium service',
+          investment: 'medium'
+        },
+        {
+          opportunity: 'Fleet Services',
+          potential: 'medium',
+          description: 'Corporate fleet maintenance contracts',
+          investment: 'high'
+        }
+      ],
+      threats: [
+        {
+          threat: 'Economic Downturn',
+          probability: 'medium',
+          impact: 'high',
+          mitigation: 'Diversify service offerings'
+        },
+        {
+          threat: 'New Entrants',
+          probability: 'high',
+          impact: 'medium',
+          mitigation: 'Strengthen customer relationships'
+        }
+      ]
+    };
+
+    res.json({
+      success: true,
+      data: { market: marketAnalysis },
+      message: 'Market analysis retrieved successfully',
+      timestamp: new Date().toISOString()
+    });
+
+  } catch (error) {
+    logger.error('❌ Get market analysis error:', error);
+    res.status(500).json({
+      success: false,
+      error: 'GET_MARKET_ANALYSIS_FAILED',
+      message: 'Failed to get market analysis',
+      timestamp: new Date().toISOString()
+    });
+  }
+});
+
+// GET /admin/business/market-analysis - Get detailed market analysis
+router.get('/business/market-analysis', authenticateToken, requireRole(['admin', 'business_analyst']), async (req, res) => {
+  try {
+    const { region, timeframe = '12m' } = req.query;
+    
+    const marketAnalysis = {
+      region: region || 'global',
+      timeframe: timeframe,
+      executiveSummary: {
+        marketSize: 50000000,
+        ourShare: 2.5,
+        growthRate: 8.2,
+        keyInsights: [
+          'Market growing at 8.2% annually',
+          'Digital transformation driving demand',
+          'Premium services showing strong growth'
+        ]
+      },
+      marketSegmentation: {
+        byService: [
+          { segment: 'Maintenance', size: 30000000, growth: 6.5 },
+          { segment: 'Repair', size: 15000000, growth: 12.3 },
+          { segment: 'Emergency', size: 5000000, growth: 15.8 }
+        ],
+        byCustomer: [
+          { segment: 'Individual', size: 35000000, growth: 7.2 },
+          { segment: 'Fleet', size: 10000000, growth: 11.5 },
+          { segment: 'Commercial', size: 5000000, growth: 9.8 }
+        ]
+      },
+      competitiveLandscape: {
+        marketLeaders: [
+          { name: 'Market Leader A', share: 18.5, strengths: ['Brand', 'Network'] },
+          { name: 'Market Leader B', share: 15.2, strengths: ['Technology', 'Service'] },
+          { name: 'Market Leader C', share: 12.8, strengths: ['Price', 'Speed'] }
+        ],
+        ourPosition: {
+          rank: 4,
+          share: 2.5,
+          strengths: ['Quality', 'Customer Service'],
+          weaknesses: ['Scale', 'Brand Recognition']
+        }
+      },
+      growthOpportunities: [
+        {
+          opportunity: 'Digital Services',
+          marketSize: 10000000,
+          growthRate: 25.0,
+          barriers: 'Technology investment',
+          timeline: '6-12 months'
+        },
+        {
+          opportunity: 'Fleet Management',
+          marketSize: 8000000,
+          growthRate: 18.5,
+          barriers: 'Capital requirements',
+          timeline: '12-18 months'
+        }
+      ],
+      recommendations: [
+        'Invest in digital platform enhancement',
+        'Expand premium service offerings',
+        'Develop fleet management capabilities',
+        'Strengthen brand positioning'
+      ]
+    };
+
+    res.json({
+      success: true,
+      data: { analysis: marketAnalysis },
+      message: 'Market analysis retrieved successfully',
+      timestamp: new Date().toISOString()
+    });
+
+  } catch (error) {
+    logger.error('❌ Get market analysis error:', error);
+    res.status(500).json({
+      success: false,
+      error: 'GET_MARKET_ANALYSIS_FAILED',
+      message: 'Failed to get market analysis',
+      timestamp: new Date().toISOString()
+    });
+  }
+});
+
+// GET /admin/business/metrics - Get business metrics
+router.get('/business/metrics', authenticateToken, requireRole(['admin', 'business_analyst']), async (req, res) => {
+  try {
+    const { period = '30d', category } = req.query;
+    
+    const businessMetrics = {
+      period: period,
+      category: category || 'all',
+      financial: {
+        revenue: {
+          total: 125000,
+          monthly: 25000,
+          growth: 15.3,
+          target: 200000,
+          achievement: 62.5
+        },
+        profit: {
+          total: 25000,
+          margin: 20.0,
+          growth: 12.8
+        },
+        costs: {
+          total: 100000,
+          breakdown: {
+            operations: 60000,
+            marketing: 15000,
+            technology: 10000,
+            personnel: 15000
+          }
+        }
+      },
+      operational: {
+        efficiency: {
+          serviceTime: 45, // minutes
+          target: 30,
+          improvement: 12.5
+        },
+        capacity: {
+          utilization: 78.5,
+          target: 85.0,
+          available: 21.5
+        },
+        quality: {
+          satisfaction: 4.2,
+          complaints: 2.1, // per 100 services
+          target: 1.5
+        }
+      },
+      customer: {
+        acquisition: {
+          newCustomers: 45,
+          cost: 125, // per customer
+          target: 100
+        },
+        retention: {
+          rate: 78.5,
+          target: 80.0,
+          churn: 2.1
+        },
+        lifetime: {
+          value: 2500,
+          target: 3000,
+          growth: 8.2
+        }
+      },
+      market: {
+        share: 2.5,
+        growth: 8.2,
+        position: 4,
+        competition: 'moderate'
+      },
+      trends: {
+        daily: [
+          { date: '2024-09-08', revenue: 850, customers: 12, satisfaction: 4.1 },
+          { date: '2024-09-09', revenue: 920, customers: 15, satisfaction: 4.2 },
+          { date: '2024-09-10', revenue: 780, customers: 10, satisfaction: 4.3 },
+          { date: '2024-09-11', revenue: 1100, customers: 18, satisfaction: 4.2 },
+          { date: '2024-09-12', revenue: 950, customers: 14, satisfaction: 4.4 },
+          { date: '2024-09-13', revenue: 1050, customers: 16, satisfaction: 4.2 },
+          { date: '2024-09-14', revenue: 892, customers: 13, satisfaction: 4.2 }
+        ]
+      }
+    };
+
+    res.json({
+      success: true,
+      data: { metrics: businessMetrics },
+      message: 'Business metrics retrieved successfully',
+      timestamp: new Date().toISOString()
+    });
+
+  } catch (error) {
+    logger.error('❌ Get business metrics error:', error);
+    res.status(500).json({
+      success: false,
+      error: 'GET_BUSINESS_METRICS_FAILED',
+      message: 'Failed to get business metrics',
       timestamp: new Date().toISOString()
     });
   }
