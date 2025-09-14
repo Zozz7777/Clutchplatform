@@ -1,0 +1,55 @@
+{
+  "server": "https://clutch-main-nk7x.onrender.com",
+  "summary": {
+    "total": 7,
+    "passed": 5,
+    "failed": 2,
+    "successRate": 71.4,
+    "duration": 3526
+  },
+  "tests": [
+    {
+      "name": "Health Endpoint",
+      "success": false,
+      "duration": 744,
+      "error": "Environment should be production"
+    },
+    {
+      "name": "Ping Endpoint",
+      "success": true,
+      "duration": 282,
+      "error": null
+    },
+    {
+      "name": "System Version",
+      "success": true,
+      "duration": 262,
+      "error": null
+    },
+    {
+      "name": "404 Handling",
+      "success": true,
+      "duration": 667,
+      "error": null
+    },
+    {
+      "name": "Response Time",
+      "success": true,
+      "duration": 250,
+      "error": null
+    },
+    {
+      "name": "Concurrent Requests",
+      "success": true,
+      "duration": 847,
+      "error": null
+    },
+    {
+      "name": "Endpoint Availability",
+      "success": false,
+      "duration": 265,
+      "error": "Health endpoint should return endpoints information"
+    }
+  ],
+  "timestamp": "2025-09-14T12:48:00.862Z"
+}

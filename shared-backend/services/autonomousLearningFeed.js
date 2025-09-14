@@ -647,5 +647,6 @@ class AutonomousLearningFeed {
       this.logger.error('Failed to process comprehensive fixes:', error);
     }
   }
+}
 
 module.exports = AutonomousLearningFeed;

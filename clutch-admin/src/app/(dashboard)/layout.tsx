@@ -812,6 +812,7 @@ const UserMenuDropdown = ({ isOpen, onClose }: { isOpen: boolean; onClose: () =>
        onSearchClick: () => void
        onKeyboardShortcutsClick: () => void
      }) => {
+       // All hooks must be called at the top level
        const { sidebarCollapsed, toggleSidebar, notifications } = useUIStore()
        const { user } = useAuthStore()
        const { theme, setTheme, resolvedTheme } = useTheme()
@@ -824,23 +825,23 @@ const UserMenuDropdown = ({ isOpen, onClose }: { isOpen: boolean; onClose: () =>
        const router = useRouter()
        const pathname = usePathname()
 
-  // Initialize keyboard shortcuts
-  useKeyboardShortcuts()
+       // Initialize keyboard shortcuts
+       useKeyboardShortcuts()
 
-  // Ensure theme is mounted before rendering
-  useEffect(() => {
-    setMounted(true)
-  }, [])
+       // Ensure theme is mounted before rendering
+       useEffect(() => {
+         setMounted(true)
+       }, [])
 
-  // Listen for keyboard shortcuts events
-  useEffect(() => {
-    const handleKeyboardShortcutsEvent = () => {
-      onKeyboardShortcutsClick()
-    }
+       // Listen for keyboard shortcuts events
+       useEffect(() => {
+         const handleKeyboardShortcutsEvent = () => {
+           onKeyboardShortcutsClick()
+         }
 
-    window.addEventListener('open-keyboard-shortcuts', handleKeyboardShortcutsEvent)
-    return () => window.removeEventListener('open-keyboard-shortcuts', handleKeyboardShortcutsEvent)
-  }, [onKeyboardShortcutsClick])
+         window.addEventListener('open-keyboard-shortcuts', handleKeyboardShortcutsEvent)
+         return () => window.removeEventListener('open-keyboard-shortcuts', handleKeyboardShortcutsEvent)
+       }, [onKeyboardShortcutsClick])
 
   const toggleTheme = () => {
     if (mounted) {

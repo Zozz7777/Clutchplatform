@@ -6,6 +6,11 @@
 import '@testing-library/jest-dom'
 import { configure } from '@testing-library/react'
 
+// Polyfill for TextEncoder/TextDecoder (needed for MSW)
+import { TextEncoder, TextDecoder } from 'util'
+global.TextEncoder = TextEncoder
+global.TextDecoder = TextDecoder as any
+
 // Configure testing library
 configure({
   testIdAttribute: 'data-testid',

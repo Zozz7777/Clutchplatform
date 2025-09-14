@@ -275,8 +275,8 @@ class ProductionMonitoringService extends EventEmitter {
       
       for (const interfaceName in networkInterfaces) {
         const interfaces = networkInterfaces[interfaceName];
-        for (const interface of interfaces) {
-          if (interface.family === 'IPv4' && !interface.internal) {
+        for (const networkInterface of interfaces) {
+          if (networkInterface.family === 'IPv4' && !networkInterface.internal) {
             // This is a simplified approach - in production, you'd want to track actual network usage
             totalBytesIn += Math.random() * 1000000; // Mock data
             totalBytesOut += Math.random() * 1000000; // Mock data

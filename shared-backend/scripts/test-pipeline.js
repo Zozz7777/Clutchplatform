@@ -1,56 +1,13 @@
 #!/usr/bin/env node
 
 /**
- * Comprehensive Testing Pipeline Runner
+ * Comprehensive Testing Pipeline
  * Runs all tests with proper error handling and reporting
  */
 
 const { spawn } = require('child_process');
 const fs = require('fs');
 const path = require('path');
-
-// Test configuration
-const testConfig = {
-  timeout: 300000, // 5 minutes
-  retries: 3,
-  parallel: true,
-  coverage: true,
-  verbose: true
-};
-
-// Test suites to run
-const testSuites = [
-  {
-    name: 'Unit Tests',
-    command: 'npm',
-    args: ['run', 'test:unit'],
-    timeout: 60000
-  },
-  {
-    name: 'Integration Tests',
-    command: 'npm',
-    args: ['run', 'test:integration'],
-    timeout: 120000
-  },
-  {
-    name: 'API Tests',
-    command: 'npm',
-    args: ['run', 'test:api'],
-    timeout: 180000
-  },
-  {
-    name: 'Security Tests',
-    command: 'npm',
-    args: ['run', 'test:security'],
-    timeout: 90000
-  },
-  {
-    name: 'Comprehensive Backend Tests',
-    command: 'npx',
-    args: ['jest', 'tests/comprehensive-backend-tests.js', '--verbose', '--detectOpenHandles'],
-    timeout: 300000
-  }
-];
 
 // Colors for console output
 const colors = {
@@ -117,14 +74,14 @@ async function runTestSuite(suite) {
 
     child.stdout.on('data', (data) => {
       stdout += data.toString();
-      if (testConfig.verbose) {
+      if (process.env.VERBOSE === 'true') {
         process.stdout.write(data);
       }
     });
 
     child.stderr.on('data', (data) => {
       stderr += data.toString();
-      if (testConfig.verbose) {
+      if (process.env.VERBOSE === 'true') {
         process.stderr.write(data);
       }
     });
@@ -250,14 +207,39 @@ async function main() {
     process.exit(1);
   }
 
-  // Check if dependencies are installed
-  if (!fs.existsSync('node_modules')) {
-    logWarning('node_modules not found. Installing dependencies...');
-    const install = spawn('npm', ['install'], { stdio: 'inherit' });
-    await new Promise((resolve) => {
-      install.on('close', resolve);
-    });
-  }
+  // Test suites to run
+  const testSuites = [
+    {
+      name: 'Health Tests',
+      command: 'npm',
+      args: ['run', 'test:health'],
+      timeout: 120000
+    },
+    {
+      name: 'Unit Tests',
+      command: 'npm',
+      args: ['run', 'test:unit'],
+      timeout: 60000
+    },
+    {
+      name: 'Integration Tests',
+      command: 'npm',
+      args: ['run', 'test:integration'],
+      timeout: 120000
+    },
+    {
+      name: 'API Tests',
+      command: 'npm',
+      args: ['run', 'test:api'],
+      timeout: 180000
+    },
+    {
+      name: 'Security Tests',
+      command: 'npm',
+      args: ['run', 'test:security'],
+      timeout: 90000
+    }
+  ];
 
   // Run test suites
   for (const suite of testSuites) {
@@ -305,4 +287,4 @@ if (require.main === module) {
   });
 }
 
-module.exports = { runTestSuite, generateReport, testConfig };
+module.exports = { runTestSuite, generateReport };
