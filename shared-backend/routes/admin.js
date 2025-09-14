@@ -1573,4 +1573,1214 @@ router.put('/revenue/pricing/:id', authenticateToken, requireRole(['admin']), as
   }
 });
 
+// ============================================================================
+// ADMIN FEATURE FLAGS ENDPOINTS
+// ============================================================================
+
+// GET /api/v1/admin/feature-flags - Get all feature flags
+router.get('/feature-flags', authenticateToken, requireRole(['admin']), async (req, res) => {
+  try {
+    const featureFlags = [
+      {
+        id: 'flag-1',
+        name: 'dark_mode',
+        description: 'Enable dark mode for the application',
+        isEnabled: true,
+        rolloutPercentage: 100,
+        targetUsers: ['all'],
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString()
+      },
+      {
+        id: 'flag-2',
+        name: 'ai_recommendations',
+        description: 'Enable AI-powered recommendations',
+        isEnabled: false,
+        rolloutPercentage: 25,
+        targetUsers: ['premium'],
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString()
+      }
+    ];
+
+    res.json({
+      success: true,
+      data: { featureFlags },
+      message: 'Feature flags retrieved successfully',
+      timestamp: new Date().toISOString()
+    });
+
+  } catch (error) {
+    logger.error('❌ Get feature flags error:', error);
+    res.status(500).json({
+      success: false,
+      error: 'GET_FEATURE_FLAGS_FAILED',
+      message: 'Failed to get feature flags',
+      timestamp: new Date().toISOString()
+    });
+  }
+});
+
+// GET /api/v1/admin/feature-flags/:id - Get specific feature flag
+router.get('/feature-flags/:id', authenticateToken, requireRole(['admin']), async (req, res) => {
+  try {
+    const { id } = req.params;
+    
+    const featureFlag = {
+      id: id,
+      name: 'dark_mode',
+      description: 'Enable dark mode for the application',
+      isEnabled: true,
+      rolloutPercentage: 100,
+      targetUsers: ['all'],
+      conditions: {
+        userRoles: ['user', 'employee', 'admin'],
+        regions: ['US', 'EU'],
+        devices: ['web', 'mobile']
+      },
+      metrics: {
+        impressions: 1250,
+        conversions: 980,
+        conversionRate: 78.4
+      },
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString()
+    };
+
+    res.json({
+      success: true,
+      data: { featureFlag },
+      message: 'Feature flag retrieved successfully',
+      timestamp: new Date().toISOString()
+    });
+
+  } catch (error) {
+    logger.error('❌ Get feature flag error:', error);
+    res.status(500).json({
+      success: false,
+      error: 'GET_FEATURE_FLAG_FAILED',
+      message: 'Failed to get feature flag',
+      timestamp: new Date().toISOString()
+    });
+  }
+});
+
+// PUT /api/v1/admin/feature-flags/:id/toggle - Toggle feature flag
+router.put('/feature-flags/:id/toggle', authenticateToken, requireRole(['admin']), async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { isEnabled, rolloutPercentage } = req.body;
+    
+    const updatedFlag = {
+      id: id,
+      isEnabled: isEnabled !== undefined ? isEnabled : true,
+      rolloutPercentage: rolloutPercentage || 100,
+      updatedAt: new Date().toISOString(),
+      updatedBy: req.user.email
+    };
+
+    res.json({
+      success: true,
+      data: { featureFlag: updatedFlag },
+      message: 'Feature flag toggled successfully',
+      timestamp: new Date().toISOString()
+    });
+
+  } catch (error) {
+    logger.error('❌ Toggle feature flag error:', error);
+    res.status(500).json({
+      success: false,
+      error: 'TOGGLE_FEATURE_FLAG_FAILED',
+      message: 'Failed to toggle feature flag',
+      timestamp: new Date().toISOString()
+    });
+  }
+});
+
+// ============================================================================
+// ADMIN INCIDENT MANAGEMENT ENDPOINTS
+// ============================================================================
+
+// GET /api/v1/admin/incidents - Get all incidents
+router.get('/incidents', authenticateToken, requireRole(['admin']), async (req, res) => {
+  try {
+    const { page = 1, limit = 20, status, severity } = req.query;
+    
+    const incidents = [
+      {
+        id: 'incident-1',
+        title: 'Database Connection Timeout',
+        description: 'Users experiencing slow response times',
+        severity: 'high',
+        status: 'investigating',
+        affectedServices: ['database', 'api'],
+        reportedBy: 'system-monitor',
+        assignedTo: 'admin@example.com',
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString()
+      },
+      {
+        id: 'incident-2',
+        title: 'Payment Gateway Error',
+        description: 'Payment processing failures',
+        severity: 'critical',
+        status: 'resolved',
+        affectedServices: ['payment-gateway'],
+        reportedBy: 'user-feedback',
+        assignedTo: 'admin@example.com',
+        createdAt: new Date(Date.now() - 86400000).toISOString(),
+        updatedAt: new Date().toISOString()
+      }
+    ];
+
+    res.json({
+      success: true,
+      data: { 
+        incidents,
+        pagination: {
+          page: parseInt(page),
+          limit: parseInt(limit),
+          total: incidents.length,
+          pages: Math.ceil(incidents.length / limit)
+        }
+      },
+      message: 'Incidents retrieved successfully',
+      timestamp: new Date().toISOString()
+    });
+
+  } catch (error) {
+    logger.error('❌ Get incidents error:', error);
+    res.status(500).json({
+      success: false,
+      error: 'GET_INCIDENTS_FAILED',
+      message: 'Failed to get incidents',
+      timestamp: new Date().toISOString()
+    });
+  }
+});
+
+// GET /api/v1/admin/incidents/:id - Get specific incident
+router.get('/incidents/:id', authenticateToken, requireRole(['admin']), async (req, res) => {
+  try {
+    const { id } = req.params;
+    
+    const incident = {
+      id: id,
+      title: 'Database Connection Timeout',
+      description: 'Users experiencing slow response times',
+      severity: 'high',
+      status: 'investigating',
+      affectedServices: ['database', 'api'],
+      reportedBy: 'system-monitor',
+      assignedTo: 'admin@example.com',
+      timeline: [
+        { timestamp: new Date().toISOString(), event: 'Incident reported', user: 'system-monitor' },
+        { timestamp: new Date().toISOString(), event: 'Investigation started', user: 'admin@example.com' }
+      ],
+      impact: {
+        affectedUsers: 1250,
+        estimatedDowntime: '2 hours',
+        businessImpact: 'High'
+      },
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString()
+    };
+
+    res.json({
+      success: true,
+      data: { incident },
+      message: 'Incident retrieved successfully',
+      timestamp: new Date().toISOString()
+    });
+
+  } catch (error) {
+    logger.error('❌ Get incident error:', error);
+    res.status(500).json({
+      success: false,
+      error: 'GET_INCIDENT_FAILED',
+      message: 'Failed to get incident',
+      timestamp: new Date().toISOString()
+    });
+  }
+});
+
+// PUT /api/v1/admin/incidents/:id/resolve - Resolve incident
+router.put('/incidents/:id/resolve', authenticateToken, requireRole(['admin']), async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { resolution, rootCause } = req.body;
+    
+    const resolvedIncident = {
+      id: id,
+      status: 'resolved',
+      resolution: resolution || 'Issue resolved',
+      rootCause: rootCause || 'Configuration issue',
+      resolvedBy: req.user.email,
+      resolvedAt: new Date().toISOString()
+    };
+
+    res.json({
+      success: true,
+      data: { incident: resolvedIncident },
+      message: 'Incident resolved successfully',
+      timestamp: new Date().toISOString()
+    });
+
+  } catch (error) {
+    logger.error('❌ Resolve incident error:', error);
+    res.status(500).json({
+      success: false,
+      error: 'RESOLVE_INCIDENT_FAILED',
+      message: 'Failed to resolve incident',
+      timestamp: new Date().toISOString()
+    });
+  }
+});
+
+// ============================================================================
+// ADMIN KNOWLEDGE BASE ENDPOINTS
+// ============================================================================
+
+// GET /api/v1/admin/knowledge-base - Get knowledge base articles
+router.get('/knowledge-base', authenticateToken, requireRole(['admin']), async (req, res) => {
+  try {
+    const { page = 1, limit = 20, category, search } = req.query;
+    
+    const articles = [
+      {
+        id: 'kb-1',
+        title: 'How to Reset Password',
+        content: 'Step-by-step guide to reset your password',
+        category: 'account',
+        tags: ['password', 'security', 'account'],
+        isPublished: true,
+        views: 1250,
+        helpful: 980,
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString()
+      },
+      {
+        id: 'kb-2',
+        title: 'API Integration Guide',
+        content: 'Complete guide to integrating with our API',
+        category: 'technical',
+        tags: ['api', 'integration', 'developer'],
+        isPublished: true,
+        views: 850,
+        helpful: 720,
+        createdAt: new Date(Date.now() - 86400000).toISOString(),
+        updatedAt: new Date().toISOString()
+      }
+    ];
+
+    res.json({
+      success: true,
+      data: { 
+        articles,
+        pagination: {
+          page: parseInt(page),
+          limit: parseInt(limit),
+          total: articles.length,
+          pages: Math.ceil(articles.length / limit)
+        }
+      },
+      message: 'Knowledge base articles retrieved successfully',
+      timestamp: new Date().toISOString()
+    });
+
+  } catch (error) {
+    logger.error('❌ Get knowledge base error:', error);
+    res.status(500).json({
+      success: false,
+      error: 'GET_KNOWLEDGE_BASE_FAILED',
+      message: 'Failed to get knowledge base articles',
+      timestamp: new Date().toISOString()
+    });
+  }
+});
+
+// GET /api/v1/admin/knowledge-base/:id - Get specific article
+router.get('/knowledge-base/:id', authenticateToken, requireRole(['admin']), async (req, res) => {
+  try {
+    const { id } = req.params;
+    
+    const article = {
+      id: id,
+      title: 'How to Reset Password',
+      content: 'Step-by-step guide to reset your password...',
+      category: 'account',
+      tags: ['password', 'security', 'account'],
+      isPublished: true,
+      author: 'admin@example.com',
+      views: 1250,
+      helpful: 980,
+      feedback: [
+        { rating: 5, comment: 'Very helpful!', user: 'user@example.com' },
+        { rating: 4, comment: 'Good guide', user: 'user2@example.com' }
+      ],
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString()
+    };
+
+    res.json({
+      success: true,
+      data: { article },
+      message: 'Knowledge base article retrieved successfully',
+      timestamp: new Date().toISOString()
+    });
+
+  } catch (error) {
+    logger.error('❌ Get knowledge base article error:', error);
+    res.status(500).json({
+      success: false,
+      error: 'GET_KNOWLEDGE_BASE_ARTICLE_FAILED',
+      message: 'Failed to get knowledge base article',
+      timestamp: new Date().toISOString()
+    });
+  }
+});
+
+// ============================================================================
+// ADMIN PARTNER MANAGEMENT ENDPOINTS
+// ============================================================================
+
+// GET /api/v1/admin/partners - Get all partners
+router.get('/partners', authenticateToken, requireRole(['admin']), async (req, res) => {
+  try {
+    const { page = 1, limit = 20, status, type } = req.query;
+    
+    const partners = [
+      {
+        id: 'partner-1',
+        name: 'AutoParts Plus',
+        type: 'supplier',
+        status: 'active',
+        contactEmail: 'contact@autopartsplus.com',
+        contactPhone: '+1-555-0123',
+        address: '123 Auto Parts St, Detroit, MI',
+        commission: 15.0,
+        totalOrders: 450,
+        totalRevenue: 125000,
+        joinedAt: new Date().toISOString()
+      },
+      {
+        id: 'partner-2',
+        name: 'Tech Solutions Inc',
+        type: 'technology',
+        status: 'pending',
+        contactEmail: 'info@techsolutions.com',
+        contactPhone: '+1-555-0456',
+        address: '456 Tech Ave, San Francisco, CA',
+        commission: 10.0,
+        totalOrders: 0,
+        totalRevenue: 0,
+        joinedAt: new Date(Date.now() - 86400000).toISOString()
+      }
+    ];
+
+    res.json({
+      success: true,
+      data: { 
+        partners,
+        pagination: {
+          page: parseInt(page),
+          limit: parseInt(limit),
+          total: partners.length,
+          pages: Math.ceil(partners.length / limit)
+        }
+      },
+      message: 'Partners retrieved successfully',
+      timestamp: new Date().toISOString()
+    });
+
+  } catch (error) {
+    logger.error('❌ Get partners error:', error);
+    res.status(500).json({
+      success: false,
+      error: 'GET_PARTNERS_FAILED',
+      message: 'Failed to get partners',
+      timestamp: new Date().toISOString()
+    });
+  }
+});
+
+// GET /api/v1/admin/partners/:id - Get specific partner
+router.get('/partners/:id', authenticateToken, requireRole(['admin']), async (req, res) => {
+  try {
+    const { id } = req.params;
+    
+    const partner = {
+      id: id,
+      name: 'AutoParts Plus',
+      type: 'supplier',
+      status: 'active',
+      contactEmail: 'contact@autopartsplus.com',
+      contactPhone: '+1-555-0123',
+      address: '123 Auto Parts St, Detroit, MI',
+      commission: 15.0,
+      contract: {
+        startDate: new Date().toISOString(),
+        endDate: new Date(Date.now() + 365 * 24 * 60 * 60 * 1000).toISOString(),
+        terms: 'Standard supplier agreement'
+      },
+      performance: {
+        totalOrders: 450,
+        totalRevenue: 125000,
+        averageOrderValue: 277.78,
+        rating: 4.8
+      },
+      joinedAt: new Date().toISOString()
+    };
+
+    res.json({
+      success: true,
+      data: { partner },
+      message: 'Partner retrieved successfully',
+      timestamp: new Date().toISOString()
+    });
+
+  } catch (error) {
+    logger.error('❌ Get partner error:', error);
+    res.status(500).json({
+      success: false,
+      error: 'GET_PARTNER_FAILED',
+      message: 'Failed to get partner',
+      timestamp: new Date().toISOString()
+    });
+  }
+});
+
+// ============================================================================
+// ADMIN ACTIVITY LOGS ENDPOINTS
+// ============================================================================
+
+// GET /api/v1/admin/activity-logs - Get activity logs
+router.get('/activity-logs', authenticateToken, requireRole(['admin']), async (req, res) => {
+  try {
+    const { page = 1, limit = 50, user, action, dateFrom, dateTo } = req.query;
+    
+    const activityLogs = [
+      {
+        id: 'log-1',
+        userId: 'user-1',
+        userEmail: 'john.doe@example.com',
+        action: 'user_login',
+        details: 'User logged in from Chrome on Windows',
+        ipAddress: '192.168.1.1',
+        userAgent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36',
+        timestamp: new Date().toISOString()
+      },
+      {
+        id: 'log-2',
+        userId: 'admin-1',
+        userEmail: 'admin@example.com',
+        action: 'user_created',
+        details: 'Created new user account for jane.smith@example.com',
+        ipAddress: '192.168.1.2',
+        userAgent: 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36',
+        timestamp: new Date(Date.now() - 3600000).toISOString()
+      }
+    ];
+
+    res.json({
+      success: true,
+      data: { 
+        logs: activityLogs,
+        pagination: {
+          page: parseInt(page),
+          limit: parseInt(limit),
+          total: activityLogs.length,
+          pages: Math.ceil(activityLogs.length / limit)
+        }
+      },
+      message: 'Activity logs retrieved successfully',
+      timestamp: new Date().toISOString()
+    });
+
+  } catch (error) {
+    logger.error('❌ Get activity logs error:', error);
+    res.status(500).json({
+      success: false,
+      error: 'GET_ACTIVITY_LOGS_FAILED',
+      message: 'Failed to get activity logs',
+      timestamp: new Date().toISOString()
+    });
+  }
+});
+
+// GET /api/v1/admin/activity/recent - Get recent activity
+router.get('/activity/recent', authenticateToken, requireRole(['admin']), async (req, res) => {
+  try {
+    const { limit = 10 } = req.query;
+    
+    const recentActivity = [
+      {
+        id: 'activity-1',
+        type: 'user_action',
+        user: 'john.doe@example.com',
+        action: 'profile_updated',
+        timestamp: new Date().toISOString(),
+        details: 'Updated profile information'
+      },
+      {
+        id: 'activity-2',
+        type: 'system_event',
+        action: 'backup_completed',
+        timestamp: new Date(Date.now() - 1800000).toISOString(),
+        details: 'Daily backup completed successfully'
+      },
+      {
+        id: 'activity-3',
+        type: 'admin_action',
+        user: 'admin@example.com',
+        action: 'feature_flag_toggled',
+        timestamp: new Date(Date.now() - 3600000).toISOString(),
+        details: 'Toggled dark_mode feature flag'
+      }
+    ];
+
+    res.json({
+      success: true,
+      data: { activities: recentActivity },
+      message: 'Recent activity retrieved successfully',
+      timestamp: new Date().toISOString()
+    });
+
+  } catch (error) {
+    logger.error('❌ Get recent activity error:', error);
+    res.status(500).json({
+      success: false,
+      error: 'GET_RECENT_ACTIVITY_FAILED',
+      message: 'Failed to get recent activity',
+      timestamp: new Date().toISOString()
+    });
+  }
+});
+
+// ============================================================================
+// ADMIN CHAT MANAGEMENT ENDPOINTS
+// ============================================================================
+
+// GET /api/v1/admin/chat/channels - Get chat channels
+router.get('/chat/channels', authenticateToken, requireRole(['admin']), async (req, res) => {
+  try {
+    const { page = 1, limit = 20, status } = req.query;
+    
+    const channels = [
+      {
+        id: 'channel-1',
+        name: 'General Support',
+        type: 'support',
+        status: 'active',
+        participants: 45,
+        lastMessage: 'Thank you for contacting support',
+        lastMessageAt: new Date().toISOString(),
+        createdAt: new Date().toISOString()
+      },
+      {
+        id: 'channel-2',
+        name: 'Technical Issues',
+        type: 'technical',
+        status: 'active',
+        participants: 23,
+        lastMessage: 'Issue has been resolved',
+        lastMessageAt: new Date(Date.now() - 3600000).toISOString(),
+        createdAt: new Date(Date.now() - 86400000).toISOString()
+      }
+    ];
+
+    res.json({
+      success: true,
+      data: { 
+        channels,
+        pagination: {
+          page: parseInt(page),
+          limit: parseInt(limit),
+          total: channels.length,
+          pages: Math.ceil(channels.length / limit)
+        }
+      },
+      message: 'Chat channels retrieved successfully',
+      timestamp: new Date().toISOString()
+    });
+
+  } catch (error) {
+    logger.error('❌ Get chat channels error:', error);
+    res.status(500).json({
+      success: false,
+      error: 'GET_CHAT_CHANNELS_FAILED',
+      message: 'Failed to get chat channels',
+      timestamp: new Date().toISOString()
+    });
+  }
+});
+
+// GET /api/v1/admin/chat/channels/:id/messages - Get channel messages
+router.get('/chat/channels/:id/messages', authenticateToken, requireRole(['admin']), async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { page = 1, limit = 50 } = req.query;
+    
+    const messages = [
+      {
+        id: 'msg-1',
+        channelId: id,
+        userId: 'user-1',
+        userEmail: 'john.doe@example.com',
+        message: 'I need help with my account',
+        timestamp: new Date().toISOString(),
+        isRead: true
+      },
+      {
+        id: 'msg-2',
+        channelId: id,
+        userId: 'admin-1',
+        userEmail: 'admin@example.com',
+        message: 'How can I help you today?',
+        timestamp: new Date(Date.now() - 1800000).toISOString(),
+        isRead: true
+      }
+    ];
+
+    res.json({
+      success: true,
+      data: { 
+        messages,
+        pagination: {
+          page: parseInt(page),
+          limit: parseInt(limit),
+          total: messages.length,
+          pages: Math.ceil(messages.length / limit)
+        }
+      },
+      message: 'Channel messages retrieved successfully',
+      timestamp: new Date().toISOString()
+    });
+
+  } catch (error) {
+    logger.error('❌ Get channel messages error:', error);
+    res.status(500).json({
+      success: false,
+      error: 'GET_CHANNEL_MESSAGES_FAILED',
+      message: 'Failed to get channel messages',
+      timestamp: new Date().toISOString()
+    });
+  }
+});
+
+// ============================================================================
+// ADMIN DRIVERS MANAGEMENT ENDPOINTS
+// ============================================================================
+
+// GET /api/v1/admin/drivers - Get all drivers
+router.get('/drivers', authenticateToken, requireRole(['admin']), async (req, res) => {
+  try {
+    const { page = 1, limit = 20, status, location } = req.query;
+    
+    const drivers = [
+      {
+        id: 'driver-1',
+        name: 'John Smith',
+        email: 'john.smith@example.com',
+        phone: '+1-555-0123',
+        licenseNumber: 'DL123456789',
+        status: 'active',
+        location: {
+          latitude: 40.7128,
+          longitude: -74.0060,
+          address: 'New York, NY'
+        },
+        rating: 4.8,
+        totalTrips: 1250,
+        joinedAt: new Date().toISOString()
+      },
+      {
+        id: 'driver-2',
+        name: 'Jane Doe',
+        email: 'jane.doe@example.com',
+        phone: '+1-555-0456',
+        licenseNumber: 'DL987654321',
+        status: 'offline',
+        location: {
+          latitude: 34.0522,
+          longitude: -118.2437,
+          address: 'Los Angeles, CA'
+        },
+        rating: 4.9,
+        totalTrips: 980,
+        joinedAt: new Date(Date.now() - 86400000).toISOString()
+      }
+    ];
+
+    res.json({
+      success: true,
+      data: { 
+        drivers,
+        pagination: {
+          page: parseInt(page),
+          limit: parseInt(limit),
+          total: drivers.length,
+          pages: Math.ceil(drivers.length / limit)
+        }
+      },
+      message: 'Drivers retrieved successfully',
+      timestamp: new Date().toISOString()
+    });
+
+  } catch (error) {
+    logger.error('❌ Get drivers error:', error);
+    res.status(500).json({
+      success: false,
+      error: 'GET_DRIVERS_FAILED',
+      message: 'Failed to get drivers',
+      timestamp: new Date().toISOString()
+    });
+  }
+});
+
+// GET /api/v1/admin/drivers/:id - Get specific driver
+router.get('/drivers/:id', authenticateToken, requireRole(['admin']), async (req, res) => {
+  try {
+    const { id } = req.params;
+    
+    const driver = {
+      id: id,
+      name: 'John Smith',
+      email: 'john.smith@example.com',
+      phone: '+1-555-0123',
+      licenseNumber: 'DL123456789',
+      status: 'active',
+      location: {
+        latitude: 40.7128,
+        longitude: -74.0060,
+        address: 'New York, NY'
+      },
+      vehicle: {
+        make: 'Toyota',
+        model: 'Camry',
+        year: 2020,
+        licensePlate: 'ABC123',
+        color: 'Silver'
+      },
+      rating: 4.8,
+      totalTrips: 1250,
+      earnings: {
+        total: 25000,
+        thisMonth: 2500,
+        lastMonth: 2200
+      },
+      joinedAt: new Date().toISOString()
+    };
+
+    res.json({
+      success: true,
+      data: { driver },
+      message: 'Driver retrieved successfully',
+      timestamp: new Date().toISOString()
+    });
+
+  } catch (error) {
+    logger.error('❌ Get driver error:', error);
+    res.status(500).json({
+      success: false,
+      error: 'GET_DRIVER_FAILED',
+      message: 'Failed to get driver',
+      timestamp: new Date().toISOString()
+    });
+  }
+});
+
+// PUT /api/v1/admin/drivers/:id/status - Update driver status
+router.put('/drivers/:id/status', authenticateToken, requireRole(['admin']), async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { status, reason } = req.body;
+    
+    const updatedDriver = {
+      id: id,
+      status: status || 'active',
+      reason: reason || 'Status updated by admin',
+      updatedAt: new Date().toISOString(),
+      updatedBy: req.user.email
+    };
+
+    res.json({
+      success: true,
+      data: { driver: updatedDriver },
+      message: 'Driver status updated successfully',
+      timestamp: new Date().toISOString()
+    });
+
+  } catch (error) {
+    logger.error('❌ Update driver status error:', error);
+    res.status(500).json({
+      success: false,
+      error: 'UPDATE_DRIVER_STATUS_FAILED',
+      message: 'Failed to update driver status',
+      timestamp: new Date().toISOString()
+    });
+  }
+});
+
+// ============================================================================
+// ADMIN ORDERS MANAGEMENT ENDPOINTS
+// ============================================================================
+
+// GET /api/v1/admin/orders - Get all orders
+router.get('/orders', authenticateToken, requireRole(['admin']), async (req, res) => {
+  try {
+    const { page = 1, limit = 20, status, dateFrom, dateTo } = req.query;
+    
+    const orders = [
+      {
+        id: 'order-1',
+        customerId: 'customer-1',
+        customerEmail: 'john.doe@example.com',
+        items: [
+          { name: 'Oil Change', price: 29.99, quantity: 1 },
+          { name: 'Tire Rotation', price: 19.99, quantity: 1 }
+        ],
+        total: 49.98,
+        status: 'completed',
+        paymentStatus: 'paid',
+        createdAt: new Date().toISOString(),
+        completedAt: new Date().toISOString()
+      },
+      {
+        id: 'order-2',
+        customerId: 'customer-2',
+        customerEmail: 'jane.smith@example.com',
+        items: [
+          { name: 'Brake Inspection', price: 39.99, quantity: 1 }
+        ],
+        total: 39.99,
+        status: 'pending',
+        paymentStatus: 'pending',
+        createdAt: new Date(Date.now() - 3600000).toISOString(),
+        completedAt: null
+      }
+    ];
+
+    res.json({
+      success: true,
+      data: { 
+        orders,
+        pagination: {
+          page: parseInt(page),
+          limit: parseInt(limit),
+          total: orders.length,
+          pages: Math.ceil(orders.length / limit)
+        }
+      },
+      message: 'Orders retrieved successfully',
+      timestamp: new Date().toISOString()
+    });
+
+  } catch (error) {
+    logger.error('❌ Get orders error:', error);
+    res.status(500).json({
+      success: false,
+      error: 'GET_ORDERS_FAILED',
+      message: 'Failed to get orders',
+      timestamp: new Date().toISOString()
+    });
+  }
+});
+
+// GET /api/v1/admin/orders/:id - Get specific order
+router.get('/orders/:id', authenticateToken, requireRole(['admin']), async (req, res) => {
+  try {
+    const { id } = req.params;
+    
+    const order = {
+      id: id,
+      customerId: 'customer-1',
+      customerEmail: 'john.doe@example.com',
+      customerInfo: {
+        name: 'John Doe',
+        phone: '+1-555-0123',
+        address: '123 Main St, New York, NY'
+      },
+      items: [
+        { name: 'Oil Change', price: 29.99, quantity: 1, description: 'Full synthetic oil change' },
+        { name: 'Tire Rotation', price: 19.99, quantity: 1, description: 'Rotate all four tires' }
+      ],
+      total: 49.98,
+      tax: 4.00,
+      totalWithTax: 53.98,
+      status: 'completed',
+      paymentStatus: 'paid',
+      paymentMethod: 'credit_card',
+      notes: 'Customer requested early morning appointment',
+      createdAt: new Date().toISOString(),
+      completedAt: new Date().toISOString()
+    };
+
+    res.json({
+      success: true,
+      data: { order },
+      message: 'Order retrieved successfully',
+      timestamp: new Date().toISOString()
+    });
+
+  } catch (error) {
+    logger.error('❌ Get order error:', error);
+    res.status(500).json({
+      success: false,
+      error: 'GET_ORDER_FAILED',
+      message: 'Failed to get order',
+      timestamp: new Date().toISOString()
+    });
+  }
+});
+
+// PUT /api/v1/admin/orders/:id/status - Update order status
+router.put('/orders/:id/status', authenticateToken, requireRole(['admin']), async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { status, notes } = req.body;
+    
+    const updatedOrder = {
+      id: id,
+      status: status || 'pending',
+      notes: notes || 'Status updated by admin',
+      updatedAt: new Date().toISOString(),
+      updatedBy: req.user.email
+    };
+
+    res.json({
+      success: true,
+      data: { order: updatedOrder },
+      message: 'Order status updated successfully',
+      timestamp: new Date().toISOString()
+    });
+
+  } catch (error) {
+    logger.error('❌ Update order status error:', error);
+    res.status(500).json({
+      success: false,
+      error: 'UPDATE_ORDER_STATUS_FAILED',
+      message: 'Failed to update order status',
+      timestamp: new Date().toISOString()
+    });
+  }
+});
+
+// ============================================================================
+// ADMIN ALERTS ENDPOINT
+// ============================================================================
+
+// GET /api/v1/admin/alerts - Get system alerts
+router.get('/alerts', authenticateToken, requireRole(['admin']), async (req, res) => {
+  try {
+    const { page = 1, limit = 20, severity, status } = req.query;
+    
+    const alerts = [
+      {
+        id: 'alert-1',
+        title: 'High CPU Usage',
+        message: 'CPU usage is above 80%',
+        severity: 'warning',
+        status: 'active',
+        source: 'system-monitor',
+        timestamp: new Date().toISOString(),
+        acknowledged: false
+      },
+      {
+        id: 'alert-2',
+        title: 'Database Connection Pool Exhausted',
+        message: 'Database connection pool is at 95% capacity',
+        severity: 'critical',
+        status: 'resolved',
+        source: 'database-monitor',
+        timestamp: new Date(Date.now() - 3600000).toISOString(),
+        acknowledged: true
+      }
+    ];
+
+    res.json({
+      success: true,
+      data: { 
+        alerts,
+        pagination: {
+          page: parseInt(page),
+          limit: parseInt(limit),
+          total: alerts.length,
+          pages: Math.ceil(alerts.length / limit)
+        }
+      },
+      message: 'Alerts retrieved successfully',
+      timestamp: new Date().toISOString()
+    });
+
+  } catch (error) {
+    logger.error('❌ Get alerts error:', error);
+    res.status(500).json({
+      success: false,
+      error: 'GET_ALERTS_FAILED',
+      message: 'Failed to get alerts',
+      timestamp: new Date().toISOString()
+    });
+  }
+});
+
+// ============================================================================
+// ADMIN PLATFORM SERVICES ENDPOINT
+// ============================================================================
+
+// GET /api/v1/admin/platform/services - Get platform services
+router.get('/platform/services', authenticateToken, requireRole(['admin']), async (req, res) => {
+  try {
+    const services = [
+      {
+        name: 'API Gateway',
+        status: 'healthy',
+        version: '1.2.3',
+        uptime: 99.9,
+        responseTime: 45,
+        lastDeployment: new Date().toISOString(),
+        endpoints: 150
+      },
+      {
+        name: 'Database',
+        status: 'healthy',
+        version: '2.1.0',
+        uptime: 99.8,
+        responseTime: 12,
+        lastDeployment: new Date(Date.now() - 86400000).toISOString(),
+        connections: 25
+      },
+      {
+        name: 'Payment Gateway',
+        status: 'degraded',
+        version: '1.0.5',
+        uptime: 98.5,
+        responseTime: 150,
+        lastDeployment: new Date(Date.now() - 172800000).toISOString(),
+        transactions: 1250
+      }
+    ];
+
+    res.json({
+      success: true,
+      data: { services },
+      message: 'Platform services retrieved successfully',
+      timestamp: new Date().toISOString()
+    });
+
+  } catch (error) {
+    logger.error('❌ Get platform services error:', error);
+    res.status(500).json({
+      success: false,
+      error: 'GET_PLATFORM_SERVICES_FAILED',
+      message: 'Failed to get platform services',
+      timestamp: new Date().toISOString()
+    });
+  }
+});
+
+// ============================================================================
+// ADMIN REALTIME METRICS ENDPOINT
+// ============================================================================
+
+// GET /api/v1/admin/realtime/metrics - Get realtime metrics
+router.get('/realtime/metrics', authenticateToken, requireRole(['admin']), async (req, res) => {
+  try {
+    const metrics = {
+      system: {
+        cpuUsage: 45.2,
+        memoryUsage: 67.8,
+        diskUsage: 34.5,
+        networkLatency: 12.3
+      },
+      application: {
+        activeUsers: 125,
+        requestsPerSecond: 45,
+        averageResponseTime: 245,
+        errorRate: 0.1
+      },
+      business: {
+        activeOrders: 23,
+        completedOrders: 156,
+        revenue: 12500,
+        newCustomers: 8
+      },
+      lastUpdated: new Date().toISOString()
+    };
+
+    res.json({
+      success: true,
+      data: { metrics },
+      message: 'Realtime metrics retrieved successfully',
+      timestamp: new Date().toISOString()
+    });
+
+  } catch (error) {
+    logger.error('❌ Get realtime metrics error:', error);
+    res.status(500).json({
+      success: false,
+      error: 'GET_REALTIME_METRICS_FAILED',
+      message: 'Failed to get realtime metrics',
+      timestamp: new Date().toISOString()
+    });
+  }
+});
+
+// ============================================================================
+// ADMIN SYSTEM MAINTENANCE ENDPOINT
+// ============================================================================
+
+// GET /api/v1/admin/system/maintenance - Get system maintenance
+router.get('/system/maintenance', authenticateToken, requireRole(['admin']), async (req, res) => {
+  try {
+    const maintenance = {
+      scheduledMaintenance: [
+        {
+          id: 'maint-1',
+          title: 'Database Optimization',
+          description: 'Scheduled database optimization and cleanup',
+          scheduledAt: new Date(Date.now() + 86400000).toISOString(),
+          estimatedDuration: '2 hours',
+          status: 'scheduled'
+        },
+        {
+          id: 'maint-2',
+          title: 'Security Updates',
+          description: 'Apply latest security patches',
+          scheduledAt: new Date(Date.now() + 172800000).toISOString(),
+          estimatedDuration: '1 hour',
+          status: 'scheduled'
+        }
+      ],
+      lastMaintenance: {
+        title: 'System Backup',
+        completedAt: new Date(Date.now() - 86400000).toISOString(),
+        duration: '45 minutes',
+        status: 'completed'
+      },
+      maintenanceWindow: {
+        start: '02:00',
+        end: '06:00',
+        timezone: 'UTC'
+      }
+    };
+
+    res.json({
+      success: true,
+      data: { maintenance },
+      message: 'System maintenance information retrieved successfully',
+      timestamp: new Date().toISOString()
+    });
+
+  } catch (error) {
+    logger.error('❌ Get system maintenance error:', error);
+    res.status(500).json({
+      success: false,
+      error: 'GET_SYSTEM_MAINTENANCE_FAILED',
+      message: 'Failed to get system maintenance information',
+      timestamp: new Date().toISOString()
+    });
+  }
+});
+
 module.exports = router;
