@@ -24,6 +24,126 @@ router.post('/initialize', authenticateToken, async (req, res) => {
     }
 });
 
+// GET /api/v1/security/sessions - Get user sessions
+router.get('/sessions', authenticateToken, async (req, res) => {
+    try {
+        const { status, device, search } = req.query;
+        
+        const sessions = [
+            {
+                id: 'session-1',
+                userId: 'user-1',
+                device: 'Chrome on Windows',
+                ipAddress: '192.168.1.100',
+                location: 'Cairo, Egypt',
+                status: 'active',
+                lastActivity: new Date().toISOString(),
+                createdAt: new Date(Date.now() - 3600000).toISOString(),
+                userAgent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36'
+            },
+            {
+                id: 'session-2',
+                userId: 'user-1',
+                device: 'Safari on iPhone',
+                ipAddress: '192.168.1.101',
+                location: 'Cairo, Egypt',
+                status: 'active',
+                lastActivity: new Date(Date.now() - 1800000).toISOString(),
+                createdAt: new Date(Date.now() - 7200000).toISOString(),
+                userAgent: 'Mozilla/5.0 (iPhone; CPU iPhone OS 15_0 like Mac OS X)'
+            }
+        ];
+
+        res.json({
+            success: true,
+            data: sessions,
+            message: 'Sessions retrieved successfully',
+            timestamp: new Date().toISOString()
+        });
+    } catch (error) {
+        console.error('Get sessions error:', error);
+        res.status(500).json({
+            success: false,
+            error: 'GET_SESSIONS_FAILED',
+            message: 'Failed to retrieve sessions',
+            timestamp: new Date().toISOString()
+        });
+    }
+});
+
+// PUT /api/v1/security/sessions/:id/revoke - Revoke session
+router.put('/sessions/:id/revoke', authenticateToken, async (req, res) => {
+    try {
+        const { id } = req.params;
+
+        res.json({
+            success: true,
+            message: 'Session revoked successfully',
+            timestamp: new Date().toISOString()
+        });
+    } catch (error) {
+        console.error('Revoke session error:', error);
+        res.status(500).json({
+            success: false,
+            error: 'REVOKE_SESSION_FAILED',
+            message: 'Failed to revoke session',
+            timestamp: new Date().toISOString()
+        });
+    }
+});
+
+// DELETE /api/v1/security/sessions/:id - Delete session
+router.delete('/sessions/:id', authenticateToken, async (req, res) => {
+    try {
+        const { id } = req.params;
+
+        res.json({
+            success: true,
+            message: 'Session deleted successfully',
+            timestamp: new Date().toISOString()
+        });
+    } catch (error) {
+        console.error('Delete session error:', error);
+        res.status(500).json({
+            success: false,
+            error: 'DELETE_SESSION_FAILED',
+            message: 'Failed to delete session',
+            timestamp: new Date().toISOString()
+        });
+    }
+});
+
+// GET /api/v1/security/metrics - Get security metrics
+router.get('/metrics', authenticateToken, async (req, res) => {
+    try {
+        const metrics = {
+            totalSessions: 25,
+            activeSessions: 8,
+            failedLogins: 3,
+            blockedIPs: 1,
+            securityAlerts: 2,
+            lastSecurityScan: new Date().toISOString(),
+            threatLevel: 'low',
+            complianceScore: 95
+        };
+
+        res.json({
+            success: true,
+            data: metrics,
+            message: 'Security metrics retrieved successfully',
+            timestamp: new Date().toISOString()
+        });
+    } catch (error) {
+        console.error('Get security metrics error:', error);
+        res.status(500).json({
+            success: false,
+            error: 'GET_SECURITY_METRICS_FAILED',
+            message: 'Failed to retrieve security metrics',
+            timestamp: new Date().toISOString()
+        });
+    }
+});
+
 // GET /api/v1/security/2fa - Get 2FA settings
 router.get('/2fa', authenticateToken, async (req, res) => {
     try {

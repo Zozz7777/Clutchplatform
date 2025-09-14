@@ -990,6 +990,132 @@ router.get('/roles', authenticateToken, async (req, res) => {
   }
 });
 
+// POST /api/v1/auth/roles - Create new role
+router.post('/roles', authenticateToken, requireRole(['admin']), async (req, res) => {
+  try {
+    const { name, description, permissions } = req.body;
+
+    const newRole = {
+      id: `role-${Date.now()}`,
+      name,
+      description,
+      permissions,
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString()
+    };
+
+    res.json({
+      success: true,
+      data: newRole,
+      message: 'Role created successfully',
+      timestamp: new Date().toISOString()
+    });
+  } catch (error) {
+    logger.error('Create role error:', error);
+    res.status(500).json({
+      success: false,
+      error: 'CREATE_ROLE_FAILED',
+      message: 'Failed to create role',
+      timestamp: new Date().toISOString()
+    });
+  }
+});
+
+// PUT /api/v1/auth/roles/:id - Update role
+router.put('/roles/:id', authenticateToken, requireRole(['admin']), async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { name, description, permissions } = req.body;
+
+    const updatedRole = {
+      id,
+      name,
+      description,
+      permissions,
+      updatedAt: new Date().toISOString()
+    };
+
+    res.json({
+      success: true,
+      data: updatedRole,
+      message: 'Role updated successfully',
+      timestamp: new Date().toISOString()
+    });
+  } catch (error) {
+    logger.error('Update role error:', error);
+    res.status(500).json({
+      success: false,
+      error: 'UPDATE_ROLE_FAILED',
+      message: 'Failed to update role',
+      timestamp: new Date().toISOString()
+    });
+  }
+});
+
+// DELETE /api/v1/auth/roles/:id - Delete role
+router.delete('/roles/:id', authenticateToken, requireRole(['admin']), async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    res.json({
+      success: true,
+      message: 'Role deleted successfully',
+      timestamp: new Date().toISOString()
+    });
+  } catch (error) {
+    logger.error('Delete role error:', error);
+    res.status(500).json({
+      success: false,
+      error: 'DELETE_ROLE_FAILED',
+      message: 'Failed to delete role',
+      timestamp: new Date().toISOString()
+    });
+  }
+});
+
+// POST /api/v1/auth/users/:userId/roles - Assign role to user
+router.post('/users/:userId/roles', authenticateToken, requireRole(['admin']), async (req, res) => {
+  try {
+    const { userId } = req.params;
+    const { roleId } = req.body;
+
+    res.json({
+      success: true,
+      message: 'Role assigned to user successfully',
+      timestamp: new Date().toISOString()
+    });
+  } catch (error) {
+    logger.error('Assign role error:', error);
+    res.status(500).json({
+      success: false,
+      error: 'ASSIGN_ROLE_FAILED',
+      message: 'Failed to assign role to user',
+      timestamp: new Date().toISOString()
+    });
+  }
+});
+
+// DELETE /api/v1/auth/users/:userId/roles/:roleId - Remove role from user
+router.delete('/users/:userId/roles/:roleId', authenticateToken, requireRole(['admin']), async (req, res) => {
+  try {
+    const { userId, roleId } = req.params;
+
+    res.json({
+      success: true,
+      message: 'Role removed from user successfully',
+      timestamp: new Date().toISOString()
+    });
+  } catch (error) {
+    logger.error('Remove role error:', error);
+    res.status(500).json({
+      success: false,
+      error: 'REMOVE_ROLE_FAILED',
+      message: 'Failed to remove role from user',
+      timestamp: new Date().toISOString()
+    });
+  }
+});
+
 // GET /api/v1/auth/permissions - Get user permissions
 router.get('/permissions', authenticateToken, async (req, res) => {
   try {

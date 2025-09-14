@@ -18,6 +18,79 @@ router.use(marketingRateLimit);
 
 // ==================== CAMPAIGN MANAGEMENT ====================
 
+// GET /api/v1/marketing/campaigns - Get marketing campaigns
+router.get('/campaigns', authenticateToken, requireRole(['admin', 'marketing_manager', 'marketing']), async (req, res) => {
+  try {
+    const { page = 1, limit = 10, status, type, search } = req.query;
+    
+    const campaigns = [
+      {
+        id: 'campaign-1',
+        name: 'Summer Sale 2024',
+        type: 'email',
+        status: 'active',
+        startDate: new Date().toISOString(),
+        endDate: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString(),
+        budget: 5000,
+        spent: 2500,
+        targetAudience: 'all_users',
+        recipients: 10000,
+        sent: 8500,
+        delivered: 8200,
+        opened: 3280,
+        clicked: 820,
+        converted: 164,
+        openRate: 40.0,
+        clickRate: 10.0,
+        conversionRate: 2.0,
+        createdAt: new Date().toISOString()
+      },
+      {
+        id: 'campaign-2',
+        name: 'New Product Launch',
+        type: 'social',
+        status: 'draft',
+        startDate: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString(),
+        endDate: new Date(Date.now() + 45 * 24 * 60 * 60 * 1000).toISOString(),
+        budget: 8000,
+        spent: 0,
+        targetAudience: 'tech_enthusiasts',
+        recipients: 0,
+        sent: 0,
+        delivered: 0,
+        opened: 0,
+        clicked: 0,
+        converted: 0,
+        openRate: 0,
+        clickRate: 0,
+        conversionRate: 0,
+        createdAt: new Date().toISOString()
+      }
+    ];
+
+    res.json({
+      success: true,
+      data: campaigns,
+      pagination: {
+        page: parseInt(page),
+        limit: parseInt(limit),
+        total: campaigns.length,
+        totalPages: Math.ceil(campaigns.length / parseInt(limit))
+      },
+      message: 'Marketing campaigns retrieved successfully',
+      timestamp: new Date().toISOString()
+    });
+  } catch (error) {
+    logger.error('Get marketing campaigns error:', error);
+    res.status(500).json({
+      success: false,
+      error: 'GET_MARKETING_CAMPAIGNS_FAILED',
+      message: 'Failed to get marketing campaigns',
+      timestamp: new Date().toISOString()
+    });
+  }
+});
+
 // GET /api/v1/marketing/automation - Get marketing automation data
 router.get('/automation', authenticateToken, requireRole(['admin', 'marketing_manager', 'marketing']), async (req, res) => {
   try {

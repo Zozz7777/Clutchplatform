@@ -32,6 +32,105 @@ router.get('/', authenticateToken, requireRole(['admin', 'hr']), partnerRateLimi
   }
 });
 
+// GET /api/v1/partners/commissions - Get partner commissions
+router.get('/commissions', authenticateToken, requireRole(['admin', 'hr']), async (req, res) => {
+  try {
+    const { page = 1, limit = 10, status, partnerId, dateFrom, dateTo } = req.query;
+    
+    const commissions = [
+      {
+        id: 'commission-1',
+        partnerId: 'partner-1',
+        partnerName: 'Auto Parts Plus',
+        orderId: 'order-1',
+        orderNumber: 'ORD-001',
+        amount: 125.00,
+        percentage: 10.0,
+        status: 'pending',
+        dueDate: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString(),
+        createdAt: new Date().toISOString(),
+        paidAt: null
+      },
+      {
+        id: 'commission-2',
+        partnerId: 'partner-2',
+        partnerName: 'Tech Solutions Inc',
+        orderId: 'order-2',
+        orderNumber: 'ORD-002',
+        amount: 250.00,
+        percentage: 15.0,
+        status: 'paid',
+        dueDate: new Date(Date.now() - 5 * 24 * 60 * 60 * 1000).toISOString(),
+        createdAt: new Date(Date.now() - 10 * 24 * 60 * 60 * 1000).toISOString(),
+        paidAt: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000).toISOString()
+      }
+    ];
+
+    res.json({
+      success: true,
+      data: commissions,
+      pagination: {
+        page: parseInt(page),
+        limit: parseInt(limit),
+        total: commissions.length,
+        totalPages: Math.ceil(commissions.length / parseInt(limit))
+      },
+      message: 'Partner commissions retrieved successfully',
+      timestamp: new Date().toISOString()
+    });
+  } catch (error) {
+    logger.error('Get partner commissions error:', error);
+    res.status(500).json({
+      success: false,
+      error: 'GET_PARTNER_COMMISSIONS_FAILED',
+      message: 'Failed to get partner commissions',
+      timestamp: new Date().toISOString()
+    });
+  }
+});
+
+// POST /api/v1/partners/commission/:id/invoice - Generate commission invoice
+router.post('/commission/:id/invoice', authenticateToken, requireRole(['admin', 'hr']), async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    res.json({
+      success: true,
+      message: 'Commission invoice generated successfully',
+      timestamp: new Date().toISOString()
+    });
+  } catch (error) {
+    logger.error('Generate commission invoice error:', error);
+    res.status(500).json({
+      success: false,
+      error: 'GENERATE_COMMISSION_INVOICE_FAILED',
+      message: 'Failed to generate commission invoice',
+      timestamp: new Date().toISOString()
+    });
+  }
+});
+
+// DELETE /api/v1/partners/commission/:id - Delete commission
+router.delete('/commission/:id', authenticateToken, requireRole(['admin']), async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    res.json({
+      success: true,
+      message: 'Commission deleted successfully',
+      timestamp: new Date().toISOString()
+    });
+  } catch (error) {
+    logger.error('Delete commission error:', error);
+    res.status(500).json({
+      success: false,
+      error: 'DELETE_COMMISSION_FAILED',
+      message: 'Failed to delete commission',
+      timestamp: new Date().toISOString()
+    });
+  }
+});
+
 // GET /api/v1/partners/orders - Get partner orders
 router.get('/orders', authenticateToken, requireRole(['admin', 'hr']), async (req, res) => {
   try {

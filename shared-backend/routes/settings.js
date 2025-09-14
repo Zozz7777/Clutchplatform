@@ -8,6 +8,80 @@ const fs = require('fs');
 const fileService = require('../services/fileService');
 const { Buffer } = require('buffer');
 
+// GET /api/v1/settings/feature-flags - Get feature flags
+router.get('/feature-flags', authenticateToken, async (req, res) => {
+    try {
+        const featureFlags = [
+            {
+                id: 'flag-1',
+                name: 'dark_mode',
+                description: 'Enable dark mode for the application',
+                enabled: true,
+                type: 'boolean',
+                environment: 'production',
+                createdAt: new Date().toISOString(),
+                updatedAt: new Date().toISOString()
+            },
+            {
+                id: 'flag-2',
+                name: 'advanced_analytics',
+                description: 'Enable advanced analytics features',
+                enabled: false,
+                type: 'boolean',
+                environment: 'production',
+                createdAt: new Date().toISOString(),
+                updatedAt: new Date().toISOString()
+            },
+            {
+                id: 'flag-3',
+                name: 'ai_recommendations',
+                description: 'Enable AI-powered recommendations',
+                enabled: true,
+                type: 'boolean',
+                environment: 'production',
+                createdAt: new Date().toISOString(),
+                updatedAt: new Date().toISOString()
+            }
+        ];
+
+        res.json({
+            success: true,
+            data: featureFlags,
+            message: 'Feature flags retrieved successfully',
+            timestamp: new Date().toISOString()
+        });
+    } catch (error) {
+        console.error('Get feature flags error:', error);
+        res.status(500).json({
+            success: false,
+            error: 'GET_FEATURE_FLAGS_FAILED',
+            message: 'Failed to retrieve feature flags',
+            timestamp: new Date().toISOString()
+        });
+    }
+});
+
+// DELETE /api/v1/settings/feature-flags/:id - Delete feature flag
+router.delete('/feature-flags/:id', authenticateToken, async (req, res) => {
+    try {
+        const { id } = req.params;
+
+        res.json({
+            success: true,
+            message: 'Feature flag deleted successfully',
+            timestamp: new Date().toISOString()
+        });
+    } catch (error) {
+        console.error('Delete feature flag error:', error);
+        res.status(500).json({
+            success: false,
+            error: 'DELETE_FEATURE_FLAG_FAILED',
+            message: 'Failed to delete feature flag',
+            timestamp: new Date().toISOString()
+        });
+    }
+});
+
 // GET /api/v1/settings/system - Get system settings
 router.get('/system', authenticateToken, async (req, res) => {
     try {

@@ -5,6 +5,114 @@ const { logger } = require('../config/logger');
 const { authenticateToken, requireRole } = require('../middleware/auth');
 const { rateLimit: createRateLimit } = require('../middleware/rateLimit');
 
+// GET /api/v1/email/stats - Get email statistics
+router.get('/stats', authenticateToken, requireRole(['admin', 'email_manager']), async (req, res) => {
+  try {
+    const stats = {
+      totalEmails: 1250,
+      totalAccounts: 45,
+      emailsToday: 23,
+      storageUsed: 1073741824,
+      activeUsers: 38,
+      spamBlocked: 156,
+      emailsSent: 89,
+      emailsReceived: 134,
+      averageResponseTime: 2.5,
+      uptime: 99.9
+    };
+
+    res.json({
+      success: true,
+      data: stats,
+      message: 'Email statistics retrieved successfully',
+      timestamp: new Date().toISOString()
+    });
+  } catch (error) {
+    logger.error('Get email stats error:', error);
+    res.status(500).json({
+      success: false,
+      error: 'GET_EMAIL_STATS_FAILED',
+      message: 'Failed to get email statistics',
+      timestamp: new Date().toISOString()
+    });
+  }
+});
+
+// GET /api/v1/email/accounts - Get email accounts
+router.get('/accounts', authenticateToken, requireRole(['admin', 'email_manager']), async (req, res) => {
+  try {
+    const accounts = [
+      {
+        id: 'account-1',
+        userId: 'user-1',
+        emailAddress: 'admin@clutch.com',
+        displayName: 'Admin User',
+        status: 'active',
+        storageUsed: 1073741824,
+        storageLimit: 5368709120,
+        lastLogin: new Date().toISOString(),
+        createdAt: new Date().toISOString(),
+        isAdmin: true,
+        emailCount: 1250
+      }
+    ];
+
+    res.json({
+      success: true,
+      data: accounts,
+      message: 'Email accounts retrieved successfully',
+      timestamp: new Date().toISOString()
+    });
+  } catch (error) {
+    logger.error('Get email accounts error:', error);
+    res.status(500).json({
+      success: false,
+      error: 'GET_EMAIL_ACCOUNTS_FAILED',
+      message: 'Failed to get email accounts',
+      timestamp: new Date().toISOString()
+    });
+  }
+});
+
+// GET /api/v1/email/emails - Get emails
+router.get('/emails', authenticateToken, requireRole(['admin', 'email_manager']), async (req, res) => {
+  try {
+    const { folder = 'inbox', page = 1, limit = 10 } = req.query;
+    
+    const emails = [
+      {
+        id: 'email-1',
+        from: 'support@clutch.com',
+        to: ['admin@clutch.com'],
+        subject: 'Welcome to Clutch Admin',
+        body: 'Welcome to the Clutch Admin dashboard...',
+        isRead: true,
+        isStarred: false,
+        isArchived: false,
+        folder: 'inbox',
+        sentAt: new Date().toISOString(),
+        receivedAt: new Date().toISOString(),
+        labels: ['important']
+      }
+    ];
+
+    res.json({
+      success: true,
+      data: emails,
+      message: 'Emails retrieved successfully',
+      timestamp: new Date().toISOString()
+    });
+  } catch (error) {
+    logger.error('Get emails error:', error);
+    res.status(500).json({
+      success: false,
+      error: 'GET_EMAILS_FAILED',
+      message: 'Failed to get emails',
+      timestamp: new Date().toISOString()
+    });
+  }
+});
+
 // Email template configurations
 const EMAIL_CONFIG = {
   brand: {

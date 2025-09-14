@@ -19,6 +19,69 @@ router.use(legalRateLimit);
 
 // ==================== LEGAL DOCUMENT MANAGEMENT ====================
 
+// GET /api/v1/legal/contracts - Get legal contracts
+router.get('/contracts', authenticateToken, requireRole(['admin', 'legal', 'compliance']), async (req, res) => {
+  try {
+    const { page = 1, limit = 10, status, type, search } = req.query;
+    
+    const contracts = [
+      {
+        id: 'contract-1',
+        title: 'Service Agreement - Auto Parts Plus',
+        type: 'service_agreement',
+        status: 'active',
+        party1: 'Clutch Admin',
+        party2: 'Auto Parts Plus',
+        startDate: new Date(Date.now() - 365 * 24 * 60 * 60 * 1000).toISOString(),
+        endDate: new Date(Date.now() + 365 * 24 * 60 * 60 * 1000).toISOString(),
+        value: 50000,
+        currency: 'USD',
+        terms: '12 months with auto-renewal',
+        lastReview: new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toISOString(),
+        nextReview: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString(),
+        createdAt: new Date(Date.now() - 365 * 24 * 60 * 60 * 1000).toISOString()
+      },
+      {
+        id: 'contract-2',
+        title: 'Partnership Agreement - Tech Solutions Inc',
+        type: 'partnership',
+        status: 'pending',
+        party1: 'Clutch Admin',
+        party2: 'Tech Solutions Inc',
+        startDate: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString(),
+        endDate: new Date(Date.now() + 2 * 365 * 24 * 60 * 60 * 1000).toISOString(),
+        value: 100000,
+        currency: 'USD',
+        terms: '24 months with performance clauses',
+        lastReview: null,
+        nextReview: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString(),
+        createdAt: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString()
+      }
+    ];
+
+    res.json({
+      success: true,
+      data: contracts,
+      pagination: {
+        page: parseInt(page),
+        limit: parseInt(limit),
+        total: contracts.length,
+        totalPages: Math.ceil(contracts.length / parseInt(limit))
+      },
+      message: 'Legal contracts retrieved successfully',
+      timestamp: new Date().toISOString()
+    });
+  } catch (error) {
+    logger.error('Get legal contracts error:', error);
+    res.status(500).json({
+      success: false,
+      error: 'GET_LEGAL_CONTRACTS_FAILED',
+      message: 'Failed to get legal contracts',
+      timestamp: new Date().toISOString()
+    });
+  }
+});
+
 // GET /api/v1/legal/compliance - Get compliance data
 router.get('/compliance', authenticateToken, requireRole(['admin', 'legal', 'compliance']), async (req, res) => {
   try {
