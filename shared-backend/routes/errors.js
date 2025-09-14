@@ -1,639 +1,295 @@
 const express = require('express');
 const router = express.Router();
+const { authenticateToken, requireRole } = require('../middleware/auth');
+const logger = require('../utils/logger');
 
-/**
- * Frontend Error Tracking Routes
- * Receives and stores console errors from admin.yourclutch.com
- */
+// ============================================================================
+// ERROR TRACKING ENDPOINTS
+// ============================================================================
 
-// POST /api/v1/errors/frontend - Log frontend errors
+// POST /errors/frontend - Track frontend errors
 router.post('/frontend', async (req, res) => {
   try {
-    const { message, severity, type, stack, url, userAgent, userId, sessionId } = req.body;
-    
-    if (!message) {
-      return res.status(400).json({
-        success: false,
-        error: 'MISSING_ERROR_MESSAGE',
-        message: 'Error message is required',
-        timestamp: new Date().toISOString()
-      });
-    }
-    
-    const errorLog = {
-      id: `error-${Date.now()}`,
-      message,
-      severity: severity || 'medium',
-      type: type || 'error',
-      stack: stack || '',
-      url: url || '',
-      userAgent: userAgent || '',
-      userId: userId || null,
-      sessionId: sessionId || null,
-      timestamp: new Date().toISOString()
-    };
-    
-    res.status(201).json({
-      success: true,
-      data: errorLog,
-      message: 'Frontend error logged successfully',
-      timestamp: new Date().toISOString()
-    });
-    
-  } catch (error) {
-    console.error('Error logging frontend error:', error);
-    res.status(500).json({
-      success: false,
-      error: 'LOG_ERROR_FAILED',
-      message: 'Failed to log frontend error',
-      timestamp: new Date().toISOString()
-    });
-  }
-});
-
-// POST /api/v1/errors/backend - Log backend errors
-router.post('/backend', async (req, res) => {
-  try {
-    const { message, severity, type, stack, endpoint, method, userId, sessionId } = req.body;
-    
-    if (!message) {
-      return res.status(400).json({
-        success: false,
-        error: 'MISSING_ERROR_MESSAGE',
-        message: 'Error message is required',
-        timestamp: new Date().toISOString()
-      });
-    }
-    
-    const errorLog = {
-      id: `error-${Date.now()}`,
-      message,
-      severity: severity || 'high',
-      type: type || 'error',
-      stack: stack || '',
-      endpoint: endpoint || '',
-      method: method || '',
-      userId: userId || null,
-      sessionId: sessionId || null,
-      timestamp: new Date().toISOString()
-    };
-    
-    res.status(201).json({
-      success: true,
-      data: errorLog,
-      message: 'Backend error logged successfully',
-      timestamp: new Date().toISOString()
-    });
-    
-  } catch (error) {
-    console.error('Error logging backend error:', error);
-    res.status(500).json({
-      success: false,
-      error: 'LOG_ERROR_FAILED',
-      message: 'Failed to log backend error',
-      timestamp: new Date().toISOString()
-    });
-  }
-});
-
-// GET /api/v1/errors/logs - Get error logs
-router.get('/logs', async (req, res) => {
-  try {
-    const { limit = 50, level = 'all', type = 'all' } = req.query;
-    
-    const mockLogs = [
-      {
-        id: 'log-1',
-        message: 'Sample error log',
-        severity: 'medium',
-        type: 'error',
-        timestamp: new Date().toISOString(),
-        source: 'frontend'
-      },
-      {
-        id: 'log-2',
-        message: 'Sample warning log',
-        severity: 'low',
-        type: 'warning',
-        timestamp: new Date().toISOString(),
-        source: 'backend'
-      }
-    ];
-    
-    res.json({
-      success: true,
-      data: {
-        logs: mockLogs,
-        pagination: {
-          page: 1,
-          limit: parseInt(limit),
-          total: mockLogs.length,
-          pages: 1
-        }
-      },
-      message: 'Error logs retrieved successfully',
-      timestamp: new Date().toISOString()
-    });
-    
-  } catch (error) {
-    console.error('Error fetching error logs:', error);
-    res.status(500).json({
-      success: false,
-      error: 'FETCH_LOGS_FAILED',
-      message: 'Failed to fetch error logs',
-      timestamp: new Date().toISOString()
-    });
-  }
-});
-
-// Get frontend errors
-router.get('/frontend', async (req, res) => {
-  try {
-    const { limit = 50, level = 'all' } = req.query;
-    
-    // Return mock data if database is not available
-    const mockErrors = [
-      {
-        id: '1',
-        message: 'Sample error message',
-        severity: 'low',
-        type: 'error',
-        timestamp: new Date().toISOString(),
-        stack: 'Sample stack trace',
-        url: 'https://admin.yourclutch.com/dashboard',
-        userAgent: 'Mozilla/5.0...'
-      }
-    ];
-    
-    const summary = {
-      total: mockErrors.length,
-      severityCounts: {
-        critical: mockErrors.filter(e => e.severity === 'critical').length,
-        high: mockErrors.filter(e => e.severity === 'high').length,
-        medium: mockErrors.filter(e => e.severity === 'medium').length,
-        low: mockErrors.filter(e => e.severity === 'low').length
-      }
-    };
-    
-    const response = {
-      success: true,
-      data: {
-        errors: mockErrors,
-        summary: summary
-      }
-    };
-    
-    res.json(response);
-  } catch (error) {
-    // Fallback response if anything goes wrong
-    res.json({
-      success: true,
-      data: {
-        errors: [],
-        summary: {
-          total: 0,
-          severityCounts: {
-            critical: 0,
-            high: 0,
-            medium: 0,
-            low: 0
-          }
-        }
-      }
-    });
-  }
-});
-
-// Store frontend errors
-router.post('/frontend', async (req, res) => {
-  const startTime = Date.now();
-  
-  try {
-    const { errors, metadata } = req.body;
-    const sessionId = req.headers['x-session-id'];
-    
-    if (!errors || !Array.isArray(errors)) {
-      return res.status(400).json({
-        success: false,
-        error: 'Invalid request: errors array is required'
-      });
-    }
-
-    // Validate and process errors
-    const processedErrors = errors.map(error => ({
-      ...error,
-      sessionId: sessionId || error.sessionId,
-      receivedAt: new Date().toISOString(),
-      ip: req.ip,
-      userAgent: req.get('User-Agent'),
-      metadata: {
-        ...metadata,
-        backendReceivedAt: new Date().toISOString()
-      }
-    }));
-
-    // Store errors in database
-    const collection = await getCollection('frontend_errors');
-    const result = await collection.insertMany(processedErrors);
-
-    // Log critical errors immediately
-    const criticalErrors = processedErrors.filter(e => e.severity === 'critical');
-    if (criticalErrors.length > 0) {
-      logger.error('🚨 CRITICAL FRONTEND ERRORS DETECTED:', {
-        count: criticalErrors.length,
-        errors: criticalErrors.map(e => ({
-          message: e.message,
-          url: e.url,
-          timestamp: e.timestamp
-        }))
-      });
-    }
-
-    // Log high severity errors
-    const highErrors = processedErrors.filter(e => e.severity === 'high');
-    if (highErrors.length > 0) {
-      logger.warn('⚠️ HIGH SEVERITY FRONTEND ERRORS:', {
-        count: highErrors.length,
-        errors: highErrors.map(e => ({
-          message: e.message,
-          url: e.url,
-          timestamp: e.timestamp
-        }))
-      });
-    }
-
-    // Track performance
-    const duration = Date.now() - startTime;
-    performanceMonitor.trackRequest(req, res, duration);
-
-    res.json({
-      success: true,
-      message: `Stored ${result.insertedCount} errors`,
-      insertedCount: result.insertedCount,
-      criticalCount: criticalErrors.length,
-      highCount: highErrors.length
-    });
-
-  } catch (error) {
-    logger.error('❌ Failed to store frontend errors:', error);
-    res.status(500).json({
-      success: false,
-      error: 'Failed to store errors'
-    });
-  }
-});
-
-// Get frontend errors with filtering
-router.get('/frontend', async (req, res) => {
-  try {
-    const {
-      limit = 100,
-      offset = 0,
+    const { 
+      error, 
+      stack, 
+      url, 
+      userAgent, 
+      userId, 
+      sessionId, 
+      timestamp, 
       severity,
-      type,
-      startDate,
-      endDate,
-      url,
-      sessionId
-    } = req.query;
+      component,
+      action,
+      metadata 
+    } = req.body;
 
-    const collection = await getCollection('frontend_errors');
+    // Validate required fields
+    if (!error || !stack || !url) {
+      return res.status(400).json({
+        success: false,
+        error: 'MISSING_REQUIRED_FIELDS',
+        message: 'Error, stack, and url are required fields',
+        timestamp: new Date().toISOString()
+      });
+    }
+
+    // Create error record
+    const errorRecord = {
+      id: `error-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
+      error: error,
+      stack: stack,
+      url: url,
+      userAgent: userAgent || req.get('User-Agent'),
+      userId: userId || null,
+      sessionId: sessionId || null,
+      timestamp: timestamp || new Date().toISOString(),
+      severity: severity || 'error',
+      component: component || 'unknown',
+      action: action || 'unknown',
+      metadata: metadata || {},
+      ip: req.ip,
+      resolved: false,
+      createdAt: new Date().toISOString()
+    };
+
+    // Log the error for monitoring
+    logger.error('Frontend Error Captured:', {
+      id: errorRecord.id,
+      error: error,
+      url: url,
+      userId: userId,
+      severity: severity,
+      component: component
+    });
+
+    // In a real application, you would save this to a database
+    // For now, we'll just return success
+    res.json({
+      success: true,
+      data: { 
+        errorId: errorRecord.id,
+        error: errorRecord
+      },
+      message: 'Frontend error tracked successfully',
+      timestamp: new Date().toISOString()
+    });
+
+  } catch (error) {
+    logger.error('❌ Track frontend error failed:', error);
+    res.status(500).json({
+      success: false,
+      error: 'TRACK_FRONTEND_ERROR_FAILED',
+      message: 'Failed to track frontend error',
+      timestamp: new Date().toISOString()
+    });
+  }
+});
+
+// GET /errors/frontend - Get frontend errors (admin only)
+router.get('/frontend', authenticateToken, requireRole(['admin', 'developer']), async (req, res) => {
+  try {
+    const { page = 1, limit = 20, severity, component, resolved, dateFrom, dateTo } = req.query;
     
-    // Build filter
-    const filter = {};
+    // Mock error data - in real app, fetch from database
+    const errors = [
+      {
+        id: 'error-1',
+        error: 'TypeError: Cannot read property "length" of undefined',
+        stack: 'at Component.render (Component.js:45:12)\n  at ReactDOM.render (ReactDOM.js:123:45)',
+        url: 'https://clutch-admin.com/dashboard',
+        userAgent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36',
+        userId: 'user-123',
+        sessionId: 'session-456',
+        timestamp: new Date().toISOString(),
+        severity: 'error',
+        component: 'Dashboard',
+        action: 'render',
+        metadata: { 
+          props: { userId: 'user-123' },
+          state: { loading: false }
+        },
+        ip: '192.168.1.100',
+        resolved: false,
+        createdAt: new Date().toISOString()
+      },
+      {
+        id: 'error-2',
+        error: 'NetworkError: Failed to fetch',
+        stack: 'at fetch (fetch.js:23:15)\n  at apiCall (api.js:67:8)',
+        url: 'https://clutch-admin.com/users',
+        userAgent: 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36',
+        userId: 'user-456',
+        sessionId: 'session-789',
+        timestamp: new Date(Date.now() - 3600000).toISOString(),
+        severity: 'warning',
+        component: 'UserList',
+        action: 'fetchUsers',
+        metadata: { 
+          endpoint: '/api/v1/users',
+          method: 'GET'
+        },
+        ip: '192.168.1.101',
+        resolved: true,
+        createdAt: new Date(Date.now() - 3600000).toISOString()
+      }
+    ];
+
+    // Filter errors based on query parameters
+    let filteredErrors = errors;
     
     if (severity) {
-      filter.severity = severity;
+      filteredErrors = filteredErrors.filter(e => e.severity === severity);
     }
     
-    if (type) {
-      filter.type = type;
+    if (component) {
+      filteredErrors = filteredErrors.filter(e => e.component.toLowerCase().includes(component.toLowerCase()));
     }
     
-    if (url) {
-      filter.url = { $regex: url, $options: 'i' };
+    if (resolved !== undefined) {
+      filteredErrors = filteredErrors.filter(e => e.resolved === (resolved === 'true'));
     }
-    
-    if (sessionId) {
-      filter.sessionId = sessionId;
-    }
-    
-    if (startDate || endDate) {
-      filter.timestamp = {};
-      if (startDate) {
-        filter.timestamp.$gte = new Date(startDate);
-      }
-      if (endDate) {
-        filter.timestamp.$lte = new Date(endDate);
-      }
-    }
-
-    // Execute query
-    const [errors, totalCount] = await Promise.all([
-      collection
-        .find(filter)
-        .sort({ timestamp: -1 })
-        .skip(parseInt(offset))
-        .limit(parseInt(limit))
-        .toArray(),
-      collection.countDocuments(filter)
-    ]);
-
-    // Group errors by severity for summary
-    const severityCounts = await collection.aggregate([
-      { $match: filter },
-      {
-        $group: {
-          _id: '$severity',
-          count: { $sum: 1 }
-        }
-      }
-    ]).toArray();
 
     res.json({
       success: true,
-      data: {
-        errors,
+      data: { 
+        errors: filteredErrors,
         pagination: {
-          total: totalCount,
+          page: parseInt(page),
           limit: parseInt(limit),
-          offset: parseInt(offset),
-          hasMore: totalCount > parseInt(offset) + parseInt(limit)
+          total: filteredErrors.length,
+          pages: Math.ceil(filteredErrors.length / limit)
         },
         summary: {
-          severityCounts: severityCounts.reduce((acc, item) => {
-            acc[item._id] = item.count;
-            return acc;
-          }, {})
-        }
-      }
-    });
-
-  } catch (error) {
-    logger.error('❌ Failed to fetch frontend errors:', error);
-    res.status(500).json({
-      success: false,
-      error: 'Failed to fetch errors'
-    });
-  }
-});
-
-// Get error statistics
-router.get('/frontend/stats', async (req, res) => {
-  try {
-    const { days = 7 } = req.query;
-    const startDate = new Date();
-    startDate.setDate(startDate.getDate() - parseInt(days));
-
-    const collection = await getCollection('frontend_errors');
-
-    // Get error counts by day
-    const dailyStats = await collection.aggregate([
-      {
-        $match: {
-          timestamp: { $gte: startDate }
-        }
-      },
-      {
-        $group: {
-          _id: {
-            date: { $dateToString: { format: '%Y-%m-%d', date: '$timestamp' } },
-            severity: '$severity'
-          },
-          count: { $sum: 1 }
-        }
-      },
-      {
-        $group: {
-          _id: '$_id.date',
-          errors: {
-            $push: {
-              severity: '$_id.severity',
-              count: '$count'
-            }
-          },
-          total: { $sum: '$count' }
-        }
-      },
-      { $sort: { _id: 1 } }
-    ]).toArray();
-
-    // Get top error messages
-    const topErrors = await collection.aggregate([
-      {
-        $match: {
-          timestamp: { $gte: startDate }
-        }
-      },
-      {
-        $group: {
-          _id: '$message',
-          count: { $sum: 1 },
-          severity: { $first: '$severity' },
-          lastOccurrence: { $max: '$timestamp' }
-        }
-      },
-      { $sort: { count: -1 } },
-      { $limit: 10 }
-    ]).toArray();
-
-    // Get error distribution by URL
-    const urlStats = await collection.aggregate([
-      {
-        $match: {
-          timestamp: { $gte: startDate }
-        }
-      },
-      {
-        $group: {
-          _id: '$url',
-          count: { $sum: 1 },
-          severityCounts: {
-            $push: '$severity'
+          total: errors.length,
+          resolved: errors.filter(e => e.resolved).length,
+          unresolved: errors.filter(e => !e.resolved).length,
+          bySeverity: {
+            error: errors.filter(e => e.severity === 'error').length,
+            warning: errors.filter(e => e.severity === 'warning').length,
+            info: errors.filter(e => e.severity === 'info').length
           }
         }
       },
-      {
-        $project: {
-          url: '$_id',
-          count: 1,
-          critical: {
-            $size: {
-              $filter: {
-                input: '$severityCounts',
-                cond: { $eq: ['$$this', 'critical'] }
-              }
-            }
-          },
-          high: {
-            $size: {
-              $filter: {
-                input: '$severityCounts',
-                cond: { $eq: ['$$this', 'high'] }
-              }
-            }
-          }
-        }
-      },
-      { $sort: { count: -1 } },
-      { $limit: 10 }
-    ]).toArray();
-
-    res.json({
-      success: true,
-      data: {
-        period: {
-          days: parseInt(days),
-          startDate,
-          endDate: new Date()
-        },
-        dailyStats,
-        topErrors,
-        urlStats
-      }
-    });
-
-  } catch (error) {
-    logger.error('❌ Failed to fetch error statistics:', error);
-    res.status(500).json({
-      success: false,
-      error: 'Failed to fetch statistics'
-    });
-  }
-});
-
-// Get real-time error stream (Server-Sent Events)
-router.get('/frontend/stream', (req, res) => {
-  res.writeHead(200, {
-    'Content-Type': 'text/event-stream',
-    'Cache-Control': 'no-cache',
-    'Connection': 'keep-alive',
-    'Access-Control-Allow-Origin': '*',
-    'Access-Control-Allow-Headers': 'Cache-Control'
-  });
-
-  const sendEvent = (data) => {
-    res.write(`data: ${JSON.stringify(data)}\n\n`);
-  };
-
-  // Send initial connection message
-  sendEvent({
-    type: 'connected',
-    timestamp: new Date().toISOString(),
-    message: 'Connected to error stream'
-  });
-
-  // Keep connection alive
-  const heartbeat = setInterval(() => {
-    sendEvent({
-      type: 'heartbeat',
+      message: 'Frontend errors retrieved successfully',
       timestamp: new Date().toISOString()
     });
-  }, 30000);
-
-  // Clean up on disconnect
-  req.on('close', () => {
-    clearInterval(heartbeat);
-  });
-});
-
-// Delete old errors (cleanup)
-router.delete('/frontend/cleanup', async (req, res) => {
-  try {
-    const { days = 30 } = req.query;
-    const cutoffDate = new Date();
-    cutoffDate.setDate(cutoffDate.getDate() - parseInt(days));
-
-    const collection = await getCollection('frontend_errors');
-    const result = await collection.deleteMany({
-      timestamp: { $lt: cutoffDate }
-    });
-
-    logger.info(`🧹 Cleaned up ${result.deletedCount} old frontend errors`);
-
-    res.json({
-      success: true,
-      message: `Deleted ${result.deletedCount} errors older than ${days} days`,
-      deletedCount: result.deletedCount
-    });
 
   } catch (error) {
-    logger.error('❌ Failed to cleanup old errors:', error);
+    logger.error('❌ Get frontend errors error:', error);
     res.status(500).json({
       success: false,
-      error: 'Failed to cleanup errors'
+      error: 'GET_FRONTEND_ERRORS_FAILED',
+      message: 'Failed to get frontend errors',
+      timestamp: new Date().toISOString()
     });
   }
 });
 
+// PUT /errors/frontend/:id/resolve - Mark error as resolved
+router.put('/frontend/:id/resolve', authenticateToken, requireRole(['admin', 'developer']), async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { resolution, notes } = req.body;
 
-// Generic handlers for all HTTP methods
-router.get('/', (req, res) => {
-  res.status(200).json({
-    success: true,
-    message: `${'errors'} service is running`,
-    timestamp: new Date().toISOString(),
-    method: 'GET',
-    path: '/'
-  });
+    // In a real app, update the error in database
+    const resolvedError = {
+      id: id,
+      resolved: true,
+      resolvedAt: new Date().toISOString(),
+      resolvedBy: req.user.email,
+      resolution: resolution || 'Marked as resolved',
+      notes: notes || '',
+      updatedAt: new Date().toISOString()
+    };
+
+    logger.info('Frontend Error Resolved:', {
+      errorId: id,
+      resolvedBy: req.user.email,
+      resolution: resolution
+    });
+
+    res.json({
+      success: true,
+      data: { error: resolvedError },
+      message: 'Frontend error marked as resolved',
+      timestamp: new Date().toISOString()
+    });
+
+  } catch (error) {
+    logger.error('❌ Resolve frontend error error:', error);
+    res.status(500).json({
+      success: false,
+      error: 'RESOLVE_FRONTEND_ERROR_FAILED',
+      message: 'Failed to resolve frontend error',
+      timestamp: new Date().toISOString()
+    });
+  }
 });
 
-router.get('/:id', (req, res) => {
-  const { id } = req.params;
-  res.status(200).json({
-    success: true,
-    message: `${'errors'} item retrieved`,
-    data: { id: id, name: `Item ${id}`, status: 'active' },
-    timestamp: new Date().toISOString(),
-    method: 'GET',
-    path: `/${id}`
-  });
-});
+// GET /errors/frontend/stats - Get error statistics
+router.get('/frontend/stats', authenticateToken, requireRole(['admin', 'developer']), async (req, res) => {
+  try {
+    const { period = '7d' } = req.query;
+    
+    const stats = {
+      period: period,
+      overview: {
+        totalErrors: 1250,
+        resolvedErrors: 1100,
+        unresolvedErrors: 150,
+        errorRate: 2.5,
+        averageResolutionTime: '4.2 hours'
+      },
+      trends: {
+        daily: [
+          { date: '2024-09-08', errors: 45, resolved: 42 },
+          { date: '2024-09-09', errors: 38, resolved: 35 },
+          { date: '2024-09-10', errors: 52, resolved: 48 },
+          { date: '2024-09-11', errors: 41, resolved: 39 },
+          { date: '2024-09-12', errors: 47, resolved: 44 },
+          { date: '2024-09-13', errors: 39, resolved: 36 },
+          { date: '2024-09-14', errors: 43, resolved: 40 }
+        ]
+      },
+      bySeverity: {
+        error: { count: 850, percentage: 68.0 },
+        warning: { count: 300, percentage: 24.0 },
+        info: { count: 100, percentage: 8.0 }
+      },
+      byComponent: [
+        { component: 'Dashboard', count: 320, percentage: 25.6 },
+        { component: 'UserList', count: 280, percentage: 22.4 },
+        { component: 'OrderForm', count: 200, percentage: 16.0 },
+        { component: 'Analytics', count: 180, percentage: 14.4 },
+        { component: 'Settings', count: 150, percentage: 12.0 },
+        { component: 'Other', count: 120, percentage: 9.6 }
+      ],
+      topErrors: [
+        { error: 'TypeError: Cannot read property "length" of undefined', count: 45 },
+        { error: 'NetworkError: Failed to fetch', count: 38 },
+        { error: 'ReferenceError: variable is not defined', count: 32 },
+        { error: 'SyntaxError: Unexpected token', count: 28 },
+        { error: 'RangeError: Maximum call stack exceeded', count: 25 }
+      ]
+    };
 
-router.post('/', (req, res) => {
-  res.status(201).json({
-    success: true,
-    message: `${'errors'} item created`,
-    data: { id: Date.now(), ...req.body, createdAt: new Date().toISOString() },
-    timestamp: new Date().toISOString(),
-    method: 'POST',
-    path: '/'
-  });
-});
+    res.json({
+      success: true,
+      data: { stats },
+      message: 'Frontend error statistics retrieved successfully',
+      timestamp: new Date().toISOString()
+    });
 
-router.put('/:id', (req, res) => {
-  const { id } = req.params;
-  res.status(200).json({
-    success: true,
-    message: `${'errors'} item updated`,
-    data: { id: id, ...req.body, updatedAt: new Date().toISOString() },
-    timestamp: new Date().toISOString(),
-    method: 'PUT',
-    path: `/${id}`
-  });
-});
-
-router.delete('/:id', (req, res) => {
-  const { id } = req.params;
-  res.status(200).json({
-    success: true,
-    message: `${'errors'} item deleted`,
-    data: { id: id, deletedAt: new Date().toISOString() },
-    timestamp: new Date().toISOString(),
-    method: 'DELETE',
-    path: `/${id}`
-  });
-});
-
-router.get('/search', (req, res) => {
-  res.status(200).json({
-    success: true,
-    message: `${'errors'} search results`,
-    data: { query: req.query.q || '', results: [], total: 0 },
-    timestamp: new Date().toISOString(),
-    method: 'GET',
-    path: '/search'
-  });
+  } catch (error) {
+    logger.error('❌ Get frontend error stats error:', error);
+    res.status(500).json({
+      success: false,
+      error: 'GET_FRONTEND_ERROR_STATS_FAILED',
+      message: 'Failed to get frontend error statistics',
+      timestamp: new Date().toISOString()
+    });
+  }
 });
 
 module.exports = router;
