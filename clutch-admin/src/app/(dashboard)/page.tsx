@@ -8,12 +8,12 @@ export default function DashboardPage() {
   const router = useRouter()
   const { user, isAuthenticated } = useAuthStore()
   
-  // Redirect to consolidated dashboard
+  // Redirect to login page if not authenticated, otherwise go to consolidated dashboard
   useEffect(() => {
     if (isAuthenticated && user) {
       router.replace('/dashboard-consolidated')
     } else {
-      router.push('/login')
+      router.replace('/login')
     }
   }, [isAuthenticated, user, router])
 
@@ -21,7 +21,7 @@ export default function DashboardPage() {
     <div className="flex items-center justify-center min-h-screen">
       <div className="text-center">
         <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-clutch-primary mx-auto mb-4"></div>
-        <p className="text-slate-600">Redirecting to dashboard...</p>
+        <p className="text-slate-600">Loading...</p>
       </div>
     </div>
   )

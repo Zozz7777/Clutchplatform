@@ -1,7 +1,7 @@
 'use client'
 
 import React, { useState, useEffect } from 'react'
-import { useAuth } from '@/contexts/AuthContext'
+import { useAuthStore } from '@/store'
 import { useRouter } from 'next/navigation'
 import { LuxuryButton } from '@/components/ui/luxury-button'
 import { LuxuryInput } from '@/components/ui/luxury-input'
@@ -25,7 +25,7 @@ import {
 import { toast } from 'sonner'
 
 export default function LoginPage() {
-  const { login, isAuthenticated, isLoading: authLoading } = useAuth()
+  const { login, isAuthenticated, isLoading: authLoading } = useAuthStore()
   const router = useRouter()
   
   const [formData, setFormData] = useState({
@@ -41,7 +41,7 @@ export default function LoginPage() {
   // Redirect if already authenticated
   useEffect(() => {
     if (isAuthenticated && !authLoading) {
-      router.push('/dashboard')
+      router.push('/dashboard-consolidated')
     }
   }, [isAuthenticated, authLoading, router])
 
