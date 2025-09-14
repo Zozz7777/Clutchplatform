@@ -779,11 +779,11 @@ export default function NewSidebar({ selectedParent, setSelectedParent }: NewSid
                 <p className="text-xs text-clutch-gray-600 dark:text-clutch-gray-400 truncate">
                 {user?.email || 'user@example.com'}
               </p>
-              </div>
             </div>
           </div>
-        )}
-      </div>
+        </div>
+      )}
+    </div>
 
       {/* Sub-sidebar */}
       {selectedParent && (

@@ -73,7 +73,7 @@ export default function LoginPage() {
 
     try {
       // Connect to real backend authentication
-      const response = await fetch('/api/v1/auth/login', {
+        const response = await fetch('/auth/employee-login', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -140,8 +140,8 @@ export default function LoginPage() {
           backgroundRepeat: 'no-repeat'
         }}
       >
-        {/* Glassmorphism Overlay */}
-        <div className="absolute inset-0 bg-gradient-to-br from-clutch-red-500/20 via-clutch-red-600/30 to-clutch-red-700/40 backdrop-blur-sm"></div>
+        {/* Enhanced Red Glassmorphism Overlay */}
+        <div className="absolute inset-0 bg-gradient-to-br from-clutch-red-500/40 via-clutch-red-600/50 to-clutch-red-700/60 backdrop-blur-md"></div>
         {/* Animated Background Elements */}
         <div className="absolute inset-0">
           <div className="absolute top-20 left-20 w-32 h-32 bg-clutch-red-200 rounded-full opacity-30 animate-pulse"></div>
@@ -238,6 +238,18 @@ export default function LoginPage() {
               </div>
 
               <div className="text-center mb-8">
+                {/* Logo above Employee Login */}
+                <div className="flex justify-center mb-6">
+                  <div className="w-20 h-20 bg-gradient-to-br from-clutch-red-500 to-clutch-red-600 rounded-2xl shadow-lg p-4 flex items-center justify-center">
+                    <Image 
+                      src="/Assets/logos/Logored.png" 
+                      alt="Clutch Logo" 
+                      width={48} 
+                      height={48}
+                      className="object-contain"
+                    />
+                  </div>
+                </div>
                 <h2 className="text-3xl font-bold text-clutch-gray-700 mb-2">Employee Login</h2>
                 <p className="text-clutch-gray-600">Sign in to drive the automotive revolution</p>
         </div>
@@ -371,13 +383,13 @@ export default function LoginPage() {
                     <p>Use your company email and password to access the Clutch Admin system.</p>
                     <p className="mt-1">Contact your administrator if you need assistance.</p>
                   </div>
-                </div>
-                </div>
               </div>
+              </div>
+            </div>
 
               {/* Footer */}
               <div className="text-center mt-8 text-sm text-clutch-gray-600">
-                <p className="flex items-center justify-center">
+          <p className="flex items-center justify-center">
                   <Image 
                     src="/Assets/logos/Logored.png" 
                     alt="Clutch Logo" 

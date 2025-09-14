@@ -4,7 +4,7 @@ import React, { useState, useEffect } from 'react'
 import { usePathname, useRouter } from 'next/navigation'
 import { useAuthStore, useUIStore } from '@/store'
 import NewSidebar from './new-sidebar'
-import { NewHeader } from './new-header'
+import NewHeader from './new-header'
 import { SnowCard } from '@/components/ui/snow-card'
 import { SnowButton } from '@/components/ui/snow-button'
 import { 
@@ -115,7 +115,7 @@ export function NewLayout({ children }: NewLayoutProps) {
         }`}
       >
         {/* Header */}
-        <NewHeader onToggleSidebar={handleToggleSidebar} />
+        <NewHeader />
         
         {/* Page Content */}
         <main className="p-6 min-h-screen">

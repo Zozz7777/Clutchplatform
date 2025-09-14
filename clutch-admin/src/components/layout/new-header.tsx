@@ -1,50 +1,54 @@
 'use client'
 
 import React, { useState, useEffect } from 'react'
-import Link from 'next/link'
-import { usePathname, useRouter } from 'next/navigation'
 import { 
-  Menu,
-  Search,
-  Bell,
-  User,
-  ChevronDown,
-  Sun,
-  Moon,
+  Menu, 
+  Search, 
+  Bell, 
+  User, 
+  ChevronDown, 
+  Sun, 
+  Moon, 
+  HelpCircle, 
+  MessageSquare,
   Settings,
   LogOut,
-  HelpCircle,
-  MessageSquare,
-  X,
-  CheckCircle,
-  AlertTriangle,
-  Info,
-  Clock
+  Shield,
+  Activity,
+  Zap,
+  Command
 } from 'lucide-react'
-import { useAuthStore, useUIStore } from '@/store'
 import { useTheme } from 'next-themes'
-import { SnowButton } from '@/components/ui/snow-button'
-import { toast } from 'sonner'
+import { useAuthStore, useUIStore } from '@/store'
+import { usePathname, useRouter } from 'next/navigation'
+import Link from 'next/link'
+import Image from 'next/image'
 
 interface NewHeaderProps {
-  onToggleSidebar: () => void
+  onSearchClick?: () => void
+  onKeyboardShortcutsClick?: () => void
 }
 
-export function NewHeader({ onToggleSidebar }: NewHeaderProps) {
+const NewHeader: React.FC<NewHeaderProps> = ({ 
+  onSearchClick, 
+  onKeyboardShortcutsClick 
+}) => {
+  // Hooks
+  const { sidebarCollapsed, toggleSidebar, notifications } = useUIStore()
   const { user, logout } = useAuthStore()
-  const { notifications } = useUIStore()
-  const pathname = usePathname()
-  const router = useRouter()
   const { theme, setTheme, resolvedTheme } = useTheme()
+  const router = useRouter()
+  const pathname = usePathname()
   
+  // State
+  const [mounted, setMounted] = useState(false)
+  const [notificationsOpen, setNotificationsOpen] = useState(false)
+  const [userMenuOpen, setUserMenuOpen] = useState(false)
   const [searchQuery, setSearchQuery] = useState('')
   const [searchResults, setSearchResults] = useState<any[]>([])
   const [showSearchResults, setShowSearchResults] = useState(false)
-  const [notificationsOpen, setNotificationsOpen] = useState(false)
-  const [userMenuOpen, setUserMenuOpen] = useState(false)
-  const [mounted, setMounted] = useState(false)
 
-  // Ensure theme is mounted before rendering
+  // Initialize theme
   useEffect(() => {
     setMounted(true)
   }, [])
@@ -52,10 +56,10 @@ export function NewHeader({ onToggleSidebar }: NewHeaderProps) {
   // Generate breadcrumbs from pathname
   const generateBreadcrumbs = () => {
     const segments = pathname.split('/').filter(Boolean)
-    const breadcrumbs = []
+    const breadcrumbs: Array<{ label: string; href: string; isLast?: boolean }> = []
     
     // Add home
-    breadcrumbs.push({ label: 'Home', href: '/dashboard' })
+    breadcrumbs.push({ label: 'Dashboard', href: '/dashboard' })
     
     // Add path segments
     let currentPath = ''
@@ -78,111 +82,120 @@ export function NewHeader({ onToggleSidebar }: NewHeaderProps) {
 
   const breadcrumbs = generateBreadcrumbs()
 
-  // Handle search
-  const handleSearch = async (query: string) => {
-    if (query.trim().length < 2) {
-      setSearchResults([])
-      setShowSearchResults(false)
-      return
-    }
-
-    // Mock search results - replace with real search API
-    const mockResults = [
-      { title: 'Dashboard', href: '/dashboard', type: 'page' },
-      { title: 'User Analytics', href: '/users/analytics', type: 'page' },
-      { title: 'Fleet Management', href: '/fleet/overview', type: 'page' },
-      { title: 'CRM Customers', href: '/crm/customers', type: 'page' },
-      { title: 'Settings', href: '/settings/system', type: 'page' }
-    ].filter(result => 
-      result.title.toLowerCase().includes(query.toLowerCase())
-    )
-
-    setSearchResults(mockResults)
-    setShowSearchResults(true)
-  }
-
-  // Handle search input change
-  const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const query = e.target.value
-    setSearchQuery(query)
-    handleSearch(query)
-  }
-
-  // Handle search result click
-  const handleSearchResultClick = (href: string) => {
-    router.push(href)
-    setSearchQuery('')
-    setShowSearchResults(false)
-  }
-
-  // Handle logout
-  const handleLogout = async () => {
-    await logout()
-    router.push('/login')
-    toast.success('Logged out successfully')
-    setUserMenuOpen(false)
-  }
-
-  // Toggle theme
+  // Theme toggle
   const toggleTheme = () => {
     if (mounted) {
       setTheme(theme === 'dark' ? 'light' : theme === 'light' ? 'dark' : 'light')
     }
   }
 
-  // Toggle notifications
+  // Toggle functions
   const toggleNotifications = () => {
     setNotificationsOpen(!notificationsOpen)
     setUserMenuOpen(false)
   }
 
-  // Toggle user menu
   const toggleUserMenu = () => {
     setUserMenuOpen(!userMenuOpen)
     setNotificationsOpen(false)
   }
 
-  // Close dropdowns when clicking outside
-  useEffect(() => {
-    const handleClickOutside = (event: MouseEvent) => {
-      const target = event.target as Element
-      if (!target.closest('[data-dropdown]')) {
-        setNotificationsOpen(false)
-        setUserMenuOpen(false)
-        setShowSearchResults(false)
-      }
+  // Search functionality
+  const handleSearchQuery = async (query: string) => {
+    if (query.trim().length < 2) {
+      setSearchResults([])
+      setShowSearchResults(false)
+      return
     }
 
-    document.addEventListener('mousedown', handleClickOutside)
-    return () => document.removeEventListener('mousedown', handleClickOutside)
-  }, [])
+    // Enhanced search results with more comprehensive data
+    const mockResults = [
+      { title: 'Dashboard Overview', href: '/dashboard', type: 'page', category: 'Core' },
+      { title: 'User Analytics', href: '/users/analytics', type: 'page', category: 'Analytics' },
+      { title: 'Fleet Management', href: '/fleet/overview', type: 'page', category: 'Fleet' },
+      { title: 'CRM Customers', href: '/crm/customers', type: 'page', category: 'CRM' },
+      { title: 'HR Employees', href: '/hr/employees', type: 'page', category: 'HR' },
+      { title: 'Finance Reports', href: '/finance/reports', type: 'page', category: 'Finance' },
+      { title: 'Legal Contracts', href: '/legal/contracts', type: 'page', category: 'Legal' },
+      { title: 'AI Dashboard', href: '/ai/dashboard', type: 'page', category: 'AI' },
+      { title: 'System Settings', href: '/settings/system', type: 'page', category: 'Settings' },
+      { title: 'Team Chat', href: '/chat', type: 'page', category: 'Communication' }
+    ].filter(result => 
+      result.title.toLowerCase().includes(query.toLowerCase()) ||
+      result.category.toLowerCase().includes(query.toLowerCase())
+    )
+
+    setSearchResults(mockResults)
+    setShowSearchResults(true)
+  }
+
+  const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const query = e.target.value
+    setSearchQuery(query)
+    handleSearchQuery(query)
+  }
+
+  const handleSearchResultClick = (href: string) => {
+    router.push(href)
+    setSearchQuery('')
+    setShowSearchResults(false)
+  }
+
+  const handleLogout = () => {
+    logout()
+    router.push('/login')
+  }
+
+  // Don't render until theme is mounted
+  if (!mounted) {
+    return (
+      <header className="sticky top-0 z-30 bg-white dark:bg-clutch-gray-800 border-b border-clutch-gray-200 dark:border-clutch-gray-700 shadow-sm">
+        <div className="flex h-16 items-center justify-between px-6">
+          <div className="flex items-center space-x-4">
+            <div className="h-8 w-8 bg-clutch-gray-200 rounded animate-pulse" />
+            <div className="h-4 w-32 bg-clutch-gray-200 rounded animate-pulse" />
+          </div>
+          <div className="flex items-center space-x-4">
+            <div className="h-8 w-8 bg-clutch-gray-200 rounded animate-pulse" />
+            <div className="h-8 w-8 bg-clutch-gray-200 rounded animate-pulse" />
+            <div className="h-8 w-8 bg-clutch-gray-200 rounded animate-pulse" />
+          </div>
+        </div>
+      </header>
+    )
+  }
 
   return (
-    <header className="sticky top-0 z-30 bg-white dark:bg-slate-900 border-b border-slate-200 dark:border-slate-700 shadow-sm">
+    <header className="sticky top-0 z-30 bg-white dark:bg-clutch-gray-800 border-b border-clutch-gray-200 dark:border-clutch-gray-700 shadow-sm backdrop-blur-sm bg-white/95 dark:bg-clutch-gray-800/95">
       <div className="flex h-16 items-center justify-between px-6">
         {/* Left Section */}
         <div className="flex items-center space-x-4">
+          {/* Sidebar Toggle */}
           <button
-            onClick={onToggleSidebar}
-            className="p-2 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg transition-colors"
+            onClick={toggleSidebar}
+            className="p-2 hover:bg-clutch-gray-100 dark:hover:bg-clutch-gray-700 rounded-lg transition-all duration-200 hover:scale-105"
             aria-label="Toggle sidebar"
           >
-            <Menu className="h-5 w-5 text-slate-600 dark:text-slate-300" />
+            <Menu className="h-5 w-5 text-clutch-gray-600 dark:text-clutch-gray-300" />
           </button>
           
           {/* Breadcrumbs */}
-          <nav className="flex items-center space-x-1 text-sm text-slate-500 dark:text-slate-400">
+          <nav className="flex items-center space-x-1 text-sm text-clutch-gray-500 dark:text-clutch-gray-400">
             {breadcrumbs.map((breadcrumb, index) => (
               <React.Fragment key={breadcrumb.href}>
-                {index > 0 && <span className="mx-1">/</span>}
-                {index === breadcrumbs.length - 1 ? (
-                  <span className="text-slate-900 dark:text-white font-medium">
+                {index > 0 && (
+                  <span className="mx-1 text-clutch-gray-300 dark:text-clutch-gray-600">
+                    /
+                  </span>
+                )}
+                {breadcrumb.isLast ? (
+                  <span className="text-clutch-gray-900 dark:text-white font-medium">
                     {breadcrumb.label}
                   </span>
                 ) : (
                   <Link
                     href={breadcrumb.href}
-                    className="hover:text-slate-700 dark:hover:text-slate-300 transition-colors"
+                    className="hover:text-clutch-primary transition-colors duration-200"
                   >
                     {breadcrumb.label}
                   </Link>
@@ -192,40 +205,50 @@ export function NewHeader({ onToggleSidebar }: NewHeaderProps) {
           </nav>
         </div>
 
-        {/* Right Section */}
-        <div className="flex items-center space-x-4">
-          {/* Search */}
-          <div className="relative" data-dropdown>
+        {/* Center Section - Search */}
+        <div className="flex-1 max-w-2xl mx-8">
+          <div className="relative">
             <div className="relative">
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-slate-400" />
+              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-clutch-gray-400" />
               <input
                 type="text"
-                placeholder="Search anything..."
+                placeholder="Search anything... (Ctrl+K)"
                 value={searchQuery}
                 onChange={handleSearchChange}
-                className="w-80 pl-10 pr-4 py-2 border border-slate-300 dark:border-slate-600 rounded-lg focus:ring-2 focus:ring-clutch-primary focus:border-transparent bg-white dark:bg-slate-800 text-slate-900 dark:text-white"
+                className="w-full pl-10 pr-4 py-2.5 border border-clutch-gray-300 dark:border-clutch-gray-600 rounded-xl focus:ring-2 focus:ring-clutch-primary focus:border-transparent bg-white dark:bg-clutch-gray-700 text-clutch-gray-900 dark:text-white placeholder-clutch-gray-400 transition-all duration-200"
+                onFocus={() => onSearchClick?.()}
               />
+              <div className="absolute right-3 top-1/2 transform -translate-y-1/2">
+                <kbd className="px-2 py-1 text-xs font-mono bg-clutch-gray-100 dark:bg-clutch-gray-600 text-clutch-gray-500 dark:text-clutch-gray-400 rounded border">
+                  ⌘K
+                </kbd>
+              </div>
             </div>
             
-            {/* Search Results */}
+            {/* Enhanced Search Results */}
             {showSearchResults && searchResults.length > 0 && (
-              <div className="absolute top-full left-0 right-0 mt-1 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg shadow-lg z-50">
+              <div className="absolute top-full left-0 right-0 mt-2 bg-white dark:bg-clutch-gray-800 border border-clutch-gray-200 dark:border-clutch-gray-700 rounded-xl shadow-xl z-50 overflow-hidden">
                 <div className="py-2">
                   {searchResults.map((result, index) => (
                     <button
                       key={index}
                       onClick={() => handleSearchResultClick(result.href)}
-                      className="w-full px-4 py-2 text-left hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors"
+                      className="w-full px-4 py-3 text-left hover:bg-clutch-gray-50 dark:hover:bg-clutch-gray-700 transition-colors duration-200 group"
                     >
                       <div className="flex items-center space-x-3">
-                        <div className="w-2 h-2 bg-clutch-primary rounded-full"></div>
-                        <div>
-                          <p className="text-sm font-medium text-slate-900 dark:text-white">
+                        <div className="w-2 h-2 bg-clutch-primary rounded-full group-hover:scale-125 transition-transform duration-200"></div>
+                        <div className="flex-1">
+                          <p className="text-sm font-medium text-clutch-gray-900 dark:text-white group-hover:text-clutch-primary transition-colors">
                             {result.title}
                           </p>
-                          <p className="text-xs text-slate-500 dark:text-slate-400">
-                            {result.href}
-                          </p>
+                          <div className="flex items-center space-x-2 mt-1">
+                            <span className="text-xs text-clutch-gray-500 dark:text-clutch-gray-400">
+                              {result.href}
+                            </span>
+                            <span className="text-xs px-2 py-0.5 bg-clutch-gray-100 dark:bg-clutch-gray-600 text-clutch-gray-600 dark:text-clutch-gray-300 rounded-full">
+                              {result.category}
+                            </span>
+                          </div>
                         </div>
                       </div>
                     </button>
@@ -234,184 +257,149 @@ export function NewHeader({ onToggleSidebar }: NewHeaderProps) {
               </div>
             )}
           </div>
+        </div>
 
+        {/* Right Section */}
+        <div className="flex items-center space-x-2">
           {/* Help */}
           <button
             onClick={() => router.push('/help')}
-            className="p-2 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg transition-colors"
+            className="p-2 hover:bg-clutch-gray-100 dark:hover:bg-clutch-gray-700 rounded-lg transition-all duration-200 hover:scale-105"
             title="Help & Support"
           >
-            <HelpCircle className="h-5 w-5 text-slate-600 dark:text-slate-300" />
+            <HelpCircle className="h-5 w-5 text-clutch-gray-600 dark:text-clutch-gray-300" />
           </button>
 
-          {/* Chat */}
+          {/* Team Chat */}
           <button
             onClick={() => router.push('/chat')}
-            className="p-2 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg transition-colors"
+            className="p-2 hover:bg-clutch-gray-100 dark:hover:bg-clutch-gray-700 rounded-lg transition-all duration-200 hover:scale-105"
             title="Team Chat"
           >
-            <MessageSquare className="h-5 w-5 text-slate-600 dark:text-slate-300" />
+            <MessageSquare className="h-5 w-5 text-clutch-gray-600 dark:text-clutch-gray-300" />
           </button>
 
           {/* Theme Toggle */}
           <button
             onClick={toggleTheme}
-            className="p-2 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg transition-colors"
-            title={`Switch to ${mounted && theme === 'dark' ? 'light' : 'dark'} mode`}
+            className="p-2 hover:bg-clutch-gray-100 dark:hover:bg-clutch-gray-700 rounded-lg transition-all duration-200 hover:scale-105"
+            title={`Switch to ${theme === 'dark' ? 'light' : 'dark'} mode`}
           >
-            {mounted ? (
-              theme === 'dark' ? (
-                <Sun className="h-5 w-5 text-slate-600 dark:text-slate-300" />
-              ) : (
-                <Moon className="h-5 w-5 text-slate-600 dark:text-slate-300" />
-              )
+            {theme === 'dark' ? (
+              <Sun className="h-5 w-5 text-clutch-gray-600 dark:text-clutch-gray-300" />
             ) : (
-              <div className="h-5 w-5 bg-slate-200 rounded animate-pulse" />
+              <Moon className="h-5 w-5 text-clutch-gray-600 dark:text-clutch-gray-300" />
             )}
           </button>
 
           {/* Notifications */}
-          <div className="relative" data-dropdown>
+          <div className="relative">
             <button
               onClick={toggleNotifications}
-              className="relative p-2 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg transition-colors"
+              className="relative p-2 hover:bg-clutch-gray-100 dark:hover:bg-clutch-gray-700 rounded-lg transition-all duration-200 hover:scale-105"
               aria-label="Notifications"
             >
-              <Bell className="h-5 w-5 text-slate-600 dark:text-slate-300" />
+              <Bell className="h-5 w-5 text-clutch-gray-600 dark:text-clutch-gray-300" />
               {notifications.length > 0 && (
-                <span className="absolute -top-1 -right-1 h-5 w-5 bg-clutch-primary rounded-full text-xs text-white flex items-center justify-center font-medium">
+                <span className="absolute -top-1 -right-1 h-5 w-5 bg-clutch-primary rounded-full text-xs text-white flex items-center justify-center font-medium animate-pulse">
                   {notifications.length > 9 ? '9+' : notifications.length}
                 </span>
               )}
             </button>
-            
+
             {/* Notifications Dropdown */}
             {notificationsOpen && (
-              <div className="absolute top-full right-0 mt-1 w-80 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg shadow-lg z-50">
-                <div className="p-4 border-b border-slate-200 dark:border-slate-700">
-                  <div className="flex items-center justify-between">
-                    <h3 className="text-lg font-semibold text-slate-900 dark:text-white">
-                      Notifications
-                    </h3>
-                    <button
-                      onClick={() => setNotificationsOpen(false)}
-                      className="p-1 hover:bg-slate-100 dark:hover:bg-slate-700 rounded transition-colors"
-                    >
-                      <X className="h-4 w-4" />
-                    </button>
-                  </div>
+              <div className="absolute right-0 top-full mt-2 w-80 bg-white dark:bg-clutch-gray-800 border border-clutch-gray-200 dark:border-clutch-gray-700 rounded-xl shadow-xl z-50">
+                <div className="p-4 border-b border-clutch-gray-200 dark:border-clutch-gray-700">
+                  <h3 className="text-sm font-semibold text-clutch-gray-900 dark:text-white">
+                    Notifications
+                  </h3>
                 </div>
-                
-                <div className="max-h-96 overflow-y-auto">
-                  {notifications.length === 0 ? (
+                <div className="max-h-64 overflow-y-auto">
+                  {notifications.length > 0 ? (
+                    notifications.map((notification, index) => (
+                      <div key={index} className="p-4 border-b border-clutch-gray-100 dark:border-clutch-gray-700 last:border-b-0">
+                        <p className="text-sm text-clutch-gray-900 dark:text-white">
+                          {notification.message}
+                        </p>
+                        <p className="text-xs text-clutch-gray-500 dark:text-clutch-gray-400 mt-1">
+                          {notification.timestamp}
+                        </p>
+                      </div>
+                    ))
+                  ) : (
                     <div className="p-8 text-center">
-                      <Bell className="h-8 w-8 text-slate-400 mx-auto mb-2" />
-                      <p className="text-slate-600 dark:text-slate-400 font-medium">
+                      <Bell className="h-8 w-8 text-clutch-gray-400 mx-auto mb-2" />
+                      <p className="text-sm text-clutch-gray-500 dark:text-clutch-gray-400">
                         No notifications
                       </p>
-                      <p className="text-sm text-slate-500 dark:text-slate-500 mt-1">
-                        You're all caught up!
-                      </p>
-                    </div>
-                  ) : (
-                    <div className="divide-y divide-slate-100 dark:divide-slate-700">
-                      {notifications.map((notification, index) => (
-                        <div key={index} className="p-4 hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors">
-                          <div className="flex items-start space-x-3">
-                            <div className="flex-shrink-0">
-                              {notification.type === 'success' && <CheckCircle className="h-5 w-5 text-green-500" />}
-                              {notification.type === 'warning' && <AlertTriangle className="h-5 w-5 text-yellow-500" />}
-                              {notification.type === 'error' && <AlertTriangle className="h-5 w-5 text-red-500" />}
-                              {notification.type === 'info' && <Info className="h-5 w-5 text-blue-500" />}
-                            </div>
-                            <div className="flex-1 min-w-0">
-                              <p className="text-sm font-medium text-slate-900 dark:text-white">
-                                {notification.title}
-                              </p>
-                              <p className="text-sm text-slate-600 dark:text-slate-400 mt-1">
-                                {notification.message}
-                              </p>
-                              <p className="text-xs text-slate-500 dark:text-slate-500 mt-2">
-                                {notification.timestamp}
-                              </p>
-                            </div>
-                          </div>
-                        </div>
-                      ))}
                     </div>
                   )}
                 </div>
-                
-                {notifications.length > 0 && (
-                  <div className="p-4 border-t border-slate-200 dark:border-slate-700">
-                    <button className="w-full text-sm text-clutch-primary hover:text-clutch-primary-dark transition-colors">
-                      Mark all as read
-                    </button>
-                  </div>
-                )}
               </div>
             )}
           </div>
 
           {/* User Menu */}
-          <div className="relative" data-dropdown>
+          <div className="relative">
             <button
               onClick={toggleUserMenu}
-              className="flex items-center space-x-2 p-2 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg transition-colors"
+              className="flex items-center space-x-2 p-2 hover:bg-clutch-gray-100 dark:hover:bg-clutch-gray-700 rounded-lg transition-all duration-200 hover:scale-105"
               aria-label="User menu"
             >
-              <div className="w-8 h-8 bg-clutch-primary rounded-full flex items-center justify-center">
+              <div className="w-8 h-8 bg-gradient-to-br from-clutch-primary to-clutch-primary-dark rounded-full flex items-center justify-center shadow-sm">
                 <User className="h-4 w-4 text-white" />
               </div>
-              <ChevronDown className="h-4 w-4 text-slate-600 dark:text-slate-300" />
+              <ChevronDown className="h-4 w-4 text-clutch-gray-600 dark:text-clutch-gray-300" />
             </button>
-            
+
             {/* User Menu Dropdown */}
             {userMenuOpen && (
-              <div className="absolute top-full right-0 mt-1 w-64 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg shadow-lg z-50">
-                <div className="p-4 border-b border-slate-200 dark:border-slate-700">
+              <div className="absolute right-0 top-full mt-2 w-64 bg-white dark:bg-clutch-gray-800 border border-clutch-gray-200 dark:border-clutch-gray-700 rounded-xl shadow-xl z-50">
+                <div className="p-4 border-b border-clutch-gray-200 dark:border-clutch-gray-700">
                   <div className="flex items-center space-x-3">
-                    <div className="w-10 h-10 bg-clutch-primary rounded-full flex items-center justify-center">
+                    <div className="w-10 h-10 bg-gradient-to-br from-clutch-primary to-clutch-primary-dark rounded-full flex items-center justify-center">
                       <User className="h-5 w-5 text-white" />
                     </div>
-                    <div className="flex-1 min-w-0">
-                      <p className="text-sm font-semibold text-slate-900 dark:text-white truncate">
-                        {user?.fullName || 'User'}
+                    <div>
+                      <p className="text-sm font-semibold text-clutch-gray-900 dark:text-white">
+                        {user?.email || 'Admin User'}
                       </p>
-                      <p className="text-xs text-slate-500 dark:text-slate-400 truncate">
-                        {user?.email || 'user@example.com'}
+                      <p className="text-xs text-clutch-gray-500 dark:text-clutch-gray-400">
+                        {user?.email || 'admin@zgarage.com'}
                       </p>
                     </div>
                   </div>
                 </div>
-                
                 <div className="py-2">
                   <Link
                     href="/settings/profile"
-                    onClick={() => setUserMenuOpen(false)}
-                    className="flex items-center px-4 py-2 text-sm text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors"
+                    className="flex items-center space-x-3 px-4 py-2 text-sm text-clutch-gray-700 dark:text-clutch-gray-300 hover:bg-clutch-gray-50 dark:hover:bg-clutch-gray-700 transition-colors"
                   >
-                    <User className="h-4 w-4 mr-3" />
-                    Profile Settings
+                    <User className="h-4 w-4" />
+                    <span>Profile</span>
                   </Link>
-                  
                   <Link
                     href="/settings"
-                    onClick={() => setUserMenuOpen(false)}
-                    className="flex items-center px-4 py-2 text-sm text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors"
+                    className="flex items-center space-x-3 px-4 py-2 text-sm text-clutch-gray-700 dark:text-clutch-gray-300 hover:bg-clutch-gray-50 dark:hover:bg-clutch-gray-700 transition-colors"
                   >
-                    <Settings className="h-4 w-4 mr-3" />
-                    Settings
+                    <Settings className="h-4 w-4" />
+                    <span>Settings</span>
                   </Link>
-                  
-                  <div className="border-t border-slate-200 dark:border-slate-700 my-2"></div>
-                  
+                  <Link
+                    href="/security"
+                    className="flex items-center space-x-3 px-4 py-2 text-sm text-clutch-gray-700 dark:text-clutch-gray-300 hover:bg-clutch-gray-50 dark:hover:bg-clutch-gray-700 transition-colors"
+                  >
+                    <Shield className="h-4 w-4" />
+                    <span>Security</span>
+                  </Link>
+                  <div className="border-t border-clutch-gray-200 dark:border-clutch-gray-700 my-2"></div>
                   <button
                     onClick={handleLogout}
-                    className="flex items-center w-full px-4 py-2 text-sm text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors"
+                    className="flex items-center space-x-3 px-4 py-2 text-sm text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors w-full text-left"
                   >
-                    <LogOut className="h-4 w-4 mr-3" />
-                    Logout
+                    <LogOut className="h-4 w-4" />
+                    <span>Sign out</span>
                   </button>
                 </div>
               </div>
@@ -422,3 +410,5 @@ export function NewHeader({ onToggleSidebar }: NewHeaderProps) {
     </header>
   )
 }
+
+export default NewHeader
