@@ -167,6 +167,14 @@ const endpointTesterRoutes = require('./routes/endpoint-tester');
 const searchRoutes = require('./routes/search');
 const webhooksRoutes = require('./routes/webhooks');
 
+// Import new advanced routes
+const aiAdvancedRoutes = require('./routes/ai-advanced');
+const enterpriseAdvancedRoutes = require('./routes/enterprise-advanced');
+const mobileAdvancedRoutes = require('./routes/mobile-advanced');
+const analyticsAdvancedRoutes = require('./routes/analytics-advanced');
+const integrationAdvancedRoutes = require('./routes/integration-advanced');
+const experimentalRoutes = require('./routes/experimental');
+
 // Initialize Express app
 const app = express();
 
@@ -444,6 +452,14 @@ app.use(`${apiPrefix}/user-analytics-backup`, userAnalyticsBackupRoutes);
 app.use(`${apiPrefix}/endpoint-tester`, endpointTesterRoutes);
 app.use(`${apiPrefix}/search`, searchRoutes);
 app.use(`${apiPrefix}/webhooks`, webhooksRoutes);
+
+// Register new advanced routes
+app.use(`${apiPrefix}/ai-advanced`, aiAdvancedRoutes);
+app.use(`${apiPrefix}/enterprise-advanced`, enterpriseAdvancedRoutes);
+app.use(`${apiPrefix}/mobile-advanced`, mobileAdvancedRoutes);
+app.use(`${apiPrefix}/analytics-advanced`, analyticsAdvancedRoutes);
+app.use(`${apiPrefix}/integration-advanced`, integrationAdvancedRoutes);
+app.use(`${apiPrefix}/experimental`, experimentalRoutes);
 
 // Fallback routes
 app.use('/auth', authRoutes);

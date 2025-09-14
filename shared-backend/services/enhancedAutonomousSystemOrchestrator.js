@@ -157,17 +157,18 @@ class EnhancedAutonomousSystemOrchestrator {
       const healthStatus = this.healthMonitor.getHealthStatus();
       this.systemState.lastHealthCheck = new Date();
 
-      if (healthStatus.overall.status === 'unhealthy') {
+      // Fix: SimpleHealthMonitor returns direct object, not nested under 'overall'
+      if (healthStatus.status === 'unhealthy') {
         this.logger.warn('🚨 System health check failed - monitoring only (no recovery)');
         // Disable automatic recovery to prevent restarts
         // await this.initiateSystemRecovery();
-      } else if (healthStatus.overall.status === 'degraded') {
+      } else if (healthStatus.status === 'degraded') {
         this.logger.warn('⚠️ System health degraded - monitoring only (no optimization)');
         // Disable automatic optimization to prevent restarts
         // await this.optimizeSystemResources();
       }
 
-      this.logger.info(`📊 System health: ${healthStatus.overall.status} (${healthStatus.overall.healthPercentage}%)`);
+      this.logger.info(`📊 System health: ${healthStatus.status} (${healthStatus.healthPercentage}%)`);
     } catch (error) {
       this.logger.error('❌ System health check failed:', error);
     }

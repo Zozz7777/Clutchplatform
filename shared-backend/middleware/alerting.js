@@ -92,9 +92,27 @@ const checkSystemHealth = () => {
     console.log(`✅ Memory healthy - Render Compatible: ${renderMemoryPercent.toFixed(1)}%, Heap: ${heapUsagePercent.toFixed(1)}%`);
   }
   
-  // CPU checks
+  // CPU checks - Proper calculation with time tracking
   const cpuUsage = process.cpuUsage();
-  const cpuPercent = (cpuUsage.user + cpuUsage.system) / 1000000; // Convert to percentage
+  let cpuPercent = 0; // Default value
+  
+  // Store previous CPU usage for comparison
+  if (!global.previousCpuUsage) {
+    global.previousCpuUsage = cpuUsage;
+    global.previousCpuTime = Date.now();
+    cpuPercent = 0; // First run, no previous data
+  } else {
+    const currentTime = Date.now();
+    const timeDiff = currentTime - global.previousCpuTime;
+    const cpuDiff = (cpuUsage.user + cpuUsage.system) - (global.previousCpuUsage.user + global.previousCpuUsage.system);
+    
+    // Calculate CPU percentage based on time elapsed
+    cpuPercent = Math.min((cpuDiff / (timeDiff * 1000)) * 100, 100); // Convert to percentage and cap at 100%
+    
+    // Update previous values
+    global.previousCpuUsage = cpuUsage;
+    global.previousCpuTime = currentTime;
+  }
   
   if (cpuPercent > alertThresholds.cpu.critical) {
     addAlert('cpu', `Critical CPU usage: ${cpuPercent.toFixed(1)}%`, 'critical', { usage: cpuPercent });

@@ -171,22 +171,18 @@ export function withAuth<P extends object>(Component: React.ComponentType<P>) {
     }, [isAuthenticated, isLoading, router])
 
     // Always call hooks in the same order, then handle conditional rendering
-    const renderContent = () => {
-      if (isLoading) {
-        return (
-          <div className="min-h-screen flex items-center justify-center">
-            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
-          </div>
-        )
-      }
-
-      if (!isAuthenticated) {
-        return null
-      }
-
-      return <Component {...props} />
+    if (isLoading) {
+      return (
+        <div className="min-h-screen flex items-center justify-center">
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+        </div>
+      )
     }
 
-    return renderContent()
+    if (!isAuthenticated) {
+      return null
+    }
+
+    return <Component {...props} />
   }
 }
