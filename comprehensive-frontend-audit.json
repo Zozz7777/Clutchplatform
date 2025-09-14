@@ -1,0 +1,1506 @@
+{
+  "summary": {
+    "totalFiles": 73,
+    "totalApiCalls": 277,
+    "categories": {
+      "auth": 41,
+      "admin": 84,
+      "dashboard": 22,
+      "analytics": 25,
+      "monitoring": 7,
+      "users": 14,
+      "other": 83,
+      "errors": 1
+    }
+  },
+  "allApiCalls": [
+    "/'))",
+    "//clutch-main-nk7x.onrender.com/api/marketing/statistics",
+    "//clutch-main-nk7x.onrender.com/api/v1/clutch-email",
+    "//localhost:${PORT}/api/v1",
+    "//localhost:${PORT}/api/v1/ai/*",
+    "//localhost:${PORT}/api/v1/auth/*",
+    "//localhost:${PORT}/api/v1/customers/*",
+    "//localhost:${PORT}/api/v1/inventory/*",
+    "//localhost:${PORT}/api/v1/sales/*",
+    "//localhost:${PORT}/api/v1/shops/*",
+    "//localhost:${PORT}/api/v1/system/*",
+    "/admin/activity-logs",
+    "/admin/activity/recent",
+    "/admin/alerts",
+    "/admin/analytics",
+    "/admin/analytics/export",
+    "/admin/analytics/revenue",
+    "/admin/analytics/users",
+    "/admin/business/customer-insights",
+    "/admin/business/customers",
+    "/admin/business/market",
+    "/admin/business/market-analysis",
+    "/admin/business/metrics",
+    "/admin/chat/channels",
+    "/admin/chat/channels/${channelId}/messages",
+    "/admin/cms/media",
+    "/admin/cms/media/${id}",
+    "/admin/cms/media/upload",
+    "/admin/cms/mobile",
+    "/admin/cms/mobile/${id}",
+    "/admin/cms/seo",
+    "/admin/dashboard/activity",
+    "/admin/dashboard/consolidated",
+    "/admin/dashboard/metrics",
+    "/admin/dashboard/realtime",
+    "/admin/dashboard/services",
+    "/admin/drivers",
+    "/admin/drivers/${id}",
+    "/admin/drivers/${id}/status",
+    "/admin/feature-flags",
+    "/admin/feature-flags/${id}",
+    "/admin/feature-flags/${id}/toggle",
+    "/admin/finance",
+    "/admin/hr",
+    "/admin/incidents",
+    "/admin/incidents/${id}",
+    "/admin/incidents/${id}/resolve",
+    "/admin/knowledge-base",
+    "/admin/knowledge-base/${id}",
+    "/admin/mobile/crashes",
+    "/admin/mobile/crashes/${id}",
+    "/admin/mobile/crashes/${id}/resolve",
+    "/admin/notifications",
+    "/admin/notifications/${id}/read",
+    "/admin/orders",
+    "/admin/orders/${id}",
+    "/admin/orders/${id}/status",
+    "/admin/overview",
+    "/admin/partners",
+    "/admin/partners/${id}",
+    "/admin/platform/services",
+    "/admin/realtime/metrics",
+    "/admin/revenue",
+    "/admin/revenue/forecasting",
+    "/admin/revenue/pricing",
+    "/admin/revenue/pricing/${id}",
+    "/admin/settings",
+    "/admin/settings/company",
+    "/admin/settings/general",
+    "/admin/settings/security",
+    "/admin/stats",
+    "/admin/support/feedback",
+    "/admin/support/feedback/${id}/reply",
+    "/admin/support/feedback/${id}/status",
+    "/admin/system/health",
+    "/admin/system/logs",
+    "/admin/system/maintenance",
+    "/admin/users",
+    "/admin/users/${id}",
+    "/admin/users/cohorts",
+    "/admin/users/cohorts/${id}",
+    "/admin/users/export",
+    "/admin/users/segments",
+    "/admin/users/segments/${id}",
+    "/analytics/${campaign.id}/details",
+    "/analytics/business",
+    "/analytics/dashboard",
+    "/analytics/department",
+    "/analytics/department/${department.id}",
+    "/analytics/department/${department.id}/employees",
+    "/analytics/department/${selectedDepartment.id}",
+    "/analytics/department/page",
+    "/analytics/events",
+    "/analytics/export",
+    "/analytics/overview",
+    "/analytics/overview/page",
+    "/analytics/page",
+    "/analytics/predictive",
+    "/analytics/predictive/${prediction._id",
+    "/analytics/predictive/page",
+    "/analytics/reports",
+    "/analytics/reports/${report._id",
+    "/analytics/reports/page",
+    "/analytics/revenue",
+    "/analytics/revenue/dashboard",
+    "/analytics/sessions",
+    "/analytics/users",
+    "/api",
+    "/api/ai/customer-insights",
+    "/api/ai/demand-forecast",
+    "/api/ai/inventory-optimization",
+    "/api/ai/price-optimization",
+    "/api/auth/login</code>",
+    "/api/auth/logout</code>",
+    "/api/auth/me</code>",
+    "/api/auth/refresh</code>",
+    "/api/health</code>",
+    "/api/inventory/${itemId}/stock",
+    "/api/inventory/batch-sync",
+    "/api/inventory/recommendations",
+    "/api/inventory/sync",
+    "/api/keys",
+    "/api/keys/${apiKey._id}",
+    "/api/keys/${apiKey._id}/regenerate",
+    "/api/keys/${selectedApiKey._id}",
+    "/api/market/insights",
+    "/api/market/popular-cars",
+    "/api/market/top-selling",
+    "/api/marketing/statistics",
+    "/api/ping",
+    "/api/sales/batch-sync",
+    "/api/sales/sync",
+    "/api/sync/inventory",
+    "/api/sync/transaction",
+    "/api/test",
+    "/api/time",
+    "/api/v1",
+    "/api/v1/**",
+    "/api/v1/admin/analytics",
+    "/api/v1/admin/analytics',",
+    "/api/v1/admin/dashboard/consolidated",
+    "/api/v1/admin/finance",
+    "/api/v1/admin/hr",
+    "/api/v1/admin/hr',",
+    "/api/v1/admin/settings",
+    "/api/v1/admin/settings',",
+    "/api/v1/admin/settings/general",
+    "/api/v1/admin/users",
+    "/api/v1/ai/*",
+    "/api/v1/ai/customer-insights",
+    "/api/v1/ai/demand-forecast",
+    "/api/v1/ai/inventory-optimization",
+    "/api/v1/ai/market-analysis",
+    "/api/v1/ai/price-optimization",
+    "/api/v1/analytics/overview",
+    "/api/v1/auth/*",
+    "/api/v1/auth/login",
+    "/api/v1/auth/verify",
+    "/api/v1/auto-parts/brands",
+    "/api/v1/auto-parts/categories",
+    "/api/v1/auto-parts/inventory",
+    "/api/v1/auto-parts/inventory/:id/stock",
+    "/api/v1/auto-parts/inventory/bulk",
+    "/api/v1/clutch-email",
+    "/api/v1/customers",
+    "/api/v1/customers/*",
+    "/api/v1/customers/analytics",
+    "/api/v1/dashboard/consolidated",
+    "/api/v1/inventory/*",
+    "/api/v1/inventory/alerts",
+    "/api/v1/inventory/items",
+    "/api/v1/inventory/items/:id",
+    "/api/v1/inventory/recommendations",
+    "/api/v1/market/*",
+    "/api/v1/market/insights",
+    "/api/v1/market/popular-cars",
+    "/api/v1/market/top-selling",
+    "/api/v1/market/trends",
+    "/api/v1/mobile/dashboard",
+    "/api/v1/orders",
+    "/api/v1/orders/*",
+    "/api/v1/orders/:id/status",
+    "/api/v1/sales/*",
+    "/api/v1/sales/analytics",
+    "/api/v1/sales/transactions",
+    "/api/v1/shops/*",
+    "/api/v1/shops/profile",
+    "/api/v1/shops/stats",
+    "/api/v1/suppliers",
+    "/api/v1/suppliers/*",
+    "/api/v1/system/*",
+    "/api/v1/system/health",
+    "/api/v1/system/ping",
+    "/api/v1/system/time",
+    "/api/v1/system/version",
+    "/auth/*",
+    "/auth/auth-guard",
+    "/auth/change-password",
+    "/auth/create-employee",
+    "/auth/current-user",
+    "/auth/employee-login",
+    "/auth/employee-me",
+    "/auth/enable-2fa",
+    "/auth/login",
+    "/auth/login</code>",
+    "/auth/logout",
+    "/auth/logout</code>",
+    "/auth/me",
+    "/auth/me</code>",
+    "/auth/permission-guard",
+    "/auth/permissions",
+    "/auth/preferences",
+    "/auth/profile",
+    "/auth/refresh",
+    "/auth/refresh-token",
+    "/auth/refresh</code>",
+    "/auth/reset-password",
+    "/auth/roles",
+    "/auth/roles/${roleId}",
+    "/auth/sessions",
+    "/auth/sessions/${sessionId}",
+    "/auth/set-recovery-options",
+    "/auth/update-profile",
+    "/auth/users",
+    "/auth/users/${userId}/roles",
+    "/auth/users/${userId}/roles/${roleId}",
+    "/auth/verify",
+    "/auth/verify-2fa",
+    "/dashboard/${model._id",
+    "/dashboard/activity",
+    "/dashboard/admin/overview",
+    "/dashboard/analytics",
+    "/dashboard/consolidated",
+    "/dashboard/dashboard-builder",
+    "/dashboard/dashboard-widget",
+    "/dashboard/data-context",
+    "/dashboard/finance",
+    "/dashboard/fleet",
+    "/dashboard/hr",
+    "/dashboard/hr/employees",
+    "/dashboard/metrics",
+    "/dashboard/page",
+    "/dashboard/partners",
+    "/dashboard/realtime",
+    "/dashboard/security",
+    "/dashboard/services",
+    "/dashboard/settings",
+    "/dashboard/stats",
+    "/dashboard/users",
+    "/dashboard/widget-system",
+    "/enterprise/api/keys',",
+    "/enterprise/api/keys/${apiKey._id}",
+    "/enterprise/api/keys/${apiKey._id}/regenerate",
+    "/errors/frontend",
+    "/json'",
+    "/monitoring/alerts",
+    "/monitoring/analytics",
+    "/monitoring/dashboard",
+    "/monitoring/errors",
+    "/monitoring/health",
+    "/monitoring/incidents",
+    "/monitoring/performance",
+    "/users/${id}",
+    "/users/${userId}/roles",
+    "/users/${userId}/roles/${roleId}",
+    "/users/analytics",
+    "/users/analytics/dashboard",
+    "/users/cohorts",
+    "/users/cohorts/${id}",
+    "/users/create",
+    "/users/edit",
+    "/users/export",
+    "/users/journey",
+    "/users/page",
+    "/users/segments",
+    "/users/segments/${id}",
+    "/users/top-users"
+  ],
+  "categories": {
+    "auth": [
+      "//localhost:${PORT}/api/v1/auth/*",
+      "/api/auth/login</code>",
+      "/api/auth/logout</code>",
+      "/api/auth/me</code>",
+      "/api/auth/refresh</code>",
+      "/api/v1/auth/*",
+      "/api/v1/auth/login",
+      "/api/v1/auth/verify",
+      "/auth/*",
+      "/auth/auth-guard",
+      "/auth/change-password",
+      "/auth/create-employee",
+      "/auth/current-user",
+      "/auth/employee-login",
+      "/auth/employee-me",
+      "/auth/enable-2fa",
+      "/auth/login",
+      "/auth/login</code>",
+      "/auth/logout",
+      "/auth/logout</code>",
+      "/auth/me",
+      "/auth/me</code>",
+      "/auth/permission-guard",
+      "/auth/permissions",
+      "/auth/preferences",
+      "/auth/profile",
+      "/auth/refresh",
+      "/auth/refresh-token",
+      "/auth/refresh</code>",
+      "/auth/reset-password",
+      "/auth/roles",
+      "/auth/roles/${roleId}",
+      "/auth/sessions",
+      "/auth/sessions/${sessionId}",
+      "/auth/set-recovery-options",
+      "/auth/update-profile",
+      "/auth/users",
+      "/auth/users/${userId}/roles",
+      "/auth/users/${userId}/roles/${roleId}",
+      "/auth/verify",
+      "/auth/verify-2fa"
+    ],
+    "admin": [
+      "/admin/activity-logs",
+      "/admin/activity/recent",
+      "/admin/alerts",
+      "/admin/analytics",
+      "/admin/analytics/export",
+      "/admin/analytics/revenue",
+      "/admin/analytics/users",
+      "/admin/business/customer-insights",
+      "/admin/business/customers",
+      "/admin/business/market",
+      "/admin/business/market-analysis",
+      "/admin/business/metrics",
+      "/admin/chat/channels",
+      "/admin/chat/channels/${channelId}/messages",
+      "/admin/cms/media",
+      "/admin/cms/media/${id}",
+      "/admin/cms/media/upload",
+      "/admin/cms/mobile",
+      "/admin/cms/mobile/${id}",
+      "/admin/cms/seo",
+      "/admin/dashboard/activity",
+      "/admin/dashboard/consolidated",
+      "/admin/dashboard/metrics",
+      "/admin/dashboard/realtime",
+      "/admin/dashboard/services",
+      "/admin/drivers",
+      "/admin/drivers/${id}",
+      "/admin/drivers/${id}/status",
+      "/admin/feature-flags",
+      "/admin/feature-flags/${id}",
+      "/admin/feature-flags/${id}/toggle",
+      "/admin/finance",
+      "/admin/hr",
+      "/admin/incidents",
+      "/admin/incidents/${id}",
+      "/admin/incidents/${id}/resolve",
+      "/admin/knowledge-base",
+      "/admin/knowledge-base/${id}",
+      "/admin/mobile/crashes",
+      "/admin/mobile/crashes/${id}",
+      "/admin/mobile/crashes/${id}/resolve",
+      "/admin/notifications",
+      "/admin/notifications/${id}/read",
+      "/admin/orders",
+      "/admin/orders/${id}",
+      "/admin/orders/${id}/status",
+      "/admin/overview",
+      "/admin/partners",
+      "/admin/partners/${id}",
+      "/admin/platform/services",
+      "/admin/realtime/metrics",
+      "/admin/revenue",
+      "/admin/revenue/forecasting",
+      "/admin/revenue/pricing",
+      "/admin/revenue/pricing/${id}",
+      "/admin/settings",
+      "/admin/settings/company",
+      "/admin/settings/general",
+      "/admin/settings/security",
+      "/admin/stats",
+      "/admin/support/feedback",
+      "/admin/support/feedback/${id}/reply",
+      "/admin/support/feedback/${id}/status",
+      "/admin/system/health",
+      "/admin/system/logs",
+      "/admin/system/maintenance",
+      "/admin/users",
+      "/admin/users/${id}",
+      "/admin/users/cohorts",
+      "/admin/users/cohorts/${id}",
+      "/admin/users/export",
+      "/admin/users/segments",
+      "/admin/users/segments/${id}",
+      "/api/v1/admin/analytics",
+      "/api/v1/admin/analytics',",
+      "/api/v1/admin/dashboard/consolidated",
+      "/api/v1/admin/finance",
+      "/api/v1/admin/hr",
+      "/api/v1/admin/hr',",
+      "/api/v1/admin/settings",
+      "/api/v1/admin/settings',",
+      "/api/v1/admin/settings/general",
+      "/api/v1/admin/users",
+      "/dashboard/admin/overview"
+    ],
+    "dashboard": [
+      "/api/v1/dashboard/consolidated",
+      "/dashboard/${model._id",
+      "/dashboard/activity",
+      "/dashboard/analytics",
+      "/dashboard/consolidated",
+      "/dashboard/dashboard-builder",
+      "/dashboard/dashboard-widget",
+      "/dashboard/data-context",
+      "/dashboard/finance",
+      "/dashboard/fleet",
+      "/dashboard/hr",
+      "/dashboard/hr/employees",
+      "/dashboard/metrics",
+      "/dashboard/page",
+      "/dashboard/partners",
+      "/dashboard/realtime",
+      "/dashboard/security",
+      "/dashboard/services",
+      "/dashboard/settings",
+      "/dashboard/stats",
+      "/dashboard/users",
+      "/dashboard/widget-system"
+    ],
+    "analytics": [
+      "/analytics/${campaign.id}/details",
+      "/analytics/business",
+      "/analytics/dashboard",
+      "/analytics/department",
+      "/analytics/department/${department.id}",
+      "/analytics/department/${department.id}/employees",
+      "/analytics/department/${selectedDepartment.id}",
+      "/analytics/department/page",
+      "/analytics/events",
+      "/analytics/export",
+      "/analytics/overview",
+      "/analytics/overview/page",
+      "/analytics/page",
+      "/analytics/predictive",
+      "/analytics/predictive/${prediction._id",
+      "/analytics/predictive/page",
+      "/analytics/reports",
+      "/analytics/reports/${report._id",
+      "/analytics/reports/page",
+      "/analytics/revenue",
+      "/analytics/revenue/dashboard",
+      "/analytics/sessions",
+      "/analytics/users",
+      "/api/v1/analytics/overview",
+      "/users/analytics/dashboard"
+    ],
+    "monitoring": [
+      "/monitoring/alerts",
+      "/monitoring/analytics",
+      "/monitoring/dashboard",
+      "/monitoring/errors",
+      "/monitoring/health",
+      "/monitoring/incidents",
+      "/monitoring/performance"
+    ],
+    "users": [
+      "/users/${id}",
+      "/users/${userId}/roles",
+      "/users/${userId}/roles/${roleId}",
+      "/users/analytics",
+      "/users/cohorts",
+      "/users/cohorts/${id}",
+      "/users/create",
+      "/users/edit",
+      "/users/export",
+      "/users/journey",
+      "/users/page",
+      "/users/segments",
+      "/users/segments/${id}",
+      "/users/top-users"
+    ],
+    "other": [
+      "/'))",
+      "//clutch-main-nk7x.onrender.com/api/marketing/statistics",
+      "//clutch-main-nk7x.onrender.com/api/v1/clutch-email",
+      "//localhost:${PORT}/api/v1",
+      "//localhost:${PORT}/api/v1/ai/*",
+      "//localhost:${PORT}/api/v1/customers/*",
+      "//localhost:${PORT}/api/v1/inventory/*",
+      "//localhost:${PORT}/api/v1/sales/*",
+      "//localhost:${PORT}/api/v1/shops/*",
+      "//localhost:${PORT}/api/v1/system/*",
+      "/api",
+      "/api/ai/customer-insights",
+      "/api/ai/demand-forecast",
+      "/api/ai/inventory-optimization",
+      "/api/ai/price-optimization",
+      "/api/health</code>",
+      "/api/inventory/${itemId}/stock",
+      "/api/inventory/batch-sync",
+      "/api/inventory/recommendations",
+      "/api/inventory/sync",
+      "/api/keys",
+      "/api/keys/${apiKey._id}",
+      "/api/keys/${apiKey._id}/regenerate",
+      "/api/keys/${selectedApiKey._id}",
+      "/api/market/insights",
+      "/api/market/popular-cars",
+      "/api/market/top-selling",
+      "/api/marketing/statistics",
+      "/api/ping",
+      "/api/sales/batch-sync",
+      "/api/sales/sync",
+      "/api/sync/inventory",
+      "/api/sync/transaction",
+      "/api/test",
+      "/api/time",
+      "/api/v1",
+      "/api/v1/**",
+      "/api/v1/ai/*",
+      "/api/v1/ai/customer-insights",
+      "/api/v1/ai/demand-forecast",
+      "/api/v1/ai/inventory-optimization",
+      "/api/v1/ai/market-analysis",
+      "/api/v1/ai/price-optimization",
+      "/api/v1/auto-parts/brands",
+      "/api/v1/auto-parts/categories",
+      "/api/v1/auto-parts/inventory",
+      "/api/v1/auto-parts/inventory/:id/stock",
+      "/api/v1/auto-parts/inventory/bulk",
+      "/api/v1/clutch-email",
+      "/api/v1/customers",
+      "/api/v1/customers/*",
+      "/api/v1/customers/analytics",
+      "/api/v1/inventory/*",
+      "/api/v1/inventory/alerts",
+      "/api/v1/inventory/items",
+      "/api/v1/inventory/items/:id",
+      "/api/v1/inventory/recommendations",
+      "/api/v1/market/*",
+      "/api/v1/market/insights",
+      "/api/v1/market/popular-cars",
+      "/api/v1/market/top-selling",
+      "/api/v1/market/trends",
+      "/api/v1/mobile/dashboard",
+      "/api/v1/orders",
+      "/api/v1/orders/*",
+      "/api/v1/orders/:id/status",
+      "/api/v1/sales/*",
+      "/api/v1/sales/analytics",
+      "/api/v1/sales/transactions",
+      "/api/v1/shops/*",
+      "/api/v1/shops/profile",
+      "/api/v1/shops/stats",
+      "/api/v1/suppliers",
+      "/api/v1/suppliers/*",
+      "/api/v1/system/*",
+      "/api/v1/system/health",
+      "/api/v1/system/ping",
+      "/api/v1/system/time",
+      "/api/v1/system/version",
+      "/enterprise/api/keys',",
+      "/enterprise/api/keys/${apiKey._id}",
+      "/enterprise/api/keys/${apiKey._id}/regenerate",
+      "/json'"
+    ],
+    "errors": [
+      "/errors/frontend"
+    ]
+  },
+  "fileResults": [
+    {
+      "file": "clutch-admin\\src\\app\\(dashboard)\\ai\\dashboard\\page.tsx",
+      "apiCalls": [
+        "/dashboard/${model._id"
+      ]
+    },
+    {
+      "file": "clutch-admin\\src\\app\\(dashboard)\\analytics\\department\\page.tsx",
+      "apiCalls": [
+        "/analytics/department",
+        "/analytics/department/${department.id}",
+        "/analytics/department/${department.id}/employees",
+        "/analytics/department/${selectedDepartment.id}"
+      ]
+    },
+    {
+      "file": "clutch-admin\\src\\app\\(dashboard)\\analytics\\overview\\page.tsx",
+      "apiCalls": [
+        "/admin/overview",
+        "/dashboard/admin/overview",
+        "/dashboard/stats"
+      ]
+    },
+    {
+      "file": "clutch-admin\\src\\app\\(dashboard)\\analytics\\predictive\\page.tsx",
+      "apiCalls": [
+        "/analytics/predictive",
+        "/analytics/predictive/${prediction._id"
+      ]
+    },
+    {
+      "file": "clutch-admin\\src\\app\\(dashboard)\\analytics\\reports\\page.tsx",
+      "apiCalls": [
+        "/analytics/reports",
+        "/analytics/reports/${report._id"
+      ]
+    },
+    {
+      "file": "clutch-admin\\src\\app\\(dashboard)\\cms\\seo\\page.tsx",
+      "apiCalls": [
+        "/analytics/overview"
+      ]
+    },
+    {
+      "file": "clutch-admin\\src\\app\\(dashboard)\\dashboard\\page.tsx",
+      "apiCalls": [
+        "/dashboard/hr/employees",
+        "/dashboard/partners",
+        "/dashboard/fleet",
+        "/dashboard/security"
+      ]
+    },
+    {
+      "file": "clutch-admin\\src\\app\\(dashboard)\\dashboard-consolidated\\page.tsx",
+      "apiCalls": [
+        "/dashboard/dashboard-widget",
+        "/dashboard/data-context"
+      ]
+    },
+    {
+      "file": "clutch-admin\\src\\app\\(dashboard)\\email\\management\\page.tsx",
+      "apiCalls": [
+        "/admin/stats",
+        "//clutch-main-nk7x.onrender.com/api/v1/clutch-email",
+        "/api/v1/clutch-email"
+      ]
+    },
+    {
+      "file": "clutch-admin\\src\\app\\(dashboard)\\email\\page.tsx",
+      "apiCalls": [
+        "/admin/stats",
+        "//clutch-main-nk7x.onrender.com/api/v1/clutch-email",
+        "/api/v1/clutch-email"
+      ]
+    },
+    {
+      "file": "clutch-admin\\src\\app\\(dashboard)\\enhanced-layout.tsx",
+      "apiCalls": [
+        "/auth/auth-guard",
+        "/analytics/overview",
+        "/analytics/department",
+        "/analytics/predictive",
+        "/analytics/reports",
+        "/monitoring/alerts",
+        "/monitoring/performance",
+        "/monitoring/incidents",
+        "/monitoring/health",
+        "/users/analytics",
+        "/users/segments",
+        "/users/journey",
+        "/users/cohorts"
+      ]
+    },
+    {
+      "file": "clutch-admin\\src\\app\\(dashboard)\\enterprise\\api\\page.tsx",
+      "apiCalls": [
+        "/enterprise/api/keys/${apiKey._id}",
+        "/enterprise/api/keys/${apiKey._id}/regenerate",
+        "/enterprise/api/keys',",
+        "/api/keys/${apiKey._id}",
+        "/api/keys/${apiKey._id}/regenerate",
+        "/api/keys",
+        "/api/keys/${selectedApiKey._id}"
+      ]
+    },
+    {
+      "file": "clutch-admin\\src\\app\\(dashboard)\\fleet\\overview\\page.tsx",
+      "apiCalls": [
+        "/admin/overview",
+        "/dashboard/admin/overview"
+      ]
+    },
+    {
+      "file": "clutch-admin\\src\\app\\(dashboard)\\layout.tsx",
+      "apiCalls": [
+        "/auth/auth-guard",
+        "/analytics/overview",
+        "/analytics/department",
+        "/analytics/predictive",
+        "/analytics/reports",
+        "/monitoring/alerts",
+        "/monitoring/performance",
+        "/monitoring/incidents",
+        "/monitoring/health",
+        "/users/analytics",
+        "/users/segments",
+        "/users/journey",
+        "/users/cohorts"
+      ]
+    },
+    {
+      "file": "clutch-admin\\src\\app\\(dashboard)\\marketing\\analytics\\page.tsx",
+      "apiCalls": [
+        "/analytics/${campaign.id}/details"
+      ]
+    },
+    {
+      "file": "clutch-admin\\src\\app\\(dashboard)\\monitoring\\performance\\page.tsx",
+      "apiCalls": [
+        "/api/v1/auth/login",
+        "/api/v1/dashboard/consolidated",
+        "/api/v1/mobile/dashboard",
+        "/api/v1/analytics/overview",
+        "/auth/login",
+        "/dashboard/consolidated",
+        "/analytics/overview"
+      ]
+    },
+    {
+      "file": "clutch-admin\\src\\app\\(dashboard)\\operations\\api-analytics\\page.tsx",
+      "apiCalls": [
+        "/api/v1/auth/login",
+        "/api/v1/dashboard/consolidated",
+        "/api/v1/mobile/dashboard",
+        "/api/v1/analytics/overview",
+        "/auth/login",
+        "/dashboard/consolidated",
+        "/analytics/overview"
+      ]
+    },
+    {
+      "file": "clutch-admin\\src\\app\\(dashboard)\\operations\\performance\\page.tsx",
+      "apiCalls": [
+        "/api/v1/auth/login",
+        "/api/v1/dashboard/consolidated",
+        "/api/v1/mobile/dashboard",
+        "/api/v1/analytics/overview",
+        "/auth/login",
+        "/dashboard/consolidated",
+        "/analytics/overview"
+      ]
+    },
+    {
+      "file": "clutch-admin\\src\\app\\(dashboard)\\security\\roles\\page.tsx",
+      "apiCalls": [
+        "/auth/roles",
+        "/auth/users",
+        "/auth/roles/${roleId}",
+        "/auth/users/${userId}/roles",
+        "/auth/users/${userId}/roles/${roleId}",
+        "/users/${userId}/roles",
+        "/users/${userId}/roles/${roleId}"
+      ]
+    },
+    {
+      "file": "clutch-admin\\src\\app\\(dashboard)\\settings\\page.tsx",
+      "apiCalls": [
+        "/dashboard/data-context"
+      ]
+    },
+    {
+      "file": "clutch-admin\\src\\app\\(dashboard)\\settings\\profile\\page.tsx",
+      "apiCalls": [
+        "/api"
+      ]
+    },
+    {
+      "file": "clutch-admin\\src\\app\\(dashboard)\\test-auth\\page.tsx",
+      "apiCalls": [
+        "/api/auth/login</code>",
+        "/api/auth/me</code>",
+        "/api/auth/refresh</code>",
+        "/api/auth/logout</code>",
+        "/api/health</code>",
+        "/auth/login</code>",
+        "/auth/me</code>",
+        "/auth/refresh</code>",
+        "/auth/logout</code>"
+      ]
+    },
+    {
+      "file": "clutch-admin\\src\\app\\(dashboard)\\users\\analytics\\page.tsx",
+      "apiCalls": [
+        "/users/analytics",
+        "/users/segments",
+        "/users/top-users"
+      ]
+    },
+    {
+      "file": "clutch-admin\\src\\components\\autonomous\\AutonomousDashboard.tsx",
+      "apiCalls": [
+        "/api/v1"
+      ]
+    },
+    {
+      "file": "clutch-admin\\src\\components\\layout\\enhanced-header.tsx",
+      "apiCalls": [
+        "/users/analytics"
+      ]
+    },
+    {
+      "file": "clutch-admin\\src\\components\\layout\\enhanced-sidebar.tsx",
+      "apiCalls": [
+        "/analytics/overview",
+        "/analytics/department",
+        "/analytics/predictive",
+        "/analytics/reports",
+        "/monitoring/alerts",
+        "/monitoring/performance",
+        "/monitoring/incidents",
+        "/monitoring/health",
+        "/users/analytics",
+        "/users/segments",
+        "/users/journey",
+        "/users/cohorts"
+      ]
+    },
+    {
+      "file": "clutch-admin\\src\\components\\layout\\improved-header.tsx",
+      "apiCalls": [
+        "/users/analytics"
+      ]
+    },
+    {
+      "file": "clutch-admin\\src\\components\\layout\\improved-sidebar.tsx",
+      "apiCalls": [
+        "/analytics/overview",
+        "/analytics/department",
+        "/analytics/predictive",
+        "/analytics/reports",
+        "/monitoring/alerts",
+        "/monitoring/performance",
+        "/monitoring/incidents",
+        "/monitoring/health",
+        "/users/analytics",
+        "/users/segments",
+        "/users/journey",
+        "/users/cohorts"
+      ]
+    },
+    {
+      "file": "clutch-admin\\src\\components\\layout\\new-header.tsx",
+      "apiCalls": [
+        "/users/analytics"
+      ]
+    },
+    {
+      "file": "clutch-admin\\src\\components\\layout\\new-sidebar.tsx",
+      "apiCalls": [
+        "/analytics/overview",
+        "/analytics/reports",
+        "/monitoring/health",
+        "/users/analytics"
+      ]
+    },
+    {
+      "file": "clutch-admin\\src\\components\\layout\\redesigned-header.tsx",
+      "apiCalls": [
+        "/users/analytics"
+      ]
+    },
+    {
+      "file": "clutch-admin\\src\\components\\layout\\redesigned-sidebar.tsx",
+      "apiCalls": [
+        "/analytics/overview",
+        "/analytics/department",
+        "/analytics/predictive",
+        "/analytics/reports",
+        "/monitoring/alerts",
+        "/monitoring/performance",
+        "/monitoring/incidents",
+        "/monitoring/health",
+        "/users/analytics",
+        "/users/segments",
+        "/users/journey",
+        "/users/cohorts"
+      ]
+    },
+    {
+      "file": "clutch-admin\\src\\components\\LogDashboard.tsx",
+      "apiCalls": [
+        "/errors/frontend",
+        "/api/v1"
+      ]
+    },
+    {
+      "file": "clutch-admin\\src\\components\\ui\\luxury-header.tsx",
+      "apiCalls": [
+        "/users/analytics"
+      ]
+    },
+    {
+      "file": "clutch-admin\\src\\components\\ui\\luxury-sidebar.tsx",
+      "apiCalls": [
+        "/analytics/overview",
+        "/analytics/department",
+        "/analytics/predictive",
+        "/analytics/reports",
+        "/monitoring/alerts",
+        "/monitoring/performance",
+        "/monitoring/incidents",
+        "/monitoring/health",
+        "/users/analytics",
+        "/users/segments",
+        "/users/journey",
+        "/users/cohorts"
+      ]
+    },
+    {
+      "file": "clutch-admin\\src\\config\\auth.ts",
+      "apiCalls": [
+        "/auth/employee-login",
+        "/auth/refresh-token",
+        "/auth/logout",
+        "/auth/current-user"
+      ]
+    },
+    {
+      "file": "clutch-admin\\src\\hooks\\useMarketingAnalyticsDashboard.ts",
+      "apiCalls": [
+        "/analytics/dashboard"
+      ]
+    },
+    {
+      "file": "clutch-admin\\src\\hooks\\useMonitoringDashboard.ts",
+      "apiCalls": [
+        "/monitoring/dashboard"
+      ]
+    },
+    {
+      "file": "clutch-admin\\src\\hooks\\useRealtimeData.ts",
+      "apiCalls": [
+        "/analytics/revenue",
+        "/analytics/business"
+      ]
+    },
+    {
+      "file": "clutch-admin\\src\\hooks\\useRevenueDashboard.ts",
+      "apiCalls": [
+        "/analytics/revenue/dashboard"
+      ]
+    },
+    {
+      "file": "clutch-admin\\src\\hooks\\useUsersAnalyticsDashboard.ts",
+      "apiCalls": [
+        "/analytics/dashboard",
+        "/users/analytics/dashboard"
+      ]
+    },
+    {
+      "file": "clutch-admin\\src\\lib\\api-service.ts",
+      "apiCalls": [
+        "/auth/refresh",
+        "/api/v1",
+        "/auth/employee-login",
+        "/auth/employee-me",
+        "/auth/logout",
+        "/admin/dashboard/metrics",
+        "/admin/platform/services",
+        "/admin/activity-logs",
+        "/admin/users",
+        "/admin/users/${id}",
+        "/admin/drivers",
+        "/admin/drivers/${id}",
+        "/admin/drivers/${id}/status",
+        "/admin/partners",
+        "/admin/partners/${id}",
+        "/admin/orders",
+        "/admin/orders/${id}",
+        "/admin/orders/${id}/status",
+        "/admin/analytics",
+        "/admin/revenue",
+        "/admin/realtime/metrics",
+        "/admin/notifications",
+        "/admin/notifications/${id}/read",
+        "/admin/chat/channels",
+        "/admin/chat/channels/${channelId}/messages",
+        "/admin/system/health",
+        "/admin/system/logs",
+        "/admin/system/maintenance",
+        "/admin/business/metrics",
+        "/admin/business/customer-insights",
+        "/admin/business/market-analysis",
+        "/admin/knowledge-base",
+        "/admin/knowledge-base/${id}",
+        "/admin/incidents",
+        "/admin/incidents/${id}",
+        "/admin/incidents/${id}/resolve",
+        "/admin/mobile/crashes",
+        "/admin/mobile/crashes/${id}",
+        "/admin/mobile/crashes/${id}/resolve",
+        "/admin/cms/mobile",
+        "/admin/cms/mobile/${id}",
+        "/admin/feature-flags",
+        "/admin/feature-flags/${id}",
+        "/admin/feature-flags/${id}/toggle",
+        "/admin/cms/media",
+        "/admin/cms/media/upload",
+        "/admin/cms/media/${id}",
+        "/admin/users/segments",
+        "/admin/users/segments/${id}",
+        "/admin/users/cohorts",
+        "/admin/users/cohorts/${id}",
+        "/admin/support/feedback",
+        "/admin/support/feedback/${id}/status",
+        "/admin/support/feedback/${id}/reply",
+        "/admin/revenue/pricing",
+        "/admin/revenue/pricing/${id}",
+        "/admin/revenue/forecasting",
+        "/admin/cms/seo",
+        "/dashboard/metrics",
+        "/users/${id}",
+        "/users/segments",
+        "/users/segments/${id}",
+        "/users/cohorts",
+        "/users/cohorts/${id}"
+      ]
+    },
+    {
+      "file": "clutch-admin\\src\\lib\\api.ts",
+      "apiCalls": [
+        "/auth/refresh-token",
+        "/api/v1",
+        "/auth/employee-login",
+        "/auth/logout",
+        "/auth/employee-me",
+        "/auth/profile",
+        "/auth/preferences",
+        "/auth/permissions",
+        "/auth/update-profile",
+        "/auth/change-password",
+        "/auth/enable-2fa",
+        "/auth/verify-2fa",
+        "/auth/sessions",
+        "/auth/sessions/${sessionId}",
+        "/auth/set-recovery-options",
+        "/admin/dashboard/metrics",
+        "/admin/dashboard/consolidated",
+        "/admin/platform/services",
+        "/admin/activity-logs",
+        "/admin/overview",
+        "/dashboard/metrics",
+        "/dashboard/consolidated",
+        "/dashboard/admin/overview"
+      ]
+    },
+    {
+      "file": "clutch-admin\\src\\lib\\auth-service.ts",
+      "apiCalls": [
+        "/auth/login",
+        "/auth/logout",
+        "/auth/me",
+        "/auth/refresh",
+        "/auth/change-password",
+        "/auth/reset-password"
+      ]
+    },
+    {
+      "file": "clutch-admin\\src\\lib\\code-splitting.tsx",
+      "apiCalls": [
+        "/dashboard/page",
+        "/analytics/page",
+        "/analytics/overview/page",
+        "/analytics/department/page",
+        "/analytics/predictive/page",
+        "/analytics/reports/page"
+      ]
+    },
+    {
+      "file": "clutch-admin\\src\\lib\\config.ts",
+      "apiCalls": [
+        "/auth/refresh",
+        "/auth/logout"
+      ]
+    },
+    {
+      "file": "clutch-admin\\src\\lib\\consolidated-api.ts",
+      "apiCalls": [
+        "/api/v1",
+        "/auth/login",
+        "/auth/logout",
+        "/auth/me",
+        "/auth/refresh",
+        "/admin/dashboard/metrics",
+        "/admin/dashboard/services",
+        "/admin/dashboard/activity",
+        "/admin/dashboard/realtime",
+        "/admin/users",
+        "/admin/users/${id}",
+        "/admin/drivers",
+        "/admin/drivers/${id}",
+        "/admin/drivers/${id}/status",
+        "/admin/partners",
+        "/admin/partners/${id}",
+        "/admin/orders",
+        "/admin/orders/${id}",
+        "/admin/orders/${id}/status",
+        "/admin/analytics",
+        "/admin/analytics/revenue",
+        "/admin/system/logs",
+        "/admin/system/maintenance",
+        "/admin/business/metrics",
+        "/admin/business/customers",
+        "/admin/business/market",
+        "/admin/notifications",
+        "/admin/notifications/${id}/read",
+        "/admin/chat/channels",
+        "/admin/chat/channels/${channelId}/messages",
+        "/admin/knowledge-base",
+        "/admin/knowledge-base/${id}",
+        "/admin/incidents",
+        "/admin/incidents/${id}",
+        "/admin/incidents/${id}/resolve",
+        "/admin/mobile/crashes",
+        "/admin/mobile/crashes/${id}",
+        "/admin/mobile/crashes/${id}/resolve",
+        "/admin/cms/mobile",
+        "/admin/cms/mobile/${id}",
+        "/admin/feature-flags",
+        "/admin/feature-flags/${id}",
+        "/admin/feature-flags/${id}/toggle",
+        "/admin/cms/media",
+        "/admin/cms/media/upload",
+        "/admin/cms/media/${id}",
+        "/admin/users/segments",
+        "/admin/users/segments/${id}",
+        "/admin/users/cohorts",
+        "/admin/users/cohorts/${id}",
+        "/admin/support/feedback",
+        "/admin/support/feedback/${id}/status",
+        "/admin/support/feedback/${id}/reply",
+        "/admin/revenue/pricing/${id}",
+        "/admin/revenue/forecasting",
+        "/admin/cms/seo",
+        "/dashboard/metrics",
+        "/dashboard/services",
+        "/dashboard/activity",
+        "/dashboard/realtime",
+        "/analytics/revenue",
+        "/monitoring/alerts",
+        "/monitoring/incidents",
+        "/monitoring/health",
+        "/users/${id}",
+        "/users/segments",
+        "/users/segments/${id}",
+        "/users/cohorts",
+        "/users/cohorts/${id}",
+        "/users/journey"
+      ]
+    },
+    {
+      "file": "clutch-admin\\src\\lib\\mock-auth.ts",
+      "apiCalls": [
+        "/admin/dashboard/metrics",
+        "/admin/platform/services",
+        "/admin/activity-logs",
+        "/dashboard/metrics"
+      ]
+    },
+    {
+      "file": "clutch-admin\\src\\lib\\performance-monitoring.tsx",
+      "apiCalls": [
+        "/monitoring/errors",
+        "/monitoring/analytics",
+        "/json'",
+        "/api/v1"
+      ]
+    },
+    {
+      "file": "clutch-admin\\src\\lib\\rbac.ts",
+      "apiCalls": [
+        "/analytics/export",
+        "/users/create",
+        "/users/edit",
+        "/users/segments",
+        "/users/cohorts"
+      ]
+    },
+    {
+      "file": "clutch-admin\\src\\lib\\react-query-setup.tsx",
+      "apiCalls": [
+        "/api/v1",
+        "/dashboard/metrics",
+        "/dashboard/activity",
+        "/users/${id}"
+      ]
+    },
+    {
+      "file": "clutch-admin\\src\\lib\\real-api-service.ts",
+      "apiCalls": [
+        "/admin/dashboard/metrics",
+        "/admin/system/health",
+        "/admin/activity/recent",
+        "/admin/alerts",
+        "/admin/users",
+        "/admin/users/${id}",
+        "/admin/users/export",
+        "/admin/settings",
+        "/admin/settings/company",
+        "/admin/settings/security",
+        "/admin/analytics",
+        "/admin/analytics/revenue",
+        "/admin/analytics/users",
+        "/admin/analytics/export",
+        "/dashboard/metrics",
+        "/analytics/revenue",
+        "/analytics/users",
+        "/analytics/export",
+        "/users/${id}",
+        "/users/export"
+      ]
+    },
+    {
+      "file": "clutch-admin\\src\\lib\\user-analytics.tsx",
+      "apiCalls": [
+        "/analytics/events",
+        "/analytics/sessions",
+        "/json'",
+        "/api/v1"
+      ]
+    },
+    {
+      "file": "clutch-admin\\src\\lib\\user-feedback.ts",
+      "apiCalls": [
+        "/'))",
+        "/api/v1"
+      ]
+    },
+    {
+      "file": "clutch-admin\\src\\store\\index.ts",
+      "apiCalls": [
+        "/auth/create-employee"
+      ]
+    },
+    {
+      "file": "clutch-admin\\src\\utils\\errorTracker.ts",
+      "apiCalls": [
+        "/api/v1",
+        "/errors/frontend"
+      ]
+    },
+    {
+      "file": "clutch-admin\\src\\utils\\performanceMonitor.ts",
+      "apiCalls": [
+        "/api/v1"
+      ]
+    },
+    {
+      "file": "clutch-admin\\src\\__tests__\\auto-parts\\inventory-management.test.tsx",
+      "apiCalls": [
+        "/api/v1/auto-parts/inventory",
+        "/api/v1/auto-parts/categories",
+        "/api/v1/auto-parts/brands",
+        "/api/v1/auto-parts/inventory/:id/stock",
+        "/api/v1/auto-parts/inventory/bulk"
+      ]
+    },
+    {
+      "file": "clutch-admin\\src\\__tests__\\automated\\coverage-enhancement.test.tsx",
+      "apiCalls": [
+        "/api/v1/admin/analytics',",
+        "/api/v1/admin/hr',",
+        "/api/v1/admin/settings',",
+        "/api/v1/admin/dashboard/consolidated",
+        "/api/v1/admin/users",
+        "/api/v1/admin/analytics",
+        "/api/v1/admin/finance",
+        "/api/v1/admin/hr",
+        "/api/v1/admin/settings",
+        "/api/v1/admin/settings/general",
+        "/admin/dashboard/consolidated",
+        "/admin/users",
+        "/admin/analytics",
+        "/admin/finance",
+        "/admin/hr",
+        "/admin/settings",
+        "/admin/settings/general",
+        "/dashboard/page",
+        "/dashboard/consolidated",
+        "/analytics/page",
+        "/users/page"
+      ]
+    },
+    {
+      "file": "clutch-admin\\src\\__tests__\\critical\\cross-browser-compatibility.test.tsx",
+      "apiCalls": [
+        "/api/test"
+      ]
+    },
+    {
+      "file": "clutch-admin\\src\\__tests__\\critical\\frontend-pages-comprehensive.test.tsx",
+      "apiCalls": [
+        "/api/v1/admin/dashboard/consolidated",
+        "/api/v1/admin/users",
+        "/api/v1/admin/analytics",
+        "/api/v1/admin/finance",
+        "/api/v1/admin/hr",
+        "/admin/dashboard/consolidated",
+        "/admin/users",
+        "/admin/analytics",
+        "/admin/finance",
+        "/admin/hr",
+        "/dashboard/consolidated"
+      ]
+    },
+    {
+      "file": "clutch-admin\\src\\__tests__\\critical\\user-acceptance-testing.spec.ts",
+      "apiCalls": [
+        "/api/v1/**"
+      ]
+    },
+    {
+      "file": "clutch-admin\\src\\__tests__\\enhancement\\uat-stakeholder-validation.spec.ts",
+      "apiCalls": [
+        "/api/v1/admin/users",
+        "/admin/users",
+        "/dashboard/users",
+        "/dashboard/analytics",
+        "/dashboard/settings"
+      ]
+    },
+    {
+      "file": "clutch-admin\\src\\__tests__\\find-hooks-violations.test.tsx",
+      "apiCalls": [
+        "/auth/auth-guard",
+        "/auth/permission-guard",
+        "/dashboard/dashboard-builder",
+        "/dashboard/widget-system"
+      ]
+    },
+    {
+      "file": "clutch-admin\\src\\__tests__\\performance\\performance-benchmarks.test.tsx",
+      "apiCalls": [
+        "/dashboard/page",
+        "/analytics/page",
+        "/users/page"
+      ]
+    },
+    {
+      "file": "clutch-admin\\src\\__tests__\\uat\\user-acceptance-tests.spec.ts",
+      "apiCalls": [
+        "/api/v1/admin/users",
+        "/admin/users",
+        "/dashboard/users",
+        "/dashboard/analytics",
+        "/dashboard/finance",
+        "/dashboard/hr",
+        "/dashboard/settings"
+      ]
+    },
+    {
+      "file": "website\\clutch-website\\config.js",
+      "apiCalls": [
+        "/api/marketing/statistics"
+      ]
+    },
+    {
+      "file": "website\\clutch-website\\script.js",
+      "apiCalls": [
+        "//clutch-main-nk7x.onrender.com/api/marketing/statistics",
+        "/api/marketing/statistics"
+      ]
+    },
+    {
+      "file": "clutch-auto-parts-clean\\api-endpoints-implementation.js",
+      "apiCalls": [
+        "/api/v1/auth/login",
+        "/api/v1/auth/verify",
+        "/api/v1/shops/profile",
+        "/api/v1/shops/stats",
+        "/api/v1/inventory/items",
+        "/api/v1/inventory/items/:id",
+        "/api/v1/inventory/alerts",
+        "/api/v1/inventory/recommendations",
+        "/api/v1/sales/transactions",
+        "/api/v1/sales/analytics",
+        "/api/v1/customers",
+        "/api/v1/customers/analytics",
+        "/api/v1/suppliers",
+        "/api/v1/ai/demand-forecast",
+        "/api/v1/ai/price-optimization",
+        "/api/v1/ai/inventory-optimization",
+        "/api/v1/ai/customer-insights",
+        "/api/v1/ai/market-analysis",
+        "/api/v1/orders",
+        "/api/v1/orders/:id/status",
+        "/api/v1/market/insights",
+        "/api/v1/market/trends",
+        "/api/v1/market/top-selling",
+        "/api/v1/market/popular-cars",
+        "/api/v1/system/health",
+        "/api/v1/system/ping",
+        "/api/v1/system/time",
+        "/api/v1/system/version",
+        "/auth/login",
+        "/auth/verify"
+      ]
+    },
+    {
+      "file": "clutch-auto-parts-clean\\mock-api-server.js",
+      "apiCalls": [
+        "/api/v1",
+        "/api/v1/auth/*",
+        "/api/v1/shops/*",
+        "/api/v1/inventory/*",
+        "/api/v1/sales/*",
+        "/api/v1/customers/*",
+        "/api/v1/suppliers/*",
+        "/api/v1/ai/*",
+        "/api/v1/orders/*",
+        "/api/v1/market/*",
+        "/api/v1/system/*",
+        "//localhost:${PORT}/api/v1",
+        "//localhost:${PORT}/api/v1/auth/*",
+        "//localhost:${PORT}/api/v1/shops/*",
+        "//localhost:${PORT}/api/v1/inventory/*",
+        "//localhost:${PORT}/api/v1/sales/*",
+        "//localhost:${PORT}/api/v1/customers/*",
+        "//localhost:${PORT}/api/v1/ai/*",
+        "//localhost:${PORT}/api/v1/system/*",
+        "/api/v1/auth/login",
+        "/api/v1/auth/verify",
+        "/api/v1/shops/profile",
+        "/api/v1/shops/stats",
+        "/api/v1/inventory/items",
+        "/api/v1/inventory/alerts",
+        "/api/v1/inventory/recommendations",
+        "/api/v1/sales/transactions",
+        "/api/v1/sales/analytics",
+        "/api/v1/customers",
+        "/api/v1/customers/analytics",
+        "/api/v1/ai/demand-forecast",
+        "/api/v1/ai/price-optimization",
+        "/api/v1/system/health",
+        "/api/v1/system/ping",
+        "/api/v1/system/time",
+        "/api/v1/system/version",
+        "/auth/*",
+        "/auth/login",
+        "/auth/verify"
+      ]
+    },
+    {
+      "file": "clutch-auto-parts-clean\\src\\renderer\\js\\api.js",
+      "apiCalls": [
+        "/api/inventory/recommendations",
+        "/api/market/insights",
+        "/api/market/top-selling",
+        "/api/market/popular-cars",
+        "/api/ai/demand-forecast",
+        "/api/ai/price-optimization",
+        "/api/ai/inventory-optimization",
+        "/api/ai/customer-insights",
+        "/api/inventory/sync",
+        "/api/inventory/${itemId}/stock",
+        "/api/sales/sync",
+        "/api/sync/transaction",
+        "/api/sync/inventory",
+        "/api/inventory/batch-sync",
+        "/api/sales/batch-sync",
+        "/api/ping",
+        "/api/time",
+        "/auth/verify"
+      ]
+    },
+    {
+      "file": "clutch-auto-parts-clean\\src\\renderer\\js\\backend-config.js",
+      "apiCalls": [
+        "/auth/login",
+        "/auth/refresh",
+        "/auth/logout",
+        "/auth/verify"
+      ]
+    },
+    {
+      "file": "clutch-auto-parts-clean\\test-backend.js",
+      "apiCalls": [
+        "/api/v1/auth/verify",
+        "/api/v1/shops/profile",
+        "/api/v1/inventory/items",
+        "/api/v1/sales/transactions",
+        "/auth/verify"
+      ]
+    }
+  ]
+}
