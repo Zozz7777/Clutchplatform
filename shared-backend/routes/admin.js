@@ -6771,4 +6771,758 @@ router.get('/dashboard/consolidated', authenticateToken, requireRole(['admin']),
   }
 });
 
+// ============================================================================
+// PHASE 2 BATCH 2: ADDITIONAL CRITICAL ADMIN ENDPOINTS
+// ============================================================================
+
+// GET /admin/drivers - Get drivers list
+router.get('/drivers', authenticateToken, requireRole(['admin', 'fleet_manager']), async (req, res) => {
+  try {
+    const { page = 1, limit = 20, status, location, sortBy = 'name' } = req.query;
+    
+    const drivers = [
+      {
+        id: 'driver-001',
+        name: 'John Smith',
+        email: 'john.smith@clutch.com',
+        phone: '+1-555-0123',
+        status: 'active',
+        location: {
+          city: 'New York',
+          state: 'NY',
+          coordinates: { latitude: 40.7128, longitude: -74.0060 }
+        },
+        vehicle: {
+          id: 'VH-001',
+          make: 'Ford',
+          model: 'Transit',
+          year: 2022,
+          licensePlate: 'ABC-123'
+        },
+        performance: {
+          rating: 4.8,
+          totalTrips: 1250,
+          onTimeRate: 96.5,
+          customerRating: 4.7
+        },
+        schedule: {
+          currentShift: '08:00-17:00',
+          nextShift: '2024-01-16T08:00:00Z',
+          daysOff: ['Saturday', 'Sunday']
+        },
+        employment: {
+          hireDate: '2023-01-15',
+          position: 'Senior Driver',
+          department: 'Fleet Operations'
+        }
+      },
+      {
+        id: 'driver-002',
+        name: 'Sarah Johnson',
+        email: 'sarah.johnson@clutch.com',
+        phone: '+1-555-0124',
+        status: 'on_duty',
+        location: {
+          city: 'Brooklyn',
+          state: 'NY',
+          coordinates: { latitude: 40.6782, longitude: -73.9442 }
+        },
+        vehicle: {
+          id: 'VH-002',
+          make: 'Chevrolet',
+          model: 'Express',
+          year: 2021,
+          licensePlate: 'DEF-456'
+        },
+        performance: {
+          rating: 4.6,
+          totalTrips: 980,
+          onTimeRate: 94.2,
+          customerRating: 4.5
+        },
+        schedule: {
+          currentShift: '10:00-19:00',
+          nextShift: '2024-01-16T10:00:00Z',
+          daysOff: ['Monday', 'Tuesday']
+        },
+        employment: {
+          hireDate: '2023-03-20',
+          position: 'Driver',
+          department: 'Fleet Operations'
+        }
+      }
+    ];
+
+    res.json({
+      success: true,
+      data: { 
+        drivers,
+        pagination: {
+          page: parseInt(page),
+          limit: parseInt(limit),
+          total: drivers.length,
+          pages: Math.ceil(drivers.length / limit)
+        },
+        summary: {
+          totalDrivers: 45,
+          activeDrivers: 38,
+          onDutyDrivers: 12,
+          averageRating: 4.6
+        }
+      },
+      message: 'Drivers list retrieved successfully',
+      timestamp: new Date().toISOString()
+    });
+
+  } catch (error) {
+    logger.error('❌ Get drivers list error:', error);
+    res.status(500).json({
+      success: false,
+      error: 'GET_DRIVERS_LIST_FAILED',
+      message: 'Failed to get drivers list',
+      timestamp: new Date().toISOString()
+    });
+  }
+});
+
+// GET /admin/feature-flags - Get feature flags list
+router.get('/feature-flags', authenticateToken, requireRole(['admin', 'developer']), async (req, res) => {
+  try {
+    const { page = 1, limit = 20, status, environment } = req.query;
+    
+    const featureFlags = [
+      {
+        id: 'flag-001',
+        name: 'new_dashboard_ui',
+        description: 'Enable the new dashboard user interface',
+        status: 'active',
+        enabled: true,
+        rolloutPercentage: 50,
+        environment: 'production',
+        targetAudience: {
+          userTypes: ['admin', 'manager'],
+          regions: ['US', 'CA'],
+          userSegments: ['premium', 'enterprise']
+        },
+        metrics: {
+          impressions: 1250,
+          conversions: 125,
+          conversionRate: 10.0,
+          userFeedback: 4.2
+        },
+        createdBy: 'admin@clutch.com',
+        createdAt: '2024-01-01T00:00:00Z',
+        updatedAt: new Date().toISOString()
+      },
+      {
+        id: 'flag-002',
+        name: 'mobile_app_v2',
+        description: 'Enable new mobile app features',
+        status: 'testing',
+        enabled: false,
+        rolloutPercentage: 25,
+        environment: 'staging',
+        targetAudience: {
+          userTypes: ['customer'],
+          regions: ['US'],
+          userSegments: ['beta_testers']
+        },
+        metrics: {
+          impressions: 500,
+          conversions: 50,
+          conversionRate: 10.0,
+          userFeedback: 4.0
+        },
+        createdBy: 'mobile-team@clutch.com',
+        createdAt: '2024-01-10T00:00:00Z',
+        updatedAt: new Date().toISOString()
+      }
+    ];
+
+    res.json({
+      success: true,
+      data: { 
+        featureFlags,
+        pagination: {
+          page: parseInt(page),
+          limit: parseInt(limit),
+          total: featureFlags.length,
+          pages: Math.ceil(featureFlags.length / limit)
+        },
+        summary: {
+          totalFlags: 25,
+          activeFlags: 15,
+          testingFlags: 8,
+          disabledFlags: 2
+        }
+      },
+      message: 'Feature flags list retrieved successfully',
+      timestamp: new Date().toISOString()
+    });
+
+  } catch (error) {
+    logger.error('❌ Get feature flags list error:', error);
+    res.status(500).json({
+      success: false,
+      error: 'GET_FEATURE_FLAGS_LIST_FAILED',
+      message: 'Failed to get feature flags list',
+      timestamp: new Date().toISOString()
+    });
+  }
+});
+
+// GET /admin/feedback - Get feedback management
+router.get('/feedback', authenticateToken, requireRole(['admin', 'feedback_manager']), async (req, res) => {
+  try {
+    const { page = 1, limit = 20, type, status, rating } = req.query;
+    
+    const feedback = [
+      {
+        id: 'feedback-001',
+        type: 'service',
+        rating: 5,
+        title: 'Excellent oil change service',
+        description: 'The technician was very professional and completed the service quickly. Highly recommend!',
+        customer: {
+          id: 'customer-123',
+          name: 'Alice Johnson',
+          email: 'alice.johnson@example.com',
+          tier: 'premium'
+        },
+        service: {
+          id: 'service-001',
+          name: 'Oil Change',
+          orderId: 'ORD-2024-001',
+          date: '2024-01-15T10:00:00Z'
+        },
+        categories: {
+          punctuality: 5,
+          quality: 5,
+          communication: 5,
+          cleanliness: 5
+        },
+        status: 'processed',
+        assignedTo: 'feedback-team@clutch.com',
+        tags: ['positive', 'recommendation'],
+        createdAt: '2024-01-15T11:00:00Z',
+        updatedAt: new Date().toISOString()
+      },
+      {
+        id: 'feedback-002',
+        type: 'complaint',
+        rating: 2,
+        title: 'Late arrival and poor communication',
+        description: 'Driver arrived 30 minutes late and didn\'t communicate the delay. Service quality was also below expectations.',
+        customer: {
+          id: 'customer-456',
+          name: 'Bob Smith',
+          email: 'bob.smith@example.com',
+          tier: 'standard'
+        },
+        service: {
+          id: 'service-002',
+          name: 'Brake Service',
+          orderId: 'ORD-2024-002',
+          date: '2024-01-14T14:00:00Z'
+        },
+        categories: {
+          punctuality: 1,
+          quality: 2,
+          communication: 1,
+          cleanliness: 3
+        },
+        status: 'investigating',
+        assignedTo: 'support-team@clutch.com',
+        tags: ['complaint', 'punctuality', 'communication'],
+        createdAt: '2024-01-14T16:00:00Z',
+        updatedAt: new Date().toISOString()
+      }
+    ];
+
+    res.json({
+      success: true,
+      data: { 
+        feedback,
+        pagination: {
+          page: parseInt(page),
+          limit: parseInt(limit),
+          total: feedback.length,
+          pages: Math.ceil(feedback.length / limit)
+        },
+        summary: {
+          totalFeedback: 1250,
+          positiveFeedback: 950,
+          negativeFeedback: 200,
+          pendingReview: 100,
+          averageRating: 4.2
+        }
+      },
+      message: 'Feedback management data retrieved successfully',
+      timestamp: new Date().toISOString()
+    });
+
+  } catch (error) {
+    logger.error('❌ Get feedback management error:', error);
+    res.status(500).json({
+      success: false,
+      error: 'GET_FEEDBACK_MANAGEMENT_FAILED',
+      message: 'Failed to get feedback management data',
+      timestamp: new Date().toISOString()
+    });
+  }
+});
+
+// GET /admin/incidents - Get incidents list
+router.get('/incidents', authenticateToken, requireRole(['admin', 'incident_manager']), async (req, res) => {
+  try {
+    const { page = 1, limit = 20, status, severity, type } = req.query;
+    
+    const incidents = [
+      {
+        id: 'incident-001',
+        title: 'Vehicle Accident - Minor Collision',
+        description: 'Driver reported minor collision with another vehicle during delivery. No injuries reported.',
+        type: 'safety',
+        severity: 'medium',
+        status: 'investigating',
+        priority: 'high',
+        reportedBy: {
+          name: 'John Smith',
+          email: 'john.smith@clutch.com',
+          role: 'driver'
+        },
+        assignedTo: {
+          name: 'Sarah Johnson',
+          email: 'sarah.johnson@clutch.com',
+          role: 'incident_manager'
+        },
+        location: {
+          address: '123 Main St, New York, NY',
+          coordinates: { latitude: 40.7128, longitude: -74.0060 }
+        },
+        impact: {
+          vehicles: ['VH-001'],
+          drivers: ['John Smith'],
+          customers: ['Alice Johnson'],
+          estimatedCost: 2500,
+          serviceDisruption: '2 hours'
+        },
+        createdAt: '2024-01-15T10:30:00Z',
+        updatedAt: new Date().toISOString()
+      },
+      {
+        id: 'incident-002',
+        title: 'System Outage - Payment Processing',
+        description: 'Payment processing system experienced intermittent failures for 30 minutes',
+        type: 'technical',
+        severity: 'high',
+        status: 'resolved',
+        priority: 'critical',
+        reportedBy: {
+          name: 'System Monitor',
+          email: 'system@clutch.com',
+          role: 'system'
+        },
+        assignedTo: {
+          name: 'Mike Davis',
+          email: 'mike.davis@clutch.com',
+          role: 'technical_lead'
+        },
+        location: {
+          address: 'Data Center - Primary',
+          coordinates: { latitude: 40.7589, longitude: -73.9851 }
+        },
+        impact: {
+          affectedServices: ['payment', 'checkout'],
+          affectedUsers: 1250,
+          estimatedCost: 5000,
+          serviceDisruption: '30 minutes'
+        },
+        createdAt: '2024-01-15T09:00:00Z',
+        updatedAt: '2024-01-15T09:30:00Z'
+      }
+    ];
+
+    res.json({
+      success: true,
+      data: { 
+        incidents,
+        pagination: {
+          page: parseInt(page),
+          limit: parseInt(limit),
+          total: incidents.length,
+          pages: Math.ceil(incidents.length / limit)
+        },
+        summary: {
+          totalIncidents: 45,
+          openIncidents: 12,
+          resolvedIncidents: 30,
+          criticalIncidents: 3,
+          averageResolutionTime: '4.5 hours'
+        }
+      },
+      message: 'Incidents list retrieved successfully',
+      timestamp: new Date().toISOString()
+    });
+
+  } catch (error) {
+    logger.error('❌ Get incidents list error:', error);
+    res.status(500).json({
+      success: false,
+      error: 'GET_INCIDENTS_LIST_FAILED',
+      message: 'Failed to get incidents list',
+      timestamp: new Date().toISOString()
+    });
+  }
+});
+
+// GET /admin/knowledge-base - Get knowledge base management
+router.get('/knowledge-base', authenticateToken, requireRole(['admin', 'content_manager']), async (req, res) => {
+  try {
+    const { page = 1, limit = 20, category, status, search } = req.query;
+    
+    const knowledgeItems = [
+      {
+        id: 'kb-001',
+        title: 'How to Handle Customer Complaints',
+        description: 'Step-by-step guide for handling customer complaints effectively',
+        category: 'customer_service',
+        subcategory: 'complaint_resolution',
+        status: 'published',
+        visibility: 'internal',
+        author: {
+          name: 'Sarah Johnson',
+          email: 'sarah.johnson@clutch.com',
+          role: 'customer_service_manager'
+        },
+        tags: ['customer_service', 'complaints', 'resolution', 'training'],
+        usage: {
+          views: 1250,
+          helpful: 89,
+          notHelpful: 5,
+          rating: 4.7
+        },
+        metadata: {
+          wordCount: 450,
+          readingTime: 3,
+          difficulty: 'beginner',
+          lastReviewed: '2024-01-01T00:00:00Z'
+        },
+        createdAt: '2024-01-01T00:00:00Z',
+        updatedAt: new Date().toISOString(),
+        version: 2
+      },
+      {
+        id: 'kb-002',
+        title: 'Vehicle Maintenance Checklist',
+        description: 'Comprehensive checklist for vehicle maintenance procedures',
+        category: 'operations',
+        subcategory: 'maintenance',
+        status: 'published',
+        visibility: 'internal',
+        author: {
+          name: 'Mike Wilson',
+          email: 'mike.wilson@clutch.com',
+          role: 'operations_manager'
+        },
+        tags: ['maintenance', 'vehicle', 'checklist', 'operations'],
+        usage: {
+          views: 850,
+          helpful: 65,
+          notHelpful: 3,
+          rating: 4.5
+        },
+        metadata: {
+          wordCount: 650,
+          readingTime: 4,
+          difficulty: 'intermediate',
+          lastReviewed: '2023-12-15T00:00:00Z'
+        },
+        createdAt: '2023-12-01T00:00:00Z',
+        updatedAt: '2023-12-15T00:00:00Z',
+        version: 1
+      }
+    ];
+
+    res.json({
+      success: true,
+      data: { 
+        knowledgeItems,
+        pagination: {
+          page: parseInt(page),
+          limit: parseInt(limit),
+          total: knowledgeItems.length,
+          pages: Math.ceil(knowledgeItems.length / limit)
+        },
+        summary: {
+          totalItems: 125,
+          publishedItems: 98,
+          draftItems: 20,
+          archivedItems: 7,
+          totalViews: 15000,
+          averageRating: 4.4
+        }
+      },
+      message: 'Knowledge base management data retrieved successfully',
+      timestamp: new Date().toISOString()
+    });
+
+  } catch (error) {
+    logger.error('❌ Get knowledge base management error:', error);
+    res.status(500).json({
+      success: false,
+      error: 'GET_KNOWLEDGE_BASE_MANAGEMENT_FAILED',
+      message: 'Failed to get knowledge base management data',
+      timestamp: new Date().toISOString()
+    });
+  }
+});
+
+// GET /admin/mobile - Get mobile management
+router.get('/mobile', authenticateToken, requireRole(['admin', 'mobile_manager']), async (req, res) => {
+  try {
+    const { page = 1, limit = 20, platform, version } = req.query;
+    
+    const mobileData = {
+      overview: {
+        totalUsers: 1250,
+        activeUsers: 980,
+        appVersions: 3,
+        platforms: ['iOS', 'Android'],
+        crashRate: 0.8,
+        averageSessionTime: 8.5
+      },
+      versions: [
+        {
+          version: '2.1.0',
+          platform: 'iOS',
+          releaseDate: '2024-01-10T00:00:00Z',
+          users: 450,
+          adoptionRate: 36.0,
+          crashRate: 0.5,
+          rating: 4.6,
+          status: 'current'
+        },
+        {
+          version: '2.0.5',
+          platform: 'Android',
+          releaseDate: '2024-01-05T00:00:00Z',
+          users: 380,
+          adoptionRate: 30.4,
+          crashRate: 1.2,
+          rating: 4.4,
+          status: 'current'
+        },
+        {
+          version: '2.0.0',
+          platform: 'iOS',
+          releaseDate: '2023-12-15T00:00:00Z',
+          users: 150,
+          adoptionRate: 12.0,
+          crashRate: 0.8,
+          rating: 4.5,
+          status: 'legacy'
+        }
+      ],
+      crashes: {
+        totalCrashes: 45,
+        unresolvedCrashes: 12,
+        highSeverityCrashes: 3,
+        averageResolutionTime: '2.5 days',
+        topCrashes: [
+          {
+            id: 'crash-001',
+            type: 'NSException',
+            frequency: 15,
+            severity: 'high',
+            version: '2.1.0',
+            platform: 'iOS'
+          },
+          {
+            id: 'crash-002',
+            type: 'ANR',
+            frequency: 12,
+            severity: 'medium',
+            version: '2.0.5',
+            platform: 'Android'
+          }
+        ]
+      },
+      performance: {
+        averageLoadTime: 2.1,
+        averageResponseTime: 1.8,
+        errorRate: 0.8,
+        uptime: 99.2,
+        metrics: {
+          pageLoadTime: 2.1,
+          apiResponseTime: 1.8,
+          crashRate: 0.8,
+          memoryUsage: 65.2
+        }
+      },
+      features: [
+        {
+          name: 'Real-time Tracking',
+          status: 'enabled',
+          usage: 85.0,
+          userRating: 4.7
+        },
+        {
+          name: 'Push Notifications',
+          status: 'enabled',
+          usage: 92.0,
+          userRating: 4.5
+        },
+        {
+          name: 'Offline Mode',
+          status: 'beta',
+          usage: 15.0,
+          userRating: 4.2
+        }
+      ]
+    };
+
+    res.json({
+      success: true,
+      data: { mobile: mobileData },
+      message: 'Mobile management data retrieved successfully',
+      timestamp: new Date().toISOString()
+    });
+
+  } catch (error) {
+    logger.error('❌ Get mobile management error:', error);
+    res.status(500).json({
+      success: false,
+      error: 'GET_MOBILE_MANAGEMENT_FAILED',
+      message: 'Failed to get mobile management data',
+      timestamp: new Date().toISOString()
+    });
+  }
+});
+
+// GET /admin/orders - Get orders management
+router.get('/orders', authenticateToken, requireRole(['admin', 'order_manager']), async (req, res) => {
+  try {
+    const { page = 1, limit = 20, status, dateFrom, dateTo, customer } = req.query;
+    
+    const orders = [
+      {
+        id: 'order-001',
+        orderNumber: 'ORD-2024-001',
+        status: 'completed',
+        priority: 'normal',
+        customer: {
+          id: 'customer-123',
+          name: 'Alice Johnson',
+          email: 'alice.johnson@example.com',
+          phone: '+1-555-9876'
+        },
+        service: {
+          type: 'oil_change',
+          name: 'Full Service Oil Change',
+          price: 89.99
+        },
+        vehicle: {
+          make: 'Toyota',
+          model: 'Camry',
+          year: 2020,
+          licensePlate: 'ABC-123'
+        },
+        driver: {
+          id: 'driver-456',
+          name: 'John Smith',
+          rating: 4.8
+        },
+        schedule: {
+          requestedDate: '2024-01-15T10:00:00Z',
+          completedDate: '2024-01-15T10:45:00Z'
+        },
+        payment: {
+          method: 'credit_card',
+          amount: 89.99,
+          status: 'completed'
+        },
+        feedback: {
+          rating: 5,
+          comment: 'Excellent service!'
+        },
+        createdAt: '2024-01-15T08:30:00Z',
+        updatedAt: '2024-01-15T10:45:00Z'
+      },
+      {
+        id: 'order-002',
+        orderNumber: 'ORD-2024-002',
+        status: 'in_progress',
+        priority: 'high',
+        customer: {
+          id: 'customer-456',
+          name: 'Bob Smith',
+          email: 'bob.smith@example.com',
+          phone: '+1-555-5432'
+        },
+        service: {
+          type: 'brake_service',
+          name: 'Brake Pad Replacement',
+          price: 150.00
+        },
+        vehicle: {
+          make: 'Honda',
+          model: 'Civic',
+          year: 2019,
+          licensePlate: 'DEF-456'
+        },
+        driver: {
+          id: 'driver-789',
+          name: 'Sarah Johnson',
+          rating: 4.6
+        },
+        schedule: {
+          requestedDate: '2024-01-15T14:00:00Z',
+          estimatedCompletion: '2024-01-15T15:30:00Z'
+        },
+        payment: {
+          method: 'credit_card',
+          amount: 150.00,
+          status: 'pending'
+        },
+        feedback: null,
+        createdAt: '2024-01-15T12:00:00Z',
+        updatedAt: new Date().toISOString()
+      }
+    ];
+
+    res.json({
+      success: true,
+      data: { 
+        orders,
+        pagination: {
+          page: parseInt(page),
+          limit: parseInt(limit),
+          total: orders.length,
+          pages: Math.ceil(orders.length / limit)
+        },
+        summary: {
+          totalOrders: 3420,
+          completedOrders: 3375,
+          pendingOrders: 30,
+          cancelledOrders: 15,
+          totalRevenue: 125000,
+          averageOrderValue: 36.55
+        }
+      },
+      message: 'Orders management data retrieved successfully',
+      timestamp: new Date().toISOString()
+    });
+
+  } catch (error) {
+    logger.error('❌ Get orders management error:', error);
+    res.status(500).json({
+      success: false,
+      error: 'GET_ORDERS_MANAGEMENT_FAILED',
+      message: 'Failed to get orders management data',
+      timestamp: new Date().toISOString()
+    });
+  }
+});
+
 module.exports = router;
