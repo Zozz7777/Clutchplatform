@@ -132,25 +132,25 @@ export const defaultBrandConfig: BrandConfig = {
     primary: '#ED1B24', // Clutch Red
     primaryDark: '#C41E3A',
     primaryLight: '#F87171',
-    secondary: '#3B82F6', // Clutch Blue
-    secondaryDark: '#1E40AF',
-    secondaryLight: '#60A5FA',
+    secondary: '#3F4D4D', // Clutch Dark Gray
+    secondaryDark: '#221E22', // Clutch Charcoal
+    secondaryLight: '#F2F2F2', // Clutch Light Gray
     accent: '#F59E0B', // Clutch Gold
     success: '#059669',
     warning: '#D97706',
     error: '#DC2626',
     info: '#0284C7',
     neutral: {
-      50: '#F8FAFC',
-      100: '#F1F5F9',
-      200: '#E2E8F0',
-      300: '#CBD5E1',
-      400: '#94A3B8',
-      500: '#64748B',
-      600: '#475569',
-      700: '#334155',
-      800: '#1E293B',
-      900: '#0F172A',
+      50: '#F2F2F2', // Clutch Light Gray
+      100: '#E5E5E5',
+      200: '#D4D4D4',
+      300: '#A3A3A3',
+      400: '#737373',
+      500: '#3F4D4D', // Clutch Dark Gray
+      600: '#2D3333',
+      700: '#221E22', // Clutch Charcoal
+      800: '#1A1619',
+      900: '#0F0D0F',
     },
   },
   typography: {

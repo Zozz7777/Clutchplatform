@@ -3,12 +3,6 @@
 import React, { useState, useEffect } from 'react'
 import { useAuthStore } from '@/store'
 import { useRouter } from 'next/navigation'
-import { LuxuryButton } from '@/components/ui/luxury-button'
-import { LuxuryInput } from '@/components/ui/luxury-input'
-import { LuxuryCard, LuxuryCardContent, LuxuryCardDescription, LuxuryCardHeader, LuxuryCardTitle } from '@/components/ui/luxury-card'
-import { Label } from '@/components/ui/label'
-import { Checkbox } from '@/components/ui/checkbox'
-import { Alert, AlertDescription } from '@/components/ui/alert'
 import { 
   Eye, 
   EyeOff, 
@@ -18,9 +12,13 @@ import {
   AlertCircle,
   CheckCircle,
   ArrowRight,
-  Crown,
+  Shield,
   Sparkles,
-  Shield
+  Building2,
+  Users,
+  BarChart3,
+  Settings,
+  Zap
 } from 'lucide-react'
 import { toast } from 'sonner'
 import { ErrorTracker } from '@/components/debug/error-tracker'
@@ -52,7 +50,6 @@ export default function LoginPage() {
       ...prev,
       [name]: type === 'checkbox' ? checked : value
     }))
-    // Clear error when user starts typing
     if (error) setError('')
   }
 
@@ -61,7 +58,6 @@ export default function LoginPage() {
     setError('')
     setSuccess('')
 
-    // Basic validation
     if (!formData.email || !formData.password) {
       setError('Please fill in all fields')
       return
@@ -75,18 +71,37 @@ export default function LoginPage() {
     setIsLoading(true)
 
     try {
+      // Connect to real backend authentication
+      const response = await fetch('/api/v1/auth/login', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          email: formData.email,
+          password: formData.password,
+          rememberMe: formData.rememberMe
+        }),
+      })
+
+      const data = await response.json()
+
+      if (!response.ok) {
+        throw new Error(data.message || 'Login failed')
+      }
+
       await login(formData.email, formData.password)
       
       setSuccess('Login successful! Redirecting...')
       toast.success('Welcome back!', {
         description: 'You have been successfully logged in.'
       })
-      // Redirect will be handled by the auth context
     } catch (error) {
       console.error('Login error:', error)
-      setError('An unexpected error occurred. Please try again.')
+      const errorMessage = error instanceof Error ? error.message : 'An unexpected error occurred. Please try again.'
+      setError(errorMessage)
       toast.error('Login Error', {
-        description: 'An unexpected error occurred. Please try again.'
+        description: errorMessage
       })
     } finally {
       setIsLoading(false)
@@ -94,7 +109,6 @@ export default function LoginPage() {
   }
 
   const handleForgotPassword = () => {
-    // TODO: Implement forgot password functionality
     toast.info('Forgot Password', {
       description: 'Password reset functionality will be implemented soon.'
     })
@@ -102,13 +116,13 @@ export default function LoginPage() {
 
   if (authLoading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-clutch-white-50 via-clutch-white-100 to-clutch-red-50">
+      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-clutch-gray-50 via-white to-clutch-red-50">
         <div className="flex items-center space-x-3">
           <div className="relative">
-            <Crown className="h-8 w-8 text-clutch-red-500 animate-pulse" />
+            <Building2 className="h-8 w-8 text-clutch-red-500 animate-pulse" />
             <Sparkles className="h-4 w-4 text-clutch-red-400 absolute -top-1 -right-1 animate-bounce" />
           </div>
-          <span className="text-clutch-red-700 font-luxury-sans font-medium">Loading Clutch experience...</span>
+          <span className="text-clutch-gray-700 font-medium">Loading Clutch experience...</span>
         </div>
       </div>
     )
@@ -116,190 +130,239 @@ export default function LoginPage() {
 
   return (
     <ErrorTracker>
-      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-clutch-white-50 via-clutch-white-100 to-clutch-red-50 p-4 relative overflow-hidden">
-      {/* Clutch Brand Background Pattern */}
-      <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iODAiIGhlaWdodD0iODAiIHZpZXdCb3g9IjAgMCA4MCA4MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZyBmaWxsPSJub25lIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiPjxnIGZpbGw9IiNFRDFCMjQiIGZpbGwtb3BhY2l0eT0iMC4wMyI+PGNpcmNsZSBjeD0iNDAiIGN5PSI0MCIgcj0iMyIvPjwvZz48L2c+PC9zdmc+')] opacity-40"></div>
-      
-      {/* Floating Clutch Brand Elements */}
-      <div className="absolute top-20 left-20 w-4 h-4 bg-clutch-red-300 rounded-full animate-pulse opacity-60"></div>
-      <div className="absolute top-40 right-32 w-6 h-6 bg-clutch-red-400 rounded-full animate-bounce opacity-40"></div>
-      <div className="absolute bottom-32 left-32 w-3 h-3 bg-clutch-red-500 rounded-full animate-pulse opacity-50"></div>
-      <div className="absolute bottom-20 right-20 w-5 h-5 bg-clutch-red-600 rounded-full animate-bounce opacity-30"></div>
-      
-      <div className="relative w-full max-w-md z-10">
-        {/* Clutch Brand Logo and Header */}
-        <div className="text-center mb-8">
-          <div className="inline-flex items-center justify-center w-20 h-20 bg-gradient-to-br from-clutch-red-500 to-clutch-red-600 rounded-luxury-2xl mb-6 shadow-luxury-lg relative">
-            <Crown className="h-10 w-10 text-white" />
-            <div className="absolute -top-1 -right-1 w-6 h-6 bg-clutch-red-400 rounded-full flex items-center justify-center">
-              <Sparkles className="h-3 w-3 text-white animate-spin" />
+      <div className="min-h-screen bg-gradient-to-br from-clutch-gray-50 via-white to-clutch-red-50 relative overflow-hidden">
+        {/* Animated Background Elements */}
+        <div className="absolute inset-0">
+          <div className="absolute top-20 left-20 w-32 h-32 bg-clutch-red-100 rounded-full opacity-20 animate-pulse"></div>
+          <div className="absolute top-40 right-32 w-24 h-24 bg-clutch-red-200 rounded-full opacity-30 animate-bounce"></div>
+          <div className="absolute bottom-32 left-32 w-16 h-16 bg-clutch-red-300 rounded-full opacity-40 animate-pulse"></div>
+          <div className="absolute bottom-20 right-20 w-20 h-20 bg-clutch-red-400 rounded-full opacity-25 animate-bounce"></div>
+        </div>
+
+        {/* Main Content */}
+        <div className="relative z-10 min-h-screen flex">
+          {/* Left Side - Branding & Features */}
+          <div className="hidden lg:flex lg:w-1/2 bg-gradient-to-br from-clutch-red-500 to-clutch-red-600 p-12 flex-col justify-center text-white relative overflow-hidden">
+            {/* Background Pattern */}
+            <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAiIGhlaWdodD0iNDAiIHZpZXdCb3g9IjAgMCA0MCA0MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZyBmaWxsPSJub25lIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiPjxnIGZpbGw9IiNmZmYiIGZpbGwtb3BhY2l0eT0iMC4xIj48Y2lyY2xlIGN4PSIyMCIgY3k9IjIwIiByPSIyIi8+PC9nPjwvZz48L3N2Zz4=')] opacity-30"></div>
+            
+            <div className="relative z-10">
+              <div className="flex items-center mb-8">
+                <div className="w-12 h-12 bg-white/20 rounded-xl flex items-center justify-center mr-4">
+                  <Building2 className="h-8 w-8 text-white" />
+                </div>
+                <div>
+                  <h1 className="text-3xl font-bold">Clutch Admin</h1>
+                  <p className="text-clutch-red-100">Enterprise Management Platform</p>
+                </div>
+              </div>
+
+              <h2 className="text-4xl font-bold mb-6 leading-tight">
+                Manage Your Automotive Empire
+              </h2>
+              
+              <p className="text-xl text-clutch-red-100 mb-12 leading-relaxed">
+                Comprehensive admin dashboard for fleet management, customer relations, 
+                financial operations, and business intelligence.
+              </p>
+
+              {/* Feature Highlights */}
+              <div className="space-y-6">
+                <div className="flex items-center">
+                  <div className="w-10 h-10 bg-white/20 rounded-lg flex items-center justify-center mr-4">
+                    <Users className="h-5 w-5 text-white" />
+                  </div>
+                  <div>
+                    <h3 className="font-semibold">HR & Employee Management</h3>
+                    <p className="text-clutch-red-100 text-sm">Complete workforce administration</p>
+                  </div>
+                </div>
+
+                <div className="flex items-center">
+                  <div className="w-10 h-10 bg-white/20 rounded-lg flex items-center justify-center mr-4">
+                    <BarChart3 className="h-5 w-5 text-white" />
+                  </div>
+                  <div>
+                    <h3 className="font-semibold">Financial Analytics</h3>
+                    <p className="text-clutch-red-100 text-sm">Real-time business intelligence</p>
+                  </div>
+                </div>
+
+                <div className="flex items-center">
+                  <div className="w-10 h-10 bg-white/20 rounded-lg flex items-center justify-center mr-4">
+                    <Zap className="h-5 w-5 text-white" />
+                  </div>
+                  <div>
+                    <h3 className="font-semibold">Team Collaboration</h3>
+                    <p className="text-clutch-red-100 text-sm">Integrated chat and communication</p>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
-          <h1 className="text-4xl font-luxury-serif font-bold bg-gradient-to-r from-clutch-red-600 to-clutch-red-700 bg-clip-text text-transparent mb-3">
-            Welcome Back
-          </h1>
-          <p className="text-clutch-red-700 font-luxury-sans text-lg">Sign in to your Clutch Admin account</p>
-        </div>
 
-        {/* Clutch Brand Login Form */}
-        <LuxuryCard variant="glass" className="shadow-luxury-xl border-0 bg-white/90 backdrop-blur-md">
-          <LuxuryCardHeader className="space-y-2 pb-6">
-            <LuxuryCardTitle className="text-3xl text-center font-luxury-serif bg-gradient-to-r from-clutch-red-600 to-clutch-red-700 bg-clip-text text-transparent">
-              Sign In
-            </LuxuryCardTitle>
-            <LuxuryCardDescription className="text-center text-clutch-red-700 font-luxury-sans">
-              Enter your credentials to access the Clutch admin dashboard
-            </LuxuryCardDescription>
-          </LuxuryCardHeader>
-          <LuxuryCardContent>
-            <form onSubmit={handleSubmit} className="space-y-4">
-              {/* Error Alert */}
-              {error && (
-                <Alert variant="destructive">
-                  <AlertCircle className="h-4 w-4" />
-                  <AlertDescription>{error}</AlertDescription>
-                </Alert>
-              )}
-
-              {/* Success Alert */}
-              {success && (
-                <Alert className="border-green-200 bg-green-50 text-green-800">
-                  <CheckCircle className="h-4 w-4" />
-                  <AlertDescription>{success}</AlertDescription>
-                </Alert>
-              )}
-
-              {/* Email Field */}
-              <div className="space-y-2">
-                <Label htmlFor="email" className="text-clutch-red-700 font-luxury-sans font-medium">Email Address</Label>
-                <LuxuryInput
-                  id="email"
-                  name="email"
-                  type="email"
-                  value={formData.email}
-                  onChange={handleInputChange}
-                  placeholder="admin@clutch.com"
-                  variant="glass"
-                  className="h-12"
-                  required
-                  disabled={isLoading}
-                  icon={<Mail className="h-5 w-5 text-clutch-red-500" />}
-                  iconPosition="left"
-                />
+          {/* Right Side - Login Form */}
+          <div className="w-full lg:w-1/2 flex items-center justify-center p-8">
+            <div className="w-full max-w-md">
+              {/* Mobile Logo */}
+              <div className="lg:hidden text-center mb-8">
+                <div className="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-br from-clutch-red-500 to-clutch-red-600 rounded-2xl mb-4 shadow-lg">
+                  <Building2 className="h-8 w-8 text-white" />
+                </div>
+                <h1 className="text-2xl font-bold text-clutch-gray-700">Clutch Admin</h1>
               </div>
 
-              {/* Password Field */}
-              <div className="space-y-2">
-                <Label htmlFor="password" className="text-clutch-red-700 font-luxury-sans font-medium">Password</Label>
-                <div className="relative">
-                  <LuxuryInput
-                    id="password"
-                    name="password"
-                    type={showPassword ? 'text' : 'password'}
-                    value={formData.password}
-                    onChange={handleInputChange}
-                    placeholder="Enter your password"
-                    variant="glass"
-                    className="h-12"
-                    required
-                    disabled={isLoading}
-                    icon={<Lock className="h-5 w-5 text-clutch-red-500" />}
-                    iconPosition="left"
-                  />
+              <div className="text-center mb-8">
+                <h2 className="text-3xl font-bold text-clutch-gray-700 mb-2">Welcome Back</h2>
+                <p className="text-clutch-gray-600">Sign in to access your dashboard</p>
+              </div>
+
+              {/* Login Form */}
+              <div className="bg-white rounded-2xl shadow-xl p-8 border border-clutch-gray-200">
+                <form onSubmit={handleSubmit} className="space-y-6">
+                  {/* Error Alert */}
+                  {error && (
+                    <div className="bg-red-50 border border-red-200 text-red-800 px-4 py-3 rounded-lg flex items-center">
+                      <AlertCircle className="h-4 w-4 mr-2 flex-shrink-0" />
+                      <span className="text-sm">{error}</span>
+                    </div>
+                  )}
+
+                  {/* Success Alert */}
+                  {success && (
+                    <div className="bg-green-50 border border-green-200 text-green-800 px-4 py-3 rounded-lg flex items-center">
+                      <CheckCircle className="h-4 w-4 mr-2 flex-shrink-0" />
+                      <span className="text-sm">{success}</span>
+                    </div>
+                  )}
+
+                  {/* Email Field */}
+                  <div className="space-y-2">
+                    <label htmlFor="email" className="block text-sm font-medium text-clutch-gray-700">
+                      Email Address
+                    </label>
+                    <div className="relative">
+                      <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-clutch-gray-400" />
+                      <input
+                        id="email"
+                        name="email"
+                        type="email"
+                        value={formData.email}
+                        onChange={handleInputChange}
+                        placeholder="admin@clutch.com"
+                        className="w-full pl-10 pr-4 py-3 border border-clutch-gray-300 rounded-lg focus:ring-2 focus:ring-clutch-red-500 focus:border-clutch-red-500 bg-white text-clutch-gray-900 placeholder-clutch-gray-400 transition-colors"
+                        required
+                        disabled={isLoading}
+                      />
+                    </div>
+                  </div>
+
+                  {/* Password Field */}
+                  <div className="space-y-2">
+                    <label htmlFor="password" className="block text-sm font-medium text-clutch-gray-700">
+                      Password
+                    </label>
+                    <div className="relative">
+                      <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-clutch-gray-400" />
+                      <input
+                        id="password"
+                        name="password"
+                        type={showPassword ? 'text' : 'password'}
+                        value={formData.password}
+                        onChange={handleInputChange}
+                        placeholder="Enter your password"
+                        className="w-full pl-10 pr-12 py-3 border border-clutch-gray-300 rounded-lg focus:ring-2 focus:ring-clutch-red-500 focus:border-clutch-red-500 bg-white text-clutch-gray-900 placeholder-clutch-gray-400 transition-colors"
+                        required
+                        disabled={isLoading}
+                      />
+                      <button
+                        type="button"
+                        onClick={() => setShowPassword(!showPassword)}
+                        className="absolute right-3 top-1/2 transform -translate-y-1/2 text-clutch-gray-400 hover:text-clutch-gray-600 transition-colors"
+                        disabled={isLoading}
+                      >
+                        {showPassword ? <EyeOff className="h-5 w-5" /> : <Eye className="h-5 w-5" />}
+                      </button>
+                    </div>
+                  </div>
+
+                  {/* Remember Me & Forgot Password */}
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center">
+                      <input
+                        id="rememberMe"
+                        name="rememberMe"
+                        type="checkbox"
+                        checked={formData.rememberMe}
+                        onChange={handleInputChange}
+                        disabled={isLoading}
+                        className="w-4 h-4 text-clutch-red-500 border-clutch-gray-300 rounded focus:ring-clutch-red-500"
+                      />
+                      <label htmlFor="rememberMe" className="ml-2 text-sm text-clutch-gray-700">
+                        Remember me
+                      </label>
+                    </div>
+                    <button
+                      type="button"
+                      onClick={handleForgotPassword}
+                      className="text-sm text-clutch-red-600 hover:text-clutch-red-700 transition-colors"
+                      disabled={isLoading}
+                    >
+                      Forgot password?
+                    </button>
+                  </div>
+
+                  {/* Submit Button */}
                   <button
-                    type="button"
-                    onClick={() => setShowPassword(!showPassword)}
-                    className="absolute right-3 top-1/2 transform -translate-y-1/2 text-clutch-red-500 hover:text-clutch-red-600 transition-colors"
+                    type="submit"
                     disabled={isLoading}
+                    className="w-full bg-gradient-to-r from-clutch-red-500 to-clutch-red-600 text-white py-3 px-4 rounded-lg font-semibold hover:from-clutch-red-600 hover:to-clutch-red-700 focus:ring-2 focus:ring-clutch-red-500 focus:ring-offset-2 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center shadow-lg"
                   >
-                    {showPassword ? <EyeOff className="h-5 w-5" /> : <Eye className="h-5 w-5" />}
+                    {isLoading ? (
+                      <>
+                        <Loader2 className="mr-2 h-5 w-5 animate-spin" />
+                        Signing in...
+                      </>
+                    ) : (
+                      <>
+                        <Shield className="mr-2 h-5 w-5" />
+                        Sign In
+                        <ArrowRight className="ml-2 h-5 w-5" />
+                      </>
+                    )}
                   </button>
+                </form>
+
+                {/* Demo Credentials */}
+                <div className="mt-6 p-4 bg-gradient-to-r from-clutch-red-50 to-clutch-gray-50 rounded-lg border border-clutch-red-200">
+                  <div className="flex items-center mb-3">
+                    <Sparkles className="h-4 w-4 text-clutch-red-500 mr-2" />
+                    <h4 className="text-sm font-semibold text-clutch-gray-700">Demo Credentials</h4>
+                  </div>
+                  <div className="text-xs text-clutch-gray-600 space-y-1">
+                    <p className="flex items-center">
+                      <Mail className="h-3 w-3 mr-2 text-clutch-red-500" />
+                      <strong>Email:</strong> admin@clutch.com
+                    </p>
+                    <p className="flex items-center">
+                      <Lock className="h-3 w-3 mr-2 text-clutch-red-500" />
+                      <strong>Password:</strong> admin123
+                    </p>
+                  </div>
                 </div>
               </div>
 
-              {/* Remember Me & Forgot Password */}
-              <div className="flex items-center justify-between">
-                <div className="flex items-center space-x-2">
-                  <Checkbox
-                    id="rememberMe"
-                    name="rememberMe"
-                    checked={formData.rememberMe}
-                    onCheckedChange={(checked) => 
-                      setFormData(prev => ({ ...prev, rememberMe: !!checked }))
-                    }
-                    disabled={isLoading}
-                    className="border-clutch-red-300 data-[state=checked]:bg-clutch-red-500 data-[state=checked]:border-clutch-red-500"
-                  />
-                  <Label htmlFor="rememberMe" className="text-sm text-clutch-red-700 font-luxury-sans">
-                    Remember me
-                  </Label>
-                </div>
-                <button
-                  type="button"
-                  onClick={handleForgotPassword}
-                  className="text-sm text-clutch-red-600 hover:text-clutch-red-700 transition-colors font-luxury-sans"
-                  disabled={isLoading}
-                >
-                  Forgot password?
-                </button>
-              </div>
-
-              {/* Submit Button */}
-              <LuxuryButton
-                type="submit"
-                variant="luxury"
-                size="lg"
-                className="w-full h-12 font-luxury-sans font-semibold"
-                disabled={isLoading}
-              >
-                {isLoading ? (
-                  <>
-                    <Loader2 className="mr-2 h-5 w-5 animate-spin" />
-                    Signing in...
-                  </>
-                ) : (
-                  <>
-                    <Shield className="mr-2 h-5 w-5" />
-                    Sign In
-                    <ArrowRight className="ml-2 h-5 w-5" />
-                  </>
-                )}
-              </LuxuryButton>
-            </form>
-
-            {/* Clutch Brand Demo Credentials */}
-            <div className="mt-6 p-5 bg-gradient-to-r from-clutch-red-50 to-clutch-white-100 rounded-luxury-lg border border-clutch-red-200 relative overflow-hidden">
-              <div className="absolute top-2 right-2">
-                <Crown className="h-4 w-4 text-clutch-red-500" />
-              </div>
-              <h4 className="text-sm font-luxury-sans font-semibold text-clutch-red-700 mb-3 flex items-center">
-                <Sparkles className="h-4 w-4 mr-2 text-clutch-red-500" />
-                Demo Credentials
-              </h4>
-              <div className="text-xs text-clutch-red-600 space-y-2 font-luxury-mono">
-                <p className="flex items-center">
-                  <Mail className="h-3 w-3 mr-2 text-clutch-red-500" />
-                  <strong>Email:</strong> admin@clutch.com
-                </p>
-                <p className="flex items-center">
-                  <Lock className="h-3 w-3 mr-2 text-clutch-red-500" />
-                  <strong>Password:</strong> admin123
+              {/* Footer */}
+              <div className="text-center mt-8 text-sm text-clutch-gray-600">
+                <p className="flex items-center justify-center">
+                  <Building2 className="h-4 w-4 mr-2 text-clutch-red-500" />
+                  © 2024 Clutch Platform. All rights reserved.
                 </p>
               </div>
             </div>
-          </LuxuryCardContent>
-        </LuxuryCard>
-
-        {/* Clutch Brand Footer */}
-        <div className="text-center mt-8 text-sm text-clutch-red-600 font-luxury-sans">
-          <p className="flex items-center justify-center">
-            <Crown className="h-4 w-4 mr-2 text-clutch-red-500" />
-            © 2024 Clutch Platform. All rights reserved.
-            <Sparkles className="h-4 w-4 ml-2 text-clutch-red-500" />
-          </p>
+          </div>
         </div>
       </div>
-    </div>
     </ErrorTracker>
   )
 }

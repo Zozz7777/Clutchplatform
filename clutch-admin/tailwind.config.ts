@@ -10,7 +10,7 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
-        // Clutch Brand Colors - Red & White
+        // Clutch Brand Colors - Official Colors
         'clutch': {
           // Primary brand red
           'red-50': '#FEF2F2',
@@ -23,17 +23,17 @@ const config: Config = {
           'red-700': '#B91C1C',
           'red-800': '#991B1B',
           'red-900': '#7F1D1D',
-          // White shades
-          'white-50': '#FFFFFF',
-          'white-100': '#FEFEFE',
-          'white-200': '#FDFDFD',
-          'white-300': '#FCFCFC',
-          'white-400': '#FAFAFA',
-          'white-500': '#F8F8F8',
-          'white-600': '#F5F5F5',
-          'white-700': '#F0F0F0',
-          'white-800': '#E5E5E5',
-          'white-900': '#D1D1D1',
+          // Light gray shades
+          'gray-50': '#F2F2F2', // Clutch Light Gray
+          'gray-100': '#E5E5E5',
+          'gray-200': '#D4D4D4',
+          'gray-300': '#A3A3A3',
+          'gray-400': '#737373',
+          'gray-500': '#3F4D4D', // Clutch Dark Gray
+          'gray-600': '#2D3333',
+          'gray-700': '#221E22', // Clutch Charcoal
+          'gray-800': '#1A1619',
+          'gray-900': '#0F0D0F',
           // Legacy support
           primary: 'hsl(var(--clutch-primary))',
           'primary-light': 'hsl(var(--clutch-primary-light))',

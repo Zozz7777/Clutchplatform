@@ -175,10 +175,14 @@ const navigationItems = [
     badge: null,
     category: 'customers',
     children: [
-      { title: 'Customers', href: '/crm/customers' },
-      { title: 'Deals', href: '/crm/deals' },
-      { title: 'Leads', href: '/crm/leads' },
-      { title: 'Pipeline', href: '/crm/pipeline' }
+      { title: 'CRM Dashboard', href: '/crm/dashboard' },
+      { title: 'Customer Database', href: '/crm/customers' },
+      { title: 'Lead Management', href: '/crm/leads' },
+      { title: 'Deal Pipeline', href: '/crm/deals' },
+      { title: 'Sales Analytics', href: '/crm/analytics' },
+      { title: 'Marketing Automation', href: '/crm/marketing' },
+      { title: 'Customer Support', href: '/crm/support' },
+      { title: 'CRM Reports', href: '/crm/reports' }
     ]
   },
   {
@@ -250,10 +254,14 @@ const navigationItems = [
     badge: null,
     category: 'business',
     children: [
-      { title: 'Invoices', href: '/finance/invoices' },
-      { title: 'Expenses', href: '/finance/expenses' },
-      { title: 'Payments', href: '/finance/payments' },
-      { title: 'Reports', href: '/finance/reports' }
+      { title: 'Financial Dashboard', href: '/finance/dashboard' },
+      { title: 'Invoice Management', href: '/finance/invoices' },
+      { title: 'Expense Tracking', href: '/finance/expenses' },
+      { title: 'Payment Processing', href: '/finance/payments' },
+      { title: 'Budget Planning', href: '/finance/budget' },
+      { title: 'Financial Reports', href: '/finance/reports' },
+      { title: 'Tax Management', href: '/finance/tax' },
+      { title: 'Revenue Analytics', href: '/finance/revenue' }
     ]
   },
   {
@@ -263,10 +271,14 @@ const navigationItems = [
     badge: null,
     category: 'business',
     children: [
-      { title: 'Employees', href: '/hr/employees' },
+      { title: 'Employee Dashboard', href: '/hr/dashboard' },
+      { title: 'Employee Directory', href: '/hr/employees' },
+      { title: 'Department Management', href: '/hr/departments' },
       { title: 'Recruitment', href: '/hr/recruitment' },
-      { title: 'Payroll', href: '/hr/payroll' },
-      { title: 'Performance', href: '/hr/performance' }
+      { title: 'Performance Tracking', href: '/hr/performance' },
+      { title: 'Payroll Management', href: '/hr/payroll' },
+      { title: 'Training & Development', href: '/hr/training' },
+      { title: 'HR Analytics', href: '/hr/analytics' }
     ]
   },
   {
@@ -346,9 +358,13 @@ const navigationItems = [
     badge: null,
     category: 'enterprise',
     children: [
-      { title: 'Contracts', href: '/legal/contracts' },
-      { title: 'Compliance', href: '/legal/compliance' },
-      { title: 'Documents', href: '/legal/documents' }
+      { title: 'Legal Dashboard', href: '/legal/dashboard' },
+      { title: 'Contract Management', href: '/legal/contracts' },
+      { title: 'Compliance Monitoring', href: '/legal/compliance' },
+      { title: 'Document Management', href: '/legal/documents' },
+      { title: 'Case Management', href: '/legal/cases' },
+      { title: 'Risk Assessment', href: '/legal/risk' },
+      { title: 'Legal Analytics', href: '/legal/analytics' }
     ]
   },
 
@@ -359,7 +375,14 @@ const navigationItems = [
     icon: MessageSquare,
     badge: 'NEW',
     category: 'communication',
-    children: []
+    children: [
+      { title: 'Chat Dashboard', href: '/chat/dashboard' },
+      { title: 'Direct Messages', href: '/chat/messages' },
+      { title: 'Channels', href: '/chat/channels' },
+      { title: 'File Sharing', href: '/chat/files' },
+      { title: 'Video Calls', href: '/chat/video' },
+      { title: 'Chat Analytics', href: '/chat/analytics' }
+    ]
   },
   {
     title: 'Email',
@@ -492,28 +515,28 @@ const navigationItems = [
          <>
            {/* Enhanced Main Sidebar */}
            <div
-             className={`fixed left-0 top-0 z-40 h-screen bg-white dark:bg-slate-900 border-r border-slate-200 dark:border-slate-700 shadow-lg transition-all duration-300 ${
+             className={`fixed left-0 top-0 z-40 h-screen bg-white dark:bg-clutch-gray-700 border-r border-clutch-gray-200 dark:border-clutch-gray-600 shadow-lg transition-all duration-300 ${
                selectedParent ? 'w-16' : (sidebarCollapsed ? 'w-16' : 'w-64')
              }`}
            >
              {/* Sidebar Header with Logo */}
-             <div className="flex h-16 items-center justify-between px-4 border-b border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800">
+             <div className="flex h-16 items-center justify-between px-4 border-b border-clutch-gray-200 dark:border-clutch-gray-600 bg-clutch-gray-50 dark:bg-clutch-gray-800">
                {!sidebarCollapsed && !selectedParent && (
                  <div className="flex items-center space-x-2">
                    <div className="w-8 h-8 bg-clutch-primary rounded-lg flex items-center justify-center">
                      <span className="text-white font-bold text-sm">C</span>
                    </div>
-                   <span className="text-lg font-semibold text-slate-900 dark:text-white">
+                   <span className="text-lg font-semibold text-clutch-gray-700 dark:text-white">
                      Clutch
                    </span>
                  </div>
                )}
                <button
                  onClick={toggleSidebar}
-                 className="p-1.5 hover:bg-slate-100 dark:hover:bg-slate-700 rounded-lg transition-colors"
+                 className="p-1.5 hover:bg-clutch-gray-100 dark:hover:bg-clutch-gray-600 rounded-lg transition-colors"
                  aria-label="Toggle sidebar"
                >
-                 <Menu className="h-4 w-4 text-slate-600 dark:text-slate-300" />
+                 <Menu className="h-4 w-4 text-clutch-gray-600 dark:text-clutch-gray-300" />
                </button>
              </div>
         <nav className="flex-1 overflow-y-auto py-4 mt-16">
@@ -528,7 +551,7 @@ const navigationItems = [
                   {!sidebarCollapsed && !selectedParent && (
                     <button
                       onClick={() => toggleCategory(category)}
-                      className="w-full flex items-center justify-between px-2 py-1.5 text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider hover:text-slate-700 dark:hover:text-slate-300 transition-colors"
+                      className="w-full flex items-center justify-between px-2 py-1.5 text-xs font-semibold text-clutch-gray-500 dark:text-clutch-gray-400 uppercase tracking-wider hover:text-clutch-gray-700 dark:hover:text-clutch-gray-300 transition-colors"
                     >
                       <span>{categoryLabel}</span>
                       <ChevronDown 
@@ -554,10 +577,10 @@ const navigationItems = [
                               className={`w-full flex items-center px-3 py-2.5 text-sm font-medium rounded-lg transition-all group ${
                                 isActive || isSelected
                                   ? 'bg-clutch-primary text-white shadow-sm'
-                                  : 'text-slate-700 dark:text-slate-300 hover:bg-clutch-primary-50 dark:hover:bg-slate-800 hover:text-slate-900 dark:hover:text-white'}`}
+                                  : 'text-clutch-gray-700 dark:text-clutch-gray-300 hover:bg-clutch-red-50 dark:hover:bg-clutch-gray-800 hover:text-clutch-gray-900 dark:hover:text-white'}`}
                             >
                               <item.icon className={`h-5 w-5 mr-3 flex-shrink-0 transition-colors ${
-                                isActive || isSelected ? 'text-white' : 'text-slate-700 group-hover:text-slate-800'}`} />
+                                isActive || isSelected ? 'text-white' : 'text-clutch-gray-700 group-hover:text-clutch-gray-800'}`} />
                               {!sidebarCollapsed && !selectedParent && (
                                 <>
                                   <span className="flex-1 text-left">{item.title}</span>
@@ -594,16 +617,16 @@ const navigationItems = [
         </nav>
              {/* Enhanced User Section */}
              {!sidebarCollapsed && !selectedParent && (
-               <div className="border-t border-slate-200 dark:border-slate-700 p-4 bg-slate-50 dark:bg-slate-800">
+               <div className="border-t border-clutch-gray-200 dark:border-clutch-gray-600 p-4 bg-clutch-gray-50 dark:bg-clutch-gray-800">
                  <div className="flex items-center space-x-3">
                    <div className="w-8 h-8 bg-clutch-primary rounded-full flex items-center justify-center">
                      <User className="h-4 w-4 text-white" />
                    </div>
                    <div className="flex-1 min-w-0">
-                     <p className="text-sm font-medium text-slate-900 dark:text-white truncate">
+                     <p className="text-sm font-medium text-clutch-gray-900 dark:text-white truncate">
                        {user?.fullName || 'User'}
                      </p>
-                     <p className="text-xs text-slate-600 dark:text-slate-400 truncate">
+                     <p className="text-xs text-clutch-gray-600 dark:text-clutch-gray-400 truncate">
                        {user?.email || 'user@example.com'}
                      </p>
                    </div>
@@ -612,7 +635,7 @@ const navigationItems = [
              )}
       </div>
       {selectedParent && (
-        <div className="fixed left-16 top-0 z-30 h-screen w-64 bg-white border-r border-slate-200 shadow-sm transition-all duration-300">
+        <div className="fixed left-16 top-0 z-30 h-screen w-64 bg-white border-r border-clutch-gray-200 shadow-sm transition-all duration-300">
           <div className="flex h-full flex-col">
             <div className="border-b border-slate-200 p-4 mt-16 bg-slate-50">
               <div className="flex items-center justify-between">
