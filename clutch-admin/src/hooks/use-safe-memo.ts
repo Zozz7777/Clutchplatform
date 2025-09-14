@@ -19,7 +19,7 @@ export function useSafeMemo<T>(
       return factory()
     }
     return factory()
-  }, deps)
+  }, deps || [])
   
   return memoizedValue
 }

@@ -6,6 +6,9 @@ import { ErrorBoundary } from "@/components/ErrorBoundary";
 import { ErrorTrackerProvider } from "@/contexts/ErrorTrackerContext";
 import { ThemeProvider } from "@/components/theme-provider";
 import { I18nProvider } from '@/contexts/i18n-context';
+import { ReactErrorBoundary } from "@/components/debug/react-error-boundary";
+import { ComponentTracker } from "@/components/debug/component-tracker";
+import "@/lib/init-error-tracking";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -38,11 +41,15 @@ export default function RootLayout({
             disableTransitionOnChange={true}
           >
             <AuthProvider>
-              <ErrorBoundary>
-                <ErrorTrackerProvider>
-                  {children}
-                </ErrorTrackerProvider>
-              </ErrorBoundary>
+              <ReactErrorBoundary>
+                <ErrorBoundary>
+                  <ErrorTrackerProvider>
+                    <ComponentTracker name="AppRoot">
+                      {children}
+                    </ComponentTracker>
+                  </ErrorTrackerProvider>
+                </ErrorBoundary>
+              </ReactErrorBoundary>
             </AuthProvider>
           </ThemeProvider>
         </I18nProvider>

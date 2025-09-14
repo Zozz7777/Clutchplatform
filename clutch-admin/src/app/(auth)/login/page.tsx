@@ -23,6 +23,7 @@ import {
   Shield
 } from 'lucide-react'
 import { toast } from 'sonner'
+import { ErrorTracker } from '@/components/debug/error-tracker'
 
 export default function LoginPage() {
   const { login, isAuthenticated, isLoading: authLoading } = useAuthStore()
@@ -114,7 +115,8 @@ export default function LoginPage() {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-clutch-white-50 via-clutch-white-100 to-clutch-red-50 p-4 relative overflow-hidden">
+    <ErrorTracker>
+      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-clutch-white-50 via-clutch-white-100 to-clutch-red-50 p-4 relative overflow-hidden">
       {/* Clutch Brand Background Pattern */}
       <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iODAiIGhlaWdodD0iODAiIHZpZXdCb3g9IjAgMCA4MCA4MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZyBmaWxsPSJub25lIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiPjxnIGZpbGw9IiNFRDFCMjQiIGZpbGwtb3BhY2l0eT0iMC4wMyI+PGNpcmNsZSBjeD0iNDAiIGN5PSI0MCIgcj0iMyIvPjwvZz48L2c+PC9zdmc+')] opacity-40"></div>
       
@@ -298,5 +300,6 @@ export default function LoginPage() {
         </div>
       </div>
     </div>
+    </ErrorTracker>
   )
 }
