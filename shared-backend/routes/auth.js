@@ -81,6 +81,65 @@ router.post('/login', async (req, res) => {
   }
 });
 
+// POST /api/v1/auth/employee-login - Employee login
+router.post('/employee-login', async (req, res) => {
+  try {
+    const { email, password } = req.body;
+    
+    if (!email || !password) {
+      return res.status(400).json({
+        success: false,
+        error: 'MISSING_CREDENTIALS',
+        message: 'Email and password are required',
+        timestamp: new Date().toISOString()
+      });
+    }
+    
+    // Simplified employee authentication for testing
+    const mockEmployee = {
+      id: 'employee-123',
+      email: email,
+      name: 'Test Employee',
+      role: 'employee',
+      department: 'IT',
+      isActive: true,
+      lastLogin: new Date().toISOString()
+    };
+    
+    // Generate JWT token
+    const token = jwt.sign(
+      { 
+        userId: mockEmployee.id, 
+        email: mockEmployee.email, 
+        role: mockEmployee.role 
+      },
+      process.env.JWT_SECRET || 'test-secret',
+      { expiresIn: '24h' }
+    );
+    
+    res.json({
+      success: true,
+      data: {
+        user: mockEmployee,
+        token: token,
+        refreshToken: `refresh_${Date.now()}`,
+        expiresIn: '24h'
+      },
+      message: 'Employee login successful',
+      timestamp: new Date().toISOString()
+    });
+    
+  } catch (error) {
+    logger.error('❌ Employee login error:', error);
+    res.status(500).json({
+      success: false,
+      error: 'EMPLOYEE_LOGIN_FAILED',
+      message: 'Employee login failed',
+      timestamp: new Date().toISOString()
+    });
+  }
+});
+
 // POST /api/v1/auth/register - User registration
 router.post('/register', async (req, res) => {
   try {
