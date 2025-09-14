@@ -5,51 +5,51 @@
     "passed": 7,
     "failed": 0,
     "successRate": 100,
-    "duration": 3904
+    "duration": 3309
   },
   "tests": [
     {
       "name": "Health Endpoint",
       "success": true,
-      "duration": 661,
+      "duration": 1021,
       "error": null
     },
     {
       "name": "Ping Endpoint",
       "success": true,
-      "duration": 599,
+      "duration": 273,
       "error": null
     },
     {
       "name": "System Version",
       "success": true,
-      "duration": 271,
+      "duration": 323,
       "error": null
     },
     {
       "name": "404 Handling",
       "success": true,
-      "duration": 413,
+      "duration": 243,
       "error": null
     },
     {
       "name": "Response Time",
       "success": true,
-      "duration": 259,
+      "duration": 305,
       "error": null
     },
     {
       "name": "Concurrent Requests",
       "success": true,
-      "duration": 747,
+      "duration": 861,
       "error": null
     },
     {
       "name": "Endpoint Availability",
       "success": true,
-      "duration": 444,
+      "duration": 240,
       "error": null
     }
   ],
-  "timestamp": "2025-09-14T12:49:47.958Z"
+  "timestamp": "2025-09-14T13:45:47.930Z"
 }
