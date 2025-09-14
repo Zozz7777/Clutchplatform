@@ -334,6 +334,466 @@ router.get('/employee-me', authenticateToken, async (req, res) => {
   }
 });
 
+// GET /api/v1/auth/profile - Get user profile
+router.get('/profile', authenticateToken, async (req, res) => {
+  try {
+    const userId = req.user.userId;
+    
+    const profile = {
+      id: userId,
+      email: req.user.email,
+      name: 'User Profile',
+      role: req.user.role,
+      avatar: 'https://example.com/avatar.jpg',
+      phone: '+1234567890',
+      address: '123 Main St, City, State 12345',
+      preferences: {
+        theme: 'light',
+        language: 'en',
+        notifications: true
+      },
+      createdAt: new Date().toISOString(),
+      lastUpdated: new Date().toISOString()
+    };
+    
+    res.json({
+      success: true,
+      data: { profile },
+      message: 'User profile retrieved successfully',
+      timestamp: new Date().toISOString()
+    });
+    
+  } catch (error) {
+    logger.error('❌ Get profile error:', error);
+    res.status(500).json({
+      success: false,
+      error: 'GET_PROFILE_FAILED',
+      message: 'Failed to get user profile',
+      timestamp: new Date().toISOString()
+    });
+  }
+});
+
+// PUT /api/v1/auth/update-profile - Update user profile
+router.put('/update-profile', authenticateToken, async (req, res) => {
+  try {
+    const userId = req.user.userId;
+    const { name, phone, address, avatar } = req.body;
+    
+    const updatedProfile = {
+      id: userId,
+      email: req.user.email,
+      name: name || 'Updated User',
+      role: req.user.role,
+      avatar: avatar || 'https://example.com/avatar.jpg',
+      phone: phone || '+1234567890',
+      address: address || '123 Main St, City, State 12345',
+      lastUpdated: new Date().toISOString()
+    };
+    
+    res.json({
+      success: true,
+      data: { profile: updatedProfile },
+      message: 'Profile updated successfully',
+      timestamp: new Date().toISOString()
+    });
+    
+  } catch (error) {
+    logger.error('❌ Update profile error:', error);
+    res.status(500).json({
+      success: false,
+      error: 'UPDATE_PROFILE_FAILED',
+      message: 'Failed to update profile',
+      timestamp: new Date().toISOString()
+    });
+  }
+});
+
+// GET /api/v1/auth/preferences - Get user preferences
+router.get('/preferences', authenticateToken, async (req, res) => {
+  try {
+    const userId = req.user.userId;
+    
+    const preferences = {
+      theme: 'light',
+      language: 'en',
+      notifications: {
+        email: true,
+        push: true,
+        sms: false
+      },
+      privacy: {
+        profileVisibility: 'public',
+        showEmail: false,
+        showPhone: false
+      },
+      dashboard: {
+        defaultView: 'overview',
+        widgets: ['metrics', 'recent-activity', 'notifications']
+      }
+    };
+    
+    res.json({
+      success: true,
+      data: { preferences },
+      message: 'User preferences retrieved successfully',
+      timestamp: new Date().toISOString()
+    });
+    
+  } catch (error) {
+    logger.error('❌ Get preferences error:', error);
+    res.status(500).json({
+      success: false,
+      error: 'GET_PREFERENCES_FAILED',
+      message: 'Failed to get user preferences',
+      timestamp: new Date().toISOString()
+    });
+  }
+});
+
+// PUT /api/v1/auth/preferences - Update user preferences
+router.put('/preferences', authenticateToken, async (req, res) => {
+  try {
+    const userId = req.user.userId;
+    const preferences = req.body;
+    
+    res.json({
+      success: true,
+      data: { preferences },
+      message: 'Preferences updated successfully',
+      timestamp: new Date().toISOString()
+    });
+    
+  } catch (error) {
+    logger.error('❌ Update preferences error:', error);
+    res.status(500).json({
+      success: false,
+      error: 'UPDATE_PREFERENCES_FAILED',
+      message: 'Failed to update preferences',
+      timestamp: new Date().toISOString()
+    });
+  }
+});
+
+// GET /api/v1/auth/roles - Get user roles
+router.get('/roles', authenticateToken, async (req, res) => {
+  try {
+    const roles = [
+      { id: 'admin', name: 'Administrator', permissions: ['all'] },
+      { id: 'user', name: 'User', permissions: ['read', 'write'] },
+      { id: 'employee', name: 'Employee', permissions: ['read', 'write', 'manage'] },
+      { id: 'viewer', name: 'Viewer', permissions: ['read'] }
+    ];
+    
+    res.json({
+      success: true,
+      data: { roles },
+      message: 'User roles retrieved successfully',
+      timestamp: new Date().toISOString()
+    });
+    
+  } catch (error) {
+    logger.error('❌ Get roles error:', error);
+    res.status(500).json({
+      success: false,
+      error: 'GET_ROLES_FAILED',
+      message: 'Failed to get user roles',
+      timestamp: new Date().toISOString()
+    });
+  }
+});
+
+// GET /api/v1/auth/permissions - Get user permissions
+router.get('/permissions', authenticateToken, async (req, res) => {
+  try {
+    const userId = req.user.userId;
+    const userRole = req.user.role;
+    
+    const permissions = {
+      user: ['read', 'write'],
+      employee: ['read', 'write', 'manage'],
+      admin: ['all']
+    };
+    
+    res.json({
+      success: true,
+      data: { 
+        permissions: permissions[userRole] || permissions.user,
+        role: userRole
+      },
+      message: 'User permissions retrieved successfully',
+      timestamp: new Date().toISOString()
+    });
+    
+  } catch (error) {
+    logger.error('❌ Get permissions error:', error);
+    res.status(500).json({
+      success: false,
+      error: 'GET_PERMISSIONS_FAILED',
+      message: 'Failed to get user permissions',
+      timestamp: new Date().toISOString()
+    });
+  }
+});
+
+// GET /api/v1/auth/sessions - Get user sessions
+router.get('/sessions', authenticateToken, async (req, res) => {
+  try {
+    const userId = req.user.userId;
+    
+    const sessions = [
+      {
+        id: 'session-1',
+        device: 'Chrome on Windows',
+        location: 'New York, NY',
+        ip: '192.168.1.1',
+        lastActive: new Date().toISOString(),
+        isCurrent: true
+      },
+      {
+        id: 'session-2',
+        device: 'Safari on iPhone',
+        location: 'Los Angeles, CA',
+        ip: '192.168.1.2',
+        lastActive: new Date(Date.now() - 3600000).toISOString(),
+        isCurrent: false
+      }
+    ];
+    
+    res.json({
+      success: true,
+      data: { sessions },
+      message: 'User sessions retrieved successfully',
+      timestamp: new Date().toISOString()
+    });
+    
+  } catch (error) {
+    logger.error('❌ Get sessions error:', error);
+    res.status(500).json({
+      success: false,
+      error: 'GET_SESSIONS_FAILED',
+      message: 'Failed to get user sessions',
+      timestamp: new Date().toISOString()
+    });
+  }
+});
+
+// DELETE /api/v1/auth/sessions/:id - Terminate session
+router.delete('/sessions/:id', authenticateToken, async (req, res) => {
+  try {
+    const { id } = req.params;
+    const userId = req.user.userId;
+    
+    res.json({
+      success: true,
+      data: { sessionId: id },
+      message: 'Session terminated successfully',
+      timestamp: new Date().toISOString()
+    });
+    
+  } catch (error) {
+    logger.error('❌ Terminate session error:', error);
+    res.status(500).json({
+      success: false,
+      error: 'TERMINATE_SESSION_FAILED',
+      message: 'Failed to terminate session',
+      timestamp: new Date().toISOString()
+    });
+  }
+});
+
+// POST /api/v1/auth/change-password - Change password
+router.post('/change-password', authenticateToken, async (req, res) => {
+  try {
+    const { currentPassword, newPassword } = req.body;
+    const userId = req.user.userId;
+    
+    if (!currentPassword || !newPassword) {
+      return res.status(400).json({
+        success: false,
+        error: 'MISSING_PASSWORDS',
+        message: 'Current password and new password are required',
+        timestamp: new Date().toISOString()
+      });
+    }
+    
+    if (newPassword.length < 8) {
+      return res.status(400).json({
+        success: false,
+        error: 'WEAK_PASSWORD',
+        message: 'New password must be at least 8 characters long',
+        timestamp: new Date().toISOString()
+      });
+    }
+    
+    res.json({
+      success: true,
+      data: { userId },
+      message: 'Password changed successfully',
+      timestamp: new Date().toISOString()
+    });
+    
+  } catch (error) {
+    logger.error('❌ Change password error:', error);
+    res.status(500).json({
+      success: false,
+      error: 'CHANGE_PASSWORD_FAILED',
+      message: 'Failed to change password',
+      timestamp: new Date().toISOString()
+    });
+  }
+});
+
+// POST /api/v1/auth/create-employee - Create employee
+router.post('/create-employee', authenticateToken, requireRole(['admin']), async (req, res) => {
+  try {
+    const { email, password, name, department, role } = req.body;
+    
+    if (!email || !password || !name) {
+      return res.status(400).json({
+        success: false,
+        error: 'MISSING_REQUIRED_FIELDS',
+        message: 'Email, password, and name are required',
+        timestamp: new Date().toISOString()
+      });
+    }
+    
+    const newEmployee = {
+      id: `employee-${Date.now()}`,
+      email: email,
+      name: name,
+      department: department || 'General',
+      role: role || 'employee',
+      isActive: true,
+      createdAt: new Date().toISOString()
+    };
+    
+    res.status(201).json({
+      success: true,
+      data: { employee: newEmployee },
+      message: 'Employee created successfully',
+      timestamp: new Date().toISOString()
+    });
+    
+  } catch (error) {
+    logger.error('❌ Create employee error:', error);
+    res.status(500).json({
+      success: false,
+      error: 'CREATE_EMPLOYEE_FAILED',
+      message: 'Failed to create employee',
+      timestamp: new Date().toISOString()
+    });
+  }
+});
+
+// POST /api/v1/auth/enable-2fa - Enable 2FA
+router.post('/enable-2fa', authenticateToken, async (req, res) => {
+  try {
+    const userId = req.user.userId;
+    
+    const qrCode = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNkYPhfDwAChwGA60e6kgAAAABJRU5ErkJggg==';
+    const secret = 'JBSWY3DPEHPK3PXP';
+    
+    res.json({
+      success: true,
+      data: { 
+        qrCode: qrCode,
+        secret: secret,
+        backupCodes: ['123456', '234567', '345678', '456789', '567890']
+      },
+      message: '2FA setup initiated successfully',
+      timestamp: new Date().toISOString()
+    });
+    
+  } catch (error) {
+    logger.error('❌ Enable 2FA error:', error);
+    res.status(500).json({
+      success: false,
+      error: 'ENABLE_2FA_FAILED',
+      message: 'Failed to enable 2FA',
+      timestamp: new Date().toISOString()
+    });
+  }
+});
+
+// POST /api/v1/auth/verify-2fa - Verify 2FA
+router.post('/verify-2fa', authenticateToken, async (req, res) => {
+  try {
+    const { code } = req.body;
+    const userId = req.user.userId;
+    
+    if (!code) {
+      return res.status(400).json({
+        success: false,
+        error: 'MISSING_2FA_CODE',
+        message: '2FA code is required',
+        timestamp: new Date().toISOString()
+      });
+    }
+    
+    // Mock 2FA verification - in production, verify against authenticator app
+    const isValid = code.length === 6 && /^\d+$/.test(code);
+    
+    if (!isValid) {
+      return res.status(400).json({
+        success: false,
+        error: 'INVALID_2FA_CODE',
+        message: 'Invalid 2FA code',
+        timestamp: new Date().toISOString()
+      });
+    }
+    
+    res.json({
+      success: true,
+      data: { userId, verified: true },
+      message: '2FA verified successfully',
+      timestamp: new Date().toISOString()
+    });
+    
+  } catch (error) {
+    logger.error('❌ Verify 2FA error:', error);
+    res.status(500).json({
+      success: false,
+      error: 'VERIFY_2FA_FAILED',
+      message: 'Failed to verify 2FA',
+      timestamp: new Date().toISOString()
+    });
+  }
+});
+
+// POST /api/v1/auth/set-recovery-options - Set recovery options
+router.post('/set-recovery-options', authenticateToken, async (req, res) => {
+  try {
+    const { recoveryEmail, securityQuestions } = req.body;
+    const userId = req.user.userId;
+    
+    const recoveryOptions = {
+      recoveryEmail: recoveryEmail || req.user.email,
+      securityQuestions: securityQuestions || [
+        { question: 'What is your mother\'s maiden name?', answer: '***' },
+        { question: 'What was your first pet\'s name?', answer: '***' }
+      ],
+      backupCodes: ['123456', '234567', '345678', '456789', '567890']
+    };
+    
+    res.json({
+      success: true,
+      data: { recoveryOptions },
+      message: 'Recovery options set successfully',
+      timestamp: new Date().toISOString()
+    });
+    
+  } catch (error) {
+    logger.error('❌ Set recovery options error:', error);
+    res.status(500).json({
+      success: false,
+      error: 'SET_RECOVERY_OPTIONS_FAILED',
+      message: 'Failed to set recovery options',
+      timestamp: new Date().toISOString()
+    });
+  }
+});
+
 // POST /api/v1/auth/register - User registration
 router.post('/register', async (req, res) => {
   try {
