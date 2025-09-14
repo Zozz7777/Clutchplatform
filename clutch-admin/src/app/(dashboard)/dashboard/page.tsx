@@ -1,90 +1,367 @@
 ﻿'use client'
 
 import React, { useState, useEffect } from 'react'
-import { useRouter } from 'next/navigation'
+import { motion, AnimatePresence } from 'framer-motion'
 import { 
   TrendingUp, 
   TrendingDown, 
   Users, 
-  Building2,
+  ShoppingCart, 
   Car,
-  PoundSterling, 
+  Handshake,
+  Wrench,
+  PoundSterling,
   Activity,
-  MapPin,
   Clock,
+  RefreshCw,
   AlertTriangle,
-  AlertCircle,
   CheckCircle,
+  XCircle,
   BarChart3,
   PieChart,
-  Calendar,
+  LineChart,
   Bell,
   Settings,
-  ArrowUpRight,
-  ArrowDownRight,
-  Smartphone,
-  Globe,
-  Shield,
-  Database,
-  Zap,
-  Target,
-  Rocket,
-  Cpu,
-  Wifi,
-  Server,
-  HardDrive,
-  Network,
-  Gauge,
   Eye,
+  Download,
+  Plus,
+  ArrowUpRight,
+  Zap,
+  Shield,
   Brain,
-  Sparkles
+  Target,
+  Award,
+  Star,
+  Globe,
+  Smartphone,
+  Mail,
+  MessageSquare,
+  FileText,
+  Database,
+  Server,
+  Cpu,
+  HardDrive,
+  Wifi
 } from 'lucide-react'
-// Legacy components removed - using SnowUI components only
-import { Badge } from '@/components/ui/badge'
-import { SnowCard, SnowCardHeader, SnowCardContent, SnowCardTitle, SnowCardDescription } from '@/components/ui/snow-card'
+import { SnowCard, SnowCardContent, SnowCardDescription, SnowCardHeader, SnowCardTitle } from '@/components/ui/snow-card'
 import { SnowButton } from '@/components/ui/snow-button'
-import { EmptyState, MetricEmptyState } from '@/components/ui/empty-state'
-import { useAuthStore } from '@/store'
-import { clutchApi } from '@/lib/api-service'
+import { Badge } from '@/components/ui/badge'
 import { useConsolidatedDashboard } from '@/hooks/useConsolidatedDashboard'
-import { useResponsive } from '@/hooks/useResponsive'
+import { formatCurrency, formatNumber } from '@/lib/utils'
+import ApiErrorHandler from '@/components/error-handlers/api-error-handler'
+import DashboardWidget from '@/components/dashboard/dashboard-widget'
+import SimpleChart from '@/components/charts/simple-chart'
+import DataContext, { StatusIndicator, MetricCard } from '@/components/dashboard/data-context'
+import { toast } from 'sonner'
 
-// Define types for platform services
-interface PlatformService {
-  id: string
-  name: string
-  status: 'online' | 'offline' | 'maintenance' | 'warning'
-  icon?: string | React.ComponentType
+// Enhanced Metric Card with animations
+const EnhancedMetricCard = ({ 
+  title, 
+  value, 
+  change, 
+  trend, 
+  format = 'number',
+  icon: Icon,
+  color = 'clutch-red',
+  description,
+  onClick
+}: {
+  title: string
+  value: number
+  change?: number
+  trend?: 'up' | 'down' | 'neutral'
+  format?: 'number' | 'currency' | 'percentage'
+  icon?: any
+  color?: string
   description?: string
-  uptime?: string
-  responseTime?: string
-  performance?: number
+  onClick?: () => void
+}) => {
+  const formatValue = (val: number) => {
+    switch (format) {
+      case 'currency':
+        return formatCurrency(val)
+      case 'percentage':
+        return `${val}%`
+      default:
+        return formatNumber(val)
+    }
+  }
+
+  const getTrendIcon = () => {
+    if (trend === 'up') return <TrendingUp className="h-4 w-4 text-green-500" />
+    if (trend === 'down') return <TrendingDown className="h-4 w-4 text-red-500" />
+    return <Activity className="h-4 w-4 text-gray-500" />
+  }
+
+  const getTrendColor = () => {
+    if (trend === 'up') return 'text-green-600'
+    if (trend === 'down') return 'text-red-600'
+    return 'text-gray-600'
+  }
+
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.3 }}
+      whileHover={{ scale: 1.02 }}
+      className="group"
+    >
+      <SnowCard className={`cursor-pointer transition-all duration-200 hover:shadow-lg border-l-4 border-l-${color}-500`}>
+        <SnowCardContent className="p-6">
+          <div className="flex items-center justify-between">
+            <div className="flex-1">
+              <div className="flex items-center space-x-2 mb-2">
+                {Icon && <Icon className={`h-5 w-5 text-${color}-500`} />}
+                <p className="text-sm font-medium text-clutch-gray-600">{title}</p>
+              </div>
+              <div className="flex items-baseline space-x-2">
+                <h3 className="text-2xl font-bold text-clutch-gray-900">
+                  {formatValue(value)}
+                </h3>
+                {change !== undefined && (
+                  <div className={`flex items-center space-x-1 ${getTrendColor()}`}>
+                    {getTrendIcon()}
+                    <span className="text-sm font-medium">
+                      {Math.abs(change)}%
+                    </span>
+                  </div>
+                )}
+              </div>
+              {description && (
+                <p className="text-xs text-clutch-gray-500 mt-1">{description}</p>
+              )}
+            </div>
+            <div className="opacity-0 group-hover:opacity-100 transition-opacity">
+              <ArrowUpRight className="h-4 w-4 text-clutch-gray-400" />
+            </div>
+          </div>
+        </SnowCardContent>
+      </SnowCard>
+    </motion.div>
+  )
 }
 
-// Define types for activity logs
-interface ActivityLog {
-  id: string
-  type: string
-  message: string
-  timestamp: string
-  user?: string
-  details?: any
-  status?: 'success' | 'warning' | 'error' | 'info'
-  action?: string
+// Enhanced Activity Item with better styling
+const EnhancedActivityItem = ({ activity }: { activity: any }) => {
+  const getStatusIcon = (status: string) => {
+    switch (status.toLowerCase()) {
+      case 'completed':
+      case 'success':
+        return <CheckCircle className="h-4 w-4 text-green-500" />
+      case 'pending':
+      case 'processing':
+        return <Clock className="h-4 w-4 text-yellow-500" />
+      case 'failed':
+      case 'error':
+        return <XCircle className="h-4 w-4 text-red-500" />
+      default:
+        return <Activity className="h-4 w-4 text-blue-500" />
+    }
+  }
+
+  const getStatusColor = (status: string) => {
+    switch (status.toLowerCase()) {
+      case 'completed':
+      case 'success':
+        return 'bg-green-100 text-green-800 border-green-200'
+      case 'pending':
+      case 'processing':
+        return 'bg-yellow-100 text-yellow-800 border-yellow-200'
+      case 'failed':
+      case 'error':
+        return 'bg-red-100 text-red-800 border-red-200'
+      default:
+        return 'bg-blue-100 text-blue-800 border-blue-200'
+    }
+  }
+
+  return (
+    <motion.div
+      initial={{ opacity: 0, x: -20 }}
+      animate={{ opacity: 1, x: 0 }}
+      transition={{ duration: 0.2 }}
+      className="flex items-center space-x-3 p-3 hover:bg-clutch-gray-50 rounded-lg transition-colors border border-transparent hover:border-clutch-gray-200"
+    >
+      {getStatusIcon(activity.status)}
+      <div className="flex-1 min-w-0">
+        <p className="text-sm font-medium text-clutch-gray-900">{activity.action}</p>
+        <p className="text-sm text-clutch-gray-600 truncate">{activity.description}</p>
+      </div>
+      <div className="flex items-center space-x-2">
+        <Badge className={`${getStatusColor(activity.status)} border`}>
+          {activity.status}
+        </Badge>
+        <span className="text-xs text-clutch-gray-500">
+          {new Date(activity.timestamp).toLocaleTimeString()}
+        </span>
+      </div>
+    </motion.div>
+  )
 }
 
-export default function DashboardPage() {
-  const { user } = useAuthStore()
-  const router = useRouter()
-  const [currentTime, setCurrentTime] = useState(new Date())
-  const responsive = useResponsive()
+// Enhanced Service Status Component
+const EnhancedServiceStatus = ({ service }: { service: any }) => {
+  const getStatusIcon = (status: string) => {
+    switch (status.toLowerCase()) {
+      case 'online':
+        return <CheckCircle className="h-4 w-4 text-green-500" />
+      case 'offline':
+        return <XCircle className="h-4 w-4 text-red-500" />
+      case 'warning':
+        return <AlertTriangle className="h-4 w-4 text-yellow-500" />
+      default:
+        return <Activity className="h-4 w-4 text-blue-500" />
+    }
+  }
 
-  // Use consolidated dashboard hook instead of multiple separate API calls
-  const {
-    data: consolidatedData,
-    isLoading,
-    error,
-    lastUpdated,
+  const getStatusColor = (status: string) => {
+    switch (status.toLowerCase()) {
+      case 'online':
+        return 'bg-green-100 text-green-800 border-green-200'
+      case 'offline':
+        return 'bg-red-100 text-red-800 border-red-200'
+      case 'warning':
+        return 'bg-yellow-100 text-yellow-800 border-yellow-200'
+      default:
+        return 'bg-blue-100 text-blue-800 border-blue-200'
+    }
+  }
+
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 10 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.2 }}
+      className="flex items-center justify-between p-3 hover:bg-clutch-gray-50 rounded-lg transition-colors border border-transparent hover:border-clutch-gray-200"
+    >
+      <div className="flex items-center space-x-3">
+        {getStatusIcon(service.status)}
+        <div>
+          <p className="text-sm font-medium text-clutch-gray-900">{service.name}</p>
+          <p className="text-xs text-clutch-gray-600">Uptime: {service.uptime}</p>
+        </div>
+      </div>
+      <Badge className={`${getStatusColor(service.status)} border`}>
+        {service.status}
+      </Badge>
+    </motion.div>
+  )
+}
+
+// Quick Actions Component
+const QuickActions = () => {
+  const actions = [
+    { icon: Plus, label: 'New Order', color: 'clutch-red', href: '/orders/new' },
+    { icon: Users, label: 'Add Customer', color: 'clutch-blue', href: '/customers/new' },
+    { icon: Car, label: 'Add Vehicle', color: 'clutch-green', href: '/fleet/new' },
+    { icon: FileText, label: 'New Report', color: 'clutch-purple', href: '/reports/new' },
+    { icon: Settings, label: 'Settings', color: 'clutch-gray', href: '/settings' },
+    { icon: Bell, label: 'Notifications', color: 'clutch-orange', href: '/notifications' }
+  ]
+
+  return (
+    <SnowCard>
+      <SnowCardHeader>
+        <SnowCardTitle className="flex items-center space-x-2">
+          <Zap className="h-5 w-5 text-clutch-red-500" />
+          <span>Quick Actions</span>
+        </SnowCardTitle>
+        <SnowCardDescription>
+          Common tasks and shortcuts
+        </SnowCardDescription>
+      </SnowCardHeader>
+      <SnowCardContent>
+        <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
+          {actions.map((action, index) => (
+            <motion.div
+              key={action.label}
+              initial={{ opacity: 0, scale: 0.9 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ delay: index * 0.1 }}
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+            >
+              <SnowButton
+                variant="outline"
+                className="w-full h-20 flex flex-col items-center justify-center space-y-2 hover:bg-clutch-gray-50"
+              >
+                <action.icon className={`h-6 w-6 text-${action.color}-500`} />
+                <span className="text-xs font-medium text-clutch-gray-700">
+                  {action.label}
+                </span>
+              </SnowButton>
+            </motion.div>
+          ))}
+        </div>
+      </SnowCardContent>
+    </SnowCard>
+  )
+}
+
+// Performance Metrics Component
+const PerformanceMetrics = ({ metrics }: { metrics: any }) => {
+  const performanceData = [
+    { label: 'CPU Usage', value: 45, color: 'clutch-red', icon: Cpu },
+    { label: 'Memory', value: 67, color: 'clutch-blue', icon: Database },
+    { label: 'Storage', value: 23, color: 'clutch-green', icon: HardDrive },
+    { label: 'Network', value: 89, color: 'clutch-purple', icon: Wifi }
+  ]
+
+  return (
+    <SnowCard>
+      <SnowCardHeader>
+        <SnowCardTitle className="flex items-center space-x-2">
+          <Activity className="h-5 w-5 text-clutch-red-500" />
+          <span>System Performance</span>
+        </SnowCardTitle>
+        <SnowCardDescription>
+          Real-time system metrics
+        </SnowCardDescription>
+      </SnowCardHeader>
+      <SnowCardContent>
+        <div className="space-y-4">
+          {performanceData.map((metric, index) => (
+            <motion.div
+              key={metric.label}
+              initial={{ opacity: 0, x: -20 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ delay: index * 0.1 }}
+              className="flex items-center space-x-3"
+            >
+              <metric.icon className={`h-5 w-5 text-${metric.color}-500`} />
+              <div className="flex-1">
+                <div className="flex items-center justify-between mb-1">
+                  <span className="text-sm font-medium text-clutch-gray-700">
+                    {metric.label}
+                  </span>
+                  <span className="text-sm font-bold text-clutch-gray-900">
+                    {metric.value}%
+                  </span>
+                </div>
+                <div className="w-full bg-clutch-gray-200 rounded-full h-2">
+                  <motion.div
+                    initial={{ width: 0 }}
+                    animate={{ width: `${metric.value}%` }}
+                    transition={{ delay: index * 0.1 + 0.5, duration: 0.8 }}
+                    className={`h-2 rounded-full bg-${metric.color}-500`}
+                  />
+                </div>
+              </div>
+            </motion.div>
+          ))}
+        </div>
+      </SnowCardContent>
+    </SnowCard>
+  )
+}
+
+export default function EnhancedDashboardPage() {
+  const { 
+    data, 
+    isLoading, 
+    error, 
+    lastUpdated, 
     refreshData,
     metrics,
     recentOrders,
@@ -94,7 +371,21 @@ export default function DashboardPage() {
     realTimeData
   } = useConsolidatedDashboard()
 
-  // Fallback data structure to prevent undefined errors
+  const [selectedTimeRange, setSelectedTimeRange] = useState('30d')
+  const [autoRefresh, setAutoRefresh] = useState(true)
+
+  // Auto-refresh functionality
+  useEffect(() => {
+    if (!autoRefresh) return
+
+    const interval = setInterval(() => {
+      refreshData()
+    }, 30000) // Refresh every 30 seconds
+
+    return () => clearInterval(interval)
+  }, [autoRefresh, refreshData])
+
+  // Fallback data structure
   const safeMetrics = metrics || {
     users: { total: 0, active: 0, growth: 0 },
     orders: { total: 0, pending: 0, completed: 0, growth: 0 },
@@ -104,74 +395,16 @@ export default function DashboardPage() {
     partners: { total: 0, active: 0, pending: 0 }
   }
 
-  const safeRealTimeData = realTimeData || {
-    totalUsers: 0,
-    activeDrivers: 0,
-    totalPartners: 0,
-    monthlyRevenue: 0
-  }
-
-  const safeRecentActivity = activityLogs || []
-  const safePlatformStatus = platformServices || []
-
-  // Map consolidated data to expected format
-  const recentActivity = activityLogs || []
-  const platformStatus: PlatformService[] = (platformServices || []).map(service => ({
-    id: service.name,
-    name: service.name,
-    status: service.status as 'online' | 'offline' | 'maintenance' | 'warning',
-    uptime: service.uptime,
-    description: `Service status: ${service.status}`
-  }))
-
-  useEffect(() => {
-    const timer = setInterval(() => {
-      setCurrentTime(new Date())
-    }, 1000)
-    return () => clearInterval(timer)
-  }, [])
-
-  const formatCurrency = (amount: number) => {
-    return new Intl.NumberFormat('en-US', {
-      style: 'currency',
-      currency: 'EGP',
-      minimumFractionDigits: 0,
-      maximumFractionDigits: 0,
-    }).format(amount)
-  }
-
-  const getTrendContext = (percentage: number, isPositive: boolean = true) => {
-    const absPercentage = Math.abs(percentage)
-    if (absPercentage < 2) return { label: 'Stable', color: 'text-slate-600 dark:text-slate-400' }
-    if (isPositive) {
-      return { label: 'Good', color: 'text-emerald-600 dark:text-emerald-400' }
-    } else {
-      return { label: 'Needs Attention', color: 'text-red-600 dark:text-red-400' }
-    }
-  }
-
-  const getStatusIcon = (status: string) => {
-    switch (status) {
-      case 'success':
-        return <CheckCircle className="h-4 w-4 text-green-500" />
-      case 'warning':
-        return <AlertTriangle className="h-4 w-4 text-yellow-500" />
-      case 'info':
-        return <Bell className="h-4 w-4 text-blue-500" />
-      default:
-        return <Activity className="h-4 w-4 text-red-500" />
-    }
-  }
-
   if (isLoading) {
     return (
-      <div className="flex items-center justify-center min-h-[400px]">
+      <div className="flex items-center justify-center min-h-screen">
         <div className="text-center">
-          <div className="relative">
-            <div className="animate-spin rounded-full h-16 w-16 border-4 border-primary/20 border-t-primary mx-auto mb-4"></div>
-            <div className="absolute inset-0 rounded-full h-16 w-16 border-4 border-transparent border-t-primary/60 animate-ping"></div>
-          </div>
-          <p className="text-muted-foreground font-medium">Initializing Clutch Platform...</p>
+          <motion.div
+            animate={{ rotate: 360 }}
+            transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
+            className="w-8 h-8 border-2 border-clutch-red-500 border-t-transparent rounded-full mx-auto mb-4"
+          />
+          <p className="text-clutch-gray-600">Loading dashboard data...</p>
         </div>
       </div>
     )
@@ -179,449 +412,268 @@ export default function DashboardPage() {
 
   if (error) {
     return (
-      <div className="flex items-center justify-center min-h-[400px]">
+      <div className="p-6">
+        <ApiErrorHandler 
+          error={{ message: error }} 
+          onRetry={refreshData}
+        />
+      </div>
+    )
+  }
+
+  if (!data) {
+    return (
+      <div className="p-6">
         <div className="text-center">
-          <div className="relative mb-4">
-            <AlertCircle className="h-12 w-12 text-red-500 mx-auto" />
-            <div className="absolute inset-0 h-12 w-12 bg-red-500/20 rounded-full animate-ping"></div>
-          </div>
-          <p className="text-red-600 font-medium">{error}</p>
+          <p className="text-clutch-gray-600">No dashboard data available</p>
+          <SnowButton onClick={refreshData} className="mt-4">
+            <RefreshCw className="h-4 w-4 mr-2" />
+            Retry
+          </SnowButton>
         </div>
       </div>
     )
   }
 
   return (
-    <div className="space-y-6">
-      <SnowCard variant="primary" size="lg" className="relative overflow-hidden bg-gradient-to-br from-primary/5 via-primary/10 to-primary/5 border-primary/20">
-        <div className="absolute inset-0 bg-gradient-to-br from-primary/[0.03] to-transparent"></div>
-        <SnowCardContent className="relative z-10">
-          <div className="flex items-center justify-between">
-            <div className="space-y-4">
-              <div className="flex items-center space-x-4">
-                <div className="flex items-center space-x-2 px-3 py-1.5 bg-emerald-50 dark:bg-emerald-900/20 rounded-full">
-                  <div className="h-2.5 w-2.5 bg-emerald-500 rounded-full animate-pulse"></div>
-                  <span className="text-sm font-medium text-emerald-700 dark:text-emerald-400">SYSTEM ONLINE</span>
-                </div>
-                <div className="flex items-center space-x-2 px-3 py-1.5 bg-blue-50 dark:bg-blue-900/20 rounded-full">
-                  <Sparkles className="h-4 w-4 text-blue-600 dark:text-blue-400" />
-                  <span className="text-sm font-medium text-blue-700 dark:text-blue-400">AI ENABLED</span>
-                </div>
-              </div>
-              <div>
-                <h1 className="text-3xl font-bold text-slate-900 dark:text-slate-100 mb-2">
-                  Clutch Admin Dashboard
-                </h1>
-                <p className="text-slate-700 max-w-2xl">
-                  Welcome back, <span className="font-semibold text-primary">{user?.fullName || 'Administrator'}</span>. 
-                  Monitor your platform operations and manage your business efficiently.
-                </p>
-              </div>
-            </div>
-            <div className="text-right space-y-3">
-              <div className="flex items-center justify-end space-x-2">
-                <div className="h-2 w-2 bg-emerald-500 rounded-full animate-pulse"></div>
-                <span className="text-sm font-mono text-slate-600 text-slate-600">REAL-TIME</span>
-              </div>
-              <div className="space-y-1">
-                <p className="text-sm text-slate-500 dark:text-slate-500 font-mono">
-                  {currentTime.toLocaleDateString('en-US', { 
-                    weekday: 'short', 
-                    year: 'numeric', 
-                    month: 'short', 
-                    day: 'numeric' 
-                  })}
-                </p>
-                <p className="text-xl font-bold font-mono text-slate-900 dark:text-slate-100">
-                  {currentTime.toLocaleTimeString('en-US', { 
-                    hour: '2-digit', 
-                    minute: '2-digit',
-                    second: '2-digit'
-                  })}
-                </p>
-              </div>
-            </div>
+    <DataContext
+      title="Enhanced Dashboard"
+      lastUpdated={lastUpdated || undefined}
+      onRefresh={refreshData}
+      timeRange={`Last ${selectedTimeRange}`}
+      totalRecords={metrics?.users.total || 0}
+    >
+      <div className="space-y-6">
+        {/* Header with Controls */}
+        <motion.div
+          initial={{ opacity: 0, y: -20 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="flex flex-col sm:flex-row sm:items-center sm:justify-between space-y-4 sm:space-y-0"
+        >
+          <div>
+            <h1 className="text-3xl font-bold text-clutch-gray-900">Dashboard Overview</h1>
+            <p className="text-clutch-gray-600 mt-1">
+              Welcome back! Here's what's happening with your business today.
+            </p>
           </div>
-        </SnowCardContent>
-      </SnowCard>
-      <div className="grid gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-4">
-        <SnowCard variant="elevated" className="group relative overflow-hidden hover:shadow-xl transition-all duration-300">
-          <SnowCardContent className="p-6">
-            <div className="flex items-center justify-between">
-              <div className="space-y-3">
-                <div className="flex items-center space-x-2">
-                  <div className="p-2 bg-blue-50 dark:bg-blue-900/20 rounded-lg">
-                    <Users className="h-5 w-5 text-blue-600 dark:text-blue-400" />
-                  </div>
-                  <span className="text-sm font-medium text-slate-600 text-slate-600">Total Users</span>
+          <div className="flex items-center space-x-3">
+            <select
+              value={selectedTimeRange}
+              onChange={(e) => setSelectedTimeRange(e.target.value)}
+              className="px-3 py-2 border border-clutch-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-clutch-red-500 focus:border-clutch-red-500"
+            >
+              <option value="7d">Last 7 days</option>
+              <option value="30d">Last 30 days</option>
+              <option value="90d">Last 90 days</option>
+              <option value="1y">Last year</option>
+            </select>
+            <SnowButton
+              variant={autoRefresh ? "default" : "outline"}
+              size="sm"
+              onClick={() => setAutoRefresh(!autoRefresh)}
+            >
+              <RefreshCw className={`h-4 w-4 mr-2 ${autoRefresh ? 'animate-spin' : ''}`} />
+              Auto Refresh
+            </SnowButton>
+          </div>
+        </motion.div>
+
+        {/* Key Metrics Grid */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+          <EnhancedMetricCard
+            title="Total Users"
+            value={safeMetrics.users.total}
+            change={safeMetrics.users.growth}
+            trend={safeMetrics.users.growth && safeMetrics.users.growth > 0 ? 'up' : 'down'}
+            format="number"
+            icon={Users}
+            color="clutch-blue"
+            description="Active platform users"
+          />
+          <EnhancedMetricCard
+            title="Total Orders"
+            value={safeMetrics.orders.total}
+            change={safeMetrics.orders.growth}
+            trend={safeMetrics.orders.growth && safeMetrics.orders.growth > 0 ? 'up' : 'down'}
+            format="number"
+            icon={ShoppingCart}
+            color="clutch-green"
+            description="Completed orders"
+          />
+          <EnhancedMetricCard
+            title="Monthly Revenue"
+            value={safeMetrics.revenue.monthly}
+            change={safeMetrics.revenue.growth}
+            trend={safeMetrics.revenue.growth && safeMetrics.revenue.growth > 0 ? 'up' : 'down'}
+            format="currency"
+            icon={PoundSterling}
+            color="clutch-red"
+            description="Current month revenue"
+          />
+          <EnhancedMetricCard
+            title="Active Vehicles"
+            value={safeMetrics.vehicles.available}
+            format="number"
+            icon={Car}
+            color="clutch-purple"
+            description="Fleet availability"
+          />
+        </div>
+
+        {/* Secondary Metrics */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <EnhancedMetricCard
+            title="Total Services"
+            value={safeMetrics.services.total}
+            format="number"
+            icon={Wrench}
+            color="clutch-orange"
+            description="Service requests"
+          />
+          <EnhancedMetricCard
+            title="Active Partners"
+            value={safeMetrics.partners.active}
+            format="number"
+            icon={Handshake}
+            color="clutch-teal"
+            description="Business partners"
+          />
+          <EnhancedMetricCard
+            title="Pending Orders"
+            value={safeMetrics.orders.pending}
+            format="number"
+            icon={Clock}
+            color="clutch-yellow"
+            description="Awaiting processing"
+          />
+        </div>
+
+        {/* Main Content Grid */}
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+          {/* Left Column - Charts and Analytics */}
+          <div className="lg:col-span-2 space-y-6">
+            {/* Revenue Chart */}
+            <SnowCard>
+              <SnowCardHeader>
+                <SnowCardTitle className="flex items-center space-x-2">
+                  <LineChart className="h-5 w-5 text-clutch-red-500" />
+                  <span>Revenue Trends</span>
+                </SnowCardTitle>
+                <SnowCardDescription>
+                  Monthly revenue performance over time
+                </SnowCardDescription>
+              </SnowCardHeader>
+              <SnowCardContent>
+                <div className="h-64">
+                  <SimpleChart
+                    title="Revenue Trend"
+                    data={[
+                      { label: 'Jan', value: 45000 },
+                      { label: 'Feb', value: 52000 },
+                      { label: 'Mar', value: 48000 },
+                      { label: 'Apr', value: 61000 },
+                      { label: 'May', value: 55000 },
+                      { label: 'Jun', value: 67000 }
+                    ]}
+                    type="line"
+                    height={256}
+                  />
                 </div>
-                <div className="text-2xl font-bold text-slate-900 dark:text-slate-100">
-                  {safeMetrics.users.total.toLocaleString()}
+              </SnowCardContent>
+            </SnowCard>
+
+            {/* Activity Feed */}
+            <SnowCard>
+              <SnowCardHeader>
+                <SnowCardTitle className="flex items-center space-x-2">
+                  <Activity className="h-5 w-5 text-clutch-blue-500" />
+                  <span>Recent Activity</span>
+                </SnowCardTitle>
+                <SnowCardDescription>
+                  Latest system activities and events
+                </SnowCardDescription>
+              </SnowCardHeader>
+              <SnowCardContent>
+                <div className="space-y-2 max-h-96 overflow-y-auto">
+                  {activityLogs.slice(0, 8).map((activity, index) => (
+                    <EnhancedActivityItem key={activity.id || index} activity={activity} />
+                  ))}
+                  {activityLogs.length === 0 && (
+                    <div className="text-center py-8">
+                      <div className="text-clutch-gray-500 mb-2">No recent activity</div>
+                      <div className="text-sm text-clutch-gray-400">Activity will appear here as it happens</div>
+                    </div>
+                  )}
                 </div>
-                {safeMetrics.users.total > 0 ? (
-                  <div className="space-y-1">
-                    <div className="flex items-center space-x-1 text-emerald-600 dark:text-emerald-400">
-                      <ArrowUpRight className="h-4 w-4" />
-                      <span className="text-sm font-medium">+12%</span>
-                      <span className="text-xs text-slate-500 dark:text-slate-500">vs last month</span>
-                    </div>
-                    <div className="text-xs font-medium text-emerald-600 dark:text-emerald-400">
-                      {getTrendContext(12, true).label}
-                    </div>
-                  </div>
-                ) : (
-                  <div className="text-xs text-slate-500 dark:text-slate-500">
-                    No data for this period
-                  </div>
-                )}
-              </div>
-            </div>
-          </SnowCardContent>
-        </SnowCard>
-        <SnowCard variant="elevated" className="group relative overflow-hidden hover:shadow-xl transition-all duration-300">
-          <SnowCardContent className="p-6">
-            <div className="flex items-center justify-between">
-              <div className="space-y-3">
-                <div className="flex items-center space-x-2">
-                  <div className="p-2 bg-primary/10 rounded-lg">
-                    <Car className="h-5 w-5 text-primary" />
-                  </div>
-                  <span className="text-sm font-medium text-slate-600 text-slate-600">Active Drivers</span>
+              </SnowCardContent>
+            </SnowCard>
+          </div>
+
+          {/* Right Column - Quick Actions and Status */}
+          <div className="space-y-6">
+            <QuickActions />
+            <PerformanceMetrics metrics={metrics} />
+            
+            {/* Platform Services Status */}
+            <SnowCard>
+              <SnowCardHeader>
+                <SnowCardTitle className="flex items-center space-x-2">
+                  <Shield className="h-5 w-5 text-clutch-green-500" />
+                  <span>Platform Services</span>
+                </SnowCardTitle>
+                <SnowCardDescription>
+                  System health and uptime
+                </SnowCardDescription>
+              </SnowCardHeader>
+              <SnowCardContent>
+                <div className="space-y-3">
+                  {platformServices.map((service, index) => (
+                    <EnhancedServiceStatus key={service.name || index} service={service} />
+                  ))}
                 </div>
-                <div className="text-2xl font-bold text-slate-900 dark:text-slate-100">
-                  {safeRealTimeData.activeDrivers.toLocaleString()}
-                </div>
-                {safeRealTimeData.activeDrivers > 0 ? (
-                  <div className="space-y-1">
-                    <div className="flex items-center space-x-1 text-emerald-600 dark:text-emerald-400">
-                      <ArrowUpRight className="h-4 w-4" />
-                      <span className="text-sm font-medium">+8%</span>
-                      <span className="text-xs text-slate-500 dark:text-slate-500">vs last month</span>
-                    </div>
-                    <div className="text-xs font-medium text-emerald-600 dark:text-emerald-400">
-                      {getTrendContext(8, true).label}
-                    </div>
-                  </div>
-                ) : (
-                  <div className="text-xs text-slate-500 dark:text-slate-500">
-                    No data for this period
-                  </div>
-                )}
-              </div>
-            </div>
-          </SnowCardContent>
-        </SnowCard>
-        <SnowCard variant="elevated" className="group relative overflow-hidden hover:shadow-xl transition-all duration-300">
-          <SnowCardContent className="p-6">
-            <div className="flex items-center justify-between">
-              <div className="space-y-3">
-                <div className="flex items-center space-x-2">
-                  <div className="p-2 bg-purple-50 dark:bg-purple-900/20 rounded-lg">
-                    <Building2 className="h-5 w-5 text-purple-600 dark:text-purple-400" />
-                  </div>
-                  <span className="text-sm font-medium text-slate-600 text-slate-600">Total Partners</span>
-                </div>
-                <div className="text-2xl font-bold text-slate-900 dark:text-slate-100">
-                  {safeMetrics.partners.total.toLocaleString()}
-                </div>
-                {safeMetrics.partners.total > 0 ? (
-                  <div className="space-y-1">
-                    <div className="flex items-center space-x-1 text-emerald-600 dark:text-emerald-400">
-                      <ArrowUpRight className="h-4 w-4" />
-                      <span className="text-sm font-medium">+15%</span>
-                      <span className="text-xs text-slate-500 dark:text-slate-500">vs last month</span>
-                    </div>
-                    <div className="text-xs font-medium text-emerald-600 dark:text-emerald-400">
-                      {getTrendContext(15, true).label}
-                    </div>
-                  </div>
-                ) : (
-                  <div className="text-xs text-slate-500 dark:text-slate-500">
-                    No data for this period
-                  </div>
-                )}
-              </div>
-            </div>
-          </SnowCardContent>
-        </SnowCard>
-        <SnowCard variant="elevated" className="group relative overflow-hidden hover:shadow-xl transition-all duration-300">
-          <SnowCardContent className="p-6">
-            <div className="flex items-center justify-between">
-              <div className="space-y-3">
-                <div className="flex items-center space-x-2">
-                  <div className="p-2 bg-emerald-50 dark:bg-emerald-900/20 rounded-lg">
-                    <PoundSterling className="h-5 w-5 text-emerald-600 dark:text-emerald-400" />
-                  </div>
-                  <span className="text-sm font-medium text-slate-600 text-slate-600">Monthly Revenue</span>
-                </div>
-                <div className="text-2xl font-bold text-slate-900 dark:text-slate-100">
-                  {formatCurrency(safeMetrics.revenue.monthly)}
-                </div>
-                {safeMetrics.revenue.monthly > 0 ? (
-                  <div className="space-y-1">
-                    <div className="flex items-center space-x-1 text-red-600 dark:text-red-400">
-                      <ArrowDownRight className="h-4 w-4" />
-                      <span className="text-sm font-medium">-2%</span>
-                      <span className="text-xs text-slate-500 dark:text-slate-500">vs last month</span>
-                    </div>
-                    <div className="text-xs font-medium text-red-600 dark:text-red-400">
-                      {getTrendContext(2, false).label}
-                    </div>
-                  </div>
-                ) : (
-                  <div className="text-xs text-slate-500 dark:text-slate-500">
-                    No data for this period
-                  </div>
-                )}
-              </div>
+              </SnowCardContent>
+            </SnowCard>
+          </div>
+        </div>
+
+        {/* System Status Overview */}
+        <SnowCard>
+          <SnowCardHeader>
+            <SnowCardTitle className="flex items-center space-x-2">
+              <BarChart3 className="h-5 w-5 text-clutch-purple-500" />
+              <span>System Status Overview</span>
+            </SnowCardTitle>
+            <SnowCardDescription>
+              Comprehensive system health metrics
+            </SnowCardDescription>
+          </SnowCardHeader>
+          <SnowCardContent>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+              {systemStatus.map((status, index) => (
+                <motion.div
+                  key={status.name || index}
+                  initial={{ opacity: 0, scale: 0.9 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  transition={{ delay: index * 0.1 }}
+                  className="text-center p-4 bg-clutch-gray-50 rounded-lg border border-clutch-gray-200 hover:border-clutch-gray-300 transition-colors"
+                >
+                  <p className="text-sm text-clutch-gray-600 mb-2">{status.name}</p>
+                  <p className="text-2xl font-bold text-clutch-gray-900 mb-2">
+                    {status.value}{status.unit}
+                  </p>
+                  <Badge className={`${
+                    status.status === 'normal' 
+                      ? 'bg-green-100 text-green-800 border-green-200' 
+                      : 'bg-yellow-100 text-yellow-800 border-yellow-200'
+                  } border`}>
+                    {status.status}
+                  </Badge>
+                </motion.div>
+              ))}
             </div>
           </SnowCardContent>
         </SnowCard>
       </div>
-      <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
-        <SnowCard className="lg:col-span-1" variant="elevated">
-          <SnowCardHeader>
-            <div className="flex items-center space-x-2">
-              <div className="p-2 bg-blue-50 dark:bg-blue-900/20 rounded-lg">
-                <Server className="h-5 w-5 text-blue-600 dark:text-blue-400" />
-              </div>
-              <SnowCardTitle>Platform Services</SnowCardTitle>
-            </div>
-            <SnowCardDescription>Real-time system status monitoring</SnowCardDescription>
-          </SnowCardHeader>
-          <SnowCardContent>
-            <div className="space-y-4">
-              {platformStatus.map((service: PlatformService, index: number) => {
-                const getIconComponent = (iconName: string) => {
-                  switch (iconName) {
-                    case 'database': return Database
-                    case 'network': return Network
-                    case 'shield': return Shield
-                    case 'brain': return Brain
-                    default: return Server
-                  }
-                }
-                const IconComponent = typeof service.icon === 'string' ? getIconComponent(service.icon) : (service.icon || Server)
-                
-                return (
-                  <div key={service.id || index} className="group relative">
-                    <div className="flex items-center justify-between p-4 rounded-lg bg-slate-50 bg-slate-100/50 border border-slate-200 border-slate-200 hover:border-slate-300 dark:hover:border-slate-600 transition-all duration-300">
-                      <div className="flex items-center space-x-3">
-                        <div className="p-2 bg-white dark:bg-slate-700 rounded-lg group-hover:bg-slate-100 dark:group-hover:bg-slate-600 transition-colors shadow-sm">
-                          <IconComponent className="h-4 w-4 text-blue-600 dark:text-blue-400" />
-                        </div>
-                        <div>
-                          <p className="text-sm font-medium text-slate-900 dark:text-slate-100">{service.name}</p>
-                          <p className="text-xs text-slate-500 text-slate-600">{service.performance}% performance</p>
-                        </div>
-                      </div>
-                      <div className="text-right space-y-2">
-                        <Badge className="bg-emerald-50 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-400 border-emerald-200 dark:border-emerald-800">
-                          {service.status}
-                        </Badge>
-                        <div className="w-16 h-2 bg-slate-200 dark:bg-slate-700 rounded-full overflow-hidden">
-                          <div 
-                            className="h-full bg-gradient-to-r from-emerald-500 to-emerald-600 rounded-full transition-all duration-500"
-                            style={{ width: `${service.performance}%` }}
-                          ></div>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                )
-              })}
-            </div>
-          </SnowCardContent>
-        </SnowCard>
-        <SnowCard className="lg:col-span-2" variant="elevated">
-          <SnowCardHeader>
-            <div className="flex items-center space-x-2">
-              <div className="p-2 bg-purple-50 dark:bg-purple-900/20 rounded-lg">
-                <Activity className="h-5 w-5 text-purple-600 dark:text-purple-400" />
-              </div>
-              <SnowCardTitle>Live Activity Feed</SnowCardTitle>
-            </div>
-            <SnowCardDescription>Real-time platform events and system updates</SnowCardDescription>
-          </SnowCardHeader>
-          <SnowCardContent>
-            <div className="space-y-3 max-h-96 overflow-y-auto">
-              {recentActivity && recentActivity.length > 0 ? (
-                recentActivity.map((activity, index: number) => (
-                  <div key={activity.id || index} className="group relative">
-                    <div className="flex items-start space-x-4 p-4 rounded-lg bg-slate-50 bg-slate-100/50 border border-slate-200 border-slate-200 hover:border-slate-300 dark:hover:border-slate-600 transition-all duration-300">
-                      <div className="flex-shrink-0">
-                        <div className="p-2 bg-white dark:bg-slate-700 rounded-lg group-hover:bg-slate-100 dark:group-hover:bg-slate-600 transition-colors shadow-sm">
-                          {getStatusIcon(activity.status || 'info')}
-                        </div>
-                      </div>
-                      <div className="flex-1 min-w-0">
-                        <p className="text-sm font-medium text-slate-900 dark:text-slate-100">{activity.action}</p>
-                        <p className="text-xs text-slate-500 text-slate-600 mt-1">{activity.description}</p>
-                        <p className="text-xs text-slate-600 dark:text-slate-400">{new Date(activity.timestamp).toLocaleString()}</p>
-                      </div>
-                      <div className="flex-shrink-0">
-                        <div className="w-2 h-2 bg-emerald-500 rounded-full animate-pulse"></div>
-                      </div>
-                    </div>
-                  </div>
-                ))
-              ) : (
-                <div className="text-center py-8">
-                  <div className="w-12 h-12 bg-slate-100 bg-slate-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                    <Activity className="h-6 w-6 text-slate-600" />
-                  </div>
-                  <p className="text-slate-600 text-slate-600 font-medium">No recent activity</p>
-                  <p className="text-sm text-slate-500 dark:text-slate-500 mt-1">Activity will appear here when available</p>
-                </div>
-              )}
-            </div>
-          </SnowCardContent>
-        </SnowCard>
-        <SnowCard className="lg:col-span-1" variant="elevated">
-          <SnowCardHeader>
-            <div className="flex items-center space-x-2">
-              <div className="p-2 bg-orange-50 dark:bg-orange-900/20 rounded-lg">
-                <Zap className="h-5 w-5 text-orange-600 dark:text-orange-400" />
-              </div>
-              <SnowCardTitle>Quick Actions</SnowCardTitle>
-            </div>
-            <SnowCardDescription>Rapid access to key functions</SnowCardDescription>
-          </SnowCardHeader>
-          <SnowCardContent>
-            <div className="space-y-3">
-              <SnowButton 
-                className="w-full justify-start" 
-                variant="ghost"
-                onClick={() => router.push('/dashboard/hr/employees')}
-              >
-                <Users className="h-4 w-4 mr-2" />
-                Manage Users
-              </SnowButton>
-              <SnowButton 
-                className="w-full justify-start" 
-                variant="ghost"
-                onClick={() => router.push('/dashboard/partners')}
-              >
-                <Building2 className="h-4 w-4 mr-2" />
-                Partner Management
-              </SnowButton>
-              <SnowButton 
-                className="w-full justify-start" 
-                variant="ghost"
-                onClick={() => router.push('/dashboard/fleet')}
-              >
-                <Car className="h-4 w-4 mr-2" />
-                Fleet Overview
-              </SnowButton>
-              <SnowButton 
-                className="w-full justify-start" 
-                variant="ghost"
-                onClick={() => router.push('/dashboard/security')}
-              >
-                <Shield className="h-4 w-4 mr-2" />
-                Security Center
-              </SnowButton>
-            </div>
-          </SnowCardContent>
-        </SnowCard>
-        <SnowCard variant="elevated" className="border-0 bg-white dark:bg-slate-800 shadow-2xl">
-          <SnowCardHeader className="border-b border-slate-200 dark:border-slate-700">
-            <SnowCardTitle className="flex items-center text-slate-900 dark:text-white">
-              <div className="p-2 bg-red-50 dark:bg-red-900/20 rounded-lg mr-3">
-                <Bell className="h-5 w-5 text-red-600 dark:text-red-400" />
-              </div>
-              Platform Alerts
-            </SnowCardTitle>
-            <SnowCardDescription className="text-slate-600 dark:text-slate-300">Critical system notifications</SnowCardDescription>
-          </SnowCardHeader>
-          <SnowCardContent className="p-6">
-            <div className="space-y-4">
-              <div className="flex items-center justify-between p-4 bg-red-50 dark:bg-red-900/10 border border-red-200 dark:border-red-800/30 rounded-xl hover:bg-red-100 dark:hover:bg-red-900/20 transition-colors">
-                <div className="flex items-center space-x-3">
-                  <div className="p-2 bg-red-100 dark:bg-red-900/30 rounded-lg">
-                    <AlertTriangle className="h-4 w-4 text-red-600 dark:text-red-400" />
-                  </div>
-                  <span className="text-sm font-medium text-slate-900 dark:text-white">Security Alerts</span>
-                </div>
-                <Badge className="bg-red-500 text-white">3</Badge>
-              </div>
-              <div className="flex items-center justify-between p-4 bg-yellow-50 dark:bg-yellow-900/10 border border-yellow-200 dark:border-yellow-800/30 rounded-xl hover:bg-yellow-100 dark:hover:bg-yellow-900/20 transition-colors">
-                <div className="flex items-center space-x-3">
-                  <div className="p-2 bg-yellow-100 dark:bg-yellow-900/30 rounded-lg">
-                    <Clock className="h-4 w-4 text-yellow-600 dark:text-yellow-400" />
-                  </div>
-                  <span className="text-sm font-medium text-slate-900 dark:text-white">Pending Orders</span>
-                </div>
-                <Badge className="bg-yellow-500 text-white">{safeMetrics.orders.pending}</Badge>
-              </div>
-              <div className="flex items-center justify-between p-4 bg-green-50 dark:bg-green-900/10 border border-green-200 dark:border-green-800/30 rounded-xl hover:bg-green-100 dark:hover:bg-green-900/20 transition-colors">
-                <div className="flex items-center space-x-3">
-                  <div className="p-2 bg-green-100 dark:bg-green-900/30 rounded-lg">
-                    <CheckCircle className="h-4 w-4 text-green-600 dark:text-green-400" />
-                  </div>
-                  <span className="text-sm font-medium text-slate-900 dark:text-white">Completed Today</span>
-                </div>
-                <Badge className="bg-green-500 text-white">{safeMetrics.orders.completed.toLocaleString()}</Badge>
-              </div>
-            </div>
-          </SnowCardContent>
-        </SnowCard>
-        <SnowCard variant="elevated" className="border-0 bg-white dark:bg-slate-800 shadow-2xl">
-          <SnowCardHeader className="border-b border-slate-200 dark:border-slate-700">
-            <SnowCardTitle className="flex items-center text-slate-900 dark:text-white">
-              <div className="p-2 bg-green-50 dark:bg-green-900/20 rounded-lg mr-3">
-                <Gauge className="h-5 w-5 text-green-600 dark:text-green-400" />
-              </div>
-              System Health
-            </SnowCardTitle>
-            <SnowCardDescription className="text-slate-600 dark:text-slate-300">Platform performance metrics</SnowCardDescription>
-          </SnowCardHeader>
-          <SnowCardContent className="p-6">
-            <div className="space-y-6">
-              <div className="text-center">
-                <div className="relative inline-block">
-                  <div className="w-24 h-24 rounded-full border-4 border-slate-200 dark:border-slate-700 flex items-center justify-center">
-                    <span className="text-2xl font-bold text-slate-900 dark:text-white">{Math.round((98.5 + 99.9) / 2)}%</span>
-                  </div>
-                  <div 
-                    className="absolute inset-0 w-24 h-24 rounded-full border-4 border-transparent border-t-green-500"
-                    style={{ 
-                      background: `conic-gradient(from 0deg, #10b981 ${Math.round((98.5 + 99.9) / 2) * 3.6}deg, transparent 0deg)`
-                    }}
-                  ></div>
-                </div>
-                <p className="text-sm text-slate-600 dark:text-slate-400 mt-2">Overall Health</p>
-              </div>
-              
-              <div className="space-y-4">
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center space-x-2">
-                    <div className="w-2 h-2 bg-green-500 rounded-full"></div>
-                    <span className="text-sm text-slate-700 dark:text-slate-300">API Response</span>
-                  </div>
-                  <span className="text-sm font-semibold text-green-600 dark:text-green-400">98.5%</span>
-                </div>
-                <div className="w-full bg-slate-200 dark:bg-slate-700 rounded-full h-2">
-                  <div className="bg-gradient-to-r from-green-400 to-green-500 h-2 rounded-full" style={{ width: '98.5%' }}></div>
-                </div>
-                
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center space-x-2">
-                    <div className="w-2 h-2 bg-blue-500 rounded-full"></div>
-                    <span className="text-sm text-slate-700 dark:text-slate-300">Uptime</span>
-                  </div>
-                  <span className="text-sm font-semibold text-blue-600 dark:text-blue-400">99.9%</span>
-                </div>
-                <div className="w-full bg-slate-200 dark:bg-slate-700 rounded-full h-2">
-                  <div className="bg-gradient-to-r from-blue-400 to-blue-500 h-2 rounded-full" style={{ width: '99.9%' }}></div>
-                </div>
-              </div>
-            </div>
-          </SnowCardContent>
-        </SnowCard>
-      </div>
-    </div>
+    </DataContext>
   )
 }
-
-
