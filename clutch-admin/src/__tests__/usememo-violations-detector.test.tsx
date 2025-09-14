@@ -5,6 +5,8 @@
  * Based on the error stack trace, the issue is related to useMemo hook usage.
  */
 
+/* eslint-disable react-hooks/rules-of-hooks */
+
 import React from 'react'
 import { render, screen, fireEvent } from '@testing-library/react'
 
@@ -32,14 +34,14 @@ jest.mock('@/hooks/useAuth', () => ({
   }),
 }))
 
-jest.mock('@/hooks/useOfflineSupport', () => ({
+jest.mock('@/lib/offline-support', () => ({
   useOfflineSupport: () => ({
     offlineStatus: { isOffline: false, lastOnline: new Date() },
     syncStatus: { isSyncing: false, lastSync: new Date() },
   }),
 }))
 
-jest.mock('@/hooks/useTheme', () => ({
+jest.mock('next-themes', () => ({
   useTheme: () => ({
     theme: 'light',
     setTheme: jest.fn(),
@@ -47,7 +49,7 @@ jest.mock('@/hooks/useTheme', () => ({
   }),
 }))
 
-jest.mock('@/hooks/useUIStore', () => ({
+jest.mock('@/hooks/use-app', () => ({
   useUIStore: () => ({
     sidebarOpen: true,
     setSidebarOpen: jest.fn(),
@@ -56,7 +58,7 @@ jest.mock('@/hooks/useUIStore', () => ({
   }),
 }))
 
-jest.mock('@/hooks/useAuthStore', () => ({
+jest.mock('@/hooks/useAuth', () => ({
   useAuthStore: () => ({
     user: { id: '1', name: 'Test User' },
     isAuthenticated: true,
@@ -65,7 +67,7 @@ jest.mock('@/hooks/useAuthStore', () => ({
   }),
 }))
 
-jest.mock('@/hooks/useKeyboardShortcuts', () => ({
+jest.mock('@/hooks/use-keyboard-shortcuts', () => ({
   useKeyboardShortcuts: () => ({
     registerShortcut: jest.fn(),
     unregisterShortcut: jest.fn(),
