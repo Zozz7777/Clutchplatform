@@ -607,55 +607,51 @@ export const AnalyticsDashboard: React.FC = () => {
   const { session, events } = useUserAnalytics()
 
   // Always call hooks in the same order, then handle conditional rendering
-  const renderContent = () => {
-    if (!session) {
-      return <div>Loading analytics...</div>
-    }
-
-    const pageViews = events.filter(e => e.type === 'page_view').length
-    const conversions = events.filter(e => e.type === 'conversion').length
-    const clicks = events.filter(e => e.name === 'click').length
-
-    return (
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 p-6">
-        <div className="bg-white rounded-lg shadow p-6">
-          <h3 className="text-lg font-semibold mb-4">Session Info</h3>
-          <div className="space-y-2 text-sm">
-            <div>Duration: {Math.round(session.duration / 1000)}s</div>
-            <div>Page Views: {pageViews}</div>
-            <div>Events: {events.length}</div>
-            <div>Device: {session.deviceInfo.type}</div>
-          </div>
-        </div>
-        <div className="bg-white rounded-lg shadow p-6">
-          <h3 className="text-lg font-semibold mb-4">Engagement</h3>
-          <div className="space-y-2 text-sm">
-            <div>Clicks: {clicks}</div>
-            <div>Conversions: {conversions}</div>
-            <div>Conversion Rate: {pageViews > 0 ? ((conversions / pageViews) * 100).toFixed(1) : 0}%</div>
-          </div>
-        </div>
-        <div className="bg-white rounded-lg shadow p-6">
-          <h3 className="text-lg font-semibold mb-4">Device</h3>
-          <div className="space-y-2 text-sm">
-            <div>OS: {session.deviceInfo.os}</div>
-            <div>Browser: {session.deviceInfo.browser}</div>
-            <div>Screen: {session.deviceInfo.screen}</div>
-          </div>
-        </div>
-        <div className="bg-white rounded-lg shadow p-6">
-          <h3 className="text-lg font-semibold mb-4">Location</h3>
-          <div className="space-y-2 text-sm">
-            <div>Country: {session.location.country}</div>
-            <div>Region: {session.location.region}</div>
-            <div>City: {session.location.city}</div>
-          </div>
-        </div>
-      </div>
-    )
+  if (!session) {
+    return <div>Loading analytics...</div>
   }
 
-  return renderContent()
+  const pageViews = events.filter(e => e.type === 'page_view').length
+  const conversions = events.filter(e => e.type === 'conversion').length
+  const clicks = events.filter(e => e.name === 'click').length
+
+  return (
+    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 p-6">
+      <div className="bg-white rounded-lg shadow p-6">
+        <h3 className="text-lg font-semibold mb-4">Session Info</h3>
+        <div className="space-y-2 text-sm">
+          <div>Duration: {Math.round(session.duration / 1000)}s</div>
+          <div>Page Views: {pageViews}</div>
+          <div>Events: {events.length}</div>
+          <div>Device: {session.deviceInfo.type}</div>
+        </div>
+      </div>
+      <div className="bg-white rounded-lg shadow p-6">
+        <h3 className="text-lg font-semibold mb-4">Engagement</h3>
+        <div className="space-y-2 text-sm">
+          <div>Clicks: {clicks}</div>
+          <div>Conversions: {conversions}</div>
+          <div>Conversion Rate: {pageViews > 0 ? ((conversions / pageViews) * 100).toFixed(1) : 0}%</div>
+        </div>
+      </div>
+      <div className="bg-white rounded-lg shadow p-6">
+        <h3 className="text-lg font-semibold mb-4">Device</h3>
+        <div className="space-y-2 text-sm">
+          <div>OS: {session.deviceInfo.os}</div>
+          <div>Browser: {session.deviceInfo.browser}</div>
+          <div>Screen: {session.deviceInfo.screen}</div>
+        </div>
+      </div>
+      <div className="bg-white rounded-lg shadow p-6">
+        <h3 className="text-lg font-semibold mb-4">Location</h3>
+        <div className="space-y-2 text-sm">
+          <div>Country: {session.location.country}</div>
+          <div>Region: {session.location.region}</div>
+          <div>City: {session.location.city}</div>
+        </div>
+      </div>
+    </div>
+  )
 }
 
 const UserAnalyticsModule = {

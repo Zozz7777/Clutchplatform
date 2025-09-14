@@ -174,6 +174,10 @@ const mobileAdvancedRoutes = require('./routes/mobile-advanced');
 const analyticsAdvancedRoutes = require('./routes/analytics-advanced');
 const integrationAdvancedRoutes = require('./routes/integration-advanced');
 const experimentalRoutes = require('./routes/experimental');
+const autoPartsAIRoutes = require('./routes/auto-parts-ai');
+const serviceCentersAdvancedRoutes = require('./routes/service-centers-advanced');
+const securityComplianceRoutes = require('./routes/security-compliance');
+const enterpriseFeaturesRoutes = require('./routes/enterprise-features');
 
 // Initialize Express app
 const app = express();
@@ -460,6 +464,10 @@ app.use(`${apiPrefix}/mobile-advanced`, mobileAdvancedRoutes);
 app.use(`${apiPrefix}/analytics-advanced`, analyticsAdvancedRoutes);
 app.use(`${apiPrefix}/integration-advanced`, integrationAdvancedRoutes);
 app.use(`${apiPrefix}/experimental`, experimentalRoutes);
+app.use(`${apiPrefix}/auto-parts-ai`, autoPartsAIRoutes);
+app.use(`${apiPrefix}/service-centers-advanced`, serviceCentersAdvancedRoutes);
+app.use(`${apiPrefix}/security-compliance`, securityComplianceRoutes);
+app.use(`${apiPrefix}/enterprise-features`, enterpriseFeaturesRoutes);
 
 // Fallback routes
 app.use('/auth', authRoutes);
