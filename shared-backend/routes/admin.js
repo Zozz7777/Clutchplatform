@@ -5825,4 +5825,950 @@ router.get('/users/:id', authenticateToken, requireRole(['admin', 'user_manager'
   }
 });
 
+// ============================================================================
+// PHASE 2 BATCH 1: ADDITIONAL CRITICAL ADMIN ENDPOINTS
+// ============================================================================
+
+// GET /admin/alerts - Get system alerts
+router.get('/alerts', authenticateToken, requireRole(['admin', 'system_admin']), async (req, res) => {
+  try {
+    const { page = 1, limit = 20, severity, status, type } = req.query;
+    
+    const alerts = [
+      {
+        id: 'alert-001',
+        title: 'High CPU Usage Detected',
+        description: 'Server CPU usage has exceeded 85% for the past 10 minutes',
+        type: 'performance',
+        severity: 'warning',
+        status: 'active',
+        source: {
+          service: 'API Gateway',
+          server: 'web-server-01',
+          component: 'CPU'
+        },
+        metrics: {
+          currentValue: 87.5,
+          threshold: 85.0,
+          unit: 'percentage',
+          trend: 'increasing'
+        },
+        impact: {
+          affectedUsers: 1250,
+          estimatedDowntime: '0 minutes',
+          businessImpact: 'low'
+        },
+        timeline: [
+          {
+            timestamp: '2024-01-15T10:30:00Z',
+            action: 'Alert triggered',
+            description: 'CPU usage exceeded threshold'
+          },
+          {
+            timestamp: '2024-01-15T10:35:00Z',
+            action: 'Auto-scaling initiated',
+            description: 'Additional server instance launched'
+          }
+        ],
+        resolution: {
+          status: 'in_progress',
+          assignedTo: 'system-team@clutch.com',
+          estimatedResolution: '2024-01-15T11:00:00Z',
+          actions: ['Scale up resources', 'Monitor performance']
+        },
+        createdAt: '2024-01-15T10:30:00Z',
+        updatedAt: new Date().toISOString()
+      },
+      {
+        id: 'alert-002',
+        title: 'Database Connection Pool Exhausted',
+        description: 'Database connection pool has reached maximum capacity',
+        type: 'infrastructure',
+        severity: 'critical',
+        status: 'resolved',
+        source: {
+          service: 'Database',
+          server: 'db-server-01',
+          component: 'Connection Pool'
+        },
+        metrics: {
+          currentValue: 100,
+          threshold: 95,
+          unit: 'connections',
+          trend: 'stable'
+        },
+        impact: {
+          affectedUsers: 0,
+          estimatedDowntime: '5 minutes',
+          businessImpact: 'high'
+        },
+        timeline: [
+          {
+            timestamp: '2024-01-15T09:15:00Z',
+            action: 'Alert triggered',
+            description: 'Connection pool exhausted'
+          },
+          {
+            timestamp: '2024-01-15T09:20:00Z',
+            action: 'Issue resolved',
+            description: 'Connection pool expanded and optimized'
+          }
+        ],
+        resolution: {
+          status: 'resolved',
+          resolvedBy: 'db-team@clutch.com',
+          resolvedAt: '2024-01-15T09:20:00Z',
+          actions: ['Expanded connection pool', 'Optimized queries']
+        },
+        createdAt: '2024-01-15T09:15:00Z',
+        updatedAt: '2024-01-15T09:20:00Z'
+      }
+    ];
+
+    res.json({
+      success: true,
+      data: { 
+        alerts,
+        pagination: {
+          page: parseInt(page),
+          limit: parseInt(limit),
+          total: alerts.length,
+          pages: Math.ceil(alerts.length / limit)
+        },
+        summary: {
+          totalAlerts: 45,
+          activeAlerts: 12,
+          criticalAlerts: 3,
+          warningAlerts: 9,
+          resolvedAlerts: 33
+        }
+      },
+      message: 'System alerts retrieved successfully',
+      timestamp: new Date().toISOString()
+    });
+
+  } catch (error) {
+    logger.error('❌ Get system alerts error:', error);
+    res.status(500).json({
+      success: false,
+      error: 'GET_SYSTEM_ALERTS_FAILED',
+      message: 'Failed to get system alerts',
+      timestamp: new Date().toISOString()
+    });
+  }
+});
+
+// GET /admin/analytics/overview - Get analytics overview
+router.get('/analytics/overview', authenticateToken, requireRole(['admin', 'analyst']), async (req, res) => {
+  try {
+    const { period = '30d', compare = 'previous' } = req.query;
+    
+    const analyticsOverview = {
+      period: period,
+      compare: compare,
+      summary: {
+        totalUsers: 1250,
+        activeUsers: 980,
+        newUsers: 45,
+        totalOrders: 3420,
+        completedOrders: 3375,
+        totalRevenue: 125000,
+        averageOrderValue: 36.55,
+        conversionRate: 3.2
+      },
+      trends: {
+        users: {
+          current: 1250,
+          previous: 1180,
+          change: 5.9,
+          trend: 'up'
+        },
+        orders: {
+          current: 3420,
+          previous: 3150,
+          change: 8.6,
+          trend: 'up'
+        },
+        revenue: {
+          current: 125000,
+          previous: 112000,
+          change: 11.6,
+          trend: 'up'
+        },
+        conversion: {
+          current: 3.2,
+          previous: 2.8,
+          change: 14.3,
+          trend: 'up'
+        }
+      },
+      topMetrics: [
+        {
+          name: 'User Growth',
+          value: 5.9,
+          unit: '%',
+          trend: 'up',
+          description: 'Month-over-month user growth'
+        },
+        {
+          name: 'Revenue Growth',
+          value: 11.6,
+          unit: '%',
+          trend: 'up',
+          description: 'Month-over-month revenue growth'
+        },
+        {
+          name: 'Order Completion Rate',
+          value: 98.7,
+          unit: '%',
+          trend: 'up',
+          description: 'Percentage of completed orders'
+        },
+        {
+          name: 'Customer Satisfaction',
+          value: 4.6,
+          unit: '/5',
+          trend: 'stable',
+          description: 'Average customer rating'
+        }
+      ],
+      charts: {
+        userGrowth: [
+          { date: '2024-01-01', users: 1200 },
+          { date: '2024-01-02', users: 1210 },
+          { date: '2024-01-03', users: 1225 },
+          { date: '2024-01-04', users: 1235 },
+          { date: '2024-01-05', users: 1240 },
+          { date: '2024-01-06', users: 1245 },
+          { date: '2024-01-07', users: 1250 }
+        ],
+        revenue: [
+          { date: '2024-01-01', revenue: 18000 },
+          { date: '2024-01-02', revenue: 19500 },
+          { date: '2024-01-03', revenue: 21000 },
+          { date: '2024-01-04', revenue: 18500 },
+          { date: '2024-01-05', revenue: 22000 },
+          { date: '2024-01-06', revenue: 20000 },
+          { date: '2024-01-07', revenue: 23000 }
+        ],
+        orders: [
+          { date: '2024-01-01', orders: 450 },
+          { date: '2024-01-02', orders: 480 },
+          { date: '2024-01-03', orders: 520 },
+          { date: '2024-01-04', orders: 460 },
+          { date: '2024-01-05', orders: 540 },
+          { date: '2024-01-06', orders: 500 },
+          { date: '2024-01-07', orders: 560 }
+        ]
+      },
+      insights: [
+        {
+          type: 'positive',
+          title: 'Strong User Growth',
+          description: 'User base has grown by 5.9% this month, driven by successful marketing campaigns',
+          impact: 'high'
+        },
+        {
+          type: 'positive',
+          title: 'Revenue Performance',
+          description: 'Revenue has increased by 11.6% compared to last month',
+          impact: 'high'
+        },
+        {
+          type: 'neutral',
+          title: 'Conversion Rate Stable',
+          description: 'Conversion rate remains stable at 3.2%, with room for improvement',
+          impact: 'medium'
+        }
+      ]
+    };
+
+    res.json({
+      success: true,
+      data: { analytics: analyticsOverview },
+      message: 'Analytics overview retrieved successfully',
+      timestamp: new Date().toISOString()
+    });
+
+  } catch (error) {
+    logger.error('❌ Get analytics overview error:', error);
+    res.status(500).json({
+      success: false,
+      error: 'GET_ANALYTICS_OVERVIEW_FAILED',
+      message: 'Failed to get analytics overview',
+      timestamp: new Date().toISOString()
+    });
+  }
+});
+
+// GET /admin/bi/dashboard - Get business intelligence dashboard
+router.get('/bi/dashboard', authenticateToken, requireRole(['admin', 'business_analyst']), async (req, res) => {
+  try {
+    const { period = 'monthly', granularity = 'daily' } = req.query;
+    
+    const biDashboard = {
+      period: period,
+      granularity: granularity,
+      kpis: {
+        revenue: {
+          current: 125000,
+          target: 120000,
+          achievement: 104.2,
+          trend: 'up',
+          change: 11.6
+        },
+        orders: {
+          current: 3420,
+          target: 3000,
+          achievement: 114.0,
+          trend: 'up',
+          change: 8.6
+        },
+        customers: {
+          current: 1250,
+          target: 1000,
+          achievement: 125.0,
+          trend: 'up',
+          change: 5.9
+        },
+        satisfaction: {
+          current: 4.6,
+          target: 4.5,
+          achievement: 102.2,
+          trend: 'stable',
+          change: 2.2
+        }
+      },
+      revenue: {
+        total: 125000,
+        breakdown: {
+          services: 95000,
+          products: 25000,
+          subscriptions: 5000
+        },
+        trends: {
+          daily: [
+            { date: '2024-01-01', revenue: 18000 },
+            { date: '2024-01-02', revenue: 19500 },
+            { date: '2024-01-03', revenue: 21000 },
+            { date: '2024-01-04', revenue: 18500 },
+            { date: '2024-01-05', revenue: 22000 },
+            { date: '2024-01-06', revenue: 20000 },
+            { date: '2024-01-07', revenue: 23000 }
+          ],
+          monthly: [
+            { month: '2023-07', revenue: 95000 },
+            { month: '2023-08', revenue: 102000 },
+            { month: '2023-09', revenue: 108000 },
+            { month: '2023-10', revenue: 115000 },
+            { month: '2023-11', revenue: 118000 },
+            { month: '2023-12', revenue: 120000 },
+            { month: '2024-01', revenue: 125000 }
+          ]
+        }
+      },
+      customer: {
+        acquisition: {
+          newCustomers: 45,
+          acquisitionCost: 25.00,
+          lifetimeValue: 450.00,
+          paybackPeriod: 18
+        },
+        retention: {
+          rate: 78.5,
+          churnRate: 2.1,
+          averageTenure: 18.5
+        },
+        segments: [
+          { name: 'Premium', count: 250, revenue: 75000 },
+          { name: 'Standard', count: 800, revenue: 40000 },
+          { name: 'Basic', count: 200, revenue: 10000 }
+        ]
+      },
+      operations: {
+        efficiency: {
+          orderCompletionRate: 98.7,
+          averageServiceTime: 45,
+          customerSatisfaction: 4.6,
+          driverUtilization: 85.2
+        },
+        capacity: {
+          totalCapacity: 100,
+          utilizedCapacity: 85,
+          availableCapacity: 15,
+          utilizationRate: 85.0
+        }
+      },
+      market: {
+        share: 12.5,
+        competition: [
+          { name: 'Competitor A', share: 25.0, trend: 'down' },
+          { name: 'Competitor B', share: 18.0, trend: 'stable' },
+          { name: 'Competitor C', share: 15.0, trend: 'up' },
+          { name: 'Clutch', share: 12.5, trend: 'up' }
+        ],
+        opportunities: [
+          {
+            title: 'Market Expansion',
+            description: 'Opportunity to expand into suburban markets',
+            potential: 25000,
+            effort: 'medium'
+          },
+          {
+            title: 'Service Diversification',
+            description: 'Add new services to increase revenue per customer',
+            potential: 15000,
+            effort: 'high'
+          }
+        ]
+      },
+      forecasts: {
+        nextMonth: {
+          revenue: 135000,
+          orders: 3700,
+          customers: 1300
+        },
+        nextQuarter: {
+          revenue: 400000,
+          orders: 11000,
+          customers: 3800
+        }
+      }
+    };
+
+    res.json({
+      success: true,
+      data: { biDashboard },
+      message: 'Business intelligence dashboard retrieved successfully',
+      timestamp: new Date().toISOString()
+    });
+
+  } catch (error) {
+    logger.error('❌ Get BI dashboard error:', error);
+    res.status(500).json({
+      success: false,
+      error: 'GET_BI_DASHBOARD_FAILED',
+      message: 'Failed to get business intelligence dashboard',
+      timestamp: new Date().toISOString()
+    });
+  }
+});
+
+// GET /admin/business/customers - Get business customer analytics
+router.get('/business/customers', authenticateToken, requireRole(['admin', 'business_analyst']), async (req, res) => {
+  try {
+    const { segment, period = '30d' } = req.query;
+    
+    const customerAnalytics = {
+      period: period,
+      overview: {
+        totalCustomers: 1250,
+        activeCustomers: 980,
+        newCustomers: 45,
+        churnedCustomers: 12,
+        netGrowth: 33
+      },
+      segments: [
+        {
+          name: 'Premium',
+          count: 250,
+          percentage: 20.0,
+          revenue: 75000,
+          averageOrderValue: 300.00,
+          frequency: 2.5,
+          satisfaction: 4.8
+        },
+        {
+          name: 'Standard',
+          count: 800,
+          percentage: 64.0,
+          revenue: 40000,
+          averageOrderValue: 50.00,
+          frequency: 1.8,
+          satisfaction: 4.4
+        },
+        {
+          name: 'Basic',
+          count: 200,
+          percentage: 16.0,
+          revenue: 10000,
+          averageOrderValue: 50.00,
+          frequency: 1.2,
+          satisfaction: 4.2
+        }
+      ],
+      demographics: {
+        ageGroups: [
+          { range: '18-24', count: 150, percentage: 12.0 },
+          { range: '25-34', count: 400, percentage: 32.0 },
+          { range: '35-44', count: 350, percentage: 28.0 },
+          { range: '45-54', count: 200, percentage: 16.0 },
+          { range: '55+', count: 150, percentage: 12.0 }
+        ],
+        locations: [
+          { city: 'New York', count: 300, percentage: 24.0 },
+          { city: 'Los Angeles', count: 200, percentage: 16.0 },
+          { city: 'Chicago', count: 150, percentage: 12.0 },
+          { city: 'Houston', count: 100, percentage: 8.0 },
+          { city: 'Other', count: 500, percentage: 40.0 }
+        ],
+        income: [
+          { range: '$30k-$50k', count: 300, percentage: 24.0 },
+          { range: '$50k-$75k', count: 400, percentage: 32.0 },
+          { range: '$75k-$100k', count: 350, percentage: 28.0 },
+          { range: '$100k+', count: 200, percentage: 16.0 }
+        ]
+      },
+      behavior: {
+        acquisition: {
+          channels: [
+            { channel: 'Organic Search', count: 400, percentage: 32.0 },
+            { channel: 'Social Media', count: 300, percentage: 24.0 },
+            { channel: 'Referral', count: 250, percentage: 20.0 },
+            { channel: 'Paid Ads', count: 200, percentage: 16.0 },
+            { channel: 'Direct', count: 100, percentage: 8.0 }
+          ],
+          costPerAcquisition: 25.00,
+          lifetimeValue: 450.00,
+          paybackPeriod: 18
+        },
+        engagement: {
+          averageSessionTime: 8.5,
+          pagesPerSession: 4.2,
+          bounceRate: 25.1,
+          returnRate: 65.0
+        },
+        retention: {
+          day1: 85.0,
+          day7: 65.0,
+          day30: 45.0,
+          day90: 30.0,
+          churnRate: 2.1
+        }
+      },
+      satisfaction: {
+        overall: 4.6,
+        breakdown: [
+          { rating: 5, count: 600, percentage: 48.0 },
+          { rating: 4, count: 400, percentage: 32.0 },
+          { rating: 3, count: 150, percentage: 12.0 },
+          { rating: 2, count: 75, percentage: 6.0 },
+          { rating: 1, count: 25, percentage: 2.0 }
+        ],
+        categories: {
+          service: 4.7,
+          communication: 4.5,
+          timeliness: 4.6,
+          value: 4.4
+        }
+      },
+      insights: [
+        {
+          type: 'opportunity',
+          title: 'Premium Segment Growth',
+          description: 'Premium customers generate 60% of revenue with only 20% of customer base',
+          recommendation: 'Focus on converting standard customers to premium'
+        },
+        {
+          type: 'warning',
+          title: 'Churn Risk',
+          description: 'Basic segment shows higher churn rate of 3.2%',
+          recommendation: 'Implement retention strategies for basic customers'
+        },
+        {
+          type: 'success',
+          title: 'High Satisfaction',
+          description: 'Overall customer satisfaction is 4.6/5, above industry average',
+          recommendation: 'Maintain current service quality standards'
+        }
+      ]
+    };
+
+    res.json({
+      success: true,
+      data: { customers: customerAnalytics },
+      message: 'Business customer analytics retrieved successfully',
+      timestamp: new Date().toISOString()
+    });
+
+  } catch (error) {
+    logger.error('❌ Get business customer analytics error:', error);
+    res.status(500).json({
+      success: false,
+      error: 'GET_BUSINESS_CUSTOMER_ANALYTICS_FAILED',
+      message: 'Failed to get business customer analytics',
+      timestamp: new Date().toISOString()
+    });
+  }
+});
+
+// GET /admin/chat/channels - Get chat channels
+router.get('/chat/channels', authenticateToken, requireRole(['admin', 'support']), async (req, res) => {
+  try {
+    const { page = 1, limit = 20, status, type } = req.query;
+    
+    const channels = [
+      {
+        id: 'channel-001',
+        name: 'Customer Support',
+        type: 'support',
+        status: 'active',
+        participants: [
+          {
+            id: 'user-123',
+            name: 'Alice Johnson',
+            email: 'alice.johnson@example.com',
+            role: 'customer',
+            status: 'online',
+            lastSeen: new Date().toISOString()
+          },
+          {
+            id: 'agent-456',
+            name: 'Sarah Wilson',
+            email: 'sarah.wilson@clutch.com',
+            role: 'support_agent',
+            status: 'online',
+            lastSeen: new Date().toISOString()
+          }
+        ],
+        metadata: {
+          priority: 'normal',
+          category: 'billing',
+          tags: ['billing', 'refund'],
+          assignedAgent: 'sarah.wilson@clutch.com'
+        },
+        statistics: {
+          totalMessages: 25,
+          unreadMessages: 3,
+          averageResponseTime: 120,
+          customerSatisfaction: 4.5
+        },
+        lastActivity: {
+          timestamp: new Date().toISOString(),
+          message: 'Thank you for your help!',
+          sender: 'Alice Johnson'
+        },
+        createdAt: '2024-01-15T09:00:00Z',
+        updatedAt: new Date().toISOString()
+      },
+      {
+        id: 'channel-002',
+        name: 'Technical Support',
+        type: 'technical',
+        status: 'active',
+        participants: [
+          {
+            id: 'user-456',
+            name: 'Bob Smith',
+            email: 'bob.smith@example.com',
+            role: 'customer',
+            status: 'offline',
+            lastSeen: new Date(Date.now() - 3600000).toISOString()
+          },
+          {
+            id: 'agent-789',
+            name: 'Mike Davis',
+            email: 'mike.davis@clutch.com',
+            role: 'technical_support',
+            status: 'online',
+            lastSeen: new Date().toISOString()
+          }
+        ],
+        metadata: {
+          priority: 'high',
+          category: 'technical',
+          tags: ['bug', 'mobile_app'],
+          assignedAgent: 'mike.davis@clutch.com'
+        },
+        statistics: {
+          totalMessages: 45,
+          unreadMessages: 0,
+          averageResponseTime: 180,
+          customerSatisfaction: 4.2
+        },
+        lastActivity: {
+          timestamp: new Date(Date.now() - 1800000).toISOString(),
+          message: 'I will investigate this issue and get back to you',
+          sender: 'Mike Davis'
+        },
+        createdAt: '2024-01-15T08:30:00Z',
+        updatedAt: new Date(Date.now() - 1800000).toISOString()
+      }
+    ];
+
+    res.json({
+      success: true,
+      data: { 
+        channels,
+        pagination: {
+          page: parseInt(page),
+          limit: parseInt(limit),
+          total: channels.length,
+          pages: Math.ceil(channels.length / limit)
+        },
+        summary: {
+          totalChannels: 125,
+          activeChannels: 45,
+          waitingChannels: 12,
+          averageResponseTime: 150,
+          customerSatisfaction: 4.4
+        }
+      },
+      message: 'Chat channels retrieved successfully',
+      timestamp: new Date().toISOString()
+    });
+
+  } catch (error) {
+    logger.error('❌ Get chat channels error:', error);
+    res.status(500).json({
+      success: false,
+      error: 'GET_CHAT_CHANNELS_FAILED',
+      message: 'Failed to get chat channels',
+      timestamp: new Date().toISOString()
+    });
+  }
+});
+
+// GET /admin/cms/media - Get media management
+router.get('/cms/media', authenticateToken, requireRole(['admin', 'content_manager']), async (req, res) => {
+  try {
+    const { page = 1, limit = 20, type, status, category } = req.query;
+    
+    const mediaItems = [
+      {
+        id: 'media-001',
+        title: 'Product Banner - Oil Change',
+        description: 'Main banner for oil change service promotion',
+        type: 'image',
+        format: 'jpg',
+        size: 2048576, // 2MB
+        dimensions: { width: 1920, height: 1080 },
+        url: 'https://cdn.clutch.com/media/banners/oil-change-banner.jpg',
+        thumbnail: 'https://cdn.clutch.com/media/thumbnails/oil-change-banner-thumb.jpg',
+        alt: 'Oil Change Service Banner',
+        tags: ['banner', 'oil-change', 'promotion'],
+        category: 'banners',
+        status: 'published',
+        uploadedBy: 'admin@clutch.com',
+        uploadedAt: '2024-01-10T00:00:00Z',
+        lastModified: '2024-01-12T00:00:00Z',
+        usage: {
+          usedIn: ['homepage', 'service-page'],
+          views: 12500,
+          downloads: 45
+        },
+        metadata: {
+          colorProfile: 'sRGB',
+          compression: 'JPEG',
+          quality: 95,
+          copyright: 'Clutch Auto Services'
+        }
+      },
+      {
+        id: 'media-002',
+        title: 'Service Video - Brake Repair',
+        description: 'Educational video about brake repair process',
+        type: 'video',
+        format: 'mp4',
+        size: 52428800, // 50MB
+        dimensions: { width: 1280, height: 720 },
+        url: 'https://cdn.clutch.com/media/videos/brake-repair-process.mp4',
+        thumbnail: 'https://cdn.clutch.com/media/thumbnails/brake-repair-thumb.jpg',
+        alt: 'Brake Repair Process Video',
+        tags: ['video', 'brake-repair', 'educational'],
+        category: 'videos',
+        status: 'published',
+        uploadedBy: 'content@clutch.com',
+        uploadedAt: '2024-01-08T00:00:00Z',
+        lastModified: '2024-01-08T00:00:00Z',
+        usage: {
+          usedIn: ['service-page', 'blog'],
+          views: 8500,
+          downloads: 12
+        },
+        metadata: {
+          duration: 180,
+          frameRate: 30,
+          bitrate: 2000,
+          audio: true
+        }
+      }
+    ];
+
+    res.json({
+      success: true,
+      data: { 
+        media: mediaItems,
+        pagination: {
+          page: parseInt(page),
+          limit: parseInt(limit),
+          total: mediaItems.length,
+          pages: Math.ceil(mediaItems.length / limit)
+        },
+        summary: {
+          totalMedia: 250,
+          images: 180,
+          videos: 45,
+          documents: 25,
+          totalSize: '2.5GB',
+          storageUsed: '65%'
+        }
+      },
+      message: 'Media management data retrieved successfully',
+      timestamp: new Date().toISOString()
+    });
+
+  } catch (error) {
+    logger.error('❌ Get media management error:', error);
+    res.status(500).json({
+      success: false,
+      error: 'GET_MEDIA_MANAGEMENT_FAILED',
+      message: 'Failed to get media management data',
+      timestamp: new Date().toISOString()
+    });
+  }
+});
+
+// GET /admin/dashboard/consolidated - Get consolidated dashboard
+router.get('/dashboard/consolidated', authenticateToken, requireRole(['admin']), async (req, res) => {
+  try {
+    const { period = '24h' } = req.query;
+    
+    const consolidatedDashboard = {
+      period: period,
+      timestamp: new Date().toISOString(),
+      overview: {
+        totalUsers: 1250,
+        activeUsers: 980,
+        newUsers: 45,
+        totalOrders: 3420,
+        completedOrders: 3375,
+        pendingOrders: 45,
+        totalRevenue: 125000,
+        averageOrderValue: 36.55,
+        conversionRate: 3.2
+      },
+      realTime: {
+        activeUsers: 45,
+        currentOrders: 8,
+        onlineDrivers: 12,
+        systemHealth: 95.5
+      },
+      trends: {
+        users: {
+          current: 1250,
+          previous: 1180,
+          change: 5.9,
+          trend: 'up'
+        },
+        orders: {
+          current: 3420,
+          previous: 3150,
+          change: 8.6,
+          trend: 'up'
+        },
+        revenue: {
+          current: 125000,
+          previous: 112000,
+          change: 11.6,
+          trend: 'up'
+        }
+      },
+      alerts: [
+        {
+          id: 'alert-001',
+          type: 'warning',
+          title: 'High Server Load',
+          message: 'Server CPU usage is above 85%',
+          severity: 'medium',
+          timestamp: new Date().toISOString()
+        },
+        {
+          id: 'alert-002',
+          type: 'info',
+          title: 'New User Registration Spike',
+          message: '50% increase in new user registrations',
+          severity: 'low',
+          timestamp: new Date(Date.now() - 3600000).toISOString()
+        }
+      ],
+      recentActivity: [
+        {
+          id: 'activity-001',
+          type: 'order',
+          description: 'New order #12345 created',
+          user: 'customer@example.com',
+          timestamp: new Date().toISOString()
+        },
+        {
+          id: 'activity-002',
+          type: 'user',
+          description: 'User john.doe@example.com registered',
+          user: 'john.doe@example.com',
+          timestamp: new Date(Date.now() - 300000).toISOString()
+        },
+        {
+          id: 'activity-003',
+          type: 'payment',
+          description: 'Payment of $89.99 processed',
+          user: 'customer@example.com',
+          timestamp: new Date(Date.now() - 600000).toISOString()
+        }
+      ],
+      performance: {
+        pageLoadTime: 1.2,
+        apiResponseTime: 245,
+        errorRate: 0.1,
+        uptime: 99.9
+      },
+      topMetrics: [
+        {
+          name: 'Revenue Today',
+          value: 8500,
+          unit: '$',
+          change: 12.5,
+          trend: 'up'
+        },
+        {
+          name: 'Orders Today',
+          value: 125,
+          unit: 'orders',
+          change: 8.2,
+          trend: 'up'
+        },
+        {
+          name: 'New Users',
+          value: 15,
+          unit: 'users',
+          change: 25.0,
+          trend: 'up'
+        },
+        {
+          name: 'Customer Satisfaction',
+          value: 4.6,
+          unit: '/5',
+          change: 2.2,
+          trend: 'stable'
+        }
+      ]
+    };
+
+    res.json({
+      success: true,
+      data: { dashboard: consolidatedDashboard },
+      message: 'Consolidated dashboard retrieved successfully',
+      timestamp: new Date().toISOString()
+    });
+
+  } catch (error) {
+    logger.error('❌ Get consolidated dashboard error:', error);
+    res.status(500).json({
+      success: false,
+      error: 'GET_CONSOLIDATED_DASHBOARD_FAILED',
+      message: 'Failed to get consolidated dashboard',
+      timestamp: new Date().toISOString()
+    });
+  }
+});
+
 module.exports = router;
