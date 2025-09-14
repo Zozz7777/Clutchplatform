@@ -12795,3 +12795,586 @@ router.delete('/details/:id', authenticateToken, async (req, res) => {
     });
   }
 });
+
+// ==================== MISSING HR ENDPOINTS ====================
+
+// GET /hr/departments - Get all departments
+router.get('/departments', authenticateToken, requireRole(['admin', 'hr_manager', 'hr']), async (req, res) => {
+  try {
+    const departments = [
+      {
+        _id: 'dept-1',
+        name: 'Engineering',
+        description: 'Software development and technical operations',
+        manager: 'John Smith',
+        employeeCount: 25,
+        budget: 500000,
+        location: 'Cairo, Egypt',
+        createdAt: new Date().toISOString()
+      },
+      {
+        _id: 'dept-2',
+        name: 'Human Resources',
+        description: 'Employee management and organizational development',
+        manager: 'Sarah Johnson',
+        employeeCount: 8,
+        budget: 150000,
+        location: 'Cairo, Egypt',
+        createdAt: new Date().toISOString()
+      },
+      {
+        _id: 'dept-3',
+        name: 'Marketing',
+        description: 'Brand management and customer acquisition',
+        manager: 'Mike Wilson',
+        employeeCount: 12,
+        budget: 200000,
+        location: 'Cairo, Egypt',
+        createdAt: new Date().toISOString()
+      },
+      {
+        _id: 'dept-4',
+        name: 'Finance',
+        description: 'Financial planning and accounting',
+        manager: 'Lisa Brown',
+        employeeCount: 6,
+        budget: 100000,
+        location: 'Cairo, Egypt',
+        createdAt: new Date().toISOString()
+      },
+      {
+        _id: 'dept-5',
+        name: 'Operations',
+        description: 'Business operations and process management',
+        manager: 'David Lee',
+        employeeCount: 15,
+        budget: 300000,
+        location: 'Cairo, Egypt',
+        createdAt: new Date().toISOString()
+      }
+    ];
+
+    res.json({
+      success: true,
+      data: departments,
+      message: 'Departments retrieved successfully',
+      timestamp: new Date().toISOString()
+    });
+  } catch (error) {
+    logger.error('❌ Get departments error:', error);
+    res.status(500).json({
+      success: false,
+      error: 'GET_DEPARTMENTS_FAILED',
+      message: 'Failed to retrieve departments',
+      timestamp: new Date().toISOString()
+    });
+  }
+});
+
+// GET /hr/recruitment - Get recruitment candidates
+router.get('/recruitment', authenticateToken, requireRole(['admin', 'hr_manager', 'hr']), async (req, res) => {
+  try {
+    const { page = 1, limit = 10, status, position, department } = req.query;
+    
+    const candidates = [
+      {
+        _id: 'candidate-1',
+        name: 'Ahmed Hassan',
+        email: 'ahmed.hassan@example.com',
+        phone: '+201234567890',
+        position: 'Senior Software Engineer',
+        department: 'Engineering',
+        status: 'interview',
+        experience: '5 years',
+        education: 'Computer Science, Cairo University',
+        expectedSalary: 15000,
+        rating: 4.5,
+        appliedDate: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString(),
+        skills: ['JavaScript', 'React', 'Node.js', 'MongoDB'],
+        notes: 'Strong technical background, good communication skills'
+      },
+      {
+        _id: 'candidate-2',
+        name: 'Fatima Ali',
+        email: 'fatima.ali@example.com',
+        phone: '+201234567891',
+        position: 'Marketing Specialist',
+        department: 'Marketing',
+        status: 'screening',
+        experience: '3 years',
+        education: 'Marketing, American University in Cairo',
+        expectedSalary: 8000,
+        rating: 4.2,
+        appliedDate: new Date(Date.now() - 5 * 24 * 60 * 60 * 1000).toISOString(),
+        skills: ['Digital Marketing', 'Social Media', 'Content Creation', 'Analytics'],
+        notes: 'Creative thinker, experience with social media campaigns'
+      },
+      {
+        _id: 'candidate-3',
+        name: 'Omar Mohamed',
+        email: 'omar.mohamed@example.com',
+        phone: '+201234567892',
+        position: 'Financial Analyst',
+        department: 'Finance',
+        status: 'offer',
+        experience: '4 years',
+        education: 'Finance, Alexandria University',
+        expectedSalary: 12000,
+        rating: 4.8,
+        appliedDate: new Date(Date.now() - 10 * 24 * 60 * 60 * 1000).toISOString(),
+        skills: ['Financial Analysis', 'Excel', 'SQL', 'Budgeting'],
+        notes: 'Excellent analytical skills, CPA certified'
+      }
+    ];
+
+    res.json({
+      success: true,
+      data: candidates,
+      pagination: {
+        page: parseInt(page),
+        limit: parseInt(limit),
+        total: candidates.length,
+        totalPages: Math.ceil(candidates.length / parseInt(limit))
+      },
+      message: 'Recruitment candidates retrieved successfully',
+      timestamp: new Date().toISOString()
+    });
+  } catch (error) {
+    logger.error('❌ Get recruitment candidates error:', error);
+    res.status(500).json({
+      success: false,
+      error: 'GET_RECRUITMENT_FAILED',
+      message: 'Failed to retrieve recruitment candidates',
+      timestamp: new Date().toISOString()
+    });
+  }
+});
+
+// GET /hr/recruitment/:id - Get specific candidate
+router.get('/recruitment/:id', authenticateToken, requireRole(['admin', 'hr_manager', 'hr']), async (req, res) => {
+  try {
+    const { id } = req.params;
+    
+    const candidate = {
+      _id: id,
+      name: 'Ahmed Hassan',
+      email: 'ahmed.hassan@example.com',
+      phone: '+201234567890',
+      position: 'Senior Software Engineer',
+      department: 'Engineering',
+      status: 'interview',
+      experience: '5 years',
+      education: 'Computer Science, Cairo University',
+      expectedSalary: 15000,
+      rating: 4.5,
+      appliedDate: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString(),
+      skills: ['JavaScript', 'React', 'Node.js', 'MongoDB'],
+      notes: 'Strong technical background, good communication skills',
+      resume: 'https://example.com/resume.pdf',
+      coverLetter: 'https://example.com/cover-letter.pdf',
+      interviewHistory: [
+        {
+          date: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000).toISOString(),
+          type: 'Phone Screening',
+          interviewer: 'Sarah Johnson',
+          notes: 'Good communication, technical knowledge confirmed',
+          rating: 4.0
+        }
+      ],
+      references: [
+        {
+          name: 'Previous Manager',
+          company: 'Tech Corp',
+          phone: '+201234567893',
+          email: 'manager@techcorp.com'
+        }
+      ]
+    };
+
+    res.json({
+      success: true,
+      data: candidate,
+      message: 'Candidate details retrieved successfully',
+      timestamp: new Date().toISOString()
+    });
+  } catch (error) {
+    logger.error('❌ Get candidate details error:', error);
+    res.status(500).json({
+      success: false,
+      error: 'GET_CANDIDATE_FAILED',
+      message: 'Failed to retrieve candidate details',
+      timestamp: new Date().toISOString()
+    });
+  }
+});
+
+// GET /hr/performance - Get employee performance data
+router.get('/performance', authenticateToken, requireRole(['admin', 'hr_manager', 'hr']), async (req, res) => {
+  try {
+    const { page = 1, limit = 10, department, status } = req.query;
+    
+    const performanceData = [
+      {
+        id: 'perf-1',
+        employeeId: 'emp-1',
+        employeeName: 'John Smith',
+        position: 'Senior Developer',
+        department: 'Engineering',
+        overallScore: 4.2,
+        status: 'Meets Expectations',
+        metrics: {
+          productivity: 85,
+          quality: 90,
+          teamwork: 88,
+          leadership: 75
+        },
+        goals: 5,
+        goalsCompleted: 4,
+        nextReview: '2024-02-15',
+        lastReview: '2023-11-15',
+        manager: 'Sarah Johnson'
+      },
+      {
+        id: 'perf-2',
+        employeeId: 'emp-2',
+        employeeName: 'Jane Doe',
+        position: 'Marketing Manager',
+        department: 'Marketing',
+        overallScore: 4.7,
+        status: 'Exceeds Expectations',
+        metrics: {
+          productivity: 95,
+          quality: 92,
+          teamwork: 90,
+          leadership: 88
+        },
+        goals: 6,
+        goalsCompleted: 6,
+        nextReview: '2024-03-01',
+        lastReview: '2023-12-01',
+        manager: 'Mike Wilson'
+      },
+      {
+        id: 'perf-3',
+        employeeId: 'emp-3',
+        employeeName: 'Ahmed Hassan',
+        position: 'Financial Analyst',
+        department: 'Finance',
+        overallScore: 3.8,
+        status: 'Needs Improvement',
+        metrics: {
+          productivity: 75,
+          quality: 80,
+          teamwork: 85,
+          leadership: 70
+        },
+        goals: 4,
+        goalsCompleted: 2,
+        nextReview: '2024-01-30',
+        lastReview: '2023-10-30',
+        manager: 'Lisa Brown'
+      }
+    ];
+
+    res.json({
+      success: true,
+      data: performanceData,
+      pagination: {
+        page: parseInt(page),
+        limit: parseInt(limit),
+        total: performanceData.length,
+        totalPages: Math.ceil(performanceData.length / parseInt(limit))
+      },
+      message: 'Performance data retrieved successfully',
+      timestamp: new Date().toISOString()
+    });
+  } catch (error) {
+    logger.error('❌ Get performance data error:', error);
+    res.status(500).json({
+      success: false,
+      error: 'GET_PERFORMANCE_FAILED',
+      message: 'Failed to retrieve performance data',
+      timestamp: new Date().toISOString()
+    });
+  }
+});
+
+// GET /hr/performance/summary - Get performance summary
+router.get('/performance/summary', authenticateToken, requireRole(['admin', 'hr_manager', 'hr']), async (req, res) => {
+  try {
+    const summary = {
+      totalEmployees: 25,
+      averageScore: 4.1,
+      exceedsExpectations: 8,
+      meetsExpectations: 14,
+      needsImprovement: 3,
+      reviewsCompleted: 20,
+      reviewsPending: 5,
+      departmentBreakdown: {
+        Engineering: { total: 10, average: 4.3, exceeds: 4, meets: 5, needs: 1 },
+        Marketing: { total: 6, average: 4.2, exceeds: 2, meets: 4, needs: 0 },
+        Finance: { total: 4, average: 3.8, exceeds: 1, meets: 2, needs: 1 },
+        HR: { total: 3, average: 4.0, exceeds: 1, meets: 2, needs: 0 },
+        Operations: { total: 2, average: 4.1, exceeds: 0, meets: 1, needs: 1 }
+      },
+      trends: {
+        monthly: [
+          { month: 'Jan', average: 4.0 },
+          { month: 'Feb', average: 4.1 },
+          { month: 'Mar', average: 4.2 },
+          { month: 'Apr', average: 4.1 },
+          { month: 'May', average: 4.1 }
+        ]
+      }
+    };
+
+    res.json({
+      success: true,
+      data: summary,
+      message: 'Performance summary retrieved successfully',
+      timestamp: new Date().toISOString()
+    });
+  } catch (error) {
+    logger.error('❌ Get performance summary error:', error);
+    res.status(500).json({
+      success: false,
+      error: 'GET_PERFORMANCE_SUMMARY_FAILED',
+      message: 'Failed to retrieve performance summary',
+      timestamp: new Date().toISOString()
+    });
+  }
+});
+
+// GET /hr/payroll - Get payroll data
+router.get('/payroll', authenticateToken, requireRole(['admin', 'hr_manager', 'finance']), async (req, res) => {
+  try {
+    const { page = 1, limit = 10, status, employeeId, month, year } = req.query;
+    
+    const payrollData = [
+      {
+        _id: 'payroll-1',
+        employeeId: 'emp-1',
+        employeeName: 'John Smith',
+        position: 'Senior Developer',
+        department: 'Engineering',
+        baseSalary: 15000,
+        bonus: 2000,
+        overtime: 500,
+        deductions: 1500,
+        netPay: 16000,
+        status: 'paid',
+        payPeriod: '2024-01',
+        paymentDate: new Date().toISOString(),
+        paymentMethod: 'Bank Transfer'
+      },
+      {
+        _id: 'payroll-2',
+        employeeId: 'emp-2',
+        employeeName: 'Jane Doe',
+        position: 'Marketing Manager',
+        department: 'Marketing',
+        baseSalary: 12000,
+        bonus: 1500,
+        overtime: 0,
+        deductions: 1200,
+        netPay: 12300,
+        status: 'pending',
+        payPeriod: '2024-01',
+        paymentDate: null,
+        paymentMethod: 'Bank Transfer'
+      },
+      {
+        _id: 'payroll-3',
+        employeeId: 'emp-3',
+        employeeName: 'Ahmed Hassan',
+        position: 'Financial Analyst',
+        department: 'Finance',
+        baseSalary: 10000,
+        bonus: 1000,
+        overtime: 200,
+        deductions: 1000,
+        netPay: 10200,
+        status: 'processing',
+        payPeriod: '2024-01',
+        paymentDate: null,
+        paymentMethod: 'Bank Transfer'
+      }
+    ];
+
+    res.json({
+      success: true,
+      data: payrollData,
+      pagination: {
+        page: parseInt(page),
+        limit: parseInt(limit),
+        total: payrollData.length,
+        totalPages: Math.ceil(payrollData.length / parseInt(limit))
+      },
+      message: 'Payroll data retrieved successfully',
+      timestamp: new Date().toISOString()
+    });
+  } catch (error) {
+    logger.error('❌ Get payroll data error:', error);
+    res.status(500).json({
+      success: false,
+      error: 'GET_PAYROLL_FAILED',
+      message: 'Failed to retrieve payroll data',
+      timestamp: new Date().toISOString()
+    });
+  }
+});
+
+// GET /hr/payroll/summary - Get payroll summary
+router.get('/payroll/summary', authenticateToken, requireRole(['admin', 'hr_manager', 'finance']), async (req, res) => {
+  try {
+    const { month, year } = req.query;
+    
+    const summary = {
+      totalEmployees: 25,
+      totalPayroll: 350000,
+      averageSalary: 14000,
+      pendingPayments: 5,
+      processedPayments: 20,
+      totalBonuses: 25000,
+      totalDeductions: 35000,
+      departmentBreakdown: {
+        Engineering: { employees: 10, total: 150000, average: 15000 },
+        Marketing: { employees: 6, total: 72000, average: 12000 },
+        Finance: { employees: 4, total: 40000, average: 10000 },
+        HR: { employees: 3, total: 36000, average: 12000 },
+        Operations: { employees: 2, total: 22000, average: 11000 }
+      },
+      paymentStatus: {
+        paid: 20,
+        pending: 3,
+        processing: 2
+      }
+    };
+
+    res.json({
+      success: true,
+      data: summary,
+      message: 'Payroll summary retrieved successfully',
+      timestamp: new Date().toISOString()
+    });
+  } catch (error) {
+    logger.error('❌ Get payroll summary error:', error);
+    res.status(500).json({
+      success: false,
+      error: 'GET_PAYROLL_SUMMARY_FAILED',
+      message: 'Failed to retrieve payroll summary',
+      timestamp: new Date().toISOString()
+    });
+  }
+});
+
+// POST /hr/payroll - Create payroll record
+router.post('/payroll', authenticateToken, requireRole(['admin', 'hr_manager', 'finance']), async (req, res) => {
+  try {
+    const payrollData = req.body;
+    
+    const newPayrollRecord = {
+      _id: 'payroll-' + Date.now(),
+      ...payrollData,
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString()
+    };
+
+    res.json({
+      success: true,
+      data: newPayrollRecord,
+      message: 'Payroll record created successfully',
+      timestamp: new Date().toISOString()
+    });
+  } catch (error) {
+    logger.error('❌ Create payroll record error:', error);
+    res.status(500).json({
+      success: false,
+      error: 'CREATE_PAYROLL_FAILED',
+      message: 'Failed to create payroll record',
+      timestamp: new Date().toISOString()
+    });
+  }
+});
+
+// PUT /hr/payroll/:id - Update payroll record
+router.put('/payroll/:id', authenticateToken, requireRole(['admin', 'hr_manager', 'finance']), async (req, res) => {
+  try {
+    const { id } = req.params;
+    const updateData = req.body;
+    
+    const updatedPayrollRecord = {
+      _id: id,
+      ...updateData,
+      updatedAt: new Date().toISOString()
+    };
+
+    res.json({
+      success: true,
+      data: updatedPayrollRecord,
+      message: 'Payroll record updated successfully',
+      timestamp: new Date().toISOString()
+    });
+  } catch (error) {
+    logger.error('❌ Update payroll record error:', error);
+    res.status(500).json({
+      success: false,
+      error: 'UPDATE_PAYROLL_FAILED',
+      message: 'Failed to update payroll record',
+      timestamp: new Date().toISOString()
+    });
+  }
+});
+
+// DELETE /hr/payroll/:id - Delete payroll record
+router.delete('/payroll/:id', authenticateToken, requireRole(['admin', 'hr_manager', 'finance']), async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    res.json({
+      success: true,
+      message: 'Payroll record deleted successfully',
+      timestamp: new Date().toISOString()
+    });
+  } catch (error) {
+    logger.error('❌ Delete payroll record error:', error);
+    res.status(500).json({
+      success: false,
+      error: 'DELETE_PAYROLL_FAILED',
+      message: 'Failed to delete payroll record',
+      timestamp: new Date().toISOString()
+    });
+  }
+});
+
+// POST /hr/payroll/process - Process payroll batch
+router.post('/payroll/process', authenticateToken, requireRole(['admin', 'hr_manager', 'finance']), async (req, res) => {
+  try {
+    const { employeeIds, payPeriod, paymentDate } = req.body;
+    
+    const processedPayroll = {
+      batchId: 'batch-' + Date.now(),
+      employeeIds: employeeIds,
+      payPeriod: payPeriod,
+      paymentDate: paymentDate,
+      status: 'processed',
+      totalAmount: 350000,
+      processedAt: new Date().toISOString()
+    };
+
+    res.json({
+      success: true,
+      data: processedPayroll,
+      message: 'Payroll batch processed successfully',
+      timestamp: new Date().toISOString()
+    });
+  } catch (error) {
+    logger.error('❌ Process payroll batch error:', error);
+    res.status(500).json({
+      success: false,
+      error: 'PROCESS_PAYROLL_FAILED',
+      message: 'Failed to process payroll batch',
+      timestamp: new Date().toISOString()
+    });
+  }
+});

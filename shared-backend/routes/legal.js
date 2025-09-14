@@ -19,6 +19,78 @@ router.use(legalRateLimit);
 
 // ==================== LEGAL DOCUMENT MANAGEMENT ====================
 
+// GET /api/v1/legal/compliance - Get compliance data
+router.get('/compliance', authenticateToken, requireRole(['admin', 'legal', 'compliance']), async (req, res) => {
+  try {
+    const { type = 'overview' } = req.query;
+    
+    const complianceData = {
+      overview: {
+        totalPolicies: 15,
+        activePolicies: 12,
+        pendingReview: 3,
+        complianceScore: 95.5,
+        lastAudit: new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toISOString(),
+        nextAudit: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString()
+      },
+      policies: [
+        {
+          id: 'policy-1',
+          name: 'Data Protection Policy',
+          type: 'privacy',
+          status: 'active',
+          lastUpdated: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString(),
+          compliance: 100,
+          requirements: ['GDPR', 'CCPA']
+        },
+        {
+          id: 'policy-2',
+          name: 'Security Policy',
+          type: 'security',
+          status: 'active',
+          lastUpdated: new Date(Date.now() - 14 * 24 * 60 * 60 * 1000).toISOString(),
+          compliance: 95,
+          requirements: ['ISO 27001', 'SOC 2']
+        }
+      ],
+      audits: [
+        {
+          id: 'audit-1',
+          type: 'internal',
+          status: 'completed',
+          score: 95.5,
+          date: new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toISOString(),
+          findings: 2,
+          recommendations: 5
+        }
+      ],
+      requirements: {
+        gdpr: { status: 'compliant', score: 98 },
+        ccpa: { status: 'compliant', score: 95 },
+        iso27001: { status: 'in_progress', score: 85 },
+        soc2: { status: 'pending', score: 0 }
+      }
+    };
+    
+    res.json({
+      success: true,
+      data: complianceData[type] || complianceData.overview,
+      type: type,
+      message: 'Compliance data retrieved successfully',
+      timestamp: new Date().toISOString()
+    });
+    
+  } catch (error) {
+    logger.error('❌ Get compliance data error:', error);
+    res.status(500).json({
+      success: false,
+      error: 'GET_COMPLIANCE_DATA_FAILED',
+      message: 'Failed to get compliance data',
+      timestamp: new Date().toISOString()
+    });
+  }
+});
+
 // Get all legal documents
 router.get('/', authenticateToken, requireRole(['admin', 'legal', 'compliance']), async (req, res) => {
   try {

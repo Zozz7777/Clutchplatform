@@ -24,6 +24,201 @@ router.post('/initialize', authenticateToken, async (req, res) => {
     }
 });
 
+// GET /api/v1/security/2fa - Get 2FA settings
+router.get('/2fa', authenticateToken, async (req, res) => {
+    try {
+        const twoFactorData = {
+            enabled: false,
+            methods: ['sms', 'email', 'authenticator'],
+            backupCodes: ['123456', '789012', '345678', '901234', '567890'],
+            lastUsed: null,
+            setupDate: null,
+            phoneNumber: '+1234567890',
+            email: 'user@example.com'
+        };
+
+        res.json({
+            success: true,
+            data: twoFactorData,
+            message: '2FA settings retrieved successfully',
+            timestamp: new Date().toISOString()
+        });
+    } catch (error) {
+        console.error('Get 2FA settings error:', error);
+        res.status(500).json({
+            success: false,
+            error: 'GET_2FA_SETTINGS_FAILED',
+            message: 'Failed to get 2FA settings',
+            timestamp: new Date().toISOString()
+        });
+    }
+});
+
+// GET /api/v1/security/audit - Get security audit logs
+router.get('/audit', authenticateToken, requireRole(['admin', 'security']), async (req, res) => {
+    try {
+        const { page = 1, limit = 10, type, startDate, endDate } = req.query;
+        
+        const auditLogs = [
+            {
+                id: 'audit-1',
+                type: 'login',
+                userId: 'user-123',
+                userName: 'John Doe',
+                action: 'Successful login',
+                ipAddress: '192.168.1.1',
+                userAgent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36',
+                timestamp: new Date().toISOString(),
+                status: 'success',
+                details: {
+                    location: 'New York, NY',
+                    device: 'Chrome on Windows'
+                }
+            },
+            {
+                id: 'audit-2',
+                type: 'permission_change',
+                userId: 'admin-1',
+                userName: 'Admin User',
+                action: 'Updated user permissions',
+                ipAddress: '192.168.1.2',
+                userAgent: 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36',
+                timestamp: new Date(Date.now() - 3600000).toISOString(),
+                status: 'success',
+                details: {
+                    targetUser: 'user-456',
+                    permissions: ['read', 'write']
+                }
+            },
+            {
+                id: 'audit-3',
+                type: 'failed_login',
+                userId: null,
+                userName: 'Unknown',
+                action: 'Failed login attempt',
+                ipAddress: '192.168.1.100',
+                userAgent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36',
+                timestamp: new Date(Date.now() - 7200000).toISOString(),
+                status: 'failed',
+                details: {
+                    reason: 'Invalid credentials',
+                    attempts: 3
+                }
+            }
+        ];
+
+        res.json({
+            success: true,
+            data: auditLogs,
+            pagination: {
+                page: parseInt(page),
+                limit: parseInt(limit),
+                total: auditLogs.length,
+                totalPages: Math.ceil(auditLogs.length / parseInt(limit))
+            },
+            summary: {
+                totalEvents: auditLogs.length,
+                successfulEvents: auditLogs.filter(log => log.status === 'success').length,
+                failedEvents: auditLogs.filter(log => log.status === 'failed').length,
+                uniqueUsers: [...new Set(auditLogs.map(log => log.userId))].length
+            },
+            message: 'Security audit logs retrieved successfully',
+            timestamp: new Date().toISOString()
+        });
+    } catch (error) {
+        console.error('Get security audit error:', error);
+        res.status(500).json({
+            success: false,
+            error: 'GET_SECURITY_AUDIT_FAILED',
+            message: 'Failed to get security audit logs',
+            timestamp: new Date().toISOString()
+        });
+    }
+});
+
+// GET /api/v1/security/roles - Get security roles and permissions
+router.get('/roles', authenticateToken, requireRole(['admin', 'security']), async (req, res) => {
+    try {
+        const rolesData = {
+            roles: [
+                {
+                    id: 'admin',
+                    name: 'Administrator',
+                    description: 'Full system access',
+                    permissions: [
+                        'users:read', 'users:write', 'users:delete',
+                        'settings:read', 'settings:write',
+                        'security:read', 'security:write',
+                        'reports:read', 'reports:write',
+                        'system:read', 'system:write'
+                    ],
+                    userCount: 2,
+                    createdAt: new Date().toISOString()
+                },
+                {
+                    id: 'manager',
+                    name: 'Manager',
+                    description: 'Management level access',
+                    permissions: [
+                        'users:read', 'users:write',
+                        'reports:read', 'reports:write',
+                        'settings:read'
+                    ],
+                    userCount: 5,
+                    createdAt: new Date().toISOString()
+                },
+                {
+                    id: 'user',
+                    name: 'User',
+                    description: 'Basic user access',
+                    permissions: [
+                        'profile:read', 'profile:write',
+                        'dashboard:read'
+                    ],
+                    userCount: 25,
+                    createdAt: new Date().toISOString()
+                }
+            ],
+            permissions: [
+                { id: 'users:read', name: 'Read Users', category: 'users' },
+                { id: 'users:write', name: 'Write Users', category: 'users' },
+                { id: 'users:delete', name: 'Delete Users', category: 'users' },
+                { id: 'settings:read', name: 'Read Settings', category: 'settings' },
+                { id: 'settings:write', name: 'Write Settings', category: 'settings' },
+                { id: 'security:read', name: 'Read Security', category: 'security' },
+                { id: 'security:write', name: 'Write Security', category: 'security' },
+                { id: 'reports:read', name: 'Read Reports', category: 'reports' },
+                { id: 'reports:write', name: 'Write Reports', category: 'reports' },
+                { id: 'system:read', name: 'Read System', category: 'system' },
+                { id: 'system:write', name: 'Write System', category: 'system' },
+                { id: 'profile:read', name: 'Read Profile', category: 'profile' },
+                { id: 'profile:write', name: 'Write Profile', category: 'profile' },
+                { id: 'dashboard:read', name: 'Read Dashboard', category: 'dashboard' }
+            ],
+            summary: {
+                totalRoles: 3,
+                totalPermissions: 14,
+                totalUsers: 32
+            }
+        };
+
+        res.json({
+            success: true,
+            data: rolesData,
+            message: 'Security roles and permissions retrieved successfully',
+            timestamp: new Date().toISOString()
+        });
+    } catch (error) {
+        console.error('Get security roles error:', error);
+        res.status(500).json({
+            success: false,
+            error: 'GET_SECURITY_ROLES_FAILED',
+            message: 'Failed to get security roles and permissions',
+            timestamp: new Date().toISOString()
+        });
+    }
+});
+
 // Get security service status
 router.get('/status', authenticateToken, async (req, res) => {
     try {

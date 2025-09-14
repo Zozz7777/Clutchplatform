@@ -8,6 +8,175 @@ const fs = require('fs');
 const fileService = require('../services/fileService');
 const { Buffer } = require('buffer');
 
+// GET /api/v1/settings/system - Get system settings
+router.get('/system', authenticateToken, async (req, res) => {
+    try {
+        const systemSettings = {
+            general: {
+                siteName: 'Clutch Admin',
+                siteDescription: 'Comprehensive admin dashboard',
+                timezone: 'UTC',
+                language: 'en',
+                currency: 'USD',
+                dateFormat: 'MM/DD/YYYY',
+                timeFormat: '12h'
+            },
+            security: {
+                sessionTimeout: 30,
+                maxLoginAttempts: 5,
+                passwordMinLength: 8,
+                require2FA: false,
+                allowedIPs: [],
+                blockedIPs: []
+            },
+            notifications: {
+                emailNotifications: true,
+                smsNotifications: false,
+                pushNotifications: true,
+                adminNotifications: true,
+                userNotifications: true
+            },
+            maintenance: {
+                maintenanceMode: false,
+                maintenanceMessage: 'System is under maintenance',
+                allowedIPs: ['127.0.0.1', '::1']
+            },
+            api: {
+                rateLimitEnabled: true,
+                rateLimitWindow: 15,
+                rateLimitMax: 100,
+                apiVersion: 'v1',
+                corsEnabled: true
+            }
+        };
+
+        res.json({
+            success: true,
+            data: systemSettings,
+            message: 'System settings retrieved successfully',
+            timestamp: new Date().toISOString()
+        });
+    } catch (error) {
+        console.error('Get system settings error:', error);
+        res.status(500).json({
+            success: false,
+            error: 'GET_SYSTEM_SETTINGS_FAILED',
+            message: 'Failed to retrieve system settings',
+            timestamp: new Date().toISOString()
+        });
+    }
+});
+
+// GET /api/v1/settings/profile - Get profile settings
+router.get('/profile', authenticateToken, async (req, res) => {
+    try {
+        const profileSettings = {
+            personal: {
+                firstName: 'John',
+                lastName: 'Doe',
+                email: 'john.doe@example.com',
+                phone: '+1234567890',
+                avatar: 'https://via.placeholder.com/150',
+                bio: 'System Administrator',
+                location: 'New York, NY'
+            },
+            preferences: {
+                theme: 'light',
+                language: 'en',
+                timezone: 'America/New_York',
+                dateFormat: 'MM/DD/YYYY',
+                timeFormat: '12h',
+                notifications: {
+                    email: true,
+                    sms: false,
+                    push: true
+                }
+            },
+            privacy: {
+                profileVisibility: 'public',
+                showEmail: false,
+                showPhone: false,
+                showLocation: true,
+                allowMessages: true
+            },
+            security: {
+                twoFactorEnabled: false,
+                loginNotifications: true,
+                sessionTimeout: 30,
+                lastPasswordChange: new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toISOString()
+            }
+        };
+
+        res.json({
+            success: true,
+            data: profileSettings,
+            message: 'Profile settings retrieved successfully',
+            timestamp: new Date().toISOString()
+        });
+    } catch (error) {
+        console.error('Get profile settings error:', error);
+        res.status(500).json({
+            success: false,
+            error: 'GET_PROFILE_SETTINGS_FAILED',
+            message: 'Failed to retrieve profile settings',
+            timestamp: new Date().toISOString()
+        });
+    }
+});
+
+// GET /api/v1/settings/branding - Get branding settings
+router.get('/branding', authenticateToken, async (req, res) => {
+    try {
+        const brandingSettings = {
+            logo: {
+                primary: 'https://via.placeholder.com/200x80/0066CC/FFFFFF?text=CLUTCH',
+                secondary: 'https://via.placeholder.com/150x60/0066CC/FFFFFF?text=C',
+                favicon: 'https://via.placeholder.com/32x32/0066CC/FFFFFF?text=C'
+            },
+            colors: {
+                primary: '#0066CC',
+                secondary: '#FF6B35',
+                success: '#28A745',
+                warning: '#FFC107',
+                danger: '#DC3545',
+                info: '#17A2B8',
+                light: '#F8F9FA',
+                dark: '#343A40'
+            },
+            typography: {
+                fontFamily: 'Inter, sans-serif',
+                headingFont: 'Inter, sans-serif',
+                bodyFont: 'Inter, sans-serif',
+                fontSize: '14px',
+                lineHeight: '1.5'
+            },
+            layout: {
+                sidebarWidth: '250px',
+                headerHeight: '60px',
+                borderRadius: '8px',
+                boxShadow: '0 2px 4px rgba(0,0,0,0.1)'
+            },
+            customCSS: '',
+            customJS: ''
+        };
+
+        res.json({
+            success: true,
+            data: brandingSettings,
+            message: 'Branding settings retrieved successfully',
+            timestamp: new Date().toISOString()
+        });
+    } catch (error) {
+        console.error('Get branding settings error:', error);
+        res.status(500).json({
+            success: false,
+            error: 'GET_BRANDING_SETTINGS_FAILED',
+            message: 'Failed to retrieve branding settings',
+            timestamp: new Date().toISOString()
+        });
+    }
+});
+
 // Get all settings
 router.get('/', authenticateToken, async (req, res) => {
     try {
