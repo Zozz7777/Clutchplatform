@@ -734,4 +734,843 @@ router.put('/settings', authenticateToken, requireRole(['admin']), async (req, r
   }
 });
 
+// ============================================================================
+// ADMIN CONTENT MANAGEMENT ENDPOINTS
+// ============================================================================
+
+// GET /api/v1/admin/cms/media - Get all media files
+router.get('/cms/media', authenticateToken, requireRole(['admin']), async (req, res) => {
+  try {
+    const { page = 1, limit = 20, type, search } = req.query;
+    
+    const mediaFiles = [
+      {
+        id: 'media-1',
+        name: 'hero-image.jpg',
+        type: 'image',
+        size: 245760,
+        url: 'https://example.com/media/hero-image.jpg',
+        thumbnail: 'https://example.com/media/thumbnails/hero-image.jpg',
+        uploadedBy: 'admin@example.com',
+        uploadedAt: new Date().toISOString(),
+        tags: ['hero', 'banner', 'homepage']
+      },
+      {
+        id: 'media-2',
+        name: 'product-video.mp4',
+        type: 'video',
+        size: 5242880,
+        url: 'https://example.com/media/product-video.mp4',
+        thumbnail: 'https://example.com/media/thumbnails/product-video.jpg',
+        uploadedBy: 'admin@example.com',
+        uploadedAt: new Date(Date.now() - 86400000).toISOString(),
+        tags: ['product', 'video', 'demo']
+      }
+    ];
+
+    res.json({
+      success: true,
+      data: { 
+        media: mediaFiles,
+        pagination: {
+          page: parseInt(page),
+          limit: parseInt(limit),
+          total: mediaFiles.length,
+          pages: Math.ceil(mediaFiles.length / limit)
+        }
+      },
+      message: 'Media files retrieved successfully',
+      timestamp: new Date().toISOString()
+    });
+
+  } catch (error) {
+    logger.error('❌ Get media files error:', error);
+    res.status(500).json({
+      success: false,
+      error: 'GET_MEDIA_FAILED',
+      message: 'Failed to get media files',
+      timestamp: new Date().toISOString()
+    });
+  }
+});
+
+// GET /api/v1/admin/cms/media/:id - Get specific media file
+router.get('/cms/media/:id', authenticateToken, requireRole(['admin']), async (req, res) => {
+  try {
+    const { id } = req.params;
+    
+    const mediaFile = {
+      id: id,
+      name: 'hero-image.jpg',
+      type: 'image',
+      size: 245760,
+      url: 'https://example.com/media/hero-image.jpg',
+      thumbnail: 'https://example.com/media/thumbnails/hero-image.jpg',
+      uploadedBy: 'admin@example.com',
+      uploadedAt: new Date().toISOString(),
+      tags: ['hero', 'banner', 'homepage'],
+      metadata: {
+        width: 1920,
+        height: 1080,
+        format: 'JPEG',
+        colorSpace: 'sRGB'
+      },
+      usage: [
+        { page: 'homepage', section: 'hero' },
+        { page: 'about', section: 'banner' }
+      ]
+    };
+
+    res.json({
+      success: true,
+      data: { media: mediaFile },
+      message: 'Media file retrieved successfully',
+      timestamp: new Date().toISOString()
+    });
+
+  } catch (error) {
+    logger.error('❌ Get media file error:', error);
+    res.status(500).json({
+      success: false,
+      error: 'GET_MEDIA_FILE_FAILED',
+      message: 'Failed to get media file',
+      timestamp: new Date().toISOString()
+    });
+  }
+});
+
+// POST /api/v1/admin/cms/media/upload - Upload media file
+router.post('/cms/media/upload', authenticateToken, requireRole(['admin']), async (req, res) => {
+  try {
+    const { name, type, size, url, tags } = req.body;
+    
+    const newMediaFile = {
+      id: `media-${Date.now()}`,
+      name: name || 'uploaded-file',
+      type: type || 'image',
+      size: size || 0,
+      url: url || 'https://example.com/media/uploaded-file',
+      thumbnail: 'https://example.com/media/thumbnails/uploaded-file.jpg',
+      uploadedBy: req.user.email,
+      uploadedAt: new Date().toISOString(),
+      tags: tags || []
+    };
+
+    res.status(201).json({
+      success: true,
+      data: { media: newMediaFile },
+      message: 'Media file uploaded successfully',
+      timestamp: new Date().toISOString()
+    });
+
+  } catch (error) {
+    logger.error('❌ Upload media file error:', error);
+    res.status(500).json({
+      success: false,
+      error: 'UPLOAD_MEDIA_FAILED',
+      message: 'Failed to upload media file',
+      timestamp: new Date().toISOString()
+    });
+  }
+});
+
+// DELETE /api/v1/admin/cms/media/:id - Delete media file
+router.delete('/cms/media/:id', authenticateToken, requireRole(['admin']), async (req, res) => {
+  try {
+    const { id } = req.params;
+    
+    res.json({
+      success: true,
+      data: { mediaId: id },
+      message: 'Media file deleted successfully',
+      timestamp: new Date().toISOString()
+    });
+
+  } catch (error) {
+    logger.error('❌ Delete media file error:', error);
+    res.status(500).json({
+      success: false,
+      error: 'DELETE_MEDIA_FAILED',
+      message: 'Failed to delete media file',
+      timestamp: new Date().toISOString()
+    });
+  }
+});
+
+// GET /api/v1/admin/cms/mobile - Get mobile content
+router.get('/cms/mobile', authenticateToken, requireRole(['admin']), async (req, res) => {
+  try {
+    const mobileContent = [
+      {
+        id: 'mobile-1',
+        type: 'banner',
+        title: 'Welcome to Clutch',
+        content: 'Discover amazing automotive services',
+        image: 'https://example.com/mobile/banner-1.jpg',
+        isActive: true,
+        priority: 1,
+        createdAt: new Date().toISOString()
+      },
+      {
+        id: 'mobile-2',
+        type: 'promotion',
+        title: 'Special Offer',
+        content: 'Get 20% off your first service',
+        image: 'https://example.com/mobile/promo-1.jpg',
+        isActive: true,
+        priority: 2,
+        createdAt: new Date().toISOString()
+      }
+    ];
+
+    res.json({
+      success: true,
+      data: { content: mobileContent },
+      message: 'Mobile content retrieved successfully',
+      timestamp: new Date().toISOString()
+    });
+
+  } catch (error) {
+    logger.error('❌ Get mobile content error:', error);
+    res.status(500).json({
+      success: false,
+      error: 'GET_MOBILE_CONTENT_FAILED',
+      message: 'Failed to get mobile content',
+      timestamp: new Date().toISOString()
+    });
+  }
+});
+
+// PUT /api/v1/admin/cms/mobile/:id - Update mobile content
+router.put('/cms/mobile/:id', authenticateToken, requireRole(['admin']), async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { title, content, image, isActive, priority } = req.body;
+    
+    const updatedContent = {
+      id: id,
+      type: 'banner',
+      title: title || 'Updated Content',
+      content: content || 'Updated content description',
+      image: image || 'https://example.com/mobile/updated.jpg',
+      isActive: isActive !== undefined ? isActive : true,
+      priority: priority || 1,
+      updatedAt: new Date().toISOString()
+    };
+
+    res.json({
+      success: true,
+      data: { content: updatedContent },
+      message: 'Mobile content updated successfully',
+      timestamp: new Date().toISOString()
+    });
+
+  } catch (error) {
+    logger.error('❌ Update mobile content error:', error);
+    res.status(500).json({
+      success: false,
+      error: 'UPDATE_MOBILE_CONTENT_FAILED',
+      message: 'Failed to update mobile content',
+      timestamp: new Date().toISOString()
+    });
+  }
+});
+
+// GET /api/v1/admin/cms/seo - Get SEO settings
+router.get('/cms/seo', authenticateToken, requireRole(['admin']), async (req, res) => {
+  try {
+    const seoSettings = {
+      metaTitle: 'Clutch Platform - Automotive Services',
+      metaDescription: 'Comprehensive automotive platform for all your vehicle needs',
+      metaKeywords: ['automotive', 'services', 'platform', 'clutch'],
+      ogTitle: 'Clutch Platform',
+      ogDescription: 'Discover amazing automotive services',
+      ogImage: 'https://example.com/og-image.jpg',
+      twitterCard: 'summary_large_image',
+      canonicalUrl: 'https://clutch-platform.com',
+      robots: 'index, follow',
+      sitemap: 'https://clutch-platform.com/sitemap.xml'
+    };
+
+    res.json({
+      success: true,
+      data: { seo: seoSettings },
+      message: 'SEO settings retrieved successfully',
+      timestamp: new Date().toISOString()
+    });
+
+  } catch (error) {
+    logger.error('❌ Get SEO settings error:', error);
+    res.status(500).json({
+      success: false,
+      error: 'GET_SEO_SETTINGS_FAILED',
+      message: 'Failed to get SEO settings',
+      timestamp: new Date().toISOString()
+    });
+  }
+});
+
+// PUT /api/v1/admin/cms/seo - Update SEO settings
+router.put('/cms/seo', authenticateToken, requireRole(['admin']), async (req, res) => {
+  try {
+    const seoSettings = req.body;
+    
+    res.json({
+      success: true,
+      data: { seo: seoSettings },
+      message: 'SEO settings updated successfully',
+      timestamp: new Date().toISOString()
+    });
+
+  } catch (error) {
+    logger.error('❌ Update SEO settings error:', error);
+    res.status(500).json({
+      success: false,
+      error: 'UPDATE_SEO_SETTINGS_FAILED',
+      message: 'Failed to update SEO settings',
+      timestamp: new Date().toISOString()
+    });
+  }
+});
+
+// ============================================================================
+// ADMIN BUSINESS INTELLIGENCE ENDPOINTS
+// ============================================================================
+
+// GET /api/v1/admin/business/customers - Get customer insights
+router.get('/business/customers', authenticateToken, requireRole(['admin']), async (req, res) => {
+  try {
+    const customerInsights = {
+      totalCustomers: 1250,
+      newCustomers: 45,
+      returningCustomers: 980,
+      churnedCustomers: 12,
+      customerLifetimeValue: 1250.50,
+      averageOrderValue: 89.99,
+      customerSatisfaction: 4.6,
+      demographics: {
+        ageGroups: { '18-25': 25, '26-35': 40, '36-45': 20, '46+': 15 },
+        locations: { 'US': 60, 'EU': 25, 'Asia': 15 },
+        genders: { 'male': 55, 'female': 45 }
+      },
+      behavior: {
+        averageSessionDuration: 8.5,
+        pagesPerSession: 4.2,
+        bounceRate: 25.1,
+        conversionRate: 3.4
+      }
+    };
+
+    res.json({
+      success: true,
+      data: { customers: customerInsights },
+      message: 'Customer insights retrieved successfully',
+      timestamp: new Date().toISOString()
+    });
+
+  } catch (error) {
+    logger.error('❌ Get customer insights error:', error);
+    res.status(500).json({
+      success: false,
+      error: 'GET_CUSTOMER_INSIGHTS_FAILED',
+      message: 'Failed to get customer insights',
+      timestamp: new Date().toISOString()
+    });
+  }
+});
+
+// GET /api/v1/admin/business/market - Get market analysis
+router.get('/business/market', authenticateToken, requireRole(['admin']), async (req, res) => {
+  try {
+    const marketAnalysis = {
+      marketSize: 5000000000,
+      marketShare: 2.5,
+      growthRate: 12.5,
+      competitors: [
+        { name: 'Competitor A', marketShare: 15.2, strength: 'Brand recognition' },
+        { name: 'Competitor B', marketShare: 8.7, strength: 'Technology' },
+        { name: 'Competitor C', marketShare: 5.3, strength: 'Pricing' }
+      ],
+      trends: {
+        digitalTransformation: 85,
+        sustainability: 72,
+        personalization: 68,
+        automation: 45
+      },
+      opportunities: [
+        'Expand to new geographic markets',
+        'Develop AI-powered features',
+        'Partner with automotive manufacturers'
+      ]
+    };
+
+    res.json({
+      success: true,
+      data: { market: marketAnalysis },
+      message: 'Market analysis retrieved successfully',
+      timestamp: new Date().toISOString()
+    });
+
+  } catch (error) {
+    logger.error('❌ Get market analysis error:', error);
+    res.status(500).json({
+      success: false,
+      error: 'GET_MARKET_ANALYSIS_FAILED',
+      message: 'Failed to get market analysis',
+      timestamp: new Date().toISOString()
+    });
+  }
+});
+
+// GET /api/v1/admin/business/metrics - Get business metrics
+router.get('/business/metrics', authenticateToken, requireRole(['admin']), async (req, res) => {
+  try {
+    const businessMetrics = {
+      revenue: {
+        total: 1250000,
+        monthly: 125000,
+        growth: 12.5,
+        breakdown: {
+          subscriptions: 750000,
+          oneTime: 350000,
+          upgrades: 150000
+        }
+      },
+      operations: {
+        totalOrders: 4500,
+        completedOrders: 4200,
+        pendingOrders: 200,
+        cancelledOrders: 100,
+        averageProcessingTime: 2.5
+      },
+      performance: {
+        customerSatisfaction: 4.6,
+        netPromoterScore: 8.2,
+        customerRetention: 85.2,
+        employeeSatisfaction: 4.3
+      }
+    };
+
+    res.json({
+      success: true,
+      data: { metrics: businessMetrics },
+      message: 'Business metrics retrieved successfully',
+      timestamp: new Date().toISOString()
+    });
+
+  } catch (error) {
+    logger.error('❌ Get business metrics error:', error);
+    res.status(500).json({
+      success: false,
+      error: 'GET_BUSINESS_METRICS_FAILED',
+      message: 'Failed to get business metrics',
+      timestamp: new Date().toISOString()
+    });
+  }
+});
+
+// ============================================================================
+// ADMIN SUPPORT & FEEDBACK ENDPOINTS
+// ============================================================================
+
+// GET /api/v1/admin/support/feedback - Get all feedback
+router.get('/support/feedback', authenticateToken, requireRole(['admin']), async (req, res) => {
+  try {
+    const { page = 1, limit = 20, status, priority } = req.query;
+    
+    const feedback = [
+      {
+        id: 'feedback-1',
+        userId: 'user-1',
+        userEmail: 'john.doe@example.com',
+        subject: 'Feature Request',
+        message: 'Would love to see dark mode support',
+        category: 'feature',
+        priority: 'medium',
+        status: 'open',
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString()
+      },
+      {
+        id: 'feedback-2',
+        userId: 'user-2',
+        userEmail: 'jane.smith@example.com',
+        subject: 'Bug Report',
+        message: 'Login button not working on mobile',
+        category: 'bug',
+        priority: 'high',
+        status: 'in_progress',
+        createdAt: new Date(Date.now() - 86400000).toISOString(),
+        updatedAt: new Date().toISOString()
+      }
+    ];
+
+    res.json({
+      success: true,
+      data: { 
+        feedback,
+        pagination: {
+          page: parseInt(page),
+          limit: parseInt(limit),
+          total: feedback.length,
+          pages: Math.ceil(feedback.length / limit)
+        }
+      },
+      message: 'Feedback retrieved successfully',
+      timestamp: new Date().toISOString()
+    });
+
+  } catch (error) {
+    logger.error('❌ Get feedback error:', error);
+    res.status(500).json({
+      success: false,
+      error: 'GET_FEEDBACK_FAILED',
+      message: 'Failed to get feedback',
+      timestamp: new Date().toISOString()
+    });
+  }
+});
+
+// POST /api/v1/admin/support/feedback/:id/reply - Reply to feedback
+router.post('/support/feedback/:id/reply', authenticateToken, requireRole(['admin']), async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { message, isPublic } = req.body;
+    
+    const reply = {
+      id: `reply-${Date.now()}`,
+      feedbackId: id,
+      adminId: req.user.userId,
+      adminEmail: req.user.email,
+      message: message || 'Thank you for your feedback',
+      isPublic: isPublic !== undefined ? isPublic : false,
+      createdAt: new Date().toISOString()
+    };
+
+    res.status(201).json({
+      success: true,
+      data: { reply },
+      message: 'Reply sent successfully',
+      timestamp: new Date().toISOString()
+    });
+
+  } catch (error) {
+    logger.error('❌ Reply to feedback error:', error);
+    res.status(500).json({
+      success: false,
+      error: 'REPLY_FEEDBACK_FAILED',
+      message: 'Failed to reply to feedback',
+      timestamp: new Date().toISOString()
+    });
+  }
+});
+
+// PUT /api/v1/admin/support/feedback/:id/status - Update feedback status
+router.put('/support/feedback/:id/status', authenticateToken, requireRole(['admin']), async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { status, priority } = req.body;
+    
+    const updatedFeedback = {
+      id: id,
+      status: status || 'open',
+      priority: priority || 'medium',
+      updatedAt: new Date().toISOString(),
+      updatedBy: req.user.email
+    };
+
+    res.json({
+      success: true,
+      data: { feedback: updatedFeedback },
+      message: 'Feedback status updated successfully',
+      timestamp: new Date().toISOString()
+    });
+
+  } catch (error) {
+    logger.error('❌ Update feedback status error:', error);
+    res.status(500).json({
+      success: false,
+      error: 'UPDATE_FEEDBACK_STATUS_FAILED',
+      message: 'Failed to update feedback status',
+      timestamp: new Date().toISOString()
+    });
+  }
+});
+
+// ============================================================================
+// ADMIN MOBILE MANAGEMENT ENDPOINTS
+// ============================================================================
+
+// GET /api/v1/admin/mobile/crashes - Get mobile app crashes
+router.get('/mobile/crashes', authenticateToken, requireRole(['admin']), async (req, res) => {
+  try {
+    const { page = 1, limit = 20, severity, platform } = req.query;
+    
+    const crashes = [
+      {
+        id: 'crash-1',
+        userId: 'user-1',
+        platform: 'iOS',
+        version: '1.2.3',
+        device: 'iPhone 12',
+        osVersion: 'iOS 15.0',
+        severity: 'high',
+        error: 'NullPointerException in MainActivity',
+        stackTrace: 'at com.clutch.app.MainActivity.onCreate(MainActivity.java:45)',
+        timestamp: new Date().toISOString(),
+        resolved: false
+      },
+      {
+        id: 'crash-2',
+        userId: 'user-2',
+        platform: 'Android',
+        version: '1.2.2',
+        device: 'Samsung Galaxy S21',
+        osVersion: 'Android 11',
+        severity: 'medium',
+        error: 'OutOfMemoryError in ImageLoader',
+        stackTrace: 'at com.clutch.app.ImageLoader.load(ImageLoader.java:123)',
+        timestamp: new Date(Date.now() - 3600000).toISOString(),
+        resolved: true
+      }
+    ];
+
+    res.json({
+      success: true,
+      data: { 
+        crashes,
+        pagination: {
+          page: parseInt(page),
+          limit: parseInt(limit),
+          total: crashes.length,
+          pages: Math.ceil(crashes.length / limit)
+        }
+      },
+      message: 'Mobile crashes retrieved successfully',
+      timestamp: new Date().toISOString()
+    });
+
+  } catch (error) {
+    logger.error('❌ Get mobile crashes error:', error);
+    res.status(500).json({
+      success: false,
+      error: 'GET_MOBILE_CRASHES_FAILED',
+      message: 'Failed to get mobile crashes',
+      timestamp: new Date().toISOString()
+    });
+  }
+});
+
+// GET /api/v1/admin/mobile/crashes/:id - Get specific crash details
+router.get('/mobile/crashes/:id', authenticateToken, requireRole(['admin']), async (req, res) => {
+  try {
+    const { id } = req.params;
+    
+    const crash = {
+      id: id,
+      userId: 'user-1',
+      platform: 'iOS',
+      version: '1.2.3',
+      device: 'iPhone 12',
+      osVersion: 'iOS 15.0',
+      severity: 'high',
+      error: 'NullPointerException in MainActivity',
+      stackTrace: 'at com.clutch.app.MainActivity.onCreate(MainActivity.java:45)',
+      userActions: [
+        'Opened app',
+        'Navigated to dashboard',
+        'Clicked on profile'
+      ],
+      deviceInfo: {
+        memory: '6GB',
+        storage: '128GB',
+        battery: '85%',
+        network: 'WiFi'
+      },
+      timestamp: new Date().toISOString(),
+      resolved: false,
+      resolution: null
+    };
+
+    res.json({
+      success: true,
+      data: { crash },
+      message: 'Crash details retrieved successfully',
+      timestamp: new Date().toISOString()
+    });
+
+  } catch (error) {
+    logger.error('❌ Get crash details error:', error);
+    res.status(500).json({
+      success: false,
+      error: 'GET_CRASH_DETAILS_FAILED',
+      message: 'Failed to get crash details',
+      timestamp: new Date().toISOString()
+    });
+  }
+});
+
+// PUT /api/v1/admin/mobile/crashes/:id/resolve - Resolve crash
+router.put('/mobile/crashes/:id/resolve', authenticateToken, requireRole(['admin']), async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { resolution, fixVersion } = req.body;
+    
+    const resolvedCrash = {
+      id: id,
+      resolved: true,
+      resolution: resolution || 'Fixed in next release',
+      fixVersion: fixVersion || '1.2.4',
+      resolvedBy: req.user.email,
+      resolvedAt: new Date().toISOString()
+    };
+
+    res.json({
+      success: true,
+      data: { crash: resolvedCrash },
+      message: 'Crash resolved successfully',
+      timestamp: new Date().toISOString()
+    });
+
+  } catch (error) {
+    logger.error('❌ Resolve crash error:', error);
+    res.status(500).json({
+      success: false,
+      error: 'RESOLVE_CRASH_FAILED',
+      message: 'Failed to resolve crash',
+      timestamp: new Date().toISOString()
+    });
+  }
+});
+
+// ============================================================================
+// ADMIN REVENUE MANAGEMENT ENDPOINTS
+// ============================================================================
+
+// GET /api/v1/admin/revenue/forecasting - Get revenue forecasting
+router.get('/revenue/forecasting', authenticateToken, requireRole(['admin']), async (req, res) => {
+  try {
+    const forecasting = {
+      currentMonth: 125000,
+      nextMonth: 135000,
+      nextQuarter: 400000,
+      nextYear: 1500000,
+      growthRate: 12.5,
+      confidence: 85,
+      factors: {
+        newCustomers: 45,
+        churnRate: 2.1,
+        averageOrderValue: 89.99,
+        seasonality: 1.2
+      },
+      projections: {
+        optimistic: 1800000,
+        realistic: 1500000,
+        pessimistic: 1200000
+      }
+    };
+
+    res.json({
+      success: true,
+      data: { forecasting },
+      message: 'Revenue forecasting retrieved successfully',
+      timestamp: new Date().toISOString()
+    });
+
+  } catch (error) {
+    logger.error('❌ Get revenue forecasting error:', error);
+    res.status(500).json({
+      success: false,
+      error: 'GET_REVENUE_FORECASTING_FAILED',
+      message: 'Failed to get revenue forecasting',
+      timestamp: new Date().toISOString()
+    });
+  }
+});
+
+// GET /api/v1/admin/revenue/pricing - Get pricing strategies
+router.get('/revenue/pricing', authenticateToken, requireRole(['admin']), async (req, res) => {
+  try {
+    const pricing = [
+      {
+        id: 'pricing-1',
+        name: 'Basic Plan',
+        price: 29.99,
+        features: ['Basic features', 'Email support'],
+        targetAudience: 'Small businesses',
+        isActive: true,
+        subscribers: 450
+      },
+      {
+        id: 'pricing-2',
+        name: 'Pro Plan',
+        price: 59.99,
+        features: ['Advanced features', 'Priority support', 'Analytics'],
+        targetAudience: 'Medium businesses',
+        isActive: true,
+        subscribers: 280
+      },
+      {
+        id: 'pricing-3',
+        name: 'Enterprise Plan',
+        price: 149.99,
+        features: ['All features', '24/7 support', 'Custom integrations'],
+        targetAudience: 'Large enterprises',
+        isActive: true,
+        subscribers: 95
+      }
+    ];
+
+    res.json({
+      success: true,
+      data: { pricing },
+      message: 'Pricing strategies retrieved successfully',
+      timestamp: new Date().toISOString()
+    });
+
+  } catch (error) {
+    logger.error('❌ Get pricing strategies error:', error);
+    res.status(500).json({
+      success: false,
+      error: 'GET_PRICING_STRATEGIES_FAILED',
+      message: 'Failed to get pricing strategies',
+      timestamp: new Date().toISOString()
+    });
+  }
+});
+
+// PUT /api/v1/admin/revenue/pricing/:id - Update pricing strategy
+router.put('/revenue/pricing/:id', authenticateToken, requireRole(['admin']), async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { name, price, features, isActive } = req.body;
+    
+    const updatedPricing = {
+      id: id,
+      name: name || 'Updated Plan',
+      price: price || 29.99,
+      features: features || ['Updated features'],
+      isActive: isActive !== undefined ? isActive : true,
+      updatedAt: new Date().toISOString(),
+      updatedBy: req.user.email
+    };
+
+    res.json({
+      success: true,
+      data: { pricing: updatedPricing },
+      message: 'Pricing strategy updated successfully',
+      timestamp: new Date().toISOString()
+    });
+
+  } catch (error) {
+    logger.error('❌ Update pricing strategy error:', error);
+    res.status(500).json({
+      success: false,
+      error: 'UPDATE_PRICING_STRATEGY_FAILED',
+      message: 'Failed to update pricing strategy',
+      timestamp: new Date().toISOString()
+    });
+  }
+});
+
 module.exports = router;
