@@ -32,6 +32,192 @@ router.get('/', authenticateToken, requireRole(['admin', 'hr']), partnerRateLimi
   }
 });
 
+// GET /api/v1/partners/orders - Get partner orders
+router.get('/orders', authenticateToken, requireRole(['admin', 'hr']), async (req, res) => {
+  try {
+    const { page = 1, limit = 10, status, partnerId, dateFrom, dateTo } = req.query;
+    
+    const orders = [
+      {
+        id: 'order-1',
+        partnerId: 'partner-1',
+        partnerName: 'Auto Parts Plus',
+        orderNumber: 'ORD-001',
+        status: 'completed',
+        total: 1250.00,
+        commission: 125.00,
+        orderDate: new Date().toISOString(),
+        items: [
+          { name: 'Brake Pads', quantity: 2, price: 150.00 },
+          { name: 'Oil Filter', quantity: 1, price: 25.00 }
+        ]
+      },
+      {
+        id: 'order-2',
+        partnerId: 'partner-2',
+        partnerName: 'Car Care Center',
+        orderNumber: 'ORD-002',
+        status: 'pending',
+        total: 850.00,
+        commission: 85.00,
+        orderDate: new Date(Date.now() - 86400000).toISOString(),
+        items: [
+          { name: 'Air Filter', quantity: 1, price: 45.00 },
+          { name: 'Spark Plugs', quantity: 4, price: 60.00 }
+        ]
+      }
+    ];
+    
+    res.json({
+      success: true,
+      data: orders,
+      pagination: {
+        page: parseInt(page),
+        limit: parseInt(limit),
+        total: orders.length,
+        totalPages: Math.ceil(orders.length / parseInt(limit))
+      },
+      message: 'Partner orders retrieved successfully',
+      timestamp: new Date().toISOString()
+    });
+    
+  } catch (error) {
+    logger.error('❌ Get partner orders error:', error);
+    res.status(500).json({
+      success: false,
+      error: 'GET_PARTNER_ORDERS_FAILED',
+      message: 'Failed to get partner orders',
+      timestamp: new Date().toISOString()
+    });
+  }
+});
+
+// GET /api/v1/partners/commission - Get partner commission data
+router.get('/commission', authenticateToken, requireRole(['admin', 'hr']), async (req, res) => {
+  try {
+    const { page = 1, limit = 10, partnerId, month, year } = req.query;
+    
+    const commissionData = [
+      {
+        id: 'commission-1',
+        partnerId: 'partner-1',
+        partnerName: 'Auto Parts Plus',
+        month: '2024-01',
+        totalOrders: 45,
+        totalRevenue: 12500.00,
+        commissionRate: 0.10,
+        commissionAmount: 1250.00,
+        paid: true,
+        paymentDate: new Date().toISOString()
+      },
+      {
+        id: 'commission-2',
+        partnerId: 'partner-2',
+        partnerName: 'Car Care Center',
+        month: '2024-01',
+        totalOrders: 32,
+        totalRevenue: 8500.00,
+        commissionRate: 0.10,
+        commissionAmount: 850.00,
+        paid: false,
+        paymentDate: null
+      }
+    ];
+    
+    res.json({
+      success: true,
+      data: commissionData,
+      summary: {
+        totalCommission: 2100.00,
+        paidCommission: 1250.00,
+        pendingCommission: 850.00,
+        totalPartners: 2
+      },
+      pagination: {
+        page: parseInt(page),
+        limit: parseInt(limit),
+        total: commissionData.length,
+        totalPages: Math.ceil(commissionData.length / parseInt(limit))
+      },
+      message: 'Partner commission data retrieved successfully',
+      timestamp: new Date().toISOString()
+    });
+    
+  } catch (error) {
+    logger.error('❌ Get partner commission error:', error);
+    res.status(500).json({
+      success: false,
+      error: 'GET_PARTNER_COMMISSION_FAILED',
+      message: 'Failed to get partner commission data',
+      timestamp: new Date().toISOString()
+    });
+  }
+});
+
+// GET /api/v1/partners/performance - Get partner performance metrics
+router.get('/performance', authenticateToken, requireRole(['admin', 'hr']), async (req, res) => {
+  try {
+    const { period = '30d', partnerId } = req.query;
+    
+    const performanceData = [
+      {
+        partnerId: 'partner-1',
+        partnerName: 'Auto Parts Plus',
+        metrics: {
+          totalOrders: 145,
+          totalRevenue: 42500.00,
+          averageOrderValue: 293.10,
+          completionRate: 98.5,
+          customerSatisfaction: 4.8,
+          responseTime: '2.5 hours',
+          growth: 15.2
+        },
+        ranking: 1,
+        status: 'excellent'
+      },
+      {
+        partnerId: 'partner-2',
+        partnerName: 'Car Care Center',
+        metrics: {
+          totalOrders: 98,
+          totalRevenue: 28500.00,
+          averageOrderValue: 290.82,
+          completionRate: 95.2,
+          customerSatisfaction: 4.6,
+          responseTime: '3.2 hours',
+          growth: 8.7
+        },
+        ranking: 2,
+        status: 'good'
+      }
+    ];
+    
+    res.json({
+      success: true,
+      data: performanceData,
+      period: period,
+      summary: {
+        totalPartners: performanceData.length,
+        averagePerformance: 96.85,
+        topPerformer: performanceData[0],
+        totalRevenue: 71000.00,
+        totalOrders: 243
+      },
+      message: 'Partner performance data retrieved successfully',
+      timestamp: new Date().toISOString()
+    });
+    
+  } catch (error) {
+    logger.error('❌ Get partner performance error:', error);
+    res.status(500).json({
+      success: false,
+      error: 'GET_PARTNER_PERFORMANCE_FAILED',
+      message: 'Failed to get partner performance data',
+      timestamp: new Date().toISOString()
+    });
+  }
+});
+
 // Get partner by ID
 router.get('/:id', authenticateToken, requireRole(['admin', 'hr']), partnerRateLimit, async (req, res) => {
   try {

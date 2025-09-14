@@ -18,6 +18,130 @@ router.use(crmRateLimit);
 
 // ==================== DEAL MANAGEMENT ====================
 
+// GET /api/v1/crm/leads - Get CRM leads
+router.get('/leads', authenticateToken, requireRole(['admin', 'sales_manager', 'sales_rep']), async (req, res) => {
+  try {
+    const { page = 1, limit = 10, status, source, assignedTo } = req.query;
+    
+    const leads = [
+      {
+        id: 'lead-1',
+        name: 'John Smith',
+        email: 'john.smith@example.com',
+        phone: '+1234567890',
+        company: 'Tech Corp',
+        status: 'new',
+        source: 'website',
+        assignedTo: 'sales-rep-1',
+        score: 85,
+        createdAt: new Date().toISOString(),
+        lastContact: new Date(Date.now() - 86400000).toISOString()
+      },
+      {
+        id: 'lead-2',
+        name: 'Jane Doe',
+        email: 'jane.doe@example.com',
+        phone: '+1234567891',
+        company: 'Marketing Inc',
+        status: 'qualified',
+        source: 'referral',
+        assignedTo: 'sales-rep-2',
+        score: 92,
+        createdAt: new Date(Date.now() - 172800000).toISOString(),
+        lastContact: new Date(Date.now() - 3600000).toISOString()
+      }
+    ];
+    
+    res.json({
+      success: true,
+      data: leads,
+      pagination: {
+        page: parseInt(page),
+        limit: parseInt(limit),
+        total: leads.length,
+        totalPages: Math.ceil(leads.length / parseInt(limit))
+      },
+      message: 'CRM leads retrieved successfully',
+      timestamp: new Date().toISOString()
+    });
+    
+  } catch (error) {
+    logger.error('❌ Get CRM leads error:', error);
+    res.status(500).json({
+      success: false,
+      error: 'GET_CRM_LEADS_FAILED',
+      message: 'Failed to get CRM leads',
+      timestamp: new Date().toISOString()
+    });
+  }
+});
+
+// GET /api/v1/crm/pipeline - Get sales pipeline
+router.get('/pipeline', authenticateToken, requireRole(['admin', 'sales_manager', 'sales_rep']), async (req, res) => {
+  try {
+    const { period = '30d' } = req.query;
+    
+    const pipeline = {
+      stages: [
+        {
+          name: 'Lead',
+          count: 25,
+          value: 125000,
+          conversionRate: 80
+        },
+        {
+          name: 'Qualified',
+          count: 20,
+          value: 200000,
+          conversionRate: 60
+        },
+        {
+          name: 'Proposal',
+          count: 12,
+          value: 180000,
+          conversionRate: 50
+        },
+        {
+          name: 'Negotiation',
+          count: 6,
+          value: 120000,
+          conversionRate: 40
+        },
+        {
+          name: 'Closed Won',
+          count: 2,
+          value: 40000,
+          conversionRate: 100
+        }
+      ],
+      summary: {
+        totalLeads: 25,
+        totalValue: 665000,
+        averageDealSize: 26600,
+        winRate: 8.0,
+        averageSalesCycle: 45
+      }
+    };
+    
+    res.json({
+      success: true,
+      data: pipeline,
+      period: period,
+      message: 'Sales pipeline retrieved successfully',
+      timestamp: new Date().toISOString()
+    });
+    
+  } catch (error) {
+    logger.error('❌ Get sales pipeline error:', error);
+    res.status(500).json({
+      success: false,
+      error: 'GET_SALES_PIPELINE_FAILED',
+      message: 'Failed to get sales pipeline',
+      timestamp: new Date().toISOString()
+    });
+  }
+});
+
 // Get all deals
 router.get('/deals', authenticateToken, requireRole(['admin', 'sales_manager', 'sales_rep']), async (req, res) => {
   try {

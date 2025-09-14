@@ -1,0 +1,92 @@
+{
+  "totalFrontendCalls": 205,
+  "totalExistingRoutes": 206,
+  "missingEndpoints": 34,
+  "categorizedMissing": {
+    "auth": [
+      "POST /auth/refresh",
+      "GET /auth/profile",
+      "PUT /auth/profile",
+      "GET /auth/preferences",
+      "PUT /auth/preferences",
+      "GET /auth/permissions",
+      "PUT /auth/update-profile",
+      "POST /auth/change-password",
+      "POST /auth/enable-2fa",
+      "POST /auth/verify-2fa",
+      "GET /auth/sessions",
+      "DELETE /auth/sessions/:id",
+      "POST /auth/set-recovery-options"
+    ],
+    "dashboard": [
+      "GET /dashboard/admin/overview",
+      "GET /dashboard/stats?type=revenue",
+      "GET /dashboard/stats?type=users",
+      "GET /dashboard/stats?type=bookings"
+    ],
+    "finance": [
+      "GET /finance/reports",
+      "GET /finance/subscriptions"
+    ],
+    "crm": [
+      "GET /crm/leads",
+      "GET /crm/pipeline"
+    ],
+    "partners": [
+      "GET /partners/orders",
+      "GET /partners/commission",
+      "GET /partners/performance"
+    ],
+    "marketing": [
+      "GET /marketing/automation"
+    ],
+    "projects": [
+      "GET /projects/list",
+      "GET /projects/time"
+    ],
+    "legal": [
+      "GET /legal/compliance"
+    ],
+    "settings": [
+      "GET /settings/system",
+      "GET /settings/profile",
+      "GET /settings/branding"
+    ],
+    "security": [
+      "GET /security/2fa",
+      "GET /security/audit",
+      "GET /security/roles"
+    ]
+  },
+  "priorityEndpoints": [
+    "GET /auth/profile",
+    "PUT /auth/profile",
+    "GET /auth/preferences",
+    "PUT /auth/preferences",
+    "GET /auth/permissions",
+    "PUT /auth/update-profile",
+    "POST /auth/change-password",
+    "POST /auth/enable-2fa",
+    "POST /auth/verify-2fa",
+    "GET /auth/sessions",
+    "DELETE /auth/sessions/:id",
+    "POST /auth/set-recovery-options",
+    "GET /dashboard/admin/overview",
+    "GET /dashboard/stats?type=revenue",
+    "GET /dashboard/stats?type=users",
+    "GET /dashboard/stats?type=bookings",
+    "GET /partners/orders",
+    "GET /partners/commission",
+    "GET /partners/performance",
+    "GET /marketing/automation",
+    "GET /projects/list",
+    "GET /projects/time",
+    "GET /legal/compliance",
+    "GET /settings/system",
+    "GET /settings/profile",
+    "GET /settings/branding",
+    "GET /security/2fa",
+    "GET /security/audit",
+    "GET /security/roles"
+  ]
+}

@@ -7,6 +7,153 @@ const logger = require('../utils/logger');
 // DASHBOARD ENDPOINTS
 // ============================================================================
 
+// GET /api/v1/dashboard/admin/overview - Get admin dashboard overview
+router.get('/admin/overview', authenticateToken, requireRole(['admin']), async (req, res) => {
+  try {
+    const overviewData = {
+      users: {
+        total: 1250,
+        active: 980,
+        new: 45,
+        growth: 12.5
+      },
+      bookings: {
+        total: 2847,
+        pending: 23,
+        completed: 2824,
+        cancelled: 12,
+        growth: 8.2
+      },
+      revenue: {
+        total: 125000,
+        monthly: 25000,
+        weekly: 6250,
+        daily: 892,
+        growth: 15.3
+      },
+      vehicles: {
+        total: 150,
+        available: 142,
+        inService: 8,
+        maintenance: 3
+      },
+      services: {
+        total: 89,
+        active: 67,
+        completed: 22,
+        pending: 5
+      },
+      partners: {
+        total: 45,
+        active: 38,
+        pending: 7,
+        growth: 5.2
+      }
+    };
+
+    res.json({
+      success: true,
+      data: overviewData,
+      message: 'Admin dashboard overview retrieved successfully',
+      timestamp: new Date().toISOString()
+    });
+
+  } catch (error) {
+    logger.error('❌ Get admin overview error:', error);
+    res.status(500).json({
+      success: false,
+      error: 'GET_ADMIN_OVERVIEW_FAILED',
+      message: 'Failed to get admin dashboard overview',
+      timestamp: new Date().toISOString()
+    });
+  }
+});
+
+// GET /api/v1/dashboard/stats - Get dashboard statistics by type
+router.get('/stats', authenticateToken, async (req, res) => {
+  try {
+    const { type } = req.query;
+    
+    let statsData = {};
+    
+    switch (type) {
+      case 'revenue':
+        statsData = {
+          totalRevenue: 125000,
+          monthlyRevenue: 25000,
+          weeklyRevenue: 6250,
+          dailyRevenue: 892,
+          growth: 15.3,
+          chartData: [
+            { month: 'Jan', revenue: 20000 },
+            { month: 'Feb', revenue: 22000 },
+            { month: 'Mar', revenue: 25000 },
+            { month: 'Apr', revenue: 23000 },
+            { month: 'May', revenue: 25000 }
+          ]
+        };
+        break;
+        
+      case 'users':
+        statsData = {
+          total: 1250,
+          active: 980,
+          new: 45,
+          growth: 12.5,
+          chartData: [
+            { month: 'Jan', users: 1000 },
+            { month: 'Feb', users: 1100 },
+            { month: 'Mar', users: 1200 },
+            { month: 'Apr', users: 1180 },
+            { month: 'May', users: 1250 }
+          ]
+        };
+        break;
+        
+      case 'bookings':
+        statsData = {
+          total: 2847,
+          pending: 23,
+          completed: 2824,
+          cancelled: 12,
+          growth: 8.2,
+          chartData: [
+            { month: 'Jan', bookings: 2000 },
+            { month: 'Feb', bookings: 2200 },
+            { month: 'Mar', bookings: 2500 },
+            { month: 'Apr', bookings: 2400 },
+            { month: 'May', bookings: 2847 }
+          ]
+        };
+        break;
+        
+      default:
+        return res.status(400).json({
+          success: false,
+          error: 'INVALID_TYPE',
+          message: 'Invalid stats type. Use: revenue, users, or bookings',
+          timestamp: new Date().toISOString()
+        });
+    }
+
+    res.json({
+      success: true,
+      data: statsData,
+      message: `${type} statistics retrieved successfully`,
+      timestamp: new Date().toISOString()
+    });
+
+  } catch (error) {
+    logger.error('❌ Get dashboard stats error:', error);
+    res.status(500).json({
+      success: false,
+      error: 'GET_STATS_FAILED',
+      message: 'Failed to get dashboard statistics',
+      timestamp: new Date().toISOString()
+    });
+  }
+});
+
 // GET /api/v1/dashboard/consolidated - Get consolidated dashboard data
 router.get('/consolidated', authenticateToken, async (req, res) => {
   try {

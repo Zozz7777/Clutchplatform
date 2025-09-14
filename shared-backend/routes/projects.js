@@ -18,6 +18,134 @@ router.use(projectRateLimit);
 
 // ==================== PROJECTS ROUTES ====================
 
+// GET /api/v1/projects/list - Get projects list
+router.get('/list', authenticateToken, requireRole(['admin', 'project_manager']), async (req, res) => {
+  try {
+    const { page = 1, limit = 10, status, search } = req.query;
+    
+    const projects = [
+      {
+        id: 'project-1',
+        name: 'Website Redesign',
+        description: 'Complete redesign of the company website',
+        status: 'in_progress',
+        priority: 'high',
+        startDate: new Date().toISOString(),
+        endDate: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString(),
+        progress: 65,
+        team: ['user-1', 'user-2', 'user-3'],
+        budget: 50000,
+        spent: 32500,
+        client: 'Tech Corp'
+      },
+      {
+        id: 'project-2',
+        name: 'Mobile App Development',
+        description: 'Development of mobile application for iOS and Android',
+        status: 'planning',
+        priority: 'medium',
+        startDate: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString(),
+        endDate: new Date(Date.now() + 90 * 24 * 60 * 60 * 1000).toISOString(),
+        progress: 15,
+        team: ['user-4', 'user-5'],
+        budget: 100000,
+        spent: 15000,
+        client: 'Startup Inc'
+      }
+    ];
+    
+    res.json({
+      success: true,
+      data: projects,
+      pagination: {
+        page: parseInt(page),
+        limit: parseInt(limit),
+        total: projects.length,
+        totalPages: Math.ceil(projects.length / parseInt(limit))
+      },
+      message: 'Projects list retrieved successfully',
+      timestamp: new Date().toISOString()
+    });
+    
+  } catch (error) {
+    logger.error('❌ Get projects list error:', error);
+    res.status(500).json({
+      success: false,
+      error: 'GET_PROJECTS_LIST_FAILED',
+      message: 'Failed to get projects list',
+      timestamp: new Date().toISOString()
+    });
+  }
+});
+
+// GET /api/v1/projects/time - Get project time tracking
+router.get('/time', authenticateToken, requireRole(['admin', 'project_manager']), async (req, res) => {
+  try {
+    const { projectId, userId, startDate, endDate } = req.query;
+    
+    const timeData = [
+      {
+        id: 'time-1',
+        projectId: 'project-1',
+        projectName: 'Website Redesign',
+        userId: 'user-1',
+        userName: 'John Doe',
+        task: 'Frontend Development',
+        hours: 8.5,
+        date: new Date().toISOString(),
+        description: 'Worked on responsive design implementation'
+      },
+      {
+        id: 'time-2',
+        projectId: 'project-1',
+        projectName: 'Website Redesign',
+        userId: 'user-2',
+        userName: 'Jane Smith',
+        task: 'Backend API Development',
+        hours: 6.0,
+        date: new Date(Date.now() - 86400000).toISOString(),
+        description: 'Implemented user authentication endpoints'
+      },
+      {
+        id: 'time-3',
+        projectId: 'project-2',
+        projectName: 'Mobile App Development',
+        userId: 'user-4',
+        userName: 'Mike Johnson',
+        task: 'UI/UX Design',
+        hours: 4.5,
+        date: new Date(Date.now() - 172800000).toISOString(),
+        description: 'Created wireframes and mockups'
+      }
+    ];
+    
+    const summary = {
+      totalHours: timeData.reduce((sum, entry) => sum + entry.hours, 0),
+      totalEntries: timeData.length,
+      averageHoursPerDay: timeData.reduce((sum, entry) => sum + entry.hours, 0) / 3,
+      projects: [...new Set(timeData.map(entry => entry.projectId))].length,
+      users: [...new Set(timeData.map(entry => entry.userId))].length
+    };
+    
+    res.json({
+      success: true,
+      data: timeData,
+      summary: summary,
+      message: 'Project time tracking data retrieved successfully',
+      timestamp: new Date().toISOString()
+    });
+    
+  } catch (error) {
+    logger.error('❌ Get project time tracking error:', error);
+    res.status(500).json({
+      success: false,
+      error: 'GET_PROJECT_TIME_FAILED',
+      message: 'Failed to get project time tracking data',
+      timestamp: new Date().toISOString()
+    });
+  }
+});
+
 // Get all projects
 router.get('/', authenticateToken, requireRole(['admin', 'project_manager']), async (req, res) => {
   try {

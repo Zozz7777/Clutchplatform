@@ -18,6 +18,144 @@ router.use(financeRateLimit);
 
 // ==================== INVOICE MANAGEMENT ====================
 
+// GET /api/v1/finance/reports - Get financial reports
+router.get('/reports', authenticateToken, requireRole(['admin', 'finance_manager', 'finance']), async (req, res) => {
+  try {
+    const { type = 'summary', period = 'monthly', startDate, endDate } = req.query;
+    
+    const reports = {
+      summary: {
+        totalRevenue: 125000,
+        totalExpenses: 85000,
+        netProfit: 40000,
+        profitMargin: 32.0,
+        growth: 15.3,
+        period: period
+      },
+      revenue: {
+        total: 125000,
+        breakdown: {
+          serviceRevenue: 75000,
+          productSales: 35000,
+          subscriptionRevenue: 15000
+        },
+        chartData: [
+          { month: 'Jan', revenue: 20000 },
+          { month: 'Feb', revenue: 22000 },
+          { month: 'Mar', revenue: 25000 },
+          { month: 'Apr', revenue: 23000 },
+          { month: 'May', revenue: 25000 }
+        ]
+      },
+      expenses: {
+        total: 85000,
+        breakdown: {
+          operational: 45000,
+          marketing: 15000,
+          personnel: 20000,
+          maintenance: 5000
+        },
+        chartData: [
+          { month: 'Jan', expenses: 15000 },
+          { month: 'Feb', expenses: 16000 },
+          { month: 'Mar', expenses: 18000 },
+          { month: 'Apr', expenses: 17000 },
+          { month: 'May', expenses: 19000 }
+        ]
+      },
+      profitLoss: {
+        revenue: 125000,
+        expenses: 85000,
+        grossProfit: 40000,
+        netProfit: 40000,
+        profitMargin: 32.0
+      }
+    };
+    
+    res.json({
+      success: true,
+      data: reports[type] || reports.summary,
+      type: type,
+      period: period,
+      message: `${type} financial report retrieved successfully`,
+      timestamp: new Date().toISOString()
+    });
+    
+  } catch (error) {
+    logger.error('❌ Get financial reports error:', error);
+    res.status(500).json({
+      success: false,
+      error: 'GET_FINANCIAL_REPORTS_FAILED',
+      message: 'Failed to get financial reports',
+      timestamp: new Date().toISOString()
+    });
+  }
+});
+
+// GET /api/v1/finance/subscriptions - Get subscription data
+router.get('/subscriptions', authenticateToken, requireRole(['admin', 'finance_manager', 'finance']), async (req, res) => {
+  try {
+    const { page = 1, limit = 10, status, plan } = req.query;
+    
+    const subscriptions = [
+      {
+        id: 'sub-1',
+        customerId: 'customer-1',
+        customerName: 'John Doe',
+        plan: 'premium',
+        status: 'active',
+        amount: 99.99,
+        billingCycle: 'monthly',
+        startDate: new Date().toISOString(),
+        nextBillingDate: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString(),
+        features: ['unlimited_bookings', 'priority_support', 'analytics']
+      },
+      {
+        id: 'sub-2',
+        customerId: 'customer-2',
+        customerName: 'Jane Smith',
+        plan: 'basic',
+        status: 'active',
+        amount: 49.99,
+        billingCycle: 'monthly',
+        startDate: new Date(Date.now() - 15 * 24 * 60 * 60 * 1000).toISOString(),
+        nextBillingDate: new Date(Date.now() + 15 * 24 * 60 * 60 * 1000).toISOString(),
+        features: ['limited_bookings', 'standard_support']
+      }
+    ];
+    
+    const summary = {
+      totalSubscriptions: subscriptions.length,
+      activeSubscriptions: subscriptions.filter(s => s.status === 'active').length,
+      monthlyRecurringRevenue: subscriptions.reduce((sum, s) => sum + s.amount, 0),
+      averageRevenuePerUser: subscriptions.reduce((sum, s) => sum + s.amount, 0) / subscriptions.length
+    };
+    
+    res.json({
+      success: true,
+      data: subscriptions,
+      summary: summary,
+      pagination: {
+        page: parseInt(page),
+        limit: parseInt(limit),
+        total: subscriptions.length,
+        totalPages: Math.ceil(subscriptions.length / parseInt(limit))
+      },
+      message: 'Subscription data retrieved successfully',
+      timestamp: new Date().toISOString()
+    });
+    
+  } catch (error) {
+    logger.error('❌ Get subscriptions error:', error);
+    res.status(500).json({
+      success: false,
+      error: 'GET_SUBSCRIPTIONS_FAILED',
+      message: 'Failed to get subscription data',
+      timestamp: new Date().toISOString()
+    });
+  }
+});
+
 // Get all invoices
 router.get('/invoices', authenticateToken, requireRole(['admin', 'finance_manager', 'finance']), async (req, res) => {
   try {

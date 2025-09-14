@@ -1,0 +1,32 @@
+[33mcommit b21bbd6375b44dce63d24a07c0c0a9b299b2a8a0[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mmain[m[33m, [m[1;31morigin/main[m[33m, [m[1;31morigin/HEAD[m[33m)[m
+Author: Zozz7777 <ziad@yourclutch.com>
+Date:   Sun Sep 14 19:26:21 2025 +0300
+
+    Fix 301 redirect error on admin root URL
+    
+    - Replace server-side redirect with client-side navigation in root page
+    - Fix backend encoding issues in route files (admin.js, analytics.js, monitoring.js, users.js)
+    - Remove duplicate require statements in server.js
+    - Create missing logger.js utility file
+    - Add missing analytics endpoints (/analytics/events, /analytics/sessions)
+    - Fix data structure mismatch between frontend and backend for dashboard API
+    - Resolve TypeError: Cannot read properties of undefined (reading 'total')
+    - Fix 404 errors for various API routes
+    
+    The admin application now works correctly when accessing admin.yourclutch.com without 301 redirect errors.
+
+actual-available-endpoints.json
+clutch-admin/src/app/page.tsx
+comprehensive-endpoint-comparison.json
+comprehensive-frontend-audit.json
+final-endpoint-comparison.json
+scripts/comprehensive-endpoint-comparison.js
+scripts/comprehensive-frontend-audit.js
+scripts/final-endpoint-comparison.js
+scripts/verify-actual-endpoints.js
+shared-backend/fix-duplicates.js
+shared-backend/routes/analytics.js
+shared-backend/routes/monitoring.js
+shared-backend/routes/users.js
+shared-backend/server.js
+shared-backend/utils/logger.js

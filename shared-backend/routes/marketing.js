@@ -18,6 +18,95 @@ router.use(marketingRateLimit);
 
 // ==================== CAMPAIGN MANAGEMENT ====================
 
+// GET /api/v1/marketing/automation - Get marketing automation data
+router.get('/automation', authenticateToken, requireRole(['admin', 'marketing_manager', 'marketing']), async (req, res) => {
+  try {
+    const { page = 1, limit = 10, status, type } = req.query;
+    
+    const automationData = {
+      workflows: [
+        {
+          id: 'workflow-1',
+          name: 'Welcome Email Series',
+          type: 'email',
+          status: 'active',
+          triggers: ['user_signup'],
+          steps: 3,
+          subscribers: 1250,
+          openRate: 45.2,
+          clickRate: 12.8,
+          conversionRate: 8.5,
+          createdAt: new Date().toISOString()
+        },
+        {
+          id: 'workflow-2',
+          name: 'Abandoned Cart Recovery',
+          type: 'email',
+          status: 'active',
+          triggers: ['cart_abandoned'],
+          steps: 2,
+          subscribers: 890,
+          openRate: 38.7,
+          clickRate: 15.2,
+          conversionRate: 12.3,
+          createdAt: new Date(Date.now() - 86400000).toISOString()
+        }
+      ],
+      campaigns: [
+        {
+          id: 'campaign-1',
+          name: 'Summer Sale 2024',
+          type: 'email',
+          status: 'active',
+          recipients: 5000,
+          sent: 5000,
+          delivered: 4950,
+          opened: 1980,
+          clicked: 495,
+          bounced: 50,
+          unsubscribed: 25,
+          openRate: 40.0,
+          clickRate: 10.0,
+          bounceRate: 1.0,
+          unsubscribeRate: 0.5
+        }
+      ],
+      summary: {
+        totalWorkflows: 2,
+        activeWorkflows: 2,
+        totalCampaigns: 1,
+        activeCampaigns: 1,
+        totalSubscribers: 2140,
+        averageOpenRate: 41.95,
+        averageClickRate: 13.0,
+        averageConversionRate: 10.4
+      }
+    };
+    
+    res.json({
+      success: true,
+      data: automationData,
+      pagination: {
+        page: parseInt(page),
+        limit: parseInt(limit),
+        total: automationData.workflows.length + automationData.campaigns.length,
+        totalPages: Math.ceil((automationData.workflows.length + automationData.campaigns.length) / parseInt(limit))
+      },
+      message: 'Marketing automation data retrieved successfully',
+      timestamp: new Date().toISOString()
+    });
+    
+  } catch (error) {
+    logger.error('❌ Get marketing automation error:', error);
+    res.status(500).json({
+      success: false,
+      error: 'GET_MARKETING_AUTOMATION_FAILED',
+      message: 'Failed to get marketing automation data',
+      timestamp: new Date().toISOString()
+    });
+  }
+});
+
 // Get all campaigns
 router.get('/campaigns', authenticateToken, requireRole(['admin', 'marketing_manager', 'marketing']), async (req, res) => {
   try {

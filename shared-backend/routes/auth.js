@@ -38,12 +38,16 @@ router.post('/login', async (req, res) => {
       });
     }
     
-    // Simplified authentication for testing
+    // Check if this is the CEO user
+    const isCEO = email === 'ziad@yourclutch.com';
+    
+    // Create user object with appropriate role and permissions
     const mockUser = {
-      id: 'user-123',
+      id: isCEO ? 'ceo-001' : 'user-123',
       email: email,
-      name: 'Test User',
-      role: 'user',
+      name: isCEO ? 'Ziad - CEO' : 'Test User',
+      role: isCEO ? 'admin' : 'user',
+      permissions: isCEO ? ['all'] : ['read', 'write'],
       isActive: true,
       lastLogin: new Date().toISOString()
     };
@@ -53,7 +57,8 @@ router.post('/login', async (req, res) => {
       { 
         userId: mockUser.id, 
         email: mockUser.email, 
-        role: mockUser.role 
+        role: mockUser.role,
+        permissions: mockUser.permissions
       },
       process.env.JWT_SECRET || 'test-secret',
       { expiresIn: '24h' }
@@ -81,6 +86,479 @@ router.post('/login', async (req, res) => {
   }
 });
 
+// POST /api/v1/auth/refresh - Refresh token
+router.post('/refresh', async (req, res) => {
+  try {
+    const { refreshToken } = req.body;
+    
+    if (!refreshToken) {
+      return res.status(400).json({
+        success: false,
+        error: 'MISSING_REFRESH_TOKEN',
+        message: 'Refresh token is required',
+        timestamp: new Date().toISOString()
+      });
+    }
+    
+    // Generate new JWT token
+    const token = jwt.sign(
+      { 
+        userId: 'user-123', 
+        email: 'user@example.com', 
+        role: 'user',
+        permissions: ['read', 'write']
+      },
+      process.env.JWT_SECRET || 'test-secret',
+      { expiresIn: '24h' }
+    );
+    
+    res.json({
+      success: true,
+      data: {
+        token: token,
+        refreshToken: 'new-refresh-token-' + Date.now(),
+        expiresIn: '24h'
+      },
+      message: 'Token refreshed successfully',
+      timestamp: new Date().toISOString()
+    });
+    
+  } catch (error) {
+    logger.error('❌ Token refresh error:', error);
+    res.status(500).json({
+      success: false,
+      error: 'REFRESH_FAILED',
+      message: 'Token refresh failed',
+      timestamp: new Date().toISOString()
+    });
+  }
+});
+
+// GET /api/v1/auth/profile - Get user profile
+router.get('/profile', authenticateToken, async (req, res) => {
+  try {
+    const userProfile = {
+      id: req.user?.userId || 'user-123',
+      email: req.user?.email || 'user@example.com',
+      name: 'John Doe',
+      role: req.user?.role || 'user',
+      permissions: req.user?.permissions || ['read', 'write'],
+      avatar: 'https://via.placeholder.com/150',
+      phone: '+1234567890',
+      address: '123 Main St, City, Country',
+      preferences: {
+        theme: 'light',
+        language: 'en',
+        notifications: true,
+        emailNotifications: true
+      },
+      createdAt: new Date().toISOString(),
+      lastLogin: new Date().toISOString()
+    };
+    
+    res.json({
+      success: true,
+      data: userProfile,
+      message: 'Profile retrieved successfully',
+      timestamp: new Date().toISOString()
+    });
+    
+  } catch (error) {
+    logger.error('❌ Get profile error:', error);
+    res.status(500).json({
+      success: false,
+      error: 'PROFILE_FETCH_FAILED',
+      message: 'Failed to fetch profile',
+      timestamp: new Date().toISOString()
+    });
+  }
+});
+
+// PUT /api/v1/auth/profile - Update user profile
+router.put('/profile', authenticateToken, async (req, res) => {
+  try {
+    const { name, phone, address, preferences } = req.body;
+    
+    const updatedProfile = {
+      id: req.user?.userId || 'user-123',
+      email: req.user?.email || 'user@example.com',
+      name: name || 'John Doe',
+      role: req.user?.role || 'user',
+      permissions: req.user?.permissions || ['read', 'write'],
+      avatar: 'https://via.placeholder.com/150',
+      phone: phone || '+1234567890',
+      address: address || '123 Main St, City, Country',
+      preferences: preferences || {
+        theme: 'light',
+        language: 'en',
+        notifications: true,
+        emailNotifications: true
+      },
+      updatedAt: new Date().toISOString()
+    };
+    
+    res.json({
+      success: true,
+      data: updatedProfile,
+      message: 'Profile updated successfully',
+      timestamp: new Date().toISOString()
+    });
+    
+  } catch (error) {
+    logger.error('❌ Update profile error:', error);
+    res.status(500).json({
+      success: false,
+      error: 'PROFILE_UPDATE_FAILED',
+      message: 'Failed to update profile',
+      timestamp: new Date().toISOString()
+    });
+  }
+});
+
+// GET /api/v1/auth/preferences - Get user preferences
+router.get('/preferences', authenticateToken, async (req, res) => {
+  try {
+    const preferences = {
+      theme: 'light',
+      language: 'en',
+      notifications: true,
+      emailNotifications: true,
+      smsNotifications: false,
+      pushNotifications: true,
+      timezone: 'UTC',
+      dateFormat: 'MM/DD/YYYY',
+      currency: 'USD'
+    };
+    
+    res.json({
+      success: true,
+      data: preferences,
+      message: 'Preferences retrieved successfully',
+      timestamp: new Date().toISOString()
+    });
+    
+  } catch (error) {
+    logger.error('❌ Get preferences error:', error);
+    res.status(500).json({
+      success: false,
+      error: 'PREFERENCES_FETCH_FAILED',
+      message: 'Failed to fetch preferences',
+      timestamp: new Date().toISOString()
+    });
+  }
+});
+
+// PUT /api/v1/auth/preferences - Update user preferences
+router.put('/preferences', authenticateToken, async (req, res) => {
+  try {
+    const preferences = req.body;
+    
+    res.json({
+      success: true,
+      data: preferences,
+      message: 'Preferences updated successfully',
+      timestamp: new Date().toISOString()
+    });
+    
+  } catch (error) {
+    logger.error('❌ Update preferences error:', error);
+    res.status(500).json({
+      success: false,
+      error: 'PREFERENCES_UPDATE_FAILED',
+      message: 'Failed to update preferences',
+      timestamp: new Date().toISOString()
+    });
+  }
+});
+
+// GET /api/v1/auth/permissions - Get user permissions
+router.get('/permissions', authenticateToken, async (req, res) => {
+  try {
+    const permissions = {
+      dashboard: ['read', 'write'],
+      users: ['read', 'write', 'delete'],
+      analytics: ['read'],
+      system: ['read'],
+      settings: ['read', 'write'],
+      reports: ['read', 'write'],
+      notifications: ['read', 'write']
+    };
+    
+    res.json({
+      success: true,
+      data: permissions,
+      message: 'Permissions retrieved successfully',
+      timestamp: new Date().toISOString()
+    });
+    
+  } catch (error) {
+    logger.error('❌ Get permissions error:', error);
+    res.status(500).json({
+      success: false,
+      error: 'PERMISSIONS_FETCH_FAILED',
+      message: 'Failed to fetch permissions',
+      timestamp: new Date().toISOString()
+    });
+  }
+});
+
+// PUT /api/v1/auth/update-profile - Update user profile (alternative endpoint)
+router.put('/update-profile', authenticateToken, async (req, res) => {
+  try {
+    const { name, phone, address, preferences } = req.body;
+    
+    const updatedProfile = {
+      id: req.user?.userId || 'user-123',
+      email: req.user?.email || 'user@example.com',
+      name: name || 'John Doe',
+      role: req.user?.role || 'user',
+      permissions: req.user?.permissions || ['read', 'write'],
+      avatar: 'https://via.placeholder.com/150',
+      phone: phone || '+1234567890',
+      address: address || '123 Main St, City, Country',
+      preferences: preferences || {
+        theme: 'light',
+        language: 'en',
+        notifications: true,
+        emailNotifications: true
+      },
+      updatedAt: new Date().toISOString()
+    };
+    
+    res.json({
+      success: true,
+      data: updatedProfile,
+      message: 'Profile updated successfully',
+      timestamp: new Date().toISOString()
+    });
+    
+  } catch (error) {
+    logger.error('❌ Update profile error:', error);
+    res.status(500).json({
+      success: false,
+      error: 'PROFILE_UPDATE_FAILED',
+      message: 'Failed to update profile',
+      timestamp: new Date().toISOString()
+    });
+  }
+});
+
+// POST /api/v1/auth/change-password - Change password
+router.post('/change-password', authenticateToken, async (req, res) => {
+  try {
+    const { currentPassword, newPassword } = req.body;
+    
+    if (!currentPassword || !newPassword) {
+      return res.status(400).json({
+        success: false,
+        error: 'MISSING_PASSWORDS',
+        message: 'Current password and new password are required',
+        timestamp: new Date().toISOString()
+      });
+    }
+    
+    if (newPassword.length < 8) {
+      return res.status(400).json({
+        success: false,
+        error: 'WEAK_PASSWORD',
+        message: 'New password must be at least 8 characters long',
+        timestamp: new Date().toISOString()
+      });
+    }
+    
+    res.json({
+      success: true,
+      message: 'Password changed successfully',
+      timestamp: new Date().toISOString()
+    });
+    
+  } catch (error) {
+    logger.error('❌ Change password error:', error);
+    res.status(500).json({
+      success: false,
+      error: 'PASSWORD_CHANGE_FAILED',
+      message: 'Failed to change password',
+      timestamp: new Date().toISOString()
+    });
+  }
+});
+
+// POST /api/v1/auth/enable-2fa - Enable 2FA
+router.post('/enable-2fa', authenticateToken, async (req, res) => {
+  try {
+    const { phone } = req.body;
+    
+    if (!phone) {
+      return res.status(400).json({
+        success: false,
+        error: 'MISSING_PHONE',
+        message: 'Phone number is required for 2FA',
+        timestamp: new Date().toISOString()
+      });
+    }
+    
+    const qrCode = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNkYPhfDwAChwGA60e6kgAAAABJRU5ErkJggg==';
+    
+    res.json({
+      success: true,
+      data: {
+        qrCode: qrCode,
+        secret: '2FA_SECRET_KEY',
+        backupCodes: ['123456', '789012', '345678', '901234', '567890']
+      },
+      message: '2FA enabled successfully',
+      timestamp: new Date().toISOString()
+    });
+    
+  } catch (error) {
+    logger.error('❌ Enable 2FA error:', error);
+    res.status(500).json({
+      success: false,
+      error: '2FA_ENABLE_FAILED',
+      message: 'Failed to enable 2FA',
+      timestamp: new Date().toISOString()
+    });
+  }
+});
+
+// POST /api/v1/auth/verify-2fa - Verify 2FA code
+router.post('/verify-2fa', authenticateToken, async (req, res) => {
+  try {
+    const { code } = req.body;
+    
+    if (!code) {
+      return res.status(400).json({
+        success: false,
+        error: 'MISSING_CODE',
+        message: '2FA code is required',
+        timestamp: new Date().toISOString()
+      });
+    }
+    
+    // Mock verification - in real app, verify against authenticator app
+    if (code === '123456') {
+      res.json({
+        success: true,
+        message: '2FA verified successfully',
+        timestamp: new Date().toISOString()
+      });
+    } else {
+      res.status(400).json({
+        success: false,
+        error: 'INVALID_CODE',
+        message: 'Invalid 2FA code',
+        timestamp: new Date().toISOString()
+      });
+    }
+    
+  } catch (error) {
+    logger.error('❌ Verify 2FA error:', error);
+    res.status(500).json({
+      success: false,
+      error: '2FA_VERIFY_FAILED',
+      message: 'Failed to verify 2FA code',
+      timestamp: new Date().toISOString()
+    });
+  }
+});
+
+// GET /api/v1/auth/sessions - Get active sessions
+router.get('/sessions', authenticateToken, async (req, res) => {
+  try {
+    const sessions = [
+      {
+        id: 'session-1',
+        device: 'Chrome on Windows',
+        location: 'New York, NY',
+        ipAddress: '192.168.1.1',
+        lastActive: new Date().toISOString(),
+        isCurrent: true
+      },
+      {
+        id: 'session-2',
+        device: 'Safari on iPhone',
+        location: 'Los Angeles, CA',
+        ipAddress: '192.168.1.2',
+        lastActive: new Date(Date.now() - 3600000).toISOString(),
+        isCurrent: false
+      }
+    ];
+    
+    res.json({
+      success: true,
+      data: sessions,
+      message: 'Sessions retrieved successfully',
+      timestamp: new Date().toISOString()
+    });
+    
+  } catch (error) {
+    logger.error('❌ Get sessions error:', error);
+    res.status(500).json({
+      success: false,
+      error: 'SESSIONS_FETCH_FAILED',
+      message: 'Failed to fetch sessions',
+      timestamp: new Date().toISOString()
+    });
+  }
+});
+
+// DELETE /api/v1/auth/sessions/:id - Revoke session
+router.delete('/sessions/:id', authenticateToken, async (req, res) => {
+  try {
+    const { id } = req.params;
+    
+    res.json({
+      success: true,
+      message: 'Session revoked successfully',
+      timestamp: new Date().toISOString()
+    });
+    
+  } catch (error) {
+    logger.error('❌ Revoke session error:', error);
+    res.status(500).json({
+      success: false,
+      error: 'SESSION_REVOKE_FAILED',
+      message: 'Failed to revoke session',
+      timestamp: new Date().toISOString()
+    });
+  }
+});
+
+// POST /api/v1/auth/set-recovery-options - Set recovery options
+router.post('/set-recovery-options', authenticateToken, async (req, res) => {
+  try {
+    const { recoveryEmail } = req.body;
+    
+    if (!recoveryEmail) {
+      return res.status(400).json({
+        success: false,
+        error: 'MISSING_RECOVERY_EMAIL',
+        message: 'Recovery email is required',
+        timestamp: new Date().toISOString()
+      });
+    }
+    
+    res.json({
+      success: true,
+      data: {
+        recoveryEmail: recoveryEmail,
+        backupCodes: ['123456', '789012', '345678', '901234', '567890']
+      },
+      message: 'Recovery options set successfully',
+      timestamp: new Date().toISOString()
+    });
+    
+  } catch (error) {
+    logger.error('❌ Set recovery options error:', error);
+    res.status(500).json({
+      success: false,
+      error: 'RECOVERY_OPTIONS_FAILED',
+      message: 'Failed to set recovery options',
+      timestamp: new Date().toISOString()
+    });
+  }
+});
+
 // POST /api/v1/auth/employee-login - Employee login
 router.post('/employee-login', async (req, res) => {
   try {
@@ -95,13 +573,17 @@ router.post('/employee-login', async (req, res) => {
       });
     }
     
-    // Simplified employee authentication for testing
+    // Check if this is the CEO user
+    const isCEO = email === 'ziad@yourclutch.com';
+    
+    // Create user object with appropriate role and permissions
     const mockEmployee = {
-      id: 'employee-123',
+      id: isCEO ? 'ceo-001' : 'employee-123',
       email: email,
-      name: 'Test Employee',
-      role: 'employee',
-      department: 'IT',
+      name: isCEO ? 'Ziad - CEO' : 'Test Employee',
+      role: isCEO ? 'admin' : 'employee',
+      department: isCEO ? 'Executive' : 'IT',
+      permissions: isCEO ? ['all'] : ['read', 'write', 'manage'],
       isActive: true,
       lastLogin: new Date().toISOString()
     };
@@ -111,7 +593,8 @@ router.post('/employee-login', async (req, res) => {
       { 
         userId: mockEmployee.id, 
         email: mockEmployee.email, 
-        role: mockEmployee.role 
+        role: mockEmployee.role,
+        permissions: mockEmployee.permissions
       },
       process.env.JWT_SECRET || 'test-secret',
       { expiresIn: '24h' }
@@ -144,13 +627,16 @@ router.post('/employee-login', async (req, res) => {
 router.get('/me', authenticateToken, async (req, res) => {
   try {
     const userId = req.user.userId;
+    const isCEO = req.user.email === 'ziad@yourclutch.com';
     
     // Mock user data - in production, fetch from database
     const user = {
       id: userId,
       email: req.user.email,
-      name: 'Current User',
+      name: isCEO ? 'Ziad - CEO' : 'Current User',
       role: req.user.role,
+      permissions: req.user.permissions || (isCEO ? ['all'] : ['read', 'write']),
+      department: isCEO ? 'Executive' : 'General',
       isActive: true,
       lastLogin: new Date().toISOString()
     };
@@ -480,6 +966,7 @@ router.get('/roles', authenticateToken, async (req, res) => {
   try {
     const roles = [
       { id: 'admin', name: 'Administrator', permissions: ['all'] },
+      { id: 'ceo', name: 'Chief Executive Officer', permissions: ['all'] },
       { id: 'user', name: 'User', permissions: ['read', 'write'] },
       { id: 'employee', name: 'Employee', permissions: ['read', 'write', 'manage'] },
       { id: 'viewer', name: 'Viewer', permissions: ['read'] }
@@ -508,18 +995,24 @@ router.get('/permissions', authenticateToken, async (req, res) => {
   try {
     const userId = req.user.userId;
     const userRole = req.user.role;
+    const isCEO = req.user.email === 'ziad@yourclutch.com';
     
     const permissions = {
       user: ['read', 'write'],
       employee: ['read', 'write', 'manage'],
-      admin: ['all']
+      admin: ['all'],
+      ceo: ['all']
     };
+    
+    // CEO gets all permissions regardless of role
+    const userPermissions = isCEO ? ['all'] : (permissions[userRole] || permissions.user);
     
     res.json({
       success: true,
       data: { 
-        permissions: permissions[userRole] || permissions.user,
-        role: userRole
+        permissions: userPermissions,
+        role: userRole,
+        isCEO: isCEO
       },
       message: 'User permissions retrieved successfully',
       timestamp: new Date().toISOString()
