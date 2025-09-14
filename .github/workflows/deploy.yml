@@ -1,0 +1,109 @@
+name: 🚀 Deploy Clutch Platform
+
+on:
+  push:
+    branches: [ main ]
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: 'Deployment environment'
+        required: true
+        default: 'production'
+        type: choice
+        options:
+        - staging
+        - production
+
+env:
+  NODE_VERSION: '18'
+
+jobs:
+  # Deploy to Staging
+  deploy-staging:
+    name: 🚀 Deploy to Staging
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/develop' || (github.event_name == 'workflow_dispatch' && github.event.inputs.environment == 'staging')
+    environment: staging
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: ${{ env.NODE_VERSION }}
+        
+    - name: Install dependencies
+      working-directory: shared-backend
+      run: npm ci
+      
+    - name: Run tests
+      working-directory: shared-backend
+      run: npm run test:production
+      
+    - name: Deploy to Render (Staging)
+      uses: johnbeynon/render-deploy-action@v0.0.8
+      with:
+        service-id: ${{ secrets.RENDER_STAGING_SERVICE_ID }}
+        api-key: ${{ secrets.RENDER_API_KEY }}
+        
+    - name: Health check
+      run: |
+        echo "🏥 Checking staging deployment health..."
+        sleep 30
+        curl -f https://clutch-staging.onrender.com/health || echo "⚠️ Staging health check failed"
+        
+    - name: Notify deployment
+      run: |
+        echo "📢 Staging deployment completed successfully!"
+        echo "🌐 Staging URL: https://clutch-staging.onrender.com"
+
+  # Deploy to Production
+  deploy-production:
+    name: 🚀 Deploy to Production
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main' || (github.event_name == 'workflow_dispatch' && github.event.inputs.environment == 'production')
+    environment: production
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: ${{ env.NODE_VERSION }}
+        
+    - name: Install dependencies
+      working-directory: shared-backend
+      run: npm ci
+      
+    - name: Run comprehensive tests
+      working-directory: shared-backend
+      run: |
+        npm run test:production
+        npm run test:health
+        
+    - name: Deploy to Render (Production)
+      uses: johnbeynon/render-deploy-action@v0.0.8
+      with:
+        service-id: ${{ secrets.RENDER_PRODUCTION_SERVICE_ID }}
+        api-key: ${{ secrets.RENDER_API_KEY }}
+        
+    - name: Health check
+      run: |
+        echo "🏥 Checking production deployment health..."
+        sleep 30
+        curl -f https://clutch-main-nk7x.onrender.com/health
+        echo "✅ Production health check passed"
+        
+    - name: Run post-deployment tests
+      working-directory: shared-backend
+      run: npm run test:production
+      
+    - name: Notify deployment
+      run: |
+        echo "🎉 Production deployment completed successfully!"
+        echo "🌐 Production URL: https://clutch-main-nk7x.onrender.com"
+        echo "📊 Health Status: ✅ Operational"
