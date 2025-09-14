@@ -74,20 +74,13 @@ export default function LoginPage() {
     setIsLoading(true)
 
     try {
-      const response = await login(formData.email, formData.password, formData.rememberMe)
+      await login(formData.email, formData.password)
       
-      if (response.success) {
-        setSuccess('Login successful! Redirecting...')
-        toast.success('Welcome back!', {
-          description: 'You have been successfully logged in.'
-        })
-        // Redirect will be handled by the auth context
-      } else {
-        setError(response.message || 'Login failed. Please try again.')
-        toast.error('Login Failed', {
-          description: response.message || 'Please check your credentials and try again.'
-        })
-      }
+      setSuccess('Login successful! Redirecting...')
+      toast.success('Welcome back!', {
+        description: 'You have been successfully logged in.'
+      })
+      // Redirect will be handled by the auth context
     } catch (error) {
       console.error('Login error:', error)
       setError('An unexpected error occurred. Please try again.')
