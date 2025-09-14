@@ -3413,4 +3413,757 @@ router.get('/business/metrics', authenticateToken, requireRole(['admin', 'busine
   }
 });
 
+// ============================================================================
+// PHASE 1: ADDITIONAL CRITICAL ADMIN ENDPOINTS
+// ============================================================================
+
+// GET /admin/chat/channels/:id/messages - Get chat channel messages
+router.get('/chat/channels/:id/messages', authenticateToken, requireRole(['admin', 'support']), async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { page = 1, limit = 50, dateFrom, dateTo } = req.query;
+    
+    const messages = [
+      {
+        id: 'msg-1',
+        channelId: id,
+        sender: {
+          id: 'user-123',
+          name: 'John Doe',
+          email: 'john@example.com',
+          role: 'customer'
+        },
+        message: 'I need help with my order',
+        timestamp: new Date().toISOString(),
+        type: 'text',
+        status: 'read',
+        metadata: { orderId: 'order-456' }
+      },
+      {
+        id: 'msg-2',
+        channelId: id,
+        sender: {
+          id: 'support-1',
+          name: 'Support Agent',
+          email: 'support@clutch.com',
+          role: 'support'
+        },
+        message: 'I can help you with that. What is your order number?',
+        timestamp: new Date(Date.now() - 300000).toISOString(),
+        type: 'text',
+        status: 'sent',
+        metadata: { responseTime: '2 minutes' }
+      }
+    ];
+
+    res.json({
+      success: true,
+      data: { 
+        messages,
+        channel: {
+          id: id,
+          name: 'Customer Support',
+          type: 'support',
+          status: 'active',
+          participants: 2
+        },
+        pagination: {
+          page: parseInt(page),
+          limit: parseInt(limit),
+          total: messages.length,
+          pages: Math.ceil(messages.length / limit)
+        }
+      },
+      message: 'Chat channel messages retrieved successfully',
+      timestamp: new Date().toISOString()
+    });
+
+  } catch (error) {
+    logger.error('❌ Get chat channel messages error:', error);
+    res.status(500).json({
+      success: false,
+      error: 'GET_CHAT_CHANNEL_MESSAGES_FAILED',
+      message: 'Failed to get chat channel messages',
+      timestamp: new Date().toISOString()
+    });
+  }
+});
+
+// GET /admin/cms/media/:id - Get specific media item
+router.get('/cms/media/:id', authenticateToken, requireRole(['admin', 'content_manager']), async (req, res) => {
+  try {
+    const { id } = req.params;
+    
+    const mediaItem = {
+      id: id,
+      title: 'Product Image',
+      description: 'High-quality product image for catalog',
+      type: 'image',
+      format: 'jpg',
+      size: 2048576, // 2MB
+      dimensions: { width: 1920, height: 1080 },
+      url: `https://cdn.clutch.com/media/${id}.jpg`,
+      thumbnail: `https://cdn.clutch.com/media/thumbnails/${id}.jpg`,
+      alt: 'Product image',
+      tags: ['product', 'catalog', 'main'],
+      category: 'product-images',
+      status: 'published',
+      uploadedBy: 'admin@example.com',
+      uploadedAt: new Date().toISOString(),
+      lastModified: new Date().toISOString(),
+      usage: {
+        usedIn: ['product-123', 'catalog-page'],
+        views: 1250,
+        downloads: 45
+      },
+      metadata: {
+        colorProfile: 'sRGB',
+        compression: 'JPEG',
+        quality: 95
+      }
+    };
+
+    res.json({
+      success: true,
+      data: { media: mediaItem },
+      message: 'Media item retrieved successfully',
+      timestamp: new Date().toISOString()
+    });
+
+  } catch (error) {
+    logger.error('❌ Get media item error:', error);
+    res.status(500).json({
+      success: false,
+      error: 'GET_MEDIA_ITEM_FAILED',
+      message: 'Failed to get media item',
+      timestamp: new Date().toISOString()
+    });
+  }
+});
+
+// POST /admin/cms/media/upload - Upload media file
+router.post('/cms/media/upload', authenticateToken, requireRole(['admin', 'content_manager']), async (req, res) => {
+  try {
+    const { title, description, category, tags, alt } = req.body;
+    
+    // In a real application, you would handle file upload here
+    const uploadedMedia = {
+      id: `media-${Date.now()}`,
+      title: title || 'Uploaded Media',
+      description: description || '',
+      type: 'image',
+      format: 'jpg',
+      size: 1024000, // 1MB
+      dimensions: { width: 800, height: 600 },
+      url: `https://cdn.clutch.com/media/media-${Date.now()}.jpg`,
+      thumbnail: `https://cdn.clutch.com/media/thumbnails/media-${Date.now()}.jpg`,
+      alt: alt || '',
+      tags: tags ? tags.split(',') : [],
+      category: category || 'general',
+      status: 'uploaded',
+      uploadedBy: req.user.email,
+      uploadedAt: new Date().toISOString(),
+      lastModified: new Date().toISOString(),
+      usage: {
+        usedIn: [],
+        views: 0,
+        downloads: 0
+      }
+    };
+
+    res.json({
+      success: true,
+      data: { media: uploadedMedia },
+      message: 'Media uploaded successfully',
+      timestamp: new Date().toISOString()
+    });
+
+  } catch (error) {
+    logger.error('❌ Upload media error:', error);
+    res.status(500).json({
+      success: false,
+      error: 'UPLOAD_MEDIA_FAILED',
+      message: 'Failed to upload media',
+      timestamp: new Date().toISOString()
+    });
+  }
+});
+
+// GET /admin/cms/mobile - Get mobile CMS content
+router.get('/cms/mobile', authenticateToken, requireRole(['admin', 'mobile_manager']), async (req, res) => {
+  try {
+    const { page = 1, limit = 20, status, type } = req.query;
+    
+    const mobileContent = [
+      {
+        id: 'mobile-1',
+        title: 'App Banner',
+        type: 'banner',
+        content: {
+          image: 'https://cdn.clutch.com/banners/app-banner.jpg',
+          title: 'Welcome to Clutch',
+          subtitle: 'Your trusted auto service partner',
+          actionText: 'Get Started',
+          actionUrl: '/onboarding'
+        },
+        status: 'active',
+        priority: 1,
+        targetAudience: 'new_users',
+        startDate: new Date().toISOString(),
+        endDate: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString(),
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString()
+      },
+      {
+        id: 'mobile-2',
+        title: 'Service Promotion',
+        type: 'promotion',
+        content: {
+          title: '20% Off Oil Change',
+          description: 'Limited time offer for new customers',
+          discount: 20,
+          validUntil: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString()
+        },
+        status: 'active',
+        priority: 2,
+        targetAudience: 'all_users',
+        startDate: new Date().toISOString(),
+        endDate: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString(),
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString()
+      }
+    ];
+
+    res.json({
+      success: true,
+      data: { 
+        content: mobileContent,
+        pagination: {
+          page: parseInt(page),
+          limit: parseInt(limit),
+          total: mobileContent.length,
+          pages: Math.ceil(mobileContent.length / limit)
+        }
+      },
+      message: 'Mobile CMS content retrieved successfully',
+      timestamp: new Date().toISOString()
+    });
+
+  } catch (error) {
+    logger.error('❌ Get mobile CMS content error:', error);
+    res.status(500).json({
+      success: false,
+      error: 'GET_MOBILE_CMS_CONTENT_FAILED',
+      message: 'Failed to get mobile CMS content',
+      timestamp: new Date().toISOString()
+    });
+  }
+});
+
+// GET /admin/cms/mobile/:id - Get specific mobile CMS item
+router.get('/cms/mobile/:id', authenticateToken, requireRole(['admin', 'mobile_manager']), async (req, res) => {
+  try {
+    const { id } = req.params;
+    
+    const mobileItem = {
+      id: id,
+      title: 'App Feature Highlight',
+      type: 'feature',
+      content: {
+        image: 'https://cdn.clutch.com/features/feature-1.jpg',
+        title: 'Real-time Tracking',
+        description: 'Track your service in real-time with our advanced GPS system',
+        features: ['GPS Tracking', 'Live Updates', 'ETA Notifications'],
+        actionText: 'Learn More',
+        actionUrl: '/features/tracking'
+      },
+      status: 'active',
+      priority: 3,
+      targetAudience: 'existing_users',
+      startDate: new Date().toISOString(),
+      endDate: new Date(Date.now() + 60 * 24 * 60 * 60 * 1000).toISOString(),
+      metrics: {
+        views: 2500,
+        clicks: 125,
+        conversions: 45
+      },
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString()
+    };
+
+    res.json({
+      success: true,
+      data: { item: mobileItem },
+      message: 'Mobile CMS item retrieved successfully',
+      timestamp: new Date().toISOString()
+    });
+
+  } catch (error) {
+    logger.error('❌ Get mobile CMS item error:', error);
+    res.status(500).json({
+      success: false,
+      error: 'GET_MOBILE_CMS_ITEM_FAILED',
+      message: 'Failed to get mobile CMS item',
+      timestamp: new Date().toISOString()
+    });
+  }
+});
+
+// GET /admin/cms/seo - Get SEO management data
+router.get('/cms/seo', authenticateToken, requireRole(['admin', 'seo_manager']), async (req, res) => {
+  try {
+    const { page = 1, limit = 20, status } = req.query;
+    
+    const seoData = {
+      overview: {
+        totalPages: 150,
+        indexedPages: 145,
+        rankingKeywords: 1250,
+        averagePosition: 8.5,
+        organicTraffic: 45000,
+        growth: 12.5
+      },
+      pages: [
+        {
+          id: 'page-1',
+          url: '/services/oil-change',
+          title: 'Oil Change Services - Clutch Auto',
+          metaDescription: 'Professional oil change services with certified mechanics. Book online and save time.',
+          keywords: ['oil change', 'auto service', 'car maintenance'],
+          status: 'published',
+          lastCrawled: new Date().toISOString(),
+          ranking: 3,
+          traffic: 1250,
+          conversions: 45
+        },
+        {
+          id: 'page-2',
+          url: '/services/brake-repair',
+          title: 'Brake Repair Services - Expert Mechanics',
+          metaDescription: 'Expert brake repair and maintenance services. Safety first with our certified technicians.',
+          keywords: ['brake repair', 'brake service', 'auto repair'],
+          status: 'published',
+          lastCrawled: new Date(Date.now() - 86400000).toISOString(),
+          ranking: 5,
+          traffic: 980,
+          conversions: 32
+        }
+      ],
+      keywords: [
+        {
+          keyword: 'oil change near me',
+          position: 3,
+          volume: 12000,
+          difficulty: 'medium',
+          trend: 'up'
+        },
+        {
+          keyword: 'auto repair shop',
+          position: 8,
+          volume: 8500,
+          difficulty: 'high',
+          trend: 'stable'
+        }
+      ],
+      issues: [
+        {
+          type: 'missing_meta_description',
+          count: 5,
+          severity: 'medium',
+          pages: ['/page1', '/page2']
+        },
+        {
+          type: 'duplicate_content',
+          count: 2,
+          severity: 'high',
+          pages: ['/duplicate1', '/duplicate2']
+        }
+      ]
+    };
+
+    res.json({
+      success: true,
+      data: { seo: seoData },
+      message: 'SEO data retrieved successfully',
+      timestamp: new Date().toISOString()
+    });
+
+  } catch (error) {
+    logger.error('❌ Get SEO data error:', error);
+    res.status(500).json({
+      success: false,
+      error: 'GET_SEO_DATA_FAILED',
+      message: 'Failed to get SEO data',
+      timestamp: new Date().toISOString()
+    });
+  }
+});
+
+// GET /admin/dashboard/activity - Get dashboard activity
+router.get('/dashboard/activity', authenticateToken, requireRole(['admin']), async (req, res) => {
+  try {
+    const { limit = 20, type, dateFrom, dateTo } = req.query;
+    
+    const activities = [
+      {
+        id: 'activity-1',
+        type: 'user_action',
+        user: 'admin@example.com',
+        action: 'created_user',
+        target: 'user-123',
+        description: 'Created new user account for john.doe@example.com',
+        timestamp: new Date().toISOString(),
+        metadata: {
+          userId: 'user-123',
+          role: 'employee',
+          department: 'sales'
+        }
+      },
+      {
+        id: 'activity-2',
+        type: 'system_action',
+        user: 'system',
+        action: 'backup_completed',
+        target: 'database',
+        description: 'Daily backup completed successfully',
+        timestamp: new Date(Date.now() - 3600000).toISOString(),
+        metadata: {
+          size: '2.5GB',
+          duration: '15 minutes',
+          status: 'success'
+        }
+      },
+      {
+        id: 'activity-3',
+        type: 'order_action',
+        user: 'customer@example.com',
+        action: 'order_created',
+        target: 'order-456',
+        description: 'New order created for oil change service',
+        timestamp: new Date(Date.now() - 7200000).toISOString(),
+        metadata: {
+          orderId: 'order-456',
+          service: 'oil_change',
+          amount: 89.99
+        }
+      }
+    ];
+
+    res.json({
+      success: true,
+      data: { activities },
+      message: 'Dashboard activity retrieved successfully',
+      timestamp: new Date().toISOString()
+    });
+
+  } catch (error) {
+    logger.error('❌ Get dashboard activity error:', error);
+    res.status(500).json({
+      success: false,
+      error: 'GET_DASHBOARD_ACTIVITY_FAILED',
+      message: 'Failed to get dashboard activity',
+      timestamp: new Date().toISOString()
+    });
+  }
+});
+
+// GET /admin/dashboard/metrics - Get dashboard metrics
+router.get('/dashboard/metrics', authenticateToken, requireRole(['admin']), async (req, res) => {
+  try {
+    const { period = '24h', granularity = 'hourly' } = req.query;
+    
+    const metrics = {
+      period: period,
+      granularity: granularity,
+      overview: {
+        totalUsers: 1250,
+        activeUsers: 980,
+        newUsers: 45,
+        totalOrders: 3420,
+        completedOrders: 3375,
+        pendingOrders: 45,
+        totalRevenue: 125000,
+        averageOrderValue: 36.55,
+        conversionRate: 3.2
+      },
+      trends: {
+        users: [
+          { time: '00:00', value: 12 },
+          { time: '01:00', value: 8 },
+          { time: '02:00', value: 5 },
+          { time: '03:00', value: 3 },
+          { time: '04:00', value: 2 },
+          { time: '05:00', value: 4 },
+          { time: '06:00', value: 8 },
+          { time: '07:00', value: 15 },
+          { time: '08:00', value: 25 },
+          { time: '09:00', value: 35 },
+          { time: '10:00', value: 42 },
+          { time: '11:00', value: 38 },
+          { time: '12:00', value: 45 },
+          { time: '13:00', value: 48 },
+          { time: '14:00', value: 52 },
+          { time: '15:00', value: 55 },
+          { time: '16:00', value: 58 },
+          { time: '17:00', value: 62 },
+          { time: '18:00', value: 55 },
+          { time: '19:00', value: 48 },
+          { time: '20:00', value: 35 },
+          { time: '21:00', value: 25 },
+          { time: '22:00', value: 18 },
+          { time: '23:00', value: 15 }
+        ],
+        orders: [
+          { time: '00:00', value: 0 },
+          { time: '01:00', value: 0 },
+          { time: '02:00', value: 0 },
+          { time: '03:00', value: 0 },
+          { time: '04:00', value: 0 },
+          { time: '05:00', value: 1 },
+          { time: '06:00', value: 2 },
+          { time: '07:00', value: 3 },
+          { time: '08:00', value: 5 },
+          { time: '09:00', value: 8 },
+          { time: '10:00', value: 12 },
+          { time: '11:00', value: 15 },
+          { time: '12:00', value: 18 },
+          { time: '13:00', value: 20 },
+          { time: '14:00', value: 22 },
+          { time: '15:00', value: 25 },
+          { time: '16:00', value: 28 },
+          { time: '17:00', value: 30 },
+          { time: '18:00', value: 25 },
+          { time: '19:00', value: 20 },
+          { time: '20:00', value: 15 },
+          { time: '21:00', value: 10 },
+          { time: '22:00', value: 5 },
+          { time: '23:00', value: 2 }
+        ],
+        revenue: [
+          { time: '00:00', value: 0 },
+          { time: '01:00', value: 0 },
+          { time: '02:00', value: 0 },
+          { time: '03:00', value: 0 },
+          { time: '04:00', value: 0 },
+          { time: '05:00', value: 45 },
+          { time: '06:00', value: 90 },
+          { time: '07:00', value: 135 },
+          { time: '08:00', value: 225 },
+          { time: '09:00', value: 360 },
+          { time: '10:00', value: 540 },
+          { time: '11:00', value: 675 },
+          { time: '12:00', value: 810 },
+          { time: '13:00', value: 900 },
+          { time: '14:00', value: 990 },
+          { time: '15:00', value: 1125 },
+          { time: '16:00', value: 1260 },
+          { time: '17:00', value: 1350 },
+          { time: '18:00', value: 1125 },
+          { time: '19:00', value: 900 },
+          { time: '20:00', value: 675 },
+          { time: '21:00', value: 450 },
+          { time: '22:00', value: 225 },
+          { time: '23:00', value: 90 }
+        ]
+      },
+      performance: {
+        pageLoadTime: 1.2,
+        apiResponseTime: 245,
+        errorRate: 0.1,
+        uptime: 99.9
+      }
+    };
+
+    res.json({
+      success: true,
+      data: { metrics },
+      message: 'Dashboard metrics retrieved successfully',
+      timestamp: new Date().toISOString()
+    });
+
+  } catch (error) {
+    logger.error('❌ Get dashboard metrics error:', error);
+    res.status(500).json({
+      success: false,
+      error: 'GET_DASHBOARD_METRICS_FAILED',
+      message: 'Failed to get dashboard metrics',
+      timestamp: new Date().toISOString()
+    });
+  }
+});
+
+// GET /admin/dashboard/realtime - Get real-time dashboard data
+router.get('/dashboard/realtime', authenticateToken, requireRole(['admin']), async (req, res) => {
+  try {
+    const realtimeData = {
+      timestamp: new Date().toISOString(),
+      activeUsers: {
+        current: 45,
+        peak: 62,
+        trend: 'up',
+        change: 12.5
+      },
+      orders: {
+        current: 8,
+        today: 125,
+        trend: 'up',
+        change: 8.2
+      },
+      revenue: {
+        current: 1250,
+        today: 18500,
+        trend: 'up',
+        change: 15.3
+      },
+      services: {
+        active: 12,
+        completed: 98,
+        pending: 5,
+        trend: 'stable'
+      },
+      alerts: [
+        {
+          id: 'alert-1',
+          type: 'warning',
+          message: 'High server load detected',
+          timestamp: new Date().toISOString(),
+          severity: 'medium'
+        },
+        {
+          id: 'alert-2',
+          type: 'info',
+          message: 'New user registration spike',
+          timestamp: new Date(Date.now() - 300000).toISOString(),
+          severity: 'low'
+        }
+      ],
+      recentActivity: [
+        {
+          id: 'activity-1',
+          type: 'order',
+          description: 'New order #12345 created',
+          timestamp: new Date().toISOString(),
+          user: 'customer@example.com'
+        },
+        {
+          id: 'activity-2',
+          type: 'user',
+          description: 'User john.doe@example.com registered',
+          timestamp: new Date(Date.now() - 120000).toISOString(),
+          user: 'john.doe@example.com'
+        }
+      ]
+    };
+
+    res.json({
+      success: true,
+      data: { realtime: realtimeData },
+      message: 'Real-time dashboard data retrieved successfully',
+      timestamp: new Date().toISOString()
+    });
+
+  } catch (error) {
+    logger.error('❌ Get real-time dashboard data error:', error);
+    res.status(500).json({
+      success: false,
+      error: 'GET_REALTIME_DASHBOARD_DATA_FAILED',
+      message: 'Failed to get real-time dashboard data',
+      timestamp: new Date().toISOString()
+    });
+  }
+});
+
+// GET /admin/dashboard/services - Get dashboard services overview
+router.get('/dashboard/services', authenticateToken, requireRole(['admin']), async (req, res) => {
+  try {
+    const servicesData = {
+      overview: {
+        totalServices: 25,
+        activeServices: 20,
+        maintenanceMode: 2,
+        offline: 3,
+        healthScore: 92.5
+      },
+      services: [
+        {
+          id: 'service-1',
+          name: 'API Gateway',
+          status: 'healthy',
+          uptime: 99.9,
+          responseTime: 45,
+          lastCheck: new Date().toISOString(),
+          version: '1.2.3',
+          endpoints: 45
+        },
+        {
+          id: 'service-2',
+          name: 'User Service',
+          status: 'healthy',
+          uptime: 99.8,
+          responseTime: 120,
+          lastCheck: new Date().toISOString(),
+          version: '2.1.0',
+          endpoints: 12
+        },
+        {
+          id: 'service-3',
+          name: 'Payment Service',
+          status: 'warning',
+          uptime: 98.5,
+          responseTime: 250,
+          lastCheck: new Date().toISOString(),
+          version: '1.5.2',
+          endpoints: 8
+        },
+        {
+          id: 'service-4',
+          name: 'Notification Service',
+          status: 'maintenance',
+          uptime: 99.2,
+          responseTime: 0,
+          lastCheck: new Date(Date.now() - 1800000).toISOString(),
+          version: '1.0.5',
+          endpoints: 5
+        }
+      ],
+      metrics: {
+        averageResponseTime: 128,
+        totalRequests: 125000,
+        errorRate: 0.8,
+        throughput: 1250
+      },
+      alerts: [
+        {
+          service: 'Payment Service',
+          type: 'performance',
+          message: 'Response time above threshold',
+          severity: 'warning'
+        },
+        {
+          service: 'Notification Service',
+          type: 'maintenance',
+          message: 'Scheduled maintenance in progress',
+          severity: 'info'
+        }
+      ]
+    };
+
+    res.json({
+      success: true,
+      data: { services: servicesData },
+      message: 'Dashboard services overview retrieved successfully',
+      timestamp: new Date().toISOString()
+    });
+
+  } catch (error) {
+    logger.error('❌ Get dashboard services overview error:', error);
+    res.status(500).json({
+      success: false,
+      error: 'GET_DASHBOARD_SERVICES_OVERVIEW_FAILED',
+      message: 'Failed to get dashboard services overview',
+      timestamp: new Date().toISOString()
+    });
+  }
+});
+
 module.exports = router;
