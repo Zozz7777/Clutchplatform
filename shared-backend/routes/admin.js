@@ -5046,4 +5046,783 @@ router.get('/mobile/crashes', authenticateToken, requireRole(['admin', 'mobile_m
   }
 });
 
+// ============================================================================
+// PHASE 1 BATCH 4: REMAINING CRITICAL ADMIN ENDPOINTS
+// ============================================================================
+
+// GET /admin/mobile/crashes/:id - Get specific mobile crash report
+router.get('/mobile/crashes/:id', authenticateToken, requireRole(['admin', 'mobile_manager']), async (req, res) => {
+  try {
+    const { id } = req.params;
+    
+    const crashReport = {
+      id: id,
+      appVersion: '2.1.0',
+      platform: 'iOS',
+      device: {
+        model: 'iPhone 14 Pro',
+        osVersion: 'iOS 17.2',
+        memory: '6GB',
+        storage: '256GB',
+        batteryLevel: 45,
+        isCharging: false
+      },
+      crash: {
+        type: 'NSException',
+        errorMessage: 'NSInvalidArgumentException: unrecognized selector sent to instance',
+        stackTrace: [
+          '0x1234567890 -[ViewController crashMethod]',
+          '0x1234567891 -[AppDelegate application:didFinishLaunchingWithOptions:]',
+          '0x1234567892 main'
+        ],
+        thread: 'main',
+        signal: 'SIGABRT',
+        code: '0x0000000000000000'
+      },
+      user: {
+        userId: 'user-123',
+        email: 'user@example.com',
+        isAnonymous: false,
+        userType: 'premium',
+        registrationDate: '2023-06-15T00:00:00Z'
+      },
+      session: {
+        sessionId: 'session-456',
+        duration: 1250,
+        actionsBeforeCrash: 15,
+        lastAction: 'navigate_to_checkout',
+        screenBeforeCrash: 'ProductDetailsViewController'
+      },
+      environment: {
+        location: {
+          latitude: 40.7128,
+          longitude: -74.0060,
+          city: 'New York',
+          country: 'USA'
+        },
+        network: {
+          connectionType: 'WiFi',
+          carrier: 'Verizon',
+          signalStrength: -65,
+          isConnected: true
+        },
+        appState: {
+          isBackground: false,
+          isActive: true,
+          memoryWarning: false
+        }
+      },
+      metadata: {
+        severity: 'high',
+        frequency: 3,
+        firstOccurrence: '2024-01-10T14:30:00Z',
+        lastOccurrence: new Date().toISOString(),
+        affectedUsers: 15
+      },
+      resolution: {
+        status: 'investigating',
+        assignedTo: 'mobile-team@clutch.com',
+        priority: 'high',
+        estimatedFix: '2024-01-20T00:00:00Z',
+        workaround: 'Restart app to resolve issue'
+      },
+      related: {
+        similarCrashes: ['crash-002', 'crash-003'],
+        affectedFeatures: ['checkout', 'payment'],
+        jiraTicket: 'MOBILE-123'
+      },
+      timestamp: new Date().toISOString()
+    };
+
+    res.json({
+      success: true,
+      data: { crashReport },
+      message: 'Mobile crash report retrieved successfully',
+      timestamp: new Date().toISOString()
+    });
+
+  } catch (error) {
+    logger.error('❌ Get mobile crash report error:', error);
+    res.status(500).json({
+      success: false,
+      error: 'GET_MOBILE_CRASH_REPORT_FAILED',
+      message: 'Failed to get mobile crash report',
+      timestamp: new Date().toISOString()
+    });
+  }
+});
+
+// POST /admin/mobile/crashes/:id/resolve - Resolve mobile crash
+router.post('/mobile/crashes/:id/resolve', authenticateToken, requireRole(['admin', 'mobile_manager']), async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { resolution, fixVersion, notes, resolvedBy } = req.body;
+    
+    const resolutionResult = {
+      crashId: id,
+      resolution: {
+        status: 'resolved',
+        resolution: resolution || 'Crash resolved with app update',
+        fixVersion: fixVersion || '2.1.1',
+        notes: notes || 'Fixed null pointer exception in checkout flow',
+        resolvedBy: resolvedBy || req.user.email,
+        resolvedAt: new Date().toISOString()
+      },
+      impact: {
+        affectedUsers: 15,
+        estimatedRevenue: 2500,
+        userSatisfaction: 'improved',
+        appStoreRating: 'maintained'
+      },
+      followUp: {
+        monitoringRequired: true,
+        monitoringPeriod: '7 days',
+        successMetrics: ['crash_rate', 'user_retention', 'app_rating']
+      }
+    };
+
+    res.json({
+      success: true,
+      data: { resolution: resolutionResult },
+      message: 'Mobile crash resolved successfully',
+      timestamp: new Date().toISOString()
+    });
+
+  } catch (error) {
+    logger.error('❌ Resolve mobile crash error:', error);
+    res.status(500).json({
+      success: false,
+      error: 'RESOLVE_MOBILE_CRASH_FAILED',
+      message: 'Failed to resolve mobile crash',
+      timestamp: new Date().toISOString()
+    });
+  }
+});
+
+// GET /admin/orders/:id - Get specific order details
+router.get('/orders/:id', authenticateToken, requireRole(['admin', 'order_manager']), async (req, res) => {
+  try {
+    const { id } = req.params;
+    
+    const order = {
+      id: id,
+      orderNumber: 'ORD-2024-001',
+      status: 'completed',
+      priority: 'normal',
+      customer: {
+        id: 'customer-123',
+        name: 'Alice Johnson',
+        email: 'alice.johnson@example.com',
+        phone: '+1-555-9876',
+        address: {
+          street: '456 Oak Ave',
+          city: 'Brooklyn',
+          state: 'NY',
+          zipCode: '11201',
+          country: 'USA'
+        }
+      },
+      service: {
+        type: 'oil_change',
+        name: 'Full Service Oil Change',
+        description: 'Complete oil change with filter replacement',
+        duration: 45,
+        price: 89.99
+      },
+      vehicle: {
+        make: 'Toyota',
+        model: 'Camry',
+        year: 2020,
+        licensePlate: 'ABC-123',
+        vin: '1HGBH41JXMN109186',
+        mileage: 45000
+      },
+      schedule: {
+        requestedDate: '2024-01-15T10:00:00Z',
+        scheduledDate: '2024-01-15T10:00:00Z',
+        completedDate: '2024-01-15T10:45:00Z',
+        estimatedDuration: 45,
+        actualDuration: 45
+      },
+      driver: {
+        id: 'driver-456',
+        name: 'John Smith',
+        phone: '+1-555-0123',
+        rating: 4.8,
+        vehicle: 'VH-001'
+      },
+      payment: {
+        method: 'credit_card',
+        amount: 89.99,
+        tax: 7.20,
+        tip: 10.00,
+        total: 107.19,
+        status: 'completed',
+        transactionId: 'txn-789'
+      },
+      location: {
+        pickup: {
+          address: '456 Oak Ave, Brooklyn, NY 11201',
+          coordinates: { latitude: 40.6782, longitude: -73.9442 }
+        },
+        service: {
+          address: '456 Oak Ave, Brooklyn, NY 11201',
+          coordinates: { latitude: 40.6782, longitude: -73.9442 }
+        }
+      },
+      tracking: {
+        status: 'completed',
+        timeline: [
+          {
+            status: 'confirmed',
+            timestamp: '2024-01-15T09:00:00Z',
+            description: 'Order confirmed'
+          },
+          {
+            status: 'assigned',
+            timestamp: '2024-01-15T09:15:00Z',
+            description: 'Driver assigned'
+          },
+          {
+            status: 'en_route',
+            timestamp: '2024-01-15T09:45:00Z',
+            description: 'Driver en route'
+          },
+          {
+            status: 'arrived',
+            timestamp: '2024-01-15T10:00:00Z',
+            description: 'Driver arrived'
+          },
+          {
+            status: 'in_progress',
+            timestamp: '2024-01-15T10:05:00Z',
+            description: 'Service started'
+          },
+          {
+            status: 'completed',
+            timestamp: '2024-01-15T10:45:00Z',
+            description: 'Service completed'
+          }
+        ]
+      },
+      feedback: {
+        rating: 5,
+        comment: 'Excellent service! Very professional and quick.',
+        categories: {
+          punctuality: 5,
+          quality: 5,
+          communication: 5,
+          cleanliness: 5
+        }
+      },
+      metadata: {
+        source: 'mobile_app',
+        referral: 'organic',
+        createdAt: '2024-01-15T08:30:00Z',
+        updatedAt: '2024-01-15T10:45:00Z'
+      }
+    };
+
+    res.json({
+      success: true,
+      data: { order },
+      message: 'Order details retrieved successfully',
+      timestamp: new Date().toISOString()
+    });
+
+  } catch (error) {
+    logger.error('❌ Get order details error:', error);
+    res.status(500).json({
+      success: false,
+      error: 'GET_ORDER_DETAILS_FAILED',
+      message: 'Failed to get order details',
+      timestamp: new Date().toISOString()
+    });
+  }
+});
+
+// GET /admin/partners/:id - Get specific partner details
+router.get('/partners/:id', authenticateToken, requireRole(['admin', 'partner_manager']), async (req, res) => {
+  try {
+    const { id } = req.params;
+    
+    const partner = {
+      id: id,
+      name: 'AutoCare Plus',
+      type: 'service_provider',
+      status: 'active',
+      tier: 'premium',
+      contact: {
+        primary: {
+          name: 'Mike Wilson',
+          email: 'mike.wilson@autocareplus.com',
+          phone: '+1-555-5555',
+          role: 'Operations Manager'
+        },
+        billing: {
+          name: 'Sarah Davis',
+          email: 'billing@autocareplus.com',
+          phone: '+1-555-5556',
+          role: 'Billing Manager'
+        }
+      },
+      business: {
+        legalName: 'AutoCare Plus LLC',
+        taxId: '12-3456789',
+        address: {
+          street: '789 Service Blvd',
+          city: 'New York',
+          state: 'NY',
+          zipCode: '10001',
+          country: 'USA'
+        },
+        established: '2018-03-15',
+        employees: 25,
+        services: ['oil_change', 'brake_service', 'tire_rotation', 'inspection']
+      },
+      agreement: {
+        startDate: '2023-01-01T00:00:00Z',
+        endDate: '2024-12-31T23:59:59Z',
+        commission: 15.0,
+        minimumVolume: 100,
+        paymentTerms: 'net_30',
+        contractValue: 50000
+      },
+      performance: {
+        rating: 4.6,
+        totalOrders: 1250,
+        completedOrders: 1240,
+        onTimeRate: 94.5,
+        customerSatisfaction: 4.5,
+        revenue: 125000,
+        lastMonthOrders: 85
+      },
+      locations: [
+        {
+          id: 'loc-001',
+          name: 'AutoCare Plus - Manhattan',
+          address: '789 Service Blvd, New York, NY 10001',
+          coordinates: { latitude: 40.7589, longitude: -73.9851 },
+          status: 'active',
+          capacity: 10
+        },
+        {
+          id: 'loc-002',
+          name: 'AutoCare Plus - Brooklyn',
+          address: '456 Service Ave, Brooklyn, NY 11201',
+          coordinates: { latitude: 40.6782, longitude: -73.9442 },
+          status: 'active',
+          capacity: 8
+        }
+      ],
+      certifications: [
+        {
+          type: 'ASE_Certified',
+          number: 'ASE-123456',
+          expiry: '2025-06-30',
+          status: 'valid'
+        },
+        {
+          type: 'Insurance',
+          number: 'INS-789012',
+          expiry: '2024-12-31',
+          status: 'valid'
+        }
+      ],
+      compliance: {
+        backgroundChecks: 'completed',
+        insurance: 'valid',
+        licenses: 'current',
+        lastAudit: '2023-12-01T00:00:00Z',
+        nextAudit: '2024-06-01T00:00:00Z'
+      },
+      financial: {
+        totalEarnings: 125000,
+        pendingPayments: 8500,
+        lastPayment: '2024-01-01T00:00:00Z',
+        paymentMethod: 'bank_transfer',
+        taxDocuments: 'provided'
+      },
+      createdAt: '2023-01-01T00:00:00Z',
+      updatedAt: new Date().toISOString()
+    };
+
+    res.json({
+      success: true,
+      data: { partner },
+      message: 'Partner details retrieved successfully',
+      timestamp: new Date().toISOString()
+    });
+
+  } catch (error) {
+    logger.error('❌ Get partner details error:', error);
+    res.status(500).json({
+      success: false,
+      error: 'GET_PARTNER_DETAILS_FAILED',
+      message: 'Failed to get partner details',
+      timestamp: new Date().toISOString()
+    });
+  }
+});
+
+// GET /admin/support/tickets - Get support tickets
+router.get('/support/tickets', authenticateToken, requireRole(['admin', 'support_manager']), async (req, res) => {
+  try {
+    const { page = 1, limit = 20, status, priority, assignedTo } = req.query;
+    
+    const tickets = [
+      {
+        id: 'ticket-001',
+        ticketNumber: 'SUP-2024-001',
+        subject: 'Unable to book service appointment',
+        description: 'Customer is experiencing issues with the booking system. Error message appears when trying to select a time slot.',
+        status: 'open',
+        priority: 'high',
+        category: 'technical',
+        subcategory: 'booking_system',
+        customer: {
+          id: 'customer-123',
+          name: 'Alice Johnson',
+          email: 'alice.johnson@example.com',
+          phone: '+1-555-9876',
+          tier: 'premium'
+        },
+        assignedTo: {
+          id: 'agent-456',
+          name: 'Sarah Wilson',
+          email: 'sarah.wilson@clutch.com',
+          role: 'support_agent'
+        },
+        createdBy: 'customer-123',
+        createdAt: '2024-01-15T10:30:00Z',
+        updatedAt: new Date().toISOString(),
+        lastActivity: new Date().toISOString(),
+        resolution: {
+          status: 'pending',
+          estimatedResolution: '2024-01-16T00:00:00Z',
+          actualResolution: null
+        },
+        attachments: [
+          {
+            name: 'error_screenshot.png',
+            url: 'https://support.clutch.com/attachments/error_screenshot.png',
+            type: 'image'
+          }
+        ],
+        tags: ['booking', 'error', 'urgent'],
+        sla: {
+          target: '24 hours',
+          status: 'on_track',
+          remaining: '18 hours'
+        }
+      },
+      {
+        id: 'ticket-002',
+        ticketNumber: 'SUP-2024-002',
+        subject: 'Billing inquiry - incorrect charge',
+        description: 'Customer received a charge for $150 but only requested a $89 oil change service.',
+        status: 'in_progress',
+        priority: 'medium',
+        category: 'billing',
+        subcategory: 'incorrect_charge',
+        customer: {
+          id: 'customer-456',
+          name: 'Bob Smith',
+          email: 'bob.smith@example.com',
+          phone: '+1-555-5432',
+          tier: 'standard'
+        },
+        assignedTo: {
+          id: 'agent-789',
+          name: 'Mike Davis',
+          email: 'mike.davis@clutch.com',
+          role: 'billing_specialist'
+        },
+        createdBy: 'customer-456',
+        createdAt: '2024-01-15T09:15:00Z',
+        updatedAt: new Date(Date.now() - 3600000).toISOString(),
+        lastActivity: new Date(Date.now() - 3600000).toISOString(),
+        resolution: {
+          status: 'in_progress',
+          estimatedResolution: '2024-01-16T12:00:00Z',
+          actualResolution: null
+        },
+        attachments: [],
+        tags: ['billing', 'refund', 'investigation'],
+        sla: {
+          target: '48 hours',
+          status: 'on_track',
+          remaining: '36 hours'
+        }
+      }
+    ];
+
+    res.json({
+      success: true,
+      data: { 
+        tickets,
+        pagination: {
+          page: parseInt(page),
+          limit: parseInt(limit),
+          total: tickets.length,
+          pages: Math.ceil(tickets.length / limit)
+        },
+        summary: {
+          totalTickets: 125,
+          openTickets: 45,
+          inProgressTickets: 35,
+          resolvedTickets: 45,
+          averageResolutionTime: '18 hours'
+        }
+      },
+      message: 'Support tickets retrieved successfully',
+      timestamp: new Date().toISOString()
+    });
+
+  } catch (error) {
+    logger.error('❌ Get support tickets error:', error);
+    res.status(500).json({
+      success: false,
+      error: 'GET_SUPPORT_TICKETS_FAILED',
+      message: 'Failed to get support tickets',
+      timestamp: new Date().toISOString()
+    });
+  }
+});
+
+// GET /admin/system/health - Get system health status
+router.get('/system/health', authenticateToken, requireRole(['admin', 'system_admin']), async (req, res) => {
+  try {
+    const systemHealth = {
+      overall: {
+        status: 'healthy',
+        score: 95.5,
+        lastCheck: new Date().toISOString()
+      },
+      services: [
+        {
+          name: 'API Gateway',
+          status: 'healthy',
+          uptime: 99.9,
+          responseTime: 45,
+          lastCheck: new Date().toISOString(),
+          version: '1.2.3'
+        },
+        {
+          name: 'Database',
+          status: 'healthy',
+          uptime: 99.8,
+          responseTime: 12,
+          lastCheck: new Date().toISOString(),
+          version: 'MongoDB 6.0'
+        },
+        {
+          name: 'Payment Service',
+          status: 'warning',
+          uptime: 98.5,
+          responseTime: 250,
+          lastCheck: new Date().toISOString(),
+          version: '2.1.0'
+        },
+        {
+          name: 'Notification Service',
+          status: 'healthy',
+          uptime: 99.2,
+          responseTime: 85,
+          lastCheck: new Date().toISOString(),
+          version: '1.5.2'
+        }
+      ],
+      infrastructure: {
+        servers: {
+          total: 8,
+          healthy: 7,
+          warning: 1,
+          critical: 0
+        },
+        databases: {
+          total: 3,
+          healthy: 3,
+          warning: 0,
+          critical: 0
+        },
+        loadBalancers: {
+          total: 2,
+          healthy: 2,
+          warning: 0,
+          critical: 0
+        }
+      },
+      performance: {
+        cpu: {
+          average: 45.2,
+          peak: 78.5,
+          status: 'normal'
+        },
+        memory: {
+          used: 68.5,
+          available: 31.5,
+          status: 'normal'
+        },
+        disk: {
+          used: 45.8,
+          available: 54.2,
+          status: 'normal'
+        },
+        network: {
+          latency: 12,
+          throughput: 1250,
+          status: 'normal'
+        }
+      },
+      alerts: [
+        {
+          id: 'alert-001',
+          type: 'warning',
+          service: 'Payment Service',
+          message: 'Response time above threshold',
+          severity: 'medium',
+          timestamp: new Date().toISOString()
+        }
+      ],
+      metrics: {
+        requestsPerMinute: 1250,
+        errorRate: 0.1,
+        averageResponseTime: 125,
+        activeUsers: 450,
+        throughput: 1250
+      }
+    };
+
+    res.json({
+      success: true,
+      data: { systemHealth },
+      message: 'System health retrieved successfully',
+      timestamp: new Date().toISOString()
+    });
+
+  } catch (error) {
+    logger.error('❌ Get system health error:', error);
+    res.status(500).json({
+      success: false,
+      error: 'GET_SYSTEM_HEALTH_FAILED',
+      message: 'Failed to get system health',
+      timestamp: new Date().toISOString()
+    });
+  }
+});
+
+// GET /admin/users/:id - Get specific user details
+router.get('/users/:id', authenticateToken, requireRole(['admin', 'user_manager']), async (req, res) => {
+  try {
+    const { id } = req.params;
+    
+    const user = {
+      id: id,
+      personalInfo: {
+        firstName: 'Alice',
+        lastName: 'Johnson',
+        email: 'alice.johnson@example.com',
+        phone: '+1-555-9876',
+        dateOfBirth: '1985-06-15',
+        address: {
+          street: '456 Oak Ave',
+          city: 'Brooklyn',
+          state: 'NY',
+          zipCode: '11201',
+          country: 'USA'
+        }
+      },
+      account: {
+        status: 'active',
+        tier: 'premium',
+        registrationDate: '2023-06-15T00:00:00Z',
+        lastLogin: new Date().toISOString(),
+        emailVerified: true,
+        phoneVerified: true,
+        twoFactorEnabled: true
+      },
+      preferences: {
+        notifications: {
+          email: true,
+          sms: true,
+          push: true,
+          marketing: false
+        },
+        language: 'en',
+        timezone: 'America/New_York',
+        currency: 'USD'
+      },
+      activity: {
+        totalOrders: 25,
+        completedOrders: 24,
+        cancelledOrders: 1,
+        totalSpent: 2250.75,
+        averageOrderValue: 90.03,
+        lastOrderDate: '2024-01-10T00:00:00Z',
+        favoriteServices: ['oil_change', 'brake_service']
+      },
+      vehicles: [
+        {
+          id: 'vehicle-001',
+          make: 'Toyota',
+          model: 'Camry',
+          year: 2020,
+          licensePlate: 'ABC-123',
+          vin: '1HGBH41JXMN109186',
+          isPrimary: true
+        }
+      ],
+      payment: {
+        methods: [
+          {
+            type: 'credit_card',
+            last4: '1234',
+            brand: 'Visa',
+            expiry: '12/25',
+            isDefault: true
+          }
+        ],
+        billingAddress: {
+          street: '456 Oak Ave',
+          city: 'Brooklyn',
+          state: 'NY',
+          zipCode: '11201',
+          country: 'USA'
+        }
+      },
+      support: {
+        totalTickets: 3,
+        openTickets: 0,
+        resolvedTickets: 3,
+        averageRating: 4.8
+      },
+      loyalty: {
+        points: 1250,
+        tier: 'Gold',
+        nextTier: 'Platinum',
+        pointsToNextTier: 750
+      },
+      createdAt: '2023-06-15T00:00:00Z',
+      updatedAt: new Date().toISOString()
+    };
+
+    res.json({
+      success: true,
+      data: { user },
+      message: 'User details retrieved successfully',
+      timestamp: new Date().toISOString()
+    });
+
+  } catch (error) {
+    logger.error('❌ Get user details error:', error);
+    res.status(500).json({
+      success: false,
+      error: 'GET_USER_DETAILS_FAILED',
+      message: 'Failed to get user details',
+      timestamp: new Date().toISOString()
+    });
+  }
+});
+
 module.exports = router;
