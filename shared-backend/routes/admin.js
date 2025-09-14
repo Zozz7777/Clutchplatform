@@ -4166,4 +4166,884 @@ router.get('/dashboard/services', authenticateToken, requireRole(['admin']), asy
   }
 });
 
+// ============================================================================
+// PHASE 1 BATCH 3: DRIVER, FEATURE FLAGS, FINANCE & HR ENDPOINTS
+// ============================================================================
+
+// GET /admin/drivers/:id - Get specific driver details
+router.get('/drivers/:id', authenticateToken, requireRole(['admin', 'fleet_manager']), async (req, res) => {
+  try {
+    const { id } = req.params;
+    
+    const driver = {
+      id: id,
+      personalInfo: {
+        firstName: 'John',
+        lastName: 'Smith',
+        email: 'john.smith@clutch.com',
+        phone: '+1-555-0123',
+        dateOfBirth: '1985-03-15',
+        address: {
+          street: '123 Main St',
+          city: 'New York',
+          state: 'NY',
+          zipCode: '10001',
+          country: 'USA'
+        }
+      },
+      employment: {
+        employeeId: 'EMP-001',
+        hireDate: '2023-01-15',
+        position: 'Senior Driver',
+        department: 'Fleet Operations',
+        status: 'active',
+        shift: 'day',
+        baseSalary: 45000,
+        hourlyRate: 22.50
+      },
+      qualifications: {
+        licenseNumber: 'DL-123456789',
+        licenseClass: 'CDL-A',
+        licenseExpiry: '2025-12-31',
+        certifications: ['Hazmat', 'Passenger Transport'],
+        medicalClearance: {
+          status: 'valid',
+          expiry: '2024-06-30',
+          doctor: 'Dr. Jane Wilson'
+        }
+      },
+      performance: {
+        rating: 4.8,
+        totalTrips: 1250,
+        completedTrips: 1245,
+        onTimeRate: 96.5,
+        customerRating: 4.7,
+        safetyScore: 98.2,
+        fuelEfficiency: 8.5
+      },
+      vehicle: {
+        assignedVehicle: 'VH-001',
+        vehicleType: 'Van',
+        make: 'Ford',
+        model: 'Transit',
+        year: 2022,
+        licensePlate: 'ABC-123'
+      },
+      schedule: {
+        currentShift: '08:00-17:00',
+        daysOff: ['Saturday', 'Sunday'],
+        nextShift: '2024-01-15T08:00:00Z',
+        overtimeHours: 12.5
+      },
+      emergency: {
+        contactName: 'Jane Smith',
+        contactPhone: '+1-555-0124',
+        relationship: 'Spouse',
+        address: '123 Main St, New York, NY 10001'
+      }
+    };
+
+    res.json({
+      success: true,
+      data: { driver },
+      message: 'Driver details retrieved successfully',
+      timestamp: new Date().toISOString()
+    });
+
+  } catch (error) {
+    logger.error('❌ Get driver details error:', error);
+    res.status(500).json({
+      success: false,
+      error: 'GET_DRIVER_DETAILS_FAILED',
+      message: 'Failed to get driver details',
+      timestamp: new Date().toISOString()
+    });
+  }
+});
+
+// GET /admin/drivers/:id/status - Get driver status
+router.get('/drivers/:id/status', authenticateToken, requireRole(['admin', 'fleet_manager']), async (req, res) => {
+  try {
+    const { id } = req.params;
+    
+    const driverStatus = {
+      driverId: id,
+      currentStatus: 'on_duty',
+      location: {
+        latitude: 40.7128,
+        longitude: -74.0060,
+        address: '123 Broadway, New York, NY',
+        lastUpdated: new Date().toISOString()
+      },
+      vehicle: {
+        vehicleId: 'VH-001',
+        status: 'in_use',
+        fuelLevel: 75,
+        mileage: 125000,
+        lastMaintenance: '2024-01-01',
+        nextMaintenance: '2024-02-01'
+      },
+      currentTrip: {
+        tripId: 'TRIP-456',
+        pickupLocation: '123 Main St, New York, NY',
+        dropoffLocation: '456 Oak Ave, Brooklyn, NY',
+        estimatedArrival: new Date(Date.now() + 1800000).toISOString(),
+        status: 'in_progress',
+        customer: {
+          name: 'Alice Johnson',
+          phone: '+1-555-9876'
+        }
+      },
+      availability: {
+        isAvailable: false,
+        nextAvailable: new Date(Date.now() + 3600000).toISOString(),
+        reason: 'Currently on trip'
+      },
+      performance: {
+        todayTrips: 8,
+        todayEarnings: 240.50,
+        weeklyTrips: 45,
+        weeklyEarnings: 1250.75,
+        rating: 4.8
+      },
+      alerts: [
+        {
+          type: 'maintenance',
+          message: 'Vehicle maintenance due in 5 days',
+          severity: 'medium',
+          timestamp: new Date().toISOString()
+        }
+      ]
+    };
+
+    res.json({
+      success: true,
+      data: { status: driverStatus },
+      message: 'Driver status retrieved successfully',
+      timestamp: new Date().toISOString()
+    });
+
+  } catch (error) {
+    logger.error('❌ Get driver status error:', error);
+    res.status(500).json({
+      success: false,
+      error: 'GET_DRIVER_STATUS_FAILED',
+      message: 'Failed to get driver status',
+      timestamp: new Date().toISOString()
+    });
+  }
+});
+
+// GET /admin/feature-flags/:id - Get specific feature flag
+router.get('/feature-flags/:id', authenticateToken, requireRole(['admin', 'developer']), async (req, res) => {
+  try {
+    const { id } = req.params;
+    
+    const featureFlag = {
+      id: id,
+      name: 'new_dashboard_ui',
+      description: 'Enable the new dashboard user interface',
+      status: 'active',
+      enabled: true,
+      rolloutPercentage: 50,
+      targetAudience: {
+        userTypes: ['admin', 'manager'],
+        regions: ['US', 'CA'],
+        userSegments: ['premium', 'enterprise']
+      },
+      configuration: {
+        showNewUI: true,
+        enableAdvancedFeatures: false,
+        theme: 'modern',
+        layout: 'grid'
+      },
+      schedule: {
+        startDate: '2024-01-01T00:00:00Z',
+        endDate: '2024-12-31T23:59:59Z',
+        timezone: 'UTC'
+      },
+      metrics: {
+        impressions: 1250,
+        conversions: 125,
+        conversionRate: 10.0,
+        userFeedback: 4.2,
+        errorRate: 0.1
+      },
+      dependencies: ['user_authentication', 'dashboard_api'],
+      conflicts: [],
+      createdBy: 'admin@clutch.com',
+      createdAt: '2024-01-01T00:00:00Z',
+      updatedAt: new Date().toISOString(),
+      lastModifiedBy: 'admin@clutch.com'
+    };
+
+    res.json({
+      success: true,
+      data: { featureFlag },
+      message: 'Feature flag retrieved successfully',
+      timestamp: new Date().toISOString()
+    });
+
+  } catch (error) {
+    logger.error('❌ Get feature flag error:', error);
+    res.status(500).json({
+      success: false,
+      error: 'GET_FEATURE_FLAG_FAILED',
+      message: 'Failed to get feature flag',
+      timestamp: new Date().toISOString()
+    });
+  }
+});
+
+// POST /admin/feature-flags/:id/toggle - Toggle feature flag
+router.post('/feature-flags/:id/toggle', authenticateToken, requireRole(['admin', 'developer']), async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { enabled, reason, rolloutPercentage } = req.body;
+    
+    const toggleResult = {
+      featureFlagId: id,
+      previousState: {
+        enabled: false,
+        rolloutPercentage: 25
+      },
+      newState: {
+        enabled: enabled !== undefined ? enabled : true,
+        rolloutPercentage: rolloutPercentage || 50
+      },
+      action: enabled ? 'enabled' : 'disabled',
+      reason: reason || 'Manual toggle by admin',
+      changedBy: req.user.email,
+      timestamp: new Date().toISOString(),
+      impact: {
+        affectedUsers: 1250,
+        estimatedRevenue: enabled ? 2500 : -500,
+        riskLevel: 'low'
+      }
+    };
+
+    res.json({
+      success: true,
+      data: { toggle: toggleResult },
+      message: `Feature flag ${toggleResult.action} successfully`,
+      timestamp: new Date().toISOString()
+    });
+
+  } catch (error) {
+    logger.error('❌ Toggle feature flag error:', error);
+    res.status(500).json({
+      success: false,
+      error: 'TOGGLE_FEATURE_FLAG_FAILED',
+      message: 'Failed to toggle feature flag',
+      timestamp: new Date().toISOString()
+    });
+  }
+});
+
+// GET /admin/finance - Get finance management data
+router.get('/finance', authenticateToken, requireRole(['admin', 'finance_manager']), async (req, res) => {
+  try {
+    const { period = 'monthly', year = 2024, month = 1 } = req.query;
+    
+    const financeData = {
+      period: { period, year: parseInt(year), month: parseInt(month) },
+      overview: {
+        totalRevenue: 125000,
+        totalExpenses: 85000,
+        netProfit: 40000,
+        profitMargin: 32.0,
+        growthRate: 15.5,
+        previousPeriod: {
+          revenue: 108000,
+          expenses: 78000,
+          netProfit: 30000
+        }
+      },
+      revenue: {
+        serviceRevenue: 95000,
+        productSales: 25000,
+        subscriptionRevenue: 5000,
+        breakdown: [
+          { category: 'Oil Changes', amount: 35000, percentage: 28.0 },
+          { category: 'Brake Services', amount: 25000, percentage: 20.0 },
+          { category: 'Tire Services', amount: 20000, percentage: 16.0 },
+          { category: 'Other Services', amount: 15000, percentage: 12.0 },
+          { category: 'Parts Sales', amount: 25000, percentage: 20.0 },
+          { category: 'Subscriptions', amount: 5000, percentage: 4.0 }
+        ]
+      },
+      expenses: {
+        operationalExpenses: 45000,
+        payroll: 25000,
+        marketing: 8000,
+        maintenance: 5000,
+        utilities: 2000,
+        breakdown: [
+          { category: 'Payroll', amount: 25000, percentage: 29.4 },
+          { category: 'Equipment', amount: 15000, percentage: 17.6 },
+          { category: 'Marketing', amount: 8000, percentage: 9.4 },
+          { category: 'Maintenance', amount: 5000, percentage: 5.9 },
+          { category: 'Utilities', amount: 2000, percentage: 2.4 },
+          { category: 'Other', amount: 31000, percentage: 36.5 }
+        ]
+      },
+      cashFlow: {
+        operatingCashFlow: 45000,
+        investingCashFlow: -5000,
+        financingCashFlow: 0,
+        netCashFlow: 40000,
+        cashBalance: 125000
+      },
+      metrics: {
+        averageOrderValue: 89.50,
+        customerLifetimeValue: 450.00,
+        costPerAcquisition: 25.00,
+        returnOnInvestment: 18.5,
+        debtToEquityRatio: 0.3
+      },
+      forecasts: {
+        nextMonth: {
+          projectedRevenue: 135000,
+          projectedExpenses: 90000,
+          projectedProfit: 45000
+        },
+        nextQuarter: {
+          projectedRevenue: 400000,
+          projectedExpenses: 270000,
+          projectedProfit: 130000
+        }
+      }
+    };
+
+    res.json({
+      success: true,
+      data: { finance: financeData },
+      message: 'Finance data retrieved successfully',
+      timestamp: new Date().toISOString()
+    });
+
+  } catch (error) {
+    logger.error('❌ Get finance data error:', error);
+    res.status(500).json({
+      success: false,
+      error: 'GET_FINANCE_DATA_FAILED',
+      message: 'Failed to get finance data',
+      timestamp: new Date().toISOString()
+    });
+  }
+});
+
+// GET /admin/hr - Get HR management data
+router.get('/hr', authenticateToken, requireRole(['admin', 'hr_manager']), async (req, res) => {
+  try {
+    const { period = 'monthly' } = req.query;
+    
+    const hrData = {
+      period: period,
+      overview: {
+        totalEmployees: 125,
+        activeEmployees: 118,
+        newHires: 8,
+        terminations: 3,
+        turnoverRate: 2.4,
+        averageTenure: 3.2
+      },
+      departments: [
+        {
+          name: 'Operations',
+          totalEmployees: 45,
+          activeEmployees: 42,
+          newHires: 3,
+          terminations: 1,
+          averageSalary: 55000,
+          turnoverRate: 2.2
+        },
+        {
+          name: 'Customer Service',
+          totalEmployees: 25,
+          activeEmployees: 24,
+          newHires: 2,
+          terminations: 0,
+          averageSalary: 42000,
+          turnoverRate: 0.0
+        },
+        {
+          name: 'Sales',
+          totalEmployees: 20,
+          activeEmployees: 19,
+          newHires: 2,
+          terminations: 1,
+          averageSalary: 48000,
+          turnoverRate: 5.0
+        },
+        {
+          name: 'Administration',
+          totalEmployees: 15,
+          activeEmployees: 15,
+          newHires: 1,
+          terminations: 0,
+          averageSalary: 45000,
+          turnoverRate: 0.0
+        },
+        {
+          name: 'Management',
+          totalEmployees: 20,
+          activeEmployees: 18,
+          newHires: 0,
+          terminations: 1,
+          averageSalary: 75000,
+          turnoverRate: 5.0
+        }
+      ],
+      payroll: {
+        totalPayroll: 625000,
+        averageSalary: 50000,
+        salaryDistribution: [
+          { range: '$30k-$40k', count: 25, percentage: 20.0 },
+          { range: '$40k-$50k', count: 35, percentage: 28.0 },
+          { range: '$50k-$60k', count: 30, percentage: 24.0 },
+          { range: '$60k-$70k', count: 20, percentage: 16.0 },
+          { range: '$70k+', count: 15, percentage: 12.0 }
+        ],
+        benefits: {
+          healthInsurance: 45000,
+          retirement: 25000,
+          paidTimeOff: 15000,
+          other: 10000
+        }
+      },
+      performance: {
+        averageRating: 4.2,
+        performanceDistribution: [
+          { rating: 'Excellent (5)', count: 25, percentage: 20.0 },
+          { rating: 'Good (4)', count: 50, percentage: 40.0 },
+          { rating: 'Satisfactory (3)', count: 35, percentage: 28.0 },
+          { rating: 'Needs Improvement (2)', count: 10, percentage: 8.0 },
+          { rating: 'Poor (1)', count: 5, percentage: 4.0 }
+        ],
+        goals: {
+          totalGoals: 375,
+          completedGoals: 320,
+          completionRate: 85.3
+        }
+      },
+      training: {
+        totalTrainingHours: 1250,
+        averageTrainingHours: 10.0,
+        certifications: {
+          total: 89,
+          pending: 12,
+          expired: 3
+        },
+        upcomingTraining: [
+          {
+            title: 'Safety Training',
+            date: '2024-02-15',
+            participants: 25,
+            duration: 4
+          },
+          {
+            title: 'Customer Service Excellence',
+            date: '2024-02-20',
+            participants: 15,
+            duration: 2
+          }
+        ]
+      },
+      compliance: {
+        requiredTraining: 100,
+        completedTraining: 95,
+        complianceRate: 95.0,
+        upcomingDeadlines: [
+          {
+            type: 'Safety Certification',
+            deadline: '2024-03-01',
+            employees: 8
+          },
+          {
+            type: 'Background Check',
+            deadline: '2024-03-15',
+            employees: 3
+          }
+        ]
+      }
+    };
+
+    res.json({
+      success: true,
+      data: { hr: hrData },
+      message: 'HR data retrieved successfully',
+      timestamp: new Date().toISOString()
+    });
+
+  } catch (error) {
+    logger.error('❌ Get HR data error:', error);
+    res.status(500).json({
+      success: false,
+      error: 'GET_HR_DATA_FAILED',
+      message: 'Failed to get HR data',
+      timestamp: new Date().toISOString()
+    });
+  }
+});
+
+// GET /admin/incidents/:id - Get specific incident details
+router.get('/incidents/:id', authenticateToken, requireRole(['admin', 'incident_manager']), async (req, res) => {
+  try {
+    const { id } = req.params;
+    
+    const incident = {
+      id: id,
+      title: 'Vehicle Accident - Minor Collision',
+      description: 'Driver reported minor collision with another vehicle during delivery. No injuries reported.',
+      type: 'safety',
+      severity: 'medium',
+      status: 'investigating',
+      priority: 'high',
+      reportedBy: {
+        name: 'John Smith',
+        email: 'john.smith@clutch.com',
+        role: 'driver',
+        phone: '+1-555-0123'
+      },
+      assignedTo: {
+        name: 'Sarah Johnson',
+        email: 'sarah.johnson@clutch.com',
+        role: 'incident_manager'
+      },
+      location: {
+        address: '123 Main St, New York, NY',
+        coordinates: { latitude: 40.7128, longitude: -74.0060 }
+      },
+      timeline: [
+        {
+          timestamp: '2024-01-15T10:30:00Z',
+          action: 'Incident reported',
+          user: 'John Smith',
+          details: 'Driver called to report collision'
+        },
+        {
+          timestamp: '2024-01-15T10:35:00Z',
+          action: 'Incident assigned',
+          user: 'Sarah Johnson',
+          details: 'Assigned to incident manager for investigation'
+        },
+        {
+          timestamp: '2024-01-15T11:00:00Z',
+          action: 'Investigation started',
+          user: 'Sarah Johnson',
+          details: 'Initial investigation and evidence collection'
+        }
+      ],
+      evidence: [
+        {
+          type: 'photo',
+          url: 'https://evidence.clutch.com/incidents/inc-001/photo1.jpg',
+          description: 'Damage to front bumper',
+          uploadedBy: 'John Smith',
+          uploadedAt: '2024-01-15T10:45:00Z'
+        },
+        {
+          type: 'document',
+          url: 'https://evidence.clutch.com/incidents/inc-001/police-report.pdf',
+          description: 'Police report',
+          uploadedBy: 'Sarah Johnson',
+          uploadedAt: '2024-01-15T12:00:00Z'
+        }
+      ],
+      impact: {
+        vehicles: ['VH-001'],
+        drivers: ['John Smith'],
+        customers: ['Alice Johnson'],
+        estimatedCost: 2500,
+        serviceDisruption: '2 hours'
+      },
+      resolution: {
+        status: 'pending',
+        estimatedResolution: '2024-01-20T00:00:00Z',
+        steps: [
+          'Complete investigation',
+          'Assess damage costs',
+          'Coordinate with insurance',
+          'Implement preventive measures'
+        ]
+      },
+      createdAt: '2024-01-15T10:30:00Z',
+      updatedAt: new Date().toISOString()
+    };
+
+    res.json({
+      success: true,
+      data: { incident },
+      message: 'Incident details retrieved successfully',
+      timestamp: new Date().toISOString()
+    });
+
+  } catch (error) {
+    logger.error('❌ Get incident details error:', error);
+    res.status(500).json({
+      success: false,
+      error: 'GET_INCIDENT_DETAILS_FAILED',
+      message: 'Failed to get incident details',
+      timestamp: new Date().toISOString()
+    });
+  }
+});
+
+// POST /admin/incidents/:id/resolve - Resolve incident
+router.post('/incidents/:id/resolve', authenticateToken, requireRole(['admin', 'incident_manager']), async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { resolution, cost, preventiveMeasures, resolvedBy } = req.body;
+    
+    const resolutionResult = {
+      incidentId: id,
+      resolution: {
+        status: 'resolved',
+        resolution: resolution || 'Incident resolved after investigation',
+        cost: cost || 0,
+        preventiveMeasures: preventiveMeasures || [],
+        resolvedBy: resolvedBy || req.user.email,
+        resolvedAt: new Date().toISOString()
+      },
+      impact: {
+        totalCost: cost || 0,
+        serviceDowntime: '2 hours',
+        affectedCustomers: 1,
+        lessonsLearned: [
+          'Implement additional driver training',
+          'Review route planning procedures'
+        ]
+      },
+      followUp: {
+        required: true,
+        scheduledDate: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString(),
+        assignedTo: req.user.email
+      }
+    };
+
+    res.json({
+      success: true,
+      data: { resolution: resolutionResult },
+      message: 'Incident resolved successfully',
+      timestamp: new Date().toISOString()
+    });
+
+  } catch (error) {
+    logger.error('❌ Resolve incident error:', error);
+    res.status(500).json({
+      success: false,
+      error: 'RESOLVE_INCIDENT_FAILED',
+      message: 'Failed to resolve incident',
+      timestamp: new Date().toISOString()
+    });
+  }
+});
+
+// GET /admin/knowledge-base/:id - Get specific knowledge base item
+router.get('/knowledge-base/:id', authenticateToken, requireRole(['admin', 'content_manager']), async (req, res) => {
+  try {
+    const { id } = req.params;
+    
+    const knowledgeItem = {
+      id: id,
+      title: 'How to Handle Customer Complaints',
+      category: 'customer_service',
+      subcategory: 'complaint_resolution',
+      content: {
+        summary: 'Step-by-step guide for handling customer complaints effectively',
+        steps: [
+          'Listen actively to the customer',
+          'Acknowledge their concerns',
+          'Apologize if appropriate',
+          'Investigate the issue',
+          'Provide a solution',
+          'Follow up to ensure satisfaction'
+        ],
+        tips: [
+          'Stay calm and professional',
+          'Take detailed notes',
+          'Escalate if necessary',
+          'Document the resolution'
+        ],
+        examples: [
+          'Service quality complaint',
+          'Billing dispute',
+          'Scheduling issue'
+        ]
+      },
+      tags: ['customer_service', 'complaints', 'resolution', 'training'],
+      status: 'published',
+      visibility: 'internal',
+      author: {
+        name: 'Sarah Johnson',
+        email: 'sarah.johnson@clutch.com',
+        role: 'customer_service_manager'
+      },
+      metadata: {
+        wordCount: 450,
+        readingTime: 3,
+        difficulty: 'beginner',
+        lastReviewed: '2024-01-01T00:00:00Z'
+      },
+      usage: {
+        views: 1250,
+        helpful: 89,
+        notHelpful: 5,
+        rating: 4.7,
+        lastAccessed: new Date().toISOString()
+      },
+      related: [
+        'kb-002',
+        'kb-003',
+        'kb-004'
+      ],
+      attachments: [
+        {
+          name: 'complaint_form.pdf',
+          url: 'https://kb.clutch.com/attachments/complaint_form.pdf',
+          type: 'document'
+        }
+      ],
+      createdAt: '2024-01-01T00:00:00Z',
+      updatedAt: new Date().toISOString(),
+      version: 2
+    };
+
+    res.json({
+      success: true,
+      data: { knowledgeItem },
+      message: 'Knowledge base item retrieved successfully',
+      timestamp: new Date().toISOString()
+    });
+
+  } catch (error) {
+    logger.error('❌ Get knowledge base item error:', error);
+    res.status(500).json({
+      success: false,
+      error: 'GET_KNOWLEDGE_BASE_ITEM_FAILED',
+      message: 'Failed to get knowledge base item',
+      timestamp: new Date().toISOString()
+    });
+  }
+});
+
+// GET /admin/mobile/crashes - Get mobile crash reports
+router.get('/mobile/crashes', authenticateToken, requireRole(['admin', 'mobile_manager']), async (req, res) => {
+  try {
+    const { page = 1, limit = 20, severity, appVersion, dateFrom, dateTo } = req.query;
+    
+    const crashes = [
+      {
+        id: 'crash-001',
+        appVersion: '2.1.0',
+        platform: 'iOS',
+        device: 'iPhone 14 Pro',
+        osVersion: 'iOS 17.2',
+        severity: 'high',
+        crashType: 'NSException',
+        errorMessage: 'NSInvalidArgumentException: unrecognized selector sent to instance',
+        stackTrace: [
+          '0x1234567890 -[ViewController crashMethod]',
+          '0x1234567891 -[AppDelegate application:didFinishLaunchingWithOptions:]',
+          '0x1234567892 main'
+        ],
+        user: {
+          userId: 'user-123',
+          email: 'user@example.com',
+          isAnonymous: false
+        },
+        session: {
+          sessionId: 'session-456',
+          duration: 1250,
+          actionsBeforeCrash: 15
+        },
+        location: {
+          latitude: 40.7128,
+          longitude: -74.0060,
+          city: 'New York',
+          country: 'USA'
+        },
+        network: {
+          connectionType: 'WiFi',
+          carrier: 'Verizon',
+          signalStrength: -65
+        },
+        timestamp: new Date().toISOString(),
+        resolved: false,
+        assignedTo: null
+      },
+      {
+        id: 'crash-002',
+        appVersion: '2.0.5',
+        platform: 'Android',
+        device: 'Samsung Galaxy S23',
+        osVersion: 'Android 14',
+        severity: 'medium',
+        crashType: 'ANR',
+        errorMessage: 'Application Not Responding for 5 seconds',
+        stackTrace: [
+          'android.app.ActivityThread.main',
+          'java.lang.reflect.Method.invoke',
+          'com.android.internal.os.ZygoteInit.main'
+        ],
+        user: {
+          userId: 'user-456',
+          email: 'user2@example.com',
+          isAnonymous: false
+        },
+        session: {
+          sessionId: 'session-789',
+          duration: 850,
+          actionsBeforeCrash: 8
+        },
+        location: {
+          latitude: 34.0522,
+          longitude: -118.2437,
+          city: 'Los Angeles',
+          country: 'USA'
+        },
+        network: {
+          connectionType: '4G',
+          carrier: 'AT&T',
+          signalStrength: -75
+        },
+        timestamp: new Date(Date.now() - 3600000).toISOString(),
+        resolved: true,
+        assignedTo: 'mobile-team@clutch.com'
+      }
+    ];
+
+    res.json({
+      success: true,
+      data: { 
+        crashes,
+        pagination: {
+          page: parseInt(page),
+          limit: parseInt(limit),
+          total: crashes.length,
+          pages: Math.ceil(crashes.length / limit)
+        },
+        summary: {
+          totalCrashes: 45,
+          unresolvedCrashes: 12,
+          highSeverityCrashes: 3,
+          averageResolutionTime: '2.5 days'
+        }
+      },
+      message: 'Mobile crash reports retrieved successfully',
+      timestamp: new Date().toISOString()
+    });
+
+  } catch (error) {
+    logger.error('❌ Get mobile crash reports error:', error);
+    res.status(500).json({
+      success: false,
+      error: 'GET_MOBILE_CRASH_REPORTS_FAILED',
+      message: 'Failed to get mobile crash reports',
+      timestamp: new Date().toISOString()
+    });
+  }
+});
+
 module.exports = router;
