@@ -72,25 +72,7 @@ export default function LoginPage() {
     setIsLoading(true)
 
     try {
-      // Connect to real backend authentication
-        const response = await fetch('/auth/employee-login', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          email: formData.email,
-          password: formData.password,
-          rememberMe: formData.rememberMe
-        }),
-      })
-
-      const data = await response.json()
-
-      if (!response.ok) {
-        throw new Error(data.message || 'Login failed')
-      }
-
+      // Use the auth store's login method which handles the API call
       await login(formData.email, formData.password)
       
       setSuccess('Login successful! Redirecting...')
@@ -134,7 +116,7 @@ export default function LoginPage() {
       <div 
         className="min-h-screen relative overflow-hidden"
         style={{
-          backgroundImage: `url('CUPRA-accelerates-growth-journey-with-Tindaya-World-Premiere-new-Tribe-editions-and-Middle-East-ambitions_01_HQ.avif')`,
+          backgroundImage: `url('/CUPRA-accelerates-growth-journey-with-Tindaya-World-Premiere-new-Tribe-editions-and-Middle-East-ambitions_01_HQ.avif')`,
           backgroundSize: 'cover',
           backgroundPosition: 'center',
           backgroundRepeat: 'no-repeat'
@@ -353,10 +335,10 @@ export default function LoginPage() {
               </div>
 
               {/* Submit Button */}
-                  <button
+              <button
                 type="submit"
                 disabled={isLoading}
-                    className="w-full bg-gradient-to-r from-clutch-red-500 to-clutch-red-600 text-white py-3 px-4 rounded-lg font-semibold hover:from-clutch-red-600 hover:to-clutch-red-700 focus:ring-2 focus:ring-clutch-red-500 focus:ring-offset-2 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center shadow-xl hover:shadow-2xl transform hover:scale-[1.02]"
+                className="w-full bg-gradient-to-r from-clutch-red-500 to-clutch-red-600 text-white py-3 px-4 rounded-lg font-semibold hover:from-clutch-red-600 hover:to-clutch-red-700 focus:ring-2 focus:ring-clutch-red-500 focus:ring-offset-2 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center shadow-xl hover:shadow-2xl transform hover:scale-[1.02]"
               >
                 {isLoading ? (
                   <>
@@ -370,7 +352,7 @@ export default function LoginPage() {
                     <ArrowRight className="ml-2 h-5 w-5" />
                   </>
                 )}
-                  </button>
+              </button>
             </form>
 
                 {/* Employee Access Info */}
