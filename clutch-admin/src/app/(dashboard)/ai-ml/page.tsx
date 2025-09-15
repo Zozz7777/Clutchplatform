@@ -225,49 +225,49 @@ export default function AIMLPage() {
   const getStatusColor = (status: string) => {
     switch (status) {
       case "active":
-        return "bg-green-100 text-green-800";
+        return "bg-primary/10 text-primary-foreground";
       case "training":
-        return "bg-yellow-100 text-yellow-800";
+        return "bg-secondary/10 text-secondary-foreground";
       case "inactive":
-        return "bg-gray-100 text-gray-800";
+        return "bg-muted text-muted-foreground";
       case "investigating":
-        return "bg-yellow-100 text-yellow-800";
+        return "bg-secondary/10 text-secondary-foreground";
       case "resolved":
-        return "bg-green-100 text-green-800";
+        return "bg-primary/10 text-primary-foreground";
       case "false_positive":
-        return "bg-blue-100 text-blue-800";
+        return "bg-secondary/10 text-secondary-foreground";
       case "pending":
-        return "bg-yellow-100 text-yellow-800";
+        return "bg-secondary/10 text-secondary-foreground";
       case "implemented":
-        return "bg-green-100 text-green-800";
+        return "bg-primary/10 text-primary-foreground";
       default:
-        return "bg-gray-100 text-gray-800";
+        return "bg-muted text-muted-foreground";
     }
   };
 
   const getRiskColor = (risk: string) => {
     switch (risk) {
       case "high":
-        return "bg-red-100 text-red-800";
+        return "bg-destructive/10 text-destructive-foreground";
       case "medium":
-        return "bg-yellow-100 text-yellow-800";
+        return "bg-secondary/10 text-secondary-foreground";
       case "low":
-        return "bg-green-100 text-green-800";
+        return "bg-primary/10 text-primary-foreground";
       default:
-        return "bg-gray-100 text-gray-800";
+        return "bg-muted text-muted-foreground";
     }
   };
 
   const getImpactColor = (impact: string) => {
     switch (impact) {
       case "high":
-        return "bg-red-100 text-red-800";
+        return "bg-destructive/10 text-destructive-foreground";
       case "medium":
-        return "bg-yellow-100 text-yellow-800";
+        return "bg-secondary/10 text-secondary-foreground";
       case "low":
-        return "bg-green-100 text-green-800";
+        return "bg-primary/10 text-primary-foreground";
       default:
-        return "bg-gray-100 text-gray-800";
+        return "bg-muted text-muted-foreground";
     }
   };
 
@@ -319,7 +319,7 @@ export default function AIMLPage() {
           <CardContent>
             <div className="text-2xl font-bold text-foreground">{totalPredictions.toLocaleString()}</div>
             <p className="text-xs text-muted-foreground">
-              <span className="text-green-600">+15%</span> from last month
+              <span className="text-primary">+15%</span> from last month
             </p>
           </CardContent>
         </Card>
@@ -331,7 +331,7 @@ export default function AIMLPage() {
           <CardContent>
             <div className="text-2xl font-bold text-foreground">{avgAccuracy.toFixed(1)}%</div>
             <p className="text-xs text-muted-foreground">
-              <span className="text-green-600">+2.3%</span> improvement
+              <span className="text-primary">+2.3%</span> improvement
             </p>
           </CardContent>
         </Card>
@@ -343,7 +343,7 @@ export default function AIMLPage() {
           <CardContent>
             <div className="text-2xl font-bold text-foreground">{activeModels}</div>
             <p className="text-xs text-muted-foreground">
-              <span className="text-green-600">+1</span> new model
+              <span className="text-primary">+1</span> new model
             </p>
           </CardContent>
         </Card>
@@ -355,7 +355,7 @@ export default function AIMLPage() {
           <CardContent>
             <div className="text-2xl font-bold text-foreground">{fraudCasesDetected}</div>
             <p className="text-xs text-muted-foreground">
-              <span className="text-red-600">+3</span> this week
+              <span className="text-destructive">+3</span> this week
             </p>
           </CardContent>
         </Card>
@@ -449,7 +449,7 @@ export default function AIMLPage() {
                           <span className="text-sm font-medium text-foreground">{model.performance}%</span>
                           <div className="w-16 bg-muted rounded-full h-2">
                             <div 
-                              className="bg-green-500 h-2 rounded-full" 
+                              className="bg-primary h-2 rounded-full" 
                               style={{ width: `${model.performance}%` }}
                             ></div>
                           </div>
@@ -698,7 +698,7 @@ export default function AIMLPage() {
               <div className="space-y-4">
                 <div className="flex items-center justify-between p-4 rounded-lg bg-muted/50">
                   <div className="flex items-center space-x-3">
-                    <div className="w-2 h-2 rounded-full bg-yellow-500"></div>
+                    <div className="w-2 h-2 rounded-full bg-secondary"></div>
                     <div>
                       <p className="text-sm font-medium text-foreground">Fleet Optimization Model</p>
                       <p className="text-xs text-muted-foreground">Training in progress...</p>
@@ -711,7 +711,7 @@ export default function AIMLPage() {
                 </div>
                 <div className="flex items-center justify-between p-4 rounded-lg bg-muted/50">
                   <div className="flex items-center space-x-3">
-                    <div className="w-2 h-2 rounded-full bg-green-500"></div>
+                    <div className="w-2 h-2 rounded-full bg-primary"></div>
                     <div>
                       <p className="text-sm font-medium text-foreground">Fraud Detection Model</p>
                       <p className="text-xs text-muted-foreground">Training completed successfully</p>
@@ -724,7 +724,7 @@ export default function AIMLPage() {
                 </div>
                 <div className="flex items-center justify-between p-4 rounded-lg bg-muted/50">
                   <div className="flex items-center space-x-3">
-                    <div className="w-2 h-2 rounded-full bg-blue-500"></div>
+                    <div className="w-2 h-2 rounded-full bg-primary"></div>
                     <div>
                       <p className="text-sm font-medium text-foreground">Customer Churn Model</p>
                       <p className="text-xs text-muted-foreground">Validation in progress...</p>

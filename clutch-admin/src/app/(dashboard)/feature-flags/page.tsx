@@ -388,34 +388,34 @@ export default function FeatureFlagsPage() {
   };
 
   const getStatusColor = (enabled: boolean) => {
-    return enabled ? "bg-green-100 text-green-800" : "bg-gray-100 text-gray-800";
+    return enabled ? "bg-primary/10 text-primary-foreground" : "bg-muted text-muted-foreground";
   };
 
   const getEnvironmentColor = (environment: string) => {
     switch (environment) {
       case "production":
-        return "bg-red-100 text-red-800";
+        return "bg-destructive/10 text-destructive-foreground";
       case "staging":
-        return "bg-yellow-100 text-yellow-800";
+        return "bg-secondary/10 text-secondary-foreground";
       case "development":
-        return "bg-blue-100 text-blue-800";
+        return "bg-secondary/10 text-secondary-foreground";
       default:
-        return "bg-gray-100 text-gray-800";
+        return "bg-muted text-muted-foreground";
     }
   };
 
   const getABTestStatusColor = (status: string) => {
     switch (status) {
       case "running":
-        return "bg-green-100 text-green-800";
+        return "bg-primary/10 text-primary-foreground";
       case "paused":
-        return "bg-yellow-100 text-yellow-800";
+        return "bg-secondary/10 text-secondary-foreground";
       case "completed":
-        return "bg-blue-100 text-blue-800";
+        return "bg-secondary/10 text-secondary-foreground";
       case "draft":
-        return "bg-gray-100 text-gray-800";
+        return "bg-muted text-muted-foreground";
       default:
-        return "bg-gray-100 text-gray-800";
+        return "bg-muted text-muted-foreground";
     }
   };
 
@@ -699,7 +699,7 @@ export default function FeatureFlagsPage() {
                             <Settings className="mr-2 h-4 w-4" />
                             Configure Rollout
                           </DropdownMenuItem>
-                          <DropdownMenuItem className="text-red-600">
+                          <DropdownMenuItem className="text-destructive">
                             <Trash2 className="mr-2 h-4 w-4" />
                             Delete Flag
                           </DropdownMenuItem>
@@ -808,7 +808,7 @@ export default function FeatureFlagsPage() {
                             Resume Test
                           </DropdownMenuItem>
                         )}
-                        <DropdownMenuItem className="text-red-600">
+                        <DropdownMenuItem className="text-destructive">
                           <Trash2 className="mr-2 h-4 w-4" />
                           Delete Test
                         </DropdownMenuItem>

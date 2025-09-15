@@ -191,29 +191,29 @@ export default function APIDocsPage() {
   ];
 
   const categories = [
-    { name: "Authentication", icon: Key, color: "bg-blue-100 text-blue-800" },
-    { name: "Users", icon: Users, color: "bg-green-100 text-green-800" },
-    { name: "Fleet", icon: Truck, color: "bg-orange-100 text-orange-800" },
-    { name: "Finance", icon: DollarSign, color: "bg-yellow-100 text-yellow-800" },
-    { name: "Communication", icon: MessageSquare, color: "bg-purple-100 text-purple-800" },
-    { name: "Analytics", icon: BarChart3, color: "bg-indigo-100 text-indigo-800" },
-    { name: "System", icon: Settings, color: "bg-gray-100 text-gray-800" },
+    { name: "Authentication", icon: Key, color: "bg-secondary/10 text-secondary-foreground" },
+    { name: "Users", icon: Users, color: "bg-primary/10 text-primary-foreground" },
+    { name: "Fleet", icon: Truck, color: "bg-secondary/10 text-secondary-foreground" },
+    { name: "Finance", icon: DollarSign, color: "bg-secondary/10 text-secondary-foreground" },
+    { name: "Communication", icon: MessageSquare, color: "bg-primary/10 text-primary-foreground" },
+    { name: "Analytics", icon: BarChart3, color: "bg-secondary/10 text-secondary-foreground" },
+    { name: "System", icon: Settings, color: "bg-muted text-muted-foreground" },
   ];
 
   const getMethodColor = (method: string) => {
     switch (method) {
       case "GET":
-        return "bg-green-100 text-green-800";
+        return "bg-primary/10 text-primary-foreground";
       case "POST":
-        return "bg-blue-100 text-blue-800";
+        return "bg-secondary/10 text-secondary-foreground";
       case "PUT":
-        return "bg-yellow-100 text-yellow-800";
+        return "bg-secondary/10 text-secondary-foreground";
       case "DELETE":
-        return "bg-red-100 text-red-800";
+        return "bg-destructive/10 text-destructive-foreground";
       case "PATCH":
-        return "bg-purple-100 text-purple-800";
+        return "bg-primary/10 text-primary-foreground";
       default:
-        return "bg-gray-100 text-gray-800";
+        return "bg-muted text-muted-foreground";
     }
   };
 
@@ -476,7 +476,7 @@ export default function APIDocsPage() {
                                 {param.type}
                               </Badge>
                               {param.required && (
-                                <Badge className="bg-red-100 text-red-800">Required</Badge>
+                                <Badge className="bg-destructive/10 text-destructive-foreground">Required</Badge>
                               )}
                             </div>
                             <p className="text-sm text-muted-foreground mt-1">{param.description}</p>
@@ -495,7 +495,7 @@ export default function APIDocsPage() {
                   {Object.entries(selectedEndpoint.responses).map(([status, response]) => (
                     <div key={status} className="border rounded-lg p-4">
                       <div className="flex items-center space-x-2 mb-2">
-                        <Badge className={status.startsWith("2") ? "bg-green-100 text-green-800" : "bg-red-100 text-red-800"}>
+                        <Badge className={status.startsWith("2") ? "bg-primary/10 text-primary-foreground" : "bg-destructive/10 text-destructive-foreground"}>
                           {status}
                         </Badge>
                         <span className="font-medium">{response.description}</span>

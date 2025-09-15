@@ -267,47 +267,47 @@ export default function MobileAppsPage() {
   const getStatusColor = (status: string) => {
     switch (status) {
       case "live":
-        return "bg-green-100 text-green-800";
+        return "bg-primary/10 text-primary-foreground";
       case "testing":
-        return "bg-blue-100 text-blue-800";
+        return "bg-secondary/10 text-secondary-foreground";
       case "review":
-        return "bg-yellow-100 text-yellow-800";
+        return "bg-secondary/10 text-secondary-foreground";
       case "deprecated":
-        return "bg-red-100 text-red-800";
+        return "bg-destructive/10 text-destructive-foreground";
       case "draft":
-        return "bg-gray-100 text-gray-800";
+        return "bg-muted text-muted-foreground";
       default:
-        return "bg-gray-100 text-gray-800";
+        return "bg-muted text-muted-foreground";
     }
   };
 
   const getImpactColor = (impact: string) => {
     switch (impact) {
       case "critical":
-        return "bg-red-100 text-red-800";
+        return "bg-destructive/10 text-destructive-foreground";
       case "high":
-        return "bg-orange-100 text-orange-800";
+        return "bg-secondary/10 text-secondary-foreground";
       case "medium":
-        return "bg-yellow-100 text-yellow-800";
+        return "bg-secondary/10 text-secondary-foreground";
       case "low":
-        return "bg-green-100 text-green-800";
+        return "bg-primary/10 text-primary-foreground";
       default:
-        return "bg-gray-100 text-gray-800";
+        return "bg-muted text-muted-foreground";
     }
   };
 
   const getCrashStatusColor = (status: string) => {
     switch (status) {
       case "new":
-        return "bg-red-100 text-red-800";
+        return "bg-destructive/10 text-destructive-foreground";
       case "investigating":
-        return "bg-yellow-100 text-yellow-800";
+        return "bg-secondary/10 text-secondary-foreground";
       case "fixing":
-        return "bg-blue-100 text-blue-800";
+        return "bg-secondary/10 text-secondary-foreground";
       case "resolved":
-        return "bg-green-100 text-green-800";
+        return "bg-primary/10 text-primary-foreground";
       default:
-        return "bg-gray-100 text-gray-800";
+        return "bg-muted text-muted-foreground";
     }
   };
 
@@ -353,7 +353,7 @@ export default function MobileAppsPage() {
               {mockVersions.reduce((sum, v) => sum + v.downloadCount, 0).toLocaleString()}
             </div>
             <p className="text-xs text-muted-foreground">
-              <span className="text-green-600">+15%</span> from last month
+              <span className="text-primary">+15%</span> from last month
             </p>
           </CardContent>
         </Card>
@@ -367,7 +367,7 @@ export default function MobileAppsPage() {
               {mockAnalytics.reduce((sum, a) => sum + a.activeUsers, 0).toLocaleString()}
             </div>
             <p className="text-xs text-muted-foreground">
-              <span className="text-green-600">+8%</span> from last week
+              <span className="text-primary">+8%</span> from last week
             </p>
           </CardContent>
         </Card>
@@ -381,7 +381,7 @@ export default function MobileAppsPage() {
               {(mockVersions.reduce((sum, v) => sum + v.crashRate, 0) / mockVersions.length).toFixed(1)}%
             </div>
             <p className="text-xs text-muted-foreground">
-              <span className="text-red-600">+0.2%</span> from last week
+              <span className="text-destructive">+0.2%</span> from last week
             </p>
           </CardContent>
         </Card>
@@ -395,7 +395,7 @@ export default function MobileAppsPage() {
               {(mockVersions.reduce((sum, v) => sum + v.avgRating, 0) / mockVersions.length).toFixed(1)}
             </div>
             <p className="text-xs text-muted-foreground">
-              <span className="text-green-600">+0.1</span> from last month
+              <span className="text-primary">+0.1</span> from last month
             </p>
           </CardContent>
         </Card>
@@ -459,7 +459,7 @@ export default function MobileAppsPage() {
                       {analytics.platform === "ios" ? (
                         <Monitor className="h-5 w-5 text-gray-600" />
                       ) : (
-                        <Smartphone className="h-5 w-5 text-green-600" />
+                        <Smartphone className="h-5 w-5 text-primary" />
                       )}
                       <span className="font-medium capitalize">{analytics.platform}</span>
                     </div>
@@ -538,7 +538,7 @@ export default function MobileAppsPage() {
 
                     <div className="space-y-2">
                       <div>
-                        <div className="text-sm font-medium text-green-600 mb-1">New Features:</div>
+                        <div className="text-sm font-medium text-primary mb-1">New Features:</div>
                         <ul className="text-sm text-muted-foreground list-disc list-inside">
                           {version.features.map((feature, index) => (
                             <li key={index}>{feature}</li>
@@ -546,7 +546,7 @@ export default function MobileAppsPage() {
                         </ul>
                       </div>
                       <div>
-                        <div className="text-sm font-medium text-blue-600 mb-1">Bug Fixes:</div>
+                        <div className="text-sm font-medium text-primary mb-1">Bug Fixes:</div>
                         <ul className="text-sm text-muted-foreground list-disc list-inside">
                           {version.bugFixes.map((fix, index) => (
                             <li key={index}>{fix}</li>

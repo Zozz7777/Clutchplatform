@@ -207,26 +207,26 @@ export default function FinancePage() {
   const getStatusColor = (status: string) => {
     switch (status) {
       case "completed":
-        return "bg-green-100 text-green-800";
+        return "bg-primary/10 text-primary-foreground";
       case "pending":
-        return "bg-yellow-100 text-yellow-800";
+        return "bg-secondary/10 text-secondary-foreground";
       case "failed":
-        return "bg-red-100 text-red-800";
+        return "bg-destructive/10 text-destructive-foreground";
       case "cancelled":
-        return "bg-gray-100 text-gray-800";
+        return "bg-muted text-muted-foreground";
       default:
-        return "bg-gray-100 text-gray-800";
+        return "bg-muted text-muted-foreground";
     }
   };
 
   const getStatusIcon = (status: string) => {
     switch (status) {
       case "completed":
-        return <CheckCircle className="h-4 w-4 text-green-600" />;
+        return <CheckCircle className="h-4 w-4 text-primary" />;
       case "pending":
-        return <Clock className="h-4 w-4 text-yellow-600" />;
+        return <Clock className="h-4 w-4 text-secondary" />;
       case "failed":
-        return <XCircle className="h-4 w-4 text-red-600" />;
+        return <XCircle className="h-4 w-4 text-destructive" />;
       default:
         return <AlertTriangle className="h-4 w-4 text-gray-600" />;
     }
@@ -280,7 +280,7 @@ export default function FinancePage() {
           <CardContent>
             <div className="text-2xl font-bold text-foreground">{formatCurrency(totalRevenue)}</div>
             <p className="text-xs text-muted-foreground">
-              <span className="text-green-600">+15%</span> from last month
+              <span className="text-primary">+15%</span> from last month
             </p>
           </CardContent>
         </Card>
@@ -292,7 +292,7 @@ export default function FinancePage() {
           <CardContent>
             <div className="text-2xl font-bold text-foreground">{formatCurrency(pendingPayments)}</div>
             <p className="text-xs text-muted-foreground">
-              <span className="text-yellow-600">{payments.filter(p => p.status === "pending").length}</span> payments
+              <span className="text-secondary">{payments.filter(p => p.status === "pending").length}</span> payments
             </p>
           </CardContent>
         </Card>
@@ -304,7 +304,7 @@ export default function FinancePage() {
           <CardContent>
             <div className="text-2xl font-bold text-foreground">{activeSubscriptions}</div>
             <p className="text-xs text-muted-foreground">
-              <span className="text-green-600">+8%</span> retention rate
+              <span className="text-primary">+8%</span> retention rate
             </p>
           </CardContent>
         </Card>
@@ -316,7 +316,7 @@ export default function FinancePage() {
           <CardContent>
             <div className="text-2xl font-bold text-foreground">{formatCurrency(monthlyRecurring)}</div>
             <p className="text-xs text-muted-foreground">
-              <span className="text-green-600">+12%</span> growth
+              <span className="text-primary">+12%</span> growth
             </p>
           </CardContent>
         </Card>
@@ -471,7 +471,7 @@ export default function FinancePage() {
                               <CheckCircle className="mr-2 h-4 w-4" />
                               Mark as Paid
                             </DropdownMenuItem>
-                            <DropdownMenuItem className="text-red-600">
+                            <DropdownMenuItem className="text-destructive">
                               <XCircle className="mr-2 h-4 w-4" />
                               Refund Payment
                             </DropdownMenuItem>
@@ -556,7 +556,7 @@ export default function FinancePage() {
                               <Send className="mr-2 h-4 w-4" />
                               Send Reminder
                             </DropdownMenuItem>
-                            <DropdownMenuItem className="text-red-600">
+                            <DropdownMenuItem className="text-destructive">
                               <XCircle className="mr-2 h-4 w-4" />
                               Cancel Subscription
                             </DropdownMenuItem>

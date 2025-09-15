@@ -222,7 +222,7 @@ export default function DashboardPage() {
               {fleetVehicles.map((vehicle) => (
                 <div key={vehicle.id} className="flex items-center justify-between p-3 rounded-lg bg-muted/50">
                   <div className="flex items-center space-x-3">
-                    <div className="w-2 h-2 rounded-full bg-green-500"></div>
+                    <div className="w-2 h-2 rounded-full bg-primary"></div>
                     <div>
                       <p className="text-sm font-medium text-foreground">{vehicle.licensePlate}</p>
                       <p className="text-xs text-muted-foreground">{vehicle.model}</p>
@@ -256,7 +256,7 @@ export default function DashboardPage() {
                   <span className="text-sm text-muted-foreground">99.9%</span>
                 </div>
                 <div className="w-full bg-muted rounded-full h-2">
-                  <div className="bg-green-500 h-2 rounded-full" style={{ width: '99.9%' }}></div>
+                  <div className="bg-primary h-2 rounded-full" style={{ width: '99.9%' }}></div>
                 </div>
               </div>
               <div className="space-y-2">
@@ -274,7 +274,7 @@ export default function DashboardPage() {
                   <span className="text-sm text-muted-foreground">0.1%</span>
                 </div>
                 <div className="w-full bg-muted rounded-full h-2">
-                  <div className="bg-red-500 h-2 rounded-full" style={{ width: '0.1%' }}></div>
+                  <div className="bg-destructive h-2 rounded-full" style={{ width: '0.1%' }}></div>
                 </div>
               </div>
               <div className="space-y-2">
@@ -283,7 +283,7 @@ export default function DashboardPage() {
                   <span className="text-sm text-muted-foreground">456</span>
                 </div>
                 <div className="w-full bg-muted rounded-full h-2">
-                  <div className="bg-blue-500 h-2 rounded-full" style={{ width: '60%' }}></div>
+                  <div className="bg-secondary h-2 rounded-full" style={{ width: '60%' }}></div>
                 </div>
               </div>
             </div>
@@ -298,25 +298,25 @@ export default function DashboardPage() {
           </CardHeader>
           <CardContent>
             <div className="space-y-3">
-              <div className="flex items-center space-x-3 p-3 rounded-lg bg-red-50 border border-red-200">
-                <AlertTriangle className="h-4 w-4 text-red-600" />
+              <div className="flex items-center space-x-3 p-3 rounded-lg bg-destructive/10 border border-destructive/20">
+                <AlertTriangle className="h-4 w-4 text-destructive" />
                 <div>
-                  <p className="text-sm font-medium text-red-900">High Error Rate</p>
-                  <p className="text-xs text-red-700">API errors increased by 15%</p>
+                  <p className="text-sm font-medium text-destructive-foreground">High Error Rate</p>
+                  <p className="text-xs text-destructive-foreground/80">API errors increased by 15%</p>
                 </div>
               </div>
-              <div className="flex items-center space-x-3 p-3 rounded-lg bg-yellow-50 border border-yellow-200">
-                <Clock className="h-4 w-4 text-yellow-600" />
+              <div className="flex items-center space-x-3 p-3 rounded-lg bg-muted border border-border">
+                <Clock className="h-4 w-4 text-muted-foreground" />
                 <div>
-                  <p className="text-sm font-medium text-yellow-900">Maintenance Window</p>
-                  <p className="text-xs text-yellow-700">Scheduled for tonight 2AM</p>
+                  <p className="text-sm font-medium text-foreground">Maintenance Window</p>
+                  <p className="text-xs text-muted-foreground">Scheduled for tonight 2AM</p>
                 </div>
               </div>
-              <div className="flex items-center space-x-3 p-3 rounded-lg bg-green-50 border border-green-200">
-                <CheckCircle className="h-4 w-4 text-green-600" />
+              <div className="flex items-center space-x-3 p-3 rounded-lg bg-primary/10 border border-primary/20">
+                <CheckCircle className="h-4 w-4 text-primary" />
                 <div>
-                  <p className="text-sm font-medium text-green-900">System Healthy</p>
-                  <p className="text-xs text-green-700">All services operational</p>
+                  <p className="text-sm font-medium text-primary-foreground">System Healthy</p>
+                  <p className="text-xs text-primary-foreground/80">All services operational</p>
                 </div>
               </div>
             </div>

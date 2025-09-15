@@ -76,6 +76,7 @@ const auditRoutes = require('./routes/audit');
 const systemHealthRoutes = require('./routes/system-health');
 const systemRoutes = require('./routes/system');
 const adminCeoRoutes = require('./routes/admin-ceo');
+const authFallbackRoutes = require('./routes/auth-fallback');
 
 // All route imports cleaned up - only existing routes imported above
 
@@ -151,6 +152,9 @@ app.use(`${apiPrefix}/audit`, auditRoutes);
 app.use(`${apiPrefix}/system-health`, systemHealthRoutes);
 app.use(`${apiPrefix}/system`, systemRoutes);
 app.use(`${apiPrefix}/admin-ceo`, adminCeoRoutes);
+
+// Fallback authentication routes
+app.use(`${apiPrefix}/auth-fallback`, authFallbackRoutes);
 
 // Fallback routes
 app.use('/auth', authRoutes);

@@ -378,30 +378,30 @@ export default function IntegrationsPage() {
   const getStatusColor = (status: string) => {
     switch (status) {
       case "active":
-        return "bg-green-100 text-green-800";
+        return "bg-primary/10 text-primary-foreground";
       case "inactive":
-        return "bg-gray-100 text-gray-800";
+        return "bg-muted text-muted-foreground";
       case "error":
-        return "bg-red-100 text-red-800";
+        return "bg-destructive/10 text-destructive-foreground";
       case "pending":
-        return "bg-yellow-100 text-yellow-800";
+        return "bg-secondary/10 text-secondary-foreground";
       case "maintenance":
-        return "bg-blue-100 text-blue-800";
+        return "bg-secondary/10 text-secondary-foreground";
       default:
-        return "bg-gray-100 text-gray-800";
+        return "bg-muted text-muted-foreground";
     }
   };
 
   const getHealthColor = (status: string) => {
     switch (status) {
       case "healthy":
-        return "bg-green-100 text-green-800";
+        return "bg-primary/10 text-primary-foreground";
       case "degraded":
-        return "bg-yellow-100 text-yellow-800";
+        return "bg-secondary/10 text-secondary-foreground";
       case "down":
-        return "bg-red-100 text-red-800";
+        return "bg-destructive/10 text-destructive-foreground";
       default:
-        return "bg-gray-100 text-gray-800";
+        return "bg-muted text-muted-foreground";
     }
   };
 
@@ -708,7 +708,7 @@ export default function IntegrationsPage() {
                             <Shield className="mr-2 h-4 w-4" />
                             Security Settings
                           </DropdownMenuItem>
-                          <DropdownMenuItem className="text-red-600">
+                          <DropdownMenuItem className="text-destructive">
                             <Trash2 className="mr-2 h-4 w-4" />
                             Remove Integration
                           </DropdownMenuItem>
@@ -808,7 +808,7 @@ export default function IntegrationsPage() {
                       </div>
                       <div className="flex items-center space-x-2">
                         {template.isPopular && (
-                          <Badge className="bg-orange-100 text-orange-800">Popular</Badge>
+                          <Badge className="bg-secondary/10 text-secondary-foreground">Popular</Badge>
                         )}
                         <Badge variant="outline">{template.type}</Badge>
                       </div>

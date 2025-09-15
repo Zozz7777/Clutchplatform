@@ -468,28 +468,28 @@ export default function AuditTrailPage() {
   const getSeverityColor = (severity: string) => {
     switch (severity) {
       case "critical":
-        return "bg-red-100 text-red-800";
+        return "bg-destructive/10 text-destructive-foreground";
       case "high":
-        return "bg-orange-100 text-orange-800";
+        return "bg-secondary/10 text-secondary-foreground";
       case "medium":
-        return "bg-yellow-100 text-yellow-800";
+        return "bg-secondary/10 text-secondary-foreground";
       case "low":
-        return "bg-green-100 text-green-800";
+        return "bg-primary/10 text-primary-foreground";
       default:
-        return "bg-gray-100 text-gray-800";
+        return "bg-muted text-muted-foreground";
     }
   };
 
   const getStatusColor = (status: string) => {
     switch (status) {
       case "success":
-        return "bg-green-100 text-green-800";
+        return "bg-primary/10 text-primary-foreground";
       case "failure":
-        return "bg-red-100 text-red-800";
+        return "bg-destructive/10 text-destructive-foreground";
       case "warning":
-        return "bg-yellow-100 text-yellow-800";
+        return "bg-secondary/10 text-secondary-foreground";
       default:
-        return "bg-gray-100 text-gray-800";
+        return "bg-muted text-muted-foreground";
     }
   };
 
@@ -519,17 +519,17 @@ export default function AuditTrailPage() {
   const getActionIcon = (action: string) => {
     switch (action) {
       case "CREATE":
-        return <Plus className="h-4 w-4 text-green-600" />;
+        return <Plus className="h-4 w-4 text-primary" />;
       case "UPDATE":
-        return <Edit className="h-4 w-4 text-blue-600" />;
+        return <Edit className="h-4 w-4 text-primary" />;
       case "DELETE":
-        return <Trash2 className="h-4 w-4 text-red-600" />;
+        return <Trash2 className="h-4 w-4 text-destructive" />;
       case "LOGIN":
-        return <Unlock className="h-4 w-4 text-green-600" />;
+        return <Unlock className="h-4 w-4 text-primary" />;
       case "LOGOUT":
         return <Lock className="h-4 w-4 text-gray-600" />;
       case "FAILED_LOGIN":
-        return <XCircle className="h-4 w-4 text-red-600" />;
+        return <XCircle className="h-4 w-4 text-destructive" />;
       default:
         return <Activity className="h-4 w-4 text-gray-600" />;
     }
@@ -604,7 +604,7 @@ export default function AuditTrailPage() {
             <AlertTriangle className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold text-red-600">{criticalEvents}</div>
+            <div className="text-2xl font-bold text-destructive">{criticalEvents}</div>
             <p className="text-xs text-muted-foreground">
               Require attention
             </p>
@@ -616,7 +616,7 @@ export default function AuditTrailPage() {
             <XCircle className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold text-orange-600">{failedActions}</div>
+            <div className="text-2xl font-bold text-secondary">{failedActions}</div>
             <p className="text-xs text-muted-foreground">
               Security concerns
             </p>
@@ -651,7 +651,7 @@ export default function AuditTrailPage() {
                 <div key={event._id} className="flex items-center justify-between p-3 bg-white rounded-lg border">
                   <div>
                     <p className="font-medium text-red-800">{event.description}</p>
-                    <p className="text-sm text-red-600">
+                    <p className="text-sm text-destructive">
                       {event.type} • {event.source.ipAddress} • {new Date(event.timestamp).toLocaleString()}
                     </p>
                   </div>
@@ -829,11 +829,11 @@ export default function AuditTrailPage() {
                 <div className="flex items-center space-x-4">
                   <div className="p-2 bg-blue-100 rounded-lg">
                     {activity.device.type === "mobile" ? (
-                      <Smartphone className="h-4 w-4 text-blue-600" />
+                      <Smartphone className="h-4 w-4 text-primary" />
                     ) : activity.device.type === "tablet" ? (
-                      <Monitor className="h-4 w-4 text-blue-600" />
+                      <Monitor className="h-4 w-4 text-primary" />
                     ) : (
-                      <Monitor className="h-4 w-4 text-blue-600" />
+                      <Monitor className="h-4 w-4 text-primary" />
                     )}
                   </div>
                   <div>
@@ -851,7 +851,7 @@ export default function AuditTrailPage() {
                   <p className="text-sm text-muted-foreground">
                     {activity.duration ? `${Math.floor(activity.duration / 60)}h ${activity.duration % 60}m` : "Active"}
                   </p>
-                  <Badge className={activity.status === "active" ? "bg-green-100 text-green-800" : "bg-gray-100 text-gray-800"}>
+                  <Badge className={activity.status === "active" ? "bg-primary/10 text-primary-foreground" : "bg-muted text-muted-foreground"}>
                     {activity.status}
                   </Badge>
                 </div>

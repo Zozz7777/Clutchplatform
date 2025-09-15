@@ -431,19 +431,19 @@ export default function AssetManagementPage() {
   const getStatusColor = (status: string) => {
     switch (status) {
       case "active":
-        return "bg-green-100 text-green-800";
+        return "bg-primary/10 text-primary-foreground";
       case "inactive":
-        return "bg-gray-100 text-gray-800";
+        return "bg-muted text-muted-foreground";
       case "maintenance":
-        return "bg-yellow-100 text-yellow-800";
+        return "bg-secondary/10 text-secondary-foreground";
       case "retired":
-        return "bg-blue-100 text-blue-800";
+        return "bg-secondary/10 text-secondary-foreground";
       case "lost":
-        return "bg-orange-100 text-orange-800";
+        return "bg-secondary/10 text-secondary-foreground";
       case "stolen":
-        return "bg-red-100 text-red-800";
+        return "bg-destructive/10 text-destructive-foreground";
       default:
-        return "bg-gray-100 text-gray-800";
+        return "bg-muted text-muted-foreground";
     }
   };
 
@@ -731,7 +731,7 @@ export default function AssetManagementPage() {
                           <Settings className="mr-2 h-4 w-4" />
                           Manage Assignment
                         </DropdownMenuItem>
-                        <DropdownMenuItem className="text-red-600">
+                        <DropdownMenuItem className="text-destructive">
                           <Trash2 className="mr-2 h-4 w-4" />
                           Delete Asset
                         </DropdownMenuItem>
@@ -759,7 +759,7 @@ export default function AssetManagementPage() {
               <div key={record._id} className="flex items-center justify-between p-4 border rounded-lg">
                 <div className="flex items-center space-x-4">
                   <div className="p-2 bg-blue-100 rounded-lg">
-                    <Wrench className="h-4 w-4 text-blue-600" />
+                    <Wrench className="h-4 w-4 text-primary" />
                   </div>
                   <div>
                     <p className="font-medium">{record.assetName}</p>
@@ -771,7 +771,7 @@ export default function AssetManagementPage() {
                 </div>
                 <div className="text-right">
                   <p className="font-medium">{formatCurrency(record.cost)}</p>
-                  <Badge className={record.status === "completed" ? "bg-green-100 text-green-800" : "bg-yellow-100 text-yellow-800"}>
+                  <Badge className={record.status === "completed" ? "bg-primary/10 text-primary-foreground" : "bg-secondary/10 text-secondary-foreground"}>
                     {record.status}
                   </Badge>
                 </div>

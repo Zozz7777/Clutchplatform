@@ -539,17 +539,17 @@ export default function VendorManagementPage() {
   const getStatusColor = (status: string) => {
     switch (status) {
       case "active":
-        return "bg-green-100 text-green-800";
+        return "bg-primary/10 text-primary-foreground";
       case "inactive":
-        return "bg-gray-100 text-gray-800";
+        return "bg-muted text-muted-foreground";
       case "suspended":
-        return "bg-yellow-100 text-yellow-800";
+        return "bg-secondary/10 text-secondary-foreground";
       case "pending_approval":
-        return "bg-blue-100 text-blue-800";
+        return "bg-secondary/10 text-secondary-foreground";
       case "blacklisted":
-        return "bg-red-100 text-red-800";
+        return "bg-destructive/10 text-destructive-foreground";
       default:
-        return "bg-gray-100 text-gray-800";
+        return "bg-muted text-muted-foreground";
     }
   };
 
@@ -856,7 +856,7 @@ export default function VendorManagementPage() {
                           <Award className="mr-2 h-4 w-4" />
                           Rate Vendor
                         </DropdownMenuItem>
-                        <DropdownMenuItem className="text-red-600">
+                        <DropdownMenuItem className="text-destructive">
                           <Trash2 className="mr-2 h-4 w-4" />
                           Delete Vendor
                         </DropdownMenuItem>
@@ -884,7 +884,7 @@ export default function VendorManagementPage() {
               <div key={contract._id} className="flex items-center justify-between p-4 border rounded-lg">
                 <div className="flex items-center space-x-4">
                   <div className="p-2 bg-blue-100 rounded-lg">
-                    <FileText className="h-4 w-4 text-blue-600" />
+                    <FileText className="h-4 w-4 text-primary" />
                   </div>
                   <div>
                     <p className="font-medium">{contract.title}</p>
@@ -896,7 +896,7 @@ export default function VendorManagementPage() {
                 </div>
                 <div className="text-right">
                   <p className="font-medium">{formatCurrency(contract.value)}</p>
-                  <Badge className={contract.status === "active" ? "bg-green-100 text-green-800" : "bg-gray-100 text-gray-800"}>
+                  <Badge className={contract.status === "active" ? "bg-primary/10 text-primary-foreground" : "bg-muted text-muted-foreground"}>
                     {contract.status}
                   </Badge>
                 </div>

@@ -224,45 +224,45 @@ export default function CommunicationPage() {
   const getTypeColor = (type: string) => {
     switch (type) {
       case "info":
-        return "bg-blue-100 text-blue-800";
+        return "bg-secondary/10 text-secondary-foreground";
       case "warning":
-        return "bg-yellow-100 text-yellow-800";
+        return "bg-secondary/10 text-secondary-foreground";
       case "error":
-        return "bg-red-100 text-red-800";
+        return "bg-destructive/10 text-destructive-foreground";
       case "success":
-        return "bg-green-100 text-green-800";
+        return "bg-primary/10 text-primary-foreground";
       default:
-        return "bg-gray-100 text-gray-800";
+        return "bg-muted text-muted-foreground";
     }
   };
 
   const getStatusColor = (status: string) => {
     switch (status) {
       case "sent":
-        return "bg-green-100 text-green-800";
+        return "bg-primary/10 text-primary-foreground";
       case "scheduled":
-        return "bg-blue-100 text-blue-800";
+        return "bg-secondary/10 text-secondary-foreground";
       case "draft":
-        return "bg-gray-100 text-gray-800";
+        return "bg-muted text-muted-foreground";
       case "failed":
-        return "bg-red-100 text-red-800";
+        return "bg-destructive/10 text-destructive-foreground";
       default:
-        return "bg-gray-100 text-gray-800";
+        return "bg-muted text-muted-foreground";
     }
   };
 
   const getPriorityColor = (priority: string) => {
     switch (priority) {
       case "urgent":
-        return "bg-red-100 text-red-800";
+        return "bg-destructive/10 text-destructive-foreground";
       case "high":
-        return "bg-orange-100 text-orange-800";
+        return "bg-secondary/10 text-secondary-foreground";
       case "medium":
-        return "bg-yellow-100 text-yellow-800";
+        return "bg-secondary/10 text-secondary-foreground";
       case "low":
-        return "bg-green-100 text-green-800";
+        return "bg-primary/10 text-primary-foreground";
       default:
-        return "bg-gray-100 text-gray-800";
+        return "bg-muted text-muted-foreground";
     }
   };
 
@@ -319,7 +319,7 @@ export default function CommunicationPage() {
           <CardContent>
             <div className="text-2xl font-bold">{mockNotifications.length}</div>
             <p className="text-xs text-muted-foreground">
-              <span className="text-green-600">+12%</span> from last month
+              <span className="text-primary">+12%</span> from last month
             </p>
           </CardContent>
         </Card>
@@ -355,7 +355,7 @@ export default function CommunicationPage() {
           <CardContent>
             <div className="text-2xl font-bold">97.2%</div>
             <p className="text-xs text-muted-foreground">
-              <span className="text-green-600">+2.1%</span> from last month
+              <span className="text-primary">+2.1%</span> from last month
             </p>
           </CardContent>
         </Card>
@@ -497,7 +497,7 @@ export default function CommunicationPage() {
                   
                   <div className="flex items-center space-x-4">
                     {channel.unreadMessages > 0 && (
-                      <Badge className="bg-red-100 text-red-800">
+                      <Badge className="bg-destructive/10 text-destructive-foreground">
                         {channel.unreadMessages} unread
                       </Badge>
                     )}

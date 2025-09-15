@@ -93,15 +93,15 @@ export default function FleetPage() {
   const getStatusColor = (status: string) => {
     switch (status) {
       case "active":
-        return "bg-green-100 text-green-800";
+        return "bg-primary/10 text-primary-foreground";
       case "maintenance":
-        return "bg-yellow-100 text-yellow-800";
+        return "bg-secondary/10 text-secondary-foreground";
       case "offline":
-        return "bg-red-100 text-red-800";
+        return "bg-destructive/10 text-destructive-foreground";
       case "idle":
-        return "bg-blue-100 text-blue-800";
+        return "bg-muted text-muted-foreground";
       default:
-        return "bg-gray-100 text-gray-800";
+        return "bg-muted text-muted-foreground";
     }
   };
 
@@ -380,25 +380,25 @@ export default function FleetPage() {
         </CardHeader>
         <CardContent>
           <div className="space-y-3">
-            <div className="flex items-center space-x-3 p-3 rounded-lg bg-red-50 border border-red-200">
-              <AlertTriangle className="h-4 w-4 text-red-600" />
+            <div className="flex items-center space-x-3 p-3 rounded-lg bg-destructive/10 border border-destructive/20">
+              <AlertTriangle className="h-4 w-4 text-destructive" />
               <div>
-                <p className="text-sm font-medium text-red-900">Vehicle ABC-123 Offline</p>
-                <p className="text-xs text-red-700">No GPS signal for 2 hours</p>
+                <p className="text-sm font-medium text-destructive-foreground">Vehicle ABC-123 Offline</p>
+                <p className="text-xs text-destructive-foreground/80">No GPS signal for 2 hours</p>
               </div>
             </div>
-            <div className="flex items-center space-x-3 p-3 rounded-lg bg-yellow-50 border border-yellow-200">
-              <Wrench className="h-4 w-4 text-yellow-600" />
+            <div className="flex items-center space-x-3 p-3 rounded-lg bg-secondary/10 border border-secondary/20">
+              <Wrench className="h-4 w-4 text-secondary" />
               <div>
-                <p className="text-sm font-medium text-yellow-900">Maintenance Due</p>
-                <p className="text-xs text-yellow-700">DEF-456 needs oil change</p>
+                <p className="text-sm font-medium text-secondary-foreground">Maintenance Due</p>
+                <p className="text-xs text-secondary-foreground/80">DEF-456 needs oil change</p>
               </div>
             </div>
-            <div className="flex items-center space-x-3 p-3 rounded-lg bg-blue-50 border border-blue-200">
-              <Fuel className="h-4 w-4 text-blue-600" />
+            <div className="flex items-center space-x-3 p-3 rounded-lg bg-primary/10 border border-primary/20">
+              <Fuel className="h-4 w-4 text-primary" />
               <div>
-                <p className="text-sm font-medium text-blue-900">Low Fuel Alert</p>
-                <p className="text-xs text-blue-700">GHI-789 fuel level at 15%</p>
+                <p className="text-sm font-medium text-primary-foreground">Low Fuel Alert</p>
+                <p className="text-xs text-primary-foreground/80">GHI-789 fuel level at 15%</p>
               </div>
             </div>
           </div>

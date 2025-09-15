@@ -190,39 +190,39 @@ export default function CRMPage() {
   const getStatusColor = (status: string) => {
     switch (status) {
       case "active":
-        return "bg-green-100 text-green-800";
+        return "bg-primary/10 text-primary-foreground";
       case "prospect":
-        return "bg-blue-100 text-blue-800";
+        return "bg-secondary/10 text-secondary-foreground";
       case "inactive":
-        return "bg-gray-100 text-gray-800";
+        return "bg-muted text-muted-foreground";
       default:
-        return "bg-gray-100 text-gray-800";
+        return "bg-muted text-muted-foreground";
     }
   };
 
   const getPriorityColor = (priority: string) => {
     switch (priority) {
       case "high":
-        return "bg-red-100 text-red-800";
+        return "bg-destructive/10 text-destructive-foreground";
       case "medium":
-        return "bg-yellow-100 text-yellow-800";
+        return "bg-secondary/10 text-secondary-foreground";
       case "low":
-        return "bg-green-100 text-green-800";
+        return "bg-primary/10 text-primary-foreground";
       default:
-        return "bg-gray-100 text-gray-800";
+        return "bg-muted text-muted-foreground";
     }
   };
 
   const getTicketStatusColor = (status: string) => {
     switch (status) {
       case "open":
-        return "bg-red-100 text-red-800";
+        return "bg-destructive/10 text-destructive-foreground";
       case "in_progress":
-        return "bg-yellow-100 text-yellow-800";
+        return "bg-secondary/10 text-secondary-foreground";
       case "closed":
-        return "bg-green-100 text-green-800";
+        return "bg-primary/10 text-primary-foreground";
       default:
-        return "bg-gray-100 text-gray-800";
+        return "bg-muted text-muted-foreground";
     }
   };
 
@@ -565,7 +565,7 @@ export default function CRMPage() {
                   </div>
                 </div>
                 <div className="flex items-start space-x-3 p-4 rounded-lg bg-muted/50">
-                  <div className="w-2 h-2 rounded-full bg-blue-500 mt-2"></div>
+                  <div className="w-2 h-2 rounded-full bg-primary mt-2"></div>
                   <div className="flex-1">
                     <div className="flex items-center justify-between">
                       <p className="text-sm font-medium text-foreground">Email - Fatma Mohamed</p>
@@ -577,7 +577,7 @@ export default function CRMPage() {
                   </div>
                 </div>
                 <div className="flex items-start space-x-3 p-4 rounded-lg bg-muted/50">
-                  <div className="w-2 h-2 rounded-full bg-green-500 mt-2"></div>
+                  <div className="w-2 h-2 rounded-full bg-primary mt-2"></div>
                   <div className="flex-1">
                     <div className="flex items-center justify-between">
                       <p className="text-sm font-medium text-foreground">Meeting - Omar Ali</p>

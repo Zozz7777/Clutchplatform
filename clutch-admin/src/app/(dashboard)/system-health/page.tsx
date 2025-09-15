@@ -378,30 +378,30 @@ export default function SystemHealthPage() {
   const getStatusColor = (status: string) => {
     switch (status) {
       case "healthy":
-        return "bg-green-100 text-green-800";
+        return "bg-primary/10 text-primary-foreground";
       case "degraded":
-        return "bg-yellow-100 text-yellow-800";
+        return "bg-secondary/10 text-secondary-foreground";
       case "critical":
-        return "bg-orange-100 text-orange-800";
+        return "bg-secondary/10 text-secondary-foreground";
       case "down":
-        return "bg-red-100 text-red-800";
+        return "bg-destructive/10 text-destructive-foreground";
       default:
-        return "bg-gray-100 text-gray-800";
+        return "bg-muted text-muted-foreground";
     }
   };
 
   const getSeverityColor = (severity: string) => {
     switch (severity) {
       case "critical":
-        return "bg-red-100 text-red-800";
+        return "bg-destructive/10 text-destructive-foreground";
       case "high":
-        return "bg-orange-100 text-orange-800";
+        return "bg-secondary/10 text-secondary-foreground";
       case "medium":
-        return "bg-yellow-100 text-yellow-800";
+        return "bg-secondary/10 text-secondary-foreground";
       case "low":
-        return "bg-blue-100 text-blue-800";
+        return "bg-secondary/10 text-secondary-foreground";
       default:
-        return "bg-gray-100 text-gray-800";
+        return "bg-muted text-muted-foreground";
     }
   };
 
@@ -409,15 +409,15 @@ export default function SystemHealthPage() {
     switch (level) {
       case "fatal":
       case "error":
-        return "bg-red-100 text-red-800";
+        return "bg-destructive/10 text-destructive-foreground";
       case "warn":
-        return "bg-yellow-100 text-yellow-800";
+        return "bg-secondary/10 text-secondary-foreground";
       case "info":
-        return "bg-blue-100 text-blue-800";
+        return "bg-secondary/10 text-secondary-foreground";
       case "debug":
-        return "bg-gray-100 text-gray-800";
+        return "bg-muted text-muted-foreground";
       default:
-        return "bg-gray-100 text-gray-800";
+        return "bg-muted text-muted-foreground";
     }
   };
 
@@ -562,7 +562,7 @@ export default function SystemHealthPage() {
               <div className="flex items-center space-x-2 mt-2">
                 <div className="flex-1 bg-gray-200 rounded-full h-2">
                   <div 
-                    className="bg-blue-500 h-2 rounded-full" 
+                    className="bg-primary h-2 rounded-full" 
                     style={{ width: `${systemMetrics.cpu.usage}%` }}
                   ></div>
                 </div>
@@ -582,7 +582,7 @@ export default function SystemHealthPage() {
               <div className="flex items-center space-x-2 mt-2">
                 <div className="flex-1 bg-gray-200 rounded-full h-2">
                   <div 
-                    className="bg-green-500 h-2 rounded-full" 
+                    className="bg-primary h-2 rounded-full" 
                     style={{ width: `${systemMetrics.memory.usage}%` }}
                   ></div>
                 </div>
@@ -602,7 +602,7 @@ export default function SystemHealthPage() {
               <div className="flex items-center space-x-2 mt-2">
                 <div className="flex-1 bg-gray-200 rounded-full h-2">
                   <div 
-                    className="bg-orange-500 h-2 rounded-full" 
+                    className="bg-secondary h-2 rounded-full" 
                     style={{ width: `${systemMetrics.disk.usage}%` }}
                   ></div>
                 </div>
@@ -641,7 +641,7 @@ export default function SystemHealthPage() {
               <div key={service.name} className="flex items-center justify-between p-4 border rounded-lg">
                 <div className="flex items-center space-x-4">
                   <div className="p-2 bg-blue-100 rounded-lg">
-                    <Server className="h-4 w-4 text-blue-600" />
+                    <Server className="h-4 w-4 text-primary" />
                   </div>
                   <div>
                     <p className="font-medium">{service.name}</p>
@@ -685,7 +685,7 @@ export default function SystemHealthPage() {
               <div key={alert._id} className="flex items-center justify-between p-4 border rounded-lg">
                 <div className="flex items-center space-x-4">
                   <div className="p-2 bg-red-100 rounded-lg">
-                    <AlertTriangle className="h-4 w-4 text-red-600" />
+                    <AlertTriangle className="h-4 w-4 text-destructive" />
                   </div>
                   <div>
                     <p className="font-medium">{alert.title}</p>
