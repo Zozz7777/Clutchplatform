@@ -36,6 +36,16 @@ const nextConfig: NextConfig = {
       },
     ];
   },
+  // Ensure static files are properly served
+  async redirects() {
+    return [
+      {
+        source: '/logo/:path*',
+        destination: '/logos/:path*',
+        permanent: true,
+      },
+    ];
+  },
   async headers() {
     return [
       {

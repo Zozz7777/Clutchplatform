@@ -2,6 +2,7 @@
 
 import React, { createContext, useContext, useEffect, useState, useCallback } from 'react';
 import { websocketService, WebSocketEventHandlers } from '@/lib/websocket';
+import { useAuth } from './auth-context';
 import { toast } from 'sonner';
 
 interface RealtimeContextType {
@@ -17,6 +18,7 @@ interface RealtimeContextType {
 const RealtimeContext = createContext<RealtimeContextType | undefined>(undefined);
 
 export function RealtimeProvider({ children }: { children: React.ReactNode }) {
+  const { user, isLoading: isAuthLoading } = useAuth();
   const [isConnected, setIsConnected] = useState(false);
   const [connectionState, setConnectionState] = useState('disconnected');
   const [lastMessage, setLastMessage] = useState<any>(null);
@@ -108,15 +110,23 @@ export function RealtimeProvider({ children }: { children: React.ReactNode }) {
     return websocketService.send(message);
   }, []);
 
-  // Auto-connect when component mounts
+  // Auto-connect when user is authenticated
   useEffect(() => {
-    connect();
+    if (!isAuthLoading) {
+      if (user && !isConnected && !isConnecting) {
+        connect();
+      } else if (!user && isConnected) {
+        disconnect();
+      }
+    }
     
     // Cleanup on unmount
     return () => {
-      disconnect();
+      if (isConnected) {
+        disconnect();
+      }
     };
-  }, [connect, disconnect]);
+  }, [user, isAuthLoading, isConnected, isConnecting, connect, disconnect]);
 
   // Update connection state periodically
   useEffect(() => {
