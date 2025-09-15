@@ -12,15 +12,15 @@ services:
       - key: PORT
         value: 5000
       - key: MONGODB_URI
-        fromDatabase:
-          name: clutch-database
-          property: connectionString
+        value: mongodb+srv://ziadabdelmageed1:I174HSKpqf6iNBKd@clutch.qkgvstq.mongodb.net/clutch?retryWrites=true&w=majority&appName=Clutch
+      - key: MONGODB_DB
+        value: clutch
       - key: JWT_SECRET
         generateValue: true
       - key: ADMIN_EMAIL
         value: ziad@yourclutch.com
       - key: ADMIN_PASSWORD_HASH
-        value: $2a$12$LQv3c1yqBWVHxkd0LHAkCOYz6TtxMQJqhN8/LewdBPj4J/8K.8.8.
+        value: $2b$12$5PMqe4ig1OwGH0OgomKBfu4fjehS3holhZC3PitkKN69GLjb8L.Vy
       - key: REDIS_URL
         fromService:
           type: redis

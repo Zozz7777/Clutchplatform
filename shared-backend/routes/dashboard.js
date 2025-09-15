@@ -6,55 +6,110 @@
 const express = require('express');
 const router = express.Router();
 const { authenticateToken, requireRole } = require('../middleware/auth');
+const { getCollection } = require('../config/database-unified');
 
 // GET /api/v1/dashboard/kpis - Get dashboard KPIs
 router.get('/kpis', authenticateToken, async (req, res) => {
   try {
-    // Mock dashboard KPIs data
-    const kpis = {
-      totalUsers: 1250,
-      activeUsers: 1100,
-      totalVehicles: 850,
-      activeVehicles: 780,
-      totalBookings: 2100,
-      completedBookings: 1950,
-      pendingBookings: 150,
-      totalRevenue: 125000,
-      monthlyRevenue: 45000,
-      averageRating: 4.7,
-      customerSatisfaction: 92,
-      fleetUtilization: 85,
-      serviceCompletionRate: 95,
-      responseTime: '2.5 minutes',
-      uptime: '99.9%',
-      trends: {
-        users: { change: '+12%', trend: 'up' },
-        revenue: { change: '+8%', trend: 'up' },
-        bookings: { change: '+15%', trend: 'up' },
-        satisfaction: { change: '+2%', trend: 'up' }
+    // Get real data from database
+    const usersCollection = await getCollection('users');
+    const vehiclesCollection = await getCollection('vehicles');
+    const bookingsCollection = await getCollection('bookings');
+    const transactionsCollection = await getCollection('transactions');
+    
+    // Calculate real KPIs from database
+    const [
+      totalUsers,
+      activeUsers,
+      totalVehicles,
+      activeVehicles,
+      totalBookings,
+      completedBookings,
+      pendingBookings,
+      totalRevenueResult,
+      monthlyRevenueResult
+    ] = await Promise.all([
+      usersCollection.countDocuments(),
+      usersCollection.countDocuments({ isActive: true }),
+      vehiclesCollection.countDocuments(),
+      vehiclesCollection.countDocuments({ status: 'active' }),
+      bookingsCollection.countDocuments(),
+      bookingsCollection.countDocuments({ status: 'completed' }),
+      bookingsCollection.countDocuments({ status: 'pending' }),
+      transactionsCollection.aggregate([
+        { $group: { _id: null, total: { $sum: '$amount' } } }
+      ]).toArray(),
+      transactionsCollection.aggregate([
+        { 
+          $match: { 
+            createdAt: { 
+              $gte: new Date(new Date().getFullYear(), new Date().getMonth(), 1) 
+            } 
+          } 
+        },
+        { $group: { _id: null, total: { $sum: '$amount' } } }
+      ]).toArray()
+    ]);
+
+    const totalRevenue = totalRevenueResult[0]?.total || 0;
+    const monthlyRevenue = monthlyRevenueResult[0]?.total || 0;
+
+    // Calculate trends (simplified for now)
+    const trends = {
+      users: { change: '+0%', trend: 'stable' },
+      revenue: { change: '+0%', trend: 'stable' },
+      bookings: { change: '+0%', trend: 'stable' },
+      satisfaction: { change: '+0%', trend: 'stable' }
+    };
+
+    // Get chart data from database
+    const revenueChart = await transactionsCollection.aggregate([
+      {
+        $group: {
+          _id: { $month: '$createdAt' },
+          revenue: { $sum: '$amount' }
+        }
       },
+      { $sort: { _id: 1 } }
+    ]).toArray();
+
+    const bookingsChart = await bookingsCollection.aggregate([
+      {
+        $group: {
+          _id: { $dayOfWeek: '$createdAt' },
+          bookings: { $sum: 1 }
+        }
+      },
+      { $sort: { _id: 1 } }
+    ]).toArray();
+
+    const kpis = {
+      totalUsers,
+      activeUsers,
+      totalVehicles,
+      activeVehicles,
+      totalBookings,
+      completedBookings,
+      pendingBookings,
+      totalRevenue,
+      monthlyRevenue,
+      averageRating: 4.7, // TODO: Calculate from reviews
+      customerSatisfaction: 92, // TODO: Calculate from feedback
+      fleetUtilization: 85, // TODO: Calculate from vehicle usage
+      serviceCompletionRate: totalBookings > 0 ? (completedBookings / totalBookings * 100).toFixed(1) : 0,
+      responseTime: '2.5 minutes', // TODO: Calculate from actual response times
+      uptime: '99.9%', // TODO: Calculate from system monitoring
+      trends,
       charts: {
-        revenueChart: [
-          { month: 'Jan', revenue: 35000 },
-          { month: 'Feb', revenue: 42000 },
-          { month: 'Mar', revenue: 38000 },
-          { month: 'Apr', revenue: 45000 }
-        ],
-        bookingsChart: [
-          { day: 'Mon', bookings: 45 },
-          { day: 'Tue', bookings: 52 },
-          { day: 'Wed', bookings: 48 },
-          { day: 'Thu', bookings: 61 },
-          { day: 'Fri', bookings: 55 },
-          { day: 'Sat', bookings: 38 },
-          { day: 'Sun', bookings: 42 }
-        ],
-        userGrowthChart: [
-          { week: 'Week 1', users: 1200 },
-          { week: 'Week 2', users: 1250 },
-          { week: 'Week 3', users: 1300 },
-          { week: 'Week 4', users: 1350 }
-        ]
+        revenueChart: revenueChart.map(item => ({
+          month: new Date(2024, item._id - 1).toLocaleString('default', { month: 'short' }),
+          revenue: item.revenue
+        })),
+        bookingsChart: bookingsChart.map(item => ({
+          day: ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'][item._id - 1],
+          bookings: item.bookings
+        })),
+        userGrowthChart: [] // TODO: Implement user growth chart
       }
     };
 
