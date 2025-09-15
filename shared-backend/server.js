@@ -4,18 +4,6 @@ const { applyOptimizedMiddleware, getMemoryStats } = require('./middleware/optim
 const { redisCache } = require('./config/optimized-redis');
 const OptimizedAIProviderManager = require('./services/optimizedAIProviderManager');
 const { connectToDatabase: connectOptimizedDatabase } = require('./config/optimized-database');
-
-// Optimized imports
-const { applyOptimizedMiddleware, getMemoryStats } = require('./middleware/optimized-middleware');
-const { redisCache } = require('./config/optimized-redis');
-const OptimizedAIProviderManager = require('./services/optimizedAIProviderManager');
-const { connectToDatabase: connectOptimizedDatabase } = require('./config/optimized-database');
-
-// Optimized imports
-const { applyOptimizedMiddleware, getMemoryStats } = require('./middleware/optimized-middleware');
-const { redisCache } = require('./config/optimized-redis');
-const OptimizedAIProviderManager = require('./services/optimizedAIProviderManager');
-const { connectToDatabase: connectOptimizedDatabase } = require('./config/optimized-database');
 const express = require('express');
 const cors = require('cors');
 const rateLimit = require('express-rate-limit');
@@ -205,108 +193,7 @@ const app = express();
 app.set('trust proxy', 1);
 
 // Apply optimized middleware stack
-
-// Apply optimized middleware stack
 applyOptimizedMiddleware(app);
-
-app.use(databaseQueryMiddleware());
-app.use(optimizationMiddleware());
-app.use(performanceMonitor);
-
-// Security headers middleware
-app.use(securityHeaders);
-
-// Input validation middleware
-app.use(validateInput);
-
-// Compression middleware
-app.use(compression());
-
-// Basic CORS
-app.use(cors({
-  origin: true,
-  credentials: true,
-  methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With', 'x-session-token', 'X-API-Version', 'X-Correlation-ID', 'Accept', 'Origin']
-}));
-
-// Body parsing with security enhancements
-app.use(express.json({ 
-  limit: '10mb'
-}));
-app.use(express.urlencoded({ extended: true, limit: '10mb' }));
-
-// Input validation and XSS protection middleware
-app.use((req, res, next) => {
-  // Basic XSS protection
-  const sanitizeInput = (obj) => {
-    if (typeof obj === 'string') {
-      return obj.replace(/<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi, '');
-    }
-    if (typeof obj === 'object' && obj !== null) {
-      for (let key in obj) {
-        obj[key] = sanitizeInput(obj[key]);
-      }
-    }
-    return obj;
-  };
-  
-  if (req.body) {
-    req.body = sanitizeInput(req.body);
-  }
-  if (req.query) {
-    req.query = sanitizeInput(req.query);
-  }
-  
-  next();
-});
-
-// Rate limiting (gradual implementation)
-const generalRateLimit = rateLimit({
-  windowMs: 15 * 60 * 1000, // 15 minutes
-  max: process.env.NODE_ENV === 'development' ? 1000 : 100, // More lenient in development
-  message: { 
-    success: false,
-    error: 'RATE_LIMIT_EXCEEDED',
-    message: 'Too many requests, please try again later.' 
-  },
-  standardHeaders: true,
-  legacyHeaders: false,
-  skip: (req) => {
-    // Skip rate limiting for health endpoints
-    return req.path.includes('/health') || req.path.includes('/ping');
-  }
-});
-
-// Apply general rate limiting
-app.use(generalRateLimit);
-
-// Request timeout middleware
-app.use((req, res, next) => {
-  const timeout = 30000; // 30 seconds timeout
-  req.setTimeout(timeout, () => {
-    if (!res.headersSent) {
-      res.status(408).json({
-        success: false,
-        error: 'REQUEST_TIMEOUT',
-        message: 'Request timeout. Please try again.',
-        timestamp: new Date().toISOString()
-      });
-    }
-  });
-  next();
-});
-
-// Async error handler middleware
-const asyncHandler = (fn) => (req, res, next) => {
-  Promise.resolve(fn(req, res, next)).catch(next);
-};
-
-// Make asyncHandler available globally
-app.use((req, res, next) => {
-  req.asyncHandler = asyncHandler;
-  next();
-});
 
 // CRITICAL: Health endpoints first
 app.get('/health/ping', (req, res) => {
@@ -768,42 +655,6 @@ async function initializeRedis() {
     console.error('❌ Redis initialization error:', error);
   }
 }
-
-// Initialize optimized systems
-const optimizedAI = new OptimizedAIProviderManager();
-let redisInitialized = false;
-
-// Initialize Redis cache
-async function initializeRedis() {
-  try {
-    redisInitialized = await redisCache.initialize();
-    if (redisInitialized) {
-      console.log('✅ Redis cache initialized successfully');
-    } else {
-      console.log('⚠️ Redis cache initialization failed - continuing without cache');
-    }
-  } catch (error) {
-    console.error('❌ Redis initialization error:', error);
-  }
-}
-
-// Initialize optimized systems
-const optimizedAI = new OptimizedAIProviderManager();
-let redisInitialized = false;
-
-// Initialize Redis cache
-async function initializeRedis() {
-  try {
-    redisInitialized = await redisCache.initialize();
-    if (redisInitialized) {
-      console.log('✅ Redis cache initialized successfully');
-    } else {
-      console.log('⚠️ Redis cache initialization failed - continuing without cache');
-    }
-  } catch (error) {
-    console.error('❌ Redis initialization error:', error);
-  }
-}
 async function startServer() {
   try {
     console.log('🚀 Starting minimal server...');
@@ -821,12 +672,6 @@ async function startServer() {
     console.log('🔄 Connecting to database...');
     await connectOptimizedDatabase();
     console.log('✅ Database connection established');
-    
-    // Initialize Redis cache
-    await initializeRedis();
-    
-    // Initialize Redis cache
-    await initializeRedis();
     
     // Initialize Redis cache
     await initializeRedis();
