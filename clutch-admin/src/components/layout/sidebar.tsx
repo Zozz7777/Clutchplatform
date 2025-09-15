@@ -50,36 +50,40 @@ export function Sidebar({ isCollapsed, onToggle }: SidebarProps) {
         {isCollapsed ? (
           <div className="flex items-center justify-center w-8 h-8 bg-primary/10 rounded">
             <img
-              src="/logos/Logored.png"
+              src="/logo.png"
               alt="Clutch"
               width={32}
               height={32}
               className="object-contain max-w-full max-h-full"
               onError={(e) => {
+                console.error('Logo failed to load:', e.currentTarget.src);
                 e.currentTarget.style.display = 'none';
                 const parent = e.currentTarget.parentElement;
                 if (parent) {
                   parent.innerHTML = '<div class="text-sm font-bold text-primary">C</div>';
                 }
               }}
+              onLoad={() => console.log('Logo loaded successfully')}
             />
           </div>
         ) : (
           <div className="flex items-center space-x-3">
             <div className="flex items-center justify-center w-8 h-8 bg-primary/10 rounded">
               <img
-                src="/logos/Logored.png"
+                src="/logo.png"
                 alt="Clutch"
                 width={32}
                 height={32}
                 className="object-contain max-w-full max-h-full"
                 onError={(e) => {
+                  console.error('Logo failed to load:', e.currentTarget.src);
                   e.currentTarget.style.display = 'none';
                   const parent = e.currentTarget.parentElement;
                   if (parent) {
                     parent.innerHTML = '<div class="text-sm font-bold text-primary">C</div>';
                   }
                 }}
+                onLoad={() => console.log('Logo loaded successfully')}
               />
             </div>
             <span className="text-xl font-bold text-sidebar-primary font-sans">Clutch Admin</span>

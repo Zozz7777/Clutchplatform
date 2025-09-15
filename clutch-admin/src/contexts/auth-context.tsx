@@ -43,13 +43,18 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       if (response.success && response.data) {
         const { token, user } = response.data;
         
+        // Ensure user object exists and has required properties
+        if (!user) {
+          throw new Error("User data not received from server");
+        }
+        
         // Map backend user to frontend user format
         const userWithPermissions = {
-          id: user._id || user.id,
-          email: user.email,
+          id: user._id || user.id || `user_${Date.now()}`,
+          email: user.email || email,
           name: user.name || `${user.firstName || ''} ${user.lastName || ''}`.trim() || "User",
           role: user.role || "platform_admin",
-          status: user.isActive ? "active" : "inactive",
+          status: user.isActive !== undefined ? (user.isActive ? "active" : "inactive") : "active",
           createdAt: user.createdAt || new Date().toISOString(),
           lastLogin: new Date().toISOString(),
           permissions: user.permissions || ROLE_PERMISSIONS[user.role as keyof typeof ROLE_PERMISSIONS] || [],

@@ -26,14 +26,14 @@ const robotoMono = Roboto_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Clutch Admin - Enterprise Platform Management",
-  description: "Comprehensive enterprise platform for managing the entire Clutch automotive ecosystem",
-  keywords: ["clutch", "admin", "enterprise", "automotive", "fleet management"],
+  title: "Clutch Admin - The Joystick of the Auto Industry",
+  description: "The joystick of the auto industry - comprehensive platform for driving the automotive revolution",
+  keywords: ["clutch", "admin", "automotive", "revolution", "joystick", "auto industry"],
   authors: [{ name: "Clutch Team" }],
   viewport: "width=device-width, initial-scale=1",
   icons: {
     icon: [
-      { url: "/favicon.ico", sizes: "any" },
+      { url: "/favicon.svg", type: "image/svg+xml" },
       { url: "/favicon-light.png", media: "(prefers-color-scheme: light)" },
       { url: "/favicon-dark.png", media: "(prefers-color-scheme: dark)" },
     ],
@@ -41,6 +41,7 @@ export const metadata: Metadata = {
       { url: "/favicon-light.png", media: "(prefers-color-scheme: light)" },
       { url: "/favicon-dark.png", media: "(prefers-color-scheme: dark)" },
     ],
+    shortcut: "/favicon.svg",
   },
 };
 

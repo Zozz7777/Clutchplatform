@@ -47,7 +47,7 @@ export default function LoginPage() {
                   <div className="flex justify-center">
                     <div className="flex items-center justify-center w-20 h-20 bg-primary/10 rounded-lg">
                       <img
-                        src="/logos/Logored.png"
+                        src="/logo.png"
                         alt="Clutch"
                         width={80}
                         height={80}
@@ -66,7 +66,7 @@ export default function LoginPage() {
           <div className="space-y-2">
             <CardTitle className="text-3xl font-bold text-foreground font-sans">Clutch Admin</CardTitle>
             <CardDescription className="text-muted-foreground font-sans">
-              Sign in to your employee account
+              Sign in to drive the automotive revolution
             </CardDescription>
           </div>
         </CardHeader>

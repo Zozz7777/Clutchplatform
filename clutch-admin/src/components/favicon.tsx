@@ -18,6 +18,16 @@ export function Favicon() {
           favicon.href = '/favicon-light.png';
         }
       }
+      
+      // Also update the shortcut icon
+      const shortcutIcon = document.querySelector('link[rel="shortcut icon"]') as HTMLLinkElement;
+      if (shortcutIcon) {
+        if (currentTheme === 'dark') {
+          shortcutIcon.href = '/favicon-dark.png';
+        } else {
+          shortcutIcon.href = '/favicon-light.png';
+        }
+      }
     };
 
     updateFavicon();
