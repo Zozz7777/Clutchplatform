@@ -4,7 +4,7 @@ import React, { useState, useEffect } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { hybridApi, type KPIMetric, type FleetVehicle, type Notification } from "@/lib/hybrid-api";
+import { productionApi, type KPIMetric, type FleetVehicle, type Notification } from "@/lib/production-api";
 import { formatCurrency, formatNumber, formatRelativeTime } from "@/lib/utils";
 import { AuthStatus } from "@/components/auth-status";
 import { useQuickActions } from "@/lib/quick-actions";
@@ -43,6 +43,24 @@ const iconMap = {
   Activity,
   AlertTriangle,
   CheckCircle,
+  TrendingUp,
+  TrendingDown,
+  MapPin,
+  Fuel,
+  Gauge,
+  Plus,
+  FileText,
+  BarChart3,
+  Clock,
+  Zap,
+  Server,
+  Globe,
+  MessageSquare,
+  Route,
+  Download,
+  RefreshCw,
+  UserCheck,
+  Settings,
 };
 
 export default function DashboardPage() {
@@ -66,9 +84,9 @@ export default function DashboardPage() {
     const loadDashboardData = async () => {
       try {
         const [metrics, vehicles, notifs] = await Promise.all([
-          hybridApi.getKPIMetrics(),
-          hybridApi.getFleetVehicles(),
-          hybridApi.getNotifications(),
+          productionApi.getKPIMetrics(),
+          productionApi.getFleetVehicles(),
+          productionApi.getNotifications(),
         ]);
         
         // Ensure data is arrays before calling slice
@@ -77,23 +95,10 @@ export default function DashboardPage() {
         setNotifications(Array.isArray(notifs) ? notifs.slice(0, 5) : []);
       } catch (error) {
         console.error("Failed to load dashboard data:", error);
-        // Fallback to mock data if hybridApi fails
-        try {
-          const [metrics, vehicles, notifs] = await Promise.all([
-            hybridApi.getKPIMetrics(true), // Force mock
-            hybridApi.getFleetVehicles(true), // Force mock
-            hybridApi.getNotifications(true), // Force mock
-          ]);
-          setKpiMetrics(Array.isArray(metrics) ? metrics : []);
-          setFleetVehicles(Array.isArray(vehicles) ? vehicles.slice(0, 5) : []);
-          setNotifications(Array.isArray(notifs) ? notifs.slice(0, 5) : []);
-        } catch (fallbackError) {
-          console.error("Fallback data loading failed:", fallbackError);
-          // Set empty arrays as final fallback
-          setKpiMetrics([]);
-          setFleetVehicles([]);
-          setNotifications([]);
-        }
+        // Set empty arrays on error - no mock data fallback in production
+        setKpiMetrics([]);
+        setFleetVehicles([]);
+        setNotifications([]);
       } finally {
         setIsLoading(false);
       }
@@ -161,13 +166,17 @@ export default function DashboardPage() {
           </p>
         </div>
         <div className="flex items-center space-x-2">
-          <Button variant="outline" className="shadow-sm">
+          <Button variant="outline" className="shadow-sm" onClick={generateReport}>
             <FileText className="mr-2 h-4 w-4" />
             Generate Report
           </Button>
-          <Button className="shadow-sm">
-            <Plus className="mr-2 h-4 w-4" />
-            Quick Action
+          <Button className="shadow-sm" onClick={() => exportData('dashboard')}>
+            <Download className="mr-2 h-4 w-4" />
+            Export Data
+          </Button>
+          <Button variant="outline" className="shadow-sm" onClick={refreshData}>
+            <RefreshCw className="mr-2 h-4 w-4" />
+            Refresh
           </Button>
         </div>
       </div>
@@ -229,22 +238,21 @@ export default function DashboardPage() {
             <CardDescription>Common administrative tasks</CardDescription>
           </CardHeader>
           <CardContent className="space-y-3">
-            <Button className="w-full justify-start shadow-sm">
-              <Users className="mr-2 h-4 w-4" />
-              Add User
-            </Button>
-            <Button variant="outline" className="w-full justify-start shadow-sm">
-              <Truck className="mr-2 h-4 w-4" />
-              Create Fleet
-            </Button>
-            <Button variant="outline" className="w-full justify-start shadow-sm">
-              <FileText className="mr-2 h-4 w-4" />
-              Generate Report
-            </Button>
-            <Button variant="outline" className="w-full justify-start shadow-sm">
-              <BarChart3 className="mr-2 h-4 w-4" />
-              View Analytics
-            </Button>
+            {quickActions.slice(0, 6).map((action) => {
+              const Icon = iconMap[action.icon as keyof typeof iconMap] || Plus;
+              return (
+                <Button 
+                  key={action.id}
+                  variant={action.id === 'add-user' ? 'default' : 'outline'}
+                  className="w-full justify-start shadow-sm"
+                  onClick={action.action}
+                  title={action.description}
+                >
+                  <Icon className="mr-2 h-4 w-4" />
+                  {action.title}
+                </Button>
+              );
+            })}
           </CardContent>
         </Card>
 

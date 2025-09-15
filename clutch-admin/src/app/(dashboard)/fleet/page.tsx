@@ -10,6 +10,8 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { mockAPI, type FleetVehicle } from "@/lib/mock-api";
 import { formatDate, formatRelativeTime } from "@/lib/utils";
 import { useAuth } from "@/contexts/auth-context";
+import { useQuickActions } from "@/lib/quick-actions";
+import { toast } from "sonner";
 import { 
   Truck, 
   Search, 
@@ -45,6 +47,7 @@ export default function FleetPage() {
   const [statusFilter, setStatusFilter] = useState<string>("all");
   const [isLoading, setIsLoading] = useState(true);
   const { hasPermission } = useAuth();
+  const { createFleet, optimizeRoutes } = useQuickActions(hasPermission);
 
   useEffect(() => {
     const loadFleetData = async () => {
@@ -142,11 +145,11 @@ export default function FleetPage() {
           </p>
         </div>
         <div className="flex items-center space-x-2">
-          <Button variant="outline" className="shadow-sm">
+          <Button variant="outline" className="shadow-sm" onClick={optimizeRoutes}>
             <Route className="mr-2 h-4 w-4" />
             Optimize Routes
           </Button>
-          <Button className="shadow-sm">
+          <Button className="shadow-sm" onClick={createFleet}>
             <Plus className="mr-2 h-4 w-4" />
             Add Vehicle
           </Button>

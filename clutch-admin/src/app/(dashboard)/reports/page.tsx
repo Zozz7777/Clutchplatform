@@ -43,6 +43,8 @@ import {
 } from "lucide-react";
 import { formatCurrency } from "@/lib/utils";
 import { hybridApi } from "@/lib/hybrid-api";
+import { useAuth } from "@/contexts/auth-context";
+import { useQuickActions } from "@/lib/quick-actions";
 
 interface Report {
   _id: string;
@@ -106,6 +108,8 @@ export default function ReportsPage() {
   const [statusFilter, setStatusFilter] = useState<string>("all");
   const [showCreateDialog, setShowCreateDialog] = useState(false);
   const [showTemplateDialog, setShowTemplateDialog] = useState(false);
+  const { hasPermission } = useAuth();
+  const { generateReport, exportData } = useQuickActions(hasPermission);
 
   // Mock data for development
   const mockReports: Report[] = [
@@ -374,6 +378,10 @@ export default function ReportsPage() {
           <Button onClick={() => setShowCreateDialog(true)}>
             <Plus className="mr-2 h-4 w-4" />
             New Report
+          </Button>
+          <Button variant="outline" onClick={generateReport}>
+            <FileBarChart className="mr-2 h-4 w-4" />
+            Generate Report
           </Button>
         </div>
       </div>

@@ -16,15 +16,19 @@ export interface ApiError {
 class ApiService {
   private baseURL: string;
   private token: string | null = null;
+  private refreshToken: string | null = null;
+  private isRefreshing: boolean = false;
+  private refreshPromise: Promise<string | null> | null = null;
 
   constructor(baseURL: string) {
     this.baseURL = baseURL;
-    this.loadToken();
+    this.loadTokens();
   }
 
-  private loadToken(): void {
+  private loadTokens(): void {
     if (typeof window !== "undefined") {
       this.token = localStorage.getItem("clutch-admin-token");
+      this.refreshToken = localStorage.getItem("clutch-admin-refresh-token");
     }
   }
 
@@ -36,17 +40,83 @@ class ApiService {
     return this.token;
   }
 
+  private async refreshAuthToken(): Promise<string | null> {
+    if (this.isRefreshing && this.refreshPromise) {
+      return this.refreshPromise;
+    }
+
+    this.isRefreshing = true;
+    this.refreshPromise = this.performTokenRefresh();
+
+    try {
+      const newToken = await this.refreshPromise;
+      return newToken;
+    } finally {
+      this.isRefreshing = false;
+      this.refreshPromise = null;
+    }
+  }
+
+  private async performTokenRefresh(): Promise<string | null> {
+    if (!this.refreshToken) {
+      console.error("No refresh token available");
+      this.logout();
+      return null;
+    }
+
+    try {
+      const response = await fetch(`${this.baseURL}/api/v1/auth/refresh`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ refreshToken: this.refreshToken }),
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        if (data.success && data.token) {
+          this.setTokens(data.token, data.refreshToken);
+          return data.token;
+        }
+      }
+    } catch (error) {
+      console.error("Token refresh failed:", error);
+    }
+
+    this.logout();
+    return null;
+  }
+
+  private setTokens(token: string, refreshToken?: string): void {
+    this.token = token;
+    if (refreshToken) {
+      this.refreshToken = refreshToken;
+    }
+    
+    if (typeof window !== "undefined") {
+      localStorage.setItem("clutch-admin-token", token);
+      sessionStorage.setItem("clutch-admin-token", token);
+      if (refreshToken) {
+        localStorage.setItem("clutch-admin-refresh-token", refreshToken);
+      }
+    }
+  }
+
   private async request<T>(
     endpoint: string,
-    options: RequestInit = {}
+    options: RequestInit = {},
+    retryCount: number = 0
   ): Promise<ApiResponse<T>> {
     const url = `${this.baseURL}${endpoint}`;
+    const maxRetries = 3;
     
     const token = this.getToken();
     const config: RequestInit = {
       headers: {
         "Content-Type": "application/json",
         "Accept": "application/json",
+        "X-Requested-With": "XMLHttpRequest",
         ...(token && { Authorization: `Bearer ${token}` }),
         ...options.headers,
       },
@@ -59,6 +129,7 @@ class ApiService {
         url,
         hasToken: !!token,
         tokenPreview: token ? `${token.substring(0, 20)}...` : 'none',
+        retryCount,
         headers: config.headers
       });
     }
@@ -75,14 +146,44 @@ class ApiService {
         });
       }
       
+      // Handle 401 Unauthorized - try to refresh token
+      if (response.status === 401 && retryCount < maxRetries) {
+        console.log(`🔄 Token expired, attempting refresh for ${endpoint}`);
+        const newToken = await this.refreshAuthToken();
+        
+        if (newToken) {
+          // Retry the request with new token
+          return this.request<T>(endpoint, options, retryCount + 1);
+        } else {
+          // Refresh failed, redirect to login
+          this.logout();
+          window.location.href = '/login';
+          return {
+            data: null as T,
+            success: false,
+            error: "Authentication failed. Please login again.",
+          };
+        }
+      }
+      
       if (!response.ok) {
         const errorText = await response.text();
+        let errorMessage = `HTTP error! status: ${response.status}`;
+        
+        try {
+          const errorData = JSON.parse(errorText);
+          errorMessage = errorData.message || errorData.error || errorMessage;
+        } catch {
+          errorMessage = errorText || errorMessage;
+        }
+        
         console.error(`❌ API request failed for ${endpoint}:`, {
           status: response.status,
           statusText: response.statusText,
-          error: errorText
+          error: errorMessage
         });
-        throw new Error(`HTTP error! status: ${response.status}: ${errorText}`);
+        
+        throw new Error(errorMessage);
       }
 
       const data = await response.json();
@@ -92,6 +193,14 @@ class ApiService {
       };
     } catch (error) {
       console.error(`❌ API request failed for ${endpoint}:`, error);
+      
+      // Retry on network errors
+      if (retryCount < maxRetries && error instanceof TypeError) {
+        console.log(`🔄 Network error, retrying ${endpoint} (${retryCount + 1}/${maxRetries})`);
+        await new Promise(resolve => setTimeout(resolve, 1000 * (retryCount + 1)));
+        return this.request<T>(endpoint, options, retryCount + 1);
+      }
+      
       return {
         data: null as T,
         success: false,
@@ -117,8 +226,13 @@ class ApiService {
 
   async logout(): Promise<void> {
     this.token = null;
+    this.refreshToken = null;
+    this.isRefreshing = false;
+    this.refreshPromise = null;
+    
     if (typeof window !== "undefined") {
       localStorage.removeItem("clutch-admin-token");
+      localStorage.removeItem("clutch-admin-refresh-token");
       sessionStorage.removeItem("clutch-admin-token");
     }
   }

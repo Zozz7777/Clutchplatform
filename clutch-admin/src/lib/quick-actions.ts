@@ -1,5 +1,6 @@
 import { useRouter } from 'next/navigation';
 import { toast } from 'sonner';
+import { productionApi } from './production-api';
 
 export interface QuickAction {
   id: string;
@@ -61,22 +62,23 @@ export class QuickActionsService {
     try {
       toast.loading('Generating report...', { id: 'generate-report' });
       
-      // Simulate API call
-      await new Promise(resolve => setTimeout(resolve, 2000));
-      
-      // In a real app, this would call the API
       const reportData = {
-        id: `report-${Date.now()}`,
         name: `Dashboard Report - ${new Date().toLocaleDateString()}`,
         type: 'dashboard_summary',
-        generatedAt: new Date().toISOString(),
-        status: 'completed'
+        dateRange: {
+          start: new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toISOString(), // 30 days ago
+          end: new Date().toISOString()
+        }
       };
 
-      toast.success('Report generated successfully!', { id: 'generate-report' });
+      const result = await productionApi.generateReport(reportData);
       
-      // Navigate to reports page with the new report
-      this.router.push(`/reports?highlight=${reportData.id}`);
+      if (result) {
+        toast.success('Report generated successfully!', { id: 'generate-report' });
+        this.router.push(`/reports?highlight=${result.id}`);
+      } else {
+        throw new Error('No report data returned');
+      }
     } catch (error) {
       toast.error('Failed to generate report', { id: 'generate-report' });
       console.error('Report generation error:', error);
@@ -87,14 +89,21 @@ export class QuickActionsService {
     try {
       toast.loading('Exporting data...', { id: 'export-data' });
       
-      // Simulate API call
-      await new Promise(resolve => setTimeout(resolve, 1500));
+      const result = await productionApi.exportData(type, 'csv');
       
-      // In a real app, this would generate and download a file
-      const csvContent = this.generateCSV(type);
-      this.downloadFile(csvContent, `${type}-export-${Date.now()}.csv`);
-      
-      toast.success('Data exported successfully!', { id: 'export-data' });
+      if (result && result.downloadUrl) {
+        // Download the file from the server
+        const link = document.createElement('a');
+        link.href = result.downloadUrl;
+        link.download = `${type}-export-${Date.now()}.csv`;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        
+        toast.success('Data exported successfully!', { id: 'export-data' });
+      } else {
+        throw new Error('No download URL returned');
+      }
     } catch (error) {
       toast.error('Failed to export data', { id: 'export-data' });
       console.error('Export error:', error);
@@ -118,20 +127,16 @@ export class QuickActionsService {
     try {
       toast.loading('Optimizing routes...', { id: 'optimize-routes' });
       
-      // Simulate route optimization
-      await new Promise(resolve => setTimeout(resolve, 3000));
+      const result = await productionApi.optimizeRoutes();
       
-      const optimizedRoutes = {
-        totalRoutes: 15,
-        optimizedRoutes: 12,
-        timeSaved: '2.5 hours',
-        fuelSaved: '45 liters'
-      };
-
-      toast.success(`Routes optimized! Saved ${optimizedRoutes.timeSaved} and ${optimizedRoutes.fuelSaved}`, { 
-        id: 'optimize-routes',
-        description: `${optimizedRoutes.optimizedRoutes}/${optimizedRoutes.totalRoutes} routes optimized`
-      });
+      if (result) {
+        toast.success(`Routes optimized! Saved ${result.timeSaved || 'time'} and ${result.fuelSaved || 'fuel'}`, { 
+          id: 'optimize-routes',
+          description: `${result.optimizedRoutes || 0}/${result.totalRoutes || 0} routes optimized`
+        });
+      } else {
+        throw new Error('No optimization results returned');
+      }
     } catch (error) {
       toast.error('Failed to optimize routes', { id: 'optimize-routes' });
       console.error('Route optimization error:', error);

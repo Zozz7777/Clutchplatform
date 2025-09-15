@@ -1,29 +1,30 @@
 import { apiService } from "./api";
+import { realApi } from "./real-api";
 import { mockAPI } from "./mock-api";
 import { API_BASE_URL } from "./constants";
 
 // Configuration for which APIs to use mock vs real
 const API_CONFIG = {
   useMock: {
-    // Use real API for these endpoints now that backend is available
-    users: false, // Use real API for users
-    fleet: false, // Use real API for fleet
-    dashboard: false, // Use real API for dashboard
-    chat: false, // Use real API for chat
-    notifications: false, // Use real API for notifications
-    crm: false, // Use real API for CRM
-    finance: false, // Use real API for finance
-    analytics: false, // Use real API for analytics
-    systemHealth: false, // Use real API for system health
-    apiPerformance: false, // Use real API for API performance
-    featureFlags: false, // Use real API for feature flags
-    settings: false, // Use real API for settings
-    reports: false, // Use real API for reports
-    auditTrail: false, // Use real API for audit trail
-    integrations: false, // Use real API for integrations
+    // Use real API for all endpoints - no mock data in production
+    users: false,
+    fleet: false,
+    dashboard: false,
+    chat: false,
+    notifications: false,
+    crm: false,
+    finance: false,
+    analytics: false,
+    systemHealth: false,
+    apiPerformance: false,
+    featureFlags: false,
+    settings: false,
+    reports: false,
+    auditTrail: false,
+    integrations: false,
   },
-  // Fallback to mock if real API fails
-  fallbackToMock: true,
+  // No fallback to mock in production
+  fallbackToMock: false,
 };
 
 class HybridApiService {

@@ -6,6 +6,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useAuth } from "@/contexts/auth-context";
+import { useQuickActions } from "@/lib/quick-actions";
 import { formatDate, formatRelativeTime, formatCurrency } from "@/lib/utils";
 import { 
   BarChart3, 
@@ -137,6 +138,7 @@ export default function AnalyticsPage() {
   const [selectedTimeRange, setSelectedTimeRange] = useState<string>("30d");
   const [isLoading, setIsLoading] = useState(true);
   const { hasPermission } = useAuth();
+  const { generateReport, exportData } = useQuickActions(hasPermission);
 
   useEffect(() => {
     const loadAnalyticsData = async () => {
@@ -320,7 +322,7 @@ export default function AnalyticsPage() {
                 <RefreshCw className="mr-2 h-4 w-4" />
                 Generate Report
               </Button>
-              <Button>
+              <Button onClick={() => exportData('analytics')}>
                 <Download className="mr-2 h-4 w-4" />
                 Export Data
               </Button>

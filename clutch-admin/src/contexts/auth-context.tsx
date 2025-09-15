@@ -2,6 +2,7 @@
 
 import React, { createContext, useContext, useState, useEffect } from "react";
 import { USER_ROLES, ROLE_PERMISSIONS } from "@/lib/constants";
+import { apiService } from "@/lib/api";
 import { type User } from "@/lib/mock-api";
 
 interface AuthContextType {
@@ -36,44 +37,29 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     setIsLoading(true);
     
     try {
-      // Try real backend API first using the API service
-      const response = await fetch("https://clutch-main-nk7x.onrender.com/api/v1/auth/login", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          "Accept": "application/json",
-        },
-        body: JSON.stringify({ email, password }),
-      });
-
-      if (response.ok) {
-        const data = await response.json();
+      // Use the enhanced API service for login
+      const response = await apiService.login(email, password);
+      
+      if (response.success && response.data) {
+        const { token, user } = response.data;
         
-        if (data.success && data.user) {
-          // Map backend user to frontend user format
-          const userWithPermissions = {
-            id: data.user._id || data.user.id,
-            email: data.user.email,
-            name: data.user.name || data.user.firstName + " " + data.user.lastName || "User",
-            role: data.user.role || "platform_admin",
-            status: data.user.isActive ? "active" : "inactive",
-            createdAt: data.user.createdAt || new Date().toISOString(),
-            lastLogin: new Date().toISOString(),
-            permissions: data.user.permissions || ROLE_PERMISSIONS[data.user.role as keyof typeof ROLE_PERMISSIONS] || [],
-          };
-          
-          setUser(userWithPermissions);
-          localStorage.setItem("clutch-admin-user", JSON.stringify(userWithPermissions));
-          localStorage.setItem("clutch-admin-token", data.token);
-          
-          // Also store token in sessionStorage for immediate access
-          if (typeof window !== "undefined") {
-            sessionStorage.setItem("clutch-admin-token", data.token);
-          }
-          
-          setIsLoading(false);
-          return true;
-        }
+        // Map backend user to frontend user format
+        const userWithPermissions = {
+          id: user._id || user.id,
+          email: user.email,
+          name: user.name || `${user.firstName || ''} ${user.lastName || ''}`.trim() || "User",
+          role: user.role || "platform_admin",
+          status: user.isActive ? "active" : "inactive",
+          createdAt: user.createdAt || new Date().toISOString(),
+          lastLogin: new Date().toISOString(),
+          permissions: user.permissions || ROLE_PERMISSIONS[user.role as keyof typeof ROLE_PERMISSIONS] || [],
+        };
+        
+        setUser(userWithPermissions);
+        localStorage.setItem("clutch-admin-user", JSON.stringify(userWithPermissions));
+        
+        setIsLoading(false);
+        return true;
       }
       
       setIsLoading(false);
@@ -85,12 +71,21 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     }
   };
 
-  const logout = () => {
-    setUser(null);
-    localStorage.removeItem("clutch-admin-user");
-    localStorage.removeItem("clutch-admin-token");
-    if (typeof window !== "undefined") {
-      sessionStorage.removeItem("clutch-admin-token");
+  const logout = async () => {
+    try {
+      // Call API logout endpoint
+      await apiService.logout();
+    } catch (error) {
+      console.error("Logout API call failed:", error);
+    } finally {
+      // Clear local state regardless of API call result
+      setUser(null);
+      localStorage.removeItem("clutch-admin-user");
+      localStorage.removeItem("clutch-admin-token");
+      localStorage.removeItem("clutch-admin-refresh-token");
+      if (typeof window !== "undefined") {
+        sessionStorage.removeItem("clutch-admin-token");
+      }
     }
   };
 

@@ -11,6 +11,8 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { mockAPI, type User } from "@/lib/mock-api";
 import { formatDate, formatRelativeTime } from "@/lib/utils";
 import { useAuth } from "@/contexts/auth-context";
+import { useQuickActions } from "@/lib/quick-actions";
+import { toast } from "sonner";
 import { 
   Users, 
   Search, 
@@ -44,6 +46,7 @@ export default function UsersPage() {
   const [roleFilter, setRoleFilter] = useState<string>("all");
   const [isLoading, setIsLoading] = useState(true);
   const { hasPermission } = useAuth();
+  const { addUser } = useQuickActions(hasPermission);
 
   useEffect(() => {
     const loadUsers = async () => {
@@ -133,7 +136,7 @@ export default function UsersPage() {
           </p>
         </div>
         {hasPermission("create_users") && (
-          <Button className="shadow-sm">
+          <Button className="shadow-sm" onClick={addUser}>
             <Plus className="mr-2 h-4 w-4" />
             Add User
           </Button>
