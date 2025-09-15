@@ -28,8 +28,8 @@ import {
   User,
   Tag,
   Archive,
-  Publish,
-  Unpublish
+  Send,
+  X
 } from "lucide-react";
 import {
   DropdownMenu,
@@ -565,7 +565,7 @@ export default function CMSPage() {
                             onClick={() => handleContentAction(item._id, "publish")}
                             className="text-green-600"
                           >
-                            <Publish className="mr-2 h-4 w-4" />
+                            <Send className="mr-2 h-4 w-4" />
                             Publish
                           </DropdownMenuItem>
                         )}
@@ -574,7 +574,7 @@ export default function CMSPage() {
                             onClick={() => handleContentAction(item._id, "unpublish")}
                             className="text-yellow-600"
                           >
-                            <Unpublish className="mr-2 h-4 w-4" />
+                            <X className="mr-2 h-4 w-4" />
                             Unpublish
                           </DropdownMenuItem>
                         )}

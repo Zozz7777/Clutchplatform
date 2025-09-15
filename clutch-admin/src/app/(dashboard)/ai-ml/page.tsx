@@ -93,7 +93,7 @@ interface MLExperiment {
     loss: number;
     validationAccuracy: number;
   };
-  hyperparameters: Record<string, any>;
+  hyperparameters: Record<string, unknown>;
   results: {
     bestModel: string;
     performance: number;
@@ -114,7 +114,7 @@ interface AIInsight {
   createdAt: string;
   status: "new" | "reviewed" | "actioned" | "dismissed";
   relatedModel: string;
-  data: Record<string, any>;
+  data: Record<string, unknown>;
 }
 
 interface AIStats {

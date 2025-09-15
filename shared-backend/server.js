@@ -74,6 +74,7 @@ const assetsRoutes = require('./routes/assets');
 const vendorsRoutes = require('./routes/vendors');
 const auditRoutes = require('./routes/audit');
 const systemHealthRoutes = require('./routes/system-health');
+const adminCeoRoutes = require('./routes/admin-ceo');
 
 // All route imports cleaned up - only existing routes imported above
 
@@ -147,6 +148,7 @@ app.use(`${apiPrefix}/assets`, assetsRoutes);
 app.use(`${apiPrefix}/vendors`, vendorsRoutes);
 app.use(`${apiPrefix}/audit`, auditRoutes);
 app.use(`${apiPrefix}/system-health`, systemHealthRoutes);
+app.use(`${apiPrefix}/admin-ceo`, adminCeoRoutes);
 
 // Fallback routes
 app.use('/auth', authRoutes);
@@ -296,16 +298,17 @@ app.use('*', (req, res) => {
       '/api/v1/fleet/*',
       '/api/v1/fleet-vehicle/*',
       '/api/v1/gps-device/*',
-      '/api/v1/hr/*',
-      '/api/v1/legal/*',
-      '/api/v1/projects/*',
-      '/api/v1/feature-flags/*',
-      '/api/v1/cms/*',
-      '/api/v1/marketing/*',
-      '/api/v1/assets/*',
-      '/api/v1/vendors/*',
-      '/api/v1/audit/*',
-      '/api/v1/system-health/*',
+          '/api/v1/hr/*',
+          '/api/v1/legal/*',
+          '/api/v1/projects/*',
+          '/api/v1/feature-flags/*',
+          '/api/v1/cms/*',
+          '/api/v1/marketing/*',
+          '/api/v1/assets/*',
+          '/api/v1/vendors/*',
+          '/api/v1/audit/*',
+          '/api/v1/system-health/*',
+          '/api/v1/admin-ceo/*',
       '/api/v1/insurance/*',
       '/api/v1/invoices/*',
       '/api/v1/jobs/*',

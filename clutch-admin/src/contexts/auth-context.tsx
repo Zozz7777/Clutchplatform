@@ -1,7 +1,8 @@
 "use client";
 
 import React, { createContext, useContext, useState, useEffect } from "react";
-import { USER_ROLES, ROLE_PERMISSIONS, type User } from "@/lib/mock-api";
+import { USER_ROLES, ROLE_PERMISSIONS } from "@/lib/constants";
+import { type User } from "@/lib/mock-api";
 
 interface AuthContextType {
   user: User | null;
