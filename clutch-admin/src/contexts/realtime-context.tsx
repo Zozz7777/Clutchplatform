@@ -20,6 +20,7 @@ const RealtimeContext = createContext<RealtimeContextType | undefined>(undefined
 export function RealtimeProvider({ children }: { children: React.ReactNode }) {
   const { user, isLoading: isAuthLoading } = useAuth();
   const [isConnected, setIsConnected] = useState(false);
+  const [isConnecting, setIsConnecting] = useState(false);
   const [connectionState, setConnectionState] = useState('disconnected');
   const [lastMessage, setLastMessage] = useState<any>(null);
   const [messageCount, setMessageCount] = useState(0);
@@ -71,10 +72,20 @@ export function RealtimeProvider({ children }: { children: React.ReactNode }) {
 
   const connect = useCallback(async () => {
     try {
+      setIsConnecting(true);
       const handlers: WebSocketEventHandlers = {
-        onConnect: handleConnect,
-        onDisconnect: handleDisconnect,
-        onError: handleError,
+        onConnect: () => {
+          handleConnect();
+          setIsConnecting(false);
+        },
+        onDisconnect: () => {
+          handleDisconnect();
+          setIsConnecting(false);
+        },
+        onError: (error) => {
+          handleError(error);
+          setIsConnecting(false);
+        },
         onMessage: handleMessage,
         onSystemHealth: (data) => {
           console.log('System health update:', data);
@@ -96,6 +107,7 @@ export function RealtimeProvider({ children }: { children: React.ReactNode }) {
       await websocketService.connect(handlers);
     } catch (error) {
       console.error('Failed to connect to WebSocket:', error);
+      setIsConnecting(false);
       toast.error('Failed to establish real-time connection');
     }
   }, [handleConnect, handleDisconnect, handleError, handleMessage]);
@@ -103,6 +115,7 @@ export function RealtimeProvider({ children }: { children: React.ReactNode }) {
   const disconnect = useCallback(() => {
     websocketService.disconnect();
     setIsConnected(false);
+    setIsConnecting(false);
     setConnectionState('disconnected');
   }, []);
 

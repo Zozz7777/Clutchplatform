@@ -5,6 +5,7 @@ import { AuthProvider } from "@/contexts/auth-context";
 import { RealtimeProvider } from "@/contexts/realtime-context";
 import { Toaster } from "@/components/ui/toaster";
 import { ThemeProvider } from "next-themes";
+import { Favicon } from "@/components/favicon";
 
 const roboto = Roboto({ 
   subsets: ["latin"],
@@ -30,6 +31,17 @@ export const metadata: Metadata = {
   keywords: ["clutch", "admin", "enterprise", "automotive", "fleet management"],
   authors: [{ name: "Clutch Team" }],
   viewport: "width=device-width, initial-scale=1",
+  icons: {
+    icon: [
+      { url: "/favicon.ico", sizes: "any" },
+      { url: "/favicon-light.png", media: "(prefers-color-scheme: light)" },
+      { url: "/favicon-dark.png", media: "(prefers-color-scheme: dark)" },
+    ],
+    apple: [
+      { url: "/favicon-light.png", media: "(prefers-color-scheme: light)" },
+      { url: "/favicon-dark.png", media: "(prefers-color-scheme: dark)" },
+    ],
+  },
 };
 
 export default function RootLayout({
@@ -46,6 +58,7 @@ export default function RootLayout({
           enableSystem
           disableTransitionOnChange
         >
+          <Favicon />
           <AuthProvider>
             <RealtimeProvider>
               {children}

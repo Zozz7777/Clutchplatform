@@ -209,9 +209,10 @@ class ApiService {
     }
   }
 
-  // Authentication
+  // Authentication with fallback to emergency auth
   async login(email: string, password: string): Promise<ApiResponse<{ token: string; user: any }>> {
     try {
+      // Try main authentication first
       const response = await this.request<{ token: string; user: any }>("/api/v1/auth/login", {
         method: "POST",
         body: JSON.stringify({ email, password }),
@@ -219,11 +220,41 @@ class ApiService {
 
       if (response.success && response.data) {
         this.setTokens(response.data.token, response.data.refreshToken);
+        return response;
       }
 
+      // If main auth fails, try emergency authentication
+      console.log("Main auth failed, trying emergency auth...");
+      const emergencyResponse = await this.request<{ token: string; user: any }>("/api/v1/emergency-auth/login", {
+        method: "POST",
+        body: JSON.stringify({ email, password }),
+      });
+
+      if (emergencyResponse.success && emergencyResponse.data) {
+        this.setTokens(emergencyResponse.data.token, emergencyResponse.data.refreshToken);
+        return emergencyResponse;
+      }
+
+      // Both failed, return the main auth error
       return response;
     } catch (error) {
       console.error("Login API call failed:", error);
+      
+      // Try emergency auth as fallback
+      try {
+        console.log("Trying emergency auth as fallback...");
+        const emergencyResponse = await this.request<{ token: string; user: any }>("/api/v1/emergency-auth/login", {
+          method: "POST",
+          body: JSON.stringify({ email, password }),
+        });
+
+        if (emergencyResponse.success && emergencyResponse.data) {
+          this.setTokens(emergencyResponse.data.token, emergencyResponse.data.refreshToken);
+          return emergencyResponse;
+        }
+      } catch (emergencyError) {
+        console.error("Emergency auth also failed:", emergencyError);
+      }
       
       // Handle specific error cases
       if (error instanceof Error) {
