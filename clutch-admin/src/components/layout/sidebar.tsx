@@ -16,8 +16,12 @@ interface SidebarProps {
 
 export function Sidebar({ isCollapsed, onToggle }: SidebarProps) {
   const pathname = usePathname();
-  const { hasPermission } = useAuth();
+  const { hasPermission, user } = useAuth();
   const [expandedItems, setExpandedItems] = useState<string[]>([]);
+
+  // Debug user permissions
+  console.log('Sidebar user:', user);
+  console.log('Sidebar user permissions:', user?.permissions);
 
   const toggleExpanded = (title: string) => {
     setExpandedItems(prev =>
@@ -35,7 +39,9 @@ export function Sidebar({ isCollapsed, onToggle }: SidebarProps) {
   };
 
   const hasAnyPermission = (permissions: string[]) => {
-    return permissions.some(permission => hasPermission(permission));
+    const result = permissions.some(permission => hasPermission(permission));
+    console.log(`hasAnyPermission check: permissions=${permissions.join(', ')}, result=${result}`);
+    return result;
   };
 
   return (
@@ -96,6 +102,7 @@ export function Sidebar({ isCollapsed, onToggle }: SidebarProps) {
         <div className="px-2 space-y-1">
           {NAVIGATION_ITEMS.map((item) => {
             const hasPermission = hasAnyPermission(item.permissions);
+            console.log(`Sidebar item "${item.title}": hasPermission=${hasPermission}, permissions=${item.permissions.join(', ')}`);
             if (!hasPermission) return null;
 
             const isActive = isItemActive(item.href);

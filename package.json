@@ -31,7 +31,8 @@
   "author": "Clutch Team",
   "license": "MIT",
   "dependencies": {
-    "concurrently": "^9.2.1"
+    "concurrently": "^9.2.1",
+    "ws": "^8.18.3"
   },
   "devDependencies": {
     "nodemon": "^3.0.1"
