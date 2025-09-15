@@ -6,7 +6,7 @@
 const express = require('express');
 const router = express.Router();
 const { authenticateToken, requireRole } = require('../middleware/auth');
-const { getCollection } = require('../config/database-unified');
+const { getCollection } = require('../config/optimized-database');
 
 // GET /api/v1/performance/monitor - Get performance metrics
 router.get('/monitor', authenticateToken, requireRole(['admin', 'system_admin']), async (req, res) => {

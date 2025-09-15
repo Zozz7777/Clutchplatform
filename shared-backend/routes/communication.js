@@ -6,7 +6,7 @@
 const express = require('express');
 const router = express.Router();
 const { authenticateToken, requireRole } = require('../middleware/auth');
-const { getCollection } = require('../config/database-unified');
+const { getCollection } = require('../config/optimized-database');
 
 // GET /api/v1/communication/chat - Get chat messages
 router.get('/chat', authenticateToken, async (req, res) => {
