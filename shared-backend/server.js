@@ -78,6 +78,10 @@ const systemHealthRoutes = require('./routes/system-health');
 const systemRoutes = require('./routes/system');
 const adminCeoRoutes = require('./routes/admin-ceo');
 const authFallbackRoutes = require('./routes/auth-fallback');
+const fleetRoutes = require('./routes/fleet');
+const paymentsRoutes = require('./routes/payments');
+const communicationRoutes = require('./routes/communication');
+const performanceRoutes = require('./routes/performance');
 
 // All route imports cleaned up - only existing routes imported above
 
@@ -156,6 +160,12 @@ app.use(`${apiPrefix}/admin-ceo`, adminCeoRoutes);
 
 // Fallback authentication routes
 app.use(`${apiPrefix}/auth-fallback`, authFallbackRoutes);
+
+// New missing routes
+app.use(`${apiPrefix}/fleet`, fleetRoutes);
+app.use(`${apiPrefix}/payments`, paymentsRoutes);
+app.use(`${apiPrefix}/communication`, communicationRoutes);
+app.use(`${apiPrefix}/performance`, performanceRoutes);
 
 // Fallback routes
 app.use('/auth', authRoutes);

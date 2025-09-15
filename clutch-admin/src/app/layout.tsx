@@ -36,7 +36,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <body className={inter.className}>
+      <body className={`${roboto.variable} ${robotoSerif.variable} ${robotoMono.variable} font-sans`}>
         <AuthProvider>
           {children}
         </AuthProvider>

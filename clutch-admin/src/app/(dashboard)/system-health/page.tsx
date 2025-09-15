@@ -436,9 +436,9 @@ export default function SystemHealthPage() {
   };
 
   const getTrendIcon = (current: number, previous: number) => {
-    if (current > previous) return <TrendingUp className="h-4 w-4 text-red-500" />;
-    if (current < previous) return <TrendingDown className="h-4 w-4 text-green-500" />;
-    return <Minus className="h-4 w-4 text-gray-500" />;
+    if (current > previous) return <TrendingUp className="h-4 w-4 text-destructive" />;
+    if (current < previous) return <TrendingDown className="h-4 w-4 text-primary" />;
+    return <Minus className="h-4 w-4 text-muted-foreground" />;
   };
 
   const openAlerts = alerts.filter(a => a.status === "open").length;
@@ -496,11 +496,11 @@ export default function SystemHealthPage() {
           <CardContent>
             <div className="flex items-center space-x-2">
               {systemStatus?.overall === "healthy" ? (
-                <CheckCircle className="h-5 w-5 text-green-500" />
+                <CheckCircle className="h-5 w-5 text-primary" />
               ) : systemStatus?.overall === "degraded" ? (
-                <AlertTriangle className="h-5 w-5 text-yellow-500" />
+                <AlertTriangle className="h-5 w-5 text-secondary" />
               ) : (
-                <XCircle className="h-5 w-5 text-red-500" />
+                <XCircle className="h-5 w-5 text-destructive" />
               )}
               <span className="text-2xl font-bold capitalize">{systemStatus?.overall}</span>
             </div>
@@ -658,11 +658,11 @@ export default function SystemHealthPage() {
                     {service.status}
                   </Badge>
                   {service.status === "healthy" ? (
-                    <CheckCircle className="h-5 w-5 text-green-500" />
+                    <CheckCircle className="h-5 w-5 text-primary" />
                   ) : service.status === "degraded" ? (
-                    <AlertTriangle className="h-5 w-5 text-yellow-500" />
+                    <AlertTriangle className="h-5 w-5 text-secondary" />
                   ) : (
-                    <XCircle className="h-5 w-5 text-red-500" />
+                    <XCircle className="h-5 w-5 text-destructive" />
                   )}
                 </div>
               </div>

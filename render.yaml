@@ -98,6 +98,7 @@ databases:
   - name: clutch-redis
     plan: starter
     maxmemoryPolicy: allkeys-lru
+    type: redis
 
 # Environment Variables
 envVars:

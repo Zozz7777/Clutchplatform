@@ -35,7 +35,7 @@ class OptimizedRedisCache {
       commandTimeout: 3000, // Reduced for Render
       maxMemoryPolicy: 'allkeys-lru',
       // Render-specific optimizations
-      enableOfflineQueue: false,
+      enableOfflineQueue: true, // Enable offline queue for better reliability
       maxLoadingTimeout: 2000
     };
 

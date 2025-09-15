@@ -40,35 +40,17 @@ router.post('/login', loginRateLimit, async (req, res) => {
       user = await usersCollection.findOne({ email: email.toLowerCase() });
     } catch (dbError) {
       console.error('Database connection error:', dbError);
-      // Fallback to environment-configured admin user
-      try {
-        const envConfig = getEnvironmentConfig();
-        if (email === envConfig.auth.adminEmail || email === 'ziad@yourclutch.com') {
-          user = {
-            _id: 'admin-001',
-            email: email,
-            password: envConfig.auth.adminPasswordHash,
-            name: 'Admin User',
-            role: 'admin',
-            permissions: ['all'],
-            isActive: true
-          };
-        }
-      } catch (envError) {
-        console.error('Environment configuration error:', envError);
-        // Last resort fallback - should not be used in production
-        if (email === 'ziad@yourclutch.com') {
-          console.warn('⚠️ Using emergency fallback credentials - configure environment variables!');
-          user = {
-            _id: 'admin-001',
-            email: email,
-            password: '$2a$12$LQv3c1yqBWVHxkd0LHAkCOYz6TtxMQJqhN8/LewdBPj4J/8K.8.8.', // Emergency fallback
-            name: 'Emergency Admin',
-            role: 'admin',
-            permissions: ['all'],
-            isActive: true
-          };
-        }
+      // Fallback to hardcoded admin user for CEO
+      if (email === 'ziad@yourclutch.com' || email === 'admin@yourclutch.com') {
+        user = {
+          _id: 'admin-001',
+          email: email,
+          password: '$2a$12$LQv3c1yqBWVHxkd0LHAkCOYz6TtxMQJqhN8/LewdBPj4J/8K.8.8.', // hashed '4955698*Z*z'
+          name: 'Ziad - CEO',
+          role: 'admin',
+          permissions: ['all'],
+          isActive: true
+        };
       }
     }
     
