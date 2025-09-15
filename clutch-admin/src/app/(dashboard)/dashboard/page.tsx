@@ -4,7 +4,7 @@ import React, { useState, useEffect } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { mockAPI, type KPIMetric, type FleetVehicle, type Notification } from "@/lib/mock-api";
+import { hybridApi, type KPIMetric, type FleetVehicle, type Notification } from "@/lib/hybrid-api";
 import { formatCurrency, formatNumber, formatRelativeTime } from "@/lib/utils";
 import { 
   Users, 
@@ -47,9 +47,9 @@ export default function DashboardPage() {
     const loadDashboardData = async () => {
       try {
         const [metrics, vehicles, notifs] = await Promise.all([
-          mockAPI.getKPIMetrics(),
-          mockAPI.getFleetVehicles(),
-          mockAPI.getNotifications(),
+          hybridApi.getKPIMetrics(),
+          hybridApi.getFleetVehicles(),
+          hybridApi.getNotifications(),
         ]);
         
         setKpiMetrics(metrics);
@@ -64,11 +64,11 @@ export default function DashboardPage() {
 
     loadDashboardData();
 
-    const unsubscribeFleet = mockAPI.subscribeToFleetUpdates((vehicles) => {
+    const unsubscribeFleet = hybridApi.subscribeToFleetUpdates((vehicles) => {
       setFleetVehicles(vehicles.slice(0, 5));
     });
 
-    const unsubscribeKPIs = mockAPI.subscribeToKPIMetrics((metrics) => {
+    const unsubscribeKPIs = hybridApi.subscribeToKPIMetrics((metrics) => {
       setKpiMetrics(metrics);
     });
 

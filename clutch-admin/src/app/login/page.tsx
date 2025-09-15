@@ -123,16 +123,6 @@ export default function LoginPage() {
             </Button>
           </form>
 
-          <div className="pt-6 border-t border-border">
-            <div className="text-center text-sm text-muted-foreground space-y-3">
-              <p className="font-medium">Employee Login:</p>
-              <div className="space-y-2">
-                <p className="font-semibold text-foreground">ziad@yourclutch.com</p>
-                <p className="text-xs">Platform Administrator (Full Access)</p>
-                <p className="text-xs">Connect to production backend at clutch-main-nk7x.onrender.com</p>
-              </div>
-            </div>
-          </div>
         </CardContent>
       </Card>
     </div>
