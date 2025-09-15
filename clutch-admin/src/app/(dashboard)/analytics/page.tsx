@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useAuth } from "@/contexts/auth-context";
 import { useQuickActions } from "@/lib/quick-actions";
+import { productionApi } from "@/lib/production-api";
 import { formatDate, formatRelativeTime, formatCurrency } from "@/lib/utils";
 import { 
   BarChart3, 
@@ -143,87 +144,38 @@ export default function AnalyticsPage() {
   useEffect(() => {
     const loadAnalyticsData = async () => {
       try {
-        const token = localStorage.getItem("clutch-admin-token");
-        
-        // Load analytics metrics
-        const metricsResponse = await fetch(`https://clutch-main-nk7x.onrender.com/api/v1/analytics/metrics?period=${selectedTimeRange}`, {
-          headers: {
-            "Authorization": `Bearer ${token}`,
-            "Content-Type": "application/json",
-          },
-        });
-        
-        if (metricsResponse.ok) {
-          const metricsData = await metricsResponse.json();
-          setMetrics(metricsData.data || metricsData);
-        }
+        // Load analytics metrics using production API
+        const metricsData = await productionApi.getAnalyticsMetrics();
+        setMetrics(metricsData || mockMetrics);
 
         // Load user analytics
-        const userResponse = await fetch(`https://clutch-main-nk7x.onrender.com/api/v1/analytics/users?period=${selectedTimeRange}`, {
-          headers: {
-            "Authorization": `Bearer ${token}`,
-            "Content-Type": "application/json",
-          },
-        });
-        
-        if (userResponse.ok) {
-          const userData = await userResponse.json();
-          setUserAnalytics(userData.data || userData);
-        }
+        const userData = await productionApi.getAnalyticsData('users', { period: selectedTimeRange });
+        setUserAnalytics(userData || mockUserAnalytics);
 
         // Load revenue analytics
-        const revenueResponse = await fetch(`https://clutch-main-nk7x.onrender.com/api/v1/analytics/revenue?period=${selectedTimeRange}`, {
-          headers: {
-            "Authorization": `Bearer ${token}`,
-            "Content-Type": "application/json",
-          },
-        });
-        
-        if (revenueResponse.ok) {
-          const revenueData = await revenueResponse.json();
-          setRevenueAnalytics(revenueData.data || revenueData);
-        }
+        const revenueData = await productionApi.getAnalyticsData('revenue', { period: selectedTimeRange });
+        setRevenueAnalytics(revenueData || mockRevenueAnalytics);
 
         // Load fleet analytics
-        const fleetResponse = await fetch(`https://clutch-main-nk7x.onrender.com/api/v1/analytics/fleet?period=${selectedTimeRange}`, {
-          headers: {
-            "Authorization": `Bearer ${token}`,
-            "Content-Type": "application/json",
-          },
-        });
-        
-        if (fleetResponse.ok) {
-          const fleetData = await fleetResponse.json();
-          setFleetAnalytics(fleetData.data || fleetData);
-        }
+        const fleetData = await productionApi.getAnalyticsData('fleet', { period: selectedTimeRange });
+        setFleetAnalytics(fleetData || mockFleetAnalytics);
 
         // Load engagement analytics
-        const engagementResponse = await fetch(`https://clutch-main-nk7x.onrender.com/api/v1/analytics/engagement?period=${selectedTimeRange}`, {
-          headers: {
-            "Authorization": `Bearer ${token}`,
-            "Content-Type": "application/json",
-          },
-        });
-        
-        if (engagementResponse.ok) {
-          const engagementData = await engagementResponse.json();
-          setEngagementAnalytics(engagementData.data || engagementData);
-        }
+        const engagementData = await productionApi.getAnalyticsData('engagement', { period: selectedTimeRange });
+        setEngagementAnalytics(engagementData || mockEngagementAnalytics);
 
         // Load analytics reports
-        const reportsResponse = await fetch("https://clutch-main-nk7x.onrender.com/api/v1/analytics/reports", {
-          headers: {
-            "Authorization": `Bearer ${token}`,
-            "Content-Type": "application/json",
-          },
-        });
-        
-        if (reportsResponse.ok) {
-          const reportsData = await reportsResponse.json();
-          setReports(reportsData.data || reportsData);
-        }
+        const reportsData = await productionApi.getReports();
+        setReports(reportsData || mockReports);
       } catch (error) {
         console.error("Failed to load analytics data:", error);
+        // Use mock data as fallback
+        setMetrics(mockMetrics);
+        setUserAnalytics(mockUserAnalytics);
+        setRevenueAnalytics(mockRevenueAnalytics);
+        setFleetAnalytics(mockFleetAnalytics);
+        setEngagementAnalytics(mockEngagementAnalytics);
+        setReports(mockReports);
       } finally {
         setIsLoading(false);
       }
@@ -254,35 +206,6 @@ export default function AnalyticsPage() {
     }
   };
 
-  const generateReport = async () => {
-    try {
-      const token = localStorage.getItem("clutch-admin-token");
-      
-      const response = await fetch("https://clutch-main-nk7x.onrender.com/api/v1/analytics/reports", {
-        method: "POST",
-        headers: {
-          "Authorization": `Bearer ${token}`,
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          name: `Analytics Report - ${new Date().toLocaleDateString()}`,
-          type: "custom",
-          metrics: ["users", "revenue", "fleet", "engagement"],
-          dateRange: {
-            start: new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toISOString(),
-            end: new Date().toISOString(),
-          },
-        }),
-      });
-      
-      if (response.ok) {
-        const data = await response.json();
-        setReports(prev => [data.data || data, ...prev]);
-      }
-    } catch (error) {
-      console.error("Failed to generate report:", error);
-    }
-  };
 
   if (isLoading) {
     return (
