@@ -48,6 +48,9 @@ const {
   analyzeAndTune
 } = require('./middleware/performance-tuning');
 
+// Import WebSocket server
+const webSocketServer = require('./services/websocket-server');
+
 // Import unified database connection
 const { connectToDatabase } = require('./config/database-unified');
 const { initializeEnvironment } = require('./config/environment');
