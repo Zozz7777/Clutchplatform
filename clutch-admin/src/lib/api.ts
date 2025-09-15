@@ -564,6 +564,230 @@ class ApiService {
     });
   }
 
+  // A/B Testing API
+  async getABTests(): Promise<ApiResponse<any[]>> {
+    return this.request<any[]>("/api/v1/ab-tests");
+  }
+
+  async createABTest(testData: any): Promise<ApiResponse<any>> {
+    return this.request<any>("/api/v1/ab-tests", {
+      method: "POST",
+      body: JSON.stringify(testData),
+    });
+  }
+
+  async updateABTest(id: string, testData: any): Promise<ApiResponse<any>> {
+    return this.request<any>(`/api/v1/ab-tests/${id}`, {
+      method: "PUT",
+      body: JSON.stringify(testData),
+    });
+  }
+
+  async deleteABTest(id: string): Promise<ApiResponse<boolean>> {
+    return this.request<boolean>(`/api/v1/ab-tests/${id}`, {
+      method: "DELETE",
+    });
+  }
+
+  // Rollouts API
+  async getRollouts(): Promise<ApiResponse<any[]>> {
+    return this.request<any[]>("/api/v1/rollouts");
+  }
+
+  async createRollout(rolloutData: any): Promise<ApiResponse<any>> {
+    return this.request<any>("/api/v1/rollouts", {
+      method: "POST",
+      body: JSON.stringify(rolloutData),
+    });
+  }
+
+  async updateRollout(id: string, rolloutData: any): Promise<ApiResponse<any>> {
+    return this.request<any>(`/api/v1/rollouts/${id}`, {
+      method: "PUT",
+      body: JSON.stringify(rolloutData),
+    });
+  }
+
+  async deleteRollout(id: string): Promise<ApiResponse<boolean>> {
+    return this.request<boolean>(`/api/v1/rollouts/${id}`, {
+      method: "DELETE",
+    });
+  }
+
+  // Assets API
+  async getAssets(): Promise<ApiResponse<any[]>> {
+    return this.request<any[]>("/api/v1/assets");
+  }
+
+  async getAssetById(id: string): Promise<ApiResponse<any>> {
+    return this.request<any>(`/api/v1/assets/${id}`);
+  }
+
+  async createAsset(assetData: any): Promise<ApiResponse<any>> {
+    return this.request<any>("/api/v1/assets", {
+      method: "POST",
+      body: JSON.stringify(assetData),
+    });
+  }
+
+  async updateAsset(id: string, assetData: any): Promise<ApiResponse<any>> {
+    return this.request<any>(`/api/v1/assets/${id}`, {
+      method: "PUT",
+      body: JSON.stringify(assetData),
+    });
+  }
+
+  async deleteAsset(id: string): Promise<ApiResponse<boolean>> {
+    return this.request<boolean>(`/api/v1/assets/${id}`, {
+      method: "DELETE",
+    });
+  }
+
+  // Maintenance Records API
+  async getMaintenanceRecords(): Promise<ApiResponse<any[]>> {
+    return this.request<any[]>("/api/v1/maintenance-records");
+  }
+
+  async getMaintenanceRecordById(id: string): Promise<ApiResponse<any>> {
+    return this.request<any>(`/api/v1/maintenance-records/${id}`);
+  }
+
+  async createMaintenanceRecord(recordData: any): Promise<ApiResponse<any>> {
+    return this.request<any>("/api/v1/maintenance-records", {
+      method: "POST",
+      body: JSON.stringify(recordData),
+    });
+  }
+
+  async updateMaintenanceRecord(id: string, recordData: any): Promise<ApiResponse<any>> {
+    return this.request<any>(`/api/v1/maintenance-records/${id}`, {
+      method: "PUT",
+      body: JSON.stringify(recordData),
+    });
+  }
+
+  async deleteMaintenanceRecord(id: string): Promise<ApiResponse<boolean>> {
+    return this.request<boolean>(`/api/v1/maintenance-records/${id}`, {
+      method: "DELETE",
+    });
+  }
+
+  // Asset Assignments API
+  async getAssetAssignments(): Promise<ApiResponse<any[]>> {
+    return this.request<any[]>("/api/v1/asset-assignments");
+  }
+
+  async getAssetAssignmentById(id: string): Promise<ApiResponse<any>> {
+    return this.request<any>(`/api/v1/asset-assignments/${id}`);
+  }
+
+  async createAssetAssignment(assignmentData: any): Promise<ApiResponse<any>> {
+    return this.request<any>("/api/v1/asset-assignments", {
+      method: "POST",
+      body: JSON.stringify(assignmentData),
+    });
+  }
+
+  async updateAssetAssignment(id: string, assignmentData: any): Promise<ApiResponse<any>> {
+    return this.request<any>(`/api/v1/asset-assignments/${id}`, {
+      method: "PUT",
+      body: JSON.stringify(assignmentData),
+    });
+  }
+
+  async deleteAssetAssignment(id: string): Promise<ApiResponse<boolean>> {
+    return this.request<boolean>(`/api/v1/asset-assignments/${id}`, {
+      method: "DELETE",
+    });
+  }
+
+  // Vendors API
+  async getVendors(): Promise<ApiResponse<any[]>> {
+    return this.request<any[]>("/api/v1/vendors");
+  }
+
+  async getVendorById(id: string): Promise<ApiResponse<any>> {
+    return this.request<any>(`/api/v1/vendors/${id}`);
+  }
+
+  async createVendor(vendorData: any): Promise<ApiResponse<any>> {
+    return this.request<any>("/api/v1/vendors", {
+      method: "POST",
+      body: JSON.stringify(vendorData),
+    });
+  }
+
+  async updateVendor(id: string, vendorData: any): Promise<ApiResponse<any>> {
+    return this.request<any>(`/api/v1/vendors/${id}`, {
+      method: "PUT",
+      body: JSON.stringify(vendorData),
+    });
+  }
+
+  async deleteVendor(id: string): Promise<ApiResponse<boolean>> {
+    return this.request<boolean>(`/api/v1/vendors/${id}`, {
+      method: "DELETE",
+    });
+  }
+
+  // Vendor Contracts API
+  async getVendorContracts(): Promise<ApiResponse<any[]>> {
+    return this.request<any[]>("/api/v1/vendor-contracts");
+  }
+
+  async getVendorContractById(id: string): Promise<ApiResponse<any>> {
+    return this.request<any>(`/api/v1/vendor-contracts/${id}`);
+  }
+
+  async createVendorContract(contractData: any): Promise<ApiResponse<any>> {
+    return this.request<any>("/api/v1/vendor-contracts", {
+      method: "POST",
+      body: JSON.stringify(contractData),
+    });
+  }
+
+  async updateVendorContract(id: string, contractData: any): Promise<ApiResponse<any>> {
+    return this.request<any>(`/api/v1/vendor-contracts/${id}`, {
+      method: "PUT",
+      body: JSON.stringify(contractData),
+    });
+  }
+
+  async deleteVendorContract(id: string): Promise<ApiResponse<boolean>> {
+    return this.request<boolean>(`/api/v1/vendor-contracts/${id}`, {
+      method: "DELETE",
+    });
+  }
+
+  // Vendor Communications API
+  async getVendorCommunications(): Promise<ApiResponse<any[]>> {
+    return this.request<any[]>("/api/v1/vendor-communications");
+  }
+
+  async getVendorCommunicationById(id: string): Promise<ApiResponse<any>> {
+    return this.request<any>(`/api/v1/vendor-communications/${id}`);
+  }
+
+  async createVendorCommunication(communicationData: any): Promise<ApiResponse<any>> {
+    return this.request<any>("/api/v1/vendor-communications", {
+      method: "POST",
+      body: JSON.stringify(communicationData),
+    });
+  }
+
+  async updateVendorCommunication(id: string, communicationData: any): Promise<ApiResponse<any>> {
+    return this.request<any>(`/api/v1/vendor-communications/${id}`, {
+      method: "PUT",
+      body: JSON.stringify(communicationData),
+    });
+  }
+
+  async deleteVendorCommunication(id: string): Promise<ApiResponse<boolean>> {
+    return this.request<boolean>(`/api/v1/vendor-communications/${id}`, {
+      method: "DELETE",
+    });
+  }
+
   // WebSocket connection for real-time updates
   connectWebSocket(): WebSocket | null {
     if (typeof window === "undefined") return null;
