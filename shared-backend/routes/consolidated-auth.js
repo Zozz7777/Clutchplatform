@@ -175,10 +175,15 @@ router.post('/login', loginRateLimit, async (req, res) => {
           sessionToken,
           user: {
             id: fallbackUser._id,
+            _id: fallbackUser._id,
             email: fallbackUser.email,
             name: fallbackUser.name,
             role: fallbackUser.role,
-            permissions: fallbackUser.permissions
+            permissions: fallbackUser.permissions,
+            isActive: true,
+            isEmployee: true,
+            createdAt: new Date().toISOString(),
+            lastLogin: new Date().toISOString()
           }
         },
         message: 'Login successful (fallback)',
@@ -313,10 +318,15 @@ router.post('/login', loginRateLimit, async (req, res) => {
         sessionToken,
         user: {
           id: user._id,
+          _id: user._id,
           email: user.email,
           name: user.name,
           role: user.role,
-          permissions: user.permissions || []
+          permissions: user.permissions || [],
+          isActive: user.isActive,
+          isEmployee: user.isEmployee,
+          createdAt: user.createdAt,
+          lastLogin: new Date().toISOString()
         }
       },
       message: 'Login successful',
