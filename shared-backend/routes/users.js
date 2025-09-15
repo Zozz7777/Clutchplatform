@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const { authenticateToken, requireRole } = require('../middleware/auth');
 const logger = require('../utils/logger');
+const { getCollection } = require('../config/optimized-database');
 
 // GET /users - Get all users
 router.get('/', authenticateToken, requireRole(['admin']), async (req, res) => {

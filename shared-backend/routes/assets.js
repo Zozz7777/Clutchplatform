@@ -21,7 +21,7 @@ router.get('/', authenticateToken, requireRole(['admin', 'asset_manager']), asse
     const { page = 1, limit = 50, category, status, location, search } = req.query;
     const skip = (page - 1) * limit;
     
-    const assetsCollection = await getCollection('assets');
+    const assetsCollection = await getCollection('theme_assets');
     
     // Build query
     const query = {};
@@ -75,7 +75,7 @@ router.get('/', authenticateToken, requireRole(['admin', 'asset_manager']), asse
 router.get('/:id', authenticateToken, requireRole(['admin', 'asset_manager']), assetRateLimit, async (req, res) => {
   try {
     const { id } = req.params;
-    const assetsCollection = await getCollection('assets');
+    const assetsCollection = await getCollection('theme_assets');
     
     const asset = await assetsCollection.findOne({ _id: new ObjectId(id) });
     
@@ -134,7 +134,7 @@ router.post('/', authenticateToken, requireRole(['admin', 'asset_manager']), ass
       });
     }
     
-    const assetsCollection = await getCollection('assets');
+    const assetsCollection = await getCollection('theme_assets');
     
     // Generate asset tag
     const assetCount = await assetsCollection.countDocuments();
@@ -186,7 +186,7 @@ router.put('/:id', authenticateToken, requireRole(['admin', 'asset_manager']), a
     const { id } = req.params;
     const updateData = { ...req.body, updatedAt: new Date() };
     
-    const assetsCollection = await getCollection('assets');
+    const assetsCollection = await getCollection('theme_assets');
     
     const result = await assetsCollection.updateOne(
       { _id: new ObjectId(id) },
@@ -225,7 +225,7 @@ router.put('/:id', authenticateToken, requireRole(['admin', 'asset_manager']), a
 router.delete('/:id', authenticateToken, requireRole(['admin']), assetRateLimit, async (req, res) => {
   try {
     const { id } = req.params;
-    const assetsCollection = await getCollection('assets');
+    const assetsCollection = await getCollection('theme_assets');
     
     const result = await assetsCollection.deleteOne({ _id: new ObjectId(id) });
     
@@ -272,7 +272,7 @@ router.post('/:id/assign', authenticateToken, requireRole(['admin', 'asset_manag
       });
     }
     
-    const assetsCollection = await getCollection('assets');
+    const assetsCollection = await getCollection('theme_assets');
     
     const updateData = {
       assignedTo,
@@ -331,7 +331,7 @@ router.post('/:id/unassign', authenticateToken, requireRole(['admin', 'asset_man
     const { id } = req.params;
     const { notes } = req.body;
     
-    const assetsCollection = await getCollection('assets');
+    const assetsCollection = await getCollection('theme_assets');
     
     const updateData = {
       assignedTo: null,
@@ -391,7 +391,7 @@ router.get('/inventory', authenticateToken, requireRole(['admin', 'asset_manager
   try {
     const { category, location } = req.query;
     
-    const assetsCollection = await getCollection('assets');
+    const assetsCollection = await getCollection('theme_assets');
     
     // Build query
     const query = {};
@@ -518,7 +518,7 @@ router.post('/:id/maintenance', authenticateToken, requireRole(['admin', 'asset_
     }
     
     const maintenanceCollection = await getCollection('asset_maintenance');
-    const assetsCollection = await getCollection('assets');
+    const assetsCollection = await getCollection('theme_assets');
     
     const newMaintenanceRecord = {
       assetId: new ObjectId(id),
@@ -572,7 +572,7 @@ router.get('/analytics', authenticateToken, requireRole(['admin', 'asset_manager
   try {
     const { period = '30d' } = req.query;
     
-    const assetsCollection = await getCollection('assets');
+    const assetsCollection = await getCollection('theme_assets');
     const maintenanceCollection = await getCollection('asset_maintenance');
     const assignmentsCollection = await getCollection('asset_assignments');
     

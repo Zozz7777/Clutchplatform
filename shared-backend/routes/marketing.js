@@ -21,7 +21,7 @@ router.get('/campaigns', authenticateToken, requireRole(['admin', 'marketing_man
     const { page = 1, limit = 50, status, type, search } = req.query;
     const skip = (page - 1) * limit;
     
-    const campaignsCollection = await getCollection('marketing_campaigns');
+    const campaignsCollection = await getCollection('campaigns');
     
     // Build query
     const query = {};
@@ -72,7 +72,7 @@ router.get('/campaigns', authenticateToken, requireRole(['admin', 'marketing_man
 router.get('/campaigns/:id', authenticateToken, requireRole(['admin', 'marketing_manager']), marketingRateLimit, async (req, res) => {
   try {
     const { id } = req.params;
-    const campaignsCollection = await getCollection('marketing_campaigns');
+    const campaignsCollection = await getCollection('campaigns');
     
     const campaign = await campaignsCollection.findOne({ _id: new ObjectId(id) });
     
@@ -127,7 +127,7 @@ router.post('/campaigns', authenticateToken, requireRole(['admin', 'marketing_ma
       });
     }
     
-    const campaignsCollection = await getCollection('marketing_campaigns');
+    const campaignsCollection = await getCollection('campaigns');
     
     const newCampaign = {
       name,
@@ -177,7 +177,7 @@ router.put('/campaigns/:id', authenticateToken, requireRole(['admin', 'marketing
     const { id } = req.params;
     const updateData = { ...req.body, updatedAt: new Date() };
     
-    const campaignsCollection = await getCollection('marketing_campaigns');
+    const campaignsCollection = await getCollection('campaigns');
     
     const result = await campaignsCollection.updateOne(
       { _id: new ObjectId(id) },
@@ -622,7 +622,7 @@ router.get('/analytics', authenticateToken, requireRole(['admin', 'marketing_man
   try {
     const { period = '30d' } = req.query;
     
-    const campaignsCollection = await getCollection('marketing_campaigns');
+    const campaignsCollection = await getCollection('campaigns');
     const leadsCollection = await getCollection('marketing_leads');
     const promotionsCollection = await getCollection('marketing_promotions');
     

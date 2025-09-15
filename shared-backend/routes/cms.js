@@ -21,7 +21,7 @@ router.get('/content', authenticateToken, requireRole(['admin', 'content_manager
     const { page = 1, limit = 50, type, status, category, search } = req.query;
     const skip = (page - 1) * limit;
     
-    const contentCollection = await getCollection('cms_content');
+    const contentCollection = await getCollection('emails');
     
     // Build query
     const query = {};
@@ -74,7 +74,7 @@ router.get('/content', authenticateToken, requireRole(['admin', 'content_manager
 router.get('/content/:id', authenticateToken, requireRole(['admin', 'content_manager']), cmsRateLimit, async (req, res) => {
   try {
     const { id } = req.params;
-    const contentCollection = await getCollection('cms_content');
+    const contentCollection = await getCollection('emails');
     
     const content = await contentCollection.findOne({ _id: new ObjectId(id) });
     
@@ -108,7 +108,7 @@ router.get('/content/:id', authenticateToken, requireRole(['admin', 'content_man
 router.get('/content/slug/:slug', cmsRateLimit, async (req, res) => {
   try {
     const { slug } = req.params;
-    const contentCollection = await getCollection('cms_content');
+    const contentCollection = await getCollection('emails');
     
     const content = await contentCollection.findOne({ 
       slug: slug,
@@ -168,7 +168,7 @@ router.post('/content', authenticateToken, requireRole(['admin', 'content_manage
       });
     }
     
-    const contentCollection = await getCollection('cms_content');
+    const contentCollection = await getCollection('emails');
     
     // Check if slug already exists
     const existingContent = await contentCollection.findOne({ slug: slug });
@@ -224,7 +224,7 @@ router.put('/content/:id', authenticateToken, requireRole(['admin', 'content_man
     const { id } = req.params;
     const updateData = { ...req.body, updatedAt: new Date() };
     
-    const contentCollection = await getCollection('cms_content');
+    const contentCollection = await getCollection('emails');
     
     const result = await contentCollection.updateOne(
       { _id: new ObjectId(id) },
@@ -263,7 +263,7 @@ router.put('/content/:id', authenticateToken, requireRole(['admin', 'content_man
 router.delete('/content/:id', authenticateToken, requireRole(['admin']), cmsRateLimit, async (req, res) => {
   try {
     const { id } = req.params;
-    const contentCollection = await getCollection('cms_content');
+    const contentCollection = await getCollection('emails');
     
     const result = await contentCollection.deleteOne({ _id: new ObjectId(id) });
     
@@ -616,7 +616,7 @@ router.get('/analytics', authenticateToken, requireRole(['admin', 'content_manag
   try {
     const { period = '30d' } = req.query;
     
-    const contentCollection = await getCollection('cms_content');
+    const contentCollection = await getCollection('emails');
     const mediaCollection = await getCollection('cms_media');
     const helpArticlesCollection = await getCollection('help_articles');
     

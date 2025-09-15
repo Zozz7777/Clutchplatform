@@ -21,7 +21,7 @@ router.get('/', authenticateToken, requireRole(['admin', 'vendor_manager']), ven
     const { page = 1, limit = 50, status, category, search } = req.query;
     const skip = (page - 1) * limit;
     
-    const vendorsCollection = await getCollection('vendors');
+    const vendorsCollection = await getCollection('partners');
     
     // Build query
     const query = {};
@@ -74,7 +74,7 @@ router.get('/', authenticateToken, requireRole(['admin', 'vendor_manager']), ven
 router.get('/:id', authenticateToken, requireRole(['admin', 'vendor_manager']), vendorRateLimit, async (req, res) => {
   try {
     const { id } = req.params;
-    const vendorsCollection = await getCollection('vendors');
+    const vendorsCollection = await getCollection('partners');
     
     const vendor = await vendorsCollection.findOne({ _id: new ObjectId(id) });
     
@@ -132,7 +132,7 @@ router.post('/', authenticateToken, requireRole(['admin', 'vendor_manager']), ve
       });
     }
     
-    const vendorsCollection = await getCollection('vendors');
+    const vendorsCollection = await getCollection('partners');
     
     // Check if vendor already exists
     const existingVendor = await vendorsCollection.findOne({ email: email.toLowerCase() });
@@ -197,7 +197,7 @@ router.put('/:id', authenticateToken, requireRole(['admin', 'vendor_manager']), 
     const { id } = req.params;
     const updateData = { ...req.body, updatedAt: new Date() };
     
-    const vendorsCollection = await getCollection('vendors');
+    const vendorsCollection = await getCollection('partners');
     
     const result = await vendorsCollection.updateOne(
       { _id: new ObjectId(id) },
@@ -236,7 +236,7 @@ router.put('/:id', authenticateToken, requireRole(['admin', 'vendor_manager']), 
 router.delete('/:id', authenticateToken, requireRole(['admin']), vendorRateLimit, async (req, res) => {
   try {
     const { id } = req.params;
-    const vendorsCollection = await getCollection('vendors');
+    const vendorsCollection = await getCollection('partners');
     
     const result = await vendorsCollection.deleteOne({ _id: new ObjectId(id) });
     
@@ -474,7 +474,7 @@ router.get('/:id/performance', authenticateToken, requireRole(['admin', 'vendor_
     const { id } = req.params;
     const { period = '30d' } = req.query;
     
-    const vendorsCollection = await getCollection('vendors');
+    const vendorsCollection = await getCollection('partners');
     const ordersCollection = await getCollection('vendor_orders');
     const contractsCollection = await getCollection('vendor_contracts');
     
@@ -572,7 +572,7 @@ router.post('/:id/rating', authenticateToken, requireRole(['admin', 'vendor_mana
       });
     }
     
-    const vendorsCollection = await getCollection('vendors');
+    const vendorsCollection = await getCollection('partners');
     const ratingsCollection = await getCollection('vendor_ratings');
     
     // Create rating record
@@ -623,7 +623,7 @@ router.get('/analytics', authenticateToken, requireRole(['admin', 'vendor_manage
   try {
     const { period = '30d' } = req.query;
     
-    const vendorsCollection = await getCollection('vendors');
+    const vendorsCollection = await getCollection('partners');
     const ordersCollection = await getCollection('vendor_orders');
     const contractsCollection = await getCollection('vendor_contracts');
     

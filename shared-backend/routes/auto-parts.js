@@ -23,7 +23,7 @@ router.get('/inventory', async (req, res) => {
     } = req.query;
     
     const skip = (page - 1) * limit;
-    const collection = await getCollection('auto_parts_inventory');
+    const collection = await getCollection('carparts');
     
     // Build query
     const query = {};
@@ -113,7 +113,7 @@ router.post('/inventory', authenticateToken, requireRole(['admin', 'inventory_ma
       });
     }
     
-    const collection = await getCollection('auto_parts_inventory');
+    const collection = await getCollection('carparts');
     
     // Check if part already exists
     const existingPart = await collection.findOne({ partNumber });
@@ -195,7 +195,7 @@ router.put('/inventory/:id', authenticateToken, requireRole(['admin', 'inventory
       status
     } = req.body;
     
-    const collection = await getCollection('auto_parts_inventory');
+    const collection = await getCollection('carparts');
     
     // Check if part exists
     const existingPart = await collection.findOne({ _id: new ObjectId(req.params.id) });
@@ -269,7 +269,7 @@ router.delete('/inventory/:id', authenticateToken, requireRole(['admin']), async
     console.log('🗑️ Deleting auto part from inventory:', req.params.id);
     
     const { ObjectId } = require('mongodb');
-    const collection = await getCollection('auto_parts_inventory');
+    const collection = await getCollection('carparts');
     
     const result = await collection.deleteOne({ _id: new ObjectId(req.params.id) });
     
@@ -687,7 +687,7 @@ router.post('/sync', authenticateToken, requireRole(['admin', 'inventory_manager
     // This would typically integrate with external suppliers
     // For now, we'll simulate the sync process
     
-    const collection = await getCollection('auto_parts_inventory');
+    const collection = await getCollection('carparts');
     
     // Update last sync timestamp
     const syncResult = await collection.updateMany(

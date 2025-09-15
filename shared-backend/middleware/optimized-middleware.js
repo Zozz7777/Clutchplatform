@@ -63,11 +63,18 @@ const optimizedSecurityHeaders = (req, res, next) => {
  */
 const optimizedCORS = cors({
   origin: process.env.NODE_ENV === 'production' 
-    ? [process.env.ADMIN_URL, process.env.BACKEND_URL] 
+    ? [
+        'https://admin.yourclutch.com',
+        'https://yourclutch.com',
+        'https://www.yourclutch.com',
+        process.env.ADMIN_URL,
+        process.env.BACKEND_URL
+      ].filter(Boolean)
     : true,
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With'],
+  allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With', 'Accept', 'Origin'],
+  exposedHeaders: ['X-Total-Count', 'X-Page-Count'],
   maxAge: 86400 // 24 hours cache
 });
 

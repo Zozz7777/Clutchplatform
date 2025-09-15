@@ -10,7 +10,7 @@ const { logger } = require('../config/logger');
 // Get white-label configuration
 router.get('/white-label/config', authenticateToken, requireRole(['admin', 'enterprise_manager']), async (req, res) => {
   try {
-    const collection = await getCollection('white_label_configs');
+    const collection = await getCollection('system_settings');
     const config = await collection.findOne({ organization: req.user.organization });
     
     if (!config) {
@@ -75,7 +75,7 @@ router.get('/white-label/config', authenticateToken, requireRole(['admin', 'ente
 // Update white-label configuration
 router.put('/white-label/config', authenticateToken, requireRole(['admin', 'enterprise_manager']), async (req, res) => {
   try {
-    const collection = await getCollection('white_label_configs');
+    const collection = await getCollection('system_settings');
     const configData = {
       ...req.body,
       organization: req.user.organization,
