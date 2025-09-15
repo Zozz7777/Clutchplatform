@@ -49,7 +49,7 @@ import {
   Smartphone,
   Monitor,
 } from "lucide-react";
-import { hybridApi } from "@/lib/hybrid-api";
+import { productionApi } from "@/lib/production-api";
 
 interface AuditLog {
   _id: string;
@@ -435,7 +435,7 @@ export default function AuditTrailPage() {
   const loadAuditLogs = async () => {
     try {
       setLoading(true);
-      const data = await hybridApi.getAuditLogs();
+      const data = await productionApi.getAuditLogs();
       setAuditLogs(data || mockAuditLogs);
     } catch (error) {
       console.error("Error loading audit logs:", error);
@@ -447,7 +447,7 @@ export default function AuditTrailPage() {
 
   const loadSecurityEvents = async () => {
     try {
-      const data = await hybridApi.getSecurityEvents();
+      const data = await productionApi.getAuditLogs({ type: 'security' });
       setSecurityEvents(data || mockSecurityEvents);
     } catch (error) {
       console.error("Error loading security events:", error);
@@ -457,7 +457,7 @@ export default function AuditTrailPage() {
 
   const loadUserActivities = async () => {
     try {
-      const data = await hybridApi.getUserActivities();
+      const data = await productionApi.getAuditLogs({ type: 'user_activity' });
       setUserActivities(data || mockUserActivities);
     } catch (error) {
       console.error("Error loading user activities:", error);

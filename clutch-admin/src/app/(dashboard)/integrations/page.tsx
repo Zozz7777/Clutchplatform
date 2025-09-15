@@ -44,7 +44,7 @@ import {
   Key,
   Activity,
 } from "lucide-react";
-import { hybridApi } from "@/lib/hybrid-api";
+import { productionApi } from "@/lib/production-api";
 
 interface Integration {
   _id: string;
@@ -355,7 +355,7 @@ export default function IntegrationsPage() {
   const loadIntegrations = async () => {
     try {
       setLoading(true);
-      const data = await hybridApi.getIntegrations();
+      const data = await productionApi.getIntegrations();
       setIntegrations(data || mockIntegrations);
     } catch (error) {
       console.error("Error loading integrations:", error);
@@ -367,7 +367,7 @@ export default function IntegrationsPage() {
 
   const loadTemplates = async () => {
     try {
-      const data = await hybridApi.getIntegrationTemplates();
+      const data = await productionApi.getIntegrations({ type: 'templates' });
       setTemplates(data || mockTemplates);
     } catch (error) {
       console.error("Error loading templates:", error);
