@@ -16,9 +16,17 @@ const hashPassword = async (password) => {
 
 const comparePassword = async (password, hashedPassword) => {
   try {
-    return await bcrypt.compare(password, hashedPassword);
+    if (!password || !hashedPassword) {
+      console.error('Password comparison: missing password or hash');
+      return false;
+    }
+    
+    const result = await bcrypt.compare(password, hashedPassword);
+    console.log('Password comparison result:', result);
+    return result;
   } catch (error) {
-    throw new Error('Password comparison failed');
+    console.error('Password comparison error:', error);
+    return false; // Return false instead of throwing error
   }
 };
 

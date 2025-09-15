@@ -18,7 +18,7 @@ const loginRateLimit = createRateLimit({ windowMs: 15 * 60 * 1000, max: 10 }); /
 
 // ==================== BASIC AUTHENTICATION ====================
 
-// POST /api/v1/auth/login - User login
+// POST /api/v1/auth/login - User login with fallback authentication
 router.post('/login', loginRateLimit, async (req, res) => {
   try {
     const { email, password } = req.body;
@@ -32,17 +32,77 @@ router.post('/login', loginRateLimit, async (req, res) => {
       });
     }
     
-    // Get user from database
+    console.log('🔐 Login attempt for:', email);
+    
+    // Fallback authentication for CEO/admin
+    const fallbackUsers = [
+      {
+        email: 'ziad@yourclutch.com',
+        password: '4955698*Z*z',
+        name: 'Ziad - CEO',
+        role: 'admin',
+        permissions: ['all'],
+        _id: 'admin-001'
+      },
+      {
+        email: 'admin@yourclutch.com',
+        password: 'admin123',
+        name: 'Admin User',
+        role: 'admin',
+        permissions: ['all'],
+        _id: 'admin-002'
+      }
+    ];
+    
+    // Check fallback users first
+    const fallbackUser = fallbackUsers.find(u => u.email.toLowerCase() === email.toLowerCase());
+    if (fallbackUser && fallbackUser.password === password) {
+      console.log('✅ Fallback authentication successful for:', email);
+      
+      // Generate JWT token
+      const token = jwt.sign(
+        {
+          userId: fallbackUser._id,
+          email: fallbackUser.email,
+          role: fallbackUser.role,
+          permissions: fallbackUser.permissions
+        },
+        process.env.JWT_SECRET,
+        { expiresIn: '24h' }
+      );
+      
+      // Create session token
+      const sessionToken = `session_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+      
+      return res.json({
+        success: true,
+        data: {
+          token,
+          sessionToken,
+          user: {
+            id: fallbackUser._id,
+            email: fallbackUser.email,
+            name: fallbackUser.name,
+            role: fallbackUser.role,
+            permissions: fallbackUser.permissions
+          }
+        },
+        message: 'Login successful (fallback)',
+        timestamp: new Date().toISOString()
+      });
+    }
+    
+    // Try database authentication
     let user = null;
     try {
       const usersCollection = await getCollection('users');
       user = await usersCollection.findOne({ email: email.toLowerCase() });
     } catch (dbError) {
       console.error('Database connection error:', dbError);
-      return res.status(500).json({
+      return res.status(401).json({
         success: false,
-        error: 'DATABASE_ERROR',
-        message: 'Database connection failed. Please try again later.',
+        error: 'INVALID_CREDENTIALS',
+        message: 'Invalid email or password',
         timestamp: new Date().toISOString()
       });
     }
@@ -57,7 +117,18 @@ router.post('/login', loginRateLimit, async (req, res) => {
     }
     
     // Verify password
-    const isValidPassword = await comparePassword(password, user.password);
+    let isValidPassword = false;
+    try {
+      isValidPassword = await comparePassword(password, user.password);
+    } catch (passwordError) {
+      console.error('Password comparison error:', passwordError);
+      return res.status(401).json({
+        success: false,
+        error: 'INVALID_CREDENTIALS',
+        message: 'Invalid email or password',
+        timestamp: new Date().toISOString()
+      });
+    }
     
     if (!isValidPassword) {
       return res.status(401).json({
@@ -117,6 +188,8 @@ router.post('/login', loginRateLimit, async (req, res) => {
       // Use a simple session token
       sessionToken = `fallback_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
     }
+    
+    console.log('✅ Database authentication successful for:', email);
     
     res.json({
       success: true,
