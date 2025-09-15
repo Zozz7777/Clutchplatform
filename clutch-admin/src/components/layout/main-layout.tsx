@@ -27,7 +27,7 @@ export function MainLayout({ children }: MainLayoutProps) {
   };
 
   return (
-    <div className={`flex h-screen bg-background ${isDarkMode ? "dark" : ""}`}>
+    <div className={`flex h-screen bg-background font-sans ${isDarkMode ? "dark" : ""}`}>
       {/* Sidebar */}
       <Sidebar isCollapsed={sidebarCollapsed} onToggle={toggleSidebar} />
       
@@ -41,8 +41,10 @@ export function MainLayout({ children }: MainLayoutProps) {
         />
         
         {/* Page Content */}
-        <main className="flex-1 overflow-y-auto p-6">
-          {children}
+        <main className="flex-1 overflow-y-auto p-6 bg-background">
+          <div className="max-w-7xl mx-auto space-y-6">
+            {children}
+          </div>
         </main>
       </div>
     </div>

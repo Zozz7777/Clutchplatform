@@ -5,24 +5,32 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { mockAPI } from "@/lib/mock-api";
+import { formatDate, formatRelativeTime } from "@/lib/utils";
 import { useAuth } from "@/contexts/auth-context";
-import { formatDate, formatRelativeTime, formatCurrency } from "@/lib/utils";
 import { 
   Users, 
   Search, 
   Filter, 
   Plus, 
   MoreHorizontal,
-  UserCheck,
   MessageSquare,
   Phone,
   Mail,
   Calendar,
-  MapPin,
-  DollarSign,
   TrendingUp,
+  TrendingDown,
+  Star,
+  Clock,
+  CheckCircle,
   AlertTriangle,
-  CheckCircle
+  User,
+  Building2,
+  Activity,
+  BarChart3
 } from "lucide-react";
 import {
   DropdownMenu,
@@ -34,44 +42,35 @@ import {
 } from "@/components/ui/dropdown-menu";
 
 interface Customer {
-  _id: string;
-  firstName: string;
-  lastName: string;
+  id: string;
+  name: string;
   email: string;
   phone: string;
-  address: {
-    street: string;
-    city: string;
-    state: string;
-    zipCode: string;
-  };
-  status: "active" | "inactive" | "pending";
+  company?: string;
+  status: string;
+  lastContact: string;
   totalSpent: number;
-  lastOrderDate: string;
-  createdAt: string;
+  satisfaction: number;
   tags: string[];
-  notes: string;
 }
 
-interface SupportTicket {
-  _id: string;
-  customerId: string;
-  customerName: string;
-  subject: string;
+interface Ticket {
+  id: string;
+  title: string;
   description: string;
-  status: "open" | "in_progress" | "resolved" | "closed";
-  priority: "low" | "medium" | "high" | "urgent";
+  customer: string;
+  status: string;
+  priority: string;
   assignedTo: string;
   createdAt: string;
   updatedAt: string;
-  category: string;
 }
 
 export default function CRMPage() {
   const [customers, setCustomers] = useState<Customer[]>([]);
-  const [tickets, setTickets] = useState<SupportTicket[]>([]);
+  const [tickets, setTickets] = useState<Ticket[]>([]);
   const [filteredCustomers, setFilteredCustomers] = useState<Customer[]>([]);
-  const [filteredTickets, setFilteredTickets] = useState<SupportTicket[]>([]);
+  const [filteredTickets, setFilteredTickets] = useState<Ticket[]>([]);
   const [searchQuery, setSearchQuery] = useState("");
   const [statusFilter, setStatusFilter] = useState<string>("all");
   const [isLoading, setIsLoading] = useState(true);
@@ -80,33 +79,86 @@ export default function CRMPage() {
   useEffect(() => {
     const loadCRMData = async () => {
       try {
-        const token = localStorage.getItem("clutch-admin-token");
-        
-        // Load customers
-        const customersResponse = await fetch("https://clutch-main-nk7x.onrender.com/api/v1/customers", {
-          headers: {
-            "Authorization": `Bearer ${token}`,
-            "Content-Type": "application/json",
+        // Mock data for customers and tickets
+        const mockCustomers: Customer[] = [
+          {
+            id: "1",
+            name: "Ahmed Hassan",
+            email: "ahmed@company.com",
+            phone: "+20 123 456 7890",
+            company: "Tech Solutions Ltd",
+            status: "active",
+            lastContact: "2024-01-15T10:30:00Z",
+            totalSpent: 15000,
+            satisfaction: 4.5,
+            tags: ["VIP", "Enterprise"]
           },
-        });
-        
-        if (customersResponse.ok) {
-          const customersData = await customersResponse.json();
-          setCustomers(customersData.data || customersData);
-        }
+          {
+            id: "2",
+            name: "Fatma Mohamed",
+            email: "fatma@business.com",
+            phone: "+20 987 654 3210",
+            company: "Business Corp",
+            status: "active",
+            lastContact: "2024-01-14T14:20:00Z",
+            totalSpent: 8500,
+            satisfaction: 4.2,
+            tags: ["Regular"]
+          },
+          {
+            id: "3",
+            name: "Omar Ali",
+            email: "omar@startup.com",
+            phone: "+20 555 123 4567",
+            company: "Startup Inc",
+            status: "prospect",
+            lastContact: "2024-01-13T09:15:00Z",
+            totalSpent: 0,
+            satisfaction: 0,
+            tags: ["Lead"]
+          }
+        ];
 
-        // Load support tickets
-        const ticketsResponse = await fetch("https://clutch-main-nk7x.onrender.com/api/v1/support/tickets", {
-          headers: {
-            "Authorization": `Bearer ${token}`,
-            "Content-Type": "application/json",
+        const mockTickets: Ticket[] = [
+          {
+            id: "1",
+            title: "Fleet vehicle not responding",
+            description: "Vehicle ABC-123 is not responding to commands",
+            customer: "Ahmed Hassan",
+            status: "open",
+            priority: "high",
+            assignedTo: "Support Team",
+            createdAt: "2024-01-15T10:30:00Z",
+            updatedAt: "2024-01-15T10:30:00Z"
           },
-        });
-        
-        if (ticketsResponse.ok) {
-          const ticketsData = await ticketsResponse.json();
-          setTickets(ticketsData.data || ticketsData);
-        }
+          {
+            id: "2",
+            title: "Billing inquiry",
+            description: "Question about monthly subscription charges",
+            customer: "Fatma Mohamed",
+            status: "in_progress",
+            priority: "medium",
+            assignedTo: "Billing Team",
+            createdAt: "2024-01-14T14:20:00Z",
+            updatedAt: "2024-01-15T08:45:00Z"
+          },
+          {
+            id: "3",
+            title: "Feature request",
+            description: "Request for new reporting features",
+            customer: "Omar Ali",
+            status: "closed",
+            priority: "low",
+            assignedTo: "Product Team",
+            createdAt: "2024-01-13T09:15:00Z",
+            updatedAt: "2024-01-14T16:30:00Z"
+          }
+        ];
+
+        setCustomers(mockCustomers);
+        setTickets(mockTickets);
+        setFilteredCustomers(mockCustomers);
+        setFilteredTickets(mockTickets);
       } catch (error) {
         console.error("Failed to load CRM data:", error);
       } finally {
@@ -118,144 +170,59 @@ export default function CRMPage() {
   }, []);
 
   useEffect(() => {
-    let filteredCust = customers;
-    let filteredTick = tickets;
+    let filtered = customers;
 
-    // Search filter
     if (searchQuery) {
-      filteredCust = filteredCust.filter(customer =>
-        customer.firstName.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        customer.lastName.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        customer.email.toLowerCase().includes(searchQuery.toLowerCase())
-      );
-      
-      filteredTick = filteredTick.filter(ticket =>
-        ticket.subject.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        ticket.customerName.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        ticket.description.toLowerCase().includes(searchQuery.toLowerCase())
+      filtered = filtered.filter(customer =>
+        customer.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        customer.email.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        customer.company?.toLowerCase().includes(searchQuery.toLowerCase())
       );
     }
 
-    // Status filter
     if (statusFilter !== "all") {
-      filteredCust = filteredCust.filter(customer => customer.status === statusFilter);
-      filteredTick = filteredTick.filter(ticket => ticket.status === statusFilter);
+      filtered = filtered.filter(customer => customer.status === statusFilter);
     }
 
-    setFilteredCustomers(filteredCust);
-    setFilteredTickets(filteredTick);
-  }, [customers, tickets, searchQuery, statusFilter]);
+    setFilteredCustomers(filtered);
+  }, [customers, searchQuery, statusFilter]);
 
   const getStatusColor = (status: string) => {
     switch (status) {
       case "active":
-      case "resolved":
-        return "success";
+        return "bg-green-100 text-green-800";
+      case "prospect":
+        return "bg-blue-100 text-blue-800";
       case "inactive":
-      case "closed":
-        return "destructive";
-      case "pending":
-      case "in_progress":
-        return "warning";
-      case "open":
-        return "info";
+        return "bg-gray-100 text-gray-800";
       default:
-        return "default";
+        return "bg-gray-100 text-gray-800";
     }
   };
 
   const getPriorityColor = (priority: string) => {
     switch (priority) {
-      case "urgent":
-        return "destructive";
       case "high":
-        return "warning";
+        return "bg-red-100 text-red-800";
       case "medium":
-        return "info";
+        return "bg-yellow-100 text-yellow-800";
       case "low":
-        return "success";
+        return "bg-green-100 text-green-800";
       default:
-        return "default";
+        return "bg-gray-100 text-gray-800";
     }
   };
 
-  const handleCustomerAction = async (customerId: string, action: string) => {
-    try {
-      const token = localStorage.getItem("clutch-admin-token");
-      
-      switch (action) {
-        case "activate":
-          await fetch(`https://clutch-main-nk7x.onrender.com/api/v1/customers/${customerId}`, {
-            method: "PUT",
-            headers: {
-              "Authorization": `Bearer ${token}`,
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify({ status: "active" }),
-          });
-          break;
-        case "deactivate":
-          await fetch(`https://clutch-main-nk7x.onrender.com/api/v1/customers/${customerId}`, {
-            method: "PUT",
-            headers: {
-              "Authorization": `Bearer ${token}`,
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify({ status: "inactive" }),
-          });
-          break;
-      }
-      
-      // Reload customers
-      const response = await fetch("https://clutch-main-nk7x.onrender.com/api/v1/customers", {
-        headers: {
-          "Authorization": `Bearer ${token}`,
-          "Content-Type": "application/json",
-        },
-      });
-      
-      if (response.ok) {
-        const data = await response.json();
-        setCustomers(data.data || data);
-      }
-    } catch (error) {
-      console.error(`Failed to ${action} customer:`, error);
-    }
-  };
-
-  const handleTicketAction = async (ticketId: string, action: string) => {
-    try {
-      const token = localStorage.getItem("clutch-admin-token");
-      
-      switch (action) {
-        case "assign":
-        case "resolve":
-        case "close":
-          await fetch(`https://clutch-main-nk7x.onrender.com/api/v1/support/tickets/${ticketId}`, {
-            method: "PUT",
-            headers: {
-              "Authorization": `Bearer ${token}`,
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify({ status: action === "assign" ? "in_progress" : action }),
-          });
-          break;
-      }
-      
-      // Reload tickets
-      const response = await fetch("https://clutch-main-nk7x.onrender.com/api/v1/support/tickets", {
-        headers: {
-          "Authorization": `Bearer ${token}`,
-          "Content-Type": "application/json",
-        },
-      });
-      
-      if (response.ok) {
-        const data = await response.json();
-        setTickets(data.data || data);
-      }
-    } catch (error) {
-      console.error(`Failed to ${action} ticket:`, error);
+  const getTicketStatusColor = (status: string) => {
+    switch (status) {
+      case "open":
+        return "bg-red-100 text-red-800";
+      case "in_progress":
+        return "bg-yellow-100 text-yellow-800";
+      case "closed":
+        return "bg-green-100 text-green-800";
+      default:
+        return "bg-gray-100 text-gray-800";
     }
   };
 
@@ -264,306 +231,368 @@ export default function CRMPage() {
       <div className="flex items-center justify-center h-64">
         <div className="text-center">
           <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto mb-4"></div>
-          <p className="text-muted-foreground">Loading CRM data...</p>
+          <p className="text-muted-foreground font-sans">Loading CRM data...</p>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 font-sans">
       {/* Page Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold tracking-tight">Customer Relationship Management</h1>
-          <p className="text-muted-foreground">
-            Manage customer profiles, support tickets, and interactions
+          <h1 className="text-3xl font-bold tracking-tight text-foreground font-sans">CRM Dashboard</h1>
+          <p className="text-muted-foreground font-sans">
+            Manage customer relationships and support tickets
           </p>
         </div>
-        {hasPermission("manage_crm") && (
-          <div className="flex space-x-2">
-            <Button>
-              <Plus className="mr-2 h-4 w-4" />
-              Add Customer
-            </Button>
-            <Button variant="outline">
-              <Plus className="mr-2 h-4 w-4" />
-              New Ticket
-            </Button>
-          </div>
-        )}
+        <div className="flex items-center space-x-2">
+          <Button variant="outline" className="shadow-sm">
+            <BarChart3 className="mr-2 h-4 w-4" />
+            Analytics
+          </Button>
+          <Button className="shadow-sm">
+            <Plus className="mr-2 h-4 w-4" />
+            Add Customer
+          </Button>
+        </div>
       </div>
 
-      {/* Stats Cards */}
-      <div className="grid gap-4 md:grid-cols-4">
-        <Card>
+      {/* CRM Analytics Cards */}
+      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+        <Card className="shadow-sm">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Total Customers</CardTitle>
+            <CardTitle className="text-sm font-medium text-card-foreground">Total Customers</CardTitle>
             <Users className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{customers.length}</div>
+            <div className="text-2xl font-bold text-foreground">{customers.length}</div>
             <p className="text-xs text-muted-foreground">
-              +{customers.filter(c => c.status === "active").length} active
+              <span className="text-green-600">+12%</span> from last month
             </p>
           </CardContent>
         </Card>
-        
-        <Card>
+        <Card className="shadow-sm">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Open Tickets</CardTitle>
+            <CardTitle className="text-sm font-medium text-card-foreground">Active Customers</CardTitle>
+            <CheckCircle className="h-4 w-4 text-muted-foreground" />
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold text-foreground">
+              {customers.filter(c => c.status === "active").length}
+            </div>
+            <p className="text-xs text-muted-foreground">
+              <span className="text-green-600">+8%</span> retention rate
+            </p>
+          </CardContent>
+        </Card>
+        <Card className="shadow-sm">
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium text-card-foreground">Open Tickets</CardTitle>
             <MessageSquare className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">
-              {tickets.filter(t => t.status === "open" || t.status === "in_progress").length}
+            <div className="text-2xl font-bold text-foreground">
+              {tickets.filter(t => t.status === "open").length}
             </div>
             <p className="text-xs text-muted-foreground">
-              {tickets.filter(t => t.priority === "urgent").length} urgent
+              <span className="text-red-600">+3</span> from yesterday
             </p>
           </CardContent>
         </Card>
-        
-        <Card>
+        <Card className="shadow-sm">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Total Revenue</CardTitle>
-            <DollarSign className="h-4 w-4 text-muted-foreground" />
+            <CardTitle className="text-sm font-medium text-card-foreground">Avg Satisfaction</CardTitle>
+            <Star className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">
-              {formatCurrency(customers.reduce((sum, c) => sum + c.totalSpent, 0))}
+            <div className="text-2xl font-bold text-foreground">
+              {customers.filter(c => c.satisfaction > 0).length > 0 
+                ? (customers.filter(c => c.satisfaction > 0).reduce((acc, c) => acc + c.satisfaction, 0) / customers.filter(c => c.satisfaction > 0).length).toFixed(1)
+                : "0.0"
+              }
             </div>
             <p className="text-xs text-muted-foreground">
-              from {customers.length} customers
-            </p>
-          </CardContent>
-        </Card>
-        
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Avg. Response Time</CardTitle>
-            <TrendingUp className="h-4 w-4 text-muted-foreground" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">2.4h</div>
-            <p className="text-xs text-muted-foreground">
-              -15% from last month
+              <span className="text-green-600">+0.2</span> from last month
             </p>
           </CardContent>
         </Card>
       </div>
 
-      {/* Customers Section */}
-      <Card>
-        <CardHeader>
-          <CardTitle>Customers</CardTitle>
-          <CardDescription>
-            Manage customer profiles and information
-          </CardDescription>
-        </CardHeader>
-        <CardContent>
-          <div className="flex flex-col md:flex-row gap-4 mb-6">
-            <div className="relative flex-1">
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4" />
-              <Input
-                placeholder="Search customers..."
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                className="pl-10"
-              />
-            </div>
-            
-            <select
-              value={statusFilter}
-              onChange={(e) => setStatusFilter(e.target.value)}
-              className="px-3 py-2 border border-input bg-background rounded-md text-sm"
-            >
-              <option value="all">All Status</option>
-              <option value="active">Active</option>
-              <option value="inactive">Inactive</option>
-              <option value="pending">Pending</option>
-            </select>
-          </div>
+      {/* CRM Tabs */}
+      <Tabs defaultValue="customers" className="space-y-4">
+        <TabsList className="grid w-full grid-cols-3">
+          <TabsTrigger value="customers">Customer Profiles</TabsTrigger>
+          <TabsTrigger value="tickets">Ticket Management</TabsTrigger>
+          <TabsTrigger value="communication">Communication History</TabsTrigger>
+        </TabsList>
 
-          <div className="space-y-4">
-            {filteredCustomers.map((customer) => (
-              <div key={customer._id} className="flex items-center justify-between p-4 border rounded-lg hover:bg-muted/50 transition-colors">
-                <div className="flex items-center space-x-4">
-                  <div className="w-10 h-10 rounded-full bg-primary flex items-center justify-center">
-                    <span className="text-primary-foreground font-medium">
-                      {customer.firstName.charAt(0).toUpperCase()}
-                    </span>
-                  </div>
-                  <div>
-                    <p className="font-medium">{customer.firstName} {customer.lastName}</p>
-                    <p className="text-sm text-muted-foreground">{customer.email}</p>
-                    <div className="flex items-center space-x-2 mt-1">
-                      <Badge variant={getStatusColor(customer.status) as any}>
-                        {customer.status}
-                      </Badge>
-                      <span className="text-xs text-muted-foreground">
-                        {formatCurrency(customer.totalSpent)} spent
-                      </span>
-                    </div>
+        <TabsContent value="customers" className="space-y-4">
+          <Card className="shadow-sm">
+            <CardHeader>
+              <CardTitle className="text-card-foreground">Customer Profiles</CardTitle>
+              <CardDescription>Manage customer information and relationships</CardDescription>
+            </CardHeader>
+            <CardContent>
+              {/* Filters */}
+              <div className="flex items-center space-x-4 mb-6">
+                <div className="flex-1">
+                  <div className="relative">
+                    <Search className="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground" />
+                    <Input
+                      placeholder="Search customers..."
+                      value={searchQuery}
+                      onChange={(e) => setSearchQuery(e.target.value)}
+                      className="pl-8"
+                    />
                   </div>
                 </div>
-                
-                <div className="flex items-center space-x-4">
-                  <div className="text-right text-sm text-muted-foreground">
-                    <p>Joined {formatDate(customer.createdAt)}</p>
-                    <p>Last order {formatRelativeTime(customer.lastOrderDate)}</p>
+                <Select value={statusFilter} onValueChange={setStatusFilter}>
+                  <SelectTrigger className="w-[180px]">
+                    <SelectValue placeholder="Filter by status" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="all">All Status</SelectItem>
+                    <SelectItem value="active">Active</SelectItem>
+                    <SelectItem value="prospect">Prospect</SelectItem>
+                    <SelectItem value="inactive">Inactive</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+
+              {/* Customer Table */}
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead>Customer</TableHead>
+                    <TableHead>Company</TableHead>
+                    <TableHead>Status</TableHead>
+                    <TableHead>Total Spent</TableHead>
+                    <TableHead>Satisfaction</TableHead>
+                    <TableHead>Last Contact</TableHead>
+                    <TableHead className="text-right">Actions</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {filteredCustomers.map((customer) => (
+                    <TableRow key={customer.id}>
+                      <TableCell>
+                        <div className="flex items-center space-x-3">
+                          <div className="w-8 h-8 rounded-full bg-primary flex items-center justify-center">
+                            <User className="h-4 w-4 text-primary-foreground" />
+                          </div>
+                          <div>
+                            <p className="text-sm font-medium text-foreground">{customer.name}</p>
+                            <p className="text-xs text-muted-foreground">{customer.email}</p>
+                          </div>
+                        </div>
+                      </TableCell>
+                      <TableCell>
+                        <div className="flex items-center space-x-2">
+                          <Building2 className="h-3 w-3 text-muted-foreground" />
+                          <span className="text-sm text-muted-foreground">{customer.company || "N/A"}</span>
+                        </div>
+                      </TableCell>
+                      <TableCell>
+                        <Badge className={getStatusColor(customer.status)}>
+                          {customer.status}
+                        </Badge>
+                      </TableCell>
+                      <TableCell>
+                        <span className="text-sm font-medium text-foreground">
+                          EGP {customer.totalSpent.toLocaleString()}
+                        </span>
+                      </TableCell>
+                      <TableCell>
+                        <div className="flex items-center space-x-1">
+                          <Star className="h-3 w-3 text-yellow-500" />
+                          <span className="text-sm text-muted-foreground">
+                            {customer.satisfaction > 0 ? customer.satisfaction.toFixed(1) : "N/A"}
+                          </span>
+                        </div>
+                      </TableCell>
+                      <TableCell>
+                        <span className="text-sm text-muted-foreground">
+                          {formatRelativeTime(customer.lastContact)}
+                        </span>
+                      </TableCell>
+                      <TableCell className="text-right">
+                        <DropdownMenu>
+                          <DropdownMenuTrigger asChild>
+                            <Button variant="ghost" className="h-8 w-8 p-0">
+                              <MoreHorizontal className="h-4 w-4" />
+                            </Button>
+                          </DropdownMenuTrigger>
+                          <DropdownMenuContent align="end">
+                            <DropdownMenuLabel>Actions</DropdownMenuLabel>
+                            <DropdownMenuItem>
+                              <User className="mr-2 h-4 w-4" />
+                              View Profile
+                            </DropdownMenuItem>
+                            <DropdownMenuItem>
+                              <MessageSquare className="mr-2 h-4 w-4" />
+                              Send Message
+                            </DropdownMenuItem>
+                            <DropdownMenuItem>
+                              <Phone className="mr-2 h-4 w-4" />
+                              Call Customer
+                            </DropdownMenuItem>
+                            <DropdownMenuSeparator />
+                            <DropdownMenuItem>
+                              <Calendar className="mr-2 h-4 w-4" />
+                              Schedule Meeting
+                            </DropdownMenuItem>
+                            <DropdownMenuItem>
+                              <Activity className="mr-2 h-4 w-4" />
+                              View Activity
+                            </DropdownMenuItem>
+                          </DropdownMenuContent>
+                        </DropdownMenu>
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </CardContent>
+          </Card>
+        </TabsContent>
+
+        <TabsContent value="tickets" className="space-y-4">
+          <Card className="shadow-sm">
+            <CardHeader>
+              <CardTitle className="text-card-foreground">Support Tickets</CardTitle>
+              <CardDescription>Manage customer support requests and issues</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead>Ticket</TableHead>
+                    <TableHead>Customer</TableHead>
+                    <TableHead>Status</TableHead>
+                    <TableHead>Priority</TableHead>
+                    <TableHead>Assigned To</TableHead>
+                    <TableHead>Created</TableHead>
+                    <TableHead className="text-right">Actions</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {tickets.map((ticket) => (
+                    <TableRow key={ticket.id}>
+                      <TableCell>
+                        <div>
+                          <p className="text-sm font-medium text-foreground">{ticket.title}</p>
+                          <p className="text-xs text-muted-foreground line-clamp-1">{ticket.description}</p>
+                        </div>
+                      </TableCell>
+                      <TableCell>
+                        <span className="text-sm text-muted-foreground">{ticket.customer}</span>
+                      </TableCell>
+                      <TableCell>
+                        <Badge className={getTicketStatusColor(ticket.status)}>
+                          {ticket.status}
+                        </Badge>
+                      </TableCell>
+                      <TableCell>
+                        <Badge className={getPriorityColor(ticket.priority)}>
+                          {ticket.priority}
+                        </Badge>
+                      </TableCell>
+                      <TableCell>
+                        <span className="text-sm text-muted-foreground">{ticket.assignedTo}</span>
+                      </TableCell>
+                      <TableCell>
+                        <span className="text-sm text-muted-foreground">
+                          {formatRelativeTime(ticket.createdAt)}
+                        </span>
+                      </TableCell>
+                      <TableCell className="text-right">
+                        <DropdownMenu>
+                          <DropdownMenuTrigger asChild>
+                            <Button variant="ghost" className="h-8 w-8 p-0">
+                              <MoreHorizontal className="h-4 w-4" />
+                            </Button>
+                          </DropdownMenuTrigger>
+                          <DropdownMenuContent align="end">
+                            <DropdownMenuLabel>Actions</DropdownMenuLabel>
+                            <DropdownMenuItem>
+                              <MessageSquare className="mr-2 h-4 w-4" />
+                              View Details
+                            </DropdownMenuItem>
+                            <DropdownMenuItem>
+                              <User className="mr-2 h-4 w-4" />
+                              Assign to Me
+                            </DropdownMenuItem>
+                            <DropdownMenuSeparator />
+                            <DropdownMenuItem>
+                              <CheckCircle className="mr-2 h-4 w-4" />
+                              Mark as Resolved
+                            </DropdownMenuItem>
+                            <DropdownMenuItem className="text-red-600">
+                              <AlertTriangle className="mr-2 h-4 w-4" />
+                              Escalate
+                            </DropdownMenuItem>
+                          </DropdownMenuContent>
+                        </DropdownMenu>
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </CardContent>
+          </Card>
+        </TabsContent>
+
+        <TabsContent value="communication" className="space-y-4">
+          <Card className="shadow-sm">
+            <CardHeader>
+              <CardTitle className="text-card-foreground">Communication History</CardTitle>
+              <CardDescription>Timeline of all customer interactions</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-4">
+                <div className="flex items-start space-x-3 p-4 rounded-lg bg-muted/50">
+                  <div className="w-2 h-2 rounded-full bg-primary mt-2"></div>
+                  <div className="flex-1">
+                    <div className="flex items-center justify-between">
+                      <p className="text-sm font-medium text-foreground">Phone Call - Ahmed Hassan</p>
+                      <span className="text-xs text-muted-foreground">2 hours ago</span>
+                    </div>
+                    <p className="text-xs text-muted-foreground mt-1">
+                      Discussed fleet management features and pricing options
+                    </p>
                   </div>
-                  
-                  <DropdownMenu>
-                    <DropdownMenuTrigger asChild>
-                      <Button variant="ghost" size="icon">
-                        <MoreHorizontal className="h-4 w-4" />
-                      </Button>
-                    </DropdownMenuTrigger>
-                    <DropdownMenuContent align="end">
-                      <DropdownMenuLabel>Actions</DropdownMenuLabel>
-                      <DropdownMenuSeparator />
-                      <DropdownMenuItem>
-                        <Mail className="mr-2 h-4 w-4" />
-                        Send Email
-                      </DropdownMenuItem>
-                      <DropdownMenuItem>
-                        <Phone className="mr-2 h-4 w-4" />
-                        Call Customer
-                      </DropdownMenuItem>
-                      <DropdownMenuItem>
-                        <Calendar className="mr-2 h-4 w-4" />
-                        View Orders
-                      </DropdownMenuItem>
-                      <DropdownMenuSeparator />
-                      {customer.status === "active" ? (
-                        <DropdownMenuItem 
-                          onClick={() => handleCustomerAction(customer._id, "deactivate")}
-                          className="text-yellow-600"
-                        >
-                          <UserCheck className="mr-2 h-4 w-4" />
-                          Deactivate
-                        </DropdownMenuItem>
-                      ) : (
-                        <DropdownMenuItem 
-                          onClick={() => handleCustomerAction(customer._id, "activate")}
-                          className="text-green-600"
-                        >
-                          <UserCheck className="mr-2 h-4 w-4" />
-                          Activate
-                        </DropdownMenuItem>
-                      )}
-                    </DropdownMenuContent>
-                  </DropdownMenu>
+                </div>
+                <div className="flex items-start space-x-3 p-4 rounded-lg bg-muted/50">
+                  <div className="w-2 h-2 rounded-full bg-blue-500 mt-2"></div>
+                  <div className="flex-1">
+                    <div className="flex items-center justify-between">
+                      <p className="text-sm font-medium text-foreground">Email - Fatma Mohamed</p>
+                      <span className="text-xs text-muted-foreground">1 day ago</span>
+                    </div>
+                    <p className="text-xs text-muted-foreground mt-1">
+                      Sent monthly usage report and recommendations
+                    </p>
+                  </div>
+                </div>
+                <div className="flex items-start space-x-3 p-4 rounded-lg bg-muted/50">
+                  <div className="w-2 h-2 rounded-full bg-green-500 mt-2"></div>
+                  <div className="flex-1">
+                    <div className="flex items-center justify-between">
+                      <p className="text-sm font-medium text-foreground">Meeting - Omar Ali</p>
+                      <span className="text-xs text-muted-foreground">3 days ago</span>
+                    </div>
+                    <p className="text-xs text-muted-foreground mt-1">
+                      Product demo and onboarding session completed
+                    </p>
+                  </div>
                 </div>
               </div>
-            ))}
-          </div>
-
-          {filteredCustomers.length === 0 && (
-            <div className="text-center py-8">
-              <Users className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
-              <p className="text-muted-foreground">No customers found matching your criteria</p>
-            </div>
-          )}
-        </CardContent>
-      </Card>
-
-      {/* Support Tickets Section */}
-      <Card>
-        <CardHeader>
-          <CardTitle>Support Tickets</CardTitle>
-          <CardDescription>
-            Manage customer support requests and issues
-          </CardDescription>
-        </CardHeader>
-        <CardContent>
-          <div className="space-y-4">
-            {filteredTickets.map((ticket) => (
-              <div key={ticket._id} className="flex items-center justify-between p-4 border rounded-lg hover:bg-muted/50 transition-colors">
-                <div className="flex items-center space-x-4">
-                  <div className="w-10 h-10 rounded-full bg-muted flex items-center justify-center">
-                    <MessageSquare className="h-5 w-5" />
-                  </div>
-                  <div>
-                    <p className="font-medium">{ticket.subject}</p>
-                    <p className="text-sm text-muted-foreground">by {ticket.customerName}</p>
-                    <div className="flex items-center space-x-2 mt-1">
-                      <Badge variant={getStatusColor(ticket.status) as any}>
-                        {ticket.status}
-                      </Badge>
-                      <Badge variant={getPriorityColor(ticket.priority) as any}>
-                        {ticket.priority}
-                      </Badge>
-                      <span className="text-xs text-muted-foreground">
-                        {ticket.category}
-                      </span>
-                    </div>
-                  </div>
-                </div>
-                
-                <div className="flex items-center space-x-4">
-                  <div className="text-right text-sm text-muted-foreground">
-                    <p>Created {formatDate(ticket.createdAt)}</p>
-                    <p>Updated {formatRelativeTime(ticket.updatedAt)}</p>
-                    {ticket.assignedTo && (
-                      <p>Assigned to {ticket.assignedTo}</p>
-                    )}
-                  </div>
-                  
-                  <DropdownMenu>
-                    <DropdownMenuTrigger asChild>
-                      <Button variant="ghost" size="icon">
-                        <MoreHorizontal className="h-4 w-4" />
-                      </Button>
-                    </DropdownMenuTrigger>
-                    <DropdownMenuContent align="end">
-                      <DropdownMenuLabel>Actions</DropdownMenuLabel>
-                      <DropdownMenuSeparator />
-                      <DropdownMenuItem>
-                        <MessageSquare className="mr-2 h-4 w-4" />
-                        View Details
-                      </DropdownMenuItem>
-                      <DropdownMenuItem>
-                        <Mail className="mr-2 h-4 w-4" />
-                        Reply
-                      </DropdownMenuItem>
-                      <DropdownMenuSeparator />
-                      <DropdownMenuItem 
-                        onClick={() => handleTicketAction(ticket._id, "assign")}
-                        className="text-blue-600"
-                      >
-                        <UserCheck className="mr-2 h-4 w-4" />
-                        Assign to Me
-                      </DropdownMenuItem>
-                      <DropdownMenuItem 
-                        onClick={() => handleTicketAction(ticket._id, "resolve")}
-                        className="text-green-600"
-                      >
-                        <CheckCircle className="mr-2 h-4 w-4" />
-                        Mark Resolved
-                      </DropdownMenuItem>
-                      <DropdownMenuItem 
-                        onClick={() => handleTicketAction(ticket._id, "close")}
-                        className="text-gray-600"
-                      >
-                        Close Ticket
-                      </DropdownMenuItem>
-                    </DropdownMenuContent>
-                  </DropdownMenu>
-                </div>
-              </div>
-            ))}
-          </div>
-
-          {filteredTickets.length === 0 && (
-            <div className="text-center py-8">
-              <MessageSquare className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
-              <p className="text-muted-foreground">No support tickets found matching your criteria</p>
-            </div>
-          )}
-        </CardContent>
-      </Card>
+            </CardContent>
+          </Card>
+        </TabsContent>
+      </Tabs>
     </div>
   );
 }

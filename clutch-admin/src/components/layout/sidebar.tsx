@@ -41,12 +41,12 @@ export function Sidebar({ isCollapsed, onToggle }: SidebarProps) {
   return (
     <div
       className={cn(
-        "flex flex-col h-full bg-sidebar border-r transition-all duration-300",
+        "flex flex-col h-full bg-sidebar border-r border-border transition-all duration-300 font-sans",
         isCollapsed ? "w-16" : "w-64"
       )}
     >
       {/* Logo */}
-      <div className="flex items-center justify-center h-16 px-4 border-b">
+      <div className="flex items-center justify-center h-16 px-4 border-b border-border">
         {isCollapsed ? (
           <Image
             src="/logos/Logored.png"
@@ -56,7 +56,7 @@ export function Sidebar({ isCollapsed, onToggle }: SidebarProps) {
             className="object-contain"
           />
         ) : (
-          <div className="flex items-center space-x-2">
+          <div className="flex items-center space-x-3">
             <Image
               src="/logos/Logored.png"
               alt="Clutch"
@@ -64,7 +64,7 @@ export function Sidebar({ isCollapsed, onToggle }: SidebarProps) {
               height={32}
               className="object-contain"
             />
-            <span className="text-xl font-bold text-sidebar-primary">Clutch Admin</span>
+            <span className="text-xl font-bold text-sidebar-primary font-sans">Clutch Admin</span>
           </div>
         )}
       </div>
@@ -84,9 +84,9 @@ export function Sidebar({ isCollapsed, onToggle }: SidebarProps) {
               <div key={item.title}>
                 <div
                   className={cn(
-                    "flex items-center px-3 py-2 text-sm font-medium rounded-md cursor-pointer transition-colors",
+                    "flex items-center px-3 py-2 text-sm font-medium rounded-lg cursor-pointer transition-colors font-sans",
                     isActive
-                      ? "bg-sidebar-primary text-white"
+                      ? "bg-sidebar-primary text-white shadow-sm"
                       : "text-sidebar-primary hover:bg-sidebar-primary/10",
                     isCollapsed && "justify-center"
                   )}
@@ -123,9 +123,9 @@ export function Sidebar({ isCollapsed, onToggle }: SidebarProps) {
                           key={child.href}
                           href={child.href}
                           className={cn(
-                            "block px-3 py-2 text-sm rounded-md transition-colors",
+                            "block px-3 py-2 text-sm rounded-lg transition-colors font-sans",
                             isChildActive
-                              ? "bg-sidebar-primary text-white"
+                              ? "bg-sidebar-primary text-white shadow-sm"
                               : "text-sidebar-primary hover:bg-sidebar-primary/10"
                           )}
                         >
@@ -142,10 +142,10 @@ export function Sidebar({ isCollapsed, onToggle }: SidebarProps) {
       </nav>
 
       {/* Toggle Button */}
-      <div className="p-4 border-t">
+      <div className="p-4 border-t border-border">
         <button
           onClick={onToggle}
-          className="w-full flex items-center justify-center px-3 py-2 text-sm font-medium text-sidebar-primary hover:bg-sidebar-primary/10 rounded-md transition-colors"
+          className="w-full flex items-center justify-center px-3 py-2 text-sm font-medium text-sidebar-primary hover:bg-sidebar-primary/10 rounded-lg transition-colors font-sans"
         >
           {isCollapsed ? (
             <ChevronRight className="w-4 h-4" />

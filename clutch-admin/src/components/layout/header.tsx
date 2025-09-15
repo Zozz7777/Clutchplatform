@@ -40,14 +40,14 @@ export function Header({ onMenuToggle, isDarkMode, onThemeToggle }: HeaderProps)
   };
 
   return (
-    <header className="h-16 border-b bg-background flex items-center justify-between px-4">
+    <header className="h-16 border-b border-border bg-background flex items-center justify-between px-6 font-sans">
       {/* Left side */}
       <div className="flex items-center space-x-4">
         <Button
           variant="ghost"
           size="icon"
           onClick={onMenuToggle}
-          className="md:hidden"
+          className="md:hidden hover:bg-muted"
         >
           <Menu className="h-5 w-5" />
         </Button>
@@ -59,7 +59,7 @@ export function Header({ onMenuToggle, isDarkMode, onThemeToggle }: HeaderProps)
             placeholder="Search..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="pl-10 w-64"
+            className="pl-10 w-64 h-10"
           />
         </div>
       </div>

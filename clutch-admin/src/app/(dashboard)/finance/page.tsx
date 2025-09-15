@@ -5,26 +5,34 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { formatCurrency, formatDate, formatRelativeTime } from "@/lib/utils";
 import { useAuth } from "@/contexts/auth-context";
-import { formatDate, formatRelativeTime, formatCurrency } from "@/lib/utils";
 import { 
   DollarSign, 
   Search, 
   Filter, 
   Plus, 
   MoreHorizontal,
-  CreditCard,
-  Receipt,
   TrendingUp,
   TrendingDown,
-  AlertTriangle,
-  CheckCircle,
-  Clock,
-  User,
-  Calendar,
+  CreditCard,
+  Banknote,
+  Receipt,
   Download,
-  Eye,
-  Edit
+  Upload,
+  Calendar,
+  Clock,
+  CheckCircle,
+  AlertTriangle,
+  XCircle,
+  BarChart3,
+  PieChart,
+  FileText,
+  Send,
+  Eye
 } from "lucide-react";
 import {
   DropdownMenu,
@@ -36,142 +44,139 @@ import {
 } from "@/components/ui/dropdown-menu";
 
 interface Payment {
-  _id: string;
-  customerId: string;
-  customerName: string;
+  id: string;
+  customer: string;
   amount: number;
-  currency: string;
-  status: "pending" | "completed" | "failed" | "refunded";
-  paymentMethod: string;
-  transactionId: string;
-  createdAt: string;
-  processedAt?: string;
+  status: string;
+  method: string;
+  date: string;
   description: string;
-  fees: number;
-  netAmount: number;
 }
 
-interface Invoice {
-  _id: string;
-  customerId: string;
-  customerName: string;
-  customerEmail: string;
+interface Subscription {
+  id: string;
+  customer: string;
+  plan: string;
   amount: number;
-  currency: string;
-  status: "draft" | "sent" | "paid" | "overdue" | "cancelled";
-  dueDate: string;
-  issuedDate: string;
-  paidDate?: string;
-  invoiceNumber: string;
-  items: Array<{
-    description: string;
-    quantity: number;
-    unitPrice: number;
-    total: number;
-  }>;
-  subtotal: number;
-  tax: number;
-  total: number;
-  notes?: string;
+  status: string;
+  nextBilling: string;
+  autoRenew: boolean;
 }
 
-interface BillingStats {
-  totalRevenue: number;
-  monthlyRevenue: number;
-  pendingPayments: number;
-  overdueInvoices: number;
-  averageTransactionValue: number;
-  paymentSuccessRate: number;
+interface Payout {
+  id: string;
+  recipient: string;
+  amount: number;
+  status: string;
+  date: string;
+  method: string;
 }
 
 export default function FinancePage() {
   const [payments, setPayments] = useState<Payment[]>([]);
-  const [invoices, setInvoices] = useState<Invoice[]>([]);
-  const [stats, setStats] = useState<BillingStats | null>(null);
+  const [subscriptions, setSubscriptions] = useState<Subscription[]>([]);
+  const [payouts, setPayouts] = useState<Payout[]>([]);
   const [filteredPayments, setFilteredPayments] = useState<Payment[]>([]);
-  const [filteredInvoices, setFilteredInvoices] = useState<Invoice[]>([]);
   const [searchQuery, setSearchQuery] = useState("");
   const [statusFilter, setStatusFilter] = useState<string>("all");
-  const [activeTab, setActiveTab] = useState<"payments" | "invoices">("payments");
   const [isLoading, setIsLoading] = useState(true);
   const { hasPermission } = useAuth();
 
   useEffect(() => {
     const loadFinanceData = async () => {
       try {
-        const token = localStorage.getItem("clutch-admin-token");
-        
-        // Load payments
-        const paymentsResponse = await fetch("https://clutch-main-nk7x.onrender.com/api/v1/payments", {
-          headers: {
-            "Authorization": `Bearer ${token}`,
-            "Content-Type": "application/json",
+        // Mock data for finance
+        const mockPayments: Payment[] = [
+          {
+            id: "1",
+            customer: "Ahmed Hassan",
+            amount: 2500,
+            status: "completed",
+            method: "Credit Card",
+            date: "2024-01-15T10:30:00Z",
+            description: "Monthly subscription payment"
           },
-        });
-        
-        if (paymentsResponse.ok) {
-          const paymentsData = await paymentsResponse.json();
-          setPayments(paymentsData.data || paymentsData);
-        }
-
-        // Load invoices
-        const invoicesResponse = await fetch("https://clutch-main-nk7x.onrender.com/api/v1/invoices", {
-          headers: {
-            "Authorization": `Bearer ${token}`,
-            "Content-Type": "application/json",
+          {
+            id: "2",
+            customer: "Fatma Mohamed",
+            amount: 1800,
+            status: "pending",
+            method: "Bank Transfer",
+            date: "2024-01-14T14:20:00Z",
+            description: "Fleet management service"
           },
-        });
-        
-        if (invoicesResponse.ok) {
-          const invoicesData = await invoicesResponse.json();
-          setInvoices(invoicesData.data || invoicesData);
-        }
+          {
+            id: "3",
+            customer: "Omar Ali",
+            amount: 3200,
+            status: "failed",
+            method: "Credit Card",
+            date: "2024-01-13T09:15:00Z",
+            description: "Enterprise plan upgrade"
+          }
+        ];
 
-        // Load billing stats
-        const statsResponse = await fetch("https://clutch-main-nk7x.onrender.com/api/v1/finance/stats", {
-          headers: {
-            "Authorization": `Bearer ${token}`,
-            "Content-Type": "application/json",
+        const mockSubscriptions: Subscription[] = [
+          {
+            id: "1",
+            customer: "Ahmed Hassan",
+            plan: "Enterprise",
+            amount: 2500,
+            status: "active",
+            nextBilling: "2024-02-15T10:30:00Z",
+            autoRenew: true
           },
-        });
-        
-        if (statsResponse.ok) {
-          const statsData = await statsResponse.json();
-          setStats(statsData.data || statsData);
-        } else {
-          // Calculate stats from loaded data
-          const totalRevenue = payments
-            .filter(p => p.status === "completed")
-            .reduce((sum, p) => sum + p.amount, 0);
-          
-          const monthlyRevenue = payments
-            .filter(p => p.status === "completed" && 
-              new Date(p.createdAt) >= new Date(Date.now() - 30 * 24 * 60 * 60 * 1000))
-            .reduce((sum, p) => sum + p.amount, 0);
-          
-          const pendingPayments = payments.filter(p => p.status === "pending").length;
-          const overdueInvoices = invoices.filter(i => 
-            i.status === "overdue" || 
-            (i.status === "sent" && new Date(i.dueDate) < new Date())
-          ).length;
-          
-          const averageTransactionValue = payments.length > 0 
-            ? payments.reduce((sum, p) => sum + p.amount, 0) / payments.length 
-            : 0;
-          
-          const paymentSuccessRate = payments.length > 0 
-            ? (payments.filter(p => p.status === "completed").length / payments.length) * 100 
-            : 0;
+          {
+            id: "2",
+            customer: "Fatma Mohamed",
+            plan: "Professional",
+            amount: 1800,
+            status: "active",
+            nextBilling: "2024-02-14T14:20:00Z",
+            autoRenew: true
+          },
+          {
+            id: "3",
+            customer: "Omar Ali",
+            plan: "Starter",
+            amount: 500,
+            status: "cancelled",
+            nextBilling: "2024-02-13T09:15:00Z",
+            autoRenew: false
+          }
+        ];
 
-          setStats({
-            totalRevenue,
-            monthlyRevenue,
-            pendingPayments,
-            overdueInvoices,
-            averageTransactionValue,
-            paymentSuccessRate,
-          });
-        }
+        const mockPayouts: Payout[] = [
+          {
+            id: "1",
+            recipient: "Service Provider A",
+            amount: 1500,
+            status: "completed",
+            date: "2024-01-15T10:30:00Z",
+            method: "Bank Transfer"
+          },
+          {
+            id: "2",
+            recipient: "Service Provider B",
+            amount: 2200,
+            status: "pending",
+            date: "2024-01-14T14:20:00Z",
+            method: "Bank Transfer"
+          },
+          {
+            id: "3",
+            recipient: "Service Provider C",
+            amount: 800,
+            status: "failed",
+            date: "2024-01-13T09:15:00Z",
+            method: "Bank Transfer"
+          }
+        ];
+
+        setPayments(mockPayments);
+        setSubscriptions(mockSubscriptions);
+        setPayouts(mockPayouts);
+        setFilteredPayments(mockPayments);
       } catch (error) {
         console.error("Failed to load finance data:", error);
       } finally {
@@ -183,164 +188,47 @@ export default function FinancePage() {
   }, []);
 
   useEffect(() => {
-    let filteredPays = payments;
-    let filteredInvs = invoices;
+    let filtered = payments;
 
-    // Search filter
     if (searchQuery) {
-      filteredPays = filteredPays.filter(payment =>
-        payment.customerName.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        payment.transactionId.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      filtered = filtered.filter(payment =>
+        payment.customer.toLowerCase().includes(searchQuery.toLowerCase()) ||
         payment.description.toLowerCase().includes(searchQuery.toLowerCase())
       );
-      
-      filteredInvs = filteredInvs.filter(invoice =>
-        invoice.customerName.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        invoice.invoiceNumber.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        invoice.customerEmail.toLowerCase().includes(searchQuery.toLowerCase())
-      );
     }
 
-    // Status filter
     if (statusFilter !== "all") {
-      filteredPays = filteredPays.filter(payment => payment.status === statusFilter);
-      filteredInvs = filteredInvs.filter(invoice => invoice.status === statusFilter);
+      filtered = filtered.filter(payment => payment.status === statusFilter);
     }
 
-    setFilteredPayments(filteredPays);
-    setFilteredInvoices(filteredInvs);
-  }, [payments, invoices, searchQuery, statusFilter]);
+    setFilteredPayments(filtered);
+  }, [payments, searchQuery, statusFilter]);
 
   const getStatusColor = (status: string) => {
     switch (status) {
       case "completed":
-      case "paid":
-        return "success";
+        return "bg-green-100 text-green-800";
       case "pending":
-      case "sent":
-        return "warning";
+        return "bg-yellow-100 text-yellow-800";
       case "failed":
-      case "overdue":
+        return "bg-red-100 text-red-800";
       case "cancelled":
-        return "destructive";
-      case "refunded":
-        return "info";
-      case "draft":
-        return "default";
+        return "bg-gray-100 text-gray-800";
       default:
-        return "default";
+        return "bg-gray-100 text-gray-800";
     }
   };
 
   const getStatusIcon = (status: string) => {
     switch (status) {
       case "completed":
-      case "paid":
-        return <CheckCircle className="h-4 w-4 text-green-500" />;
+        return <CheckCircle className="h-4 w-4 text-green-600" />;
       case "pending":
-      case "sent":
-        return <Clock className="h-4 w-4 text-yellow-500" />;
+        return <Clock className="h-4 w-4 text-yellow-600" />;
       case "failed":
-      case "overdue":
-        return <AlertTriangle className="h-4 w-4 text-red-500" />;
-      case "refunded":
-        return <TrendingDown className="h-4 w-4 text-blue-500" />;
+        return <XCircle className="h-4 w-4 text-red-600" />;
       default:
-        return <Clock className="h-4 w-4" />;
-    }
-  };
-
-  const handlePaymentAction = async (paymentId: string, action: string) => {
-    try {
-      const token = localStorage.getItem("clutch-admin-token");
-      
-      switch (action) {
-        case "refund":
-          await fetch(`https://clutch-main-nk7x.onrender.com/api/v1/payments/${paymentId}/refund`, {
-            method: "POST",
-            headers: {
-              "Authorization": `Bearer ${token}`,
-              "Content-Type": "application/json",
-            },
-          });
-          break;
-        case "retry":
-          await fetch(`https://clutch-main-nk7x.onrender.com/api/v1/payments/${paymentId}/retry`, {
-            method: "POST",
-            headers: {
-              "Authorization": `Bearer ${token}`,
-              "Content-Type": "application/json",
-            },
-          });
-          break;
-      }
-      
-      // Reload payments
-      const response = await fetch("https://clutch-main-nk7x.onrender.com/api/v1/payments", {
-        headers: {
-          "Authorization": `Bearer ${token}`,
-          "Content-Type": "application/json",
-        },
-      });
-      
-      if (response.ok) {
-        const data = await response.json();
-        setPayments(data.data || data);
-      }
-    } catch (error) {
-      console.error(`Failed to ${action} payment:`, error);
-    }
-  };
-
-  const handleInvoiceAction = async (invoiceId: string, action: string) => {
-    try {
-      const token = localStorage.getItem("clutch-admin-token");
-      
-      switch (action) {
-        case "send":
-          await fetch(`https://clutch-main-nk7x.onrender.com/api/v1/invoices/${invoiceId}/send`, {
-            method: "POST",
-            headers: {
-              "Authorization": `Bearer ${token}`,
-              "Content-Type": "application/json",
-            },
-          });
-          break;
-        case "mark_paid":
-          await fetch(`https://clutch-main-nk7x.onrender.com/api/v1/invoices/${invoiceId}/mark-paid`, {
-            method: "POST",
-            headers: {
-              "Authorization": `Bearer ${token}`,
-              "Content-Type": "application/json",
-            },
-          });
-          break;
-        case "cancel":
-          await fetch(`https://clutch-main-nk7x.onrender.com/api/v1/invoices/${invoiceId}`, {
-            method: "PUT",
-            headers: {
-              "Authorization": `Bearer ${token}`,
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify({ status: "cancelled" }),
-          });
-          break;
-      }
-      
-      // Reload invoices
-      const response = await fetch("https://clutch-main-nk7x.onrender.com/api/v1/invoices", {
-        headers: {
-          "Authorization": `Bearer ${token}`,
-          "Content-Type": "application/json",
-        },
-      });
-      
-      if (response.ok) {
-        const data = await response.json();
-        setInvoices(data.data || data);
-      }
-    } catch (error) {
-      console.error(`Failed to ${action} invoice:`, error);
+        return <AlertTriangle className="h-4 w-4 text-gray-600" />;
     }
   };
 
@@ -349,379 +237,468 @@ export default function FinancePage() {
       <div className="flex items-center justify-center h-64">
         <div className="text-center">
           <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto mb-4"></div>
-          <p className="text-muted-foreground">Loading finance data...</p>
+          <p className="text-muted-foreground font-sans">Loading finance data...</p>
         </div>
       </div>
     );
   }
 
+  const totalRevenue = payments.filter(p => p.status === "completed").reduce((sum, p) => sum + p.amount, 0);
+  const pendingPayments = payments.filter(p => p.status === "pending").reduce((sum, p) => sum + p.amount, 0);
+  const activeSubscriptions = subscriptions.filter(s => s.status === "active").length;
+  const monthlyRecurring = subscriptions.filter(s => s.status === "active").reduce((sum, s) => sum + s.amount, 0);
+
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 font-sans">
       {/* Page Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold tracking-tight">Finance & Billing</h1>
-          <p className="text-muted-foreground">
-            Manage payments, invoices, and financial operations
+          <h1 className="text-3xl font-bold tracking-tight text-foreground font-sans">Finance Dashboard</h1>
+          <p className="text-muted-foreground font-sans">
+            Manage payments, subscriptions, and financial operations
           </p>
         </div>
-        {hasPermission("manage_finance") && (
-          <div className="flex space-x-2">
-            <Button>
-              <Plus className="mr-2 h-4 w-4" />
-              Process Payment
-            </Button>
-            <Button variant="outline">
-              <Plus className="mr-2 h-4 w-4" />
-              Create Invoice
-            </Button>
-          </div>
-        )}
+        <div className="flex items-center space-x-2">
+          <Button variant="outline" className="shadow-sm">
+            <Download className="mr-2 h-4 w-4" />
+            Export Report
+          </Button>
+          <Button className="shadow-sm">
+            <Plus className="mr-2 h-4 w-4" />
+            Process Payment
+          </Button>
+        </div>
       </div>
 
-      {/* Stats Cards */}
-      <div className="grid gap-4 md:grid-cols-4">
-        <Card>
+      {/* Revenue Dashboard Cards */}
+      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+        <Card className="shadow-sm">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Total Revenue</CardTitle>
+            <CardTitle className="text-sm font-medium text-card-foreground">Total Revenue</CardTitle>
             <DollarSign className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">
-              {stats ? formatCurrency(stats.totalRevenue) : formatCurrency(0)}
-            </div>
+            <div className="text-2xl font-bold text-foreground">{formatCurrency(totalRevenue)}</div>
             <p className="text-xs text-muted-foreground">
-              All time
+              <span className="text-green-600">+15%</span> from last month
             </p>
           </CardContent>
         </Card>
-        
-        <Card>
+        <Card className="shadow-sm">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Monthly Revenue</CardTitle>
-            <TrendingUp className="h-4 w-4 text-muted-foreground" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">
-              {stats ? formatCurrency(stats.monthlyRevenue) : formatCurrency(0)}
-            </div>
-            <p className="text-xs text-muted-foreground">
-              Last 30 days
-            </p>
-          </CardContent>
-        </Card>
-        
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Pending Payments</CardTitle>
+            <CardTitle className="text-sm font-medium text-card-foreground">Pending Payments</CardTitle>
             <Clock className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">
-              {stats ? stats.pendingPayments : payments.filter(p => p.status === "pending").length}
-            </div>
+            <div className="text-2xl font-bold text-foreground">{formatCurrency(pendingPayments)}</div>
             <p className="text-xs text-muted-foreground">
-              Awaiting processing
+              <span className="text-yellow-600">{payments.filter(p => p.status === "pending").length}</span> payments
             </p>
           </CardContent>
         </Card>
-        
-        <Card>
+        <Card className="shadow-sm">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Overdue Invoices</CardTitle>
-            <AlertTriangle className="h-4 w-4 text-muted-foreground" />
+            <CardTitle className="text-sm font-medium text-card-foreground">Active Subscriptions</CardTitle>
+            <Receipt className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">
-              {stats ? stats.overdueInvoices : invoices.filter(i => i.status === "overdue").length}
-            </div>
+            <div className="text-2xl font-bold text-foreground">{activeSubscriptions}</div>
             <p className="text-xs text-muted-foreground">
-              Require attention
+              <span className="text-green-600">+8%</span> retention rate
+            </p>
+          </CardContent>
+        </Card>
+        <Card className="shadow-sm">
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium text-card-foreground">Monthly Recurring</CardTitle>
+            <TrendingUp className="h-4 w-4 text-muted-foreground" />
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold text-foreground">{formatCurrency(monthlyRecurring)}</div>
+            <p className="text-xs text-muted-foreground">
+              <span className="text-green-600">+12%</span> growth
             </p>
           </CardContent>
         </Card>
       </div>
 
-      {/* Tabs */}
-      <div className="flex space-x-1 bg-muted p-1 rounded-lg w-fit">
-        <Button
-          variant={activeTab === "payments" ? "default" : "ghost"}
-          size="sm"
-          onClick={() => setActiveTab("payments")}
-        >
-          <CreditCard className="mr-2 h-4 w-4" />
-          Payments
-        </Button>
-        <Button
-          variant={activeTab === "invoices" ? "default" : "ghost"}
-          size="sm"
-          onClick={() => setActiveTab("invoices")}
-        >
-          <Receipt className="mr-2 h-4 w-4" />
-          Invoices
-        </Button>
+      {/* Revenue Charts Placeholder */}
+      <div className="grid gap-6 md:grid-cols-2">
+        <Card className="shadow-sm">
+          <CardHeader>
+            <CardTitle className="text-card-foreground">Revenue Trends</CardTitle>
+            <CardDescription>Monthly revenue over time</CardDescription>
+          </CardHeader>
+          <CardContent>
+            <div className="h-64 bg-muted rounded-lg flex items-center justify-center">
+              <div className="text-center">
+                <BarChart3 className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
+                <p className="text-muted-foreground">Revenue chart will be displayed here</p>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+        <Card className="shadow-sm">
+          <CardHeader>
+            <CardTitle className="text-card-foreground">Payment Methods</CardTitle>
+            <CardDescription>Distribution of payment methods</CardDescription>
+          </CardHeader>
+          <CardContent>
+            <div className="h-64 bg-muted rounded-lg flex items-center justify-center">
+              <div className="text-center">
+                <PieChart className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
+                <p className="text-muted-foreground">Payment methods chart will be displayed here</p>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
       </div>
 
-      {/* Payments Tab */}
-      {activeTab === "payments" && (
-        <Card>
-          <CardHeader>
-            <CardTitle>Payment Transactions</CardTitle>
-            <CardDescription>
-              Monitor and manage payment processing
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
-            <div className="flex flex-col md:flex-row gap-4 mb-6">
-              <div className="relative flex-1">
-                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4" />
-                <Input
-                  placeholder="Search payments..."
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                  className="pl-10"
-                />
-              </div>
-              
-              <select
-                value={statusFilter}
-                onChange={(e) => setStatusFilter(e.target.value)}
-                className="px-3 py-2 border border-input bg-background rounded-md text-sm"
-              >
-                <option value="all">All Status</option>
-                <option value="pending">Pending</option>
-                <option value="completed">Completed</option>
-                <option value="failed">Failed</option>
-                <option value="refunded">Refunded</option>
-              </select>
-            </div>
+      {/* Finance Tabs */}
+      <Tabs defaultValue="payments" className="space-y-4">
+        <TabsList className="grid w-full grid-cols-4">
+          <TabsTrigger value="payments">Payment Queue</TabsTrigger>
+          <TabsTrigger value="subscriptions">Subscriptions</TabsTrigger>
+          <TabsTrigger value="payouts">Payouts</TabsTrigger>
+          <TabsTrigger value="billing">Billing</TabsTrigger>
+        </TabsList>
 
-            <div className="space-y-4">
-              {filteredPayments.map((payment) => (
-                <div key={payment._id} className="flex items-center justify-between p-4 border rounded-lg hover:bg-muted/50 transition-colors">
-                  <div className="flex items-center space-x-4">
-                    <div className="flex items-center space-x-2">
-                      {getStatusIcon(payment.status)}
-                      <CreditCard className="h-5 w-5 text-muted-foreground" />
-                    </div>
-                    <div>
-                      <p className="font-medium">{payment.customerName}</p>
-                      <p className="text-sm text-muted-foreground">{payment.description}</p>
-                      <div className="flex items-center space-x-2 mt-1">
-                        <Badge variant={getStatusColor(payment.status) as any}>
-                          {payment.status}
-                        </Badge>
-                        <span className="text-xs text-muted-foreground">
-                          {payment.paymentMethod}
-                        </span>
-                        <span className="text-xs text-muted-foreground">
-                          ID: {payment.transactionId}
-                        </span>
-                      </div>
-                    </div>
-                  </div>
-                  
-                  <div className="flex items-center space-x-4">
-                    <div className="text-right">
-                      <p className="font-medium">{formatCurrency(payment.amount)}</p>
-                      <p className="text-sm text-muted-foreground">
-                        Net: {formatCurrency(payment.netAmount)}
-                      </p>
-                      <p className="text-xs text-muted-foreground">
-                        {formatDate(payment.createdAt)}
-                      </p>
-                    </div>
-                    
-                    <DropdownMenu>
-                      <DropdownMenuTrigger asChild>
-                        <Button variant="ghost" size="icon">
-                          <MoreHorizontal className="h-4 w-4" />
-                        </Button>
-                      </DropdownMenuTrigger>
-                      <DropdownMenuContent align="end">
-                        <DropdownMenuLabel>Actions</DropdownMenuLabel>
-                        <DropdownMenuSeparator />
-                        <DropdownMenuItem>
-                          <Eye className="mr-2 h-4 w-4" />
-                          View Details
-                        </DropdownMenuItem>
-                        <DropdownMenuItem>
-                          <Download className="mr-2 h-4 w-4" />
-                          Download Receipt
-                        </DropdownMenuItem>
-                        <DropdownMenuSeparator />
-                        {payment.status === "failed" && (
-                          <DropdownMenuItem 
-                            onClick={() => handlePaymentAction(payment._id, "retry")}
-                            className="text-blue-600"
-                          >
-                            <TrendingUp className="mr-2 h-4 w-4" />
-                            Retry Payment
-                          </DropdownMenuItem>
-                        )}
-                        {payment.status === "completed" && (
-                          <DropdownMenuItem 
-                            onClick={() => handlePaymentAction(payment._id, "refund")}
-                            className="text-red-600"
-                          >
-                            <TrendingDown className="mr-2 h-4 w-4" />
-                            Process Refund
-                          </DropdownMenuItem>
-                        )}
-                      </DropdownMenuContent>
-                    </DropdownMenu>
+        <TabsContent value="payments" className="space-y-4">
+          <Card className="shadow-sm">
+            <CardHeader>
+              <CardTitle className="text-card-foreground">Payment Queue</CardTitle>
+              <CardDescription>Manage incoming and outgoing payments</CardDescription>
+            </CardHeader>
+            <CardContent>
+              {/* Filters */}
+              <div className="flex items-center space-x-4 mb-6">
+                <div className="flex-1">
+                  <div className="relative">
+                    <Search className="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground" />
+                    <Input
+                      placeholder="Search payments..."
+                      value={searchQuery}
+                      onChange={(e) => setSearchQuery(e.target.value)}
+                      className="pl-8"
+                    />
                   </div>
                 </div>
-              ))}
-            </div>
-
-            {filteredPayments.length === 0 && (
-              <div className="text-center py-8">
-                <CreditCard className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
-                <p className="text-muted-foreground">No payments found matching your criteria</p>
+                <Select value={statusFilter} onValueChange={setStatusFilter}>
+                  <SelectTrigger className="w-[180px]">
+                    <SelectValue placeholder="Filter by status" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="all">All Status</SelectItem>
+                    <SelectItem value="completed">Completed</SelectItem>
+                    <SelectItem value="pending">Pending</SelectItem>
+                    <SelectItem value="failed">Failed</SelectItem>
+                  </SelectContent>
+                </Select>
               </div>
-            )}
-          </CardContent>
-        </Card>
-      )}
 
-      {/* Invoices Tab */}
-      {activeTab === "invoices" && (
-        <Card>
-          <CardHeader>
-            <CardTitle>Invoices</CardTitle>
-            <CardDescription>
-              Manage customer invoices and billing
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
-            <div className="flex flex-col md:flex-row gap-4 mb-6">
-              <div className="relative flex-1">
-                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4" />
-                <Input
-                  placeholder="Search invoices..."
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                  className="pl-10"
-                />
-              </div>
-              
-              <select
-                value={statusFilter}
-                onChange={(e) => setStatusFilter(e.target.value)}
-                className="px-3 py-2 border border-input bg-background rounded-md text-sm"
-              >
-                <option value="all">All Status</option>
-                <option value="draft">Draft</option>
-                <option value="sent">Sent</option>
-                <option value="paid">Paid</option>
-                <option value="overdue">Overdue</option>
-                <option value="cancelled">Cancelled</option>
-              </select>
-            </div>
+              {/* Payment Table */}
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead>Payment</TableHead>
+                    <TableHead>Customer</TableHead>
+                    <TableHead>Amount</TableHead>
+                    <TableHead>Method</TableHead>
+                    <TableHead>Status</TableHead>
+                    <TableHead>Date</TableHead>
+                    <TableHead className="text-right">Actions</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {filteredPayments.map((payment) => (
+                    <TableRow key={payment.id}>
+                      <TableCell>
+                        <div>
+                          <p className="text-sm font-medium text-foreground">{payment.description}</p>
+                          <p className="text-xs text-muted-foreground">ID: {payment.id}</p>
+                        </div>
+                      </TableCell>
+                      <TableCell>
+                        <span className="text-sm text-muted-foreground">{payment.customer}</span>
+                      </TableCell>
+                      <TableCell>
+                        <span className="text-sm font-medium text-foreground">
+                          {formatCurrency(payment.amount)}
+                        </span>
+                      </TableCell>
+                      <TableCell>
+                        <div className="flex items-center space-x-2">
+                          {payment.method === "Credit Card" ? (
+                            <CreditCard className="h-3 w-3 text-muted-foreground" />
+                          ) : (
+                            <Banknote className="h-3 w-3 text-muted-foreground" />
+                          )}
+                          <span className="text-sm text-muted-foreground">{payment.method}</span>
+                        </div>
+                      </TableCell>
+                      <TableCell>
+                        <div className="flex items-center space-x-2">
+                          {getStatusIcon(payment.status)}
+                          <Badge className={getStatusColor(payment.status)}>
+                            {payment.status}
+                          </Badge>
+                        </div>
+                      </TableCell>
+                      <TableCell>
+                        <span className="text-sm text-muted-foreground">
+                          {formatRelativeTime(payment.date)}
+                        </span>
+                      </TableCell>
+                      <TableCell className="text-right">
+                        <DropdownMenu>
+                          <DropdownMenuTrigger asChild>
+                            <Button variant="ghost" className="h-8 w-8 p-0">
+                              <MoreHorizontal className="h-4 w-4" />
+                            </Button>
+                          </DropdownMenuTrigger>
+                          <DropdownMenuContent align="end">
+                            <DropdownMenuLabel>Actions</DropdownMenuLabel>
+                            <DropdownMenuItem>
+                              <Eye className="mr-2 h-4 w-4" />
+                              View Details
+                            </DropdownMenuItem>
+                            <DropdownMenuItem>
+                              <Receipt className="mr-2 h-4 w-4" />
+                              Generate Receipt
+                            </DropdownMenuItem>
+                            <DropdownMenuSeparator />
+                            <DropdownMenuItem>
+                              <CheckCircle className="mr-2 h-4 w-4" />
+                              Mark as Paid
+                            </DropdownMenuItem>
+                            <DropdownMenuItem className="text-red-600">
+                              <XCircle className="mr-2 h-4 w-4" />
+                              Refund Payment
+                            </DropdownMenuItem>
+                          </DropdownMenuContent>
+                        </DropdownMenu>
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </CardContent>
+          </Card>
+        </TabsContent>
 
-            <div className="space-y-4">
-              {filteredInvoices.map((invoice) => (
-                <div key={invoice._id} className="flex items-center justify-between p-4 border rounded-lg hover:bg-muted/50 transition-colors">
-                  <div className="flex items-center space-x-4">
-                    <div className="flex items-center space-x-2">
-                      {getStatusIcon(invoice.status)}
-                      <Receipt className="h-5 w-5 text-muted-foreground" />
-                    </div>
-                    <div>
-                      <p className="font-medium">{invoice.customerName}</p>
-                      <p className="text-sm text-muted-foreground">{invoice.customerEmail}</p>
-                      <div className="flex items-center space-x-2 mt-1">
-                        <Badge variant={getStatusColor(invoice.status) as any}>
-                          {invoice.status}
+        <TabsContent value="subscriptions" className="space-y-4">
+          <Card className="shadow-sm">
+            <CardHeader>
+              <CardTitle className="text-card-foreground">Subscriptions</CardTitle>
+              <CardDescription>Manage customer subscriptions and billing</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead>Customer</TableHead>
+                    <TableHead>Plan</TableHead>
+                    <TableHead>Amount</TableHead>
+                    <TableHead>Status</TableHead>
+                    <TableHead>Next Billing</TableHead>
+                    <TableHead>Auto Renew</TableHead>
+                    <TableHead className="text-right">Actions</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {subscriptions.map((subscription) => (
+                    <TableRow key={subscription.id}>
+                      <TableCell>
+                        <span className="text-sm font-medium text-foreground">{subscription.customer}</span>
+                      </TableCell>
+                      <TableCell>
+                        <Badge variant="outline">{subscription.plan}</Badge>
+                      </TableCell>
+                      <TableCell>
+                        <span className="text-sm font-medium text-foreground">
+                          {formatCurrency(subscription.amount)}
+                        </span>
+                      </TableCell>
+                      <TableCell>
+                        <Badge className={getStatusColor(subscription.status)}>
+                          {subscription.status}
                         </Badge>
-                        <span className="text-xs text-muted-foreground">
-                          #{invoice.invoiceNumber}
+                      </TableCell>
+                      <TableCell>
+                        <span className="text-sm text-muted-foreground">
+                          {formatDate(subscription.nextBilling)}
                         </span>
-                        <span className="text-xs text-muted-foreground">
-                          Due: {formatDate(invoice.dueDate)}
+                      </TableCell>
+                      <TableCell>
+                        <Badge variant={subscription.autoRenew ? "default" : "secondary"}>
+                          {subscription.autoRenew ? "Yes" : "No"}
+                        </Badge>
+                      </TableCell>
+                      <TableCell className="text-right">
+                        <DropdownMenu>
+                          <DropdownMenuTrigger asChild>
+                            <Button variant="ghost" className="h-8 w-8 p-0">
+                              <MoreHorizontal className="h-4 w-4" />
+                            </Button>
+                          </DropdownMenuTrigger>
+                          <DropdownMenuContent align="end">
+                            <DropdownMenuLabel>Actions</DropdownMenuLabel>
+                            <DropdownMenuItem>
+                              <Eye className="mr-2 h-4 w-4" />
+                              View Details
+                            </DropdownMenuItem>
+                            <DropdownMenuItem>
+                              <FileText className="mr-2 h-4 w-4" />
+                              Generate Invoice
+                            </DropdownMenuItem>
+                            <DropdownMenuSeparator />
+                            <DropdownMenuItem>
+                              <Send className="mr-2 h-4 w-4" />
+                              Send Reminder
+                            </DropdownMenuItem>
+                            <DropdownMenuItem className="text-red-600">
+                              <XCircle className="mr-2 h-4 w-4" />
+                              Cancel Subscription
+                            </DropdownMenuItem>
+                          </DropdownMenuContent>
+                        </DropdownMenu>
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </CardContent>
+          </Card>
+        </TabsContent>
+
+        <TabsContent value="payouts" className="space-y-4">
+          <Card className="shadow-sm">
+            <CardHeader>
+              <CardTitle className="text-card-foreground">Payouts</CardTitle>
+              <CardDescription>Manage payouts to service providers</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead>Recipient</TableHead>
+                    <TableHead>Amount</TableHead>
+                    <TableHead>Method</TableHead>
+                    <TableHead>Status</TableHead>
+                    <TableHead>Date</TableHead>
+                    <TableHead className="text-right">Actions</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {payouts.map((payout) => (
+                    <TableRow key={payout.id}>
+                      <TableCell>
+                        <span className="text-sm font-medium text-foreground">{payout.recipient}</span>
+                      </TableCell>
+                      <TableCell>
+                        <span className="text-sm font-medium text-foreground">
+                          {formatCurrency(payout.amount)}
                         </span>
-                      </div>
-                    </div>
-                  </div>
-                  
-                  <div className="flex items-center space-x-4">
-                    <div className="text-right">
-                      <p className="font-medium">{formatCurrency(invoice.total)}</p>
-                      <p className="text-sm text-muted-foreground">
-                        Issued: {formatDate(invoice.issuedDate)}
-                      </p>
-                      {invoice.paidDate && (
-                        <p className="text-xs text-muted-foreground">
-                          Paid: {formatDate(invoice.paidDate)}
-                        </p>
-                      )}
-                    </div>
-                    
-                    <DropdownMenu>
-                      <DropdownMenuTrigger asChild>
-                        <Button variant="ghost" size="icon">
-                          <MoreHorizontal className="h-4 w-4" />
-                        </Button>
-                      </DropdownMenuTrigger>
-                      <DropdownMenuContent align="end">
-                        <DropdownMenuLabel>Actions</DropdownMenuLabel>
-                        <DropdownMenuSeparator />
-                        <DropdownMenuItem>
-                          <Eye className="mr-2 h-4 w-4" />
-                          View Invoice
-                        </DropdownMenuItem>
-                        <DropdownMenuItem>
-                          <Download className="mr-2 h-4 w-4" />
-                          Download PDF
-                        </DropdownMenuItem>
-                        <DropdownMenuItem>
-                          <Edit className="mr-2 h-4 w-4" />
-                          Edit Invoice
-                        </DropdownMenuItem>
-                        <DropdownMenuSeparator />
-                        {invoice.status === "draft" && (
-                          <DropdownMenuItem 
-                            onClick={() => handleInvoiceAction(invoice._id, "send")}
-                            className="text-blue-600"
-                          >
-                            <Mail className="mr-2 h-4 w-4" />
-                            Send Invoice
-                          </DropdownMenuItem>
-                        )}
-                        {invoice.status === "sent" && (
-                          <DropdownMenuItem 
-                            onClick={() => handleInvoiceAction(invoice._id, "mark_paid")}
-                            className="text-green-600"
-                          >
-                            <CheckCircle className="mr-2 h-4 w-4" />
-                            Mark as Paid
-                          </DropdownMenuItem>
-                        )}
-                        {invoice.status !== "paid" && invoice.status !== "cancelled" && (
-                          <DropdownMenuItem 
-                            onClick={() => handleInvoiceAction(invoice._id, "cancel")}
-                            className="text-red-600"
-                          >
-                            Cancel Invoice
-                          </DropdownMenuItem>
-                        )}
-                      </DropdownMenuContent>
-                    </DropdownMenu>
+                      </TableCell>
+                      <TableCell>
+                        <div className="flex items-center space-x-2">
+                          <Banknote className="h-3 w-3 text-muted-foreground" />
+                          <span className="text-sm text-muted-foreground">{payout.method}</span>
+                        </div>
+                      </TableCell>
+                      <TableCell>
+                        <div className="flex items-center space-x-2">
+                          {getStatusIcon(payout.status)}
+                          <Badge className={getStatusColor(payout.status)}>
+                            {payout.status}
+                          </Badge>
+                        </div>
+                      </TableCell>
+                      <TableCell>
+                        <span className="text-sm text-muted-foreground">
+                          {formatRelativeTime(payout.date)}
+                        </span>
+                      </TableCell>
+                      <TableCell className="text-right">
+                        <DropdownMenu>
+                          <DropdownMenuTrigger asChild>
+                            <Button variant="ghost" className="h-8 w-8 p-0">
+                              <MoreHorizontal className="h-4 w-4" />
+                            </Button>
+                          </DropdownMenuTrigger>
+                          <DropdownMenuContent align="end">
+                            <DropdownMenuLabel>Actions</DropdownMenuLabel>
+                            <DropdownMenuItem>
+                              <Eye className="mr-2 h-4 w-4" />
+                              View Details
+                            </DropdownMenuItem>
+                            <DropdownMenuItem>
+                              <Upload className="mr-2 h-4 w-4" />
+                              Process Payout
+                            </DropdownMenuItem>
+                            <DropdownMenuSeparator />
+                            <DropdownMenuItem>
+                              <FileText className="mr-2 h-4 w-4" />
+                              Generate Report
+                            </DropdownMenuItem>
+                          </DropdownMenuContent>
+                        </DropdownMenu>
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </CardContent>
+          </Card>
+        </TabsContent>
+
+        <TabsContent value="billing" className="space-y-4">
+          <Card className="shadow-sm">
+            <CardHeader>
+              <CardTitle className="text-card-foreground">Billing Management</CardTitle>
+              <CardDescription>Hold or clear payments, manage billing cycles</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="grid gap-4 md:grid-cols-2">
+                <div className="space-y-4">
+                  <h3 className="text-lg font-semibold text-foreground">Payment Actions</h3>
+                  <div className="space-y-2">
+                    <Button className="w-full justify-start shadow-sm">
+                      <CheckCircle className="mr-2 h-4 w-4" />
+                      Clear Pending Payments
+                    </Button>
+                    <Button variant="outline" className="w-full justify-start shadow-sm">
+                      <AlertTriangle className="mr-2 h-4 w-4" />
+                      Hold Suspicious Payments
+                    </Button>
+                    <Button variant="outline" className="w-full justify-start shadow-sm">
+                      <Download className="mr-2 h-4 w-4" />
+                      Export Billing Report
+                    </Button>
                   </div>
                 </div>
-              ))}
-            </div>
-
-            {filteredInvoices.length === 0 && (
-              <div className="text-center py-8">
-                <Receipt className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
-                <p className="text-muted-foreground">No invoices found matching your criteria</p>
+                <div className="space-y-4">
+                  <h3 className="text-lg font-semibold text-foreground">Billing Settings</h3>
+                  <div className="space-y-2">
+                    <Button variant="outline" className="w-full justify-start shadow-sm">
+                      <Calendar className="mr-2 h-4 w-4" />
+                      Manage Billing Cycles
+                    </Button>
+                    <Button variant="outline" className="w-full justify-start shadow-sm">
+                      <CreditCard className="mr-2 h-4 w-4" />
+                      Payment Methods
+                    </Button>
+                    <Button variant="outline" className="w-full justify-start shadow-sm">
+                      <Receipt className="mr-2 h-4 w-4" />
+                      Invoice Templates
+                    </Button>
+                  </div>
+                </div>
               </div>
-            )}
-          </CardContent>
-        </Card>
-      )}
+            </CardContent>
+          </Card>
+        </TabsContent>
+      </Tabs>
     </div>
   );
 }

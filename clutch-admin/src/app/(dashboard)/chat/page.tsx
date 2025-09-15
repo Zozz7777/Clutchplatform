@@ -1,34 +1,33 @@
 "use client";
 
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { useAuth } from "@/contexts/auth-context";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { formatDate, formatRelativeTime } from "@/lib/utils";
+import { useAuth } from "@/contexts/auth-context";
 import { 
   MessageSquare, 
   Search, 
-  Filter, 
   Plus, 
   MoreHorizontal,
   Send,
-  Phone,
-  Video,
   Paperclip,
   Smile,
-  MoreVertical,
-  User,
+  Phone,
+  Video,
+  Users,
   Clock,
-  Check,
-  CheckCheck,
+  CheckCircle,
+  CheckCircle2,
+  User,
+  Bot,
   AlertCircle,
-  Settings,
   Archive,
-  Trash2,
   Star,
-  StarOff
+  Pin
 } from "lucide-react";
 import {
   DropdownMenu,
@@ -40,109 +39,139 @@ import {
 } from "@/components/ui/dropdown-menu";
 
 interface ChatMessage {
-  _id: string;
-  conversationId: string;
-  senderId: string;
-  senderName: string;
-  senderAvatar?: string;
-  content: string;
-  type: "text" | "image" | "file" | "system";
+  id: string;
+  sender: string;
+  senderType: "user" | "bot" | "system";
+  message: string;
   timestamp: string;
-  isRead: boolean;
-  isEdited: boolean;
-  replyTo?: string;
-  attachments?: Array<{
-    name: string;
-    url: string;
-    type: string;
-    size: number;
-  }>;
+  status: "sent" | "delivered" | "read";
+  attachments?: string[];
 }
 
-interface Conversation {
-  _id: string;
-  title: string;
-  type: "direct" | "group" | "support" | "internal";
-  participants: Array<{
-    id: string;
-    name: string;
-    avatar?: string;
-    role?: string;
-    isOnline: boolean;
-  }>;
-  lastMessage: ChatMessage;
+interface ChatChannel {
+  id: string;
+  name: string;
+  type: "direct" | "group" | "support";
+  lastMessage: string;
+  lastMessageTime: string;
   unreadCount: number;
-  isPinned: boolean;
-  isArchived: boolean;
-  createdAt: string;
-  updatedAt: string;
-  tags: string[];
-}
-
-interface ChatStats {
-  totalConversations: number;
-  activeConversations: number;
-  unreadMessages: number;
-  averageResponseTime: number;
-  customerSatisfaction: number;
+  isOnline: boolean;
+  avatar?: string;
 }
 
 export default function ChatPage() {
-  const [conversations, setConversations] = useState<Conversation[]>([]);
+  const [channels, setChannels] = useState<ChatChannel[]>([]);
   const [messages, setMessages] = useState<ChatMessage[]>([]);
-  const [stats, setStats] = useState<ChatStats | null>(null);
-  const [selectedConversation, setSelectedConversation] = useState<string | null>(null);
+  const [selectedChannel, setSelectedChannel] = useState<string>("1");
   const [newMessage, setNewMessage] = useState("");
   const [searchQuery, setSearchQuery] = useState("");
-  const [typeFilter, setTypeFilter] = useState<string>("all");
   const [isLoading, setIsLoading] = useState(true);
-  const [isTyping, setIsTyping] = useState(false);
-  const messagesEndRef = useRef<HTMLDivElement>(null);
-  const { user, hasPermission } = useAuth();
+  const { hasPermission } = useAuth();
 
   useEffect(() => {
     const loadChatData = async () => {
       try {
-        const token = localStorage.getItem("clutch-admin-token");
-        
-        // Load conversations
-        const conversationsResponse = await fetch("https://clutch-main-nk7x.onrender.com/api/v1/chat/conversations", {
-          headers: {
-            "Authorization": `Bearer ${token}`,
-            "Content-Type": "application/json",
+        // Mock data for chat channels
+        const mockChannels: ChatChannel[] = [
+          {
+            id: "1",
+            name: "Ahmed Hassan",
+            type: "direct",
+            lastMessage: "Thanks for the help with the fleet management setup",
+            lastMessageTime: "2024-01-15T10:30:00Z",
+            unreadCount: 2,
+            isOnline: true
           },
-        });
-        
-        if (conversationsResponse.ok) {
-          const conversationsData = await conversationsResponse.json();
-          setConversations(conversationsData.data || conversationsData);
-        }
-
-        // Load chat stats
-        const statsResponse = await fetch("https://clutch-main-nk7x.onrender.com/api/v1/chat/stats", {
-          headers: {
-            "Authorization": `Bearer ${token}`,
-            "Content-Type": "application/json",
+          {
+            id: "2",
+            name: "Support Team",
+            type: "group",
+            lastMessage: "New ticket #1234 has been assigned",
+            lastMessageTime: "2024-01-15T09:15:00Z",
+            unreadCount: 0,
+            isOnline: true
           },
-        });
-        
-        if (statsResponse.ok) {
-          const statsData = await statsResponse.json();
-          setStats(statsData.data || statsData);
-        } else {
-          // Calculate stats from loaded data
-          const totalConversations = conversations.length;
-          const activeConversations = conversations.filter(c => !c.isArchived).length;
-          const unreadMessages = conversations.reduce((sum, c) => sum + c.unreadCount, 0);
+          {
+            id: "3",
+            name: "Fatma Mohamed",
+            type: "direct",
+            lastMessage: "Can you help me with the billing issue?",
+            lastMessageTime: "2024-01-14T16:45:00Z",
+            unreadCount: 1,
+            isOnline: false
+          },
+          {
+            id: "4",
+            name: "Omar Ali",
+            type: "direct",
+            lastMessage: "The new features look great!",
+            lastMessageTime: "2024-01-14T14:20:00Z",
+            unreadCount: 0,
+            isOnline: true
+          }
+        ];
 
-          setStats({
-            totalConversations,
-            activeConversations,
-            unreadMessages,
-            averageResponseTime: 2.5, // minutes
-            customerSatisfaction: 4.7, // out of 5
-          });
-        }
+        const mockMessages: ChatMessage[] = [
+          {
+            id: "1",
+            sender: "Ahmed Hassan",
+            senderType: "user",
+            message: "Hi, I need help setting up fleet tracking for my vehicles",
+            timestamp: "2024-01-15T10:00:00Z",
+            status: "read"
+          },
+          {
+            id: "2",
+            sender: "You",
+            senderType: "user",
+            message: "I'll help you with that. Let me guide you through the setup process",
+            timestamp: "2024-01-15T10:05:00Z",
+            status: "read"
+          },
+          {
+            id: "3",
+            sender: "Ahmed Hassan",
+            senderType: "user",
+            message: "That would be great! I have 15 vehicles in my fleet",
+            timestamp: "2024-01-15T10:10:00Z",
+            status: "read"
+          },
+          {
+            id: "4",
+            sender: "You",
+            senderType: "user",
+            message: "Perfect! I'll create a custom configuration for your fleet size. Do you need GPS tracking for all vehicles?",
+            timestamp: "2024-01-15T10:15:00Z",
+            status: "read"
+          },
+          {
+            id: "5",
+            sender: "Ahmed Hassan",
+            senderType: "user",
+            message: "Yes, GPS tracking for all vehicles would be ideal. Also, I need real-time monitoring",
+            timestamp: "2024-01-15T10:20:00Z",
+            status: "read"
+          },
+          {
+            id: "6",
+            sender: "You",
+            senderType: "user",
+            message: "Excellent! I've set up real-time GPS tracking for all 15 vehicles. You can monitor them from the dashboard",
+            timestamp: "2024-01-15T10:25:00Z",
+            status: "read"
+          },
+          {
+            id: "7",
+            sender: "Ahmed Hassan",
+            senderType: "user",
+            message: "Thanks for the help with the fleet management setup",
+            timestamp: "2024-01-15T10:30:00Z",
+            status: "delivered"
+          }
+        ];
+
+        setChannels(mockChannels);
+        setMessages(mockMessages);
       } catch (error) {
         console.error("Failed to load chat data:", error);
       } finally {
@@ -153,411 +182,268 @@ export default function ChatPage() {
     loadChatData();
   }, []);
 
-  useEffect(() => {
-    if (selectedConversation) {
-      loadMessages(selectedConversation);
-    }
-  }, [selectedConversation]);
-
-  const loadMessages = async (conversationId: string) => {
-    try {
-      const token = localStorage.getItem("clutch-admin-token");
-      
-      const response = await fetch(`https://clutch-main-nk7x.onrender.com/api/v1/chat/conversations/${conversationId}/messages`, {
-        headers: {
-          "Authorization": `Bearer ${token}`,
-          "Content-Type": "application/json",
-        },
-      });
-      
-      if (response.ok) {
-        const data = await response.json();
-        setMessages(data.data || data);
-      }
-    } catch (error) {
-      console.error("Failed to load messages:", error);
+  const handleSendMessage = () => {
+    if (newMessage.trim()) {
+      const message: ChatMessage = {
+        id: Date.now().toString(),
+        sender: "You",
+        senderType: "user",
+        message: newMessage,
+        timestamp: new Date().toISOString(),
+        status: "sent"
+      };
+      setMessages([...messages, message]);
+      setNewMessage("");
     }
   };
 
-  const sendMessage = async () => {
-    if (!newMessage.trim() || !selectedConversation) return;
-
-    try {
-      const token = localStorage.getItem("clutch-admin-token");
-      
-      const response = await fetch(`https://clutch-main-nk7x.onrender.com/api/v1/chat/conversations/${selectedConversation}/messages`, {
-        method: "POST",
-        headers: {
-          "Authorization": `Bearer ${token}`,
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          content: newMessage,
-          type: "text",
-        }),
-      });
-      
-      if (response.ok) {
-        setNewMessage("");
-        // Reload messages
-        loadMessages(selectedConversation);
-        // Update conversation list
-        const conversationsResponse = await fetch("https://clutch-main-nk7x.onrender.com/api/v1/chat/conversations", {
-          headers: {
-            "Authorization": `Bearer ${token}`,
-            "Content-Type": "application/json",
-          },
-        });
-        
-        if (conversationsResponse.ok) {
-          const conversationsData = await conversationsResponse.json();
-          setConversations(conversationsData.data || conversationsData);
-        }
-      }
-    } catch (error) {
-      console.error("Failed to send message:", error);
-    }
-  };
-
-  const handleKeyPress = (e: React.KeyboardEvent) => {
-    if (e.key === "Enter" && !e.shiftKey) {
-      e.preventDefault();
-      sendMessage();
-    }
-  };
-
-  const filteredConversations = conversations.filter(conversation => {
-    const matchesSearch = conversation.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      conversation.participants.some(p => p.name.toLowerCase().includes(searchQuery.toLowerCase()));
-    const matchesType = typeFilter === "all" || conversation.type === typeFilter;
-    return matchesSearch && matchesType;
-  });
-
-  const getTypeColor = (type: string) => {
-    switch (type) {
-      case "direct":
-        return "default";
-      case "group":
-        return "info";
-      case "support":
-        return "warning";
-      case "internal":
-        return "success";
+  const getStatusIcon = (status: string) => {
+    switch (status) {
+      case "sent":
+        return <CheckCircle className="h-3 w-3 text-muted-foreground" />;
+      case "delivered":
+        return <CheckCircle2 className="h-3 w-3 text-muted-foreground" />;
+      case "read":
+        return <CheckCircle2 className="h-3 w-3 text-blue-500" />;
       default:
-        return "default";
+        return <Clock className="h-3 w-3 text-muted-foreground" />;
     }
   };
 
-  const getMessageStatusIcon = (message: ChatMessage) => {
-    if (message.senderId === user?.id) {
-      if (message.isRead) {
-        return <CheckCheck className="h-3 w-3 text-blue-500" />;
-      } else {
-        return <Check className="h-3 w-3 text-muted-foreground" />;
-      }
+  const getSenderIcon = (senderType: string) => {
+    switch (senderType) {
+      case "bot":
+        return <Bot className="h-4 w-4" />;
+      case "system":
+        return <AlertCircle className="h-4 w-4" />;
+      default:
+        return <User className="h-4 w-4" />;
     }
-    return null;
   };
-
-  const scrollToBottom = () => {
-    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
-  };
-
-  useEffect(() => {
-    scrollToBottom();
-  }, [messages]);
 
   if (isLoading) {
     return (
       <div className="flex items-center justify-center h-64">
         <div className="text-center">
           <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto mb-4"></div>
-          <p className="text-muted-foreground">Loading chat data...</p>
+          <p className="text-muted-foreground font-sans">Loading chat...</p>
         </div>
       </div>
     );
   }
 
+  const selectedChannelData = channels.find(c => c.id === selectedChannel);
+
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 font-sans">
       {/* Page Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold tracking-tight">Chat & Messaging</h1>
-          <p className="text-muted-foreground">
-            Real-time communication with customers and team members
+          <h1 className="text-3xl font-bold tracking-tight text-foreground font-sans">Chat & Messaging</h1>
+          <p className="text-muted-foreground font-sans">
+            Real-time communication with users and service providers
           </p>
         </div>
-        {hasPermission("send_messages") && (
-          <div className="flex space-x-2">
-            <Button>
-              <Plus className="mr-2 h-4 w-4" />
-              New Chat
-            </Button>
-            <Button variant="outline">
-              <Settings className="mr-2 h-4 w-4" />
-              Settings
-            </Button>
-          </div>
-        )}
-      </div>
-
-      {/* Stats Cards */}
-      <div className="grid gap-4 md:grid-cols-4">
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Active Chats</CardTitle>
-            <MessageSquare className="h-4 w-4 text-muted-foreground" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">
-              {stats ? stats.activeConversations : conversations.filter(c => !c.isArchived).length}
-            </div>
-            <p className="text-xs text-muted-foreground">
-              {stats ? stats.totalConversations : conversations.length} total
-            </p>
-          </CardContent>
-        </Card>
-        
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Unread Messages</CardTitle>
-            <AlertCircle className="h-4 w-4 text-muted-foreground" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">
-              {stats ? stats.unreadMessages : conversations.reduce((sum, c) => sum + c.unreadCount, 0)}
-            </div>
-            <p className="text-xs text-muted-foreground">
-              Require attention
-            </p>
-          </CardContent>
-        </Card>
-        
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Avg. Response Time</CardTitle>
-            <Clock className="h-4 w-4 text-muted-foreground" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">
-              {stats ? stats.averageResponseTime : 2.5}m
-            </div>
-            <p className="text-xs text-muted-foreground">
-              Response time
-            </p>
-          </CardContent>
-        </Card>
-        
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Satisfaction</CardTitle>
-            <Star className="h-4 w-4 text-muted-foreground" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">
-              {stats ? stats.customerSatisfaction : 4.7}/5
-            </div>
-            <p className="text-xs text-muted-foreground">
-              Customer rating
-            </p>
-          </CardContent>
-        </Card>
+        <div className="flex items-center space-x-2">
+          <Button variant="outline" className="shadow-sm">
+            <Archive className="mr-2 h-4 w-4" />
+            Archive
+          </Button>
+          <Button className="shadow-sm">
+            <Plus className="mr-2 h-4 w-4" />
+            New Chat
+          </Button>
+        </div>
       </div>
 
       {/* Chat Interface */}
-      <div className="grid gap-6 lg:grid-cols-3">
-        {/* Conversations List */}
-        <Card className="lg:col-span-1">
+      <div className="grid gap-6 lg:grid-cols-4">
+        {/* Chat Channels List */}
+        <Card className="lg:col-span-1 shadow-sm">
           <CardHeader>
-            <CardTitle>Conversations</CardTitle>
-            <CardDescription>
-              Select a conversation to start chatting
-            </CardDescription>
+            <CardTitle className="text-card-foreground">Conversations</CardTitle>
+            <div className="relative">
+              <Search className="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground" />
+              <Input
+                placeholder="Search conversations..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="pl-8"
+              />
+            </div>
           </CardHeader>
-          <CardContent>
-            <div className="space-y-4">
-              {/* Search and Filter */}
-              <div className="space-y-2">
-                <div className="relative">
-                  <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4" />
-                  <Input
-                    placeholder="Search conversations..."
-                    value={searchQuery}
-                    onChange={(e) => setSearchQuery(e.target.value)}
-                    className="pl-10"
-                  />
-                </div>
-                
-                <select
-                  value={typeFilter}
-                  onChange={(e) => setTypeFilter(e.target.value)}
-                  className="w-full px-3 py-2 border border-input bg-background rounded-md text-sm"
+          <CardContent className="p-0">
+            <div className="space-y-1">
+              {channels.map((channel) => (
+                <div
+                  key={channel.id}
+                  className={`p-3 cursor-pointer hover:bg-muted/50 transition-colors ${
+                    selectedChannel === channel.id ? "bg-muted border-r-2 border-primary" : ""
+                  }`}
+                  onClick={() => setSelectedChannel(channel.id)}
                 >
-                  <option value="all">All Types</option>
-                  <option value="direct">Direct</option>
-                  <option value="group">Group</option>
-                  <option value="support">Support</option>
-                  <option value="internal">Internal</option>
-                </select>
-              </div>
-
-              {/* Conversations */}
-              <div className="space-y-2 max-h-96 overflow-y-auto">
-                {filteredConversations.map((conversation) => (
-                  <div
-                    key={conversation._id}
-                    className={`p-3 rounded-lg cursor-pointer transition-colors ${
-                      selectedConversation === conversation._id
-                        ? "bg-primary text-primary-foreground"
-                        : "hover:bg-muted"
-                    }`}
-                    onClick={() => setSelectedConversation(conversation._id)}
-                  >
-                    <div className="flex items-center justify-between">
-                      <div className="flex items-center space-x-3">
-                        <div className="w-8 h-8 rounded-full bg-muted flex items-center justify-center">
-                          <span className="text-xs font-medium">
-                            {conversation.title.charAt(0).toUpperCase()}
-                          </span>
-                        </div>
-                        <div className="flex-1 min-w-0">
-                          <p className="text-sm font-medium truncate">{conversation.title}</p>
-                          <p className="text-xs text-muted-foreground truncate">
-                            {conversation.lastMessage.content}
-                          </p>
-                        </div>
+                  <div className="flex items-center space-x-3">
+                    <div className="relative">
+                      <div className="w-10 h-10 rounded-full bg-primary flex items-center justify-center">
+                        <span className="text-primary-foreground text-sm font-medium">
+                          {channel.name.charAt(0).toUpperCase()}
+                        </span>
                       </div>
-                      <div className="flex flex-col items-end space-y-1">
-                        {conversation.unreadCount > 0 && (
+                      {channel.isOnline && (
+                        <div className="absolute -bottom-1 -right-1 w-3 h-3 bg-green-500 rounded-full border-2 border-background"></div>
+                      )}
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <div className="flex items-center justify-between">
+                        <p className="text-sm font-medium text-foreground truncate">{channel.name}</p>
+                        {channel.unreadCount > 0 && (
                           <Badge variant="destructive" className="text-xs">
-                            {conversation.unreadCount}
+                            {channel.unreadCount}
                           </Badge>
                         )}
-                        <Badge variant={getTypeColor(conversation.type) as any} className="text-xs">
-                          {conversation.type}
-                        </Badge>
-                        <p className="text-xs text-muted-foreground">
-                          {formatRelativeTime(conversation.lastMessage.timestamp)}
-                        </p>
                       </div>
+                      <p className="text-xs text-muted-foreground truncate">{channel.lastMessage}</p>
+                      <p className="text-xs text-muted-foreground">
+                        {formatRelativeTime(channel.lastMessageTime)}
+                      </p>
                     </div>
                   </div>
-                ))}
-              </div>
+                </div>
+              ))}
             </div>
           </CardContent>
         </Card>
 
         {/* Chat Messages */}
-        <Card className="lg:col-span-2">
-          {selectedConversation ? (
-            <>
-              <CardHeader className="border-b">
-                <div className="flex items-center justify-between">
-                  <div>
-                    <CardTitle>
-                      {conversations.find(c => c._id === selectedConversation)?.title}
-                    </CardTitle>
-                    <CardDescription>
-                      {conversations.find(c => c._id === selectedConversation)?.participants.length} participants
-                    </CardDescription>
-                  </div>
-                  <div className="flex items-center space-x-2">
-                    <Button variant="ghost" size="icon">
-                      <Phone className="h-4 w-4" />
-                    </Button>
-                    <Button variant="ghost" size="icon">
-                      <Video className="h-4 w-4" />
-                    </Button>
-                    <DropdownMenu>
-                      <DropdownMenuTrigger asChild>
-                        <Button variant="ghost" size="icon">
-                          <MoreVertical className="h-4 w-4" />
-                        </Button>
-                      </DropdownMenuTrigger>
-                      <DropdownMenuContent align="end">
-                        <DropdownMenuItem>
-                          <Archive className="mr-2 h-4 w-4" />
-                          Archive Chat
-                        </DropdownMenuItem>
-                        <DropdownMenuItem>
-                          <Star className="mr-2 h-4 w-4" />
-                          Pin Chat
-                        </DropdownMenuItem>
-                        <DropdownMenuSeparator />
-                        <DropdownMenuItem className="text-red-600">
-                          <Trash2 className="mr-2 h-4 w-4" />
-                          Delete Chat
-                        </DropdownMenuItem>
-                      </DropdownMenuContent>
-                    </DropdownMenu>
-                  </div>
+        <Card className="lg:col-span-3 shadow-sm">
+          <CardHeader>
+            <div className="flex items-center justify-between">
+              <div className="flex items-center space-x-3">
+                <div className="w-8 h-8 rounded-full bg-primary flex items-center justify-center">
+                  <span className="text-primary-foreground text-sm font-medium">
+                    {selectedChannelData?.name.charAt(0).toUpperCase()}
+                  </span>
                 </div>
-              </CardHeader>
-              
-              <CardContent className="p-0">
-                {/* Messages */}
-                <div className="h-96 overflow-y-auto p-4 space-y-4">
-                  {messages.map((message) => (
-                    <div
-                      key={message._id}
-                      className={`flex ${message.senderId === user?.id ? "justify-end" : "justify-start"}`}
-                    >
-                      <div className={`max-w-xs lg:max-w-md px-4 py-2 rounded-lg ${
-                        message.senderId === user?.id
-                          ? "bg-primary text-primary-foreground"
-                          : "bg-muted"
-                      }`}>
-                        {message.senderId !== user?.id && (
-                          <p className="text-xs font-medium mb-1">{message.senderName}</p>
-                        )}
-                        <p className="text-sm">{message.content}</p>
-                        <div className="flex items-center justify-between mt-1">
-                          <p className="text-xs opacity-70">
-                            {formatDate(message.timestamp)}
-                          </p>
-                          {getMessageStatusIcon(message)}
-                        </div>
+                <div>
+                  <h3 className="text-sm font-medium text-foreground">{selectedChannelData?.name}</h3>
+                  <p className="text-xs text-muted-foreground">
+                    {selectedChannelData?.isOnline ? "Online" : "Offline"}
+                  </p>
+                </div>
+              </div>
+              <div className="flex items-center space-x-2">
+                <Button variant="ghost" size="icon">
+                  <Phone className="h-4 w-4" />
+                </Button>
+                <Button variant="ghost" size="icon">
+                  <Video className="h-4 w-4" />
+                </Button>
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <Button variant="ghost" size="icon">
+                      <MoreHorizontal className="h-4 w-4" />
+                    </Button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent align="end">
+                    <DropdownMenuLabel>Actions</DropdownMenuLabel>
+                    <DropdownMenuItem>
+                      <Star className="mr-2 h-4 w-4" />
+                      Star Conversation
+                    </DropdownMenuItem>
+                    <DropdownMenuItem>
+                      <Pin className="mr-2 h-4 w-4" />
+                      Pin Conversation
+                    </DropdownMenuItem>
+                    <DropdownMenuSeparator />
+                    <DropdownMenuItem>
+                      <Archive className="mr-2 h-4 w-4" />
+                      Archive
+                    </DropdownMenuItem>
+                  </DropdownMenuContent>
+                </DropdownMenu>
+              </div>
+            </div>
+          </CardHeader>
+          <CardContent className="p-0">
+            {/* Messages Area */}
+            <div className="h-96 overflow-y-auto p-4 space-y-4">
+              {messages.map((message) => (
+                <div
+                  key={message.id}
+                  className={`flex ${message.sender === "You" ? "justify-end" : "justify-start"}`}
+                >
+                  <div className={`flex space-x-2 max-w-xs lg:max-w-md ${message.sender === "You" ? "flex-row-reverse space-x-reverse" : ""}`}>
+                    <div className="w-6 h-6 rounded-full bg-muted flex items-center justify-center">
+                      {getSenderIcon(message.senderType)}
+                    </div>
+                    <div className={`rounded-lg p-3 ${message.sender === "You" ? "bg-primary text-primary-foreground" : "bg-muted"}`}>
+                      <p className="text-sm">{message.message}</p>
+                      <div className={`flex items-center space-x-1 mt-1 ${message.sender === "You" ? "justify-end" : "justify-start"}`}>
+                        <span className="text-xs opacity-70">
+                          {formatRelativeTime(message.timestamp)}
+                        </span>
+                        {message.sender === "You" && getStatusIcon(message.status)}
                       </div>
                     </div>
-                  ))}
-                  <div ref={messagesEndRef} />
-                </div>
-
-                {/* Message Input */}
-                <div className="border-t p-4">
-                  <div className="flex items-center space-x-2">
-                    <Button variant="ghost" size="icon">
-                      <Paperclip className="h-4 w-4" />
-                    </Button>
-                    <Input
-                      placeholder="Type a message..."
-                      value={newMessage}
-                      onChange={(e) => setNewMessage(e.target.value)}
-                      onKeyPress={handleKeyPress}
-                      className="flex-1"
-                    />
-                    <Button variant="ghost" size="icon">
-                      <Smile className="h-4 w-4" />
-                    </Button>
-                    <Button onClick={sendMessage} disabled={!newMessage.trim()}>
-                      <Send className="h-4 w-4" />
-                    </Button>
                   </div>
                 </div>
-              </CardContent>
-            </>
-          ) : (
-            <CardContent className="flex items-center justify-center h-96">
-              <div className="text-center">
-                <MessageSquare className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
-                <p className="text-muted-foreground">Select a conversation to start chatting</p>
+              ))}
+            </div>
+
+            {/* Message Input */}
+            <div className="border-t p-4">
+              <div className="flex items-center space-x-2">
+                <Button variant="ghost" size="icon">
+                  <Paperclip className="h-4 w-4" />
+                </Button>
+                <div className="flex-1">
+                  <Input
+                    placeholder="Type a message..."
+                    value={newMessage}
+                    onChange={(e) => setNewMessage(e.target.value)}
+                    onKeyPress={(e) => e.key === "Enter" && handleSendMessage()}
+                  />
+                </div>
+                <Button variant="ghost" size="icon">
+                  <Smile className="h-4 w-4" />
+                </Button>
+                <Button onClick={handleSendMessage} disabled={!newMessage.trim()}>
+                  <Send className="h-4 w-4" />
+                </Button>
               </div>
-            </CardContent>
-          )}
+            </div>
+          </CardContent>
         </Card>
       </div>
+
+      {/* Chat History Search */}
+      <Card className="shadow-sm">
+        <CardHeader>
+          <CardTitle className="text-card-foreground">Search Chat History</CardTitle>
+          <CardDescription>Find messages across all conversations</CardDescription>
+        </CardHeader>
+        <CardContent>
+          <div className="flex items-center space-x-4">
+            <div className="flex-1">
+              <div className="relative">
+                <Search className="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground" />
+                <Input
+                  placeholder="Search messages, users, or keywords..."
+                  className="pl-8"
+                />
+              </div>
+            </div>
+            <Button variant="outline" className="shadow-sm">
+              <Clock className="mr-2 h-4 w-4" />
+              Filter by Date
+            </Button>
+            <Button variant="outline" className="shadow-sm">
+              <Users className="mr-2 h-4 w-4" />
+              Filter by User
+            </Button>
+          </div>
+        </CardContent>
+      </Card>
     </div>
   );
 }

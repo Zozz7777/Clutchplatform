@@ -11,66 +11,42 @@ const config: Config = {
     extend: {
       colors: {
         // Light theme colors from design.json
-        background: "oklch(1 0 0)",
-        foreground: "oklch(0.1450 0 0)",
+        background: "hsl(var(--background))",
+        foreground: "hsl(var(--foreground))",
         card: {
-          DEFAULT: "oklch(1 0 0)",
-          foreground: "oklch(0.1450 0 0)",
+          DEFAULT: "hsl(var(--card))",
+          foreground: "hsl(var(--card-foreground))",
         },
         primary: {
-          DEFAULT: "oklch(0.5770 0.2450 27.3250)",
-          foreground: "oklch(0.9850 0 0)",
+          DEFAULT: "hsl(var(--primary))",
+          foreground: "hsl(var(--primary-foreground))",
         },
         secondary: {
-          DEFAULT: "oklch(0.5770 0.2450 27.3250)",
-          foreground: "oklch(0.9850 0 0)",
+          DEFAULT: "hsl(var(--secondary))",
+          foreground: "hsl(var(--secondary-foreground))",
         },
         muted: {
-          DEFAULT: "oklch(0.9700 0 0)",
-          foreground: "oklch(0.5560 0 0)",
+          DEFAULT: "hsl(var(--muted))",
+          foreground: "hsl(var(--muted-foreground))",
         },
         destructive: {
-          DEFAULT: "oklch(0.5770 0.2450 27.3250)",
-          foreground: "oklch(0.9850 0 0)",
+          DEFAULT: "hsl(var(--destructive))",
+          foreground: "hsl(var(--destructive-foreground))",
         },
-        border: "oklch(0.9220 0 0)",
-        input: "oklch(0.9220 0 0)",
-        ring: "oklch(0.7080 0 0)",
+        border: "hsl(var(--border))",
+        input: "hsl(var(--input))",
+        ring: "hsl(var(--ring))",
         sidebar: {
-          DEFAULT: "oklch(0.9850 0 0)",
-          primary: "oklch(0.2050 0 0)",
+          DEFAULT: "hsl(var(--sidebar))",
+          primary: "hsl(var(--sidebar-primary))",
         },
-        // Dark theme colors
-        dark: {
-          background: "oklch(0.1450 0 0)",
-          foreground: "oklch(0.9850 0 0)",
-          card: {
-            DEFAULT: "oklch(0.2050 0 0)",
-            foreground: "oklch(0.9710 0.0130 17.3800)",
-          },
-          primary: {
-            DEFAULT: "oklch(0.5050 0.2130 27.5180)",
-            foreground: "oklch(0.2050 0 0)",
-          },
-          secondary: {
-            DEFAULT: "oklch(0.2690 0 0)",
-            foreground: "oklch(0.9850 0 0)",
-          },
-          muted: {
-            DEFAULT: "oklch(0.2690 0 0)",
-            foreground: "oklch(0.5560 0 0)",
-          },
-          destructive: {
-            DEFAULT: "oklch(0.7040 0.1910 22.2160)",
-            foreground: "oklch(0.9850 0 0)",
-          },
-          border: "oklch(0.2750 0 0)",
-          input: "oklch(0.3250 0 0)",
-          ring: "oklch(0.5560 0 0)",
-          sidebar: {
-            DEFAULT: "oklch(0.2050 0 0)",
-            primary: "oklch(0.5770 0.2450 27.3250)",
-          },
+        accent: {
+          DEFAULT: "hsl(var(--accent))",
+          foreground: "hsl(var(--accent-foreground))",
+        },
+        popover: {
+          DEFAULT: "hsl(var(--popover))",
+          foreground: "hsl(var(--popover-foreground))",
         },
       },
       fontFamily: {

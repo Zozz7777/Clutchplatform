@@ -5,21 +5,29 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { mockAPI, type FleetVehicle } from "@/lib/mock-api";
-import { formatRelativeTime } from "@/lib/utils";
+import { formatDate, formatRelativeTime } from "@/lib/utils";
 import { useAuth } from "@/contexts/auth-context";
 import { 
   Truck, 
   Search, 
-  MapPin, 
-  Fuel, 
-  Gauge,
-  Plus,
+  Filter, 
+  Plus, 
   MoreHorizontal,
-  Navigation,
-  Wrench,
+  MapPin,
+  Fuel,
+  Gauge,
   AlertTriangle,
-  CheckCircle
+  CheckCircle,
+  Clock,
+  Route,
+  Wrench,
+  Activity,
+  TrendingUp,
+  Navigation,
+  Car
 } from "lucide-react";
 import {
   DropdownMenu,
@@ -39,42 +47,42 @@ export default function FleetPage() {
   const { hasPermission } = useAuth();
 
   useEffect(() => {
-    const loadVehicles = async () => {
+    const loadFleetData = async () => {
       try {
         const vehicleData = await mockAPI.getFleetVehicles();
         setVehicles(vehicleData);
         setFilteredVehicles(vehicleData);
       } catch (error) {
-        console.error("Failed to load vehicles:", error);
+        console.error("Failed to load fleet data:", error);
       } finally {
         setIsLoading(false);
       }
     };
 
-    loadVehicles();
+    loadFleetData();
 
     // Subscribe to real-time updates
-    const unsubscribe = mockAPI.subscribeToFleetUpdates((updatedVehicles) => {
-      setVehicles(updatedVehicles);
+    const unsubscribe = mockAPI.subscribeToFleetUpdates((vehicles) => {
+      setVehicles(vehicles);
+      setFilteredVehicles(vehicles);
     });
 
-    return () => unsubscribe();
+    return () => {
+      unsubscribe();
+    };
   }, []);
 
   useEffect(() => {
     let filtered = vehicles;
 
-    // Search filter
     if (searchQuery) {
       filtered = filtered.filter(vehicle =>
-        vehicle.make.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        vehicle.model.toLowerCase().includes(searchQuery.toLowerCase()) ||
         vehicle.licensePlate.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        vehicle.vin.toLowerCase().includes(searchQuery.toLowerCase())
+        vehicle.model.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        vehicle.make.toLowerCase().includes(searchQuery.toLowerCase())
       );
     }
 
-    // Status filter
     if (statusFilter !== "all") {
       filtered = filtered.filter(vehicle => vehicle.status === statusFilter);
     }
@@ -85,48 +93,30 @@ export default function FleetPage() {
   const getStatusColor = (status: string) => {
     switch (status) {
       case "active":
-        return "success";
+        return "bg-green-100 text-green-800";
       case "maintenance":
-        return "warning";
+        return "bg-yellow-100 text-yellow-800";
       case "offline":
-        return "destructive";
+        return "bg-red-100 text-red-800";
+      case "idle":
+        return "bg-blue-100 text-blue-800";
       default:
-        return "default";
+        return "bg-gray-100 text-gray-800";
     }
   };
 
   const getStatusIcon = (status: string) => {
     switch (status) {
       case "active":
-        return <CheckCircle className="h-4 w-4 text-green-500" />;
+        return <CheckCircle className="h-4 w-4 text-green-600" />;
       case "maintenance":
-        return <Wrench className="h-4 w-4 text-yellow-500" />;
+        return <Wrench className="h-4 w-4 text-yellow-600" />;
       case "offline":
-        return <AlertTriangle className="h-4 w-4 text-red-500" />;
+        return <AlertTriangle className="h-4 w-4 text-red-600" />;
+      case "idle":
+        return <Clock className="h-4 w-4 text-blue-600" />;
       default:
-        return <Truck className="h-4 w-4" />;
-    }
-  };
-
-  const handleVehicleAction = async (vehicleId: string, action: string) => {
-    try {
-      switch (action) {
-        case "activate":
-          await mockAPI.updateFleetVehicle(vehicleId, { status: "active" });
-          break;
-        case "maintenance":
-          await mockAPI.updateFleetVehicle(vehicleId, { status: "maintenance" });
-          break;
-        case "offline":
-          await mockAPI.updateFleetVehicle(vehicleId, { status: "offline" });
-          break;
-      }
-      
-      // Reload vehicles
-      const updatedVehicles = await mockAPI.getFleetVehicles();
-      setVehicles(updatedVehicles);
-    } catch (error) {
-      console.error(`Failed to ${action} vehicle:`, error);
+        return <Activity className="h-4 w-4 text-gray-600" />;
     }
   };
 
@@ -135,227 +125,283 @@ export default function FleetPage() {
       <div className="flex items-center justify-center h-64">
         <div className="text-center">
           <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto mb-4"></div>
-          <p className="text-muted-foreground">Loading fleet data...</p>
+          <p className="text-muted-foreground font-sans">Loading fleet data...</p>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 font-sans">
       {/* Page Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold tracking-tight">Fleet Management</h1>
-          <p className="text-muted-foreground">
-            Monitor and manage your fleet vehicles with real-time tracking
+          <h1 className="text-3xl font-bold tracking-tight text-foreground font-sans">Fleet Management</h1>
+          <p className="text-muted-foreground font-sans">
+            Monitor and manage your fleet vehicles in real-time
           </p>
         </div>
-        {hasPermission("manage_fleet") && (
-          <Button>
+        <div className="flex items-center space-x-2">
+          <Button variant="outline" className="shadow-sm">
+            <Route className="mr-2 h-4 w-4" />
+            Optimize Routes
+          </Button>
+          <Button className="shadow-sm">
             <Plus className="mr-2 h-4 w-4" />
             Add Vehicle
           </Button>
-        )}
+        </div>
       </div>
 
-      {/* Stats Cards */}
-      <div className="grid gap-4 md:grid-cols-4">
-        <Card>
+      {/* Fleet Overview Cards */}
+      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+        <Card className="shadow-sm">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Total Vehicles</CardTitle>
+            <CardTitle className="text-sm font-medium text-card-foreground">Total Vehicles</CardTitle>
             <Truck className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{vehicles.length}</div>
+            <div className="text-2xl font-bold text-foreground">{vehicles.length}</div>
             <p className="text-xs text-muted-foreground">
-              +3 new this month
+              <span className="text-green-600">+2</span> this month
             </p>
           </CardContent>
         </Card>
-        
-        <Card>
+        <Card className="shadow-sm">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Active Vehicles</CardTitle>
+            <CardTitle className="text-sm font-medium text-card-foreground">Active Vehicles</CardTitle>
             <CheckCircle className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">
+            <div className="text-2xl font-bold text-foreground">
               {vehicles.filter(v => v.status === "active").length}
             </div>
             <p className="text-xs text-muted-foreground">
-              {Math.round((vehicles.filter(v => v.status === "active").length / vehicles.length) * 100)}% operational
+              <span className="text-green-600">+5%</span> efficiency
             </p>
           </CardContent>
         </Card>
-        
-        <Card>
+        <Card className="shadow-sm">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">In Maintenance</CardTitle>
+            <CardTitle className="text-sm font-medium text-card-foreground">Maintenance Due</CardTitle>
             <Wrench className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">
+            <div className="text-2xl font-bold text-foreground">
               {vehicles.filter(v => v.status === "maintenance").length}
             </div>
             <p className="text-xs text-muted-foreground">
-              Scheduled maintenance
+              <span className="text-yellow-600">3</span> overdue
             </p>
           </CardContent>
         </Card>
-        
-        <Card>
+        <Card className="shadow-sm">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Offline</CardTitle>
+            <CardTitle className="text-sm font-medium text-card-foreground">Offline Vehicles</CardTitle>
             <AlertTriangle className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">
+            <div className="text-2xl font-bold text-foreground">
               {vehicles.filter(v => v.status === "offline").length}
             </div>
             <p className="text-xs text-muted-foreground">
-              Requires attention
+              <span className="text-red-600">-2</span> from yesterday
             </p>
           </CardContent>
         </Card>
       </div>
 
-      {/* Fleet Overview */}
-      <Card>
+      {/* Fleet Map Placeholder */}
+      <Card className="shadow-sm">
         <CardHeader>
-          <CardTitle>Fleet Overview</CardTitle>
-          <CardDescription>
-            Real-time status and location of all fleet vehicles
-          </CardDescription>
+          <CardTitle className="text-card-foreground">Fleet Map</CardTitle>
+          <CardDescription>Real-time GPS tracking of all vehicles</CardDescription>
         </CardHeader>
         <CardContent>
-          <div className="flex flex-col md:flex-row gap-4 mb-6">
-            <div className="relative flex-1">
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4" />
-              <Input
-                placeholder="Search vehicles..."
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                className="pl-10"
-              />
+          <div className="h-64 bg-muted rounded-lg flex items-center justify-center">
+            <div className="text-center">
+              <MapPin className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
+              <p className="text-muted-foreground">Interactive fleet map will be displayed here</p>
+              <p className="text-sm text-muted-foreground mt-2">
+                Showing {vehicles.filter(v => v.location).length} vehicles with GPS data
+              </p>
             </div>
-            
-            <select
-              value={statusFilter}
-              onChange={(e) => setStatusFilter(e.target.value)}
-              className="px-3 py-2 border border-input bg-background rounded-md text-sm"
-            >
-              <option value="all">All Status</option>
-              <option value="active">Active</option>
-              <option value="maintenance">Maintenance</option>
-              <option value="offline">Offline</option>
-            </select>
           </div>
+        </CardContent>
+      </Card>
 
-          {/* Vehicles Grid */}
-          <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-            {filteredVehicles.map((vehicle) => (
-              <div key={vehicle.id} className="border rounded-lg p-4 hover:bg-muted/50 transition-colors">
-                <div className="flex items-start justify-between mb-3">
-                  <div className="flex items-center space-x-2">
-                    {getStatusIcon(vehicle.status)}
-                    <Badge variant={getStatusColor(vehicle.status) as any}>
-                      {vehicle.status}
-                    </Badge>
-                  </div>
-                  
-                  <DropdownMenu>
-                    <DropdownMenuTrigger asChild>
-                      <Button variant="ghost" size="icon" className="h-8 w-8">
-                        <MoreHorizontal className="h-4 w-4" />
-                      </Button>
-                    </DropdownMenuTrigger>
-                    <DropdownMenuContent align="end">
-                      <DropdownMenuLabel>Actions</DropdownMenuLabel>
-                      <DropdownMenuSeparator />
-                      <DropdownMenuItem>
-                        <MapPin className="mr-2 h-4 w-4" />
-                        View Location
-                      </DropdownMenuItem>
-                      <DropdownMenuItem>
-                        <Navigation className="mr-2 h-4 w-4" />
-                        Track Route
-                      </DropdownMenuItem>
-                      <DropdownMenuSeparator />
-                      <DropdownMenuItem 
-                        onClick={() => handleVehicleAction(vehicle.id, "activate")}
-                        className="text-green-600"
-                      >
-                        <CheckCircle className="mr-2 h-4 w-4" />
-                        Mark Active
-                      </DropdownMenuItem>
-                      <DropdownMenuItem 
-                        onClick={() => handleVehicleAction(vehicle.id, "maintenance")}
-                        className="text-yellow-600"
-                      >
-                        <Wrench className="mr-2 h-4 w-4" />
-                        Schedule Maintenance
-                      </DropdownMenuItem>
-                      <DropdownMenuItem 
-                        onClick={() => handleVehicleAction(vehicle.id, "offline")}
-                        className="text-red-600"
-                      >
-                        <AlertTriangle className="mr-2 h-4 w-4" />
-                        Mark Offline
-                      </DropdownMenuItem>
-                    </DropdownMenuContent>
-                  </DropdownMenu>
-                </div>
-
-                <div className="space-y-2">
-                  <h3 className="font-semibold">{vehicle.make} {vehicle.model} ({vehicle.year})</h3>
-                  <p className="text-sm text-muted-foreground">License: {vehicle.licensePlate}</p>
-                  <p className="text-sm text-muted-foreground">VIN: {vehicle.vin}</p>
-                  
-                  {vehicle.driver && (
-                    <p className="text-sm text-muted-foreground">Driver: {vehicle.driver.name}</p>
-                  )}
-                </div>
-
-                <div className="mt-4 space-y-2">
-                  <div className="flex items-center justify-between text-sm">
-                    <span className="flex items-center">
-                      <MapPin className="h-3 w-3 mr-1" />
-                      Location
-                    </span>
-                    <span className="text-muted-foreground">{vehicle.location.address}</span>
-                  </div>
-                  
-                  <div className="flex items-center justify-between text-sm">
-                    <span className="flex items-center">
-                      <Gauge className="h-3 w-3 mr-1" />
-                      Odometer
-                    </span>
-                    <span className="text-muted-foreground">{vehicle.odometer.toLocaleString()} mi</span>
-                  </div>
-                  
-                  <div className="flex items-center justify-between text-sm">
-                    <span className="flex items-center">
-                      <Fuel className="h-3 w-3 mr-1" />
-                      Fuel Level
-                    </span>
-                    <span className="text-muted-foreground">{vehicle.fuelLevel}%</span>
-                  </div>
-                  
-                  <div className="text-xs text-muted-foreground mt-2">
-                    Last update: {formatRelativeTime(vehicle.lastUpdate)}
-                  </div>
-                </div>
+      {/* Fleet List */}
+      <Card className="shadow-sm">
+        <CardHeader>
+          <CardTitle className="text-card-foreground">Fleet Vehicles</CardTitle>
+          <CardDescription>Detailed view of all vehicles with real-time status</CardDescription>
+        </CardHeader>
+        <CardContent>
+          {/* Filters */}
+          <div className="flex items-center space-x-4 mb-6">
+            <div className="flex-1">
+              <div className="relative">
+                <Search className="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground" />
+                <Input
+                  placeholder="Search vehicles..."
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  className="pl-8"
+                />
               </div>
-            ))}
+            </div>
+            <Select value={statusFilter} onValueChange={setStatusFilter}>
+              <SelectTrigger className="w-[180px]">
+                <SelectValue placeholder="Filter by status" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">All Status</SelectItem>
+                <SelectItem value="active">Active</SelectItem>
+                <SelectItem value="idle">Idle</SelectItem>
+                <SelectItem value="maintenance">Maintenance</SelectItem>
+                <SelectItem value="offline">Offline</SelectItem>
+              </SelectContent>
+            </Select>
           </div>
 
-          {filteredVehicles.length === 0 && (
-            <div className="text-center py-8">
-              <Truck className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
-              <p className="text-muted-foreground">No vehicles found matching your criteria</p>
+          {/* Vehicle Table */}
+          <Table>
+            <TableHeader>
+              <TableRow>
+                <TableHead>Vehicle</TableHead>
+                <TableHead>Status</TableHead>
+                <TableHead>Location</TableHead>
+                <TableHead>Fuel Level</TableHead>
+                <TableHead>OBD2 Health</TableHead>
+                <TableHead>Last Update</TableHead>
+                <TableHead className="text-right">Actions</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {filteredVehicles.map((vehicle) => (
+                <TableRow key={vehicle.id}>
+                  <TableCell>
+                    <div className="flex items-center space-x-3">
+                      <div className="w-8 h-8 rounded-full bg-primary flex items-center justify-center">
+                        <Car className="h-4 w-4 text-primary-foreground" />
+                      </div>
+                      <div>
+                        <p className="text-sm font-medium text-foreground">{vehicle.licensePlate}</p>
+                        <p className="text-xs text-muted-foreground">{vehicle.make} {vehicle.model}</p>
+                      </div>
+                    </div>
+                  </TableCell>
+                  <TableCell>
+                    <div className="flex items-center space-x-2">
+                      {getStatusIcon(vehicle.status)}
+                      <Badge className={getStatusColor(vehicle.status)}>
+                        {vehicle.status}
+                      </Badge>
+                    </div>
+                  </TableCell>
+                  <TableCell>
+                    {vehicle.location ? (
+                      <div className="flex items-center space-x-1">
+                        <MapPin className="h-3 w-3 text-muted-foreground" />
+                        <span className="text-sm text-muted-foreground">
+                          {vehicle.location.lat.toFixed(2)}, {vehicle.location.lng.toFixed(2)}
+                        </span>
+                      </div>
+                    ) : (
+                      <span className="text-sm text-muted-foreground">No location data</span>
+                    )}
+                  </TableCell>
+                  <TableCell>
+                    <div className="flex items-center space-x-2">
+                      <Fuel className="h-3 w-3 text-muted-foreground" />
+                      <span className="text-sm text-muted-foreground">
+                        {vehicle.fuelLevel || 0}%
+                      </span>
+                    </div>
+                  </TableCell>
+                  <TableCell>
+                    <div className="flex items-center space-x-2">
+                      <Gauge className="h-3 w-3 text-muted-foreground" />
+                      <span className="text-sm text-muted-foreground">
+                        {vehicle.obd2Health || "Good"}
+                      </span>
+                    </div>
+                  </TableCell>
+                  <TableCell>
+                    <span className="text-sm text-muted-foreground">
+                      {formatRelativeTime(vehicle.lastUpdate)}
+                    </span>
+                  </TableCell>
+                  <TableCell className="text-right">
+                    <DropdownMenu>
+                      <DropdownMenuTrigger asChild>
+                        <Button variant="ghost" className="h-8 w-8 p-0">
+                          <MoreHorizontal className="h-4 w-4" />
+                        </Button>
+                      </DropdownMenuTrigger>
+                      <DropdownMenuContent align="end">
+                        <DropdownMenuLabel>Actions</DropdownMenuLabel>
+                        <DropdownMenuItem>
+                          <Navigation className="mr-2 h-4 w-4" />
+                          View on Map
+                        </DropdownMenuItem>
+                        <DropdownMenuItem>
+                          <Route className="mr-2 h-4 w-4" />
+                          Plan Route
+                        </DropdownMenuItem>
+                        <DropdownMenuItem>
+                          <Activity className="mr-2 h-4 w-4" />
+                          View Details
+                        </DropdownMenuItem>
+                        <DropdownMenuSeparator />
+                        <DropdownMenuItem>
+                          <Wrench className="mr-2 h-4 w-4" />
+                          Schedule Maintenance
+                        </DropdownMenuItem>
+                        <DropdownMenuItem className="text-red-600">
+                          <AlertTriangle className="mr-2 h-4 w-4" />
+                          Report Issue
+                        </DropdownMenuItem>
+                      </DropdownMenuContent>
+                    </DropdownMenu>
+                  </TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </CardContent>
+      </Card>
+
+      {/* Alerts List */}
+      <Card className="shadow-sm">
+        <CardHeader>
+          <CardTitle className="text-card-foreground">Fleet Alerts</CardTitle>
+          <CardDescription>Critical notifications and maintenance reminders</CardDescription>
+        </CardHeader>
+        <CardContent>
+          <div className="space-y-3">
+            <div className="flex items-center space-x-3 p-3 rounded-lg bg-red-50 border border-red-200">
+              <AlertTriangle className="h-4 w-4 text-red-600" />
+              <div>
+                <p className="text-sm font-medium text-red-900">Vehicle ABC-123 Offline</p>
+                <p className="text-xs text-red-700">No GPS signal for 2 hours</p>
+              </div>
             </div>
-          )}
+            <div className="flex items-center space-x-3 p-3 rounded-lg bg-yellow-50 border border-yellow-200">
+              <Wrench className="h-4 w-4 text-yellow-600" />
+              <div>
+                <p className="text-sm font-medium text-yellow-900">Maintenance Due</p>
+                <p className="text-xs text-yellow-700">DEF-456 needs oil change</p>
+              </div>
+            </div>
+            <div className="flex items-center space-x-3 p-3 rounded-lg bg-blue-50 border border-blue-200">
+              <Fuel className="h-4 w-4 text-blue-600" />
+              <div>
+                <p className="text-sm font-medium text-blue-900">Low Fuel Alert</p>
+                <p className="text-xs text-blue-700">GHI-789 fuel level at 15%</p>
+              </div>
+            </div>
+          </div>
         </CardContent>
       </Card>
     </div>

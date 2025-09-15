@@ -41,27 +41,29 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-muted/50 px-4">
-      <Card className="w-full max-w-md">
-        <CardHeader className="text-center">
-          <div className="flex justify-center mb-4">
+    <div className="min-h-screen flex items-center justify-center bg-background px-4 font-sans">
+      <Card className="w-full max-w-md shadow-md">
+        <CardHeader className="text-center space-y-6">
+          <div className="flex justify-center">
             <Image
               src="/logos/Logored.png"
               alt="Clutch"
-              width={64}
-              height={64}
+              width={80}
+              height={80}
               className="object-contain"
             />
           </div>
-          <CardTitle className="text-2xl">Clutch Admin</CardTitle>
-          <CardDescription>
-            Sign in to your employee account
-          </CardDescription>
+          <div className="space-y-2">
+            <CardTitle className="text-3xl font-bold text-foreground font-sans">Clutch Admin</CardTitle>
+            <CardDescription className="text-muted-foreground font-sans">
+              Sign in to your employee account
+            </CardDescription>
+          </div>
         </CardHeader>
-        <CardContent>
-          <form onSubmit={handleSubmit} className="space-y-4">
-            <div className="space-y-2">
-              <Label htmlFor="email">Email</Label>
+        <CardContent className="space-y-6">
+          <form onSubmit={handleSubmit} className="space-y-6">
+            <div className="space-y-3">
+              <Label htmlFor="email" className="text-sm font-medium text-foreground">Email</Label>
               <Input
                 id="email"
                 type="email"
@@ -70,11 +72,12 @@ export default function LoginPage() {
                 onChange={(e) => setEmail(e.target.value)}
                 required
                 disabled={isLoading}
+                className="h-12"
               />
             </div>
             
-            <div className="space-y-2">
-              <Label htmlFor="password">Password</Label>
+            <div className="space-y-3">
+              <Label htmlFor="password" className="text-sm font-medium text-foreground">Password</Label>
               <div className="relative">
                 <Input
                   id="password"
@@ -84,31 +87,32 @@ export default function LoginPage() {
                   onChange={(e) => setPassword(e.target.value)}
                   required
                   disabled={isLoading}
+                  className="h-12 pr-12"
                 />
                 <Button
                   type="button"
                   variant="ghost"
                   size="icon"
-                  className="absolute right-0 top-0 h-full px-3 py-2 hover:bg-transparent"
+                  className="absolute right-0 top-0 h-12 w-12 hover:bg-transparent"
                   onClick={() => setShowPassword(!showPassword)}
                   disabled={isLoading}
                 >
                   {showPassword ? (
-                    <EyeOff className="h-4 w-4" />
+                    <EyeOff className="h-4 w-4 text-muted-foreground" />
                   ) : (
-                    <Eye className="h-4 w-4" />
+                    <Eye className="h-4 w-4 text-muted-foreground" />
                   )}
                 </Button>
               </div>
             </div>
 
             {error && (
-              <Alert variant="destructive">
-                <AlertDescription>{error}</AlertDescription>
+              <Alert variant="destructive" className="border-destructive bg-destructive/10">
+                <AlertDescription className="text-destructive-foreground">{error}</AlertDescription>
               </Alert>
             )}
 
-            <Button type="submit" className="w-full" disabled={isLoading}>
+            <Button type="submit" className="w-full h-12 text-base font-medium" disabled={isLoading}>
               {isLoading ? (
                 <>
                   <Loader2 className="mr-2 h-4 w-4 animate-spin" />
@@ -120,11 +124,14 @@ export default function LoginPage() {
             </Button>
           </form>
 
-          <div className="mt-6 text-center text-sm text-muted-foreground">
-            <p>Employee Login:</p>
-            <div className="mt-2 space-y-1">
-              <p><strong>ziad@yourclutch.com</strong> - Platform Administrator (Full Access)</p>
-              <p className="text-xs">Connect to production backend at clutch-main-nk7x.onrender.com</p>
+          <div className="pt-6 border-t border-border">
+            <div className="text-center text-sm text-muted-foreground space-y-3">
+              <p className="font-medium">Employee Login:</p>
+              <div className="space-y-2">
+                <p className="font-semibold text-foreground">ziad@yourclutch.com</p>
+                <p className="text-xs">Platform Administrator (Full Access)</p>
+                <p className="text-xs">Connect to production backend at clutch-main-nk7x.onrender.com</p>
+              </div>
             </div>
           </div>
         </CardContent>

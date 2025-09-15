@@ -5,8 +5,11 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { useAuth } from "@/contexts/auth-context";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { formatDate, formatRelativeTime } from "@/lib/utils";
+import { useAuth } from "@/contexts/auth-context";
 import { 
   Brain, 
   Search, 
@@ -18,21 +21,18 @@ import {
   AlertTriangle,
   CheckCircle,
   Clock,
+  Target,
+  BarChart3,
+  Activity,
+  Zap,
+  Shield,
   Eye,
-  Edit,
   Play,
   Pause,
   Settings,
-  BarChart3,
-  PieChart,
-  Activity,
-  Zap,
-  Target,
-  Shield,
-  Database,
-  Cpu,
-  Layers,
-  GitBranch
+  Download,
+  Upload,
+  XCircle
 } from "lucide-react";
 import {
   DropdownMenu,
@@ -44,181 +44,157 @@ import {
 } from "@/components/ui/dropdown-menu";
 
 interface AIModel {
-  _id: string;
+  id: string;
   name: string;
-  type: "fraud_detection" | "recommendation" | "predictive" | "nlp" | "computer_vision" | "anomaly_detection";
-  status: "training" | "active" | "inactive" | "error" | "deployed";
-  version: string;
+  type: string;
   accuracy: number;
-  performance: {
-    precision: number;
-    recall: number;
-    f1Score: number;
-    latency: number;
-  };
-  trainingData: {
-    size: number;
-    lastUpdated: string;
-    quality: "excellent" | "good" | "fair" | "poor";
-  };
-  deployment: {
-    environment: "production" | "staging" | "development";
-    instances: number;
-    lastDeployed: string;
-    uptime: number;
-  };
-  metrics: {
-    predictions: number;
-    accuracy: number;
-    falsePositives: number;
-    falseNegatives: number;
-  };
-  createdAt: string;
-  updatedAt: string;
+  status: string;
+  lastTrained: string;
+  predictions: number;
+  performance: number;
+}
+
+interface FraudCase {
+  id: string;
+  customer: string;
+  amount: number;
+  risk: string;
+  status: string;
+  detectedAt: string;
   description: string;
-  tags: string[];
 }
 
-interface MLExperiment {
-  _id: string;
-  name: string;
-  status: "running" | "completed" | "failed" | "paused";
-  algorithm: string;
-  dataset: string;
-  progress: number;
-  startTime: string;
-  endTime?: string;
-  metrics: {
-    accuracy: number;
-    loss: number;
-    validationAccuracy: number;
-  };
-  hyperparameters: Record<string, unknown>;
-  results: {
-    bestModel: string;
-    performance: number;
-    insights: string[];
-  };
-  createdBy: string;
-}
-
-interface AIInsight {
-  _id: string;
+interface Recommendation {
+  id: string;
+  type: string;
   title: string;
-  type: "anomaly" | "trend" | "prediction" | "recommendation" | "alert";
-  severity: "low" | "medium" | "high" | "critical";
-  description: string;
   confidence: number;
   impact: string;
-  actionRequired: boolean;
+  status: string;
   createdAt: string;
-  status: "new" | "reviewed" | "actioned" | "dismissed";
-  relatedModel: string;
-  data: Record<string, unknown>;
-}
-
-interface AIStats {
-  totalModels: number;
-  activeModels: number;
-  totalPredictions: number;
-  averageAccuracy: number;
-  totalExperiments: number;
-  runningExperiments: number;
-  insightsGenerated: number;
-  criticalAlerts: number;
 }
 
 export default function AIMLPage() {
   const [models, setModels] = useState<AIModel[]>([]);
-  const [experiments, setExperiments] = useState<MLExperiment[]>([]);
-  const [insights, setInsights] = useState<AIInsight[]>([]);
-  const [stats, setStats] = useState<AIStats | null>(null);
+  const [fraudCases, setFraudCases] = useState<FraudCase[]>([]);
+  const [recommendations, setRecommendations] = useState<Recommendation[]>([]);
   const [filteredModels, setFilteredModels] = useState<AIModel[]>([]);
   const [searchQuery, setSearchQuery] = useState("");
   const [statusFilter, setStatusFilter] = useState<string>("all");
-  const [activeTab, setActiveTab] = useState<"models" | "experiments" | "insights">("models");
   const [isLoading, setIsLoading] = useState(true);
   const { hasPermission } = useAuth();
 
   useEffect(() => {
     const loadAIMLData = async () => {
       try {
-        const token = localStorage.getItem("clutch-admin-token");
-        
-        // Load AI models
-        const modelsResponse = await fetch("https://clutch-main-nk7x.onrender.com/api/v1/ai/models", {
-          headers: {
-            "Authorization": `Bearer ${token}`,
-            "Content-Type": "application/json",
+        // Mock data for AI/ML
+        const mockModels: AIModel[] = [
+          {
+            id: "1",
+            name: "Fraud Detection Model",
+            type: "Classification",
+            accuracy: 94.5,
+            status: "active",
+            lastTrained: "2024-01-15T10:30:00Z",
+            predictions: 1250,
+            performance: 98.2
           },
-        });
-        
-        if (modelsResponse.ok) {
-          const modelsData = await modelsResponse.json();
-          setModels(modelsData.data || modelsData);
-        }
-
-        // Load ML experiments
-        const experimentsResponse = await fetch("https://clutch-main-nk7x.onrender.com/api/v1/ai/experiments", {
-          headers: {
-            "Authorization": `Bearer ${token}`,
-            "Content-Type": "application/json",
+          {
+            id: "2",
+            name: "Fleet Optimization",
+            type: "Regression",
+            accuracy: 89.3,
+            status: "training",
+            lastTrained: "2024-01-14T14:20:00Z",
+            predictions: 850,
+            performance: 92.1
           },
-        });
-        
-        if (experimentsResponse.ok) {
-          const experimentsData = await experimentsResponse.json();
-          setExperiments(experimentsData.data || experimentsData);
-        }
-
-        // Load AI insights
-        const insightsResponse = await fetch("https://clutch-main-nk7x.onrender.com/api/v1/ai/insights", {
-          headers: {
-            "Authorization": `Bearer ${token}`,
-            "Content-Type": "application/json",
+          {
+            id: "3",
+            name: "Customer Churn Prediction",
+            type: "Classification",
+            accuracy: 91.7,
+            status: "active",
+            lastTrained: "2024-01-13T09:15:00Z",
+            predictions: 2100,
+            performance: 95.8
           },
-        });
-        
-        if (insightsResponse.ok) {
-          const insightsData = await insightsResponse.json();
-          setInsights(insightsData.data || insightsData);
-        }
+          {
+            id: "4",
+            name: "Demand Forecasting",
+            type: "Time Series",
+            accuracy: 87.2,
+            status: "inactive",
+            lastTrained: "2024-01-12T16:45:00Z",
+            predictions: 650,
+            performance: 88.9
+          }
+        ];
 
-        // Load AI stats
-        const statsResponse = await fetch("https://clutch-main-nk7x.onrender.com/api/v1/ai/stats", {
-          headers: {
-            "Authorization": `Bearer ${token}`,
-            "Content-Type": "application/json",
+        const mockFraudCases: FraudCase[] = [
+          {
+            id: "1",
+            customer: "Ahmed Hassan",
+            amount: 15000,
+            risk: "high",
+            status: "investigating",
+            detectedAt: "2024-01-15T10:30:00Z",
+            description: "Unusual payment pattern detected"
           },
-        });
-        
-        if (statsResponse.ok) {
-          const statsData = await statsResponse.json();
-          setStats(statsData.data || statsData);
-        } else {
-          // Calculate stats from loaded data
-          const totalModels = models.length;
-          const activeModels = models.filter(m => m.status === "active").length;
-          const totalPredictions = models.reduce((sum, m) => sum + m.metrics.predictions, 0);
-          const averageAccuracy = models.length > 0 
-            ? models.reduce((sum, m) => sum + m.accuracy, 0) / models.length 
-            : 0;
-          const totalExperiments = experiments.length;
-          const runningExperiments = experiments.filter(e => e.status === "running").length;
-          const insightsGenerated = insights.length;
-          const criticalAlerts = insights.filter(i => i.severity === "critical").length;
+          {
+            id: "2",
+            customer: "Fatma Mohamed",
+            amount: 8500,
+            risk: "medium",
+            status: "resolved",
+            detectedAt: "2024-01-14T14:20:00Z",
+            description: "Multiple failed payment attempts"
+          },
+          {
+            id: "3",
+            customer: "Omar Ali",
+            amount: 3200,
+            risk: "low",
+            status: "false_positive",
+            detectedAt: "2024-01-13T09:15:00Z",
+            description: "New customer with high initial transaction"
+          }
+        ];
 
-          setStats({
-            totalModels,
-            activeModels,
-            totalPredictions,
-            averageAccuracy,
-            totalExperiments,
-            runningExperiments,
-            insightsGenerated,
-            criticalAlerts,
-          });
-        }
+        const mockRecommendations: Recommendation[] = [
+          {
+            id: "1",
+            type: "Fleet Optimization",
+            title: "Optimize Route for Vehicle ABC-123",
+            confidence: 92.5,
+            impact: "high",
+            status: "pending",
+            createdAt: "2024-01-15T10:30:00Z"
+          },
+          {
+            id: "2",
+            type: "Customer Retention",
+            title: "Offer discount to at-risk customer",
+            confidence: 87.3,
+            impact: "medium",
+            status: "implemented",
+            createdAt: "2024-01-14T14:20:00Z"
+          },
+          {
+            id: "3",
+            type: "Maintenance",
+            title: "Schedule maintenance for Vehicle DEF-456",
+            confidence: 95.1,
+            impact: "high",
+            status: "pending",
+            createdAt: "2024-01-13T09:15:00Z"
+          }
+        ];
+
+        setModels(mockModels);
+        setFraudCases(mockFraudCases);
+        setRecommendations(mockRecommendations);
+        setFilteredModels(mockModels);
       } catch (error) {
         console.error("Failed to load AI/ML data:", error);
       } finally {
@@ -232,16 +208,13 @@ export default function AIMLPage() {
   useEffect(() => {
     let filtered = models;
 
-    // Search filter
     if (searchQuery) {
       filtered = filtered.filter(model =>
         model.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        model.type.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        model.description.toLowerCase().includes(searchQuery.toLowerCase())
+        model.type.toLowerCase().includes(searchQuery.toLowerCase())
       );
     }
 
-    // Status filter
     if (statusFilter !== "all") {
       filtered = filtered.filter(model => model.status === statusFilter);
     }
@@ -252,157 +225,49 @@ export default function AIMLPage() {
   const getStatusColor = (status: string) => {
     switch (status) {
       case "active":
-      case "completed":
-        return "success";
+        return "bg-green-100 text-green-800";
       case "training":
-      case "running":
-        return "warning";
+        return "bg-yellow-100 text-yellow-800";
       case "inactive":
-      case "paused":
-        return "default";
-      case "error":
-      case "failed":
-        return "destructive";
-      case "deployed":
-        return "info";
+        return "bg-gray-100 text-gray-800";
+      case "investigating":
+        return "bg-yellow-100 text-yellow-800";
+      case "resolved":
+        return "bg-green-100 text-green-800";
+      case "false_positive":
+        return "bg-blue-100 text-blue-800";
+      case "pending":
+        return "bg-yellow-100 text-yellow-800";
+      case "implemented":
+        return "bg-green-100 text-green-800";
       default:
-        return "default";
+        return "bg-gray-100 text-gray-800";
     }
   };
 
-  const getSeverityColor = (severity: string) => {
-    switch (severity) {
-      case "critical":
-        return "destructive";
+  const getRiskColor = (risk: string) => {
+    switch (risk) {
       case "high":
-        return "warning";
+        return "bg-red-100 text-red-800";
       case "medium":
-        return "info";
+        return "bg-yellow-100 text-yellow-800";
       case "low":
-        return "success";
+        return "bg-green-100 text-green-800";
       default:
-        return "default";
+        return "bg-gray-100 text-gray-800";
     }
   };
 
-  const getTypeIcon = (type: string) => {
-    switch (type) {
-      case "fraud_detection":
-        return <Shield className="h-4 w-4" />;
-      case "recommendation":
-        return <Target className="h-4 w-4" />;
-      case "predictive":
-        return <TrendingUp className="h-4 w-4" />;
-      case "nlp":
-        return <Brain className="h-4 w-4" />;
-      case "computer_vision":
-        return <Eye className="h-4 w-4" />;
-      case "anomaly_detection":
-        return <AlertTriangle className="h-4 w-4" />;
+  const getImpactColor = (impact: string) => {
+    switch (impact) {
+      case "high":
+        return "bg-red-100 text-red-800";
+      case "medium":
+        return "bg-yellow-100 text-yellow-800";
+      case "low":
+        return "bg-green-100 text-green-800";
       default:
-        return <Brain className="h-4 w-4" />;
-    }
-  };
-
-  const handleModelAction = async (modelId: string, action: string) => {
-    try {
-      const token = localStorage.getItem("clutch-admin-token");
-      
-      switch (action) {
-        case "deploy":
-          await fetch(`https://clutch-main-nk7x.onrender.com/api/v1/ai/models/${modelId}/deploy`, {
-            method: "POST",
-            headers: {
-              "Authorization": `Bearer ${token}`,
-              "Content-Type": "application/json",
-            },
-          });
-          break;
-        case "stop":
-          await fetch(`https://clutch-main-nk7x.onrender.com/api/v1/ai/models/${modelId}/stop`, {
-            method: "POST",
-            headers: {
-              "Authorization": `Bearer ${token}`,
-              "Content-Type": "application/json",
-            },
-          });
-          break;
-        case "retrain":
-          await fetch(`https://clutch-main-nk7x.onrender.com/api/v1/ai/models/${modelId}/retrain`, {
-            method: "POST",
-            headers: {
-              "Authorization": `Bearer ${token}`,
-              "Content-Type": "application/json",
-            },
-          });
-          break;
-      }
-      
-      // Reload models
-      const response = await fetch("https://clutch-main-nk7x.onrender.com/api/v1/ai/models", {
-        headers: {
-          "Authorization": `Bearer ${token}`,
-          "Content-Type": "application/json",
-        },
-      });
-      
-      if (response.ok) {
-        const data = await response.json();
-        setModels(data.data || data);
-      }
-    } catch (error) {
-      console.error(`Failed to ${action} model:`, error);
-    }
-  };
-
-  const handleExperimentAction = async (experimentId: string, action: string) => {
-    try {
-      const token = localStorage.getItem("clutch-admin-token");
-      
-      switch (action) {
-        case "start":
-          await fetch(`https://clutch-main-nk7x.onrender.com/api/v1/ai/experiments/${experimentId}/start`, {
-            method: "POST",
-            headers: {
-              "Authorization": `Bearer ${token}`,
-              "Content-Type": "application/json",
-            },
-          });
-          break;
-        case "pause":
-          await fetch(`https://clutch-main-nk7x.onrender.com/api/v1/ai/experiments/${experimentId}/pause`, {
-            method: "POST",
-            headers: {
-              "Authorization": `Bearer ${token}`,
-              "Content-Type": "application/json",
-            },
-          });
-          break;
-        case "stop":
-          await fetch(`https://clutch-main-nk7x.onrender.com/api/v1/ai/experiments/${experimentId}/stop`, {
-            method: "POST",
-            headers: {
-              "Authorization": `Bearer ${token}`,
-              "Content-Type": "application/json",
-            },
-          });
-          break;
-      }
-      
-      // Reload experiments
-      const response = await fetch("https://clutch-main-nk7x.onrender.com/api/v1/ai/experiments", {
-        headers: {
-          "Authorization": `Bearer ${token}`,
-          "Content-Type": "application/json",
-        },
-      });
-      
-      if (response.ok) {
-        const data = await response.json();
-        setExperiments(data.data || data);
-      }
-    } catch (error) {
-      console.error(`Failed to ${action} experiment:`, error);
+        return "bg-gray-100 text-gray-800";
     }
   };
 
@@ -411,456 +276,470 @@ export default function AIMLPage() {
       <div className="flex items-center justify-center h-64">
         <div className="text-center">
           <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto mb-4"></div>
-          <p className="text-muted-foreground">Loading AI/ML data...</p>
+          <p className="text-muted-foreground font-sans">Loading AI/ML data...</p>
         </div>
       </div>
     );
   }
 
+  const totalPredictions = models.reduce((sum, model) => sum + model.predictions, 0);
+  const avgAccuracy = models.length > 0 ? models.reduce((sum, model) => sum + model.accuracy, 0) / models.length : 0;
+  const activeModels = models.filter(m => m.status === "active").length;
+  const fraudCasesDetected = fraudCases.length;
+
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 font-sans">
       {/* Page Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold tracking-tight">AI & ML Dashboard</h1>
-          <p className="text-muted-foreground">
-            Manage machine learning models, experiments, and AI insights
+          <h1 className="text-3xl font-bold tracking-tight text-foreground font-sans">AI & ML Dashboard</h1>
+          <p className="text-muted-foreground font-sans">
+            Manage AI models, predictive analytics, and machine learning features
           </p>
         </div>
-        {hasPermission("manage_ai_models") && (
-          <div className="flex space-x-2">
-            <Button>
-              <Plus className="mr-2 h-4 w-4" />
-              New Model
-            </Button>
-            <Button variant="outline">
-              <Plus className="mr-2 h-4 w-4" />
-              New Experiment
-            </Button>
-          </div>
-        )}
+        <div className="flex items-center space-x-2">
+          <Button variant="outline" className="shadow-sm">
+            <Download className="mr-2 h-4 w-4" />
+            Export Data
+          </Button>
+          <Button className="shadow-sm">
+            <Plus className="mr-2 h-4 w-4" />
+            Train Model
+          </Button>
+        </div>
       </div>
 
-      {/* Stats Cards */}
-      <div className="grid gap-4 md:grid-cols-4">
-        <Card>
+      {/* KPI Cards */}
+      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+        <Card className="shadow-sm">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Active Models</CardTitle>
-            <Brain className="h-4 w-4 text-muted-foreground" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">
-              {stats ? stats.activeModels : models.filter(m => m.status === "active").length}
-            </div>
-            <p className="text-xs text-muted-foreground">
-              {stats ? stats.totalModels : models.length} total models
-            </p>
-          </CardContent>
-        </Card>
-        
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Total Predictions</CardTitle>
-            <Zap className="h-4 w-4 text-muted-foreground" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">
-              {stats ? stats.totalPredictions.toLocaleString() : 
-                models.reduce((sum, m) => sum + m.metrics.predictions, 0).toLocaleString()}
-            </div>
-            <p className="text-xs text-muted-foreground">
-              All time predictions
-            </p>
-          </CardContent>
-        </Card>
-        
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Avg. Accuracy</CardTitle>
+            <CardTitle className="text-sm font-medium text-card-foreground">Total Predictions</CardTitle>
             <Target className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">
-              {stats ? (stats.averageAccuracy * 100).toFixed(1) : 
-                models.length > 0 ? (models.reduce((sum, m) => sum + m.accuracy, 0) / models.length * 100).toFixed(1) : 0}%
-            </div>
+            <div className="text-2xl font-bold text-foreground">{totalPredictions.toLocaleString()}</div>
             <p className="text-xs text-muted-foreground">
-              Model performance
+              <span className="text-green-600">+15%</span> from last month
             </p>
           </CardContent>
         </Card>
-        
-        <Card>
+        <Card className="shadow-sm">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Running Experiments</CardTitle>
-            <Activity className="h-4 w-4 text-muted-foreground" />
+            <CardTitle className="text-sm font-medium text-card-foreground">Average Accuracy</CardTitle>
+            <BarChart3 className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">
-              {stats ? stats.runningExperiments : experiments.filter(e => e.status === "running").length}
-            </div>
+            <div className="text-2xl font-bold text-foreground">{avgAccuracy.toFixed(1)}%</div>
             <p className="text-xs text-muted-foreground">
-              {stats ? stats.totalExperiments : experiments.length} total experiments
+              <span className="text-green-600">+2.3%</span> improvement
+            </p>
+          </CardContent>
+        </Card>
+        <Card className="shadow-sm">
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium text-card-foreground">Active Models</CardTitle>
+            <Brain className="h-4 w-4 text-muted-foreground" />
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold text-foreground">{activeModels}</div>
+            <p className="text-xs text-muted-foreground">
+              <span className="text-green-600">+1</span> new model
+            </p>
+          </CardContent>
+        </Card>
+        <Card className="shadow-sm">
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium text-card-foreground">Fraud Cases</CardTitle>
+            <Shield className="h-4 w-4 text-muted-foreground" />
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold text-foreground">{fraudCasesDetected}</div>
+            <p className="text-xs text-muted-foreground">
+              <span className="text-red-600">+3</span> this week
             </p>
           </CardContent>
         </Card>
       </div>
 
-      {/* Tabs */}
-      <div className="flex space-x-1 bg-muted p-1 rounded-lg w-fit">
-        <Button
-          variant={activeTab === "models" ? "default" : "ghost"}
-          size="sm"
-          onClick={() => setActiveTab("models")}
-        >
-          <Brain className="mr-2 h-4 w-4" />
-          Models
-        </Button>
-        <Button
-          variant={activeTab === "experiments" ? "default" : "ghost"}
-          size="sm"
-          onClick={() => setActiveTab("experiments")}
-        >
-          <GitBranch className="mr-2 h-4 w-4" />
-          Experiments
-        </Button>
-        <Button
-          variant={activeTab === "insights" ? "default" : "ghost"}
-          size="sm"
-          onClick={() => setActiveTab("insights")}
-        >
-          <BarChart3 className="mr-2 h-4 w-4" />
-          Insights
-        </Button>
-      </div>
+      {/* AI/ML Tabs */}
+      <Tabs defaultValue="models" className="space-y-4">
+        <TabsList className="grid w-full grid-cols-4">
+          <TabsTrigger value="models">AI Models</TabsTrigger>
+          <TabsTrigger value="fraud">Fraud Detection</TabsTrigger>
+          <TabsTrigger value="recommendations">Recommendations</TabsTrigger>
+          <TabsTrigger value="training">Training Status</TabsTrigger>
+        </TabsList>
 
-      {/* Models Tab */}
-      {activeTab === "models" && (
-        <Card>
-          <CardHeader>
-            <CardTitle>AI Models</CardTitle>
-            <CardDescription>
-              Manage and monitor machine learning models
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
-            <div className="flex flex-col md:flex-row gap-4 mb-6">
-              <div className="relative flex-1">
-                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4" />
-                <Input
-                  placeholder="Search models..."
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                  className="pl-10"
-                />
+        <TabsContent value="models" className="space-y-4">
+          <Card className="shadow-sm">
+            <CardHeader>
+              <CardTitle className="text-card-foreground">AI Models</CardTitle>
+              <CardDescription>Manage and monitor machine learning models</CardDescription>
+            </CardHeader>
+            <CardContent>
+              {/* Filters */}
+              <div className="flex items-center space-x-4 mb-6">
+                <div className="flex-1">
+                  <div className="relative">
+                    <Search className="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground" />
+                    <Input
+                      placeholder="Search models..."
+                      value={searchQuery}
+                      onChange={(e) => setSearchQuery(e.target.value)}
+                      className="pl-8"
+                    />
+                  </div>
+                </div>
+                <Select value={statusFilter} onValueChange={setStatusFilter}>
+                  <SelectTrigger className="w-[180px]">
+                    <SelectValue placeholder="Filter by status" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="all">All Status</SelectItem>
+                    <SelectItem value="active">Active</SelectItem>
+                    <SelectItem value="training">Training</SelectItem>
+                    <SelectItem value="inactive">Inactive</SelectItem>
+                  </SelectContent>
+                </Select>
               </div>
-              
-              <select
-                value={statusFilter}
-                onChange={(e) => setStatusFilter(e.target.value)}
-                className="px-3 py-2 border border-input bg-background rounded-md text-sm"
-              >
-                <option value="all">All Status</option>
-                <option value="active">Active</option>
-                <option value="training">Training</option>
-                <option value="inactive">Inactive</option>
-                <option value="error">Error</option>
-                <option value="deployed">Deployed</option>
-              </select>
-            </div>
 
-            <div className="space-y-4">
-              {filteredModels.map((model) => (
-                <div key={model._id} className="flex items-center justify-between p-4 border rounded-lg hover:bg-muted/50 transition-colors">
-                  <div className="flex items-center space-x-4">
-                    <div className="flex items-center space-x-2">
-                      {getTypeIcon(model.type)}
-                      <Brain className="h-5 w-5 text-muted-foreground" />
-                    </div>
-                    <div>
-                      <p className="font-medium">{model.name}</p>
-                      <p className="text-sm text-muted-foreground">{model.description}</p>
-                      <div className="flex items-center space-x-2 mt-1">
-                        <Badge variant={getStatusColor(model.status) as any}>
+              {/* Models Table */}
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead>Model</TableHead>
+                    <TableHead>Type</TableHead>
+                    <TableHead>Accuracy</TableHead>
+                    <TableHead>Performance</TableHead>
+                    <TableHead>Status</TableHead>
+                    <TableHead>Last Trained</TableHead>
+                    <TableHead className="text-right">Actions</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {filteredModels.map((model) => (
+                    <TableRow key={model.id}>
+                      <TableCell>
+                        <div className="flex items-center space-x-3">
+                          <div className="w-8 h-8 rounded-full bg-primary flex items-center justify-center">
+                            <Brain className="h-4 w-4 text-primary-foreground" />
+                          </div>
+                          <div>
+                            <p className="text-sm font-medium text-foreground">{model.name}</p>
+                            <p className="text-xs text-muted-foreground">{model.predictions.toLocaleString()} predictions</p>
+                          </div>
+                        </div>
+                      </TableCell>
+                      <TableCell>
+                        <Badge variant="outline">{model.type}</Badge>
+                      </TableCell>
+                      <TableCell>
+                        <div className="flex items-center space-x-2">
+                          <span className="text-sm font-medium text-foreground">{model.accuracy}%</span>
+                          <div className="w-16 bg-muted rounded-full h-2">
+                            <div 
+                              className="bg-primary h-2 rounded-full" 
+                              style={{ width: `${model.accuracy}%` }}
+                            ></div>
+                          </div>
+                        </div>
+                      </TableCell>
+                      <TableCell>
+                        <div className="flex items-center space-x-2">
+                          <span className="text-sm font-medium text-foreground">{model.performance}%</span>
+                          <div className="w-16 bg-muted rounded-full h-2">
+                            <div 
+                              className="bg-green-500 h-2 rounded-full" 
+                              style={{ width: `${model.performance}%` }}
+                            ></div>
+                          </div>
+                        </div>
+                      </TableCell>
+                      <TableCell>
+                        <Badge className={getStatusColor(model.status)}>
                           {model.status}
                         </Badge>
-                        <span className="text-xs text-muted-foreground">
-                          v{model.version}
+                      </TableCell>
+                      <TableCell>
+                        <span className="text-sm text-muted-foreground">
+                          {formatRelativeTime(model.lastTrained)}
                         </span>
-                        <span className="text-xs text-muted-foreground">
-                          {(model.accuracy * 100).toFixed(1)}% accuracy
-                        </span>
-                        <span className="text-xs text-muted-foreground">
-                          {model.type.replace('_', ' ')}
-                        </span>
-                      </div>
-                    </div>
-                  </div>
-                  
-                  <div className="flex items-center space-x-4">
-                    <div className="text-right text-sm text-muted-foreground">
-                      <p>Predictions: {model.metrics.predictions.toLocaleString()}</p>
-                      <p>Latency: {model.performance.latency}ms</p>
-                      <p>Uptime: {model.deployment.uptime}%</p>
-                    </div>
-                    
-                    <DropdownMenu>
-                      <DropdownMenuTrigger asChild>
-                        <Button variant="ghost" size="icon">
-                          <MoreHorizontal className="h-4 w-4" />
-                        </Button>
-                      </DropdownMenuTrigger>
-                      <DropdownMenuContent align="end">
-                        <DropdownMenuLabel>Actions</DropdownMenuLabel>
-                        <DropdownMenuSeparator />
-                        <DropdownMenuItem>
-                          <Eye className="mr-2 h-4 w-4" />
-                          View Details
-                        </DropdownMenuItem>
-                        <DropdownMenuItem>
-                          <BarChart3 className="mr-2 h-4 w-4" />
-                          View Metrics
-                        </DropdownMenuItem>
-                        <DropdownMenuItem>
-                          <Settings className="mr-2 h-4 w-4" />
-                          Configure
-                        </DropdownMenuItem>
-                        <DropdownMenuSeparator />
-                        {model.status === "active" && (
-                          <DropdownMenuItem 
-                            onClick={() => handleModelAction(model._id, "stop")}
-                            className="text-red-600"
-                          >
-                            <Pause className="mr-2 h-4 w-4" />
-                            Stop Model
-                          </DropdownMenuItem>
-                        )}
-                        {model.status === "inactive" && (
-                          <DropdownMenuItem 
-                            onClick={() => handleModelAction(model._id, "deploy")}
-                            className="text-green-600"
-                          >
-                            <Play className="mr-2 h-4 w-4" />
-                            Deploy Model
-                          </DropdownMenuItem>
-                        )}
-                        <DropdownMenuItem 
-                          onClick={() => handleModelAction(model._id, "retrain")}
-                          className="text-blue-600"
-                        >
-                          <TrendingUp className="mr-2 h-4 w-4" />
-                          Retrain Model
-                        </DropdownMenuItem>
-                      </DropdownMenuContent>
-                    </DropdownMenu>
-                  </div>
-                </div>
-              ))}
-            </div>
+                      </TableCell>
+                      <TableCell className="text-right">
+                        <DropdownMenu>
+                          <DropdownMenuTrigger asChild>
+                            <Button variant="ghost" className="h-8 w-8 p-0">
+                              <MoreHorizontal className="h-4 w-4" />
+                            </Button>
+                          </DropdownMenuTrigger>
+                          <DropdownMenuContent align="end">
+                            <DropdownMenuLabel>Actions</DropdownMenuLabel>
+                            <DropdownMenuItem>
+                              <Eye className="mr-2 h-4 w-4" />
+                              View Details
+                            </DropdownMenuItem>
+                            <DropdownMenuItem>
+                              <Play className="mr-2 h-4 w-4" />
+                              Start Training
+                            </DropdownMenuItem>
+                            <DropdownMenuItem>
+                              <Pause className="mr-2 h-4 w-4" />
+                              Pause Model
+                            </DropdownMenuItem>
+                            <DropdownMenuSeparator />
+                            <DropdownMenuItem>
+                              <Settings className="mr-2 h-4 w-4" />
+                              Configure
+                            </DropdownMenuItem>
+                            <DropdownMenuItem>
+                              <Download className="mr-2 h-4 w-4" />
+                              Export Model
+                            </DropdownMenuItem>
+                          </DropdownMenuContent>
+                        </DropdownMenu>
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </CardContent>
+          </Card>
+        </TabsContent>
 
-            {filteredModels.length === 0 && (
-              <div className="text-center py-8">
-                <Brain className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
-                <p className="text-muted-foreground">No models found matching your criteria</p>
-              </div>
-            )}
-          </CardContent>
-        </Card>
-      )}
-
-      {/* Experiments Tab */}
-      {activeTab === "experiments" && (
-        <Card>
-          <CardHeader>
-            <CardTitle>ML Experiments</CardTitle>
-            <CardDescription>
-              Track machine learning experiments and their results
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
-            <div className="space-y-4">
-              {experiments.map((experiment) => (
-                <div key={experiment._id} className="flex items-center justify-between p-4 border rounded-lg hover:bg-muted/50 transition-colors">
-                  <div className="flex items-center space-x-4">
-                    <div className="w-10 h-10 rounded-full bg-muted flex items-center justify-center">
-                      <GitBranch className="h-5 w-5" />
-                    </div>
-                    <div>
-                      <p className="font-medium">{experiment.name}</p>
-                      <p className="text-sm text-muted-foreground">{experiment.algorithm} • {experiment.dataset}</p>
-                      <div className="flex items-center space-x-2 mt-1">
-                        <Badge variant={getStatusColor(experiment.status) as any}>
-                          {experiment.status}
+        <TabsContent value="fraud" className="space-y-4">
+          <Card className="shadow-sm">
+            <CardHeader>
+              <CardTitle className="text-card-foreground">Fraud Detection Cases</CardTitle>
+              <CardDescription>Monitor and investigate potential fraud cases</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead>Case</TableHead>
+                    <TableHead>Customer</TableHead>
+                    <TableHead>Amount</TableHead>
+                    <TableHead>Risk Level</TableHead>
+                    <TableHead>Status</TableHead>
+                    <TableHead>Detected</TableHead>
+                    <TableHead className="text-right">Actions</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {fraudCases.map((case_) => (
+                    <TableRow key={case_.id}>
+                      <TableCell>
+                        <div>
+                          <p className="text-sm font-medium text-foreground">Case #{case_.id}</p>
+                          <p className="text-xs text-muted-foreground">{case_.description}</p>
+                        </div>
+                      </TableCell>
+                      <TableCell>
+                        <span className="text-sm text-muted-foreground">{case_.customer}</span>
+                      </TableCell>
+                      <TableCell>
+                        <span className="text-sm font-medium text-foreground">
+                          EGP {case_.amount.toLocaleString()}
+                        </span>
+                      </TableCell>
+                      <TableCell>
+                        <Badge className={getRiskColor(case_.risk)}>
+                          {case_.risk}
                         </Badge>
-                        <span className="text-xs text-muted-foreground">
-                          {(experiment.progress * 100).toFixed(0)}% complete
-                        </span>
-                        <span className="text-xs text-muted-foreground">
-                          {(experiment.metrics.accuracy * 100).toFixed(1)}% accuracy
-                        </span>
-                      </div>
-                    </div>
-                  </div>
-                  
-                  <div className="flex items-center space-x-4">
-                    <div className="text-right text-sm text-muted-foreground">
-                      <p>Started: {formatDate(experiment.startTime)}</p>
-                      {experiment.endTime && (
-                        <p>Ended: {formatDate(experiment.endTime)}</p>
-                      )}
-                      <p>Created by: {experiment.createdBy}</p>
-                    </div>
-                    
-                    <DropdownMenu>
-                      <DropdownMenuTrigger asChild>
-                        <Button variant="ghost" size="icon">
-                          <MoreHorizontal className="h-4 w-4" />
-                        </Button>
-                      </DropdownMenuTrigger>
-                      <DropdownMenuContent align="end">
-                        <DropdownMenuLabel>Actions</DropdownMenuLabel>
-                        <DropdownMenuSeparator />
-                        <DropdownMenuItem>
-                          <Eye className="mr-2 h-4 w-4" />
-                          View Results
-                        </DropdownMenuItem>
-                        <DropdownMenuItem>
-                          <BarChart3 className="mr-2 h-4 w-4" />
-                          View Metrics
-                        </DropdownMenuItem>
-                        <DropdownMenuSeparator />
-                        {experiment.status === "paused" && (
-                          <DropdownMenuItem 
-                            onClick={() => handleExperimentAction(experiment._id, "start")}
-                            className="text-green-600"
-                          >
-                            <Play className="mr-2 h-4 w-4" />
-                            Resume
-                          </DropdownMenuItem>
-                        )}
-                        {experiment.status === "running" && (
-                          <DropdownMenuItem 
-                            onClick={() => handleExperimentAction(experiment._id, "pause")}
-                            className="text-yellow-600"
-                          >
-                            <Pause className="mr-2 h-4 w-4" />
-                            Pause
-                          </DropdownMenuItem>
-                        )}
-                        {experiment.status === "running" && (
-                          <DropdownMenuItem 
-                            onClick={() => handleExperimentAction(experiment._id, "stop")}
-                            className="text-red-600"
-                          >
-                            <Pause className="mr-2 h-4 w-4" />
-                            Stop
-                          </DropdownMenuItem>
-                        )}
-                      </DropdownMenuContent>
-                    </DropdownMenu>
-                  </div>
-                </div>
-              ))}
-            </div>
-
-            {experiments.length === 0 && (
-              <div className="text-center py-8">
-                <GitBranch className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
-                <p className="text-muted-foreground">No experiments found</p>
-              </div>
-            )}
-          </CardContent>
-        </Card>
-      )}
-
-      {/* Insights Tab */}
-      {activeTab === "insights" && (
-        <Card>
-          <CardHeader>
-            <CardTitle>AI Insights</CardTitle>
-            <CardDescription>
-              AI-generated insights and recommendations
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
-            <div className="space-y-4">
-              {insights.map((insight) => (
-                <div key={insight._id} className="flex items-center justify-between p-4 border rounded-lg hover:bg-muted/50 transition-colors">
-                  <div className="flex items-center space-x-4">
-                    <div className="flex items-center space-x-2">
-                      <AlertTriangle className="h-5 w-5 text-muted-foreground" />
-                    </div>
-                    <div>
-                      <p className="font-medium">{insight.title}</p>
-                      <p className="text-sm text-muted-foreground">{insight.description}</p>
-                      <div className="flex items-center space-x-2 mt-1">
-                        <Badge variant={getSeverityColor(insight.severity) as any}>
-                          {insight.severity}
+                      </TableCell>
+                      <TableCell>
+                        <Badge className={getStatusColor(case_.status)}>
+                          {case_.status}
                         </Badge>
-                        <span className="text-xs text-muted-foreground">
-                          {insight.type}
+                      </TableCell>
+                      <TableCell>
+                        <span className="text-sm text-muted-foreground">
+                          {formatRelativeTime(case_.detectedAt)}
                         </span>
-                        <span className="text-xs text-muted-foreground">
-                          {(insight.confidence * 100).toFixed(0)}% confidence
+                      </TableCell>
+                      <TableCell className="text-right">
+                        <DropdownMenu>
+                          <DropdownMenuTrigger asChild>
+                            <Button variant="ghost" className="h-8 w-8 p-0">
+                              <MoreHorizontal className="h-4 w-4" />
+                            </Button>
+                          </DropdownMenuTrigger>
+                          <DropdownMenuContent align="end">
+                            <DropdownMenuLabel>Actions</DropdownMenuLabel>
+                            <DropdownMenuItem>
+                              <Eye className="mr-2 h-4 w-4" />
+                              Investigate
+                            </DropdownMenuItem>
+                            <DropdownMenuItem>
+                              <CheckCircle className="mr-2 h-4 w-4" />
+                              Mark as Resolved
+                            </DropdownMenuItem>
+                            <DropdownMenuSeparator />
+                            <DropdownMenuItem>
+                              <AlertTriangle className="mr-2 h-4 w-4" />
+                              Escalate
+                            </DropdownMenuItem>
+                            <DropdownMenuItem>
+                              <Shield className="mr-2 h-4 w-4" />
+                              Block Customer
+                            </DropdownMenuItem>
+                          </DropdownMenuContent>
+                        </DropdownMenu>
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </CardContent>
+          </Card>
+        </TabsContent>
+
+        <TabsContent value="recommendations" className="space-y-4">
+          <Card className="shadow-sm">
+            <CardHeader>
+              <CardTitle className="text-card-foreground">AI Recommendations</CardTitle>
+              <CardDescription>Intelligent recommendations for business optimization</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead>Recommendation</TableHead>
+                    <TableHead>Type</TableHead>
+                    <TableHead>Confidence</TableHead>
+                    <TableHead>Impact</TableHead>
+                    <TableHead>Status</TableHead>
+                    <TableHead>Created</TableHead>
+                    <TableHead className="text-right">Actions</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {recommendations.map((rec) => (
+                    <TableRow key={rec.id}>
+                      <TableCell>
+                        <div>
+                          <p className="text-sm font-medium text-foreground">{rec.title}</p>
+                          <p className="text-xs text-muted-foreground">ID: {rec.id}</p>
+                        </div>
+                      </TableCell>
+                      <TableCell>
+                        <Badge variant="outline">{rec.type}</Badge>
+                      </TableCell>
+                      <TableCell>
+                        <div className="flex items-center space-x-2">
+                          <span className="text-sm font-medium text-foreground">{rec.confidence}%</span>
+                          <div className="w-16 bg-muted rounded-full h-2">
+                            <div 
+                              className="bg-primary h-2 rounded-full" 
+                              style={{ width: `${rec.confidence}%` }}
+                            ></div>
+                          </div>
+                        </div>
+                      </TableCell>
+                      <TableCell>
+                        <Badge className={getImpactColor(rec.impact)}>
+                          {rec.impact}
+                        </Badge>
+                      </TableCell>
+                      <TableCell>
+                        <Badge className={getStatusColor(rec.status)}>
+                          {rec.status}
+                        </Badge>
+                      </TableCell>
+                      <TableCell>
+                        <span className="text-sm text-muted-foreground">
+                          {formatRelativeTime(rec.createdAt)}
                         </span>
-                        {insight.actionRequired && (
-                          <Badge variant="warning" className="text-xs">
-                            Action Required
-                          </Badge>
-                        )}
-                      </div>
+                      </TableCell>
+                      <TableCell className="text-right">
+                        <DropdownMenu>
+                          <DropdownMenuTrigger asChild>
+                            <Button variant="ghost" className="h-8 w-8 p-0">
+                              <MoreHorizontal className="h-4 w-4" />
+                            </Button>
+                          </DropdownMenuTrigger>
+                          <DropdownMenuContent align="end">
+                            <DropdownMenuLabel>Actions</DropdownMenuLabel>
+                            <DropdownMenuItem>
+                              <Eye className="mr-2 h-4 w-4" />
+                              View Details
+                            </DropdownMenuItem>
+                            <DropdownMenuItem>
+                              <CheckCircle className="mr-2 h-4 w-4" />
+                              Implement
+                            </DropdownMenuItem>
+                            <DropdownMenuSeparator />
+                            <DropdownMenuItem>
+                              <Clock className="mr-2 h-4 w-4" />
+                              Schedule
+                            </DropdownMenuItem>
+                            <DropdownMenuItem>
+                              <XCircle className="mr-2 h-4 w-4" />
+                              Dismiss
+                            </DropdownMenuItem>
+                          </DropdownMenuContent>
+                        </DropdownMenu>
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </CardContent>
+          </Card>
+        </TabsContent>
+
+        <TabsContent value="training" className="space-y-4">
+          <Card className="shadow-sm">
+            <CardHeader>
+              <CardTitle className="text-card-foreground">Training Status & Logs</CardTitle>
+              <CardDescription>Monitor model training progress and view logs</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-4">
+                <div className="flex items-center justify-between p-4 rounded-lg bg-muted/50">
+                  <div className="flex items-center space-x-3">
+                    <div className="w-2 h-2 rounded-full bg-yellow-500"></div>
+                    <div>
+                      <p className="text-sm font-medium text-foreground">Fleet Optimization Model</p>
+                      <p className="text-xs text-muted-foreground">Training in progress...</p>
                     </div>
                   </div>
-                  
-                  <div className="flex items-center space-x-4">
-                    <div className="text-right text-sm text-muted-foreground">
-                      <p>Created: {formatDate(insight.createdAt)}</p>
-                      <p>Status: {insight.status}</p>
-                      <p>Model: {insight.relatedModel}</p>
-                    </div>
-                    
-                    <DropdownMenu>
-                      <DropdownMenuTrigger asChild>
-                        <Button variant="ghost" size="icon">
-                          <MoreHorizontal className="h-4 w-4" />
-                        </Button>
-                      </DropdownMenuTrigger>
-                      <DropdownMenuContent align="end">
-                        <DropdownMenuLabel>Actions</DropdownMenuLabel>
-                        <DropdownMenuSeparator />
-                        <DropdownMenuItem>
-                          <Eye className="mr-2 h-4 w-4" />
-                          View Details
-                        </DropdownMenuItem>
-                        <DropdownMenuItem>
-                          <BarChart3 className="mr-2 h-4 w-4" />
-                          View Data
-                        </DropdownMenuItem>
-                        <DropdownMenuSeparator />
-                        <DropdownMenuItem>
-                          <CheckCircle className="mr-2 h-4 w-4" />
-                          Mark as Reviewed
-                        </DropdownMenuItem>
-                        <DropdownMenuItem>
-                          <AlertTriangle className="mr-2 h-4 w-4" />
-                          Take Action
-                        </DropdownMenuItem>
-                      </DropdownMenuContent>
-                    </DropdownMenu>
+                  <div className="text-right">
+                    <p className="text-sm font-medium text-foreground">67%</p>
+                    <p className="text-xs text-muted-foreground">Epoch 134/200</p>
                   </div>
                 </div>
-              ))}
-            </div>
-
-            {insights.length === 0 && (
-              <div className="text-center py-8">
-                <BarChart3 className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
-                <p className="text-muted-foreground">No insights available</p>
+                <div className="flex items-center justify-between p-4 rounded-lg bg-muted/50">
+                  <div className="flex items-center space-x-3">
+                    <div className="w-2 h-2 rounded-full bg-green-500"></div>
+                    <div>
+                      <p className="text-sm font-medium text-foreground">Fraud Detection Model</p>
+                      <p className="text-xs text-muted-foreground">Training completed successfully</p>
+                    </div>
+                  </div>
+                  <div className="text-right">
+                    <p className="text-sm font-medium text-foreground">100%</p>
+                    <p className="text-xs text-muted-foreground">Accuracy: 94.5%</p>
+                  </div>
+                </div>
+                <div className="flex items-center justify-between p-4 rounded-lg bg-muted/50">
+                  <div className="flex items-center space-x-3">
+                    <div className="w-2 h-2 rounded-full bg-blue-500"></div>
+                    <div>
+                      <p className="text-sm font-medium text-foreground">Customer Churn Model</p>
+                      <p className="text-xs text-muted-foreground">Validation in progress...</p>
+                    </div>
+                  </div>
+                  <div className="text-right">
+                    <p className="text-sm font-medium text-foreground">45%</p>
+                    <p className="text-xs text-muted-foreground">Validating dataset</p>
+                  </div>
+                </div>
               </div>
-            )}
-          </CardContent>
-        </Card>
-      )}
+            </CardContent>
+          </Card>
+        </TabsContent>
+      </Tabs>
     </div>
   );
 }
