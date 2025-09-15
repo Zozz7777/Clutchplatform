@@ -191,12 +191,12 @@ export default function APIDocsPage() {
   ];
 
   const categories = [
-    { name: "Authentication", icon: Key, color: "bg-secondary/10 text-secondary-foreground" },
+    { name: "Authentication", icon: Key, color: "bg-secondary/10 text-primary-foreground" },
     { name: "Users", icon: Users, color: "bg-primary/10 text-primary-foreground" },
-    { name: "Fleet", icon: Truck, color: "bg-secondary/10 text-secondary-foreground" },
-    { name: "Finance", icon: DollarSign, color: "bg-secondary/10 text-secondary-foreground" },
+    { name: "Fleet", icon: Truck, color: "bg-secondary/10 text-primary-foreground" },
+    { name: "Finance", icon: DollarSign, color: "bg-secondary/10 text-primary-foreground" },
     { name: "Communication", icon: MessageSquare, color: "bg-primary/10 text-primary-foreground" },
-    { name: "Analytics", icon: BarChart3, color: "bg-secondary/10 text-secondary-foreground" },
+    { name: "Analytics", icon: BarChart3, color: "bg-secondary/10 text-primary-foreground" },
     { name: "System", icon: Settings, color: "bg-muted text-muted-foreground" },
   ];
 
@@ -205,9 +205,9 @@ export default function APIDocsPage() {
       case "GET":
         return "bg-primary/10 text-primary-foreground";
       case "POST":
-        return "bg-secondary/10 text-secondary-foreground";
+        return "bg-secondary/10 text-primary-foreground";
       case "PUT":
-        return "bg-secondary/10 text-secondary-foreground";
+        return "bg-secondary/10 text-primary-foreground";
       case "DELETE":
         return "bg-destructive/10 text-destructive-foreground";
       case "PATCH":

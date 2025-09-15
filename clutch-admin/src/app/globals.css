@@ -4,30 +4,23 @@
 
 @layer base {
   :root {
-    /* Light theme colors from design.json - converted to HSL for better browser support */
-    --background: 0 0% 100%;
-    --foreground: 0 0% 14.5%;
-    --card: 0 0% 100%;
-    --card-foreground: 0 0% 14.5%;
-    --primary: 27 24.5% 57.7%;
-    --primary-foreground: 0 0% 98.5%;
-    --secondary: 27 24.5% 57.7%;
-    --secondary-foreground: 0 0% 98.5%;
-    --muted: 0 0% 97%;
-    --muted-foreground: 0 0% 55.6%;
-    --destructive: 27 24.5% 57.7%;
-    --destructive-foreground: 0 0% 98.5%;
-    --border: 0 0% 92.2%;
-    --input: 0 0% 92.2%;
-    --ring: 0 0% 70.8%;
-    --sidebar: 0 0% 98.5%;
-    --sidebar-primary: 0 0% 20.5%;
-    
-    /* Additional colors for components */
-    --accent: 0 0% 97%;
-    --accent-foreground: 0 0% 14.5%;
-    --popover: 0 0% 100%;
-    --popover-foreground: 0 0% 14.5%;
+    /* Light theme colors from design.json - exact OKLCH values */
+    --background: oklch(1 0 0);
+    --foreground: oklch(0.1450 0 0);
+    --card: oklch(1 0 0);
+    --card-foreground: oklch(0.1450 0 0);
+    --primary: oklch(0.5770 0.2450 27.3250);
+    --primary-foreground: oklch(0.9850 0 0);
+    --secondary: oklch(0.5770 0.2450 27.3250);
+    --muted: oklch(0.9700 0 0);
+    --muted-foreground: oklch(0.5560 0 0);
+    --destructive: oklch(0.5770 0.2450 27.3250);
+    --destructive-foreground: oklch(0.9850 0 0);
+    --border: oklch(0.9220 0 0);
+    --input: oklch(0.9220 0 0);
+    --ring: oklch(0.7080 0 0);
+    --sidebar: oklch(0.9850 0 0);
+    --sidebar-primary: oklch(0.2050 0 0);
     --radius: 0.625rem;
     
     /* Typography from design.json - using next/font/google variables */
@@ -37,62 +30,65 @@
   }
 
   .dark {
-    /* Dark theme colors from design.json - converted to HSL for better browser support */
-    --background: 0 0% 14.5%;
-    --foreground: 0 0% 98.5%;
-    --card: 0 0% 20.5%;
-    --card-foreground: 17.38 1.3% 97.1%;
-    --primary: 27.518 21.3% 50.5%;
-    --primary-foreground: 0 0% 20.5%;
-    --secondary: 0 0% 26.9%;
-    --secondary-foreground: 0 0% 98.5%;
-    --muted: 0 0% 26.9%;
-    --muted-foreground: 0 0% 55.6%;
-    --destructive: 22.216 19.1% 70.4%;
-    --destructive-foreground: 0 0% 98.5%;
-    --border: 0 0% 27.5%;
-    --input: 0 0% 32.5%;
-    --ring: 0 0% 55.6%;
-    --sidebar: 0 0% 20.5%;
-    --sidebar-primary: 27.325 24.5% 57.7%;
-    
-    /* Additional colors for components */
-    --accent: 0 0% 26.9%;
-    --accent-foreground: 0 0% 98.5%;
-    --popover: 0 0% 20.5%;
-    --popover-foreground: 0 0% 98.5%;
+    /* Dark theme colors from design.json - exact OKLCH values */
+    --background: oklch(0.1450 0 0);
+    --foreground: oklch(0.9850 0 0);
+    --card: oklch(0.2050 0 0);
+    --card-foreground: oklch(0.9710 0.0130 17.3800);
+    --primary: oklch(0.5050 0.2130 27.5180);
+    --primary-foreground: oklch(0.2050 0 0);
+    --secondary: oklch(0.2690 0 0);
+    --muted: oklch(0.2690 0 0);
+    --muted-foreground: oklch(0.5560 0 0);
+    --destructive: oklch(0.7040 0.1910 22.2160);
+    --destructive-foreground: oklch(0.9850 0 0);
+    --border: oklch(0.2750 0 0);
+    --input: oklch(0.3250 0 0);
+    --ring: oklch(0.5560 0 0);
+    --sidebar: oklch(0.2050 0 0);
+    --sidebar-primary: oklch(0.5770 0.2450 27.3250);
   }
 }
 
 @layer base {
   * {
-    border-color: hsl(var(--border));
+    border-color: var(--border);
   }
   
   body {
-    background-color: hsl(var(--background));
-    color: hsl(var(--foreground));
+    background-color: var(--background);
+    color: var(--foreground);
     font-family: var(--font-sans);
     font-feature-settings: "rlig" 1, "calt" 1;
   }
   
-  /* Custom scrollbar */
+  /* Custom scrollbar using design system colors */
   ::-webkit-scrollbar {
-    width: 6px;
-    height: 6px;
+    width: 8px;
+    height: 8px;
   }
   
   ::-webkit-scrollbar-track {
-    background-color: hsl(var(--muted));
+    background-color: var(--muted);
+    border-radius: var(--radius);
   }
   
   ::-webkit-scrollbar-thumb {
-    background-color: hsl(var(--border));
-    border-radius: 9999px;
+    background-color: var(--border);
+    border-radius: var(--radius);
+    border: 2px solid var(--muted);
   }
   
   ::-webkit-scrollbar-thumb:hover {
-    background-color: hsl(var(--muted-foreground) / 0.5);
+    background-color: var(--muted-foreground);
+  }
+  
+  ::-webkit-scrollbar-thumb:active {
+    background-color: var(--foreground);
+  }
+  
+  ::-webkit-scrollbar-corner {
+    background-color: var(--muted);
   }
 }
 
@@ -112,21 +108,91 @@
   }
   
   .sidebar-item:hover {
-    background-color: hsl(var(--sidebar-primary) / 0.1);
+    background-color: oklch(from var(--sidebar-primary) l c h / 0.1);
   }
   
   .sidebar-item.active {
-    background-color: hsl(var(--sidebar-primary));
-    color: white;
+    background-color: var(--sidebar-primary);
+    color: var(--primary-foreground);
   }
   
-  /* Loading animations */
+  /* Comprehensive animation system */
   .animate-pulse-slow {
     animation: pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite;
   }
   
   .animate-bounce-slow {
     animation: bounce 2s infinite;
+  }
+  
+  .animate-fade-in {
+    animation: fadeIn 0.3s ease-in-out;
+  }
+  
+  .animate-slide-up {
+    animation: slideUp 0.3s ease-out;
+  }
+  
+  .animate-slide-down {
+    animation: slideDown 0.3s ease-out;
+  }
+  
+  .animate-scale-in {
+    animation: scaleIn 0.2s ease-out;
+  }
+  
+  .animate-scale-out {
+    animation: scaleOut 0.2s ease-in;
+  }
+  
+  /* Animation keyframes */
+  @keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+  
+  @keyframes slideUp {
+    from { 
+      opacity: 0;
+      transform: translateY(10px);
+    }
+    to { 
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+  
+  @keyframes slideDown {
+    from { 
+      opacity: 0;
+      transform: translateY(-10px);
+    }
+    to { 
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+  
+  @keyframes scaleIn {
+    from { 
+      opacity: 0;
+      transform: scale(0.95);
+    }
+    to { 
+      opacity: 1;
+      transform: scale(1);
+    }
+  }
+  
+  @keyframes scaleOut {
+    from { 
+      opacity: 1;
+      transform: scale(1);
+    }
+    to { 
+      opacity: 0;
+      transform: scale(0.95);
+    }
   }
   
   /* Custom shadows from design.json - these are now handled by Tailwind config */
@@ -136,5 +202,133 @@
   /* Custom utilities - only keep what's actually used */
   .text-balance {
     text-wrap: balance;
+  }
+  
+  /* Enhanced focus states for all interactive elements */
+  .focus-ring {
+    @apply focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 focus:ring-offset-background;
+  }
+  
+  .focus-ring-inset {
+    @apply focus:outline-none focus:ring-2 focus:ring-ring focus:ring-inset;
+  }
+  
+  /* Interactive element base styles */
+  .interactive {
+    @apply transition-colors duration-normal ease-in-out;
+  }
+  
+  .interactive:hover {
+    @apply cursor-pointer;
+  }
+  
+  .interactive:disabled {
+    @apply cursor-not-allowed opacity-50;
+  }
+  
+  /* Enhanced transition utilities */
+  .transition-fast {
+    @apply transition-all duration-fast ease-in-out;
+  }
+  
+  .transition-normal {
+    @apply transition-all duration-normal ease-in-out;
+  }
+  
+  .transition-slow {
+    @apply transition-all duration-slow ease-in-out;
+  }
+  
+  /* Button focus states */
+  .btn-focus {
+    @apply focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 focus:ring-offset-background;
+  }
+  
+  /* Input focus states */
+  .input-focus {
+    @apply focus:outline-none focus:ring-2 focus:ring-ring focus:border-ring;
+  }
+  
+  /* Link focus states */
+  .link-focus {
+    @apply focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 focus:ring-offset-background rounded-sm;
+  }
+  
+  /* Accessibility enhancements */
+  .sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+  }
+  
+  .not-sr-only {
+    position: static;
+    width: auto;
+    height: auto;
+    padding: 0;
+    margin: 0;
+    overflow: visible;
+    clip: auto;
+    white-space: normal;
+  }
+  
+  /* ARIA live regions */
+  .aria-live-polite {
+    @apply sr-only;
+  }
+  
+  .aria-live-assertive {
+    @apply sr-only;
+  }
+  
+  /* Focus management */
+  .focus-trap {
+    @apply focus:outline-none;
+  }
+  
+  .focus-visible-only {
+    @apply focus:outline-none focus-visible:outline-2 focus-visible:outline-ring focus-visible:outline-offset-2;
+  }
+  
+  /* High contrast mode support */
+  @media (prefers-contrast: high) {
+    .high-contrast-border {
+      @apply border-2 border-foreground;
+    }
+  }
+  
+  /* Reduced motion support */
+  @media (prefers-reduced-motion: reduce) {
+    .animate-fade-in,
+    .animate-fade-in-fast,
+    .animate-fade-in-slow,
+    .animate-slide-up,
+    .animate-slide-up-fast,
+    .animate-slide-up-slow,
+    .animate-slide-down,
+    .animate-slide-down-fast,
+    .animate-slide-down-slow,
+    .animate-scale-in,
+    .animate-scale-in-fast,
+    .animate-scale-in-slow,
+    .animate-scale-out,
+    .animate-scale-out-fast,
+    .animate-scale-out-slow,
+    .animate-pulse-slow,
+    .animate-bounce-slow {
+      animation: none;
+    }
+    
+    .transition-fast,
+    .transition-normal,
+    .transition-slow {
+      transition: none;
+    }
   }
 }

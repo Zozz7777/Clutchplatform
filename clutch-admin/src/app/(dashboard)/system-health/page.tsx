@@ -380,9 +380,9 @@ export default function SystemHealthPage() {
       case "healthy":
         return "bg-primary/10 text-primary-foreground";
       case "degraded":
-        return "bg-secondary/10 text-secondary-foreground";
+        return "bg-secondary/10 text-primary-foreground";
       case "critical":
-        return "bg-secondary/10 text-secondary-foreground";
+        return "bg-secondary/10 text-primary-foreground";
       case "down":
         return "bg-destructive/10 text-destructive-foreground";
       default:
@@ -395,11 +395,11 @@ export default function SystemHealthPage() {
       case "critical":
         return "bg-destructive/10 text-destructive-foreground";
       case "high":
-        return "bg-secondary/10 text-secondary-foreground";
+        return "bg-secondary/10 text-primary-foreground";
       case "medium":
-        return "bg-secondary/10 text-secondary-foreground";
+        return "bg-secondary/10 text-primary-foreground";
       case "low":
-        return "bg-secondary/10 text-secondary-foreground";
+        return "bg-secondary/10 text-primary-foreground";
       default:
         return "bg-muted text-muted-foreground";
     }
@@ -411,9 +411,9 @@ export default function SystemHealthPage() {
       case "error":
         return "bg-destructive/10 text-destructive-foreground";
       case "warn":
-        return "bg-secondary/10 text-secondary-foreground";
+        return "bg-secondary/10 text-primary-foreground";
       case "info":
-        return "bg-secondary/10 text-secondary-foreground";
+        return "bg-secondary/10 text-primary-foreground";
       case "debug":
         return "bg-muted text-muted-foreground";
       default:

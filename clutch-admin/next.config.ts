@@ -20,9 +20,20 @@ const nextConfig: NextConfig = {
         hostname: 'clutch-main-nk7x.onrender.com',
       },
     ],
+    // Ensure local images are served correctly
+    formats: ['image/webp', 'image/avif'],
   },
   // Ensure static files are served correctly
   trailingSlash: false,
+  // Ensure static assets are served with proper headers
+  async rewrites() {
+    return [
+      {
+        source: '/logos/:path*',
+        destination: '/logos/:path*',
+      },
+    ];
+  },
   async headers() {
     return [
       {
@@ -31,6 +42,12 @@ const nextConfig: NextConfig = {
           { key: 'Access-Control-Allow-Origin', value: '*' },
           { key: 'Access-Control-Allow-Methods', value: 'GET, POST, PUT, DELETE, OPTIONS' },
           { key: 'Access-Control-Allow-Headers', value: 'Content-Type, Authorization' },
+        ],
+      },
+      {
+        source: '/logos/:path*',
+        headers: [
+          { key: 'Cache-Control', value: 'public, max-age=31536000, immutable' },
         ],
       },
     ];

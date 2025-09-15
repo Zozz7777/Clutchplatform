@@ -6,6 +6,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { hybridApi, type KPIMetric, type FleetVehicle, type Notification } from "@/lib/hybrid-api";
 import { formatCurrency, formatNumber, formatRelativeTime } from "@/lib/utils";
+import { AuthStatus } from "@/components/auth-status";
 import { 
   Users, 
   Truck, 

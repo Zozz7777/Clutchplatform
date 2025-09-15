@@ -14,59 +14,6 @@ interface AuthContextType {
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
-// Real employee users for login
-const realEmployees: User[] = [
-  {
-    id: "1",
-    email: "ziad@yourclutch.com",
-    name: "Ziad - Platform Administrator",
-    role: USER_ROLES.PLATFORM_ADMIN,
-    status: "active",
-    createdAt: new Date().toISOString(),
-    lastLogin: new Date().toISOString(),
-    permissions: ROLE_PERMISSIONS[USER_ROLES.PLATFORM_ADMIN],
-  },
-  {
-    id: "2",
-    email: "hr@yourclutch.com",
-    name: "HR Manager",
-    role: USER_ROLES.HR_MANAGER,
-    status: "active",
-    createdAt: new Date().toISOString(),
-    lastLogin: new Date().toISOString(),
-    permissions: ROLE_PERMISSIONS[USER_ROLES.HR_MANAGER],
-  },
-  {
-    id: "3",
-    email: "finance@yourclutch.com",
-    name: "Finance Officer",
-    role: USER_ROLES.FINANCE_OFFICER,
-    status: "active",
-    createdAt: new Date().toISOString(),
-    lastLogin: new Date().toISOString(),
-    permissions: ROLE_PERMISSIONS[USER_ROLES.FINANCE_OFFICER],
-  },
-  {
-    id: "4",
-    email: "support@yourclutch.com",
-    name: "Customer Support",
-    role: USER_ROLES.CUSTOMER_SUPPORT,
-    status: "active",
-    createdAt: new Date().toISOString(),
-    lastLogin: new Date().toISOString(),
-    permissions: ROLE_PERMISSIONS[USER_ROLES.CUSTOMER_SUPPORT],
-  },
-  {
-    id: "5",
-    email: "analyst@yourclutch.com",
-    name: "Business Analyst",
-    role: USER_ROLES.BUSINESS_ANALYST,
-    status: "active",
-    createdAt: new Date().toISOString(),
-    lastLogin: new Date().toISOString(),
-    permissions: ROLE_PERMISSIONS[USER_ROLES.BUSINESS_ANALYST],
-  },
-];
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
@@ -89,11 +36,12 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     setIsLoading(true);
     
     try {
-      // Try real backend API first
+      // Try real backend API first using the API service
       const response = await fetch("https://clutch-main-nk7x.onrender.com/api/v1/auth/login", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
+          "Accept": "application/json",
         },
         body: JSON.stringify({ email, password }),
       });
@@ -117,48 +65,21 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
           setUser(userWithPermissions);
           localStorage.setItem("clutch-admin-user", JSON.stringify(userWithPermissions));
           localStorage.setItem("clutch-admin-token", data.token);
+          
+          // Also store token in sessionStorage for immediate access
+          if (typeof window !== "undefined") {
+            sessionStorage.setItem("clutch-admin-token", data.token);
+          }
+          
           setIsLoading(false);
           return true;
         }
-      }
-      
-      // Fallback to local employee list for demo purposes
-      const employee = realEmployees.find(emp => emp.email === email);
-      
-      if (employee) {
-        const userWithPermissions = {
-          ...employee,
-          lastLogin: new Date().toISOString(),
-          permissions: ROLE_PERMISSIONS[employee.role as keyof typeof ROLE_PERMISSIONS] || [],
-        };
-        
-        setUser(userWithPermissions);
-        localStorage.setItem("clutch-admin-user", JSON.stringify(userWithPermissions));
-        setIsLoading(false);
-        return true;
       }
       
       setIsLoading(false);
       return false;
     } catch (error) {
       console.error("Login error:", error);
-      
-      // Fallback to local employee list if backend is unavailable
-      const employee = realEmployees.find(emp => emp.email === email);
-      
-      if (employee) {
-        const userWithPermissions = {
-          ...employee,
-          lastLogin: new Date().toISOString(),
-          permissions: ROLE_PERMISSIONS[employee.role as keyof typeof ROLE_PERMISSIONS] || [],
-        };
-        
-        setUser(userWithPermissions);
-        localStorage.setItem("clutch-admin-user", JSON.stringify(userWithPermissions));
-        setIsLoading(false);
-        return true;
-      }
-      
       setIsLoading(false);
       return false;
     }
@@ -168,6 +89,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     setUser(null);
     localStorage.removeItem("clutch-admin-user");
     localStorage.removeItem("clutch-admin-token");
+    if (typeof window !== "undefined") {
+      sessionStorage.removeItem("clutch-admin-token");
+    }
   };
 
   const hasPermission = (permission: string): boolean => {

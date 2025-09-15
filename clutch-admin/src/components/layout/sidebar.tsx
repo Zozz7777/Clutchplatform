@@ -47,36 +47,26 @@ export function Sidebar({ isCollapsed, onToggle }: SidebarProps) {
       {/* Logo */}
       <div className="flex items-center justify-center h-16 px-4 border-b border-border">
         {isCollapsed ? (
-          <img
-            src="/logos/Logored.png"
-            alt="Clutch"
-            width={32}
-            height={32}
-            className="object-contain"
-            onError={(e) => {
-              e.currentTarget.style.display = 'none';
-              const parent = e.currentTarget.parentElement;
-              if (parent) {
-                parent.innerHTML = '<div class="text-lg font-bold text-sidebar-primary">C</div>';
-              }
-            }}
-          />
-        ) : (
-          <div className="flex items-center space-x-3">
+          <div className="flex items-center justify-center w-8 h-8">
             <img
               src="/logos/Logored.png"
               alt="Clutch"
               width={32}
               height={32}
-              className="object-contain"
-              onError={(e) => {
-                e.currentTarget.style.display = 'none';
-                const parent = e.currentTarget.parentElement;
-                if (parent) {
-                  parent.innerHTML = '<span class="text-xl font-bold text-sidebar-primary font-sans">CLUTCH</span>';
-                }
-              }}
+              className="object-contain max-w-full max-h-full"
             />
+          </div>
+        ) : (
+          <div className="flex items-center space-x-3">
+            <div className="flex items-center justify-center w-8 h-8">
+              <img
+                src="/logos/Logored.png"
+                alt="Clutch"
+                width={32}
+                height={32}
+                className="object-contain max-w-full max-h-full"
+              />
+            </div>
             <span className="text-xl font-bold text-sidebar-primary font-sans">Clutch Admin</span>
           </div>
         )}

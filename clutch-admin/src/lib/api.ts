@@ -29,7 +29,10 @@ class ApiService {
   }
 
   private getToken(): string | null {
-    this.loadToken(); // Always get fresh token
+    // Always get fresh token from localStorage or sessionStorage
+    if (typeof window !== "undefined") {
+      this.token = localStorage.getItem("clutch-admin-token") || sessionStorage.getItem("clutch-admin-token");
+    }
     return this.token;
   }
 
@@ -43,17 +46,43 @@ class ApiService {
     const config: RequestInit = {
       headers: {
         "Content-Type": "application/json",
+        "Accept": "application/json",
         ...(token && { Authorization: `Bearer ${token}` }),
         ...options.headers,
       },
       ...options,
     };
 
+    // Debug logging for auth headers
+    if (process.env.NODE_ENV === 'development') {
+      console.log(`🔐 API Request to ${endpoint}:`, {
+        url,
+        hasToken: !!token,
+        tokenPreview: token ? `${token.substring(0, 20)}...` : 'none',
+        headers: config.headers
+      });
+    }
+
     try {
       const response = await fetch(url, config);
       
+      // Debug logging for response
+      if (process.env.NODE_ENV === 'development') {
+        console.log(`📡 API Response from ${endpoint}:`, {
+          status: response.status,
+          statusText: response.statusText,
+          headers: Object.fromEntries(response.headers.entries())
+        });
+      }
+      
       if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
+        const errorText = await response.text();
+        console.error(`❌ API request failed for ${endpoint}:`, {
+          status: response.status,
+          statusText: response.statusText,
+          error: errorText
+        });
+        throw new Error(`HTTP error! status: ${response.status}: ${errorText}`);
       }
 
       const data = await response.json();
@@ -62,7 +91,7 @@ class ApiService {
         success: true,
       };
     } catch (error) {
-      console.error(`API request failed for ${endpoint}:`, error);
+      console.error(`❌ API request failed for ${endpoint}:`, error);
       return {
         data: null as T,
         success: false,
@@ -88,7 +117,24 @@ class ApiService {
 
   async logout(): Promise<void> {
     this.token = null;
-    localStorage.removeItem("clutch-admin-token");
+    if (typeof window !== "undefined") {
+      localStorage.removeItem("clutch-admin-token");
+      sessionStorage.removeItem("clutch-admin-token");
+    }
+  }
+
+  // Verify current token
+  async verifyToken(): Promise<ApiResponse<{ valid: boolean; user?: any }>> {
+    return this.request<{ valid: boolean; user?: any }>("/api/v1/auth/verify");
+  }
+
+  // Get current token status
+  getTokenStatus(): { hasToken: boolean; tokenPreview: string } {
+    const token = this.getToken();
+    return {
+      hasToken: !!token,
+      tokenPreview: token ? `${token.substring(0, 20)}...` : 'none'
+    };
   }
 
   // Users API
