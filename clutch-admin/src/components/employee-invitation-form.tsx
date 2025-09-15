@@ -179,13 +179,13 @@ export function EmployeeInvitationForm({ onSuccess, onCancel }: EmployeeInvitati
   };
 
   return (
-    <Card className="w-full max-w-2xl mx-auto">
+    <Card className="w-full max-w-2xl mx-auto shadow-sm">
       <CardHeader>
-        <CardTitle className="flex items-center gap-2">
+        <CardTitle className="flex items-center gap-2 font-sans">
           <UserPlus className="h-5 w-5" />
           Invite New Employee
         </CardTitle>
-        <CardDescription>
+        <CardDescription className="font-sans">
           Send an invitation to a new employee to join the Clutch platform
         </CardDescription>
       </CardHeader>
@@ -194,7 +194,7 @@ export function EmployeeInvitationForm({ onSuccess, onCancel }: EmployeeInvitati
         <form onSubmit={handleSubmit} className="space-y-6">
           {/* Basic Information */}
           <div className="space-y-4">
-            <h3 className="text-lg font-medium">Basic Information</h3>
+            <h3 className="text-lg font-medium font-sans">Basic Information</h3>
             
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div className="space-y-2">
@@ -235,7 +235,7 @@ export function EmployeeInvitationForm({ onSuccess, onCancel }: EmployeeInvitati
 
           {/* Job Information */}
           <div className="space-y-4">
-            <h3 className="text-lg font-medium">Job Information</h3>
+            <h3 className="text-lg font-medium font-sans">Job Information</h3>
             
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               <div className="space-y-2">
@@ -309,8 +309,8 @@ export function EmployeeInvitationForm({ onSuccess, onCancel }: EmployeeInvitati
 
           {/* Permissions */}
           <div className="space-y-4">
-            <h3 className="text-lg font-medium">Permissions</h3>
-            <p className="text-sm text-muted-foreground">
+            <h3 className="text-lg font-medium font-sans">Permissions</h3>
+            <p className="text-sm text-muted-foreground font-sans">
               Select the permissions this employee should have. Some permissions are automatically assigned based on the role.
             </p>
             
@@ -328,11 +328,11 @@ export function EmployeeInvitationForm({ onSuccess, onCancel }: EmployeeInvitati
                   <div className="space-y-1">
                     <Label 
                       htmlFor={permission.value}
-                      className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+                      className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 font-sans"
                     >
                       {permission.label}
                     </Label>
-                    <p className="text-xs text-muted-foreground">
+                    <p className="text-xs text-muted-foreground font-sans">
                       {permission.description}
                     </p>
                   </div>

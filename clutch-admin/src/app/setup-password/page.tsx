@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -21,7 +21,7 @@ interface InvitationData {
   expiresAt: string;
 }
 
-export default function SetupPasswordPage() {
+function SetupPasswordContent() {
   const [token, setToken] = useState<string>("");
   const [password, setPassword] = useState<string>("");
   const [confirmPassword, setConfirmPassword] = useState<string>("");
@@ -198,25 +198,25 @@ export default function SetupPasswordPage() {
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-background px-4">
-      <Card className="w-full max-w-md">
-        <CardHeader className="text-center">
-          <div className="mx-auto mb-4 w-12 h-12 bg-primary rounded-full flex items-center justify-center">
-            <Shield className="h-6 w-6 text-primary-foreground" />
-          </div>
-          <CardTitle>Set Up Your Account</CardTitle>
-          <CardDescription>
-            Welcome to Clutch! Please create a secure password to complete your account setup.
-          </CardDescription>
-        </CardHeader>
+        <Card className="w-full max-w-md shadow-sm">
+          <CardHeader className="text-center">
+            <div className="mx-auto mb-4 w-12 h-12 bg-primary rounded-full flex items-center justify-center">
+              <Shield className="h-6 w-6 text-primary-foreground" />
+            </div>
+            <CardTitle className="font-sans">Set Up Your Account</CardTitle>
+            <CardDescription className="font-sans">
+              Welcome to Clutch! Please create a secure password to complete your account setup.
+            </CardDescription>
+          </CardHeader>
         
         <CardContent>
           {invitationData && (
             <div className="mb-6 p-4 bg-muted rounded-lg">
-              <h3 className="font-medium mb-2 flex items-center gap-2">
+              <h3 className="font-medium mb-2 flex items-center gap-2 font-sans">
                 <User className="h-4 w-4" />
                 Account Details
               </h3>
-              <div className="space-y-1 text-sm text-muted-foreground">
+              <div className="space-y-1 text-sm text-muted-foreground font-sans">
                 <p><strong>Name:</strong> {invitationData.name}</p>
                 <p><strong>Email:</strong> {invitationData.email}</p>
                 <p><strong>Role:</strong> {invitationData.role}</p>
@@ -347,11 +347,31 @@ export default function SetupPasswordPage() {
             </Button>
           </form>
 
-          <div className="mt-6 text-center text-sm text-muted-foreground">
+          <div className="mt-6 text-center text-sm text-muted-foreground font-sans">
             <p>By completing this setup, you agree to our terms of service and privacy policy.</p>
           </div>
         </CardContent>
       </Card>
     </div>
+  );
+}
+
+export default function SetupPasswordPage() {
+  return (
+    <Suspense fallback={
+      <div className="min-h-screen flex items-center justify-center bg-background px-4">
+        <Card className="w-full max-w-md">
+          <CardContent className="pt-6">
+            <div className="text-center">
+              <Loader2 className="h-8 w-8 animate-spin mx-auto mb-4 text-primary" />
+              <h2 className="text-lg font-semibold mb-2">Loading...</h2>
+              <p className="text-muted-foreground">Please wait while we load the setup page...</p>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+    }>
+      <SetupPasswordContent />
+    </Suspense>
   );
 }

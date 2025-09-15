@@ -483,8 +483,8 @@ export default function HRPage() {
       {/* Page Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold tracking-tight">Human Resources</h1>
-          <p className="text-muted-foreground">
+          <h1 className="text-3xl font-bold tracking-tight font-sans">Human Resources</h1>
+          <p className="text-muted-foreground font-sans">
             Manage employees, recruitment, and HR operations
           </p>
         </div>
