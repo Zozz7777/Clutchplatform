@@ -6,55 +6,53 @@
 const express = require('express');
 const router = express.Router();
 const { authenticateToken, requireRole } = require('../middleware/auth');
+const { getCollection } = require('../config/database-unified');
 
 // GET /api/v1/fleet/vehicles - Get all fleet vehicles
 router.get('/vehicles', authenticateToken, requireRole(['admin', 'fleet_manager']), async (req, res) => {
   try {
-    // Mock fleet vehicles data
-    const vehicles = [
-      {
-        id: 'vehicle-001',
-        make: 'Toyota',
-        model: 'Camry',
-        year: 2023,
-        licensePlate: 'ABC-123',
-        status: 'active',
-        driverId: 'driver-001',
-        location: {
-          lat: 25.2048,
-          lng: 55.2708
-        },
-        lastServiceDate: '2024-01-15',
-        nextServiceDate: '2024-04-15'
-      },
-      {
-        id: 'vehicle-002',
-        make: 'Honda',
-        model: 'Civic',
-        year: 2022,
-        licensePlate: 'XYZ-789',
-        status: 'maintenance',
-        driverId: 'driver-002',
-        location: {
-          lat: 25.2048,
-          lng: 55.2708
-        },
-        lastServiceDate: '2024-02-01',
-        nextServiceDate: '2024-05-01'
-      }
-    ];
-
+    const { page = 1, limit = 20, status, make, model } = req.query;
+    const skip = (parseInt(page) - 1) * parseInt(limit);
+    
+    const vehiclesCollection = await getCollection('vehicles');
+    
+    // Build filter
+    const filter = {};
+    if (status) filter.status = status;
+    if (make) filter.make = new RegExp(make, 'i');
+    if (model) filter.model = new RegExp(model, 'i');
+    
+    // Get vehicles with pagination
+    const [vehicles, total] = await Promise.all([
+      vehiclesCollection
+        .find(filter)
+        .sort({ createdAt: -1 })
+        .skip(skip)
+        .limit(parseInt(limit))
+        .toArray(),
+      vehiclesCollection.countDocuments(filter)
+    ]);
+    
     res.json({
       success: true,
-      data: vehicles,
+      data: {
+        vehicles,
+        pagination: {
+          page: parseInt(page),
+          limit: parseInt(limit),
+          total,
+          pages: Math.ceil(total / parseInt(limit))
+        }
+      },
       message: 'Fleet vehicles retrieved successfully',
       timestamp: new Date().toISOString()
     });
+    
   } catch (error) {
-    console.error('Fleet vehicles error:', error);
+    console.error('Get fleet vehicles error:', error);
     res.status(500).json({
       success: false,
-      error: 'FLEET_VEHICLES_ERROR',
+      error: 'GET_FLEET_VEHICLES_FAILED',
       message: 'Failed to retrieve fleet vehicles',
       timestamp: new Date().toISOString()
     });
@@ -64,82 +62,349 @@ router.get('/vehicles', authenticateToken, requireRole(['admin', 'fleet_manager'
 // GET /api/v1/fleet/drivers - Get all fleet drivers
 router.get('/drivers', authenticateToken, requireRole(['admin', 'fleet_manager']), async (req, res) => {
   try {
-    // Mock fleet drivers data
-    const drivers = [
-      {
-        id: 'driver-001',
-        name: 'Ahmed Al-Rashid',
-        email: 'ahmed@clutch.com',
-        phone: '+971501234567',
-        licenseNumber: 'DL-123456',
-        status: 'active',
-        vehicleId: 'vehicle-001',
-        rating: 4.8,
-        totalTrips: 150,
-        joinDate: '2023-01-15'
-      },
-      {
-        id: 'driver-002',
-        name: 'Mohammed Hassan',
-        email: 'mohammed@clutch.com',
-        phone: '+971507654321',
-        licenseNumber: 'DL-789012',
-        status: 'on_break',
-        vehicleId: 'vehicle-002',
-        rating: 4.6,
-        totalTrips: 120,
-        joinDate: '2023-03-20'
-      }
-    ];
-
+    const { page = 1, limit = 20, status, department } = req.query;
+    const skip = (parseInt(page) - 1) * parseInt(limit);
+    
+    const usersCollection = await getCollection('users');
+    
+    // Build filter for drivers
+    const filter = { 
+      isEmployee: true,
+      role: { $in: ['driver', 'fleet_manager'] }
+    };
+    if (status) filter.isActive = status === 'active';
+    if (department) filter.department = department;
+    
+    // Get drivers with pagination
+    const [drivers, total] = await Promise.all([
+      usersCollection
+        .find(filter, { projection: { password: 0 } })
+        .sort({ createdAt: -1 })
+        .skip(skip)
+        .limit(parseInt(limit))
+        .toArray(),
+      usersCollection.countDocuments(filter)
+    ]);
+    
     res.json({
       success: true,
-      data: drivers,
+      data: {
+        drivers,
+        pagination: {
+          page: parseInt(page),
+          limit: parseInt(limit),
+          total,
+          pages: Math.ceil(total / parseInt(limit))
+        }
+      },
       message: 'Fleet drivers retrieved successfully',
       timestamp: new Date().toISOString()
     });
+    
   } catch (error) {
-    console.error('Fleet drivers error:', error);
+    console.error('Get fleet drivers error:', error);
     res.status(500).json({
       success: false,
-      error: 'FLEET_DRIVERS_ERROR',
+      error: 'GET_FLEET_DRIVERS_FAILED',
       message: 'Failed to retrieve fleet drivers',
       timestamp: new Date().toISOString()
     });
   }
 });
 
-// GET /api/v1/fleet/analytics - Get fleet analytics
-router.get('/analytics', authenticateToken, requireRole(['admin', 'fleet_manager']), async (req, res) => {
+// POST /api/v1/fleet/vehicles - Add new vehicle to fleet
+router.post('/vehicles', authenticateToken, requireRole(['admin', 'fleet_manager']), async (req, res) => {
   try {
-    const analytics = {
-      totalVehicles: 25,
-      activeVehicles: 22,
-      maintenanceVehicles: 3,
-      totalDrivers: 30,
-      activeDrivers: 28,
-      onBreakDrivers: 2,
-      totalTrips: 1250,
-      completedTrips: 1200,
-      cancelledTrips: 50,
-      averageRating: 4.7,
-      revenue: 125000,
-      fuelCost: 15000,
-      maintenanceCost: 8000
+    const { 
+      make, 
+      model, 
+      year, 
+      licensePlate, 
+      vin, 
+      color, 
+      fuelType,
+      transmission,
+      engineSize,
+      mileage,
+      status = 'active',
+      assignedDriverId
+    } = req.body;
+    
+    if (!make || !model || !year || !licensePlate) {
+      return res.status(400).json({
+        success: false,
+        error: 'MISSING_REQUIRED_FIELDS',
+        message: 'make, model, year, and licensePlate are required',
+        timestamp: new Date().toISOString()
+      });
+    }
+    
+    const vehiclesCollection = await getCollection('vehicles');
+    
+    // Check if vehicle with same license plate already exists
+    const existingVehicle = await vehiclesCollection.findOne({ 
+      licensePlate: licensePlate.toUpperCase() 
+    });
+    
+    if (existingVehicle) {
+      return res.status(409).json({
+        success: false,
+        error: 'VEHICLE_EXISTS',
+        message: 'Vehicle with this license plate already exists',
+        timestamp: new Date().toISOString()
+      });
+    }
+    
+    const newVehicle = {
+      make,
+      model,
+      year: parseInt(year),
+      licensePlate: licensePlate.toUpperCase(),
+      vin: vin || null,
+      color: color || null,
+      fuelType: fuelType || 'gasoline',
+      transmission: transmission || 'automatic',
+      engineSize: engineSize || null,
+      mileage: parseInt(mileage) || 0,
+      status,
+      assignedDriverId: assignedDriverId || null,
+      location: {
+        lat: null,
+        lng: null,
+        lastUpdated: null
+      },
+      maintenance: {
+        lastServiceDate: null,
+        nextServiceDate: null,
+        serviceHistory: []
+      },
+      createdAt: new Date(),
+      createdBy: req.user.userId,
+      isActive: true
     };
-
-    res.json({
+    
+    const result = await vehiclesCollection.insertOne(newVehicle);
+    
+    res.status(201).json({
       success: true,
-      data: analytics,
-      message: 'Fleet analytics retrieved successfully',
+      data: {
+        vehicle: {
+          ...newVehicle,
+          _id: result.insertedId
+        }
+      },
+      message: 'Vehicle added to fleet successfully',
       timestamp: new Date().toISOString()
     });
+    
   } catch (error) {
-    console.error('Fleet analytics error:', error);
+    console.error('Add fleet vehicle error:', error);
     res.status(500).json({
       success: false,
-      error: 'FLEET_ANALYTICS_ERROR',
-      message: 'Failed to retrieve fleet analytics',
+      error: 'ADD_FLEET_VEHICLE_FAILED',
+      message: 'Failed to add vehicle to fleet',
+      timestamp: new Date().toISOString()
+    });
+  }
+});
+
+// PUT /api/v1/fleet/vehicles/:id - Update vehicle
+router.put('/vehicles/:id', authenticateToken, requireRole(['admin', 'fleet_manager']), async (req, res) => {
+  try {
+    const { id } = req.params;
+    const updateData = req.body;
+    
+    const vehiclesCollection = await getCollection('vehicles');
+    
+    // Check if vehicle exists
+    const existingVehicle = await vehiclesCollection.findOne({ _id: id });
+    if (!existingVehicle) {
+      return res.status(404).json({
+        success: false,
+        error: 'VEHICLE_NOT_FOUND',
+        message: 'Vehicle not found',
+        timestamp: new Date().toISOString()
+      });
+    }
+    
+    // Remove fields that shouldn't be updated directly
+    delete updateData._id;
+    delete updateData.createdAt;
+    delete updateData.createdBy;
+    
+    // Add update metadata
+    updateData.updatedAt = new Date();
+    updateData.updatedBy = req.user.userId;
+    
+    const result = await vehiclesCollection.updateOne(
+      { _id: id },
+      { $set: updateData }
+    );
+    
+    if (result.modifiedCount === 0) {
+      return res.status(400).json({
+        success: false,
+        error: 'UPDATE_FAILED',
+        message: 'No changes made to vehicle',
+        timestamp: new Date().toISOString()
+      });
+    }
+    
+    // Get updated vehicle
+    const updatedVehicle = await vehiclesCollection.findOne({ _id: id });
+    
+    res.json({
+      success: true,
+      data: { vehicle: updatedVehicle },
+      message: 'Vehicle updated successfully',
+      timestamp: new Date().toISOString()
+    });
+    
+  } catch (error) {
+    console.error('Update fleet vehicle error:', error);
+    res.status(500).json({
+      success: false,
+      error: 'UPDATE_FLEET_VEHICLE_FAILED',
+      message: 'Failed to update vehicle',
+      timestamp: new Date().toISOString()
+    });
+  }
+});
+
+// DELETE /api/v1/fleet/vehicles/:id - Remove vehicle from fleet
+router.delete('/vehicles/:id', authenticateToken, requireRole(['admin']), async (req, res) => {
+  try {
+    const { id } = req.params;
+    const vehiclesCollection = await getCollection('vehicles');
+    
+    // Check if vehicle exists
+    const existingVehicle = await vehiclesCollection.findOne({ _id: id });
+    if (!existingVehicle) {
+      return res.status(404).json({
+        success: false,
+        error: 'VEHICLE_NOT_FOUND',
+        message: 'Vehicle not found',
+        timestamp: new Date().toISOString()
+      });
+    }
+    
+    // Soft delete - deactivate vehicle
+    const result = await vehiclesCollection.updateOne(
+      { _id: id },
+      { 
+        $set: { 
+          isActive: false,
+          status: 'decommissioned',
+          deactivatedAt: new Date(),
+          deactivatedBy: req.user.userId
+        }
+      }
+    );
+    
+    if (result.modifiedCount === 0) {
+      return res.status(400).json({
+        success: false,
+        error: 'DEACTIVATION_FAILED',
+        message: 'Failed to remove vehicle from fleet',
+        timestamp: new Date().toISOString()
+      });
+    }
+    
+    res.json({
+      success: true,
+      message: 'Vehicle removed from fleet successfully',
+      timestamp: new Date().toISOString()
+    });
+    
+  } catch (error) {
+    console.error('Remove fleet vehicle error:', error);
+    res.status(500).json({
+      success: false,
+      error: 'REMOVE_FLEET_VEHICLE_FAILED',
+      message: 'Failed to remove vehicle from fleet',
+      timestamp: new Date().toISOString()
+    });
+  }
+});
+
+// GET /api/v1/fleet/vehicles/:id - Get vehicle details
+router.get('/vehicles/:id', authenticateToken, requireRole(['admin', 'fleet_manager']), async (req, res) => {
+  try {
+    const { id } = req.params;
+    const vehiclesCollection = await getCollection('vehicles');
+    
+    const vehicle = await vehiclesCollection.findOne({ _id: id });
+    
+    if (!vehicle) {
+      return res.status(404).json({
+        success: false,
+        error: 'VEHICLE_NOT_FOUND',
+        message: 'Vehicle not found',
+        timestamp: new Date().toISOString()
+      });
+    }
+    
+    res.json({
+      success: true,
+      data: { vehicle },
+      message: 'Vehicle details retrieved successfully',
+      timestamp: new Date().toISOString()
+    });
+    
+  } catch (error) {
+    console.error('Get vehicle details error:', error);
+    res.status(500).json({
+      success: false,
+      error: 'GET_VEHICLE_DETAILS_FAILED',
+      message: 'Failed to retrieve vehicle details',
+      timestamp: new Date().toISOString()
+    });
+  }
+});
+
+// GET /api/v1/fleet/stats - Get fleet statistics
+router.get('/stats', authenticateToken, requireRole(['admin', 'fleet_manager']), async (req, res) => {
+  try {
+    const vehiclesCollection = await getCollection('vehicles');
+    const usersCollection = await getCollection('users');
+    
+    const [vehicleStats, driverStats] = await Promise.all([
+      vehiclesCollection.aggregate([
+        { $group: { _id: '$status', count: { $sum: 1 } } }
+      ]).toArray(),
+      usersCollection.countDocuments({ 
+        isEmployee: true, 
+        role: { $in: ['driver', 'fleet_manager'] },
+        isActive: true
+      })
+    ]);
+    
+    const stats = {
+      vehicles: {
+        total: vehicleStats.reduce((sum, stat) => sum + stat.count, 0),
+        byStatus: vehicleStats.reduce((acc, stat) => {
+          acc[stat._id] = stat.count;
+          return acc;
+        }, {})
+      },
+      drivers: {
+        total: driverStats
+      }
+    };
+    
+    res.json({
+      success: true,
+      data: { stats },
+      message: 'Fleet statistics retrieved successfully',
+      timestamp: new Date().toISOString()
+    });
+    
+  } catch (error) {
+    console.error('Get fleet stats error:', error);
+    res.status(500).json({
+      success: false,
+      error: 'GET_FLEET_STATS_FAILED',
+      message: 'Failed to retrieve fleet statistics',
       timestamp: new Date().toISOString()
     });
   }

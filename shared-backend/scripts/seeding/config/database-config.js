@@ -15,7 +15,11 @@ class DatabaseConfig {
         return this.db;
       }
 
-      let mongoUri = process.env.MONGODB_URI || 'mongodb+srv://ziadabdelmageed1:I174HSKpqf6iNBKd@clutch.qkgvstq.mongodb.net/?retryWrites=true&w=majority&appName=Clutch';
+      let mongoUri = process.env.MONGODB_URI;
+      
+      if (!mongoUri) {
+        throw new Error('MONGODB_URI environment variable is required');
+      }
       
       // Ensure we're connecting to the clutch database
       const dbName = process.env.MONGODB_DB || 'clutch';

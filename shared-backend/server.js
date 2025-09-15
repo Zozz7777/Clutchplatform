@@ -10,6 +10,13 @@ const rateLimit = require('express-rate-limit');
 const compression = require('compression');
 require('dotenv').config();
 
+// Debug environment variables
+console.log('🔧 Environment Variables Debug:');
+console.log('ADMIN_EMAIL:', process.env.ADMIN_EMAIL);
+console.log('ADMIN_PASSWORD_HASH:', process.env.ADMIN_PASSWORD_HASH ? 'SET' : 'NOT SET');
+console.log('JWT_SECRET:', process.env.JWT_SECRET ? 'SET' : 'NOT SET');
+console.log('MONGODB_URI:', process.env.MONGODB_URI ? 'SET' : 'NOT SET');
+
 // Import security middleware
 const securityHeaders = require('./middleware/securityHeaders');
 const { cacheMiddleware } = require('./middleware/cache');
@@ -84,6 +91,7 @@ const communicationRoutes = require('./routes/communication');
 const performanceRoutes = require('./routes/performance');
 const dashboardRoutes = require('./routes/dashboard');
 const notificationsRoutes = require('./routes/notifications');
+const employeesRoutes = require('./routes/employees');
 
 // All route imports cleaned up - only existing routes imported above
 
@@ -170,6 +178,7 @@ app.use(`${apiPrefix}/communication`, communicationRoutes);
 app.use(`${apiPrefix}/performance`, performanceRoutes);
 app.use(`${apiPrefix}/dashboard`, dashboardRoutes);
 app.use(`${apiPrefix}/notifications`, notificationsRoutes);
+app.use(`${apiPrefix}/employees`, employeesRoutes);
 
 // Fallback routes (without v1 prefix for frontend compatibility)
 app.use('/auth', authRoutes);
@@ -177,6 +186,7 @@ app.use('/admin', adminRoutes);
 app.use('/api/fleet', fleetRoutes);
 app.use('/api/notifications', notificationsRoutes);
 app.use('/api/dashboard', dashboardRoutes);
+app.use('/api/employees', employeesRoutes);
 
 // Test endpoints
 app.get('/test', (req, res) => {

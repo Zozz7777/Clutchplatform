@@ -7,7 +7,13 @@
 
 const { MongoClient } = require('mongodb');
 
-const MONGODB_URI = 'mongodb+srv://ziadabdelmageed1:I174HSKpqf6iNBKd@clutch.qkgvstq.mongodb.net/clutch?retryWrites=true&w=majority&appName=Clutch';
+require('dotenv').config();
+const MONGODB_URI = process.env.MONGODB_URI;
+
+if (!MONGODB_URI) {
+  console.error('❌ MONGODB_URI environment variable is required');
+  process.exit(1);
+}
 
 // Collections that endpoints are trying to use
 const ENDPOINT_COLLECTIONS = [

@@ -2,11 +2,19 @@
  * Test Database Connection with Real MongoDB URI
  */
 
-// Set environment variables for testing
-process.env.MONGODB_URI = 'mongodb+srv://ziadabdelmageed1:I174HSKpqf6iNBKd@clutch.qkgvstq.mongodb.net/clutch?retryWrites=true&w=majority&appName=Clutch';
-process.env.MONGODB_DB = 'clutch';
-process.env.JWT_SECRET = 'test-jwt-secret-for-testing';
-process.env.NODE_ENV = 'test';
+// Load environment variables from .env file or system environment
+require('dotenv').config();
+
+// Validate required environment variables
+if (!process.env.MONGODB_URI) {
+  console.error('❌ MONGODB_URI environment variable is required');
+  process.exit(1);
+}
+
+if (!process.env.JWT_SECRET) {
+  console.error('❌ JWT_SECRET environment variable is required');
+  process.exit(1);
+}
 
 const { connectToDatabase, getDatabaseHealth } = require('./config/database-unified');
 

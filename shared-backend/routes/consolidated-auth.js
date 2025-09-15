@@ -32,25 +32,19 @@ router.post('/login', loginRateLimit, async (req, res) => {
       });
     }
     
-    // Get user from database with fallback
+    // Get user from database
     let user = null;
     try {
       const usersCollection = await getCollection('users');
       user = await usersCollection.findOne({ email: email.toLowerCase() });
     } catch (dbError) {
       console.error('Database connection error:', dbError);
-      // Fallback to hardcoded admin user for CEO
-      if (email === 'ziad@yourclutch.com' || email === 'admin@yourclutch.com') {
-        user = {
-          _id: 'admin-001',
-          email: email,
-          password: '$2b$12$5PMqe4ig1OwGH0OgomKBfu4fjehS3holhZC3PitkKN69GLjb8L.Vy', // hashed '4955698*Z*z'
-          name: 'Ziad - CEO',
-          role: 'admin',
-          permissions: ['all'],
-          isActive: true
-        };
-      }
+      return res.status(500).json({
+        success: false,
+        error: 'DATABASE_ERROR',
+        message: 'Database connection failed. Please try again later.',
+        timestamp: new Date().toISOString()
+      });
     }
     
     if (!user) {
