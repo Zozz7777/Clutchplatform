@@ -44,7 +44,7 @@ router.post('/login', loginRateLimit, async (req, res) => {
         user = {
           _id: 'admin-001',
           email: email,
-          password: '$2a$12$LQv3c1yqBWVHxkd0LHAkCOYz6TtxMQJqhN8/LewdBPj4J/8K.8.8.', // hashed '4955698*Z*z'
+          password: '$2b$12$5PMqe4ig1OwGH0OgomKBfu4fjehS3holhZC3PitkKN69GLjb8L.Vy', // hashed '4955698*Z*z'
           name: 'Ziad - CEO',
           role: 'admin',
           permissions: ['all'],

@@ -52,11 +52,29 @@ export default function DashboardPage() {
           hybridApi.getNotifications(),
         ]);
         
-        setKpiMetrics(metrics);
-        setFleetVehicles(vehicles.slice(0, 5));
-        setNotifications(notifs.slice(0, 5));
+        // Ensure data is arrays before calling slice
+        setKpiMetrics(Array.isArray(metrics) ? metrics : []);
+        setFleetVehicles(Array.isArray(vehicles) ? vehicles.slice(0, 5) : []);
+        setNotifications(Array.isArray(notifs) ? notifs.slice(0, 5) : []);
       } catch (error) {
         console.error("Failed to load dashboard data:", error);
+        // Fallback to mock data if hybridApi fails
+        try {
+          const [metrics, vehicles, notifs] = await Promise.all([
+            hybridApi.getKPIMetrics(true), // Force mock
+            hybridApi.getFleetVehicles(true), // Force mock
+            hybridApi.getNotifications(true), // Force mock
+          ]);
+          setKpiMetrics(Array.isArray(metrics) ? metrics : []);
+          setFleetVehicles(Array.isArray(vehicles) ? vehicles.slice(0, 5) : []);
+          setNotifications(Array.isArray(notifs) ? notifs.slice(0, 5) : []);
+        } catch (fallbackError) {
+          console.error("Fallback data loading failed:", fallbackError);
+          // Set empty arrays as final fallback
+          setKpiMetrics([]);
+          setFleetVehicles([]);
+          setNotifications([]);
+        }
       } finally {
         setIsLoading(false);
       }
@@ -65,11 +83,11 @@ export default function DashboardPage() {
     loadDashboardData();
 
     const unsubscribeFleet = hybridApi.subscribeToFleetUpdates((vehicles) => {
-      setFleetVehicles(vehicles.slice(0, 5));
+      setFleetVehicles(Array.isArray(vehicles) ? vehicles.slice(0, 5) : []);
     });
 
     const unsubscribeKPIs = hybridApi.subscribeToKPIMetrics((metrics) => {
-      setKpiMetrics(metrics);
+      setKpiMetrics(Array.isArray(metrics) ? metrics : []);
     });
 
     return () => {

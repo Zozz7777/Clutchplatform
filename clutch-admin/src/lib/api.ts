@@ -19,7 +19,18 @@ class ApiService {
 
   constructor(baseURL: string) {
     this.baseURL = baseURL;
-    this.token = localStorage.getItem("clutch-admin-token");
+    this.loadToken();
+  }
+
+  private loadToken(): void {
+    if (typeof window !== "undefined") {
+      this.token = localStorage.getItem("clutch-admin-token");
+    }
+  }
+
+  private getToken(): string | null {
+    this.loadToken(); // Always get fresh token
+    return this.token;
   }
 
   private async request<T>(
@@ -28,10 +39,11 @@ class ApiService {
   ): Promise<ApiResponse<T>> {
     const url = `${this.baseURL}${endpoint}`;
     
+    const token = this.getToken();
     const config: RequestInit = {
       headers: {
         "Content-Type": "application/json",
-        ...(this.token && { Authorization: `Bearer ${this.token}` }),
+        ...(token && { Authorization: `Bearer ${token}` }),
         ...options.headers,
       },
       ...options,
@@ -61,7 +73,7 @@ class ApiService {
 
   // Authentication
   async login(email: string, password: string): Promise<ApiResponse<{ token: string; user: any }>> {
-    const response = await this.request<{ token: string; user: any }>("/api/auth/login", {
+    const response = await this.request<{ token: string; user: any }>("/api/v1/auth/login", {
       method: "POST",
       body: JSON.stringify({ email, password }),
     });
