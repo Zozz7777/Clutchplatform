@@ -7,7 +7,6 @@ import { cn } from "@/lib/utils";
 import { NAVIGATION_ITEMS } from "@/lib/constants";
 import { useAuth } from "@/contexts/auth-context";
 import { ChevronDown, ChevronRight } from "lucide-react";
-import Image from "next/image";
 
 interface SidebarProps {
   isCollapsed: boolean;
@@ -48,7 +47,7 @@ export function Sidebar({ isCollapsed, onToggle }: SidebarProps) {
       {/* Logo */}
       <div className="flex items-center justify-center h-16 px-4 border-b border-border">
         {isCollapsed ? (
-          <Image
+          <img
             src="/logos/Logored.png"
             alt="Clutch"
             width={32}
@@ -57,7 +56,7 @@ export function Sidebar({ isCollapsed, onToggle }: SidebarProps) {
           />
         ) : (
           <div className="flex items-center space-x-3">
-            <Image
+            <img
               src="/logos/Logored.png"
               alt="Clutch"
               width={32}

@@ -470,7 +470,7 @@ export default function SystemHealthPage() {
           <Button
             variant="outline"
             onClick={() => setAutoRefresh(!autoRefresh)}
-            className={autoRefresh ? "bg-green-50 border-green-200" : ""}
+            className={autoRefresh ? "bg-primary/10 border-primary/20" : ""}
           >
             <RefreshCw className={`mr-2 h-4 w-4 ${autoRefresh ? "animate-spin" : ""}`} />
             Auto Refresh
@@ -560,7 +560,7 @@ export default function SystemHealthPage() {
             <CardContent>
               <div className="text-2xl font-bold">{systemMetrics.cpu.usage.toFixed(1)}%</div>
               <div className="flex items-center space-x-2 mt-2">
-                <div className="flex-1 bg-gray-200 rounded-full h-2">
+                <div className="flex-1 bg-muted rounded-full h-2">
                   <div 
                     className="bg-primary h-2 rounded-full" 
                     style={{ width: `${systemMetrics.cpu.usage}%` }}
@@ -580,7 +580,7 @@ export default function SystemHealthPage() {
             <CardContent>
               <div className="text-2xl font-bold">{systemMetrics.memory.usage.toFixed(1)}%</div>
               <div className="flex items-center space-x-2 mt-2">
-                <div className="flex-1 bg-gray-200 rounded-full h-2">
+                <div className="flex-1 bg-muted rounded-full h-2">
                   <div 
                     className="bg-primary h-2 rounded-full" 
                     style={{ width: `${systemMetrics.memory.usage}%` }}
@@ -600,7 +600,7 @@ export default function SystemHealthPage() {
             <CardContent>
               <div className="text-2xl font-bold">{systemMetrics.disk.usage.toFixed(1)}%</div>
               <div className="flex items-center space-x-2 mt-2">
-                <div className="flex-1 bg-gray-200 rounded-full h-2">
+                <div className="flex-1 bg-muted rounded-full h-2">
                   <div 
                     className="bg-secondary h-2 rounded-full" 
                     style={{ width: `${systemMetrics.disk.usage}%` }}
@@ -640,7 +640,7 @@ export default function SystemHealthPage() {
             {systemStatus?.services.map((service) => (
               <div key={service.name} className="flex items-center justify-between p-4 border rounded-lg">
                 <div className="flex items-center space-x-4">
-                  <div className="p-2 bg-blue-100 rounded-lg">
+                  <div className="p-2 bg-primary/10 rounded-lg">
                     <Server className="h-4 w-4 text-primary" />
                   </div>
                   <div>
@@ -684,7 +684,7 @@ export default function SystemHealthPage() {
             {alerts.slice(0, 10).map((alert) => (
               <div key={alert._id} className="flex items-center justify-between p-4 border rounded-lg">
                 <div className="flex items-center space-x-4">
-                  <div className="p-2 bg-red-100 rounded-lg">
+                  <div className="p-2 bg-destructive/10 rounded-lg">
                     <AlertTriangle className="h-4 w-4 text-destructive" />
                   </div>
                   <div>
@@ -801,7 +801,7 @@ export default function SystemHealthPage() {
               {selectedAlert.metadata && (
                 <div>
                   <Label className="text-sm font-medium">Metadata</Label>
-                  <pre className="text-sm text-muted-foreground bg-gray-100 p-2 rounded">
+                  <pre className="text-sm text-muted-foreground bg-muted p-2 rounded">
                     {JSON.stringify(selectedAlert.metadata, null, 2)}
                   </pre>
                 </div>

@@ -385,7 +385,7 @@ export default function APIDocsPage() {
                         <Badge className={getMethodColor(endpoint.method)}>
                           {endpoint.method}
                         </Badge>
-                        <code className="text-lg font-mono bg-gray-100 px-2 py-1 rounded">
+                        <code className="text-lg font-mono bg-muted px-2 py-1 rounded">
                           {endpoint.path}
                         </code>
                         <Badge variant="outline">{endpoint.category}</Badge>
@@ -465,7 +465,7 @@ export default function APIDocsPage() {
                   {Object.entries(selectedEndpoint.parameters).map(([type, params]) => (
                     <div key={type} className="mb-4">
                       <h4 className="font-medium capitalize mb-2">{type} Parameters</h4>
-                      <div className="bg-gray-50 p-4 rounded-lg">
+                      <div className="bg-muted p-4 rounded-lg">
                         {Object.entries(params).map(([name, param]) => (
                           <div key={name} className="mb-2">
                             <div className="flex items-center space-x-2">
@@ -501,7 +501,7 @@ export default function APIDocsPage() {
                         <span className="font-medium">{response.description}</span>
                       </div>
                       {response.schema && (
-                        <pre className="bg-gray-100 p-3 rounded text-sm overflow-x-auto">
+                        <pre className="bg-muted p-3 rounded text-sm overflow-x-auto">
                           {JSON.stringify(response.schema, null, 2)}
                         </pre>
                       )}
@@ -518,7 +518,7 @@ export default function APIDocsPage() {
                     {selectedEndpoint.examples.request && (
                       <div>
                         <h4 className="font-medium mb-2">Request</h4>
-                        <div className="bg-gray-900 text-green-400 p-4 rounded-lg">
+                        <div className="bg-muted text-primary p-4 rounded-lg">
                           <pre className="text-sm overflow-x-auto">
                             {selectedEndpoint.examples.request}
                           </pre>
@@ -537,7 +537,7 @@ export default function APIDocsPage() {
                     {selectedEndpoint.examples.response && (
                       <div>
                         <h4 className="font-medium mb-2">Response</h4>
-                        <div className="bg-gray-900 text-blue-400 p-4 rounded-lg">
+                        <div className="bg-muted text-secondary p-4 rounded-lg">
                           <pre className="text-sm overflow-x-auto">
                             {selectedEndpoint.examples.response}
                           </pre>

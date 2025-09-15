@@ -9,7 +9,6 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Label } from "@/components/ui/label";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Loader2, Eye, EyeOff } from "lucide-react";
-import Image from "next/image";
 
 export default function LoginPage() {
   const [email, setEmail] = useState("");
@@ -45,7 +44,7 @@ export default function LoginPage() {
       <Card className="w-full max-w-md shadow-md">
         <CardHeader className="text-center space-y-6">
           <div className="flex justify-center">
-            <Image
+            <img
               src="/logos/Logored.png"
               alt="Clutch"
               width={80}

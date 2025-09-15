@@ -10,6 +10,16 @@ const nextConfig: NextConfig = {
   images: {
     domains: ['admin.yourclutch.com', 'clutch-main-nk7x.onrender.com'],
     unoptimized: true, // Disable image optimization for static exports
+    remotePatterns: [
+      {
+        protocol: 'https',
+        hostname: 'admin.yourclutch.com',
+      },
+      {
+        protocol: 'https',
+        hostname: 'clutch-main-nk7x.onrender.com',
+      },
+    ],
   },
   async headers() {
     return [
