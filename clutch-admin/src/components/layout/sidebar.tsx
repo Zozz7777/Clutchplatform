@@ -7,6 +7,7 @@ import { cn } from "@/lib/utils";
 import { NAVIGATION_ITEMS } from "@/lib/constants";
 import { useAuth } from "@/contexts/auth-context";
 import { ChevronDown, ChevronRight } from "lucide-react";
+import { ThemeToggle } from "@/components/theme-toggle";
 
 interface SidebarProps {
   isCollapsed: boolean;
@@ -158,8 +159,14 @@ export function Sidebar({ isCollapsed, onToggle }: SidebarProps) {
         </div>
       </nav>
 
-      {/* Toggle Button */}
-      <div className="p-4 border-t border-border">
+      {/* Footer */}
+      <div className="p-4 border-t border-border space-y-3">
+        {/* Theme Toggle */}
+        <div className="flex items-center justify-center">
+          <ThemeToggle />
+        </div>
+        
+        {/* Toggle Button */}
         <button
           onClick={onToggle}
           className="w-full flex items-center justify-center px-3 py-2 text-sm font-medium text-sidebar-primary hover:bg-sidebar-primary/10 rounded-lg transition-colors font-sans"

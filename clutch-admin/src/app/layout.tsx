@@ -2,7 +2,9 @@ import type { Metadata } from "next";
 import { Roboto, Roboto_Serif, Roboto_Mono } from "next/font/google";
 import "./globals.css";
 import { AuthProvider } from "@/contexts/auth-context";
+import { RealtimeProvider } from "@/contexts/realtime-context";
 import { Toaster } from "@/components/ui/toaster";
+import { ThemeProvider } from "next-themes";
 
 const roboto = Roboto({ 
   subsets: ["latin"],
@@ -38,10 +40,19 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <body className={`${roboto.variable} ${robotoSerif.variable} ${robotoMono.variable} font-sans`}>
-        <AuthProvider>
-          {children}
-          <Toaster />
-        </AuthProvider>
+        <ThemeProvider
+          attribute="class"
+          defaultTheme="system"
+          enableSystem
+          disableTransitionOnChange
+        >
+          <AuthProvider>
+            <RealtimeProvider>
+              {children}
+              <Toaster />
+            </RealtimeProvider>
+          </AuthProvider>
+        </ThemeProvider>
       </body>
     </html>
   );

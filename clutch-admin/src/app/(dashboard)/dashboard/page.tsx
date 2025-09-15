@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button";
 import { productionApi, type KPIMetric, type FleetVehicle, type Notification } from "@/lib/production-api";
 import { formatCurrency, formatNumber, formatRelativeTime } from "@/lib/utils";
 import { AuthStatus } from "@/components/auth-status";
+import { RealtimeStatus } from "@/components/realtime-status";
 import { useQuickActions } from "@/lib/quick-actions";
 import { useAuth } from "@/contexts/auth-context";
 import { 
@@ -166,6 +167,7 @@ export default function DashboardPage() {
           </p>
         </div>
         <div className="flex items-center space-x-2">
+          <RealtimeStatus />
           <Button variant="outline" className="shadow-sm" onClick={generateReport}>
             <FileText className="mr-2 h-4 w-4" />
             Generate Report
