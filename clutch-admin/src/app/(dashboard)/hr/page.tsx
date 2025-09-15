@@ -164,6 +164,12 @@ export default function HRPage() {
           setApplications(applicationsData.data || applicationsData);
         }
 
+        // Load employee invitations
+        const invitationsResponse = await apiService.getEmployeeInvitations();
+        if (invitationsResponse.success) {
+          setInvitations(invitationsResponse.data?.invitations || []);
+        }
+
         // Load HR stats
         const statsResponse = await fetch("https://clutch-main-nk7x.onrender.com/api/v1/hr/stats", {
           headers: {
@@ -337,6 +343,57 @@ export default function HRPage() {
     }
   };
 
+  const handleResendInvitation = async (invitationId: string) => {
+    try {
+      const response = await apiService.resendInvitation(invitationId);
+      if (response.success) {
+        toast.success("Invitation resent successfully");
+        // Reload invitations
+        const invitationsResponse = await apiService.getEmployeeInvitations();
+        if (invitationsResponse.success) {
+          setInvitations(invitationsResponse.data?.invitations || []);
+        }
+      } else {
+        toast.error("Failed to resend invitation");
+      }
+    } catch (error) {
+      console.error("Resend invitation error:", error);
+      toast.error("Failed to resend invitation");
+    }
+  };
+
+  const handleCancelInvitation = async (invitationId: string) => {
+    if (!confirm("Are you sure you want to cancel this invitation?")) {
+      return;
+    }
+
+    try {
+      const response = await apiService.cancelInvitation(invitationId);
+      if (response.success) {
+        toast.success("Invitation cancelled successfully");
+        // Reload invitations
+        const invitationsResponse = await apiService.getEmployeeInvitations();
+        if (invitationsResponse.success) {
+          setInvitations(invitationsResponse.data?.invitations || []);
+        }
+      } else {
+        toast.error("Failed to cancel invitation");
+      }
+    } catch (error) {
+      console.error("Cancel invitation error:", error);
+      toast.error("Failed to cancel invitation");
+    }
+  };
+
+  const handleInvitationSuccess = async () => {
+    setShowInvitationForm(false);
+    // Reload invitations
+    const invitationsResponse = await apiService.getEmployeeInvitations();
+    if (invitationsResponse.success) {
+      setInvitations(invitationsResponse.data?.invitations || []);
+    }
+  };
+
   const handleApplicationAction = async (applicationId: string, action: string) => {
     try {
       const token = localStorage.getItem("clutch-admin-token");
@@ -433,9 +490,9 @@ export default function HRPage() {
         </div>
         {hasPermission("manage_hr") && (
           <div className="flex space-x-2">
-            <Button>
+            <Button onClick={() => setShowInvitationForm(true)}>
               <Plus className="mr-2 h-4 w-4" />
-              Add Employee
+              Invite Employee
             </Button>
             <Button variant="outline">
               <Plus className="mr-2 h-4 w-4" />
@@ -522,6 +579,14 @@ export default function HRPage() {
         >
           <Users className="mr-2 h-4 w-4" />
           Employees
+        </Button>
+        <Button
+          variant={activeTab === "invitations" ? "default" : "ghost"}
+          size="sm"
+          onClick={() => setActiveTab("invitations")}
+        >
+          <Mail className="mr-2 h-4 w-4" />
+          Invitations ({invitations.filter(i => i.status === 'pending').length})
         </Button>
         <Button
           variant={activeTab === "recruitment" ? "default" : "ghost"}
@@ -656,6 +721,85 @@ export default function HRPage() {
               <div className="text-center py-8">
                 <Users className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
                 <p className="text-muted-foreground">No employees found matching your criteria</p>
+              </div>
+            )}
+          </CardContent>
+        </Card>
+      )}
+
+      {/* Invitations Tab */}
+      {activeTab === "invitations" && (
+        <Card>
+          <CardHeader>
+            <CardTitle>Employee Invitations</CardTitle>
+            <CardDescription>
+              Manage pending employee invitations and track their status
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <div className="space-y-4">
+              {invitations.map((invitation) => (
+                <div key={invitation._id} className="flex items-center justify-between p-4 border rounded-lg hover:bg-muted/50 transition-colors">
+                  <div className="flex items-center space-x-4">
+                    <div className="w-10 h-10 rounded-full bg-muted flex items-center justify-center">
+                      <span className="text-muted-foreground font-medium">
+                        {invitation.name.charAt(0).toUpperCase()}
+                      </span>
+                    </div>
+                    <div>
+                      <p className="font-medium">{invitation.name}</p>
+                      <p className="text-sm text-muted-foreground">{invitation.email}</p>
+                      <div className="flex items-center space-x-2 mt-1">
+                        <Badge variant={getStatusColor(invitation.status) as any}>
+                          {invitation.status}
+                        </Badge>
+                        <span className="text-xs text-muted-foreground">
+                          {invitation.role} • {invitation.department}
+                        </span>
+                        <span className="text-xs text-muted-foreground">
+                          Expires: {formatDate(invitation.expiresAt)}
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+                  
+                  <div className="flex items-center space-x-2">
+                    {invitation.status === 'pending' && (
+                      <>
+                        <Button
+                          size="sm"
+                          variant="outline"
+                          onClick={() => handleResendInvitation(invitation._id)}
+                        >
+                          <Send className="mr-2 h-4 w-4" />
+                          Resend
+                        </Button>
+                        <Button
+                          size="sm"
+                          variant="destructive"
+                          onClick={() => handleCancelInvitation(invitation._id)}
+                        >
+                          <AlertTriangle className="mr-2 h-4 w-4" />
+                          Cancel
+                        </Button>
+                      </>
+                    )}
+                  </div>
+                </div>
+              ))}
+            </div>
+
+            {invitations.length === 0 && (
+              <div className="text-center py-8">
+                <Mail className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
+                <p className="text-muted-foreground">No invitations found</p>
+                <Button 
+                  className="mt-4" 
+                  onClick={() => setShowInvitationForm(true)}
+                >
+                  <Plus className="mr-2 h-4 w-4" />
+                  Send First Invitation
+                </Button>
               </div>
             )}
           </CardContent>
@@ -812,6 +956,18 @@ export default function HRPage() {
             )}
           </CardContent>
         </Card>
+      )}
+
+      {/* Invitation Form Modal */}
+      {showInvitationForm && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50">
+          <div className="bg-background rounded-lg max-w-4xl w-full max-h-[90vh] overflow-y-auto">
+            <EmployeeInvitationForm
+              onSuccess={handleInvitationSuccess}
+              onCancel={() => setShowInvitationForm(false)}
+            />
+          </div>
+        </div>
       )}
     </div>
   );
