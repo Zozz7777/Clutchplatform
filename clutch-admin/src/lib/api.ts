@@ -186,11 +186,21 @@ class ApiService {
         throw new Error(errorMessage);
       }
 
-      const data = await response.json();
-      return {
-        data,
-        success: true,
-      };
+      const responseData = await response.json();
+      
+      // Handle the response structure properly
+      if (responseData.success && responseData.data) {
+        return {
+          data: responseData.data,
+          success: true,
+          message: responseData.message
+        };
+      } else {
+        return {
+          data: responseData,
+          success: true,
+        };
+      }
     } catch (error) {
       console.error(`❌ API request failed for ${endpoint}:`, error);
       
@@ -219,6 +229,11 @@ class ApiService {
       });
 
       if (response.success && response.data) {
+        console.log('🔐 Main auth successful:', {
+          hasToken: !!response.data.token,
+          hasUser: !!response.data.user,
+          userRole: response.data.user?.role
+        });
         this.setTokens(response.data.token, response.data.refreshToken);
         return response;
       }
@@ -231,6 +246,11 @@ class ApiService {
       });
 
       if (emergencyResponse.success && emergencyResponse.data) {
+        console.log('🚨 Emergency auth successful:', {
+          hasToken: !!emergencyResponse.data.token,
+          hasUser: !!emergencyResponse.data.user,
+          userRole: emergencyResponse.data.user?.role
+        });
         this.setTokens(emergencyResponse.data.token, emergencyResponse.data.refreshToken);
         return emergencyResponse;
       }

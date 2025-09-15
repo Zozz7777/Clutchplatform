@@ -43,8 +43,17 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       if (response.success && response.data) {
         const { token, user } = response.data;
         
+        console.log('🔐 Auth response received:', {
+          success: response.success,
+          hasToken: !!token,
+          hasUser: !!user,
+          userData: user,
+          message: response.message
+        });
+        
         // Ensure user object exists and has required properties
         if (!user) {
+          console.error('❌ User data missing from response:', response);
           throw new Error("User data not received from server");
         }
         
