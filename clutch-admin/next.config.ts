@@ -23,7 +23,6 @@ const nextConfig: NextConfig = {
   },
   // Ensure static files are served correctly
   trailingSlash: false,
-  output: 'standalone',
   async headers() {
     return [
       {
