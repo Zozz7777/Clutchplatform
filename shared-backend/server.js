@@ -380,9 +380,16 @@ function validateEnvironment() {
 const optimizedAI = new OptimizedAIProviderManager();
 let redisInitialized = false;
 
-// Initialize Redis cache
+// Initialize Redis cache - Render compatible
 async function initializeRedis() {
   try {
+    // Check if Redis is configured
+    if (!process.env.REDIS_URL && !process.env.REDIS_HOST) {
+      console.log('⚠️ Redis not configured - running without cache (Render compatible)');
+      redisInitialized = false;
+      return;
+    }
+
     redisInitialized = await redisCache.initialize();
     if (redisInitialized) {
       console.log('✅ Redis cache initialized successfully');
@@ -391,6 +398,8 @@ async function initializeRedis() {
     }
   } catch (error) {
     console.error('❌ Redis initialization error:', error);
+    console.log('⚠️ Continuing without Redis cache');
+    redisInitialized = false;
   }
 }
 async function startServer() {

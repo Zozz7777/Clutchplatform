@@ -21,19 +21,22 @@ class OptimizedRedisCache {
       ]
     });
 
-    // Redis configuration
+    // Redis configuration - Render compatible
     this.config = {
-      host: process.env.REDIS_HOST || 'localhost',
-      port: process.env.REDIS_PORT || 6379,
-      password: process.env.REDIS_PASSWORD || null,
+      host: process.env.REDIS_HOST || process.env.REDIS_URL?.split('://')[1]?.split(':')[0] || 'localhost',
+      port: process.env.REDIS_PORT || process.env.REDIS_URL?.split(':').pop()?.split('/')[0] || 6379,
+      password: process.env.REDIS_PASSWORD || process.env.REDIS_URL?.split('://')[1]?.split('@')[0]?.split(':')[1] || null,
       db: process.env.REDIS_DB || 0,
       retryDelayOnFailover: 100,
-      maxRetriesPerRequest: 3,
+      maxRetriesPerRequest: 1, // Reduced for Render
       lazyConnect: true,
       keepAlive: 30000,
-      connectTimeout: 10000,
-      commandTimeout: 5000,
-      maxMemoryPolicy: 'allkeys-lru'
+      connectTimeout: 5000, // Reduced for Render
+      commandTimeout: 3000, // Reduced for Render
+      maxMemoryPolicy: 'allkeys-lru',
+      // Render-specific optimizations
+      enableOfflineQueue: false,
+      maxLoadingTimeout: 2000
     };
 
     // Cache statistics
@@ -78,10 +81,17 @@ class OptimizedRedisCache {
   }
 
   /**
-   * Initialize Redis connection
+   * Initialize Redis connection - Render compatible
    */
   async initialize() {
     try {
+      // Check if Redis is available in environment
+      if (!process.env.REDIS_URL && !process.env.REDIS_HOST) {
+        this.logger.warn('⚠️ Redis not configured - running without cache');
+        this.isConnected = false;
+        return false;
+      }
+
       this.client = new Redis(this.config);
       
       this.client.on('connect', () => {
@@ -100,14 +110,20 @@ class OptimizedRedisCache {
         this.isConnected = false;
       });
 
-      // Test connection
-      await this.client.ping();
+      // Test connection with timeout
+      const pingPromise = this.client.ping();
+      const timeoutPromise = new Promise((_, reject) => 
+        setTimeout(() => reject(new Error('Redis connection timeout')), 3000)
+      );
+      
+      await Promise.race([pingPromise, timeoutPromise]);
       this.logger.info('🚀 Optimized Redis cache initialized');
       
       return true;
     } catch (error) {
       this.logger.error('❌ Failed to initialize Redis:', error);
       this.isConnected = false;
+      // Don't throw error - allow server to continue without Redis
       return false;
     }
   }
