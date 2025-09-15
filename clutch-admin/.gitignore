@@ -39,3 +39,7 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# Override parent .gitignore to allow public directory
+!public/
+!public/**
