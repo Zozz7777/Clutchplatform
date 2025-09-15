@@ -53,6 +53,13 @@ export function Sidebar({ isCollapsed, onToggle }: SidebarProps) {
             width={32}
             height={32}
             className="object-contain"
+            onError={(e) => {
+              e.currentTarget.style.display = 'none';
+              const parent = e.currentTarget.parentElement;
+              if (parent) {
+                parent.innerHTML = '<div class="text-lg font-bold text-sidebar-primary">C</div>';
+              }
+            }}
           />
         ) : (
           <div className="flex items-center space-x-3">
@@ -62,6 +69,13 @@ export function Sidebar({ isCollapsed, onToggle }: SidebarProps) {
               width={32}
               height={32}
               className="object-contain"
+              onError={(e) => {
+                e.currentTarget.style.display = 'none';
+                const parent = e.currentTarget.parentElement;
+                if (parent) {
+                  parent.innerHTML = '<span class="text-xl font-bold text-sidebar-primary font-sans">CLUTCH</span>';
+                }
+              }}
             />
             <span className="text-xl font-bold text-sidebar-primary font-sans">Clutch Admin</span>
           </div>

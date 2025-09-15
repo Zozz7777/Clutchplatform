@@ -43,15 +43,23 @@ export default function LoginPage() {
     <div className="min-h-screen flex items-center justify-center bg-background px-4 font-sans">
       <Card className="w-full max-w-md shadow-md">
         <CardHeader className="text-center space-y-6">
-          <div className="flex justify-center">
-            <img
-              src="/logos/Logored.png"
-              alt="Clutch"
-              width={80}
-              height={80}
-              className="object-contain"
-            />
-          </div>
+                  <div className="flex justify-center">
+                    <img
+                      src="/logos/Logored.png"
+                      alt="Clutch"
+                      width={80}
+                      height={80}
+                      className="object-contain"
+                      onError={(e) => {
+                        // Fallback to a simple text logo if image fails to load
+                        e.currentTarget.style.display = 'none';
+                        const parent = e.currentTarget.parentElement;
+                        if (parent) {
+                          parent.innerHTML = '<div class="text-4xl font-bold text-primary">CLUTCH</div>';
+                        }
+                      }}
+                    />
+                  </div>
           <div className="space-y-2">
             <CardTitle className="text-3xl font-bold text-foreground font-sans">Clutch Admin</CardTitle>
             <CardDescription className="text-muted-foreground font-sans">
