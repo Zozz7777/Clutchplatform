@@ -41,8 +41,9 @@ const {
   analyzeAndTune
 } = require('./middleware/performance-tuning');
 
-// Import database connection
-const { connectToDatabase } = require('./config/database');
+// Import unified database connection
+const { connectToDatabase } = require('./config/database-unified');
+const { initializeEnvironment } = require('./config/environment');
 
 // Import routes
 // Import only existing routes
@@ -449,12 +450,9 @@ async function startServer() {
   try {
     console.log('🚀 Starting minimal server...');
     
-    // Validate environment
-    const envValidation = validateEnvironment();
-    if (!envValidation.isValid) {
-      console.error('❌ Environment validation failed');
-      process.exit(1);
-    }
+    // Initialize and validate environment
+    const envConfig = initializeEnvironment();
+    console.log('✅ Environment configuration loaded');
 
     console.log('✅ Environment validation passed');
 
