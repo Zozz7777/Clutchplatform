@@ -14,7 +14,7 @@ class EmailService {
   initializeTransporter() {
     try {
       // Use Gmail SMTP as default, but allow configuration via environment variables
-      this.transporter = nodemailer.createTransporter({
+      this.transporter = nodemailer.createTransport({
         service: process.env.EMAIL_SERVICE || 'gmail',
         auth: {
           user: process.env.EMAIL_USER || process.env.GMAIL_USER,
