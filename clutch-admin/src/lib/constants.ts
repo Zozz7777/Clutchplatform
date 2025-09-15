@@ -11,6 +11,9 @@ export const USER_ROLES = {
   HR_MANAGER: "hr_manager",
   FINANCE_OFFICER: "finance_officer",
   LEGAL_TEAM: "legal_team",
+  PROJECT_MANAGER: "project_manager",
+  ASSET_MANAGER: "asset_manager",
+  VENDOR_MANAGER: "vendor_manager",
 } as const;
 
 export const PERMISSIONS = {
@@ -204,6 +207,26 @@ export const ROLE_PERMISSIONS = {
     PERMISSIONS.VIEW_CONTRACTS,
     PERMISSIONS.MANAGE_CONTRACTS,
   ],
+  [USER_ROLES.PROJECT_MANAGER]: [
+    PERMISSIONS.VIEW_DASHBOARD,
+    PERMISSIONS.VIEW_PROJECTS,
+    PERMISSIONS.MANAGE_PROJECTS,
+    PERMISSIONS.VIEW_USERS,
+    PERMISSIONS.VIEW_ANALYTICS,
+  ],
+  [USER_ROLES.ASSET_MANAGER]: [
+    PERMISSIONS.VIEW_DASHBOARD,
+    PERMISSIONS.VIEW_ASSETS,
+    PERMISSIONS.MANAGE_ASSETS,
+    PERMISSIONS.VIEW_REPORTS,
+  ],
+  [USER_ROLES.VENDOR_MANAGER]: [
+    PERMISSIONS.VIEW_DASHBOARD,
+    PERMISSIONS.VIEW_VENDORS,
+    PERMISSIONS.MANAGE_VENDORS,
+    PERMISSIONS.VIEW_CONTRACTS,
+    PERMISSIONS.MANAGE_CONTRACTS,
+  ],
 } as const;
 
 export const NAVIGATION_ITEMS = [
@@ -348,6 +371,18 @@ export const NAVIGATION_ITEMS = [
     href: "/api-docs",
     icon: "Code",
     permissions: [PERMISSIONS.VIEW_API_DOCS],
+  },
+  {
+    title: "Asset Management",
+    href: "/assets",
+    icon: "Package",
+    permissions: [PERMISSIONS.VIEW_ASSETS],
+  },
+  {
+    title: "Vendor Management",
+    href: "/vendors",
+    icon: "Building2",
+    permissions: [PERMISSIONS.VIEW_VENDORS],
   },
   {
     title: "System Health",

@@ -215,7 +215,7 @@ class MockAPIStore {
   private notifications: Notification[] = generateNotifications();
 
   // Authentication
-  login = async (email: string, password: string): Promise<{ success: boolean; data?: any; error?: string }> => {
+  login = async (email: string, password: string): Promise<{ success: boolean; data?: User; error?: string }> => {
     await new Promise(resolve => setTimeout(resolve, 1000));
     
     // Simple mock authentication - accept any email/password for demo

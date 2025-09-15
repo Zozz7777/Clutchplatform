@@ -45,12 +45,12 @@ class HybridApiService {
       const response = await fetch(`${API_BASE_URL}/ping`, {
         method: "GET",
         timeout: 5000,
-      } as any);
+      });
       
       this.isBackendAvailable = response.ok;
       this.lastHealthCheck = now;
-    } catch (error) {
-      console.warn("Backend health check failed:", error);
+    } catch {
+      console.warn("Backend health check failed");
       this.isBackendAvailable = false;
       this.lastHealthCheck = now;
     }
@@ -124,7 +124,7 @@ class HybridApiService {
     );
   }
 
-  async createUser(userData: any) {
+  async createUser(userData: Partial<User>) {
     return this.executeWithFallback(
       () => apiService.createUser(userData),
       () => mockAPI.createUser(userData),
@@ -132,7 +132,7 @@ class HybridApiService {
     );
   }
 
-  async updateUser(id: string, updates: any) {
+  async updateUser(id: string, updates: Partial<User>) {
     return this.executeWithFallback(
       () => apiService.updateUser(id, updates),
       () => mockAPI.updateUser(id, updates),
@@ -165,7 +165,7 @@ class HybridApiService {
     );
   }
 
-  async updateFleetVehicle(id: string, updates: any) {
+  async updateFleetVehicle(id: string, updates: Partial<Vehicle>) {
     return this.executeWithFallback(
       () => apiService.updateFleetVehicle(id, updates),
       () => mockAPI.updateFleetVehicle(id, updates),
@@ -199,7 +199,7 @@ class HybridApiService {
     );
   }
 
-  async sendMessage(message: any) {
+  async sendMessage(message: Partial<ChatMessage>) {
     return this.executeWithFallback(
       () => apiService.sendMessage(message),
       () => mockAPI.sendMessage(message),
@@ -254,7 +254,7 @@ class HybridApiService {
   }
 
   // Real-time subscriptions
-  subscribeToFleetUpdates(callback: (vehicles: any[]) => void) {
+  subscribeToFleetUpdates(callback: (vehicles: Vehicle[]) => void) {
     // Try to use real WebSocket first
     if (this.isBackendAvailable) {
       try {
@@ -277,7 +277,7 @@ class HybridApiService {
     return mockAPI.subscribeToFleetUpdates(callback);
   }
 
-  subscribeToKPIMetrics(callback: (metrics: any[]) => void) {
+  subscribeToKPIMetrics(callback: (metrics: KPIMetric[]) => void) {
     // Try to use real WebSocket first
     if (this.isBackendAvailable) {
       try {
@@ -298,6 +298,172 @@ class HybridApiService {
 
     // Fallback to mock subscription
     return mockAPI.subscribeToKPIMetrics(callback);
+  }
+
+  // Project Management APIs
+  async getProjects() {
+    return this.executeWithFallback(
+      () => apiService.getProjects(),
+      () => mockAPI.getProjects(),
+      false // Use real API
+    );
+  }
+
+  async getProjectTasks(projectId: string) {
+    return this.executeWithFallback(
+      () => apiService.getProjectTasks(projectId),
+      () => mockAPI.getProjectTasks(projectId),
+      false // Use real API
+    );
+  }
+
+  async getTimeTracking(projectId: string) {
+    return this.executeWithFallback(
+      () => apiService.getTimeTracking(projectId),
+      () => mockAPI.getTimeTracking(projectId),
+      false // Use real API
+    );
+  }
+
+  // Feature Flags APIs
+  async getFeatureFlags() {
+    return this.executeWithFallback(
+      () => apiService.getFeatureFlags(),
+      () => mockAPI.getFeatureFlags(),
+      false // Use real API
+    );
+  }
+
+  async toggleFeatureFlag(flagId: string, enabled: boolean) {
+    return this.executeWithFallback(
+      () => apiService.toggleFeatureFlag(flagId, enabled),
+      () => mockAPI.toggleFeatureFlag(flagId, enabled),
+      false // Use real API
+    );
+  }
+
+  async getABTests() {
+    return this.executeWithFallback(
+      () => apiService.getABTests(),
+      () => mockAPI.getABTests(),
+      false // Use real API
+    );
+  }
+
+  async getRollouts() {
+    return this.executeWithFallback(
+      () => apiService.getRollouts(),
+      () => mockAPI.getRollouts(),
+      false // Use real API
+    );
+  }
+
+  // Asset Management APIs
+  async getAssets() {
+    return this.executeWithFallback(
+      () => apiService.getAssets(),
+      () => mockAPI.getAssets(),
+      false // Use real API
+    );
+  }
+
+  async getMaintenanceRecords() {
+    return this.executeWithFallback(
+      () => apiService.getMaintenanceRecords(),
+      () => mockAPI.getMaintenanceRecords(),
+      false // Use real API
+    );
+  }
+
+  async getAssetAssignments() {
+    return this.executeWithFallback(
+      () => apiService.getAssetAssignments(),
+      () => mockAPI.getAssetAssignments(),
+      false // Use real API
+    );
+  }
+
+  // Vendor Management APIs
+  async getVendors() {
+    return this.executeWithFallback(
+      () => apiService.getVendors(),
+      () => mockAPI.getVendors(),
+      false // Use real API
+    );
+  }
+
+  async getVendorContracts() {
+    return this.executeWithFallback(
+      () => apiService.getVendorContracts(),
+      () => mockAPI.getVendorContracts(),
+      false // Use real API
+    );
+  }
+
+  async getVendorCommunications() {
+    return this.executeWithFallback(
+      () => apiService.getVendorCommunications(),
+      () => mockAPI.getVendorCommunications(),
+      false // Use real API
+    );
+  }
+
+  // Audit Trail APIs
+  async getAuditLogs() {
+    return this.executeWithFallback(
+      () => apiService.getAuditLogs(),
+      () => mockAPI.getAuditLogs(),
+      false // Use real API
+    );
+  }
+
+  async getSecurityEvents() {
+    return this.executeWithFallback(
+      () => apiService.getSecurityEvents(),
+      () => mockAPI.getSecurityEvents(),
+      false // Use real API
+    );
+  }
+
+  async getUserActivities() {
+    return this.executeWithFallback(
+      () => apiService.getUserActivities(),
+      () => mockAPI.getUserActivities(),
+      false // Use real API
+    );
+  }
+
+  // System Health APIs
+  async getSystemHealthStatus() {
+    return this.executeWithFallback(
+      () => apiService.getSystemHealthStatus(),
+      () => mockAPI.getSystemHealthStatus(),
+      false // Use real API
+    );
+  }
+
+  async getSystemMetrics() {
+    return this.executeWithFallback(
+      () => apiService.getSystemMetrics(),
+      () => mockAPI.getSystemMetrics(),
+      false // Use real API
+    );
+  }
+
+  async getSystemAlerts() {
+    return this.executeWithFallback(
+      () => apiService.getSystemAlerts(),
+      () => mockAPI.getSystemAlerts(),
+      false // Use real API
+    );
+  }
+
+  async getSystemLogs() {
+    return this.executeWithFallback(
+      () => apiService.getSystemLogs(),
+      () => mockAPI.getSystemLogs(),
+      false // Use real API
+    );
   }
 
   // Utility methods
