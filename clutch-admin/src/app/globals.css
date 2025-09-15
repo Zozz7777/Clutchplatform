@@ -1,26 +1,161 @@
-@import "tailwindcss";
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
-
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
+@layer base {
   :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+    /* Light theme colors from design.json */
+    --background: oklch(1 0 0);
+    --foreground: oklch(0.1450 0 0);
+    --card: oklch(1 0 0);
+    --card-foreground: oklch(0.1450 0 0);
+    --primary: oklch(0.5770 0.2450 27.3250);
+    --primary-foreground: oklch(0.9850 0 0);
+    --secondary: oklch(0.5770 0.2450 27.3250);
+    --secondary-foreground: oklch(0.9850 0 0);
+    --muted: oklch(0.9700 0 0);
+    --muted-foreground: oklch(0.5560 0 0);
+    --destructive: oklch(0.5770 0.2450 27.3250);
+    --destructive-foreground: oklch(0.9850 0 0);
+    --border: oklch(0.9220 0 0);
+    --input: oklch(0.9220 0 0);
+    --ring: oklch(0.7080 0 0);
+    --sidebar: oklch(0.9850 0 0);
+    --sidebar-primary: oklch(0.2050 0 0);
+    
+    /* Additional colors for components */
+    --accent: oklch(0.9700 0 0);
+    --accent-foreground: oklch(0.1450 0 0);
+    --popover: oklch(1 0 0);
+    --popover-foreground: oklch(0.1450 0 0);
+    --radius: 0.625rem;
+  }
+
+  .dark {
+    /* Dark theme colors from design.json */
+    --background: oklch(0.1450 0 0);
+    --foreground: oklch(0.9850 0 0);
+    --card: oklch(0.2050 0 0);
+    --card-foreground: oklch(0.9710 0.0130 17.3800);
+    --primary: oklch(0.5050 0.2130 27.5180);
+    --primary-foreground: oklch(0.2050 0 0);
+    --secondary: oklch(0.2690 0 0);
+    --secondary-foreground: oklch(0.9850 0 0);
+    --muted: oklch(0.2690 0 0);
+    --muted-foreground: oklch(0.5560 0 0);
+    --destructive: oklch(0.7040 0.1910 22.2160);
+    --destructive-foreground: oklch(0.9850 0 0);
+    --border: oklch(0.2750 0 0);
+    --input: oklch(0.3250 0 0);
+    --ring: oklch(0.5560 0 0);
+    --sidebar: oklch(0.2050 0 0);
+    --sidebar-primary: oklch(0.5770 0.2450 27.3250);
+    
+    /* Additional colors for components */
+    --accent: oklch(0.2690 0 0);
+    --accent-foreground: oklch(0.9850 0 0);
+    --popover: oklch(0.2050 0 0);
+    --popover-foreground: oklch(0.9850 0 0);
   }
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+@layer base {
+  * {
+    @apply border-border;
+  }
+  
+  body {
+    @apply bg-background text-foreground;
+    font-feature-settings: "rlig" 1, "calt" 1;
+  }
+  
+  /* Custom scrollbar */
+  ::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+  }
+  
+  ::-webkit-scrollbar-track {
+    @apply bg-muted;
+  }
+  
+  ::-webkit-scrollbar-thumb {
+    @apply bg-border rounded-full;
+  }
+  
+  ::-webkit-scrollbar-thumb:hover {
+    @apply bg-muted-foreground/50;
+  }
+}
+
+@layer components {
+  /* Custom component styles */
+  .card-hover {
+    @apply transition-all duration-200 hover:shadow-md hover:-translate-y-1;
+  }
+  
+  .sidebar-item {
+    @apply transition-colors duration-200;
+  }
+  
+  .sidebar-item:hover {
+    @apply bg-sidebar-primary/10;
+  }
+  
+  .sidebar-item.active {
+    @apply bg-sidebar-primary text-white;
+  }
+  
+  /* Loading animations */
+  .animate-pulse-slow {
+    animation: pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+  }
+  
+  .animate-bounce-slow {
+    animation: bounce 2s infinite;
+  }
+  
+  /* Custom shadows from design.json */
+  .shadow-2xs {
+    box-shadow: 0 1px 3px 0px hsl(0 0% 0% / 0.05);
+  }
+  
+  .shadow-sm-custom {
+    box-shadow: 0 1px 3px 0px hsl(0 0% 0% / 0.10), 0 1px 2px -1px hsl(0 0% 0% / 0.10);
+  }
+  
+  .shadow-md-custom {
+    box-shadow: 0 1px 3px 0px hsl(0 0% 0% / 0.10), 0 2px 4px -1px hsl(0 0% 0% / 0.10);
+  }
+}
+
+@layer utilities {
+  /* Custom utilities */
+  .text-balance {
+    text-wrap: balance;
+  }
+  
+  .bg-gradient-primary {
+    background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+  }
+  
+  .bg-gradient-card {
+    background: linear-gradient(135deg, var(--card) 0%, var(--muted) 100%);
+  }
+  
+  /* Typography utilities */
+  .font-display {
+    font-family: var(--font-sans);
+    font-weight: 600;
+    letter-spacing: -0.025em;
+  }
+  
+  .font-body {
+    font-family: var(--font-sans);
+    font-weight: 400;
+  }
+  
+  .font-mono {
+    font-family: var(--font-mono);
+  }
 }

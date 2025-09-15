@@ -18,7 +18,7 @@ const config: Config = {
           foreground: "oklch(0.1450 0 0)",
         },
         primary: {
-          DEFAULT: "oklch(0.5770 0.2450 27.3250)", // Clutch Red
+          DEFAULT: "oklch(0.5770 0.2450 27.3250)",
           foreground: "oklch(0.9850 0 0)",
         },
         secondary: {
@@ -72,13 +72,6 @@ const config: Config = {
             primary: "oklch(0.5770 0.2450 27.3250)",
           },
         },
-        // Luxury colors
-        luxury: {
-          gold: "#FFD700",
-          platinum: "#E5E4E2",
-          diamond: "#B9F2FF",
-          emerald: "#50C878",
-        },
       },
       fontFamily: {
         sans: ["Roboto", "ui-sans-serif", "sans-serif", "system-ui"],
@@ -87,37 +80,19 @@ const config: Config = {
       },
       borderRadius: {
         lg: "0.625rem",
-        md: "0.375rem",
-        sm: "0.25rem",
+        md: "calc(0.625rem - 2px)",
+        sm: "calc(0.625rem - 4px)",
       },
       boxShadow: {
         "2xs": "0 1px 3px 0px hsl(0 0% 0% / 0.05)",
         sm: "0 1px 3px 0px hsl(0 0% 0% / 0.10), 0 1px 2px -1px hsl(0 0% 0% / 0.10)",
         md: "0 1px 3px 0px hsl(0 0% 0% / 0.10), 0 2px 4px -1px hsl(0 0% 0% / 0.10)",
-        luxury: "0 25px 50px -12px rgb(0 0 0 / 0.25)",
       },
       spacing: {
-        "18": "4.5rem",
-        "88": "22rem",
+        base: "0.25rem",
       },
-      animation: {
-        "fade-in": "fadeIn 0.5s ease-in-out",
-        "slide-in": "slideIn 0.3s ease-out",
-        "scale-in": "scaleIn 0.2s ease-out",
-      },
-      keyframes: {
-        fadeIn: {
-          "0%": { opacity: "0" },
-          "100%": { opacity: "1" },
-        },
-        slideIn: {
-          "0%": { transform: "translateX(-100%)" },
-          "100%": { transform: "translateX(0)" },
-        },
-        scaleIn: {
-          "0%": { transform: "scale(0.95)", opacity: "0" },
-          "100%": { transform: "scale(1)", opacity: "1" },
-        },
+      letterSpacing: {
+        normal: "0em",
       },
     },
   },

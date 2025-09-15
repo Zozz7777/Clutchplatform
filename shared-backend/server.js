@@ -63,6 +63,18 @@ const enterpriseRoutes = require('./routes/enterprise');
 const enterpriseAuthRoutes = require('./routes/enterpriseAuth');
 const aiRoutes = require('./routes/ai');
 
+// Import new missing routes
+const hrRoutes = require('./routes/hr');
+const legalRoutes = require('./routes/legal');
+const projectsRoutes = require('./routes/projects');
+const featureFlagsRoutes = require('./routes/feature-flags');
+const cmsRoutes = require('./routes/cms');
+const marketingRoutes = require('./routes/marketing');
+const assetsRoutes = require('./routes/assets');
+const vendorsRoutes = require('./routes/vendors');
+const auditRoutes = require('./routes/audit');
+const systemHealthRoutes = require('./routes/system-health');
+
 // All route imports cleaned up - only existing routes imported above
 
 // Initialize Express app
@@ -123,6 +135,18 @@ app.use(`${apiPrefix}/bookings`, bookingsRoutes);
 app.use(`${apiPrefix}/enterprise`, enterpriseRoutes);
 app.use(`${apiPrefix}/enterprise-auth`, enterpriseAuthRoutes);
 app.use(`${apiPrefix}/ai`, aiRoutes);
+
+// Mount new missing routes
+app.use(`${apiPrefix}/hr`, hrRoutes);
+app.use(`${apiPrefix}/legal`, legalRoutes);
+app.use(`${apiPrefix}/projects`, projectsRoutes);
+app.use(`${apiPrefix}/feature-flags`, featureFlagsRoutes);
+app.use(`${apiPrefix}/cms`, cmsRoutes);
+app.use(`${apiPrefix}/marketing`, marketingRoutes);
+app.use(`${apiPrefix}/assets`, assetsRoutes);
+app.use(`${apiPrefix}/vendors`, vendorsRoutes);
+app.use(`${apiPrefix}/audit`, auditRoutes);
+app.use(`${apiPrefix}/system-health`, systemHealthRoutes);
 
 // Fallback routes
 app.use('/auth', authRoutes);
@@ -273,6 +297,15 @@ app.use('*', (req, res) => {
       '/api/v1/fleet-vehicle/*',
       '/api/v1/gps-device/*',
       '/api/v1/hr/*',
+      '/api/v1/legal/*',
+      '/api/v1/projects/*',
+      '/api/v1/feature-flags/*',
+      '/api/v1/cms/*',
+      '/api/v1/marketing/*',
+      '/api/v1/assets/*',
+      '/api/v1/vendors/*',
+      '/api/v1/audit/*',
+      '/api/v1/system-health/*',
       '/api/v1/insurance/*',
       '/api/v1/invoices/*',
       '/api/v1/jobs/*',
