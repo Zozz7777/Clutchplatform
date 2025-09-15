@@ -354,7 +354,7 @@ export default function FeatureFlagsPage() {
 
   const loadABTests = async () => {
     try {
-      const data = await hybridApi.getABTests();
+      const data = await productionApi.getABTests();
       setABTests(data || mockABTests);
     } catch (error) {
       console.error("Error loading A/B tests:", error);
@@ -364,7 +364,7 @@ export default function FeatureFlagsPage() {
 
   const loadRollouts = async () => {
     try {
-      const data = await hybridApi.getRollouts();
+      const data = await productionApi.getRollouts();
       setRollouts(data || mockRollouts);
     } catch (error) {
       console.error("Error loading rollouts:", error);

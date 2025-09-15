@@ -45,7 +45,7 @@ import {
   FileText,
 } from "lucide-react";
 import { formatCurrency } from "@/lib/utils";
-import { hybridApi } from "@/lib/hybrid-api";
+import { productionApi } from "@/lib/production-api";
 
 interface Project {
   _id: string;
@@ -320,7 +320,7 @@ export default function ProjectManagementPage() {
   const loadProjects = async () => {
     try {
       setLoading(true);
-      const data = await hybridApi.getProjects();
+      const data = await productionApi.getProjects();
       setProjects(data || mockProjects);
     } catch (error) {
       console.error("Error loading projects:", error);
@@ -332,7 +332,7 @@ export default function ProjectManagementPage() {
 
   const loadTasks = async () => {
     try {
-      const data = await hybridApi.getProjectTasks(selectedProject?._id || "");
+      const data = await productionApi.getProjectTasks(selectedProject?._id || "");
       setTasks(data || mockTasks);
     } catch (error) {
       console.error("Error loading tasks:", error);
@@ -342,7 +342,7 @@ export default function ProjectManagementPage() {
 
   const loadTimeEntries = async () => {
     try {
-      const data = await hybridApi.getTimeTracking(selectedProject?._id || "");
+      const data = await productionApi.getTimeTracking(selectedProject?._id || "");
       setTimeEntries(data || mockTimeEntries);
     } catch (error) {
       console.error("Error loading time entries:", error);

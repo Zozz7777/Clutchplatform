@@ -42,7 +42,7 @@ import {
   AlertTriangle,
 } from "lucide-react";
 import { formatCurrency } from "@/lib/utils";
-import { hybridApi } from "@/lib/hybrid-api";
+import { productionApi } from "@/lib/production-api";
 import { useAuth } from "@/contexts/auth-context";
 import { useQuickActions } from "@/lib/quick-actions";
 
@@ -276,7 +276,7 @@ export default function ReportsPage() {
   const loadReports = async () => {
     try {
       setLoading(true);
-      const data = await hybridApi.getReports();
+      const data = await productionApi.getReports();
       setReports(data || mockReports);
     } catch (error) {
       console.error("Error loading reports:", error);
@@ -288,7 +288,7 @@ export default function ReportsPage() {
 
   const loadTemplates = async () => {
     try {
-      const data = await hybridApi.getReportTemplates();
+      const data = await productionApi.getReports({ type: 'templates' });
       setTemplates(data || mockTemplates);
     } catch (error) {
       console.error("Error loading templates:", error);

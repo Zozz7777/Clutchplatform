@@ -107,17 +107,11 @@ export default function DashboardPage() {
 
     loadDashboardData();
 
-    const unsubscribeFleet = hybridApi.subscribeToFleetUpdates((vehicles) => {
-      setFleetVehicles(Array.isArray(vehicles) ? vehicles.slice(0, 5) : []);
-    });
-
-    const unsubscribeKPIs = hybridApi.subscribeToKPIMetrics((metrics) => {
-      setKpiMetrics(Array.isArray(metrics) ? metrics : []);
-    });
+    // Note: Real-time subscriptions will be handled by the WebSocket service
+    // For now, we'll rely on the initial data load and periodic refreshes
 
     return () => {
-      unsubscribeFleet();
-      unsubscribeKPIs();
+      // Cleanup will be handled by the WebSocket service
     };
   }, []);
 

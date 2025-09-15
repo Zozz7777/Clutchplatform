@@ -48,7 +48,7 @@ import {
   DollarSign,
 } from "lucide-react";
 import { formatCurrency } from "@/lib/utils";
-import { hybridApi } from "@/lib/hybrid-api";
+import { productionApi } from "@/lib/production-api";
 
 interface Asset {
   _id: string;
@@ -398,7 +398,7 @@ export default function AssetManagementPage() {
   const loadAssets = async () => {
     try {
       setLoading(true);
-      const data = await hybridApi.getAssets();
+      const data = await productionApi.getAssets();
       setAssets(data || mockAssets);
     } catch (error) {
       console.error("Error loading assets:", error);
@@ -410,7 +410,7 @@ export default function AssetManagementPage() {
 
   const loadMaintenanceRecords = async () => {
     try {
-      const data = await hybridApi.getMaintenanceRecords();
+      const data = await productionApi.getMaintenanceRecords();
       setMaintenanceRecords(data || mockMaintenanceRecords);
     } catch (error) {
       console.error("Error loading maintenance records:", error);
@@ -420,7 +420,7 @@ export default function AssetManagementPage() {
 
   const loadAssignments = async () => {
     try {
-      const data = await hybridApi.getAssetAssignments();
+      const data = await productionApi.getAssetAssignments();
       setAssignments(data || mockAssignments);
     } catch (error) {
       console.error("Error loading assignments:", error);

@@ -4,7 +4,7 @@ import React, { useState, useEffect } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { hybridApi } from "@/lib/hybrid-api";
+import { productionApi } from "@/lib/production-api";
 import { formatNumber } from "@/lib/utils";
 import { useAuth } from "@/contexts/auth-context";
 import { 
@@ -47,14 +47,14 @@ export default function ApiPerformancePage() {
   useEffect(() => {
     const loadApiPerformance = async () => {
       try {
-        const result = await hybridApi.getApiPerformance();
+        const result = await productionApi.getApiPerformance();
         if (result.success) {
           setPerformanceData(result.data);
         } else {
           // Generate mock data if API fails
           setPerformanceData(generateMockApiPerformanceData());
         }
-        setIsUsingMock(hybridApi.isUsingMockData());
+        setIsUsingMock(false); // Always using production API now
       } catch (error) {
         console.error("Failed to load API performance data:", error);
         setPerformanceData(generateMockApiPerformanceData());

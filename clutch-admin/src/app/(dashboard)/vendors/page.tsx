@@ -49,7 +49,7 @@ import {
   Handshake,
 } from "lucide-react";
 import { formatCurrency } from "@/lib/utils";
-import { hybridApi } from "@/lib/hybrid-api";
+import { productionApi } from "@/lib/production-api";
 
 interface Vendor {
   _id: string;
@@ -506,7 +506,7 @@ export default function VendorManagementPage() {
   const loadVendors = async () => {
     try {
       setLoading(true);
-      const data = await hybridApi.getVendors();
+      const data = await productionApi.getVendors();
       setVendors(data || mockVendors);
     } catch (error) {
       console.error("Error loading vendors:", error);
@@ -518,7 +518,7 @@ export default function VendorManagementPage() {
 
   const loadContracts = async () => {
     try {
-      const data = await hybridApi.getVendorContracts();
+      const data = await productionApi.getVendorContracts();
       setContracts(data || mockContracts);
     } catch (error) {
       console.error("Error loading contracts:", error);
@@ -528,7 +528,7 @@ export default function VendorManagementPage() {
 
   const loadCommunications = async () => {
     try {
-      const data = await hybridApi.getVendorCommunications();
+      const data = await productionApi.getVendorCommunications();
       setCommunications(data || mockCommunications);
     } catch (error) {
       console.error("Error loading communications:", error);

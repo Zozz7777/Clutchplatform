@@ -7,6 +7,9 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useAuth } from "@/contexts/auth-context";
 import { formatDate, formatRelativeTime } from "@/lib/utils";
+import { EmployeeInvitationForm } from "@/components/employee-invitation-form";
+import { apiService } from "@/lib/api";
+import { toast } from "sonner";
 import { 
   UserCog, 
   Search, 
@@ -124,8 +127,10 @@ export default function HRPage() {
   const [filteredApplications, setFilteredApplications] = useState<JobApplication[]>([]);
   const [searchQuery, setSearchQuery] = useState("");
   const [statusFilter, setStatusFilter] = useState<string>("all");
-  const [activeTab, setActiveTab] = useState<"employees" | "recruitment">("employees");
+  const [activeTab, setActiveTab] = useState<"employees" | "recruitment" | "invitations">("employees");
   const [isLoading, setIsLoading] = useState(true);
+  const [showInvitationForm, setShowInvitationForm] = useState(false);
+  const [invitations, setInvitations] = useState<any[]>([]);
   const { hasPermission } = useAuth();
 
   useEffect(() => {

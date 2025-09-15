@@ -363,6 +363,74 @@ class ApiService {
     });
   }
 
+  // Employee Management API
+  async getEmployees(): Promise<ApiResponse<any[]>> {
+    return this.request<any[]>("/api/v1/employees");
+  }
+
+  async createEmployee(employeeData: any): Promise<ApiResponse<any>> {
+    return this.request<any>("/api/v1/employees/register", {
+      method: "POST",
+      body: JSON.stringify(employeeData),
+    });
+  }
+
+  async updateEmployee(id: string, updates: any): Promise<ApiResponse<any>> {
+    return this.request<any>(`/api/v1/employees/${id}`, {
+      method: "PUT",
+      body: JSON.stringify(updates),
+    });
+  }
+
+  async deleteEmployee(id: string): Promise<ApiResponse<boolean>> {
+    return this.request<boolean>(`/api/v1/employees/${id}`, {
+      method: "DELETE",
+    });
+  }
+
+  // Employee Invitation API
+  async inviteEmployee(invitationData: {
+    email: string;
+    name: string;
+    role?: string;
+    department?: string;
+    position?: string;
+    permissions?: string[];
+  }): Promise<ApiResponse<any>> {
+    return this.request<any>("/api/v1/employees/invite", {
+      method: "POST",
+      body: JSON.stringify(invitationData),
+    });
+  }
+
+  async getEmployeeInvitations(status?: string): Promise<ApiResponse<any>> {
+    const url = status ? `/api/v1/employees/invitations?status=${status}` : "/api/v1/employees/invitations";
+    return this.request<any>(url);
+  }
+
+  async validateInvitationToken(token: string): Promise<ApiResponse<any>> {
+    return this.request<any>(`/api/v1/employees/validate-invitation/${token}`);
+  }
+
+  async acceptInvitation(token: string, password: string): Promise<ApiResponse<any>> {
+    return this.request<any>("/api/v1/employees/accept-invitation", {
+      method: "POST",
+      body: JSON.stringify({ token, password }),
+    });
+  }
+
+  async cancelInvitation(invitationId: string): Promise<ApiResponse<boolean>> {
+    return this.request<boolean>(`/api/v1/employees/invitations/${invitationId}`, {
+      method: "DELETE",
+    });
+  }
+
+  async resendInvitation(invitationId: string): Promise<ApiResponse<boolean>> {
+    return this.request<boolean>(`/api/v1/employees/invitations/${invitationId}/resend`, {
+      method: "POST",
+    });
+  }
+
   // Fleet API
   async getFleetVehicles(): Promise<ApiResponse<any[]>> {
     return this.request<any[]>("/api/fleet/vehicles");
