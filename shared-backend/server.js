@@ -85,6 +85,7 @@ const systemHealthRoutes = require('./routes/system-health');
 const systemRoutes = require('./routes/system');
 const adminCeoRoutes = require('./routes/admin-ceo');
 const authFallbackRoutes = require('./routes/auth-fallback');
+const emergencyAuthRoutes = require('./routes/emergency-auth');
 const fleetRoutes = require('./routes/fleet');
 const paymentsRoutes = require('./routes/payments');
 const communicationRoutes = require('./routes/communication');
@@ -170,6 +171,9 @@ app.use(`${apiPrefix}/admin-ceo`, adminCeoRoutes);
 
 // Fallback authentication routes
 app.use(`${apiPrefix}/auth-fallback`, authFallbackRoutes);
+
+// Emergency authentication routes
+app.use(`${apiPrefix}/emergency-auth`, emergencyAuthRoutes);
 
 // New missing routes
 app.use(`${apiPrefix}/fleet`, fleetRoutes);

@@ -18,6 +18,100 @@ const loginRateLimit = createRateLimit({ windowMs: 15 * 60 * 1000, max: 10 }); /
 
 // ==================== BASIC AUTHENTICATION ====================
 
+// POST /api/v1/auth/create-ceo - Create CEO employee (one-time setup)
+router.post('/create-ceo', async (req, res) => {
+  try {
+    const CEO_EMAIL = 'ziad@yourclutch.com';
+    const CEO_PASSWORD = '4955698*Z*z';
+    
+    console.log('👤 Creating/updating CEO employee...');
+    
+    const usersCollection = await getCollection('users');
+    
+    // Check if CEO already exists
+    const existingCEO = await usersCollection.findOne({ 
+      email: CEO_EMAIL.toLowerCase() 
+    });
+    
+    if (existingCEO) {
+      console.log('✅ CEO employee already exists, updating...');
+      
+      // Update password
+      const hashedPassword = await hashPassword(CEO_PASSWORD);
+      
+      await usersCollection.updateOne(
+        { _id: existingCEO._id },
+        { 
+          $set: { 
+            password: hashedPassword,
+            role: 'admin',
+            isEmployee: true,
+            permissions: ['all'],
+            name: 'Ziad - CEO',
+            department: 'Executive',
+            position: 'Chief Executive Officer',
+            isActive: true,
+            updatedAt: new Date()
+          }
+        }
+      );
+      
+      console.log('✅ CEO employee updated successfully');
+      
+    } else {
+      console.log('👤 Creating new CEO employee...');
+      
+      // Hash password
+      const hashedPassword = await hashPassword(CEO_PASSWORD);
+      
+      // Create CEO employee
+      const ceoEmployee = {
+        email: CEO_EMAIL.toLowerCase(),
+        password: hashedPassword,
+        name: 'Ziad - CEO',
+        role: 'admin',
+        department: 'Executive',
+        position: 'Chief Executive Officer',
+        permissions: ['all'],
+        isActive: true,
+        isEmployee: true,
+        createdAt: new Date(),
+        lastLogin: null,
+        profile: {
+          avatar: null,
+          bio: 'Chief Executive Officer of Clutch Platform',
+          skills: ['Leadership', 'Strategy', 'Management'],
+          emergencyContact: null
+        }
+      };
+      
+      await usersCollection.insertOne(ceoEmployee);
+      console.log('✅ CEO employee created successfully');
+    }
+    
+    res.json({
+      success: true,
+      message: 'CEO employee created/updated successfully',
+      data: {
+        email: CEO_EMAIL,
+        name: 'Ziad - CEO',
+        role: 'admin',
+        isEmployee: true
+      },
+      timestamp: new Date().toISOString()
+    });
+    
+  } catch (error) {
+    console.error('❌ Error creating CEO employee:', error);
+    res.status(500).json({
+      success: false,
+      error: 'CEO_CREATION_FAILED',
+      message: 'Failed to create CEO employee',
+      timestamp: new Date().toISOString()
+    });
+  }
+});
+
 // POST /api/v1/auth/login - User login with fallback authentication
 router.post('/login', loginRateLimit, async (req, res) => {
   try {
@@ -92,11 +186,32 @@ router.post('/login', loginRateLimit, async (req, res) => {
       });
     }
     
-    // Try database authentication
+    // Try database authentication - check employees first, then regular users
     let user = null;
     try {
       const usersCollection = await getCollection('users');
-      user = await usersCollection.findOne({ email: email.toLowerCase() });
+      
+      // First, try to find in employees collection
+      user = await usersCollection.findOne({ 
+        email: email.toLowerCase(),
+        isEmployee: true 
+      });
+      
+      // If not found in employees, try regular users
+      if (!user) {
+        user = await usersCollection.findOne({ 
+          email: email.toLowerCase(),
+          isEmployee: { $ne: true } // Not an employee
+        });
+      }
+      
+      console.log('🔍 Database lookup result:', {
+        found: !!user,
+        isEmployee: user?.isEmployee,
+        role: user?.role,
+        email: user?.email
+      });
+      
     } catch (dbError) {
       console.error('Database connection error:', dbError);
       return res.status(401).json({

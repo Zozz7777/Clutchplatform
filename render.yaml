@@ -17,10 +17,8 @@ services:
         value: clutch
       - key: JWT_SECRET
         generateValue: true
-      - key: ADMIN_EMAIL
-        value: ziad@yourclutch.com
-      - key: ADMIN_PASSWORD_HASH
-        value: $2b$12$5PMqe4ig1OwGH0OgomKBfu4fjehS3holhZC3PitkKN69GLjb8L.Vy
+      - key: FORCE_REDEPLOY
+        value: "2025-09-15-22-00"
       - key: REDIS_URL
         fromService:
           type: redis
