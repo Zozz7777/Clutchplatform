@@ -347,12 +347,17 @@ router.post('/login', loginRateLimit, async (req, res) => {
 // POST /api/v1/auth/register - User registration
 router.post('/register', authRateLimit, async (req, res) => {
   try {
+    console.log('🔐 Registration attempt:', { email: req.body.email, hasName: !!req.body.name, hasFirstName: !!req.body.firstName });
+    
     const { email, password, name, firstName, lastName, phoneNumber } = req.body;
     
     // Handle both name formats (name or firstName/lastName)
     const fullName = name || (firstName && lastName ? `${firstName} ${lastName}` : null);
     
+    console.log('📝 Registration data processed:', { email, hasPassword: !!password, fullName });
+    
     if (!email || !password || !fullName) {
+      console.log('❌ Missing required fields:', { email: !!email, password: !!password, fullName: !!fullName });
       return res.status(400).json({
         success: false,
         error: 'MISSING_REQUIRED_FIELDS',
@@ -383,10 +388,15 @@ router.post('/register', authRateLimit, async (req, res) => {
     }
     
     // Check if user already exists
+    console.log('🔍 Checking if user exists...');
     const usersCollection = await getCollection('users');
+    console.log('✅ Database collection accessed');
+    
     const existingUser = await usersCollection.findOne({ email: email.toLowerCase() });
+    console.log('🔍 User lookup result:', { found: !!existingUser });
     
     if (existingUser) {
+      console.log('❌ User already exists');
       return res.status(409).json({
         success: false,
         error: 'USER_EXISTS',
@@ -396,7 +406,9 @@ router.post('/register', authRateLimit, async (req, res) => {
     }
     
     // Hash password
+    console.log('🔐 Hashing password...');
     const hashedPassword = await hashPassword(password);
+    console.log('✅ Password hashed successfully');
     
     // Create user
     const newUser = {
@@ -411,9 +423,12 @@ router.post('/register', authRateLimit, async (req, res) => {
       lastLogin: null
     };
     
+    console.log('💾 Creating user in database...');
     const result = await usersCollection.insertOne(newUser);
+    console.log('✅ User created successfully:', { userId: result.insertedId });
     
     // Generate JWT token
+    console.log('🔑 Generating JWT token...');
     const token = jwt.sign(
       {
         userId: result.insertedId,
@@ -424,7 +439,9 @@ router.post('/register', authRateLimit, async (req, res) => {
       process.env.JWT_SECRET,
       { expiresIn: '24h' }
     );
+    console.log('✅ JWT token generated');
     
+    console.log('✅ Registration completed successfully');
     res.status(201).json({
       success: true,
       data: {
