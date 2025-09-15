@@ -43,7 +43,7 @@ import {
   Activity,
   Zap,
 } from "lucide-react";
-import { hybridApi } from "@/lib/hybrid-api";
+import { productionApi } from "@/lib/production-api";
 
 interface FeatureFlag {
   _id: string;
@@ -342,7 +342,7 @@ export default function FeatureFlagsPage() {
   const loadFeatureFlags = async () => {
     try {
       setLoading(true);
-      const data = await hybridApi.getFeatureFlags();
+      const data = await productionApi.getFeatureFlags();
       setFeatureFlags(data || mockFeatureFlags);
     } catch (error) {
       console.error("Error loading feature flags:", error);
@@ -374,7 +374,7 @@ export default function FeatureFlagsPage() {
 
   const toggleFeatureFlag = async (flagId: string, enabled: boolean) => {
     try {
-      await hybridApi.toggleFeatureFlag(flagId, enabled);
+      await productionApi.updateFeatureFlag(flagId, enabled);
       setFeatureFlags(prev => 
         prev.map(flag => 
           flag._id === flagId 

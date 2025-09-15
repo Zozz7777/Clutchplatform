@@ -53,7 +53,7 @@ import {
   Calendar,
   Filter,
 } from "lucide-react";
-import { hybridApi } from "@/lib/hybrid-api";
+import { productionApi } from "@/lib/production-api";
 
 interface SystemStatus {
   overall: "healthy" | "degraded" | "critical" | "down";
@@ -348,19 +348,19 @@ export default function SystemHealthPage() {
       setLoading(true);
       
       // Load system status
-      const statusData = await hybridApi.getSystemHealthStatus();
+      const statusData = await productionApi.getSystemHealth();
       setSystemStatus(statusData || mockSystemStatus);
       
       // Load system metrics
-      const metricsData = await hybridApi.getSystemMetrics();
+      const metricsData = await productionApi.getApiPerformance();
       setSystemMetrics(metricsData || mockSystemMetrics);
       
       // Load alerts
-      const alertsData = await hybridApi.getSystemAlerts();
-      setAlerts(alertsData || mockAlerts);
+      const alertsData = await productionApi.getSystemHealth();
+      setAlerts(alertsData?.alerts || mockAlerts);
       
       // Load logs
-      const logsData = await hybridApi.getSystemLogs();
+      const logsData = await productionApi.getAuditLogs();
       setLogs(logsData || mockLogs);
       
     } catch (error) {

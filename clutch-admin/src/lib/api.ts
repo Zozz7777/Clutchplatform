@@ -211,17 +211,49 @@ class ApiService {
 
   // Authentication
   async login(email: string, password: string): Promise<ApiResponse<{ token: string; user: any }>> {
-    const response = await this.request<{ token: string; user: any }>("/api/v1/auth/login", {
-      method: "POST",
-      body: JSON.stringify({ email, password }),
-    });
+    try {
+      const response = await this.request<{ token: string; user: any }>("/api/v1/auth/login", {
+        method: "POST",
+        body: JSON.stringify({ email, password }),
+      });
 
-    if (response.success && response.data) {
-      this.token = response.data.token;
-      localStorage.setItem("clutch-admin-token", response.data.token);
+      if (response.success && response.data) {
+        this.setTokens(response.data.token, response.data.refreshToken);
+      }
+
+      return response;
+    } catch (error) {
+      console.error("Login API call failed:", error);
+      
+      // Handle specific error cases
+      if (error instanceof Error) {
+        if (error.message.includes('502') || error.message.includes('Bad Gateway')) {
+          return {
+            data: null as any,
+            success: false,
+            error: "Server temporarily unavailable. Please try again in a few moments.",
+          };
+        } else if (error.message.includes('404')) {
+          return {
+            data: null as any,
+            success: false,
+            error: "Authentication service not found. Please contact support.",
+          };
+        } else if (error.message.includes('500')) {
+          return {
+            data: null as any,
+            success: false,
+            error: "Server error occurred. Please try again later.",
+          };
+        }
+      }
+      
+      return {
+        data: null as any,
+        success: false,
+        error: "Network error. Please check your connection and try again.",
+      };
     }
-
-    return response;
   }
 
   async logout(): Promise<void> {

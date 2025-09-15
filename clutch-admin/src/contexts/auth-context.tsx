@@ -60,10 +60,11 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         
         setIsLoading(false);
         return true;
+      } else {
+        // Use the specific error message from the API response
+        const errorMessage = response.error || "Invalid email or password. Please try again.";
+        throw new Error(errorMessage);
       }
-      
-      setIsLoading(false);
-      return false;
     } catch (error) {
       console.error("Login error:", error);
       setIsLoading(false);

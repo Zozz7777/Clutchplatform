@@ -33,7 +33,8 @@ export default function LoginPage() {
         setError("Invalid email or password. Please try again.");
       }
     } catch (err) {
-      setError("An error occurred. Please try again.");
+      const errorMessage = err instanceof Error ? err.message : "An error occurred. Please try again.";
+      setError(errorMessage);
     } finally {
       setIsLoading(false);
     }
@@ -44,13 +45,21 @@ export default function LoginPage() {
       <Card className="w-full max-w-md shadow-md">
         <CardHeader className="text-center space-y-6">
                   <div className="flex justify-center">
-                    <div className="flex items-center justify-center w-20 h-20">
+                    <div className="flex items-center justify-center w-20 h-20 bg-primary/10 rounded-lg">
                       <img
                         src="/logos/Logored.png"
                         alt="Clutch"
                         width={80}
                         height={80}
                         className="object-contain max-w-full max-h-full"
+                        onError={(e) => {
+                          // Hide the image and show text fallback
+                          e.currentTarget.style.display = 'none';
+                          const parent = e.currentTarget.parentElement;
+                          if (parent) {
+                            parent.innerHTML = '<div class="text-2xl font-bold text-primary">CLUTCH</div>';
+                          }
+                        }}
                       />
                     </div>
                   </div>
@@ -109,7 +118,7 @@ export default function LoginPage() {
 
             {error && (
               <Alert variant="destructive" className="border-destructive bg-destructive/10">
-                <AlertDescription className="text-destructive-foreground">{error}</AlertDescription>
+                <AlertDescription className="text-destructive font-medium">{error}</AlertDescription>
               </Alert>
             )}
 
