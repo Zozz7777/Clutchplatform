@@ -347,13 +347,37 @@ router.post('/login', loginRateLimit, async (req, res) => {
 // POST /api/v1/auth/register - User registration
 router.post('/register', authRateLimit, async (req, res) => {
   try {
-    const { email, password, name, phoneNumber } = req.body;
+    const { email, password, name, firstName, lastName, phoneNumber } = req.body;
     
-    if (!email || !password || !name) {
+    // Handle both name formats (name or firstName/lastName)
+    const fullName = name || (firstName && lastName ? `${firstName} ${lastName}` : null);
+    
+    if (!email || !password || !fullName) {
       return res.status(400).json({
         success: false,
         error: 'MISSING_REQUIRED_FIELDS',
-        message: 'Email, password, and name are required',
+        message: 'Email, password, and name (or firstName/lastName) are required',
+        timestamp: new Date().toISOString()
+      });
+    }
+    
+    // Validate email format
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+      return res.status(400).json({
+        success: false,
+        error: 'INVALID_EMAIL',
+        message: 'Please provide a valid email address',
+        timestamp: new Date().toISOString()
+      });
+    }
+    
+    // Validate password strength
+    if (password.length < 6) {
+      return res.status(400).json({
+        success: false,
+        error: 'WEAK_PASSWORD',
+        message: 'Password must be at least 6 characters long',
         timestamp: new Date().toISOString()
       });
     }
@@ -378,7 +402,7 @@ router.post('/register', authRateLimit, async (req, res) => {
     const newUser = {
       email: email.toLowerCase(),
       password: hashedPassword,
-      name,
+      name: fullName,
       phoneNumber: phoneNumber || null,
       role: 'user',
       permissions: ['read', 'write'],
