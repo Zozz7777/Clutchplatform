@@ -84,11 +84,16 @@ export default function DashboardPage() {
   useEffect(() => {
     const loadDashboardData = async () => {
       try {
-        const [metrics, vehicles, notifs] = await Promise.all([
+        const [metricsResponse, vehiclesResponse, notifsResponse] = await Promise.all([
           productionApi.getKPIMetrics(),
           productionApi.getFleetVehicles(),
           productionApi.getNotifications(),
         ]);
+        
+        // Handle API response structure properly
+        const metrics = metricsResponse?.data || metricsResponse || [];
+        const vehicles = vehiclesResponse?.data || vehiclesResponse || [];
+        const notifs = notifsResponse?.data?.notifications || notifsResponse?.data || notifsResponse || [];
         
         // Ensure data is arrays before calling slice
         setKpiMetrics(Array.isArray(metrics) ? metrics : []);

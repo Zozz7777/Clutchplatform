@@ -60,11 +60,13 @@ export function Header({ onMenuToggle, isDarkMode, onThemeToggle }: HeaderProps)
       
       setNotificationsLoading(true);
       try {
-        const data = await productionApi.getNotifications();
-        setNotifications(data.slice(0, 5)); // Show only latest 5 notifications
+        const response = await productionApi.getNotifications();
+        // Handle the API response structure properly
+        const notifications = response?.data?.notifications || response?.data || response || [];
+        setNotifications(Array.isArray(notifications) ? notifications.slice(0, 5) : []);
       } catch (error) {
         console.error("Failed to fetch notifications:", error);
-        // Keep empty array on error
+        setNotifications([]); // Set empty array on error
       } finally {
         setNotificationsLoading(false);
       }

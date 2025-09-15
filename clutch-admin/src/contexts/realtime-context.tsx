@@ -48,13 +48,21 @@ export function RealtimeProvider({ children }: { children: React.ReactNode }) {
     
     // Handle different message types
     switch (message.type) {
+      case 'connection':
+        console.log('📨 WebSocket connection confirmed:', message.message);
+        // Connection message is handled silently - no toast needed
+        break;
+      case 'pong':
+        console.log('📨 WebSocket pong received');
+        // Pong response is handled silently
+        break;
       case 'notification':
-        toast.info(message.data.message || 'New notification received');
+        toast.info(message.data?.message || 'New notification received');
         break;
       case 'system_health':
-        if (message.data.status === 'critical') {
+        if (message.data?.status === 'critical') {
           toast.error('System health critical!');
-        } else if (message.data.status === 'degraded') {
+        } else if (message.data?.status === 'degraded') {
           toast.warning('System health degraded');
         }
         break;
@@ -66,6 +74,10 @@ export function RealtimeProvider({ children }: { children: React.ReactNode }) {
         break;
       case 'analytics_update':
         // Analytics updates are usually silent
+        break;
+      default:
+        console.log('📨 WebSocket message received:', message.type, message);
+        // Log unknown message types for debugging
         break;
     }
   }, []);
