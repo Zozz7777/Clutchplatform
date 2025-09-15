@@ -7,6 +7,8 @@ import { Button } from "@/components/ui/button";
 import { hybridApi, type KPIMetric, type FleetVehicle, type Notification } from "@/lib/hybrid-api";
 import { formatCurrency, formatNumber, formatRelativeTime } from "@/lib/utils";
 import { AuthStatus } from "@/components/auth-status";
+import { useQuickActions } from "@/lib/quick-actions";
+import { useAuth } from "@/contexts/auth-context";
 import { 
   Users, 
   Truck, 
@@ -26,7 +28,12 @@ import {
   Zap,
   Server,
   Globe,
-  MessageSquare
+  MessageSquare,
+  Route,
+  Download,
+  RefreshCw,
+  UserCheck,
+  Settings
 } from "lucide-react";
 
 const iconMap = {
@@ -43,6 +50,17 @@ export default function DashboardPage() {
   const [fleetVehicles, setFleetVehicles] = useState<FleetVehicle[]>([]);
   const [notifications, setNotifications] = useState<Notification[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const { hasPermission } = useAuth();
+  const {
+    quickActions,
+    generateReport,
+    exportData,
+    addUser,
+    createFleet,
+    optimizeRoutes,
+    refreshData,
+    navigateToAnalytics
+  } = useQuickActions(hasPermission);
 
   useEffect(() => {
     const loadDashboardData = async () => {
