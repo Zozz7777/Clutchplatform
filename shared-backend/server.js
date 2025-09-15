@@ -82,6 +82,8 @@ const fleetRoutes = require('./routes/fleet');
 const paymentsRoutes = require('./routes/payments');
 const communicationRoutes = require('./routes/communication');
 const performanceRoutes = require('./routes/performance');
+const dashboardRoutes = require('./routes/dashboard');
+const notificationsRoutes = require('./routes/notifications');
 
 // All route imports cleaned up - only existing routes imported above
 
@@ -166,10 +168,15 @@ app.use(`${apiPrefix}/fleet`, fleetRoutes);
 app.use(`${apiPrefix}/payments`, paymentsRoutes);
 app.use(`${apiPrefix}/communication`, communicationRoutes);
 app.use(`${apiPrefix}/performance`, performanceRoutes);
+app.use(`${apiPrefix}/dashboard`, dashboardRoutes);
+app.use(`${apiPrefix}/notifications`, notificationsRoutes);
 
-// Fallback routes
+// Fallback routes (without v1 prefix for frontend compatibility)
 app.use('/auth', authRoutes);
 app.use('/admin', adminRoutes);
+app.use('/api/fleet', fleetRoutes);
+app.use('/api/notifications', notificationsRoutes);
+app.use('/api/dashboard', dashboardRoutes);
 
 // Test endpoints
 app.get('/test', (req, res) => {
@@ -267,6 +274,15 @@ app.use((err, req, res, next) => {
     message: isDevelopment ? err.message : errorMessage,
     timestamp: new Date().toISOString(),
     ...(isDevelopment && { stack: err.stack })
+  });
+});
+
+// Logo route (for frontend compatibility)
+app.get('/Logored.png', (req, res) => {
+  res.status(404).json({
+    success: false,
+    message: 'Logo file not found - please check the frontend static files',
+    timestamp: new Date().toISOString()
   });
 });
 

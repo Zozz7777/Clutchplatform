@@ -11,7 +11,6 @@ const router = express.Router();
 const { getCollection } = require('../config/optimized-database');
 const { authenticateToken, requireRole, hashPassword, comparePassword } = require('../middleware/auth');
 const { rateLimit: createRateLimit } = require('../middleware/rateLimit');
-const { getEnvironmentConfig } = require('../config/environment');
 
 // Apply rate limiting
 const authRateLimit = createRateLimit({ windowMs: 15 * 60 * 1000, max: 50 }); // 50 attempts per 15 minutes
