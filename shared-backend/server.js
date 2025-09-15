@@ -517,7 +517,11 @@ async function startServer() {
       console.log(`🌍 Environment: ${process.env.NODE_ENV || 'development'}`);
       console.log(`📊 Health check: https://clutch-main-nk7x.onrender.com/health/ping`);
       console.log(`⚡ Performance monitoring: https://clutch-main-nk7x.onrender.com/api/v1/performance/monitor`);
+      console.log(`🔌 WebSocket server: wss://clutch-main-nk7x.onrender.com/ws`);
       console.log(`🔄 Graceful restart: SIGUSR2 or SIGHUP`);
+      
+      // Initialize WebSocket server
+      webSocketServer.initialize(server);
       
       // Run endpoint testing in production to generate logs
       if (process.env.NODE_ENV === 'production') {

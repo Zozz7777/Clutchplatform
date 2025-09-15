@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const { authenticateToken } = require('../middleware/auth');
+const webSocketServer = require('../services/websocket-server');
 
 // Import database utilities with error handling
 let getCollection, connectDB;
@@ -25,7 +26,8 @@ router.get('/ping', (req, res) => {
                 status: 'pong',
                 timestamp: new Date().toISOString(),
                 uptime: process.uptime(),
-                environment: process.env.NODE_ENV || 'development'
+                environment: process.env.NODE_ENV || 'development',
+                websocket: webSocketServer.getStats()
             }
         });
     } catch (error) {
