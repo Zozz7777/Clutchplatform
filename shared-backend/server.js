@@ -97,6 +97,7 @@ const dashboardRoutes = require('./routes/dashboard');
 const notificationsRoutes = require('./routes/notifications');
 const employeesRoutes = require('./routes/employees');
 const employeeInvitationsRoutes = require('./routes/employee-invitations');
+const exportRoutes = require('./routes/export');
 
 // All route imports cleaned up - only existing routes imported above
 
@@ -187,7 +188,8 @@ app.use(`${apiPrefix}/performance`, performanceRoutes);
 app.use(`${apiPrefix}/dashboard`, dashboardRoutes);
 app.use(`${apiPrefix}/notifications`, notificationsRoutes);
 app.use(`${apiPrefix}/employees`, employeesRoutes);
-app.use(`${apiPrefix}/employees`, employeeInvitationsRoutes);
+app.use(`${apiPrefix}/employee-invitations`, employeeInvitationsRoutes);
+app.use(`${apiPrefix}/export`, exportRoutes);
 
 // Fallback routes (without v1 prefix for frontend compatibility)
 app.use('/auth', authRoutes);
@@ -196,6 +198,7 @@ app.use('/api/fleet', fleetRoutes);
 app.use('/api/notifications', notificationsRoutes);
 app.use('/api/dashboard', dashboardRoutes);
 app.use('/api/employees', employeesRoutes);
+app.use('/api/export', exportRoutes);
 app.use('/api/employees', employeeInvitationsRoutes);
 
 // Test endpoints
