@@ -1,3 +1,21 @@
+
+// Optimized imports
+const { applyOptimizedMiddleware, getMemoryStats } = require('./middleware/optimized-middleware');
+const { redisCache } = require('./config/optimized-redis');
+const OptimizedAIProviderManager = require('./services/optimizedAIProviderManager');
+const { connectToDatabase: connectOptimizedDatabase } = require('./config/optimized-database');
+
+// Optimized imports
+const { applyOptimizedMiddleware, getMemoryStats } = require('./middleware/optimized-middleware');
+const { redisCache } = require('./config/optimized-redis');
+const OptimizedAIProviderManager = require('./services/optimizedAIProviderManager');
+const { connectToDatabase: connectOptimizedDatabase } = require('./config/optimized-database');
+
+// Optimized imports
+const { applyOptimizedMiddleware, getMemoryStats } = require('./middleware/optimized-middleware');
+const { redisCache } = require('./config/optimized-redis');
+const OptimizedAIProviderManager = require('./services/optimizedAIProviderManager');
+const { connectToDatabase: connectOptimizedDatabase } = require('./config/optimized-database');
 const express = require('express');
 const cors = require('cors');
 const rateLimit = require('express-rate-limit');
@@ -39,11 +57,11 @@ const {
 const { connectToDatabase } = require('./config/database');
 
 // Import routes
-const authRoutes = require('./routes/auth');
+const authRoutes = require('./routes/consolidated-auth');
 const healthRoutes = require('./routes/health');
 const adminRoutes = require('./routes/admin');
 const dashboardRoutes = require('./routes/dashboard');
-const analyticsRoutes = require('./routes/analytics');
+const analyticsRoutes = require('./routes/consolidated-analytics');
 const monitoringRoutes = require('./routes/monitoring');
 const usersRoutes = require('./routes/users');
 const otherRoutes = require('./routes/other');
@@ -186,8 +204,11 @@ const app = express();
 // Trust proxy
 app.set('trust proxy', 1);
 
-// Performance monitoring middleware
-app.use(requestPerformanceMiddleware());
+// Apply optimized middleware stack
+
+// Apply optimized middleware stack
+applyOptimizedMiddleware(app);
+
 app.use(databaseQueryMiddleware());
 app.use(optimizationMiddleware());
 app.use(performanceMonitor);
@@ -729,6 +750,60 @@ function validateEnvironment() {
 }
 
 // Start server
+
+// Initialize optimized systems
+const optimizedAI = new OptimizedAIProviderManager();
+let redisInitialized = false;
+
+// Initialize Redis cache
+async function initializeRedis() {
+  try {
+    redisInitialized = await redisCache.initialize();
+    if (redisInitialized) {
+      console.log('✅ Redis cache initialized successfully');
+    } else {
+      console.log('⚠️ Redis cache initialization failed - continuing without cache');
+    }
+  } catch (error) {
+    console.error('❌ Redis initialization error:', error);
+  }
+}
+
+// Initialize optimized systems
+const optimizedAI = new OptimizedAIProviderManager();
+let redisInitialized = false;
+
+// Initialize Redis cache
+async function initializeRedis() {
+  try {
+    redisInitialized = await redisCache.initialize();
+    if (redisInitialized) {
+      console.log('✅ Redis cache initialized successfully');
+    } else {
+      console.log('⚠️ Redis cache initialization failed - continuing without cache');
+    }
+  } catch (error) {
+    console.error('❌ Redis initialization error:', error);
+  }
+}
+
+// Initialize optimized systems
+const optimizedAI = new OptimizedAIProviderManager();
+let redisInitialized = false;
+
+// Initialize Redis cache
+async function initializeRedis() {
+  try {
+    redisInitialized = await redisCache.initialize();
+    if (redisInitialized) {
+      console.log('✅ Redis cache initialized successfully');
+    } else {
+      console.log('⚠️ Redis cache initialization failed - continuing without cache');
+    }
+  } catch (error) {
+    console.error('❌ Redis initialization error:', error);
+  }
+}
 async function startServer() {
   try {
     console.log('🚀 Starting minimal server...');
@@ -744,8 +819,17 @@ async function startServer() {
 
     // Connect to database
     console.log('🔄 Connecting to database...');
-    await connectToDatabase();
+    await connectOptimizedDatabase();
     console.log('✅ Database connection established');
+    
+    // Initialize Redis cache
+    await initializeRedis();
+    
+    // Initialize Redis cache
+    await initializeRedis();
+    
+    // Initialize Redis cache
+    await initializeRedis();
 
     // Start HTTP server
     const PORT = process.env.PORT || 5000;
