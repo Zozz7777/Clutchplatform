@@ -201,15 +201,15 @@ app.use(`${apiPrefix}/employees`, employeesRoutes);
 app.use(`${apiPrefix}/employee-invitations`, employeeInvitationsRoutes);
 app.use(`${apiPrefix}/export`, exportRoutes);
 
-// Mount new missing route files
-app.use('/api/crm', crmRoutes);
-app.use('/api/finance', financeRoutes);
-app.use('/api/chat', chatRoutes);
-app.use('/api/settings', settingsRoutes);
-app.use('/api/integrations', integrationsRoutes);
-app.use('/api/audit-trail', auditTrailRoutes);
+// Mount new missing route files with correct v1 prefix
+app.use(`${apiPrefix}/crm`, crmRoutes);
+app.use(`${apiPrefix}/finance`, financeRoutes);
+app.use(`${apiPrefix}/chat`, chatRoutes);
+app.use(`${apiPrefix}/settings`, settingsRoutes);
+app.use(`${apiPrefix}/integrations`, integrationsRoutes);
+app.use(`${apiPrefix}/audit-trail`, auditTrailRoutes);
 app.use(`${apiPrefix}/reports`, reportsRoutes);
-app.use('/api/v1/rbac', rbacRoutes);
+app.use(`${apiPrefix}/rbac`, rbacRoutes);
 
 // Fallback routes (without v1 prefix for frontend compatibility)
 app.use('/auth', authRoutes);
@@ -220,6 +220,14 @@ app.use('/api/dashboard', dashboardRoutes);
 app.use('/api/employees', employeesRoutes);
 app.use('/api/export', exportRoutes);
 app.use('/api/employees', employeeInvitationsRoutes);
+app.use('/api/crm', crmRoutes);
+app.use('/api/finance', financeRoutes);
+app.use('/api/chat', chatRoutes);
+app.use('/api/settings', settingsRoutes);
+app.use('/api/integrations', integrationsRoutes);
+app.use('/api/audit-trail', auditTrailRoutes);
+app.use('/api/reports', reportsRoutes);
+app.use('/api/rbac', rbacRoutes);
 
 // Test endpoints
 app.get('/test', (req, res) => {

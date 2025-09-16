@@ -10,7 +10,7 @@ export class RealApiService {
   }
 
   async getFleetVehicles(): Promise<any[]> {
-    const response = await apiService.request<any[]>("/api/v1/fleet/vehicles");
+    const response = await apiService.request<any[]>("/api/fleet/vehicles");
     return response.success ? response.data : [];
   }
 
@@ -50,12 +50,12 @@ export class RealApiService {
 
   // Fleet Management APIs
   async getFleetVehicles(): Promise<any[]> {
-    const response = await apiService.request<any[]>("/api/v1/fleet/vehicles");
+    const response = await apiService.request<any[]>("/api/fleet/vehicles");
     return response.success ? response.data : [];
   }
 
   async createFleetVehicle(vehicleData: any): Promise<any> {
-    const response = await apiService.request<any>("/api/v1/fleet/vehicles", {
+    const response = await apiService.request<any>("/api/fleet/vehicles", {
       method: "POST",
       body: JSON.stringify(vehicleData),
     });
@@ -63,7 +63,7 @@ export class RealApiService {
   }
 
   async updateFleetVehicle(vehicleId: string, vehicleData: any): Promise<any> {
-    const response = await apiService.request<any>(`/api/v1/fleet/vehicles/${vehicleId}`, {
+    const response = await apiService.request<any>(`/api/fleet/vehicles/${vehicleId}`, {
       method: "PUT",
       body: JSON.stringify(vehicleData),
     });
@@ -71,7 +71,7 @@ export class RealApiService {
   }
 
   async deleteFleetVehicle(vehicleId: string): Promise<boolean> {
-    const response = await apiService.request<any>(`/api/v1/fleet/vehicles/${vehicleId}`, {
+    const response = await apiService.request<any>(`/api/fleet/vehicles/${vehicleId}`, {
       method: "DELETE",
     });
     return response.success;
@@ -116,17 +116,17 @@ export class RealApiService {
 
   // CRM APIs
   async getCustomers(): Promise<any[]> {
-    const response = await apiService.request<any[]>("/api/v1/crm/customers");
+    const response = await apiService.request<any[]>("/api/crm/customers");
     return response.success ? response.data : [];
   }
 
   async getTickets(): Promise<any[]> {
-    const response = await apiService.request<any[]>("/api/v1/crm/tickets");
+    const response = await apiService.request<any[]>("/api/crm/tickets");
     return response.success ? response.data : [];
   }
 
   async createTicket(ticketData: any): Promise<any> {
-    const response = await apiService.request<any>("/api/v1/crm/tickets", {
+    const response = await apiService.request<any>("/api/crm/tickets", {
       method: "POST",
       body: JSON.stringify(ticketData),
     });
@@ -134,7 +134,7 @@ export class RealApiService {
   }
 
   async updateTicket(ticketId: string, ticketData: any): Promise<any> {
-    const response = await apiService.request<any>(`/api/v1/crm/tickets/${ticketId}`, {
+    const response = await apiService.request<any>(`/api/crm/tickets/${ticketId}`, {
       method: "PUT",
       body: JSON.stringify(ticketData),
     });
@@ -143,7 +143,7 @@ export class RealApiService {
 
   // Finance APIs
   async getPayments(): Promise<any[]> {
-    const response = await apiService.request<any[]>("/api/v1/finance/payments");
+    const response = await apiService.request<any[]>("/api/finance/payments");
     return response.success ? response.data : [];
   }
 
@@ -301,7 +301,7 @@ export class RealApiService {
 
   // Finance APIs
   async getPayments(): Promise<any[]> {
-    const response = await apiService.request<any[]>("/api/v1/finance/payments");
+    const response = await apiService.request<any[]>("/api/finance/payments");
     return response.success ? response.data : [];
   }
 
@@ -316,7 +316,7 @@ export class RealApiService {
   }
 
   async createPayment(paymentData: any): Promise<any> {
-    const response = await apiService.request<any>("/api/v1/finance/payments", {
+    const response = await apiService.request<any>("/api/finance/payments", {
       method: "POST",
       body: JSON.stringify(paymentData),
     });
@@ -324,7 +324,7 @@ export class RealApiService {
   }
 
   async updatePayment(paymentId: string, paymentData: any): Promise<any> {
-    const response = await apiService.request<any>(`/api/v1/finance/payments/${paymentId}`, {
+    const response = await apiService.request<any>(`/api/finance/payments/${paymentId}`, {
       method: "PUT",
       body: JSON.stringify(paymentData),
     });
@@ -332,7 +332,7 @@ export class RealApiService {
   }
 
   async deletePayment(paymentId: string): Promise<boolean> {
-    const response = await apiService.request<any>(`/api/v1/finance/payments/${paymentId}`, {
+    const response = await apiService.request<any>(`/api/finance/payments/${paymentId}`, {
       method: "DELETE",
     });
     return response.success;
@@ -340,17 +340,17 @@ export class RealApiService {
 
   // CRM APIs
   async getCustomers(): Promise<any[]> {
-    const response = await apiService.request<any[]>("/api/v1/crm/customers");
+    const response = await apiService.request<any[]>("/api/crm/customers");
     return response.success ? response.data : [];
   }
 
   async getTickets(): Promise<any[]> {
-    const response = await apiService.request<any[]>("/api/v1/crm/tickets");
+    const response = await apiService.request<any[]>("/api/crm/tickets");
     return response.success ? response.data : [];
   }
 
   async createCustomer(customerData: any): Promise<any> {
-    const response = await apiService.request<any>("/api/v1/crm/customers", {
+    const response = await apiService.request<any>("/api/crm/customers", {
       method: "POST",
       body: JSON.stringify(customerData),
     });
@@ -358,7 +358,7 @@ export class RealApiService {
   }
 
   async updateCustomer(customerId: string, customerData: any): Promise<any> {
-    const response = await apiService.request<any>(`/api/v1/crm/customers/${customerId}`, {
+    const response = await apiService.request<any>(`/api/crm/customers/${customerId}`, {
       method: "PUT",
       body: JSON.stringify(customerData),
     });
@@ -366,7 +366,7 @@ export class RealApiService {
   }
 
   async deleteCustomer(customerId: string): Promise<boolean> {
-    const response = await apiService.request<any>(`/api/v1/crm/customers/${customerId}`, {
+    const response = await apiService.request<any>(`/api/crm/customers/${customerId}`, {
       method: "DELETE",
     });
     return response.success;

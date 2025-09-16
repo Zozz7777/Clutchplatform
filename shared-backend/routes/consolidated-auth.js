@@ -706,8 +706,8 @@ router.post('/register', authRateLimit, async (req, res) => {
 
 // ==================== ENHANCED AUTHENTICATION ====================
 
-// POST /api/v1/auth/refresh - Refresh token
-router.post('/refresh', authenticateToken, async (req, res) => {
+// POST /api/v1/auth/refresh - Refresh token (no auth required since token is expired)
+router.post('/refresh', async (req, res) => {
   try {
     const { refreshToken } = req.body;
     

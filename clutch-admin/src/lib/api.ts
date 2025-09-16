@@ -36,14 +36,18 @@ class ApiService {
     // Always get fresh token from localStorage or sessionStorage
     if (typeof window !== "undefined") {
       this.token = localStorage.getItem("clutch-admin-token") || sessionStorage.getItem("clutch-admin-token");
+      this.refreshToken = localStorage.getItem("clutch-admin-refresh-token");
       
       // Debug logging for token retrieval
       if (process.env.NODE_ENV === 'development') {
         console.log('🔑 Token retrieval:', {
           hasToken: !!this.token,
+          hasRefreshToken: !!this.refreshToken,
           tokenPreview: this.token ? `${this.token.substring(0, 20)}...` : 'none',
+          refreshTokenPreview: this.refreshToken ? `${this.refreshToken.substring(0, 20)}...` : 'none',
           localStorage: localStorage.getItem("clutch-admin-token") ? 'exists' : 'missing',
-          sessionStorage: sessionStorage.getItem("clutch-admin-token") ? 'exists' : 'missing'
+          sessionStorage: sessionStorage.getItem("clutch-admin-token") ? 'exists' : 'missing',
+          refreshTokenStorage: localStorage.getItem("clutch-admin-refresh-token") ? 'exists' : 'missing'
         });
       }
     }
