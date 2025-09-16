@@ -1,137 +1,0 @@
-<!-- Dashboard Page -->
-<div class="dashboard-page">
-    <div class="page-header">
-        <h1 class="page-title">لوحة التحكم</h1>
-        <div class="page-actions">
-            <button class="btn btn-primary" id="refresh-dashboard-btn">
-                <span class="btn-icon">🔄</span>
-                تحديث البيانات
-            </button>
-            <button class="btn btn-secondary" id="export-dashboard-btn">
-                <span class="btn-icon">📊</span>
-                تصدير التقرير
-            </button>
-        </div>
-    </div>
-
-    <!-- Dashboard Statistics -->
-    <div class="dashboard-stats">
-        <div class="stat-card">
-            <div class="stat-icon">📦</div>
-            <div class="stat-content">
-                <div class="stat-value" id="total-inventory-items">0</div>
-                <div class="stat-label">إجمالي الأصناف</div>
-                <div class="stat-change" id="inventory-change">+0%</div>
-            </div>
-        </div>
-        <div class="stat-card">
-            <div class="stat-icon">💰</div>
-            <div class="stat-content">
-                <div class="stat-value" id="total-sales-amount">0</div>
-                <div class="stat-label">إجمالي المبيعات</div>
-                <div class="stat-change" id="sales-change">+0%</div>
-            </div>
-        </div>
-        <div class="stat-card">
-            <div class="stat-icon">👥</div>
-            <div class="stat-content">
-                <div class="stat-value" id="total-customers">0</div>
-                <div class="stat-label">إجمالي العملاء</div>
-                <div class="stat-change" id="customers-change">+0%</div>
-            </div>
-        </div>
-        <div class="stat-card">
-            <div class="stat-icon">🏭</div>
-            <div class="stat-content">
-                <div class="stat-value" id="total-suppliers">0</div>
-                <div class="stat-label">إجمالي الموردين</div>
-                <div class="stat-change" id="suppliers-change">+0%</div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Quick Actions -->
-    <div class="quick-actions">
-        <h3>الإجراءات السريعة</h3>
-        <div class="actions-grid">
-            <button class="action-card" id="quick-sale-btn">
-                <div class="action-icon">💰</div>
-                <div class="action-content">
-                    <h4>بيع سريع</h4>
-                    <p>إضافة مبيعات جديدة</p>
-                </div>
-            </button>
-            <button class="action-card" id="add-inventory-btn">
-                <div class="action-icon">📦</div>
-                <div class="action-content">
-                    <h4>إضافة صنف</h4>
-                    <p>إضافة أصناف جديدة للمخزون</p>
-                </div>
-            </button>
-            <button class="action-card" id="add-customer-btn">
-                <div class="action-icon">👥</div>
-                <div class="action-content">
-                    <h4>إضافة عميل</h4>
-                    <p>إضافة عملاء جدد</p>
-                </div>
-            </button>
-            <button class="action-card" id="add-supplier-btn">
-                <div class="action-icon">🏭</div>
-                <div class="action-content">
-                    <h4>إضافة مورد</h4>
-                    <p>إضافة موردين جدد</p>
-                </div>
-            </button>
-            <button class="action-card" id="import-excel-btn">
-                <div class="action-icon">📥</div>
-                <div class="action-content">
-                    <h4>استيراد Excel</h4>
-                    <p>استيراد البيانات من Excel</p>
-                </div>
-            </button>
-            <button class="action-card" id="generate-report-btn">
-                <div class="action-icon">📊</div>
-                <div class="action-content">
-                    <h4>توليد تقرير</h4>
-                    <p>إنشاء تقارير مفصلة</p>
-                </div>
-            </button>
-        </div>
-    </div>
-
-    <!-- Charts Section -->
-    <div class="charts-section">
-        <div class="chart-container">
-            <h3>اتجاه المبيعات</h3>
-            <canvas id="sales-trend-chart"></canvas>
-        </div>
-        <div class="chart-container">
-            <h3>توزيع المخزون</h3>
-            <canvas id="inventory-distribution-chart"></canvas>
-        </div>
-    </div>
-
-    <!-- Recent Activity -->
-    <div class="recent-activity">
-        <h3>النشاط الأخير</h3>
-        <div class="activity-list" id="recent-activity-list">
-            <!-- Recent activity items will be loaded here -->
-        </div>
-    </div>
-
-    <!-- Low Stock Alerts -->
-    <div class="alerts-section">
-        <h3>تنبيهات المخزون</h3>
-        <div class="alerts-list" id="low-stock-alerts">
-            <!-- Low stock alerts will be loaded here -->
-        </div>
-    </div>
-
-    <!-- AI Insights -->
-    <div class="ai-insights-section">
-        <h3>رؤى الذكاء الاصطناعي</h3>
-        <div class="insights-grid" id="ai-insights-grid">
-            <!-- AI insights will be loaded here -->
-        </div>
-    </div>
-</div>

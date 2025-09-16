@@ -648,6 +648,7 @@ router.post('/register', authRateLimit, async (req, res) => {
       role: 'user',
       permissions: ['read', 'write'],
       isActive: true,
+      firebaseId: `user_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`, // Generate unique firebaseId
       createdAt: new Date(),
       lastLogin: null
     };

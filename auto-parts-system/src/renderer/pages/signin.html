@@ -1,87 +1,0 @@
-<!-- Sign In Page -->
-<div class="signin-page">
-    <div class="signin-container">
-        <div class="signin-header">
-            <div class="logo-section">
-                <img src="assets/logo.svg" alt="Clutch Logo" class="signin-logo" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
-                <div style="display:none; font-size: 32px; color: #2c3e50; font-weight: bold;">CLUTCH</div>
-            </div>
-            <h1 class="signin-title">نظام إدارة قطع غيار السيارات</h1>
-            <p class="signin-subtitle">مرحباً بك في نظام Clutch لإدارة قطع الغيار</p>
-        </div>
-
-        <div class="signin-form-container">
-            <form id="signin-form" class="signin-form">
-                <div class="form-group">
-                    <label for="shop-id" class="form-label">معرف المتجر</label>
-                    <input type="text" id="shop-id" name="shopId" class="form-control" required placeholder="أدخل معرف المتجر">
-                </div>
-
-                <div class="form-group">
-                    <label for="api-key" class="form-label">مفتاح API</label>
-                    <input type="password" id="api-key" name="apiKey" class="form-control" required placeholder="أدخل مفتاح API">
-                </div>
-
-                <div class="form-group">
-                    <label for="shop-name" class="form-label">اسم المتجر</label>
-                    <input type="text" id="shop-name" name="shopName" class="form-control" required placeholder="أدخل اسم المتجر">
-                </div>
-
-                <div class="form-group">
-                    <label for="shop-location" class="form-label">موقع المتجر</label>
-                    <input type="text" id="shop-location" name="shopLocation" class="form-control" placeholder="أدخل موقع المتجر">
-                </div>
-
-                <div class="form-options">
-                    <label class="checkbox-label">
-                        <input type="checkbox" id="remember-credentials" name="rememberCredentials">
-                        <span class="checkmark"></span>
-                        تذكر بيانات الدخول
-                    </label>
-                </div>
-
-                <button type="submit" class="btn btn-primary btn-signin" id="signin-btn">
-                    <span class="btn-icon">🔐</span>
-                    تسجيل الدخول
-                </button>
-            </form>
-
-            <div class="signin-help">
-                <h3>هل تحتاج مساعدة؟</h3>
-                <div class="help-options">
-                    <button class="help-btn" id="demo-mode-btn">
-                        <span class="help-icon">🎮</span>
-                        <div class="help-content">
-                            <h4>الوضع التجريبي</h4>
-                            <p>جرب النظام بدون بيانات حقيقية</p>
-                        </div>
-                    </button>
-                    <button class="help-btn" id="contact-support-btn">
-                        <span class="help-icon">📞</span>
-                        <div class="help-content">
-                            <h4>الدعم الفني</h4>
-                            <p>تواصل مع فريق الدعم</p>
-                        </div>
-                    </button>
-                    <button class="help-btn" id="documentation-btn">
-                        <span class="help-icon">📚</span>
-                        <div class="help-content">
-                            <h4>الوثائق</h4>
-                            <p>تعرف على كيفية الاستخدام</p>
-                        </div>
-                    </button>
-                </div>
-            </div>
-        </div>
-
-        <div class="signin-footer">
-            <div class="connection-status">
-                <span class="status-indicator" id="connection-status-indicator"></span>
-                <span class="status-text" id="connection-status-text">جاري فحص الاتصال...</span>
-            </div>
-            <div class="version-info">
-                <span>الإصدار 1.0.0</span>
-            </div>
-        </div>
-    </div>
-</div>
