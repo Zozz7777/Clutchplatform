@@ -596,6 +596,102 @@ router.get('/analytics', authenticateToken, requireRole(['admin', 'hr_manager'])
   }
 });
 
+// ==================== JOB APPLICATIONS ====================
+
+// GET /api/v1/hr/applications - Get job applications
+router.get('/applications', authenticateToken, requireRole(['admin', 'hr_manager']), hrRateLimit, async (req, res) => {
+  try {
+    const { status, position, department } = req.query;
+    const applicationsCollection = await getCollection('job_applications');
+    
+    // Build query
+    const query = {};
+    if (status) query.status = status;
+    if (position) query.position = position;
+    if (department) query.department = department;
+    
+    const applications = await applicationsCollection
+      .find(query)
+      .sort({ createdAt: -1 })
+      .toArray();
+    
+    res.json({
+      success: true,
+      data: { applications },
+      message: 'Job applications retrieved successfully',
+      timestamp: new Date().toISOString()
+    });
+  } catch (error) {
+    console.error('Get applications error:', error);
+    res.status(500).json({
+      success: false,
+      error: 'GET_APPLICATIONS_FAILED',
+      message: 'Failed to retrieve job applications',
+      timestamp: new Date().toISOString()
+    });
+  }
+});
+
+// ==================== HR STATISTICS ====================
+
+// GET /api/v1/hr/stats - Get HR statistics
+router.get('/stats', authenticateToken, requireRole(['admin', 'hr_manager']), hrRateLimit, async (req, res) => {
+  try {
+    const employeesCollection = await getCollection('employees');
+    const applicationsCollection = await getCollection('job_applications');
+    const recruitmentCollection = await getCollection('recruitment');
+    
+    // Get employee statistics
+    const totalEmployees = await employeesCollection.countDocuments();
+    const activeEmployees = await employeesCollection.countDocuments({ status: 'active' });
+    const newHires = await employeesCollection.countDocuments({
+      hireDate: { $gte: new Date(Date.now() - 30 * 24 * 60 * 60 * 1000) }
+    });
+    
+    // Get application statistics
+    const totalApplications = await applicationsCollection.countDocuments();
+    const pendingApplications = await applicationsCollection.countDocuments({ status: 'pending' });
+    const reviewedApplications = await applicationsCollection.countDocuments({ status: 'reviewed' });
+    
+    // Get recruitment statistics
+    const totalCandidates = await recruitmentCollection.countDocuments();
+    const hiredCandidates = await recruitmentCollection.countDocuments({ status: 'hired' });
+    
+    const stats = {
+      employees: {
+        total: totalEmployees,
+        active: activeEmployees,
+        newHires
+      },
+      applications: {
+        total: totalApplications,
+        pending: pendingApplications,
+        reviewed: reviewedApplications
+      },
+      recruitment: {
+        total: totalCandidates,
+        hired: hiredCandidates
+      },
+      generatedAt: new Date()
+    };
+    
+    res.json({
+      success: true,
+      data: { stats },
+      message: 'HR statistics retrieved successfully',
+      timestamp: new Date().toISOString()
+    });
+  } catch (error) {
+    console.error('Get HR stats error:', error);
+    res.status(500).json({
+      success: false,
+      error: 'GET_HR_STATS_FAILED',
+      message: 'Failed to retrieve HR statistics',
+      timestamp: new Date().toISOString()
+    });
+  }
+});
+
 // ==================== GENERIC HANDLERS ====================
 
 // GET /api/v1/hr - Get HR overview
@@ -607,6 +703,8 @@ router.get('/', authenticateToken, requireRole(['admin', 'hr_manager']), hrRateL
       employees: '/api/v1/hr/employees',
       payroll: '/api/v1/hr/payroll',
       recruitment: '/api/v1/hr/recruitment',
+      applications: '/api/v1/hr/applications',
+      stats: '/api/v1/hr/stats',
       analytics: '/api/v1/hr/analytics'
     },
     timestamp: new Date().toISOString()

@@ -19,9 +19,6 @@ export function Sidebar({ isCollapsed, onToggle }: SidebarProps) {
   const { hasPermission, user } = useAuth();
   const [expandedItems, setExpandedItems] = useState<string[]>([]);
 
-  // Debug user permissions
-  console.log('Sidebar user:', user);
-  console.log('Sidebar user permissions:', user?.permissions);
 
   const toggleExpanded = (title: string) => {
     setExpandedItems(prev =>
@@ -39,9 +36,7 @@ export function Sidebar({ isCollapsed, onToggle }: SidebarProps) {
   };
 
   const hasAnyPermission = (permissions: string[]) => {
-    const result = permissions.some(permission => hasPermission(permission));
-    console.log(`hasAnyPermission check: permissions=${permissions.join(', ')}, result=${result}`);
-    return result;
+    return permissions.some(permission => hasPermission(permission));
   };
 
   return (
@@ -92,7 +87,7 @@ export function Sidebar({ isCollapsed, onToggle }: SidebarProps) {
                 onLoad={() => console.log('Logo loaded successfully')}
               />
             </div>
-            <span className="text-xl font-bold text-sidebar-primary font-sans">Clutch Admin</span>
+            <span className="text-xl font-bold text-foreground font-sans">Clutch Admin</span>
           </div>
         )}
       </div>
@@ -102,7 +97,6 @@ export function Sidebar({ isCollapsed, onToggle }: SidebarProps) {
         <div className="px-2 space-y-1">
           {NAVIGATION_ITEMS.map((item) => {
             const hasPermission = hasAnyPermission(item.permissions);
-            console.log(`Sidebar item "${item.title}": hasPermission=${hasPermission}, permissions=${item.permissions.join(', ')}`);
             if (!hasPermission) return null;
 
             const isActive = isItemActive(item.href);
@@ -116,7 +110,7 @@ export function Sidebar({ isCollapsed, onToggle }: SidebarProps) {
                     "flex items-center px-3 py-2 text-sm font-medium rounded-lg cursor-pointer transition-colors font-sans",
                     isActive
                       ? "bg-sidebar-primary text-white shadow-sm"
-                      : "text-sidebar-primary hover:bg-sidebar-primary/10",
+                      : "text-foreground hover:bg-sidebar-primary/10",
                     isCollapsed && "justify-center"
                   )}
                   onClick={() => {
@@ -155,7 +149,7 @@ export function Sidebar({ isCollapsed, onToggle }: SidebarProps) {
                             "block px-3 py-2 text-sm rounded-lg transition-colors font-sans",
                             isChildActive
                               ? "bg-sidebar-primary text-white shadow-sm"
-                              : "text-sidebar-primary hover:bg-sidebar-primary/10"
+                              : "text-foreground hover:bg-sidebar-primary/10"
                           )}
                         >
                           {child.title}
@@ -180,7 +174,7 @@ export function Sidebar({ isCollapsed, onToggle }: SidebarProps) {
         {/* Toggle Button */}
         <button
           onClick={onToggle}
-          className="w-full flex items-center justify-center px-3 py-2 text-sm font-medium text-sidebar-primary hover:bg-sidebar-primary/10 rounded-lg transition-colors font-sans"
+          className="w-full flex items-center justify-center px-3 py-2 text-sm font-medium text-foreground hover:bg-sidebar-primary/10 rounded-lg transition-colors font-sans"
         >
           {isCollapsed ? (
             <ChevronRight className="w-4 h-4" />

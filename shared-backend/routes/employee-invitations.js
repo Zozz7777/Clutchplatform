@@ -18,7 +18,7 @@ const invitationRateLimit = createRateLimit({ windowMs: 15 * 60 * 1000, max: 10 
 // ==================== EMPLOYEE INVITATIONS ====================
 
 // POST /api/v1/employees/invite - Send employee invitation
-router.post('/invite', authenticateToken, requireRole(['admin', 'hr']), invitationRateLimit, async (req, res) => {
+router.post('/invite', authenticateToken, requireRole(['admin', 'hr', 'super_admin', 'hr_manager']), invitationRateLimit, async (req, res) => {
   try {
     const { 
       email, 
@@ -162,7 +162,7 @@ router.post('/invite', authenticateToken, requireRole(['admin', 'hr']), invitati
 });
 
 // GET /api/v1/employees/invitations - List pending invitations
-router.get('/invitations', authenticateToken, requireRole(['admin', 'hr']), async (req, res) => {
+router.get('/invitations', authenticateToken, requireRole(['admin', 'hr', 'super_admin', 'hr_manager']), async (req, res) => {
   try {
     const { page = 1, limit = 20, status = 'all' } = req.query;
     const skip = (parseInt(page) - 1) * parseInt(limit);
