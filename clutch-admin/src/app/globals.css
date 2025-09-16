@@ -33,6 +33,16 @@
     --sidebar-primary: oklch(0.2050 0 0);
     --radius: 0.625rem;
     
+    /* Semantic color variants for design system */
+    --success: oklch(0.5770 0.2450 142.5); /* Green variant of primary */
+    --success-foreground: oklch(0.9850 0 0);
+    --warning: oklch(0.5770 0.2450 77.5); /* Yellow variant of primary */
+    --warning-foreground: oklch(0.1450 0 0);
+    --error: oklch(0.5770 0.2450 27.3250); /* Same as destructive */
+    --error-foreground: oklch(0.9850 0 0);
+    --info: oklch(0.5770 0.2450 217.5); /* Blue variant of primary */
+    --info-foreground: oklch(0.9850 0 0);
+    
     /* Typography from design.json - using next/font/google variables */
     --font-sans: var(--font-roboto), ui-sans-serif, sans-serif, system-ui;
     --font-serif: var(--font-roboto-serif), ui-serif, serif;
@@ -58,6 +68,16 @@
     --ring-ring: oklch(0.5560 0 0);
     --sidebar: oklch(0.2050 0 0);
     --sidebar-primary: oklch(0.5770 0.2450 27.3250);
+    
+    /* Semantic color variants for dark theme */
+    --success: oklch(0.5050 0.2130 142.5); /* Green variant of primary */
+    --success-foreground: oklch(0.2050 0 0);
+    --warning: oklch(0.5050 0.2130 77.5); /* Yellow variant of primary */
+    --warning-foreground: oklch(0.2050 0 0);
+    --error: oklch(0.7040 0.1910 22.2160); /* Same as destructive */
+    --error-foreground: oklch(0.9850 0 0);
+    --info: oklch(0.5050 0.2130 217.5); /* Blue variant of primary */
+    --info-foreground: oklch(0.2050 0 0);
   }
 }
 

@@ -13,8 +13,15 @@ export function getTranslatedNavigationItems(t: (key: string) => string) {
 
 // Helper function to convert title to translation key
 export function titleToTranslationKey(title: string): string {
-  return title.toLowerCase()
-    .replace(/\s+/g, '')
+  // Convert to camelCase format to match translation keys
+  return title
     .replace(/&/g, '')
-    .replace(/[^a-z0-9]/g, '');
+    .replace(/[^a-zA-Z0-9\s]/g, '')
+    .split(' ')
+    .map((word, index) => 
+      index === 0 
+        ? word.toLowerCase() 
+        : word.charAt(0).toUpperCase() + word.slice(1).toLowerCase()
+    )
+    .join('');
 }

@@ -83,11 +83,11 @@ export default function HealthPage() {
   const getStatusIcon = (status: string) => {
     switch (status) {
       case 'healthy':
-        return <CheckCircle className="h-5 w-5 text-green-500" />;
+        return <CheckCircle className="h-5 w-5 text-success" />;
       case 'degraded':
-        return <AlertTriangle className="h-5 w-5 text-yellow-500" />;
+        return <AlertTriangle className="h-5 w-5 text-warning" />;
       case 'down':
-        return <XCircle className="h-5 w-5 text-red-500" />;
+        return <XCircle className="h-5 w-5 text-error" />;
       default:
         return <Activity className="h-5 w-5 text-gray-500" />;
     }
@@ -96,9 +96,9 @@ export default function HealthPage() {
   const getStatusBadge = (status: string) => {
     switch (status) {
       case 'healthy':
-        return <Badge variant="default" className="bg-green-500">Healthy</Badge>;
+        return <Badge variant="default" className="bg-success text-success-foreground">Healthy</Badge>;
       case 'degraded':
-        return <Badge variant="default" className="bg-yellow-500">Degraded</Badge>;
+        return <Badge variant="default" className="bg-warning text-warning-foreground">Degraded</Badge>;
       case 'down':
         return <Badge variant="destructive">Down</Badge>;
       default:
@@ -109,11 +109,11 @@ export default function HealthPage() {
   const getOverallStatusIcon = (status: string) => {
     switch (status) {
       case 'healthy':
-        return <Heart className="h-8 w-8 text-green-500" />;
+        return <Heart className="h-8 w-8 text-success" />;
       case 'degraded':
-        return <AlertTriangle className="h-8 w-8 text-yellow-500" />;
+        return <AlertTriangle className="h-8 w-8 text-warning" />;
       case 'down':
-        return <XCircle className="h-8 w-8 text-red-500" />;
+        return <XCircle className="h-8 w-8 text-error" />;
       default:
         return <Activity className="h-8 w-8 text-gray-500" />;
     }
