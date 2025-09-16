@@ -14,21 +14,27 @@ class WebSocketServer {
         server,
         path: '/ws',
         verifyClient: (info) => {
-          // Extract token from query string
-          const url = new URL(info.req.url, `http://${info.req.headers.host}`);
-          const token = url.searchParams.get('token');
-          
-          if (!token) {
-            console.log('❌ WebSocket connection rejected: No token provided');
-            return false;
-          }
-
           try {
-            const decoded = jwt.verify(token, process.env.JWT_SECRET);
-            info.req.user = decoded;
-            return true;
+            // Extract token from query string
+            const url = new URL(info.req.url, `http://${info.req.headers.host}`);
+            const token = url.searchParams.get('token');
+            
+            if (!token) {
+              console.log('❌ WebSocket connection rejected: No token provided');
+              return false;
+            }
+
+            try {
+              const decoded = jwt.verify(token, process.env.JWT_SECRET);
+              info.req.user = decoded;
+              console.log('✅ WebSocket token validated for user:', decoded.userId || decoded.id);
+              return true;
+            } catch (error) {
+              console.log('❌ WebSocket connection rejected: Invalid token', error.message);
+              return false;
+            }
           } catch (error) {
-            console.log('❌ WebSocket connection rejected: Invalid token', error.message);
+            console.log('❌ WebSocket connection rejected: URL parsing error', error.message);
             return false;
           }
         }
@@ -44,20 +50,26 @@ class WebSocketServer {
         this.clients.set(clientId, {
           ws,
           user,
-          lastPing: Date.now()
+          lastPing: Date.now(),
+          connectedAt: Date.now()
         });
 
         // Send connection confirmation
-        ws.send(JSON.stringify({
-          type: 'connection',
-          message: 'Connected successfully',
-          clientId,
-          user: {
-            id: user.userId || user.id,
-            email: user.email,
-            role: user.role
-          }
-        }));
+        try {
+          ws.send(JSON.stringify({
+            type: 'connection',
+            message: 'Connected successfully',
+            clientId,
+            user: {
+              id: user.userId || user.id,
+              email: user.email,
+              role: user.role
+            },
+            timestamp: new Date().toISOString()
+          }));
+        } catch (error) {
+          console.error('❌ Error sending connection confirmation:', error);
+        }
 
         // Handle incoming messages
         ws.on('message', (message) => {
@@ -66,16 +78,33 @@ class WebSocketServer {
             this.handleMessage(clientId, data);
           } catch (error) {
             console.error('❌ WebSocket message parsing error:', error);
-            ws.send(JSON.stringify({
-              type: 'error',
-              message: 'Invalid message format'
-            }));
+            try {
+              ws.send(JSON.stringify({
+                type: 'error',
+                message: 'Invalid message format',
+                timestamp: new Date().toISOString()
+              }));
+            } catch (sendError) {
+              console.error('❌ Error sending error message:', sendError);
+            }
+          }
+        });
+
+        // Handle pong responses
+        ws.on('pong', () => {
+          const client = this.clients.get(clientId);
+          if (client) {
+            client.lastPing = Date.now();
           }
         });
 
         // Handle client disconnect
-        ws.on('close', () => {
-          console.log(`🔌 WebSocket client disconnected: ${clientId}`);
+        ws.on('close', (code, reason) => {
+          console.log(`🔌 WebSocket client disconnected: ${clientId}`, {
+            code,
+            reason: reason.toString(),
+            duration: Date.now() - (this.clients.get(clientId)?.connectedAt || Date.now())
+          });
           this.clients.delete(clientId);
         });
 
@@ -85,8 +114,12 @@ class WebSocketServer {
           this.clients.delete(clientId);
         });
 
-        // Send ping to keep connection alive
-        ws.ping();
+        // Send initial ping to test connection
+        try {
+          ws.ping();
+        } catch (error) {
+          console.error('❌ Error sending initial ping:', error);
+        }
       });
 
       // Start heartbeat
@@ -124,10 +157,23 @@ class WebSocketServer {
 
   startHeartbeat() {
     this.heartbeatInterval = setInterval(() => {
+      const now = Date.now();
       this.clients.forEach((client, clientId) => {
         if (client.ws.readyState === WebSocket.OPEN) {
-          client.ws.ping();
+          try {
+            client.ws.ping();
+            // Check if client hasn't responded to pings for too long
+            if (now - client.lastPing > 60000) { // 60 seconds timeout
+              console.log(`🔌 WebSocket client ${clientId} timeout, closing connection`);
+              client.ws.close(1000, 'Heartbeat timeout');
+              this.clients.delete(clientId);
+            }
+          } catch (error) {
+            console.error(`❌ Error pinging client ${clientId}:`, error);
+            this.clients.delete(clientId);
+          }
         } else {
+          console.log(`🔌 Removing dead WebSocket client: ${clientId}`);
           this.clients.delete(clientId);
         }
       });
