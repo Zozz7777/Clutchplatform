@@ -66,7 +66,7 @@ const otherRoutes = require('./routes/other');
 const errorsRoutes = require('./routes/errors');
 const knowledgeBaseRoutes = require('./routes/knowledge-base');
 const incidentsRoutes = require('./routes/incidents');
-const autoPartsRoutes = require('./routes/auto-parts');
+// const autoPartsRoutes = require('./routes/auto-parts'); // Removed - file deleted
 const realtimeRoutes = require('./routes/realtime');
 const shopsRoutes = require('./routes/shops');
 const bookingsRoutes = require('./routes/bookings');
@@ -162,7 +162,7 @@ app.use('/api', otherRoutes);
 app.use('/errors', errorsRoutes);
 app.use(`${apiPrefix}/knowledge-base`, knowledgeBaseRoutes);
 app.use(`${apiPrefix}/incidents`, incidentsRoutes);
-app.use(`${apiPrefix}/auto-parts`, autoPartsRoutes);
+// app.use(`${apiPrefix}/auto-parts`, autoPartsRoutes); // Removed - route deleted
 app.use(`${apiPrefix}/realtime`, realtimeRoutes);
 app.use(`${apiPrefix}/shops`, shopsRoutes);
 app.use(`${apiPrefix}/bookings`, bookingsRoutes);
