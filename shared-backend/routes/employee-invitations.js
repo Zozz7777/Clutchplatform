@@ -8,7 +8,8 @@ const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
 const router = express.Router();
 const { getCollection } = require('../config/optimized-database');
-const { authenticateToken, checkRole, hashPassword } = require('../middleware/auth');
+const { authenticateToken, requireRole, hashPassword } = require('../middleware/auth');
+const { checkRole, checkPermission } = require('../middleware/rbac');
 const { rateLimit: createRateLimit } = require('../middleware/rateLimit');
 const emailService = require('../services/email-service');
 
