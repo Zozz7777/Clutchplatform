@@ -79,6 +79,7 @@ class ApiService {
     }
 
     try {
+      console.log("🔄 Attempting token refresh with refresh token:", this.refreshToken.substring(0, 20) + "...");
       const response = await fetch(`${this.baseURL}/api/v1/auth/refresh`, {
         method: "POST",
         headers: {
@@ -87,12 +88,18 @@ class ApiService {
         body: JSON.stringify({ refreshToken: this.refreshToken }),
       });
 
+      console.log("🔄 Refresh response status:", response.status);
+      
       if (response.ok) {
         const data = await response.json();
+        console.log("🔄 Refresh response data:", { success: data.success, hasToken: !!data.token, hasRefreshToken: !!data.refreshToken });
         if (data.success && data.token) {
           this.setTokens(data.token, data.refreshToken);
           return data.token;
         }
+      } else {
+        const errorData = await response.json();
+        console.error("🔄 Refresh failed:", errorData);
       }
     } catch (error) {
       console.error("Token refresh failed:", error);
@@ -248,6 +255,7 @@ class ApiService {
       if (response.success && response.data) {
         console.log('🔐 Main auth successful:', {
           hasToken: !!response.data.token,
+          hasRefreshToken: !!response.data.refreshToken,
           hasUser: !!response.data.user,
           userRole: response.data.user?.role
         });
@@ -265,6 +273,7 @@ class ApiService {
       if (emergencyResponse.success && emergencyResponse.data) {
         console.log('🚨 Emergency auth successful:', {
           hasToken: !!emergencyResponse.data.token,
+          hasRefreshToken: !!emergencyResponse.data.refreshToken,
           hasUser: !!emergencyResponse.data.user,
           userRole: emergencyResponse.data.user?.role
         });
