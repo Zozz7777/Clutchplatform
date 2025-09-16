@@ -29,7 +29,7 @@ const keyEndpoints = [
     name: 'Auth Register', 
     requiresAuth: false, 
     body: JSON.stringify({ 
-      email: 'testuser@example.com', 
+      email: `testuser_${Date.now()}@example.com`, 
       password: 'TestPassword123!', 
       firstName: 'Test', 
       lastName: 'User' 

@@ -654,6 +654,13 @@ router.post('/register', authRateLimit, async (req, res) => {
     };
     
     console.log('💾 Creating user in database...');
+    console.log('📝 User data to insert:', {
+      email: newUser.email,
+      hasPassword: !!newUser.password,
+      name: newUser.name,
+      firebaseId: newUser.firebaseId,
+      role: newUser.role
+    });
     const result = await usersCollection.insertOne(newUser);
     console.log('✅ User created successfully:', { userId: result.insertedId });
     
@@ -693,8 +700,27 @@ router.post('/register', authRateLimit, async (req, res) => {
     console.error('❌ Registration error details:', {
       message: error.message,
       stack: error.stack,
-      name: error.name
+      name: error.name,
+      code: error.code,
+      keyPattern: error.keyPattern,
+      keyValue: error.keyValue
     });
+    
+    // Handle specific MongoDB errors
+    if (error.code === 11000) {
+      console.error('❌ Duplicate key error detected:', {
+        duplicateField: error.keyPattern,
+        duplicateValue: error.keyValue
+      });
+      return res.status(409).json({
+        success: false,
+        error: 'DUPLICATE_ENTRY',
+        message: 'User with this information already exists',
+        field: Object.keys(error.keyPattern)[0],
+        timestamp: new Date().toISOString()
+      });
+    }
+    
     res.status(500).json({
       success: false,
       error: 'REGISTRATION_FAILED',
