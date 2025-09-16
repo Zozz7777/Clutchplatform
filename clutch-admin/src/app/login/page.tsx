@@ -9,6 +9,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Label } from "@/components/ui/label";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Loader2, Eye, EyeOff } from "lucide-react";
+import { useTranslations } from "@/hooks/use-translations";
 
 export default function LoginPage() {
   const [email, setEmail] = useState("");
@@ -18,6 +19,7 @@ export default function LoginPage() {
   const [isLoading, setIsLoading] = useState(false);
   
   const { login } = useAuth();
+  const { t } = useTranslations();
   const router = useRouter();
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -30,7 +32,7 @@ export default function LoginPage() {
       if (success) {
         router.push("/dashboard");
       } else {
-        setError("Invalid email or password. Please try again.");
+        setError(t('auth.invalidCredentials'));
       }
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : "An error occurred. Please try again.";
@@ -66,14 +68,14 @@ export default function LoginPage() {
           <div className="space-y-2">
             <CardTitle className="text-3xl font-bold text-foreground font-sans">Clutch Admin</CardTitle>
             <CardDescription className="text-muted-foreground font-sans">
-              Sign in to drive the automotive revolution
+              {t('auth.signInToDrive')}
             </CardDescription>
           </div>
         </CardHeader>
         <CardContent className="space-y-6">
           <form onSubmit={handleSubmit} className="space-y-6">
             <div className="space-y-3">
-              <Label htmlFor="email" className="text-sm font-medium text-foreground">Email</Label>
+              <Label htmlFor="email" className="text-sm font-medium text-foreground">{t('auth.email')}</Label>
               <Input
                 id="email"
                 type="email"
@@ -87,7 +89,7 @@ export default function LoginPage() {
             </div>
             
             <div className="space-y-3">
-              <Label htmlFor="password" className="text-sm font-medium text-foreground">Password</Label>
+              <Label htmlFor="password" className="text-sm font-medium text-foreground">{t('auth.password')}</Label>
               <div className="relative">
                 <Input
                   id="password"
@@ -129,7 +131,7 @@ export default function LoginPage() {
                   Signing in...
                 </>
               ) : (
-                "Sign In"
+                t('auth.login')
               )}
             </Button>
           </form>

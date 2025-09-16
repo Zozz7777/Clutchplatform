@@ -38,6 +38,7 @@ interface HeaderProps {
 
 export function Header({ onMenuToggle, isDarkMode, onThemeToggle }: HeaderProps) {
   const { user, logout } = useAuth();
+  const { t } = useTranslations();
   const [searchQuery, setSearchQuery] = useState("");
   const [notifications, setNotifications] = useState<Notification[]>([]);
   const [notificationsLoading, setNotificationsLoading] = useState(false);
@@ -98,7 +99,7 @@ export function Header({ onMenuToggle, isDarkMode, onThemeToggle }: HeaderProps)
         <div className="relative hidden md:block">
           <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4" />
           <Input
-            placeholder="Search..."
+            placeholder={t('header.search')}
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             className="pl-10 w-64 h-10"
@@ -108,6 +109,9 @@ export function Header({ onMenuToggle, isDarkMode, onThemeToggle }: HeaderProps)
 
       {/* Right side */}
       <div className="flex items-center space-x-4">
+        {/* Language Switcher */}
+        <LanguageSwitcher />
+        
         {/* Theme Toggle */}
         <Button
           variant="ghost"
@@ -137,16 +141,16 @@ export function Header({ onMenuToggle, isDarkMode, onThemeToggle }: HeaderProps)
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end" className="w-80">
-            <DropdownMenuLabel>Notifications</DropdownMenuLabel>
+            <DropdownMenuLabel>{t('header.notifications')}</DropdownMenuLabel>
             <DropdownMenuSeparator />
             <div className="max-h-64 overflow-y-auto">
               {notificationsLoading ? (
                 <div className="p-4 text-center text-muted-foreground">
-                  Loading notifications...
+                  {t('common.loading')}
                 </div>
               ) : notifications.length === 0 ? (
                 <div className="p-4 text-center text-muted-foreground">
-                  No new notifications
+                  {t('notifications.noNotifications')}
                 </div>
               ) : (
                 notifications.map((notification) => (
@@ -181,20 +185,20 @@ export function Header({ onMenuToggle, isDarkMode, onThemeToggle }: HeaderProps)
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end" className="w-56">
-            <DropdownMenuLabel>My Account</DropdownMenuLabel>
+            <DropdownMenuLabel>{t('header.myAccount')}</DropdownMenuLabel>
             <DropdownMenuSeparator />
             <DropdownMenuItem onClick={handleProfileClick}>
               <User className="mr-2 h-4 w-4" />
-              <span>Profile</span>
+              <span>{t('header.profile')}</span>
             </DropdownMenuItem>
             <DropdownMenuItem onClick={handleSettingsClick}>
               <Settings className="mr-2 h-4 w-4" />
-              <span>Settings</span>
+              <span>{t('header.settings')}</span>
             </DropdownMenuItem>
             <DropdownMenuSeparator />
             <DropdownMenuItem onClick={handleLogout}>
               <LogOut className="mr-2 h-4 w-4" />
-              <span>Log out</span>
+              <span>{t('auth.logout')}</span>
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>

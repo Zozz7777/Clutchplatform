@@ -4,12 +4,13 @@ import React, { useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
-import { NAVIGATION_ITEMS } from "@/lib/constants";
 import { useAuth } from "@/contexts/auth-context";
 import { ChevronDown, ChevronRight } from "lucide-react";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { LanguageSwitcher } from "@/components/language-switcher";
 import { useTranslations } from "@/hooks/use-translations";
+import { getTranslatedNavigationItems } from "@/lib/navigation";
+import { iconMap, type IconName } from "@/lib/icons";
 
 interface SidebarProps {
   isCollapsed: boolean;
@@ -21,6 +22,8 @@ export function Sidebar({ isCollapsed, onToggle }: SidebarProps) {
   const { hasPermission, user } = useAuth();
   const { t } = useTranslations();
   const [expandedItems, setExpandedItems] = useState<string[]>([]);
+  
+  const navigationItems = getTranslatedNavigationItems(t);
 
 
   const toggleExpanded = (title: string) => {
@@ -98,13 +101,15 @@ export function Sidebar({ isCollapsed, onToggle }: SidebarProps) {
       {/* Navigation */}
       <nav className="flex-1 overflow-y-auto py-4">
         <div className="px-2 space-y-1">
-          {NAVIGATION_ITEMS.map((item) => {
+          {navigationItems.map((item) => {
             const hasPermission = hasAnyPermission(item.permissions);
             if (!hasPermission) return null;
 
             const isActive = isItemActive(item.href);
             const isExpanded = expandedItems.includes(item.title);
             const hasChildren = item.children && item.children.length > 0;
+
+            const IconComponent = iconMap[item.icon as IconName] || iconMap.LayoutDashboard;
 
             return (
               <div key={item.title}>
@@ -117,14 +122,15 @@ export function Sidebar({ isCollapsed, onToggle }: SidebarProps) {
                     isCollapsed && "justify-center"
                   )}
                   onClick={() => {
-                    if (hasChildren) {
+                    if (hasChildren && !isCollapsed) {
                       toggleExpanded(item.title);
                     }
                   }}
                 >
+                  <IconComponent className="w-4 h-4" />
                   {!isCollapsed && (
                     <>
-                      <span className="flex-1">{item.title}</span>
+                      <span className="flex-1 ml-3">{item.title}</span>
                       {hasChildren && (
                         isExpanded ? (
                           <ChevronDown className="w-4 h-4" />

@@ -3,6 +3,15 @@
 @tailwind utilities;
 
 @layer base {
+  /* RTL Support */
+  [dir="rtl"] {
+    direction: rtl;
+  }
+  
+  [dir="ltr"] {
+    direction: ltr;
+  }
+
   :root {
     /* Light theme colors from design.json - exact OKLCH values */
     --background: oklch(1 0 0);
