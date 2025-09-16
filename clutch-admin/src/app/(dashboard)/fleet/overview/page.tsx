@@ -26,7 +26,8 @@ import {
   DollarSign,
   BarChart3,
   PieChart,
-  LineChart
+  LineChart,
+  Wrench
 } from "lucide-react";
 
 export default function FleetOverviewPage() {

@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const { authenticateToken, checkRole } = require('../middleware/auth');
+const { authenticateToken, requireRole } = require('../middleware/auth');
 const { checkRole, checkPermission } = require('../middleware/rbac');
 const logger = require('../utils/logger');
 const { getCollection } = require('../config/optimized-database');

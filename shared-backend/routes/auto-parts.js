@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const { getCollection } = require('../config/database');
-const { authenticateToken, checkRole } = require('../middleware/auth');
+const { authenticateToken, requireRole } = require('../middleware/auth');
 const { checkRole, checkPermission } = require('../middleware/rbac');
 
 // ==================== AUTO PARTS INTEGRATION ROUTES ====================

@@ -7,7 +7,7 @@
 const express = require('express');
 const router = express.Router();
 const { getCollection } = require('../config/optimized-database');
-const { authenticateToken, checkRole } = require('../middleware/auth');
+const { authenticateToken, requireRole } = require('../middleware/auth');
 const { checkRole, checkPermission } = require('../middleware/rbac');
 const { rateLimit: createRateLimit } = require('../middleware/rateLimit');
 
