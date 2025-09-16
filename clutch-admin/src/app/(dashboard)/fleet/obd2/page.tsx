@@ -8,8 +8,35 @@ import { Input } from "@/components/ui/input";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { mockAPI, type FleetVehicle } from "@/lib/mock-api";
+import { productionApi } from "@/lib/production-api";
 import { formatDate, formatRelativeTime } from "@/lib/utils";
+
+// Define FleetVehicle type locally
+interface FleetVehicle {
+  id: string;
+  licensePlate: string;
+  make: string;
+  model: string;
+  year: number;
+  status: string;
+  location: {
+    lat: number;
+    lng: number;
+    address: string;
+  };
+  mileage: number;
+  fuelLevel: number;
+  lastMaintenance: string;
+  nextMaintenance: string;
+  driver?: {
+    id: string;
+    name: string;
+    phone: string;
+  };
+  fuelEfficiency: number;
+  createdAt: string;
+  updatedAt: string;
+}
 import { useAuth } from "@/contexts/auth-context";
 import { toast } from "sonner";
 import { 
@@ -56,60 +83,20 @@ export default function OBD2Page() {
   useEffect(() => {
     const loadOBD2Data = async () => {
       try {
-        const fleetData = await mockAPI.getFleetVehicles();
-        setVehicles(fleetData);
+        const fleetData = await productionApi.getFleetVehicles();
+        setVehicles(fleetData || []);
         
-        // Mock OBD2 data
-        const mockOBD2Data: OBD2Data[] = [
-          {
-            id: "1",
-            vehicleId: fleetData[0]?.id || "1",
-            dtc: "P0301",
-            description: "Cylinder 1 Misfire Detected",
-            severity: "high",
-            timestamp: new Date(Date.now() - 2 * 60 * 60 * 1000).toISOString(),
-            status: "active"
-          },
-          {
-            id: "2",
-            vehicleId: fleetData[1]?.id || "2",
-            dtc: "P0171",
-            description: "System Too Lean (Bank 1)",
-            severity: "medium",
-            timestamp: new Date(Date.now() - 4 * 60 * 60 * 1000).toISOString(),
-            status: "pending"
-          },
-          {
-            id: "3",
-            vehicleId: fleetData[2]?.id || "3",
-            dtc: "P0420",
-            description: "Catalyst System Efficiency Below Threshold",
-            severity: "medium",
-            timestamp: new Date(Date.now() - 6 * 60 * 60 * 1000).toISOString(),
-            status: "resolved"
-          },
-          {
-            id: "4",
-            vehicleId: fleetData[0]?.id || "1",
-            dtc: "P0128",
-            description: "Coolant Thermostat (Coolant Temperature Below Thermostat Regulating Temperature)",
-            severity: "low",
-            timestamp: new Date(Date.now() - 8 * 60 * 60 * 1000).toISOString(),
-            status: "active"
-          },
-          {
-            id: "5",
-            vehicleId: fleetData[1]?.id || "2",
-            dtc: "P0300",
-            description: "Random/Multiple Cylinder Misfire Detected",
-            severity: "critical",
-            timestamp: new Date(Date.now() - 1 * 60 * 60 * 1000).toISOString(),
-            status: "active"
-          }
-        ];
         
-        setOBD2Data(mockOBD2Data);
-        setFilteredData(mockOBD2Data);
+        // Load OBD2 data from production API
+        try {
+          const obd2Data = await productionApi.getOBD2Data();
+          setOBD2Data(obd2Data || []);
+          setFilteredData(obd2Data || []);
+        } catch (obd2Error) {
+          console.error("Failed to load OBD2 data:", obd2Error);
+          setOBD2Data([]);
+          setFilteredData([]);
+        }
       } catch (error) {
         console.error("Failed to load OBD2 data:", error);
         toast.error("Failed to load OBD2 diagnostics");

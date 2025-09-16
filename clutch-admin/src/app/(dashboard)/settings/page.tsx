@@ -7,6 +7,12 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useAuth } from "@/contexts/auth-context";
 import { formatDate, formatRelativeTime } from "@/lib/utils";
+
+// Import new Phase 2 widgets
+import RBACOverview from '@/components/widgets/rbac-overview';
+import AuditTrailInsights from '@/components/widgets/audit-trail-insights';
+import SecurityAlerts from '@/components/widgets/security-alerts';
+import IntegrationHealth from '@/components/widgets/integration-health';
 import { 
   Settings, 
   Search, 
@@ -777,6 +783,30 @@ export default function SettingsPage() {
           </CardContent>
         </Card>
       )}
+
+      {/* Phase 2: Settings Analytics Widgets */}
+      <div className="space-y-6 mt-8">
+        <div className="flex items-center justify-between">
+          <div>
+            <h2 className="text-2xl font-bold tracking-tight text-foreground">Settings Analytics</h2>
+            <p className="text-muted-foreground">
+              From configs → governance & oversight
+            </p>
+          </div>
+        </div>
+
+        {/* Top Row - RBAC & Audit Trail */}
+        <div className="grid gap-6 md:grid-cols-2">
+          <RBACOverview />
+          <AuditTrailInsights />
+        </div>
+
+        {/* Second Row - Security Alerts & Integration Health */}
+        <div className="grid gap-6 md:grid-cols-2">
+          <SecurityAlerts />
+          <IntegrationHealth />
+        </div>
+      </div>
     </div>
   );
 }

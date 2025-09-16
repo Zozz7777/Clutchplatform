@@ -14,6 +14,13 @@ import { useAuth } from "@/contexts/auth-context";
 import { useQuickActions } from "@/lib/quick-actions";
 import { toast } from "sonner";
 
+// Import new Phase 2 widgets
+import UserGrowthCohort from "@/components/widgets/user-growth-cohort";
+import EngagementHeatmap from "@/components/widgets/engagement-heatmap";
+import OnboardingCompletion from "@/components/widgets/onboarding-completion";
+import RoleDistribution from "@/components/widgets/role-distribution";
+import ChurnRiskCard from "@/components/widgets/churn-risk-card";
+
 // Define User type locally since we're not using mock API
 interface User {
   id: string;
@@ -410,6 +417,31 @@ export default function UsersPage() {
           </Card>
         </TabsContent>
       </Tabs>
+
+      {/* Phase 2: User Analytics Widgets */}
+      <div className="space-y-6 mt-8">
+        <div className="flex items-center justify-between">
+          <div>
+            <h2 className="text-2xl font-bold tracking-tight text-foreground">User Analytics</h2>
+            <p className="text-muted-foreground">
+              Deep insights into user adoption, engagement, and retention
+            </p>
+          </div>
+        </div>
+
+        {/* Top Row - Growth & Engagement */}
+        <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+          <UserGrowthCohort className="lg:col-span-2" />
+          <EngagementHeatmap />
+        </div>
+
+        {/* Second Row - Onboarding & Roles */}
+        <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+          <OnboardingCompletion />
+          <RoleDistribution />
+          <ChurnRiskCard />
+        </div>
+      </div>
     </div>
   );
 }

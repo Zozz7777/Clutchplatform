@@ -10,6 +10,12 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { productionApi } from "@/lib/production-api";
 import { formatDate, formatRelativeTime } from "@/lib/utils";
+
+// Import new Phase 2 widgets
+import CustomerHealthScore from "@/components/widgets/customer-health-score";
+import AtRiskClients from "@/components/widgets/at-risk-clients";
+import CSATNPSTrends from "@/components/widgets/csat-nps-trends";
+import UpsellOpportunities from "@/components/widgets/upsell-opportunities";
 import { useAuth } from "@/contexts/auth-context";
 import { toast } from "sonner";
 import { 
@@ -533,6 +539,30 @@ export default function CRMPage() {
           </Card>
         </TabsContent>
       </Tabs>
+
+      {/* Phase 2: CRM Analytics Widgets */}
+      <div className="space-y-6 mt-8">
+        <div className="flex items-center justify-between">
+          <div>
+            <h2 className="text-2xl font-bold tracking-tight text-foreground">CRM Analytics</h2>
+            <p className="text-muted-foreground">
+              Move beyond tickets → predict churn & satisfaction
+            </p>
+          </div>
+        </div>
+
+        {/* Top Row - Health Score & At-Risk */}
+        <div className="grid gap-6 md:grid-cols-2">
+          <CustomerHealthScore />
+          <AtRiskClients />
+        </div>
+
+        {/* Second Row - CSAT/NPS & Upsell */}
+        <div className="grid gap-6 md:grid-cols-2">
+          <CSATNPSTrends />
+          <UpsellOpportunities />
+        </div>
+      </div>
     </div>
   );
 }

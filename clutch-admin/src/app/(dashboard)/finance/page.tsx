@@ -12,6 +12,12 @@ import { formatCurrency, formatDate, formatRelativeTime } from "@/lib/utils";
 import { useAuth } from "@/contexts/auth-context";
 import { productionApi } from "@/lib/production-api";
 import { paymentService } from "@/lib/payment-service";
+
+// Import new Phase 2 widgets
+import RevenueExpenses from "@/components/widgets/revenue-expenses";
+import ARPUARPPU from "@/components/widgets/arpu-arppu";
+import CashFlowProjection from "@/components/widgets/cash-flow-projection";
+import OverdueInvoices from "@/components/widgets/overdue-invoices";
 import { toast } from "sonner";
 import { 
   DollarSign, 
@@ -699,6 +705,30 @@ export default function FinancePage() {
           </Card>
         </TabsContent>
       </Tabs>
+
+      {/* Phase 2: Financial Analytics Widgets */}
+      <div className="space-y-6 mt-8">
+        <div className="flex items-center justify-between">
+          <div>
+            <h2 className="text-2xl font-bold tracking-tight text-foreground">Financial Analytics</h2>
+            <p className="text-muted-foreground">
+              Make revenue actionable & contextualized
+            </p>
+          </div>
+        </div>
+
+        {/* Top Row - Revenue & ARPU */}
+        <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+          <RevenueExpenses className="lg:col-span-2" />
+          <ARPUARPPU />
+        </div>
+
+        {/* Second Row - Cash Flow & Overdue */}
+        <div className="grid gap-6 md:grid-cols-2">
+          <CashFlowProjection />
+          <OverdueInvoices />
+        </div>
+      </div>
     </div>
   );
 }

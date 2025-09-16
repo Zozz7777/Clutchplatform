@@ -1,0 +1,289 @@
+"use client";
+
+import React from 'react';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
+import { Progress } from '@/components/ui/progress';
+import { businessIntelligence } from '@/lib/business-intelligence';
+import { 
+  Truck, 
+  Activity, 
+  AlertTriangle, 
+  CheckCircle, 
+  Clock,
+  TrendingUp,
+  TrendingDown,
+  Download,
+  Eye,
+  BarChart3,
+  PieChart
+} from 'lucide-react';
+
+interface FleetUtilizationProps {
+  className?: string;
+}
+
+interface UtilizationData {
+  total: number;
+  active: number;
+  idle: number;
+  maintenance: number;
+  utilizationRate: number;
+}
+
+export function FleetUtilization({ className = '' }: FleetUtilizationProps) {
+  const [utilizationData, setUtilizationData] = React.useState<UtilizationData | null>(null);
+  const [isLoading, setIsLoading] = React.useState(true);
+
+  React.useEffect(() => {
+    const loadUtilizationData = async () => {
+      try {
+        const data = await businessIntelligence.getFleetUtilization();
+        setUtilizationData(data);
+      } catch (error) {
+        console.error('Failed to load utilization data:', error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    loadUtilizationData();
+  }, []);
+
+  const getUtilizationColor = (rate: number) => {
+    if (rate >= 80) return 'text-green-600';
+    if (rate >= 60) return 'text-yellow-600';
+    return 'text-red-600';
+  };
+
+  const getUtilizationBadge = (rate: number) => {
+    if (rate >= 80) return 'bg-green-100 text-green-800';
+    if (rate >= 60) return 'bg-yellow-100 text-yellow-800';
+    return 'bg-red-100 text-red-800';
+  };
+
+  const getUtilizationLevel = (rate: number) => {
+    if (rate >= 80) return 'Excellent';
+    if (rate >= 60) return 'Good';
+    if (rate >= 40) return 'Fair';
+    return 'Poor';
+  };
+
+  const getStatusColor = (status: string) => {
+    switch (status) {
+      case 'active': return 'text-green-600';
+      case 'idle': return 'text-yellow-600';
+      case 'maintenance': return 'text-red-600';
+      default: return 'text-gray-600';
+    }
+  };
+
+  const getStatusBadge = (status: string) => {
+    switch (status) {
+      case 'active': return 'bg-green-100 text-green-800';
+      case 'idle': return 'bg-yellow-100 text-yellow-800';
+      case 'maintenance': return 'bg-red-100 text-red-800';
+      default: return 'bg-gray-100 text-gray-800';
+    }
+  };
+
+  const getStatusIcon = (status: string) => {
+    switch (status) {
+      case 'active': return CheckCircle;
+      case 'idle': return Clock;
+      case 'maintenance': return AlertTriangle;
+      default: return Truck;
+    }
+  };
+
+  if (isLoading) {
+    return (
+      <Card className={className}>
+        <CardHeader>
+          <CardTitle className="flex items-center space-x-2">
+            <Truck className="h-5 w-5 text-blue-600" />
+            <span>Fleet Utilization</span>
+          </CardTitle>
+          <CardDescription>Loading fleet utilization data...</CardDescription>
+        </CardHeader>
+        <CardContent>
+          <div className="animate-pulse space-y-4">
+            <div className="h-4 bg-gray-200 rounded w-3/4"></div>
+            <div className="h-4 bg-gray-200 rounded w-1/2"></div>
+            <div className="h-4 bg-gray-200 rounded w-2/3"></div>
+          </div>
+        </CardContent>
+      </Card>
+    );
+  }
+
+  if (!utilizationData) {
+    return (
+      <Card className={className}>
+        <CardHeader>
+          <CardTitle className="flex items-center space-x-2">
+            <Truck className="h-5 w-5 text-blue-600" />
+            <span>Fleet Utilization</span>
+          </CardTitle>
+          <CardDescription>Unable to load fleet utilization data</CardDescription>
+        </CardHeader>
+      </Card>
+    );
+  }
+
+  const statusData = [
+    { status: 'active', count: utilizationData.active, label: 'Active' },
+    { status: 'idle', count: utilizationData.idle, label: 'Idle' },
+    { status: 'maintenance', count: utilizationData.maintenance, label: 'Maintenance' }
+  ];
+
+  return (
+    <Card className={className}>
+      <CardHeader>
+        <CardTitle className="flex items-center space-x-2">
+          <Truck className="h-5 w-5 text-blue-600" />
+          <span>Fleet Utilization</span>
+        </CardTitle>
+        <CardDescription>
+          % of vehicles active vs idle
+        </CardDescription>
+      </CardHeader>
+      <CardContent className="space-y-6">
+        {/* Overall Utilization */}
+        <div className="text-center p-4 bg-gray-50 rounded-lg">
+          <div className="flex items-center justify-center space-x-2 mb-2">
+            <Activity className={`h-6 w-6 ${getUtilizationColor(utilizationData.utilizationRate)}`} />
+            <span className={`text-2xl font-bold ${getUtilizationColor(utilizationData.utilizationRate)}`}>
+              {utilizationData.utilizationRate.toFixed(1)}%
+            </span>
+            <Badge className={getUtilizationBadge(utilizationData.utilizationRate)}>
+              {getUtilizationLevel(utilizationData.utilizationRate)}
+            </Badge>
+          </div>
+          <p className="text-sm text-gray-600">Overall Utilization Rate</p>
+          <div className="mt-3">
+            <Progress value={utilizationData.utilizationRate} className="h-2" />
+          </div>
+        </div>
+
+        {/* Fleet Status Summary */}
+        <div className="grid grid-cols-3 gap-4">
+          <div className="text-center p-3 bg-green-50 rounded-lg">
+            <CheckCircle className="h-5 w-5 text-green-600 mx-auto mb-1" />
+            <p className="text-lg font-bold text-green-600">{utilizationData.active}</p>
+            <p className="text-xs text-gray-500">Active</p>
+          </div>
+          <div className="text-center p-3 bg-yellow-50 rounded-lg">
+            <Clock className="h-5 w-5 text-yellow-600 mx-auto mb-1" />
+            <p className="text-lg font-bold text-yellow-600">{utilizationData.idle}</p>
+            <p className="text-xs text-gray-500">Idle</p>
+          </div>
+          <div className="text-center p-3 bg-red-50 rounded-lg">
+            <AlertTriangle className="h-5 w-5 text-red-600 mx-auto mb-1" />
+            <p className="text-lg font-bold text-red-600">{utilizationData.maintenance}</p>
+            <p className="text-xs text-gray-500">Maintenance</p>
+          </div>
+        </div>
+
+        {/* Fleet Status Breakdown */}
+        <div className="space-y-3">
+          <h4 className="text-sm font-medium text-gray-900">Fleet Status Breakdown</h4>
+          <div className="space-y-2">
+            {statusData.map((status) => {
+              const StatusIcon = getStatusIcon(status.status);
+              const percentage = utilizationData.total > 0 ? (status.count / utilizationData.total) * 100 : 0;
+              
+              return (
+                <div key={status.status} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+                  <div className="flex items-center space-x-3">
+                    <StatusIcon className={`h-4 w-4 ${getStatusColor(status.status)}`} />
+                    <div>
+                      <p className="text-sm font-medium text-gray-900">{status.label}</p>
+                      <p className="text-xs text-gray-500">{status.count} vehicles</p>
+                    </div>
+                  </div>
+                  <div className="text-right">
+                    <p className="text-sm font-semibold text-gray-900">{status.count}</p>
+                    <Badge className={getStatusBadge(status.status)}>
+                      {percentage.toFixed(1)}%
+                    </Badge>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+
+        {/* Utilization Distribution */}
+        <div className="space-y-3">
+          <h4 className="text-sm font-medium text-gray-900">Utilization Distribution</h4>
+          <div className="space-y-2">
+            {statusData.map((status) => {
+              const percentage = utilizationData.total > 0 ? (status.count / utilizationData.total) * 100 : 0;
+              return (
+                <div key={status.status} className="space-y-1">
+                  <div className="flex justify-between text-sm">
+                    <span className="text-gray-600">{status.label}</span>
+                    <span className="text-gray-900 font-medium">{percentage.toFixed(1)}%</span>
+                  </div>
+                  <Progress value={percentage} className="h-2" />
+                </div>
+              );
+            })}
+          </div>
+        </div>
+
+        {/* Fleet Performance Metrics */}
+        <div className="grid grid-cols-2 gap-4">
+          <div className="text-center p-3 bg-blue-50 rounded-lg">
+            <TrendingUp className="h-4 w-4 text-blue-600 mx-auto mb-1" />
+            <p className="text-sm font-bold text-blue-600">
+              {utilizationData.total > 0 ? ((utilizationData.active / utilizationData.total) * 100).toFixed(1) : 0}%
+            </p>
+            <p className="text-xs text-gray-500">Active Rate</p>
+          </div>
+          <div className="text-center p-3 bg-purple-50 rounded-lg">
+            <BarChart3 className="h-4 w-4 text-purple-600 mx-auto mb-1" />
+            <p className="text-sm font-bold text-purple-600">
+              {utilizationData.total > 0 ? ((utilizationData.maintenance / utilizationData.total) * 100).toFixed(1) : 0}%
+            </p>
+            <p className="text-xs text-gray-500">Maintenance Rate</p>
+          </div>
+        </div>
+
+        {/* Action Buttons */}
+        <div className="flex space-x-2 pt-2">
+          <Button variant="outline" size="sm" className="flex-1">
+            <Eye className="h-4 w-4 mr-2" />
+            View Details
+          </Button>
+          <Button variant="outline" size="sm" className="flex-1">
+            <Download className="h-4 w-4 mr-2" />
+            Export Data
+          </Button>
+        </div>
+
+        {/* Insights */}
+        <div className="p-3 bg-blue-50 rounded-lg">
+          <h5 className="text-sm font-medium text-blue-900 mb-2">💡 Fleet Insights</h5>
+          <ul className="text-xs text-blue-800 space-y-1">
+            <li>• Total fleet size: {utilizationData.total} vehicles</li>
+            <li>• Utilization rate: {utilizationData.utilizationRate.toFixed(1)}%</li>
+            <li>• {utilizationData.active} vehicles currently active</li>
+            <li>• {utilizationData.idle} vehicles idle</li>
+            <li>• {utilizationData.maintenance} vehicles in maintenance</li>
+            {utilizationData.utilizationRate < 60 && (
+              <li>• Low utilization - consider optimizing fleet deployment</li>
+            )}
+            {utilizationData.maintenance > utilizationData.total * 0.1 && (
+              <li>• High maintenance rate - review maintenance schedules</li>
+            )}
+          </ul>
+        </div>
+      </CardContent>
+    </Card>
+  );
+}
+
+export default FleetUtilization;

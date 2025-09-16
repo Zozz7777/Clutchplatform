@@ -7,6 +7,12 @@ import { Button } from '@/components/ui/button';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { productionApi } from '@/lib/production-api';
 import { websocketService } from '@/lib/websocket-service';
+
+// Import new Phase 2 widgets
+import SLACompliance from '@/components/widgets/sla-compliance';
+import IncidentCost from '@/components/widgets/incident-cost';
+import ErrorDistribution from '@/components/widgets/error-distribution';
+import RootCauseTimeline from '@/components/widgets/root-cause-timeline';
 import { toast } from 'sonner';
 import { 
   Heart, 
@@ -422,6 +428,30 @@ export default function HealthPage() {
           </Card>
         </TabsContent>
       </Tabs>
+
+      {/* Phase 2: System Health Analytics Widgets */}
+      <div className="space-y-6 mt-8">
+        <div className="flex items-center justify-between">
+          <div>
+            <h2 className="text-2xl font-bold tracking-tight text-foreground">System Health Analytics</h2>
+            <p className="text-muted-foreground">
+              Go beyond uptime → proactive reliability insights
+            </p>
+          </div>
+        </div>
+
+        {/* Top Row - SLA & Incident Cost */}
+        <div className="grid gap-6 md:grid-cols-2">
+          <SLACompliance />
+          <IncidentCost />
+        </div>
+
+        {/* Second Row - Error Distribution & Root Cause */}
+        <div className="grid gap-6 md:grid-cols-2">
+          <ErrorDistribution />
+          <RootCauseTimeline />
+        </div>
+      </div>
     </div>
   );
 }

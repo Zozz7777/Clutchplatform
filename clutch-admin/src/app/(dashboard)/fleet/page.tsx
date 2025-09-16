@@ -14,6 +14,12 @@ import { useAuth } from "@/contexts/auth-context";
 import { useQuickActions } from "@/lib/quick-actions";
 import { toast } from "sonner";
 
+// Import new Phase 2 widgets
+import FleetUtilization from "@/components/widgets/fleet-utilization";
+import MaintenanceForecast from "@/components/widgets/maintenance-forecast";
+import FuelCostMetrics from "@/components/widgets/fuel-cost-metrics";
+import DowntimeImpact from "@/components/widgets/downtime-impact";
+
 // Define FleetVehicle type locally since we're not using mock API
 interface FleetVehicle {
   id: string;
@@ -440,6 +446,30 @@ export default function FleetPage() {
           </div>
         </CardContent>
       </Card>
+
+      {/* Phase 2: Fleet Analytics Widgets */}
+      <div className="space-y-6 mt-8">
+        <div className="flex items-center justify-between">
+          <div>
+            <h2 className="text-2xl font-bold tracking-tight text-foreground">Fleet Analytics</h2>
+            <p className="text-muted-foreground">
+              Optimize utilization, costs, and downtime
+            </p>
+          </div>
+        </div>
+
+        {/* Top Row - Utilization & Maintenance */}
+        <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+          <FleetUtilization className="lg:col-span-2" />
+          <MaintenanceForecast />
+        </div>
+
+        {/* Second Row - Cost & Downtime */}
+        <div className="grid gap-6 md:grid-cols-2">
+          <FuelCostMetrics />
+          <DowntimeImpact />
+        </div>
+      </div>
     </div>
   );
 }

@@ -7,8 +7,22 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { mockAPI, type User } from "@/lib/mock-api";
+import { productionApi } from "@/lib/production-api";
 import { formatDate, formatRelativeTime } from "@/lib/utils";
+
+// Define User type locally
+interface User {
+  id: string;
+  name: string;
+  email: string;
+  role: string;
+  status: string;
+  lastLogin: string;
+  createdAt: string;
+  avatar?: string;
+  department?: string;
+  permissions?: string[];
+}
 import { useAuth } from "@/contexts/auth-context";
 import { toast } from "sonner";
 import { 
@@ -45,9 +59,9 @@ export default function B2CUsersPage() {
   useEffect(() => {
     const loadUsers = async () => {
       try {
-        const userData = await mockAPI.getUsers();
+        const userData = await productionApi.getUsers();
         // Filter for B2C customers (individual users, not enterprise)
-        const b2cUsers = userData.filter(user => 
+        const b2cUsers = (userData || []).filter(user => 
           user.role !== "enterprise_client" && 
           user.role !== "service_provider" &&
           user.role !== "platform_admin"
@@ -57,6 +71,8 @@ export default function B2CUsersPage() {
       } catch (error) {
         console.error("Failed to load B2C users:", error);
         toast.error("Failed to load customers");
+        setUsers([]);
+        setFilteredUsers([]);
       } finally {
         setIsLoading(false);
       }

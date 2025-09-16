@@ -47,6 +47,9 @@ import {
 import { formatCurrency } from "@/lib/utils";
 import { productionApi } from "@/lib/production-api";
 
+// Import new Phase 2 widgets
+import ProjectROI from '@/components/widgets/project-roi';
+
 interface Project {
   _id: string;
   name: string;
@@ -816,6 +819,23 @@ export default function ProjectManagementPage() {
           </DialogFooter>
         </DialogContent>
       </Dialog>
+
+      {/* Phase 2: Projects Analytics Widgets */}
+      <div className="space-y-6 mt-8">
+        <div className="flex items-center justify-between">
+          <div>
+            <h2 className="text-2xl font-bold tracking-tight text-foreground">Projects Analytics</h2>
+            <p className="text-muted-foreground">
+              Blend project execution with financial & ops impact
+            </p>
+          </div>
+        </div>
+
+        {/* Project ROI */}
+        <div className="grid gap-6">
+          <ProjectROI />
+        </div>
+      </div>
     </div>
   );
 }

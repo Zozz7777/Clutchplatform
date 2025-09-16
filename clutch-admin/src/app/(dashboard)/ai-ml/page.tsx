@@ -12,6 +12,12 @@ import { formatDate, formatRelativeTime } from "@/lib/utils";
 import { useAuth } from "@/contexts/auth-context";
 import { productionApi } from "@/lib/production-api";
 import { toast } from "sonner";
+
+// Import new Phase 2 widgets
+import FraudImpact from "@/components/widgets/fraud-impact";
+import RecommendationUplift from "@/components/widgets/recommendation-uplift";
+import TrainingROI from "@/components/widgets/training-roi";
+import ModelDriftDetector from "@/components/widgets/model-drift-detector";
 import { 
   Brain, 
   Search, 
@@ -654,6 +660,30 @@ export default function AIMLPage() {
           </Card>
         </TabsContent>
       </Tabs>
+
+      {/* Phase 2: AI/ML Analytics Widgets */}
+      <div className="space-y-6 mt-8">
+        <div className="flex items-center justify-between">
+          <div>
+            <h2 className="text-2xl font-bold tracking-tight text-foreground">AI/ML Analytics</h2>
+            <p className="text-muted-foreground">
+              Track not just models, but business impact
+            </p>
+          </div>
+        </div>
+
+        {/* Top Row - Impact & Uplift */}
+        <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+          <FraudImpact />
+          <RecommendationUplift />
+          <TrainingROI />
+        </div>
+
+        {/* Second Row - Model Monitoring */}
+        <div className="grid gap-6">
+          <ModelDriftDetector />
+        </div>
+      </div>
     </div>
   );
 }

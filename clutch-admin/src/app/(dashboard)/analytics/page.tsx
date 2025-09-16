@@ -9,6 +9,13 @@ import { useAuth } from "@/contexts/auth-context";
 import { useQuickActions } from "@/lib/quick-actions";
 import { productionApi } from "@/lib/production-api";
 import { formatDate, formatRelativeTime, formatCurrency } from "@/lib/utils";
+
+// Import new Phase 2 widgets
+import AdoptionFunnel from "@/components/widgets/adoption-funnel";
+import CustomerLifetimeValue from "@/components/widgets/customer-lifetime-value";
+import FeatureUsage from "@/components/widgets/feature-usage";
+import ChurnAttribution from "@/components/widgets/churn-attribution";
+import ForecastAccuracy from "@/components/widgets/forecast-accuracy";
 import { 
   BarChart3, 
   Search, 
@@ -144,38 +151,40 @@ export default function AnalyticsPage() {
   useEffect(() => {
     const loadAnalyticsData = async () => {
       try {
+        setIsLoading(true);
+        
         // Load analytics metrics using production API
         const metricsData = await productionApi.getAnalyticsMetrics();
-        setMetrics(metricsData || mockMetrics);
+        setMetrics(metricsData || []);
 
         // Load user analytics
         const userData = await productionApi.getAnalyticsData('users', { period: selectedTimeRange });
-        setUserAnalytics(userData || mockUserAnalytics);
+        setUserAnalytics(userData || null);
 
         // Load revenue analytics
         const revenueData = await productionApi.getAnalyticsData('revenue', { period: selectedTimeRange });
-        setRevenueAnalytics(revenueData || mockRevenueAnalytics);
+        setRevenueAnalytics(revenueData || null);
 
         // Load fleet analytics
         const fleetData = await productionApi.getAnalyticsData('fleet', { period: selectedTimeRange });
-        setFleetAnalytics(fleetData || mockFleetAnalytics);
+        setFleetAnalytics(fleetData || null);
 
         // Load engagement analytics
         const engagementData = await productionApi.getAnalyticsData('engagement', { period: selectedTimeRange });
-        setEngagementAnalytics(engagementData || mockEngagementAnalytics);
+        setEngagementAnalytics(engagementData || null);
 
         // Load analytics reports
         const reportsData = await productionApi.getReports();
-        setReports(reportsData || mockReports);
+        setReports(reportsData || []);
       } catch (error) {
         console.error("Failed to load analytics data:", error);
-        // Use mock data as fallback
-        setMetrics(mockMetrics);
-        setUserAnalytics(mockUserAnalytics);
-        setRevenueAnalytics(mockRevenueAnalytics);
-        setFleetAnalytics(mockFleetAnalytics);
-        setEngagementAnalytics(mockEngagementAnalytics);
-        setReports(mockReports);
+        // Set empty data instead of mock data
+        setMetrics([]);
+        setUserAnalytics(null);
+        setRevenueAnalytics(null);
+        setFleetAnalytics(null);
+        setEngagementAnalytics(null);
+        setReports([]);
       } finally {
         setIsLoading(false);
       }
@@ -659,6 +668,35 @@ export default function AnalyticsPage() {
           )}
         </CardContent>
       </Card>
+
+      {/* Phase 2: Advanced Analytics Widgets */}
+      <div className="space-y-6 mt-8">
+        <div className="flex items-center justify-between">
+          <div>
+            <h2 className="text-2xl font-bold tracking-tight text-foreground">Advanced Analytics</h2>
+            <p className="text-muted-foreground">
+              Go beyond vanity metrics → decision-grade insights
+            </p>
+          </div>
+        </div>
+
+        {/* Top Row - Funnel & CLV */}
+        <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+          <AdoptionFunnel className="lg:col-span-2" />
+          <CustomerLifetimeValue />
+        </div>
+
+        {/* Second Row - Feature Usage & Churn */}
+        <div className="grid gap-6 md:grid-cols-2">
+          <FeatureUsage />
+          <ChurnAttribution />
+        </div>
+
+        {/* Third Row - Forecast Accuracy */}
+        <div className="grid gap-6">
+          <ForecastAccuracy />
+        </div>
+      </div>
     </div>
   );
 }

@@ -44,6 +44,9 @@ import {
 import { formatCurrency } from "@/lib/utils";
 import { productionApi } from "@/lib/production-api";
 import { useAuth } from "@/contexts/auth-context";
+
+// Import new Phase 2 widgets
+import ReportUsageStats from '@/components/widgets/report-usage-stats';
 import { useQuickActions } from "@/lib/quick-actions";
 
 interface Report {
@@ -699,6 +702,23 @@ export default function ReportsPage() {
           </DialogFooter>
         </DialogContent>
       </Dialog>
+
+      {/* Phase 2: Reports Analytics Widgets */}
+      <div className="space-y-6 mt-8">
+        <div className="flex items-center justify-between">
+          <div>
+            <h2 className="text-2xl font-bold tracking-tight text-foreground">Reports Analytics</h2>
+            <p className="text-muted-foreground">
+              Automate and measure report effectiveness
+            </p>
+          </div>
+        </div>
+
+        {/* Report Usage Stats */}
+        <div className="grid gap-6">
+          <ReportUsageStats />
+        </div>
+      </div>
     </div>
   );
 }

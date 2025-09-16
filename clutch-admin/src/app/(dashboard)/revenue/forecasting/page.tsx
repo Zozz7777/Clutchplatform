@@ -16,6 +16,12 @@ import {
   RefreshCw
 } from 'lucide-react';
 
+// Import new Phase 2 widgets
+import ChurnAdjustedForecast from '@/components/widgets/churn-adjusted-forecast';
+import ClientGrowthContribution from '@/components/widgets/client-growth-contribution';
+import RiskScenarioMatrix from '@/components/widgets/risk-scenario-matrix';
+import ForecastAccuracyTrend from '@/components/widgets/forecast-accuracy-trend';
+
 export default function RevenueForecastingPage() {
   const [forecastData] = useState({
     currentMonth: {
@@ -401,6 +407,30 @@ export default function RevenueForecastingPage() {
           </div>
         </TabsContent>
       </Tabs>
+
+      {/* Phase 2: Revenue Forecasting Analytics Widgets */}
+      <div className="space-y-6 mt-8">
+        <div className="flex items-center justify-between">
+          <div>
+            <h2 className="text-2xl font-bold tracking-tight text-foreground">Revenue Forecasting Analytics</h2>
+            <p className="text-muted-foreground">
+              From static projections → scenarios & risk-adjusted planning
+            </p>
+          </div>
+        </div>
+
+        {/* Top Row - Churn-Adjusted & Client Growth */}
+        <div className="grid gap-6 md:grid-cols-2">
+          <ChurnAdjustedForecast />
+          <ClientGrowthContribution />
+        </div>
+
+        {/* Second Row - Risk Scenarios & Accuracy */}
+        <div className="grid gap-6 md:grid-cols-2">
+          <RiskScenarioMatrix />
+          <ForecastAccuracyTrend />
+        </div>
+      </div>
     </div>
   );
 }
