@@ -1,0 +1,312 @@
+'use client';
+
+import { useState } from 'react';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { 
+  Image, 
+  Video, 
+  File, 
+  Upload, 
+  Search,
+  Download,
+  Trash2,
+  Eye,
+  Folder,
+  Grid,
+  List
+} from 'lucide-react';
+
+interface MediaFile {
+  id: string;
+  name: string;
+  type: 'image' | 'video' | 'document';
+  size: number;
+  url: string;
+  uploadedAt: string;
+  tags: string[];
+}
+
+export default function MediaCMSPage() {
+  const [mediaFiles, setMediaFiles] = useState<MediaFile[]>([
+    {
+      id: '1',
+      name: 'clutch-logo.png',
+      type: 'image',
+      size: 245760,
+      url: '/images/clutch-logo.png',
+      uploadedAt: '2024-01-15T10:30:00Z',
+      tags: ['logo', 'branding']
+    },
+    {
+      id: '2',
+      name: 'app-screenshot.jpg',
+      type: 'image',
+      size: 1024000,
+      url: '/images/app-screenshot.jpg',
+      uploadedAt: '2024-01-14T15:20:00Z',
+      tags: ['screenshot', 'mobile']
+    },
+    {
+      id: '3',
+      name: 'demo-video.mp4',
+      type: 'video',
+      size: 15728640,
+      url: '/videos/demo-video.mp4',
+      uploadedAt: '2024-01-13T11:45:00Z',
+      tags: ['demo', 'video']
+    }
+  ]);
+
+  const [searchTerm, setSearchTerm] = useState('');
+  const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
+  const [selectedType, setSelectedType] = useState('all');
+
+  const formatFileSize = (bytes: number) => {
+    if (bytes === 0) return '0 Bytes';
+    const k = 1024;
+    const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+    const i = Math.floor(Math.log(bytes) / Math.log(k));
+    return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+  };
+
+  const getFileIcon = (type: string) => {
+    switch (type) {
+      case 'image':
+        return <Image className="h-8 w-8 text-blue-500" />;
+      case 'video':
+        return <Video className="h-8 w-8 text-red-500" />;
+      case 'document':
+        return <File className="h-8 w-8 text-gray-500" />;
+      default:
+        return <File className="h-8 w-8 text-gray-500" />;
+    }
+  };
+
+  const filteredFiles = mediaFiles.filter(file => {
+    const matchesSearch = file.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                         file.tags.some(tag => tag.toLowerCase().includes(searchTerm.toLowerCase()));
+    const matchesType = selectedType === 'all' || file.type === selectedType;
+    return matchesSearch && matchesType;
+  });
+
+  return (
+    <div className="space-y-6">
+      <div className="flex items-center justify-between">
+        <div>
+          <h1 className="text-3xl font-bold font-sans">Media Library</h1>
+          <p className="text-muted-foreground font-sans">
+            Manage images, videos, and documents
+          </p>
+        </div>
+        <div className="flex items-center space-x-2">
+          <Button variant="outline" onClick={() => setViewMode(viewMode === 'grid' ? 'list' : 'grid')}>
+            {viewMode === 'grid' ? <List className="h-4 w-4" /> : <Grid className="h-4 w-4" />}
+          </Button>
+          <Button>
+            <Upload className="h-4 w-4 mr-2" />
+            Upload
+          </Button>
+        </div>
+      </div>
+
+      <div className="flex items-center space-x-4">
+        <div className="flex-1">
+          <div className="relative">
+            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
+            <Input
+              placeholder="Search media files..."
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              className="pl-10"
+            />
+          </div>
+        </div>
+        <select
+          value={selectedType}
+          onChange={(e) => setSelectedType(e.target.value)}
+          className="px-3 py-2 border border-gray-300 rounded-md"
+        >
+          <option value="all">All Types</option>
+          <option value="image">Images</option>
+          <option value="video">Videos</option>
+          <option value="document">Documents</option>
+        </select>
+      </div>
+
+      <Tabs defaultValue="library" className="space-y-4">
+        <TabsList>
+          <TabsTrigger value="library">Library</TabsTrigger>
+          <TabsTrigger value="folders">Folders</TabsTrigger>
+          <TabsTrigger value="analytics">Analytics</TabsTrigger>
+        </TabsList>
+
+        <TabsContent value="library" className="space-y-4">
+          {viewMode === 'grid' ? (
+            <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+              {filteredFiles.map((file) => (
+                <Card key={file.id} className="overflow-hidden">
+                  <div className="aspect-square bg-gray-100 flex items-center justify-center">
+                    {getFileIcon(file.type)}
+                  </div>
+                  <CardContent className="p-4">
+                    <div className="flex items-center justify-between mb-2">
+                      <h3 className="font-medium font-sans truncate">{file.name}</h3>
+                      <div className="flex items-center space-x-1">
+                        <Button variant="outline" size="sm">
+                          <Eye className="h-4 w-4" />
+                        </Button>
+                        <Button variant="outline" size="sm">
+                          <Download className="h-4 w-4" />
+                        </Button>
+                        <Button variant="outline" size="sm">
+                          <Trash2 className="h-4 w-4" />
+                        </Button>
+                      </div>
+                    </div>
+                    <div className="text-sm text-muted-foreground space-y-1">
+                      <p className="font-sans">{formatFileSize(file.size)}</p>
+                      <p className="font-sans">{new Date(file.uploadedAt).toLocaleDateString()}</p>
+                    </div>
+                    <div className="flex items-center space-x-1 mt-2">
+                      {file.tags.map((tag, index) => (
+                        <Badge key={index} variant="outline" className="text-xs">
+                          {tag}
+                        </Badge>
+                      ))}
+                    </div>
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
+          ) : (
+            <div className="space-y-2">
+              {filteredFiles.map((file) => (
+                <Card key={file.id}>
+                  <CardContent className="p-4">
+                    <div className="flex items-center space-x-4">
+                      {getFileIcon(file.type)}
+                      <div className="flex-1">
+                        <h3 className="font-medium font-sans">{file.name}</h3>
+                        <div className="flex items-center space-x-4 text-sm text-muted-foreground">
+                          <span className="font-sans">{formatFileSize(file.size)}</span>
+                          <span className="font-sans">{new Date(file.uploadedAt).toLocaleDateString()}</span>
+                          <div className="flex items-center space-x-1">
+                            {file.tags.map((tag, index) => (
+                              <Badge key={index} variant="outline" className="text-xs">
+                                {tag}
+                              </Badge>
+                            ))}
+                          </div>
+                        </div>
+                      </div>
+                      <div className="flex items-center space-x-2">
+                        <Button variant="outline" size="sm">
+                          <Eye className="h-4 w-4 mr-2" />
+                          View
+                        </Button>
+                        <Button variant="outline" size="sm">
+                          <Download className="h-4 w-4 mr-2" />
+                          Download
+                        </Button>
+                        <Button variant="outline" size="sm">
+                          <Trash2 className="h-4 w-4" />
+                        </Button>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
+          )}
+        </TabsContent>
+
+        <TabsContent value="folders" className="space-y-4">
+          <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+            {[
+              { name: 'Images', count: mediaFiles.filter(f => f.type === 'image').length, icon: <Image className="h-8 w-8" /> },
+              { name: 'Videos', count: mediaFiles.filter(f => f.type === 'video').length, icon: <Video className="h-8 w-8" /> },
+              { name: 'Documents', count: mediaFiles.filter(f => f.type === 'document').length, icon: <File className="h-8 w-8" /> },
+              { name: 'Branding', count: mediaFiles.filter(f => f.tags.includes('branding')).length, icon: <Folder className="h-8 w-8" /> },
+              { name: 'Screenshots', count: mediaFiles.filter(f => f.tags.includes('screenshot')).length, icon: <Folder className="h-8 w-8" /> },
+              { name: 'Demos', count: mediaFiles.filter(f => f.tags.includes('demo')).length, icon: <Folder className="h-8 w-8" /> }
+            ].map((folder, index) => (
+              <Card key={index}>
+                <CardHeader>
+                  <div className="flex items-center space-x-3">
+                    {folder.icon}
+                    <div>
+                      <CardTitle className="font-sans">{folder.name}</CardTitle>
+                      <CardDescription className="font-sans">
+                        {folder.count} files
+                      </CardDescription>
+                    </div>
+                  </div>
+                </CardHeader>
+                <CardContent>
+                  <Button variant="outline" className="w-full">
+                    <Eye className="h-4 w-4 mr-2" />
+                    View Files
+                  </Button>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+        </TabsContent>
+
+        <TabsContent value="analytics" className="space-y-4">
+          <div className="grid gap-4 md:grid-cols-4">
+            <Card>
+              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                <CardTitle className="text-sm font-medium font-sans">Total Files</CardTitle>
+                <File className="h-4 w-4 text-muted-foreground" />
+              </CardHeader>
+              <CardContent>
+                <div className="text-2xl font-bold font-sans">{mediaFiles.length}</div>
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                <CardTitle className="text-sm font-medium font-sans">Images</CardTitle>
+                <Image className="h-4 w-4 text-muted-foreground" />
+              </CardHeader>
+              <CardContent>
+                <div className="text-2xl font-bold font-sans">
+                  {mediaFiles.filter(f => f.type === 'image').length}
+                </div>
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                <CardTitle className="text-sm font-medium font-sans">Videos</CardTitle>
+                <Video className="h-4 w-4 text-muted-foreground" />
+              </CardHeader>
+              <CardContent>
+                <div className="text-2xl font-bold font-sans">
+                  {mediaFiles.filter(f => f.type === 'video').length}
+                </div>
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                <CardTitle className="text-sm font-medium font-sans">Total Size</CardTitle>
+                <Folder className="h-4 w-4 text-muted-foreground" />
+              </CardHeader>
+              <CardContent>
+                <div className="text-2xl font-bold font-sans">
+                  {formatFileSize(mediaFiles.reduce((sum, file) => sum + file.size, 0))}
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+        </TabsContent>
+      </Tabs>
+    </div>
+  );
+}
