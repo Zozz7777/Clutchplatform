@@ -44,7 +44,7 @@ export default function LoginPage() {
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-background px-4 font-sans">
-      <Card className="w-full max-w-md shadow-md border-border rounded-lg">
+      <Card className="w-full max-w-md shadow-md border border-border rounded-lg bg-card">
         <CardHeader className="text-center space-y-6 pb-8">
           <div className="flex justify-center">
             <div className="flex items-center justify-center w-20 h-20 bg-primary/10 rounded-lg">
@@ -84,7 +84,7 @@ export default function LoginPage() {
                 onChange={(e) => setEmail(e.target.value)}
                 required
                 disabled={isLoading}
-                className="h-12 text-base border-border bg-input focus:ring-ring focus:border-ring"
+                className="h-12 text-base border border-border bg-input text-foreground placeholder:text-muted-foreground focus:ring-2 focus:ring-ring"
               />
             </div>
             
@@ -99,20 +99,20 @@ export default function LoginPage() {
                   onChange={(e) => setPassword(e.target.value)}
                   required
                   disabled={isLoading}
-                  className="h-12 pr-12 text-base border-border bg-input focus:ring-ring focus:border-ring"
+                  className="h-12 pr-12 text-base border border-border bg-input text-foreground placeholder:text-muted-foreground focus:ring-2 focus:ring-ring"
                 />
                 <Button
                   type="button"
                   variant="ghost"
                   size="icon"
-                  className="absolute right-0 top-0 h-12 w-12 hover:bg-transparent"
+                  className="absolute right-0 top-0 h-12 w-12 hover:bg-transparent text-muted-foreground hover:text-foreground"
                   onClick={() => setShowPassword(!showPassword)}
                   disabled={isLoading}
                 >
                   {showPassword ? (
-                    <EyeOff className="h-4 w-4 text-muted-foreground" />
+                    <EyeOff className="h-4 w-4" />
                   ) : (
-                    <Eye className="h-4 w-4 text-muted-foreground" />
+                    <Eye className="h-4 w-4" />
                   )}
                 </Button>
               </div>
@@ -126,7 +126,7 @@ export default function LoginPage() {
 
             <Button 
               type="submit" 
-              className="w-full h-12 text-base font-medium bg-primary text-primary-foreground hover:bg-primary/90 focus:ring-ring focus:ring-offset-2" 
+              className="w-full h-12 text-base font-medium bg-primary text-primary-foreground hover:bg-primary/90 focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed" 
               disabled={isLoading}
             >
               {isLoading ? (

@@ -42,10 +42,6 @@
             "value": "oklch(0.5770 0.2450 27.3250)",
             "description": "Color for destructive actions like deleting."
           },
-          "destructive-foreground": {
-            "value": "oklch(0.9850 0 0)",
-            "description": "Text color on destructive-colored elements."
-          },
           "border": {
             "value": "oklch(0.9220 0 0)",
             "description": "Border color for elements."
@@ -107,17 +103,9 @@
             "value": "oklch(0.2690 0 0)",
             "description": "Muted color for backgrounds in dark mode."
           },
-          "muted-foreground": {
-            "value": "oklch(0.5560 0 0)",
-            "description": "Text color on muted backgrounds in dark mode."
-          },
           "destructive": {
             "value": "oklch(0.7040 0.1910 22.2160)",
             "description": "Destructive color for dark mode."
-          },
-          "destructive-foreground": {
-            "value": "oklch(0.9850 0 0)",
-            "description": "Text color on destructive-colored elements in dark mode."
           },
           "border": {
             "value": "oklch(0.2750 0 0)",
