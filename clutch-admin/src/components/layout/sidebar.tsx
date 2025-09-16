@@ -113,34 +113,50 @@ export function Sidebar({ isCollapsed, onToggle }: SidebarProps) {
 
             return (
               <div key={item.title}>
-                <div
-                  className={cn(
-                    "flex items-center px-3 py-2 text-sm font-medium rounded-lg cursor-pointer transition-colors font-sans",
-                    isActive
-                      ? "bg-sidebar-primary text-white shadow-sm"
-                      : "text-foreground hover:bg-sidebar-primary/10",
-                    isCollapsed && "justify-center"
-                  )}
-                  onClick={() => {
-                    if (hasChildren && !isCollapsed) {
-                      toggleExpanded(item.title);
-                    }
-                  }}
-                >
-                  <IconComponent className="w-4 h-4" />
-                  {!isCollapsed && (
-                    <>
-                      <span className="flex-1 ml-3">{item.title}</span>
-                      {hasChildren && (
-                        isExpanded ? (
+                {hasChildren ? (
+                  <div
+                    className={cn(
+                      "flex items-center px-3 py-2 text-sm font-medium rounded-lg cursor-pointer transition-colors font-sans",
+                      isActive
+                        ? "bg-sidebar-primary text-white shadow-sm"
+                        : "text-foreground hover:bg-sidebar-primary/10",
+                      isCollapsed && "justify-center"
+                    )}
+                    onClick={() => {
+                      if (!isCollapsed) {
+                        toggleExpanded(item.title);
+                      }
+                    }}
+                  >
+                    <IconComponent className="w-4 h-4" />
+                    {!isCollapsed && (
+                      <>
+                        <span className="flex-1 ml-3">{item.title}</span>
+                        {isExpanded ? (
                           <ChevronDown className="w-4 h-4" />
                         ) : (
                           <ChevronRight className="w-4 h-4" />
-                        )
-                      )}
-                    </>
-                  )}
-                </div>
+                        )}
+                      </>
+                    )}
+                  </div>
+                ) : (
+                  <Link
+                    href={item.href}
+                    className={cn(
+                      "flex items-center px-3 py-2 text-sm font-medium rounded-lg cursor-pointer transition-colors font-sans",
+                      isActive
+                        ? "bg-sidebar-primary text-white shadow-sm"
+                        : "text-foreground hover:bg-sidebar-primary/10",
+                      isCollapsed && "justify-center"
+                    )}
+                  >
+                    <IconComponent className="w-4 h-4" />
+                    {!isCollapsed && (
+                      <span className="flex-1 ml-3">{item.title}</span>
+                    )}
+                  </Link>
+                )}
 
                 {/* Children */}
                 {hasChildren && !isCollapsed && isExpanded && (
