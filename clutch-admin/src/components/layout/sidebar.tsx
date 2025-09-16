@@ -8,6 +8,8 @@ import { NAVIGATION_ITEMS } from "@/lib/constants";
 import { useAuth } from "@/contexts/auth-context";
 import { ChevronDown, ChevronRight } from "lucide-react";
 import { ThemeToggle } from "@/components/theme-toggle";
+import { LanguageSwitcher } from "@/components/language-switcher";
+import { useTranslations } from "@/hooks/use-translations";
 
 interface SidebarProps {
   isCollapsed: boolean;
@@ -17,6 +19,7 @@ interface SidebarProps {
 export function Sidebar({ isCollapsed, onToggle }: SidebarProps) {
   const pathname = usePathname();
   const { hasPermission, user } = useAuth();
+  const { t } = useTranslations();
   const [expandedItems, setExpandedItems] = useState<string[]>([]);
 
 
@@ -87,7 +90,7 @@ export function Sidebar({ isCollapsed, onToggle }: SidebarProps) {
                 onLoad={() => console.log('Logo loaded successfully')}
               />
             </div>
-            <span className="text-xl font-bold text-foreground font-sans">Clutch Admin</span>
+            <span className="text-xl font-bold text-foreground font-sans">{t('sidebar.clutchAdmin')}</span>
           </div>
         )}
       </div>
@@ -166,9 +169,10 @@ export function Sidebar({ isCollapsed, onToggle }: SidebarProps) {
 
       {/* Footer */}
       <div className="p-4 border-t border-border space-y-3">
-        {/* Theme Toggle */}
-        <div className="flex items-center justify-center">
+        {/* Theme Toggle and Language Switcher */}
+        <div className="flex items-center justify-center gap-2">
           <ThemeToggle />
+          <LanguageSwitcher />
         </div>
         
         {/* Toggle Button */}
@@ -180,7 +184,7 @@ export function Sidebar({ isCollapsed, onToggle }: SidebarProps) {
             <ChevronRight className="w-4 h-4" />
           ) : (
             <>
-              <span className="flex-1 text-left">Collapse</span>
+              <span className="flex-1 text-left">{t('sidebar.collapse')}</span>
               <ChevronRight className="w-4 h-4" />
             </>
           )}

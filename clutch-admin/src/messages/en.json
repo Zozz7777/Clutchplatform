@@ -1,0 +1,138 @@
+{
+  "common": {
+    "loading": "Loading...",
+    "error": "Error",
+    "success": "Success",
+    "save": "Save",
+    "cancel": "Cancel",
+    "delete": "Delete",
+    "edit": "Edit",
+    "add": "Add",
+    "search": "Search",
+    "filter": "Filter",
+    "export": "Export",
+    "import": "Import",
+    "refresh": "Refresh",
+    "close": "Close",
+    "back": "Back",
+    "next": "Next",
+    "previous": "Previous",
+    "submit": "Submit",
+    "reset": "Reset",
+    "confirm": "Confirm",
+    "yes": "Yes",
+    "no": "No"
+  },
+  "navigation": {
+    "dashboard": "Dashboard",
+    "userManagement": "User Management",
+    "fleetManagement": "Fleet Management",
+    "crm": "CRM",
+    "chat": "Chat",
+    "aiDashboard": "AI Dashboard",
+    "enterprise": "Enterprise",
+    "finance": "Finance",
+    "legal": "Legal",
+    "hr": "HR",
+    "featureFlags": "Feature Flags",
+    "communication": "Communication",
+    "analytics": "Analytics",
+    "mobileApps": "Mobile Apps",
+    "cms": "CMS",
+    "marketing": "Marketing",
+    "projects": "Projects",
+    "settings": "Settings",
+    "reports": "Reports",
+    "integrations": "Integrations",
+    "auditTrail": "Audit Trail",
+    "apiDocs": "API Docs",
+    "assets": "Assets",
+    "vendors": "Vendors",
+    "systemHealth": "System Health"
+  },
+  "auth": {
+    "login": "Sign In",
+    "logout": "Sign Out",
+    "email": "Email",
+    "password": "Password",
+    "forgotPassword": "Forgot Password?",
+    "rememberMe": "Remember Me",
+    "signInToDrive": "Sign in to drive the automotive revolution",
+    "invalidCredentials": "Invalid email or password",
+    "loginSuccess": "Login successful",
+    "logoutSuccess": "Logout successful"
+  },
+  "dashboard": {
+    "title": "Dashboard",
+    "welcome": "Welcome back",
+    "overview": "Overview",
+    "quickActions": "Quick Actions",
+    "recentActivity": "Recent Activity",
+    "systemStatus": "System Status",
+    "totalUsers": "Total Users",
+    "activeVehicles": "Active Vehicles",
+    "totalBookings": "Total Bookings",
+    "revenue": "Revenue"
+  },
+  "header": {
+    "search": "Search...",
+    "notifications": "Notifications",
+    "myAccount": "My Account",
+    "profile": "Profile",
+    "settings": "Settings",
+    "theme": "Theme",
+    "language": "Language"
+  },
+  "sidebar": {
+    "collapse": "Collapse",
+    "expand": "Expand",
+    "clutchAdmin": "Clutch Admin"
+  },
+  "theme": {
+    "light": "Light",
+    "dark": "Dark",
+    "system": "System"
+  },
+  "language": {
+    "english": "English",
+    "arabic": "العربية"
+  },
+  "settings": {
+    "title": "Settings",
+    "profile": "Profile",
+    "account": "Account",
+    "security": "Security",
+    "notifications": "Notifications",
+    "preferences": "Preferences",
+    "system": "System",
+    "integrations": "Integrations",
+    "api": "API",
+    "backup": "Backup",
+    "logs": "Logs"
+  },
+  "profile": {
+    "title": "Profile Settings",
+    "personalInfo": "Personal Information",
+    "contactInfo": "Contact Information",
+    "changePassword": "Change Password",
+    "currentPassword": "Current Password",
+    "newPassword": "New Password",
+    "confirmPassword": "Confirm Password",
+    "updateProfile": "Update Profile",
+    "profileUpdated": "Profile updated successfully"
+  },
+  "notifications": {
+    "title": "Notifications",
+    "markAllRead": "Mark all as read",
+    "noNotifications": "No notifications",
+    "newNotification": "New notification"
+  },
+  "errors": {
+    "generic": "Something went wrong",
+    "networkError": "Network error",
+    "unauthorized": "Unauthorized",
+    "forbidden": "Forbidden",
+    "notFound": "Not found",
+    "serverError": "Server error"
+  }
+}

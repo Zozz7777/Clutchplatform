@@ -711,4 +711,236 @@ router.get('/overview', authenticateToken, requireRole(['admin', 'vendor_manager
   });
 });
 
+// ==================== VENDOR CONTRACTS ENDPOINTS ====================
+
+// GET /api/v1/vendor-contracts - Get all vendor contracts
+router.get('/vendor-contracts', authenticateToken, requireRole(['admin', 'vendor_manager', 'super_admin']), vendorRateLimit, async (req, res) => {
+  try {
+    const { page = 1, limit = 50, vendorId, status, type, dateFrom, dateTo } = req.query;
+    const skip = (page - 1) * limit;
+    
+    const contractsCollection = await getCollection('vendor_contracts');
+    
+    // Build query
+    const query = {};
+    if (vendorId) query.vendorId = vendorId;
+    if (status) query.status = status;
+    if (type) query.type = type;
+    if (dateFrom || dateTo) {
+      query.startDate = {};
+      if (dateFrom) query.startDate.$gte = new Date(dateFrom);
+      if (dateTo) query.startDate.$lte = new Date(dateTo);
+    }
+    
+    const vendorContracts = await contractsCollection
+      .find(query)
+      .sort({ startDate: -1 })
+      .skip(skip)
+      .limit(parseInt(limit))
+      .toArray();
+    
+    const total = await contractsCollection.countDocuments(query);
+    
+    res.json({
+      success: true,
+      data: {
+        vendorContracts,
+        pagination: {
+          page: parseInt(page),
+          limit: parseInt(limit),
+          total,
+          pages: Math.ceil(total / limit)
+        }
+      },
+      message: 'Vendor contracts retrieved successfully',
+      timestamp: new Date().toISOString()
+    });
+  } catch (error) {
+    console.error('Get vendor contracts error:', error);
+    res.status(500).json({
+      success: false,
+      error: 'GET_VENDOR_CONTRACTS_FAILED',
+      message: 'Failed to retrieve vendor contracts',
+      timestamp: new Date().toISOString()
+    });
+  }
+});
+
+// POST /api/v1/vendor-contracts - Create new vendor contract
+router.post('/vendor-contracts', authenticateToken, requireRole(['admin', 'vendor_manager', 'super_admin']), vendorRateLimit, async (req, res) => {
+  try {
+    const {
+      vendorId,
+      contractNumber,
+      type,
+      title,
+      description,
+      startDate,
+      endDate,
+      value,
+      currency = 'USD',
+      terms,
+      status = 'draft'
+    } = req.body;
+    
+    if (!vendorId || !contractNumber || !type || !title) {
+      return res.status(400).json({
+        success: false,
+        error: 'MISSING_REQUIRED_FIELDS',
+        message: 'Vendor ID, contract number, type, and title are required',
+        timestamp: new Date().toISOString()
+      });
+    }
+    
+    const contractsCollection = await getCollection('vendor_contracts');
+    
+    const newContract = {
+      vendorId,
+      contractNumber,
+      type,
+      title,
+      description: description || null,
+      startDate: startDate ? new Date(startDate) : new Date(),
+      endDate: endDate ? new Date(endDate) : null,
+      value: value ? parseFloat(value) : null,
+      currency,
+      terms: terms || null,
+      status,
+      createdAt: new Date(),
+      updatedAt: new Date(),
+      createdBy: req.user.userId
+    };
+    
+    const result = await contractsCollection.insertOne(newContract);
+    
+    res.status(201).json({
+      success: true,
+      data: { vendorContract: { ...newContract, _id: result.insertedId } },
+      message: 'Vendor contract created successfully',
+      timestamp: new Date().toISOString()
+    });
+  } catch (error) {
+    console.error('Create vendor contract error:', error);
+    res.status(500).json({
+      success: false,
+      error: 'CREATE_VENDOR_CONTRACT_FAILED',
+      message: 'Failed to create vendor contract',
+      timestamp: new Date().toISOString()
+    });
+  }
+});
+
+// ==================== VENDOR COMMUNICATIONS ENDPOINTS ====================
+
+// GET /api/v1/vendor-communications - Get all vendor communications
+router.get('/vendor-communications', authenticateToken, requireRole(['admin', 'vendor_manager', 'super_admin']), vendorRateLimit, async (req, res) => {
+  try {
+    const { page = 1, limit = 50, vendorId, type, status, dateFrom, dateTo } = req.query;
+    const skip = (page - 1) * limit;
+    
+    const communicationsCollection = await getCollection('vendor_communications');
+    
+    // Build query
+    const query = {};
+    if (vendorId) query.vendorId = vendorId;
+    if (type) query.type = type;
+    if (status) query.status = status;
+    if (dateFrom || dateTo) {
+      query.date = {};
+      if (dateFrom) query.date.$gte = new Date(dateFrom);
+      if (dateTo) query.date.$lte = new Date(dateTo);
+    }
+    
+    const vendorCommunications = await communicationsCollection
+      .find(query)
+      .sort({ date: -1 })
+      .skip(skip)
+      .limit(parseInt(limit))
+      .toArray();
+    
+    const total = await communicationsCollection.countDocuments(query);
+    
+    res.json({
+      success: true,
+      data: {
+        vendorCommunications,
+        pagination: {
+          page: parseInt(page),
+          limit: parseInt(limit),
+          total,
+          pages: Math.ceil(total / limit)
+        }
+      },
+      message: 'Vendor communications retrieved successfully',
+      timestamp: new Date().toISOString()
+    });
+  } catch (error) {
+    console.error('Get vendor communications error:', error);
+    res.status(500).json({
+      success: false,
+      error: 'GET_VENDOR_COMMUNICATIONS_FAILED',
+      message: 'Failed to retrieve vendor communications',
+      timestamp: new Date().toISOString()
+    });
+  }
+});
+
+// POST /api/v1/vendor-communications - Create new vendor communication
+router.post('/vendor-communications', authenticateToken, requireRole(['admin', 'vendor_manager', 'super_admin']), vendorRateLimit, async (req, res) => {
+  try {
+    const {
+      vendorId,
+      type,
+      subject,
+      message,
+      date,
+      status = 'sent',
+      attachments = [],
+      followUpDate
+    } = req.body;
+    
+    if (!vendorId || !type || !subject || !message) {
+      return res.status(400).json({
+        success: false,
+        error: 'MISSING_REQUIRED_FIELDS',
+        message: 'Vendor ID, type, subject, and message are required',
+        timestamp: new Date().toISOString()
+      });
+    }
+    
+    const communicationsCollection = await getCollection('vendor_communications');
+    
+    const newCommunication = {
+      vendorId,
+      type,
+      subject,
+      message,
+      date: date ? new Date(date) : new Date(),
+      status,
+      attachments,
+      followUpDate: followUpDate ? new Date(followUpDate) : null,
+      createdAt: new Date(),
+      updatedAt: new Date(),
+      createdBy: req.user.userId
+    };
+    
+    const result = await communicationsCollection.insertOne(newCommunication);
+    
+    res.status(201).json({
+      success: true,
+      data: { vendorCommunication: { ...newCommunication, _id: result.insertedId } },
+      message: 'Vendor communication created successfully',
+      timestamp: new Date().toISOString()
+    });
+  } catch (error) {
+    console.error('Create vendor communication error:', error);
+    res.status(500).json({
+      success: false,
+      error: 'CREATE_VENDOR_COMMUNICATION_FAILED',
+      message: 'Failed to create vendor communication',
+      timestamp: new Date().toISOString()
+    });
+  }
+});
+
 module.exports = router;

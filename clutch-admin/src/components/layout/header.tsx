@@ -27,6 +27,8 @@ import { formatRelativeTime } from "@/lib/utils";
 import { productionApi } from "@/lib/production-api";
 import { type Notification } from "@/lib/mock-api";
 import { useRouter } from "next/navigation";
+import { LanguageSwitcher } from "@/components/language-switcher";
+import { useTranslations } from "@/hooks/use-translations";
 
 interface HeaderProps {
   onMenuToggle: () => void;

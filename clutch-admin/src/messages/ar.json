@@ -1,0 +1,138 @@
+{
+  "common": {
+    "loading": "جاري التحميل...",
+    "error": "خطأ",
+    "success": "نجح",
+    "save": "حفظ",
+    "cancel": "إلغاء",
+    "delete": "حذف",
+    "edit": "تعديل",
+    "add": "إضافة",
+    "search": "بحث",
+    "filter": "تصفية",
+    "export": "تصدير",
+    "import": "استيراد",
+    "refresh": "تحديث",
+    "close": "إغلاق",
+    "back": "رجوع",
+    "next": "التالي",
+    "previous": "السابق",
+    "submit": "إرسال",
+    "reset": "إعادة تعيين",
+    "confirm": "تأكيد",
+    "yes": "نعم",
+    "no": "لا"
+  },
+  "navigation": {
+    "dashboard": "لوحة التحكم",
+    "userManagement": "إدارة المستخدمين",
+    "fleetManagement": "إدارة الأسطول",
+    "crm": "إدارة العملاء",
+    "chat": "الدردشة",
+    "aiDashboard": "لوحة الذكاء الاصطناعي",
+    "enterprise": "المؤسسة",
+    "finance": "المالية",
+    "legal": "القانونية",
+    "hr": "الموارد البشرية",
+    "featureFlags": "علامات الميزات",
+    "communication": "التواصل",
+    "analytics": "التحليلات",
+    "mobileApps": "تطبيقات الهاتف",
+    "cms": "نظام إدارة المحتوى",
+    "marketing": "التسويق",
+    "projects": "المشاريع",
+    "settings": "الإعدادات",
+    "reports": "التقارير",
+    "integrations": "التكاملات",
+    "auditTrail": "مسار التدقيق",
+    "apiDocs": "وثائق API",
+    "assets": "الأصول",
+    "vendors": "الموردين",
+    "systemHealth": "صحة النظام"
+  },
+  "auth": {
+    "login": "تسجيل الدخول",
+    "logout": "تسجيل الخروج",
+    "email": "البريد الإلكتروني",
+    "password": "كلمة المرور",
+    "forgotPassword": "نسيت كلمة المرور؟",
+    "rememberMe": "تذكرني",
+    "signInToDrive": "سجل دخولك لقيادة ثورة السيارات",
+    "invalidCredentials": "بريد إلكتروني أو كلمة مرور غير صحيحة",
+    "loginSuccess": "تم تسجيل الدخول بنجاح",
+    "logoutSuccess": "تم تسجيل الخروج بنجاح"
+  },
+  "dashboard": {
+    "title": "لوحة التحكم",
+    "welcome": "مرحباً بعودتك",
+    "overview": "نظرة عامة",
+    "quickActions": "إجراءات سريعة",
+    "recentActivity": "النشاط الأخير",
+    "systemStatus": "حالة النظام",
+    "totalUsers": "إجمالي المستخدمين",
+    "activeVehicles": "المركبات النشطة",
+    "totalBookings": "إجمالي الحجوزات",
+    "revenue": "الإيرادات"
+  },
+  "header": {
+    "search": "بحث...",
+    "notifications": "الإشعارات",
+    "myAccount": "حسابي",
+    "profile": "الملف الشخصي",
+    "settings": "الإعدادات",
+    "theme": "المظهر",
+    "language": "اللغة"
+  },
+  "sidebar": {
+    "collapse": "طي",
+    "expand": "توسيع",
+    "clutchAdmin": "كلتش أدمن"
+  },
+  "theme": {
+    "light": "فاتح",
+    "dark": "داكن",
+    "system": "النظام"
+  },
+  "language": {
+    "english": "English",
+    "arabic": "العربية"
+  },
+  "settings": {
+    "title": "الإعدادات",
+    "profile": "الملف الشخصي",
+    "account": "الحساب",
+    "security": "الأمان",
+    "notifications": "الإشعارات",
+    "preferences": "التفضيلات",
+    "system": "النظام",
+    "integrations": "التكاملات",
+    "api": "API",
+    "backup": "النسخ الاحتياطي",
+    "logs": "السجلات"
+  },
+  "profile": {
+    "title": "إعدادات الملف الشخصي",
+    "personalInfo": "المعلومات الشخصية",
+    "contactInfo": "معلومات الاتصال",
+    "changePassword": "تغيير كلمة المرور",
+    "currentPassword": "كلمة المرور الحالية",
+    "newPassword": "كلمة المرور الجديدة",
+    "confirmPassword": "تأكيد كلمة المرور",
+    "updateProfile": "تحديث الملف الشخصي",
+    "profileUpdated": "تم تحديث الملف الشخصي بنجاح"
+  },
+  "notifications": {
+    "title": "الإشعارات",
+    "markAllRead": "تعيين الكل كمقروء",
+    "noNotifications": "لا توجد إشعارات",
+    "newNotification": "إشعار جديد"
+  },
+  "errors": {
+    "generic": "حدث خطأ ما",
+    "networkError": "خطأ في الشبكة",
+    "unauthorized": "غير مخول",
+    "forbidden": "ممنوع",
+    "notFound": "غير موجود",
+    "serverError": "خطأ في الخادم"
+  }
+}

@@ -99,6 +99,14 @@ const employeesRoutes = require('./routes/employees');
 const employeeInvitationsRoutes = require('./routes/employee-invitations');
 const exportRoutes = require('./routes/export');
 
+// Import new missing route files
+const crmRoutes = require('./routes/crm');
+const financeRoutes = require('./routes/finance');
+const chatRoutes = require('./routes/chat');
+const settingsRoutes = require('./routes/settings');
+const integrationsRoutes = require('./routes/integrations');
+const auditTrailRoutes = require('./routes/audit-trail');
+
 // All route imports cleaned up - only existing routes imported above
 
 // Initialize Express app
@@ -190,6 +198,14 @@ app.use(`${apiPrefix}/notifications`, notificationsRoutes);
 app.use(`${apiPrefix}/employees`, employeesRoutes);
 app.use(`${apiPrefix}/employee-invitations`, employeeInvitationsRoutes);
 app.use(`${apiPrefix}/export`, exportRoutes);
+
+// Mount new missing route files
+app.use('/api/crm', crmRoutes);
+app.use('/api/finance', financeRoutes);
+app.use('/api/chat', chatRoutes);
+app.use('/api/settings', settingsRoutes);
+app.use('/api/integrations', integrationsRoutes);
+app.use('/api/audit-trail', auditTrailRoutes);
 
 // Fallback routes (without v1 prefix for frontend compatibility)
 app.use('/auth', authRoutes);
