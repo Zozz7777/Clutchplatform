@@ -747,6 +747,12 @@ router.post('/refresh', async (req, res) => {
   try {
     const { refreshToken } = req.body;
     
+    console.log('🔄 Token refresh attempt:', {
+      hasRefreshToken: !!refreshToken,
+      refreshTokenPreview: refreshToken ? `${refreshToken.substring(0, 20)}...` : 'none',
+      timestamp: new Date().toISOString()
+    });
+    
     if (!refreshToken) {
       return res.status(400).json({
         success: false,
@@ -757,11 +763,79 @@ router.post('/refresh', async (req, res) => {
     }
     
     // Verify refresh token
-    const decoded = jwt.verify(refreshToken, process.env.JWT_SECRET);
+    let decoded;
+    try {
+      decoded = jwt.verify(refreshToken, process.env.JWT_SECRET);
+      console.log('🔄 Refresh token decoded successfully:', {
+        userId: decoded.userId,
+        email: decoded.email,
+        type: decoded.type,
+        exp: decoded.exp,
+        iat: decoded.iat
+      });
+    } catch (jwtError) {
+      console.error('🔄 JWT verification failed:', {
+        error: jwtError.message,
+        name: jwtError.name,
+        refreshTokenPreview: refreshToken.substring(0, 20) + '...'
+      });
+      return res.status(401).json({
+        success: false,
+        error: 'INVALID_REFRESH_TOKEN',
+        message: 'Invalid or expired refresh token',
+        details: process.env.NODE_ENV === 'development' ? jwtError.message : undefined,
+        timestamp: new Date().toISOString()
+      });
+    }
     
-    // Get user from database
+    // Handle fallback users (no database lookup needed)
+    if (decoded.userId === 'fallback_ziad_ceo' || decoded.userId === 'admin-001') {
+      console.log('🔄 Refreshing token for fallback user:', decoded.userId);
+      
+      // Generate new access token
+      const newToken = jwt.sign(
+        {
+          userId: decoded.userId,
+          email: decoded.email,
+          role: decoded.userId === 'fallback_ziad_ceo' ? 'head_administrator' : 'admin',
+          permissions: ['all']
+        },
+        process.env.JWT_SECRET,
+        { expiresIn: '24h' }
+      );
+      
+      // Generate new refresh token
+      const newRefreshToken = jwt.sign(
+        {
+          userId: decoded.userId,
+          email: decoded.email,
+          type: 'refresh'
+        },
+        process.env.JWT_SECRET,
+        { expiresIn: '7d' }
+      );
+      
+      console.log('🔄 Token refresh successful for fallback user');
+      
+      return res.json({
+        success: true,
+        token: newToken,
+        refreshToken: newRefreshToken,
+        message: 'Token refreshed successfully',
+        timestamp: new Date().toISOString()
+      });
+    }
+    
+    // Get user from database for regular users
     const usersCollection = await getCollection('users');
     const user = await usersCollection.findOne({ _id: decoded.userId });
+    
+    console.log('🔄 Database user lookup:', {
+      found: !!user,
+      userId: decoded.userId,
+      userActive: user?.isActive,
+      userEmail: user?.email
+    });
     
     if (!user || !user.isActive) {
       return res.status(401).json({
@@ -795,29 +869,23 @@ router.post('/refresh', async (req, res) => {
       { expiresIn: '7d' }
     );
     
+    console.log('🔄 Token refresh successful for database user');
+    
     res.json({
       success: true,
-      data: {
-        token: newToken,
-        refreshToken: newRefreshToken,
-        user: {
-          id: user._id,
-          email: user.email,
-          name: user.name,
-          role: user.role,
-          permissions: user.permissions || []
-        }
-      },
+      token: newToken,
+      refreshToken: newRefreshToken,
       message: 'Token refreshed successfully',
       timestamp: new Date().toISOString()
     });
     
   } catch (error) {
-    console.error('Token refresh error:', error);
+    console.error('🔄 Token refresh error:', error);
     res.status(401).json({
       success: false,
-      error: 'TOKEN_REFRESH_FAILED',
-      message: 'Token refresh failed',
+      error: 'INVALID_REFRESH_TOKEN',
+      message: 'Invalid or expired refresh token',
+      details: process.env.NODE_ENV === 'development' ? error.message : undefined,
       timestamp: new Date().toISOString()
     });
   }

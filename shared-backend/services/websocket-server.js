@@ -100,11 +100,18 @@ class WebSocketServer {
 
         // Handle client disconnect
         ws.on('close', (code, reason) => {
+          const client = this.clients.get(clientId);
+          const duration = client ? Date.now() - client.connectedAt : 0;
+          
           console.log(`🔌 WebSocket client disconnected: ${clientId}`, {
             code,
             reason: reason.toString(),
-            duration: Date.now() - (this.clients.get(clientId)?.connectedAt || Date.now())
+            wasClean: code === 1000,
+            duration: `${Math.round(duration / 1000)}s`,
+            userEmail: user.email,
+            userId: user.userId || user.id
           });
+          
           this.clients.delete(clientId);
         });
 
@@ -161,11 +168,15 @@ class WebSocketServer {
       this.clients.forEach((client, clientId) => {
         if (client.ws.readyState === WebSocket.OPEN) {
           try {
-            client.ws.ping();
+            // Only ping if we haven't received a pong recently
+            if (now - client.lastPing > 45000) { // 45 seconds since last pong
+              client.ws.ping();
+            }
+            
             // Check if client hasn't responded to pings for too long
-            if (now - client.lastPing > 60000) { // 60 seconds timeout
+            if (now - client.lastPing > 120000) { // 2 minutes timeout
               console.log(`🔌 WebSocket client ${clientId} timeout, closing connection`);
-              client.ws.close(1000, 'Heartbeat timeout');
+              client.ws.close(1001, 'Heartbeat timeout');
               this.clients.delete(clientId);
             }
           } catch (error) {
@@ -177,7 +188,7 @@ class WebSocketServer {
           this.clients.delete(clientId);
         }
       });
-    }, 30000); // Ping every 30 seconds
+    }, 60000); // Ping every 60 seconds
   }
 
   broadcast(message, excludeClientId = null) {

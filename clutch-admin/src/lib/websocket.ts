@@ -42,11 +42,13 @@ export class WebSocketService {
   connect(handlers: WebSocketEventHandlers = {}): Promise<void> {
     return new Promise((resolve, reject) => {
       if (this.ws?.readyState === WebSocket.OPEN) {
+        console.log('🔌 WebSocket already connected');
         resolve();
         return;
       }
 
       if (this.isConnecting) {
+        console.log('🔌 WebSocket connection already in progress');
         reject(new Error('Connection already in progress'));
         return;
       }
@@ -78,6 +80,12 @@ export class WebSocketService {
 
         const wsUrl = `${this.url}?token=${this.token}`;
         console.log('🔌 Attempting WebSocket connection to:', wsUrl.replace(this.token, '[TOKEN]'));
+        
+        // Close existing connection if any
+        if (this.ws) {
+          this.ws.close();
+        }
+        
         this.ws = new WebSocket(wsUrl);
 
         // Set connection timeout
@@ -88,13 +96,21 @@ export class WebSocketService {
             this.isConnecting = false;
             reject(new Error('WebSocket connection timeout'));
           }
-        }, 10000); // 10 second timeout
+        }, 15000); // 15 second timeout
 
         this.ws.onopen = () => {
           console.log('🔌 WebSocket connected successfully');
           clearTimeout(connectionTimeout);
           this.isConnecting = false;
           this.reconnectAttempts = 0;
+          
+          // Send initial ping to test connection
+          setTimeout(() => {
+            if (this.ws?.readyState === WebSocket.OPEN) {
+              this.send({ type: 'ping', timestamp: Date.now() });
+            }
+          }, 1000);
+          
           this.eventHandlers.onConnect?.();
           resolve();
         };
@@ -116,14 +132,21 @@ export class WebSocketService {
             wasClean: event.wasClean,
             url: wsUrl.replace(this.token || '', '[TOKEN]'),
             hasToken: !!this.token,
-            tokenPreview: this.token ? `${this.token.substring(0, 20)}...` : 'none'
+            tokenPreview: this.token ? `${this.token.substring(0, 20)}...` : 'none',
+            reconnectAttempts: this.reconnectAttempts,
+            maxReconnectAttempts: this.maxReconnectAttempts
           });
           this.isConnecting = false;
           this.eventHandlers.onDisconnect?.();
           
-          // Only attempt reconnect for unexpected disconnections
-          if (!event.wasClean && event.code !== 1000 && this.reconnectAttempts < this.maxReconnectAttempts) {
+          // Only attempt reconnect for unexpected disconnections and if we haven't exceeded max attempts
+          if (!event.wasClean && event.code !== 1000 && event.code !== 1001 && this.reconnectAttempts < this.maxReconnectAttempts) {
+            console.log('🔌 Scheduling reconnect due to unexpected disconnection');
             this.scheduleReconnect();
+          } else if (event.code === 1001) {
+            console.log('🔌 WebSocket closed by server (1001), not attempting reconnect');
+          } else if (this.reconnectAttempts >= this.maxReconnectAttempts) {
+            console.log('🔌 Max reconnect attempts reached, giving up');
           }
         };
 

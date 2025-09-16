@@ -92,10 +92,22 @@ class ApiService {
       
       if (response.ok) {
         const data = await response.json();
-        console.log("🔄 Refresh response data:", { success: data.success, hasToken: !!data.token, hasRefreshToken: !!data.refreshToken });
-        if (data.success && data.token) {
-          this.setTokens(data.token, data.refreshToken);
-          return data.token;
+        console.log("🔄 Refresh response data:", { 
+          success: data.success, 
+          hasToken: !!data.token, 
+          hasRefreshToken: !!data.refreshToken,
+          responseStructure: Object.keys(data)
+        });
+        
+        // Handle both response formats: { success: true, token: ... } and { success: true, data: { token: ... } }
+        const token = data.token || data.data?.token;
+        const refreshToken = data.refreshToken || data.data?.refreshToken;
+        
+        if (data.success && token) {
+          this.setTokens(token, refreshToken);
+          return token;
+        } else {
+          console.error("🔄 Refresh response missing token:", data);
         }
       } else {
         const errorData = await response.json();
