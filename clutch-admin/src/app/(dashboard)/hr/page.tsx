@@ -217,8 +217,8 @@ export default function HRPage() {
   }, []);
 
   useEffect(() => {
-    let filteredEmps = employees;
-    let filteredApps = applications;
+    let filteredEmps = employees || [];
+    let filteredApps = applications || [];
 
     // Search filter
     if (searchQuery) {

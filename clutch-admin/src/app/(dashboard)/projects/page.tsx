@@ -382,18 +382,18 @@ export default function ProjectManagementPage() {
     }
   };
 
-  const filteredProjects = projects.filter((project) => {
+  const filteredProjects = (projects || []).filter((project) => {
     const matchesSearch = project.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
                          project.description.toLowerCase().includes(searchTerm.toLowerCase());
     const matchesStatus = statusFilter === "all" || project.status === statusFilter;
     return matchesSearch && matchesStatus;
   });
 
-  const totalProjects = projects.length;
-  const activeProjects = projects.filter(p => p.status === "active").length;
-  const completedProjects = projects.filter(p => p.status === "completed").length;
-  const totalBudget = projects.reduce((sum, p) => sum + p.budget, 0);
-  const totalLoggedHours = projects.reduce((sum, p) => sum + p.timeTracking.logged, 0);
+  const totalProjects = (projects || []).length;
+  const activeProjects = (projects || []).filter(p => p.status === "active").length;
+  const completedProjects = (projects || []).filter(p => p.status === "completed").length;
+  const totalBudget = (projects || []).reduce((sum, p) => sum + p.budget, 0);
+  const totalLoggedHours = (projects || []).reduce((sum, p) => sum + p.timeTracking.logged, 0);
 
   if (loading) {
     return (

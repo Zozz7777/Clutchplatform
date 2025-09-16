@@ -66,7 +66,7 @@ export default function B2CUsersPage() {
   }, []);
 
   useEffect(() => {
-    let filtered = users;
+    let filtered = users || [];
 
     if (searchQuery) {
       filtered = filtered.filter(user =>

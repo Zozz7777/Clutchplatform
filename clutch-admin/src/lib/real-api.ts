@@ -249,6 +249,55 @@ export class RealApiService {
     });
     return response.success;
   }
+
+  // Asset Management APIs
+  async getAssets(): Promise<any[]> {
+    const response = await apiService.request<any[]>("/api/v1/assets");
+    return response.success ? response.data : [];
+  }
+
+  async getMaintenanceRecords(): Promise<any[]> {
+    const response = await apiService.request<any[]>("/api/v1/assets/maintenance");
+    return response.success ? response.data : [];
+  }
+
+  async getAssetAssignments(): Promise<any[]> {
+    const response = await apiService.request<any[]>("/api/v1/assets/assignments");
+    return response.success ? response.data : [];
+  }
+
+  // Project Management APIs
+  async getProjects(): Promise<any[]> {
+    const response = await apiService.request<any[]>("/api/v1/projects");
+    return response.success ? response.data : [];
+  }
+
+  async getProjectTasks(projectId: string): Promise<any[]> {
+    const response = await apiService.request<any[]>(`/api/v1/projects/${projectId}/tasks`);
+    return response.success ? response.data : [];
+  }
+
+  async getTimeTracking(projectId: string): Promise<any[]> {
+    const response = await apiService.request<any[]>(`/api/v1/projects/${projectId}/time-tracking`);
+    return response.success ? response.data : [];
+  }
+
+  // Feature Flags APIs - Additional methods
+  async getABTests(): Promise<any[]> {
+    const response = await apiService.request<any[]>("/api/v1/feature-flags/ab-tests");
+    return response.success ? response.data : [];
+  }
+
+  async getRollouts(): Promise<any[]> {
+    const response = await apiService.request<any[]>("/api/v1/feature-flags/rollouts");
+    return response.success ? response.data : [];
+  }
+
+  // Analytics APIs - Additional methods
+  async getAnalyticsMetrics(): Promise<any> {
+    const response = await apiService.request<any>("/api/v1/analytics/metrics");
+    return response.success ? response.data : null;
+  }
 }
 
 export const realApi = new RealApiService();

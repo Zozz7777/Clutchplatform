@@ -122,13 +122,13 @@ export default function OBD2Page() {
   }, []);
 
   useEffect(() => {
-    let filtered = obd2Data;
+    let filtered = obd2Data || [];
 
     if (searchQuery) {
       filtered = filtered.filter(item =>
         item.dtc.toLowerCase().includes(searchQuery.toLowerCase()) ||
         item.description.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        vehicles.find(v => v.id === item.vehicleId)?.licensePlate.toLowerCase().includes(searchQuery.toLowerCase())
+        (vehicles || []).find(v => v.id === item.vehicleId)?.licensePlate.toLowerCase().includes(searchQuery.toLowerCase())
       );
     }
 

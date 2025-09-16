@@ -62,11 +62,11 @@ export default function FleetOverviewPage() {
     );
   }
 
-  const activeVehicles = vehicles.filter(v => v.status === "active").length;
-  const maintenanceVehicles = vehicles.filter(v => v.status === "maintenance").length;
-  const totalMileage = vehicles.reduce((sum, v) => sum + v.mileage, 0);
-  const averageFuelEfficiency = vehicles.length > 0 
-    ? vehicles.reduce((sum, v) => sum + v.fuelEfficiency, 0) / vehicles.length 
+  const activeVehicles = (vehicles || []).filter(v => v.status === "active").length;
+  const maintenanceVehicles = (vehicles || []).filter(v => v.status === "maintenance").length;
+  const totalMileage = (vehicles || []).reduce((sum, v) => sum + v.mileage, 0);
+  const averageFuelEfficiency = (vehicles || []).length > 0 
+    ? (vehicles || []).reduce((sum, v) => sum + v.fuelEfficiency, 0) / (vehicles || []).length 
     : 0;
 
   return (
@@ -99,7 +99,7 @@ export default function FleetOverviewPage() {
             <Truck className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold text-foreground">{vehicles.length}</div>
+            <div className="text-2xl font-bold text-foreground">{(vehicles || []).length}</div>
             <p className="text-xs text-muted-foreground">
               <span className="text-green-600">+2</span> this month
             </p>
@@ -193,7 +193,7 @@ export default function FleetOverviewPage() {
           </CardHeader>
           <CardContent>
             <div className="space-y-4">
-              {vehicles.slice(0, 5).map((vehicle) => (
+              {(vehicles || []).slice(0, 5).map((vehicle) => (
                 <div key={vehicle.id} className="flex items-center justify-between">
                   <div className="flex items-center space-x-3">
                     <div className="w-8 h-8 rounded-full bg-primary flex items-center justify-center">

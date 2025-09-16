@@ -391,6 +391,81 @@ export class ProductionApiService {
       throw new Error("Failed to delete report");
     }
   }
+
+  // Asset Management APIs
+  async getAssets(): Promise<any[]> {
+    try {
+      return await realApi.getAssets();
+    } catch (error) {
+      console.error("Failed to fetch assets:", error);
+      throw new Error("Failed to load assets");
+    }
+  }
+
+  async getMaintenanceRecords(): Promise<any[]> {
+    try {
+      return await realApi.getMaintenanceRecords();
+    } catch (error) {
+      console.error("Failed to fetch maintenance records:", error);
+      throw new Error("Failed to load maintenance records");
+    }
+  }
+
+  async getAssetAssignments(): Promise<any[]> {
+    try {
+      return await realApi.getAssetAssignments();
+    } catch (error) {
+      console.error("Failed to fetch asset assignments:", error);
+      throw new Error("Failed to load asset assignments");
+    }
+  }
+
+  // Project Management APIs
+  async getProjects(): Promise<any[]> {
+    try {
+      return await realApi.getProjects();
+    } catch (error) {
+      console.error("Failed to fetch projects:", error);
+      throw new Error("Failed to load projects");
+    }
+  }
+
+  async getProjectTasks(projectId: string): Promise<any[]> {
+    try {
+      return await realApi.getProjectTasks(projectId);
+    } catch (error) {
+      console.error("Failed to fetch project tasks:", error);
+      throw new Error("Failed to load project tasks");
+    }
+  }
+
+  async getTimeTracking(projectId: string): Promise<any[]> {
+    try {
+      return await realApi.getTimeTracking(projectId);
+    } catch (error) {
+      console.error("Failed to fetch time tracking:", error);
+      throw new Error("Failed to load time tracking");
+    }
+  }
+
+  // Feature Flags APIs - Additional methods
+  async getABTests(): Promise<any[]> {
+    try {
+      return await realApi.getABTests();
+    } catch (error) {
+      console.error("Failed to fetch A/B tests:", error);
+      throw new Error("Failed to load A/B tests");
+    }
+  }
+
+  async getRollouts(): Promise<any[]> {
+    try {
+      return await realApi.getRollouts();
+    } catch (error) {
+      console.error("Failed to fetch rollouts:", error);
+      throw new Error("Failed to load rollouts");
+    }
+  }
 }
 
 export const productionApi = new ProductionApiService();

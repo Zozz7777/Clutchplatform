@@ -462,7 +462,7 @@ export default function AssetManagementPage() {
     }
   };
 
-  const filteredAssets = assets.filter((asset) => {
+  const filteredAssets = (assets || []).filter((asset) => {
     const matchesSearch = asset.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
                          asset.serialNumber.toLowerCase().includes(searchTerm.toLowerCase()) ||
                          asset.description.toLowerCase().includes(searchTerm.toLowerCase());
@@ -471,10 +471,10 @@ export default function AssetManagementPage() {
     return matchesSearch && matchesType && matchesStatus;
   });
 
-  const totalAssets = assets.length;
-  const activeAssets = assets.filter(a => a.status === "active").length;
-  const totalValue = assets.reduce((sum, a) => sum + a.currentValue, 0);
-  const maintenanceDue = assets.filter(a => 
+  const totalAssets = (assets || []).length;
+  const activeAssets = (assets || []).filter(a => a.status === "active").length;
+  const totalValue = (assets || []).reduce((sum, a) => sum + a.currentValue, 0);
+  const maintenanceDue = (assets || []).filter(a => 
     new Date(a.maintenance.nextService) <= new Date(Date.now() + 30 * 24 * 60 * 60 * 1000)
   ).length;
 
