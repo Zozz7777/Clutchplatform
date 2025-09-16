@@ -166,9 +166,9 @@ export function ReportUsageStats({ className = '' }: ReportUsageStatsProps) {
         </CardHeader>
         <CardContent>
           <div className="animate-pulse space-y-4">
-            <div className="h-4 bg-gray-200 rounded w-3/4"></div>
-            <div className="h-4 bg-gray-200 rounded w-1/2"></div>
-            <div className="h-4 bg-gray-200 rounded w-2/3"></div>
+            <div className="h-4 bg-gray-200 rounded-lg-lg w-3/4"></div>
+            <div className="h-4 bg-gray-200 rounded-lg-lg w-1/2"></div>
+            <div className="h-4 bg-gray-200 rounded-lg-lg w-2/3"></div>
           </div>
         </CardContent>
       </Card>
@@ -203,12 +203,12 @@ export function ReportUsageStats({ className = '' }: ReportUsageStatsProps) {
       <CardContent className="space-y-6">
         {/* Summary Stats */}
         <div className="grid grid-cols-2 gap-4">
-          <div className="text-center p-3 bg-blue-50 rounded-lg">
+          <div className="text-center p-3 bg-blue-50 rounded-lg-lg-lg">
             <FileText className="h-5 w-5 text-blue-600 mx-auto mb-1" />
             <p className="text-lg font-bold text-blue-600">{usageData.totalUsage}</p>
             <p className="text-xs text-gray-500">Total Usage</p>
           </div>
-          <div className="text-center p-3 bg-green-50 rounded-lg">
+          <div className="text-center p-3 bg-green-50 rounded-lg-lg-lg">
             <Users className="h-5 w-5 text-green-600 mx-auto mb-1" />
             <p className="text-lg font-bold text-green-600">{usageData.totalUsers}</p>
             <p className="text-xs text-gray-500">Unique Users</p>
@@ -217,7 +217,7 @@ export function ReportUsageStats({ className = '' }: ReportUsageStatsProps) {
 
         {/* Most Popular Report */}
         {usageData.mostPopular && (
-          <div className="text-center p-4 bg-gray-50 rounded-lg">
+          <div className="text-center p-4 bg-gray-50 rounded-lg-lg-lg">
             <div className="flex items-center justify-center space-x-2 mb-2">
               <Star className="h-6 w-6 text-yellow-600" />
               <span className="text-xl font-bold text-gray-900">{usageData.mostPopular.reportName}</span>
@@ -237,9 +237,9 @@ export function ReportUsageStats({ className = '' }: ReportUsageStatsProps) {
           <h4 className="text-sm font-medium text-gray-900">Report Usage</h4>
           <div className="space-y-2">
             {usageData.reports.map((report, index) => (
-              <div key={report.reportName} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+              <div key={report.reportName} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg-lg-lg">
                 <div className="flex items-center space-x-3">
-                  <div className="flex items-center justify-center w-6 h-6 bg-blue-100 rounded-full">
+                  <div className="flex items-center justify-center w-6 h-6 bg-blue-100 rounded-lg-lg-full">
                     <span className="text-xs font-semibold text-blue-600">{index + 1}</span>
                   </div>
                   <div>
@@ -286,7 +286,7 @@ export function ReportUsageStats({ className = '' }: ReportUsageStatsProps) {
         </div>
 
         {/* Generation Time */}
-        <div className="text-center p-3 bg-gray-50 rounded-lg">
+        <div className="text-center p-3 bg-gray-50 rounded-lg-lg-lg">
           <div className="flex items-center justify-center space-x-2 mb-2">
             <Clock className="h-5 w-5 text-blue-600" />
             <span className="text-lg font-bold text-blue-600">
@@ -312,7 +312,7 @@ export function ReportUsageStats({ className = '' }: ReportUsageStatsProps) {
         </div>
 
         {/* Insights */}
-        <div className="p-3 bg-blue-50 rounded-lg">
+        <div className="p-3 bg-blue-50 rounded-lg-lg-lg">
           <h5 className="text-sm font-medium text-blue-900 mb-2">💡 Report Usage Insights</h5>
           <ul className="text-xs text-blue-800 space-y-1">
             <li>• Total usage: {usageData.totalUsage} report generations</li>

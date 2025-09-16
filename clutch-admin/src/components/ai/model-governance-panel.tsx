@@ -615,26 +615,26 @@ export default function ModelGovernancePanel({ className }: ModelGovernancePanel
         <CardContent className="space-y-6">
           {/* Model Summary */}
           <div className="grid grid-cols-4 gap-4">
-            <div className="text-center p-3 bg-green-50 rounded-lg">
+            <div className="text-center p-3 bg-green-50 rounded-lg-lg">
               <div className="text-2xl font-bold text-green-600">{productionModels}</div>
               <div className="text-sm text-muted-foreground">Production Models</div>
             </div>
-            <div className="text-center p-3 bg-orange-50 rounded-lg">
+            <div className="text-center p-3 bg-orange-50 rounded-lg-lg">
               <div className="text-2xl font-bold text-orange-600">{highBiasModels}</div>
               <div className="text-sm text-muted-foreground">High Bias Models</div>
             </div>
-            <div className="text-center p-3 bg-yellow-50 rounded-lg">
+            <div className="text-center p-3 bg-yellow-50 rounded-lg-lg">
               <div className="text-2xl font-bold text-yellow-600">{pendingApprovals}</div>
               <div className="text-sm text-muted-foreground">Pending Approvals</div>
             </div>
-            <div className="text-center p-3 bg-red-50 rounded-lg">
+            <div className="text-center p-3 bg-red-50 rounded-lg-lg">
               <div className="text-2xl font-bold text-red-600">{activeAlerts}</div>
               <div className="text-sm text-muted-foreground">Active Alerts</div>
             </div>
           </div>
 
           {/* Bias Overview */}
-          <div className="p-4 bg-gradient-to-r from-blue-50 to-purple-50 rounded-lg">
+          <div className="p-4 bg-gradient-to-r from-blue-50 to-purple-50 rounded-lg-lg">
             <div className="flex items-center justify-between">
               <div>
                 <h4 className="font-medium">Average Bias Score</h4>
@@ -659,7 +659,7 @@ export default function ModelGovernancePanel({ className }: ModelGovernancePanel
             <h4 className="font-medium mb-3">Bias & Fairness Alerts</h4>
             <div className="space-y-2">
               {biasAlerts.map((alert) => (
-                <div key={alert.id} className="p-3 border rounded-lg">
+                <div key={alert.id} className="p-3 border rounded-lg-lg">
                   <div className="flex items-center justify-between mb-2">
                     <div className="flex items-center gap-2">
                       <span className="font-medium">{alert.description}</span>
@@ -720,7 +720,7 @@ export default function ModelGovernancePanel({ className }: ModelGovernancePanel
               {filteredModels.map((model) => (
                 <div
                   key={model.id}
-                  className={`p-3 border rounded-lg cursor-pointer transition-colors ${
+                  className={`p-3 border rounded-lg-lg cursor-pointer transition-colors ${
                     selectedModel?.id === model.id ? 'border-blue-500 bg-blue-50' : 'hover:bg-gray-50'
                   }`}
                   onClick={() => setSelectedModel(model)}
@@ -1048,7 +1048,7 @@ export default function ModelGovernancePanel({ className }: ModelGovernancePanel
                     <h5 className="font-medium mb-2">Documentation</h5>
                     <div className="space-y-1">
                       {selectedModel.governance.documentation.map((doc, index) => (
-                        <div key={index} className="p-2 border rounded text-sm">
+                        <div key={index} className="p-2 border rounded-lg text-sm">
                           • {doc}
                         </div>
                       ))}

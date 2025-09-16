@@ -590,19 +590,19 @@ export default function FraudEscalationWorkflow({ className }: FraudEscalationWo
         <CardContent className="space-y-6">
           {/* Fraud Summary */}
           <div className="grid grid-cols-4 gap-4">
-            <div className="text-center p-3 bg-red-50 rounded-lg">
+            <div className="text-center p-3 bg-red-50 rounded-lg-lg">
               <div className="text-2xl font-bold text-red-600">{criticalEvents}</div>
               <div className="text-sm text-muted-foreground">Critical Events</div>
             </div>
-            <div className="text-center p-3 bg-orange-50 rounded-lg">
+            <div className="text-center p-3 bg-orange-50 rounded-lg-lg">
               <div className="text-2xl font-bold text-orange-600">{activeEvents}</div>
               <div className="text-sm text-muted-foreground">Active Events</div>
             </div>
-            <div className="text-center p-3 bg-purple-50 rounded-lg">
+            <div className="text-center p-3 bg-purple-50 rounded-lg-lg">
               <div className="text-2xl font-bold text-purple-600">{avgRiskScore}</div>
               <div className="text-sm text-muted-foreground">Avg Risk Score</div>
             </div>
-            <div className="text-center p-3 bg-yellow-50 rounded-lg">
+            <div className="text-center p-3 bg-yellow-50 rounded-lg-lg">
               <div className="text-2xl font-bold text-yellow-600">{formatCurrency(totalFinancialImpact)}</div>
               <div className="text-sm text-muted-foreground">Financial Impact</div>
             </div>
@@ -613,7 +613,7 @@ export default function FraudEscalationWorkflow({ className }: FraudEscalationWo
             <h4 className="font-medium mb-3">Active Fraud Rules</h4>
             <div className="space-y-2">
               {fraudRules.map((rule) => (
-                <div key={rule.id} className="p-3 border rounded-lg">
+                <div key={rule.id} className="p-3 border rounded-lg-lg">
                   <div className="flex items-center justify-between mb-2">
                     <div className="flex items-center gap-2">
                       <span className="font-medium">{rule.name}</span>
@@ -667,7 +667,7 @@ export default function FraudEscalationWorkflow({ className }: FraudEscalationWo
               {filteredEvents.map((event) => (
                 <div
                   key={event.id}
-                  className={`p-3 border rounded-lg cursor-pointer transition-colors ${
+                  className={`p-3 border rounded-lg-lg cursor-pointer transition-colors ${
                     selectedEvent?.id === event.id ? 'border-blue-500 bg-blue-50' : 'hover:bg-gray-50'
                   }`}
                   onClick={() => setSelectedEvent(event)}
@@ -853,7 +853,7 @@ export default function FraudEscalationWorkflow({ className }: FraudEscalationWo
                     <h5 className="font-medium mb-2">Fraud Indicators</h5>
                     <div className="space-y-2">
                       {selectedEvent.indicators.map((indicator, index) => (
-                        <div key={index} className="p-3 border rounded-lg">
+                        <div key={index} className="p-3 border rounded-lg-lg">
                           <div className="flex items-center justify-between mb-2">
                             <span className="font-medium">{indicator.type.replace('_', ' ')}</span>
                             <div className="flex items-center gap-2">
@@ -875,7 +875,7 @@ export default function FraudEscalationWorkflow({ className }: FraudEscalationWo
                     <h5 className="font-medium mb-2">Actions Taken</h5>
                     <div className="space-y-2">
                       {selectedEvent.actions.map((action) => (
-                        <div key={action.id} className="p-3 border rounded-lg">
+                        <div key={action.id} className="p-3 border rounded-lg-lg">
                           <div className="flex items-center justify-between mb-2">
                             <div className="flex items-center gap-2">
                               {getActionIcon(action.type)}

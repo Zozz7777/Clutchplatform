@@ -552,26 +552,26 @@ export default function ChaosTestingIntegration({ className }: ChaosTestingInteg
         <CardContent className="space-y-6">
           {/* Experiment Summary */}
           <div className="grid grid-cols-4 gap-4">
-            <div className="text-center p-3 bg-orange-50 rounded-lg">
+            <div className="text-center p-3 bg-orange-50 rounded-lg-lg">
               <div className="text-2xl font-bold text-orange-600">{runningExperiments}</div>
               <div className="text-sm text-muted-foreground">Running</div>
             </div>
-            <div className="text-center p-3 bg-blue-50 rounded-lg">
+            <div className="text-center p-3 bg-blue-50 rounded-lg-lg">
               <div className="text-2xl font-bold text-blue-600">{scheduledExperiments}</div>
               <div className="text-sm text-muted-foreground">Scheduled</div>
             </div>
-            <div className="text-center p-3 bg-green-50 rounded-lg">
+            <div className="text-center p-3 bg-green-50 rounded-lg-lg">
               <div className="text-2xl font-bold text-green-600">{completedExperiments}</div>
               <div className="text-sm text-muted-foreground">Completed</div>
             </div>
-            <div className="text-center p-3 bg-red-50 rounded-lg">
+            <div className="text-center p-3 bg-red-50 rounded-lg-lg">
               <div className="text-2xl font-bold text-red-600">{failedExperiments}</div>
               <div className="text-sm text-muted-foreground">Failed</div>
             </div>
           </div>
 
           {/* Safety Status */}
-          <div className="p-4 bg-gradient-to-r from-blue-50 to-purple-50 rounded-lg">
+          <div className="p-4 bg-gradient-to-r from-blue-50 to-purple-50 rounded-lg-lg">
             <div className="flex items-center justify-between">
               <div>
                 <h4 className="font-medium">Chaos Testing Safety</h4>
@@ -625,7 +625,7 @@ export default function ChaosTestingIntegration({ className }: ChaosTestingInteg
               {filteredExperiments.map((experiment) => (
                 <div
                   key={experiment.id}
-                  className={`p-3 border rounded-lg cursor-pointer transition-colors ${
+                  className={`p-3 border rounded-lg-lg cursor-pointer transition-colors ${
                     selectedExperiment?.id === experiment.id ? 'border-blue-500 bg-blue-50' : 'hover:bg-gray-50'
                   }`}
                   onClick={() => setSelectedExperiment(experiment)}
@@ -767,7 +767,7 @@ export default function ChaosTestingIntegration({ className }: ChaosTestingInteg
                     <h5 className="font-medium mb-2">Performance Metrics</h5>
                     <div className="space-y-2">
                       {selectedExperiment.metrics.map((metric) => (
-                        <div key={metric.metric} className="p-3 border rounded-lg">
+                        <div key={metric.metric} className="p-3 border rounded-lg-lg">
                           <div className="flex items-center justify-between mb-2">
                             <span className="font-medium">{metric.metric}</span>
                             <div className="flex items-center gap-2">
@@ -855,7 +855,7 @@ export default function ChaosTestingIntegration({ className }: ChaosTestingInteg
                       <h5 className="font-medium mb-2">Lessons Learned</h5>
                       <div className="space-y-1">
                         {selectedExperiment.results.lessons.map((lesson, index) => (
-                          <div key={index} className="p-2 border rounded text-sm">
+                          <div key={index} className="p-2 border rounded-lg text-sm">
                             • {lesson}
                           </div>
                         ))}
@@ -891,7 +891,7 @@ export default function ChaosTestingIntegration({ className }: ChaosTestingInteg
                     <h5 className="font-medium mb-2">Rollback Triggers</h5>
                     <div className="space-y-1">
                       {selectedExperiment.safety.rollbackTriggers.map((trigger, index) => (
-                        <div key={index} className="p-2 border rounded text-sm">
+                        <div key={index} className="p-2 border rounded-lg text-sm">
                           • {trigger}
                         </div>
                       ))}

@@ -195,9 +195,9 @@ export function ForecastAccuracy({ className = '' }: ForecastAccuracyProps) {
         </CardHeader>
         <CardContent>
           <div className="animate-pulse space-y-4">
-            <div className="h-4 bg-gray-200 rounded w-3/4"></div>
-            <div className="h-4 bg-gray-200 rounded w-1/2"></div>
-            <div className="h-4 bg-gray-200 rounded w-2/3"></div>
+            <div className="h-4 bg-gray-200 rounded-lg-lg w-3/4"></div>
+            <div className="h-4 bg-gray-200 rounded-lg-lg w-1/2"></div>
+            <div className="h-4 bg-gray-200 rounded-lg-lg w-2/3"></div>
           </div>
         </CardContent>
       </Card>
@@ -222,14 +222,14 @@ export function ForecastAccuracy({ className = '' }: ForecastAccuracyProps) {
       <CardContent className="space-y-6">
         {/* Summary Stats */}
         <div className="grid grid-cols-2 gap-4">
-          <div className="text-center p-3 bg-blue-50 rounded-lg">
+          <div className="text-center p-3 bg-blue-50 rounded-lg-lg-lg">
             <Target className="h-5 w-5 text-blue-600 mx-auto mb-1" />
             <p className="text-lg font-bold text-blue-600">
               {averageAccuracy.toFixed(1)}%
             </p>
             <p className="text-xs text-gray-500">Avg Accuracy</p>
           </div>
-          <div className="text-center p-3 bg-green-50 rounded-lg">
+          <div className="text-center p-3 bg-green-50 rounded-lg-lg-lg">
             <CheckCircle className="h-5 w-5 text-green-600 mx-auto mb-1" />
             <p className="text-lg font-bold text-green-600">
               {accuracyData.filter(m => m.accuracy >= 80).length}
@@ -239,7 +239,7 @@ export function ForecastAccuracy({ className = '' }: ForecastAccuracyProps) {
         </div>
 
         {/* Overall Accuracy */}
-        <div className="text-center p-4 bg-gray-50 rounded-lg">
+        <div className="text-center p-4 bg-gray-50 rounded-lg-lg-lg">
           <div className="flex items-center justify-center space-x-2 mb-2">
             <Target className={`h-6 w-6 ${getAccuracyColor(averageAccuracy)}`} />
             <span className={`text-2xl font-bold ${getAccuracyColor(averageAccuracy)}`}>
@@ -263,9 +263,9 @@ export function ForecastAccuracy({ className = '' }: ForecastAccuracyProps) {
               const TrendIcon = getTrendIcon(model.trend);
               
               return (
-                <div key={model.model} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+                <div key={model.model} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg-lg-lg">
                   <div className="flex items-center space-x-3">
-                    <div className="flex items-center justify-center w-8 h-8 bg-blue-100 rounded-full">
+                    <div className="flex items-center justify-center w-8 h-8 bg-blue-100 rounded-lg-lg-full">
                       <span className="text-sm font-semibold text-blue-600">
                         {index + 1}
                       </span>
@@ -319,7 +319,7 @@ export function ForecastAccuracy({ className = '' }: ForecastAccuracyProps) {
           <h4 className="text-sm font-medium text-gray-900">Model Metrics</h4>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
             {accuracyData.slice(0, 4).map((model) => (
-              <div key={model.model} className="p-3 bg-gray-50 rounded-lg">
+              <div key={model.model} className="p-3 bg-gray-50 rounded-lg-lg-lg">
                 <div className="flex items-center justify-between mb-2">
                   <h5 className="text-sm font-medium text-gray-900">{model.model}</h5>
                   <Badge variant="outline" className="text-xs">
@@ -352,14 +352,14 @@ export function ForecastAccuracy({ className = '' }: ForecastAccuracyProps) {
 
         {/* Performance Summary */}
         <div className="grid grid-cols-2 gap-4">
-          <div className="text-center p-3 bg-green-50 rounded-lg">
+          <div className="text-center p-3 bg-green-50 rounded-lg-lg-lg">
             <CheckCircle className="h-4 w-4 text-green-600 mx-auto mb-1" />
             <p className="text-sm font-bold text-green-600">
               {topModel?.model || 'N/A'}
             </p>
             <p className="text-xs text-gray-500">Best Model</p>
           </div>
-          <div className="text-center p-3 bg-red-50 rounded-lg">
+          <div className="text-center p-3 bg-red-50 rounded-lg-lg-lg">
             <XCircle className="h-4 w-4 text-red-600 mx-auto mb-1" />
             <p className="text-sm font-bold text-red-600">
               {worstModel?.model || 'N/A'}
@@ -381,7 +381,7 @@ export function ForecastAccuracy({ className = '' }: ForecastAccuracyProps) {
         </div>
 
         {/* Insights */}
-        <div className="p-3 bg-blue-50 rounded-lg">
+        <div className="p-3 bg-blue-50 rounded-lg-lg-lg">
           <h5 className="text-sm font-medium text-blue-900 mb-2">💡 Forecast Accuracy Insights</h5>
           <ul className="text-xs text-blue-800 space-y-1">
             <li>• Average accuracy: {averageAccuracy.toFixed(1)}%</li>

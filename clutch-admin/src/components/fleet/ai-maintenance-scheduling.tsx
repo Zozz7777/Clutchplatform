@@ -502,30 +502,30 @@ export default function AIMaintenanceScheduling({ className }: AIMaintenanceSche
         <CardContent className="space-y-6">
           {/* Maintenance Summary */}
           <div className="grid grid-cols-5 gap-4">
-            <div className="text-center p-3 bg-blue-50 rounded-lg">
+            <div className="text-center p-3 bg-blue-50 rounded-lg-lg">
               <div className="text-2xl font-bold text-blue-600">{scheduledTasks}</div>
               <div className="text-sm text-muted-foreground">Scheduled</div>
             </div>
-            <div className="text-center p-3 bg-yellow-50 rounded-lg">
+            <div className="text-center p-3 bg-yellow-50 rounded-lg-lg">
               <div className="text-2xl font-bold text-yellow-600">{inProgressTasks}</div>
               <div className="text-sm text-muted-foreground">In Progress</div>
             </div>
-            <div className="text-center p-3 bg-green-50 rounded-lg">
+            <div className="text-center p-3 bg-green-50 rounded-lg-lg">
               <div className="text-2xl font-bold text-green-600">{completedTasks}</div>
               <div className="text-sm text-muted-foreground">Completed</div>
             </div>
-            <div className="text-center p-3 bg-red-50 rounded-lg">
+            <div className="text-center p-3 bg-red-50 rounded-lg-lg">
               <div className="text-2xl font-bold text-red-600">{overdueTasks}</div>
               <div className="text-sm text-muted-foreground">Overdue</div>
             </div>
-            <div className="text-center p-3 bg-purple-50 rounded-lg">
+            <div className="text-center p-3 bg-purple-50 rounded-lg-lg">
               <div className="text-2xl font-bold text-purple-600">{avgAIConfidence}%</div>
               <div className="text-sm text-muted-foreground">AI Confidence</div>
             </div>
           </div>
 
           {/* AI Optimization Status */}
-          <div className="p-4 bg-gradient-to-r from-blue-50 to-purple-50 rounded-lg">
+          <div className="p-4 bg-gradient-to-r from-blue-50 to-purple-50 rounded-lg-lg">
             <div className="flex items-center justify-between">
               <div>
                 <h4 className="font-medium">AI Optimization Status</h4>
@@ -576,7 +576,7 @@ export default function AIMaintenanceScheduling({ className }: AIMaintenanceSche
               {filteredTasks.map((task) => (
                 <div
                   key={task.id}
-                  className={`p-3 border rounded-lg cursor-pointer transition-colors ${
+                  className={`p-3 border rounded-lg-lg cursor-pointer transition-colors ${
                     selectedTask?.id === task.id ? 'border-blue-500 bg-blue-50' : 'hover:bg-gray-50'
                   }`}
                   onClick={() => setSelectedTask(task)}
@@ -651,7 +651,7 @@ export default function AIMaintenanceScheduling({ className }: AIMaintenanceSche
                     <h5 className="font-medium mb-2">Required Parts</h5>
                     <div className="space-y-2">
                       {selectedTask.parts.map((part) => (
-                        <div key={part.id} className="flex items-center justify-between p-2 border rounded">
+                        <div key={part.id} className="flex items-center justify-between p-2 border rounded-lg">
                           <div>
                             <div className="font-medium text-sm">{part.name}</div>
                             <div className="text-xs text-muted-foreground">Qty: {part.quantity}</div>
@@ -699,7 +699,7 @@ export default function AIMaintenanceScheduling({ className }: AIMaintenanceSche
                     <h5 className="font-medium mb-2">Alternative Approaches</h5>
                     <div className="space-y-2">
                       {selectedTask.aiRecommendations.alternatives.map((alternative, index) => (
-                        <div key={index} className="p-2 border rounded text-sm">
+                        <div key={index} className="p-2 border rounded-lg text-sm">
                           {alternative}
                         </div>
                       ))}
@@ -742,7 +742,7 @@ export default function AIMaintenanceScheduling({ className }: AIMaintenanceSche
                     <h5 className="font-medium mb-2">Task History</h5>
                     <div className="space-y-2">
                       {selectedTask.history.map((entry) => (
-                        <div key={entry.id} className="p-2 border rounded">
+                        <div key={entry.id} className="p-2 border rounded-lg">
                           <div className="flex items-center justify-between mb-1">
                             <span className="font-medium text-sm">{entry.action}</span>
                             <span className="text-xs text-muted-foreground">{new Date(entry.timestamp).toLocaleString()}</span>

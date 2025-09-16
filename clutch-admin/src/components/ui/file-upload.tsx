@@ -299,7 +299,7 @@ export function FileUpload({
           </CardHeader>
           <CardContent className="space-y-3">
             {uploadedFiles.map((file) => (
-              <div key={file.id} className="flex items-center justify-between p-3 border rounded-lg">
+              <div key={file.id} className="flex items-center justify-between p-3 border rounded-lg-lg">
                 <div className="flex items-center space-x-3 flex-1">
                   {getFileIcon(file.type)}
                   <div className="flex-1 min-w-0">
@@ -362,7 +362,7 @@ export function FileUpload({
       {/* Upload Status */}
       {isUploading && (
         <div className="flex items-center space-x-2 text-sm text-blue-600">
-          <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-blue-600"></div>
+          <div className="animate-spin rounded-lg-full h-4 w-4 border-b-2 border-blue-600"></div>
           <span>Uploading files...</span>
         </div>
       )}

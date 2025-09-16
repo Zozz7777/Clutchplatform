@@ -313,7 +313,7 @@ export default function CriticalPathAlerts({ className }: CriticalPathAlertsProp
           {alerts.map((alert) => (
             <div
               key={alert.id}
-              className={`p-4 rounded-lg border ${
+              className={`p-4 rounded-lg-lg border ${
                 alert.priority === 'critical' ? 'border-red-200 bg-red-50' :
                 alert.priority === 'high' ? 'border-orange-200 bg-orange-50' :
                 'border-gray-200 bg-white'
@@ -328,7 +328,7 @@ export default function CriticalPathAlerts({ className }: CriticalPathAlertsProp
                   <Badge className={getStatusColor(alert.status)}>
                     {alert.status.replace('_', ' ')}
                   </Badge>
-                  <div className={`w-2 h-2 rounded-full ${getPriorityColor(alert.priority)}`} />
+                  <div className={`w-2 h-2 rounded-lg-full ${getPriorityColor(alert.priority)}`} />
                 </div>
               </div>
 
@@ -358,7 +358,7 @@ export default function CriticalPathAlerts({ className }: CriticalPathAlertsProp
                     <span>{alert.estimatedResolution}</span>
                   </div>
                   <div className="flex items-center space-x-1">
-                    <div className={`w-2 h-2 rounded-full ${getEffortColor(alert.bottleneck.effort)}`} />
+                    <div className={`w-2 h-2 rounded-lg-full ${getEffortColor(alert.bottleneck.effort)}`} />
                     <span className="capitalize">{alert.bottleneck.effort} effort</span>
                   </div>
                 </div>
@@ -408,11 +408,11 @@ export default function CriticalPathAlerts({ className }: CriticalPathAlertsProp
               <div>
                 <h4 className="font-medium mb-2">Impact Analysis</h4>
                 <div className="grid grid-cols-2 gap-4">
-                  <div className="p-3 bg-gray-50 rounded">
+                  <div className="p-3 bg-gray-50 rounded-lg">
                     <div className="text-sm text-muted-foreground">Current Performance</div>
                     <div className="text-xl font-bold">{selectedAlert.impact.currentValue}{selectedAlert.impact.unit}</div>
                   </div>
-                  <div className="p-3 bg-green-50 rounded">
+                  <div className="p-3 bg-green-50 rounded-lg">
                     <div className="text-sm text-muted-foreground">Potential Performance</div>
                     <div className="text-xl font-bold text-green-600">
                       {selectedAlert.impact.potentialValue}{selectedAlert.impact.unit}

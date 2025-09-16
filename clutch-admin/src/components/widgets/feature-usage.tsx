@@ -219,9 +219,9 @@ export function FeatureUsage({ className = '' }: FeatureUsageProps) {
         </CardHeader>
         <CardContent>
           <div className="animate-pulse space-y-4">
-            <div className="h-4 bg-gray-200 rounded w-3/4"></div>
-            <div className="h-4 bg-gray-200 rounded w-1/2"></div>
-            <div className="h-4 bg-gray-200 rounded w-2/3"></div>
+            <div className="h-4 bg-gray-200 rounded-lg-lg w-3/4"></div>
+            <div className="h-4 bg-gray-200 rounded-lg-lg w-1/2"></div>
+            <div className="h-4 bg-gray-200 rounded-lg-lg w-2/3"></div>
           </div>
         </CardContent>
       </Card>
@@ -262,17 +262,17 @@ export function FeatureUsage({ className = '' }: FeatureUsageProps) {
 
         {/* Summary Stats */}
         <div className="grid grid-cols-3 gap-4">
-          <div className="text-center p-3 bg-green-50 rounded-lg">
+          <div className="text-center p-3 bg-green-50 rounded-lg-lg-lg">
             <Star className="h-5 w-5 text-green-600 mx-auto mb-1" />
             <p className="text-lg font-bold text-green-600">{stickyFeatures.length}</p>
             <p className="text-xs text-gray-500">Sticky Features</p>
           </div>
-          <div className="text-center p-3 bg-yellow-50 rounded-lg">
+          <div className="text-center p-3 bg-yellow-50 rounded-lg-lg-lg">
             <Activity className="h-5 w-5 text-yellow-600 mx-auto mb-1" />
             <p className="text-lg font-bold text-yellow-600">{filteredFeatures.length}</p>
             <p className="text-xs text-gray-500">Total Features</p>
           </div>
-          <div className="text-center p-3 bg-red-50 rounded-lg">
+          <div className="text-center p-3 bg-red-50 rounded-lg-lg-lg">
             <TrendingDown className="h-5 w-5 text-red-600 mx-auto mb-1" />
             <p className="text-lg font-bold text-red-600">{ignoredFeatures.length}</p>
             <p className="text-xs text-gray-500">Ignored Features</p>
@@ -288,9 +288,9 @@ export function FeatureUsage({ className = '' }: FeatureUsageProps) {
               const TrendIcon = getTrendIcon(feature.trend);
               
               return (
-                <div key={feature.feature} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+                <div key={feature.feature} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg-lg-lg">
                   <div className="flex items-center space-x-3">
-                    <div className="flex items-center justify-center w-6 h-6 bg-purple-100 rounded-full">
+                    <div className="flex items-center justify-center w-6 h-6 bg-purple-100 rounded-lg-lg-full">
                       <span className="text-xs font-semibold text-purple-600">{index + 1}</span>
                     </div>
                     <FeatureIcon className="h-4 w-4 text-purple-600" />
@@ -331,7 +331,7 @@ export function FeatureUsage({ className = '' }: FeatureUsageProps) {
               const TrendIcon = getTrendIcon(feature.trend);
               
               return (
-                <div key={feature.feature} className="p-3 bg-gray-50 rounded-lg">
+                <div key={feature.feature} className="p-3 bg-gray-50 rounded-lg-lg-lg">
                   <div className="flex items-center justify-between mb-2">
                     <div className="flex items-center space-x-2">
                       <FeatureIcon className="h-4 w-4 text-purple-600" />
@@ -374,19 +374,19 @@ export function FeatureUsage({ className = '' }: FeatureUsageProps) {
         <div className="space-y-3">
           <h4 className="text-sm font-medium text-gray-900">Usage Distribution</h4>
           <div className="grid grid-cols-3 gap-2">
-            <div className="text-center p-2 bg-green-50 rounded">
+            <div className="text-center p-2 bg-green-50 rounded-lg-lg">
               <p className="text-sm font-bold text-green-600">
                 {filteredFeatures.filter(f => f.usage >= 80).length}
               </p>
               <p className="text-xs text-gray-500">High (80%+)</p>
             </div>
-            <div className="text-center p-2 bg-yellow-50 rounded">
+            <div className="text-center p-2 bg-yellow-50 rounded-lg-lg">
               <p className="text-sm font-bold text-yellow-600">
                 {filteredFeatures.filter(f => f.usage >= 60 && f.usage < 80).length}
               </p>
               <p className="text-xs text-gray-500">Medium (60-79%)</p>
             </div>
-            <div className="text-center p-2 bg-red-50 rounded">
+            <div className="text-center p-2 bg-red-50 rounded-lg-lg">
               <p className="text-sm font-bold text-red-600">
                 {filteredFeatures.filter(f => f.usage < 60).length}
               </p>
@@ -408,7 +408,7 @@ export function FeatureUsage({ className = '' }: FeatureUsageProps) {
         </div>
 
         {/* Insights */}
-        <div className="p-3 bg-blue-50 rounded-lg">
+        <div className="p-3 bg-blue-50 rounded-lg-lg-lg">
           <h5 className="text-sm font-medium text-blue-900 mb-2">💡 Feature Usage Insights</h5>
           <ul className="text-xs text-blue-800 space-y-1">
             <li>• {stickyFeatures.length} features with high usage (80%+)</li>

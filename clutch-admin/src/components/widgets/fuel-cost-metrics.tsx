@@ -131,9 +131,9 @@ export function FuelCostMetrics({ className = '' }: FuelCostMetricsProps) {
         </CardHeader>
         <CardContent>
           <div className="animate-pulse space-y-4">
-            <div className="h-4 bg-gray-200 rounded w-3/4"></div>
-            <div className="h-4 bg-gray-200 rounded w-1/2"></div>
-            <div className="h-4 bg-gray-200 rounded w-2/3"></div>
+            <div className="h-4 bg-gray-200 rounded-lg-lg w-3/4"></div>
+            <div className="h-4 bg-gray-200 rounded-lg-lg w-1/2"></div>
+            <div className="h-4 bg-gray-200 rounded-lg-lg w-2/3"></div>
           </div>
         </CardContent>
       </Card>
@@ -178,14 +178,14 @@ export function FuelCostMetrics({ className = '' }: FuelCostMetricsProps) {
       <CardContent className="space-y-6">
         {/* Summary Stats */}
         <div className="grid grid-cols-2 gap-4">
-          <div className="text-center p-3 bg-green-50 rounded-lg">
+          <div className="text-center p-3 bg-green-50 rounded-lg-lg-lg">
             <DollarSign className="h-5 w-5 text-green-600 mx-auto mb-1" />
             <p className="text-lg font-bold text-green-600">
               ${costMetrics.totalCost.toLocaleString()}
             </p>
             <p className="text-xs text-gray-500">Total Monthly Cost</p>
           </div>
-          <div className="text-center p-3 bg-blue-50 rounded-lg">
+          <div className="text-center p-3 bg-blue-50 rounded-lg-lg-lg">
             <Truck className="h-5 w-5 text-blue-600 mx-auto mb-1" />
             <p className="text-lg font-bold text-blue-600">{costMetrics.totalVehicles}</p>
             <p className="text-xs text-gray-500">Total Vehicles</p>
@@ -193,7 +193,7 @@ export function FuelCostMetrics({ className = '' }: FuelCostMetricsProps) {
         </div>
 
         {/* Cost Per Vehicle */}
-        <div className="text-center p-4 bg-gray-50 rounded-lg">
+        <div className="text-center p-4 bg-gray-50 rounded-lg-lg-lg">
           <div className="flex items-center justify-center space-x-2 mb-2">
             <Target className={`h-6 w-6 ${getCostColor(costMetrics.costPerVehicle, targetCostPerVehicle)}`} />
             <span className={`text-2xl font-bold ${getCostColor(costMetrics.costPerVehicle, targetCostPerVehicle)}`}>
@@ -216,9 +216,9 @@ export function FuelCostMetrics({ className = '' }: FuelCostMetricsProps) {
             {costBreakdown.map((item) => {
               const percentage = (item.cost / costMetrics.totalCost) * 100;
               return (
-                <div key={item.name} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+                <div key={item.name} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg-lg-lg">
                   <div className="flex items-center space-x-3">
-                    <div className={`p-2 rounded-full ${item.bgColor}`}>
+                    <div className={`p-2 rounded-lg-lg-full ${item.bgColor}`}>
                       <Fuel className={`h-4 w-4 ${item.color}`} />
                     </div>
                     <div>
@@ -242,14 +242,14 @@ export function FuelCostMetrics({ className = '' }: FuelCostMetricsProps) {
 
         {/* Performance Metrics */}
         <div className="grid grid-cols-2 gap-4">
-          <div className="text-center p-3 bg-purple-50 rounded-lg">
+          <div className="text-center p-3 bg-purple-50 rounded-lg-lg-lg">
             <BarChart3 className="h-4 w-4 text-purple-600 mx-auto mb-1" />
             <p className="text-sm font-bold text-purple-600">
               ${costMetrics.costPerMile.toFixed(2)}
             </p>
             <p className="text-xs text-gray-500">Cost Per Mile</p>
           </div>
-          <div className="text-center p-3 bg-yellow-50 rounded-lg">
+          <div className="text-center p-3 bg-yellow-50 rounded-lg-lg-lg">
             <Fuel className="h-4 w-4 text-yellow-600 mx-auto mb-1" />
             <p className="text-sm font-bold text-yellow-600">
               {costMetrics.fuelEfficiency.toFixed(1)} MPG
@@ -262,7 +262,7 @@ export function FuelCostMetrics({ className = '' }: FuelCostMetricsProps) {
         <div className="space-y-3">
           <h4 className="text-sm font-medium text-gray-900">Cost Trends</h4>
           <div className="space-y-2">
-            <div className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+            <div className="flex items-center justify-between p-3 bg-gray-50 rounded-lg-lg-lg">
               <div className="flex items-center space-x-3">
                 <Fuel className="h-4 w-4 text-green-600" />
                 <div>
@@ -275,7 +275,7 @@ export function FuelCostMetrics({ className = '' }: FuelCostMetricsProps) {
                 <span className="text-sm text-red-600">+5.2%</span>
               </div>
             </div>
-            <div className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+            <div className="flex items-center justify-between p-3 bg-gray-50 rounded-lg-lg-lg">
               <div className="flex items-center space-x-3">
                 <Truck className="h-4 w-4 text-orange-600" />
                 <div>
@@ -304,7 +304,7 @@ export function FuelCostMetrics({ className = '' }: FuelCostMetricsProps) {
         </div>
 
         {/* Insights */}
-        <div className="p-3 bg-blue-50 rounded-lg">
+        <div className="p-3 bg-blue-50 rounded-lg-lg-lg">
           <h5 className="text-sm font-medium text-blue-900 mb-2">💡 Cost Insights</h5>
           <ul className="text-xs text-blue-800 space-y-1">
             <li>• Total monthly fleet cost: ${costMetrics.totalCost.toLocaleString()}</li>

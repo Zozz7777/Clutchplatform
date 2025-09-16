@@ -165,9 +165,9 @@ export function ChurnAttribution({ className = '' }: ChurnAttributionProps) {
         </CardHeader>
         <CardContent>
           <div className="animate-pulse space-y-4">
-            <div className="h-4 bg-gray-200 rounded w-3/4"></div>
-            <div className="h-4 bg-gray-200 rounded w-1/2"></div>
-            <div className="h-4 bg-gray-200 rounded w-2/3"></div>
+            <div className="h-4 bg-gray-200 rounded-lg-lg w-3/4"></div>
+            <div className="h-4 bg-gray-200 rounded-lg-lg w-1/2"></div>
+            <div className="h-4 bg-gray-200 rounded-lg-lg w-2/3"></div>
           </div>
         </CardContent>
       </Card>
@@ -192,12 +192,12 @@ export function ChurnAttribution({ className = '' }: ChurnAttributionProps) {
       <CardContent className="space-y-6">
         {/* Summary Stats */}
         <div className="grid grid-cols-2 gap-4">
-          <div className="text-center p-3 bg-red-50 rounded-lg">
+          <div className="text-center p-3 bg-red-50 rounded-lg-lg-lg">
             <Users className="h-5 w-5 text-red-600 mx-auto mb-1" />
             <p className="text-lg font-bold text-red-600">{totalChurned}</p>
             <p className="text-xs text-gray-500">Total Churned</p>
           </div>
-          <div className="text-center p-3 bg-orange-50 rounded-lg">
+          <div className="text-center p-3 bg-orange-50 rounded-lg-lg-lg">
             <AlertTriangle className="h-5 w-5 text-orange-600 mx-auto mb-1" />
             <p className="text-lg font-bold text-orange-600">{highImpactReasons.length}</p>
             <p className="text-xs text-gray-500">High Impact</p>
@@ -206,7 +206,7 @@ export function ChurnAttribution({ className = '' }: ChurnAttributionProps) {
 
         {/* Top Churn Reason */}
         {topReason && (
-          <div className="text-center p-4 bg-gray-50 rounded-lg">
+          <div className="text-center p-4 bg-gray-50 rounded-lg-lg-lg">
             <div className="flex items-center justify-center space-x-2 mb-2">
               <topReason.icon className={`h-6 w-6 ${topReason.color}`} />
               <span className="text-xl font-bold text-gray-900">{topReason.reason}</span>
@@ -230,9 +230,9 @@ export function ChurnAttribution({ className = '' }: ChurnAttributionProps) {
               const TrendIcon = getTrendIcon(reason.trend);
               
               return (
-                <div key={reason.reason} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+                <div key={reason.reason} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg-lg-lg">
                   <div className="flex items-center space-x-3">
-                    <div className="flex items-center justify-center w-8 h-8 bg-blue-100 rounded-full">
+                    <div className="flex items-center justify-center w-8 h-8 bg-blue-100 rounded-lg-lg-full">
                       <span className="text-sm font-semibold text-blue-600">
                         {index + 1}
                       </span>
@@ -284,19 +284,19 @@ export function ChurnAttribution({ className = '' }: ChurnAttributionProps) {
         <div className="space-y-3">
           <h4 className="text-sm font-medium text-gray-900">Impact Analysis</h4>
           <div className="grid grid-cols-3 gap-2">
-            <div className="text-center p-2 bg-red-50 rounded">
+            <div className="text-center p-2 bg-red-50 rounded-lg-lg">
               <p className="text-sm font-bold text-red-600">
                 {churnReasons.filter(r => r.impact === 'high').length}
               </p>
               <p className="text-xs text-gray-500">High Impact</p>
             </div>
-            <div className="text-center p-2 bg-yellow-50 rounded">
+            <div className="text-center p-2 bg-yellow-50 rounded-lg-lg">
               <p className="text-sm font-bold text-yellow-600">
                 {churnReasons.filter(r => r.impact === 'medium').length}
               </p>
               <p className="text-xs text-gray-500">Medium Impact</p>
             </div>
-            <div className="text-center p-2 bg-green-50 rounded">
+            <div className="text-center p-2 bg-green-50 rounded-lg-lg">
               <p className="text-sm font-bold text-green-600">
                 {churnReasons.filter(r => r.impact === 'low').length}
               </p>
@@ -318,7 +318,7 @@ export function ChurnAttribution({ className = '' }: ChurnAttributionProps) {
         </div>
 
         {/* Insights */}
-        <div className="p-3 bg-blue-50 rounded-lg">
+        <div className="p-3 bg-blue-50 rounded-lg-lg-lg">
           <h5 className="text-sm font-medium text-blue-900 mb-2">💡 Churn Attribution Insights</h5>
           <ul className="text-xs text-blue-800 space-y-1">
             <li>• Total churned users: {totalChurned}</li>

@@ -487,19 +487,19 @@ export default function FleetCostAnomalyDetector({ className }: FleetCostAnomaly
         <CardContent className="space-y-6">
           {/* Anomaly Summary */}
           <div className="grid grid-cols-4 gap-4">
-            <div className="text-center p-3 bg-red-50 rounded-lg">
+            <div className="text-center p-3 bg-red-50 rounded-lg-lg">
               <div className="text-2xl font-bold text-red-600">{criticalAnomalies}</div>
               <div className="text-sm text-muted-foreground">Critical Anomalies</div>
             </div>
-            <div className="text-center p-3 bg-orange-50 rounded-lg">
+            <div className="text-center p-3 bg-orange-50 rounded-lg-lg">
               <div className="text-2xl font-bold text-orange-600">{activeAnomalies}</div>
               <div className="text-sm text-muted-foreground">Active Anomalies</div>
             </div>
-            <div className="text-center p-3 bg-purple-50 rounded-lg">
+            <div className="text-center p-3 bg-purple-50 rounded-lg-lg">
               <div className="text-2xl font-bold text-purple-600">{avgAnomalyScore}</div>
               <div className="text-sm text-muted-foreground">Avg Anomaly Score</div>
             </div>
-            <div className="text-center p-3 bg-yellow-50 rounded-lg">
+            <div className="text-center p-3 bg-yellow-50 rounded-lg-lg">
               <div className="text-2xl font-bold text-yellow-600">{formatCurrency(totalCostImpact)}</div>
               <div className="text-sm text-muted-foreground">Cost Impact</div>
             </div>
@@ -510,7 +510,7 @@ export default function FleetCostAnomalyDetector({ className }: FleetCostAnomaly
             <h4 className="font-medium mb-3">Cost Categories</h4>
             <div className="grid gap-3">
               {costCategories.map((category) => (
-                <div key={category.id} className="p-3 border rounded-lg">
+                <div key={category.id} className="p-3 border rounded-lg-lg">
                   <div className="flex items-center justify-between mb-2">
                     <div className="flex items-center gap-2">
                       {getTypeIcon(category.type)}
@@ -567,7 +567,7 @@ export default function FleetCostAnomalyDetector({ className }: FleetCostAnomaly
               {filteredAnomalies.map((anomaly) => (
                 <div
                   key={anomaly.id}
-                  className={`p-3 border rounded-lg cursor-pointer transition-colors ${
+                  className={`p-3 border rounded-lg-lg cursor-pointer transition-colors ${
                     selectedAnomaly?.id === anomaly.id ? 'border-blue-500 bg-blue-50' : 'hover:bg-gray-50'
                   }`}
                   onClick={() => setSelectedAnomaly(anomaly)}
@@ -664,7 +664,7 @@ export default function FleetCostAnomalyDetector({ className }: FleetCostAnomaly
                     <h5 className="font-medium mb-2">Historical Data</h5>
                     <div className="space-y-2">
                       {selectedAnomaly.historicalData.map((data, index) => (
-                        <div key={index} className="flex items-center justify-between p-2 border rounded text-sm">
+                        <div key={index} className="flex items-center justify-between p-2 border rounded-lg text-sm">
                           <span className="font-medium">{data.period}</span>
                           <div className="flex items-center gap-4">
                             <span>Cost: {formatCurrency(data.cost)}</span>
@@ -715,7 +715,7 @@ export default function FleetCostAnomalyDetector({ className }: FleetCostAnomaly
                       <h5 className="font-medium mb-2">Immediate Actions</h5>
                       <div className="space-y-2">
                         {selectedAnomaly.recommendations.immediate.map((action, index) => (
-                          <div key={index} className="p-2 border rounded text-sm">
+                          <div key={index} className="p-2 border rounded-lg text-sm">
                             {action}
                           </div>
                         ))}
@@ -725,14 +725,14 @@ export default function FleetCostAnomalyDetector({ className }: FleetCostAnomaly
                       <h5 className="font-medium mb-2">Long-term Solutions</h5>
                       <div className="space-y-2">
                         {selectedAnomaly.recommendations.longTerm.map((action, index) => (
-                          <div key={index} className="p-2 border rounded text-sm">
+                          <div key={index} className="p-2 border rounded-lg text-sm">
                             {action}
                           </div>
                         ))}
                       </div>
                     </div>
                   </div>
-                  <div className="p-3 bg-green-50 rounded-lg">
+                  <div className="p-3 bg-green-50 rounded-lg-lg">
                     <div className="flex items-center justify-between">
                       <span className="font-medium">Potential Cost Savings:</span>
                       <span className="text-lg font-bold text-green-600">
@@ -747,7 +747,7 @@ export default function FleetCostAnomalyDetector({ className }: FleetCostAnomaly
                     <h5 className="font-medium mb-2">Active Alerts</h5>
                     <div className="space-y-2">
                       {selectedAnomaly.alerts.filter(alert => !alert.resolved).map((alert) => (
-                        <div key={alert.id} className="p-3 border rounded-lg">
+                        <div key={alert.id} className="p-3 border rounded-lg-lg">
                           <div className="flex items-center justify-between mb-2">
                             <div className="flex items-center gap-2">
                               {getAlertTypeIcon(alert.type)}

@@ -302,7 +302,7 @@ export default function RealtimeCollaboration({ currentUserId, currentPage }: Re
                           {user.name.split(' ').map(n => n[0]).join('')}
                         </AvatarFallback>
                       </Avatar>
-                      <div className={`absolute -bottom-0.5 -right-0.5 h-2 w-2 rounded-full border border-white ${getStatusColor(user.status)}`} />
+                      <div className={`absolute -bottom-0.5 -right-0.5 h-2 w-2 rounded-lg-full border border-white ${getStatusColor(user.status)}`} />
                     </div>
                     <div>
                       <p className="text-xs font-medium">{user.name}</p>
@@ -331,13 +331,13 @@ export default function RealtimeCollaboration({ currentUserId, currentPage }: Re
               {collaborationEvents.map((event) => (
                 <div
                   key={event.id}
-                  className={`p-2 rounded-lg border text-xs ${
+                  className={`p-2 rounded-lg-lg border text-xs ${
                     event.resolved ? 'bg-gray-50 opacity-60' : 'bg-white'
                   }`}
                 >
                   <div className="flex items-start justify-between">
                     <div className="flex items-start space-x-2">
-                      <div className={`p-1 rounded ${getPriorityColor(event.priority)} text-white`}>
+                      <div className={`p-1 rounded-lg ${getPriorityColor(event.priority)} text-white`}>
                         {getEventIcon(event.type)}
                       </div>
                       <div className="flex-1">

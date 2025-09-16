@@ -344,26 +344,26 @@ export default function CashBurnTracker({ className }: CashBurnTrackerProps) {
         <CardContent className="space-y-6">
           {/* Cash Position Summary */}
           <div className="grid grid-cols-4 gap-4">
-            <div className="text-center p-3 bg-blue-50 rounded-lg">
+            <div className="text-center p-3 bg-blue-50 rounded-lg-lg">
               <div className="text-2xl font-bold text-blue-600">{formatCurrency(currentCash)}</div>
               <div className="text-sm text-muted-foreground">Current Cash</div>
             </div>
-            <div className="text-center p-3 bg-green-50 rounded-lg">
+            <div className="text-center p-3 bg-green-50 rounded-lg-lg">
               <div className="text-2xl font-bold text-green-600">{formatCurrency(totalInflows)}</div>
               <div className="text-sm text-muted-foreground">Total Inflows</div>
             </div>
-            <div className="text-center p-3 bg-red-50 rounded-lg">
+            <div className="text-center p-3 bg-red-50 rounded-lg-lg">
               <div className="text-2xl font-bold text-red-600">{formatCurrency(totalOutflows)}</div>
               <div className="text-sm text-muted-foreground">Total Outflows</div>
             </div>
-            <div className="text-center p-3 bg-purple-50 rounded-lg">
+            <div className="text-center p-3 bg-purple-50 rounded-lg-lg">
               <div className="text-2xl font-bold text-purple-600">{Math.round(runwayMonths)}</div>
               <div className="text-sm text-muted-foreground">Runway (Months)</div>
             </div>
           </div>
 
           {/* Net Cash Flow */}
-          <div className="p-4 bg-gradient-to-r from-blue-50 to-purple-50 rounded-lg">
+          <div className="p-4 bg-gradient-to-r from-blue-50 to-purple-50 rounded-lg-lg">
             <div className="flex items-center justify-between">
               <div>
                 <h4 className="font-medium">Net Cash Flow</h4>
@@ -385,7 +385,7 @@ export default function CashBurnTracker({ className }: CashBurnTrackerProps) {
             <h4 className="font-medium mb-3">Burn Rate Analysis</h4>
             <div className="space-y-3">
               {burnRates.map((burnRate) => (
-                <div key={burnRate.period} className="p-3 border rounded-lg">
+                <div key={burnRate.period} className="p-3 border rounded-lg-lg">
                   <div className="flex items-center justify-between mb-2">
                     <span className="font-medium">{burnRate.period}</span>
                     <div className="flex items-center gap-2">
@@ -408,7 +408,7 @@ export default function CashBurnTracker({ className }: CashBurnTrackerProps) {
             <h4 className="font-medium mb-3">Runway Projections</h4>
             <div className="grid gap-3">
               {runwayProjections.map((projection) => (
-                <div key={projection.scenario} className="p-3 border rounded-lg">
+                <div key={projection.scenario} className="p-3 border rounded-lg-lg">
                   <div className="flex items-center justify-between mb-2">
                     <div className="flex items-center gap-2">
                       <Badge className={getScenarioColor(projection.scenario)}>
@@ -465,7 +465,7 @@ export default function CashBurnTracker({ className }: CashBurnTrackerProps) {
 
             <div className="space-y-2">
               {filteredCashFlows.map((flow) => (
-                <div key={flow.id} className="p-3 border rounded-lg">
+                <div key={flow.id} className="p-3 border rounded-lg-lg">
                   <div className="flex items-center justify-between mb-2">
                     <div className="flex items-center gap-3">
                       {getCategoryIcon(flow.category)}
@@ -495,9 +495,9 @@ export default function CashBurnTracker({ className }: CashBurnTrackerProps) {
           </div>
 
           {/* Cash Flow Chart Placeholder */}
-          <div className="p-4 border rounded-lg">
+          <div className="p-4 border rounded-lg-lg">
             <h4 className="font-medium mb-3">Cash Flow Trend</h4>
-            <div className="h-32 bg-gray-50 rounded flex items-center justify-center">
+            <div className="h-32 bg-gray-50 rounded-lg flex items-center justify-center">
               <div className="text-center text-muted-foreground">
                 <BarChart3 className="h-8 w-8 mx-auto mb-2" />
                 <p>Cash Flow Chart</p>

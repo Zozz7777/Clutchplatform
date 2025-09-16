@@ -320,7 +320,7 @@ export default function LiveOpsMap({ className }: LiveOpsMapProps) {
         </div>
 
         {/* Map Visualization (Simplified) */}
-        <div className="relative h-64 bg-gray-100 rounded-lg overflow-hidden">
+        <div className="relative h-64 bg-gray-100 rounded-lg-lg overflow-hidden">
           <div className="absolute inset-0 bg-gradient-to-br from-blue-50 to-green-50">
             {/* Grid pattern */}
             <div className="absolute inset-0 opacity-20" style={{
@@ -342,8 +342,8 @@ export default function LiveOpsMap({ className }: LiveOpsMapProps) {
                 }}
               >
                 <div className="relative">
-                  <div className={`w-3 h-3 rounded-full border-2 border-white ${getStatusColor(location.status)}`} />
-                  <div className="absolute -top-6 left-1/2 transform -translate-x-1/2 bg-black text-white text-xs px-1 py-0.5 rounded whitespace-nowrap">
+                  <div className={`w-3 h-3 rounded-lg-full border-2 border-white ${getStatusColor(location.status)}`} />
+                  <div className="absolute -top-6 left-1/2 transform -translate-x-1/2 bg-black text-white text-xs px-1 py-0.5 rounded-lg whitespace-nowrap">
                     {location.name}
                   </div>
                 </div>
@@ -361,8 +361,8 @@ export default function LiveOpsMap({ className }: LiveOpsMapProps) {
                 }}
               >
                 <div className="relative">
-                  <div className={`w-4 h-4 rounded-full border-2 border-white ${getCategoryColor(hotspot.category)}`} />
-                  <div className="absolute -top-8 left-1/2 transform -translate-x-1/2 bg-green-600 text-white text-xs px-1 py-0.5 rounded whitespace-nowrap">
+                  <div className={`w-4 h-4 rounded-lg-full border-2 border-white ${getCategoryColor(hotspot.category)}`} />
+                  <div className="absolute -top-8 left-1/2 transform -translate-x-1/2 bg-green-600 text-white text-xs px-1 py-0.5 rounded-lg whitespace-nowrap">
                     ${(hotspot.revenue / 1000).toFixed(1)}k
                   </div>
                 </div>
@@ -380,8 +380,8 @@ export default function LiveOpsMap({ className }: LiveOpsMapProps) {
                 }}
               >
                 <div className="relative">
-                  <div className={`w-2 h-2 rounded-full border border-white ${getStatusColor(user.status)}`} />
-                  <div className="absolute -top-6 left-1/2 transform -translate-x-1/2 bg-blue-600 text-white text-xs px-1 py-0.5 rounded whitespace-nowrap">
+                  <div className={`w-2 h-2 rounded-lg-full border border-white ${getStatusColor(user.status)}`} />
+                  <div className="absolute -top-6 left-1/2 transform -translate-x-1/2 bg-blue-600 text-white text-xs px-1 py-0.5 rounded-lg whitespace-nowrap">
                     {user.name.split(' ')[0]}
                   </div>
                 </div>
@@ -413,7 +413,7 @@ export default function LiveOpsMap({ className }: LiveOpsMapProps) {
             {fleetLocations.slice(0, 3).map((location) => (
               <div key={location.id} className="flex items-center justify-between text-xs">
                 <div className="flex items-center space-x-2">
-                  <div className={`w-2 h-2 rounded-full ${getStatusColor(location.status)}`} />
+                  <div className={`w-2 h-2 rounded-lg-full ${getStatusColor(location.status)}`} />
                   <span>{location.name}</span>
                 </div>
                 <div className="flex items-center space-x-2">

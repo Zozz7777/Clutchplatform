@@ -677,26 +677,26 @@ export default function AutoRollbackSafety({ className }: AutoRollbackSafetyProp
         <CardContent className="space-y-6">
           {/* Safety Summary */}
           <div className="grid grid-cols-4 gap-4">
-            <div className="text-center p-3 bg-green-50 rounded-lg">
+            <div className="text-center p-3 bg-green-50 rounded-lg-lg">
               <div className="text-2xl font-bold text-green-600">{productionDeployments}</div>
               <div className="text-sm text-muted-foreground">Production Models</div>
             </div>
-            <div className="text-center p-3 bg-orange-50 rounded-lg">
+            <div className="text-center p-3 bg-orange-50 rounded-lg-lg">
               <div className="text-2xl font-bold text-orange-600">{activeRollbacks}</div>
               <div className="text-sm text-muted-foreground">Active Rollbacks</div>
             </div>
-            <div className="text-center p-3 bg-blue-50 rounded-lg">
+            <div className="text-center p-3 bg-blue-50 rounded-lg-lg">
               <div className="text-2xl font-bold text-blue-600">{totalRollbacks}</div>
               <div className="text-sm text-muted-foreground">Total Rollbacks</div>
             </div>
-            <div className="text-center p-3 bg-purple-50 rounded-lg">
+            <div className="text-center p-3 bg-purple-50 rounded-lg-lg">
               <div className="text-2xl font-bold text-purple-600">{avgAccuracy}%</div>
               <div className="text-sm text-muted-foreground">Avg Accuracy</div>
             </div>
           </div>
 
           {/* Safety Status */}
-          <div className={`p-4 border rounded-lg ${isSafetyEnabled ? 'bg-green-50 border-green-200' : 'bg-red-50 border-red-200'}`}>
+          <div className={`p-4 border rounded-lg-lg ${isSafetyEnabled ? 'bg-green-50 border-green-200' : 'bg-red-50 border-red-200'}`}>
             <div className="flex items-center justify-between">
               <div>
                 <h4 className={`font-medium ${isSafetyEnabled ? 'text-green-800' : 'text-red-800'}`}>
@@ -725,7 +725,7 @@ export default function AutoRollbackSafety({ className }: AutoRollbackSafetyProp
             <h4 className="font-medium mb-3">Safety Rules</h4>
             <div className="space-y-2">
               {safetyRules.map((rule) => (
-                <div key={rule.id} className="p-3 border rounded-lg">
+                <div key={rule.id} className="p-3 border rounded-lg-lg">
                   <div className="flex items-center justify-between mb-2">
                     <div className="flex items-center gap-2">
                       <span className="font-medium">{rule.name}</span>
@@ -786,7 +786,7 @@ export default function AutoRollbackSafety({ className }: AutoRollbackSafetyProp
               {filteredDeployments.map((deployment) => (
                 <div
                   key={deployment.id}
-                  className={`p-3 border rounded-lg cursor-pointer transition-colors ${
+                  className={`p-3 border rounded-lg-lg cursor-pointer transition-colors ${
                     selectedDeployment?.id === deployment.id ? 'border-blue-500 bg-blue-50' : 'hover:bg-gray-50'
                   }`}
                   onClick={() => setSelectedDeployment(deployment)}
@@ -945,7 +945,7 @@ export default function AutoRollbackSafety({ className }: AutoRollbackSafetyProp
                     <h5 className="font-medium mb-2">Model Metrics</h5>
                     <div className="space-y-2">
                       {selectedDeployment.metrics.map((metric) => (
-                        <div key={metric.metric} className="p-3 border rounded-lg">
+                        <div key={metric.metric} className="p-3 border rounded-lg-lg">
                           <div className="flex items-center justify-between mb-2">
                             <span className="font-medium">{metric.metric}</span>
                             <div className="flex items-center gap-2">
@@ -971,7 +971,7 @@ export default function AutoRollbackSafety({ className }: AutoRollbackSafetyProp
                     <h5 className="font-medium mb-2">Rollback Triggers</h5>
                     <div className="space-y-2">
                       {selectedDeployment.rollbackTriggers.map((trigger) => (
-                        <div key={trigger.id} className="p-3 border rounded-lg">
+                        <div key={trigger.id} className="p-3 border rounded-lg-lg">
                           <div className="flex items-center justify-between mb-2">
                             <div className="flex items-center gap-2">
                               <span className="font-medium">{trigger.description}</span>
@@ -1000,7 +1000,7 @@ export default function AutoRollbackSafety({ className }: AutoRollbackSafetyProp
                     {selectedDeployment.rollbackHistory.length > 0 ? (
                       <div className="space-y-2">
                         {selectedDeployment.rollbackHistory.map((rollback) => (
-                          <div key={rollback.id} className="p-3 border rounded-lg">
+                          <div key={rollback.id} className="p-3 border rounded-lg-lg">
                             <div className="flex items-center justify-between mb-2">
                               <div className="flex items-center gap-2">
                                 <span className="font-medium">{rollback.reason}</span>

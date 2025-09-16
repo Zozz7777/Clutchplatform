@@ -387,7 +387,7 @@ export default function ScenarioSimulation({ className }: ScenarioSimulationProp
 
         <CardContent className="space-y-6">
           {/* Scenario Description */}
-          <div className="p-4 bg-blue-50 rounded-lg">
+          <div className="p-4 bg-blue-50 rounded-lg-lg">
             <h3 className="font-semibold mb-2">{currentScenario.name}</h3>
             <p className="text-sm text-muted-foreground">{currentScenario.description}</p>
             <div className="flex items-center gap-4 mt-3 text-sm">
@@ -403,7 +403,7 @@ export default function ScenarioSimulation({ className }: ScenarioSimulationProp
           </div>
 
           {/* Simulation Controls */}
-          <div className="flex items-center justify-between p-4 border rounded-lg">
+          <div className="flex items-center justify-between p-4 border rounded-lg-lg">
             <div className="flex items-center gap-4">
               <Button
                 onClick={runSimulation}
@@ -448,9 +448,9 @@ export default function ScenarioSimulation({ className }: ScenarioSimulationProp
                 <span>Simulation Progress</span>
                 <span>{simulationProgress}%</span>
               </div>
-              <div className="w-full bg-gray-200 rounded-full h-2">
+              <div className="w-full bg-gray-200 rounded-lg-full h-2">
                 <div 
-                  className="bg-blue-600 h-2 rounded-full transition-all duration-300"
+                  className="bg-blue-600 h-2 rounded-lg-full transition-all duration-300"
                   style={{ width: `${simulationProgress}%` }}
                 />
               </div>
@@ -467,7 +467,7 @@ export default function ScenarioSimulation({ className }: ScenarioSimulationProp
             <TabsContent value="parameters" className="space-y-4">
               <div className="grid gap-4">
                 {currentScenario.parameters.map((parameter) => (
-                  <div key={parameter.id} className="p-4 border rounded-lg">
+                  <div key={parameter.id} className="p-4 border rounded-lg-lg">
                     <div className="flex items-center justify-between mb-3">
                       <div className="flex items-center gap-2">
                         {getCategoryIcon(parameter.category)}
@@ -509,7 +509,7 @@ export default function ScenarioSimulation({ className }: ScenarioSimulationProp
               {currentScenario.status === 'completed' ? (
                 <div className="grid gap-4">
                   {currentScenario.results.map((result, index) => (
-                    <div key={index} className="p-4 border rounded-lg">
+                    <div key={index} className="p-4 border rounded-lg-lg">
                       <div className="flex items-center justify-between mb-3">
                         <h4 className="font-medium">{result.metric}</h4>
                         <Badge className={getResultCategoryColor(result.category)}>
@@ -574,7 +574,7 @@ export default function ScenarioSimulation({ className }: ScenarioSimulationProp
               {scenarios.map((scenario) => (
                 <div
                   key={scenario.id}
-                  className={`p-3 border rounded-lg cursor-pointer transition-colors ${
+                  className={`p-3 border rounded-lg-lg cursor-pointer transition-colors ${
                     currentScenario?.id === scenario.id ? 'border-blue-500 bg-blue-50' : 'hover:bg-gray-50'
                   }`}
                   onClick={() => setCurrentScenario(scenario)}

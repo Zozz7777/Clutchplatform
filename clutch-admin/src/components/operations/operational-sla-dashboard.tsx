@@ -491,19 +491,19 @@ export default function OperationalSLADashboard({ className }: OperationalSLADas
         <CardContent className="space-y-6">
           {/* SLA Summary */}
           <div className="grid grid-cols-4 gap-4">
-            <div className="text-center p-3 bg-green-50 rounded-lg">
+            <div className="text-center p-3 bg-green-50 rounded-lg-lg">
               <div className="text-2xl font-bold text-green-600">{meetingSLAs}</div>
               <div className="text-sm text-muted-foreground">Meeting SLA</div>
             </div>
-            <div className="text-center p-3 bg-yellow-50 rounded-lg">
+            <div className="text-center p-3 bg-yellow-50 rounded-lg-lg">
               <div className="text-2xl font-bold text-yellow-600">{atRiskSLAs}</div>
               <div className="text-sm text-muted-foreground">At Risk</div>
             </div>
-            <div className="text-center p-3 bg-red-50 rounded-lg">
+            <div className="text-center p-3 bg-red-50 rounded-lg-lg">
               <div className="text-2xl font-bold text-red-600">{breachSLAs}</div>
               <div className="text-sm text-muted-foreground">Breach</div>
             </div>
-            <div className="text-center p-3 bg-blue-50 rounded-lg">
+            <div className="text-center p-3 bg-blue-50 rounded-lg-lg">
               <div className="text-2xl font-bold text-blue-600">{avgUptime}%</div>
               <div className="text-sm text-muted-foreground">Avg Uptime</div>
             </div>
@@ -514,10 +514,10 @@ export default function OperationalSLADashboard({ className }: OperationalSLADas
             <h4 className="font-medium mb-3">Service Health</h4>
             <div className="grid gap-3">
               {services.map((service) => (
-                <div key={service.id} className="p-3 border rounded-lg">
+                <div key={service.id} className="p-3 border rounded-lg-lg">
                   <div className="flex items-center justify-between mb-2">
                     <div className="flex items-center gap-2">
-                      <div className={`h-3 w-3 rounded-full ${getServiceStatusColor(service.status)}`} />
+                      <div className={`h-3 w-3 rounded-lg-full ${getServiceStatusColor(service.status)}`} />
                       <span className="font-medium">{service.name}</span>
                     </div>
                     <div className="flex items-center gap-2">
@@ -574,7 +574,7 @@ export default function OperationalSLADashboard({ className }: OperationalSLADas
               {filteredSLAs.map((sla) => (
                 <div
                   key={sla.id}
-                  className={`p-3 border rounded-lg cursor-pointer transition-colors ${
+                  className={`p-3 border rounded-lg-lg cursor-pointer transition-colors ${
                     selectedSLA?.id === sla.id ? 'border-blue-500 bg-blue-50' : 'hover:bg-gray-50'
                   }`}
                   onClick={() => setSelectedSLA(sla)}
@@ -676,7 +676,7 @@ export default function OperationalSLADashboard({ className }: OperationalSLADas
                     <h5 className="font-medium mb-2">Historical Performance</h5>
                     <div className="space-y-2">
                       {selectedSLA.history.map((entry, index) => (
-                        <div key={index} className="flex items-center justify-between p-2 border rounded text-sm">
+                        <div key={index} className="flex items-center justify-between p-2 border rounded-lg text-sm">
                           <span>{new Date(entry.timestamp).toLocaleString()}</span>
                           <div className="flex items-center gap-2">
                             <span className="font-medium">{entry.value}</span>
@@ -731,7 +731,7 @@ export default function OperationalSLADashboard({ className }: OperationalSLADas
                     <h5 className="font-medium mb-2">Recent Incidents</h5>
                     <div className="space-y-2">
                       {selectedSLA.incidents.map((incident) => (
-                        <div key={incident.id} className="p-3 border rounded-lg">
+                        <div key={incident.id} className="p-3 border rounded-lg-lg">
                           <div className="flex items-center justify-between mb-2">
                             <div className="flex items-center gap-2">
                               <Badge className={getSeverityColor(incident.severity)}>
@@ -766,7 +766,7 @@ export default function OperationalSLADashboard({ className }: OperationalSLADas
                     <h5 className="font-medium mb-2">Active Alerts</h5>
                     <div className="space-y-2">
                       {selectedSLA.alerts.filter(alert => !alert.resolved).map((alert) => (
-                        <div key={alert.id} className="p-3 border rounded-lg">
+                        <div key={alert.id} className="p-3 border rounded-lg-lg">
                           <div className="flex items-center justify-between mb-2">
                             <div className="flex items-center gap-2">
                               {getAlertTypeIcon(alert.type)}

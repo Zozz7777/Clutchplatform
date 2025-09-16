@@ -665,19 +665,19 @@ export default function RootCauseAnalytics({ className }: RootCauseAnalyticsProp
         <CardContent className="space-y-6">
           {/* Analytics Summary */}
           <div className="grid grid-cols-4 gap-4">
-            <div className="text-center p-3 bg-red-50 rounded-lg">
+            <div className="text-center p-3 bg-red-50 rounded-lg-lg">
               <div className="text-2xl font-bold text-red-600">{criticalAnalyses}</div>
               <div className="text-sm text-muted-foreground">Critical Analyses</div>
             </div>
-            <div className="text-center p-3 bg-orange-50 rounded-lg">
+            <div className="text-center p-3 bg-orange-50 rounded-lg-lg">
               <div className="text-2xl font-bold text-orange-600">{activeAnalyses}</div>
               <div className="text-sm text-muted-foreground">Active Analyses</div>
             </div>
-            <div className="text-center p-3 bg-purple-50 rounded-lg">
+            <div className="text-center p-3 bg-purple-50 rounded-lg-lg">
               <div className="text-2xl font-bold text-purple-600">{avgRecoveryTime}%</div>
               <div className="text-sm text-muted-foreground">Avg Recovery</div>
             </div>
-            <div className="text-center p-3 bg-yellow-50 rounded-lg">
+            <div className="text-center p-3 bg-yellow-50 rounded-lg-lg">
               <div className="text-2xl font-bold text-yellow-600">{formatCurrency(totalFinancialImpact)}</div>
               <div className="text-sm text-muted-foreground">Total Impact</div>
             </div>
@@ -689,7 +689,7 @@ export default function RootCauseAnalytics({ className }: RootCauseAnalyticsProp
               <h4 className="font-medium mb-3">Churn Analysis</h4>
               <div className="space-y-2">
                 {churnAnalyses.map((churn) => (
-                  <div key={churn.id} className="p-3 border rounded-lg">
+                  <div key={churn.id} className="p-3 border rounded-lg-lg">
                     <div className="flex items-center justify-between mb-2">
                       <span className="font-medium">{churn.customerSegment}</span>
                       <div className="flex items-center gap-2">
@@ -708,7 +708,7 @@ export default function RootCauseAnalytics({ className }: RootCauseAnalyticsProp
               <h4 className="font-medium mb-3">Downtime Analysis</h4>
               <div className="space-y-2">
                 {downtimeAnalyses.map((downtime) => (
-                  <div key={downtime.id} className="p-3 border rounded-lg">
+                  <div key={downtime.id} className="p-3 border rounded-lg-lg">
                     <div className="flex items-center justify-between mb-2">
                       <span className="font-medium">{downtime.service}</span>
                       <div className="flex items-center gap-2">
@@ -759,7 +759,7 @@ export default function RootCauseAnalytics({ className }: RootCauseAnalyticsProp
               {filteredAnalyses.map((analysis) => (
                 <div
                   key={analysis.id}
-                  className={`p-3 border rounded-lg cursor-pointer transition-colors ${
+                  className={`p-3 border rounded-lg-lg cursor-pointer transition-colors ${
                     selectedAnalysis?.id === analysis.id ? 'border-blue-500 bg-blue-50' : 'hover:bg-gray-50'
                   }`}
                   onClick={() => setSelectedAnalysis(analysis)}
@@ -857,7 +857,7 @@ export default function RootCauseAnalytics({ className }: RootCauseAnalyticsProp
                     <h5 className="font-medium mb-2">Correlations</h5>
                     <div className="space-y-2">
                       {selectedAnalysis.correlations.map((correlation, index) => (
-                        <div key={index} className="flex items-center justify-between p-2 border rounded text-sm">
+                        <div key={index} className="flex items-center justify-between p-2 border rounded-lg text-sm">
                           <span className="font-medium">{correlation.metric}</span>
                           <div className="flex items-center gap-2">
                             <span className="font-medium">{correlation.correlation.toFixed(2)}</span>
@@ -877,7 +877,7 @@ export default function RootCauseAnalytics({ className }: RootCauseAnalyticsProp
                 <TabsContent value="causes" className="space-y-4">
                   <div>
                     <h5 className="font-medium mb-2">Primary Root Cause</h5>
-                    <div className="p-3 border rounded-lg">
+                    <div className="p-3 border rounded-lg-lg">
                       <div className="flex items-center justify-between mb-2">
                         <span className="font-medium">{selectedAnalysis.rootCauses.primary.factor}</span>
                         <div className="flex items-center gap-2">
@@ -900,7 +900,7 @@ export default function RootCauseAnalytics({ className }: RootCauseAnalyticsProp
                     <h5 className="font-medium mb-2">Secondary Causes</h5>
                     <div className="space-y-2">
                       {selectedAnalysis.rootCauses.secondary.map((cause, index) => (
-                        <div key={index} className="p-2 border rounded">
+                        <div key={index} className="p-2 border rounded-lg">
                           <div className="flex items-center justify-between mb-1">
                             <span className="font-medium text-sm">{cause.factor}</span>
                             <div className="flex items-center gap-2">
@@ -924,7 +924,7 @@ export default function RootCauseAnalytics({ className }: RootCauseAnalyticsProp
                     <h5 className="font-medium mb-2">Contributing Factors</h5>
                     <div className="space-y-2">
                       {selectedAnalysis.rootCauses.contributing.map((factor, index) => (
-                        <div key={index} className="p-2 border rounded">
+                        <div key={index} className="p-2 border rounded-lg">
                           <div className="flex items-center justify-between mb-1">
                             <span className="font-medium text-sm">{factor.factor}</span>
                             <div className="flex items-center gap-2">
@@ -950,8 +950,8 @@ export default function RootCauseAnalytics({ className }: RootCauseAnalyticsProp
                     <h5 className="font-medium mb-2">Event Timeline</h5>
                     <div className="space-y-3">
                       {selectedAnalysis.timeline.map((event) => (
-                        <div key={event.id} className="flex items-start gap-3 p-3 border rounded-lg">
-                          <div className={`p-1 rounded-full ${getImpactColor(event.impact)}`}>
+                        <div key={event.id} className="flex items-start gap-3 p-3 border rounded-lg-lg">
+                          <div className={`p-1 rounded-lg-full ${getImpactColor(event.impact)}`}>
                             {event.impact === 'positive' ? <ArrowRight className="h-4 w-4" /> : 
                              event.impact === 'negative' ? <ArrowLeft className="h-4 w-4" /> : 
                              <Info className="h-4 w-4" />}
@@ -984,7 +984,7 @@ export default function RootCauseAnalytics({ className }: RootCauseAnalyticsProp
                       <h5 className="font-medium mb-2">Immediate Actions</h5>
                       <div className="space-y-2">
                         {selectedAnalysis.recommendations.immediate.map((action, index) => (
-                          <div key={index} className="p-3 border rounded-lg">
+                          <div key={index} className="p-3 border rounded-lg-lg">
                             <div className="flex items-center justify-between mb-2">
                               <span className="font-medium text-sm">{action.action}</span>
                               <Badge className={getPriorityColor(action.priority)}>
@@ -1004,7 +1004,7 @@ export default function RootCauseAnalytics({ className }: RootCauseAnalyticsProp
                       <h5 className="font-medium mb-2">Long-term Solutions</h5>
                       <div className="space-y-2">
                         {selectedAnalysis.recommendations.longTerm.map((action, index) => (
-                          <div key={index} className="p-3 border rounded-lg">
+                          <div key={index} className="p-3 border rounded-lg-lg">
                             <div className="flex items-center justify-between mb-2">
                               <span className="font-medium text-sm">{action.action}</span>
                               <Badge className={getPriorityColor(action.priority)}>

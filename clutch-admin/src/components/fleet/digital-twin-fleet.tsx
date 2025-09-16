@@ -468,19 +468,19 @@ export default function DigitalTwinFleet({ className }: DigitalTwinFleetProps) {
           {/* Fleet Health Summary */}
           {fleetHealth && (
             <div className="grid grid-cols-4 gap-4">
-              <div className="text-center p-3 bg-green-50 rounded-lg">
+              <div className="text-center p-3 bg-green-50 rounded-lg-lg">
                 <div className="text-2xl font-bold text-green-600">{fleetHealth.activeVehicles}</div>
                 <div className="text-sm text-muted-foreground">Active Vehicles</div>
               </div>
-              <div className="text-center p-3 bg-blue-50 rounded-lg">
+              <div className="text-center p-3 bg-blue-50 rounded-lg-lg">
                 <div className="text-2xl font-bold text-blue-600">{fleetHealth.avgHealthScore}%</div>
                 <div className="text-sm text-muted-foreground">Avg Health Score</div>
               </div>
-              <div className="text-center p-3 bg-purple-50 rounded-lg">
+              <div className="text-center p-3 bg-purple-50 rounded-lg-lg">
                 <div className="text-2xl font-bold text-purple-600">{fleetHealth.avgUtilization}%</div>
                 <div className="text-sm text-muted-foreground">Avg Utilization</div>
               </div>
-              <div className="text-center p-3 bg-red-50 rounded-lg">
+              <div className="text-center p-3 bg-red-50 rounded-lg-lg">
                 <div className="text-2xl font-bold text-red-600">{criticalAlerts}</div>
                 <div className="text-sm text-muted-foreground">Critical Alerts</div>
               </div>
@@ -521,7 +521,7 @@ export default function DigitalTwinFleet({ className }: DigitalTwinFleetProps) {
               {filteredVehicles.map((vehicle) => (
                 <div
                   key={vehicle.id}
-                  className={`p-3 border rounded-lg cursor-pointer transition-colors ${
+                  className={`p-3 border rounded-lg-lg cursor-pointer transition-colors ${
                     selectedVehicle?.id === vehicle.id ? 'border-blue-500 bg-blue-50' : 'hover:bg-gray-50'
                   }`}
                   onClick={() => setSelectedVehicle(vehicle)}
@@ -749,7 +749,7 @@ export default function DigitalTwinFleet({ className }: DigitalTwinFleetProps) {
                     <h5 className="font-medium mb-2">Active Alerts</h5>
                     <div className="space-y-2">
                       {selectedVehicle.alerts.filter(alert => !alert.resolved).map((alert) => (
-                        <div key={alert.id} className="p-3 border rounded-lg">
+                        <div key={alert.id} className="p-3 border rounded-lg-lg">
                           <div className="flex items-center justify-between mb-2">
                             <div className="flex items-center gap-2">
                               {getAlertIcon(alert.type)}

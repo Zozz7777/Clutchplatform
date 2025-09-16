@@ -109,9 +109,9 @@ export function FleetUtilization({ className = '' }: FleetUtilizationProps) {
         </CardHeader>
         <CardContent>
           <div className="animate-pulse space-y-4">
-            <div className="h-4 bg-gray-200 rounded w-3/4"></div>
-            <div className="h-4 bg-gray-200 rounded w-1/2"></div>
-            <div className="h-4 bg-gray-200 rounded w-2/3"></div>
+            <div className="h-4 bg-gray-200 rounded-lg-lg w-3/4"></div>
+            <div className="h-4 bg-gray-200 rounded-lg-lg w-1/2"></div>
+            <div className="h-4 bg-gray-200 rounded-lg-lg w-2/3"></div>
           </div>
         </CardContent>
       </Card>
@@ -151,7 +151,7 @@ export function FleetUtilization({ className = '' }: FleetUtilizationProps) {
       </CardHeader>
       <CardContent className="space-y-6">
         {/* Overall Utilization */}
-        <div className="text-center p-4 bg-gray-50 rounded-lg">
+        <div className="text-center p-4 bg-gray-50 rounded-lg-lg-lg">
           <div className="flex items-center justify-center space-x-2 mb-2">
             <Activity className={`h-6 w-6 ${getUtilizationColor(utilizationData.utilizationRate)}`} />
             <span className={`text-2xl font-bold ${getUtilizationColor(utilizationData.utilizationRate)}`}>
@@ -169,17 +169,17 @@ export function FleetUtilization({ className = '' }: FleetUtilizationProps) {
 
         {/* Fleet Status Summary */}
         <div className="grid grid-cols-3 gap-4">
-          <div className="text-center p-3 bg-green-50 rounded-lg">
+          <div className="text-center p-3 bg-green-50 rounded-lg-lg-lg">
             <CheckCircle className="h-5 w-5 text-green-600 mx-auto mb-1" />
             <p className="text-lg font-bold text-green-600">{utilizationData.active}</p>
             <p className="text-xs text-gray-500">Active</p>
           </div>
-          <div className="text-center p-3 bg-yellow-50 rounded-lg">
+          <div className="text-center p-3 bg-yellow-50 rounded-lg-lg-lg">
             <Clock className="h-5 w-5 text-yellow-600 mx-auto mb-1" />
             <p className="text-lg font-bold text-yellow-600">{utilizationData.idle}</p>
             <p className="text-xs text-gray-500">Idle</p>
           </div>
-          <div className="text-center p-3 bg-red-50 rounded-lg">
+          <div className="text-center p-3 bg-red-50 rounded-lg-lg-lg">
             <AlertTriangle className="h-5 w-5 text-red-600 mx-auto mb-1" />
             <p className="text-lg font-bold text-red-600">{utilizationData.maintenance}</p>
             <p className="text-xs text-gray-500">Maintenance</p>
@@ -195,7 +195,7 @@ export function FleetUtilization({ className = '' }: FleetUtilizationProps) {
               const percentage = utilizationData.total > 0 ? (status.count / utilizationData.total) * 100 : 0;
               
               return (
-                <div key={status.status} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+                <div key={status.status} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg-lg-lg">
                   <div className="flex items-center space-x-3">
                     <StatusIcon className={`h-4 w-4 ${getStatusColor(status.status)}`} />
                     <div>
@@ -236,14 +236,14 @@ export function FleetUtilization({ className = '' }: FleetUtilizationProps) {
 
         {/* Fleet Performance Metrics */}
         <div className="grid grid-cols-2 gap-4">
-          <div className="text-center p-3 bg-blue-50 rounded-lg">
+          <div className="text-center p-3 bg-blue-50 rounded-lg-lg-lg">
             <TrendingUp className="h-4 w-4 text-blue-600 mx-auto mb-1" />
             <p className="text-sm font-bold text-blue-600">
               {utilizationData.total > 0 ? ((utilizationData.active / utilizationData.total) * 100).toFixed(1) : 0}%
             </p>
             <p className="text-xs text-gray-500">Active Rate</p>
           </div>
-          <div className="text-center p-3 bg-purple-50 rounded-lg">
+          <div className="text-center p-3 bg-purple-50 rounded-lg-lg-lg">
             <BarChart3 className="h-4 w-4 text-purple-600 mx-auto mb-1" />
             <p className="text-sm font-bold text-purple-600">
               {utilizationData.total > 0 ? ((utilizationData.maintenance / utilizationData.total) * 100).toFixed(1) : 0}%
@@ -265,7 +265,7 @@ export function FleetUtilization({ className = '' }: FleetUtilizationProps) {
         </div>
 
         {/* Insights */}
-        <div className="p-3 bg-blue-50 rounded-lg">
+        <div className="p-3 bg-blue-50 rounded-lg-lg-lg">
           <h5 className="text-sm font-medium text-blue-900 mb-2">💡 Fleet Insights</h5>
           <ul className="text-xs text-blue-800 space-y-1">
             <li>• Total fleet size: {utilizationData.total} vehicles</li>

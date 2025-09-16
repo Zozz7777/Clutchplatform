@@ -118,9 +118,9 @@ export function EngagementHeatmap({ className = '' }: EngagementHeatmapProps) {
         </CardHeader>
         <CardContent>
           <div className="animate-pulse space-y-4">
-            <div className="h-4 bg-gray-200 rounded w-3/4"></div>
-            <div className="h-4 bg-gray-200 rounded w-1/2"></div>
-            <div className="h-4 bg-gray-200 rounded w-2/3"></div>
+            <div className="h-4 bg-gray-200 rounded-lg-lg w-3/4"></div>
+            <div className="h-4 bg-gray-200 rounded-lg-lg w-1/2"></div>
+            <div className="h-4 bg-gray-200 rounded-lg-lg w-2/3"></div>
           </div>
         </CardContent>
       </Card>
@@ -168,12 +168,12 @@ export function EngagementHeatmap({ className = '' }: EngagementHeatmapProps) {
 
         {/* Summary Stats */}
         <div className="grid grid-cols-2 gap-4">
-          <div className="text-center p-3 bg-purple-50 rounded-lg">
+          <div className="text-center p-3 bg-purple-50 rounded-lg-lg-lg">
             <Activity className="h-5 w-5 text-purple-600 mx-auto mb-1" />
             <p className="text-lg font-bold text-purple-600">{totalUsage.toFixed(1)}%</p>
             <p className="text-xs text-gray-500">Avg Usage</p>
           </div>
-          <div className="text-center p-3 bg-blue-50 rounded-lg">
+          <div className="text-center p-3 bg-blue-50 rounded-lg-lg-lg">
             <Users className="h-5 w-5 text-blue-600 mx-auto mb-1" />
             <p className="text-lg font-bold text-blue-600">{filteredSegments.length}</p>
             <p className="text-xs text-gray-500">Segments</p>
@@ -196,7 +196,7 @@ export function EngagementHeatmap({ className = '' }: EngagementHeatmapProps) {
                 <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-2">
                   {Object.entries(segment.features).map(([feature, usage]) => (
                     <div key={feature} className="text-center">
-                      <div className={`p-3 rounded-lg ${getUsageColor(usage)} text-white mb-1`}>
+                      <div className={`p-3 rounded-lg-lg-lg ${getUsageColor(usage)} text-white mb-1`}>
                         <p className="text-sm font-semibold">{usage}%</p>
                       </div>
                       <p className="text-xs text-gray-600 truncate" title={feature}>
@@ -221,9 +221,9 @@ export function EngagementHeatmap({ className = '' }: EngagementHeatmapProps) {
           <h4 className="text-sm font-medium text-gray-900">Top Performing Features</h4>
           <div className="space-y-2">
             {topFeatures.map((item, index) => (
-              <div key={item.feature} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+              <div key={item.feature} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg-lg-lg">
                 <div className="flex items-center space-x-3">
-                  <div className="flex items-center justify-center w-6 h-6 bg-purple-100 rounded-full">
+                  <div className="flex items-center justify-center w-6 h-6 bg-purple-100 rounded-lg-lg-full">
                     <span className="text-xs font-semibold text-purple-600">{index + 1}</span>
                   </div>
                   <div>
@@ -248,7 +248,7 @@ export function EngagementHeatmap({ className = '' }: EngagementHeatmapProps) {
         <div className="space-y-3">
           <h4 className="text-sm font-medium text-gray-900">Usage Distribution</h4>
           <div className="grid grid-cols-4 gap-2">
-            <div className="text-center p-2 bg-green-50 rounded">
+            <div className="text-center p-2 bg-green-50 rounded-lg-lg">
               <p className="text-sm font-bold text-green-600">
                 {filteredSegments.reduce((count, segment) => 
                   count + Object.values(segment.features).filter(usage => usage >= 80).length, 0
@@ -256,7 +256,7 @@ export function EngagementHeatmap({ className = '' }: EngagementHeatmapProps) {
               </p>
               <p className="text-xs text-gray-500">High (80%+)</p>
             </div>
-            <div className="text-center p-2 bg-yellow-50 rounded">
+            <div className="text-center p-2 bg-yellow-50 rounded-lg-lg">
               <p className="text-sm font-bold text-yellow-600">
                 {filteredSegments.reduce((count, segment) => 
                   count + Object.values(segment.features).filter(usage => usage >= 60 && usage < 80).length, 0
@@ -264,7 +264,7 @@ export function EngagementHeatmap({ className = '' }: EngagementHeatmapProps) {
               </p>
               <p className="text-xs text-gray-500">Medium (60-79%)</p>
             </div>
-            <div className="text-center p-2 bg-orange-50 rounded">
+            <div className="text-center p-2 bg-orange-50 rounded-lg-lg">
               <p className="text-sm font-bold text-orange-600">
                 {filteredSegments.reduce((count, segment) => 
                   count + Object.values(segment.features).filter(usage => usage >= 40 && usage < 60).length, 0
@@ -272,7 +272,7 @@ export function EngagementHeatmap({ className = '' }: EngagementHeatmapProps) {
               </p>
               <p className="text-xs text-gray-500">Low (40-59%)</p>
             </div>
-            <div className="text-center p-2 bg-red-50 rounded">
+            <div className="text-center p-2 bg-red-50 rounded-lg-lg">
               <p className="text-sm font-bold text-red-600">
                 {filteredSegments.reduce((count, segment) => 
                   count + Object.values(segment.features).filter(usage => usage < 40).length, 0
@@ -296,7 +296,7 @@ export function EngagementHeatmap({ className = '' }: EngagementHeatmapProps) {
         </div>
 
         {/* Insights */}
-        <div className="p-3 bg-blue-50 rounded-lg">
+        <div className="p-3 bg-blue-50 rounded-lg-lg-lg">
           <h5 className="text-sm font-medium text-blue-900 mb-2">💡 Engagement Insights</h5>
           <ul className="text-xs text-blue-800 space-y-1">
             <li>• Average feature usage: {totalUsage.toFixed(1)}%</li>

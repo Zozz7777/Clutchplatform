@@ -367,7 +367,7 @@ export default function AIRecommendationFeed({ className }: AIRecommendationFeed
           {filteredRecommendations.map((recommendation) => (
             <div
               key={recommendation.id}
-              className={`p-4 border rounded-lg ${
+              className={`p-4 border rounded-lg-lg ${
                 recommendation.priority === 'critical' ? 'border-red-200 bg-red-50' :
                 recommendation.priority === 'high' ? 'border-orange-200 bg-orange-50' :
                 'border-gray-200 bg-white'
@@ -375,7 +375,7 @@ export default function AIRecommendationFeed({ className }: AIRecommendationFeed
             >
               <div className="flex items-start justify-between mb-3">
                 <div className="flex items-center space-x-2">
-                  <div className={`p-1 rounded ${getCategoryColor(recommendation.category)} text-white`}>
+                  <div className={`p-1 rounded-lg ${getCategoryColor(recommendation.category)} text-white`}>
                     {getCategoryIcon(recommendation.category)}
                   </div>
                   <h3 className="font-medium">{recommendation.title}</h3>
@@ -384,7 +384,7 @@ export default function AIRecommendationFeed({ className }: AIRecommendationFeed
                   <Badge className={getStatusColor(recommendation.status)}>
                     {recommendation.status.replace('_', ' ')}
                   </Badge>
-                  <div className={`w-2 h-2 rounded-full ${getPriorityColor(recommendation.priority)}`} />
+                  <div className={`w-2 h-2 rounded-lg-full ${getPriorityColor(recommendation.priority)}`} />
                 </div>
               </div>
 
@@ -421,7 +421,7 @@ export default function AIRecommendationFeed({ className }: AIRecommendationFeed
                   </div>
                   <div className="flex items-center space-x-1">
                     <span className="text-xs text-muted-foreground">Effort:</span>
-                    <div className={`w-2 h-2 rounded-full ${getEffortColor(recommendation.effort)}`} />
+                    <div className={`w-2 h-2 rounded-lg-full ${getEffortColor(recommendation.effort)}`} />
                     <span className="text-sm capitalize">{recommendation.effort}</span>
                   </div>
                 </div>

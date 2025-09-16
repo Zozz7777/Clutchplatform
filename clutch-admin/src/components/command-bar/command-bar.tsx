@@ -456,17 +456,17 @@ export default function CommandBar({ isOpen, onClose }: CommandBarProps) {
     <>
       <Dialog open={isOpen} onOpenChange={onClose}>
         <DialogContent className="max-w-2xl max-h-[80vh] p-0">
-          <Command className="rounded-lg border shadow-md">
+          <Command className="rounded-lg-lg border shadow-md">
             <div className="flex items-center border-b px-3">
               <Search className="mr-2 h-4 w-4 shrink-0 opacity-50" />
               <CommandInput
                 placeholder="Type a command or search..."
                 value={search}
                 onValueChange={setSearch}
-                className="flex h-11 w-full rounded-md bg-transparent py-3 text-sm outline-none placeholder:text-muted-foreground disabled:cursor-not-allowed disabled:opacity-50"
+                className="flex h-11 w-full rounded-lg-md bg-transparent py-3 text-sm outline-none placeholder:text-muted-foreground disabled:cursor-not-allowed disabled:opacity-50"
               />
               <div className="ml-auto text-xs text-muted-foreground">
-                Press <kbd className="pointer-events-none inline-flex h-5 select-none items-center gap-1 rounded border bg-muted px-1.5 font-mono text-[10px] font-medium text-muted-foreground opacity-100">
+                Press <kbd className="pointer-events-none inline-flex h-5 select-none items-center gap-1 rounded-lg border bg-muted px-1.5 font-mono text-[10px] font-medium text-muted-foreground opacity-100">
                   <span className="text-xs">⌘</span>K
                 </kbd> to open
               </div>
@@ -493,7 +493,7 @@ export default function CommandBar({ isOpen, onClose }: CommandBarProps) {
                       </div>
                       <div className="flex items-center space-x-2">
                         {action.shortcut && (
-                          <kbd className="pointer-events-none inline-flex h-5 select-none items-center gap-1 rounded border bg-muted px-1.5 font-mono text-[10px] font-medium text-muted-foreground opacity-100">
+                          <kbd className="pointer-events-none inline-flex h-5 select-none items-center gap-1 rounded-lg border bg-muted px-1.5 font-mono text-[10px] font-medium text-muted-foreground opacity-100">
                             {action.shortcut}
                           </kbd>
                         )}
@@ -540,7 +540,7 @@ export default function CommandBar({ isOpen, onClose }: CommandBarProps) {
               <div className="flex justify-end space-x-2">
                 <button
                   onClick={() => setSelectedAction(null)}
-                  className="px-4 py-2 text-sm border rounded-md hover:bg-gray-50"
+                  className="px-4 py-2 text-sm border rounded-lg-md hover:bg-gray-50"
                 >
                   Cancel
                 </button>
@@ -549,7 +549,7 @@ export default function CommandBar({ isOpen, onClose }: CommandBarProps) {
                     selectedAction.action();
                     setSelectedAction(null);
                   }}
-                  className="px-4 py-2 text-sm bg-red-600 text-white rounded-md hover:bg-red-700"
+                  className="px-4 py-2 text-sm bg-red-600 text-white rounded-lg-md hover:bg-red-700"
                 >
                   Confirm
                 </button>

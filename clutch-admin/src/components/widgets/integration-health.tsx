@@ -176,9 +176,9 @@ export function IntegrationHealth({ className = '' }: IntegrationHealthProps) {
         </CardHeader>
         <CardContent>
           <div className="animate-pulse space-y-4">
-            <div className="h-4 bg-gray-200 rounded w-3/4"></div>
-            <div className="h-4 bg-gray-200 rounded w-1/2"></div>
-            <div className="h-4 bg-gray-200 rounded w-2/3"></div>
+            <div className="h-4 bg-gray-200 rounded-lg-lg w-3/4"></div>
+            <div className="h-4 bg-gray-200 rounded-lg-lg w-1/2"></div>
+            <div className="h-4 bg-gray-200 rounded-lg-lg w-2/3"></div>
           </div>
         </CardContent>
       </Card>
@@ -213,12 +213,12 @@ export function IntegrationHealth({ className = '' }: IntegrationHealthProps) {
       <CardContent className="space-y-6">
         {/* Summary Stats */}
         <div className="grid grid-cols-2 gap-4">
-          <div className="text-center p-3 bg-blue-50 rounded-lg">
+          <div className="text-center p-3 bg-blue-50 rounded-lg-lg-lg">
             <Link className="h-5 w-5 text-blue-600 mx-auto mb-1" />
             <p className="text-lg font-bold text-blue-600">{integrationData.totalIntegrations}</p>
             <p className="text-xs text-gray-500">Total Integrations</p>
           </div>
-          <div className="text-center p-3 bg-green-50 rounded-lg">
+          <div className="text-center p-3 bg-green-50 rounded-lg-lg-lg">
             <CheckCircle className="h-5 w-5 text-green-600 mx-auto mb-1" />
             <p className="text-lg font-bold text-green-600">{integrationData.healthyIntegrations}</p>
             <p className="text-xs text-gray-500">Healthy</p>
@@ -227,14 +227,14 @@ export function IntegrationHealth({ className = '' }: IntegrationHealthProps) {
 
         {/* Average Metrics */}
         <div className="grid grid-cols-2 gap-4">
-          <div className="text-center p-3 bg-gray-50 rounded-lg">
+          <div className="text-center p-3 bg-gray-50 rounded-lg-lg-lg">
             <Target className="h-5 w-5 text-gray-600 mx-auto mb-1" />
             <p className="text-lg font-bold text-gray-600">
               {integrationData.averageUptime.toFixed(1)}%
             </p>
             <p className="text-xs text-gray-500">Avg Uptime</p>
           </div>
-          <div className="text-center p-3 bg-gray-50 rounded-lg">
+          <div className="text-center p-3 bg-gray-50 rounded-lg-lg-lg">
             <Clock className="h-5 w-5 text-gray-600 mx-auto mb-1" />
             <p className="text-lg font-bold text-gray-600">
               {integrationData.averageResponseTime.toFixed(0)}ms
@@ -251,9 +251,9 @@ export function IntegrationHealth({ className = '' }: IntegrationHealthProps) {
               const StatusIcon = getStatusIcon(integration.status);
               
               return (
-                <div key={integration.name} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+                <div key={integration.name} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg-lg-lg">
                   <div className="flex items-center space-x-3">
-                    <div className={`p-2 rounded-full ${
+                    <div className={`p-2 rounded-lg-lg-full ${
                       integration.status === 'healthy' ? 'bg-green-100' :
                       integration.status === 'degraded' ? 'bg-yellow-100' : 'bg-red-100'
                     }`}>
@@ -290,7 +290,7 @@ export function IntegrationHealth({ className = '' }: IntegrationHealthProps) {
           <h4 className="text-sm font-medium text-gray-900">Performance Metrics</h4>
           <div className="space-y-2">
             {integrationData.integrations.map((integration) => (
-              <div key={integration.name} className="p-3 bg-gray-50 rounded-lg">
+              <div key={integration.name} className="p-3 bg-gray-50 rounded-lg-lg-lg">
                 <div className="flex justify-between items-center mb-2">
                   <h5 className="text-sm font-medium text-gray-900">{integration.name}</h5>
                   <Badge className={getStatusBadge(integration.status)}>
@@ -335,7 +335,7 @@ export function IntegrationHealth({ className = '' }: IntegrationHealthProps) {
         </div>
 
         {/* Insights */}
-        <div className="p-3 bg-blue-50 rounded-lg">
+        <div className="p-3 bg-blue-50 rounded-lg-lg-lg">
           <h5 className="text-sm font-medium text-blue-900 mb-2">💡 Integration Health Insights</h5>
           <ul className="text-xs text-blue-800 space-y-1">
             <li>• Total integrations: {integrationData.totalIntegrations}</li>

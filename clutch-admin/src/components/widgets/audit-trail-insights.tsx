@@ -183,9 +183,9 @@ export function AuditTrailInsights({ className = '' }: AuditTrailInsightsProps) 
         </CardHeader>
         <CardContent>
           <div className="animate-pulse space-y-4">
-            <div className="h-4 bg-gray-200 rounded w-3/4"></div>
-            <div className="h-4 bg-gray-200 rounded w-1/2"></div>
-            <div className="h-4 bg-gray-200 rounded w-2/3"></div>
+            <div className="h-4 bg-gray-200 rounded-lg-lg w-3/4"></div>
+            <div className="h-4 bg-gray-200 rounded-lg-lg w-1/2"></div>
+            <div className="h-4 bg-gray-200 rounded-lg-lg w-2/3"></div>
           </div>
         </CardContent>
       </Card>
@@ -220,12 +220,12 @@ export function AuditTrailInsights({ className = '' }: AuditTrailInsightsProps) 
       <CardContent className="space-y-6">
         {/* Summary Stats */}
         <div className="grid grid-cols-2 gap-4">
-          <div className="text-center p-3 bg-blue-50 rounded-lg">
+          <div className="text-center p-3 bg-blue-50 rounded-lg-lg-lg">
             <FileText className="h-5 w-5 text-blue-600 mx-auto mb-1" />
             <p className="text-lg font-bold text-blue-600">{auditData.totalEvents}</p>
             <p className="text-xs text-gray-500">Total Events</p>
           </div>
-          <div className="text-center p-3 bg-green-50 rounded-lg">
+          <div className="text-center p-3 bg-green-50 rounded-lg-lg-lg">
             <Users className="h-5 w-5 text-green-600 mx-auto mb-1" />
             <p className="text-lg font-bold text-green-600">{auditData.uniqueUsers}</p>
             <p className="text-xs text-gray-500">Unique Users</p>
@@ -233,7 +233,7 @@ export function AuditTrailInsights({ className = '' }: AuditTrailInsightsProps) 
         </div>
 
         {/* Security Events */}
-        <div className="text-center p-3 bg-red-50 rounded-lg">
+        <div className="text-center p-3 bg-red-50 rounded-lg-lg-lg">
           <div className="flex items-center justify-center space-x-2 mb-2">
             <AlertTriangle className="h-5 w-5 text-red-600" />
             <span className="text-lg font-bold text-red-600">{auditData.securityEvents}</span>
@@ -249,9 +249,9 @@ export function AuditTrailInsights({ className = '' }: AuditTrailInsightsProps) 
           <h4 className="text-sm font-medium text-gray-900">Most Frequent Actions</h4>
           <div className="space-y-2">
             {auditData.topActions.map((action, index) => (
-              <div key={action.action} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+              <div key={action.action} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg-lg-lg">
                 <div className="flex items-center space-x-3">
-                  <div className="flex items-center justify-center w-6 h-6 bg-blue-100 rounded-full">
+                  <div className="flex items-center justify-center w-6 h-6 bg-blue-100 rounded-lg-lg-full">
                     <span className="text-xs font-semibold text-blue-600">{index + 1}</span>
                   </div>
                   <div>
@@ -276,9 +276,9 @@ export function AuditTrailInsights({ className = '' }: AuditTrailInsightsProps) 
           <h4 className="text-sm font-medium text-gray-900">Most Active Users</h4>
           <div className="space-y-2">
             {auditData.topUsers.map((user, index) => (
-              <div key={user.user} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+              <div key={user.user} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg-lg-lg">
                 <div className="flex items-center space-x-3">
-                  <div className="flex items-center justify-center w-6 h-6 bg-green-100 rounded-full">
+                  <div className="flex items-center justify-center w-6 h-6 bg-green-100 rounded-lg-lg-full">
                     <span className="text-xs font-semibold text-green-600">{index + 1}</span>
                   </div>
                   <div>
@@ -303,9 +303,9 @@ export function AuditTrailInsights({ className = '' }: AuditTrailInsightsProps) 
           <h4 className="text-sm font-medium text-gray-900">Recent Events</h4>
           <div className="space-y-2">
             {auditData.recentEvents.map((event) => (
-              <div key={event.id} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+              <div key={event.id} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg-lg-lg">
                 <div className="flex items-center space-x-3">
-                  <div className={`p-2 rounded-full ${
+                  <div className={`p-2 rounded-lg-lg-full ${
                     event.success ? 'bg-green-100' : 'bg-red-100'
                   }`}>
                     {event.success ? (
@@ -362,7 +362,7 @@ export function AuditTrailInsights({ className = '' }: AuditTrailInsightsProps) 
         </div>
 
         {/* Insights */}
-        <div className="p-3 bg-blue-50 rounded-lg">
+        <div className="p-3 bg-blue-50 rounded-lg-lg-lg">
           <h5 className="text-sm font-medium text-blue-900 mb-2">💡 Audit Trail Insights</h5>
           <ul className="text-xs text-blue-800 space-y-1">
             <li>• Total events: {auditData.totalEvents}</li>

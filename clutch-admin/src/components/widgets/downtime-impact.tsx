@@ -146,9 +146,9 @@ export function DowntimeImpact({ className = '' }: DowntimeImpactProps) {
         </CardHeader>
         <CardContent>
           <div className="animate-pulse space-y-4">
-            <div className="h-4 bg-gray-200 rounded w-3/4"></div>
-            <div className="h-4 bg-gray-200 rounded w-1/2"></div>
-            <div className="h-4 bg-gray-200 rounded w-2/3"></div>
+            <div className="h-4 bg-gray-200 rounded-lg-lg w-3/4"></div>
+            <div className="h-4 bg-gray-200 rounded-lg-lg w-1/2"></div>
+            <div className="h-4 bg-gray-200 rounded-lg-lg w-2/3"></div>
           </div>
         </CardContent>
       </Card>
@@ -186,17 +186,17 @@ export function DowntimeImpact({ className = '' }: DowntimeImpactProps) {
       <CardContent className="space-y-6">
         {/* Summary Stats */}
         <div className="grid grid-cols-3 gap-4">
-          <div className="text-center p-3 bg-red-50 rounded-lg">
+          <div className="text-center p-3 bg-red-50 rounded-lg-lg-lg">
             <Clock className="h-5 w-5 text-red-600 mx-auto mb-1" />
             <p className="text-lg font-bold text-red-600">{downtimeMetrics.totalDowntimeHours}</p>
             <p className="text-xs text-gray-500">Total Hours</p>
           </div>
-          <div className="text-center p-3 bg-orange-50 rounded-lg">
+          <div className="text-center p-3 bg-orange-50 rounded-lg-lg-lg">
             <AlertTriangle className="h-5 w-5 text-orange-600 mx-auto mb-1" />
             <p className="text-lg font-bold text-orange-600">{downtimeMetrics.lostRevenueHours}</p>
             <p className="text-xs text-gray-500">Lost Revenue Hours</p>
           </div>
-          <div className="text-center p-3 bg-yellow-50 rounded-lg">
+          <div className="text-center p-3 bg-yellow-50 rounded-lg-lg-lg">
             <DollarSign className="h-5 w-5 text-yellow-600 mx-auto mb-1" />
             <p className="text-lg font-bold text-yellow-600">
               ${downtimeMetrics.revenueImpact.toLocaleString()}
@@ -206,7 +206,7 @@ export function DowntimeImpact({ className = '' }: DowntimeImpactProps) {
         </div>
 
         {/* Revenue Impact */}
-        <div className="text-center p-4 bg-gray-50 rounded-lg">
+        <div className="text-center p-4 bg-gray-50 rounded-lg-lg-lg">
           <div className="flex items-center justify-center space-x-2 mb-2">
             <DollarSign className={`h-6 w-6 ${getImpactColor(downtimeMetrics.revenueImpact, targetRevenueImpact)}`} />
             <span className={`text-2xl font-bold ${getImpactColor(downtimeMetrics.revenueImpact, targetRevenueImpact)}`}>
@@ -227,9 +227,9 @@ export function DowntimeImpact({ className = '' }: DowntimeImpactProps) {
           <h4 className="text-sm font-medium text-gray-900">Downtime by Reason</h4>
           <div className="space-y-2">
             {downtimeMetrics.downtimeByReason.map((reason) => (
-              <div key={reason.reason} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+              <div key={reason.reason} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg-lg-lg">
                 <div className="flex items-center space-x-3">
-                  <div className="flex items-center justify-center w-8 h-8 bg-blue-100 rounded-full">
+                  <div className="flex items-center justify-center w-8 h-8 bg-blue-100 rounded-lg-lg-full">
                     <span className="text-sm font-semibold text-blue-600">
                       {reason.percentage.toFixed(0)}%
                     </span>
@@ -257,9 +257,9 @@ export function DowntimeImpact({ className = '' }: DowntimeImpactProps) {
           <h4 className="text-sm font-medium text-gray-900">Top Affected Vehicles</h4>
           <div className="space-y-2">
             {downtimeMetrics.topAffectedVehicles.map((vehicle, index) => (
-              <div key={vehicle.vehicleId} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+              <div key={vehicle.vehicleId} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg-lg-lg">
                 <div className="flex items-center space-x-3">
-                  <div className="flex items-center justify-center w-8 h-8 bg-red-100 rounded-full">
+                  <div className="flex items-center justify-center w-8 h-8 bg-red-100 rounded-lg-lg-full">
                     <span className="text-sm font-semibold text-red-600">
                       {index + 1}
                     </span>
@@ -284,14 +284,14 @@ export function DowntimeImpact({ className = '' }: DowntimeImpactProps) {
 
         {/* Performance Metrics */}
         <div className="grid grid-cols-2 gap-4">
-          <div className="text-center p-3 bg-blue-50 rounded-lg">
+          <div className="text-center p-3 bg-blue-50 rounded-lg-lg-lg">
             <Truck className="h-4 w-4 text-blue-600 mx-auto mb-1" />
             <p className="text-sm font-bold text-blue-600">
               {downtimeMetrics.averageDowntimePerVehicle.toFixed(1)}h
             </p>
             <p className="text-xs text-gray-500">Avg Per Vehicle</p>
           </div>
-          <div className="text-center p-3 bg-purple-50 rounded-lg">
+          <div className="text-center p-3 bg-purple-50 rounded-lg-lg-lg">
             <BarChart3 className="h-4 w-4 text-purple-600 mx-auto mb-1" />
             <p className="text-sm font-bold text-purple-600">
               {((downtimeMetrics.lostRevenueHours / downtimeMetrics.totalDowntimeHours) * 100).toFixed(1)}%
@@ -313,7 +313,7 @@ export function DowntimeImpact({ className = '' }: DowntimeImpactProps) {
         </div>
 
         {/* Insights */}
-        <div className="p-3 bg-blue-50 rounded-lg">
+        <div className="p-3 bg-blue-50 rounded-lg-lg-lg">
           <h5 className="text-sm font-medium text-blue-900 mb-2">💡 Downtime Insights</h5>
           <ul className="text-xs text-blue-800 space-y-1">
             <li>• Total downtime: {downtimeMetrics.totalDowntimeHours} hours</li>

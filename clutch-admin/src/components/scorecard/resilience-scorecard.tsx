@@ -226,7 +226,7 @@ export default function ResilienceScorecard({ className }: ResilienceScorecardPr
 
       <CardContent className="space-y-6">
         {/* Overall Score Visualization */}
-        <div className={`p-4 rounded-lg ${overallStatus.bg}`}>
+        <div className={`p-4 rounded-lg-lg ${overallStatus.bg}`}>
           <div className="flex items-center justify-between mb-2">
             <span className="font-medium">Overall Resilience</span>
             <Badge className={`${getStatusColor(overallStatus.status)} text-white`}>
@@ -244,7 +244,7 @@ export default function ResilienceScorecard({ className }: ResilienceScorecardPr
           {metrics.map((metric) => (
             <div
               key={metric.id}
-              className="p-4 border rounded-lg hover:shadow-md transition-shadow"
+              className="p-4 border rounded-lg-lg hover:shadow-md transition-shadow"
             >
               <div className="flex items-center justify-between mb-3">
                 <div className="flex items-center space-x-2">
@@ -314,7 +314,7 @@ export default function ResilienceScorecard({ className }: ResilienceScorecardPr
             {metrics
               .filter(metric => metric.status === 'warning' || metric.status === 'critical')
               .map((metric) => (
-                <div key={metric.id} className="flex items-center justify-between p-2 bg-yellow-50 rounded">
+                <div key={metric.id} className="flex items-center justify-between p-2 bg-yellow-50 rounded-lg">
                   <div className="flex items-center space-x-2">
                     <AlertTriangle className="h-4 w-4 text-yellow-600" />
                     <span className="text-sm">
