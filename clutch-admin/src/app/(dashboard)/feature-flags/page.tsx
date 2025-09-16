@@ -150,188 +150,37 @@ export default function FeatureFlagsPage() {
   const [showABTestDialog, setShowABTestDialog] = useState(false);
   const [showRolloutDialog, setShowRolloutDialog] = useState(false);
   const [selectedFlag, setSelectedFlag] = useState<FeatureFlag | null>(null);
+  
+  // Form data states
+  const [createFlagData, setCreateFlagData] = useState({
+    name: "",
+    key: "",
+    description: "",
+    type: "boolean",
+    defaultValue: "",
+    environment: "development",
+    tags: ""
+  });
+  
+  const [createABTestData, setCreateABTestData] = useState({
+    name: "",
+    description: "",
+    featureFlagId: "",
+    successMetric: "",
+    startDate: "",
+    endDate: "",
+    confidenceLevel: "95"
+  });
+  
+  const [createRolloutData, setCreateRolloutData] = useState({
+    name: "",
+    featureFlagId: "",
+    type: "percentage",
+    percentage: "",
+    startDate: "",
+    endDate: ""
+  });
 
-  // Mock data for development
-  const mockFeatureFlags: FeatureFlag[] = [
-    {
-      _id: "1",
-      name: "New Dashboard UI",
-      key: "new_dashboard_ui",
-      description: "Enable the new dashboard user interface design",
-      enabled: true,
-      type: "boolean",
-      defaultValue: false,
-      currentValue: true,
-      environment: "production",
-      tags: ["ui", "dashboard", "frontend"],
-      createdBy: {
-        id: "1",
-        name: "Ahmed Hassan",
-        email: "ahmed@yourclutch.com",
-      },
-      createdAt: "2024-01-15T10:00:00Z",
-      updatedAt: "2024-03-15T14:30:00Z",
-      lastModifiedBy: {
-        id: "2",
-        name: "Fatma Ali",
-        email: "fatma@yourclutch.com",
-      },
-      rollout: {
-        percentage: 75,
-        targetUsers: [],
-        targetSegments: ["premium_users", "beta_testers"],
-        conditions: {
-          userTier: "premium",
-          region: "EG",
-        },
-      },
-      analytics: {
-        impressions: 15420,
-        conversions: 1236,
-        conversionRate: 8.02,
-        lastEvaluated: "2024-03-15T14:30:00Z",
-      },
-    },
-    {
-      _id: "2",
-      name: "AI Recommendations",
-      key: "ai_recommendations",
-      description: "Enable AI-powered service recommendations",
-      enabled: false,
-      type: "boolean",
-      defaultValue: false,
-      currentValue: false,
-      environment: "staging",
-      tags: ["ai", "recommendations", "ml"],
-      createdBy: {
-        id: "3",
-        name: "Mohamed Ibrahim",
-        email: "mohamed@yourclutch.com",
-      },
-      createdAt: "2024-02-01T09:00:00Z",
-      updatedAt: "2024-03-10T16:45:00Z",
-      lastModifiedBy: {
-        id: "3",
-        name: "Mohamed Ibrahim",
-        email: "mohamed@yourclutch.com",
-      },
-      rollout: {
-        percentage: 0,
-        targetUsers: [],
-        targetSegments: [],
-        conditions: {},
-      },
-      analytics: {
-        impressions: 0,
-        conversions: 0,
-        conversionRate: 0,
-        lastEvaluated: "2024-03-10T16:45:00Z",
-      },
-    },
-    {
-      _id: "3",
-      name: "Payment Gateway",
-      key: "payment_gateway",
-      description: "Switch between payment gateway providers",
-      enabled: true,
-      type: "string",
-      defaultValue: "stripe",
-      currentValue: "paymob",
-      environment: "production",
-      tags: ["payment", "integration", "backend"],
-      createdBy: {
-        id: "4",
-        name: "Nour El-Din",
-        email: "nour@yourclutch.com",
-      },
-      createdAt: "2024-01-20T11:30:00Z",
-      updatedAt: "2024-03-12T10:15:00Z",
-      lastModifiedBy: {
-        id: "4",
-        name: "Nour El-Din",
-        email: "nour@yourclutch.com",
-      },
-      rollout: {
-        percentage: 100,
-        targetUsers: [],
-        targetSegments: [],
-        conditions: {},
-      },
-      analytics: {
-        impressions: 8930,
-        conversions: 1786,
-        conversionRate: 20.01,
-        lastEvaluated: "2024-03-12T10:15:00Z",
-      },
-    },
-  ];
-
-  const mockABTests: ABTest[] = [
-    {
-      _id: "1",
-      name: "Checkout Button Color",
-      description: "Test different button colors for checkout conversion",
-      featureFlagId: "1",
-      status: "running",
-      variants: [
-        {
-          name: "Control (Blue)",
-          value: "#3B82F6",
-          percentage: 50,
-          metrics: {
-            impressions: 1250,
-            conversions: 125,
-            conversionRate: 10.0,
-          },
-        },
-        {
-          name: "Variant A (Green)",
-          value: "#10B981",
-          percentage: 50,
-          metrics: {
-            impressions: 1280,
-            conversions: 141,
-            conversionRate: 11.02,
-          },
-        },
-      ],
-      startDate: "2024-03-01T00:00:00Z",
-      endDate: "2024-03-31T23:59:59Z",
-      successMetric: "checkout_completion",
-      minimumSampleSize: 2000,
-      confidenceLevel: 95,
-      results: {
-        winner: "Variant A (Green)",
-        confidence: 87.5,
-        significance: false,
-        lift: 10.2,
-      },
-      createdAt: "2024-02-25T14:00:00Z",
-    },
-  ];
-
-  const mockRollouts: Rollout[] = [
-    {
-      _id: "1",
-      name: "New Dashboard - Gradual Rollout",
-      featureFlagId: "1",
-      type: "percentage",
-      status: "active",
-      target: {
-        percentage: 75,
-      },
-      schedule: {
-        startDate: "2024-03-01T00:00:00Z",
-        timezone: "Africa/Cairo",
-      },
-      metrics: {
-        totalUsers: 20000,
-        exposedUsers: 15000,
-        conversionRate: 8.02,
-      },
-      createdAt: "2024-02-28T10:00:00Z",
-    },
-  ];
 
   useEffect(() => {
     loadFeatureFlags();
@@ -343,10 +192,10 @@ export default function FeatureFlagsPage() {
     try {
       setLoading(true);
       const data = await productionApi.getFeatureFlags();
-      setFeatureFlags(data || mockFeatureFlags);
+      setFeatureFlags(data || []);
     } catch (error) {
       console.error("Error loading feature flags:", error);
-      setFeatureFlags(mockFeatureFlags);
+      setFeatureFlags([]);
     } finally {
       setLoading(false);
     }
@@ -355,20 +204,150 @@ export default function FeatureFlagsPage() {
   const loadABTests = async () => {
     try {
       const data = await productionApi.getABTests();
-      setABTests(data || mockABTests);
+      setABTests(data || []);
     } catch (error) {
       console.error("Error loading A/B tests:", error);
-      setABTests(mockABTests);
+      setABTests([]);
     }
   };
 
   const loadRollouts = async () => {
     try {
       const data = await productionApi.getRollouts();
-      setRollouts(data || mockRollouts);
+      setRollouts(data || []);
     } catch (error) {
       console.error("Error loading rollouts:", error);
-      setRollouts(mockRollouts);
+      setRollouts([]);
+    }
+  };
+  
+  const createFeatureFlag = async () => {
+    try {
+      const flagData = {
+        name: createFlagData.name,
+        key: createFlagData.key,
+        description: createFlagData.description,
+        enabled: false,
+        type: createFlagData.type,
+        defaultValue: createFlagData.defaultValue,
+        currentValue: createFlagData.defaultValue,
+        environment: createFlagData.environment,
+        tags: createFlagData.tags.split(',').map(tag => tag.trim()).filter(tag => tag),
+        createdBy: {
+          id: "current-user",
+          name: "Current User",
+          email: "user@example.com"
+        },
+        rollout: {
+          percentage: 0,
+          targetUsers: [],
+          targetSegments: [],
+          conditions: {}
+        },
+        analytics: {
+          impressions: 0,
+          conversions: 0,
+          conversionRate: 0,
+          lastEvaluated: new Date().toISOString()
+        }
+      };
+      
+      const newFlag = await productionApi.createFeatureFlag(flagData);
+      if (newFlag) {
+        setFeatureFlags(prev => [...prev, newFlag]);
+        setShowCreateDialog(false);
+        setCreateFlagData({
+          name: "",
+          key: "",
+          description: "",
+          type: "boolean",
+          defaultValue: "",
+          environment: "development",
+          tags: ""
+        });
+      }
+    } catch (error) {
+      console.error("Error creating feature flag:", error);
+    }
+  };
+  
+  const createABTest = async () => {
+    try {
+      const abTestData = {
+        name: createABTestData.name,
+        description: createABTestData.description,
+        featureFlagId: createABTestData.featureFlagId,
+        status: "draft",
+        variants: [],
+        startDate: createABTestData.startDate,
+        endDate: createABTestData.endDate,
+        successMetric: createABTestData.successMetric,
+        minimumSampleSize: 1000,
+        confidenceLevel: parseInt(createABTestData.confidenceLevel),
+        results: {
+          winner: "",
+          confidence: 0,
+          significance: false,
+          lift: 0
+        }
+      };
+      
+      const newTest = await productionApi.createABTest(abTestData);
+      if (newTest) {
+        setABTests(prev => [...prev, newTest]);
+        setShowABTestDialog(false);
+        setCreateABTestData({
+          name: "",
+          description: "",
+          featureFlagId: "",
+          successMetric: "",
+          startDate: "",
+          endDate: "",
+          confidenceLevel: "95"
+        });
+      }
+    } catch (error) {
+      console.error("Error creating A/B test:", error);
+    }
+  };
+  
+  const createRollout = async () => {
+    try {
+      const rolloutData = {
+        name: createRolloutData.name,
+        featureFlagId: createRolloutData.featureFlagId,
+        type: createRolloutData.type,
+        status: "scheduled",
+        target: {
+          percentage: parseInt(createRolloutData.percentage) || 0
+        },
+        schedule: {
+          startDate: createRolloutData.startDate,
+          endDate: createRolloutData.endDate || undefined,
+          timezone: "Africa/Cairo"
+        },
+        metrics: {
+          totalUsers: 0,
+          exposedUsers: 0,
+          conversionRate: 0
+        }
+      };
+      
+      const newRollout = await productionApi.createRollout(rolloutData);
+      if (newRollout) {
+        setRollouts(prev => [...prev, newRollout]);
+        setShowRolloutDialog(false);
+        setCreateRolloutData({
+          name: "",
+          featureFlagId: "",
+          type: "percentage",
+          percentage: "",
+          startDate: "",
+          endDate: ""
+        });
+      }
+    } catch (error) {
+      console.error("Error creating rollout:", error);
     }
   };
 
@@ -835,21 +814,40 @@ export default function FeatureFlagsPage() {
             <div className="grid grid-cols-2 gap-4">
               <div>
                 <Label htmlFor="name">Flag Name</Label>
-                <Input id="name" placeholder="Enter flag name" />
+                <Input 
+                  id="name" 
+                  placeholder="Enter flag name" 
+                  value={createFlagData.name}
+                  onChange={(e) => setCreateFlagData(prev => ({ ...prev, name: e.target.value }))}
+                />
               </div>
               <div>
                 <Label htmlFor="key">Flag Key</Label>
-                <Input id="key" placeholder="flag_key_name" />
+                <Input 
+                  id="key" 
+                  placeholder="flag_key_name" 
+                  value={createFlagData.key}
+                  onChange={(e) => setCreateFlagData(prev => ({ ...prev, key: e.target.value }))}
+                />
               </div>
             </div>
             <div>
               <Label htmlFor="description">Description</Label>
-              <Input id="description" placeholder="Describe what this flag controls" />
+              <Input 
+                id="description" 
+                placeholder="Describe what this flag controls" 
+                value={createFlagData.description}
+                onChange={(e) => setCreateFlagData(prev => ({ ...prev, description: e.target.value }))}
+              />
             </div>
             <div className="grid grid-cols-3 gap-4">
               <div>
                 <Label htmlFor="type">Type</Label>
-                <select className="w-full p-2 border rounded-md">
+                <select 
+                  className="w-full p-2 border rounded-md"
+                  value={createFlagData.type}
+                  onChange={(e) => setCreateFlagData(prev => ({ ...prev, type: e.target.value }))}
+                >
                   <option value="boolean">Boolean</option>
                   <option value="string">String</option>
                   <option value="number">Number</option>
@@ -858,11 +856,20 @@ export default function FeatureFlagsPage() {
               </div>
               <div>
                 <Label htmlFor="defaultValue">Default Value</Label>
-                <Input id="defaultValue" placeholder="false" />
+                <Input 
+                  id="defaultValue" 
+                  placeholder="false" 
+                  value={createFlagData.defaultValue}
+                  onChange={(e) => setCreateFlagData(prev => ({ ...prev, defaultValue: e.target.value }))}
+                />
               </div>
               <div>
                 <Label htmlFor="environment">Environment</Label>
-                <select className="w-full p-2 border rounded-md">
+                <select 
+                  className="w-full p-2 border rounded-md"
+                  value={createFlagData.environment}
+                  onChange={(e) => setCreateFlagData(prev => ({ ...prev, environment: e.target.value }))}
+                >
                   <option value="development">Development</option>
                   <option value="staging">Staging</option>
                   <option value="production">Production</option>
@@ -871,14 +878,19 @@ export default function FeatureFlagsPage() {
             </div>
             <div>
               <Label htmlFor="tags">Tags</Label>
-              <Input id="tags" placeholder="ui, frontend, feature" />
+              <Input 
+                id="tags" 
+                placeholder="ui, frontend, feature" 
+                value={createFlagData.tags}
+                onChange={(e) => setCreateFlagData(prev => ({ ...prev, tags: e.target.value }))}
+              />
             </div>
           </div>
           <DialogFooter>
             <Button variant="outline" onClick={() => setShowCreateDialog(false)}>
               Cancel
             </Button>
-            <Button onClick={() => setShowCreateDialog(false)}>
+            <Button onClick={createFeatureFlag}>
               Create Flag
             </Button>
           </DialogFooter>
@@ -897,16 +909,30 @@ export default function FeatureFlagsPage() {
           <div className="grid gap-4 py-4">
             <div>
               <Label htmlFor="testName">Test Name</Label>
-              <Input id="testName" placeholder="Enter test name" />
+              <Input 
+                id="testName" 
+                placeholder="Enter test name" 
+                value={createABTestData.name}
+                onChange={(e) => setCreateABTestData(prev => ({ ...prev, name: e.target.value }))}
+              />
             </div>
             <div>
               <Label htmlFor="testDescription">Description</Label>
-              <Input id="testDescription" placeholder="Describe the test hypothesis" />
+              <Input 
+                id="testDescription" 
+                placeholder="Describe the test hypothesis" 
+                value={createABTestData.description}
+                onChange={(e) => setCreateABTestData(prev => ({ ...prev, description: e.target.value }))}
+              />
             </div>
             <div className="grid grid-cols-2 gap-4">
               <div>
                 <Label htmlFor="featureFlag">Feature Flag</Label>
-                <select className="w-full p-2 border rounded-md">
+                <select 
+                  className="w-full p-2 border rounded-md"
+                  value={createABTestData.featureFlagId}
+                  onChange={(e) => setCreateABTestData(prev => ({ ...prev, featureFlagId: e.target.value }))}
+                >
                   <option value="">Select feature flag</option>
                   {featureFlags.map((flag) => (
                     <option key={flag._id} value={flag._id}>
@@ -917,21 +943,40 @@ export default function FeatureFlagsPage() {
               </div>
               <div>
                 <Label htmlFor="successMetric">Success Metric</Label>
-                <Input id="successMetric" placeholder="conversion_rate" />
+                <Input 
+                  id="successMetric" 
+                  placeholder="conversion_rate" 
+                  value={createABTestData.successMetric}
+                  onChange={(e) => setCreateABTestData(prev => ({ ...prev, successMetric: e.target.value }))}
+                />
               </div>
             </div>
             <div className="grid grid-cols-3 gap-4">
               <div>
                 <Label htmlFor="startDate">Start Date</Label>
-                <Input id="startDate" type="date" />
+                <Input 
+                  id="startDate" 
+                  type="date" 
+                  value={createABTestData.startDate}
+                  onChange={(e) => setCreateABTestData(prev => ({ ...prev, startDate: e.target.value }))}
+                />
               </div>
               <div>
                 <Label htmlFor="endDate">End Date</Label>
-                <Input id="endDate" type="date" />
+                <Input 
+                  id="endDate" 
+                  type="date" 
+                  value={createABTestData.endDate}
+                  onChange={(e) => setCreateABTestData(prev => ({ ...prev, endDate: e.target.value }))}
+                />
               </div>
               <div>
                 <Label htmlFor="confidenceLevel">Confidence Level</Label>
-                <select className="w-full p-2 border rounded-md">
+                <select 
+                  className="w-full p-2 border rounded-md"
+                  value={createABTestData.confidenceLevel}
+                  onChange={(e) => setCreateABTestData(prev => ({ ...prev, confidenceLevel: e.target.value }))}
+                >
                   <option value="90">90%</option>
                   <option value="95">95%</option>
                   <option value="99">99%</option>
@@ -943,7 +988,7 @@ export default function FeatureFlagsPage() {
             <Button variant="outline" onClick={() => setShowABTestDialog(false)}>
               Cancel
             </Button>
-            <Button onClick={() => setShowABTestDialog(false)}>
+            <Button onClick={createABTest}>
               Create Test
             </Button>
           </DialogFooter>
@@ -962,11 +1007,20 @@ export default function FeatureFlagsPage() {
           <div className="grid gap-4 py-4">
             <div>
               <Label htmlFor="rolloutName">Rollout Name</Label>
-              <Input id="rolloutName" placeholder="Enter rollout name" />
+              <Input 
+                id="rolloutName" 
+                placeholder="Enter rollout name" 
+                value={createRolloutData.name}
+                onChange={(e) => setCreateRolloutData(prev => ({ ...prev, name: e.target.value }))}
+              />
             </div>
             <div>
               <Label htmlFor="rolloutFlag">Feature Flag</Label>
-              <select className="w-full p-2 border rounded-md">
+              <select 
+                className="w-full p-2 border rounded-md"
+                value={createRolloutData.featureFlagId}
+                onChange={(e) => setCreateRolloutData(prev => ({ ...prev, featureFlagId: e.target.value }))}
+              >
                 <option value="">Select feature flag</option>
                 {featureFlags.map((flag) => (
                   <option key={flag._id} value={flag._id}>
@@ -978,7 +1032,11 @@ export default function FeatureFlagsPage() {
             <div className="grid grid-cols-2 gap-4">
               <div>
                 <Label htmlFor="rolloutType">Rollout Type</Label>
-                <select className="w-full p-2 border rounded-md">
+                <select 
+                  className="w-full p-2 border rounded-md"
+                  value={createRolloutData.type}
+                  onChange={(e) => setCreateRolloutData(prev => ({ ...prev, type: e.target.value }))}
+                >
                   <option value="percentage">Percentage</option>
                   <option value="user_list">User List</option>
                   <option value="segment">User Segment</option>
@@ -987,17 +1045,35 @@ export default function FeatureFlagsPage() {
               </div>
               <div>
                 <Label htmlFor="rolloutPercentage">Percentage</Label>
-                <Input id="rolloutPercentage" type="number" min="0" max="100" placeholder="0" />
+                <Input 
+                  id="rolloutPercentage" 
+                  type="number" 
+                  min="0" 
+                  max="100" 
+                  placeholder="0" 
+                  value={createRolloutData.percentage}
+                  onChange={(e) => setCreateRolloutData(prev => ({ ...prev, percentage: e.target.value }))}
+                />
               </div>
             </div>
             <div className="grid grid-cols-2 gap-4">
               <div>
                 <Label htmlFor="rolloutStart">Start Date</Label>
-                <Input id="rolloutStart" type="datetime-local" />
+                <Input 
+                  id="rolloutStart" 
+                  type="datetime-local" 
+                  value={createRolloutData.startDate}
+                  onChange={(e) => setCreateRolloutData(prev => ({ ...prev, startDate: e.target.value }))}
+                />
               </div>
               <div>
                 <Label htmlFor="rolloutEnd">End Date (Optional)</Label>
-                <Input id="rolloutEnd" type="datetime-local" />
+                <Input 
+                  id="rolloutEnd" 
+                  type="datetime-local" 
+                  value={createRolloutData.endDate}
+                  onChange={(e) => setCreateRolloutData(prev => ({ ...prev, endDate: e.target.value }))}
+                />
               </div>
             </div>
           </div>
@@ -1005,7 +1081,7 @@ export default function FeatureFlagsPage() {
             <Button variant="outline" onClick={() => setShowRolloutDialog(false)}>
               Cancel
             </Button>
-            <Button onClick={() => setShowRolloutDialog(false)}>
+            <Button onClick={createRollout}>
               Create Rollout
             </Button>
           </DialogFooter>

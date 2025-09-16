@@ -5,7 +5,16 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from '@/components/ui/dialog';
 import { 
   BookOpen, 
   Search, 
@@ -18,14 +27,19 @@ import {
   Calendar,
   User
 } from 'lucide-react';
+import { productionApi } from '@/lib/production-api';
 
 interface KnowledgeArticle {
-  id: string;
+  _id: string;
   title: string;
   content: string;
   category: string;
   tags: string[];
-  author: string;
+  author: {
+    id: string;
+    name: string;
+    email: string;
+  };
   createdAt: string;
   updatedAt: string;
   views: number;
@@ -37,55 +51,126 @@ export default function KnowledgeBasePage() {
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('all');
   const [loading, setLoading] = useState(true);
+  const [showCreateDialog, setShowCreateDialog] = useState(false);
+  const [showEditDialog, setShowEditDialog] = useState(false);
+  const [selectedArticle, setSelectedArticle] = useState<KnowledgeArticle | null>(null);
+  
+  // Form data state
+  const [articleData, setArticleData] = useState({
+    title: '',
+    content: '',
+    category: 'Getting Started',
+    tags: '',
+    status: 'draft' as 'published' | 'draft' | 'archived'
+  });
 
   const categories = ['all', 'Getting Started', 'Account Management', 'Billing', 'Technical Support', 'API Documentation'];
 
-  const mockArticles: KnowledgeArticle[] = [
-    {
-      id: '1',
-      title: 'Getting Started with Clutch',
-      content: 'Learn how to set up your account and start using Clutch...',
-      category: 'Getting Started',
-      tags: ['setup', 'onboarding', 'basics'],
-      author: 'John Doe',
-      createdAt: '2024-01-10T10:00:00Z',
-      updatedAt: '2024-01-15T14:30:00Z',
-      views: 1250,
-      status: 'published'
-    },
-    {
-      id: '2',
-      title: 'Managing Your Fleet',
-      content: 'Complete guide to managing your vehicle fleet...',
-      category: 'Account Management',
-      tags: ['fleet', 'vehicles', 'management'],
-      author: 'Jane Smith',
-      createdAt: '2024-01-12T09:00:00Z',
-      updatedAt: '2024-01-14T16:45:00Z',
-      views: 890,
-      status: 'published'
-    },
-    {
-      id: '3',
-      title: 'API Authentication Guide',
-      content: 'How to authenticate with the Clutch API...',
-      category: 'API Documentation',
-      tags: ['api', 'authentication', 'developer'],
-      author: 'Mike Johnson',
-      createdAt: '2024-01-08T11:00:00Z',
-      updatedAt: '2024-01-13T10:20:00Z',
-      views: 2100,
-      status: 'published'
-    }
-  ];
 
   useEffect(() => {
-    setLoading(true);
-    setTimeout(() => {
-      setArticles(mockArticles);
-      setLoading(false);
-    }, 1000);
+    loadArticles();
   }, []);
+  
+  const loadArticles = async () => {
+    try {
+      setLoading(true);
+      const data = await productionApi.getKnowledgeArticles();
+      setArticles(data || []);
+    } catch (error) {
+      console.error('Error loading articles:', error);
+      setArticles([]);
+    } finally {
+      setLoading(false);
+    }
+  };
+  
+  const createArticle = async () => {
+    try {
+      const newArticleData = {
+        title: articleData.title,
+        content: articleData.content,
+        category: articleData.category,
+        tags: articleData.tags.split(',').map(tag => tag.trim()).filter(tag => tag),
+        status: articleData.status,
+        author: {
+          id: 'current-user',
+          name: 'Current User',
+          email: 'user@example.com'
+        },
+        views: 0
+      };
+      
+      const newArticle = await productionApi.createKnowledgeArticle(newArticleData);
+      if (newArticle) {
+        setArticles(prev => [...prev, newArticle]);
+        setShowCreateDialog(false);
+        setArticleData({
+          title: '',
+          content: '',
+          category: 'Getting Started',
+          tags: '',
+          status: 'draft'
+        });
+      }
+    } catch (error) {
+      console.error('Error creating article:', error);
+    }
+  };
+  
+  const updateArticle = async () => {
+    if (!selectedArticle) return;
+    
+    try {
+      const updatedArticleData = {
+        title: articleData.title,
+        content: articleData.content,
+        category: articleData.category,
+        tags: articleData.tags.split(',').map(tag => tag.trim()).filter(tag => tag),
+        status: articleData.status
+      };
+      
+      const updatedArticle = await productionApi.updateKnowledgeArticle(selectedArticle._id, updatedArticleData);
+      if (updatedArticle) {
+        setArticles(prev => prev.map(article => 
+          article._id === selectedArticle._id ? updatedArticle : article
+        ));
+        setShowEditDialog(false);
+        setSelectedArticle(null);
+        setArticleData({
+          title: '',
+          content: '',
+          category: 'Getting Started',
+          tags: '',
+          status: 'draft'
+        });
+      }
+    } catch (error) {
+      console.error('Error updating article:', error);
+    }
+  };
+  
+  const deleteArticle = async (articleId: string) => {
+    try {
+      const success = await productionApi.deleteKnowledgeArticle(articleId);
+      if (success) {
+        setArticles(prev => prev.filter(article => article._id !== articleId));
+      }
+    } catch (error) {
+      console.error('Error deleting article:', error);
+    }
+  };
+  
+  const openEditDialog = (article: KnowledgeArticle) => {
+    setSelectedArticle(article);
+    setArticleData({
+      title: article.title,
+      content: article.content,
+      category: article.category,
+      tags: article.tags.join(', '),
+      status: article.status
+    });
+    setShowEditDialog(true);
+  };
 
   const filteredArticles = articles.filter(article => {
     const matchesSearch = article.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -117,7 +202,7 @@ export default function KnowledgeBasePage() {
             Manage help articles and documentation
           </p>
         </div>
-        <Button>
+        <Button onClick={() => setShowCreateDialog(true)}>
           <Plus className="h-4 w-4 mr-2" />
           New Article
         </Button>
@@ -163,7 +248,7 @@ export default function KnowledgeBasePage() {
           ) : (
             <div className="grid gap-4">
               {filteredArticles.map((article) => (
-                <Card key={article.id}>
+                <Card key={article._id}>
                   <CardHeader>
                     <div className="flex items-center justify-between">
                       <div className="flex-1">
@@ -178,11 +263,11 @@ export default function KnowledgeBasePage() {
                           <Eye className="h-4 w-4 mr-2" />
                           View
                         </Button>
-                        <Button variant="outline" size="sm">
+                        <Button variant="outline" size="sm" onClick={() => openEditDialog(article)}>
                           <Edit className="h-4 w-4 mr-2" />
                           Edit
                         </Button>
-                        <Button variant="outline" size="sm">
+                        <Button variant="outline" size="sm" onClick={() => deleteArticle(article._id)}>
                           <Trash2 className="h-4 w-4" />
                         </Button>
                       </div>
@@ -196,7 +281,7 @@ export default function KnowledgeBasePage() {
                       </div>
                       <div className="flex items-center space-x-1">
                         <User className="h-4 w-4" />
-                        <span className="font-sans">{article.author}</span>
+                        <span className="font-sans">{article.author.name}</span>
                       </div>
                       <div className="flex items-center space-x-1">
                         <Calendar className="h-4 w-4" />
@@ -292,6 +377,158 @@ export default function KnowledgeBasePage() {
           </div>
         </TabsContent>
       </Tabs>
+
+      {/* Create Article Dialog */}
+      <Dialog open={showCreateDialog} onOpenChange={setShowCreateDialog}>
+        <DialogContent className="max-w-2xl">
+          <DialogHeader>
+            <DialogTitle>Create New Article</DialogTitle>
+            <DialogDescription>
+              Create a new knowledge base article.
+            </DialogDescription>
+          </DialogHeader>
+          <div className="grid gap-4 py-4">
+            <div>
+              <Label htmlFor="title">Title</Label>
+              <Input 
+                id="title" 
+                placeholder="Article title" 
+                value={articleData.title}
+                onChange={(e) => setArticleData(prev => ({ ...prev, title: e.target.value }))}
+              />
+            </div>
+            <div>
+              <Label htmlFor="category">Category</Label>
+              <select 
+                className="w-full p-2 border rounded-md"
+                value={articleData.category}
+                onChange={(e) => setArticleData(prev => ({ ...prev, category: e.target.value }))}
+              >
+                <option value="Getting Started">Getting Started</option>
+                <option value="Account Management">Account Management</option>
+                <option value="Billing">Billing</option>
+                <option value="Technical Support">Technical Support</option>
+                <option value="API Documentation">API Documentation</option>
+              </select>
+            </div>
+            <div>
+              <Label htmlFor="content">Content</Label>
+              <textarea 
+                id="content" 
+                placeholder="Article content" 
+                className="w-full p-2 border rounded-md h-32"
+                value={articleData.content}
+                onChange={(e) => setArticleData(prev => ({ ...prev, content: e.target.value }))}
+              />
+            </div>
+            <div>
+              <Label htmlFor="tags">Tags (comma-separated)</Label>
+              <Input 
+                id="tags" 
+                placeholder="tag1, tag2, tag3" 
+                value={articleData.tags}
+                onChange={(e) => setArticleData(prev => ({ ...prev, tags: e.target.value }))}
+              />
+            </div>
+            <div>
+              <Label htmlFor="status">Status</Label>
+              <select 
+                className="w-full p-2 border rounded-md"
+                value={articleData.status}
+                onChange={(e) => setArticleData(prev => ({ ...prev, status: e.target.value as 'published' | 'draft' | 'archived' }))}
+              >
+                <option value="draft">Draft</option>
+                <option value="published">Published</option>
+                <option value="archived">Archived</option>
+              </select>
+            </div>
+          </div>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setShowCreateDialog(false)}>
+              Cancel
+            </Button>
+            <Button onClick={createArticle}>
+              Create Article
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* Edit Article Dialog */}
+      <Dialog open={showEditDialog} onOpenChange={setShowEditDialog}>
+        <DialogContent className="max-w-2xl">
+          <DialogHeader>
+            <DialogTitle>Edit Article</DialogTitle>
+            <DialogDescription>
+              Edit the knowledge base article.
+            </DialogDescription>
+          </DialogHeader>
+          <div className="grid gap-4 py-4">
+            <div>
+              <Label htmlFor="editTitle">Title</Label>
+              <Input 
+                id="editTitle" 
+                placeholder="Article title" 
+                value={articleData.title}
+                onChange={(e) => setArticleData(prev => ({ ...prev, title: e.target.value }))}
+              />
+            </div>
+            <div>
+              <Label htmlFor="editCategory">Category</Label>
+              <select 
+                className="w-full p-2 border rounded-md"
+                value={articleData.category}
+                onChange={(e) => setArticleData(prev => ({ ...prev, category: e.target.value }))}
+              >
+                <option value="Getting Started">Getting Started</option>
+                <option value="Account Management">Account Management</option>
+                <option value="Billing">Billing</option>
+                <option value="Technical Support">Technical Support</option>
+                <option value="API Documentation">API Documentation</option>
+              </select>
+            </div>
+            <div>
+              <Label htmlFor="editContent">Content</Label>
+              <textarea 
+                id="editContent" 
+                placeholder="Article content" 
+                className="w-full p-2 border rounded-md h-32"
+                value={articleData.content}
+                onChange={(e) => setArticleData(prev => ({ ...prev, content: e.target.value }))}
+              />
+            </div>
+            <div>
+              <Label htmlFor="editTags">Tags (comma-separated)</Label>
+              <Input 
+                id="editTags" 
+                placeholder="tag1, tag2, tag3" 
+                value={articleData.tags}
+                onChange={(e) => setArticleData(prev => ({ ...prev, tags: e.target.value }))}
+              />
+            </div>
+            <div>
+              <Label htmlFor="editStatus">Status</Label>
+              <select 
+                className="w-full p-2 border rounded-md"
+                value={articleData.status}
+                onChange={(e) => setArticleData(prev => ({ ...prev, status: e.target.value as 'published' | 'draft' | 'archived' }))}
+              >
+                <option value="draft">Draft</option>
+                <option value="published">Published</option>
+                <option value="archived">Archived</option>
+              </select>
+            </div>
+          </div>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setShowEditDialog(false)}>
+              Cancel
+            </Button>
+            <Button onClick={updateArticle}>
+              Update Article
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }

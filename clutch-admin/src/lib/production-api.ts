@@ -374,6 +374,15 @@ export class ProductionApiService {
     }
   }
 
+  async createReport(reportData: any): Promise<any> {
+    try {
+      return await realApi.createReport(reportData);
+    } catch (error) {
+      console.error("Failed to create report:", error);
+      throw new Error("Failed to create report");
+    }
+  }
+
   async getReport(reportId: string): Promise<any> {
     try {
       return await realApi.getReport(reportId);
@@ -420,6 +429,33 @@ export class ProductionApiService {
     }
   }
 
+  async createAsset(assetData: any): Promise<any> {
+    try {
+      return await realApi.createAsset(assetData);
+    } catch (error) {
+      console.error("Failed to create asset:", error);
+      throw new Error("Failed to create asset");
+    }
+  }
+
+  async createMaintenanceRecord(maintenanceData: any): Promise<any> {
+    try {
+      return await realApi.createMaintenanceRecord(maintenanceData);
+    } catch (error) {
+      console.error("Failed to create maintenance record:", error);
+      throw new Error("Failed to create maintenance record");
+    }
+  }
+
+  async createAssetAssignment(assignmentData: any): Promise<any> {
+    try {
+      return await realApi.createAssetAssignment(assignmentData);
+    } catch (error) {
+      console.error("Failed to create asset assignment:", error);
+      throw new Error("Failed to create asset assignment");
+    }
+  }
+
   // Project Management APIs
   async getProjects(): Promise<any[]> {
     try {
@@ -427,6 +463,15 @@ export class ProductionApiService {
     } catch (error) {
       console.error("Failed to fetch projects:", error);
       throw new Error("Failed to load projects");
+    }
+  }
+
+  async createProject(projectData: any): Promise<any> {
+    try {
+      return await realApi.createProject(projectData);
+    } catch (error) {
+      console.error("Failed to create project:", error);
+      throw new Error("Failed to create project");
     }
   }
 
@@ -464,6 +509,24 @@ export class ProductionApiService {
     } catch (error) {
       console.error("Failed to fetch rollouts:", error);
       throw new Error("Failed to load rollouts");
+    }
+  }
+
+  async createABTest(abTestData: any): Promise<any> {
+    try {
+      return await realApi.createABTest(abTestData);
+    } catch (error) {
+      console.error("Failed to create A/B test:", error);
+      throw new Error("Failed to create A/B test");
+    }
+  }
+
+  async createRollout(rolloutData: any): Promise<any> {
+    try {
+      return await realApi.createRollout(rolloutData);
+    } catch (error) {
+      console.error("Failed to create rollout:", error);
+      throw new Error("Failed to create rollout");
     }
   }
 
@@ -624,6 +687,42 @@ export class ProductionApiService {
     }
   }
 
+  async getVendorContracts(): Promise<any[]> {
+    try {
+      return await realApi.getVendorContracts();
+    } catch (error) {
+      console.error("Failed to fetch vendor contracts:", error);
+      throw new Error("Failed to load vendor contracts");
+    }
+  }
+
+  async createVendorContract(contractData: any): Promise<any> {
+    try {
+      return await realApi.createVendorContract(contractData);
+    } catch (error) {
+      console.error("Failed to create vendor contract:", error);
+      throw new Error("Failed to create vendor contract");
+    }
+  }
+
+  async getVendorCommunications(): Promise<any[]> {
+    try {
+      return await realApi.getVendorCommunications();
+    } catch (error) {
+      console.error("Failed to fetch vendor communications:", error);
+      throw new Error("Failed to load vendor communications");
+    }
+  }
+
+  async createVendorCommunication(communicationData: any): Promise<any> {
+    try {
+      return await realApi.createVendorCommunication(communicationData);
+    } catch (error) {
+      console.error("Failed to create vendor communication:", error);
+      throw new Error("Failed to create vendor communication");
+    }
+  }
+
   async updateVendor(vendorId: string, vendorData: any): Promise<any> {
     try {
       return await realApi.updateVendor(vendorId, vendorData);
@@ -742,6 +841,80 @@ export class ProductionApiService {
     } catch (error) {
       console.error("Failed to fetch revenue forecast:", error);
       throw new Error("Failed to load revenue forecast");
+    }
+  }
+
+  async refreshRevenueData(): Promise<any> {
+    try {
+      return await realApi.refreshRevenueData();
+    } catch (error) {
+      console.error("Failed to refresh revenue data:", error);
+      throw new Error("Failed to refresh revenue data");
+    }
+  }
+
+  async generateRevenueReport(): Promise<any> {
+    try {
+      return await realApi.generateRevenueReport();
+    } catch (error) {
+      console.error("Failed to generate revenue report:", error);
+      throw new Error("Failed to generate revenue report");
+    }
+  }
+
+  // SEO CMS APIs
+  async getSEOData(): Promise<any[]> {
+    try {
+      return await realApi.getSEOData();
+    } catch (error) {
+      console.error("Failed to fetch SEO data:", error);
+      throw new Error("Failed to load SEO data");
+    }
+  }
+
+  async refreshSEOAnalysis(): Promise<any> {
+    try {
+      return await realApi.refreshSEOAnalysis();
+    } catch (error) {
+      console.error("Failed to refresh SEO analysis:", error);
+      throw new Error("Failed to refresh SEO analysis");
+    }
+  }
+
+  async optimizeSEO(): Promise<any> {
+    try {
+      return await realApi.optimizeSEO();
+    } catch (error) {
+      console.error("Failed to optimize SEO:", error);
+      throw new Error("Failed to optimize SEO");
+    }
+  }
+
+  // Mobile CMS APIs
+  async getMobileAppSettings(): Promise<any> {
+    try {
+      return await realApi.getMobileAppSettings();
+    } catch (error) {
+      console.error("Failed to fetch mobile app settings:", error);
+      throw new Error("Failed to load mobile app settings");
+    }
+  }
+
+  async saveMobileAppSettings(settings: any): Promise<any> {
+    try {
+      return await realApi.saveMobileAppSettings(settings);
+    } catch (error) {
+      console.error("Failed to save mobile app settings:", error);
+      throw new Error("Failed to save mobile app settings");
+    }
+  }
+
+  async previewMobileApp(): Promise<any> {
+    try {
+      return await realApi.previewMobileApp();
+    } catch (error) {
+      console.error("Failed to preview mobile app:", error);
+      throw new Error("Failed to preview mobile app");
     }
   }
 

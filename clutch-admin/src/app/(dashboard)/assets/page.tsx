@@ -154,240 +154,40 @@ export default function AssetManagementPage() {
   const [showMaintenanceDialog, setShowMaintenanceDialog] = useState(false);
   const [showAssignmentDialog, setShowAssignmentDialog] = useState(false);
   const [selectedAsset, setSelectedAsset] = useState<Asset | null>(null);
+  
+  // Form data states
+  const [createAssetData, setCreateAssetData] = useState({
+    name: "",
+    type: "vehicle",
+    category: "",
+    description: "",
+    serialNumber: "",
+    model: "",
+    manufacturer: "",
+    purchaseDate: "",
+    purchasePrice: "",
+    currentValue: "",
+    building: "",
+    floor: "",
+    room: ""
+  });
+  
+  const [createMaintenanceData, setCreateMaintenanceData] = useState({
+    assetId: "",
+    type: "routine",
+    description: "",
+    date: "",
+    cost: "",
+    notes: ""
+  });
+  
+  const [createAssignmentData, setCreateAssignmentData] = useState({
+    assetId: "",
+    assignedTo: "",
+    assignedDate: "",
+    notes: ""
+  });
 
-  // Mock data for development
-  const mockAssets: Asset[] = [
-    {
-      _id: "1",
-      name: "Delivery Van - Toyota Hiace",
-      type: "vehicle",
-      category: "Delivery Vehicle",
-      description: "White Toyota Hiace van for package delivery",
-      serialNumber: "VH001",
-      model: "Hiace",
-      manufacturer: "Toyota",
-      purchaseDate: "2023-01-15",
-      purchasePrice: 450000,
-      currentValue: 380000,
-      status: "active",
-      location: {
-        building: "Main Warehouse",
-        floor: "Ground Floor",
-        room: "Parking Area A",
-        coordinates: {
-          lat: 30.0444,
-          lng: 31.2357,
-        },
-      },
-      assignedTo: {
-        id: "1",
-        name: "Ahmed Hassan",
-        email: "ahmed@yourclutch.com",
-        department: "Logistics",
-      },
-      maintenance: {
-        lastService: "2024-02-15",
-        nextService: "2024-05-15",
-        serviceInterval: 90,
-        totalServices: 5,
-        totalCost: 15000,
-      },
-      warranty: {
-        startDate: "2023-01-15",
-        endDate: "2026-01-15",
-        provider: "Toyota Egypt",
-        terms: "3 years or 100,000 km",
-      },
-      tags: ["delivery", "vehicle", "logistics"],
-      images: ["van1.jpg", "van2.jpg"],
-      documents: [
-        {
-          name: "Purchase Invoice",
-          url: "/documents/van_invoice.pdf",
-          type: "invoice",
-        },
-        {
-          name: "Insurance Certificate",
-          url: "/documents/van_insurance.pdf",
-          type: "insurance",
-        },
-      ],
-      createdAt: "2023-01-15T10:00:00Z",
-      updatedAt: "2024-03-15T14:30:00Z",
-    },
-    {
-      _id: "2",
-      name: "MacBook Pro 16-inch",
-      type: "it_hardware",
-      category: "Laptop",
-      description: "MacBook Pro 16-inch with M2 Max chip for development",
-      serialNumber: "MBP001",
-      model: "MacBook Pro 16-inch",
-      manufacturer: "Apple",
-      purchaseDate: "2023-06-01",
-      purchasePrice: 85000,
-      currentValue: 65000,
-      status: "active",
-      location: {
-        building: "Office Building",
-        floor: "3rd Floor",
-        room: "Development Lab",
-      },
-      assignedTo: {
-        id: "2",
-        name: "Fatma Ali",
-        email: "fatma@yourclutch.com",
-        department: "Engineering",
-      },
-      maintenance: {
-        lastService: "2024-01-10",
-        nextService: "2024-07-10",
-        serviceInterval: 180,
-        totalServices: 2,
-        totalCost: 5000,
-      },
-      warranty: {
-        startDate: "2023-06-01",
-        endDate: "2025-06-01",
-        provider: "Apple Egypt",
-        terms: "2 years limited warranty",
-      },
-      tags: ["laptop", "development", "macbook"],
-      images: ["macbook1.jpg"],
-      documents: [
-        {
-          name: "Purchase Receipt",
-          url: "/documents/macbook_receipt.pdf",
-          type: "receipt",
-        },
-      ],
-      createdAt: "2023-06-01T09:00:00Z",
-      updatedAt: "2024-03-10T16:45:00Z",
-    },
-    {
-      _id: "3",
-      name: "Office Desk - Ergonomic",
-      type: "furniture",
-      category: "Desk",
-      description: "Adjustable height ergonomic office desk",
-      serialNumber: "DESK001",
-      model: "ErgoDesk Pro",
-      manufacturer: "OfficeMax",
-      purchaseDate: "2023-03-20",
-      purchasePrice: 12000,
-      currentValue: 10000,
-      status: "active",
-      location: {
-        building: "Office Building",
-        floor: "2nd Floor",
-        room: "Conference Room B",
-      },
-      assignedTo: null,
-      maintenance: {
-        lastService: "2023-12-01",
-        nextService: "2024-12-01",
-        serviceInterval: 365,
-        totalServices: 1,
-        totalCost: 500,
-      },
-      warranty: {
-        startDate: "2023-03-20",
-        endDate: "2025-03-20",
-        provider: "OfficeMax Egypt",
-        terms: "2 years warranty on mechanism",
-      },
-      tags: ["furniture", "desk", "ergonomic"],
-      images: ["desk1.jpg"],
-      documents: [
-        {
-          name: "Warranty Certificate",
-          url: "/documents/desk_warranty.pdf",
-          type: "warranty",
-        },
-      ],
-      createdAt: "2023-03-20T11:30:00Z",
-      updatedAt: "2024-02-15T10:20:00Z",
-    },
-  ];
-
-  const mockMaintenanceRecords: MaintenanceRecord[] = [
-    {
-      _id: "1",
-      assetId: "1",
-      assetName: "Delivery Van - Toyota Hiace",
-      type: "routine",
-      description: "Regular oil change and filter replacement",
-      performedBy: {
-        id: "3",
-        name: "Mohamed Ibrahim",
-      },
-      cost: 2500,
-      date: "2024-02-15",
-      nextDueDate: "2024-05-15",
-      status: "completed",
-      notes: "All systems checked, vehicle in good condition",
-      attachments: ["service_report.pdf"],
-      createdAt: "2024-02-15T14:00:00Z",
-    },
-    {
-      _id: "2",
-      assetId: "2",
-      assetName: "MacBook Pro 16-inch",
-      type: "repair",
-      description: "Keyboard replacement due to sticky keys",
-      performedBy: {
-        id: "4",
-        name: "Nour El-Din",
-      },
-      cost: 3000,
-      date: "2024-01-10",
-      status: "completed",
-      notes: "Keyboard replaced, all keys working properly",
-      attachments: ["repair_invoice.pdf"],
-      createdAt: "2024-01-10T10:30:00Z",
-    },
-  ];
-
-  const mockAssignments: AssetAssignment[] = [
-    {
-      _id: "1",
-      assetId: "1",
-      assetName: "Delivery Van - Toyota Hiace",
-      assignedTo: {
-        id: "1",
-        name: "Ahmed Hassan",
-        email: "ahmed@yourclutch.com",
-        department: "Logistics",
-      },
-      assignedBy: {
-        id: "5",
-        name: "Omar Khaled",
-      },
-      assignedDate: "2023-01-20",
-      status: "active",
-      notes: "Primary delivery vehicle for downtown area",
-      createdAt: "2023-01-20T09:00:00Z",
-    },
-    {
-      _id: "2",
-      assetId: "2",
-      assetName: "MacBook Pro 16-inch",
-      assignedTo: {
-        id: "2",
-        name: "Fatma Ali",
-        email: "fatma@yourclutch.com",
-        department: "Engineering",
-      },
-      assignedBy: {
-        id: "6",
-        name: "Yasmin Mostafa",
-      },
-      assignedDate: "2023-06-05",
-      status: "active",
-      notes: "Development workstation for frontend team",
-      createdAt: "2023-06-05T11:00:00Z",
-    },
-  ];
 
   useEffect(() => {
     loadAssets();
@@ -399,10 +199,10 @@ export default function AssetManagementPage() {
     try {
       setLoading(true);
       const data = await productionApi.getAssets();
-      setAssets(data || mockAssets);
+      setAssets(data || []);
     } catch (error) {
       console.error("Error loading assets:", error);
-      setAssets(mockAssets);
+      setAssets([]);
     } finally {
       setLoading(false);
     }
@@ -411,20 +211,153 @@ export default function AssetManagementPage() {
   const loadMaintenanceRecords = async () => {
     try {
       const data = await productionApi.getMaintenanceRecords();
-      setMaintenanceRecords(data || mockMaintenanceRecords);
+      setMaintenanceRecords(data || []);
     } catch (error) {
       console.error("Error loading maintenance records:", error);
-      setMaintenanceRecords(mockMaintenanceRecords);
+      setMaintenanceRecords([]);
     }
   };
 
   const loadAssignments = async () => {
     try {
       const data = await productionApi.getAssetAssignments();
-      setAssignments(data || mockAssignments);
+      setAssignments(data || []);
     } catch (error) {
       console.error("Error loading assignments:", error);
-      setAssignments(mockAssignments);
+      setAssignments([]);
+    }
+  };
+  
+  const createAsset = async () => {
+    try {
+      const assetData = {
+        name: createAssetData.name,
+        type: createAssetData.type,
+        category: createAssetData.category,
+        description: createAssetData.description,
+        serialNumber: createAssetData.serialNumber,
+        model: createAssetData.model,
+        manufacturer: createAssetData.manufacturer,
+        purchaseDate: createAssetData.purchaseDate,
+        purchasePrice: parseFloat(createAssetData.purchasePrice) || 0,
+        currentValue: parseFloat(createAssetData.currentValue) || 0,
+        status: "active",
+        location: {
+          building: createAssetData.building,
+          floor: createAssetData.floor,
+          room: createAssetData.room
+        },
+        assignedTo: null,
+        maintenance: {
+          lastService: "",
+          nextService: "",
+          serviceInterval: 0,
+          totalServices: 0,
+          totalCost: 0
+        },
+        warranty: {
+          startDate: "",
+          endDate: "",
+          provider: "",
+          terms: ""
+        },
+        tags: [],
+        images: [],
+        documents: []
+      };
+      
+      const newAsset = await productionApi.createAsset(assetData);
+      if (newAsset) {
+        setAssets(prev => [...prev, newAsset]);
+        setShowCreateDialog(false);
+        setCreateAssetData({
+          name: "",
+          type: "vehicle",
+          category: "",
+          description: "",
+          serialNumber: "",
+          model: "",
+          manufacturer: "",
+          purchaseDate: "",
+          purchasePrice: "",
+          currentValue: "",
+          building: "",
+          floor: "",
+          room: ""
+        });
+      }
+    } catch (error) {
+      console.error("Error creating asset:", error);
+    }
+  };
+  
+  const createMaintenanceRecord = async () => {
+    try {
+      const maintenanceData = {
+        assetId: createMaintenanceData.assetId,
+        type: createMaintenanceData.type,
+        description: createMaintenanceData.description,
+        performedBy: {
+          id: "current-user",
+          name: "Current User"
+        },
+        cost: parseFloat(createMaintenanceData.cost) || 0,
+        date: createMaintenanceData.date,
+        status: "scheduled",
+        notes: createMaintenanceData.notes,
+        attachments: []
+      };
+      
+      const newRecord = await productionApi.createMaintenanceRecord(maintenanceData);
+      if (newRecord) {
+        setMaintenanceRecords(prev => [...prev, newRecord]);
+        setShowMaintenanceDialog(false);
+        setCreateMaintenanceData({
+          assetId: "",
+          type: "routine",
+          description: "",
+          date: "",
+          cost: "",
+          notes: ""
+        });
+      }
+    } catch (error) {
+      console.error("Error creating maintenance record:", error);
+    }
+  };
+  
+  const createAssetAssignment = async () => {
+    try {
+      const assignmentData = {
+        assetId: createAssignmentData.assetId,
+        assignedTo: {
+          id: createAssignmentData.assignedTo,
+          name: "Selected Employee",
+          email: "employee@example.com",
+          department: "Department"
+        },
+        assignedBy: {
+          id: "current-user",
+          name: "Current User"
+        },
+        assignedDate: createAssignmentData.assignedDate,
+        status: "active",
+        notes: createAssignmentData.notes
+      };
+      
+      const newAssignment = await productionApi.createAssetAssignment(assignmentData);
+      if (newAssignment) {
+        setAssignments(prev => [...prev, newAssignment]);
+        setShowAssignmentDialog(false);
+        setCreateAssignmentData({
+          assetId: "",
+          assignedTo: "",
+          assignedDate: "",
+          notes: ""
+        });
+      }
+    } catch (error) {
+      console.error("Error creating asset assignment:", error);
     }
   };
 
@@ -794,11 +727,20 @@ export default function AssetManagementPage() {
             <div className="grid grid-cols-2 gap-4">
               <div>
                 <Label htmlFor="name">Asset Name</Label>
-                <Input id="name" placeholder="Enter asset name" />
+                <Input 
+                  id="name" 
+                  placeholder="Enter asset name" 
+                  value={createAssetData.name}
+                  onChange={(e) => setCreateAssetData(prev => ({ ...prev, name: e.target.value }))}
+                />
               </div>
               <div>
                 <Label htmlFor="type">Type</Label>
-                <select className="w-full p-2 border rounded-md">
+                <select 
+                  className="w-full p-2 border rounded-md"
+                  value={createAssetData.type}
+                  onChange={(e) => setCreateAssetData(prev => ({ ...prev, type: e.target.value }))}
+                >
                   <option value="vehicle">Vehicle</option>
                   <option value="it_hardware">IT Hardware</option>
                   <option value="equipment">Equipment</option>
@@ -808,45 +750,110 @@ export default function AssetManagementPage() {
               </div>
             </div>
             <div>
+              <Label htmlFor="category">Category</Label>
+              <Input 
+                id="category" 
+                placeholder="Asset category" 
+                value={createAssetData.category}
+                onChange={(e) => setCreateAssetData(prev => ({ ...prev, category: e.target.value }))}
+              />
+            </div>
+            <div>
               <Label htmlFor="description">Description</Label>
-              <Input id="description" placeholder="Asset description" />
+              <Input 
+                id="description" 
+                placeholder="Asset description" 
+                value={createAssetData.description}
+                onChange={(e) => setCreateAssetData(prev => ({ ...prev, description: e.target.value }))}
+              />
             </div>
             <div className="grid grid-cols-3 gap-4">
               <div>
                 <Label htmlFor="serialNumber">Serial Number</Label>
-                <Input id="serialNumber" placeholder="Serial number" />
+                <Input 
+                  id="serialNumber" 
+                  placeholder="Serial number" 
+                  value={createAssetData.serialNumber}
+                  onChange={(e) => setCreateAssetData(prev => ({ ...prev, serialNumber: e.target.value }))}
+                />
               </div>
               <div>
                 <Label htmlFor="model">Model</Label>
-                <Input id="model" placeholder="Model" />
+                <Input 
+                  id="model" 
+                  placeholder="Model" 
+                  value={createAssetData.model}
+                  onChange={(e) => setCreateAssetData(prev => ({ ...prev, model: e.target.value }))}
+                />
               </div>
               <div>
                 <Label htmlFor="manufacturer">Manufacturer</Label>
-                <Input id="manufacturer" placeholder="Manufacturer" />
+                <Input 
+                  id="manufacturer" 
+                  placeholder="Manufacturer" 
+                  value={createAssetData.manufacturer}
+                  onChange={(e) => setCreateAssetData(prev => ({ ...prev, manufacturer: e.target.value }))}
+                />
               </div>
             </div>
             <div className="grid grid-cols-3 gap-4">
               <div>
                 <Label htmlFor="purchaseDate">Purchase Date</Label>
-                <Input id="purchaseDate" type="date" />
+                <Input 
+                  id="purchaseDate" 
+                  type="date" 
+                  value={createAssetData.purchaseDate}
+                  onChange={(e) => setCreateAssetData(prev => ({ ...prev, purchaseDate: e.target.value }))}
+                />
               </div>
               <div>
                 <Label htmlFor="purchasePrice">Purchase Price (EGP)</Label>
-                <Input id="purchasePrice" type="number" placeholder="0" />
+                <Input 
+                  id="purchasePrice" 
+                  type="number" 
+                  placeholder="0" 
+                  value={createAssetData.purchasePrice}
+                  onChange={(e) => setCreateAssetData(prev => ({ ...prev, purchasePrice: e.target.value }))}
+                />
               </div>
               <div>
                 <Label htmlFor="currentValue">Current Value (EGP)</Label>
-                <Input id="currentValue" type="number" placeholder="0" />
+                <Input 
+                  id="currentValue" 
+                  type="number" 
+                  placeholder="0" 
+                  value={createAssetData.currentValue}
+                  onChange={(e) => setCreateAssetData(prev => ({ ...prev, currentValue: e.target.value }))}
+                />
               </div>
             </div>
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-3 gap-4">
               <div>
                 <Label htmlFor="building">Building</Label>
-                <Input id="building" placeholder="Building name" />
+                <Input 
+                  id="building" 
+                  placeholder="Building name" 
+                  value={createAssetData.building}
+                  onChange={(e) => setCreateAssetData(prev => ({ ...prev, building: e.target.value }))}
+                />
+              </div>
+              <div>
+                <Label htmlFor="floor">Floor</Label>
+                <Input 
+                  id="floor" 
+                  placeholder="Floor" 
+                  value={createAssetData.floor}
+                  onChange={(e) => setCreateAssetData(prev => ({ ...prev, floor: e.target.value }))}
+                />
               </div>
               <div>
                 <Label htmlFor="room">Room</Label>
-                <Input id="room" placeholder="Room number" />
+                <Input 
+                  id="room" 
+                  placeholder="Room number" 
+                  value={createAssetData.room}
+                  onChange={(e) => setCreateAssetData(prev => ({ ...prev, room: e.target.value }))}
+                />
               </div>
             </div>
           </div>
@@ -854,7 +861,7 @@ export default function AssetManagementPage() {
             <Button variant="outline" onClick={() => setShowCreateDialog(false)}>
               Cancel
             </Button>
-            <Button onClick={() => setShowCreateDialog(false)}>
+            <Button onClick={createAsset}>
               Add Asset
             </Button>
           </DialogFooter>
@@ -873,7 +880,11 @@ export default function AssetManagementPage() {
           <div className="grid gap-4 py-4">
             <div>
               <Label htmlFor="asset">Asset</Label>
-              <select className="w-full p-2 border rounded-md">
+              <select 
+                className="w-full p-2 border rounded-md"
+                value={createMaintenanceData.assetId}
+                onChange={(e) => setCreateMaintenanceData(prev => ({ ...prev, assetId: e.target.value }))}
+              >
                 <option value="">Select asset</option>
                 {assets.map((asset) => (
                   <option key={asset._id} value={asset._id}>
@@ -884,7 +895,11 @@ export default function AssetManagementPage() {
             </div>
             <div>
               <Label htmlFor="maintenanceType">Maintenance Type</Label>
-              <select className="w-full p-2 border rounded-md">
+              <select 
+                className="w-full p-2 border rounded-md"
+                value={createMaintenanceData.type}
+                onChange={(e) => setCreateMaintenanceData(prev => ({ ...prev, type: e.target.value }))}
+              >
                 <option value="routine">Routine</option>
                 <option value="repair">Repair</option>
                 <option value="inspection">Inspection</option>
@@ -893,28 +908,49 @@ export default function AssetManagementPage() {
             </div>
             <div>
               <Label htmlFor="maintenanceDescription">Description</Label>
-              <Input id="maintenanceDescription" placeholder="Describe the maintenance work" />
+              <Input 
+                id="maintenanceDescription" 
+                placeholder="Describe the maintenance work" 
+                value={createMaintenanceData.description}
+                onChange={(e) => setCreateMaintenanceData(prev => ({ ...prev, description: e.target.value }))}
+              />
             </div>
             <div className="grid grid-cols-2 gap-4">
               <div>
                 <Label htmlFor="maintenanceDate">Date</Label>
-                <Input id="maintenanceDate" type="date" />
+                <Input 
+                  id="maintenanceDate" 
+                  type="date" 
+                  value={createMaintenanceData.date}
+                  onChange={(e) => setCreateMaintenanceData(prev => ({ ...prev, date: e.target.value }))}
+                />
               </div>
               <div>
                 <Label htmlFor="maintenanceCost">Estimated Cost (EGP)</Label>
-                <Input id="maintenanceCost" type="number" placeholder="0" />
+                <Input 
+                  id="maintenanceCost" 
+                  type="number" 
+                  placeholder="0" 
+                  value={createMaintenanceData.cost}
+                  onChange={(e) => setCreateMaintenanceData(prev => ({ ...prev, cost: e.target.value }))}
+                />
               </div>
             </div>
             <div>
               <Label htmlFor="maintenanceNotes">Notes</Label>
-              <Input id="maintenanceNotes" placeholder="Additional notes" />
+              <Input 
+                id="maintenanceNotes" 
+                placeholder="Additional notes" 
+                value={createMaintenanceData.notes}
+                onChange={(e) => setCreateMaintenanceData(prev => ({ ...prev, notes: e.target.value }))}
+              />
             </div>
           </div>
           <DialogFooter>
             <Button variant="outline" onClick={() => setShowMaintenanceDialog(false)}>
               Cancel
             </Button>
-            <Button onClick={() => setShowMaintenanceDialog(false)}>
+            <Button onClick={createMaintenanceRecord}>
               Schedule Maintenance
             </Button>
           </DialogFooter>
@@ -933,7 +969,11 @@ export default function AssetManagementPage() {
           <div className="grid gap-4 py-4">
             <div>
               <Label htmlFor="assignAsset">Asset</Label>
-              <select className="w-full p-2 border rounded-md">
+              <select 
+                className="w-full p-2 border rounded-md"
+                value={createAssignmentData.assetId}
+                onChange={(e) => setCreateAssignmentData(prev => ({ ...prev, assetId: e.target.value }))}
+              >
                 <option value="">Select asset</option>
                 {assets.filter(a => !a.assignedTo).map((asset) => (
                   <option key={asset._id} value={asset._id}>
@@ -944,7 +984,11 @@ export default function AssetManagementPage() {
             </div>
             <div>
               <Label htmlFor="assignTo">Assign To</Label>
-              <select className="w-full p-2 border rounded-md">
+              <select 
+                className="w-full p-2 border rounded-md"
+                value={createAssignmentData.assignedTo}
+                onChange={(e) => setCreateAssignmentData(prev => ({ ...prev, assignedTo: e.target.value }))}
+              >
                 <option value="">Select employee</option>
                 <option value="1">Ahmed Hassan - Logistics</option>
                 <option value="2">Fatma Ali - Engineering</option>
@@ -954,18 +998,28 @@ export default function AssetManagementPage() {
             </div>
             <div>
               <Label htmlFor="assignDate">Assignment Date</Label>
-              <Input id="assignDate" type="date" />
+              <Input 
+                id="assignDate" 
+                type="date" 
+                value={createAssignmentData.assignedDate}
+                onChange={(e) => setCreateAssignmentData(prev => ({ ...prev, assignedDate: e.target.value }))}
+              />
             </div>
             <div>
               <Label htmlFor="assignNotes">Notes</Label>
-              <Input id="assignNotes" placeholder="Assignment notes" />
+              <Input 
+                id="assignNotes" 
+                placeholder="Assignment notes" 
+                value={createAssignmentData.notes}
+                onChange={(e) => setCreateAssignmentData(prev => ({ ...prev, notes: e.target.value }))}
+              />
             </div>
           </div>
           <DialogFooter>
             <Button variant="outline" onClick={() => setShowAssignmentDialog(false)}>
               Cancel
             </Button>
-            <Button onClick={() => setShowAssignmentDialog(false)}>
+            <Button onClick={createAssetAssignment}>
               Assign Asset
             </Button>
           </DialogFooter>

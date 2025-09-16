@@ -196,308 +196,55 @@ export default function VendorManagementPage() {
   const [showContractDialog, setShowContractDialog] = useState(false);
   const [showCommunicationDialog, setShowCommunicationDialog] = useState(false);
   const [selectedVendor, setSelectedVendor] = useState<Vendor | null>(null);
+  
+  // Form data states
+  const [createVendorData, setCreateVendorData] = useState({
+    name: "",
+    type: "supplier",
+    category: "",
+    description: "",
+    primaryContactName: "",
+    primaryContactEmail: "",
+    primaryContactPhone: "",
+    primaryContactTitle: "",
+    street: "",
+    city: "",
+    state: "",
+    country: "Egypt",
+    zipCode: "",
+    registrationNumber: "",
+    taxId: "",
+    website: "",
+    establishedYear: "",
+    employeeCount: "",
+    annualRevenue: "",
+    notes: ""
+  });
+  
+  const [createContractData, setCreateContractData] = useState({
+    vendorId: "",
+    title: "",
+    description: "",
+    type: "service",
+    value: "",
+    currency: "EGP",
+    startDate: "",
+    endDate: "",
+    paymentTerms: "",
+    deliveryTerms: "",
+    warranty: "",
+    termination: ""
+  });
+  
+  const [createCommunicationData, setCreateCommunicationData] = useState({
+    vendorId: "",
+    type: "email",
+    subject: "",
+    content: "",
+    direction: "outbound",
+    date: ""
+  });
 
-  // Mock data for development
-  const mockVendors: Vendor[] = [
-    {
-      _id: "1",
-      name: "Tech Solutions Egypt",
-      type: "service_provider",
-      category: "IT Services",
-      description: "Leading IT services provider specializing in software development and system integration",
-      contact: {
-        primary: {
-          name: "Ahmed Hassan",
-          email: "ahmed@techsolutions.eg",
-          phone: "+20 10 1234 5678",
-          title: "Business Development Manager",
-        },
-        secondary: {
-          name: "Fatma Ali",
-          email: "fatma@techsolutions.eg",
-          phone: "+20 10 8765 4321",
-          title: "Project Manager",
-        },
-      },
-      address: {
-        street: "123 Nile Street",
-        city: "Cairo",
-        state: "Cairo",
-        country: "Egypt",
-        zipCode: "11511",
-        coordinates: {
-          lat: 30.0444,
-          lng: 31.2357,
-        },
-      },
-      business: {
-        registrationNumber: "12345-2020",
-        taxId: "TAX-EG-123456789",
-        website: "https://techsolutions.eg",
-        establishedYear: 2020,
-        employeeCount: 150,
-        annualRevenue: 50000000,
-      },
-      status: "active",
-      rating: {
-        overall: 4.5,
-        quality: 4.7,
-        delivery: 4.3,
-        communication: 4.6,
-        pricing: 4.2,
-        totalReviews: 24,
-      },
-      contracts: {
-        total: 8,
-        active: 3,
-        totalValue: 2500000,
-        averageValue: 312500,
-      },
-      performance: {
-        onTimeDelivery: 92,
-        qualityScore: 4.7,
-        responseTime: 2.5,
-        lastInteraction: "2024-03-15T10:30:00Z",
-      },
-      certifications: [
-        {
-          name: "ISO 9001:2015",
-          issuer: "Bureau Veritas",
-          issueDate: "2023-01-15",
-          expiryDate: "2026-01-15",
-          status: "valid",
-        },
-        {
-          name: "ISO 27001:2013",
-          issuer: "SGS",
-          issueDate: "2023-06-01",
-          expiryDate: "2026-06-01",
-          status: "valid",
-        },
-      ],
-      tags: ["IT", "software", "development", "integration"],
-      notes: "Reliable partner for complex software projects. Excellent technical expertise.",
-      createdAt: "2023-01-10T10:00:00Z",
-      updatedAt: "2024-03-15T14:30:00Z",
-    },
-    {
-      _id: "2",
-      name: "Office Supplies Plus",
-      type: "supplier",
-      category: "Office Supplies",
-      description: "Comprehensive office supplies and equipment supplier",
-      contact: {
-        primary: {
-          name: "Mohamed Ibrahim",
-          email: "mohamed@officesupplies.eg",
-          phone: "+20 11 2345 6789",
-          title: "Sales Manager",
-        },
-      },
-      address: {
-        street: "456 Tahrir Square",
-        city: "Cairo",
-        state: "Cairo",
-        country: "Egypt",
-        zipCode: "11512",
-      },
-      business: {
-        registrationNumber: "67890-2018",
-        taxId: "TAX-EG-987654321",
-        website: "https://officesupplies.eg",
-        establishedYear: 2018,
-        employeeCount: 45,
-        annualRevenue: 15000000,
-      },
-      status: "active",
-      rating: {
-        overall: 4.2,
-        quality: 4.1,
-        delivery: 4.4,
-        communication: 4.0,
-        pricing: 4.3,
-        totalReviews: 18,
-      },
-      contracts: {
-        total: 12,
-        active: 5,
-        totalValue: 800000,
-        averageValue: 66667,
-      },
-      performance: {
-        onTimeDelivery: 88,
-        qualityScore: 4.1,
-        responseTime: 4.0,
-        lastInteraction: "2024-03-12T15:45:00Z",
-      },
-      certifications: [
-        {
-          name: "ISO 9001:2015",
-          issuer: "TÜV NORD",
-          issueDate: "2022-03-01",
-          expiryDate: "2025-03-01",
-          status: "valid",
-        },
-      ],
-      tags: ["office", "supplies", "equipment", "stationery"],
-      notes: "Good pricing and reliable delivery. Quality could be improved.",
-      createdAt: "2023-02-15T09:00:00Z",
-      updatedAt: "2024-03-12T15:45:00Z",
-    },
-    {
-      _id: "3",
-      name: "Fleet Maintenance Co.",
-      type: "service_provider",
-      category: "Vehicle Maintenance",
-      description: "Professional vehicle maintenance and repair services",
-      contact: {
-        primary: {
-          name: "Nour El-Din",
-          email: "nour@fleetmaintenance.eg",
-          phone: "+20 12 3456 7890",
-          title: "Operations Manager",
-        },
-      },
-      address: {
-        street: "789 Industrial Zone",
-        city: "Alexandria",
-        state: "Alexandria",
-        country: "Egypt",
-        zipCode: "21500",
-      },
-      business: {
-        registrationNumber: "11111-2019",
-        taxId: "TAX-EG-111222333",
-        website: "https://fleetmaintenance.eg",
-        establishedYear: 2019,
-        employeeCount: 80,
-        annualRevenue: 25000000,
-      },
-      status: "active",
-      rating: {
-        overall: 4.8,
-        quality: 4.9,
-        delivery: 4.7,
-        communication: 4.8,
-        pricing: 4.6,
-        totalReviews: 32,
-      },
-      contracts: {
-        total: 6,
-        active: 4,
-        totalValue: 1800000,
-        averageValue: 300000,
-      },
-      performance: {
-        onTimeDelivery: 96,
-        qualityScore: 4.9,
-        responseTime: 1.5,
-        lastInteraction: "2024-03-14T11:20:00Z",
-      },
-      certifications: [
-        {
-          name: "ISO 9001:2015",
-          issuer: "DNV GL",
-          issueDate: "2023-02-01",
-          expiryDate: "2026-02-01",
-          status: "valid",
-        },
-        {
-          name: "Automotive Service Excellence",
-          issuer: "ASE",
-          issueDate: "2023-05-15",
-          expiryDate: "2025-05-15",
-          status: "valid",
-        },
-      ],
-      tags: ["vehicle", "maintenance", "repair", "fleet"],
-      notes: "Excellent service quality and reliability. Highly recommended for fleet maintenance.",
-      createdAt: "2023-03-01T08:00:00Z",
-      updatedAt: "2024-03-14T11:20:00Z",
-    },
-  ];
-
-  const mockContracts: Contract[] = [
-    {
-      _id: "1",
-      vendorId: "1",
-      vendorName: "Tech Solutions Egypt",
-      title: "Mobile App Development",
-      description: "Development of Clutch mobile application",
-      type: "service",
-      status: "active",
-      value: 800000,
-      currency: "EGP",
-      startDate: "2024-01-01",
-      endDate: "2024-06-30",
-      terms: {
-        paymentTerms: "50% upfront, 50% on completion",
-        deliveryTerms: "Weekly progress reports",
-        warranty: "6 months post-delivery support",
-        termination: "30 days notice required",
-      },
-      deliverables: [
-        {
-          description: "UI/UX Design",
-          dueDate: "2024-02-15",
-          status: "completed",
-        },
-        {
-          description: "Frontend Development",
-          dueDate: "2024-04-15",
-          status: "in_progress",
-        },
-        {
-          description: "Backend Integration",
-          dueDate: "2024-05-30",
-          status: "pending",
-        },
-      ],
-      createdBy: {
-        id: "1",
-        name: "Ahmed Hassan",
-      },
-      createdAt: "2023-12-15T10:00:00Z",
-      updatedAt: "2024-03-15T14:30:00Z",
-    },
-  ];
-
-  const mockCommunications: Communication[] = [
-    {
-      _id: "1",
-      vendorId: "1",
-      vendorName: "Tech Solutions Egypt",
-      type: "email",
-      subject: "Project Status Update",
-      content: "Weekly progress report for mobile app development project",
-      direction: "inbound",
-      participants: [
-        {
-          id: "1",
-          name: "Ahmed Hassan",
-          email: "ahmed@techsolutions.eg",
-        },
-        {
-          id: "2",
-          name: "Fatma Ali",
-          email: "fatma@yourclutch.com",
-        },
-      ],
-      attachments: [
-        {
-          name: "progress_report.pdf",
-          url: "/attachments/progress_report.pdf",
-          type: "pdf",
-        },
-      ],
-      date: "2024-03-15T10:30:00Z",
-      createdBy: {
-        id: "1",
-        name: "Ahmed Hassan",
-      },
-      createdAt: "2024-03-15T10:30:00Z",
-    },
-  ];
 
   useEffect(() => {
     loadVendors();
@@ -509,10 +256,10 @@ export default function VendorManagementPage() {
     try {
       setLoading(true);
       const data = await productionApi.getVendors();
-      setVendors(data || mockVendors);
+      setVendors(data || []);
     } catch (error) {
       console.error("Error loading vendors:", error);
-      setVendors(mockVendors);
+      setVendors([]);
     } finally {
       setLoading(false);
     }
@@ -521,20 +268,192 @@ export default function VendorManagementPage() {
   const loadContracts = async () => {
     try {
       const data = await productionApi.getVendorContracts();
-      setContracts(data || mockContracts);
+      setContracts(data || []);
     } catch (error) {
       console.error("Error loading contracts:", error);
-      setContracts(mockContracts);
+      setContracts([]);
     }
   };
 
   const loadCommunications = async () => {
     try {
       const data = await productionApi.getVendorCommunications();
-      setCommunications(data || mockCommunications);
+      setCommunications(data || []);
     } catch (error) {
       console.error("Error loading communications:", error);
-      setCommunications(mockCommunications);
+      setCommunications([]);
+    }
+  };
+  
+  const createVendor = async () => {
+    try {
+      const vendorData = {
+        name: createVendorData.name,
+        type: createVendorData.type,
+        category: createVendorData.category,
+        description: createVendorData.description,
+        contact: {
+          primary: {
+            name: createVendorData.primaryContactName,
+            email: createVendorData.primaryContactEmail,
+            phone: createVendorData.primaryContactPhone,
+            title: createVendorData.primaryContactTitle
+          }
+        },
+        address: {
+          street: createVendorData.street,
+          city: createVendorData.city,
+          state: createVendorData.state,
+          country: createVendorData.country,
+          zipCode: createVendorData.zipCode
+        },
+        business: {
+          registrationNumber: createVendorData.registrationNumber,
+          taxId: createVendorData.taxId,
+          website: createVendorData.website,
+          establishedYear: parseInt(createVendorData.establishedYear) || 0,
+          employeeCount: parseInt(createVendorData.employeeCount) || 0,
+          annualRevenue: parseFloat(createVendorData.annualRevenue) || 0
+        },
+        status: "pending_approval",
+        rating: {
+          overall: 0,
+          quality: 0,
+          delivery: 0,
+          communication: 0,
+          pricing: 0,
+          totalReviews: 0
+        },
+        contracts: {
+          total: 0,
+          active: 0,
+          totalValue: 0,
+          averageValue: 0
+        },
+        performance: {
+          onTimeDelivery: 0,
+          qualityScore: 0,
+          responseTime: 0,
+          lastInteraction: new Date().toISOString()
+        },
+        certifications: [],
+        tags: [],
+        notes: createVendorData.notes
+      };
+      
+      const newVendor = await productionApi.createVendor(vendorData);
+      if (newVendor) {
+        setVendors(prev => [...prev, newVendor]);
+        setShowCreateDialog(false);
+        setCreateVendorData({
+          name: "",
+          type: "supplier",
+          category: "",
+          description: "",
+          primaryContactName: "",
+          primaryContactEmail: "",
+          primaryContactPhone: "",
+          primaryContactTitle: "",
+          street: "",
+          city: "",
+          state: "",
+          country: "Egypt",
+          zipCode: "",
+          registrationNumber: "",
+          taxId: "",
+          website: "",
+          establishedYear: "",
+          employeeCount: "",
+          annualRevenue: "",
+          notes: ""
+        });
+      }
+    } catch (error) {
+      console.error("Error creating vendor:", error);
+    }
+  };
+  
+  const createContract = async () => {
+    try {
+      const contractData = {
+        vendorId: createContractData.vendorId,
+        title: createContractData.title,
+        description: createContractData.description,
+        type: createContractData.type,
+        status: "draft",
+        value: parseFloat(createContractData.value) || 0,
+        currency: createContractData.currency,
+        startDate: createContractData.startDate,
+        endDate: createContractData.endDate,
+        terms: {
+          paymentTerms: createContractData.paymentTerms,
+          deliveryTerms: createContractData.deliveryTerms,
+          warranty: createContractData.warranty,
+          termination: createContractData.termination
+        },
+        deliverables: [],
+        createdBy: {
+          id: "current-user",
+          name: "Current User"
+        }
+      };
+      
+      const newContract = await productionApi.createVendorContract(contractData);
+      if (newContract) {
+        setContracts(prev => [...prev, newContract]);
+        setShowContractDialog(false);
+        setCreateContractData({
+          vendorId: "",
+          title: "",
+          description: "",
+          type: "service",
+          value: "",
+          currency: "EGP",
+          startDate: "",
+          endDate: "",
+          paymentTerms: "",
+          deliveryTerms: "",
+          warranty: "",
+          termination: ""
+        });
+      }
+    } catch (error) {
+      console.error("Error creating contract:", error);
+    }
+  };
+  
+  const createCommunication = async () => {
+    try {
+      const communicationData = {
+        vendorId: createCommunicationData.vendorId,
+        type: createCommunicationData.type,
+        subject: createCommunicationData.subject,
+        content: createCommunicationData.content,
+        direction: createCommunicationData.direction,
+        participants: [],
+        attachments: [],
+        date: createCommunicationData.date,
+        createdBy: {
+          id: "current-user",
+          name: "Current User"
+        }
+      };
+      
+      const newCommunication = await productionApi.createVendorCommunication(communicationData);
+      if (newCommunication) {
+        setCommunications(prev => [...prev, newCommunication]);
+        setShowCommunicationDialog(false);
+        setCreateCommunicationData({
+          vendorId: "",
+          type: "email",
+          subject: "",
+          content: "",
+          direction: "outbound",
+          date: ""
+        });
+      }
+    } catch (error) {
+      console.error("Error creating communication:", error);
     }
   };
 
@@ -921,11 +840,20 @@ export default function VendorManagementPage() {
             <div className="grid grid-cols-2 gap-4">
               <div>
                 <Label htmlFor="vendorName">Vendor Name</Label>
-                <Input id="vendorName" placeholder="Enter vendor name" />
+                <Input 
+                  id="vendorName" 
+                  placeholder="Enter vendor name" 
+                  value={createVendorData.name}
+                  onChange={(e) => setCreateVendorData(prev => ({ ...prev, name: e.target.value }))}
+                />
               </div>
               <div>
                 <Label htmlFor="vendorType">Type</Label>
-                <select className="w-full p-2 border rounded-md">
+                <select 
+                  className="w-full p-2 border rounded-md"
+                  value={createVendorData.type}
+                  onChange={(e) => setCreateVendorData(prev => ({ ...prev, type: e.target.value }))}
+                >
                   <option value="supplier">Supplier</option>
                   <option value="service_provider">Service Provider</option>
                   <option value="contractor">Contractor</option>
@@ -935,55 +863,189 @@ export default function VendorManagementPage() {
               </div>
             </div>
             <div>
+              <Label htmlFor="vendorCategory">Category</Label>
+              <Input 
+                id="vendorCategory" 
+                placeholder="Vendor category" 
+                value={createVendorData.category}
+                onChange={(e) => setCreateVendorData(prev => ({ ...prev, category: e.target.value }))}
+              />
+            </div>
+            <div>
               <Label htmlFor="vendorDescription">Description</Label>
-              <Input id="vendorDescription" placeholder="Vendor description" />
+              <Input 
+                id="vendorDescription" 
+                placeholder="Vendor description" 
+                value={createVendorData.description}
+                onChange={(e) => setCreateVendorData(prev => ({ ...prev, description: e.target.value }))}
+              />
             </div>
             <div className="grid grid-cols-2 gap-4">
               <div>
                 <Label htmlFor="contactName">Primary Contact Name</Label>
-                <Input id="contactName" placeholder="Contact name" />
+                <Input 
+                  id="contactName" 
+                  placeholder="Contact name" 
+                  value={createVendorData.primaryContactName}
+                  onChange={(e) => setCreateVendorData(prev => ({ ...prev, primaryContactName: e.target.value }))}
+                />
               </div>
               <div>
                 <Label htmlFor="contactEmail">Email</Label>
-                <Input id="contactEmail" type="email" placeholder="contact@vendor.com" />
+                <Input 
+                  id="contactEmail" 
+                  type="email" 
+                  placeholder="contact@vendor.com" 
+                  value={createVendorData.primaryContactEmail}
+                  onChange={(e) => setCreateVendorData(prev => ({ ...prev, primaryContactEmail: e.target.value }))}
+                />
               </div>
             </div>
             <div className="grid grid-cols-2 gap-4">
               <div>
                 <Label htmlFor="contactPhone">Phone</Label>
-                <Input id="contactPhone" placeholder="+20 10 1234 5678" />
+                <Input 
+                  id="contactPhone" 
+                  placeholder="+20 10 1234 5678" 
+                  value={createVendorData.primaryContactPhone}
+                  onChange={(e) => setCreateVendorData(prev => ({ ...prev, primaryContactPhone: e.target.value }))}
+                />
               </div>
               <div>
                 <Label htmlFor="contactTitle">Title</Label>
-                <Input id="contactTitle" placeholder="Job title" />
+                <Input 
+                  id="contactTitle" 
+                  placeholder="Job title" 
+                  value={createVendorData.primaryContactTitle}
+                  onChange={(e) => setCreateVendorData(prev => ({ ...prev, primaryContactTitle: e.target.value }))}
+                />
               </div>
             </div>
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-3 gap-4">
+              <div>
+                <Label htmlFor="street">Street</Label>
+                <Input 
+                  id="street" 
+                  placeholder="Street address" 
+                  value={createVendorData.street}
+                  onChange={(e) => setCreateVendorData(prev => ({ ...prev, street: e.target.value }))}
+                />
+              </div>
               <div>
                 <Label htmlFor="city">City</Label>
-                <Input id="city" placeholder="City" />
+                <Input 
+                  id="city" 
+                  placeholder="City" 
+                  value={createVendorData.city}
+                  onChange={(e) => setCreateVendorData(prev => ({ ...prev, city: e.target.value }))}
+                />
               </div>
               <div>
-                <Label htmlFor="country">Country</Label>
-                <Input id="country" placeholder="Country" />
+                <Label htmlFor="state">State</Label>
+                <Input 
+                  id="state" 
+                  placeholder="State" 
+                  value={createVendorData.state}
+                  onChange={(e) => setCreateVendorData(prev => ({ ...prev, state: e.target.value }))}
+                />
               </div>
             </div>
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-3 gap-4">
+              <div>
+                <Label htmlFor="country">Country</Label>
+                <Input 
+                  id="country" 
+                  placeholder="Country" 
+                  value={createVendorData.country}
+                  onChange={(e) => setCreateVendorData(prev => ({ ...prev, country: e.target.value }))}
+                />
+              </div>
+              <div>
+                <Label htmlFor="zipCode">Zip Code</Label>
+                <Input 
+                  id="zipCode" 
+                  placeholder="Zip code" 
+                  value={createVendorData.zipCode}
+                  onChange={(e) => setCreateVendorData(prev => ({ ...prev, zipCode: e.target.value }))}
+                />
+              </div>
               <div>
                 <Label htmlFor="website">Website</Label>
-                <Input id="website" placeholder="https://vendor.com" />
+                <Input 
+                  id="website" 
+                  placeholder="https://vendor.com" 
+                  value={createVendorData.website}
+                  onChange={(e) => setCreateVendorData(prev => ({ ...prev, website: e.target.value }))}
+                />
+              </div>
+            </div>
+            <div className="grid grid-cols-3 gap-4">
+              <div>
+                <Label htmlFor="registrationNumber">Registration Number</Label>
+                <Input 
+                  id="registrationNumber" 
+                  placeholder="Registration number" 
+                  value={createVendorData.registrationNumber}
+                  onChange={(e) => setCreateVendorData(prev => ({ ...prev, registrationNumber: e.target.value }))}
+                />
               </div>
               <div>
                 <Label htmlFor="taxId">Tax ID</Label>
-                <Input id="taxId" placeholder="Tax identification number" />
+                <Input 
+                  id="taxId" 
+                  placeholder="Tax identification number" 
+                  value={createVendorData.taxId}
+                  onChange={(e) => setCreateVendorData(prev => ({ ...prev, taxId: e.target.value }))}
+                />
               </div>
+              <div>
+                <Label htmlFor="establishedYear">Established Year</Label>
+                <Input 
+                  id="establishedYear" 
+                  type="number" 
+                  placeholder="2020" 
+                  value={createVendorData.establishedYear}
+                  onChange={(e) => setCreateVendorData(prev => ({ ...prev, establishedYear: e.target.value }))}
+                />
+              </div>
+            </div>
+            <div className="grid grid-cols-2 gap-4">
+              <div>
+                <Label htmlFor="employeeCount">Employee Count</Label>
+                <Input 
+                  id="employeeCount" 
+                  type="number" 
+                  placeholder="50" 
+                  value={createVendorData.employeeCount}
+                  onChange={(e) => setCreateVendorData(prev => ({ ...prev, employeeCount: e.target.value }))}
+                />
+              </div>
+              <div>
+                <Label htmlFor="annualRevenue">Annual Revenue (EGP)</Label>
+                <Input 
+                  id="annualRevenue" 
+                  type="number" 
+                  placeholder="1000000" 
+                  value={createVendorData.annualRevenue}
+                  onChange={(e) => setCreateVendorData(prev => ({ ...prev, annualRevenue: e.target.value }))}
+                />
+              </div>
+            </div>
+            <div>
+              <Label htmlFor="notes">Notes</Label>
+              <Input 
+                id="notes" 
+                placeholder="Additional notes" 
+                value={createVendorData.notes}
+                onChange={(e) => setCreateVendorData(prev => ({ ...prev, notes: e.target.value }))}
+              />
             </div>
           </div>
           <DialogFooter>
             <Button variant="outline" onClick={() => setShowCreateDialog(false)}>
               Cancel
             </Button>
-            <Button onClick={() => setShowCreateDialog(false)}>
+            <Button onClick={createVendor}>
               Add Vendor
             </Button>
           </DialogFooter>
@@ -1002,7 +1064,11 @@ export default function VendorManagementPage() {
           <div className="grid gap-4 py-4">
             <div>
               <Label htmlFor="contractVendor">Vendor</Label>
-              <select className="w-full p-2 border rounded-md">
+              <select 
+                className="w-full p-2 border rounded-md"
+                value={createContractData.vendorId}
+                onChange={(e) => setCreateContractData(prev => ({ ...prev, vendorId: e.target.value }))}
+              >
                 <option value="">Select vendor</option>
                 {vendors.map((vendor) => (
                   <option key={vendor._id} value={vendor._id}>
@@ -1013,16 +1079,30 @@ export default function VendorManagementPage() {
             </div>
             <div>
               <Label htmlFor="contractTitle">Contract Title</Label>
-              <Input id="contractTitle" placeholder="Enter contract title" />
+              <Input 
+                id="contractTitle" 
+                placeholder="Enter contract title" 
+                value={createContractData.title}
+                onChange={(e) => setCreateContractData(prev => ({ ...prev, title: e.target.value }))}
+              />
             </div>
             <div>
               <Label htmlFor="contractDescription">Description</Label>
-              <Input id="contractDescription" placeholder="Contract description" />
+              <Input 
+                id="contractDescription" 
+                placeholder="Contract description" 
+                value={createContractData.description}
+                onChange={(e) => setCreateContractData(prev => ({ ...prev, description: e.target.value }))}
+              />
             </div>
             <div className="grid grid-cols-2 gap-4">
               <div>
                 <Label htmlFor="contractType">Type</Label>
-                <select className="w-full p-2 border rounded-md">
+                <select 
+                  className="w-full p-2 border rounded-md"
+                  value={createContractData.type}
+                  onChange={(e) => setCreateContractData(prev => ({ ...prev, type: e.target.value }))}
+                >
                   <option value="service">Service</option>
                   <option value="supply">Supply</option>
                   <option value="consulting">Consulting</option>
@@ -1032,17 +1112,73 @@ export default function VendorManagementPage() {
               </div>
               <div>
                 <Label htmlFor="contractValue">Value (EGP)</Label>
-                <Input id="contractValue" type="number" placeholder="0" />
+                <Input 
+                  id="contractValue" 
+                  type="number" 
+                  placeholder="0" 
+                  value={createContractData.value}
+                  onChange={(e) => setCreateContractData(prev => ({ ...prev, value: e.target.value }))}
+                />
               </div>
             </div>
             <div className="grid grid-cols-2 gap-4">
               <div>
                 <Label htmlFor="contractStart">Start Date</Label>
-                <Input id="contractStart" type="date" />
+                <Input 
+                  id="contractStart" 
+                  type="date" 
+                  value={createContractData.startDate}
+                  onChange={(e) => setCreateContractData(prev => ({ ...prev, startDate: e.target.value }))}
+                />
               </div>
               <div>
                 <Label htmlFor="contractEnd">End Date</Label>
-                <Input id="contractEnd" type="date" />
+                <Input 
+                  id="contractEnd" 
+                  type="date" 
+                  value={createContractData.endDate}
+                  onChange={(e) => setCreateContractData(prev => ({ ...prev, endDate: e.target.value }))}
+                />
+              </div>
+            </div>
+            <div className="grid grid-cols-2 gap-4">
+              <div>
+                <Label htmlFor="paymentTerms">Payment Terms</Label>
+                <Input 
+                  id="paymentTerms" 
+                  placeholder="Payment terms" 
+                  value={createContractData.paymentTerms}
+                  onChange={(e) => setCreateContractData(prev => ({ ...prev, paymentTerms: e.target.value }))}
+                />
+              </div>
+              <div>
+                <Label htmlFor="deliveryTerms">Delivery Terms</Label>
+                <Input 
+                  id="deliveryTerms" 
+                  placeholder="Delivery terms" 
+                  value={createContractData.deliveryTerms}
+                  onChange={(e) => setCreateContractData(prev => ({ ...prev, deliveryTerms: e.target.value }))}
+                />
+              </div>
+            </div>
+            <div className="grid grid-cols-2 gap-4">
+              <div>
+                <Label htmlFor="warranty">Warranty</Label>
+                <Input 
+                  id="warranty" 
+                  placeholder="Warranty terms" 
+                  value={createContractData.warranty}
+                  onChange={(e) => setCreateContractData(prev => ({ ...prev, warranty: e.target.value }))}
+                />
+              </div>
+              <div>
+                <Label htmlFor="termination">Termination</Label>
+                <Input 
+                  id="termination" 
+                  placeholder="Termination terms" 
+                  value={createContractData.termination}
+                  onChange={(e) => setCreateContractData(prev => ({ ...prev, termination: e.target.value }))}
+                />
               </div>
             </div>
           </div>
@@ -1050,7 +1186,7 @@ export default function VendorManagementPage() {
             <Button variant="outline" onClick={() => setShowContractDialog(false)}>
               Cancel
             </Button>
-            <Button onClick={() => setShowContractDialog(false)}>
+            <Button onClick={createContract}>
               Create Contract
             </Button>
           </DialogFooter>
@@ -1069,7 +1205,11 @@ export default function VendorManagementPage() {
           <div className="grid gap-4 py-4">
             <div>
               <Label htmlFor="commVendor">Vendor</Label>
-              <select className="w-full p-2 border rounded-md">
+              <select 
+                className="w-full p-2 border rounded-md"
+                value={createCommunicationData.vendorId}
+                onChange={(e) => setCreateCommunicationData(prev => ({ ...prev, vendorId: e.target.value }))}
+              >
                 <option value="">Select vendor</option>
                 {vendors.map((vendor) => (
                   <option key={vendor._id} value={vendor._id}>
@@ -1080,7 +1220,11 @@ export default function VendorManagementPage() {
             </div>
             <div>
               <Label htmlFor="commType">Type</Label>
-              <select className="w-full p-2 border rounded-md">
+              <select 
+                className="w-full p-2 border rounded-md"
+                value={createCommunicationData.type}
+                onChange={(e) => setCreateCommunicationData(prev => ({ ...prev, type: e.target.value }))}
+              >
                 <option value="email">Email</option>
                 <option value="phone">Phone</option>
                 <option value="meeting">Meeting</option>
@@ -1090,22 +1234,37 @@ export default function VendorManagementPage() {
             </div>
             <div>
               <Label htmlFor="commSubject">Subject</Label>
-              <Input id="commSubject" placeholder="Communication subject" />
+              <Input 
+                id="commSubject" 
+                placeholder="Communication subject" 
+                value={createCommunicationData.subject}
+                onChange={(e) => setCreateCommunicationData(prev => ({ ...prev, subject: e.target.value }))}
+              />
             </div>
             <div>
               <Label htmlFor="commContent">Content</Label>
-              <Input id="commContent" placeholder="Communication details" />
+              <Input 
+                id="commContent" 
+                placeholder="Communication details" 
+                value={createCommunicationData.content}
+                onChange={(e) => setCreateCommunicationData(prev => ({ ...prev, content: e.target.value }))}
+              />
             </div>
             <div>
               <Label htmlFor="commDate">Date</Label>
-              <Input id="commDate" type="datetime-local" />
+              <Input 
+                id="commDate" 
+                type="datetime-local" 
+                value={createCommunicationData.date}
+                onChange={(e) => setCreateCommunicationData(prev => ({ ...prev, date: e.target.value }))}
+              />
             </div>
           </div>
           <DialogFooter>
             <Button variant="outline" onClick={() => setShowCommunicationDialog(false)}>
               Cancel
             </Button>
-            <Button onClick={() => setShowCommunicationDialog(false)}>
+            <Button onClick={createCommunication}>
               Log Communication
             </Button>
           </DialogFooter>
@@ -1114,3 +1273,4 @@ export default function VendorManagementPage() {
     </div>
   );
 }
+

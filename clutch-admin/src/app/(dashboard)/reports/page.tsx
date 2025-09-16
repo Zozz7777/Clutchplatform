@@ -111,165 +111,17 @@ export default function ReportsPage() {
   const [statusFilter, setStatusFilter] = useState<string>("all");
   const [showCreateDialog, setShowCreateDialog] = useState(false);
   const [showTemplateDialog, setShowTemplateDialog] = useState(false);
+  const [createReportData, setCreateReportData] = useState({
+    name: "",
+    description: "",
+    type: "financial",
+    startDate: "",
+    endDate: "",
+    schedule: "once"
+  });
   const { hasPermission } = useAuth();
   const { generateReport, exportData } = useQuickActions(hasPermission);
 
-  // Mock data for development
-  const mockReports: Report[] = [
-    {
-      _id: "1",
-      name: "Monthly Financial Summary",
-      description: "Comprehensive financial report for the current month",
-      type: "financial",
-      category: "Revenue & Expenses",
-      status: "completed",
-      createdBy: {
-        id: "1",
-        name: "Ahmed Hassan",
-        email: "ahmed@yourclutch.com",
-      },
-      schedule: {
-        frequency: "monthly",
-        nextRun: "2024-04-01T00:00:00Z",
-        lastRun: "2024-03-01T00:00:00Z",
-      },
-      parameters: {
-        dateRange: {
-          start: "2024-03-01",
-          end: "2024-03-31",
-        },
-        filters: {
-          includeRefunds: false,
-          currency: "EGP",
-        },
-        groupBy: ["payment_method", "service_type"],
-        metrics: ["total_revenue", "total_expenses", "net_profit"],
-      },
-      results: {
-        totalRecords: 1250,
-        generatedAt: "2024-03-01T08:30:00Z",
-        fileSize: 2048576, // 2MB
-        downloadUrl: "/reports/monthly-financial-march-2024.pdf",
-      },
-      createdAt: "2024-02-15T10:00:00Z",
-      updatedAt: "2024-03-01T08:30:00Z",
-    },
-    {
-      _id: "2",
-      name: "User Activity Analytics",
-      description: "Detailed analysis of user behavior and engagement",
-      type: "user_analytics",
-      category: "User Behavior",
-      status: "generating",
-      createdBy: {
-        id: "2",
-        name: "Fatma Ali",
-        email: "fatma@yourclutch.com",
-      },
-      schedule: {
-        frequency: "weekly",
-        nextRun: "2024-03-18T00:00:00Z",
-        lastRun: "2024-03-11T00:00:00Z",
-      },
-      parameters: {
-        dateRange: {
-          start: "2024-03-11",
-          end: "2024-03-17",
-        },
-        filters: {
-          userType: "all",
-          includeInactive: false,
-        },
-        groupBy: ["user_segment", "device_type"],
-        metrics: ["active_users", "session_duration", "feature_usage"],
-      },
-      results: {
-        totalRecords: 0,
-        generatedAt: "",
-        fileSize: 0,
-      },
-      createdAt: "2024-03-10T14:00:00Z",
-      updatedAt: "2024-03-17T09:15:00Z",
-    },
-    {
-      _id: "3",
-      name: "Fleet Performance Report",
-      description: "Vehicle utilization and maintenance analysis",
-      type: "fleet",
-      category: "Fleet Operations",
-      status: "scheduled",
-      createdBy: {
-        id: "3",
-        name: "Mohamed Ibrahim",
-        email: "mohamed@yourclutch.com",
-      },
-      schedule: {
-        frequency: "weekly",
-        nextRun: "2024-03-18T06:00:00Z",
-        lastRun: "2024-03-11T06:00:00Z",
-      },
-      parameters: {
-        dateRange: {
-          start: "2024-03-11",
-          end: "2024-03-17",
-        },
-        filters: {
-          vehicleType: "all",
-          includeMaintenance: true,
-        },
-        groupBy: ["vehicle_type", "driver"],
-        metrics: ["utilization_rate", "fuel_efficiency", "maintenance_cost"],
-      },
-      results: {
-        totalRecords: 0,
-        generatedAt: "",
-        fileSize: 0,
-      },
-      createdAt: "2024-03-05T11:30:00Z",
-      updatedAt: "2024-03-17T10:00:00Z",
-    },
-  ];
-
-  const mockTemplates: ReportTemplate[] = [
-    {
-      _id: "1",
-      name: "Financial Summary Template",
-      description: "Standard template for monthly financial reports",
-      type: "financial",
-      category: "Revenue & Expenses",
-      parameters: {
-        defaultFilters: {
-          currency: "EGP",
-          includeRefunds: false,
-        },
-        availableMetrics: ["total_revenue", "total_expenses", "net_profit", "transaction_count"],
-        availableGroupBy: ["payment_method", "service_type", "date"],
-      },
-      isPublic: true,
-      createdBy: "1",
-      usageCount: 45,
-      createdAt: "2024-01-15T10:00:00Z",
-    },
-    {
-      _id: "2",
-      name: "User Engagement Report",
-      description: "Template for analyzing user behavior and engagement metrics",
-      type: "user_analytics",
-      category: "User Behavior",
-      parameters: {
-        defaultFilters: {
-          userType: "all",
-          includeInactive: false,
-        },
-        availableMetrics: ["active_users", "session_duration", "feature_usage", "retention_rate"],
-        availableGroupBy: ["user_segment", "device_type", "location"],
-      },
-      isPublic: true,
-      createdBy: "2",
-      usageCount: 32,
-      createdAt: "2024-02-01T14:00:00Z",
-    },
-  ];
 
   useEffect(() => {
     loadReports();
@@ -280,10 +132,10 @@ export default function ReportsPage() {
     try {
       setLoading(true);
       const data = await productionApi.getReports();
-      setReports(data || mockReports);
+      setReports(data || []);
     } catch (error) {
       console.error("Error loading reports:", error);
-      setReports(mockReports);
+      setReports([]);
     } finally {
       setLoading(false);
     }
@@ -292,10 +144,60 @@ export default function ReportsPage() {
   const loadTemplates = async () => {
     try {
       const data = await productionApi.getReports({ type: 'templates' });
-      setTemplates(data || mockTemplates);
+      setTemplates(data || []);
     } catch (error) {
       console.error("Error loading templates:", error);
-      setTemplates(mockTemplates);
+      setTemplates([]);
+    }
+  };
+
+  const createReport = async () => {
+    try {
+      const reportData = {
+        name: createReportData.name,
+        description: createReportData.description,
+        type: createReportData.type,
+        status: "draft",
+        createdBy: {
+          id: "current-user",
+          name: "Current User",
+          email: "user@example.com"
+        },
+        schedule: {
+          frequency: createReportData.schedule,
+          nextRun: createReportData.schedule !== "once" ? new Date().toISOString() : undefined
+        },
+        parameters: {
+          dateRange: {
+            start: createReportData.startDate,
+            end: createReportData.endDate
+          },
+          filters: {},
+          groupBy: [],
+          metrics: []
+        },
+        results: {
+          totalRecords: 0,
+          generatedAt: "",
+          fileSize: 0
+        }
+      };
+
+      const newReport = await productionApi.createReport(reportData);
+      if (newReport) {
+        setReports(prev => [...prev, newReport]);
+        setShowCreateDialog(false);
+        setCreateReportData({
+          name: "",
+          description: "",
+          type: "financial",
+          startDate: "",
+          endDate: "",
+          schedule: "once"
+        });
+      }
+    } catch (error) {
+      console.error("Error creating report:", error);
     }
   };
 
@@ -612,11 +514,20 @@ export default function ReportsPage() {
             <div className="grid grid-cols-2 gap-4">
               <div>
                 <Label htmlFor="reportName">Report Name</Label>
-                <Input id="reportName" placeholder="Enter report name" />
+                <Input 
+                  id="reportName" 
+                  placeholder="Enter report name" 
+                  value={createReportData.name}
+                  onChange={(e) => setCreateReportData({...createReportData, name: e.target.value})}
+                />
               </div>
               <div>
                 <Label htmlFor="reportType">Type</Label>
-                <select className="w-full p-2 border rounded-md">
+                <select 
+                  className="w-full p-2 border rounded-md"
+                  value={createReportData.type}
+                  onChange={(e) => setCreateReportData({...createReportData, type: e.target.value})}
+                >
                   <option value="financial">Financial</option>
                   <option value="operational">Operational</option>
                   <option value="user_analytics">User Analytics</option>
@@ -627,21 +538,40 @@ export default function ReportsPage() {
             </div>
             <div>
               <Label htmlFor="reportDescription">Description</Label>
-              <Input id="reportDescription" placeholder="Report description" />
+              <Input 
+                id="reportDescription" 
+                placeholder="Report description" 
+                value={createReportData.description}
+                onChange={(e) => setCreateReportData({...createReportData, description: e.target.value})}
+              />
             </div>
             <div className="grid grid-cols-2 gap-4">
               <div>
                 <Label htmlFor="startDate">Start Date</Label>
-                <Input id="startDate" type="date" />
+                <Input 
+                  id="startDate" 
+                  type="date" 
+                  value={createReportData.startDate}
+                  onChange={(e) => setCreateReportData({...createReportData, startDate: e.target.value})}
+                />
               </div>
               <div>
                 <Label htmlFor="endDate">End Date</Label>
-                <Input id="endDate" type="date" />
+                <Input 
+                  id="endDate" 
+                  type="date" 
+                  value={createReportData.endDate}
+                  onChange={(e) => setCreateReportData({...createReportData, endDate: e.target.value})}
+                />
               </div>
             </div>
             <div>
               <Label htmlFor="schedule">Schedule</Label>
-              <select className="w-full p-2 border rounded-md">
+              <select 
+                className="w-full p-2 border rounded-md"
+                value={createReportData.schedule}
+                onChange={(e) => setCreateReportData({...createReportData, schedule: e.target.value})}
+              >
                 <option value="once">Run Once</option>
                 <option value="daily">Daily</option>
                 <option value="weekly">Weekly</option>
@@ -654,7 +584,7 @@ export default function ReportsPage() {
             <Button variant="outline" onClick={() => setShowCreateDialog(false)}>
               Cancel
             </Button>
-            <Button onClick={() => setShowCreateDialog(false)}>
+            <Button onClick={createReport}>
               Create Report
             </Button>
           </DialogFooter>

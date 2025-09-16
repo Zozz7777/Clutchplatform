@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -17,6 +17,7 @@ import {
   AlertTriangle,
   RefreshCw
 } from 'lucide-react';
+import { productionApi } from '@/lib/production-api';
 
 interface SEOData {
   page: string;
@@ -29,28 +30,11 @@ interface SEOData {
 }
 
 export default function SEOCMSPage() {
-  const [seoData, setSeoData] = useState<SEOData[]>([
-    {
-      page: '/',
-      title: 'Clutch - Fleet Management Solution',
-      description: 'Manage your vehicle fleet efficiently with Clutch. Real-time tracking, maintenance alerts, and comprehensive fleet analytics.',
-      keywords: ['fleet management', 'vehicle tracking', 'fleet analytics'],
-      score: 85,
-      issues: ['Missing meta description', 'Title too long'],
-      suggestions: ['Add structured data', 'Optimize images']
-    },
-    {
-      page: '/dashboard',
-      title: 'Dashboard - Clutch Fleet Management',
-      description: 'Access your fleet dashboard with real-time vehicle tracking, maintenance schedules, and performance analytics.',
-      keywords: ['dashboard', 'fleet tracking', 'vehicle management'],
-      score: 92,
-      issues: [],
-      suggestions: ['Add more internal links']
-    }
-  ]);
+  const [seoData, setSeoData] = useState<SEOData[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [refreshing, setRefreshing] = useState(false);
 
-  const [selectedPage, setSelectedPage] = useState(seoData[0]);
+  const [selectedPage, setSelectedPage] = useState<SEOData | null>(null);
 
   const getScoreColor = (score: number) => {
     if (score >= 90) return 'text-green-500';
@@ -63,6 +47,47 @@ export default function SEOCMSPage() {
     if (score >= 70) return <Badge variant="default" className="bg-yellow-500">Good</Badge>;
     return <Badge variant="destructive">Needs Work</Badge>;
   };
+  
+  useEffect(() => {
+    loadSEOData();
+  }, []);
+  
+  const loadSEOData = async () => {
+    try {
+      setLoading(true);
+      const data = await productionApi.getSEOData();
+      setSeoData(data || []);
+      if (data && data.length > 0) {
+        setSelectedPage(data[0]);
+      }
+    } catch (error) {
+      console.error('Error loading SEO data:', error);
+      setSeoData([]);
+    } finally {
+      setLoading(false);
+    }
+  };
+  
+  const refreshAnalysis = async () => {
+    try {
+      setRefreshing(true);
+      await productionApi.refreshSEOAnalysis();
+      await loadSEOData();
+    } catch (error) {
+      console.error('Error refreshing SEO analysis:', error);
+    } finally {
+      setRefreshing(false);
+    }
+  };
+  
+  const optimizeAll = async () => {
+    try {
+      await productionApi.optimizeSEO();
+      await loadSEOData();
+    } catch (error) {
+      console.error('Error optimizing SEO:', error);
+    }
+  };
 
   return (
     <div className="space-y-6">
@@ -74,11 +99,11 @@ export default function SEOCMSPage() {
           </p>
         </div>
         <div className="flex items-center space-x-2">
-          <Button variant="outline">
-            <RefreshCw className="h-4 w-4 mr-2" />
-            Refresh Analysis
+          <Button variant="outline" onClick={refreshAnalysis} disabled={refreshing}>
+            <RefreshCw className={`h-4 w-4 mr-2 ${refreshing ? 'animate-spin' : ''}`} />
+            {refreshing ? 'Refreshing...' : 'Refresh Analysis'}
           </Button>
-          <Button>
+          <Button onClick={optimizeAll}>
             <Target className="h-4 w-4 mr-2" />
             Optimize All
           </Button>
@@ -102,9 +127,9 @@ export default function SEOCMSPage() {
               </CardHeader>
               <CardContent>
                 <div className={`text-2xl font-bold font-sans ${getScoreColor(
-                  Math.round(seoData.reduce((sum, page) => sum + page.score, 0) / seoData.length)
+                  seoData.length > 0 ? Math.round(seoData.reduce((sum, page) => sum + page.score, 0) / seoData.length) : 0
                 )}`}>
-                  {Math.round(seoData.reduce((sum, page) => sum + page.score, 0) / seoData.length)}
+                  {seoData.length > 0 ? Math.round(seoData.reduce((sum, page) => sum + page.score, 0) / seoData.length) : 0}
                 </div>
                 <p className="text-xs text-muted-foreground font-sans">
                   Average SEO score

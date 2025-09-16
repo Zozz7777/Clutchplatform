@@ -125,194 +125,17 @@ export default function ProjectManagementPage() {
   const [showCreateDialog, setShowCreateDialog] = useState(false);
   const [showTaskDialog, setShowTaskDialog] = useState(false);
   const [showTimeDialog, setShowTimeDialog] = useState(false);
+  const [createProjectData, setCreateProjectData] = useState({
+    name: "",
+    description: "",
+    client: "",
+    startDate: "",
+    endDate: "",
+    budget: "",
+    status: "planning",
+    priority: "medium"
+  });
 
-  // Mock data for development
-  const mockProjects: Project[] = [
-    {
-      _id: "1",
-      name: "Clutch Mobile App Redesign",
-      description: "Complete redesign of the Clutch mobile application with new UI/UX",
-      status: "active",
-      priority: "high",
-      startDate: "2024-01-15",
-      endDate: "2024-06-30",
-      budget: 150000,
-      progress: 65,
-      team: [
-        { id: "1", name: "Ahmed Hassan", role: "Project Manager" },
-        { id: "2", name: "Fatma Ali", role: "UI/UX Designer" },
-        { id: "3", name: "Mohamed Ibrahim", role: "Frontend Developer" },
-        { id: "4", name: "Nour El-Din", role: "Backend Developer" },
-      ],
-      client: {
-        id: "1",
-        name: "Clutch Technologies",
-        email: "contact@yourclutch.com",
-      },
-      tasks: {
-        total: 45,
-        completed: 29,
-        inProgress: 12,
-        pending: 4,
-      },
-      timeTracking: {
-        estimated: 1200,
-        logged: 780,
-        remaining: 420,
-      },
-      createdAt: "2024-01-10T10:00:00Z",
-      updatedAt: "2024-03-15T14:30:00Z",
-    },
-    {
-      _id: "2",
-      name: "Enterprise Dashboard Development",
-      description: "Build comprehensive dashboard for enterprise clients",
-      status: "planning",
-      priority: "medium",
-      startDate: "2024-04-01",
-      endDate: "2024-08-31",
-      budget: 200000,
-      progress: 15,
-      team: [
-        { id: "5", name: "Omar Khaled", role: "Project Manager" },
-        { id: "6", name: "Yasmin Mostafa", role: "Full Stack Developer" },
-        { id: "7", name: "Tarek Mohamed", role: "DevOps Engineer" },
-      ],
-      client: {
-        id: "2",
-        name: "Enterprise Solutions Ltd",
-        email: "projects@enterprise.com",
-      },
-      tasks: {
-        total: 32,
-        completed: 5,
-        inProgress: 3,
-        pending: 24,
-      },
-      timeTracking: {
-        estimated: 800,
-        logged: 120,
-        remaining: 680,
-      },
-      createdAt: "2024-03-01T09:00:00Z",
-      updatedAt: "2024-03-15T16:45:00Z",
-    },
-    {
-      _id: "3",
-      name: "API Integration Platform",
-      description: "Develop platform for third-party API integrations",
-      status: "completed",
-      priority: "high",
-      startDate: "2023-10-01",
-      endDate: "2024-02-29",
-      budget: 100000,
-      progress: 100,
-      team: [
-        { id: "8", name: "Hassan Mahmoud", role: "Tech Lead" },
-        { id: "9", name: "Dina Salah", role: "Backend Developer" },
-        { id: "10", name: "Karim Farouk", role: "API Developer" },
-      ],
-      client: {
-        id: "3",
-        name: "Integration Partners",
-        email: "tech@integration.com",
-      },
-      tasks: {
-        total: 28,
-        completed: 28,
-        inProgress: 0,
-        pending: 0,
-      },
-      timeTracking: {
-        estimated: 600,
-        logged: 580,
-        remaining: 0,
-      },
-      createdAt: "2023-09-15T08:00:00Z",
-      updatedAt: "2024-02-29T17:00:00Z",
-    },
-  ];
-
-  const mockTasks: Task[] = [
-    {
-      _id: "1",
-      title: "Design new user interface",
-      description: "Create wireframes and mockups for the new mobile app design",
-      status: "in_progress",
-      priority: "high",
-      assignee: {
-        id: "2",
-        name: "Fatma Ali",
-      },
-      estimatedHours: 40,
-      loggedHours: 25,
-      dueDate: "2024-04-15",
-      createdAt: "2024-01-15T10:00:00Z",
-    },
-    {
-      _id: "2",
-      title: "Implement authentication system",
-      description: "Build secure authentication with JWT tokens",
-      status: "completed",
-      priority: "high",
-      assignee: {
-        id: "3",
-        name: "Mohamed Ibrahim",
-      },
-      estimatedHours: 32,
-      loggedHours: 32,
-      dueDate: "2024-03-01",
-      createdAt: "2024-01-20T09:00:00Z",
-    },
-    {
-      _id: "3",
-      title: "Database optimization",
-      description: "Optimize database queries and add indexing",
-      status: "pending",
-      priority: "medium",
-      assignee: {
-        id: "4",
-        name: "Nour El-Din",
-      },
-      estimatedHours: 24,
-      loggedHours: 0,
-      dueDate: "2024-04-30",
-      createdAt: "2024-02-01T14:00:00Z",
-    },
-  ];
-
-  const mockTimeEntries: TimeEntry[] = [
-    {
-      _id: "1",
-      taskId: "1",
-      userId: "2",
-      userName: "Fatma Ali",
-      description: "UI design work on login screen",
-      hours: 4,
-      date: "2024-03-15",
-      createdAt: "2024-03-15T18:00:00Z",
-    },
-    {
-      _id: "2",
-      taskId: "1",
-      userId: "2",
-      userName: "Fatma Ali",
-      description: "Wireframe creation for dashboard",
-      hours: 6,
-      date: "2024-03-14",
-      createdAt: "2024-03-14T17:30:00Z",
-    },
-    {
-      _id: "3",
-      taskId: "2",
-      userId: "3",
-      userName: "Mohamed Ibrahim",
-      description: "JWT implementation and testing",
-      hours: 8,
-      date: "2024-03-13",
-      createdAt: "2024-03-13T19:00:00Z",
-    },
-  ];
 
   useEffect(() => {
     loadProjects();
@@ -324,10 +147,10 @@ export default function ProjectManagementPage() {
     try {
       setLoading(true);
       const data = await productionApi.getProjects();
-      setProjects(data || mockProjects);
+      setProjects(data || []);
     } catch (error) {
       console.error("Error loading projects:", error);
-      setProjects(mockProjects);
+      setProjects([]);
     } finally {
       setLoading(false);
     }
@@ -336,20 +159,60 @@ export default function ProjectManagementPage() {
   const loadTasks = async () => {
     try {
       const data = await productionApi.getProjectTasks(selectedProject?._id || "");
-      setTasks(data || mockTasks);
+      setTasks(data || []);
     } catch (error) {
       console.error("Error loading tasks:", error);
-      setTasks(mockTasks);
+      setTasks([]);
     }
   };
 
   const loadTimeEntries = async () => {
     try {
       const data = await productionApi.getTimeTracking(selectedProject?._id || "");
-      setTimeEntries(data || mockTimeEntries);
+      setTimeEntries(data || []);
     } catch (error) {
       console.error("Error loading time entries:", error);
-      setTimeEntries(mockTimeEntries);
+      setTimeEntries([]);
+    }
+  };
+
+  const createProject = async () => {
+    try {
+      const projectData = {
+        name: createProjectData.name,
+        description: createProjectData.description,
+        client: {
+          name: createProjectData.client,
+          email: "",
+        },
+        startDate: createProjectData.startDate,
+        endDate: createProjectData.endDate,
+        budget: parseFloat(createProjectData.budget) || 0,
+        status: createProjectData.status,
+        priority: createProjectData.priority,
+        progress: 0,
+        team: [],
+        tasks: { total: 0, completed: 0, inProgress: 0, pending: 0 },
+        timeTracking: { estimated: 0, logged: 0, remaining: 0 }
+      };
+
+      const newProject = await productionApi.createProject(projectData);
+      if (newProject) {
+        setProjects(prev => [...prev, newProject]);
+        setShowCreateDialog(false);
+        setCreateProjectData({
+          name: "",
+          description: "",
+          client: "",
+          startDate: "",
+          endDate: "",
+          budget: "",
+          status: "planning",
+          priority: "medium"
+        });
+      }
+    } catch (error) {
+      console.error("Error creating project:", error);
     }
   };
 
@@ -646,35 +509,70 @@ export default function ProjectManagementPage() {
             <div className="grid grid-cols-2 gap-4">
               <div>
                 <Label htmlFor="name">Project Name</Label>
-                <Input id="name" placeholder="Enter project name" />
+                <Input 
+                  id="name" 
+                  placeholder="Enter project name" 
+                  value={createProjectData.name}
+                  onChange={(e) => setCreateProjectData({...createProjectData, name: e.target.value})}
+                />
               </div>
               <div>
                 <Label htmlFor="client">Client</Label>
-                <Input id="client" placeholder="Client name" />
+                <Input 
+                  id="client" 
+                  placeholder="Client name" 
+                  value={createProjectData.client}
+                  onChange={(e) => setCreateProjectData({...createProjectData, client: e.target.value})}
+                />
               </div>
             </div>
             <div>
               <Label htmlFor="description">Description</Label>
-              <Input id="description" placeholder="Project description" />
+              <Input 
+                id="description" 
+                placeholder="Project description" 
+                value={createProjectData.description}
+                onChange={(e) => setCreateProjectData({...createProjectData, description: e.target.value})}
+              />
             </div>
             <div className="grid grid-cols-3 gap-4">
               <div>
                 <Label htmlFor="startDate">Start Date</Label>
-                <Input id="startDate" type="date" />
+                <Input 
+                  id="startDate" 
+                  type="date" 
+                  value={createProjectData.startDate}
+                  onChange={(e) => setCreateProjectData({...createProjectData, startDate: e.target.value})}
+                />
               </div>
               <div>
                 <Label htmlFor="endDate">End Date</Label>
-                <Input id="endDate" type="date" />
+                <Input 
+                  id="endDate" 
+                  type="date" 
+                  value={createProjectData.endDate}
+                  onChange={(e) => setCreateProjectData({...createProjectData, endDate: e.target.value})}
+                />
               </div>
               <div>
                 <Label htmlFor="budget">Budget (EGP)</Label>
-                <Input id="budget" type="number" placeholder="0" />
+                <Input 
+                  id="budget" 
+                  type="number" 
+                  placeholder="0" 
+                  value={createProjectData.budget}
+                  onChange={(e) => setCreateProjectData({...createProjectData, budget: e.target.value})}
+                />
               </div>
             </div>
             <div className="grid grid-cols-2 gap-4">
               <div>
                 <Label htmlFor="status">Status</Label>
-                <select className="w-full p-2 border rounded-md">
+                <select 
+                  className="w-full p-2 border rounded-md"
+                  value={createProjectData.status}
+                  onChange={(e) => setCreateProjectData({...createProjectData, status: e.target.value})}
+                >
                   <option value="planning">Planning</option>
                   <option value="active">Active</option>
                   <option value="on_hold">On Hold</option>
@@ -682,7 +580,11 @@ export default function ProjectManagementPage() {
               </div>
               <div>
                 <Label htmlFor="priority">Priority</Label>
-                <select className="w-full p-2 border rounded-md">
+                <select 
+                  className="w-full p-2 border rounded-md"
+                  value={createProjectData.priority}
+                  onChange={(e) => setCreateProjectData({...createProjectData, priority: e.target.value})}
+                >
                   <option value="low">Low</option>
                   <option value="medium">Medium</option>
                   <option value="high">High</option>
@@ -695,7 +597,7 @@ export default function ProjectManagementPage() {
             <Button variant="outline" onClick={() => setShowCreateDialog(false)}>
               Cancel
             </Button>
-            <Button onClick={() => setShowCreateDialog(false)}>
+            <Button onClick={createProject}>
               Create Project
             </Button>
           </DialogFooter>

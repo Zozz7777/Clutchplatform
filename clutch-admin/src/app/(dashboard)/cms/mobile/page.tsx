@@ -40,6 +40,51 @@ export default function MobileCMSPage() {
       description: 'Clutch is a comprehensive fleet management solution designed to help businesses optimize their vehicle operations.'
     }
   });
+  
+  const [loading, setLoading] = useState(true);
+  const [saving, setSaving] = useState(false);
+  
+  useEffect(() => {
+    loadMobileAppSettings();
+  }, []);
+  
+  const loadMobileAppSettings = async () => {
+    try {
+      setLoading(true);
+      const data = await productionApi.getMobileAppSettings();
+      if (data) {
+        setAppSettings(data.appSettings || appSettings);
+        setContent(data.content || content);
+      }
+    } catch (error) {
+      console.error('Error loading mobile app settings:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+  
+  const saveChanges = async () => {
+    try {
+      setSaving(true);
+      const settingsData = {
+        appSettings,
+        content
+      };
+      await productionApi.saveMobileAppSettings(settingsData);
+    } catch (error) {
+      console.error('Error saving mobile app settings:', error);
+    } finally {
+      setSaving(false);
+    }
+  };
+  
+  const previewApp = async () => {
+    try {
+      await productionApi.previewMobileApp();
+    } catch (error) {
+      console.error('Error previewing mobile app:', error);
+    }
+  };
 
   return (
     <div className="space-y-6">
@@ -51,13 +96,13 @@ export default function MobileCMSPage() {
           </p>
         </div>
         <div className="flex items-center space-x-2">
-          <Button variant="outline">
+          <Button variant="outline" onClick={previewApp}>
             <Eye className="h-4 w-4 mr-2" />
             Preview
           </Button>
-          <Button>
+          <Button onClick={saveChanges} disabled={saving}>
             <Save className="h-4 w-4 mr-2" />
-            Save Changes
+            {saving ? 'Saving...' : 'Save Changes'}
           </Button>
         </div>
       </div>

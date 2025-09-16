@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -15,6 +15,7 @@ import {
   PieChart,
   RefreshCw
 } from 'lucide-react';
+import { productionApi } from '@/lib/production-api';
 
 // Import new Phase 2 widgets
 import ChurnAdjustedForecast from '@/components/widgets/churn-adjusted-forecast';
@@ -23,56 +24,59 @@ import RiskScenarioMatrix from '@/components/widgets/risk-scenario-matrix';
 import ForecastAccuracyTrend from '@/components/widgets/forecast-accuracy-trend';
 
 export default function RevenueForecastingPage() {
-  const [forecastData] = useState({
+  const [forecastData, setForecastData] = useState({
     currentMonth: {
-      revenue: 125000,
-      growth: 12.5,
-      customers: 1250,
-      churn: 2.1
+      revenue: 0,
+      growth: 0,
+      customers: 0,
+      churn: 0
     },
     nextMonth: {
-      revenue: 142000,
-      growth: 13.6,
-      customers: 1380,
-      churn: 1.8
+      revenue: 0,
+      growth: 0,
+      customers: 0,
+      churn: 0
     },
     quarterly: {
-      revenue: 425000,
-      growth: 15.2,
-      customers: 4200,
-      churn: 1.9
+      revenue: 0,
+      growth: 0,
+      customers: 0,
+      churn: 0
     },
     yearly: {
-      revenue: 1850000,
-      growth: 18.7,
-      customers: 18500,
-      churn: 1.5
+      revenue: 0,
+      growth: 0,
+      customers: 0,
+      churn: 0
     }
   });
 
-  const [scenarios] = useState([
+  const [scenarios, setScenarios] = useState([
     {
       name: 'Optimistic',
       description: 'High growth scenario with increased market adoption',
-      revenue: 2200000,
-      growth: 25.0,
-      probability: 30
+      revenue: 0,
+      growth: 0,
+      probability: 0
     },
     {
       name: 'Realistic',
       description: 'Current trend continuation with steady growth',
-      revenue: 1850000,
-      growth: 18.7,
-      probability: 50
+      revenue: 0,
+      growth: 0,
+      probability: 0
     },
     {
       name: 'Pessimistic',
       description: 'Economic downturn affecting customer acquisition',
-      revenue: 1500000,
-      growth: 12.0,
-      probability: 20
+      revenue: 0,
+      growth: 0,
+      probability: 0
     }
   ]);
+  
+  const [loading, setLoading] = useState(true);
+  const [refreshing, setRefreshing] = useState(false);
 
   const formatCurrency = (amount: number) => {
     return new Intl.NumberFormat('en-US', {
@@ -90,6 +94,49 @@ export default function RevenueForecastingPage() {
   const getGrowthIcon = (growth: number) => {
     return growth > 0 ? <TrendingUp className="h-4 w-4" /> : <TrendingDown className="h-4 w-4" />;
   };
+  
+  useEffect(() => {
+    loadForecastData();
+  }, []);
+  
+  const loadForecastData = async () => {
+    try {
+      setLoading(true);
+      const data = await productionApi.getRevenueForecast();
+      if (data) {
+        setForecastData(data.forecastData || forecastData);
+        setScenarios(data.scenarios || scenarios);
+      }
+    } catch (error) {
+      console.error('Error loading forecast data:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+  
+  const refreshData = async () => {
+    try {
+      setRefreshing(true);
+      await productionApi.refreshRevenueData();
+      await loadForecastData();
+    } catch (error) {
+      console.error('Error refreshing data:', error);
+    } finally {
+      setRefreshing(false);
+    }
+  };
+  
+  const generateReport = async () => {
+    try {
+      const report = await productionApi.generateRevenueReport();
+      if (report) {
+        // Handle report generation success
+        console.log('Report generated successfully:', report);
+      }
+    } catch (error) {
+      console.error('Error generating report:', error);
+    }
+  };
 
   return (
     <div className="space-y-6">
@@ -101,11 +148,11 @@ export default function RevenueForecastingPage() {
           </p>
         </div>
         <div className="flex items-center space-x-2">
-          <Button variant="outline">
-            <RefreshCw className="h-4 w-4 mr-2" />
-            Refresh Data
+          <Button variant="outline" onClick={refreshData} disabled={refreshing}>
+            <RefreshCw className={`h-4 w-4 mr-2 ${refreshing ? 'animate-spin' : ''}`} />
+            {refreshing ? 'Refreshing...' : 'Refresh Data'}
           </Button>
-          <Button>
+          <Button onClick={generateReport}>
             <Target className="h-4 w-4 mr-2" />
             Generate Report
           </Button>
