@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Roboto, Roboto_Serif, Roboto_Mono } from "next/font/google";
 import "./globals.css";
 import { AuthProvider } from "@/contexts/auth-context";
@@ -31,7 +31,6 @@ export const metadata: Metadata = {
   description: "The joystick of the auto industry - comprehensive platform for driving the automotive revolution",
   keywords: ["clutch", "admin", "automotive", "revolution", "joystick", "auto industry"],
   authors: [{ name: "Clutch Team" }],
-  viewport: "width=device-width, initial-scale=1",
   icons: {
     icon: [
       { url: "/favicon.ico", sizes: "any" },
@@ -44,6 +43,11 @@ export const metadata: Metadata = {
     ],
     shortcut: "/favicon.ico",
   },
+};
+
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
 };
 
 export default function RootLayout({
