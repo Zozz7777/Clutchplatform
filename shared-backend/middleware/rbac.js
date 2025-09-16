@@ -10,15 +10,16 @@ const Permission = require('../models/Permission');
 const checkPermission = (permissionName) => {
   return async (req, res, next) => {
     try {
-      if (!req.user || !req.user.id) {
+      if (!req.user || (!req.user.id && !req.user.userId)) {
         return res.status(401).json({ 
           error: 'Authentication required',
           code: 'AUTH_REQUIRED'
         });
       }
 
-      // Get employee from database
-      const employee = await Employee.findById(req.user.id);
+      // Get employee from database - handle both id and userId
+      const userId = req.user.id || req.user.userId;
+      const employee = await Employee.findById(userId);
       if (!employee) {
         return res.status(401).json({ 
           error: 'Employee not found',
@@ -67,14 +68,16 @@ const checkPermission = (permissionName) => {
 const checkAnyPermission = (permissions) => {
   return async (req, res, next) => {
     try {
-      if (!req.user || !req.user.id) {
+      if (!req.user || (!req.user.id && !req.user.userId)) {
         return res.status(401).json({ 
           error: 'Authentication required',
           code: 'AUTH_REQUIRED'
         });
       }
 
-      const employee = await Employee.findById(req.user.id);
+      // Get employee from database - handle both id and userId
+      const userId = req.user.id || req.user.userId;
+      const employee = await Employee.findById(userId);
       if (!employee) {
         return res.status(401).json({ 
           error: 'Employee not found',
@@ -122,14 +125,16 @@ const checkAnyPermission = (permissions) => {
 const checkAllPermissions = (permissions) => {
   return async (req, res, next) => {
     try {
-      if (!req.user || !req.user.id) {
+      if (!req.user || (!req.user.id && !req.user.userId)) {
         return res.status(401).json({ 
           error: 'Authentication required',
           code: 'AUTH_REQUIRED'
         });
       }
 
-      const employee = await Employee.findById(req.user.id);
+      // Get employee from database - handle both id and userId
+      const userId = req.user.id || req.user.userId;
+      const employee = await Employee.findById(userId);
       if (!employee) {
         return res.status(401).json({ 
           error: 'Employee not found',
@@ -178,14 +183,33 @@ const checkAllPermissions = (permissions) => {
 const checkRole = (roles) => {
   return async (req, res, next) => {
     try {
-      if (!req.user || !req.user.id) {
+      if (!req.user || (!req.user.id && !req.user.userId)) {
         return res.status(401).json({ 
           error: 'Authentication required',
           code: 'AUTH_REQUIRED'
         });
       }
 
-      const employee = await Employee.findById(req.user.id);
+      // Handle fallback users (CEO, admin) who don't exist in Employee database
+      if (req.user.userId === 'fallback_ziad_ceo' || req.user.userId === 'admin-001') {
+        // For fallback users, check role directly from JWT token
+        const allowedRoles = Array.isArray(roles) ? roles : [roles];
+        if (allowedRoles.includes(req.user.role)) {
+          return next();
+        } else {
+          return res.status(403).json({ 
+            error: 'Insufficient role permissions',
+            code: 'INSUFFICIENT_ROLE',
+            required: allowedRoles,
+            current: req.user.role,
+            message: `You need one of these roles: ${allowedRoles.join(', ')}`
+          });
+        }
+      }
+
+      // Get employee from database - handle both id and userId
+      const userId = req.user.id || req.user.userId;
+      const employee = await Employee.findById(userId);
       if (!employee) {
         return res.status(401).json({ 
           error: 'Employee not found',
@@ -248,14 +272,16 @@ const checkRole = (roles) => {
 const checkGroupPermission = (groupName) => {
   return async (req, res, next) => {
     try {
-      if (!req.user || !req.user.id) {
+      if (!req.user || (!req.user.id && !req.user.userId)) {
         return res.status(401).json({ 
           error: 'Authentication required',
           code: 'AUTH_REQUIRED'
         });
       }
 
-      const employee = await Employee.findById(req.user.id);
+      // Get employee from database - handle both id and userId
+      const userId = req.user.id || req.user.userId;
+      const employee = await Employee.findById(userId);
       if (!employee) {
         return res.status(401).json({ 
           error: 'Employee not found',
