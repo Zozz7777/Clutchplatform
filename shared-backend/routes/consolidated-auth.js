@@ -644,7 +644,7 @@ router.post('/register', authRateLimit, async (req, res) => {
       email: email.toLowerCase(),
       password: hashedPassword,
       name: fullName,
-      phoneNumber: phoneNumber || null,
+      phoneNumber: phoneNumber || `temp_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`, // Generate unique phoneNumber if not provided
       role: 'user',
       permissions: ['read', 'write'],
       isActive: true,
@@ -658,6 +658,7 @@ router.post('/register', authRateLimit, async (req, res) => {
       email: newUser.email,
       hasPassword: !!newUser.password,
       name: newUser.name,
+      phoneNumber: newUser.phoneNumber,
       firebaseId: newUser.firebaseId,
       role: newUser.role
     });
