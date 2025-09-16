@@ -29,7 +29,14 @@ export class WebSocketService {
   private eventHandlers: WebSocketEventHandlers = {};
 
   constructor(baseURL: string) {
-    this.url = baseURL.replace('http', 'ws') + '/ws';
+    // Handle WebSocket URL construction properly
+    if (baseURL.includes('https://')) {
+      this.url = baseURL.replace('https://', 'wss://') + '/ws';
+    } else if (baseURL.includes('http://')) {
+      this.url = baseURL.replace('http://', 'ws://') + '/ws';
+    } else {
+      this.url = baseURL + '/ws';
+    }
   }
 
   connect(handlers: WebSocketEventHandlers = {}): Promise<void> {
@@ -61,6 +68,7 @@ export class WebSocketService {
         }
 
         const wsUrl = `${this.url}?token=${this.token}`;
+        console.log('🔌 Attempting WebSocket connection to:', wsUrl.replace(this.token, '[TOKEN]'));
         this.ws = new WebSocket(wsUrl);
 
         this.ws.onopen = () => {

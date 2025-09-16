@@ -7,6 +7,14 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from '@/components/ui/dialog';
 import { 
   MessageSquare, 
   Star, 
@@ -21,6 +29,7 @@ import {
   Calendar,
   Tag
 } from 'lucide-react';
+import { productionApi } from '@/lib/production-api';
 
 interface Feedback {
   id: string;
@@ -46,59 +55,83 @@ export default function FeedbackPage() {
   const [statusFilter, setStatusFilter] = useState('all');
   const [typeFilter, setTypeFilter] = useState('all');
   const [loading, setLoading] = useState(true);
+  const [showReplyDialog, setShowReplyDialog] = useState(false);
+  const [selectedFeedback, setSelectedFeedback] = useState<Feedback | null>(null);
+  const [replyText, setReplyText] = useState('');
 
-  const mockFeedback: Feedback[] = [
-    {
-      id: '1',
-      type: 'bug',
-      title: 'Login button not working on mobile',
-      description: 'The login button on the mobile app is not responding when tapped. This happens on both iOS and Android devices.',
-      user: { name: 'John Smith', email: 'john@example.com' },
-      rating: 2,
-      status: 'new',
-      priority: 'high',
-      createdAt: '2024-01-15T10:30:00Z',
-      updatedAt: '2024-01-15T10:30:00Z',
-      tags: ['mobile', 'login', 'bug'],
-      responses: 0
-    },
-    {
-      id: '2',
-      type: 'feature',
-      title: 'Add dark mode support',
-      description: 'It would be great to have a dark mode option for the dashboard. Many users prefer dark themes.',
-      user: { name: 'Sarah Johnson', email: 'sarah@example.com' },
-      rating: 5,
-      status: 'in_progress',
-      priority: 'medium',
-      createdAt: '2024-01-14T15:20:00Z',
-      updatedAt: '2024-01-15T09:15:00Z',
-      tags: ['ui', 'theme', 'feature'],
-      responses: 2
-    },
-    {
-      id: '3',
-      type: 'general',
-      title: 'Great service!',
-      description: 'I\'ve been using Clutch for 6 months now and it has significantly improved our fleet management. Keep up the great work!',
-      user: { name: 'Mike Wilson', email: 'mike@example.com' },
-      rating: 5,
-      status: 'resolved',
-      priority: 'low',
-      createdAt: '2024-01-13T11:45:00Z',
-      updatedAt: '2024-01-14T16:30:00Z',
-      tags: ['praise', 'general'],
-      responses: 1
-    }
-  ];
 
   useEffect(() => {
-    setLoading(true);
-    setTimeout(() => {
-      setFeedback(mockFeedback);
-      setLoading(false);
-    }, 1000);
+    loadFeedback();
   }, []);
+  
+  const loadFeedback = async () => {
+    try {
+      setLoading(true);
+      const data = await productionApi.getFeedback();
+      setFeedback(data || []);
+    } catch (error) {
+      console.error('Error loading feedback:', error);
+      setFeedback([]);
+    } finally {
+      setLoading(false);
+    }
+  };
+  
+  const handleReply = async () => {
+    if (!selectedFeedback || !replyText.trim()) return;
+    
+    try {
+      await productionApi.replyToFeedback(selectedFeedback.id, {
+        message: replyText,
+        repliedBy: 'Admin',
+        repliedAt: new Date().toISOString()
+      });
+      
+      // Update local state
+      setFeedback(prev => 
+        prev.map(item => 
+          item.id === selectedFeedback.id 
+            ? { ...item, responses: item.responses + 1, status: 'in_progress' as const }
+            : item
+        )
+      );
+      
+      setShowReplyDialog(false);
+      setReplyText('');
+      setSelectedFeedback(null);
+    } catch (error) {
+      console.error('Error replying to feedback:', error);
+    }
+  };
+  
+  const handleArchive = async (feedbackId: string) => {
+    try {
+      await productionApi.archiveFeedback(feedbackId);
+      setFeedback(prev => 
+        prev.map(item => 
+          item.id === feedbackId 
+            ? { ...item, status: 'closed' as const }
+            : item
+        )
+      );
+    } catch (error) {
+      console.error('Error archiving feedback:', error);
+    }
+  };
+  
+  const handleDelete = async (feedbackId: string) => {
+    try {
+      await productionApi.deleteFeedback(feedbackId);
+      setFeedback(prev => prev.filter(item => item.id !== feedbackId));
+    } catch (error) {
+      console.error('Error deleting feedback:', error);
+    }
+  };
+  
+  const openReplyDialog = (item: Feedback) => {
+    setSelectedFeedback(item);
+    setShowReplyDialog(true);
+  };
 
   const filteredFeedback = feedback.filter(item => {
     const matchesSearch = item.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -241,15 +274,15 @@ export default function FeedbackPage() {
                         </CardDescription>
                       </div>
                       <div className="flex items-center space-x-2">
-                        <Button variant="outline" size="sm">
+                        <Button variant="outline" size="sm" onClick={() => openReplyDialog(item)}>
                           <Reply className="h-4 w-4 mr-2" />
                           Reply
                         </Button>
-                        <Button variant="outline" size="sm">
+                        <Button variant="outline" size="sm" onClick={() => handleArchive(item.id)}>
                           <Archive className="h-4 w-4 mr-2" />
                           Archive
                         </Button>
-                        <Button variant="outline" size="sm">
+                        <Button variant="outline" size="sm" onClick={() => handleDelete(item.id)}>
                           <Trash2 className="h-4 w-4" />
                         </Button>
                       </div>
@@ -402,6 +435,40 @@ export default function FeedbackPage() {
           </div>
         </TabsContent>
       </Tabs>
+
+      {/* Reply Dialog */}
+      <Dialog open={showReplyDialog} onOpenChange={setShowReplyDialog}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Reply to Feedback</DialogTitle>
+            <DialogDescription>
+              Send a response to {selectedFeedback?.user.name}
+            </DialogDescription>
+          </DialogHeader>
+          <div className="py-4">
+            <div className="mb-4 p-3 bg-gray-50 rounded-lg">
+              <h4 className="font-medium">{selectedFeedback?.title}</h4>
+              <p className="text-sm text-muted-foreground mt-1">
+                {selectedFeedback?.description}
+              </p>
+            </div>
+            <Textarea
+              placeholder="Type your response here..."
+              value={replyText}
+              onChange={(e) => setReplyText(e.target.value)}
+              rows={4}
+            />
+          </div>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setShowReplyDialog(false)}>
+              Cancel
+            </Button>
+            <Button onClick={handleReply}>
+              Send Reply
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }

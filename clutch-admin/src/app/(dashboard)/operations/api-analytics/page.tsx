@@ -18,7 +18,7 @@ import {
   Smartphone,
   Monitor
 } from 'lucide-react';
-import { apiService } from '@/lib/api';
+import { productionApi } from '@/lib/production-api';
 
 interface APIAnalytics {
   totalRequests: number;
@@ -58,54 +58,33 @@ export default function APIAnalyticsPage() {
   const fetchAPIAnalytics = async () => {
     try {
       setLoading(true);
-      // Mock data since we don't have a specific API analytics endpoint
-      const mockAnalytics: APIAnalytics = {
-        totalRequests: 125430,
-        uniqueUsers: 2847,
-        averageResponseTime: 156,
-        errorRate: 0.8,
-        topEndpoints: [
-          { path: '/api/v1/auth/login', method: 'POST', requests: 15420, avgResponseTime: 180, errorRate: 0.2 },
-          { path: '/api/v1/dashboard/kpis', method: 'GET', requests: 12350, avgResponseTime: 120, errorRate: 0.1 },
-          { path: '/api/v1/users', method: 'GET', requests: 9870, avgResponseTime: 95, errorRate: 0.3 },
-          { path: '/api/v1/notifications', method: 'GET', requests: 8760, avgResponseTime: 110, errorRate: 0.1 },
-          { path: '/api/v1/fleet', method: 'GET', requests: 6540, avgResponseTime: 140, errorRate: 0.4 }
-        ],
-        userAgents: [
-          { userAgent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64)', count: 45670, percentage: 36.4 },
-          { userAgent: 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7)', count: 32100, percentage: 25.6 },
-          { userAgent: 'Mozilla/5.0 (iPhone; CPU iPhone OS 15_0)', count: 28750, percentage: 22.9 },
-          { userAgent: 'Mozilla/5.0 (Android 11; Mobile)', count: 18910, percentage: 15.1 }
-        ],
-        hourlyStats: [
-          { hour: '00:00', requests: 1200, errors: 8, avgResponseTime: 145 },
-          { hour: '01:00', requests: 980, errors: 6, avgResponseTime: 152 },
-          { hour: '02:00', requests: 750, errors: 4, avgResponseTime: 148 },
-          { hour: '03:00', requests: 650, errors: 3, avgResponseTime: 155 },
-          { hour: '04:00', requests: 720, errors: 5, avgResponseTime: 150 },
-          { hour: '05:00', requests: 890, errors: 7, avgResponseTime: 147 },
-          { hour: '06:00', requests: 1200, errors: 9, avgResponseTime: 142 },
-          { hour: '07:00', requests: 1800, errors: 12, avgResponseTime: 138 },
-          { hour: '08:00', requests: 2500, errors: 18, avgResponseTime: 135 },
-          { hour: '09:00', requests: 3200, errors: 22, avgResponseTime: 132 },
-          { hour: '10:00', requests: 3800, errors: 28, avgResponseTime: 128 },
-          { hour: '11:00', requests: 4200, errors: 32, avgResponseTime: 125 }
-        ],
-        statusCodes: [
-          { code: 200, count: 124430, percentage: 99.2 },
-          { code: 400, count: 450, percentage: 0.36 },
-          { code: 401, count: 320, percentage: 0.26 },
-          { code: 404, count: 180, percentage: 0.14 },
-          { code: 500, count: 50, percentage: 0.04 }
-        ]
-      };
-      
-      setAnalytics(mockAnalytics);
+      const data = await productionApi.getAPIAnalytics();
+      setAnalytics(data);
       setLastUpdated(new Date());
     } catch (error) {
       console.error('Error fetching API analytics:', error);
+      setAnalytics(null);
     } finally {
       setLoading(false);
+    }
+  };
+  
+  const handleExportData = async () => {
+    try {
+      const exportData = await productionApi.exportAPIAnalytics();
+      // Handle export functionality
+      console.log('Exporting API analytics data:', exportData);
+    } catch (error) {
+      console.error('Error exporting API analytics:', error);
+    }
+  };
+  
+  const handleConfigureMonitoring = async () => {
+    try {
+      // Implementation for configuring monitoring
+      console.log('Configuring API monitoring...');
+    } catch (error) {
+      console.error('Error configuring monitoring:', error);
     }
   };
 
@@ -155,6 +134,14 @@ export default function APIAnalyticsPage() {
               Last updated: {lastUpdated.toLocaleTimeString()}
             </span>
           )}
+          <Button onClick={handleExportData} variant="outline" size="sm">
+            <BarChart3 className="h-4 w-4 mr-2" />
+            Export Data
+          </Button>
+          <Button onClick={handleConfigureMonitoring} variant="outline" size="sm">
+            <Activity className="h-4 w-4 mr-2" />
+            Configure
+          </Button>
           <Button onClick={fetchAPIAnalytics} disabled={loading} variant="outline" size="sm">
             <RefreshCw className={`h-4 w-4 mr-2 ${loading ? 'animate-spin' : ''}`} />
             Refresh

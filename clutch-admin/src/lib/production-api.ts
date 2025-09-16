@@ -918,6 +918,71 @@ export class ProductionApiService {
     }
   }
 
+  // Support Feedback APIs
+  async getFeedback(): Promise<any[]> {
+    try {
+      return await realApi.getFeedback();
+    } catch (error) {
+      console.error("Failed to fetch feedback:", error);
+      throw new Error("Failed to load feedback");
+    }
+  }
+
+  async replyToFeedback(feedbackId: string, replyData: any): Promise<any> {
+    try {
+      return await realApi.replyToFeedback(feedbackId, replyData);
+    } catch (error) {
+      console.error("Failed to reply to feedback:", error);
+      throw new Error("Failed to reply to feedback");
+    }
+  }
+
+  async archiveFeedback(feedbackId: string): Promise<any> {
+    try {
+      return await realApi.archiveFeedback(feedbackId);
+    } catch (error) {
+      console.error("Failed to archive feedback:", error);
+      throw new Error("Failed to archive feedback");
+    }
+  }
+
+  async deleteFeedback(feedbackId: string): Promise<any> {
+    try {
+      return await realApi.deleteFeedback(feedbackId);
+    } catch (error) {
+      console.error("Failed to delete feedback:", error);
+      throw new Error("Failed to delete feedback");
+    }
+  }
+
+  // API Analytics APIs
+  async getAPIAnalytics(): Promise<any> {
+    try {
+      return await realApi.getAPIAnalytics();
+    } catch (error) {
+      console.error("Failed to fetch API analytics:", error);
+      throw new Error("Failed to load API analytics");
+    }
+  }
+
+  async exportAPIAnalytics(): Promise<any> {
+    try {
+      return await realApi.exportAPIAnalytics();
+    } catch (error) {
+      console.error("Failed to export API analytics:", error);
+      throw new Error("Failed to export API analytics");
+    }
+  }
+
+  async configureAPIMonitoring(config: any): Promise<any> {
+    try {
+      return await realApi.configureAPIMonitoring(config);
+    } catch (error) {
+      console.error("Failed to configure API monitoring:", error);
+      throw new Error("Failed to configure API monitoring");
+    }
+  }
+
   async getRevenueScenarios(): Promise<any[]> {
     try {
       return await realApi.getRevenueScenarios();
