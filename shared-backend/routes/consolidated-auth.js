@@ -348,10 +348,22 @@ router.post('/login', loginRateLimit, async (req, res) => {
       // Create session token
       const sessionToken = `session_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
       
+      // Create refresh token (longer expiration)
+      const refreshToken = jwt.sign(
+        {
+          userId: fallbackUser._id,
+          email: fallbackUser.email,
+          type: 'refresh'
+        },
+        process.env.JWT_SECRET,
+        { expiresIn: '7d' }
+      );
+      
       return res.json({
         success: true,
         data: {
           token,
+          refreshToken,
           sessionToken,
           user: {
             id: fallbackUser._id,
@@ -482,10 +494,22 @@ router.post('/login', loginRateLimit, async (req, res) => {
     
     console.log('✅ Database authentication successful for:', email);
     
+    // Create refresh token (longer expiration)
+    const refreshToken = jwt.sign(
+      {
+        userId: user._id,
+        email: user.email,
+        type: 'refresh'
+      },
+      process.env.JWT_SECRET,
+      { expiresIn: '7d' }
+    );
+    
     res.json({
       success: true,
       data: {
         token,
+        refreshToken,
         sessionToken,
         user: {
           id: user._id,
@@ -724,10 +748,22 @@ router.post('/refresh', authenticateToken, async (req, res) => {
       { expiresIn: '24h' }
     );
     
+    // Generate new refresh token
+    const newRefreshToken = jwt.sign(
+      {
+        userId: user._id,
+        email: user.email,
+        type: 'refresh'
+      },
+      process.env.JWT_SECRET,
+      { expiresIn: '7d' }
+    );
+    
     res.json({
       success: true,
       data: {
         token: newToken,
+        refreshToken: newRefreshToken,
         user: {
           id: user._id,
           email: user.email,
