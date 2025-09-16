@@ -7,7 +7,8 @@
 const express = require('express');
 const router = express.Router();
 const { getCollection } = require('../config/optimized-database');
-const { authenticateToken, requireRole } = require('../middleware/auth');
+const { authenticateToken, checkRole } = require('../middleware/auth');
+const { checkRole, checkPermission } = require('../middleware/rbac');
 const { rateLimit: createRateLimit } = require('../middleware/rateLimit');
 
 // Apply rate limiting
@@ -16,7 +17,7 @@ const analyticsRateLimit = createRateLimit({ windowMs: 60 * 1000, max: 100 });
 // ==================== USER ANALYTICS ====================
 
 // GET /api/v1/analytics/users - Get user analytics
-router.get('/users', authenticateToken, requireRole(['admin', 'analyst']), analyticsRateLimit, async (req, res) => {
+router.get('/users', authenticateToken, checkRole(['head_administrator', 'analyst']), analyticsRateLimit, async (req, res) => {
   try {
     const { period = '30d', limit = 100 } = req.query;
     
@@ -69,7 +70,7 @@ router.get('/users', authenticateToken, requireRole(['admin', 'analyst']), analy
 // ==================== SERVICE ANALYTICS ====================
 
 // GET /api/v1/analytics/services - Get service analytics
-router.get('/services', authenticateToken, requireRole(['admin', 'analyst']), analyticsRateLimit, async (req, res) => {
+router.get('/services', authenticateToken, checkRole(['head_administrator', 'analyst']), analyticsRateLimit, async (req, res) => {
   try {
     const { period = '30d', serviceType } = req.query;
     
@@ -144,7 +145,7 @@ router.get('/services', authenticateToken, requireRole(['admin', 'analyst']), an
 // ==================== FINANCIAL ANALYTICS ====================
 
 // GET /api/v1/analytics/financial - Get financial analytics
-router.get('/financial', authenticateToken, requireRole(['admin', 'finance']), analyticsRateLimit, async (req, res) => {
+router.get('/financial', authenticateToken, checkRole(['head_administrator', 'finance']), analyticsRateLimit, async (req, res) => {
   try {
     const { period = '30d', type = 'all' } = req.query;
     
@@ -207,7 +208,7 @@ router.get('/financial', authenticateToken, requireRole(['admin', 'finance']), a
 // ==================== PERFORMANCE ANALYTICS ====================
 
 // GET /api/v1/analytics/performance - Get system performance analytics
-router.get('/performance', authenticateToken, requireRole(['admin', 'devops']), analyticsRateLimit, async (req, res) => {
+router.get('/performance', authenticateToken, checkRole(['head_administrator', 'devops']), analyticsRateLimit, async (req, res) => {
   try {
     const { period = '24h' } = req.query;
     
@@ -258,7 +259,7 @@ router.get('/performance', authenticateToken, requireRole(['admin', 'devops']), 
 // ==================== DASHBOARD ANALYTICS ====================
 
 // GET /api/v1/analytics/dashboard - Get consolidated dashboard data
-router.get('/dashboard', authenticateToken, requireRole(['admin', 'analyst']), analyticsRateLimit, async (req, res) => {
+router.get('/dashboard', authenticateToken, checkRole(['head_administrator', 'analyst']), analyticsRateLimit, async (req, res) => {
   try {
     const { period = '30d' } = req.query;
     
@@ -319,7 +320,7 @@ router.get('/dashboard', authenticateToken, requireRole(['admin', 'analyst']), a
 // ==================== EXPORT ANALYTICS ====================
 
 // POST /api/v1/analytics/export - Export analytics data
-router.post('/export', authenticateToken, requireRole(['admin', 'analyst']), analyticsRateLimit, async (req, res) => {
+router.post('/export', authenticateToken, checkRole(['head_administrator', 'analyst']), analyticsRateLimit, async (req, res) => {
   try {
     const { type, period, format = 'json' } = req.body;
     
@@ -363,7 +364,7 @@ router.post('/export', authenticateToken, requireRole(['admin', 'analyst']), ana
 // ==================== GENERIC HANDLERS ====================
 
 // GET /api/v1/analytics - Get analytics overview
-router.get('/', authenticateToken, requireRole(['admin', 'analyst']), analyticsRateLimit, async (req, res) => {
+router.get('/', authenticateToken, checkRole(['head_administrator', 'analyst']), analyticsRateLimit, async (req, res) => {
   res.json({
     success: true,
     message: 'Consolidated Analytics API is running',

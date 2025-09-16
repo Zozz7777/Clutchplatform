@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
-const { authenticateToken, requireRole } = require('../middleware/auth');
+const { authenticateToken, checkRole } = require('../middleware/auth');
+const { checkRole, checkPermission } = require('../middleware/rbac');
 const { getCollection } = require('../config/optimized-database');
 const rateLimit = require('express-rate-limit');
 
@@ -89,7 +90,7 @@ router.get('/:id', async (req, res) => {
 });
 
 // POST /api/v1/reports - Create new report
-router.post('/', requireRole(['admin', 'report_manager', 'super_admin']), async (req, res) => {
+router.post('/', checkRole(['head_administrator', 'report_manager', 'head_administrator']), async (req, res) => {
   try {
     const reportsCollection = await getCollection('reports');
     const { 
@@ -149,7 +150,7 @@ router.post('/', requireRole(['admin', 'report_manager', 'super_admin']), async 
 });
 
 // PUT /api/v1/reports/:id - Update report
-router.put('/:id', requireRole(['admin', 'report_manager', 'super_admin']), async (req, res) => {
+router.put('/:id', checkRole(['head_administrator', 'report_manager', 'head_administrator']), async (req, res) => {
   try {
     const reportsCollection = await getCollection('reports');
     const { 
@@ -205,7 +206,7 @@ router.put('/:id', requireRole(['admin', 'report_manager', 'super_admin']), asyn
 });
 
 // DELETE /api/v1/reports/:id - Delete report
-router.delete('/:id', requireRole(['admin', 'super_admin']), async (req, res) => {
+router.delete('/:id', checkRole(['head_administrator', 'head_administrator']), async (req, res) => {
   try {
     const reportsCollection = await getCollection('reports');
     const result = await reportsCollection.deleteOne({ _id: req.params.id });
@@ -234,7 +235,7 @@ router.delete('/:id', requireRole(['admin', 'super_admin']), async (req, res) =>
 // ===== REPORT GENERATION =====
 
 // POST /api/v1/reports/generate - Generate report
-router.post('/generate', requireRole(['admin', 'report_manager', 'super_admin', 'employee']), async (req, res) => {
+router.post('/generate', checkRole(['head_administrator', 'report_manager', 'head_administrator', 'employee']), async (req, res) => {
   try {
     const reportsCollection = await getCollection('reports');
     const { reportId, parameters, format, emailTo } = req.body;
@@ -351,7 +352,7 @@ router.get('/templates', async (req, res) => {
 });
 
 // POST /api/v1/reports/templates - Create report template
-router.post('/templates', requireRole(['admin', 'report_manager', 'super_admin']), async (req, res) => {
+router.post('/templates', checkRole(['head_administrator', 'report_manager', 'head_administrator']), async (req, res) => {
   try {
     const templatesCollection = await getCollection('report_templates');
     const { 

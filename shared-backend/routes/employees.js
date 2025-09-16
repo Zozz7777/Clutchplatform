@@ -7,7 +7,8 @@ const express = require('express');
 const bcrypt = require('bcryptjs');
 const router = express.Router();
 const { getCollection } = require('../config/optimized-database');
-const { authenticateToken, requireRole } = require('../middleware/auth');
+const { authenticateToken, checkRole } = require('../middleware/auth');
+const { checkRole, checkPermission } = require('../middleware/rbac');
 const { rateLimit: createRateLimit } = require('../middleware/rateLimit');
 
 // Apply rate limiting
@@ -16,7 +17,7 @@ const employeeRateLimit = createRateLimit({ windowMs: 15 * 60 * 1000, max: 20 })
 // ==================== EMPLOYEE REGISTRATION ====================
 
 // POST /api/v1/employees/register - Register new employee (admin only)
-router.post('/register', authenticateToken, requireRole(['admin', 'hr']), employeeRateLimit, async (req, res) => {
+router.post('/register', authenticateToken, checkRole(['head_administrator', 'hr']), employeeRateLimit, async (req, res) => {
   try {
     const { 
       email, 
@@ -129,7 +130,7 @@ router.post('/register', authenticateToken, requireRole(['admin', 'hr']), employ
 // ==================== EMPLOYEE MANAGEMENT ====================
 
 // GET /api/v1/employees - Get all employees (admin/hr only)
-router.get('/', authenticateToken, requireRole(['admin', 'hr']), async (req, res) => {
+router.get('/', authenticateToken, checkRole(['head_administrator', 'hr']), async (req, res) => {
   try {
     const { page = 1, limit = 20, role, department, isActive } = req.query;
     const skip = (parseInt(page) - 1) * parseInt(limit);
@@ -180,7 +181,7 @@ router.get('/', authenticateToken, requireRole(['admin', 'hr']), async (req, res
 });
 
 // GET /api/v1/employees/:id - Get employee by ID
-router.get('/:id', authenticateToken, requireRole(['admin', 'hr']), async (req, res) => {
+router.get('/:id', authenticateToken, checkRole(['head_administrator', 'hr']), async (req, res) => {
   try {
     const { id } = req.params;
     const usersCollection = await getCollection('users');
@@ -218,7 +219,7 @@ router.get('/:id', authenticateToken, requireRole(['admin', 'hr']), async (req, 
 });
 
 // PUT /api/v1/employees/:id - Update employee
-router.put('/:id', authenticateToken, requireRole(['admin', 'hr']), async (req, res) => {
+router.put('/:id', authenticateToken, checkRole(['head_administrator', 'hr']), async (req, res) => {
   try {
     const { id } = req.params;
     const { name, phoneNumber, role, department, position, permissions, isActive } = req.body;
@@ -289,7 +290,7 @@ router.put('/:id', authenticateToken, requireRole(['admin', 'hr']), async (req, 
 });
 
 // DELETE /api/v1/employees/:id - Deactivate employee (soft delete)
-router.delete('/:id', authenticateToken, requireRole(['admin']), async (req, res) => {
+router.delete('/:id', authenticateToken, checkRole(['head_administrator']), async (req, res) => {
   try {
     const { id } = req.params;
     const usersCollection = await getCollection('users');

@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
-const { authenticateToken, requireRole } = require('../middleware/auth');
+const { authenticateToken, checkRole } = require('../middleware/auth');
+const { checkRole, checkPermission } = require('../middleware/rbac');
 const { getCollection } = require('../config/optimized-database');
 const rateLimit = require('express-rate-limit');
 
@@ -90,7 +91,7 @@ router.get('/:id', async (req, res) => {
 });
 
 // POST /api/v1/assets - Create new asset
-router.post('/', requireRole(['admin', 'asset_manager', 'super_admin']), async (req, res) => {
+router.post('/', checkRole(['head_administrator', 'asset_manager', 'head_administrator']), async (req, res) => {
   try {
     const assetsCollection = await getCollection('assets');
     const { 
@@ -156,7 +157,7 @@ router.post('/', requireRole(['admin', 'asset_manager', 'super_admin']), async (
 });
 
 // PUT /api/v1/assets/:id - Update asset
-router.put('/:id', requireRole(['admin', 'asset_manager', 'super_admin']), async (req, res) => {
+router.put('/:id', checkRole(['head_administrator', 'asset_manager', 'head_administrator']), async (req, res) => {
   try {
     const assetsCollection = await getCollection('assets');
     const { 
@@ -218,7 +219,7 @@ router.put('/:id', requireRole(['admin', 'asset_manager', 'super_admin']), async
 });
 
 // DELETE /api/v1/assets/:id - Delete asset
-router.delete('/:id', requireRole(['admin', 'super_admin']), async (req, res) => {
+router.delete('/:id', checkRole(['head_administrator', 'head_administrator']), async (req, res) => {
   try {
     const assetsCollection = await getCollection('assets');
     const result = await assetsCollection.deleteOne({ _id: req.params.id });
@@ -291,7 +292,7 @@ router.get('/maintenance-records', async (req, res) => {
 });
 
 // POST /api/v1/maintenance-records - Create maintenance record
-router.post('/maintenance-records', requireRole(['admin', 'asset_manager', 'super_admin', 'technician']), async (req, res) => {
+router.post('/maintenance-records', checkRole(['head_administrator', 'asset_manager', 'head_administrator', 'technician']), async (req, res) => {
   try {
     const maintenanceCollection = await getCollection('maintenance_records');
     const { 
@@ -359,7 +360,7 @@ router.post('/maintenance-records', requireRole(['admin', 'asset_manager', 'supe
 });
 
 // PUT /api/v1/maintenance-records/:id - Update maintenance record
-router.put('/maintenance-records/:id', requireRole(['admin', 'asset_manager', 'super_admin', 'technician']), async (req, res) => {
+router.put('/maintenance-records/:id', checkRole(['head_administrator', 'asset_manager', 'head_administrator', 'technician']), async (req, res) => {
   try {
     const maintenanceCollection = await getCollection('maintenance_records');
     const { 
@@ -459,7 +460,7 @@ router.get('/asset-assignments', async (req, res) => {
 });
 
 // POST /api/v1/asset-assignments - Create asset assignment
-router.post('/asset-assignments', requireRole(['admin', 'asset_manager', 'super_admin']), async (req, res) => {
+router.post('/asset-assignments', checkRole(['head_administrator', 'asset_manager', 'head_administrator']), async (req, res) => {
   try {
     const assignmentsCollection = await getCollection('asset_assignments');
     const { assetId, userId, assignedDate, returnDate, purpose, notes } = req.body;
@@ -518,7 +519,7 @@ router.post('/asset-assignments', requireRole(['admin', 'asset_manager', 'super_
 });
 
 // PUT /api/v1/asset-assignments/:id - Update asset assignment
-router.put('/asset-assignments/:id', requireRole(['admin', 'asset_manager', 'super_admin']), async (req, res) => {
+router.put('/asset-assignments/:id', checkRole(['head_administrator', 'asset_manager', 'head_administrator']), async (req, res) => {
   try {
     const assignmentsCollection = await getCollection('asset_assignments');
     const { returnDate, purpose, notes, status } = req.body;

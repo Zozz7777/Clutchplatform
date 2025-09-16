@@ -5,7 +5,8 @@
 
 const express = require('express');
 const router = express.Router();
-const { authenticateToken, requireRole } = require('../middleware/auth');
+const { authenticateToken, checkRole } = require('../middleware/auth');
+const { checkRole, checkPermission } = require('../middleware/rbac');
 const { getCollection } = require('../config/optimized-database');
 const { rateLimit: createRateLimit } = require('../middleware/rateLimit');
 const { ObjectId } = require('mongodb');
@@ -16,7 +17,7 @@ const legalRateLimit = createRateLimit({ windowMs: 60 * 1000, max: 100 });
 // ==================== CONTRACT MANAGEMENT ====================
 
 // GET /api/v1/legal/contracts - Get all contracts
-router.get('/contracts', authenticateToken, requireRole(['admin', 'legal_team']), legalRateLimit, async (req, res) => {
+router.get('/contracts', authenticateToken, checkRole(['head_administrator', 'legal_team']), legalRateLimit, async (req, res) => {
   try {
     const { page = 1, limit = 50, status, type, party, search } = req.query;
     const skip = (page - 1) * limit;
@@ -71,7 +72,7 @@ router.get('/contracts', authenticateToken, requireRole(['admin', 'legal_team'])
 });
 
 // GET /api/v1/legal/contracts/:id - Get contract by ID
-router.get('/contracts/:id', authenticateToken, requireRole(['admin', 'legal_team']), legalRateLimit, async (req, res) => {
+router.get('/contracts/:id', authenticateToken, checkRole(['head_administrator', 'legal_team']), legalRateLimit, async (req, res) => {
   try {
     const { id } = req.params;
     const contractsCollection = await getCollection('contracts');
@@ -105,7 +106,7 @@ router.get('/contracts/:id', authenticateToken, requireRole(['admin', 'legal_tea
 });
 
 // POST /api/v1/legal/contracts - Create new contract
-router.post('/contracts', authenticateToken, requireRole(['admin', 'legal_team']), legalRateLimit, async (req, res) => {
+router.post('/contracts', authenticateToken, checkRole(['head_administrator', 'legal_team']), legalRateLimit, async (req, res) => {
   try {
     const {
       title,
@@ -175,7 +176,7 @@ router.post('/contracts', authenticateToken, requireRole(['admin', 'legal_team']
 });
 
 // PUT /api/v1/legal/contracts/:id - Update contract
-router.put('/contracts/:id', authenticateToken, requireRole(['admin', 'legal_team']), legalRateLimit, async (req, res) => {
+router.put('/contracts/:id', authenticateToken, checkRole(['head_administrator', 'legal_team']), legalRateLimit, async (req, res) => {
   try {
     const { id } = req.params;
     const updateData = { ...req.body, updatedAt: new Date() };
@@ -216,7 +217,7 @@ router.put('/contracts/:id', authenticateToken, requireRole(['admin', 'legal_tea
 });
 
 // POST /api/v1/legal/contracts/:id/sign - Sign contract
-router.post('/contracts/:id/sign', authenticateToken, requireRole(['admin', 'legal_team']), legalRateLimit, async (req, res) => {
+router.post('/contracts/:id/sign', authenticateToken, checkRole(['head_administrator', 'legal_team']), legalRateLimit, async (req, res) => {
   try {
     const { id } = req.params;
     const { signature, signedBy } = req.body;
@@ -278,7 +279,7 @@ router.post('/contracts/:id/sign', authenticateToken, requireRole(['admin', 'leg
 // ==================== DISPUTE MANAGEMENT ====================
 
 // GET /api/v1/legal/disputes - Get all disputes
-router.get('/disputes', authenticateToken, requireRole(['admin', 'legal_team']), legalRateLimit, async (req, res) => {
+router.get('/disputes', authenticateToken, checkRole(['head_administrator', 'legal_team']), legalRateLimit, async (req, res) => {
   try {
     const { page = 1, limit = 50, status, type, priority, search } = req.query;
     const skip = (page - 1) * limit;
@@ -333,7 +334,7 @@ router.get('/disputes', authenticateToken, requireRole(['admin', 'legal_team']),
 });
 
 // POST /api/v1/legal/disputes - Create new dispute
-router.post('/disputes', authenticateToken, requireRole(['admin', 'legal_team']), legalRateLimit, async (req, res) => {
+router.post('/disputes', authenticateToken, checkRole(['head_administrator', 'legal_team']), legalRateLimit, async (req, res) => {
   try {
     const {
       title,
@@ -399,7 +400,7 @@ router.post('/disputes', authenticateToken, requireRole(['admin', 'legal_team'])
 });
 
 // PUT /api/v1/legal/disputes/:id - Update dispute
-router.put('/disputes/:id', authenticateToken, requireRole(['admin', 'legal_team']), legalRateLimit, async (req, res) => {
+router.put('/disputes/:id', authenticateToken, checkRole(['head_administrator', 'legal_team']), legalRateLimit, async (req, res) => {
   try {
     const { id } = req.params;
     const updateData = { ...req.body, updatedAt: new Date() };
@@ -442,7 +443,7 @@ router.put('/disputes/:id', authenticateToken, requireRole(['admin', 'legal_team
 // ==================== LEGAL DOCUMENTS ====================
 
 // GET /api/v1/legal/documents - Get legal documents
-router.get('/documents', authenticateToken, requireRole(['admin', 'legal_team']), legalRateLimit, async (req, res) => {
+router.get('/documents', authenticateToken, checkRole(['head_administrator', 'legal_team']), legalRateLimit, async (req, res) => {
   try {
     const { page = 1, limit = 50, type, category, search } = req.query;
     const skip = (page - 1) * limit;
@@ -495,7 +496,7 @@ router.get('/documents', authenticateToken, requireRole(['admin', 'legal_team'])
 });
 
 // POST /api/v1/legal/documents - Upload legal document
-router.post('/documents', authenticateToken, requireRole(['admin', 'legal_team']), legalRateLimit, async (req, res) => {
+router.post('/documents', authenticateToken, checkRole(['head_administrator', 'legal_team']), legalRateLimit, async (req, res) => {
   try {
     const {
       title,
@@ -554,7 +555,7 @@ router.post('/documents', authenticateToken, requireRole(['admin', 'legal_team']
 // ==================== LEGAL ANALYTICS ====================
 
 // GET /api/v1/legal/analytics - Get legal analytics
-router.get('/analytics', authenticateToken, requireRole(['admin', 'legal_team']), legalRateLimit, async (req, res) => {
+router.get('/analytics', authenticateToken, checkRole(['head_administrator', 'legal_team']), legalRateLimit, async (req, res) => {
   try {
     const { period = '30d' } = req.query;
     
@@ -634,7 +635,7 @@ router.get('/analytics', authenticateToken, requireRole(['admin', 'legal_team'])
 // ==================== GENERIC HANDLERS ====================
 
 // GET /api/v1/legal - Get legal overview
-router.get('/', authenticateToken, requireRole(['admin', 'legal_team']), legalRateLimit, async (req, res) => {
+router.get('/', authenticateToken, checkRole(['head_administrator', 'legal_team']), legalRateLimit, async (req, res) => {
   res.json({
     success: true,
     message: 'Legal Management API is running',

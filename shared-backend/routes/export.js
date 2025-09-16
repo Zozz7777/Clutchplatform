@@ -5,7 +5,8 @@
 
 const express = require('express');
 const router = express.Router();
-const { authenticateToken, requireRole } = require('../middleware/auth');
+const { authenticateToken, checkRole } = require('../middleware/auth');
+const { checkRole, checkPermission } = require('../middleware/rbac');
 const { getCollection } = require('../config/optimized-database');
 
 // GET /api/v1/export/dashboard - Export dashboard data
@@ -125,7 +126,7 @@ router.get('/dashboard', authenticateToken, async (req, res) => {
 });
 
 // GET /api/v1/export/users - Export users data
-router.get('/users', authenticateToken, requireRole(['admin', 'hr']), async (req, res) => {
+router.get('/users', authenticateToken, checkRole(['head_administrator', 'hr']), async (req, res) => {
   try {
     console.log('👥 Users export requested by user:', req.user?.email);
     
@@ -165,7 +166,7 @@ router.get('/users', authenticateToken, requireRole(['admin', 'hr']), async (req
 });
 
 // GET /api/v1/export/vehicles - Export vehicles data
-router.get('/vehicles', authenticateToken, requireRole(['admin', 'fleet_manager']), async (req, res) => {
+router.get('/vehicles', authenticateToken, checkRole(['head_administrator', 'asset_manager']), async (req, res) => {
   try {
     console.log('🚗 Vehicles export requested by user:', req.user?.email);
     
@@ -203,7 +204,7 @@ router.get('/vehicles', authenticateToken, requireRole(['admin', 'fleet_manager'
 });
 
 // GET /api/v1/export/bookings - Export bookings data
-router.get('/bookings', authenticateToken, requireRole(['admin', 'booking_manager']), async (req, res) => {
+router.get('/bookings', authenticateToken, checkRole(['head_administrator', 'booking_manager']), async (req, res) => {
   try {
     console.log('📅 Bookings export requested by user:', req.user?.email);
     

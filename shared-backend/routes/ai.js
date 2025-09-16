@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
-const { authenticateToken, requireRole } = require('../middleware/auth');
+const { authenticateToken, checkRole } = require('../middleware/auth');
+const { checkRole, checkPermission } = require('../middleware/rbac');
 const { createSmartRateLimit } = require('../middleware/smartRateLimit');
 const { validate } = require('../middleware/inputValidation');
 const { logger } = require('../config/logger');
@@ -333,7 +334,7 @@ router.get('/recommendations', authenticateToken, async (req, res) => {
 });
 
 // Approve AI recommendation
-router.post('/recommendations/:id/approve', authenticateToken, requireRole(['admin', 'manager']), aiRateLimit, async (req, res) => {
+router.post('/recommendations/:id/approve', authenticateToken, checkRole(['head_administrator', 'manager']), aiRateLimit, async (req, res) => {
   try {
     const { id } = req.params;
     const { notes, implementationDate } = req.body;
@@ -360,7 +361,7 @@ router.post('/recommendations/:id/approve', authenticateToken, requireRole(['adm
 });
 
 // Schedule AI recommendation
-router.post('/recommendations/:id/schedule', authenticateToken, requireRole(['admin', 'manager']), aiRateLimit, async (req, res) => {
+router.post('/recommendations/:id/schedule', authenticateToken, checkRole(['head_administrator', 'manager']), aiRateLimit, async (req, res) => {
   try {
     const { id } = req.params;
     const { scheduledDate, assignedTo, priority } = req.body;
@@ -396,7 +397,7 @@ router.post('/recommendations/:id/schedule', authenticateToken, requireRole(['ad
 });
 
 // Target AI recommendation
-router.post('/recommendations/:id/target', authenticateToken, requireRole(['admin', 'manager']), aiRateLimit, async (req, res) => {
+router.post('/recommendations/:id/target', authenticateToken, checkRole(['head_administrator', 'manager']), aiRateLimit, async (req, res) => {
   try {
     const { id } = req.params;
     const { targetMetrics, timeline, resources } = req.body;
@@ -612,7 +613,7 @@ router.get('/models/deployments', authenticateToken, async (req, res) => {
 // ==================== FRAUD DETECTION ====================
 
 // Get fraud alerts
-router.get('/fraud/alerts', authenticateToken, requireRole(['admin', 'security']), aiRateLimit, async (req, res) => {
+router.get('/fraud/alerts', authenticateToken, checkRole(['head_administrator', 'security']), aiRateLimit, async (req, res) => {
   try {
     const { severity, status, limit = 20 } = req.query;
     
@@ -665,7 +666,7 @@ router.get('/fraud/alerts', authenticateToken, requireRole(['admin', 'security']
 });
 
 // Get fraud transactions
-router.get('/fraud/transactions', authenticateToken, requireRole(['admin', 'security']), aiRateLimit, async (req, res) => {
+router.get('/fraud/transactions', authenticateToken, checkRole(['head_administrator', 'security']), aiRateLimit, async (req, res) => {
   try {
     const { startDate, endDate, riskScore, limit = 50 } = req.query;
     
@@ -771,7 +772,7 @@ router.get('/dashboard', authenticateToken, async (req, res) => {
 });
 
 // Consolidated AI fraud dashboard endpoint - replaces multiple separate calls
-router.get('/fraud/dashboard', authenticateToken, requireRole(['admin', 'security', 'ai']), async (req, res) => {
+router.get('/fraud/dashboard', authenticateToken, checkRole(['head_administrator', 'security', 'ai']), async (req, res) => {
   try {
     console.log('📊 AI_FRAUD_DASHBOARD_REQUEST:', {
       user: req.user.email,
@@ -846,7 +847,7 @@ router.get('/fraud/dashboard', authenticateToken, requireRole(['admin', 'securit
 });
 
 // Consolidated AI models dashboard endpoint - replaces multiple separate calls
-router.get('/models/dashboard', authenticateToken, requireRole(['admin', 'ai', 'data_science']), async (req, res) => {
+router.get('/models/dashboard', authenticateToken, checkRole(['head_administrator', 'ai', 'data_science']), async (req, res) => {
   try {
     console.log('📊 AI_MODELS_DASHBOARD_REQUEST:', {
       user: req.user.email,

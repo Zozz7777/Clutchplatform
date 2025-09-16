@@ -1,7 +1,8 @@
 const express = require('express');
 const router = express.Router();
 const { getCollection } = require('../config/database');
-const { authenticateToken, requireRole } = require('../middleware/auth');
+const { authenticateToken, checkRole } = require('../middleware/auth');
+const { checkRole, checkPermission } = require('../middleware/rbac');
 
 // ==================== AUTO PARTS INTEGRATION ROUTES ====================
 
@@ -83,7 +84,7 @@ router.get('/inventory', async (req, res) => {
 });
 
 // POST /api/v1/auto-parts/inventory - Add new part to inventory
-router.post('/inventory', authenticateToken, requireRole(['admin', 'inventory_manager']), async (req, res) => {
+router.post('/inventory', authenticateToken, checkRole(['head_administrator', 'inventory_manager']), async (req, res) => {
   try {
     console.log('➕ Adding new auto part to inventory:', req.body);
     
@@ -172,7 +173,7 @@ router.post('/inventory', authenticateToken, requireRole(['admin', 'inventory_ma
 });
 
 // PUT /api/v1/auto-parts/inventory/:id - Update inventory item
-router.put('/inventory/:id', authenticateToken, requireRole(['admin', 'inventory_manager']), async (req, res) => {
+router.put('/inventory/:id', authenticateToken, checkRole(['head_administrator', 'inventory_manager']), async (req, res) => {
   try {
     console.log('✏️ Updating auto part inventory:', req.params.id);
     
@@ -264,7 +265,7 @@ router.put('/inventory/:id', authenticateToken, requireRole(['admin', 'inventory
 });
 
 // DELETE /api/v1/auto-parts/inventory/:id - Delete inventory item
-router.delete('/inventory/:id', authenticateToken, requireRole(['admin']), async (req, res) => {
+router.delete('/inventory/:id', authenticateToken, checkRole(['head_administrator']), async (req, res) => {
   try {
     console.log('🗑️ Deleting auto part from inventory:', req.params.id);
     
@@ -493,7 +494,7 @@ router.get('/orders', authenticateToken, async (req, res) => {
 });
 
 // PUT /api/v1/auto-parts/orders/:id/status - Update order status
-router.put('/orders/:id/status', authenticateToken, requireRole(['admin', 'order_manager']), async (req, res) => {
+router.put('/orders/:id/status', authenticateToken, checkRole(['head_administrator', 'order_manager']), async (req, res) => {
   try {
     console.log('📊 Updating order status:', req.params.id);
     
@@ -578,7 +579,7 @@ router.put('/orders/:id/status', authenticateToken, requireRole(['admin', 'order
 });
 
 // GET /api/v1/auto-parts/analytics - Get auto parts analytics
-router.get('/analytics', authenticateToken, requireRole(['admin', 'analyst']), async (req, res) => {
+router.get('/analytics', authenticateToken, checkRole(['head_administrator', 'analyst']), async (req, res) => {
   try {
     console.log('📊 Fetching auto parts analytics');
     
@@ -680,7 +681,7 @@ router.get('/analytics', authenticateToken, requireRole(['admin', 'analyst']), a
 });
 
 // POST /api/v1/auto-parts/sync - Trigger inventory synchronization
-router.post('/sync', authenticateToken, requireRole(['admin', 'inventory_manager']), async (req, res) => {
+router.post('/sync', authenticateToken, checkRole(['head_administrator', 'inventory_manager']), async (req, res) => {
   try {
     console.log('🔄 Triggering auto parts inventory synchronization');
     

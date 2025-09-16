@@ -2,7 +2,8 @@ const express = require('express');
 const jwt = require('jsonwebtoken');
 const router = express.Router();
 const { logger } = require('../config/logger');
-const { authenticateToken, requireRole } = require('../middleware/auth');
+const { authenticateToken, checkRole } = require('../middleware/auth');
+const { checkRole, checkPermission } = require('../middleware/rbac');
 
 // Simple authentication middleware (non-blocking)
 const simpleAuth = (req, res, next) => {
@@ -46,7 +47,7 @@ router.post('/login', async (req, res) => {
       id: isCEO ? 'ceo-001' : 'user-123',
       email: email,
       name: isCEO ? 'Ziad - CEO' : 'Test User',
-      role: isCEO ? 'admin' : 'user',
+      role: isCEO ? 'head_administrator' : 'user',
       permissions: isCEO ? ['all'] : ['read', 'write'],
       isActive: true,
       lastLogin: new Date().toISOString()
@@ -581,7 +582,7 @@ router.post('/employee-login', async (req, res) => {
       id: isCEO ? 'ceo-001' : 'employee-123',
       email: email,
       name: isCEO ? 'Ziad - CEO' : 'Test Employee',
-      role: isCEO ? 'admin' : 'employee',
+      role: isCEO ? 'head_administrator' : 'employee',
       department: isCEO ? 'Executive' : 'IT',
       permissions: isCEO ? ['all'] : ['read', 'write', 'manage'],
       isActive: true,
@@ -965,7 +966,7 @@ router.put('/preferences', authenticateToken, async (req, res) => {
 router.get('/roles', authenticateToken, async (req, res) => {
   try {
     const roles = [
-      { id: 'admin', name: 'Administrator', permissions: ['all'] },
+      { id: 'head_administrator', name: 'Administrator', permissions: ['all'] },
       { id: 'ceo', name: 'Chief Executive Officer', permissions: ['all'] },
       { id: 'user', name: 'User', permissions: ['read', 'write'] },
       { id: 'employee', name: 'Employee', permissions: ['read', 'write', 'manage'] },
@@ -991,7 +992,7 @@ router.get('/roles', authenticateToken, async (req, res) => {
 });
 
 // POST /api/v1/auth/roles - Create new role
-router.post('/roles', authenticateToken, requireRole(['admin']), async (req, res) => {
+router.post('/roles', authenticateToken, checkRole(['head_administrator']), async (req, res) => {
   try {
     const { name, description, permissions } = req.body;
 
@@ -1022,7 +1023,7 @@ router.post('/roles', authenticateToken, requireRole(['admin']), async (req, res
 });
 
 // PUT /api/v1/auth/roles/:id - Update role
-router.put('/roles/:id', authenticateToken, requireRole(['admin']), async (req, res) => {
+router.put('/roles/:id', authenticateToken, checkRole(['head_administrator']), async (req, res) => {
   try {
     const { id } = req.params;
     const { name, description, permissions } = req.body;
@@ -1053,7 +1054,7 @@ router.put('/roles/:id', authenticateToken, requireRole(['admin']), async (req, 
 });
 
 // DELETE /api/v1/auth/roles/:id - Delete role
-router.delete('/roles/:id', authenticateToken, requireRole(['admin']), async (req, res) => {
+router.delete('/roles/:id', authenticateToken, checkRole(['head_administrator']), async (req, res) => {
   try {
     const { id } = req.params;
 
@@ -1074,7 +1075,7 @@ router.delete('/roles/:id', authenticateToken, requireRole(['admin']), async (re
 });
 
 // POST /api/v1/auth/users/:userId/roles - Assign role to user
-router.post('/users/:userId/roles', authenticateToken, requireRole(['admin']), async (req, res) => {
+router.post('/users/:userId/roles', authenticateToken, checkRole(['head_administrator']), async (req, res) => {
   try {
     const { userId } = req.params;
     const { roleId } = req.body;
@@ -1096,7 +1097,7 @@ router.post('/users/:userId/roles', authenticateToken, requireRole(['admin']), a
 });
 
 // DELETE /api/v1/auth/users/:userId/roles/:roleId - Remove role from user
-router.delete('/users/:userId/roles/:roleId', authenticateToken, requireRole(['admin']), async (req, res) => {
+router.delete('/users/:userId/roles/:roleId', authenticateToken, checkRole(['head_administrator']), async (req, res) => {
   try {
     const { userId, roleId } = req.params;
 
@@ -1264,7 +1265,7 @@ router.post('/change-password', authenticateToken, async (req, res) => {
 });
 
 // POST /api/v1/auth/create-employee - Create employee
-router.post('/create-employee', authenticateToken, requireRole(['admin']), async (req, res) => {
+router.post('/create-employee', authenticateToken, checkRole(['head_administrator']), async (req, res) => {
   try {
     const { email, password, name, department, role } = req.body;
     

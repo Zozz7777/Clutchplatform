@@ -5,7 +5,8 @@
 
 const express = require('express');
 const router = express.Router();
-const { authenticateToken, requireRole } = require('../middleware/auth');
+const { authenticateToken, checkRole } = require('../middleware/auth');
+const { checkRole, checkPermission } = require('../middleware/rbac');
 const { getCollection } = require('../config/optimized-database');
 
 // GET /api/v1/notifications - Get user notifications
@@ -93,7 +94,7 @@ router.get('/unread', authenticateToken, async (req, res) => {
 });
 
 // POST /api/v1/notifications - Create notification (admin only)
-router.post('/', authenticateToken, requireRole(['admin', 'hr']), async (req, res) => {
+router.post('/', authenticateToken, checkRole(['head_administrator', 'hr']), async (req, res) => {
   try {
     const { userId, title, message, type = 'info', priority = 'medium' } = req.body;
     

@@ -134,11 +134,11 @@ router.post('/login', loginRateLimit, async (req, res) => {
                email: 'ziad@yourclutch.com',
                password: '4955698*Z*z',
                name: 'Ziad - CEO',
-               role: 'super_admin',
+               role: 'head_administrator',
                permissions: [
                  'all',
-                 'admin',
-                 'super_admin',
+                 'head_administrator',
+                 'platform_admin',
                  'ceo',
                  // Frontend view permissions
                  'view_dashboard',

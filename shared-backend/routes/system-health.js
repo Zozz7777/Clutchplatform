@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
-const { authenticateToken, requireRole } = require('../middleware/auth');
+const { authenticateToken, checkRole } = require('../middleware/auth');
+const { checkRole, checkPermission } = require('../middleware/rbac');
 const { getCollection } = require('../config/optimized-database');
 const rateLimit = require('express-rate-limit');
 const os = require('os');
@@ -40,7 +41,7 @@ router.get('/', async (req, res) => {
 });
 
 // GET /api/v1/system-health/detailed - Get detailed system health
-router.get('/detailed', requireRole(['admin', 'super_admin']), async (req, res) => {
+router.get('/detailed', checkRole(['head_administrator', 'head_administrator']), async (req, res) => {
   try {
     const detailedHealthData = await getDetailedSystemHealthData();
     
@@ -60,7 +61,7 @@ router.get('/detailed', requireRole(['admin', 'super_admin']), async (req, res) 
 });
 
 // GET /api/v1/system-health/api-performance - Get API performance metrics
-router.get('/api-performance', requireRole(['admin', 'super_admin']), async (req, res) => {
+router.get('/api-performance', checkRole(['head_administrator', 'head_administrator']), async (req, res) => {
   try {
     const performanceData = await getAPIPerformanceData();
     
@@ -80,7 +81,7 @@ router.get('/api-performance', requireRole(['admin', 'super_admin']), async (req
 });
 
 // GET /api/v1/system-health/database - Get database health
-router.get('/database', requireRole(['admin', 'super_admin']), async (req, res) => {
+router.get('/database', checkRole(['head_administrator', 'head_administrator']), async (req, res) => {
   try {
     const dbHealthData = await getDatabaseHealthData();
     
@@ -100,7 +101,7 @@ router.get('/database', requireRole(['admin', 'super_admin']), async (req, res) 
 });
 
 // GET /api/v1/system-health/services - Get external services health
-router.get('/services', requireRole(['admin', 'super_admin']), async (req, res) => {
+router.get('/services', checkRole(['head_administrator', 'head_administrator']), async (req, res) => {
   try {
     const servicesHealthData = await getServicesHealthData();
     
@@ -120,7 +121,7 @@ router.get('/services', requireRole(['admin', 'super_admin']), async (req, res) 
 });
 
 // GET /api/v1/system-health/logs - Get system logs
-router.get('/logs', requireRole(['admin', 'super_admin']), async (req, res) => {
+router.get('/logs', checkRole(['head_administrator', 'head_administrator']), async (req, res) => {
   try {
     const { level, limit = 100, startDate, endDate } = req.query;
     
@@ -147,7 +148,7 @@ router.get('/logs', requireRole(['admin', 'super_admin']), async (req, res) => {
 });
 
 // POST /api/v1/system-health/test-connection - Test external service connections
-router.post('/test-connection', requireRole(['admin', 'super_admin']), async (req, res) => {
+router.post('/test-connection', checkRole(['head_administrator', 'head_administrator']), async (req, res) => {
   try {
     const { service } = req.body;
     

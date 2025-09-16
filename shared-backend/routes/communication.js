@@ -5,7 +5,8 @@
 
 const express = require('express');
 const router = express.Router();
-const { authenticateToken, requireRole } = require('../middleware/auth');
+const { authenticateToken, checkRole } = require('../middleware/auth');
+const { checkRole, checkPermission } = require('../middleware/rbac');
 const { getCollection } = require('../config/optimized-database');
 
 // GET /api/v1/communication/chat - Get chat messages
@@ -268,7 +269,7 @@ router.get('/chat/unread', authenticateToken, async (req, res) => {
 });
 
 // POST /api/v1/communication/email - Send email notification
-router.post('/email', authenticateToken, requireRole(['admin', 'hr']), async (req, res) => {
+router.post('/email', authenticateToken, checkRole(['head_administrator', 'hr']), async (req, res) => {
   try {
     const { to, subject, body, type = 'notification' } = req.body;
     
@@ -322,7 +323,7 @@ router.post('/email', authenticateToken, requireRole(['admin', 'hr']), async (re
 });
 
 // GET /api/v1/communication/email - Get email history
-router.get('/email', authenticateToken, requireRole(['admin', 'hr']), async (req, res) => {
+router.get('/email', authenticateToken, checkRole(['head_administrator', 'hr']), async (req, res) => {
   try {
     const { page = 1, limit = 20, status, type } = req.query;
     const skip = (parseInt(page) - 1) * parseInt(limit);

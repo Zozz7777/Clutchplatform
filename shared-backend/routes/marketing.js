@@ -5,7 +5,8 @@
 
 const express = require('express');
 const router = express.Router();
-const { authenticateToken, requireRole } = require('../middleware/auth');
+const { authenticateToken, checkRole } = require('../middleware/auth');
+const { checkRole, checkPermission } = require('../middleware/rbac');
 const { getCollection } = require('../config/optimized-database');
 const { rateLimit: createRateLimit } = require('../middleware/rateLimit');
 const { ObjectId } = require('mongodb');
@@ -16,7 +17,7 @@ const marketingRateLimit = createRateLimit({ windowMs: 60 * 1000, max: 100 });
 // ==================== CAMPAIGN MANAGEMENT ====================
 
 // GET /api/v1/marketing/campaigns - Get all campaigns
-router.get('/campaigns', authenticateToken, requireRole(['admin', 'marketing_manager']), marketingRateLimit, async (req, res) => {
+router.get('/campaigns', authenticateToken, checkRole(['head_administrator', 'marketing_manager']), marketingRateLimit, async (req, res) => {
   try {
     const { page = 1, limit = 50, status, type, search } = req.query;
     const skip = (page - 1) * limit;
@@ -69,7 +70,7 @@ router.get('/campaigns', authenticateToken, requireRole(['admin', 'marketing_man
 });
 
 // GET /api/v1/marketing/campaigns/:id - Get campaign by ID
-router.get('/campaigns/:id', authenticateToken, requireRole(['admin', 'marketing_manager']), marketingRateLimit, async (req, res) => {
+router.get('/campaigns/:id', authenticateToken, checkRole(['head_administrator', 'marketing_manager']), marketingRateLimit, async (req, res) => {
   try {
     const { id } = req.params;
     const campaignsCollection = await getCollection('campaigns');
@@ -103,7 +104,7 @@ router.get('/campaigns/:id', authenticateToken, requireRole(['admin', 'marketing
 });
 
 // POST /api/v1/marketing/campaigns - Create new campaign
-router.post('/campaigns', authenticateToken, requireRole(['admin', 'marketing_manager']), marketingRateLimit, async (req, res) => {
+router.post('/campaigns', authenticateToken, checkRole(['head_administrator', 'marketing_manager']), marketingRateLimit, async (req, res) => {
   try {
     const {
       name,
@@ -172,7 +173,7 @@ router.post('/campaigns', authenticateToken, requireRole(['admin', 'marketing_ma
 });
 
 // PUT /api/v1/marketing/campaigns/:id - Update campaign
-router.put('/campaigns/:id', authenticateToken, requireRole(['admin', 'marketing_manager']), marketingRateLimit, async (req, res) => {
+router.put('/campaigns/:id', authenticateToken, checkRole(['head_administrator', 'marketing_manager']), marketingRateLimit, async (req, res) => {
   try {
     const { id } = req.params;
     const updateData = { ...req.body, updatedAt: new Date() };
@@ -215,7 +216,7 @@ router.put('/campaigns/:id', authenticateToken, requireRole(['admin', 'marketing
 // ==================== LEAD TRACKING ====================
 
 // GET /api/v1/marketing/leads - Get all leads
-router.get('/leads', authenticateToken, requireRole(['admin', 'marketing_manager', 'sales']), marketingRateLimit, async (req, res) => {
+router.get('/leads', authenticateToken, checkRole(['head_administrator', 'marketing_manager', 'sales']), marketingRateLimit, async (req, res) => {
   try {
     const { page = 1, limit = 50, status, source, search } = req.query;
     const skip = (page - 1) * limit;
@@ -344,7 +345,7 @@ router.post('/leads', marketingRateLimit, async (req, res) => {
 });
 
 // PUT /api/v1/marketing/leads/:id - Update lead
-router.put('/leads/:id', authenticateToken, requireRole(['admin', 'marketing_manager', 'sales']), marketingRateLimit, async (req, res) => {
+router.put('/leads/:id', authenticateToken, checkRole(['head_administrator', 'marketing_manager', 'sales']), marketingRateLimit, async (req, res) => {
   try {
     const { id } = req.params;
     const updateData = { ...req.body, updatedAt: new Date() };
@@ -387,7 +388,7 @@ router.put('/leads/:id', authenticateToken, requireRole(['admin', 'marketing_man
 // ==================== PROMOTIONS ====================
 
 // GET /api/v1/marketing/promotions - Get all promotions
-router.get('/promotions', authenticateToken, requireRole(['admin', 'marketing_manager']), marketingRateLimit, async (req, res) => {
+router.get('/promotions', authenticateToken, checkRole(['head_administrator', 'marketing_manager']), marketingRateLimit, async (req, res) => {
   try {
     const { page = 1, limit = 50, status, type, search } = req.query;
     const skip = (page - 1) * limit;
@@ -441,7 +442,7 @@ router.get('/promotions', authenticateToken, requireRole(['admin', 'marketing_ma
 });
 
 // POST /api/v1/marketing/promotions - Create new promotion
-router.post('/promotions', authenticateToken, requireRole(['admin', 'marketing_manager']), marketingRateLimit, async (req, res) => {
+router.post('/promotions', authenticateToken, checkRole(['head_administrator', 'marketing_manager']), marketingRateLimit, async (req, res) => {
   try {
     const {
       name,
@@ -618,7 +619,7 @@ router.post('/promotions/validate', marketingRateLimit, async (req, res) => {
 // ==================== MARKETING ANALYTICS ====================
 
 // GET /api/v1/marketing/analytics - Get marketing analytics
-router.get('/analytics', authenticateToken, requireRole(['admin', 'marketing_manager']), marketingRateLimit, async (req, res) => {
+router.get('/analytics', authenticateToken, checkRole(['head_administrator', 'marketing_manager']), marketingRateLimit, async (req, res) => {
   try {
     const { period = '30d' } = req.query;
     
@@ -723,7 +724,7 @@ router.get('/analytics', authenticateToken, requireRole(['admin', 'marketing_man
 // ==================== GENERIC HANDLERS ====================
 
 // GET /api/v1/marketing - Get marketing overview
-router.get('/', authenticateToken, requireRole(['admin', 'marketing_manager']), marketingRateLimit, async (req, res) => {
+router.get('/', authenticateToken, checkRole(['head_administrator', 'marketing_manager']), marketingRateLimit, async (req, res) => {
   res.json({
     success: true,
     message: 'Marketing API is running',

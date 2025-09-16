@@ -1,14 +1,15 @@
 const express = require('express');
 const router = express.Router();
-const { authenticateToken, requireRole } = require('../middleware/auth');
+const { authenticateToken, checkRole } = require('../middleware/auth');
+const { checkRole, checkPermission } = require('../middleware/rbac');
 const logger = require('../utils/logger');
 const { getCollection } = require('../config/optimized-database');
 
 // GET /users - Get all users
-router.get('/', authenticateToken, requireRole(['admin']), async (req, res) => {
+router.get('/', authenticateToken, checkRole(['head_administrator']), async (req, res) => {
   try {
     const users = [
-      { id: 'user-1', name: 'John Doe', email: 'john@example.com', role: 'admin', status: 'active', createdAt: new Date().toISOString() },
+      { id: 'user-1', name: 'John Doe', email: 'john@example.com', role: 'head_administrator', status: 'active', createdAt: new Date().toISOString() },
       { id: 'user-2', name: 'Jane Smith', email: 'jane@example.com', role: 'user', status: 'active', createdAt: new Date(Date.now() - 86400000).toISOString() }
     ];
     res.json({ success: true, data: { users }, message: 'Users retrieved successfully', timestamp: new Date().toISOString() });
@@ -19,10 +20,10 @@ router.get('/', authenticateToken, requireRole(['admin']), async (req, res) => {
 });
 
 // GET /users/:id - Get user by ID
-router.get('/:id', authenticateToken, requireRole(['admin']), async (req, res) => {
+router.get('/:id', authenticateToken, checkRole(['head_administrator']), async (req, res) => {
   try {
     const { id } = req.params;
-    const user = { id, name: 'John Doe', email: 'john@example.com', role: 'admin', status: 'active', createdAt: new Date().toISOString() };
+    const user = { id, name: 'John Doe', email: 'john@example.com', role: 'head_administrator', status: 'active', createdAt: new Date().toISOString() };
     res.json({ success: true, data: { user }, message: 'User retrieved successfully', timestamp: new Date().toISOString() });
   } catch (error) {
     logger.error('Get user error:', error);
@@ -31,7 +32,7 @@ router.get('/:id', authenticateToken, requireRole(['admin']), async (req, res) =
 });
 
 // POST /users - Create new user
-router.post('/', authenticateToken, requireRole(['admin']), async (req, res) => {
+router.post('/', authenticateToken, checkRole(['head_administrator']), async (req, res) => {
   try {
     const { name, email, role } = req.body;
     const newUser = { id: 'user-new', name, email, role, status: 'active', createdAt: new Date().toISOString() };
@@ -43,7 +44,7 @@ router.post('/', authenticateToken, requireRole(['admin']), async (req, res) => 
 });
 
 // PUT /users/:id - Update user
-router.put('/:id', authenticateToken, requireRole(['admin']), async (req, res) => {
+router.put('/:id', authenticateToken, checkRole(['head_administrator']), async (req, res) => {
   try {
     const { id } = req.params;
     const { name, email, role, status } = req.body;
@@ -56,7 +57,7 @@ router.put('/:id', authenticateToken, requireRole(['admin']), async (req, res) =
 });
 
 // DELETE /users/:id - Delete user
-router.delete('/:id', authenticateToken, requireRole(['admin']), async (req, res) => {
+router.delete('/:id', authenticateToken, checkRole(['head_administrator']), async (req, res) => {
   try {
     const { id } = req.params;
     res.json({ success: true, data: { id }, message: 'User deleted successfully', timestamp: new Date().toISOString() });

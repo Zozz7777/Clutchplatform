@@ -5,7 +5,8 @@
 
 const express = require('express');
 const router = express.Router();
-const { authenticateToken, requireRole } = require('../middleware/auth');
+const { authenticateToken, checkRole } = require('../middleware/auth');
+const { checkRole, checkPermission } = require('../middleware/rbac');
 const { getCollection } = require('../config/optimized-database');
 const { rateLimit: createRateLimit } = require('../middleware/rateLimit');
 const { ObjectId } = require('mongodb');
@@ -16,7 +17,7 @@ const featureFlagRateLimit = createRateLimit({ windowMs: 60 * 1000, max: 100 });
 // ==================== FEATURE FLAG MANAGEMENT ====================
 
 // GET /api/v1/feature-flags - Get all feature flags
-router.get('/', authenticateToken, requireRole(['admin', 'developer', 'super_admin']), featureFlagRateLimit, async (req, res) => {
+router.get('/', authenticateToken, checkRole(['head_administrator', 'technology_admin', 'head_administrator']), featureFlagRateLimit, async (req, res) => {
   try {
     const { page = 1, limit = 50, status, environment, search } = req.query;
     const skip = (page - 1) * limit;
@@ -70,7 +71,7 @@ router.get('/', authenticateToken, requireRole(['admin', 'developer', 'super_adm
 });
 
 // GET /api/v1/feature-flags/:id - Get feature flag by ID
-router.get('/:id', authenticateToken, requireRole(['admin', 'developer', 'super_admin']), featureFlagRateLimit, async (req, res) => {
+router.get('/:id', authenticateToken, checkRole(['head_administrator', 'technology_admin', 'head_administrator']), featureFlagRateLimit, async (req, res) => {
   try {
     const { id } = req.params;
     const featureFlagsCollection = await getCollection('feature_flags');
@@ -104,7 +105,7 @@ router.get('/:id', authenticateToken, requireRole(['admin', 'developer', 'super_
 });
 
 // POST /api/v1/feature-flags - Create new feature flag
-router.post('/', authenticateToken, requireRole(['admin', 'developer', 'super_admin']), featureFlagRateLimit, async (req, res) => {
+router.post('/', authenticateToken, checkRole(['head_administrator', 'technology_admin', 'head_administrator']), featureFlagRateLimit, async (req, res) => {
   try {
     const {
       name,
@@ -183,7 +184,7 @@ router.post('/', authenticateToken, requireRole(['admin', 'developer', 'super_ad
 });
 
 // PUT /api/v1/feature-flags/:id - Update feature flag
-router.put('/:id', authenticateToken, requireRole(['admin', 'developer', 'super_admin']), featureFlagRateLimit, async (req, res) => {
+router.put('/:id', authenticateToken, checkRole(['head_administrator', 'technology_admin', 'head_administrator']), featureFlagRateLimit, async (req, res) => {
   try {
     const { id } = req.params;
     const updateData = { ...req.body, updatedAt: new Date() };
@@ -224,7 +225,7 @@ router.put('/:id', authenticateToken, requireRole(['admin', 'developer', 'super_
 });
 
 // POST /api/v1/feature-flags/:id/toggle - Toggle feature flag
-router.post('/:id/toggle', authenticateToken, requireRole(['admin', 'developer', 'super_admin']), featureFlagRateLimit, async (req, res) => {
+router.post('/:id/toggle', authenticateToken, checkRole(['head_administrator', 'technology_admin', 'head_administrator']), featureFlagRateLimit, async (req, res) => {
   try {
     const { id } = req.params;
     const { status } = req.body;
@@ -281,7 +282,7 @@ router.post('/:id/toggle', authenticateToken, requireRole(['admin', 'developer',
 // ==================== A/B TESTING ====================
 
 // GET /api/v1/feature-flags/:id/ab-tests - Get A/B tests for feature flag
-router.get('/:id/ab-tests', authenticateToken, requireRole(['admin', 'developer', 'super_admin']), featureFlagRateLimit, async (req, res) => {
+router.get('/:id/ab-tests', authenticateToken, checkRole(['head_administrator', 'technology_admin', 'head_administrator']), featureFlagRateLimit, async (req, res) => {
   try {
     const { id } = req.params;
     const abTestsCollection = await getCollection('ab_tests');
@@ -309,7 +310,7 @@ router.get('/:id/ab-tests', authenticateToken, requireRole(['admin', 'developer'
 });
 
 // POST /api/v1/feature-flags/:id/ab-tests - Create A/B test
-router.post('/:id/ab-tests', authenticateToken, requireRole(['admin', 'developer', 'super_admin']), featureFlagRateLimit, async (req, res) => {
+router.post('/:id/ab-tests', authenticateToken, checkRole(['head_administrator', 'technology_admin', 'head_administrator']), featureFlagRateLimit, async (req, res) => {
   try {
     const { id } = req.params;
     const {
@@ -373,7 +374,7 @@ router.post('/:id/ab-tests', authenticateToken, requireRole(['admin', 'developer
 // ==================== GEOGRAPHIC ROLLOUTS ====================
 
 // GET /api/v1/feature-flags/:id/rollouts - Get geographic rollouts
-router.get('/:id/rollouts', authenticateToken, requireRole(['admin', 'developer', 'super_admin']), featureFlagRateLimit, async (req, res) => {
+router.get('/:id/rollouts', authenticateToken, checkRole(['head_administrator', 'technology_admin', 'head_administrator']), featureFlagRateLimit, async (req, res) => {
   try {
     const { id } = req.params;
     const rolloutsCollection = await getCollection('feature_rollouts');
@@ -401,7 +402,7 @@ router.get('/:id/rollouts', authenticateToken, requireRole(['admin', 'developer'
 });
 
 // POST /api/v1/feature-flags/:id/rollouts - Create geographic rollout
-router.post('/:id/rollouts', authenticateToken, requireRole(['admin', 'developer', 'super_admin']), featureFlagRateLimit, async (req, res) => {
+router.post('/:id/rollouts', authenticateToken, checkRole(['head_administrator', 'technology_admin', 'head_administrator']), featureFlagRateLimit, async (req, res) => {
   try {
     const { id } = req.params;
     const {
@@ -572,7 +573,7 @@ router.post('/evaluate', authenticateToken, featureFlagRateLimit, async (req, re
 // ==================== FEATURE FLAG ANALYTICS ====================
 
 // GET /api/v1/feature-flags/:id/analytics - Get feature flag analytics
-router.get('/:id/analytics', authenticateToken, requireRole(['admin', 'developer', 'super_admin']), featureFlagRateLimit, async (req, res) => {
+router.get('/:id/analytics', authenticateToken, checkRole(['head_administrator', 'technology_admin', 'head_administrator']), featureFlagRateLimit, async (req, res) => {
   try {
     const { id } = req.params;
     const { startDate, endDate } = req.query;
@@ -679,7 +680,7 @@ router.get('/:id/analytics', authenticateToken, requireRole(['admin', 'developer
 // ==================== GENERIC HANDLERS ====================
 
 // GET /api/v1/feature-flags/analytics/overview - Get feature flags overview analytics
-router.get('/analytics/overview', authenticateToken, requireRole(['admin', 'developer', 'super_admin']), featureFlagRateLimit, async (req, res) => {
+router.get('/analytics/overview', authenticateToken, checkRole(['head_administrator', 'technology_admin', 'head_administrator']), featureFlagRateLimit, async (req, res) => {
   try {
     const featureFlagsCollection = await getCollection('feature_flags');
     const abTestsCollection = await getCollection('ab_tests');
@@ -749,7 +750,7 @@ router.get('/analytics/overview', authenticateToken, requireRole(['admin', 'deve
 // ==================== TOP-LEVEL A/B TESTS ENDPOINTS ====================
 
 // GET /api/v1/ab-tests - Get all A/B tests
-router.get('/ab-tests', authenticateToken, requireRole(['admin', 'developer', 'super_admin']), featureFlagRateLimit, async (req, res) => {
+router.get('/ab-tests', authenticateToken, checkRole(['head_administrator', 'technology_admin', 'head_administrator']), featureFlagRateLimit, async (req, res) => {
   try {
     const { page = 1, limit = 50, status, featureFlagId } = req.query;
     const skip = (page - 1) * limit;
@@ -796,7 +797,7 @@ router.get('/ab-tests', authenticateToken, requireRole(['admin', 'developer', 's
 });
 
 // POST /api/v1/ab-tests - Create new A/B test
-router.post('/ab-tests', authenticateToken, requireRole(['admin', 'developer', 'super_admin']), featureFlagRateLimit, async (req, res) => {
+router.post('/ab-tests', authenticateToken, checkRole(['head_administrator', 'technology_admin', 'head_administrator']), featureFlagRateLimit, async (req, res) => {
   try {
     const {
       name,
@@ -857,7 +858,7 @@ router.post('/ab-tests', authenticateToken, requireRole(['admin', 'developer', '
 // ==================== TOP-LEVEL ROLLOUTS ENDPOINTS ====================
 
 // GET /api/v1/rollouts - Get all rollouts
-router.get('/rollouts', authenticateToken, requireRole(['admin', 'developer', 'super_admin']), featureFlagRateLimit, async (req, res) => {
+router.get('/rollouts', authenticateToken, checkRole(['head_administrator', 'technology_admin', 'head_administrator']), featureFlagRateLimit, async (req, res) => {
   try {
     const { page = 1, limit = 50, status, featureFlagId } = req.query;
     const skip = (page - 1) * limit;
@@ -904,7 +905,7 @@ router.get('/rollouts', authenticateToken, requireRole(['admin', 'developer', 's
 });
 
 // POST /api/v1/rollouts - Create new rollout
-router.post('/rollouts', authenticateToken, requireRole(['admin', 'developer', 'super_admin']), featureFlagRateLimit, async (req, res) => {
+router.post('/rollouts', authenticateToken, checkRole(['head_administrator', 'technology_admin', 'head_administrator']), featureFlagRateLimit, async (req, res) => {
   try {
     const {
       name,

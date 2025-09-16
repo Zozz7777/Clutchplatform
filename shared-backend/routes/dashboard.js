@@ -5,7 +5,8 @@
 
 const express = require('express');
 const router = express.Router();
-const { authenticateToken, requireRole } = require('../middleware/auth');
+const { authenticateToken, checkRole } = require('../middleware/auth');
+const { checkRole, checkPermission } = require('../middleware/rbac');
 const { getCollection } = require('../config/optimized-database');
 
 // GET /api/v1/dashboard/kpis - Get dashboard KPIs
@@ -131,7 +132,7 @@ router.get('/kpis', authenticateToken, async (req, res) => {
 });
 
 // GET /api/v1/dashboard/analytics - Get dashboard analytics
-router.get('/analytics', authenticateToken, requireRole(['admin', 'analyst']), async (req, res) => {
+router.get('/analytics', authenticateToken, checkRole(['head_administrator', 'analyst']), async (req, res) => {
   try {
     const analytics = {
       overview: {

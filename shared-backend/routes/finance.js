@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
-const { authenticateToken, requireRole } = require('../middleware/auth');
+const { authenticateToken, checkRole } = require('../middleware/auth');
+const { checkRole, checkPermission } = require('../middleware/rbac');
 const { getCollection } = require('../config/optimized-database');
 const rateLimit = require('express-rate-limit');
 
@@ -93,7 +94,7 @@ router.get('/payments/:id', async (req, res) => {
 });
 
 // POST /api/finance/payments - Create new payment
-router.post('/payments', requireRole(['admin', 'finance_manager', 'super_admin']), async (req, res) => {
+router.post('/payments', checkRole(['head_administrator', 'finance_officer', 'head_administrator']), async (req, res) => {
   try {
     const paymentsCollection = await getCollection('payments');
     const { 
@@ -194,7 +195,7 @@ router.get('/invoices', async (req, res) => {
 });
 
 // POST /api/finance/invoices - Create new invoice
-router.post('/invoices', requireRole(['admin', 'finance_manager', 'super_admin']), async (req, res) => {
+router.post('/invoices', checkRole(['head_administrator', 'finance_officer', 'head_administrator']), async (req, res) => {
   try {
     const invoicesCollection = await getCollection('invoices');
     const { 

@@ -8,7 +8,7 @@ const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
 const router = express.Router();
 const { getCollection } = require('../config/optimized-database');
-const { authenticateToken, requireRole, hashPassword } = require('../middleware/auth');
+const { authenticateToken, checkRole, hashPassword } = require('../middleware/auth');
 const { rateLimit: createRateLimit } = require('../middleware/rateLimit');
 const emailService = require('../services/email-service');
 
@@ -18,7 +18,7 @@ const invitationRateLimit = createRateLimit({ windowMs: 15 * 60 * 1000, max: 10 
 // ==================== EMPLOYEE INVITATIONS ====================
 
 // POST /api/v1/employees/invite - Send employee invitation
-router.post('/invite', authenticateToken, requireRole(['admin', 'hr', 'super_admin', 'hr_manager']), invitationRateLimit, async (req, res) => {
+router.post('/invite', authenticateToken, checkRole(['head_administrator', 'hr_manager']), invitationRateLimit, async (req, res) => {
   try {
     const { 
       email, 
@@ -162,7 +162,7 @@ router.post('/invite', authenticateToken, requireRole(['admin', 'hr', 'super_adm
 });
 
 // GET /api/v1/employees/invitations - List pending invitations
-router.get('/invitations', authenticateToken, requireRole(['admin', 'hr', 'super_admin', 'hr_manager']), async (req, res) => {
+router.get('/invitations', authenticateToken, checkRole(['head_administrator', 'hr_manager']), async (req, res) => {
   try {
     const { page = 1, limit = 20, status = 'all' } = req.query;
     const skip = (parseInt(page) - 1) * parseInt(limit);
@@ -481,7 +481,7 @@ router.get('/validate-invitation/:token', async (req, res) => {
 });
 
 // DELETE /api/v1/employees/invitations/:id - Cancel invitation
-router.delete('/invitations/:id', authenticateToken, requireRole(['admin', 'hr', 'super_admin', 'hr_manager']), async (req, res) => {
+router.delete('/invitations/:id', authenticateToken, checkRole(['head_administrator', 'hr', 'head_administrator', 'hr_manager']), async (req, res) => {
   try {
     const { id } = req.params;
     const invitationsCollection = await getCollection('employee_invitations');
@@ -546,7 +546,7 @@ router.delete('/invitations/:id', authenticateToken, requireRole(['admin', 'hr',
 });
 
 // POST /api/v1/employees/invitations/:id/resend - Resend invitation
-router.post('/invitations/:id/resend', authenticateToken, requireRole(['admin', 'hr', 'super_admin', 'hr_manager']), async (req, res) => {
+router.post('/invitations/:id/resend', authenticateToken, checkRole(['head_administrator', 'hr', 'head_administrator', 'hr_manager']), async (req, res) => {
   try {
     const { id } = req.params;
     const invitationsCollection = await getCollection('employee_invitations');

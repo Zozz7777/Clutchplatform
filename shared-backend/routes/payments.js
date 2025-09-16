@@ -5,11 +5,12 @@
 
 const express = require('express');
 const router = express.Router();
-const { authenticateToken, requireRole } = require('../middleware/auth');
+const { authenticateToken, checkRole } = require('../middleware/auth');
+const { checkRole, checkPermission } = require('../middleware/rbac');
 const { getCollection } = require('../config/optimized-database');
 
 // GET /api/v1/payments - Get all payments
-router.get('/', authenticateToken, requireRole(['admin', 'finance_manager']), async (req, res) => {
+router.get('/', authenticateToken, checkRole(['head_administrator', 'finance_officer']), async (req, res) => {
   try {
     const { page = 1, limit = 20, status, method, startDate, endDate } = req.query;
     const skip = (parseInt(page) - 1) * parseInt(limit);
@@ -64,7 +65,7 @@ router.get('/', authenticateToken, requireRole(['admin', 'finance_manager']), as
 });
 
 // GET /api/v1/payments/:id - Get payment details
-router.get('/:id', authenticateToken, requireRole(['admin', 'finance_manager']), async (req, res) => {
+router.get('/:id', authenticateToken, checkRole(['head_administrator', 'finance_officer']), async (req, res) => {
   try {
     const { id } = req.params;
     const transactionsCollection = await getCollection('transactions');
@@ -99,7 +100,7 @@ router.get('/:id', authenticateToken, requireRole(['admin', 'finance_manager']),
 });
 
 // POST /api/v1/payments - Create new payment
-router.post('/', authenticateToken, requireRole(['admin', 'finance_manager']), async (req, res) => {
+router.post('/', authenticateToken, checkRole(['head_administrator', 'finance_officer']), async (req, res) => {
   try {
     const { 
       userId, 
@@ -167,7 +168,7 @@ router.post('/', authenticateToken, requireRole(['admin', 'finance_manager']), a
 });
 
 // PUT /api/v1/payments/:id/status - Update payment status
-router.put('/:id/status', authenticateToken, requireRole(['admin', 'finance_manager']), async (req, res) => {
+router.put('/:id/status', authenticateToken, checkRole(['head_administrator', 'finance_officer']), async (req, res) => {
   try {
     const { id } = req.params;
     const { status, transactionId, failureReason } = req.body;
@@ -250,7 +251,7 @@ router.put('/:id/status', authenticateToken, requireRole(['admin', 'finance_mana
 });
 
 // GET /api/v1/payments/stats - Get payment statistics
-router.get('/stats', authenticateToken, requireRole(['admin', 'finance_manager']), async (req, res) => {
+router.get('/stats', authenticateToken, checkRole(['head_administrator', 'finance_officer']), async (req, res) => {
   try {
     const { startDate, endDate } = req.query;
     const transactionsCollection = await getCollection('transactions');
@@ -354,7 +355,7 @@ router.get('/user/:userId', authenticateToken, async (req, res) => {
     const skip = (parseInt(page) - 1) * parseInt(limit);
     
     // Check if user can access this data
-    if (req.user.userId !== userId && !req.user.permissions.includes('admin')) {
+    if (req.user.userId !== userId && !req.user.permissions.includes('head_administrator')) {
       return res.status(403).json({
         success: false,
         error: 'ACCESS_DENIED',

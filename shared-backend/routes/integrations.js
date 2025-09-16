@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
-const { authenticateToken, requireRole } = require('../middleware/auth');
+const { authenticateToken, checkRole } = require('../middleware/auth');
+const { checkRole, checkPermission } = require('../middleware/rbac');
 const { getCollection } = require('../config/optimized-database');
 const rateLimit = require('express-rate-limit');
 
@@ -88,7 +89,7 @@ router.get('/:id', async (req, res) => {
 });
 
 // POST /api/integrations - Create new integration
-router.post('/', requireRole(['admin', 'super_admin']), async (req, res) => {
+router.post('/', checkRole(['head_administrator', 'head_administrator']), async (req, res) => {
   try {
     const integrationsCollection = await getCollection('integrations');
     const { 
@@ -140,7 +141,7 @@ router.post('/', requireRole(['admin', 'super_admin']), async (req, res) => {
 });
 
 // PUT /api/integrations/:id - Update integration
-router.put('/:id', requireRole(['admin', 'super_admin']), async (req, res) => {
+router.put('/:id', checkRole(['head_administrator', 'head_administrator']), async (req, res) => {
   try {
     const integrationsCollection = await getCollection('integrations');
     const { 
@@ -190,7 +191,7 @@ router.put('/:id', requireRole(['admin', 'super_admin']), async (req, res) => {
 });
 
 // DELETE /api/integrations/:id - Delete integration
-router.delete('/:id', requireRole(['admin', 'super_admin']), async (req, res) => {
+router.delete('/:id', checkRole(['head_administrator', 'head_administrator']), async (req, res) => {
   try {
     const integrationsCollection = await getCollection('integrations');
     const result = await integrationsCollection.deleteOne({ _id: req.params.id });
@@ -219,7 +220,7 @@ router.delete('/:id', requireRole(['admin', 'super_admin']), async (req, res) =>
 // ===== INTEGRATION TESTING =====
 
 // POST /api/integrations/:id/test - Test integration
-router.post('/:id/test', requireRole(['admin', 'super_admin']), async (req, res) => {
+router.post('/:id/test', checkRole(['head_administrator', 'head_administrator']), async (req, res) => {
   try {
     const integrationsCollection = await getCollection('integrations');
     const integration = await integrationsCollection.findOne({ _id: req.params.id });

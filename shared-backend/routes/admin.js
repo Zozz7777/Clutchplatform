@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
-const { authenticateToken, requireRole } = require('../middleware/auth');
+const { authenticateToken, checkRole } = require('../middleware/auth');
+const { checkRole, checkPermission } = require('../middleware/rbac');
 const logger = require('../utils/logger');
 
 // Basic admin routes
@@ -17,7 +18,7 @@ router.get('/', (req, res) => {
 // ============================================================================
 
 // GET /api/v1/admin/dashboard/consolidated - Get consolidated dashboard data
-router.get('/dashboard/consolidated', authenticateToken, requireRole(['admin']), async (req, res) => {
+router.get('/dashboard/consolidated', authenticateToken, checkRole(['head_administrator']), async (req, res) => {
   try {
     const dashboardData = {
       metrics: {
@@ -107,7 +108,7 @@ router.get('/dashboard/consolidated', authenticateToken, requireRole(['admin']),
 });
 
 // GET /api/v1/admin/dashboard/metrics - Get dashboard metrics
-router.get('/dashboard/metrics', authenticateToken, requireRole(['admin']), async (req, res) => {
+router.get('/dashboard/metrics', authenticateToken, checkRole(['head_administrator']), async (req, res) => {
   try {
     const metrics = {
       performance: {
@@ -149,7 +150,7 @@ router.get('/dashboard/metrics', authenticateToken, requireRole(['admin']), asyn
 });
 
 // GET /api/v1/admin/dashboard/realtime - Get real-time dashboard data
-router.get('/dashboard/realtime', authenticateToken, requireRole(['admin']), async (req, res) => {
+router.get('/dashboard/realtime', authenticateToken, checkRole(['head_administrator']), async (req, res) => {
   try {
     const realtimeData = {
       activeUsers: 45,
@@ -184,7 +185,7 @@ router.get('/dashboard/realtime', authenticateToken, requireRole(['admin']), asy
 });
 
 // GET /api/v1/admin/dashboard/activity - Get dashboard activity
-router.get('/dashboard/activity', authenticateToken, requireRole(['admin']), async (req, res) => {
+router.get('/dashboard/activity', authenticateToken, checkRole(['head_administrator']), async (req, res) => {
   try {
     const activities = [
       {
@@ -231,7 +232,7 @@ router.get('/dashboard/activity', authenticateToken, requireRole(['admin']), asy
 });
 
 // GET /api/v1/admin/dashboard/services - Get dashboard services status
-router.get('/dashboard/services', authenticateToken, requireRole(['admin']), async (req, res) => {
+router.get('/dashboard/services', authenticateToken, checkRole(['head_administrator']), async (req, res) => {
   try {
     const services = [
       { name: 'API Gateway', status: 'healthy', uptime: 99.9, responseTime: 45 },
@@ -264,7 +265,7 @@ router.get('/dashboard/services', authenticateToken, requireRole(['admin']), asy
 // ============================================================================
 
 // GET /api/v1/admin/users - Get all users
-router.get('/users', authenticateToken, requireRole(['admin']), async (req, res) => {
+router.get('/users', authenticateToken, checkRole(['head_administrator']), async (req, res) => {
   try {
     const { page = 1, limit = 20, search, role, status } = req.query;
     
@@ -316,7 +317,7 @@ router.get('/users', authenticateToken, requireRole(['admin']), async (req, res)
 });
 
 // GET /api/v1/admin/users/:id - Get specific user
-router.get('/users/:id', authenticateToken, requireRole(['admin']), async (req, res) => {
+router.get('/users/:id', authenticateToken, checkRole(['head_administrator']), async (req, res) => {
   try {
     const { id } = req.params;
     
@@ -360,7 +361,7 @@ router.get('/users/:id', authenticateToken, requireRole(['admin']), async (req, 
 });
 
 // PUT /api/v1/admin/users/:id - Update user
-router.put('/users/:id', authenticateToken, requireRole(['admin']), async (req, res) => {
+router.put('/users/:id', authenticateToken, checkRole(['head_administrator']), async (req, res) => {
   try {
     const { id } = req.params;
     const { name, email, role, status } = req.body;
@@ -393,7 +394,7 @@ router.put('/users/:id', authenticateToken, requireRole(['admin']), async (req, 
 });
 
 // DELETE /api/v1/admin/users/:id - Delete user
-router.delete('/users/:id', authenticateToken, requireRole(['admin']), async (req, res) => {
+router.delete('/users/:id', authenticateToken, checkRole(['head_administrator']), async (req, res) => {
   try {
     const { id } = req.params;
     
@@ -416,7 +417,7 @@ router.delete('/users/:id', authenticateToken, requireRole(['admin']), async (re
 });
 
 // GET /api/v1/admin/users/cohorts - Get user cohorts
-router.get('/users/cohorts', authenticateToken, requireRole(['admin']), async (req, res) => {
+router.get('/users/cohorts', authenticateToken, checkRole(['head_administrator']), async (req, res) => {
   try {
     const cohorts = [
       {
@@ -454,7 +455,7 @@ router.get('/users/cohorts', authenticateToken, requireRole(['admin']), async (r
 });
 
 // GET /api/v1/admin/users/segments - Get user segments
-router.get('/users/segments', authenticateToken, requireRole(['admin']), async (req, res) => {
+router.get('/users/segments', authenticateToken, checkRole(['head_administrator']), async (req, res) => {
   try {
     const segments = [
       {
@@ -496,7 +497,7 @@ router.get('/users/segments', authenticateToken, requireRole(['admin']), async (
 // ============================================================================
 
 // GET /api/v1/admin/analytics - Get admin analytics
-router.get('/analytics', authenticateToken, requireRole(['admin']), async (req, res) => {
+router.get('/analytics', authenticateToken, checkRole(['head_administrator']), async (req, res) => {
   try {
     const analytics = {
       overview: {
@@ -536,7 +537,7 @@ router.get('/analytics', authenticateToken, requireRole(['admin']), async (req, 
 });
 
 // GET /api/v1/admin/analytics/revenue - Get revenue analytics
-router.get('/analytics/revenue', authenticateToken, requireRole(['admin']), async (req, res) => {
+router.get('/analytics/revenue', authenticateToken, checkRole(['head_administrator']), async (req, res) => {
   try {
     const revenueAnalytics = {
       total: 125000,
@@ -574,7 +575,7 @@ router.get('/analytics/revenue', authenticateToken, requireRole(['admin']), asyn
 });
 
 // GET /api/v1/admin/analytics/users - Get user analytics
-router.get('/analytics/users', authenticateToken, requireRole(['admin']), async (req, res) => {
+router.get('/analytics/users', authenticateToken, checkRole(['head_administrator']), async (req, res) => {
   try {
     const userAnalytics = {
       total: 1250,
@@ -616,7 +617,7 @@ router.get('/analytics/users', authenticateToken, requireRole(['admin']), async 
 // ============================================================================
 
 // GET /api/v1/admin/system/health - Get system health
-router.get('/system/health', authenticateToken, requireRole(['admin']), async (req, res) => {
+router.get('/system/health', authenticateToken, checkRole(['head_administrator']), async (req, res) => {
   try {
     const systemHealth = {
       overall: 'healthy',
@@ -656,7 +657,7 @@ router.get('/system/health', authenticateToken, requireRole(['admin']), async (r
 });
 
 // GET /api/v1/admin/system/logs - Get system logs
-router.get('/system/logs', authenticateToken, requireRole(['admin']), async (req, res) => {
+router.get('/system/logs', authenticateToken, checkRole(['head_administrator']), async (req, res) => {
   try {
     const { level, service, limit = 100 } = req.query;
     
@@ -698,7 +699,7 @@ router.get('/system/logs', authenticateToken, requireRole(['admin']), async (req
 });
 
 // GET /api/v1/admin/settings - Get admin settings
-router.get('/settings', authenticateToken, requireRole(['admin']), async (req, res) => {
+router.get('/settings', authenticateToken, checkRole(['head_administrator']), async (req, res) => {
   try {
     const settings = {
       general: {
@@ -756,7 +757,7 @@ router.get('/settings', authenticateToken, requireRole(['admin']), async (req, r
 });
 
 // PUT /api/v1/admin/settings - Update admin settings
-router.put('/settings', authenticateToken, requireRole(['admin']), async (req, res) => {
+router.put('/settings', authenticateToken, checkRole(['head_administrator']), async (req, res) => {
   try {
     const settings = req.body;
     
@@ -783,7 +784,7 @@ router.put('/settings', authenticateToken, requireRole(['admin']), async (req, r
 // ============================================================================
 
 // GET /api/v1/admin/cms/media - Get all media files
-router.get('/cms/media', authenticateToken, requireRole(['admin']), async (req, res) => {
+router.get('/cms/media', authenticateToken, checkRole(['head_administrator']), async (req, res) => {
   try {
     const { page = 1, limit = 20, type, search } = req.query;
     
@@ -839,7 +840,7 @@ router.get('/cms/media', authenticateToken, requireRole(['admin']), async (req, 
 });
 
 // GET /api/v1/admin/cms/media/:id - Get specific media file
-router.get('/cms/media/:id', authenticateToken, requireRole(['admin']), async (req, res) => {
+router.get('/cms/media/:id', authenticateToken, checkRole(['head_administrator']), async (req, res) => {
   try {
     const { id } = req.params;
     
@@ -884,7 +885,7 @@ router.get('/cms/media/:id', authenticateToken, requireRole(['admin']), async (r
 });
 
 // POST /api/v1/admin/cms/media/upload - Upload media file
-router.post('/cms/media/upload', authenticateToken, requireRole(['admin']), async (req, res) => {
+router.post('/cms/media/upload', authenticateToken, checkRole(['head_administrator']), async (req, res) => {
   try {
     const { name, type, size, url, tags } = req.body;
     
@@ -919,7 +920,7 @@ router.post('/cms/media/upload', authenticateToken, requireRole(['admin']), asyn
 });
 
 // DELETE /api/v1/admin/cms/media/:id - Delete media file
-router.delete('/cms/media/:id', authenticateToken, requireRole(['admin']), async (req, res) => {
+router.delete('/cms/media/:id', authenticateToken, checkRole(['head_administrator']), async (req, res) => {
   try {
     const { id } = req.params;
     
@@ -942,7 +943,7 @@ router.delete('/cms/media/:id', authenticateToken, requireRole(['admin']), async
 });
 
 // GET /api/v1/admin/cms/mobile - Get mobile content
-router.get('/cms/mobile', authenticateToken, requireRole(['admin']), async (req, res) => {
+router.get('/cms/mobile', authenticateToken, checkRole(['head_administrator']), async (req, res) => {
   try {
     const mobileContent = [
       {
@@ -986,7 +987,7 @@ router.get('/cms/mobile', authenticateToken, requireRole(['admin']), async (req,
 });
 
 // PUT /api/v1/admin/cms/mobile/:id - Update mobile content
-router.put('/cms/mobile/:id', authenticateToken, requireRole(['admin']), async (req, res) => {
+router.put('/cms/mobile/:id', authenticateToken, checkRole(['head_administrator']), async (req, res) => {
   try {
     const { id } = req.params;
     const { title, content, image, isActive, priority } = req.body;
@@ -1021,7 +1022,7 @@ router.put('/cms/mobile/:id', authenticateToken, requireRole(['admin']), async (
 });
 
 // GET /api/v1/admin/cms/seo - Get SEO settings
-router.get('/cms/seo', authenticateToken, requireRole(['admin']), async (req, res) => {
+router.get('/cms/seo', authenticateToken, checkRole(['head_administrator']), async (req, res) => {
   try {
     const seoSettings = {
       metaTitle: 'Clutch Platform - Automotive Services',
@@ -1055,7 +1056,7 @@ router.get('/cms/seo', authenticateToken, requireRole(['admin']), async (req, re
 });
 
 // PUT /api/v1/admin/cms/seo - Update SEO settings
-router.put('/cms/seo', authenticateToken, requireRole(['admin']), async (req, res) => {
+router.put('/cms/seo', authenticateToken, checkRole(['head_administrator']), async (req, res) => {
   try {
     const seoSettings = req.body;
     
@@ -1082,7 +1083,7 @@ router.put('/cms/seo', authenticateToken, requireRole(['admin']), async (req, re
 // ============================================================================
 
 // GET /api/v1/admin/business/customers - Get customer insights
-router.get('/business/customers', authenticateToken, requireRole(['admin']), async (req, res) => {
+router.get('/business/customers', authenticateToken, checkRole(['head_administrator']), async (req, res) => {
   try {
     const customerInsights = {
       totalCustomers: 1250,
@@ -1124,7 +1125,7 @@ router.get('/business/customers', authenticateToken, requireRole(['admin']), asy
 });
 
 // GET /api/v1/admin/business/market - Get market analysis
-router.get('/business/market', authenticateToken, requireRole(['admin']), async (req, res) => {
+router.get('/business/market', authenticateToken, checkRole(['head_administrator']), async (req, res) => {
   try {
     const marketAnalysis = {
       marketSize: 5000000000,
@@ -1167,7 +1168,7 @@ router.get('/business/market', authenticateToken, requireRole(['admin']), async 
 });
 
 // GET /api/v1/admin/business/metrics - Get business metrics
-router.get('/business/metrics', authenticateToken, requireRole(['admin']), async (req, res) => {
+router.get('/business/metrics', authenticateToken, checkRole(['head_administrator']), async (req, res) => {
   try {
     const businessMetrics = {
       revenue: {
@@ -1218,7 +1219,7 @@ router.get('/business/metrics', authenticateToken, requireRole(['admin']), async
 // ============================================================================
 
 // GET /api/v1/admin/support/feedback - Get all feedback
-router.get('/support/feedback', authenticateToken, requireRole(['admin']), async (req, res) => {
+router.get('/support/feedback', authenticateToken, checkRole(['head_administrator']), async (req, res) => {
   try {
     const { page = 1, limit = 20, status, priority } = req.query;
     
@@ -1276,7 +1277,7 @@ router.get('/support/feedback', authenticateToken, requireRole(['admin']), async
 });
 
 // POST /api/v1/admin/support/feedback/:id/reply - Reply to feedback
-router.post('/support/feedback/:id/reply', authenticateToken, requireRole(['admin']), async (req, res) => {
+router.post('/support/feedback/:id/reply', authenticateToken, checkRole(['head_administrator']), async (req, res) => {
   try {
     const { id } = req.params;
     const { message, isPublic } = req.body;
@@ -1310,7 +1311,7 @@ router.post('/support/feedback/:id/reply', authenticateToken, requireRole(['admi
 });
 
 // PUT /api/v1/admin/support/feedback/:id/status - Update feedback status
-router.put('/support/feedback/:id/status', authenticateToken, requireRole(['admin']), async (req, res) => {
+router.put('/support/feedback/:id/status', authenticateToken, checkRole(['head_administrator']), async (req, res) => {
   try {
     const { id } = req.params;
     const { status, priority } = req.body;
@@ -1346,7 +1347,7 @@ router.put('/support/feedback/:id/status', authenticateToken, requireRole(['admi
 // ============================================================================
 
 // GET /api/v1/admin/mobile/crashes - Get mobile app crashes
-router.get('/mobile/crashes', authenticateToken, requireRole(['admin']), async (req, res) => {
+router.get('/mobile/crashes', authenticateToken, checkRole(['head_administrator']), async (req, res) => {
   try {
     const { page = 1, limit = 20, severity, platform } = req.query;
     
@@ -1406,7 +1407,7 @@ router.get('/mobile/crashes', authenticateToken, requireRole(['admin']), async (
 });
 
 // GET /api/v1/admin/mobile/crashes/:id - Get specific crash details
-router.get('/mobile/crashes/:id', authenticateToken, requireRole(['admin']), async (req, res) => {
+router.get('/mobile/crashes/:id', authenticateToken, checkRole(['head_administrator']), async (req, res) => {
   try {
     const { id } = req.params;
     
@@ -1455,7 +1456,7 @@ router.get('/mobile/crashes/:id', authenticateToken, requireRole(['admin']), asy
 });
 
 // PUT /api/v1/admin/mobile/crashes/:id/resolve - Resolve crash
-router.put('/mobile/crashes/:id/resolve', authenticateToken, requireRole(['admin']), async (req, res) => {
+router.put('/mobile/crashes/:id/resolve', authenticateToken, checkRole(['head_administrator']), async (req, res) => {
   try {
     const { id } = req.params;
     const { resolution, fixVersion } = req.body;
@@ -1492,7 +1493,7 @@ router.put('/mobile/crashes/:id/resolve', authenticateToken, requireRole(['admin
 // ============================================================================
 
 // GET /api/v1/admin/revenue/forecasting - Get revenue forecasting
-router.get('/revenue/forecasting', authenticateToken, requireRole(['admin']), async (req, res) => {
+router.get('/revenue/forecasting', authenticateToken, checkRole(['head_administrator']), async (req, res) => {
   try {
     const forecasting = {
       currentMonth: 125000,
@@ -1533,7 +1534,7 @@ router.get('/revenue/forecasting', authenticateToken, requireRole(['admin']), as
 });
 
 // GET /api/v1/admin/revenue/pricing - Get pricing strategies
-router.get('/revenue/pricing', authenticateToken, requireRole(['admin']), async (req, res) => {
+router.get('/revenue/pricing', authenticateToken, checkRole(['head_administrator']), async (req, res) => {
   try {
     const pricing = [
       {
@@ -1584,7 +1585,7 @@ router.get('/revenue/pricing', authenticateToken, requireRole(['admin']), async 
 });
 
 // PUT /api/v1/admin/revenue/pricing/:id - Update pricing strategy
-router.put('/revenue/pricing/:id', authenticateToken, requireRole(['admin']), async (req, res) => {
+router.put('/revenue/pricing/:id', authenticateToken, checkRole(['head_administrator']), async (req, res) => {
   try {
     const { id } = req.params;
     const { name, price, features, isActive } = req.body;
@@ -1622,7 +1623,7 @@ router.put('/revenue/pricing/:id', authenticateToken, requireRole(['admin']), as
 // ============================================================================
 
 // GET /api/v1/admin/feature-flags - Get all feature flags
-router.get('/feature-flags', authenticateToken, requireRole(['admin']), async (req, res) => {
+router.get('/feature-flags', authenticateToken, checkRole(['head_administrator']), async (req, res) => {
   try {
     const featureFlags = [
       {
@@ -1666,7 +1667,7 @@ router.get('/feature-flags', authenticateToken, requireRole(['admin']), async (r
 });
 
 // GET /api/v1/admin/feature-flags/:id - Get specific feature flag
-router.get('/feature-flags/:id', authenticateToken, requireRole(['admin']), async (req, res) => {
+router.get('/feature-flags/:id', authenticateToken, checkRole(['head_administrator']), async (req, res) => {
   try {
     const { id } = req.params;
     
@@ -1678,7 +1679,7 @@ router.get('/feature-flags/:id', authenticateToken, requireRole(['admin']), asyn
       rolloutPercentage: 100,
       targetUsers: ['all'],
       conditions: {
-        userRoles: ['user', 'employee', 'admin'],
+        userRoles: ['user', 'employee', 'head_administrator'],
         regions: ['US', 'EU'],
         devices: ['web', 'mobile']
       },
@@ -1710,7 +1711,7 @@ router.get('/feature-flags/:id', authenticateToken, requireRole(['admin']), asyn
 });
 
 // PUT /api/v1/admin/feature-flags/:id/toggle - Toggle feature flag
-router.put('/feature-flags/:id/toggle', authenticateToken, requireRole(['admin']), async (req, res) => {
+router.put('/feature-flags/:id/toggle', authenticateToken, checkRole(['head_administrator']), async (req, res) => {
   try {
     const { id } = req.params;
     const { isEnabled, rolloutPercentage } = req.body;
@@ -1746,7 +1747,7 @@ router.put('/feature-flags/:id/toggle', authenticateToken, requireRole(['admin']
 // ============================================================================
 
 // GET /api/v1/admin/incidents - Get all incidents
-router.get('/incidents', authenticateToken, requireRole(['admin']), async (req, res) => {
+router.get('/incidents', authenticateToken, checkRole(['head_administrator']), async (req, res) => {
   try {
     const { page = 1, limit = 20, status, severity } = req.query;
     
@@ -1804,7 +1805,7 @@ router.get('/incidents', authenticateToken, requireRole(['admin']), async (req, 
 });
 
 // GET /api/v1/admin/incidents/:id - Get specific incident
-router.get('/incidents/:id', authenticateToken, requireRole(['admin']), async (req, res) => {
+router.get('/incidents/:id', authenticateToken, checkRole(['head_administrator']), async (req, res) => {
   try {
     const { id } = req.params;
     
@@ -1849,7 +1850,7 @@ router.get('/incidents/:id', authenticateToken, requireRole(['admin']), async (r
 });
 
 // PUT /api/v1/admin/incidents/:id/resolve - Resolve incident
-router.put('/incidents/:id/resolve', authenticateToken, requireRole(['admin']), async (req, res) => {
+router.put('/incidents/:id/resolve', authenticateToken, checkRole(['head_administrator']), async (req, res) => {
   try {
     const { id } = req.params;
     const { resolution, rootCause } = req.body;
@@ -1886,7 +1887,7 @@ router.put('/incidents/:id/resolve', authenticateToken, requireRole(['admin']), 
 // ============================================================================
 
 // GET /api/v1/admin/knowledge-base - Get knowledge base articles
-router.get('/knowledge-base', authenticateToken, requireRole(['admin']), async (req, res) => {
+router.get('/knowledge-base', authenticateToken, checkRole(['head_administrator']), async (req, res) => {
   try {
     const { page = 1, limit = 20, category, search } = req.query;
     
@@ -1908,7 +1909,7 @@ router.get('/knowledge-base', authenticateToken, requireRole(['admin']), async (
         title: 'API Integration Guide',
         content: 'Complete guide to integrating with our API',
         category: 'technical',
-        tags: ['api', 'integration', 'developer'],
+        tags: ['api', 'integration', 'technology_admin'],
         isPublished: true,
         views: 850,
         helpful: 720,
@@ -1944,7 +1945,7 @@ router.get('/knowledge-base', authenticateToken, requireRole(['admin']), async (
 });
 
 // GET /api/v1/admin/knowledge-base/:id - Get specific article
-router.get('/knowledge-base/:id', authenticateToken, requireRole(['admin']), async (req, res) => {
+router.get('/knowledge-base/:id', authenticateToken, checkRole(['head_administrator']), async (req, res) => {
   try {
     const { id } = req.params;
     
@@ -1989,7 +1990,7 @@ router.get('/knowledge-base/:id', authenticateToken, requireRole(['admin']), asy
 // ============================================================================
 
 // GET /api/v1/admin/partners - Get all partners
-router.get('/partners', authenticateToken, requireRole(['admin']), async (req, res) => {
+router.get('/partners', authenticateToken, checkRole(['head_administrator']), async (req, res) => {
   try {
     const { page = 1, limit = 20, status, type } = req.query;
     
@@ -2049,7 +2050,7 @@ router.get('/partners', authenticateToken, requireRole(['admin']), async (req, r
 });
 
 // GET /api/v1/admin/partners/:id - Get specific partner
-router.get('/partners/:id', authenticateToken, requireRole(['admin']), async (req, res) => {
+router.get('/partners/:id', authenticateToken, checkRole(['head_administrator']), async (req, res) => {
   try {
     const { id } = req.params;
     
@@ -2099,7 +2100,7 @@ router.get('/partners/:id', authenticateToken, requireRole(['admin']), async (re
 // ============================================================================
 
 // GET /api/v1/admin/activity-logs - Get activity logs
-router.get('/activity-logs', authenticateToken, requireRole(['admin']), async (req, res) => {
+router.get('/activity-logs', authenticateToken, checkRole(['head_administrator']), async (req, res) => {
   try {
     const { page = 1, limit = 50, user, action, dateFrom, dateTo } = req.query;
     
@@ -2153,7 +2154,7 @@ router.get('/activity-logs', authenticateToken, requireRole(['admin']), async (r
 });
 
 // GET /api/v1/admin/activity/recent - Get recent activity
-router.get('/activity/recent', authenticateToken, requireRole(['admin']), async (req, res) => {
+router.get('/activity/recent', authenticateToken, checkRole(['head_administrator']), async (req, res) => {
   try {
     const { limit = 10 } = req.query;
     
@@ -2206,7 +2207,7 @@ router.get('/activity/recent', authenticateToken, requireRole(['admin']), async 
 // ============================================================================
 
 // GET /api/v1/admin/chat/channels - Get chat channels
-router.get('/chat/channels', authenticateToken, requireRole(['admin']), async (req, res) => {
+router.get('/chat/channels', authenticateToken, checkRole(['head_administrator']), async (req, res) => {
   try {
     const { page = 1, limit = 20, status } = req.query;
     
@@ -2260,7 +2261,7 @@ router.get('/chat/channels', authenticateToken, requireRole(['admin']), async (r
 });
 
 // GET /api/v1/admin/chat/channels/:id/messages - Get channel messages
-router.get('/chat/channels/:id/messages', authenticateToken, requireRole(['admin']), async (req, res) => {
+router.get('/chat/channels/:id/messages', authenticateToken, checkRole(['head_administrator']), async (req, res) => {
   try {
     const { id } = req.params;
     const { page = 1, limit = 50 } = req.query;
@@ -2317,7 +2318,7 @@ router.get('/chat/channels/:id/messages', authenticateToken, requireRole(['admin
 // ============================================================================
 
 // GET /api/v1/admin/drivers - Get all drivers
-router.get('/drivers', authenticateToken, requireRole(['admin']), async (req, res) => {
+router.get('/drivers', authenticateToken, checkRole(['head_administrator']), async (req, res) => {
   try {
     const { page = 1, limit = 20, status, location } = req.query;
     
@@ -2383,7 +2384,7 @@ router.get('/drivers', authenticateToken, requireRole(['admin']), async (req, re
 });
 
 // GET /api/v1/admin/drivers/:id - Get specific driver
-router.get('/drivers/:id', authenticateToken, requireRole(['admin']), async (req, res) => {
+router.get('/drivers/:id', authenticateToken, checkRole(['head_administrator']), async (req, res) => {
   try {
     const { id } = req.params;
     
@@ -2435,7 +2436,7 @@ router.get('/drivers/:id', authenticateToken, requireRole(['admin']), async (req
 });
 
 // PUT /api/v1/admin/drivers/:id/status - Update driver status
-router.put('/drivers/:id/status', authenticateToken, requireRole(['admin']), async (req, res) => {
+router.put('/drivers/:id/status', authenticateToken, checkRole(['head_administrator']), async (req, res) => {
   try {
     const { id } = req.params;
     const { status, reason } = req.body;
@@ -2471,7 +2472,7 @@ router.put('/drivers/:id/status', authenticateToken, requireRole(['admin']), asy
 // ============================================================================
 
 // GET /api/v1/admin/orders - Get all orders
-router.get('/orders', authenticateToken, requireRole(['admin']), async (req, res) => {
+router.get('/orders', authenticateToken, checkRole(['head_administrator']), async (req, res) => {
   try {
     const { page = 1, limit = 20, status, dateFrom, dateTo } = req.query;
     
@@ -2532,7 +2533,7 @@ router.get('/orders', authenticateToken, requireRole(['admin']), async (req, res
 });
 
 // GET /api/v1/admin/orders/:id - Get specific order
-router.get('/orders/:id', authenticateToken, requireRole(['admin']), async (req, res) => {
+router.get('/orders/:id', authenticateToken, checkRole(['head_administrator']), async (req, res) => {
   try {
     const { id } = req.params;
     
@@ -2579,7 +2580,7 @@ router.get('/orders/:id', authenticateToken, requireRole(['admin']), async (req,
 });
 
 // PUT /api/v1/admin/orders/:id/status - Update order status
-router.put('/orders/:id/status', authenticateToken, requireRole(['admin']), async (req, res) => {
+router.put('/orders/:id/status', authenticateToken, checkRole(['head_administrator']), async (req, res) => {
   try {
     const { id } = req.params;
     const { status, notes } = req.body;
@@ -2615,7 +2616,7 @@ router.put('/orders/:id/status', authenticateToken, requireRole(['admin']), asyn
 // ============================================================================
 
 // GET /api/v1/admin/alerts - Get system alerts
-router.get('/alerts', authenticateToken, requireRole(['admin']), async (req, res) => {
+router.get('/alerts', authenticateToken, checkRole(['head_administrator']), async (req, res) => {
   try {
     const { page = 1, limit = 20, severity, status } = req.query;
     
@@ -2673,7 +2674,7 @@ router.get('/alerts', authenticateToken, requireRole(['admin']), async (req, res
 // ============================================================================
 
 // GET /api/v1/admin/platform/services - Get platform services
-router.get('/platform/services', authenticateToken, requireRole(['admin']), async (req, res) => {
+router.get('/platform/services', authenticateToken, checkRole(['head_administrator']), async (req, res) => {
   try {
     const services = [
       {
@@ -2728,7 +2729,7 @@ router.get('/platform/services', authenticateToken, requireRole(['admin']), asyn
 // ============================================================================
 
 // GET /api/v1/admin/realtime/metrics - Get realtime metrics
-router.get('/realtime/metrics', authenticateToken, requireRole(['admin']), async (req, res) => {
+router.get('/realtime/metrics', authenticateToken, checkRole(['head_administrator']), async (req, res) => {
   try {
     const metrics = {
       system: {
@@ -2775,7 +2776,7 @@ router.get('/realtime/metrics', authenticateToken, requireRole(['admin']), async
 // ============================================================================
 
 // GET /api/v1/admin/system/maintenance - Get system maintenance
-router.get('/system/maintenance', authenticateToken, requireRole(['admin']), async (req, res) => {
+router.get('/system/maintenance', authenticateToken, checkRole(['head_administrator']), async (req, res) => {
   try {
     const maintenance = {
       scheduledMaintenance: [
@@ -2832,7 +2833,7 @@ router.get('/system/maintenance', authenticateToken, requireRole(['admin']), asy
 // ============================================================================
 
 // GET /admin/activity/recent - Get recent admin activity
-router.get('/activity/recent', authenticateToken, requireRole(['admin']), async (req, res) => {
+router.get('/activity/recent', authenticateToken, checkRole(['head_administrator']), async (req, res) => {
   try {
     const { limit = 20, type } = req.query;
     
@@ -2878,7 +2879,7 @@ router.get('/activity/recent', authenticateToken, requireRole(['admin']), async 
 });
 
 // GET /admin/analytics/export - Export admin analytics data
-router.get('/analytics/export', authenticateToken, requireRole(['admin', 'analyst']), async (req, res) => {
+router.get('/analytics/export', authenticateToken, checkRole(['head_administrator', 'analyst']), async (req, res) => {
   try {
     const { format = 'json', dateFrom, dateTo, metrics } = req.query;
     
@@ -2914,7 +2915,7 @@ router.get('/analytics/export', authenticateToken, requireRole(['admin', 'analys
 });
 
 // GET /admin/analytics/revenue - Get revenue analytics
-router.get('/analytics/revenue', authenticateToken, requireRole(['admin', 'finance']), async (req, res) => {
+router.get('/analytics/revenue', authenticateToken, checkRole(['head_administrator', 'finance']), async (req, res) => {
   try {
     const { period = '30d', breakdown } = req.query;
     
@@ -2973,7 +2974,7 @@ router.get('/analytics/revenue', authenticateToken, requireRole(['admin', 'finan
 });
 
 // GET /admin/analytics/users - Get user analytics
-router.get('/analytics/users', authenticateToken, requireRole(['admin', 'user_manager']), async (req, res) => {
+router.get('/analytics/users', authenticateToken, checkRole(['head_administrator', 'user_manager']), async (req, res) => {
   try {
     const { period = '30d', segment } = req.query;
     
@@ -3039,7 +3040,7 @@ router.get('/analytics/users', authenticateToken, requireRole(['admin', 'user_ma
 });
 
 // GET /admin/business/customer-insights - Get customer insights
-router.get('/business/customer-insights', authenticateToken, requireRole(['admin', 'business_analyst']), async (req, res) => {
+router.get('/business/customer-insights', authenticateToken, checkRole(['head_administrator', 'business_analyst']), async (req, res) => {
   try {
     const { period = '30d', segment } = req.query;
     
@@ -3131,7 +3132,7 @@ router.get('/business/customer-insights', authenticateToken, requireRole(['admin
 });
 
 // GET /admin/business/market - Get market analysis
-router.get('/business/market', authenticateToken, requireRole(['admin', 'business_analyst']), async (req, res) => {
+router.get('/business/market', authenticateToken, checkRole(['head_administrator', 'business_analyst']), async (req, res) => {
   try {
     const { region, period = '30d' } = req.query;
     
@@ -3227,7 +3228,7 @@ router.get('/business/market', authenticateToken, requireRole(['admin', 'busines
 });
 
 // GET /admin/business/market-analysis - Get detailed market analysis
-router.get('/business/market-analysis', authenticateToken, requireRole(['admin', 'business_analyst']), async (req, res) => {
+router.get('/business/market-analysis', authenticateToken, checkRole(['head_administrator', 'business_analyst']), async (req, res) => {
   try {
     const { region, timeframe = '12m' } = req.query;
     
@@ -3312,7 +3313,7 @@ router.get('/business/market-analysis', authenticateToken, requireRole(['admin',
 });
 
 // GET /admin/business/metrics - Get business metrics
-router.get('/business/metrics', authenticateToken, requireRole(['admin', 'business_analyst']), async (req, res) => {
+router.get('/business/metrics', authenticateToken, checkRole(['head_administrator', 'business_analyst']), async (req, res) => {
   try {
     const { period = '30d', category } = req.query;
     
@@ -3418,7 +3419,7 @@ router.get('/business/metrics', authenticateToken, requireRole(['admin', 'busine
 // ============================================================================
 
 // GET /admin/chat/channels/:id/messages - Get chat channel messages
-router.get('/chat/channels/:id/messages', authenticateToken, requireRole(['admin', 'support']), async (req, res) => {
+router.get('/chat/channels/:id/messages', authenticateToken, checkRole(['head_administrator', 'support']), async (req, res) => {
   try {
     const { id } = req.params;
     const { page = 1, limit = 50, dateFrom, dateTo } = req.query;
@@ -3490,7 +3491,7 @@ router.get('/chat/channels/:id/messages', authenticateToken, requireRole(['admin
 });
 
 // GET /admin/cms/media/:id - Get specific media item
-router.get('/cms/media/:id', authenticateToken, requireRole(['admin', 'content_manager']), async (req, res) => {
+router.get('/cms/media/:id', authenticateToken, checkRole(['head_administrator', 'content_manager']), async (req, res) => {
   try {
     const { id } = req.params;
     
@@ -3542,7 +3543,7 @@ router.get('/cms/media/:id', authenticateToken, requireRole(['admin', 'content_m
 });
 
 // POST /admin/cms/media/upload - Upload media file
-router.post('/cms/media/upload', authenticateToken, requireRole(['admin', 'content_manager']), async (req, res) => {
+router.post('/cms/media/upload', authenticateToken, checkRole(['head_administrator', 'content_manager']), async (req, res) => {
   try {
     const { title, description, category, tags, alt } = req.body;
     
@@ -3590,7 +3591,7 @@ router.post('/cms/media/upload', authenticateToken, requireRole(['admin', 'conte
 });
 
 // GET /admin/cms/mobile - Get mobile CMS content
-router.get('/cms/mobile', authenticateToken, requireRole(['admin', 'mobile_manager']), async (req, res) => {
+router.get('/cms/mobile', authenticateToken, checkRole(['head_administrator', 'mobile_manager']), async (req, res) => {
   try {
     const { page = 1, limit = 20, status, type } = req.query;
     
@@ -3661,7 +3662,7 @@ router.get('/cms/mobile', authenticateToken, requireRole(['admin', 'mobile_manag
 });
 
 // GET /admin/cms/mobile/:id - Get specific mobile CMS item
-router.get('/cms/mobile/:id', authenticateToken, requireRole(['admin', 'mobile_manager']), async (req, res) => {
+router.get('/cms/mobile/:id', authenticateToken, checkRole(['head_administrator', 'mobile_manager']), async (req, res) => {
   try {
     const { id } = req.params;
     
@@ -3710,7 +3711,7 @@ router.get('/cms/mobile/:id', authenticateToken, requireRole(['admin', 'mobile_m
 });
 
 // GET /admin/cms/seo - Get SEO management data
-router.get('/cms/seo', authenticateToken, requireRole(['admin', 'seo_manager']), async (req, res) => {
+router.get('/cms/seo', authenticateToken, checkRole(['head_administrator', 'seo_manager']), async (req, res) => {
   try {
     const { page = 1, limit = 20, status } = req.query;
     
@@ -3800,7 +3801,7 @@ router.get('/cms/seo', authenticateToken, requireRole(['admin', 'seo_manager']),
 });
 
 // GET /admin/dashboard/activity - Get dashboard activity
-router.get('/dashboard/activity', authenticateToken, requireRole(['admin']), async (req, res) => {
+router.get('/dashboard/activity', authenticateToken, checkRole(['head_administrator']), async (req, res) => {
   try {
     const { limit = 20, type, dateFrom, dateTo } = req.query;
     
@@ -3868,7 +3869,7 @@ router.get('/dashboard/activity', authenticateToken, requireRole(['admin']), asy
 });
 
 // GET /admin/dashboard/metrics - Get dashboard metrics
-router.get('/dashboard/metrics', authenticateToken, requireRole(['admin']), async (req, res) => {
+router.get('/dashboard/metrics', authenticateToken, checkRole(['head_administrator']), async (req, res) => {
   try {
     const { period = '24h', granularity = 'hourly' } = req.query;
     
@@ -3993,7 +3994,7 @@ router.get('/dashboard/metrics', authenticateToken, requireRole(['admin']), asyn
 });
 
 // GET /admin/dashboard/realtime - Get real-time dashboard data
-router.get('/dashboard/realtime', authenticateToken, requireRole(['admin']), async (req, res) => {
+router.get('/dashboard/realtime', authenticateToken, checkRole(['head_administrator']), async (req, res) => {
   try {
     const realtimeData = {
       timestamp: new Date().toISOString(),
@@ -4074,7 +4075,7 @@ router.get('/dashboard/realtime', authenticateToken, requireRole(['admin']), asy
 });
 
 // GET /admin/dashboard/services - Get dashboard services overview
-router.get('/dashboard/services', authenticateToken, requireRole(['admin']), async (req, res) => {
+router.get('/dashboard/services', authenticateToken, checkRole(['head_administrator']), async (req, res) => {
   try {
     const servicesData = {
       overview: {
@@ -4171,7 +4172,7 @@ router.get('/dashboard/services', authenticateToken, requireRole(['admin']), asy
 // ============================================================================
 
 // GET /admin/drivers/:id - Get specific driver details
-router.get('/drivers/:id', authenticateToken, requireRole(['admin', 'fleet_manager']), async (req, res) => {
+router.get('/drivers/:id', authenticateToken, checkRole(['head_administrator', 'asset_manager']), async (req, res) => {
   try {
     const { id } = req.params;
     
@@ -4262,7 +4263,7 @@ router.get('/drivers/:id', authenticateToken, requireRole(['admin', 'fleet_manag
 });
 
 // GET /admin/drivers/:id/status - Get driver status
-router.get('/drivers/:id/status', authenticateToken, requireRole(['admin', 'fleet_manager']), async (req, res) => {
+router.get('/drivers/:id/status', authenticateToken, checkRole(['head_administrator', 'asset_manager']), async (req, res) => {
   try {
     const { id } = req.params;
     
@@ -4335,7 +4336,7 @@ router.get('/drivers/:id/status', authenticateToken, requireRole(['admin', 'flee
 });
 
 // GET /admin/feature-flags/:id - Get specific feature flag
-router.get('/feature-flags/:id', authenticateToken, requireRole(['admin', 'developer']), async (req, res) => {
+router.get('/feature-flags/:id', authenticateToken, checkRole(['head_administrator', 'technology_admin']), async (req, res) => {
   try {
     const { id } = req.params;
     
@@ -4347,7 +4348,7 @@ router.get('/feature-flags/:id', authenticateToken, requireRole(['admin', 'devel
       enabled: true,
       rolloutPercentage: 50,
       targetAudience: {
-        userTypes: ['admin', 'manager'],
+        userTypes: ['head_administrator', 'manager'],
         regions: ['US', 'CA'],
         userSegments: ['premium', 'enterprise']
       },
@@ -4396,7 +4397,7 @@ router.get('/feature-flags/:id', authenticateToken, requireRole(['admin', 'devel
 });
 
 // POST /admin/feature-flags/:id/toggle - Toggle feature flag
-router.post('/feature-flags/:id/toggle', authenticateToken, requireRole(['admin', 'developer']), async (req, res) => {
+router.post('/feature-flags/:id/toggle', authenticateToken, checkRole(['head_administrator', 'technology_admin']), async (req, res) => {
   try {
     const { id } = req.params;
     const { enabled, reason, rolloutPercentage } = req.body;
@@ -4441,7 +4442,7 @@ router.post('/feature-flags/:id/toggle', authenticateToken, requireRole(['admin'
 });
 
 // GET /admin/finance - Get finance management data
-router.get('/finance', authenticateToken, requireRole(['admin', 'finance_manager']), async (req, res) => {
+router.get('/finance', authenticateToken, checkRole(['head_administrator', 'finance_officer']), async (req, res) => {
   try {
     const { period = 'monthly', year = 2024, month = 1 } = req.query;
     
@@ -4534,7 +4535,7 @@ router.get('/finance', authenticateToken, requireRole(['admin', 'finance_manager
 });
 
 // GET /admin/hr - Get HR management data
-router.get('/hr', authenticateToken, requireRole(['admin', 'hr_manager']), async (req, res) => {
+router.get('/hr', authenticateToken, checkRole(['head_administrator', 'hr_manager']), async (req, res) => {
   try {
     const { period = 'monthly' } = req.query;
     
@@ -4688,7 +4689,7 @@ router.get('/hr', authenticateToken, requireRole(['admin', 'hr_manager']), async
 });
 
 // GET /admin/incidents/:id - Get specific incident details
-router.get('/incidents/:id', authenticateToken, requireRole(['admin', 'incident_manager']), async (req, res) => {
+router.get('/incidents/:id', authenticateToken, checkRole(['head_administrator', 'incident_manager']), async (req, res) => {
   try {
     const { id } = req.params;
     
@@ -4791,7 +4792,7 @@ router.get('/incidents/:id', authenticateToken, requireRole(['admin', 'incident_
 });
 
 // POST /admin/incidents/:id/resolve - Resolve incident
-router.post('/incidents/:id/resolve', authenticateToken, requireRole(['admin', 'incident_manager']), async (req, res) => {
+router.post('/incidents/:id/resolve', authenticateToken, checkRole(['head_administrator', 'incident_manager']), async (req, res) => {
   try {
     const { id } = req.params;
     const { resolution, cost, preventiveMeasures, resolvedBy } = req.body;
@@ -4841,7 +4842,7 @@ router.post('/incidents/:id/resolve', authenticateToken, requireRole(['admin', '
 });
 
 // GET /admin/knowledge-base/:id - Get specific knowledge base item
-router.get('/knowledge-base/:id', authenticateToken, requireRole(['admin', 'content_manager']), async (req, res) => {
+router.get('/knowledge-base/:id', authenticateToken, checkRole(['head_administrator', 'content_manager']), async (req, res) => {
   try {
     const { id } = req.params;
     
@@ -4929,7 +4930,7 @@ router.get('/knowledge-base/:id', authenticateToken, requireRole(['admin', 'cont
 });
 
 // GET /admin/mobile/crashes - Get mobile crash reports
-router.get('/mobile/crashes', authenticateToken, requireRole(['admin', 'mobile_manager']), async (req, res) => {
+router.get('/mobile/crashes', authenticateToken, checkRole(['head_administrator', 'mobile_manager']), async (req, res) => {
   try {
     const { page = 1, limit = 20, severity, appVersion, dateFrom, dateTo } = req.query;
     
@@ -5051,7 +5052,7 @@ router.get('/mobile/crashes', authenticateToken, requireRole(['admin', 'mobile_m
 // ============================================================================
 
 // GET /admin/mobile/crashes/:id - Get specific mobile crash report
-router.get('/mobile/crashes/:id', authenticateToken, requireRole(['admin', 'mobile_manager']), async (req, res) => {
+router.get('/mobile/crashes/:id', authenticateToken, checkRole(['head_administrator', 'mobile_manager']), async (req, res) => {
   try {
     const { id } = req.params;
     
@@ -5153,7 +5154,7 @@ router.get('/mobile/crashes/:id', authenticateToken, requireRole(['admin', 'mobi
 });
 
 // POST /admin/mobile/crashes/:id/resolve - Resolve mobile crash
-router.post('/mobile/crashes/:id/resolve', authenticateToken, requireRole(['admin', 'mobile_manager']), async (req, res) => {
+router.post('/mobile/crashes/:id/resolve', authenticateToken, checkRole(['head_administrator', 'mobile_manager']), async (req, res) => {
   try {
     const { id } = req.params;
     const { resolution, fixVersion, notes, resolvedBy } = req.body;
@@ -5200,7 +5201,7 @@ router.post('/mobile/crashes/:id/resolve', authenticateToken, requireRole(['admi
 });
 
 // GET /admin/orders/:id - Get specific order details
-router.get('/orders/:id', authenticateToken, requireRole(['admin', 'order_manager']), async (req, res) => {
+router.get('/orders/:id', authenticateToken, checkRole(['head_administrator', 'order_manager']), async (req, res) => {
   try {
     const { id } = req.params;
     
@@ -5342,7 +5343,7 @@ router.get('/orders/:id', authenticateToken, requireRole(['admin', 'order_manage
 });
 
 // GET /admin/partners/:id - Get specific partner details
-router.get('/partners/:id', authenticateToken, requireRole(['admin', 'partner_manager']), async (req, res) => {
+router.get('/partners/:id', authenticateToken, checkRole(['head_administrator', 'partner_manager']), async (req, res) => {
   try {
     const { id } = req.params;
     
@@ -5466,7 +5467,7 @@ router.get('/partners/:id', authenticateToken, requireRole(['admin', 'partner_ma
 });
 
 // GET /admin/support/tickets - Get support tickets
-router.get('/support/tickets', authenticateToken, requireRole(['admin', 'support_manager']), async (req, res) => {
+router.get('/support/tickets', authenticateToken, checkRole(['head_administrator', 'support_manager']), async (req, res) => {
   try {
     const { page = 1, limit = 20, status, priority, assignedTo } = req.query;
     
@@ -5591,7 +5592,7 @@ router.get('/support/tickets', authenticateToken, requireRole(['admin', 'support
 });
 
 // GET /admin/system/health - Get system health status
-router.get('/system/health', authenticateToken, requireRole(['admin', 'system_admin']), async (req, res) => {
+router.get('/system/health', authenticateToken, checkRole(['head_administrator', 'system_admin']), async (req, res) => {
   try {
     const systemHealth = {
       overall: {
@@ -5713,7 +5714,7 @@ router.get('/system/health', authenticateToken, requireRole(['admin', 'system_ad
 });
 
 // GET /admin/users/:id - Get specific user details
-router.get('/users/:id', authenticateToken, requireRole(['admin', 'user_manager']), async (req, res) => {
+router.get('/users/:id', authenticateToken, checkRole(['head_administrator', 'user_manager']), async (req, res) => {
   try {
     const { id } = req.params;
     
@@ -5830,7 +5831,7 @@ router.get('/users/:id', authenticateToken, requireRole(['admin', 'user_manager'
 // ============================================================================
 
 // GET /admin/alerts - Get system alerts
-router.get('/alerts', authenticateToken, requireRole(['admin', 'system_admin']), async (req, res) => {
+router.get('/alerts', authenticateToken, checkRole(['head_administrator', 'system_admin']), async (req, res) => {
   try {
     const { page = 1, limit = 20, severity, status, type } = req.query;
     
@@ -5959,7 +5960,7 @@ router.get('/alerts', authenticateToken, requireRole(['admin', 'system_admin']),
 });
 
 // GET /admin/analytics/overview - Get analytics overview
-router.get('/analytics/overview', authenticateToken, requireRole(['admin', 'analyst']), async (req, res) => {
+router.get('/analytics/overview', authenticateToken, checkRole(['head_administrator', 'analyst']), async (req, res) => {
   try {
     const { period = '30d', compare = 'previous' } = req.query;
     
@@ -6102,7 +6103,7 @@ router.get('/analytics/overview', authenticateToken, requireRole(['admin', 'anal
 });
 
 // GET /admin/bi/dashboard - Get business intelligence dashboard
-router.get('/bi/dashboard', authenticateToken, requireRole(['admin', 'business_analyst']), async (req, res) => {
+router.get('/bi/dashboard', authenticateToken, checkRole(['head_administrator', 'business_analyst']), async (req, res) => {
   try {
     const { period = 'monthly', granularity = 'daily' } = req.query;
     
@@ -6255,7 +6256,7 @@ router.get('/bi/dashboard', authenticateToken, requireRole(['admin', 'business_a
 });
 
 // GET /admin/business/customers - Get business customer analytics
-router.get('/business/customers', authenticateToken, requireRole(['admin', 'business_analyst']), async (req, res) => {
+router.get('/business/customers', authenticateToken, checkRole(['head_administrator', 'business_analyst']), async (req, res) => {
   try {
     const { segment, period = '30d' } = req.query;
     
@@ -6403,7 +6404,7 @@ router.get('/business/customers', authenticateToken, requireRole(['admin', 'busi
 });
 
 // GET /admin/chat/channels - Get chat channels
-router.get('/chat/channels', authenticateToken, requireRole(['admin', 'support']), async (req, res) => {
+router.get('/chat/channels', authenticateToken, checkRole(['head_administrator', 'support']), async (req, res) => {
   try {
     const { page = 1, limit = 20, status, type } = req.query;
     
@@ -6530,7 +6531,7 @@ router.get('/chat/channels', authenticateToken, requireRole(['admin', 'support']
 });
 
 // GET /admin/cms/media - Get media management
-router.get('/cms/media', authenticateToken, requireRole(['admin', 'content_manager']), async (req, res) => {
+router.get('/cms/media', authenticateToken, checkRole(['head_administrator', 'content_manager']), async (req, res) => {
   try {
     const { page = 1, limit = 20, type, status, category } = req.query;
     
@@ -6630,7 +6631,7 @@ router.get('/cms/media', authenticateToken, requireRole(['admin', 'content_manag
 });
 
 // GET /admin/dashboard/consolidated - Get consolidated dashboard
-router.get('/dashboard/consolidated', authenticateToken, requireRole(['admin']), async (req, res) => {
+router.get('/dashboard/consolidated', authenticateToken, checkRole(['head_administrator']), async (req, res) => {
   try {
     const { period = '24h' } = req.query;
     
@@ -6776,7 +6777,7 @@ router.get('/dashboard/consolidated', authenticateToken, requireRole(['admin']),
 // ============================================================================
 
 // GET /admin/drivers - Get drivers list
-router.get('/drivers', authenticateToken, requireRole(['admin', 'fleet_manager']), async (req, res) => {
+router.get('/drivers', authenticateToken, checkRole(['head_administrator', 'asset_manager']), async (req, res) => {
   try {
     const { page = 1, limit = 20, status, location, sortBy = 'name' } = req.query;
     
@@ -6886,7 +6887,7 @@ router.get('/drivers', authenticateToken, requireRole(['admin', 'fleet_manager']
 });
 
 // GET /admin/feature-flags - Get feature flags list
-router.get('/feature-flags', authenticateToken, requireRole(['admin', 'developer']), async (req, res) => {
+router.get('/feature-flags', authenticateToken, checkRole(['head_administrator', 'technology_admin']), async (req, res) => {
   try {
     const { page = 1, limit = 20, status, environment } = req.query;
     
@@ -6900,7 +6901,7 @@ router.get('/feature-flags', authenticateToken, requireRole(['admin', 'developer
         rolloutPercentage: 50,
         environment: 'production',
         targetAudience: {
-          userTypes: ['admin', 'manager'],
+          userTypes: ['head_administrator', 'manager'],
           regions: ['US', 'CA'],
           userSegments: ['premium', 'enterprise']
         },
@@ -6972,7 +6973,7 @@ router.get('/feature-flags', authenticateToken, requireRole(['admin', 'developer
 });
 
 // GET /admin/feedback - Get feedback management
-router.get('/feedback', authenticateToken, requireRole(['admin', 'feedback_manager']), async (req, res) => {
+router.get('/feedback', authenticateToken, checkRole(['head_administrator', 'feedback_manager']), async (req, res) => {
   try {
     const { page = 1, limit = 20, type, status, rating } = req.query;
     
@@ -7073,7 +7074,7 @@ router.get('/feedback', authenticateToken, requireRole(['admin', 'feedback_manag
 });
 
 // GET /admin/incidents - Get incidents list
-router.get('/incidents', authenticateToken, requireRole(['admin', 'incident_manager']), async (req, res) => {
+router.get('/incidents', authenticateToken, checkRole(['head_administrator', 'incident_manager']), async (req, res) => {
   try {
     const { page = 1, limit = 20, status, severity, type } = req.query;
     
@@ -7177,7 +7178,7 @@ router.get('/incidents', authenticateToken, requireRole(['admin', 'incident_mana
 });
 
 // GET /admin/knowledge-base - Get knowledge base management
-router.get('/knowledge-base', authenticateToken, requireRole(['admin', 'content_manager']), async (req, res) => {
+router.get('/knowledge-base', authenticateToken, checkRole(['head_administrator', 'content_manager']), async (req, res) => {
   try {
     const { page = 1, limit = 20, category, status, search } = req.query;
     
@@ -7279,7 +7280,7 @@ router.get('/knowledge-base', authenticateToken, requireRole(['admin', 'content_
 });
 
 // GET /admin/mobile - Get mobile management
-router.get('/mobile', authenticateToken, requireRole(['admin', 'mobile_manager']), async (req, res) => {
+router.get('/mobile', authenticateToken, checkRole(['head_administrator', 'mobile_manager']), async (req, res) => {
   try {
     const { page = 1, limit = 20, platform, version } = req.query;
     
@@ -7401,7 +7402,7 @@ router.get('/mobile', authenticateToken, requireRole(['admin', 'mobile_manager']
 });
 
 // GET /admin/orders - Get orders management
-router.get('/orders', authenticateToken, requireRole(['admin', 'order_manager']), async (req, res) => {
+router.get('/orders', authenticateToken, checkRole(['head_administrator', 'order_manager']), async (req, res) => {
   try {
     const { page = 1, limit = 20, status, dateFrom, dateTo, customer } = req.query;
     

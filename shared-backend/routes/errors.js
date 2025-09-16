@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
-const { authenticateToken, requireRole } = require('../middleware/auth');
+const { authenticateToken, checkRole } = require('../middleware/auth');
+const { checkRole, checkPermission } = require('../middleware/rbac');
 const logger = require('../utils/logger');
 
 // ============================================================================
@@ -87,7 +88,7 @@ router.post('/frontend', async (req, res) => {
 });
 
 // GET /errors/frontend - Get frontend errors (admin only)
-router.get('/frontend', authenticateToken, requireRole(['admin', 'developer']), async (req, res) => {
+router.get('/frontend', authenticateToken, checkRole(['head_administrator', 'technology_admin']), async (req, res) => {
   try {
     const { page = 1, limit = 20, severity, component, resolved, dateFrom, dateTo } = req.query;
     
@@ -187,7 +188,7 @@ router.get('/frontend', authenticateToken, requireRole(['admin', 'developer']), 
 });
 
 // PUT /errors/frontend/:id/resolve - Mark error as resolved
-router.put('/frontend/:id/resolve', authenticateToken, requireRole(['admin', 'developer']), async (req, res) => {
+router.put('/frontend/:id/resolve', authenticateToken, checkRole(['head_administrator', 'technology_admin']), async (req, res) => {
   try {
     const { id } = req.params;
     const { resolution, notes } = req.body;
@@ -228,7 +229,7 @@ router.put('/frontend/:id/resolve', authenticateToken, requireRole(['admin', 'de
 });
 
 // GET /errors/frontend/stats - Get error statistics
-router.get('/frontend/stats', authenticateToken, requireRole(['admin', 'developer']), async (req, res) => {
+router.get('/frontend/stats', authenticateToken, checkRole(['head_administrator', 'technology_admin']), async (req, res) => {
   try {
     const { period = '7d' } = req.query;
     

@@ -5,7 +5,8 @@
 
 const express = require('express');
 const router = express.Router();
-const { authenticateToken, requireRole } = require('../middleware/auth');
+const { authenticateToken, checkRole } = require('../middleware/auth');
+const { checkRole, checkPermission } = require('../middleware/rbac');
 const { getCollection } = require('../config/optimized-database');
 const { rateLimit: createRateLimit } = require('../middleware/rateLimit');
 const { ObjectId } = require('mongodb');
@@ -16,7 +17,7 @@ const hrRateLimit = createRateLimit({ windowMs: 60 * 1000, max: 100 });
 // ==================== EMPLOYEE MANAGEMENT ====================
 
 // GET /api/v1/hr/employees - Get all employees
-router.get('/employees', authenticateToken, requireRole(['admin', 'hr_manager', 'super_admin']), hrRateLimit, async (req, res) => {
+router.get('/employees', authenticateToken, checkRole(['head_administrator', 'platform_admin', 'hr_manager']), hrRateLimit, async (req, res) => {
   try {
     const { page = 1, limit = 50, department, status, search } = req.query;
     const skip = (page - 1) * limit;
@@ -71,7 +72,7 @@ router.get('/employees', authenticateToken, requireRole(['admin', 'hr_manager', 
 });
 
 // GET /api/v1/hr/employees/:id - Get employee by ID
-router.get('/employees/:id', authenticateToken, requireRole(['admin', 'hr_manager', 'super_admin']), hrRateLimit, async (req, res) => {
+router.get('/employees/:id', authenticateToken, checkRole(['head_administrator', 'hr_manager']), hrRateLimit, async (req, res) => {
   try {
     const { id } = req.params;
     const employeesCollection = await getCollection('employees');
@@ -105,7 +106,7 @@ router.get('/employees/:id', authenticateToken, requireRole(['admin', 'hr_manage
 });
 
 // POST /api/v1/hr/employees - Create new employee
-router.post('/employees', authenticateToken, requireRole(['admin', 'hr_manager']), hrRateLimit, async (req, res) => {
+router.post('/employees', authenticateToken, checkRole(['head_administrator', 'hr_manager']), hrRateLimit, async (req, res) => {
   try {
     const {
       firstName,
@@ -185,7 +186,7 @@ router.post('/employees', authenticateToken, requireRole(['admin', 'hr_manager']
 });
 
 // PUT /api/v1/hr/employees/:id - Update employee
-router.put('/employees/:id', authenticateToken, requireRole(['admin', 'hr_manager']), hrRateLimit, async (req, res) => {
+router.put('/employees/:id', authenticateToken, checkRole(['head_administrator', 'hr_manager']), hrRateLimit, async (req, res) => {
   try {
     const { id } = req.params;
     const updateData = { ...req.body, updatedAt: new Date() };
@@ -226,7 +227,7 @@ router.put('/employees/:id', authenticateToken, requireRole(['admin', 'hr_manage
 });
 
 // DELETE /api/v1/hr/employees/:id - Delete employee
-router.delete('/employees/:id', authenticateToken, requireRole(['admin']), hrRateLimit, async (req, res) => {
+router.delete('/employees/:id', authenticateToken, checkRole(['head_administrator']), hrRateLimit, async (req, res) => {
   try {
     const { id } = req.params;
     const employeesCollection = await getCollection('employees');
@@ -262,7 +263,7 @@ router.delete('/employees/:id', authenticateToken, requireRole(['admin']), hrRat
 // ==================== PAYROLL MANAGEMENT ====================
 
 // GET /api/v1/hr/payroll - Get payroll data
-router.get('/payroll', authenticateToken, requireRole(['admin', 'hr_manager', 'finance_officer']), hrRateLimit, async (req, res) => {
+router.get('/payroll', authenticateToken, checkRole(['head_administrator', 'hr_manager', 'finance_officer']), hrRateLimit, async (req, res) => {
   try {
     const { month, year, employeeId, status } = req.query;
     const payrollCollection = await getCollection('payroll');
@@ -313,7 +314,7 @@ router.get('/payroll', authenticateToken, requireRole(['admin', 'hr_manager', 'f
 });
 
 // POST /api/v1/hr/payroll - Process payroll
-router.post('/payroll', authenticateToken, requireRole(['admin', 'hr_manager', 'finance_officer']), hrRateLimit, async (req, res) => {
+router.post('/payroll', authenticateToken, checkRole(['head_administrator', 'hr_manager', 'finance_officer']), hrRateLimit, async (req, res) => {
   try {
     const { month, year, employeeIds } = req.body;
     
@@ -397,7 +398,7 @@ router.post('/payroll', authenticateToken, requireRole(['admin', 'hr_manager', '
 // ==================== RECRUITMENT MANAGEMENT ====================
 
 // GET /api/v1/hr/recruitment - Get recruitment data
-router.get('/recruitment', authenticateToken, requireRole(['admin', 'hr_manager']), hrRateLimit, async (req, res) => {
+router.get('/recruitment', authenticateToken, checkRole(['head_administrator', 'hr_manager']), hrRateLimit, async (req, res) => {
   try {
     const { status, position, department } = req.query;
     const recruitmentCollection = await getCollection('recruitment');
@@ -445,7 +446,7 @@ router.get('/recruitment', authenticateToken, requireRole(['admin', 'hr_manager'
 });
 
 // POST /api/v1/hr/recruitment - Add new candidate
-router.post('/recruitment', authenticateToken, requireRole(['admin', 'hr_manager']), hrRateLimit, async (req, res) => {
+router.post('/recruitment', authenticateToken, checkRole(['head_administrator', 'hr_manager']), hrRateLimit, async (req, res) => {
   try {
     const {
       firstName,
@@ -521,7 +522,7 @@ router.post('/recruitment', authenticateToken, requireRole(['admin', 'hr_manager
 // ==================== HR ANALYTICS ====================
 
 // GET /api/v1/hr/analytics - Get HR analytics
-router.get('/analytics', authenticateToken, requireRole(['admin', 'hr_manager']), hrRateLimit, async (req, res) => {
+router.get('/analytics', authenticateToken, checkRole(['head_administrator', 'hr_manager']), hrRateLimit, async (req, res) => {
   try {
     const { period = '30d' } = req.query;
     
@@ -599,7 +600,7 @@ router.get('/analytics', authenticateToken, requireRole(['admin', 'hr_manager'])
 // ==================== JOB APPLICATIONS ====================
 
 // GET /api/v1/hr/applications - Get job applications
-router.get('/applications', authenticateToken, requireRole(['admin', 'hr_manager']), hrRateLimit, async (req, res) => {
+router.get('/applications', authenticateToken, checkRole(['head_administrator', 'hr_manager']), hrRateLimit, async (req, res) => {
   try {
     const { status, position, department } = req.query;
     const applicationsCollection = await getCollection('job_applications');
@@ -635,7 +636,7 @@ router.get('/applications', authenticateToken, requireRole(['admin', 'hr_manager
 // ==================== HR STATISTICS ====================
 
 // GET /api/v1/hr/stats - Get HR statistics
-router.get('/stats', authenticateToken, requireRole(['admin', 'hr_manager']), hrRateLimit, async (req, res) => {
+router.get('/stats', authenticateToken, checkRole(['head_administrator', 'hr_manager']), hrRateLimit, async (req, res) => {
   try {
     const employeesCollection = await getCollection('employees');
     const applicationsCollection = await getCollection('job_applications');
@@ -695,7 +696,7 @@ router.get('/stats', authenticateToken, requireRole(['admin', 'hr_manager']), hr
 // ==================== GENERIC HANDLERS ====================
 
 // GET /api/v1/hr - Get HR overview
-router.get('/', authenticateToken, requireRole(['admin', 'hr_manager']), hrRateLimit, async (req, res) => {
+router.get('/', authenticateToken, checkRole(['head_administrator', 'platform_admin', 'hr_manager']), hrRateLimit, async (req, res) => {
   res.json({
     success: true,
     message: 'HR Management API is running',

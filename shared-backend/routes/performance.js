@@ -5,11 +5,12 @@
 
 const express = require('express');
 const router = express.Router();
-const { authenticateToken, requireRole } = require('../middleware/auth');
+const { authenticateToken, checkRole } = require('../middleware/auth');
+const { checkRole, checkPermission } = require('../middleware/rbac');
 const { getCollection } = require('../config/optimized-database');
 
 // GET /api/v1/performance/monitor - Get performance metrics
-router.get('/monitor', authenticateToken, requireRole(['admin', 'system_admin']), async (req, res) => {
+router.get('/monitor', authenticateToken, checkRole(['head_administrator', 'system_admin']), async (req, res) => {
   try {
     const analyticsCollection = await getCollection('analytics');
     
@@ -81,7 +82,7 @@ router.get('/monitor', authenticateToken, requireRole(['admin', 'system_admin'])
 });
 
 // GET /api/v1/performance/analytics - Get detailed analytics
-router.get('/analytics', authenticateToken, requireRole(['admin', 'system_admin']), async (req, res) => {
+router.get('/analytics', authenticateToken, checkRole(['head_administrator', 'system_admin']), async (req, res) => {
   try {
     const { startDate, endDate, type } = req.query;
     const analyticsCollection = await getCollection('analytics');
@@ -183,7 +184,7 @@ router.post('/metrics', authenticateToken, async (req, res) => {
 });
 
 // GET /api/v1/performance/health - Get system health status
-router.get('/health', authenticateToken, requireRole(['admin', 'system_admin']), async (req, res) => {
+router.get('/health', authenticateToken, checkRole(['head_administrator', 'system_admin']), async (req, res) => {
   try {
     const analyticsCollection = await getCollection('analytics');
     
@@ -240,7 +241,7 @@ router.get('/health', authenticateToken, requireRole(['admin', 'system_admin']),
 });
 
 // GET /api/v1/performance/reports - Get performance reports
-router.get('/reports', authenticateToken, requireRole(['admin', 'system_admin']), async (req, res) => {
+router.get('/reports', authenticateToken, checkRole(['head_administrator', 'system_admin']), async (req, res) => {
   try {
     const { period = '24h' } = req.query;
     

@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
-const { authenticateToken, requireRole } = require('../middleware/auth');
+const { authenticateToken, checkRole } = require('../middleware/auth');
+const { checkRole, checkPermission } = require('../middleware/rbac');
 const { getCollection } = require('../config/optimized-database');
 const rateLimit = require('express-rate-limit');
 
@@ -88,7 +89,7 @@ router.get('/customers/:id', async (req, res) => {
 });
 
 // POST /api/crm/customers - Create new customer
-router.post('/customers', requireRole(['admin', 'crm_manager', 'super_admin']), async (req, res) => {
+router.post('/customers', checkRole(['head_administrator', 'customer_support', 'head_administrator']), async (req, res) => {
   try {
     const customersCollection = await getCollection('customers');
     const { 
@@ -282,7 +283,7 @@ router.get('/tickets', async (req, res) => {
 });
 
 // POST /api/crm/tickets - Create new ticket
-router.post('/tickets', requireRole(['admin', 'crm_manager', 'super_admin', 'employee']), async (req, res) => {
+router.post('/tickets', checkRole(['head_administrator', 'customer_support', 'head_administrator', 'employee']), async (req, res) => {
   try {
     const ticketsCollection = await getCollection('tickets');
     const { 

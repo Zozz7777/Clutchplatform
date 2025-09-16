@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
-const { authenticateToken, requireRole } = require('../middleware/auth');
+const { authenticateToken, checkRole } = require('../middleware/auth');
+const { checkRole, checkPermission } = require('../middleware/rbac');
 const { getCollection } = require('../config/optimized-database');
 const rateLimit = require('express-rate-limit');
 const webSocketServer = require('../services/websocket-server');
@@ -282,7 +283,7 @@ router.get('/channels', async (req, res) => {
 });
 
 // POST /api/chat/channels - Create new channel
-router.post('/channels', requireRole(['admin', 'super_admin']), async (req, res) => {
+router.post('/channels', checkRole(['head_administrator', 'head_administrator']), async (req, res) => {
   try {
     const channelsCollection = await getCollection('chat_channels');
     const { 

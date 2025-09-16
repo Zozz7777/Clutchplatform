@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
-const { authenticateToken, requireRole } = require('../middleware/auth');
+const { authenticateToken, checkRole } = require('../middleware/auth');
+const { checkRole, checkPermission } = require('../middleware/rbac');
 const { getCollection } = require('../config/database');
 const { ObjectId } = require('mongodb');
 const { logger } = require('../config/logger');
@@ -8,7 +9,7 @@ const { logger } = require('../config/logger');
 // ==================== WHITE-LABEL ROUTES ====================
 
 // Get white-label configuration
-router.get('/white-label/config', authenticateToken, requireRole(['admin', 'enterprise_manager']), async (req, res) => {
+router.get('/white-label/config', authenticateToken, checkRole(['head_administrator', 'enterprise_manager']), async (req, res) => {
   try {
     const collection = await getCollection('system_settings');
     const config = await collection.findOne({ organization: req.user.organization });
@@ -73,7 +74,7 @@ router.get('/white-label/config', authenticateToken, requireRole(['admin', 'ente
 });
 
 // Update white-label configuration
-router.put('/white-label/config', authenticateToken, requireRole(['admin', 'enterprise_manager']), async (req, res) => {
+router.put('/white-label/config', authenticateToken, checkRole(['head_administrator', 'enterprise_manager']), async (req, res) => {
   try {
     const collection = await getCollection('system_settings');
     const configData = {
@@ -106,7 +107,7 @@ router.put('/white-label/config', authenticateToken, requireRole(['admin', 'ente
 // ==================== API MANAGEMENT ROUTES ====================
 
 // Get API keys
-router.get('/api-keys', authenticateToken, requireRole(['admin', 'enterprise_manager']), async (req, res) => {
+router.get('/api-keys', authenticateToken, checkRole(['head_administrator', 'enterprise_manager']), async (req, res) => {
   try {
     const collection = await getCollection('api_keys');
     const apiKeys = await collection.find({ organization: req.user.organization })
@@ -128,7 +129,7 @@ router.get('/api-keys', authenticateToken, requireRole(['admin', 'enterprise_man
 });
 
 // Create API key
-router.post('/api-keys', authenticateToken, requireRole(['admin', 'enterprise_manager']), async (req, res) => {
+router.post('/api-keys', authenticateToken, checkRole(['head_administrator', 'enterprise_manager']), async (req, res) => {
   try {
     const { name, permissions, expiresAt } = req.body;
     
@@ -164,7 +165,7 @@ router.post('/api-keys', authenticateToken, requireRole(['admin', 'enterprise_ma
 // ==================== WEBHOOK MANAGEMENT ROUTES ====================
 
 // Get webhooks
-router.get('/webhooks', authenticateToken, requireRole(['admin', 'enterprise_manager']), async (req, res) => {
+router.get('/webhooks', authenticateToken, checkRole(['head_administrator', 'enterprise_manager']), async (req, res) => {
   try {
     const collection = await getCollection('webhooks');
     const webhooks = await collection.find({ organization: req.user.organization })
@@ -186,7 +187,7 @@ router.get('/webhooks', authenticateToken, requireRole(['admin', 'enterprise_man
 });
 
 // Create webhook
-router.post('/webhooks', authenticateToken, requireRole(['admin', 'enterprise_manager']), async (req, res) => {
+router.post('/webhooks', authenticateToken, checkRole(['head_administrator', 'enterprise_manager']), async (req, res) => {
   try {
     const { name, url, events, secret } = req.body;
     

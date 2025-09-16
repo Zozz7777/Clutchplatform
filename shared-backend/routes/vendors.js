@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
-const { authenticateToken, requireRole } = require('../middleware/auth');
+const { authenticateToken, checkRole } = require('../middleware/auth');
+const { checkRole, checkPermission } = require('../middleware/rbac');
 const { getCollection } = require('../config/optimized-database');
 const rateLimit = require('express-rate-limit');
 
@@ -89,7 +90,7 @@ router.get('/:id', async (req, res) => {
 });
 
 // POST /api/v1/vendors - Create new vendor
-router.post('/', requireRole(['admin', 'vendor_manager', 'super_admin']), async (req, res) => {
+router.post('/', checkRole(['head_administrator', 'vendor_manager', 'head_administrator']), async (req, res) => {
   try {
     const vendorsCollection = await getCollection('vendors');
     const { 
@@ -161,7 +162,7 @@ router.post('/', requireRole(['admin', 'vendor_manager', 'super_admin']), async 
 });
 
 // PUT /api/v1/vendors/:id - Update vendor
-router.put('/:id', requireRole(['admin', 'vendor_manager', 'super_admin']), async (req, res) => {
+router.put('/:id', checkRole(['head_administrator', 'vendor_manager', 'head_administrator']), async (req, res) => {
   try {
     const vendorsCollection = await getCollection('vendors');
     const { 
@@ -229,7 +230,7 @@ router.put('/:id', requireRole(['admin', 'vendor_manager', 'super_admin']), asyn
 });
 
 // DELETE /api/v1/vendors/:id - Delete vendor
-router.delete('/:id', requireRole(['admin', 'super_admin']), async (req, res) => {
+router.delete('/:id', checkRole(['head_administrator', 'head_administrator']), async (req, res) => {
   try {
     const vendorsCollection = await getCollection('vendors');
     const result = await vendorsCollection.deleteOne({ _id: req.params.id });
@@ -302,7 +303,7 @@ router.get('/contracts', async (req, res) => {
 });
 
 // POST /api/v1/vendor-contracts - Create vendor contract
-router.post('/contracts', requireRole(['admin', 'vendor_manager', 'super_admin']), async (req, res) => {
+router.post('/contracts', checkRole(['head_administrator', 'vendor_manager', 'head_administrator']), async (req, res) => {
   try {
     const contractsCollection = await getCollection('vendor_contracts');
     const { 
@@ -378,7 +379,7 @@ router.post('/contracts', requireRole(['admin', 'vendor_manager', 'super_admin']
 });
 
 // PUT /api/v1/vendor-contracts/:id - Update vendor contract
-router.put('/contracts/:id', requireRole(['admin', 'vendor_manager', 'super_admin']), async (req, res) => {
+router.put('/contracts/:id', checkRole(['head_administrator', 'vendor_manager', 'head_administrator']), async (req, res) => {
   try {
     const contractsCollection = await getCollection('vendor_contracts');
     const { 
@@ -484,7 +485,7 @@ router.get('/communications', async (req, res) => {
 });
 
 // POST /api/v1/vendor-communications - Create vendor communication
-router.post('/communications', requireRole(['admin', 'vendor_manager', 'super_admin', 'employee']), async (req, res) => {
+router.post('/communications', checkRole(['head_administrator', 'vendor_manager', 'head_administrator', 'employee']), async (req, res) => {
   try {
     const communicationsCollection = await getCollection('vendor_communications');
     const { 
@@ -550,7 +551,7 @@ router.post('/communications', requireRole(['admin', 'vendor_manager', 'super_ad
 });
 
 // PUT /api/v1/vendor-communications/:id - Update vendor communication
-router.put('/communications/:id', requireRole(['admin', 'vendor_manager', 'super_admin', 'employee']), async (req, res) => {
+router.put('/communications/:id', checkRole(['head_administrator', 'vendor_manager', 'head_administrator', 'employee']), async (req, res) => {
   try {
     const communicationsCollection = await getCollection('vendor_communications');
     const { 
