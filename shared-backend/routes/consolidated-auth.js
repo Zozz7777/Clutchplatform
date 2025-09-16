@@ -618,11 +618,17 @@ router.post('/register', authRateLimit, async (req, res) => {
     
     // Check if user already exists
     console.log('🔍 Checking if user exists...');
+    console.log('📧 Email to check:', email.toLowerCase());
     const usersCollection = await getCollection('users');
     console.log('✅ Database collection accessed');
     
     const existingUser = await usersCollection.findOne({ email: email.toLowerCase() });
-    console.log('🔍 User lookup result:', { found: !!existingUser });
+    console.log('🔍 User lookup result:', { 
+      found: !!existingUser,
+      email: email.toLowerCase(),
+      existingUserEmail: existingUser?.email,
+      existingUserId: existingUser?._id
+    });
     
     if (existingUser) {
       console.log('❌ User already exists');
