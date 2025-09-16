@@ -94,7 +94,7 @@ router.get('/payments/:id', async (req, res) => {
 });
 
 // POST /api/finance/payments - Create new payment
-router.post('/payments', checkRole(['head_administrator', 'finance_officer', 'head_administrator']), async (req, res) => {
+router.post('/payments', checkRole(['head_administrator', 'finance_officer']), async (req, res) => {
   try {
     const paymentsCollection = await getCollection('payments');
     const { 
@@ -195,7 +195,7 @@ router.get('/invoices', async (req, res) => {
 });
 
 // POST /api/finance/invoices - Create new invoice
-router.post('/invoices', checkRole(['head_administrator', 'finance_officer', 'head_administrator']), async (req, res) => {
+router.post('/invoices', checkRole(['head_administrator', 'finance_officer']), async (req, res) => {
   try {
     const invoicesCollection = await getCollection('invoices');
     const { 

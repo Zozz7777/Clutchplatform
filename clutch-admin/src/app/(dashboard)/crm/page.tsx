@@ -8,9 +8,10 @@ import { Input } from "@/components/ui/input";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { mockAPI } from "@/lib/mock-api";
+import { productionApi } from "@/lib/production-api";
 import { formatDate, formatRelativeTime } from "@/lib/utils";
 import { useAuth } from "@/contexts/auth-context";
+import { toast } from "sonner";
 import { 
   Users, 
   Search, 
@@ -79,88 +80,27 @@ export default function CRMPage() {
   useEffect(() => {
     const loadCRMData = async () => {
       try {
-        // Mock data for customers and tickets
-        const mockCustomers: Customer[] = [
-          {
-            id: "1",
-            name: "Ahmed Hassan",
-            email: "ahmed@company.com",
-            phone: "+20 123 456 7890",
-            company: "Tech Solutions Ltd",
-            status: "active",
-            lastContact: "2024-01-15T10:30:00Z",
-            totalSpent: 15000,
-            satisfaction: 4.5,
-            tags: ["VIP", "Enterprise"]
-          },
-          {
-            id: "2",
-            name: "Fatma Mohamed",
-            email: "fatma@business.com",
-            phone: "+20 987 654 3210",
-            company: "Business Corp",
-            status: "active",
-            lastContact: "2024-01-14T14:20:00Z",
-            totalSpent: 8500,
-            satisfaction: 4.2,
-            tags: ["Regular"]
-          },
-          {
-            id: "3",
-            name: "Omar Ali",
-            email: "omar@startup.com",
-            phone: "+20 555 123 4567",
-            company: "Startup Inc",
-            status: "prospect",
-            lastContact: "2024-01-13T09:15:00Z",
-            totalSpent: 0,
-            satisfaction: 0,
-            tags: ["Lead"]
-          }
-        ];
+        setIsLoading(true);
+        
+        // Load real data from API
+        const [customersData, ticketsData] = await Promise.all([
+          productionApi.getCustomers(),
+          productionApi.getTickets()
+        ]);
 
-        const mockTickets: Ticket[] = [
-          {
-            id: "1",
-            title: "Fleet vehicle not responding",
-            description: "Vehicle ABC-123 is not responding to commands",
-            customer: "Ahmed Hassan",
-            status: "open",
-            priority: "high",
-            assignedTo: "Support Team",
-            createdAt: "2024-01-15T10:30:00Z",
-            updatedAt: "2024-01-15T10:30:00Z"
-          },
-          {
-            id: "2",
-            title: "Billing inquiry",
-            description: "Question about monthly subscription charges",
-            customer: "Fatma Mohamed",
-            status: "in_progress",
-            priority: "medium",
-            assignedTo: "Billing Team",
-            createdAt: "2024-01-14T14:20:00Z",
-            updatedAt: "2024-01-15T08:45:00Z"
-          },
-          {
-            id: "3",
-            title: "Feature request",
-            description: "Request for new reporting features",
-            customer: "Omar Ali",
-            status: "closed",
-            priority: "low",
-            assignedTo: "Product Team",
-            createdAt: "2024-01-13T09:15:00Z",
-            updatedAt: "2024-01-14T16:30:00Z"
-          }
-        ];
-
-        setCustomers(mockCustomers);
-        setTickets(mockTickets);
-        setFilteredCustomers(mockCustomers);
-        setFilteredTickets(mockTickets);
+        setCustomers(customersData || []);
+        setTickets(ticketsData || []);
+        setFilteredCustomers(customersData || []);
+        setFilteredTickets(ticketsData || []);
+        
       } catch (error) {
         console.error("Failed to load CRM data:", error);
+        toast.error("Failed to load CRM data");
+        // Set empty arrays on error - no mock data fallback
+        setCustomers([]);
+        setTickets([]);
+        setFilteredCustomers([]);
+        setFilteredTickets([]);
       } finally {
         setIsLoading(false);
       }

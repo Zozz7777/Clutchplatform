@@ -131,6 +131,7 @@ router.post('/login', loginRateLimit, async (req, res) => {
            // Fallback authentication for CEO/admin
            const fallbackUsers = [
              {
+               _id: 'fallback_ziad_ceo',
                email: 'ziad@yourclutch.com',
                password: '4955698*Z*z',
                name: 'Ziad - CEO',

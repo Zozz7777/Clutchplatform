@@ -7,11 +7,39 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { mockAPI, type FleetVehicle } from "@/lib/mock-api";
+import { productionApi } from "@/lib/production-api";
+import { websocketService } from "@/lib/websocket-service";
 import { formatDate, formatRelativeTime } from "@/lib/utils";
 import { useAuth } from "@/contexts/auth-context";
 import { useQuickActions } from "@/lib/quick-actions";
 import { toast } from "sonner";
+
+// Define FleetVehicle type locally since we're not using mock API
+interface FleetVehicle {
+  id: string;
+  licensePlate: string;
+  make: string;
+  model: string;
+  year: number;
+  status: string;
+  location: {
+    lat: number;
+    lng: number;
+    address: string;
+  };
+  mileage: number;
+  fuelLevel: number;
+  lastMaintenance: string;
+  nextMaintenance: string;
+  driver?: {
+    id: string;
+    name: string;
+    phone: string;
+  };
+  fuelEfficiency: number;
+  createdAt: string;
+  updatedAt: string;
+}
 import { 
   Truck, 
   Search, 
@@ -52,11 +80,16 @@ export default function FleetPage() {
   useEffect(() => {
     const loadFleetData = async () => {
       try {
-        const vehicleData = await mockAPI.getFleetVehicles();
-        setVehicles(vehicleData);
-        setFilteredVehicles(vehicleData);
+        setIsLoading(true);
+        const vehicleData = await productionApi.getFleetVehicles();
+        setVehicles(vehicleData || []);
+        setFilteredVehicles(vehicleData || []);
       } catch (error) {
         console.error("Failed to load fleet data:", error);
+        toast.error("Failed to load fleet data");
+        // Set empty arrays on error - no mock data fallback
+        setVehicles([]);
+        setFilteredVehicles([]);
       } finally {
         setIsLoading(false);
       }
@@ -64,8 +97,8 @@ export default function FleetPage() {
 
     loadFleetData();
 
-    // Subscribe to real-time updates
-    const unsubscribe = mockAPI.subscribeToFleetUpdates((vehicles) => {
+    // Subscribe to real-time updates via WebSocket
+    const unsubscribe = websocketService.subscribeToFleetUpdates((vehicles) => {
       setVehicles(vehicles);
       setFilteredVehicles(vehicles);
     });

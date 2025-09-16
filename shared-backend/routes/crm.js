@@ -89,7 +89,7 @@ router.get('/customers/:id', async (req, res) => {
 });
 
 // POST /api/crm/customers - Create new customer
-router.post('/customers', checkRole(['head_administrator', 'customer_support', 'head_administrator']), async (req, res) => {
+router.post('/customers', checkRole(['head_administrator', 'customer_support']), async (req, res) => {
   try {
     const customersCollection = await getCollection('customers');
     const { 
@@ -283,7 +283,7 @@ router.get('/tickets', async (req, res) => {
 });
 
 // POST /api/crm/tickets - Create new ticket
-router.post('/tickets', checkRole(['head_administrator', 'customer_support', 'head_administrator', 'employee']), async (req, res) => {
+router.post('/tickets', checkRole(['head_administrator', 'customer_support', 'employee']), async (req, res) => {
   try {
     const ticketsCollection = await getCollection('tickets');
     const { 

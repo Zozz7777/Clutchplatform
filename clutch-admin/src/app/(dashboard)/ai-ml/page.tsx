@@ -10,6 +10,8 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { formatDate, formatRelativeTime } from "@/lib/utils";
 import { useAuth } from "@/contexts/auth-context";
+import { productionApi } from "@/lib/production-api";
+import { toast } from "sonner";
 import { 
   Brain, 
   Search, 
@@ -87,116 +89,28 @@ export default function AIMLPage() {
   useEffect(() => {
     const loadAIMLData = async () => {
       try {
-        // Mock data for AI/ML
-        const mockModels: AIModel[] = [
-          {
-            id: "1",
-            name: "Fraud Detection Model",
-            type: "Classification",
-            accuracy: 94.5,
-            status: "active",
-            lastTrained: "2024-01-15T10:30:00Z",
-            predictions: 1250,
-            performance: 98.2
-          },
-          {
-            id: "2",
-            name: "Fleet Optimization",
-            type: "Regression",
-            accuracy: 89.3,
-            status: "training",
-            lastTrained: "2024-01-14T14:20:00Z",
-            predictions: 850,
-            performance: 92.1
-          },
-          {
-            id: "3",
-            name: "Customer Churn Prediction",
-            type: "Classification",
-            accuracy: 91.7,
-            status: "active",
-            lastTrained: "2024-01-13T09:15:00Z",
-            predictions: 2100,
-            performance: 95.8
-          },
-          {
-            id: "4",
-            name: "Demand Forecasting",
-            type: "Time Series",
-            accuracy: 87.2,
-            status: "inactive",
-            lastTrained: "2024-01-12T16:45:00Z",
-            predictions: 650,
-            performance: 88.9
-          }
-        ];
+        setIsLoading(true);
+        
+        // Load real data from API
+        const [modelsData, fraudCasesData, recommendationsData] = await Promise.all([
+          productionApi.getAIModels(),
+          productionApi.getFraudCases(),
+          productionApi.getRecommendations()
+        ]);
 
-        const mockFraudCases: FraudCase[] = [
-          {
-            id: "1",
-            customer: "Ahmed Hassan",
-            amount: 15000,
-            risk: "high",
-            status: "investigating",
-            detectedAt: "2024-01-15T10:30:00Z",
-            description: "Unusual payment pattern detected"
-          },
-          {
-            id: "2",
-            customer: "Fatma Mohamed",
-            amount: 8500,
-            risk: "medium",
-            status: "resolved",
-            detectedAt: "2024-01-14T14:20:00Z",
-            description: "Multiple failed payment attempts"
-          },
-          {
-            id: "3",
-            customer: "Omar Ali",
-            amount: 3200,
-            risk: "low",
-            status: "false_positive",
-            detectedAt: "2024-01-13T09:15:00Z",
-            description: "New customer with high initial transaction"
-          }
-        ];
-
-        const mockRecommendations: Recommendation[] = [
-          {
-            id: "1",
-            type: "Fleet Optimization",
-            title: "Optimize Route for Vehicle ABC-123",
-            confidence: 92.5,
-            impact: "high",
-            status: "pending",
-            createdAt: "2024-01-15T10:30:00Z"
-          },
-          {
-            id: "2",
-            type: "Customer Retention",
-            title: "Offer discount to at-risk customer",
-            confidence: 87.3,
-            impact: "medium",
-            status: "implemented",
-            createdAt: "2024-01-14T14:20:00Z"
-          },
-          {
-            id: "3",
-            type: "Maintenance",
-            title: "Schedule maintenance for Vehicle DEF-456",
-            confidence: 95.1,
-            impact: "high",
-            status: "pending",
-            createdAt: "2024-01-13T09:15:00Z"
-          }
-        ];
-
-        setModels(mockModels);
-        setFraudCases(mockFraudCases);
-        setRecommendations(mockRecommendations);
-        setFilteredModels(mockModels);
+        setModels(modelsData || []);
+        setFraudCases(fraudCasesData || []);
+        setRecommendations(recommendationsData || []);
+        setFilteredModels(modelsData || []);
+        
       } catch (error) {
         console.error("Failed to load AI/ML data:", error);
+        toast.error("Failed to load AI/ML data");
+        // Set empty arrays on error - no mock data fallback
+        setModels([]);
+        setFraudCases([]);
+        setRecommendations([]);
+        setFilteredModels([]);
       } finally {
         setIsLoading(false);
       }

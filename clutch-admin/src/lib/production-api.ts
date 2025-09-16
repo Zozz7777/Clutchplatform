@@ -466,6 +466,461 @@ export class ProductionApiService {
       throw new Error("Failed to load rollouts");
     }
   }
+
+  // Finance APIs
+  async getPayments(): Promise<any[]> {
+    try {
+      return await realApi.getPayments();
+    } catch (error) {
+      console.error("Failed to fetch payments:", error);
+      throw new Error("Failed to load payments");
+    }
+  }
+
+  async getSubscriptions(): Promise<any[]> {
+    try {
+      return await realApi.getSubscriptions();
+    } catch (error) {
+      console.error("Failed to fetch subscriptions:", error);
+      throw new Error("Failed to load subscriptions");
+    }
+  }
+
+  async getPayouts(): Promise<any[]> {
+    try {
+      return await realApi.getPayouts();
+    } catch (error) {
+      console.error("Failed to fetch payouts:", error);
+      throw new Error("Failed to load payouts");
+    }
+  }
+
+  async createPayment(paymentData: any): Promise<any> {
+    try {
+      return await realApi.createPayment(paymentData);
+    } catch (error) {
+      console.error("Failed to create payment:", error);
+      throw new Error("Failed to create payment");
+    }
+  }
+
+  async updatePayment(paymentId: string, paymentData: any): Promise<any> {
+    try {
+      return await realApi.updatePayment(paymentId, paymentData);
+    } catch (error) {
+      console.error("Failed to update payment:", error);
+      throw new Error("Failed to update payment");
+    }
+  }
+
+  async deletePayment(paymentId: string): Promise<boolean> {
+    try {
+      return await realApi.deletePayment(paymentId);
+    } catch (error) {
+      console.error("Failed to delete payment:", error);
+      throw new Error("Failed to delete payment");
+    }
+  }
+
+  // CRM APIs
+  async getCustomers(): Promise<any[]> {
+    try {
+      return await realApi.getCustomers();
+    } catch (error) {
+      console.error("Failed to fetch customers:", error);
+      throw new Error("Failed to load customers");
+    }
+  }
+
+  async createCustomer(customerData: any): Promise<any> {
+    try {
+      return await realApi.createCustomer(customerData);
+    } catch (error) {
+      console.error("Failed to create customer:", error);
+      throw new Error("Failed to create customer");
+    }
+  }
+
+  async updateCustomer(customerId: string, customerData: any): Promise<any> {
+    try {
+      return await realApi.updateCustomer(customerId, customerData);
+    } catch (error) {
+      console.error("Failed to update customer:", error);
+      throw new Error("Failed to update customer");
+    }
+  }
+
+  async deleteCustomer(customerId: string): Promise<boolean> {
+    try {
+      return await realApi.deleteCustomer(customerId);
+    } catch (error) {
+      console.error("Failed to delete customer:", error);
+      throw new Error("Failed to delete customer");
+    }
+  }
+
+  // AI/ML APIs
+  async getAIModels(): Promise<any[]> {
+    try {
+      return await realApi.getAIModels();
+    } catch (error) {
+      console.error("Failed to fetch AI models:", error);
+      throw new Error("Failed to load AI models");
+    }
+  }
+
+  async getFraudCases(): Promise<any[]> {
+    try {
+      return await realApi.getFraudCases();
+    } catch (error) {
+      console.error("Failed to fetch fraud cases:", error);
+      throw new Error("Failed to load fraud cases");
+    }
+  }
+
+  async getRecommendations(): Promise<any[]> {
+    try {
+      return await realApi.getRecommendations();
+    } catch (error) {
+      console.error("Failed to fetch recommendations:", error);
+      throw new Error("Failed to load recommendations");
+    }
+  }
+
+  async trainModel(modelId: string): Promise<any> {
+    try {
+      return await realApi.trainModel(modelId);
+    } catch (error) {
+      console.error("Failed to train model:", error);
+      throw new Error("Failed to train model");
+    }
+  }
+
+  async updateModel(modelId: string, modelData: any): Promise<any> {
+    try {
+      return await realApi.updateModel(modelId, modelData);
+    } catch (error) {
+      console.error("Failed to update model:", error);
+      throw new Error("Failed to update model");
+    }
+  }
+
+  // Vendor Management APIs
+  async getVendors(): Promise<any[]> {
+    try {
+      return await realApi.getVendors();
+    } catch (error) {
+      console.error("Failed to fetch vendors:", error);
+      throw new Error("Failed to load vendors");
+    }
+  }
+
+  async createVendor(vendorData: any): Promise<any> {
+    try {
+      return await realApi.createVendor(vendorData);
+    } catch (error) {
+      console.error("Failed to create vendor:", error);
+      throw new Error("Failed to create vendor");
+    }
+  }
+
+  async updateVendor(vendorId: string, vendorData: any): Promise<any> {
+    try {
+      return await realApi.updateVendor(vendorId, vendorData);
+    } catch (error) {
+      console.error("Failed to update vendor:", error);
+      throw new Error("Failed to update vendor");
+    }
+  }
+
+  async deleteVendor(vendorId: string): Promise<boolean> {
+    try {
+      return await realApi.deleteVendor(vendorId);
+    } catch (error) {
+      console.error("Failed to delete vendor:", error);
+      throw new Error("Failed to delete vendor");
+    }
+  }
+
+  // Integration Management APIs
+  async getIntegrations(): Promise<any[]> {
+    try {
+      return await realApi.getIntegrations();
+    } catch (error) {
+      console.error("Failed to fetch integrations:", error);
+      throw new Error("Failed to load integrations");
+    }
+  }
+
+  async createIntegration(integrationData: any): Promise<any> {
+    try {
+      return await realApi.createIntegration(integrationData);
+    } catch (error) {
+      console.error("Failed to create integration:", error);
+      throw new Error("Failed to create integration");
+    }
+  }
+
+  async updateIntegration(integrationId: string, integrationData: any): Promise<any> {
+    try {
+      return await realApi.updateIntegration(integrationId, integrationData);
+    } catch (error) {
+      console.error("Failed to update integration:", error);
+      throw new Error("Failed to update integration");
+    }
+  }
+
+  async deleteIntegration(integrationId: string): Promise<boolean> {
+    try {
+      return await realApi.deleteIntegration(integrationId);
+    } catch (error) {
+      console.error("Failed to delete integration:", error);
+      throw new Error("Failed to delete integration");
+    }
+  }
+
+  // Feature Flags APIs
+  async createFeatureFlag(flagData: any): Promise<any> {
+    try {
+      return await realApi.createFeatureFlag(flagData);
+    } catch (error) {
+      console.error("Failed to create feature flag:", error);
+      throw new Error("Failed to create feature flag");
+    }
+  }
+
+  async updateFeatureFlag(flagId: string, flagData: any): Promise<any> {
+    try {
+      return await realApi.updateFeatureFlag(flagId, flagData);
+    } catch (error) {
+      console.error("Failed to update feature flag:", error);
+      throw new Error("Failed to update feature flag");
+    }
+  }
+
+  async deleteFeatureFlag(flagId: string): Promise<boolean> {
+    try {
+      return await realApi.deleteFeatureFlag(flagId);
+    } catch (error) {
+      console.error("Failed to delete feature flag:", error);
+      throw new Error("Failed to delete feature flag");
+    }
+  }
+
+  // System Monitoring APIs
+  async getSystemHealth(): Promise<any> {
+    try {
+      return await realApi.getSystemHealth();
+    } catch (error) {
+      console.error("Failed to fetch system health:", error);
+      throw new Error("Failed to load system health");
+    }
+  }
+
+  async getPerformanceMetrics(): Promise<any> {
+    try {
+      return await realApi.getPerformanceMetrics();
+    } catch (error) {
+      console.error("Failed to fetch performance metrics:", error);
+      throw new Error("Failed to load performance metrics");
+    }
+  }
+
+  async getSystemAlerts(): Promise<any[]> {
+    try {
+      return await realApi.getSystemAlerts();
+    } catch (error) {
+      console.error("Failed to fetch system alerts:", error);
+      throw new Error("Failed to load system alerts");
+    }
+  }
+
+  // Revenue Forecasting APIs
+  async getRevenueForecast(): Promise<any> {
+    try {
+      return await realApi.getRevenueForecast();
+    } catch (error) {
+      console.error("Failed to fetch revenue forecast:", error);
+      throw new Error("Failed to load revenue forecast");
+    }
+  }
+
+  async getRevenueScenarios(): Promise<any[]> {
+    try {
+      return await realApi.getRevenueScenarios();
+    } catch (error) {
+      console.error("Failed to fetch revenue scenarios:", error);
+      throw new Error("Failed to load revenue scenarios");
+    }
+  }
+
+  // CMS APIs
+  async getCMSContent(): Promise<any> {
+    try {
+      return await realApi.getCMSContent();
+    } catch (error) {
+      console.error("Failed to fetch CMS content:", error);
+      throw new Error("Failed to load CMS content");
+    }
+  }
+
+  async updateCMSContent(contentData: any): Promise<any> {
+    try {
+      return await realApi.updateCMSContent(contentData);
+    } catch (error) {
+      console.error("Failed to update CMS content:", error);
+      throw new Error("Failed to update CMS content");
+    }
+  }
+
+  // Knowledge Base APIs
+  async getKnowledgeArticles(): Promise<any[]> {
+    try {
+      return await realApi.getKnowledgeArticles();
+    } catch (error) {
+      console.error("Failed to fetch knowledge articles:", error);
+      throw new Error("Failed to load knowledge articles");
+    }
+  }
+
+  async createKnowledgeArticle(articleData: any): Promise<any> {
+    try {
+      return await realApi.createKnowledgeArticle(articleData);
+    } catch (error) {
+      console.error("Failed to create knowledge article:", error);
+      throw new Error("Failed to create knowledge article");
+    }
+  }
+
+  async updateKnowledgeArticle(articleId: string, articleData: any): Promise<any> {
+    try {
+      return await realApi.updateKnowledgeArticle(articleId, articleData);
+    } catch (error) {
+      console.error("Failed to update knowledge article:", error);
+      throw new Error("Failed to update knowledge article");
+    }
+  }
+
+  async deleteKnowledgeArticle(articleId: string): Promise<boolean> {
+    try {
+      return await realApi.deleteKnowledgeArticle(articleId);
+    } catch (error) {
+      console.error("Failed to delete knowledge article:", error);
+      throw new Error("Failed to delete knowledge article");
+    }
+  }
+
+  // User Segments APIs
+  async getUserSegments(): Promise<any[]> {
+    try {
+      return await realApi.getUserSegments();
+    } catch (error) {
+      console.error("Failed to fetch user segments:", error);
+      throw new Error("Failed to load user segments");
+    }
+  }
+
+  async createUserSegment(segmentData: any): Promise<any> {
+    try {
+      return await realApi.createUserSegment(segmentData);
+    } catch (error) {
+      console.error("Failed to create user segment:", error);
+      throw new Error("Failed to create user segment");
+    }
+  }
+
+  async updateUserSegment(segmentId: string, segmentData: any): Promise<any> {
+    try {
+      return await realApi.updateUserSegment(segmentId, segmentData);
+    } catch (error) {
+      console.error("Failed to update user segment:", error);
+      throw new Error("Failed to update user segment");
+    }
+  }
+
+  async deleteUserSegment(segmentId: string): Promise<boolean> {
+    try {
+      return await realApi.deleteUserSegment(segmentId);
+    } catch (error) {
+      console.error("Failed to delete user segment:", error);
+      throw new Error("Failed to delete user segment");
+    }
+  }
+
+  // File Upload/Download APIs
+  async uploadFile(file: File, type: string): Promise<any> {
+    try {
+      return await realApi.uploadFile(file, type);
+    } catch (error) {
+      console.error("Failed to upload file:", error);
+      throw new Error("Failed to upload file");
+    }
+  }
+
+  async downloadFile(fileId: string): Promise<Blob> {
+    try {
+      return await realApi.downloadFile(fileId);
+    } catch (error) {
+      console.error("Failed to download file:", error);
+      throw new Error("Failed to download file");
+    }
+  }
+
+  // Real-time Communication APIs
+  async sendMessage(messageData: any): Promise<any> {
+    try {
+      return await realApi.sendMessage(messageData);
+    } catch (error) {
+      console.error("Failed to send message:", error);
+      throw new Error("Failed to send message");
+    }
+  }
+
+  async getChatSessions(): Promise<any[]> {
+    try {
+      return await realApi.getChatSessions();
+    } catch (error) {
+      console.error("Failed to fetch chat sessions:", error);
+      throw new Error("Failed to load chat sessions");
+    }
+  }
+
+  async createChatSession(sessionData: any): Promise<any> {
+    try {
+      return await realApi.createChatSession(sessionData);
+    } catch (error) {
+      console.error("Failed to create chat session:", error);
+      throw new Error("Failed to create chat session");
+    }
+  }
+
+  // Payment Processing APIs
+  async processPayment(paymentData: any): Promise<any> {
+    try {
+      return await realApi.processPayment(paymentData);
+    } catch (error) {
+      console.error("Failed to process payment:", error);
+      throw new Error("Failed to process payment");
+    }
+  }
+
+  async refundPayment(paymentId: string, refundData: any): Promise<any> {
+    try {
+      return await realApi.refundPayment(paymentId, refundData);
+    } catch (error) {
+      console.error("Failed to refund payment:", error);
+      throw new Error("Failed to refund payment");
+    }
+  }
+
+  async getPaymentMethods(): Promise<any[]> {
+    try {
+      return await realApi.getPaymentMethods();
+    } catch (error) {
+      console.error("Failed to fetch payment methods:", error);
+      throw new Error("Failed to load payment methods");
+    }
+  }
 }
 
 export const productionApi = new ProductionApiService();

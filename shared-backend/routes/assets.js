@@ -91,7 +91,7 @@ router.get('/:id', async (req, res) => {
 });
 
 // POST /api/v1/assets - Create new asset
-router.post('/', checkRole(['head_administrator', 'asset_manager', 'head_administrator']), async (req, res) => {
+router.post('/', checkRole(['head_administrator', 'asset_manager']), async (req, res) => {
   try {
     const assetsCollection = await getCollection('assets');
     const { 
@@ -157,7 +157,7 @@ router.post('/', checkRole(['head_administrator', 'asset_manager', 'head_adminis
 });
 
 // PUT /api/v1/assets/:id - Update asset
-router.put('/:id', checkRole(['head_administrator', 'asset_manager', 'head_administrator']), async (req, res) => {
+router.put('/:id', checkRole(['head_administrator', 'asset_manager']), async (req, res) => {
   try {
     const assetsCollection = await getCollection('assets');
     const { 
@@ -219,7 +219,7 @@ router.put('/:id', checkRole(['head_administrator', 'asset_manager', 'head_admin
 });
 
 // DELETE /api/v1/assets/:id - Delete asset
-router.delete('/:id', checkRole(['head_administrator', 'head_administrator']), async (req, res) => {
+router.delete('/:id', checkRole(['head_administrator']), async (req, res) => {
   try {
     const assetsCollection = await getCollection('assets');
     const result = await assetsCollection.deleteOne({ _id: req.params.id });
@@ -292,7 +292,7 @@ router.get('/maintenance-records', async (req, res) => {
 });
 
 // POST /api/v1/maintenance-records - Create maintenance record
-router.post('/maintenance-records', checkRole(['head_administrator', 'asset_manager', 'head_administrator', 'technician']), async (req, res) => {
+router.post('/maintenance-records', checkRole(['head_administrator', 'asset_manager', 'technician']), async (req, res) => {
   try {
     const maintenanceCollection = await getCollection('maintenance_records');
     const { 
@@ -360,7 +360,7 @@ router.post('/maintenance-records', checkRole(['head_administrator', 'asset_mana
 });
 
 // PUT /api/v1/maintenance-records/:id - Update maintenance record
-router.put('/maintenance-records/:id', checkRole(['head_administrator', 'asset_manager', 'head_administrator', 'technician']), async (req, res) => {
+router.put('/maintenance-records/:id', checkRole(['head_administrator', 'asset_manager', 'technician']), async (req, res) => {
   try {
     const maintenanceCollection = await getCollection('maintenance_records');
     const { 
@@ -460,7 +460,7 @@ router.get('/asset-assignments', async (req, res) => {
 });
 
 // POST /api/v1/asset-assignments - Create asset assignment
-router.post('/asset-assignments', checkRole(['head_administrator', 'asset_manager', 'head_administrator']), async (req, res) => {
+router.post('/asset-assignments', checkRole(['head_administrator', 'asset_manager']), async (req, res) => {
   try {
     const assignmentsCollection = await getCollection('asset_assignments');
     const { assetId, userId, assignedDate, returnDate, purpose, notes } = req.body;
@@ -519,7 +519,7 @@ router.post('/asset-assignments', checkRole(['head_administrator', 'asset_manage
 });
 
 // PUT /api/v1/asset-assignments/:id - Update asset assignment
-router.put('/asset-assignments/:id', checkRole(['head_administrator', 'asset_manager', 'head_administrator']), async (req, res) => {
+router.put('/asset-assignments/:id', checkRole(['head_administrator', 'asset_manager']), async (req, res) => {
   try {
     const assignmentsCollection = await getCollection('asset_assignments');
     const { returnDate, purpose, notes, status } = req.body;

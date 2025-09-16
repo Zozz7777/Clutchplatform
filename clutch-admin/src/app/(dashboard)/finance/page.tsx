@@ -10,6 +10,9 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { formatCurrency, formatDate, formatRelativeTime } from "@/lib/utils";
 import { useAuth } from "@/contexts/auth-context";
+import { productionApi } from "@/lib/production-api";
+import { paymentService } from "@/lib/payment-service";
+import { toast } from "sonner";
 import { 
   DollarSign, 
   Search, 
@@ -82,103 +85,100 @@ export default function FinancePage() {
   const [isLoading, setIsLoading] = useState(true);
   const { hasPermission } = useAuth();
 
+  // Payment processing functions
+  const handleProcessPayment = async (paymentData: any) => {
+    try {
+      const result = await paymentService.processPayment(paymentData);
+      if (result.success) {
+        // Refresh the payments list
+        const updatedPayments = await productionApi.getPayments();
+        setPayments(updatedPayments || []);
+        setFilteredPayments(updatedPayments || []);
+      }
+    } catch (error) {
+      console.error("Failed to process payment:", error);
+    }
+  };
+
+  const handleRefundPayment = async (paymentId: string, refundData: any) => {
+    try {
+      const result = await paymentService.refundPayment(paymentId, refundData);
+      if (result.success) {
+        // Refresh the payments list
+        const updatedPayments = await productionApi.getPayments();
+        setPayments(updatedPayments || []);
+        setFilteredPayments(updatedPayments || []);
+      }
+    } catch (error) {
+      console.error("Failed to refund payment:", error);
+    }
+  };
+
+  const handleCreatePayment = async () => {
+    // This would open a payment creation dialog
+    toast.info("Payment creation dialog would open here");
+  };
+
+  const handleExportPayments = async () => {
+    try {
+      // Export payments data
+      const paymentsData = payments.map(payment => ({
+        ID: payment.id,
+        Customer: payment.customer,
+        Amount: payment.amount,
+        Status: payment.status,
+        Method: payment.method,
+        Date: payment.date,
+        Description: payment.description
+      }));
+
+      const csvContent = [
+        Object.keys(paymentsData[0] || {}).join(','),
+        ...paymentsData.map(row => Object.values(row).join(','))
+      ].join('\n');
+
+      const blob = new Blob([csvContent], { type: 'text/csv' });
+      const url = window.URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = `payments-export-${new Date().toISOString().split('T')[0]}.csv`;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      window.URL.revokeObjectURL(url);
+
+      toast.success("Payments exported successfully!");
+    } catch (error) {
+      console.error("Failed to export payments:", error);
+      toast.error("Failed to export payments");
+    }
+  };
+
   useEffect(() => {
     const loadFinanceData = async () => {
       try {
-        // Mock data for finance
-        const mockPayments: Payment[] = [
-          {
-            id: "1",
-            customer: "Ahmed Hassan",
-            amount: 2500,
-            status: "completed",
-            method: "Credit Card",
-            date: "2024-01-15T10:30:00Z",
-            description: "Monthly subscription payment"
-          },
-          {
-            id: "2",
-            customer: "Fatma Mohamed",
-            amount: 1800,
-            status: "pending",
-            method: "Bank Transfer",
-            date: "2024-01-14T14:20:00Z",
-            description: "Fleet management service"
-          },
-          {
-            id: "3",
-            customer: "Omar Ali",
-            amount: 3200,
-            status: "failed",
-            method: "Credit Card",
-            date: "2024-01-13T09:15:00Z",
-            description: "Enterprise plan upgrade"
-          }
-        ];
+        setIsLoading(true);
+        
+        // Load real data from API
+        const [paymentsData, subscriptionsData, payoutsData] = await Promise.all([
+          productionApi.getPayments(),
+          productionApi.getSubscriptions(),
+          productionApi.getPayouts()
+        ]);
 
-        const mockSubscriptions: Subscription[] = [
-          {
-            id: "1",
-            customer: "Ahmed Hassan",
-            plan: "Enterprise",
-            amount: 2500,
-            status: "active",
-            nextBilling: "2024-02-15T10:30:00Z",
-            autoRenew: true
-          },
-          {
-            id: "2",
-            customer: "Fatma Mohamed",
-            plan: "Professional",
-            amount: 1800,
-            status: "active",
-            nextBilling: "2024-02-14T14:20:00Z",
-            autoRenew: true
-          },
-          {
-            id: "3",
-            customer: "Omar Ali",
-            plan: "Starter",
-            amount: 500,
-            status: "cancelled",
-            nextBilling: "2024-02-13T09:15:00Z",
-            autoRenew: false
-          }
-        ];
-
-        const mockPayouts: Payout[] = [
-          {
-            id: "1",
-            recipient: "Service Provider A",
-            amount: 1500,
-            status: "completed",
-            date: "2024-01-15T10:30:00Z",
-            method: "Bank Transfer"
-          },
-          {
-            id: "2",
-            recipient: "Service Provider B",
-            amount: 2200,
-            status: "pending",
-            date: "2024-01-14T14:20:00Z",
-            method: "Bank Transfer"
-          },
-          {
-            id: "3",
-            recipient: "Service Provider C",
-            amount: 800,
-            status: "failed",
-            date: "2024-01-13T09:15:00Z",
-            method: "Bank Transfer"
-          }
-        ];
-
-        setPayments(mockPayments);
-        setSubscriptions(mockSubscriptions);
-        setPayouts(mockPayouts);
-        setFilteredPayments(mockPayments);
+        setPayments(paymentsData || []);
+        setSubscriptions(subscriptionsData || []);
+        setPayouts(payoutsData || []);
+        setFilteredPayments(paymentsData || []);
+        
       } catch (error) {
         console.error("Failed to load finance data:", error);
+        toast.error("Failed to load finance data");
+        // Set empty arrays on error - no mock data fallback
+        setPayments([]);
+        setSubscriptions([]);
+        setPayouts([]);
+        setFilteredPayments([]);
       } finally {
         setIsLoading(false);
       }

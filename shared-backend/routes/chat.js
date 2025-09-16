@@ -283,7 +283,7 @@ router.get('/channels', async (req, res) => {
 });
 
 // POST /api/chat/channels - Create new channel
-router.post('/channels', checkRole(['head_administrator', 'head_administrator']), async (req, res) => {
+router.post('/channels', checkRole(['head_administrator']), async (req, res) => {
   try {
     const channelsCollection = await getCollection('chat_channels');
     const { 

@@ -1,10 +1,13 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { productionApi } from '@/lib/production-api';
+import { websocketService } from '@/lib/websocket-service';
+import { toast } from 'sonner';
 import { 
   Activity, 
   Zap, 
@@ -18,59 +21,112 @@ import {
 } from 'lucide-react';
 
 export default function MonitoringPerformancePage() {
-  const [metrics] = useState({
+  const [metrics, setMetrics] = useState({
     responseTime: {
-      average: 156,
-      p95: 320,
-      p99: 850,
-      max: 2500
+      average: 0,
+      p95: 0,
+      p99: 0,
+      max: 0
     },
     throughput: {
-      requestsPerSecond: 1250,
-      requestsPerMinute: 75000,
-      requestsPerHour: 4500000
+      requestsPerSecond: 0,
+      requestsPerMinute: 0,
+      requestsPerHour: 0
     },
     errorRate: {
-      percentage: 0.8,
-      count: 1250,
-      lastHour: 45
+      percentage: 0,
+      count: 0,
+      lastHour: 0
     },
     availability: {
-      uptime: 99.9,
-      downtime: 0.1,
-      lastIncident: '2024-01-10'
+      uptime: 0,
+      downtime: 0,
+      lastIncident: ''
     }
   });
 
-  const [alerts] = useState([
-    {
-      id: '1',
-      type: 'warning',
-      message: 'High response time detected',
-      threshold: '> 500ms',
-      current: '650ms',
-      timestamp: '2024-01-15T14:30:00Z',
-      status: 'active'
-    },
-    {
-      id: '2',
-      type: 'critical',
-      message: 'Error rate spike',
-      threshold: '> 5%',
-      current: '8.2%',
-      timestamp: '2024-01-15T13:45:00Z',
-      status: 'resolved'
-    },
-    {
-      id: '3',
-      type: 'info',
-      message: 'High traffic volume',
-      threshold: '> 1000 req/s',
-      current: '1250 req/s',
-      timestamp: '2024-01-15T12:15:00Z',
-      status: 'active'
+  const [alerts, setAlerts] = useState<any[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [connectionStatus, setConnectionStatus] = useState('disconnected');
+
+  useEffect(() => {
+    const loadPerformanceData = async () => {
+      try {
+        setIsLoading(true);
+        const [metricsData, alertsData] = await Promise.all([
+          productionApi.getPerformanceMetrics(),
+          productionApi.getSystemAlerts()
+        ]);
+
+        if (metricsData) {
+          setMetrics(metricsData);
+        }
+
+        if (alertsData) {
+          setAlerts(alertsData);
+        }
+      } catch (error) {
+        console.error('Failed to load performance data:', error);
+        toast.error('Failed to load performance data');
+        // Set empty data on error
+        setMetrics({
+          responseTime: { average: 0, p95: 0, p99: 0, max: 0 },
+          throughput: { requestsPerSecond: 0, requestsPerMinute: 0, requestsPerHour: 0 },
+          errorRate: { percentage: 0, count: 0, lastHour: 0 },
+          availability: { uptime: 0, downtime: 0, lastIncident: '' }
+        });
+        setAlerts([]);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    loadPerformanceData();
+
+    // Subscribe to real-time performance updates
+    const unsubscribe = websocketService.subscribeToPerformanceMetrics((data) => {
+      setMetrics(data);
+    });
+
+    // Subscribe to real-time alerts
+    const unsubscribeAlerts = websocketService.subscribeToNotifications((data) => {
+      setAlerts(prevAlerts => [data, ...prevAlerts.slice(0, 9)]); // Keep last 10 alerts
+    });
+
+    // Monitor connection status
+    const statusInterval = setInterval(() => {
+      setConnectionStatus(websocketService.getConnectionStatus());
+    }, 1000);
+
+    return () => {
+      unsubscribe();
+      unsubscribeAlerts();
+      clearInterval(statusInterval);
+    };
+  }, []);
+
+  const handleRefresh = async () => {
+    try {
+      setIsLoading(true);
+      const [metricsData, alertsData] = await Promise.all([
+        productionApi.getPerformanceMetrics(),
+        productionApi.getSystemAlerts()
+      ]);
+
+      if (metricsData) {
+        setMetrics(metricsData);
+      }
+
+      if (alertsData) {
+        setAlerts(alertsData);
+      }
+    } catch (error) {
+      console.error('Failed to refresh performance data:', error);
+      toast.error('Failed to refresh performance data');
+    } finally {
+      setIsLoading(false);
     }
-  ]);
+  };
 
   const getAlertIcon = (type: string) => {
     switch (type) {

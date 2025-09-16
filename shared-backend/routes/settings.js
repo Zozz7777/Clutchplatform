@@ -47,7 +47,7 @@ router.get('/', async (req, res) => {
 });
 
 // PUT /api/settings - Update settings
-router.put('/', checkRole(['head_administrator', 'head_administrator']), async (req, res) => {
+router.put('/', checkRole(['head_administrator']), async (req, res) => {
   try {
     const settingsCollection = await getCollection('settings');
     const { settings } = req.body;
@@ -113,7 +113,7 @@ router.get('/:category', async (req, res) => {
 });
 
 // PUT /api/settings/:category/:key - Update specific setting
-router.put('/:category/:key', checkRole(['head_administrator', 'head_administrator']), async (req, res) => {
+router.put('/:category/:key', checkRole(['head_administrator']), async (req, res) => {
   try {
     const settingsCollection = await getCollection('settings');
     const { value } = req.body;
@@ -214,7 +214,7 @@ router.put('/user/preferences', async (req, res) => {
 // ===== SYSTEM CONFIGURATION =====
 
 // GET /api/settings/system/config - Get system configuration
-router.get('/system/config', checkRole(['head_administrator', 'head_administrator']), async (req, res) => {
+router.get('/system/config', checkRole(['head_administrator']), async (req, res) => {
   try {
     const configCollection = await getCollection('system_config');
     const config = await configCollection.findOne({ type: 'main' });
@@ -234,7 +234,7 @@ router.get('/system/config', checkRole(['head_administrator', 'head_administrato
 });
 
 // PUT /api/settings/system/config - Update system configuration
-router.put('/system/config', checkRole(['head_administrator', 'head_administrator']), async (req, res) => {
+router.put('/system/config', checkRole(['head_administrator']), async (req, res) => {
   try {
     const configCollection = await getCollection('system_config');
     const { config } = req.body;
@@ -275,7 +275,7 @@ router.put('/system/config', checkRole(['head_administrator', 'head_administrato
 // ===== SETTINGS ANALYTICS =====
 
 // GET /api/settings/analytics - Get settings analytics
-router.get('/analytics', checkRole(['head_administrator', 'head_administrator']), async (req, res) => {
+router.get('/analytics', checkRole(['head_administrator']), async (req, res) => {
   try {
     const settingsCollection = await getCollection('settings');
     const preferencesCollection = await getCollection('user_preferences');

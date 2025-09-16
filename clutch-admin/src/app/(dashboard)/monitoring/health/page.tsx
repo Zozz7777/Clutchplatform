@@ -1,10 +1,13 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { productionApi } from '@/lib/production-api';
+import { websocketService } from '@/lib/websocket-service';
+import { toast } from 'sonner';
 import { 
   Heart, 
   CheckCircle, 
@@ -29,56 +32,94 @@ interface ServiceHealth {
 }
 
 export default function HealthPage() {
-  const [services, setServices] = useState<ServiceHealth[]>([
-    {
-      name: 'API Gateway',
-      status: 'healthy',
-      uptime: 99.9,
-      responseTime: 45,
-      lastCheck: '2024-01-15T15:30:00Z',
-      dependencies: ['Load Balancer', 'Authentication Service']
-    },
-    {
-      name: 'Database',
-      status: 'healthy',
-      uptime: 99.8,
-      responseTime: 12,
-      lastCheck: '2024-01-15T15:30:00Z',
-      dependencies: ['Primary DB', 'Replica DB']
-    },
-    {
-      name: 'Authentication Service',
-      status: 'degraded',
-      uptime: 98.5,
-      responseTime: 180,
-      lastCheck: '2024-01-15T15:30:00Z',
-      dependencies: ['Redis Cache', 'JWT Service']
-    },
-    {
-      name: 'File Storage',
-      status: 'healthy',
-      uptime: 99.7,
-      responseTime: 85,
-      lastCheck: '2024-01-15T15:30:00Z',
-      dependencies: ['S3 Bucket', 'CDN']
-    },
-    {
-      name: 'Email Service',
-      status: 'down',
-      uptime: 95.2,
-      responseTime: 0,
-      lastCheck: '2024-01-15T15:30:00Z',
-      dependencies: ['SMTP Server', 'Queue Service']
-    }
-  ]);
-
-  const [overallHealth] = useState({
-    status: 'degraded',
-    uptime: 98.6,
-    servicesUp: 4,
-    servicesDown: 1,
-    lastIncident: '2024-01-15T14:30:00Z'
+  const [services, setServices] = useState<ServiceHealth[]>([]);
+  const [overallHealth, setOverallHealth] = useState({
+    status: 'unknown' as 'healthy' | 'degraded' | 'down' | 'unknown',
+    uptime: 0,
+    servicesUp: 0,
+    servicesDown: 0,
+    lastIncident: ''
   });
+  const [isLoading, setIsLoading] = useState(true);
+  const [connectionStatus, setConnectionStatus] = useState('disconnected');
+
+  useEffect(() => {
+    const loadSystemHealth = async () => {
+      try {
+        setIsLoading(true);
+        const healthData = await productionApi.getSystemHealth();
+        
+        if (healthData) {
+          setServices(healthData.services || []);
+          setOverallHealth(healthData.overall || {
+            status: 'unknown',
+            uptime: 0,
+            servicesUp: 0,
+            servicesDown: 0,
+            lastIncident: ''
+          });
+        }
+      } catch (error) {
+        console.error('Failed to load system health:', error);
+        toast.error('Failed to load system health data');
+        // Set empty data on error
+        setServices([]);
+        setOverallHealth({
+          status: 'unknown',
+          uptime: 0,
+          servicesUp: 0,
+          servicesDown: 0,
+          lastIncident: ''
+        });
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    loadSystemHealth();
+
+    // Subscribe to real-time health updates
+    const unsubscribe = websocketService.subscribeToSystemHealth((data) => {
+      setServices(prevServices => 
+        prevServices.map(service => 
+          service.name === data.service ? { ...service, ...data } : service
+        )
+      );
+    });
+
+    // Monitor connection status
+    const statusInterval = setInterval(() => {
+      setConnectionStatus(websocketService.getConnectionStatus());
+    }, 1000);
+
+    return () => {
+      unsubscribe();
+      clearInterval(statusInterval);
+    };
+  }, []);
+
+  const handleRefresh = async () => {
+    try {
+      setIsLoading(true);
+      const healthData = await productionApi.getSystemHealth();
+      
+      if (healthData) {
+        setServices(healthData.services || []);
+        setOverallHealth(healthData.overall || {
+          status: 'unknown',
+          uptime: 0,
+          servicesUp: 0,
+          servicesDown: 0,
+          lastIncident: ''
+        });
+      }
+    } catch (error) {
+      console.error('Failed to refresh system health:', error);
+      toast.error('Failed to refresh system health data');
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   const getStatusIcon = (status: string) => {
     switch (status) {

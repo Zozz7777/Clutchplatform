@@ -8,11 +8,25 @@ import { Input } from "@/components/ui/input";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { mockAPI, type User } from "@/lib/mock-api";
+import { productionApi } from "@/lib/production-api";
 import { formatDate, formatRelativeTime } from "@/lib/utils";
 import { useAuth } from "@/contexts/auth-context";
 import { useQuickActions } from "@/lib/quick-actions";
 import { toast } from "sonner";
+
+// Define User type locally since we're not using mock API
+interface User {
+  id: string;
+  name: string;
+  email: string;
+  role: string;
+  status: string;
+  lastLogin: string;
+  createdAt: string;
+  avatar?: string;
+  department?: string;
+  permissions?: string[];
+}
 import { 
   Users, 
   Search, 
@@ -51,11 +65,16 @@ export default function UsersPage() {
   useEffect(() => {
     const loadUsers = async () => {
       try {
-        const userData = await mockAPI.getUsers();
-        setUsers(userData);
-        setFilteredUsers(userData);
+        setIsLoading(true);
+        const userData = await productionApi.getUsers();
+        setUsers(userData || []);
+        setFilteredUsers(userData || []);
       } catch (error) {
         console.error("Failed to load users:", error);
+        toast.error("Failed to load users");
+        // Set empty arrays on error - no mock data fallback
+        setUsers([]);
+        setFilteredUsers([]);
       } finally {
         setIsLoading(false);
       }
