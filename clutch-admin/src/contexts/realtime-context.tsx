@@ -139,7 +139,12 @@ export function RealtimeProvider({ children }: { children: React.ReactNode }) {
   useEffect(() => {
     if (!isAuthLoading) {
       if (user && !isConnected && !isConnecting) {
-        connect();
+        // Add a small delay to ensure token is stored after login
+        const connectTimer = setTimeout(() => {
+          connect();
+        }, 100);
+        
+        return () => clearTimeout(connectTimer);
       } else if (!user && isConnected) {
         disconnect();
       }

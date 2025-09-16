@@ -48,9 +48,11 @@ export class WebSocketService {
       this.eventHandlers = handlers;
 
       try {
-        // Get fresh token
-        this.token = apiService.getTokenStatus().hasToken ? 
-          localStorage.getItem("clutch-admin-token") : null;
+        // Get fresh token with multiple fallbacks
+        this.token = localStorage.getItem("clutch-admin-token") || 
+                    sessionStorage.getItem("clutch-admin-token") ||
+                    (apiService.getTokenStatus().hasToken ? 
+                      localStorage.getItem("clutch-admin-token") : null);
 
         if (!this.token) {
           this.isConnecting = false;

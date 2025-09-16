@@ -10,6 +10,14 @@ import { AuthStatus } from "@/components/auth-status";
 import { RealtimeStatus } from "@/components/realtime-status";
 import { useQuickActions } from "@/lib/quick-actions";
 import { useAuth } from "@/contexts/auth-context";
+
+// Import new Phase 2 widgets
+import UnifiedOpsPulse from "@/components/widgets/unified-ops-pulse";
+import ChurnRiskCard from "@/components/widgets/churn-risk-card";
+import RevenueMarginCard from "@/components/widgets/revenue-margin-card";
+import AIForecastCard from "@/components/widgets/ai-forecast-card";
+import ComplianceRadar from "@/components/widgets/compliance-radar";
+import TopEnterpriseClients from "@/components/widgets/top-enterprise-clients";
 import { 
   Users, 
   Truck, 
@@ -368,6 +376,36 @@ export default function DashboardPage() {
             </div>
           </CardContent>
         </Card>
+      </div>
+
+      {/* Phase 2: Business Intelligence Widgets */}
+      <div className="space-y-6">
+        <div className="flex items-center justify-between">
+          <div>
+            <h2 className="text-2xl font-bold tracking-tight text-foreground">Business Intelligence</h2>
+            <p className="text-muted-foreground">
+              Advanced analytics and predictive insights for data-driven decisions
+            </p>
+          </div>
+        </div>
+
+        {/* Top Row - Key Operational Metrics */}
+        <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+          <UnifiedOpsPulse className="lg:col-span-2" />
+          <ChurnRiskCard />
+        </div>
+
+        {/* Second Row - Financial & Forecast */}
+        <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+          <RevenueMarginCard />
+          <AIForecastCard />
+          <ComplianceRadar />
+        </div>
+
+        {/* Third Row - Enterprise Clients */}
+        <div className="grid gap-6">
+          <TopEnterpriseClients />
+        </div>
       </div>
     </div>
   );
