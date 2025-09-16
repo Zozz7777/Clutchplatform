@@ -61,7 +61,7 @@ const iconMap = {
   Download,
   RefreshCw,
   UserCheck,
-  Settings,
+  Settings
 };
 
 export default function DashboardPage() {
