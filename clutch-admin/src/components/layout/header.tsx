@@ -18,8 +18,6 @@ import {
   Settings,
   LogOut,
   User,
-  Moon,
-  Sun,
   Menu,
 } from "lucide-react";
 import { Input } from "@/components/ui/input";
@@ -28,15 +26,14 @@ import { productionApi } from "@/lib/production-api";
 import { type Notification } from "@/lib/mock-api";
 import { useRouter } from "next/navigation";
 import { LanguageSwitcher } from "@/components/language-switcher";
+import { ThemeToggle } from "@/components/theme-toggle";
 import { useTranslations } from "@/hooks/use-translations";
 
 interface HeaderProps {
   onMenuToggle: () => void;
-  isDarkMode: boolean;
-  onThemeToggle: () => void;
 }
 
-export function Header({ onMenuToggle, isDarkMode, onThemeToggle }: HeaderProps) {
+export function Header({ onMenuToggle }: HeaderProps) {
   const { user, logout } = useAuth();
   const { t } = useTranslations();
   const [searchQuery, setSearchQuery] = useState("");
@@ -113,17 +110,7 @@ export function Header({ onMenuToggle, isDarkMode, onThemeToggle }: HeaderProps)
         <LanguageSwitcher />
         
         {/* Theme Toggle */}
-        <Button
-          variant="ghost"
-          size="icon"
-          onClick={onThemeToggle}
-        >
-          {isDarkMode ? (
-            <Sun className="h-5 w-5" />
-          ) : (
-            <Moon className="h-5 w-5" />
-          )}
-        </Button>
+        <ThemeToggle />
 
         {/* Notifications */}
         <DropdownMenu>

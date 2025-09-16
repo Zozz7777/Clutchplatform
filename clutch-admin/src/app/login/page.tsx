@@ -44,37 +44,37 @@ export default function LoginPage() {
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-background px-4 font-sans">
-      <Card className="w-full max-w-md shadow-md">
-        <CardHeader className="text-center space-y-6">
-                  <div className="flex justify-center">
-                    <div className="flex items-center justify-center w-20 h-20 bg-primary/10 rounded-lg">
-                      <img
-                        src="/logo.png"
-                        alt="Clutch"
-                        width={80}
-                        height={80}
-                        className="object-contain max-w-full max-h-full"
-                        onError={(e) => {
-                          // Hide the image and show text fallback
-                          e.currentTarget.style.display = 'none';
-                          const parent = e.currentTarget.parentElement;
-                          if (parent) {
-                            parent.innerHTML = '<div class="text-2xl font-bold text-primary">CLUTCH</div>';
-                          }
-                        }}
-                      />
-                    </div>
-                  </div>
+      <Card className="w-full max-w-md shadow-md border-border rounded-lg">
+        <CardHeader className="text-center space-y-6 pb-8">
+          <div className="flex justify-center">
+            <div className="flex items-center justify-center w-20 h-20 bg-primary/10 rounded-lg">
+              <img
+                src="/logo.png"
+                alt="Clutch"
+                width={80}
+                height={80}
+                className="object-contain max-w-full max-h-full"
+                onError={(e) => {
+                  // Hide the image and show text fallback
+                  e.currentTarget.style.display = 'none';
+                  const parent = e.currentTarget.parentElement;
+                  if (parent) {
+                    parent.innerHTML = '<div class="text-2xl font-bold text-primary">CLUTCH</div>';
+                  }
+                }}
+              />
+            </div>
+          </div>
           <div className="space-y-2">
-            <CardTitle className="text-3xl font-bold text-foreground font-sans">Clutch Admin</CardTitle>
-            <CardDescription className="text-muted-foreground font-sans">
+            <CardTitle className="text-3xl font-bold text-card-foreground font-sans">Clutch Admin</CardTitle>
+            <CardDescription className="text-muted-foreground font-sans text-base">
               {t('auth.signInToDrive')}
             </CardDescription>
           </div>
         </CardHeader>
-        <CardContent className="space-y-6">
+        <CardContent className="space-y-6 pt-0">
           <form onSubmit={handleSubmit} className="space-y-6">
-            <div className="space-y-3">
+            <div className="space-y-2">
               <Label htmlFor="email" className="text-sm font-medium text-foreground">{t('auth.email')}</Label>
               <Input
                 id="email"
@@ -84,11 +84,11 @@ export default function LoginPage() {
                 onChange={(e) => setEmail(e.target.value)}
                 required
                 disabled={isLoading}
-                className="h-12"
+                className="h-12 text-base border-border bg-input focus:ring-ring focus:border-ring"
               />
             </div>
             
-            <div className="space-y-3">
+            <div className="space-y-2">
               <Label htmlFor="password" className="text-sm font-medium text-foreground">{t('auth.password')}</Label>
               <div className="relative">
                 <Input
@@ -99,7 +99,7 @@ export default function LoginPage() {
                   onChange={(e) => setPassword(e.target.value)}
                   required
                   disabled={isLoading}
-                  className="h-12 pr-12"
+                  className="h-12 pr-12 text-base border-border bg-input focus:ring-ring focus:border-ring"
                 />
                 <Button
                   type="button"
@@ -124,7 +124,11 @@ export default function LoginPage() {
               </Alert>
             )}
 
-            <Button type="submit" className="w-full h-12 text-base font-medium" disabled={isLoading}>
+            <Button 
+              type="submit" 
+              className="w-full h-12 text-base font-medium bg-primary text-primary-foreground hover:bg-primary/90 focus:ring-ring focus:ring-offset-2" 
+              disabled={isLoading}
+            >
               {isLoading ? (
                 <>
                   <Loader2 className="mr-2 h-4 w-4 animate-spin" />
