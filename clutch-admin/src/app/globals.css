@@ -28,6 +28,7 @@
     --border: oklch(0.9220 0 0);
     --input: oklch(0.9220 0 0);
     --ring: oklch(0.7080 0 0);
+    --ring-ring: oklch(0.7080 0 0);
     --sidebar: oklch(0.9850 0 0);
     --sidebar-primary: oklch(0.2050 0 0);
     --radius: 0.625rem;
@@ -54,6 +55,7 @@
     --border: oklch(0.2750 0 0);
     --input: oklch(0.3250 0 0);
     --ring: oklch(0.5560 0 0);
+    --ring-ring: oklch(0.5560 0 0);
     --sidebar: oklch(0.2050 0 0);
     --sidebar-primary: oklch(0.5770 0.2450 27.3250);
   }
