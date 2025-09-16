@@ -19,6 +19,8 @@ class ApiService {
   private refreshToken: string | null = null;
   private isRefreshing: boolean = false;
   private refreshPromise: Promise<string | null> | null = null;
+  private lastRefreshTime: number = 0;
+  private refreshCooldown: number = 5000; // 5 seconds cooldown between refresh attempts
 
   constructor(baseURL: string) {
     this.baseURL = baseURL;
@@ -55,11 +57,20 @@ class ApiService {
   }
 
   private async refreshAuthToken(): Promise<string | null> {
+    // Check cooldown period to prevent rapid refresh attempts
+    const now = Date.now();
+    if (now - this.lastRefreshTime < this.refreshCooldown) {
+      console.log(`🔄 Refresh cooldown active, skipping refresh attempt`);
+      return null;
+    }
+
     if (this.isRefreshing && this.refreshPromise) {
+      console.log(`🔄 Refresh already in progress, waiting...`);
       return this.refreshPromise;
     }
 
     this.isRefreshing = true;
+    this.lastRefreshTime = now;
     this.refreshPromise = this.performTokenRefresh();
 
     try {
@@ -133,6 +144,17 @@ class ApiService {
       if (refreshToken) {
         localStorage.setItem("clutch-admin-refresh-token", refreshToken);
       }
+      
+      // Debug logging for token storage
+      console.log('🔑 Tokens stored:', {
+        hasToken: !!token,
+        hasRefreshToken: !!refreshToken,
+        tokenPreview: token ? `${token.substring(0, 20)}...` : 'none',
+        refreshTokenPreview: refreshToken ? `${refreshToken.substring(0, 20)}...` : 'none',
+        localStorage: localStorage.getItem("clutch-admin-token") ? 'exists' : 'missing',
+        sessionStorage: sessionStorage.getItem("clutch-admin-token") ? 'exists' : 'missing',
+        refreshTokenStorage: localStorage.getItem("clutch-admin-refresh-token") ? 'exists' : 'missing'
+      });
     }
   }
 
@@ -188,17 +210,38 @@ class ApiService {
         const newToken = await this.refreshAuthToken();
         
         if (newToken) {
+          console.log(`✅ Token refreshed successfully, retrying request for ${endpoint}`);
+          // Force reload tokens from storage to ensure we have the latest
+          this.loadTokens();
           // Retry the request with new token
           return this.request<T>(endpoint, options, retryCount + 1);
         } else {
-          // Refresh failed, redirect to login
-          this.logout();
-          window.location.href = '/login';
-          return {
-            data: null as T,
-            success: false,
-            error: "Authentication failed. Please login again.",
-          };
+          console.log(`❌ Token refresh failed or skipped for ${endpoint}`);
+          // If refresh failed due to cooldown or other reasons, try to use existing token
+          if (retryCount === 0) {
+            // First retry - try with current token from storage
+            this.loadTokens();
+            const currentToken = this.getToken();
+            if (currentToken && currentToken !== token) {
+              console.log(`🔄 Using different token from storage for ${endpoint}`);
+              return this.request<T>(endpoint, options, retryCount + 1);
+            }
+          }
+          
+          // If we've exhausted retries or no valid token, redirect to login
+          if (retryCount >= maxRetries - 1) {
+            console.log(`❌ Max retries reached for ${endpoint}, redirecting to login`);
+            this.logout();
+            window.location.href = '/login';
+            return {
+              data: null as T,
+              success: false,
+              error: "Authentication failed. Please login again.",
+            };
+          }
+          
+          // Continue with current request and let it fail naturally
+          console.log(`⚠️ Continuing with failed request for ${endpoint}`);
         }
       }
       
