@@ -36,6 +36,16 @@ class ApiService {
     // Always get fresh token from localStorage or sessionStorage
     if (typeof window !== "undefined") {
       this.token = localStorage.getItem("clutch-admin-token") || sessionStorage.getItem("clutch-admin-token");
+      
+      // Debug logging for token retrieval
+      if (process.env.NODE_ENV === 'development') {
+        console.log('🔑 Token retrieval:', {
+          hasToken: !!this.token,
+          tokenPreview: this.token ? `${this.token.substring(0, 20)}...` : 'none',
+          localStorage: localStorage.getItem("clutch-admin-token") ? 'exists' : 'missing',
+          sessionStorage: sessionStorage.getItem("clutch-admin-token") ? 'exists' : 'missing'
+        });
+      }
     }
     return this.token;
   }
@@ -130,6 +140,9 @@ class ApiService {
         hasToken: !!token,
         tokenPreview: token ? `${token.substring(0, 20)}...` : 'none',
         retryCount,
+        hasAuthHeader: !!(config.headers as any)?.Authorization,
+        authHeaderPreview: (config.headers as any)?.Authorization ? 
+          `${(config.headers as any).Authorization.substring(0, 30)}...` : 'none',
         headers: config.headers
       });
     }
@@ -332,6 +345,11 @@ class ApiService {
       hasToken: !!token,
       tokenPreview: token ? `${token.substring(0, 20)}...` : 'none'
     };
+  }
+
+  // Public method to get token for debugging
+  getTokenForDebugging(): string | null {
+    return this.getToken();
   }
 
   // Users API
