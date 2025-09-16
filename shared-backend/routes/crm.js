@@ -1,49 +1,42 @@
-/**
- * CRM Management Routes
- * Complete CRM system with customer management, leads, and sales tracking
- */
-
 const express = require('express');
 const router = express.Router();
 const { authenticateToken, requireRole } = require('../middleware/auth');
 const { getCollection } = require('../config/optimized-database');
-const { rateLimit: createRateLimit } = require('../middleware/rateLimit');
-const { ObjectId } = require('mongodb');
+const rateLimit = require('express-rate-limit');
 
-// Apply rate limiting
-const crmRateLimit = createRateLimit({ windowMs: 60 * 1000, max: 100 });
+// Rate limiting
+const crmLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: 100, // limit each IP to 100 requests per windowMs
+  message: 'Too many CRM requests from this IP, please try again later.'
+});
 
-// ==================== CUSTOMER MANAGEMENT ====================
+// Apply rate limiting and authentication to all routes
+router.use(crmLimiter);
+router.use(authenticateToken);
+
+// ===== CRM CUSTOMERS =====
 
 // GET /api/crm/customers - Get all customers
-router.get('/customers', authenticateToken, requireRole(['admin', 'crm_manager', 'sales_manager', 'super_admin']), crmRateLimit, async (req, res) => {
+router.get('/customers', async (req, res) => {
   try {
-    const { page = 1, limit = 50, status, source, search } = req.query;
-    const skip = (page - 1) * limit;
-    
     const customersCollection = await getCollection('customers');
+    const { page = 1, limit = 10, status, source } = req.query;
     
-    // Build query
-    const query = {};
-    if (status) query.status = status;
-    if (source) query.source = source;
-    if (search) {
-      query.$or = [
-        { firstName: { $regex: search, $options: 'i' } },
-        { lastName: { $regex: search, $options: 'i' } },
-        { email: { $regex: search, $options: 'i' } },
-        { company: { $regex: search, $options: 'i' } }
-      ];
-    }
+    const filter = {};
+    if (status) filter.status = status;
+    if (source) filter.source = source;
+    
+    const skip = (parseInt(page) - 1) * parseInt(limit);
     
     const customers = await customersCollection
-      .find(query)
-      .sort({ createdAt: -1 })
+      .find(filter)
       .skip(skip)
       .limit(parseInt(limit))
+      .sort({ createdAt: -1 })
       .toArray();
     
-    const total = await customersCollection.countDocuments(query);
+    const total = await customersCollection.countDocuments(filter);
     
     res.json({
       success: true,
@@ -53,154 +46,123 @@ router.get('/customers', authenticateToken, requireRole(['admin', 'crm_manager',
           page: parseInt(page),
           limit: parseInt(limit),
           total,
-          pages: Math.ceil(total / limit)
+          pages: Math.ceil(total / parseInt(limit))
         }
-      },
-      message: 'Customers retrieved successfully',
-      timestamp: new Date().toISOString()
+      }
     });
   } catch (error) {
-    console.error('Get customers error:', error);
+    console.error('Error fetching customers:', error);
     res.status(500).json({
       success: false,
-      error: 'GET_CUSTOMERS_FAILED',
-      message: 'Failed to retrieve customers',
-      timestamp: new Date().toISOString()
+      message: 'Failed to fetch customers',
+      error: process.env.NODE_ENV === 'development' ? error.message : undefined
     });
   }
 });
 
 // GET /api/crm/customers/:id - Get customer by ID
-router.get('/customers/:id', authenticateToken, requireRole(['admin', 'crm_manager', 'sales_manager', 'super_admin']), crmRateLimit, async (req, res) => {
+router.get('/customers/:id', async (req, res) => {
   try {
-    const { id } = req.params;
     const customersCollection = await getCollection('customers');
-    
-    const customer = await customersCollection.findOne({ _id: new ObjectId(id) });
+    const customer = await customersCollection.findOne({ _id: req.params.id });
     
     if (!customer) {
       return res.status(404).json({
         success: false,
-        error: 'CUSTOMER_NOT_FOUND',
-        message: 'Customer not found',
-        timestamp: new Date().toISOString()
+        message: 'Customer not found'
       });
     }
     
     res.json({
       success: true,
-      data: { customer },
-      message: 'Customer retrieved successfully',
-      timestamp: new Date().toISOString()
+      data: customer
     });
   } catch (error) {
-    console.error('Get customer error:', error);
+    console.error('Error fetching customer:', error);
     res.status(500).json({
       success: false,
-      error: 'GET_CUSTOMER_FAILED',
-      message: 'Failed to retrieve customer',
-      timestamp: new Date().toISOString()
+      message: 'Failed to fetch customer',
+      error: process.env.NODE_ENV === 'development' ? error.message : undefined
     });
   }
 });
 
 // POST /api/crm/customers - Create new customer
-router.post('/customers', authenticateToken, requireRole(['admin', 'crm_manager', 'sales_manager', 'super_admin']), crmRateLimit, async (req, res) => {
+router.post('/customers', requireRole(['admin', 'crm_manager', 'super_admin']), async (req, res) => {
   try {
-    const {
-      firstName,
-      lastName,
-      email,
-      phone,
-      company,
-      position,
-      source,
-      status = 'lead',
-      notes,
-      address
+    const customersCollection = await getCollection('customers');
+    const { 
+      name, 
+      email, 
+      phone, 
+      company, 
+      status, 
+      source, 
+      notes 
     } = req.body;
     
-    if (!firstName || !lastName || !email) {
+    if (!name || !email) {
       return res.status(400).json({
         success: false,
-        error: 'MISSING_REQUIRED_FIELDS',
-        message: 'First name, last name, and email are required',
-        timestamp: new Date().toISOString()
+        message: 'Name and email are required'
       });
     }
     
-    const customersCollection = await getCollection('customers');
-    
-    // Check if customer already exists
-    const existingCustomer = await customersCollection.findOne({ email: email.toLowerCase() });
-    if (existingCustomer) {
-      return res.status(409).json({
-        success: false,
-        error: 'CUSTOMER_EXISTS',
-        message: 'Customer with this email already exists',
-        timestamp: new Date().toISOString()
-      });
-    }
-    
-    const newCustomer = {
-      firstName,
-      lastName,
-      email: email.toLowerCase(),
-      phone: phone || null,
-      company: company || null,
-      position: position || null,
+    const customer = {
+      name,
+      email,
+      phone: phone || '',
+      company: company || '',
+      status: status || 'lead',
       source: source || 'website',
-      status,
-      notes: notes || null,
-      address: address || null,
+      notes: notes || '',
+      createdBy: req.user.userId,
       createdAt: new Date(),
-      updatedAt: new Date(),
-      createdBy: req.user.userId
+      updatedAt: new Date()
     };
     
-    const result = await customersCollection.insertOne(newCustomer);
+    const result = await customersCollection.insertOne(customer);
     
     res.status(201).json({
       success: true,
-      data: { customer: { ...newCustomer, _id: result.insertedId } },
-      message: 'Customer created successfully',
-      timestamp: new Date().toISOString()
+      data: {
+        id: result.insertedId,
+        ...customer
+      },
+      message: 'Customer created successfully'
     });
   } catch (error) {
-    console.error('Create customer error:', error);
+    console.error('Error creating customer:', error);
     res.status(500).json({
       success: false,
-      error: 'CREATE_CUSTOMER_FAILED',
       message: 'Failed to create customer',
-      timestamp: new Date().toISOString()
+      error: process.env.NODE_ENV === 'development' ? error.message : undefined
     });
   }
 });
 
-// ==================== LEADS MANAGEMENT ====================
+// ===== CRM LEADS =====
 
 // GET /api/crm/leads - Get all leads
-router.get('/leads', authenticateToken, requireRole(['admin', 'crm_manager', 'sales_manager', 'super_admin']), crmRateLimit, async (req, res) => {
+router.get('/leads', async (req, res) => {
   try {
-    const { page = 1, limit = 50, status, source, assignedTo } = req.query;
-    const skip = (page - 1) * limit;
-    
     const leadsCollection = await getCollection('leads');
+    const { page = 1, limit = 10, status, source } = req.query;
     
-    // Build query
-    const query = {};
-    if (status) query.status = status;
-    if (source) query.source = source;
-    if (assignedTo) query.assignedTo = assignedTo;
+    const filter = {};
+    if (status) filter.status = status;
+    if (source) filter.source = source;
+    
+    const skip = (parseInt(page) - 1) * parseInt(limit);
     
     const leads = await leadsCollection
-      .find(query)
-      .sort({ createdAt: -1 })
+      .find(filter)
       .skip(skip)
       .limit(parseInt(limit))
+      .sort({ createdAt: -1 })
       .toArray();
     
-    const total = await leadsCollection.countDocuments(query);
+    const total = await leadsCollection.countDocuments(filter);
     
     res.json({
       success: true,
@@ -210,167 +172,220 @@ router.get('/leads', authenticateToken, requireRole(['admin', 'crm_manager', 'sa
           page: parseInt(page),
           limit: parseInt(limit),
           total,
-          pages: Math.ceil(total / limit)
+          pages: Math.ceil(total / parseInt(limit))
         }
-      },
-      message: 'Leads retrieved successfully',
-      timestamp: new Date().toISOString()
+      }
     });
   } catch (error) {
-    console.error('Get leads error:', error);
+    console.error('Error fetching leads:', error);
     res.status(500).json({
       success: false,
-      error: 'GET_LEADS_FAILED',
-      message: 'Failed to retrieve leads',
-      timestamp: new Date().toISOString()
+      message: 'Failed to fetch leads',
+      error: process.env.NODE_ENV === 'development' ? error.message : undefined
     });
   }
 });
 
-// ==================== SALES TRACKING ====================
+// ===== CRM SALES =====
 
-// GET /api/crm/sales - Get sales data
-router.get('/sales', authenticateToken, requireRole(['admin', 'crm_manager', 'sales_manager', 'super_admin']), crmRateLimit, async (req, res) => {
+// GET /api/crm/sales - Get all sales
+router.get('/sales', async (req, res) => {
   try {
-    const { period = '30d', status } = req.query;
-    
     const salesCollection = await getCollection('sales');
+    const { page = 1, limit = 10, status, dateFrom, dateTo } = req.query;
     
-    // Calculate date range
-    const endDate = new Date();
-    const startDate = new Date();
-    startDate.setDate(endDate.getDate() - parseInt(period.replace('d', '')));
+    const filter = {};
+    if (status) filter.status = status;
+    if (dateFrom || dateTo) {
+      filter.createdAt = {};
+      if (dateFrom) filter.createdAt.$gte = new Date(dateFrom);
+      if (dateTo) filter.createdAt.$lte = new Date(dateTo);
+    }
     
-    // Build query
-    const query = {
-      createdAt: { $gte: startDate, $lte: endDate }
-    };
-    if (status) query.status = status;
+    const skip = (parseInt(page) - 1) * parseInt(limit);
     
     const sales = await salesCollection
-      .find(query)
+      .find(filter)
+      .skip(skip)
+      .limit(parseInt(limit))
       .sort({ createdAt: -1 })
       .toArray();
     
-    // Calculate totals
-    const totals = sales.reduce((acc, sale) => {
-      acc.totalRevenue += sale.amount || 0;
-      acc.totalDeals += 1;
-      if (sale.status === 'closed') {
-        acc.closedDeals += 1;
-        acc.closedRevenue += sale.amount || 0;
-      }
-      return acc;
-    }, { totalRevenue: 0, totalDeals: 0, closedDeals: 0, closedRevenue: 0 });
+    const total = await salesCollection.countDocuments(filter);
     
     res.json({
       success: true,
       data: {
         sales,
-        totals,
-        period,
-        summary: {
-          totalRecords: sales.length,
-          conversionRate: sales.length > 0 ? (totals.closedDeals / sales.length * 100).toFixed(2) : 0
+        pagination: {
+          page: parseInt(page),
+          limit: parseInt(limit),
+          total,
+          pages: Math.ceil(total / parseInt(limit))
         }
-      },
-      message: 'Sales data retrieved successfully',
-      timestamp: new Date().toISOString()
+      }
     });
   } catch (error) {
-    console.error('Get sales error:', error);
+    console.error('Error fetching sales:', error);
     res.status(500).json({
       success: false,
-      error: 'GET_SALES_FAILED',
-      message: 'Failed to retrieve sales data',
-      timestamp: new Date().toISOString()
+      message: 'Failed to fetch sales',
+      error: process.env.NODE_ENV === 'development' ? error.message : undefined
     });
   }
 });
 
-// ==================== CRM ANALYTICS ====================
+// ===== CRM TICKETS =====
 
-// GET /api/crm/analytics - Get CRM analytics
-router.get('/analytics', authenticateToken, requireRole(['admin', 'crm_manager', 'sales_manager', 'super_admin']), crmRateLimit, async (req, res) => {
+// GET /api/crm/tickets - Get all tickets
+router.get('/tickets', async (req, res) => {
   try {
-    const { period = '30d' } = req.query;
+    const ticketsCollection = await getCollection('tickets');
+    const { page = 1, limit = 10, status, priority, assignee } = req.query;
     
-    const customersCollection = await getCollection('customers');
-    const leadsCollection = await getCollection('leads');
-    const salesCollection = await getCollection('sales');
+    const filter = {};
+    if (status) filter.status = status;
+    if (priority) filter.priority = priority;
+    if (assignee) filter.assignee = assignee;
     
-    // Calculate date range
-    const endDate = new Date();
-    const startDate = new Date();
-    startDate.setDate(endDate.getDate() - parseInt(period.replace('d', '')));
+    const skip = (parseInt(page) - 1) * parseInt(limit);
     
-    // Customer statistics
-    const totalCustomers = await customersCollection.countDocuments();
-    const newCustomers = await customersCollection.countDocuments({
-      createdAt: { $gte: startDate, $lte: endDate }
-    });
+    const tickets = await ticketsCollection
+      .find(filter)
+      .skip(skip)
+      .limit(parseInt(limit))
+      .sort({ createdAt: -1 })
+      .toArray();
     
-    // Lead statistics
-    const totalLeads = await leadsCollection.countDocuments();
-    const newLeads = await leadsCollection.countDocuments({
-      createdAt: { $gte: startDate, $lte: endDate }
-    });
-    
-    // Sales statistics
-    const totalSales = await salesCollection.countDocuments();
-    const periodSales = await salesCollection.countDocuments({
-      createdAt: { $gte: startDate, $lte: endDate }
-    });
-    
-    const analytics = {
-      customers: {
-        total: totalCustomers,
-        new: newCustomers
-      },
-      leads: {
-        total: totalLeads,
-        new: newLeads
-      },
-      sales: {
-        total: totalSales,
-        period: periodSales
-      },
-      period,
-      generatedAt: new Date()
-    };
+    const total = await ticketsCollection.countDocuments(filter);
     
     res.json({
       success: true,
-      data: analytics,
-      message: 'CRM analytics retrieved successfully',
-      timestamp: new Date().toISOString()
+      data: {
+        tickets,
+        pagination: {
+          page: parseInt(page),
+          limit: parseInt(limit),
+          total,
+          pages: Math.ceil(total / parseInt(limit))
+        }
+      }
     });
   } catch (error) {
-    console.error('Get CRM analytics error:', error);
+    console.error('Error fetching tickets:', error);
     res.status(500).json({
       success: false,
-      error: 'GET_CRM_ANALYTICS_FAILED',
-      message: 'Failed to retrieve CRM analytics',
-      timestamp: new Date().toISOString()
+      message: 'Failed to fetch tickets',
+      error: process.env.NODE_ENV === 'development' ? error.message : undefined
     });
   }
 });
 
-// ==================== GENERIC HANDLERS ====================
+// POST /api/crm/tickets - Create new ticket
+router.post('/tickets', requireRole(['admin', 'crm_manager', 'super_admin', 'employee']), async (req, res) => {
+  try {
+    const ticketsCollection = await getCollection('tickets');
+    const { 
+      title, 
+      description, 
+      priority, 
+      category, 
+      customerId, 
+      assignee 
+    } = req.body;
+    
+    if (!title || !description) {
+      return res.status(400).json({
+        success: false,
+        message: 'Title and description are required'
+      });
+    }
+    
+    const ticket = {
+      title,
+      description,
+      priority: priority || 'medium',
+      category: category || 'general',
+      customerId: customerId || null,
+      assignee: assignee || null,
+      status: 'open',
+      createdBy: req.user.userId,
+      createdAt: new Date(),
+      updatedAt: new Date()
+    };
+    
+    const result = await ticketsCollection.insertOne(ticket);
+    
+    res.status(201).json({
+      success: true,
+      data: {
+        id: result.insertedId,
+        ...ticket
+      },
+      message: 'Ticket created successfully'
+    });
+  } catch (error) {
+    console.error('Error creating ticket:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Failed to create ticket',
+      error: process.env.NODE_ENV === 'development' ? error.message : undefined
+    });
+  }
+});
 
-// GET /api/crm - Get CRM overview
-router.get('/', authenticateToken, requireRole(['admin', 'crm_manager', 'sales_manager', 'super_admin']), crmRateLimit, async (req, res) => {
-  res.json({
-    success: true,
-    message: 'CRM Management API is running',
-    endpoints: {
-      customers: '/api/crm/customers',
-      leads: '/api/crm/leads',
-      sales: '/api/crm/sales',
-      analytics: '/api/crm/analytics'
-    },
-    timestamp: new Date().toISOString()
-  });
+// ===== CRM ANALYTICS =====
+
+// GET /api/crm/analytics - Get CRM analytics
+router.get('/analytics', async (req, res) => {
+  try {
+    const customersCollection = await getCollection('customers');
+    const leadsCollection = await getCollection('leads');
+    const salesCollection = await getCollection('sales');
+    const ticketsCollection = await getCollection('tickets');
+    
+    const totalCustomers = await customersCollection.countDocuments();
+    const totalLeads = await leadsCollection.countDocuments();
+    const totalSales = await salesCollection.countDocuments();
+    const totalTickets = await ticketsCollection.countDocuments();
+    
+    // Get customers by status
+    const customerStatusStats = await customersCollection.aggregate([
+      { $group: { _id: '$status', count: { $sum: 1 } } }
+    ]).toArray();
+    
+    // Get leads by source
+    const leadSourceStats = await leadsCollection.aggregate([
+      { $group: { _id: '$source', count: { $sum: 1 } } }
+    ]).toArray();
+    
+    // Get tickets by priority
+    const ticketPriorityStats = await ticketsCollection.aggregate([
+      { $group: { _id: '$priority', count: { $sum: 1 } } }
+    ]).toArray();
+    
+    res.json({
+      success: true,
+      data: {
+        overview: {
+          totalCustomers,
+          totalLeads,
+          totalSales,
+          totalTickets
+        },
+        customerStatusStats,
+        leadSourceStats,
+        ticketPriorityStats
+      }
+    });
+  } catch (error) {
+    console.error('Error fetching CRM analytics:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Failed to fetch CRM analytics',
+      error: process.env.NODE_ENV === 'development' ? error.message : undefined
+    });
+  }
 });
 
 module.exports = router;

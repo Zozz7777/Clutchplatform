@@ -1,66 +1,56 @@
-/**
- * Audit Trail Routes
- * Complete audit trail system with activity logging and compliance tracking
- */
-
 const express = require('express');
 const router = express.Router();
 const { authenticateToken, requireRole } = require('../middleware/auth');
 const { getCollection } = require('../config/optimized-database');
-const { rateLimit: createRateLimit } = require('../middleware/rateLimit');
-const { ObjectId } = require('mongodb');
+const rateLimit = require('express-rate-limit');
 
-// Apply rate limiting
-const auditRateLimit = createRateLimit({ windowMs: 60 * 1000, max: 100 });
+// Rate limiting
+const auditLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: 50, // limit each IP to 50 requests per windowMs
+  message: 'Too many audit requests from this IP, please try again later.'
+});
 
-// ==================== AUDIT LOG MANAGEMENT ====================
+// Apply rate limiting and authentication to all routes
+router.use(auditLimiter);
+router.use(authenticateToken);
 
-// GET /api/audit-trail - Get audit trail logs
-router.get('/', authenticateToken, requireRole(['admin', 'auditor', 'super_admin']), auditRateLimit, async (req, res) => {
+// ===== AUDIT TRAIL MANAGEMENT =====
+
+// GET /api/audit-trail - Get all audit logs
+router.get('/', async (req, res) => {
   try {
+    const auditCollection = await getCollection('audit_logs');
     const { 
       page = 1, 
       limit = 50, 
-      userId, 
       action, 
+      userId, 
       resource, 
       dateFrom, 
-      dateTo,
-      severity,
-      search 
+      dateTo 
     } = req.query;
-    const skip = (page - 1) * limit;
     
-    const auditCollection = await getCollection('audit_logs');
-    
-    // Build query
-    const query = {};
-    if (userId) query.userId = userId;
-    if (action) query.action = action;
-    if (resource) query.resource = resource;
-    if (severity) query.severity = severity;
+    const filter = {};
+    if (action) filter.action = action;
+    if (userId) filter.userId = userId;
+    if (resource) filter.resource = resource;
     if (dateFrom || dateTo) {
-      query.timestamp = {};
-      if (dateFrom) query.timestamp.$gte = new Date(dateFrom);
-      if (dateTo) query.timestamp.$lte = new Date(dateTo);
+      filter.timestamp = {};
+      if (dateFrom) filter.timestamp.$gte = new Date(dateFrom);
+      if (dateTo) filter.timestamp.$lte = new Date(dateTo);
     }
-    if (search) {
-      query.$or = [
-        { action: { $regex: search, $options: 'i' } },
-        { resource: { $regex: search, $options: 'i' } },
-        { description: { $regex: search, $options: 'i' } },
-        { userEmail: { $regex: search, $options: 'i' } }
-      ];
-    }
+    
+    const skip = (parseInt(page) - 1) * parseInt(limit);
     
     const auditLogs = await auditCollection
-      .find(query)
-      .sort({ timestamp: -1 })
+      .find(filter)
       .skip(skip)
       .limit(parseInt(limit))
+      .sort({ timestamp: -1 })
       .toArray();
     
-    const total = await auditCollection.countDocuments(query);
+    const total = await auditCollection.countDocuments(filter);
     
     res.json({
       success: true,
@@ -70,92 +60,74 @@ router.get('/', authenticateToken, requireRole(['admin', 'auditor', 'super_admin
           page: parseInt(page),
           limit: parseInt(limit),
           total,
-          pages: Math.ceil(total / limit)
+          pages: Math.ceil(total / parseInt(limit))
         }
-      },
-      message: 'Audit trail retrieved successfully',
-      timestamp: new Date().toISOString()
+      }
     });
   } catch (error) {
-    console.error('Get audit trail error:', error);
+    console.error('Error fetching audit logs:', error);
     res.status(500).json({
       success: false,
-      error: 'GET_AUDIT_TRAIL_FAILED',
-      message: 'Failed to retrieve audit trail',
-      timestamp: new Date().toISOString()
+      message: 'Failed to fetch audit logs',
+      error: process.env.NODE_ENV === 'development' ? error.message : undefined
     });
   }
 });
 
 // GET /api/audit-trail/:id - Get audit log by ID
-router.get('/:id', authenticateToken, requireRole(['admin', 'auditor', 'super_admin']), auditRateLimit, async (req, res) => {
+router.get('/:id', async (req, res) => {
   try {
-    const { id } = req.params;
     const auditCollection = await getCollection('audit_logs');
-    
-    const auditLog = await auditCollection.findOne({ _id: new ObjectId(id) });
+    const auditLog = await auditCollection.findOne({ _id: req.params.id });
     
     if (!auditLog) {
       return res.status(404).json({
         success: false,
-        error: 'AUDIT_LOG_NOT_FOUND',
-        message: 'Audit log not found',
-        timestamp: new Date().toISOString()
+        message: 'Audit log not found'
       });
     }
     
     res.json({
       success: true,
-      data: { auditLog },
-      message: 'Audit log retrieved successfully',
-      timestamp: new Date().toISOString()
+      data: auditLog
     });
   } catch (error) {
-    console.error('Get audit log error:', error);
+    console.error('Error fetching audit log:', error);
     res.status(500).json({
       success: false,
-      error: 'GET_AUDIT_LOG_FAILED',
-      message: 'Failed to retrieve audit log',
-      timestamp: new Date().toISOString()
+      message: 'Failed to fetch audit log',
+      error: process.env.NODE_ENV === 'development' ? error.message : undefined
     });
   }
 });
 
 // POST /api/audit-trail - Create audit log entry
-router.post('/', authenticateToken, requireRole(['admin', 'auditor', 'super_admin']), auditRateLimit, async (req, res) => {
+router.post('/', requireRole(['admin', 'super_admin']), async (req, res) => {
   try {
-    const {
-      action,
-      resource,
-      resourceId,
-      description,
-      severity = 'info',
-      metadata = {},
-      ipAddress,
-      userAgent
+    const auditCollection = await getCollection('audit_logs');
+    const { 
+      action, 
+      resource, 
+      resourceId, 
+      details, 
+      userId, 
+      ipAddress, 
+      userAgent 
     } = req.body;
     
     if (!action || !resource) {
       return res.status(400).json({
         success: false,
-        error: 'MISSING_REQUIRED_FIELDS',
-        message: 'Action and resource are required',
-        timestamp: new Date().toISOString()
+        message: 'Action and resource are required'
       });
     }
-    
-    const auditCollection = await getCollection('audit_logs');
     
     const auditLog = {
       action,
       resource,
       resourceId: resourceId || null,
-      description: description || null,
-      severity,
-      userId: req.user.userId,
-      userEmail: req.user.email,
-      userName: req.user.name,
-      metadata,
+      details: details || {},
+      userId: userId || req.user.userId,
       ipAddress: ipAddress || req.ip,
       userAgent: userAgent || req.get('User-Agent'),
       timestamp: new Date()
@@ -165,248 +137,269 @@ router.post('/', authenticateToken, requireRole(['admin', 'auditor', 'super_admi
     
     res.status(201).json({
       success: true,
-      data: { auditLog: { ...auditLog, _id: result.insertedId } },
-      message: 'Audit log created successfully',
-      timestamp: new Date().toISOString()
+      data: {
+        id: result.insertedId,
+        ...auditLog
+      },
+      message: 'Audit log created successfully'
     });
   } catch (error) {
-    console.error('Create audit log error:', error);
+    console.error('Error creating audit log:', error);
     res.status(500).json({
       success: false,
-      error: 'CREATE_AUDIT_LOG_FAILED',
       message: 'Failed to create audit log',
-      timestamp: new Date().toISOString()
+      error: process.env.NODE_ENV === 'development' ? error.message : undefined
     });
   }
 });
 
-// ==================== AUDIT ANALYTICS ====================
+// ===== SECURITY AUDIT =====
+
+// GET /api/audit-trail/security - Get security audit logs
+router.get('/security', requireRole(['admin', 'super_admin']), async (req, res) => {
+  try {
+    const auditCollection = await getCollection('audit_logs');
+    const { page = 1, limit = 50, dateFrom, dateTo } = req.query;
+    
+    const filter = {
+      action: { $in: ['login', 'logout', 'failed_login', 'password_change', 'permission_change'] }
+    };
+    
+    if (dateFrom || dateTo) {
+      filter.timestamp = {};
+      if (dateFrom) filter.timestamp.$gte = new Date(dateFrom);
+      if (dateTo) filter.timestamp.$lte = new Date(dateTo);
+    }
+    
+    const skip = (parseInt(page) - 1) * parseInt(limit);
+    
+    const securityLogs = await auditCollection
+      .find(filter)
+      .skip(skip)
+      .limit(parseInt(limit))
+      .sort({ timestamp: -1 })
+      .toArray();
+    
+    const total = await auditCollection.countDocuments(filter);
+    
+    res.json({
+      success: true,
+      data: {
+        securityLogs,
+        pagination: {
+          page: parseInt(page),
+          limit: parseInt(limit),
+          total,
+          pages: Math.ceil(total / parseInt(limit))
+        }
+      }
+    });
+  } catch (error) {
+    console.error('Error fetching security audit logs:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Failed to fetch security audit logs',
+      error: process.env.NODE_ENV === 'development' ? error.message : undefined
+    });
+  }
+});
+
+// ===== USER ACTIVITY AUDIT =====
+
+// GET /api/audit-trail/user-activity - Get user activity audit logs
+router.get('/user-activity', requireRole(['admin', 'super_admin']), async (req, res) => {
+  try {
+    const auditCollection = await getCollection('audit_logs');
+    const { page = 1, limit = 50, userId, dateFrom, dateTo } = req.query;
+    
+    const filter = {};
+    if (userId) filter.userId = userId;
+    if (dateFrom || dateTo) {
+      filter.timestamp = {};
+      if (dateFrom) filter.timestamp.$gte = new Date(dateFrom);
+      if (dateTo) filter.timestamp.$lte = new Date(dateTo);
+    }
+    
+    const skip = (parseInt(page) - 1) * parseInt(limit);
+    
+    const userActivityLogs = await auditCollection
+      .find(filter)
+      .skip(skip)
+      .limit(parseInt(limit))
+      .sort({ timestamp: -1 })
+      .toArray();
+    
+    const total = await auditCollection.countDocuments(filter);
+    
+    res.json({
+      success: true,
+      data: {
+        userActivityLogs,
+        pagination: {
+          page: parseInt(page),
+          limit: parseInt(limit),
+          total,
+          pages: Math.ceil(total / parseInt(limit))
+        }
+      }
+    });
+  } catch (error) {
+    console.error('Error fetching user activity audit logs:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Failed to fetch user activity audit logs',
+      error: process.env.NODE_ENV === 'development' ? error.message : undefined
+    });
+  }
+});
+
+// ===== AUDIT ANALYTICS =====
 
 // GET /api/audit-trail/analytics - Get audit analytics
-router.get('/analytics', authenticateToken, requireRole(['admin', 'auditor', 'super_admin']), auditRateLimit, async (req, res) => {
+router.get('/analytics', requireRole(['admin', 'super_admin']), async (req, res) => {
   try {
-    const { period = '30d' } = req.query;
-    
     const auditCollection = await getCollection('audit_logs');
     
-    // Calculate date range
-    const endDate = new Date();
-    const startDate = new Date();
-    startDate.setDate(endDate.getDate() - parseInt(period.replace('d', '')));
-    
-    // Total audit logs
     const totalLogs = await auditCollection.countDocuments();
-    const periodLogs = await auditCollection.countDocuments({
-      timestamp: { $gte: startDate, $lte: endDate }
-    });
     
-    // Logs by action
-    const logsByAction = await auditCollection.aggregate([
-      { $match: { timestamp: { $gte: startDate, $lte: endDate } } },
-      { $group: { _id: '$action', count: { $sum: 1 } } },
-      { $sort: { count: -1 } }
+    // Get logs by action
+    const actionStats = await auditCollection.aggregate([
+      { $group: { _id: '$action', count: { $sum: 1 } } }
     ]).toArray();
     
-    // Logs by resource
-    const logsByResource = await auditCollection.aggregate([
-      { $match: { timestamp: { $gte: startDate, $lte: endDate } } },
-      { $group: { _id: '$resource', count: { $sum: 1 } } },
-      { $sort: { count: -1 } }
+    // Get logs by resource
+    const resourceStats = await auditCollection.aggregate([
+      { $group: { _id: '$resource', count: { $sum: 1 } } }
     ]).toArray();
     
-    // Logs by severity
-    const logsBySeverity = await auditCollection.aggregate([
-      { $match: { timestamp: { $gte: startDate, $lte: endDate } } },
-      { $group: { _id: '$severity', count: { $sum: 1 } } },
-      { $sort: { count: -1 } }
-    ]).toArray();
-    
-    // Most active users
-    const mostActiveUsers = await auditCollection.aggregate([
-      { $match: { timestamp: { $gte: startDate, $lte: endDate } } },
-      { $group: { _id: '$userId', userEmail: { $first: '$userEmail' }, userName: { $first: '$userName' }, count: { $sum: 1 } } },
+    // Get logs by user
+    const userStats = await auditCollection.aggregate([
+      { $group: { _id: '$userId', count: { $sum: 1 } } },
       { $sort: { count: -1 } },
       { $limit: 10 }
     ]).toArray();
     
-    // Daily activity
-    const dailyActivity = await auditCollection.aggregate([
-      { $match: { timestamp: { $gte: startDate, $lte: endDate } } },
-      { 
-        $group: { 
-          _id: { 
-            year: { $year: '$timestamp' },
-            month: { $month: '$timestamp' },
-            day: { $dayOfMonth: '$timestamp' }
-          }, 
-          count: { $sum: 1 } 
-        } 
-      },
-      { $sort: { '_id.year': 1, '_id.month': 1, '_id.day': 1 } }
-    ]).toArray();
-    
-    const analytics = {
-      overview: {
-        total: totalLogs,
-        period: periodLogs
-      },
-      byAction: logsByAction,
-      byResource: logsByResource,
-      bySeverity: logsBySeverity,
-      mostActiveUsers,
-      dailyActivity,
-      period,
-      generatedAt: new Date()
-    };
+    // Get recent activity (last 24 hours)
+    const recentActivity = await auditCollection.countDocuments({
+      timestamp: { $gte: new Date(Date.now() - 24 * 60 * 60 * 1000) }
+    });
     
     res.json({
       success: true,
-      data: analytics,
-      message: 'Audit analytics retrieved successfully',
-      timestamp: new Date().toISOString()
+      data: {
+        overview: {
+          totalLogs,
+          recentActivity
+        },
+        actionStats,
+        resourceStats,
+        topUsers: userStats
+      }
     });
   } catch (error) {
-    console.error('Get audit analytics error:', error);
+    console.error('Error fetching audit analytics:', error);
     res.status(500).json({
       success: false,
-      error: 'GET_AUDIT_ANALYTICS_FAILED',
-      message: 'Failed to retrieve audit analytics',
-      timestamp: new Date().toISOString()
+      message: 'Failed to fetch audit analytics',
+      error: process.env.NODE_ENV === 'development' ? error.message : undefined
     });
   }
 });
 
-// ==================== COMPLIANCE REPORTS ====================
+// ===== COMPLIANCE AUDIT =====
 
-// GET /api/audit-trail/compliance - Get compliance report
-router.get('/compliance', authenticateToken, requireRole(['admin', 'auditor', 'compliance_officer', 'super_admin']), auditRateLimit, async (req, res) => {
+// GET /api/audit-trail/compliance - Get compliance audit logs
+router.get('/compliance', requireRole(['admin', 'super_admin']), async (req, res) => {
   try {
-    const { period = '90d', format = 'json' } = req.query;
-    
     const auditCollection = await getCollection('audit_logs');
+    const { page = 1, limit = 50, dateFrom, dateTo } = req.query;
     
-    // Calculate date range
-    const endDate = new Date();
-    const startDate = new Date();
-    startDate.setDate(endDate.getDate() - parseInt(period.replace('d', '')));
-    
-    // Critical actions (security-related)
-    const criticalActions = await auditCollection.countDocuments({
-      timestamp: { $gte: startDate, $lte: endDate },
-      $or: [
-        { action: { $regex: /login|logout|password|auth/i } },
-        { action: { $regex: /delete|remove|destroy/i } },
-        { action: { $regex: /permission|role|access/i } },
-        { severity: 'critical' }
-      ]
-    });
-    
-    // Failed actions
-    const failedActions = await auditCollection.countDocuments({
-      timestamp: { $gte: startDate, $lte: endDate },
-      severity: 'error'
-    });
-    
-    // Data access logs
-    const dataAccessLogs = await auditCollection.countDocuments({
-      timestamp: { $gte: startDate, $lte: endDate },
-      action: { $regex: /read|view|access|export/i }
-    });
-    
-    // User activity summary
-    const userActivity = await auditCollection.aggregate([
-      { $match: { timestamp: { $gte: startDate, $lte: endDate } } },
-      { $group: { _id: '$userId', userEmail: { $first: '$userEmail' }, userName: { $first: '$userName' }, actions: { $sum: 1 } } },
-      { $sort: { actions: -1 } }
-    ]).toArray();
-    
-    const complianceReport = {
-      period: {
-        start: startDate,
-        end: endDate,
-        days: parseInt(period.replace('d', ''))
-      },
-      summary: {
-        totalLogs: await auditCollection.countDocuments({ timestamp: { $gte: startDate, $lte: endDate } }),
-        criticalActions,
-        failedActions,
-        dataAccessLogs,
-        uniqueUsers: userActivity.length
-      },
-      userActivity,
-      generatedAt: new Date(),
-      generatedBy: req.user.userId
+    const filter = {
+      action: { $in: ['data_access', 'data_export', 'data_deletion', 'permission_change', 'role_change'] }
     };
+    
+    if (dateFrom || dateTo) {
+      filter.timestamp = {};
+      if (dateFrom) filter.timestamp.$gte = new Date(dateFrom);
+      if (dateTo) filter.timestamp.$lte = new Date(dateTo);
+    }
+    
+    const skip = (parseInt(page) - 1) * parseInt(limit);
+    
+    const complianceLogs = await auditCollection
+      .find(filter)
+      .skip(skip)
+      .limit(parseInt(limit))
+      .sort({ timestamp: -1 })
+      .toArray();
+    
+    const total = await auditCollection.countDocuments(filter);
     
     res.json({
       success: true,
-      data: { complianceReport },
-      message: 'Compliance report generated successfully',
-      timestamp: new Date().toISOString()
+      data: {
+        complianceLogs,
+        pagination: {
+          page: parseInt(page),
+          limit: parseInt(limit),
+          total,
+          pages: Math.ceil(total / parseInt(limit))
+        }
+      }
     });
   } catch (error) {
-    console.error('Get compliance report error:', error);
+    console.error('Error fetching compliance audit logs:', error);
     res.status(500).json({
       success: false,
-      error: 'GET_COMPLIANCE_REPORT_FAILED',
-      message: 'Failed to generate compliance report',
-      timestamp: new Date().toISOString()
+      message: 'Failed to fetch compliance audit logs',
+      error: process.env.NODE_ENV === 'development' ? error.message : undefined
     });
   }
 });
 
-// ==================== AUDIT EXPORT ====================
+// ===== AUDIT EXPORT =====
 
 // GET /api/audit-trail/export - Export audit logs
-router.get('/export', authenticateToken, requireRole(['admin', 'auditor', 'super_admin']), auditRateLimit, async (req, res) => {
+router.get('/export', requireRole(['admin', 'super_admin']), async (req, res) => {
   try {
-    const { format = 'json', dateFrom, dateTo, action, resource } = req.query;
-    
     const auditCollection = await getCollection('audit_logs');
+    const { format = 'json', dateFrom, dateTo } = req.query;
     
-    // Build query
-    const query = {};
+    const filter = {};
     if (dateFrom || dateTo) {
-      query.timestamp = {};
-      if (dateFrom) query.timestamp.$gte = new Date(dateFrom);
-      if (dateTo) query.timestamp.$lte = new Date(dateTo);
+      filter.timestamp = {};
+      if (dateFrom) filter.timestamp.$gte = new Date(dateFrom);
+      if (dateTo) filter.timestamp.$lte = new Date(dateTo);
     }
-    if (action) query.action = action;
-    if (resource) query.resource = resource;
     
     const auditLogs = await auditCollection
-      .find(query)
+      .find(filter)
       .sort({ timestamp: -1 })
       .toArray();
     
     if (format === 'csv') {
       // Convert to CSV format
-      const csvHeaders = 'Timestamp,Action,Resource,User,Severity,Description,IP Address\n';
-      const csvData = auditLogs.map(log => 
-        `${log.timestamp},${log.action},${log.resource},${log.userEmail},${log.severity},"${log.description || ''}",${log.ipAddress}`
+      const csv = auditLogs.map(log => 
+        `${log.timestamp},${log.action},${log.resource},${log.userId},${log.ipAddress}`
       ).join('\n');
       
       res.setHeader('Content-Type', 'text/csv');
-      res.setHeader('Content-Disposition', 'attachment; filename=audit-trail.csv');
-      res.send(csvHeaders + csvData);
+      res.setHeader('Content-Disposition', 'attachment; filename=audit-logs.csv');
+      res.send(csv);
     } else {
-      // JSON format
-      res.setHeader('Content-Type', 'application/json');
-      res.setHeader('Content-Disposition', 'attachment; filename=audit-trail.json');
       res.json({
         success: true,
-        data: { auditLogs },
+        data: auditLogs,
         exportedAt: new Date(),
         totalRecords: auditLogs.length
       });
     }
   } catch (error) {
-    console.error('Export audit trail error:', error);
+    console.error('Error exporting audit logs:', error);
     res.status(500).json({
       success: false,
-      error: 'EXPORT_AUDIT_TRAIL_FAILED',
-      message: 'Failed to export audit trail',
-      timestamp: new Date().toISOString()
+      message: 'Failed to export audit logs',
+      error: process.env.NODE_ENV === 'development' ? error.message : undefined
     });
   }
 });

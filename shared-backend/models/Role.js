@@ -1,62 +1,28 @@
 const mongoose = require('../shims/mongoose');
 
-const timeBasedAccessSchema = new mongoose.Schema({
-    startTime: {
-        type: Date,
-        required: true
-    },
-    endTime: {
-        type: Date,
-        required: true
-    },
-    daysOfWeek: {
-        type: [String],
-        enum: ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday'],
-        default: ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday']
-    },
-    timeZone: {
-        type: String,
-        default: 'UTC'
-    }
-});
-
-const conditionalPermissionSchema = new mongoose.Schema({
-    condition: {
-        type: String,
-        enum: ['time_based', 'location_based', 'device_based', 'ip_based', 'custom'],
-        required: true
-    },
-    parameters: {
-        type: mongoose.Schema.Types.Mixed,
-        required: true
-    },
-    permissions: {
-        type: [String],
-        required: true
-    }
-});
-
 const roleSchema = new mongoose.Schema({
     name: {
         type: String,
         required: true,
         unique: true,
-        trim: true
+        trim: true,
+        maxlength: 50
+    },
+    displayName: {
+        type: String,
+        required: true,
+        trim: true,
+        maxlength: 100
     },
     description: {
         type: String,
-        trim: true
+        trim: true,
+        maxlength: 500
     },
-    permissions: {
-        type: [String],
-        default: []
-    },
-    priority: {
-        type: Number,
-        default: 100,
-        min: 1,
-        max: 1000
-    },
+    permissions: [{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Permission'
+    }],
     isActive: {
         type: Boolean,
         default: true
@@ -65,11 +31,11 @@ const roleSchema = new mongoose.Schema({
         type: Boolean,
         default: false
     },
-    timeBasedAccess: timeBasedAccessSchema,
-    conditionalPermissions: [conditionalPermissionSchema],
-    inheritsFrom: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'Role'
+    priority: {
+        type: Number,
+        default: 100,
+        min: 1,
+        max: 1000
     },
     metadata: {
         type: mongoose.Schema.Types.Mixed,
@@ -77,180 +43,163 @@ const roleSchema = new mongoose.Schema({
     },
     createdBy: {
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'User'
+        ref: 'Employee'
     },
     updatedBy: {
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'User'
-    },
-    createdAt: {
-        type: Date,
-        default: Date.now
-    },
-    updatedAt: {
-        type: Date,
-        default: Date.now
+        ref: 'Employee'
     }
-});
-
-// Update the updatedAt field before saving
-roleSchema.pre('save', function(next) {
-    this.updatedAt = new Date();
-    next();
+}, {
+    timestamps: true,
+    toJSON: { virtuals: true },
+    toObject: { virtuals: true }
 });
 
 // Indexes for efficient querying
-// roleSchema.index({ name: 1 }); // Removed - unique: true already creates index
+roleSchema.index({ name: 1 });
 roleSchema.index({ isActive: 1 });
 roleSchema.index({ priority: 1 });
 roleSchema.index({ isSystem: 1 });
 
-// Virtual for checking if role has time-based access
-roleSchema.virtual('hasTimeBasedAccess').get(function() {
-    return !!this.timeBasedAccess;
-});
-
-// Virtual for checking if role is currently active based on time
-roleSchema.virtual('isCurrentlyActive').get(function() {
-    if (!this.timeBasedAccess) return this.isActive;
-    
-    const now = new Date();
-    const startTime = new Date(this.timeBasedAccess.startTime);
-    const endTime = new Date(this.timeBasedAccess.endTime);
-    
-    return this.isActive && now >= startTime && now <= endTime;
-});
-
 // Method to check if role has a specific permission
-roleSchema.methods.hasPermission = function(permission) {
-    return this.permissions.includes(permission);
+roleSchema.methods.hasPermission = function(permissionId) {
+    return this.permissions.some(p => p.toString() === permissionId.toString());
 };
 
 // Method to add permission to role
-roleSchema.methods.addPermission = function(permission) {
-    if (!this.permissions.includes(permission)) {
-        this.permissions.push(permission);
+roleSchema.methods.addPermission = function(permissionId) {
+    if (!this.hasPermission(permissionId)) {
+        this.permissions.push(permissionId);
     }
     return this;
 };
 
 // Method to remove permission from role
-roleSchema.methods.removePermission = function(permission) {
-    this.permissions = this.permissions.filter(p => p !== permission);
+roleSchema.methods.removePermission = function(permissionId) {
+    this.permissions = this.permissions.filter(p => p.toString() !== permissionId.toString());
     return this;
 };
 
-// Method to get all effective permissions (including inherited)
-roleSchema.methods.getEffectivePermissions = async function() {
-    const permissions = new Set(this.permissions);
-    
-    if (this.inheritsFrom) {
-        const parentRole = await mongoose.model('Role').findById(this.inheritsFrom);
-        if (parentRole) {
-            const parentPermissions = await parentRole.getEffectivePermissions();
-            parentPermissions.forEach(permission => permissions.add(permission));
-        }
-    }
-    
-    return Array.from(permissions);
+// Method to get all permissions with details
+roleSchema.methods.getPermissionsWithDetails = async function() {
+    const Permission = mongoose.model('Permission');
+    return await Permission.find({ _id: { $in: this.permissions }, isActive: true });
 };
 
 // Static method to create default roles
 roleSchema.statics.createDefaultRoles = async function() {
+    const Permission = mongoose.model('Permission');
+    
+    // Get all permissions for head administrator
+    const allPermissions = await Permission.find({ isActive: true });
+    const allPermissionIds = allPermissions.map(p => p._id);
+    
     const defaultRoles = [
         {
-            name: 'super_admin',
-            description: 'Super Administrator with full system access',
-            permissions: [
-                '*:*:*' // Wildcard permission for everything
-            ],
+            name: 'head_administrator',
+            displayName: 'Head Administrator',
+            description: 'Highest level of access, can manage everything',
+            permissions: allPermissionIds, // All 90 permissions
             priority: 1,
             isSystem: true,
             isActive: true
         },
         {
-            name: 'admin',
-            description: 'Administrator with administrative access',
-            permissions: [
-                'users:*:*',
-                'roles:*:*',
-                'audit:*:*',
-                'system:*:*',
-                'bookings:*:*',
-                'payments:*:*',
-                'fleet:*:*',
-                'ai:*:*',
-                'analytics:*:*',
-                'reports:*:*'
-            ],
+            name: 'platform_admin',
+            displayName: 'Platform Administrator',
+            description: 'Platform administration with full access',
+            permissions: allPermissionIds, // Full access for backward compatibility
             priority: 10,
             isSystem: true,
             isActive: true
         },
         {
-            name: 'manager',
-            description: 'Manager with operational access',
-            permissions: [
-                'users:read:*',
-                'users:write:limited',
-                'bookings:*:*',
-                'payments:read:*',
-                'payments:write:limited',
-                'fleet:read:*',
-                'fleet:write:limited',
-                'analytics:read:*',
-                'reports:read:*'
-            ],
+            name: 'enterprise_client',
+            displayName: 'Enterprise Client',
+            description: 'Fleet, CRM, Analytics, Reports access',
+            permissions: [], // Will be populated with specific permissions
             priority: 50,
             isSystem: true,
             isActive: true
         },
         {
-            name: 'operator',
-            description: 'Operator with basic operational access',
-            permissions: [
-                'bookings:read:*',
-                'bookings:write:own',
-                'payments:read:own',
-                'fleet:read:own',
-                'analytics:read:own'
-            ],
+            name: 'service_provider',
+            displayName: 'Service Provider',
+            description: 'Chat, CRM, Communication access',
+            permissions: [], // Will be populated with specific permissions
+            priority: 60,
+            isSystem: true,
+            isActive: true
+        },
+        {
+            name: 'business_analyst',
+            displayName: 'Business Analyst',
+            description: 'Analytics, Reports, Business Intelligence access',
+            permissions: [], // Will be populated with specific permissions
+            priority: 70,
+            isSystem: true,
+            isActive: true
+        },
+        {
+            name: 'customer_support',
+            displayName: 'Customer Support',
+            description: 'CRM, Chat, Communication, Support access',
+            permissions: [], // Will be populated with specific permissions
+            priority: 80,
+            isSystem: true,
+            isActive: true
+        },
+        {
+            name: 'hr_manager',
+            displayName: 'HR Manager',
+            description: 'HR, Users, Employee Management access',
+            permissions: [], // Will be populated with specific permissions
+            priority: 90,
+            isSystem: true,
+            isActive: true
+        },
+        {
+            name: 'finance_officer',
+            displayName: 'Finance Officer',
+            description: 'Finance, Billing, Payments access',
+            permissions: [], // Will be populated with specific permissions
             priority: 100,
             isSystem: true,
             isActive: true
         },
         {
-            name: 'customer',
-            description: 'Customer with limited access',
-            permissions: [
-                'profile:read:own',
-                'profile:write:own',
-                'bookings:read:own',
-                'bookings:write:own',
-                'payments:read:own',
-                'payments:write:own',
-                'vehicles:read:own',
-                'vehicles:write:own'
-            ],
-            priority: 200,
+            name: 'legal_team',
+            displayName: 'Legal Team',
+            description: 'Legal, Contracts access',
+            permissions: [], // Will be populated with specific permissions
+            priority: 110,
             isSystem: true,
             isActive: true
         },
         {
-            name: 'partner',
-            description: 'Business partner with partner access',
-            permissions: [
-                'profile:read:own',
-                'profile:write:own',
-                'bookings:read:assigned',
-                'bookings:write:assigned',
-                'payments:read:own',
-                'payments:write:own',
-                'fleet:read:own',
-                'fleet:write:own',
-                'analytics:read:own'
-            ],
-            priority: 150,
+            name: 'project_manager',
+            displayName: 'Project Manager',
+            description: 'Projects, Users, Analytics access',
+            permissions: [], // Will be populated with specific permissions
+            priority: 120,
+            isSystem: true,
+            isActive: true
+        },
+        {
+            name: 'asset_manager',
+            displayName: 'Asset Manager',
+            description: 'Assets, Fleet, Operations access',
+            permissions: [], // Will be populated with specific permissions
+            priority: 130,
+            isSystem: true,
+            isActive: true
+        },
+        {
+            name: 'vendor_manager',
+            displayName: 'Vendor Manager',
+            description: 'Vendors, Assets, Operations access',
+            permissions: [], // Will be populated with specific permissions
+            priority: 140,
             isSystem: true,
             isActive: true
         }

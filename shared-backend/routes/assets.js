@@ -1,50 +1,44 @@
-/**
- * Asset Management Routes
- * Complete asset management system for tracking company assets and inventory
- */
-
 const express = require('express');
 const router = express.Router();
 const { authenticateToken, requireRole } = require('../middleware/auth');
 const { getCollection } = require('../config/optimized-database');
-const { rateLimit: createRateLimit } = require('../middleware/rateLimit');
-const { ObjectId } = require('mongodb');
+const rateLimit = require('express-rate-limit');
 
-// Apply rate limiting
-const assetRateLimit = createRateLimit({ windowMs: 60 * 1000, max: 100 });
+// Rate limiting
+const assetLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: 100, // limit each IP to 100 requests per windowMs
+  message: 'Too many asset requests from this IP, please try again later.'
+});
 
-// ==================== ASSET MANAGEMENT ====================
+// Apply rate limiting and authentication to all routes
+router.use(assetLimiter);
+router.use(authenticateToken);
+
+// ===== ASSETS MANAGEMENT =====
 
 // GET /api/v1/assets - Get all assets
-router.get('/', authenticateToken, requireRole(['admin', 'asset_manager']), assetRateLimit, async (req, res) => {
+router.get('/', async (req, res) => {
   try {
-    const { page = 1, limit = 50, category, status, location, search } = req.query;
-    const skip = (page - 1) * limit;
+    const assetsCollection = await getCollection('assets');
+    const { page = 1, limit = 10, type, status, location, assignedTo } = req.query;
     
-    const assetsCollection = await getCollection('theme_assets');
+    const filter = {};
+    if (type) filter.type = type;
+    if (status) filter.status = status;
+    if (location) filter.location = location;
+    if (assignedTo) filter.assignedTo = assignedTo;
     
-    // Build query
-    const query = {};
-    if (category) query.category = category;
-    if (status) query.status = status;
-    if (location) query.location = location;
-    if (search) {
-      query.$or = [
-        { name: { $regex: search, $options: 'i' } },
-        { assetTag: { $regex: search, $options: 'i' } },
-        { serialNumber: { $regex: search, $options: 'i' } },
-        { description: { $regex: search, $options: 'i' } }
-      ];
-    }
+    const skip = (parseInt(page) - 1) * parseInt(limit);
     
     const assets = await assetsCollection
-      .find(query)
-      .sort({ createdAt: -1 })
+      .find(filter)
       .skip(skip)
       .limit(parseInt(limit))
+      .sort({ createdAt: -1 })
       .toArray();
     
-    const total = await assetsCollection.countDocuments(query);
+    const total = await assetsCollection.countDocuments(filter);
     
     res.json({
       success: true,
@@ -54,852 +48,593 @@ router.get('/', authenticateToken, requireRole(['admin', 'asset_manager']), asse
           page: parseInt(page),
           limit: parseInt(limit),
           total,
-          pages: Math.ceil(total / limit)
+          pages: Math.ceil(total / parseInt(limit))
         }
-      },
-      message: 'Assets retrieved successfully',
-      timestamp: new Date().toISOString()
+      }
     });
   } catch (error) {
-    console.error('Get assets error:', error);
+    console.error('Error fetching assets:', error);
     res.status(500).json({
       success: false,
-      error: 'GET_ASSETS_FAILED',
-      message: 'Failed to retrieve assets',
-      timestamp: new Date().toISOString()
+      message: 'Failed to fetch assets',
+      error: process.env.NODE_ENV === 'development' ? error.message : undefined
     });
   }
 });
 
 // GET /api/v1/assets/:id - Get asset by ID
-router.get('/:id', authenticateToken, requireRole(['admin', 'asset_manager']), assetRateLimit, async (req, res) => {
+router.get('/:id', async (req, res) => {
   try {
-    const { id } = req.params;
-    const assetsCollection = await getCollection('theme_assets');
-    
-    const asset = await assetsCollection.findOne({ _id: new ObjectId(id) });
+    const assetsCollection = await getCollection('assets');
+    const asset = await assetsCollection.findOne({ _id: req.params.id });
     
     if (!asset) {
       return res.status(404).json({
         success: false,
-        error: 'ASSET_NOT_FOUND',
-        message: 'Asset not found',
-        timestamp: new Date().toISOString()
+        message: 'Asset not found'
       });
     }
     
     res.json({
       success: true,
-      data: { asset },
-      message: 'Asset retrieved successfully',
-      timestamp: new Date().toISOString()
+      data: asset
     });
   } catch (error) {
-    console.error('Get asset error:', error);
+    console.error('Error fetching asset:', error);
     res.status(500).json({
       success: false,
-      error: 'GET_ASSET_FAILED',
-      message: 'Failed to retrieve asset',
-      timestamp: new Date().toISOString()
+      message: 'Failed to fetch asset',
+      error: process.env.NODE_ENV === 'development' ? error.message : undefined
     });
   }
 });
 
 // POST /api/v1/assets - Create new asset
-router.post('/', authenticateToken, requireRole(['admin', 'asset_manager']), assetRateLimit, async (req, res) => {
+router.post('/', requireRole(['admin', 'asset_manager', 'super_admin']), async (req, res) => {
   try {
-    const {
-      name,
-      category,
-      description,
-      serialNumber,
-      model,
-      manufacturer,
-      purchaseDate,
-      purchasePrice,
-      warrantyExpiry,
-      location,
+    const assetsCollection = await getCollection('assets');
+    const { 
+      name, 
+      type, 
+      description, 
+      serialNumber, 
+      model, 
+      manufacturer, 
+      purchaseDate, 
+      purchasePrice, 
+      location, 
+      status, 
       assignedTo,
-      status,
-      condition,
-      tags
+      tags 
     } = req.body;
     
-    if (!name || !category) {
+    if (!name || !type) {
       return res.status(400).json({
         success: false,
-        error: 'MISSING_REQUIRED_FIELDS',
-        message: 'Name and category are required',
-        timestamp: new Date().toISOString()
+        message: 'Name and type are required'
       });
     }
     
-    const assetsCollection = await getCollection('theme_assets');
-    
-    // Generate asset tag
-    const assetCount = await assetsCollection.countDocuments();
-    const assetTag = `AST${String(assetCount + 1).padStart(6, '0')}`;
-    
-    const newAsset = {
-      assetTag,
+    const asset = {
       name,
-      category,
-      description: description || null,
-      serialNumber: serialNumber || null,
-      model: model || null,
-      manufacturer: manufacturer || null,
+      type,
+      description: description || '',
+      serialNumber: serialNumber || '',
+      model: model || '',
+      manufacturer: manufacturer || '',
       purchaseDate: purchaseDate ? new Date(purchaseDate) : null,
-      purchasePrice: purchasePrice || null,
-      warrantyExpiry: warrantyExpiry ? new Date(warrantyExpiry) : null,
-      location: location || null,
-      assignedTo: assignedTo || null,
+      purchasePrice: purchasePrice || 0,
+      location: location || '',
       status: status || 'available',
-      condition: condition || 'good',
+      assignedTo: assignedTo || null,
       tags: tags || [],
+      createdBy: req.user.userId,
       createdAt: new Date(),
       updatedAt: new Date(),
-      createdBy: req.user.userId
+      maintenanceRecords: [],
+      assignments: []
     };
     
-    const result = await assetsCollection.insertOne(newAsset);
+    const result = await assetsCollection.insertOne(asset);
     
     res.status(201).json({
       success: true,
-      data: { asset: { ...newAsset, _id: result.insertedId } },
-      message: 'Asset created successfully',
-      timestamp: new Date().toISOString()
+      data: {
+        id: result.insertedId,
+        ...asset
+      },
+      message: 'Asset created successfully'
     });
   } catch (error) {
-    console.error('Create asset error:', error);
+    console.error('Error creating asset:', error);
     res.status(500).json({
       success: false,
-      error: 'CREATE_ASSET_FAILED',
       message: 'Failed to create asset',
-      timestamp: new Date().toISOString()
+      error: process.env.NODE_ENV === 'development' ? error.message : undefined
     });
   }
 });
 
 // PUT /api/v1/assets/:id - Update asset
-router.put('/:id', authenticateToken, requireRole(['admin', 'asset_manager']), assetRateLimit, async (req, res) => {
+router.put('/:id', requireRole(['admin', 'asset_manager', 'super_admin']), async (req, res) => {
   try {
-    const { id } = req.params;
-    const updateData = { ...req.body, updatedAt: new Date() };
+    const assetsCollection = await getCollection('assets');
+    const { 
+      name, 
+      type, 
+      description, 
+      serialNumber, 
+      model, 
+      manufacturer, 
+      purchaseDate, 
+      purchasePrice, 
+      location, 
+      status, 
+      assignedTo,
+      tags 
+    } = req.body;
     
-    const assetsCollection = await getCollection('theme_assets');
+    const updateData = {
+      updatedAt: new Date()
+    };
+    
+    if (name) updateData.name = name;
+    if (type) updateData.type = type;
+    if (description) updateData.description = description;
+    if (serialNumber) updateData.serialNumber = serialNumber;
+    if (model) updateData.model = model;
+    if (manufacturer) updateData.manufacturer = manufacturer;
+    if (purchaseDate) updateData.purchaseDate = new Date(purchaseDate);
+    if (purchasePrice !== undefined) updateData.purchasePrice = purchasePrice;
+    if (location) updateData.location = location;
+    if (status) updateData.status = status;
+    if (assignedTo !== undefined) updateData.assignedTo = assignedTo;
+    if (tags) updateData.tags = tags;
     
     const result = await assetsCollection.updateOne(
-      { _id: new ObjectId(id) },
+      { _id: req.params.id },
       { $set: updateData }
     );
     
     if (result.matchedCount === 0) {
       return res.status(404).json({
         success: false,
-        error: 'ASSET_NOT_FOUND',
-        message: 'Asset not found',
-        timestamp: new Date().toISOString()
+        message: 'Asset not found'
       });
     }
     
-    const updatedAsset = await assetsCollection.findOne({ _id: new ObjectId(id) });
-    
     res.json({
       success: true,
-      data: { asset: updatedAsset },
-      message: 'Asset updated successfully',
-      timestamp: new Date().toISOString()
+      message: 'Asset updated successfully'
     });
   } catch (error) {
-    console.error('Update asset error:', error);
+    console.error('Error updating asset:', error);
     res.status(500).json({
       success: false,
-      error: 'UPDATE_ASSET_FAILED',
       message: 'Failed to update asset',
-      timestamp: new Date().toISOString()
+      error: process.env.NODE_ENV === 'development' ? error.message : undefined
     });
   }
 });
 
 // DELETE /api/v1/assets/:id - Delete asset
-router.delete('/:id', authenticateToken, requireRole(['admin']), assetRateLimit, async (req, res) => {
+router.delete('/:id', requireRole(['admin', 'super_admin']), async (req, res) => {
   try {
-    const { id } = req.params;
-    const assetsCollection = await getCollection('theme_assets');
-    
-    const result = await assetsCollection.deleteOne({ _id: new ObjectId(id) });
+    const assetsCollection = await getCollection('assets');
+    const result = await assetsCollection.deleteOne({ _id: req.params.id });
     
     if (result.deletedCount === 0) {
       return res.status(404).json({
         success: false,
-        error: 'ASSET_NOT_FOUND',
-        message: 'Asset not found',
-        timestamp: new Date().toISOString()
+        message: 'Asset not found'
       });
     }
     
     res.json({
       success: true,
-      data: { id },
-      message: 'Asset deleted successfully',
-      timestamp: new Date().toISOString()
+      message: 'Asset deleted successfully'
     });
   } catch (error) {
-    console.error('Delete asset error:', error);
+    console.error('Error deleting asset:', error);
     res.status(500).json({
       success: false,
-      error: 'DELETE_ASSET_FAILED',
       message: 'Failed to delete asset',
-      timestamp: new Date().toISOString()
+      error: process.env.NODE_ENV === 'development' ? error.message : undefined
     });
   }
 });
 
-// ==================== ASSET ASSIGNMENT ====================
+// ===== MAINTENANCE RECORDS =====
 
-// POST /api/v1/assets/:id/assign - Assign asset to user
-router.post('/:id/assign', authenticateToken, requireRole(['admin', 'asset_manager']), assetRateLimit, async (req, res) => {
+// GET /api/v1/maintenance-records - Get all maintenance records
+router.get('/maintenance-records', async (req, res) => {
   try {
-    const { id } = req.params;
-    const { assignedTo, assignedDate, notes } = req.body;
+    const maintenanceCollection = await getCollection('maintenance_records');
+    const { page = 1, limit = 10, assetId, type, status } = req.query;
     
-    if (!assignedTo) {
-      return res.status(400).json({
-        success: false,
-        error: 'MISSING_ASSIGNEE',
-        message: 'Assigned to user is required',
-        timestamp: new Date().toISOString()
-      });
-    }
+    const filter = {};
+    if (assetId) filter.assetId = assetId;
+    if (type) filter.type = type;
+    if (status) filter.status = status;
     
-    const assetsCollection = await getCollection('theme_assets');
+    const skip = (parseInt(page) - 1) * parseInt(limit);
     
-    const updateData = {
-      assignedTo,
-      assignedDate: assignedDate ? new Date(assignedDate) : new Date(),
-      status: 'assigned',
-      updatedAt: new Date()
-    };
-    
-    const result = await assetsCollection.updateOne(
-      { _id: new ObjectId(id) },
-      { $set: updateData }
-    );
-    
-    if (result.matchedCount === 0) {
-      return res.status(404).json({
-        success: false,
-        error: 'ASSET_NOT_FOUND',
-        message: 'Asset not found',
-        timestamp: new Date().toISOString()
-      });
-    }
-    
-    // Log assignment
-    const assetAssignmentsCollection = await getCollection('asset_assignments');
-    await assetAssignmentsCollection.insertOne({
-      assetId: new ObjectId(id),
-      assignedTo,
-      assignedDate: updateData.assignedDate,
-      notes: notes || null,
-      assignedBy: req.user.userId,
-      createdAt: new Date()
-    });
-    
-    const updatedAsset = await assetsCollection.findOne({ _id: new ObjectId(id) });
-    
-    res.json({
-      success: true,
-      data: { asset: updatedAsset },
-      message: 'Asset assigned successfully',
-      timestamp: new Date().toISOString()
-    });
-  } catch (error) {
-    console.error('Assign asset error:', error);
-    res.status(500).json({
-      success: false,
-      error: 'ASSIGN_ASSET_FAILED',
-      message: 'Failed to assign asset',
-      timestamp: new Date().toISOString()
-    });
-  }
-});
-
-// POST /api/v1/assets/:id/unassign - Unassign asset
-router.post('/:id/unassign', authenticateToken, requireRole(['admin', 'asset_manager']), assetRateLimit, async (req, res) => {
-  try {
-    const { id } = req.params;
-    const { notes } = req.body;
-    
-    const assetsCollection = await getCollection('theme_assets');
-    
-    const updateData = {
-      assignedTo: null,
-      assignedDate: null,
-      status: 'available',
-      updatedAt: new Date()
-    };
-    
-    const result = await assetsCollection.updateOne(
-      { _id: new ObjectId(id) },
-      { $set: updateData }
-    );
-    
-    if (result.matchedCount === 0) {
-      return res.status(404).json({
-        success: false,
-        error: 'ASSET_NOT_FOUND',
-        message: 'Asset not found',
-        timestamp: new Date().toISOString()
-      });
-    }
-    
-    // Log unassignment
-    const assetAssignmentsCollection = await getCollection('asset_assignments');
-    await assetAssignmentsCollection.insertOne({
-      assetId: new ObjectId(id),
-      assignedTo: null,
-      unassignedDate: new Date(),
-      notes: notes || null,
-      unassignedBy: req.user.userId,
-      createdAt: new Date()
-    });
-    
-    const updatedAsset = await assetsCollection.findOne({ _id: new ObjectId(id) });
-    
-    res.json({
-      success: true,
-      data: { asset: updatedAsset },
-      message: 'Asset unassigned successfully',
-      timestamp: new Date().toISOString()
-    });
-  } catch (error) {
-    console.error('Unassign asset error:', error);
-    res.status(500).json({
-      success: false,
-      error: 'UNASSIGN_ASSET_FAILED',
-      message: 'Failed to unassign asset',
-      timestamp: new Date().toISOString()
-    });
-  }
-});
-
-// ==================== INVENTORY MANAGEMENT ====================
-
-// GET /api/v1/assets/inventory - Get inventory overview
-router.get('/inventory', authenticateToken, requireRole(['admin', 'asset_manager']), assetRateLimit, async (req, res) => {
-  try {
-    const { category, location } = req.query;
-    
-    const assetsCollection = await getCollection('theme_assets');
-    
-    // Build query
-    const query = {};
-    if (category) query.category = category;
-    if (location) query.location = location;
-    
-    const assets = await assetsCollection.find(query).toArray();
-    
-    // Calculate inventory statistics
-    const totalAssets = assets.length;
-    const availableAssets = assets.filter(a => a.status === 'available').length;
-    const assignedAssets = assets.filter(a => a.status === 'assigned').length;
-    const maintenanceAssets = assets.filter(a => a.status === 'maintenance').length;
-    const retiredAssets = assets.filter(a => a.status === 'retired').length;
-    
-    // Category distribution
-    const categoryStats = {};
-    assets.forEach(asset => {
-      if (!categoryStats[asset.category]) {
-        categoryStats[asset.category] = { total: 0, available: 0, assigned: 0 };
-      }
-      categoryStats[asset.category].total++;
-      if (asset.status === 'available') categoryStats[asset.category].available++;
-      if (asset.status === 'assigned') categoryStats[asset.category].assigned++;
-    });
-    
-    // Location distribution
-    const locationStats = {};
-    assets.forEach(asset => {
-      const loc = asset.location || 'Unassigned';
-      if (!locationStats[loc]) {
-        locationStats[loc] = { total: 0, available: 0, assigned: 0 };
-      }
-      locationStats[loc].total++;
-      if (asset.status === 'available') locationStats[loc].available++;
-      if (asset.status === 'assigned') locationStats[loc].assigned++;
-    });
-    
-    // Total value calculation
-    const totalValue = assets.reduce((sum, asset) => sum + (asset.purchasePrice || 0), 0);
-    
-    const inventory = {
-      overview: {
-        totalAssets,
-        availableAssets,
-        assignedAssets,
-        maintenanceAssets,
-        retiredAssets,
-        totalValue
-      },
-      categoryDistribution: categoryStats,
-      locationDistribution: locationStats,
-      generatedAt: new Date()
-    };
-    
-    res.json({
-      success: true,
-      data: inventory,
-      message: 'Inventory overview retrieved successfully',
-      timestamp: new Date().toISOString()
-    });
-  } catch (error) {
-    console.error('Get inventory error:', error);
-    res.status(500).json({
-      success: false,
-      error: 'GET_INVENTORY_FAILED',
-      message: 'Failed to retrieve inventory overview',
-      timestamp: new Date().toISOString()
-    });
-  }
-});
-
-// ==================== MAINTENANCE TRACKING ====================
-
-// GET /api/v1/assets/:id/maintenance - Get asset maintenance history
-router.get('/:id/maintenance', authenticateToken, requireRole(['admin', 'asset_manager']), assetRateLimit, async (req, res) => {
-  try {
-    const { id } = req.params;
-    const maintenanceCollection = await getCollection('asset_maintenance');
-    
-    const maintenanceRecords = await maintenanceCollection
-      .find({ assetId: new ObjectId(id) })
+    const records = await maintenanceCollection
+      .find(filter)
+      .skip(skip)
+      .limit(parseInt(limit))
       .sort({ createdAt: -1 })
       .toArray();
     
-    res.json({
-      success: true,
-      data: { maintenanceRecords },
-      message: 'Maintenance history retrieved successfully',
-      timestamp: new Date().toISOString()
-    });
-  } catch (error) {
-    console.error('Get maintenance history error:', error);
-    res.status(500).json({
-      success: false,
-      error: 'GET_MAINTENANCE_HISTORY_FAILED',
-      message: 'Failed to retrieve maintenance history',
-      timestamp: new Date().toISOString()
-    });
-  }
-});
-
-// POST /api/v1/assets/:id/maintenance - Add maintenance record
-router.post('/:id/maintenance', authenticateToken, requireRole(['admin', 'asset_manager']), assetRateLimit, async (req, res) => {
-  try {
-    const { id } = req.params;
-    const {
-      type,
-      description,
-      cost,
-      performedBy,
-      performedDate,
-      nextMaintenanceDate,
-      status
-    } = req.body;
-    
-    if (!type || !description) {
-      return res.status(400).json({
-        success: false,
-        error: 'MISSING_REQUIRED_FIELDS',
-        message: 'Type and description are required',
-        timestamp: new Date().toISOString()
-      });
-    }
-    
-    const maintenanceCollection = await getCollection('asset_maintenance');
-    const assetsCollection = await getCollection('theme_assets');
-    
-    const newMaintenanceRecord = {
-      assetId: new ObjectId(id),
-      type,
-      description,
-      cost: cost || null,
-      performedBy: performedBy || null,
-      performedDate: performedDate ? new Date(performedDate) : new Date(),
-      nextMaintenanceDate: nextMaintenanceDate ? new Date(nextMaintenanceDate) : null,
-      status: status || 'completed',
-      createdAt: new Date(),
-      createdBy: req.user.userId
-    };
-    
-    const result = await maintenanceCollection.insertOne(newMaintenanceRecord);
-    
-    // Update asset status if needed
-    if (status === 'in_progress') {
-      await assetsCollection.updateOne(
-        { _id: new ObjectId(id) },
-        { $set: { status: 'maintenance', updatedAt: new Date() } }
-      );
-    } else if (status === 'completed') {
-      await assetsCollection.updateOne(
-        { _id: new ObjectId(id) },
-        { $set: { status: 'available', updatedAt: new Date() } }
-      );
-    }
-    
-    res.status(201).json({
-      success: true,
-      data: { maintenanceRecord: { ...newMaintenanceRecord, _id: result.insertedId } },
-      message: 'Maintenance record created successfully',
-      timestamp: new Date().toISOString()
-    });
-  } catch (error) {
-    console.error('Create maintenance record error:', error);
-    res.status(500).json({
-      success: false,
-      error: 'CREATE_MAINTENANCE_RECORD_FAILED',
-      message: 'Failed to create maintenance record',
-      timestamp: new Date().toISOString()
-    });
-  }
-});
-
-// ==================== ASSET ANALYTICS ====================
-
-// GET /api/v1/assets/analytics - Get asset analytics
-router.get('/analytics', authenticateToken, requireRole(['admin', 'asset_manager']), assetRateLimit, async (req, res) => {
-  try {
-    const { period = '30d' } = req.query;
-    
-    const assetsCollection = await getCollection('theme_assets');
-    const maintenanceCollection = await getCollection('asset_maintenance');
-    const assignmentsCollection = await getCollection('asset_assignments');
-    
-    // Calculate date range
-    const endDate = new Date();
-    const startDate = new Date();
-    startDate.setDate(endDate.getDate() - parseInt(period.replace('d', '')));
-    
-    // Asset statistics
-    const totalAssets = await assetsCollection.countDocuments();
-    const availableAssets = await assetsCollection.countDocuments({ status: 'available' });
-    const assignedAssets = await assetsCollection.countDocuments({ status: 'assigned' });
-    const maintenanceAssets = await assetsCollection.countDocuments({ status: 'maintenance' });
-    const retiredAssets = await assetsCollection.countDocuments({ status: 'retired' });
-    
-    // Recent additions
-    const recentAssets = await assetsCollection.countDocuments({
-      createdAt: { $gte: startDate, $lte: endDate }
-    });
-    
-    // Maintenance statistics
-    const totalMaintenance = await maintenanceCollection.countDocuments();
-    const recentMaintenance = await maintenanceCollection.countDocuments({
-      performedDate: { $gte: startDate, $lte: endDate }
-    });
-    
-    // Assignment statistics
-    const totalAssignments = await assignmentsCollection.countDocuments();
-    const recentAssignments = await assignmentsCollection.countDocuments({
-      assignedDate: { $gte: startDate, $lte: endDate }
-    });
-    
-    // Category distribution
-    const categoryStats = await assetsCollection.aggregate([
-      { $group: { _id: '$category', count: { $sum: 1 } } },
-      { $sort: { count: -1 } }
-    ]).toArray();
-    
-    // Status distribution
-    const statusStats = await assetsCollection.aggregate([
-      { $group: { _id: '$status', count: { $sum: 1 } } },
-      { $sort: { count: -1 } }
-    ]).toArray();
-    
-    // Total value
-    const valueStats = await assetsCollection.aggregate([
-      { $group: { _id: null, totalValue: { $sum: '$purchasePrice' } } }
-    ]).toArray();
-    
-    const analytics = {
-      assets: {
-        total: totalAssets,
-        available: availableAssets,
-        assigned: assignedAssets,
-        maintenance: maintenanceAssets,
-        retired: retiredAssets,
-        recent: recentAssets,
-        categories: categoryStats,
-        status: statusStats,
-        totalValue: valueStats[0]?.totalValue || 0
-      },
-      maintenance: {
-        total: totalMaintenance,
-        recent: recentMaintenance
-      },
-      assignments: {
-        total: totalAssignments,
-        recent: recentAssignments
-      },
-      period,
-      generatedAt: new Date()
-    };
-    
-    res.json({
-      success: true,
-      data: analytics,
-      message: 'Asset analytics retrieved successfully',
-      timestamp: new Date().toISOString()
-    });
-  } catch (error) {
-    console.error('Get asset analytics error:', error);
-    res.status(500).json({
-      success: false,
-      error: 'GET_ASSET_ANALYTICS_FAILED',
-      message: 'Failed to retrieve asset analytics',
-      timestamp: new Date().toISOString()
-    });
-  }
-});
-
-// ==================== GENERIC HANDLERS ====================
-
-// GET /api/v1/assets/overview - Get assets overview
-router.get('/overview', authenticateToken, requireRole(['admin', 'asset_manager']), assetRateLimit, async (req, res) => {
-  res.json({
-    success: true,
-    message: 'Asset Management API is running',
-    endpoints: {
-      assets: '/api/v1/assets',
-      inventory: '/api/v1/assets/inventory',
-      maintenance: '/api/v1/assets/:id/maintenance',
-      analytics: '/api/v1/assets/analytics'
-    },
-    timestamp: new Date().toISOString()
-  });
-});
-
-// ==================== MAINTENANCE RECORDS ENDPOINTS ====================
-
-// GET /api/v1/maintenance-records - Get all maintenance records
-router.get('/maintenance-records', authenticateToken, requireRole(['admin', 'asset_manager', 'super_admin']), assetRateLimit, async (req, res) => {
-  try {
-    const { page = 1, limit = 50, assetId, status, type, dateFrom, dateTo } = req.query;
-    const skip = (page - 1) * limit;
-    
-    const maintenanceCollection = await getCollection('maintenance_records');
-    
-    // Build query
-    const query = {};
-    if (assetId) query.assetId = assetId;
-    if (status) query.status = status;
-    if (type) query.type = type;
-    if (dateFrom || dateTo) {
-      query.scheduledDate = {};
-      if (dateFrom) query.scheduledDate.$gte = new Date(dateFrom);
-      if (dateTo) query.scheduledDate.$lte = new Date(dateTo);
-    }
-    
-    const maintenanceRecords = await maintenanceCollection
-      .find(query)
-      .sort({ scheduledDate: -1 })
-      .skip(skip)
-      .limit(parseInt(limit))
-      .toArray();
-    
-    const total = await maintenanceCollection.countDocuments(query);
+    const total = await maintenanceCollection.countDocuments(filter);
     
     res.json({
       success: true,
       data: {
-        maintenanceRecords,
+        records,
         pagination: {
           page: parseInt(page),
           limit: parseInt(limit),
           total,
-          pages: Math.ceil(total / limit)
+          pages: Math.ceil(total / parseInt(limit))
         }
-      },
-      message: 'Maintenance records retrieved successfully',
-      timestamp: new Date().toISOString()
+      }
     });
   } catch (error) {
-    console.error('Get maintenance records error:', error);
+    console.error('Error fetching maintenance records:', error);
     res.status(500).json({
       success: false,
-      error: 'GET_MAINTENANCE_RECORDS_FAILED',
-      message: 'Failed to retrieve maintenance records',
-      timestamp: new Date().toISOString()
+      message: 'Failed to fetch maintenance records',
+      error: process.env.NODE_ENV === 'development' ? error.message : undefined
     });
   }
 });
 
-// POST /api/v1/maintenance-records - Create new maintenance record
-router.post('/maintenance-records', authenticateToken, requireRole(['admin', 'asset_manager', 'super_admin']), assetRateLimit, async (req, res) => {
+// POST /api/v1/maintenance-records - Create maintenance record
+router.post('/maintenance-records', requireRole(['admin', 'asset_manager', 'super_admin', 'technician']), async (req, res) => {
   try {
-    const {
-      assetId,
-      type,
-      description,
-      scheduledDate,
-      assignedTo,
-      priority = 'medium',
-      estimatedCost,
-      notes
+    const maintenanceCollection = await getCollection('maintenance_records');
+    const { 
+      assetId, 
+      type, 
+      description, 
+      scheduledDate, 
+      completedDate, 
+      cost, 
+      technician, 
+      status, 
+      notes 
     } = req.body;
     
     if (!assetId || !type || !description) {
       return res.status(400).json({
         success: false,
-        error: 'MISSING_REQUIRED_FIELDS',
-        message: 'Asset ID, type, and description are required',
-        timestamp: new Date().toISOString()
+        message: 'Asset ID, type, and description are required'
       });
     }
     
-    const maintenanceCollection = await getCollection('maintenance_records');
-    
-    const newMaintenanceRecord = {
+    const record = {
       assetId,
       type,
       description,
-      scheduledDate: scheduledDate ? new Date(scheduledDate) : new Date(),
-      assignedTo: assignedTo || null,
-      priority,
-      estimatedCost: estimatedCost ? parseFloat(estimatedCost) : null,
-      notes: notes || null,
-      status: 'scheduled',
+      scheduledDate: scheduledDate ? new Date(scheduledDate) : null,
+      completedDate: completedDate ? new Date(completedDate) : null,
+      cost: cost || 0,
+      technician: technician || req.user.userId,
+      status: status || 'scheduled',
+      notes: notes || '',
+      createdBy: req.user.userId,
       createdAt: new Date(),
-      updatedAt: new Date(),
-      createdBy: req.user.userId
+      updatedAt: new Date()
     };
     
-    const result = await maintenanceCollection.insertOne(newMaintenanceRecord);
+    const result = await maintenanceCollection.insertOne(record);
+    
+    // Update asset with maintenance record
+    const assetsCollection = await getCollection('assets');
+    await assetsCollection.updateOne(
+      { _id: assetId },
+      { 
+        $push: { maintenanceRecords: result.insertedId },
+        $set: { updatedAt: new Date() }
+      }
+    );
     
     res.status(201).json({
       success: true,
-      data: { maintenanceRecord: { ...newMaintenanceRecord, _id: result.insertedId } },
-      message: 'Maintenance record created successfully',
-      timestamp: new Date().toISOString()
+      data: {
+        id: result.insertedId,
+        ...record
+      },
+      message: 'Maintenance record created successfully'
     });
   } catch (error) {
-    console.error('Create maintenance record error:', error);
+    console.error('Error creating maintenance record:', error);
     res.status(500).json({
       success: false,
-      error: 'CREATE_MAINTENANCE_RECORD_FAILED',
       message: 'Failed to create maintenance record',
-      timestamp: new Date().toISOString()
+      error: process.env.NODE_ENV === 'development' ? error.message : undefined
     });
   }
 });
 
-// ==================== ASSET ASSIGNMENTS ENDPOINTS ====================
-
-// GET /api/v1/asset-assignments - Get all asset assignments
-router.get('/asset-assignments', authenticateToken, requireRole(['admin', 'asset_manager', 'super_admin']), assetRateLimit, async (req, res) => {
+// PUT /api/v1/maintenance-records/:id - Update maintenance record
+router.put('/maintenance-records/:id', requireRole(['admin', 'asset_manager', 'super_admin', 'technician']), async (req, res) => {
   try {
-    const { page = 1, limit = 50, assetId, userId, status, dateFrom, dateTo } = req.query;
-    const skip = (page - 1) * limit;
+    const maintenanceCollection = await getCollection('maintenance_records');
+    const { 
+      type, 
+      description, 
+      scheduledDate, 
+      completedDate, 
+      cost, 
+      technician, 
+      status, 
+      notes 
+    } = req.body;
     
-    const assignmentsCollection = await getCollection('asset_assignments');
+    const updateData = {
+      updatedAt: new Date()
+    };
     
-    // Build query
-    const query = {};
-    if (assetId) query.assetId = assetId;
-    if (userId) query.userId = userId;
-    if (status) query.status = status;
-    if (dateFrom || dateTo) {
-      query.assignedDate = {};
-      if (dateFrom) query.assignedDate.$gte = new Date(dateFrom);
-      if (dateTo) query.assignedDate.$lte = new Date(dateTo);
+    if (type) updateData.type = type;
+    if (description) updateData.description = description;
+    if (scheduledDate) updateData.scheduledDate = new Date(scheduledDate);
+    if (completedDate) updateData.completedDate = new Date(completedDate);
+    if (cost !== undefined) updateData.cost = cost;
+    if (technician) updateData.technician = technician;
+    if (status) updateData.status = status;
+    if (notes) updateData.notes = notes;
+    
+    const result = await maintenanceCollection.updateOne(
+      { _id: req.params.id },
+      { $set: updateData }
+    );
+    
+    if (result.matchedCount === 0) {
+      return res.status(404).json({
+        success: false,
+        message: 'Maintenance record not found'
+      });
     }
     
-    const assetAssignments = await assignmentsCollection
-      .find(query)
-      .sort({ assignedDate: -1 })
+    res.json({
+      success: true,
+      message: 'Maintenance record updated successfully'
+    });
+  } catch (error) {
+    console.error('Error updating maintenance record:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Failed to update maintenance record',
+      error: process.env.NODE_ENV === 'development' ? error.message : undefined
+    });
+  }
+});
+
+// ===== ASSET ASSIGNMENTS =====
+
+// GET /api/v1/asset-assignments - Get all asset assignments
+router.get('/asset-assignments', async (req, res) => {
+  try {
+    const assignmentsCollection = await getCollection('asset_assignments');
+    const { page = 1, limit = 10, assetId, userId, status } = req.query;
+    
+    const filter = {};
+    if (assetId) filter.assetId = assetId;
+    if (userId) filter.userId = userId;
+    if (status) filter.status = status;
+    
+    const skip = (parseInt(page) - 1) * parseInt(limit);
+    
+    const assignments = await assignmentsCollection
+      .find(filter)
       .skip(skip)
       .limit(parseInt(limit))
+      .sort({ createdAt: -1 })
       .toArray();
     
-    const total = await assignmentsCollection.countDocuments(query);
+    const total = await assignmentsCollection.countDocuments(filter);
     
     res.json({
       success: true,
       data: {
-        assetAssignments,
+        assignments,
         pagination: {
           page: parseInt(page),
           limit: parseInt(limit),
           total,
-          pages: Math.ceil(total / limit)
+          pages: Math.ceil(total / parseInt(limit))
         }
-      },
-      message: 'Asset assignments retrieved successfully',
-      timestamp: new Date().toISOString()
+      }
     });
   } catch (error) {
-    console.error('Get asset assignments error:', error);
+    console.error('Error fetching asset assignments:', error);
     res.status(500).json({
       success: false,
-      error: 'GET_ASSET_ASSIGNMENTS_FAILED',
-      message: 'Failed to retrieve asset assignments',
-      timestamp: new Date().toISOString()
+      message: 'Failed to fetch asset assignments',
+      error: process.env.NODE_ENV === 'development' ? error.message : undefined
     });
   }
 });
 
-// POST /api/v1/asset-assignments - Create new asset assignment
-router.post('/asset-assignments', authenticateToken, requireRole(['admin', 'asset_manager', 'super_admin']), assetRateLimit, async (req, res) => {
+// POST /api/v1/asset-assignments - Create asset assignment
+router.post('/asset-assignments', requireRole(['admin', 'asset_manager', 'super_admin']), async (req, res) => {
   try {
-    const {
-      assetId,
-      userId,
-      assignedDate,
-      returnDate,
-      purpose,
-      notes
-    } = req.body;
+    const assignmentsCollection = await getCollection('asset_assignments');
+    const { assetId, userId, assignedDate, returnDate, purpose, notes } = req.body;
     
     if (!assetId || !userId) {
       return res.status(400).json({
         success: false,
-        error: 'MISSING_REQUIRED_FIELDS',
-        message: 'Asset ID and user ID are required',
-        timestamp: new Date().toISOString()
+        message: 'Asset ID and User ID are required'
       });
     }
     
-    const assignmentsCollection = await getCollection('asset_assignments');
-    
-    const newAssignment = {
+    const assignment = {
       assetId,
       userId,
       assignedDate: assignedDate ? new Date(assignedDate) : new Date(),
       returnDate: returnDate ? new Date(returnDate) : null,
-      purpose: purpose || null,
-      notes: notes || null,
+      purpose: purpose || '',
+      notes: notes || '',
       status: 'active',
+      createdBy: req.user.userId,
       createdAt: new Date(),
-      updatedAt: new Date(),
-      assignedBy: req.user.userId
+      updatedAt: new Date()
     };
     
-    const result = await assignmentsCollection.insertOne(newAssignment);
+    const result = await assignmentsCollection.insertOne(assignment);
+    
+    // Update asset assignment status
+    const assetsCollection = await getCollection('assets');
+    await assetsCollection.updateOne(
+      { _id: assetId },
+      { 
+        $set: { 
+          assignedTo: userId,
+          status: 'assigned',
+          updatedAt: new Date()
+        }
+      }
+    );
     
     res.status(201).json({
       success: true,
-      data: { assetAssignment: { ...newAssignment, _id: result.insertedId } },
-      message: 'Asset assignment created successfully',
-      timestamp: new Date().toISOString()
+      data: {
+        id: result.insertedId,
+        ...assignment
+      },
+      message: 'Asset assignment created successfully'
     });
   } catch (error) {
-    console.error('Create asset assignment error:', error);
+    console.error('Error creating asset assignment:', error);
     res.status(500).json({
       success: false,
-      error: 'CREATE_ASSET_ASSIGNMENT_FAILED',
       message: 'Failed to create asset assignment',
-      timestamp: new Date().toISOString()
+      error: process.env.NODE_ENV === 'development' ? error.message : undefined
+    });
+  }
+});
+
+// PUT /api/v1/asset-assignments/:id - Update asset assignment
+router.put('/asset-assignments/:id', requireRole(['admin', 'asset_manager', 'super_admin']), async (req, res) => {
+  try {
+    const assignmentsCollection = await getCollection('asset_assignments');
+    const { returnDate, purpose, notes, status } = req.body;
+    
+    const updateData = {
+      updatedAt: new Date()
+    };
+    
+    if (returnDate) updateData.returnDate = new Date(returnDate);
+    if (purpose) updateData.purpose = purpose;
+    if (notes) updateData.notes = notes;
+    if (status) updateData.status = status;
+    
+    const result = await assignmentsCollection.updateOne(
+      { _id: req.params.id },
+      { $set: updateData }
+    );
+    
+    if (result.matchedCount === 0) {
+      return res.status(404).json({
+        success: false,
+        message: 'Asset assignment not found'
+      });
+    }
+    
+    // If assignment is returned, update asset status
+    if (status === 'returned') {
+      const assignment = await assignmentsCollection.findOne({ _id: req.params.id });
+      if (assignment) {
+        const assetsCollection = await getCollection('assets');
+        await assetsCollection.updateOne(
+          { _id: assignment.assetId },
+          { 
+            $set: { 
+              assignedTo: null,
+              status: 'available',
+              updatedAt: new Date()
+            }
+          }
+        );
+      }
+    }
+    
+    res.json({
+      success: true,
+      message: 'Asset assignment updated successfully'
+    });
+  } catch (error) {
+    console.error('Error updating asset assignment:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Failed to update asset assignment',
+      error: process.env.NODE_ENV === 'development' ? error.message : undefined
+    });
+  }
+});
+
+// GET /api/v1/assets/analytics - Get assets analytics
+router.get('/analytics/overview', async (req, res) => {
+  try {
+    const assetsCollection = await getCollection('assets');
+    const maintenanceCollection = await getCollection('maintenance_records');
+    const assignmentsCollection = await getCollection('asset_assignments');
+    
+    const totalAssets = await assetsCollection.countDocuments();
+    const availableAssets = await assetsCollection.countDocuments({ status: 'available' });
+    const assignedAssets = await assetsCollection.countDocuments({ status: 'assigned' });
+    const maintenanceAssets = await assetsCollection.countDocuments({ status: 'maintenance' });
+    
+    // Get assets by type
+    const typeStats = await assetsCollection.aggregate([
+      { $group: { _id: '$type', count: { $sum: 1 } } }
+    ]).toArray();
+    
+    // Get assets by status
+    const statusStats = await assetsCollection.aggregate([
+      { $group: { _id: '$status', count: { $sum: 1 } } }
+    ]).toArray();
+    
+    // Get maintenance stats
+    const totalMaintenance = await maintenanceCollection.countDocuments();
+    const pendingMaintenance = await maintenanceCollection.countDocuments({ status: 'scheduled' });
+    const completedMaintenance = await maintenanceCollection.countDocuments({ status: 'completed' });
+    
+    // Get assignment stats
+    const totalAssignments = await assignmentsCollection.countDocuments();
+    const activeAssignments = await assignmentsCollection.countDocuments({ status: 'active' });
+    
+    res.json({
+      success: true,
+      data: {
+        overview: {
+          totalAssets,
+          availableAssets,
+          assignedAssets,
+          maintenanceAssets
+        },
+        typeStats,
+        statusStats,
+        maintenance: {
+          totalMaintenance,
+          pendingMaintenance,
+          completedMaintenance
+        },
+        assignments: {
+          totalAssignments,
+          activeAssignments
+        }
+      }
+    });
+  } catch (error) {
+    console.error('Error fetching assets analytics:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Failed to fetch assets analytics',
+      error: process.env.NODE_ENV === 'development' ? error.message : undefined
     });
   }
 });

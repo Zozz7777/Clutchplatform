@@ -1,49 +1,43 @@
-/**
- * Project Management Routes
- * Complete project management system with tasks, time tracking, and resource allocation
- */
-
 const express = require('express');
 const router = express.Router();
 const { authenticateToken, requireRole } = require('../middleware/auth');
 const { getCollection } = require('../config/optimized-database');
-const { rateLimit: createRateLimit } = require('../middleware/rateLimit');
-const { ObjectId } = require('mongodb');
+const rateLimit = require('express-rate-limit');
 
-// Apply rate limiting
-const projectRateLimit = createRateLimit({ windowMs: 60 * 1000, max: 100 });
+// Rate limiting
+const projectLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: 100, // limit each IP to 100 requests per windowMs
+  message: 'Too many project requests from this IP, please try again later.'
+});
 
-// ==================== PROJECT MANAGEMENT ====================
+// Apply rate limiting and authentication to all routes
+router.use(projectLimiter);
+router.use(authenticateToken);
+
+// ===== PROJECTS MANAGEMENT =====
 
 // GET /api/v1/projects - Get all projects
-router.get('/', authenticateToken, requireRole(['admin', 'manager', 'project_manager']), projectRateLimit, async (req, res) => {
+router.get('/', async (req, res) => {
   try {
-    const { page = 1, limit = 50, status, priority, manager, search } = req.query;
-    const skip = (page - 1) * limit;
-    
     const projectsCollection = await getCollection('projects');
+    const { page = 1, limit = 10, status, priority, assignee } = req.query;
     
-    // Build query
-    const query = {};
-    if (status) query.status = status;
-    if (priority) query.priority = priority;
-    if (manager) query.managerId = manager;
-    if (search) {
-      query.$or = [
-        { name: { $regex: search, $options: 'i' } },
-        { description: { $regex: search, $options: 'i' } },
-        { projectCode: { $regex: search, $options: 'i' } }
-      ];
-    }
+    const filter = {};
+    if (status) filter.status = status;
+    if (priority) filter.priority = priority;
+    if (assignee) filter.assignee = assignee;
+    
+    const skip = (parseInt(page) - 1) * parseInt(limit);
     
     const projects = await projectsCollection
-      .find(query)
-      .sort({ createdAt: -1 })
+      .find(filter)
       .skip(skip)
       .limit(parseInt(limit))
+      .sort({ createdAt: -1 })
       .toArray();
     
-    const total = await projectsCollection.countDocuments(query);
+    const total = await projectsCollection.countDocuments(filter);
     
     res.json({
       success: true,
@@ -53,608 +47,451 @@ router.get('/', authenticateToken, requireRole(['admin', 'manager', 'project_man
           page: parseInt(page),
           limit: parseInt(limit),
           total,
-          pages: Math.ceil(total / limit)
+          pages: Math.ceil(total / parseInt(limit))
         }
-      },
-      message: 'Projects retrieved successfully',
-      timestamp: new Date().toISOString()
+      }
     });
   } catch (error) {
-    console.error('Get projects error:', error);
+    console.error('Error fetching projects:', error);
     res.status(500).json({
       success: false,
-      error: 'GET_PROJECTS_FAILED',
-      message: 'Failed to retrieve projects',
-      timestamp: new Date().toISOString()
+      message: 'Failed to fetch projects',
+      error: process.env.NODE_ENV === 'development' ? error.message : undefined
     });
   }
 });
 
 // GET /api/v1/projects/:id - Get project by ID
-router.get('/:id', authenticateToken, requireRole(['admin', 'manager', 'project_manager']), projectRateLimit, async (req, res) => {
+router.get('/:id', async (req, res) => {
   try {
-    const { id } = req.params;
     const projectsCollection = await getCollection('projects');
-    
-    const project = await projectsCollection.findOne({ _id: new ObjectId(id) });
+    const project = await projectsCollection.findOne({ _id: req.params.id });
     
     if (!project) {
       return res.status(404).json({
         success: false,
-        error: 'PROJECT_NOT_FOUND',
-        message: 'Project not found',
-        timestamp: new Date().toISOString()
+        message: 'Project not found'
       });
     }
     
     res.json({
       success: true,
-      data: { project },
-      message: 'Project retrieved successfully',
-      timestamp: new Date().toISOString()
+      data: project
     });
   } catch (error) {
-    console.error('Get project error:', error);
+    console.error('Error fetching project:', error);
     res.status(500).json({
       success: false,
-      error: 'GET_PROJECT_FAILED',
-      message: 'Failed to retrieve project',
-      timestamp: new Date().toISOString()
+      message: 'Failed to fetch project',
+      error: process.env.NODE_ENV === 'development' ? error.message : undefined
     });
   }
 });
 
 // POST /api/v1/projects - Create new project
-router.post('/', authenticateToken, requireRole(['admin', 'manager', 'project_manager']), projectRateLimit, async (req, res) => {
+router.post('/', requireRole(['admin', 'project_manager', 'super_admin']), async (req, res) => {
   try {
-    const {
-      name,
-      description,
-      startDate,
-      endDate,
-      budget,
-      priority,
-      managerId,
-      teamMembers,
-      client,
-      deliverables
-    } = req.body;
+    const projectsCollection = await getCollection('projects');
+    const { name, description, status, priority, assignee, dueDate, tags } = req.body;
     
-    if (!name || !description || !startDate || !endDate) {
+    if (!name || !description) {
       return res.status(400).json({
         success: false,
-        error: 'MISSING_REQUIRED_FIELDS',
-        message: 'Name, description, start date, and end date are required',
-        timestamp: new Date().toISOString()
+        message: 'Name and description are required'
       });
     }
     
-    const projectsCollection = await getCollection('projects');
-    
-    // Generate project code
-    const projectCount = await projectsCollection.countDocuments();
-    const projectCode = `PRJ${String(projectCount + 1).padStart(4, '0')}`;
-    
-    const newProject = {
-      projectCode,
+    const project = {
       name,
       description,
-      startDate: new Date(startDate),
-      endDate: new Date(endDate),
-      budget: budget || null,
+      status: status || 'planning',
       priority: priority || 'medium',
-      managerId: managerId || req.user.userId,
-      teamMembers: teamMembers || [],
-      client: client || null,
-      deliverables: deliverables || [],
-      status: 'planning',
-      progress: 0,
+      assignee: assignee || req.user.userId,
+      dueDate: dueDate ? new Date(dueDate) : null,
+      tags: tags || [],
+      createdBy: req.user.userId,
       createdAt: new Date(),
       updatedAt: new Date(),
-      createdBy: req.user.userId
+      progress: 0,
+      tasks: [],
+      timeTracking: []
     };
     
-    const result = await projectsCollection.insertOne(newProject);
+    const result = await projectsCollection.insertOne(project);
     
     res.status(201).json({
       success: true,
-      data: { project: { ...newProject, _id: result.insertedId } },
-      message: 'Project created successfully',
-      timestamp: new Date().toISOString()
+      data: {
+        id: result.insertedId,
+        ...project
+      },
+      message: 'Project created successfully'
     });
   } catch (error) {
-    console.error('Create project error:', error);
+    console.error('Error creating project:', error);
     res.status(500).json({
       success: false,
-      error: 'CREATE_PROJECT_FAILED',
       message: 'Failed to create project',
-      timestamp: new Date().toISOString()
+      error: process.env.NODE_ENV === 'development' ? error.message : undefined
     });
   }
 });
 
 // PUT /api/v1/projects/:id - Update project
-router.put('/:id', authenticateToken, requireRole(['admin', 'manager', 'project_manager']), projectRateLimit, async (req, res) => {
+router.put('/:id', requireRole(['admin', 'project_manager', 'super_admin']), async (req, res) => {
   try {
-    const { id } = req.params;
-    const updateData = { ...req.body, updatedAt: new Date() };
-    
     const projectsCollection = await getCollection('projects');
+    const { name, description, status, priority, assignee, dueDate, tags, progress } = req.body;
+    
+    const updateData = {
+      updatedAt: new Date()
+    };
+    
+    if (name) updateData.name = name;
+    if (description) updateData.description = description;
+    if (status) updateData.status = status;
+    if (priority) updateData.priority = priority;
+    if (assignee) updateData.assignee = assignee;
+    if (dueDate) updateData.dueDate = new Date(dueDate);
+    if (tags) updateData.tags = tags;
+    if (progress !== undefined) updateData.progress = progress;
     
     const result = await projectsCollection.updateOne(
-      { _id: new ObjectId(id) },
+      { _id: req.params.id },
       { $set: updateData }
     );
     
     if (result.matchedCount === 0) {
       return res.status(404).json({
         success: false,
-        error: 'PROJECT_NOT_FOUND',
-        message: 'Project not found',
-        timestamp: new Date().toISOString()
+        message: 'Project not found'
       });
     }
     
-    const updatedProject = await projectsCollection.findOne({ _id: new ObjectId(id) });
-    
     res.json({
       success: true,
-      data: { project: updatedProject },
-      message: 'Project updated successfully',
-      timestamp: new Date().toISOString()
+      message: 'Project updated successfully'
     });
   } catch (error) {
-    console.error('Update project error:', error);
+    console.error('Error updating project:', error);
     res.status(500).json({
       success: false,
-      error: 'UPDATE_PROJECT_FAILED',
       message: 'Failed to update project',
-      timestamp: new Date().toISOString()
+      error: process.env.NODE_ENV === 'development' ? error.message : undefined
     });
   }
 });
 
-// ==================== TASK MANAGEMENT ====================
+// DELETE /api/v1/projects/:id - Delete project
+router.delete('/:id', requireRole(['admin', 'super_admin']), async (req, res) => {
+  try {
+    const projectsCollection = await getCollection('projects');
+    const result = await projectsCollection.deleteOne({ _id: req.params.id });
+    
+    if (result.deletedCount === 0) {
+      return res.status(404).json({
+        success: false,
+        message: 'Project not found'
+      });
+    }
+    
+    res.json({
+      success: true,
+      message: 'Project deleted successfully'
+    });
+  } catch (error) {
+    console.error('Error deleting project:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Failed to delete project',
+      error: process.env.NODE_ENV === 'development' ? error.message : undefined
+    });
+  }
+});
+
+// ===== PROJECT TASKS =====
 
 // GET /api/v1/projects/:id/tasks - Get project tasks
-router.get('/:id/tasks', authenticateToken, requireRole(['admin', 'manager', 'project_manager']), projectRateLimit, async (req, res) => {
+router.get('/:id/tasks', async (req, res) => {
   try {
-    const { id } = req.params;
-    const { status, assignee, priority } = req.query;
+    const projectsCollection = await getCollection('projects');
+    const project = await projectsCollection.findOne({ _id: req.params.id });
     
-    const tasksCollection = await getCollection('tasks');
-    
-    // Build query
-    const query = { projectId: new ObjectId(id) };
-    if (status) query.status = status;
-    if (assignee) query.assigneeId = assignee;
-    if (priority) query.priority = priority;
-    
-    const tasks = await tasksCollection
-      .find(query)
-      .sort({ createdAt: -1 })
-      .toArray();
+    if (!project) {
+      return res.status(404).json({
+        success: false,
+        message: 'Project not found'
+      });
+    }
     
     res.json({
       success: true,
-      data: { tasks },
-      message: 'Project tasks retrieved successfully',
-      timestamp: new Date().toISOString()
+      data: project.tasks || []
     });
   } catch (error) {
-    console.error('Get project tasks error:', error);
+    console.error('Error fetching project tasks:', error);
     res.status(500).json({
       success: false,
-      error: 'GET_PROJECT_TASKS_FAILED',
-      message: 'Failed to retrieve project tasks',
-      timestamp: new Date().toISOString()
+      message: 'Failed to fetch project tasks',
+      error: process.env.NODE_ENV === 'development' ? error.message : undefined
     });
   }
 });
 
-// POST /api/v1/projects/:id/tasks - Create project task
-router.post('/:id/tasks', authenticateToken, requireRole(['admin', 'manager', 'project_manager']), projectRateLimit, async (req, res) => {
+// POST /api/v1/projects/:id/tasks - Add task to project
+router.post('/:id/tasks', requireRole(['admin', 'project_manager', 'super_admin']), async (req, res) => {
   try {
-    const { id } = req.params;
-    const {
-      title,
-      description,
-      assigneeId,
-      priority,
-      dueDate,
-      estimatedHours,
-      dependencies
-    } = req.body;
+    const projectsCollection = await getCollection('projects');
+    const { title, description, status, priority, assignee, dueDate } = req.body;
     
-    if (!title || !description) {
+    if (!title) {
       return res.status(400).json({
         success: false,
-        error: 'MISSING_REQUIRED_FIELDS',
-        message: 'Title and description are required',
-        timestamp: new Date().toISOString()
+        message: 'Task title is required'
       });
     }
     
-    const tasksCollection = await getCollection('tasks');
-    
-    const newTask = {
-      projectId: new ObjectId(id),
+    const task = {
+      id: Date.now().toString(),
       title,
-      description,
-      assigneeId: assigneeId || null,
+      description: description || '',
+      status: status || 'todo',
       priority: priority || 'medium',
+      assignee: assignee || req.user.userId,
       dueDate: dueDate ? new Date(dueDate) : null,
-      estimatedHours: estimatedHours || null,
-      dependencies: dependencies || [],
-      status: 'todo',
-      progress: 0,
-      createdAt: new Date(),
-      updatedAt: new Date(),
-      createdBy: req.user.userId
-    };
-    
-    const result = await tasksCollection.insertOne(newTask);
-    
-    res.status(201).json({
-      success: true,
-      data: { task: { ...newTask, _id: result.insertedId } },
-      message: 'Task created successfully',
-      timestamp: new Date().toISOString()
-    });
-  } catch (error) {
-    console.error('Create task error:', error);
-    res.status(500).json({
-      success: false,
-      error: 'CREATE_TASK_FAILED',
-      message: 'Failed to create task',
-      timestamp: new Date().toISOString()
-    });
-  }
-});
-
-// ==================== TIME TRACKING ====================
-
-// GET /api/v1/projects/:id/time-tracking - Get project time tracking
-router.get('/:id/time-tracking', authenticateToken, requireRole(['admin', 'manager', 'project_manager']), projectRateLimit, async (req, res) => {
-  try {
-    const { id } = req.params;
-    const { startDate, endDate, userId } = req.query;
-    
-    const timeTrackingCollection = await getCollection('time_tracking');
-    
-    // Build query
-    const query = { projectId: new ObjectId(id) };
-    if (userId) query.userId = userId;
-    if (startDate && endDate) {
-      query.date = {
-        $gte: new Date(startDate),
-        $lte: new Date(endDate)
-      };
-    }
-    
-    const timeEntries = await timeTrackingCollection
-      .find(query)
-      .sort({ date: -1 })
-      .toArray();
-    
-    // Calculate totals
-    const totals = timeEntries.reduce((acc, entry) => {
-      acc.totalHours += entry.hours || 0;
-      acc.totalMinutes += entry.minutes || 0;
-      return acc;
-    }, { totalHours: 0, totalMinutes: 0 });
-    
-    res.json({
-      success: true,
-      data: {
-        timeEntries,
-        totals: {
-          totalHours: totals.totalHours + Math.floor(totals.totalMinutes / 60),
-          totalMinutes: totals.totalMinutes % 60
-        }
-      },
-      message: 'Time tracking data retrieved successfully',
-      timestamp: new Date().toISOString()
-    });
-  } catch (error) {
-    console.error('Get time tracking error:', error);
-    res.status(500).json({
-      success: false,
-      error: 'GET_TIME_TRACKING_FAILED',
-      message: 'Failed to retrieve time tracking data',
-      timestamp: new Date().toISOString()
-    });
-  }
-});
-
-// POST /api/v1/projects/:id/time-tracking - Log time entry
-router.post('/:id/time-tracking', authenticateToken, requireRole(['admin', 'manager', 'project_manager', 'employee']), projectRateLimit, async (req, res) => {
-  try {
-    const { id } = req.params;
-    const {
-      taskId,
-      hours,
-      minutes,
-      description,
-      date
-    } = req.body;
-    
-    if (!hours && !minutes) {
-      return res.status(400).json({
-        success: false,
-        error: 'MISSING_TIME_DATA',
-        message: 'Hours or minutes are required',
-        timestamp: new Date().toISOString()
-      });
-    }
-    
-    const timeTrackingCollection = await getCollection('time_tracking');
-    
-    const newTimeEntry = {
-      projectId: new ObjectId(id),
-      taskId: taskId ? new ObjectId(taskId) : null,
-      userId: req.user.userId,
-      hours: hours || 0,
-      minutes: minutes || 0,
-      description: description || null,
-      date: date ? new Date(date) : new Date(),
       createdAt: new Date(),
       updatedAt: new Date()
     };
     
-    const result = await timeTrackingCollection.insertOne(newTimeEntry);
+    const result = await projectsCollection.updateOne(
+      { _id: req.params.id },
+      { 
+        $push: { tasks: task },
+        $set: { updatedAt: new Date() }
+      }
+    );
     
-    res.status(201).json({
-      success: true,
-      data: { timeEntry: { ...newTimeEntry, _id: result.insertedId } },
-      message: 'Time entry logged successfully',
-      timestamp: new Date().toISOString()
-    });
-  } catch (error) {
-    console.error('Log time entry error:', error);
-    res.status(500).json({
-      success: false,
-      error: 'LOG_TIME_ENTRY_FAILED',
-      message: 'Failed to log time entry',
-      timestamp: new Date().toISOString()
-    });
-  }
-});
-
-// ==================== RESOURCE ALLOCATION ====================
-
-// GET /api/v1/projects/:id/resources - Get project resources
-router.get('/:id/resources', authenticateToken, requireRole(['admin', 'manager', 'project_manager']), projectRateLimit, async (req, res) => {
-  try {
-    const { id } = req.params;
-    const resourcesCollection = await getCollection('project_resources');
-    
-    const resources = await resourcesCollection
-      .find({ projectId: new ObjectId(id) })
-      .sort({ createdAt: -1 })
-      .toArray();
-    
-    res.json({
-      success: true,
-      data: { resources },
-      message: 'Project resources retrieved successfully',
-      timestamp: new Date().toISOString()
-    });
-  } catch (error) {
-    console.error('Get project resources error:', error);
-    res.status(500).json({
-      success: false,
-      error: 'GET_PROJECT_RESOURCES_FAILED',
-      message: 'Failed to retrieve project resources',
-      timestamp: new Date().toISOString()
-    });
-  }
-});
-
-// POST /api/v1/projects/:id/resources - Allocate resource to project
-router.post('/:id/resources', authenticateToken, requireRole(['admin', 'manager', 'project_manager']), projectRateLimit, async (req, res) => {
-  try {
-    const { id } = req.params;
-    const {
-      resourceType,
-      resourceId,
-      allocation,
-      startDate,
-      endDate,
-      cost
-    } = req.body;
-    
-    if (!resourceType || !resourceId || !allocation) {
-      return res.status(400).json({
+    if (result.matchedCount === 0) {
+      return res.status(404).json({
         success: false,
-        error: 'MISSING_REQUIRED_FIELDS',
-        message: 'Resource type, resource ID, and allocation are required',
-        timestamp: new Date().toISOString()
+        message: 'Project not found'
       });
     }
     
-    const resourcesCollection = await getCollection('project_resources');
-    
-    const newResource = {
-      projectId: new ObjectId(id),
-      resourceType,
-      resourceId,
-      allocation: parseFloat(allocation),
-      startDate: startDate ? new Date(startDate) : new Date(),
-      endDate: endDate ? new Date(endDate) : null,
-      cost: cost || null,
-      status: 'allocated',
-      createdAt: new Date(),
-      updatedAt: new Date(),
-      allocatedBy: req.user.userId
-    };
-    
-    const result = await resourcesCollection.insertOne(newResource);
-    
     res.status(201).json({
       success: true,
-      data: { resource: { ...newResource, _id: result.insertedId } },
-      message: 'Resource allocated successfully',
-      timestamp: new Date().toISOString()
+      data: task,
+      message: 'Task added successfully'
     });
   } catch (error) {
-    console.error('Allocate resource error:', error);
+    console.error('Error adding task:', error);
     res.status(500).json({
       success: false,
-      error: 'ALLOCATE_RESOURCE_FAILED',
-      message: 'Failed to allocate resource',
-      timestamp: new Date().toISOString()
+      message: 'Failed to add task',
+      error: process.env.NODE_ENV === 'development' ? error.message : undefined
     });
   }
 });
 
-// ==================== PROJECT ANALYTICS ====================
-
-// GET /api/v1/projects/:id/analytics - Get project analytics
-router.get('/:id/analytics', authenticateToken, requireRole(['admin', 'manager', 'project_manager']), projectRateLimit, async (req, res) => {
+// PUT /api/v1/projects/:id/tasks/:taskId - Update project task
+router.put('/:id/tasks/:taskId', requireRole(['admin', 'project_manager', 'super_admin']), async (req, res) => {
   try {
-    const { id } = req.params;
-    
     const projectsCollection = await getCollection('projects');
-    const tasksCollection = await getCollection('tasks');
-    const timeTrackingCollection = await getCollection('time_tracking');
-    const resourcesCollection = await getCollection('project_resources');
+    const { title, description, status, priority, assignee, dueDate } = req.body;
     
-    // Get project
-    const project = await projectsCollection.findOne({ _id: new ObjectId(id) });
+    const updateFields = {};
+    if (title) updateFields['tasks.$.title'] = title;
+    if (description) updateFields['tasks.$.description'] = description;
+    if (status) updateFields['tasks.$.status'] = status;
+    if (priority) updateFields['tasks.$.priority'] = priority;
+    if (assignee) updateFields['tasks.$.assignee'] = assignee;
+    if (dueDate) updateFields['tasks.$.dueDate'] = new Date(dueDate);
+    updateFields['tasks.$.updatedAt'] = new Date();
+    updateFields.updatedAt = new Date();
+    
+    const result = await projectsCollection.updateOne(
+      { _id: req.params.id, 'tasks.id': req.params.taskId },
+      { $set: updateFields }
+    );
+    
+    if (result.matchedCount === 0) {
+      return res.status(404).json({
+        success: false,
+        message: 'Project or task not found'
+      });
+    }
+    
+    res.json({
+      success: true,
+      message: 'Task updated successfully'
+    });
+  } catch (error) {
+    console.error('Error updating task:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Failed to update task',
+      error: process.env.NODE_ENV === 'development' ? error.message : undefined
+    });
+  }
+});
+
+// DELETE /api/v1/projects/:id/tasks/:taskId - Delete project task
+router.delete('/:id/tasks/:taskId', requireRole(['admin', 'project_manager', 'super_admin']), async (req, res) => {
+  try {
+    const projectsCollection = await getCollection('projects');
+    const result = await projectsCollection.updateOne(
+      { _id: req.params.id },
+      { 
+        $pull: { tasks: { id: req.params.taskId } },
+        $set: { updatedAt: new Date() }
+      }
+    );
+    
+    if (result.matchedCount === 0) {
+      return res.status(404).json({
+        success: false,
+        message: 'Project not found'
+      });
+    }
+    
+    res.json({
+      success: true,
+      message: 'Task deleted successfully'
+    });
+  } catch (error) {
+    console.error('Error deleting task:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Failed to delete task',
+      error: process.env.NODE_ENV === 'development' ? error.message : undefined
+    });
+  }
+});
+
+// ===== TIME TRACKING =====
+
+// GET /api/v1/projects/:id/time-tracking - Get project time tracking
+router.get('/:id/time-tracking', async (req, res) => {
+  try {
+    const projectsCollection = await getCollection('projects');
+    const project = await projectsCollection.findOne({ _id: req.params.id });
+    
     if (!project) {
       return res.status(404).json({
         success: false,
-        error: 'PROJECT_NOT_FOUND',
-        message: 'Project not found',
-        timestamp: new Date().toISOString()
+        message: 'Project not found'
       });
     }
     
-    // Task statistics
-    const totalTasks = await tasksCollection.countDocuments({ projectId: new ObjectId(id) });
-    const completedTasks = await tasksCollection.countDocuments({ 
-      projectId: new ObjectId(id), 
-      status: 'completed' 
-    });
-    const inProgressTasks = await tasksCollection.countDocuments({ 
-      projectId: new ObjectId(id), 
-      status: 'in_progress' 
-    });
-    
-    // Time tracking statistics
-    const timeEntries = await timeTrackingCollection.find({ projectId: new ObjectId(id) }).toArray();
-    const totalTime = timeEntries.reduce((sum, entry) => sum + (entry.hours || 0) + (entry.minutes || 0) / 60, 0);
-    
-    // Resource statistics
-    const resources = await resourcesCollection.find({ projectId: new ObjectId(id) }).toArray();
-    const totalCost = resources.reduce((sum, resource) => sum + (resource.cost || 0), 0);
-    
-    // Progress calculation
-    const progress = totalTasks > 0 ? (completedTasks / totalTasks) * 100 : 0;
-    
-    const analytics = {
-      project: {
-        id: project._id,
-        name: project.name,
-        status: project.status,
-        progress: Math.round(progress * 100) / 100
-      },
-      tasks: {
-        total: totalTasks,
-        completed: completedTasks,
-        inProgress: inProgressTasks,
-        remaining: totalTasks - completedTasks - inProgressTasks
-      },
-      timeTracking: {
-        totalHours: Math.round(totalTime * 100) / 100,
-        entries: timeEntries.length
-      },
-      resources: {
-        total: resources.length,
-        totalCost: totalCost
-      },
-      budget: {
-        allocated: project.budget || 0,
-        spent: totalCost,
-        remaining: (project.budget || 0) - totalCost
-      },
-      generatedAt: new Date()
-    };
-    
     res.json({
       success: true,
-      data: analytics,
-      message: 'Project analytics retrieved successfully',
-      timestamp: new Date().toISOString()
+      data: project.timeTracking || []
     });
   } catch (error) {
-    console.error('Get project analytics error:', error);
+    console.error('Error fetching time tracking:', error);
     res.status(500).json({
       success: false,
-      error: 'GET_PROJECT_ANALYTICS_FAILED',
-      message: 'Failed to retrieve project analytics',
-      timestamp: new Date().toISOString()
+      message: 'Failed to fetch time tracking',
+      error: process.env.NODE_ENV === 'development' ? error.message : undefined
     });
   }
 });
 
-// ==================== GENERIC HANDLERS ====================
-
-// GET /api/v1/projects/analytics/overview - Get projects overview analytics
-router.get('/analytics/overview', authenticateToken, requireRole(['admin', 'manager', 'project_manager']), projectRateLimit, async (req, res) => {
+// POST /api/v1/projects/:id/time-tracking - Add time entry
+router.post('/:id/time-tracking', requireRole(['admin', 'project_manager', 'super_admin', 'employee']), async (req, res) => {
   try {
     const projectsCollection = await getCollection('projects');
-    const tasksCollection = await getCollection('tasks');
+    const { taskId, description, duration, date } = req.body;
     
-    // Project statistics
+    if (!duration || !description) {
+      return res.status(400).json({
+        success: false,
+        message: 'Duration and description are required'
+      });
+    }
+    
+    const timeEntry = {
+      id: Date.now().toString(),
+      taskId: taskId || null,
+      description,
+      duration: parseInt(duration), // in minutes
+      date: date ? new Date(date) : new Date(),
+      userId: req.user.userId,
+      createdAt: new Date()
+    };
+    
+    const result = await projectsCollection.updateOne(
+      { _id: req.params.id },
+      { 
+        $push: { timeTracking: timeEntry },
+        $set: { updatedAt: new Date() }
+      }
+    );
+    
+    if (result.matchedCount === 0) {
+      return res.status(404).json({
+        success: false,
+        message: 'Project not found'
+      });
+    }
+    
+    res.status(201).json({
+      success: true,
+      data: timeEntry,
+      message: 'Time entry added successfully'
+    });
+  } catch (error) {
+    console.error('Error adding time entry:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Failed to add time entry',
+      error: process.env.NODE_ENV === 'development' ? error.message : undefined
+    });
+  }
+});
+
+// GET /api/v1/projects/analytics - Get projects analytics
+router.get('/analytics/overview', async (req, res) => {
+  try {
+    const projectsCollection = await getCollection('projects');
+    
     const totalProjects = await projectsCollection.countDocuments();
-    const activeProjects = await projectsCollection.countDocuments({ status: 'active' });
+    const activeProjects = await projectsCollection.countDocuments({ status: { $in: ['active', 'in_progress'] } });
     const completedProjects = await projectsCollection.countDocuments({ status: 'completed' });
-    const overdueProjects = await projectsCollection.countDocuments({
-      endDate: { $lt: new Date() },
+    const overdueProjects = await projectsCollection.countDocuments({ 
+      dueDate: { $lt: new Date() },
       status: { $ne: 'completed' }
     });
     
-    // Task statistics
-    const totalTasks = await tasksCollection.countDocuments();
-    const completedTasks = await tasksCollection.countDocuments({ status: 'completed' });
-    
-    // Project status distribution
-    const statusDistribution = await projectsCollection.aggregate([
-      { $group: { _id: '$status', count: { $sum: 1 } } },
-      { $sort: { count: -1 } }
+    // Get projects by status
+    const statusStats = await projectsCollection.aggregate([
+      { $group: { _id: '$status', count: { $sum: 1 } } }
     ]).toArray();
     
-    const overview = {
-      projects: {
-        total: totalProjects,
-        active: activeProjects,
-        completed: completedProjects,
-        overdue: overdueProjects,
-        statusDistribution
-      },
-      tasks: {
-        total: totalTasks,
-        completed: completedTasks,
-        completionRate: totalTasks > 0 ? Math.round((completedTasks / totalTasks) * 100) : 0
-      },
-      generatedAt: new Date()
-    };
+    // Get projects by priority
+    const priorityStats = await projectsCollection.aggregate([
+      { $group: { _id: '$priority', count: { $sum: 1 } } }
+    ]).toArray();
     
     res.json({
       success: true,
-      data: overview,
-      message: 'Projects overview analytics retrieved successfully',
-      timestamp: new Date().toISOString()
+      data: {
+        overview: {
+          totalProjects,
+          activeProjects,
+          completedProjects,
+          overdueProjects
+        },
+        statusStats,
+        priorityStats
+      }
     });
   } catch (error) {
-    console.error('Get projects overview analytics error:', error);
+    console.error('Error fetching projects analytics:', error);
     res.status(500).json({
       success: false,
-      error: 'GET_PROJECTS_OVERVIEW_ANALYTICS_FAILED',
-      message: 'Failed to retrieve projects overview analytics',
-      timestamp: new Date().toISOString()
+      message: 'Failed to fetch projects analytics',
+      error: process.env.NODE_ENV === 'development' ? error.message : undefined
     });
   }
 });

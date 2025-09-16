@@ -16,7 +16,7 @@ const featureFlagRateLimit = createRateLimit({ windowMs: 60 * 1000, max: 100 });
 // ==================== FEATURE FLAG MANAGEMENT ====================
 
 // GET /api/v1/feature-flags - Get all feature flags
-router.get('/', authenticateToken, requireRole(['admin', 'developer']), featureFlagRateLimit, async (req, res) => {
+router.get('/', authenticateToken, requireRole(['admin', 'developer', 'super_admin']), featureFlagRateLimit, async (req, res) => {
   try {
     const { page = 1, limit = 50, status, environment, search } = req.query;
     const skip = (page - 1) * limit;
@@ -70,7 +70,7 @@ router.get('/', authenticateToken, requireRole(['admin', 'developer']), featureF
 });
 
 // GET /api/v1/feature-flags/:id - Get feature flag by ID
-router.get('/:id', authenticateToken, requireRole(['admin', 'developer']), featureFlagRateLimit, async (req, res) => {
+router.get('/:id', authenticateToken, requireRole(['admin', 'developer', 'super_admin']), featureFlagRateLimit, async (req, res) => {
   try {
     const { id } = req.params;
     const featureFlagsCollection = await getCollection('feature_flags');
@@ -104,7 +104,7 @@ router.get('/:id', authenticateToken, requireRole(['admin', 'developer']), featu
 });
 
 // POST /api/v1/feature-flags - Create new feature flag
-router.post('/', authenticateToken, requireRole(['admin', 'developer']), featureFlagRateLimit, async (req, res) => {
+router.post('/', authenticateToken, requireRole(['admin', 'developer', 'super_admin']), featureFlagRateLimit, async (req, res) => {
   try {
     const {
       name,
@@ -183,7 +183,7 @@ router.post('/', authenticateToken, requireRole(['admin', 'developer']), feature
 });
 
 // PUT /api/v1/feature-flags/:id - Update feature flag
-router.put('/:id', authenticateToken, requireRole(['admin', 'developer']), featureFlagRateLimit, async (req, res) => {
+router.put('/:id', authenticateToken, requireRole(['admin', 'developer', 'super_admin']), featureFlagRateLimit, async (req, res) => {
   try {
     const { id } = req.params;
     const updateData = { ...req.body, updatedAt: new Date() };
@@ -224,7 +224,7 @@ router.put('/:id', authenticateToken, requireRole(['admin', 'developer']), featu
 });
 
 // POST /api/v1/feature-flags/:id/toggle - Toggle feature flag
-router.post('/:id/toggle', authenticateToken, requireRole(['admin', 'developer']), featureFlagRateLimit, async (req, res) => {
+router.post('/:id/toggle', authenticateToken, requireRole(['admin', 'developer', 'super_admin']), featureFlagRateLimit, async (req, res) => {
   try {
     const { id } = req.params;
     const { status } = req.body;
@@ -281,7 +281,7 @@ router.post('/:id/toggle', authenticateToken, requireRole(['admin', 'developer']
 // ==================== A/B TESTING ====================
 
 // GET /api/v1/feature-flags/:id/ab-tests - Get A/B tests for feature flag
-router.get('/:id/ab-tests', authenticateToken, requireRole(['admin', 'developer']), featureFlagRateLimit, async (req, res) => {
+router.get('/:id/ab-tests', authenticateToken, requireRole(['admin', 'developer', 'super_admin']), featureFlagRateLimit, async (req, res) => {
   try {
     const { id } = req.params;
     const abTestsCollection = await getCollection('ab_tests');
@@ -309,7 +309,7 @@ router.get('/:id/ab-tests', authenticateToken, requireRole(['admin', 'developer'
 });
 
 // POST /api/v1/feature-flags/:id/ab-tests - Create A/B test
-router.post('/:id/ab-tests', authenticateToken, requireRole(['admin', 'developer']), featureFlagRateLimit, async (req, res) => {
+router.post('/:id/ab-tests', authenticateToken, requireRole(['admin', 'developer', 'super_admin']), featureFlagRateLimit, async (req, res) => {
   try {
     const { id } = req.params;
     const {
@@ -373,7 +373,7 @@ router.post('/:id/ab-tests', authenticateToken, requireRole(['admin', 'developer
 // ==================== GEOGRAPHIC ROLLOUTS ====================
 
 // GET /api/v1/feature-flags/:id/rollouts - Get geographic rollouts
-router.get('/:id/rollouts', authenticateToken, requireRole(['admin', 'developer']), featureFlagRateLimit, async (req, res) => {
+router.get('/:id/rollouts', authenticateToken, requireRole(['admin', 'developer', 'super_admin']), featureFlagRateLimit, async (req, res) => {
   try {
     const { id } = req.params;
     const rolloutsCollection = await getCollection('feature_rollouts');
@@ -401,7 +401,7 @@ router.get('/:id/rollouts', authenticateToken, requireRole(['admin', 'developer'
 });
 
 // POST /api/v1/feature-flags/:id/rollouts - Create geographic rollout
-router.post('/:id/rollouts', authenticateToken, requireRole(['admin', 'developer']), featureFlagRateLimit, async (req, res) => {
+router.post('/:id/rollouts', authenticateToken, requireRole(['admin', 'developer', 'super_admin']), featureFlagRateLimit, async (req, res) => {
   try {
     const { id } = req.params;
     const {
@@ -572,7 +572,7 @@ router.post('/evaluate', authenticateToken, featureFlagRateLimit, async (req, re
 // ==================== FEATURE FLAG ANALYTICS ====================
 
 // GET /api/v1/feature-flags/:id/analytics - Get feature flag analytics
-router.get('/:id/analytics', authenticateToken, requireRole(['admin', 'developer']), featureFlagRateLimit, async (req, res) => {
+router.get('/:id/analytics', authenticateToken, requireRole(['admin', 'developer', 'super_admin']), featureFlagRateLimit, async (req, res) => {
   try {
     const { id } = req.params;
     const { startDate, endDate } = req.query;
@@ -679,7 +679,7 @@ router.get('/:id/analytics', authenticateToken, requireRole(['admin', 'developer
 // ==================== GENERIC HANDLERS ====================
 
 // GET /api/v1/feature-flags/analytics/overview - Get feature flags overview analytics
-router.get('/analytics/overview', authenticateToken, requireRole(['admin', 'developer']), featureFlagRateLimit, async (req, res) => {
+router.get('/analytics/overview', authenticateToken, requireRole(['admin', 'developer', 'super_admin']), featureFlagRateLimit, async (req, res) => {
   try {
     const featureFlagsCollection = await getCollection('feature_flags');
     const abTestsCollection = await getCollection('ab_tests');

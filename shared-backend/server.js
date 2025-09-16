@@ -106,6 +106,8 @@ const chatRoutes = require('./routes/chat');
 const settingsRoutes = require('./routes/settings');
 const integrationsRoutes = require('./routes/integrations');
 const auditTrailRoutes = require('./routes/audit-trail');
+const reportsRoutes = require('./routes/reports');
+const rbacRoutes = require('./routes/rbac');
 
 // All route imports cleaned up - only existing routes imported above
 
@@ -206,6 +208,8 @@ app.use('/api/chat', chatRoutes);
 app.use('/api/settings', settingsRoutes);
 app.use('/api/integrations', integrationsRoutes);
 app.use('/api/audit-trail', auditTrailRoutes);
+app.use(`${apiPrefix}/reports`, reportsRoutes);
+app.use('/api/v1/rbac', rbacRoutes);
 
 // Fallback routes (without v1 prefix for frontend compatibility)
 app.use('/auth', authRoutes);

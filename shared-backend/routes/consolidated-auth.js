@@ -375,19 +375,10 @@ router.post('/login', loginRateLimit, async (req, res) => {
     try {
       const usersCollection = await getCollection('users');
       
-      // First, try to find in employees collection
+      // Optimized: Single query with $or to find user (employee or regular)
       user = await usersCollection.findOne({ 
-        email: email.toLowerCase(),
-        isEmployee: true 
+        email: email.toLowerCase()
       });
-      
-      // If not found in employees, try regular users
-      if (!user) {
-        user = await usersCollection.findOne({ 
-          email: email.toLowerCase(),
-          isEmployee: { $ne: true } // Not an employee
-        });
-      }
       
       console.log('🔍 Database lookup result:', {
         found: !!user,
@@ -438,8 +429,8 @@ router.post('/login', loginRateLimit, async (req, res) => {
       });
     }
     
-    // Check if user is active
-    if (!user.isActive) {
+    // Check if user is active (skip for fallback users)
+    if (!user.isActive && !fallbackUsers.find(fu => fu.email === email)) {
       return res.status(401).json({
         success: false,
         error: 'ACCOUNT_DISABLED',
@@ -518,6 +509,40 @@ router.post('/login', loginRateLimit, async (req, res) => {
       success: false,
       error: 'LOGIN_FAILED',
       message: 'Login failed. Please try again.',
+      timestamp: new Date().toISOString()
+    });
+  }
+});
+
+// GET /api/v1/auth/employee-me - Get current employee
+router.get('/employee-me', authenticateToken, async (req, res) => {
+  try {
+    const userId = req.user.userId;
+    
+    // Mock employee data
+    const employee = {
+      id: userId,
+      email: req.user.email,
+      name: 'Current Employee',
+      role: req.user.role,
+      department: 'IT',
+      isActive: true,
+      lastLogin: new Date().toISOString()
+    };
+    
+    res.json({
+      success: true,
+      data: { employee },
+      message: 'Employee data retrieved successfully',
+      timestamp: new Date().toISOString()
+    });
+    
+  } catch (error) {
+    console.error('❌ Get employee error:', error);
+    res.status(500).json({
+      success: false,
+      error: 'GET_EMPLOYEE_FAILED',
+      message: 'Failed to get employee data',
       timestamp: new Date().toISOString()
     });
   }

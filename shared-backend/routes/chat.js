@@ -1,47 +1,44 @@
-/**
- * Chat & Messaging Routes
- * Complete chat system with real-time messaging and communication management
- */
-
 const express = require('express');
 const router = express.Router();
 const { authenticateToken, requireRole } = require('../middleware/auth');
 const { getCollection } = require('../config/optimized-database');
-const { rateLimit: createRateLimit } = require('../middleware/rateLimit');
-const { ObjectId } = require('mongodb');
+const rateLimit = require('express-rate-limit');
+const webSocketServer = require('../services/websocket-server');
 
-// Apply rate limiting
-const chatRateLimit = createRateLimit({ windowMs: 60 * 1000, max: 200 });
+// Rate limiting
+const chatLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: 100, // limit each IP to 100 requests per windowMs
+  message: 'Too many chat requests from this IP, please try again later.'
+});
 
-// ==================== MESSAGE MANAGEMENT ====================
+// Apply rate limiting and authentication to all routes
+router.use(chatLimiter);
+router.use(authenticateToken);
 
-// GET /api/chat/messages - Get chat messages
-router.get('/messages', authenticateToken, requireRole(['admin', 'user', 'support', 'super_admin']), chatRateLimit, async (req, res) => {
+// ===== CHAT MESSAGES =====
+
+// GET /api/chat/messages - Get all messages
+router.get('/messages', async (req, res) => {
   try {
-    const { page = 1, limit = 50, channel, userId, type, dateFrom, dateTo } = req.query;
-    const skip = (page - 1) * limit;
-    
     const messagesCollection = await getCollection('chat_messages');
+    const { page = 1, limit = 50, channelId, userId, type } = req.query;
     
-    // Build query
-    const query = {};
-    if (channel) query.channel = channel;
-    if (userId) query.userId = userId;
-    if (type) query.type = type;
-    if (dateFrom || dateTo) {
-      query.createdAt = {};
-      if (dateFrom) query.createdAt.$gte = new Date(dateFrom);
-      if (dateTo) query.createdAt.$lte = new Date(dateTo);
-    }
+    const filter = {};
+    if (channelId) filter.channelId = channelId;
+    if (userId) filter.userId = userId;
+    if (type) filter.type = type;
+    
+    const skip = (parseInt(page) - 1) * parseInt(limit);
     
     const messages = await messagesCollection
-      .find(query)
-      .sort({ createdAt: -1 })
+      .find(filter)
       .skip(skip)
       .limit(parseInt(limit))
+      .sort({ createdAt: -1 })
       .toArray();
     
-    const total = await messagesCollection.countDocuments(query);
+    const total = await messagesCollection.countDocuments(filter);
     
     res.json({
       success: true,
@@ -51,405 +48,335 @@ router.get('/messages', authenticateToken, requireRole(['admin', 'user', 'suppor
           page: parseInt(page),
           limit: parseInt(limit),
           total,
-          pages: Math.ceil(total / limit)
+          pages: Math.ceil(total / parseInt(limit))
         }
-      },
-      message: 'Messages retrieved successfully',
-      timestamp: new Date().toISOString()
+      }
     });
   } catch (error) {
-    console.error('Get messages error:', error);
+    console.error('Error fetching messages:', error);
     res.status(500).json({
       success: false,
-      error: 'GET_MESSAGES_FAILED',
-      message: 'Failed to retrieve messages',
-      timestamp: new Date().toISOString()
+      message: 'Failed to fetch messages',
+      error: process.env.NODE_ENV === 'development' ? error.message : undefined
     });
   }
 });
 
 // GET /api/chat/messages/:id - Get message by ID
-router.get('/messages/:id', authenticateToken, requireRole(['admin', 'user', 'support', 'super_admin']), chatRateLimit, async (req, res) => {
+router.get('/messages/:id', async (req, res) => {
   try {
-    const { id } = req.params;
     const messagesCollection = await getCollection('chat_messages');
-    
-    const message = await messagesCollection.findOne({ _id: new ObjectId(id) });
+    const message = await messagesCollection.findOne({ _id: req.params.id });
     
     if (!message) {
       return res.status(404).json({
         success: false,
-        error: 'MESSAGE_NOT_FOUND',
-        message: 'Message not found',
-        timestamp: new Date().toISOString()
+        message: 'Message not found'
       });
     }
     
     res.json({
       success: true,
-      data: { message },
-      message: 'Message retrieved successfully',
-      timestamp: new Date().toISOString()
+      data: message
     });
   } catch (error) {
-    console.error('Get message error:', error);
+    console.error('Error fetching message:', error);
     res.status(500).json({
       success: false,
-      error: 'GET_MESSAGE_FAILED',
-      message: 'Failed to retrieve message',
-      timestamp: new Date().toISOString()
+      message: 'Failed to fetch message',
+      error: process.env.NODE_ENV === 'development' ? error.message : undefined
     });
   }
 });
 
-// POST /api/chat/messages - Send new message
-router.post('/messages', authenticateToken, requireRole(['admin', 'user', 'support', 'super_admin']), chatRateLimit, async (req, res) => {
+// POST /api/chat/messages - Create new message
+router.post('/messages', async (req, res) => {
   try {
-    const {
-      content,
-      channel = 'general',
-      type = 'text',
-      recipientId,
-      metadata = {}
+    const messagesCollection = await getCollection('chat_messages');
+    const { 
+      channelId, 
+      content, 
+      type, 
+      replyTo, 
+      attachments 
     } = req.body;
     
-    if (!content) {
+    if (!channelId || !content) {
       return res.status(400).json({
         success: false,
-        error: 'MISSING_REQUIRED_FIELDS',
-        message: 'Message content is required',
-        timestamp: new Date().toISOString()
+        message: 'Channel ID and content are required'
       });
     }
     
-    const messagesCollection = await getCollection('chat_messages');
-    
-    const newMessage = {
+    const message = {
+      channelId,
       content,
-      channel,
-      type,
-      senderId: req.user.userId,
-      recipientId: recipientId || null,
-      metadata,
-      status: 'sent',
+      type: type || 'text',
+      replyTo: replyTo || null,
+      attachments: attachments || [],
+      userId: req.user.userId,
+      userName: req.user.name || req.user.email,
       createdAt: new Date(),
       updatedAt: new Date()
     };
     
-    const result = await messagesCollection.insertOne(newMessage);
+    const result = await messagesCollection.insertOne(message);
     
-    // Broadcast message to WebSocket clients (if WebSocket is available)
-    try {
-      const { webSocketServer } = require('../services/websocket-server');
-      if (webSocketServer) {
-        webSocketServer.broadcast({
-          type: 'new_message',
-          data: { ...newMessage, _id: result.insertedId }
-        });
+    // Broadcast message to WebSocket clients
+    webSocketServer.broadcast({
+      type: 'new_message',
+      data: {
+        id: result.insertedId,
+        ...message
       }
-    } catch (wsError) {
-      console.log('WebSocket not available for message broadcast');
-    }
+    });
     
     res.status(201).json({
       success: true,
-      data: { message: { ...newMessage, _id: result.insertedId } },
-      message: 'Message sent successfully',
-      timestamp: new Date().toISOString()
+      data: {
+        id: result.insertedId,
+        ...message
+      },
+      message: 'Message sent successfully'
     });
   } catch (error) {
-    console.error('Send message error:', error);
+    console.error('Error creating message:', error);
     res.status(500).json({
       success: false,
-      error: 'SEND_MESSAGE_FAILED',
       message: 'Failed to send message',
-      timestamp: new Date().toISOString()
+      error: process.env.NODE_ENV === 'development' ? error.message : undefined
     });
   }
 });
 
 // PUT /api/chat/messages/:id - Update message
-router.put('/messages/:id', authenticateToken, requireRole(['admin', 'user', 'support', 'super_admin']), chatRateLimit, async (req, res) => {
+router.put('/messages/:id', async (req, res) => {
   try {
-    const { id } = req.params;
-    const { content, status } = req.body;
-    
     const messagesCollection = await getCollection('chat_messages');
+    const { content, type, attachments } = req.body;
     
-    // Check if message exists and user has permission to edit
-    const message = await messagesCollection.findOne({ _id: new ObjectId(id) });
-    if (!message) {
-      return res.status(404).json({
-        success: false,
-        error: 'MESSAGE_NOT_FOUND',
-        message: 'Message not found',
-        timestamp: new Date().toISOString()
-      });
-    }
+    const updateData = {
+      updatedAt: new Date()
+    };
     
-    // Only allow sender or admin to edit
-    if (message.senderId !== req.user.userId && !req.user.role.includes('admin')) {
-      return res.status(403).json({
-        success: false,
-        error: 'INSUFFICIENT_PERMISSIONS',
-        message: 'You can only edit your own messages',
-        timestamp: new Date().toISOString()
-      });
-    }
-    
-    const updateData = { updatedAt: new Date() };
-    if (content !== undefined) updateData.content = content;
-    if (status !== undefined) updateData.status = status;
+    if (content) updateData.content = content;
+    if (type) updateData.type = type;
+    if (attachments) updateData.attachments = attachments;
     
     const result = await messagesCollection.updateOne(
-      { _id: new ObjectId(id) },
+      { _id: req.params.id, userId: req.user.userId },
       { $set: updateData }
     );
     
-    if (result.modifiedCount === 0) {
-      return res.status(400).json({
+    if (result.matchedCount === 0) {
+      return res.status(404).json({
         success: false,
-        error: 'UPDATE_FAILED',
-        message: 'Failed to update message',
-        timestamp: new Date().toISOString()
+        message: 'Message not found or you are not authorized to edit it'
       });
     }
     
-    const updatedMessage = await messagesCollection.findOne({ _id: new ObjectId(id) });
+    // Broadcast message update to WebSocket clients
+    webSocketServer.broadcast({
+      type: 'message_updated',
+      data: {
+        id: req.params.id,
+        ...updateData
+      }
+    });
     
     res.json({
       success: true,
-      data: { message: updatedMessage },
-      message: 'Message updated successfully',
-      timestamp: new Date().toISOString()
+      message: 'Message updated successfully'
     });
   } catch (error) {
-    console.error('Update message error:', error);
+    console.error('Error updating message:', error);
     res.status(500).json({
       success: false,
-      error: 'UPDATE_MESSAGE_FAILED',
       message: 'Failed to update message',
-      timestamp: new Date().toISOString()
+      error: process.env.NODE_ENV === 'development' ? error.message : undefined
     });
   }
 });
 
 // DELETE /api/chat/messages/:id - Delete message
-router.delete('/messages/:id', authenticateToken, requireRole(['admin', 'user', 'support', 'super_admin']), chatRateLimit, async (req, res) => {
+router.delete('/messages/:id', async (req, res) => {
   try {
-    const { id } = req.params;
     const messagesCollection = await getCollection('chat_messages');
-    
-    // Check if message exists and user has permission to delete
-    const message = await messagesCollection.findOne({ _id: new ObjectId(id) });
-    if (!message) {
-      return res.status(404).json({
-        success: false,
-        error: 'MESSAGE_NOT_FOUND',
-        message: 'Message not found',
-        timestamp: new Date().toISOString()
-      });
-    }
-    
-    // Only allow sender or admin to delete
-    if (message.senderId !== req.user.userId && !req.user.role.includes('admin')) {
-      return res.status(403).json({
-        success: false,
-        error: 'INSUFFICIENT_PERMISSIONS',
-        message: 'You can only delete your own messages',
-        timestamp: new Date().toISOString()
-      });
-    }
-    
-    const result = await messagesCollection.deleteOne({ _id: new ObjectId(id) });
+    const result = await messagesCollection.deleteOne({
+      _id: req.params.id,
+      userId: req.user.userId
+    });
     
     if (result.deletedCount === 0) {
-      return res.status(400).json({
+      return res.status(404).json({
         success: false,
-        error: 'DELETE_FAILED',
-        message: 'Failed to delete message',
-        timestamp: new Date().toISOString()
+        message: 'Message not found or you are not authorized to delete it'
       });
     }
+    
+    // Broadcast message deletion to WebSocket clients
+    webSocketServer.broadcast({
+      type: 'message_deleted',
+      data: {
+        id: req.params.id
+      }
+    });
     
     res.json({
       success: true,
-      data: { id },
-      message: 'Message deleted successfully',
-      timestamp: new Date().toISOString()
+      message: 'Message deleted successfully'
     });
   } catch (error) {
-    console.error('Delete message error:', error);
+    console.error('Error deleting message:', error);
     res.status(500).json({
       success: false,
-      error: 'DELETE_MESSAGE_FAILED',
       message: 'Failed to delete message',
-      timestamp: new Date().toISOString()
+      error: process.env.NODE_ENV === 'development' ? error.message : undefined
     });
   }
 });
 
-// ==================== CHANNEL MANAGEMENT ====================
+// ===== CHAT CHANNELS =====
 
-// GET /api/chat/channels - Get chat channels
-router.get('/channels', authenticateToken, requireRole(['admin', 'user', 'support', 'super_admin']), chatRateLimit, async (req, res) => {
+// GET /api/chat/channels - Get all channels
+router.get('/channels', async (req, res) => {
   try {
     const channelsCollection = await getCollection('chat_channels');
+    const { page = 1, limit = 20, type, userId } = req.query;
+    
+    const filter = {};
+    if (type) filter.type = type;
+    if (userId) filter.members = userId;
+    
+    const skip = (parseInt(page) - 1) * parseInt(limit);
     
     const channels = await channelsCollection
-      .find({})
-      .sort({ createdAt: -1 })
+      .find(filter)
+      .skip(skip)
+      .limit(parseInt(limit))
+      .sort({ updatedAt: -1 })
       .toArray();
+    
+    const total = await channelsCollection.countDocuments(filter);
     
     res.json({
       success: true,
-      data: { channels },
-      message: 'Channels retrieved successfully',
-      timestamp: new Date().toISOString()
+      data: {
+        channels,
+        pagination: {
+          page: parseInt(page),
+          limit: parseInt(limit),
+          total,
+          pages: Math.ceil(total / parseInt(limit))
+        }
+      }
     });
   } catch (error) {
-    console.error('Get channels error:', error);
+    console.error('Error fetching channels:', error);
     res.status(500).json({
       success: false,
-      error: 'GET_CHANNELS_FAILED',
-      message: 'Failed to retrieve channels',
-      timestamp: new Date().toISOString()
+      message: 'Failed to fetch channels',
+      error: process.env.NODE_ENV === 'development' ? error.message : undefined
     });
   }
 });
 
 // POST /api/chat/channels - Create new channel
-router.post('/channels', authenticateToken, requireRole(['admin', 'super_admin']), chatRateLimit, async (req, res) => {
+router.post('/channels', requireRole(['admin', 'super_admin']), async (req, res) => {
   try {
-    const { name, description, type = 'public', members = [] } = req.body;
+    const channelsCollection = await getCollection('chat_channels');
+    const { 
+      name, 
+      description, 
+      type, 
+      members, 
+      isPrivate 
+    } = req.body;
     
-    if (!name) {
+    if (!name || !type) {
       return res.status(400).json({
         success: false,
-        error: 'MISSING_REQUIRED_FIELDS',
-        message: 'Channel name is required',
-        timestamp: new Date().toISOString()
+        message: 'Name and type are required'
       });
     }
     
-    const channelsCollection = await getCollection('chat_channels');
-    
-    // Check if channel already exists
-    const existingChannel = await channelsCollection.findOne({ name: name.toLowerCase() });
-    if (existingChannel) {
-      return res.status(409).json({
-        success: false,
-        error: 'CHANNEL_EXISTS',
-        message: 'Channel with this name already exists',
-        timestamp: new Date().toISOString()
-      });
-    }
-    
-    const newChannel = {
-      name: name.toLowerCase(),
-      displayName: name,
-      description: description || null,
+    const channel = {
+      name,
+      description: description || '',
       type,
-      members: [...members, req.user.userId], // Include creator
+      members: members || [req.user.userId],
+      isPrivate: isPrivate || false,
       createdBy: req.user.userId,
       createdAt: new Date(),
       updatedAt: new Date()
     };
     
-    const result = await channelsCollection.insertOne(newChannel);
+    const result = await channelsCollection.insertOne(channel);
     
     res.status(201).json({
       success: true,
-      data: { channel: { ...newChannel, _id: result.insertedId } },
-      message: 'Channel created successfully',
-      timestamp: new Date().toISOString()
+      data: {
+        id: result.insertedId,
+        ...channel
+      },
+      message: 'Channel created successfully'
     });
   } catch (error) {
-    console.error('Create channel error:', error);
+    console.error('Error creating channel:', error);
     res.status(500).json({
       success: false,
-      error: 'CREATE_CHANNEL_FAILED',
       message: 'Failed to create channel',
-      timestamp: new Date().toISOString()
+      error: process.env.NODE_ENV === 'development' ? error.message : undefined
     });
   }
 });
 
-// ==================== CHAT ANALYTICS ====================
+// ===== CHAT ANALYTICS =====
 
 // GET /api/chat/analytics - Get chat analytics
-router.get('/analytics', authenticateToken, requireRole(['admin', 'super_admin']), chatRateLimit, async (req, res) => {
+router.get('/analytics', async (req, res) => {
   try {
-    const { period = '30d' } = req.query;
-    
     const messagesCollection = await getCollection('chat_messages');
     const channelsCollection = await getCollection('chat_channels');
     
-    // Calculate date range
-    const endDate = new Date();
-    const startDate = new Date();
-    startDate.setDate(endDate.getDate() - parseInt(period.replace('d', '')));
-    
-    // Message statistics
     const totalMessages = await messagesCollection.countDocuments();
-    const periodMessages = await messagesCollection.countDocuments({
-      createdAt: { $gte: startDate, $lte: endDate }
-    });
-    
-    // Channel statistics
     const totalChannels = await channelsCollection.countDocuments();
     
-    // Active users (users who sent messages in the period)
-    const activeUsers = await messagesCollection.distinct('senderId', {
-      createdAt: { $gte: startDate, $lte: endDate }
-    });
+    // Get messages by type
+    const messageTypeStats = await messagesCollection.aggregate([
+      { $group: { _id: '$type', count: { $sum: 1 } } }
+    ]).toArray();
     
-    const analytics = {
-      messages: {
-        total: totalMessages,
-        period: periodMessages
-      },
-      channels: {
-        total: totalChannels
-      },
-      users: {
-        active: activeUsers.length
-      },
-      period,
-      generatedAt: new Date()
-    };
+    // Get channels by type
+    const channelTypeStats = await channelsCollection.aggregate([
+      { $group: { _id: '$type', count: { $sum: 1 } } }
+    ]).toArray();
+    
+    // Get recent activity (last 24 hours)
+    const recentMessages = await messagesCollection.countDocuments({
+      createdAt: { $gte: new Date(Date.now() - 24 * 60 * 60 * 1000) }
+    });
     
     res.json({
       success: true,
-      data: analytics,
-      message: 'Chat analytics retrieved successfully',
-      timestamp: new Date().toISOString()
+      data: {
+        overview: {
+          totalMessages,
+          totalChannels,
+          recentMessages
+        },
+        messageTypeStats,
+        channelTypeStats
+      }
     });
   } catch (error) {
-    console.error('Get chat analytics error:', error);
+    console.error('Error fetching chat analytics:', error);
     res.status(500).json({
       success: false,
-      error: 'GET_CHAT_ANALYTICS_FAILED',
-      message: 'Failed to retrieve chat analytics',
-      timestamp: new Date().toISOString()
+      message: 'Failed to fetch chat analytics',
+      error: process.env.NODE_ENV === 'development' ? error.message : undefined
     });
   }
-});
-
-// ==================== GENERIC HANDLERS ====================
-
-// GET /api/chat - Get chat overview
-router.get('/', authenticateToken, requireRole(['admin', 'user', 'support', 'super_admin']), chatRateLimit, async (req, res) => {
-  res.json({
-    success: true,
-    message: 'Chat & Messaging API is running',
-    endpoints: {
-      messages: '/api/chat/messages',
-      channels: '/api/chat/channels',
-      analytics: '/api/chat/analytics'
-    },
-    timestamp: new Date().toISOString()
-  });
 });
 
 module.exports = router;

@@ -13,29 +13,29 @@ const employeeSchema = new mongoose.Schema({
     type: String,
     required: true
   },
+  // Primary role (for backward compatibility)
   role: {
     type: String,
     enum: [
-      ...Object.values(ROLES).map(role => role.name),
+      'head_administrator', 'platform_admin', 'enterprise_client', 'service_provider',
+      'business_analyst', 'customer_support', 'hr_manager', 'finance_officer',
+      'legal_team', 'project_manager', 'asset_manager', 'vendor_manager',
       // Legacy role values for backward compatibility
       'admin', 'manager', 'viewer', 'fleet_manager', 'enterprise_manager', 
       'sales_manager', 'analytics', 'management', 'operations', 'sales_rep',
-      'legal_manager', 'legal', 'compliance'
+      'legal_manager', 'legal', 'compliance', 'employee'
     ],
     default: 'employee'
   },
+  // Multiple roles support
   roles: [{
-    type: String,
-    enum: [
-      ...Object.values(ROLES).map(role => role.name),
-      // Legacy role values for backward compatibility
-      'admin', 'manager', 'viewer', 'fleet_manager', 'enterprise_manager', 
-      'sales_manager', 'analytics', 'management', 'operations', 'sales_rep',
-      'legal_manager', 'legal', 'compliance'
-    ]
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Role'
   }],
+  // Direct permissions (for custom permissions)
   permissions: [{
-    type: String
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Permission'
   }],
   loginAttempts: {
     type: Number,
@@ -650,6 +650,118 @@ employeeSchema.methods.addDocument = function(document) {
 employeeSchema.methods.removeDocument = function(documentId) {
   this.documents = this.documents.filter(doc => doc._id.toString() !== documentId);
   return this.save();
+};
+
+// Instance methods for RBAC
+employeeSchema.methods.hasPermission = async function(permissionName) {
+  const Permission = mongoose.model('Permission');
+  const Role = mongoose.model('Role');
+  
+  // Check direct permissions first
+  const directPermissions = await Permission.find({ 
+    _id: { $in: this.permissions }, 
+    name: permissionName,
+    isActive: true 
+  });
+  
+  if (directPermissions.length > 0) {
+    return true;
+  }
+  
+  // Check role-based permissions
+  const userRoles = await Role.find({ 
+    _id: { $in: this.roles }, 
+    isActive: true 
+  }).populate('permissions');
+  
+  for (const role of userRoles) {
+    const rolePermissions = await Permission.find({ 
+      _id: { $in: role.permissions }, 
+      name: permissionName,
+      isActive: true 
+    });
+    
+    if (rolePermissions.length > 0) {
+      return true;
+    }
+  }
+  
+  // Check primary role permissions (backward compatibility)
+  if (this.role) {
+    const primaryRole = await Role.findOne({ name: this.role, isActive: true });
+    if (primaryRole) {
+      const primaryRolePermissions = await Permission.find({ 
+        _id: { $in: primaryRole.permissions }, 
+        name: permissionName,
+        isActive: true 
+      });
+      
+      if (primaryRolePermissions.length > 0) {
+        return true;
+      }
+    }
+  }
+  
+  return false;
+};
+
+employeeSchema.methods.getAllPermissions = async function() {
+  const Permission = mongoose.model('Permission');
+  const Role = mongoose.model('Role');
+  
+  const allPermissionIds = new Set();
+  
+  // Add direct permissions
+  this.permissions.forEach(permissionId => allPermissionIds.add(permissionId.toString()));
+  
+  // Add role-based permissions
+  const userRoles = await Role.find({ 
+    _id: { $in: this.roles }, 
+    isActive: true 
+  });
+  
+  for (const role of userRoles) {
+    role.permissions.forEach(permissionId => allPermissionIds.add(permissionId.toString()));
+  }
+  
+  // Add primary role permissions (backward compatibility)
+  if (this.role) {
+    const primaryRole = await Role.findOne({ name: this.role, isActive: true });
+    if (primaryRole) {
+      primaryRole.permissions.forEach(permissionId => allPermissionIds.add(permissionId.toString()));
+    }
+  }
+  
+  // Get permission details
+  const permissionIds = Array.from(allPermissionIds);
+  return await Permission.find({ 
+    _id: { $in: permissionIds }, 
+    isActive: true 
+  });
+};
+
+employeeSchema.methods.addRole = function(roleId) {
+  if (!this.roles.includes(roleId)) {
+    this.roles.push(roleId);
+  }
+  return this;
+};
+
+employeeSchema.methods.removeRole = function(roleId) {
+  this.roles = this.roles.filter(role => role.toString() !== roleId.toString());
+  return this;
+};
+
+employeeSchema.methods.addPermission = function(permissionId) {
+  if (!this.permissions.includes(permissionId)) {
+    this.permissions.push(permissionId);
+  }
+  return this;
+};
+
+employeeSchema.methods.removePermission = function(permissionId) {
+  this.permissions = this.permissions.filter(permission => permission.toString() !== permissionId.toString());
+  return this;
 };
 
 module.exports = mongoose.model('Employee', employeeSchema);

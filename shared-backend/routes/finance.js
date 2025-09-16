@@ -1,407 +1,400 @@
-/**
- * Finance Management Routes
- * Complete finance system with payments, invoices, and financial tracking
- */
-
 const express = require('express');
 const router = express.Router();
 const { authenticateToken, requireRole } = require('../middleware/auth');
 const { getCollection } = require('../config/optimized-database');
-const { rateLimit: createRateLimit } = require('../middleware/rateLimit');
-const { ObjectId } = require('mongodb');
+const rateLimit = require('express-rate-limit');
 
-// Apply rate limiting
-const financeRateLimit = createRateLimit({ windowMs: 60 * 1000, max: 100 });
+// Rate limiting
+const financeLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: 100, // limit each IP to 100 requests per windowMs
+  message: 'Too many finance requests from this IP, please try again later.'
+});
 
-// ==================== PAYMENT MANAGEMENT ====================
+// Apply rate limiting and authentication to all routes
+router.use(financeLimiter);
+router.use(authenticateToken);
+
+// ===== FINANCE PAYMENTS =====
 
 // GET /api/finance/payments - Get all payments
-router.get('/payments', authenticateToken, requireRole(['admin', 'finance_manager', 'accountant', 'super_admin']), financeRateLimit, async (req, res) => {
+router.get('/payments', async (req, res) => {
   try {
-    const { page = 1, limit = 50, status, method, dateFrom, dateTo } = req.query;
-    const skip = (page - 1) * limit;
-    
     const paymentsCollection = await getCollection('payments');
+    const { page = 1, limit = 10, status, method, dateFrom, dateTo } = req.query;
     
-    // Build query
-    const query = {};
-    if (status) query.status = status;
-    if (method) query.method = method;
+    const filter = {};
+    if (status) filter.status = status;
+    if (method) filter.method = method;
     if (dateFrom || dateTo) {
-      query.createdAt = {};
-      if (dateFrom) query.createdAt.$gte = new Date(dateFrom);
-      if (dateTo) query.createdAt.$lte = new Date(dateTo);
+      filter.createdAt = {};
+      if (dateFrom) filter.createdAt.$gte = new Date(dateFrom);
+      if (dateTo) filter.createdAt.$lte = new Date(dateTo);
     }
     
+    const skip = (parseInt(page) - 1) * parseInt(limit);
+    
     const payments = await paymentsCollection
-      .find(query)
-      .sort({ createdAt: -1 })
+      .find(filter)
       .skip(skip)
       .limit(parseInt(limit))
+      .sort({ createdAt: -1 })
       .toArray();
     
-    const total = await paymentsCollection.countDocuments(query);
-    
-    // Calculate totals
-    const totals = payments.reduce((acc, payment) => {
-      acc.totalAmount += payment.amount || 0;
-      if (payment.status === 'completed') {
-        acc.completedAmount += payment.amount || 0;
-        acc.completedCount += 1;
-      }
-      return acc;
-    }, { totalAmount: 0, completedAmount: 0, completedCount: 0 });
+    const total = await paymentsCollection.countDocuments(filter);
     
     res.json({
       success: true,
       data: {
         payments,
-        totals,
         pagination: {
           page: parseInt(page),
           limit: parseInt(limit),
           total,
-          pages: Math.ceil(total / limit)
+          pages: Math.ceil(total / parseInt(limit))
         }
-      },
-      message: 'Payments retrieved successfully',
-      timestamp: new Date().toISOString()
+      }
     });
   } catch (error) {
-    console.error('Get payments error:', error);
+    console.error('Error fetching payments:', error);
     res.status(500).json({
       success: false,
-      error: 'GET_PAYMENTS_FAILED',
-      message: 'Failed to retrieve payments',
-      timestamp: new Date().toISOString()
+      message: 'Failed to fetch payments',
+      error: process.env.NODE_ENV === 'development' ? error.message : undefined
     });
   }
 });
 
 // GET /api/finance/payments/:id - Get payment by ID
-router.get('/payments/:id', authenticateToken, requireRole(['admin', 'finance_manager', 'accountant', 'super_admin']), financeRateLimit, async (req, res) => {
+router.get('/payments/:id', async (req, res) => {
   try {
-    const { id } = req.params;
     const paymentsCollection = await getCollection('payments');
-    
-    const payment = await paymentsCollection.findOne({ _id: new ObjectId(id) });
+    const payment = await paymentsCollection.findOne({ _id: req.params.id });
     
     if (!payment) {
       return res.status(404).json({
         success: false,
-        error: 'PAYMENT_NOT_FOUND',
-        message: 'Payment not found',
-        timestamp: new Date().toISOString()
+        message: 'Payment not found'
       });
     }
     
     res.json({
       success: true,
-      data: { payment },
-      message: 'Payment retrieved successfully',
-      timestamp: new Date().toISOString()
+      data: payment
     });
   } catch (error) {
-    console.error('Get payment error:', error);
+    console.error('Error fetching payment:', error);
     res.status(500).json({
       success: false,
-      error: 'GET_PAYMENT_FAILED',
-      message: 'Failed to retrieve payment',
-      timestamp: new Date().toISOString()
+      message: 'Failed to fetch payment',
+      error: process.env.NODE_ENV === 'development' ? error.message : undefined
     });
   }
 });
 
 // POST /api/finance/payments - Create new payment
-router.post('/payments', authenticateToken, requireRole(['admin', 'finance_manager', 'accountant', 'super_admin']), financeRateLimit, async (req, res) => {
+router.post('/payments', requireRole(['admin', 'finance_manager', 'super_admin']), async (req, res) => {
   try {
-    const {
-      amount,
-      currency = 'USD',
-      method,
-      status = 'pending',
-      description,
-      customerId,
-      invoiceId,
-      metadata
+    const paymentsCollection = await getCollection('payments');
+    const { 
+      amount, 
+      currency, 
+      method, 
+      description, 
+      customerId, 
+      status 
     } = req.body;
     
-    if (!amount || !method) {
+    if (!amount || !currency || !method) {
       return res.status(400).json({
         success: false,
-        error: 'MISSING_REQUIRED_FIELDS',
-        message: 'Amount and payment method are required',
-        timestamp: new Date().toISOString()
+        message: 'Amount, currency, and method are required'
       });
     }
     
-    const paymentsCollection = await getCollection('payments');
-    
-    const newPayment = {
+    const payment = {
       amount: parseFloat(amount),
       currency,
       method,
-      status,
-      description: description || null,
+      description: description || '',
       customerId: customerId || null,
-      invoiceId: invoiceId || null,
-      metadata: metadata || {},
+      status: status || 'pending',
+      createdBy: req.user.userId,
       createdAt: new Date(),
-      updatedAt: new Date(),
-      createdBy: req.user.userId
+      updatedAt: new Date()
     };
     
-    const result = await paymentsCollection.insertOne(newPayment);
+    const result = await paymentsCollection.insertOne(payment);
     
     res.status(201).json({
       success: true,
-      data: { payment: { ...newPayment, _id: result.insertedId } },
-      message: 'Payment created successfully',
-      timestamp: new Date().toISOString()
+      data: {
+        id: result.insertedId,
+        ...payment
+      },
+      message: 'Payment created successfully'
     });
   } catch (error) {
-    console.error('Create payment error:', error);
+    console.error('Error creating payment:', error);
     res.status(500).json({
       success: false,
-      error: 'CREATE_PAYMENT_FAILED',
       message: 'Failed to create payment',
-      timestamp: new Date().toISOString()
+      error: process.env.NODE_ENV === 'development' ? error.message : undefined
     });
   }
 });
 
-// ==================== INVOICE MANAGEMENT ====================
+// ===== FINANCE INVOICES =====
 
 // GET /api/finance/invoices - Get all invoices
-router.get('/invoices', authenticateToken, requireRole(['admin', 'finance_manager', 'accountant', 'super_admin']), financeRateLimit, async (req, res) => {
+router.get('/invoices', async (req, res) => {
   try {
-    const { page = 1, limit = 50, status, customerId, dateFrom, dateTo } = req.query;
-    const skip = (page - 1) * limit;
-    
     const invoicesCollection = await getCollection('invoices');
+    const { page = 1, limit = 10, status, dateFrom, dateTo } = req.query;
     
-    // Build query
-    const query = {};
-    if (status) query.status = status;
-    if (customerId) query.customerId = customerId;
+    const filter = {};
+    if (status) filter.status = status;
     if (dateFrom || dateTo) {
-      query.createdAt = {};
-      if (dateFrom) query.createdAt.$gte = new Date(dateFrom);
-      if (dateTo) query.createdAt.$lte = new Date(dateTo);
+      filter.createdAt = {};
+      if (dateFrom) filter.createdAt.$gte = new Date(dateFrom);
+      if (dateTo) filter.createdAt.$lte = new Date(dateTo);
     }
     
+    const skip = (parseInt(page) - 1) * parseInt(limit);
+    
     const invoices = await invoicesCollection
-      .find(query)
-      .sort({ createdAt: -1 })
+      .find(filter)
       .skip(skip)
       .limit(parseInt(limit))
+      .sort({ createdAt: -1 })
       .toArray();
     
-    const total = await invoicesCollection.countDocuments(query);
-    
-    // Calculate totals
-    const totals = invoices.reduce((acc, invoice) => {
-      acc.totalAmount += invoice.totalAmount || 0;
-      if (invoice.status === 'paid') {
-        acc.paidAmount += invoice.totalAmount || 0;
-        acc.paidCount += 1;
-      } else if (invoice.status === 'overdue') {
-        acc.overdueAmount += invoice.totalAmount || 0;
-        acc.overdueCount += 1;
-      }
-      return acc;
-    }, { totalAmount: 0, paidAmount: 0, paidCount: 0, overdueAmount: 0, overdueCount: 0 });
+    const total = await invoicesCollection.countDocuments(filter);
     
     res.json({
       success: true,
       data: {
         invoices,
-        totals,
         pagination: {
           page: parseInt(page),
           limit: parseInt(limit),
           total,
-          pages: Math.ceil(total / limit)
+          pages: Math.ceil(total / parseInt(limit))
         }
-      },
-      message: 'Invoices retrieved successfully',
-      timestamp: new Date().toISOString()
+      }
     });
   } catch (error) {
-    console.error('Get invoices error:', error);
+    console.error('Error fetching invoices:', error);
     res.status(500).json({
       success: false,
-      error: 'GET_INVOICES_FAILED',
-      message: 'Failed to retrieve invoices',
-      timestamp: new Date().toISOString()
+      message: 'Failed to fetch invoices',
+      error: process.env.NODE_ENV === 'development' ? error.message : undefined
     });
   }
 });
 
 // POST /api/finance/invoices - Create new invoice
-router.post('/invoices', authenticateToken, requireRole(['admin', 'finance_manager', 'accountant', 'super_admin']), financeRateLimit, async (req, res) => {
+router.post('/invoices', requireRole(['admin', 'finance_manager', 'super_admin']), async (req, res) => {
   try {
-    const {
-      customerId,
-      items,
-      subtotal,
-      taxRate = 0,
-      taxAmount = 0,
-      totalAmount,
-      dueDate,
-      description,
-      notes
+    const invoicesCollection = await getCollection('invoices');
+    const { 
+      invoiceNumber, 
+      customerId, 
+      amount, 
+      currency, 
+      dueDate, 
+      items, 
+      status 
     } = req.body;
     
-    if (!customerId || !items || !totalAmount) {
+    if (!invoiceNumber || !customerId || !amount) {
       return res.status(400).json({
         success: false,
-        error: 'MISSING_REQUIRED_FIELDS',
-        message: 'Customer ID, items, and total amount are required',
-        timestamp: new Date().toISOString()
+        message: 'Invoice number, customer ID, and amount are required'
       });
     }
     
-    const invoicesCollection = await getCollection('invoices');
-    
-    // Generate invoice number
-    const invoiceCount = await invoicesCollection.countDocuments();
-    const invoiceNumber = `INV-${String(invoiceCount + 1).padStart(6, '0')}`;
-    
-    const newInvoice = {
+    const invoice = {
       invoiceNumber,
       customerId,
-      items,
-      subtotal: parseFloat(subtotal),
-      taxRate: parseFloat(taxRate),
-      taxAmount: parseFloat(taxAmount),
-      totalAmount: parseFloat(totalAmount),
-      dueDate: dueDate ? new Date(dueDate) : new Date(Date.now() + 30 * 24 * 60 * 60 * 1000), // 30 days from now
-      description: description || null,
-      notes: notes || null,
-      status: 'pending',
+      amount: parseFloat(amount),
+      currency: currency || 'USD',
+      dueDate: dueDate ? new Date(dueDate) : null,
+      items: items || [],
+      status: status || 'draft',
+      createdBy: req.user.userId,
       createdAt: new Date(),
-      updatedAt: new Date(),
-      createdBy: req.user.userId
+      updatedAt: new Date()
     };
     
-    const result = await invoicesCollection.insertOne(newInvoice);
+    const result = await invoicesCollection.insertOne(invoice);
     
     res.status(201).json({
       success: true,
-      data: { invoice: { ...newInvoice, _id: result.insertedId } },
-      message: 'Invoice created successfully',
-      timestamp: new Date().toISOString()
+      data: {
+        id: result.insertedId,
+        ...invoice
+      },
+      message: 'Invoice created successfully'
     });
   } catch (error) {
-    console.error('Create invoice error:', error);
+    console.error('Error creating invoice:', error);
     res.status(500).json({
       success: false,
-      error: 'CREATE_INVOICE_FAILED',
       message: 'Failed to create invoice',
-      timestamp: new Date().toISOString()
+      error: process.env.NODE_ENV === 'development' ? error.message : undefined
     });
   }
 });
 
-// ==================== FINANCIAL ANALYTICS ====================
+// ===== FINANCE SUBSCRIPTIONS =====
 
-// GET /api/finance/analytics - Get financial analytics
-router.get('/analytics', authenticateToken, requireRole(['admin', 'finance_manager', 'accountant', 'super_admin']), financeRateLimit, async (req, res) => {
+// GET /api/finance/subscriptions - Get all subscriptions
+router.get('/subscriptions', async (req, res) => {
   try {
-    const { period = '30d' } = req.query;
+    const subscriptionsCollection = await getCollection('subscriptions');
+    const { page = 1, limit = 10, status, plan } = req.query;
     
-    const paymentsCollection = await getCollection('payments');
-    const invoicesCollection = await getCollection('invoices');
+    const filter = {};
+    if (status) filter.status = status;
+    if (plan) filter.plan = plan;
     
-    // Calculate date range
-    const endDate = new Date();
-    const startDate = new Date();
-    startDate.setDate(endDate.getDate() - parseInt(period.replace('d', '')));
+    const skip = (parseInt(page) - 1) * parseInt(limit);
     
-    // Payment statistics
-    const totalPayments = await paymentsCollection.countDocuments();
-    const periodPayments = await paymentsCollection.find({
-      createdAt: { $gte: startDate, $lte: endDate }
-    }).toArray();
+    const subscriptions = await subscriptionsCollection
+      .find(filter)
+      .skip(skip)
+      .limit(parseInt(limit))
+      .sort({ createdAt: -1 })
+      .toArray();
     
-    const paymentTotals = periodPayments.reduce((acc, payment) => {
-      acc.totalRevenue += payment.amount || 0;
-      if (payment.status === 'completed') {
-        acc.completedRevenue += payment.amount || 0;
-        acc.completedCount += 1;
-      }
-      return acc;
-    }, { totalRevenue: 0, completedRevenue: 0, completedCount: 0 });
-    
-    // Invoice statistics
-    const totalInvoices = await invoicesCollection.countDocuments();
-    const periodInvoices = await invoicesCollection.find({
-      createdAt: { $gte: startDate, $lte: endDate }
-    }).toArray();
-    
-    const invoiceTotals = periodInvoices.reduce((acc, invoice) => {
-      acc.totalAmount += invoice.totalAmount || 0;
-      if (invoice.status === 'paid') {
-        acc.paidAmount += invoice.totalAmount || 0;
-        acc.paidCount += 1;
-      } else if (invoice.status === 'overdue') {
-        acc.overdueAmount += invoice.totalAmount || 0;
-        acc.overdueCount += 1;
-      }
-      return acc;
-    }, { totalAmount: 0, paidAmount: 0, paidCount: 0, overdueAmount: 0, overdueCount: 0 });
-    
-    const analytics = {
-      payments: {
-        total: totalPayments,
-        period: periodPayments.length,
-        revenue: paymentTotals.completedRevenue,
-        completionRate: periodPayments.length > 0 ? (paymentTotals.completedCount / periodPayments.length * 100).toFixed(2) : 0
-      },
-      invoices: {
-        total: totalInvoices,
-        period: periodInvoices.length,
-        totalAmount: invoiceTotals.totalAmount,
-        paidAmount: invoiceTotals.paidAmount,
-        overdueAmount: invoiceTotals.overdueAmount,
-        collectionRate: invoiceTotals.totalAmount > 0 ? (invoiceTotals.paidAmount / invoiceTotals.totalAmount * 100).toFixed(2) : 0
-      },
-      period,
-      generatedAt: new Date()
-    };
+    const total = await subscriptionsCollection.countDocuments(filter);
     
     res.json({
       success: true,
-      data: analytics,
-      message: 'Financial analytics retrieved successfully',
-      timestamp: new Date().toISOString()
+      data: {
+        subscriptions,
+        pagination: {
+          page: parseInt(page),
+          limit: parseInt(limit),
+          total,
+          pages: Math.ceil(total / parseInt(limit))
+        }
+      }
     });
   } catch (error) {
-    console.error('Get financial analytics error:', error);
+    console.error('Error fetching subscriptions:', error);
     res.status(500).json({
       success: false,
-      error: 'GET_FINANCIAL_ANALYTICS_FAILED',
-      message: 'Failed to retrieve financial analytics',
-      timestamp: new Date().toISOString()
+      message: 'Failed to fetch subscriptions',
+      error: process.env.NODE_ENV === 'development' ? error.message : undefined
     });
   }
 });
 
-// ==================== GENERIC HANDLERS ====================
+// ===== FINANCE METRICS =====
 
-// GET /api/finance - Get finance overview
-router.get('/', authenticateToken, requireRole(['admin', 'finance_manager', 'accountant', 'super_admin']), financeRateLimit, async (req, res) => {
-  res.json({
-    success: true,
-    message: 'Finance Management API is running',
-    endpoints: {
-      payments: '/api/finance/payments',
-      invoices: '/api/finance/invoices',
-      analytics: '/api/finance/analytics'
-    },
-    timestamp: new Date().toISOString()
-  });
+// GET /api/finance/metrics - Get finance metrics
+router.get('/metrics', async (req, res) => {
+  try {
+    const paymentsCollection = await getCollection('payments');
+    const invoicesCollection = await getCollection('invoices');
+    const subscriptionsCollection = await getCollection('subscriptions');
+    
+    // Get total revenue
+    const totalRevenue = await paymentsCollection.aggregate([
+      { $match: { status: 'completed' } },
+      { $group: { _id: null, total: { $sum: '$amount' } } }
+    ]).toArray();
+    
+    // Get monthly revenue
+    const monthlyRevenue = await paymentsCollection.aggregate([
+      { 
+        $match: { 
+          status: 'completed',
+          createdAt: { $gte: new Date(Date.now() - 30 * 24 * 60 * 60 * 1000) }
+        } 
+      },
+      { $group: { _id: null, total: { $sum: '$amount' } } }
+    ]).toArray();
+    
+    // Get payment methods stats
+    const paymentMethodsStats = await paymentsCollection.aggregate([
+      { $group: { _id: '$method', count: { $sum: 1 }, total: { $sum: '$amount' } } }
+    ]).toArray();
+    
+    // Get invoice status stats
+    const invoiceStatusStats = await invoicesCollection.aggregate([
+      { $group: { _id: '$status', count: { $sum: 1 } } }
+    ]).toArray();
+    
+    // Get subscription stats
+    const subscriptionStats = await subscriptionsCollection.aggregate([
+      { $group: { _id: '$status', count: { $sum: 1 } } }
+    ]).toArray();
+    
+    res.json({
+      success: true,
+      data: {
+        revenue: {
+          total: totalRevenue[0]?.total || 0,
+          monthly: monthlyRevenue[0]?.total || 0
+        },
+        paymentMethodsStats,
+        invoiceStatusStats,
+        subscriptionStats
+      }
+    });
+  } catch (error) {
+    console.error('Error fetching finance metrics:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Failed to fetch finance metrics',
+      error: process.env.NODE_ENV === 'development' ? error.message : undefined
+    });
+  }
+});
+
+// ===== FINANCE ANALYTICS =====
+
+// GET /api/finance/analytics - Get finance analytics
+router.get('/analytics', async (req, res) => {
+  try {
+    const paymentsCollection = await getCollection('payments');
+    const invoicesCollection = await getCollection('invoices');
+    
+    const totalPayments = await paymentsCollection.countDocuments();
+    const totalInvoices = await invoicesCollection.countDocuments();
+    
+    // Get payments by status
+    const paymentStatusStats = await paymentsCollection.aggregate([
+      { $group: { _id: '$status', count: { $sum: 1 } } }
+    ]).toArray();
+    
+    // Get invoices by status
+    const invoiceStatusStats = await invoicesCollection.aggregate([
+      { $group: { _id: '$status', count: { $sum: 1 } } }
+    ]).toArray();
+    
+    res.json({
+      success: true,
+      data: {
+        overview: {
+          totalPayments,
+          totalInvoices
+        },
+        paymentStatusStats,
+        invoiceStatusStats
+      }
+    });
+  } catch (error) {
+    console.error('Error fetching finance analytics:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Failed to fetch finance analytics',
+      error: process.env.NODE_ENV === 'development' ? error.message : undefined
+    });
+  }
 });
 
 module.exports = router;

@@ -8,6 +8,11 @@ const winston = require('winston');
 
 class AIProviderManager {
   constructor() {
+    // Singleton pattern - return existing instance if already created
+    if (AIProviderManager.instance) {
+      return AIProviderManager.instance;
+    }
+
     // Research-only mode configuration - NO AI PROVIDERS
     this.researchFirstMode = true;
     this.knowledgeBaseFirst = true;
@@ -38,7 +43,20 @@ class AIProviderManager {
       researchAccuracy: 0
     };
 
-    this.logger.info('🔬 AI Provider Manager initialized in RESEARCH-ONLY mode');
+    // Set singleton instance
+    AIProviderManager.instance = this;
+
+    this.logger.info('🔬 AI Provider Manager initialized in RESEARCH-ONLY mode (Singleton)');
+  }
+
+  /**
+   * Get singleton instance
+   */
+  static getInstance() {
+    if (!AIProviderManager.instance) {
+      AIProviderManager.instance = new AIProviderManager();
+    }
+    return AIProviderManager.instance;
   }
 
   /**

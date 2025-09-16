@@ -1,8 +1,3 @@
-/**
- * WebSocket Server
- * Handles real-time communication with frontend clients
- */
-
 const WebSocket = require('ws');
 const jwt = require('jsonwebtoken');
 
@@ -14,48 +9,54 @@ class WebSocketServer {
   }
 
   initialize(server) {
-    console.log('🔌 Initializing WebSocket server...');
-    
-    this.wss = new WebSocket.Server({ 
-      server,
-      path: '/ws'
-    });
+    try {
+      this.wss = new WebSocket.Server({ 
+        server,
+        path: '/ws',
+        verifyClient: (info) => {
+          // Extract token from query string
+          const url = new URL(info.req.url, `http://${info.req.headers.host}`);
+          const token = url.searchParams.get('token');
+          
+          if (!token) {
+            console.log('❌ WebSocket connection rejected: No token provided');
+            return false;
+          }
 
-    this.wss.on('connection', (ws, req) => {
-      console.log('🔌 New WebSocket connection attempt');
-      
-      // Extract token from query parameters
-      const url = new URL(req.url, `http://${req.headers.host}`);
-      const token = url.searchParams.get('token');
-      
-      if (!token) {
-        console.log('❌ WebSocket connection rejected: No token provided');
-        ws.close(1008, 'No authentication token provided');
-        return;
-      }
+          try {
+            const decoded = jwt.verify(token, process.env.JWT_SECRET);
+            info.req.user = decoded;
+            return true;
+          } catch (error) {
+            console.log('❌ WebSocket connection rejected: Invalid token', error.message);
+            return false;
+          }
+        }
+      });
 
-      // Verify JWT token
-      try {
-        const decoded = jwt.verify(token, process.env.JWT_SECRET);
-        console.log('✅ WebSocket connection authenticated for user:', decoded.email);
+      this.wss.on('connection', (ws, req) => {
+        const user = req.user;
+        const clientId = `${user.userId || user.id}-${Date.now()}`;
+        
+        console.log(`🔌 WebSocket client connected: ${clientId} (${user.email})`);
         
         // Store client connection
-        const clientId = `${decoded.userId}_${Date.now()}`;
         this.clients.set(clientId, {
           ws,
-          userId: decoded.userId,
-          email: decoded.email,
-          role: decoded.role,
-          permissions: decoded.permissions,
-          connectedAt: new Date()
+          user,
+          lastPing: Date.now()
         });
 
-        // Send welcome message
+        // Send connection confirmation
         ws.send(JSON.stringify({
           type: 'connection',
-          message: 'Connected to Clutch real-time updates',
+          message: 'Connected successfully',
           clientId,
-          timestamp: new Date().toISOString()
+          user: {
+            id: user.userId || user.id,
+            email: user.email,
+            role: user.role
+          }
         }));
 
         // Handle incoming messages
@@ -67,73 +68,57 @@ class WebSocketServer {
             console.error('❌ WebSocket message parsing error:', error);
             ws.send(JSON.stringify({
               type: 'error',
-              message: 'Invalid message format',
-              timestamp: new Date().toISOString()
+              message: 'Invalid message format'
             }));
           }
         });
 
-        // Handle connection close
-        ws.on('close', (code, reason) => {
-          console.log(`🔌 WebSocket connection closed: ${code} - ${reason}`);
+        // Handle client disconnect
+        ws.on('close', () => {
+          console.log(`🔌 WebSocket client disconnected: ${clientId}`);
           this.clients.delete(clientId);
         });
 
-        // Handle connection errors
+        // Handle errors
         ws.on('error', (error) => {
-          console.error('❌ WebSocket connection error:', error);
+          console.error(`❌ WebSocket client error (${clientId}):`, error);
           this.clients.delete(clientId);
         });
 
-        // Send heartbeat
-        ws.on('pong', () => {
-          const client = this.clients.get(clientId);
-          if (client) {
-            client.lastPong = new Date();
-          }
-        });
+        // Send ping to keep connection alive
+        ws.ping();
+      });
 
-      } catch (error) {
-        console.log('❌ WebSocket connection rejected: Invalid token');
-        ws.close(1008, 'Invalid authentication token');
-      }
-    });
+      // Start heartbeat
+      this.startHeartbeat();
 
-    // Start heartbeat to keep connections alive
-    this.startHeartbeat();
-    
-    console.log('✅ WebSocket server initialized');
+      console.log('✅ WebSocket server initialized on /ws');
+      return true;
+    } catch (error) {
+      console.error('❌ WebSocket server initialization failed:', error);
+      return false;
+    }
   }
 
   handleMessage(clientId, data) {
     const client = this.clients.get(clientId);
     if (!client) return;
 
-    console.log('📨 WebSocket message from', client.email, ':', data.type);
-
     switch (data.type) {
       case 'ping':
-        client.ws.send(JSON.stringify({
-          type: 'pong',
-          timestamp: new Date().toISOString()
-        }));
+        client.ws.send(JSON.stringify({ type: 'pong', timestamp: Date.now() }));
         break;
-
+      
       case 'subscribe':
         // Handle subscription to specific channels
         client.ws.send(JSON.stringify({
           type: 'subscribed',
-          channel: data.channel,
-          timestamp: new Date().toISOString()
+          channel: data.channel
         }));
         break;
-
+      
       default:
-        client.ws.send(JSON.stringify({
-          type: 'error',
-          message: 'Unknown message type',
-          timestamp: new Date().toISOString()
-        }));
+        console.log(`📨 WebSocket message from ${clientId}:`, data.type);
     }
   }
 
@@ -142,85 +127,56 @@ class WebSocketServer {
       this.clients.forEach((client, clientId) => {
         if (client.ws.readyState === WebSocket.OPEN) {
           client.ws.ping();
-          
-          // Check if client responded to ping
-          if (client.lastPong && (Date.now() - client.lastPong.getTime()) > 30000) {
-            console.log('🔌 Removing unresponsive WebSocket client:', client.email);
-            client.ws.terminate();
-            this.clients.delete(clientId);
-          }
         } else {
-          // Remove closed connections
           this.clients.delete(clientId);
         }
       });
-    }, 30000); // Send ping every 30 seconds
+    }, 30000); // Ping every 30 seconds
   }
 
-  broadcast(message, filter = null) {
-    const data = JSON.stringify({
-      ...message,
-      timestamp: new Date().toISOString()
-    });
-
+  broadcast(message, excludeClientId = null) {
+    const messageStr = typeof message === 'string' ? message : JSON.stringify(message);
+    
     this.clients.forEach((client, clientId) => {
-      if (client.ws.readyState === WebSocket.OPEN) {
-        // Apply filter if provided
-        if (!filter || filter(client)) {
-          client.ws.send(data);
-        }
+      if (clientId !== excludeClientId && client.ws.readyState === WebSocket.OPEN) {
+        client.ws.send(messageStr);
       }
     });
   }
 
   sendToUser(userId, message) {
-    const data = JSON.stringify({
-      ...message,
-      timestamp: new Date().toISOString()
-    });
-
+    const messageStr = typeof message === 'string' ? message : JSON.stringify(message);
+    
     this.clients.forEach((client, clientId) => {
-      if (client.ws.readyState === WebSocket.OPEN && client.userId === userId) {
-        client.ws.send(data);
+      if (client.user.userId === userId || client.user.id === userId) {
+        if (client.ws.readyState === WebSocket.OPEN) {
+          client.ws.send(messageStr);
+        }
       }
     });
   }
 
   getStats() {
     return {
-      totalConnections: this.clients.size,
-      activeConnections: Array.from(this.clients.values()).filter(
-        client => client.ws.readyState === WebSocket.OPEN
-      ).length,
-      clients: Array.from(this.clients.values()).map(client => ({
-        userId: client.userId,
-        email: client.email,
-        role: client.role,
-        connectedAt: client.connectedAt
-      }))
+      connectedClients: this.clients.size,
+      isRunning: this.wss !== null,
+      uptime: this.wss ? Date.now() - this.wss.startTime : 0
     };
   }
 
-  shutdown() {
+  stop() {
     if (this.heartbeatInterval) {
       clearInterval(this.heartbeatInterval);
     }
     
-    this.clients.forEach((client) => {
-      if (client.ws.readyState === WebSocket.OPEN) {
-        client.ws.close(1001, 'Server shutting down');
-      }
-    });
-    
-    this.clients.clear();
-    
     if (this.wss) {
       this.wss.close();
+      this.wss = null;
     }
+    
+    this.clients.clear();
+    console.log('🔌 WebSocket server stopped');
   }
 }
 
-// Create singleton instance
-const webSocketServer = new WebSocketServer();
-
-module.exports = webSocketServer;
+module.exports = new WebSocketServer();

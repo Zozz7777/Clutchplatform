@@ -16,7 +16,7 @@ const hrRateLimit = createRateLimit({ windowMs: 60 * 1000, max: 100 });
 // ==================== EMPLOYEE MANAGEMENT ====================
 
 // GET /api/v1/hr/employees - Get all employees
-router.get('/employees', authenticateToken, requireRole(['admin', 'hr_manager']), hrRateLimit, async (req, res) => {
+router.get('/employees', authenticateToken, requireRole(['admin', 'hr_manager', 'super_admin']), hrRateLimit, async (req, res) => {
   try {
     const { page = 1, limit = 50, department, status, search } = req.query;
     const skip = (page - 1) * limit;
@@ -71,7 +71,7 @@ router.get('/employees', authenticateToken, requireRole(['admin', 'hr_manager'])
 });
 
 // GET /api/v1/hr/employees/:id - Get employee by ID
-router.get('/employees/:id', authenticateToken, requireRole(['admin', 'hr_manager']), hrRateLimit, async (req, res) => {
+router.get('/employees/:id', authenticateToken, requireRole(['admin', 'hr_manager', 'super_admin']), hrRateLimit, async (req, res) => {
   try {
     const { id } = req.params;
     const employeesCollection = await getCollection('employees');

@@ -1,248 +1,193 @@
-/**
- * Settings Management Routes
- * Complete settings system with configuration management and system preferences
- */
-
 const express = require('express');
 const router = express.Router();
 const { authenticateToken, requireRole } = require('../middleware/auth');
 const { getCollection } = require('../config/optimized-database');
-const { rateLimit: createRateLimit } = require('../middleware/rateLimit');
-const { ObjectId } = require('mongodb');
+const rateLimit = require('express-rate-limit');
 
-// Apply rate limiting
-const settingsRateLimit = createRateLimit({ windowMs: 60 * 1000, max: 50 });
+// Rate limiting
+const settingsLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: 50, // limit each IP to 50 requests per windowMs
+  message: 'Too many settings requests from this IP, please try again later.'
+});
 
-// ==================== SYSTEM SETTINGS ====================
+// Apply rate limiting and authentication to all routes
+router.use(settingsLimiter);
+router.use(authenticateToken);
+
+// ===== SYSTEM SETTINGS =====
 
 // GET /api/settings - Get all settings
-router.get('/', authenticateToken, requireRole(['admin', 'super_admin']), settingsRateLimit, async (req, res) => {
+router.get('/', async (req, res) => {
   try {
-    const { category, key } = req.query;
-    
     const settingsCollection = await getCollection('settings');
+    const { category } = req.query;
     
-    // Build query
-    const query = {};
-    if (category) query.category = category;
-    if (key) query.key = key;
+    const filter = {};
+    if (category) filter.category = category;
     
     const settings = await settingsCollection
-      .find(query)
+      .find(filter)
       .sort({ category: 1, key: 1 })
       .toArray();
     
-    // Group settings by category
-    const groupedSettings = settings.reduce((acc, setting) => {
-      if (!acc[setting.category]) {
-        acc[setting.category] = {};
-      }
-      acc[setting.category][setting.key] = setting.value;
-      return acc;
-    }, {});
-    
     res.json({
       success: true,
-      data: { settings: groupedSettings },
-      message: 'Settings retrieved successfully',
-      timestamp: new Date().toISOString()
+      data: settings
     });
   } catch (error) {
-    console.error('Get settings error:', error);
+    console.error('Error fetching settings:', error);
     res.status(500).json({
       success: false,
-      error: 'GET_SETTINGS_FAILED',
-      message: 'Failed to retrieve settings',
-      timestamp: new Date().toISOString()
-    });
-  }
-});
-
-// GET /api/settings/:category - Get settings by category
-router.get('/:category', authenticateToken, requireRole(['admin', 'super_admin']), settingsRateLimit, async (req, res) => {
-  try {
-    const { category } = req.params;
-    
-    const settingsCollection = await getCollection('settings');
-    
-    const settings = await settingsCollection
-      .find({ category })
-      .sort({ key: 1 })
-      .toArray();
-    
-    // Convert to key-value object
-    const settingsObject = settings.reduce((acc, setting) => {
-      acc[setting.key] = setting.value;
-      return acc;
-    }, {});
-    
-    res.json({
-      success: true,
-      data: { settings: settingsObject },
-      message: `Settings for category '${category}' retrieved successfully`,
-      timestamp: new Date().toISOString()
-    });
-  } catch (error) {
-    console.error('Get settings by category error:', error);
-    res.status(500).json({
-      success: false,
-      error: 'GET_SETTINGS_CATEGORY_FAILED',
-      message: 'Failed to retrieve settings by category',
-      timestamp: new Date().toISOString()
+      message: 'Failed to fetch settings',
+      error: process.env.NODE_ENV === 'development' ? error.message : undefined
     });
   }
 });
 
 // PUT /api/settings - Update settings
-router.put('/', authenticateToken, requireRole(['admin', 'super_admin']), settingsRateLimit, async (req, res) => {
+router.put('/', requireRole(['admin', 'super_admin']), async (req, res) => {
   try {
+    const settingsCollection = await getCollection('settings');
     const { settings } = req.body;
     
-    if (!settings || typeof settings !== 'object') {
+    if (!settings || !Array.isArray(settings)) {
       return res.status(400).json({
         success: false,
-        error: 'MISSING_REQUIRED_FIELDS',
-        message: 'Settings object is required',
-        timestamp: new Date().toISOString()
+        message: 'Settings array is required'
       });
     }
     
-    const settingsCollection = await getCollection('settings');
-    const updatedSettings = [];
+    const updatePromises = settings.map(setting => {
+      return settingsCollection.updateOne(
+        { category: setting.category, key: setting.key },
+        { 
+          $set: {
+            value: setting.value,
+            updatedBy: req.user.userId,
+            updatedAt: new Date()
+          }
+        },
+        { upsert: true }
+      );
+    });
     
-    // Update each setting
-    for (const [category, categorySettings] of Object.entries(settings)) {
-      if (typeof categorySettings === 'object') {
-        for (const [key, value] of Object.entries(categorySettings)) {
-          const result = await settingsCollection.updateOne(
-            { category, key },
-            {
-              $set: {
-                value,
-                updatedAt: new Date(),
-                updatedBy: req.user.userId
-              }
-            },
-            { upsert: true }
-          );
-          
-          updatedSettings.push({ category, key, value });
-        }
-      }
-    }
+    await Promise.all(updatePromises);
     
     res.json({
       success: true,
-      data: { updatedSettings },
-      message: 'Settings updated successfully',
-      timestamp: new Date().toISOString()
+      message: 'Settings updated successfully'
     });
   } catch (error) {
-    console.error('Update settings error:', error);
+    console.error('Error updating settings:', error);
     res.status(500).json({
       success: false,
-      error: 'UPDATE_SETTINGS_FAILED',
       message: 'Failed to update settings',
-      timestamp: new Date().toISOString()
+      error: process.env.NODE_ENV === 'development' ? error.message : undefined
+    });
+  }
+});
+
+// GET /api/settings/:category - Get settings by category
+router.get('/:category', async (req, res) => {
+  try {
+    const settingsCollection = await getCollection('settings');
+    const settings = await settingsCollection
+      .find({ category: req.params.category })
+      .sort({ key: 1 })
+      .toArray();
+    
+    res.json({
+      success: true,
+      data: settings
+    });
+  } catch (error) {
+    console.error('Error fetching settings by category:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Failed to fetch settings',
+      error: process.env.NODE_ENV === 'development' ? error.message : undefined
     });
   }
 });
 
 // PUT /api/settings/:category/:key - Update specific setting
-router.put('/:category/:key', authenticateToken, requireRole(['admin', 'super_admin']), settingsRateLimit, async (req, res) => {
+router.put('/:category/:key', requireRole(['admin', 'super_admin']), async (req, res) => {
   try {
-    const { category, key } = req.params;
-    const { value, description } = req.body;
+    const settingsCollection = await getCollection('settings');
+    const { value } = req.body;
     
     if (value === undefined) {
       return res.status(400).json({
         success: false,
-        error: 'MISSING_REQUIRED_FIELDS',
-        message: 'Setting value is required',
-        timestamp: new Date().toISOString()
+        message: 'Value is required'
       });
     }
     
-    const settingsCollection = await getCollection('settings');
-    
-    const updateData = {
-      value,
-      updatedAt: new Date(),
-      updatedBy: req.user.userId
-    };
-    
-    if (description !== undefined) {
-      updateData.description = description;
-    }
-    
     const result = await settingsCollection.updateOne(
-      { category, key },
-      { $set: updateData },
+      { category: req.params.category, key: req.params.key },
+      { 
+        $set: {
+          value,
+          updatedBy: req.user.userId,
+          updatedAt: new Date()
+        }
+      },
       { upsert: true }
     );
     
     res.json({
       success: true,
-      data: { category, key, value },
-      message: 'Setting updated successfully',
-      timestamp: new Date().toISOString()
+      message: 'Setting updated successfully'
     });
   } catch (error) {
-    console.error('Update setting error:', error);
+    console.error('Error updating setting:', error);
     res.status(500).json({
       success: false,
-      error: 'UPDATE_SETTING_FAILED',
       message: 'Failed to update setting',
-      timestamp: new Date().toISOString()
+      error: process.env.NODE_ENV === 'development' ? error.message : undefined
     });
   }
 });
 
-// ==================== USER PREFERENCES ====================
+// ===== USER PREFERENCES =====
 
 // GET /api/settings/user/preferences - Get user preferences
-router.get('/user/preferences', authenticateToken, requireRole(['admin', 'user', 'super_admin']), settingsRateLimit, async (req, res) => {
+router.get('/user/preferences', async (req, res) => {
   try {
     const preferencesCollection = await getCollection('user_preferences');
-    
     const preferences = await preferencesCollection.findOne({ userId: req.user.userId });
     
     res.json({
       success: true,
-      data: { preferences: preferences?.preferences || {} },
-      message: 'User preferences retrieved successfully',
-      timestamp: new Date().toISOString()
+      data: preferences || { userId: req.user.userId, preferences: {} }
     });
   } catch (error) {
-    console.error('Get user preferences error:', error);
+    console.error('Error fetching user preferences:', error);
     res.status(500).json({
       success: false,
-      error: 'GET_USER_PREFERENCES_FAILED',
-      message: 'Failed to retrieve user preferences',
-      timestamp: new Date().toISOString()
+      message: 'Failed to fetch user preferences',
+      error: process.env.NODE_ENV === 'development' ? error.message : undefined
     });
   }
 });
 
 // PUT /api/settings/user/preferences - Update user preferences
-router.put('/user/preferences', authenticateToken, requireRole(['admin', 'user', 'super_admin']), settingsRateLimit, async (req, res) => {
+router.put('/user/preferences', async (req, res) => {
   try {
+    const preferencesCollection = await getCollection('user_preferences');
     const { preferences } = req.body;
     
-    if (!preferences || typeof preferences !== 'object') {
+    if (!preferences) {
       return res.status(400).json({
         success: false,
-        error: 'MISSING_REQUIRED_FIELDS',
-        message: 'Preferences object is required',
-        timestamp: new Date().toISOString()
+        message: 'Preferences object is required'
       });
     }
     
-    const preferencesCollection = await getCollection('user_preferences');
-    
     const result = await preferencesCollection.updateOne(
       { userId: req.user.userId },
-      {
+      { 
         $set: {
           preferences,
           updatedAt: new Date()
@@ -253,108 +198,111 @@ router.put('/user/preferences', authenticateToken, requireRole(['admin', 'user',
     
     res.json({
       success: true,
-      data: { preferences },
-      message: 'User preferences updated successfully',
-      timestamp: new Date().toISOString()
+      message: 'User preferences updated successfully'
     });
   } catch (error) {
-    console.error('Update user preferences error:', error);
+    console.error('Error updating user preferences:', error);
     res.status(500).json({
       success: false,
-      error: 'UPDATE_USER_PREFERENCES_FAILED',
       message: 'Failed to update user preferences',
-      timestamp: new Date().toISOString()
+      error: process.env.NODE_ENV === 'development' ? error.message : undefined
     });
   }
 });
 
-// ==================== SYSTEM CONFIGURATION ====================
+// ===== SYSTEM CONFIGURATION =====
 
 // GET /api/settings/system/config - Get system configuration
-router.get('/system/config', authenticateToken, requireRole(['admin', 'super_admin']), settingsRateLimit, async (req, res) => {
+router.get('/system/config', requireRole(['admin', 'super_admin']), async (req, res) => {
   try {
-    const config = {
-      version: process.env.APP_VERSION || '1.0.0',
-      environment: process.env.NODE_ENV || 'development',
-      features: {
-        chat: true,
-        notifications: true,
-        analytics: true,
-        reporting: true,
-        integrations: true
-      },
-      limits: {
-        maxFileSize: '10MB',
-        maxUsers: 1000,
-        maxProjects: 100,
-        maxStorage: '1GB'
-      },
-      integrations: {
-        email: !!process.env.EMAIL_SERVICE,
-        sms: !!process.env.SMS_SERVICE,
-        webhook: !!process.env.WEBHOOK_URL
-      }
-    };
+    const configCollection = await getCollection('system_config');
+    const config = await configCollection.findOne({ type: 'main' });
     
     res.json({
       success: true,
-      data: { config },
-      message: 'System configuration retrieved successfully',
-      timestamp: new Date().toISOString()
+      data: config || { type: 'main', config: {} }
     });
   } catch (error) {
-    console.error('Get system config error:', error);
+    console.error('Error fetching system configuration:', error);
     res.status(500).json({
       success: false,
-      error: 'GET_SYSTEM_CONFIG_FAILED',
-      message: 'Failed to retrieve system configuration',
-      timestamp: new Date().toISOString()
+      message: 'Failed to fetch system configuration',
+      error: process.env.NODE_ENV === 'development' ? error.message : undefined
     });
   }
 });
 
-// ==================== SETTINGS ANALYTICS ====================
+// PUT /api/settings/system/config - Update system configuration
+router.put('/system/config', requireRole(['admin', 'super_admin']), async (req, res) => {
+  try {
+    const configCollection = await getCollection('system_config');
+    const { config } = req.body;
+    
+    if (!config) {
+      return res.status(400).json({
+        success: false,
+        message: 'Config object is required'
+      });
+    }
+    
+    const result = await configCollection.updateOne(
+      { type: 'main' },
+      { 
+        $set: {
+          config,
+          updatedBy: req.user.userId,
+          updatedAt: new Date()
+        }
+      },
+      { upsert: true }
+    );
+    
+    res.json({
+      success: true,
+      message: 'System configuration updated successfully'
+    });
+  } catch (error) {
+    console.error('Error updating system configuration:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Failed to update system configuration',
+      error: process.env.NODE_ENV === 'development' ? error.message : undefined
+    });
+  }
+});
+
+// ===== SETTINGS ANALYTICS =====
 
 // GET /api/settings/analytics - Get settings analytics
-router.get('/analytics', authenticateToken, requireRole(['admin', 'super_admin']), settingsRateLimit, async (req, res) => {
+router.get('/analytics', requireRole(['admin', 'super_admin']), async (req, res) => {
   try {
     const settingsCollection = await getCollection('settings');
     const preferencesCollection = await getCollection('user_preferences');
     
-    // Settings statistics
     const totalSettings = await settingsCollection.countDocuments();
-    const settingsByCategory = await settingsCollection.aggregate([
-      { $group: { _id: '$category', count: { $sum: 1 } } },
-      { $sort: { count: -1 } }
+    const totalUserPreferences = await preferencesCollection.countDocuments();
+    
+    // Get settings by category
+    const categoryStats = await settingsCollection.aggregate([
+      { $group: { _id: '$category', count: { $sum: 1 } } }
     ]).toArray();
-    
-    // User preferences statistics
-    const totalUsersWithPreferences = await preferencesCollection.countDocuments();
-    
-    const analytics = {
-      settings: {
-        total: totalSettings,
-        byCategory: settingsByCategory
-      },
-      preferences: {
-        totalUsers: totalUsersWithPreferences
-      },
-      generatedAt: new Date()
-    };
     
     res.json({
       success: true,
-      data: analytics,
-      message: 'Settings analytics retrieved successfully',
-      timestamp: new Date().toISOString()
+      data: {
+        overview: {
+          totalSettings,
+          totalUserPreferences
+        },
+        categoryStats
+      }
     });
   } catch (error) {
-    console.error('Get settings analytics error:', error);
+    console.error('Error fetching settings analytics:', error);
     res.status(500).json({
       success: false,
-      error: 'GET_SETTINGS_ANALYTICS_FAILED',
-      message: 'Failed to retrieve settings analytics',
-      timestamp: new Date().toISOString()
+      message: 'Failed to fetch settings analytics',
+      error: process.env.NODE_ENV === 'development' ? error.message : undefined
     });
   }
 });

@@ -1,49 +1,43 @@
-/**
- * Vendor & Supplier Management Routes
- * Complete vendor management system with contracts and communication
- */
-
 const express = require('express');
 const router = express.Router();
 const { authenticateToken, requireRole } = require('../middleware/auth');
 const { getCollection } = require('../config/optimized-database');
-const { rateLimit: createRateLimit } = require('../middleware/rateLimit');
-const { ObjectId } = require('mongodb');
+const rateLimit = require('express-rate-limit');
 
-// Apply rate limiting
-const vendorRateLimit = createRateLimit({ windowMs: 60 * 1000, max: 100 });
+// Rate limiting
+const vendorLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: 100, // limit each IP to 100 requests per windowMs
+  message: 'Too many vendor requests from this IP, please try again later.'
+});
 
-// ==================== VENDOR MANAGEMENT ====================
+// Apply rate limiting and authentication to all routes
+router.use(vendorLimiter);
+router.use(authenticateToken);
+
+// ===== VENDORS MANAGEMENT =====
 
 // GET /api/v1/vendors - Get all vendors
-router.get('/', authenticateToken, requireRole(['admin', 'vendor_manager']), vendorRateLimit, async (req, res) => {
+router.get('/', async (req, res) => {
   try {
-    const { page = 1, limit = 50, status, category, search } = req.query;
-    const skip = (page - 1) * limit;
+    const vendorsCollection = await getCollection('vendors');
+    const { page = 1, limit = 10, category, status, location } = req.query;
     
-    const vendorsCollection = await getCollection('partners');
+    const filter = {};
+    if (category) filter.category = category;
+    if (status) filter.status = status;
+    if (location) filter.location = location;
     
-    // Build query
-    const query = {};
-    if (status) query.status = status;
-    if (category) query.category = category;
-    if (search) {
-      query.$or = [
-        { name: { $regex: search, $options: 'i' } },
-        { companyName: { $regex: search, $options: 'i' } },
-        { email: { $regex: search, $options: 'i' } },
-        { contactPerson: { $regex: search, $options: 'i' } }
-      ];
-    }
+    const skip = (parseInt(page) - 1) * parseInt(limit);
     
     const vendors = await vendorsCollection
-      .find(query)
-      .sort({ createdAt: -1 })
+      .find(filter)
       .skip(skip)
       .limit(parseInt(limit))
+      .sort({ createdAt: -1 })
       .toArray();
     
-    const total = await vendorsCollection.countDocuments(query);
+    const total = await vendorsCollection.countDocuments(filter);
     
     res.json({
       success: true,
@@ -53,339 +47,419 @@ router.get('/', authenticateToken, requireRole(['admin', 'vendor_manager']), ven
           page: parseInt(page),
           limit: parseInt(limit),
           total,
-          pages: Math.ceil(total / limit)
+          pages: Math.ceil(total / parseInt(limit))
         }
-      },
-      message: 'Vendors retrieved successfully',
-      timestamp: new Date().toISOString()
+      }
     });
   } catch (error) {
-    console.error('Get vendors error:', error);
+    console.error('Error fetching vendors:', error);
     res.status(500).json({
       success: false,
-      error: 'GET_VENDORS_FAILED',
-      message: 'Failed to retrieve vendors',
-      timestamp: new Date().toISOString()
+      message: 'Failed to fetch vendors',
+      error: process.env.NODE_ENV === 'development' ? error.message : undefined
     });
   }
 });
 
 // GET /api/v1/vendors/:id - Get vendor by ID
-router.get('/:id', authenticateToken, requireRole(['admin', 'vendor_manager']), vendorRateLimit, async (req, res) => {
+router.get('/:id', async (req, res) => {
   try {
-    const { id } = req.params;
-    const vendorsCollection = await getCollection('partners');
-    
-    const vendor = await vendorsCollection.findOne({ _id: new ObjectId(id) });
+    const vendorsCollection = await getCollection('vendors');
+    const vendor = await vendorsCollection.findOne({ _id: req.params.id });
     
     if (!vendor) {
       return res.status(404).json({
         success: false,
-        error: 'VENDOR_NOT_FOUND',
-        message: 'Vendor not found',
-        timestamp: new Date().toISOString()
+        message: 'Vendor not found'
       });
     }
     
     res.json({
       success: true,
-      data: { vendor },
-      message: 'Vendor retrieved successfully',
-      timestamp: new Date().toISOString()
+      data: vendor
     });
   } catch (error) {
-    console.error('Get vendor error:', error);
+    console.error('Error fetching vendor:', error);
     res.status(500).json({
       success: false,
-      error: 'GET_VENDOR_FAILED',
-      message: 'Failed to retrieve vendor',
-      timestamp: new Date().toISOString()
+      message: 'Failed to fetch vendor',
+      error: process.env.NODE_ENV === 'development' ? error.message : undefined
     });
   }
 });
 
 // POST /api/v1/vendors - Create new vendor
-router.post('/', authenticateToken, requireRole(['admin', 'vendor_manager']), vendorRateLimit, async (req, res) => {
+router.post('/', requireRole(['admin', 'vendor_manager', 'super_admin']), async (req, res) => {
   try {
-    const {
-      name,
-      companyName,
-      email,
-      phone,
-      address,
-      contactPerson,
-      category,
-      taxId,
-      website,
-      description,
-      paymentTerms,
-      creditLimit,
-      status
+    const vendorsCollection = await getCollection('vendors');
+    const { 
+      name, 
+      category, 
+      contactPerson, 
+      email, 
+      phone, 
+      address, 
+      city, 
+      state, 
+      zipCode, 
+      country, 
+      website, 
+      taxId, 
+      status, 
+      rating, 
+      notes 
     } = req.body;
     
-    if (!name || !companyName || !email) {
+    if (!name || !category || !email) {
       return res.status(400).json({
         success: false,
-        error: 'MISSING_REQUIRED_FIELDS',
-        message: 'Name, company name, and email are required',
-        timestamp: new Date().toISOString()
+        message: 'Name, category, and email are required'
       });
     }
     
-    const vendorsCollection = await getCollection('partners');
-    
-    // Check if vendor already exists
-    const existingVendor = await vendorsCollection.findOne({ email: email.toLowerCase() });
-    if (existingVendor) {
-      return res.status(409).json({
-        success: false,
-        error: 'VENDOR_EXISTS',
-        message: 'Vendor with this email already exists',
-        timestamp: new Date().toISOString()
-      });
-    }
-    
-    // Generate vendor code
-    const vendorCount = await vendorsCollection.countDocuments();
-    const vendorCode = `VND${String(vendorCount + 1).padStart(4, '0')}`;
-    
-    const newVendor = {
-      vendorCode,
+    const vendor = {
       name,
-      companyName,
-      email: email.toLowerCase(),
-      phone: phone || null,
-      address: address || null,
-      contactPerson: contactPerson || null,
-      category: category || null,
-      taxId: taxId || null,
-      website: website || null,
-      description: description || null,
-      paymentTerms: paymentTerms || null,
-      creditLimit: creditLimit || null,
+      category,
+      contactPerson: contactPerson || '',
+      email,
+      phone: phone || '',
+      address: address || '',
+      city: city || '',
+      state: state || '',
+      zipCode: zipCode || '',
+      country: country || '',
+      website: website || '',
+      taxId: taxId || '',
       status: status || 'active',
-      rating: 0,
-      totalOrders: 0,
-      totalValue: 0,
+      rating: rating || 0,
+      notes: notes || '',
+      createdBy: req.user.userId,
       createdAt: new Date(),
       updatedAt: new Date(),
-      createdBy: req.user.userId
+      contracts: [],
+      communications: []
     };
     
-    const result = await vendorsCollection.insertOne(newVendor);
+    const result = await vendorsCollection.insertOne(vendor);
     
     res.status(201).json({
       success: true,
-      data: { vendor: { ...newVendor, _id: result.insertedId } },
-      message: 'Vendor created successfully',
-      timestamp: new Date().toISOString()
+      data: {
+        id: result.insertedId,
+        ...vendor
+      },
+      message: 'Vendor created successfully'
     });
   } catch (error) {
-    console.error('Create vendor error:', error);
+    console.error('Error creating vendor:', error);
     res.status(500).json({
       success: false,
-      error: 'CREATE_VENDOR_FAILED',
       message: 'Failed to create vendor',
-      timestamp: new Date().toISOString()
+      error: process.env.NODE_ENV === 'development' ? error.message : undefined
     });
   }
 });
 
 // PUT /api/v1/vendors/:id - Update vendor
-router.put('/:id', authenticateToken, requireRole(['admin', 'vendor_manager']), vendorRateLimit, async (req, res) => {
+router.put('/:id', requireRole(['admin', 'vendor_manager', 'super_admin']), async (req, res) => {
   try {
-    const { id } = req.params;
-    const updateData = { ...req.body, updatedAt: new Date() };
+    const vendorsCollection = await getCollection('vendors');
+    const { 
+      name, 
+      category, 
+      contactPerson, 
+      email, 
+      phone, 
+      address, 
+      city, 
+      state, 
+      zipCode, 
+      country, 
+      website, 
+      taxId, 
+      status, 
+      rating, 
+      notes 
+    } = req.body;
     
-    const vendorsCollection = await getCollection('partners');
+    const updateData = {
+      updatedAt: new Date()
+    };
+    
+    if (name) updateData.name = name;
+    if (category) updateData.category = category;
+    if (contactPerson) updateData.contactPerson = contactPerson;
+    if (email) updateData.email = email;
+    if (phone) updateData.phone = phone;
+    if (address) updateData.address = address;
+    if (city) updateData.city = city;
+    if (state) updateData.state = state;
+    if (zipCode) updateData.zipCode = zipCode;
+    if (country) updateData.country = country;
+    if (website) updateData.website = website;
+    if (taxId) updateData.taxId = taxId;
+    if (status) updateData.status = status;
+    if (rating !== undefined) updateData.rating = rating;
+    if (notes) updateData.notes = notes;
     
     const result = await vendorsCollection.updateOne(
-      { _id: new ObjectId(id) },
+      { _id: req.params.id },
       { $set: updateData }
     );
     
     if (result.matchedCount === 0) {
       return res.status(404).json({
         success: false,
-        error: 'VENDOR_NOT_FOUND',
-        message: 'Vendor not found',
-        timestamp: new Date().toISOString()
+        message: 'Vendor not found'
       });
     }
     
-    const updatedVendor = await vendorsCollection.findOne({ _id: new ObjectId(id) });
-    
     res.json({
       success: true,
-      data: { vendor: updatedVendor },
-      message: 'Vendor updated successfully',
-      timestamp: new Date().toISOString()
+      message: 'Vendor updated successfully'
     });
   } catch (error) {
-    console.error('Update vendor error:', error);
+    console.error('Error updating vendor:', error);
     res.status(500).json({
       success: false,
-      error: 'UPDATE_VENDOR_FAILED',
       message: 'Failed to update vendor',
-      timestamp: new Date().toISOString()
+      error: process.env.NODE_ENV === 'development' ? error.message : undefined
     });
   }
 });
 
 // DELETE /api/v1/vendors/:id - Delete vendor
-router.delete('/:id', authenticateToken, requireRole(['admin']), vendorRateLimit, async (req, res) => {
+router.delete('/:id', requireRole(['admin', 'super_admin']), async (req, res) => {
   try {
-    const { id } = req.params;
-    const vendorsCollection = await getCollection('partners');
-    
-    const result = await vendorsCollection.deleteOne({ _id: new ObjectId(id) });
+    const vendorsCollection = await getCollection('vendors');
+    const result = await vendorsCollection.deleteOne({ _id: req.params.id });
     
     if (result.deletedCount === 0) {
       return res.status(404).json({
         success: false,
-        error: 'VENDOR_NOT_FOUND',
-        message: 'Vendor not found',
-        timestamp: new Date().toISOString()
+        message: 'Vendor not found'
       });
     }
     
     res.json({
       success: true,
-      data: { id },
-      message: 'Vendor deleted successfully',
-      timestamp: new Date().toISOString()
+      message: 'Vendor deleted successfully'
     });
   } catch (error) {
-    console.error('Delete vendor error:', error);
+    console.error('Error deleting vendor:', error);
     res.status(500).json({
       success: false,
-      error: 'DELETE_VENDOR_FAILED',
       message: 'Failed to delete vendor',
-      timestamp: new Date().toISOString()
+      error: process.env.NODE_ENV === 'development' ? error.message : undefined
     });
   }
 });
 
-// ==================== VENDOR CONTRACTS ====================
+// ===== VENDOR CONTRACTS =====
 
-// GET /api/v1/vendors/:id/contracts - Get vendor contracts
-router.get('/:id/contracts', authenticateToken, requireRole(['admin', 'vendor_manager']), vendorRateLimit, async (req, res) => {
+// GET /api/v1/vendor-contracts - Get all vendor contracts
+router.get('/contracts', async (req, res) => {
   try {
-    const { id } = req.params;
     const contractsCollection = await getCollection('vendor_contracts');
+    const { page = 1, limit = 10, vendorId, status, type } = req.query;
+    
+    const filter = {};
+    if (vendorId) filter.vendorId = vendorId;
+    if (status) filter.status = status;
+    if (type) filter.type = type;
+    
+    const skip = (parseInt(page) - 1) * parseInt(limit);
     
     const contracts = await contractsCollection
-      .find({ vendorId: new ObjectId(id) })
+      .find(filter)
+      .skip(skip)
+      .limit(parseInt(limit))
       .sort({ createdAt: -1 })
       .toArray();
     
+    const total = await contractsCollection.countDocuments(filter);
+    
     res.json({
       success: true,
-      data: { contracts },
-      message: 'Vendor contracts retrieved successfully',
-      timestamp: new Date().toISOString()
+      data: {
+        contracts,
+        pagination: {
+          page: parseInt(page),
+          limit: parseInt(limit),
+          total,
+          pages: Math.ceil(total / parseInt(limit))
+        }
+      }
     });
   } catch (error) {
-    console.error('Get vendor contracts error:', error);
+    console.error('Error fetching vendor contracts:', error);
     res.status(500).json({
       success: false,
-      error: 'GET_VENDOR_CONTRACTS_FAILED',
-      message: 'Failed to retrieve vendor contracts',
-      timestamp: new Date().toISOString()
+      message: 'Failed to fetch vendor contracts',
+      error: process.env.NODE_ENV === 'development' ? error.message : undefined
     });
   }
 });
 
-// POST /api/v1/vendors/:id/contracts - Create vendor contract
-router.post('/:id/contracts', authenticateToken, requireRole(['admin', 'vendor_manager']), vendorRateLimit, async (req, res) => {
+// POST /api/v1/vendor-contracts - Create vendor contract
+router.post('/contracts', requireRole(['admin', 'vendor_manager', 'super_admin']), async (req, res) => {
   try {
-    const { id } = req.params;
-    const {
-      title,
-      type,
-      startDate,
-      endDate,
-      value,
-      terms,
-      renewalDate,
-      autoRenewal,
-      status
+    const contractsCollection = await getCollection('vendor_contracts');
+    const { 
+      vendorId, 
+      contractNumber, 
+      type, 
+      title, 
+      description, 
+      startDate, 
+      endDate, 
+      value, 
+      currency, 
+      terms, 
+      status, 
+      renewalDate, 
+      notes 
     } = req.body;
     
-    if (!title || !type || !startDate || !endDate) {
+    if (!vendorId || !contractNumber || !type || !title) {
       return res.status(400).json({
         success: false,
-        error: 'MISSING_REQUIRED_FIELDS',
-        message: 'Title, type, start date, and end date are required',
-        timestamp: new Date().toISOString()
+        message: 'Vendor ID, contract number, type, and title are required'
       });
     }
     
-    const contractsCollection = await getCollection('vendor_contracts');
-    
-    // Generate contract number
-    const contractCount = await contractsCollection.countDocuments();
-    const contractNumber = `VCT${String(contractCount + 1).padStart(6, '0')}`;
-    
-    const newContract = {
+    const contract = {
+      vendorId,
       contractNumber,
-      vendorId: new ObjectId(id),
-      title,
       type,
-      startDate: new Date(startDate),
-      endDate: new Date(endDate),
-      value: value || null,
-      terms: terms || null,
+      title,
+      description: description || '',
+      startDate: startDate ? new Date(startDate) : new Date(),
+      endDate: endDate ? new Date(endDate) : null,
+      value: value || 0,
+      currency: currency || 'USD',
+      terms: terms || '',
+      status: status || 'active',
       renewalDate: renewalDate ? new Date(renewalDate) : null,
-      autoRenewal: autoRenewal || false,
-      status: status || 'draft',
+      notes: notes || '',
+      createdBy: req.user.userId,
       createdAt: new Date(),
-      updatedAt: new Date(),
-      createdBy: req.user.userId
+      updatedAt: new Date()
     };
     
-    const result = await contractsCollection.insertOne(newContract);
+    const result = await contractsCollection.insertOne(contract);
+    
+    // Update vendor with contract reference
+    const vendorsCollection = await getCollection('vendors');
+    await vendorsCollection.updateOne(
+      { _id: vendorId },
+      { 
+        $push: { contracts: result.insertedId },
+        $set: { updatedAt: new Date() }
+      }
+    );
     
     res.status(201).json({
       success: true,
-      data: { contract: { ...newContract, _id: result.insertedId } },
-      message: 'Vendor contract created successfully',
-      timestamp: new Date().toISOString()
+      data: {
+        id: result.insertedId,
+        ...contract
+      },
+      message: 'Vendor contract created successfully'
     });
   } catch (error) {
-    console.error('Create vendor contract error:', error);
+    console.error('Error creating vendor contract:', error);
     res.status(500).json({
       success: false,
-      error: 'CREATE_VENDOR_CONTRACT_FAILED',
       message: 'Failed to create vendor contract',
-      timestamp: new Date().toISOString()
+      error: process.env.NODE_ENV === 'development' ? error.message : undefined
     });
   }
 });
 
-// ==================== VENDOR COMMUNICATION ====================
-
-// GET /api/v1/vendors/:id/communications - Get vendor communications
-router.get('/:id/communications', authenticateToken, requireRole(['admin', 'vendor_manager']), vendorRateLimit, async (req, res) => {
+// PUT /api/v1/vendor-contracts/:id - Update vendor contract
+router.put('/contracts/:id', requireRole(['admin', 'vendor_manager', 'super_admin']), async (req, res) => {
   try {
-    const { id } = req.params;
-    const { page = 1, limit = 50, type } = req.query;
-    const skip = (page - 1) * limit;
+    const contractsCollection = await getCollection('vendor_contracts');
+    const { 
+      type, 
+      title, 
+      description, 
+      startDate, 
+      endDate, 
+      value, 
+      currency, 
+      terms, 
+      status, 
+      renewalDate, 
+      notes 
+    } = req.body;
     
+    const updateData = {
+      updatedAt: new Date()
+    };
+    
+    if (type) updateData.type = type;
+    if (title) updateData.title = title;
+    if (description) updateData.description = description;
+    if (startDate) updateData.startDate = new Date(startDate);
+    if (endDate) updateData.endDate = new Date(endDate);
+    if (value !== undefined) updateData.value = value;
+    if (currency) updateData.currency = currency;
+    if (terms) updateData.terms = terms;
+    if (status) updateData.status = status;
+    if (renewalDate) updateData.renewalDate = new Date(renewalDate);
+    if (notes) updateData.notes = notes;
+    
+    const result = await contractsCollection.updateOne(
+      { _id: req.params.id },
+      { $set: updateData }
+    );
+    
+    if (result.matchedCount === 0) {
+      return res.status(404).json({
+        success: false,
+        message: 'Vendor contract not found'
+      });
+    }
+    
+    res.json({
+      success: true,
+      message: 'Vendor contract updated successfully'
+    });
+  } catch (error) {
+    console.error('Error updating vendor contract:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Failed to update vendor contract',
+      error: process.env.NODE_ENV === 'development' ? error.message : undefined
+    });
+  }
+});
+
+// ===== VENDOR COMMUNICATIONS =====
+
+// GET /api/v1/vendor-communications - Get all vendor communications
+router.get('/communications', async (req, res) => {
+  try {
     const communicationsCollection = await getCollection('vendor_communications');
+    const { page = 1, limit = 10, vendorId, type, status } = req.query;
     
-    // Build query
-    const query = { vendorId: new ObjectId(id) };
-    if (type) query.type = type;
+    const filter = {};
+    if (vendorId) filter.vendorId = vendorId;
+    if (type) filter.type = type;
+    if (status) filter.status = status;
+    
+    const skip = (parseInt(page) - 1) * parseInt(limit);
     
     const communications = await communicationsCollection
-      .find(query)
-      .sort({ createdAt: -1 })
+      .find(filter)
       .skip(skip)
       .limit(parseInt(limit))
+      .sort({ createdAt: -1 })
       .toArray();
     
-    const total = await communicationsCollection.countDocuments(query);
+    const total = await communicationsCollection.countDocuments(filter);
     
     res.json({
       success: true,
@@ -395,550 +469,203 @@ router.get('/:id/communications', authenticateToken, requireRole(['admin', 'vend
           page: parseInt(page),
           limit: parseInt(limit),
           total,
-          pages: Math.ceil(total / limit)
+          pages: Math.ceil(total / parseInt(limit))
         }
-      },
-      message: 'Vendor communications retrieved successfully',
-      timestamp: new Date().toISOString()
+      }
     });
   } catch (error) {
-    console.error('Get vendor communications error:', error);
+    console.error('Error fetching vendor communications:', error);
     res.status(500).json({
       success: false,
-      error: 'GET_VENDOR_COMMUNICATIONS_FAILED',
-      message: 'Failed to retrieve vendor communications',
-      timestamp: new Date().toISOString()
+      message: 'Failed to fetch vendor communications',
+      error: process.env.NODE_ENV === 'development' ? error.message : undefined
     });
   }
 });
 
-// POST /api/v1/vendors/:id/communications - Create vendor communication
-router.post('/:id/communications', authenticateToken, requireRole(['admin', 'vendor_manager']), vendorRateLimit, async (req, res) => {
+// POST /api/v1/vendor-communications - Create vendor communication
+router.post('/communications', requireRole(['admin', 'vendor_manager', 'super_admin', 'employee']), async (req, res) => {
   try {
-    const { id } = req.params;
-    const {
-      type,
-      subject,
-      message,
-      priority,
-      attachments
-    } = req.body;
-    
-    if (!type || !subject || !message) {
-      return res.status(400).json({
-        success: false,
-        error: 'MISSING_REQUIRED_FIELDS',
-        message: 'Type, subject, and message are required',
-        timestamp: new Date().toISOString()
-      });
-    }
-    
     const communicationsCollection = await getCollection('vendor_communications');
-    
-    const newCommunication = {
-      vendorId: new ObjectId(id),
-      type,
-      subject,
-      message,
-      priority: priority || 'medium',
-      attachments: attachments || [],
-      status: 'sent',
-      createdAt: new Date(),
-      createdBy: req.user.userId
-    };
-    
-    const result = await communicationsCollection.insertOne(newCommunication);
-    
-    res.status(201).json({
-      success: true,
-      data: { communication: { ...newCommunication, _id: result.insertedId } },
-      message: 'Vendor communication created successfully',
-      timestamp: new Date().toISOString()
-    });
-  } catch (error) {
-    console.error('Create vendor communication error:', error);
-    res.status(500).json({
-      success: false,
-      error: 'CREATE_VENDOR_COMMUNICATION_FAILED',
-      message: 'Failed to create vendor communication',
-      timestamp: new Date().toISOString()
-    });
-  }
-});
-
-// ==================== VENDOR PERFORMANCE ====================
-
-// GET /api/v1/vendors/:id/performance - Get vendor performance
-router.get('/:id/performance', authenticateToken, requireRole(['admin', 'vendor_manager']), vendorRateLimit, async (req, res) => {
-  try {
-    const { id } = req.params;
-    const { period = '30d' } = req.query;
-    
-    const vendorsCollection = await getCollection('partners');
-    const ordersCollection = await getCollection('vendor_orders');
-    const contractsCollection = await getCollection('vendor_contracts');
-    
-    // Get vendor
-    const vendor = await vendorsCollection.findOne({ _id: new ObjectId(id) });
-    if (!vendor) {
-      return res.status(404).json({
-        success: false,
-        error: 'VENDOR_NOT_FOUND',
-        message: 'Vendor not found',
-        timestamp: new Date().toISOString()
-      });
-    }
-    
-    // Calculate date range
-    const endDate = new Date();
-    const startDate = new Date();
-    startDate.setDate(endDate.getDate() - parseInt(period.replace('d', '')));
-    
-    // Order statistics
-    const totalOrders = await ordersCollection.countDocuments({ vendorId: new ObjectId(id) });
-    const recentOrders = await ordersCollection.countDocuments({
-      vendorId: new ObjectId(id),
-      createdAt: { $gte: startDate, $lte: endDate }
-    });
-    
-    // Order value statistics
-    const orderValueStats = await ordersCollection.aggregate([
-      { $match: { vendorId: new ObjectId(id) } },
-      { $group: { 
-        _id: null, 
-        totalValue: { $sum: '$totalAmount' },
-        averageValue: { $avg: '$totalAmount' }
-      }}
-    ]).toArray();
-    
-    // Contract statistics
-    const totalContracts = await contractsCollection.countDocuments({ vendorId: new ObjectId(id) });
-    const activeContracts = await contractsCollection.countDocuments({ 
-      vendorId: new ObjectId(id),
-      status: 'active'
-    });
-    
-    // Performance metrics
-    const performance = {
-      vendor: {
-        id: vendor._id,
-        name: vendor.name,
-        companyName: vendor.companyName,
-        rating: vendor.rating
-      },
-      orders: {
-        total: totalOrders,
-        recent: recentOrders,
-        totalValue: orderValueStats[0]?.totalValue || 0,
-        averageValue: orderValueStats[0]?.averageValue || 0
-      },
-      contracts: {
-        total: totalContracts,
-        active: activeContracts
-      },
-      period,
-      generatedAt: new Date()
-    };
-    
-    res.json({
-      success: true,
-      data: performance,
-      message: 'Vendor performance retrieved successfully',
-      timestamp: new Date().toISOString()
-    });
-  } catch (error) {
-    console.error('Get vendor performance error:', error);
-    res.status(500).json({
-      success: false,
-      error: 'GET_VENDOR_PERFORMANCE_FAILED',
-      message: 'Failed to retrieve vendor performance',
-      timestamp: new Date().toISOString()
-    });
-  }
-});
-
-// POST /api/v1/vendors/:id/rating - Rate vendor
-router.post('/:id/rating', authenticateToken, requireRole(['admin', 'vendor_manager']), vendorRateLimit, async (req, res) => {
-  try {
-    const { id } = req.params;
-    const { rating, review, criteria } = req.body;
-    
-    if (!rating || rating < 1 || rating > 5) {
-      return res.status(400).json({
-        success: false,
-        error: 'INVALID_RATING',
-        message: 'Rating must be between 1 and 5',
-        timestamp: new Date().toISOString()
-      });
-    }
-    
-    const vendorsCollection = await getCollection('partners');
-    const ratingsCollection = await getCollection('vendor_ratings');
-    
-    // Create rating record
-    const newRating = {
-      vendorId: new ObjectId(id),
-      rating: parseInt(rating),
-      review: review || null,
-      criteria: criteria || {},
-      ratedBy: req.user.userId,
-      createdAt: new Date()
-    };
-    
-    await ratingsCollection.insertOne(newRating);
-    
-    // Update vendor average rating
-    const ratings = await ratingsCollection.find({ vendorId: new ObjectId(id) }).toArray();
-    const averageRating = ratings.reduce((sum, r) => sum + r.rating, 0) / ratings.length;
-    
-    await vendorsCollection.updateOne(
-      { _id: new ObjectId(id) },
-      { $set: { rating: Math.round(averageRating * 100) / 100, updatedAt: new Date() } }
-    );
-    
-    res.json({
-      success: true,
-      data: { 
-        rating: newRating,
-        averageRating: Math.round(averageRating * 100) / 100
-      },
-      message: 'Vendor rated successfully',
-      timestamp: new Date().toISOString()
-    });
-  } catch (error) {
-    console.error('Rate vendor error:', error);
-    res.status(500).json({
-      success: false,
-      error: 'RATE_VENDOR_FAILED',
-      message: 'Failed to rate vendor',
-      timestamp: new Date().toISOString()
-    });
-  }
-});
-
-// ==================== VENDOR ANALYTICS ====================
-
-// GET /api/v1/vendors/analytics - Get vendor analytics
-router.get('/analytics', authenticateToken, requireRole(['admin', 'vendor_manager']), vendorRateLimit, async (req, res) => {
-  try {
-    const { period = '30d' } = req.query;
-    
-    const vendorsCollection = await getCollection('partners');
-    const ordersCollection = await getCollection('vendor_orders');
-    const contractsCollection = await getCollection('vendor_contracts');
-    
-    // Calculate date range
-    const endDate = new Date();
-    const startDate = new Date();
-    startDate.setDate(endDate.getDate() - parseInt(period.replace('d', '')));
-    
-    // Vendor statistics
-    const totalVendors = await vendorsCollection.countDocuments();
-    const activeVendors = await vendorsCollection.countDocuments({ status: 'active' });
-    const recentVendors = await vendorsCollection.countDocuments({
-      createdAt: { $gte: startDate, $lte: endDate }
-    });
-    
-    // Category distribution
-    const categoryStats = await vendorsCollection.aggregate([
-      { $group: { _id: '$category', count: { $sum: 1 } } },
-      { $sort: { count: -1 } }
-    ]).toArray();
-    
-    // Top vendors by value
-    const topVendors = await ordersCollection.aggregate([
-      { $group: { _id: '$vendorId', totalValue: { $sum: '$totalAmount' } } },
-      { $sort: { totalValue: -1 } },
-      { $limit: 10 }
-    ]).toArray();
-    
-    // Contract statistics
-    const totalContracts = await contractsCollection.countDocuments();
-    const activeContracts = await contractsCollection.countDocuments({ status: 'active' });
-    const expiringContracts = await contractsCollection.countDocuments({
-      endDate: { $gte: new Date(), $lte: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000) }
-    });
-    
-    const analytics = {
-      vendors: {
-        total: totalVendors,
-        active: activeVendors,
-        recent: recentVendors,
-        categories: categoryStats
-      },
-      contracts: {
-        total: totalContracts,
-        active: activeContracts,
-        expiring: expiringContracts
-      },
-      topVendors,
-      period,
-      generatedAt: new Date()
-    };
-    
-    res.json({
-      success: true,
-      data: analytics,
-      message: 'Vendor analytics retrieved successfully',
-      timestamp: new Date().toISOString()
-    });
-  } catch (error) {
-    console.error('Get vendor analytics error:', error);
-    res.status(500).json({
-      success: false,
-      error: 'GET_VENDOR_ANALYTICS_FAILED',
-      message: 'Failed to retrieve vendor analytics',
-      timestamp: new Date().toISOString()
-    });
-  }
-});
-
-// ==================== GENERIC HANDLERS ====================
-
-// GET /api/v1/vendors/overview - Get vendors overview
-router.get('/overview', authenticateToken, requireRole(['admin', 'vendor_manager']), vendorRateLimit, async (req, res) => {
-  res.json({
-    success: true,
-    message: 'Vendor Management API is running',
-    endpoints: {
-      vendors: '/api/v1/vendors',
-      contracts: '/api/v1/vendors/:id/contracts',
-      communications: '/api/v1/vendors/:id/communications',
-      performance: '/api/v1/vendors/:id/performance',
-      analytics: '/api/v1/vendors/analytics'
-    },
-    timestamp: new Date().toISOString()
-  });
-});
-
-// ==================== VENDOR CONTRACTS ENDPOINTS ====================
-
-// GET /api/v1/vendor-contracts - Get all vendor contracts
-router.get('/vendor-contracts', authenticateToken, requireRole(['admin', 'vendor_manager', 'super_admin']), vendorRateLimit, async (req, res) => {
-  try {
-    const { page = 1, limit = 50, vendorId, status, type, dateFrom, dateTo } = req.query;
-    const skip = (page - 1) * limit;
-    
-    const contractsCollection = await getCollection('vendor_contracts');
-    
-    // Build query
-    const query = {};
-    if (vendorId) query.vendorId = vendorId;
-    if (status) query.status = status;
-    if (type) query.type = type;
-    if (dateFrom || dateTo) {
-      query.startDate = {};
-      if (dateFrom) query.startDate.$gte = new Date(dateFrom);
-      if (dateTo) query.startDate.$lte = new Date(dateTo);
-    }
-    
-    const vendorContracts = await contractsCollection
-      .find(query)
-      .sort({ startDate: -1 })
-      .skip(skip)
-      .limit(parseInt(limit))
-      .toArray();
-    
-    const total = await contractsCollection.countDocuments(query);
-    
-    res.json({
-      success: true,
-      data: {
-        vendorContracts,
-        pagination: {
-          page: parseInt(page),
-          limit: parseInt(limit),
-          total,
-          pages: Math.ceil(total / limit)
-        }
-      },
-      message: 'Vendor contracts retrieved successfully',
-      timestamp: new Date().toISOString()
-    });
-  } catch (error) {
-    console.error('Get vendor contracts error:', error);
-    res.status(500).json({
-      success: false,
-      error: 'GET_VENDOR_CONTRACTS_FAILED',
-      message: 'Failed to retrieve vendor contracts',
-      timestamp: new Date().toISOString()
-    });
-  }
-});
-
-// POST /api/v1/vendor-contracts - Create new vendor contract
-router.post('/vendor-contracts', authenticateToken, requireRole(['admin', 'vendor_manager', 'super_admin']), vendorRateLimit, async (req, res) => {
-  try {
-    const {
-      vendorId,
-      contractNumber,
-      type,
-      title,
-      description,
-      startDate,
-      endDate,
-      value,
-      currency = 'USD',
-      terms,
-      status = 'draft'
-    } = req.body;
-    
-    if (!vendorId || !contractNumber || !type || !title) {
-      return res.status(400).json({
-        success: false,
-        error: 'MISSING_REQUIRED_FIELDS',
-        message: 'Vendor ID, contract number, type, and title are required',
-        timestamp: new Date().toISOString()
-      });
-    }
-    
-    const contractsCollection = await getCollection('vendor_contracts');
-    
-    const newContract = {
-      vendorId,
-      contractNumber,
-      type,
-      title,
-      description: description || null,
-      startDate: startDate ? new Date(startDate) : new Date(),
-      endDate: endDate ? new Date(endDate) : null,
-      value: value ? parseFloat(value) : null,
-      currency,
-      terms: terms || null,
-      status,
-      createdAt: new Date(),
-      updatedAt: new Date(),
-      createdBy: req.user.userId
-    };
-    
-    const result = await contractsCollection.insertOne(newContract);
-    
-    res.status(201).json({
-      success: true,
-      data: { vendorContract: { ...newContract, _id: result.insertedId } },
-      message: 'Vendor contract created successfully',
-      timestamp: new Date().toISOString()
-    });
-  } catch (error) {
-    console.error('Create vendor contract error:', error);
-    res.status(500).json({
-      success: false,
-      error: 'CREATE_VENDOR_CONTRACT_FAILED',
-      message: 'Failed to create vendor contract',
-      timestamp: new Date().toISOString()
-    });
-  }
-});
-
-// ==================== VENDOR COMMUNICATIONS ENDPOINTS ====================
-
-// GET /api/v1/vendor-communications - Get all vendor communications
-router.get('/vendor-communications', authenticateToken, requireRole(['admin', 'vendor_manager', 'super_admin']), vendorRateLimit, async (req, res) => {
-  try {
-    const { page = 1, limit = 50, vendorId, type, status, dateFrom, dateTo } = req.query;
-    const skip = (page - 1) * limit;
-    
-    const communicationsCollection = await getCollection('vendor_communications');
-    
-    // Build query
-    const query = {};
-    if (vendorId) query.vendorId = vendorId;
-    if (type) query.type = type;
-    if (status) query.status = status;
-    if (dateFrom || dateTo) {
-      query.date = {};
-      if (dateFrom) query.date.$gte = new Date(dateFrom);
-      if (dateTo) query.date.$lte = new Date(dateTo);
-    }
-    
-    const vendorCommunications = await communicationsCollection
-      .find(query)
-      .sort({ date: -1 })
-      .skip(skip)
-      .limit(parseInt(limit))
-      .toArray();
-    
-    const total = await communicationsCollection.countDocuments(query);
-    
-    res.json({
-      success: true,
-      data: {
-        vendorCommunications,
-        pagination: {
-          page: parseInt(page),
-          limit: parseInt(limit),
-          total,
-          pages: Math.ceil(total / limit)
-        }
-      },
-      message: 'Vendor communications retrieved successfully',
-      timestamp: new Date().toISOString()
-    });
-  } catch (error) {
-    console.error('Get vendor communications error:', error);
-    res.status(500).json({
-      success: false,
-      error: 'GET_VENDOR_COMMUNICATIONS_FAILED',
-      message: 'Failed to retrieve vendor communications',
-      timestamp: new Date().toISOString()
-    });
-  }
-});
-
-// POST /api/v1/vendor-communications - Create new vendor communication
-router.post('/vendor-communications', authenticateToken, requireRole(['admin', 'vendor_manager', 'super_admin']), vendorRateLimit, async (req, res) => {
-  try {
-    const {
-      vendorId,
-      type,
-      subject,
-      message,
-      date,
-      status = 'sent',
-      attachments = [],
-      followUpDate
+    const { 
+      vendorId, 
+      type, 
+      subject, 
+      message, 
+      priority, 
+      status, 
+      followUpDate, 
+      attachments 
     } = req.body;
     
     if (!vendorId || !type || !subject || !message) {
       return res.status(400).json({
         success: false,
-        error: 'MISSING_REQUIRED_FIELDS',
-        message: 'Vendor ID, type, subject, and message are required',
-        timestamp: new Date().toISOString()
+        message: 'Vendor ID, type, subject, and message are required'
       });
     }
     
-    const communicationsCollection = await getCollection('vendor_communications');
-    
-    const newCommunication = {
+    const communication = {
       vendorId,
       type,
       subject,
       message,
-      date: date ? new Date(date) : new Date(),
-      status,
-      attachments,
+      priority: priority || 'medium',
+      status: status || 'sent',
       followUpDate: followUpDate ? new Date(followUpDate) : null,
+      attachments: attachments || [],
+      createdBy: req.user.userId,
       createdAt: new Date(),
-      updatedAt: new Date(),
-      createdBy: req.user.userId
+      updatedAt: new Date()
     };
     
-    const result = await communicationsCollection.insertOne(newCommunication);
+    const result = await communicationsCollection.insertOne(communication);
+    
+    // Update vendor with communication reference
+    const vendorsCollection = await getCollection('vendors');
+    await vendorsCollection.updateOne(
+      { _id: vendorId },
+      { 
+        $push: { communications: result.insertedId },
+        $set: { updatedAt: new Date() }
+      }
+    );
     
     res.status(201).json({
       success: true,
-      data: { vendorCommunication: { ...newCommunication, _id: result.insertedId } },
-      message: 'Vendor communication created successfully',
-      timestamp: new Date().toISOString()
+      data: {
+        id: result.insertedId,
+        ...communication
+      },
+      message: 'Vendor communication created successfully'
     });
   } catch (error) {
-    console.error('Create vendor communication error:', error);
+    console.error('Error creating vendor communication:', error);
     res.status(500).json({
       success: false,
-      error: 'CREATE_VENDOR_COMMUNICATION_FAILED',
       message: 'Failed to create vendor communication',
-      timestamp: new Date().toISOString()
+      error: process.env.NODE_ENV === 'development' ? error.message : undefined
+    });
+  }
+});
+
+// PUT /api/v1/vendor-communications/:id - Update vendor communication
+router.put('/communications/:id', requireRole(['admin', 'vendor_manager', 'super_admin', 'employee']), async (req, res) => {
+  try {
+    const communicationsCollection = await getCollection('vendor_communications');
+    const { 
+      type, 
+      subject, 
+      message, 
+      priority, 
+      status, 
+      followUpDate, 
+      attachments 
+    } = req.body;
+    
+    const updateData = {
+      updatedAt: new Date()
+    };
+    
+    if (type) updateData.type = type;
+    if (subject) updateData.subject = subject;
+    if (message) updateData.message = message;
+    if (priority) updateData.priority = priority;
+    if (status) updateData.status = status;
+    if (followUpDate) updateData.followUpDate = new Date(followUpDate);
+    if (attachments) updateData.attachments = attachments;
+    
+    const result = await communicationsCollection.updateOne(
+      { _id: req.params.id },
+      { $set: updateData }
+    );
+    
+    if (result.matchedCount === 0) {
+      return res.status(404).json({
+        success: false,
+        message: 'Vendor communication not found'
+      });
+    }
+    
+    res.json({
+      success: true,
+      message: 'Vendor communication updated successfully'
+    });
+  } catch (error) {
+    console.error('Error updating vendor communication:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Failed to update vendor communication',
+      error: process.env.NODE_ENV === 'development' ? error.message : undefined
+    });
+  }
+});
+
+// GET /api/v1/vendors/analytics - Get vendors analytics
+router.get('/analytics/overview', async (req, res) => {
+  try {
+    const vendorsCollection = await getCollection('vendors');
+    const contractsCollection = await getCollection('vendor_contracts');
+    const communicationsCollection = await getCollection('vendor_communications');
+    
+    const totalVendors = await vendorsCollection.countDocuments();
+    const activeVendors = await vendorsCollection.countDocuments({ status: 'active' });
+    const inactiveVendors = await vendorsCollection.countDocuments({ status: 'inactive' });
+    
+    // Get vendors by category
+    const categoryStats = await vendorsCollection.aggregate([
+      { $group: { _id: '$category', count: { $sum: 1 } } }
+    ]).toArray();
+    
+    // Get vendors by status
+    const statusStats = await vendorsCollection.aggregate([
+      { $group: { _id: '$status', count: { $sum: 1 } } }
+    ]).toArray();
+    
+    // Get contract stats
+    const totalContracts = await contractsCollection.countDocuments();
+    const activeContracts = await contractsCollection.countDocuments({ status: 'active' });
+    const expiringContracts = await contractsCollection.countDocuments({
+      endDate: { 
+        $gte: new Date(),
+        $lte: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000) // 30 days from now
+      }
+    });
+    
+    // Get communication stats
+    const totalCommunications = await communicationsCollection.countDocuments();
+    const pendingFollowUps = await communicationsCollection.countDocuments({
+      followUpDate: { $lte: new Date() },
+      status: { $ne: 'completed' }
+    });
+    
+    res.json({
+      success: true,
+      data: {
+        overview: {
+          totalVendors,
+          activeVendors,
+          inactiveVendors
+        },
+        categoryStats,
+        statusStats,
+        contracts: {
+          totalContracts,
+          activeContracts,
+          expiringContracts
+        },
+        communications: {
+          totalCommunications,
+          pendingFollowUps
+        }
+      }
+    });
+  } catch (error) {
+    console.error('Error fetching vendors analytics:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Failed to fetch vendors analytics',
+      error: process.env.NODE_ENV === 'development' ? error.message : undefined
     });
   }
 });
