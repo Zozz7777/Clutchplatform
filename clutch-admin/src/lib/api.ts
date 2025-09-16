@@ -788,6 +788,399 @@ class ApiService {
     });
   }
 
+  // Projects API
+  async getProjects(): Promise<ApiResponse<any[]>> {
+    return this.request<any[]>("/api/v1/projects");
+  }
+
+  async getProjectById(id: string): Promise<ApiResponse<any>> {
+    return this.request<any>(`/api/v1/projects/${id}`);
+  }
+
+  async createProject(projectData: any): Promise<ApiResponse<any>> {
+    return this.request<any>("/api/v1/projects", {
+      method: "POST",
+      body: JSON.stringify(projectData),
+    });
+  }
+
+  async updateProject(id: string, projectData: any): Promise<ApiResponse<any>> {
+    return this.request<any>(`/api/v1/projects/${id}`, {
+      method: "PUT",
+      body: JSON.stringify(projectData),
+    });
+  }
+
+  async deleteProject(id: string): Promise<ApiResponse<boolean>> {
+    return this.request<boolean>(`/api/v1/projects/${id}`, {
+      method: "DELETE",
+    });
+  }
+
+  async getProjectTasks(projectId: string): Promise<ApiResponse<any[]>> {
+    return this.request<any[]>(`/api/v1/projects/${projectId}/tasks`);
+  }
+
+  async addProjectTask(projectId: string, taskData: any): Promise<ApiResponse<any>> {
+    return this.request<any>(`/api/v1/projects/${projectId}/tasks`, {
+      method: "POST",
+      body: JSON.stringify(taskData),
+    });
+  }
+
+  async updateProjectTask(projectId: string, taskId: string, taskData: any): Promise<ApiResponse<any>> {
+    return this.request<any>(`/api/v1/projects/${projectId}/tasks/${taskId}`, {
+      method: "PUT",
+      body: JSON.stringify(taskData),
+    });
+  }
+
+  async deleteProjectTask(projectId: string, taskId: string): Promise<ApiResponse<boolean>> {
+    return this.request<boolean>(`/api/v1/projects/${projectId}/tasks/${taskId}`, {
+      method: "DELETE",
+    });
+  }
+
+  async getProjectTimeTracking(projectId: string): Promise<ApiResponse<any[]>> {
+    return this.request<any[]>(`/api/v1/projects/${projectId}/time-tracking`);
+  }
+
+  async addTimeEntry(projectId: string, timeData: any): Promise<ApiResponse<any>> {
+    return this.request<any>(`/api/v1/projects/${projectId}/time-tracking`, {
+      method: "POST",
+      body: JSON.stringify(timeData),
+    });
+  }
+
+  // Reports API
+  async getReports(): Promise<ApiResponse<any[]>> {
+    return this.request<any[]>("/api/v1/reports");
+  }
+
+  async getReportById(id: string): Promise<ApiResponse<any>> {
+    return this.request<any>(`/api/v1/reports/${id}`);
+  }
+
+  async createReport(reportData: any): Promise<ApiResponse<any>> {
+    return this.request<any>("/api/v1/reports", {
+      method: "POST",
+      body: JSON.stringify(reportData),
+    });
+  }
+
+  async updateReport(id: string, reportData: any): Promise<ApiResponse<any>> {
+    return this.request<any>(`/api/v1/reports/${id}`, {
+      method: "PUT",
+      body: JSON.stringify(reportData),
+    });
+  }
+
+  async deleteReport(id: string): Promise<ApiResponse<boolean>> {
+    return this.request<boolean>(`/api/v1/reports/${id}`, {
+      method: "DELETE",
+    });
+  }
+
+  async generateReport(reportData: any): Promise<ApiResponse<any>> {
+    return this.request<any>("/api/v1/reports/generate", {
+      method: "POST",
+      body: JSON.stringify(reportData),
+    });
+  }
+
+  async getReportTemplates(): Promise<ApiResponse<any[]>> {
+    return this.request<any[]>("/api/v1/reports/templates");
+  }
+
+  async createReportTemplate(templateData: any): Promise<ApiResponse<any>> {
+    return this.request<any>("/api/v1/reports/templates", {
+      method: "POST",
+      body: JSON.stringify(templateData),
+    });
+  }
+
+  // CRM API
+  async getCustomers(): Promise<ApiResponse<any[]>> {
+    return this.request<any[]>("/api/crm/customers");
+  }
+
+  async getCustomerById(id: string): Promise<ApiResponse<any>> {
+    return this.request<any>(`/api/crm/customers/${id}`);
+  }
+
+  async createCustomer(customerData: any): Promise<ApiResponse<any>> {
+    return this.request<any>("/api/crm/customers", {
+      method: "POST",
+      body: JSON.stringify(customerData),
+    });
+  }
+
+  async getLeads(): Promise<ApiResponse<any[]>> {
+    return this.request<any[]>("/api/crm/leads");
+  }
+
+  async getSales(): Promise<ApiResponse<any[]>> {
+    return this.request<any[]>("/api/crm/sales");
+  }
+
+  async getTickets(): Promise<ApiResponse<any[]>> {
+    return this.request<any[]>("/api/crm/tickets");
+  }
+
+  async createTicket(ticketData: any): Promise<ApiResponse<any>> {
+    return this.request<any>("/api/crm/tickets", {
+      method: "POST",
+      body: JSON.stringify(ticketData),
+    });
+  }
+
+  async getCRMAnalytics(): Promise<ApiResponse<any>> {
+    return this.request<any>("/api/crm/analytics");
+  }
+
+  // Finance API
+  async getPayments(): Promise<ApiResponse<any[]>> {
+    return this.request<any[]>("/api/finance/payments");
+  }
+
+  async getPaymentById(id: string): Promise<ApiResponse<any>> {
+    return this.request<any>(`/api/finance/payments/${id}`);
+  }
+
+  async createPayment(paymentData: any): Promise<ApiResponse<any>> {
+    return this.request<any>("/api/finance/payments", {
+      method: "POST",
+      body: JSON.stringify(paymentData),
+    });
+  }
+
+  async getInvoices(): Promise<ApiResponse<any[]>> {
+    return this.request<any[]>("/api/finance/invoices");
+  }
+
+  async createInvoice(invoiceData: any): Promise<ApiResponse<any>> {
+    return this.request<any>("/api/finance/invoices", {
+      method: "POST",
+      body: JSON.stringify(invoiceData),
+    });
+  }
+
+  async getSubscriptions(): Promise<ApiResponse<any[]>> {
+    return this.request<any[]>("/api/finance/subscriptions");
+  }
+
+  async getFinanceMetrics(): Promise<ApiResponse<any>> {
+    return this.request<any>("/api/finance/metrics");
+  }
+
+  async getFinanceAnalytics(): Promise<ApiResponse<any>> {
+    return this.request<any>("/api/finance/analytics");
+  }
+
+  // Chat API
+  async getMessages(): Promise<ApiResponse<any[]>> {
+    return this.request<any[]>("/api/chat/messages");
+  }
+
+  async getMessageById(id: string): Promise<ApiResponse<any>> {
+    return this.request<any>(`/api/chat/messages/${id}`);
+  }
+
+  async sendMessage(messageData: any): Promise<ApiResponse<any>> {
+    return this.request<any>("/api/chat/messages", {
+      method: "POST",
+      body: JSON.stringify(messageData),
+    });
+  }
+
+  async updateMessage(id: string, messageData: any): Promise<ApiResponse<any>> {
+    return this.request<any>(`/api/chat/messages/${id}`, {
+      method: "PUT",
+      body: JSON.stringify(messageData),
+    });
+  }
+
+  async deleteMessage(id: string): Promise<ApiResponse<boolean>> {
+    return this.request<boolean>(`/api/chat/messages/${id}`, {
+      method: "DELETE",
+    });
+  }
+
+  async getChannels(): Promise<ApiResponse<any[]>> {
+    return this.request<any[]>("/api/chat/channels");
+  }
+
+  async createChannel(channelData: any): Promise<ApiResponse<any>> {
+    return this.request<any>("/api/chat/channels", {
+      method: "POST",
+      body: JSON.stringify(channelData),
+    });
+  }
+
+  async getChatAnalytics(): Promise<ApiResponse<any>> {
+    return this.request<any>("/api/chat/analytics");
+  }
+
+  // Settings API
+  async getSettings(): Promise<ApiResponse<any[]>> {
+    return this.request<any[]>("/api/settings");
+  }
+
+  async updateSettings(settings: any[]): Promise<ApiResponse<any>> {
+    return this.request<any>("/api/settings", {
+      method: "PUT",
+      body: JSON.stringify({ settings }),
+    });
+  }
+
+  async getSettingsByCategory(category: string): Promise<ApiResponse<any[]>> {
+    return this.request<any[]>(`/api/settings/${category}`);
+  }
+
+  async updateSetting(category: string, key: string, value: any): Promise<ApiResponse<any>> {
+    return this.request<any>(`/api/settings/${category}/${key}`, {
+      method: "PUT",
+      body: JSON.stringify({ value }),
+    });
+  }
+
+  async getUserPreferences(): Promise<ApiResponse<any>> {
+    return this.request<any>("/api/settings/user/preferences");
+  }
+
+  async updateUserPreferences(preferences: any): Promise<ApiResponse<any>> {
+    return this.request<any>("/api/settings/user/preferences", {
+      method: "PUT",
+      body: JSON.stringify({ preferences }),
+    });
+  }
+
+  async getSystemConfig(): Promise<ApiResponse<any>> {
+    return this.request<any>("/api/settings/system/config");
+  }
+
+  async updateSystemConfig(config: any): Promise<ApiResponse<any>> {
+    return this.request<any>("/api/settings/system/config", {
+      method: "PUT",
+      body: JSON.stringify({ config }),
+    });
+  }
+
+  async getSettingsAnalytics(): Promise<ApiResponse<any>> {
+    return this.request<any>("/api/settings/analytics");
+  }
+
+  // Integrations API
+  async getIntegrations(): Promise<ApiResponse<any[]>> {
+    return this.request<any[]>("/api/integrations");
+  }
+
+  async getIntegrationById(id: string): Promise<ApiResponse<any>> {
+    return this.request<any>(`/api/integrations/${id}`);
+  }
+
+  async createIntegration(integrationData: any): Promise<ApiResponse<any>> {
+    return this.request<any>("/api/integrations", {
+      method: "POST",
+      body: JSON.stringify(integrationData),
+    });
+  }
+
+  async updateIntegration(id: string, integrationData: any): Promise<ApiResponse<any>> {
+    return this.request<any>(`/api/integrations/${id}`, {
+      method: "PUT",
+      body: JSON.stringify(integrationData),
+    });
+  }
+
+  async deleteIntegration(id: string): Promise<ApiResponse<boolean>> {
+    return this.request<boolean>(`/api/integrations/${id}`, {
+      method: "DELETE",
+    });
+  }
+
+  async testIntegration(id: string): Promise<ApiResponse<any>> {
+    return this.request<any>(`/api/integrations/${id}/test`, {
+      method: "POST",
+    });
+  }
+
+  async getIntegrationTemplates(): Promise<ApiResponse<any[]>> {
+    return this.request<any[]>("/api/integrations/templates");
+  }
+
+  async getIntegrationAnalytics(): Promise<ApiResponse<any>> {
+    return this.request<any>("/api/integrations/analytics");
+  }
+
+  // Audit Trail API
+  async getAuditLogs(): Promise<ApiResponse<any[]>> {
+    return this.request<any[]>("/api/audit-trail");
+  }
+
+  async getAuditLogById(id: string): Promise<ApiResponse<any>> {
+    return this.request<any>(`/api/audit-trail/${id}`);
+  }
+
+  async createAuditLog(auditData: any): Promise<ApiResponse<any>> {
+    return this.request<any>("/api/audit-trail", {
+      method: "POST",
+      body: JSON.stringify(auditData),
+    });
+  }
+
+  async getSecurityAuditLogs(): Promise<ApiResponse<any[]>> {
+    return this.request<any[]>("/api/audit-trail/security");
+  }
+
+  async getUserActivityLogs(): Promise<ApiResponse<any[]>> {
+    return this.request<any[]>("/api/audit-trail/user-activity");
+  }
+
+  async getAuditAnalytics(): Promise<ApiResponse<any>> {
+    return this.request<any>("/api/audit-trail/analytics");
+  }
+
+  async getComplianceLogs(): Promise<ApiResponse<any[]>> {
+    return this.request<any[]>("/api/audit-trail/compliance");
+  }
+
+  async exportAuditLogs(format: string = 'json'): Promise<ApiResponse<any>> {
+    return this.request<any>(`/api/audit-trail/export?format=${format}`);
+  }
+
+  // System Health API
+  async getSystemHealth(): Promise<ApiResponse<any>> {
+    return this.request<any>("/api/v1/system-health");
+  }
+
+  async getDetailedSystemHealth(): Promise<ApiResponse<any>> {
+    return this.request<any>("/api/v1/system-health/detailed");
+  }
+
+  async getAPIPerformance(): Promise<ApiResponse<any>> {
+    return this.request<any>("/api/v1/system-health/api-performance");
+  }
+
+  async getDatabaseHealth(): Promise<ApiResponse<any>> {
+    return this.request<any>("/api/v1/system-health/database");
+  }
+
+  async getServicesHealth(): Promise<ApiResponse<any>> {
+    return this.request<any>("/api/v1/system-health/services");
+  }
+
+  async getSystemLogs(): Promise<ApiResponse<any>> {
+    return this.request<any>("/api/v1/system-health/logs");
+  }
+
+  async testServiceConnection(service: string): Promise<ApiResponse<any>> {
+    return this.request<any>("/api/v1/system-health/test-connection", {
+      method: "POST",
+      body: JSON.stringify({ service }),
+    });
+  }
+
   // WebSocket connection for real-time updates
   connectWebSocket(): WebSocket | null {
     if (typeof window === "undefined") return null;

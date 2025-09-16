@@ -47,6 +47,8 @@ import {
   User,
   Award,
   Handshake,
+  Package,
+  Wrench,
 } from "lucide-react";
 import { formatCurrency } from "@/lib/utils";
 import { productionApi } from "@/lib/production-api";
