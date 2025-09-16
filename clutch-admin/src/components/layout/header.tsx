@@ -87,7 +87,7 @@ export function Header({ onMenuToggle }: HeaderProps) {
           variant="ghost"
           size="icon"
           onClick={onMenuToggle}
-          className="md:hidden hover:bg-muted"
+          className="md:hidden hover:bg-muted focus:ring-2 focus:ring-ring focus:ring-offset-2"
         >
           <Menu className="h-5 w-5" />
         </Button>
@@ -115,7 +115,7 @@ export function Header({ onMenuToggle }: HeaderProps) {
         {/* Notifications */}
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
-            <Button variant="ghost" size="icon" className="relative">
+            <Button variant="ghost" size="icon" className="relative hover:bg-muted focus:ring-2 focus:ring-ring focus:ring-offset-2">
               <Bell className="h-5 w-5" />
               {notifications.length > 0 && (
                 <Badge
@@ -141,7 +141,7 @@ export function Header({ onMenuToggle }: HeaderProps) {
                 </div>
               ) : (
                 notifications.map((notification) => (
-                  <DropdownMenuItem key={notification.id} className="flex flex-col items-start p-3">
+                  <DropdownMenuItem key={notification.id} className="flex flex-col items-start p-3 hover:bg-muted focus:bg-muted">
                     <div className="flex items-center justify-between w-full">
                       <span className="font-medium">{notification.title}</span>
                       <span className="text-xs text-muted-foreground">
@@ -161,7 +161,7 @@ export function Header({ onMenuToggle }: HeaderProps) {
         {/* User Menu */}
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
-            <Button variant="ghost" className="flex items-center space-x-2">
+            <Button variant="ghost" className="flex items-center space-x-2 hover:bg-muted focus:ring-2 focus:ring-ring focus:ring-offset-2">
               <div className="w-8 h-8 rounded-full bg-primary flex items-center justify-center">
                 <User className="h-4 w-4 text-primary-foreground" />
               </div>
@@ -174,16 +174,16 @@ export function Header({ onMenuToggle }: HeaderProps) {
           <DropdownMenuContent align="end" className="w-56">
             <DropdownMenuLabel>{t('header.myAccount')}</DropdownMenuLabel>
             <DropdownMenuSeparator />
-            <DropdownMenuItem onClick={handleProfileClick}>
+            <DropdownMenuItem onClick={handleProfileClick} className="hover:bg-muted focus:bg-muted">
               <User className="mr-2 h-4 w-4" />
               <span>{t('header.profile')}</span>
             </DropdownMenuItem>
-            <DropdownMenuItem onClick={handleSettingsClick}>
+            <DropdownMenuItem onClick={handleSettingsClick} className="hover:bg-muted focus:bg-muted">
               <Settings className="mr-2 h-4 w-4" />
               <span>{t('header.settings')}</span>
             </DropdownMenuItem>
             <DropdownMenuSeparator />
-            <DropdownMenuItem onClick={handleLogout}>
+            <DropdownMenuItem onClick={handleLogout} className="hover:bg-muted focus:bg-muted">
               <LogOut className="mr-2 h-4 w-4" />
               <span>{t('auth.logout')}</span>
             </DropdownMenuItem>

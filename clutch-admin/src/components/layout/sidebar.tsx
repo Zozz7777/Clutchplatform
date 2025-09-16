@@ -116,10 +116,10 @@ export function Sidebar({ isCollapsed, onToggle }: SidebarProps) {
                 {hasChildren ? (
                   <div
                     className={cn(
-                      "flex items-center px-3 py-2 text-sm font-medium rounded-lg cursor-pointer transition-colors font-sans",
+                      "flex items-center px-3 py-2 text-sm font-medium rounded-lg cursor-pointer transition-all duration-200 ease-in-out font-sans focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 focus:ring-offset-sidebar",
                       isActive
                         ? "bg-sidebar-primary text-white shadow-sm"
-                        : "text-foreground hover:bg-sidebar-primary/10",
+                        : "text-foreground hover:bg-sidebar-primary/10 hover:text-sidebar-primary active:bg-sidebar-primary/20",
                       isCollapsed && "justify-center"
                     )}
                     onClick={() => {
@@ -144,10 +144,10 @@ export function Sidebar({ isCollapsed, onToggle }: SidebarProps) {
                   <Link
                     href={item.href}
                     className={cn(
-                      "flex items-center px-3 py-2 text-sm font-medium rounded-lg cursor-pointer transition-colors font-sans",
+                      "flex items-center px-3 py-2 text-sm font-medium rounded-lg cursor-pointer transition-all duration-200 ease-in-out font-sans focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 focus:ring-offset-sidebar",
                       isActive
                         ? "bg-sidebar-primary text-white shadow-sm"
-                        : "text-foreground hover:bg-sidebar-primary/10",
+                        : "text-foreground hover:bg-sidebar-primary/10 hover:text-sidebar-primary active:bg-sidebar-primary/20",
                       isCollapsed && "justify-center"
                     )}
                   >
@@ -171,10 +171,10 @@ export function Sidebar({ isCollapsed, onToggle }: SidebarProps) {
                           key={child.href}
                           href={child.href}
                           className={cn(
-                            "block px-3 py-2 text-sm rounded-lg transition-colors font-sans",
+                            "block px-3 py-2 text-sm rounded-lg transition-all duration-200 ease-in-out font-sans focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 focus:ring-offset-sidebar",
                             isChildActive
                               ? "bg-sidebar-primary text-white shadow-sm"
-                              : "text-foreground hover:bg-sidebar-primary/10"
+                              : "text-foreground hover:bg-sidebar-primary/10 hover:text-sidebar-primary active:bg-sidebar-primary/20"
                           )}
                         >
                           {child.title}
@@ -200,7 +200,7 @@ export function Sidebar({ isCollapsed, onToggle }: SidebarProps) {
         {/* Toggle Button */}
         <button
           onClick={onToggle}
-          className="w-full flex items-center justify-center px-3 py-2 text-sm font-medium text-foreground hover:bg-sidebar-primary/10 rounded-lg transition-colors font-sans"
+          className="w-full flex items-center justify-center px-3 py-2 text-sm font-medium text-foreground hover:bg-sidebar-primary/10 rounded-lg transition-all duration-200 ease-in-out font-sans focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 focus:ring-offset-sidebar"
         >
           {isCollapsed ? (
             <ChevronRight className="w-4 h-4" />
