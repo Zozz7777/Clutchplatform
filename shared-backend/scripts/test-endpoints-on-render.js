@@ -21,7 +21,7 @@ const keyEndpoints = [
     method: 'POST', 
     name: 'Auth Login', 
     requiresAuth: false, 
-    body: JSON.stringify({ email: 'test@example.com', password: 'testpassword' })
+    body: JSON.stringify({ email: 'ziad@yourclutch.com', password: '4955698*Z*z' })
   },
   { 
     path: '/api/v1/auth/register', 
@@ -29,8 +29,8 @@ const keyEndpoints = [
     name: 'Auth Register', 
     requiresAuth: false, 
     body: JSON.stringify({ 
-      email: 'test@example.com', 
-      password: 'testpassword', 
+      email: 'testuser@example.com', 
+      password: 'TestPassword123!', 
       firstName: 'Test', 
       lastName: 'User' 
     })
@@ -82,10 +82,15 @@ function testEndpoint(endpoint) {
         // Consider 401 as expected for auth-required endpoints
         const isSuccess = res.statusCode >= 200 && res.statusCode < 400;
         const isExpectedAuthError = endpoint.requiresAuth && res.statusCode === 401;
+        const isLoginSuccess = endpoint.path.includes('/login') && res.statusCode === 200;
+        const isRegisterSuccess = endpoint.path.includes('/register') && (res.statusCode === 200 || res.statusCode === 201);
         
-        if (isSuccess || isExpectedAuthError) {
+        if (isSuccess || isExpectedAuthError || isLoginSuccess || isRegisterSuccess) {
           testResults.successful++;
-          const status = isExpectedAuthError ? '401 (Expected - Auth Required)' : res.statusCode;
+          let status = res.statusCode;
+          if (isExpectedAuthError) status = '401 (Expected - Auth Required)';
+          if (isLoginSuccess) status = '200 (Login Success)';
+          if (isRegisterSuccess) status = `${res.statusCode} (Register Success)`;
           console.log(`✅ ${endpoint.name} (${endpoint.method} ${endpoint.path}) - Status: ${status}`);
         } else {
           testResults.failed++;
