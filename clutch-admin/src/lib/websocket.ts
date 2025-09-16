@@ -71,6 +71,7 @@ export class WebSocketService {
 
         if (!this.token) {
           this.isConnecting = false;
+          console.log('🔌 No token found, skipping WebSocket connection');
           reject(new Error('No authentication token available'));
           return;
         }
@@ -79,8 +80,19 @@ export class WebSocketService {
         console.log('🔌 Attempting WebSocket connection to:', wsUrl.replace(this.token, '[TOKEN]'));
         this.ws = new WebSocket(wsUrl);
 
+        // Set connection timeout
+        const connectionTimeout = setTimeout(() => {
+          if (this.ws?.readyState === WebSocket.CONNECTING) {
+            console.log('🔌 WebSocket connection timeout');
+            this.ws.close();
+            this.isConnecting = false;
+            reject(new Error('WebSocket connection timeout'));
+          }
+        }, 10000); // 10 second timeout
+
         this.ws.onopen = () => {
-          console.log('🔌 WebSocket connected');
+          console.log('🔌 WebSocket connected successfully');
+          clearTimeout(connectionTimeout);
           this.isConnecting = false;
           this.reconnectAttempts = 0;
           this.eventHandlers.onConnect?.();
@@ -97,6 +109,7 @@ export class WebSocketService {
         };
 
         this.ws.onclose = (event) => {
+          clearTimeout(connectionTimeout);
           console.log('🔌 WebSocket disconnected:', {
             code: event.code,
             reason: event.reason,
@@ -108,12 +121,14 @@ export class WebSocketService {
           this.isConnecting = false;
           this.eventHandlers.onDisconnect?.();
           
-          if (!event.wasClean && this.reconnectAttempts < this.maxReconnectAttempts) {
+          // Only attempt reconnect for unexpected disconnections
+          if (!event.wasClean && event.code !== 1000 && this.reconnectAttempts < this.maxReconnectAttempts) {
             this.scheduleReconnect();
           }
         };
 
         this.ws.onerror = (error) => {
+          clearTimeout(connectionTimeout);
           console.error('🔌 WebSocket error:', {
             error,
             readyState: this.ws?.readyState,
