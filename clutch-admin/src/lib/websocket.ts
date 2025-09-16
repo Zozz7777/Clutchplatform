@@ -123,6 +123,12 @@ export class WebSocketService {
       case 'analytics_update':
         this.eventHandlers.onAnalyticsUpdate?.(message.data);
         break;
+      case 'connection':
+        // Connection confirmation message - handled silently
+        break;
+      case 'pong':
+        // Pong response - handled silently
+        break;
       default:
         console.log('Unknown message type:', message.type);
     }

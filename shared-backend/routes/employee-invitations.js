@@ -481,7 +481,7 @@ router.get('/validate-invitation/:token', async (req, res) => {
 });
 
 // DELETE /api/v1/employees/invitations/:id - Cancel invitation
-router.delete('/invitations/:id', authenticateToken, requireRole(['admin', 'hr']), async (req, res) => {
+router.delete('/invitations/:id', authenticateToken, requireRole(['admin', 'hr', 'super_admin', 'hr_manager']), async (req, res) => {
   try {
     const { id } = req.params;
     const invitationsCollection = await getCollection('employee_invitations');
@@ -546,7 +546,7 @@ router.delete('/invitations/:id', authenticateToken, requireRole(['admin', 'hr']
 });
 
 // POST /api/v1/employees/invitations/:id/resend - Resend invitation
-router.post('/invitations/:id/resend', authenticateToken, requireRole(['admin', 'hr']), async (req, res) => {
+router.post('/invitations/:id/resend', authenticateToken, requireRole(['admin', 'hr', 'super_admin', 'hr_manager']), async (req, res) => {
   try {
     const { id } = req.params;
     const invitationsCollection = await getCollection('employee_invitations');
