@@ -126,7 +126,8 @@ export default function LoginPage() {
 
             <Button 
               type="submit" 
-              className="w-full h-12 text-base font-medium bg-primary text-primary-foreground hover:bg-primary/90 focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed" 
+              size="lg"
+              className="w-full h-12 text-base font-medium focus:ring-2 focus:ring-ring focus:ring-offset-2" 
               disabled={isLoading}
             >
               {isLoading ? (
