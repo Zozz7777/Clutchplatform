@@ -139,10 +139,17 @@ export function RealtimeProvider({ children }: { children: React.ReactNode }) {
   useEffect(() => {
     if (!isAuthLoading) {
       if (user && !isConnected && !isConnecting) {
-        // Add a small delay to ensure token is stored after login
+        // Add a delay and check for token availability before connecting
         const connectTimer = setTimeout(() => {
-          connect();
-        }, 100);
+          // Check if token is available before attempting connection
+          const token = localStorage.getItem("clutch-admin-token") || sessionStorage.getItem("clutch-admin-token");
+          if (token) {
+            console.log('🔌 Token found, attempting WebSocket connection...');
+            connect();
+          } else {
+            console.warn('🔌 No token found, skipping WebSocket connection');
+          }
+        }, 500); // Increased delay to 500ms
         
         return () => clearTimeout(connectTimer);
       } else if (!user && isConnected) {

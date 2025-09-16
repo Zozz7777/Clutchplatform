@@ -61,6 +61,14 @@ export class WebSocketService {
                     (apiService.getTokenStatus().hasToken ? 
                       localStorage.getItem("clutch-admin-token") : null);
 
+        console.log('🔌 WebSocket token check:', {
+          hasToken: !!this.token,
+          tokenPreview: this.token ? `${this.token.substring(0, 20)}...` : 'none',
+          localStorage: localStorage.getItem("clutch-admin-token") ? 'exists' : 'missing',
+          sessionStorage: sessionStorage.getItem("clutch-admin-token") ? 'exists' : 'missing',
+          apiServiceStatus: apiService.getTokenStatus()
+        });
+
         if (!this.token) {
           this.isConnecting = false;
           reject(new Error('No authentication token available'));
@@ -89,7 +97,14 @@ export class WebSocketService {
         };
 
         this.ws.onclose = (event) => {
-          console.log('🔌 WebSocket disconnected:', event.code, event.reason);
+          console.log('🔌 WebSocket disconnected:', {
+            code: event.code,
+            reason: event.reason,
+            wasClean: event.wasClean,
+            url: wsUrl.replace(this.token || '', '[TOKEN]'),
+            hasToken: !!this.token,
+            tokenPreview: this.token ? `${this.token.substring(0, 20)}...` : 'none'
+          });
           this.isConnecting = false;
           this.eventHandlers.onDisconnect?.();
           
@@ -99,7 +114,13 @@ export class WebSocketService {
         };
 
         this.ws.onerror = (error) => {
-          console.error('🔌 WebSocket error:', error);
+          console.error('🔌 WebSocket error:', {
+            error,
+            readyState: this.ws?.readyState,
+            url: wsUrl.replace(this.token || '', '[TOKEN]'),
+            hasToken: !!this.token,
+            tokenPreview: this.token ? `${this.token.substring(0, 20)}...` : 'none'
+          });
           this.isConnecting = false;
           this.eventHandlers.onError?.(error);
           reject(error);
