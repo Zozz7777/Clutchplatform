@@ -72,6 +72,8 @@ module.exports = {
         "2xl": "1rem",       // 16px
         "3xl": "1.5rem",     // 24px
         full: "9999px",
+        // Override default Tailwind values to match design system
+        DEFAULT: "0.625rem", // Use design system base as default
       },
       boxShadow: {
         "2xs": "0 1px 3px 0px hsl(0 0% 0% / 0.05)",
