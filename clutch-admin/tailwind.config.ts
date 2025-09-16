@@ -35,7 +35,10 @@ const config: Config = {
         },
         border: "var(--border)",
         input: "var(--input)",
-        ring: "var(--ring)",
+        ring: {
+          DEFAULT: "var(--ring)",
+          ring: "var(--ring-ring)",
+        },
         sidebar: {
           DEFAULT: "var(--sidebar)",
           primary: "var(--sidebar-primary)",
