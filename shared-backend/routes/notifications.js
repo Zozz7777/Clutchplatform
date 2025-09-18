@@ -1,13 +1,12 @@
 const express = require('express');
 const router = express.Router();
 const { authenticateToken, checkRole } = require('../middleware/unified-auth');
-const { connectToDatabase } = require('../config/database-unified');
+const { getCollection } = require('../config/optimized-database');
 
 // GET /api/v1/notifications - Get all notifications for the authenticated user
 router.get('/', authenticateToken, async (req, res) => {
   try {
-    const { db } = await connectToDatabase();
-    const notificationsCollection = db.collection('notifications');
+    const notificationsCollection = await getCollection('notifications');
     
     // Get notifications for the current user
     const notifications = await notificationsCollection
@@ -39,8 +38,7 @@ router.get('/', authenticateToken, async (req, res) => {
 // GET /api/v1/notifications/all - Get all notifications (including read ones)
 router.get('/all', authenticateToken, async (req, res) => {
   try {
-    const { db } = await connectToDatabase();
-    const notificationsCollection = db.collection('notifications');
+    const notificationsCollection = await getCollection('notifications');
     
     const { page = 1, limit = 20 } = req.query;
     const skip = (page - 1) * limit;
@@ -92,8 +90,7 @@ router.post('/', authenticateToken, checkRole(['head_administrator', 'admin']), 
       });
     }
 
-    const { db } = await connectToDatabase();
-    const notificationsCollection = db.collection('notifications');
+    const notificationsCollection = await getCollection('notifications');
     
     const notification = {
       title,
@@ -129,8 +126,7 @@ router.post('/', authenticateToken, checkRole(['head_administrator', 'admin']), 
 router.put('/:id/read', authenticateToken, async (req, res) => {
   try {
     const { id } = req.params;
-    const { db } = await connectToDatabase();
-    const notificationsCollection = db.collection('notifications');
+    const notificationsCollection = await getCollection('notifications');
     
     const result = await notificationsCollection.updateOne(
       { 
@@ -172,8 +168,7 @@ router.put('/:id/read', authenticateToken, async (req, res) => {
 // PUT /api/v1/notifications/read-all - Mark all notifications as read
 router.put('/read-all', authenticateToken, async (req, res) => {
   try {
-    const { db } = await connectToDatabase();
-    const notificationsCollection = db.collection('notifications');
+    const notificationsCollection = await getCollection('notifications');
     
     const result = await notificationsCollection.updateMany(
       { 
@@ -209,8 +204,7 @@ router.put('/read-all', authenticateToken, async (req, res) => {
 router.delete('/:id', authenticateToken, checkRole(['head_administrator', 'admin']), async (req, res) => {
   try {
     const { id } = req.params;
-    const { db } = await connectToDatabase();
-    const notificationsCollection = db.collection('notifications');
+    const notificationsCollection = await getCollection('notifications');
     
     const result = await notificationsCollection.deleteOne({
       _id: new require('mongodb').ObjectId(id)
@@ -243,8 +237,7 @@ router.delete('/:id', authenticateToken, checkRole(['head_administrator', 'admin
 // GET /api/v1/notifications/stats - Get notification statistics
 router.get('/stats', authenticateToken, async (req, res) => {
   try {
-    const { db } = await connectToDatabase();
-    const notificationsCollection = db.collection('notifications');
+    const notificationsCollection = await getCollection('notifications');
     
     const userId = req.user.userId || req.user.id;
     

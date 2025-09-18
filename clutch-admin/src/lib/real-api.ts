@@ -548,7 +548,7 @@ export class RealApiService {
   async getSystemPerformanceMetrics(): Promise<any> {
     return withErrorHandling(
       async () => {
-        const response = await apiService.request<any>("/api/v1/system/performance");
+        const response = await apiService.request<any>("/api/v1/system-health/performance");
         return handleApiResponse(response, 'getSystemPerformanceMetrics', {
           uptime: 99.9,
           requestRate: 1234,

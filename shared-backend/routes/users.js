@@ -7,7 +7,7 @@ const { getCollection } = require('../config/optimized-database');
 // GET /users - Get all users
 router.get('/', authenticateToken, checkRole(['head_administrator']), async (req, res) => {
   try {
-    const { db } = await getCollection('users');
+    const usersCollection = await getCollection('users');
     const { page = 1, limit = 20, status, role } = req.query;
     const skip = (page - 1) * limit;
     
@@ -16,14 +16,14 @@ router.get('/', authenticateToken, checkRole(['head_administrator']), async (req
     if (status) filter.status = status;
     if (role) filter.role = role;
     
-    const users = await db
+    const users = await usersCollection
       .find(filter)
       .sort({ createdAt: -1 })
       .skip(skip)
       .limit(parseInt(limit))
       .toArray();
     
-    const total = await db.countDocuments(filter);
+    const total = await usersCollection.countDocuments(filter);
     
     res.paginated(users, page, limit, total, 'Users retrieved successfully');
   } catch (error) {
@@ -36,9 +36,9 @@ router.get('/', authenticateToken, checkRole(['head_administrator']), async (req
 router.get('/:id', authenticateToken, checkRole(['head_administrator']), async (req, res) => {
   try {
     const { id } = req.params;
-    const { db } = await getCollection('users');
+    const usersCollection = await getCollection('users');
     
-    const user = await db.findOne({ _id: id });
+    const user = await usersCollection.findOne({ _id: id });
     
     if (!user) {
       return res.notFound('User', id);
@@ -64,10 +64,10 @@ router.post('/', authenticateToken, checkRole(['head_administrator']), async (re
       ]);
     }
     
-    const { db } = await getCollection('users');
+    const usersCollection = await getCollection('users');
     
     // Check if user already exists
-    const existingUser = await db.findOne({ email });
+    const existingUser = await usersCollection.findOne({ email });
     if (existingUser) {
       return res.conflict('User with this email already exists');
     }
@@ -82,7 +82,7 @@ router.post('/', authenticateToken, checkRole(['head_administrator']), async (re
       lastLogin: null
     };
     
-    const result = await db.insertOne(newUser);
+    const result = await usersCollection.insertOne(newUser);
     newUser._id = result.insertedId;
     
     res.status(201).success(newUser, 'User created successfully');
@@ -98,17 +98,17 @@ router.put('/:id', authenticateToken, checkRole(['head_administrator']), async (
     const { id } = req.params;
     const { name, email, role, status } = req.body;
     
-    const { db } = await getCollection('users');
+    const usersCollection = await getCollection('users');
     
     // Check if user exists
-    const existingUser = await db.findOne({ _id: id });
+    const existingUser = await usersCollection.findOne({ _id: id });
     if (!existingUser) {
       return res.notFound('User', id);
     }
     
     // Check if email is being changed and if it already exists
     if (email && email !== existingUser.email) {
-      const emailExists = await db.findOne({ email, _id: { $ne: id } });
+      const emailExists = await usersCollection.findOne({ email, _id: { $ne: id } });
       if (emailExists) {
         return res.conflict('Email already exists for another user');
       }
@@ -122,7 +122,7 @@ router.put('/:id', authenticateToken, checkRole(['head_administrator']), async (
       updatedAt: new Date().toISOString()
     };
     
-    const result = await db.updateOne(
+    const result = await usersCollection.updateOne(
       { _id: id },
       { $set: updateData }
     );
@@ -131,7 +131,7 @@ router.put('/:id', authenticateToken, checkRole(['head_administrator']), async (
       return res.notFound('User', id);
     }
     
-    const updatedUser = await db.findOne({ _id: id });
+    const updatedUser = await usersCollection.findOne({ _id: id });
     
     res.success(updatedUser, 'User updated successfully');
   } catch (error) {
@@ -145,10 +145,10 @@ router.delete('/:id', authenticateToken, checkRole(['head_administrator']), asyn
   try {
     const { id } = req.params;
     
-    const { db } = await getCollection('users');
+    const usersCollection = await getCollection('users');
     
     // Check if user exists
-    const existingUser = await db.findOne({ _id: id });
+    const existingUser = await usersCollection.findOne({ _id: id });
     if (!existingUser) {
       return res.notFound('User', id);
     }
@@ -158,7 +158,7 @@ router.delete('/:id', authenticateToken, checkRole(['head_administrator']), asyn
       return res.error('CANNOT_DELETE_SELF', 'Cannot delete your own account', 400);
     }
     
-    const result = await db.deleteOne({ _id: id });
+    const result = await usersCollection.deleteOne({ _id: id });
     
     if (result.deletedCount === 0) {
       return res.notFound('User', id);

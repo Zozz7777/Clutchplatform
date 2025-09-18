@@ -13,6 +13,49 @@ const { rateLimit: createRateLimit } = require('../middleware/rateLimit');
 // Apply rate limiting
 const employeeRateLimit = createRateLimit({ windowMs: 15 * 60 * 1000, max: 20 }); // 20 attempts per 15 minutes
 
+// ==================== EMPLOYEE INVITATIONS ====================
+
+// GET /api/v1/employees/invitations - Get all employee invitations
+router.get('/invitations', authenticateToken, checkRole(['head_administrator', 'hr']), async (req, res) => {
+  try {
+    const invitationsCollection = await getCollection('employee_invitations');
+    const { page = 1, limit = 20, status } = req.query;
+    const skip = (page - 1) * limit;
+    
+    const filter = {};
+    if (status) filter.status = status;
+    
+    const invitations = await invitationsCollection
+      .find(filter)
+      .sort({ createdAt: -1 })
+      .skip(skip)
+      .limit(parseInt(limit))
+      .toArray();
+    
+    const total = await invitationsCollection.countDocuments(filter);
+    
+    res.json({
+      success: true,
+      data: invitations,
+      pagination: {
+        page: parseInt(page),
+        limit: parseInt(limit),
+        total,
+        pages: Math.ceil(total / parseInt(limit))
+      },
+      timestamp: new Date().toISOString()
+    });
+  } catch (error) {
+    console.error('Get employee invitations error:', error);
+    res.status(500).json({
+      success: false,
+      error: 'GET_EMPLOYEE_INVITATIONS_FAILED',
+      message: 'Failed to retrieve employee invitations',
+      timestamp: new Date().toISOString()
+    });
+  }
+});
+
 // ==================== EMPLOYEE REGISTRATION ====================
 
 // POST /api/v1/employees/register - Register new employee (admin only)
