@@ -48,7 +48,7 @@ export function Sidebar({ isCollapsed, onToggle }: SidebarProps) {
   return (
     <div
       className={cn(
-        "flex flex-col h-full bg-sidebar border-r border-border transition-all duration-300 font-sans",
+        "flex flex-col h-full bg-sidebar border-r border-border transition-all duration-300 font-sans focus-within:ring-2 focus-within:ring-ring focus-within:ring-offset-2 focus-within:ring-offset-background",
         isCollapsed ? "w-16" : "w-64"
       )}
     >
