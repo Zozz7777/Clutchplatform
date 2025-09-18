@@ -1,7 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const { authenticateToken, requireRole } = require('../middleware/auth');
-const { checkRole, checkPermission } = require('../middleware/rbac');
+const { authenticateToken, checkRole, checkPermission } = require('../middleware/unified-auth');
 const { getCollection } = require('../config/optimized-database');
 const rateLimit = require('express-rate-limit');
 
@@ -352,6 +351,103 @@ router.get('/metrics', async (req, res) => {
       success: false,
       message: 'Failed to fetch finance metrics',
       error: process.env.NODE_ENV === 'development' ? error.message : undefined
+    });
+  }
+});
+
+// ===== FINANCE EXPENSES =====
+
+// GET /api/finance/expenses - Get all expenses
+router.get('/expenses', async (req, res) => {
+  try {
+    const expensesCollection = await getCollection('expenses');
+    const { page = 1, limit = 10, category, status, dateFrom, dateTo } = req.query;
+    
+    const filter = {};
+    if (category) filter.category = category;
+    if (status) filter.status = status;
+    if (dateFrom || dateTo) {
+      filter.createdAt = {};
+      if (dateFrom) filter.createdAt.$gte = new Date(dateFrom);
+      if (dateTo) filter.createdAt.$lte = new Date(dateTo);
+    }
+    
+    const skip = (parseInt(page) - 1) * parseInt(limit);
+    
+    const expenses = await expensesCollection
+      .find(filter)
+      .skip(skip)
+      .limit(parseInt(limit))
+      .sort({ createdAt: -1 })
+      .toArray();
+    
+    const total = await expensesCollection.countDocuments(filter);
+    
+    res.json({
+      success: true,
+      data: expenses,
+      pagination: {
+        page: parseInt(page),
+        limit: parseInt(limit),
+        total,
+        pages: Math.ceil(total / parseInt(limit))
+      },
+      message: 'Expenses retrieved successfully',
+      timestamp: new Date().toISOString()
+    });
+  } catch (error) {
+    console.error('Error fetching expenses:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Failed to fetch expenses',
+      error: process.env.NODE_ENV === 'development' ? error.message : undefined,
+      timestamp: new Date().toISOString()
+    });
+  }
+});
+
+// POST /api/finance/expenses - Create new expense
+router.post('/expenses', checkRole(['head_administrator', 'admin']), async (req, res) => {
+  try {
+    const { amount, category, description, vendor, status = 'pending' } = req.body;
+    
+    if (!amount || !category || !description) {
+      return res.status(400).json({
+        success: false,
+        message: 'Amount, category, and description are required',
+        timestamp: new Date().toISOString()
+      });
+    }
+    
+    const expensesCollection = await getCollection('expenses');
+    
+    const newExpense = {
+      amount: parseFloat(amount),
+      category,
+      description,
+      vendor: vendor || null,
+      status,
+      createdBy: req.user.userId || req.user.id,
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString()
+    };
+    
+    const result = await expensesCollection.insertOne(newExpense);
+    newExpense._id = result.insertedId;
+    
+    res.status(201).json({
+      success: true,
+      data: newExpense,
+      message: 'Expense created successfully',
+      timestamp: new Date().toISOString()
+    });
+  } catch (error) {
+    console.error('Error creating expense:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Failed to create expense',
+      error: process.env.NODE_ENV === 'development' ? error.message : undefined,
+      timestamp: new Date().toISOString()
     });
   }
 });

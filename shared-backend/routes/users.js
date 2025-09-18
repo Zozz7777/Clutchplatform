@@ -1,7 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const { authenticateToken, requireRole } = require('../middleware/auth');
-const { checkRole, checkPermission } = require('../middleware/rbac');
+const { authenticateToken, checkRole, checkPermission } = require('../middleware/unified-auth');
 const logger = require('../utils/logger');
 const { getCollection } = require('../config/optimized-database');
 
@@ -58,12 +57,11 @@ router.post('/', authenticateToken, checkRole(['head_administrator']), async (re
     const { name, email, role, status = 'active' } = req.body;
     
     if (!name || !email || !role) {
-      return res.status(400).json({
-        success: false,
-        error: 'MISSING_REQUIRED_FIELDS',
-        message: 'Name, email, and role are required',
-        timestamp: new Date().toISOString()
-      });
+      return res.validationError([
+        { field: 'name', message: 'Name is required' },
+        { field: 'email', message: 'Email is required' },
+        { field: 'role', message: 'Role is required' }
+      ]);
     }
     
     const { db } = await getCollection('users');
@@ -71,12 +69,7 @@ router.post('/', authenticateToken, checkRole(['head_administrator']), async (re
     // Check if user already exists
     const existingUser = await db.findOne({ email });
     if (existingUser) {
-      return res.status(409).json({
-        success: false,
-        error: 'USER_ALREADY_EXISTS',
-        message: 'User with this email already exists',
-        timestamp: new Date().toISOString()
-      });
+      return res.conflict('User with this email already exists');
     }
     
     const newUser = {
@@ -92,15 +85,10 @@ router.post('/', authenticateToken, checkRole(['head_administrator']), async (re
     const result = await db.insertOne(newUser);
     newUser._id = result.insertedId;
     
-    res.status(201).json({ 
-      success: true, 
-      data: newUser, 
-      message: 'User created successfully', 
-      timestamp: new Date().toISOString() 
-    });
+    res.status(201).success(newUser, 'User created successfully');
   } catch (error) {
     logger.error('Create user error:', error);
-    res.status(500).json({ success: false, error: 'CREATE_USER_FAILED', message: 'Failed to create user', timestamp: new Date().toISOString() });
+    res.serverError('Failed to create user', error.message);
   }
 });
 
@@ -115,24 +103,14 @@ router.put('/:id', authenticateToken, checkRole(['head_administrator']), async (
     // Check if user exists
     const existingUser = await db.findOne({ _id: id });
     if (!existingUser) {
-      return res.status(404).json({
-        success: false,
-        error: 'USER_NOT_FOUND',
-        message: 'User not found',
-        timestamp: new Date().toISOString()
-      });
+      return res.notFound('User', id);
     }
     
     // Check if email is being changed and if it already exists
     if (email && email !== existingUser.email) {
       const emailExists = await db.findOne({ email, _id: { $ne: id } });
       if (emailExists) {
-        return res.status(409).json({
-          success: false,
-          error: 'EMAIL_ALREADY_EXISTS',
-          message: 'Email already exists for another user',
-          timestamp: new Date().toISOString()
-        });
+        return res.conflict('Email already exists for another user');
       }
     }
     
@@ -150,25 +128,15 @@ router.put('/:id', authenticateToken, checkRole(['head_administrator']), async (
     );
     
     if (result.matchedCount === 0) {
-      return res.status(404).json({
-        success: false,
-        error: 'USER_NOT_FOUND',
-        message: 'User not found',
-        timestamp: new Date().toISOString()
-      });
+      return res.notFound('User', id);
     }
     
     const updatedUser = await db.findOne({ _id: id });
     
-    res.json({ 
-      success: true, 
-      data: updatedUser, 
-      message: 'User updated successfully', 
-      timestamp: new Date().toISOString() 
-    });
+    res.success(updatedUser, 'User updated successfully');
   } catch (error) {
     logger.error('Update user error:', error);
-    res.status(500).json({ success: false, error: 'UPDATE_USER_FAILED', message: 'Failed to update user', timestamp: new Date().toISOString() });
+    res.serverError('Failed to update user', error.message);
   }
 });
 
@@ -182,44 +150,24 @@ router.delete('/:id', authenticateToken, checkRole(['head_administrator']), asyn
     // Check if user exists
     const existingUser = await db.findOne({ _id: id });
     if (!existingUser) {
-      return res.status(404).json({
-        success: false,
-        error: 'USER_NOT_FOUND',
-        message: 'User not found',
-        timestamp: new Date().toISOString()
-      });
+      return res.notFound('User', id);
     }
     
     // Prevent deletion of the current user
     if (id === (req.user.userId || req.user.id)) {
-      return res.status(400).json({
-        success: false,
-        error: 'CANNOT_DELETE_SELF',
-        message: 'Cannot delete your own account',
-        timestamp: new Date().toISOString()
-      });
+      return res.error('CANNOT_DELETE_SELF', 'Cannot delete your own account', 400);
     }
     
     const result = await db.deleteOne({ _id: id });
     
     if (result.deletedCount === 0) {
-      return res.status(404).json({
-        success: false,
-        error: 'USER_NOT_FOUND',
-        message: 'User not found',
-        timestamp: new Date().toISOString()
-      });
+      return res.notFound('User', id);
     }
     
-    res.json({ 
-      success: true, 
-      data: { id }, 
-      message: 'User deleted successfully', 
-      timestamp: new Date().toISOString() 
-    });
+    res.success({ id }, 'User deleted successfully');
   } catch (error) {
     logger.error('Delete user error:', error);
-    res.status(500).json({ success: false, error: 'DELETE_USER_FAILED', message: 'Failed to delete user', timestamp: new Date().toISOString() });
+    res.serverError('Failed to delete user', error.message);
   }
 });
 

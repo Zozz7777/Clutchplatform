@@ -1,0 +1,13 @@
+---
+description: "Force Cursor to always complete all requested tasks in one pass without pausing for confirmation."
+globs: ["**/*"]
+alwaysApply: true
+---
+
+# Rule: Full Task Completion
+When executing instructions:
+- Always finish **all subtasks in one go**, even if they are long or multi-step.  
+- Do **not pause or stop mid-task** with prompts like “Ready to continue?” or “Would you like me to focus on a specific area?”.  
+- Assume the user wants the **entire scope of work completed upfront**.  
+- If a task is too large, break it into structured sections but still complete **all sections** in the same response.  
+- Only stop early if the task is impossible or requires missing context. Otherwise, **always deliver a full, final solution**.  

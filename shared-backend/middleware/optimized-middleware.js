@@ -67,13 +67,16 @@ const optimizedCORS = cors({
         'https://admin.yourclutch.com',
         'https://yourclutch.com',
         'https://www.yourclutch.com',
+        'https://clutch-main-nk7x.onrender.com', // Add the actual frontend URL
+        'https://clutch-platform-frontend.onrender.com', // Alternative frontend URL
         process.env.ADMIN_URL,
-        process.env.BACKEND_URL
+        process.env.BACKEND_URL,
+        process.env.FRONTEND_URL
       ].filter(Boolean)
     : true,
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With', 'Accept', 'Origin'],
+  allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With', 'Accept', 'Origin', 'X-CSRF-Token'],
   exposedHeaders: ['X-Total-Count', 'X-Page-Count'],
   maxAge: 86400 // 24 hours cache
 });
