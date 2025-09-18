@@ -1,7 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const { authenticateToken, requireRole } = require('../middleware/auth');
-const { checkRole, checkPermission } = require('../middleware/rbac');
+const { authenticateToken, checkRole, checkPermission } = require('../middleware/unified-auth');
 const { getCollection } = require('../config/database');
 const { ObjectId } = require('mongodb');
 const { logger } = require('../config/logger');

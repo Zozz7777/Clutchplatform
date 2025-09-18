@@ -5,8 +5,7 @@
 
 const express = require('express');
 const router = express.Router();
-const { authenticateToken, requireRole } = require('../middleware/auth');
-const { checkRole, checkPermission } = require('../middleware/rbac');
+const { authenticateToken, checkRole, checkPermission } = require('../middleware/unified-auth');
 const { getCollection } = require('../config/optimized-database');
 
 // GET /api/v1/export/dashboard - Export dashboard data

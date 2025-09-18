@@ -7,8 +7,7 @@ const express = require('express');
 const bcrypt = require('bcryptjs');
 const router = express.Router();
 const { getCollection } = require('../config/optimized-database');
-const { authenticateToken, requireRole } = require('../middleware/auth');
-const { checkRole, checkPermission } = require('../middleware/rbac');
+const { authenticateToken, checkRole, checkPermission } = require('../middleware/unified-auth');
 const { rateLimit: createRateLimit } = require('../middleware/rateLimit');
 
 // Apply rate limiting

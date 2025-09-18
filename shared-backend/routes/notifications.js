@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const { authenticateToken, checkRole } = require('../middleware/rbac');
+const { authenticateToken, checkRole } = require('../middleware/unified-auth');
 const { connectToDatabase } = require('../config/database-unified');
 
 // GET /api/v1/notifications - Get all notifications for the authenticated user
