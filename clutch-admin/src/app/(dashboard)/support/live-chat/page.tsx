@@ -70,28 +70,31 @@ export default function LiveChatPage() {
       const messages = await productionApi.getChatMessages(sessionId);
       setMessages(messages);
       
-      // Set up WebSocket connection for real-time updates with retry logic and polling fallback
-      const wsService = new WebSocketService('https://clutch-main-nk7x.onrender.com');
-      
-      await wsService.connect({
-        onConnect: () => {
-          logger.log('WebSocket connected for chat session:', sessionId);
-        },
-        onMessage: (message) => {
-          if (message.type === 'new_message') {
-            setMessages(prev => [...prev, message.data]);
+      // Only set up WebSocket connection on client side
+      if (typeof window !== 'undefined') {
+        // Set up WebSocket connection for real-time updates with retry logic and polling fallback
+        const wsService = new WebSocketService('https://clutch-main-nk7x.onrender.com');
+        
+        await wsService.connect({
+          onConnect: () => {
+            logger.log('WebSocket connected for chat session:', sessionId);
+          },
+          onMessage: (message) => {
+            if (message.type === 'new_message') {
+              setMessages(prev => [...prev, message.data]);
+            }
+          },
+          onDisconnect: () => {
+            logger.log('WebSocket disconnected for chat session:', sessionId);
+          },
+          onError: (error) => {
+            logger.error('WebSocket error:', error);
           }
-        },
-        onDisconnect: () => {
-          logger.log('WebSocket disconnected for chat session:', sessionId);
-        },
-        onError: (error) => {
-          logger.error('WebSocket error:', error);
-        }
-      });
+        });
 
-      // Store WebSocket service for cleanup
-      setWebSocketService(wsService);
+        // Store WebSocket service for cleanup
+        setWebSocketService(wsService);
+      }
       
     } catch (error) {
       logger.error('Error fetching messages:', error);

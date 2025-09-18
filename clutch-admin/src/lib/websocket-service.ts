@@ -65,7 +65,10 @@ class WebSocketService {
   private connectionStatus: 'connecting' | 'connected' | 'disconnected' | 'error' = 'disconnected';
 
   constructor() {
-    this.connect();
+    // Only connect on client side
+    if (typeof window !== 'undefined') {
+      this.connect();
+    }
   }
 
   private connect(): void {
@@ -253,8 +256,32 @@ class WebSocketService {
   }
 }
 
-// Create singleton instance
-export const websocketService = new WebSocketService();
+// Create singleton instance only on client side
+export const websocketService = (() => {
+  if (typeof window === 'undefined') {
+    // Return a mock service for SSR
+    return {
+      subscribe: () => () => {},
+      send: () => {},
+      getConnectionStatus: () => 'disconnected',
+      isConnected: () => false,
+      disconnect: () => {},
+      subscribeToSystemHealth: () => () => {},
+      subscribeToPerformanceMetrics: () => () => {},
+      subscribeToNotifications: () => () => {},
+      subscribeToChatMessages: () => () => {},
+      subscribeToFleetUpdates: () => () => {},
+      subscribeToUserUpdates: () => () => {},
+      subscribeToPaymentUpdates: () => () => {},
+      sendChatMessage: () => {},
+      requestSystemHealth: () => {},
+      requestPerformanceMetrics: () => {},
+      requestFleetUpdates: () => {},
+      requestUserUpdates: () => {}
+    } as any;
+  }
+  return new WebSocketService();
+})();
 
 // Export for use in components
 export default websocketService;
