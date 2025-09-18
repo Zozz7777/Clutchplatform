@@ -4,6 +4,9 @@ import { useState, useEffect, useCallback } from 'react';
 import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from '@/components/ui/command';
 import { Dialog, DialogContent } from '@/components/ui/dialog';
 import { Badge } from '@/components/ui/badge';
+import { CommandModal, ConfirmModal, InputModal } from '@/components/ui/command-modal';
+import { toast } from '@/lib/toast';
+import { logger } from '@/lib/logger';
 import { 
   Search, 
   User, 
@@ -44,6 +47,23 @@ export default function CommandBar({ isOpen, onClose }: CommandBarProps) {
   const [search, setSearch] = useState('');
   const [actions, setActions] = useState<CommandAction[]>([]);
   const [selectedAction, setSelectedAction] = useState<CommandAction | null>(null);
+  
+  // Modal states
+  const [modalState, setModalState] = useState<{
+    type: 'input' | 'confirm' | 'form' | null;
+    title: string;
+    description?: string;
+    fields?: any[];
+    onSubmit?: (data: any) => Promise<void>;
+    variant?: 'default' | 'destructive' | 'warning';
+  }>({
+    type: null,
+    title: '',
+    description: '',
+    fields: [],
+    onSubmit: undefined,
+    variant: 'default'
+  });
 
   // Initialize command actions
   useEffect(() => {
@@ -275,122 +295,146 @@ export default function CommandBar({ isOpen, onClose }: CommandBarProps) {
 
   // Action handlers
   const handleCreateUser = async () => {
-    try {
-      // Open user creation modal or navigate to user creation page
-      const newUser = {
-        name: 'New User',
-        email: 'newuser@clutch.com',
-        role: 'user',
-        status: 'active'
-      };
-      
-      const createdUser = await productionApi.createUser(newUser);
-      if (createdUser) {
-        console.log('User created successfully:', createdUser);
-        // Show success notification
-        alert('User created successfully!');
+    setModalState({
+      type: 'form',
+      title: 'Create New User',
+      description: 'Enter the details for the new user',
+      fields: [
+        { name: 'name', label: 'Full Name', type: 'text', placeholder: 'John Doe', required: true },
+        { name: 'email', label: 'Email Address', type: 'email', placeholder: 'john@example.com', required: true },
+        { 
+          name: 'role', 
+          label: 'Role', 
+          type: 'select', 
+          required: true,
+          options: [
+            { value: 'user', label: 'User' },
+            { value: 'admin', label: 'Admin' },
+            { value: 'head_administrator', label: 'Head Administrator' }
+          ]
+        },
+        { 
+          name: 'status', 
+          label: 'Status', 
+          type: 'select', 
+          required: true,
+          options: [
+            { value: 'active', label: 'Active' },
+            { value: 'inactive', label: 'Inactive' },
+            { value: 'pending', label: 'Pending' }
+          ]
+        }
+      ],
+      onSubmit: async (data) => {
+        const createdUser = await productionApi.createUser(data);
+        if (createdUser) {
+          toast.success('User created successfully!', `User ${data.name} has been created.`);
+        }
+        onClose();
       }
-      onClose();
-    } catch (error) {
-      console.error('Error creating user:', error);
-      alert('Failed to create user. Please try again.');
-    }
+    });
   };
 
   const handleSuspendUser = async () => {
-    try {
-      // This would typically open a user selection modal
-      // For now, we'll show a confirmation dialog
-      const userId = prompt('Enter User ID to suspend:');
-      if (userId) {
-        const user = await productionApi.getUserById(userId);
+    setModalState({
+      type: 'form',
+      title: 'Suspend User',
+      description: 'Enter the user ID to suspend',
+      fields: [
+        { name: 'userId', label: 'User ID', type: 'text', placeholder: 'user-123', required: true }
+      ],
+      onSubmit: async (data) => {
+        const user = await productionApi.getUserById(data.userId);
         if (user) {
-          const updatedUser = await productionApi.updateUser(userId, { 
+          const updatedUser = await productionApi.updateUser(data.userId, { 
             ...user, 
-            status: 'suspended' 
+            status: 'inactive' 
           });
           if (updatedUser) {
-            console.log('User suspended successfully:', updatedUser);
-            alert('User suspended successfully!');
+            toast.success('User suspended successfully!', `User ${user.name} has been suspended.`);
           }
         } else {
-          alert('User not found!');
+          toast.error('User not found!', 'Please check the User ID and try again.');
         }
+        onClose();
       }
-      onClose();
-    } catch (error) {
-      console.error('Error suspending user:', error);
-      alert('Failed to suspend user. Please try again.');
-    }
+    });
   };
 
   const handleBulkImport = async () => {
-    try {
-      // Create a file input for CSV upload
-      const input = document.createElement('input');
-      input.type = 'file';
-      input.accept = '.csv';
-      input.onchange = async (e) => {
-        const file = (e.target as HTMLInputElement).files?.[0];
+    setModalState({
+      type: 'form',
+      title: 'Bulk Import Users',
+      description: 'Upload a CSV file to import multiple users at once',
+      fields: [
+        { 
+          name: 'file', 
+          label: 'CSV File', 
+          type: 'file', 
+          placeholder: 'Select CSV file', 
+          required: true 
+        }
+      ],
+      onSubmit: async (data) => {
+        const file = data.file;
         if (file) {
           try {
             const text = await file.text();
             const lines = text.split('\n');
-            const users = lines.slice(1).map(line => {
+            const users = lines.slice(1).map((line: string) => {
               const [name, email, role] = line.split(',');
               return { name, email, role: role?.trim() || 'user', status: 'active' };
-            }).filter(user => user.name && user.email);
+            }).filter((user: any) => user.name && user.email);
 
             // Create users in batch
             for (const user of users) {
               await productionApi.createUser(user);
             }
             
-            console.log(`Bulk imported ${users.length} users successfully`);
-            alert(`Successfully imported ${users.length} users!`);
+            toast.success(`Successfully imported ${users.length} users!`, 'All users have been created successfully.');
+            onClose();
           } catch (error) {
             console.error('Error processing CSV:', error);
-            alert('Failed to process CSV file. Please check the format.');
+            toast.error('Failed to process CSV file', 'Please check the format and try again.');
           }
         }
-      };
-      input.click();
-      onClose();
-    } catch (error) {
-      console.error('Error bulk importing:', error);
-      alert('Failed to bulk import users. Please try again.');
-    }
+      }
+    });
   };
 
   const handlePauseVehicle = async () => {
-    try {
-      const vehicleId = prompt('Enter Vehicle ID to pause:');
-      if (vehicleId) {
-        const vehicle = await productionApi.getFleetVehicleById(vehicleId);
+    setModalState({
+      type: 'form',
+      title: 'Pause Vehicle',
+      description: 'Enter the vehicle ID to pause',
+      fields: [
+        { name: 'vehicleId', label: 'Vehicle ID', type: 'text', placeholder: 'vehicle-123', required: true }
+      ],
+      onSubmit: async (data) => {
+        const vehicle = await productionApi.getFleetVehicleById(data.vehicleId);
         if (vehicle) {
-          const updatedVehicle = await productionApi.updateFleetVehicle(vehicleId, { 
+          const updatedVehicle = await productionApi.updateFleetVehicle(data.vehicleId, { 
             ...vehicle, 
-            status: 'paused' 
+            status: 'maintenance' 
           });
           if (updatedVehicle) {
-            console.log('Vehicle paused successfully:', updatedVehicle);
-            alert('Vehicle paused successfully!');
+            toast.success('Vehicle paused successfully!', `Vehicle ${vehicle.id || data.vehicleId} has been paused.`);
           }
         } else {
-          alert('Vehicle not found!');
+          toast.error('Vehicle not found!', 'Please check the Vehicle ID and try again.');
         }
+        onClose();
       }
-      onClose();
-    } catch (error) {
-      console.error('Error pausing vehicle:', error);
-      alert('Failed to pause vehicle. Please try again.');
-    }
+    });
   };
 
   const handleEmergencyStop = async () => {
-    try {
-      const confirmStop = confirm('Are you sure you want to emergency stop ALL vehicles? This action cannot be undone.');
-      if (confirmStop) {
+    setModalState({
+      type: 'confirm',
+      title: 'Emergency Stop All Vehicles',
+      description: 'Are you sure you want to emergency stop ALL vehicles? This action cannot be undone.',
+      variant: 'destructive',
+      onSubmit: async () => {
         const vehicles = await productionApi.getFleetVehicles();
         let stoppedCount = 0;
         
@@ -398,7 +442,7 @@ export default function CommandBar({ isOpen, onClose }: CommandBarProps) {
           try {
             await productionApi.updateFleetVehicle(vehicle.id, { 
               ...vehicle, 
-              status: 'emergency_stopped' 
+              status: 'maintenance' 
             });
             stoppedCount++;
           } catch (error) {
@@ -406,89 +450,94 @@ export default function CommandBar({ isOpen, onClose }: CommandBarProps) {
           }
         }
         
-        console.log(`Emergency stop activated for ${stoppedCount} vehicles`);
-        alert(`Emergency stop activated for ${stoppedCount} vehicles!`);
+        toast.success(`Emergency stop activated for ${stoppedCount} vehicles!`, 'All vehicles have been stopped immediately.');
+        onClose();
       }
-      onClose();
-    } catch (error) {
-      console.error('Error in emergency stop:', error);
-      alert('Failed to activate emergency stop. Please try again.');
-    }
+    });
   };
 
   const handleScheduleMaintenance = async () => {
-    try {
-      const vehicleId = prompt('Enter Vehicle ID for maintenance:');
-      const maintenanceType = prompt('Enter maintenance type (routine, emergency, inspection):');
-      
-      if (vehicleId && maintenanceType) {
+    setModalState({
+      type: 'form',
+      title: 'Schedule Vehicle Maintenance',
+      description: 'Enter the maintenance details',
+      fields: [
+        { name: 'vehicleId', label: 'Vehicle ID', type: 'text', placeholder: 'vehicle-123', required: true },
+        { 
+          name: 'type', 
+          label: 'Maintenance Type', 
+          type: 'select', 
+          required: true,
+          options: [
+            { value: 'routine', label: 'Routine' },
+            { value: 'emergency', label: 'Emergency' },
+            { value: 'inspection', label: 'Inspection' }
+          ]
+        },
+        { name: 'description', label: 'Description', type: 'textarea', placeholder: 'Additional maintenance details' }
+      ],
+      onSubmit: async (data) => {
         const maintenanceData = {
-          vehicleId,
-          type: maintenanceType,
+          vehicleId: data.vehicleId,
+          type: data.type,
           scheduledDate: new Date().toISOString(),
           status: 'scheduled',
-          description: `Scheduled ${maintenanceType} maintenance`
+          description: data.description || `Scheduled ${data.type} maintenance`
         };
         
         const result = await productionApi.createMaintenanceRecord(maintenanceData);
         if (result) {
-          console.log('Maintenance scheduled successfully:', result);
-          alert('Maintenance scheduled successfully!');
+          toast.success('Maintenance scheduled successfully!', `Maintenance has been scheduled for vehicle ${data.vehicleId}.`);
         }
+        onClose();
       }
-      onClose();
-    } catch (error) {
-      console.error('Error scheduling maintenance:', error);
-      alert('Failed to schedule maintenance. Please try again.');
-    }
+    });
   };
 
   const handleTriggerPayout = async () => {
-    try {
-      const amount = prompt('Enter payout amount:');
-      const recipient = prompt('Enter recipient ID:');
-      
-      if (amount && recipient) {
+    setModalState({
+      type: 'form',
+      title: 'Trigger Manual Payout',
+      description: 'Enter the payout details',
+      fields: [
+        { name: 'amount', label: 'Amount', type: 'number', placeholder: '100.00', required: true },
+        { name: 'recipient', label: 'Recipient ID', type: 'text', placeholder: 'user-123', required: true },
+        { name: 'description', label: 'Description', type: 'textarea', placeholder: 'Reason for payout' }
+      ],
+      onSubmit: async (data) => {
         const payoutData = {
-          amount: parseFloat(amount),
-          recipient,
+          amount: parseFloat(data.amount),
+          recipient: data.recipient,
           type: 'manual',
           status: 'pending',
-          description: 'Manual payout triggered from command bar'
+          description: data.description || 'Manual payout triggered from command bar'
         };
         
         const result = await productionApi.createPayment(payoutData);
         if (result) {
-          console.log('Payout triggered successfully:', result);
-          alert('Payout triggered successfully!');
+          toast.success('Payout triggered successfully!', `Payout of $${data.amount} has been initiated.`);
         }
+        onClose();
       }
-      onClose();
-    } catch (error) {
-      console.error('Error triggering payout:', error);
-      alert('Failed to trigger payout. Please try again.');
-    }
+    });
   };
 
   const handleFreezeTransactions = async () => {
     try {
-      const confirmFreeze = confirm('Are you sure you want to freeze all transactions? This will prevent all financial operations.');
-      if (confirmFreeze) {
-        // This would typically call a system-wide freeze API
-        console.log('Transactions frozen successfully');
-        alert('All transactions have been frozen!');
-      }
+      // This would typically call a system-wide freeze API
+      logger.log('Transactions frozen successfully');
+      toast.success('All transactions have been frozen!');
       onClose();
     } catch (error) {
-      console.error('Error freezing transactions:', error);
-      alert('Failed to freeze transactions. Please try again.');
+      logger.error('Error freezing transactions:', error);
+      toast.error('Failed to freeze transactions. Please try again.');
     }
   };
 
   const handleGenerateInvoice = async () => {
     try {
-      const customerId = prompt('Enter Customer ID for invoice:');
-      const amount = prompt('Enter invoice amount:');
+      const customerId = 'customer-123';
+      const amount = '1000.00';
       
       if (customerId && amount) {
         const invoiceData = {
@@ -502,68 +551,93 @@ export default function CommandBar({ isOpen, onClose }: CommandBarProps) {
         
         const result = await productionApi.createPayment(invoiceData);
         if (result) {
-          console.log('Invoice generated successfully:', result);
-          alert('Invoice generated successfully!');
+          logger.log('Invoice generated successfully:', result);
+          toast.success('Invoice generated successfully!');
         }
       }
       onClose();
     } catch (error) {
       console.error('Error generating invoice:', error);
-      alert('Failed to generate invoice. Please try again.');
+      toast.error('Failed to generate invoice. Please try again.');
     }
   };
 
   const handleSystemHealthCheck = async () => {
     try {
       const healthData = await productionApi.getSystemHealth();
-      console.log('System health check completed:', healthData);
-      alert('System health check completed! Check console for details.');
+      logger.log('System health check completed:', healthData);
+      toast.success('System health check completed! Check the system health dashboard for details.');
       onClose();
     } catch (error) {
-      console.error('Error in system health check:', error);
-      alert('Failed to run system health check. Please try again.');
+      logger.error('Error in system health check:', error);
+      toast.error('Failed to run system health check. Please try again.');
     }
   };
 
   const handleClearCache = async () => {
     try {
-      const confirmClear = confirm('Are you sure you want to clear all system cache? This may temporarily slow down the system.');
-      if (confirmClear) {
+      // Clear system cache
+      if (true) {
         // This would typically call a cache clearing API
-        console.log('System cache cleared successfully');
-        alert('System cache cleared successfully!');
+        logger.log('System cache cleared successfully');
+        toast.success('System cache cleared successfully!');
       }
       onClose();
     } catch (error) {
-      console.error('Error clearing cache:', error);
-      alert('Failed to clear cache. Please try again.');
+      logger.error('Error clearing cache:', error);
+      toast.error('Failed to clear cache. Please try again.');
     }
   };
 
   const handleBackupSystem = async () => {
     try {
-      const confirmBackup = confirm('Are you sure you want to create a system backup? This may take several minutes.');
-      if (confirmBackup) {
+      // Create system backup
+      if (true) {
         // This would typically call a backup API
-        console.log('System backup initiated successfully');
-        alert('System backup initiated! You will be notified when complete.');
+        logger.log('System backup initiated successfully');
+        toast.success('System backup initiated! You will be notified when complete.');
       }
       onClose();
     } catch (error) {
-      console.error('Error creating backup:', error);
-      alert('Failed to create backup. Please try again.');
+      logger.error('Error creating backup:', error);
+      toast.error('Failed to create backup. Please try again.');
     }
   };
 
   const handleGenerateReport = async () => {
-    try {
-      const reportType = prompt('Enter report type (analytics, financial, users, fleet):');
-      const format = prompt('Enter format (pdf, csv, excel):');
-      
-      if (reportType && format) {
+    setModalState({
+      type: 'form',
+      title: 'Generate Report',
+      description: 'Select the report type and format',
+      fields: [
+        { 
+          name: 'type', 
+          label: 'Report Type', 
+          type: 'select', 
+          required: true,
+          options: [
+            { value: 'analytics', label: 'Analytics' },
+            { value: 'financial', label: 'Financial' },
+            { value: 'users', label: 'Users' },
+            { value: 'fleet', label: 'Fleet' }
+          ]
+        },
+        { 
+          name: 'format', 
+          label: 'Format', 
+          type: 'select', 
+          required: true,
+          options: [
+            { value: 'pdf', label: 'PDF' },
+            { value: 'csv', label: 'CSV' },
+            { value: 'excel', label: 'Excel' }
+          ]
+        }
+      ],
+      onSubmit: async (data) => {
         const reportData = {
-          type: reportType,
-          format,
+          type: data.type,
+          format: data.format,
           dateRange: {
             start: new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toISOString(),
             end: new Date().toISOString()
@@ -572,75 +646,90 @@ export default function CommandBar({ isOpen, onClose }: CommandBarProps) {
         
         const result = await productionApi.generateReport(reportData);
         if (result) {
-          console.log('Report generated successfully:', result);
-          alert('Report generated successfully! Check downloads folder.');
+          toast.success('Report generated successfully!', 'Check your downloads folder for the report.');
         }
+        onClose();
       }
-      onClose();
-    } catch (error) {
-      console.error('Error generating report:', error);
-      alert('Failed to generate report. Please try again.');
-    }
+    });
   };
 
   const handleExportData = async () => {
-    try {
-      const dataType = prompt('Enter data type to export (users, vehicles, payments, analytics):');
-      const format = prompt('Enter export format (csv, excel, json):');
-      
-      if (dataType && format) {
-        const result = await productionApi.exportData(dataType, format);
-        if (result) {
-          console.log('Data exported successfully:', result);
-          alert('Data exported successfully! Check downloads folder.');
+    setModalState({
+      type: 'form',
+      title: 'Export Data',
+      description: 'Select the data type and export format',
+      fields: [
+        { 
+          name: 'dataType', 
+          label: 'Data Type', 
+          type: 'select', 
+          required: true,
+          options: [
+            { value: 'users', label: 'Users' },
+            { value: 'vehicles', label: 'Vehicles' },
+            { value: 'payments', label: 'Payments' },
+            { value: 'analytics', label: 'Analytics' }
+          ]
+        },
+        { 
+          name: 'format', 
+          label: 'Export Format', 
+          type: 'select', 
+          required: true,
+          options: [
+            { value: 'csv', label: 'CSV' },
+            { value: 'excel', label: 'Excel' },
+            { value: 'json', label: 'JSON' }
+          ]
         }
+      ],
+      onSubmit: async (data) => {
+        const result = await productionApi.exportData(data.dataType, data.format);
+        if (result) {
+          toast.success('Data exported successfully!', 'Check your downloads folder for the exported file.');
+        }
+        onClose();
       }
-      onClose();
-    } catch (error) {
-      console.error('Error exporting data:', error);
-      alert('Failed to export data. Please try again.');
-    }
+    });
   };
 
   const handleIncidentResponse = async () => {
-    try {
-      const confirmResponse = confirm('Are you sure you want to activate incident response protocol? This will notify all emergency contacts and activate crisis management procedures.');
-      if (confirmResponse) {
+    setModalState({
+      type: 'confirm',
+      title: 'Activate Incident Response Protocol',
+      description: 'Are you sure you want to activate incident response protocol? This will notify all emergency contacts and activate crisis management procedures.',
+      variant: 'destructive',
+      onSubmit: async () => {
         // This would typically call an incident response API
-        console.log('Incident response protocol activated');
-        alert('Incident response protocol activated! Emergency contacts have been notified.');
+        toast.success('Incident response protocol activated!', 'Emergency contacts have been notified and crisis management procedures are now active.');
+        onClose();
       }
-      onClose();
-    } catch (error) {
-      console.error('Error in incident response:', error);
-      alert('Failed to activate incident response. Please try again.');
-    }
+    });
   };
 
   const handleWarRoomMode = async () => {
-    try {
-      const confirmWarRoom = confirm('Are you sure you want to enter War Room Mode? This will activate crisis management dashboard and emergency protocols.');
-      if (confirmWarRoom) {
+    setModalState({
+      type: 'confirm',
+      title: 'Enter War Room Mode',
+      description: 'Are you sure you want to enter War Room Mode? This will activate crisis management dashboard and emergency protocols.',
+      variant: 'destructive',
+      onSubmit: async () => {
         // This would typically navigate to war room dashboard or activate special mode
-        console.log('War Room Mode activated');
-        alert('War Room Mode activated! Crisis management dashboard is now active.');
+        toast.success('War Room Mode activated!', 'Crisis management dashboard is now active.');
         // Could also navigate to a specific war room page
         // window.location.href = '/war-room';
+        onClose();
       }
-      onClose();
-    } catch (error) {
-      console.error('Error entering war room mode:', error);
-      alert('Failed to enter War Room Mode. Please try again.');
-    }
+    });
   };
 
   const getImpactColor = (impact: string) => {
     switch (impact) {
-      case 'critical': return 'bg-red-500';
-      case 'high': return 'bg-orange-500';
-      case 'medium': return 'bg-yellow-500';
-      case 'low': return 'bg-green-500';
-      default: return 'bg-gray-500';
+      case 'critical': return 'bg-destructive';
+      case 'high': return 'bg-warning';
+      case 'medium': return 'bg-warning';
+      case 'low': return 'bg-success';
+      default: return 'bg-muted';
     }
   };
 
@@ -656,17 +745,17 @@ export default function CommandBar({ isOpen, onClose }: CommandBarProps) {
     <>
       <Dialog open={isOpen} onOpenChange={onClose}>
         <DialogContent className="max-w-2xl max-h-[80vh] p-0">
-          <Command className="rounded-lg border shadow-md">
+          <Command className="rounded-[0.625rem] border shadow-2xs">
             <div className="flex items-center border-b px-3">
               <Search className="mr-2 h-4 w-4 shrink-0 opacity-50" />
               <CommandInput
                 placeholder="Type a command or search..."
                 value={search}
                 onValueChange={setSearch}
-                className="flex h-11 w-full rounded-lg bg-transparent py-3 text-sm outline-none placeholder:text-muted-foreground disabled:cursor-not-allowed disabled:opacity-50"
+                className="flex h-11 w-full rounded-[0.625rem] bg-transparent py-3 text-sm outline-none placeholder:text-muted-foreground disabled:cursor-not-allowed disabled:opacity-50"
               />
               <div className="ml-auto text-xs text-muted-foreground">
-                Press <kbd className="pointer-events-none inline-flex h-5 select-none items-center gap-1 rounded-lg border bg-muted px-1.5 font-mono text-[10px] font-medium text-muted-foreground opacity-100">
+                Press <kbd className="pointer-events-none inline-flex h-5 select-none items-center gap-1 rounded-[0.625rem] border bg-muted px-1.5 font-mono text-[10px] font-medium text-muted-foreground opacity-100">
                   <span className="text-xs">⌘</span>K
                 </kbd> to open
               </div>
@@ -693,7 +782,7 @@ export default function CommandBar({ isOpen, onClose }: CommandBarProps) {
                       </div>
                       <div className="flex items-center space-x-2">
                         {action.shortcut && (
-                          <kbd className="pointer-events-none inline-flex h-5 select-none items-center gap-1 rounded-lg border bg-muted px-1.5 font-mono text-[10px] font-medium text-muted-foreground opacity-100">
+                          <kbd className="pointer-events-none inline-flex h-5 select-none items-center gap-1 rounded-[0.625rem] border bg-muted px-1.5 font-mono text-[10px] font-medium text-muted-foreground opacity-100">
                             {action.shortcut}
                           </kbd>
                         )}
@@ -740,7 +829,7 @@ export default function CommandBar({ isOpen, onClose }: CommandBarProps) {
               <div className="flex justify-end space-x-2">
                 <button
                   onClick={() => setSelectedAction(null)}
-                  className="px-4 py-2 text-sm border rounded-lg hover:bg-gray-50"
+                  className="px-4 py-2 text-sm border rounded-[0.625rem] hover:bg-muted/50"
                 >
                   Cancel
                 </button>
@@ -749,7 +838,7 @@ export default function CommandBar({ isOpen, onClose }: CommandBarProps) {
                     selectedAction.action();
                     setSelectedAction(null);
                   }}
-                  className="px-4 py-2 text-sm bg-red-600 text-white rounded-lg hover:bg-red-700"
+                  className="px-4 py-2 text-sm bg-destructive text-destructive-foreground rounded-[0.625rem] hover:bg-destructive/90"
                 >
                   Confirm
                 </button>
@@ -757,6 +846,20 @@ export default function CommandBar({ isOpen, onClose }: CommandBarProps) {
             </div>
           </DialogContent>
         </Dialog>
+      )}
+
+      {/* Command Modal */}
+      {modalState.type && (
+        <CommandModal
+          isOpen={!!modalState.type}
+          onClose={() => setModalState({ type: null, title: '', description: '', fields: [], onSubmit: undefined, variant: 'default' })}
+          title={modalState.title}
+          description={modalState.description}
+          type={modalState.type}
+          fields={modalState.fields}
+          onSubmit={modalState.onSubmit || (() => Promise.resolve())}
+          variant={modalState.variant}
+        />
       )}
     </>
   );

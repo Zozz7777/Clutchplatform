@@ -489,47 +489,47 @@ export default function BudgetBreachDetector({ className }: BudgetBreachDetector
 
   const getCategoryColor = (category: string) => {
     switch (category) {
-      case 'infrastructure': return 'bg-blue-100 text-blue-800';
-      case 'marketing': return 'bg-green-100 text-green-800';
-      case 'operations': return 'bg-orange-100 text-orange-800';
-      case 'development': return 'bg-purple-100 text-purple-800';
-      case 'support': return 'bg-yellow-100 text-yellow-800';
-      case 'security': return 'bg-red-100 text-red-800';
-      case 'compliance': return 'bg-indigo-100 text-indigo-800';
-      case 'other': return 'bg-gray-100 text-gray-800';
-      default: return 'bg-gray-100 text-gray-800';
+      case 'infrastructure': return 'bg-info/10 text-info';
+      case 'marketing': return 'bg-success/10 text-success';
+      case 'operations': return 'bg-warning/10 text-warning';
+      case 'development': return 'bg-primary/10 text-primary';
+      case 'support': return 'bg-warning/10 text-warning';
+      case 'security': return 'bg-destructive/10 text-destructive';
+      case 'compliance': return 'bg-primary/10 text-primary';
+      case 'other': return 'bg-muted text-muted-foreground';
+      default: return 'bg-muted text-muted-foreground';
     }
   };
 
   const getSeverityColor = (severity: string) => {
     switch (severity) {
-      case 'low': return 'bg-green-100 text-green-800';
-      case 'medium': return 'bg-yellow-100 text-yellow-800';
-      case 'high': return 'bg-orange-100 text-orange-800';
-      case 'critical': return 'bg-red-100 text-red-800';
-      case 'emergency': return 'bg-red-100 text-red-800';
-      default: return 'bg-gray-100 text-gray-800';
+      case 'low': return 'bg-success/10 text-success';
+      case 'medium': return 'bg-warning/10 text-warning';
+      case 'high': return 'bg-warning/10 text-warning';
+      case 'critical': return 'bg-destructive/10 text-destructive';
+      case 'emergency': return 'bg-destructive/10 text-destructive';
+      default: return 'bg-muted text-muted-foreground';
     }
   };
 
   const getStatusColor = (status: string) => {
     switch (status) {
-      case 'monitoring': return 'bg-blue-100 text-blue-800';
-      case 'alert': return 'bg-yellow-100 text-yellow-800';
-      case 'breach': return 'bg-red-100 text-red-800';
-      case 'resolved': return 'bg-green-100 text-green-800';
-      case 'escalated': return 'bg-purple-100 text-purple-800';
-      default: return 'bg-gray-100 text-gray-800';
+      case 'monitoring': return 'bg-info/10 text-info';
+      case 'alert': return 'bg-warning/10 text-warning';
+      case 'breach': return 'bg-destructive/10 text-destructive';
+      case 'resolved': return 'bg-success/10 text-success';
+      case 'escalated': return 'bg-primary/10 text-primary';
+      default: return 'bg-muted text-muted-foreground';
     }
   };
 
   const getMitigationStatusColor = (status: string) => {
     switch (status) {
-      case 'completed': return 'bg-green-100 text-green-800';
-      case 'in_progress': return 'bg-blue-100 text-blue-800';
-      case 'planned': return 'bg-yellow-100 text-yellow-800';
-      case 'failed': return 'bg-red-100 text-red-800';
-      default: return 'bg-gray-100 text-gray-800';
+      case 'completed': return 'bg-success/10 text-success';
+      case 'in_progress': return 'bg-info/10 text-info';
+      case 'planned': return 'bg-warning/10 text-warning';
+      case 'failed': return 'bg-destructive/10 text-destructive';
+      default: return 'bg-muted text-muted-foreground';
     }
   };
 
@@ -568,7 +568,7 @@ export default function BudgetBreachDetector({ className }: BudgetBreachDetector
                 variant="outline"
                 size="sm"
                 onClick={() => setIsMonitoring(!isMonitoring)}
-                className={isMonitoring ? 'bg-green-100 text-green-800' : ''}
+                className={isMonitoring ? 'bg-success/10 text-success' : ''}
               >
                 {isMonitoring ? <Eye className="h-4 w-4 mr-2" /> : <EyeOff className="h-4 w-4 mr-2" />}
                 {isMonitoring ? 'Monitoring' : 'Paused'}
@@ -587,26 +587,26 @@ export default function BudgetBreachDetector({ className }: BudgetBreachDetector
         <CardContent className="space-y-6">
           {/* Budget Summary */}
           <div className="grid grid-cols-4 gap-4">
-            <div className="text-center p-3 bg-blue-50 rounded-lg">
-              <div className="text-2xl font-bold text-blue-600">{formatCurrency(totalAllocated)}</div>
+            <div className="text-center p-3 bg-info/10 rounded-[0.625rem]">
+              <div className="text-2xl font-bold text-info">{formatCurrency(totalAllocated)}</div>
               <div className="text-sm text-muted-foreground">Total Allocated</div>
             </div>
-            <div className="text-center p-3 bg-orange-50 rounded-lg">
-              <div className="text-2xl font-bold text-orange-600">{formatCurrency(totalSpent)}</div>
+            <div className="text-center p-3 bg-warning/10 rounded-[0.625rem]">
+              <div className="text-2xl font-bold text-warning">{formatCurrency(totalSpent)}</div>
               <div className="text-sm text-muted-foreground">Total Spent</div>
             </div>
-            <div className="text-center p-3 bg-green-50 rounded-lg">
-              <div className="text-2xl font-bold text-green-600">{formatCurrency(totalRemaining)}</div>
+            <div className="text-center p-3 bg-success/10 rounded-[0.625rem]">
+              <div className="text-2xl font-bold text-success">{formatCurrency(totalRemaining)}</div>
               <div className="text-sm text-muted-foreground">Remaining</div>
             </div>
-            <div className="text-center p-3 bg-red-50 rounded-lg">
-              <div className="text-2xl font-bold text-red-600">{activeBreaches}</div>
+            <div className="text-center p-3 bg-destructive/10 rounded-[0.625rem]">
+              <div className="text-2xl font-bold text-destructive">{activeBreaches}</div>
               <div className="text-sm text-muted-foreground">Active Breaches</div>
             </div>
           </div>
 
           {/* Budget Breach Overview */}
-          <div className="p-4 bg-gradient-to-r from-red-50 to-orange-50 rounded-lg">
+          <div className="p-4 bg-gradient-to-r from-destructive/10 to-warning/10 rounded-[0.625rem]">
             <div className="flex items-center justify-between">
               <div>
                 <h4 className="font-medium">Budget Breach Monitoring</h4>
@@ -615,7 +615,7 @@ export default function BudgetBreachDetector({ className }: BudgetBreachDetector
                 </p>
               </div>
               <div className="text-right">
-                <div className="text-3xl font-bold text-red-600">
+                <div className="text-3xl font-bold text-destructive">
                   {breaches.length}
                 </div>
                 <div className="text-sm text-muted-foreground">budgets monitored</div>
@@ -671,8 +671,8 @@ export default function BudgetBreachDetector({ className }: BudgetBreachDetector
               {filteredBreaches.map((breach) => (
                 <div
                   key={breach.id}
-                  className={`p-3 border rounded-lg cursor-pointer transition-colors ${
-                    selectedBreach?.id === breach.id ? 'border-blue-500 bg-blue-50' : 'hover:bg-gray-50'
+                  className={`p-3 border rounded-[0.625rem] cursor-pointer transition-colors ${
+                    selectedBreach?.id === breach.id ? 'border-primary bg-primary/10' : 'hover:bg-muted/50'
                   }`}
                   onClick={() => setSelectedBreach(breach)}
                 >
@@ -815,10 +815,10 @@ export default function BudgetBreachDetector({ className }: BudgetBreachDetector
                     <h5 className="font-medium mb-2">Alert Thresholds</h5>
                     <div className="space-y-2">
                       {selectedBreach.alerts.map((alert, index) => (
-                        <div key={index} className="p-3 border rounded-lg">
+                        <div key={index} className="p-3 border rounded-[0.625rem]">
                           <div className="flex items-center justify-between mb-2">
                             <span className="font-medium">{alert.threshold}% Threshold</span>
-                            <Badge className={alert.triggered ? 'bg-red-100 text-red-800' : 'bg-green-100 text-green-800'}>
+                            <Badge className={alert.triggered ? 'bg-destructive/10 text-destructive' : 'bg-success/10 text-success'}>
                               {alert.triggered ? 'Triggered' : 'Normal'}
                             </Badge>
                           </div>
@@ -836,7 +836,7 @@ export default function BudgetBreachDetector({ className }: BudgetBreachDetector
                     <h5 className="font-medium mb-2">Mitigation Strategies</h5>
                     <div className="space-y-2">
                       {selectedBreach.mitigation.map((strategy, index) => (
-                        <div key={index} className="p-3 border rounded-lg">
+                        <div key={index} className="p-3 border rounded-[0.625rem]">
                           <div className="flex items-center justify-between mb-2">
                             <span className="font-medium">{strategy.strategy}</span>
                             <Badge className={getMitigationStatusColor(strategy.status)}>

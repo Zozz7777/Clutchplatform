@@ -6,6 +6,7 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Progress } from '@/components/ui/progress';
 import { businessIntelligence, type ChurnRisk } from '@/lib/business-intelligence';
+import { logger } from '@/lib/logger';
 import { 
   AlertTriangle, 
   Users, 
@@ -33,7 +34,7 @@ export function ChurnRiskCard({ className = '', showDetails = false }: ChurnRisk
         const data = await businessIntelligence.getChurnRisk();
         setChurnRisks(data);
       } catch (error) {
-        console.error('Failed to load churn risks:', error);
+        logger.error('Failed to load churn risks:', error);
       } finally {
         setIsLoading(false);
       }

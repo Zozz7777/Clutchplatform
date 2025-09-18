@@ -38,6 +38,8 @@ import {
   Flag
 } from 'lucide-react';
 import { formatCurrency, formatNumber } from '@/lib/utils';
+import { productionApi } from '@/lib/production-api';
+import { logger } from '@/lib/logger';
 
 interface SLA {
   id: string;
@@ -110,264 +112,30 @@ export default function OperationalSLADashboard({ className }: OperationalSLADas
   const [filterService, setFilterService] = useState<string>('all');
 
   useEffect(() => {
-    const loadSLAData = () => {
-      const mockSLAs: SLA[] = [
-        {
-          id: 'sla-001',
-          name: 'API Response Time',
-          description: 'API endpoints must respond within 200ms for 95% of requests',
-          service: 'API Gateway',
-          metric: 'Response Time',
-          target: 200,
-          current: 185,
-          status: 'meeting',
-          trend: 'improving',
-          lastUpdated: new Date(Date.now() - 5 * 60 * 1000).toISOString(),
-          breachCount: 2,
-          avgResponseTime: 185,
-          uptime: 99.9,
-          availability: 99.95,
-          performance: {
-            p50: 120,
-            p95: 185,
-            p99: 250
-          },
-          incidents: [
-            {
-              id: 'incident-001',
-              severity: 'high',
-              title: 'API Response Time Degradation',
-              startTime: new Date(Date.now() - 2 * 60 * 60 * 1000).toISOString(),
-              endTime: new Date(Date.now() - 1 * 60 * 60 * 1000).toISOString(),
-              duration: 60,
-              impact: 'Increased response times affecting user experience',
-              status: 'resolved'
-            }
-          ],
-          alerts: [
-            {
-              id: 'alert-001',
-              type: 'response_time_spike',
-              message: 'Response time exceeded 300ms threshold',
-              timestamp: new Date(Date.now() - 2 * 60 * 60 * 1000).toISOString(),
-              severity: 'high',
-              resolved: true
-            }
-          ],
-          history: [
-            { timestamp: new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString(), value: 195, status: 'meeting' },
-            { timestamp: new Date(Date.now() - 12 * 60 * 60 * 1000).toISOString(), value: 180, status: 'meeting' },
-            { timestamp: new Date(Date.now() - 6 * 60 * 60 * 1000).toISOString(), value: 220, status: 'at_risk' },
-            { timestamp: new Date(Date.now() - 3 * 60 * 60 * 1000).toISOString(), value: 185, status: 'meeting' }
-          ]
-        },
-        {
-          id: 'sla-002',
-          name: 'Fleet Availability',
-          description: 'Fleet vehicles must be available for 95% of operational hours',
-          service: 'Fleet Management',
-          metric: 'Availability',
-          target: 95,
-          current: 97.2,
-          status: 'meeting',
-          trend: 'stable',
-          lastUpdated: new Date(Date.now() - 2 * 60 * 1000).toISOString(),
-          breachCount: 0,
-          avgResponseTime: 0,
-          uptime: 97.2,
-          availability: 97.2,
-          performance: {
-            p50: 0,
-            p95: 0,
-            p99: 0
-          },
-          incidents: [],
-          alerts: [],
-          history: [
-            { timestamp: new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString(), value: 96.8, status: 'meeting' },
-            { timestamp: new Date(Date.now() - 12 * 60 * 60 * 1000).toISOString(), value: 97.1, status: 'meeting' },
-            { timestamp: new Date(Date.now() - 6 * 60 * 60 * 1000).toISOString(), value: 97.0, status: 'meeting' },
-            { timestamp: new Date(Date.now() - 3 * 60 * 60 * 1000).toISOString(), value: 97.2, status: 'meeting' }
-          ]
-        },
-        {
-          id: 'sla-003',
-          name: 'Payment Processing',
-          description: 'Payment transactions must complete within 5 seconds for 99% of requests',
-          service: 'Payment Gateway',
-          metric: 'Transaction Time',
-          target: 5000,
-          current: 4200,
-          status: 'meeting',
-          trend: 'improving',
-          lastUpdated: new Date(Date.now() - 1 * 60 * 1000).toISOString(),
-          breachCount: 1,
-          avgResponseTime: 4200,
-          uptime: 99.8,
-          availability: 99.85,
-          performance: {
-            p50: 2800,
-            p95: 4200,
-            p99: 4800
-          },
-          incidents: [
-            {
-              id: 'incident-002',
-              severity: 'critical',
-              title: 'Payment Processing Delay',
-              startTime: new Date(Date.now() - 4 * 60 * 60 * 1000).toISOString(),
-              endTime: new Date(Date.now() - 3 * 60 * 60 * 1000).toISOString(),
-              duration: 60,
-              impact: 'Payment delays affecting customer experience',
-              status: 'resolved'
-            }
-          ],
-          alerts: [
-            {
-              id: 'alert-002',
-              type: 'threshold_breach',
-              message: 'Transaction time exceeded 6 seconds',
-              timestamp: new Date(Date.now() - 4 * 60 * 60 * 1000).toISOString(),
-              severity: 'critical',
-              resolved: true
-            }
-          ],
-          history: [
-            { timestamp: new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString(), value: 3800, status: 'meeting' },
-            { timestamp: new Date(Date.now() - 12 * 60 * 60 * 1000).toISOString(), value: 4100, status: 'meeting' },
-            { timestamp: new Date(Date.now() - 6 * 60 * 60 * 1000).toISOString(), value: 5200, status: 'at_risk' },
-            { timestamp: new Date(Date.now() - 3 * 60 * 60 * 1000).toISOString(), value: 4200, status: 'meeting' }
-          ]
-        },
-        {
-          id: 'sla-004',
-          name: 'Customer Support',
-          description: 'Customer support tickets must be resolved within 24 hours for 90% of cases',
-          service: 'Support System',
-          metric: 'Resolution Time',
-          target: 24,
-          current: 18.5,
-          status: 'meeting',
-          trend: 'improving',
-          lastUpdated: new Date(Date.now() - 10 * 60 * 1000).toISOString(),
-          breachCount: 3,
-          avgResponseTime: 18.5,
-          uptime: 99.5,
-          availability: 99.5,
-          performance: {
-            p50: 12,
-            p95: 18.5,
-            p99: 22
-          },
-          incidents: [
-            {
-              id: 'incident-003',
-              severity: 'medium',
-              title: 'Support Ticket Backlog',
-              startTime: new Date(Date.now() - 6 * 60 * 60 * 1000).toISOString(),
-              endTime: new Date(Date.now() - 4 * 60 * 60 * 1000).toISOString(),
-              duration: 120,
-              impact: 'Increased resolution times for support tickets',
-              status: 'resolved'
-            }
-          ],
-          alerts: [
-            {
-              id: 'alert-003',
-              type: 'performance_degradation',
-              message: 'Resolution time approaching SLA threshold',
-              timestamp: new Date(Date.now() - 6 * 60 * 60 * 1000).toISOString(),
-              severity: 'medium',
-              resolved: true
-            }
-          ],
-          history: [
-            { timestamp: new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString(), value: 20, status: 'meeting' },
-            { timestamp: new Date(Date.now() - 12 * 60 * 60 * 1000).toISOString(), value: 22, status: 'at_risk' },
-            { timestamp: new Date(Date.now() - 6 * 60 * 60 * 1000).toISOString(), value: 25, status: 'breach' },
-            { timestamp: new Date(Date.now() - 3 * 60 * 60 * 1000).toISOString(), value: 18.5, status: 'meeting' }
-          ]
-        }
-      ];
-
-      const mockServices: ServiceHealth[] = [
-        {
-          id: 'service-001',
-          name: 'API Gateway',
-          status: 'healthy',
-          uptime: 99.9,
-          responseTime: 185,
-          errorRate: 0.1,
-          throughput: 1500,
-          lastIncident: new Date(Date.now() - 2 * 60 * 60 * 1000).toISOString(),
-          slas: ['sla-001']
-        },
-        {
-          id: 'service-002',
-          name: 'Fleet Management',
-          status: 'healthy',
-          uptime: 97.2,
-          responseTime: 0,
-          errorRate: 0.05,
-          throughput: 500,
-          lastIncident: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString(),
-          slas: ['sla-002']
-        },
-        {
-          id: 'service-003',
-          name: 'Payment Gateway',
-          status: 'healthy',
-          uptime: 99.8,
-          responseTime: 4200,
-          errorRate: 0.2,
-          throughput: 800,
-          lastIncident: new Date(Date.now() - 4 * 60 * 60 * 1000).toISOString(),
-          slas: ['sla-003']
-        },
-        {
-          id: 'service-004',
-          name: 'Support System',
-          status: 'degraded',
-          uptime: 99.5,
-          responseTime: 18.5,
-          errorRate: 0.3,
-          throughput: 200,
-          lastIncident: new Date(Date.now() - 6 * 60 * 60 * 1000).toISOString(),
-          slas: ['sla-004']
-        }
-      ];
-
-      setSlas(mockSLAs);
-      setServices(mockServices);
-      setSelectedSLA(mockSLAs[0]);
+    const loadSLAData = async () => {
+      try {
+        // Load real SLA data from API
+        const [slaData, serviceData] = await Promise.all([
+          productionApi.getSLAMetrics(),
+          productionApi.getServiceHealth()
+        ]);
+        
+        setSlas(slaData || []);
+        setServices(serviceData || []);
+        setSelectedSLA(slaData?.[0] || null);
+      } catch (error) {
+        logger.error('Failed to load SLA data:', error);
+        // Set empty arrays as fallback
+        setSlas([]);
+        setServices([]);
+        setSelectedSLA(null);
+      }
     };
 
     loadSLAData();
 
-    // Simulate real-time updates
-    const interval = setInterval(() => {
-      setSlas(prev => prev.map(sla => {
-        // Simulate small variations in SLA metrics
-        const variation = (Math.random() - 0.5) * 0.1; // ±5% variation
-        const newValue = sla.current * (1 + variation);
-        
-        let newStatus = sla.status;
-        if (newValue > sla.target * 1.1) {
-          newStatus = 'breach';
-        } else if (newValue > sla.target * 0.9) {
-          newStatus = 'at_risk';
-        } else {
-          newStatus = 'meeting';
-        }
-
-        return {
-          ...sla,
-          current: Math.round(newValue * 100) / 100,
-          status: newStatus,
-          lastUpdated: new Date().toISOString()
-        };
-      }));
-    }, 30000);
+    // Real-time updates via WebSocket or polling
+    const interval = setInterval(loadSLAData, 30000);
 
     return () => clearInterval(interval);
   }, []);

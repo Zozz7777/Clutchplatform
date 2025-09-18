@@ -410,4 +410,125 @@ router.get('/stats', authenticateToken, checkRole(['head_administrator', 'asset_
   }
 });
 
+// POST /api/v1/fleet/maintenance - Create maintenance record
+router.post('/maintenance', authenticateToken, checkRole(['head_administrator', 'admin']), async (req, res) => {
+  try {
+    const { vehicleId, type, description, scheduledDate, status = 'scheduled' } = req.body;
+    
+    if (!vehicleId || !type) {
+      return res.status(400).json({
+        success: false,
+        error: 'MISSING_REQUIRED_FIELDS',
+        message: 'Vehicle ID and maintenance type are required',
+        timestamp: new Date().toISOString()
+      });
+    }
+
+    const { db } = await getCollection('fleet_vehicles');
+    
+    // Check if vehicle exists
+    const vehicle = await db.findOne({ _id: vehicleId });
+    if (!vehicle) {
+      return res.status(404).json({
+        success: false,
+        error: 'VEHICLE_NOT_FOUND',
+        message: 'Vehicle not found',
+        timestamp: new Date().toISOString()
+      });
+    }
+
+    const maintenanceRecord = {
+      vehicleId,
+      type,
+      description: description || `Scheduled ${type} maintenance`,
+      scheduledDate: scheduledDate || new Date(),
+      status,
+      createdAt: new Date(),
+      createdBy: req.user.userId,
+      isActive: true
+    };
+
+    // Insert maintenance record
+    const maintenanceCollection = await getCollection('maintenance_records');
+    const result = await maintenanceCollection.insertOne(maintenanceRecord);
+
+    // Update vehicle's maintenance history
+    await db.updateOne(
+      { _id: vehicleId },
+      { 
+        $push: { 
+          'maintenance.serviceHistory': {
+            recordId: result.insertedId,
+            type,
+            description: maintenanceRecord.description,
+            scheduledDate: maintenanceRecord.scheduledDate,
+            status,
+            createdAt: maintenanceRecord.createdAt
+          }
+        },
+        $set: { 
+          'maintenance.nextServiceDate': scheduledDate || new Date(),
+          updatedAt: new Date()
+        }
+      }
+    );
+
+    res.status(201).json({
+      success: true,
+      data: {
+        maintenanceRecord: {
+          ...maintenanceRecord,
+          _id: result.insertedId
+        }
+      },
+      message: 'Maintenance record created successfully',
+      timestamp: new Date().toISOString()
+    });
+
+  } catch (error) {
+    console.error('Create maintenance record error:', error);
+    res.status(500).json({
+      success: false,
+      error: 'CREATE_MAINTENANCE_RECORD_FAILED',
+      message: 'Failed to create maintenance record',
+      timestamp: new Date().toISOString()
+    });
+  }
+});
+
+// GET /api/v1/fleet/obd2 - Get OBD2 data for vehicles
+router.get('/obd2', authenticateToken, checkRole(['head_administrator', 'admin', 'fleet_manager']), async (req, res) => {
+  try {
+    const { vehicleId, limit = 100 } = req.query;
+    
+    const obd2Collection = await getCollection('obd2_data');
+    
+    let query = {};
+    if (vehicleId) {
+      query.vehicleId = vehicleId;
+    }
+    
+    const obd2Data = await obd2Collection
+      .find(query)
+      .sort({ timestamp: -1 })
+      .limit(parseInt(limit))
+      .toArray();
+    
+    res.json({
+      success: true,
+      data: obd2Data,
+      message: 'OBD2 data retrieved successfully',
+      timestamp: new Date().toISOString()
+    });
+  } catch (error) {
+    console.error('Get OBD2 data error:', error);
+    res.status(500).json({
+      success: false,
+      error: 'GET_OBD2_DATA_FAILED',
+      message: 'Failed to retrieve OBD2 data',
+      timestamp: new Date().toISOString()
+    });
+  }
+});
+
 module.exports = router;

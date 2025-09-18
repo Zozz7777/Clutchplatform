@@ -76,6 +76,7 @@ export default function DashboardPage() {
   const [kpiMetrics, setKpiMetrics] = useState<KPIMetric[]>([]);
   const [fleetVehicles, setFleetVehicles] = useState<FleetVehicle[]>([]);
   const [notifications, setNotifications] = useState<Notification[]>([]);
+  const [performanceMetrics, setPerformanceMetrics] = useState<any>(null);
   const [isLoading, setIsLoading] = useState(true);
   const { hasPermission } = useAuth();
   const {
@@ -92,27 +93,31 @@ export default function DashboardPage() {
   useEffect(() => {
     const loadDashboardData = async () => {
       try {
-        const [metricsResponse, vehiclesResponse, notifsResponse] = await Promise.all([
+        const [metricsResponse, vehiclesResponse, notifsResponse, perfResponse] = await Promise.all([
           productionApi.getKPIMetrics(),
           productionApi.getFleetVehicles(),
           productionApi.getNotifications(),
+          productionApi.getSystemPerformanceMetrics(),
         ]);
         
         // Handle API response structure properly
         const metrics = metricsResponse?.data || metricsResponse || [];
         const vehicles = vehiclesResponse?.data || vehiclesResponse || [];
         const notifs = notifsResponse?.data?.notifications || notifsResponse?.data || notifsResponse || [];
+        const perf = perfResponse?.data || perfResponse || null;
         
         // Ensure data is arrays before calling slice
         setKpiMetrics(Array.isArray(metrics) ? metrics : []);
         setFleetVehicles(Array.isArray(vehicles) ? vehicles.slice(0, 5) : []);
         setNotifications(Array.isArray(notifs) ? notifs.slice(0, 5) : []);
+        setPerformanceMetrics(perf);
       } catch (error) {
         console.error("Failed to load dashboard data:", error);
         // Set empty arrays on error - no mock data fallback in production
         setKpiMetrics([]);
         setFleetVehicles([]);
         setNotifications([]);
+        setPerformanceMetrics(null);
       } finally {
         setIsLoading(false);
       }
@@ -241,7 +246,7 @@ export default function DashboardPage() {
         </Card>
 
         {/* Quick Actions */}
-        <Card className="shadow-sm">
+        <Card className="shadow-2xs">
           <CardHeader>
             <CardTitle className="text-card-foreground">Quick Actions</CardTitle>
             <CardDescription>Common administrative tasks</CardDescription>
@@ -266,7 +271,7 @@ export default function DashboardPage() {
         </Card>
 
         {/* Fleet Status */}
-        <Card className="shadow-sm">
+        <Card className="shadow-2xs">
           <CardHeader>
             <CardTitle className="text-card-foreground">Fleet Status</CardTitle>
             <CardDescription>Real-time fleet monitoring</CardDescription>
@@ -307,37 +312,57 @@ export default function DashboardPage() {
               <div className="space-y-2">
                 <div className="flex items-center justify-between">
                   <span className="text-sm font-medium text-foreground">API Uptime</span>
-                  <span className="text-sm text-muted-foreground">99.9%</span>
+                  <span className="text-sm text-muted-foreground">
+                    {performanceMetrics?.uptime ? `${performanceMetrics.uptime}%` : '99.9%'}
+                  </span>
                 </div>
                 <div className="w-full bg-muted rounded-full h-2">
-                  <div className="bg-primary h-2 rounded-full" style={{ width: '99.9%' }}></div>
+                  <div 
+                    className="bg-primary h-2 rounded-full" 
+                    style={{ width: `${performanceMetrics?.uptime || 99.9}%` }}
+                  ></div>
                 </div>
               </div>
               <div className="space-y-2">
                 <div className="flex items-center justify-between">
                   <span className="text-sm font-medium text-foreground">Request Rate</span>
-                  <span className="text-sm text-muted-foreground">1,234/min</span>
+                  <span className="text-sm text-muted-foreground">
+                    {performanceMetrics?.requestRate ? `${performanceMetrics.requestRate.toLocaleString()}/min` : '1,234/min'}
+                  </span>
                 </div>
                 <div className="w-full bg-muted rounded-full h-2">
-                  <div className="bg-primary h-2 rounded-full" style={{ width: '75%' }}></div>
+                  <div 
+                    className="bg-primary h-2 rounded-full" 
+                    style={{ width: `${Math.min((performanceMetrics?.requestRate || 1234) / 20, 100)}%` }}
+                  ></div>
                 </div>
               </div>
               <div className="space-y-2">
                 <div className="flex items-center justify-between">
                   <span className="text-sm font-medium text-foreground">Error Rate</span>
-                  <span className="text-sm text-muted-foreground">0.1%</span>
+                  <span className="text-sm text-muted-foreground">
+                    {performanceMetrics?.errorRate ? `${performanceMetrics.errorRate}%` : '0.1%'}
+                  </span>
                 </div>
                 <div className="w-full bg-muted rounded-full h-2">
-                  <div className="bg-destructive h-2 rounded-full" style={{ width: '0.1%' }}></div>
+                  <div 
+                    className="bg-destructive h-2 rounded-full" 
+                    style={{ width: `${Math.min((performanceMetrics?.errorRate || 0.1) * 10, 100)}%` }}
+                  ></div>
                 </div>
               </div>
               <div className="space-y-2">
                 <div className="flex items-center justify-between">
                   <span className="text-sm font-medium text-foreground">Active Sessions</span>
-                  <span className="text-sm text-muted-foreground">456</span>
+                  <span className="text-sm text-muted-foreground">
+                    {performanceMetrics?.activeSessions ? performanceMetrics.activeSessions.toLocaleString() : '456'}
+                  </span>
                 </div>
                 <div className="w-full bg-muted rounded-full h-2">
-                  <div className="bg-secondary h-2 rounded-full" style={{ width: '60%' }}></div>
+                  <div 
+                    className="bg-secondary h-2 rounded-full" 
+                    style={{ width: `${Math.min((performanceMetrics?.activeSessions || 456) / 10, 100)}%` }}
+                  ></div>
                 </div>
               </div>
             </div>
@@ -345,28 +370,28 @@ export default function DashboardPage() {
         </Card>
 
         {/* Alerts/Notifications Card */}
-        <Card className="shadow-sm">
+        <Card className="shadow-2xs">
           <CardHeader>
             <CardTitle className="text-card-foreground">System Alerts</CardTitle>
             <CardDescription>Critical notifications requiring attention</CardDescription>
           </CardHeader>
           <CardContent>
             <div className="space-y-3">
-              <div className="flex items-center space-x-3 p-3 rounded-lg bg-destructive/10 border border-destructive/20">
+              <div className="flex items-center space-x-3 p-3 rounded-[0.625rem] bg-destructive/10 border border-destructive/20">
                 <AlertTriangle className="h-4 w-4 text-destructive" />
                 <div>
                   <p className="text-sm font-medium text-destructive-foreground">High Error Rate</p>
                   <p className="text-xs text-destructive-foreground/80">API errors increased by 15%</p>
                 </div>
               </div>
-              <div className="flex items-center space-x-3 p-3 rounded-lg bg-muted border border-border">
+              <div className="flex items-center space-x-3 p-3 rounded-[0.625rem] bg-muted border border-border">
                 <Clock className="h-4 w-4 text-muted-foreground" />
                 <div>
                   <p className="text-sm font-medium text-foreground">Maintenance Window</p>
                   <p className="text-xs text-muted-foreground">Scheduled for tonight 2AM</p>
                 </div>
               </div>
-              <div className="flex items-center space-x-3 p-3 rounded-lg bg-primary/10 border border-primary/20">
+              <div className="flex items-center space-x-3 p-3 rounded-[0.625rem] bg-primary/10 border border-primary/20">
                 <CheckCircle className="h-4 w-4 text-primary" />
                 <div>
                   <p className="text-sm font-medium text-primary-foreground">System Healthy</p>

@@ -5,6 +5,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Badge } from '@/components/ui/badge';
 import { Progress } from '@/components/ui/progress';
 import { businessIntelligence } from '@/lib/business-intelligence';
+import { logger } from '@/lib/logger';
 import { 
   DollarSign, 
   TrendingUp, 
@@ -31,7 +32,7 @@ export function RevenueMarginCard({ className = '' }: RevenueMarginCardProps) {
         const data = await businessIntelligence.getRevenueVsCostMargin();
         setMarginData(data);
       } catch (error) {
-        console.error('Failed to load margin data:', error);
+        logger.error('Failed to load margin data:', error);
       } finally {
         setIsLoading(false);
       }

@@ -21,6 +21,8 @@ import {
 } from 'lucide-react';
 import { apiService } from '@/lib/api';
 import { productionApi } from '@/lib/production-api';
+import { WebSocketService } from '@/lib/websocket';
+import { logger } from '@/lib/logger';
 
 interface ChatSession {
   id: string;
@@ -47,7 +49,7 @@ export default function LiveChatPage() {
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [newMessage, setNewMessage] = useState('');
   const [loading, setLoading] = useState(true);
-  const [webSocketConnection, setWebSocketConnection] = useState<WebSocket | null>(null);
+  const [webSocketService, setWebSocketService] = useState<WebSocketService | null>(null);
 
   const fetchChatSessions = async () => {
     try {
@@ -86,7 +88,7 @@ export default function LiveChatPage() {
       
       setSessions(mockSessions);
     } catch (error) {
-      console.error('Error fetching chat sessions:', error);
+      logger.error('Error fetching chat sessions:', error);
     } finally {
       setLoading(false);
     }
@@ -98,38 +100,31 @@ export default function LiveChatPage() {
       const messages = await productionApi.getChatMessages(sessionId);
       setMessages(messages);
       
-      // Set up WebSocket connection for real-time updates
-      const wsUrl = `wss://clutch-main-nk7x.onrender.com/ws/chat/${sessionId}?token=${localStorage.getItem('token')}`;
-      const ws = new WebSocket(wsUrl);
+      // Set up WebSocket connection for real-time updates with retry logic and polling fallback
+      const wsService = new WebSocketService('https://clutch-main-nk7x.onrender.com');
       
-      ws.onopen = () => {
-        console.log('WebSocket connected for chat session:', sessionId);
-      };
-      
-      ws.onmessage = (event) => {
-        try {
-          const data = JSON.parse(event.data);
-          if (data.type === 'new_message') {
-            setMessages(prev => [...prev, data.message]);
+      await wsService.connect({
+        onConnect: () => {
+          logger.log('WebSocket connected for chat session:', sessionId);
+        },
+        onMessage: (message) => {
+          if (message.type === 'new_message') {
+            setMessages(prev => [...prev, message.data]);
           }
-        } catch (error) {
-          console.error('Error parsing WebSocket message:', error);
+        },
+        onDisconnect: () => {
+          logger.log('WebSocket disconnected for chat session:', sessionId);
+        },
+        onError: (error) => {
+          logger.error('WebSocket error:', error);
         }
-      };
-      
-      ws.onclose = () => {
-        console.log('WebSocket disconnected for chat session:', sessionId);
-      };
-      
-      ws.onerror = (error) => {
-        console.error('WebSocket error:', error);
-      };
-      
-      // Store WebSocket connection for cleanup
-      setWebSocketConnection(ws);
+      });
+
+      // Store WebSocket service for cleanup
+      setWebSocketService(wsService);
       
     } catch (error) {
-      console.error('Error fetching messages:', error);
+      logger.error('Error fetching messages:', error);
       // Fallback to empty messages if API fails
       setMessages([]);
     }
@@ -137,6 +132,13 @@ export default function LiveChatPage() {
 
   useEffect(() => {
     fetchChatSessions();
+    
+    // Cleanup WebSocket connection on unmount
+    return () => {
+      if (webSocketService) {
+        webSocketService.disconnect();
+      }
+    };
   }, []);
 
   const handleSendMessage = async () => {
@@ -164,16 +166,16 @@ export default function LiveChatPage() {
       setMessages(prev => [...prev, newMsg]);
       setNewMessage('');
     } catch (error) {
-      console.error('Error sending message:', error);
+      logger.error('Error sending message:', error);
     }
   };
 
   const getStatusBadge = (status: string) => {
     switch (status) {
       case 'active':
-        return <Badge variant="default" className="bg-green-500">Active</Badge>;
+        return <Badge variant="default" className="bg-success">Active</Badge>;
       case 'waiting':
-        return <Badge variant="default" className="bg-yellow-500">Waiting</Badge>;
+        return <Badge variant="default" className="bg-warning">Waiting</Badge>;
       case 'resolved':
         return <Badge variant="secondary">Resolved</Badge>;
       default:
@@ -184,13 +186,13 @@ export default function LiveChatPage() {
   const getStatusIcon = (status: string) => {
     switch (status) {
       case 'active':
-        return <CheckCircle className="h-4 w-4 text-green-500" />;
+        return <CheckCircle className="h-4 w-4 text-success" />;
       case 'waiting':
-        return <Clock className="h-4 w-4 text-yellow-500" />;
+        return <Clock className="h-4 w-4 text-warning" />;
       case 'resolved':
-        return <AlertCircle className="h-4 w-4 text-gray-500" />;
+        return <AlertCircle className="h-4 w-4 text-muted-foreground" />;
       default:
-        return <MessageCircle className="h-4 w-4 text-gray-500" />;
+        return <MessageCircle className="h-4 w-4 text-muted-foreground" />;
     }
   };
 
@@ -234,8 +236,8 @@ export default function LiveChatPage() {
               {sessions.map((session) => (
                 <div
                   key={session.id}
-                  className={`p-4 border rounded-lg cursor-pointer transition-colors ${
-                    activeSession?.id === session.id ? 'bg-blue-50 border-blue-200' : 'hover:bg-gray-50'
+                  className={`p-4 border rounded-[0.625rem] cursor-pointer transition-colors ${
+                    activeSession?.id === session.id ? 'bg-primary/10 border-primary' : 'hover:bg-muted/50'
                   }`}
                   onClick={() => {
                     setActiveSession(session);
@@ -265,7 +267,7 @@ export default function LiveChatPage() {
                   </div>
                   {session.rating && (
                     <div className="flex items-center mt-2">
-                      <Star className="h-4 w-4 text-yellow-500 fill-current" />
+                      <Star className="h-4 w-4 text-warning fill-current" />
                       <span className="text-sm font-sans ml-1">{session.rating}/5</span>
                     </div>
                   )}
@@ -310,15 +312,15 @@ export default function LiveChatPage() {
                       className={`flex ${message.sender === 'agent' ? 'justify-end' : 'justify-start'}`}
                     >
                       <div
-                        className={`max-w-[70%] p-3 rounded-lg ${
+                        className={`max-w-[70%] p-3 rounded-[0.625rem] ${
                           message.sender === 'agent'
-                            ? 'bg-blue-500 text-white'
-                            : 'bg-gray-100 text-gray-900'
+                            ? 'bg-primary text-primary-foreground'
+                            : 'bg-muted text-foreground'
                         }`}
                       >
                         <p className="text-sm font-sans">{message.message}</p>
                         <p className={`text-xs mt-1 ${
-                          message.sender === 'agent' ? 'text-blue-100' : 'text-gray-500'
+                          message.sender === 'agent' ? 'text-primary-foreground/70' : 'text-muted-foreground'
                         }`}>
                           {new Date(message.timestamp).toLocaleTimeString()}
                         </p>
@@ -345,7 +347,7 @@ export default function LiveChatPage() {
           ) : (
             <Card className="h-[600px] flex items-center justify-center">
               <div className="text-center">
-                <MessageCircle className="h-12 w-12 text-gray-400 mx-auto mb-4" />
+                <MessageCircle className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
                 <h3 className="text-lg font-medium font-sans mb-2">No chat selected</h3>
                 <p className="text-muted-foreground font-sans">
                   Select a chat session from the list to start responding

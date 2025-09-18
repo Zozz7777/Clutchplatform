@@ -8,13 +8,13 @@ const buttonVariants = cva(
   {
     variants: {
       variant: {
-        default: "bg-primary text-primary-foreground hover:bg-primary/90 active:bg-primary/95 shadow-2xs hover:shadow-sm focus:bg-primary/95",
+        default: "bg-primary text-primary-foreground hover:bg-primary/90 active:bg-primary/95 shadow-2xs hover:shadow-2xs focus:bg-primary/95",
         destructive:
-          "bg-destructive text-destructive-foreground hover:bg-destructive/90 active:bg-destructive/95 shadow-2xs hover:shadow-sm focus:bg-destructive/95",
+          "bg-destructive text-destructive-foreground hover:bg-destructive/90 active:bg-destructive/95 shadow-2xs hover:shadow-2xs focus:bg-destructive/95",
         outline:
-          "border border-border bg-background hover:bg-muted hover:text-foreground active:bg-muted/80 shadow-2xs hover:shadow-sm focus:bg-muted/50",
+          "border border-border bg-background hover:bg-muted hover:text-foreground active:bg-muted/80 shadow-2xs hover:shadow-2xs focus:bg-muted/50",
         secondary:
-          "bg-secondary text-primary-foreground hover:bg-secondary/80 active:bg-secondary/70 shadow-2xs hover:shadow-sm focus:bg-secondary/70",
+          "bg-secondary text-primary-foreground hover:bg-secondary/80 active:bg-secondary/70 shadow-2xs hover:shadow-2xs focus:bg-secondary/70",
         ghost: "hover:bg-muted hover:text-foreground active:bg-muted/80 focus:bg-muted/50",
         link: "text-primary underline-offset-4 hover:underline active:text-primary/80 focus:text-primary/80",
       },

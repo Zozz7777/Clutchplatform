@@ -414,7 +414,7 @@ export default function GlobalSecurityCenter() {
               variant="outline"
               size="sm"
               onClick={() => setIsMonitoring(!isMonitoring)}
-              className={isMonitoring ? 'bg-green-100 text-green-800' : ''}
+              className={isMonitoring ? 'bg-success/10 text-success' : ''}
             >
               {isMonitoring ? <Eye className="h-4 w-4 mr-2" /> : <EyeOff className="h-4 w-4 mr-2" />}
               {isMonitoring ? 'Monitoring' : 'Paused'}

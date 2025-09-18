@@ -118,7 +118,7 @@ export default function ProvidersPage() {
           </p>
         </div>
         {hasPermission("create_users") && (
-          <Button className="shadow-sm">
+          <Button className="shadow-2xs">
             <Plus className="mr-2 h-4 w-4" />
             Add Provider
           </Button>
@@ -127,7 +127,7 @@ export default function ProvidersPage() {
 
       {/* Analytics Cards */}
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-        <Card className="shadow-sm">
+        <Card className="shadow-2xs">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium text-card-foreground">Total Providers</CardTitle>
             <UserCog className="h-4 w-4 text-muted-foreground" />
@@ -135,11 +135,11 @@ export default function ProvidersPage() {
           <CardContent>
             <div className="text-2xl font-bold text-foreground">{users.length}</div>
             <p className="text-xs text-muted-foreground">
-              <span className="text-green-600">+15%</span> from last month
+              <span className="text-success">+15%</span> from last month
             </p>
           </CardContent>
         </Card>
-        <Card className="shadow-sm">
+        <Card className="shadow-2xs">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium text-card-foreground">Active Providers</CardTitle>
             <UserCheck className="h-4 w-4 text-muted-foreground" />
@@ -149,11 +149,11 @@ export default function ProvidersPage() {
               {users.filter(u => u.status === "active").length}
             </div>
             <p className="text-xs text-muted-foreground">
-              <span className="text-green-600">+12%</span> from last month
+              <span className="text-success">+12%</span> from last month
             </p>
           </CardContent>
         </Card>
-        <Card className="shadow-sm">
+        <Card className="shadow-2xs">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium text-card-foreground">Average Rating</CardTitle>
             <Star className="h-4 w-4 text-muted-foreground" />
@@ -161,11 +161,11 @@ export default function ProvidersPage() {
           <CardContent>
             <div className="text-2xl font-bold text-foreground">4.7</div>
             <p className="text-xs text-muted-foreground">
-              <span className="text-green-600">+0.2</span> from last month
+              <span className="text-success">+0.2</span> from last month
             </p>
           </CardContent>
         </Card>
-        <Card className="shadow-sm">
+        <Card className="shadow-2xs">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium text-card-foreground">Response Time</CardTitle>
             <Clock className="h-4 w-4 text-muted-foreground" />
@@ -173,7 +173,7 @@ export default function ProvidersPage() {
           <CardContent>
             <div className="text-2xl font-bold text-foreground">2.3h</div>
             <p className="text-xs text-muted-foreground">
-              <span className="text-green-600">-15%</span> from last month
+              <span className="text-success">-15%</span> from last month
             </p>
           </CardContent>
         </Card>

@@ -1,4 +1,5 @@
 import { apiService } from "./api";
+import { logger } from "./logger";
 
 export interface WebSocketMessage {
   type: string;
@@ -46,13 +47,13 @@ export class WebSocketService {
   connect(handlers: WebSocketEventHandlers = {}): Promise<void> {
     return new Promise((resolve, reject) => {
       if (this.ws?.readyState === WebSocket.OPEN) {
-        console.log('🔌 WebSocket already connected');
+        logger.log('🔌 WebSocket already connected');
         resolve();
         return;
       }
 
       if (this.isConnecting) {
-        console.log('🔌 WebSocket connection already in progress');
+        logger.log('🔌 WebSocket connection already in progress');
         reject(new Error('Connection already in progress'));
         return;
       }
@@ -67,7 +68,7 @@ export class WebSocketService {
                     (apiService.getTokenStatus().hasToken ? 
                       localStorage.getItem("clutch-admin-token") : null);
 
-        console.log('🔌 WebSocket token check:', {
+        logger.log('🔌 WebSocket token check:', {
           hasToken: !!this.token,
           tokenPreview: this.token ? `${this.token.substring(0, 20)}...` : 'none',
           localStorage: localStorage.getItem("clutch-admin-token") ? 'exists' : 'missing',
@@ -77,13 +78,13 @@ export class WebSocketService {
 
         if (!this.token) {
           this.isConnecting = false;
-          console.log('🔌 No token found, skipping WebSocket connection');
+          logger.log('🔌 No token found, skipping WebSocket connection');
           reject(new Error('No authentication token available'));
           return;
         }
 
         const wsUrl = `${this.url}?token=${this.token}`;
-        console.log('🔌 Attempting WebSocket connection to:', wsUrl.replace(this.token, '[TOKEN]'));
+        logger.log('🔌 Attempting WebSocket connection to:', wsUrl.replace(this.token, '[TOKEN]'));
         
         // Close existing connection if any
         if (this.ws) {
@@ -95,7 +96,7 @@ export class WebSocketService {
         // Set connection timeout
         const connectionTimeout = setTimeout(() => {
           if (this.ws?.readyState === WebSocket.CONNECTING) {
-            console.log('🔌 WebSocket connection timeout');
+            logger.log('🔌 WebSocket connection timeout');
             this.ws.close();
             this.isConnecting = false;
             reject(new Error('WebSocket connection timeout'));
@@ -103,7 +104,7 @@ export class WebSocketService {
         }, 15000); // 15 second timeout
 
         this.ws.onopen = () => {
-          console.log('🔌 WebSocket connected successfully');
+          logger.log('🔌 WebSocket connected successfully');
           clearTimeout(connectionTimeout);
           this.isConnecting = false;
           this.reconnectAttempts = 0;
@@ -127,13 +128,13 @@ export class WebSocketService {
             const message: WebSocketMessage = JSON.parse(event.data);
             this.handleMessage(message);
           } catch (error) {
-            console.error('Failed to parse WebSocket message:', error);
+            logger.error('Failed to parse WebSocket message:', error);
           }
         };
 
         this.ws.onclose = (event) => {
           clearTimeout(connectionTimeout);
-          console.log('🔌 WebSocket disconnected:', {
+          logger.log('🔌 WebSocket disconnected:', {
             code: event.code,
             reason: event.reason,
             wasClean: event.wasClean,
@@ -151,19 +152,19 @@ export class WebSocketService {
           
           // Only attempt reconnect for unexpected disconnections and if we haven't exceeded max attempts
           if (!event.wasClean && event.code !== 1000 && event.code !== 1001 && this.reconnectAttempts < this.maxReconnectAttempts) {
-            console.log('🔌 Scheduling reconnect due to unexpected disconnection');
+            logger.log('🔌 Scheduling reconnect due to unexpected disconnection');
             this.scheduleReconnect();
           } else if (event.code === 1001) {
-            console.log('🔌 WebSocket closed by server (1001), not attempting reconnect');
+            logger.log('🔌 WebSocket closed by server (1001), not attempting reconnect');
           } else if (this.reconnectAttempts >= this.maxReconnectAttempts) {
-            console.log('🔌 Max reconnect attempts reached, using polling fallback');
+            logger.log('🔌 Max reconnect attempts reached, using polling fallback');
             this.startPolling();
           }
         };
 
         this.ws.onerror = (error) => {
           clearTimeout(connectionTimeout);
-          console.error('🔌 WebSocket error:', {
+          logger.error('🔌 WebSocket error:', {
             error,
             readyState: this.ws?.readyState,
             url: wsUrl.replace(this.token || '', '[TOKEN]'),
@@ -183,7 +184,7 @@ export class WebSocketService {
   }
 
   private handleMessage(message: WebSocketMessage) {
-    console.log('📨 WebSocket message received:', message.type);
+    logger.log('📨 WebSocket message received:', message.type);
     
     this.eventHandlers.onMessage?.(message);
 
@@ -210,7 +211,7 @@ export class WebSocketService {
         // Pong response - handled silently
         break;
       default:
-        console.log('Unknown message type:', message.type);
+        logger.log('Unknown message type:', message.type);
     }
   }
 
@@ -218,11 +219,11 @@ export class WebSocketService {
     this.reconnectAttempts++;
     const delay = this.reconnectInterval * Math.pow(2, this.reconnectAttempts - 1);
     
-    console.log(`🔄 Scheduling reconnect attempt ${this.reconnectAttempts} in ${delay}ms`);
+    logger.log(`🔄 Scheduling reconnect attempt ${this.reconnectAttempts} in ${delay}ms`);
     
     setTimeout(() => {
       if (this.reconnectAttempts <= this.maxReconnectAttempts) {
-        this.connect(this.eventHandlers).catch(console.error);
+        this.connect(this.eventHandlers).catch(logger.error);
       }
     }, delay);
   }
@@ -285,7 +286,7 @@ export class WebSocketService {
       return;
     }
 
-    console.log('🔄 Starting polling fallback for WebSocket');
+    logger.log('🔄 Starting polling fallback for WebSocket');
     this.isPolling = true;
     this.lastPollTime = Date.now();
 
@@ -293,12 +294,12 @@ export class WebSocketService {
       try {
         await this.pollForUpdates();
       } catch (error) {
-        console.error('Polling error:', error);
+        logger.error('Polling error:', error);
       }
     }, this.pollingIntervalMs);
 
     // Initial poll
-    this.pollForUpdates().catch(console.error);
+    this.pollForUpdates().catch(logger.error);
   }
 
   /**
@@ -310,7 +311,7 @@ export class WebSocketService {
       this.pollingInterval = null;
     }
     this.isPolling = false;
-    console.log('🔄 Stopped polling fallback');
+    logger.log('🔄 Stopped polling fallback');
   }
 
   /**
@@ -373,7 +374,7 @@ export class WebSocketService {
 
       this.lastPollTime = Date.now();
     } catch (error) {
-      console.error('Polling request failed:', error);
+      logger.error('Polling request failed:', error);
     }
   }
 
@@ -382,10 +383,10 @@ export class WebSocketService {
    */
   private checkConnectionAndFallback(): void {
     if (!this.isConnected() && !this.isPolling) {
-      console.log('🔌 WebSocket not connected, starting polling fallback');
+      logger.log('🔌 WebSocket not connected, starting polling fallback');
       this.startPolling();
     } else if (this.isConnected() && this.isPolling) {
-      console.log('🔌 WebSocket connected, stopping polling fallback');
+      logger.log('🔌 WebSocket connected, stopping polling fallback');
       this.stopPolling();
     }
   }
@@ -395,7 +396,7 @@ export class WebSocketService {
 export const websocketService = (() => {
   // Check if we're in a browser environment
   if (typeof window === 'undefined') {
-    console.log('🔌 WebSocket service initialized in SSR mode - using safe fallback');
+    logger.log('🔌 WebSocket service initialized in SSR mode - using safe fallback');
     // Return a mock service for SSR
     return {
       connect: () => Promise.resolve(),
@@ -409,6 +410,6 @@ export const websocketService = (() => {
   }
   
   return new WebSocketService(
-    process.env.NEXT_PUBLIC_API_BASE_URL || 'https://clutch-main-nk7x.onrender.com'
-  );
+  process.env.NEXT_PUBLIC_API_BASE_URL || 'https://clutch-main-nk7x.onrender.com'
+);
 })();

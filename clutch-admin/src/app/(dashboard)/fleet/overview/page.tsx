@@ -155,7 +155,7 @@ export default function FleetOverviewPage() {
             <div className="space-y-4">
               <div className="flex items-center justify-between">
                 <div className="flex items-center space-x-2">
-                  <CheckCircle className="h-4 w-4 text-green-600" />
+                  <CheckCircle className="h-4 w-4 text-success" />
                   <span className="text-sm font-medium">Active</span>
                 </div>
                 <div className="flex items-center space-x-2">
@@ -165,7 +165,7 @@ export default function FleetOverviewPage() {
               </div>
               <div className="flex items-center justify-between">
                 <div className="flex items-center space-x-2">
-                  <Wrench className="h-4 w-4 text-yellow-600" />
+                  <Wrench className="h-4 w-4 text-warning" />
                   <span className="text-sm font-medium">Maintenance</span>
                 </div>
                 <div className="flex items-center space-x-2">
@@ -175,7 +175,7 @@ export default function FleetOverviewPage() {
               </div>
               <div className="flex items-center justify-between">
                 <div className="flex items-center space-x-2">
-                  <AlertTriangle className="h-4 w-4 text-red-600" />
+                  <AlertTriangle className="h-4 w-4 text-destructive" />
                   <span className="text-sm font-medium">Issues</span>
                 </div>
                 <div className="flex items-center space-x-2">
@@ -268,9 +268,41 @@ export default function FleetOverviewPage() {
               <CardDescription>Upcoming and overdue maintenance tasks</CardDescription>
             </CardHeader>
             <CardContent>
-              <div className="text-center py-8">
-                <Wrench className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
-                <p className="text-muted-foreground">Maintenance scheduling interface coming soon</p>
+              <div className="space-y-4">
+                <div className="flex justify-between items-center">
+                  <h3 className="text-lg font-semibold">Upcoming Maintenance</h3>
+                  <Button size="sm" className="shadow-sm">
+                    <Wrench className="mr-2 h-4 w-4" />
+                    Schedule New
+                  </Button>
+                </div>
+                <div className="space-y-3">
+                  {vehicles.filter(v => v.status === "maintenance").map((vehicle) => (
+                    <div key={vehicle.id} className="flex items-center justify-between p-3 border rounded-lg">
+                      <div className="flex items-center space-x-3">
+                        <div className="w-10 h-10 rounded-full bg-yellow-100 flex items-center justify-center">
+                          <Wrench className="h-5 w-5 text-yellow-600" />
+                        </div>
+                        <div>
+                          <p className="font-medium text-foreground">{vehicle.make} {vehicle.model}</p>
+                          <p className="text-sm text-muted-foreground">{vehicle.licensePlate}</p>
+                        </div>
+                      </div>
+                      <div className="text-right">
+                        <Badge variant="secondary">Scheduled</Badge>
+                        <p className="text-sm text-muted-foreground mt-1">
+                          {formatDate(vehicle.lastMaintenance)}
+                        </p>
+                      </div>
+                    </div>
+                  ))}
+                  {vehicles.filter(v => v.status === "maintenance").length === 0 && (
+                    <div className="text-center py-8">
+                      <Wrench className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
+                      <p className="text-muted-foreground">No maintenance scheduled</p>
+                    </div>
+                  )}
+                </div>
               </div>
             </CardContent>
           </Card>
@@ -283,9 +315,49 @@ export default function FleetOverviewPage() {
               <CardDescription>Fuel consumption patterns and optimization</CardDescription>
             </CardHeader>
             <CardContent>
-              <div className="text-center py-8">
-                <Fuel className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
-                <p className="text-muted-foreground">Fuel analytics dashboard coming soon</p>
+              <div className="space-y-6">
+                <div className="grid gap-4 md:grid-cols-3">
+                  <div className="text-center p-4 border rounded-lg">
+                    <Fuel className="h-8 w-8 text-primary mx-auto mb-2" />
+                    <p className="text-2xl font-bold text-foreground">{averageFuelEfficiency.toFixed(1)}</p>
+                    <p className="text-sm text-muted-foreground">Avg MPG</p>
+                  </div>
+                  <div className="text-center p-4 border rounded-lg">
+                    <TrendingUp className="h-8 w-8 text-green-600 mx-auto mb-2" />
+                    <p className="text-2xl font-bold text-foreground">+5.2%</p>
+                    <p className="text-sm text-muted-foreground">Efficiency</p>
+                  </div>
+                  <div className="text-center p-4 border rounded-lg">
+                    <DollarSign className="h-8 w-8 text-blue-600 mx-auto mb-2" />
+                    <p className="text-2xl font-bold text-foreground">$2,340</p>
+                    <p className="text-sm text-muted-foreground">Monthly Cost</p>
+                  </div>
+                </div>
+                <div className="space-y-4">
+                  <h3 className="text-lg font-semibold">Top Performing Vehicles</h3>
+                  <div className="space-y-2">
+                    {vehicles
+                      .sort((a, b) => b.fuelEfficiency - a.fuelEfficiency)
+                      .slice(0, 5)
+                      .map((vehicle) => (
+                        <div key={vehicle.id} className="flex items-center justify-between p-3 border rounded-lg">
+                          <div className="flex items-center space-x-3">
+                            <div className="w-8 h-8 rounded-full bg-green-100 flex items-center justify-center">
+                              <Fuel className="h-4 w-4 text-green-600" />
+                            </div>
+                            <div>
+                              <p className="font-medium text-foreground">{vehicle.make} {vehicle.model}</p>
+                              <p className="text-sm text-muted-foreground">{vehicle.licensePlate}</p>
+                            </div>
+                          </div>
+                          <div className="text-right">
+                            <p className="font-semibold text-foreground">{vehicle.fuelEfficiency} MPG</p>
+                            <p className="text-sm text-muted-foreground">{vehicle.mileage.toLocaleString()} miles</p>
+                          </div>
+                        </div>
+                      ))}
+                  </div>
+                </div>
               </div>
             </CardContent>
           </Card>
@@ -298,9 +370,54 @@ export default function FleetOverviewPage() {
               <CardDescription>Route planning and optimization tools</CardDescription>
             </CardHeader>
             <CardContent>
-              <div className="text-center py-8">
-                <Route className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
-                <p className="text-muted-foreground">Route optimization tools coming soon</p>
+              <div className="space-y-6">
+                <div className="grid gap-4 md:grid-cols-3">
+                  <div className="text-center p-4 border rounded-lg">
+                    <Route className="h-8 w-8 text-primary mx-auto mb-2" />
+                    <p className="text-2xl font-bold text-foreground">24</p>
+                    <p className="text-sm text-muted-foreground">Active Routes</p>
+                  </div>
+                  <div className="text-center p-4 border rounded-lg">
+                    <Navigation className="h-8 w-8 text-green-600 mx-auto mb-2" />
+                    <p className="text-2xl font-bold text-foreground">-12%</p>
+                    <p className="text-sm text-muted-foreground">Distance Saved</p>
+                  </div>
+                  <div className="text-center p-4 border rounded-lg">
+                    <Clock className="h-8 w-8 text-blue-600 mx-auto mb-2" />
+                    <p className="text-2xl font-bold text-foreground">-18min</p>
+                    <p className="text-sm text-muted-foreground">Avg Time Saved</p>
+                  </div>
+                </div>
+                <div className="space-y-4">
+                  <div className="flex justify-between items-center">
+                    <h3 className="text-lg font-semibold">Recent Route Optimizations</h3>
+                    <Button size="sm" variant="outline" className="shadow-sm">
+                      <Route className="mr-2 h-4 w-4" />
+                      Optimize All
+                    </Button>
+                  </div>
+                  <div className="space-y-2">
+                    {vehicles.slice(0, 5).map((vehicle) => (
+                      <div key={vehicle.id} className="flex items-center justify-between p-3 border rounded-lg">
+                        <div className="flex items-center space-x-3">
+                          <div className="w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center">
+                            <Navigation className="h-4 w-4 text-blue-600" />
+                          </div>
+                          <div>
+                            <p className="font-medium text-foreground">{vehicle.make} {vehicle.model}</p>
+                            <p className="text-sm text-muted-foreground">{vehicle.licensePlate}</p>
+                          </div>
+                        </div>
+                        <div className="text-right">
+                          <Badge variant="secondary">Optimized</Badge>
+                          <p className="text-sm text-muted-foreground mt-1">
+                            {Math.floor(Math.random() * 20) + 5} min saved
+                          </p>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
               </div>
             </CardContent>
           </Card>

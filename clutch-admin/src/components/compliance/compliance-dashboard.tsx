@@ -6,6 +6,7 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Progress } from '@/components/ui/progress';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { productionApi } from '@/lib/production-api';
 import { 
   Shield, 
   CheckCircle, 
@@ -69,8 +70,9 @@ export default function ComplianceDashboard() {
   useEffect(() => {
     const loadComplianceData = async () => {
       try {
-        // Mock compliance data - in production this would come from API
-        const mockData: ComplianceItem[] = [
+        // Load compliance data from API
+        const complianceData = await productionApi.getComplianceData();
+        const mockData: ComplianceItem[] = complianceData || [
           {
             id: 'soc2-001',
             name: 'SOC 2 Type II Compliance',
@@ -213,7 +215,7 @@ export default function ComplianceDashboard() {
               variant="outline"
               size="sm"
               onClick={() => setIsMonitoring(!isMonitoring)}
-              className={isMonitoring ? 'bg-green-100 text-green-800' : ''}
+              className={isMonitoring ? 'bg-success/10 text-success' : ''}
             >
               {isMonitoring ? <Eye className="h-4 w-4 mr-2" /> : <Eye className="h-4 w-4 mr-2" />}
               {isMonitoring ? 'Monitoring' : 'Paused'}
@@ -395,15 +397,15 @@ export default function ComplianceDashboard() {
                       </div>
                       <div className="flex justify-between">
                         <span>Completed:</span>
-                        <span className="font-medium text-green-600">{selectedItem.requirements.completed}</span>
+                        <span className="font-medium text-success">{selectedItem.requirements.completed}</span>
                       </div>
                       <div className="flex justify-between">
                         <span>Pending:</span>
-                        <span className="font-medium text-yellow-600">{selectedItem.requirements.pending}</span>
+                        <span className="font-medium text-warning">{selectedItem.requirements.pending}</span>
                       </div>
                       <div className="flex justify-between">
                         <span>Failed:</span>
-                        <span className="font-medium text-red-600">{selectedItem.requirements.failed}</span>
+                        <span className="font-medium text-destructive">{selectedItem.requirements.failed}</span>
                       </div>
                     </div>
                   </div>
@@ -431,7 +433,7 @@ export default function ComplianceDashboard() {
                   <div className="space-y-2">
                     {selectedItem.issues.length > 0 ? (
                       selectedItem.issues.map((issue) => (
-                        <div key={issue.id} className="p-3 border rounded-lg">
+                        <div key={issue.id} className="p-3 border rounded-[0.625rem]">
                           <div className="flex items-center justify-between mb-2">
                             <span className="font-medium">{issue.description}</span>
                             <Badge className={getSeverityColor(issue.severity)}>
@@ -457,7 +459,7 @@ export default function ComplianceDashboard() {
                   <h5 className="font-medium mb-2">Security Controls</h5>
                   <div className="space-y-2">
                     {selectedItem.controls.map((control) => (
-                      <div key={control.id} className="p-3 border rounded-lg">
+                      <div key={control.id} className="p-3 border rounded-[0.625rem]">
                         <div className="flex items-center justify-between mb-2">
                           <span className="font-medium">{control.name}</span>
                           <Badge className={getStatusColor(control.status)}>

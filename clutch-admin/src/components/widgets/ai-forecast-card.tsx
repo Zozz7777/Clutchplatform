@@ -6,6 +6,7 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { businessIntelligence, type RevenueForecast } from '@/lib/business-intelligence';
+import { logger } from '@/lib/logger';
 import { 
   Brain, 
   TrendingUp, 
@@ -34,7 +35,7 @@ export function AIForecastCard({ className = '' }: AIForecastCardProps) {
         const data = await businessIntelligence.getAIRevenueForecast();
         setForecast(data);
       } catch (error) {
-        console.error('Failed to load forecast:', error);
+        logger.error('Failed to load forecast:', error);
       } finally {
         setIsLoading(false);
       }

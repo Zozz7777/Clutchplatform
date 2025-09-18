@@ -6,6 +6,7 @@ import { Badge } from '@/components/ui/badge';
 import { Progress } from '@/components/ui/progress';
 import { businessIntelligence, type OperationalPulse } from '@/lib/business-intelligence';
 import { Users, Activity, Truck, DollarSign, TrendingUp, Zap } from 'lucide-react';
+import { logger } from '@/lib/logger';
 
 interface UnifiedOpsPulseProps {
   className?: string;
@@ -21,7 +22,7 @@ export function UnifiedOpsPulse({ className = '' }: UnifiedOpsPulseProps) {
         const data = await businessIntelligence.getUnifiedOpsPulse();
         setPulse(data);
       } catch (error) {
-        console.error('Failed to load ops pulse:', error);
+        logger.error('Failed to load ops pulse:', error);
       } finally {
         setIsLoading(false);
       }

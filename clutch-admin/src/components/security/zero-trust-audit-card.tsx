@@ -536,7 +536,7 @@ export default function ZeroTrustAuditCard() {
               variant="outline"
               size="sm"
               onClick={() => setIsMonitoring(!isMonitoring)}
-              className={isMonitoring ? 'bg-green-100 text-green-800' : ''}
+              className={isMonitoring ? 'bg-success/10 text-success' : ''}
             >
               {isMonitoring ? <Eye className="h-4 w-4 mr-2" /> : <EyeOff className="h-4 w-4 mr-2" />}
               {isMonitoring ? 'Monitoring' : 'Paused'}
@@ -577,7 +577,7 @@ export default function ZeroTrustAuditCard() {
 
         {/* Zero-Trust Overview */}
         {metrics && (
-          <div className="p-4 bg-gradient-to-r from-blue-50 to-purple-50 rounded-lg">
+          <div className="p-4 bg-gradient-to-r from-info/10 to-primary/10 rounded-[0.625rem]">
             <div className="flex items-center justify-between">
               <div>
                 <h4 className="font-medium">Zero-Trust Security Status</h4>
@@ -586,7 +586,7 @@ export default function ZeroTrustAuditCard() {
                 </p>
               </div>
               <div className="text-right">
-                <div className="text-3xl font-bold text-blue-600">
+                <div className="text-3xl font-bold text-info">
                   {metrics.overallScore}%
                 </div>
                 <div className="text-sm text-muted-foreground">overall score</div>
@@ -658,8 +658,8 @@ export default function ZeroTrustAuditCard() {
               {filteredPolicies.map((policy) => (
                 <div
                   key={policy.id}
-                  className={`p-3 border rounded-lg cursor-pointer transition-colors ${
-                    selectedPolicy?.id === policy.id ? 'border-blue-500 bg-blue-50' : 'hover:bg-gray-50'
+                  className={`p-3 border rounded-[0.625rem] cursor-pointer transition-colors ${
+                    selectedPolicy?.id === policy.id ? 'border-primary bg-primary/10' : 'hover:bg-muted/50'
                   }`}
                   onClick={() => setSelectedPolicy(policy)}
                 >
@@ -744,8 +744,8 @@ export default function ZeroTrustAuditCard() {
               {filteredAnomalies.map((anomaly) => (
                 <div
                   key={anomaly.id}
-                  className={`p-3 border rounded-lg cursor-pointer transition-colors ${
-                    selectedAnomaly?.id === anomaly.id ? 'border-blue-500 bg-blue-50' : 'hover:bg-gray-50'
+                  className={`p-3 border rounded-[0.625rem] cursor-pointer transition-colors ${
+                    selectedAnomaly?.id === anomaly.id ? 'border-primary bg-primary/10' : 'hover:bg-muted/50'
                   }`}
                   onClick={() => setSelectedAnomaly(anomaly)}
                 >
@@ -857,7 +857,7 @@ export default function ZeroTrustAuditCard() {
                         </div>
                         <div className="flex justify-between">
                           <span>Violations:</span>
-                          <span className="font-medium text-red-600">{selectedPolicy.compliance.violations}</span>
+                          <span className="font-medium text-destructive">{selectedPolicy.compliance.violations}</span>
                         </div>
                       </div>
                     </div>
@@ -932,7 +932,7 @@ export default function ZeroTrustAuditCard() {
                     <h5 className="font-medium mb-2">Policy Rules</h5>
                     <div className="space-y-2">
                       {selectedPolicy.rules.map((rule) => (
-                        <div key={rule.id} className="p-3 border rounded-lg">
+                        <div key={rule.id} className="p-3 border rounded-[0.625rem]">
                           <div className="flex items-center justify-between mb-2">
                             <span className="font-medium">{rule.name}</span>
                             <Badge className={getStatusColor(rule.status)}>
@@ -968,7 +968,7 @@ export default function ZeroTrustAuditCard() {
                       </div>
                       <div>
                         <span className="font-medium">Context:</span>
-                        <pre className="text-muted-foreground bg-gray-100 p-2 rounded text-xs">
+                        <pre className="text-muted-foreground bg-muted p-2 rounded-[0.625rem] text-xs">
                           {JSON.stringify(selectedAnomaly.details.context, null, 2)}
                         </pre>
                       </div>

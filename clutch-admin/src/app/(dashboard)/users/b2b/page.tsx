@@ -117,7 +117,7 @@ export default function B2BUsersPage() {
           </p>
         </div>
         {hasPermission("create_users") && (
-          <Button className="shadow-sm">
+          <Button className="shadow-2xs">
             <Plus className="mr-2 h-4 w-4" />
             Add Enterprise Client
           </Button>
@@ -126,7 +126,7 @@ export default function B2BUsersPage() {
 
       {/* Analytics Cards */}
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-        <Card className="shadow-sm">
+        <Card className="shadow-2xs">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium text-card-foreground">Total Enterprises</CardTitle>
             <Building2 className="h-4 w-4 text-muted-foreground" />
@@ -134,11 +134,11 @@ export default function B2BUsersPage() {
           <CardContent>
             <div className="text-2xl font-bold text-foreground">{users.length}</div>
             <p className="text-xs text-muted-foreground">
-              <span className="text-green-600">+8%</span> from last month
+              <span className="text-success">+8%</span> from last month
             </p>
           </CardContent>
         </Card>
-        <Card className="shadow-sm">
+        <Card className="shadow-2xs">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium text-card-foreground">Active Enterprises</CardTitle>
             <UserCheck className="h-4 w-4 text-muted-foreground" />
@@ -148,11 +148,11 @@ export default function B2BUsersPage() {
               {users.filter(u => u.status === "active").length}
             </div>
             <p className="text-xs text-muted-foreground">
-              <span className="text-green-600">+12%</span> from last month
+              <span className="text-success">+12%</span> from last month
             </p>
           </CardContent>
         </Card>
-        <Card className="shadow-sm">
+        <Card className="shadow-2xs">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium text-card-foreground">Total Users</CardTitle>
             <Users className="h-4 w-4 text-muted-foreground" />
@@ -162,11 +162,11 @@ export default function B2BUsersPage() {
               {users.length * 25} {/* Estimated users per enterprise */}
             </div>
             <p className="text-xs text-muted-foreground">
-              <span className="text-green-600">+15%</span> from last month
+              <span className="text-success">+15%</span> from last month
             </p>
           </CardContent>
         </Card>
-        <Card className="shadow-sm">
+        <Card className="shadow-2xs">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium text-card-foreground">Monthly Revenue</CardTitle>
             <DollarSign className="h-4 w-4 text-muted-foreground" />
@@ -176,7 +176,7 @@ export default function B2BUsersPage() {
               ${(users.length * 2500).toLocaleString()}
             </div>
             <p className="text-xs text-muted-foreground">
-              <span className="text-green-600">+18%</span> from last month
+              <span className="text-success">+18%</span> from last month
             </p>
           </CardContent>
         </Card>
@@ -289,7 +289,7 @@ export default function B2BUsersPage() {
                           <DollarSign className="mr-2 h-4 w-4" />
                           Billing & Usage
                         </DropdownMenuItem>
-                        <DropdownMenuItem className="text-red-600">
+                        <DropdownMenuItem className="text-destructive">
                           <UserX className="mr-2 h-4 w-4" />
                           Suspend Enterprise
                         </DropdownMenuItem>

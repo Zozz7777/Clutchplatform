@@ -834,12 +834,30 @@ export class ProductionApiService {
     }
   }
 
+  async getSystemPerformanceMetrics(): Promise<any> {
+    try {
+      return await realApi.getSystemPerformanceMetrics();
+    } catch (error) {
+      console.error("Failed to fetch system performance metrics:", error);
+      throw new Error("Failed to load system performance metrics");
+    }
+  }
+
   async getSystemAlerts(): Promise<any[]> {
     try {
       return await realApi.getSystemAlerts();
     } catch (error) {
       console.error("Failed to fetch system alerts:", error);
       throw new Error("Failed to load system alerts");
+    }
+  }
+
+  async getSystemLogs(): Promise<any[]> {
+    try {
+      return await realApi.getSystemLogs();
+    } catch (error) {
+      console.error("Failed to fetch system logs:", error);
+      throw new Error("Failed to load system logs");
     }
   }
 
@@ -1279,6 +1297,33 @@ export class ProductionApiService {
     } catch (error) {
       console.error("Failed to fetch portfolio risks:", error);
       throw new Error("Failed to load portfolio risks");
+    }
+  }
+
+  async getSLAMetrics(): Promise<any[]> {
+    try {
+      return await realApi.getSLAMetrics();
+    } catch (error) {
+      console.error("Failed to fetch SLA metrics:", error);
+      throw new Error("Failed to load SLA metrics");
+    }
+  }
+
+  async getServiceHealth(): Promise<any[]> {
+    try {
+      return await realApi.getServiceHealth();
+    } catch (error) {
+      console.error("Failed to fetch service health:", error);
+      throw new Error("Failed to load service health");
+    }
+  }
+
+  async getComplianceData(): Promise<any[]> {
+    try {
+      return await realApi.getComplianceData();
+    } catch (error) {
+      console.error("Failed to fetch compliance data:", error);
+      throw new Error("Failed to load compliance data");
     }
   }
 }

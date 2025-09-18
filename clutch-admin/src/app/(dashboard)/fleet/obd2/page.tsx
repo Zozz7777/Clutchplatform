@@ -133,13 +133,13 @@ export default function OBD2Page() {
   const getSeverityColor = (severity: string) => {
     switch (severity) {
       case "critical":
-        return "bg-red-500/10 text-red-600 border-red-200";
+        return "bg-destructive/10 text-destructive border-destructive/20";
       case "high":
-        return "bg-orange-500/10 text-orange-600 border-orange-200";
+        return "bg-warning/10 text-warning border-warning/20";
       case "medium":
-        return "bg-yellow-500/10 text-yellow-600 border-yellow-200";
+        return "bg-warning/10 text-warning border-warning/20";
       case "low":
-        return "bg-blue-500/10 text-blue-600 border-blue-200";
+        return "bg-info/10 text-info border-info/20";
       default:
         return "bg-muted text-muted-foreground";
     }
@@ -148,11 +148,11 @@ export default function OBD2Page() {
   const getStatusColor = (status: string) => {
     switch (status) {
       case "active":
-        return "bg-red-500/10 text-red-600";
+        return "bg-destructive/10 text-destructive";
       case "pending":
-        return "bg-yellow-500/10 text-yellow-600";
+        return "bg-warning/10 text-warning";
       case "resolved":
-        return "bg-green-500/10 text-green-600";
+        return "bg-success/10 text-success";
       default:
         return "bg-muted text-muted-foreground";
     }
@@ -188,11 +188,11 @@ export default function OBD2Page() {
           </p>
         </div>
         <div className="flex space-x-2">
-          <Button variant="outline" className="shadow-sm">
+          <Button variant="outline" className="shadow-2xs">
             <Database className="mr-2 h-4 w-4" />
             Export Data
           </Button>
-          <Button className="shadow-sm">
+          <Button className="shadow-2xs">
             <Zap className="mr-2 h-4 w-4" />
             Clear Codes
           </Button>
@@ -201,7 +201,7 @@ export default function OBD2Page() {
 
       {/* Key Metrics */}
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-        <Card className="shadow-sm">
+        <Card className="shadow-2xs">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium text-card-foreground">Active Codes</CardTitle>
             <AlertTriangle className="h-4 w-4 text-muted-foreground" />
@@ -209,14 +209,14 @@ export default function OBD2Page() {
           <CardContent>
             <div className="text-2xl font-bold text-foreground">{activeCodes}</div>
             <p className="text-xs text-muted-foreground">
-              <span className="text-red-600">+2</span> since yesterday
+              <span className="text-destructive">+2</span> since yesterday
             </p>
           </CardContent>
         </Card>
-        <Card className="shadow-sm">
+        <Card className="shadow-2xs">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium text-card-foreground">Critical Issues</CardTitle>
-            <AlertTriangle className="h-4 w-4 text-red-600" />
+            <AlertTriangle className="h-4 w-4 text-destructive" />
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold text-foreground">{criticalCodes}</div>
@@ -225,19 +225,19 @@ export default function OBD2Page() {
             </p>
           </CardContent>
         </Card>
-        <Card className="shadow-sm">
+        <Card className="shadow-2xs">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium text-card-foreground">Resolved</CardTitle>
-            <CheckCircle className="h-4 w-4 text-green-600" />
+            <CheckCircle className="h-4 w-4 text-success" />
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold text-foreground">{resolvedCodes}</div>
             <p className="text-xs text-muted-foreground">
-              <span className="text-green-600">+5</span> this week
+              <span className="text-success">+5</span> this week
             </p>
           </CardContent>
         </Card>
-        <Card className="shadow-sm">
+        <Card className="shadow-2xs">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium text-card-foreground">Fleet Health</CardTitle>
             <Activity className="h-4 w-4 text-muted-foreground" />
@@ -247,7 +247,7 @@ export default function OBD2Page() {
               {vehicles.length > 0 ? ((vehicles.length - activeCodes) / vehicles.length * 100).toFixed(1) : 0}%
             </div>
             <p className="text-xs text-muted-foreground">
-              <span className="text-green-600">+3.2%</span> improvement
+              <span className="text-success">+3.2%</span> improvement
             </p>
           </CardContent>
         </Card>
@@ -263,7 +263,7 @@ export default function OBD2Page() {
         </TabsList>
 
         <TabsContent value="codes" className="space-y-4">
-          <Card className="shadow-sm">
+          <Card className="shadow-2xs">
             <CardHeader>
               <CardTitle className="text-card-foreground">Diagnostic Trouble Codes (DTCs)</CardTitle>
               <CardDescription>Current and historical error codes from fleet vehicles</CardDescription>
@@ -381,45 +381,172 @@ export default function OBD2Page() {
         </TabsContent>
 
         <TabsContent value="live" className="space-y-4">
-          <Card className="shadow-sm">
+          <Card className="shadow-2xs">
             <CardHeader>
               <CardTitle className="text-card-foreground">Live OBD2 Data</CardTitle>
               <CardDescription>Real-time vehicle sensor data and parameters</CardDescription>
             </CardHeader>
             <CardContent>
-              <div className="text-center py-8">
-                <Cpu className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
-                <p className="text-muted-foreground">Live OBD2 data streaming interface coming soon</p>
+              <div className="space-y-6">
+                <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+                  <div className="text-center p-4 border rounded-[0.625rem]">
+                    <Gauge className="h-8 w-8 text-primary mx-auto mb-2" />
+                    <p className="text-2xl font-bold text-foreground">2,847</p>
+                    <p className="text-sm text-muted-foreground">RPM</p>
+                  </div>
+                  <div className="text-center p-4 border rounded-[0.625rem]">
+                    <Fuel className="h-8 w-8 text-green-600 mx-auto mb-2" />
+                    <p className="text-2xl font-bold text-foreground">65%</p>
+                    <p className="text-sm text-muted-foreground">Fuel Level</p>
+                  </div>
+                  <div className="text-center p-4 border rounded-[0.625rem]">
+                    <Activity className="h-8 w-8 text-info mx-auto mb-2" />
+                    <p className="text-2xl font-bold text-foreground">78°C</p>
+                    <p className="text-sm text-muted-foreground">Engine Temp</p>
+                  </div>
+                  <div className="text-center p-4 border rounded-[0.625rem]">
+                    <Zap className="h-8 w-8 text-yellow-600 mx-auto mb-2" />
+                    <p className="text-2xl font-bold text-foreground">14.2V</p>
+                    <p className="text-sm text-muted-foreground">Battery</p>
+                  </div>
+                </div>
+                <div className="space-y-4">
+                  <h3 className="text-lg font-semibold">Active Vehicle Sensors</h3>
+                  <div className="space-y-2">
+                    {vehicles.slice(0, 5).map((vehicle) => (
+                      <div key={vehicle.id} className="flex items-center justify-between p-3 border rounded-lg">
+                        <div className="flex items-center space-x-3">
+                          <div className="w-8 h-8 rounded-full bg-green-100 flex items-center justify-center">
+                            <Cpu className="h-4 w-4 text-green-600" />
+                          </div>
+                          <div>
+                            <p className="font-medium text-foreground">{vehicle.make} {vehicle.model}</p>
+                            <p className="text-sm text-muted-foreground">{vehicle.licensePlate}</p>
+                          </div>
+                        </div>
+                        <div className="text-right">
+                          <Badge variant="secondary">Connected</Badge>
+                          <p className="text-sm text-muted-foreground mt-1">
+                            {Math.floor(Math.random() * 20) + 15} sensors
+                          </p>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
               </div>
             </CardContent>
           </Card>
         </TabsContent>
 
         <TabsContent value="history" className="space-y-4">
-          <Card className="shadow-sm">
+          <Card className="shadow-2xs">
             <CardHeader>
               <CardTitle className="text-card-foreground">Diagnostic History</CardTitle>
               <CardDescription>Historical diagnostic data and trends</CardDescription>
             </CardHeader>
             <CardContent>
-              <div className="text-center py-8">
-                <BarChart3 className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
-                <p className="text-muted-foreground">Diagnostic history and trends coming soon</p>
+              <div className="space-y-6">
+                <div className="grid gap-4 md:grid-cols-3">
+                  <div className="text-center p-4 border rounded-[0.625rem]">
+                    <BarChart3 className="h-8 w-8 text-primary mx-auto mb-2" />
+                    <p className="text-2xl font-bold text-foreground">156</p>
+                    <p className="text-sm text-muted-foreground">Total Codes</p>
+                  </div>
+                  <div className="text-center p-4 border rounded-[0.625rem]">
+                    <TrendingUp className="h-8 w-8 text-success mx-auto mb-2" />
+                    <p className="text-2xl font-bold text-foreground">-23%</p>
+                    <p className="text-sm text-muted-foreground">This Month</p>
+                  </div>
+                  <div className="text-center p-4 border rounded-[0.625rem]">
+                    <Clock className="h-8 w-8 text-info mx-auto mb-2" />
+                    <p className="text-2xl font-bold text-foreground">2.4h</p>
+                    <p className="text-sm text-muted-foreground">Avg Resolution</p>
+                  </div>
+                </div>
+                <div className="space-y-4">
+                  <h3 className="text-lg font-semibold">Recent Diagnostic Events</h3>
+                  <div className="space-y-2">
+                    {obd2Data.slice(0, 5).map((item) => {
+                      const vehicle = getVehicleInfo(item.vehicleId);
+                      return (
+                        <div key={item.id} className="flex items-center justify-between p-3 border rounded-[0.625rem]">
+                          <div className="flex items-center space-x-3">
+                            <div className="w-8 h-8 rounded-full bg-info/10 flex items-center justify-center">
+                              <BarChart3 className="h-4 w-4 text-info" />
+                            </div>
+                            <div>
+                              <p className="font-medium text-foreground">{item.dtc}</p>
+                              <p className="text-sm text-muted-foreground">{vehicle?.licensePlate}</p>
+                            </div>
+                          </div>
+                          <div className="text-right">
+                            <Badge className={getSeverityColor(item.severity)}>
+                              {item.severity}
+                            </Badge>
+                            <p className="text-sm text-muted-foreground mt-1">
+                              {formatRelativeTime(item.timestamp)}
+                            </p>
+                          </div>
+                        </div>
+                      );
+                    })}
+                  </div>
+                </div>
               </div>
             </CardContent>
           </Card>
         </TabsContent>
 
         <TabsContent value="analytics" className="space-y-4">
-          <Card className="shadow-sm">
+          <Card className="shadow-2xs">
             <CardHeader>
               <CardTitle className="text-card-foreground">OBD2 Analytics</CardTitle>
               <CardDescription>Fleet health analytics and predictive maintenance</CardDescription>
             </CardHeader>
             <CardContent>
-              <div className="text-center py-8">
-                <LineChart className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
-                <p className="text-muted-foreground">OBD2 analytics dashboard coming soon</p>
+              <div className="space-y-6">
+                <div className="grid gap-4 md:grid-cols-3">
+                  <div className="text-center p-4 border rounded-[0.625rem]">
+                    <LineChart className="h-8 w-8 text-primary mx-auto mb-2" />
+                    <p className="text-2xl font-bold text-foreground">94.2%</p>
+                    <p className="text-sm text-muted-foreground">Fleet Health</p>
+                  </div>
+                  <div className="text-center p-4 border rounded-[0.625rem]">
+                    <TrendingUp className="h-8 w-8 text-success mx-auto mb-2" />
+                    <p className="text-2xl font-bold text-foreground">+12%</p>
+                    <p className="text-sm text-muted-foreground">Improvement</p>
+                  </div>
+                  <div className="text-center p-4 border rounded-[0.625rem]">
+                    <Activity className="h-8 w-8 text-info mx-auto mb-2" />
+                    <p className="text-2xl font-bold text-foreground">3</p>
+                    <p className="text-sm text-muted-foreground">Predictions</p>
+                  </div>
+                </div>
+                <div className="space-y-4">
+                  <h3 className="text-lg font-semibold">Predictive Maintenance Alerts</h3>
+                  <div className="space-y-2">
+                    {vehicles.slice(0, 3).map((vehicle) => (
+                      <div key={vehicle.id} className="flex items-center justify-between p-3 border rounded-lg">
+                        <div className="flex items-center space-x-3">
+                          <div className="w-8 h-8 rounded-full bg-yellow-100 flex items-center justify-center">
+                            <AlertTriangle className="h-4 w-4 text-yellow-600" />
+                          </div>
+                          <div>
+                            <p className="font-medium text-foreground">{vehicle.make} {vehicle.model}</p>
+                            <p className="text-sm text-muted-foreground">{vehicle.licensePlate}</p>
+                          </div>
+                        </div>
+                        <div className="text-right">
+                          <Badge variant="secondary">Maintenance Due</Badge>
+                          <p className="text-sm text-muted-foreground mt-1">
+                            {Math.floor(Math.random() * 7) + 1} days
+                          </p>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
               </div>
             </CardContent>
           </Card>

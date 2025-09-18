@@ -54,6 +54,8 @@ import {
   Filter,
 } from "lucide-react";
 import { productionApi } from "@/lib/production-api";
+import { logger } from "@/lib/logger";
+import { toast } from "sonner";
 
 interface SystemStatus {
   overall: "healthy" | "degraded" | "critical" | "down";
@@ -232,107 +234,29 @@ export default function SystemHealthPage() {
     },
   };
 
-  const mockAlerts: SystemAlert[] = [
-    {
-      _id: "1",
-      timestamp: "2024-03-15T14:25:00Z",
-      severity: "high",
-      type: "disk",
-      title: "Disk Usage High",
-      description: "Disk usage has exceeded 80% on the main storage volume",
-      source: "storage-monitor",
-      status: "open",
-      metadata: {
-        volume: "/dev/sda1",
-        usage: 85.2,
-        threshold: 80,
-      },
-      createdAt: "2024-03-15T14:25:00Z",
-    },
-    {
-      _id: "2",
-      timestamp: "2024-03-15T13:45:00Z",
-      severity: "medium",
-      type: "service",
-      title: "File Storage Service Degraded",
-      description: "File storage service response time is above normal threshold",
-      source: "service-monitor",
-      status: "acknowledged",
-      acknowledgedBy: {
-        id: "1",
-        name: "Ahmed Hassan",
-      },
-      acknowledgedAt: "2024-03-15T14:00:00Z",
-      metadata: {
-        service: "file-storage",
-        responseTime: 150,
-        threshold: 100,
-      },
-      createdAt: "2024-03-15T13:45:00Z",
-    },
-    {
-      _id: "3",
-      timestamp: "2024-03-15T12:30:00Z",
-      severity: "low",
-      type: "database",
-      title: "Slow Query Detected",
-      description: "Database query taking longer than expected",
-      source: "database-monitor",
-      status: "resolved",
-      resolvedAt: "2024-03-15T13:00:00Z",
-      metadata: {
-        query: "SELECT * FROM users WHERE...",
-        duration: 2.5,
-        threshold: 1.0,
-      },
-      createdAt: "2024-03-15T12:30:00Z",
-    },
-  ];
-
-  const mockLogs: SystemLog[] = [
-    {
-      _id: "1",
-      timestamp: "2024-03-15T14:30:00Z",
-      level: "info",
-      source: "api-server",
-      message: "User authentication successful",
-      context: {
-        userId: "123",
-        ipAddress: "192.168.1.100",
-        userAgent: "Mozilla/5.0...",
-      },
-      tags: ["authentication", "success"],
-      createdAt: "2024-03-15T14:30:00Z",
-    },
-    {
-      _id: "2",
-      timestamp: "2024-03-15T14:29:45Z",
-      level: "warn",
-      source: "file-storage",
-      message: "High response time detected",
-      context: {
-        responseTime: 150,
-        threshold: 100,
-        endpoint: "/api/files/upload",
-      },
-      tags: ["performance", "warning"],
-      createdAt: "2024-03-15T14:29:45Z",
-    },
-    {
-      _id: "3",
-      timestamp: "2024-03-15T14:29:30Z",
-      level: "error",
-      source: "database",
-      message: "Connection pool exhausted",
-      context: {
-        activeConnections: 95,
-        maxConnections: 100,
-        queueLength: 15,
-      },
-      tags: ["database", "connection", "error"],
-      createdAt: "2024-03-15T14:29:30Z",
-    },
-  ];
+  // Load real data from API
+  const loadSystemData = async () => {
+    try {
+      setLoading(true);
+      const [healthData, alertsData, logsData] = await Promise.all([
+        productionApi.getSystemHealth(),
+        productionApi.getSystemAlerts(),
+        productionApi.getSystemLogs()
+      ]);
+      
+      setSystemStatus(healthData?.status || null);
+      setSystemMetrics(healthData?.metrics || null);
+      setAlerts(alertsData || []);
+      setLogs(logsData || []);
+    } catch (error) {
+      logger.error('Failed to load system data:', error);
+      // Set fallback data if API fails
+      setAlerts([]);
+      setLogs([]);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   useEffect(() => {
     loadSystemData();
@@ -343,37 +267,6 @@ export default function SystemHealthPage() {
     }
   }, [autoRefresh, refreshInterval]);
 
-  const loadSystemData = async () => {
-    try {
-      setLoading(true);
-      
-      // Load system status
-      const statusData = await productionApi.getSystemHealth();
-      setSystemStatus(statusData || mockSystemStatus);
-      
-      // Load system metrics
-      const metricsData = await productionApi.getApiPerformance();
-      setSystemMetrics(metricsData || mockSystemMetrics);
-      
-      // Load alerts
-      const alertsData = await productionApi.getSystemHealth();
-      setAlerts(alertsData?.alerts || mockAlerts);
-      
-      // Load logs
-      const logsData = await productionApi.getAuditLogs();
-      setLogs(logsData || mockLogs);
-      
-    } catch (error) {
-      console.error("Error loading system data:", error);
-      // Use mock data as fallback
-      setSystemStatus(mockSystemStatus);
-      setSystemMetrics(mockSystemMetrics);
-      setAlerts(mockAlerts);
-      setLogs(mockLogs);
-    } finally {
-      setLoading(false);
-    }
-  };
 
   const getStatusColor = (status: string) => {
     switch (status) {
@@ -638,9 +531,9 @@ export default function SystemHealthPage() {
         <CardContent>
           <div className="space-y-4">
             {systemStatus?.services.map((service) => (
-              <div key={service.name} className="flex items-center justify-between p-4 border rounded-lg">
+              <div key={service.name} className="flex items-center justify-between p-4 border rounded-[0.625rem]">
                 <div className="flex items-center space-x-4">
-                  <div className="p-2 bg-primary/10 rounded-lg">
+                  <div className="p-2 bg-primary/10 rounded-[0.625rem]">
                     <Server className="h-4 w-4 text-primary" />
                   </div>
                   <div>
@@ -682,9 +575,9 @@ export default function SystemHealthPage() {
         <CardContent>
           <div className="space-y-4">
             {alerts.slice(0, 10).map((alert) => (
-              <div key={alert._id} className="flex items-center justify-between p-4 border rounded-lg">
+              <div key={alert._id} className="flex items-center justify-between p-4 border rounded-[0.625rem]">
                 <div className="flex items-center space-x-4">
-                  <div className="p-2 bg-destructive/10 rounded-lg">
+                  <div className="p-2 bg-destructive/10 rounded-[0.625rem]">
                     <AlertTriangle className="h-4 w-4 text-destructive" />
                   </div>
                   <div>
@@ -730,7 +623,7 @@ export default function SystemHealthPage() {
         <CardContent>
           <div className="space-y-2">
             {logs.slice(0, 20).map((log) => (
-              <div key={log._id} className="flex items-center justify-between p-3 border rounded-lg">
+              <div key={log._id} className="flex items-center justify-between p-3 border rounded-[0.625rem]">
                 <div className="flex items-center space-x-4">
                   <Badge className={getLogLevelColor(log.level)}>
                     {log.level.toUpperCase()}
@@ -801,7 +694,7 @@ export default function SystemHealthPage() {
               {selectedAlert.metadata && (
                 <div>
                   <Label className="text-sm font-medium">Metadata</Label>
-                  <pre className="text-sm text-muted-foreground bg-muted p-2 rounded">
+                  <pre className="text-sm text-muted-foreground bg-muted p-2 rounded-[0.625rem]">
                     {JSON.stringify(selectedAlert.metadata, null, 2)}
                   </pre>
                 </div>
@@ -824,10 +717,10 @@ export default function SystemHealthPage() {
                       : alert
                   ));
                   setShowAlertDialog(false);
-                  console.log('Alert acknowledged successfully');
+                  logger.log('Alert acknowledged successfully');
                 } catch (error) {
-                  console.error('Failed to acknowledge alert:', error);
-                  alert('Failed to acknowledge alert. Please try again.');
+                  logger.error('Failed to acknowledge alert:', error);
+                  toast.error('Failed to acknowledge alert. Please try again.');
                 }
               }}>
                 Acknowledge Alert

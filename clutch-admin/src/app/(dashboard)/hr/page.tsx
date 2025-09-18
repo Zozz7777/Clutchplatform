@@ -363,10 +363,7 @@ export default function HRPage() {
   };
 
   const handleCancelInvitation = async (invitationId: string) => {
-    if (!confirm("Are you sure you want to cancel this invitation?")) {
-      return;
-    }
-
+    // Proceed with cancellation
     try {
       const response = await apiService.cancelInvitation(invitationId);
       if (response.success) {

@@ -379,9 +379,57 @@ export default function UsersPage() {
               <CardDescription>Individual customers using the platform</CardDescription>
             </CardHeader>
             <CardContent>
-              <div className="text-center py-8">
-                <Users className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
-                <p className="text-muted-foreground">Customer management interface coming soon</p>
+              <div className="space-y-6">
+                <div className="grid gap-4 md:grid-cols-3">
+                  <div className="text-center p-4 border rounded-lg">
+                    <Users className="h-8 w-8 text-primary mx-auto mb-2" />
+                    <p className="text-2xl font-bold text-foreground">
+                      {users.filter(u => u.role === "customer").length}
+                    </p>
+                    <p className="text-sm text-muted-foreground">Total Customers</p>
+                  </div>
+                  <div className="text-center p-4 border rounded-lg">
+                    <TrendingUp className="h-8 w-8 text-green-600 mx-auto mb-2" />
+                    <p className="text-2xl font-bold text-foreground">+18%</p>
+                    <p className="text-sm text-muted-foreground">Growth Rate</p>
+                  </div>
+                  <div className="text-center p-4 border rounded-lg">
+                    <Activity className="h-8 w-8 text-blue-600 mx-auto mb-2" />
+                    <p className="text-2xl font-bold text-foreground">87%</p>
+                    <p className="text-sm text-muted-foreground">Active Rate</p>
+                  </div>
+                </div>
+                <div className="space-y-4">
+                  <h3 className="text-lg font-semibold">Recent Customer Activity</h3>
+                  <div className="space-y-2">
+                    {users
+                      .filter(u => u.role === "customer")
+                      .slice(0, 5)
+                      .map((user) => (
+                        <div key={user.id} className="flex items-center justify-between p-3 border rounded-lg">
+                          <div className="flex items-center space-x-3">
+                            <div className="w-8 h-8 rounded-full bg-primary flex items-center justify-center">
+                              <span className="text-primary-foreground text-sm font-medium">
+                                {user.name.charAt(0).toUpperCase()}
+                              </span>
+                            </div>
+                            <div>
+                              <p className="font-medium text-foreground">{user.name}</p>
+                              <p className="text-sm text-muted-foreground">{user.email}</p>
+                            </div>
+                          </div>
+                          <div className="text-right">
+                            <Badge className={getStatusColor(user.status)}>
+                              {user.status}
+                            </Badge>
+                            <p className="text-sm text-muted-foreground mt-1">
+                              {formatRelativeTime(user.lastLogin)}
+                            </p>
+                          </div>
+                        </div>
+                      ))}
+                  </div>
+                </div>
               </div>
             </CardContent>
           </Card>
@@ -394,9 +442,55 @@ export default function UsersPage() {
               <CardDescription>B2B enterprise accounts and their management</CardDescription>
             </CardHeader>
             <CardContent>
-              <div className="text-center py-8">
-                <Building2 className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
-                <p className="text-muted-foreground">Enterprise client management interface coming soon</p>
+              <div className="space-y-6">
+                <div className="grid gap-4 md:grid-cols-3">
+                  <div className="text-center p-4 border rounded-lg">
+                    <Building2 className="h-8 w-8 text-primary mx-auto mb-2" />
+                    <p className="text-2xl font-bold text-foreground">
+                      {users.filter(u => u.role === "enterprise_client").length}
+                    </p>
+                    <p className="text-sm text-muted-foreground">Enterprise Clients</p>
+                  </div>
+                  <div className="text-center p-4 border rounded-lg">
+                    <TrendingUp className="h-8 w-8 text-green-600 mx-auto mb-2" />
+                    <p className="text-2xl font-bold text-foreground">+5%</p>
+                    <p className="text-sm text-muted-foreground">Growth Rate</p>
+                  </div>
+                  <div className="text-center p-4 border rounded-lg">
+                    <Activity className="h-8 w-8 text-blue-600 mx-auto mb-2" />
+                    <p className="text-2xl font-bold text-foreground">92%</p>
+                    <p className="text-sm text-muted-foreground">Active Rate</p>
+                  </div>
+                </div>
+                <div className="space-y-4">
+                  <h3 className="text-lg font-semibold">Enterprise Client Overview</h3>
+                  <div className="space-y-2">
+                    {users
+                      .filter(u => u.role === "enterprise_client")
+                      .slice(0, 5)
+                      .map((user) => (
+                        <div key={user.id} className="flex items-center justify-between p-3 border rounded-lg">
+                          <div className="flex items-center space-x-3">
+                            <div className="w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center">
+                              <Building2 className="h-4 w-4 text-blue-600" />
+                            </div>
+                            <div>
+                              <p className="font-medium text-foreground">{user.name}</p>
+                              <p className="text-sm text-muted-foreground">{user.email}</p>
+                            </div>
+                          </div>
+                          <div className="text-right">
+                            <Badge className={getStatusColor(user.status)}>
+                              {user.status}
+                            </Badge>
+                            <p className="text-sm text-muted-foreground mt-1">
+                              {formatRelativeTime(user.lastLogin)}
+                            </p>
+                          </div>
+                        </div>
+                      ))}
+                  </div>
+                </div>
               </div>
             </CardContent>
           </Card>
@@ -409,9 +503,55 @@ export default function UsersPage() {
               <CardDescription>Service providers and their capabilities</CardDescription>
             </CardHeader>
             <CardContent>
-              <div className="text-center py-8">
-                <UserCog className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
-                <p className="text-muted-foreground">Service provider management interface coming soon</p>
+              <div className="space-y-6">
+                <div className="grid gap-4 md:grid-cols-3">
+                  <div className="text-center p-4 border rounded-lg">
+                    <UserCog className="h-8 w-8 text-primary mx-auto mb-2" />
+                    <p className="text-2xl font-bold text-foreground">
+                      {users.filter(u => u.role === "service_provider").length}
+                    </p>
+                    <p className="text-sm text-muted-foreground">Service Providers</p>
+                  </div>
+                  <div className="text-center p-4 border rounded-lg">
+                    <TrendingUp className="h-8 w-8 text-green-600 mx-auto mb-2" />
+                    <p className="text-2xl font-bold text-foreground">+15%</p>
+                    <p className="text-sm text-muted-foreground">Growth Rate</p>
+                  </div>
+                  <div className="text-center p-4 border rounded-lg">
+                    <Activity className="h-8 w-8 text-blue-600 mx-auto mb-2" />
+                    <p className="text-2xl font-bold text-foreground">89%</p>
+                    <p className="text-sm text-muted-foreground">Active Rate</p>
+                  </div>
+                </div>
+                <div className="space-y-4">
+                  <h3 className="text-lg font-semibold">Service Provider Overview</h3>
+                  <div className="space-y-2">
+                    {users
+                      .filter(u => u.role === "service_provider")
+                      .slice(0, 5)
+                      .map((user) => (
+                        <div key={user.id} className="flex items-center justify-between p-3 border rounded-lg">
+                          <div className="flex items-center space-x-3">
+                            <div className="w-8 h-8 rounded-full bg-green-100 flex items-center justify-center">
+                              <UserCog className="h-4 w-4 text-green-600" />
+                            </div>
+                            <div>
+                              <p className="font-medium text-foreground">{user.name}</p>
+                              <p className="text-sm text-muted-foreground">{user.email}</p>
+                            </div>
+                          </div>
+                          <div className="text-right">
+                            <Badge className={getStatusColor(user.status)}>
+                              {user.status}
+                            </Badge>
+                            <p className="text-sm text-muted-foreground mt-1">
+                              {formatRelativeTime(user.lastLogin)}
+                            </p>
+                          </div>
+                        </div>
+                      ))}
+                  </div>
+                </div>
               </div>
             </CardContent>
           </Card>

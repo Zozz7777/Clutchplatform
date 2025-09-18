@@ -74,21 +74,21 @@ export function RootCauseTimeline({ className = '' }: RootCauseTimelineProps) {
 
   const getSeverityColor = (severity: string) => {
     switch (severity) {
-      case 'critical': return 'text-red-600';
-      case 'high': return 'text-orange-600';
-      case 'medium': return 'text-yellow-600';
-      case 'low': return 'text-green-600';
-      default: return 'text-gray-600';
+      case 'critical': return 'text-destructive';
+      case 'high': return 'text-warning';
+      case 'medium': return 'text-warning';
+      case 'low': return 'text-success';
+      default: return 'text-muted-foreground';
     }
   };
 
   const getSeverityBadge = (severity: string) => {
     switch (severity) {
-      case 'critical': return 'bg-red-100 text-red-800';
-      case 'high': return 'bg-orange-100 text-orange-800';
-      case 'medium': return 'bg-yellow-100 text-yellow-800';
-      case 'low': return 'bg-green-100 text-green-800';
-      default: return 'bg-gray-100 text-gray-800';
+      case 'critical': return 'bg-destructive/10 text-destructive';
+      case 'high': return 'bg-warning/10 text-warning';
+      case 'medium': return 'bg-warning/10 text-warning';
+      case 'low': return 'bg-success/10 text-success';
+      default: return 'bg-muted text-muted-foreground';
     }
   };
 
@@ -102,9 +102,9 @@ export function RootCauseTimeline({ className = '' }: RootCauseTimelineProps) {
 
   const getTrendColor = (trend: string) => {
     switch (trend) {
-      case 'up': return 'text-red-600';
-      case 'down': return 'text-green-600';
-      default: return 'text-gray-600';
+      case 'up': return 'text-destructive';
+      case 'down': return 'text-success';
+      default: return 'text-muted-foreground';
     }
   };
 
@@ -124,16 +124,16 @@ export function RootCauseTimeline({ className = '' }: RootCauseTimelineProps) {
       <Card className={className}>
         <CardHeader>
           <CardTitle className="flex items-center space-x-2">
-            <Search className="h-5 w-5 text-blue-600" />
+            <Search className="h-5 w-5 text-info" />
             <span>Root Cause Timeline</span>
           </CardTitle>
           <CardDescription>Loading root cause analysis data...</CardDescription>
         </CardHeader>
         <CardContent>
           <div className="animate-pulse space-y-4">
-            <div className="h-4 bg-gray-200 rounded-lg w-3/4"></div>
-            <div className="h-4 bg-gray-200 rounded-lg w-1/2"></div>
-            <div className="h-4 bg-gray-200 rounded-lg w-2/3"></div>
+            <div className="h-4 bg-muted rounded-[0.625rem] w-3/4"></div>
+            <div className="h-4 bg-muted rounded-[0.625rem] w-1/2"></div>
+            <div className="h-4 bg-muted rounded-[0.625rem] w-2/3"></div>
           </div>
         </CardContent>
       </Card>
@@ -145,7 +145,7 @@ export function RootCauseTimeline({ className = '' }: RootCauseTimelineProps) {
       <Card className={className}>
         <CardHeader>
           <CardTitle className="flex items-center space-x-2">
-            <Search className="h-5 w-5 text-blue-600" />
+            <Search className="h-5 w-5 text-info" />
             <span>Root Cause Timeline</span>
           </CardTitle>
           <CardDescription>Unable to load root cause analysis data</CardDescription>
@@ -158,7 +158,7 @@ export function RootCauseTimeline({ className = '' }: RootCauseTimelineProps) {
     <Card className={className}>
       <CardHeader>
         <CardTitle className="flex items-center space-x-2">
-          <Search className="h-5 w-5 text-blue-600" />
+          <Search className="h-5 w-5 text-info" />
           <span>Root Cause Timeline</span>
         </CardTitle>
         <CardDescription>
@@ -168,29 +168,29 @@ export function RootCauseTimeline({ className = '' }: RootCauseTimelineProps) {
       <CardContent className="space-y-6">
         {/* Summary Stats */}
         <div className="grid grid-cols-2 gap-4">
-          <div className="text-center p-3 bg-blue-50 rounded-lg-lg">
-            <AlertTriangle className="h-5 w-5 text-blue-600 mx-auto mb-1" />
-            <p className="text-lg font-bold text-blue-600">{rootCauseData.totalIncidents}</p>
-            <p className="text-xs text-gray-500">Total Incidents</p>
+          <div className="text-center p-3 bg-info/10 rounded-[0.625rem]">
+            <AlertTriangle className="h-5 w-5 text-info mx-auto mb-1" />
+            <p className="text-lg font-bold text-info">{rootCauseData.totalIncidents}</p>
+            <p className="text-xs text-muted-foreground">Total Incidents</p>
           </div>
-          <div className="text-center p-3 bg-green-50 rounded-lg-lg">
-            <Clock className="h-5 w-5 text-green-600 mx-auto mb-1" />
-            <p className="text-lg font-bold text-green-600">{rootCauseData.averageResolution}m</p>
-            <p className="text-xs text-gray-500">Avg Resolution</p>
+          <div className="text-center p-3 bg-success/10 rounded-[0.625rem]">
+            <Clock className="h-5 w-5 text-success mx-auto mb-1" />
+            <p className="text-lg font-bold text-success">{rootCauseData.averageResolution}m</p>
+            <p className="text-xs text-muted-foreground">Avg Resolution</p>
           </div>
         </div>
 
         {/* Top Root Cause */}
         {rootCauseData.topCause && (
-          <div className="text-center p-4 bg-gray-50 rounded-lg-lg">
+          <div className="text-center p-4 bg-muted/50 rounded-[0.625rem]">
             <div className="flex items-center justify-center space-x-2 mb-2">
-              <Target className="h-6 w-6 text-red-600" />
-              <span className="text-xl font-bold text-gray-900">{rootCauseData.topCause.category}</span>
+              <Target className="h-6 w-6 text-destructive" />
+              <span className="text-xl font-bold text-foreground">{rootCauseData.topCause.category}</span>
               <Badge className={getSeverityBadge(rootCauseData.topCause.severity)}>
                 {rootCauseData.topCause.severity}
               </Badge>
             </div>
-            <p className="text-sm text-gray-600">{rootCauseData.topCause.description}</p>
+            <p className="text-sm text-muted-foreground">{rootCauseData.topCause.description}</p>
             <div className="mt-3">
               <Progress value={rootCauseData.topCause.frequency} className="h-2" />
             </div>
@@ -199,28 +199,28 @@ export function RootCauseTimeline({ className = '' }: RootCauseTimelineProps) {
 
         {/* Root Causes */}
         <div className="space-y-3">
-          <h4 className="text-sm font-medium text-gray-900">Root Causes</h4>
+          <h4 className="text-sm font-medium text-foreground">Root Causes</h4>
           <div className="space-y-2">
             {rootCauseData.causes.map((cause, index) => {
               const TrendIcon = getTrendIcon(cause.trend);
               
               return (
-                <div key={cause.id} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg-lg">
+                <div key={cause.id} className="flex items-center justify-between p-3 bg-muted/50 rounded-[0.625rem]">
                   <div className="flex items-center space-x-3">
-                    <div className="flex items-center justify-center w-8 h-8 bg-blue-100 rounded-lg-full">
-                      <span className="text-sm font-semibold text-blue-600">
+                    <div className="flex items-center justify-center w-8 h-8 bg-info/10 rounded-full">
+                      <span className="text-sm font-semibold text-info">
                         {index + 1}
                       </span>
                     </div>
                     <div>
-                      <p className="text-sm font-medium text-gray-900">{cause.category}</p>
-                      <p className="text-xs text-gray-500">{cause.description}</p>
+                      <p className="text-sm font-medium text-foreground">{cause.category}</p>
+                      <p className="text-xs text-muted-foreground">{cause.description}</p>
                     </div>
                   </div>
                   
                   <div className="text-right">
                     <div className="flex items-center space-x-2">
-                      <p className="text-sm font-semibold text-gray-900">{cause.incidents}</p>
+                      <p className="text-sm font-semibold text-foreground">{cause.incidents}</p>
                       <Badge className={getSeverityBadge(cause.severity)}>
                         {cause.severity}
                       </Badge>
@@ -240,13 +240,13 @@ export function RootCauseTimeline({ className = '' }: RootCauseTimelineProps) {
 
         {/* Frequency Distribution */}
         <div className="space-y-3">
-          <h4 className="text-sm font-medium text-gray-900">Frequency Distribution</h4>
+          <h4 className="text-sm font-medium text-foreground">Frequency Distribution</h4>
           <div className="space-y-2">
             {rootCauseData.causes.map((cause) => (
               <div key={cause.id} className="space-y-1">
                 <div className="flex justify-between text-sm">
-                  <span className="text-gray-600">{cause.category}</span>
-                  <span className="text-gray-900 font-medium">{cause.frequency}%</span>
+                  <span className="text-muted-foreground">{cause.category}</span>
+                  <span className="text-foreground font-medium">{cause.frequency}%</span>
                 </div>
                 <Progress value={cause.frequency} className="h-2" />
               </div>
@@ -256,22 +256,22 @@ export function RootCauseTimeline({ className = '' }: RootCauseTimelineProps) {
 
         {/* Resolution Timeline */}
         <div className="space-y-3">
-          <h4 className="text-sm font-medium text-gray-900">Recent Resolutions</h4>
+          <h4 className="text-sm font-medium text-foreground">Recent Resolutions</h4>
           <div className="space-y-2">
             {rootCauseData.causes
               .sort((a, b) => new Date(b.lastOccurrence).getTime() - new Date(a.lastOccurrence).getTime())
               .slice(0, 3)
               .map((cause) => (
-                <div key={cause.id} className="p-3 bg-gray-50 rounded-lg-lg">
+                <div key={cause.id} className="p-3 bg-muted/50 rounded-[0.625rem]">
                   <div className="flex items-center justify-between mb-2">
-                    <h5 className="text-sm font-medium text-gray-900">{cause.category}</h5>
+                    <h5 className="text-sm font-medium text-foreground">{cause.category}</h5>
                     <Badge className={getSeverityBadge(cause.severity)}>
                       {cause.severity}
                     </Badge>
                   </div>
-                  <p className="text-xs text-gray-600 mb-2">{cause.description}</p>
-                  <p className="text-xs text-green-600 mb-1">Resolution: {cause.resolution}</p>
-                  <p className="text-xs text-gray-500">Last occurrence: {formatDate(cause.lastOccurrence)}</p>
+                  <p className="text-xs text-muted-foreground mb-2">{cause.description}</p>
+                  <p className="text-xs text-success mb-1">Resolution: {cause.resolution}</p>
+                  <p className="text-xs text-muted-foreground">Last occurrence: {formatDate(cause.lastOccurrence)}</p>
                 </div>
               ))}
           </div>
@@ -290,9 +290,9 @@ export function RootCauseTimeline({ className = '' }: RootCauseTimelineProps) {
         </div>
 
         {/* Insights */}
-        <div className="p-3 bg-blue-50 rounded-lg-lg">
-          <h5 className="text-sm font-medium text-blue-900 mb-2">💡 Root Cause Insights</h5>
-          <ul className="text-xs text-blue-800 space-y-1">
+        <div className="p-3 bg-info/10 rounded-[0.625rem]">
+          <h5 className="text-sm font-medium text-info mb-2">💡 Root Cause Insights</h5>
+          <ul className="text-xs text-info space-y-1">
             <li>• Total incidents analyzed: {rootCauseData.totalIncidents}</li>
             <li>• {rootCauseData.causes.length} root causes identified</li>
             <li>• Average resolution time: {rootCauseData.averageResolution} minutes</li>

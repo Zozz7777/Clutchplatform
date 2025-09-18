@@ -79,6 +79,26 @@ router.get('/api-performance', checkRole(['head_administrator']), async (req, re
   }
 });
 
+// GET /api/v1/system-health/performance - Get system performance metrics for dashboard
+router.get('/performance', async (req, res) => {
+  try {
+    const performanceData = await getSystemPerformanceMetrics();
+    
+    res.json({
+      success: true,
+      data: performanceData,
+      timestamp: new Date()
+    });
+  } catch (error) {
+    console.error('Error fetching system performance metrics:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Failed to fetch system performance metrics',
+      error: process.env.NODE_ENV === 'development' ? error.message : undefined
+    });
+  }
+});
+
 // GET /api/v1/system-health/database - Get database health
 router.get('/database', checkRole(['head_administrator']), async (req, res) => {
   try {
@@ -170,6 +190,95 @@ router.post('/test-connection', checkRole(['head_administrator']), async (req, r
     res.status(500).json({
       success: false,
       message: 'Failed to test service connection',
+      error: process.env.NODE_ENV === 'development' ? error.message : undefined
+    });
+  }
+});
+
+// GET /api/v1/system-health/alerts - Get system alerts
+router.get('/alerts', checkRole(['head_administrator', 'admin']), async (req, res) => {
+  try {
+    const { status, severity, limit = 50 } = req.query;
+    
+    const alertsData = await getSystemAlerts({
+      status,
+      severity,
+      limit: parseInt(limit)
+    });
+    
+    res.json({
+      success: true,
+      data: alertsData,
+      timestamp: new Date()
+    });
+  } catch (error) {
+    console.error('Error fetching system alerts:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Failed to fetch system alerts',
+      error: process.env.NODE_ENV === 'development' ? error.message : undefined
+    });
+  }
+});
+
+// POST /api/v1/system-health/alerts/:id/acknowledge - Acknowledge an alert
+router.post('/alerts/:id/acknowledge', checkRole(['head_administrator', 'admin']), async (req, res) => {
+  try {
+    const { id } = req.params;
+    
+    const result = await acknowledgeAlert(id, req.user.userId || req.user.id);
+    
+    res.json({
+      success: true,
+      data: result,
+      message: 'Alert acknowledged successfully',
+      timestamp: new Date()
+    });
+  } catch (error) {
+    console.error('Error acknowledging alert:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Failed to acknowledge alert',
+      error: process.env.NODE_ENV === 'development' ? error.message : undefined
+    });
+  }
+});
+
+// GET /api/v1/system-health/sla - Get SLA metrics
+router.get('/sla', checkRole(['head_administrator', 'admin']), async (req, res) => {
+  try {
+    const slaData = await getSLAMetrics();
+    
+    res.json({
+      success: true,
+      data: slaData,
+      timestamp: new Date()
+    });
+  } catch (error) {
+    console.error('Error fetching SLA metrics:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Failed to fetch SLA metrics',
+      error: process.env.NODE_ENV === 'development' ? error.message : undefined
+    });
+  }
+});
+
+// GET /api/v1/system-health/services - Get service health status
+router.get('/services', checkRole(['head_administrator', 'admin']), async (req, res) => {
+  try {
+    const serviceData = await getServiceHealth();
+    
+    res.json({
+      success: true,
+      data: serviceData,
+      timestamp: new Date()
+    });
+  } catch (error) {
+    console.error('Error fetching service health:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Failed to fetch service health',
       error: process.env.NODE_ENV === 'development' ? error.message : undefined
     });
   }
@@ -295,6 +404,37 @@ async function getAPIPerformanceData() {
         errorCount: 2
       }
     ]
+  };
+}
+
+async function getSystemPerformanceMetrics() {
+  // Get real system metrics
+  const memoryUsage = process.memoryUsage();
+  const uptime = process.uptime();
+  const totalMemory = os.totalmem();
+  const freeMemory = os.freemem();
+  const usedMemory = totalMemory - freeMemory;
+  
+  // Calculate uptime percentage (assuming 24/7 operation)
+  const uptimePercentage = Math.min(99.9, Math.max(95.0, 100 - (uptime / (24 * 60 * 60) * 0.1)));
+  
+  // Calculate request rate (mock for now - would come from monitoring)
+  const requestRate = Math.floor(Math.random() * 500) + 1000; // 1000-1500 requests/min
+  
+  // Calculate error rate (mock for now - would come from monitoring)
+  const errorRate = Math.random() * 0.5; // 0-0.5% error rate
+  
+  // Calculate active sessions (mock for now - would come from session store)
+  const activeSessions = Math.floor(Math.random() * 200) + 300; // 300-500 active sessions
+  
+  return {
+    uptime: Math.round(uptimePercentage * 10) / 10, // Round to 1 decimal
+    requestRate: requestRate,
+    errorRate: Math.round(errorRate * 10) / 10, // Round to 1 decimal
+    activeSessions: activeSessions,
+    memoryUsage: Math.round((usedMemory / totalMemory) * 100),
+    cpuUsage: Math.round(Math.random() * 30) + 20, // 20-50% CPU usage
+    timestamp: new Date().toISOString()
   };
 }
 
@@ -474,6 +614,212 @@ async function testServiceConnection(service) {
       timestamp: new Date()
     };
   }
+}
+
+async function getSystemAlerts(options) {
+  // This would typically come from a monitoring service or database
+  // For now, we'll return mock data
+  const mockAlerts = [
+    {
+      id: 'alert-001',
+      title: 'High Memory Usage',
+      description: 'Memory usage has exceeded 85% threshold',
+      severity: 'warning',
+      status: 'open',
+      source: 'system-monitor',
+      timestamp: new Date(Date.now() - 5 * 60 * 1000),
+      metadata: {
+        memoryUsage: 87.5,
+        threshold: 85,
+        server: 'web-01'
+      }
+    },
+    {
+      id: 'alert-002',
+      title: 'Database Connection Pool Exhausted',
+      description: 'Database connection pool is at 95% capacity',
+      severity: 'critical',
+      status: 'open',
+      source: 'database-monitor',
+      timestamp: new Date(Date.now() - 2 * 60 * 1000),
+      metadata: {
+        poolUsage: 95,
+        maxConnections: 100,
+        activeConnections: 95
+      }
+    },
+    {
+      id: 'alert-003',
+      title: 'API Response Time Degraded',
+      description: 'Average API response time has increased to 2.5s',
+      severity: 'warning',
+      status: 'acknowledged',
+      source: 'api-monitor',
+      timestamp: new Date(Date.now() - 10 * 60 * 1000),
+      metadata: {
+        averageResponseTime: 2500,
+        threshold: 2000,
+        affectedEndpoints: ['/api/v1/dashboard/kpis', '/api/v1/users']
+      }
+    }
+  ];
+  
+  let filteredAlerts = mockAlerts;
+  
+  if (options.status) {
+    filteredAlerts = filteredAlerts.filter(alert => alert.status === options.status);
+  }
+  
+  if (options.severity) {
+    filteredAlerts = filteredAlerts.filter(alert => alert.severity === options.severity);
+  }
+  
+  return {
+    alerts: filteredAlerts.slice(0, options.limit),
+    total: filteredAlerts.length,
+    summary: {
+      open: filteredAlerts.filter(a => a.status === 'open').length,
+      acknowledged: filteredAlerts.filter(a => a.status === 'acknowledged').length,
+      resolved: filteredAlerts.filter(a => a.status === 'resolved').length,
+      critical: filteredAlerts.filter(a => a.severity === 'critical').length,
+      warning: filteredAlerts.filter(a => a.severity === 'warning').length,
+      info: filteredAlerts.filter(a => a.severity === 'info').length
+    }
+  };
+}
+
+async function acknowledgeAlert(alertId, userId) {
+  // This would typically update the alert in a database
+  // For now, we'll return a mock response
+  return {
+    id: alertId,
+    status: 'acknowledged',
+    acknowledgedBy: userId,
+    acknowledgedAt: new Date(),
+    message: 'Alert acknowledged successfully'
+  };
+}
+
+async function getSLAMetrics() {
+  // This would typically come from a monitoring service or database
+  // For now, we'll return mock data
+  return [
+    {
+      id: 'sla-001',
+      name: 'API Response Time',
+      description: 'API endpoints must respond within 200ms for 95% of requests',
+      service: 'API Gateway',
+      metric: 'Response Time',
+      target: 200,
+      current: 185,
+      status: 'meeting',
+      trend: 'improving',
+      lastUpdated: new Date(Date.now() - 5 * 60 * 1000).toISOString(),
+      breachCount: 2,
+      avgResponseTime: 185,
+      uptime: 99.9,
+      availability: 99.95,
+      performance: {
+        p50: 120,
+        p95: 185,
+        p99: 250
+      },
+      incidents: [],
+      alerts: [],
+      history: []
+    },
+    {
+      id: 'sla-002',
+      name: 'Fleet Availability',
+      description: 'Fleet vehicles must be available for 95% of operational hours',
+      service: 'Fleet Management',
+      metric: 'Availability',
+      target: 95,
+      current: 97.2,
+      status: 'meeting',
+      trend: 'stable',
+      lastUpdated: new Date(Date.now() - 2 * 60 * 1000).toISOString(),
+      breachCount: 0,
+      avgResponseTime: 0,
+      uptime: 97.2,
+      availability: 97.2,
+      performance: {
+        p50: 0,
+        p95: 0,
+        p99: 0
+      },
+      incidents: [],
+      alerts: [],
+      history: []
+    }
+  ];
+}
+
+async function getServiceHealth() {
+  // This would typically come from a monitoring service or database
+  // For now, we'll return mock data
+  return [
+    {
+      id: 'service-001',
+      name: 'API Gateway',
+      status: 'healthy',
+      uptime: 99.9,
+      responseTime: 185,
+      lastCheck: new Date(Date.now() - 30 * 1000).toISOString(),
+      version: '1.2.3',
+      endpoints: [
+        { path: '/api/v1/auth', status: 'healthy', responseTime: 120 },
+        { path: '/api/v1/users', status: 'healthy', responseTime: 95 },
+        { path: '/api/v1/fleet', status: 'healthy', responseTime: 210 },
+        { path: '/api/v1/analytics', status: 'healthy', responseTime: 180 }
+      ],
+      dependencies: ['Database', 'Redis', 'WebSocket'],
+      alerts: []
+    },
+    {
+      id: 'service-002',
+      name: 'Database',
+      status: 'healthy',
+      uptime: 99.95,
+      responseTime: 45,
+      lastCheck: new Date(Date.now() - 15 * 1000).toISOString(),
+      version: 'MongoDB 6.0',
+      endpoints: [],
+      dependencies: [],
+      alerts: []
+    },
+    {
+      id: 'service-003',
+      name: 'WebSocket Server',
+      status: 'degraded',
+      uptime: 98.5,
+      responseTime: 320,
+      lastCheck: new Date(Date.now() - 45 * 1000).toISOString(),
+      version: '2.1.0',
+      endpoints: [],
+      dependencies: ['Redis'],
+      alerts: [
+        {
+          id: 'ws-alert-001',
+          message: 'High connection latency detected',
+          severity: 'warning',
+          timestamp: new Date(Date.now() - 5 * 60 * 1000).toISOString()
+        }
+      ]
+    },
+    {
+      id: 'service-004',
+      name: 'Redis Cache',
+      status: 'healthy',
+      uptime: 99.8,
+      responseTime: 12,
+      lastCheck: new Date(Date.now() - 20 * 1000).toISOString(),
+      version: 'Redis 7.0',
+      endpoints: [],
+      dependencies: [],
+      alerts: []
+    }
+  ];
 }
 
 module.exports = router;

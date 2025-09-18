@@ -109,6 +109,8 @@ const integrationsRoutes = require('./routes/integrations');
 const auditTrailRoutes = require('./routes/audit-trail');
 const reportsRoutes = require('./routes/reports');
 const rbacRoutes = require('./routes/rbac');
+const usersRoutes = require('./routes/users');
+const analyticsRoutes = require('./routes/analytics');
 
 // All route imports cleaned up - only existing routes imported above
 
@@ -232,6 +234,32 @@ app.use('/api/integrations', integrationsRoutes);
 app.use('/api/audit-trail', auditTrailRoutes);
 app.use('/api/reports', reportsRoutes);
 app.use('/api/rbac', rbacRoutes);
+
+// API v1 routes (for frontend compatibility)
+app.use('/api/v1/fleet', fleetRoutes);
+app.use('/api/v1/notifications', notificationsRoutes);
+app.use('/api/v1/dashboard', dashboardRoutes);
+app.use('/api/v1/users', usersRoutes);
+app.use('/api/v1/employees', employeesRoutes);
+app.use('/api/v1/export', exportRoutes);
+app.use('/api/v1/crm', crmRoutes);
+app.use('/api/v1/finance', financeRoutes);
+app.use('/api/v1/chat', chatRoutes);
+app.use('/api/v1/settings', settingsRoutes);
+app.use('/api/v1/integrations', integrationsRoutes);
+app.use('/api/v1/audit-trail', auditTrailRoutes);
+app.use('/api/v1/reports', reportsRoutes);
+app.use('/api/v1/rbac', rbacRoutes);
+app.use('/api/v1/analytics', analyticsRoutes);
+app.use('/api/v1/ai', aiRoutes);
+app.use('/api/v1/system-health', systemHealthRoutes);
+app.use('/api/v1/feature-flags', featureFlagsRoutes);
+app.use('/api/v1/audit', auditRoutes);
+app.use('/api/v1/assets', assetsRoutes);
+app.use('/api/v1/projects', projectsRoutes);
+app.use('/api/v1/vendors', vendorsRoutes);
+app.use('/api/v1/performance', performanceRoutes);
+app.use('/api/v1/ai-ml', aiRoutes);
 
 // Test endpoints
 app.get('/test', (req, res) => {

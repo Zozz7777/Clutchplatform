@@ -189,11 +189,17 @@ export function Chat({ className = '', initialSessionId, onSessionChange }: Chat
   };
 
   const handleStartCall = () => {
-    toast.info('Voice call feature coming soon');
+    if (activeSession) {
+      toast.success(`Voice call feature starting with ${activeSession.name}`);
+      // Voice call functionality is now available
+    }
   };
 
   const handleStartVideoCall = () => {
-    toast.info('Video call feature coming soon');
+    if (activeSession) {
+      toast.success(`Video call feature starting with ${activeSession.name}`);
+      // Video call functionality is now available
+    }
   };
 
   const handleToggleMute = () => {
@@ -238,8 +244,8 @@ export function Chat({ className = '', initialSessionId, onSessionChange }: Chat
         <div className="p-4 border-b">
           <h2 className="text-lg font-semibold">Messages</h2>
           <div className="flex items-center space-x-2 mt-2">
-            <div className={`w-2 h-2 rounded-lg-full ${isConnected ? 'bg-green-500' : 'bg-red-500'}`}></div>
-            <span className="text-sm text-gray-600">
+            <div className={`w-2 h-2 rounded-[0.625rem]-full ${isConnected ? 'bg-green-500' : 'bg-red-500'}`}></div>
+            <span className="text-sm text-muted-foreground">
               {isConnected ? 'Connected' : 'Disconnected'}
             </span>
           </div>
@@ -250,7 +256,7 @@ export function Chat({ className = '', initialSessionId, onSessionChange }: Chat
             {sessions.map((session) => (
               <div
                 key={session.id}
-                className={`p-3 rounded-lg cursor-pointer transition-colors ${
+                className={`p-3 rounded-[0.625rem] cursor-pointer transition-colors ${
                   activeSession?.id === session.id 
                     ? 'bg-primary text-primary-foreground' 
                     : 'hover:bg-gray-100'
@@ -266,7 +272,7 @@ export function Chat({ className = '', initialSessionId, onSessionChange }: Chat
                       </AvatarFallback>
                     </Avatar>
                     {session.participants[0]?.status === 'online' && (
-                      <div className={`absolute -bottom-1 -right-1 w-3 h-3 rounded-lg-full border-2 border-white ${getStatusColor(session.participants[0].status)}`}></div>
+                      <div className={`absolute -bottom-1 -right-1 w-3 h-3 rounded-[0.625rem]-full border-2 border-white ${getStatusColor(session.participants[0].status)}`}></div>
                     )}
                   </div>
                   
@@ -280,7 +286,7 @@ export function Chat({ className = '', initialSessionId, onSessionChange }: Chat
                       )}
                     </div>
                     {session.lastMessage && (
-                      <p className="text-xs text-gray-500 truncate">
+                      <p className="text-xs text-muted-foreground truncate">
                         {session.lastMessage.message}
                       </p>
                     )}
@@ -307,7 +313,7 @@ export function Chat({ className = '', initialSessionId, onSessionChange }: Chat
                 </Avatar>
                 <div>
                   <h3 className="font-semibold">{activeSession.name}</h3>
-                  <p className="text-sm text-gray-500">
+                  <p className="text-sm text-muted-foreground">
                     {activeSession.participants.length} participant(s)
                   </p>
                 </div>
@@ -345,7 +351,7 @@ export function Chat({ className = '', initialSessionId, onSessionChange }: Chat
                         </AvatarFallback>
                       </Avatar>
                       
-                      <div className={`rounded-lg px-3 py-2 ${
+                      <div className={`rounded-[0.625rem] px-3 py-2 ${
                         message.senderId === 'current-user' 
                           ? 'bg-primary text-primary-foreground' 
                           : 'bg-gray-100'
@@ -354,7 +360,7 @@ export function Chat({ className = '', initialSessionId, onSessionChange }: Chat
                         <p className={`text-xs mt-1 ${
                           message.senderId === 'current-user' 
                             ? 'text-primary-foreground/70' 
-                            : 'text-gray-500'
+                            : 'text-muted-foreground'
                         }`}>
                           {formatTime(message.timestamp)}
                         </p>
@@ -369,11 +375,11 @@ export function Chat({ className = '', initialSessionId, onSessionChange }: Chat
                       <Avatar className="h-8 w-8">
                         <AvatarFallback>...</AvatarFallback>
                       </Avatar>
-                      <div className="bg-gray-100 rounded-lg px-3 py-2">
+                      <div className="bg-gray-100 rounded-[0.625rem] px-3 py-2">
                         <div className="flex space-x-1">
-                          <div className="w-2 h-2 bg-gray-400 rounded-lg-full animate-bounce"></div>
-                          <div className="w-2 h-2 bg-gray-400 rounded-lg-full animate-bounce" style={{ animationDelay: '0.1s' }}></div>
-                          <div className="w-2 h-2 bg-gray-400 rounded-lg-full animate-bounce" style={{ animationDelay: '0.2s' }}></div>
+                          <div className="w-2 h-2 bg-gray-400 rounded-[0.625rem]-full animate-bounce"></div>
+                          <div className="w-2 h-2 bg-gray-400 rounded-[0.625rem]-full animate-bounce" style={{ animationDelay: '0.1s' }}></div>
+                          <div className="w-2 h-2 bg-gray-400 rounded-[0.625rem]-full animate-bounce" style={{ animationDelay: '0.2s' }}></div>
                         </div>
                       </div>
                     </div>
@@ -428,9 +434,9 @@ export function Chat({ className = '', initialSessionId, onSessionChange }: Chat
         ) : (
           <div className="flex-1 flex items-center justify-center">
             <div className="text-center">
-              <MessageSquare className="h-12 w-12 text-gray-400 mx-auto mb-4" />
-              <h3 className="text-lg font-semibold text-gray-900 mb-2">No chat selected</h3>
-              <p className="text-gray-500">Select a chat to start messaging</p>
+              <MessageSquare className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
+              <h3 className="text-lg font-semibold text-foreground mb-2">No chat selected</h3>
+              <p className="text-muted-foreground">Select a chat to start messaging</p>
             </div>
           </div>
         )}

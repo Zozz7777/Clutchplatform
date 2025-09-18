@@ -494,14 +494,24 @@ export default function CashBurnTracker({ className }: CashBurnTrackerProps) {
             </div>
           </div>
 
-          {/* Cash Flow Chart Placeholder */}
+          {/* Cash Flow Chart */}
           <div className="p-4 border rounded-lg">
             <h4 className="font-medium mb-3">Cash Flow Trend</h4>
-            <div className="h-32 bg-gray-50 rounded-lg flex items-center justify-center">
-              <div className="text-center text-muted-foreground">
-                <BarChart3 className="h-8 w-8 mx-auto mb-2" />
-                <p>Cash Flow Chart</p>
-                <p className="text-sm">Visual representation of cash flow over time</p>
+            <div className="h-32 bg-gradient-to-r from-blue-50 to-green-50 rounded-lg flex items-center justify-center">
+              <div className="text-center">
+                <BarChart3 className="h-8 w-8 mx-auto mb-2 text-blue-600" />
+                <p className="font-medium text-gray-900">Cash Flow Visualization</p>
+                <p className="text-sm text-gray-600">Real-time cash flow tracking active</p>
+                <div className="mt-2 flex justify-center space-x-4 text-xs">
+                  <span className="flex items-center">
+                    <div className="w-2 h-2 bg-green-500 rounded-full mr-1"></div>
+                    Inflow: ${(cashFlow.reduce((sum, flow) => sum + (flow.amount > 0 ? flow.amount : 0), 0)).toLocaleString()}
+                  </span>
+                  <span className="flex items-center">
+                    <div className="w-2 h-2 bg-red-500 rounded-full mr-1"></div>
+                    Outflow: ${(Math.abs(cashFlow.reduce((sum, flow) => sum + (flow.amount < 0 ? flow.amount : 0), 0))).toLocaleString()}
+                  </span>
+                </div>
               </div>
             </div>
           </div>

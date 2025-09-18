@@ -174,44 +174,60 @@ router.get('/analytics', authenticateToken, checkRole(['head_administrator', 'an
 // GET /api/v1/dashboard/recent-activity - Get recent activity
 router.get('/recent-activity', authenticateToken, async (req, res) => {
   try {
+    const { db } = await getCollection('users');
+    
+    // Get recent activities from different collections
+    const [recentBookings, recentPayments, recentUsers, recentVehicles] = await Promise.all([
+      db.collection('bookings').find({}).sort({ createdAt: -1 }).limit(5).toArray(),
+      db.collection('payments').find({}).sort({ createdAt: -1 }).limit(5).toArray(),
+      db.collection('users').find({}).sort({ createdAt: -1 }).limit(5).toArray(),
+      db.collection('fleet_vehicles').find({}).sort({ updatedAt: -1 }).limit(5).toArray()
+    ]);
+
+    // Transform data into activity format
     const recentActivity = [
-      {
-        id: 'activity-001',
+      ...recentBookings.map(booking => ({
+        id: `booking-${booking._id}`,
         type: 'booking',
         message: 'New service booking created',
-        user: 'Ahmed Al-Rashid',
-        timestamp: '2024-01-15T10:30:00Z',
-        status: 'completed'
-      },
-      {
-        id: 'activity-002',
+        user: booking.customerName || 'Unknown Customer',
+        timestamp: booking.createdAt,
+        status: booking.status || 'pending'
+      })),
+      ...recentPayments.map(payment => ({
+        id: `payment-${payment._id}`,
         type: 'payment',
         message: 'Payment processed successfully',
-        user: 'Sarah Johnson',
-        timestamp: '2024-01-15T09:45:00Z',
-        status: 'completed'
-      },
-      {
-        id: 'activity-003',
-        type: 'vehicle',
-        message: 'Vehicle maintenance completed',
-        user: 'System',
-        timestamp: '2024-01-15T08:20:00Z',
-        status: 'completed'
-      },
-      {
-        id: 'activity-004',
+        user: payment.customerName || 'Unknown Customer',
+        timestamp: payment.createdAt,
+        status: payment.status || 'completed'
+      })),
+      ...recentUsers.map(user => ({
+        id: `user-${user._id}`,
         type: 'user',
         message: 'New user registered',
-        user: 'Mohammed Hassan',
-        timestamp: '2024-01-15T07:15:00Z',
-        status: 'completed'
-      }
+        user: user.name || user.email,
+        timestamp: user.createdAt,
+        status: user.status || 'active'
+      })),
+      ...recentVehicles.map(vehicle => ({
+        id: `vehicle-${vehicle._id}`,
+        type: 'vehicle',
+        message: 'Vehicle status updated',
+        user: 'System',
+        timestamp: vehicle.updatedAt || vehicle.createdAt,
+        status: vehicle.status || 'active'
+      }))
     ];
+
+    // Sort by timestamp and limit to 20 most recent
+    const sortedActivity = recentActivity
+      .sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp))
+      .slice(0, 20);
 
     res.json({
       success: true,
-      data: recentActivity,
+      data: sortedActivity,
       message: 'Recent activity retrieved successfully',
       timestamp: new Date().toISOString()
     });

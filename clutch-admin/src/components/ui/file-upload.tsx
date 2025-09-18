@@ -237,13 +237,13 @@ export function FileUpload({
   const getStatusColor = (status: string) => {
     switch (status) {
       case 'completed':
-        return 'bg-green-100 text-green-800';
+        return 'bg-success/10 text-success';
       case 'error':
-        return 'bg-red-100 text-red-800';
+        return 'bg-destructive/10 text-destructive';
       case 'uploading':
-        return 'bg-blue-100 text-blue-800';
+        return 'bg-info/10 text-info';
       default:
-        return 'bg-gray-100 text-gray-800';
+        return 'bg-muted text-muted-foreground';
     }
   };
 
@@ -262,14 +262,14 @@ export function FileUpload({
         onClick={() => !disabled && fileInputRef.current?.click()}
       >
         <CardContent className="flex flex-col items-center justify-center py-8">
-          <Upload className="h-12 w-12 text-gray-400 mb-4" />
-          <h3 className="text-lg font-semibold text-gray-900 mb-2">
+          <Upload className="h-12 w-12 text-muted-foreground mb-4" />
+          <h3 className="text-lg font-semibold text-foreground mb-2">
             {isDragging ? 'Drop files here' : 'Upload files'}
           </h3>
-          <p className="text-sm text-gray-500 text-center mb-4">
+          <p className="text-sm text-muted-foreground text-center mb-4">
             Drag and drop files here, or click to select files
           </p>
-          <div className="text-xs text-gray-400 space-y-1">
+          <div className="text-xs text-muted-foreground space-y-1">
             <p>Max file size: {fileService.formatFileSize(maxSize)}</p>
             <p>Max files: {maxFiles}</p>
             <p>Allowed types: {allowedTypes.join(', ')}</p>
@@ -299,21 +299,21 @@ export function FileUpload({
           </CardHeader>
           <CardContent className="space-y-3">
             {uploadedFiles.map((file) => (
-              <div key={file.id} className="flex items-center justify-between p-3 border rounded-lg">
+              <div key={file.id} className="flex items-center justify-between p-3 border rounded-[0.625rem]">
                 <div className="flex items-center space-x-3 flex-1">
                   {getFileIcon(file.type)}
                   <div className="flex-1 min-w-0">
-                    <p className="text-sm font-medium text-gray-900 truncate">
+                    <p className="text-sm font-medium text-foreground truncate">
                       {file.name}
                     </p>
-                    <p className="text-xs text-gray-500">
+                    <p className="text-xs text-muted-foreground">
                       {fileService.formatFileSize(file.size)}
                     </p>
                     {file.status === 'uploading' && (
                       <Progress value={file.progress} className="mt-1 h-1" />
                     )}
                     {file.status === 'error' && file.error && (
-                      <p className="text-xs text-red-600 mt-1">{file.error}</p>
+                      <p className="text-xs text-destructive mt-1">{file.error}</p>
                     )}
                   </div>
                 </div>
@@ -348,7 +348,7 @@ export function FileUpload({
                     variant="ghost"
                     size="sm"
                     onClick={() => handleRemoveFile(file.id)}
-                    className="h-8 w-8 p-0 text-red-600 hover:text-red-700"
+                    className="h-8 w-8 p-0 text-destructive hover:text-destructive/80"
                   >
                     <X className="h-4 w-4" />
                   </Button>
@@ -361,8 +361,8 @@ export function FileUpload({
 
       {/* Upload Status */}
       {isUploading && (
-        <div className="flex items-center space-x-2 text-sm text-blue-600">
-          <div className="animate-spin rounded-lg-full h-4 w-4 border-b-2 border-blue-600"></div>
+        <div className="flex items-center space-x-2 text-sm text-info">
+          <div className="animate-spin rounded-[0.625rem]-full h-4 w-4 border-b-2 border-info"></div>
           <span>Uploading files...</span>
         </div>
       )}
