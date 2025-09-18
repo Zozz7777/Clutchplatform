@@ -109,8 +109,6 @@ const integrationsRoutes = require('./routes/integrations');
 const auditTrailRoutes = require('./routes/audit-trail');
 const reportsRoutes = require('./routes/reports');
 const rbacRoutes = require('./routes/rbac');
-const usersRoutes = require('./routes/users');
-const analyticsRoutes = require('./routes/analytics');
 
 // All route imports cleaned up - only existing routes imported above
 
