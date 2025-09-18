@@ -1,0 +1,25 @@
+# Cursor Rules for Clutch Platform
+
+## Frontend Enforcement Rule
+
+All frontend work on the Clutch platform must strictly follow design.json.
+
+design.json is the single source of truth for all design decisions (layout, components, colors, spacing, typography, responsiveness).
+
+You must never edit or modify design.json directly.
+
+You must never override, ignore, or approximate its specifications — pixel-perfect adherence is required.
+
+If a design detail is unclear, default to what is defined in design.json rather than inventing new styles.
+
+Backend and logic code may be changed freely, but all UI must remain fully consistent with design.json.
+
+This rule is permanent and applies to all current and future frontend tasks across login, dashboard, users, fleet, finance, and every other Clutch page.
+
+## Development Standards
+
+### No Temporary Fixes
+Only implement permanent solutions. No temporary workarounds, placeholder code, or quick fixes that will need to be replaced later.
+
+### Production-Ready Code Only
+All code must be production-ready from the start. No mock data, dummy data, or test data in production code. Use real data sources and proper error handling.

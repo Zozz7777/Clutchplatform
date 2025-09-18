@@ -534,26 +534,26 @@ export default function AIEscalationEngine({ className }: AIEscalationEngineProp
         <CardContent className="space-y-6">
           {/* SLA Summary */}
           <div className="grid grid-cols-4 gap-4">
-            <div className="text-center p-3 bg-green-50 rounded-lg-lg">
+            <div className="text-center p-3 bg-green-50 rounded-lg">
               <div className="text-2xl font-bold text-green-600">{healthySLAs}</div>
               <div className="text-sm text-muted-foreground">Healthy SLAs</div>
             </div>
-            <div className="text-center p-3 bg-yellow-50 rounded-lg-lg">
+            <div className="text-center p-3 bg-yellow-50 rounded-lg">
               <div className="text-2xl font-bold text-yellow-600">{warningSLAs}</div>
               <div className="text-sm text-muted-foreground">Warning SLAs</div>
             </div>
-            <div className="text-center p-3 bg-red-50 rounded-lg-lg">
+            <div className="text-center p-3 bg-red-50 rounded-lg">
               <div className="text-2xl font-bold text-red-600">{criticalSLAs}</div>
               <div className="text-sm text-muted-foreground">Critical SLAs</div>
             </div>
-            <div className="text-center p-3 bg-purple-50 rounded-lg-lg">
+            <div className="text-center p-3 bg-purple-50 rounded-lg">
               <div className="text-2xl font-bold text-purple-600">{activeEvents}</div>
               <div className="text-sm text-muted-foreground">Active Events</div>
             </div>
           </div>
 
           {/* Breach Probability Overview */}
-          <div className="p-4 bg-gradient-to-r from-blue-50 to-purple-50 rounded-lg-lg">
+          <div className="p-4 bg-gradient-to-r from-blue-50 to-purple-50 rounded-lg">
             <div className="flex items-center justify-between">
               <div>
                 <h4 className="font-medium">Average Breach Probability</h4>
@@ -607,7 +607,7 @@ export default function AIEscalationEngine({ className }: AIEscalationEngineProp
               {filteredSLAs.map((sla) => (
                 <div
                   key={sla.id}
-                  className={`p-3 border rounded-lg-lg cursor-pointer transition-colors ${
+                  className={`p-3 border rounded-lg cursor-pointer transition-colors ${
                     selectedSLA?.id === sla.id ? 'border-blue-500 bg-blue-50' : 'hover:bg-gray-50'
                   }`}
                   onClick={() => setSelectedSLA(sla)}
@@ -648,7 +648,7 @@ export default function AIEscalationEngine({ className }: AIEscalationEngineProp
             <h4 className="font-medium mb-3">Recent Escalation Events</h4>
             <div className="space-y-2">
               {escalationEvents.slice(0, 5).map((event) => (
-                <div key={event.id} className="p-3 border rounded-lg-lg">
+                <div key={event.id} className="p-3 border rounded-lg">
                   <div className="flex items-center justify-between mb-2">
                     <div className="flex items-center gap-2">
                       <span className="font-medium">{event.type.replace('_', ' ')}</span>
@@ -757,7 +757,7 @@ export default function AIEscalationEngine({ className }: AIEscalationEngineProp
                     <h5 className="font-medium mb-2">Escalation Rules</h5>
                     <div className="space-y-2">
                       {escalationRules.filter(rule => rule.isActive).map((rule) => (
-                        <div key={rule.id} className="p-3 border rounded-lg-lg">
+                        <div key={rule.id} className="p-3 border rounded-lg">
                           <div className="flex items-center justify-between mb-2">
                             <span className="font-medium">{rule.name}</span>
                             <div className="flex items-center gap-2">
@@ -782,7 +782,7 @@ export default function AIEscalationEngine({ className }: AIEscalationEngineProp
                     <h5 className="font-medium mb-2">All Escalation Rules</h5>
                     <div className="space-y-2">
                       {escalationRules.map((rule) => (
-                        <div key={rule.id} className="p-3 border rounded-lg-lg">
+                        <div key={rule.id} className="p-3 border rounded-lg">
                           <div className="flex items-center justify-between mb-2">
                             <span className="font-medium">{rule.name}</span>
                             <div className="flex items-center gap-2">
@@ -809,7 +809,7 @@ export default function AIEscalationEngine({ className }: AIEscalationEngineProp
                     <h5 className="font-medium mb-2">Escalation History</h5>
                     <div className="space-y-2">
                       {escalationEvents.filter(event => event.slaId === selectedSLA.id).map((event) => (
-                        <div key={event.id} className="p-3 border rounded-lg-lg">
+                        <div key={event.id} className="p-3 border rounded-lg">
                           <div className="flex items-center justify-between mb-2">
                             <div className="flex items-center gap-2">
                               <span className="font-medium">{event.type.replace('_', ' ')}</span>

@@ -157,9 +157,9 @@ export function RiskScenarioMatrix({ className = '' }: RiskScenarioMatrixProps) 
         </CardHeader>
         <CardContent>
           <div className="animate-pulse space-y-4">
-            <div className="h-4 bg-gray-200 rounded-lg-lg w-3/4"></div>
-            <div className="h-4 bg-gray-200 rounded-lg-lg w-1/2"></div>
-            <div className="h-4 bg-gray-200 rounded-lg-lg w-2/3"></div>
+            <div className="h-4 bg-gray-200 rounded-lg w-3/4"></div>
+            <div className="h-4 bg-gray-200 rounded-lg w-1/2"></div>
+            <div className="h-4 bg-gray-200 rounded-lg w-2/3"></div>
           </div>
         </CardContent>
       </Card>
@@ -194,14 +194,14 @@ export function RiskScenarioMatrix({ className = '' }: RiskScenarioMatrixProps) 
       <CardContent className="space-y-6">
         {/* Summary Stats */}
         <div className="grid grid-cols-2 gap-4">
-          <div className="text-center p-3 bg-blue-50 rounded-lg-lg-lg">
+          <div className="text-center p-3 bg-blue-50 rounded-lg-lg">
             <DollarSign className="h-5 w-5 text-blue-600 mx-auto mb-1" />
             <p className="text-lg font-bold text-blue-600">
               ${scenarioData.riskAdjustedRevenue.toLocaleString()}
             </p>
             <p className="text-xs text-gray-500">Risk-Adjusted Revenue</p>
           </div>
-          <div className="text-center p-3 bg-orange-50 rounded-lg-lg-lg">
+          <div className="text-center p-3 bg-orange-50 rounded-lg-lg">
             <Shield className="h-5 w-5 text-orange-600 mx-auto mb-1" />
             <p className="text-lg font-bold text-orange-600">
               {scenarioData.riskScore.toFixed(0)}
@@ -211,7 +211,7 @@ export function RiskScenarioMatrix({ className = '' }: RiskScenarioMatrixProps) 
         </div>
 
         {/* Risk-Adjusted Revenue */}
-        <div className="text-center p-4 bg-gray-50 rounded-lg-lg-lg">
+        <div className="text-center p-4 bg-gray-50 rounded-lg-lg">
           <div className="flex items-center justify-center space-x-2 mb-2">
             <Target className={`h-6 w-6 ${getRiskColor(scenarioData.riskScore)}`} />
             <span className={`text-2xl font-bold ${getRiskColor(scenarioData.riskScore)}`}>
@@ -232,9 +232,9 @@ export function RiskScenarioMatrix({ className = '' }: RiskScenarioMatrixProps) 
           <h4 className="text-sm font-medium text-gray-900">Revenue Scenarios</h4>
           <div className="space-y-2">
             {scenarioData.scenarios.map((scenario) => (
-              <div key={scenario.name} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg-lg-lg">
+              <div key={scenario.name} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg-lg">
                 <div className="flex items-center space-x-3">
-                  <div className="flex items-center justify-center w-8 h-8 bg-blue-100 rounded-lg-lg-full">
+                  <div className="flex items-center justify-center w-8 h-8 bg-blue-100 rounded-lg-full">
                     <span className="text-sm font-semibold text-blue-600">
                       {scenario.name.charAt(0)}
                     </span>
@@ -270,7 +270,7 @@ export function RiskScenarioMatrix({ className = '' }: RiskScenarioMatrixProps) 
           <h4 className="text-sm font-medium text-gray-900">Scenario Comparison</h4>
           <div className="grid grid-cols-3 gap-2">
             {scenarioData.scenarios.map((scenario) => (
-              <div key={scenario.name} className="text-center p-3 bg-gray-50 rounded-lg-lg-lg">
+              <div key={scenario.name} className="text-center p-3 bg-gray-50 rounded-lg-lg">
                 <div className={`text-lg font-bold ${getScenarioColor(scenario.type)} mb-1`}>
                   ${scenario.revenue.toLocaleString()}
                 </div>
@@ -295,7 +295,7 @@ export function RiskScenarioMatrix({ className = '' }: RiskScenarioMatrixProps) 
           <h4 className="text-sm font-medium text-gray-900">Key Risk Factors</h4>
           <div className="space-y-2">
             {scenarioData.topRisks.map((risk, index) => (
-              <div key={risk} className="flex items-center justify-between p-2 bg-gray-50 rounded-lg-lg">
+              <div key={risk} className="flex items-center justify-between p-2 bg-gray-50 rounded-lg">
                 <div className="flex items-center space-x-2">
                   <AlertTriangle className="h-4 w-4 text-orange-600" />
                   <span className="text-sm text-gray-700">{risk}</span>
@@ -337,7 +337,7 @@ export function RiskScenarioMatrix({ className = '' }: RiskScenarioMatrixProps) 
         </div>
 
         {/* Insights */}
-        <div className="p-3 bg-blue-50 rounded-lg-lg-lg">
+        <div className="p-3 bg-blue-50 rounded-lg-lg">
           <h5 className="text-sm font-medium text-blue-900 mb-2">💡 Risk Scenario Insights</h5>
           <ul className="text-xs text-blue-800 space-y-1">
             <li>• Risk-adjusted revenue: ${scenarioData.riskAdjustedRevenue.toLocaleString()}</li>

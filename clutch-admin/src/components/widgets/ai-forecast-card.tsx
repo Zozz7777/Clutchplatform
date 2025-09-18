@@ -95,9 +95,9 @@ export function AIForecastCard({ className = '' }: AIForecastCardProps) {
         </CardHeader>
         <CardContent>
           <div className="animate-pulse space-y-4">
-            <div className="h-4 bg-gray-200 rounded-lg-lg w-3/4"></div>
-            <div className="h-4 bg-gray-200 rounded-lg-lg w-1/2"></div>
-            <div className="h-4 bg-gray-200 rounded-lg-lg w-2/3"></div>
+            <div className="h-4 bg-gray-200 rounded-lg w-3/4"></div>
+            <div className="h-4 bg-gray-200 rounded-lg w-1/2"></div>
+            <div className="h-4 bg-gray-200 rounded-lg w-2/3"></div>
           </div>
         </CardContent>
       </Card>
@@ -140,7 +140,7 @@ export function AIForecastCard({ className = '' }: AIForecastCardProps) {
 
         {/* Summary Metrics */}
         <div className="grid grid-cols-2 gap-4">
-          <div className="text-center p-3 bg-green-50 rounded-lg-lg-lg">
+          <div className="text-center p-3 bg-green-50 rounded-lg-lg">
             <p className="text-2xl font-bold text-green-600">
               ${totalRevenue.toLocaleString()}
             </p>
@@ -151,7 +151,7 @@ export function AIForecastCard({ className = '' }: AIForecastCardProps) {
               </Badge>
             </div>
           </div>
-          <div className="text-center p-3 bg-blue-50 rounded-lg-lg-lg">
+          <div className="text-center p-3 bg-blue-50 rounded-lg-lg">
             <p className="text-2xl font-bold text-blue-600">
               {avgConfidence.toFixed(0)}%
             </p>
@@ -172,21 +172,21 @@ export function AIForecastCard({ className = '' }: AIForecastCardProps) {
         <div className="space-y-3">
           <h4 className="text-sm font-medium text-gray-900">Scenario Analysis</h4>
           <div className="grid grid-cols-3 gap-3">
-            <div className="text-center p-3 bg-green-50 rounded-lg-lg-lg">
+            <div className="text-center p-3 bg-green-50 rounded-lg-lg">
               <TrendingUp className="h-4 w-4 text-green-600 mx-auto mb-1" />
               <p className="text-sm font-semibold text-green-600">
                 ${optimisticRevenue.toLocaleString()}
               </p>
               <p className="text-xs text-gray-500">Optimistic</p>
             </div>
-            <div className="text-center p-3 bg-gray-50 rounded-lg-lg-lg">
+            <div className="text-center p-3 bg-gray-50 rounded-lg-lg">
               <Target className="h-4 w-4 text-gray-600 mx-auto mb-1" />
               <p className="text-sm font-semibold text-gray-600">
                 ${totalRevenue.toLocaleString()}
               </p>
               <p className="text-xs text-gray-500">Base Case</p>
             </div>
-            <div className="text-center p-3 bg-red-50 rounded-lg-lg-lg">
+            <div className="text-center p-3 bg-red-50 rounded-lg-lg">
               <TrendingDown className="h-4 w-4 text-red-600 mx-auto mb-1" />
               <p className="text-sm font-semibold text-red-600">
                 ${pessimisticRevenue.toLocaleString()}
@@ -205,7 +205,7 @@ export function AIForecastCard({ className = '' }: AIForecastCardProps) {
           
           <div className="space-y-2 max-h-40 overflow-y-auto">
             {filteredForecast.slice(0, 10).map((day, index) => (
-              <div key={day.period} className="flex items-center justify-between p-2 bg-gray-50 rounded-lg-lg">
+              <div key={day.period} className="flex items-center justify-between p-2 bg-gray-50 rounded-lg">
                 <div className="flex items-center space-x-3">
                   <Calendar className="h-3 w-3 text-gray-400" />
                   <span className="text-sm text-gray-600">{formatDate(day.period)}</span>
@@ -220,9 +220,9 @@ export function AIForecastCard({ className = '' }: AIForecastCardProps) {
                     </p>
                   </div>
                   <div className="w-16">
-                    <div className="w-full bg-gray-200 rounded-lg-lg-full h-1">
+                    <div className="w-full bg-gray-200 rounded-lg-full h-1">
                       <div 
-                        className="bg-blue-600 h-1 rounded-lg-lg-full" 
+                        className="bg-blue-600 h-1 rounded-lg-full" 
                         style={{ width: `${day.confidence}%` }}
                       ></div>
                     </div>
@@ -239,7 +239,7 @@ export function AIForecastCard({ className = '' }: AIForecastCardProps) {
           <div className="space-y-2">
             {filteredForecast[0]?.factors.map((factor, index) => (
               <div key={index} className="flex items-center space-x-2 text-sm text-gray-600">
-                <div className="w-2 h-2 bg-blue-500 rounded-lg-lg-full"></div>
+                <div className="w-2 h-2 bg-blue-500 rounded-lg-full"></div>
                 <span>{factor}</span>
               </div>
             ))}
@@ -247,7 +247,7 @@ export function AIForecastCard({ className = '' }: AIForecastCardProps) {
         </div>
 
         {/* Risk Assessment */}
-        <div className="p-3 bg-gray-50 rounded-lg-lg-lg">
+        <div className="p-3 bg-gray-50 rounded-lg-lg">
           <div className="flex items-center space-x-2 mb-2">
             <riskLevel.icon className={`h-4 w-4 ${
               riskLevel.color === 'green' ? 'text-green-600' :

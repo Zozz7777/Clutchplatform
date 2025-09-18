@@ -52,9 +52,9 @@ export function RevenueMarginCard({ className = '' }: RevenueMarginCardProps) {
         </CardHeader>
         <CardContent>
           <div className="animate-pulse space-y-4">
-            <div className="h-4 bg-gray-200 rounded-lg-lg w-3/4"></div>
-            <div className="h-4 bg-gray-200 rounded-lg-lg w-1/2"></div>
-            <div className="h-4 bg-gray-200 rounded-lg-lg w-2/3"></div>
+            <div className="h-4 bg-gray-200 rounded-lg w-3/4"></div>
+            <div className="h-4 bg-gray-200 rounded-lg w-1/2"></div>
+            <div className="h-4 bg-gray-200 rounded-lg w-2/3"></div>
           </div>
         </CardContent>
       </Card>
@@ -168,7 +168,7 @@ export function RevenueMarginCard({ className = '' }: RevenueMarginCardProps) {
         </div>
 
         {/* Margin Display */}
-        <div className="text-center p-4 bg-gray-50 rounded-lg-lg-lg">
+        <div className="text-center p-4 bg-gray-50 rounded-lg-lg">
           <div className="flex items-center justify-center space-x-2 mb-2">
             <trend.icon className={`h-5 w-5 ${trend.color}`} />
             <span className={`text-2xl font-bold ${getMarginColor(marginData.margin)}`}>
@@ -193,9 +193,9 @@ export function RevenueMarginCard({ className = '' }: RevenueMarginCardProps) {
           
           <div className="space-y-2">
             {costBreakdown.map((item) => (
-              <div key={item.name} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg-lg-lg">
+              <div key={item.name} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg-lg">
                 <div className="flex items-center space-x-3">
-                  <div className={`p-2 rounded-lg-lg-full ${item.bgColor}`}>
+                  <div className={`p-2 rounded-lg-full ${item.bgColor}`}>
                     <item.icon className={`h-4 w-4 ${item.color}`} />
                   </div>
                   <div>
@@ -228,9 +228,9 @@ export function RevenueMarginCard({ className = '' }: RevenueMarginCardProps) {
               <span className="text-sm text-gray-600">Revenue</span>
               <span className="text-sm font-medium">${marginData.revenue.toLocaleString()}</span>
             </div>
-            <div className="w-full bg-gray-200 rounded-lg-lg-full h-2">
+            <div className="w-full bg-gray-200 rounded-lg-full h-2">
               <div 
-                className="bg-green-600 h-2 rounded-lg-lg-full" 
+                className="bg-green-600 h-2 rounded-lg-full" 
                 style={{ width: '100%' }}
               ></div>
             </div>
@@ -239,9 +239,9 @@ export function RevenueMarginCard({ className = '' }: RevenueMarginCardProps) {
               <span className="text-sm text-gray-600">Costs</span>
               <span className="text-sm font-medium">${marginData.costs.toLocaleString()}</span>
             </div>
-            <div className="w-full bg-gray-200 rounded-lg-lg-full h-2">
+            <div className="w-full bg-gray-200 rounded-lg-full h-2">
               <div 
-                className="bg-red-600 h-2 rounded-lg-lg-full" 
+                className="bg-red-600 h-2 rounded-lg-full" 
                 style={{ width: `${(marginData.costs / marginData.revenue) * 100}%` }}
               ></div>
             </div>
@@ -249,7 +249,7 @@ export function RevenueMarginCard({ className = '' }: RevenueMarginCardProps) {
         </div>
 
         {/* Insights */}
-        <div className="p-3 bg-blue-50 rounded-lg-lg-lg">
+        <div className="p-3 bg-blue-50 rounded-lg-lg">
           <h5 className="text-sm font-medium text-blue-900 mb-2">💡 Insights</h5>
           <ul className="text-xs text-blue-800 space-y-1">
             {marginData.margin >= 30 && (

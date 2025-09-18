@@ -320,7 +320,7 @@ export default function LiveOpsMap({ className }: LiveOpsMapProps) {
         </div>
 
         {/* Map Visualization (Simplified) */}
-        <div className="relative h-64 bg-gray-100 rounded-lg-lg overflow-hidden">
+        <div className="relative h-64 bg-gray-100 rounded-lg overflow-hidden">
           <div className="absolute inset-0 bg-gradient-to-br from-blue-50 to-green-50">
             {/* Grid pattern */}
             <div className="absolute inset-0 opacity-20" style={{

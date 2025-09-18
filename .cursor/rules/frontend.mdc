@@ -1,0 +1,12 @@
+---
+description: |
+  All frontend work on the Clutch platform must strictly follow `design.json`.  
+  - `design.json` is the single source of truth for layout, components, colors, spacing, typography, and responsiveness.  
+  - Never edit or modify `design.json` directly.  
+  - Never override, ignore, or approximate its specifications — pixel-perfect adherence is required.  
+  - If a design detail is unclear, always default to what is defined in `design.json`.  
+  - Backend and logic code may be changed freely, but all UI must remain fully consistent with `design.json`.  
+  This rule is permanent and applies to all frontend pages (login, dashboard, users, fleet, finance, etc.).
+globs: ["**/*.{ts,tsx,js,jsx,css,scss,html}"]
+alwaysApply: true
+---

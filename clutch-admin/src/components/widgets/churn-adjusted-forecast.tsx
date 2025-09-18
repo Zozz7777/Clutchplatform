@@ -172,9 +172,9 @@ export function ChurnAdjustedForecast({ className = '' }: ChurnAdjustedForecastP
         </CardHeader>
         <CardContent>
           <div className="animate-pulse space-y-4">
-            <div className="h-4 bg-gray-200 rounded-lg-lg w-3/4"></div>
-            <div className="h-4 bg-gray-200 rounded-lg-lg w-1/2"></div>
-            <div className="h-4 bg-gray-200 rounded-lg-lg w-2/3"></div>
+            <div className="h-4 bg-gray-200 rounded-lg w-3/4"></div>
+            <div className="h-4 bg-gray-200 rounded-lg w-1/2"></div>
+            <div className="h-4 bg-gray-200 rounded-lg w-2/3"></div>
           </div>
         </CardContent>
       </Card>
@@ -209,14 +209,14 @@ export function ChurnAdjustedForecast({ className = '' }: ChurnAdjustedForecastP
       <CardContent className="space-y-6">
         {/* Summary Stats */}
         <div className="grid grid-cols-2 gap-4">
-          <div className="text-center p-3 bg-blue-50 rounded-lg-lg-lg">
+          <div className="text-center p-3 bg-blue-50 rounded-lg-lg">
             <DollarSign className="h-5 w-5 text-blue-600 mx-auto mb-1" />
             <p className="text-lg font-bold text-blue-600">
               ${forecastData.totalAdjustedRevenue.toLocaleString()}
             </p>
             <p className="text-xs text-gray-500">Adjusted Revenue</p>
           </div>
-          <div className="text-center p-3 bg-orange-50 rounded-lg-lg-lg">
+          <div className="text-center p-3 bg-orange-50 rounded-lg-lg">
             <AlertTriangle className="h-5 w-5 text-orange-600 mx-auto mb-1" />
             <p className="text-lg font-bold text-orange-600">
               {forecastData.averageChurnRate.toFixed(1)}%
@@ -226,7 +226,7 @@ export function ChurnAdjustedForecast({ className = '' }: ChurnAdjustedForecastP
         </div>
 
         {/* Revenue Impact */}
-        <div className="text-center p-4 bg-gray-50 rounded-lg-lg-lg">
+        <div className="text-center p-4 bg-gray-50 rounded-lg-lg">
           <div className="flex items-center justify-center space-x-2 mb-2">
             <Target className="h-6 w-6 text-red-600" />
             <span className="text-2xl font-bold text-red-600">
@@ -250,9 +250,9 @@ export function ChurnAdjustedForecast({ className = '' }: ChurnAdjustedForecastP
               const TrendIcon = getTrendIcon(forecast.trend);
               
               return (
-                <div key={forecast.period} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg-lg-lg">
+                <div key={forecast.period} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg-lg">
                   <div className="flex items-center space-x-3">
-                    <div className="flex items-center justify-center w-8 h-8 bg-blue-100 rounded-lg-lg-full">
+                    <div className="flex items-center justify-center w-8 h-8 bg-blue-100 rounded-lg-full">
                       <span className="text-sm font-semibold text-blue-600">
                         {forecast.period.split(' ')[0]}
                       </span>
@@ -304,7 +304,7 @@ export function ChurnAdjustedForecast({ className = '' }: ChurnAdjustedForecastP
         </div>
 
         {/* Confidence Score */}
-        <div className="text-center p-3 bg-gray-50 rounded-lg-lg-lg">
+        <div className="text-center p-3 bg-gray-50 rounded-lg-lg">
           <div className="flex items-center justify-center space-x-2 mb-2">
             <Target className={`h-5 w-5 ${getConfidenceColor(forecastData.confidenceScore)}`} />
             <span className={`text-lg font-bold ${getConfidenceColor(forecastData.confidenceScore)}`}>
@@ -330,7 +330,7 @@ export function ChurnAdjustedForecast({ className = '' }: ChurnAdjustedForecastP
         </div>
 
         {/* Insights */}
-        <div className="p-3 bg-blue-50 rounded-lg-lg-lg">
+        <div className="p-3 bg-blue-50 rounded-lg-lg">
           <h5 className="text-sm font-medium text-blue-900 mb-2">💡 Churn-Adjusted Forecast Insights</h5>
           <ul className="text-xs text-blue-800 space-y-1">
             <li>• Total adjusted revenue: ${forecastData.totalAdjustedRevenue.toLocaleString()}</li>

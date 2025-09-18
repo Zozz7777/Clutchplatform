@@ -183,9 +183,9 @@ export function CashFlowProjection({ className = '' }: CashFlowProjectionProps) 
         </CardHeader>
         <CardContent>
           <div className="animate-pulse space-y-4">
-            <div className="h-4 bg-gray-200 rounded-lg-lg w-3/4"></div>
-            <div className="h-4 bg-gray-200 rounded-lg-lg w-1/2"></div>
-            <div className="h-4 bg-gray-200 rounded-lg-lg w-2/3"></div>
+            <div className="h-4 bg-gray-200 rounded-lg w-3/4"></div>
+            <div className="h-4 bg-gray-200 rounded-lg w-1/2"></div>
+            <div className="h-4 bg-gray-200 rounded-lg w-2/3"></div>
           </div>
         </CardContent>
       </Card>
@@ -236,7 +236,7 @@ export function CashFlowProjection({ className = '' }: CashFlowProjectionProps) 
         </div>
 
         {/* Current vs Projected Balance */}
-        <div className="text-center p-4 bg-gray-50 rounded-lg-lg-lg">
+        <div className="text-center p-4 bg-gray-50 rounded-lg-lg">
           <div className="flex items-center justify-center space-x-2 mb-2">
             <Target className={`h-6 w-6 ${getBalanceColor(cashFlowData.projectedBalance)}`} />
             <span className={`text-2xl font-bold ${getBalanceColor(cashFlowData.projectedBalance)}`}>
@@ -254,14 +254,14 @@ export function CashFlowProjection({ className = '' }: CashFlowProjectionProps) 
 
         {/* Cash Flow Summary */}
         <div className="grid grid-cols-2 gap-4">
-          <div className="text-center p-3 bg-green-50 rounded-lg-lg-lg">
+          <div className="text-center p-3 bg-green-50 rounded-lg-lg">
             <TrendingUp className="h-5 w-5 text-green-600 mx-auto mb-1" />
             <p className="text-lg font-bold text-green-600">
               ${cashFlowData.monthlyInflow.toLocaleString()}
             </p>
             <p className="text-xs text-gray-500">Monthly Inflow</p>
           </div>
-          <div className="text-center p-3 bg-red-50 rounded-lg-lg-lg">
+          <div className="text-center p-3 bg-red-50 rounded-lg-lg">
             <TrendingDown className="h-5 w-5 text-red-600 mx-auto mb-1" />
             <p className="text-lg font-bold text-red-600">
               ${cashFlowData.monthlyOutflow.toLocaleString()}
@@ -271,7 +271,7 @@ export function CashFlowProjection({ className = '' }: CashFlowProjectionProps) 
         </div>
 
         {/* Net Cash Flow */}
-        <div className="flex items-center justify-between p-3 bg-gray-50 rounded-lg-lg-lg">
+        <div className="flex items-center justify-between p-3 bg-gray-50 rounded-lg-lg">
           <div className="flex items-center space-x-3">
             <CashFlowIcon className={`h-4 w-4 ${getCashFlowColor(cashFlowData.netCashFlow)}`} />
             <div>
@@ -294,9 +294,9 @@ export function CashFlowProjection({ className = '' }: CashFlowProjectionProps) 
           <h4 className="text-sm font-medium text-gray-900">Projection Scenarios</h4>
           <div className="space-y-2">
             {cashFlowData.scenarios.map((scenario) => (
-              <div key={scenario.scenario} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg-lg-lg">
+              <div key={scenario.scenario} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg-lg">
                 <div className="flex items-center space-x-3">
-                  <div className="flex items-center justify-center w-8 h-8 bg-blue-100 rounded-lg-lg-full">
+                  <div className="flex items-center justify-center w-8 h-8 bg-blue-100 rounded-lg-full">
                     <span className="text-sm font-semibold text-blue-600">
                       {scenario.scenario.charAt(0)}
                     </span>
@@ -327,9 +327,9 @@ export function CashFlowProjection({ className = '' }: CashFlowProjectionProps) 
           <h4 className="text-sm font-medium text-gray-900">Upcoming Payments</h4>
           <div className="space-y-2">
             {cashFlowData.upcomingPayments.map((payment, index) => (
-              <div key={index} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg-lg-lg">
+              <div key={index} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg-lg">
                 <div className="flex items-center space-x-3">
-                  <div className={`p-2 rounded-lg-lg-full ${
+                  <div className={`p-2 rounded-lg-full ${
                     payment.type === 'inflow' ? 'bg-green-100' : 'bg-red-100'
                   }`}>
                     {payment.type === 'inflow' ? (
@@ -372,7 +372,7 @@ export function CashFlowProjection({ className = '' }: CashFlowProjectionProps) 
         </div>
 
         {/* Insights */}
-        <div className="p-3 bg-blue-50 rounded-lg-lg-lg">
+        <div className="p-3 bg-blue-50 rounded-lg-lg">
           <h5 className="text-sm font-medium text-blue-900 mb-2">💡 Cash Flow Insights</h5>
           <ul className="text-xs text-blue-800 space-y-1">
             <li>• Current balance: ${cashFlowData.currentBalance.toLocaleString()}</li>

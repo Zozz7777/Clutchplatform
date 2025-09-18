@@ -555,26 +555,26 @@ export default function CriticalAccountsTracker({ className }: CriticalAccountsT
         <CardContent className="space-y-6">
           {/* Account Summary */}
           <div className="grid grid-cols-4 gap-4">
-            <div className="text-center p-3 bg-green-50 rounded-lg-lg">
+            <div className="text-center p-3 bg-green-50 rounded-lg">
               <div className="text-2xl font-bold text-green-600">{healthyAccounts}</div>
               <div className="text-sm text-muted-foreground">Healthy Accounts</div>
             </div>
-            <div className="text-center p-3 bg-yellow-50 rounded-lg-lg">
+            <div className="text-center p-3 bg-yellow-50 rounded-lg">
               <div className="text-2xl font-bold text-yellow-600">{atRiskAccounts}</div>
               <div className="text-sm text-muted-foreground">At Risk</div>
             </div>
-            <div className="text-center p-3 bg-red-50 rounded-lg-lg">
+            <div className="text-center p-3 bg-red-50 rounded-lg">
               <div className="text-2xl font-bold text-red-600">{criticalAccounts}</div>
               <div className="text-sm text-muted-foreground">Critical</div>
             </div>
-            <div className="text-center p-3 bg-purple-50 rounded-lg-lg">
+            <div className="text-center p-3 bg-purple-50 rounded-lg">
               <div className="text-2xl font-bold text-purple-600">{formatCurrency(totalRevenue)}</div>
               <div className="text-sm text-muted-foreground">Total Revenue</div>
             </div>
           </div>
 
           {/* Health Score Overview */}
-          <div className="p-4 bg-gradient-to-r from-blue-50 to-purple-50 rounded-lg-lg">
+          <div className="p-4 bg-gradient-to-r from-blue-50 to-purple-50 rounded-lg">
             <div className="flex items-center justify-between">
               <div>
                 <h4 className="font-medium">Average Health Score</h4>
@@ -628,7 +628,7 @@ export default function CriticalAccountsTracker({ className }: CriticalAccountsT
               {filteredAccounts.map((account) => (
                 <div
                   key={account.id}
-                  className={`p-3 border rounded-lg-lg cursor-pointer transition-colors ${
+                  className={`p-3 border rounded-lg cursor-pointer transition-colors ${
                     selectedAccount?.id === account.id ? 'border-blue-500 bg-blue-50' : 'hover:bg-gray-50'
                   }`}
                   onClick={() => setSelectedAccount(account)}
@@ -927,7 +927,7 @@ export default function CriticalAccountsTracker({ className }: CriticalAccountsT
                     <h5 className="font-medium mb-2">Active Alerts</h5>
                     <div className="space-y-2">
                       {selectedAccount.alerts.map((alert) => (
-                        <div key={alert.id} className="p-3 border rounded-lg-lg">
+                        <div key={alert.id} className="p-3 border rounded-lg">
                           <div className="flex items-center justify-between mb-2">
                             <div className="flex items-center gap-2">
                               {getAlertTypeIcon(alert.type)}

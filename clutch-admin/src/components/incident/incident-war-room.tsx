@@ -358,15 +358,15 @@ export default function IncidentWarRoom({ className }: IncidentWarRoomProps) {
         <CardContent className="space-y-6">
           {/* Crisis Summary */}
           <div className="grid grid-cols-3 gap-4">
-            <div className="text-center p-3 bg-red-50 rounded-lg-lg">
+            <div className="text-center p-3 bg-red-50 rounded-lg">
               <div className="text-2xl font-bold text-red-600">{criticalIncidents}</div>
               <div className="text-sm text-muted-foreground">Critical Incidents</div>
             </div>
-            <div className="text-center p-3 bg-orange-50 rounded-lg-lg">
+            <div className="text-center p-3 bg-orange-50 rounded-lg">
               <div className="text-2xl font-bold text-orange-600">{activeIncidents}</div>
               <div className="text-sm text-muted-foreground">Active Incidents</div>
             </div>
-            <div className="text-center p-3 bg-purple-50 rounded-lg-lg">
+            <div className="text-center p-3 bg-purple-50 rounded-lg">
               <div className="text-2xl font-bold text-purple-600">{formatCurrency(totalRevenueImpact)}</div>
               <div className="text-sm text-muted-foreground">Revenue Impact</div>
             </div>
@@ -374,7 +374,7 @@ export default function IncidentWarRoom({ className }: IncidentWarRoomProps) {
 
           {/* Active Incident Focus */}
           {activeIncident && (
-            <div className={`p-4 border-2 rounded-lg-lg ${
+            <div className={`p-4 border-2 rounded-lg ${
               activeIncident.severity === 'critical' ? 'border-red-200 bg-red-50' :
               activeIncident.severity === 'high' ? 'border-orange-200 bg-orange-50' :
               'border-yellow-200 bg-yellow-50'
@@ -444,7 +444,7 @@ export default function IncidentWarRoom({ className }: IncidentWarRoomProps) {
               <TabsContent value="actions" className="space-y-4">
                 <div className="space-y-3">
                   {activeIncident.actions.map((action) => (
-                    <div key={action.id} className="p-3 border rounded-lg-lg">
+                    <div key={action.id} className="p-3 border rounded-lg">
                       <div className="flex items-center justify-between mb-2">
                         <div className="flex items-center gap-2">
                           <CheckCircle className="h-4 w-4" />
@@ -484,7 +484,7 @@ export default function IncidentWarRoom({ className }: IncidentWarRoomProps) {
                 <div className="space-y-3">
                   {Object.entries(activeIncident.timeline).map(([stage, timestamp]) => (
                     timestamp && (
-                      <div key={stage} className="flex items-center gap-3 p-3 border rounded-lg-lg">
+                      <div key={stage} className="flex items-center gap-3 p-3 border rounded-lg">
                         <div className={`w-3 h-3 rounded-lg-full ${
                           stage === 'resolved' ? 'bg-green-500' :
                           stage === 'mitigating' ? 'bg-orange-500' :
@@ -507,7 +507,7 @@ export default function IncidentWarRoom({ className }: IncidentWarRoomProps) {
               <TabsContent value="communications" className="space-y-4">
                 <div className="space-y-3">
                   {activeIncident.communications.map((comm) => (
-                    <div key={comm.id} className="p-3 border rounded-lg-lg">
+                    <div key={comm.id} className="p-3 border rounded-lg">
                       <div className="flex items-start justify-between mb-2">
                         <div className="flex items-center gap-2">
                           <MessageSquare className="h-4 w-4" />
@@ -537,7 +537,7 @@ export default function IncidentWarRoom({ className }: IncidentWarRoomProps) {
               {incidents.map((incident) => (
                 <div
                   key={incident.id}
-                  className={`p-3 border rounded-lg-lg cursor-pointer transition-colors ${
+                  className={`p-3 border rounded-lg cursor-pointer transition-colors ${
                     activeIncident?.id === incident.id ? 'border-blue-500 bg-blue-50' : 'hover:bg-gray-50'
                   }`}
                   onClick={() => setActiveIncident(incident)}

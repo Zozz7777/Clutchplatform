@@ -194,9 +194,9 @@ export function OverdueInvoices({ className = '' }: OverdueInvoicesProps) {
         </CardHeader>
         <CardContent>
           <div className="animate-pulse space-y-4">
-            <div className="h-4 bg-gray-200 rounded-lg-lg w-3/4"></div>
-            <div className="h-4 bg-gray-200 rounded-lg-lg w-1/2"></div>
-            <div className="h-4 bg-gray-200 rounded-lg-lg w-2/3"></div>
+            <div className="h-4 bg-gray-200 rounded-lg w-3/4"></div>
+            <div className="h-4 bg-gray-200 rounded-lg w-1/2"></div>
+            <div className="h-4 bg-gray-200 rounded-lg w-2/3"></div>
           </div>
         </CardContent>
       </Card>
@@ -231,14 +231,14 @@ export function OverdueInvoices({ className = '' }: OverdueInvoicesProps) {
       <CardContent className="space-y-6">
         {/* Summary Stats */}
         <div className="grid grid-cols-2 gap-4">
-          <div className="text-center p-3 bg-red-50 rounded-lg-lg-lg">
+          <div className="text-center p-3 bg-red-50 rounded-lg-lg">
             <DollarSign className="h-5 w-5 text-red-600 mx-auto mb-1" />
             <p className="text-lg font-bold text-red-600">
               ${overdueData.totalOverdue.toLocaleString()}
             </p>
             <p className="text-xs text-gray-500">Total Overdue</p>
           </div>
-          <div className="text-center p-3 bg-orange-50 rounded-lg-lg-lg">
+          <div className="text-center p-3 bg-orange-50 rounded-lg-lg">
             <AlertTriangle className="h-5 w-5 text-orange-600 mx-auto mb-1" />
             <p className="text-lg font-bold text-orange-600">{overdueData.count}</p>
             <p className="text-xs text-gray-500">Overdue Count</p>
@@ -249,25 +249,25 @@ export function OverdueInvoices({ className = '' }: OverdueInvoicesProps) {
         <div className="space-y-3">
           <h4 className="text-sm font-medium text-gray-900">Risk Distribution</h4>
           <div className="grid grid-cols-4 gap-2">
-            <div className="text-center p-2 bg-green-50 rounded-lg-lg">
+            <div className="text-center p-2 bg-green-50 rounded-lg">
               <p className="text-sm font-bold text-green-600">
                 {overdueData.riskDistribution.low || 0}
               </p>
               <p className="text-xs text-gray-500">Low Risk</p>
             </div>
-            <div className="text-center p-2 bg-yellow-50 rounded-lg-lg">
+            <div className="text-center p-2 bg-yellow-50 rounded-lg">
               <p className="text-sm font-bold text-yellow-600">
                 {overdueData.riskDistribution.medium || 0}
               </p>
               <p className="text-xs text-gray-500">Medium Risk</p>
             </div>
-            <div className="text-center p-2 bg-orange-50 rounded-lg-lg">
+            <div className="text-center p-2 bg-orange-50 rounded-lg">
               <p className="text-sm font-bold text-orange-600">
                 {overdueData.riskDistribution.high || 0}
               </p>
               <p className="text-xs text-gray-500">High Risk</p>
             </div>
-            <div className="text-center p-2 bg-red-50 rounded-lg-lg">
+            <div className="text-center p-2 bg-red-50 rounded-lg">
               <p className="text-sm font-bold text-red-600">
                 {overdueData.riskDistribution.critical || 0}
               </p>
@@ -281,9 +281,9 @@ export function OverdueInvoices({ className = '' }: OverdueInvoicesProps) {
           <h4 className="text-sm font-medium text-gray-900">Overdue Invoices</h4>
           <div className="space-y-2 max-h-64 overflow-y-auto">
             {overdueData.invoices.map((invoice) => (
-              <div key={invoice.id} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg-lg-lg">
+              <div key={invoice.id} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg-lg">
                 <div className="flex items-center space-x-3">
-                  <div className="flex items-center justify-center w-8 h-8 bg-red-100 rounded-lg-lg-full">
+                  <div className="flex items-center justify-center w-8 h-8 bg-red-100 rounded-lg-full">
                     <span className="text-sm font-semibold text-red-600">
                       {invoice.daysOverdue}
                     </span>
@@ -318,7 +318,7 @@ export function OverdueInvoices({ className = '' }: OverdueInvoicesProps) {
         </div>
 
         {/* Average Days Overdue */}
-        <div className="text-center p-4 bg-gray-50 rounded-lg-lg-lg">
+        <div className="text-center p-4 bg-gray-50 rounded-lg-lg">
           <div className="flex items-center justify-center space-x-2 mb-2">
             <Clock className="h-6 w-6 text-orange-600" />
             <span className="text-2xl font-bold text-orange-600">
@@ -347,7 +347,7 @@ export function OverdueInvoices({ className = '' }: OverdueInvoicesProps) {
         </div>
 
         {/* Insights */}
-        <div className="p-3 bg-blue-50 rounded-lg-lg-lg">
+        <div className="p-3 bg-blue-50 rounded-lg-lg">
           <h5 className="text-sm font-medium text-blue-900 mb-2">💡 Overdue Invoice Insights</h5>
           <ul className="text-xs text-blue-800 space-y-1">
             <li>• Total overdue amount: ${overdueData.totalOverdue.toLocaleString()}</li>

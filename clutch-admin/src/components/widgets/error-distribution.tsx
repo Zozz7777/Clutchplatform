@@ -176,9 +176,9 @@ export function ErrorDistribution({ className = '' }: ErrorDistributionProps) {
         </CardHeader>
         <CardContent>
           <div className="animate-pulse space-y-4">
-            <div className="h-4 bg-gray-200 rounded-lg-lg w-3/4"></div>
-            <div className="h-4 bg-gray-200 rounded-lg-lg w-1/2"></div>
-            <div className="h-4 bg-gray-200 rounded-lg-lg w-2/3"></div>
+            <div className="h-4 bg-gray-200 rounded-lg w-3/4"></div>
+            <div className="h-4 bg-gray-200 rounded-lg w-1/2"></div>
+            <div className="h-4 bg-gray-200 rounded-lg w-2/3"></div>
           </div>
         </CardContent>
       </Card>
@@ -213,12 +213,12 @@ export function ErrorDistribution({ className = '' }: ErrorDistributionProps) {
       <CardContent className="space-y-6">
         {/* Summary Stats */}
         <div className="grid grid-cols-2 gap-4">
-          <div className="text-center p-3 bg-red-50 rounded-lg-lg-lg">
+          <div className="text-center p-3 bg-red-50 rounded-lg-lg">
             <Bug className="h-5 w-5 text-red-600 mx-auto mb-1" />
             <p className="text-lg font-bold text-red-600">{errorData.totalErrors}</p>
             <p className="text-xs text-gray-500">Total Errors</p>
           </div>
-          <div className="text-center p-3 bg-orange-50 rounded-lg-lg-lg">
+          <div className="text-center p-3 bg-orange-50 rounded-lg-lg">
             <AlertTriangle className="h-5 w-5 text-orange-600 mx-auto mb-1" />
             <p className="text-lg font-bold text-orange-600">{errorData.criticalErrors}</p>
             <p className="text-xs text-gray-500">Critical Errors</p>
@@ -233,9 +233,9 @@ export function ErrorDistribution({ className = '' }: ErrorDistributionProps) {
               const TrendIcon = getTrendIcon(error.trend);
               
               return (
-                <div key={error.type} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg-lg-lg">
+                <div key={error.type} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg-lg">
                   <div className="flex items-center space-x-3">
-                    <div className="flex items-center justify-center w-8 h-8 bg-red-100 rounded-lg-lg-full">
+                    <div className="flex items-center justify-center w-8 h-8 bg-red-100 rounded-lg-full">
                       <span className="text-sm font-semibold text-red-600">
                         {index + 1}
                       </span>
@@ -290,7 +290,7 @@ export function ErrorDistribution({ className = '' }: ErrorDistributionProps) {
               .sort((a, b) => new Date(b.lastOccurrence).getTime() - new Date(a.lastOccurrence).getTime())
               .slice(0, 3)
               .map((error) => (
-                <div key={error.type} className="flex items-center justify-between p-2 bg-gray-50 rounded-lg-lg">
+                <div key={error.type} className="flex items-center justify-between p-2 bg-gray-50 rounded-lg">
                   <div className="flex items-center space-x-2">
                     <Bug className="h-4 w-4 text-red-600" />
                     <span className="text-sm text-gray-700">{error.type}</span>
@@ -319,7 +319,7 @@ export function ErrorDistribution({ className = '' }: ErrorDistributionProps) {
         </div>
 
         {/* Insights */}
-        <div className="p-3 bg-blue-50 rounded-lg-lg-lg">
+        <div className="p-3 bg-blue-50 rounded-lg-lg">
           <h5 className="text-sm font-medium text-blue-900 mb-2">💡 Error Distribution Insights</h5>
           <ul className="text-xs text-blue-800 space-y-1">
             <li>• Total errors: {errorData.totalErrors}</li>

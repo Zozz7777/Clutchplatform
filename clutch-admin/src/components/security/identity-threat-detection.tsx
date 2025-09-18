@@ -412,15 +412,15 @@ export default function IdentityThreatDetection({ className }: IdentityThreatDet
         <CardContent className="space-y-6">
           {/* Threat Summary */}
           <div className="grid grid-cols-3 gap-4">
-            <div className="text-center p-3 bg-red-50 rounded-lg-lg">
+            <div className="text-center p-3 bg-red-50 rounded-lg">
               <div className="text-2xl font-bold text-red-600">{criticalThreats}</div>
               <div className="text-sm text-muted-foreground">Critical Threats</div>
             </div>
-            <div className="text-center p-3 bg-orange-50 rounded-lg-lg">
+            <div className="text-center p-3 bg-orange-50 rounded-lg">
               <div className="text-2xl font-bold text-orange-600">{activeThreats}</div>
               <div className="text-sm text-muted-foreground">Active Threats</div>
             </div>
-            <div className="text-center p-3 bg-purple-50 rounded-lg-lg">
+            <div className="text-center p-3 bg-purple-50 rounded-lg">
               <div className="text-2xl font-bold text-purple-600">{avgRiskScore}</div>
               <div className="text-sm text-muted-foreground">Avg Risk Score</div>
             </div>
@@ -431,7 +431,7 @@ export default function IdentityThreatDetection({ className }: IdentityThreatDet
             <h4 className="font-medium mb-3">Threat Patterns</h4>
             <div className="grid gap-3">
               {threatPatterns.map((pattern) => (
-                <div key={pattern.id} className="p-3 border rounded-lg-lg">
+                <div key={pattern.id} className="p-3 border rounded-lg">
                   <div className="flex items-center justify-between mb-2">
                     <div className="flex items-center gap-2">
                       <Target className="h-4 w-4" />
@@ -478,7 +478,7 @@ export default function IdentityThreatDetection({ className }: IdentityThreatDet
               {filteredEvents.map((event) => (
                 <div
                   key={event.id}
-                  className={`p-3 border rounded-lg-lg cursor-pointer transition-colors ${
+                  className={`p-3 border rounded-lg cursor-pointer transition-colors ${
                     selectedEvent?.id === event.id ? 'border-blue-500 bg-blue-50' : 'hover:bg-gray-50'
                   }`}
                   onClick={() => setSelectedEvent(event)}

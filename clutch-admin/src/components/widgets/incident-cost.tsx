@@ -194,9 +194,9 @@ export function IncidentCost({ className = '' }: IncidentCostProps) {
         </CardHeader>
         <CardContent>
           <div className="animate-pulse space-y-4">
-            <div className="h-4 bg-gray-200 rounded-lg-lg w-3/4"></div>
-            <div className="h-4 bg-gray-200 rounded-lg-lg w-1/2"></div>
-            <div className="h-4 bg-gray-200 rounded-lg-lg w-2/3"></div>
+            <div className="h-4 bg-gray-200 rounded-lg w-3/4"></div>
+            <div className="h-4 bg-gray-200 rounded-lg w-1/2"></div>
+            <div className="h-4 bg-gray-200 rounded-lg w-2/3"></div>
           </div>
         </CardContent>
       </Card>
@@ -231,14 +231,14 @@ export function IncidentCost({ className = '' }: IncidentCostProps) {
       <CardContent className="space-y-6">
         {/* Summary Stats */}
         <div className="grid grid-cols-2 gap-4">
-          <div className="text-center p-3 bg-red-50 rounded-lg-lg-lg">
+          <div className="text-center p-3 bg-red-50 rounded-lg-lg">
             <DollarSign className="h-5 w-5 text-red-600 mx-auto mb-1" />
             <p className="text-lg font-bold text-red-600">
               ${incidentData.totalCost.toLocaleString()}
             </p>
             <p className="text-xs text-gray-500">Total Cost</p>
           </div>
-          <div className="text-center p-3 bg-orange-50 rounded-lg-lg-lg">
+          <div className="text-center p-3 bg-orange-50 rounded-lg-lg">
             <Clock className="h-5 w-5 text-orange-600 mx-auto mb-1" />
             <p className="text-lg font-bold text-orange-600">
               {formatDuration(incidentData.totalDowntime)}
@@ -248,7 +248,7 @@ export function IncidentCost({ className = '' }: IncidentCostProps) {
         </div>
 
         {/* Average Cost */}
-        <div className="text-center p-4 bg-gray-50 rounded-lg-lg-lg">
+        <div className="text-center p-4 bg-gray-50 rounded-lg-lg">
           <div className="flex items-center justify-center space-x-2 mb-2">
             <Target className="h-6 w-6 text-red-600" />
             <span className="text-2xl font-bold text-red-600">
@@ -268,25 +268,25 @@ export function IncidentCost({ className = '' }: IncidentCostProps) {
         <div className="space-y-3">
           <h4 className="text-sm font-medium text-gray-900">Severity Distribution</h4>
           <div className="grid grid-cols-4 gap-2">
-            <div className="text-center p-2 bg-red-50 rounded-lg-lg">
+            <div className="text-center p-2 bg-red-50 rounded-lg">
               <p className="text-sm font-bold text-red-600">
                 {incidentData.severityDistribution.critical || 0}
               </p>
               <p className="text-xs text-gray-500">Critical</p>
             </div>
-            <div className="text-center p-2 bg-orange-50 rounded-lg-lg">
+            <div className="text-center p-2 bg-orange-50 rounded-lg">
               <p className="text-sm font-bold text-orange-600">
                 {incidentData.severityDistribution.high || 0}
               </p>
               <p className="text-xs text-gray-500">High</p>
             </div>
-            <div className="text-center p-2 bg-yellow-50 rounded-lg-lg">
+            <div className="text-center p-2 bg-yellow-50 rounded-lg">
               <p className="text-sm font-bold text-yellow-600">
                 {incidentData.severityDistribution.medium || 0}
               </p>
               <p className="text-xs text-gray-500">Medium</p>
             </div>
-            <div className="text-center p-2 bg-green-50 rounded-lg-lg">
+            <div className="text-center p-2 bg-green-50 rounded-lg">
               <p className="text-sm font-bold text-green-600">
                 {incidentData.severityDistribution.low || 0}
               </p>
@@ -302,9 +302,9 @@ export function IncidentCost({ className = '' }: IncidentCostProps) {
             {incidentData.incidents
               .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
               .map((incident) => (
-                <div key={incident.incidentId} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg-lg-lg">
+                <div key={incident.incidentId} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg-lg">
                   <div className="flex items-center space-x-3">
-                    <div className="flex items-center justify-center w-8 h-8 bg-red-100 rounded-lg-lg-full">
+                    <div className="flex items-center justify-center w-8 h-8 bg-red-100 rounded-lg-full">
                       <AlertTriangle className="h-4 w-4 text-red-600" />
                     </div>
                     <div>
@@ -373,7 +373,7 @@ export function IncidentCost({ className = '' }: IncidentCostProps) {
         </div>
 
         {/* Insights */}
-        <div className="p-3 bg-blue-50 rounded-lg-lg-lg">
+        <div className="p-3 bg-blue-50 rounded-lg-lg">
           <h5 className="text-sm font-medium text-blue-900 mb-2">💡 Incident Cost Insights</h5>
           <ul className="text-xs text-blue-800 space-y-1">
             <li>• Total incident cost: ${incidentData.totalCost.toLocaleString()}</li>

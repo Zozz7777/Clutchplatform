@@ -465,26 +465,26 @@ export default function AutoHealingPlaybooks({ className }: AutoHealingPlaybooks
         <CardContent className="space-y-6">
           {/* Playbook Summary */}
           <div className="grid grid-cols-4 gap-4">
-            <div className="text-center p-3 bg-green-50 rounded-lg-lg">
+            <div className="text-center p-3 bg-green-50 rounded-lg">
               <div className="text-2xl font-bold text-green-600">{activePlaybooks}</div>
               <div className="text-sm text-muted-foreground">Active Playbooks</div>
             </div>
-            <div className="text-center p-3 bg-blue-50 rounded-lg-lg">
+            <div className="text-center p-3 bg-blue-50 rounded-lg">
               <div className="text-2xl font-bold text-blue-600">{totalExecutions}</div>
               <div className="text-sm text-muted-foreground">Total Executions</div>
             </div>
-            <div className="text-center p-3 bg-purple-50 rounded-lg-lg">
+            <div className="text-center p-3 bg-purple-50 rounded-lg">
               <div className="text-2xl font-bold text-purple-600">{avgSuccessRate}%</div>
               <div className="text-sm text-muted-foreground">Avg Success Rate</div>
             </div>
-            <div className="text-center p-3 bg-orange-50 rounded-lg-lg">
+            <div className="text-center p-3 bg-orange-50 rounded-lg">
               <div className="text-2xl font-bold text-orange-600">{totalServices}</div>
               <div className="text-sm text-muted-foreground">Protected Services</div>
             </div>
           </div>
 
           {/* Auto-Healing Overview */}
-          <div className="p-4 bg-gradient-to-r from-green-50 to-blue-50 rounded-lg-lg">
+          <div className="p-4 bg-gradient-to-r from-green-50 to-blue-50 rounded-lg">
             <div className="flex items-center justify-between">
               <div>
                 <h4 className="font-medium">Auto-Healing System</h4>
@@ -538,7 +538,7 @@ export default function AutoHealingPlaybooks({ className }: AutoHealingPlaybooks
               {filteredPlaybooks.map((playbook) => (
                 <div
                   key={playbook.id}
-                  className={`p-3 border rounded-lg-lg cursor-pointer transition-colors ${
+                  className={`p-3 border rounded-lg cursor-pointer transition-colors ${
                     selectedPlaybook?.id === playbook.id ? 'border-blue-500 bg-blue-50' : 'hover:bg-gray-50'
                   }`}
                   onClick={() => setSelectedPlaybook(playbook)}
@@ -677,7 +677,7 @@ export default function AutoHealingPlaybooks({ className }: AutoHealingPlaybooks
                     <h5 className="font-medium mb-2">Healing Steps</h5>
                     <div className="space-y-2">
                       {selectedPlaybook.steps.map((step) => (
-                        <div key={step.id} className="p-3 border rounded-lg-lg">
+                        <div key={step.id} className="p-3 border rounded-lg">
                           <div className="flex items-center justify-between mb-2">
                             <div className="flex items-center gap-2">
                               {getStepTypeIcon(step.type)}

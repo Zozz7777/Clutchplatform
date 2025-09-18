@@ -150,13 +150,13 @@ export default function FeatureFlagsPage() {
   const [showABTestDialog, setShowABTestDialog] = useState(false);
   const [showRolloutDialog, setShowRolloutDialog] = useState(false);
   const [selectedFlag, setSelectedFlag] = useState<FeatureFlag | null>(null);
-  
+
   // Form data states
   const [createFlagData, setCreateFlagData] = useState({
     name: "",
     key: "",
     description: "",
-    type: "boolean",
+      type: "boolean",
     defaultValue: "",
     environment: "development",
     tags: ""
@@ -175,7 +175,7 @@ export default function FeatureFlagsPage() {
   const [createRolloutData, setCreateRolloutData] = useState({
     name: "",
     featureFlagId: "",
-    type: "percentage",
+      type: "percentage",
     percentage: "",
     startDate: "",
     endDate: ""

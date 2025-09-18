@@ -313,7 +313,7 @@ export default function CriticalPathAlerts({ className }: CriticalPathAlertsProp
           {alerts.map((alert) => (
             <div
               key={alert.id}
-              className={`p-4 rounded-lg-lg border ${
+              className={`p-4 rounded-lg border ${
                 alert.priority === 'critical' ? 'border-red-200 bg-red-50' :
                 alert.priority === 'high' ? 'border-orange-200 bg-orange-50' :
                 'border-gray-200 bg-white'

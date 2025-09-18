@@ -506,19 +506,19 @@ export default function DynamicPricingSimulation({ className }: DynamicPricingSi
         <CardContent className="space-y-6">
           {/* Simulation Summary */}
           <div className="grid grid-cols-4 gap-4">
-            <div className="text-center p-3 bg-green-50 rounded-lg-lg">
+            <div className="text-center p-3 bg-green-50 rounded-lg">
               <div className="text-2xl font-bold text-green-600">{activeScenarios}</div>
               <div className="text-sm text-muted-foreground">Active Scenarios</div>
             </div>
-            <div className="text-center p-3 bg-blue-50 rounded-lg-lg">
+            <div className="text-center p-3 bg-blue-50 rounded-lg">
               <div className="text-2xl font-bold text-blue-600">{testingScenarios}</div>
               <div className="text-sm text-muted-foreground">Testing Scenarios</div>
             </div>
-            <div className="text-center p-3 bg-purple-50 rounded-lg-lg">
+            <div className="text-center p-3 bg-purple-50 rounded-lg">
               <div className="text-2xl font-bold text-purple-600">{avgConfidence}%</div>
               <div className="text-sm text-muted-foreground">Avg Confidence</div>
             </div>
-            <div className="text-center p-3 bg-yellow-50 rounded-lg-lg">
+            <div className="text-center p-3 bg-yellow-50 rounded-lg">
               <div className="text-2xl font-bold text-yellow-600">{formatCurrency(totalExpectedRevenue)}</div>
               <div className="text-sm text-muted-foreground">Expected Revenue</div>
             </div>
@@ -529,7 +529,7 @@ export default function DynamicPricingSimulation({ className }: DynamicPricingSi
             <h4 className="font-medium mb-3">Competitive Market Analysis</h4>
             <div className="space-y-2">
               {marketAnalysis.map((competitor) => (
-                <div key={competitor.competitor} className="p-3 border rounded-lg-lg">
+                <div key={competitor.competitor} className="p-3 border rounded-lg">
                   <div className="flex items-center justify-between mb-2">
                     <div className="flex items-center gap-2">
                       <span className="font-medium">{competitor.competitor}</span>
@@ -582,7 +582,7 @@ export default function DynamicPricingSimulation({ className }: DynamicPricingSi
               {filteredScenarios.map((scenario) => (
                 <div
                   key={scenario.id}
-                  className={`p-3 border rounded-lg-lg cursor-pointer transition-colors ${
+                  className={`p-3 border rounded-lg cursor-pointer transition-colors ${
                     selectedScenario?.id === scenario.id ? 'border-blue-500 bg-blue-50' : 'hover:bg-gray-50'
                   }`}
                   onClick={() => setSelectedScenario(scenario)}
@@ -760,7 +760,7 @@ export default function DynamicPricingSimulation({ className }: DynamicPricingSi
                     <h5 className="font-medium mb-2">A/B Tests</h5>
                     <div className="space-y-3">
                       {tests.filter(test => test.scenarioId === selectedScenario.id).map((test) => (
-                        <div key={test.id} className="p-3 border rounded-lg-lg">
+                        <div key={test.id} className="p-3 border rounded-lg">
                           <div className="flex items-center justify-between mb-2">
                             <span className="font-medium">{test.name}</span>
                             <Badge className={getTestStatusColor(test.status)}>

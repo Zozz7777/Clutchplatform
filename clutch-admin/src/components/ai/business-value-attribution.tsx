@@ -629,26 +629,26 @@ export default function BusinessValueAttribution({ className }: BusinessValueAtt
         <CardContent className="space-y-6">
           {/* Value Summary */}
           <div className="grid grid-cols-4 gap-4">
-            <div className="text-center p-3 bg-green-50 rounded-lg-lg">
+            <div className="text-center p-3 bg-green-50 rounded-lg">
               <div className="text-2xl font-bold text-green-600">{formatCurrency(totalValue)}</div>
               <div className="text-sm text-muted-foreground">Total Value Created</div>
             </div>
-            <div className="text-center p-3 bg-blue-50 rounded-lg-lg">
+            <div className="text-center p-3 bg-blue-50 rounded-lg">
               <div className="text-2xl font-bold text-blue-600">{formatCurrency(totalInvestment)}</div>
               <div className="text-sm text-muted-foreground">Total Investment</div>
             </div>
-            <div className="text-center p-3 bg-purple-50 rounded-lg-lg">
+            <div className="text-center p-3 bg-purple-50 rounded-lg">
               <div className="text-2xl font-bold text-purple-600">{avgROI}%</div>
               <div className="text-sm text-muted-foreground">Average ROI</div>
             </div>
-            <div className="text-center p-3 bg-orange-50 rounded-lg-lg">
+            <div className="text-center p-3 bg-orange-50 rounded-lg">
               <div className="text-2xl font-bold text-orange-600">{avgConfidence}%</div>
               <div className="text-sm text-muted-foreground">Avg Confidence</div>
             </div>
           </div>
 
           {/* Value Attribution Overview */}
-          <div className="p-4 bg-gradient-to-r from-blue-50 to-purple-50 rounded-lg-lg">
+          <div className="p-4 bg-gradient-to-r from-blue-50 to-purple-50 rounded-lg">
             <div className="flex items-center justify-between">
               <div>
                 <h4 className="font-medium">Business Value Attribution</h4>
@@ -702,7 +702,7 @@ export default function BusinessValueAttribution({ className }: BusinessValueAtt
               {filteredImpacts.map((impact) => (
                 <div
                   key={impact.id}
-                  className={`p-3 border rounded-lg-lg cursor-pointer transition-colors ${
+                  className={`p-3 border rounded-lg cursor-pointer transition-colors ${
                     selectedImpact?.id === impact.id ? 'border-blue-500 bg-blue-50' : 'hover:bg-gray-50'
                   }`}
                   onClick={() => setSelectedImpact(impact)}
@@ -814,7 +814,7 @@ export default function BusinessValueAttribution({ className }: BusinessValueAtt
                     <h5 className="font-medium mb-2">Stakeholder Impact</h5>
                     <div className="grid grid-cols-2 gap-4">
                       {selectedImpact.stakeholders.map((stakeholder, index) => (
-                        <div key={index} className="p-3 border rounded-lg-lg">
+                        <div key={index} className="p-3 border rounded-lg">
                           <div className="flex items-center justify-between mb-2">
                             <span className="font-medium">{stakeholder.department}</span>
                             <span className="text-sm font-medium">{stakeholder.impact}% impact</span>
@@ -834,7 +834,7 @@ export default function BusinessValueAttribution({ className }: BusinessValueAtt
                     <h5 className="font-medium mb-2">Performance Metrics</h5>
                     <div className="space-y-2">
                       {selectedImpact.metrics.map((metric) => (
-                        <div key={metric.metric} className="p-3 border rounded-lg-lg">
+                        <div key={metric.metric} className="p-3 border rounded-lg">
                           <div className="flex items-center justify-between mb-2">
                             <span className="font-medium">{metric.metric}</span>
                             <div className="flex items-center gap-2">
@@ -891,7 +891,7 @@ export default function BusinessValueAttribution({ className }: BusinessValueAtt
                     <h5 className="font-medium mb-2">Impact Timeline</h5>
                     <div className="space-y-2">
                       {selectedImpact.timeline.milestones.map((milestone, index) => (
-                        <div key={index} className="p-3 border rounded-lg-lg">
+                        <div key={index} className="p-3 border rounded-lg">
                           <div className="flex items-center justify-between mb-2">
                             <span className="font-medium">{milestone.event}</span>
                             <span className="text-sm font-medium text-green-600">

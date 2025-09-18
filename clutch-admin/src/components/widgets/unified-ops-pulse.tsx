@@ -42,9 +42,9 @@ export function UnifiedOpsPulse({ className = '' }: UnifiedOpsPulseProps) {
         </CardHeader>
         <CardContent>
           <div className="animate-pulse space-y-4">
-            <div className="h-4 bg-gray-200 rounded-lg-lg-lg-lg w-3/4"></div>
-            <div className="h-4 bg-gray-200 rounded-lg-lg-lg-lg w-1/2"></div>
-            <div className="h-4 bg-gray-200 rounded-lg-lg-lg-lg w-2/3"></div>
+            <div className="h-4 bg-gray-200 rounded w-3/4"></div>
+            <div className="h-4 bg-gray-200 rounded w-1/2"></div>
+            <div className="h-4 bg-gray-200 rounded w-2/3"></div>
           </div>
         </CardContent>
       </Card>
@@ -92,9 +92,9 @@ export function UnifiedOpsPulse({ className = '' }: UnifiedOpsPulseProps) {
         {/* Funnel Flow */}
         <div className="space-y-4">
           {/* New Users */}
-          <div className="flex items-center justify-between p-3 bg-blue-50 rounded-lg-lg-lg-lg">
+          <div className="flex items-center justify-between p-3 bg-blue-50 rounded-lg">
             <div className="flex items-center space-x-3">
-              <div className="p-2 bg-blue-100 rounded-lg-lg-lg-full">
+              <div className="p-2 bg-blue-100 rounded-full">
                 <Users className="h-4 w-4 text-blue-600" />
               </div>
               <div>
@@ -109,9 +109,9 @@ export function UnifiedOpsPulse({ className = '' }: UnifiedOpsPulseProps) {
           </div>
 
           {/* Active Sessions */}
-          <div className="flex items-center justify-between p-3 bg-green-50 rounded-lg-lg-lg-lg">
+          <div className="flex items-center justify-between p-3 bg-green-50 rounded-lg">
             <div className="flex items-center space-x-3">
-              <div className="p-2 bg-green-100 rounded-lg-lg-lg-full">
+              <div className="p-2 bg-green-100 rounded-full">
                 <Activity className="h-4 w-4 text-green-600" />
               </div>
               <div>
@@ -126,9 +126,9 @@ export function UnifiedOpsPulse({ className = '' }: UnifiedOpsPulseProps) {
           </div>
 
           {/* Active Vehicles */}
-          <div className="flex items-center justify-between p-3 bg-purple-50 rounded-lg-lg-lg-lg">
+          <div className="flex items-center justify-between p-3 bg-purple-50 rounded-lg">
             <div className="flex items-center space-x-3">
-              <div className="p-2 bg-purple-100 rounded-lg-lg-lg-full">
+              <div className="p-2 bg-purple-100 rounded-full">
                 <Truck className="h-4 w-4 text-purple-600" />
               </div>
               <div>
@@ -145,9 +145,9 @@ export function UnifiedOpsPulse({ className = '' }: UnifiedOpsPulseProps) {
           </div>
 
           {/* Revenue Impact */}
-          <div className="flex items-center justify-between p-3 bg-yellow-50 rounded-lg-lg-lg-lg">
+          <div className="flex items-center justify-between p-3 bg-yellow-50 rounded-lg">
             <div className="flex items-center space-x-3">
-              <div className="p-2 bg-yellow-100 rounded-lg-lg-lg-full">
+              <div className="p-2 bg-yellow-100 rounded-full">
                 <DollarSign className="h-4 w-4 text-yellow-600" />
               </div>
               <div>

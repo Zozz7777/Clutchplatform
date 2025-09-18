@@ -131,9 +131,9 @@ export function ARPUARPPU({ className = '' }: ARPUARPPUProps) {
         </CardHeader>
         <CardContent>
           <div className="animate-pulse space-y-4">
-            <div className="h-4 bg-gray-200 rounded-lg-lg w-3/4"></div>
-            <div className="h-4 bg-gray-200 rounded-lg-lg w-1/2"></div>
-            <div className="h-4 bg-gray-200 rounded-lg-lg w-2/3"></div>
+            <div className="h-4 bg-gray-200 rounded-lg w-3/4"></div>
+            <div className="h-4 bg-gray-200 rounded-lg w-1/2"></div>
+            <div className="h-4 bg-gray-200 rounded-lg w-2/3"></div>
           </div>
         </CardContent>
       </Card>
@@ -168,14 +168,14 @@ export function ARPUARPPU({ className = '' }: ARPUARPPUProps) {
       <CardContent className="space-y-6">
         {/* Summary Stats */}
         <div className="grid grid-cols-2 gap-4">
-          <div className="text-center p-3 bg-blue-50 rounded-lg-lg-lg">
+          <div className="text-center p-3 bg-blue-50 rounded-lg-lg">
             <Users className="h-5 w-5 text-blue-600 mx-auto mb-1" />
             <p className="text-lg font-bold text-blue-600">
               ${arpuData.arpu.toFixed(0)}
             </p>
             <p className="text-xs text-gray-500">ARPU</p>
           </div>
-          <div className="text-center p-3 bg-green-50 rounded-lg-lg-lg">
+          <div className="text-center p-3 bg-green-50 rounded-lg-lg">
             <UserCheck className="h-5 w-5 text-green-600 mx-auto mb-1" />
             <p className="text-lg font-bold text-green-600">
               ${arpuData.arppu.toFixed(0)}
@@ -185,7 +185,7 @@ export function ARPUARPPU({ className = '' }: ARPUARPPUProps) {
         </div>
 
         {/* ARPU vs ARPPU Comparison */}
-        <div className="text-center p-4 bg-gray-50 rounded-lg-lg-lg">
+        <div className="text-center p-4 bg-gray-50 rounded-lg-lg">
           <div className="flex items-center justify-center space-x-4 mb-2">
             <div className="text-center">
               <p className="text-sm text-gray-600">ARPU</p>
@@ -211,7 +211,7 @@ export function ARPUARPPU({ className = '' }: ARPUARPPUProps) {
         <div className="space-y-3">
           <h4 className="text-sm font-medium text-gray-900">User Metrics</h4>
           <div className="space-y-2">
-            <div className="flex items-center justify-between p-3 bg-gray-50 rounded-lg-lg-lg">
+            <div className="flex items-center justify-between p-3 bg-gray-50 rounded-lg-lg">
               <div className="flex items-center space-x-3">
                 <Users className="h-4 w-4 text-blue-600" />
                 <div>
@@ -229,7 +229,7 @@ export function ARPUARPPU({ className = '' }: ARPUARPPUProps) {
               </div>
             </div>
 
-            <div className="flex items-center justify-between p-3 bg-gray-50 rounded-lg-lg-lg">
+            <div className="flex items-center justify-between p-3 bg-gray-50 rounded-lg-lg">
               <div className="flex items-center space-x-3">
                 <UserCheck className="h-4 w-4 text-green-600" />
                 <div>
@@ -254,9 +254,9 @@ export function ARPUARPPU({ className = '' }: ARPUARPPUProps) {
           <h4 className="text-sm font-medium text-gray-900">Segment Breakdown</h4>
           <div className="space-y-2">
             {arpuData.segmentBreakdown.map((segment) => (
-              <div key={segment.segment} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg-lg-lg">
+              <div key={segment.segment} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg-lg">
                 <div className="flex items-center space-x-3">
-                  <div className="flex items-center justify-center w-8 h-8 bg-blue-100 rounded-lg-lg-full">
+                  <div className="flex items-center justify-center w-8 h-8 bg-blue-100 rounded-lg-full">
                     <span className="text-sm font-semibold text-blue-600">
                       {segment.segment.charAt(0)}
                     </span>
@@ -287,14 +287,14 @@ export function ARPUARPPU({ className = '' }: ARPUARPPUProps) {
 
         {/* Growth Trends */}
         <div className="grid grid-cols-2 gap-4">
-          <div className="text-center p-3 bg-green-50 rounded-lg-lg-lg">
+          <div className="text-center p-3 bg-green-50 rounded-lg-lg">
             <TrendingUp className="h-4 w-4 text-green-600 mx-auto mb-1" />
             <p className="text-sm font-bold text-green-600">
               +{arpuData.arpuGrowth.toFixed(1)}%
             </p>
             <p className="text-xs text-gray-500">ARPU Growth</p>
           </div>
-          <div className="text-center p-3 bg-blue-50 rounded-lg-lg-lg">
+          <div className="text-center p-3 bg-blue-50 rounded-lg-lg">
             <TrendingUp className="h-4 w-4 text-blue-600 mx-auto mb-1" />
             <p className="text-sm font-bold text-blue-600">
               +{arpuData.arppuGrowth.toFixed(1)}%
@@ -316,7 +316,7 @@ export function ARPUARPPU({ className = '' }: ARPUARPPUProps) {
         </div>
 
         {/* Insights */}
-        <div className="p-3 bg-blue-50 rounded-lg-lg-lg">
+        <div className="p-3 bg-blue-50 rounded-lg-lg">
           <h5 className="text-sm font-medium text-blue-900 mb-2">💡 ARPU Insights</h5>
           <ul className="text-xs text-blue-800 space-y-1">
             <li>• ARPU: ${arpuData.arpu.toFixed(0)} per user</li>

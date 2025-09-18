@@ -183,9 +183,9 @@ export function SecurityAlerts({ className = '' }: SecurityAlertsProps) {
         </CardHeader>
         <CardContent>
           <div className="animate-pulse space-y-4">
-            <div className="h-4 bg-gray-200 rounded-lg-lg w-3/4"></div>
-            <div className="h-4 bg-gray-200 rounded-lg-lg w-1/2"></div>
-            <div className="h-4 bg-gray-200 rounded-lg-lg w-2/3"></div>
+            <div className="h-4 bg-gray-200 rounded-lg w-3/4"></div>
+            <div className="h-4 bg-gray-200 rounded-lg w-1/2"></div>
+            <div className="h-4 bg-gray-200 rounded-lg w-2/3"></div>
           </div>
         </CardContent>
       </Card>
@@ -220,12 +220,12 @@ export function SecurityAlerts({ className = '' }: SecurityAlertsProps) {
       <CardContent className="space-y-6">
         {/* Summary Stats */}
         <div className="grid grid-cols-2 gap-4">
-          <div className="text-center p-3 bg-red-50 rounded-lg-lg-lg">
+          <div className="text-center p-3 bg-red-50 rounded-lg-lg">
             <AlertTriangle className="h-5 w-5 text-red-600 mx-auto mb-1" />
             <p className="text-lg font-bold text-red-600">{alertData.totalAlerts}</p>
             <p className="text-xs text-gray-500">Total Alerts</p>
           </div>
-          <div className="text-center p-3 bg-orange-50 rounded-lg-lg-lg">
+          <div className="text-center p-3 bg-orange-50 rounded-lg-lg">
             <Shield className="h-5 w-5 text-orange-600 mx-auto mb-1" />
             <p className="text-lg font-bold text-orange-600">{alertData.activeAlerts}</p>
             <p className="text-xs text-gray-500">Active Alerts</p>
@@ -233,7 +233,7 @@ export function SecurityAlerts({ className = '' }: SecurityAlertsProps) {
         </div>
 
         {/* Critical Alerts */}
-        <div className="text-center p-3 bg-red-50 rounded-lg-lg-lg">
+        <div className="text-center p-3 bg-red-50 rounded-lg-lg">
           <div className="flex items-center justify-center space-x-2 mb-2">
             <AlertTriangle className="h-5 w-5 text-red-600" />
             <span className="text-lg font-bold text-red-600">{alertData.criticalAlerts}</span>
@@ -249,9 +249,9 @@ export function SecurityAlerts({ className = '' }: SecurityAlertsProps) {
           <h4 className="text-sm font-medium text-gray-900">Recent Security Alerts</h4>
           <div className="space-y-2">
             {alertData.alerts.map((alert) => (
-              <div key={alert.id} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg-lg-lg">
+              <div key={alert.id} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg-lg">
                 <div className="flex items-center space-x-3">
-                  <div className={`p-2 rounded-lg-lg-full ${
+                  <div className={`p-2 rounded-lg-full ${
                     alert.severity === 'critical' ? 'bg-red-100' :
                     alert.severity === 'high' ? 'bg-orange-100' :
                     alert.severity === 'medium' ? 'bg-yellow-100' : 'bg-green-100'
@@ -287,7 +287,7 @@ export function SecurityAlerts({ className = '' }: SecurityAlertsProps) {
           <h4 className="text-sm font-medium text-gray-900">Alert Types</h4>
           <div className="space-y-2">
             {['Failed Login Attempts', 'Unusual Access Pattern', 'Permission Escalation', 'Data Export Anomaly', 'API Rate Limit Exceeded'].map((type) => (
-              <div key={type} className="flex items-center justify-between p-2 bg-gray-50 rounded-lg-lg">
+              <div key={type} className="flex items-center justify-between p-2 bg-gray-50 rounded-lg">
                 <span className="text-sm text-gray-700">{type}</span>
                 <Badge variant="outline" className="text-xs">
                   {Math.floor(Math.random() * 5) + 1} alerts
@@ -310,7 +310,7 @@ export function SecurityAlerts({ className = '' }: SecurityAlertsProps) {
         </div>
 
         {/* Insights */}
-        <div className="p-3 bg-blue-50 rounded-lg-lg-lg">
+        <div className="p-3 bg-blue-50 rounded-lg-lg">
           <h5 className="text-sm font-medium text-blue-900 mb-2">💡 Security Alert Insights</h5>
           <ul className="text-xs text-blue-800 space-y-1">
             <li>• Total alerts: {alertData.totalAlerts}</li>

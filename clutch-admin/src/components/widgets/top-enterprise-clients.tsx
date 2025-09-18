@@ -101,9 +101,9 @@ export function TopEnterpriseClients({ className = '' }: TopEnterpriseClientsPro
         </CardHeader>
         <CardContent>
           <div className="animate-pulse space-y-4">
-            <div className="h-4 bg-gray-200 rounded-lg-lg w-3/4"></div>
-            <div className="h-4 bg-gray-200 rounded-lg-lg w-1/2"></div>
-            <div className="h-4 bg-gray-200 rounded-lg-lg w-2/3"></div>
+            <div className="h-4 bg-gray-200 rounded-lg w-3/4"></div>
+            <div className="h-4 bg-gray-200 rounded-lg w-1/2"></div>
+            <div className="h-4 bg-gray-200 rounded-lg w-2/3"></div>
           </div>
         </CardContent>
       </Card>
@@ -124,14 +124,14 @@ export function TopEnterpriseClients({ className = '' }: TopEnterpriseClientsPro
       <CardContent className="space-y-6">
         {/* Summary Stats */}
         <div className="grid grid-cols-2 gap-4">
-          <div className="text-center p-3 bg-green-50 rounded-lg-lg-lg">
+          <div className="text-center p-3 bg-green-50 rounded-lg-lg">
             <DollarSign className="h-5 w-5 text-green-600 mx-auto mb-1" />
             <p className="text-lg font-bold text-green-600">
               ${totalRevenue.toLocaleString()}
             </p>
             <p className="text-xs text-gray-500">Total Revenue</p>
           </div>
-          <div className="text-center p-3 bg-blue-50 rounded-lg-lg-lg">
+          <div className="text-center p-3 bg-blue-50 rounded-lg-lg">
             <TrendingUp className="h-5 w-5 text-blue-600 mx-auto mb-1" />
             <p className="text-lg font-bold text-blue-600">
               {averageGrowth.toFixed(1)}%
@@ -147,9 +147,9 @@ export function TopEnterpriseClients({ className = '' }: TopEnterpriseClientsPro
             const revenuePercentage = totalRevenue > 0 ? (client.revenue / totalRevenue) * 100 : 0;
             
             return (
-              <div key={client.id} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg-lg-lg">
+              <div key={client.id} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg-lg">
                 <div className="flex items-center space-x-3 flex-1">
-                  <div className="flex items-center justify-center w-8 h-8 bg-blue-100 rounded-lg-lg-full">
+                  <div className="flex items-center justify-center w-8 h-8 bg-blue-100 rounded-lg-full">
                     <span className="text-sm font-semibold text-blue-600">
                       {index + 1}
                     </span>
@@ -213,7 +213,7 @@ export function TopEnterpriseClients({ className = '' }: TopEnterpriseClientsPro
               return (
                 <div key={client.id} className="flex items-center justify-between text-sm">
                   <div className="flex items-center space-x-2">
-                    <div className="w-3 h-3 bg-blue-500 rounded-lg-lg-full"></div>
+                    <div className="w-3 h-3 bg-blue-500 rounded-lg-full"></div>
                     <span className="text-gray-600">{client.name}</span>
                   </div>
                   <div className="flex items-center space-x-2">
@@ -232,13 +232,13 @@ export function TopEnterpriseClients({ className = '' }: TopEnterpriseClientsPro
         <div className="space-y-3">
           <h4 className="text-sm font-medium text-gray-900">Growth Analysis</h4>
           <div className="grid grid-cols-2 gap-4">
-            <div className="text-center p-3 bg-green-50 rounded-lg-lg-lg">
+            <div className="text-center p-3 bg-green-50 rounded-lg-lg">
               <p className="text-lg font-bold text-green-600">
                 {clients.filter(c => c.growth > 0).length}
               </p>
               <p className="text-xs text-gray-500">Growing Clients</p>
             </div>
-            <div className="text-center p-3 bg-red-50 rounded-lg-lg-lg">
+            <div className="text-center p-3 bg-red-50 rounded-lg-lg">
               <p className="text-lg font-bold text-red-600">
                 {clients.filter(c => c.growth < 0).length}
               </p>
@@ -260,7 +260,7 @@ export function TopEnterpriseClients({ className = '' }: TopEnterpriseClientsPro
         </div>
 
         {/* Insights */}
-        <div className="p-3 bg-blue-50 rounded-lg-lg-lg">
+        <div className="p-3 bg-blue-50 rounded-lg-lg">
           <h5 className="text-sm font-medium text-blue-900 mb-2">💡 Client Insights</h5>
           <ul className="text-xs text-blue-800 space-y-1">
             <li>• Top client contributes {(clients[0]?.revenue / totalRevenue * 100 || 0).toFixed(1)}% of total revenue</li>

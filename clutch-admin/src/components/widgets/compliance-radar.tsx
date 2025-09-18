@@ -97,9 +97,9 @@ export function ComplianceRadar({ className = '' }: ComplianceRadarProps) {
         </CardHeader>
         <CardContent>
           <div className="animate-pulse space-y-4">
-            <div className="h-4 bg-gray-200 rounded-lg-lg w-3/4"></div>
-            <div className="h-4 bg-gray-200 rounded-lg-lg w-1/2"></div>
-            <div className="h-4 bg-gray-200 rounded-lg-lg w-2/3"></div>
+            <div className="h-4 bg-gray-200 rounded-lg w-3/4"></div>
+            <div className="h-4 bg-gray-200 rounded-lg w-1/2"></div>
+            <div className="h-4 bg-gray-200 rounded-lg w-2/3"></div>
           </div>
         </CardContent>
       </Card>
@@ -136,7 +136,7 @@ export function ComplianceRadar({ className = '' }: ComplianceRadarProps) {
       </CardHeader>
       <CardContent className="space-y-6">
         {/* Overall Status */}
-        <div className="text-center p-4 bg-gray-50 rounded-lg-lg-lg">
+        <div className="text-center p-4 bg-gray-50 rounded-lg-lg">
           <div className="flex items-center justify-center space-x-2 mb-2">
             <StatusIcon className={`h-6 w-6 ${getStatusColor(compliance.overallStatus)}`} />
             <span className={`text-xl font-bold ${getStatusColor(compliance.overallStatus)}`}>
@@ -153,17 +153,17 @@ export function ComplianceRadar({ className = '' }: ComplianceRadarProps) {
 
         {/* Compliance Metrics */}
         <div className="grid grid-cols-3 gap-4">
-          <div className="text-center p-3 bg-blue-50 rounded-lg-lg-lg">
+          <div className="text-center p-3 bg-blue-50 rounded-lg-lg">
             <FileText className="h-5 w-5 text-blue-600 mx-auto mb-1" />
             <p className="text-lg font-bold text-blue-600">{compliance.pendingApprovals}</p>
             <p className="text-xs text-gray-500">Pending Approvals</p>
           </div>
-          <div className="text-center p-3 bg-yellow-50 rounded-lg-lg-lg">
+          <div className="text-center p-3 bg-yellow-50 rounded-lg-lg">
             <AlertTriangle className="h-5 w-5 text-yellow-600 mx-auto mb-1" />
             <p className="text-lg font-bold text-yellow-600">{compliance.violations}</p>
             <p className="text-xs text-gray-500">Violations</p>
           </div>
-          <div className="text-center p-3 bg-red-50 rounded-lg-lg-lg">
+          <div className="text-center p-3 bg-red-50 rounded-lg-lg">
             <Lock className="h-5 w-5 text-red-600 mx-auto mb-1" />
             <p className="text-lg font-bold text-red-600">{compliance.securityIncidents}</p>
             <p className="text-xs text-gray-500">Security Incidents</p>
@@ -175,7 +175,7 @@ export function ComplianceRadar({ className = '' }: ComplianceRadarProps) {
           <h4 className="text-sm font-medium text-gray-900">Compliance Breakdown</h4>
           
           <div className="space-y-2">
-            <div className="flex items-center justify-between p-3 bg-gray-50 rounded-lg-lg-lg">
+            <div className="flex items-center justify-between p-3 bg-gray-50 rounded-lg-lg">
               <div className="flex items-center space-x-3">
                 <FileText className="h-4 w-4 text-blue-600" />
                 <div>
@@ -191,7 +191,7 @@ export function ComplianceRadar({ className = '' }: ComplianceRadarProps) {
               </div>
             </div>
 
-            <div className="flex items-center justify-between p-3 bg-gray-50 rounded-lg-lg-lg">
+            <div className="flex items-center justify-between p-3 bg-gray-50 rounded-lg-lg">
               <div className="flex items-center space-x-3">
                 <AlertTriangle className="h-4 w-4 text-yellow-600" />
                 <div>
@@ -207,7 +207,7 @@ export function ComplianceRadar({ className = '' }: ComplianceRadarProps) {
               </div>
             </div>
 
-            <div className="flex items-center justify-between p-3 bg-gray-50 rounded-lg-lg-lg">
+            <div className="flex items-center justify-between p-3 bg-gray-50 rounded-lg-lg">
               <div className="flex items-center space-x-3">
                 <Lock className="h-4 w-4 text-red-600" />
                 <div>
@@ -233,7 +233,7 @@ export function ComplianceRadar({ className = '' }: ComplianceRadarProps) {
           </h4>
           
           <div className="space-y-3">
-            <div className="flex items-center justify-between p-3 bg-green-50 rounded-lg-lg-lg">
+            <div className="flex items-center justify-between p-3 bg-green-50 rounded-lg-lg">
               <div className="flex items-center space-x-3">
                 <CheckCircle className="h-4 w-4 text-green-600" />
                 <div>
@@ -249,7 +249,7 @@ export function ComplianceRadar({ className = '' }: ComplianceRadarProps) {
               </div>
             </div>
 
-            <div className="flex items-center justify-between p-3 bg-blue-50 rounded-lg-lg-lg">
+            <div className="flex items-center justify-between p-3 bg-blue-50 rounded-lg-lg">
               <div className="flex items-center space-x-3">
                 <Clock className="h-4 w-4 text-blue-600" />
                 <div>
@@ -298,7 +298,7 @@ export function ComplianceRadar({ className = '' }: ComplianceRadarProps) {
         </div>
 
         {/* Compliance Insights */}
-        <div className="p-3 bg-blue-50 rounded-lg-lg-lg">
+        <div className="p-3 bg-blue-50 rounded-lg-lg">
           <h5 className="text-sm font-medium text-blue-900 mb-2">💡 Compliance Insights</h5>
           <ul className="text-xs text-blue-800 space-y-1">
             {compliance.overallStatus === 'green' && (

@@ -445,15 +445,15 @@ export default function ComplianceFlags({ className }: ComplianceFlagsProps) {
         <CardContent className="space-y-6">
           {/* Compliance Summary */}
           <div className="grid grid-cols-3 gap-4">
-            <div className="text-center p-3 bg-red-50 rounded-lg-lg">
+            <div className="text-center p-3 bg-red-50 rounded-lg">
               <div className="text-2xl font-bold text-red-600">{criticalFlags}</div>
               <div className="text-sm text-muted-foreground">Critical Flags</div>
             </div>
-            <div className="text-center p-3 bg-orange-50 rounded-lg-lg">
+            <div className="text-center p-3 bg-orange-50 rounded-lg">
               <div className="text-2xl font-bold text-orange-600">{openFlags}</div>
               <div className="text-sm text-muted-foreground">Open Issues</div>
             </div>
-            <div className="text-center p-3 bg-green-50 rounded-lg-lg">
+            <div className="text-center p-3 bg-green-50 rounded-lg">
               <div className="text-2xl font-bold text-green-600">{avgComplianceScore}%</div>
               <div className="text-sm text-muted-foreground">Compliance Score</div>
             </div>
@@ -464,7 +464,7 @@ export default function ComplianceFlags({ className }: ComplianceFlagsProps) {
             <h4 className="font-medium mb-3">Compliance Frameworks</h4>
             <div className="grid gap-3">
               {frameworks.map((framework) => (
-                <div key={framework.id} className="p-3 border rounded-lg-lg">
+                <div key={framework.id} className="p-3 border rounded-lg">
                   <div className="flex items-center justify-between mb-2">
                     <div className="flex items-center gap-2">
                       <Shield className="h-4 w-4" />
@@ -526,7 +526,7 @@ export default function ComplianceFlags({ className }: ComplianceFlagsProps) {
               {filteredFlags.map((flag) => (
                 <div
                   key={flag.id}
-                  className={`p-3 border rounded-lg-lg cursor-pointer transition-colors ${
+                  className={`p-3 border rounded-lg cursor-pointer transition-colors ${
                     selectedFlag?.id === flag.id ? 'border-blue-500 bg-blue-50' : 'hover:bg-gray-50'
                   }`}
                   onClick={() => setSelectedFlag(flag)}

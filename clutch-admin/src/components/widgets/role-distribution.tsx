@@ -133,9 +133,9 @@ export function RoleDistribution({ className = '' }: RoleDistributionProps) {
         </CardHeader>
         <CardContent>
           <div className="animate-pulse space-y-4">
-            <div className="h-4 bg-gray-200 rounded-lg-lg w-3/4"></div>
-            <div className="h-4 bg-gray-200 rounded-lg-lg w-1/2"></div>
-            <div className="h-4 bg-gray-200 rounded-lg-lg w-2/3"></div>
+            <div className="h-4 bg-gray-200 rounded-lg w-3/4"></div>
+            <div className="h-4 bg-gray-200 rounded-lg w-1/2"></div>
+            <div className="h-4 bg-gray-200 rounded-lg w-2/3"></div>
           </div>
         </CardContent>
       </Card>
@@ -160,17 +160,17 @@ export function RoleDistribution({ className = '' }: RoleDistributionProps) {
       <CardContent className="space-y-6">
         {/* Summary Stats */}
         <div className="grid grid-cols-3 gap-4">
-          <div className="text-center p-3 bg-blue-50 rounded-lg-lg-lg">
+          <div className="text-center p-3 bg-blue-50 rounded-lg-lg">
             <Users className="h-5 w-5 text-blue-600 mx-auto mb-1" />
             <p className="text-lg font-bold text-blue-600">{totalUsers}</p>
             <p className="text-xs text-gray-500">Total Users</p>
           </div>
-          <div className="text-center p-3 bg-green-50 rounded-lg-lg-lg">
+          <div className="text-center p-3 bg-green-50 rounded-lg-lg">
             <UserCheck className="h-5 w-5 text-green-600 mx-auto mb-1" />
             <p className="text-lg font-bold text-green-600">{roleData.length}</p>
             <p className="text-xs text-gray-500">Roles</p>
           </div>
-          <div className="text-center p-3 bg-purple-50 rounded-lg-lg-lg">
+          <div className="text-center p-3 bg-purple-50 rounded-lg-lg">
             <BarChart3 className="h-5 w-5 text-purple-600 mx-auto mb-1" />
             <p className="text-lg font-bold text-purple-600">
               {largestRole ? largestRole.percentage.toFixed(1) : 0}%
@@ -189,9 +189,9 @@ export function RoleDistribution({ className = '' }: RoleDistributionProps) {
               const TrendIcon = trend.trend === 'up' ? TrendingUp : trend.trend === 'down' ? TrendingDown : Users;
               
               return (
-                <div key={role.role} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg-lg-lg">
+                <div key={role.role} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg-lg">
                   <div className="flex items-center space-x-3">
-                    <div className="flex items-center justify-center w-8 h-8 bg-blue-100 rounded-lg-lg-full">
+                    <div className="flex items-center justify-center w-8 h-8 bg-blue-100 rounded-lg-full">
                       <span className="text-sm font-semibold text-blue-600">
                         {index + 1}
                       </span>
@@ -247,14 +247,14 @@ export function RoleDistribution({ className = '' }: RoleDistributionProps) {
 
         {/* Role Insights */}
         <div className="grid grid-cols-2 gap-4">
-          <div className="text-center p-3 bg-green-50 rounded-lg-lg-lg">
+          <div className="text-center p-3 bg-green-50 rounded-lg-lg">
             <UserCheck className="h-4 w-4 text-green-600 mx-auto mb-1" />
             <p className="text-sm font-bold text-green-600 capitalize">
               {largestRole?.role || 'N/A'}
             </p>
             <p className="text-xs text-gray-500">Largest Role</p>
           </div>
-          <div className="text-center p-3 bg-red-50 rounded-lg-lg-lg">
+          <div className="text-center p-3 bg-red-50 rounded-lg-lg">
             <User className="h-4 w-4 text-red-600 mx-auto mb-1" />
             <p className="text-sm font-bold text-red-600 capitalize">
               {smallestRole?.role || 'N/A'}
@@ -276,7 +276,7 @@ export function RoleDistribution({ className = '' }: RoleDistributionProps) {
         </div>
 
         {/* Insights */}
-        <div className="p-3 bg-blue-50 rounded-lg-lg-lg">
+        <div className="p-3 bg-blue-50 rounded-lg-lg">
           <h5 className="text-sm font-medium text-blue-900 mb-2">💡 Role Insights</h5>
           <ul className="text-xs text-blue-800 space-y-1">
             <li>• Total users: {totalUsers}</li>

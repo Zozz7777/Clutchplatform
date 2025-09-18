@@ -494,19 +494,19 @@ export default function RevenueAtRiskWidget({ className }: RevenueAtRiskWidgetPr
         <CardContent className="space-y-6">
           {/* Risk Summary */}
           <div className="grid grid-cols-4 gap-4">
-            <div className="text-center p-3 bg-red-50 rounded-lg-lg">
+            <div className="text-center p-3 bg-red-50 rounded-lg">
               <div className="text-2xl font-bold text-red-600">{criticalRisks}</div>
               <div className="text-sm text-muted-foreground">Critical Risks</div>
             </div>
-            <div className="text-center p-3 bg-orange-50 rounded-lg-lg">
+            <div className="text-center p-3 bg-orange-50 rounded-lg">
               <div className="text-2xl font-bold text-orange-600">{activeRisks}</div>
               <div className="text-sm text-muted-foreground">Active Risks</div>
             </div>
-            <div className="text-center p-3 bg-purple-50 rounded-lg-lg">
+            <div className="text-center p-3 bg-purple-50 rounded-lg">
               <div className="text-2xl font-bold text-purple-600">{avgRiskScore}</div>
               <div className="text-sm text-muted-foreground">Avg Risk Score</div>
             </div>
-            <div className="text-center p-3 bg-yellow-50 rounded-lg-lg">
+            <div className="text-center p-3 bg-yellow-50 rounded-lg">
               <div className="text-2xl font-bold text-yellow-600">{formatCurrency(totalAtRisk)}</div>
               <div className="text-sm text-muted-foreground">Total at Risk</div>
             </div>
@@ -517,7 +517,7 @@ export default function RevenueAtRiskWidget({ className }: RevenueAtRiskWidgetPr
             <h4 className="font-medium mb-3">Revenue Projections</h4>
             <div className="space-y-3">
               {revenueProjections.map((projection) => (
-                <div key={projection.period} className="p-3 border rounded-lg-lg">
+                <div key={projection.period} className="p-3 border rounded-lg">
                   <div className="flex items-center justify-between mb-2">
                     <span className="font-medium">{projection.period}</span>
                     <div className="flex items-center gap-2">
@@ -580,7 +580,7 @@ export default function RevenueAtRiskWidget({ className }: RevenueAtRiskWidgetPr
               {filteredRisks.map((risk) => (
                 <div
                   key={risk.id}
-                  className={`p-3 border rounded-lg-lg cursor-pointer transition-colors ${
+                  className={`p-3 border rounded-lg cursor-pointer transition-colors ${
                     selectedRisk?.id === risk.id ? 'border-blue-500 bg-blue-50' : 'hover:bg-gray-50'
                   }`}
                   onClick={() => setSelectedRisk(risk)}
@@ -687,7 +687,7 @@ export default function RevenueAtRiskWidget({ className }: RevenueAtRiskWidgetPr
                     <h5 className="font-medium mb-2">Risk Indicators</h5>
                     <div className="space-y-2">
                       {selectedRisk.indicators.map((indicator, index) => (
-                        <div key={index} className="p-3 border rounded-lg-lg">
+                        <div key={index} className="p-3 border rounded-lg">
                           <div className="flex items-center justify-between mb-2">
                             <span className="font-medium">{indicator.metric}</span>
                             <div className="flex items-center gap-2">
@@ -710,7 +710,7 @@ export default function RevenueAtRiskWidget({ className }: RevenueAtRiskWidgetPr
                     <h5 className="font-medium mb-2">Risk Scenarios</h5>
                     <div className="space-y-2">
                       {selectedRisk.scenarios.map((scenario, index) => (
-                        <div key={index} className="p-3 border rounded-lg-lg">
+                        <div key={index} className="p-3 border rounded-lg">
                           <div className="flex items-center justify-between mb-2">
                             <span className="font-medium">{scenario.scenario}</span>
                             <div className="flex items-center gap-2">

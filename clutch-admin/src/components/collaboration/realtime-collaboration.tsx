@@ -331,7 +331,7 @@ export default function RealtimeCollaboration({ currentUserId, currentPage }: Re
               {collaborationEvents.map((event) => (
                 <div
                   key={event.id}
-                  className={`p-2 rounded-lg-lg border text-xs ${
+                  className={`p-2 rounded-lg border text-xs ${
                     event.resolved ? 'bg-gray-50 opacity-60' : 'bg-white'
                   }`}
                 >

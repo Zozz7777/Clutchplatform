@@ -228,9 +228,9 @@ export function CustomerHealthScore({ className = '' }: CustomerHealthScoreProps
         </CardHeader>
         <CardContent>
           <div className="animate-pulse space-y-4">
-            <div className="h-4 bg-gray-200 rounded-lg-lg w-3/4"></div>
-            <div className="h-4 bg-gray-200 rounded-lg-lg w-1/2"></div>
-            <div className="h-4 bg-gray-200 rounded-lg-lg w-2/3"></div>
+            <div className="h-4 bg-gray-200 rounded-lg w-3/4"></div>
+            <div className="h-4 bg-gray-200 rounded-lg w-1/2"></div>
+            <div className="h-4 bg-gray-200 rounded-lg w-2/3"></div>
           </div>
         </CardContent>
       </Card>
@@ -265,14 +265,14 @@ export function CustomerHealthScore({ className = '' }: CustomerHealthScoreProps
       <CardContent className="space-y-6">
         {/* Summary Stats */}
         <div className="grid grid-cols-2 gap-4">
-          <div className="text-center p-3 bg-red-50 rounded-lg-lg-lg">
+          <div className="text-center p-3 bg-red-50 rounded-lg-lg">
             <Heart className="h-5 w-5 text-red-600 mx-auto mb-1" />
             <p className="text-lg font-bold text-red-600">
               {healthData.averageScore.toFixed(0)}
             </p>
             <p className="text-xs text-gray-500">Avg Health Score</p>
           </div>
-          <div className="text-center p-3 bg-blue-50 rounded-lg-lg-lg">
+          <div className="text-center p-3 bg-blue-50 rounded-lg-lg">
             <Users className="h-5 w-5 text-blue-600 mx-auto mb-1" />
             <p className="text-lg font-bold text-blue-600">{healthData.customers.length}</p>
             <p className="text-xs text-gray-500">Total Customers</p>
@@ -280,7 +280,7 @@ export function CustomerHealthScore({ className = '' }: CustomerHealthScoreProps
         </div>
 
         {/* Average Health Score */}
-        <div className="text-center p-4 bg-gray-50 rounded-lg-lg-lg">
+        <div className="text-center p-4 bg-gray-50 rounded-lg-lg">
           <div className="flex items-center justify-center space-x-2 mb-2">
             <Heart className={`h-6 w-6 ${getHealthColor(healthData.averageScore)}`} />
             <span className={`text-2xl font-bold ${getHealthColor(healthData.averageScore)}`}>
@@ -300,19 +300,19 @@ export function CustomerHealthScore({ className = '' }: CustomerHealthScoreProps
         <div className="space-y-3">
           <h4 className="text-sm font-medium text-gray-900">Risk Distribution</h4>
           <div className="grid grid-cols-3 gap-2">
-            <div className="text-center p-2 bg-green-50 rounded-lg-lg">
+            <div className="text-center p-2 bg-green-50 rounded-lg">
               <p className="text-sm font-bold text-green-600">
                 {healthData.distribution.low || 0}
               </p>
               <p className="text-xs text-gray-500">Low Risk</p>
             </div>
-            <div className="text-center p-2 bg-yellow-50 rounded-lg-lg">
+            <div className="text-center p-2 bg-yellow-50 rounded-lg">
               <p className="text-sm font-bold text-yellow-600">
                 {healthData.distribution.medium || 0}
               </p>
               <p className="text-xs text-gray-500">Medium Risk</p>
             </div>
-            <div className="text-center p-2 bg-red-50 rounded-lg-lg">
+            <div className="text-center p-2 bg-red-50 rounded-lg">
               <p className="text-sm font-bold text-red-600">
                 {healthData.distribution.high || 0}
               </p>
@@ -329,9 +329,9 @@ export function CustomerHealthScore({ className = '' }: CustomerHealthScoreProps
               const TrendIcon = getTrendIcon(customer.trend);
               
               return (
-                <div key={customer.customerId} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg-lg-lg">
+                <div key={customer.customerId} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg-lg">
                   <div className="flex items-center space-x-3">
-                    <div className="flex items-center justify-center w-6 h-6 bg-green-100 rounded-lg-lg-full">
+                    <div className="flex items-center justify-center w-6 h-6 bg-green-100 rounded-lg-full">
                       <span className="text-xs font-semibold text-green-600">{index + 1}</span>
                     </div>
                     <div>
@@ -374,7 +374,7 @@ export function CustomerHealthScore({ className = '' }: CustomerHealthScoreProps
                 const TrendIcon = getTrendIcon(customer.trend);
                 
                 return (
-                  <div key={customer.customerId} className="flex items-center justify-between p-3 bg-red-50 rounded-lg-lg-lg border border-red-200">
+                  <div key={customer.customerId} className="flex items-center justify-between p-3 bg-red-50 rounded-lg-lg border border-red-200">
                     <div className="flex items-center space-x-3">
                       <AlertTriangle className="h-4 w-4 text-red-600" />
                       <div>
@@ -419,7 +419,7 @@ export function CustomerHealthScore({ className = '' }: CustomerHealthScoreProps
         </div>
 
         {/* Insights */}
-        <div className="p-3 bg-blue-50 rounded-lg-lg-lg">
+        <div className="p-3 bg-blue-50 rounded-lg-lg">
           <h5 className="text-sm font-medium text-blue-900 mb-2">💡 Health Score Insights</h5>
           <ul className="text-xs text-blue-800 space-y-1">
             <li>• Average health score: {healthData.averageScore.toFixed(0)}</li>

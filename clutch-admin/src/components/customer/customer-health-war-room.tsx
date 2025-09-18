@@ -604,19 +604,19 @@ export default function CustomerHealthWarRoom({ className }: CustomerHealthWarRo
         <CardContent className="space-y-6">
           {/* Crisis Summary */}
           <div className="grid grid-cols-4 gap-4">
-            <div className="text-center p-3 bg-red-50 rounded-lg-lg">
+            <div className="text-center p-3 bg-red-50 rounded-lg">
               <div className="text-2xl font-bold text-red-600">{activeCrises}</div>
               <div className="text-sm text-muted-foreground">Active Crises</div>
             </div>
-            <div className="text-center p-3 bg-orange-50 rounded-lg-lg">
+            <div className="text-center p-3 bg-orange-50 rounded-lg">
               <div className="text-2xl font-bold text-orange-600">{escalatedCrises}</div>
               <div className="text-sm text-muted-foreground">Escalated</div>
             </div>
-            <div className="text-center p-3 bg-green-50 rounded-lg-lg">
+            <div className="text-center p-3 bg-green-50 rounded-lg">
               <div className="text-2xl font-bold text-green-600">{resolvedCrises}</div>
               <div className="text-sm text-muted-foreground">Resolved</div>
             </div>
-            <div className="text-center p-3 bg-purple-50 rounded-lg-lg">
+            <div className="text-center p-3 bg-purple-50 rounded-lg">
               <div className="text-2xl font-bold text-purple-600">{formatCurrency(totalRevenueAtRisk)}</div>
               <div className="text-sm text-muted-foreground">Revenue at Risk</div>
             </div>
@@ -624,7 +624,7 @@ export default function CustomerHealthWarRoom({ className }: CustomerHealthWarRo
 
           {/* War Room Status */}
           {isWarRoomActive && (
-            <div className="p-4 bg-red-50 border border-red-200 rounded-lg-lg">
+            <div className="p-4 bg-red-50 border border-red-200 rounded-lg">
               <div className="flex items-center justify-between">
                 <div>
                   <h4 className="font-medium text-red-800">War Room Active</h4>
@@ -678,7 +678,7 @@ export default function CustomerHealthWarRoom({ className }: CustomerHealthWarRo
               {filteredCrises.map((crisis) => (
                 <div
                   key={crisis.id}
-                  className={`p-3 border rounded-lg-lg cursor-pointer transition-colors ${
+                  className={`p-3 border rounded-lg cursor-pointer transition-colors ${
                     selectedCrisis?.id === crisis.id ? 'border-blue-500 bg-blue-50' : 'hover:bg-gray-50'
                   }`}
                   onClick={() => setSelectedCrisis(crisis)}
@@ -817,7 +817,7 @@ export default function CustomerHealthWarRoom({ className }: CustomerHealthWarRo
                     <h5 className="font-medium mb-2">Action Items</h5>
                     <div className="space-y-2">
                       {selectedCrisis.actions.map((action) => (
-                        <div key={action.id} className="p-3 border rounded-lg-lg">
+                        <div key={action.id} className="p-3 border rounded-lg">
                           <div className="flex items-center justify-between mb-2">
                             <div className="flex items-center gap-2">
                               <span className="font-medium">{action.description}</span>
@@ -851,7 +851,7 @@ export default function CustomerHealthWarRoom({ className }: CustomerHealthWarRo
                     <h5 className="font-medium mb-2">Communication History</h5>
                     <div className="space-y-2">
                       {selectedCrisis.communications.map((comm) => (
-                        <div key={comm.id} className="p-3 border rounded-lg-lg">
+                        <div key={comm.id} className="p-3 border rounded-lg">
                           <div className="flex items-center justify-between mb-2">
                             <div className="flex items-center gap-2">
                               <span className="font-medium">{comm.type} with {comm.participant}</span>
@@ -885,7 +885,7 @@ export default function CustomerHealthWarRoom({ className }: CustomerHealthWarRo
                     <h5 className="font-medium mb-2">War Room Session</h5>
                     {warRoomSessions.find(session => session.crisisId === selectedCrisis.id) ? (
                       <div className="space-y-4">
-                        <div className="p-3 border rounded-lg-lg">
+                        <div className="p-3 border rounded-lg">
                           <h6 className="font-medium mb-2">Participants</h6>
                           <div className="grid grid-cols-2 gap-2">
                             {warRoomSessions.find(session => session.crisisId === selectedCrisis.id)?.participants.map((participant, index) => (
@@ -898,7 +898,7 @@ export default function CustomerHealthWarRoom({ className }: CustomerHealthWarRo
                             ))}
                           </div>
                         </div>
-                        <div className="p-3 border rounded-lg-lg">
+                        <div className="p-3 border rounded-lg">
                           <h6 className="font-medium mb-2">Decisions Made</h6>
                           <div className="space-y-2">
                             {warRoomSessions.find(session => session.crisisId === selectedCrisis.id)?.decisions.map((decision) => (

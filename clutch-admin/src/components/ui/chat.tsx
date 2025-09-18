@@ -250,7 +250,7 @@ export function Chat({ className = '', initialSessionId, onSessionChange }: Chat
             {sessions.map((session) => (
               <div
                 key={session.id}
-                className={`p-3 rounded-lg-lg cursor-pointer transition-colors ${
+                className={`p-3 rounded-lg cursor-pointer transition-colors ${
                   activeSession?.id === session.id 
                     ? 'bg-primary text-primary-foreground' 
                     : 'hover:bg-gray-100'
@@ -345,7 +345,7 @@ export function Chat({ className = '', initialSessionId, onSessionChange }: Chat
                         </AvatarFallback>
                       </Avatar>
                       
-                      <div className={`rounded-lg-lg px-3 py-2 ${
+                      <div className={`rounded-lg px-3 py-2 ${
                         message.senderId === 'current-user' 
                           ? 'bg-primary text-primary-foreground' 
                           : 'bg-gray-100'
@@ -369,7 +369,7 @@ export function Chat({ className = '', initialSessionId, onSessionChange }: Chat
                       <Avatar className="h-8 w-8">
                         <AvatarFallback>...</AvatarFallback>
                       </Avatar>
-                      <div className="bg-gray-100 rounded-lg-lg px-3 py-2">
+                      <div className="bg-gray-100 rounded-lg px-3 py-2">
                         <div className="flex space-x-1">
                           <div className="w-2 h-2 bg-gray-400 rounded-lg-full animate-bounce"></div>
                           <div className="w-2 h-2 bg-gray-400 rounded-lg-full animate-bounce" style={{ animationDelay: '0.1s' }}></div>

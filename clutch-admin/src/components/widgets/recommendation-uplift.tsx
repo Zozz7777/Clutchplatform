@@ -104,9 +104,9 @@ export function RecommendationUplift({ className = '' }: RecommendationUpliftPro
         </CardHeader>
         <CardContent>
           <div className="animate-pulse space-y-4">
-            <div className="h-4 bg-gray-200 rounded-lg-lg w-3/4"></div>
-            <div className="h-4 bg-gray-200 rounded-lg-lg w-1/2"></div>
-            <div className="h-4 bg-gray-200 rounded-lg-lg w-2/3"></div>
+            <div className="h-4 bg-gray-200 rounded-lg w-3/4"></div>
+            <div className="h-4 bg-gray-200 rounded-lg w-1/2"></div>
+            <div className="h-4 bg-gray-200 rounded-lg w-2/3"></div>
           </div>
         </CardContent>
       </Card>
@@ -143,12 +143,12 @@ export function RecommendationUplift({ className = '' }: RecommendationUpliftPro
       <CardContent className="space-y-6">
         {/* Summary Stats */}
         <div className="grid grid-cols-2 gap-4">
-          <div className="text-center p-3 bg-yellow-50 rounded-lg-lg-lg">
+          <div className="text-center p-3 bg-yellow-50 rounded-lg-lg">
             <Lightbulb className="h-5 w-5 text-yellow-600 mx-auto mb-1" />
             <p className="text-lg font-bold text-yellow-600">{upliftData.recommendationsSent}</p>
             <p className="text-xs text-gray-500">Sent</p>
           </div>
-          <div className="text-center p-3 bg-green-50 rounded-lg-lg-lg">
+          <div className="text-center p-3 bg-green-50 rounded-lg-lg">
             <CheckCircle className="h-5 w-5 text-green-600 mx-auto mb-1" />
             <p className="text-lg font-bold text-green-600">{upliftData.accepted}</p>
             <p className="text-xs text-gray-500">Accepted</p>
@@ -156,7 +156,7 @@ export function RecommendationUplift({ className = '' }: RecommendationUpliftPro
         </div>
 
         {/* Acceptance Rate */}
-        <div className="text-center p-4 bg-gray-50 rounded-lg-lg-lg">
+        <div className="text-center p-4 bg-gray-50 rounded-lg-lg">
           <div className="flex items-center justify-center space-x-2 mb-2">
             <Target className={`h-6 w-6 ${getAcceptanceColor(acceptanceRate)}`} />
             <span className={`text-2xl font-bold ${getAcceptanceColor(acceptanceRate)}`}>
@@ -176,7 +176,7 @@ export function RecommendationUplift({ className = '' }: RecommendationUpliftPro
         <div className="space-y-3">
           <h4 className="text-sm font-medium text-gray-900">Impact Metrics</h4>
           <div className="space-y-2">
-            <div className="flex items-center justify-between p-3 bg-gray-50 rounded-lg-lg-lg">
+            <div className="flex items-center justify-between p-3 bg-gray-50 rounded-lg-lg">
               <div className="flex items-center space-x-3">
                 <DollarSign className="h-4 w-4 text-green-600" />
                 <div>
@@ -194,7 +194,7 @@ export function RecommendationUplift({ className = '' }: RecommendationUpliftPro
               </div>
             </div>
 
-            <div className="flex items-center justify-between p-3 bg-gray-50 rounded-lg-lg-lg">
+            <div className="flex items-center justify-between p-3 bg-gray-50 rounded-lg-lg">
               <div className="flex items-center space-x-3">
                 <TrendingUp className="h-4 w-4 text-blue-600" />
                 <div>
@@ -219,9 +219,9 @@ export function RecommendationUplift({ className = '' }: RecommendationUpliftPro
           <h4 className="text-sm font-medium text-gray-900">Top Performing Types</h4>
           <div className="space-y-2">
             {upliftData.topPerformingTypes.map((type, index) => (
-              <div key={type} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg-lg-lg">
+              <div key={type} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg-lg">
                 <div className="flex items-center space-x-3">
-                  <div className="flex items-center justify-center w-6 h-6 bg-yellow-100 rounded-lg-lg-full">
+                  <div className="flex items-center justify-center w-6 h-6 bg-yellow-100 rounded-lg-full">
                     <span className="text-xs font-semibold text-yellow-600">{index + 1}</span>
                   </div>
                   <div>
@@ -244,14 +244,14 @@ export function RecommendationUplift({ className = '' }: RecommendationUpliftPro
 
         {/* Performance Metrics */}
         <div className="grid grid-cols-2 gap-4">
-          <div className="text-center p-3 bg-purple-50 rounded-lg-lg-lg">
+          <div className="text-center p-3 bg-purple-50 rounded-lg-lg">
             <BarChart3 className="h-4 w-4 text-purple-600 mx-auto mb-1" />
             <p className="text-sm font-bold text-purple-600">
               {upliftData.accepted > 0 ? (upliftData.revenueImpact / upliftData.accepted).toFixed(0) : 0}
             </p>
             <p className="text-xs text-gray-500">Avg Revenue Per Acceptance</p>
           </div>
-          <div className="text-center p-3 bg-orange-50 rounded-lg-lg-lg">
+          <div className="text-center p-3 bg-orange-50 rounded-lg-lg">
             <Activity className="h-4 w-4 text-orange-600 mx-auto mb-1" />
             <p className="text-sm font-bold text-orange-600">
               {upliftData.engagementImprovement.toFixed(1)}%
@@ -297,7 +297,7 @@ export function RecommendationUplift({ className = '' }: RecommendationUpliftPro
         </div>
 
         {/* Insights */}
-        <div className="p-3 bg-blue-50 rounded-lg-lg-lg">
+        <div className="p-3 bg-blue-50 rounded-lg-lg">
           <h5 className="text-sm font-medium text-blue-900 mb-2">💡 Recommendation Insights</h5>
           <ul className="text-xs text-blue-800 space-y-1">
             <li>• {upliftData.recommendationsSent} recommendations sent</li>

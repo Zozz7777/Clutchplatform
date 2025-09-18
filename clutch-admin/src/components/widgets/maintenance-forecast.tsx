@@ -147,9 +147,9 @@ export function MaintenanceForecast({ className = '' }: MaintenanceForecastProps
         </CardHeader>
         <CardContent>
           <div className="animate-pulse space-y-4">
-            <div className="h-4 bg-gray-200 rounded-lg-lg w-3/4"></div>
-            <div className="h-4 bg-gray-200 rounded-lg-lg w-1/2"></div>
-            <div className="h-4 bg-gray-200 rounded-lg-lg w-2/3"></div>
+            <div className="h-4 bg-gray-200 rounded-lg w-3/4"></div>
+            <div className="h-4 bg-gray-200 rounded-lg w-1/2"></div>
+            <div className="h-4 bg-gray-200 rounded-lg w-2/3"></div>
           </div>
         </CardContent>
       </Card>
@@ -189,17 +189,17 @@ export function MaintenanceForecast({ className = '' }: MaintenanceForecastProps
 
         {/* Summary Stats */}
         <div className="grid grid-cols-3 gap-4">
-          <div className="text-center p-3 bg-orange-50 rounded-lg-lg-lg">
+          <div className="text-center p-3 bg-orange-50 rounded-lg-lg">
             <Wrench className="h-5 w-5 text-orange-600 mx-auto mb-1" />
             <p className="text-lg font-bold text-orange-600">{filteredForecasts.length}</p>
             <p className="text-xs text-gray-500">Scheduled</p>
           </div>
-          <div className="text-center p-3 bg-red-50 rounded-lg-lg-lg">
+          <div className="text-center p-3 bg-red-50 rounded-lg-lg">
             <AlertTriangle className="h-5 w-5 text-red-600 mx-auto mb-1" />
             <p className="text-lg font-bold text-red-600">{highPriorityForecasts.length}</p>
             <p className="text-xs text-gray-500">High Priority</p>
           </div>
-          <div className="text-center p-3 bg-blue-50 rounded-lg-lg-lg">
+          <div className="text-center p-3 bg-blue-50 rounded-lg-lg">
             <Target className="h-5 w-5 text-blue-600 mx-auto mb-1" />
             <p className="text-lg font-bold text-blue-600">{averageConfidence.toFixed(0)}%</p>
             <p className="text-xs text-gray-500">Avg Confidence</p>
@@ -215,7 +215,7 @@ export function MaintenanceForecast({ className = '' }: MaintenanceForecastProps
             </h4>
             <div className="space-y-2">
               {highPriorityForecasts.slice(0, 3).map((forecast) => (
-                <div key={forecast.vehicleId} className="flex items-center justify-between p-3 bg-red-50 rounded-lg-lg-lg border border-red-200">
+                <div key={forecast.vehicleId} className="flex items-center justify-between p-3 bg-red-50 rounded-lg-lg border border-red-200">
                   <div className="flex items-center space-x-3">
                     <AlertTriangle className="h-4 w-4 text-red-600" />
                     <div>
@@ -242,7 +242,7 @@ export function MaintenanceForecast({ className = '' }: MaintenanceForecastProps
           <h4 className="text-sm font-medium text-gray-900">Maintenance Schedule</h4>
           <div className="space-y-2 max-h-64 overflow-y-auto">
             {filteredForecasts.map((forecast) => (
-              <div key={forecast.vehicleId} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg-lg-lg">
+              <div key={forecast.vehicleId} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg-lg">
                 <div className="flex items-center space-x-3">
                   <Wrench className="h-4 w-4 text-orange-600" />
                   <div>
@@ -279,19 +279,19 @@ export function MaintenanceForecast({ className = '' }: MaintenanceForecastProps
         <div className="space-y-3">
           <h4 className="text-sm font-medium text-gray-900">Confidence Distribution</h4>
           <div className="grid grid-cols-3 gap-2">
-            <div className="text-center p-2 bg-green-50 rounded-lg-lg">
+            <div className="text-center p-2 bg-green-50 rounded-lg">
               <p className="text-sm font-bold text-green-600">
                 {filteredForecasts.filter(f => f.confidence >= 80).length}
               </p>
               <p className="text-xs text-gray-500">High (80%+)</p>
             </div>
-            <div className="text-center p-2 bg-yellow-50 rounded-lg-lg">
+            <div className="text-center p-2 bg-yellow-50 rounded-lg">
               <p className="text-sm font-bold text-yellow-600">
                 {filteredForecasts.filter(f => f.confidence >= 60 && f.confidence < 80).length}
               </p>
               <p className="text-xs text-gray-500">Medium (60-79%)</p>
             </div>
-            <div className="text-center p-2 bg-red-50 rounded-lg-lg">
+            <div className="text-center p-2 bg-red-50 rounded-lg">
               <p className="text-sm font-bold text-red-600">
                 {filteredForecasts.filter(f => f.confidence < 60).length}
               </p>
@@ -313,7 +313,7 @@ export function MaintenanceForecast({ className = '' }: MaintenanceForecastProps
         </div>
 
         {/* Insights */}
-        <div className="p-3 bg-blue-50 rounded-lg-lg-lg">
+        <div className="p-3 bg-blue-50 rounded-lg-lg">
           <h5 className="text-sm font-medium text-blue-900 mb-2">💡 Maintenance Insights</h5>
           <ul className="text-xs text-blue-800 space-y-1">
             <li>• {filteredForecasts.length} maintenance events predicted in next {selectedPeriod}</li>

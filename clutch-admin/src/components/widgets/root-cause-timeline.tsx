@@ -198,9 +198,9 @@ export function RootCauseTimeline({ className = '' }: RootCauseTimelineProps) {
         </CardHeader>
         <CardContent>
           <div className="animate-pulse space-y-4">
-            <div className="h-4 bg-gray-200 rounded-lg-lg w-3/4"></div>
-            <div className="h-4 bg-gray-200 rounded-lg-lg w-1/2"></div>
-            <div className="h-4 bg-gray-200 rounded-lg-lg w-2/3"></div>
+            <div className="h-4 bg-gray-200 rounded-lg w-3/4"></div>
+            <div className="h-4 bg-gray-200 rounded-lg w-1/2"></div>
+            <div className="h-4 bg-gray-200 rounded-lg w-2/3"></div>
           </div>
         </CardContent>
       </Card>
@@ -235,12 +235,12 @@ export function RootCauseTimeline({ className = '' }: RootCauseTimelineProps) {
       <CardContent className="space-y-6">
         {/* Summary Stats */}
         <div className="grid grid-cols-2 gap-4">
-          <div className="text-center p-3 bg-blue-50 rounded-lg-lg-lg">
+          <div className="text-center p-3 bg-blue-50 rounded-lg-lg">
             <AlertTriangle className="h-5 w-5 text-blue-600 mx-auto mb-1" />
             <p className="text-lg font-bold text-blue-600">{rootCauseData.totalIncidents}</p>
             <p className="text-xs text-gray-500">Total Incidents</p>
           </div>
-          <div className="text-center p-3 bg-green-50 rounded-lg-lg-lg">
+          <div className="text-center p-3 bg-green-50 rounded-lg-lg">
             <Clock className="h-5 w-5 text-green-600 mx-auto mb-1" />
             <p className="text-lg font-bold text-green-600">{rootCauseData.averageResolution}m</p>
             <p className="text-xs text-gray-500">Avg Resolution</p>
@@ -249,7 +249,7 @@ export function RootCauseTimeline({ className = '' }: RootCauseTimelineProps) {
 
         {/* Top Root Cause */}
         {rootCauseData.topCause && (
-          <div className="text-center p-4 bg-gray-50 rounded-lg-lg-lg">
+          <div className="text-center p-4 bg-gray-50 rounded-lg-lg">
             <div className="flex items-center justify-center space-x-2 mb-2">
               <Target className="h-6 w-6 text-red-600" />
               <span className="text-xl font-bold text-gray-900">{rootCauseData.topCause.category}</span>
@@ -272,9 +272,9 @@ export function RootCauseTimeline({ className = '' }: RootCauseTimelineProps) {
               const TrendIcon = getTrendIcon(cause.trend);
               
               return (
-                <div key={cause.id} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg-lg-lg">
+                <div key={cause.id} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg-lg">
                   <div className="flex items-center space-x-3">
-                    <div className="flex items-center justify-center w-8 h-8 bg-blue-100 rounded-lg-lg-full">
+                    <div className="flex items-center justify-center w-8 h-8 bg-blue-100 rounded-lg-full">
                       <span className="text-sm font-semibold text-blue-600">
                         {index + 1}
                       </span>
@@ -329,7 +329,7 @@ export function RootCauseTimeline({ className = '' }: RootCauseTimelineProps) {
               .sort((a, b) => new Date(b.lastOccurrence).getTime() - new Date(a.lastOccurrence).getTime())
               .slice(0, 3)
               .map((cause) => (
-                <div key={cause.id} className="p-3 bg-gray-50 rounded-lg-lg-lg">
+                <div key={cause.id} className="p-3 bg-gray-50 rounded-lg-lg">
                   <div className="flex items-center justify-between mb-2">
                     <h5 className="text-sm font-medium text-gray-900">{cause.category}</h5>
                     <Badge className={getSeverityBadge(cause.severity)}>
@@ -357,7 +357,7 @@ export function RootCauseTimeline({ className = '' }: RootCauseTimelineProps) {
         </div>
 
         {/* Insights */}
-        <div className="p-3 bg-blue-50 rounded-lg-lg-lg">
+        <div className="p-3 bg-blue-50 rounded-lg-lg">
           <h5 className="text-sm font-medium text-blue-900 mb-2">💡 Root Cause Insights</h5>
           <ul className="text-xs text-blue-800 space-y-1">
             <li>• Total incidents analyzed: {rootCauseData.totalIncidents}</li>

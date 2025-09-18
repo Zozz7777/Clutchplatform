@@ -633,26 +633,26 @@ export default function BlackSwanSimulator({ className }: BlackSwanSimulatorProp
         <CardContent className="space-y-6">
           {/* Event Summary */}
           <div className="grid grid-cols-4 gap-4">
-            <div className="text-center p-3 bg-red-50 rounded-lg-lg">
+            <div className="text-center p-3 bg-red-50 rounded-lg">
               <div className="text-2xl font-bold text-red-600">{formatNumber(totalUsers)}</div>
               <div className="text-sm text-muted-foreground">Total Users at Risk</div>
             </div>
-            <div className="text-center p-3 bg-orange-50 rounded-lg-lg">
+            <div className="text-center p-3 bg-orange-50 rounded-lg">
               <div className="text-2xl font-bold text-orange-600">{formatCurrency(totalRevenue)}</div>
               <div className="text-sm text-muted-foreground">Revenue at Risk</div>
             </div>
-            <div className="text-center p-3 bg-yellow-50 rounded-lg-lg">
+            <div className="text-center p-3 bg-yellow-50 rounded-lg">
               <div className="text-2xl font-bold text-yellow-600">{avgProbability}%</div>
               <div className="text-sm text-muted-foreground">Avg Probability</div>
             </div>
-            <div className="text-center p-3 bg-purple-50 rounded-lg-lg">
+            <div className="text-center p-3 bg-purple-50 rounded-lg">
               <div className="text-2xl font-bold text-purple-600">{avgResilience}%</div>
               <div className="text-sm text-muted-foreground">Avg Resilience</div>
             </div>
           </div>
 
           {/* Black Swan Overview */}
-          <div className="p-4 bg-gradient-to-r from-red-50 to-orange-50 rounded-lg-lg">
+          <div className="p-4 bg-gradient-to-r from-red-50 to-orange-50 rounded-lg">
             <div className="flex items-center justify-between">
               <div>
                 <h4 className="font-medium">Black Swan Event Analysis</h4>
@@ -706,7 +706,7 @@ export default function BlackSwanSimulator({ className }: BlackSwanSimulatorProp
               {filteredEvents.map((event) => (
                 <div
                   key={event.id}
-                  className={`p-3 border rounded-lg-lg cursor-pointer transition-colors ${
+                  className={`p-3 border rounded-lg cursor-pointer transition-colors ${
                     selectedEvent?.id === event.id ? 'border-blue-500 bg-blue-50' : 'hover:bg-gray-50'
                   }`}
                   onClick={() => setSelectedEvent(event)}
@@ -817,7 +817,7 @@ export default function BlackSwanSimulator({ className }: BlackSwanSimulatorProp
                     <h5 className="font-medium mb-2">Scenario Analysis</h5>
                     <div className="space-y-2">
                       {selectedEvent.scenarios.map((scenario) => (
-                        <div key={scenario.id} className="p-3 border rounded-lg-lg">
+                        <div key={scenario.id} className="p-3 border rounded-lg">
                           <div className="flex items-center justify-between mb-2">
                             <span className="font-medium">{scenario.name}</span>
                             <span className="text-sm font-medium">{scenario.probability}% probability</span>
@@ -853,7 +853,7 @@ export default function BlackSwanSimulator({ className }: BlackSwanSimulatorProp
                     <h5 className="font-medium mb-2">Early Warning Triggers</h5>
                     <div className="space-y-2">
                       {selectedEvent.triggers.map((trigger, index) => (
-                        <div key={index} className="p-3 border rounded-lg-lg">
+                        <div key={index} className="p-3 border rounded-lg">
                           <div className="flex items-center justify-between mb-2">
                             <span className="font-medium">{trigger.condition}</span>
                             <span className="text-sm font-medium">Threshold: {trigger.threshold}</span>

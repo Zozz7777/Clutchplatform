@@ -119,9 +119,9 @@ export function RevenueExpenses({ className = '' }: RevenueExpensesProps) {
         </CardHeader>
         <CardContent>
           <div className="animate-pulse space-y-4">
-            <div className="h-4 bg-gray-200 rounded-lg-lg w-3/4"></div>
-            <div className="h-4 bg-gray-200 rounded-lg-lg w-1/2"></div>
-            <div className="h-4 bg-gray-200 rounded-lg-lg w-2/3"></div>
+            <div className="h-4 bg-gray-200 rounded-lg w-3/4"></div>
+            <div className="h-4 bg-gray-200 rounded-lg w-1/2"></div>
+            <div className="h-4 bg-gray-200 rounded-lg w-2/3"></div>
           </div>
         </CardContent>
       </Card>
@@ -156,14 +156,14 @@ export function RevenueExpenses({ className = '' }: RevenueExpensesProps) {
       <CardContent className="space-y-6">
         {/* Summary Stats */}
         <div className="grid grid-cols-2 gap-4">
-          <div className="text-center p-3 bg-green-50 rounded-lg-lg-lg">
+          <div className="text-center p-3 bg-green-50 rounded-lg-lg">
             <DollarSign className="h-5 w-5 text-green-600 mx-auto mb-1" />
             <p className="text-lg font-bold text-green-600">
               ${financialData.revenue.toLocaleString()}
             </p>
             <p className="text-xs text-gray-500">Revenue</p>
           </div>
-          <div className="text-center p-3 bg-red-50 rounded-lg-lg-lg">
+          <div className="text-center p-3 bg-red-50 rounded-lg-lg">
             <Calculator className="h-5 w-5 text-red-600 mx-auto mb-1" />
             <p className="text-lg font-bold text-red-600">
               ${financialData.expenses.toLocaleString()}
@@ -173,7 +173,7 @@ export function RevenueExpenses({ className = '' }: RevenueExpensesProps) {
         </div>
 
         {/* Net Margin */}
-        <div className="text-center p-4 bg-gray-50 rounded-lg-lg-lg">
+        <div className="text-center p-4 bg-gray-50 rounded-lg-lg">
           <div className="flex items-center justify-center space-x-2 mb-2">
             <Target className={`h-6 w-6 ${getMarginColor(financialData.netMargin)}`} />
             <span className={`text-2xl font-bold ${getMarginColor(financialData.netMargin)}`}>
@@ -193,7 +193,7 @@ export function RevenueExpenses({ className = '' }: RevenueExpensesProps) {
         <div className="space-y-3">
           <h4 className="text-sm font-medium text-gray-900">Margin Breakdown</h4>
           <div className="space-y-2">
-            <div className="flex items-center justify-between p-3 bg-gray-50 rounded-lg-lg-lg">
+            <div className="flex items-center justify-between p-3 bg-gray-50 rounded-lg-lg">
               <div className="flex items-center space-x-3">
                 <PieChart className="h-4 w-4 text-blue-600" />
                 <div>
@@ -211,7 +211,7 @@ export function RevenueExpenses({ className = '' }: RevenueExpensesProps) {
               </div>
             </div>
 
-            <div className="flex items-center justify-between p-3 bg-gray-50 rounded-lg-lg-lg">
+            <div className="flex items-center justify-between p-3 bg-gray-50 rounded-lg-lg">
               <div className="flex items-center space-x-3">
                 <BarChart3 className="h-4 w-4 text-purple-600" />
                 <div>
@@ -235,7 +235,7 @@ export function RevenueExpenses({ className = '' }: RevenueExpensesProps) {
         <div className="space-y-3">
           <h4 className="text-sm font-medium text-gray-900">Growth Trends</h4>
           <div className="space-y-2">
-            <div className="flex items-center justify-between p-3 bg-gray-50 rounded-lg-lg-lg">
+            <div className="flex items-center justify-between p-3 bg-gray-50 rounded-lg-lg">
               <div className="flex items-center space-x-3">
                 <TrendingUp className="h-4 w-4 text-green-600" />
                 <div>
@@ -253,7 +253,7 @@ export function RevenueExpenses({ className = '' }: RevenueExpensesProps) {
               </div>
             </div>
 
-            <div className="flex items-center justify-between p-3 bg-gray-50 rounded-lg-lg-lg">
+            <div className="flex items-center justify-between p-3 bg-gray-50 rounded-lg-lg">
               <div className="flex items-center space-x-3">
                 <TrendingDown className="h-4 w-4 text-red-600" />
                 <div>
@@ -286,7 +286,7 @@ export function RevenueExpenses({ className = '' }: RevenueExpensesProps) {
         </div>
 
         {/* Insights */}
-        <div className="p-3 bg-blue-50 rounded-lg-lg-lg">
+        <div className="p-3 bg-blue-50 rounded-lg-lg">
           <h5 className="text-sm font-medium text-blue-900 mb-2">💡 Financial Insights</h5>
           <ul className="text-xs text-blue-800 space-y-1">
             <li>• Net margin: {financialData.netMargin.toFixed(1)}%</li>

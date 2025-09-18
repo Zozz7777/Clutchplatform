@@ -367,7 +367,7 @@ export default function AIRecommendationFeed({ className }: AIRecommendationFeed
           {filteredRecommendations.map((recommendation) => (
             <div
               key={recommendation.id}
-              className={`p-4 border rounded-lg-lg ${
+              className={`p-4 border rounded-lg ${
                 recommendation.priority === 'critical' ? 'border-red-200 bg-red-50' :
                 recommendation.priority === 'high' ? 'border-orange-200 bg-orange-50' :
                 'border-gray-200 bg-white'
