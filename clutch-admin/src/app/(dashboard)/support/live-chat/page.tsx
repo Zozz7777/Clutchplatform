@@ -54,39 +54,9 @@ export default function LiveChatPage() {
   const fetchChatSessions = async () => {
     try {
       setLoading(true);
-      // Mock data since we don't have a specific chat sessions endpoint
-      const mockSessions: ChatSession[] = [
-        {
-          id: '1',
-          customerName: 'John Smith',
-          customerEmail: 'john@example.com',
-          status: 'active',
-          startTime: '2024-01-15T10:30:00Z',
-          lastMessage: 'I need help with my order',
-          messages: 12
-        },
-        {
-          id: '2',
-          customerName: 'Sarah Johnson',
-          customerEmail: 'sarah@example.com',
-          status: 'waiting',
-          startTime: '2024-01-15T11:15:00Z',
-          lastMessage: 'How do I track my shipment?',
-          messages: 8
-        },
-        {
-          id: '3',
-          customerName: 'Mike Wilson',
-          customerEmail: 'mike@example.com',
-          status: 'resolved',
-          startTime: '2024-01-15T09:45:00Z',
-          lastMessage: 'Thank you for your help!',
-          messages: 15,
-          rating: 5
-        }
-      ];
-      
-      setSessions(mockSessions);
+      // Load chat sessions from API
+      const chatSessions = await productionApi.getChatSessions();
+      setSessions(chatSessions || []);
     } catch (error) {
       logger.error('Error fetching chat sessions:', error);
     } finally {

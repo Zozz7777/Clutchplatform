@@ -109,6 +109,7 @@ const integrationsRoutes = require('./routes/integrations');
 const auditTrailRoutes = require('./routes/audit-trail');
 const reportsRoutes = require('./routes/reports');
 const rbacRoutes = require('./routes/rbac');
+const complianceRoutes = require('./routes/compliance');
 
 // All route imports cleaned up - only existing routes imported above
 
@@ -258,6 +259,7 @@ app.use('/api/v1/projects', projectsRoutes);
 app.use('/api/v1/vendors', vendorsRoutes);
 app.use('/api/v1/performance', performanceRoutes);
 app.use('/api/v1/ai-ml', aiRoutes);
+app.use('/api/v1/compliance', complianceRoutes);
 
 // Test endpoints
 app.get('/test', (req, res) => {

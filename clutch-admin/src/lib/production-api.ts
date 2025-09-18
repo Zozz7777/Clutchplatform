@@ -1326,6 +1326,15 @@ export class ProductionApiService {
       throw new Error("Failed to load compliance data");
     }
   }
+
+  async getChatSessions(): Promise<any[]> {
+    try {
+      return await realApi.getChatSessions();
+    } catch (error) {
+      console.error("Failed to fetch chat sessions:", error);
+      throw new Error("Failed to load chat sessions");
+    }
+  }
 }
 
 export const productionApi = new ProductionApiService();

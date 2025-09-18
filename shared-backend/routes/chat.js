@@ -16,6 +16,51 @@ const chatLimiter = rateLimit({
 router.use(chatLimiter);
 router.use(authenticateToken);
 
+// ===== CHAT SESSIONS =====
+
+// GET /api/v1/chat/sessions - Get all chat sessions
+router.get('/sessions', checkRole(['head_administrator', 'admin', 'support_agent']), async (req, res) => {
+  try {
+    const sessionsCollection = await getCollection('chat_sessions');
+    const { page = 1, limit = 50, status, customerId } = req.query;
+    
+    const filter = {};
+    if (status) filter.status = status;
+    if (customerId) filter.customerId = customerId;
+    
+    const skip = (parseInt(page) - 1) * parseInt(limit);
+    
+    const sessions = await sessionsCollection
+      .find(filter)
+      .sort({ startTime: -1 })
+      .skip(skip)
+      .limit(parseInt(limit))
+      .toArray();
+    
+    const total = await sessionsCollection.countDocuments(filter);
+    
+    res.json({
+      success: true,
+      data: sessions,
+      pagination: {
+        page: parseInt(page),
+        limit: parseInt(limit),
+        total,
+        pages: Math.ceil(total / parseInt(limit))
+      },
+      timestamp: new Date().toISOString()
+    });
+  } catch (error) {
+    console.error('Get chat sessions error:', error);
+    res.status(500).json({
+      success: false,
+      error: 'GET_CHAT_SESSIONS_FAILED',
+      message: 'Failed to retrieve chat sessions',
+      timestamp: new Date().toISOString()
+    });
+  }
+});
+
 // ===== CHAT MESSAGES =====
 
 // GET /api/chat/messages - Get all messages

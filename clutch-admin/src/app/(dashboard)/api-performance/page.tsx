@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button";
 import { productionApi } from "@/lib/production-api";
 import { formatNumber } from "@/lib/utils";
 import { useAuth } from "@/contexts/auth-context";
+import { logger } from "@/lib/logger";
 import { 
   Activity, 
   Clock, 
@@ -51,14 +52,26 @@ export default function ApiPerformancePage() {
         if (result.success) {
           setPerformanceData(result.data);
         } else {
-          // Generate mock data if API fails
-          setPerformanceData(generateMockApiPerformanceData());
+          // Set empty data if API fails
+          setPerformanceData({
+            endpoints: [],
+            totalRequests: 0,
+            averageResponseTime: 0,
+            errorRate: 0,
+            uptime: 0
+          });
         }
-        setIsUsingMock(false); // Always using production API now
+        setIsUsingMock(false);
       } catch (error) {
-        console.error("Failed to load API performance data:", error);
-        setPerformanceData(generateMockApiPerformanceData());
-        setIsUsingMock(true);
+        logger.error("Failed to load API performance data:", error);
+        setPerformanceData({
+          endpoints: [],
+          totalRequests: 0,
+          averageResponseTime: 0,
+          errorRate: 0,
+          uptime: 0
+        });
+        setIsUsingMock(false);
       } finally {
         setIsLoading(false);
       }
@@ -71,63 +84,7 @@ export default function ApiPerformancePage() {
     return () => clearInterval(interval);
   }, []);
 
-  const generateMockApiPerformanceData = (): ApiPerformanceData => {
-    const endpoints: ApiEndpoint[] = [
-      {
-        name: "/api/v1/users",
-        method: "GET",
-        requestsPerMinute: Math.floor(Math.random() * 1000) + 500,
-        p95Latency: Math.floor(Math.random() * 200) + 50,
-        errorRate: Math.random() * 2,
-        status: Math.random() > 0.1 ? "healthy" : "degraded",
-        lastUpdate: new Date().toISOString(),
-      },
-      {
-        name: "/api/v1/fleet/vehicles",
-        method: "GET",
-        requestsPerMinute: Math.floor(Math.random() * 800) + 300,
-        p95Latency: Math.floor(Math.random() * 300) + 100,
-        errorRate: Math.random() * 1.5,
-        status: Math.random() > 0.05 ? "healthy" : "degraded",
-        lastUpdate: new Date().toISOString(),
-      },
-      {
-        name: "/api/v1/auth/login",
-        method: "POST",
-        requestsPerMinute: Math.floor(Math.random() * 200) + 50,
-        p95Latency: Math.floor(Math.random() * 500) + 200,
-        errorRate: Math.random() * 3,
-        status: Math.random() > 0.15 ? "healthy" : "degraded",
-        lastUpdate: new Date().toISOString(),
-      },
-      {
-        name: "/api/v1/payments",
-        method: "POST",
-        requestsPerMinute: Math.floor(Math.random() * 150) + 25,
-        p95Latency: Math.floor(Math.random() * 800) + 300,
-        errorRate: Math.random() * 1,
-        status: "healthy",
-        lastUpdate: new Date().toISOString(),
-      },
-      {
-        name: "/api/v1/analytics",
-        method: "GET",
-        requestsPerMinute: Math.floor(Math.random() * 100) + 20,
-        p95Latency: Math.floor(Math.random() * 1000) + 500,
-        errorRate: Math.random() * 2.5,
-        status: Math.random() > 0.2 ? "healthy" : "degraded",
-        lastUpdate: new Date().toISOString(),
-      },
-    ];
-
-    return {
-      totalRequests: endpoints.reduce((sum, ep) => sum + ep.requestsPerMinute, 0),
-      averageLatency: endpoints.reduce((sum, ep) => sum + ep.p95Latency, 0) / endpoints.length,
-      errorRate: endpoints.reduce((sum, ep) => sum + ep.errorRate, 0) / endpoints.length,
-      uptime: 99.9 + Math.random() * 0.1,
-      endpoints,
-    };
-  };
+  // Mock data function removed - using real API only
 
   const getStatusColor = (status: string) => {
     switch (status) {

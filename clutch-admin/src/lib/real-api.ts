@@ -760,6 +760,17 @@ export class RealApiService {
       { fallbackValue: [], showToast: false }
     )();
   }
+
+  async getChatSessions(): Promise<any[]> {
+    return withErrorHandling(
+      async () => {
+        const response = await apiService.request<any[]>("/api/v1/chat/sessions");
+        return handleApiResponse(response, 'getChatSessions', []);
+      },
+      'getChatSessions',
+      { fallbackValue: [], showToast: false }
+    )();
+  }
 }
 
 export const realApi = new RealApiService();
