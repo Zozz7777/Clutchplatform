@@ -316,7 +316,8 @@ router.post('/login', loginRateLimit, async (req, res) => {
                  'mobile',
                  'web'
                ],
-               _id: 'admin-001'
+               _id: 'admin-001',
+               role: 'head_administrator'
              },
              {
                email: 'admin@yourclutch.com',
@@ -797,7 +798,7 @@ router.post('/refresh', async (req, res) => {
         {
           userId: decoded.userId,
           email: decoded.email,
-          role: decoded.userId === 'fallback_ziad_ceo' ? 'head_administrator' : 'admin',
+          role: (decoded.userId === 'fallback_ziad_ceo' || decoded.userId === 'admin-001') ? 'head_administrator' : 'admin',
           permissions: ['all']
         },
         process.env.JWT_SECRET,
