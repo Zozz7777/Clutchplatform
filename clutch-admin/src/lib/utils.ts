@@ -17,26 +17,41 @@ export function formatNumber(num: number) {
 }
 
 export function formatDate(date: Date | string) {
+  if (!date) return "N/A";
+  
+  const dateObj = new Date(date);
+  if (isNaN(dateObj.getTime())) return "N/A";
+  
   return new Intl.DateTimeFormat("en-US", {
     year: "numeric",
     month: "short",
     day: "numeric",
-  }).format(new Date(date));
+  }).format(dateObj);
 }
 
 export function formatDateTime(date: Date | string) {
+  if (!date) return "N/A";
+  
+  const dateObj = new Date(date);
+  if (isNaN(dateObj.getTime())) return "N/A";
+  
   return new Intl.DateTimeFormat("en-US", {
     year: "numeric",
     month: "short",
     day: "numeric",
     hour: "2-digit",
     minute: "2-digit",
-  }).format(new Date(date));
+  }).format(dateObj);
 }
 
 export function formatRelativeTime(date: Date | string) {
+  if (!date) return "N/A";
+  
   const now = new Date();
   const targetDate = new Date(date);
+  
+  if (isNaN(targetDate.getTime())) return "N/A";
+  
   const diffInSeconds = Math.floor((now.getTime() - targetDate.getTime()) / 1000);
 
   if (diffInSeconds < 60) return "Just now";
