@@ -40,16 +40,9 @@ export function TrainingROI({ className = '' }: TrainingROIProps) {
   React.useEffect(() => {
     const loadROIData = async () => {
       try {
-        // Simulate training ROI data
-        const gpuHours = 1250;
-        const gpuCostPerHour = 2.50;
-        const trainingCost = gpuHours * gpuCostPerHour;
-        const businessValue = 45000; // Simulated business value
-        const roi = ((businessValue - trainingCost) / trainingCost) * 100;
-        const modelsTrained = 8;
-        const accuracyImprovement = 15.5;
-        const costPerModel = trainingCost / modelsTrained;
-        const valuePerModel = businessValue / modelsTrained;
+        // Get training ROI data from API
+        const roiData = await productionApi.getTrainingROI();
+        const { gpuHours, trainingCost, businessValue, roi, modelsTrained, accuracyImprovement, costPerModel, valuePerModel } = roiData;
 
         setRoiData({
           gpuHours,

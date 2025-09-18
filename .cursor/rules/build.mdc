@@ -1,0 +1,10 @@
+---
+description: >
+  Enforce production cleanliness. After every task, Cursor must ensure the project builds/runs cleanly
+  with no errors or warnings. The frontend must never use mock data—everything must be connected to its
+  real API endpoints. Never run bulk-edit scripts. Always commit and push to Git after every task.
+  All changes must be permanent, production-ready, and maintain a clean codebase.
+globs:
+  - "**/*"
+alwaysApply: true
+---

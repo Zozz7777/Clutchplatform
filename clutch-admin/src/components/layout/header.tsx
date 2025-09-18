@@ -23,7 +23,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { formatRelativeTime } from "@/lib/utils";
 import { productionApi } from "@/lib/production-api";
-import { type Notification } from "@/lib/mock-api";
+import { type Notification } from "@/lib/types";
 import { useRouter } from "next/navigation";
 import { LanguageSwitcher } from "@/components/language-switcher";
 import { ThemeToggle } from "@/components/theme-toggle";

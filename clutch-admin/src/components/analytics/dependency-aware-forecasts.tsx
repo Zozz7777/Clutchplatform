@@ -102,6 +102,7 @@ import {
   GitBranch as BranchIcon
 } from 'lucide-react';
 import { formatCurrency, formatNumber } from '@/lib/utils';
+import { productionApi } from '@/lib/production-api';
 
 interface DependencyForecast {
   id: string;
@@ -151,183 +152,18 @@ export default function DependencyAwareForecasts({ className }: DependencyAwareF
   const [filterTimeframe, setFilterTimeframe] = useState<string>('all');
 
   useEffect(() => {
-    const loadDependencyForecastData = () => {
-      const mockForecasts: DependencyForecast[] = [
-        {
-          id: 'forecast-001',
-          name: 'Revenue Growth Forecast',
-          type: 'revenue',
-          dependencies: [
-            {
-              service: 'Payment Gateway',
-              impact: 95,
-              type: 'critical',
-              status: 'healthy'
-            },
-            {
-              service: 'User Authentication',
-              impact: 80,
-              type: 'critical',
-              status: 'healthy'
-            },
-            {
-              service: 'Recommendation Engine',
-              impact: 60,
-              type: 'important',
-              status: 'healthy'
-            },
-            {
-              service: 'Analytics Service',
-              impact: 30,
-              type: 'optional',
-              status: 'healthy'
-            }
-          ],
-          forecast: {
-            current: 2500000,
-            predicted: 3200000,
-            confidence: 88,
-            timeframe: 90,
-            scenarios: {
-              optimistic: 3800000,
-              realistic: 3200000,
-              pessimistic: 2800000
-            }
-          },
-          impact: {
-            direct: 85,
-            indirect: 10,
-            cascading: 5,
-            total: 100
-          },
-          triggers: [
-            {
-              condition: 'payment_success_rate < 95%',
-              threshold: 95,
-              metric: 'payment_success_rate'
-            },
-            {
-              condition: 'user_retention_rate < 80%',
-              threshold: 80,
-              metric: 'user_retention_rate'
-            }
-          ],
-          lastUpdated: new Date(Date.now() - 2 * 60 * 60 * 1000).toISOString()
-        },
-        {
-          id: 'forecast-002',
-          name: 'User Growth Forecast',
-          type: 'users',
-          dependencies: [
-            {
-              service: 'User Registration',
-              impact: 90,
-              type: 'critical',
-              status: 'healthy'
-            },
-            {
-              service: 'Email Service',
-              impact: 70,
-              type: 'important',
-              status: 'healthy'
-            },
-            {
-              service: 'Social Login',
-              impact: 50,
-              type: 'important',
-              status: 'healthy'
-            }
-          ],
-          forecast: {
-            current: 150000,
-            predicted: 220000,
-            confidence: 82,
-            timeframe: 60,
-            scenarios: {
-              optimistic: 260000,
-              realistic: 220000,
-              pessimistic: 180000
-            }
-          },
-          impact: {
-            direct: 90,
-            indirect: 8,
-            cascading: 2,
-            total: 100
-          },
-          triggers: [
-            {
-              condition: 'registration_success_rate < 90%',
-              threshold: 90,
-              metric: 'registration_success_rate'
-            },
-            {
-              condition: 'email_delivery_rate < 95%',
-              threshold: 95,
-              metric: 'email_delivery_rate'
-            }
-          ],
-          lastUpdated: new Date(Date.now() - 4 * 60 * 60 * 1000).toISOString()
-        },
-        {
-          id: 'forecast-003',
-          name: 'Performance Forecast',
-          type: 'performance',
-          dependencies: [
-            {
-              service: 'API Gateway',
-              impact: 85,
-              type: 'critical',
-              status: 'healthy'
-            },
-            {
-              service: 'Database Cluster',
-              impact: 90,
-              type: 'critical',
-              status: 'healthy'
-            },
-            {
-              service: 'CDN',
-              impact: 60,
-              type: 'important',
-              status: 'healthy'
-            }
-          ],
-          forecast: {
-            current: 200,
-            predicted: 150,
-            confidence: 75,
-            timeframe: 30,
-            scenarios: {
-              optimistic: 120,
-              realistic: 150,
-              pessimistic: 180
-            }
-          },
-          impact: {
-            direct: 80,
-            indirect: 15,
-            cascading: 5,
-            total: 100
-          },
-          triggers: [
-            {
-              condition: 'response_time > 500ms',
-              threshold: 500,
-              metric: 'response_time'
-            },
-            {
-              condition: 'database_connection_pool > 80%',
-              threshold: 80,
-              metric: 'database_connection_pool'
-            }
-          ],
-          lastUpdated: new Date(Date.now() - 6 * 60 * 60 * 1000).toISOString()
+    const loadDependencyForecastData = async () => {
+      try {
+        const data = await productionApi.getDependencyForecasts();
+        setForecasts(data);
+        if (data.length > 0) {
+          setSelectedForecast(data[0]);
         }
-      ];
-
-      setForecasts(mockForecasts);
-      setSelectedForecast(mockForecasts[0]);
+      } catch (error) {
+        console.error('Failed to load dependency forecasts:', error);
+        // Fallback to empty array if API fails
+        setForecasts([]);
+      }
     };
 
     loadDependencyForecastData();

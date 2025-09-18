@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Frontend Auth Test</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        .container { max-width: 800px; margin: 0 auto; }
+        .section { margin: 20px 0; padding: 15px; border: 1px solid #ddd; border-radius: 5px; }
+        .button { padding: 10px 15px; margin: 5px; background: #007bff; color: white; border: none; border-radius: 3px; cursor: pointer; }
+        .button:hover { background: #0056b3; }
+        .button.danger { background: #dc3545; }
+        .button.danger:hover { background: #c82333; }
+        .log { background: #f8f9fa; padding: 10px; border-radius: 3px; font-family: monospace; white-space: pre-wrap; max-height: 300px; overflow-y: auto; }
+        .status { padding: 5px 10px; border-radius: 3px; margin: 5px 0; }
+        .status.success { background: #d4edda; color: #155724; }
+        .status.error { background: #f8d7da; color: #721c24; }
+        .status.warning { background: #fff3cd; color: #856404; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Frontend Authentication Test</h1>
+        
+        <div class="section">
+            <h3>Current Token Status</h3>
+            <div id="tokenStatus" class="status warning">Checking...</div>
+            <button class="button" onclick="checkTokenStatus()">Refresh Status</button>
+        </div>
+
+        <div class="section">
+            <h3>Authentication Actions</h3>
+            <button class="button" onclick="login()">Login (CEO)</button>
+            <button class="button" onclick="logout()">Logout</button>
+            <button class="button" onclick="clearAllTokens()">Clear All Tokens</button>
+            <button class="button" onclick="forceTokenRefresh()">Force Token Refresh</button>
+        </div>
+
+        <div class="section">
+            <h3>API Tests</h3>
+            <button class="button" onclick="testFleetVehicles()">Test Fleet Vehicles</button>
+            <button class="button" onclick="testUsers()">Test Users</button>
+            <button class="button" onclick="testVerifyToken()">Verify Token</button>
+        </div>
+
+        <div class="section">
+            <h3>Logs</h3>
+            <button class="button" onclick="clearLogs()">Clear Logs</button>
+            <div id="logs" class="log"></div>
+        </div>
+    </div>
+
+    <script>
+        const API_BASE_URL = 'http://localhost:5000';
+        
+        function log(message, type = 'info') {
+            const timestamp = new Date().toISOString();
+            const logElement = document.getElementById('logs');
+            const logEntry = `[${timestamp}] ${type.toUpperCase()}: ${message}\n`;
+            logElement.textContent += logEntry;
+            logElement.scrollTop = logElement.scrollHeight;
+            console.log(logEntry);
+        }
+
+        function clearLogs() {
+            document.getElementById('logs').textContent = '';
+        }
+
+        function updateTokenStatus() {
+            const token = localStorage.getItem('clutch-admin-token');
+            const refreshToken = localStorage.getItem('clutch-admin-refresh-token');
+            const user = localStorage.getItem('clutch-admin-user');
+            
+            const statusElement = document.getElementById('tokenStatus');
+            
+            if (token) {
+                try {
+                    // Decode JWT to check role
+                    const payload = JSON.parse(atob(token.split('.')[1]));
+                    statusElement.innerHTML = `
+                        <div class="status success">Token: ${token.substring(0, 20)}...</div>
+                        <div class="status success">Role: ${payload.role || 'unknown'}</div>
+                        <div class="status success">User ID: ${payload.userId || payload.id || 'unknown'}</div>
+                        <div class="status success">Refresh Token: ${refreshToken ? 'Present' : 'Missing'}</div>
+                        <div class="status success">User Data: ${user ? 'Present' : 'Missing'}</div>
+                    `;
+                } catch (e) {
+                    statusElement.innerHTML = `<div class="status error">Token present but invalid: ${e.message}</div>`;
+                }
+            } else {
+                statusElement.innerHTML = '<div class="status error">No token found</div>';
+            }
+        }
+
+        function checkTokenStatus() {
+            updateTokenStatus();
+            log('Token status checked');
+        }
+
+        async function login() {
+            log('Attempting login...');
+            try {
+                const response = await fetch(`${API_BASE_URL}/auth/login`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        email: 'ziad@yourclutch.com',
+                        password: '4955698*Z*z'
+                    })
+                });
+
+                const data = await response.json();
+                log(`Login response: ${JSON.stringify(data, null, 2)}`);
+
+                if (data.success && data.data.token) {
+                    localStorage.setItem('clutch-admin-token', data.data.token);
+                    if (data.data.refreshToken) {
+                        localStorage.setItem('clutch-admin-refresh-token', data.data.refreshToken);
+                    }
+                    if (data.data.user) {
+                        localStorage.setItem('clutch-admin-user', JSON.stringify(data.data.user));
+                    }
+                    updateTokenStatus();
+                    log('Login successful, tokens stored');
+                } else {
+                    log(`Login failed: ${data.error || 'Unknown error'}`, 'error');
+                }
+            } catch (error) {
+                log(`Login error: ${error.message}`, 'error');
+            }
+        }
+
+        async function logout() {
+            log('Logging out...');
+            localStorage.removeItem('clutch-admin-token');
+            localStorage.removeItem('clutch-admin-refresh-token');
+            localStorage.removeItem('clutch-admin-user');
+            updateTokenStatus();
+            log('Logout completed');
+        }
+
+        function clearAllTokens() {
+            log('Clearing all tokens...');
+            localStorage.removeItem('clutch-admin-token');
+            localStorage.removeItem('clutch-admin-refresh-token');
+            localStorage.removeItem('clutch-admin-user');
+            sessionStorage.removeItem('clutch-admin-token');
+            updateTokenStatus();
+            log('All tokens cleared');
+        }
+
+        async function forceTokenRefresh() {
+            log('Forcing token refresh...');
+            const refreshToken = localStorage.getItem('clutch-admin-refresh-token');
+            
+            if (!refreshToken) {
+                log('No refresh token available', 'error');
+                return;
+            }
+
+            try {
+                const response = await fetch(`${API_BASE_URL}/auth/refresh`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${localStorage.getItem('clutch-admin-token')}`
+                    }
+                });
+
+                const data = await response.json();
+                log(`Refresh response: ${JSON.stringify(data, null, 2)}`);
+
+                if (data.success && data.data.token) {
+                    localStorage.setItem('clutch-admin-token', data.data.token);
+                    if (data.data.refreshToken) {
+                        localStorage.setItem('clutch-admin-refresh-token', data.data.refreshToken);
+                    }
+                    updateTokenStatus();
+                    log('Token refresh successful');
+                } else {
+                    log(`Token refresh failed: ${data.error || 'Unknown error'}`, 'error');
+                }
+            } catch (error) {
+                log(`Token refresh error: ${error.message}`, 'error');
+            }
+        }
+
+        async function testFleetVehicles() {
+            log('Testing Fleet Vehicles endpoint...');
+            await testEndpoint('/api/fleet/vehicles', 'Fleet Vehicles');
+        }
+
+        async function testUsers() {
+            log('Testing Users endpoint...');
+            await testEndpoint('/api/v1/users', 'Users');
+        }
+
+        async function testVerifyToken() {
+            log('Testing Token Verification...');
+            await testEndpoint('/auth/verify', 'Token Verification');
+        }
+
+        async function testEndpoint(endpoint, name) {
+            const token = localStorage.getItem('clutch-admin-token');
+            
+            if (!token) {
+                log(`No token available for ${name} test`, 'error');
+                return;
+            }
+
+            try {
+                const response = await fetch(`${API_BASE_URL}${endpoint}`, {
+                    method: 'GET',
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'Content-Type': 'application/json'
+                    }
+                });
+
+                const data = await response.json();
+                log(`${name} test - Status: ${response.status}, Response: ${JSON.stringify(data, null, 2)}`);
+                
+                if (response.status === 403) {
+                    log(`${name} returned 403 - likely role issue`, 'error');
+                } else if (response.status === 200 || response.status === 201) {
+                    log(`${name} test successful`, 'success');
+                }
+            } catch (error) {
+                log(`${name} test error: ${error.message}`, 'error');
+            }
+        }
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function() {
+            updateTokenStatus();
+            log('Frontend Auth Test initialized');
+        });
+    </script>
+</body>
+</html>

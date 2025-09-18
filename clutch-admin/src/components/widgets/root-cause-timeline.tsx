@@ -49,75 +49,8 @@ export function RootCauseTimeline({ className = '' }: RootCauseTimelineProps) {
   React.useEffect(() => {
     const loadRootCauseData = async () => {
       try {
-        // Simulate root cause analysis data
-        const causes: RootCause[] = [
-          {
-            id: '1',
-            category: 'Infrastructure',
-            description: 'Server overload and resource exhaustion',
-            incidents: 12,
-            frequency: 35,
-            lastOccurrence: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000).toISOString(),
-            trend: 'down',
-            severity: 'high',
-            resolution: 'Auto-scaling configuration updated'
-          },
-          {
-            id: '2',
-            category: 'Database',
-            description: 'Connection pool exhaustion and query timeouts',
-            incidents: 8,
-            frequency: 23,
-            lastOccurrence: new Date(Date.now() - 5 * 24 * 60 * 60 * 1000).toISOString(),
-            trend: 'up',
-            severity: 'critical',
-            resolution: 'Connection pool size increased'
-          },
-          {
-            id: '3',
-            category: 'Third-party API',
-            description: 'External service failures and rate limiting',
-            incidents: 6,
-            frequency: 18,
-            lastOccurrence: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString(),
-            trend: 'stable',
-            severity: 'medium',
-            resolution: 'Circuit breaker pattern implemented'
-          },
-          {
-            id: '4',
-            category: 'Code Deployment',
-            description: 'Failed deployments and configuration errors',
-            incidents: 4,
-            frequency: 12,
-            lastOccurrence: new Date(Date.now() - 10 * 24 * 60 * 60 * 1000).toISOString(),
-            trend: 'down',
-            severity: 'medium',
-            resolution: 'Deployment pipeline improved'
-          },
-          {
-            id: '5',
-            category: 'Network',
-            description: 'DNS resolution and connectivity issues',
-            incidents: 3,
-            frequency: 9,
-            lastOccurrence: new Date(Date.now() - 14 * 24 * 60 * 60 * 1000).toISOString(),
-            trend: 'down',
-            severity: 'low',
-            resolution: 'DNS failover configured'
-          },
-          {
-            id: '6',
-            category: 'Security',
-            description: 'Authentication and authorization failures',
-            incidents: 2,
-            frequency: 6,
-            lastOccurrence: new Date(Date.now() - 21 * 24 * 60 * 60 * 1000).toISOString(),
-            trend: 'stable',
-            severity: 'high',
-            resolution: 'Security policies updated'
-          }
-        ];
+        // Get root cause analysis data from API
+        const causes = await productionApi.getRootCauseAnalysis();
 
         const totalIncidents = causes.reduce((sum, cause) => sum + cause.incidents, 0);
         const averageResolution = 45; // Simulated average resolution time in minutes

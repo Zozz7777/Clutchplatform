@@ -49,59 +49,8 @@ export function SLACompliance({ className = '' }: SLAComplianceProps) {
   React.useEffect(() => {
     const loadSLAData = async () => {
       try {
-        // Simulate SLA compliance data
-        const metrics: SLAMetric[] = [
-          {
-            service: 'API Gateway',
-            uptime: 99.95,
-            sla: 99.9,
-            compliance: 100,
-            incidents: 2,
-            mttr: 15,
-            status: 'compliant',
-            trend: 'up'
-          },
-          {
-            service: 'Database',
-            uptime: 99.8,
-            sla: 99.9,
-            compliance: 90,
-            incidents: 5,
-            mttr: 45,
-            status: 'warning',
-            trend: 'down'
-          },
-          {
-            service: 'Fleet Management',
-            uptime: 99.7,
-            sla: 99.5,
-            compliance: 100,
-            incidents: 3,
-            mttr: 30,
-            status: 'compliant',
-            trend: 'stable'
-          },
-          {
-            service: 'Payment Processing',
-            uptime: 99.2,
-            sla: 99.9,
-            compliance: 30,
-            incidents: 8,
-            mttr: 120,
-            status: 'breach',
-            trend: 'down'
-          },
-          {
-            service: 'User Management',
-            uptime: 99.9,
-            sla: 99.5,
-            compliance: 100,
-            incidents: 1,
-            mttr: 20,
-            status: 'compliant',
-            trend: 'up'
-          }
-        ];
+        // Get SLA compliance data from API
+        const metrics = await productionApi.getSLACompliance();
 
         const overallCompliance = metrics.reduce((sum, metric) => sum + metric.compliance, 0) / metrics.length;
         const totalIncidents = metrics.reduce((sum, metric) => sum + metric.incidents, 0);

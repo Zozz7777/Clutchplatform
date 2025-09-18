@@ -23,6 +23,7 @@ const { cacheMiddleware } = require('./middleware/cache');
 const { validateInput } = require('./middleware/validation');
 const { performanceMonitor, getPerformanceMetrics } = require('./middleware/performanceMonitor');
 const { addAlert, getAlerts } = require('./middleware/alerting');
+const { responseMiddleware } = require('./utils/response-format');
 
 // Import performance monitoring
 const {
@@ -119,6 +120,9 @@ app.set('trust proxy', 1);
 
 // Apply optimized middleware stack
 applyOptimizedMiddleware(app);
+
+// Add standardized response format middleware
+app.use(responseMiddleware);
 
 // CRITICAL: Health endpoints first
 app.get('/health/ping', (req, res) => {

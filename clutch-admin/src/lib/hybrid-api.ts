@@ -1,6 +1,6 @@
 import { apiService } from "./api";
 import { realApi } from "./real-api";
-import { mockAPI } from "./mock-api";
+// Note: mockAPI removed - use realApi instead
 import { API_BASE_URL } from "./constants";
 
 // Configuration for which APIs to use mock vs real
@@ -100,8 +100,8 @@ class HybridApiService {
       console.warn("Real login failed, using mock authentication");
     }
 
-    // Fallback to mock authentication
-    return await mockAPI.login(email, password);
+    // Fallback to real API authentication
+    return await realApi.login(email, password);
   }
 
   async logout() {
@@ -112,7 +112,7 @@ class HybridApiService {
   async getUsers() {
     return this.executeWithFallback(
       () => apiService.getUsers(),
-      () => mockAPI.getUsers(),
+      () => realApi.getUsers(),
       API_CONFIG.useMock.users
     );
   }
@@ -120,7 +120,7 @@ class HybridApiService {
   async getUserById(id: string) {
     return this.executeWithFallback(
       () => apiService.getUserById(id),
-      () => mockAPI.getUserById(id),
+      () => realApi.getUserById(id),
       API_CONFIG.useMock.users
     );
   }
@@ -128,7 +128,7 @@ class HybridApiService {
   async createUser(userData: Partial<User>) {
     return this.executeWithFallback(
       () => apiService.createUser(userData),
-      () => mockAPI.createUser(userData),
+      () => realApi.createUser(userData),
       API_CONFIG.useMock.users
     );
   }
@@ -136,7 +136,7 @@ class HybridApiService {
   async updateUser(id: string, updates: Partial<User>) {
     return this.executeWithFallback(
       () => apiService.updateUser(id, updates),
-      () => mockAPI.updateUser(id, updates),
+      () => realApi.updateUser(id, updates),
       API_CONFIG.useMock.users
     );
   }
@@ -144,7 +144,7 @@ class HybridApiService {
   async deleteUser(id: string) {
     return this.executeWithFallback(
       () => apiService.deleteUser(id),
-      () => mockAPI.deleteUser(id),
+      () => realApi.deleteUser(id),
       API_CONFIG.useMock.users
     );
   }
@@ -153,7 +153,7 @@ class HybridApiService {
   async getFleetVehicles() {
     return this.executeWithFallback(
       () => apiService.getFleetVehicles(),
-      () => mockAPI.getFleetVehicles(),
+      () => realApi.getFleetVehicles(),
       API_CONFIG.useMock.fleet
     );
   }
@@ -161,7 +161,7 @@ class HybridApiService {
   async getFleetVehicleById(id: string) {
     return this.executeWithFallback(
       () => apiService.getFleetVehicleById(id),
-      () => mockAPI.getFleetVehicleById(id),
+      () => realApi.getFleetVehicleById(id),
       API_CONFIG.useMock.fleet
     );
   }
@@ -169,7 +169,7 @@ class HybridApiService {
   async updateFleetVehicle(id: string, updates: Partial<Vehicle>) {
     return this.executeWithFallback(
       () => apiService.updateFleetVehicle(id, updates),
-      () => mockAPI.updateFleetVehicle(id, updates),
+      () => realApi.updateFleetVehicle(id, updates),
       API_CONFIG.useMock.fleet
     );
   }
@@ -178,7 +178,7 @@ class HybridApiService {
   async getKPIMetrics() {
     return this.executeWithFallback(
       () => apiService.getKPIMetrics(),
-      () => mockAPI.getKPIMetrics(),
+      () => realApi.getKPIMetrics(),
       API_CONFIG.useMock.dashboard
     );
   }
@@ -186,7 +186,7 @@ class HybridApiService {
   async getDashboardStats() {
     return this.executeWithFallback(
       () => apiService.getDashboardStats(),
-      () => mockAPI.getKPIMetrics(), // Use KPI metrics as fallback
+      () => realApi.getKPIMetrics(), // Use KPI metrics as fallback
       API_CONFIG.useMock.dashboard
     );
   }
@@ -195,7 +195,7 @@ class HybridApiService {
   async getChatMessages() {
     return this.executeWithFallback(
       () => apiService.getChatMessages(),
-      () => mockAPI.getChatMessages(),
+      () => realApi.getChatMessages(),
       API_CONFIG.useMock.chat
     );
   }
@@ -203,7 +203,7 @@ class HybridApiService {
   async sendMessage(message: Partial<ChatMessage>) {
     return this.executeWithFallback(
       () => apiService.sendMessage(message),
-      () => mockAPI.sendMessage(message),
+      () => realApi.sendMessage(message),
       API_CONFIG.useMock.chat
     );
   }
@@ -212,7 +212,7 @@ class HybridApiService {
   async getNotifications() {
     return this.executeWithFallback(
       () => apiService.getNotifications(),
-      () => mockAPI.getNotifications(),
+      () => realApi.getNotifications(),
       API_CONFIG.useMock.notifications
     );
   }
@@ -220,7 +220,7 @@ class HybridApiService {
   async markNotificationAsRead(id: string) {
     return this.executeWithFallback(
       () => apiService.markNotificationAsRead(id),
-      () => mockAPI.markNotificationAsRead(id),
+      () => realApi.markNotificationAsRead(id),
       API_CONFIG.useMock.notifications
     );
   }
@@ -275,7 +275,7 @@ class HybridApiService {
     }
 
     // Fallback to mock subscription
-    return mockAPI.subscribeToFleetUpdates(callback);
+    return realApi.subscribeToFleetUpdates(callback);
   }
 
   subscribeToKPIMetrics(callback: (metrics: KPIMetric[]) => void) {
@@ -298,14 +298,14 @@ class HybridApiService {
     }
 
     // Fallback to mock subscription
-    return mockAPI.subscribeToKPIMetrics(callback);
+    return realApi.subscribeToKPIMetrics(callback);
   }
 
   // Project Management APIs
   async getProjects() {
     return this.executeWithFallback(
       () => apiService.getProjects(),
-      () => mockAPI.getProjects(),
+      () => realApi.getProjects(),
       false // Use real API
     );
   }
@@ -313,7 +313,7 @@ class HybridApiService {
   async getProjectTasks(projectId: string) {
     return this.executeWithFallback(
       () => apiService.getProjectTasks(projectId),
-      () => mockAPI.getProjectTasks(projectId),
+      () => realApi.getProjectTasks(projectId),
       false // Use real API
     );
   }
@@ -321,7 +321,7 @@ class HybridApiService {
   async getTimeTracking(projectId: string) {
     return this.executeWithFallback(
       () => apiService.getTimeTracking(projectId),
-      () => mockAPI.getTimeTracking(projectId),
+      () => realApi.getTimeTracking(projectId),
       false // Use real API
     );
   }
@@ -330,7 +330,7 @@ class HybridApiService {
   async getFeatureFlags() {
     return this.executeWithFallback(
       () => apiService.getFeatureFlags(),
-      () => mockAPI.getFeatureFlags(),
+      () => realApi.getFeatureFlags(),
       false // Use real API
     );
   }
@@ -338,7 +338,7 @@ class HybridApiService {
   async toggleFeatureFlag(flagId: string, enabled: boolean) {
     return this.executeWithFallback(
       () => apiService.toggleFeatureFlag(flagId, enabled),
-      () => mockAPI.toggleFeatureFlag(flagId, enabled),
+      () => realApi.toggleFeatureFlag(flagId, enabled),
       false // Use real API
     );
   }
@@ -346,7 +346,7 @@ class HybridApiService {
   async getABTests() {
     return this.executeWithFallback(
       () => apiService.getABTests(),
-      () => mockAPI.getABTests(),
+      () => realApi.getABTests(),
       false // Use real API
     );
   }
@@ -354,7 +354,7 @@ class HybridApiService {
   async getRollouts() {
     return this.executeWithFallback(
       () => apiService.getRollouts(),
-      () => mockAPI.getRollouts(),
+      () => realApi.getRollouts(),
       false // Use real API
     );
   }
@@ -363,7 +363,7 @@ class HybridApiService {
   async getAssets() {
     return this.executeWithFallback(
       () => apiService.getAssets(),
-      () => mockAPI.getAssets(),
+      () => realApi.getAssets(),
       false // Use real API
     );
   }
@@ -371,7 +371,7 @@ class HybridApiService {
   async getMaintenanceRecords() {
     return this.executeWithFallback(
       () => apiService.getMaintenanceRecords(),
-      () => mockAPI.getMaintenanceRecords(),
+      () => realApi.getMaintenanceRecords(),
       false // Use real API
     );
   }
@@ -379,7 +379,7 @@ class HybridApiService {
   async getAssetAssignments() {
     return this.executeWithFallback(
       () => apiService.getAssetAssignments(),
-      () => mockAPI.getAssetAssignments(),
+      () => realApi.getAssetAssignments(),
       false // Use real API
     );
   }
@@ -388,7 +388,7 @@ class HybridApiService {
   async getVendors() {
     return this.executeWithFallback(
       () => apiService.getVendors(),
-      () => mockAPI.getVendors(),
+      () => realApi.getVendors(),
       false // Use real API
     );
   }
@@ -396,7 +396,7 @@ class HybridApiService {
   async getVendorContracts() {
     return this.executeWithFallback(
       () => apiService.getVendorContracts(),
-      () => mockAPI.getVendorContracts(),
+      () => realApi.getVendorContracts(),
       false // Use real API
     );
   }
@@ -404,7 +404,7 @@ class HybridApiService {
   async getVendorCommunications() {
     return this.executeWithFallback(
       () => apiService.getVendorCommunications(),
-      () => mockAPI.getVendorCommunications(),
+      () => realApi.getVendorCommunications(),
       false // Use real API
     );
   }
@@ -413,7 +413,7 @@ class HybridApiService {
   async getAuditLogs() {
     return this.executeWithFallback(
       () => apiService.getAuditLogs(),
-      () => mockAPI.getAuditLogs(),
+      () => realApi.getAuditLogs(),
       false // Use real API
     );
   }
@@ -421,7 +421,7 @@ class HybridApiService {
   async getSecurityEvents() {
     return this.executeWithFallback(
       () => apiService.getSecurityEvents(),
-      () => mockAPI.getSecurityEvents(),
+      () => realApi.getSecurityEvents(),
       false // Use real API
     );
   }
@@ -429,7 +429,7 @@ class HybridApiService {
   async getUserActivities() {
     return this.executeWithFallback(
       () => apiService.getUserActivities(),
-      () => mockAPI.getUserActivities(),
+      () => realApi.getUserActivities(),
       false // Use real API
     );
   }
@@ -438,7 +438,7 @@ class HybridApiService {
   async getSystemHealthStatus() {
     return this.executeWithFallback(
       () => apiService.getSystemHealthStatus(),
-      () => mockAPI.getSystemHealthStatus(),
+      () => realApi.getSystemHealthStatus(),
       false // Use real API
     );
   }
@@ -446,7 +446,7 @@ class HybridApiService {
   async getSystemMetrics() {
     return this.executeWithFallback(
       () => apiService.getSystemMetrics(),
-      () => mockAPI.getSystemMetrics(),
+      () => realApi.getSystemMetrics(),
       false // Use real API
     );
   }
@@ -454,7 +454,7 @@ class HybridApiService {
   async getSystemAlerts() {
     return this.executeWithFallback(
       () => apiService.getSystemAlerts(),
-      () => mockAPI.getSystemAlerts(),
+      () => realApi.getSystemAlerts(),
       false // Use real API
     );
   }
@@ -462,7 +462,7 @@ class HybridApiService {
   async getSystemLogs() {
     return this.executeWithFallback(
       () => apiService.getSystemLogs(),
-      () => mockAPI.getSystemLogs(),
+      () => realApi.getSystemLogs(),
       false // Use real API
     );
   }

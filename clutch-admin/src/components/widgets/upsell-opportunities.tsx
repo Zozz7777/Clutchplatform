@@ -55,69 +55,8 @@ export function UpsellOpportunities({ className = '' }: UpsellOpportunitiesProps
           productionApi.getPayments()
         ]);
 
-        // Simulate upsell opportunities
-        const opportunities: UpsellOpportunity[] = [
-          {
-            customerId: '1',
-            customerName: 'Enterprise Client A',
-            currentPlan: 'Professional',
-            recommendedPlan: 'Enterprise',
-            potentialRevenue: 15000,
-            confidence: 85,
-            usage: 95,
-            segment: 'Enterprise',
-            lastUpgrade: new Date(Date.now() - 90 * 24 * 60 * 60 * 1000).toISOString(),
-            opportunityScore: 92
-          },
-          {
-            customerId: '2',
-            customerName: 'SMB Client B',
-            currentPlan: 'Basic',
-            recommendedPlan: 'Professional',
-            potentialRevenue: 5000,
-            confidence: 78,
-            usage: 88,
-            segment: 'SMB',
-            lastUpgrade: new Date(Date.now() - 120 * 24 * 60 * 60 * 1000).toISOString(),
-            opportunityScore: 85
-          },
-          {
-            customerId: '3',
-            customerName: 'Individual Client C',
-            currentPlan: 'Starter',
-            recommendedPlan: 'Basic',
-            potentialRevenue: 1200,
-            confidence: 72,
-            usage: 82,
-            segment: 'Individual',
-            lastUpgrade: new Date(Date.now() - 180 * 24 * 60 * 60 * 1000).toISOString(),
-            opportunityScore: 78
-          },
-          {
-            customerId: '4',
-            customerName: 'Enterprise Client D',
-            currentPlan: 'Professional',
-            recommendedPlan: 'Enterprise',
-            potentialRevenue: 12000,
-            confidence: 90,
-            usage: 92,
-            segment: 'Enterprise',
-            lastUpgrade: new Date(Date.now() - 60 * 24 * 60 * 60 * 1000).toISOString(),
-            opportunityScore: 95
-          },
-          {
-            customerId: '5',
-            customerName: 'SMB Client E',
-            currentPlan: 'Basic',
-            recommendedPlan: 'Professional',
-            potentialRevenue: 3500,
-            confidence: 65,
-            usage: 75,
-            segment: 'SMB',
-            lastUpgrade: new Date(Date.now() - 150 * 24 * 60 * 60 * 1000).toISOString(),
-            opportunityScore: 70
-          }
-        ];
+        // Get upsell opportunities from API
+        const opportunities = await productionApi.getUpsellOpportunities();
 
         const totalPotentialRevenue = opportunities.reduce((sum, opp) => sum + opp.potentialRevenue, 0);
         const averageConfidence = opportunities.reduce((sum, opp) => sum + opp.confidence, 0) / opportunities.length;

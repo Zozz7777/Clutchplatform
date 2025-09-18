@@ -7,7 +7,8 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { mockAPI, type User } from "@/lib/mock-api";
+import { realApi } from "@/lib/real-api";
+import { type User } from "@/lib/types";
 import { formatDate, formatRelativeTime } from "@/lib/utils";
 import { useAuth } from "@/contexts/auth-context";
 import { toast } from "sonner";
@@ -47,7 +48,7 @@ export default function ProvidersPage() {
   useEffect(() => {
     const loadUsers = async () => {
       try {
-        const userData = await mockAPI.getUsers();
+        const userData = await realApi.getUsers();
         // Filter for service providers
         const providerUsers = userData.filter(user => user.role === "service_provider");
         setUsers(providerUsers);

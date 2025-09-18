@@ -3,7 +3,7 @@
 import React, { createContext, useContext, useState, useEffect } from "react";
 import { USER_ROLES, ROLE_PERMISSIONS } from "@/lib/constants";
 import { apiService } from "@/lib/api";
-import { type User } from "@/lib/mock-api";
+import { type User } from "@/lib/types";
 
 interface AuthContextType {
   user: User | null;

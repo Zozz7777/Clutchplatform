@@ -1,6 +1,6 @@
 import { realApi } from "./real-api";
 import { apiService } from "./api";
-import { type KPIMetric, type FleetVehicle, type Notification, type User } from "./mock-api";
+import { type KPIMetric, type FleetVehicle, type Notification, type User } from "./types";
 
 // Production API service that only uses real APIs
 export class ProductionApiService {
@@ -1157,6 +1157,119 @@ export class ProductionApiService {
     } catch (error) {
       console.error("Failed to fetch payment methods:", error);
       throw new Error("Failed to load payment methods");
+    }
+  }
+
+  // Analytics APIs - New endpoints for advanced analytics
+  async getConfidenceIntervals(): Promise<any[]> {
+    try {
+      return await realApi.getConfidenceIntervals();
+    } catch (error) {
+      console.error("Failed to fetch confidence intervals:", error);
+      throw new Error("Failed to load confidence intervals");
+    }
+  }
+
+  async getDependencyForecasts(): Promise<any[]> {
+    try {
+      return await realApi.getDependencyForecasts();
+    } catch (error) {
+      console.error("Failed to fetch dependency forecasts:", error);
+      throw new Error("Failed to load dependency forecasts");
+    }
+  }
+
+  // AI/ML APIs - New endpoints for AI components
+  async getAnomalyDetections(): Promise<any[]> {
+    try {
+      return await realApi.getAnomalyDetections();
+    } catch (error) {
+      console.error("Failed to fetch anomaly detections:", error);
+      throw new Error("Failed to load anomaly detections");
+    }
+  }
+
+  // Testing APIs - New endpoints for testing components
+  async getChaosExperiments(): Promise<any[]> {
+    try {
+      return await realApi.getChaosExperiments();
+    } catch (error) {
+      console.error("Failed to fetch chaos experiments:", error);
+      throw new Error("Failed to load chaos experiments");
+    }
+  }
+
+  async getBlackSwanEvents(): Promise<any[]> {
+    try {
+      return await realApi.getBlackSwanEvents();
+    } catch (error) {
+      console.error("Failed to fetch black swan events:", error);
+      throw new Error("Failed to load black swan events");
+    }
+  }
+
+  // Widget APIs - New endpoints for widget components
+  async getUpsellOpportunities(): Promise<any[]> {
+    try {
+      return await realApi.getUpsellOpportunities();
+    } catch (error) {
+      console.error("Failed to fetch upsell opportunities:", error);
+      throw new Error("Failed to load upsell opportunities");
+    }
+  }
+
+  async getSLACompliance(): Promise<any[]> {
+    try {
+      return await realApi.getSLACompliance();
+    } catch (error) {
+      console.error("Failed to fetch SLA compliance:", error);
+      throw new Error("Failed to load SLA compliance");
+    }
+  }
+
+  async getTrainingROI(): Promise<any> {
+    try {
+      return await realApi.getTrainingROI();
+    } catch (error) {
+      console.error("Failed to fetch training ROI:", error);
+      throw new Error("Failed to load training ROI");
+    }
+  }
+
+  async getSecurityAlerts(): Promise<any[]> {
+    try {
+      return await realApi.getSecurityAlerts();
+    } catch (error) {
+      console.error("Failed to fetch security alerts:", error);
+      throw new Error("Failed to load security alerts");
+    }
+  }
+
+  async getRootCauseAnalysis(): Promise<any[]> {
+    try {
+      return await realApi.getRootCauseAnalysis();
+    } catch (error) {
+      console.error("Failed to fetch root cause analysis:", error);
+      throw new Error("Failed to load root cause analysis");
+    }
+  }
+
+  // Operations APIs - New endpoints for operations components
+  async getMissionCriticalTasks(): Promise<any[]> {
+    try {
+      return await realApi.getMissionCriticalTasks();
+    } catch (error) {
+      console.error("Failed to fetch mission critical tasks:", error);
+      throw new Error("Failed to load mission critical tasks");
+    }
+  }
+
+  async getPortfolioRisks(): Promise<any[]> {
+    try {
+      return await realApi.getPortfolioRisks();
+    } catch (error) {
+      console.error("Failed to fetch portfolio risks:", error);
+      throw new Error("Failed to load portfolio risks");
     }
   }
 }

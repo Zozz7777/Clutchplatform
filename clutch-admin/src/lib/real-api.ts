@@ -5,24 +5,40 @@ export class RealApiService {
   
   // Dashboard APIs
   async getKPIMetrics(): Promise<any[]> {
-    const response = await apiService.request<any[]>("/api/v1/dashboard/kpis");
-    return response.success ? response.data : [];
+    try {
+      const response = await apiService.request<any[]>("/api/v1/dashboard/kpis");
+      return response.success ? response.data : [];
+    } catch (error) {
+      console.error('Failed to fetch KPI metrics:', error);
+      return [];
+    }
   }
 
   async getFleetVehicles(): Promise<any[]> {
-    const response = await apiService.request<any[]>("/api/fleet/vehicles");
-    return response.success ? response.data : [];
+    try {
+      const response = await apiService.request<any[]>("/api/v1/fleet/vehicles");
+      return response.success ? response.data : [];
+    } catch (error) {
+      console.error('Failed to fetch fleet vehicles:', error);
+      return [];
+    }
   }
 
   async getNotifications(): Promise<any[]> {
-    const response = await apiService.request<any[]>("/api/v1/notifications");
-    return response.success ? response.data : [];
+    // TODO: Implement notifications endpoint in backend
+    console.warn("Notifications endpoint not implemented in backend yet");
+    return [];
   }
 
   // User Management APIs
   async getUsers(): Promise<any[]> {
-    const response = await apiService.request<any[]>("/api/v1/users");
-    return response.success ? response.data : [];
+    try {
+      const response = await apiService.request<any[]>("/api/v1/users");
+      return response.success ? response.data : [];
+    } catch (error) {
+      console.error('Failed to fetch users:', error);
+      return [];
+    }
   }
 
   async createUser(userData: any): Promise<any> {
@@ -48,14 +64,10 @@ export class RealApiService {
     return response.success;
   }
 
-  // Fleet Management APIs
-  async getFleetVehicles(): Promise<any[]> {
-    const response = await apiService.request<any[]>("/api/fleet/vehicles");
-    return response.success ? response.data : [];
-  }
+  // Fleet Management APIs - getFleetVehicles already defined above
 
   async createFleetVehicle(vehicleData: any): Promise<any> {
-    const response = await apiService.request<any>("/api/fleet/vehicles", {
+    const response = await apiService.request<any>("/api/v1/fleet/vehicles", {
       method: "POST",
       body: JSON.stringify(vehicleData),
     });
@@ -63,7 +75,7 @@ export class RealApiService {
   }
 
   async updateFleetVehicle(vehicleId: string, vehicleData: any): Promise<any> {
-    const response = await apiService.request<any>(`/api/fleet/vehicles/${vehicleId}`, {
+    const response = await apiService.request<any>(`/api/v1/fleet/vehicles/${vehicleId}`, {
       method: "PUT",
       body: JSON.stringify(vehicleData),
     });
@@ -71,7 +83,7 @@ export class RealApiService {
   }
 
   async deleteFleetVehicle(vehicleId: string): Promise<boolean> {
-    const response = await apiService.request<any>(`/api/fleet/vehicles/${vehicleId}`, {
+    const response = await apiService.request<any>(`/api/v1/fleet/vehicles/${vehicleId}`, {
       method: "DELETE",
     });
     return response.success;
@@ -293,17 +305,9 @@ export class RealApiService {
     return response.success ? response.data : [];
   }
 
-  // Analytics APIs - Additional methods
-  async getAnalyticsMetrics(): Promise<any> {
-    const response = await apiService.request<any>("/api/v1/analytics/metrics");
-    return response.success ? response.data : null;
-  }
+  // Analytics APIs - Additional methods (getAnalyticsMetrics already defined above)
 
-  // Finance APIs
-  async getPayments(): Promise<any[]> {
-    const response = await apiService.request<any[]>("/api/finance/payments");
-    return response.success ? response.data : [];
-  }
+  // Finance APIs (getPayments already defined above)
 
   async getSubscriptions(): Promise<any[]> {
     const response = await apiService.request<any[]>("/api/v1/finance/subscriptions");
@@ -338,11 +342,7 @@ export class RealApiService {
     return response.success;
   }
 
-  // CRM APIs
-  async getCustomers(): Promise<any[]> {
-    const response = await apiService.request<any[]>("/api/crm/customers");
-    return response.success ? response.data : [];
-  }
+  // CRM APIs (getCustomers already defined above)
 
   async getTickets(): Promise<any[]> {
     const response = await apiService.request<any[]>("/api/crm/tickets");

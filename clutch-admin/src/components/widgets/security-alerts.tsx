@@ -47,59 +47,8 @@ export function SecurityAlerts({ className = '' }: SecurityAlertsProps) {
   React.useEffect(() => {
     const loadSecurityData = async () => {
       try {
-        // Simulate security alerts data
-        const alerts: SecurityAlert[] = [
-          {
-            id: '1',
-            type: 'Failed Login Attempts',
-            severity: 'high',
-            description: 'Multiple failed login attempts from suspicious IP',
-            timestamp: new Date(Date.now() - 1 * 60 * 60 * 1000).toISOString(),
-            source: '192.168.1.100',
-            status: 'active',
-            count: 15
-          },
-          {
-            id: '2',
-            type: 'Unusual Access Pattern',
-            severity: 'medium',
-            description: 'User accessing system outside normal hours',
-            timestamp: new Date(Date.now() - 2 * 60 * 60 * 1000).toISOString(),
-            source: 'admin@clutch.com',
-            status: 'investigating',
-            count: 3
-          },
-          {
-            id: '3',
-            type: 'Permission Escalation',
-            severity: 'critical',
-            description: 'Unauthorized permission change attempt',
-            timestamp: new Date(Date.now() - 3 * 60 * 60 * 1000).toISOString(),
-            source: 'fleet@provider.com',
-            status: 'active',
-            count: 1
-          },
-          {
-            id: '4',
-            type: 'Data Export Anomaly',
-            severity: 'high',
-            description: 'Large data export from unusual location',
-            timestamp: new Date(Date.now() - 4 * 60 * 60 * 1000).toISOString(),
-            source: '10.0.0.50',
-            status: 'resolved',
-            count: 1
-          },
-          {
-            id: '5',
-            type: 'API Rate Limit Exceeded',
-            severity: 'low',
-            description: 'API rate limit exceeded by client',
-            timestamp: new Date(Date.now() - 5 * 60 * 60 * 1000).toISOString(),
-            source: '203.0.113.10',
-            status: 'resolved',
-            count: 5
-          }
-        ];
+        // Get security alerts data from API
+        const alerts = await productionApi.getSecurityAlerts();
 
         const totalAlerts = alerts.length;
         const activeAlerts = alerts.filter(a => a.status === 'active').length;

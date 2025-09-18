@@ -5,7 +5,8 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { mockAPI, type FleetVehicle } from "@/lib/mock-api";
+import { realApi } from "@/lib/real-api";
+import { type FleetVehicle } from "@/lib/types";
 import { formatDate, formatRelativeTime } from "@/lib/utils";
 import { useAuth } from "@/contexts/auth-context";
 import { toast } from "sonner";
@@ -38,7 +39,7 @@ export default function FleetOverviewPage() {
   useEffect(() => {
     const loadFleetData = async () => {
       try {
-        const fleetData = await mockAPI.getFleetVehicles();
+        const fleetData = await realApi.getFleetVehicles();
         setVehicles(fleetData);
       } catch (error) {
         console.error("Failed to load fleet data:", error);

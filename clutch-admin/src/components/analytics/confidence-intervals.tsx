@@ -155,6 +155,7 @@ import {
   GitBranch as BranchIcon2
 } from 'lucide-react';
 import { formatCurrency, formatNumber } from '@/lib/utils';
+import { productionApi } from '@/lib/production-api';
 
 interface ConfidenceInterval {
   id: string;
@@ -207,249 +208,18 @@ export default function ConfidenceIntervals({ className }: ConfidenceIntervalsPr
   const [filterConfidence, setFilterConfidence] = useState<string>('all');
 
   useEffect(() => {
-    const loadConfidenceIntervalData = () => {
-      const mockIntervals: ConfidenceInterval[] = [
-        {
-          id: 'interval-001',
-          name: 'Monthly Recurring Revenue',
-          type: 'revenue',
-          metric: 'MRR',
-          currentValue: 2500000,
-          confidenceLevel: 85,
-          interval: {
-            lower: 2200000,
-            upper: 2800000,
-            width: 600000
-          },
-          scenarios: {
-            optimistic: 3200000,
-            realistic: 2500000,
-            pessimistic: 1800000
-          },
-          factors: [
-            {
-              name: 'Customer Acquisition Rate',
-              impact: 0.4,
-              confidence: 80,
-              trend: 'up'
-            },
-            {
-              name: 'Churn Rate',
-              impact: -0.3,
-              confidence: 75,
-              trend: 'down'
-            },
-            {
-              name: 'Average Revenue Per User',
-              impact: 0.2,
-              confidence: 90,
-              trend: 'up'
-            },
-            {
-              name: 'Market Conditions',
-              impact: 0.1,
-              confidence: 60,
-              trend: 'stable'
-            }
-          ],
-          historical: [
-            {
-              date: new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toISOString(),
-              value: 2400000,
-              confidence: 82
-            },
-            {
-              date: new Date(Date.now() - 60 * 24 * 60 * 60 * 1000).toISOString(),
-              value: 2300000,
-              confidence: 78
-            },
-            {
-              date: new Date(Date.now() - 90 * 24 * 60 * 60 * 1000).toISOString(),
-              value: 2200000,
-              confidence: 75
-            }
-          ],
-          predictions: [
-            {
-              date: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString(),
-              value: 2600000,
-              confidence: 85,
-              scenario: 'realistic'
-            },
-            {
-              date: new Date(Date.now() + 60 * 24 * 60 * 60 * 1000).toISOString(),
-              value: 2700000,
-              confidence: 80,
-              scenario: 'realistic'
-            },
-            {
-              date: new Date(Date.now() + 90 * 24 * 60 * 60 * 1000).toISOString(),
-              value: 2800000,
-              confidence: 75,
-              scenario: 'realistic'
-            }
-          ],
-          lastUpdated: new Date(Date.now() - 2 * 60 * 60 * 1000).toISOString(),
-          nextUpdate: new Date(Date.now() + 2 * 60 * 60 * 1000).toISOString()
-        },
-        {
-          id: 'interval-002',
-          name: 'User Growth Rate',
-          type: 'users',
-          metric: 'Monthly Active Users',
-          currentValue: 150000,
-          confidenceLevel: 78,
-          interval: {
-            lower: 130000,
-            upper: 170000,
-            width: 40000
-          },
-          scenarios: {
-            optimistic: 200000,
-            realistic: 150000,
-            pessimistic: 100000
-          },
-          factors: [
-            {
-              name: 'Marketing Campaign Effectiveness',
-              impact: 0.5,
-              confidence: 70,
-              trend: 'up'
-            },
-            {
-              name: 'User Retention Rate',
-              impact: 0.3,
-              confidence: 85,
-              trend: 'up'
-            },
-            {
-              name: 'Viral Coefficient',
-              impact: 0.2,
-              confidence: 60,
-              trend: 'stable'
-            }
-          ],
-          historical: [
-            {
-              date: new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toISOString(),
-              value: 145000,
-              confidence: 75
-            },
-            {
-              date: new Date(Date.now() - 60 * 24 * 60 * 60 * 1000).toISOString(),
-              value: 140000,
-              confidence: 72
-            },
-            {
-              date: new Date(Date.now() - 90 * 24 * 60 * 60 * 1000).toISOString(),
-              value: 135000,
-              confidence: 70
-            }
-          ],
-          predictions: [
-            {
-              date: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString(),
-              value: 155000,
-              confidence: 78,
-              scenario: 'realistic'
-            },
-            {
-              date: new Date(Date.now() + 60 * 24 * 60 * 60 * 1000).toISOString(),
-              value: 160000,
-              confidence: 75,
-              scenario: 'realistic'
-            },
-            {
-              date: new Date(Date.now() + 90 * 24 * 60 * 60 * 1000).toISOString(),
-              value: 165000,
-              confidence: 72,
-              scenario: 'realistic'
-            }
-          ],
-          lastUpdated: new Date(Date.now() - 4 * 60 * 60 * 1000).toISOString(),
-          nextUpdate: new Date(Date.now() + 4 * 60 * 60 * 1000).toISOString()
-        },
-        {
-          id: 'interval-003',
-          name: 'System Performance',
-          type: 'performance',
-          metric: 'Response Time (ms)',
-          currentValue: 200,
-          confidenceLevel: 90,
-          interval: {
-            lower: 150,
-            upper: 250,
-            width: 100
-          },
-          scenarios: {
-            optimistic: 120,
-            realistic: 200,
-            pessimistic: 300
-          },
-          factors: [
-            {
-              name: 'Server Load',
-              impact: 0.6,
-              confidence: 95,
-              trend: 'stable'
-            },
-            {
-              name: 'Database Performance',
-              impact: 0.3,
-              confidence: 85,
-              trend: 'up'
-            },
-            {
-              name: 'Network Latency',
-              impact: 0.1,
-              confidence: 70,
-              trend: 'stable'
-            }
-          ],
-          historical: [
-            {
-              date: new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toISOString(),
-              value: 195,
-              confidence: 88
-            },
-            {
-              date: new Date(Date.now() - 60 * 24 * 60 * 60 * 1000).toISOString(),
-              value: 190,
-              confidence: 85
-            },
-            {
-              date: new Date(Date.now() - 90 * 24 * 60 * 60 * 1000).toISOString(),
-              value: 185,
-              confidence: 82
-            }
-          ],
-          predictions: [
-            {
-              date: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString(),
-              value: 205,
-              confidence: 90,
-              scenario: 'realistic'
-            },
-            {
-              date: new Date(Date.now() + 60 * 24 * 60 * 60 * 1000).toISOString(),
-              value: 210,
-              confidence: 85,
-              scenario: 'realistic'
-            },
-            {
-              date: new Date(Date.now() + 90 * 24 * 60 * 60 * 1000).toISOString(),
-              value: 215,
-              confidence: 80,
-              scenario: 'realistic'
-            }
-          ],
-          lastUpdated: new Date(Date.now() - 6 * 60 * 60 * 1000).toISOString(),
-          nextUpdate: new Date(Date.now() + 6 * 60 * 60 * 1000).toISOString()
+    const loadConfidenceIntervalData = async () => {
+      try {
+        const data = await productionApi.getConfidenceIntervals();
+        setIntervals(data);
+        if (data.length > 0) {
+          setSelectedInterval(data[0]);
         }
-      ];
-
-      setIntervals(mockIntervals);
-      setSelectedInterval(mockIntervals[0]);
+      } catch (error) {
+        console.error('Failed to load confidence intervals:', error);
+        // Fallback to empty array if API fails
+        setIntervals([]);
+      }
     };
 
     loadConfidenceIntervalData();
