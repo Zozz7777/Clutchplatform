@@ -198,7 +198,7 @@ export default function DashboardPage() {
       {/* KPI Cards */}
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-5">
         {kpiMetrics.map((metric) => {
-          const Icon = iconMap[metric.icon as keyof typeof iconMap];
+          const Icon = iconMap[metric.icon as keyof typeof iconMap] || Activity;
           return (
             <Card key={metric.id} className="shadow-sm">
               <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">

@@ -771,6 +771,51 @@ export class RealApiService {
       { fallbackValue: [], showToast: false }
     )();
   }
+
+  // Widget-specific APIs
+  async getUpsellOpportunities(): Promise<any[]> {
+    return withErrorHandling(
+      async () => {
+        const response = await apiService.request<any[]>("/api/v1/analytics/upsell-opportunities");
+        return handleApiResponse(response, 'getUpsellOpportunities', []);
+      },
+      'getUpsellOpportunities',
+      { fallbackValue: [], showToast: false }
+    )();
+  }
+
+  async getEngagementHeatmap(): Promise<any> {
+    return withErrorHandling(
+      async () => {
+        const response = await apiService.request<any>("/api/v1/analytics/engagement-heatmap");
+        return handleApiResponse(response, 'getEngagementHeatmap', null);
+      },
+      'getEngagementHeatmap',
+      { fallbackValue: null, showToast: false }
+    )();
+  }
+
+  async getComplianceStatus(): Promise<any> {
+    return withErrorHandling(
+      async () => {
+        const response = await apiService.request<any>("/api/v1/compliance/status");
+        return handleApiResponse(response, 'getComplianceStatus', null);
+      },
+      'getComplianceStatus',
+      { fallbackValue: null, showToast: false }
+    )();
+  }
+
+  async getActiveSessions(): Promise<any> {
+    return withErrorHandling(
+      async () => {
+        const response = await apiService.request<any>("/api/v1/analytics/active-sessions");
+        return handleApiResponse(response, 'getActiveSessions', null);
+      },
+      'getActiveSessions',
+      { fallbackValue: null, showToast: false }
+    )();
+  }
 }
 
 export const realApi = new RealApiService();

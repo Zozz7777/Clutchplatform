@@ -55,57 +55,78 @@ export function AtRiskClients({ className = '' }: AtRiskClientsProps) {
           productionApi.getPayments()
         ]);
 
-        // Simulate at-risk clients data
-        const atRiskClients: AtRiskClient[] = [
-          {
-            clientId: '1',
-            clientName: 'Enterprise Client A',
-            riskScore: 85,
-            churnProbability: 75,
-            lastActivity: new Date(Date.now() - 21 * 24 * 60 * 60 * 1000).toISOString(),
-            daysSinceActivity: 21,
-            revenue: 45000,
-            riskFactors: ['Low usage', 'Support tickets', 'Contract expiring'],
-            segment: 'Enterprise',
-            status: 'critical'
-          },
-          {
-            clientId: '2',
-            clientName: 'SMB Client B',
-            riskScore: 72,
-            churnProbability: 60,
-            lastActivity: new Date(Date.now() - 14 * 24 * 60 * 60 * 1000).toISOString(),
-            daysSinceActivity: 14,
-            revenue: 12000,
-            riskFactors: ['Payment delays', 'Low satisfaction'],
-            segment: 'SMB',
-            status: 'high'
-          },
-          {
-            clientId: '3',
-            clientName: 'Individual Client C',
-            riskScore: 65,
-            churnProbability: 55,
-            lastActivity: new Date(Date.now() - 10 * 24 * 60 * 60 * 1000).toISOString(),
-            daysSinceActivity: 10,
-            revenue: 2500,
-            riskFactors: ['Inactive account', 'No recent payments'],
-            segment: 'Individual',
-            status: 'high'
-          },
-          {
-            clientId: '4',
-            clientName: 'Enterprise Client D',
-            riskScore: 58,
-            churnProbability: 45,
-            lastActivity: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString(),
-            daysSinceActivity: 7,
-            revenue: 32000,
-            riskFactors: ['Decreased usage'],
-            segment: 'Enterprise',
-            status: 'medium'
+        // Calculate at-risk clients from real data
+        const customersArray = Array.isArray(customers) ? customers : [];
+        const paymentsArray = Array.isArray(payments) ? payments : [];
+        
+        const atRiskClients: AtRiskClient[] = customersArray.map(customer => {
+          // Calculate days since last activity
+          const lastActivity = customer.lastActivity || customer.updatedAt || customer.createdAt;
+          const daysSinceActivity = lastActivity ? 
+            Math.floor((Date.now() - new Date(lastActivity).getTime()) / (1000 * 60 * 60 * 24)) : 0;
+          
+          // Calculate customer revenue from payments
+          const customerPayments = paymentsArray.filter(p => p.customerId === customer.id || p.userId === customer.id);
+          const revenue = customerPayments.reduce((sum, p) => sum + (p.amount || 0), 0);
+          
+          // Calculate risk score based on real factors
+          let riskScore = 0;
+          const riskFactors: string[] = [];
+          
+          // Activity-based risk
+          if (daysSinceActivity > 30) {
+            riskScore += 40;
+            riskFactors.push('Inactive for 30+ days');
+          } else if (daysSinceActivity > 14) {
+            riskScore += 20;
+            riskFactors.push('Inactive for 14+ days');
           }
-        ];
+          
+          // Payment-based risk
+          const recentPayments = customerPayments.filter(p => {
+            const paymentDate = new Date(p.createdAt || p.timestamp);
+            return (Date.now() - paymentDate.getTime()) < (30 * 24 * 60 * 60 * 1000);
+          });
+          
+          if (recentPayments.length === 0 && customerPayments.length > 0) {
+            riskScore += 30;
+            riskFactors.push('No recent payments');
+          }
+          
+          // Status-based risk
+          if (customer.status === 'inactive' || customer.status === 'suspended') {
+            riskScore += 35;
+            riskFactors.push('Account inactive');
+          }
+          
+          // Revenue-based risk (lower revenue = higher risk)
+          if (revenue < 1000) {
+            riskScore += 15;
+            riskFactors.push('Low revenue');
+          }
+          
+          // Determine status based on risk score
+          let status = 'low';
+          if (riskScore >= 80) status = 'critical';
+          else if (riskScore >= 60) status = 'high';
+          else if (riskScore >= 40) status = 'medium';
+          
+          // Only include clients with significant risk
+          if (riskScore < 30) return null;
+          
+          return {
+            clientId: customer.id || Math.random().toString(),
+            clientName: customer.name || customer.companyName || customer.email || 'Unknown Client',
+            riskScore: Math.min(riskScore, 100),
+            churnProbability: Math.min(riskScore * 0.8, 95),
+            lastActivity: lastActivity || new Date().toISOString(),
+            daysSinceActivity,
+            revenue,
+            riskFactors: riskFactors.length > 0 ? riskFactors : ['General risk factors'],
+            segment: customer.segment || customer.type || 'Unknown',
+            status
+          };
+        }).filter((client): client is AtRiskClient => client !== null).sort((a, b) => b.riskScore - a.riskScore).slice(0, 10);
 
         const totalAtRisk = atRiskClients.length;
         const totalRevenueAtRisk = atRiskClients.reduce((sum, client) => sum + client.revenue, 0);

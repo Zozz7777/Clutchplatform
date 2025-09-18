@@ -238,12 +238,12 @@ export function ChurnRiskCard({ className = '', showDetails = false }: ChurnRisk
         )}
 
         {/* Action Buttons */}
-        <div className="flex space-x-2 pt-4 border-t border-border">
-          <Button variant="outline" size="sm" className="flex-1 hover:bg-muted focus:ring-2 focus:ring-ring">
+        <div className="flex flex-col space-y-2 pt-4 border-t border-border">
+          <Button variant="outline" size="sm" className="w-full hover:bg-muted focus:ring-2 focus:ring-ring">
             <Mail className="h-4 w-4 mr-2" />
             Send Retention Campaign
           </Button>
-          <Button variant="outline" size="sm" className="flex-1 hover:bg-muted focus:ring-2 focus:ring-ring">
+          <Button variant="outline" size="sm" className="w-full hover:bg-muted focus:ring-2 focus:ring-ring">
             <Users className="h-4 w-4 mr-2" />
             View All Users
           </Button>
