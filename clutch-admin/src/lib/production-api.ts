@@ -307,6 +307,15 @@ export class ProductionApiService {
     }
   }
 
+  async acknowledgeAlert(alertId: string): Promise<any> {
+    try {
+      return await realApi.acknowledgeAlert(alertId);
+    } catch (error) {
+      console.error("Failed to acknowledge alert:", error);
+      throw new Error("Failed to acknowledge alert");
+    }
+  }
+
   async getApiPerformance(): Promise<any> {
     try {
       return await realApi.getApiPerformance();

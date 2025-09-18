@@ -813,7 +813,23 @@ export default function SystemHealthPage() {
               Close
             </Button>
             {selectedAlert?.status === "open" && (
-              <Button>
+              <Button onClick={async () => {
+                try {
+                  // Acknowledge the alert via API
+                  await productionApi.acknowledgeAlert(selectedAlert.id);
+                  // Update local state
+                  setAlerts(prev => prev.map(alert => 
+                    alert.id === selectedAlert.id 
+                      ? { ...alert, status: 'acknowledged' }
+                      : alert
+                  ));
+                  setShowAlertDialog(false);
+                  console.log('Alert acknowledged successfully');
+                } catch (error) {
+                  console.error('Failed to acknowledge alert:', error);
+                  alert('Failed to acknowledge alert. Please try again.');
+                }
+              }}>
                 Acknowledge Alert
               </Button>
             )}
