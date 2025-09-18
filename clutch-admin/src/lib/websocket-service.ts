@@ -63,8 +63,10 @@ class WebSocketService {
   private isConnecting = false;
   private messageHandlers: Map<string, ((data: any) => void)[]> = new Map();
   private connectionStatus: 'connecting' | 'connected' | 'disconnected' | 'error' = 'disconnected';
+  private baseUrl: string;
 
-  constructor() {
+  constructor(baseUrl?: string) {
+    this.baseUrl = baseUrl || process.env.NEXT_PUBLIC_API_BASE_URL || 'https://clutch-main-nk7x.onrender.com';
     // Only connect on client side
     if (typeof window !== 'undefined') {
       this.connect();
@@ -80,10 +82,10 @@ class WebSocketService {
     this.connectionStatus = 'connecting';
 
     try {
-      const wsUrl = process.env.NODE_ENV === 'production' 
-        ? 'wss://clutch-main-nk7x.onrender.com/ws'
-        : 'ws://localhost:5001/ws';
+      // Use the stored baseUrl
+      const wsUrl = this.baseUrl.replace('http://', 'ws://').replace('https://', 'wss://') + '/ws';
 
+      console.log('🔌 Attempting WebSocket connection to:', wsUrl);
       this.ws = new WebSocket(wsUrl);
 
       this.ws.onopen = () => {
@@ -111,10 +113,11 @@ class WebSocketService {
       };
 
       this.ws.onerror = (error) => {
-        console.error('WebSocket error:', error);
+        console.warn('WebSocket connection failed, will retry or use fallback:', error);
         this.connectionStatus = 'error';
         this.isConnecting = false;
-        toast.error('Real-time connection error');
+        // Don't show error toast immediately, let the reconnection logic handle it
+        this.attemptReconnect();
       };
 
     } catch (error) {
@@ -282,6 +285,33 @@ export const websocketService = (() => {
   }
   return new WebSocketService();
 })();
+
+// Export a function to create WebSocket service with custom baseUrl
+export const createWebSocketService = (baseUrl?: string) => {
+  if (typeof window === 'undefined') {
+    // Return a mock service for SSR
+    return {
+      subscribe: () => () => {},
+      send: () => {},
+      getConnectionStatus: () => 'disconnected',
+      isConnected: () => false,
+      disconnect: () => {},
+      subscribeToSystemHealth: () => () => {},
+      subscribeToPerformanceMetrics: () => () => {},
+      subscribeToNotifications: () => () => {},
+      subscribeToChatMessages: () => () => {},
+      subscribeToFleetUpdates: () => () => {},
+      subscribeToUserUpdates: () => () => {},
+      subscribeToPaymentUpdates: () => () => {},
+      sendChatMessage: () => {},
+      requestSystemHealth: () => {},
+      requestPerformanceMetrics: () => {},
+      requestFleetUpdates: () => {},
+      requestUserUpdates: () => {}
+    } as any;
+  }
+  return new WebSocketService(baseUrl);
+};
 
 // Export for use in components
 export default websocketService;

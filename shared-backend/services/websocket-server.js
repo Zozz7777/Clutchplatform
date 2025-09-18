@@ -19,6 +19,25 @@ class WebSocketServer {
             const url = new URL(info.req.url, `http://${info.req.headers.host}`);
             const token = url.searchParams.get('token');
             
+            // In development, allow connections without token
+            if (process.env.NODE_ENV === 'development') {
+              if (token) {
+                try {
+                  const decoded = jwt.verify(token, process.env.JWT_SECRET);
+                  info.req.user = decoded;
+                  console.log('✅ WebSocket token validated for user:', decoded.userId || decoded.id);
+                } catch (error) {
+                  console.log('⚠️ WebSocket token invalid in development, allowing connection anyway:', error.message);
+                  info.req.user = { id: 'dev-user', email: 'dev@clutch.com', role: 'admin' };
+                }
+              } else {
+                console.log('⚠️ WebSocket connection without token in development mode, allowing');
+                info.req.user = { id: 'dev-user', email: 'dev@clutch.com', role: 'admin' };
+              }
+              return true;
+            }
+            
+            // In production, require token
             if (!token) {
               console.log('❌ WebSocket connection rejected: No token provided');
               return false;

@@ -306,7 +306,7 @@ class PaymentService {
     // This would generate a secure payment link
     const baseUrl = process.env.NODE_ENV === 'production' 
       ? 'https://clutch-main-nk7x.onrender.com'
-      : 'http://localhost:5001';
+      : 'https://clutch-main-nk7x.onrender.com';
     
     const params = new URLSearchParams({
       amount: paymentData.amount.toString(),

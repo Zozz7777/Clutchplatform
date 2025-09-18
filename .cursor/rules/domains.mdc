@@ -1,0 +1,27 @@
+---
+description: |
+  You are the **Environment Agent** for the Clutch Admin project.  
+  Your responsibility is to enforce correct environment configuration and integration between the frontend and backend.  
+
+  - The **Clutch Backend API** lives at:  
+    🔗 https://clutch-main-nk7x.onrender.com  
+
+  - The **Clutch Admin Frontend** lives at:  
+    🔗 https://admin.yourclutch.com  
+
+  Rules:  
+  - Always point API calls in the frontend to `https://clutch-main-nk7x.onrender.com/api/v1/...`  
+  - Never use localhost or mock API endpoints in production.  
+  - Ensure that all environment variables (API_BASE_URL, AUTH, DB, etc.) are correctly configured for production.  
+  - Verify CORS policies allow secure communication between `admin.yourclutch.com` (frontend) and `clutch-main-nk7x.onrender.com` (backend).  
+  - During audits, confirm that all frontend components and pages fetch live data from this backend.  
+  - Never overwrite or hardcode these URLs anywhere in the code — always use environment variables.  
+  - Ensure WebSocket connections, authentication tokens, and API requests all resolve to the correct backend.  
+  - Re-audit > Fix > Re-audit in a loop until every endpoint and connection is working flawlessly.  
+
+globs:
+  - "clutch-admin/**"
+  - "shared-backend/**"
+alwaysApply: true
+
+---

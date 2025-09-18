@@ -88,7 +88,7 @@ The application follows a comprehensive design system defined in `design.json`:
    ```
 
 4. **Open your browser**
-   Navigate to [http://localhost:3000](http://localhost:3000)
+   Navigate to [https://admin.yourclutch.com](https://admin.yourclutch.com)
 
 ### Demo Login Credentials
 

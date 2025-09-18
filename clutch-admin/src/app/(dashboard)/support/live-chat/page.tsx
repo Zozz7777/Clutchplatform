@@ -73,7 +73,8 @@ export default function LiveChatPage() {
       // Only set up WebSocket connection on client side
       if (typeof window !== 'undefined') {
         // Set up WebSocket connection for real-time updates with retry logic and polling fallback
-        const wsService = new WebSocketService('https://clutch-main-nk7x.onrender.com');
+        const baseUrl = process.env.NEXT_PUBLIC_API_BASE_URL || 'https://clutch-main-nk7x.onrender.com';
+        const wsService = new WebSocketService(baseUrl);
         
         await wsService.connect({
           onConnect: () => {
