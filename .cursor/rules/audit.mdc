@@ -1,0 +1,31 @@
+---
+description: >
+  Deployment Readiness Audit Rule for Clutch Admin frontend and shared backend.
+  Before approving any production deployment, run a complete readiness audit.
+  The audit must check both frontend and backend builds, API integrations,
+  authentication, design compliance, error handling, and performance metrics.
+
+globs:
+  - "clutch-admin/**"
+  - "clutch-shared-backend/**"
+alwaysApply: true
+
+rules:
+  - Always build both frontend (Next.js) and backend (Node/Express) to confirm no errors/warnings.
+  - Verify API_BASE_URL and environment variables are production-ready.
+  - Check authentication & authorization flows (JWT, refresh tokens, RBAC).
+  - Ensure **no mock data** exists — only live MongoDB/Atlas endpoints.
+  - Audit **frontend-backend integration**: all routes and endpoints must match.
+  - Run a **design audit**: compare every page and component against `design.json`.
+    Fix any mismatches in spacing, border radius, typography weights, shadows, hover states, and dark mode.
+  - Verify error handling (frontend error boundaries, backend middleware, retry logic).
+  - Confirm monitoring and logging are active (Winston, health checks).
+  - Remove all `console.log` statements in production code.
+  - Verify WebSockets work or fallback gracefully.
+  - Complete any **TODO endpoints** (notifications, etc.).
+  - Measure and confirm performance metrics (bundle size, build time, API latency).
+  - At the end of the audit, provide a **deployment readiness verdict**:
+    ✅ GO, ⚠️ Needs Fixes, or ❌ Blocked.
+
+
+---

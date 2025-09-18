@@ -146,35 +146,35 @@ export default function ComplianceDashboard() {
 
   const getStandardColor = (standard: string) => {
     switch (standard) {
-      case 'SOC2': return 'bg-blue-100 text-blue-800';
-      case 'GDPR': return 'bg-green-100 text-green-800';
-      case 'ISO27001': return 'bg-purple-100 text-purple-800';
-      case 'HIPAA': return 'bg-red-100 text-red-800';
-      case 'PCI-DSS': return 'bg-orange-100 text-orange-800';
-      case 'CCPA': return 'bg-yellow-100 text-yellow-800';
-      case 'SOX': return 'bg-indigo-100 text-indigo-800';
-      default: return 'bg-gray-100 text-gray-800';
+      case 'SOC2': return 'bg-info/10 text-info';
+      case 'GDPR': return 'bg-success/10 text-success';
+      case 'ISO27001': return 'bg-primary/10 text-primary';
+      case 'HIPAA': return 'bg-destructive/10 text-destructive';
+      case 'PCI-DSS': return 'bg-warning/10 text-warning';
+      case 'CCPA': return 'bg-warning/10 text-warning';
+      case 'SOX': return 'bg-primary/10 text-primary';
+      default: return 'bg-muted text-muted-foreground';
     }
   };
 
   const getStatusColor = (status: string) => {
     switch (status) {
-      case 'compliant': return 'bg-green-100 text-green-800';
-      case 'non_compliant': return 'bg-red-100 text-red-800';
-      case 'in_progress': return 'bg-yellow-100 text-yellow-800';
-      case 'pending': return 'bg-blue-100 text-blue-800';
-      case 'failed': return 'bg-red-100 text-red-800';
-      default: return 'bg-gray-100 text-gray-800';
+      case 'compliant': return 'bg-success/10 text-success';
+      case 'non_compliant': return 'bg-destructive/10 text-destructive';
+      case 'in_progress': return 'bg-warning/10 text-warning';
+      case 'pending': return 'bg-info/10 text-info';
+      case 'failed': return 'bg-destructive/10 text-destructive';
+      default: return 'bg-muted text-muted-foreground';
     }
   };
 
   const getSeverityColor = (severity: string) => {
     switch (severity) {
-      case 'low': return 'bg-green-100 text-green-800';
-      case 'medium': return 'bg-yellow-100 text-yellow-800';
-      case 'high': return 'bg-orange-100 text-orange-800';
-      case 'critical': return 'bg-red-100 text-red-800';
-      default: return 'bg-gray-100 text-gray-800';
+      case 'low': return 'bg-success/10 text-success';
+      case 'medium': return 'bg-warning/10 text-warning';
+      case 'high': return 'bg-warning/10 text-warning';
+      case 'critical': return 'bg-destructive/10 text-destructive';
+      default: return 'bg-muted text-muted-foreground';
     }
   };
 
@@ -232,26 +232,26 @@ export default function ComplianceDashboard() {
       <CardContent className="space-y-6">
         {/* Compliance Summary */}
         <div className="grid grid-cols-4 gap-4">
-          <div className="text-center p-3 bg-blue-50 rounded-lg">
-            <div className="text-2xl font-bold text-blue-600">{overallScore}%</div>
+          <div className="text-center p-3 bg-info/10 rounded-[0.625rem]">
+            <div className="text-2xl font-bold text-info">{overallScore}%</div>
             <div className="text-sm text-muted-foreground">Overall Score</div>
           </div>
-          <div className="text-center p-3 bg-green-50 rounded-lg">
-            <div className="text-2xl font-bold text-green-600">{compliantItems}</div>
+          <div className="text-center p-3 bg-success/10 rounded-[0.625rem]">
+            <div className="text-2xl font-bold text-success">{compliantItems}</div>
             <div className="text-sm text-muted-foreground">Compliant Standards</div>
           </div>
-          <div className="text-center p-3 bg-orange-50 rounded-lg">
-            <div className="text-2xl font-bold text-orange-600">{pendingRequirements}</div>
+          <div className="text-center p-3 bg-warning/10 rounded-[0.625rem]">
+            <div className="text-2xl font-bold text-warning">{pendingRequirements}</div>
             <div className="text-sm text-muted-foreground">Pending Requirements</div>
           </div>
-          <div className="text-center p-3 bg-red-50 rounded-lg">
-            <div className="text-2xl font-bold text-red-600">{criticalIssues}</div>
+          <div className="text-center p-3 bg-destructive/10 rounded-[0.625rem]">
+            <div className="text-2xl font-bold text-destructive">{criticalIssues}</div>
             <div className="text-sm text-muted-foreground">Critical Issues</div>
           </div>
         </div>
 
         {/* Compliance Overview */}
-        <div className="p-4 bg-gradient-to-r from-blue-50 to-green-50 rounded-lg">
+        <div className="p-4 bg-gradient-to-r from-info/10 to-success/10 rounded-[0.625rem]">
           <div className="flex items-center justify-between">
             <div>
               <h4 className="font-medium">Compliance Status Overview</h4>
@@ -260,7 +260,7 @@ export default function ComplianceDashboard() {
               </p>
             </div>
             <div className="text-right">
-              <div className="text-3xl font-bold text-blue-600">
+              <div className="text-3xl font-bold text-info">
                 {complianceItems.length}
               </div>
               <div className="text-sm text-muted-foreground">standards tracked</div>
@@ -305,8 +305,8 @@ export default function ComplianceDashboard() {
             {filteredItems.map((item) => (
               <div
                 key={item.id}
-                className={`p-3 border rounded-lg cursor-pointer transition-colors ${
-                  selectedItem?.id === item.id ? 'border-blue-500 bg-blue-50' : 'hover:bg-gray-50'
+                className={`p-3 border rounded-[0.625rem] cursor-pointer transition-colors ${
+                  selectedItem?.id === item.id ? 'border-primary bg-primary/10' : 'hover:bg-muted/50'
                 }`}
                 onClick={() => setSelectedItem(item)}
               >

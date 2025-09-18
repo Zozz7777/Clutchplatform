@@ -1,3 +1,8 @@
+/**
+ * Build-safe WebSocket service that handles SSR and build-time issues
+ * This version prevents WebSocket connection warnings during build
+ */
+
 import { apiService } from "./api";
 
 export interface WebSocketMessage {
@@ -18,7 +23,7 @@ export interface WebSocketEventHandlers {
   onAnalyticsUpdate?: (data: any) => void;
 }
 
-export class WebSocketService {
+export class SafeWebSocketService {
   private ws: WebSocket | null = null;
   private url: string;
   private token: string | null = null;
@@ -31,8 +36,17 @@ export class WebSocketService {
   private isPolling = false;
   private pollingIntervalMs = 30000; // 30 seconds
   private lastPollTime = 0;
+  private isClient = false;
 
   constructor(baseURL: string) {
+    // Check if we're in a browser environment
+    this.isClient = typeof window !== 'undefined';
+    
+    if (!this.isClient) {
+      console.log('🔌 WebSocket service initialized in SSR mode - WebSocket disabled');
+      return;
+    }
+
     // Handle WebSocket URL construction properly
     if (baseURL.includes('https://')) {
       this.url = baseURL.replace('https://', 'wss://') + '/ws';
@@ -45,6 +59,14 @@ export class WebSocketService {
 
   connect(handlers: WebSocketEventHandlers = {}): Promise<void> {
     return new Promise((resolve, reject) => {
+      // Skip WebSocket connection during SSR or build
+      if (!this.isClient) {
+        console.log('🔌 Skipping WebSocket connection in SSR mode');
+        this.startPollingFallback(handlers);
+        resolve();
+        return;
+      }
+
       if (this.ws?.readyState === WebSocket.OPEN) {
         console.log('🔌 WebSocket already connected');
         resolve();
@@ -77,8 +99,9 @@ export class WebSocketService {
 
         if (!this.token) {
           this.isConnecting = false;
-          console.log('🔌 No token found, skipping WebSocket connection');
-          reject(new Error('No authentication token available'));
+          console.log('🔌 No token found, starting polling fallback');
+          this.startPollingFallback(handlers);
+          resolve();
           return;
         }
 
@@ -95,12 +118,13 @@ export class WebSocketService {
         // Set connection timeout
         const connectionTimeout = setTimeout(() => {
           if (this.ws?.readyState === WebSocket.CONNECTING) {
-            console.log('🔌 WebSocket connection timeout');
+            console.log('🔌 WebSocket connection timeout, falling back to polling');
             this.ws.close();
             this.isConnecting = false;
-            reject(new Error('WebSocket connection timeout'));
+            this.startPollingFallback(handlers);
+            resolve();
           }
-        }, 15000); // 15 second timeout
+        }, 10000); // 10 second timeout
 
         this.ws.onopen = () => {
           console.log('🔌 WebSocket connected successfully');
@@ -147,23 +171,24 @@ export class WebSocketService {
           this.eventHandlers.onDisconnect?.();
           
           // Start polling fallback when WebSocket disconnects
-          this.checkConnectionAndFallback();
+          this.startPollingFallback(handlers);
           
           // Only attempt reconnect for unexpected disconnections and if we haven't exceeded max attempts
           if (!event.wasClean && event.code !== 1000 && event.code !== 1001 && this.reconnectAttempts < this.maxReconnectAttempts) {
             console.log('🔌 Scheduling reconnect due to unexpected disconnection');
             this.scheduleReconnect();
           } else if (event.code === 1001) {
-            console.log('🔌 WebSocket closed by server (1001), not attempting reconnect');
+            console.log('🔌 WebSocket closed by server (1001), using polling fallback');
+            this.startPollingFallback(handlers);
           } else if (this.reconnectAttempts >= this.maxReconnectAttempts) {
             console.log('🔌 Max reconnect attempts reached, using polling fallback');
-            this.startPolling();
+            this.startPollingFallback(handlers);
           }
         };
 
         this.ws.onerror = (error) => {
           clearTimeout(connectionTimeout);
-          console.error('🔌 WebSocket error:', {
+          console.error('🔌 WebSocket error, falling back to polling:', {
             error,
             readyState: this.ws?.readyState,
             url: wsUrl.replace(this.token || '', '[TOKEN]'),
@@ -172,12 +197,15 @@ export class WebSocketService {
           });
           this.isConnecting = false;
           this.eventHandlers.onError?.(error);
-          reject(error);
+          this.startPollingFallback(handlers);
+          resolve(); // Resolve instead of reject to prevent unhandled promise rejection
         };
 
       } catch (error) {
         this.isConnecting = false;
-        reject(error);
+        console.error('🔌 WebSocket connection failed, falling back to polling:', error);
+        this.startPollingFallback(handlers);
+        resolve(); // Resolve instead of reject to prevent unhandled promise rejection
       }
     });
   }
@@ -227,67 +255,15 @@ export class WebSocketService {
     }, delay);
   }
 
-  send(message: any): boolean {
-    if (this.ws?.readyState === WebSocket.OPEN) {
-      this.ws.send(JSON.stringify(message));
-      return true;
-    }
-    return false;
-  }
-
-  disconnect() {
-    if (this.ws) {
-      this.ws.close(1000, 'Client disconnect');
-      this.ws = null;
-    }
-    this.reconnectAttempts = this.maxReconnectAttempts; // Prevent auto-reconnect
-    this.stopPolling(); // Stop polling fallback
-  }
-
-  isConnected(): boolean {
-    return this.ws?.readyState === WebSocket.OPEN;
-  }
-
-  isUsingPollingFallback(): boolean {
-    return this.isPolling;
-  }
-
-  getConnectionInfo(): { connected: boolean; polling: boolean; state: string } {
-    return {
-      connected: this.isConnected(),
-      polling: this.isPolling,
-      state: this.getConnectionState()
-    };
-  }
-
-  getConnectionState(): string {
-    if (!this.ws) return 'disconnected';
-    
-    switch (this.ws.readyState) {
-      case WebSocket.CONNECTING:
-        return 'connecting';
-      case WebSocket.OPEN:
-        return 'connected';
-      case WebSocket.CLOSING:
-        return 'closing';
-      case WebSocket.CLOSED:
-        return 'closed';
-      default:
-        return 'unknown';
-    }
-  }
-
-  /**
-   * Start polling fallback when WebSocket is not available
-   */
-  private startPolling(): void {
-    if (this.isPolling || this.isConnected()) {
+  private startPollingFallback(handlers: WebSocketEventHandlers) {
+    if (this.isPolling) {
       return;
     }
 
     console.log('🔄 Starting polling fallback for WebSocket');
     this.isPolling = true;
     this.lastPollTime = Date.now();
+    this.eventHandlers = handlers;
 
     this.pollingInterval = setInterval(async () => {
       try {
@@ -301,10 +277,7 @@ export class WebSocketService {
     this.pollForUpdates().catch(console.error);
   }
 
-  /**
-   * Stop polling fallback
-   */
-  private stopPolling(): void {
+  private stopPolling() {
     if (this.pollingInterval) {
       clearInterval(this.pollingInterval);
       this.pollingInterval = null;
@@ -313,11 +286,8 @@ export class WebSocketService {
     console.log('🔄 Stopped polling fallback');
   }
 
-  /**
-   * Poll for updates using HTTP API
-   */
   private async pollForUpdates(): Promise<void> {
-    if (!this.token) {
+    if (!this.token || !this.isClient) {
       return;
     }
 
@@ -377,38 +347,60 @@ export class WebSocketService {
     }
   }
 
-  /**
-   * Check if WebSocket is available and start fallback if needed
-   */
-  private checkConnectionAndFallback(): void {
-    if (!this.isConnected() && !this.isPolling) {
-      console.log('🔌 WebSocket not connected, starting polling fallback');
-      this.startPolling();
-    } else if (this.isConnected() && this.isPolling) {
-      console.log('🔌 WebSocket connected, stopping polling fallback');
-      this.stopPolling();
+  send(message: any): boolean {
+    if (this.ws?.readyState === WebSocket.OPEN) {
+      this.ws.send(JSON.stringify(message));
+      return true;
+    }
+    return false;
+  }
+
+  disconnect() {
+    if (this.ws) {
+      this.ws.close(1000, 'Client disconnect');
+      this.ws = null;
+    }
+    this.reconnectAttempts = this.maxReconnectAttempts; // Prevent auto-reconnect
+    this.stopPolling(); // Stop polling fallback
+  }
+
+  isConnected(): boolean {
+    return this.ws?.readyState === WebSocket.OPEN;
+  }
+
+  isUsingPollingFallback(): boolean {
+    return this.isPolling;
+  }
+
+  getConnectionInfo(): { connected: boolean; polling: boolean; state: string; isClient: boolean } {
+    return {
+      connected: this.isConnected(),
+      polling: this.isPolling,
+      state: this.getConnectionState(),
+      isClient: this.isClient
+    };
+  }
+
+  getConnectionState(): string {
+    if (!this.isClient) return 'ssr';
+    if (!this.ws) return 'disconnected';
+    
+    switch (this.ws.readyState) {
+      case WebSocket.CONNECTING:
+        return 'connecting';
+      case WebSocket.OPEN:
+        return 'connected';
+      case WebSocket.CLOSING:
+        return 'closing';
+      case WebSocket.CLOSED:
+        return 'closed';
+      default:
+        return 'unknown';
     }
   }
 }
 
-// Create singleton instance with build-time safety
-export const websocketService = (() => {
-  // Check if we're in a browser environment
-  if (typeof window === 'undefined') {
-    console.log('🔌 WebSocket service initialized in SSR mode - using safe fallback');
-    // Return a mock service for SSR
-    return {
-      connect: () => Promise.resolve(),
-      disconnect: () => {},
-      send: () => false,
-      isConnected: () => false,
-      isUsingPollingFallback: () => true,
-      getConnectionInfo: () => ({ connected: false, polling: true, state: 'ssr' }),
-      getConnectionState: () => 'ssr'
-    } as any;
-  }
-  
-  return new WebSocketService(
-    process.env.NEXT_PUBLIC_API_BASE_URL || 'https://clutch-main-nk7x.onrender.com'
-  );
-})();
+// Create singleton instance
+export const safeWebSocketService = new SafeWebSocketService(
+  process.env.NEXT_PUBLIC_API_BASE_URL || 'https://clutch-main-nk7x.onrender.com'
+);

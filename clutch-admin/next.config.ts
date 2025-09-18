@@ -9,6 +9,27 @@ const nextConfig: NextConfig = {
   eslint: {
     ignoreDuringBuilds: true,
   },
+  // Handle WebSocket warnings during build
+  webpack: (config, { isServer }) => {
+    if (isServer) {
+      // Suppress WebSocket warnings during server-side rendering
+      config.externals = config.externals || [];
+      config.externals.push({
+        'ws': 'commonjs ws',
+      });
+    }
+    
+    // Add fallback for WebSocket in browser builds
+    config.resolve.fallback = {
+      ...config.resolve.fallback,
+      'ws': false,
+      'net': false,
+      'tls': false,
+      'crypto': false,
+    };
+    
+    return config;
+  },
   images: {
     domains: ['admin.yourclutch.com', 'clutch-main-nk7x.onrender.com'],
     unoptimized: true, // Disable image optimization for static exports

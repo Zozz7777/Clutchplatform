@@ -450,58 +450,58 @@ export default function ZeroTrustAuditCard() {
 
   const getPolicyTypeColor = (type: string) => {
     switch (type) {
-      case 'access_control': return 'bg-blue-100 text-blue-800';
-      case 'device_trust': return 'bg-green-100 text-green-800';
-      case 'network_segmentation': return 'bg-purple-100 text-purple-800';
-      case 'data_protection': return 'bg-red-100 text-red-800';
-      case 'identity_verification': return 'bg-yellow-100 text-yellow-800';
-      case 'behavioral_analysis': return 'bg-orange-100 text-orange-800';
-      default: return 'bg-gray-100 text-gray-800';
+      case 'access_control': return 'bg-info/10 text-info';
+      case 'device_trust': return 'bg-success/10 text-success';
+      case 'network_segmentation': return 'bg-primary/10 text-primary';
+      case 'data_protection': return 'bg-destructive/10 text-destructive';
+      case 'identity_verification': return 'bg-warning/10 text-warning';
+      case 'behavioral_analysis': return 'bg-warning/10 text-warning';
+      default: return 'bg-muted text-muted-foreground';
     }
   };
 
   const getStatusColor = (status: string) => {
     switch (status) {
-      case 'active': return 'bg-green-100 text-green-800';
-      case 'inactive': return 'bg-gray-100 text-gray-800';
-      case 'testing': return 'bg-yellow-100 text-yellow-800';
-      case 'failed': return 'bg-red-100 text-red-800';
-      case 'detected': return 'bg-red-100 text-red-800';
-      case 'investigating': return 'bg-yellow-100 text-yellow-800';
-      case 'resolved': return 'bg-green-100 text-green-800';
-      case 'false_positive': return 'bg-gray-100 text-gray-800';
-      default: return 'bg-gray-100 text-gray-800';
+      case 'active': return 'bg-success/10 text-success';
+      case 'inactive': return 'bg-muted text-muted-foreground';
+      case 'testing': return 'bg-warning/10 text-warning';
+      case 'failed': return 'bg-destructive/10 text-destructive';
+      case 'detected': return 'bg-destructive/10 text-destructive';
+      case 'investigating': return 'bg-warning/10 text-warning';
+      case 'resolved': return 'bg-success/10 text-success';
+      case 'false_positive': return 'bg-muted text-muted-foreground';
+      default: return 'bg-muted text-muted-foreground';
     }
   };
 
   const getSeverityColor = (severity: string) => {
     switch (severity) {
-      case 'low': return 'bg-green-100 text-green-800';
-      case 'medium': return 'bg-yellow-100 text-yellow-800';
-      case 'high': return 'bg-orange-100 text-orange-800';
-      case 'critical': return 'bg-red-100 text-red-800';
-      default: return 'bg-gray-100 text-gray-800';
+      case 'low': return 'bg-success/10 text-success';
+      case 'medium': return 'bg-warning/10 text-warning';
+      case 'high': return 'bg-warning/10 text-warning';
+      case 'critical': return 'bg-destructive/10 text-destructive';
+      default: return 'bg-muted text-muted-foreground';
     }
   };
 
   const getEnforcementColor = (enforcement: string) => {
     switch (enforcement) {
-      case 'strict': return 'bg-red-100 text-red-800';
-      case 'moderate': return 'bg-yellow-100 text-yellow-800';
-      case 'lenient': return 'bg-green-100 text-green-800';
-      default: return 'bg-gray-100 text-gray-800';
+      case 'strict': return 'bg-destructive/10 text-destructive';
+      case 'moderate': return 'bg-warning/10 text-warning';
+      case 'lenient': return 'bg-success/10 text-success';
+      default: return 'bg-muted text-muted-foreground';
     }
   };
 
   const getAnomalyTypeColor = (type: string) => {
     switch (type) {
-      case 'unusual_location': return 'bg-blue-100 text-blue-800';
-      case 'suspicious_device': return 'bg-orange-100 text-orange-800';
-      case 'abnormal_behavior': return 'bg-purple-100 text-purple-800';
-      case 'privilege_escalation': return 'bg-red-100 text-red-800';
-      case 'data_exfiltration': return 'bg-red-100 text-red-800';
-      case 'network_anomaly': return 'bg-yellow-100 text-yellow-800';
-      default: return 'bg-gray-100 text-gray-800';
+      case 'unusual_location': return 'bg-info/10 text-info';
+      case 'suspicious_device': return 'bg-warning/10 text-warning';
+      case 'abnormal_behavior': return 'bg-primary/10 text-primary';
+      case 'privilege_escalation': return 'bg-destructive/10 text-destructive';
+      case 'data_exfiltration': return 'bg-destructive/10 text-destructive';
+      case 'network_anomaly': return 'bg-warning/10 text-warning';
+      default: return 'bg-muted text-muted-foreground';
     }
   };
 
@@ -555,24 +555,24 @@ export default function ZeroTrustAuditCard() {
       <CardContent className="space-y-6">
         {/* Zero-Trust Metrics */}
         {metrics && (
-          <div className="grid grid-cols-4 gap-4">
-            <div className="text-center p-3 bg-blue-50 rounded-lg">
-              <div className="text-2xl font-bold text-blue-600">{metrics.overallScore}%</div>
-              <div className="text-sm text-muted-foreground">Overall Score</div>
-            </div>
-            <div className="text-center p-3 bg-green-50 rounded-lg">
-              <div className="text-2xl font-bold text-green-600">{metrics.activePolicies}</div>
-              <div className="text-sm text-muted-foreground">Active Policies</div>
-            </div>
-            <div className="text-center p-3 bg-orange-50 rounded-lg">
-              <div className="text-2xl font-bold text-orange-600">{metrics.totalAnomalies}</div>
-              <div className="text-sm text-muted-foreground">Total Anomalies</div>
-            </div>
-            <div className="text-center p-3 bg-red-50 rounded-lg">
-              <div className="text-2xl font-bold text-red-600">{metrics.criticalAnomalies}</div>
-              <div className="text-sm text-muted-foreground">Critical Anomalies</div>
-            </div>
+        <div className="grid grid-cols-4 gap-4">
+          <div className="text-center p-3 bg-info/10 rounded-[0.625rem]">
+            <div className="text-2xl font-bold text-info">{metrics.overallScore}%</div>
+            <div className="text-sm text-muted-foreground">Overall Score</div>
           </div>
+          <div className="text-center p-3 bg-success/10 rounded-[0.625rem]">
+            <div className="text-2xl font-bold text-success">{metrics.activePolicies}</div>
+            <div className="text-sm text-muted-foreground">Active Policies</div>
+          </div>
+          <div className="text-center p-3 bg-warning/10 rounded-[0.625rem]">
+            <div className="text-2xl font-bold text-warning">{metrics.totalAnomalies}</div>
+            <div className="text-sm text-muted-foreground">Total Anomalies</div>
+          </div>
+          <div className="text-center p-3 bg-destructive/10 rounded-[0.625rem]">
+            <div className="text-2xl font-bold text-destructive">{metrics.criticalAnomalies}</div>
+            <div className="text-sm text-muted-foreground">Critical Anomalies</div>
+          </div>
+        </div>
         )}
 
         {/* Zero-Trust Overview */}

@@ -341,37 +341,37 @@ export default function GlobalSecurityCenter() {
 
   const getEventTypeColor = (type: string) => {
     switch (type) {
-      case 'login': return 'bg-green-100 text-green-800';
-      case 'logout': return 'bg-blue-100 text-blue-800';
-      case 'failed_login': return 'bg-red-100 text-red-800';
-      case 'permission_change': return 'bg-yellow-100 text-yellow-800';
-      case 'data_access': return 'bg-purple-100 text-purple-800';
-      case 'suspicious_activity': return 'bg-red-100 text-red-800';
-      case 'admin_action': return 'bg-orange-100 text-orange-800';
-      default: return 'bg-gray-100 text-gray-800';
+      case 'login': return 'bg-success/10 text-success';
+      case 'logout': return 'bg-info/10 text-info';
+      case 'failed_login': return 'bg-destructive/10 text-destructive';
+      case 'permission_change': return 'bg-warning/10 text-warning';
+      case 'data_access': return 'bg-primary/10 text-primary';
+      case 'suspicious_activity': return 'bg-destructive/10 text-destructive';
+      case 'admin_action': return 'bg-warning/10 text-warning';
+      default: return 'bg-muted text-muted-foreground';
     }
   };
 
   const getSeverityColor = (severity: string) => {
     switch (severity) {
-      case 'low': return 'bg-green-100 text-green-800';
-      case 'medium': return 'bg-yellow-100 text-yellow-800';
-      case 'high': return 'bg-orange-100 text-orange-800';
-      case 'critical': return 'bg-red-100 text-red-800';
-      default: return 'bg-gray-100 text-gray-800';
+      case 'low': return 'bg-success/10 text-success';
+      case 'medium': return 'bg-warning/10 text-warning';
+      case 'high': return 'bg-warning/10 text-warning';
+      case 'critical': return 'bg-destructive/10 text-destructive';
+      default: return 'bg-muted text-muted-foreground';
     }
   };
 
   const getStatusColor = (status: string) => {
     switch (status) {
-      case 'active': return 'bg-green-100 text-green-800';
-      case 'investigating': return 'bg-yellow-100 text-yellow-800';
-      case 'resolved': return 'bg-blue-100 text-blue-800';
-      case 'false_positive': return 'bg-gray-100 text-gray-800';
-      case 'suspicious': return 'bg-red-100 text-red-800';
-      case 'expired': return 'bg-gray-100 text-gray-800';
-      case 'terminated': return 'bg-red-100 text-red-800';
-      default: return 'bg-gray-100 text-gray-800';
+      case 'active': return 'bg-success/10 text-success';
+      case 'investigating': return 'bg-warning/10 text-warning';
+      case 'resolved': return 'bg-info/10 text-info';
+      case 'false_positive': return 'bg-muted text-muted-foreground';
+      case 'suspicious': return 'bg-destructive/10 text-destructive';
+      case 'expired': return 'bg-muted text-muted-foreground';
+      case 'terminated': return 'bg-destructive/10 text-destructive';
+      default: return 'bg-muted text-muted-foreground';
     }
   };
 
@@ -433,29 +433,29 @@ export default function GlobalSecurityCenter() {
       <CardContent className="space-y-6">
         {/* Security Metrics */}
         {metrics && (
-          <div className="grid grid-cols-4 gap-4">
-            <div className="text-center p-3 bg-blue-50 rounded-lg">
-              <div className="text-2xl font-bold text-blue-600">{metrics.totalEvents}</div>
-              <div className="text-sm text-muted-foreground">Total Events</div>
-            </div>
-            <div className="text-center p-3 bg-green-50 rounded-lg">
-              <div className="text-2xl font-bold text-green-600">{metrics.activeSessions}</div>
-              <div className="text-sm text-muted-foreground">Active Sessions</div>
-            </div>
-            <div className="text-center p-3 bg-orange-50 rounded-lg">
-              <div className="text-2xl font-bold text-orange-600">{metrics.suspiciousActivities}</div>
-              <div className="text-sm text-muted-foreground">Suspicious Activities</div>
-            </div>
-            <div className="text-center p-3 bg-red-50 rounded-lg">
-              <div className="text-2xl font-bold text-red-600">{metrics.failedLogins}</div>
-              <div className="text-sm text-muted-foreground">Failed Logins</div>
-            </div>
+        <div className="grid grid-cols-4 gap-4">
+          <div className="text-center p-3 bg-info/10 rounded-[0.625rem]">
+            <div className="text-2xl font-bold text-info">{metrics.totalEvents}</div>
+            <div className="text-sm text-muted-foreground">Total Events</div>
           </div>
+          <div className="text-center p-3 bg-success/10 rounded-[0.625rem]">
+            <div className="text-2xl font-bold text-success">{metrics.activeSessions}</div>
+            <div className="text-sm text-muted-foreground">Active Sessions</div>
+          </div>
+          <div className="text-center p-3 bg-warning/10 rounded-[0.625rem]">
+            <div className="text-2xl font-bold text-warning">{metrics.suspiciousActivities}</div>
+            <div className="text-sm text-muted-foreground">Suspicious Activities</div>
+          </div>
+          <div className="text-center p-3 bg-destructive/10 rounded-[0.625rem]">
+            <div className="text-2xl font-bold text-destructive">{metrics.failedLogins}</div>
+            <div className="text-sm text-muted-foreground">Failed Logins</div>
+          </div>
+        </div>
         )}
 
         {/* Security Overview */}
         {metrics && (
-          <div className="p-4 bg-gradient-to-r from-blue-50 to-red-50 rounded-lg">
+          <div className="p-4 bg-gradient-to-r from-info/10 to-destructive/10 rounded-[0.625rem]">
             <div className="flex items-center justify-between">
               <div>
                 <h4 className="font-medium">Security Status Overview</h4>
@@ -464,7 +464,7 @@ export default function GlobalSecurityCenter() {
                 </p>
               </div>
               <div className="text-right">
-                <div className="text-3xl font-bold text-blue-600">
+                <div className="text-3xl font-bold text-info">
                   {metrics.riskScore}%
                 </div>
                 <div className="text-sm text-muted-foreground">risk score</div>
@@ -540,8 +540,8 @@ export default function GlobalSecurityCenter() {
               {filteredEvents.map((event) => (
                 <div
                   key={event.id}
-                  className={`p-3 border rounded-lg cursor-pointer transition-colors ${
-                    selectedEvent?.id === event.id ? 'border-blue-500 bg-blue-50' : 'hover:bg-gray-50'
+                  className={`p-3 border rounded-[0.625rem] cursor-pointer transition-colors ${
+                    selectedEvent?.id === event.id ? 'border-primary bg-primary/10' : 'hover:bg-muted/50'
                   }`}
                   onClick={() => setSelectedEvent(event)}
                 >
@@ -603,8 +603,8 @@ export default function GlobalSecurityCenter() {
               {filteredSessions.map((session) => (
                 <div
                   key={session.id}
-                  className={`p-3 border rounded-lg cursor-pointer transition-colors ${
-                    selectedSession?.id === session.id ? 'border-blue-500 bg-blue-50' : 'hover:bg-gray-50'
+                  className={`p-3 border rounded-[0.625rem] cursor-pointer transition-colors ${
+                    selectedSession?.id === session.id ? 'border-primary bg-primary/10' : 'hover:bg-muted/50'
                   }`}
                   onClick={() => setSelectedSession(session)}
                 >
