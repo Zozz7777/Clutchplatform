@@ -792,6 +792,8 @@ router.post('/refresh', async (req, res) => {
     // Handle fallback users (no database lookup needed)
     if (decoded.userId === 'fallback_ziad_ceo' || decoded.userId === 'admin-001') {
       console.log('🔄 Refreshing token for fallback user:', decoded.userId);
+      console.log('🔍 Current token role:', decoded.role);
+      console.log('🔍 Will assign role:', (decoded.userId === 'fallback_ziad_ceo' || decoded.userId === 'admin-001') ? 'head_administrator' : 'admin');
       
       // Generate new access token
       const newToken = jwt.sign(

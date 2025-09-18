@@ -190,6 +190,10 @@ const checkRole = (roles) => {
         });
       }
 
+      console.log('🔍 RBAC checkRole - User:', req.user.userId || req.user.id);
+      console.log('🔍 RBAC checkRole - Current role:', req.user.role);
+      console.log('🔍 RBAC checkRole - Required roles:', roles);
+
       // Handle fallback users (CEO, admin) who don't exist in Employee database
       if (req.user.userId === 'fallback_ziad_ceo' || req.user.userId === 'admin-001') {
         // For fallback users, check role directly from JWT token
