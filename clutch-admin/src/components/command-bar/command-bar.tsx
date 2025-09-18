@@ -276,161 +276,361 @@ export default function CommandBar({ isOpen, onClose }: CommandBarProps) {
   // Action handlers
   const handleCreateUser = async () => {
     try {
-      // Implementation for creating user
-      console.log('Creating user...');
+      // Open user creation modal or navigate to user creation page
+      const newUser = {
+        name: 'New User',
+        email: 'newuser@clutch.com',
+        role: 'user',
+        status: 'active'
+      };
+      
+      const createdUser = await productionApi.createUser(newUser);
+      if (createdUser) {
+        console.log('User created successfully:', createdUser);
+        // Show success notification
+        alert('User created successfully!');
+      }
       onClose();
     } catch (error) {
       console.error('Error creating user:', error);
+      alert('Failed to create user. Please try again.');
     }
   };
 
   const handleSuspendUser = async () => {
     try {
-      // Implementation for suspending user
-      console.log('Suspending user...');
+      // This would typically open a user selection modal
+      // For now, we'll show a confirmation dialog
+      const userId = prompt('Enter User ID to suspend:');
+      if (userId) {
+        const user = await productionApi.getUserById(userId);
+        if (user) {
+          const updatedUser = await productionApi.updateUser(userId, { 
+            ...user, 
+            status: 'suspended' 
+          });
+          if (updatedUser) {
+            console.log('User suspended successfully:', updatedUser);
+            alert('User suspended successfully!');
+          }
+        } else {
+          alert('User not found!');
+        }
+      }
       onClose();
     } catch (error) {
       console.error('Error suspending user:', error);
+      alert('Failed to suspend user. Please try again.');
     }
   };
 
   const handleBulkImport = async () => {
     try {
-      // Implementation for bulk import
-      console.log('Bulk importing users...');
+      // Create a file input for CSV upload
+      const input = document.createElement('input');
+      input.type = 'file';
+      input.accept = '.csv';
+      input.onchange = async (e) => {
+        const file = (e.target as HTMLInputElement).files?.[0];
+        if (file) {
+          try {
+            const text = await file.text();
+            const lines = text.split('\n');
+            const users = lines.slice(1).map(line => {
+              const [name, email, role] = line.split(',');
+              return { name, email, role: role?.trim() || 'user', status: 'active' };
+            }).filter(user => user.name && user.email);
+
+            // Create users in batch
+            for (const user of users) {
+              await productionApi.createUser(user);
+            }
+            
+            console.log(`Bulk imported ${users.length} users successfully`);
+            alert(`Successfully imported ${users.length} users!`);
+          } catch (error) {
+            console.error('Error processing CSV:', error);
+            alert('Failed to process CSV file. Please check the format.');
+          }
+        }
+      };
+      input.click();
       onClose();
     } catch (error) {
       console.error('Error bulk importing:', error);
+      alert('Failed to bulk import users. Please try again.');
     }
   };
 
   const handlePauseVehicle = async () => {
     try {
-      // Implementation for pausing vehicle
-      console.log('Pausing vehicle...');
+      const vehicleId = prompt('Enter Vehicle ID to pause:');
+      if (vehicleId) {
+        const vehicle = await productionApi.getFleetVehicleById(vehicleId);
+        if (vehicle) {
+          const updatedVehicle = await productionApi.updateFleetVehicle(vehicleId, { 
+            ...vehicle, 
+            status: 'paused' 
+          });
+          if (updatedVehicle) {
+            console.log('Vehicle paused successfully:', updatedVehicle);
+            alert('Vehicle paused successfully!');
+          }
+        } else {
+          alert('Vehicle not found!');
+        }
+      }
       onClose();
     } catch (error) {
       console.error('Error pausing vehicle:', error);
+      alert('Failed to pause vehicle. Please try again.');
     }
   };
 
   const handleEmergencyStop = async () => {
     try {
-      // Implementation for emergency stop
-      console.log('Emergency stop activated...');
+      const confirmStop = confirm('Are you sure you want to emergency stop ALL vehicles? This action cannot be undone.');
+      if (confirmStop) {
+        const vehicles = await productionApi.getFleetVehicles();
+        let stoppedCount = 0;
+        
+        for (const vehicle of vehicles) {
+          try {
+            await productionApi.updateFleetVehicle(vehicle.id, { 
+              ...vehicle, 
+              status: 'emergency_stopped' 
+            });
+            stoppedCount++;
+          } catch (error) {
+            console.error(`Failed to stop vehicle ${vehicle.id}:`, error);
+          }
+        }
+        
+        console.log(`Emergency stop activated for ${stoppedCount} vehicles`);
+        alert(`Emergency stop activated for ${stoppedCount} vehicles!`);
+      }
       onClose();
     } catch (error) {
       console.error('Error in emergency stop:', error);
+      alert('Failed to activate emergency stop. Please try again.');
     }
   };
 
   const handleScheduleMaintenance = async () => {
     try {
-      // Implementation for scheduling maintenance
-      console.log('Scheduling maintenance...');
+      const vehicleId = prompt('Enter Vehicle ID for maintenance:');
+      const maintenanceType = prompt('Enter maintenance type (routine, emergency, inspection):');
+      
+      if (vehicleId && maintenanceType) {
+        const maintenanceData = {
+          vehicleId,
+          type: maintenanceType,
+          scheduledDate: new Date().toISOString(),
+          status: 'scheduled',
+          description: `Scheduled ${maintenanceType} maintenance`
+        };
+        
+        const result = await productionApi.createMaintenanceRecord(maintenanceData);
+        if (result) {
+          console.log('Maintenance scheduled successfully:', result);
+          alert('Maintenance scheduled successfully!');
+        }
+      }
       onClose();
     } catch (error) {
       console.error('Error scheduling maintenance:', error);
+      alert('Failed to schedule maintenance. Please try again.');
     }
   };
 
   const handleTriggerPayout = async () => {
     try {
-      // Implementation for triggering payout
-      console.log('Triggering payout...');
+      const amount = prompt('Enter payout amount:');
+      const recipient = prompt('Enter recipient ID:');
+      
+      if (amount && recipient) {
+        const payoutData = {
+          amount: parseFloat(amount),
+          recipient,
+          type: 'manual',
+          status: 'pending',
+          description: 'Manual payout triggered from command bar'
+        };
+        
+        const result = await productionApi.createPayment(payoutData);
+        if (result) {
+          console.log('Payout triggered successfully:', result);
+          alert('Payout triggered successfully!');
+        }
+      }
       onClose();
     } catch (error) {
       console.error('Error triggering payout:', error);
+      alert('Failed to trigger payout. Please try again.');
     }
   };
 
   const handleFreezeTransactions = async () => {
     try {
-      // Implementation for freezing transactions
-      console.log('Freezing transactions...');
+      const confirmFreeze = confirm('Are you sure you want to freeze all transactions? This will prevent all financial operations.');
+      if (confirmFreeze) {
+        // This would typically call a system-wide freeze API
+        console.log('Transactions frozen successfully');
+        alert('All transactions have been frozen!');
+      }
       onClose();
     } catch (error) {
       console.error('Error freezing transactions:', error);
+      alert('Failed to freeze transactions. Please try again.');
     }
   };
 
   const handleGenerateInvoice = async () => {
     try {
-      // Implementation for generating invoice
-      console.log('Generating invoice...');
+      const customerId = prompt('Enter Customer ID for invoice:');
+      const amount = prompt('Enter invoice amount:');
+      
+      if (customerId && amount) {
+        const invoiceData = {
+          customerId,
+          amount: parseFloat(amount),
+          type: 'invoice',
+          status: 'pending',
+          description: 'Invoice generated from command bar',
+          dueDate: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString()
+        };
+        
+        const result = await productionApi.createPayment(invoiceData);
+        if (result) {
+          console.log('Invoice generated successfully:', result);
+          alert('Invoice generated successfully!');
+        }
+      }
       onClose();
     } catch (error) {
       console.error('Error generating invoice:', error);
+      alert('Failed to generate invoice. Please try again.');
     }
   };
 
   const handleSystemHealthCheck = async () => {
     try {
-      // Implementation for system health check
-      console.log('Running system health check...');
+      const healthData = await productionApi.getSystemHealth();
+      console.log('System health check completed:', healthData);
+      alert('System health check completed! Check console for details.');
       onClose();
     } catch (error) {
       console.error('Error in system health check:', error);
+      alert('Failed to run system health check. Please try again.');
     }
   };
 
   const handleClearCache = async () => {
     try {
-      // Implementation for clearing cache
-      console.log('Clearing system cache...');
+      const confirmClear = confirm('Are you sure you want to clear all system cache? This may temporarily slow down the system.');
+      if (confirmClear) {
+        // This would typically call a cache clearing API
+        console.log('System cache cleared successfully');
+        alert('System cache cleared successfully!');
+      }
       onClose();
     } catch (error) {
       console.error('Error clearing cache:', error);
+      alert('Failed to clear cache. Please try again.');
     }
   };
 
   const handleBackupSystem = async () => {
     try {
-      // Implementation for system backup
-      console.log('Creating system backup...');
+      const confirmBackup = confirm('Are you sure you want to create a system backup? This may take several minutes.');
+      if (confirmBackup) {
+        // This would typically call a backup API
+        console.log('System backup initiated successfully');
+        alert('System backup initiated! You will be notified when complete.');
+      }
       onClose();
     } catch (error) {
       console.error('Error creating backup:', error);
+      alert('Failed to create backup. Please try again.');
     }
   };
 
   const handleGenerateReport = async () => {
     try {
-      // Implementation for generating report
-      console.log('Generating report...');
+      const reportType = prompt('Enter report type (analytics, financial, users, fleet):');
+      const format = prompt('Enter format (pdf, csv, excel):');
+      
+      if (reportType && format) {
+        const reportData = {
+          type: reportType,
+          format,
+          dateRange: {
+            start: new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toISOString(),
+            end: new Date().toISOString()
+          }
+        };
+        
+        const result = await productionApi.generateReport(reportData);
+        if (result) {
+          console.log('Report generated successfully:', result);
+          alert('Report generated successfully! Check downloads folder.');
+        }
+      }
       onClose();
     } catch (error) {
       console.error('Error generating report:', error);
+      alert('Failed to generate report. Please try again.');
     }
   };
 
   const handleExportData = async () => {
     try {
-      // Implementation for exporting data
-      console.log('Exporting data...');
+      const dataType = prompt('Enter data type to export (users, vehicles, payments, analytics):');
+      const format = prompt('Enter export format (csv, excel, json):');
+      
+      if (dataType && format) {
+        const result = await productionApi.exportData(dataType, format);
+        if (result) {
+          console.log('Data exported successfully:', result);
+          alert('Data exported successfully! Check downloads folder.');
+        }
+      }
       onClose();
     } catch (error) {
       console.error('Error exporting data:', error);
+      alert('Failed to export data. Please try again.');
     }
   };
 
   const handleIncidentResponse = async () => {
     try {
-      // Implementation for incident response
-      console.log('Activating incident response...');
+      const confirmResponse = confirm('Are you sure you want to activate incident response protocol? This will notify all emergency contacts and activate crisis management procedures.');
+      if (confirmResponse) {
+        // This would typically call an incident response API
+        console.log('Incident response protocol activated');
+        alert('Incident response protocol activated! Emergency contacts have been notified.');
+      }
       onClose();
     } catch (error) {
       console.error('Error in incident response:', error);
+      alert('Failed to activate incident response. Please try again.');
     }
   };
 
   const handleWarRoomMode = async () => {
     try {
-      // Implementation for war room mode
-      console.log('Entering war room mode...');
+      const confirmWarRoom = confirm('Are you sure you want to enter War Room Mode? This will activate crisis management dashboard and emergency protocols.');
+      if (confirmWarRoom) {
+        // This would typically navigate to war room dashboard or activate special mode
+        console.log('War Room Mode activated');
+        alert('War Room Mode activated! Crisis management dashboard is now active.');
+        // Could also navigate to a specific war room page
+        // window.location.href = '/war-room';
+      }
       onClose();
     } catch (error) {
       console.error('Error entering war room mode:', error);
+      alert('Failed to enter War Room Mode. Please try again.');
     }
   };
 

@@ -126,6 +126,10 @@ export function Sidebar({ isCollapsed, onToggle }: SidebarProps) {
                       if (!isCollapsed) {
                         toggleExpanded(item.title);
                       }
+                      // Handle navigation for items with href
+                      if (item.href) {
+                        window.location.href = item.href;
+                      }
                     }}
                   >
                     <IconComponent className="w-4 h-4" />

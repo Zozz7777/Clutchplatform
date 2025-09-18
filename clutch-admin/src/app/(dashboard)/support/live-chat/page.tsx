@@ -20,6 +20,7 @@ import {
   RefreshCw
 } from 'lucide-react';
 import { apiService } from '@/lib/api';
+import { productionApi } from '@/lib/production-api';
 
 interface ChatSession {
   id: string;
@@ -46,6 +47,7 @@ export default function LiveChatPage() {
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [newMessage, setNewMessage] = useState('');
   const [loading, setLoading] = useState(true);
+  const [webSocketConnection, setWebSocketConnection] = useState<WebSocket | null>(null);
 
   const fetchChatSessions = async () => {
     try {
@@ -92,41 +94,44 @@ export default function LiveChatPage() {
 
   const fetchMessages = async (sessionId: string) => {
     try {
-      // Mock messages
-      const mockMessages: ChatMessage[] = [
-        {
-          id: '1',
-          sender: 'customer',
-          message: 'Hello, I need help with my order',
-          timestamp: '2024-01-15T10:30:00Z',
-          type: 'text'
-        },
-        {
-          id: '2',
-          sender: 'agent',
-          message: 'Hello! I\'d be happy to help you with your order. Can you please provide your order number?',
-          timestamp: '2024-01-15T10:31:00Z',
-          type: 'text'
-        },
-        {
-          id: '3',
-          sender: 'customer',
-          message: 'My order number is #12345',
-          timestamp: '2024-01-15T10:32:00Z',
-          type: 'text'
-        },
-        {
-          id: '4',
-          sender: 'agent',
-          message: 'Thank you! Let me look up your order details...',
-          timestamp: '2024-01-15T10:33:00Z',
-          type: 'text'
-        }
-      ];
+      // Fetch messages from API
+      const messages = await productionApi.getChatMessages(sessionId);
+      setMessages(messages);
       
-      setMessages(mockMessages);
+      // Set up WebSocket connection for real-time updates
+      const wsUrl = `wss://clutch-main-nk7x.onrender.com/ws/chat/${sessionId}?token=${localStorage.getItem('token')}`;
+      const ws = new WebSocket(wsUrl);
+      
+      ws.onopen = () => {
+        console.log('WebSocket connected for chat session:', sessionId);
+      };
+      
+      ws.onmessage = (event) => {
+        try {
+          const data = JSON.parse(event.data);
+          if (data.type === 'new_message') {
+            setMessages(prev => [...prev, data.message]);
+          }
+        } catch (error) {
+          console.error('Error parsing WebSocket message:', error);
+        }
+      };
+      
+      ws.onclose = () => {
+        console.log('WebSocket disconnected for chat session:', sessionId);
+      };
+      
+      ws.onerror = (error) => {
+        console.error('WebSocket error:', error);
+      };
+      
+      // Store WebSocket connection for cleanup
+      setWebSocketConnection(ws);
+      
     } catch (error) {
       console.error('Error fetching messages:', error);
+      // Fallback to empty messages if API fails
+      setMessages([]);
     }
   };
 

@@ -1,27 +1,30 @@
 import { apiService } from "./api";
+import { errorHandler, withErrorHandling, handleApiResponse } from "./error-handler";
 
 // Real API service that replaces mock data
 export class RealApiService {
   
   // Dashboard APIs
   async getKPIMetrics(): Promise<any[]> {
-    try {
-      const response = await apiService.request<any[]>("/api/v1/dashboard/kpis");
-      return response.success ? response.data : [];
-    } catch (error) {
-      console.error('Failed to fetch KPI metrics:', error);
-      return [];
-    }
+    return withErrorHandling(
+      async () => {
+        const response = await apiService.request<any[]>("/api/v1/dashboard/kpis");
+        return handleApiResponse(response, 'getKPIMetrics', []);
+      },
+      'getKPIMetrics',
+      { fallbackValue: [], showToast: false }
+    )();
   }
 
   async getFleetVehicles(): Promise<any[]> {
-    try {
-      const response = await apiService.request<any[]>("/api/v1/fleet/vehicles");
-      return response.success ? response.data : [];
-    } catch (error) {
-      console.error('Failed to fetch fleet vehicles:', error);
-      return [];
-    }
+    return withErrorHandling(
+      async () => {
+        const response = await apiService.request<any[]>("/api/v1/fleet/vehicles");
+        return handleApiResponse(response, 'getFleetVehicles', []);
+      },
+      'getFleetVehicles',
+      { fallbackValue: [], showToast: false }
+    )();
   }
 
   async getNotifications(): Promise<any[]> {
@@ -32,21 +35,28 @@ export class RealApiService {
 
   // User Management APIs
   async getUsers(): Promise<any[]> {
-    try {
-      const response = await apiService.request<any[]>("/api/v1/users");
-      return response.success ? response.data : [];
-    } catch (error) {
-      console.error('Failed to fetch users:', error);
-      return [];
-    }
+    return withErrorHandling(
+      async () => {
+        const response = await apiService.request<any[]>("/api/v1/users");
+        return handleApiResponse(response, 'getUsers', []);
+      },
+      'getUsers',
+      { fallbackValue: [], showToast: true }
+    )();
   }
 
   async createUser(userData: any): Promise<any> {
-    const response = await apiService.request<any>("/api/v1/users", {
-      method: "POST",
-      body: JSON.stringify(userData),
-    });
-    return response.success ? response.data : null;
+    return withErrorHandling(
+      async () => {
+        const response = await apiService.request<any>("/api/v1/users", {
+          method: "POST",
+          body: JSON.stringify(userData),
+        });
+        return handleApiResponse(response, 'createUser', null);
+      },
+      'createUser',
+      { fallbackValue: null, showToast: true }
+    )();
   }
 
   async updateUser(userId: string, userData: any): Promise<any> {
@@ -308,6 +318,17 @@ export class RealApiService {
   // Analytics APIs - Additional methods (getAnalyticsMetrics already defined above)
 
   // Finance APIs (getPayments already defined above)
+
+  async getExpenses(): Promise<any[]> {
+    return withErrorHandling(
+      async () => {
+        const response = await apiService.request<any[]>("/api/v1/finance/expenses");
+        return handleApiResponse(response, 'getExpenses', []);
+      },
+      'getExpenses',
+      { fallbackValue: [], showToast: false }
+    )();
+  }
 
   async getSubscriptions(): Promise<any[]> {
     const response = await apiService.request<any[]>("/api/v1/finance/subscriptions");
