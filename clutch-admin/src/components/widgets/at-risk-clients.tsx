@@ -187,9 +187,9 @@ export function AtRiskClients({ className = '' }: AtRiskClientsProps) {
         </CardHeader>
         <CardContent>
           <div className="animate-pulse space-y-4">
-            <div className="h-4 bg-gray-200 rounded-lg w-3/4"></div>
-            <div className="h-4 bg-gray-200 rounded-lg w-1/2"></div>
-            <div className="h-4 bg-gray-200 rounded-lg w-2/3"></div>
+            <div className="h-4 bg-muted rounded-[0.625rem] w-3/4"></div>
+            <div className="h-4 bg-muted rounded-[0.625rem] w-1/2"></div>
+            <div className="h-4 bg-muted rounded-[0.625rem] w-2/3"></div>
           </div>
         </CardContent>
       </Card>
@@ -224,22 +224,22 @@ export function AtRiskClients({ className = '' }: AtRiskClientsProps) {
       <CardContent className="space-y-6">
         {/* Summary Stats */}
         <div className="grid grid-cols-2 gap-4">
-          <div className="text-center p-3 bg-red-50 rounded-lg-lg">
+          <div className="text-center p-3 bg-destructive/10 rounded-[0.625rem]">
             <Users className="h-5 w-5 text-destructive mx-auto mb-1" />
             <p className="text-lg font-bold text-destructive">{atRiskData.totalAtRisk}</p>
-            <p className="text-xs text-gray-500">At-Risk Clients</p>
+            <p className="text-xs text-muted-foreground">At-Risk Clients</p>
           </div>
-          <div className="text-center p-3 bg-orange-50 rounded-lg-lg">
+          <div className="text-center p-3 bg-warning/10 rounded-[0.625rem]">
             <DollarSign className="h-5 w-5 text-warning mx-auto mb-1" />
             <p className="text-lg font-bold text-warning">
               ${atRiskData.totalRevenueAtRisk.toLocaleString()}
             </p>
-            <p className="text-xs text-gray-500">Revenue at Risk</p>
+            <p className="text-xs text-muted-foreground">Revenue at Risk</p>
           </div>
         </div>
 
         {/* Average Risk Score */}
-        <div className="text-center p-4 bg-gray-50 rounded-lg-lg">
+        <div className="text-center p-4 bg-muted/50 rounded-[0.625rem] border border-border">
           <div className="flex items-center justify-center space-x-2 mb-2">
             <AlertTriangle className={`h-6 w-6 ${getRiskColor(atRiskData.averageRiskScore)}`} />
             <span className={`text-2xl font-bold ${getRiskColor(atRiskData.averageRiskScore)}`}>
@@ -249,7 +249,7 @@ export function AtRiskClients({ className = '' }: AtRiskClientsProps) {
               {getRiskLevel(atRiskData.averageRiskScore)}
             </Badge>
           </div>
-          <p className="text-sm text-gray-600">Average Risk Score</p>
+          <p className="text-sm text-muted-foreground">Average Risk Score</p>
           <div className="mt-3">
             <Progress value={atRiskData.averageRiskScore} className="h-2" />
           </div>
@@ -257,44 +257,44 @@ export function AtRiskClients({ className = '' }: AtRiskClientsProps) {
 
         {/* Status Distribution */}
         <div className="space-y-3">
-          <h4 className="text-sm font-medium text-gray-900">Risk Status Distribution</h4>
+          <h4 className="text-sm font-medium text-card-foreground">Risk Status Distribution</h4>
           <div className="grid grid-cols-3 gap-2">
-            <div className="text-center p-2 bg-red-50 rounded-lg">
+            <div className="text-center p-2 bg-destructive/10 rounded-[0.625rem] border border-destructive/20">
               <p className="text-sm font-bold text-destructive">
                 {atRiskData.statusDistribution.critical || 0}
               </p>
-              <p className="text-xs text-gray-500">Critical</p>
+              <p className="text-xs text-muted-foreground">Critical</p>
             </div>
-            <div className="text-center p-2 bg-orange-50 rounded-lg">
+            <div className="text-center p-2 bg-warning/10 rounded-[0.625rem] border border-warning/20">
               <p className="text-sm font-bold text-warning">
                 {atRiskData.statusDistribution.high || 0}
               </p>
-              <p className="text-xs text-gray-500">High Risk</p>
+              <p className="text-xs text-muted-foreground">High Risk</p>
             </div>
-            <div className="text-center p-2 bg-yellow-50 rounded-lg">
-              <p className="text-sm font-bold text-yellow-600">
+            <div className="text-center p-2 bg-info/10 rounded-[0.625rem] border border-info/20">
+              <p className="text-sm font-bold text-info">
                 {atRiskData.statusDistribution.medium || 0}
               </p>
-              <p className="text-xs text-gray-500">Medium Risk</p>
+              <p className="text-xs text-muted-foreground">Medium Risk</p>
             </div>
           </div>
         </div>
 
         {/* At-Risk Clients List */}
         <div className="space-y-3">
-          <h4 className="text-sm font-medium text-gray-900">At-Risk Clients</h4>
+          <h4 className="text-sm font-medium text-card-foreground">At-Risk Clients</h4>
           <div className="space-y-2 max-h-64 overflow-y-auto">
             {atRiskData.clients.map((client) => (
-              <div key={client.clientId} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg-lg">
+              <div key={client.clientId} className="flex items-center justify-between p-3 bg-muted/50 rounded-[0.625rem] border border-border">
                 <div className="flex items-center space-x-3">
-                  <div className="flex items-center justify-center w-8 h-8 bg-red-100 rounded-lg-full">
+                  <div className="flex items-center justify-center w-8 h-8 bg-destructive/10 rounded-full">
                     <span className="text-sm font-semibold text-destructive">
                       {client.riskScore}
                     </span>
                   </div>
                   <div>
-                    <p className="text-sm font-medium text-gray-900">{client.clientName}</p>
-                    <p className="text-xs text-gray-500">
+                    <p className="text-sm font-medium text-card-foreground">{client.clientName}</p>
+                    <p className="text-xs text-muted-foreground">
                       {client.daysSinceActivity} days since activity
                     </p>
                   </div>
@@ -302,7 +302,7 @@ export function AtRiskClients({ className = '' }: AtRiskClientsProps) {
                 
                 <div className="text-right">
                   <div className="flex items-center space-x-2">
-                    <p className="text-sm font-semibold text-gray-900">
+                    <p className="text-sm font-semibold text-card-foreground">
                       ${client.revenue.toLocaleString()}
                     </p>
                     <Badge className={getStatusBadge(client.status)}>
@@ -322,11 +322,11 @@ export function AtRiskClients({ className = '' }: AtRiskClientsProps) {
 
         {/* Risk Factors */}
         <div className="space-y-3">
-          <h4 className="text-sm font-medium text-gray-900">Common Risk Factors</h4>
+          <h4 className="text-sm font-medium text-card-foreground">Common Risk Factors</h4>
           <div className="space-y-2">
             {['Low usage', 'Support tickets', 'Payment delays', 'Contract expiring', 'Inactive account'].map((factor) => (
-              <div key={factor} className="flex items-center justify-between p-2 bg-gray-50 rounded-lg">
-                <span className="text-sm text-gray-700">{factor}</span>
+              <div key={factor} className="flex items-center justify-between p-2 bg-muted/50 rounded-[0.625rem] border border-border">
+                <span className="text-sm text-foreground">{factor}</span>
                 <Badge variant="outline" className="text-xs">
                   {Math.floor(Math.random() * 5) + 1} clients
                 </Badge>
@@ -348,9 +348,9 @@ export function AtRiskClients({ className = '' }: AtRiskClientsProps) {
         </div>
 
         {/* Insights */}
-        <div className="p-3 bg-blue-50 rounded-lg-lg">
-          <h5 className="text-sm font-medium text-blue-900 mb-2">💡 At-Risk Client Insights</h5>
-          <ul className="text-xs text-blue-800 space-y-1">
+        <div className="p-3 bg-primary/10 rounded-[0.625rem] border border-primary/20">
+          <h5 className="text-sm font-medium text-primary mb-2">💡 At-Risk Client Insights</h5>
+          <ul className="text-xs text-primary/80 space-y-1">
             <li>• {atRiskData.totalAtRisk} clients at risk of churning</li>
             <li>• ${atRiskData.totalRevenueAtRisk.toLocaleString()} revenue at risk</li>
             <li>• Average risk score: {atRiskData.averageRiskScore.toFixed(0)}</li>
