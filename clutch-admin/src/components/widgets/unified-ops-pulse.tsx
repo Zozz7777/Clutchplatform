@@ -33,19 +33,19 @@ export function UnifiedOpsPulse({ className = '' }: UnifiedOpsPulseProps) {
 
   if (isLoading) {
     return (
-      <Card className={className}>
+      <Card className={`${className} shadow-sm`}>
         <CardHeader>
-          <CardTitle className="flex items-center space-x-2">
+          <CardTitle className="flex items-center space-x-2 text-card-foreground font-medium">
             <Zap className="h-5 w-5 text-primary" />
             <span>Unified Ops Pulse</span>
           </CardTitle>
-          <CardDescription>Loading operational metrics...</CardDescription>
+          <CardDescription className="text-muted-foreground">Loading operational metrics...</CardDescription>
         </CardHeader>
         <CardContent>
           <div className="animate-pulse space-y-4">
-            <div className="h-4 bg-gray-200 rounded w-3/4"></div>
-            <div className="h-4 bg-gray-200 rounded w-1/2"></div>
-            <div className="h-4 bg-gray-200 rounded w-2/3"></div>
+            <div className="h-4 bg-muted rounded-[0.625rem] w-3/4"></div>
+            <div className="h-4 bg-muted rounded-[0.625rem] w-1/2"></div>
+            <div className="h-4 bg-muted rounded-[0.625rem] w-2/3"></div>
           </div>
         </CardContent>
       </Card>
@@ -54,38 +54,38 @@ export function UnifiedOpsPulse({ className = '' }: UnifiedOpsPulseProps) {
 
   if (!pulse) {
     return (
-      <Card className={className}>
+      <Card className={`${className} shadow-sm`}>
         <CardHeader>
-          <CardTitle className="flex items-center space-x-2">
+          <CardTitle className="flex items-center space-x-2 text-card-foreground font-medium">
             <Zap className="h-5 w-5 text-primary" />
             <span>Unified Ops Pulse</span>
           </CardTitle>
-          <CardDescription>Unable to load operational metrics</CardDescription>
+          <CardDescription className="text-muted-foreground">Unable to load operational metrics</CardDescription>
         </CardHeader>
       </Card>
     );
   }
 
   const getEfficiencyColor = (efficiency: number) => {
-    if (efficiency >= 80) return 'text-green-600';
-    if (efficiency >= 60) return 'text-yellow-600';
-    return 'text-red-600';
+    if (efficiency >= 80) return 'text-success';
+    if (efficiency >= 60) return 'text-warning';
+    return 'text-destructive';
   };
 
   const getEfficiencyBadge = (efficiency: number) => {
-    if (efficiency >= 80) return 'bg-green-100 text-green-800';
-    if (efficiency >= 60) return 'bg-yellow-100 text-yellow-800';
-    return 'bg-red-100 text-red-800';
+    if (efficiency >= 80) return 'bg-success/10 text-success border-success/20';
+    if (efficiency >= 60) return 'bg-warning/10 text-warning border-warning/20';
+    return 'bg-destructive/10 text-destructive border-destructive/20';
   };
 
   return (
-    <Card className={className}>
+    <Card className={`${className} shadow-sm`}>
       <CardHeader>
-        <CardTitle className="flex items-center space-x-2">
+        <CardTitle className="flex items-center space-x-2 text-card-foreground font-medium">
           <Zap className="h-5 w-5 text-primary" />
           <span>Unified Ops Pulse</span>
         </CardTitle>
-        <CardDescription>
+        <CardDescription className="text-muted-foreground">
           Real-time operational funnel from users to revenue
         </CardDescription>
       </CardHeader>
@@ -93,52 +93,52 @@ export function UnifiedOpsPulse({ className = '' }: UnifiedOpsPulseProps) {
         {/* Funnel Flow */}
         <div className="space-y-4">
           {/* New Users */}
-          <div className="flex items-center justify-between p-3 bg-blue-50 rounded-lg">
+          <div className="flex items-center justify-between p-3 bg-muted/50 rounded-[0.625rem] border border-border">
             <div className="flex items-center space-x-3">
-              <div className="p-2 bg-blue-100 rounded-full">
-                <Users className="h-4 w-4 text-blue-600" />
+              <div className="p-2 bg-primary/10 rounded-full">
+                <Users className="h-4 w-4 text-primary" />
               </div>
               <div>
-                <p className="text-sm font-medium text-gray-900">New Users (30d)</p>
-                <p className="text-xs text-gray-500">Fresh signups</p>
+                <p className="text-sm font-medium text-card-foreground">New Users (30d)</p>
+                <p className="text-xs text-muted-foreground">Fresh signups</p>
               </div>
             </div>
             <div className="text-right">
-              <p className="text-lg font-semibold text-blue-600">{pulse.newUsers}</p>
+              <p className="text-lg font-bold text-primary">{pulse.newUsers}</p>
               <Badge variant="secondary" className="text-xs">+12%</Badge>
             </div>
           </div>
 
           {/* Active Sessions */}
-          <div className="flex items-center justify-between p-3 bg-green-50 rounded-lg">
+          <div className="flex items-center justify-between p-3 bg-muted/50 rounded-[0.625rem] border border-border">
             <div className="flex items-center space-x-3">
-              <div className="p-2 bg-green-100 rounded-full">
-                <Activity className="h-4 w-4 text-green-600" />
+              <div className="p-2 bg-success/10 rounded-full">
+                <Activity className="h-4 w-4 text-success" />
               </div>
               <div>
-                <p className="text-sm font-medium text-gray-900">Active Sessions</p>
-                <p className="text-xs text-gray-500">Currently online</p>
+                <p className="text-sm font-medium text-card-foreground">Active Sessions</p>
+                <p className="text-xs text-muted-foreground">Currently online</p>
               </div>
             </div>
             <div className="text-right">
-              <p className="text-lg font-semibold text-green-600">{pulse.activeSessions}</p>
+              <p className="text-lg font-bold text-success">{pulse.activeSessions}</p>
               <Badge variant="secondary" className="text-xs">Live</Badge>
             </div>
           </div>
 
           {/* Active Vehicles */}
-          <div className="flex items-center justify-between p-3 bg-purple-50 rounded-lg">
+          <div className="flex items-center justify-between p-3 bg-muted/50 rounded-[0.625rem] border border-border">
             <div className="flex items-center space-x-3">
-              <div className="p-2 bg-purple-100 rounded-full">
-                <Truck className="h-4 w-4 text-purple-600" />
+              <div className="p-2 bg-info/10 rounded-full">
+                <Truck className="h-4 w-4 text-info" />
               </div>
               <div>
-                <p className="text-sm font-medium text-gray-900">Active Vehicles</p>
-                <p className="text-xs text-gray-500">Fleet utilization</p>
+                <p className="text-sm font-medium text-card-foreground">Active Vehicles</p>
+                <p className="text-xs text-muted-foreground">Fleet utilization</p>
               </div>
             </div>
             <div className="text-right">
-              <p className="text-lg font-semibold text-purple-600">{pulse.activeVehicles}</p>
+              <p className="text-lg font-bold text-info">{pulse.activeVehicles}</p>
               <Badge className={getEfficiencyBadge(pulse.efficiency)}>
                 {pulse.efficiency.toFixed(1)}%
               </Badge>
@@ -146,18 +146,18 @@ export function UnifiedOpsPulse({ className = '' }: UnifiedOpsPulseProps) {
           </div>
 
           {/* Revenue Impact */}
-          <div className="flex items-center justify-between p-3 bg-yellow-50 rounded-lg">
+          <div className="flex items-center justify-between p-3 bg-muted/50 rounded-[0.625rem] border border-border">
             <div className="flex items-center space-x-3">
-              <div className="p-2 bg-yellow-100 rounded-full">
-                <DollarSign className="h-4 w-4 text-yellow-600" />
+              <div className="p-2 bg-warning/10 rounded-full">
+                <DollarSign className="h-4 w-4 text-warning" />
               </div>
               <div>
-                <p className="text-sm font-medium text-gray-900">Revenue Impact</p>
-                <p className="text-xs text-gray-500">Monthly revenue</p>
+                <p className="text-sm font-medium text-card-foreground">Revenue Impact</p>
+                <p className="text-xs text-muted-foreground">Monthly revenue</p>
               </div>
             </div>
             <div className="text-right">
-              <p className="text-lg font-semibold text-yellow-600">
+              <p className="text-lg font-bold text-warning">
                 ${pulse.revenueImpact.toLocaleString()}
               </p>
               <Badge variant="secondary" className="text-xs">+8%</Badge>
@@ -166,10 +166,10 @@ export function UnifiedOpsPulse({ className = '' }: UnifiedOpsPulseProps) {
         </div>
 
         {/* Key Metrics */}
-        <div className="grid grid-cols-2 gap-4 pt-4 border-t">
+        <div className="grid grid-cols-2 gap-4 pt-4 border-t border-border">
           <div className="text-center">
-            <p className="text-2xl font-bold text-gray-900">{pulse.conversionRate.toFixed(1)}%</p>
-            <p className="text-xs text-gray-500">Conversion Rate</p>
+            <p className="text-2xl font-bold text-card-foreground">{pulse.conversionRate.toFixed(1)}%</p>
+            <p className="text-xs text-muted-foreground">Conversion Rate</p>
             <div className="mt-2">
               <Progress value={pulse.conversionRate} className="h-2" />
             </div>
@@ -178,7 +178,7 @@ export function UnifiedOpsPulse({ className = '' }: UnifiedOpsPulseProps) {
             <p className={`text-2xl font-bold ${getEfficiencyColor(pulse.efficiency)}`}>
               {pulse.efficiency.toFixed(1)}%
             </p>
-            <p className="text-xs text-gray-500">Fleet Efficiency</p>
+            <p className="text-xs text-muted-foreground">Fleet Efficiency</p>
             <div className="mt-2">
               <Progress value={pulse.efficiency} className="h-2" />
             </div>
@@ -187,8 +187,8 @@ export function UnifiedOpsPulse({ className = '' }: UnifiedOpsPulseProps) {
 
         {/* Trend Indicator */}
         <div className="flex items-center justify-center space-x-2 pt-2">
-          <TrendingUp className="h-4 w-4 text-green-500" />
-          <span className="text-sm text-gray-600">Operations trending positive</span>
+          <TrendingUp className="h-4 w-4 text-success" />
+          <span className="text-sm text-muted-foreground">Operations trending positive</span>
         </div>
       </CardContent>
     </Card>

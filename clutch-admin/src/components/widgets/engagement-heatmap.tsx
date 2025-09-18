@@ -46,17 +46,17 @@ export function EngagementHeatmap({ className = '' }: EngagementHeatmapProps) {
   }, []);
 
   const getUsageColor = (usage: number) => {
-    if (usage >= 80) return 'bg-green-500';
-    if (usage >= 60) return 'bg-yellow-500';
-    if (usage >= 40) return 'bg-orange-500';
-    return 'bg-red-500';
+    if (usage >= 80) return 'bg-success';
+    if (usage >= 60) return 'bg-warning';
+    if (usage >= 40) return 'bg-info';
+    return 'bg-destructive';
   };
 
   const getUsageTextColor = (usage: number) => {
-    if (usage >= 80) return 'text-green-600';
-    if (usage >= 60) return 'text-yellow-600';
-    if (usage >= 40) return 'text-orange-600';
-    return 'text-red-600';
+    if (usage >= 80) return 'text-success';
+    if (usage >= 60) return 'text-warning';
+    if (usage >= 40) return 'text-info';
+    return 'text-destructive';
   };
 
   const getUsageLevel = (usage: number) => {
@@ -111,16 +111,16 @@ export function EngagementHeatmap({ className = '' }: EngagementHeatmapProps) {
       <Card className={className}>
         <CardHeader>
           <CardTitle className="flex items-center space-x-2">
-            <BarChart3 className="h-5 w-5 text-purple-600" />
+            <BarChart3 className="h-5 w-5 text-primary" />
             <span>Engagement Heatmap</span>
           </CardTitle>
           <CardDescription>Loading engagement data...</CardDescription>
         </CardHeader>
         <CardContent>
           <div className="animate-pulse space-y-4">
-            <div className="h-4 bg-gray-200 rounded-lg w-3/4"></div>
-            <div className="h-4 bg-gray-200 rounded-lg w-1/2"></div>
-            <div className="h-4 bg-gray-200 rounded-lg w-2/3"></div>
+            <div className="h-4 bg-muted rounded-[0.625rem] w-3/4"></div>
+            <div className="h-4 bg-muted rounded-[0.625rem] w-1/2"></div>
+            <div className="h-4 bg-muted rounded-[0.625rem] w-2/3"></div>
           </div>
         </CardContent>
       </Card>
@@ -135,7 +135,7 @@ export function EngagementHeatmap({ className = '' }: EngagementHeatmapProps) {
     <Card className={className}>
       <CardHeader>
         <CardTitle className="flex items-center space-x-2">
-          <BarChart3 className="h-5 w-5 text-purple-600" />
+          <BarChart3 className="h-5 w-5 text-primary" />
           <span>Engagement Heatmap</span>
         </CardTitle>
         <CardDescription>
@@ -168,26 +168,26 @@ export function EngagementHeatmap({ className = '' }: EngagementHeatmapProps) {
 
         {/* Summary Stats */}
         <div className="grid grid-cols-2 gap-4">
-          <div className="text-center p-3 bg-purple-50 rounded-lg-lg">
-            <Activity className="h-5 w-5 text-purple-600 mx-auto mb-1" />
-            <p className="text-lg font-bold text-purple-600">{totalUsage.toFixed(1)}%</p>
-            <p className="text-xs text-gray-500">Avg Usage</p>
+          <div className="text-center p-3 bg-primary/10 rounded-[0.625rem] border border-primary/20">
+            <Activity className="h-5 w-5 text-primary mx-auto mb-1" />
+            <p className="text-lg font-bold text-primary">{totalUsage.toFixed(1)}%</p>
+            <p className="text-xs text-muted-foreground">Avg Usage</p>
           </div>
-          <div className="text-center p-3 bg-blue-50 rounded-lg-lg">
-            <Users className="h-5 w-5 text-blue-600 mx-auto mb-1" />
-            <p className="text-lg font-bold text-blue-600">{filteredSegments.length}</p>
-            <p className="text-xs text-gray-500">Segments</p>
+          <div className="text-center p-3 bg-secondary/10 rounded-[0.625rem] border border-secondary/20">
+            <Users className="h-5 w-5 text-secondary mx-auto mb-1" />
+            <p className="text-lg font-bold text-secondary">{filteredSegments.length}</p>
+            <p className="text-xs text-muted-foreground">Segments</p>
           </div>
         </div>
 
         {/* Heatmap Grid */}
         <div className="space-y-3">
-          <h4 className="text-sm font-medium text-gray-900">Feature Usage Heatmap</h4>
+          <h4 className="text-sm font-medium text-card-foreground">Feature Usage Heatmap</h4>
           <div className="space-y-2">
             {filteredSegments.map((segment) => (
               <div key={segment.segment} className="space-y-2">
                 <div className="flex items-center space-x-2">
-                  <h5 className="text-sm font-medium text-gray-700">{segment.segment}</h5>
+                  <h5 className="text-sm font-medium text-foreground">{segment.segment}</h5>
                   <Badge variant="outline" className="text-xs">
                     {Object.keys(segment.features).length} features
                   </Badge>
@@ -196,10 +196,10 @@ export function EngagementHeatmap({ className = '' }: EngagementHeatmapProps) {
                 <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-2">
                   {Object.entries(segment.features).map(([feature, usage]) => (
                     <div key={feature} className="text-center">
-                      <div className={`p-3 rounded-lg-lg ${getUsageColor(usage)} text-white mb-1`}>
+                      <div className={`p-3 rounded-[0.625rem] ${getUsageColor(usage)} text-white mb-1`}>
                         <p className="text-sm font-semibold">{usage}%</p>
                       </div>
-                      <p className="text-xs text-gray-600 truncate" title={feature}>
+                      <p className="text-xs text-muted-foreground truncate" title={feature}>
                         {feature}
                       </p>
                       <Badge 
@@ -218,17 +218,17 @@ export function EngagementHeatmap({ className = '' }: EngagementHeatmapProps) {
 
         {/* Top Features */}
         <div className="space-y-3">
-          <h4 className="text-sm font-medium text-gray-900">Top Performing Features</h4>
+          <h4 className="text-sm font-medium text-card-foreground">Top Performing Features</h4>
           <div className="space-y-2">
             {topFeatures.map((item, index) => (
-              <div key={item.feature} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg-lg">
+              <div key={item.feature} className="flex items-center justify-between p-3 bg-muted/50 rounded-[0.625rem] border border-border">
                 <div className="flex items-center space-x-3">
-                  <div className="flex items-center justify-center w-6 h-6 bg-purple-100 rounded-lg-full">
-                    <span className="text-xs font-semibold text-purple-600">{index + 1}</span>
+                  <div className="flex items-center justify-center w-6 h-6 bg-primary/10 rounded-full">
+                    <span className="text-xs font-semibold text-primary">{index + 1}</span>
                   </div>
                   <div>
-                    <p className="text-sm font-medium text-gray-900">{item.feature}</p>
-                    <p className="text-xs text-gray-500">Feature usage</p>
+                    <p className="text-sm font-medium text-card-foreground">{item.feature}</p>
+                    <p className="text-xs text-muted-foreground">Feature usage</p>
                   </div>
                 </div>
                 <div className="text-right">
@@ -246,39 +246,39 @@ export function EngagementHeatmap({ className = '' }: EngagementHeatmapProps) {
 
         {/* Usage Distribution */}
         <div className="space-y-3">
-          <h4 className="text-sm font-medium text-gray-900">Usage Distribution</h4>
+          <h4 className="text-sm font-medium text-card-foreground">Usage Distribution</h4>
           <div className="grid grid-cols-4 gap-2">
-            <div className="text-center p-2 bg-green-50 rounded-lg">
-              <p className="text-sm font-bold text-green-600">
+            <div className="text-center p-2 bg-success/10 rounded-[0.625rem] border border-success/20">
+              <p className="text-sm font-bold text-success">
                 {filteredSegments.reduce((count, segment) => 
                   count + Object.values(segment.features).filter(usage => usage >= 80).length, 0
                 )}
               </p>
-              <p className="text-xs text-gray-500">High (80%+)</p>
+              <p className="text-xs text-muted-foreground">High (80%+)</p>
             </div>
-            <div className="text-center p-2 bg-yellow-50 rounded-lg">
-              <p className="text-sm font-bold text-yellow-600">
+            <div className="text-center p-2 bg-warning/10 rounded-[0.625rem] border border-warning/20">
+              <p className="text-sm font-bold text-warning">
                 {filteredSegments.reduce((count, segment) => 
                   count + Object.values(segment.features).filter(usage => usage >= 60 && usage < 80).length, 0
                 )}
               </p>
-              <p className="text-xs text-gray-500">Medium (60-79%)</p>
+              <p className="text-xs text-muted-foreground">Medium (60-79%)</p>
             </div>
-            <div className="text-center p-2 bg-orange-50 rounded-lg">
-              <p className="text-sm font-bold text-orange-600">
+            <div className="text-center p-2 bg-info/10 rounded-[0.625rem] border border-info/20">
+              <p className="text-sm font-bold text-info">
                 {filteredSegments.reduce((count, segment) => 
                   count + Object.values(segment.features).filter(usage => usage >= 40 && usage < 60).length, 0
                 )}
               </p>
-              <p className="text-xs text-gray-500">Low (40-59%)</p>
+              <p className="text-xs text-muted-foreground">Low (40-59%)</p>
             </div>
-            <div className="text-center p-2 bg-red-50 rounded-lg">
-              <p className="text-sm font-bold text-red-600">
+            <div className="text-center p-2 bg-destructive/10 rounded-[0.625rem] border border-destructive/20">
+              <p className="text-sm font-bold text-destructive">
                 {filteredSegments.reduce((count, segment) => 
                   count + Object.values(segment.features).filter(usage => usage < 40).length, 0
                 )}
               </p>
-              <p className="text-xs text-gray-500">Very Low (&lt;40%)</p>
+              <p className="text-xs text-muted-foreground">Very Low (&lt;40%)</p>
             </div>
           </div>
         </div>
@@ -296,9 +296,9 @@ export function EngagementHeatmap({ className = '' }: EngagementHeatmapProps) {
         </div>
 
         {/* Insights */}
-        <div className="p-3 bg-blue-50 rounded-lg-lg">
-          <h5 className="text-sm font-medium text-blue-900 mb-2">💡 Engagement Insights</h5>
-          <ul className="text-xs text-blue-800 space-y-1">
+        <div className="p-3 bg-primary/10 rounded-[0.625rem] border border-primary/20">
+          <h5 className="text-sm font-medium text-primary mb-2">💡 Engagement Insights</h5>
+          <ul className="text-xs text-primary/80 space-y-1">
             <li>• Average feature usage: {totalUsage.toFixed(1)}%</li>
             <li>• Top feature: {topFeatures[0]?.feature} ({topFeatures[0]?.usage.toFixed(1)}% usage)</li>
             <li>• {filteredSegments.reduce((count, segment) => 

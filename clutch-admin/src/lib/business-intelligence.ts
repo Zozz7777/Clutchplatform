@@ -104,30 +104,34 @@ class BusinessIntelligenceService {
   public async getUnifiedOpsPulse(): Promise<OperationalPulse> {
     try {
       const [users, sessions, vehicles, revenue] = await Promise.all([
-        productionApi.getUsers(),
-        this.getActiveSessions(),
-        productionApi.getFleetVehicles(),
-        this.getRevenueMetrics()
+        productionApi.getUsers().catch(() => []),
+        this.getActiveSessions().catch(() => 0),
+        productionApi.getFleetVehicles().catch(() => []),
+        this.getRevenueMetrics().catch(() => ({ monthly: 0, total: 0, growth: 0 }))
       ]);
 
-      const activeUsers = users?.filter(u => u.status === 'active').length || 0;
-      const activeVehicles = vehicles?.filter(v => v.status === 'active').length || 0;
-      const totalVehicles = vehicles?.length || 1;
+      const activeUsers = Array.isArray(users) ? users.filter(u => u.status === 'active').length : 0;
+      const activeVehicles = Array.isArray(vehicles) ? vehicles.filter(v => v.status === 'active').length : 0;
+      const totalVehicles = Array.isArray(vehicles) ? vehicles.length : 1;
 
       return {
-        newUsers: users?.filter(u => {
-          const created = new Date(u.createdAt);
-          const thirtyDaysAgo = new Date(Date.now() - 30 * 24 * 60 * 60 * 1000);
-          return created > thirtyDaysAgo;
-        }).length || 0,
-        activeSessions: sessions,
+        newUsers: Array.isArray(users) ? users.filter(u => {
+          try {
+            const created = new Date(u.createdAt);
+            const thirtyDaysAgo = new Date(Date.now() - 30 * 24 * 60 * 60 * 1000);
+            return created > thirtyDaysAgo;
+          } catch {
+            return false;
+          }
+        }).length : 0,
+        activeSessions: typeof sessions === 'number' ? sessions : 0,
         activeVehicles,
-        revenueImpact: revenue.monthly,
-        conversionRate: activeUsers / (users?.length || 1) * 100,
+        revenueImpact: revenue?.monthly || 0,
+        conversionRate: activeUsers / (Array.isArray(users) ? users.length : 1) * 100,
         efficiency: (activeVehicles / totalVehicles) * 100
       };
     } catch (error) {
-      errorHandler.handleError(error as Error, 'Get unified ops pulse');
+      errorHandler.handleError(error as Error, 'Get unified ops pulse', { showToast: false });
       return {
         newUsers: 0,
         activeSessions: 0,
@@ -141,47 +145,54 @@ class BusinessIntelligenceService {
 
   public async getChurnRisk(): Promise<ChurnRisk[]> {
     try {
-      const users = await productionApi.getUsers();
+      const users = await productionApi.getUsers().catch(() => []);
       const churnRisks: ChurnRisk[] = [];
 
+      const usersArray = Array.isArray(users) ? users : [];
+
       // Simulate AI-powered churn prediction
-      for (const user of users || []) {
-        const lastLogin = new Date(user.lastLogin);
-        const daysSinceLogin = (Date.now() - lastLogin.getTime()) / (1000 * 60 * 60 * 24);
-        
-        let riskScore = 0;
-        const factors: string[] = [];
+      for (const user of usersArray) {
+        try {
+          const lastLogin = new Date(user.lastLogin);
+          const daysSinceLogin = (Date.now() - lastLogin.getTime()) / (1000 * 60 * 60 * 24);
+          
+          let riskScore = 0;
+          const factors: string[] = [];
 
-        // Calculate risk factors
-        if (daysSinceLogin > 30) {
-          riskScore += 40;
-          factors.push('Inactive for 30+ days');
-        }
-        if (daysSinceLogin > 14) {
-          riskScore += 20;
-          factors.push('Inactive for 14+ days');
-        }
-        if (user.status === 'inactive') {
-          riskScore += 30;
-          factors.push('Account inactive');
-        }
+          // Calculate risk factors
+          if (daysSinceLogin > 30) {
+            riskScore += 40;
+            factors.push('Inactive for 30+ days');
+          }
+          if (daysSinceLogin > 14) {
+            riskScore += 20;
+            factors.push('Inactive for 14+ days');
+          }
+          if (user.status === 'inactive') {
+            riskScore += 30;
+            factors.push('Account inactive');
+          }
 
-        if (riskScore > 50) {
-          churnRisks.push({
-            userId: user.id,
-            userName: user.name,
-            riskScore: Math.min(riskScore, 100),
-            confidence: Math.min(riskScore * 0.8, 95),
-            factors,
-            lastActivity: user.lastLogin,
-            predictedChurnDate: new Date(Date.now() + (100 - riskScore) * 24 * 60 * 60 * 1000).toISOString()
-          });
+          if (riskScore > 50) {
+            churnRisks.push({
+              userId: user.id || Math.random().toString(),
+              userName: user.name || 'Unknown User',
+              riskScore: Math.min(riskScore, 100),
+              confidence: Math.min(riskScore * 0.8, 95),
+              factors,
+              lastActivity: user.lastLogin || new Date().toISOString(),
+              predictedChurnDate: new Date(Date.now() + (100 - riskScore) * 24 * 60 * 60 * 1000).toISOString()
+            });
+          }
+        } catch (userError) {
+          // Skip invalid user data
+          continue;
         }
       }
 
       return churnRisks.sort((a, b) => b.riskScore - a.riskScore).slice(0, 10);
     } catch (error) {
-      errorHandler.handleError(error as Error, 'Get churn risk');
+      errorHandler.handleError(error as Error, 'Get churn risk', { showToast: false });
       return [];
     }
   }
@@ -199,21 +210,22 @@ class BusinessIntelligenceService {
   }> {
     try {
       const [revenue, fleet, payments] = await Promise.all([
-        this.getRevenueMetrics(),
-        productionApi.getFleetVehicles(),
-        productionApi.getPayments()
+        this.getRevenueMetrics().catch(() => ({ monthly: 0, total: 0, growth: 0 })),
+        productionApi.getFleetVehicles().catch(() => []),
+        productionApi.getPayments().catch(() => [])
       ]);
 
-      const fleetCosts = (fleet?.length || 0) * 500; // Estimated monthly cost per vehicle
+      const fleetCosts = (Array.isArray(fleet) ? fleet.length : 0) * 500; // Estimated monthly cost per vehicle
       const infrastructureCosts = 10000; // Estimated server costs
-      const maintenanceCosts = (fleet?.filter(v => v.status === 'maintenance').length || 0) * 2000;
+      const maintenanceCosts = (Array.isArray(fleet) ? fleet.filter(v => v.status === 'maintenance').length : 0) * 2000;
       const otherCosts = 5000;
 
       const totalCosts = fleetCosts + infrastructureCosts + maintenanceCosts + otherCosts;
-      const margin = ((revenue.monthly - totalCosts) / revenue.monthly) * 100;
+      const monthlyRevenue = revenue?.monthly || 0;
+      const margin = monthlyRevenue > 0 ? ((monthlyRevenue - totalCosts) / monthlyRevenue) * 100 : 0;
 
       return {
-        revenue: revenue.monthly,
+        revenue: monthlyRevenue,
         costs: totalCosts,
         margin: Math.max(margin, 0),
         breakdown: {
@@ -224,7 +236,7 @@ class BusinessIntelligenceService {
         }
       };
     } catch (error) {
-      errorHandler.handleError(error as Error, 'Get revenue vs cost margin');
+      errorHandler.handleError(error as Error, 'Get revenue vs cost margin', { showToast: false });
       return {
         revenue: 0,
         costs: 0,
@@ -243,19 +255,22 @@ class BusinessIntelligenceService {
   }>> {
     try {
       const [customers, payments] = await Promise.all([
-        productionApi.getCustomers(),
-        productionApi.getPayments()
+        productionApi.getCustomers().catch(() => []),
+        productionApi.getPayments().catch(() => [])
       ]);
 
-      const clientMetrics = (customers || []).map(customer => {
-        const customerPayments = (payments || []).filter(p => p.customer === customer.name);
-        const revenue = customerPayments.reduce((sum, p) => sum + p.amount, 0);
+      const customersArray = Array.isArray(customers) ? customers : [];
+      const paymentsArray = Array.isArray(payments) ? payments : [];
+
+      const clientMetrics = customersArray.map(customer => {
+        const customerPayments = paymentsArray.filter(p => p.customer === customer.name);
+        const revenue = customerPayments.reduce((sum, p) => sum + (p.amount || 0), 0);
         const activity = customer.status === 'active' ? 100 : 50;
         const growth = Math.random() * 20 - 10; // Simulated growth
 
         return {
-          id: customer.id,
-          name: customer.name,
+          id: customer.id || Math.random().toString(),
+          name: customer.name || 'Unknown Client',
           revenue,
           activity,
           growth
@@ -266,7 +281,7 @@ class BusinessIntelligenceService {
         .sort((a, b) => b.revenue - a.revenue)
         .slice(0, 5);
     } catch (error) {
-      errorHandler.handleError(error as Error, 'Get top enterprise clients');
+      errorHandler.handleError(error as Error, 'Get top enterprise clients', { showToast: false });
       return [];
     }
   }
@@ -563,8 +578,9 @@ class BusinessIntelligenceService {
 
   private async getRevenueMetrics(): Promise<{ monthly: number; total: number; growth: number }> {
     try {
-      const payments = await productionApi.getPayments();
-      const monthly = payments?.reduce((sum, p) => sum + p.amount, 0) || 0;
+      const payments = await productionApi.getPayments().catch(() => []);
+      const paymentsArray = Array.isArray(payments) ? payments : [];
+      const monthly = paymentsArray.reduce((sum, p) => sum + (p.amount || 0), 0);
       const total = monthly * 12; // Annual projection
       const growth = 15 + Math.random() * 10; // 15-25% growth
 

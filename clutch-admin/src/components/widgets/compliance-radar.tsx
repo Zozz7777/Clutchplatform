@@ -44,19 +44,19 @@ export function ComplianceRadar({ className = '' }: ComplianceRadarProps) {
 
   const getStatusColor = (status: string) => {
     switch (status) {
-      case 'green': return 'text-green-600';
-      case 'amber': return 'text-yellow-600';
-      case 'red': return 'text-red-600';
-      default: return 'text-gray-600';
+      case 'green': return 'text-success';
+      case 'amber': return 'text-warning';
+      case 'red': return 'text-destructive';
+      default: return 'text-muted-foreground';
     }
   };
 
   const getStatusBadge = (status: string) => {
     switch (status) {
-      case 'green': return 'bg-green-100 text-green-800';
-      case 'amber': return 'bg-yellow-100 text-yellow-800';
-      case 'red': return 'bg-red-100 text-red-800';
-      default: return 'bg-gray-100 text-gray-800';
+      case 'green': return 'bg-success/10 text-success border-success/20';
+      case 'amber': return 'bg-warning/10 text-warning border-warning/20';
+      case 'red': return 'bg-destructive/10 text-destructive border-destructive/20';
+      default: return 'bg-muted text-muted-foreground border-border';
     }
   };
 
@@ -87,19 +87,19 @@ export function ComplianceRadar({ className = '' }: ComplianceRadarProps) {
 
   if (isLoading) {
     return (
-      <Card className={className}>
+      <Card className={`${className} shadow-sm`}>
         <CardHeader>
-          <CardTitle className="flex items-center space-x-2">
-            <Shield className="h-5 w-5 text-blue-600" />
+          <CardTitle className="flex items-center space-x-2 text-card-foreground font-medium">
+            <Shield className="h-5 w-5 text-primary" />
             <span>Compliance Radar</span>
           </CardTitle>
-          <CardDescription>Loading compliance status...</CardDescription>
+          <CardDescription className="text-muted-foreground">Loading compliance status...</CardDescription>
         </CardHeader>
         <CardContent>
           <div className="animate-pulse space-y-4">
-            <div className="h-4 bg-gray-200 rounded-lg w-3/4"></div>
-            <div className="h-4 bg-gray-200 rounded-lg w-1/2"></div>
-            <div className="h-4 bg-gray-200 rounded-lg w-2/3"></div>
+            <div className="h-4 bg-muted rounded-[0.625rem] w-3/4"></div>
+            <div className="h-4 bg-muted rounded-[0.625rem] w-1/2"></div>
+            <div className="h-4 bg-muted rounded-[0.625rem] w-2/3"></div>
           </div>
         </CardContent>
       </Card>
@@ -108,13 +108,13 @@ export function ComplianceRadar({ className = '' }: ComplianceRadarProps) {
 
   if (!compliance) {
     return (
-      <Card className={className}>
+      <Card className={`${className} shadow-sm`}>
         <CardHeader>
-          <CardTitle className="flex items-center space-x-2">
-            <Shield className="h-5 w-5 text-blue-600" />
+          <CardTitle className="flex items-center space-x-2 text-card-foreground font-medium">
+            <Shield className="h-5 w-5 text-primary" />
             <span>Compliance Radar</span>
           </CardTitle>
-          <CardDescription>Unable to load compliance status</CardDescription>
+          <CardDescription className="text-muted-foreground">Unable to load compliance status</CardDescription>
         </CardHeader>
       </Card>
     );
@@ -124,19 +124,19 @@ export function ComplianceRadar({ className = '' }: ComplianceRadarProps) {
   const daysUntilAudit = getDaysUntilAudit();
 
   return (
-    <Card className={className}>
+    <Card className={`${className} shadow-sm`}>
       <CardHeader>
-        <CardTitle className="flex items-center space-x-2">
-          <Shield className="h-5 w-5 text-blue-600" />
+        <CardTitle className="flex items-center space-x-2 text-card-foreground font-medium">
+          <Shield className="h-5 w-5 text-primary" />
           <span>Compliance Radar</span>
         </CardTitle>
-        <CardDescription>
+        <CardDescription className="text-muted-foreground">
           Red-amber-green summary of compliance status
         </CardDescription>
       </CardHeader>
       <CardContent className="space-y-6">
         {/* Overall Status */}
-        <div className="text-center p-4 bg-gray-50 rounded-lg-lg">
+        <div className="text-center p-4 bg-muted/50 rounded-[0.625rem] border border-border">
           <div className="flex items-center justify-center space-x-2 mb-2">
             <StatusIcon className={`h-6 w-6 ${getStatusColor(compliance.overallStatus)}`} />
             <span className={`text-xl font-bold ${getStatusColor(compliance.overallStatus)}`}>
@@ -148,75 +148,75 @@ export function ComplianceRadar({ className = '' }: ComplianceRadarProps) {
                'Action Required'}
             </Badge>
           </div>
-          <p className="text-sm text-gray-600">Overall Compliance Status</p>
+          <p className="text-sm text-muted-foreground">Overall Compliance Status</p>
         </div>
 
         {/* Compliance Metrics */}
         <div className="grid grid-cols-3 gap-4">
-          <div className="text-center p-3 bg-blue-50 rounded-lg-lg">
-            <FileText className="h-5 w-5 text-blue-600 mx-auto mb-1" />
-            <p className="text-lg font-bold text-blue-600">{compliance.pendingApprovals}</p>
-            <p className="text-xs text-gray-500">Pending Approvals</p>
+          <div className="text-center p-3 bg-primary/10 rounded-[0.625rem] border border-primary/20">
+            <FileText className="h-5 w-5 text-primary mx-auto mb-1" />
+            <p className="text-lg font-bold text-primary">{compliance.pendingApprovals}</p>
+            <p className="text-xs text-muted-foreground">Pending Approvals</p>
           </div>
-          <div className="text-center p-3 bg-yellow-50 rounded-lg-lg">
-            <AlertTriangle className="h-5 w-5 text-yellow-600 mx-auto mb-1" />
-            <p className="text-lg font-bold text-yellow-600">{compliance.violations}</p>
-            <p className="text-xs text-gray-500">Violations</p>
+          <div className="text-center p-3 bg-warning/10 rounded-[0.625rem] border border-warning/20">
+            <AlertTriangle className="h-5 w-5 text-warning mx-auto mb-1" />
+            <p className="text-lg font-bold text-warning">{compliance.violations}</p>
+            <p className="text-xs text-muted-foreground">Violations</p>
           </div>
-          <div className="text-center p-3 bg-red-50 rounded-lg-lg">
-            <Lock className="h-5 w-5 text-red-600 mx-auto mb-1" />
-            <p className="text-lg font-bold text-red-600">{compliance.securityIncidents}</p>
-            <p className="text-xs text-gray-500">Security Incidents</p>
+          <div className="text-center p-3 bg-destructive/10 rounded-[0.625rem] border border-destructive/20">
+            <Lock className="h-5 w-5 text-destructive mx-auto mb-1" />
+            <p className="text-lg font-bold text-destructive">{compliance.securityIncidents}</p>
+            <p className="text-xs text-muted-foreground">Security Incidents</p>
           </div>
         </div>
 
         {/* Compliance Breakdown */}
         <div className="space-y-3">
-          <h4 className="text-sm font-medium text-gray-900">Compliance Breakdown</h4>
+          <h4 className="text-sm font-medium text-card-foreground">Compliance Breakdown</h4>
           
           <div className="space-y-2">
-            <div className="flex items-center justify-between p-3 bg-gray-50 rounded-lg-lg">
+            <div className="flex items-center justify-between p-3 bg-muted/50 rounded-[0.625rem] border border-border">
               <div className="flex items-center space-x-3">
-                <FileText className="h-4 w-4 text-blue-600" />
+                <FileText className="h-4 w-4 text-primary" />
                 <div>
-                  <p className="text-sm font-medium text-gray-900">Pending Approvals</p>
-                  <p className="text-xs text-gray-500">Awaiting review</p>
+                  <p className="text-sm font-medium text-card-foreground">Pending Approvals</p>
+                  <p className="text-xs text-muted-foreground">Awaiting review</p>
                 </div>
               </div>
               <div className="text-right">
-                <p className="text-sm font-semibold text-gray-900">{compliance.pendingApprovals}</p>
+                <p className="text-sm font-semibold text-card-foreground">{compliance.pendingApprovals}</p>
                 <Badge variant="outline" className="text-xs">
                   {compliance.pendingApprovals > 5 ? 'High' : compliance.pendingApprovals > 2 ? 'Medium' : 'Low'}
                 </Badge>
               </div>
             </div>
 
-            <div className="flex items-center justify-between p-3 bg-gray-50 rounded-lg-lg">
+            <div className="flex items-center justify-between p-3 bg-muted/50 rounded-[0.625rem] border border-border">
               <div className="flex items-center space-x-3">
-                <AlertTriangle className="h-4 w-4 text-yellow-600" />
+                <AlertTriangle className="h-4 w-4 text-warning" />
                 <div>
-                  <p className="text-sm font-medium text-gray-900">Compliance Violations</p>
-                  <p className="text-xs text-gray-500">Policy breaches</p>
+                  <p className="text-sm font-medium text-card-foreground">Compliance Violations</p>
+                  <p className="text-xs text-muted-foreground">Policy breaches</p>
                 </div>
               </div>
               <div className="text-right">
-                <p className="text-sm font-semibold text-gray-900">{compliance.violations}</p>
+                <p className="text-sm font-semibold text-card-foreground">{compliance.violations}</p>
                 <Badge variant="outline" className="text-xs">
                   {compliance.violations > 2 ? 'High' : compliance.violations > 0 ? 'Medium' : 'None'}
                 </Badge>
               </div>
             </div>
 
-            <div className="flex items-center justify-between p-3 bg-gray-50 rounded-lg-lg">
+            <div className="flex items-center justify-between p-3 bg-muted/50 rounded-[0.625rem] border border-border">
               <div className="flex items-center space-x-3">
-                <Lock className="h-4 w-4 text-red-600" />
+                <Lock className="h-4 w-4 text-destructive" />
                 <div>
-                  <p className="text-sm font-medium text-gray-900">Security Incidents</p>
-                  <p className="text-xs text-gray-500">Security breaches</p>
+                  <p className="text-sm font-medium text-card-foreground">Security Incidents</p>
+                  <p className="text-xs text-muted-foreground">Security breaches</p>
                 </div>
               </div>
               <div className="text-right">
-                <p className="text-sm font-semibold text-gray-900">{compliance.securityIncidents}</p>
+                <p className="text-sm font-semibold text-card-foreground">{compliance.securityIncidents}</p>
                 <Badge variant="outline" className="text-xs">
                   {compliance.securityIncidents > 0 ? 'Critical' : 'None'}
                 </Badge>
@@ -227,38 +227,38 @@ export function ComplianceRadar({ className = '' }: ComplianceRadarProps) {
 
         {/* Audit Timeline */}
         <div className="space-y-3">
-          <h4 className="text-sm font-medium text-gray-900 flex items-center space-x-2">
+          <h4 className="text-sm font-medium text-card-foreground flex items-center space-x-2">
             <Calendar className="h-4 w-4" />
             <span>Audit Timeline</span>
           </h4>
           
           <div className="space-y-3">
-            <div className="flex items-center justify-between p-3 bg-green-50 rounded-lg-lg">
+            <div className="flex items-center justify-between p-3 bg-success/10 rounded-[0.625rem] border border-success/20">
               <div className="flex items-center space-x-3">
-                <CheckCircle className="h-4 w-4 text-green-600" />
+                <CheckCircle className="h-4 w-4 text-success" />
                 <div>
-                  <p className="text-sm font-medium text-gray-900">Last Audit</p>
-                  <p className="text-xs text-gray-500">Completed successfully</p>
+                  <p className="text-sm font-medium text-card-foreground">Last Audit</p>
+                  <p className="text-xs text-muted-foreground">Completed successfully</p>
                 </div>
               </div>
               <div className="text-right">
-                <p className="text-sm font-semibold text-gray-900">
+                <p className="text-sm font-semibold text-card-foreground">
                   {formatDate(compliance.lastAudit)}
                 </p>
                 <Badge variant="secondary" className="text-xs">Passed</Badge>
               </div>
             </div>
 
-            <div className="flex items-center justify-between p-3 bg-blue-50 rounded-lg-lg">
+            <div className="flex items-center justify-between p-3 bg-primary/10 rounded-[0.625rem] border border-primary/20">
               <div className="flex items-center space-x-3">
-                <Clock className="h-4 w-4 text-blue-600" />
+                <Clock className="h-4 w-4 text-primary" />
                 <div>
-                  <p className="text-sm font-medium text-gray-900">Next Audit</p>
-                  <p className="text-xs text-gray-500">Scheduled audit</p>
+                  <p className="text-sm font-medium text-card-foreground">Next Audit</p>
+                  <p className="text-xs text-muted-foreground">Scheduled audit</p>
                 </div>
               </div>
               <div className="text-right">
-                <p className="text-sm font-semibold text-gray-900">
+                <p className="text-sm font-semibold text-card-foreground">
                   {formatDate(compliance.nextAudit)}
                 </p>
                 <Badge variant="outline" className="text-xs">
@@ -271,12 +271,12 @@ export function ComplianceRadar({ className = '' }: ComplianceRadarProps) {
 
         {/* Compliance Progress */}
         <div className="space-y-3">
-          <h4 className="text-sm font-medium text-gray-900">Compliance Progress</h4>
+          <h4 className="text-sm font-medium text-card-foreground">Compliance Progress</h4>
           
           <div className="space-y-2">
             <div className="flex justify-between text-sm">
-              <span>Overall Compliance</span>
-              <span>{compliance.overallStatus === 'green' ? '100%' : compliance.overallStatus === 'amber' ? '75%' : '50%'}</span>
+              <span className="text-muted-foreground">Overall Compliance</span>
+              <span className="text-card-foreground">{compliance.overallStatus === 'green' ? '100%' : compliance.overallStatus === 'amber' ? '75%' : '50%'}</span>
             </div>
             <Progress 
               value={compliance.overallStatus === 'green' ? 100 : compliance.overallStatus === 'amber' ? 75 : 50} 
@@ -287,20 +287,20 @@ export function ComplianceRadar({ className = '' }: ComplianceRadarProps) {
 
         {/* Action Buttons */}
         <div className="grid grid-cols-2 gap-2 pt-2">
-          <Button variant="outline" size="sm">
+          <Button variant="outline" size="sm" className="hover:bg-muted focus:ring-2 focus:ring-ring">
             <Eye className="h-4 w-4 mr-2" />
             View Details
           </Button>
-          <Button variant="outline" size="sm">
+          <Button variant="outline" size="sm" className="hover:bg-muted focus:ring-2 focus:ring-ring">
             <Download className="h-4 w-4 mr-2" />
             Export Report
           </Button>
         </div>
 
         {/* Compliance Insights */}
-        <div className="p-3 bg-blue-50 rounded-lg-lg">
-          <h5 className="text-sm font-medium text-blue-900 mb-2">💡 Compliance Insights</h5>
-          <ul className="text-xs text-blue-800 space-y-1">
+        <div className="p-3 bg-primary/10 rounded-[0.625rem] border border-primary/20">
+          <h5 className="text-sm font-medium text-primary mb-2">💡 Compliance Insights</h5>
+          <ul className="text-xs text-primary/80 space-y-1">
             {compliance.overallStatus === 'green' && (
               <li>• All compliance requirements are met</li>
             )}

@@ -1,0 +1,75 @@
+---
+description: |
+  Root-Cause Fixer role — Deep-dive and resolution on any reported error.
+
+  When I (the user) present an error, you (the agent) must treat that error as a production incident and run a full, exhaustive root-cause investigation and remediation workflow until the error is fully resolved or there is a documented, safe mitigation and human-approved rollback plan.
+
+  REQUIRED BEHAVIOR (do these steps every time, in order):
+
+  1) Triage & Reproduce
+     - Immediately collect the full error context: stack trace, request/response, user steps, timestamps, environment (dev/staging/prod), logs (app, server, infra), recent deploys and git SHAs.
+     - Attempt to reproduce the error locally and in a staging environment that mirrors production. Document exact reproduction steps.
+
+  2) Broad-scope Investigation (cover all layers)
+     - Code: trace stack back to the source files and functions; inspect recent code changes/PRs that touched this area.
+     - Frontend: check UI handlers, network requests, headers, auth tokens, CORS, payloads, and client-side validation.
+     - Backend: validate route handlers, middlewares, auth checks (JWT/RBAC), input validation, error handling, and response formats.
+     - Database: check schema migrations, indices, query plans, missing fields, corrupted or unexpected data, and relevant transactions.
+     - Infrastructure: inspect container logs, orchestration (k8s/PM2), load balancer, proxies, CDN, TLS, DNS, firewall rules, rate-limits and quotas.
+     - Third parties: verify external API credentials, uptime, rate limits, and error responses.
+     - Environment & Config: validate environment variables, secrets, deployment config, feature flags, and rollout status.
+     - Performance/Resources: confirm CPU/memory, disk, network, connection pool exhaustion, or file descriptor limits that could trigger the error.
+
+  3) Hypotheses & Quick Mitigations
+     - Form prioritized hypotheses for root cause.
+     - For each safe and non-destructive mitigation, implement immediately (e.g., increase timeout, rate-limit fallback, switch to cached data, enable a circuit-breaker).
+     - For any destructive action (data deletion, DB migration, rollback that loses data), create a backup and a rollback plan and require explicit human approval before executing.
+
+  4) Implement Permanent Fix
+     - Make code changes to fix root cause (bug fix, validation, schema migration, retry/backoff logic, auth adjustments, CORS, etc.).
+     - Add unit/integration/e2e tests that reproduce the previous failure and prove the fix.
+     - Improve logging and add observability (structured logs, traces, metrics) around the failure point.
+
+  5) Validate & Test
+     - Run local tests, run CI (unit + integration + lint + typecheck), build both frontend and backend cleanly.
+     - Deploy fix to staging and run the exact reproduction steps; confirm the failure no longer occurs.
+     - Run a smoke test suite (automated) and manual verification across impacted flows.
+
+  6) Deploy & Monitor
+     - Deploy the fix to production using standard CI/CD procedures.
+     - Monitor logs, metrics, and alerts for a minimum of 30 minutes (or longer for high-risk issues); verify error rate returns to baseline.
+     - If symptoms persist, rollback per safe rollback plan and escalate.
+
+  7) Documentation & Closing
+     - Open a PR with changes, include tests and a clear description of the root cause and the fix.
+     - Commit with a descriptive message and push; link PR to the incident ticket.
+     - Produce a post-mortem entry: root cause, timeline, impact, fix, tests added, monitoring added, and follow-up actions to prevent recurrence.
+     - If any manual steps or approvals were required, record who approved and when.
+
+  ESCALATION / EDGE CASES
+  - If you cannot reproduce the error after exhaustive attempts, produce a reproducibility report with all logs, telemetry, and a prioritized list of likely causes and recommended mitigations. Continue monitoring and add defensive guards until reproducible.
+  - If the fix requires credentials, secrets, or irreversible operations, stop and create a remediation plan and request human approval (include full risk assessment and rollback strategy).
+  - Never perform destructive operations in production without backup and explicit approval.
+
+  GUARANTEES
+  - Do not return control to me with an open TODO for the same error. Either:
+    • The error is resolved and validated in production, or
+    • There is a documented, tested mitigation and a human-approved plan for the remaining risky step.
+
+  REPORT FORMAT (deliver after resolution or mitigation):
+  - Incident summary (one-paragraph)
+  - Reproduction steps (exact)
+  - Root cause (concise)
+  - Fix implemented (files/PR links, tests)
+  - Validation steps & evidence (logs, screenshots, metrics)
+  - Rollback plan (if any)
+  - Follow-ups & preventive actions
+globs:
+  - "clutch-admin/**"
+  - "shared-backend/**"
+  - "**/*.ts"
+  - "**/*.tsx"
+  - "**/*.js"
+  - "**/*.json"
+alwaysApply: true
+---

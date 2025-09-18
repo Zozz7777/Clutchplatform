@@ -170,6 +170,15 @@ router.get('/invitations', authenticateToken, checkRole(['head_administrator', '
     
     const invitationsCollection = await getCollection('employee_invitations');
     
+    if (!invitationsCollection) {
+      return res.status(500).json({
+        success: false,
+        error: 'DATABASE_CONNECTION_FAILED',
+        message: 'Database connection failed',
+        timestamp: new Date().toISOString()
+      });
+    }
+    
     // Build filter
     const filter = {};
     if (status !== 'all') {
@@ -190,12 +199,12 @@ router.get('/invitations', authenticateToken, checkRole(['head_administrator', '
     res.json({
       success: true,
       data: {
-        invitations,
+        invitations: invitations || [],
         pagination: {
           page: parseInt(page),
           limit: parseInt(limit),
-          total,
-          pages: Math.ceil(total / parseInt(limit))
+          total: total || 0,
+          pages: Math.ceil((total || 0) / parseInt(limit))
         }
       },
       message: 'Invitations retrieved successfully',

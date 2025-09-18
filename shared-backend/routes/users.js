@@ -8,6 +8,16 @@ const { getCollection } = require('../config/optimized-database');
 router.get('/', authenticateToken, checkRole(['head_administrator']), async (req, res) => {
   try {
     const usersCollection = await getCollection('users');
+    
+    if (!usersCollection) {
+      return res.status(500).json({
+        success: false,
+        error: 'DATABASE_CONNECTION_FAILED',
+        message: 'Database connection failed',
+        timestamp: new Date().toISOString()
+      });
+    }
+    
     const { page = 1, limit = 20, status, role } = req.query;
     const skip = (page - 1) * limit;
     
@@ -25,10 +35,15 @@ router.get('/', authenticateToken, checkRole(['head_administrator']), async (req
     
     const total = await usersCollection.countDocuments(filter);
     
-    res.paginated(users, page, limit, total, 'Users retrieved successfully');
+    res.paginated(users || [], page, limit, total, 'Users retrieved successfully');
   } catch (error) {
-    logger.error('Get users error:', error);
-    res.serverError('Failed to get users', error.message);
+    console.error('Get users error:', error);
+    res.status(500).json({
+      success: false,
+      error: 'Failed to get users',
+      message: error.message,
+      timestamp: new Date().toISOString()
+    });
   }
 });
 

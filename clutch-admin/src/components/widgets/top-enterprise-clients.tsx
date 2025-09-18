@@ -39,9 +39,10 @@ export function TopEnterpriseClients({ className = '' }: TopEnterpriseClientsPro
     const loadClients = async () => {
       try {
         const data = await businessIntelligence.getTopEnterpriseClients();
-        setClients(data);
+        setClients(Array.isArray(data) ? data : []);
       } catch (error) {
         console.error('Failed to load enterprise clients:', error);
+        setClients([]);
       } finally {
         setIsLoading(false);
       }
@@ -51,9 +52,9 @@ export function TopEnterpriseClients({ className = '' }: TopEnterpriseClientsPro
   }, []);
 
   const getGrowthColor = (growth: number) => {
-    if (growth > 0) return 'text-green-600';
-    if (growth < 0) return 'text-red-600';
-    return 'text-gray-600';
+    if (growth > 0) return 'text-success';
+    if (growth < 0) return 'text-destructive';
+    return 'text-muted-foreground';
   };
 
   const getGrowthIcon = (growth: number) => {
@@ -63,21 +64,21 @@ export function TopEnterpriseClients({ className = '' }: TopEnterpriseClientsPro
   };
 
   const getGrowthBadge = (growth: number) => {
-    if (growth > 0) return 'bg-green-100 text-green-800';
-    if (growth < 0) return 'bg-red-100 text-red-800';
-    return 'bg-gray-100 text-gray-800';
+    if (growth > 0) return 'bg-success/10 text-success';
+    if (growth < 0) return 'bg-destructive/10 text-destructive';
+    return 'bg-muted text-muted-foreground';
   };
 
   const getActivityColor = (activity: number) => {
-    if (activity >= 80) return 'text-green-600';
-    if (activity >= 60) return 'text-yellow-600';
-    return 'text-red-600';
+    if (activity >= 80) return 'text-success';
+    if (activity >= 60) return 'text-warning';
+    return 'text-destructive';
   };
 
   const getActivityBadge = (activity: number) => {
-    if (activity >= 80) return 'bg-green-100 text-green-800';
-    if (activity >= 60) return 'bg-yellow-100 text-yellow-800';
-    return 'bg-red-100 text-red-800';
+    if (activity >= 80) return 'bg-success/10 text-success';
+    if (activity >= 60) return 'bg-warning/10 text-warning';
+    return 'bg-destructive/10 text-destructive';
   };
 
   const getActivityLevel = (activity: number) => {
@@ -91,19 +92,19 @@ export function TopEnterpriseClients({ className = '' }: TopEnterpriseClientsPro
 
   if (isLoading) {
     return (
-      <Card className={className}>
+      <Card className={`${className} shadow-sm`}>
         <CardHeader>
-          <CardTitle className="flex items-center space-x-2">
-            <Building2 className="h-5 w-5 text-blue-600" />
+          <CardTitle className="flex items-center space-x-2 text-card-foreground font-medium">
+            <Building2 className="h-5 w-5 text-primary" />
             <span>Top 5 Enterprise Clients</span>
           </CardTitle>
-          <CardDescription>Loading client data...</CardDescription>
+          <CardDescription className="text-muted-foreground">Loading client data...</CardDescription>
         </CardHeader>
         <CardContent>
           <div className="animate-pulse space-y-4">
-            <div className="h-4 bg-gray-200 rounded-lg w-3/4"></div>
-            <div className="h-4 bg-gray-200 rounded-lg w-1/2"></div>
-            <div className="h-4 bg-gray-200 rounded-lg w-2/3"></div>
+            <div className="h-4 bg-muted rounded-[0.625rem] w-3/4"></div>
+            <div className="h-4 bg-muted rounded-[0.625rem] w-1/2"></div>
+            <div className="h-4 bg-muted rounded-[0.625rem] w-2/3"></div>
           </div>
         </CardContent>
       </Card>
@@ -111,32 +112,32 @@ export function TopEnterpriseClients({ className = '' }: TopEnterpriseClientsPro
   }
 
   return (
-    <Card className={className}>
+    <Card className={`${className} shadow-sm`}>
       <CardHeader>
-        <CardTitle className="flex items-center space-x-2">
-          <Building2 className="h-5 w-5 text-blue-600" />
+        <CardTitle className="flex items-center space-x-2 text-card-foreground font-medium">
+          <Building2 className="h-5 w-5 text-primary" />
           <span>Top 5 Enterprise Clients</span>
         </CardTitle>
-        <CardDescription>
+        <CardDescription className="text-muted-foreground">
           By revenue contribution & activity level
         </CardDescription>
       </CardHeader>
       <CardContent className="space-y-6">
         {/* Summary Stats */}
         <div className="grid grid-cols-2 gap-4">
-          <div className="text-center p-3 bg-green-50 rounded-lg-lg">
-            <DollarSign className="h-5 w-5 text-green-600 mx-auto mb-1" />
-            <p className="text-lg font-bold text-green-600">
+          <div className="text-center p-3 bg-success/10 rounded-[0.625rem] border border-success/20">
+            <DollarSign className="h-5 w-5 text-success mx-auto mb-1" />
+            <p className="text-lg font-bold text-success">
               ${totalRevenue.toLocaleString()}
             </p>
-            <p className="text-xs text-gray-500">Total Revenue</p>
+            <p className="text-xs text-muted-foreground">Total Revenue</p>
           </div>
-          <div className="text-center p-3 bg-blue-50 rounded-lg-lg">
-            <TrendingUp className="h-5 w-5 text-blue-600 mx-auto mb-1" />
-            <p className="text-lg font-bold text-blue-600">
+          <div className="text-center p-3 bg-primary/10 rounded-[0.625rem] border border-primary/20">
+            <TrendingUp className="h-5 w-5 text-primary mx-auto mb-1" />
+            <p className="text-lg font-bold text-primary">
               {averageGrowth.toFixed(1)}%
             </p>
-            <p className="text-xs text-gray-500">Avg Growth</p>
+            <p className="text-xs text-muted-foreground">Avg Growth</p>
           </div>
         </div>
 
@@ -147,17 +148,17 @@ export function TopEnterpriseClients({ className = '' }: TopEnterpriseClientsPro
             const revenuePercentage = totalRevenue > 0 ? (client.revenue / totalRevenue) * 100 : 0;
             
             return (
-              <div key={client.id} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg-lg">
+              <div key={client.id} className="flex items-center justify-between p-3 bg-muted/50 rounded-[0.625rem] border border-border">
                 <div className="flex items-center space-x-3 flex-1">
-                  <div className="flex items-center justify-center w-8 h-8 bg-blue-100 rounded-lg-full">
-                    <span className="text-sm font-semibold text-blue-600">
+                  <div className="flex items-center justify-center w-8 h-8 bg-primary/10 rounded-full">
+                    <span className="text-sm font-semibold text-primary">
                       {index + 1}
                     </span>
                   </div>
                   
                   <div className="flex-1">
                     <div className="flex items-center space-x-2">
-                      <p className="text-sm font-medium text-gray-900">{client.name}</p>
+                      <p className="text-sm font-medium text-card-foreground">{client.name}</p>
                       <Badge className={getActivityBadge(client.activity)}>
                         {getActivityLevel(client.activity)}
                       </Badge>
@@ -165,8 +166,8 @@ export function TopEnterpriseClients({ className = '' }: TopEnterpriseClientsPro
                     
                     <div className="flex items-center space-x-4 mt-1">
                       <div className="flex items-center space-x-1">
-                        <DollarSign className="h-3 w-3 text-gray-400" />
-                        <span className="text-xs text-gray-500">
+                        <DollarSign className="h-3 w-3 text-muted-foreground" />
+                        <span className="text-xs text-muted-foreground">
                           ${client.revenue.toLocaleString()}
                         </span>
                       </div>
@@ -179,7 +180,7 @@ export function TopEnterpriseClients({ className = '' }: TopEnterpriseClientsPro
                     </div>
                     
                     <div className="mt-2">
-                      <div className="flex justify-between text-xs text-gray-500 mb-1">
+                      <div className="flex justify-between text-xs text-muted-foreground mb-1">
                         <span>Revenue Share</span>
                         <span>{revenuePercentage.toFixed(1)}%</span>
                       </div>
@@ -189,13 +190,13 @@ export function TopEnterpriseClients({ className = '' }: TopEnterpriseClientsPro
                 </div>
                 
                 <div className="flex items-center space-x-1">
-                  <Button variant="ghost" size="sm" className="h-8 w-8 p-0">
+                  <Button variant="ghost" size="sm" className="h-8 w-8 p-0 hover:bg-muted focus:ring-2 focus:ring-ring">
                     <Eye className="h-4 w-4" />
                   </Button>
-                  <Button variant="ghost" size="sm" className="h-8 w-8 p-0">
+                  <Button variant="ghost" size="sm" className="h-8 w-8 p-0 hover:bg-muted focus:ring-2 focus:ring-ring">
                     <Mail className="h-4 w-4" />
                   </Button>
-                  <Button variant="ghost" size="sm" className="h-8 w-8 p-0">
+                  <Button variant="ghost" size="sm" className="h-8 w-8 p-0 hover:bg-muted focus:ring-2 focus:ring-ring">
                     <Phone className="h-4 w-4" />
                   </Button>
                 </div>
@@ -206,19 +207,19 @@ export function TopEnterpriseClients({ className = '' }: TopEnterpriseClientsPro
 
         {/* Revenue Distribution */}
         <div className="space-y-3">
-          <h4 className="text-sm font-medium text-gray-900">Revenue Distribution</h4>
+          <h4 className="text-sm font-medium text-card-foreground">Revenue Distribution</h4>
           <div className="space-y-2">
             {clients.map((client, index) => {
               const percentage = totalRevenue > 0 ? (client.revenue / totalRevenue) * 100 : 0;
               return (
                 <div key={client.id} className="flex items-center justify-between text-sm">
                   <div className="flex items-center space-x-2">
-                    <div className="w-3 h-3 bg-blue-500 rounded-lg-full"></div>
-                    <span className="text-gray-600">{client.name}</span>
+                    <div className="w-3 h-3 bg-primary rounded-full"></div>
+                    <span className="text-muted-foreground">{client.name}</span>
                   </div>
                   <div className="flex items-center space-x-2">
-                    <span className="text-gray-500">{percentage.toFixed(1)}%</span>
-                    <span className="text-gray-900 font-medium">
+                    <span className="text-muted-foreground">{percentage.toFixed(1)}%</span>
+                    <span className="text-card-foreground font-medium">
                       ${client.revenue.toLocaleString()}
                     </span>
                   </div>
@@ -230,39 +231,39 @@ export function TopEnterpriseClients({ className = '' }: TopEnterpriseClientsPro
 
         {/* Growth Analysis */}
         <div className="space-y-3">
-          <h4 className="text-sm font-medium text-gray-900">Growth Analysis</h4>
+          <h4 className="text-sm font-medium text-card-foreground">Growth Analysis</h4>
           <div className="grid grid-cols-2 gap-4">
-            <div className="text-center p-3 bg-green-50 rounded-lg-lg">
-              <p className="text-lg font-bold text-green-600">
+            <div className="text-center p-3 bg-success/10 rounded-[0.625rem] border border-success/20">
+              <p className="text-lg font-bold text-success">
                 {clients.filter(c => c.growth > 0).length}
               </p>
-              <p className="text-xs text-gray-500">Growing Clients</p>
+              <p className="text-xs text-muted-foreground">Growing Clients</p>
             </div>
-            <div className="text-center p-3 bg-red-50 rounded-lg-lg">
-              <p className="text-lg font-bold text-red-600">
+            <div className="text-center p-3 bg-destructive/10 rounded-[0.625rem] border border-destructive/20">
+              <p className="text-lg font-bold text-destructive">
                 {clients.filter(c => c.growth < 0).length}
               </p>
-              <p className="text-xs text-gray-500">Declining Clients</p>
+              <p className="text-xs text-muted-foreground">Declining Clients</p>
             </div>
           </div>
         </div>
 
         {/* Action Buttons */}
         <div className="flex space-x-2 pt-2">
-          <Button variant="outline" size="sm" className="flex-1">
+          <Button variant="outline" size="sm" className="flex-1 hover:bg-muted focus:ring-2 focus:ring-ring">
             <Users className="h-4 w-4 mr-2" />
             View All Clients
           </Button>
-          <Button variant="outline" size="sm" className="flex-1">
+          <Button variant="outline" size="sm" className="flex-1 hover:bg-muted focus:ring-2 focus:ring-ring">
             <Calendar className="h-4 w-4 mr-2" />
             Schedule Review
           </Button>
         </div>
 
         {/* Insights */}
-        <div className="p-3 bg-blue-50 rounded-lg-lg">
-          <h5 className="text-sm font-medium text-blue-900 mb-2">💡 Client Insights</h5>
-          <ul className="text-xs text-blue-800 space-y-1">
+        <div className="p-3 bg-primary/10 rounded-[0.625rem] border border-primary/20">
+          <h5 className="text-sm font-medium text-primary mb-2">💡 Client Insights</h5>
+          <ul className="text-xs text-primary/80 space-y-1">
             <li>• Top client contributes {(clients[0]?.revenue / totalRevenue * 100 || 0).toFixed(1)}% of total revenue</li>
             <li>• {clients.filter(c => c.growth > 0).length} out of {clients.length} clients showing positive growth</li>
             <li>• Average client activity level: {clients.reduce((sum, c) => sum + c.activity, 0) / clients.length || 0}%</li>

@@ -1,4 +1,4 @@
-export const API_BASE_URL = "https://clutch-main-nk7x.onrender.com";
+export const API_BASE_URL = "http://localhost:5001";
 export const DOMAIN = "yourclutch.com";
 export const ADMIN_DOMAIN = "admin.yourclutch.com";
 

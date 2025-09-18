@@ -8,6 +8,15 @@ router.get('/', authenticateToken, async (req, res) => {
   try {
     const notificationsCollection = await getCollection('notifications');
     
+    if (!notificationsCollection) {
+      return res.status(500).json({
+        success: false,
+        error: 'DATABASE_CONNECTION_FAILED',
+        message: 'Database connection failed',
+        timestamp: new Date().toISOString()
+      });
+    }
+    
     // Get notifications for the current user
     const notifications = await notificationsCollection
       .find({ 
@@ -20,7 +29,7 @@ router.get('/', authenticateToken, async (req, res) => {
 
     res.json({
       success: true,
-      data: notifications,
+      data: notifications || [],
       message: 'Notifications retrieved successfully',
       timestamp: new Date().toISOString()
     });

@@ -258,6 +258,7 @@ app.use('/api/v1/assets', assetsRoutes);
 app.use('/api/v1/projects', projectsRoutes);
 app.use('/api/v1/vendors', vendorsRoutes);
 app.use('/api/v1/performance', performanceRoutes);
+app.use('/api/v1/system/performance', performanceRoutes); // Add system performance route
 app.use('/api/v1/ai-ml', aiRoutes);
 app.use('/api/v1/compliance', complianceRoutes);
 

@@ -134,15 +134,15 @@ export function AtRiskClients({ className = '' }: AtRiskClientsProps) {
   }, []);
 
   const getRiskColor = (score: number) => {
-    if (score >= 80) return 'text-red-600';
-    if (score >= 60) return 'text-orange-600';
-    return 'text-yellow-600';
+    if (score >= 80) return 'text-destructive';
+    if (score >= 60) return 'text-warning';
+    return 'text-info';
   };
 
   const getRiskBadge = (score: number) => {
-    if (score >= 80) return 'bg-red-100 text-red-800';
-    if (score >= 60) return 'bg-orange-100 text-orange-800';
-    return 'bg-yellow-100 text-yellow-800';
+    if (score >= 80) return 'bg-destructive/10 text-destructive border-destructive/20';
+    if (score >= 60) return 'bg-warning/10 text-warning border-warning/20';
+    return 'bg-info/10 text-info border-info/20';
   };
 
   const getRiskLevel = (score: number) => {
@@ -153,26 +153,26 @@ export function AtRiskClients({ className = '' }: AtRiskClientsProps) {
 
   const getStatusColor = (status: string) => {
     switch (status) {
-      case 'critical': return 'text-red-600';
-      case 'high': return 'text-orange-600';
-      case 'medium': return 'text-yellow-600';
-      default: return 'text-gray-600';
+      case 'critical': return 'text-destructive';
+      case 'high': return 'text-warning';
+      case 'medium': return 'text-info';
+      default: return 'text-muted-foreground';
     }
   };
 
   const getStatusBadge = (status: string) => {
     switch (status) {
-      case 'critical': return 'bg-red-100 text-red-800';
-      case 'high': return 'bg-orange-100 text-orange-800';
-      case 'medium': return 'bg-yellow-100 text-yellow-800';
-      default: return 'bg-gray-100 text-gray-800';
+      case 'critical': return 'bg-destructive/10 text-destructive border-destructive/20';
+      case 'high': return 'bg-warning/10 text-warning border-warning/20';
+      case 'medium': return 'bg-info/10 text-info border-info/20';
+      default: return 'bg-muted text-muted-foreground border-border';
     }
   };
 
   const getChurnColor = (probability: number) => {
-    if (probability >= 70) return 'text-red-600';
-    if (probability >= 50) return 'text-orange-600';
-    return 'text-yellow-600';
+    if (probability >= 70) return 'text-destructive';
+    if (probability >= 50) return 'text-warning';
+    return 'text-info';
   };
 
   if (isLoading) {
@@ -180,7 +180,7 @@ export function AtRiskClients({ className = '' }: AtRiskClientsProps) {
       <Card className={className}>
         <CardHeader>
           <CardTitle className="flex items-center space-x-2">
-            <AlertTriangle className="h-5 w-5 text-red-600" />
+            <AlertTriangle className="h-5 w-5 text-destructive" />
             <span>At-Risk Clients</span>
           </CardTitle>
           <CardDescription>Loading at-risk clients data...</CardDescription>
@@ -201,7 +201,7 @@ export function AtRiskClients({ className = '' }: AtRiskClientsProps) {
       <Card className={className}>
         <CardHeader>
           <CardTitle className="flex items-center space-x-2">
-            <AlertTriangle className="h-5 w-5 text-red-600" />
+            <AlertTriangle className="h-5 w-5 text-destructive" />
             <span>At-Risk Clients</span>
           </CardTitle>
           <CardDescription>Unable to load at-risk clients data</CardDescription>
@@ -214,7 +214,7 @@ export function AtRiskClients({ className = '' }: AtRiskClientsProps) {
     <Card className={className}>
       <CardHeader>
         <CardTitle className="flex items-center space-x-2">
-          <AlertTriangle className="h-5 w-5 text-red-600" />
+          <AlertTriangle className="h-5 w-5 text-destructive" />
           <span>At-Risk Clients</span>
         </CardTitle>
         <CardDescription>
@@ -225,13 +225,13 @@ export function AtRiskClients({ className = '' }: AtRiskClientsProps) {
         {/* Summary Stats */}
         <div className="grid grid-cols-2 gap-4">
           <div className="text-center p-3 bg-red-50 rounded-lg-lg">
-            <Users className="h-5 w-5 text-red-600 mx-auto mb-1" />
-            <p className="text-lg font-bold text-red-600">{atRiskData.totalAtRisk}</p>
+            <Users className="h-5 w-5 text-destructive mx-auto mb-1" />
+            <p className="text-lg font-bold text-destructive">{atRiskData.totalAtRisk}</p>
             <p className="text-xs text-gray-500">At-Risk Clients</p>
           </div>
           <div className="text-center p-3 bg-orange-50 rounded-lg-lg">
-            <DollarSign className="h-5 w-5 text-orange-600 mx-auto mb-1" />
-            <p className="text-lg font-bold text-orange-600">
+            <DollarSign className="h-5 w-5 text-warning mx-auto mb-1" />
+            <p className="text-lg font-bold text-warning">
               ${atRiskData.totalRevenueAtRisk.toLocaleString()}
             </p>
             <p className="text-xs text-gray-500">Revenue at Risk</p>
@@ -260,13 +260,13 @@ export function AtRiskClients({ className = '' }: AtRiskClientsProps) {
           <h4 className="text-sm font-medium text-gray-900">Risk Status Distribution</h4>
           <div className="grid grid-cols-3 gap-2">
             <div className="text-center p-2 bg-red-50 rounded-lg">
-              <p className="text-sm font-bold text-red-600">
+              <p className="text-sm font-bold text-destructive">
                 {atRiskData.statusDistribution.critical || 0}
               </p>
               <p className="text-xs text-gray-500">Critical</p>
             </div>
             <div className="text-center p-2 bg-orange-50 rounded-lg">
-              <p className="text-sm font-bold text-orange-600">
+              <p className="text-sm font-bold text-warning">
                 {atRiskData.statusDistribution.high || 0}
               </p>
               <p className="text-xs text-gray-500">High Risk</p>
@@ -288,7 +288,7 @@ export function AtRiskClients({ className = '' }: AtRiskClientsProps) {
               <div key={client.clientId} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg-lg">
                 <div className="flex items-center space-x-3">
                   <div className="flex items-center justify-center w-8 h-8 bg-red-100 rounded-lg-full">
-                    <span className="text-sm font-semibold text-red-600">
+                    <span className="text-sm font-semibold text-destructive">
                       {client.riskScore}
                     </span>
                   </div>

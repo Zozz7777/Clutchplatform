@@ -97,7 +97,10 @@ const OPTIMIZED_COLLECTIONS = [
   
   // Device & Token Management
   'device_tokens',   // Keep for push notifications
-  'sessions'         // Keep for authentication
+  'sessions',        // Keep for authentication
+  
+  // Employee Management
+  'employee_invitations'  // Keep for employee invitation system
 ];
 
 // Collections to REMOVE (redundant/unused)
@@ -306,7 +309,12 @@ const createIndexSafely = async (collectionName, index, options = {}) => {
 const getCollection = async (collectionName) => {
   try {
     if (!db) {
+      console.log('🔄 Database not connected, attempting to connect...');
       await connectToDatabase();
+    }
+    
+    if (!db) {
+      throw new Error('Database connection failed');
     }
     
     // Validate collection is in optimized list
@@ -314,7 +322,12 @@ const getCollection = async (collectionName) => {
       console.warn(`⚠️ Collection '${collectionName}' is not in optimized list. Consider using: ${OPTIMIZED_COLLECTIONS.join(', ')}`);
     }
     
-    return db.collection(collectionName);
+    const collection = db.collection(collectionName);
+    if (!collection) {
+      throw new Error(`Collection '${collectionName}' could not be retrieved`);
+    }
+    
+    return collection;
   } catch (error) {
     console.error(`❌ Error getting optimized collection ${collectionName}:`, error);
     throw error;

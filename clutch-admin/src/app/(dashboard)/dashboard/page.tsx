@@ -208,7 +208,7 @@ export default function DashboardPage() {
                 {Icon && <Icon className="h-4 w-4 text-muted-foreground" />}
               </CardHeader>
               <CardContent>
-                <div className="text-2xl font-bold text-foreground">{formatMetricValue(metric)}</div>
+                <div className="text-2xl font-bold text-card-foreground">{formatMetricValue(metric)}</div>
                 <div className="flex items-center space-x-1 text-xs text-muted-foreground">
                   {getTrendIcon(metric.trend)}
                   <span>{metric.change}% from last month</span>
@@ -225,15 +225,15 @@ export default function DashboardPage() {
         <Card className="lg:col-span-2 shadow-sm">
           <CardHeader>
             <CardTitle className="text-card-foreground">Real-time Activity Feed</CardTitle>
-            <CardDescription>Latest actions and system events</CardDescription>
+            <CardDescription className="text-muted-foreground">Latest actions and system events</CardDescription>
           </CardHeader>
           <CardContent>
             <div className="space-y-4">
               {notifications.map((notification) => (
-                <div key={notification.id} className="flex items-start space-x-3 p-3 rounded-lg bg-muted/50">
+                <div key={notification.id} className="flex items-start space-x-3 p-3 rounded-[0.625rem] bg-muted/50 border border-border">
                   <div className="w-2 h-2 rounded-full bg-primary mt-2"></div>
                   <div className="flex-1">
-                    <p className="text-sm font-medium text-foreground">{notification.title}</p>
+                    <p className="text-sm font-medium text-card-foreground">{notification.title}</p>
                     <p className="text-xs text-muted-foreground">{notification.message}</p>
                     <p className="text-xs text-muted-foreground mt-1">
                       {formatRelativeTime(notification.timestamp)}
@@ -246,10 +246,10 @@ export default function DashboardPage() {
         </Card>
 
         {/* Quick Actions */}
-        <Card className="shadow-2xs">
+        <Card className="shadow-sm">
           <CardHeader>
             <CardTitle className="text-card-foreground">Quick Actions</CardTitle>
-            <CardDescription>Common administrative tasks</CardDescription>
+            <CardDescription className="text-muted-foreground">Common administrative tasks</CardDescription>
           </CardHeader>
           <CardContent className="space-y-3">
             {quickActions.slice(0, 6).map((action) => {
@@ -258,7 +258,7 @@ export default function DashboardPage() {
                 <Button 
                   key={action.id}
                   variant={action.id === 'add-user' ? 'default' : 'outline'}
-                  className="w-full justify-start shadow-sm"
+                  className="w-full justify-start shadow-sm hover:bg-muted focus:ring-2 focus:ring-ring"
                   onClick={action.action}
                   title={action.description}
                 >
@@ -271,19 +271,19 @@ export default function DashboardPage() {
         </Card>
 
         {/* Fleet Status */}
-        <Card className="shadow-2xs">
+        <Card className="shadow-sm">
           <CardHeader>
             <CardTitle className="text-card-foreground">Fleet Status</CardTitle>
-            <CardDescription>Real-time fleet monitoring</CardDescription>
+            <CardDescription className="text-muted-foreground">Real-time fleet monitoring</CardDescription>
           </CardHeader>
           <CardContent>
             <div className="space-y-4">
               {fleetVehicles.map((vehicle) => (
-                <div key={vehicle.id} className="flex items-center justify-between p-3 rounded-lg bg-muted/50">
+                <div key={vehicle.id} className="flex items-center justify-between p-3 rounded-[0.625rem] bg-muted/50 border border-border">
                   <div className="flex items-center space-x-3">
                     <div className="w-2 h-2 rounded-full bg-primary"></div>
                     <div>
-                      <p className="text-sm font-medium text-foreground">{vehicle.licensePlate}</p>
+                      <p className="text-sm font-medium text-card-foreground">{vehicle.licensePlate}</p>
                       <p className="text-xs text-muted-foreground">{vehicle.model}</p>
                     </div>
                   </div>
@@ -305,13 +305,13 @@ export default function DashboardPage() {
         <Card className="lg:col-span-2 shadow-sm">
           <CardHeader>
             <CardTitle className="text-card-foreground">Performance Metrics</CardTitle>
-            <CardDescription>API uptime, requests, errors, and sessions</CardDescription>
+            <CardDescription className="text-muted-foreground">API uptime, requests, errors, and sessions</CardDescription>
           </CardHeader>
           <CardContent>
             <div className="grid gap-4 md:grid-cols-2">
               <div className="space-y-2">
                 <div className="flex items-center justify-between">
-                  <span className="text-sm font-medium text-foreground">API Uptime</span>
+                  <span className="text-sm font-medium text-card-foreground">API Uptime</span>
                   <span className="text-sm text-muted-foreground">
                     {performanceMetrics?.uptime ? `${performanceMetrics.uptime}%` : '99.9%'}
                   </span>
@@ -325,7 +325,7 @@ export default function DashboardPage() {
               </div>
               <div className="space-y-2">
                 <div className="flex items-center justify-between">
-                  <span className="text-sm font-medium text-foreground">Request Rate</span>
+                  <span className="text-sm font-medium text-card-foreground">Request Rate</span>
                   <span className="text-sm text-muted-foreground">
                     {performanceMetrics?.requestRate ? `${performanceMetrics.requestRate.toLocaleString()}/min` : '1,234/min'}
                   </span>
@@ -339,7 +339,7 @@ export default function DashboardPage() {
               </div>
               <div className="space-y-2">
                 <div className="flex items-center justify-between">
-                  <span className="text-sm font-medium text-foreground">Error Rate</span>
+                  <span className="text-sm font-medium text-card-foreground">Error Rate</span>
                   <span className="text-sm text-muted-foreground">
                     {performanceMetrics?.errorRate ? `${performanceMetrics.errorRate}%` : '0.1%'}
                   </span>
@@ -353,7 +353,7 @@ export default function DashboardPage() {
               </div>
               <div className="space-y-2">
                 <div className="flex items-center justify-between">
-                  <span className="text-sm font-medium text-foreground">Active Sessions</span>
+                  <span className="text-sm font-medium text-card-foreground">Active Sessions</span>
                   <span className="text-sm text-muted-foreground">
                     {performanceMetrics?.activeSessions ? performanceMetrics.activeSessions.toLocaleString() : '456'}
                   </span>
@@ -370,32 +370,32 @@ export default function DashboardPage() {
         </Card>
 
         {/* Alerts/Notifications Card */}
-        <Card className="shadow-2xs">
+        <Card className="shadow-sm">
           <CardHeader>
             <CardTitle className="text-card-foreground">System Alerts</CardTitle>
-            <CardDescription>Critical notifications requiring attention</CardDescription>
+            <CardDescription className="text-muted-foreground">Critical notifications requiring attention</CardDescription>
           </CardHeader>
           <CardContent>
             <div className="space-y-3">
               <div className="flex items-center space-x-3 p-3 rounded-[0.625rem] bg-destructive/10 border border-destructive/20">
                 <AlertTriangle className="h-4 w-4 text-destructive" />
                 <div>
-                  <p className="text-sm font-medium text-destructive-foreground">High Error Rate</p>
-                  <p className="text-xs text-destructive-foreground/80">API errors increased by 15%</p>
+                  <p className="text-sm font-medium text-destructive">High Error Rate</p>
+                  <p className="text-xs text-destructive/80">API errors increased by 15%</p>
                 </div>
               </div>
-              <div className="flex items-center space-x-3 p-3 rounded-[0.625rem] bg-muted border border-border">
+              <div className="flex items-center space-x-3 p-3 rounded-[0.625rem] bg-muted/50 border border-border">
                 <Clock className="h-4 w-4 text-muted-foreground" />
                 <div>
-                  <p className="text-sm font-medium text-foreground">Maintenance Window</p>
+                  <p className="text-sm font-medium text-card-foreground">Maintenance Window</p>
                   <p className="text-xs text-muted-foreground">Scheduled for tonight 2AM</p>
                 </div>
               </div>
-              <div className="flex items-center space-x-3 p-3 rounded-[0.625rem] bg-primary/10 border border-primary/20">
-                <CheckCircle className="h-4 w-4 text-primary" />
+              <div className="flex items-center space-x-3 p-3 rounded-[0.625rem] bg-success/10 border border-success/20">
+                <CheckCircle className="h-4 w-4 text-success" />
                 <div>
-                  <p className="text-sm font-medium text-primary-foreground">System Healthy</p>
-                  <p className="text-xs text-primary-foreground/80">All services operational</p>
+                  <p className="text-sm font-medium text-success">System Healthy</p>
+                  <p className="text-xs text-success/80">All services operational</p>
                 </div>
               </div>
             </div>
@@ -407,7 +407,7 @@ export default function DashboardPage() {
       <div className="space-y-6">
         <div className="flex items-center justify-between">
           <div>
-            <h2 className="text-2xl font-bold tracking-tight text-foreground">Business Intelligence</h2>
+            <h2 className="text-2xl font-bold tracking-tight text-card-foreground">Business Intelligence</h2>
             <p className="text-muted-foreground">
               Advanced analytics and predictive insights for data-driven decisions
             </p>

@@ -32,9 +32,10 @@ export function ChurnRiskCard({ className = '', showDetails = false }: ChurnRisk
     const loadChurnRisks = async () => {
       try {
         const data = await businessIntelligence.getChurnRisk();
-        setChurnRisks(data);
+        setChurnRisks(Array.isArray(data) ? data : []);
       } catch (error) {
         logger.error('Failed to load churn risks:', error);
+        setChurnRisks([]);
       } finally {
         setIsLoading(false);
       }
@@ -44,15 +45,15 @@ export function ChurnRiskCard({ className = '', showDetails = false }: ChurnRisk
   }, []);
 
   const getRiskColor = (score: number) => {
-    if (score >= 80) return 'text-red-600';
-    if (score >= 60) return 'text-yellow-600';
-    return 'text-green-600';
+    if (score >= 80) return 'text-destructive';
+    if (score >= 60) return 'text-warning';
+    return 'text-success';
   };
 
   const getRiskBadge = (score: number) => {
-    if (score >= 80) return 'bg-red-100 text-red-800';
-    if (score >= 60) return 'bg-yellow-100 text-yellow-800';
-    return 'bg-green-100 text-green-800';
+    if (score >= 80) return 'bg-destructive/10 text-destructive';
+    if (score >= 60) return 'bg-warning/10 text-warning';
+    return 'bg-success/10 text-success';
   };
 
   const getRiskLevel = (score: number) => {
@@ -79,19 +80,19 @@ export function ChurnRiskCard({ className = '', showDetails = false }: ChurnRisk
 
   if (isLoading) {
     return (
-      <Card className={className}>
+      <Card className={`${className} shadow-sm`}>
         <CardHeader>
-          <CardTitle className="flex items-center space-x-2">
-            <AlertTriangle className="h-5 w-5 text-orange-500" />
+          <CardTitle className="flex items-center space-x-2 text-card-foreground font-medium">
+            <AlertTriangle className="h-5 w-5 text-warning" />
             <span>Churn Risk Analysis</span>
           </CardTitle>
-          <CardDescription>Loading churn risk data...</CardDescription>
+          <CardDescription className="text-muted-foreground">Loading churn risk data...</CardDescription>
         </CardHeader>
         <CardContent>
           <div className="animate-pulse space-y-4">
-            <div className="h-4 bg-gray-200 rounded-lg w-3/4"></div>
-            <div className="h-4 bg-gray-200 rounded-lg w-1/2"></div>
-            <div className="h-4 bg-gray-200 rounded-lg w-2/3"></div>
+            <div className="h-4 bg-muted rounded-[0.625rem] w-3/4"></div>
+            <div className="h-4 bg-muted rounded-[0.625rem] w-1/2"></div>
+            <div className="h-4 bg-muted rounded-[0.625rem] w-2/3"></div>
           </div>
         </CardContent>
       </Card>
@@ -103,44 +104,44 @@ export function ChurnRiskCard({ className = '', showDetails = false }: ChurnRisk
   const totalAtRisk = churnRisks.length;
 
   return (
-    <Card className={className}>
+    <Card className={`${className} shadow-sm`}>
       <CardHeader>
-        <CardTitle className="flex items-center space-x-2">
-          <AlertTriangle className="h-5 w-5 text-orange-500" />
+        <CardTitle className="flex items-center space-x-2 text-card-foreground font-medium">
+          <AlertTriangle className="h-5 w-5 text-warning" />
           <span>Churn Risk Analysis</span>
         </CardTitle>
-        <CardDescription>
+        <CardDescription className="text-muted-foreground">
           AI-powered prediction of customer churn risk
         </CardDescription>
       </CardHeader>
       <CardContent className="space-y-6">
         {/* Summary Stats */}
         <div className="grid grid-cols-3 gap-4">
-          <div className="text-center p-3 bg-red-50 rounded-lg-lg">
-            <p className="text-2xl font-bold text-red-600">{highRiskCount}</p>
-            <p className="text-xs text-gray-500">High Risk</p>
+          <div className="text-center p-3 bg-destructive/10 rounded-[0.625rem] border border-destructive/20">
+            <p className="text-2xl font-bold text-destructive">{highRiskCount}</p>
+            <p className="text-xs text-muted-foreground">High Risk</p>
           </div>
-          <div className="text-center p-3 bg-yellow-50 rounded-lg-lg">
-            <p className="text-2xl font-bold text-yellow-600">{mediumRiskCount}</p>
-            <p className="text-xs text-gray-500">Medium Risk</p>
+          <div className="text-center p-3 bg-warning/10 rounded-[0.625rem] border border-warning/20">
+            <p className="text-2xl font-bold text-warning">{mediumRiskCount}</p>
+            <p className="text-xs text-muted-foreground">Medium Risk</p>
           </div>
-          <div className="text-center p-3 bg-blue-50 rounded-lg-lg">
-            <p className="text-2xl font-bold text-blue-600">{totalAtRisk}</p>
-            <p className="text-xs text-gray-500">Total At Risk</p>
+          <div className="text-center p-3 bg-primary/10 rounded-[0.625rem] border border-primary/20">
+            <p className="text-2xl font-bold text-primary">{totalAtRisk}</p>
+            <p className="text-xs text-muted-foreground">Total At Risk</p>
           </div>
         </div>
 
         {/* Risk Distribution */}
         <div className="space-y-2">
           <div className="flex justify-between text-sm">
-            <span>High Risk (80%+)</span>
-            <span>{highRiskCount}</span>
+            <span className="text-muted-foreground">High Risk (80%+)</span>
+            <span className="text-card-foreground">{highRiskCount}</span>
           </div>
           <Progress value={(highRiskCount / Math.max(totalAtRisk, 1)) * 100} className="h-2" />
           
           <div className="flex justify-between text-sm">
-            <span>Medium Risk (60-79%)</span>
-            <span>{mediumRiskCount}</span>
+            <span className="text-muted-foreground">Medium Risk (60-79%)</span>
+            <span className="text-card-foreground">{mediumRiskCount}</span>
           </div>
           <Progress value={(mediumRiskCount / Math.max(totalAtRisk, 1)) * 100} className="h-2" />
         </div>
@@ -149,13 +150,13 @@ export function ChurnRiskCard({ className = '', showDetails = false }: ChurnRisk
         {churnRisks.length > 0 && (
           <div className="space-y-3">
             <div className="flex items-center justify-between">
-              <h4 className="text-sm font-medium text-gray-900">At-Risk Users</h4>
+              <h4 className="text-sm font-medium text-card-foreground">At-Risk Users</h4>
               {!showAll && churnRisks.length > 3 && (
                 <Button
                   variant="ghost"
                   size="sm"
                   onClick={() => setShowAll(true)}
-                  className="text-xs"
+                  className="text-xs hover:bg-muted focus:ring-2 focus:ring-ring"
                 >
                   View All ({churnRisks.length})
                 </Button>
@@ -164,31 +165,31 @@ export function ChurnRiskCard({ className = '', showDetails = false }: ChurnRisk
             
             <div className="space-y-2">
               {(showAll ? churnRisks : churnRisks.slice(0, 3)).map((risk) => (
-                <div key={risk.userId} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg-lg">
+                <div key={risk.userId} className="flex items-center justify-between p-3 bg-muted/50 rounded-[0.625rem] border border-border">
                   <div className="flex-1">
                     <div className="flex items-center space-x-2">
-                      <p className="text-sm font-medium text-gray-900">{risk.userName}</p>
+                      <p className="text-sm font-medium text-card-foreground">{risk.userName}</p>
                       <Badge className={getRiskBadge(risk.riskScore)}>
                         {getRiskLevel(risk.riskScore)}
                       </Badge>
                     </div>
                     <div className="flex items-center space-x-4 mt-1">
                       <div className="flex items-center space-x-1">
-                        <TrendingDown className="h-3 w-3 text-gray-400" />
-                        <span className="text-xs text-gray-500">
+                        <TrendingDown className="h-3 w-3 text-muted-foreground" />
+                        <span className="text-xs text-muted-foreground">
                           {risk.riskScore.toFixed(0)}% risk
                         </span>
                       </div>
                       <div className="flex items-center space-x-1">
-                        <Clock className="h-3 w-3 text-gray-400" />
-                        <span className="text-xs text-gray-500">
+                        <Clock className="h-3 w-3 text-muted-foreground" />
+                        <span className="text-xs text-muted-foreground">
                           Last active: {formatRelativeTime(risk.lastActivity)}
                         </span>
                       </div>
                     </div>
                     {risk.factors.length > 0 && (
                       <div className="mt-1">
-                        <p className="text-xs text-gray-500">
+                        <p className="text-xs text-muted-foreground">
                           Factors: {risk.factors.slice(0, 2).join(', ')}
                           {risk.factors.length > 2 && ` +${risk.factors.length - 2} more`}
                         </p>
@@ -197,13 +198,13 @@ export function ChurnRiskCard({ className = '', showDetails = false }: ChurnRisk
                   </div>
                   
                   <div className="flex items-center space-x-1">
-                    <Button variant="ghost" size="sm" className="h-8 w-8 p-0">
+                    <Button variant="ghost" size="sm" className="h-8 w-8 p-0 hover:bg-muted focus:ring-2 focus:ring-ring">
                       <Eye className="h-4 w-4" />
                     </Button>
-                    <Button variant="ghost" size="sm" className="h-8 w-8 p-0">
+                    <Button variant="ghost" size="sm" className="h-8 w-8 p-0 hover:bg-muted focus:ring-2 focus:ring-ring">
                       <Mail className="h-4 w-4" />
                     </Button>
-                    <Button variant="ghost" size="sm" className="h-8 w-8 p-0">
+                    <Button variant="ghost" size="sm" className="h-8 w-8 p-0 hover:bg-muted focus:ring-2 focus:ring-ring">
                       <Phone className="h-4 w-4" />
                     </Button>
                   </div>
@@ -215,15 +216,15 @@ export function ChurnRiskCard({ className = '', showDetails = false }: ChurnRisk
 
         {/* Predicted Churn Timeline */}
         {churnRisks.length > 0 && (
-          <div className="pt-4 border-t">
-            <h4 className="text-sm font-medium text-gray-900 mb-3">Predicted Churn Timeline</h4>
+          <div className="pt-4 border-t border-border">
+            <h4 className="text-sm font-medium text-card-foreground mb-3">Predicted Churn Timeline</h4>
             <div className="space-y-2">
               {churnRisks.slice(0, 3).map((risk) => (
                 <div key={risk.userId} className="flex items-center justify-between text-sm">
-                  <span className="text-gray-600">{risk.userName}</span>
+                  <span className="text-muted-foreground">{risk.userName}</span>
                   <div className="flex items-center space-x-2">
-                    <Calendar className="h-3 w-3 text-gray-400" />
-                    <span className="text-gray-500">
+                    <Calendar className="h-3 w-3 text-muted-foreground" />
+                    <span className="text-muted-foreground">
                       {formatDate(risk.predictedChurnDate)}
                     </span>
                     <Badge variant="outline" className="text-xs">
@@ -237,12 +238,12 @@ export function ChurnRiskCard({ className = '', showDetails = false }: ChurnRisk
         )}
 
         {/* Action Buttons */}
-        <div className="flex space-x-2 pt-4 border-t">
-          <Button variant="outline" size="sm" className="flex-1">
+        <div className="flex space-x-2 pt-4 border-t border-border">
+          <Button variant="outline" size="sm" className="flex-1 hover:bg-muted focus:ring-2 focus:ring-ring">
             <Mail className="h-4 w-4 mr-2" />
             Send Retention Campaign
           </Button>
-          <Button variant="outline" size="sm" className="flex-1">
+          <Button variant="outline" size="sm" className="flex-1 hover:bg-muted focus:ring-2 focus:ring-ring">
             <Users className="h-4 w-4 mr-2" />
             View All Users
           </Button>

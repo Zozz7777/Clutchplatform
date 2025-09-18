@@ -51,24 +51,26 @@ export function UpsellOpportunities({ className = '' }: UpsellOpportunitiesProps
     const loadUpsellData = async () => {
       try {
         const [customers, payments] = await Promise.all([
-          productionApi.getCustomers(),
-          productionApi.getPayments()
+          productionApi.getCustomers().catch(() => []),
+          productionApi.getPayments().catch(() => [])
         ]);
 
         // Get upsell opportunities from API
-        const opportunities = await productionApi.getUpsellOpportunities();
+        const opportunities = await productionApi.getUpsellOpportunities().catch(() => []);
 
-        const totalPotentialRevenue = opportunities.reduce((sum, opp) => sum + opp.potentialRevenue, 0);
-        const averageConfidence = opportunities.reduce((sum, opp) => sum + opp.confidence, 0) / opportunities.length;
-        const highConfidenceCount = opportunities.filter(opp => opp.confidence >= 80).length;
+        const opportunitiesArray = Array.isArray(opportunities) ? opportunities : [];
+        const totalPotentialRevenue = opportunitiesArray.reduce((sum, opp) => sum + (opp.potentialRevenue || 0), 0);
+        const averageConfidence = opportunitiesArray.length > 0 ? opportunitiesArray.reduce((sum, opp) => sum + (opp.confidence || 0), 0) / opportunitiesArray.length : 0;
+        const highConfidenceCount = opportunitiesArray.filter(opp => (opp.confidence || 0) >= 80).length;
         
-        const segmentBreakdown = opportunities.reduce((acc, opp) => {
-          acc[opp.segment] = (acc[opp.segment] || 0) + 1;
+        const segmentBreakdown = opportunitiesArray.reduce((acc, opp) => {
+          const segment = opp.segment || 'Unknown';
+          acc[segment] = (acc[segment] || 0) + 1;
           return acc;
         }, {} as Record<string, number>);
 
         setUpsellData({
-          opportunities,
+          opportunities: opportunitiesArray,
           totalPotentialRevenue,
           averageConfidence,
           highConfidenceCount,

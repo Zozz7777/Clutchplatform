@@ -165,9 +165,16 @@ export default function HRPage() {
         }
 
         // Load employee invitations
-        const invitationsResponse = await apiService.getEmployeeInvitations();
-        if (invitationsResponse.success) {
-          setInvitations(invitationsResponse.data?.invitations || []);
+        try {
+          const invitationsResponse = await apiService.getEmployeeInvitations();
+          if (invitationsResponse.success) {
+            setInvitations(invitationsResponse.data?.invitations || []);
+          } else {
+            setInvitations([]);
+          }
+        } catch (error) {
+          console.error('Failed to load employee invitations:', error);
+          setInvitations([]);
         }
 
         // Load HR stats
@@ -735,7 +742,7 @@ export default function HRPage() {
           </CardHeader>
           <CardContent>
             <div className="space-y-4">
-              {invitations.map((invitation) => (
+              {(invitations || []).map((invitation) => (
                 <div key={invitation._id} className="flex items-center justify-between p-4 border rounded-lg hover:bg-muted/50 transition-colors">
                   <div className="flex items-center space-x-4">
                     <div className="w-10 h-10 rounded-full bg-muted flex items-center justify-center">
