@@ -172,6 +172,19 @@ export function CommandModal({
                       onChange={(e) => handleInputChange(field.name, e.target.value)}
                       required={field.required}
                     />
+                  ) : field.type === 'file' ? (
+                    <Input
+                      id={field.name}
+                      type="file"
+                      accept=".csv,.xlsx,.xls"
+                      onChange={(e) => {
+                        const file = e.target.files?.[0];
+                        if (file) {
+                          handleInputChange(field.name, file);
+                        }
+                      }}
+                      required={field.required}
+                    />
                   ) : (
                     <Input
                       id={field.name}

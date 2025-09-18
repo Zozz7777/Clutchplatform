@@ -189,4 +189,81 @@ router.delete('/:id', checkRole(['head_administrator', 'admin']), async (req, re
   }
 });
 
+// GET /api/v1/compliance/status - Get compliance status summary
+router.get('/status', authenticateToken, async (req, res) => {
+  try {
+    const complianceCollection = await getCollection('compliance');
+    
+    // Get compliance data from database
+    const complianceData = await complianceCollection.find({}).toArray();
+    
+    if (complianceData.length > 0) {
+      // Calculate real compliance metrics
+      const totalItems = complianceData.length;
+      const pendingApprovals = complianceData.filter(item => item.status === 'pending').length;
+      const violations = complianceData.filter(item => item.status === 'violation').length;
+      const securityIncidents = complianceData.filter(item => item.category === 'security' && item.status === 'violation').length;
+      
+      // Determine overall status
+      let overallStatus = 'green';
+      if (violations > 5 || securityIncidents > 0) {
+        overallStatus = 'red';
+      } else if (violations > 2 || pendingApprovals > 10) {
+        overallStatus = 'amber';
+      }
+      
+      // Get last and next audit dates
+      const auditDates = complianceData
+        .filter(item => item.lastAudit || item.nextAudit)
+        .map(item => ({ lastAudit: item.lastAudit, nextAudit: item.nextAudit }))
+        .filter(dates => dates.lastAudit || dates.nextAudit);
+      
+      const lastAudit = auditDates.length > 0 ? 
+        auditDates.sort((a, b) => new Date(b.lastAudit) - new Date(a.lastAudit))[0].lastAudit :
+        new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toISOString();
+      
+      const nextAudit = auditDates.length > 0 ? 
+        auditDates.sort((a, b) => new Date(a.nextAudit) - new Date(b.nextAudit))[0].nextAudit :
+        new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString();
+      
+      res.json({
+        success: true,
+        data: {
+          pendingApprovals,
+          violations,
+          securityIncidents,
+          overallStatus,
+          lastAudit,
+          nextAudit
+        },
+        message: 'Compliance status retrieved successfully',
+        timestamp: new Date().toISOString()
+      });
+    } else {
+      // No compliance data, return default status
+      res.json({
+        success: true,
+        data: {
+          pendingApprovals: 0,
+          violations: 0,
+          securityIncidents: 0,
+          overallStatus: 'green',
+          lastAudit: new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toISOString(),
+          nextAudit: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString()
+        },
+        message: 'Compliance status retrieved successfully',
+        timestamp: new Date().toISOString()
+      });
+    }
+  } catch (error) {
+    console.error('Error fetching compliance status:', error);
+    res.status(500).json({
+      success: false,
+      error: 'Failed to fetch compliance status',
+      message: error.message,
+      timestamp: new Date().toISOString()
+    });
+  }
+});
+
 module.exports = router;

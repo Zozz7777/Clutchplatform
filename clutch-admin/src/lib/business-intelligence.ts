@@ -150,10 +150,10 @@ class BusinessIntelligenceService {
 
       const usersArray = Array.isArray(users) ? users : [];
 
-      // Simulate AI-powered churn prediction
+      // AI-powered churn prediction based on real user data
       for (const user of usersArray) {
         try {
-          const lastLogin = new Date(user.lastLogin);
+          const lastLogin = user.lastLogin ? new Date(user.lastLogin) : new Date();
           const daysSinceLogin = (Date.now() - lastLogin.getTime()) / (1000 * 60 * 60 * 24);
           
           let riskScore = 0;

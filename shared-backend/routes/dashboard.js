@@ -133,24 +133,99 @@ router.get('/kpis', authenticateToken, async (req, res) => {
 // GET /api/v1/dashboard/analytics - Get dashboard analytics
 router.get('/analytics', authenticateToken, checkRole(['head_administrator', 'analyst']), async (req, res) => {
   try {
+    // Get real data from database
+    const usersCollection = await getCollection('users');
+    const vehiclesCollection = await getCollection('vehicles');
+    const bookingsCollection = await getCollection('bookings');
+    const transactionsCollection = await getCollection('transactions');
+    const reviewsCollection = await getCollection('reviews');
+    
+    // Calculate real analytics from database
+    const [
+      totalUsers,
+      totalVehicles,
+      totalBookings,
+      totalRevenueResult,
+      completedBookings,
+      totalReviews,
+      averageRatingResult
+    ] = await Promise.all([
+      usersCollection.countDocuments(),
+      vehiclesCollection.countDocuments(),
+      bookingsCollection.countDocuments(),
+      transactionsCollection.aggregate([
+        { $group: { _id: null, total: { $sum: '$amount' } } }
+      ]).toArray(),
+      bookingsCollection.countDocuments({ status: 'completed' }),
+      reviewsCollection.countDocuments(),
+      reviewsCollection.aggregate([
+        { $group: { _id: null, average: { $avg: '$rating' } } }
+      ]).toArray()
+    ]);
+
+    const totalRevenue = totalRevenueResult[0]?.total || 0;
+    const averageRating = averageRatingResult[0]?.average || 0;
+    const serviceCompletionRate = totalBookings > 0 ? (completedBookings / totalBookings * 100) : 0;
+    
+    // Calculate fleet utilization (active vehicles / total vehicles)
+    const activeVehicles = await vehiclesCollection.countDocuments({ status: 'active' });
+    const fleetUtilization = totalVehicles > 0 ? (activeVehicles / totalVehicles * 100) : 0;
+    
+    // Calculate customer satisfaction (based on reviews)
+    const customerSatisfaction = averageRating > 0 ? (averageRating / 5 * 100) : 0;
+
+    // Calculate trends (compare current month vs previous month)
+    const currentMonth = new Date();
+    const previousMonth = new Date(currentMonth.getFullYear(), currentMonth.getMonth() - 1, 1);
+    const currentMonthStart = new Date(currentMonth.getFullYear(), currentMonth.getMonth(), 1);
+    
+    const [
+      currentMonthRevenue,
+      previousMonthRevenue,
+      currentMonthUsers,
+      previousMonthUsers,
+      currentMonthBookings,
+      previousMonthBookings
+    ] = await Promise.all([
+      transactionsCollection.aggregate([
+        { $match: { createdAt: { $gte: currentMonthStart } } },
+        { $group: { _id: null, total: { $sum: '$amount' } } }
+      ]).toArray(),
+      transactionsCollection.aggregate([
+        { $match: { createdAt: { $gte: previousMonth, $lt: currentMonthStart } } },
+        { $group: { _id: null, total: { $sum: '$amount' } } }
+      ]).toArray(),
+      usersCollection.countDocuments({ createdAt: { $gte: currentMonthStart } }),
+      usersCollection.countDocuments({ createdAt: { $gte: previousMonth, $lt: currentMonthStart } }),
+      bookingsCollection.countDocuments({ createdAt: { $gte: currentMonthStart } }),
+      bookingsCollection.countDocuments({ createdAt: { $gte: previousMonth, $lt: currentMonthStart } })
+    ]);
+
+    const currentRevenue = currentMonthRevenue[0]?.total || 0;
+    const prevRevenue = previousMonthRevenue[0]?.total || 0;
+    const revenueGrowth = prevRevenue > 0 ? ((currentRevenue - prevRevenue) / prevRevenue * 100) : 0;
+    
+    const userGrowth = previousMonthUsers > 0 ? ((currentMonthUsers - previousMonthUsers) / previousMonthUsers * 100) : 0;
+    const bookingGrowth = previousMonthBookings > 0 ? ((currentMonthBookings - previousMonthBookings) / previousMonthBookings * 100) : 0;
+
     const analytics = {
       overview: {
-        totalRevenue: 125000,
-        totalBookings: 2100,
-        totalUsers: 1250,
-        totalVehicles: 850
+        totalRevenue: Math.round(totalRevenue),
+        totalBookings: totalBookings,
+        totalUsers: totalUsers,
+        totalVehicles: totalVehicles
       },
       performance: {
-        averageResponseTime: '2.5 minutes',
-        serviceCompletionRate: 95,
-        customerSatisfaction: 4.7,
-        fleetUtilization: 85
+        averageResponseTime: '2.5 minutes', // TODO: Calculate from actual response times
+        serviceCompletionRate: Math.round(serviceCompletionRate * 10) / 10,
+        customerSatisfaction: Math.round(customerSatisfaction * 10) / 10,
+        fleetUtilization: Math.round(fleetUtilization * 10) / 10
       },
       trends: {
-        revenueGrowth: 8.5,
-        userGrowth: 12.3,
-        bookingGrowth: 15.2,
-        satisfactionGrowth: 2.1
+        revenueGrowth: Math.round(revenueGrowth * 10) / 10,
+        userGrowth: Math.round(userGrowth * 10) / 10,
+        bookingGrowth: Math.round(bookingGrowth * 10) / 10,
+        satisfactionGrowth: 0 // TODO: Calculate satisfaction trend
       }
     };
 

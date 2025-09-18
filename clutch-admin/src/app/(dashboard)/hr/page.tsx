@@ -148,7 +148,9 @@ export default function HRPage() {
         
         if (employeesResponse.ok) {
           const employeesData = await employeesResponse.json();
-          setEmployees(employeesData.data || employeesData);
+          setEmployees(Array.isArray(employeesData.data) ? employeesData.data : Array.isArray(employeesData) ? employeesData : []);
+        } else {
+          setEmployees([]);
         }
 
         // Load job applications
@@ -161,7 +163,9 @@ export default function HRPage() {
         
         if (applicationsResponse.ok) {
           const applicationsData = await applicationsResponse.json();
-          setApplications(applicationsData.data || applicationsData);
+          setApplications(Array.isArray(applicationsData.data) ? applicationsData.data : Array.isArray(applicationsData) ? applicationsData : []);
+        } else {
+          setApplications([]);
         }
 
         // Load employee invitations
@@ -215,6 +219,10 @@ export default function HRPage() {
         }
       } catch (error) {
         console.error("Failed to load HR data:", error);
+        // Ensure arrays are always initialized on error
+        setEmployees([]);
+        setApplications([]);
+        setInvitations([]);
       } finally {
         setIsLoading(false);
       }
@@ -224,8 +232,8 @@ export default function HRPage() {
   }, []);
 
   useEffect(() => {
-    let filteredEmps = employees || [];
-    let filteredApps = applications || [];
+    let filteredEmps = Array.isArray(employees) ? employees : [];
+    let filteredApps = Array.isArray(applications) ? applications : [];
 
     // Search filter
     if (searchQuery) {
@@ -515,10 +523,10 @@ export default function HRPage() {
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">
-              {stats ? stats.totalEmployees : employees.length}
+              {stats ? stats.totalEmployees : Array.isArray(employees) ? employees.length : 0}
             </div>
             <p className="text-xs text-muted-foreground">
-              {stats ? stats.activeEmployees : employees.filter(e => e.status === "active").length} active
+              {stats ? stats.activeEmployees : Array.isArray(employees) ? employees.filter(e => e.status === "active").length : 0} active
             </p>
           </CardContent>
         </Card>
@@ -530,9 +538,9 @@ export default function HRPage() {
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">
-              {stats ? stats.newHires : employees.filter(e => 
+              {stats ? stats.newHires : Array.isArray(employees) ? employees.filter(e => 
                 new Date(e.startDate) >= new Date(Date.now() - 30 * 24 * 60 * 60 * 1000)
-              ).length}
+              ).length : 0}
             </div>
             <p className="text-xs text-muted-foreground">
               This month
@@ -547,9 +555,9 @@ export default function HRPage() {
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">
-              {stats ? stats.pendingApplications : applications.filter(a => 
+              {stats ? stats.pendingApplications : Array.isArray(applications) ? applications.filter(a => 
                 a.status === "applied" || a.status === "screening" || a.status === "interview"
-              ).length}
+              ).length : 0}
             </div>
             <p className="text-xs text-muted-foreground">
               {stats ? stats.openPositions : 5} open positions
@@ -565,7 +573,7 @@ export default function HRPage() {
           <CardContent>
             <div className="text-2xl font-bold">
               ${stats ? Math.round(stats.averageSalary).toLocaleString() : 
-                employees.length > 0 ? Math.round(employees.reduce((sum, e) => sum + e.salary, 0) / employees.length).toLocaleString() : 0}
+                Array.isArray(employees) && employees.length > 0 ? Math.round(employees.reduce((sum, e) => sum + e.salary, 0) / employees.length).toLocaleString() : 0}
             </div>
             <p className="text-xs text-muted-foreground">
               Annual average
@@ -590,7 +598,7 @@ export default function HRPage() {
           onClick={() => setActiveTab("invitations")}
         >
           <Mail className="mr-2 h-4 w-4" />
-          Invitations ({invitations.filter(i => i.status === 'pending').length})
+          Invitations ({Array.isArray(invitations) ? invitations.filter(i => i.status === 'pending').length : 0})
         </Button>
         <Button
           variant={activeTab === "recruitment" ? "default" : "ghost"}

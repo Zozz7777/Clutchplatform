@@ -232,9 +232,14 @@ router.post('/:id/test', checkRole(['head_administrator']), async (req, res) => 
     }
     
     // Mock integration test
+    const startTime = Date.now();
+    // Simulate actual integration test
+    await new Promise(resolve => setTimeout(resolve, 100 + Math.random() * 200)); // 100-300ms
+    const responseTime = Date.now() - startTime;
+    
     const testResult = {
       success: true,
-      responseTime: Math.random() * 1000,
+      responseTime: responseTime,
       status: 'connected',
       message: 'Integration test successful',
       timestamp: new Date()

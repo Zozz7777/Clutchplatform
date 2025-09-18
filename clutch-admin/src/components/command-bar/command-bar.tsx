@@ -5,7 +5,7 @@ import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, Command
 import { Dialog, DialogContent } from '@/components/ui/dialog';
 import { Badge } from '@/components/ui/badge';
 import { CommandModal, ConfirmModal, InputModal } from '@/components/ui/command-modal';
-import { toast } from '@/lib/toast';
+import { toast } from 'sonner';
 import { logger } from '@/lib/logger';
 import { 
   Search, 
@@ -377,7 +377,7 @@ export default function CommandBar({ isOpen, onClose }: CommandBarProps) {
       ],
       onSubmit: async (data) => {
         const file = data.file;
-        if (file) {
+        if (file && file instanceof File) {
           try {
             const text = await file.text();
             const lines = text.split('\n');
@@ -440,13 +440,15 @@ export default function CommandBar({ isOpen, onClose }: CommandBarProps) {
         
         for (const vehicle of vehicles) {
           try {
-            await productionApi.updateFleetVehicle(vehicle.id, { 
-              ...vehicle, 
-              status: 'maintenance' 
-            });
-            stoppedCount++;
+            if (vehicle.id) {
+              await productionApi.updateFleetVehicle(vehicle.id, { 
+                ...vehicle, 
+                status: 'maintenance' 
+              });
+              stoppedCount++;
+            }
           } catch (error) {
-            console.error(`Failed to stop vehicle ${vehicle.id}:`, error);
+            console.error(`Failed to stop vehicle ${vehicle.id || 'unknown'}:`, error);
           }
         }
         
@@ -535,14 +537,19 @@ export default function CommandBar({ isOpen, onClose }: CommandBarProps) {
   };
 
   const handleGenerateInvoice = async () => {
-    try {
-      const customerId = 'customer-123';
-      const amount = '1000.00';
-      
-      if (customerId && amount) {
+    setModalState({
+      type: 'form',
+      title: 'Generate Invoice',
+      description: 'Enter the invoice details',
+      fields: [
+        { name: 'customerId', label: 'Customer ID', type: 'text', placeholder: 'customer-123', required: true },
+        { name: 'amount', label: 'Amount', type: 'number', placeholder: '1000.00', required: true },
+        { name: 'description', label: 'Description', type: 'textarea', placeholder: 'Invoice description' }
+      ],
+      onSubmit: async (data) => {
         const invoiceData = {
-          customerId,
-          amount: parseFloat(amount),
+          customerId: data.customerId,
+          amount: parseFloat(data.amount),
           type: 'invoice',
           status: 'pending',
           description: 'Invoice generated from command bar',
@@ -554,12 +561,9 @@ export default function CommandBar({ isOpen, onClose }: CommandBarProps) {
           logger.log('Invoice generated successfully:', result);
           toast.success('Invoice generated successfully!');
         }
+        onClose();
       }
-      onClose();
-    } catch (error) {
-      console.error('Error generating invoice:', error);
-      toast.error('Failed to generate invoice. Please try again.');
-    }
+    });
   };
 
   const handleSystemHealthCheck = async () => {

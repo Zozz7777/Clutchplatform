@@ -852,6 +852,61 @@ export class ProductionApiService {
     }
   }
 
+  // Business Intelligence APIs
+  async getComplianceStatus(): Promise<any> {
+    try {
+      return await realApi.getComplianceStatus();
+    } catch (error) {
+      console.error("Failed to fetch compliance status:", error);
+      throw new Error("Failed to load compliance status");
+    }
+  }
+
+  async getEngagementHeatmap(): Promise<any> {
+    try {
+      return await realApi.getEngagementHeatmap();
+    } catch (error) {
+      console.error("Failed to fetch engagement heatmap:", error);
+      throw new Error("Failed to load engagement heatmap");
+    }
+  }
+
+  async getMaintenanceForecast(): Promise<any> {
+    try {
+      return await realApi.getMaintenanceForecast();
+    } catch (error) {
+      console.error("Failed to fetch maintenance forecast:", error);
+      throw new Error("Failed to load maintenance forecast");
+    }
+  }
+
+  async getRecommendationUplift(): Promise<any> {
+    try {
+      return await realApi.getRecommendationUplift();
+    } catch (error) {
+      console.error("Failed to fetch recommendation uplift:", error);
+      throw new Error("Failed to load recommendation uplift");
+    }
+  }
+
+  async getActiveSessions(): Promise<any> {
+    try {
+      return await realApi.getActiveSessions();
+    } catch (error) {
+      console.error("Failed to fetch active sessions:", error);
+      throw new Error("Failed to load active sessions");
+    }
+  }
+
+  async getRevenueMetrics(): Promise<any> {
+    try {
+      return await realApi.getRevenueMetrics();
+    } catch (error) {
+      console.error("Failed to fetch revenue metrics:", error);
+      throw new Error("Failed to load revenue metrics");
+    }
+  }
+
   async getSystemLogs(): Promise<any[]> {
     try {
       return await realApi.getSystemLogs();

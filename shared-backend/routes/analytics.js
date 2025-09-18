@@ -40,26 +40,54 @@ router.get('/metrics', authenticateToken, async (req, res) => {
       ]).toArray()
     ]);
 
+    // Calculate growth rates (compare current month vs previous month)
+    const currentMonth = new Date();
+    const previousMonth = new Date(currentMonth.getFullYear(), currentMonth.getMonth() - 1, 1);
+    const currentMonthStart = new Date(currentMonth.getFullYear(), currentMonth.getMonth(), 1);
+    
+    const [
+      currentMonthUsers,
+      previousMonthUsers,
+      currentMonthRevenue,
+      previousMonthRevenue
+    ] = await Promise.all([
+      db.collection('users').countDocuments({ createdAt: { $gte: currentMonthStart } }),
+      db.collection('users').countDocuments({ createdAt: { $gte: previousMonth, $lt: currentMonthStart } }),
+      db.collection('payments').aggregate([
+        { $match: { createdAt: { $gte: currentMonthStart } } },
+        { $group: { _id: null, total: { $sum: '$amount' } } }
+      ]).toArray(),
+      db.collection('payments').aggregate([
+        { $match: { createdAt: { $gte: previousMonth, $lt: currentMonthStart } } },
+        { $group: { _id: null, total: { $sum: '$amount' } } }
+      ]).toArray()
+    ]);
+
+    const currentRevenue = currentMonthRevenue[0]?.total || 0;
+    const prevRevenue = previousMonthRevenue[0]?.total || 0;
+    const userGrowth = previousMonthUsers > 0 ? ((currentMonthUsers - previousMonthUsers) / previousMonthUsers * 100) : 0;
+    const revenueGrowth = prevRevenue > 0 ? ((currentRevenue - prevRevenue) / prevRevenue * 100) : 0;
+
     const metrics = {
       users: {
         total: totalUsers,
         active: activeUsers,
-        growth: 0 // TODO: Calculate growth rate
+        growth: Math.round(userGrowth * 10) / 10
       },
       vehicles: {
         total: totalVehicles,
         active: activeVehicles,
-        utilization: activeVehicles / totalVehicles * 100
+        utilization: totalVehicles > 0 ? Math.round((activeVehicles / totalVehicles * 100) * 10) / 10 : 0
       },
       orders: {
         total: totalOrders,
         pending: pendingOrders,
-        completionRate: ((totalOrders - pendingOrders) / totalOrders * 100) || 0
+        completionRate: totalOrders > 0 ? Math.round(((totalOrders - pendingOrders) / totalOrders * 100) * 10) / 10 : 0
       },
       revenue: {
         total: totalRevenue[0]?.total || 0,
         monthly: monthlyRevenue[0]?.total || 0,
-        growth: 0 // TODO: Calculate growth rate
+        growth: Math.round(revenueGrowth * 10) / 10
       }
     };
 
@@ -359,6 +387,181 @@ router.post('/custom', authenticateToken, checkRole(['head_administrator', 'admi
     res.status(500).json({
       success: false,
       error: 'Failed to fetch custom analytics',
+      message: error.message,
+      timestamp: new Date().toISOString()
+    });
+  }
+});
+
+// GET /api/v1/analytics/upsell-opportunities - Get upsell opportunities
+router.get('/upsell-opportunities', authenticateToken, async (req, res) => {
+  try {
+    const { db } = await connectToDatabase();
+    
+    // Get customers and their payment history
+    const [customers, payments] = await Promise.all([
+      db.collection('users').find({ role: { $in: ['user', 'customer'] } }).toArray(),
+      db.collection('payments').find({}).toArray()
+    ]);
+    
+    const opportunities = customers.map(customer => {
+      const customerPayments = payments.filter(p => 
+        p.customerId === customer._id.toString() || 
+        p.userId === customer._id.toString()
+      );
+      
+      const totalSpent = customerPayments.reduce((sum, p) => sum + (p.amount || 0), 0);
+      const avgPayment = customerPayments.length > 0 ? totalSpent / customerPayments.length : 0;
+      
+      // Calculate opportunity score based on spending patterns
+      let opportunityScore = 0;
+      let potentialRevenue = 0;
+      let confidence = 0.5;
+      
+      if (totalSpent > 1000 && customerPayments.length > 3) {
+        opportunityScore = 85;
+        potentialRevenue = totalSpent * 1.5; // 50% increase potential
+        confidence = 0.8;
+      } else if (totalSpent > 500 && customerPayments.length > 2) {
+        opportunityScore = 70;
+        potentialRevenue = totalSpent * 1.3; // 30% increase potential
+        confidence = 0.7;
+      } else if (totalSpent > 100) {
+        opportunityScore = 55;
+        potentialRevenue = totalSpent * 1.2; // 20% increase potential
+        confidence = 0.6;
+      }
+      
+      return {
+        customerId: customer._id.toString(),
+        customerName: customer.name || customer.email,
+        currentRevenue: totalSpent,
+        potentialRevenue: Math.round(potentialRevenue),
+        opportunityScore: opportunityScore,
+        confidence: Math.round(confidence * 100) / 100,
+        segment: customer.segment || 'Standard',
+        lastPayment: customerPayments.length > 0 ? 
+          customerPayments.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))[0].createdAt : 
+          customer.createdAt,
+        paymentCount: customerPayments.length,
+        avgPaymentAmount: Math.round(avgPayment)
+      };
+    }).filter(opp => opp.opportunityScore > 50).sort((a, b) => b.opportunityScore - a.opportunityScore);
+    
+    res.json({
+      success: true,
+      data: opportunities,
+      message: 'Upsell opportunities retrieved successfully',
+      timestamp: new Date().toISOString()
+    });
+  } catch (error) {
+    console.error('Error fetching upsell opportunities:', error);
+    res.status(500).json({
+      success: false,
+      error: 'Failed to fetch upsell opportunities',
+      message: error.message,
+      timestamp: new Date().toISOString()
+    });
+  }
+});
+
+// GET /api/v1/analytics/engagement-heatmap - Get engagement heatmap data
+router.get('/engagement-heatmap', authenticateToken, async (req, res) => {
+  try {
+    const { db } = await connectToDatabase();
+    
+    // Get user activity data
+    const users = await db.collection('users').find({}).toArray();
+    const bookings = await db.collection('bookings').find({}).toArray();
+    const payments = await db.collection('payments').find({}).toArray();
+    
+    // Group users by segment
+    const segments = ['Enterprise', 'SMB', 'Individual'];
+    const features = ['Dashboard', 'Bookings', 'Payments', 'Support', 'Reports'];
+    
+    const heatmapData = segments.map(segment => {
+      const segmentUsers = users.filter(user => 
+        (user.segment || 'Individual') === segment
+      );
+      
+      const featuresUsage = {};
+      features.forEach(feature => {
+        let usage = 0;
+        
+        switch (feature) {
+          case 'Dashboard':
+            usage = segmentUsers.filter(u => u.lastLogin && 
+              new Date(u.lastLogin) > new Date(Date.now() - 7 * 24 * 60 * 60 * 1000)
+            ).length / segmentUsers.length * 100;
+            break;
+          case 'Bookings':
+            const segmentBookings = bookings.filter(b => 
+              segmentUsers.some(u => u._id.toString() === b.userId)
+            );
+            usage = segmentBookings.length / segmentUsers.length * 10; // Normalize
+            break;
+          case 'Payments':
+            const segmentPayments = payments.filter(p => 
+              segmentUsers.some(u => u._id.toString() === p.userId)
+            );
+            usage = segmentPayments.length / segmentUsers.length * 10; // Normalize
+            break;
+          case 'Support':
+            usage = Math.random() * 30 + 20; // Mock support usage
+            break;
+          case 'Reports':
+            usage = Math.random() * 20 + 10; // Mock reports usage
+            break;
+        }
+        
+        featuresUsage[feature] = Math.min(100, Math.max(0, Math.round(usage)));
+      });
+      
+      return {
+        segment,
+        features: featuresUsage
+      };
+    });
+    
+    res.json({
+      success: true,
+      data: { segments: heatmapData },
+      message: 'Engagement heatmap retrieved successfully',
+      timestamp: new Date().toISOString()
+    });
+  } catch (error) {
+    console.error('Error fetching engagement heatmap:', error);
+    res.status(500).json({
+      success: false,
+      error: 'Failed to fetch engagement heatmap',
+      message: error.message,
+      timestamp: new Date().toISOString()
+    });
+  }
+});
+
+// GET /api/v1/analytics/active-sessions - Get active sessions count
+router.get('/active-sessions', authenticateToken, async (req, res) => {
+  try {
+    const { db } = await connectToDatabase();
+    
+    // Count active sessions (sessions created in last 30 minutes)
+    const activeSessionTime = new Date(Date.now() - 30 * 60 * 1000);
+    const activeSessions = await db.collection('sessions').countDocuments({
+      createdAt: { $gte: activeSessionTime }
+    });
+    
+    res.json({
+      success: true,
+      data: { count: activeSessions },
+      message: 'Active sessions retrieved successfully',
+      timestamp: new Date().toISOString()
+    });
+  } catch (error) {
+    console.error('Error fetching active sessions:', error);
+    res.status(500).json({
+      success: false,
+      error: 'Failed to fetch active sessions',
       message: error.message,
       timestamp: new Date().toISOString()
     });

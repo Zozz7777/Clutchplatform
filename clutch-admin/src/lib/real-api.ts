@@ -816,6 +816,39 @@ export class RealApiService {
       { fallbackValue: null, showToast: false }
     )();
   }
+
+  async getMaintenanceForecast(): Promise<any> {
+    return withErrorHandling(
+      async () => {
+        const response = await apiService.request<any>("/api/v1/fleet/maintenance-forecast");
+        return handleApiResponse(response, 'getMaintenanceForecast', []);
+      },
+      'getMaintenanceForecast',
+      { fallbackValue: [], showToast: false }
+    )();
+  }
+
+  async getRecommendationUplift(): Promise<any> {
+    return withErrorHandling(
+      async () => {
+        const response = await apiService.request<any>("/api/v1/analytics/recommendation-uplift");
+        return handleApiResponse(response, 'getRecommendationUplift', null);
+      },
+      'getRecommendationUplift',
+      { fallbackValue: null, showToast: false }
+    )();
+  }
+
+  async getRevenueMetrics(): Promise<any> {
+    return withErrorHandling(
+      async () => {
+        const response = await apiService.request<any>("/api/v1/analytics/revenue-metrics");
+        return handleApiResponse(response, 'getRevenueMetrics', null);
+      },
+      'getRevenueMetrics',
+      { fallbackValue: null, showToast: false }
+    )();
+  }
 }
 
 export const realApi = new RealApiService();
