@@ -801,7 +801,7 @@ export default function HRPage() {
               ))}
             </div>
 
-            {invitations.length === 0 && (
+            {(!Array.isArray(invitations) || invitations.length === 0) && (
               <div className="text-center py-8">
                 <Mail className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
                 <p className="text-muted-foreground">No invitations found</p>
