@@ -6,7 +6,10 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useAuth } from "@/contexts/auth-context";
+import { useTranslations } from "@/hooks/use-translations";
 import { formatDate, formatRelativeTime, formatCurrency } from "@/lib/utils";
+import { productionApi } from "@/lib/production-api";
+import { toast } from "sonner";
 import { 
   Building2, 
   Search, 
@@ -125,44 +128,33 @@ export default function EnterprisePage() {
   const [tierFilter, setTierFilter] = useState<string>("all");
   const [isLoading, setIsLoading] = useState(true);
   const { hasPermission } = useAuth();
+  const { t } = useTranslations();
 
   useEffect(() => {
     const loadEnterpriseData = async () => {
       try {
-        const token = localStorage.getItem("clutch-admin-token");
+        setIsLoading(true);
         
-        // Load enterprise clients
-        const clientsResponse = await fetch("https://clutch-main-nk7x.onrender.com/api/v1/enterprise/clients", {
-          headers: {
-            "Authorization": `Bearer ${token}`,
-            "Content-Type": "application/json",
-          },
-        });
-        
-        if (clientsResponse.ok) {
-          const clientsData = await clientsResponse.json();
-          setClients(clientsData.data || clientsData);
-        }
+        // Load enterprise clients and stats using production API
+        const [clientsData, statsData] = await Promise.all([
+          productionApi.getEnterpriseClients(),
+          productionApi.getEnterpriseStats()
+        ]);
 
-        // Load enterprise stats
-        const statsResponse = await fetch("https://clutch-main-nk7x.onrender.com/api/v1/enterprise/stats", {
-          headers: {
-            "Authorization": `Bearer ${token}`,
-            "Content-Type": "application/json",
-          },
-        });
-        
-        if (statsResponse.ok) {
-          const statsData = await statsResponse.json();
-          setStats(statsData.data || statsData);
+        // Ensure clients is always an array
+        const clientsArray = Array.isArray(clientsData) ? clientsData : [];
+        setClients(clientsArray);
+
+        if (statsData) {
+          setStats(statsData);
         } else {
-          // Calculate stats from loaded data
-          const totalClients = clients.length;
-          const activeClients = clients.filter(c => c.status === "active").length;
-          const totalRevenue = clients.reduce((sum, c) => sum + c.subscription.monthlyFee, 0);
-          const totalVehicles = clients.reduce((sum, c) => sum + c.fleet.totalVehicles, 0);
-          const averageFleetSize = clients.length > 0 ? totalVehicles / clients.length : 0;
-          const whiteLabelClients = clients.filter(c => c.whiteLabel.enabled).length;
+          // Calculate stats from loaded data with array safety
+          const totalClients = clientsArray.length;
+          const activeClients = clientsArray.filter(c => c.status === "active").length;
+          const totalRevenue = clientsArray.reduce((sum, c) => sum + (c.subscription?.monthlyFee || 0), 0);
+          const totalVehicles = clientsArray.reduce((sum, c) => sum + (c.fleet?.totalVehicles || 0), 0);
+          const averageFleetSize = clientsArray.length > 0 ? totalVehicles / clientsArray.length : 0;
+          const whiteLabelClients = clientsArray.filter(c => c.whiteLabel?.enabled).length;
 
           setStats({
             totalClients,
@@ -171,12 +163,17 @@ export default function EnterprisePage() {
             monthlyRecurringRevenue: totalRevenue,
             averageFleetSize,
             totalVehicles,
-            apiUsage: clients.reduce((sum, c) => sum + c.api.usage, 0),
+            apiUsage: clientsArray.reduce((sum, c) => sum + (c.api?.usage || 0), 0),
             whiteLabelClients,
           });
         }
+        
       } catch (error) {
         console.error("Failed to load enterprise data:", error);
+        toast.error("Failed to load enterprise data");
+        // Set empty arrays on error - no mock data fallback
+        setClients([]);
+        setStats(null);
       } finally {
         setIsLoading(false);
       }
@@ -186,15 +183,16 @@ export default function EnterprisePage() {
   }, []);
 
   useEffect(() => {
-    let filtered = clients;
+    // Ensure clients is always an array
+    let filtered = Array.isArray(clients) ? clients : [];
 
     // Search filter
     if (searchQuery) {
       filtered = filtered.filter(client =>
-        client.companyName.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        client.contactInfo.primaryContact.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        client.contactInfo.email.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        client.industry.toLowerCase().includes(searchQuery.toLowerCase())
+        client.companyName?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        client.contactInfo?.primaryContact?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        client.contactInfo?.email?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        client.industry?.toLowerCase().includes(searchQuery.toLowerCase())
       );
     }
 
@@ -319,7 +317,7 @@ export default function EnterprisePage() {
       <div className="flex items-center justify-center h-64">
         <div className="text-center">
           <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto mb-4"></div>
-          <p className="text-muted-foreground">Loading enterprise data...</p>
+          <p className="text-muted-foreground">{t('common.loading')}</p>
         </div>
       </div>
     );
@@ -358,10 +356,10 @@ export default function EnterprisePage() {
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">
-              {stats ? stats.totalClients : clients.length}
+              {stats ? stats.totalClients : (Array.isArray(clients) ? clients.length : 0)}
             </div>
             <p className="text-xs text-muted-foreground">
-              {stats ? stats.activeClients : clients.filter(c => c.status === "active").length} active
+              {stats ? stats.activeClients : (Array.isArray(clients) ? clients.filter(c => c.status === "active").length : 0)} active
             </p>
           </CardContent>
         </Card>

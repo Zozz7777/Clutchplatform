@@ -129,7 +129,7 @@ interface AnalyticsReport {
     start: string;
     end: string;
   };
-  filters: Record<string, any>;
+  filters: Record<string, unknown>;
   generatedAt: string;
   generatedBy: string;
   fileUrl?: string;

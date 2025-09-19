@@ -83,7 +83,7 @@ export default function SystemHealthPage() {
 
       setLastUpdated(new Date());
     } catch (error) {
-      console.error('Error fetching system health:', error);
+      // Error handled by API service
     } finally {
       setLoading(false);
     }

@@ -134,7 +134,7 @@ interface AnomalyDetection {
     description: string;
     riskFactors: string[];
     evidence: string[];
-    context: Record<string, any>;
+    context: Record<string, unknown>;
   };
   impact: {
     users: number;

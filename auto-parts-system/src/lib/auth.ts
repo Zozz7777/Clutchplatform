@@ -47,6 +47,12 @@ export class AuthManager {
       }
 
       // Verify password
+      if (!user.password_hash) {
+        return {
+          success: false,
+          message: 'Invalid user data'
+        };
+      }
       const isValidPassword = await bcrypt.compare(password, user.password_hash);
       if (!isValidPassword) {
         return {

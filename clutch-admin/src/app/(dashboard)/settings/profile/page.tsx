@@ -151,7 +151,7 @@ export default function ProfileSettingsPage() {
           }
         }
       } catch (error) {
-        console.error("Failed to load profile:", error);
+        // Error handled by API service
         // Fallback to current user data
         if (user) {
           setProfile({
@@ -255,7 +255,7 @@ export default function ProfileSettingsPage() {
         throw new Error("Failed to update profile");
       }
     } catch (error) {
-      console.error("Failed to save profile:", error);
+      // Error handled by API service
       toast({
         title: "Error",
         description: "Failed to update profile. Please try again.",
@@ -316,7 +316,7 @@ export default function ProfileSettingsPage() {
         throw new Error("Failed to change password");
       }
     } catch (error) {
-      console.error("Failed to change password:", error);
+      // Error handled by API service
       toast({
         title: "Error",
         description: "Failed to change password. Please try again.",

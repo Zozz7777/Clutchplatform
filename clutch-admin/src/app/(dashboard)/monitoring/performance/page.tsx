@@ -66,7 +66,7 @@ export default function MonitoringPerformancePage() {
           setAlerts(alertsData);
         }
       } catch (error) {
-        console.error('Failed to load performance data:', error);
+        // Error handled by API service
         toast.error('Failed to load performance data');
         // Set empty data on error
         setMetrics({
@@ -121,7 +121,7 @@ export default function MonitoringPerformancePage() {
         setAlerts(alertsData);
       }
     } catch (error) {
-      console.error('Failed to refresh performance data:', error);
+      // Error handled by API service
       toast.error('Failed to refresh performance data');
     } finally {
       setIsLoading(false);

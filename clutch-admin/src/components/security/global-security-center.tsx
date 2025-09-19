@@ -89,7 +89,7 @@ interface SecurityEvent {
     action: string;
     resource: string;
     resourceId?: string;
-    metadata?: Record<string, any>;
+    metadata?: Record<string, unknown>;
   };
   riskScore: number;
   tags: string[];

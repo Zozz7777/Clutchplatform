@@ -340,7 +340,7 @@ export class DatabaseManager {
     logger.info('Default data inserted successfully');
   }
 
-  async query(sql: string, params: any[] = []): Promise<any[]> {
+  async query<T = any>(sql: string, params: any[] = []): Promise<T[]> {
     return new Promise((resolve, reject) => {
       if (!this.db) {
         reject(new Error('Database not initialized'));
@@ -352,7 +352,7 @@ export class DatabaseManager {
           logger.error('Database query error:', err);
           reject(err);
         } else {
-          resolve(rows || []);
+          resolve((rows as T[]) || []);
         }
       });
     });
@@ -376,7 +376,7 @@ export class DatabaseManager {
     });
   }
 
-  async get(sql: string, params: any[] = []): Promise<any> {
+  async get<T = any>(sql: string, params: any[] = []): Promise<T | undefined> {
     return new Promise((resolve, reject) => {
       if (!this.db) {
         reject(new Error('Database not initialized'));
@@ -388,7 +388,7 @@ export class DatabaseManager {
           logger.error('Database get error:', err);
           reject(err);
         } else {
-          resolve(row);
+          resolve(row as T);
         }
       });
     });

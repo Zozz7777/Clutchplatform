@@ -179,7 +179,7 @@ export default function SettingsPage() {
           setAuditLogs(auditData.data || auditData);
         }
       } catch (error) {
-        console.error("Failed to load settings data:", error);
+        // Error handled by API service
       } finally {
         setIsLoading(false);
       }
@@ -235,7 +235,7 @@ export default function SettingsPage() {
 
       // Show success message
     } catch (error) {
-      console.error("Failed to save settings:", error);
+      // Error handled by API service
     } finally {
       setIsSaving(false);
     }

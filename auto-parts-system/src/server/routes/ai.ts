@@ -2,6 +2,7 @@ import express from 'express';
 import { DatabaseManager } from '../../lib/database';
 import { AuthManager } from '../../lib/auth';
 import { logger } from '../../lib/logger';
+import { User } from '../../types';
 
 const router = express.Router();
 const databaseManager = new DatabaseManager();
@@ -19,7 +20,7 @@ const requireAuth = async (req: express.Request, res: express.Response, next: ex
         timestamp: new Date().toISOString()
       });
     }
-    req.user = currentUser;
+    req.user = currentUser as User;
     next();
   } catch (error) {
     res.status(401).json({
@@ -35,7 +36,7 @@ const requireAuth = async (req: express.Request, res: express.Response, next: ex
 router.get('/demand-forecast', requireAuth, async (req, res) => {
   try {
     const currentUser = req.user;
-    if (!authManager.hasPermission(currentUser, 'ai.view')) {
+    if (!currentUser || !authManager.hasPermission(currentUser, 'ai.view')) {
       return res.status(403).json({
         success: false,
         error: 'INSUFFICIENT_PERMISSIONS',
@@ -104,7 +105,7 @@ router.get('/demand-forecast', requireAuth, async (req, res) => {
 router.get('/price-optimization', requireAuth, async (req, res) => {
   try {
     const currentUser = req.user;
-    if (!authManager.hasPermission(currentUser, 'ai.view')) {
+    if (!currentUser || !authManager.hasPermission(currentUser, 'ai.view')) {
       return res.status(403).json({
         success: false,
         error: 'INSUFFICIENT_PERMISSIONS',
@@ -189,7 +190,7 @@ router.get('/price-optimization', requireAuth, async (req, res) => {
 router.get('/inventory-optimization', requireAuth, async (req, res) => {
   try {
     const currentUser = req.user;
-    if (!authManager.hasPermission(currentUser, 'ai.view')) {
+    if (!currentUser || !authManager.hasPermission(currentUser, 'ai.view')) {
       return res.status(403).json({
         success: false,
         error: 'INSUFFICIENT_PERMISSIONS',
