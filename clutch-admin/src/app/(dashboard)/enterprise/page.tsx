@@ -308,7 +308,7 @@ export default function EnterprisePage() {
         setClients(data.data || data);
       }
     } catch (error) {
-      console.error(`Failed to ${action} client:`, error);
+      // Error handled by API service
     }
   };
 
