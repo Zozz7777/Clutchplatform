@@ -160,7 +160,7 @@ export default function DependencyAwareForecasts({ className }: DependencyAwareF
           setSelectedForecast(data[0]);
         }
       } catch (error) {
-        console.error('Failed to load dependency forecasts:', error);
+        // Failed to load dependency forecasts
         // Fallback to empty array if API fails
         setForecasts([]);
       }

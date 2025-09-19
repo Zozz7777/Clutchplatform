@@ -6,6 +6,7 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Progress } from '@/components/ui/progress';
 import { businessIntelligence } from '@/lib/business-intelligence';
+import { useTranslations } from '@/hooks/use-translations';
 import { 
   Truck, 
   Activity, 
@@ -35,6 +36,7 @@ interface UtilizationData {
 export function FleetUtilization({ className = '' }: FleetUtilizationProps) {
   const [utilizationData, setUtilizationData] = React.useState<UtilizationData | null>(null);
   const [isLoading, setIsLoading] = React.useState(true);
+  const { t } = useTranslations();
 
   React.useEffect(() => {
     const loadUtilizationData = async () => {

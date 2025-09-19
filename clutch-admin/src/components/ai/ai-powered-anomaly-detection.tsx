@@ -226,7 +226,7 @@ export default function AIPoweredAnomalyDetection({ className }: AIPoweredAnomal
           setSelectedAnomaly(data[0]);
         }
       } catch (error) {
-        console.error('Failed to load anomaly detections:', error);
+        // Failed to load anomaly detections
         // Fallback to empty array if API fails
         setAnomalies([]);
       }

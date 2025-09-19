@@ -159,6 +159,16 @@ export class SyncManager {
    */
   private async loadConfig(): Promise<void> {
     try {
+      // Check if sync_config table exists, if not create it
+      await this.db.exec(`
+        CREATE TABLE IF NOT EXISTS sync_config (
+          key TEXT PRIMARY KEY,
+          value TEXT NOT NULL,
+          created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+          updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
+        )
+      `);
+      
       const configRecords = await this.db.query('SELECT key, value FROM sync_config');
       
       for (const record of configRecords) {

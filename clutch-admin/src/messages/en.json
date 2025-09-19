@@ -587,6 +587,23 @@
     "b2b": "B2B",
     "providers": "Providers"
   },
+  "fleetUtilization": {
+    "title": "Fleet Utilization",
+    "description": "% of vehicles active vs idle",
+    "loadingData": "Loading fleet utilization data...",
+    "unableToLoad": "Unable to load fleet utilization data",
+    "overallUtilizationRate": "Overall Utilization Rate",
+    "fleetStatusBreakdown": "Fleet Status Breakdown",
+    "excellent": "Excellent",
+    "good": "Good",
+    "fair": "Fair",
+    "poor": "Poor",
+    "active": "Active",
+    "idle": "Idle",
+    "maintenance": "Maintenance",
+    "viewDetails": "View Details",
+    "exportData": "Export Data"
+  },
   "fleet": {
     "title": "Fleet Management",
     "description": "Monitor and manage your fleet vehicles in real-time",
@@ -617,7 +634,16 @@
     "good": "Good",
     "warning": "Warning",
     "critical": "Critical",
-    "failedToLoadFleetData": "Failed to load fleet data"
+    "failedToLoadFleetData": "Failed to load fleet data",
+    "maintenanceDue": "Maintenance Due",
+    "overdue": "overdue",
+    "offlineVehicles": "Offline Vehicles",
+    "active": "Active",
+    "idle": "Idle",
+    "offline": "Offline",
+    "maintenance": "Maintenance",
+    "noLocation": "No location",
+    "vehicleOffline": "Vehicle {plate} Offline"
   },
   "finance": {
     "title": "Finance Dashboard",

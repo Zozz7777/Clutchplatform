@@ -235,7 +235,7 @@ export default function FleetPage() {
         </Card>
         <Card className="shadow-2xs">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium text-card-foreground">Maintenance Due</CardTitle>
+            <CardTitle className="text-sm font-medium text-card-foreground">{t('fleet.maintenanceDue')}</CardTitle>
             <Wrench className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
@@ -243,13 +243,13 @@ export default function FleetPage() {
               {Array.isArray(vehicles) ? vehicles.filter(v => v?.status === "maintenance").length : 0}
             </div>
             <p className="text-xs text-muted-foreground">
-              <span className="text-warning">3</span> overdue
+              <span className="text-warning">3</span> {t('fleet.overdue')}
             </p>
           </CardContent>
         </Card>
         <Card className="shadow-2xs">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium text-card-foreground">Offline Vehicles</CardTitle>
+            <CardTitle className="text-sm font-medium text-card-foreground">{t('fleet.offlineVehicles')}</CardTitle>
             <AlertTriangle className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
@@ -308,10 +308,10 @@ export default function FleetPage() {
               </SelectTrigger>
               <SelectContent>
                 <SelectItem value="all">All Status</SelectItem>
-                <SelectItem value="active">Active</SelectItem>
-                <SelectItem value="idle">Idle</SelectItem>
-                <SelectItem value="maintenance">Maintenance</SelectItem>
-                <SelectItem value="offline">Offline</SelectItem>
+                <SelectItem value="active">{t('fleet.active')}</SelectItem>
+                <SelectItem value="idle">{t('fleet.idle')}</SelectItem>
+                <SelectItem value="maintenance">{t('fleet.maintenance')}</SelectItem>
+                <SelectItem value="offline">{t('fleet.offline')}</SelectItem>
               </SelectContent>
             </Select>
           </div>
@@ -435,14 +435,14 @@ export default function FleetPage() {
             <div className="flex items-center space-x-3 p-3 rounded-[0.625rem] bg-destructive/10 border border-destructive/20">
               <AlertTriangle className="h-4 w-4 text-destructive" />
               <div>
-                <p className="text-sm font-medium text-destructive-foreground">Vehicle ABC-123 Offline</p>
+                <p className="text-sm font-medium text-destructive-foreground">{t('fleet.vehicleOffline', { plate: 'ABC-123' })}</p>
                 <p className="text-xs text-destructive-foreground/80">No GPS signal for 2 hours</p>
               </div>
             </div>
             <div className="flex items-center space-x-3 p-3 rounded-[0.625rem] bg-secondary/10 border border-secondary/20">
               <Wrench className="h-4 w-4 text-secondary" />
               <div>
-                <p className="text-sm font-medium text-secondary-foreground">Maintenance Due</p>
+                <p className="text-sm font-medium text-secondary-foreground">{t('fleet.maintenanceDue')}</p>
                 <p className="text-xs text-secondary-foreground/80">DEF-456 needs oil change</p>
               </div>
             </div>

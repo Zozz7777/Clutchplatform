@@ -3,6 +3,24 @@ const router = express.Router();
 const { authenticateToken } = require('../middleware/auth');
 const { logger } = require('../config/logger');
 const { connectToDatabase } = require('../config/database-unified');
+const rateLimit = require('express-rate-limit');
+
+// Rate limiting for mobile apps endpoints
+const mobileAppsLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: 100, // limit each IP to 100 requests per windowMs
+  message: {
+    success: false,
+    error: 'TOO_MANY_REQUESTS',
+    message: 'Too many mobile apps requests from this IP, please try again later.',
+    timestamp: new Date().toISOString()
+  },
+  standardHeaders: true,
+  legacyHeaders: false,
+});
+
+// Apply rate limiting to all routes
+router.use(mobileAppsLimiter);
 
 // GET /api/v1/mobile-apps/versions - Get mobile app versions
 router.get('/versions', authenticateToken, async (req, res) => {
@@ -10,10 +28,17 @@ router.get('/versions', authenticateToken, async (req, res) => {
     const { db } = await connectToDatabase();
     const versionsCollection = db.collection('mobile_app_versions');
     
-    const versions = await versionsCollection
-      .find({})
-      .sort({ createdAt: -1 })
-      .toArray();
+    // Check if collection exists and has data
+    const collectionExists = await versionsCollection.countDocuments({});
+    
+    let versions = [];
+    
+    if (collectionExists > 0) {
+      versions = await versionsCollection
+        .find({})
+        .sort({ createdAt: -1 })
+        .toArray();
+    }
 
     res.json({
       success: true,
@@ -44,11 +69,18 @@ router.get('/crashes', authenticateToken, async (req, res) => {
     if (status) filter.status = status;
     if (severity) filter.severity = severity;
     
-    const crashes = await crashesCollection
-      .find(filter)
-      .sort({ createdAt: -1 })
-      .limit(parseInt(limit))
-      .toArray();
+    // Check if collection exists and has data
+    const collectionExists = await crashesCollection.countDocuments({});
+    
+    let crashes = [];
+    
+    if (collectionExists > 0) {
+      crashes = await crashesCollection
+        .find(filter)
+        .sort({ createdAt: -1 })
+        .limit(parseInt(limit))
+        .toArray();
+    }
 
     res.json({
       success: true,
@@ -78,10 +110,17 @@ router.get('/analytics', authenticateToken, async (req, res) => {
     const filter = {};
     if (metric) filter.metric = metric;
     
-    const analytics = await analyticsCollection
-      .find(filter)
-      .sort({ date: -1 })
-      .toArray();
+    // Check if collection exists and has data
+    const collectionExists = await analyticsCollection.countDocuments({});
+    
+    let analytics = [];
+    
+    if (collectionExists > 0) {
+      analytics = await analyticsCollection
+        .find(filter)
+        .sort({ date: -1 })
+        .toArray();
+    }
 
     res.json({
       success: true,
@@ -112,10 +151,17 @@ router.get('/stores', authenticateToken, async (req, res) => {
     if (platform) filter.platform = platform;
     if (status) filter.status = status;
     
-    const stores = await storesCollection
-      .find(filter)
-      .sort({ updatedAt: -1 })
-      .toArray();
+    // Check if collection exists and has data
+    const collectionExists = await storesCollection.countDocuments({});
+    
+    let stores = [];
+    
+    if (collectionExists > 0) {
+      stores = await storesCollection
+        .find(filter)
+        .sort({ updatedAt: -1 })
+        .toArray();
+    }
 
     res.json({
       success: true,

@@ -587,6 +587,23 @@
     "b2b": "B2B",
     "providers": "مقدمو الخدمات"
   },
+  "fleetUtilization": {
+    "title": "استخدام الأسطول",
+    "description": "% من المركبات النشطة مقابل الخاملة",
+    "loadingData": "جاري تحميل بيانات استخدام الأسطول...",
+    "unableToLoad": "غير قادر على تحميل بيانات استخدام الأسطول",
+    "overallUtilizationRate": "معدل الاستخدام الإجمالي",
+    "fleetStatusBreakdown": "تفصيل حالة الأسطول",
+    "excellent": "ممتاز",
+    "good": "جيد",
+    "fair": "مقبول",
+    "poor": "ضعيف",
+    "active": "نشط",
+    "idle": "خامل",
+    "maintenance": "صيانة",
+    "viewDetails": "عرض التفاصيل",
+    "exportData": "تصدير البيانات"
+  },
   "fleet": {
     "title": "إدارة الأسطول",
     "description": "مراقبة وإدارة مركبات الأسطول في الوقت الفعلي",
@@ -617,7 +634,16 @@
     "good": "جيد",
     "warning": "تحذير",
     "critical": "حرج",
-    "failedToLoadFleetData": "فشل في تحميل بيانات الأسطول"
+    "failedToLoadFleetData": "فشل في تحميل بيانات الأسطول",
+    "maintenanceDue": "الصيانة مستحقة",
+    "overdue": "متأخرة",
+    "offlineVehicles": "المركبات غير المتصلة",
+    "active": "نشط",
+    "idle": "خامل",
+    "offline": "غير متصل",
+    "maintenance": "صيانة",
+    "noLocation": "لا يوجد موقع",
+    "vehicleOffline": "المركبة {plate} غير متصلة"
   },
   "finance": {
     "title": "لوحة المالية",

@@ -32,7 +32,7 @@ export function AuthStatus() {
         setVerificationStatus('invalid');
       }
     } catch (error) {
-      console.error('Token verification failed:', error);
+      // Token verification failed
       setVerificationStatus('error');
     }
     setLastChecked(new Date());

@@ -63,7 +63,7 @@ export default function AIRecommendationFeed() {
         const recommendationsData = await realApi.getAIRecommendations();
         setRecommendations(recommendationsData || []);
       } catch (error) {
-        console.error("Failed to load AI recommendations:", error);
+        // Failed to load AI recommendations
         toast.error(t('aiRecommendations.failedToLoadRecommendations'));
         setRecommendations([]);
       }
@@ -143,7 +143,7 @@ export default function AIRecommendationFeed() {
       setRecommendations(updatedRecommendations || []);
       toast.success(t('aiRecommendations.analysisComplete'));
     } catch (error) {
-      console.error("Failed to analyze recommendations:", error);
+      // Failed to analyze recommendations
       toast.error(t('aiRecommendations.analysisFailed'));
     } finally {
       setIsAnalyzing(false);
@@ -155,7 +155,7 @@ export default function AIRecommendationFeed() {
       // Implement action logic here
       toast.success(t('aiRecommendations.actionStarted', { action }));
     } catch (error) {
-      console.error("Failed to execute action:", error);
+      // Failed to execute action
       toast.error(t('aiRecommendations.actionFailed'));
     }
   };

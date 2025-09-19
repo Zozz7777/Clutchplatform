@@ -216,7 +216,7 @@ export default function ConfidenceIntervals({ className }: ConfidenceIntervalsPr
           setSelectedInterval(data[0]);
         }
       } catch (error) {
-        console.error('Failed to load confidence intervals:', error);
+        // Failed to load confidence intervals
         // Fallback to empty array if API fails
         setIntervals([]);
       }
