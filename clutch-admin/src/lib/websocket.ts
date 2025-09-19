@@ -406,7 +406,7 @@ export const websocketService = (() => {
       isUsingPollingFallback: () => true,
       getConnectionInfo: () => ({ connected: false, polling: true, state: 'ssr' }),
       getConnectionState: () => 'ssr'
-    } as any;
+    } as Record<string, unknown>;
   }
   
   return new WebSocketService(

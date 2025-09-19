@@ -281,7 +281,7 @@ export const websocketService = (() => {
       requestPerformanceMetrics: () => {},
       requestFleetUpdates: () => {},
       requestUserUpdates: () => {}
-    } as any;
+    } as Record<string, unknown>;
   }
   return new WebSocketService();
 })();
@@ -308,7 +308,7 @@ export const createWebSocketService = (baseUrl?: string) => {
       requestPerformanceMetrics: () => {},
       requestFleetUpdates: () => {},
       requestUserUpdates: () => {}
-    } as any;
+    } as Record<string, unknown>;
   }
   return new WebSocketService(baseUrl);
 };

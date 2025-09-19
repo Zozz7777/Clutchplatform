@@ -659,10 +659,10 @@ export default function HRPage() {
                       <p className="font-medium">{employee.firstName} {employee.lastName}</p>
                       <p className="text-sm text-muted-foreground">{employee.position} • {employee.department}</p>
                       <div className="flex items-center space-x-2 mt-1">
-                        <Badge variant={getStatusColor(employee.status) as any}>
+                        <Badge variant={getStatusColor(employee.status) as "default" | "secondary" | "destructive" | "outline"}>
                           {employee.status}
                         </Badge>
-                        <Badge variant={getEmploymentTypeColor(employee.employmentType) as any}>
+                        <Badge variant={getEmploymentTypeColor(employee.employmentType) as "default" | "secondary" | "destructive" | "outline"}>
                           {employee.employmentType}
                         </Badge>
                         <span className="text-xs text-muted-foreground">
@@ -764,7 +764,7 @@ export default function HRPage() {
                       <p className="font-medium">{invitation.name}</p>
                       <p className="text-sm text-muted-foreground">{invitation.email}</p>
                       <div className="flex items-center space-x-2 mt-1">
-                        <Badge variant={getStatusColor(invitation.status) as any}>
+                        <Badge variant={getStatusColor(invitation.status) as "default" | "secondary" | "destructive" | "outline"}>
                           {invitation.status}
                         </Badge>
                         <span className="text-xs text-muted-foreground">
@@ -869,10 +869,10 @@ export default function HRPage() {
                       <p className="font-medium">{application.candidateName}</p>
                       <p className="text-sm text-muted-foreground">{application.jobTitle} • {application.department}</p>
                       <div className="flex items-center space-x-2 mt-1">
-                        <Badge variant={getStatusColor(application.status) as any}>
+                        <Badge variant={getStatusColor(application.status) as "default" | "secondary" | "destructive" | "outline"}>
                           {application.status}
                         </Badge>
-                        <Badge variant={getPriorityColor(application.priority) as any}>
+                        <Badge variant={getPriorityColor(application.priority) as "default" | "secondary" | "destructive" | "outline"}>
                           {application.priority}
                         </Badge>
                         <span className="text-xs text-muted-foreground">

@@ -90,7 +90,7 @@ interface Integration {
   type: "api" | "webhook" | "oauth" | "sso";
   status: "active" | "inactive" | "error" | "pending";
   description: string;
-  configuration: Record<string, any>;
+  configuration: Record<string, unknown>;
   lastSync?: string;
   errorCount: number;
   createdAt: string;
@@ -104,7 +104,7 @@ interface AuditLog {
   resourceId: string;
   userId: string;
   userName: string;
-  changes: Record<string, any>;
+  changes: Record<string, unknown>;
   ipAddress: string;
   userAgent: string;
   timestamp: string;
@@ -651,7 +651,7 @@ export default function SettingsPage() {
                       <p className="font-medium">{integration.name}</p>
                       <p className="text-sm text-muted-foreground">{integration.description}</p>
                       <div className="flex items-center space-x-2 mt-1">
-                        <Badge variant={getStatusColor(integration.status) as any}>
+                        <Badge variant={getStatusColor(integration.status) as "default" | "secondary" | "destructive" | "outline"}>
                           {integration.status}
                         </Badge>
                         <span className="text-xs text-muted-foreground">
