@@ -10,7 +10,7 @@ export const getTranslations = () => {
     enTranslations = require('@/messages/en.json');
     arTranslations = require('@/messages/ar.json');
   } catch (error) {
-    console.warn('Failed to load translation files, using fallback:', error);
+    // Failed to load translation files, using fallback
   }
 
   // Fallback translations if loading fails
@@ -160,7 +160,7 @@ export const getTranslations = () => {
   // Merge fallback translations with loaded translations
   const mergeTranslations = (loaded: any, fallback: any) => {
     if (!loaded) {
-      console.warn('Using fallback translations');
+      // Using fallback translations
       return fallback;
     }
 

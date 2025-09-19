@@ -84,7 +84,7 @@ export function useTranslations() {
     
     const result = typeof value === 'string' ? value : key;
     if (key === 'common.loading') {
-      console.log(`🎯 Final result for "${key}":`, result);
+      // Final result
     }
     
     return result;

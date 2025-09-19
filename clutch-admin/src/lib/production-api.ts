@@ -36,7 +36,9 @@ export class ProductionApiService {
   async getFleetVehicles(): Promise<FleetVehicle[]> {
     try {
       const data = await realApi.getFleetVehicles();
-      return data || [];
+      // Ensure we always return an array and handle type conversion
+      const vehiclesArray = Array.isArray(data) ? data : [];
+      return vehiclesArray as unknown as FleetVehicle[];
     } catch (error) {
       logger.error("Failed to fetch fleet vehicles:", error);
       throw new Error("Failed to load fleet vehicles");
@@ -117,7 +119,9 @@ export class ProductionApiService {
   async getFleetVehicles(): Promise<FleetVehicle[]> {
     try {
       const data = await realApi.getFleetVehicles();
-      return data || [];
+      // Ensure we always return an array and handle type conversion
+      const vehiclesArray = Array.isArray(data) ? data : [];
+      return vehiclesArray as unknown as FleetVehicle[];
     } catch (error) {
       logger.error("Failed to fetch fleet vehicles:", error);
       throw new Error("Failed to load fleet vehicles");

@@ -87,7 +87,7 @@ class WebSocketService {
                    sessionStorage.getItem("clutch-admin-token");
 
       if (!token) {
-        console.log('🔌 No authentication token found, skipping WebSocket connection');
+        // No authentication token found, skipping WebSocket connection
         this.connectionStatus = 'disconnected';
         this.isConnecting = false;
         return;
@@ -96,7 +96,7 @@ class WebSocketService {
       // Use the stored baseUrl with authentication
       const wsUrl = this.baseUrl.replace('http://', 'ws://').replace('https://', 'wss://') + `/ws?token=${token}`;
 
-      console.log('🔌 Attempting WebSocket connection to:', wsUrl.replace(token, '[TOKEN]'));
+      // Attempting WebSocket connection
 
       // WebSocket connection attempt
       this.ws = new WebSocket(wsUrl);
@@ -114,7 +114,7 @@ class WebSocketService {
           const message: WebSocketMessage = JSON.parse(event.data);
           this.handleMessage(message);
         } catch (error) {
-          console.error('Failed to parse WebSocket message:', error);
+          // Failed to parse WebSocket message
         }
       };
 
@@ -126,7 +126,7 @@ class WebSocketService {
       };
 
       this.ws.onerror = (error) => {
-        console.warn('WebSocket connection failed, will retry or use fallback:', error);
+        // WebSocket connection failed, will retry or use fallback
         this.connectionStatus = 'error';
         this.isConnecting = false;
         // Don't show error toast immediately, let the reconnection logic handle it

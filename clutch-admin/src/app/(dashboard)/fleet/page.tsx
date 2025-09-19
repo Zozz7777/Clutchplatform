@@ -90,10 +90,12 @@ export default function FleetPage() {
       try {
         setIsLoading(true);
         const vehicleData = await productionApi.getFleetVehicles();
-        setVehicles(vehicleData || []);
-        setFilteredVehicles(vehicleData || []);
+        // Ensure we always have an array
+        const vehiclesArray = Array.isArray(vehicleData) ? vehicleData : [];
+        setVehicles(vehiclesArray);
+        setFilteredVehicles(vehiclesArray);
       } catch (error) {
-        // Error handled by API service
+        console.error('Failed to load fleet data:', error);
         toast.error(t('fleet.failedToLoadFleetData'));
         // Set empty arrays on error - no mock data fallback
         setVehicles([]);
@@ -106,9 +108,13 @@ export default function FleetPage() {
     loadFleetData();
 
     // Subscribe to real-time updates via WebSocket
-    const unsubscribe = websocketService.subscribeToFleetUpdates((vehicles) => {
-      setVehicles(vehicles);
-      setFilteredVehicles(vehicles);
+    const unsubscribe = websocketService.subscribeToFleetUpdates((data) => {
+      // Handle different data structures from WebSocket
+      const vehiclesData = Array.isArray(data) ? data : 
+                          Array.isArray(data?.vehicles) ? data.vehicles : 
+                          Array.isArray(data?.data) ? data.data : [];
+      setVehicles(vehiclesData);
+      setFilteredVehicles(vehiclesData);
     });
 
     return () => {
@@ -117,18 +123,20 @@ export default function FleetPage() {
   }, []);
 
   useEffect(() => {
-    let filtered = (vehicles || []);
+    // Ensure vehicles is always an array
+    const vehiclesArray = Array.isArray(vehicles) ? vehicles : [];
+    let filtered = vehiclesArray;
 
     if (searchQuery) {
       filtered = filtered.filter(vehicle =>
-        vehicle.licensePlate.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        vehicle.model.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        vehicle.make.toLowerCase().includes(searchQuery.toLowerCase())
+        vehicle?.licensePlate?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        vehicle?.model?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        vehicle?.make?.toLowerCase().includes(searchQuery.toLowerCase())
       );
     }
 
     if (statusFilter !== "all") {
-      filtered = filtered.filter(vehicle => vehicle.status === statusFilter);
+      filtered = filtered.filter(vehicle => vehicle?.status === statusFilter);
     }
 
     setFilteredVehicles(filtered);
@@ -218,7 +226,7 @@ export default function FleetPage() {
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold text-foreground">
-              {(vehicles || []).filter(v => v.status === "active").length}
+              {Array.isArray(vehicles) ? vehicles.filter(v => v?.status === "active").length : 0}
             </div>
             <p className="text-xs text-muted-foreground">
               <span className="text-success">+5%</span> {t('fleet.efficiency')}
@@ -232,7 +240,7 @@ export default function FleetPage() {
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold text-foreground">
-              {(vehicles || []).filter(v => v.status === "maintenance").length}
+              {Array.isArray(vehicles) ? vehicles.filter(v => v?.status === "maintenance").length : 0}
             </div>
             <p className="text-xs text-muted-foreground">
               <span className="text-warning">3</span> overdue
@@ -246,7 +254,7 @@ export default function FleetPage() {
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold text-foreground">
-              {(vehicles || []).filter(v => v.status === "offline").length}
+              {Array.isArray(vehicles) ? vehicles.filter(v => v?.status === "offline").length : 0}
             </div>
             <p className="text-xs text-muted-foreground">
               <span className="text-destructive">-2</span> from yesterday
@@ -267,7 +275,7 @@ export default function FleetPage() {
               <MapPin className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
               <p className="text-muted-foreground">Interactive fleet map will be displayed here</p>
               <p className="text-sm text-muted-foreground mt-2">
-                Showing {(vehicles || []).filter(v => v.location).length} vehicles with GPS data
+                Showing {Array.isArray(vehicles) ? vehicles.filter(v => v?.location).length : 0} vehicles with GPS data
               </p>
             </div>
           </div>

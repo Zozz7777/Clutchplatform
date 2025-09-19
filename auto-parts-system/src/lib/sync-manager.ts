@@ -315,7 +315,7 @@ export class SyncManager {
     } catch (error) {
       this.status.isRunning = false;
       this.status.currentOperation = null;
-      this.status.errors.push(error.message);
+      this.status.errors.push(error instanceof Error ? error.message : String(error));
       logger.error('Sync failed:', error);
     }
 
@@ -367,11 +367,11 @@ export class SyncManager {
       } catch (error) {
         await this.db.exec(
           'UPDATE sync_queue SET status = ?, error_message = ?, retry_count = retry_count + 1, updated_at = CURRENT_TIMESTAMP WHERE id = ?',
-          ['failed', error.message, record.id]
+          ['failed', error instanceof Error ? error.message : String(error), record.id]
         );
 
         this.status.failedRecords++;
-        this.status.errors.push(`Failed to sync ${record.table_name}:${record.id} - ${error.message}`);
+        this.status.errors.push(`Failed to sync ${record.table_name}:${record.id} - ${error instanceof Error ? error.message : String(error)}`);
       }
     }
   }

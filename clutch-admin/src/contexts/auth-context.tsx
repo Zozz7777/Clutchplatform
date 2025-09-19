@@ -47,7 +47,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         
         // Ensure user object exists and has required properties
         if (!user) {
-          console.error('❌ User data missing from response:', response);
+          // User data missing from response
           throw new Error("User data not received from server");
         }
         
@@ -75,7 +75,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         throw new Error(errorMessage);
       }
     } catch (error) {
-      console.error("Login error:", error);
+      // Login error handled
       setIsLoading(false);
       return false;
     }
@@ -86,7 +86,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       // Call API logout endpoint
       await apiService.logout();
     } catch (error) {
-      console.error("Logout API call failed:", error);
+      // Logout API call failed
     } finally {
       // Clear local state regardless of API call result
       setUser(null);

@@ -671,7 +671,7 @@ export default function HRPage() {
                   <div className="flex items-center space-x-4">
                     <div className="w-10 h-10 rounded-full bg-primary flex items-center justify-center">
                       <span className="text-primary-foreground font-medium">
-                        {employee.firstName.charAt(0).toUpperCase()}
+                        {(employee.firstName || employee.name || 'U').charAt(0).toUpperCase()}
                       </span>
                     </div>
                     <div>
