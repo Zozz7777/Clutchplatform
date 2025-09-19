@@ -201,7 +201,8 @@ export default function AssetManagementPage() {
     try {
       setLoading(true);
       const data = await productionApi.getAssets();
-      setAssets(data || []);
+      const assetsArray = Array.isArray(data) ? data : [];
+      setAssets(assetsArray);
     } catch (error) {
       // Error handled by API service
       setAssets([]);
@@ -213,7 +214,8 @@ export default function AssetManagementPage() {
   const loadMaintenanceRecords = async () => {
     try {
       const data = await productionApi.getMaintenanceRecords();
-      setMaintenanceRecords(data || []);
+      const maintenanceArray = Array.isArray(data) ? data : [];
+      setMaintenanceRecords(maintenanceArray);
     } catch (error) {
       // Error handled by API service
       setMaintenanceRecords([]);
@@ -223,7 +225,8 @@ export default function AssetManagementPage() {
   const loadAssignments = async () => {
     try {
       const data = await productionApi.getAssetAssignments();
-      setAssignments(data || []);
+      const assignmentsArray = Array.isArray(data) ? data : [];
+      setAssignments(assignmentsArray);
     } catch (error) {
       // Error handled by API service
       setAssignments([]);
@@ -712,7 +715,7 @@ export default function AssetManagementPage() {
                   </Badge>
                 </div>
               </div>
-            ))}
+            )) : null}
           </div>
         </CardContent>
       </Card>
@@ -889,11 +892,11 @@ export default function AssetManagementPage() {
                 onChange={(e) => setCreateMaintenanceData(prev => ({ ...prev, assetId: e.target.value }))}
               >
                 <option value="">Select asset</option>
-                {assets.map((asset) => (
-                  <option key={asset._id} value={asset._id}>
-                    {asset.name}
+                {Array.isArray(assets) ? assets.map((asset) => (
+                  <option key={asset?._id} value={asset?._id}>
+                    {asset?.name}
                   </option>
-                ))}
+                )) : null}
               </select>
             </div>
             <div>
@@ -978,11 +981,11 @@ export default function AssetManagementPage() {
                 onChange={(e) => setCreateAssignmentData(prev => ({ ...prev, assetId: e.target.value }))}
               >
                 <option value="">Select asset</option>
-                {assets.filter(a => !a.assignedTo).map((asset) => (
-                  <option key={asset._id} value={asset._id}>
-                    {asset.name}
+                {Array.isArray(assets) ? assets.filter(a => !a?.assignedTo).map((asset) => (
+                  <option key={asset?._id} value={asset?._id}>
+                    {asset?.name}
                   </option>
-                ))}
+                )) : null}
               </select>
             </div>
             <div>

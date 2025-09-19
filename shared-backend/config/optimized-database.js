@@ -128,7 +128,13 @@ const OPTIMIZED_COLLECTIONS = [
   'security_alerts',      // Security alerts and threats
   'security_logs',        // Security event logs
   'threat_intelligence',  // Threat intelligence data
-  'security_incidents'    // Security incident reports
+  'security_incidents',   // Security incident reports
+  
+  // Asset Management Collections
+  'assets',               // Asset inventory and management
+  'asset_maintenance',    // Asset maintenance records
+  'asset_assignments',    // Asset assignment tracking
+  'maintenance_records'   // General maintenance records
 ];
 
 // Collections to REMOVE (redundant/unused)

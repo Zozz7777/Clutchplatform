@@ -372,7 +372,7 @@ class DataPersistenceService {
         try {
           await saveFunction(currentData);
         } catch (error) {
-          console.error(`Auto-save failed for key: ${key}`, error);
+          // Auto-save failed
         }
       }
     }, interval);
@@ -413,7 +413,7 @@ class DataPersistenceService {
       const result = await this.read<T>(endpoint);
       return result.success ? result.data || null : null;
     } catch (error) {
-      console.error(`Failed to refresh data for ${endpoint}:`, error);
+      // Failed to refresh data
       return null;
     }
   }

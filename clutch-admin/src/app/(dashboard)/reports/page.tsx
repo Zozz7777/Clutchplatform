@@ -241,18 +241,18 @@ export default function ReportsPage() {
     return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + " " + sizes[i];
   };
 
-  const filteredReports = reports.filter((report) => {
-    const matchesSearch = report.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         report.description.toLowerCase().includes(searchTerm.toLowerCase());
+  const filteredReports = (reports || []).filter((report) => {
+    const matchesSearch = (report.name || '').toLowerCase().includes(searchTerm.toLowerCase()) ||
+                         (report.description || '').toLowerCase().includes(searchTerm.toLowerCase());
     const matchesType = typeFilter === "all" || report.type === typeFilter;
     const matchesStatus = statusFilter === "all" || report.status === statusFilter;
     return matchesSearch && matchesType && matchesStatus;
   });
 
-  const totalReports = reports.length;
-  const completedReports = reports.filter(r => r.status === "completed").length;
-  const scheduledReports = reports.filter(r => r.status === "scheduled").length;
-  const totalTemplates = templates.length;
+  const totalReports = (reports || []).length;
+  const completedReports = (reports || []).filter(r => r.status === "completed").length;
+  const scheduledReports = (reports || []).filter(r => r.status === "scheduled").length;
+  const totalTemplates = (templates || []).length;
 
   if (loading) {
     return (
@@ -336,7 +336,7 @@ export default function ReportsPage() {
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">
-              {reports.reduce((sum, r) => sum + r.results.totalRecords, 0).toLocaleString()}
+              {(reports || []).reduce((sum, r) => sum + (r.results?.totalRecords || 0), 0).toLocaleString()}
             </div>
             <p className="text-xs text-muted-foreground">
               Total records processed

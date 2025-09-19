@@ -2,7 +2,12 @@ import { app } from 'electron';
 import * as path from 'path';
 
 export const isDev = (): boolean => {
-  return process.env['NODE_ENV'] === 'development' || (typeof app !== 'undefined' && !app.isPackaged);
+  try {
+    return process.env['NODE_ENV'] === 'development' || (typeof app !== 'undefined' && app && !app.isPackaged);
+  } catch (error) {
+    // If electron app is not available, assume development mode
+    return process.env['NODE_ENV'] === 'development' || true;
+  }
 };
 
 export const getAppPath = (): string => {

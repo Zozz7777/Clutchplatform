@@ -46,7 +46,7 @@ const requireAuth = async (req: any, res: any, next: any) => {
 // GET /api/dashboard/stats - Get dashboard statistics
 router.get('/stats', requireAuth, async (req, res) => {
   try {
-    const currentUser = req.user;
+    const currentUser = (req as any).user;
     if (!currentUser) {
       return res.status(401).json({
         success: false,
@@ -140,7 +140,7 @@ router.get('/stats', requireAuth, async (req, res) => {
 // GET /api/dashboard/overview - Get business overview
 router.get('/overview', requireAuth, async (req, res) => {
   try {
-    const currentUser = req.user;
+    const currentUser = (req as any).user;
     if (!currentUser) {
       return res.status(401).json({
         success: false,
@@ -216,7 +216,7 @@ router.get('/overview', requireAuth, async (req, res) => {
 // GET /api/dashboard/alerts - Get system alerts
 router.get('/alerts', requireAuth, async (req, res) => {
   try {
-    const currentUser = req.user;
+    const currentUser = (req as any).user;
     if (!currentUser) {
       return res.status(401).json({
         success: false,

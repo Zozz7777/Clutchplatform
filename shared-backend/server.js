@@ -270,7 +270,7 @@ app.use('/api/v1/ai', aiRoutes);
 app.use('/api/v1/system-health', systemHealthRoutes);
 app.use('/api/v1/feature-flags', featureFlagsRoutes);
 app.use('/api/v1/audit', auditRoutes);
-app.use('/api/v1/assets', assetsRoutes);
+// app.use('/api/v1/assets', assetsRoutes); // Removed duplicate - already mounted with apiPrefix
 app.use('/api/v1/projects', projectsRoutes);
 app.use('/api/v1/vendors', vendorsRoutes);
 app.use('/api/v1/performance', performanceRoutes);

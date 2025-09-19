@@ -38,7 +38,7 @@ export function RealtimeProvider({ children }: { children: React.ReactNode }) {
   }, []);
 
   const handleError = useCallback((error: Event) => {
-    console.error('WebSocket error:', error);
+    // WebSocket error
     toast.error('Real-time connection error');
   }, []);
 
@@ -110,7 +110,7 @@ export function RealtimeProvider({ children }: { children: React.ReactNode }) {
 
       await websocketService.connect(handlers);
     } catch (error) {
-      console.error('Failed to connect to WebSocket:', error);
+      // Failed to connect to WebSocket
       setIsConnecting(false);
       toast.error('Failed to establish real-time connection');
     }
@@ -138,7 +138,7 @@ export function RealtimeProvider({ children }: { children: React.ReactNode }) {
           if (token) {
             connect();
           } else {
-            console.warn('🔌 No token found, skipping WebSocket connection');
+            // No token found, skipping WebSocket connection
           }
         }, 500); // Increased delay to 500ms
         

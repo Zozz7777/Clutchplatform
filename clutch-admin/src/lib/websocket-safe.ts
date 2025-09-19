@@ -133,7 +133,7 @@ export class SafeWebSocketService {
             const message: WebSocketMessage = JSON.parse(event.data);
             this.handleMessage(message);
           } catch (error) {
-            console.error('Failed to parse WebSocket message:', error);
+            // Failed to parse WebSocket message
           }
         };
 
@@ -157,9 +157,7 @@ export class SafeWebSocketService {
 
         this.ws.onerror = (error) => {
           clearTimeout(connectionTimeout);
-          console.error('🔌 WebSocket error, falling back to polling:', {
-            error,
-            readyState: this.ws?.readyState,
+          // WebSocket error, falling back to polling
             url: wsUrl.replace(this.token || '', '[TOKEN]'),
             hasToken: !!this.token,
             tokenPreview: this.token ? `${this.token.substring(0, 20)}...` : 'none'
@@ -172,7 +170,7 @@ export class SafeWebSocketService {
 
       } catch (error) {
         this.isConnecting = false;
-        console.error('🔌 WebSocket connection failed, falling back to polling:', error);
+        // WebSocket connection failed, falling back to polling
         this.startPollingFallback(handlers);
         resolve(); // Resolve instead of reject to prevent unhandled promise rejection
       }
@@ -213,7 +211,7 @@ export class SafeWebSocketService {
     const delay = this.reconnectInterval * Math.pow(2, this.reconnectAttempts - 1);
     setTimeout(() => {
       if (this.reconnectAttempts <= this.maxReconnectAttempts) {
-        this.connect(this.eventHandlers).catch(console.error);
+        this.connect(this.eventHandlers).catch(() => {});
       }
     }, delay);
   }
@@ -230,12 +228,12 @@ export class SafeWebSocketService {
       try {
         await this.pollForUpdates();
       } catch (error) {
-        console.error('Polling error:', error);
+        // Polling error
       }
     }, this.pollingIntervalMs);
 
     // Initial poll
-    this.pollForUpdates().catch(console.error);
+    this.pollForUpdates().catch(() => {});
   }
 
   private stopPolling() {
@@ -303,7 +301,7 @@ export class SafeWebSocketService {
 
       this.lastPollTime = Date.now();
     } catch (error) {
-      console.error('Polling request failed:', error);
+      // Polling request failed
     }
   }
 

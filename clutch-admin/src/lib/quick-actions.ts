@@ -81,7 +81,7 @@ export class QuickActionsService {
       }
     } catch (error) {
       toast.error('Failed to generate report', { id: 'generate-report' });
-      console.error('Report generation error:', error);
+      // Report generation error
     }
   };
 
@@ -106,7 +106,7 @@ export class QuickActionsService {
       }
     } catch (error) {
       toast.error('Failed to export data', { id: 'export-data' });
-      console.error('Export error:', error);
+      // Export error
     }
   };
 
@@ -139,7 +139,7 @@ export class QuickActionsService {
       }
     } catch (error) {
       toast.error('Failed to optimize routes', { id: 'optimize-routes' });
-      console.error('Route optimization error:', error);
+      // Route optimization error
     }
   };
 
@@ -157,7 +157,7 @@ export class QuickActionsService {
       toast.success('Data refreshed successfully!', { id: 'refresh-data' });
     } catch (error) {
       toast.error('Failed to refresh data', { id: 'refresh-data' });
-      console.error('Data refresh error:', error);
+      // Data refresh error
     }
   };
 
@@ -172,7 +172,7 @@ export class QuickActionsService {
       toast.success('Notification sent successfully!', { id: 'send-notification' });
     } catch (error) {
       toast.error('Failed to send notification', { id: 'send-notification' });
-      console.error('Notification error:', error);
+      // Notification error
     }
   };
 
