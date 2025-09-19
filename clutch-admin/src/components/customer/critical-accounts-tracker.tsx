@@ -108,7 +108,7 @@ export default function CriticalAccountsTracker({ className }: CriticalAccountsT
           setSelectedAccount(accountsData[0]);
         }
       } catch (error) {
-        console.error("Failed to load critical accounts:", error);
+        // Error handled by API service
         // Set empty array on error - no mock data fallback
         setAccounts([]);
         setSelectedAccount(null);

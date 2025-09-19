@@ -85,7 +85,7 @@ export default function LiveOpsMap({ className }: LiveOpsMapProps) {
         setUserActivities(usersData || []);
         setLastUpdate(new Date());
       } catch (error) {
-        console.error("Failed to load map data:", error);
+        // Error handled by API service
         // Set empty arrays on error - no mock data fallback
         setFleetLocations([]);
         setRevenueHotspots([]);
@@ -111,7 +111,7 @@ export default function LiveOpsMap({ className }: LiveOpsMapProps) {
           setUserActivities(usersData || []);
           setLastUpdate(new Date());
         } catch (error) {
-          console.error("Failed to update map data:", error);
+          // Error handled by API service
           // Keep existing data on error
         }
       }, 10000); // Update every 10 seconds

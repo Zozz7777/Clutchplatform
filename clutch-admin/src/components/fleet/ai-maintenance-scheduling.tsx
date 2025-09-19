@@ -189,7 +189,7 @@ export default function AIMaintenanceScheduling({ className }: AIMaintenanceSche
           setTechnicians([]);
         }
       } catch (error) {
-        console.error('Failed to load maintenance data:', error);
+        // Error handled by API service
         setTasks([]);
         setSchedules([]);
         setTechnicians([]);

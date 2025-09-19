@@ -553,7 +553,7 @@ export default function LegalPage() {
                       <p className="font-medium">{contract.title}</p>
                       <p className="text-sm text-muted-foreground">{contract.partyName}</p>
                       <div className="flex items-center space-x-2 mt-1">
-                        <Badge variant={getStatusColor(contract.status) as any}>
+                        <Badge variant={getStatusColor(contract.status) as "default" | "secondary" | "destructive" | "outline"}>
                           {contract.status}
                         </Badge>
                         <span className="text-xs text-muted-foreground">
@@ -689,7 +689,7 @@ export default function LegalPage() {
                       <p className="font-medium">{dispute.title}</p>
                       <p className="text-sm text-muted-foreground">{dispute.partyName}</p>
                       <div className="flex items-center space-x-2 mt-1">
-                        <Badge variant={getStatusColor(dispute.status) as any}>
+                        <Badge variant={getStatusColor(dispute.status) as "default" | "secondary" | "destructive" | "outline"}>
                           {dispute.status}
                         </Badge>
                         <Badge variant={getPriorityColor(dispute.priority) as any}>

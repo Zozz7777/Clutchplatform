@@ -83,7 +83,7 @@ export function ChurnAttribution({ className = '' }: ChurnAttributionProps) {
 
         setChurnReasons(reasons);
       } catch (error) {
-        console.error('Failed to load churn attribution data:', error);
+        // Error handled by API service
         // Set empty array on error - no mock data fallback
         setChurnReasons([]);
       } finally {

@@ -126,7 +126,7 @@ export default function CMSPage() {
         setCategories(categoriesData || []);
         setFilteredContent(contentData || []);
       } catch (error) {
-        console.error("Failed to load CMS data:", error);
+        // Error handled by API service
         // Set empty arrays on error - no mock data fallback
         setContent([]);
         setMedia([]);

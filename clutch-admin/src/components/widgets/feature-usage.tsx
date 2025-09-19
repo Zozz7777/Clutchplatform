@@ -77,7 +77,7 @@ export function FeatureUsage({ className = '' }: FeatureUsageProps) {
 
         setFeatureData(features);
       } catch (error) {
-        console.error('Failed to load feature usage data:', error);
+        // Error handled by API service
         // Set empty array on error - no mock data fallback
         setFeatureData([]);
       } finally {

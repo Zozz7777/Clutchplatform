@@ -558,7 +558,7 @@ export default function MarketingPage() {
                       <p className="font-medium">{campaign.name}</p>
                       <p className="text-sm text-muted-foreground">{campaign.objective} • {campaign.type}</p>
                       <div className="flex items-center space-x-2 mt-1">
-                        <Badge variant={getStatusColor(campaign.status) as any}>
+                        <Badge variant={getStatusColor(campaign.status) as "default" | "secondary" | "destructive" | "outline"}>
                           {campaign.status}
                         </Badge>
                         <span className="text-xs text-muted-foreground">
@@ -691,7 +691,7 @@ export default function MarketingPage() {
                       <p className="font-medium">{lead.firstName} {lead.lastName}</p>
                       <p className="text-sm text-muted-foreground">{lead.email}</p>
                       <div className="flex items-center space-x-2 mt-1">
-                        <Badge variant={getStatusColor(lead.status) as any}>
+                        <Badge variant={getStatusColor(lead.status) as "default" | "secondary" | "destructive" | "outline"}>
                           {lead.status}
                         </Badge>
                         <span className="text-xs text-muted-foreground">
