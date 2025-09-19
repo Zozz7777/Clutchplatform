@@ -246,7 +246,7 @@ export default function FleetPage() {
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold text-foreground">
-              {vehicles.filter(v => v.status === "offline").length}
+              {(vehicles || []).filter(v => v.status === "offline").length}
             </div>
             <p className="text-xs text-muted-foreground">
               <span className="text-destructive">-2</span> from yesterday
@@ -267,7 +267,7 @@ export default function FleetPage() {
               <MapPin className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
               <p className="text-muted-foreground">Interactive fleet map will be displayed here</p>
               <p className="text-sm text-muted-foreground mt-2">
-                Showing {vehicles.filter(v => v.location).length} vehicles with GPS data
+                Showing {(vehicles || []).filter(v => v.location).length} vehicles with GPS data
               </p>
             </div>
           </div>

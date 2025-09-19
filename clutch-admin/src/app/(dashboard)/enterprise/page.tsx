@@ -474,7 +474,7 @@ export default function EnterprisePage() {
                       <Badge variant={getStatusColor(client.status) as "default" | "secondary" | "destructive" | "outline"}>
                         {client.status}
                       </Badge>
-                      <Badge variant={getTierColor(client.tier) as any}>
+                      <Badge variant={getTierColor(client.tier) as "default" | "secondary" | "destructive" | "outline"}>
                         {client.tier}
                       </Badge>
                       <Badge variant={getSizeColor(client.size) as any}>

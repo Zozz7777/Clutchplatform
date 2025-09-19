@@ -49,6 +49,9 @@
     "typescript": "^5.3.3"
   },
   "dependencies": {
+    "@types/jsbarcode": "^3.11.4",
+    "@types/ws": "^8.18.1",
+    "axios": "^1.12.2",
     "bcryptjs": "^2.4.3",
     "chart.js": "^4.4.1",
     "compression": "^1.7.4",
@@ -59,13 +62,13 @@
     "helmet": "^7.1.0",
     "i18next": "^23.7.16",
     "i18next-fs-backend": "^2.3.1",
+    "jsbarcode": "^3.11.5",
     "jsonwebtoken": "^9.0.2",
     "mongoose": "^8.0.3",
     "morgan": "^1.10.0",
-    "jsbarcode": "^3.11.5",
     "sqlite3": "^5.1.6",
-    "ws": "^8.14.2",
-    "winston": "^3.11.0"
+    "winston": "^3.11.0",
+    "ws": "^8.14.2"
   },
   "build": {
     "appId": "com.clutch.autoparts",
@@ -82,11 +85,15 @@
       "target": [
         {
           "target": "nsis",
-          "arch": ["x64"]
+          "arch": [
+            "x64"
+          ]
         },
         {
           "target": "portable",
-          "arch": ["x64"]
+          "arch": [
+            "x64"
+          ]
         }
       ],
       "icon": "assets/icon.ico"
