@@ -355,8 +355,8 @@ class DataPersistenceService {
   // Auto-save functionality
   public enableAutoSave(
     key: string,
-    data: any,
-    saveFunction: (data: any) => Promise<any>,
+    data: unknown,
+    saveFunction: (data: unknown) => Promise<unknown>,
     interval: number = 30000 // 30 seconds
   ): void {
     // Clear existing timer
@@ -389,12 +389,12 @@ class DataPersistenceService {
     this.pendingChanges.delete(key);
   }
 
-  public updateAutoSaveData(key: string, data: any): void {
+  public updateAutoSaveData(key: string, data: unknown): void {
     this.pendingChanges.set(key, data);
   }
 
   // Validation
-  public setValidationRule(endpoint: string, validator: (data: any) => boolean): void {
+  public setValidationRule(endpoint: string, validator: (data: unknown) => boolean): void {
     this.validationRules.set(endpoint, validator);
   }
 

@@ -29,7 +29,7 @@ import {
   XCircle,
 } from "lucide-react";
 import { useTranslations } from "@/hooks/use-translations";
-import { productionApi } from "@/lib/production-api";
+import { realApi } from "@/lib/real-api";
 import { toast } from "sonner";
 
 interface AppVersion {
@@ -112,10 +112,10 @@ export default function MobileAppsPage() {
         
         // Load real data from API
         const [versionsData, crashesData, analyticsData, storesData] = await Promise.all([
-          productionApi.getMobileAppVersions(),
-          productionApi.getMobileAppCrashes(),
-          productionApi.getMobileAppAnalytics(),
-          productionApi.getMobileAppStores()
+          realApi.getMobileAppVersions(),
+          realApi.getMobileAppCrashes(),
+          realApi.getMobileAppAnalytics(),
+          realApi.getMobileAppStores()
         ]);
 
         setVersions(versionsData || []);
