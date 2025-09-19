@@ -109,6 +109,7 @@ const businessIntelligenceRoutes = require('./routes/business-intelligence');
 const monitoringRoutes = require('./routes/monitoring');
 const revenueRoutes = require('./routes/revenue');
 const filesRoutes = require('./routes/files');
+const apiDocsRoutes = require('./routes/api-docs');
 
 // All route imports cleaned up - only existing routes imported above
 
@@ -261,6 +262,7 @@ app.use('/api/v1/analytics', businessIntelligenceRoutes);
 app.use('/api/v1/monitoring', monitoringRoutes);
 app.use('/api/v1/revenue', revenueRoutes);
 app.use('/api/v1/files', filesRoutes);
+app.use('/api/v1/docs', apiDocsRoutes);
 
 // Test endpoints
 app.get('/test', (req, res) => {

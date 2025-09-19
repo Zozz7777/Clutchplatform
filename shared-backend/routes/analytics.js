@@ -507,10 +507,10 @@ router.get('/engagement-heatmap', authenticateToken, async (req, res) => {
             usage = segmentPayments.length / segmentUsers.length * 10; // Normalize
             break;
           case 'Support':
-            usage = Math.random() * 30 + 20; // Mock support usage
+            usage = 0; // TODO: Get actual support usage
             break;
           case 'Reports':
-            usage = Math.random() * 20 + 10; // Mock reports usage
+            usage = 0; // TODO: Get actual reports usage
             break;
         }
         

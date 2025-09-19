@@ -101,23 +101,21 @@ router.post('/generate', checkRole(['head_administrator', 'analyst', 'manager'])
       type,
       data: {
         summary: {
-          totalRecords: Math.floor(Math.random() * 1000) + 100,
+          totalRecords: 0, // TODO: Get actual record count
           dateRange: reportData.dateRange,
           generatedAt: new Date().toISOString()
         },
         metrics: {
-          revenue: Math.floor(Math.random() * 100000) + 50000,
-          users: Math.floor(Math.random() * 500) + 100,
-          orders: Math.floor(Math.random() * 200) + 50
+          revenue: 0, // TODO: Get actual revenue
+          users: 0, // TODO: Get actual user count
+          orders: 0 // TODO: Get actual order count
         },
         charts: [
           {
             type: 'line',
             title: 'Revenue Trend',
-            data: Array.from({ length: 30 }, (_, i) => ({
-              date: new Date(Date.now() - (29 - i) * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
-              value: Math.floor(Math.random() * 10000) + 1000
-            }))
+            data: [], // TODO: Get actual revenue trend data
+            note: 'Chart data not yet implemented - requires real data source'
           }
         ]
       },
@@ -567,20 +565,41 @@ router.get('/analytics/overview', async (req, res) => {
 // ===== HELPER FUNCTIONS =====
 
 async function generateDashboardReport(params) {
-  // Mock dashboard report data
-  return {
-    summary: {
-      totalUsers: 150,
-      totalVehicles: 75,
-      totalBookings: 320,
-      totalRevenue: 45000
-    },
-    charts: {
-      userGrowth: [10, 15, 20, 25, 30, 35, 40],
-      revenueTrend: [5000, 6000, 7000, 8000, 9000, 10000, 11000]
-    },
-    generatedAt: new Date()
-  };
+  // Generate real dashboard report data from database
+  try {
+    const usersCollection = await getCollection('users');
+    const vehiclesCollection = await getCollection('vehicles');
+    const bookingsCollection = await getCollection('bookings');
+    
+    const totalUsers = await usersCollection.countDocuments();
+    const totalVehicles = await vehiclesCollection.countDocuments();
+    const totalBookings = await bookingsCollection.countDocuments();
+    
+    // Calculate total revenue from actual bookings
+    const revenueResult = await bookingsCollection.aggregate([
+      { $match: { status: 'completed' } },
+      { $group: { _id: null, totalRevenue: { $sum: '$amount' } } }
+    ]).toArray();
+    
+    const totalRevenue = revenueResult.length > 0 ? revenueResult[0].totalRevenue : 0;
+    
+    return {
+      summary: {
+        totalUsers,
+        totalVehicles,
+        totalBookings,
+        totalRevenue
+      },
+      charts: {
+        userGrowth: [], // TODO: Implement real user growth data
+        revenueTrend: [] // TODO: Implement real revenue trend data
+      },
+      generatedAt: new Date()
+    };
+  } catch (error) {
+    console.error('Failed to generate dashboard report:', error);
+    throw new Error('Failed to generate dashboard report');
+  }
 }
 
 async function generateUsersReport(params) {
@@ -657,16 +676,24 @@ async function generateFinancialReport(params) {
 }
 
 async function generatePerformanceReport(params) {
-  // Mock performance report data
-  return {
-    metrics: {
-      responseTime: '150ms',
-      uptime: '99.9%',
-      errorRate: '0.1%',
-      throughput: '1000 req/min'
-    },
-    generatedAt: new Date()
-  };
+  // Generate real performance report data
+  try {
+    // TODO: Implement real performance metrics collection
+    // This would typically come from monitoring services like Prometheus, New Relic, etc.
+    return {
+      metrics: {
+        responseTime: 'N/A', // TODO: Get from monitoring service
+        uptime: 'N/A', // TODO: Get from monitoring service
+        errorRate: 'N/A', // TODO: Get from monitoring service
+        throughput: 'N/A' // TODO: Get from monitoring service
+      },
+      generatedAt: new Date(),
+      note: 'Performance metrics not yet implemented - requires monitoring service integration'
+    };
+  } catch (error) {
+    console.error('Failed to generate performance report:', error);
+    throw new Error('Failed to generate performance report');
+  }
 }
 
 module.exports = router;

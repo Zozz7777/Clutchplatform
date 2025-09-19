@@ -353,13 +353,13 @@ class EnhancedAutonomousLearningSystem {
         return this.researchCache.get(cacheKey);
       }
 
-      // Simulate web search results (in real implementation, use actual web search API)
-      const mockResults = this.generateMockWebResults(query);
+      // TODO: Implement actual web search API integration
+      const results = []; // TODO: Use actual web search API
       
       // Cache results
-      this.researchCache.set(cacheKey, mockResults);
+      this.researchCache.set(cacheKey, results);
       
-      return mockResults;
+      return results;
     } catch (error) {
       this.logger.error('❌ Web search failed:', error);
       return [];

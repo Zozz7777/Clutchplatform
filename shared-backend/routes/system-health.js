@@ -550,7 +550,7 @@ async function getSystemPerformanceMetrics() {
       errorRate: Math.round(errorRate * 10) / 10, // Round to 1 decimal
       activeSessions: activeSessions,
       memoryUsage: Math.round((usedMemory / totalMemory) * 100),
-      cpuUsage: Math.round(Math.random() * 30) + 20, // TODO: Get real CPU usage
+      cpuUsage: 0, // TODO: Get real CPU usage
       timestamp: new Date().toISOString()
     };
   } catch (error) {
@@ -657,33 +657,17 @@ async function getServicesHealthData() {
 }
 
 async function getSystemLogs(options) {
-  // This would typically read from log files or a logging service
-  // For now, we'll return mock data
-  const mockLogs = [
-    {
-      timestamp: new Date(),
-      level: 'info',
-      message: 'Server started successfully',
-      service: 'main',
-      metadata: { port: 5000 }
-    },
-    {
-      timestamp: new Date(Date.now() - 60000),
-      level: 'warn',
-      message: 'High memory usage detected',
-      service: 'monitor',
-      metadata: { usage: '85%' }
-    },
-    {
-      timestamp: new Date(Date.now() - 120000),
-      level: 'error',
-      message: 'Database connection timeout',
-      service: 'database',
-      metadata: { timeout: 5000 }
-    }
-  ];
+  // Read from actual log files or logging service
+  let filteredLogs = [];
   
-  let filteredLogs = mockLogs;
+  try {
+    // TODO: Implement actual log reading from files or logging service
+    // For now, return empty array until proper logging is implemented
+    filteredLogs = [];
+  } catch (error) {
+    console.error('Failed to read logs:', error);
+    filteredLogs = [];
+  }
   
   if (options.level) {
     filteredLogs = filteredLogs.filter(log => log.level === options.level);
