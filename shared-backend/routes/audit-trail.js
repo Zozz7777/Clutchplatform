@@ -43,33 +43,41 @@ router.get('/', async (req, res) => {
     
     const skip = (parseInt(page) - 1) * parseInt(limit);
     
-    const auditLogs = await auditCollection
-      .find(filter)
-      .skip(skip)
-      .limit(parseInt(limit))
-      .sort({ timestamp: -1 })
-      .toArray();
+    // Check if collection exists and has data
+    const collectionExists = await auditCollection.countDocuments({});
     
-    const total = await auditCollection.countDocuments(filter);
+    let auditLogs = [];
+    let total = 0;
+    
+    if (collectionExists > 0) {
+      auditLogs = await auditCollection
+        .find(filter)
+        .skip(skip)
+        .limit(parseInt(limit))
+        .sort({ timestamp: -1 })
+        .toArray();
+      
+      total = await auditCollection.countDocuments(filter);
+    }
     
     res.json({
       success: true,
-      data: {
-        auditLogs,
-        pagination: {
-          page: parseInt(page),
-          limit: parseInt(limit),
-          total,
-          pages: Math.ceil(total / parseInt(limit))
-        }
-      }
+      data: auditLogs,
+      pagination: {
+        page: parseInt(page),
+        limit: parseInt(limit),
+        total,
+        pages: Math.ceil(total / parseInt(limit))
+      },
+      timestamp: new Date().toISOString()
     });
   } catch (error) {
     console.error('Error fetching audit logs:', error);
     res.status(500).json({
       success: false,
       message: 'Failed to fetch audit logs',
-      error: process.env.NODE_ENV === 'development' ? error.message : undefined
+      error: process.env.NODE_ENV === 'development' ? error.message : undefined,
+      timestamp: new Date().toISOString()
     });
   }
 });
@@ -173,33 +181,41 @@ router.get('/security', checkRole(['head_administrator']), async (req, res) => {
     
     const skip = (parseInt(page) - 1) * parseInt(limit);
     
-    const securityLogs = await auditCollection
-      .find(filter)
-      .skip(skip)
-      .limit(parseInt(limit))
-      .sort({ timestamp: -1 })
-      .toArray();
+    // Check if collection exists and has data
+    const collectionExists = await auditCollection.countDocuments({});
     
-    const total = await auditCollection.countDocuments(filter);
+    let securityLogs = [];
+    let total = 0;
+    
+    if (collectionExists > 0) {
+      securityLogs = await auditCollection
+        .find(filter)
+        .skip(skip)
+        .limit(parseInt(limit))
+        .sort({ timestamp: -1 })
+        .toArray();
+      
+      total = await auditCollection.countDocuments(filter);
+    }
     
     res.json({
       success: true,
-      data: {
-        securityLogs,
-        pagination: {
-          page: parseInt(page),
-          limit: parseInt(limit),
-          total,
-          pages: Math.ceil(total / parseInt(limit))
-        }
-      }
+      data: securityLogs,
+      pagination: {
+        page: parseInt(page),
+        limit: parseInt(limit),
+        total,
+        pages: Math.ceil(total / parseInt(limit))
+      },
+      timestamp: new Date().toISOString()
     });
   } catch (error) {
     console.error('Error fetching security audit logs:', error);
     res.status(500).json({
       success: false,
       message: 'Failed to fetch security audit logs',
-      error: process.env.NODE_ENV === 'development' ? error.message : undefined
+      error: process.env.NODE_ENV === 'development' ? error.message : undefined,
+      timestamp: new Date().toISOString()
     });
   }
 });
@@ -222,33 +238,41 @@ router.get('/user-activity', checkRole(['head_administrator']), async (req, res)
     
     const skip = (parseInt(page) - 1) * parseInt(limit);
     
-    const userActivityLogs = await auditCollection
-      .find(filter)
-      .skip(skip)
-      .limit(parseInt(limit))
-      .sort({ timestamp: -1 })
-      .toArray();
+    // Check if collection exists and has data
+    const collectionExists = await auditCollection.countDocuments({});
     
-    const total = await auditCollection.countDocuments(filter);
+    let userActivityLogs = [];
+    let total = 0;
+    
+    if (collectionExists > 0) {
+      userActivityLogs = await auditCollection
+        .find(filter)
+        .skip(skip)
+        .limit(parseInt(limit))
+        .sort({ timestamp: -1 })
+        .toArray();
+      
+      total = await auditCollection.countDocuments(filter);
+    }
     
     res.json({
       success: true,
-      data: {
-        userActivityLogs,
-        pagination: {
-          page: parseInt(page),
-          limit: parseInt(limit),
-          total,
-          pages: Math.ceil(total / parseInt(limit))
-        }
-      }
+      data: userActivityLogs,
+      pagination: {
+        page: parseInt(page),
+        limit: parseInt(limit),
+        total,
+        pages: Math.ceil(total / parseInt(limit))
+      },
+      timestamp: new Date().toISOString()
     });
   } catch (error) {
     console.error('Error fetching user activity audit logs:', error);
     res.status(500).json({
       success: false,
       message: 'Failed to fetch user activity audit logs',
-      error: process.env.NODE_ENV === 'development' ? error.message : undefined
+      error: process.env.NODE_ENV === 'development' ? error.message : undefined,
+      timestamp: new Date().toISOString()
     });
   }
 });

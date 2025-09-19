@@ -138,7 +138,7 @@ export function EmployeeInvitationForm({ onSuccess, onCancel }: EmployeeInvitati
         });
       }
     } catch (error) {
-      console.error("Invitation error:", error);
+      // Invitation error
       toast.error("Failed to send invitation", {
         description: "Please check your connection and try again"
       });

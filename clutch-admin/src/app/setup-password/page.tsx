@@ -59,7 +59,7 @@ function SetupPasswordContent() {
         setIsValidToken(false);
       }
     } catch (error) {
-      console.error("Token validation error:", error);
+      // Token validation error
       setIsValidToken(false);
     } finally {
       setIsValidating(false);
@@ -122,7 +122,7 @@ function SetupPasswordContent() {
         });
       }
     } catch (error) {
-      console.error("Password setup error:", error);
+      // Password setup error
       toast.error("Failed to set password", {
         description: "Please check your connection and try again"
       });

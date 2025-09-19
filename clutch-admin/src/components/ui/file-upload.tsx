@@ -154,7 +154,7 @@ export function FileUpload({
         toast.error(errorMessage);
       }
     } catch (error) {
-      console.error('Upload error:', error);
+      // Upload error
       onUploadError?.('Upload failed');
     } finally {
       setIsUploading(false);
@@ -208,7 +208,7 @@ export function FileUpload({
         fileName: file.name
       });
     } catch (error) {
-      console.error('Download error:', error);
+      // Download error
       toast.error('Failed to download file');
     }
   }, []);
@@ -222,7 +222,7 @@ export function FileUpload({
         window.open(previewUrl, '_blank');
       }
     } catch (error) {
-      console.error('Preview error:', error);
+      // Preview error
       toast.error('Failed to preview file');
     }
   }, []);

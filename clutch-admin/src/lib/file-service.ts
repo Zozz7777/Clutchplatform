@@ -69,7 +69,7 @@ class FileService {
       }
 
     } catch (error) {
-      console.error('File upload error:', error);
+      // File upload error
       const errorMessage = error instanceof Error ? error.message : 'Upload failed';
       toast.error(`Failed to upload ${file.name}: ${errorMessage}`, { id: `upload-${file.name}` });
       
@@ -106,7 +106,7 @@ class FileService {
       toast.success('File downloaded successfully!', { id: `download-${fileId}` });
 
     } catch (error) {
-      console.error('File download error:', error);
+      // File download error
       const errorMessage = error instanceof Error ? error.message : 'Download failed';
       toast.error(`Failed to download file: ${errorMessage}`, { id: `download-${fileId}` });
     }
@@ -176,7 +176,7 @@ class FileService {
       const blob = await productionApi.downloadFile(fileId);
       return URL.createObjectURL(blob);
     } catch (error) {
-      console.error('File preview error:', error);
+      // File preview error
       return null;
     }
   }
@@ -188,7 +188,7 @@ class FileService {
       toast.success('File deleted successfully!');
       return true;
     } catch (error) {
-      console.error('File deletion error:', error);
+      // File deletion error
       toast.error('Failed to delete file');
       return false;
     }
