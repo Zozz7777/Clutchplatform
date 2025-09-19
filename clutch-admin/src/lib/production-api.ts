@@ -1,5 +1,6 @@
 import { realApi } from "./real-api";
 import { apiService } from "./api";
+import { logger } from "./logger";
 import { type KPIMetric, type FleetVehicle, type Notification, type User } from "./types";
 
 // Export types for use in other components
@@ -27,7 +28,7 @@ export class ProductionApiService {
       const data = await realApi.getKPIMetrics();
       return data || [];
     } catch (error) {
-      console.error("Failed to fetch KPI metrics:", error);
+      logger.error("Failed to fetch KPI metrics:", error);
       throw new Error("Failed to load dashboard metrics");
     }
   }
@@ -37,7 +38,7 @@ export class ProductionApiService {
       const data = await realApi.getFleetVehicles();
       return data || [];
     } catch (error) {
-      console.error("Failed to fetch fleet vehicles:", error);
+      logger.error("Failed to fetch fleet vehicles:", error);
       throw new Error("Failed to load fleet vehicles");
     }
   }
@@ -47,7 +48,7 @@ export class ProductionApiService {
       const data = await realApi.getNotifications();
       return data || [];
     } catch (error) {
-      console.error("Failed to fetch notifications:", error);
+      logger.error("Failed to fetch notifications:", error);
       throw new Error("Failed to load notifications");
     }
   }
@@ -58,7 +59,7 @@ export class ProductionApiService {
       const data = await realApi.getUsers();
       return data || [];
     } catch (error) {
-      console.error("Failed to fetch users:", error);
+      logger.error("Failed to fetch users:", error);
       throw new Error("Failed to load users");
     }
   }
@@ -68,7 +69,7 @@ export class ProductionApiService {
       const users = await this.getUsers();
       return users.find(user => user.id === id) || null;
     } catch (error) {
-      console.error("Failed to fetch user:", error);
+      logger.error("Failed to fetch user:", error);
       throw new Error("Failed to load user");
     }
   }
@@ -78,7 +79,7 @@ export class ProductionApiService {
       const data = await realApi.createUser(userData);
       return data;
     } catch (error) {
-      console.error("Failed to create user:", error);
+      logger.error("Failed to create user:", error);
       throw new Error("Failed to create user");
     }
   }
@@ -88,7 +89,7 @@ export class ProductionApiService {
       const data = await realApi.updateUser(id, userData);
       return data;
     } catch (error) {
-      console.error("Failed to update user:", error);
+      logger.error("Failed to update user:", error);
       throw new Error("Failed to update user");
     }
   }
@@ -97,7 +98,7 @@ export class ProductionApiService {
     try {
       return await realApi.deleteUser(id);
     } catch (error) {
-      console.error("Failed to delete user:", error);
+      logger.error("Failed to delete user:", error);
       throw new Error("Failed to delete user");
     }
   }
@@ -108,7 +109,7 @@ export class ProductionApiService {
       const data = await realApi.getFleetVehicles();
       return data || [];
     } catch (error) {
-      console.error("Failed to fetch fleet vehicles:", error);
+      logger.error("Failed to fetch fleet vehicles:", error);
       throw new Error("Failed to load fleet vehicles");
     }
   }
@@ -118,7 +119,7 @@ export class ProductionApiService {
       const vehicles = await this.getFleetVehicles();
       return vehicles.find(vehicle => vehicle.id === id) || null;
     } catch (error) {
-      console.error("Failed to fetch fleet vehicle:", error);
+      logger.error("Failed to fetch fleet vehicle:", error);
       throw new Error("Failed to load fleet vehicle");
     }
   }
@@ -128,7 +129,7 @@ export class ProductionApiService {
       const data = await realApi.createFleetVehicle(vehicleData);
       return data;
     } catch (error) {
-      console.error("Failed to create fleet vehicle:", error);
+      logger.error("Failed to create fleet vehicle:", error);
       throw new Error("Failed to create fleet vehicle");
     }
   }
@@ -138,7 +139,7 @@ export class ProductionApiService {
       const data = await realApi.updateFleetVehicle(id, vehicleData);
       return data;
     } catch (error) {
-      console.error("Failed to update fleet vehicle:", error);
+      logger.error("Failed to update fleet vehicle:", error);
       throw new Error("Failed to update fleet vehicle");
     }
   }
@@ -147,7 +148,7 @@ export class ProductionApiService {
     try {
       return await realApi.deleteFleetVehicle(id);
     } catch (error) {
-      console.error("Failed to delete fleet vehicle:", error);
+      logger.error("Failed to delete fleet vehicle:", error);
       throw new Error("Failed to delete fleet vehicle");
     }
   }
@@ -156,7 +157,7 @@ export class ProductionApiService {
     try {
       return await realApi.optimizeRoutes();
     } catch (error) {
-      console.error("Failed to optimize routes:", error);
+      logger.error("Failed to optimize routes:", error);
       throw new Error("Failed to optimize routes");
     }
   }
@@ -166,7 +167,7 @@ export class ProductionApiService {
     try {
       return await realApi.getAnalyticsMetrics();
     } catch (error) {
-      console.error("Failed to fetch analytics metrics:", error);
+      logger.error("Failed to fetch analytics metrics:", error);
       throw new Error("Failed to load analytics metrics");
     }
   }
@@ -175,7 +176,7 @@ export class ProductionApiService {
     try {
       return await realApi.getAnalyticsData(type, dateRange);
     } catch (error) {
-      console.error("Failed to fetch analytics data:", error);
+      logger.error("Failed to fetch analytics data:", error);
       throw new Error("Failed to load analytics data");
     }
   }
@@ -184,7 +185,7 @@ export class ProductionApiService {
     try {
       return await realApi.generateReport(reportData);
     } catch (error) {
-      console.error("Failed to generate report:", error);
+      logger.error("Failed to generate report:", error);
       throw new Error("Failed to generate report");
     }
   }
@@ -193,7 +194,7 @@ export class ProductionApiService {
     try {
       return await realApi.exportData(type, format);
     } catch (error) {
-      console.error("Failed to export data:", error);
+      logger.error("Failed to export data:", error);
       throw new Error("Failed to export data");
     }
   }
@@ -203,7 +204,7 @@ export class ProductionApiService {
     try {
       return await realApi.getCustomers();
     } catch (error) {
-      console.error("Failed to fetch customers:", error);
+      logger.error("Failed to fetch customers:", error);
       throw new Error("Failed to load customers");
     }
   }
@@ -212,7 +213,7 @@ export class ProductionApiService {
     try {
       return await realApi.getTickets();
     } catch (error) {
-      console.error("Failed to fetch tickets:", error);
+      logger.error("Failed to fetch tickets:", error);
       throw new Error("Failed to load tickets");
     }
   }
@@ -221,7 +222,7 @@ export class ProductionApiService {
     try {
       return await realApi.createTicket(ticketData);
     } catch (error) {
-      console.error("Failed to create ticket:", error);
+      logger.error("Failed to create ticket:", error);
       throw new Error("Failed to create ticket");
     }
   }
@@ -230,7 +231,7 @@ export class ProductionApiService {
     try {
       return await realApi.updateTicket(ticketId, ticketData);
     } catch (error) {
-      console.error("Failed to update ticket:", error);
+      logger.error("Failed to update ticket:", error);
       throw new Error("Failed to update ticket");
     }
   }
@@ -240,7 +241,7 @@ export class ProductionApiService {
     try {
       return await realApi.getPayments();
     } catch (error) {
-      console.error("Failed to fetch payments:", error);
+      logger.error("Failed to fetch payments:", error);
       throw new Error("Failed to load payments");
     }
   }
@@ -249,7 +250,7 @@ export class ProductionApiService {
     try {
       return await realApi.getSubscriptions();
     } catch (error) {
-      console.error("Failed to fetch subscriptions:", error);
+      logger.error("Failed to fetch subscriptions:", error);
       throw new Error("Failed to load subscriptions");
     }
   }
@@ -258,7 +259,7 @@ export class ProductionApiService {
     try {
       return await realApi.getFinancialMetrics();
     } catch (error) {
-      console.error("Failed to fetch financial metrics:", error);
+      logger.error("Failed to fetch financial metrics:", error);
       throw new Error("Failed to load financial metrics");
     }
   }
@@ -268,7 +269,7 @@ export class ProductionApiService {
     try {
       return await realApi.getSystemSettings();
     } catch (error) {
-      console.error("Failed to fetch system settings:", error);
+      logger.error("Failed to fetch system settings:", error);
       throw new Error("Failed to load system settings");
     }
   }
@@ -277,7 +278,7 @@ export class ProductionApiService {
     try {
       return await realApi.updateSystemSettings(settings);
     } catch (error) {
-      console.error("Failed to update system settings:", error);
+      logger.error("Failed to update system settings:", error);
       throw new Error("Failed to update system settings");
     }
   }
@@ -286,7 +287,7 @@ export class ProductionApiService {
     try {
       return await realApi.getIntegrations();
     } catch (error) {
-      console.error("Failed to fetch integrations:", error);
+      logger.error("Failed to fetch integrations:", error);
       throw new Error("Failed to load integrations");
     }
   }
@@ -295,7 +296,7 @@ export class ProductionApiService {
     try {
       return await realApi.updateIntegration(integrationId, config);
     } catch (error) {
-      console.error("Failed to update integration:", error);
+      logger.error("Failed to update integration:", error);
       throw new Error("Failed to update integration");
     }
   }
@@ -305,7 +306,7 @@ export class ProductionApiService {
     try {
       return await realApi.getSystemHealth();
     } catch (error) {
-      console.error("Failed to fetch system health:", error);
+      logger.error("Failed to fetch system health:", error);
       throw new Error("Failed to load system health");
     }
   }
@@ -314,7 +315,7 @@ export class ProductionApiService {
     try {
       return await realApi.acknowledgeAlert(alertId);
     } catch (error) {
-      console.error("Failed to acknowledge alert:", error);
+      logger.error("Failed to acknowledge alert:", error);
       throw new Error("Failed to acknowledge alert");
     }
   }
@@ -323,7 +324,7 @@ export class ProductionApiService {
     try {
       return await realApi.getApiPerformance();
     } catch (error) {
-      console.error("Failed to fetch API performance:", error);
+      logger.error("Failed to fetch API performance:", error);
       throw new Error("Failed to load API performance");
     }
   }
@@ -333,7 +334,7 @@ export class ProductionApiService {
     try {
       return await realApi.getFeatureFlags();
     } catch (error) {
-      console.error("Failed to fetch feature flags:", error);
+      logger.error("Failed to fetch feature flags:", error);
       throw new Error("Failed to load feature flags");
     }
   }
@@ -342,7 +343,7 @@ export class ProductionApiService {
     try {
       return await realApi.updateFeatureFlag(flagId, enabled);
     } catch (error) {
-      console.error("Failed to update feature flag:", error);
+      logger.error("Failed to update feature flag:", error);
       throw new Error("Failed to update feature flag");
     }
   }
@@ -352,7 +353,7 @@ export class ProductionApiService {
     try {
       return await realApi.getAuditLogs(filters);
     } catch (error) {
-      console.error("Failed to fetch audit logs:", error);
+      logger.error("Failed to fetch audit logs:", error);
       throw new Error("Failed to load audit logs");
     }
   }
@@ -362,7 +363,7 @@ export class ProductionApiService {
     try {
       return await realApi.getChatMessages(conversationId);
     } catch (error) {
-      console.error("Failed to fetch chat messages:", error);
+      logger.error("Failed to fetch chat messages:", error);
       throw new Error("Failed to load chat messages");
     }
   }
@@ -371,7 +372,7 @@ export class ProductionApiService {
     try {
       return await realApi.sendMessage(messageData);
     } catch (error) {
-      console.error("Failed to send message:", error);
+      logger.error("Failed to send message:", error);
       throw new Error("Failed to send message");
     }
   }
@@ -381,7 +382,7 @@ export class ProductionApiService {
     try {
       return await realApi.getReports();
     } catch (error) {
-      console.error("Failed to fetch reports:", error);
+      logger.error("Failed to fetch reports:", error);
       throw new Error("Failed to load reports");
     }
   }
@@ -390,7 +391,7 @@ export class ProductionApiService {
     try {
       return await realApi.createReport(reportData);
     } catch (error) {
-      console.error("Failed to create report:", error);
+      logger.error("Failed to create report:", error);
       throw new Error("Failed to create report");
     }
   }
@@ -399,7 +400,7 @@ export class ProductionApiService {
     try {
       return await realApi.getReport(reportId);
     } catch (error) {
-      console.error("Failed to fetch report:", error);
+      logger.error("Failed to fetch report:", error);
       throw new Error("Failed to load report");
     }
   }
@@ -408,7 +409,7 @@ export class ProductionApiService {
     try {
       return await realApi.deleteReport(reportId);
     } catch (error) {
-      console.error("Failed to delete report:", error);
+      logger.error("Failed to delete report:", error);
       throw new Error("Failed to delete report");
     }
   }
@@ -418,7 +419,7 @@ export class ProductionApiService {
     try {
       return await realApi.getAssets();
     } catch (error) {
-      console.error("Failed to fetch assets:", error);
+      logger.error("Failed to fetch assets:", error);
       throw new Error("Failed to load assets");
     }
   }
@@ -427,7 +428,7 @@ export class ProductionApiService {
     try {
       return await realApi.getMaintenanceRecords();
     } catch (error) {
-      console.error("Failed to fetch maintenance records:", error);
+      logger.error("Failed to fetch maintenance records:", error);
       throw new Error("Failed to load maintenance records");
     }
   }
@@ -436,7 +437,7 @@ export class ProductionApiService {
     try {
       return await realApi.getAssetAssignments();
     } catch (error) {
-      console.error("Failed to fetch asset assignments:", error);
+      logger.error("Failed to fetch asset assignments:", error);
       throw new Error("Failed to load asset assignments");
     }
   }
@@ -445,7 +446,7 @@ export class ProductionApiService {
     try {
       return await realApi.createAsset(assetData);
     } catch (error) {
-      console.error("Failed to create asset:", error);
+      logger.error("Failed to create asset:", error);
       throw new Error("Failed to create asset");
     }
   }
@@ -454,7 +455,7 @@ export class ProductionApiService {
     try {
       return await realApi.createMaintenanceRecord(maintenanceData);
     } catch (error) {
-      console.error("Failed to create maintenance record:", error);
+      logger.error("Failed to create maintenance record:", error);
       throw new Error("Failed to create maintenance record");
     }
   }
@@ -463,7 +464,7 @@ export class ProductionApiService {
     try {
       return await realApi.createAssetAssignment(assignmentData);
     } catch (error) {
-      console.error("Failed to create asset assignment:", error);
+      logger.error("Failed to create asset assignment:", error);
       throw new Error("Failed to create asset assignment");
     }
   }
@@ -473,7 +474,7 @@ export class ProductionApiService {
     try {
       return await realApi.getProjects();
     } catch (error) {
-      console.error("Failed to fetch projects:", error);
+      logger.error("Failed to fetch projects:", error);
       throw new Error("Failed to load projects");
     }
   }
@@ -482,7 +483,7 @@ export class ProductionApiService {
     try {
       return await realApi.createProject(projectData);
     } catch (error) {
-      console.error("Failed to create project:", error);
+      logger.error("Failed to create project:", error);
       throw new Error("Failed to create project");
     }
   }
@@ -491,7 +492,7 @@ export class ProductionApiService {
     try {
       return await realApi.getProjectTasks(projectId);
     } catch (error) {
-      console.error("Failed to fetch project tasks:", error);
+      logger.error("Failed to fetch project tasks:", error);
       throw new Error("Failed to load project tasks");
     }
   }
@@ -500,7 +501,7 @@ export class ProductionApiService {
     try {
       return await realApi.getTimeTracking(projectId);
     } catch (error) {
-      console.error("Failed to fetch time tracking:", error);
+      logger.error("Failed to fetch time tracking:", error);
       throw new Error("Failed to load time tracking");
     }
   }
@@ -510,7 +511,7 @@ export class ProductionApiService {
     try {
       return await realApi.getABTests();
     } catch (error) {
-      console.error("Failed to fetch A/B tests:", error);
+      logger.error("Failed to fetch A/B tests:", error);
       throw new Error("Failed to load A/B tests");
     }
   }
@@ -519,7 +520,7 @@ export class ProductionApiService {
     try {
       return await realApi.getRollouts();
     } catch (error) {
-      console.error("Failed to fetch rollouts:", error);
+      logger.error("Failed to fetch rollouts:", error);
       throw new Error("Failed to load rollouts");
     }
   }
@@ -528,7 +529,7 @@ export class ProductionApiService {
     try {
       return await realApi.createABTest(abTestData);
     } catch (error) {
-      console.error("Failed to create A/B test:", error);
+      logger.error("Failed to create A/B test:", error);
       throw new Error("Failed to create A/B test");
     }
   }
@@ -537,7 +538,7 @@ export class ProductionApiService {
     try {
       return await realApi.createRollout(rolloutData);
     } catch (error) {
-      console.error("Failed to create rollout:", error);
+      logger.error("Failed to create rollout:", error);
       throw new Error("Failed to create rollout");
     }
   }
@@ -547,7 +548,7 @@ export class ProductionApiService {
     try {
       return await realApi.getPayments();
     } catch (error) {
-      console.error("Failed to fetch payments:", error);
+      logger.error("Failed to fetch payments:", error);
       throw new Error("Failed to load payments");
     }
   }
@@ -556,7 +557,7 @@ export class ProductionApiService {
     try {
       return await realApi.getSubscriptions();
     } catch (error) {
-      console.error("Failed to fetch subscriptions:", error);
+      logger.error("Failed to fetch subscriptions:", error);
       throw new Error("Failed to load subscriptions");
     }
   }
@@ -565,7 +566,7 @@ export class ProductionApiService {
     try {
       return await realApi.getPayouts();
     } catch (error) {
-      console.error("Failed to fetch payouts:", error);
+      logger.error("Failed to fetch payouts:", error);
       throw new Error("Failed to load payouts");
     }
   }
@@ -574,7 +575,7 @@ export class ProductionApiService {
     try {
       return await realApi.createPayment(paymentData);
     } catch (error) {
-      console.error("Failed to create payment:", error);
+      logger.error("Failed to create payment:", error);
       throw new Error("Failed to create payment");
     }
   }
@@ -583,7 +584,7 @@ export class ProductionApiService {
     try {
       return await realApi.updatePayment(paymentId, paymentData);
     } catch (error) {
-      console.error("Failed to update payment:", error);
+      logger.error("Failed to update payment:", error);
       throw new Error("Failed to update payment");
     }
   }
@@ -592,7 +593,7 @@ export class ProductionApiService {
     try {
       return await realApi.deletePayment(paymentId);
     } catch (error) {
-      console.error("Failed to delete payment:", error);
+      logger.error("Failed to delete payment:", error);
       throw new Error("Failed to delete payment");
     }
   }
@@ -602,7 +603,7 @@ export class ProductionApiService {
     try {
       return await realApi.getCustomers();
     } catch (error) {
-      console.error("Failed to fetch customers:", error);
+      logger.error("Failed to fetch customers:", error);
       throw new Error("Failed to load customers");
     }
   }
@@ -611,7 +612,7 @@ export class ProductionApiService {
     try {
       return await realApi.createCustomer(customerData);
     } catch (error) {
-      console.error("Failed to create customer:", error);
+      logger.error("Failed to create customer:", error);
       throw new Error("Failed to create customer");
     }
   }
@@ -620,7 +621,7 @@ export class ProductionApiService {
     try {
       return await realApi.updateCustomer(customerId, customerData);
     } catch (error) {
-      console.error("Failed to update customer:", error);
+      logger.error("Failed to update customer:", error);
       throw new Error("Failed to update customer");
     }
   }
@@ -629,7 +630,7 @@ export class ProductionApiService {
     try {
       return await realApi.deleteCustomer(customerId);
     } catch (error) {
-      console.error("Failed to delete customer:", error);
+      logger.error("Failed to delete customer:", error);
       throw new Error("Failed to delete customer");
     }
   }
@@ -639,7 +640,7 @@ export class ProductionApiService {
     try {
       return await realApi.getAIModels();
     } catch (error) {
-      console.error("Failed to fetch AI models:", error);
+      logger.error("Failed to fetch AI models:", error);
       throw new Error("Failed to load AI models");
     }
   }
@@ -648,7 +649,7 @@ export class ProductionApiService {
     try {
       return await realApi.getFraudCases();
     } catch (error) {
-      console.error("Failed to fetch fraud cases:", error);
+      logger.error("Failed to fetch fraud cases:", error);
       throw new Error("Failed to load fraud cases");
     }
   }
@@ -657,7 +658,7 @@ export class ProductionApiService {
     try {
       return await realApi.getRecommendations();
     } catch (error) {
-      console.error("Failed to fetch recommendations:", error);
+      logger.error("Failed to fetch recommendations:", error);
       throw new Error("Failed to load recommendations");
     }
   }
@@ -666,7 +667,7 @@ export class ProductionApiService {
     try {
       return await realApi.trainModel(modelId);
     } catch (error) {
-      console.error("Failed to train model:", error);
+      logger.error("Failed to train model:", error);
       throw new Error("Failed to train model");
     }
   }
@@ -675,7 +676,7 @@ export class ProductionApiService {
     try {
       return await realApi.updateModel(modelId, modelData);
     } catch (error) {
-      console.error("Failed to update model:", error);
+      logger.error("Failed to update model:", error);
       throw new Error("Failed to update model");
     }
   }
@@ -685,7 +686,7 @@ export class ProductionApiService {
     try {
       return await realApi.getVendors();
     } catch (error) {
-      console.error("Failed to fetch vendors:", error);
+      logger.error("Failed to fetch vendors:", error);
       throw new Error("Failed to load vendors");
     }
   }
@@ -694,7 +695,7 @@ export class ProductionApiService {
     try {
       return await realApi.createVendor(vendorData);
     } catch (error) {
-      console.error("Failed to create vendor:", error);
+      logger.error("Failed to create vendor:", error);
       throw new Error("Failed to create vendor");
     }
   }
@@ -703,7 +704,7 @@ export class ProductionApiService {
     try {
       return await realApi.getVendorContracts();
     } catch (error) {
-      console.error("Failed to fetch vendor contracts:", error);
+      logger.error("Failed to fetch vendor contracts:", error);
       throw new Error("Failed to load vendor contracts");
     }
   }
@@ -712,7 +713,7 @@ export class ProductionApiService {
     try {
       return await realApi.createVendorContract(contractData);
     } catch (error) {
-      console.error("Failed to create vendor contract:", error);
+      logger.error("Failed to create vendor contract:", error);
       throw new Error("Failed to create vendor contract");
     }
   }
@@ -721,7 +722,7 @@ export class ProductionApiService {
     try {
       return await realApi.getVendorCommunications();
     } catch (error) {
-      console.error("Failed to fetch vendor communications:", error);
+      logger.error("Failed to fetch vendor communications:", error);
       throw new Error("Failed to load vendor communications");
     }
   }
@@ -730,7 +731,7 @@ export class ProductionApiService {
     try {
       return await realApi.createVendorCommunication(communicationData);
     } catch (error) {
-      console.error("Failed to create vendor communication:", error);
+      logger.error("Failed to create vendor communication:", error);
       throw new Error("Failed to create vendor communication");
     }
   }
@@ -739,7 +740,7 @@ export class ProductionApiService {
     try {
       return await realApi.updateVendor(vendorId, vendorData);
     } catch (error) {
-      console.error("Failed to update vendor:", error);
+      logger.error("Failed to update vendor:", error);
       throw new Error("Failed to update vendor");
     }
   }
@@ -748,7 +749,7 @@ export class ProductionApiService {
     try {
       return await realApi.deleteVendor(vendorId);
     } catch (error) {
-      console.error("Failed to delete vendor:", error);
+      logger.error("Failed to delete vendor:", error);
       throw new Error("Failed to delete vendor");
     }
   }
@@ -758,7 +759,7 @@ export class ProductionApiService {
     try {
       return await realApi.getIntegrations();
     } catch (error) {
-      console.error("Failed to fetch integrations:", error);
+      logger.error("Failed to fetch integrations:", error);
       throw new Error("Failed to load integrations");
     }
   }
@@ -767,7 +768,7 @@ export class ProductionApiService {
     try {
       return await realApi.createIntegration(integrationData);
     } catch (error) {
-      console.error("Failed to create integration:", error);
+      logger.error("Failed to create integration:", error);
       throw new Error("Failed to create integration");
     }
   }
@@ -776,7 +777,7 @@ export class ProductionApiService {
     try {
       return await realApi.updateIntegration(integrationId, integrationData);
     } catch (error) {
-      console.error("Failed to update integration:", error);
+      logger.error("Failed to update integration:", error);
       throw new Error("Failed to update integration");
     }
   }
@@ -785,7 +786,7 @@ export class ProductionApiService {
     try {
       return await realApi.deleteIntegration(integrationId);
     } catch (error) {
-      console.error("Failed to delete integration:", error);
+      logger.error("Failed to delete integration:", error);
       throw new Error("Failed to delete integration");
     }
   }
@@ -795,7 +796,7 @@ export class ProductionApiService {
     try {
       return await realApi.createFeatureFlag(flagData);
     } catch (error) {
-      console.error("Failed to create feature flag:", error);
+      logger.error("Failed to create feature flag:", error);
       throw new Error("Failed to create feature flag");
     }
   }
@@ -804,7 +805,7 @@ export class ProductionApiService {
     try {
       return await realApi.updateFeatureFlag(flagId, flagData);
     } catch (error) {
-      console.error("Failed to update feature flag:", error);
+      logger.error("Failed to update feature flag:", error);
       throw new Error("Failed to update feature flag");
     }
   }
@@ -813,7 +814,7 @@ export class ProductionApiService {
     try {
       return await realApi.deleteFeatureFlag(flagId);
     } catch (error) {
-      console.error("Failed to delete feature flag:", error);
+      logger.error("Failed to delete feature flag:", error);
       throw new Error("Failed to delete feature flag");
     }
   }
@@ -823,7 +824,7 @@ export class ProductionApiService {
     try {
       return await realApi.getSystemHealth();
     } catch (error) {
-      console.error("Failed to fetch system health:", error);
+      logger.error("Failed to fetch system health:", error);
       throw new Error("Failed to load system health");
     }
   }
@@ -832,7 +833,7 @@ export class ProductionApiService {
     try {
       return await realApi.getPerformanceMetrics();
     } catch (error) {
-      console.error("Failed to fetch performance metrics:", error);
+      logger.error("Failed to fetch performance metrics:", error);
       throw new Error("Failed to load performance metrics");
     }
   }
@@ -841,7 +842,7 @@ export class ProductionApiService {
     try {
       return await realApi.getSystemPerformanceMetrics();
     } catch (error) {
-      console.error("Failed to fetch system performance metrics:", error);
+      logger.error("Failed to fetch system performance metrics:", error);
       throw new Error("Failed to load system performance metrics");
     }
   }
@@ -850,7 +851,7 @@ export class ProductionApiService {
     try {
       return await realApi.getSystemAlerts();
     } catch (error) {
-      console.error("Failed to fetch system alerts:", error);
+      logger.error("Failed to fetch system alerts:", error);
       throw new Error("Failed to load system alerts");
     }
   }
@@ -860,7 +861,7 @@ export class ProductionApiService {
     try {
       return await realApi.getComplianceStatus();
     } catch (error) {
-      console.error("Failed to fetch compliance status:", error);
+      logger.error("Failed to fetch compliance status:", error);
       throw new Error("Failed to load compliance status");
     }
   }
@@ -869,7 +870,7 @@ export class ProductionApiService {
     try {
       return await realApi.getEngagementHeatmap();
     } catch (error) {
-      console.error("Failed to fetch engagement heatmap:", error);
+      logger.error("Failed to fetch engagement heatmap:", error);
       throw new Error("Failed to load engagement heatmap");
     }
   }
@@ -878,7 +879,7 @@ export class ProductionApiService {
     try {
       return await realApi.getMaintenanceForecast();
     } catch (error) {
-      console.error("Failed to fetch maintenance forecast:", error);
+      logger.error("Failed to fetch maintenance forecast:", error);
       throw new Error("Failed to load maintenance forecast");
     }
   }
@@ -887,7 +888,7 @@ export class ProductionApiService {
     try {
       return await realApi.getRecommendationUplift();
     } catch (error) {
-      console.error("Failed to fetch recommendation uplift:", error);
+      logger.error("Failed to fetch recommendation uplift:", error);
       throw new Error("Failed to load recommendation uplift");
     }
   }
@@ -896,7 +897,7 @@ export class ProductionApiService {
     try {
       return await realApi.getActiveSessions();
     } catch (error) {
-      console.error("Failed to fetch active sessions:", error);
+      logger.error("Failed to fetch active sessions:", error);
       throw new Error("Failed to load active sessions");
     }
   }
@@ -905,7 +906,7 @@ export class ProductionApiService {
     try {
       return await realApi.getRevenueMetrics();
     } catch (error) {
-      console.error("Failed to fetch revenue metrics:", error);
+      logger.error("Failed to fetch revenue metrics:", error);
       throw new Error("Failed to load revenue metrics");
     }
   }
@@ -914,7 +915,7 @@ export class ProductionApiService {
     try {
       return await realApi.getSystemLogs();
     } catch (error) {
-      console.error("Failed to fetch system logs:", error);
+      logger.error("Failed to fetch system logs:", error);
       throw new Error("Failed to load system logs");
     }
   }
@@ -924,7 +925,7 @@ export class ProductionApiService {
     try {
       return await realApi.getRevenueForecast();
     } catch (error) {
-      console.error("Failed to fetch revenue forecast:", error);
+      logger.error("Failed to fetch revenue forecast:", error);
       throw new Error("Failed to load revenue forecast");
     }
   }
@@ -933,7 +934,7 @@ export class ProductionApiService {
     try {
       return await realApi.refreshRevenueData();
     } catch (error) {
-      console.error("Failed to refresh revenue data:", error);
+      logger.error("Failed to refresh revenue data:", error);
       throw new Error("Failed to refresh revenue data");
     }
   }
@@ -942,7 +943,7 @@ export class ProductionApiService {
     try {
       return await realApi.generateRevenueReport();
     } catch (error) {
-      console.error("Failed to generate revenue report:", error);
+      logger.error("Failed to generate revenue report:", error);
       throw new Error("Failed to generate revenue report");
     }
   }
@@ -952,7 +953,7 @@ export class ProductionApiService {
     try {
       return await realApi.getSEOData();
     } catch (error) {
-      console.error("Failed to fetch SEO data:", error);
+      logger.error("Failed to fetch SEO data:", error);
       throw new Error("Failed to load SEO data");
     }
   }
@@ -961,7 +962,7 @@ export class ProductionApiService {
     try {
       return await realApi.refreshSEOAnalysis();
     } catch (error) {
-      console.error("Failed to refresh SEO analysis:", error);
+      logger.error("Failed to refresh SEO analysis:", error);
       throw new Error("Failed to refresh SEO analysis");
     }
   }
@@ -970,7 +971,7 @@ export class ProductionApiService {
     try {
       return await realApi.optimizeSEO();
     } catch (error) {
-      console.error("Failed to optimize SEO:", error);
+      logger.error("Failed to optimize SEO:", error);
       throw new Error("Failed to optimize SEO");
     }
   }
@@ -980,7 +981,7 @@ export class ProductionApiService {
     try {
       return await realApi.getMobileAppSettings();
     } catch (error) {
-      console.error("Failed to fetch mobile app settings:", error);
+      logger.error("Failed to fetch mobile app settings:", error);
       throw new Error("Failed to load mobile app settings");
     }
   }
@@ -989,7 +990,7 @@ export class ProductionApiService {
     try {
       return await realApi.saveMobileAppSettings(settings);
     } catch (error) {
-      console.error("Failed to save mobile app settings:", error);
+      logger.error("Failed to save mobile app settings:", error);
       throw new Error("Failed to save mobile app settings");
     }
   }
@@ -998,7 +999,7 @@ export class ProductionApiService {
     try {
       return await realApi.previewMobileApp();
     } catch (error) {
-      console.error("Failed to preview mobile app:", error);
+      logger.error("Failed to preview mobile app:", error);
       throw new Error("Failed to preview mobile app");
     }
   }
@@ -1008,7 +1009,7 @@ export class ProductionApiService {
     try {
       return await realApi.getFeedback();
     } catch (error) {
-      console.error("Failed to fetch feedback:", error);
+      logger.error("Failed to fetch feedback:", error);
       throw new Error("Failed to load feedback");
     }
   }
@@ -1017,7 +1018,7 @@ export class ProductionApiService {
     try {
       return await realApi.replyToFeedback(feedbackId, replyData);
     } catch (error) {
-      console.error("Failed to reply to feedback:", error);
+      logger.error("Failed to reply to feedback:", error);
       throw new Error("Failed to reply to feedback");
     }
   }
@@ -1026,7 +1027,7 @@ export class ProductionApiService {
     try {
       return await realApi.archiveFeedback(feedbackId);
     } catch (error) {
-      console.error("Failed to archive feedback:", error);
+      logger.error("Failed to archive feedback:", error);
       throw new Error("Failed to archive feedback");
     }
   }
@@ -1035,7 +1036,7 @@ export class ProductionApiService {
     try {
       return await realApi.deleteFeedback(feedbackId);
     } catch (error) {
-      console.error("Failed to delete feedback:", error);
+      logger.error("Failed to delete feedback:", error);
       throw new Error("Failed to delete feedback");
     }
   }
@@ -1045,7 +1046,7 @@ export class ProductionApiService {
     try {
       return await realApi.getAPIAnalytics();
     } catch (error) {
-      console.error("Failed to fetch API analytics:", error);
+      logger.error("Failed to fetch API analytics:", error);
       throw new Error("Failed to load API analytics");
     }
   }
@@ -1054,7 +1055,7 @@ export class ProductionApiService {
     try {
       return await realApi.exportAPIAnalytics();
     } catch (error) {
-      console.error("Failed to export API analytics:", error);
+      logger.error("Failed to export API analytics:", error);
       throw new Error("Failed to export API analytics");
     }
   }
@@ -1063,7 +1064,7 @@ export class ProductionApiService {
     try {
       return await realApi.configureAPIMonitoring(config);
     } catch (error) {
-      console.error("Failed to configure API monitoring:", error);
+      logger.error("Failed to configure API monitoring:", error);
       throw new Error("Failed to configure API monitoring");
     }
   }
@@ -1072,7 +1073,7 @@ export class ProductionApiService {
     try {
       return await realApi.getRevenueScenarios();
     } catch (error) {
-      console.error("Failed to fetch revenue scenarios:", error);
+      logger.error("Failed to fetch revenue scenarios:", error);
       throw new Error("Failed to load revenue scenarios");
     }
   }
@@ -1082,7 +1083,7 @@ export class ProductionApiService {
     try {
       return await realApi.getCMSContent();
     } catch (error) {
-      console.error("Failed to fetch CMS content:", error);
+      logger.error("Failed to fetch CMS content:", error);
       throw new Error("Failed to load CMS content");
     }
   }
@@ -1091,7 +1092,7 @@ export class ProductionApiService {
     try {
       return await realApi.updateCMSContent(contentData);
     } catch (error) {
-      console.error("Failed to update CMS content:", error);
+      logger.error("Failed to update CMS content:", error);
       throw new Error("Failed to update CMS content");
     }
   }
@@ -1101,7 +1102,7 @@ export class ProductionApiService {
     try {
       return await realApi.getKnowledgeArticles();
     } catch (error) {
-      console.error("Failed to fetch knowledge articles:", error);
+      logger.error("Failed to fetch knowledge articles:", error);
       throw new Error("Failed to load knowledge articles");
     }
   }
@@ -1110,7 +1111,7 @@ export class ProductionApiService {
     try {
       return await realApi.createKnowledgeArticle(articleData);
     } catch (error) {
-      console.error("Failed to create knowledge article:", error);
+      logger.error("Failed to create knowledge article:", error);
       throw new Error("Failed to create knowledge article");
     }
   }
@@ -1119,7 +1120,7 @@ export class ProductionApiService {
     try {
       return await realApi.updateKnowledgeArticle(articleId, articleData);
     } catch (error) {
-      console.error("Failed to update knowledge article:", error);
+      logger.error("Failed to update knowledge article:", error);
       throw new Error("Failed to update knowledge article");
     }
   }
@@ -1128,7 +1129,7 @@ export class ProductionApiService {
     try {
       return await realApi.deleteKnowledgeArticle(articleId);
     } catch (error) {
-      console.error("Failed to delete knowledge article:", error);
+      logger.error("Failed to delete knowledge article:", error);
       throw new Error("Failed to delete knowledge article");
     }
   }
@@ -1138,7 +1139,7 @@ export class ProductionApiService {
     try {
       return await realApi.getUserSegments();
     } catch (error) {
-      console.error("Failed to fetch user segments:", error);
+      logger.error("Failed to fetch user segments:", error);
       throw new Error("Failed to load user segments");
     }
   }
@@ -1147,7 +1148,7 @@ export class ProductionApiService {
     try {
       return await realApi.createUserSegment(segmentData);
     } catch (error) {
-      console.error("Failed to create user segment:", error);
+      logger.error("Failed to create user segment:", error);
       throw new Error("Failed to create user segment");
     }
   }
@@ -1156,7 +1157,7 @@ export class ProductionApiService {
     try {
       return await realApi.updateUserSegment(segmentId, segmentData);
     } catch (error) {
-      console.error("Failed to update user segment:", error);
+      logger.error("Failed to update user segment:", error);
       throw new Error("Failed to update user segment");
     }
   }
@@ -1165,7 +1166,7 @@ export class ProductionApiService {
     try {
       return await realApi.deleteUserSegment(segmentId);
     } catch (error) {
-      console.error("Failed to delete user segment:", error);
+      logger.error("Failed to delete user segment:", error);
       throw new Error("Failed to delete user segment");
     }
   }
@@ -1175,7 +1176,7 @@ export class ProductionApiService {
     try {
       return await realApi.uploadFile(file, type);
     } catch (error) {
-      console.error("Failed to upload file:", error);
+      logger.error("Failed to upload file:", error);
       throw new Error("Failed to upload file");
     }
   }
@@ -1184,7 +1185,7 @@ export class ProductionApiService {
     try {
       return await realApi.downloadFile(fileId);
     } catch (error) {
-      console.error("Failed to download file:", error);
+      logger.error("Failed to download file:", error);
       throw new Error("Failed to download file");
     }
   }
@@ -1194,7 +1195,7 @@ export class ProductionApiService {
     try {
       return await realApi.sendMessage(messageData);
     } catch (error) {
-      console.error("Failed to send message:", error);
+      logger.error("Failed to send message:", error);
       throw new Error("Failed to send message");
     }
   }
@@ -1203,7 +1204,7 @@ export class ProductionApiService {
     try {
       return await realApi.getChatSessions();
     } catch (error) {
-      console.error("Failed to fetch chat sessions:", error);
+      logger.error("Failed to fetch chat sessions:", error);
       throw new Error("Failed to load chat sessions");
     }
   }
@@ -1212,7 +1213,7 @@ export class ProductionApiService {
     try {
       return await realApi.createChatSession(sessionData);
     } catch (error) {
-      console.error("Failed to create chat session:", error);
+      logger.error("Failed to create chat session:", error);
       throw new Error("Failed to create chat session");
     }
   }
@@ -1222,7 +1223,7 @@ export class ProductionApiService {
     try {
       return await realApi.processPayment(paymentData);
     } catch (error) {
-      console.error("Failed to process payment:", error);
+      logger.error("Failed to process payment:", error);
       throw new Error("Failed to process payment");
     }
   }
@@ -1231,7 +1232,7 @@ export class ProductionApiService {
     try {
       return await realApi.refundPayment(paymentId, refundData);
     } catch (error) {
-      console.error("Failed to refund payment:", error);
+      logger.error("Failed to refund payment:", error);
       throw new Error("Failed to refund payment");
     }
   }
@@ -1240,7 +1241,7 @@ export class ProductionApiService {
     try {
       return await realApi.getPaymentMethods();
     } catch (error) {
-      console.error("Failed to fetch payment methods:", error);
+      logger.error("Failed to fetch payment methods:", error);
       throw new Error("Failed to load payment methods");
     }
   }
@@ -1250,7 +1251,7 @@ export class ProductionApiService {
     try {
       return await realApi.getConfidenceIntervals();
     } catch (error) {
-      console.error("Failed to fetch confidence intervals:", error);
+      logger.error("Failed to fetch confidence intervals:", error);
       throw new Error("Failed to load confidence intervals");
     }
   }
@@ -1259,7 +1260,7 @@ export class ProductionApiService {
     try {
       return await realApi.getDependencyForecasts();
     } catch (error) {
-      console.error("Failed to fetch dependency forecasts:", error);
+      logger.error("Failed to fetch dependency forecasts:", error);
       throw new Error("Failed to load dependency forecasts");
     }
   }
@@ -1269,7 +1270,7 @@ export class ProductionApiService {
     try {
       return await realApi.getAnomalyDetections();
     } catch (error) {
-      console.error("Failed to fetch anomaly detections:", error);
+      logger.error("Failed to fetch anomaly detections:", error);
       throw new Error("Failed to load anomaly detections");
     }
   }
@@ -1279,7 +1280,7 @@ export class ProductionApiService {
     try {
       return await realApi.getChaosExperiments();
     } catch (error) {
-      console.error("Failed to fetch chaos experiments:", error);
+      logger.error("Failed to fetch chaos experiments:", error);
       throw new Error("Failed to load chaos experiments");
     }
   }
@@ -1288,7 +1289,7 @@ export class ProductionApiService {
     try {
       return await realApi.getBlackSwanEvents();
     } catch (error) {
-      console.error("Failed to fetch black swan events:", error);
+      logger.error("Failed to fetch black swan events:", error);
       throw new Error("Failed to load black swan events");
     }
   }
@@ -1298,7 +1299,7 @@ export class ProductionApiService {
     try {
       return await realApi.getUpsellOpportunities();
     } catch (error) {
-      console.error("Failed to fetch upsell opportunities:", error);
+      logger.error("Failed to fetch upsell opportunities:", error);
       throw new Error("Failed to load upsell opportunities");
     }
   }
@@ -1307,7 +1308,7 @@ export class ProductionApiService {
     try {
       return await realApi.getSLACompliance();
     } catch (error) {
-      console.error("Failed to fetch SLA compliance:", error);
+      logger.error("Failed to fetch SLA compliance:", error);
       throw new Error("Failed to load SLA compliance");
     }
   }
@@ -1316,7 +1317,7 @@ export class ProductionApiService {
     try {
       return await realApi.getTrainingROI();
     } catch (error) {
-      console.error("Failed to fetch training ROI:", error);
+      logger.error("Failed to fetch training ROI:", error);
       throw new Error("Failed to load training ROI");
     }
   }
@@ -1325,7 +1326,7 @@ export class ProductionApiService {
     try {
       return await realApi.getSecurityAlerts();
     } catch (error) {
-      console.error("Failed to fetch security alerts:", error);
+      logger.error("Failed to fetch security alerts:", error);
       throw new Error("Failed to load security alerts");
     }
   }
@@ -1334,7 +1335,7 @@ export class ProductionApiService {
     try {
       return await realApi.getRootCauseAnalysis();
     } catch (error) {
-      console.error("Failed to fetch root cause analysis:", error);
+      logger.error("Failed to fetch root cause analysis:", error);
       throw new Error("Failed to load root cause analysis");
     }
   }
@@ -1344,7 +1345,7 @@ export class ProductionApiService {
     try {
       return await realApi.getMissionCriticalTasks();
     } catch (error) {
-      console.error("Failed to fetch mission critical tasks:", error);
+      logger.error("Failed to fetch mission critical tasks:", error);
       throw new Error("Failed to load mission critical tasks");
     }
   }
@@ -1353,7 +1354,7 @@ export class ProductionApiService {
     try {
       return await realApi.getPortfolioRisks();
     } catch (error) {
-      console.error("Failed to fetch portfolio risks:", error);
+      logger.error("Failed to fetch portfolio risks:", error);
       throw new Error("Failed to load portfolio risks");
     }
   }
@@ -1362,7 +1363,7 @@ export class ProductionApiService {
     try {
       return await realApi.getSLAMetrics();
     } catch (error) {
-      console.error("Failed to fetch SLA metrics:", error);
+      logger.error("Failed to fetch SLA metrics:", error);
       throw new Error("Failed to load SLA metrics");
     }
   }
@@ -1371,7 +1372,7 @@ export class ProductionApiService {
     try {
       return await realApi.getServiceHealth();
     } catch (error) {
-      console.error("Failed to fetch service health:", error);
+      logger.error("Failed to fetch service health:", error);
       throw new Error("Failed to load service health");
     }
   }
@@ -1380,7 +1381,7 @@ export class ProductionApiService {
     try {
       return await realApi.getComplianceData();
     } catch (error) {
-      console.error("Failed to fetch compliance data:", error);
+      logger.error("Failed to fetch compliance data:", error);
       throw new Error("Failed to load compliance data");
     }
   }
@@ -1389,7 +1390,7 @@ export class ProductionApiService {
     try {
       return await realApi.getChatSessions();
     } catch (error) {
-      console.error("Failed to fetch chat sessions:", error);
+      logger.error("Failed to fetch chat sessions:", error);
       throw new Error("Failed to load chat sessions");
     }
   }

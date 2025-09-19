@@ -179,8 +179,8 @@ export default function FleetOverviewPage() {
                   <span className="text-sm font-medium">Issues</span>
                 </div>
                 <div className="flex items-center space-x-2">
-                  <span className="text-sm text-muted-foreground">{vehicles.filter(v => v.status === "issue").length} vehicles</span>
-                  <Badge variant="destructive">{((vehicles.filter(v => v.status === "issue").length / vehicles.length) * 100).toFixed(1)}%</Badge>
+                  <span className="text-sm text-muted-foreground">{(vehicles || []).filter(v => v.status === "issue").length} vehicles</span>
+                  <Badge variant="destructive">{vehicles && vehicles.length > 0 ? (((vehicles || []).filter(v => v.status === "issue").length / vehicles.length) * 100).toFixed(1) : 0}%</Badge>
                 </div>
               </div>
             </div>

@@ -563,7 +563,7 @@ export default function FraudEscalationWorkflow({ className }: FraudEscalationWo
 
   const handleEventStatusUpdate = (eventId: string, newStatus: string) => {
     setFraudEvents(prev => prev.map(event =>
-      event.id === eventId ? { ...event, status: newStatus as any } : event
+      event.id === eventId ? { ...event, status: newStatus as string } : event
     ));
   };
 
@@ -573,7 +573,7 @@ export default function FraudEscalationWorkflow({ className }: FraudEscalationWo
         ? {
             ...event,
             actions: event.actions.map(action =>
-              action.id === actionId ? { ...action, status: newStatus as any } : action
+              action.id === actionId ? { ...action, status: newStatus as string } : action
             )
           }
         : event
