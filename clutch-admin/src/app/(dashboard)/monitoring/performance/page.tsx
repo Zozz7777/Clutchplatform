@@ -45,7 +45,7 @@ export default function MonitoringPerformancePage() {
     }
   });
 
-  const [alerts, setAlerts] = useState<any[]>([]);
+  const [alerts, setAlerts] = useState<Record<string, unknown>[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [connectionStatus, setConnectionStatus] = useState('disconnected');
 

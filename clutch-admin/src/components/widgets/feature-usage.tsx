@@ -58,93 +58,28 @@ export function FeatureUsage({ className = '' }: FeatureUsageProps) {
   React.useEffect(() => {
     const loadFeatureData = async () => {
       try {
-        // Simulate feature usage data
-        const features: FeatureData[] = [
-          {
-            feature: 'Dashboard Analytics',
-            usage: 95,
-            adoption: 88,
-            satisfaction: 4.2,
-            trend: 'up',
-            category: 'Analytics',
-            description: 'Real-time dashboard and analytics',
-            icon: BarChart3
-          },
-          {
-            feature: 'Fleet Management',
-            usage: 87,
-            adoption: 82,
-            satisfaction: 4.1,
-            trend: 'up',
-            category: 'Fleet',
-            description: 'Vehicle tracking and management',
-            icon: Activity
-          },
-          {
-            feature: 'User Management',
-            usage: 92,
-            adoption: 85,
-            satisfaction: 4.3,
-            trend: 'stable',
-            category: 'Users',
-            description: 'User roles and permissions',
-            icon: Users
-          },
-          {
-            feature: 'Payment Processing',
-            usage: 78,
-            adoption: 72,
-            satisfaction: 3.9,
-            trend: 'up',
-            category: 'Finance',
-            description: 'Payment and billing management',
-            icon: Target
-          },
-          {
-            feature: 'AI Recommendations',
-            usage: 65,
-            adoption: 58,
-            satisfaction: 4.0,
-            trend: 'up',
-            category: 'AI/ML',
-            description: 'AI-powered recommendations',
-            icon: Zap
-          },
-          {
-            feature: 'Report Generation',
-            usage: 82,
-            adoption: 75,
-            satisfaction: 4.1,
-            trend: 'stable',
-            category: 'Reports',
-            description: 'Automated report generation',
-            icon: BarChart3
-          },
-          {
-            feature: 'Mobile App',
-            usage: 45,
-            adoption: 38,
-            satisfaction: 3.7,
-            trend: 'down',
-            category: 'Mobile',
-            description: 'Mobile application features',
-            icon: Activity
-          },
-          {
-            feature: 'API Integration',
-            usage: 58,
-            adoption: 52,
-            satisfaction: 3.8,
-            trend: 'up',
-            category: 'Integration',
-            description: 'Third-party API integrations',
-            icon: Zap
-          }
-        ];
+        setIsLoading(true);
+        
+        // Load real data from API
+        const featuresData = await realApi.getFeatureUsage();
+        
+        // Transform API data to component format
+        const features: FeatureData[] = (featuresData || []).map((item: any) => ({
+          feature: item.feature,
+          usage: item.usage,
+          adoption: item.adoption,
+          satisfaction: item.satisfaction,
+          trend: item.trend,
+          category: item.category,
+          description: item.description,
+          icon: getIconForCategory(item.category)
+        }));
 
         setFeatureData(features);
       } catch (error) {
         console.error('Failed to load feature usage data:', error);
+        // Set empty array on error - no mock data fallback
+        setFeatureData([]);
       } finally {
         setIsLoading(false);
       }

@@ -131,7 +131,7 @@ export default function HRPage() {
   const [activeTab, setActiveTab] = useState<"employees" | "recruitment" | "invitations">("employees");
   const [isLoading, setIsLoading] = useState(true);
   const [showInvitationForm, setShowInvitationForm] = useState(false);
-  const [invitations, setInvitations] = useState<any[]>([]);
+  const [invitations, setInvitations] = useState<Record<string, unknown>[]>([]);
   const { hasPermission } = useAuth();
   const { t } = useTranslations();
 

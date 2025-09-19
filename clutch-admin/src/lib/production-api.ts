@@ -199,7 +199,7 @@ export class ProductionApiService {
   }
 
   // CRM APIs
-  async getCustomers(): Promise<any[]> {
+  async getCustomers(): Promise<Record<string, unknown>[]> {
     try {
       return await realApi.getCustomers();
     } catch (error) {
@@ -245,7 +245,7 @@ export class ProductionApiService {
     }
   }
 
-  async getSubscriptions(): Promise<any[]> {
+  async getSubscriptions(): Promise<Record<string, unknown>[]> {
     try {
       return await realApi.getSubscriptions();
     } catch (error) {
@@ -282,7 +282,7 @@ export class ProductionApiService {
     }
   }
 
-  async getIntegrations(): Promise<any[]> {
+  async getIntegrations(): Promise<Record<string, unknown>[]> {
     try {
       return await realApi.getIntegrations();
     } catch (error) {
@@ -329,7 +329,7 @@ export class ProductionApiService {
   }
 
   // Feature Flags APIs
-  async getFeatureFlags(): Promise<any[]> {
+  async getFeatureFlags(): Promise<Record<string, unknown>[]> {
     try {
       return await realApi.getFeatureFlags();
     } catch (error) {
@@ -358,7 +358,7 @@ export class ProductionApiService {
   }
 
   // Chat/Messaging APIs
-  async getChatMessages(conversationId?: string): Promise<any[]> {
+  async getChatMessages(conversationId?: string): Promise<Record<string, unknown>[]> {
     try {
       return await realApi.getChatMessages(conversationId);
     } catch (error) {
@@ -377,7 +377,7 @@ export class ProductionApiService {
   }
 
   // Reports APIs
-  async getReports(): Promise<any[]> {
+  async getReports(): Promise<Record<string, unknown>[]> {
     try {
       return await realApi.getReports();
     } catch (error) {
@@ -414,7 +414,7 @@ export class ProductionApiService {
   }
 
   // Asset Management APIs
-  async getAssets(): Promise<any[]> {
+  async getAssets(): Promise<Record<string, unknown>[]> {
     try {
       return await realApi.getAssets();
     } catch (error) {
@@ -423,7 +423,7 @@ export class ProductionApiService {
     }
   }
 
-  async getMaintenanceRecords(): Promise<any[]> {
+  async getMaintenanceRecords(): Promise<Record<string, unknown>[]> {
     try {
       return await realApi.getMaintenanceRecords();
     } catch (error) {
@@ -432,7 +432,7 @@ export class ProductionApiService {
     }
   }
 
-  async getAssetAssignments(): Promise<any[]> {
+  async getAssetAssignments(): Promise<Record<string, unknown>[]> {
     try {
       return await realApi.getAssetAssignments();
     } catch (error) {
@@ -469,7 +469,7 @@ export class ProductionApiService {
   }
 
   // Project Management APIs
-  async getProjects(): Promise<any[]> {
+  async getProjects(): Promise<Record<string, unknown>[]> {
     try {
       return await realApi.getProjects();
     } catch (error) {
@@ -487,7 +487,7 @@ export class ProductionApiService {
     }
   }
 
-  async getProjectTasks(projectId: string): Promise<any[]> {
+  async getProjectTasks(projectId: string): Promise<Record<string, unknown>[]> {
     try {
       return await realApi.getProjectTasks(projectId);
     } catch (error) {
@@ -496,7 +496,7 @@ export class ProductionApiService {
     }
   }
 
-  async getTimeTracking(projectId: string): Promise<any[]> {
+  async getTimeTracking(projectId: string): Promise<Record<string, unknown>[]> {
     try {
       return await realApi.getTimeTracking(projectId);
     } catch (error) {
@@ -506,7 +506,7 @@ export class ProductionApiService {
   }
 
   // Feature Flags APIs - Additional methods
-  async getABTests(): Promise<any[]> {
+  async getABTests(): Promise<Record<string, unknown>[]> {
     try {
       return await realApi.getABTests();
     } catch (error) {
@@ -515,7 +515,7 @@ export class ProductionApiService {
     }
   }
 
-  async getRollouts(): Promise<any[]> {
+  async getRollouts(): Promise<Record<string, unknown>[]> {
     try {
       return await realApi.getRollouts();
     } catch (error) {
@@ -552,7 +552,7 @@ export class ProductionApiService {
     }
   }
 
-  async getSubscriptions(): Promise<any[]> {
+  async getSubscriptions(): Promise<Record<string, unknown>[]> {
     try {
       return await realApi.getSubscriptions();
     } catch (error) {
@@ -561,7 +561,7 @@ export class ProductionApiService {
     }
   }
 
-  async getPayouts(): Promise<any[]> {
+  async getPayouts(): Promise<Record<string, unknown>[]> {
     try {
       return await realApi.getPayouts();
     } catch (error) {
@@ -598,7 +598,7 @@ export class ProductionApiService {
   }
 
   // CRM APIs
-  async getCustomers(): Promise<any[]> {
+  async getCustomers(): Promise<Record<string, unknown>[]> {
     try {
       return await realApi.getCustomers();
     } catch (error) {
@@ -635,7 +635,7 @@ export class ProductionApiService {
   }
 
   // AI/ML APIs
-  async getAIModels(): Promise<any[]> {
+  async getAIModels(): Promise<Record<string, unknown>[]> {
     try {
       return await realApi.getAIModels();
     } catch (error) {
@@ -644,7 +644,7 @@ export class ProductionApiService {
     }
   }
 
-  async getFraudCases(): Promise<any[]> {
+  async getFraudCases(): Promise<Record<string, unknown>[]> {
     try {
       return await realApi.getFraudCases();
     } catch (error) {
@@ -653,7 +653,7 @@ export class ProductionApiService {
     }
   }
 
-  async getRecommendations(): Promise<any[]> {
+  async getRecommendations(): Promise<Record<string, unknown>[]> {
     try {
       return await realApi.getRecommendations();
     } catch (error) {
@@ -681,7 +681,7 @@ export class ProductionApiService {
   }
 
   // Vendor Management APIs
-  async getVendors(): Promise<any[]> {
+  async getVendors(): Promise<Record<string, unknown>[]> {
     try {
       return await realApi.getVendors();
     } catch (error) {
@@ -699,7 +699,7 @@ export class ProductionApiService {
     }
   }
 
-  async getVendorContracts(): Promise<any[]> {
+  async getVendorContracts(): Promise<Record<string, unknown>[]> {
     try {
       return await realApi.getVendorContracts();
     } catch (error) {
@@ -717,7 +717,7 @@ export class ProductionApiService {
     }
   }
 
-  async getVendorCommunications(): Promise<any[]> {
+  async getVendorCommunications(): Promise<Record<string, unknown>[]> {
     try {
       return await realApi.getVendorCommunications();
     } catch (error) {
@@ -754,7 +754,7 @@ export class ProductionApiService {
   }
 
   // Integration Management APIs
-  async getIntegrations(): Promise<any[]> {
+  async getIntegrations(): Promise<Record<string, unknown>[]> {
     try {
       return await realApi.getIntegrations();
     } catch (error) {
@@ -846,7 +846,7 @@ export class ProductionApiService {
     }
   }
 
-  async getSystemAlerts(): Promise<any[]> {
+  async getSystemAlerts(): Promise<Record<string, unknown>[]> {
     try {
       return await realApi.getSystemAlerts();
     } catch (error) {
@@ -910,7 +910,7 @@ export class ProductionApiService {
     }
   }
 
-  async getSystemLogs(): Promise<any[]> {
+  async getSystemLogs(): Promise<Record<string, unknown>[]> {
     try {
       return await realApi.getSystemLogs();
     } catch (error) {
@@ -948,7 +948,7 @@ export class ProductionApiService {
   }
 
   // SEO CMS APIs
-  async getSEOData(): Promise<any[]> {
+  async getSEOData(): Promise<Record<string, unknown>[]> {
     try {
       return await realApi.getSEOData();
     } catch (error) {
@@ -1004,7 +1004,7 @@ export class ProductionApiService {
   }
 
   // Support Feedback APIs
-  async getFeedback(): Promise<any[]> {
+  async getFeedback(): Promise<Record<string, unknown>[]> {
     try {
       return await realApi.getFeedback();
     } catch (error) {
@@ -1068,7 +1068,7 @@ export class ProductionApiService {
     }
   }
 
-  async getRevenueScenarios(): Promise<any[]> {
+  async getRevenueScenarios(): Promise<Record<string, unknown>[]> {
     try {
       return await realApi.getRevenueScenarios();
     } catch (error) {
@@ -1097,7 +1097,7 @@ export class ProductionApiService {
   }
 
   // Knowledge Base APIs
-  async getKnowledgeArticles(): Promise<any[]> {
+  async getKnowledgeArticles(): Promise<Record<string, unknown>[]> {
     try {
       return await realApi.getKnowledgeArticles();
     } catch (error) {
@@ -1134,7 +1134,7 @@ export class ProductionApiService {
   }
 
   // User Segments APIs
-  async getUserSegments(): Promise<any[]> {
+  async getUserSegments(): Promise<Record<string, unknown>[]> {
     try {
       return await realApi.getUserSegments();
     } catch (error) {
@@ -1199,7 +1199,7 @@ export class ProductionApiService {
     }
   }
 
-  async getChatSessions(): Promise<any[]> {
+  async getChatSessions(): Promise<Record<string, unknown>[]> {
     try {
       return await realApi.getChatSessions();
     } catch (error) {
@@ -1236,7 +1236,7 @@ export class ProductionApiService {
     }
   }
 
-  async getPaymentMethods(): Promise<any[]> {
+  async getPaymentMethods(): Promise<Record<string, unknown>[]> {
     try {
       return await realApi.getPaymentMethods();
     } catch (error) {
@@ -1246,7 +1246,7 @@ export class ProductionApiService {
   }
 
   // Analytics APIs - New endpoints for advanced analytics
-  async getConfidenceIntervals(): Promise<any[]> {
+  async getConfidenceIntervals(): Promise<Record<string, unknown>[]> {
     try {
       return await realApi.getConfidenceIntervals();
     } catch (error) {
@@ -1255,7 +1255,7 @@ export class ProductionApiService {
     }
   }
 
-  async getDependencyForecasts(): Promise<any[]> {
+  async getDependencyForecasts(): Promise<Record<string, unknown>[]> {
     try {
       return await realApi.getDependencyForecasts();
     } catch (error) {
@@ -1265,7 +1265,7 @@ export class ProductionApiService {
   }
 
   // AI/ML APIs - New endpoints for AI components
-  async getAnomalyDetections(): Promise<any[]> {
+  async getAnomalyDetections(): Promise<Record<string, unknown>[]> {
     try {
       return await realApi.getAnomalyDetections();
     } catch (error) {
@@ -1275,7 +1275,7 @@ export class ProductionApiService {
   }
 
   // Testing APIs - New endpoints for testing components
-  async getChaosExperiments(): Promise<any[]> {
+  async getChaosExperiments(): Promise<Record<string, unknown>[]> {
     try {
       return await realApi.getChaosExperiments();
     } catch (error) {
@@ -1284,7 +1284,7 @@ export class ProductionApiService {
     }
   }
 
-  async getBlackSwanEvents(): Promise<any[]> {
+  async getBlackSwanEvents(): Promise<Record<string, unknown>[]> {
     try {
       return await realApi.getBlackSwanEvents();
     } catch (error) {
@@ -1294,7 +1294,7 @@ export class ProductionApiService {
   }
 
   // Widget APIs - New endpoints for widget components
-  async getUpsellOpportunities(): Promise<any[]> {
+  async getUpsellOpportunities(): Promise<Record<string, unknown>[]> {
     try {
       return await realApi.getUpsellOpportunities();
     } catch (error) {
@@ -1303,7 +1303,7 @@ export class ProductionApiService {
     }
   }
 
-  async getSLACompliance(): Promise<any[]> {
+  async getSLACompliance(): Promise<Record<string, unknown>[]> {
     try {
       return await realApi.getSLACompliance();
     } catch (error) {
@@ -1321,7 +1321,7 @@ export class ProductionApiService {
     }
   }
 
-  async getSecurityAlerts(): Promise<any[]> {
+  async getSecurityAlerts(): Promise<Record<string, unknown>[]> {
     try {
       return await realApi.getSecurityAlerts();
     } catch (error) {
@@ -1330,7 +1330,7 @@ export class ProductionApiService {
     }
   }
 
-  async getRootCauseAnalysis(): Promise<any[]> {
+  async getRootCauseAnalysis(): Promise<Record<string, unknown>[]> {
     try {
       return await realApi.getRootCauseAnalysis();
     } catch (error) {
@@ -1340,7 +1340,7 @@ export class ProductionApiService {
   }
 
   // Operations APIs - New endpoints for operations components
-  async getMissionCriticalTasks(): Promise<any[]> {
+  async getMissionCriticalTasks(): Promise<Record<string, unknown>[]> {
     try {
       return await realApi.getMissionCriticalTasks();
     } catch (error) {
@@ -1349,7 +1349,7 @@ export class ProductionApiService {
     }
   }
 
-  async getPortfolioRisks(): Promise<any[]> {
+  async getPortfolioRisks(): Promise<Record<string, unknown>[]> {
     try {
       return await realApi.getPortfolioRisks();
     } catch (error) {
@@ -1358,7 +1358,7 @@ export class ProductionApiService {
     }
   }
 
-  async getSLAMetrics(): Promise<any[]> {
+  async getSLAMetrics(): Promise<Record<string, unknown>[]> {
     try {
       return await realApi.getSLAMetrics();
     } catch (error) {
@@ -1367,7 +1367,7 @@ export class ProductionApiService {
     }
   }
 
-  async getServiceHealth(): Promise<any[]> {
+  async getServiceHealth(): Promise<Record<string, unknown>[]> {
     try {
       return await realApi.getServiceHealth();
     } catch (error) {
@@ -1376,7 +1376,7 @@ export class ProductionApiService {
     }
   }
 
-  async getComplianceData(): Promise<any[]> {
+  async getComplianceData(): Promise<Record<string, unknown>[]> {
     try {
       return await realApi.getComplianceData();
     } catch (error) {
@@ -1385,7 +1385,7 @@ export class ProductionApiService {
     }
   }
 
-  async getChatSessions(): Promise<any[]> {
+  async getChatSessions(): Promise<Record<string, unknown>[]> {
     try {
       return await realApi.getChatSessions();
     } catch (error) {
