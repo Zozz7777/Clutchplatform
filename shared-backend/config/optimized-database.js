@@ -187,7 +187,7 @@ const connectToDatabase = async () => {
       });
 
       client.on('error', (error) => {
-        console.error('❌ MongoDB optimized client connection error:', error);
+        logger.error('MongoDB optimized client connection error:', error);
       });
 
       await client.connect();

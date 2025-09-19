@@ -429,7 +429,7 @@ export function CSATNPSTrends({ className = '' }: CSATNPSTrendsProps) {
               <li>• {t('csatNps.highNpsStrongAdvocacy')}</li>
             )}
             {satisfactionData.responseRate < 50 && (
-              <li>• Low response rate - consider survey optimization</li>
+              <li>• {t('csatNps.lowResponseRateOptimization')}</li>
             )}
           </ul>
         </div>
