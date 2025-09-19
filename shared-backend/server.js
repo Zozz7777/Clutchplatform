@@ -117,7 +117,6 @@ const mobileAppsRoutes = require('./routes/mobile-apps');
 const operationsRoutes = require('./routes/operations');
 
 // Import newly created routes
-const enterpriseRoutes = require('./routes/enterprise');
 const supportRoutes = require('./routes/support');
 const analyticsExtendedRoutes = require('./routes/analytics-extended');
 
