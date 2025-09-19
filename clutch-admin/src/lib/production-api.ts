@@ -103,6 +103,16 @@ export class ProductionApiService {
     }
   }
 
+  async cleanupTestUsers(): Promise<{ deletedCount: number }> {
+    try {
+      const data = await realApi.cleanupTestUsers();
+      return data;
+    } catch (error) {
+      logger.error("Failed to cleanup test users:", error);
+      throw new Error("Failed to cleanup test users");
+    }
+  }
+
   // Fleet Management APIs
   async getFleetVehicles(): Promise<FleetVehicle[]> {
     try {

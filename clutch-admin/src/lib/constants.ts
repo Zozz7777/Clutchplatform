@@ -405,22 +405,12 @@ export const NAVIGATION_ITEMS = [
     href: "/users",
     icon: "Users",
     permissions: [PERMISSIONS.VIEW_USERS],
-    children: [
-      { title: "B2C Customers", href: "/users/b2c", permissions: [PERMISSIONS.VIEW_USERS] },
-      { title: "B2B Enterprise", href: "/users/b2b", permissions: [PERMISSIONS.VIEW_USERS] },
-      { title: "Service Providers", href: "/users/providers", permissions: [PERMISSIONS.VIEW_USERS] },
-    ],
   },
   {
     title: "Fleet Management",
     href: "/fleet",
     icon: "Truck",
     permissions: [PERMISSIONS.VIEW_FLEET],
-    children: [
-      { title: "Fleet Overview", href: "/fleet/overview", permissions: [PERMISSIONS.VIEW_FLEET] },
-      { title: "GPS Tracking", href: "/fleet/tracking", permissions: [PERMISSIONS.VIEW_GPS_TRACKING] },
-      { title: "OBD2 Devices", href: "/fleet/obd2", permissions: [PERMISSIONS.VIEW_FLEET] },
-    ],
   },
   {
     title: "CRM",

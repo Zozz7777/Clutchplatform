@@ -206,7 +206,7 @@ export default function FeatureFlagsPage() {
       const data = await productionApi.getABTests();
       setABTests(data || []);
     } catch (error) {
-      console.error("Error loading A/B tests:", error);
+      // Error handled by API service
       setABTests([]);
     }
   };
@@ -216,7 +216,7 @@ export default function FeatureFlagsPage() {
       const data = await productionApi.getRollouts();
       setRollouts(data || []);
     } catch (error) {
-      console.error("Error loading rollouts:", error);
+      // Error handled by API service
       setRollouts([]);
     }
   };
@@ -267,7 +267,7 @@ export default function FeatureFlagsPage() {
         });
       }
     } catch (error) {
-      console.error("Error creating feature flag:", error);
+      // Error handled by API service
     }
   };
   
@@ -307,7 +307,7 @@ export default function FeatureFlagsPage() {
         });
       }
     } catch (error) {
-      console.error("Error creating A/B test:", error);
+      // Error handled by API service
     }
   };
   
@@ -347,7 +347,7 @@ export default function FeatureFlagsPage() {
         });
       }
     } catch (error) {
-      console.error("Error creating rollout:", error);
+      // Error handled by API service
     }
   };
 
@@ -362,7 +362,7 @@ export default function FeatureFlagsPage() {
         )
       );
     } catch (error) {
-      console.error("Error toggling feature flag:", error);
+      // Error handled by API service
     }
   };
 

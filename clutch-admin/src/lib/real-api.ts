@@ -91,6 +91,19 @@ export class RealApiService {
     )();
   }
 
+  async cleanupTestUsers(): Promise<{ deletedCount: number }> {
+    return withErrorHandling(
+      async () => {
+        const response = await apiService.request<{ deletedCount: number }>("/api/v1/users/cleanup/test", {
+          method: "DELETE",
+        });
+        return handleApiResponse(response, 'cleanupTestUsers', { deletedCount: 0 });
+      },
+      'cleanupTestUsers',
+      { fallbackValue: { deletedCount: 0 }, showToast: true }
+    )();
+  }
+
   // Fleet Management APIs
   async getFleetData(): Promise<Record<string, unknown>[]> {
     return withErrorHandling(

@@ -57,7 +57,7 @@ export default function MobileCMSPage() {
         setContent(data.content || content);
       }
     } catch (error) {
-      console.error('Error loading mobile app settings:', error);
+      // Error handled by API service
     } finally {
       setLoading(false);
     }
@@ -72,7 +72,7 @@ export default function MobileCMSPage() {
       };
       await productionApi.saveMobileAppSettings(settingsData);
     } catch (error) {
-      console.error('Error saving mobile app settings:', error);
+      // Error handled by API service
     } finally {
       setSaving(false);
     }
@@ -82,7 +82,7 @@ export default function MobileCMSPage() {
     try {
       await productionApi.previewMobileApp();
     } catch (error) {
-      console.error('Error previewing mobile app:', error);
+      // Error handled by API service
     }
   };
 

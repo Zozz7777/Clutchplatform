@@ -186,4 +186,31 @@ router.delete('/:id', authenticateToken, checkRole(['head_administrator']), asyn
   }
 });
 
+// DELETE /users/cleanup/test - Delete all test users
+router.delete('/cleanup/test', authenticateToken, checkRole(['head_administrator']), async (req, res) => {
+  try {
+    const usersCollection = await getCollection('users');
+    
+    // Delete users with test patterns
+    const testPatterns = [
+      { name: /^Test User/i },
+      { email: /testuser/i },
+      { email: /@example\.com$/ },
+      { name: /^test/i }
+    ];
+    
+    let totalDeleted = 0;
+    
+    for (const pattern of testPatterns) {
+      const result = await usersCollection.deleteMany(pattern);
+      totalDeleted += result.deletedCount;
+    }
+    
+    res.success({ deletedCount: totalDeleted }, `Deleted ${totalDeleted} test users successfully`);
+  } catch (error) {
+    logger.error('Delete test users error:', error);
+    res.serverError('Failed to delete test users', error.message);
+  }
+});
+
 module.exports = router;

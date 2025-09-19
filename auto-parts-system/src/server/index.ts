@@ -23,6 +23,9 @@ import aiRoutes from './routes/ai';
 import marketplaceRoutes from './routes/marketplace';
 import branchesRoutes from './routes/branches';
 import backupRoutes from './routes/backup';
+import companionRoutes from './routes/companion';
+import trainingRoutes from './routes/training';
+import rbacRoutes from './routes/rbac';
 
 class ClutchAutoPartsServer {
   private app: express.Application;
@@ -128,6 +131,10 @@ class ClutchAutoPartsServer {
     this.app.use('/api/ai', aiRoutes);
     this.app.use('/api/marketplace', marketplaceRoutes);
     this.app.use('/api/branches', branchesRoutes);
+    this.app.use('/api/backup', backupRoutes);
+    this.app.use('/api/companion', companionRoutes);
+    this.app.use('/api/training', trainingRoutes);
+    this.app.use('/api/rbac', rbacRoutes);
 
     // Serve main app (for development)
     if (isDev()) {

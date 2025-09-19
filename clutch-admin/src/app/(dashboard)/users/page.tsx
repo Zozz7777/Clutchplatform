@@ -181,7 +181,7 @@ export default function UsersPage() {
           <CardContent>
             <div className="text-2xl font-bold text-foreground">{users.length}</div>
             <p className="text-xs text-muted-foreground">
-              <span className="text-success">+12%</span> {t('users.fromLastMonth')}
+              <span className="text-muted-foreground">N/A</span> {t('users.fromLastMonth')}
             </p>
           </CardContent>
         </Card>
@@ -195,7 +195,7 @@ export default function UsersPage() {
               {users.filter(u => u.status === "active").length}
             </div>
             <p className="text-xs text-muted-foreground">
-              <span className="text-success">+8%</span> {t('users.fromLastMonth')}
+              <span className="text-muted-foreground">N/A</span> {t('users.fromLastMonth')}
             </p>
           </CardContent>
         </Card>
@@ -209,7 +209,7 @@ export default function UsersPage() {
               {users.filter(u => u.role === "enterprise_client").length}
             </div>
             <p className="text-xs text-muted-foreground">
-              <span className="text-success">+5%</span> {t('users.fromLastMonth')}
+              <span className="text-muted-foreground">N/A</span> {t('users.fromLastMonth')}
             </p>
           </CardContent>
         </Card>
@@ -223,7 +223,7 @@ export default function UsersPage() {
               {users.filter(u => u.role === "service_provider").length}
             </div>
             <p className="text-xs text-muted-foreground">
-              <span className="text-success">+15%</span> from last month
+              <span className="text-muted-foreground">N/A</span> from last month
             </p>
           </CardContent>
         </Card>

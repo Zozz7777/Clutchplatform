@@ -61,7 +61,7 @@ export default function SEOCMSPage() {
         setSelectedPage(data[0]);
       }
     } catch (error) {
-      console.error('Error loading SEO data:', error);
+      // Error handled by API service
       setSeoData([]);
     } finally {
       setLoading(false);
@@ -74,7 +74,7 @@ export default function SEOCMSPage() {
       await productionApi.refreshSEOAnalysis();
       await loadSEOData();
     } catch (error) {
-      console.error('Error refreshing SEO analysis:', error);
+      // Error handled by API service
     } finally {
       setRefreshing(false);
     }
@@ -85,7 +85,7 @@ export default function SEOCMSPage() {
       await productionApi.optimizeSEO();
       await loadSEOData();
     } catch (error) {
-      console.error('Error optimizing SEO:', error);
+      // Error handled by API service
     }
   };
 
