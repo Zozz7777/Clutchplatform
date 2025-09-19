@@ -351,7 +351,7 @@ export default function IdentityThreatDetection({ className }: IdentityThreatDet
         ? {
             ...event,
             actions: event.actions.map(action =>
-              action.id === actionId ? { ...action, status: newStatus as any } : action
+              action.id === actionId ? { ...action, status: newStatus as string } : action
             )
           }
         : event

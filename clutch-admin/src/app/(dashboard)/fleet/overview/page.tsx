@@ -40,10 +40,13 @@ export default function FleetOverviewPage() {
     const loadFleetData = async () => {
       try {
         const fleetData = await realApi.getFleetVehicles();
-        setVehicles(fleetData);
+        // Ensure we always have an array
+        setVehicles(Array.isArray(fleetData) ? fleetData : []);
       } catch (error) {
         console.error("Failed to load fleet data:", error);
         toast.error("Failed to load fleet overview");
+        // Set empty array on error to prevent filter issues
+        setVehicles([]);
       } finally {
         setIsLoading(false);
       }
@@ -277,7 +280,7 @@ export default function FleetOverviewPage() {
                   </Button>
                 </div>
                 <div className="space-y-3">
-                  {vehicles.filter(v => v.status === "maintenance").map((vehicle) => (
+                  {(vehicles || []).filter(v => v.status === "maintenance").map((vehicle) => (
                     <div key={vehicle.id} className="flex items-center justify-between p-3 border rounded-[0.625rem]">
                       <div className="flex items-center space-x-3">
                         <div className="w-10 h-10 rounded-full bg-warning/10 flex items-center justify-center">
@@ -296,7 +299,7 @@ export default function FleetOverviewPage() {
                       </div>
                     </div>
                   ))}
-                  {vehicles.filter(v => v.status === "maintenance").length === 0 && (
+                  {(vehicles || []).filter(v => v.status === "maintenance").length === 0 && (
                     <div className="text-center py-8">
                       <Wrench className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
                       <p className="text-muted-foreground">No maintenance scheduled</p>

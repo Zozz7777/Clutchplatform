@@ -508,7 +508,7 @@ export default function DynamicPricingSimulation({ className }: DynamicPricingSi
 
   const handleScenarioStatusUpdate = (scenarioId: string, newStatus: string) => {
     setScenarios(prev => prev.map(scenario =>
-      scenario.id === scenarioId ? { ...scenario, status: newStatus as any } : scenario
+      scenario.id === scenarioId ? { ...scenario, status: newStatus as string } : scenario
     ));
   };
 
