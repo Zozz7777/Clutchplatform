@@ -365,6 +365,57 @@ router.post('/security-events', authenticateToken, checkRole(['head_administrato
   }
 });
 
+// GET /api/v1/audit/user-activities - Get user activities
+router.get('/user-activities', authenticateToken, checkRole(['head_administrator', 'auditor']), auditRateLimit, async (req, res) => {
+  try {
+    const { page = 1, limit = 50, userId, action, startDate, endDate } = req.query;
+    const skip = (page - 1) * limit;
+    
+    const userActivitiesCollection = await getCollection('user_activities');
+    
+    // Build query
+    const query = {};
+    if (userId) query.userId = userId;
+    if (action) query.action = action;
+    if (startDate && endDate) {
+      query.timestamp = {
+        $gte: new Date(startDate),
+        $lte: new Date(endDate)
+      };
+    }
+    
+    const [activities, total] = await Promise.all([
+      userActivitiesCollection
+        .find(query)
+        .sort({ timestamp: -1 })
+        .skip(skip)
+        .limit(parseInt(limit))
+        .toArray(),
+      userActivitiesCollection.countDocuments(query)
+    ]);
+    
+    res.json({
+      success: true,
+      data: activities,
+      pagination: {
+        page: parseInt(page),
+        limit: parseInt(limit),
+        total,
+        pages: Math.ceil(total / limit)
+      },
+      timestamp: new Date().toISOString()
+    });
+  } catch (error) {
+    console.error('Get user activities error:', error);
+    res.status(500).json({
+      success: false,
+      error: 'GET_USER_ACTIVITIES_FAILED',
+      message: 'Failed to retrieve user activities',
+      timestamp: new Date().toISOString()
+    });
+  }
+});
+
 // ==================== COMPLIANCE REPORTING ====================
 
 // GET /api/v1/audit/compliance-report - Generate compliance report

@@ -397,6 +397,28 @@ router.post('/subscriptions', checkRole(['head_administrator', 'finance_officer'
 // ===== FINANCE METRICS =====
 
 // GET /api/v1/finance/metrics - Get finance metrics
+// GET /api/v1/finance/payouts - Get payouts data
+router.get('/payouts', authenticateToken, async (req, res) => {
+  try {
+    const payoutsCollection = await getCollection('payouts');
+    
+    const payouts = await payoutsCollection.find({}).toArray();
+    
+    res.json({
+      success: true,
+      data: payouts,
+      timestamp: new Date().toISOString()
+    });
+  } catch (error) {
+    logger.error('Error getting payouts:', error);
+    res.status(500).json({
+      success: false,
+      error: 'Failed to get payouts',
+      message: error.message
+    });
+  }
+});
+
 router.get('/metrics', async (req, res) => {
   try {
     const paymentsCollection = await getCollection('payments');

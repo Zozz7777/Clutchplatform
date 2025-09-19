@@ -139,300 +139,71 @@ export default function DynamicPricingSimulation({ className }: DynamicPricingSi
   const [filterType, setFilterType] = useState<string>('all');
   const [filterStatus, setFilterStatus] = useState<string>('all');
 
-  useEffect(() => {
-    const loadPricingData = async () => {
-      try {
-        // Load pricing scenarios from API
-        const scenariosResponse = await fetch('/api/v1/revenue/pricing/scenarios', {
-          headers: {
-            'Authorization': `Bearer ${localStorage.getItem('token')}`,
-            'Content-Type': 'application/json'
-          }
-        });
-        
-        if (scenariosResponse.ok) {
-          const scenariosData = await scenariosResponse.json();
-          setScenarios(scenariosData.data || []);
-        } else {
-          setScenarios([]);
+  const loadPricingData = async () => {
+    try {
+      // Load pricing scenarios from API
+      const scenariosResponse = await fetch('/api/v1/revenue/pricing/scenarios', {
+        headers: {
+          'Authorization': `Bearer ${localStorage.getItem('token')}`,
+          'Content-Type': 'application/json'
         }
-
-        // Load pricing tests from API
-        const testsResponse = await fetch('/api/v1/revenue/pricing/tests', {
-          headers: {
-            'Authorization': `Bearer ${localStorage.getItem('token')}`,
-            'Content-Type': 'application/json'
-          }
-        });
-        
-        if (testsResponse.ok) {
-          const testsData = await testsResponse.json();
-          setTests(testsData.data || []);
-        } else {
-          setTests([]);
-        }
-
-        // Load market analysis from API
-        const analysisResponse = await fetch('/api/v1/revenue/pricing/market-analysis', {
-          headers: {
-            'Authorization': `Bearer ${localStorage.getItem('token')}`,
-            'Content-Type': 'application/json'
-          }
-        });
-        
-        if (analysisResponse.ok) {
-          const analysisData = await analysisResponse.json();
-          setMarketAnalysis(analysisData.data || []);
-        } else {
-          setMarketAnalysis([]);
-        }
-      } catch (error) {
-        console.error('Failed to load pricing data:', error);
+      });
+      
+      if (scenariosResponse.ok) {
+        const scenariosData = await scenariosResponse.json();
+        setScenarios(scenariosData.data || []);
+      } else {
         setScenarios([]);
+      }
+
+      // Load pricing tests from API
+      const testsResponse = await fetch('/api/v1/revenue/pricing/tests', {
+        headers: {
+          'Authorization': `Bearer ${localStorage.getItem('token')}`,
+          'Content-Type': 'application/json'
+        }
+      });
+      
+      if (testsResponse.ok) {
+        const testsData = await testsResponse.json();
+        setTests(testsData.data || []);
+      } else {
         setTests([]);
+      }
+
+      // Load market analysis from API
+      const analysisResponse = await fetch('/api/v1/revenue/pricing/market-analysis', {
+        headers: {
+          'Authorization': `Bearer ${localStorage.getItem('token')}`,
+          'Content-Type': 'application/json'
+        }
+      });
+      
+      if (analysisResponse.ok) {
+        const analysisData = await analysisResponse.json();
+        setMarketAnalysis(analysisData.data || []);
+      } else {
         setMarketAnalysis([]);
       }
-    };
+    } catch (error) {
+      console.error('Failed to load pricing data:', error);
+      // Set empty arrays on error
+      setScenarios([]);
+      setTests([]);
+      setMarketAnalysis([]);
+    }
+  };
 
+  useEffect(() => {
     loadPricingData();
   }, []);
 
-  // Keep mock data as fallback for development
-  const getMockScenarios = (): PricingScenario[] => [
-        {
-          id: 'scenario-001',
-          name: 'Premium Tier Price Increase',
-          description: 'Increase premium tier pricing by 15% to improve margins',
-          type: 'price_increase',
-          status: 'testing',
-          currentPrice: 99,
-          newPrice: 114,
-          priceChange: 15,
-          priceChangePercent: 15.15,
-          targetSegment: 'Enterprise',
-          expectedImpact: {
-            revenue: 125000,
-            volume: -8,
-            margin: 12,
-            churn: 5,
-            acquisition: -3
-          },
-          actualImpact: {
-            revenue: 118000,
-            volume: -6,
-            margin: 11,
-            churn: 4,
-            acquisition: -2
-          },
-          confidence: 78,
-          riskLevel: 'medium',
-          assumptions: [
-            'Enterprise customers have low price sensitivity',
-            'Competitive landscape remains stable',
-            'Value proposition justifies price increase'
-          ],
-          constraints: {
-            minPrice: 100,
-            maxPrice: 150,
-            maxChurnIncrease: 10,
-            minMargin: 25
-          },
-          timeline: {
-            startDate: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString(),
-            endDate: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString(),
-            duration: 14
-          },
-          metrics: {
-            elasticity: -0.8,
-            priceSensitivity: 0.6,
-            demandCurve: 0.7,
-            competitivePosition: 0.8
-          }
-        },
-        {
-          id: 'scenario-002',
-          name: 'SMB Tier Restructure',
-          description: 'Restructure SMB pricing with usage-based components',
-          type: 'tier_restructure',
-          status: 'draft',
-          currentPrice: 29,
-          newPrice: 35,
-          priceChange: 6,
-          priceChangePercent: 20.69,
-          targetSegment: 'SMB',
-          expectedImpact: {
-            revenue: 85000,
-            volume: -12,
-            margin: 8,
-            churn: 8,
-            acquisition: -5
-          },
-          confidence: 65,
-          riskLevel: 'high',
-          assumptions: [
-            'SMB customers prefer predictable pricing',
-            'Usage-based pricing increases adoption',
-            'Competition doesn\'t respond aggressively'
-          ],
-          constraints: {
-            minPrice: 25,
-            maxPrice: 50,
-            maxChurnIncrease: 15,
-            minMargin: 20
-          },
-          timeline: {
-            startDate: new Date(Date.now() + 14 * 24 * 60 * 60 * 1000).toISOString(),
-            endDate: new Date(Date.now() + 44 * 24 * 60 * 60 * 1000).toISOString(),
-            duration: 30
-          },
-          metrics: {
-            elasticity: -1.2,
-            priceSensitivity: 0.8,
-            demandCurve: 0.5,
-            competitivePosition: 0.6
-          }
-        },
-        {
-          id: 'scenario-003',
-          name: 'Competitive Response Pricing',
-          description: 'Adjust pricing to match competitor\'s new offering',
-          type: 'competitive',
-          status: 'active',
-          currentPrice: 49,
-          newPrice: 45,
-          priceChange: -4,
-          priceChangePercent: -8.16,
-          targetSegment: 'Mid-Market',
-          expectedImpact: {
-            revenue: -20000,
-            volume: 15,
-            margin: -3,
-            churn: -2,
-            acquisition: 12
-          },
-          actualImpact: {
-            revenue: -18000,
-            volume: 18,
-            margin: -2,
-            churn: -1,
-            acquisition: 15
-          },
-          confidence: 85,
-          riskLevel: 'low',
-          assumptions: [
-            'Competitor pricing is sustainable',
-            'Market demand remains stable',
-            'Volume increase offsets price reduction'
-          ],
-          constraints: {
-            minPrice: 40,
-            maxPrice: 60,
-            maxChurnIncrease: 5,
-            minMargin: 15
-          },
-          timeline: {
-            startDate: new Date(Date.now() - 14 * 24 * 60 * 60 * 1000).toISOString(),
-            endDate: new Date(Date.now() + 16 * 24 * 60 * 60 * 1000).toISOString(),
-            duration: 30
-          },
-          metrics: {
-            elasticity: -1.5,
-            priceSensitivity: 0.9,
-            demandCurve: 0.8,
-            competitivePosition: 0.9
-          }
-        }
-      ];
-
-      const mockTests: PricingTest[] = [
-        {
-          id: 'test-001',
-          scenarioId: 'scenario-001',
-          name: 'Premium Tier A/B Test',
-          status: 'running',
-          startDate: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString(),
-          testGroup: {
-            size: 500,
-            conversion: 12.5,
-            revenue: 57000,
-            churn: 3.2
-          },
-          controlGroup: {
-            size: 500,
-            conversion: 13.8,
-            revenue: 49500,
-            churn: 2.8
-          },
-          results: {
-            revenueLift: 15.2,
-            conversionChange: -9.4,
-            churnChange: 14.3,
-            statisticalSignificance: 78
-          }
-        },
-        {
-          id: 'test-002',
-          scenarioId: 'scenario-002',
-          name: 'SMB Tier Restructure Test',
-          status: 'completed',
-          startDate: new Date(Date.now() - 21 * 24 * 60 * 60 * 1000).toISOString(),
-          endDate: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString(),
-          testGroup: {
-            size: 300,
-            conversion: 8.2,
-            revenue: 10500,
-            churn: 5.1
-          },
-          controlGroup: {
-            size: 300,
-            conversion: 9.5,
-            revenue: 8700,
-            churn: 3.8
-          },
-          results: {
-            revenueLift: 20.7,
-            conversionChange: -13.7,
-            churnChange: 34.2,
-            statisticalSignificance: 92
-          }
-        }
-      ];
-
-      const mockMarketAnalysis: MarketAnalysis[] = [
-        {
-          competitor: 'Competitor A',
-          currentPrice: 95,
-          marketShare: 25,
-          priceTrend: 'increasing',
-          lastUpdate: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000).toISOString()
-        },
-        {
-          competitor: 'Competitor B',
-          currentPrice: 110,
-          marketShare: 20,
-          priceTrend: 'stable',
-          lastUpdate: new Date(Date.now() - 1 * 24 * 60 * 60 * 1000).toISOString()
-        },
-        {
-          competitor: 'Competitor C',
-          currentPrice: 85,
-          marketShare: 15,
-          priceTrend: 'decreasing',
-          lastUpdate: new Date(Date.now() - 3 * 24 * 60 * 60 * 1000).toISOString()
-        }
-      ];
-
-      setScenarios(mockScenarios);
-      setTests(mockTests);
-      setMarketAnalysis(mockMarketAnalysis);
-      setSelectedScenario(mockScenarios[0]);
-    };
-
+  useEffect(() => {
     loadPricingData();
 
     // Simulate real-time updates
     const interval = setInterval(() => {
-      setScenarios(prev => prev.map(scenario => {
+      setScenarios((prev: PricingScenario[]) => prev.map((scenario: PricingScenario) => {
         if (scenario.status === 'testing' && scenario.actualImpact) {
           // Simulate small variations in actual impact
           const variation = (Math.random() - 0.5) * 0.1; // ±5% variation
@@ -507,22 +278,22 @@ export default function DynamicPricingSimulation({ className }: DynamicPricingSi
   };
 
   const handleScenarioStatusUpdate = (scenarioId: string, newStatus: string) => {
-    setScenarios(prev => prev.map(scenario =>
-      scenario.id === scenarioId ? { ...scenario, status: newStatus as string } : scenario
+    setScenarios((prev: PricingScenario[]) => prev.map((scenario: PricingScenario) =>
+      scenario.id === scenarioId ? { ...scenario, status: newStatus as any } : scenario
     ));
   };
 
-  const filteredScenarios = scenarios.filter(scenario => {
+  const filteredScenarios = scenarios.filter((scenario: PricingScenario) => {
     const typeMatch = filterType === 'all' || scenario.type === filterType;
     const statusMatch = filterStatus === 'all' || scenario.status === filterStatus;
     return typeMatch && statusMatch;
   });
 
-  const activeScenarios = scenarios.filter(scenario => scenario.status === 'active').length;
-  const testingScenarios = scenarios.filter(scenario => scenario.status === 'testing').length;
-  const totalExpectedRevenue = scenarios.reduce((sum, scenario) => sum + scenario.expectedImpact.revenue, 0);
+  const activeScenarios = scenarios.filter((scenario: PricingScenario) => scenario.status === 'active').length;
+  const testingScenarios = scenarios.filter((scenario: PricingScenario) => scenario.status === 'testing').length;
+  const totalExpectedRevenue = scenarios.reduce((sum: number, scenario: PricingScenario) => sum + scenario.expectedImpact.revenue, 0);
   const avgConfidence = scenarios.length > 0 
-    ? Math.round(scenarios.reduce((sum, scenario) => sum + scenario.confidence, 0) / scenarios.length)
+    ? Math.round(scenarios.reduce((sum: number, scenario: PricingScenario) => sum + scenario.confidence, 0) / scenarios.length)
     : 0;
 
   return (
@@ -636,7 +407,7 @@ export default function DynamicPricingSimulation({ className }: DynamicPricingSi
             </div>
 
             <div className="space-y-3">
-              {filteredScenarios.map((scenario) => (
+              {filteredScenarios.map((scenario: PricingScenario) => (
                 <div
                   key={scenario.id}
                   className={`p-3 border rounded-[0.625rem] cursor-pointer transition-colors ${
@@ -816,7 +587,7 @@ export default function DynamicPricingSimulation({ className }: DynamicPricingSi
                   <div>
                     <h5 className="font-medium mb-2">A/B Tests</h5>
                     <div className="space-y-3">
-                      {tests.filter(test => test.scenarioId === selectedScenario.id).map((test) => (
+                      {tests.filter((test: PricingTest) => test.scenarioId === selectedScenario.id).map((test: PricingTest) => (
                         <div key={test.id} className="p-3 border rounded-[0.625rem]">
                           <div className="flex items-center justify-between mb-2">
                             <span className="font-medium">{test.name}</span>

@@ -201,6 +201,200 @@ export class RealApiService {
     )();
   }
 
+  // Enterprise APIs
+  async getEnterpriseClients(): Promise<Record<string, unknown>[]> {
+    return withErrorHandling(
+      async () => {
+        const response = await apiService.request<Record<string, unknown>[]>("/api/v1/enterprise/clients");
+        return handleApiResponse(response, 'getEnterpriseClients', []);
+      },
+      'getEnterpriseClients',
+      { fallbackValue: [], showToast: false }
+    )();
+  }
+
+  async getEnterpriseStats(): Promise<Record<string, unknown>> {
+    return withErrorHandling(
+      async () => {
+        const response = await apiService.request<Record<string, unknown>>("/api/v1/enterprise/stats");
+        return handleApiResponse(response, 'getEnterpriseStats', {});
+      },
+      'getEnterpriseStats',
+      { fallbackValue: {}, showToast: false }
+    )();
+  }
+
+  // Asset Management APIs
+  async getAssets(): Promise<Record<string, unknown>[]> {
+    return withErrorHandling(
+      async () => {
+        const response = await apiService.request<Record<string, unknown>[]>("/api/v1/assets");
+        return handleApiResponse(response, 'getAssets', []);
+      },
+      'getAssets',
+      { fallbackValue: [], showToast: false }
+    )();
+  }
+
+  async getMaintenanceRecords(): Promise<Record<string, unknown>[]> {
+    return withErrorHandling(
+      async () => {
+        const response = await apiService.request<Record<string, unknown>[]>("/api/v1/assets/maintenance");
+        return handleApiResponse(response, 'getMaintenanceRecords', []);
+      },
+      'getMaintenanceRecords',
+      { fallbackValue: [], showToast: false }
+    )();
+  }
+
+  async getAssetAssignments(): Promise<Record<string, unknown>[]> {
+    return withErrorHandling(
+      async () => {
+        const response = await apiService.request<Record<string, unknown>[]>("/api/v1/assets/assignments");
+        return handleApiResponse(response, 'getAssetAssignments', []);
+      },
+      'getAssetAssignments',
+      { fallbackValue: [], showToast: false }
+    )();
+  }
+
+  async createAsset(assetData: Record<string, unknown>): Promise<Record<string, unknown>> {
+    return withErrorHandling(
+      async () => {
+        const response = await apiService.request<Record<string, unknown>>("/api/v1/assets", {
+          method: "POST",
+          body: JSON.stringify(assetData),
+        });
+        return handleApiResponse(response, 'createAsset', null);
+      },
+      'createAsset',
+      { fallbackValue: null, showToast: true }
+    )();
+  }
+
+  async createMaintenanceRecord(maintenanceData: Record<string, unknown>): Promise<Record<string, unknown>> {
+    return withErrorHandling(
+      async () => {
+        const response = await apiService.request<Record<string, unknown>>("/api/v1/assets/maintenance", {
+          method: "POST",
+          body: JSON.stringify(maintenanceData),
+        });
+        return handleApiResponse(response, 'createMaintenanceRecord', null);
+      },
+      'createMaintenanceRecord',
+      { fallbackValue: null, showToast: true }
+    )();
+  }
+
+  async createAssetAssignment(assignmentData: Record<string, unknown>): Promise<Record<string, unknown>> {
+    return withErrorHandling(
+      async () => {
+        const response = await apiService.request<Record<string, unknown>>("/api/v1/assets/assignments", {
+          method: "POST",
+          body: JSON.stringify(assignmentData),
+        });
+        return handleApiResponse(response, 'createAssetAssignment', null);
+      },
+      'createAssetAssignment',
+      { fallbackValue: null, showToast: true }
+    )();
+  }
+
+  // Finance APIs
+  async getSubscriptions(): Promise<Record<string, unknown>[]> {
+    return withErrorHandling(
+      async () => {
+        const response = await apiService.request<Record<string, unknown>[]>("/api/v1/finance/subscriptions");
+        return handleApiResponse(response, 'getSubscriptions', []);
+      },
+      'getSubscriptions',
+      { fallbackValue: [], showToast: false }
+    )();
+  }
+
+  async getPayouts(): Promise<Record<string, unknown>[]> {
+    return withErrorHandling(
+      async () => {
+        const response = await apiService.request<Record<string, unknown>[]>("/api/v1/finance/payouts");
+        return handleApiResponse(response, 'getPayouts', []);
+      },
+      'getPayouts',
+      { fallbackValue: [], showToast: false }
+    )();
+  }
+
+  // SEO APIs
+  async getSEOData(): Promise<Record<string, unknown>[]> {
+    return withErrorHandling(
+      async () => {
+        const response = await apiService.request<Record<string, unknown>[]>("/api/v1/cms/seo");
+        return handleApiResponse(response, 'getSEOData', []);
+      },
+      'getSEOData',
+      { fallbackValue: [], showToast: false }
+    )();
+  }
+
+  async refreshSEOAnalysis(): Promise<Record<string, unknown>> {
+    return withErrorHandling(
+      async () => {
+        const response = await apiService.request<Record<string, unknown>>("/api/v1/cms/seo/refresh", {
+          method: "POST",
+        });
+        return handleApiResponse(response, 'refreshSEOAnalysis', null);
+      },
+      'refreshSEOAnalysis',
+      { fallbackValue: null, showToast: true }
+    )();
+  }
+
+  async optimizeSEO(): Promise<Record<string, unknown>> {
+    return withErrorHandling(
+      async () => {
+        const response = await apiService.request<Record<string, unknown>>("/api/v1/cms/seo/optimize", {
+          method: "POST",
+        });
+        return handleApiResponse(response, 'optimizeSEO', null);
+      },
+      'optimizeSEO',
+      { fallbackValue: null, showToast: true }
+    )();
+  }
+
+  // Audit Trail APIs
+  async getAuditLogs(): Promise<Record<string, unknown>[]> {
+    return withErrorHandling(
+      async () => {
+        const response = await apiService.request<Record<string, unknown>[]>("/api/v1/audit/logs");
+        return handleApiResponse(response, 'getAuditLogs', []);
+      },
+      'getAuditLogs',
+      { fallbackValue: [], showToast: false }
+    )();
+  }
+
+  async getSecurityEvents(): Promise<Record<string, unknown>[]> {
+    return withErrorHandling(
+      async () => {
+        const response = await apiService.request<Record<string, unknown>[]>("/api/v1/audit/security-events");
+        return handleApiResponse(response, 'getSecurityEvents', []);
+      },
+      'getSecurityEvents',
+      { fallbackValue: [], showToast: false }
+    )();
+  }
+
+  async getUserActivities(): Promise<Record<string, unknown>[]> {
+    return withErrorHandling(
+      async () => {
+        const response = await apiService.request<Record<string, unknown>[]>("/api/v1/audit/user-activities");
+        return handleApiResponse(response, 'getUserActivities', []);
+      },
+      'getUserActivities',
+      { fallbackValue: [], showToast: false }
+    )();
+  }
+
   // System Health APIs
   async getSystemHealth(): Promise<Record<string, unknown>> {
     return withErrorHandling(
