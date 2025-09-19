@@ -27,6 +27,7 @@ import companionRoutes from './routes/companion';
 import trainingRoutes from './routes/training';
 import rbacRoutes from './routes/rbac';
 import websocketRoutes, { setWebSocketManager } from './routes/websocket';
+import dashboardRoutes from './routes/dashboard';
 
 class ClutchAutoPartsServer {
   private app: express.Application;
@@ -138,6 +139,7 @@ class ClutchAutoPartsServer {
     this.app.use('/api/training', trainingRoutes);
     this.app.use('/api/rbac', rbacRoutes);
     this.app.use('/api/websocket', websocketRoutes);
+    this.app.use('/api/dashboard', dashboardRoutes);
 
     // Serve main app (for development)
     if (isDev()) {

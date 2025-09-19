@@ -168,12 +168,12 @@ export default function MarketingPage() {
           const activeCampaigns = (campaigns || []).filter(c => c.status === "active").length;
           const totalSpent = (campaigns || []).reduce((sum, c) => sum + (c.spent || 0), 0);
           const totalLeads = (leads || []).length;
-          const conversionRate = campaigns.length > 0 
-            ? campaigns.reduce((sum, c) => sum + c.metrics.conversions, 0) / 
-              campaigns.reduce((sum, c) => sum + c.metrics.clicks, 0) * 100 
+          const conversionRate = (campaigns || []).length > 0 
+            ? (campaigns || []).reduce((sum, c) => sum + (c.metrics?.conversions || 0), 0) / 
+              (campaigns || []).reduce((sum, c) => sum + (c.metrics?.clicks || 0), 0) * 100 
             : 0;
-          const averageROAS = campaigns.length > 0 
-            ? campaigns.reduce((sum, c) => sum + c.metrics.roas, 0) / campaigns.length 
+          const averageROAS = (campaigns || []).length > 0 
+            ? (campaigns || []).reduce((sum, c) => sum + (c.metrics?.roas || 0), 0) / (campaigns || []).length 
             : 0;
 
           setStats({
@@ -198,21 +198,21 @@ export default function MarketingPage() {
   }, []);
 
   useEffect(() => {
-    let filteredCamps = campaigns;
-    let filteredLeadsList = leads;
+    let filteredCamps = campaigns || [];
+    let filteredLeadsList = leads || [];
 
     // Search filter
     if (searchQuery) {
       filteredCamps = filteredCamps.filter(campaign =>
-        campaign.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        campaign.objective.toLowerCase().includes(searchQuery.toLowerCase())
+        (campaign.name || '').toLowerCase().includes(searchQuery.toLowerCase()) ||
+        (campaign.objective || '').toLowerCase().includes(searchQuery.toLowerCase())
       );
       
       filteredLeadsList = filteredLeadsList.filter(lead =>
-        lead.firstName.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        lead.lastName.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        lead.email.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        lead.company?.toLowerCase().includes(searchQuery.toLowerCase())
+        (lead.firstName || '').toLowerCase().includes(searchQuery.toLowerCase()) ||
+        (lead.lastName || '').toLowerCase().includes(searchQuery.toLowerCase()) ||
+        (lead.email || '').toLowerCase().includes(searchQuery.toLowerCase()) ||
+        (lead.company || '').toLowerCase().includes(searchQuery.toLowerCase())
       );
     }
 
@@ -422,10 +422,10 @@ export default function MarketingPage() {
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">
-              {stats ? stats.activeCampaigns : campaigns.filter(c => c.status === "active").length}
+              {stats ? stats.activeCampaigns : (campaigns || []).filter(c => c.status === "active").length}
             </div>
             <p className="text-xs text-muted-foreground">
-              {stats ? stats.totalCampaigns : campaigns.length} total campaigns
+              {stats ? stats.totalCampaigns : (campaigns || []).length} total campaigns
             </p>
           </CardContent>
         </Card>

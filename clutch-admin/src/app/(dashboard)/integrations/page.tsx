@@ -146,7 +146,8 @@ export default function IntegrationsPage() {
     try {
       setLoading(true);
       const data = await productionApi.getIntegrations();
-      setIntegrations(data || []);
+      const integrationsArray = Array.isArray(data) ? data : [];
+      setIntegrations(integrationsArray);
     } catch (error) {
       logger.error("Error loading integrations:", error);
       toast.error(t('integrations.failedToLoadIntegrations'));
@@ -159,7 +160,8 @@ export default function IntegrationsPage() {
   const loadTemplates = async () => {
     try {
       const data = await productionApi.getIntegrationTemplates();
-      setTemplates(data || []);
+      const templatesArray = Array.isArray(data) ? data : [];
+      setTemplates(templatesArray);
     } catch (error) {
       logger.error("Error loading templates:", error);
       toast.error("Failed to load integration templates");
@@ -220,19 +222,20 @@ export default function IntegrationsPage() {
     }
   };
 
-  const filteredIntegrations = integrations.filter((integration) => {
-    const matchesSearch = integration.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         integration.description.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         integration.provider.name.toLowerCase().includes(searchTerm.toLowerCase());
-    const matchesType = typeFilter === "all" || integration.type === typeFilter;
-    const matchesStatus = statusFilter === "all" || integration.status === statusFilter;
+  const integrationsArray = Array.isArray(integrations) ? integrations : [];
+  const filteredIntegrations = integrationsArray.filter((integration) => {
+    const matchesSearch = integration?.name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                         integration?.description?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                         integration?.provider?.name?.toLowerCase().includes(searchTerm.toLowerCase());
+    const matchesType = typeFilter === "all" || integration?.type === typeFilter;
+    const matchesStatus = statusFilter === "all" || integration?.status === statusFilter;
     return matchesSearch && matchesType && matchesStatus;
   });
 
-  const totalIntegrations = integrations.length;
-  const activeIntegrations = integrations.filter(i => i.status === "active").length;
-  const errorIntegrations = integrations.filter(i => i.status === "error").length;
-  const totalRequests = integrations.reduce((sum, i) => sum + i.usage.requestsThisMonth, 0);
+  const totalIntegrations = integrationsArray.length;
+  const activeIntegrations = integrationsArray.filter(i => i?.status === "active").length;
+  const errorIntegrations = integrationsArray.filter(i => i?.status === "error").length;
+  const totalRequests = integrationsArray.reduce((sum, i) => sum + (i?.usage?.requestsThisMonth || 0), 0);
 
   if (loading) {
     return (
@@ -300,7 +303,7 @@ export default function IntegrationsPage() {
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">
-              {(integrations.reduce((sum, i) => sum + i.health.uptime, 0) / integrations.length || 0).toFixed(1)}%
+              {(integrationsArray.length > 0 ? integrationsArray.reduce((sum, i) => sum + (i?.health?.uptime || 0), 0) / integrationsArray.length : 0).toFixed(1)}%
             </div>
             <p className="text-xs text-muted-foreground">
               Across all integrations
@@ -314,7 +317,7 @@ export default function IntegrationsPage() {
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">
-              {(integrations.reduce((sum, i) => sum + i.health.errorRate, 0) / integrations.length || 0).toFixed(2)}%
+              {(integrationsArray.length > 0 ? integrationsArray.reduce((sum, i) => sum + (i?.health?.errorRate || 0), 0) / integrationsArray.length : 0).toFixed(2)}%
             </div>
             <p className="text-xs text-muted-foreground">
               Average error rate
@@ -589,7 +592,7 @@ export default function IntegrationsPage() {
           </DialogHeader>
           <div className="grid gap-4 py-4">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              {templates.map((template) => (
+              {Array.isArray(templates) ? templates.map((template) => (
                 <Card key={template._id} className="hover:shadow-sm transition-shadow">
                   <CardContent className="p-4">
                     <div className="flex items-start justify-between mb-2">
@@ -633,7 +636,7 @@ export default function IntegrationsPage() {
                     </div>
                   </CardContent>
                 </Card>
-              ))}
+              )) : null}
             </div>
           </div>
           <DialogFooter>

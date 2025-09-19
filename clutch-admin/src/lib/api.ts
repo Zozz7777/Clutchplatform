@@ -107,7 +107,7 @@ class ApiService {
         // Refresh failed
       }
     } catch (error) {
-      console.error("Token refresh failed:", error);
+      // Token refresh failed
     }
 
     this.logout();
@@ -217,11 +217,7 @@ class ApiService {
           errorMessage = errorText || errorMessage;
         }
         
-        console.error(`❌ API request failed for ${endpoint}:`, {
-          status: response.status,
-          statusText: response.statusText,
-          error: errorMessage
-        });
+        // API request failed
         
         throw new Error(errorMessage);
       }
@@ -242,7 +238,7 @@ class ApiService {
         };
       }
     } catch (error) {
-      console.error(`❌ API request failed for ${endpoint}:`, error);
+      // API request failed
       
       // Retry on network errors
       if (retryCount < maxRetries && error instanceof TypeError) {
