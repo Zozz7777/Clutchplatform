@@ -18,6 +18,7 @@ import {
   Filter,
   Download,
   Settings,
+  Shield,
   Bell,
   BellOff,
   CheckCircle,

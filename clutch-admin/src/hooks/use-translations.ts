@@ -1,6 +1,8 @@
 'use client';
 
 import { useLanguage } from '@/contexts/language-context';
+
+// Import translations directly
 import enTranslations from '@/messages/en.json';
 import arTranslations from '@/messages/ar.json';
 
@@ -74,6 +76,15 @@ export function useTranslations() {
         console.warn(`❌ Translation key "${key}" not found in ${language} translations`);
         console.warn(`Failed at key "${k}" in path "${key}"`);
         console.warn('Available keys at current level:', value ? Object.keys(value) : 'value is null/undefined');
+        
+        // Fallback for common keys
+        if (key === 'common.loading') {
+          return 'Loading...';
+        }
+        if (key === 'common.filter') {
+          return 'Filter';
+        }
+        
         return key;
       }
     }

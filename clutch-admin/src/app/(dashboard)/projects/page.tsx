@@ -149,7 +149,7 @@ export default function ProjectManagementPage() {
       const data = await productionApi.getProjects();
       setProjects(data || []);
     } catch (error) {
-      console.error("Error loading projects:", error);
+      // Error handled by API service
       setProjects([]);
     } finally {
       setLoading(false);
@@ -161,7 +161,7 @@ export default function ProjectManagementPage() {
       const data = await productionApi.getProjectTasks(selectedProject?._id || "");
       setTasks(data || []);
     } catch (error) {
-      console.error("Error loading tasks:", error);
+      // Error handled by API service
       setTasks([]);
     }
   };
@@ -171,7 +171,7 @@ export default function ProjectManagementPage() {
       const data = await productionApi.getTimeTracking(selectedProject?._id || "");
       setTimeEntries(data || []);
     } catch (error) {
-      console.error("Error loading time entries:", error);
+      // Error handled by API service
       setTimeEntries([]);
     }
   };
@@ -212,7 +212,7 @@ export default function ProjectManagementPage() {
         });
       }
     } catch (error) {
-      console.error("Error creating project:", error);
+      // Error handled by API service
     }
   };
 
