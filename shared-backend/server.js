@@ -229,7 +229,7 @@ app.use(`${apiPrefix}/rbac`, rbacRoutes);
 
 // Mount newly created routes
 app.use(`${apiPrefix}/support`, supportRoutes);
-app.use(`${apiPrefix}/analytics-extended`, analyticsExtendedRoutes);
+app.use(`${apiPrefix}/analytics`, analyticsExtendedRoutes);
 
 // Fallback routes (without v1 prefix for frontend compatibility)
 app.use('/auth', authRoutes);
