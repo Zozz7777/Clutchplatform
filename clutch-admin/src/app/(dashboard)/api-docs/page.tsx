@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -24,6 +24,8 @@ import {
   Activity,
 } from "lucide-react";
 import { useTranslations } from "@/hooks/use-translations";
+import { realApi } from "@/lib/real-api";
+import { toast } from "sonner";
 
 interface APIEndpoint {
   _id: string;
@@ -57,170 +59,59 @@ export default function APIDocsPage() {
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedCategory, setSelectedCategory] = useState<string>("all");
   const [selectedEndpoint, setSelectedEndpoint] = useState<APIEndpoint | null>(null);
+  const [endpoints, setEndpoints] = useState<APIEndpoint[]>([]);
+  const [categories, setCategories] = useState<Record<string, unknown>[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
 
-  const mockEndpoints: APIEndpoint[] = [
-    {
-      _id: "1",
-      path: "/api/v1/auth/login",
-      method: "POST",
-      description: "Authenticate user and return access token",
-      category: "Authentication",
-      version: "v1",
-      authentication: "none",
-      parameters: {
-        body: {
-          email: { type: "string", required: true, description: "User email address" },
-          password: { type: "string", required: true, description: "User password" },
-        },
-      },
-      responses: {
-        "200": {
-          description: "Login successful",
-          schema: {
-            success: true,
-            data: {
-              user: { id: "string", email: "string", role: "string" },
-              token: "string",
-            },
-          },
-        },
-        "401": {
-          description: "Invalid credentials",
-        },
-      },
-      examples: {
-        request: `{
-  "email": "user@example.com",
-  "password": "password123"
-}`,
-        response: `{
-  "success": true,
-  "data": {
-    "user": {
-      "id": "123",
-      "email": "user@example.com",
-      "role": "admin"
-    },
-    "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
-  }
-}`,
-      },
-      rateLimit: 100,
-      tags: ["auth", "login"],
-    },
-    {
-      _id: "2",
-      path: "/api/v1/users",
-      method: "GET",
-      description: "Get list of users with pagination and filtering",
-      category: "Users",
-      version: "v1",
-      authentication: "bearer",
-      parameters: {
-        query: {
-          page: { type: "number", required: false, description: "Page number" },
-          limit: { type: "number", required: false, description: "Items per page" },
-          role: { type: "string", required: false, description: "Filter by user role" },
-          status: { type: "string", required: false, description: "Filter by user status" },
-        },
-      },
-      responses: {
-        "200": {
-          description: "Users retrieved successfully",
-        },
-        "401": {
-          description: "Unauthorized",
-        },
-      },
-      examples: {
-        request: "GET /api/v1/users?page=1&limit=10&role=admin",
-        response: `{
-  "success": true,
-  "data": {
-    "users": [...],
-    "pagination": {
-      "page": 1,
-      "limit": 10,
-      "total": 100
-    }
-  }
-}`,
-      },
-      rateLimit: 1000,
-      tags: ["users", "list"],
-    },
-    {
-      _id: "3",
-      path: "/api/v1/fleet/vehicles",
-      method: "GET",
-      description: "Get fleet vehicles with real-time status",
-      category: "Fleet",
-      version: "v1",
-      authentication: "bearer",
-      parameters: {
-        query: {
-          status: { type: "string", required: false, description: "Vehicle status filter" },
-          location: { type: "string", required: false, description: "Location filter" },
-        },
-      },
-      responses: {
-        "200": {
-          description: "Vehicles retrieved successfully",
-        },
-      },
-      examples: {
-        request: "GET /api/v1/fleet/vehicles?status=active",
-        response: `{
-  "success": true,
-  "data": {
-    "vehicles": [
-      {
-        "id": "v1",
-        "licensePlate": "ABC-123",
-        "status": "active",
-        "location": {
-          "lat": 30.0444,
-          "lng": 31.2357
-        }
+  useEffect(() => {
+    const loadAPIDocsData = async () => {
+      try {
+        setIsLoading(true);
+        
+        // Load real data from API
+        const [endpointsData, categoriesData] = await Promise.all([
+          realApi.getAPIEndpoints(),
+          realApi.getAPICategories()
+        ]);
+
+        setEndpoints(endpointsData || []);
+        setCategories(categoriesData || []);
+        
+      } catch (error) {
+        console.error("Failed to load API docs data:", error);
+        toast.error(t('apiDocs.failedToLoadAPIDocsData'));
+        // Set empty arrays on error - no mock data fallback
+        setEndpoints([]);
+        setCategories([]);
+      } finally {
+        setIsLoading(false);
       }
-    ]
-  }
-}`,
-      },
-      rateLimit: 500,
-      tags: ["fleet", "vehicles"],
-    },
-  ];
+    };
 
-  const categories = [
-    { name: "Authentication", icon: Key, color: "bg-secondary/10 text-primary-foreground" },
-    { name: "Users", icon: Users, color: "bg-primary/10 text-primary-foreground" },
-    { name: "Fleet", icon: Truck, color: "bg-secondary/10 text-primary-foreground" },
-    { name: "Finance", icon: DollarSign, color: "bg-secondary/10 text-primary-foreground" },
-    { name: "Communication", icon: MessageSquare, color: "bg-primary/10 text-primary-foreground" },
-    { name: "Analytics", icon: BarChart3, color: "bg-secondary/10 text-primary-foreground" },
-    { name: "System", icon: Settings, color: "bg-muted text-muted-foreground" },
-  ];
+    loadAPIDocsData();
+  }, [t]);
 
   const getMethodColor = (method: string) => {
     switch (method) {
       case "GET":
-        return "bg-primary/10 text-primary-foreground";
+        return "bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200";
       case "POST":
-        return "bg-secondary/10 text-primary-foreground";
+        return "bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200";
       case "PUT":
-        return "bg-secondary/10 text-primary-foreground";
+        return "bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200";
       case "DELETE":
-        return "bg-destructive/10 text-destructive-foreground";
+        return "bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200";
       case "PATCH":
-        return "bg-primary/10 text-primary-foreground";
+        return "bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-200";
       default:
-        return "bg-muted text-muted-foreground";
+        return "bg-gray-100 text-gray-800 dark:bg-gray-900 dark:text-gray-200";
     }
   };
 
   const getAuthIcon = (auth: string) => {
     switch (auth) {
+      case "none":
+        return <Globe className="h-4 w-4" />;
       case "api_key":
         return <Key className="h-4 w-4" />;
       case "bearer":
@@ -232,7 +123,7 @@ export default function APIDocsPage() {
     }
   };
 
-  const filteredEndpoints = mockEndpoints.filter((endpoint) => {
+  const filteredEndpoints = endpoints.filter((endpoint) => {
     const matchesSearch = endpoint.path.toLowerCase().includes(searchTerm.toLowerCase()) ||
                          endpoint.description.toLowerCase().includes(searchTerm.toLowerCase()) ||
                          endpoint.tags.some(tag => tag.toLowerCase().includes(searchTerm.toLowerCase()));
@@ -244,323 +135,336 @@ export default function APIDocsPage() {
     navigator.clipboard.writeText(text);
   };
 
+  if (isLoading) {
+    return (
+      <div className="flex items-center justify-center h-64">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto mb-4"></div>
+          <p className="text-muted-foreground">Loading API documentation...</p>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="space-y-6">
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-medium tracking-tight">{t('apiDocs.title')}</h1>
+          <h1 className="text-3xl font-bold tracking-tight">API Documentation</h1>
           <p className="text-muted-foreground">
-            {t('apiDocs.description')}
+            Complete reference for all Clutch Admin API endpoints
           </p>
         </div>
-        <div className="flex items-center space-x-2">
-          <Button variant="outline">
-            <BookOpen className="mr-2 h-4 w-4" />
-            Download PDF
-          </Button>
-          <Button variant="outline">
-            <ExternalLink className="mr-2 h-4 w-4" />
-            Postman Collection
-          </Button>
-        </div>
+        <Button variant="outline" size="sm">
+          <ExternalLink className="h-4 w-4 mr-2" />
+          OpenAPI Spec
+        </Button>
       </div>
 
-      {/* API Overview */}
-      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+      {/* Stats Cards */}
+      <div className="grid gap-4 md:grid-cols-4">
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">Total Endpoints</CardTitle>
             <Code className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-medium">{mockEndpoints.length}</div>
+            <div className="text-2xl font-medium">{endpoints.length}</div>
             <p className="text-xs text-muted-foreground">
               Available endpoints
             </p>
           </CardContent>
         </Card>
+
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">API Version</CardTitle>
+            <CardTitle className="text-sm font-medium">Categories</CardTitle>
+            <BookOpen className="h-4 w-4 text-muted-foreground" />
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-medium">{categories.length}</div>
+            <p className="text-xs text-muted-foreground">
+              API categories
+            </p>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium">Rate Limits</CardTitle>
             <Database className="h-4 w-4 text-muted-foreground" />
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-medium">
+              {endpoints.length > 0 ? Math.round(endpoints.reduce((sum, e) => sum + e.rateLimit, 0) / endpoints.length) : 0}
+            </div>
+            <p className="text-xs text-muted-foreground">
+              Average per hour
+            </p>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium">Version</CardTitle>
+            <Settings className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-medium">v1</div>
             <p className="text-xs text-muted-foreground">
-              Current version
-            </p>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Base URL</CardTitle>
-            <Globe className="h-4 w-4 text-muted-foreground" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-sm font-mono">https://clutch-main-nk7x.onrender.com</div>
-            <p className="text-xs text-muted-foreground">
-              Production endpoint
-            </p>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Authentication</CardTitle>
-            <Shield className="h-4 w-4 text-muted-foreground" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-sm font-medium">Bearer Token</div>
-            <p className="text-xs text-muted-foreground">
-              JWT-based auth
+              Current API version
             </p>
           </CardContent>
         </Card>
       </div>
 
-      {/* Categories */}
-      <Card>
-        <CardHeader>
-          <CardTitle>API Categories</CardTitle>
-          <CardDescription>
-            Browse endpoints by category
-          </CardDescription>
-        </CardHeader>
-        <CardContent>
-          <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-7 gap-4">
-            <Button
-              variant={selectedCategory === "all" ? "default" : "outline"}
-              onClick={() => setSelectedCategory("all")}
-              className="h-auto p-4 flex flex-col items-center space-y-2"
-            >
-              <Code className="h-6 w-6" />
-              <span className="text-sm">All</span>
-            </Button>
-            {categories.map((category) => {
-              const Icon = category.icon;
-              return (
-                <Button
-                  key={category.name}
-                  variant={selectedCategory === category.name ? "default" : "outline"}
-                  onClick={() => setSelectedCategory(category.name)}
-                  className="h-auto p-4 flex flex-col items-center space-y-2"
-                >
-                  <Icon className="h-6 w-6" />
-                  <span className="text-sm">{category.name}</span>
-                </Button>
-              );
-            })}
-          </div>
-        </CardContent>
-      </Card>
-
       {/* Search and Filters */}
       <Card>
         <CardHeader>
-          <CardTitle>API Endpoints</CardTitle>
+          <CardTitle>Search & Filter</CardTitle>
           <CardDescription>
-            Search and explore all available API endpoints
+            Find specific endpoints by path, description, or tags
           </CardDescription>
         </CardHeader>
-        <CardContent>
-          <div className="flex items-center space-x-4 mb-6">
-            <div className="flex-1">
-              <div className="relative">
-                <Search className="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground" />
-                <Input
-                  placeholder="Search endpoints..."
-                  value={searchTerm}
-                  onChange={(e) => setSearchTerm(e.target.value)}
-                  className="pl-8"
-                />
-              </div>
-            </div>
+        <CardContent className="space-y-4">
+          <div className="relative">
+            <Search className="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground" />
+            <Input
+              placeholder={t('common.search')}
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              className="pl-8"
+            />
           </div>
-
-          <div className="space-y-4">
-            {filteredEndpoints.map((endpoint) => (
-              <Card key={endpoint._id} className="hover:shadow-sm transition-shadow">
-                <CardContent className="p-6">
-                  <div className="flex items-start justify-between">
-                    <div className="flex-1">
-                      <div className="flex items-center space-x-3 mb-2">
-                        <Badge className={getMethodColor(endpoint.method)}>
-                          {endpoint.method}
-                        </Badge>
-                        <code className="text-lg font-mono bg-muted px-2 py-1 rounded">
-                          {endpoint.path}
-                        </code>
-                        <Badge variant="outline">{endpoint.category}</Badge>
-                        <div className="flex items-center space-x-1 text-muted-foreground">
-                          {getAuthIcon(endpoint.authentication)}
-                          <span className="text-sm">{endpoint.authentication}</span>
-                        </div>
-                      </div>
-                      <p className="text-muted-foreground mb-4">{endpoint.description}</p>
-                      
-                      <div className="flex items-center space-x-4 text-sm text-muted-foreground">
-                        <div className="flex items-center space-x-1">
-                          <Activity className="h-4 w-4" />
-                          <span>Rate limit: {endpoint.rateLimit}/hour</span>
-                        </div>
-                        <div className="flex items-center space-x-1">
-                          <Database className="h-4 w-4" />
-                          <span>Version: {endpoint.version}</span>
-                        </div>
-                        <div className="flex items-center space-x-1">
-                          <span>Tags: {endpoint.tags.join(", ")}</span>
-                        </div>
-                      </div>
-                    </div>
-                    
-                    <div className="flex items-center space-x-2">
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        onClick={() => setSelectedEndpoint(endpoint)}
-                      >
-                        <BookOpen className="mr-2 h-4 w-4" />
-                        View Details
-                      </Button>
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        onClick={() => copyToClipboard(`curl -X ${endpoint.method} https://clutch-main-nk7x.onrender.com${endpoint.path}`)}
-                      >
-                        <Copy className="mr-2 h-4 w-4" />
-                        Copy cURL
-                      </Button>
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
+          
+          <div className="flex flex-wrap gap-2">
+            <Button
+              variant={selectedCategory === "all" ? "default" : "outline"}
+              size="sm"
+              onClick={() => setSelectedCategory("all")}
+            >
+              All Categories
+            </Button>
+            {categories.map((category) => (
+              <Button
+                key={category._id as string}
+                variant={selectedCategory === category.name ? "default" : "outline"}
+                size="sm"
+                onClick={() => setSelectedCategory(category.name as string)}
+              >
+                {category.name as string}
+              </Button>
             ))}
           </div>
         </CardContent>
       </Card>
 
+      {/* Endpoints List */}
+      <div className="space-y-4">
+        {filteredEndpoints.length === 0 ? (
+          <Card>
+            <CardContent className="text-center py-8">
+              <Code className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
+              <h3 className="text-lg font-semibold mb-2">No endpoints found</h3>
+              <p className="text-muted-foreground">
+                Try adjusting your search terms or category filter
+              </p>
+            </CardContent>
+          </Card>
+        ) : (
+          filteredEndpoints.map((endpoint) => (
+            <Card key={endpoint._id} className="hover:shadow-md transition-shadow">
+              <CardHeader>
+                <div className="flex items-start justify-between">
+                  <div className="flex-1">
+                    <div className="flex items-center space-x-3 mb-2">
+                      <Badge className={getMethodColor(endpoint.method)}>
+                        {endpoint.method}
+                      </Badge>
+                      <code className="text-sm font-mono bg-muted px-2 py-1 rounded">
+                        {endpoint.path}
+                      </code>
+                      <Badge variant="outline">{endpoint.version}</Badge>
+                    </div>
+                    <CardTitle className="text-lg">{endpoint.description}</CardTitle>
+                    <CardDescription className="mt-2">
+                      Category: {endpoint.category} • Rate Limit: {endpoint.rateLimit}/hour
+                    </CardDescription>
+                  </div>
+                  <div className="flex items-center space-x-2">
+                    <div className="flex items-center space-x-1 text-sm text-muted-foreground">
+                      {getAuthIcon(endpoint.authentication)}
+                      <span className="capitalize">{endpoint.authentication}</span>
+                    </div>
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() => setSelectedEndpoint(endpoint)}
+                    >
+                      View Details
+                    </Button>
+                  </div>
+                </div>
+              </CardHeader>
+              
+              {endpoint.tags && endpoint.tags.length > 0 && (
+                <CardContent className="pt-0">
+                  <div className="flex flex-wrap gap-1">
+                    {endpoint.tags.map((tag) => (
+                      <Badge key={tag} variant="secondary" className="text-xs">
+                        {tag}
+                      </Badge>
+                    ))}
+                  </div>
+                </CardContent>
+              )}
+            </Card>
+          ))
+        )}
+      </div>
+
       {/* Endpoint Details Modal */}
       {selectedEndpoint && (
-        <Card className="fixed inset-4 z-50 overflow-auto bg-background border-2">
-          <CardHeader className="sticky top-0 bg-background border-b">
-            <div className="flex items-center justify-between">
-              <div>
-                <CardTitle className="flex items-center space-x-3">
-                  <Badge className={getMethodColor(selectedEndpoint.method)}>
-                    {selectedEndpoint.method}
-                  </Badge>
-                  <code className="text-lg font-mono">{selectedEndpoint.path}</code>
-                </CardTitle>
-                <CardDescription className="mt-2">{selectedEndpoint.description}</CardDescription>
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50">
+          <Card className="w-full max-w-4xl max-h-[90vh] overflow-y-auto">
+            <CardHeader>
+              <div className="flex items-start justify-between">
+                <div className="flex-1">
+                  <div className="flex items-center space-x-3 mb-2">
+                    <Badge className={getMethodColor(selectedEndpoint.method)}>
+                      {selectedEndpoint.method}
+                    </Badge>
+                    <code className="text-lg font-mono bg-muted px-3 py-1 rounded">
+                      {selectedEndpoint.path}
+                    </code>
+                  </div>
+                  <CardTitle className="text-xl">{selectedEndpoint.description}</CardTitle>
+                </div>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => setSelectedEndpoint(null)}
+                >
+                  Close
+                </Button>
               </div>
-              <Button variant="outline" onClick={() => setSelectedEndpoint(null)}>
-                Close
-              </Button>
-            </div>
-          </CardHeader>
-          <CardContent className="p-6">
-            <div className="space-y-6">
+            </CardHeader>
+            
+            <CardContent className="space-y-6">
               {/* Parameters */}
-              {Object.keys(selectedEndpoint.parameters).length > 0 && (
+              {selectedEndpoint.parameters && Object.keys(selectedEndpoint.parameters).length > 0 && (
                 <div>
                   <h3 className="text-lg font-semibold mb-3">Parameters</h3>
-                  {Object.entries(selectedEndpoint.parameters).map(([type, params]) => (
-                    <div key={type} className="mb-4">
-                      <h4 className="font-medium capitalize mb-2">{type} Parameters</h4>
-                      <div className="bg-muted p-4 rounded-[0.625rem]">
-                        {Object.entries(params).map(([name, param]) => (
-                          <div key={name} className="mb-2">
-                            <div className="flex items-center space-x-2">
-                              <code className="font-mono bg-background px-2 py-1 rounded-[0.625rem] border border-border">
-                                {name}
-                              </code>
-                              <Badge variant={param.required ? "default" : "outline"}>
-                                {param.type}
-                              </Badge>
-                              {param.required && (
-                                <Badge className="bg-destructive/10 text-destructive-foreground">Required</Badge>
-                              )}
+                  <div className="space-y-4">
+                    {Object.entries(selectedEndpoint.parameters).map(([type, params]) => (
+                      <div key={type}>
+                        <h4 className="font-medium capitalize mb-2">{type} Parameters</h4>
+                        <div className="space-y-2">
+                          {Object.entries(params).map(([name, param]) => (
+                            <div key={name} className="flex items-start space-x-3 p-3 border rounded-lg">
+                              <div className="flex-1">
+                                <div className="flex items-center space-x-2">
+                                  <code className="font-mono text-sm">{name}</code>
+                                  <Badge variant={param.required ? "destructive" : "secondary"}>
+                                    {param.type}
+                                  </Badge>
+                                  {param.required && (
+                                    <Badge variant="outline">Required</Badge>
+                                  )}
+                                </div>
+                                <p className="text-sm text-muted-foreground mt-1">
+                                  {param.description}
+                                </p>
+                              </div>
                             </div>
-                            <p className="text-sm text-muted-foreground mt-1">{param.description}</p>
-                          </div>
-                        ))}
+                          ))}
+                        </div>
                       </div>
-                    </div>
-                  ))}
+                    ))}
+                  </div>
                 </div>
               )}
 
               {/* Responses */}
-              <div>
-                <h3 className="text-lg font-semibold mb-3">Responses</h3>
-                <div className="space-y-3">
-                  {Object.entries(selectedEndpoint.responses).map(([status, response]) => (
-                    <div key={status} className="border border-border rounded-[0.625rem] p-4">
-                      <div className="flex items-center space-x-2 mb-2">
-                        <Badge className={status.startsWith("2") ? "bg-primary/10 text-primary-foreground" : "bg-destructive/10 text-destructive-foreground"}>
-                          {status}
-                        </Badge>
-                        <span className="font-medium">{response.description}</span>
+              {selectedEndpoint.responses && Object.keys(selectedEndpoint.responses).length > 0 && (
+                <div>
+                  <h3 className="text-lg font-semibold mb-3">Responses</h3>
+                  <div className="space-y-3">
+                    {Object.entries(selectedEndpoint.responses).map(([status, response]) => (
+                      <div key={status} className="p-3 border rounded-lg">
+                        <div className="flex items-center space-x-2 mb-2">
+                          <Badge variant={status.startsWith('2') ? "default" : "destructive"}>
+                            {status}
+                          </Badge>
+                          <span className="font-medium">{response.description}</span>
+                        </div>
+                        {response.schema && (
+                          <div className="mt-2">
+                            <Button
+                              variant="outline"
+                              size="sm"
+                              onClick={() => copyToClipboard(JSON.stringify(response.schema, null, 2))}
+                            >
+                              <Copy className="h-4 w-4 mr-2" />
+                              Copy Schema
+                            </Button>
+                          </div>
+                        )}
                       </div>
-                      {response.schema && (
-                        <pre className="bg-muted p-3 rounded text-sm overflow-x-auto">
-                          {JSON.stringify(response.schema, null, 2)}
-                        </pre>
-                      )}
-                    </div>
-                  ))}
+                    ))}
+                  </div>
                 </div>
-              </div>
+              )}
 
               {/* Examples */}
               {selectedEndpoint.examples && (
                 <div>
                   <h3 className="text-lg font-semibold mb-3">Examples</h3>
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div className="space-y-4">
                     {selectedEndpoint.examples.request && (
                       <div>
                         <h4 className="font-medium mb-2">Request</h4>
-                        <div className="bg-muted text-primary p-4 rounded-[0.625rem]">
-                          <pre className="text-sm overflow-x-auto">
-                            {selectedEndpoint.examples.request}
+                        <div className="relative">
+                          <pre className="bg-muted p-4 rounded-lg overflow-x-auto text-sm">
+                            <code>{selectedEndpoint.examples.request}</code>
                           </pre>
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            className="absolute top-2 right-2"
+                            onClick={() => copyToClipboard(selectedEndpoint.examples.request || '')}
+                          >
+                            <Copy className="h-4 w-4" />
+                          </Button>
                         </div>
-                        <Button
-                          variant="outline"
-                          size="sm"
-                          className="mt-2"
-                          onClick={() => copyToClipboard(selectedEndpoint.examples.request || "")}
-                        >
-                          <Copy className="mr-2 h-4 w-4" />
-                          Copy Request
-                        </Button>
                       </div>
                     )}
+                    
                     {selectedEndpoint.examples.response && (
                       <div>
                         <h4 className="font-medium mb-2">Response</h4>
-                        <div className="bg-muted text-secondary p-4 rounded-[0.625rem]">
-                          <pre className="text-sm overflow-x-auto">
-                            {selectedEndpoint.examples.response}
+                        <div className="relative">
+                          <pre className="bg-muted p-4 rounded-lg overflow-x-auto text-sm">
+                            <code>{selectedEndpoint.examples.response}</code>
                           </pre>
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            className="absolute top-2 right-2"
+                            onClick={() => copyToClipboard(selectedEndpoint.examples.response || '')}
+                          >
+                            <Copy className="h-4 w-4" />
+                          </Button>
                         </div>
-                        <Button
-                          variant="outline"
-                          size="sm"
-                          className="mt-2"
-                          onClick={() => copyToClipboard(selectedEndpoint.examples.response || "")}
-                        >
-                          <Copy className="mr-2 h-4 w-4" />
-                          Copy Response
-                        </Button>
                       </div>
                     )}
                   </div>
                 </div>
               )}
-            </div>
-          </CardContent>
-        </Card>
+            </CardContent>
+          </Card>
+        </div>
       )}
     </div>
   );

@@ -5,6 +5,8 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { useTranslations } from '@/hooks/use-translations';
+import { realApi } from '@/lib/real-api';
+import { toast } from 'sonner';
 import { 
   Brain, 
   TrendingUp, 
@@ -49,471 +51,389 @@ interface AIRecommendation {
   };
 }
 
-interface AIRecommendationFeedProps {
-  className?: string;
-}
-
-export default function AIRecommendationFeed({ className }: AIRecommendationFeedProps) {
+export default function AIRecommendationFeed() {
   const { t } = useTranslations();
   const [recommendations, setRecommendations] = useState<AIRecommendation[]>([]);
   const [filter, setFilter] = useState<'all' | 'revenue' | 'efficiency' | 'cost' | 'risk' | 'growth'>('all');
   const [isAnalyzing, setIsAnalyzing] = useState(false);
 
   useEffect(() => {
-    const loadRecommendations = () => {
-      const mockRecommendations: AIRecommendation[] = [
-        {
-          id: '1',
-          title: 'Extend Fleet A Maintenance by 2 Days',
-          description: 'Based on usage patterns, extending maintenance by 2 days will prevent revenue loss during peak hours',
-          category: 'revenue',
-          priority: 'high',
-          impact: {
-            metric: 'Revenue Loss Prevention',
-            currentValue: 0,
-            expectedValue: 3200,
-            improvement: 100,
-            unit: '$',
-            timeframe: 'Next 7 days'
-          },
-          confidence: 87,
-          effort: 'low',
-          roi: 450,
-          status: 'pending',
-          createdAt: '2 hours ago',
-          expiresAt: '6 hours',
-          tags: ['fleet', 'maintenance', 'revenue'],
-          actions: {
-            primary: 'Schedule Maintenance',
-            secondary: 'View Details'
-          }
-        },
-        {
-          id: '2',
-          title: 'Optimize B2B Onboarding Flow',
-          description: 'Streamlining the onboarding process from 12 to 3 steps will increase activation rate by 40%',
-          category: 'growth',
-          priority: 'high',
-          impact: {
-            metric: 'Activation Rate',
-            currentValue: 35,
-            expectedValue: 49,
-            improvement: 40,
-            unit: '%',
-            timeframe: 'Next 30 days'
-          },
-          confidence: 92,
-          effort: 'high',
-          roi: 280,
-          status: 'pending',
-          createdAt: '4 hours ago',
-          expiresAt: '2 days',
-          tags: ['onboarding', 'b2b', 'conversion'],
-          actions: {
-            primary: 'Implement Changes',
-            secondary: 'A/B Test'
-          }
-        },
-        {
-          id: '3',
-          title: 'Implement Dynamic Pricing for Peak Hours',
-          description: 'Adjusting pricing during peak demand hours can increase revenue by 15% without affecting customer satisfaction',
-          category: 'revenue',
-          priority: 'medium',
-          impact: {
-            metric: 'Peak Hour Revenue',
-            currentValue: 12500,
-            expectedValue: 14375,
-            improvement: 15,
-            unit: '$',
-            timeframe: 'Next 14 days'
-          },
-          confidence: 78,
-          effort: 'medium',
-          roi: 320,
-          status: 'pending',
-          createdAt: '6 hours ago',
-          expiresAt: '3 days',
-          tags: ['pricing', 'revenue', 'optimization'],
-          actions: {
-            primary: 'Enable Dynamic Pricing',
-            secondary: 'Review Impact'
-          }
-        },
-        {
-          id: '4',
-          title: 'Reduce API Response Time with Caching',
-          description: 'Implementing Redis caching for frequently accessed data will reduce response time by 65%',
-          category: 'efficiency',
-          priority: 'high',
-          impact: {
-            metric: 'API Response Time',
-            currentValue: 2.3,
-            expectedValue: 0.8,
-            improvement: 65,
-            unit: 's',
-            timeframe: 'Next 10 days'
-          },
-          confidence: 95,
-          effort: 'medium',
-          roi: 180,
-          status: 'in_progress',
-          createdAt: '1 day ago',
-          expiresAt: '5 days',
-          tags: ['performance', 'api', 'caching'],
-          actions: {
-            primary: 'Continue Implementation',
-            secondary: 'Monitor Progress'
-          }
-        },
-        {
-          id: '5',
-          title: 'Automate Customer Support Triage',
-          description: 'AI-powered ticket classification will reduce response time by 40% and improve customer satisfaction',
-          category: 'efficiency',
-          priority: 'medium',
-          impact: {
-            metric: 'Support Response Time',
-            currentValue: 4.2,
-            expectedValue: 2.5,
-            improvement: 40,
-            unit: 'hours',
-            timeframe: 'Next 21 days'
-          },
-          confidence: 83,
-          effort: 'high',
-          roi: 220,
-          status: 'pending',
-          createdAt: '2 days ago',
-          expiresAt: '1 week',
-          tags: ['support', 'automation', 'ai'],
-          actions: {
-            primary: 'Start Implementation',
-            secondary: 'Pilot Program'
-          }
-        }
-      ];
-
-      setRecommendations(mockRecommendations);
+    const loadRecommendations = async () => {
+      try {
+        const recommendationsData = await realApi.getAIRecommendations();
+        setRecommendations(recommendationsData || []);
+      } catch (error) {
+        console.error("Failed to load AI recommendations:", error);
+        toast.error(t('aiRecommendations.failedToLoadRecommendations'));
+        setRecommendations([]);
+      }
     };
 
     loadRecommendations();
-  }, []);
+  }, [t]);
 
   const getCategoryIcon = (category: string) => {
     switch (category) {
-      case 'revenue': return <DollarSign className="h-4 w-4" />;
-      case 'efficiency': return <Activity className="h-4 w-4" />;
-      case 'cost': return <BarChart3 className="h-4 w-4" />;
-      case 'risk': return <AlertTriangle className="h-4 w-4" />;
-      case 'growth': return <TrendingUp className="h-4 w-4" />;
-      default: return <Target className="h-4 w-4" />;
-    }
-  };
-
-  const getCategoryColor = (category: string) => {
-    switch (category) {
-      case 'revenue': return 'bg-success';
-      case 'efficiency': return 'bg-primary';
-      case 'cost': return 'bg-secondary';
-      case 'risk': return 'bg-destructive';
-      case 'growth': return 'bg-warning';
-      default: return 'bg-muted-foreground';
+      case 'revenue':
+        return <DollarSign className="h-4 w-4" />;
+      case 'efficiency':
+        return <Zap className="h-4 w-4" />;
+      case 'cost':
+        return <TrendingUp className="h-4 w-4" />;
+      case 'risk':
+        return <AlertTriangle className="h-4 w-4" />;
+      case 'growth':
+        return <Target className="h-4 w-4" />;
+      default:
+        return <Brain className="h-4 w-4" />;
     }
   };
 
   const getPriorityColor = (priority: string) => {
     switch (priority) {
-      case 'critical': return 'bg-destructive';
-      case 'high': return 'bg-warning';
-      case 'medium': return 'bg-warning';
-      case 'low': return 'bg-success';
-      default: return 'bg-muted-foreground';
-    }
-  };
-
-  const getStatusColor = (status: string) => {
-    switch (status) {
-      case 'pending': return 'bg-warning/10 text-warning border-warning/20';
-      case 'in_progress': return 'bg-primary/10 text-primary border-primary/20';
-      case 'completed': return 'bg-success/10 text-success border-success/20';
-      case 'dismissed': return 'bg-muted text-muted-foreground border-border';
-      default: return 'bg-muted text-muted-foreground border-border';
+      case 'critical':
+        return 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200';
+      case 'high':
+        return 'bg-orange-100 text-orange-800 dark:bg-orange-900 dark:text-orange-200';
+      case 'medium':
+        return 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200';
+      case 'low':
+        return 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200';
+      default:
+        return 'bg-gray-100 text-gray-800 dark:bg-gray-900 dark:text-gray-200';
     }
   };
 
   const getEffortColor = (effort: string) => {
     switch (effort) {
-      case 'low': return 'bg-success';
-      case 'medium': return 'bg-warning';
-      case 'high': return 'bg-destructive';
-      default: return 'bg-muted-foreground';
+      case 'low':
+        return 'text-green-600 dark:text-green-400';
+      case 'medium':
+        return 'text-yellow-600 dark:text-yellow-400';
+      case 'high':
+        return 'text-red-600 dark:text-red-400';
+      default:
+        return 'text-gray-600 dark:text-gray-400';
     }
   };
 
-  const handleAcceptRecommendation = (id: string) => {
-    setRecommendations(prev => 
-      prev.map(rec => 
-        rec.id === id 
-          ? { ...rec, status: 'in_progress' as const }
-          : rec
-      )
-    );
+  const getStatusIcon = (status: string) => {
+    switch (status) {
+      case 'completed':
+        return <CheckCircle className="h-4 w-4 text-green-600" />;
+      case 'in_progress':
+        return <Activity className="h-4 w-4 text-blue-600" />;
+      case 'dismissed':
+        return <X className="h-4 w-4 text-gray-600" />;
+      default:
+        return <Clock className="h-4 w-4 text-yellow-600" />;
+    }
   };
 
-  const handleDismissRecommendation = (id: string) => {
-    setRecommendations(prev => 
-      prev.map(rec => 
-        rec.id === id 
-          ? { ...rec, status: 'dismissed' as const }
-          : rec
-      )
-    );
-  };
+  const filteredRecommendations = recommendations.filter(rec => 
+    filter === 'all' || rec.category === filter
+  );
 
-  const handleCompleteRecommendation = (id: string) => {
-    setRecommendations(prev => 
-      prev.map(rec => 
-        rec.id === id 
-          ? { ...rec, status: 'completed' as const }
-          : rec
-      )
-    );
-  };
-
-  const handleAnalyze = () => {
+  const handleAnalyze = async () => {
     setIsAnalyzing(true);
-    // Perform real analysis
-    setTimeout(() => {
+    try {
+      // Trigger new analysis
+      await new Promise(resolve => setTimeout(resolve, 2000)); // Simulate analysis
+      const updatedRecommendations = await realApi.getAIRecommendations();
+      setRecommendations(updatedRecommendations || []);
+      toast.success(t('aiRecommendations.analysisComplete'));
+    } catch (error) {
+      console.error("Failed to analyze recommendations:", error);
+      toast.error(t('aiRecommendations.analysisFailed'));
+    } finally {
       setIsAnalyzing(false);
-      // Add new recommendations
-    }, 3000);
+    }
   };
 
-  const filteredRecommendations = filter === 'all' 
-    ? recommendations 
-    : recommendations.filter(rec => rec.category === filter);
-
-  const pendingRecommendations = recommendations.filter(rec => rec.status === 'pending');
-  const totalPotentialImpact = pendingRecommendations.reduce((sum, rec) => sum + rec.impact.expectedValue, 0);
+  const handleAction = async (recommendationId: string, action: string) => {
+    try {
+      // Implement action logic here
+      toast.success(t('aiRecommendations.actionStarted', { action }));
+    } catch (error) {
+      console.error("Failed to execute action:", error);
+      toast.error(t('aiRecommendations.actionFailed'));
+    }
+  };
 
   return (
-    <Card className={className}>
-      <CardHeader>
-        <div className="flex items-center justify-between">
-          <div>
-            <CardTitle className="flex items-center">
-              <Brain className="h-5 w-5 mr-2" />
-              {t('widgets.aiRecommendationFeed.title')}
-            </CardTitle>
-            <CardDescription>
-              {t('widgets.aiRecommendationFeed.description')}
-            </CardDescription>
-          </div>
-          <div className="flex items-center space-x-2">
-            <div className="text-right">
-              <div className="text-2xl font-medium text-success">
-                ${(totalPotentialImpact / 1000).toFixed(1)}k
-              </div>
-              <div className="text-sm text-muted-foreground">
-                {t('widgets.aiRecommendationFeed.potentialImpact')}
-              </div>
+    <div className="space-y-6">
+      {/* Header */}
+      <div className="flex items-center justify-between">
+        <div>
+          <h2 className="text-2xl font-bold tracking-tight flex items-center gap-2">
+            <Brain className="h-6 w-6 text-primary" />
+            AI Recommendations
+          </h2>
+          <p className="text-muted-foreground">
+            AI-powered insights to optimize your business performance
+          </p>
+        </div>
+        <Button 
+          onClick={handleAnalyze} 
+          disabled={isAnalyzing}
+          className="flex items-center gap-2"
+        >
+          <Lightbulb className="h-4 w-4" />
+          {isAnalyzing ? t('aiRecommendations.analyzing') : t('aiRecommendations.analyze')}
+        </Button>
+      </div>
+
+      {/* Stats */}
+      <div className="grid gap-4 md:grid-cols-4">
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium">Total Recommendations</CardTitle>
+            <Brain className="h-4 w-4 text-muted-foreground" />
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold">{recommendations.length}</div>
+            <p className="text-xs text-muted-foreground">
+              Active recommendations
+            </p>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium">High Priority</CardTitle>
+            <AlertTriangle className="h-4 w-4 text-muted-foreground" />
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold">
+              {recommendations.filter(r => r.priority === 'high' || r.priority === 'critical').length}
             </div>
-            <Button 
-              onClick={handleAnalyze}
-              disabled={isAnalyzing}
+            <p className="text-xs text-muted-foreground">
+              Require attention
+            </p>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium">Avg. ROI</CardTitle>
+            <TrendingUp className="h-4 w-4 text-muted-foreground" />
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold">
+              {recommendations.length > 0 ? Math.round(recommendations.reduce((sum, r) => sum + r.roi, 0) / recommendations.length) : 0}%
+            </div>
+            <p className="text-xs text-muted-foreground">
+              Expected return
+            </p>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium">Avg. Confidence</CardTitle>
+            <BarChart3 className="h-4 w-4 text-muted-foreground" />
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold">
+              {recommendations.length > 0 ? Math.round(recommendations.reduce((sum, r) => sum + r.confidence, 0) / recommendations.length) : 0}%
+            </div>
+            <p className="text-xs text-muted-foreground">
+              AI confidence level
+            </p>
+          </CardContent>
+        </Card>
+      </div>
+
+      {/* Filters */}
+      <Card>
+        <CardHeader>
+          <CardTitle>Filter by Category</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <div className="flex flex-wrap gap-2">
+            <Button
+              variant={filter === 'all' ? 'default' : 'outline'}
               size="sm"
+              onClick={() => setFilter('all')}
             >
-              {isAnalyzing ? (
-                <>
-                  <Activity className="h-4 w-4 mr-1 animate-spin" />
-                  {t('widgets.aiRecommendationFeed.analyzing')}
-                </>
-              ) : (
-                <>
-                  <Lightbulb className="h-4 w-4 mr-1" />
-                  {t('widgets.aiRecommendationFeed.analyze')}
-                </>
-              )}
+              All Categories
+            </Button>
+            <Button
+              variant={filter === 'revenue' ? 'default' : 'outline'}
+              size="sm"
+              onClick={() => setFilter('revenue')}
+            >
+              <DollarSign className="h-4 w-4 mr-2" />
+              Revenue
+            </Button>
+            <Button
+              variant={filter === 'efficiency' ? 'default' : 'outline'}
+              size="sm"
+              onClick={() => setFilter('efficiency')}
+            >
+              <Zap className="h-4 w-4 mr-2" />
+              Efficiency
+            </Button>
+            <Button
+              variant={filter === 'cost' ? 'default' : 'outline'}
+              size="sm"
+              onClick={() => setFilter('cost')}
+            >
+              <TrendingUp className="h-4 w-4 mr-2" />
+              Cost
+            </Button>
+            <Button
+              variant={filter === 'risk' ? 'default' : 'outline'}
+              size="sm"
+              onClick={() => setFilter('risk')}
+            >
+              <AlertTriangle className="h-4 w-4 mr-2" />
+              Risk
+            </Button>
+            <Button
+              variant={filter === 'growth' ? 'default' : 'outline'}
+              size="sm"
+              onClick={() => setFilter('growth')}
+            >
+              <Target className="h-4 w-4 mr-2" />
+              Growth
             </Button>
           </div>
-        </div>
-      </CardHeader>
+        </CardContent>
+      </Card>
 
-      <CardContent className="space-y-4">
-        {/* Filter Tabs */}
-        <div className="flex items-center space-x-2">
-          <span className="text-sm font-medium">{t('widgets.aiRecommendationFeed.filter')}</span>
-          {[
-            { key: 'all', label: t('widgets.aiRecommendationFeed.all'), icon: <Target className="h-4 w-4" /> },
-            { key: 'revenue', label: t('widgets.aiRecommendationFeed.revenue'), icon: <DollarSign className="h-4 w-4" /> },
-            { key: 'efficiency', label: t('widgets.aiRecommendationFeed.efficiency'), icon: <Activity className="h-4 w-4" /> },
-            { key: 'cost', label: t('widgets.aiRecommendationFeed.cost'), icon: <BarChart3 className="h-4 w-4" /> },
-            { key: 'risk', label: t('widgets.aiRecommendationFeed.risk'), icon: <AlertTriangle className="h-4 w-4" /> },
-            { key: 'growth', label: t('widgets.aiRecommendationFeed.growth'), icon: <TrendingUp className="h-4 w-4" /> }
-          ].map((filterOption) => (
-            <Button
-              key={filterOption.key}
-              variant={filter === filterOption.key ? 'default' : 'outline'}
-              size="sm"
-              onClick={() => setFilter(filterOption.key as any)}
-            >
-              {filterOption.icon}
-              <span className="ml-1">{filterOption.label}</span>
-            </Button>
-          ))}
-        </div>
-
-        {/* Recommendations List */}
-        <div className="space-y-4">
-          {filteredRecommendations.map((recommendation) => (
-            <div
-              key={recommendation.id}
-              className={`p-4 border border-border rounded-[0.625rem] ${
-                recommendation.priority === 'critical' ? 'bg-destructive/10' :
-                recommendation.priority === 'high' ? 'bg-warning/10' :
-                'bg-background'
-              }`}
-            >
-              <div className="flex items-start justify-between mb-3">
-                <div className="flex items-center space-x-2">
-                  <div className={`p-1 rounded-[0.625rem] ${getCategoryColor(recommendation.category)} text-background`}>
-                    {getCategoryIcon(recommendation.category)}
-                  </div>
-                  <h3 className="font-medium">{recommendation.title}</h3>
-                </div>
-                <div className="flex items-center space-x-2">
-                  <Badge className={getStatusColor(recommendation.status)}>
-                    {recommendation.status.replace('_', ' ')}
-                  </Badge>
-                  <div className={`w-2 h-2 rounded-full ${getPriorityColor(recommendation.priority)}`} />
-                </div>
-              </div>
-
-              <p className="text-sm text-muted-foreground mb-3">{recommendation.description}</p>
-
-              {/* Impact Metrics */}
-              <div className="grid grid-cols-2 gap-4 mb-3">
-                <div>
-                  <div className="text-xs text-muted-foreground">Expected Impact</div>
-                  <div className="font-medium text-success">
-                    {recommendation.impact.improvement > 0 ? '+' : ''}{recommendation.impact.improvement}%
-                  </div>
-                  <div className="text-xs text-muted-foreground">
-                    {recommendation.impact.expectedValue}{recommendation.impact.unit}
+      {/* Recommendations List */}
+      <div className="space-y-4">
+        {filteredRecommendations.length === 0 ? (
+          <Card>
+            <CardContent className="text-center py-8">
+              <Brain className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
+              <h3 className="text-lg font-semibold mb-2">No recommendations found</h3>
+              <p className="text-muted-foreground">
+                Try adjusting your filter or run a new analysis
+              </p>
+            </CardContent>
+          </Card>
+        ) : (
+          filteredRecommendations.map((recommendation) => (
+            <Card key={recommendation.id} className="hover:shadow-md transition-shadow">
+              <CardHeader>
+                <div className="flex items-start justify-between">
+                  <div className="flex-1">
+                    <div className="flex items-center space-x-3 mb-2">
+                      <div className="flex items-center space-x-2">
+                        {getCategoryIcon(recommendation.category)}
+                        <span className="text-sm font-medium capitalize">
+                          {recommendation.category}
+                        </span>
+                      </div>
+                      <Badge className={getPriorityColor(recommendation.priority)}>
+                        {recommendation.priority}
+                      </Badge>
+                      <div className="flex items-center space-x-1">
+                        {getStatusIcon(recommendation.status)}
+                        <span className="text-sm text-muted-foreground capitalize">
+                          {recommendation.status.replace('_', ' ')}
+                        </span>
+                      </div>
+                    </div>
+                    <CardTitle className="text-lg">{recommendation.title}</CardTitle>
+                    <CardDescription className="mt-2">
+                      {recommendation.description}
+                    </CardDescription>
                   </div>
                 </div>
-                <div>
-                  <div className="text-xs text-muted-foreground">{t('widgets.aiRecommendationFeed.roi')}</div>
-                  <div className="font-medium text-primary">
-                    {recommendation.roi}%
+              </CardHeader>
+              
+              <CardContent className="space-y-4">
+                {/* Impact Metrics */}
+                <div className="grid gap-4 md:grid-cols-3">
+                  <div className="space-y-2">
+                    <div className="text-sm font-medium text-muted-foreground">
+                      {recommendation.impact.metric}
+                    </div>
+                    <div className="text-2xl font-bold">
+                      {recommendation.impact.currentValue}
+                      {recommendation.impact.unit}
+                    </div>
+                    <div className="text-sm text-muted-foreground">
+                      → {recommendation.impact.expectedValue}{recommendation.impact.unit}
+                    </div>
                   </div>
-                  <div className="text-xs text-muted-foreground">
-                    {recommendation.impact.timeframe}
+                  
+                  <div className="space-y-2">
+                    <div className="text-sm font-medium text-muted-foreground">
+                      Improvement
+                    </div>
+                    <div className="text-2xl font-bold text-green-600">
+                      +{recommendation.impact.improvement}%
+                    </div>
+                    <div className="text-sm text-muted-foreground">
+                      {recommendation.impact.timeframe}
+                    </div>
+                  </div>
+                  
+                  <div className="space-y-2">
+                    <div className="text-sm font-medium text-muted-foreground">
+                      ROI & Confidence
+                    </div>
+                    <div className="text-2xl font-bold">
+                      {recommendation.roi}%
+                    </div>
+                    <div className="text-sm text-muted-foreground">
+                      {recommendation.confidence}% confidence
+                    </div>
                   </div>
                 </div>
-              </div>
 
-              {/* Confidence and Effort */}
-              <div className="flex items-center justify-between mb-3">
-                <div className="flex items-center space-x-4">
-                  <div className="flex items-center space-x-1">
-                    <span className="text-xs text-muted-foreground">{t('widgets.aiRecommendationFeed.confidence')}</span>
-                    <span className="text-sm font-medium">{recommendation.confidence}%</span>
+                {/* Tags */}
+                {recommendation.tags && recommendation.tags.length > 0 && (
+                  <div className="flex flex-wrap gap-1">
+                    {recommendation.tags.map((tag) => (
+                      <Badge key={tag} variant="secondary" className="text-xs">
+                        {tag}
+                      </Badge>
+                    ))}
                   </div>
-                  <div className="flex items-center space-x-1">
-                    <span className="text-xs text-muted-foreground">{t('widgets.aiRecommendationFeed.effort')}</span>
-                    <div className={`w-2 h-2 rounded-full ${getEffortColor(recommendation.effort)}`} />
-                    <span className="text-sm capitalize">{recommendation.effort}</span>
+                )}
+
+                {/* Actions */}
+                <div className="flex items-center justify-between pt-4 border-t">
+                  <div className="flex items-center space-x-4 text-sm text-muted-foreground">
+                    <div className="flex items-center space-x-1">
+                      <Clock className="h-4 w-4" />
+                      <span>Created {recommendation.createdAt}</span>
+                    </div>
+                    <div className="flex items-center space-x-1">
+                      <AlertTriangle className="h-4 w-4" />
+                      <span>Expires {recommendation.expiresAt}</span>
+                    </div>
+                    <div className={`flex items-center space-x-1 ${getEffortColor(recommendation.effort)}`}>
+                      <span>Effort: {recommendation.effort}</span>
+                    </div>
                   </div>
-                </div>
-                <div className="text-xs text-muted-foreground">
-                  {t('widgets.aiRecommendationFeed.expires')} {recommendation.expiresAt}
-                </div>
-              </div>
-
-              {/* Tags */}
-              <div className="flex flex-wrap gap-1 mb-3">
-                {recommendation.tags.map((tag, index) => (
-                  <Badge key={index} variant="outline" className="text-xs">
-                    {tag}
-                  </Badge>
-                ))}
-              </div>
-
-              {/* Actions */}
-              <div className="flex items-center justify-between">
-                <div className="text-xs text-muted-foreground">
-                  {t('widgets.aiRecommendationFeed.created')} {recommendation.createdAt}
-                </div>
-                <div className="flex items-center space-x-2">
-                  {recommendation.status === 'pending' && (
-                    <>
-                      <Button
-                        size="sm"
-                        onClick={() => handleAcceptRecommendation(recommendation.id)}
-                      >
-                        <CheckCircle className="h-3 w-3 mr-1" />
-                        {recommendation.actions.primary}
-                      </Button>
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        onClick={() => handleDismissRecommendation(recommendation.id)}
-                      >
-                        <X className="h-3 w-3 mr-1" />
-                        {t('widgets.aiRecommendationFeed.dismiss')}
-                      </Button>
-                    </>
-                  )}
-                  {recommendation.status === 'in_progress' && (
+                  
+                  <div className="flex items-center space-x-2">
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() => handleAction(recommendation.id, recommendation.actions.secondary || 'View Details')}
+                    >
+                      {recommendation.actions.secondary || 'View Details'}
+                    </Button>
                     <Button
                       size="sm"
-                      onClick={() => handleCompleteRecommendation(recommendation.id)}
+                      onClick={() => handleAction(recommendation.id, recommendation.actions.primary)}
                     >
-                      <CheckCircle className="h-3 w-3 mr-1" />
-                      {t('widgets.aiRecommendationFeed.markComplete')}
+                      {recommendation.actions.primary}
                     </Button>
-                  )}
-                  {recommendation.actions.secondary && (
-                    <Button variant="ghost" size="sm">
-                      {recommendation.actions.secondary}
-                    </Button>
-                  )}
+                  </div>
                 </div>
-              </div>
-            </div>
-          ))}
-        </div>
-
-        {/* Summary Stats */}
-        <div className="grid grid-cols-4 gap-4 pt-4 border-t">
-          <div className="text-center">
-            <div className="text-2xl font-medium text-warning">
-              {recommendations.filter(r => r.status === 'pending').length}
-            </div>
-            <div className="text-xs text-muted-foreground">Pending</div>
-          </div>
-          <div className="text-center">
-            <div className="text-2xl font-medium text-primary">
-              {recommendations.filter(r => r.status === 'in_progress').length}
-            </div>
-            <div className="text-xs text-muted-foreground">In Progress</div>
-          </div>
-          <div className="text-center">
-            <div className="text-2xl font-medium text-success">
-              {recommendations.filter(r => r.status === 'completed').length}
-            </div>
-            <div className="text-xs text-muted-foreground">Completed</div>
-          </div>
-          <div className="text-center">
-            <div className="text-2xl font-medium text-muted-foreground">
-              {recommendations.filter(r => r.status === 'dismissed').length}
-            </div>
-            <div className="text-xs text-muted-foreground">Dismissed</div>
-          </div>
-        </div>
-      </CardContent>
-    </Card>
+              </CardContent>
+            </Card>
+          ))
+        )}
+      </div>
+    </div>
   );
 }

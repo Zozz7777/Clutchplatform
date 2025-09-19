@@ -217,7 +217,7 @@ export interface AuditLog {
   action: string;
   resource: string;
   resourceId?: string;
-  details: Record<string, any>;
+  details: Record<string, unknown>;
   ipAddress: string;
   userAgent: string;
   timestamp: string;
@@ -233,7 +233,7 @@ export interface FileUpload {
   url: string;
   uploadedBy: string;
   uploadedAt: string;
-  metadata?: Record<string, any>;
+  metadata?: Record<string, unknown>;
 }
 
 // Integration types
@@ -242,7 +242,7 @@ export interface Integration {
   name: string;
   type: string;
   status: "active" | "inactive" | "error";
-  configuration: Record<string, any>;
+  configuration: Record<string, unknown>;
   lastSync?: string;
   createdAt: string;
   updatedAt: string;
@@ -254,7 +254,7 @@ export interface Report {
   name: string;
   type: string;
   description: string;
-  parameters: Record<string, any>;
+  parameters: Record<string, unknown>;
   generatedBy: string;
   generatedAt: string;
   status: "generating" | "completed" | "failed";

@@ -97,174 +97,46 @@ export default function MobileAppsPage() {
   const { t } = useTranslations();
   const [activeTab, setActiveTab] = useState("overview");
   const [searchTerm, setSearchTerm] = useState("");
+  const [versions, setVersions] = useState<AppVersion[]>([]);
+  const [crashes, setCrashes] = useState<CrashReport[]>([]);
+  const [analytics, setAnalytics] = useState<AppAnalytics[]>([]);
+  const [stores, setStores] = useState<AppStore[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
 
-  const mockVersions: AppVersion[] = [
-    {
-      _id: "1",
-      version: "2.1.0",
-      buildNumber: "210",
-      platform: "ios",
-      status: "live",
-      releaseDate: "2024-01-10T00:00:00Z",
-      downloadCount: 15420,
-      crashRate: 0.8,
-      avgRating: 4.6,
-      features: [t('mobileApps.newDashboardDesign'), t('mobileApps.improvedGpsTracking'), t('mobileApps.pushNotifications')],
-      bugFixes: [t('mobileApps.fixedLoginIssue'), t('mobileApps.resolvedMapLoadingBug')],
-      size: "45.2 MB",
-      minOSVersion: "iOS 14.0",
-    },
-    {
-      _id: "2",
-      version: "2.1.0",
-      buildNumber: "210",
-      platform: "android",
-      status: "live",
-      releaseDate: "2024-01-10T00:00:00Z",
-      downloadCount: 23890,
-      crashRate: 1.2,
-      avgRating: 4.4,
-      features: [t('mobileApps.newDashboardDesign'), t('mobileApps.improvedGpsTracking'), t('mobileApps.pushNotifications')],
-      bugFixes: [t('mobileApps.fixedLoginIssue'), t('mobileApps.resolvedMapLoadingBug')],
-      size: "52.8 MB",
-      minOSVersion: "Android 8.0",
-    },
-    {
-      _id: "3",
-      version: "2.2.0",
-      buildNumber: "220",
-      platform: "ios",
-      status: "testing",
-      downloadCount: 0,
-      crashRate: 0,
-      avgRating: 0,
-      features: [t('mobileApps.darkMode'), t('mobileApps.offlineMode'), t('mobileApps.enhancedAnalytics')],
-      bugFixes: [t('mobileApps.performanceImprovements'), t('mobileApps.memoryOptimization')],
-      size: "47.1 MB",
-      minOSVersion: "iOS 14.0",
-    },
-  ];
+  useEffect(() => {
+    const loadMobileAppsData = async () => {
+      try {
+        setIsLoading(true);
+        
+        // Load real data from API
+        const [versionsData, crashesData, analyticsData, storesData] = await Promise.all([
+          productionApi.getMobileAppVersions(),
+          productionApi.getMobileAppCrashes(),
+          productionApi.getMobileAppAnalytics(),
+          productionApi.getMobileAppStores()
+        ]);
 
-  const mockCrashes: CrashReport[] = [
-    {
-      _id: "1",
-      appVersion: "2.1.0",
-      platform: "ios",
-      device: "iPhone 14 Pro",
-      osVersion: "iOS 17.2",
-      crashType: "EXC_BAD_ACCESS",
-      stackTrace: "Thread 0 Crashed: 0 libobjc.A.dylib 0x00000001a1234567 objc_msgSend",
-      userImpact: "high",
-      frequency: 45,
-      firstSeen: "2024-01-12T10:30:00Z",
-      lastSeen: "2024-01-15T16:45:00Z",
-      status: "investigating",
-      assignedTo: "iOS Team",
-    },
-    {
-      _id: "2",
-      appVersion: "2.1.0",
-      platform: "android",
-      device: "Samsung Galaxy S23",
-      osVersion: "Android 14",
-      crashType: t('mobileApps.nullPointerException'),
-      stackTrace: "java.lang.NullPointerException at com.clutch.app.MainActivity.onCreate",
-      userImpact: "medium",
-      frequency: 23,
-      firstSeen: "2024-01-13T14:20:00Z",
-      lastSeen: "2024-01-15T12:30:00Z",
-      status: "fixing",
-      assignedTo: t('mobileApps.androidTeam'),
-    },
-    {
-      _id: "3",
-      appVersion: "2.0.5",
-      platform: "ios",
-      device: "iPhone 12",
-      osVersion: "iOS 16.7",
-      crashType: t('mobileApps.sigabrt'),
-      stackTrace: "libc++abi: terminating with uncaught exception",
-      userImpact: "low",
-      frequency: 8,
-      firstSeen: "2024-01-08T09:15:00Z",
-      lastSeen: "2024-01-14T11:20:00Z",
-      status: "resolved",
-    },
-  ];
+        setVersions(versionsData || []);
+        setCrashes(crashesData || []);
+        setAnalytics(analyticsData || []);
+        setStores(storesData || []);
+        
+      } catch (error) {
+        console.error("Failed to load mobile apps data:", error);
+        toast.error(t('mobileApps.failedToLoadMobileAppsData'));
+        // Set empty arrays on error - no mock data fallback
+        setVersions([]);
+        setCrashes([]);
+        setAnalytics([]);
+        setStores([]);
+      } finally {
+        setIsLoading(false);
+      }
+    };
 
-  const mockAnalytics: AppAnalytics[] = [
-    {
-      _id: "1",
-      date: "2024-01-15",
-      platform: "ios",
-      activeUsers: 1250,
-      newUsers: 89,
-      sessions: 3420,
-      avgSessionDuration: 8.5,
-      retentionRate: 78.5,
-      crashRate: 0.8,
-      appOpens: 4560,
-      featureUsage: {
-        [t('mobileApps.gpsTracking')]: 89.2,
-        [t('mobileApps.dashboard')]: 95.1,
-        [t('mobileApps.notifications')]: 67.8,
-        [t('mobileApps.settings')]: 23.4,
-      },
-    },
-    {
-      _id: "2",
-      date: "2024-01-15",
-      platform: "android",
-      activeUsers: 1890,
-      newUsers: 134,
-      sessions: 5120,
-      avgSessionDuration: 7.8,
-      retentionRate: 72.3,
-      crashRate: 1.2,
-      appOpens: 6780,
-      featureUsage: {
-        [t('mobileApps.gpsTracking')]: 85.7,
-        "Dashboard": 92.3,
-        "Notifications": 71.2,
-        "Settings": 28.9,
-      },
-    },
-  ];
+    loadMobileAppsData();
+  }, [t]);
 
-  const mockStores: AppStore[] = [
-    {
-      _id: "1",
-      name: "Clutch Fleet Manager",
-      platform: "ios",
-      status: "live",
-      version: "2.1.0",
-      rating: 4.6,
-      reviewCount: 1247,
-      downloadCount: 15420,
-      lastUpdated: "2024-01-10T00:00:00Z",
-      size: "45.2 MB",
-      category: "Business",
-      keywords: ["fleet", "management", "gps", "tracking"],
-      description: "Comprehensive fleet management solution for businesses",
-      screenshots: ["screenshot1.png", "screenshot2.png", "screenshot3.png"],
-    },
-    {
-      _id: "2",
-      name: "Clutch Fleet Manager",
-      platform: "android",
-      status: "live",
-      version: "2.1.0",
-      rating: 4.4,
-      reviewCount: 2156,
-      downloadCount: 23890,
-      lastUpdated: "2024-01-10T00:00:00Z",
-      size: "52.8 MB",
-      category: "Business",
-      keywords: ["fleet", "management", "gps", "tracking"],
-      description: "Comprehensive fleet management solution for businesses",
-      screenshots: ["screenshot1.png", "screenshot2.png", "screenshot3.png"],
-    },
-  ];
 
   const getStatusColor = (status: string) => {
     switch (status) {
@@ -352,7 +224,7 @@ export default function MobileAppsPage() {
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">
-              {mockVersions.reduce((sum, v) => sum + v.downloadCount, 0).toLocaleString()}
+              {versions.reduce((sum, v) => sum + v.downloadCount, 0).toLocaleString()}
             </div>
             <p className="text-xs text-muted-foreground">
               <span className="text-primary">+15%</span> from last month
@@ -366,7 +238,7 @@ export default function MobileAppsPage() {
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">
-              {mockAnalytics.reduce((sum, a) => sum + a.activeUsers, 0).toLocaleString()}
+              {analytics.reduce((sum, a) => sum + a.activeUsers, 0).toLocaleString()}
             </div>
             <p className="text-xs text-muted-foreground">
               <span className="text-primary">+8%</span> from last week
@@ -380,7 +252,7 @@ export default function MobileAppsPage() {
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">
-              {(mockVersions.reduce((sum, v) => sum + v.crashRate, 0) / mockVersions.length).toFixed(1)}%
+              {versions.length > 0 ? (versions.reduce((sum, v) => sum + v.crashRate, 0) / versions.length).toFixed(1) : '0.0'}%
             </div>
             <p className="text-xs text-muted-foreground">
               <span className="text-destructive">+0.2%</span> from last week
@@ -394,7 +266,7 @@ export default function MobileAppsPage() {
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">
-              {(mockVersions.reduce((sum, v) => sum + v.avgRating, 0) / mockVersions.length).toFixed(1)}
+              {versions.length > 0 ? (versions.reduce((sum, v) => sum + v.avgRating, 0) / versions.length).toFixed(1) : '0.0'}
             </div>
             <p className="text-xs text-muted-foreground">
               <span className="text-primary">+0.1</span> from last month
@@ -455,7 +327,7 @@ export default function MobileAppsPage() {
             </CardHeader>
             <CardContent>
               <div className="space-y-4">
-                {mockAnalytics.map((analytics) => (
+                {analytics.map((analytics) => (
                   <div key={analytics._id} className="flex items-center justify-between">
                     <div className="flex items-center space-x-3">
                       {analytics.platform === "ios" ? (
@@ -482,7 +354,7 @@ export default function MobileAppsPage() {
             </CardHeader>
             <CardContent>
               <div className="space-y-3">
-                {mockCrashes.slice(0, 3).map((crash) => (
+                {crashes.slice(0, 3).map((crash) => (
                   <div key={crash._id} className="flex items-center justify-between p-3 border rounded-[0.625rem]">
                     <div>
                       <div className="font-medium">{crash.crashType}</div>
@@ -503,7 +375,7 @@ export default function MobileAppsPage() {
 
       {activeTab === "versions" && (
         <div className="space-y-4">
-          {mockVersions.map((version) => (
+          {versions.map((version) => (
             <Card key={version._id}>
               <CardContent className="p-6">
                 <div className="flex items-start justify-between">
@@ -587,7 +459,7 @@ export default function MobileAppsPage() {
 
       {activeTab === "crashes" && (
         <div className="space-y-4">
-          {mockCrashes.map((crash) => (
+          {crashes.map((crash) => (
             <Card key={crash._id}>
               <CardContent className="p-6">
                 <div className="flex items-start justify-between">
@@ -670,7 +542,7 @@ export default function MobileAppsPage() {
 
       {activeTab === "analytics" && (
         <div className="space-y-6">
-          {mockAnalytics.map((analytics) => (
+          {analytics.map((analytics) => (
             <Card key={analytics._id}>
               <CardHeader>
                 <CardTitle className="flex items-center space-x-2">
@@ -749,7 +621,7 @@ export default function MobileAppsPage() {
 
       {activeTab === "stores" && (
         <div className="space-y-4">
-          {mockStores.map((store) => (
+          {stores.map((store) => (
             <Card key={store._id}>
               <CardContent className="p-6">
                 <div className="flex items-start justify-between">

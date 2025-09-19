@@ -7,7 +7,7 @@ import { apiService } from "./api";
 
 export interface WebSocketMessage {
   type: string;
-  data: any;
+  data: Record<string, unknown>;
   timestamp: string;
 }
 
@@ -16,11 +16,11 @@ export interface WebSocketEventHandlers {
   onDisconnect?: () => void;
   onError?: (error: Event) => void;
   onMessage?: (message: WebSocketMessage) => void;
-  onSystemHealth?: (data: any) => void;
-  onNotification?: (data: any) => void;
-  onUserUpdate?: (data: any) => void;
-  onFleetUpdate?: (data: any) => void;
-  onAnalyticsUpdate?: (data: any) => void;
+  onSystemHealth?: (data: Record<string, unknown>) => void;
+  onNotification?: (data: Record<string, unknown>) => void;
+  onUserUpdate?: (data: Record<string, unknown>) => void;
+  onFleetUpdate?: (data: Record<string, unknown>) => void;
+  onAnalyticsUpdate?: (data: Record<string, unknown>) => void;
 }
 
 export class SafeWebSocketService {
@@ -266,11 +266,11 @@ export class SafeWebSocketService {
         const notificationsData = await notificationsResponse.json();
         if (notificationsData.success && notificationsData.data?.length > 0) {
           // Check for new notifications since last poll
-          const newNotifications = notificationsData.data.filter((notification: any) => 
-            new Date(notification.timestamp).getTime() > this.lastPollTime
+          const newNotifications = notificationsData.data.filter((notification: Record<string, unknown>) => 
+            new Date(notification.timestamp as string).getTime() > this.lastPollTime
           );
 
-          newNotifications.forEach((notification: any) => {
+          newNotifications.forEach((notification: Record<string, unknown>) => {
             this.eventHandlers.onNotification?.(notification);
             this.eventHandlers.onMessage?.({
               type: 'notification',
@@ -307,7 +307,7 @@ export class SafeWebSocketService {
     }
   }
 
-  send(message: any): boolean {
+  send(message: Record<string, unknown>): boolean {
     if (this.ws?.readyState === WebSocket.OPEN) {
       this.ws.send(JSON.stringify(message));
       return true;

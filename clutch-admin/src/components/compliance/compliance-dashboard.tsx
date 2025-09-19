@@ -72,70 +72,9 @@ export default function ComplianceDashboard() {
       try {
         // Load compliance data from API
         const complianceData = await productionApi.getComplianceData();
-        const mockData: ComplianceItem[] = complianceData || [
-          {
-            id: 'soc2-001',
-            name: 'SOC 2 Type II Compliance',
-            description: 'Service Organization Control 2 Type II certification',
-            standard: 'SOC2',
-            status: 'compliant',
-            severity: 'high',
-            category: 'security',
-            requirements: { total: 64, completed: 64, pending: 0, failed: 0 },
-            lastAudit: new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toISOString(),
-            nextAudit: new Date(Date.now() + 335 * 24 * 60 * 60 * 1000).toISOString(),
-            score: 100,
-            issues: [],
-            controls: [
-              { id: 'cc1', name: 'Control Environment', description: 'Control environment controls', status: 'compliant', evidence: ['Policy Document', 'Training Records'] },
-              { id: 'cc2', name: 'Communication and Information', description: 'Communication controls', status: 'compliant', evidence: ['Communication Plan'] }
-            ]
-          },
-          {
-            id: 'gdpr-001',
-            name: 'GDPR Compliance',
-            description: 'General Data Protection Regulation compliance',
-            standard: 'GDPR',
-            status: 'in_progress',
-            severity: 'critical',
-            category: 'privacy',
-            requirements: { total: 45, completed: 38, pending: 7, failed: 0 },
-            lastAudit: new Date(Date.now() - 15 * 24 * 60 * 60 * 1000).toISOString(),
-            nextAudit: new Date(Date.now() + 15 * 24 * 60 * 60 * 1000).toISOString(),
-            score: 84,
-            issues: [
-              { id: 'issue-1', description: 'Data retention policy needs update', severity: 'medium', status: 'open', dueDate: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString() }
-            ],
-            controls: [
-              { id: 'art6', name: 'Lawfulness of Processing', description: 'Legal basis for processing', status: 'compliant', evidence: ['Legal Basis Document'] },
-              { id: 'art32', name: 'Security of Processing', description: 'Technical and organizational measures', status: 'in_progress', evidence: ['Security Assessment'] }
-            ]
-          },
-          {
-            id: 'iso27001-001',
-            name: 'ISO 27001 Certification',
-            description: 'Information Security Management System',
-            standard: 'ISO27001',
-            status: 'pending',
-            severity: 'high',
-            category: 'security',
-            requirements: { total: 114, completed: 89, pending: 25, failed: 0 },
-            lastAudit: new Date(Date.now() - 60 * 24 * 60 * 60 * 1000).toISOString(),
-            nextAudit: new Date(Date.now() + 60 * 24 * 60 * 60 * 1000).toISOString(),
-            score: 78,
-            issues: [
-              { id: 'issue-2', description: 'Risk assessment incomplete', severity: 'high', status: 'open', dueDate: new Date(Date.now() + 14 * 24 * 60 * 60 * 1000).toISOString() }
-            ],
-            controls: [
-              { id: 'a5', name: 'Information Security Policies', description: 'Security policy framework', status: 'compliant', evidence: ['Security Policy'] },
-              { id: 'a6', name: 'Organization of Information Security', description: 'Security organization', status: 'in_progress', evidence: ['Org Chart'] }
-            ]
-          }
-        ];
-
-        setComplianceItems(mockData);
-        if (mockData.length > 0) {
-          setSelectedItem(mockData[0]);
+        setComplianceItems(complianceData || []);
+        if (complianceData && complianceData.length > 0) {
+          setSelectedItem(complianceData[0]);
         }
       } catch (error) {
         console.error('Failed to load compliance data:', error);

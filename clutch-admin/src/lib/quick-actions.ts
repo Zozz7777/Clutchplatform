@@ -13,10 +13,10 @@ export interface QuickAction {
 }
 
 export class QuickActionsService {
-  private router: any;
+  private router: { push: (path: string) => void };
   private hasPermission: (permission: string) => boolean;
 
-  constructor(router: any, hasPermission: (permission: string) => boolean) {
+  constructor(router: { push: (path: string) => void }, hasPermission: (permission: string) => boolean) {
     this.router = router;
     this.hasPermission = hasPermission;
   }

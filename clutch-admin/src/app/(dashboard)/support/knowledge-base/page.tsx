@@ -406,10 +406,10 @@ export default function KnowledgeBasePage() {
                 value={articleData.category}
                 onChange={(e) => setArticleData(prev => ({ ...prev, category: e.target.value }))}
               >
-                <option value="Getting Started">Getting Started</option>
-                <option value="Account Management">Account Management</option>
-                <option value="Billing">Billing</option>
-                <option value="Technical Support">Technical Support</option>
+                <option value="Getting Started">{t('support.gettingStarted')}</option>
+                <option value="Account Management">{t('support.accountManagement')}</option>
+                <option value="Billing">{t('support.billing')}</option>
+                <option value="Technical Support">{t('support.technicalSupport')}</option>
                 <option value="API Documentation">API Documentation</option>
               </select>
             </div>
@@ -482,10 +482,10 @@ export default function KnowledgeBasePage() {
                 value={articleData.category}
                 onChange={(e) => setArticleData(prev => ({ ...prev, category: e.target.value }))}
               >
-                <option value="Getting Started">Getting Started</option>
-                <option value="Account Management">Account Management</option>
-                <option value="Billing">Billing</option>
-                <option value="Technical Support">Technical Support</option>
+                <option value="Getting Started">{t('support.gettingStarted')}</option>
+                <option value="Account Management">{t('support.accountManagement')}</option>
+                <option value="Billing">{t('support.billing')}</option>
+                <option value="Technical Support">{t('support.technicalSupport')}</option>
                 <option value="API Documentation">API Documentation</option>
               </select>
             </div>

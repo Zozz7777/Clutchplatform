@@ -1,6 +1,6 @@
 import { NAVIGATION_ITEMS } from './constants';
 
-export function getTranslatedNavigationItems(t: (key: any) => string) {
+export function getTranslatedNavigationItems(t: (key: string) => string) {
   return NAVIGATION_ITEMS.map(item => ({
     ...item,
     title: t(`navigation.${titleToTranslationKey(item.title)}`),

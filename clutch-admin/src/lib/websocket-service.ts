@@ -2,7 +2,7 @@ import { toast } from 'sonner';
 
 export interface WebSocketMessage {
   type: string;
-  data: any;
+  data: Record<string, unknown>;
   timestamp: string;
 }
 
@@ -61,7 +61,7 @@ class WebSocketService {
   private maxReconnectAttempts = 5;
   private reconnectInterval = 5000;
   private isConnecting = false;
-  private messageHandlers: Map<string, ((data: any) => void)[]> = new Map();
+  private messageHandlers: Map<string, ((data: Record<string, unknown>) => void)[]> = new Map();
   private connectionStatus: 'connecting' | 'connected' | 'disconnected' | 'error' = 'disconnected';
   private baseUrl: string;
 
@@ -156,7 +156,7 @@ class WebSocketService {
     }
   }
 
-  public subscribe(type: string, handler: (data: any) => void): () => void {
+  public subscribe(type: string, handler: (data: Record<string, unknown>) => void): () => void {
     if (!this.messageHandlers.has(type)) {
       this.messageHandlers.set(type, []);
     }
@@ -175,7 +175,7 @@ class WebSocketService {
     };
   }
 
-  public send(type: string, data: any): void {
+  public send(type: string, data: Record<string, unknown>): void {
     if (this.ws?.readyState === WebSocket.OPEN) {
       const message: WebSocketMessage = {
         type,
@@ -221,15 +221,15 @@ class WebSocketService {
     return this.subscribe('chat_message', handler);
   }
 
-  public subscribeToFleetUpdates(handler: (data: any) => void): () => void {
+  public subscribeToFleetUpdates(handler: (data: Record<string, unknown>) => void): () => void {
     return this.subscribe('fleet_update', handler);
   }
 
-  public subscribeToUserUpdates(handler: (data: any) => void): () => void {
+  public subscribeToUserUpdates(handler: (data: Record<string, unknown>) => void): () => void {
     return this.subscribe('user_update', handler);
   }
 
-  public subscribeToPaymentUpdates(handler: (data: any) => void): () => void {
+  public subscribeToPaymentUpdates(handler: (data: Record<string, unknown>) => void): () => void {
     return this.subscribe('payment_update', handler);
   }
 

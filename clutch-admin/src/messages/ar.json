@@ -736,7 +736,9 @@
     "messageDelivered": "تم التسليم",
     "messageRead": "تم القراءة",
     "messageSent": "تم الإرسال",
-    "failedToLoadChatData": "فشل في تحميل بيانات الدردشة"
+    "failedToLoadChatData": "فشل في تحميل بيانات الدردشة",
+    "failedToSendMessage": "فشل في إرسال الرسالة",
+    "you": "أنت"
   },
   "crm": {
     "title": "إدارة علاقات العملاء",
@@ -959,6 +961,8 @@
     "filterByUser": "تصفية حسب المستخدم",
     "filterByResource": "تصفية حسب المورد",
     "filterByDate": "تصفية حسب التاريخ",
+    "failedToLoadAuditData": "فشل في تحميل بيانات التدقيق",
+    "exportStarted": "تم بدء التصدير بنجاح",
     "exportLogs": "تصدير السجلات",
     "viewDetails": "عرض التفاصيل",
     "action": "الإجراء",
@@ -1342,6 +1346,18 @@
     "loadingMobileAppsData": "جاري تحميل بيانات تطبيقات الهاتف...",
     "failedToLoadMobileAppsData": "فشل في تحميل بيانات تطبيقات الهاتف"
   },
+  "apiDocs": {
+    "failedToLoadAPIDocsData": "فشل في تحميل بيانات وثائق API"
+  },
+  "aiRecommendations": {
+    "failedToLoadRecommendations": "فشل في تحميل توصيات الذكاء الاصطناعي",
+    "analysisComplete": "تم إكمال التحليل بنجاح",
+    "analysisFailed": "فشل التحليل",
+    "actionStarted": "تم بدء الإجراء: {action}",
+    "actionFailed": "فشل الإجراء",
+    "analyzing": "جاري التحليل...",
+    "analyze": "تحليل"
+  },
   "vendors": {
     "title": "إدارة الموردين",
     "description": "إدارة علاقات الموردين والأداء",
@@ -1466,6 +1482,10 @@
     "searchArticles": "البحث في المقالات...",
     "articleTitle": "عنوان المقال",
     "articleContent": "محتوى المقال",
+    "gettingStarted": "البدء",
+    "accountManagement": "إدارة الحساب",
+    "billing": "الفوترة",
+    "technicalSupport": "الدعم الفني",
     "filterByCategory": "تصفية حسب الفئة",
     "filterByStatus": "تصفية حسب الحالة",
     "allCategories": "جميع الفئات",

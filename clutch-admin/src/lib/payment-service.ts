@@ -19,7 +19,7 @@ export interface PaymentData {
   description: string;
   customerId: string;
   paymentMethodId?: string;
-  metadata?: Record<string, any>;
+  metadata?: Record<string, unknown>;
 }
 
 export interface PaymentResult {
@@ -34,7 +34,7 @@ export interface PaymentResult {
 export interface RefundData {
   amount?: number; // If not provided, full refund
   reason: string;
-  metadata?: Record<string, any>;
+  metadata?: Record<string, unknown>;
 }
 
 export interface RefundResult {
@@ -51,7 +51,7 @@ export interface SubscriptionData {
   paymentMethodId: string;
   startDate?: string;
   trialPeriodDays?: number;
-  metadata?: Record<string, any>;
+  metadata?: Record<string, unknown>;
 }
 
 export interface SubscriptionResult {
@@ -271,7 +271,7 @@ class PaymentService {
     }
   }
 
-  public async getPaymentHistory(customerId: string, limit: number = 50): Promise<any[]> {
+  public async getPaymentHistory(customerId: string, limit: number = 50): Promise<Record<string, unknown>[]> {
     try {
       // This would need to be implemented in the backend
       // For now, return empty array

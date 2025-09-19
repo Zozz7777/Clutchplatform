@@ -736,7 +736,9 @@
     "messageDelivered": "Delivered",
     "messageRead": "Read",
     "messageSent": "Sent",
-    "failedToLoadChatData": "Failed to load chat data"
+    "failedToLoadChatData": "Failed to load chat data",
+    "failedToSendMessage": "Failed to send message",
+    "you": "You"
   },
   "crm": {
     "title": "Customer Relationship Management",
@@ -959,6 +961,8 @@
     "filterByUser": "Filter by user",
     "filterByResource": "Filter by resource",
     "filterByDate": "Filter by date",
+    "failedToLoadAuditData": "Failed to load audit data",
+    "exportStarted": "Export started successfully",
     "exportLogs": "Export Logs",
     "viewDetails": "View Details",
     "action": "Action",
@@ -1342,6 +1346,18 @@
     "loadingMobileAppsData": "Loading mobile apps data...",
     "failedToLoadMobileAppsData": "Failed to load mobile apps data"
   },
+  "apiDocs": {
+    "failedToLoadAPIDocsData": "Failed to load API documentation data"
+  },
+  "aiRecommendations": {
+    "failedToLoadRecommendations": "Failed to load AI recommendations",
+    "analysisComplete": "Analysis completed successfully",
+    "analysisFailed": "Analysis failed",
+    "actionStarted": "Action started: {action}",
+    "actionFailed": "Action failed",
+    "analyzing": "Analyzing...",
+    "analyze": "Analyze"
+  },
   "vendors": {
     "title": "Vendor Management",
     "description": "Manage vendor relationships and performance",
@@ -1466,6 +1482,10 @@
     "searchArticles": "Search articles...",
     "articleTitle": "Article title",
     "articleContent": "Article content",
+    "gettingStarted": "Getting Started",
+    "accountManagement": "Account Management",
+    "billing": "Billing",
+    "technicalSupport": "Technical Support",
     "filterByCategory": "Filter by category",
     "filterByStatus": "Filter by status",
     "allCategories": "All Categories",

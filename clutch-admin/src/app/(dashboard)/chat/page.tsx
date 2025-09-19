@@ -114,7 +114,7 @@ export default function ChatPage() {
         }
       } catch (error) {
         console.error("Failed to send message:", error);
-        toast.error("Failed to send message");
+        toast.error(t('chat.failedToSendMessage'));
       }
     }
   };
@@ -249,7 +249,7 @@ export default function ChatPage() {
                 <div>
                   <h3 className="text-sm font-medium text-foreground">{selectedChannelData?.name}</h3>
                   <p className="text-xs text-muted-foreground">
-                    {selectedChannelData?.isOnline ? "Online" : "Offline"}
+                    {selectedChannelData?.isOnline ? t('chat.online') : t('chat.offline')}
                   </p>
                 </div>
               </div>
@@ -292,19 +292,19 @@ export default function ChatPage() {
               {messages.map((message) => (
                 <div
                   key={message.id}
-                  className={`flex ${message.sender === "You" ? "justify-end" : "justify-start"}`}
+                  className={`flex ${message.sender === t('chat.you') ? "justify-end" : "justify-start"}`}
                 >
-                  <div className={`flex space-x-2 max-w-xs lg:max-w-md ${message.sender === "You" ? "flex-row-reverse space-x-reverse" : ""}`}>
+                  <div className={`flex space-x-2 max-w-xs lg:max-w-md ${message.sender === t('chat.you') ? "flex-row-reverse space-x-reverse" : ""}`}>
                     <div className="w-6 h-6 rounded-full bg-muted flex items-center justify-center">
                       {getSenderIcon(message.senderType)}
                     </div>
-                    <div className={`rounded-[0.625rem] p-3 ${message.sender === "You" ? "bg-primary text-primary-foreground" : "bg-muted"}`}>
+                    <div className={`rounded-[0.625rem] p-3 ${message.sender === t('chat.you') ? "bg-primary text-primary-foreground" : "bg-muted"}`}>
                       <p className="text-sm">{message.message}</p>
-                      <div className={`flex items-center space-x-1 mt-1 ${message.sender === "You" ? "justify-end" : "justify-start"}`}>
+                      <div className={`flex items-center space-x-1 mt-1 ${message.sender === t('chat.you') ? "justify-end" : "justify-start"}`}>
                         <span className="text-xs opacity-70">
                           {formatRelativeTime(message.timestamp)}
                         </span>
-                        {message.sender === "You" && getStatusIcon(message.status)}
+                        {message.sender === t('chat.you') && getStatusIcon(message.status)}
                       </div>
                     </div>
                   </div>
