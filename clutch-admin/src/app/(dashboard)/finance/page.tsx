@@ -130,14 +130,15 @@ export default function FinancePage() {
   const handleExportPayments = async () => {
     try {
       // Export payments data
-      const paymentsData = payments.map(payment => ({
-        ID: payment.id,
-        Customer: payment.customer,
-        Amount: payment.amount,
-        Status: payment.status,
-        Method: payment.method,
-        Date: payment.date,
-        Description: payment.description
+      const paymentsArray = Array.isArray(payments) ? payments : [];
+      const paymentsData = paymentsArray.map(payment => ({
+        ID: payment?.id || '',
+        Customer: payment?.customer || '',
+        Amount: payment?.amount || 0,
+        Status: payment?.status || '',
+        Method: payment?.method || '',
+        Date: payment?.date || '',
+        Description: payment?.description || ''
       }));
 
       const csvContent = [
@@ -196,17 +197,18 @@ export default function FinancePage() {
   }, []);
 
   useEffect(() => {
-    let filtered = payments;
+    const paymentsArray = Array.isArray(payments) ? payments : [];
+    let filtered = paymentsArray;
 
     if (searchQuery) {
       filtered = filtered.filter(payment =>
-        payment.customer.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        payment.description.toLowerCase().includes(searchQuery.toLowerCase())
+        payment?.customer?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        payment?.description?.toLowerCase().includes(searchQuery.toLowerCase())
       );
     }
 
     if (statusFilter !== "all") {
-      filtered = filtered.filter(payment => payment.status === statusFilter);
+      filtered = filtered.filter(payment => payment?.status === statusFilter);
     }
 
     setFilteredPayments(filtered);
@@ -251,10 +253,13 @@ export default function FinancePage() {
     );
   }
 
-  const totalRevenue = payments.filter(p => p.status === "completed").reduce((sum, p) => sum + p.amount, 0);
-  const pendingPayments = payments.filter(p => p.status === "pending").reduce((sum, p) => sum + p.amount, 0);
-  const activeSubscriptions = subscriptions.filter(s => s.status === "active").length;
-  const monthlyRecurring = subscriptions.filter(s => s.status === "active").reduce((sum, s) => sum + s.amount, 0);
+  const paymentsArray = Array.isArray(payments) ? payments : [];
+  const subscriptionsArray = Array.isArray(subscriptions) ? subscriptions : [];
+  
+  const totalRevenue = paymentsArray.filter(p => p?.status === "completed").reduce((sum, p) => sum + (p?.amount || 0), 0);
+  const pendingPayments = paymentsArray.filter(p => p?.status === "pending").reduce((sum, p) => sum + (p?.amount || 0), 0);
+  const activeSubscriptions = subscriptionsArray.filter(s => s?.status === "active").length;
+  const monthlyRecurring = subscriptionsArray.filter(s => s?.status === "active").reduce((sum, s) => sum + (s?.amount || 0), 0);
 
   return (
     <div className="space-y-6 font-sans">
@@ -300,7 +305,7 @@ export default function FinancePage() {
           <CardContent>
             <div className="text-2xl font-bold text-foreground">{formatCurrency(pendingPayments)}</div>
             <p className="text-xs text-muted-foreground">
-              <span className="text-secondary">{payments.filter(p => p.status === "pending").length}</span> payments
+              <span className="text-secondary">{paymentsArray.filter(p => p?.status === "pending").length}</span> payments
             </p>
           </CardContent>
         </Card>
@@ -418,7 +423,7 @@ export default function FinancePage() {
                   </TableRow>
                 </TableHeader>
                 <TableBody>
-                  {filteredPayments.map((payment) => (
+                  {Array.isArray(filteredPayments) ? filteredPayments.map((payment) => (
                     <TableRow key={payment.id}>
                       <TableCell>
                         <div>
@@ -487,7 +492,7 @@ export default function FinancePage() {
                         </DropdownMenu>
                       </TableCell>
                     </TableRow>
-                  ))}
+                  )) : null}
                 </TableBody>
               </Table>
             </CardContent>
@@ -514,7 +519,7 @@ export default function FinancePage() {
                   </TableRow>
                 </TableHeader>
                 <TableBody>
-                  {subscriptions.map((subscription) => (
+                  {Array.isArray(subscriptions) ? subscriptions.map((subscription) => (
                     <TableRow key={subscription.id}>
                       <TableCell>
                         <span className="text-sm font-medium text-foreground">{subscription.customer}</span>
@@ -572,7 +577,7 @@ export default function FinancePage() {
                         </DropdownMenu>
                       </TableCell>
                     </TableRow>
-                  ))}
+                  )) : null}
                 </TableBody>
               </Table>
             </CardContent>
@@ -598,7 +603,7 @@ export default function FinancePage() {
                   </TableRow>
                 </TableHeader>
                 <TableBody>
-                  {payouts.map((payout) => (
+                  {Array.isArray(payouts) ? payouts.map((payout) => (
                     <TableRow key={payout.id}>
                       <TableCell>
                         <span className="text-sm font-medium text-foreground">{payout.recipient}</span>
@@ -653,7 +658,7 @@ export default function FinancePage() {
                         </DropdownMenu>
                       </TableCell>
                     </TableRow>
-                  ))}
+                  )) : null}
                 </TableBody>
               </Table>
             </CardContent>
