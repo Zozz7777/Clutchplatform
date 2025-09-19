@@ -279,7 +279,7 @@ export default function CMSPage() {
         setContent(data.data || data);
       }
     } catch (error) {
-      console.error(`Failed to ${action} content:`, error);
+      // Error handled by API service
     }
   };
 
@@ -312,7 +312,7 @@ export default function CMSPage() {
         setMedia(data.data || data);
       }
     } catch (error) {
-      console.error(`Failed to ${action} media:`, error);
+      // Error handled by API service
     }
   };
 

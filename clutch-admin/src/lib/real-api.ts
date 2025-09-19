@@ -533,6 +533,29 @@ export class RealApiService {
     )();
   }
 
+  // Enterprise APIs
+  async getEnterpriseClients(): Promise<Record<string, unknown>[]> {
+    return withErrorHandling(
+      async () => {
+        const response = await apiService.request<Record<string, unknown>[]>("/api/v1/enterprise/clients");
+        return handleApiResponse(response, 'getEnterpriseClients', []);
+      },
+      'getEnterpriseClients',
+      { fallbackValue: [], showToast: false }
+    )();
+  }
+
+  async getEnterpriseStats(): Promise<Record<string, unknown>> {
+    return withErrorHandling(
+      async () => {
+        const response = await apiService.request<Record<string, unknown>>("/api/v1/enterprise/stats");
+        return handleApiResponse(response, 'getEnterpriseStats', {});
+      },
+      'getEnterpriseStats',
+      { fallbackValue: {}, showToast: false }
+    )();
+  }
+
   // Audit Trail APIs
   async getAuditLogs(filters?: Record<string, unknown>): Promise<Record<string, unknown>[]> {
     return withErrorHandling(

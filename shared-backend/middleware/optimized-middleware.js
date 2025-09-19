@@ -86,7 +86,7 @@ const optimizedCORS = cors({
  */
 const optimizedRateLimit = rateLimit({
   windowMs: 15 * 60 * 1000, // 15 minutes
-  max: process.env.NODE_ENV === 'development' ? 1000 : 100,
+  max: process.env.NODE_ENV === 'development' ? 2000 : 200, // Increased limits
   message: { 
     success: false,
     error: 'RATE_LIMIT_EXCEEDED',

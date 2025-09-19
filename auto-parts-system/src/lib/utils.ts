@@ -2,7 +2,7 @@ import { app } from 'electron';
 import * as path from 'path';
 
 export const isDev = (): boolean => {
-  return process.env['NODE_ENV'] === 'development' || !app.isPackaged;
+  return process.env['NODE_ENV'] === 'development' || (typeof app !== 'undefined' && !app.isPackaged);
 };
 
 export const getAppPath = (): string => {

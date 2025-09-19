@@ -14,6 +14,25 @@ import { useAuth } from "@/contexts/auth-context";
 import { useTranslations } from "@/hooks/use-translations";
 import { useQuickActions } from "@/lib/quick-actions";
 import { toast } from "sonner";
+import { 
+  Truck, 
+  Search, 
+  Filter, 
+  Plus, 
+  MoreHorizontal,
+  MapPin,
+  Fuel,
+  Gauge,
+  AlertTriangle,
+  CheckCircle,
+  Clock,
+  Route,
+  Wrench,
+  Activity,
+  TrendingUp,
+  Navigation,
+  Car
+} from "lucide-react";
 
 // Import new Phase 2 widgets
 import FleetUtilization from "@/components/widgets/fleet-utilization";
@@ -47,25 +66,6 @@ interface FleetVehicle {
   createdAt: string;
   updatedAt: string;
 }
-import { 
-  Truck, 
-  Search, 
-  Filter, 
-  Plus, 
-  MoreHorizontal,
-  MapPin,
-  Fuel,
-  Gauge,
-  AlertTriangle,
-  CheckCircle,
-  Clock,
-  Route,
-  Wrench,
-  Activity,
-  TrendingUp,
-  Navigation,
-  Car
-} from "lucide-react";
 import {
   DropdownMenu,
   DropdownMenuContent,

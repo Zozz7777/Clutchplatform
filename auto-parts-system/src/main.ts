@@ -52,7 +52,6 @@ class ClutchAutoPartsApp {
       webPreferences: {
         nodeIntegration: false,
         contextIsolation: true,
-        enableRemoteModule: false,
         preload: path.join(__dirname, 'preload.js'),
         webSecurity: !isDev()
       },
@@ -299,8 +298,8 @@ app.whenReady().then(() => {
 
 // Security: Prevent new window creation
 app.on('web-contents-created', (event, contents) => {
-  contents.on('new-window', (event, navigationUrl) => {
-    event.preventDefault();
-    shell.openExternal(navigationUrl);
+  contents.setWindowOpenHandler(({ url }) => {
+    shell.openExternal(url);
+    return { action: 'deny' };
   });
 });

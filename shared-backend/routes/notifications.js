@@ -1,10 +1,24 @@
 const express = require('express');
 const router = express.Router();
+const rateLimit = require('express-rate-limit');
 const { authenticateToken, checkRole } = require('../middleware/unified-auth');
 const { getCollection } = require('../config/optimized-database');
 
+// More lenient rate limit for notifications
+const notificationLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: process.env.NODE_ENV === 'development' ? 500 : 50, // More lenient for notifications
+  message: { 
+    success: false,
+    error: 'RATE_LIMIT_EXCEEDED',
+    message: 'Too many notification requests, please try again later.' 
+  },
+  standardHeaders: true,
+  legacyHeaders: false
+});
+
 // GET /api/v1/notifications - Get all notifications for the authenticated user
-router.get('/', authenticateToken, async (req, res) => {
+router.get('/', notificationLimiter, authenticateToken, async (req, res) => {
   try {
     const notificationsCollection = await getCollection('notifications');
     
@@ -45,7 +59,7 @@ router.get('/', authenticateToken, async (req, res) => {
 });
 
 // GET /api/v1/notifications/all - Get all notifications (including read ones)
-router.get('/all', authenticateToken, async (req, res) => {
+router.get('/all', notificationLimiter, authenticateToken, async (req, res) => {
   try {
     const notificationsCollection = await getCollection('notifications');
     

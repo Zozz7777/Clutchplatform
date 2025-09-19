@@ -260,7 +260,7 @@ export default function VendorManagementPage() {
       const data = await productionApi.getVendors();
       setVendors(data || []);
     } catch (error) {
-      console.error("Error loading vendors:", error);
+      // Error handled by API service
       setVendors([]);
     } finally {
       setLoading(false);
@@ -272,7 +272,7 @@ export default function VendorManagementPage() {
       const data = await productionApi.getVendorContracts();
       setContracts(data || []);
     } catch (error) {
-      console.error("Error loading contracts:", error);
+      // Error handled by API service
       setContracts([]);
     }
   };
@@ -282,7 +282,7 @@ export default function VendorManagementPage() {
       const data = await productionApi.getVendorCommunications();
       setCommunications(data || []);
     } catch (error) {
-      console.error("Error loading communications:", error);
+      // Error handled by API service
       setCommunications([]);
     }
   };
@@ -371,7 +371,7 @@ export default function VendorManagementPage() {
         });
       }
     } catch (error) {
-      console.error("Error creating vendor:", error);
+      // Error handled by API service
     }
   };
   
@@ -420,7 +420,7 @@ export default function VendorManagementPage() {
         });
       }
     } catch (error) {
-      console.error("Error creating contract:", error);
+      // Error handled by API service
     }
   };
   
@@ -455,7 +455,7 @@ export default function VendorManagementPage() {
         });
       }
     } catch (error) {
-      console.error("Error creating communication:", error);
+      // Error handled by API service
     }
   };
 

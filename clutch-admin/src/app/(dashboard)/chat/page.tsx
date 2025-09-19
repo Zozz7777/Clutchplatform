@@ -87,7 +87,7 @@ export default function ChatPage() {
         setMessages(messagesData || []);
         
       } catch (error) {
-        console.error("Failed to load chat data:", error);
+        // Error handled by API service
         toast.error(t('chat.failedToLoadChatData'));
         // Set empty arrays on error - no mock data fallback
         setChannels([]);
@@ -115,7 +115,7 @@ export default function ChatPage() {
           setNewMessage("");
         }
       } catch (error) {
-        console.error("Failed to send message:", error);
+        // Error handled by API service
         toast.error(t('chat.failedToSendMessage'));
       }
     }

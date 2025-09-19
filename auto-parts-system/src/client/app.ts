@@ -1,10 +1,14 @@
 // src/client/app.ts
-import { i18nManager } from '../lib/i18n';
+import { i18nManager } from './i18n';
+
+// Import components (these would be React components in a real app)
+// For now, we'll create simple HTML-based components
 
 class ClutchApp {
   private currentView: string = 'dashboard';
   private isDarkMode: boolean = false;
   private isRTL: boolean = false;
+  private currentUser: any = null;
 
   constructor() {
     this.initialize();
@@ -19,6 +23,9 @@ class ClutchApp {
       this.isRTL = i18nManager.isRTL();
       this.updateDirection();
       
+      // Load design tokens
+      await this.loadDesignTokens();
+      
       // Render the app
       this.render();
       
@@ -29,6 +36,79 @@ class ClutchApp {
     } catch (error) {
       console.error('Failed to initialize app:', error);
     }
+  }
+
+  private async loadDesignTokens(): Promise<void> {
+    try {
+      const response = await fetch('/src/assets/design.json');
+      const designTokens = await response.json();
+      
+      // Apply design tokens to CSS custom properties
+      this.applyDesignTokens(designTokens);
+    } catch (error) {
+      console.error('Failed to load design tokens:', error);
+    }
+  }
+
+  private applyDesignTokens(designTokens: any): void {
+    const root = document.documentElement;
+    const theme = this.isDarkMode ? designTokens.theme.dark : designTokens.theme.light;
+    
+    // Apply color tokens
+    Object.entries(theme.colors).forEach(([key, value]: [string, any]) => {
+      root.style.setProperty(`--${key}`, value.value);
+    });
+    
+    // Apply shadow tokens
+    Object.entries(theme.shadows).forEach(([key, value]: [string, any]) => {
+      root.style.setProperty(`--shadow-${key}`, value);
+    });
+    
+    // Apply typography tokens
+    root.style.setProperty('--font-sans', designTokens.typography['font-sans']);
+    root.style.setProperty('--font-serif', designTokens.typography['font-serif']);
+    root.style.setProperty('--font-mono', designTokens.typography['font-mono']);
+    
+    Object.entries(designTokens.typography.sizes).forEach(([key, value]: [string, any]) => {
+      root.style.setProperty(`--font-size-${key}`, value);
+    });
+    
+    Object.entries(designTokens.typography.weights).forEach(([key, value]: [string, any]) => {
+      root.style.setProperty(`--font-weight-${key}`, value);
+    });
+    
+    Object.entries(designTokens.typography.lineHeights).forEach(([key, value]: [string, any]) => {
+      root.style.setProperty(`--line-height-${key}`, value);
+    });
+    
+    // Apply spacing tokens
+    root.style.setProperty('--spacing-base', designTokens.spacing.base);
+    
+    // Apply border tokens
+    root.style.setProperty('--border-radius', designTokens.borders.radius);
+    
+    // Apply z-index tokens
+    Object.entries(designTokens.zIndex).forEach(([key, value]: [string, any]) => {
+      root.style.setProperty(`--z-index-${key}`, value.toString());
+    });
+    
+    // Apply motion tokens
+    Object.entries(designTokens.motion.duration).forEach(([key, value]: [string, any]) => {
+      root.style.setProperty(`--motion-duration-${key}`, value);
+    });
+    
+    Object.entries(designTokens.motion.easing).forEach(([key, value]: [string, any]) => {
+      root.style.setProperty(`--motion-easing-${key}`, value);
+    });
+    
+    // Apply density tokens
+    Object.entries(designTokens.density.comfortable).forEach(([key, value]: [string, any]) => {
+      root.style.setProperty(`--density-comfortable-${key}`, value);
+    });
+    
+    Object.entries(designTokens.density.compact).forEach(([key, value]: [string, any]) => {
+      root.style.setProperty(`--density-compact-${key}`, value);
+    });
   }
 
   private render(): void {

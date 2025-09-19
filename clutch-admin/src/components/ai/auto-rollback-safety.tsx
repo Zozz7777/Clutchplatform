@@ -18,6 +18,7 @@ import {
   Eye,
   EyeOff,
   RefreshCw,
+  Brain,
   Filter,
   Download,
   Settings,

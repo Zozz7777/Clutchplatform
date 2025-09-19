@@ -699,6 +699,25 @@ export class ProductionApiService {
     }
   }
 
+  // Enterprise APIs
+  async getEnterpriseClients(): Promise<Record<string, unknown>[]> {
+    try {
+      return await realApi.getEnterpriseClients();
+    } catch (error) {
+      logger.error("Failed to fetch enterprise clients:", error);
+      throw new Error("Failed to load enterprise clients");
+    }
+  }
+
+  async getEnterpriseStats(): Promise<Record<string, unknown>> {
+    try {
+      return await realApi.getEnterpriseStats();
+    } catch (error) {
+      logger.error("Failed to fetch enterprise stats:", error);
+      throw new Error("Failed to load enterprise stats");
+    }
+  }
+
   async trainModel(modelId: string): Promise<Record<string, unknown>> {
     try {
       return await realApi.trainModel(modelId);

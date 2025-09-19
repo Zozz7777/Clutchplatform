@@ -372,7 +372,7 @@ export default function EnterprisePage() {
           <CardContent>
             <div className="text-2xl font-bold">
               {stats ? formatCurrency(stats.monthlyRecurringRevenue) : 
-                formatCurrency(clients.reduce((sum, c) => sum + c.subscription.monthlyFee, 0))}
+                formatCurrency(Array.isArray(clients) ? clients.reduce((sum, c) => sum + (c.subscription?.monthlyFee || 0), 0) : 0)}
             </div>
             <p className="text-xs text-muted-foreground">
               Recurring revenue
@@ -387,7 +387,7 @@ export default function EnterprisePage() {
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">
-              {stats ? stats.totalVehicles : clients.reduce((sum, c) => sum + c.fleet.totalVehicles, 0)}
+              {stats ? stats.totalVehicles : (Array.isArray(clients) ? clients.reduce((sum, c) => sum + (c.fleet?.totalVehicles || 0), 0) : 0)}
             </div>
             <p className="text-xs text-muted-foreground">
               Across all clients
@@ -402,7 +402,7 @@ export default function EnterprisePage() {
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">
-              {stats ? stats.whiteLabelClients : clients.filter(c => c.whiteLabel.enabled).length}
+              {stats ? stats.whiteLabelClients : (Array.isArray(clients) ? clients.filter(c => c.whiteLabel?.enabled).length : 0)}
             </div>
             <p className="text-xs text-muted-foreground">
               Custom branding
@@ -606,13 +606,13 @@ export default function EnterprisePage() {
                 <span className="text-sm">Total API Calls</span>
                 <span className="font-medium">
                   {stats ? stats.apiUsage.toLocaleString() : 
-                    clients.reduce((sum, c) => sum + c.api.usage, 0).toLocaleString()}
+                    (Array.isArray(clients) ? clients.reduce((sum, c) => sum + (c.api?.usage || 0), 0) : 0).toLocaleString()}
                 </span>
               </div>
               <div className="flex items-center justify-between">
                 <span className="text-sm">Active API Clients</span>
                 <span className="font-medium">
-                  {clients.filter(c => c.api.enabled).length}
+                  {Array.isArray(clients) ? clients.filter(c => c.api?.enabled).length : 0}
                 </span>
               </div>
               <div className="flex items-center justify-between">
@@ -643,13 +643,13 @@ export default function EnterprisePage() {
               <div className="flex items-center justify-between">
                 <span className="text-sm">White-Label Clients</span>
                 <span className="font-medium">
-                  {clients.filter(c => c.whiteLabel.enabled).length}
+                  {Array.isArray(clients) ? clients.filter(c => c.whiteLabel?.enabled).length : 0}
                 </span>
               </div>
               <div className="flex items-center justify-between">
                 <span className="text-sm">Custom Domains</span>
                 <span className="font-medium">
-                  {clients.filter(c => c.whiteLabel.enabled && c.whiteLabel.domain).length}
+                  {Array.isArray(clients) ? clients.filter(c => c.whiteLabel?.enabled && c.whiteLabel?.domain).length : 0}
                 </span>
               </div>
               <div className="flex items-center justify-between">
