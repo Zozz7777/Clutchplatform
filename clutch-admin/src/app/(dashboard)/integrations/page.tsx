@@ -134,8 +134,6 @@ export default function IntegrationsPage() {
   const [showTemplatesDialog, setShowTemplatesDialog] = useState(false);
   const [selectedIntegration, setSelectedIntegration] = useState<Integration | null>(null);
 
-  // Mock data for development
-  const mockIntegrations: Integration[] = [
     {
       _id: "1",
       name: "Paymob Payment Gateway",

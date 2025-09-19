@@ -144,7 +144,7 @@ router.get('/profile', authenticateToken, async (req, res) => {
       name: 'John Doe',
       role: req.user?.role || 'user',
       permissions: req.user?.permissions || ['read', 'write'],
-      avatar: 'https://via.placeholder.com/150',
+      avatar: null, // TODO: Implement real avatar upload system
       phone: '+1234567890',
       address: '123 Main St, City, Country',
       preferences: {
@@ -186,7 +186,7 @@ router.put('/profile', authenticateToken, async (req, res) => {
       name: name || 'John Doe',
       role: req.user?.role || 'user',
       permissions: req.user?.permissions || ['read', 'write'],
-      avatar: 'https://via.placeholder.com/150',
+      avatar: null, // TODO: Implement real avatar upload system
       phone: phone || '+1234567890',
       address: address || '123 Main St, City, Country',
       preferences: preferences || {
@@ -314,7 +314,7 @@ router.put('/update-profile', authenticateToken, async (req, res) => {
       name: name || 'John Doe',
       role: req.user?.role || 'user',
       permissions: req.user?.permissions || ['read', 'write'],
-      avatar: 'https://via.placeholder.com/150',
+      avatar: null, // TODO: Implement real avatar upload system
       phone: phone || '+1234567890',
       address: address || '123 Main St, City, Country',
       preferences: preferences || {

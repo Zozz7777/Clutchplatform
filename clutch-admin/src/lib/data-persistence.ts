@@ -419,7 +419,7 @@ class DataPersistenceService {
   }
 
   // Private helper methods
-  private async callCreateAPI(endpoint: string, data: any): Promise<PersistenceResult<any>> {
+  private async callCreateAPI(endpoint: string, data: unknown): Promise<PersistenceResult<unknown>> {
     // Map endpoint to appropriate API method
     const apiMethod = this.getAPIMethod(endpoint, 'create');
     const result = await apiMethod(data);
@@ -432,7 +432,7 @@ class DataPersistenceService {
     return { success: true, data: result };
   }
 
-  private async callUpdateAPI(endpoint: string, id: string, data: any): Promise<PersistenceResult<any>> {
+  private async callUpdateAPI(endpoint: string, id: string, data: unknown): Promise<PersistenceResult<unknown>> {
     const apiMethod = this.getAPIMethod(endpoint, 'update');
     const result = await apiMethod(id, data);
     return { success: true, data: result };

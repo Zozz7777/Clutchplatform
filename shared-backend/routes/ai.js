@@ -316,8 +316,8 @@ router.post('/predict', authenticateToken, async (req, res) => {
         const avgConfidence = historicalPredictions.reduce((sum, p) => sum + p.confidence, 0) / historicalPredictions.length;
         
         // Use historical patterns to make prediction
-        predictedValue = avgPrediction + (Math.random() - 0.5) * 20; // Add some variation
-        confidence = Math.max(0.3, Math.min(0.95, avgConfidence + (Math.random() - 0.5) * 0.2));
+        predictedValue = avgPrediction; // Use historical average without random variation
+        confidence = Math.max(0.3, Math.min(0.95, avgConfidence)); // Use historical confidence
         uncertainty = Math.max(5, Math.min(20, 15 - (confidence * 10)));
       } else {
         // No historical data, use conservative estimates
