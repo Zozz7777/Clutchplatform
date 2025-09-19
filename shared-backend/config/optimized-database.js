@@ -111,7 +111,12 @@ const OPTIMIZED_COLLECTIONS = [
   'ai_model_performance', // AI model performance metrics
   'ai_training',          // AI training data and ROI
   'anomalies',            // Anomaly detection results
-  'fraud_cases'           // Fraud detection cases
+  'fraud_cases',          // Fraud detection cases
+  
+  // Legal Collections
+  'contracts',            // Legal contracts
+  'disputes',             // Legal disputes
+  'legal_documents'       // Legal documents
 ];
 
 // Collections to REMOVE (redundant/unused)

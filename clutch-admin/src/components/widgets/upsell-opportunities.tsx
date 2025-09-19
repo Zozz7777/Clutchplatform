@@ -77,7 +77,7 @@ export function UpsellOpportunities({ className = '' }: UpsellOpportunitiesProps
           segmentBreakdown
         });
       } catch (error) {
-        console.error('Failed to load upsell opportunities data:', error);
+        // Failed to load upsell opportunities data
       } finally {
         setIsLoading(false);
       }

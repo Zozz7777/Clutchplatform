@@ -92,7 +92,7 @@ export function ARPUARPPU({ className = '' }: ARPUARPPUProps) {
           segmentBreakdown
         });
       } catch (error) {
-        console.error('Failed to load ARPU data:', error);
+        // Failed to load ARPU data
       } finally {
         setIsLoading(false);
       }

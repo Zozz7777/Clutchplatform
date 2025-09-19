@@ -69,7 +69,7 @@ export function SLACompliance({ className = '' }: SLAComplianceProps) {
           statusDistribution
         });
       } catch (error) {
-        console.error('Failed to load SLA compliance data:', error);
+        // Failed to load SLA compliance data
       } finally {
         setIsLoading(false);
       }

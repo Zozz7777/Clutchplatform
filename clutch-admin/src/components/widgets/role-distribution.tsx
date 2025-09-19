@@ -88,7 +88,7 @@ export function RoleDistribution({ className = '' }: RoleDistributionProps) {
 
         setRoleData(roles.sort((a, b) => b.count - a.count));
       } catch (error) {
-        console.error('Failed to load role data:', error);
+        // Failed to load role data
       } finally {
         setIsLoading(false);
       }

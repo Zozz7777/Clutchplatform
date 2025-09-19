@@ -64,7 +64,7 @@ export function RevenueExpenses({ className = '' }: RevenueExpensesProps) {
           marginTrend: netMargin > 20 ? 'improving' : netMargin < 10 ? 'declining' : 'stable'
         });
       } catch (error) {
-        console.error('Failed to load financial data:', error);
+        // Failed to load financial data
       } finally {
         setIsLoading(false);
       }

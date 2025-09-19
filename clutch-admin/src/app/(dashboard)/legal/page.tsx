@@ -147,18 +147,21 @@ export default function LegalPage() {
           setStats(statsData.data || statsData);
         } else {
           // Calculate stats from loaded data
-          const activeContracts = contracts.filter(c => c.status === "active").length;
-          const expiringContracts = contracts.filter(c => 
-            c.status === "active" && 
-            new Date(c.endDate) <= new Date(Date.now() + 30 * 24 * 60 * 60 * 1000)
+          const contractsArray = Array.isArray(contracts) ? contracts : [];
+          const disputesArray = Array.isArray(disputes) ? disputes : [];
+          
+          const activeContracts = contractsArray.filter(c => c?.status === "active").length;
+          const expiringContracts = contractsArray.filter(c => 
+            c?.status === "active" && 
+            new Date(c?.endDate || new Date()) <= new Date(Date.now() + 30 * 24 * 60 * 60 * 1000)
           ).length;
-          const openDisputes = disputes.filter(d => 
-            d.status === "open" || d.status === "investigating" || d.status === "negotiating"
+          const openDisputes = disputesArray.filter(d => 
+            d?.status === "open" || d?.status === "investigating" || d?.status === "negotiating"
           ).length;
-          const resolvedDisputes = disputes.filter(d => d.status === "resolved").length;
-          const totalContractValue = contracts
-            .filter(c => c.status === "active")
-            .reduce((sum, c) => sum + c.value, 0);
+          const resolvedDisputes = disputesArray.filter(d => d?.status === "resolved").length;
+          const totalContractValue = contractsArray
+            .filter(c => c?.status === "active")
+            .reduce((sum, c) => sum + (c?.value || 0), 0);
 
           setStats({
             activeContracts,
@@ -180,28 +183,31 @@ export default function LegalPage() {
   }, []);
 
   useEffect(() => {
-    let filteredConts = contracts;
-    let filteredDisp = disputes;
+    const contractsArray = Array.isArray(contracts) ? contracts : [];
+    const disputesArray = Array.isArray(disputes) ? disputes : [];
+    
+    let filteredConts = contractsArray;
+    let filteredDisp = disputesArray;
 
     // Search filter
     if (searchQuery) {
       filteredConts = filteredConts.filter(contract =>
-        contract.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        contract.contractNumber.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        contract.partyName.toLowerCase().includes(searchQuery.toLowerCase())
+        contract?.title?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        contract?.contractNumber?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        contract?.partyName?.toLowerCase().includes(searchQuery.toLowerCase())
       );
       
       filteredDisp = filteredDisp.filter(dispute =>
-        dispute.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        dispute.disputeNumber.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        dispute.partyName.toLowerCase().includes(searchQuery.toLowerCase())
+        dispute?.title?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        dispute?.disputeNumber?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        dispute?.partyName?.toLowerCase().includes(searchQuery.toLowerCase())
       );
     }
 
     // Status filter
     if (statusFilter !== "all") {
-      filteredConts = filteredConts.filter(contract => contract.status === statusFilter);
-      filteredDisp = filteredDisp.filter(dispute => dispute.status === statusFilter);
+      filteredConts = filteredConts.filter(contract => contract?.status === statusFilter);
+      filteredDisp = filteredDisp.filter(dispute => dispute?.status === statusFilter);
     }
 
     setFilteredContracts(filteredConts);
@@ -425,13 +431,13 @@ export default function LegalPage() {
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">
-              {stats ? stats.activeContracts : contracts.filter(c => c.status === "active").length}
+              {stats ? stats.activeContracts : (Array.isArray(contracts) ? contracts.filter(c => c?.status === "active").length : 0)}
             </div>
             <p className="text-xs text-muted-foreground">
-              {stats ? stats.expiringContracts : contracts.filter(c => 
-                c.status === "active" && 
-                new Date(c.endDate) <= new Date(Date.now() + 30 * 24 * 60 * 60 * 1000)
-              ).length} expiring soon
+              {stats ? stats.expiringContracts : (Array.isArray(contracts) ? contracts.filter(c => 
+                c?.status === "active" && 
+                new Date(c?.endDate || new Date()) <= new Date(Date.now() + 30 * 24 * 60 * 60 * 1000)
+              ).length : 0)} expiring soon
             </p>
           </CardContent>
         </Card>
@@ -443,12 +449,12 @@ export default function LegalPage() {
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">
-              {stats ? stats.openDisputes : disputes.filter(d => 
-                d.status === "open" || d.status === "investigating" || d.status === "negotiating"
-              ).length}
+              {stats ? stats.openDisputes : (Array.isArray(disputes) ? disputes.filter(d => 
+                d?.status === "open" || d?.status === "investigating" || d?.status === "negotiating"
+              ).length : 0)}
             </div>
             <p className="text-xs text-muted-foreground">
-              {disputes.filter(d => d.priority === "critical").length} critical
+              {Array.isArray(disputes) ? disputes.filter(d => d?.priority === "critical").length : 0} critical
             </p>
           </CardContent>
         </Card>
@@ -461,7 +467,7 @@ export default function LegalPage() {
           <CardContent>
             <div className="text-2xl font-bold">
               ${stats ? stats.totalContractValue.toLocaleString() : 
-                contracts.filter(c => c.status === "active").reduce((sum, c) => sum + c.value, 0).toLocaleString()}
+                (Array.isArray(contracts) ? contracts.filter(c => c?.status === "active").reduce((sum, c) => sum + (c?.value || 0), 0).toLocaleString() : "0")}
             </div>
             <p className="text-xs text-muted-foreground">
               Active contracts
@@ -542,7 +548,7 @@ export default function LegalPage() {
             </div>
 
             <div className="space-y-4">
-              {filteredContracts.map((contract) => (
+              {Array.isArray(filteredContracts) ? filteredContracts.map((contract) => (
                 <div key={contract._id} className="flex items-center justify-between p-4 border rounded-[0.625rem] hover:bg-muted/50 transition-colors">
                   <div className="flex items-center space-x-4">
                     <div className="flex items-center space-x-2">
@@ -629,10 +635,10 @@ export default function LegalPage() {
                     </DropdownMenu>
                   </div>
                 </div>
-              ))}
+              )) : null}
             </div>
 
-            {filteredContracts.length === 0 && (
+            {Array.isArray(filteredContracts) && filteredContracts.length === 0 && (
               <div className="text-center py-8">
                 <FileText className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
                 <p className="text-muted-foreground">No contracts found matching your criteria</p>
@@ -679,7 +685,7 @@ export default function LegalPage() {
             </div>
 
             <div className="space-y-4">
-              {filteredDisputes.map((dispute) => (
+              {Array.isArray(filteredDisputes) ? filteredDisputes.map((dispute) => (
                 <div key={dispute._id} className="flex items-center justify-between p-4 border rounded-[0.625rem] hover:bg-muted/50 transition-colors">
                   <div className="flex items-center space-x-4">
                     <div className="flex items-center space-x-2">
@@ -769,10 +775,10 @@ export default function LegalPage() {
                     </DropdownMenu>
                   </div>
                 </div>
-              ))}
+              )) : null}
             </div>
 
-            {filteredDisputes.length === 0 && (
+            {Array.isArray(filteredDisputes) && filteredDisputes.length === 0 && (
               <div className="text-center py-8">
                 <Gavel className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
                 <p className="text-muted-foreground">No disputes found matching your criteria</p>

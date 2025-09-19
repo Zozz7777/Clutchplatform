@@ -871,7 +871,7 @@ export default function HRPage() {
                           onClick={() => handleDeleteEmployee(employee)}
                           className="text-destructive"
                         >
-                          <AlertTriangle className="mr-2 h-4 w-4" />
+                          <Trash2 className="mr-2 h-4 w-4" />
                           Delete Employee
                         </DropdownMenuItem>
                       </DropdownMenuContent>
@@ -1303,6 +1303,49 @@ export default function HRPage() {
                 }}>
                   <Edit className="mr-2 h-4 w-4" />
                   Update Invitation
+                </Button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Delete Confirmation Modal */}
+      {showDeleteConfirmModal && employeeToDelete && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50">
+          <div className="bg-background rounded-[0.625rem] max-w-md w-full">
+            <div className="p-6">
+              <div className="flex items-center space-x-3 mb-4">
+                <div className="w-10 h-10 rounded-full bg-destructive/10 flex items-center justify-center">
+                  <Trash2 className="h-5 w-5 text-destructive" />
+                </div>
+                <div>
+                  <h3 className="text-lg font-semibold">Delete Employee</h3>
+                  <p className="text-sm text-muted-foreground">This action cannot be undone.</p>
+                </div>
+              </div>
+              
+              <p className="text-sm mb-6">
+                Are you sure you want to delete <strong>{employeeToDelete.firstName || employeeToDelete.name || 'this employee'}</strong>? 
+                This will permanently remove all their data from the system.
+              </p>
+
+              <div className="flex justify-end space-x-2">
+                <Button 
+                  variant="outline" 
+                  onClick={() => {
+                    setShowDeleteConfirmModal(false);
+                    setEmployeeToDelete(null);
+                  }}
+                >
+                  Cancel
+                </Button>
+                <Button 
+                  variant="destructive" 
+                  onClick={confirmDeleteEmployee}
+                >
+                  <Trash2 className="mr-2 h-4 w-4" />
+                  Delete Employee
                 </Button>
               </div>
             </div>

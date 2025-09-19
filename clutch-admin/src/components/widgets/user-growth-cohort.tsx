@@ -39,7 +39,7 @@ export function UserGrowthCohort({ className = '' }: UserGrowthCohortProps) {
         const data = await businessIntelligence.getUserGrowthCohort();
         setCohortData(data);
       } catch (error) {
-        console.error('Failed to load cohort data:', error);
+        // Failed to load cohort data
       } finally {
         setIsLoading(false);
       }

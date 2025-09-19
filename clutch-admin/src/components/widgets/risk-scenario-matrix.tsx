@@ -100,7 +100,7 @@ export function RiskScenarioMatrix({ className = '' }: RiskScenarioMatrixProps) 
           topRisks
         });
       } catch (error) {
-        console.error('Failed to load risk scenario data:', error);
+        // Failed to load risk scenario data
       } finally {
         setIsLoading(false);
       }

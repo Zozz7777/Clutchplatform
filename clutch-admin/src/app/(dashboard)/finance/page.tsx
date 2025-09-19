@@ -130,15 +130,14 @@ export default function FinancePage() {
   const handleExportPayments = async () => {
     try {
       // Export payments data
-      const paymentsArray = Array.isArray(payments) ? payments : [];
-      const paymentsData = paymentsArray.map(payment => ({
-        ID: payment?.id || '',
-        Customer: payment?.customer || '',
-        Amount: payment?.amount || 0,
-        Status: payment?.status || '',
-        Method: payment?.method || '',
-        Date: payment?.date || '',
-        Description: payment?.description || ''
+      const paymentsData = payments.map(payment => ({
+        ID: payment.id,
+        Customer: payment.customer,
+        Amount: payment.amount,
+        Status: payment.status,
+        Method: payment.method,
+        Date: payment.date,
+        Description: payment.description
       }));
 
       const csvContent = [
@@ -423,7 +422,7 @@ export default function FinancePage() {
                   </TableRow>
                 </TableHeader>
                 <TableBody>
-                  {Array.isArray(filteredPayments) ? filteredPayments.map((payment) => (
+                  {filteredPayments.map((payment) => (
                     <TableRow key={payment.id}>
                       <TableCell>
                         <div>
@@ -492,7 +491,7 @@ export default function FinancePage() {
                         </DropdownMenu>
                       </TableCell>
                     </TableRow>
-                  )) : null}
+                  ))}
                 </TableBody>
               </Table>
             </CardContent>
@@ -577,7 +576,7 @@ export default function FinancePage() {
                         </DropdownMenu>
                       </TableCell>
                     </TableRow>
-                  )) : null}
+                  ))}
                 </TableBody>
               </Table>
             </CardContent>
@@ -658,7 +657,7 @@ export default function FinancePage() {
                         </DropdownMenu>
                       </TableCell>
                     </TableRow>
-                  )) : null}
+                  ))}
                 </TableBody>
               </Table>
             </CardContent>

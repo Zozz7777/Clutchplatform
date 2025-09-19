@@ -551,6 +551,61 @@ router.post('/documents', authenticateToken, checkRole(['head_administrator', 'l
   }
 });
 
+// ==================== LEGAL STATS ====================
+
+// GET /api/v1/legal/stats - Get legal statistics
+router.get('/stats', authenticateToken, checkRole(['head_administrator', 'legal_team']), legalRateLimit, async (req, res) => {
+  try {
+    const contractsCollection = await getCollection('contracts');
+    const disputesCollection = await getCollection('disputes');
+    
+    // Get all contracts and disputes
+    const contracts = await contractsCollection.find({}).toArray();
+    const disputes = await disputesCollection.find({}).toArray();
+    
+    // Calculate statistics
+    const activeContracts = contracts.filter(c => c?.status === "active").length;
+    const expiringContracts = contracts.filter(c => 
+      c?.status === "active" && 
+      new Date(c?.endDate || new Date()) <= new Date(Date.now() + 30 * 24 * 60 * 60 * 1000)
+    ).length;
+    const openDisputes = disputes.filter(d => 
+      d?.status === "open" || d?.status === "investigating" || d?.status === "negotiating"
+    ).length;
+    const resolvedDisputes = disputes.filter(d => d?.status === "resolved").length;
+    const totalContractValue = contracts
+      .filter(c => c?.status === "active")
+      .reduce((sum, c) => sum + (c?.value || 0), 0);
+    
+    // Calculate average resolution time (mock data for now)
+    const averageResolutionTime = 15; // days
+    
+    const stats = {
+      activeContracts,
+      expiringContracts,
+      openDisputes,
+      resolvedDisputes,
+      totalContractValue,
+      averageResolutionTime
+    };
+    
+    res.json({
+      success: true,
+      data: stats,
+      message: 'Legal statistics retrieved successfully',
+      timestamp: new Date().toISOString()
+    });
+  } catch (error) {
+    console.error('Get legal stats error:', error);
+    res.status(500).json({
+      success: false,
+      error: 'GET_LEGAL_STATS_FAILED',
+      message: 'Failed to retrieve legal statistics',
+      timestamp: new Date().toISOString()
+    });
+  }
+});
+
 // ==================== LEGAL ANALYTICS ====================
 
 // GET /api/v1/legal/analytics - Get legal analytics

@@ -223,84 +223,105 @@ export class AIManager {
 
   // Helper methods
   private async getHistoricalSalesData(period: string): Promise<any[]> {
-    // Mock data for now - in real implementation, this would query the database
-    return [
-      {
-        id: 1,
-        name: 'Engine Oil Filter',
-        current_stock: 50,
-        total_quantity: 120,
-        sales_count: 15
-      },
-      {
-        id: 2,
-        name: 'Brake Pads',
-        current_stock: 25,
-        total_quantity: 80,
-        sales_count: 12
-      }
-    ];
+    try {
+      const query = `
+        SELECT 
+          p.id,
+          p.name,
+          p.stock_quantity as current_stock,
+          p.stock_quantity as total_quantity,
+          COUNT(si.id) as sales_count
+        FROM products p
+        LEFT JOIN sale_items si ON p.id = si.product_id
+        LEFT JOIN sales s ON si.sale_id = s.id
+        WHERE s.created_at >= datetime('now', '-${period}')
+        GROUP BY p.id, p.name, p.stock_quantity
+        ORDER BY sales_count DESC
+        LIMIT 50
+      `;
+      
+      return await this.db.query(query);
+    } catch (error) {
+      logger.error('Error fetching historical sales data:', error);
+      return [];
+    }
   }
 
   private async getProductPricingData(): Promise<any[]> {
-    // Mock data for now
-    return [
-      {
-        id: 1,
-        name: 'Engine Oil Filter',
-        current_price: 25.00,
-        cost_price: 15.00,
-        sales_volume: 120,
-        competitor_prices: [22.00, 28.00, 26.00]
-      },
-      {
-        id: 2,
-        name: 'Brake Pads',
-        current_price: 45.00,
-        cost_price: 30.00,
-        sales_volume: 80,
-        competitor_prices: [42.00, 48.00, 46.00]
-      }
-    ];
+    try {
+      const query = `
+        SELECT 
+          p.id,
+          p.name,
+          p.selling_price as current_price,
+          p.cost_price,
+          COUNT(si.id) as sales_volume,
+          '[]' as competitor_prices
+        FROM products p
+        LEFT JOIN sale_items si ON p.id = si.product_id
+        LEFT JOIN sales s ON si.sale_id = s.id
+        WHERE s.created_at >= datetime('now', '-30 days')
+        GROUP BY p.id, p.name, p.selling_price, p.cost_price
+        ORDER BY sales_volume DESC
+        LIMIT 50
+      `;
+      
+      return await this.db.query(query);
+    } catch (error) {
+      logger.error('Error fetching product pricing data:', error);
+      return [];
+    }
   }
 
   private async getProductInventoryData(): Promise<any[]> {
-    // Mock data for now
-    return [
-      {
-        id: 1,
-        name: 'Engine Oil Filter',
-        current_stock: 50,
-        min_stock: 10,
-        max_stock: 100,
-        cost_price: 15.00,
-        demand_variance: 0.2
-      },
-      {
-        id: 2,
-        name: 'Brake Pads',
-        current_stock: 25,
-        min_stock: 5,
-        max_stock: 50,
-        cost_price: 30.00,
-        demand_variance: 0.3
-      }
-    ];
+    try {
+      const query = `
+        SELECT 
+          p.id,
+          p.name,
+          p.stock_quantity as current_stock,
+          p.min_stock,
+          p.max_stock,
+          p.cost_price,
+          0.2 as demand_variance
+        FROM products p
+        WHERE p.stock_quantity <= p.min_stock * 2
+        ORDER BY p.stock_quantity ASC
+        LIMIT 50
+      `;
+      
+      return await this.db.query(query);
+    } catch (error) {
+      logger.error('Error fetching product inventory data:', error);
+      return [];
+    }
   }
 
   private async getCustomerBehaviorData(): Promise<any[]> {
-    // Mock data for now
-    return [
-      {
-        id: 1,
-        name: 'Ahmed Al-Rashid',
-        total_purchases: 1500.00,
-        purchase_frequency: 2.5,
-        last_purchase_days_ago: 15,
-        preferred_categories: ['Engine Parts', 'Brake System'],
-        seasonal_patterns: ['winter_peak', 'summer_low']
-      }
-    ];
+    try {
+      const query = `
+        SELECT 
+          c.id,
+          c.name,
+          COALESCE(SUM(s.total_amount), 0) as total_purchases,
+          COALESCE(COUNT(s.id) / 30.0, 0) as purchase_frequency,
+          COALESCE(julianday('now') - julianday(MAX(s.created_at)), 0) as last_purchase_days_ago,
+          '[]' as preferred_categories,
+          '[]' as seasonal_patterns
+        FROM customers c
+        LEFT JOIN sales s ON c.id = s.customer_id
+        WHERE s.created_at >= datetime('now', '-90 days')
+        GROUP BY c.id, c.name
+        HAVING total_purchases > 0
+        ORDER BY total_purchases DESC
+        LIMIT 50
+      `;
+      
+      return await this.db.query(query);
+    } catch (error) {
+      logger.error('Error fetching customer behavior data:', error);
+      return [];
+    }
   }
 
   private getDaysInPeriod(period: string): number {

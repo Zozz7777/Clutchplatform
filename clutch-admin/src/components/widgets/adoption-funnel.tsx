@@ -92,7 +92,7 @@ export function AdoptionFunnel({ className = '' }: AdoptionFunnelProps) {
 
         setFunnelData(stages);
       } catch (error) {
-        console.error('Failed to load funnel data:', error);
+        // Failed to load funnel data
       } finally {
         setIsLoading(false);
       }

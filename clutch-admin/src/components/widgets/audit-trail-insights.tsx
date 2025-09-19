@@ -132,7 +132,7 @@ export function AuditTrailInsights({ className = '' }: AuditTrailInsightsProps) 
           securityEvents
         });
       } catch (error) {
-        console.error('Failed to load audit trail data:', error);
+        // Failed to load audit trail data
       } finally {
         setIsLoading(false);
       }

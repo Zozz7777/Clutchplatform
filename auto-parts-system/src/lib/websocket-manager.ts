@@ -71,8 +71,8 @@ export class WebSocketManager {
         return false;
       }
 
-      const user = await this.authManager.verifyToken(token);
-      if (!user) {
+      const authResult = await this.authManager.verifyToken(token);
+      if (!authResult.success || !authResult.user) {
         logger.warn('WebSocket connection rejected: Invalid token');
         return false;
       }
@@ -97,12 +97,13 @@ export class WebSocketManager {
         return;
       }
 
-      const user = await this.authManager.verifyToken(token);
-      if (!user) {
+      const authResult = await this.authManager.verifyToken(token);
+      if (!authResult.success || !authResult.user) {
         ws.close(1008, 'Invalid token');
         return;
       }
 
+      const user = authResult.user;
       const clientId = this.generateClientId();
       const client: WebSocketClient = {
         id: clientId,
@@ -293,8 +294,12 @@ export class WebSocketManager {
 
     // Check if user has any of the required permissions
     for (const permission of requiredPermissions) {
-      const hasPermission = await this.authManager.hasPermission(client.userId, permission);
-      if (hasPermission) return true;
+      // Get user object from database
+      const user = await this.db.get('SELECT * FROM users WHERE id = ?', [client.userId!]);
+      if (user) {
+        const hasPermission = await this.authManager.hasPermission(user, permission);
+        if (hasPermission) return true;
+      }
     }
 
     return false;
