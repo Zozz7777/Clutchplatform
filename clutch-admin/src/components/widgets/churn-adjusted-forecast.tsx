@@ -105,7 +105,7 @@ export function ChurnAdjustedForecast({ className = '' }: ChurnAdjustedForecastP
           confidenceScore
         });
       } catch (error) {
-        console.error('Failed to load churn-adjusted forecast data:', error);
+        // Failed to load churn-adjusted forecast data
       } finally {
         setIsLoading(false);
       }

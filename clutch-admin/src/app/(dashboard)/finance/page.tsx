@@ -518,7 +518,7 @@ export default function FinancePage() {
                   </TableRow>
                 </TableHeader>
                 <TableBody>
-                  {Array.isArray(subscriptions) ? subscriptions.map((subscription) => (
+                  {subscriptions.map((subscription) => (
                     <TableRow key={subscription.id}>
                       <TableCell>
                         <span className="text-sm font-medium text-foreground">{subscription.customer}</span>
@@ -602,7 +602,7 @@ export default function FinancePage() {
                   </TableRow>
                 </TableHeader>
                 <TableBody>
-                  {Array.isArray(payouts) ? payouts.map((payout) => (
+                  {payouts.map((payout) => (
                     <TableRow key={payout.id}>
                       <TableCell>
                         <span className="text-sm font-medium text-foreground">{payout.recipient}</span>

@@ -254,7 +254,7 @@ export default function FeatureFlagsPage() {
       
       const newFlag = await productionApi.createFeatureFlag(flagData);
       if (newFlag) {
-        setFeatureFlags(prev => [...prev, newFlag]);
+        setFeatureFlags(prev => [...(Array.isArray(prev) ? prev : []), newFlag]);
         setShowCreateDialog(false);
         setCreateFlagData({
           name: "",
@@ -294,7 +294,7 @@ export default function FeatureFlagsPage() {
       
       const newTest = await productionApi.createABTest(abTestData);
       if (newTest) {
-        setABTests(prev => [...prev, newTest]);
+        setABTests(prev => [...(Array.isArray(prev) ? prev : []), newTest]);
         setShowABTestDialog(false);
         setCreateABTestData({
           name: "",
@@ -335,7 +335,7 @@ export default function FeatureFlagsPage() {
       
       const newRollout = await productionApi.createRollout(rolloutData);
       if (newRollout) {
-        setRollouts(prev => [...prev, newRollout]);
+        setRollouts(prev => [...(Array.isArray(prev) ? prev : []), newRollout]);
         setShowRolloutDialog(false);
         setCreateRolloutData({
           name: "",
@@ -355,8 +355,8 @@ export default function FeatureFlagsPage() {
     try {
       await productionApi.updateFeatureFlag(flagId, enabled);
       setFeatureFlags(prev => 
-        prev.map(flag => 
-          flag._id === flagId 
+        (Array.isArray(prev) ? prev : []).map(flag => 
+          flag?._id === flagId 
             ? { ...flag, enabled, updatedAt: new Date().toISOString() }
             : flag
         )
@@ -398,21 +398,24 @@ export default function FeatureFlagsPage() {
     }
   };
 
-  const filteredFlags = featureFlags.filter((flag) => {
-    const matchesSearch = flag.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         flag.key.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         flag.description.toLowerCase().includes(searchTerm.toLowerCase());
+  const featureFlagsArray = Array.isArray(featureFlags) ? featureFlags : [];
+  const abTestsArray = Array.isArray(abTests) ? abTests : [];
+  
+  const filteredFlags = featureFlagsArray.filter((flag) => {
+    const matchesSearch = flag?.name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                         flag?.key?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                         flag?.description?.toLowerCase().includes(searchTerm.toLowerCase());
     const matchesStatus = statusFilter === "all" || 
-                         (statusFilter === "enabled" && flag.enabled) ||
-                         (statusFilter === "disabled" && !flag.enabled);
-    const matchesEnvironment = environmentFilter === "all" || flag.environment === environmentFilter;
+                         (statusFilter === "enabled" && flag?.enabled) ||
+                         (statusFilter === "disabled" && !flag?.enabled);
+    const matchesEnvironment = environmentFilter === "all" || flag?.environment === environmentFilter;
     return matchesSearch && matchesStatus && matchesEnvironment;
   });
 
-  const totalFlags = featureFlags.length;
-  const enabledFlags = featureFlags.filter(f => f.enabled).length;
-  const productionFlags = featureFlags.filter(f => f.environment === "production").length;
-  const totalImpressions = featureFlags.reduce((sum, f) => sum + f.analytics.impressions, 0);
+  const totalFlags = featureFlagsArray.length;
+  const enabledFlags = featureFlagsArray.filter(f => f?.enabled).length;
+  const productionFlags = featureFlagsArray.filter(f => f?.environment === "production").length;
+  const totalImpressions = featureFlagsArray.reduce((sum, f) => sum + (f?.analytics?.impressions || 0), 0);
 
   if (loading) {
     return (
@@ -496,7 +499,7 @@ export default function FeatureFlagsPage() {
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">
-              {abTests.filter(t => t.status === "running").length}
+              {abTestsArray.filter(t => t?.status === "running").length}
             </div>
             <p className="text-xs text-muted-foreground">
               Currently running
@@ -570,7 +573,7 @@ export default function FeatureFlagsPage() {
           </div>
 
           <div className="space-y-4">
-            {filteredFlags.map((flag) => (
+            {Array.isArray(filteredFlags) ? filteredFlags.map((flag) => (
               <Card key={flag._id} className="hover:shadow-sm transition-shadow">
                 <CardContent className="p-6">
                   <div className="flex items-start justify-between">
@@ -688,7 +691,7 @@ export default function FeatureFlagsPage() {
                   </div>
                 </CardContent>
               </Card>
-            ))}
+            )) : null}
           </div>
         </CardContent>
       </Card>
@@ -703,7 +706,7 @@ export default function FeatureFlagsPage() {
         </CardHeader>
         <CardContent>
           <div className="space-y-4">
-            {abTests.map((test) => (
+            {Array.isArray(abTests) ? abTests.map((test) => (
               <Card key={test._id} className="hover:shadow-sm transition-shadow">
                 <CardContent className="p-6">
                   <div className="flex items-start justify-between">
@@ -728,7 +731,7 @@ export default function FeatureFlagsPage() {
                         <div>
                           <p className="text-sm font-medium">Sample Size</p>
                           <p className="text-sm text-muted-foreground">
-                            {test.variants.reduce((sum, v) => sum + v.metrics.impressions, 0)}
+                            {Array.isArray(test?.variants) ? test.variants.reduce((sum, v) => sum + (v?.metrics?.impressions || 0), 0) : 0}
                           </p>
                         </div>
                         <div>
@@ -742,7 +745,7 @@ export default function FeatureFlagsPage() {
                       <div className="space-y-2">
                         <p className="text-sm font-medium">Variants:</p>
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
-                          {test.variants.map((variant, index) => (
+                          {Array.isArray(test?.variants) ? test.variants.map((variant, index) => (
                             <div key={index} className="flex items-center justify-between p-3 bg-muted/50 rounded-[0.625rem]">
                               <div>
                                 <p className="font-medium">{variant.name}</p>
@@ -755,7 +758,7 @@ export default function FeatureFlagsPage() {
                                 <p className="text-sm text-muted-foreground">{variant.percentage}% traffic</p>
                               </div>
                             </div>
-                          ))}
+                          )) : null}
                         </div>
                       </div>
                     </div>
@@ -796,7 +799,7 @@ export default function FeatureFlagsPage() {
                   </div>
                 </CardContent>
               </Card>
-            ))}
+            )) : null}
           </div>
         </CardContent>
       </Card>
@@ -934,11 +937,11 @@ export default function FeatureFlagsPage() {
                   onChange={(e) => setCreateABTestData(prev => ({ ...prev, featureFlagId: e.target.value }))}
                 >
                   <option value="">Select feature flag</option>
-                  {featureFlags.map((flag) => (
-                    <option key={flag._id} value={flag._id}>
-                      {flag.name}
+                  {Array.isArray(featureFlags) ? featureFlags.map((flag) => (
+                    <option key={flag?._id} value={flag?._id}>
+                      {flag?.name}
                     </option>
-                  ))}
+                  )) : null}
                 </select>
               </div>
               <div>
@@ -1022,11 +1025,11 @@ export default function FeatureFlagsPage() {
                 onChange={(e) => setCreateRolloutData(prev => ({ ...prev, featureFlagId: e.target.value }))}
               >
                 <option value="">Select feature flag</option>
-                {featureFlags.map((flag) => (
-                  <option key={flag._id} value={flag._id}>
-                    {flag.name}
+                {Array.isArray(featureFlags) ? featureFlags.map((flag) => (
+                  <option key={flag?._id} value={flag?._id}>
+                    {flag?.name}
                   </option>
-                ))}
+                )) : null}
               </select>
             </div>
             <div className="grid grid-cols-2 gap-4">

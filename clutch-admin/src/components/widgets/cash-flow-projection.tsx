@@ -125,7 +125,7 @@ export function CashFlowProjection({ className = '' }: CashFlowProjectionProps) 
           upcomingPayments
         });
       } catch (error) {
-        console.error('Failed to load cash flow data:', error);
+        // Failed to load cash flow data
       } finally {
         setIsLoading(false);
       }

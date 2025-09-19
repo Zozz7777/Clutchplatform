@@ -134,7 +134,7 @@ export function ClientGrowthContribution({ className = '' }: ClientGrowthContrib
           topContributors
         });
       } catch (error) {
-        console.error('Failed to load client growth data:', error);
+        // Failed to load client growth data
       } finally {
         setIsLoading(false);
       }
