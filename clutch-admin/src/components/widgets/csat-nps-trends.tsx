@@ -140,7 +140,7 @@ export function CSATNPSTrends({ className = '' }: CSATNPSTrendsProps) {
           segmentBreakdown
         });
       } catch (error) {
-        console.error('Failed to load satisfaction data:', error);
+        // Failed to load satisfaction data
       } finally {
         setIsLoading(false);
       }

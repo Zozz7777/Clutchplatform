@@ -116,7 +116,13 @@ const OPTIMIZED_COLLECTIONS = [
   // Legal Collections
   'contracts',            // Legal contracts
   'disputes',             // Legal disputes
-  'legal_documents'       // Legal documents
+  'legal_documents',      // Legal documents
+  
+  // CMS Collections
+  'cms_categories',       // CMS content categories
+  'cms_media',            // CMS media files
+  'help_articles',        // Help articles
+  'seo_data'              // SEO data
 ];
 
 // Collections to REMOVE (redundant/unused)

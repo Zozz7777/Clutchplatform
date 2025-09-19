@@ -243,9 +243,9 @@ export default function CommunicationPage() {
             <MessageSquare className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{channels.filter(c => c.status === "active").length}</div>
+            <div className="text-2xl font-bold">{(channels || []).filter(c => c.status === "active").length}</div>
             <p className="text-xs text-muted-foreground">
-              {channels.reduce((sum, c) => sum + c.unreadMessages, 0)} unread messages
+              {(channels || []).reduce((sum, c) => sum + (c.unreadMessages || 0), 0)} unread messages
             </p>
           </CardContent>
         </Card>
@@ -255,7 +255,7 @@ export default function CommunicationPage() {
             <AlertCircle className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{tickets.filter(t => t.status === "open" || t.status === "in_progress").length}</div>
+            <div className="text-2xl font-bold">{(tickets || []).filter(t => t.status === "open" || t.status === "in_progress").length}</div>
             <p className="text-xs text-muted-foreground">
               Avg response time: 2.3 hours
             </p>
@@ -320,7 +320,7 @@ export default function CommunicationPage() {
       {/* Tab Content */}
       {activeTab === "notifications" && (
         <div className="space-y-4">
-          {notifications.map((notification) => (
+          {(notifications || []).map((notification) => (
             <Card key={notification._id}>
               <CardContent className="p-6">
                 <div className="flex items-start justify-between">

@@ -141,25 +141,26 @@ export default function CMSPage() {
   }, []);
 
   useEffect(() => {
-    let filtered = content;
+    const contentArray = Array.isArray(content) ? content : [];
+    let filtered = contentArray;
 
     // Search filter
     if (searchQuery) {
       filtered = filtered.filter(item =>
-        item.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        item.content.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        item.authorName.toLowerCase().includes(searchQuery.toLowerCase())
+        item?.title?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        item?.content?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        item?.authorName?.toLowerCase().includes(searchQuery.toLowerCase())
       );
     }
 
     // Status filter
     if (statusFilter !== "all") {
-      filtered = filtered.filter(item => item.status === statusFilter);
+      filtered = filtered.filter(item => item?.status === statusFilter);
     }
 
     // Type filter
     if (typeFilter !== "all") {
-      filtered = filtered.filter(item => item.type === typeFilter);
+      filtered = filtered.filter(item => item?.type === typeFilter);
     }
 
     setFilteredContent(filtered);
@@ -359,9 +360,9 @@ export default function CMSPage() {
             <FileText className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{content.length}</div>
+            <div className="text-2xl font-bold">{Array.isArray(content) ? content.length : 0}</div>
             <p className="text-xs text-muted-foreground">
-              {content.filter(c => c.status === "published").length} published
+              {Array.isArray(content) ? content.filter(c => c?.status === "published").length : 0} published
             </p>
           </CardContent>
         </Card>
@@ -372,9 +373,9 @@ export default function CMSPage() {
             <Image className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{media.length}</div>
+            <div className="text-2xl font-bold">{Array.isArray(media) ? media.length : 0}</div>
             <p className="text-xs text-muted-foreground">
-              {media.filter(m => m.type === "image").length} images
+              {Array.isArray(media) ? media.filter(m => m?.type === "image").length : 0} images
             </p>
           </CardContent>
         </Card>
@@ -385,7 +386,7 @@ export default function CMSPage() {
             <Tag className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{categories.length}</div>
+            <div className="text-2xl font-bold">{Array.isArray(categories) ? categories.length : 0}</div>
             <p className="text-xs text-muted-foreground">
               Content categories
             </p>
@@ -399,7 +400,7 @@ export default function CMSPage() {
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">
-              {content.reduce((sum, c) => sum + c.views, 0).toLocaleString()}
+              {Array.isArray(content) ? content.reduce((sum, c) => sum + (c?.views || 0), 0).toLocaleString() : "0"}
             </div>
             <p className="text-xs text-muted-foreground">
               All time views
@@ -483,7 +484,7 @@ export default function CMSPage() {
             </div>
 
             <div className="space-y-4">
-              {filteredContent.map((item) => (
+              {Array.isArray(filteredContent) ? filteredContent.map((item) => (
                 <div key={item._id} className="flex items-center justify-between p-4 border rounded-[0.625rem] hover:bg-muted/50 transition-colors">
                   <div className="flex items-center space-x-4">
                     <div className="flex items-center space-x-2">
@@ -570,10 +571,10 @@ export default function CMSPage() {
                     </DropdownMenu>
                   </div>
                 </div>
-              ))}
+              )) : null}
             </div>
 
-            {filteredContent.length === 0 && (
+            {Array.isArray(filteredContent) && filteredContent.length === 0 && (
               <div className="text-center py-8">
                 <FileText className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
                 <p className="text-muted-foreground">No content found matching your criteria</p>
@@ -594,7 +595,7 @@ export default function CMSPage() {
           </CardHeader>
           <CardContent>
             <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-              {media.map((item) => (
+              {Array.isArray(media) ? media.map((item) => (
                 <div key={item._id} className="border rounded-[0.625rem] p-4 hover:bg-muted/50 transition-colors">
                   <div className="flex items-center space-x-3 mb-3">
                     {getMediaTypeIcon(item.type)}
@@ -657,10 +658,10 @@ export default function CMSPage() {
                     </div>
                   </div>
                 </div>
-              ))}
+              )) : null}
             </div>
 
-            {media.length === 0 && (
+            {Array.isArray(media) && media.length === 0 && (
               <div className="text-center py-8">
                 <Image className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
                 <p className="text-muted-foreground">No media files found</p>
@@ -681,7 +682,7 @@ export default function CMSPage() {
           </CardHeader>
           <CardContent>
             <div className="space-y-4">
-              {categories.map((category) => (
+              {Array.isArray(categories) ? categories.map((category) => (
                 <div key={category._id} className="flex items-center justify-between p-4 border rounded-[0.625rem] hover:bg-muted/50 transition-colors">
                   <div className="flex items-center space-x-4">
                     <div className="w-10 h-10 rounded-[0.625rem] bg-muted flex items-center justify-center">
@@ -737,10 +738,10 @@ export default function CMSPage() {
                     </DropdownMenu>
                   </div>
                 </div>
-              ))}
+              )) : null}
             </div>
 
-            {categories.length === 0 && (
+            {Array.isArray(categories) && categories.length === 0 && (
               <div className="text-center py-8">
                 <Tag className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
                 <p className="text-muted-foreground">No categories found</p>

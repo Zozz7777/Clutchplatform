@@ -33,7 +33,7 @@ export function ComplianceRadar({ className = '' }: ComplianceRadarProps) {
         const data = await businessIntelligence.getComplianceRadar();
         setCompliance(data);
       } catch (error) {
-        console.error('Failed to load compliance data:', error);
+        // Failed to load compliance data
       } finally {
         setIsLoading(false);
       }

@@ -109,7 +109,7 @@ export function ForecastAccuracy({ className = '' }: ForecastAccuracyProps) {
 
         setAccuracyData(models);
       } catch (error) {
-        console.error('Failed to load forecast accuracy data:', error);
+        // Failed to load forecast accuracy data
       } finally {
         setIsLoading(false);
       }

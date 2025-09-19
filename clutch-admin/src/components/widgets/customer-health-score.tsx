@@ -144,7 +144,7 @@ export function CustomerHealthScore({ className = '' }: CustomerHealthScoreProps
           atRisk
         });
       } catch (error) {
-        console.error('Failed to load customer health data:', error);
+        // Failed to load customer health data
       } finally {
         setIsLoading(false);
       }

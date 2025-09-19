@@ -83,7 +83,7 @@ export function CustomerLifetimeValue({ className = '' }: CustomerLifetimeValueP
 
         setClvData(segments);
       } catch (error) {
-        console.error('Failed to load CLV data:', error);
+        // Failed to load CLV data
       } finally {
         setIsLoading(false);
       }

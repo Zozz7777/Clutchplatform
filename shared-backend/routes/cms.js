@@ -441,6 +441,261 @@ router.delete('/media/:id', authenticateToken, checkRole(['head_administrator', 
   }
 });
 
+// ==================== CATEGORIES MANAGEMENT ====================
+
+// GET /api/v1/cms/categories - Get all categories
+router.get('/categories', authenticateToken, checkRole(['head_administrator', 'content_manager']), cmsRateLimit, async (req, res) => {
+  try {
+    const { page = 1, limit = 50, parent, search } = req.query;
+    const skip = (page - 1) * limit;
+    
+    const categoriesCollection = await getCollection('cms_categories');
+    
+    // Build query
+    const query = {};
+    if (parent) query.parent = parent;
+    if (search) {
+      query.$or = [
+        { name: { $regex: search, $options: 'i' } },
+        { description: { $regex: search, $options: 'i' } },
+        { slug: { $regex: search, $options: 'i' } }
+      ];
+    }
+    
+    const categories = await categoriesCollection
+      .find(query)
+      .sort({ createdAt: -1 })
+      .skip(skip)
+      .limit(parseInt(limit))
+      .toArray();
+    
+    const total = await categoriesCollection.countDocuments(query);
+    
+    res.json({
+      success: true,
+      data: {
+        categories,
+        pagination: {
+          page: parseInt(page),
+          limit: parseInt(limit),
+          total,
+          pages: Math.ceil(total / limit)
+        }
+      },
+      message: 'Categories retrieved successfully',
+      timestamp: new Date().toISOString()
+    });
+  } catch (error) {
+    console.error('Get categories error:', error);
+    res.status(500).json({
+      success: false,
+      error: 'GET_CATEGORIES_FAILED',
+      message: 'Failed to retrieve categories',
+      timestamp: new Date().toISOString()
+    });
+  }
+});
+
+// GET /api/v1/cms/categories/:id - Get category by ID
+router.get('/categories/:id', authenticateToken, checkRole(['head_administrator', 'content_manager']), cmsRateLimit, async (req, res) => {
+  try {
+    const { id } = req.params;
+    const categoriesCollection = await getCollection('cms_categories');
+    
+    const category = await categoriesCollection.findOne({ _id: new ObjectId(id) });
+    
+    if (!category) {
+      return res.status(404).json({
+        success: false,
+        error: 'CATEGORY_NOT_FOUND',
+        message: 'Category not found',
+        timestamp: new Date().toISOString()
+      });
+    }
+    
+    res.json({
+      success: true,
+      data: { category },
+      message: 'Category retrieved successfully',
+      timestamp: new Date().toISOString()
+    });
+  } catch (error) {
+    console.error('Get category error:', error);
+    res.status(500).json({
+      success: false,
+      error: 'GET_CATEGORY_FAILED',
+      message: 'Failed to retrieve category',
+      timestamp: new Date().toISOString()
+    });
+  }
+});
+
+// POST /api/v1/cms/categories - Create new category
+router.post('/categories', authenticateToken, checkRole(['head_administrator', 'content_manager']), cmsRateLimit, async (req, res) => {
+  try {
+    const {
+      name,
+      slug,
+      description,
+      parent,
+      order
+    } = req.body;
+    
+    if (!name || !slug) {
+      return res.status(400).json({
+        success: false,
+        error: 'MISSING_REQUIRED_FIELDS',
+        message: 'Name and slug are required',
+        timestamp: new Date().toISOString()
+      });
+    }
+    
+    const categoriesCollection = await getCollection('cms_categories');
+    
+    // Check if slug already exists
+    const existingCategory = await categoriesCollection.findOne({ slug: slug });
+    if (existingCategory) {
+      return res.status(409).json({
+        success: false,
+        error: 'SLUG_EXISTS',
+        message: 'Category with this slug already exists',
+        timestamp: new Date().toISOString()
+      });
+    }
+    
+    const newCategory = {
+      name,
+      slug,
+      description: description || null,
+      parent: parent || null,
+      children: [],
+      contentCount: 0,
+      order: order || 0,
+      createdAt: new Date(),
+      updatedAt: new Date()
+    };
+    
+    const result = await categoriesCollection.insertOne(newCategory);
+    
+    // Update parent category if specified
+    if (parent) {
+      await categoriesCollection.updateOne(
+        { _id: new ObjectId(parent) },
+        { $push: { children: result.insertedId } }
+      );
+    }
+    
+    res.status(201).json({
+      success: true,
+      data: { category: { ...newCategory, _id: result.insertedId } },
+      message: 'Category created successfully',
+      timestamp: new Date().toISOString()
+    });
+  } catch (error) {
+    console.error('Create category error:', error);
+    res.status(500).json({
+      success: false,
+      error: 'CREATE_CATEGORY_FAILED',
+      message: 'Failed to create category',
+      timestamp: new Date().toISOString()
+    });
+  }
+});
+
+// PUT /api/v1/cms/categories/:id - Update category
+router.put('/categories/:id', authenticateToken, checkRole(['head_administrator', 'content_manager']), cmsRateLimit, async (req, res) => {
+  try {
+    const { id } = req.params;
+    const updateData = { ...req.body, updatedAt: new Date() };
+    
+    const categoriesCollection = await getCollection('cms_categories');
+    
+    const result = await categoriesCollection.updateOne(
+      { _id: new ObjectId(id) },
+      { $set: updateData }
+    );
+    
+    if (result.matchedCount === 0) {
+      return res.status(404).json({
+        success: false,
+        error: 'CATEGORY_NOT_FOUND',
+        message: 'Category not found',
+        timestamp: new Date().toISOString()
+      });
+    }
+    
+    const updatedCategory = await categoriesCollection.findOne({ _id: new ObjectId(id) });
+    
+    res.json({
+      success: true,
+      data: { category: updatedCategory },
+      message: 'Category updated successfully',
+      timestamp: new Date().toISOString()
+    });
+  } catch (error) {
+    console.error('Update category error:', error);
+    res.status(500).json({
+      success: false,
+      error: 'UPDATE_CATEGORY_FAILED',
+      message: 'Failed to update category',
+      timestamp: new Date().toISOString()
+    });
+  }
+});
+
+// DELETE /api/v1/cms/categories/:id - Delete category
+router.delete('/categories/:id', authenticateToken, checkRole(['head_administrator']), cmsRateLimit, async (req, res) => {
+  try {
+    const { id } = req.params;
+    const categoriesCollection = await getCollection('cms_categories');
+    
+    // Check if category has children
+    const category = await categoriesCollection.findOne({ _id: new ObjectId(id) });
+    if (category && category.children && category.children.length > 0) {
+      return res.status(400).json({
+        success: false,
+        error: 'CATEGORY_HAS_CHILDREN',
+        message: 'Cannot delete category with subcategories',
+        timestamp: new Date().toISOString()
+      });
+    }
+    
+    const result = await categoriesCollection.deleteOne({ _id: new ObjectId(id) });
+    
+    if (result.deletedCount === 0) {
+      return res.status(404).json({
+        success: false,
+        error: 'CATEGORY_NOT_FOUND',
+        message: 'Category not found',
+        timestamp: new Date().toISOString()
+      });
+    }
+    
+    // Remove from parent's children array if it has a parent
+    if (category && category.parent) {
+      await categoriesCollection.updateOne(
+        { _id: new ObjectId(category.parent) },
+        { $pull: { children: new ObjectId(id) } }
+      );
+    }
+    
+    res.json({
+      success: true,
+      data: { id },
+      message: 'Category deleted successfully',
+      timestamp: new Date().toISOString()
+    });
+  } catch (error) {
+    console.error('Delete category error:', error);
+    res.status(500).json({
+      success: false,
+      error: 'DELETE_CATEGORY_FAILED',
+      message: 'Failed to delete category',
+      timestamp: new Date().toISOString()
+    });
+  }
+});
+
 // ==================== HELP ARTICLES ====================
 
 // GET /api/v1/cms/help-articles - Get help articles

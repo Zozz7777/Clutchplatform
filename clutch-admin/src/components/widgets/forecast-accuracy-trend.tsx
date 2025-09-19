@@ -131,7 +131,7 @@ export function ForecastAccuracyTrend({ className = '' }: ForecastAccuracyTrendP
           modelPerformance
         });
       } catch (error) {
-        console.error('Failed to load forecast accuracy data:', error);
+        // Failed to load forecast accuracy data
       } finally {
         setIsLoading(false);
       }
