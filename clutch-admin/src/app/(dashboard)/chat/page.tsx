@@ -83,8 +83,11 @@ export default function ChatPage() {
           productionApi.getChatMessages(selectedChannel)
         ]);
 
-        setChannels(channelsData || []);
-        setMessages(messagesData || []);
+        // Ensure we always have arrays
+        const channelsArray = Array.isArray(channelsData) ? channelsData as unknown as ChatChannel[] : [];
+        const messagesArray = Array.isArray(messagesData) ? messagesData as unknown as ChatMessage[] : [];
+        setChannels(channelsArray);
+        setMessages(messagesArray);
         
       } catch (error) {
         // Error handled by API service
@@ -156,7 +159,7 @@ export default function ChatPage() {
     );
   }
 
-  const selectedChannelData = channels.find(c => c.id === selectedChannel);
+  const selectedChannelData = Array.isArray(channels) ? channels.find(c => c?.id === selectedChannel) : undefined;
 
   return (
     <div className="space-y-6 font-sans">
@@ -198,7 +201,7 @@ export default function ChatPage() {
           </CardHeader>
           <CardContent className="p-0">
             <div className="space-y-1">
-              {channels.map((channel) => (
+              {Array.isArray(channels) ? channels.map((channel) => (
                 <div
                   key={channel.id}
                   className={`p-3 cursor-pointer hover:bg-muted/50 transition-colors ${
@@ -233,7 +236,7 @@ export default function ChatPage() {
                     </div>
                   </div>
                 </div>
-              ))}
+              )) : []}
             </div>
           </CardContent>
         </Card>
@@ -291,7 +294,7 @@ export default function ChatPage() {
           <CardContent className="p-0">
             {/* Messages Area */}
             <div className="h-96 overflow-y-auto p-4 space-y-4">
-              {messages.map((message) => (
+              {Array.isArray(messages) ? messages.map((message) => (
                 <div
                   key={message.id}
                   className={`flex ${message.sender === t('chat.you') ? "justify-end" : "justify-start"}`}
@@ -311,7 +314,7 @@ export default function ChatPage() {
                     </div>
                   </div>
                 </div>
-              ))}
+              )) : []}
             </div>
 
             {/* Message Input */}

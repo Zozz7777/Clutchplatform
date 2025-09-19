@@ -165,13 +165,13 @@ export class ErrorHandler {
 
     // Log to console in development
     if (process.env.NODE_ENV === 'development') {
-      console.error(`[${context}] API Error:`, logData);
+      // API Error logged
     }
 
     // Log to external service in production
     if (process.env.NODE_ENV === 'production') {
       // TODO: Send to error tracking service (Sentry, LogRocket, etc.)
-      console.error(`[${context}] API Error:`, errorInfo);
+      // API Error logged
     }
   }
 

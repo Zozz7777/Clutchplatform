@@ -407,7 +407,7 @@ export class SyncManager {
           this.status.syncedRecords++;
         } catch (error) {
           this.status.failedRecords++;
-          this.status.errors.push(`Failed to apply remote change ${change.table}:${change.id} - ${error.message}`);
+          this.status.errors.push(`Failed to apply remote change ${change.table}:${change.id} - ${error instanceof Error ? error.message : String(error)}`);
         }
       }
 
@@ -434,7 +434,7 @@ export class SyncManager {
         await this.applyConflictResolution(conflict, resolution);
       } catch (error) {
         logger.error('Failed to resolve conflict:', error);
-        this.status.errors.push(`Failed to resolve conflict ${conflict.record_id}: ${error.message}`);
+        this.status.errors.push(`Failed to resolve conflict ${conflict.record_id}: ${error instanceof Error ? error.message : String(error)}`);
       }
     }
   }

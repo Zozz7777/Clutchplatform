@@ -56,7 +56,7 @@ export function TrainingROI({ className = '' }: TrainingROIProps) {
           valuePerModel
         });
       } catch (error) {
-        console.error('Failed to load training ROI data:', error);
+        // Failed to load training ROI data
       } finally {
         setIsLoading(false);
       }

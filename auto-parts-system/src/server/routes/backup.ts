@@ -1,5 +1,5 @@
 import express from 'express';
-import * as multer from 'multer';
+import multer from 'multer';
 import * as path from 'path';
 import { DatabaseManager } from '../../lib/database';
 import { AuthManager } from '../../lib/auth';

@@ -134,7 +134,7 @@ class WebSocketService {
       };
 
     } catch (error) {
-      console.error('Failed to create WebSocket connection:', error);
+      // Failed to create WebSocket connection
       this.connectionStatus = 'error';
       this.isConnecting = false;
       this.attemptReconnect();
@@ -163,7 +163,7 @@ class WebSocketService {
         try {
           handler(message.data);
         } catch (error) {
-          console.error(`Error in message handler for ${message.type}:`, error);
+          // Error in message handler
         }
       });
     }
@@ -197,7 +197,7 @@ class WebSocketService {
       };
       this.ws.send(JSON.stringify(message));
     } else {
-      console.warn('WebSocket not connected, cannot send message');
+      // WebSocket not connected, cannot send message
     }
   }
 

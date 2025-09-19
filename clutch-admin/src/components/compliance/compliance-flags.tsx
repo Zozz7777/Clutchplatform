@@ -144,7 +144,7 @@ export default function ComplianceFlags({ className }: ComplianceFlagsProps) {
           setFrameworks([]);
         }
       } catch (error) {
-        console.error('Failed to load compliance data:', error);
+        // Failed to load compliance data
         // Set empty arrays as fallback
         setFlags([]);
         setFrameworks([]);

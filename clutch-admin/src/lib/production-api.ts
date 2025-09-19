@@ -216,7 +216,9 @@ export class ProductionApiService {
   // CRM APIs
   async getCustomers(): Promise<Record<string, unknown>[]> {
     try {
-      return await realApi.getCustomers();
+      const data = await realApi.getCustomers();
+      // Ensure we always return an array
+      return Array.isArray(data) ? data : [];
     } catch (error) {
       logger.error("Failed to fetch customers:", error);
       throw new Error("Failed to load customers");
@@ -225,7 +227,9 @@ export class ProductionApiService {
 
   async getTickets(): Promise<Record<string, unknown>[]> {
     try {
-      return await realApi.getTickets();
+      const data = await realApi.getTickets();
+      // Ensure we always return an array
+      return Array.isArray(data) ? data : [];
     } catch (error) {
       logger.error("Failed to fetch tickets:", error);
       throw new Error("Failed to load tickets");
@@ -633,7 +637,9 @@ export class ProductionApiService {
   // CRM APIs
   async getCustomers(): Promise<Record<string, unknown>[]> {
     try {
-      return await realApi.getCustomers();
+      const data = await realApi.getCustomers();
+      // Ensure we always return an array
+      return Array.isArray(data) ? data : [];
     } catch (error) {
       logger.error("Failed to fetch customers:", error);
       throw new Error("Failed to load customers");

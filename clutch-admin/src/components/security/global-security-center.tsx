@@ -319,7 +319,7 @@ export default function GlobalSecurityCenter() {
           setSelectedSession(mockSessions[0]);
         }
       } catch (error) {
-        console.error('Failed to load security data:', error);
+        // Failed to load security data
         setSecurityEvents([]);
         setAccessSessions([]);
         setMetrics(null);

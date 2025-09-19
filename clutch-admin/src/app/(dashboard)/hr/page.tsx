@@ -675,8 +675,8 @@ export default function HRPage() {
                       </span>
                     </div>
                     <div>
-                      <p className="font-medium">{employee.firstName} {employee.lastName}</p>
-                      <p className="text-sm text-muted-foreground">{employee.position} • {employee.department}</p>
+                      <p className="font-medium">{employee.firstName || employee.name || 'Unknown'} {employee.lastName || ''}</p>
+                      <p className="text-sm text-muted-foreground">{employee.position || 'No Position'} • {employee.department || 'No Department'}</p>
                       <div className="flex items-center space-x-2 mt-1">
                         <Badge variant={getStatusColor(employee.status) as "default" | "secondary" | "destructive" | "outline"}>
                           {employee.status}
@@ -688,7 +688,7 @@ export default function HRPage() {
                           ID: {employee.employeeId}
                         </span>
                         <span className="text-xs text-muted-foreground">
-                          ${employee.salary.toLocaleString()}
+                          ${(employee.salary || 0).toLocaleString()}
                         </span>
                       </div>
                     </div>
@@ -776,7 +776,7 @@ export default function HRPage() {
                   <div className="flex items-center space-x-4">
                     <div className="w-10 h-10 rounded-full bg-muted flex items-center justify-center">
                       <span className="text-muted-foreground font-medium">
-                        {String(invitation.name || '').charAt(0).toUpperCase()}
+                        {String(invitation.name || 'U').charAt(0).toUpperCase()}
                       </span>
                     </div>
                     <div>
@@ -881,11 +881,11 @@ export default function HRPage() {
                   <div className="flex items-center space-x-4">
                     <div className="w-10 h-10 rounded-full bg-muted flex items-center justify-center">
                       <span className="text-muted-foreground font-medium">
-                        {application.candidateName.charAt(0).toUpperCase()}
+                        {(application.candidateName || 'U').charAt(0).toUpperCase()}
                       </span>
                     </div>
                     <div>
-                      <p className="font-medium">{application.candidateName}</p>
+                      <p className="font-medium">{application.candidateName || 'Unknown Candidate'}</p>
                       <p className="text-sm text-muted-foreground">{application.jobTitle} • {application.department}</p>
                       <div className="flex items-center space-x-2 mt-1">
                         <Badge variant={getStatusColor(application.status) as "default" | "secondary" | "destructive" | "outline"}>

@@ -412,7 +412,7 @@ router.post('/transfers', requireAuth, async (req, res) => {
     res.status(500).json({
       success: false,
       error: 'CREATE_TRANSFER_FAILED',
-      message: error.message || 'Failed to create transfer',
+      message: error instanceof Error ? error.message : 'Failed to create transfer',
       timestamp: new Date().toISOString()
     });
   }
@@ -445,7 +445,7 @@ router.put('/transfers/:id/approve', requireAuth, async (req, res) => {
     res.status(500).json({
       success: false,
       error: 'APPROVE_TRANSFER_FAILED',
-      message: error.message || 'Failed to approve transfer',
+      message: error instanceof Error ? error.message : 'Failed to approve transfer',
       timestamp: new Date().toISOString()
     });
   }
@@ -489,7 +489,7 @@ router.put('/transfers/:id/complete', requireAuth, async (req, res) => {
     res.status(500).json({
       success: false,
       error: 'COMPLETE_TRANSFER_FAILED',
-      message: error.message || 'Failed to complete transfer',
+      message: error instanceof Error ? error.message : 'Failed to complete transfer',
       timestamp: new Date().toISOString()
     });
   }

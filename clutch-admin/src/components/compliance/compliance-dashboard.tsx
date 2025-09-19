@@ -77,7 +77,7 @@ export default function ComplianceDashboard() {
           setSelectedItem(complianceData[0]);
         }
       } catch (error) {
-        console.error('Failed to load compliance data:', error);
+        // Failed to load compliance data
         setComplianceItems([]);
       }
     };

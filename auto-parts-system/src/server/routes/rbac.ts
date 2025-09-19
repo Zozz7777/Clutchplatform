@@ -316,13 +316,13 @@ router.get('/check/:permissionId', requireAuth, async (req, res) => {
     const currentUser = req.user;
     const permissionId = req.params.permissionId;
 
-    const hasPermission = await rbacManager.hasPermission(currentUser.id, permissionId);
+    const hasPermission = await rbacManager.hasPermission(currentUser!.id, permissionId);
 
     res.json({
       success: true,
       data: {
         has_permission: hasPermission,
-        user_id: currentUser.id,
+        user_id: currentUser!.id,
         permission_id: permissionId
       },
       timestamp: new Date().toISOString()

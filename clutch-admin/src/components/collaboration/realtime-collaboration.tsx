@@ -96,7 +96,7 @@ export default function RealtimeCollaboration({ currentUserId, currentPage }: Re
         }));
         setCollaborationEvents(collaborationEvents);
       } catch (error) {
-        console.error('Failed to load collaboration events:', error);
+        // Failed to load collaboration events
         setCollaborationEvents([]);
       }
     };
@@ -124,7 +124,7 @@ export default function RealtimeCollaboration({ currentUserId, currentPage }: Re
           setCollaborationEvents(prev => [newEvent, ...prev.slice(0, 9)]);
         }
       } catch (error) {
-        console.error('Failed to fetch new events:', error);
+        // Failed to fetch new events
       }
     }, 10000);
 

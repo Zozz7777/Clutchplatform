@@ -425,7 +425,7 @@ export default function ZeroTrustAuditCard() {
           setSelectedAnomaly(mockAnomalies[0]);
         }
       } catch (error) {
-        console.error('Failed to load zero-trust data:', error);
+        // Failed to load zero-trust data
         setPolicies([]);
         setAnomalies([]);
         setMetrics(null);

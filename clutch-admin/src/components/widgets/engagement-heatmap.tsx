@@ -36,7 +36,7 @@ export function EngagementHeatmap({ className = '' }: EngagementHeatmapProps) {
         const data = await businessIntelligence.getEngagementHeatmap();
         setHeatmapData(data);
       } catch (error) {
-        console.error('Failed to load heatmap data:', error);
+        // Failed to load heatmap data
       } finally {
         setIsLoading(false);
       }
