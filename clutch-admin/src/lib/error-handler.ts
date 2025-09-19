@@ -7,14 +7,14 @@ export interface ApiError {
   code: string;
   message: string;
   statusCode: number;
-  details?: any;
+  details?: unknown;
   timestamp: string;
 }
 
 export interface ErrorHandlerOptions {
   showToast?: boolean;
   logError?: boolean;
-  fallbackValue?: any;
+  fallbackValue?: unknown;
   retryable?: boolean;
   maxRetries?: number;
 }
