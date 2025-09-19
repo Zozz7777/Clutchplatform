@@ -27,6 +27,7 @@ import {
   Calendar,
   User
 } from 'lucide-react';
+import { useTranslations } from '@/hooks/use-translations';
 import { productionApi } from '@/lib/production-api';
 
 interface KnowledgeArticle {
@@ -47,6 +48,7 @@ interface KnowledgeArticle {
 }
 
 export default function KnowledgeBasePage() {
+  const { t } = useTranslations();
   const [articles, setArticles] = useState<KnowledgeArticle[]>([]);
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('all');
@@ -183,9 +185,9 @@ export default function KnowledgeBasePage() {
   const getStatusBadge = (status: string) => {
     switch (status) {
       case 'published':
-        return <Badge variant="default" className="bg-green-500">Published</Badge>;
+        return <Badge variant="default" className="bg-success/100">Published</Badge>;
       case 'draft':
-        return <Badge variant="default" className="bg-yellow-500">Draft</Badge>;
+        return <Badge variant="default" className="bg-warning/100">Draft</Badge>;
       case 'archived':
         return <Badge variant="secondary">Archived</Badge>;
       default:
@@ -197,9 +199,9 @@ export default function KnowledgeBasePage() {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold font-sans">Knowledge Base</h1>
+          <h1 className="text-3xl font-bold font-sans">{t('support.knowledgeBase')}</h1>
           <p className="text-muted-foreground font-sans">
-            Manage help articles and documentation
+            {t('support.manageHelpArticles')}
           </p>
         </div>
         <Button onClick={() => setShowCreateDialog(true)}>
@@ -213,7 +215,7 @@ export default function KnowledgeBasePage() {
           <div className="relative">
             <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
             <Input
-              placeholder="Search articles..."
+              placeholder={t('support.searchArticles')}
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
               className="pl-10"
@@ -392,7 +394,7 @@ export default function KnowledgeBasePage() {
               <Label htmlFor="title">Title</Label>
               <Input 
                 id="title" 
-                placeholder="Article title" 
+                placeholder={t('support.articleTitle')} 
                 value={articleData.title}
                 onChange={(e) => setArticleData(prev => ({ ...prev, title: e.target.value }))}
               />
@@ -415,7 +417,7 @@ export default function KnowledgeBasePage() {
               <Label htmlFor="content">Content</Label>
               <textarea 
                 id="content" 
-                placeholder="Article content" 
+                placeholder={t('support.articleContent')} 
                 className="w-full p-2 border rounded-md h-32"
                 value={articleData.content}
                 onChange={(e) => setArticleData(prev => ({ ...prev, content: e.target.value }))}
@@ -468,7 +470,7 @@ export default function KnowledgeBasePage() {
               <Label htmlFor="editTitle">Title</Label>
               <Input 
                 id="editTitle" 
-                placeholder="Article title" 
+                placeholder={t('support.articleTitle')} 
                 value={articleData.title}
                 onChange={(e) => setArticleData(prev => ({ ...prev, title: e.target.value }))}
               />
@@ -491,7 +493,7 @@ export default function KnowledgeBasePage() {
               <Label htmlFor="editContent">Content</Label>
               <textarea 
                 id="editContent" 
-                placeholder="Article content" 
+                placeholder={t('support.articleContent')} 
                 className="w-full p-2 border rounded-md h-32"
                 value={articleData.content}
                 onChange={(e) => setArticleData(prev => ({ ...prev, content: e.target.value }))}

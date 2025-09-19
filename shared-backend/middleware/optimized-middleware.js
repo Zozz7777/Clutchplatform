@@ -276,7 +276,7 @@ const memoryHealthCheck = () => {
  * Apply optimized middleware stack
  */
 const applyOptimizedMiddleware = (app) => {
-  console.log('🔧 Applying optimized middleware stack...');
+  // Applying optimized middleware stack
   
   // Trust proxy
   app.set('trust proxy', 1);
@@ -315,8 +315,7 @@ const applyOptimizedMiddleware = (app) => {
     next();
   });
   
-  console.log('✅ Optimized middleware stack applied');
-  console.log(`💾 Memory optimization: ~40% reduction in middleware overhead`);
+  // Optimized middleware stack applied
 };
 
 module.exports = {

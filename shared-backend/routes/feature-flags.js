@@ -962,4 +962,232 @@ router.post('/rollouts', authenticateToken, checkRole(['head_administrator', 'te
   }
 });
 
+// ===== A/B TESTING =====
+
+// GET /api/v1/feature-flags/ab-tests - Get A/B tests
+router.get('/ab-tests', authenticateToken, checkRole(['head_administrator', 'technology_admin']), featureFlagRateLimit, async (req, res) => {
+  try {
+    const abTestsCollection = await getCollection('ab_tests');
+    const { page = 1, limit = 50, status, environment } = req.query;
+    
+    const filter = {};
+    if (status) filter.status = status;
+    if (environment) filter.environment = environment;
+    
+    const skip = (parseInt(page) - 1) * parseInt(limit);
+    
+    const abTests = await abTestsCollection
+      .find(filter)
+      .sort({ createdAt: -1 })
+      .skip(skip)
+      .limit(parseInt(limit))
+      .toArray();
+    
+    const total = await abTestsCollection.countDocuments(filter);
+    
+    res.json({
+      success: true,
+      data: {
+        abTests,
+        pagination: {
+          page: parseInt(page),
+          limit: parseInt(limit),
+          total,
+          pages: Math.ceil(total / parseInt(limit))
+        }
+      },
+      message: 'A/B tests retrieved successfully',
+      timestamp: new Date().toISOString()
+    });
+  } catch (error) {
+    console.error('Get A/B tests error:', error);
+    res.status(500).json({
+      success: false,
+      error: 'GET_AB_TESTS_FAILED',
+      message: 'Failed to retrieve A/B tests',
+      timestamp: new Date().toISOString()
+    });
+  }
+});
+
+// POST /api/v1/feature-flags/ab-tests - Create A/B test
+router.post('/ab-tests', authenticateToken, checkRole(['head_administrator', 'technology_admin']), featureFlagRateLimit, async (req, res) => {
+  try {
+    const abTestsCollection = await getCollection('ab_tests');
+    const { 
+      name, 
+      description, 
+      featureFlagId, 
+      variants, 
+      trafficAllocation,
+      startDate,
+      endDate,
+      environment 
+    } = req.body;
+    
+    // Validate required fields
+    if (!name || !featureFlagId || !variants || !Array.isArray(variants) || variants.length < 2) {
+      return res.status(400).json({
+        success: false,
+        error: 'INVALID_AB_TEST_DATA',
+        message: 'Name, feature flag ID, and at least 2 variants are required',
+        timestamp: new Date().toISOString()
+      });
+    }
+    
+    const abTestData = {
+      name,
+      description: description || '',
+      featureFlagId,
+      variants,
+      trafficAllocation: trafficAllocation || variants.map(() => 100 / variants.length),
+      startDate: startDate ? new Date(startDate) : new Date(),
+      endDate: endDate ? new Date(endDate) : null,
+      environment: environment || 'production',
+      status: 'draft',
+      createdBy: req.user.userId || req.user.id,
+      createdAt: new Date(),
+      updatedAt: new Date()
+    };
+    
+    const result = await abTestsCollection.insertOne(abTestData);
+    
+    res.json({
+      success: true,
+      data: {
+        abTest: {
+          ...abTestData,
+          _id: result.insertedId
+        }
+      },
+      message: 'A/B test created successfully',
+      timestamp: new Date().toISOString()
+    });
+    
+  } catch (error) {
+    console.error('Create A/B test error:', error);
+    res.status(500).json({
+      success: false,
+      error: 'CREATE_AB_TEST_FAILED',
+      message: 'Failed to create A/B test',
+      timestamp: new Date().toISOString()
+    });
+  }
+});
+
+// ===== ROLLOUTS =====
+
+// GET /api/v1/feature-flags/rollouts - Get rollouts
+router.get('/rollouts', authenticateToken, checkRole(['head_administrator', 'technology_admin']), featureFlagRateLimit, async (req, res) => {
+  try {
+    const rolloutsCollection = await getCollection('rollouts');
+    const { page = 1, limit = 50, status, environment } = req.query;
+    
+    const filter = {};
+    if (status) filter.status = status;
+    if (environment) filter.environment = environment;
+    
+    const skip = (parseInt(page) - 1) * parseInt(limit);
+    
+    const rollouts = await rolloutsCollection
+      .find(filter)
+      .sort({ createdAt: -1 })
+      .skip(skip)
+      .limit(parseInt(limit))
+      .toArray();
+    
+    const total = await rolloutsCollection.countDocuments(filter);
+    
+    res.json({
+      success: true,
+      data: {
+        rollouts,
+        pagination: {
+          page: parseInt(page),
+          limit: parseInt(limit),
+          total,
+          pages: Math.ceil(total / parseInt(limit))
+        }
+      },
+      message: 'Rollouts retrieved successfully',
+      timestamp: new Date().toISOString()
+    });
+  } catch (error) {
+    console.error('Get rollouts error:', error);
+    res.status(500).json({
+      success: false,
+      error: 'GET_ROLLOUTS_FAILED',
+      message: 'Failed to retrieve rollouts',
+      timestamp: new Date().toISOString()
+    });
+  }
+});
+
+// POST /api/v1/feature-flags/rollouts - Create rollout
+router.post('/rollouts', authenticateToken, checkRole(['head_administrator', 'technology_admin']), featureFlagRateLimit, async (req, res) => {
+  try {
+    const rolloutsCollection = await getCollection('rollouts');
+    const { 
+      name, 
+      description, 
+      featureFlagId, 
+      rolloutPercentage,
+      targetUsers,
+      targetGroups,
+      startDate,
+      endDate,
+      environment 
+    } = req.body;
+    
+    // Validate required fields
+    if (!name || !featureFlagId || rolloutPercentage === undefined) {
+      return res.status(400).json({
+        success: false,
+        error: 'INVALID_ROLLOUT_DATA',
+        message: 'Name, feature flag ID, and rollout percentage are required',
+        timestamp: new Date().toISOString()
+      });
+    }
+    
+    const rolloutData = {
+      name,
+      description: description || '',
+      featureFlagId,
+      rolloutPercentage: Math.max(0, Math.min(100, parseInt(rolloutPercentage))),
+      targetUsers: targetUsers || [],
+      targetGroups: targetGroups || [],
+      startDate: startDate ? new Date(startDate) : new Date(),
+      endDate: endDate ? new Date(endDate) : null,
+      environment: environment || 'production',
+      status: 'scheduled',
+      createdBy: req.user.userId || req.user.id,
+      createdAt: new Date(),
+      updatedAt: new Date()
+    };
+    
+    const result = await rolloutsCollection.insertOne(rolloutData);
+    
+    res.json({
+      success: true,
+      data: {
+        rollout: {
+          ...rolloutData,
+          _id: result.insertedId
+        }
+      },
+      message: 'Rollout created successfully',
+      timestamp: new Date().toISOString()
+    });
+    
+  } catch (error) {
+    console.error('Create rollout error:', error);
+    res.status(500).json({
+      success: false,
+      error: 'CREATE_ROLLOUT_FAILED',
+      message: 'Failed to create rollout',
+      timestamp: new Date().toISOString()
+    });
+  }
+});
+
 module.exports = router;

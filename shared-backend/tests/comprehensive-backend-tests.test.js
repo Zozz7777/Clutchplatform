@@ -1,5 +1,5 @@
 const request = require('supertest');
-const app = require('../server');
+const { app } = require('../server');
 const { connectToDatabase } = require('../config/database');
 
 describe('🚀 Comprehensive Backend Testing Pipeline', () => {
@@ -15,15 +15,13 @@ describe('🚀 Comprehensive Backend Testing Pipeline', () => {
       console.log('⚠️ Database connection failed, using mock data');
     }
 
-    // Start server
+    // Use the Express app directly for testing
     server = app;
   }, 30000);
 
   afterAll(async () => {
-    // Cleanup
-    if (server) {
-      await new Promise(resolve => server.close(resolve));
-    }
+    // Cleanup - no need to close app in tests
+    console.log('✅ Test cleanup completed');
   });
 
   describe('🔧 System Health & Infrastructure', () => {

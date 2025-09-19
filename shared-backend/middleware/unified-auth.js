@@ -12,24 +12,16 @@ const authenticateToken = async (req, res, next) => {
     // Skip auth for public endpoints
     const publicPaths = ['/login', '/register', '/employee-login', '/create-employee', '/health', '/test', '/ping', '/webhook/github'];
     if (publicPaths.includes(req.path) || req.path.includes('/test') || req.path.includes('/health')) {
-      console.log('🔓 Skipping auth for public endpoint:', req.path);
+      // Skipping auth for public endpoint
       return next();
     }
     
     // Debug authentication attempt
-    console.log('🔐 Authentication attempt:', {
-      path: req.path,
-      method: req.method,
-      hasAuthHeader: !!req.headers.authorization,
-      authHeader: req.headers.authorization ? req.headers.authorization.substring(0, 20) + '...' : 'none',
-      userAgent: req.headers['user-agent']?.substring(0, 50) + '...',
-      origin: req.headers.origin,
-      timestamp: new Date().toISOString()
-    });
+    // Authentication attempt
     
     const authHeader = req.headers.authorization;
     if (!authHeader || !authHeader.startsWith('Bearer ')) {
-      console.log('❌ No valid Authorization header found');
+      // No valid Authorization header found
       return res.status(401).json({ 
         success: false,
         error: 'NO_TOKEN_PROVIDED',
@@ -86,13 +78,9 @@ const authenticateToken = async (req, res, next) => {
     
     // Handle JWT tokens
     try {
-      console.log('🔑 Attempting JWT token validation...');
+      // Attempting JWT token validation
       const decoded = jwt.verify(token, process.env.JWT_SECRET);
-      console.log('✅ JWT token validated successfully:', {
-        userId: decoded.userId || decoded.id,
-        role: decoded.role,
-        type: decoded.type
-      });
+      // JWT token validated successfully
       
       // Ensure both id and userId are set for compatibility
       req.user = {

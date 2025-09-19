@@ -29,7 +29,7 @@ interface RoleData {
   count: number;
   percentage: number;
   color: string;
-  icon: any;
+  icon: React.ComponentType<{ className?: string }>;
   description: string;
 }
 
@@ -51,27 +51,27 @@ export function RoleDistribution({ className = '' }: RoleDistributionProps) {
         const totalUsers = users?.length || 0;
         const roleDefinitions = {
           admin: { 
-            color: 'text-red-600', 
+            color: 'text-destructive', 
             icon: Shield, 
             description: 'Full system access and management' 
           },
           manager: { 
-            color: 'text-blue-600', 
+            color: 'text-primary', 
             icon: UserCheck, 
             description: 'Team and project management' 
           },
           staff: { 
-            color: 'text-green-600', 
+            color: 'text-success', 
             icon: User, 
             description: 'Standard user access' 
           },
           customer: { 
-            color: 'text-purple-600', 
+            color: 'text-primary', 
             icon: Users, 
             description: 'Customer portal access' 
           },
           provider: { 
-            color: 'text-orange-600', 
+            color: 'text-warning', 
             icon: Settings, 
             description: 'Service provider access' 
           }
@@ -81,7 +81,7 @@ export function RoleDistribution({ className = '' }: RoleDistributionProps) {
           role,
           count,
           percentage: totalUsers > 0 ? (count / totalUsers) * 100 : 0,
-          color: roleDefinitions[role as keyof typeof roleDefinitions]?.color || 'text-gray-600',
+          color: roleDefinitions[role as keyof typeof roleDefinitions]?.color || 'text-muted-foreground',
           icon: roleDefinitions[role as keyof typeof roleDefinitions]?.icon || User,
           description: roleDefinitions[role as keyof typeof roleDefinitions]?.description || 'User access'
         }));
@@ -126,16 +126,16 @@ export function RoleDistribution({ className = '' }: RoleDistributionProps) {
       <Card className={className}>
         <CardHeader>
           <CardTitle className="flex items-center space-x-2">
-            <PieChart className="h-5 w-5 text-blue-600" />
+            <PieChart className="h-5 w-5 text-primary" />
             <span>Role Distribution</span>
           </CardTitle>
           <CardDescription>Loading role data...</CardDescription>
         </CardHeader>
         <CardContent>
           <div className="animate-pulse space-y-4">
-            <div className="h-4 bg-gray-200 rounded-lg w-3/4"></div>
-            <div className="h-4 bg-gray-200 rounded-lg w-1/2"></div>
-            <div className="h-4 bg-gray-200 rounded-lg w-2/3"></div>
+            <div className="h-4 bg-muted rounded-[0.625rem] w-3/4"></div>
+            <div className="h-4 bg-muted rounded-[0.625rem] w-1/2"></div>
+            <div className="h-4 bg-muted rounded-[0.625rem] w-2/3"></div>
           </div>
         </CardContent>
       </Card>
@@ -150,7 +150,7 @@ export function RoleDistribution({ className = '' }: RoleDistributionProps) {
     <Card className={className}>
       <CardHeader>
         <CardTitle className="flex items-center space-x-2">
-          <PieChart className="h-5 w-5 text-blue-600" />
+          <PieChart className="h-5 w-5 text-primary" />
           <span>Role Distribution</span>
         </CardTitle>
         <CardDescription>
@@ -160,28 +160,28 @@ export function RoleDistribution({ className = '' }: RoleDistributionProps) {
       <CardContent className="space-y-6">
         {/* Summary Stats */}
         <div className="grid grid-cols-3 gap-4">
-          <div className="text-center p-3 bg-blue-50 rounded-lg-lg">
-            <Users className="h-5 w-5 text-blue-600 mx-auto mb-1" />
-            <p className="text-lg font-bold text-blue-600">{totalUsers}</p>
-            <p className="text-xs text-gray-500">Total Users</p>
+          <div className="text-center p-3 bg-primary/10 rounded-[0.625rem]-lg">
+            <Users className="h-5 w-5 text-primary mx-auto mb-1" />
+            <p className="text-lg font-bold text-primary">{totalUsers}</p>
+            <p className="text-xs text-muted-foreground">Total Users</p>
           </div>
-          <div className="text-center p-3 bg-green-50 rounded-lg-lg">
-            <UserCheck className="h-5 w-5 text-green-600 mx-auto mb-1" />
-            <p className="text-lg font-bold text-green-600">{roleData.length}</p>
-            <p className="text-xs text-gray-500">Roles</p>
+          <div className="text-center p-3 bg-success/10 rounded-[0.625rem]-lg">
+            <UserCheck className="h-5 w-5 text-success mx-auto mb-1" />
+            <p className="text-lg font-bold text-success">{roleData.length}</p>
+            <p className="text-xs text-muted-foreground">Roles</p>
           </div>
-          <div className="text-center p-3 bg-purple-50 rounded-lg-lg">
-            <BarChart3 className="h-5 w-5 text-purple-600 mx-auto mb-1" />
-            <p className="text-lg font-bold text-purple-600">
+          <div className="text-center p-3 bg-primary/10 rounded-[0.625rem]-lg">
+            <BarChart3 className="h-5 w-5 text-primary mx-auto mb-1" />
+            <p className="text-lg font-bold text-primary">
               {largestRole ? largestRole.percentage.toFixed(1) : 0}%
             </p>
-            <p className="text-xs text-gray-500">Largest Role</p>
+            <p className="text-xs text-muted-foreground">Largest Role</p>
           </div>
         </div>
 
         {/* Role List */}
         <div className="space-y-3">
-          <h4 className="text-sm font-medium text-gray-900">Role Breakdown</h4>
+          <h4 className="text-sm font-medium text-foreground">Role Breakdown</h4>
           <div className="space-y-2">
             {roleData.map((role, index) => {
               const RoleIcon = role.icon;
@@ -189,35 +189,35 @@ export function RoleDistribution({ className = '' }: RoleDistributionProps) {
               const TrendIcon = trend.trend === 'up' ? TrendingUp : trend.trend === 'down' ? TrendingDown : Users;
               
               return (
-                <div key={role.role} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg-lg">
+                <div key={role.role} className="flex items-center justify-between p-3 bg-muted/50 rounded-[0.625rem]-lg">
                   <div className="flex items-center space-x-3">
-                    <div className="flex items-center justify-center w-8 h-8 bg-blue-100 rounded-lg-full">
-                      <span className="text-sm font-semibold text-blue-600">
+                    <div className="flex items-center justify-center w-8 h-8 bg-primary/10 rounded-[0.625rem]-full">
+                      <span className="text-sm font-semibold text-primary">
                         {index + 1}
                       </span>
                     </div>
                     <RoleIcon className={`h-4 w-4 ${role.color}`} />
                     <div>
-                      <p className="text-sm font-medium text-gray-900 capitalize">{role.role}</p>
-                      <p className="text-xs text-gray-500">{role.description}</p>
+                      <p className="text-sm font-medium text-foreground capitalize">{role.role}</p>
+                      <p className="text-xs text-muted-foreground">{role.description}</p>
                     </div>
                   </div>
                   
                   <div className="text-right">
                     <div className="flex items-center space-x-2">
-                      <p className="text-sm font-semibold text-gray-900">{role.count}</p>
+                      <p className="text-sm font-semibold text-foreground">{role.count}</p>
                       <Badge variant="outline" className="text-xs">
                         {role.percentage.toFixed(1)}%
                       </Badge>
                     </div>
                     <div className="flex items-center space-x-1 mt-1">
                       <TrendIcon className={`h-3 w-3 ${
-                        trend.trend === 'up' ? 'text-green-500' : 
-                        trend.trend === 'down' ? 'text-red-500' : 'text-gray-500'
+                        trend.trend === 'up' ? 'text-success' : 
+                        trend.trend === 'down' ? 'text-destructive' : 'text-muted-foreground'
                       }`} />
                       <span className={`text-xs ${
-                        trend.trend === 'up' ? 'text-green-600' : 
-                        trend.trend === 'down' ? 'text-red-600' : 'text-gray-600'
+                        trend.trend === 'up' ? 'text-success' : 
+                        trend.trend === 'down' ? 'text-destructive' : 'text-muted-foreground'
                       }`}>
                         {trend.change > 0 ? '+' : ''}{trend.change}%
                       </span>
@@ -231,13 +231,13 @@ export function RoleDistribution({ className = '' }: RoleDistributionProps) {
 
         {/* Role Distribution Chart */}
         <div className="space-y-3">
-          <h4 className="text-sm font-medium text-gray-900">Distribution</h4>
+          <h4 className="text-sm font-medium text-foreground">Distribution</h4>
           <div className="space-y-2">
             {roleData.map((role) => (
               <div key={role.role} className="space-y-1">
                 <div className="flex justify-between text-sm">
-                  <span className="text-gray-600 capitalize">{role.role}</span>
-                  <span className="text-gray-900 font-medium">{role.percentage.toFixed(1)}%</span>
+                  <span className="text-muted-foreground capitalize">{role.role}</span>
+                  <span className="text-foreground font-medium">{role.percentage.toFixed(1)}%</span>
                 </div>
                 <Progress value={role.percentage} className="h-2" />
               </div>
@@ -247,19 +247,19 @@ export function RoleDistribution({ className = '' }: RoleDistributionProps) {
 
         {/* Role Insights */}
         <div className="grid grid-cols-2 gap-4">
-          <div className="text-center p-3 bg-green-50 rounded-lg-lg">
-            <UserCheck className="h-4 w-4 text-green-600 mx-auto mb-1" />
-            <p className="text-sm font-bold text-green-600 capitalize">
+          <div className="text-center p-3 bg-success/10 rounded-[0.625rem]-lg">
+            <UserCheck className="h-4 w-4 text-success mx-auto mb-1" />
+            <p className="text-sm font-bold text-success capitalize">
               {largestRole?.role || 'N/A'}
             </p>
-            <p className="text-xs text-gray-500">Largest Role</p>
+            <p className="text-xs text-muted-foreground">Largest Role</p>
           </div>
-          <div className="text-center p-3 bg-red-50 rounded-lg-lg">
-            <User className="h-4 w-4 text-red-600 mx-auto mb-1" />
-            <p className="text-sm font-bold text-red-600 capitalize">
+          <div className="text-center p-3 bg-destructive/10 rounded-[0.625rem]-lg">
+            <User className="h-4 w-4 text-destructive mx-auto mb-1" />
+            <p className="text-sm font-bold text-destructive capitalize">
               {smallestRole?.role || 'N/A'}
             </p>
-            <p className="text-xs text-gray-500">Smallest Role</p>
+            <p className="text-xs text-muted-foreground">Smallest Role</p>
           </div>
         </div>
 
@@ -276,7 +276,7 @@ export function RoleDistribution({ className = '' }: RoleDistributionProps) {
         </div>
 
         {/* Insights */}
-        <div className="p-3 bg-blue-50 rounded-lg-lg">
+        <div className="p-3 bg-primary/10 rounded-[0.625rem]-lg">
           <h5 className="text-sm font-medium text-blue-900 mb-2">💡 Role Insights</h5>
           <ul className="text-xs text-blue-800 space-y-1">
             <li>• Total users: {totalUsers}</li>

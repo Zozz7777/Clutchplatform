@@ -376,21 +376,21 @@ export default function AutoHealingPlaybooks({ className }: AutoHealingPlaybooks
 
   const getStatusColor = (status: string) => {
     switch (status) {
-      case 'active': return 'bg-green-100 text-green-800';
-      case 'inactive': return 'bg-gray-100 text-gray-800';
-      case 'testing': return 'bg-yellow-100 text-yellow-800';
-      case 'failed': return 'bg-red-100 text-red-800';
-      default: return 'bg-gray-100 text-gray-800';
+      case 'active': return 'bg-success/10 text-green-800';
+      case 'inactive': return 'bg-muted text-gray-800';
+      case 'testing': return 'bg-warning/10 text-yellow-800';
+      case 'failed': return 'bg-destructive/10 text-red-800';
+      default: return 'bg-muted text-gray-800';
     }
   };
 
   const getSeverityColor = (severity: string) => {
     switch (severity) {
-      case 'low': return 'bg-green-100 text-green-800';
-      case 'medium': return 'bg-yellow-100 text-yellow-800';
-      case 'high': return 'bg-orange-100 text-orange-800';
-      case 'critical': return 'bg-red-100 text-red-800';
-      default: return 'bg-gray-100 text-gray-800';
+      case 'low': return 'bg-success/10 text-green-800';
+      case 'medium': return 'bg-warning/10 text-yellow-800';
+      case 'high': return 'bg-warning/10 text-orange-800';
+      case 'critical': return 'bg-destructive/10 text-red-800';
+      default: return 'bg-muted text-gray-800';
     }
   };
 
@@ -408,10 +408,10 @@ export default function AutoHealingPlaybooks({ className }: AutoHealingPlaybooks
   };
 
   const getSuccessRateColor = (rate: number) => {
-    if (rate >= 90) return 'text-green-600';
-    if (rate >= 80) return 'text-yellow-600';
-    if (rate >= 70) return 'text-orange-600';
-    return 'text-red-600';
+    if (rate >= 90) return 'text-success';
+    if (rate >= 80) return 'text-warning';
+    if (rate >= 70) return 'text-warning';
+    return 'text-destructive';
   };
 
   const filteredPlaybooks = playbooks.filter(playbook => {
@@ -446,7 +446,7 @@ export default function AutoHealingPlaybooks({ className }: AutoHealingPlaybooks
                 variant="outline"
                 size="sm"
                 onClick={() => setIsMonitoring(!isMonitoring)}
-                className={isMonitoring ? 'bg-green-100 text-green-800' : ''}
+                className={isMonitoring ? 'bg-success/10 text-green-800' : ''}
               >
                 {isMonitoring ? <Eye className="h-4 w-4 mr-2" /> : <EyeOff className="h-4 w-4 mr-2" />}
                 {isMonitoring ? 'Monitoring' : 'Paused'}
@@ -465,26 +465,26 @@ export default function AutoHealingPlaybooks({ className }: AutoHealingPlaybooks
         <CardContent className="space-y-6">
           {/* Playbook Summary */}
           <div className="grid grid-cols-4 gap-4">
-            <div className="text-center p-3 bg-green-50 rounded-lg">
-              <div className="text-2xl font-bold text-green-600">{activePlaybooks}</div>
+            <div className="text-center p-3 bg-success/10 rounded-[0.625rem]">
+              <div className="text-2xl font-bold text-success">{activePlaybooks}</div>
               <div className="text-sm text-muted-foreground">Active Playbooks</div>
             </div>
-            <div className="text-center p-3 bg-blue-50 rounded-lg">
-              <div className="text-2xl font-bold text-blue-600">{totalExecutions}</div>
+            <div className="text-center p-3 bg-primary/10 rounded-[0.625rem]">
+              <div className="text-2xl font-bold text-primary">{totalExecutions}</div>
               <div className="text-sm text-muted-foreground">Total Executions</div>
             </div>
-            <div className="text-center p-3 bg-purple-50 rounded-lg">
-              <div className="text-2xl font-bold text-purple-600">{avgSuccessRate}%</div>
+            <div className="text-center p-3 bg-primary/10 rounded-[0.625rem]">
+              <div className="text-2xl font-bold text-primary">{avgSuccessRate}%</div>
               <div className="text-sm text-muted-foreground">Avg Success Rate</div>
             </div>
-            <div className="text-center p-3 bg-orange-50 rounded-lg">
-              <div className="text-2xl font-bold text-orange-600">{totalServices}</div>
+            <div className="text-center p-3 bg-warning/10 rounded-[0.625rem]">
+              <div className="text-2xl font-bold text-warning">{totalServices}</div>
               <div className="text-sm text-muted-foreground">Protected Services</div>
             </div>
           </div>
 
           {/* Auto-Healing Overview */}
-          <div className="p-4 bg-gradient-to-r from-green-50 to-blue-50 rounded-lg">
+          <div className="p-4 bg-gradient-to-r from-green-50 to-blue-50 rounded-[0.625rem]">
             <div className="flex items-center justify-between">
               <div>
                 <h4 className="font-medium">Auto-Healing System</h4>
@@ -493,7 +493,7 @@ export default function AutoHealingPlaybooks({ className }: AutoHealingPlaybooks
                 </p>
               </div>
               <div className="text-right">
-                <div className="text-3xl font-bold text-green-600">
+                <div className="text-3xl font-bold text-success">
                   {avgSuccessRate}%
                 </div>
                 <div className="text-sm text-muted-foreground">success rate</div>
@@ -538,8 +538,8 @@ export default function AutoHealingPlaybooks({ className }: AutoHealingPlaybooks
               {filteredPlaybooks.map((playbook) => (
                 <div
                   key={playbook.id}
-                  className={`p-3 border rounded-lg cursor-pointer transition-colors ${
-                    selectedPlaybook?.id === playbook.id ? 'border-blue-500 bg-blue-50' : 'hover:bg-gray-50'
+                  className={`p-3 border rounded-[0.625rem] cursor-pointer transition-colors ${
+                    selectedPlaybook?.id === playbook.id ? 'border-blue-500 bg-primary/10' : 'hover:bg-muted/50'
                   }`}
                   onClick={() => setSelectedPlaybook(playbook)}
                 >
@@ -677,7 +677,7 @@ export default function AutoHealingPlaybooks({ className }: AutoHealingPlaybooks
                     <h5 className="font-medium mb-2">Healing Steps</h5>
                     <div className="space-y-2">
                       {selectedPlaybook.steps.map((step) => (
-                        <div key={step.id} className="p-3 border rounded-lg">
+                        <div key={step.id} className="p-3 border rounded-[0.625rem]">
                           <div className="flex items-center justify-between mb-2">
                             <div className="flex items-center gap-2">
                               {getStepTypeIcon(step.type)}
@@ -759,13 +759,13 @@ export default function AutoHealingPlaybooks({ className }: AutoHealingPlaybooks
                       </div>
                       <div className="flex justify-between">
                         <span>Rollback Enabled:</span>
-                        <Badge className={selectedPlaybook.safety.rollbackEnabled ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}>
+                        <Badge className={selectedPlaybook.safety.rollbackEnabled ? 'bg-success/10 text-green-800' : 'bg-destructive/10 text-red-800'}>
                           {selectedPlaybook.safety.rollbackEnabled ? 'Yes' : 'No'}
                         </Badge>
                       </div>
                       <div className="flex justify-between">
                         <span>Approval Required:</span>
-                        <Badge className={selectedPlaybook.safety.approvalRequired ? 'bg-yellow-100 text-yellow-800' : 'bg-green-100 text-green-800'}>
+                        <Badge className={selectedPlaybook.safety.approvalRequired ? 'bg-warning/10 text-yellow-800' : 'bg-success/10 text-green-800'}>
                           {selectedPlaybook.safety.approvalRequired ? 'Yes' : 'No'}
                         </Badge>
                       </div>

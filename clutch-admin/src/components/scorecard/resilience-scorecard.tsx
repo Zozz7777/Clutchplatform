@@ -154,30 +154,30 @@ export default function ResilienceScorecard({ className }: ResilienceScorecardPr
 
   const getStatusColor = (status: string) => {
     switch (status) {
-      case 'excellent': return 'bg-green-500';
-      case 'good': return 'bg-blue-500';
-      case 'warning': return 'bg-yellow-500';
-      case 'critical': return 'bg-red-500';
-      default: return 'bg-gray-500';
+      case 'excellent': return 'bg-success/100';
+      case 'good': return 'bg-primary/100';
+      case 'warning': return 'bg-warning/100';
+      case 'critical': return 'bg-destructive/100';
+      default: return 'bg-muted/500';
     }
   };
 
   const getStatusTextColor = (status: string) => {
     switch (status) {
-      case 'excellent': return 'text-green-600';
-      case 'good': return 'text-blue-600';
-      case 'warning': return 'text-yellow-600';
-      case 'critical': return 'text-red-600';
-      default: return 'text-gray-600';
+      case 'excellent': return 'text-success';
+      case 'good': return 'text-primary';
+      case 'warning': return 'text-warning';
+      case 'critical': return 'text-destructive';
+      default: return 'text-muted-foreground';
     }
   };
 
   const getTrendIcon = (trend: string) => {
     switch (trend) {
-      case 'up': return <TrendingUp className="h-4 w-4 text-green-500" />;
-      case 'down': return <TrendingDown className="h-4 w-4 text-red-500" />;
-      case 'stable': return <Activity className="h-4 w-4 text-blue-500" />;
-      default: return <Activity className="h-4 w-4 text-gray-500" />;
+      case 'up': return <TrendingUp className="h-4 w-4 text-success" />;
+      case 'down': return <TrendingDown className="h-4 w-4 text-destructive" />;
+      case 'stable': return <Activity className="h-4 w-4 text-primary" />;
+      default: return <Activity className="h-4 w-4 text-muted-foreground" />;
     }
   };
 
@@ -192,10 +192,10 @@ export default function ResilienceScorecard({ className }: ResilienceScorecardPr
   };
 
   const getOverallStatus = (score: number) => {
-    if (score >= 90) return { status: 'excellent', color: 'text-green-600', bg: 'bg-green-50' };
-    if (score >= 80) return { status: 'good', color: 'text-blue-600', bg: 'bg-blue-50' };
-    if (score >= 70) return { status: 'warning', color: 'text-yellow-600', bg: 'bg-yellow-50' };
-    return { status: 'critical', color: 'text-red-600', bg: 'bg-red-50' };
+    if (score >= 90) return { status: 'excellent', color: 'text-success', bg: 'bg-success/10' };
+    if (score >= 80) return { status: 'good', color: 'text-primary', bg: 'bg-primary/10' };
+    if (score >= 70) return { status: 'warning', color: 'text-warning', bg: 'bg-warning/10' };
+    return { status: 'critical', color: 'text-destructive', bg: 'bg-destructive/10' };
   };
 
   const overallStatus = getOverallStatus(overallScore);
@@ -226,7 +226,7 @@ export default function ResilienceScorecard({ className }: ResilienceScorecardPr
 
       <CardContent className="space-y-6">
         {/* Overall Score Visualization */}
-        <div className={`p-4 rounded-lg ${overallStatus.bg}`}>
+        <div className={`p-4 rounded-[0.625rem] ${overallStatus.bg}`}>
           <div className="flex items-center justify-between mb-2">
             <span className="font-medium">Overall Resilience</span>
             <Badge className={`${getStatusColor(overallStatus.status)} text-white`}>
@@ -244,7 +244,7 @@ export default function ResilienceScorecard({ className }: ResilienceScorecardPr
           {metrics.map((metric) => (
             <div
               key={metric.id}
-              className="p-4 border rounded-lg hover:shadow-md transition-shadow"
+              className="p-4 border rounded-[0.625rem] hover:shadow-sm transition-shadow"
             >
               <div className="flex items-center justify-between mb-3">
                 <div className="flex items-center space-x-2">
@@ -314,9 +314,9 @@ export default function ResilienceScorecard({ className }: ResilienceScorecardPr
             {metrics
               .filter(metric => metric.status === 'warning' || metric.status === 'critical')
               .map((metric) => (
-                <div key={metric.id} className="flex items-center justify-between p-2 bg-yellow-50 rounded-lg">
+                <div key={metric.id} className="flex items-center justify-between p-2 bg-warning/10 rounded-[0.625rem]">
                   <div className="flex items-center space-x-2">
-                    <AlertTriangle className="h-4 w-4 text-yellow-600" />
+                    <AlertTriangle className="h-4 w-4 text-warning" />
                     <span className="text-sm">
                       Address {metric.name.toLowerCase()} - currently at {metric.score}%
                     </span>
@@ -333,25 +333,25 @@ export default function ResilienceScorecard({ className }: ResilienceScorecardPr
         {/* Summary Stats */}
         <div className="grid grid-cols-4 gap-4 pt-4 border-t">
           <div className="text-center">
-            <div className="text-2xl font-bold text-green-600">
+            <div className="text-2xl font-bold text-success">
               {metrics.filter(m => m.status === 'excellent').length}
             </div>
             <div className="text-xs text-muted-foreground">Excellent</div>
           </div>
           <div className="text-center">
-            <div className="text-2xl font-bold text-blue-600">
+            <div className="text-2xl font-bold text-primary">
               {metrics.filter(m => m.status === 'good').length}
             </div>
             <div className="text-xs text-muted-foreground">Good</div>
           </div>
           <div className="text-center">
-            <div className="text-2xl font-bold text-yellow-600">
+            <div className="text-2xl font-bold text-warning">
               {metrics.filter(m => m.status === 'warning').length}
             </div>
             <div className="text-xs text-muted-foreground">Warning</div>
           </div>
           <div className="text-center">
-            <div className="text-2xl font-bold text-red-600">
+            <div className="text-2xl font-bold text-destructive">
               {metrics.filter(m => m.status === 'critical').length}
             </div>
             <div className="text-xs text-muted-foreground">Critical</div>

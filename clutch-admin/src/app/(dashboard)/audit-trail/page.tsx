@@ -50,6 +50,7 @@ import {
   Monitor,
 } from "lucide-react";
 import { productionApi } from "@/lib/production-api";
+import { useTranslations } from "@/hooks/use-translations";
 
 interface AuditLog {
   _id: string;
@@ -151,6 +152,7 @@ interface UserActivity {
 }
 
 export default function AuditTrailPage() {
+  const { t } = useTranslations();
   const [auditLogs, setAuditLogs] = useState<AuditLog[]>([]);
   const [securityEvents, setSecurityEvents] = useState<SecurityEvent[]>([]);
   const [userActivities, setUserActivities] = useState<UserActivity[]>([]);
@@ -436,10 +438,11 @@ export default function AuditTrailPage() {
     try {
       setLoading(true);
       const data = await productionApi.getAuditLogs();
-      setAuditLogs(data || mockAuditLogs);
+      setAuditLogs(data || []);
     } catch (error) {
       console.error("Error loading audit logs:", error);
-      setAuditLogs(mockAuditLogs);
+      toast.error(t('auditTrail.failedToLoadAuditLogs'));
+      setAuditLogs([]);
     } finally {
       setLoading(false);
     }
@@ -447,21 +450,23 @@ export default function AuditTrailPage() {
 
   const loadSecurityEvents = async () => {
     try {
-      const data = await productionApi.getAuditLogs({ type: 'security' });
-      setSecurityEvents(data || mockSecurityEvents);
+      const data = await productionApi.getSecurityEvents();
+      setSecurityEvents(data || []);
     } catch (error) {
       console.error("Error loading security events:", error);
-      setSecurityEvents(mockSecurityEvents);
+      toast.error(t('auditTrail.failedToLoadSecurityEvents'));
+      setSecurityEvents([]);
     }
   };
 
   const loadUserActivities = async () => {
     try {
-      const data = await productionApi.getAuditLogs({ type: 'user_activity' });
-      setUserActivities(data || mockUserActivities);
+      const data = await productionApi.getUserActivities();
+      setUserActivities(data || []);
     } catch (error) {
       console.error("Error loading user activities:", error);
-      setUserActivities(mockUserActivities);
+      toast.error(t('auditTrail.failedToLoadUserActivities'));
+      setUserActivities([]);
     }
   };
 
@@ -527,11 +532,11 @@ export default function AuditTrailPage() {
       case "LOGIN":
         return <Unlock className="h-4 w-4 text-primary" />;
       case "LOGOUT":
-        return <Lock className="h-4 w-4 text-gray-600" />;
+        return <Lock className="h-4 w-4 text-muted-foreground" />;
       case "FAILED_LOGIN":
         return <XCircle className="h-4 w-4 text-destructive" />;
       default:
-        return <Activity className="h-4 w-4 text-gray-600" />;
+        return <Activity className="h-4 w-4 text-muted-foreground" />;
     }
   };
 
@@ -567,9 +572,9 @@ export default function AuditTrailPage() {
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold tracking-tight">Audit Trail</h1>
+          <h1 className="text-3xl font-medium tracking-tight">{t('auditTrail.title')}</h1>
           <p className="text-muted-foreground">
-            Monitor system activities, security events, and user actions
+            {t('auditTrail.description')}
           </p>
         </div>
         <div className="flex items-center space-x-2">
@@ -592,7 +597,7 @@ export default function AuditTrailPage() {
             <History className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{totalLogs}</div>
+            <div className="text-2xl font-medium">{totalLogs}</div>
             <p className="text-xs text-muted-foreground">
               Last 7 days
             </p>
@@ -604,7 +609,7 @@ export default function AuditTrailPage() {
             <AlertTriangle className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold text-destructive">{criticalEvents}</div>
+            <div className="text-2xl font-medium text-destructive">{criticalEvents}</div>
             <p className="text-xs text-muted-foreground">
               Require attention
             </p>
@@ -616,7 +621,7 @@ export default function AuditTrailPage() {
             <XCircle className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold text-secondary">{failedActions}</div>
+            <div className="text-2xl font-medium text-secondary">{failedActions}</div>
             <p className="text-xs text-muted-foreground">
               Security concerns
             </p>
@@ -628,7 +633,7 @@ export default function AuditTrailPage() {
             <User className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{activeUsers}</div>
+            <div className="text-2xl font-medium">{activeUsers}</div>
             <p className="text-xs text-muted-foreground">
               Currently online
             </p>
@@ -638,7 +643,7 @@ export default function AuditTrailPage() {
 
       {/* Security Events Alert */}
       {securityEvents.filter(e => e.status === "open" || e.status === "investigating").length > 0 && (
-        <Card className="border-red-200 bg-red-50">
+        <Card className="border-red-200 bg-destructive/10">
           <CardHeader>
             <CardTitle className="text-red-800 flex items-center">
               <AlertTriangle className="mr-2 h-5 w-5" />
@@ -648,9 +653,9 @@ export default function AuditTrailPage() {
           <CardContent>
             <div className="space-y-2">
               {securityEvents.filter(e => e.status === "open" || e.status === "investigating").map((event) => (
-                <div key={event._id} className="flex items-center justify-between p-3 bg-white rounded-lg border">
+                <div key={event._id} className="flex items-center justify-between p-3 bg-background rounded-[0.625rem] border border-border">
                   <div>
-                    <p className="font-medium text-red-800">{event.description}</p>
+                    <p className="font-medium text-destructive">{event.description}</p>
                     <p className="text-sm text-destructive">
                       {event.type} • {event.source.ipAddress} • {new Date(event.timestamp).toLocaleString()}
                     </p>
@@ -679,7 +684,7 @@ export default function AuditTrailPage() {
               <div className="relative">
                 <Search className="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground" />
                 <Input
-                  placeholder="Search logs..."
+                  placeholder={t('auditTrail.searchAuditLogs')}
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
                   className="pl-8"
@@ -768,7 +773,7 @@ export default function AuditTrailPage() {
 
           <div className="space-y-2">
             {filteredLogs.map((log) => (
-              <div key={log._id} className="flex items-center justify-between p-4 border rounded-lg hover:bg-gray-50">
+              <div key={log._id} className="flex items-center justify-between p-4 border border-border rounded-[0.625rem] hover:bg-muted/50">
                 <div className="flex items-center space-x-4">
                   <div className="flex items-center space-x-2">
                     {getActionIcon(log.action)}
@@ -825,9 +830,9 @@ export default function AuditTrailPage() {
         <CardContent>
           <div className="space-y-4">
             {userActivities.map((activity) => (
-              <div key={activity._id} className="flex items-center justify-between p-4 border rounded-lg">
+              <div key={activity._id} className="flex items-center justify-between p-4 border border-border rounded-[0.625rem]">
                 <div className="flex items-center space-x-4">
-                  <div className="p-2 bg-blue-100 rounded-lg">
+                  <div className="p-2 bg-primary/10 rounded-[0.625rem]">
                     {activity.device.type === "mobile" ? (
                       <Smartphone className="h-4 w-4 text-primary" />
                     ) : activity.device.type === "tablet" ? (
@@ -921,7 +926,7 @@ export default function AuditTrailPage() {
               {selectedLog.details.before && (
                 <div>
                   <Label className="text-sm font-medium">Before</Label>
-                  <pre className="text-sm text-muted-foreground bg-gray-100 p-2 rounded">
+                  <pre className="text-sm text-muted-foreground bg-muted p-2 rounded">
                     {JSON.stringify(selectedLog.details.before, null, 2)}
                   </pre>
                 </div>
@@ -929,7 +934,7 @@ export default function AuditTrailPage() {
               {selectedLog.details.after && (
                 <div>
                   <Label className="text-sm font-medium">After</Label>
-                  <pre className="text-sm text-muted-foreground bg-gray-100 p-2 rounded">
+                  <pre className="text-sm text-muted-foreground bg-muted p-2 rounded">
                     {JSON.stringify(selectedLog.details.after, null, 2)}
                   </pre>
                 </div>
@@ -937,7 +942,7 @@ export default function AuditTrailPage() {
               {selectedLog.details.changes && (
                 <div>
                   <Label className="text-sm font-medium">Changes</Label>
-                  <pre className="text-sm text-muted-foreground bg-gray-100 p-2 rounded">
+                  <pre className="text-sm text-muted-foreground bg-muted p-2 rounded">
                     {JSON.stringify(selectedLog.details.changes, null, 2)}
                   </pre>
                 </div>

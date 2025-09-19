@@ -10,11 +10,8 @@ import {
   CheckCircle, 
   Circle, 
   Users, 
-  TrendingUp, 
-  TrendingDown, 
   Target,
   Download,
-  RefreshCw,
   Eye,
   AlertTriangle
 } from 'lucide-react';
@@ -56,15 +53,15 @@ export function OnboardingCompletion({ className = '' }: OnboardingCompletionPro
   }, []);
 
   const getCompletionColor = (rate: number) => {
-    if (rate >= 80) return 'text-green-600';
-    if (rate >= 60) return 'text-yellow-600';
-    return 'text-red-600';
+    if (rate >= 80) return 'text-success';
+    if (rate >= 60) return 'text-warning';
+    return 'text-destructive';
   };
 
   const getCompletionBadge = (rate: number) => {
-    if (rate >= 80) return 'bg-green-100 text-green-800';
-    if (rate >= 60) return 'bg-yellow-100 text-yellow-800';
-    return 'bg-red-100 text-red-800';
+    if (rate >= 80) return 'bg-success/10 text-green-800';
+    if (rate >= 60) return 'bg-warning/10 text-yellow-800';
+    return 'bg-destructive/10 text-red-800';
   };
 
   const getCompletionLevel = (rate: number) => {
@@ -81,9 +78,9 @@ export function OnboardingCompletion({ className = '' }: OnboardingCompletionPro
   };
 
   const getStepColor = (rate: number) => {
-    if (rate >= 80) return 'text-green-600';
-    if (rate >= 60) return 'text-yellow-600';
-    return 'text-red-600';
+    if (rate >= 80) return 'text-success';
+    if (rate >= 60) return 'text-warning';
+    return 'text-destructive';
   };
 
   const getBottleneckSteps = () => {
@@ -105,16 +102,16 @@ export function OnboardingCompletion({ className = '' }: OnboardingCompletionPro
       <Card className={className}>
         <CardHeader>
           <CardTitle className="flex items-center space-x-2">
-            <Target className="h-5 w-5 text-green-600" />
+            <Target className="h-5 w-5 text-success" />
             <span>Onboarding Completion</span>
           </CardTitle>
           <CardDescription>Loading onboarding metrics...</CardDescription>
         </CardHeader>
         <CardContent>
           <div className="animate-pulse space-y-4">
-            <div className="h-4 bg-gray-200 rounded-lg w-3/4"></div>
-            <div className="h-4 bg-gray-200 rounded-lg w-1/2"></div>
-            <div className="h-4 bg-gray-200 rounded-lg w-2/3"></div>
+            <div className="h-4 bg-muted rounded-[0.625rem] w-3/4"></div>
+            <div className="h-4 bg-muted rounded-[0.625rem] w-1/2"></div>
+            <div className="h-4 bg-muted rounded-[0.625rem] w-2/3"></div>
           </div>
         </CardContent>
       </Card>
@@ -126,7 +123,7 @@ export function OnboardingCompletion({ className = '' }: OnboardingCompletionPro
       <Card className={className}>
         <CardHeader>
           <CardTitle className="flex items-center space-x-2">
-            <Target className="h-5 w-5 text-green-600" />
+            <Target className="h-5 w-5 text-success" />
             <span>Onboarding Completion</span>
           </CardTitle>
           <CardDescription>Unable to load onboarding data</CardDescription>
@@ -142,7 +139,7 @@ export function OnboardingCompletion({ className = '' }: OnboardingCompletionPro
     <Card className={className}>
       <CardHeader>
         <CardTitle className="flex items-center space-x-2">
-          <Target className="h-5 w-5 text-green-600" />
+          <Target className="h-5 w-5 text-success" />
           <span>Onboarding Completion</span>
         </CardTitle>
         <CardDescription>
@@ -151,7 +148,7 @@ export function OnboardingCompletion({ className = '' }: OnboardingCompletionPro
       </CardHeader>
       <CardContent className="space-y-6">
         {/* Overall Completion */}
-        <div className="text-center p-4 bg-gray-50 rounded-lg-lg">
+        <div className="text-center p-4 bg-muted/50 rounded-[0.625rem]-lg">
           <div className="flex items-center justify-center space-x-2 mb-2">
             <Target className={`h-6 w-6 ${getCompletionColor(onboardingData.completionRate)}`} />
             <span className={`text-2xl font-bold ${getCompletionColor(onboardingData.completionRate)}`}>
@@ -161,7 +158,7 @@ export function OnboardingCompletion({ className = '' }: OnboardingCompletionPro
               {getCompletionLevel(onboardingData.completionRate)}
             </Badge>
           </div>
-          <p className="text-sm text-gray-600">Overall Completion Rate</p>
+          <p className="text-sm text-muted-foreground">Overall Completion Rate</p>
           <div className="mt-3">
             <Progress value={onboardingData.completionRate} className="h-2" />
           </div>
@@ -169,38 +166,38 @@ export function OnboardingCompletion({ className = '' }: OnboardingCompletionPro
 
         {/* Summary Stats */}
         <div className="grid grid-cols-3 gap-4">
-          <div className="text-center p-3 bg-blue-50 rounded-lg-lg">
-            <Users className="h-5 w-5 text-blue-600 mx-auto mb-1" />
-            <p className="text-lg font-bold text-blue-600">{onboardingData.total}</p>
-            <p className="text-xs text-gray-500">Total Users</p>
+          <div className="text-center p-3 bg-primary/10 rounded-[0.625rem]-lg">
+            <Users className="h-5 w-5 text-primary mx-auto mb-1" />
+            <p className="text-lg font-bold text-primary">{onboardingData.total}</p>
+            <p className="text-xs text-muted-foreground">Total Users</p>
           </div>
-          <div className="text-center p-3 bg-green-50 rounded-lg-lg">
-            <CheckCircle className="h-5 w-5 text-green-600 mx-auto mb-1" />
-            <p className="text-lg font-bold text-green-600">{onboardingData.completed}</p>
-            <p className="text-xs text-gray-500">Completed</p>
+          <div className="text-center p-3 bg-success/10 rounded-[0.625rem]-lg">
+            <CheckCircle className="h-5 w-5 text-success mx-auto mb-1" />
+            <p className="text-lg font-bold text-success">{onboardingData.completed}</p>
+            <p className="text-xs text-muted-foreground">Completed</p>
           </div>
-          <div className="text-center p-3 bg-red-50 rounded-lg-lg">
-            <AlertTriangle className="h-5 w-5 text-red-600 mx-auto mb-1" />
-            <p className="text-lg font-bold text-red-600">
+          <div className="text-center p-3 bg-destructive/10 rounded-[0.625rem]-lg">
+            <AlertTriangle className="h-5 w-5 text-destructive mx-auto mb-1" />
+            <p className="text-lg font-bold text-destructive">
               {onboardingData.total - onboardingData.completed}
             </p>
-            <p className="text-xs text-gray-500">Incomplete</p>
+            <p className="text-xs text-muted-foreground">Incomplete</p>
           </div>
         </div>
 
         {/* Onboarding Steps */}
         <div className="space-y-3">
-          <h4 className="text-sm font-medium text-gray-900">Onboarding Steps</h4>
+          <h4 className="text-sm font-medium text-foreground">Onboarding Steps</h4>
           <div className="space-y-2">
-            {onboardingData.steps.map((step, index) => {
+            {onboardingData.steps.map((step) => {
               const StepIcon = getStepIcon(step.rate);
               return (
-                <div key={step.step} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg-lg">
+                <div key={step.step} className="flex items-center justify-between p-3 bg-muted/50 rounded-[0.625rem]-lg">
                   <div className="flex items-center space-x-3">
                     <StepIcon className={`h-4 w-4 ${getStepColor(step.rate)}`} />
                     <div>
-                      <p className="text-sm font-medium text-gray-900">{step.step}</p>
-                      <p className="text-xs text-gray-500">{step.completed} of {onboardingData.total} users</p>
+                      <p className="text-sm font-medium text-foreground">{step.step}</p>
+                      <p className="text-xs text-muted-foreground">{step.completed} of {onboardingData.total} users</p>
                     </div>
                   </div>
                   <div className="text-right">
@@ -219,13 +216,13 @@ export function OnboardingCompletion({ className = '' }: OnboardingCompletionPro
 
         {/* Step Progress Visualization */}
         <div className="space-y-3">
-          <h4 className="text-sm font-medium text-gray-900">Step Progress</h4>
+          <h4 className="text-sm font-medium text-foreground">Step Progress</h4>
           <div className="space-y-2">
             {onboardingData.steps.map((step) => (
               <div key={step.step} className="space-y-1">
                 <div className="flex justify-between text-sm">
-                  <span className="text-gray-600">{step.step}</span>
-                  <span className="text-gray-900 font-medium">{step.rate.toFixed(1)}%</span>
+                  <span className="text-muted-foreground">{step.step}</span>
+                  <span className="text-foreground font-medium">{step.rate.toFixed(1)}%</span>
                 </div>
                 <Progress value={step.rate} className="h-2" />
               </div>
@@ -236,23 +233,23 @@ export function OnboardingCompletion({ className = '' }: OnboardingCompletionPro
         {/* Bottleneck Analysis */}
         {bottleneckSteps.length > 0 && (
           <div className="space-y-3">
-            <h4 className="text-sm font-medium text-gray-900 flex items-center space-x-2">
-              <AlertTriangle className="h-4 w-4 text-red-600" />
+            <h4 className="text-sm font-medium text-foreground flex items-center space-x-2">
+              <AlertTriangle className="h-4 w-4 text-destructive" />
               <span>Bottlenecks</span>
             </h4>
             <div className="space-y-2">
               {bottleneckSteps.map((step) => (
-                <div key={step.step} className="flex items-center justify-between p-3 bg-red-50 rounded-lg-lg border border-red-200">
+                <div key={step.step} className="flex items-center justify-between p-3 bg-destructive/10 rounded-[0.625rem]-lg border border-red-200">
                   <div className="flex items-center space-x-3">
-                    <AlertTriangle className="h-4 w-4 text-red-600" />
+                    <AlertTriangle className="h-4 w-4 text-destructive" />
                     <div>
                       <p className="text-sm font-medium text-red-900">{step.step}</p>
-                      <p className="text-xs text-red-700">Needs attention</p>
+                      <p className="text-xs text-destructive">Needs attention</p>
                     </div>
                   </div>
                   <div className="text-right">
-                    <p className="text-sm font-semibold text-red-600">{step.rate.toFixed(1)}%</p>
-                    <Badge className="bg-red-100 text-red-800">Low</Badge>
+                    <p className="text-sm font-semibold text-destructive">{step.rate.toFixed(1)}%</p>
+                    <Badge className="bg-destructive/10 text-red-800">Low</Badge>
                   </div>
                 </div>
               ))}
@@ -263,23 +260,23 @@ export function OnboardingCompletion({ className = '' }: OnboardingCompletionPro
         {/* Top Performing Steps */}
         {topPerformingSteps.length > 0 && (
           <div className="space-y-3">
-            <h4 className="text-sm font-medium text-gray-900 flex items-center space-x-2">
-              <CheckCircle className="h-4 w-4 text-green-600" />
+            <h4 className="text-sm font-medium text-foreground flex items-center space-x-2">
+              <CheckCircle className="h-4 w-4 text-success" />
               <span>Top Performing Steps</span>
             </h4>
             <div className="space-y-2">
               {topPerformingSteps.map((step) => (
-                <div key={step.step} className="flex items-center justify-between p-3 bg-green-50 rounded-lg-lg border border-green-200">
+                <div key={step.step} className="flex items-center justify-between p-3 bg-success/10 rounded-[0.625rem]-lg border border-green-200">
                   <div className="flex items-center space-x-3">
-                    <CheckCircle className="h-4 w-4 text-green-600" />
+                    <CheckCircle className="h-4 w-4 text-success" />
                     <div>
                       <p className="text-sm font-medium text-green-900">{step.step}</p>
-                      <p className="text-xs text-green-700">Performing well</p>
+                      <p className="text-xs text-success">Performing well</p>
                     </div>
                   </div>
                   <div className="text-right">
-                    <p className="text-sm font-semibold text-green-600">{step.rate.toFixed(1)}%</p>
-                    <Badge className="bg-green-100 text-green-800">High</Badge>
+                    <p className="text-sm font-semibold text-success">{step.rate.toFixed(1)}%</p>
+                    <Badge className="bg-success/10 text-green-800">High</Badge>
                   </div>
                 </div>
               ))}
@@ -300,7 +297,7 @@ export function OnboardingCompletion({ className = '' }: OnboardingCompletionPro
         </div>
 
         {/* Insights */}
-        <div className="p-3 bg-blue-50 rounded-lg-lg">
+        <div className="p-3 bg-primary/10 rounded-[0.625rem]-lg">
           <h5 className="text-sm font-medium text-blue-900 mb-2">💡 Onboarding Insights</h5>
           <ul className="text-xs text-blue-800 space-y-1">
             <li>• Overall completion rate: {onboardingData.completionRate.toFixed(1)}%</li>

@@ -85,11 +85,11 @@ class WebSocketService {
       // Use the stored baseUrl
       const wsUrl = this.baseUrl.replace('http://', 'ws://').replace('https://', 'wss://') + '/ws';
 
-      console.log('🔌 Attempting WebSocket connection to:', wsUrl);
+      // WebSocket connection attempt
       this.ws = new WebSocket(wsUrl);
 
       this.ws.onopen = () => {
-        console.log('WebSocket connected');
+        // WebSocket connected
         this.connectionStatus = 'connected';
         this.reconnectAttempts = 0;
         this.isConnecting = false;
@@ -106,7 +106,7 @@ class WebSocketService {
       };
 
       this.ws.onclose = () => {
-        console.log('WebSocket disconnected');
+        // WebSocket disconnected
         this.connectionStatus = 'disconnected';
         this.isConnecting = false;
         this.attemptReconnect();
@@ -130,13 +130,13 @@ class WebSocketService {
 
   private attemptReconnect(): void {
     if (this.reconnectAttempts >= this.maxReconnectAttempts) {
-      console.log('Max reconnection attempts reached');
+      // Max reconnection attempts reached
       toast.error('Real-time connection lost. Please refresh the page.');
       return;
     }
 
     this.reconnectAttempts++;
-    console.log(`Attempting to reconnect (${this.reconnectAttempts}/${this.maxReconnectAttempts})...`);
+    // Attempting to reconnect
     
     setTimeout(() => {
       this.connect();

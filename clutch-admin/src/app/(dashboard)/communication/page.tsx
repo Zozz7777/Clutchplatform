@@ -25,6 +25,7 @@ import {
   Smartphone,
   Monitor,
 } from "lucide-react";
+import { useTranslations } from "@/hooks/use-translations";
 
 interface Notification {
   _id: string;
@@ -76,8 +77,44 @@ interface SupportTicket {
 }
 
 export default function CommunicationPage() {
+  const { t } = useTranslations();
   const [activeTab, setActiveTab] = useState("notifications");
   const [searchTerm, setSearchTerm] = useState("");
+  const [notifications, setNotifications] = useState<Notification[]>([]);
+  const [channels, setChannels] = useState<ChatChannel[]>([]);
+  const [tickets, setTickets] = useState<SupportTicket[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    const loadCommunicationData = async () => {
+      try {
+        setIsLoading(true);
+        
+        // Load real data from API
+        const [notificationsData, channelsData, ticketsData] = await Promise.all([
+          productionApi.getNotificationList(),
+          productionApi.getChatChannels(),
+          productionApi.getTickets()
+        ]);
+
+        setNotifications(notificationsData || []);
+        setChannels(channelsData || []);
+        setTickets(ticketsData || []);
+        
+      } catch (error) {
+        console.error("Failed to load communication data:", error);
+        toast.error(t('communication.failedToLoadCommunicationData'));
+        // Set empty arrays on error - no mock data fallback
+        setNotifications([]);
+        setChannels([]);
+        setTickets([]);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    loadCommunicationData();
+  }, []);
 
   const mockNotifications: Notification[] = [
     {
@@ -292,9 +329,9 @@ export default function CommunicationPage() {
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold tracking-tight">Communication</h1>
+          <h1 className="text-3xl font-bold tracking-tight">{t('communication.title')}</h1>
           <p className="text-muted-foreground">
-            Manage notifications, chat channels, and support tickets
+            {t('communication.description')}
           </p>
         </div>
         <div className="flex items-center space-x-2">
@@ -317,7 +354,7 @@ export default function CommunicationPage() {
             <Bell className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{mockNotifications.length}</div>
+            <div className="text-2xl font-bold">{notifications.length}</div>
             <p className="text-xs text-muted-foreground">
               <span className="text-primary">+12%</span> from last month
             </p>
@@ -329,9 +366,9 @@ export default function CommunicationPage() {
             <MessageSquare className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{mockChannels.filter(c => c.status === "active").length}</div>
+            <div className="text-2xl font-bold">{channels.filter(c => c.status === "active").length}</div>
             <p className="text-xs text-muted-foreground">
-              {mockChannels.reduce((sum, c) => sum + c.unreadMessages, 0)} unread messages
+              {channels.reduce((sum, c) => sum + c.unreadMessages, 0)} unread messages
             </p>
           </CardContent>
         </Card>
@@ -341,7 +378,7 @@ export default function CommunicationPage() {
             <AlertCircle className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{mockTickets.filter(t => t.status === "open" || t.status === "in_progress").length}</div>
+            <div className="text-2xl font-bold">{tickets.filter(t => t.status === "open" || t.status === "in_progress").length}</div>
             <p className="text-xs text-muted-foreground">
               Avg response time: 2.3 hours
             </p>
@@ -390,7 +427,7 @@ export default function CommunicationPage() {
           <div className="relative">
             <Search className="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground" />
             <Input
-              placeholder="Search..."
+              placeholder={t('common.search')}
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
               className="pl-8"
@@ -406,7 +443,7 @@ export default function CommunicationPage() {
       {/* Tab Content */}
       {activeTab === "notifications" && (
         <div className="space-y-4">
-          {mockNotifications.map((notification) => (
+          {notifications.map((notification) => (
             <Card key={notification._id}>
               <CardContent className="p-6">
                 <div className="flex items-start justify-between">
@@ -471,7 +508,7 @@ export default function CommunicationPage() {
 
       {activeTab === "chat" && (
         <div className="space-y-4">
-          {mockChannels.map((channel) => (
+          {channels.map((channel) => (
             <Card key={channel._id}>
               <CardContent className="p-6">
                 <div className="flex items-center justify-between">
@@ -521,7 +558,7 @@ export default function CommunicationPage() {
 
       {activeTab === "tickets" && (
         <div className="space-y-4">
-          {mockTickets.map((ticket) => (
+          {tickets.map((ticket) => (
             <Card key={ticket._id}>
               <CardContent className="p-6">
                 <div className="flex items-start justify-between">

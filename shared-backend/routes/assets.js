@@ -639,4 +639,208 @@ router.get('/analytics/overview', async (req, res) => {
   }
 });
 
+// ===== ASSET MAINTENANCE =====
+
+// GET /api/v1/assets/maintenance - Get asset maintenance records
+router.get('/maintenance', async (req, res) => {
+  try {
+    const maintenanceCollection = await getCollection('asset_maintenance');
+    const { page = 1, limit = 10, assetId, status, type } = req.query;
+    
+    const filter = {};
+    if (assetId) filter.assetId = assetId;
+    if (status) filter.status = status;
+    if (type) filter.type = type;
+    
+    const skip = (parseInt(page) - 1) * parseInt(limit);
+    
+    const maintenanceRecords = await maintenanceCollection
+      .find(filter)
+      .sort({ scheduledDate: -1 })
+      .skip(skip)
+      .limit(parseInt(limit))
+      .toArray();
+    
+    const total = await maintenanceCollection.countDocuments(filter);
+    
+    res.json({
+      success: true,
+      data: {
+        maintenanceRecords,
+        pagination: {
+          page: parseInt(page),
+          limit: parseInt(limit),
+          total,
+          pages: Math.ceil(total / parseInt(limit))
+        }
+      }
+    });
+  } catch (error) {
+    console.error('Error fetching asset maintenance records:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Failed to fetch asset maintenance records',
+      error: process.env.NODE_ENV === 'development' ? error.message : undefined
+    });
+  }
+});
+
+// POST /api/v1/assets/maintenance - Create asset maintenance record
+router.post('/maintenance', checkRole(['head_administrator', 'asset_manager']), async (req, res) => {
+  try {
+    const maintenanceCollection = await getCollection('asset_maintenance');
+    const { 
+      assetId, 
+      type, 
+      description, 
+      scheduledDate, 
+      estimatedCost,
+      assignedTo 
+    } = req.body;
+    
+    // Validate required fields
+    if (!assetId || !type || !description) {
+      return res.status(400).json({
+        success: false,
+        message: 'Asset ID, type, and description are required'
+      });
+    }
+    
+    const maintenanceData = {
+      assetId,
+      type,
+      description,
+      scheduledDate: scheduledDate ? new Date(scheduledDate) : new Date(),
+      estimatedCost: estimatedCost ? parseFloat(estimatedCost) : 0,
+      assignedTo,
+      status: 'scheduled',
+      createdBy: req.user.userId || req.user.id,
+      createdAt: new Date(),
+      updatedAt: new Date()
+    };
+    
+    const result = await maintenanceCollection.insertOne(maintenanceData);
+    
+    res.json({
+      success: true,
+      data: {
+        maintenanceRecord: {
+          ...maintenanceData,
+          _id: result.insertedId
+        }
+      },
+      message: 'Maintenance record created successfully'
+    });
+    
+  } catch (error) {
+    console.error('Error creating asset maintenance record:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Failed to create maintenance record',
+      error: process.env.NODE_ENV === 'development' ? error.message : undefined
+    });
+  }
+});
+
+// ===== ASSET ASSIGNMENTS =====
+
+// GET /api/v1/assets/assignments - Get asset assignments
+router.get('/assignments', async (req, res) => {
+  try {
+    const assignmentsCollection = await getCollection('asset_assignments');
+    const { page = 1, limit = 10, assetId, userId, status } = req.query;
+    
+    const filter = {};
+    if (assetId) filter.assetId = assetId;
+    if (userId) filter.userId = userId;
+    if (status) filter.status = status;
+    
+    const skip = (parseInt(page) - 1) * parseInt(limit);
+    
+    const assignments = await assignmentsCollection
+      .find(filter)
+      .sort({ assignedDate: -1 })
+      .skip(skip)
+      .limit(parseInt(limit))
+      .toArray();
+    
+    const total = await assignmentsCollection.countDocuments(filter);
+    
+    res.json({
+      success: true,
+      data: {
+        assignments,
+        pagination: {
+          page: parseInt(page),
+          limit: parseInt(limit),
+          total,
+          pages: Math.ceil(total / parseInt(limit))
+        }
+      }
+    });
+  } catch (error) {
+    console.error('Error fetching asset assignments:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Failed to fetch asset assignments',
+      error: process.env.NODE_ENV === 'development' ? error.message : undefined
+    });
+  }
+});
+
+// POST /api/v1/assets/assignments - Create asset assignment
+router.post('/assignments', checkRole(['head_administrator', 'asset_manager']), async (req, res) => {
+  try {
+    const assignmentsCollection = await getCollection('asset_assignments');
+    const { 
+      assetId, 
+      userId, 
+      assignedDate, 
+      returnDate,
+      notes 
+    } = req.body;
+    
+    // Validate required fields
+    if (!assetId || !userId) {
+      return res.status(400).json({
+        success: false,
+        message: 'Asset ID and User ID are required'
+      });
+    }
+    
+    const assignmentData = {
+      assetId,
+      userId,
+      assignedDate: assignedDate ? new Date(assignedDate) : new Date(),
+      returnDate: returnDate ? new Date(returnDate) : null,
+      notes: notes || '',
+      status: 'active',
+      createdBy: req.user.userId || req.user.id,
+      createdAt: new Date(),
+      updatedAt: new Date()
+    };
+    
+    const result = await assignmentsCollection.insertOne(assignmentData);
+    
+    res.json({
+      success: true,
+      data: {
+        assignment: {
+          ...assignmentData,
+          _id: result.insertedId
+        }
+      },
+      message: 'Asset assignment created successfully'
+    });
+    
+  } catch (error) {
+    console.error('Error creating asset assignment:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Failed to create asset assignment',
+      error: process.env.NODE_ENV === 'development' ? error.message : undefined
+    });
+  }
+});
+
 module.exports = router;

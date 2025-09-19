@@ -10,6 +10,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { formatDate, formatRelativeTime } from "@/lib/utils";
 import { useAuth } from "@/contexts/auth-context";
+import { useTranslations } from "@/hooks/use-translations";
 import { productionApi } from "@/lib/production-api";
 import { toast } from "sonner";
 
@@ -91,6 +92,7 @@ export default function AIMLPage() {
   const [statusFilter, setStatusFilter] = useState<string>("all");
   const [isLoading, setIsLoading] = useState(true);
   const { hasPermission } = useAuth();
+  const { t } = useTranslations();
 
   useEffect(() => {
     const loadAIMLData = async () => {
@@ -218,11 +220,11 @@ export default function AIMLPage() {
           </p>
         </div>
         <div className="flex items-center space-x-2">
-          <Button variant="outline" className="shadow-sm">
+          <Button variant="outline" className="shadow-2xs">
             <Download className="mr-2 h-4 w-4" />
             Export Data
           </Button>
-          <Button className="shadow-sm">
+          <Button className="shadow-2xs">
             <Plus className="mr-2 h-4 w-4" />
             Train Model
           </Button>
@@ -231,7 +233,7 @@ export default function AIMLPage() {
 
       {/* KPI Cards */}
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-        <Card className="shadow-sm">
+        <Card className="shadow-2xs">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium text-card-foreground">Total Predictions</CardTitle>
             <Target className="h-4 w-4 text-muted-foreground" />
@@ -243,7 +245,7 @@ export default function AIMLPage() {
             </p>
           </CardContent>
         </Card>
-        <Card className="shadow-sm">
+        <Card className="shadow-2xs">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium text-card-foreground">Average Accuracy</CardTitle>
             <BarChart3 className="h-4 w-4 text-muted-foreground" />
@@ -255,7 +257,7 @@ export default function AIMLPage() {
             </p>
           </CardContent>
         </Card>
-        <Card className="shadow-sm">
+        <Card className="shadow-2xs">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium text-card-foreground">Active Models</CardTitle>
             <Brain className="h-4 w-4 text-muted-foreground" />
@@ -267,7 +269,7 @@ export default function AIMLPage() {
             </p>
           </CardContent>
         </Card>
-        <Card className="shadow-sm">
+        <Card className="shadow-2xs">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium text-card-foreground">Fraud Cases</CardTitle>
             <Shield className="h-4 w-4 text-muted-foreground" />
@@ -291,7 +293,7 @@ export default function AIMLPage() {
         </TabsList>
 
         <TabsContent value="models" className="space-y-4">
-          <Card className="shadow-sm">
+          <Card className="shadow-2xs">
             <CardHeader>
               <CardTitle className="text-card-foreground">AI Models</CardTitle>
               <CardDescription>Manage and monitor machine learning models</CardDescription>
@@ -312,7 +314,7 @@ export default function AIMLPage() {
                 </div>
                 <Select value={statusFilter} onValueChange={setStatusFilter}>
                   <SelectTrigger className="w-[180px]">
-                    <SelectValue placeholder="Filter by status" />
+                    <SelectValue placeholder={t('common.filter')} />
                   </SelectTrigger>
                   <SelectContent>
                     <SelectItem value="all">All Status</SelectItem>
@@ -427,7 +429,7 @@ export default function AIMLPage() {
         </TabsContent>
 
         <TabsContent value="fraud" className="space-y-4">
-          <Card className="shadow-sm">
+          <Card className="shadow-2xs">
             <CardHeader>
               <CardTitle className="text-card-foreground">Fraud Detection Cases</CardTitle>
               <CardDescription>Monitor and investigate potential fraud cases</CardDescription>
@@ -515,7 +517,7 @@ export default function AIMLPage() {
         </TabsContent>
 
         <TabsContent value="recommendations" className="space-y-4">
-          <Card className="shadow-sm">
+          <Card className="shadow-2xs">
             <CardHeader>
               <CardTitle className="text-card-foreground">AI Recommendations</CardTitle>
               <CardDescription>Intelligent recommendations for business optimization</CardDescription>
@@ -609,14 +611,14 @@ export default function AIMLPage() {
         </TabsContent>
 
         <TabsContent value="training" className="space-y-4">
-          <Card className="shadow-sm">
+          <Card className="shadow-2xs">
             <CardHeader>
               <CardTitle className="text-card-foreground">Training Status & Logs</CardTitle>
               <CardDescription>Monitor model training progress and view logs</CardDescription>
             </CardHeader>
             <CardContent>
               <div className="space-y-4">
-                <div className="flex items-center justify-between p-4 rounded-lg bg-muted/50">
+                <div className="flex items-center justify-between p-4 rounded-[0.625rem] bg-muted/50">
                   <div className="flex items-center space-x-3">
                     <div className="w-2 h-2 rounded-full bg-secondary"></div>
                     <div>
@@ -629,7 +631,7 @@ export default function AIMLPage() {
                     <p className="text-xs text-muted-foreground">Epoch 134/200</p>
                   </div>
                 </div>
-                <div className="flex items-center justify-between p-4 rounded-lg bg-muted/50">
+                <div className="flex items-center justify-between p-4 rounded-[0.625rem] bg-muted/50">
                   <div className="flex items-center space-x-3">
                     <div className="w-2 h-2 rounded-full bg-primary"></div>
                     <div>
@@ -642,7 +644,7 @@ export default function AIMLPage() {
                     <p className="text-xs text-muted-foreground">Accuracy: 94.5%</p>
                   </div>
                 </div>
-                <div className="flex items-center justify-between p-4 rounded-lg bg-muted/50">
+                <div className="flex items-center justify-between p-4 rounded-[0.625rem] bg-muted/50">
                   <div className="flex items-center space-x-3">
                     <div className="w-2 h-2 rounded-full bg-primary"></div>
                     <div>

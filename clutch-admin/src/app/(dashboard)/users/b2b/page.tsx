@@ -183,7 +183,7 @@ export default function B2BUsersPage() {
       </div>
 
       {/* Enterprise Management */}
-      <Card className="shadow-sm">
+      <Card className="shadow-2xs">
         <CardHeader>
           <CardTitle className="text-card-foreground">Enterprise Client Directory</CardTitle>
           <CardDescription>B2B enterprise accounts and their management</CardDescription>

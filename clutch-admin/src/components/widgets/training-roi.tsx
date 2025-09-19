@@ -65,15 +65,15 @@ export function TrainingROI({ className = '' }: TrainingROIProps) {
   }, []);
 
   const getROIColor = (roi: number) => {
-    if (roi >= 200) return 'text-green-600';
-    if (roi >= 100) return 'text-yellow-600';
-    return 'text-red-600';
+    if (roi >= 200) return 'text-success';
+    if (roi >= 100) return 'text-warning';
+    return 'text-destructive';
   };
 
   const getROIBadge = (roi: number) => {
-    if (roi >= 200) return 'bg-green-100 text-green-800';
-    if (roi >= 100) return 'bg-yellow-100 text-yellow-800';
-    return 'bg-red-100 text-red-800';
+    if (roi >= 200) return 'bg-success/10 text-green-800';
+    if (roi >= 100) return 'bg-warning/10 text-yellow-800';
+    return 'bg-destructive/10 text-red-800';
   };
 
   const getROILevel = (roi: number) => {
@@ -84,15 +84,15 @@ export function TrainingROI({ className = '' }: TrainingROIProps) {
   };
 
   const getAccuracyColor = (accuracy: number) => {
-    if (accuracy >= 20) return 'text-green-600';
-    if (accuracy >= 10) return 'text-yellow-600';
-    return 'text-red-600';
+    if (accuracy >= 20) return 'text-success';
+    if (accuracy >= 10) return 'text-warning';
+    return 'text-destructive';
   };
 
   const getAccuracyBadge = (accuracy: number) => {
-    if (accuracy >= 20) return 'bg-green-100 text-green-800';
-    if (accuracy >= 10) return 'bg-yellow-100 text-yellow-800';
-    return 'bg-red-100 text-red-800';
+    if (accuracy >= 20) return 'bg-success/10 text-green-800';
+    if (accuracy >= 10) return 'bg-warning/10 text-yellow-800';
+    return 'bg-destructive/10 text-red-800';
   };
 
   const getAccuracyLevel = (accuracy: number) => {
@@ -106,16 +106,16 @@ export function TrainingROI({ className = '' }: TrainingROIProps) {
       <Card className={className}>
         <CardHeader>
           <CardTitle className="flex items-center space-x-2">
-            <Cpu className="h-5 w-5 text-purple-600" />
+            <Cpu className="h-5 w-5 text-primary" />
             <span>Training Cost vs ROI</span>
           </CardTitle>
           <CardDescription>Loading training ROI data...</CardDescription>
         </CardHeader>
         <CardContent>
           <div className="animate-pulse space-y-4">
-            <div className="h-4 bg-gray-200 rounded-lg w-3/4"></div>
-            <div className="h-4 bg-gray-200 rounded-lg w-1/2"></div>
-            <div className="h-4 bg-gray-200 rounded-lg w-2/3"></div>
+            <div className="h-4 bg-muted rounded-[0.625rem] w-3/4"></div>
+            <div className="h-4 bg-muted rounded-[0.625rem] w-1/2"></div>
+            <div className="h-4 bg-muted rounded-[0.625rem] w-2/3"></div>
           </div>
         </CardContent>
       </Card>
@@ -127,7 +127,7 @@ export function TrainingROI({ className = '' }: TrainingROIProps) {
       <Card className={className}>
         <CardHeader>
           <CardTitle className="flex items-center space-x-2">
-            <Cpu className="h-5 w-5 text-purple-600" />
+            <Cpu className="h-5 w-5 text-primary" />
             <span>Training Cost vs ROI</span>
           </CardTitle>
           <CardDescription>Unable to load training ROI data</CardDescription>
@@ -140,7 +140,7 @@ export function TrainingROI({ className = '' }: TrainingROIProps) {
     <Card className={className}>
       <CardHeader>
         <CardTitle className="flex items-center space-x-2">
-          <Cpu className="h-5 w-5 text-purple-600" />
+          <Cpu className="h-5 w-5 text-primary" />
           <span>Training Cost vs ROI</span>
         </CardTitle>
         <CardDescription>
@@ -150,20 +150,20 @@ export function TrainingROI({ className = '' }: TrainingROIProps) {
       <CardContent className="space-y-6">
         {/* Summary Stats */}
         <div className="grid grid-cols-2 gap-4">
-          <div className="text-center p-3 bg-purple-50 rounded-lg-lg">
-            <Cpu className="h-5 w-5 text-purple-600 mx-auto mb-1" />
-            <p className="text-lg font-bold text-purple-600">{roiData.gpuHours.toLocaleString()}</p>
-            <p className="text-xs text-gray-500">GPU Hours</p>
+          <div className="text-center p-3 bg-primary/10 rounded-[0.625rem]-lg">
+            <Cpu className="h-5 w-5 text-primary mx-auto mb-1" />
+            <p className="text-lg font-bold text-primary">{roiData.gpuHours.toLocaleString()}</p>
+            <p className="text-xs text-muted-foreground">GPU Hours</p>
           </div>
-          <div className="text-center p-3 bg-blue-50 rounded-lg-lg">
-            <Target className="h-5 w-5 text-blue-600 mx-auto mb-1" />
-            <p className="text-lg font-bold text-blue-600">{roiData.modelsTrained}</p>
-            <p className="text-xs text-gray-500">Models Trained</p>
+          <div className="text-center p-3 bg-primary/10 rounded-[0.625rem]-lg">
+            <Target className="h-5 w-5 text-primary mx-auto mb-1" />
+            <p className="text-lg font-bold text-primary">{roiData.modelsTrained}</p>
+            <p className="text-xs text-muted-foreground">Models Trained</p>
           </div>
         </div>
 
         {/* ROI Display */}
-        <div className="text-center p-4 bg-gray-50 rounded-lg-lg">
+        <div className="text-center p-4 bg-muted/50 rounded-[0.625rem]-lg">
           <div className="flex items-center justify-center space-x-2 mb-2">
             <TrendingUp className={`h-6 w-6 ${getROIColor(roiData.roi)}`} />
             <span className={`text-2xl font-bold ${getROIColor(roiData.roi)}`}>
@@ -173,7 +173,7 @@ export function TrainingROI({ className = '' }: TrainingROIProps) {
               {getROILevel(roiData.roi)}
             </Badge>
           </div>
-          <p className="text-sm text-gray-600">Return on Investment</p>
+          <p className="text-sm text-muted-foreground">Return on Investment</p>
           <div className="mt-3">
             <Progress value={Math.min(roiData.roi / 3, 100)} className="h-2" />
           </div>
@@ -181,18 +181,18 @@ export function TrainingROI({ className = '' }: TrainingROIProps) {
 
         {/* Cost vs Value Breakdown */}
         <div className="space-y-3">
-          <h4 className="text-sm font-medium text-gray-900">Cost vs Value</h4>
+          <h4 className="text-sm font-medium text-foreground">Cost vs Value</h4>
           <div className="space-y-2">
-            <div className="flex items-center justify-between p-3 bg-gray-50 rounded-lg-lg">
+            <div className="flex items-center justify-between p-3 bg-muted/50 rounded-[0.625rem]-lg">
               <div className="flex items-center space-x-3">
-                <DollarSign className="h-4 w-4 text-red-600" />
+                <DollarSign className="h-4 w-4 text-destructive" />
                 <div>
-                  <p className="text-sm font-medium text-gray-900">Training Cost</p>
-                  <p className="text-xs text-gray-500">GPU compute costs</p>
+                  <p className="text-sm font-medium text-foreground">Training Cost</p>
+                  <p className="text-xs text-muted-foreground">GPU compute costs</p>
                 </div>
               </div>
               <div className="text-right">
-                <p className="text-sm font-semibold text-gray-900">
+                <p className="text-sm font-semibold text-foreground">
                   ${roiData.trainingCost.toLocaleString()}
                 </p>
                 <Badge variant="outline" className="text-xs">
@@ -201,16 +201,16 @@ export function TrainingROI({ className = '' }: TrainingROIProps) {
               </div>
             </div>
 
-            <div className="flex items-center justify-between p-3 bg-gray-50 rounded-lg-lg">
+            <div className="flex items-center justify-between p-3 bg-muted/50 rounded-[0.625rem]-lg">
               <div className="flex items-center space-x-3">
-                <TrendingUp className="h-4 w-4 text-green-600" />
+                <TrendingUp className="h-4 w-4 text-success" />
                 <div>
-                  <p className="text-sm font-medium text-gray-900">Business Value</p>
-                  <p className="text-xs text-gray-500">Value delivered</p>
+                  <p className="text-sm font-medium text-foreground">Business Value</p>
+                  <p className="text-xs text-muted-foreground">Value delivered</p>
                 </div>
               </div>
               <div className="text-right">
-                <p className="text-sm font-semibold text-gray-900">
+                <p className="text-sm font-semibold text-foreground">
                   ${roiData.businessValue.toLocaleString()}
                 </p>
                 <Badge variant="outline" className="text-xs">
@@ -223,14 +223,14 @@ export function TrainingROI({ className = '' }: TrainingROIProps) {
 
         {/* Model Performance */}
         <div className="space-y-3">
-          <h4 className="text-sm font-medium text-gray-900">Model Performance</h4>
+          <h4 className="text-sm font-medium text-foreground">Model Performance</h4>
           <div className="space-y-2">
-            <div className="flex items-center justify-between p-3 bg-gray-50 rounded-lg-lg">
+            <div className="flex items-center justify-between p-3 bg-muted/50 rounded-[0.625rem]-lg">
               <div className="flex items-center space-x-3">
-                <Zap className="h-4 w-4 text-yellow-600" />
+                <Zap className="h-4 w-4 text-warning" />
                 <div>
-                  <p className="text-sm font-medium text-gray-900">Accuracy Improvement</p>
-                  <p className="text-xs text-gray-500">Average across models</p>
+                  <p className="text-sm font-medium text-foreground">Accuracy Improvement</p>
+                  <p className="text-xs text-muted-foreground">Average across models</p>
                 </div>
               </div>
               <div className="text-right">
@@ -247,25 +247,25 @@ export function TrainingROI({ className = '' }: TrainingROIProps) {
 
         {/* Efficiency Metrics */}
         <div className="grid grid-cols-2 gap-4">
-          <div className="text-center p-3 bg-green-50 rounded-lg-lg">
-            <BarChart3 className="h-4 w-4 text-green-600 mx-auto mb-1" />
-            <p className="text-sm font-bold text-green-600">
+          <div className="text-center p-3 bg-success/10 rounded-[0.625rem]-lg">
+            <BarChart3 className="h-4 w-4 text-success mx-auto mb-1" />
+            <p className="text-sm font-bold text-success">
               ${(roiData.businessValue / roiData.gpuHours).toFixed(0)}
             </p>
-            <p className="text-xs text-gray-500">Value Per GPU Hour</p>
+            <p className="text-xs text-muted-foreground">Value Per GPU Hour</p>
           </div>
-          <div className="text-center p-3 bg-orange-50 rounded-lg-lg">
-            <Activity className="h-4 w-4 text-orange-600 mx-auto mb-1" />
-            <p className="text-sm font-bold text-orange-600">
+          <div className="text-center p-3 bg-warning/10 rounded-[0.625rem]-lg">
+            <Activity className="h-4 w-4 text-warning mx-auto mb-1" />
+            <p className="text-sm font-bold text-warning">
               {(roiData.gpuHours / roiData.modelsTrained).toFixed(0)}h
             </p>
-            <p className="text-xs text-gray-500">Hours Per Model</p>
+            <p className="text-xs text-muted-foreground">Hours Per Model</p>
           </div>
         </div>
 
         {/* Cost Breakdown */}
         <div className="space-y-3">
-          <h4 className="text-sm font-medium text-gray-900">Cost Breakdown</h4>
+          <h4 className="text-sm font-medium text-foreground">Cost Breakdown</h4>
           <div className="space-y-2">
             <div className="flex justify-between text-sm">
               <span>GPU Compute</span>
@@ -300,7 +300,7 @@ export function TrainingROI({ className = '' }: TrainingROIProps) {
         </div>
 
         {/* Insights */}
-        <div className="p-3 bg-blue-50 rounded-lg-lg">
+        <div className="p-3 bg-primary/10 rounded-[0.625rem]-lg">
           <h5 className="text-sm font-medium text-blue-900 mb-2">💡 Training ROI Insights</h5>
           <ul className="text-xs text-blue-800 space-y-1">
             <li>• Total ROI: {roiData.roi.toFixed(0)}%</li>

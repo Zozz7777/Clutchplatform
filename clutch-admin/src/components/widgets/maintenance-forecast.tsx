@@ -61,15 +61,15 @@ export function MaintenanceForecast({ className = '' }: MaintenanceForecastProps
   };
 
   const getConfidenceColor = (confidence: number) => {
-    if (confidence >= 80) return 'text-green-600';
-    if (confidence >= 60) return 'text-yellow-600';
-    return 'text-red-600';
+    if (confidence >= 80) return 'text-success';
+    if (confidence >= 60) return 'text-warning';
+    return 'text-destructive';
   };
 
   const getConfidenceBadge = (confidence: number) => {
-    if (confidence >= 80) return 'bg-green-100 text-green-800';
-    if (confidence >= 60) return 'bg-yellow-100 text-yellow-800';
-    return 'bg-red-100 text-red-800';
+    if (confidence >= 80) return 'bg-success/10 text-green-800';
+    if (confidence >= 60) return 'bg-warning/10 text-yellow-800';
+    return 'bg-destructive/10 text-red-800';
   };
 
   const getConfidenceLevel = (confidence: number) => {
@@ -83,9 +83,9 @@ export function MaintenanceForecast({ className = '' }: MaintenanceForecastProps
     const now = new Date();
     const daysUntil = Math.ceil((date.getTime() - now.getTime()) / (1000 * 60 * 60 * 24));
     
-    if (daysUntil <= 7) return 'text-red-600';
-    if (daysUntil <= 14) return 'text-yellow-600';
-    return 'text-green-600';
+    if (daysUntil <= 7) return 'text-destructive';
+    if (daysUntil <= 14) return 'text-warning';
+    return 'text-success';
   };
 
   const getUrgencyBadge = (dateString: string) => {
@@ -93,9 +93,9 @@ export function MaintenanceForecast({ className = '' }: MaintenanceForecastProps
     const now = new Date();
     const daysUntil = Math.ceil((date.getTime() - now.getTime()) / (1000 * 60 * 60 * 24));
     
-    if (daysUntil <= 7) return 'bg-red-100 text-red-800';
-    if (daysUntil <= 14) return 'bg-yellow-100 text-yellow-800';
-    return 'bg-green-100 text-green-800';
+    if (daysUntil <= 7) return 'bg-destructive/10 text-red-800';
+    if (daysUntil <= 14) return 'bg-warning/10 text-yellow-800';
+    return 'bg-success/10 text-green-800';
   };
 
   const getUrgencyLevel = (dateString: string) => {
@@ -140,16 +140,16 @@ export function MaintenanceForecast({ className = '' }: MaintenanceForecastProps
       <Card className={className}>
         <CardHeader>
           <CardTitle className="flex items-center space-x-2">
-            <Wrench className="h-5 w-5 text-orange-600" />
+            <Wrench className="h-5 w-5 text-warning" />
             <span>Maintenance Forecast</span>
           </CardTitle>
           <CardDescription>Loading maintenance predictions...</CardDescription>
         </CardHeader>
         <CardContent>
           <div className="animate-pulse space-y-4">
-            <div className="h-4 bg-gray-200 rounded-lg w-3/4"></div>
-            <div className="h-4 bg-gray-200 rounded-lg w-1/2"></div>
-            <div className="h-4 bg-gray-200 rounded-lg w-2/3"></div>
+            <div className="h-4 bg-muted rounded-[0.625rem] w-3/4"></div>
+            <div className="h-4 bg-muted rounded-[0.625rem] w-1/2"></div>
+            <div className="h-4 bg-muted rounded-[0.625rem] w-2/3"></div>
           </div>
         </CardContent>
       </Card>
@@ -164,7 +164,7 @@ export function MaintenanceForecast({ className = '' }: MaintenanceForecastProps
     <Card className={className}>
       <CardHeader>
         <CardTitle className="flex items-center space-x-2">
-          <Wrench className="h-5 w-5 text-orange-600" />
+          <Wrench className="h-5 w-5 text-warning" />
           <span>Maintenance Forecast</span>
         </CardTitle>
         <CardDescription>
@@ -189,42 +189,42 @@ export function MaintenanceForecast({ className = '' }: MaintenanceForecastProps
 
         {/* Summary Stats */}
         <div className="grid grid-cols-3 gap-4">
-          <div className="text-center p-3 bg-orange-50 rounded-lg-lg">
-            <Wrench className="h-5 w-5 text-orange-600 mx-auto mb-1" />
-            <p className="text-lg font-bold text-orange-600">{filteredForecasts.length}</p>
-            <p className="text-xs text-gray-500">Scheduled</p>
+          <div className="text-center p-3 bg-warning/10 rounded-[0.625rem]-lg">
+            <Wrench className="h-5 w-5 text-warning mx-auto mb-1" />
+            <p className="text-lg font-bold text-warning">{filteredForecasts.length}</p>
+            <p className="text-xs text-muted-foreground">Scheduled</p>
           </div>
-          <div className="text-center p-3 bg-red-50 rounded-lg-lg">
-            <AlertTriangle className="h-5 w-5 text-red-600 mx-auto mb-1" />
-            <p className="text-lg font-bold text-red-600">{highPriorityForecasts.length}</p>
-            <p className="text-xs text-gray-500">High Priority</p>
+          <div className="text-center p-3 bg-destructive/10 rounded-[0.625rem]-lg">
+            <AlertTriangle className="h-5 w-5 text-destructive mx-auto mb-1" />
+            <p className="text-lg font-bold text-destructive">{highPriorityForecasts.length}</p>
+            <p className="text-xs text-muted-foreground">High Priority</p>
           </div>
-          <div className="text-center p-3 bg-blue-50 rounded-lg-lg">
-            <Target className="h-5 w-5 text-blue-600 mx-auto mb-1" />
-            <p className="text-lg font-bold text-blue-600">{averageConfidence.toFixed(0)}%</p>
-            <p className="text-xs text-gray-500">Avg Confidence</p>
+          <div className="text-center p-3 bg-primary/10 rounded-[0.625rem]-lg">
+            <Target className="h-5 w-5 text-primary mx-auto mb-1" />
+            <p className="text-lg font-bold text-primary">{averageConfidence.toFixed(0)}%</p>
+            <p className="text-xs text-muted-foreground">Avg Confidence</p>
           </div>
         </div>
 
         {/* High Priority Alerts */}
         {highPriorityForecasts.length > 0 && (
           <div className="space-y-3">
-            <h4 className="text-sm font-medium text-gray-900 flex items-center space-x-2">
-              <AlertTriangle className="h-4 w-4 text-red-600" />
+            <h4 className="text-sm font-medium text-foreground flex items-center space-x-2">
+              <AlertTriangle className="h-4 w-4 text-destructive" />
               <span>High Priority Maintenance</span>
             </h4>
             <div className="space-y-2">
               {highPriorityForecasts.slice(0, 3).map((forecast) => (
-                <div key={forecast.vehicleId} className="flex items-center justify-between p-3 bg-red-50 rounded-lg-lg border border-red-200">
+                <div key={forecast.vehicleId} className="flex items-center justify-between p-3 bg-destructive/10 rounded-[0.625rem]-lg border border-red-200">
                   <div className="flex items-center space-x-3">
-                    <AlertTriangle className="h-4 w-4 text-red-600" />
+                    <AlertTriangle className="h-4 w-4 text-destructive" />
                     <div>
                       <p className="text-sm font-medium text-red-900">{forecast.vehicleName}</p>
-                      <p className="text-xs text-red-700">{forecast.reason}</p>
+                      <p className="text-xs text-destructive">{forecast.reason}</p>
                     </div>
                   </div>
                   <div className="text-right">
-                    <p className="text-sm font-semibold text-red-600">
+                    <p className="text-sm font-semibold text-destructive">
                       {getDaysUntil(forecast.predictedDate)} days
                     </p>
                     <Badge className={getUrgencyBadge(forecast.predictedDate)}>
@@ -239,24 +239,24 @@ export function MaintenanceForecast({ className = '' }: MaintenanceForecastProps
 
         {/* Maintenance Schedule */}
         <div className="space-y-3">
-          <h4 className="text-sm font-medium text-gray-900">Maintenance Schedule</h4>
+          <h4 className="text-sm font-medium text-foreground">Maintenance Schedule</h4>
           <div className="space-y-2 max-h-64 overflow-y-auto">
             {filteredForecasts.map((forecast) => (
-              <div key={forecast.vehicleId} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg-lg">
+              <div key={forecast.vehicleId} className="flex items-center justify-between p-3 bg-muted/50 rounded-[0.625rem]-lg">
                 <div className="flex items-center space-x-3">
-                  <Wrench className="h-4 w-4 text-orange-600" />
+                  <Wrench className="h-4 w-4 text-warning" />
                   <div>
-                    <p className="text-sm font-medium text-gray-900">{forecast.vehicleName}</p>
-                    <p className="text-xs text-gray-500">{forecast.reason}</p>
+                    <p className="text-sm font-medium text-foreground">{forecast.vehicleName}</p>
+                    <p className="text-xs text-muted-foreground">{forecast.reason}</p>
                   </div>
                 </div>
                 <div className="text-right">
                   <div className="flex items-center space-x-2">
                     <div>
-                      <p className="text-sm font-semibold text-gray-900">
+                      <p className="text-sm font-semibold text-foreground">
                         {formatDate(forecast.predictedDate)}
                       </p>
-                      <p className="text-xs text-gray-500">
+                      <p className="text-xs text-muted-foreground">
                         {getDaysUntil(forecast.predictedDate)} days
                       </p>
                     </div>
@@ -264,7 +264,7 @@ export function MaintenanceForecast({ className = '' }: MaintenanceForecastProps
                       <Badge className={getConfidenceBadge(forecast.confidence)}>
                         {forecast.confidence.toFixed(0)}%
                       </Badge>
-                      <p className="text-xs text-gray-500 mt-1">
+                      <p className="text-xs text-muted-foreground mt-1">
                         {getConfidenceLevel(forecast.confidence)}
                       </p>
                     </div>
@@ -277,25 +277,25 @@ export function MaintenanceForecast({ className = '' }: MaintenanceForecastProps
 
         {/* Confidence Distribution */}
         <div className="space-y-3">
-          <h4 className="text-sm font-medium text-gray-900">Confidence Distribution</h4>
+          <h4 className="text-sm font-medium text-foreground">Confidence Distribution</h4>
           <div className="grid grid-cols-3 gap-2">
-            <div className="text-center p-2 bg-green-50 rounded-lg">
-              <p className="text-sm font-bold text-green-600">
+            <div className="text-center p-2 bg-success/10 rounded-[0.625rem]">
+              <p className="text-sm font-bold text-success">
                 {filteredForecasts.filter(f => f.confidence >= 80).length}
               </p>
-              <p className="text-xs text-gray-500">High (80%+)</p>
+              <p className="text-xs text-muted-foreground">High (80%+)</p>
             </div>
-            <div className="text-center p-2 bg-yellow-50 rounded-lg">
-              <p className="text-sm font-bold text-yellow-600">
+            <div className="text-center p-2 bg-warning/10 rounded-[0.625rem]">
+              <p className="text-sm font-bold text-warning">
                 {filteredForecasts.filter(f => f.confidence >= 60 && f.confidence < 80).length}
               </p>
-              <p className="text-xs text-gray-500">Medium (60-79%)</p>
+              <p className="text-xs text-muted-foreground">Medium (60-79%)</p>
             </div>
-            <div className="text-center p-2 bg-red-50 rounded-lg">
-              <p className="text-sm font-bold text-red-600">
+            <div className="text-center p-2 bg-destructive/10 rounded-[0.625rem]">
+              <p className="text-sm font-bold text-destructive">
                 {filteredForecasts.filter(f => f.confidence < 60).length}
               </p>
-              <p className="text-xs text-gray-500">Low (&lt;60%)</p>
+              <p className="text-xs text-muted-foreground">Low (&lt;60%)</p>
             </div>
           </div>
         </div>
@@ -313,7 +313,7 @@ export function MaintenanceForecast({ className = '' }: MaintenanceForecastProps
         </div>
 
         {/* Insights */}
-        <div className="p-3 bg-blue-50 rounded-lg-lg">
+        <div className="p-3 bg-primary/10 rounded-[0.625rem]-lg">
           <h5 className="text-sm font-medium text-blue-900 mb-2">💡 Maintenance Insights</h5>
           <ul className="text-xs text-blue-800 space-y-1">
             <li>• {filteredForecasts.length} maintenance events predicted in next {selectedPeriod}</li>

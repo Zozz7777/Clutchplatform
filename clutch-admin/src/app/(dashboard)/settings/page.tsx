@@ -6,6 +6,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useAuth } from "@/contexts/auth-context";
+import { useTranslations } from "@/hooks/use-translations";
 import { formatDate, formatRelativeTime } from "@/lib/utils";
 
 // Import new Phase 2 widgets
@@ -119,6 +120,7 @@ export default function SettingsPage() {
   const [isSaving, setIsSaving] = useState(false);
   const [showPasswords, setShowPasswords] = useState<Record<string, boolean>>({});
   const { user, hasPermission } = useAuth();
+  const { t } = useTranslations();
 
   useEffect(() => {
     const loadSettingsData = async () => {
@@ -232,7 +234,6 @@ export default function SettingsPage() {
       });
 
       // Show success message
-      console.log("Settings saved successfully");
     } catch (error) {
       console.error("Failed to save settings:", error);
     } finally {
@@ -295,7 +296,7 @@ export default function SettingsPage() {
               onChange={(e) => handleSettingChange(setting.key, e.target.checked)}
               className="rounded border-input"
             />
-            <span className="text-sm">{setting.value ? "Enabled" : "Disabled"}</span>
+            <span className="text-sm">{setting.value ? t('settings.enabled') : t('settings.disabled')}</span>
           </div>
         );
       case "number":
@@ -361,7 +362,7 @@ export default function SettingsPage() {
               onChange={(e) => handlePreferenceChange(preference.key, e.target.checked)}
               className="rounded border-input"
             />
-            <span className="text-sm">{preference.value ? "Enabled" : "Disabled"}</span>
+            <span className="text-sm">{preference.value ? t('settings.enabled') : t('settings.disabled')}</span>
           </div>
         );
       case "number":
@@ -401,9 +402,9 @@ export default function SettingsPage() {
       {/* Page Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold tracking-tight">Settings & Configuration</h1>
+          <h1 className="text-3xl font-bold tracking-tight">{t('settings.title')}</h1>
           <p className="text-muted-foreground">
-            Manage system settings, user preferences, and integrations
+            {t('settings.description')}
           </p>
         </div>
         {hasPermission("manage_settings") && (
@@ -413,20 +414,20 @@ export default function SettingsPage() {
             ) : (
               <Save className="mr-2 h-4 w-4" />
             )}
-            Save Changes
+            {t('settings.saveChanges')}
           </Button>
         )}
       </div>
 
       {/* Tabs */}
-      <div className="flex space-x-1 bg-muted p-1 rounded-lg w-fit">
+      <div className="flex space-x-1 bg-muted p-1 rounded-[0.625rem] w-fit">
         <Button
           variant={activeTab === "general" ? "default" : "ghost"}
           size="sm"
           onClick={() => setActiveTab("general")}
         >
           <Settings className="mr-2 h-4 w-4" />
-          General
+          {t('settings.general')}
         </Button>
         <Button
           variant={activeTab === "security" ? "default" : "ghost"}
@@ -434,7 +435,7 @@ export default function SettingsPage() {
           onClick={() => setActiveTab("security")}
         >
           <Shield className="mr-2 h-4 w-4" />
-          Security
+          {t('settings.security')}
         </Button>
         <Button
           variant={activeTab === "notifications" ? "default" : "ghost"}
@@ -442,7 +443,7 @@ export default function SettingsPage() {
           onClick={() => setActiveTab("notifications")}
         >
           <Bell className="mr-2 h-4 w-4" />
-          Notifications
+          {t('settings.notifications')}
         </Button>
         <Button
           variant={activeTab === "appearance" ? "default" : "ghost"}
@@ -641,9 +642,9 @@ export default function SettingsPage() {
           <CardContent>
             <div className="space-y-4">
               {integrations.map((integration) => (
-                <div key={integration._id} className="flex items-center justify-between p-4 border rounded-lg">
+                <div key={integration._id} className="flex items-center justify-between p-4 border rounded-[0.625rem]">
                   <div className="flex items-center space-x-4">
-                    <div className="w-10 h-10 rounded-lg bg-muted flex items-center justify-center">
+                    <div className="w-10 h-10 rounded-[0.625rem] bg-muted flex items-center justify-center">
                       <Key className="h-5 w-5" />
                     </div>
                     <div>
@@ -697,7 +698,7 @@ export default function SettingsPage() {
                           Export Config
                         </DropdownMenuItem>
                         <DropdownMenuSeparator />
-                        <DropdownMenuItem className="text-red-600">
+                        <DropdownMenuItem className="text-destructive">
                           <Trash2 className="mr-2 h-4 w-4" />
                           Remove Integration
                         </DropdownMenuItem>
@@ -730,7 +731,7 @@ export default function SettingsPage() {
           <CardContent>
             <div className="space-y-4">
               {auditLogs.slice(0, 50).map((log) => (
-                <div key={log._id} className="flex items-center justify-between p-4 border rounded-lg">
+                <div key={log._id} className="flex items-center justify-between p-4 border rounded-[0.625rem]">
                   <div className="flex items-center space-x-4">
                     <div className="w-8 h-8 rounded-full bg-muted flex items-center justify-center">
                       <User className="h-4 w-4" />

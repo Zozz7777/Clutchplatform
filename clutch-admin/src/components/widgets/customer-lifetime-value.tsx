@@ -93,15 +93,15 @@ export function CustomerLifetimeValue({ className = '' }: CustomerLifetimeValueP
   }, []);
 
   const getCLVColor = (clv: number) => {
-    if (clv >= 30000) return 'text-green-600';
-    if (clv >= 15000) return 'text-yellow-600';
-    return 'text-red-600';
+    if (clv >= 30000) return 'text-success';
+    if (clv >= 15000) return 'text-warning';
+    return 'text-destructive';
   };
 
   const getCLVBadge = (clv: number) => {
-    if (clv >= 30000) return 'bg-green-100 text-green-800';
-    if (clv >= 15000) return 'bg-yellow-100 text-yellow-800';
-    return 'bg-red-100 text-red-800';
+    if (clv >= 30000) return 'bg-success/10 text-green-800';
+    if (clv >= 15000) return 'bg-warning/10 text-yellow-800';
+    return 'bg-destructive/10 text-red-800';
   };
 
   const getCLVLevel = (clv: number) => {
@@ -111,15 +111,15 @@ export function CustomerLifetimeValue({ className = '' }: CustomerLifetimeValueP
   };
 
   const getRetentionColor = (rate: number) => {
-    if (rate >= 80) return 'text-green-600';
-    if (rate >= 60) return 'text-yellow-600';
-    return 'text-red-600';
+    if (rate >= 80) return 'text-success';
+    if (rate >= 60) return 'text-warning';
+    return 'text-destructive';
   };
 
   const getRetentionBadge = (rate: number) => {
-    if (rate >= 80) return 'bg-green-100 text-green-800';
-    if (rate >= 60) return 'bg-yellow-100 text-yellow-800';
-    return 'bg-red-100 text-red-800';
+    if (rate >= 80) return 'bg-success/10 text-green-800';
+    if (rate >= 60) return 'bg-warning/10 text-yellow-800';
+    return 'bg-destructive/10 text-red-800';
   };
 
   const getTotalCLV = () => {
@@ -140,16 +140,16 @@ export function CustomerLifetimeValue({ className = '' }: CustomerLifetimeValueP
       <Card className={className}>
         <CardHeader>
           <CardTitle className="flex items-center space-x-2">
-            <DollarSign className="h-5 w-5 text-green-600" />
+            <DollarSign className="h-5 w-5 text-success" />
             <span>Customer Lifetime Value</span>
           </CardTitle>
           <CardDescription>Loading CLV data...</CardDescription>
         </CardHeader>
         <CardContent>
           <div className="animate-pulse space-y-4">
-            <div className="h-4 bg-gray-200 rounded-lg w-3/4"></div>
-            <div className="h-4 bg-gray-200 rounded-lg w-1/2"></div>
-            <div className="h-4 bg-gray-200 rounded-lg w-2/3"></div>
+            <div className="h-4 bg-muted rounded-[0.625rem] w-3/4"></div>
+            <div className="h-4 bg-muted rounded-[0.625rem] w-1/2"></div>
+            <div className="h-4 bg-muted rounded-[0.625rem] w-2/3"></div>
           </div>
         </CardContent>
       </Card>
@@ -164,7 +164,7 @@ export function CustomerLifetimeValue({ className = '' }: CustomerLifetimeValueP
     <Card className={className}>
       <CardHeader>
         <CardTitle className="flex items-center space-x-2">
-          <DollarSign className="h-5 w-5 text-green-600" />
+          <DollarSign className="h-5 w-5 text-success" />
           <span>Customer Lifetime Value</span>
         </CardTitle>
         <CardDescription>
@@ -174,37 +174,37 @@ export function CustomerLifetimeValue({ className = '' }: CustomerLifetimeValueP
       <CardContent className="space-y-6">
         {/* Summary Stats */}
         <div className="grid grid-cols-2 gap-4">
-          <div className="text-center p-3 bg-green-50 rounded-lg-lg">
-            <DollarSign className="h-5 w-5 text-green-600 mx-auto mb-1" />
-            <p className="text-lg font-bold text-green-600">
+          <div className="text-center p-3 bg-success/10 rounded-[0.625rem]-lg">
+            <DollarSign className="h-5 w-5 text-success mx-auto mb-1" />
+            <p className="text-lg font-bold text-success">
               ${averageCLV.toLocaleString()}
             </p>
-            <p className="text-xs text-gray-500">Avg CLV</p>
+            <p className="text-xs text-muted-foreground">Avg CLV</p>
           </div>
-          <div className="text-center p-3 bg-blue-50 rounded-lg-lg">
-            <Users className="h-5 w-5 text-blue-600 mx-auto mb-1" />
-            <p className="text-lg font-bold text-blue-600">
+          <div className="text-center p-3 bg-primary/10 rounded-[0.625rem]-lg">
+            <Users className="h-5 w-5 text-primary mx-auto mb-1" />
+            <p className="text-lg font-bold text-primary">
               {clvData.reduce((sum, segment) => sum + segment.customerCount, 0)}
             </p>
-            <p className="text-xs text-gray-500">Total Customers</p>
+            <p className="text-xs text-muted-foreground">Total Customers</p>
           </div>
         </div>
 
         {/* CLV by Segment */}
         <div className="space-y-3">
-          <h4 className="text-sm font-medium text-gray-900">CLV by Segment</h4>
+          <h4 className="text-sm font-medium text-foreground">CLV by Segment</h4>
           <div className="space-y-2">
             {clvData.map((segment) => (
-              <div key={segment.segment} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg-lg">
+              <div key={segment.segment} className="flex items-center justify-between p-3 bg-muted/50 rounded-[0.625rem]-lg">
                 <div className="flex items-center space-x-3">
-                  <div className="flex items-center justify-center w-8 h-8 bg-blue-100 rounded-lg-full">
-                    <span className="text-sm font-semibold text-blue-600">
+                  <div className="flex items-center justify-center w-8 h-8 bg-primary/10 rounded-[0.625rem]-full">
+                    <span className="text-sm font-semibold text-primary">
                       {segment.segment.charAt(0)}
                     </span>
                   </div>
                   <div>
-                    <p className="text-sm font-medium text-gray-900">{segment.segment}</p>
-                    <p className="text-xs text-gray-500">{segment.customerCount} customers</p>
+                    <p className="text-sm font-medium text-foreground">{segment.segment}</p>
+                    <p className="text-xs text-muted-foreground">{segment.customerCount} customers</p>
                   </div>
                 </div>
                 
@@ -217,7 +217,7 @@ export function CustomerLifetimeValue({ className = '' }: CustomerLifetimeValueP
                       {getCLVLevel(segment.clv)}
                     </Badge>
                   </div>
-                  <p className="text-xs text-gray-500">
+                  <p className="text-xs text-muted-foreground">
                     ${segment.totalRevenue.toLocaleString()} total
                   </p>
                 </div>
@@ -228,12 +228,12 @@ export function CustomerLifetimeValue({ className = '' }: CustomerLifetimeValueP
 
         {/* CLV Components */}
         <div className="space-y-3">
-          <h4 className="text-sm font-medium text-gray-900">CLV Components</h4>
+          <h4 className="text-sm font-medium text-foreground">CLV Components</h4>
           <div className="space-y-2">
             {clvData.map((segment) => (
-              <div key={segment.segment} className="p-3 bg-gray-50 rounded-lg-lg">
+              <div key={segment.segment} className="p-3 bg-muted/50 rounded-[0.625rem]-lg">
                 <div className="flex items-center justify-between mb-2">
-                  <h5 className="text-sm font-medium text-gray-900">{segment.segment}</h5>
+                  <h5 className="text-sm font-medium text-foreground">{segment.segment}</h5>
                   <Badge variant="outline" className="text-xs">
                     ${segment.clv.toLocaleString()} CLV
                   </Badge>
@@ -241,20 +241,20 @@ export function CustomerLifetimeValue({ className = '' }: CustomerLifetimeValueP
                 
                 <div className="grid grid-cols-2 gap-2 text-xs">
                   <div className="flex justify-between">
-                    <span className="text-gray-500">AOV:</span>
-                    <span className="text-gray-900">${segment.averageOrderValue.toLocaleString()}</span>
+                    <span className="text-muted-foreground">AOV:</span>
+                    <span className="text-foreground">${segment.averageOrderValue.toLocaleString()}</span>
                   </div>
                   <div className="flex justify-between">
-                    <span className="text-gray-500">Frequency:</span>
-                    <span className="text-gray-900">{segment.purchaseFrequency}/year</span>
+                    <span className="text-muted-foreground">Frequency:</span>
+                    <span className="text-foreground">{segment.purchaseFrequency}/year</span>
                   </div>
                   <div className="flex justify-between">
-                    <span className="text-gray-500">Lifespan:</span>
-                    <span className="text-gray-900">{segment.customerLifespan} months</span>
+                    <span className="text-muted-foreground">Lifespan:</span>
+                    <span className="text-foreground">{segment.customerLifespan} months</span>
                   </div>
                   <div className="flex justify-between">
-                    <span className="text-gray-500">Retention:</span>
-                    <span className="text-gray-900">{segment.retentionRate}%</span>
+                    <span className="text-muted-foreground">Retention:</span>
+                    <span className="text-foreground">{segment.retentionRate}%</span>
                   </div>
                 </div>
               </div>
@@ -264,15 +264,15 @@ export function CustomerLifetimeValue({ className = '' }: CustomerLifetimeValueP
 
         {/* Revenue Distribution */}
         <div className="space-y-3">
-          <h4 className="text-sm font-medium text-gray-900">Revenue Distribution</h4>
+          <h4 className="text-sm font-medium text-foreground">Revenue Distribution</h4>
           <div className="space-y-2">
             {clvData.map((segment) => {
               const percentage = totalRevenue > 0 ? (segment.totalRevenue / totalRevenue) * 100 : 0;
               return (
                 <div key={segment.segment} className="space-y-1">
                   <div className="flex justify-between text-sm">
-                    <span className="text-gray-600">{segment.segment}</span>
-                    <span className="text-gray-900 font-medium">{percentage.toFixed(1)}%</span>
+                    <span className="text-muted-foreground">{segment.segment}</span>
+                    <span className="text-foreground font-medium">{percentage.toFixed(1)}%</span>
                   </div>
                   <Progress value={percentage} className="h-2" />
                 </div>
@@ -283,19 +283,19 @@ export function CustomerLifetimeValue({ className = '' }: CustomerLifetimeValueP
 
         {/* Performance Metrics */}
         <div className="grid grid-cols-2 gap-4">
-          <div className="text-center p-3 bg-purple-50 rounded-lg-lg">
-            <BarChart3 className="h-4 w-4 text-purple-600 mx-auto mb-1" />
-            <p className="text-sm font-bold text-purple-600">
+          <div className="text-center p-3 bg-primary/10 rounded-[0.625rem]-lg">
+            <BarChart3 className="h-4 w-4 text-primary mx-auto mb-1" />
+            <p className="text-sm font-bold text-primary">
               ${totalCLV.toLocaleString()}
             </p>
-            <p className="text-xs text-gray-500">Total CLV</p>
+            <p className="text-xs text-muted-foreground">Total CLV</p>
           </div>
-          <div className="text-center p-3 bg-orange-50 rounded-lg-lg">
-            <TrendingUp className="h-4 w-4 text-orange-600 mx-auto mb-1" />
-            <p className="text-sm font-bold text-orange-600">
+          <div className="text-center p-3 bg-warning/10 rounded-[0.625rem]-lg">
+            <TrendingUp className="h-4 w-4 text-warning mx-auto mb-1" />
+            <p className="text-sm font-bold text-warning">
               {clvData.length > 0 ? clvData[0].segment : 'N/A'}
             </p>
-            <p className="text-xs text-gray-500">Highest CLV</p>
+            <p className="text-xs text-muted-foreground">Highest CLV</p>
           </div>
         </div>
 
@@ -312,7 +312,7 @@ export function CustomerLifetimeValue({ className = '' }: CustomerLifetimeValueP
         </div>
 
         {/* Insights */}
-        <div className="p-3 bg-blue-50 rounded-lg-lg">
+        <div className="p-3 bg-primary/10 rounded-[0.625rem]-lg">
           <h5 className="text-sm font-medium text-blue-900 mb-2">💡 CLV Insights</h5>
           <ul className="text-xs text-blue-800 space-y-1">
             <li>• Average CLV: ${averageCLV.toLocaleString()}</li>

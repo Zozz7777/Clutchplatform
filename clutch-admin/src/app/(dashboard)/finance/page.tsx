@@ -10,6 +10,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { formatCurrency, formatDate, formatRelativeTime } from "@/lib/utils";
 import { useAuth } from "@/contexts/auth-context";
+import { useTranslations } from "@/hooks/use-translations";
 import { productionApi } from "@/lib/production-api";
 import { paymentService } from "@/lib/payment-service";
 
@@ -90,6 +91,7 @@ export default function FinancePage() {
   const [statusFilter, setStatusFilter] = useState<string>("all");
   const [isLoading, setIsLoading] = useState(true);
   const { hasPermission } = useAuth();
+  const { t } = useTranslations();
 
   // Payment processing functions
   const handleProcessPayment = async (paymentData: any) => {
@@ -122,7 +124,7 @@ export default function FinancePage() {
 
   const handleCreatePayment = async () => {
     // This would open a payment creation dialog
-    toast.info("Payment creation dialog would open here");
+    toast.info(t('finance.paymentCreationDialog'));
   };
 
   const handleExportPayments = async () => {
@@ -156,7 +158,7 @@ export default function FinancePage() {
       toast.success("Payments exported successfully!");
     } catch (error) {
       console.error("Failed to export payments:", error);
-      toast.error("Failed to export payments");
+      toast.error(t('finance.failedToExportPayments'));
     }
   };
 
@@ -179,7 +181,7 @@ export default function FinancePage() {
         
       } catch (error) {
         console.error("Failed to load finance data:", error);
-        toast.error("Failed to load finance data");
+        toast.error(t('finance.failedToLoadFinanceData'));
         // Set empty arrays on error - no mock data fallback
         setPayments([]);
         setSubscriptions([]);
@@ -234,7 +236,7 @@ export default function FinancePage() {
       case "failed":
         return <XCircle className="h-4 w-4 text-destructive" />;
       default:
-        return <AlertTriangle className="h-4 w-4 text-gray-600" />;
+        return <AlertTriangle className="h-4 w-4 text-muted-foreground" />;
     }
   };
 
@@ -259,38 +261,38 @@ export default function FinancePage() {
       {/* Page Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold tracking-tight text-foreground font-sans">Finance Dashboard</h1>
+          <h1 className="text-3xl font-bold tracking-tight text-foreground font-sans">{t('finance.title')}</h1>
           <p className="text-muted-foreground font-sans">
-            Manage payments, subscriptions, and financial operations
+            {t('finance.description')}
           </p>
         </div>
         <div className="flex items-center space-x-2">
-          <Button variant="outline" className="shadow-sm">
+          <Button variant="outline" className="shadow-2xs">
             <Download className="mr-2 h-4 w-4" />
-            Export Report
+            {t('finance.exportReport')}
           </Button>
-          <Button className="shadow-sm">
+          <Button className="shadow-2xs">
             <Plus className="mr-2 h-4 w-4" />
-            Process Payment
+            {t('finance.processPayment')}
           </Button>
         </div>
       </div>
 
       {/* Revenue Dashboard Cards */}
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-        <Card className="shadow-sm">
+        <Card className="shadow-2xs">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium text-card-foreground">Total Revenue</CardTitle>
+            <CardTitle className="text-sm font-medium text-card-foreground">{t('finance.totalRevenue')}</CardTitle>
             <DollarSign className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold text-foreground">{formatCurrency(totalRevenue)}</div>
             <p className="text-xs text-muted-foreground">
-              <span className="text-primary">+15%</span> from last month
+              <span className="text-primary">+15%</span> {t('finance.fromLastMonth')}
             </p>
           </CardContent>
         </Card>
-        <Card className="shadow-sm">
+        <Card className="shadow-2xs">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium text-card-foreground">Pending Payments</CardTitle>
             <Clock className="h-4 w-4 text-muted-foreground" />
@@ -302,7 +304,7 @@ export default function FinancePage() {
             </p>
           </CardContent>
         </Card>
-        <Card className="shadow-sm">
+        <Card className="shadow-2xs">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium text-card-foreground">Active Subscriptions</CardTitle>
             <Receipt className="h-4 w-4 text-muted-foreground" />
@@ -314,7 +316,7 @@ export default function FinancePage() {
             </p>
           </CardContent>
         </Card>
-        <Card className="shadow-sm">
+        <Card className="shadow-2xs">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium text-card-foreground">Monthly Recurring</CardTitle>
             <TrendingUp className="h-4 w-4 text-muted-foreground" />
@@ -330,13 +332,13 @@ export default function FinancePage() {
 
       {/* Revenue Charts Placeholder */}
       <div className="grid gap-6 md:grid-cols-2">
-        <Card className="shadow-sm">
+        <Card className="shadow-2xs">
           <CardHeader>
             <CardTitle className="text-card-foreground">Revenue Trends</CardTitle>
             <CardDescription>Monthly revenue over time</CardDescription>
           </CardHeader>
           <CardContent>
-            <div className="h-64 bg-muted rounded-lg flex items-center justify-center">
+            <div className="h-64 bg-muted rounded-[0.625rem] flex items-center justify-center">
               <div className="text-center">
                 <BarChart3 className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
                 <p className="text-muted-foreground">Revenue chart will be displayed here</p>
@@ -344,13 +346,13 @@ export default function FinancePage() {
             </div>
           </CardContent>
         </Card>
-        <Card className="shadow-sm">
+        <Card className="shadow-2xs">
           <CardHeader>
             <CardTitle className="text-card-foreground">Payment Methods</CardTitle>
             <CardDescription>Distribution of payment methods</CardDescription>
           </CardHeader>
           <CardContent>
-            <div className="h-64 bg-muted rounded-lg flex items-center justify-center">
+            <div className="h-64 bg-muted rounded-[0.625rem] flex items-center justify-center">
               <div className="text-center">
                 <PieChart className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
                 <p className="text-muted-foreground">Payment methods chart will be displayed here</p>
@@ -370,7 +372,7 @@ export default function FinancePage() {
         </TabsList>
 
         <TabsContent value="payments" className="space-y-4">
-          <Card className="shadow-sm">
+          <Card className="shadow-2xs">
             <CardHeader>
               <CardTitle className="text-card-foreground">Payment Queue</CardTitle>
               <CardDescription>Manage incoming and outgoing payments</CardDescription>
@@ -391,7 +393,7 @@ export default function FinancePage() {
                 </div>
                 <Select value={statusFilter} onValueChange={setStatusFilter}>
                   <SelectTrigger className="w-[180px]">
-                    <SelectValue placeholder="Filter by status" />
+                    <SelectValue placeholder={t('finance.filterByStatus')} />
                   </SelectTrigger>
                   <SelectContent>
                     <SelectItem value="all">All Status</SelectItem>
@@ -434,7 +436,7 @@ export default function FinancePage() {
                       </TableCell>
                       <TableCell>
                         <div className="flex items-center space-x-2">
-                          {payment.method === "Credit Card" ? (
+                          {payment.method === 'Credit Card' ? (
                             <CreditCard className="h-3 w-3 text-muted-foreground" />
                           ) : (
                             <Banknote className="h-3 w-3 text-muted-foreground" />
@@ -493,7 +495,7 @@ export default function FinancePage() {
         </TabsContent>
 
         <TabsContent value="subscriptions" className="space-y-4">
-          <Card className="shadow-sm">
+          <Card className="shadow-2xs">
             <CardHeader>
               <CardTitle className="text-card-foreground">Subscriptions</CardTitle>
               <CardDescription>Manage customer subscriptions and billing</CardDescription>
@@ -537,7 +539,7 @@ export default function FinancePage() {
                       </TableCell>
                       <TableCell>
                         <Badge variant={subscription.autoRenew ? "default" : "secondary"}>
-                          {subscription.autoRenew ? "Yes" : "No"}
+                          {subscription.autoRenew ? t('finance.yes') : t('finance.no')}
                         </Badge>
                       </TableCell>
                       <TableCell className="text-right">
@@ -578,7 +580,7 @@ export default function FinancePage() {
         </TabsContent>
 
         <TabsContent value="payouts" className="space-y-4">
-          <Card className="shadow-sm">
+          <Card className="shadow-2xs">
             <CardHeader>
               <CardTitle className="text-card-foreground">Payouts</CardTitle>
               <CardDescription>Manage payouts to service providers</CardDescription>
@@ -659,7 +661,7 @@ export default function FinancePage() {
         </TabsContent>
 
         <TabsContent value="billing" className="space-y-4">
-          <Card className="shadow-sm">
+          <Card className="shadow-2xs">
             <CardHeader>
               <CardTitle className="text-card-foreground">Billing Management</CardTitle>
               <CardDescription>Hold or clear payments, manage billing cycles</CardDescription>
@@ -669,15 +671,15 @@ export default function FinancePage() {
                 <div className="space-y-4">
                   <h3 className="text-lg font-semibold text-foreground">Payment Actions</h3>
                   <div className="space-y-2">
-                    <Button className="w-full justify-start shadow-sm">
+                    <Button className="w-full justify-start shadow-2xs">
                       <CheckCircle className="mr-2 h-4 w-4" />
                       Clear Pending Payments
                     </Button>
-                    <Button variant="outline" className="w-full justify-start shadow-sm">
+                    <Button variant="outline" className="w-full justify-start shadow-2xs">
                       <AlertTriangle className="mr-2 h-4 w-4" />
                       Hold Suspicious Payments
                     </Button>
-                    <Button variant="outline" className="w-full justify-start shadow-sm">
+                    <Button variant="outline" className="w-full justify-start shadow-2xs">
                       <Download className="mr-2 h-4 w-4" />
                       Export Billing Report
                     </Button>
@@ -686,15 +688,15 @@ export default function FinancePage() {
                 <div className="space-y-4">
                   <h3 className="text-lg font-semibold text-foreground">Billing Settings</h3>
                   <div className="space-y-2">
-                    <Button variant="outline" className="w-full justify-start shadow-sm">
+                    <Button variant="outline" className="w-full justify-start shadow-2xs">
                       <Calendar className="mr-2 h-4 w-4" />
                       Manage Billing Cycles
                     </Button>
-                    <Button variant="outline" className="w-full justify-start shadow-sm">
+                    <Button variant="outline" className="w-full justify-start shadow-2xs">
                       <CreditCard className="mr-2 h-4 w-4" />
                       Payment Methods
                     </Button>
-                    <Button variant="outline" className="w-full justify-start shadow-sm">
+                    <Button variant="outline" className="w-full justify-start shadow-2xs">
                       <Receipt className="mr-2 h-4 w-4" />
                       Invoice Templates
                     </Button>

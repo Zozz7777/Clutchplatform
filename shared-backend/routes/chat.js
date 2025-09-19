@@ -376,6 +376,115 @@ router.post('/channels', checkRole(['head_administrator']), async (req, res) => 
   }
 });
 
+// ===== CHAT MESSAGES =====
+
+// GET /api/v1/chat/messages - Get chat messages
+router.get('/messages', checkRole(['head_administrator', 'admin', 'support_agent']), async (req, res) => {
+  try {
+    const messagesCollection = await getCollection('chat_messages');
+    const { page = 1, limit = 50, sessionId, userId, startDate, endDate } = req.query;
+    
+    const filter = {};
+    if (sessionId) filter.sessionId = sessionId;
+    if (userId) filter.userId = userId;
+    if (startDate && endDate) {
+      filter.timestamp = {
+        $gte: new Date(startDate),
+        $lte: new Date(endDate)
+      };
+    }
+    
+    const skip = (parseInt(page) - 1) * parseInt(limit);
+    
+    const messages = await messagesCollection
+      .find(filter)
+      .sort({ timestamp: -1 })
+      .skip(skip)
+      .limit(parseInt(limit))
+      .toArray();
+    
+    const total = await messagesCollection.countDocuments(filter);
+    
+    res.json({
+      success: true,
+      data: {
+        messages,
+        pagination: {
+          page: parseInt(page),
+          limit: parseInt(limit),
+          total,
+          pages: Math.ceil(total / parseInt(limit))
+        }
+      }
+    });
+  } catch (error) {
+    console.error('Error fetching chat messages:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Failed to fetch chat messages',
+      error: process.env.NODE_ENV === 'development' ? error.message : undefined
+    });
+  }
+});
+
+// POST /api/v1/chat/messages - Send chat message
+router.post('/messages', checkRole(['head_administrator', 'admin', 'support_agent']), async (req, res) => {
+  try {
+    const messagesCollection = await getCollection('chat_messages');
+    const { sessionId, message, messageType = 'text', attachments } = req.body;
+    
+    // Validate required fields
+    if (!sessionId || !message) {
+      return res.status(400).json({
+        success: false,
+        message: 'Session ID and message are required'
+      });
+    }
+    
+    const messageData = {
+      sessionId,
+      message,
+      messageType,
+      attachments: attachments || [],
+      userId: req.user.userId || req.user.id,
+      timestamp: new Date(),
+      status: 'sent'
+    };
+    
+    const result = await messagesCollection.insertOne(messageData);
+    
+    // Broadcast message via WebSocket
+    if (webSocketServer) {
+      webSocketServer.broadcastToSession(sessionId, {
+        type: 'new_message',
+        data: {
+          ...messageData,
+          _id: result.insertedId
+        }
+      });
+    }
+    
+    res.json({
+      success: true,
+      data: {
+        message: {
+          ...messageData,
+          _id: result.insertedId
+        }
+      },
+      message: 'Message sent successfully'
+    });
+    
+  } catch (error) {
+    console.error('Error sending chat message:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Failed to send message',
+      error: process.env.NODE_ENV === 'development' ? error.message : undefined
+    });
+  }
+});
+
 // ===== CHAT ANALYTICS =====
 
 // GET /api/chat/analytics - Get chat analytics

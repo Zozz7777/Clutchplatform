@@ -91,85 +91,69 @@ router.get('/frontend', authenticateToken, checkRole(['head_administrator', 'tec
   try {
     const { page = 1, limit = 20, severity, component, resolved, dateFrom, dateTo } = req.query;
     
-    // Mock error data - in real app, fetch from database
-    const errors = [
-      {
-        id: 'error-1',
-        error: 'TypeError: Cannot read property "length" of undefined',
-        stack: 'at Component.render (Component.js:45:12)\n  at ReactDOM.render (ReactDOM.js:123:45)',
-        url: 'https://clutch-admin.com/dashboard',
-        userAgent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36',
-        userId: 'user-123',
-        sessionId: 'session-456',
-        timestamp: new Date().toISOString(),
-        severity: 'error',
-        component: 'Dashboard',
-        action: 'render',
-        metadata: { 
-          props: { userId: 'user-123' },
-          state: { loading: false }
-        },
-        ip: '192.168.1.100',
-        resolved: false,
-        createdAt: new Date().toISOString()
-      },
-      {
-        id: 'error-2',
-        error: 'NetworkError: Failed to fetch',
-        stack: 'at fetch (fetch.js:23:15)\n  at apiCall (api.js:67:8)',
-        url: 'https://clutch-admin.com/users',
-        userAgent: 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36',
-        userId: 'user-456',
-        sessionId: 'session-789',
-        timestamp: new Date(Date.now() - 3600000).toISOString(),
-        severity: 'warning',
-        component: 'UserList',
-        action: 'fetchUsers',
-        metadata: { 
-          endpoint: '/api/v1/users',
-          method: 'GET'
-        },
-        ip: '192.168.1.101',
-        resolved: true,
-        createdAt: new Date(Date.now() - 3600000).toISOString()
-      }
-    ];
+    // Get real error data from database
+    const errorsCollection = await getCollection('frontend_errors');
+    if (!errorsCollection) {
+      return res.status(500).json({
+        success: false,
+        message: 'Failed to connect to frontend_errors collection'
+      });
+    }
 
-    // Filter errors based on query parameters
-    let filteredErrors = errors;
-    
+    // Build query based on filters
+    const query = {};
     if (severity) {
-      filteredErrors = filteredErrors.filter(e => e.severity === severity);
+      query.severity = severity;
     }
-    
     if (component) {
-      filteredErrors = filteredErrors.filter(e => e.component.toLowerCase().includes(component.toLowerCase()));
+      query.component = component;
     }
-    
     if (resolved !== undefined) {
-      filteredErrors = filteredErrors.filter(e => e.resolved === (resolved === 'true'));
+      query.resolved = resolved === 'true';
     }
+    if (dateFrom || dateTo) {
+      query.timestamp = {};
+      if (dateFrom) {
+        query.timestamp.$gte = new Date(dateFrom);
+      }
+      if (dateTo) {
+        query.timestamp.$lte = new Date(dateTo);
+      }
+    }
+
+    // Get errors from database
+    const errors = await errorsCollection.find(query)
+      .sort({ timestamp: -1 })
+      .skip((page - 1) * limit)
+      .limit(parseInt(limit))
+      .toArray();
+
+    // Get total count for pagination
+    const total = await errorsCollection.countDocuments(query);
+
+    // Calculate summary statistics
+    const summary = {
+      total: total,
+      resolved: await errorsCollection.countDocuments({ ...query, resolved: true }),
+      unresolved: await errorsCollection.countDocuments({ ...query, resolved: false }),
+      bySeverity: {
+        error: await errorsCollection.countDocuments({ ...query, severity: 'error' }),
+        warning: await errorsCollection.countDocuments({ ...query, severity: 'warning' }),
+        info: await errorsCollection.countDocuments({ ...query, severity: 'info' })
+      }
+    };
 
     res.json({
       success: true,
       data: { 
-        errors: filteredErrors,
+        errors: errors,
         pagination: {
           page: parseInt(page),
           limit: parseInt(limit),
-          total: filteredErrors.length,
-          pages: Math.ceil(filteredErrors.length / limit)
+          total: total,
+          pages: Math.ceil(total / limit)
         },
-        summary: {
-          total: errors.length,
-          resolved: errors.filter(e => e.resolved).length,
-          unresolved: errors.filter(e => !e.resolved).length,
-          bySeverity: {
-            error: errors.filter(e => e.severity === 'error').length,
-            warning: errors.filter(e => e.severity === 'warning').length,
-            info: errors.filter(e => e.severity === 'info').length
-          }
-        }
+        summary: summary
       },
       message: 'Frontend errors retrieved successfully',
       timestamp: new Date().toISOString()

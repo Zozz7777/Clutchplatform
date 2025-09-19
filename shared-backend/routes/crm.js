@@ -334,6 +334,109 @@ router.post('/tickets', checkRole(['head_administrator', 'customer_support', 'em
   }
 });
 
+// ===== CRM TICKETS =====
+
+// GET /api/crm/tickets - Get all tickets
+router.get('/tickets', async (req, res) => {
+  try {
+    const ticketsCollection = await getCollection('tickets');
+    const { page = 1, limit = 10, status, priority, assignedTo } = req.query;
+    
+    const filter = {};
+    if (status) filter.status = status;
+    if (priority) filter.priority = priority;
+    if (assignedTo) filter.assignedTo = assignedTo;
+    
+    const skip = (parseInt(page) - 1) * parseInt(limit);
+    
+    const tickets = await ticketsCollection
+      .find(filter)
+      .skip(skip)
+      .limit(parseInt(limit))
+      .sort({ createdAt: -1 })
+      .toArray();
+    
+    const total = await ticketsCollection.countDocuments(filter);
+    
+    res.json({
+      success: true,
+      data: {
+        tickets,
+        pagination: {
+          page: parseInt(page),
+          limit: parseInt(limit),
+          total,
+          pages: Math.ceil(total / parseInt(limit))
+        }
+      }
+    });
+  } catch (error) {
+    console.error('Error fetching tickets:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Failed to fetch tickets',
+      error: process.env.NODE_ENV === 'development' ? error.message : undefined
+    });
+  }
+});
+
+// POST /api/crm/tickets - Create new ticket
+router.post('/tickets', checkRole(['head_administrator', 'customer_support']), async (req, res) => {
+  try {
+    const ticketsCollection = await getCollection('tickets');
+    const { 
+      title, 
+      description, 
+      priority = 'medium', 
+      category, 
+      customerId,
+      assignedTo 
+    } = req.body;
+    
+    // Validate required fields
+    if (!title || !description) {
+      return res.status(400).json({
+        success: false,
+        message: 'Title and description are required'
+      });
+    }
+    
+    const ticketData = {
+      title,
+      description,
+      priority,
+      category: category || 'general',
+      customerId,
+      assignedTo,
+      status: 'open',
+      createdBy: req.user.userId || req.user.id,
+      createdAt: new Date(),
+      updatedAt: new Date()
+    };
+    
+    const result = await ticketsCollection.insertOne(ticketData);
+    
+    res.json({
+      success: true,
+      data: {
+        ticket: {
+          ...ticketData,
+          _id: result.insertedId
+        }
+      },
+      message: 'Ticket created successfully'
+    });
+    
+  } catch (error) {
+    console.error('Error creating ticket:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Failed to create ticket',
+      error: process.env.NODE_ENV === 'development' ? error.message : undefined
+    });
+  }
+});
+
 // ===== CRM ANALYTICS =====
 
 // GET /api/crm/analytics - Get CRM analytics
@@ -384,6 +487,179 @@ router.get('/analytics', async (req, res) => {
       success: false,
       message: 'Failed to fetch CRM analytics',
       error: process.env.NODE_ENV === 'development' ? error.message : undefined
+    });
+  }
+});
+
+// ============================================================================
+// CRITICAL ACCOUNTS ENDPOINTS
+// ============================================================================
+
+// GET /api/v1/crm/critical-accounts - Get critical accounts
+router.get('/critical-accounts', checkRole(['head_administrator', 'admin', 'crm_manager', 'account_manager']), async (req, res) => {
+  try {
+    const accountsCollection = await getCollection('critical_accounts');
+    const { page = 1, limit = 50, tier, status } = req.query;
+    
+    const filter = {};
+    if (tier) filter.tier = tier;
+    if (status) filter.status = status;
+    
+    const skip = (parseInt(page) - 1) * parseInt(limit);
+    
+    const accounts = await accountsCollection
+      .find(filter)
+      .sort({ healthScore: 1 }) // Sort by health score (lowest first - most critical)
+      .skip(skip)
+      .limit(parseInt(limit))
+      .toArray();
+    
+    const total = await accountsCollection.countDocuments(filter);
+    
+    res.json({
+      success: true,
+      data: accounts,
+      pagination: {
+        page: parseInt(page),
+        limit: parseInt(limit),
+        total,
+        pages: Math.ceil(total / parseInt(limit))
+      },
+      timestamp: new Date().toISOString()
+    });
+  } catch (error) {
+    console.error('Get critical accounts error:', error);
+    res.status(500).json({
+      success: false,
+      error: 'GET_CRITICAL_ACCOUNTS_FAILED',
+      message: 'Failed to retrieve critical accounts',
+      timestamp: new Date().toISOString()
+    });
+  }
+});
+
+// GET /api/v1/crm/critical-accounts/:id - Get specific critical account
+router.get('/critical-accounts/:id', checkRole(['head_administrator', 'admin', 'crm_manager', 'account_manager']), async (req, res) => {
+  try {
+    const accountsCollection = await getCollection('critical_accounts');
+    const { id } = req.params;
+    
+    const account = await accountsCollection.findOne({ id });
+    
+    if (!account) {
+      return res.status(404).json({
+        success: false,
+        error: 'CRITICAL_ACCOUNT_NOT_FOUND',
+        message: 'Critical account not found',
+        timestamp: new Date().toISOString()
+      });
+    }
+    
+    res.json({
+      success: true,
+      data: account,
+      timestamp: new Date().toISOString()
+    });
+  } catch (error) {
+    console.error('Get critical account error:', error);
+    res.status(500).json({
+      success: false,
+      error: 'GET_CRITICAL_ACCOUNT_FAILED',
+      message: 'Failed to retrieve critical account',
+      timestamp: new Date().toISOString()
+    });
+  }
+});
+
+// PUT /api/v1/crm/critical-accounts/:id - Update critical account
+router.put('/critical-accounts/:id', checkRole(['head_administrator', 'admin', 'crm_manager', 'account_manager']), async (req, res) => {
+  try {
+    const accountsCollection = await getCollection('critical_accounts');
+    const { id } = req.params;
+    
+    const updateData = {
+      ...req.body,
+      updatedAt: new Date().toISOString()
+    };
+    
+    const result = await accountsCollection.updateOne(
+      { id },
+      { $set: updateData }
+    );
+    
+    if (result.matchedCount === 0) {
+      return res.status(404).json({
+        success: false,
+        error: 'CRITICAL_ACCOUNT_NOT_FOUND',
+        message: 'Critical account not found',
+        timestamp: new Date().toISOString()
+      });
+    }
+    
+    res.json({
+      success: true,
+      data: { id, ...updateData },
+      message: 'Critical account updated successfully',
+      timestamp: new Date().toISOString()
+    });
+  } catch (error) {
+    console.error('Update critical account error:', error);
+    res.status(500).json({
+      success: false,
+      error: 'UPDATE_CRITICAL_ACCOUNT_FAILED',
+      message: 'Failed to update critical account',
+      timestamp: new Date().toISOString()
+    });
+  }
+});
+
+// POST /api/v1/crm/critical-accounts/:id/actions - Add action to critical account
+router.post('/critical-accounts/:id/actions', checkRole(['head_administrator', 'admin', 'crm_manager', 'account_manager']), async (req, res) => {
+  try {
+    const accountsCollection = await getCollection('critical_accounts');
+    const { id } = req.params;
+    const { action, notes, priority = 'medium' } = req.body;
+    
+    const actionData = {
+      id: `action-${Date.now()}`,
+      action,
+      notes,
+      priority,
+      status: 'pending',
+      assignedTo: req.user.id,
+      createdAt: new Date().toISOString()
+    };
+    
+    const result = await accountsCollection.updateOne(
+      { id },
+      { 
+        $push: { actions: actionData },
+        $set: { updatedAt: new Date().toISOString() }
+      }
+    );
+    
+    if (result.matchedCount === 0) {
+      return res.status(404).json({
+        success: false,
+        error: 'CRITICAL_ACCOUNT_NOT_FOUND',
+        message: 'Critical account not found',
+        timestamp: new Date().toISOString()
+      });
+    }
+    
+    res.json({
+      success: true,
+      data: actionData,
+      message: 'Action added to critical account successfully',
+      timestamp: new Date().toISOString()
+    });
+  } catch (error) {
+    console.error('Add action to critical account error:', error);
+    res.status(500).json({
+      success: false,
+      error: 'ADD_ACTION_TO_CRITICAL_ACCOUNT_FAILED',
+      message: 'Failed to add action to critical account',
+      timestamp: new Date().toISOString()
     });
   }
 });

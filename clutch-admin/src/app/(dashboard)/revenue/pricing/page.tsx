@@ -112,7 +112,7 @@ export default function PricingPage() {
             {plans.map((plan) => (
               <Card key={plan.id} className={plan.popular ? 'border-blue-500 shadow-lg' : ''}>
                 {plan.popular && (
-                  <div className="bg-blue-500 text-white text-center py-2 text-sm font-medium font-sans">
+                  <div className="bg-primary/100 text-white text-center py-2 text-sm font-medium font-sans">
                     Most Popular
                   </div>
                 )}
@@ -138,7 +138,7 @@ export default function PricingPage() {
                     <ul className="space-y-2">
                       {plan.features.map((feature, index) => (
                         <li key={index} className="flex items-center space-x-2">
-                          <Check className="h-4 w-4 text-green-500" />
+                          <Check className="h-4 w-4 text-success" />
                           <span className="text-sm font-sans">{feature}</span>
                         </li>
                       ))}
@@ -272,9 +272,9 @@ export default function PricingPage() {
                           <span className="text-sm font-sans">{plan.name}</span>
                           <span className="text-sm font-sans">{percentage.toFixed(1)}%</span>
                         </div>
-                        <div className="w-full bg-gray-200 rounded-full h-2">
+                        <div className="w-full bg-muted rounded-full h-2">
                           <div 
-                            className="bg-blue-500 h-2 rounded-full" 
+                            className="bg-primary/100 h-2 rounded-full" 
                             style={{ width: `${percentage}%` }}
                           ></div>
                         </div>

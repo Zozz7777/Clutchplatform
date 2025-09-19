@@ -74,14 +74,14 @@ export default function PerformancePage() {
   }, []);
 
   const getPerformanceColor = (value: number, thresholds: { good: number; warning: number }) => {
-    if (value <= thresholds.good) return 'text-green-500';
-    if (value <= thresholds.warning) return 'text-yellow-500';
-    return 'text-red-500';
+    if (value <= thresholds.good) return 'text-success';
+    if (value <= thresholds.warning) return 'text-warning';
+    return 'text-destructive';
   };
 
   const getPerformanceBadge = (value: number, thresholds: { good: number; warning: number }) => {
-    if (value <= thresholds.good) return <Badge variant="default" className="bg-green-500">Good</Badge>;
-    if (value <= thresholds.warning) return <Badge variant="default" className="bg-yellow-500">Warning</Badge>;
+    if (value <= thresholds.good) return <Badge variant="default" className="bg-success/100">Good</Badge>;
+    if (value <= thresholds.warning) return <Badge variant="default" className="bg-warning/100">Warning</Badge>;
     return <Badge variant="destructive">Critical</Badge>;
   };
 
@@ -257,7 +257,7 @@ export default function PerformancePage() {
               <CardContent>
                 <div className="space-y-4">
                   {metrics.endpoints.map((endpoint, index) => (
-                    <div key={index} className="flex items-center justify-between p-4 border rounded-lg">
+                    <div key={index} className="flex items-center justify-between p-4 border rounded-[0.625rem]">
                       <div className="flex items-center space-x-3">
                         <Badge variant="outline" className="font-sans">
                           {endpoint.method}
@@ -279,9 +279,9 @@ export default function PerformancePage() {
                           </div>
                         </div>
                         {endpoint.errorCount > 0 ? (
-                          <AlertTriangle className="h-5 w-5 text-red-500" />
+                          <AlertTriangle className="h-5 w-5 text-destructive" />
                         ) : (
-                          <CheckCircle className="h-5 w-5 text-green-500" />
+                          <CheckCircle className="h-5 w-5 text-success" />
                         )}
                       </div>
                     </div>
@@ -299,7 +299,7 @@ export default function PerformancePage() {
                 </CardHeader>
                 <CardContent>
                   <div className="text-center py-8">
-                    <TrendingUp className="h-8 w-8 mx-auto text-green-500" />
+                    <TrendingUp className="h-8 w-8 mx-auto text-success" />
                     <p className="text-sm text-muted-foreground font-sans mt-2">
                       Response time trending down
                     </p>
@@ -317,9 +317,9 @@ export default function PerformancePage() {
                 <CardContent>
                   <div className="text-center py-8">
                     {metrics.errorRate.percentage < 1 ? (
-                      <TrendingDown className="h-8 w-8 mx-auto text-green-500" />
+                      <TrendingDown className="h-8 w-8 mx-auto text-success" />
                     ) : (
-                      <TrendingUp className="h-8 w-8 mx-auto text-red-500" />
+                      <TrendingUp className="h-8 w-8 mx-auto text-destructive" />
                     )}
                     <p className="text-sm text-muted-foreground font-sans mt-2">
                       Error rate: {metrics.errorRate.percentage}%

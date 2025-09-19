@@ -52,15 +52,15 @@ export function FleetUtilization({ className = '' }: FleetUtilizationProps) {
   }, []);
 
   const getUtilizationColor = (rate: number) => {
-    if (rate >= 80) return 'text-green-600';
-    if (rate >= 60) return 'text-yellow-600';
-    return 'text-red-600';
+    if (rate >= 80) return 'text-success';
+    if (rate >= 60) return 'text-warning';
+    return 'text-destructive';
   };
 
   const getUtilizationBadge = (rate: number) => {
-    if (rate >= 80) return 'bg-green-100 text-green-800';
-    if (rate >= 60) return 'bg-yellow-100 text-yellow-800';
-    return 'bg-red-100 text-red-800';
+    if (rate >= 80) return 'bg-success/10 text-green-800';
+    if (rate >= 60) return 'bg-warning/10 text-yellow-800';
+    return 'bg-destructive/10 text-red-800';
   };
 
   const getUtilizationLevel = (rate: number) => {
@@ -72,19 +72,19 @@ export function FleetUtilization({ className = '' }: FleetUtilizationProps) {
 
   const getStatusColor = (status: string) => {
     switch (status) {
-      case 'active': return 'text-green-600';
-      case 'idle': return 'text-yellow-600';
-      case 'maintenance': return 'text-red-600';
-      default: return 'text-gray-600';
+      case 'active': return 'text-success';
+      case 'idle': return 'text-warning';
+      case 'maintenance': return 'text-destructive';
+      default: return 'text-muted-foreground';
     }
   };
 
   const getStatusBadge = (status: string) => {
     switch (status) {
-      case 'active': return 'bg-green-100 text-green-800';
-      case 'idle': return 'bg-yellow-100 text-yellow-800';
-      case 'maintenance': return 'bg-red-100 text-red-800';
-      default: return 'bg-gray-100 text-gray-800';
+      case 'active': return 'bg-success/10 text-green-800';
+      case 'idle': return 'bg-warning/10 text-yellow-800';
+      case 'maintenance': return 'bg-destructive/10 text-red-800';
+      default: return 'bg-muted text-gray-800';
     }
   };
 
@@ -102,16 +102,16 @@ export function FleetUtilization({ className = '' }: FleetUtilizationProps) {
       <Card className={className}>
         <CardHeader>
           <CardTitle className="flex items-center space-x-2">
-            <Truck className="h-5 w-5 text-blue-600" />
+            <Truck className="h-5 w-5 text-primary" />
             <span>Fleet Utilization</span>
           </CardTitle>
           <CardDescription>Loading fleet utilization data...</CardDescription>
         </CardHeader>
         <CardContent>
           <div className="animate-pulse space-y-4">
-            <div className="h-4 bg-gray-200 rounded-lg w-3/4"></div>
-            <div className="h-4 bg-gray-200 rounded-lg w-1/2"></div>
-            <div className="h-4 bg-gray-200 rounded-lg w-2/3"></div>
+            <div className="h-4 bg-muted rounded-[0.625rem] w-3/4"></div>
+            <div className="h-4 bg-muted rounded-[0.625rem] w-1/2"></div>
+            <div className="h-4 bg-muted rounded-[0.625rem] w-2/3"></div>
           </div>
         </CardContent>
       </Card>
@@ -123,7 +123,7 @@ export function FleetUtilization({ className = '' }: FleetUtilizationProps) {
       <Card className={className}>
         <CardHeader>
           <CardTitle className="flex items-center space-x-2">
-            <Truck className="h-5 w-5 text-blue-600" />
+            <Truck className="h-5 w-5 text-primary" />
             <span>Fleet Utilization</span>
           </CardTitle>
           <CardDescription>Unable to load fleet utilization data</CardDescription>
@@ -142,7 +142,7 @@ export function FleetUtilization({ className = '' }: FleetUtilizationProps) {
     <Card className={className}>
       <CardHeader>
         <CardTitle className="flex items-center space-x-2">
-          <Truck className="h-5 w-5 text-blue-600" />
+          <Truck className="h-5 w-5 text-primary" />
           <span>Fleet Utilization</span>
         </CardTitle>
         <CardDescription>
@@ -151,7 +151,7 @@ export function FleetUtilization({ className = '' }: FleetUtilizationProps) {
       </CardHeader>
       <CardContent className="space-y-6">
         {/* Overall Utilization */}
-        <div className="text-center p-4 bg-gray-50 rounded-lg-lg">
+        <div className="text-center p-4 bg-muted/50 rounded-[0.625rem]-lg">
           <div className="flex items-center justify-center space-x-2 mb-2">
             <Activity className={`h-6 w-6 ${getUtilizationColor(utilizationData.utilizationRate)}`} />
             <span className={`text-2xl font-bold ${getUtilizationColor(utilizationData.utilizationRate)}`}>
@@ -161,7 +161,7 @@ export function FleetUtilization({ className = '' }: FleetUtilizationProps) {
               {getUtilizationLevel(utilizationData.utilizationRate)}
             </Badge>
           </div>
-          <p className="text-sm text-gray-600">Overall Utilization Rate</p>
+          <p className="text-sm text-muted-foreground">Overall Utilization Rate</p>
           <div className="mt-3">
             <Progress value={utilizationData.utilizationRate} className="h-2" />
           </div>
@@ -169,42 +169,42 @@ export function FleetUtilization({ className = '' }: FleetUtilizationProps) {
 
         {/* Fleet Status Summary */}
         <div className="grid grid-cols-3 gap-4">
-          <div className="text-center p-3 bg-green-50 rounded-lg-lg">
-            <CheckCircle className="h-5 w-5 text-green-600 mx-auto mb-1" />
-            <p className="text-lg font-bold text-green-600">{utilizationData.active}</p>
-            <p className="text-xs text-gray-500">Active</p>
+          <div className="text-center p-3 bg-success/10 rounded-[0.625rem]-lg">
+            <CheckCircle className="h-5 w-5 text-success mx-auto mb-1" />
+            <p className="text-lg font-bold text-success">{utilizationData.active}</p>
+            <p className="text-xs text-muted-foreground">Active</p>
           </div>
-          <div className="text-center p-3 bg-yellow-50 rounded-lg-lg">
-            <Clock className="h-5 w-5 text-yellow-600 mx-auto mb-1" />
-            <p className="text-lg font-bold text-yellow-600">{utilizationData.idle}</p>
-            <p className="text-xs text-gray-500">Idle</p>
+          <div className="text-center p-3 bg-warning/10 rounded-[0.625rem]-lg">
+            <Clock className="h-5 w-5 text-warning mx-auto mb-1" />
+            <p className="text-lg font-bold text-warning">{utilizationData.idle}</p>
+            <p className="text-xs text-muted-foreground">Idle</p>
           </div>
-          <div className="text-center p-3 bg-red-50 rounded-lg-lg">
-            <AlertTriangle className="h-5 w-5 text-red-600 mx-auto mb-1" />
-            <p className="text-lg font-bold text-red-600">{utilizationData.maintenance}</p>
-            <p className="text-xs text-gray-500">Maintenance</p>
+          <div className="text-center p-3 bg-destructive/10 rounded-[0.625rem]-lg">
+            <AlertTriangle className="h-5 w-5 text-destructive mx-auto mb-1" />
+            <p className="text-lg font-bold text-destructive">{utilizationData.maintenance}</p>
+            <p className="text-xs text-muted-foreground">Maintenance</p>
           </div>
         </div>
 
         {/* Fleet Status Breakdown */}
         <div className="space-y-3">
-          <h4 className="text-sm font-medium text-gray-900">Fleet Status Breakdown</h4>
+          <h4 className="text-sm font-medium text-foreground">Fleet Status Breakdown</h4>
           <div className="space-y-2">
             {statusData.map((status) => {
               const StatusIcon = getStatusIcon(status.status);
               const percentage = utilizationData.total > 0 ? (status.count / utilizationData.total) * 100 : 0;
               
               return (
-                <div key={status.status} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg-lg">
+                <div key={status.status} className="flex items-center justify-between p-3 bg-muted/50 rounded-[0.625rem]-lg">
                   <div className="flex items-center space-x-3">
                     <StatusIcon className={`h-4 w-4 ${getStatusColor(status.status)}`} />
                     <div>
-                      <p className="text-sm font-medium text-gray-900">{status.label}</p>
-                      <p className="text-xs text-gray-500">{status.count} vehicles</p>
+                      <p className="text-sm font-medium text-foreground">{status.label}</p>
+                      <p className="text-xs text-muted-foreground">{status.count} vehicles</p>
                     </div>
                   </div>
                   <div className="text-right">
-                    <p className="text-sm font-semibold text-gray-900">{status.count}</p>
+                    <p className="text-sm font-semibold text-foreground">{status.count}</p>
                     <Badge className={getStatusBadge(status.status)}>
                       {percentage.toFixed(1)}%
                     </Badge>
@@ -217,15 +217,15 @@ export function FleetUtilization({ className = '' }: FleetUtilizationProps) {
 
         {/* Utilization Distribution */}
         <div className="space-y-3">
-          <h4 className="text-sm font-medium text-gray-900">Utilization Distribution</h4>
+          <h4 className="text-sm font-medium text-foreground">Utilization Distribution</h4>
           <div className="space-y-2">
             {statusData.map((status) => {
               const percentage = utilizationData.total > 0 ? (status.count / utilizationData.total) * 100 : 0;
               return (
                 <div key={status.status} className="space-y-1">
                   <div className="flex justify-between text-sm">
-                    <span className="text-gray-600">{status.label}</span>
-                    <span className="text-gray-900 font-medium">{percentage.toFixed(1)}%</span>
+                    <span className="text-muted-foreground">{status.label}</span>
+                    <span className="text-foreground font-medium">{percentage.toFixed(1)}%</span>
                   </div>
                   <Progress value={percentage} className="h-2" />
                 </div>
@@ -236,19 +236,19 @@ export function FleetUtilization({ className = '' }: FleetUtilizationProps) {
 
         {/* Fleet Performance Metrics */}
         <div className="grid grid-cols-2 gap-4">
-          <div className="text-center p-3 bg-blue-50 rounded-lg-lg">
-            <TrendingUp className="h-4 w-4 text-blue-600 mx-auto mb-1" />
-            <p className="text-sm font-bold text-blue-600">
+          <div className="text-center p-3 bg-primary/10 rounded-[0.625rem]-lg">
+            <TrendingUp className="h-4 w-4 text-primary mx-auto mb-1" />
+            <p className="text-sm font-bold text-primary">
               {utilizationData.total > 0 ? ((utilizationData.active / utilizationData.total) * 100).toFixed(1) : 0}%
             </p>
-            <p className="text-xs text-gray-500">Active Rate</p>
+            <p className="text-xs text-muted-foreground">Active Rate</p>
           </div>
-          <div className="text-center p-3 bg-purple-50 rounded-lg-lg">
-            <BarChart3 className="h-4 w-4 text-purple-600 mx-auto mb-1" />
-            <p className="text-sm font-bold text-purple-600">
+          <div className="text-center p-3 bg-primary/10 rounded-[0.625rem]-lg">
+            <BarChart3 className="h-4 w-4 text-primary mx-auto mb-1" />
+            <p className="text-sm font-bold text-primary">
               {utilizationData.total > 0 ? ((utilizationData.maintenance / utilizationData.total) * 100).toFixed(1) : 0}%
             </p>
-            <p className="text-xs text-gray-500">Maintenance Rate</p>
+            <p className="text-xs text-muted-foreground">Maintenance Rate</p>
           </div>
         </div>
 
@@ -265,7 +265,7 @@ export function FleetUtilization({ className = '' }: FleetUtilizationProps) {
         </div>
 
         {/* Insights */}
-        <div className="p-3 bg-blue-50 rounded-lg-lg">
+        <div className="p-3 bg-primary/10 rounded-[0.625rem]-lg">
           <h5 className="text-sm font-medium text-blue-900 mb-2">💡 Fleet Insights</h5>
           <ul className="text-xs text-blue-800 space-y-1">
             <li>• Total fleet size: {utilizationData.total} vehicles</li>

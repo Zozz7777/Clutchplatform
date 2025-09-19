@@ -142,40 +142,40 @@ export default function OperationalSLADashboard({ className }: OperationalSLADas
 
   const getStatusColor = (status: string) => {
     switch (status) {
-      case 'meeting': return 'bg-green-100 text-green-800';
-      case 'at_risk': return 'bg-yellow-100 text-yellow-800';
-      case 'breach': return 'bg-red-100 text-red-800';
-      case 'unknown': return 'bg-gray-100 text-gray-800';
-      default: return 'bg-gray-100 text-gray-800';
+      case 'meeting': return 'bg-success/10 text-green-800';
+      case 'at_risk': return 'bg-warning/10 text-yellow-800';
+      case 'breach': return 'bg-destructive/10 text-red-800';
+      case 'unknown': return 'bg-muted text-gray-800';
+      default: return 'bg-muted text-gray-800';
     }
   };
 
   const getServiceStatusColor = (status: string) => {
     switch (status) {
-      case 'healthy': return 'bg-green-500';
-      case 'degraded': return 'bg-yellow-500';
-      case 'down': return 'bg-red-500';
-      case 'maintenance': return 'bg-blue-500';
-      default: return 'bg-gray-500';
+      case 'healthy': return 'bg-success/100';
+      case 'degraded': return 'bg-warning/100';
+      case 'down': return 'bg-destructive/100';
+      case 'maintenance': return 'bg-primary/100';
+      default: return 'bg-muted/500';
     }
   };
 
   const getTrendIcon = (trend: string) => {
     switch (trend) {
-      case 'improving': return <TrendingUp className="h-4 w-4 text-green-500" />;
-      case 'declining': return <TrendingDown className="h-4 w-4 text-red-500" />;
-      case 'stable': return <Activity className="h-4 w-4 text-blue-500" />;
-      default: return <Activity className="h-4 w-4 text-gray-500" />;
+      case 'improving': return <TrendingUp className="h-4 w-4 text-success" />;
+      case 'declining': return <TrendingDown className="h-4 w-4 text-destructive" />;
+      case 'stable': return <Activity className="h-4 w-4 text-primary" />;
+      default: return <Activity className="h-4 w-4 text-muted-foreground" />;
     }
   };
 
   const getSeverityColor = (severity: string) => {
     switch (severity) {
-      case 'critical': return 'bg-red-500';
-      case 'high': return 'bg-orange-500';
-      case 'medium': return 'bg-yellow-500';
-      case 'low': return 'bg-green-500';
-      default: return 'bg-gray-500';
+      case 'critical': return 'bg-destructive/100';
+      case 'high': return 'bg-warning/100';
+      case 'medium': return 'bg-warning/100';
+      case 'low': return 'bg-success/100';
+      default: return 'bg-muted/500';
     }
   };
 
@@ -240,7 +240,7 @@ export default function OperationalSLADashboard({ className }: OperationalSLADas
                 variant="outline"
                 size="sm"
                 onClick={() => setIsMonitoring(!isMonitoring)}
-                className={isMonitoring ? 'bg-green-100 text-green-800' : ''}
+                className={isMonitoring ? 'bg-success/10 text-green-800' : ''}
               >
                 {isMonitoring ? <Eye className="h-4 w-4 mr-2" /> : <EyeOff className="h-4 w-4 mr-2" />}
                 {isMonitoring ? 'Monitoring' : 'Paused'}
@@ -259,20 +259,20 @@ export default function OperationalSLADashboard({ className }: OperationalSLADas
         <CardContent className="space-y-6">
           {/* SLA Summary */}
           <div className="grid grid-cols-4 gap-4">
-            <div className="text-center p-3 bg-green-50 rounded-lg">
-              <div className="text-2xl font-bold text-green-600">{meetingSLAs}</div>
+            <div className="text-center p-3 bg-success/10 rounded-[0.625rem]">
+              <div className="text-2xl font-bold text-success">{meetingSLAs}</div>
               <div className="text-sm text-muted-foreground">Meeting SLA</div>
             </div>
-            <div className="text-center p-3 bg-yellow-50 rounded-lg">
-              <div className="text-2xl font-bold text-yellow-600">{atRiskSLAs}</div>
+            <div className="text-center p-3 bg-warning/10 rounded-[0.625rem]">
+              <div className="text-2xl font-bold text-warning">{atRiskSLAs}</div>
               <div className="text-sm text-muted-foreground">At Risk</div>
             </div>
-            <div className="text-center p-3 bg-red-50 rounded-lg">
-              <div className="text-2xl font-bold text-red-600">{breachSLAs}</div>
+            <div className="text-center p-3 bg-destructive/10 rounded-[0.625rem]">
+              <div className="text-2xl font-bold text-destructive">{breachSLAs}</div>
               <div className="text-sm text-muted-foreground">Breach</div>
             </div>
-            <div className="text-center p-3 bg-blue-50 rounded-lg">
-              <div className="text-2xl font-bold text-blue-600">{avgUptime}%</div>
+            <div className="text-center p-3 bg-primary/10 rounded-[0.625rem]">
+              <div className="text-2xl font-bold text-primary">{avgUptime}%</div>
               <div className="text-sm text-muted-foreground">Avg Uptime</div>
             </div>
           </div>
@@ -282,10 +282,10 @@ export default function OperationalSLADashboard({ className }: OperationalSLADas
             <h4 className="font-medium mb-3">Service Health</h4>
             <div className="grid gap-3">
               {services.map((service) => (
-                <div key={service.id} className="p-3 border rounded-lg">
+                <div key={service.id} className="p-3 border rounded-[0.625rem]">
                   <div className="flex items-center justify-between mb-2">
                     <div className="flex items-center gap-2">
-                      <div className={`h-3 w-3 rounded-lg-full ${getServiceStatusColor(service.status)}`} />
+                      <div className={`h-3 w-3 rounded-[0.625rem]-full ${getServiceStatusColor(service.status)}`} />
                       <span className="font-medium">{service.name}</span>
                     </div>
                     <div className="flex items-center gap-2">
@@ -342,8 +342,8 @@ export default function OperationalSLADashboard({ className }: OperationalSLADas
               {filteredSLAs.map((sla) => (
                 <div
                   key={sla.id}
-                  className={`p-3 border rounded-lg cursor-pointer transition-colors ${
-                    selectedSLA?.id === sla.id ? 'border-blue-500 bg-blue-50' : 'hover:bg-gray-50'
+                  className={`p-3 border rounded-[0.625rem] cursor-pointer transition-colors ${
+                    selectedSLA?.id === sla.id ? 'border-blue-500 bg-primary/10' : 'hover:bg-muted/50'
                   }`}
                   onClick={() => setSelectedSLA(sla)}
                 >
@@ -444,7 +444,7 @@ export default function OperationalSLADashboard({ className }: OperationalSLADas
                     <h5 className="font-medium mb-2">Historical Performance</h5>
                     <div className="space-y-2">
                       {selectedSLA.history.map((entry, index) => (
-                        <div key={index} className="flex items-center justify-between p-2 border rounded-lg text-sm">
+                        <div key={index} className="flex items-center justify-between p-2 border rounded-[0.625rem] text-sm">
                           <span>{new Date(entry.timestamp).toLocaleString()}</span>
                           <div className="flex items-center gap-2">
                             <span className="font-medium">{entry.value}</span>
@@ -499,7 +499,7 @@ export default function OperationalSLADashboard({ className }: OperationalSLADas
                     <h5 className="font-medium mb-2">Recent Incidents</h5>
                     <div className="space-y-2">
                       {selectedSLA.incidents.map((incident) => (
-                        <div key={incident.id} className="p-3 border rounded-lg">
+                        <div key={incident.id} className="p-3 border rounded-[0.625rem]">
                           <div className="flex items-center justify-between mb-2">
                             <div className="flex items-center gap-2">
                               <Badge className={getSeverityColor(incident.severity)}>
@@ -534,7 +534,7 @@ export default function OperationalSLADashboard({ className }: OperationalSLADas
                     <h5 className="font-medium mb-2">Active Alerts</h5>
                     <div className="space-y-2">
                       {selectedSLA.alerts.filter(alert => !alert.resolved).map((alert) => (
-                        <div key={alert.id} className="p-3 border rounded-lg">
+                        <div key={alert.id} className="p-3 border rounded-[0.625rem]">
                           <div className="flex items-center justify-between mb-2">
                             <div className="flex items-center gap-2">
                               {getAlertTypeIcon(alert.type)}

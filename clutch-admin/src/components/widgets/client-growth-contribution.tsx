@@ -144,15 +144,15 @@ export function ClientGrowthContribution({ className = '' }: ClientGrowthContrib
   }, []);
 
   const getGrowthColor = (rate: number) => {
-    if (rate >= 15) return 'text-green-600';
-    if (rate >= 10) return 'text-yellow-600';
-    return 'text-red-600';
+    if (rate >= 15) return 'text-success';
+    if (rate >= 10) return 'text-warning';
+    return 'text-destructive';
   };
 
   const getGrowthBadge = (rate: number) => {
-    if (rate >= 15) return 'bg-green-100 text-green-800';
-    if (rate >= 10) return 'bg-yellow-100 text-yellow-800';
-    return 'bg-red-100 text-red-800';
+    if (rate >= 15) return 'bg-success/10 text-green-800';
+    if (rate >= 10) return 'bg-warning/10 text-yellow-800';
+    return 'bg-destructive/10 text-red-800';
   };
 
   const getGrowthLevel = (rate: number) => {
@@ -162,15 +162,15 @@ export function ClientGrowthContribution({ className = '' }: ClientGrowthContrib
   };
 
   const getConfidenceColor = (confidence: number) => {
-    if (confidence >= 85) return 'text-green-600';
-    if (confidence >= 75) return 'text-yellow-600';
-    return 'text-red-600';
+    if (confidence >= 85) return 'text-success';
+    if (confidence >= 75) return 'text-warning';
+    return 'text-destructive';
   };
 
   const getConfidenceBadge = (confidence: number) => {
-    if (confidence >= 85) return 'bg-green-100 text-green-800';
-    if (confidence >= 75) return 'bg-yellow-100 text-yellow-800';
-    return 'bg-red-100 text-red-800';
+    if (confidence >= 85) return 'bg-success/10 text-green-800';
+    if (confidence >= 75) return 'bg-warning/10 text-yellow-800';
+    return 'bg-destructive/10 text-red-800';
   };
 
   const getTrendIcon = (trend: string) => {
@@ -183,9 +183,9 @@ export function ClientGrowthContribution({ className = '' }: ClientGrowthContrib
 
   const getTrendColor = (trend: string) => {
     switch (trend) {
-      case 'up': return 'text-green-600';
-      case 'down': return 'text-red-600';
-      default: return 'text-gray-600';
+      case 'up': return 'text-success';
+      case 'down': return 'text-destructive';
+      default: return 'text-muted-foreground';
     }
   };
 
@@ -205,16 +205,16 @@ export function ClientGrowthContribution({ className = '' }: ClientGrowthContrib
       <Card className={className}>
         <CardHeader>
           <CardTitle className="flex items-center space-x-2">
-            <TrendingUp className="h-5 w-5 text-green-600" />
+            <TrendingUp className="h-5 w-5 text-success" />
             <span>Client Growth Contribution</span>
           </CardTitle>
           <CardDescription>Loading client growth data...</CardDescription>
         </CardHeader>
         <CardContent>
           <div className="animate-pulse space-y-4">
-            <div className="h-4 bg-gray-200 rounded-lg w-3/4"></div>
-            <div className="h-4 bg-gray-200 rounded-lg w-1/2"></div>
-            <div className="h-4 bg-gray-200 rounded-lg w-2/3"></div>
+            <div className="h-4 bg-muted rounded-[0.625rem] w-3/4"></div>
+            <div className="h-4 bg-muted rounded-[0.625rem] w-1/2"></div>
+            <div className="h-4 bg-muted rounded-[0.625rem] w-2/3"></div>
           </div>
         </CardContent>
       </Card>
@@ -226,7 +226,7 @@ export function ClientGrowthContribution({ className = '' }: ClientGrowthContrib
       <Card className={className}>
         <CardHeader>
           <CardTitle className="flex items-center space-x-2">
-            <TrendingUp className="h-5 w-5 text-green-600" />
+            <TrendingUp className="h-5 w-5 text-success" />
             <span>Client Growth Contribution</span>
           </CardTitle>
           <CardDescription>Unable to load client growth data</CardDescription>
@@ -239,7 +239,7 @@ export function ClientGrowthContribution({ className = '' }: ClientGrowthContrib
     <Card className={className}>
       <CardHeader>
         <CardTitle className="flex items-center space-x-2">
-          <TrendingUp className="h-5 w-5 text-green-600" />
+          <TrendingUp className="h-5 w-5 text-success" />
           <span>Client Growth Contribution</span>
         </CardTitle>
         <CardDescription>
@@ -249,34 +249,34 @@ export function ClientGrowthContribution({ className = '' }: ClientGrowthContrib
       <CardContent className="space-y-6">
         {/* Summary Stats */}
         <div className="grid grid-cols-2 gap-4">
-          <div className="text-center p-3 bg-green-50 rounded-lg-lg">
-            <DollarSign className="h-5 w-5 text-green-600 mx-auto mb-1" />
-            <p className="text-lg font-bold text-green-600">
+          <div className="text-center p-3 bg-success/10 rounded-[0.625rem]-lg">
+            <DollarSign className="h-5 w-5 text-success mx-auto mb-1" />
+            <p className="text-lg font-bold text-success">
               ${(growthData.totalProjectedRevenue - growthData.totalCurrentRevenue).toLocaleString()}
             </p>
-            <p className="text-xs text-gray-500">Growth Revenue</p>
+            <p className="text-xs text-muted-foreground">Growth Revenue</p>
           </div>
-          <div className="text-center p-3 bg-blue-50 rounded-lg-lg">
-            <TrendingUp className="h-5 w-5 text-blue-600 mx-auto mb-1" />
-            <p className="text-lg font-bold text-blue-600">
+          <div className="text-center p-3 bg-primary/10 rounded-[0.625rem]-lg">
+            <TrendingUp className="h-5 w-5 text-primary mx-auto mb-1" />
+            <p className="text-lg font-bold text-primary">
               {growthData.averageGrowthRate.toFixed(1)}%
             </p>
-            <p className="text-xs text-gray-500">Avg Growth Rate</p>
+            <p className="text-xs text-muted-foreground">Avg Growth Rate</p>
           </div>
         </div>
 
         {/* Total Growth Impact */}
-        <div className="text-center p-4 bg-gray-50 rounded-lg-lg">
+        <div className="text-center p-4 bg-muted/50 rounded-[0.625rem]-lg">
           <div className="flex items-center justify-center space-x-2 mb-2">
-            <Target className="h-6 w-6 text-green-600" />
-            <span className="text-2xl font-bold text-green-600">
+            <Target className="h-6 w-6 text-success" />
+            <span className="text-2xl font-bold text-success">
               ${growthData.totalProjectedRevenue.toLocaleString()}
             </span>
-            <Badge className="bg-green-100 text-green-800">
+            <Badge className="bg-success/10 text-green-800">
               Projected
             </Badge>
           </div>
-          <p className="text-sm text-gray-600">Total Projected Revenue</p>
+          <p className="text-sm text-muted-foreground">Total Projected Revenue</p>
           <div className="mt-3">
             <Progress value={(growthData.totalProjectedRevenue / (growthData.totalProjectedRevenue * 1.2)) * 100} className="h-2" />
           </div>
@@ -284,27 +284,27 @@ export function ClientGrowthContribution({ className = '' }: ClientGrowthContrib
 
         {/* Top Contributors */}
         <div className="space-y-3">
-          <h4 className="text-sm font-medium text-gray-900">Top Growth Contributors</h4>
+          <h4 className="text-sm font-medium text-foreground">Top Growth Contributors</h4>
           <div className="space-y-2">
             {growthData.topContributors.map((client, index) => {
               const TrendIcon = getTrendIcon(client.trend);
               
               return (
-                <div key={client.clientId} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg-lg">
+                <div key={client.clientId} className="flex items-center justify-between p-3 bg-muted/50 rounded-[0.625rem]-lg">
                   <div className="flex items-center space-x-3">
-                    <div className="flex items-center justify-center w-6 h-6 bg-green-100 rounded-lg-full">
-                      <span className="text-xs font-semibold text-green-600">{index + 1}</span>
+                    <div className="flex items-center justify-center w-6 h-6 bg-success/10 rounded-[0.625rem]-full">
+                      <span className="text-xs font-semibold text-success">{index + 1}</span>
                     </div>
-                    <Building2 className="h-4 w-4 text-blue-600" />
+                    <Building2 className="h-4 w-4 text-primary" />
                     <div>
-                      <p className="text-sm font-medium text-gray-900">{client.clientName}</p>
-                      <p className="text-xs text-gray-500">{client.segment}</p>
+                      <p className="text-sm font-medium text-foreground">{client.clientName}</p>
+                      <p className="text-xs text-muted-foreground">{client.segment}</p>
                     </div>
                   </div>
                   
                   <div className="text-right">
                     <div className="flex items-center space-x-2">
-                      <p className="text-sm font-semibold text-gray-900">
+                      <p className="text-sm font-semibold text-foreground">
                         {client.contribution}%
                       </p>
                       <Badge className={getGrowthBadge(client.growthRate)}>
@@ -326,22 +326,22 @@ export function ClientGrowthContribution({ className = '' }: ClientGrowthContrib
 
         {/* All Clients Growth */}
         <div className="space-y-3">
-          <h4 className="text-sm font-medium text-gray-900">All Clients Growth</h4>
+          <h4 className="text-sm font-medium text-foreground">All Clients Growth</h4>
           <div className="space-y-2">
             {growthData.clients.map((client) => {
               const TrendIcon = getTrendIcon(client.trend);
               
               return (
-                <div key={client.clientId} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg-lg">
+                <div key={client.clientId} className="flex items-center justify-between p-3 bg-muted/50 rounded-[0.625rem]-lg">
                   <div className="flex items-center space-x-3">
-                    <div className="flex items-center justify-center w-8 h-8 bg-blue-100 rounded-lg-full">
-                      <span className="text-sm font-semibold text-blue-600">
+                    <div className="flex items-center justify-center w-8 h-8 bg-primary/10 rounded-[0.625rem]-full">
+                      <span className="text-sm font-semibold text-primary">
                         {client.clientName.charAt(0)}
                       </span>
                     </div>
                     <div>
-                      <p className="text-sm font-medium text-gray-900">{client.clientName}</p>
-                      <p className="text-xs text-gray-500">
+                      <p className="text-sm font-medium text-foreground">{client.clientName}</p>
+                      <p className="text-xs text-muted-foreground">
                         {client.segment} • Last activity: {formatDate(client.lastActivity)}
                       </p>
                     </div>
@@ -349,7 +349,7 @@ export function ClientGrowthContribution({ className = '' }: ClientGrowthContrib
                   
                   <div className="text-right">
                     <div className="flex items-center space-x-2">
-                      <p className="text-sm font-semibold text-gray-900">
+                      <p className="text-sm font-semibold text-foreground">
                         ${client.projectedRevenue.toLocaleString()}
                       </p>
                       <Badge className={getGrowthBadge(client.growthRate)}>
@@ -371,13 +371,13 @@ export function ClientGrowthContribution({ className = '' }: ClientGrowthContrib
 
         {/* Growth Distribution */}
         <div className="space-y-3">
-          <h4 className="text-sm font-medium text-gray-900">Growth Distribution</h4>
+          <h4 className="text-sm font-medium text-foreground">Growth Distribution</h4>
           <div className="space-y-2">
             {growthData.clients.map((client) => (
               <div key={client.clientId} className="space-y-1">
                 <div className="flex justify-between text-sm">
-                  <span className="text-gray-600">{client.clientName}</span>
-                  <span className="text-gray-900 font-medium">{client.contribution}%</span>
+                  <span className="text-muted-foreground">{client.clientName}</span>
+                  <span className="text-foreground font-medium">{client.contribution}%</span>
                 </div>
                 <Progress value={client.contribution} className="h-2" />
               </div>
@@ -398,7 +398,7 @@ export function ClientGrowthContribution({ className = '' }: ClientGrowthContrib
         </div>
 
         {/* Insights */}
-        <div className="p-3 bg-blue-50 rounded-lg-lg">
+        <div className="p-3 bg-primary/10 rounded-[0.625rem]-lg">
           <h5 className="text-sm font-medium text-blue-900 mb-2">💡 Client Growth Insights</h5>
           <ul className="text-xs text-blue-800 space-y-1">
             <li>• Total projected revenue: ${growthData.totalProjectedRevenue.toLocaleString()}</li>

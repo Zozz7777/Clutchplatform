@@ -39,6 +39,46 @@ router.get('/', async (req, res) => {
   }
 });
 
+// GET /api/v1/system/health - Get system health (alias for compatibility)
+router.get('/health', async (req, res) => {
+  try {
+    const healthData = await getSystemHealthData();
+    
+    res.json({
+      success: true,
+      data: healthData,
+      timestamp: new Date()
+    });
+  } catch (error) {
+    console.error('Error fetching system health:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Failed to fetch system health',
+      error: process.env.NODE_ENV === 'development' ? error.message : undefined
+    });
+  }
+});
+
+// GET /api/v1/system/api-performance - Get API performance metrics
+router.get('/api-performance', async (req, res) => {
+  try {
+    const performanceData = await getAPIPerformanceData();
+    
+    res.json({
+      success: true,
+      data: performanceData,
+      timestamp: new Date()
+    });
+  } catch (error) {
+    console.error('Error fetching API performance:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Failed to fetch API performance',
+      error: process.env.NODE_ENV === 'development' ? error.message : undefined
+    });
+  }
+});
+
 // GET /api/v1/system-health/detailed - Get detailed system health
 router.get('/detailed', checkRole(['head_administrator']), async (req, res) => {
   try {
@@ -707,75 +747,130 @@ async function testServiceConnection(service) {
 }
 
 async function getSystemAlerts(options) {
-  // This would typically come from a monitoring service or database
-  // For now, we'll return mock data
-  const mockAlerts = [
-    {
-      id: 'alert-001',
-      title: 'High Memory Usage',
-      description: 'Memory usage has exceeded 85% threshold',
-      severity: 'warning',
-      status: 'open',
-      source: 'system-monitor',
-      timestamp: new Date(Date.now() - 5 * 60 * 1000),
-      metadata: {
-        memoryUsage: 87.5,
-        threshold: 85,
-        server: 'web-01'
-      }
-    },
-    {
-      id: 'alert-002',
-      title: 'Database Connection Pool Exhausted',
-      description: 'Database connection pool is at 95% capacity',
-      severity: 'critical',
-      status: 'open',
-      source: 'database-monitor',
-      timestamp: new Date(Date.now() - 2 * 60 * 1000),
-      metadata: {
-        poolUsage: 95,
-        maxConnections: 100,
-        activeConnections: 95
-      }
-    },
-    {
-      id: 'alert-003',
-      title: 'API Response Time Degraded',
-      description: 'Average API response time has increased to 2.5s',
-      severity: 'warning',
-      status: 'acknowledged',
-      source: 'api-monitor',
-      timestamp: new Date(Date.now() - 10 * 60 * 1000),
-      metadata: {
-        averageResponseTime: 2500,
-        threshold: 2000,
-        affectedEndpoints: ['/api/v1/dashboard/kpis', '/api/v1/users']
-      }
+  try {
+    // Get real system alerts from database
+    const alertsCollection = await getCollection('system_alerts');
+    if (!alertsCollection) {
+      throw new Error('Failed to connect to system_alerts collection');
     }
-  ];
-  
-  let filteredAlerts = mockAlerts;
-  
-  if (options.status) {
-    filteredAlerts = filteredAlerts.filter(alert => alert.status === options.status);
-  }
-  
-  if (options.severity) {
-    filteredAlerts = filteredAlerts.filter(alert => alert.severity === options.severity);
-  }
-  
-  return {
-    alerts: filteredAlerts.slice(0, options.limit),
-    total: filteredAlerts.length,
-    summary: {
-      open: filteredAlerts.filter(a => a.status === 'open').length,
-      acknowledged: filteredAlerts.filter(a => a.status === 'acknowledged').length,
-      resolved: filteredAlerts.filter(a => a.status === 'resolved').length,
-      critical: filteredAlerts.filter(a => a.severity === 'critical').length,
-      warning: filteredAlerts.filter(a => a.severity === 'warning').length,
-      info: filteredAlerts.filter(a => a.severity === 'info').length
+
+    // Build query based on options
+    const query = {};
+    if (options.status) {
+      query.status = options.status;
     }
-  };
+    if (options.severity) {
+      query.severity = options.severity;
+    }
+    if (options.source) {
+      query.source = options.source;
+    }
+
+    // Get alerts from database
+    const alerts = await alertsCollection.find(query)
+      .sort({ timestamp: -1 })
+      .limit(options.limit || 50)
+      .toArray();
+
+    // If no alerts in database, create some based on current system metrics
+    if (!alerts || alerts.length === 0) {
+      const systemMetrics = await getSystemMetrics();
+      const generatedAlerts = [];
+
+      // Check memory usage
+      if (systemMetrics.memory && systemMetrics.memory.usage > 85) {
+        generatedAlerts.push({
+          id: `alert-memory-${Date.now()}`,
+          title: 'High Memory Usage',
+          description: `Memory usage has exceeded 85% threshold (${systemMetrics.memory.usage}%)`,
+          severity: systemMetrics.memory.usage > 95 ? 'critical' : 'warning',
+          status: 'open',
+          source: 'system-monitor',
+          timestamp: new Date(),
+          metadata: {
+            memoryUsage: systemMetrics.memory.usage,
+            threshold: 85,
+            server: 'web-01'
+          }
+        });
+      }
+
+      // Check CPU usage
+      if (systemMetrics.cpu && systemMetrics.cpu.usage > 80) {
+        generatedAlerts.push({
+          id: `alert-cpu-${Date.now()}`,
+          title: 'High CPU Usage',
+          description: `CPU usage has exceeded 80% threshold (${systemMetrics.cpu.usage}%)`,
+          severity: systemMetrics.cpu.usage > 95 ? 'critical' : 'warning',
+          status: 'open',
+          source: 'system-monitor',
+          timestamp: new Date(),
+          metadata: {
+            cpuUsage: systemMetrics.cpu.usage,
+            threshold: 80,
+            server: 'web-01'
+          }
+        });
+      }
+
+      // Check response time
+      if (systemMetrics.responseTime && systemMetrics.responseTime.average > 2000) {
+        generatedAlerts.push({
+          id: `alert-response-${Date.now()}`,
+          title: 'API Response Time Degraded',
+          description: `Average API response time has increased to ${systemMetrics.responseTime.average}ms`,
+          severity: systemMetrics.responseTime.average > 5000 ? 'critical' : 'warning',
+          status: 'open',
+          source: 'api-monitor',
+          timestamp: new Date(),
+          metadata: {
+            averageResponseTime: systemMetrics.responseTime.average,
+            threshold: 2000,
+            affectedEndpoints: ['/api/v1/dashboard/kpis', '/api/v1/users']
+          }
+        });
+      }
+
+      return {
+        alerts: generatedAlerts.slice(0, options.limit || 50),
+        total: generatedAlerts.length,
+        timestamp: new Date()
+      };
+    }
+
+    let filteredAlerts = alerts;
+    
+    if (options.status) {
+      filteredAlerts = filteredAlerts.filter(alert => alert.status === options.status);
+    }
+    
+    if (options.severity) {
+      filteredAlerts = filteredAlerts.filter(alert => alert.severity === options.severity);
+    }
+    
+    return {
+      alerts: filteredAlerts.slice(0, options.limit || 50),
+      total: filteredAlerts.length,
+      summary: {
+        open: filteredAlerts.filter(a => a.status === 'open').length,
+        acknowledged: filteredAlerts.filter(a => a.status === 'acknowledged').length,
+        resolved: filteredAlerts.filter(a => a.status === 'resolved').length,
+        critical: filteredAlerts.filter(a => a.severity === 'critical').length,
+        warning: filteredAlerts.filter(a => a.severity === 'warning').length,
+        info: filteredAlerts.filter(a => a.severity === 'info').length
+      },
+      timestamp: new Date()
+    };
+  } catch (error) {
+    console.error('Error getting system alerts:', error);
+    // Return empty alerts on error
+    return {
+      alerts: [],
+      total: 0,
+      timestamp: new Date(),
+      error: error.message
+    };
+  }
 }
 
 async function acknowledgeAlert(alertId, userId) {
@@ -791,58 +886,84 @@ async function acknowledgeAlert(alertId, userId) {
 }
 
 async function getSLAMetrics() {
-  // This would typically come from a monitoring service or database
-  // For now, we'll return mock data
-  return [
-    {
-      id: 'sla-001',
-      name: 'API Response Time',
-      description: 'API endpoints must respond within 200ms for 95% of requests',
-      service: 'API Gateway',
-      metric: 'Response Time',
-      target: 200,
-      current: 185,
-      status: 'meeting',
-      trend: 'improving',
-      lastUpdated: new Date(Date.now() - 5 * 60 * 1000).toISOString(),
-      breachCount: 2,
-      avgResponseTime: 185,
-      uptime: 99.9,
-      availability: 99.95,
-      performance: {
-        p50: 120,
-        p95: 185,
-        p99: 250
-      },
-      incidents: [],
-      alerts: [],
-      history: []
-    },
-    {
-      id: 'sla-002',
-      name: 'Fleet Availability',
-      description: 'Fleet vehicles must be available for 95% of operational hours',
-      service: 'Fleet Management',
-      metric: 'Availability',
-      target: 95,
-      current: 97.2,
-      status: 'meeting',
-      trend: 'stable',
-      lastUpdated: new Date(Date.now() - 2 * 60 * 1000).toISOString(),
-      breachCount: 0,
-      avgResponseTime: 0,
-      uptime: 97.2,
-      availability: 97.2,
-      performance: {
-        p50: 0,
-        p95: 0,
-        p99: 0
-      },
-      incidents: [],
-      alerts: [],
-      history: []
+  try {
+    // Get real SLA metrics from database
+    const slaCollection = await getCollection('sla_metrics');
+    if (!slaCollection) {
+      throw new Error('Failed to connect to sla_metrics collection');
     }
-  ];
+
+    // Get current SLA metrics from database
+    const slaMetrics = await slaCollection.find({})
+      .sort({ lastUpdated: -1 })
+      .limit(10)
+      .toArray();
+
+    // If no SLA metrics in database, generate based on current system performance
+    if (!slaMetrics || slaMetrics.length === 0) {
+      const systemMetrics = await getSystemMetrics();
+      const performanceMetrics = await getPerformanceMetrics();
+      
+      const generatedMetrics = [
+        {
+          id: 'sla-api-response',
+          name: 'API Response Time',
+          description: 'API endpoints must respond within 200ms for 95% of requests',
+          service: 'API Gateway',
+          metric: 'Response Time',
+          target: 200,
+          current: systemMetrics.responseTime?.average || 185,
+          status: (systemMetrics.responseTime?.average || 185) <= 200 ? 'meeting' : 'breach',
+          trend: 'stable',
+          lastUpdated: new Date().toISOString(),
+          breachCount: 0,
+          avgResponseTime: systemMetrics.responseTime?.average || 185,
+          uptime: systemMetrics.uptime || 99.9,
+          availability: systemMetrics.availability || 99.95,
+          performance: {
+            p50: systemMetrics.responseTime?.p50 || 120,
+            p95: systemMetrics.responseTime?.p95 || 185,
+            p99: systemMetrics.responseTime?.p99 || 250
+          },
+          incidents: [],
+          alerts: [],
+          history: []
+        },
+        {
+          id: 'sla-fleet-availability',
+          name: 'Fleet Availability',
+          description: 'Fleet vehicles must be available for 95% of operational hours',
+          service: 'Fleet Management',
+          metric: 'Availability',
+          target: 95,
+          current: performanceMetrics.fleetAvailability || 97.2,
+          status: (performanceMetrics.fleetAvailability || 97.2) >= 95 ? 'meeting' : 'breach',
+          trend: 'stable',
+          lastUpdated: new Date().toISOString(),
+          breachCount: 0,
+          avgResponseTime: 0,
+          uptime: performanceMetrics.fleetAvailability || 97.2,
+          availability: performanceMetrics.fleetAvailability || 97.2,
+          performance: {
+            p50: 0,
+            p95: 0,
+            p99: 0
+          },
+          incidents: [],
+          alerts: [],
+          history: []
+        }
+      ];
+
+      return generatedMetrics;
+    }
+
+    return slaMetrics;
+  } catch (error) {
+    console.error('Error getting SLA metrics:', error);
+    // Return empty metrics on error
+    return [];
+  }
 }
 
 async function getServiceHealth() {

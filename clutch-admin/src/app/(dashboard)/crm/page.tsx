@@ -17,6 +17,7 @@ import AtRiskClients from "@/components/widgets/at-risk-clients";
 import CSATNPSTrends from "@/components/widgets/csat-nps-trends";
 import UpsellOpportunities from "@/components/widgets/upsell-opportunities";
 import { useAuth } from "@/contexts/auth-context";
+import { useTranslations } from "@/hooks/use-translations";
 import { toast } from "sonner";
 import { 
   Users, 
@@ -82,6 +83,7 @@ export default function CRMPage() {
   const [statusFilter, setStatusFilter] = useState<string>("all");
   const [isLoading, setIsLoading] = useState(true);
   const { hasPermission } = useAuth();
+  const { t } = useTranslations();
 
   useEffect(() => {
     const loadCRMData = async () => {
@@ -101,7 +103,7 @@ export default function CRMPage() {
         
       } catch (error) {
         console.error("Failed to load CRM data:", error);
-        toast.error("Failed to load CRM data");
+        toast.error(t('crm.failedToLoadCrmData'));
         // Set empty arrays on error - no mock data fallback
         setCustomers([]);
         setTickets([]);
@@ -194,11 +196,11 @@ export default function CRMPage() {
           </p>
         </div>
         <div className="flex items-center space-x-2">
-          <Button variant="outline" className="shadow-sm">
+          <Button variant="outline" className="shadow-2xs">
             <BarChart3 className="mr-2 h-4 w-4" />
             Analytics
           </Button>
-          <Button className="shadow-sm">
+          <Button className="shadow-2xs">
             <Plus className="mr-2 h-4 w-4" />
             Add Customer
           </Button>
@@ -207,7 +209,7 @@ export default function CRMPage() {
 
       {/* CRM Analytics Cards */}
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-        <Card className="shadow-sm">
+        <Card className="shadow-2xs">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium text-card-foreground">Total Customers</CardTitle>
             <Users className="h-4 w-4 text-muted-foreground" />
@@ -215,11 +217,11 @@ export default function CRMPage() {
           <CardContent>
             <div className="text-2xl font-bold text-foreground">{customers.length}</div>
             <p className="text-xs text-muted-foreground">
-              <span className="text-green-600">+12%</span> from last month
+              <span className="text-success">+12%</span> from last month
             </p>
           </CardContent>
         </Card>
-        <Card className="shadow-sm">
+        <Card className="shadow-2xs">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium text-card-foreground">Active Customers</CardTitle>
             <CheckCircle className="h-4 w-4 text-muted-foreground" />
@@ -229,11 +231,11 @@ export default function CRMPage() {
               {customers.filter(c => c.status === "active").length}
             </div>
             <p className="text-xs text-muted-foreground">
-              <span className="text-green-600">+8%</span> retention rate
+              <span className="text-success">+8%</span> retention rate
             </p>
           </CardContent>
         </Card>
-        <Card className="shadow-sm">
+        <Card className="shadow-2xs">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium text-card-foreground">Open Tickets</CardTitle>
             <MessageSquare className="h-4 w-4 text-muted-foreground" />
@@ -243,11 +245,11 @@ export default function CRMPage() {
               {tickets.filter(t => t.status === "open").length}
             </div>
             <p className="text-xs text-muted-foreground">
-              <span className="text-red-600">+3</span> from yesterday
+              <span className="text-destructive">+3</span> from yesterday
             </p>
           </CardContent>
         </Card>
-        <Card className="shadow-sm">
+        <Card className="shadow-2xs">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium text-card-foreground">Avg Satisfaction</CardTitle>
             <Star className="h-4 w-4 text-muted-foreground" />
@@ -260,7 +262,7 @@ export default function CRMPage() {
               }
             </div>
             <p className="text-xs text-muted-foreground">
-              <span className="text-green-600">+0.2</span> from last month
+              <span className="text-success">+0.2</span> from last month
             </p>
           </CardContent>
         </Card>
@@ -275,7 +277,7 @@ export default function CRMPage() {
         </TabsList>
 
         <TabsContent value="customers" className="space-y-4">
-          <Card className="shadow-sm">
+          <Card className="shadow-2xs">
             <CardHeader>
               <CardTitle className="text-card-foreground">Customer Profiles</CardTitle>
               <CardDescription>Manage customer information and relationships</CardDescription>
@@ -296,7 +298,7 @@ export default function CRMPage() {
                 </div>
                 <Select value={statusFilter} onValueChange={setStatusFilter}>
                   <SelectTrigger className="w-[180px]">
-                    <SelectValue placeholder="Filter by status" />
+                    <SelectValue placeholder={t('crm.filterByStatus')} />
                   </SelectTrigger>
                   <SelectContent>
                     <SelectItem value="all">All Status</SelectItem>
@@ -352,7 +354,7 @@ export default function CRMPage() {
                       </TableCell>
                       <TableCell>
                         <div className="flex items-center space-x-1">
-                          <Star className="h-3 w-3 text-yellow-500" />
+                          <Star className="h-3 w-3 text-warning" />
                           <span className="text-sm text-muted-foreground">
                             {customer.satisfaction > 0 ? customer.satisfaction.toFixed(1) : "N/A"}
                           </span>
@@ -405,7 +407,7 @@ export default function CRMPage() {
         </TabsContent>
 
         <TabsContent value="tickets" className="space-y-4">
-          <Card className="shadow-sm">
+          <Card className="shadow-2xs">
             <CardHeader>
               <CardTitle className="text-card-foreground">Support Tickets</CardTitle>
               <CardDescription>Manage customer support requests and issues</CardDescription>
@@ -475,7 +477,7 @@ export default function CRMPage() {
                               <CheckCircle className="mr-2 h-4 w-4" />
                               Mark as Resolved
                             </DropdownMenuItem>
-                            <DropdownMenuItem className="text-red-600">
+                            <DropdownMenuItem className="text-destructive">
                               <AlertTriangle className="mr-2 h-4 w-4" />
                               Escalate
                             </DropdownMenuItem>
@@ -491,14 +493,14 @@ export default function CRMPage() {
         </TabsContent>
 
         <TabsContent value="communication" className="space-y-4">
-          <Card className="shadow-sm">
+          <Card className="shadow-2xs">
             <CardHeader>
               <CardTitle className="text-card-foreground">Communication History</CardTitle>
               <CardDescription>Timeline of all customer interactions</CardDescription>
             </CardHeader>
             <CardContent>
               <div className="space-y-4">
-                <div className="flex items-start space-x-3 p-4 rounded-lg bg-muted/50">
+                <div className="flex items-start space-x-3 p-4 rounded-[0.625rem] bg-muted/50">
                   <div className="w-2 h-2 rounded-full bg-primary mt-2"></div>
                   <div className="flex-1">
                     <div className="flex items-center justify-between">
@@ -510,7 +512,7 @@ export default function CRMPage() {
                     </p>
                   </div>
                 </div>
-                <div className="flex items-start space-x-3 p-4 rounded-lg bg-muted/50">
+                <div className="flex items-start space-x-3 p-4 rounded-[0.625rem] bg-muted/50">
                   <div className="w-2 h-2 rounded-full bg-primary mt-2"></div>
                   <div className="flex-1">
                     <div className="flex items-center justify-between">
@@ -522,7 +524,7 @@ export default function CRMPage() {
                     </p>
                   </div>
                 </div>
-                <div className="flex items-start space-x-3 p-4 rounded-lg bg-muted/50">
+                <div className="flex items-start space-x-3 p-4 rounded-[0.625rem] bg-muted/50">
                   <div className="w-2 h-2 rounded-full bg-primary mt-2"></div>
                   <div className="flex-1">
                     <div className="flex items-center justify-between">

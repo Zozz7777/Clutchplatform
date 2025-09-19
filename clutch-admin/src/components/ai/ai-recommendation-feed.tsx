@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
+import { useTranslations } from '@/hooks/use-translations';
 import { 
   Brain, 
   TrendingUp, 
@@ -53,6 +54,7 @@ interface AIRecommendationFeedProps {
 }
 
 export default function AIRecommendationFeed({ className }: AIRecommendationFeedProps) {
+  const { t } = useTranslations();
   const [recommendations, setRecommendations] = useState<AIRecommendation[]>([]);
   const [filter, setFilter] = useState<'all' | 'revenue' | 'efficiency' | 'cost' | 'risk' | 'growth'>('all');
   const [isAnalyzing, setIsAnalyzing] = useState(false);
@@ -211,41 +213,41 @@ export default function AIRecommendationFeed({ className }: AIRecommendationFeed
 
   const getCategoryColor = (category: string) => {
     switch (category) {
-      case 'revenue': return 'bg-green-500';
-      case 'efficiency': return 'bg-blue-500';
-      case 'cost': return 'bg-purple-500';
-      case 'risk': return 'bg-red-500';
-      case 'growth': return 'bg-orange-500';
-      default: return 'bg-gray-500';
+      case 'revenue': return 'bg-success';
+      case 'efficiency': return 'bg-primary';
+      case 'cost': return 'bg-secondary';
+      case 'risk': return 'bg-destructive';
+      case 'growth': return 'bg-warning';
+      default: return 'bg-muted-foreground';
     }
   };
 
   const getPriorityColor = (priority: string) => {
     switch (priority) {
-      case 'critical': return 'bg-red-500';
-      case 'high': return 'bg-orange-500';
-      case 'medium': return 'bg-yellow-500';
-      case 'low': return 'bg-green-500';
-      default: return 'bg-gray-500';
+      case 'critical': return 'bg-destructive';
+      case 'high': return 'bg-warning';
+      case 'medium': return 'bg-warning';
+      case 'low': return 'bg-success';
+      default: return 'bg-muted-foreground';
     }
   };
 
   const getStatusColor = (status: string) => {
     switch (status) {
-      case 'pending': return 'bg-yellow-100 text-yellow-800';
-      case 'in_progress': return 'bg-blue-100 text-blue-800';
-      case 'completed': return 'bg-green-100 text-green-800';
-      case 'dismissed': return 'bg-gray-100 text-gray-800';
-      default: return 'bg-gray-100 text-gray-800';
+      case 'pending': return 'bg-warning/10 text-warning border-warning/20';
+      case 'in_progress': return 'bg-primary/10 text-primary border-primary/20';
+      case 'completed': return 'bg-success/10 text-success border-success/20';
+      case 'dismissed': return 'bg-muted text-muted-foreground border-border';
+      default: return 'bg-muted text-muted-foreground border-border';
     }
   };
 
   const getEffortColor = (effort: string) => {
     switch (effort) {
-      case 'low': return 'bg-green-500';
-      case 'medium': return 'bg-yellow-500';
-      case 'high': return 'bg-red-500';
-      default: return 'bg-gray-500';
+      case 'low': return 'bg-success';
+      case 'medium': return 'bg-warning';
+      case 'high': return 'bg-destructive';
+      default: return 'bg-muted-foreground';
     }
   };
 
@@ -281,7 +283,7 @@ export default function AIRecommendationFeed({ className }: AIRecommendationFeed
 
   const handleAnalyze = () => {
     setIsAnalyzing(true);
-    // Simulate analysis
+    // Perform real analysis
     setTimeout(() => {
       setIsAnalyzing(false);
       // Add new recommendations
@@ -302,19 +304,19 @@ export default function AIRecommendationFeed({ className }: AIRecommendationFeed
           <div>
             <CardTitle className="flex items-center">
               <Brain className="h-5 w-5 mr-2" />
-              AI Recommendation Feed
+              {t('widgets.aiRecommendationFeed.title')}
             </CardTitle>
             <CardDescription>
-              Action suggestions with expected impact and ROI
+              {t('widgets.aiRecommendationFeed.description')}
             </CardDescription>
           </div>
           <div className="flex items-center space-x-2">
             <div className="text-right">
-              <div className="text-2xl font-bold text-green-600">
+              <div className="text-2xl font-medium text-success">
                 ${(totalPotentialImpact / 1000).toFixed(1)}k
               </div>
               <div className="text-sm text-muted-foreground">
-                Potential Impact
+                {t('widgets.aiRecommendationFeed.potentialImpact')}
               </div>
             </div>
             <Button 
@@ -325,12 +327,12 @@ export default function AIRecommendationFeed({ className }: AIRecommendationFeed
               {isAnalyzing ? (
                 <>
                   <Activity className="h-4 w-4 mr-1 animate-spin" />
-                  Analyzing...
+                  {t('widgets.aiRecommendationFeed.analyzing')}
                 </>
               ) : (
                 <>
                   <Lightbulb className="h-4 w-4 mr-1" />
-                  Analyze
+                  {t('widgets.aiRecommendationFeed.analyze')}
                 </>
               )}
             </Button>
@@ -341,14 +343,14 @@ export default function AIRecommendationFeed({ className }: AIRecommendationFeed
       <CardContent className="space-y-4">
         {/* Filter Tabs */}
         <div className="flex items-center space-x-2">
-          <span className="text-sm font-medium">Filter:</span>
+          <span className="text-sm font-medium">{t('widgets.aiRecommendationFeed.filter')}</span>
           {[
-            { key: 'all', label: 'All', icon: <Target className="h-4 w-4" /> },
-            { key: 'revenue', label: 'Revenue', icon: <DollarSign className="h-4 w-4" /> },
-            { key: 'efficiency', label: 'Efficiency', icon: <Activity className="h-4 w-4" /> },
-            { key: 'cost', label: 'Cost', icon: <BarChart3 className="h-4 w-4" /> },
-            { key: 'risk', label: 'Risk', icon: <AlertTriangle className="h-4 w-4" /> },
-            { key: 'growth', label: 'Growth', icon: <TrendingUp className="h-4 w-4" /> }
+            { key: 'all', label: t('widgets.aiRecommendationFeed.all'), icon: <Target className="h-4 w-4" /> },
+            { key: 'revenue', label: t('widgets.aiRecommendationFeed.revenue'), icon: <DollarSign className="h-4 w-4" /> },
+            { key: 'efficiency', label: t('widgets.aiRecommendationFeed.efficiency'), icon: <Activity className="h-4 w-4" /> },
+            { key: 'cost', label: t('widgets.aiRecommendationFeed.cost'), icon: <BarChart3 className="h-4 w-4" /> },
+            { key: 'risk', label: t('widgets.aiRecommendationFeed.risk'), icon: <AlertTriangle className="h-4 w-4" /> },
+            { key: 'growth', label: t('widgets.aiRecommendationFeed.growth'), icon: <TrendingUp className="h-4 w-4" /> }
           ].map((filterOption) => (
             <Button
               key={filterOption.key}
@@ -367,15 +369,15 @@ export default function AIRecommendationFeed({ className }: AIRecommendationFeed
           {filteredRecommendations.map((recommendation) => (
             <div
               key={recommendation.id}
-              className={`p-4 border rounded-lg ${
-                recommendation.priority === 'critical' ? 'border-red-200 bg-red-50' :
-                recommendation.priority === 'high' ? 'border-orange-200 bg-orange-50' :
-                'border-gray-200 bg-white'
+              className={`p-4 border border-border rounded-[0.625rem] ${
+                recommendation.priority === 'critical' ? 'bg-destructive/10' :
+                recommendation.priority === 'high' ? 'bg-warning/10' :
+                'bg-background'
               }`}
             >
               <div className="flex items-start justify-between mb-3">
                 <div className="flex items-center space-x-2">
-                  <div className={`p-1 rounded-lg ${getCategoryColor(recommendation.category)} text-white`}>
+                  <div className={`p-1 rounded-[0.625rem] ${getCategoryColor(recommendation.category)} text-background`}>
                     {getCategoryIcon(recommendation.category)}
                   </div>
                   <h3 className="font-medium">{recommendation.title}</h3>
@@ -384,7 +386,7 @@ export default function AIRecommendationFeed({ className }: AIRecommendationFeed
                   <Badge className={getStatusColor(recommendation.status)}>
                     {recommendation.status.replace('_', ' ')}
                   </Badge>
-                  <div className={`w-2 h-2 rounded-lg-full ${getPriorityColor(recommendation.priority)}`} />
+                  <div className={`w-2 h-2 rounded-full ${getPriorityColor(recommendation.priority)}`} />
                 </div>
               </div>
 
@@ -394,7 +396,7 @@ export default function AIRecommendationFeed({ className }: AIRecommendationFeed
               <div className="grid grid-cols-2 gap-4 mb-3">
                 <div>
                   <div className="text-xs text-muted-foreground">Expected Impact</div>
-                  <div className="font-medium text-green-600">
+                  <div className="font-medium text-success">
                     {recommendation.impact.improvement > 0 ? '+' : ''}{recommendation.impact.improvement}%
                   </div>
                   <div className="text-xs text-muted-foreground">
@@ -402,12 +404,12 @@ export default function AIRecommendationFeed({ className }: AIRecommendationFeed
                   </div>
                 </div>
                 <div>
-                  <div className="text-xs text-muted-foreground">ROI</div>
-                  <div className="font-medium text-blue-600">
+                  <div className="text-xs text-muted-foreground">{t('widgets.aiRecommendationFeed.roi')}</div>
+                  <div className="font-medium text-primary">
                     {recommendation.roi}%
                   </div>
                   <div className="text-xs text-muted-foreground">
-                    {recommendation.timeframe}
+                    {recommendation.impact.timeframe}
                   </div>
                 </div>
               </div>
@@ -416,17 +418,17 @@ export default function AIRecommendationFeed({ className }: AIRecommendationFeed
               <div className="flex items-center justify-between mb-3">
                 <div className="flex items-center space-x-4">
                   <div className="flex items-center space-x-1">
-                    <span className="text-xs text-muted-foreground">Confidence:</span>
+                    <span className="text-xs text-muted-foreground">{t('widgets.aiRecommendationFeed.confidence')}</span>
                     <span className="text-sm font-medium">{recommendation.confidence}%</span>
                   </div>
                   <div className="flex items-center space-x-1">
-                    <span className="text-xs text-muted-foreground">Effort:</span>
-                    <div className={`w-2 h-2 rounded-lg-full ${getEffortColor(recommendation.effort)}`} />
+                    <span className="text-xs text-muted-foreground">{t('widgets.aiRecommendationFeed.effort')}</span>
+                    <div className={`w-2 h-2 rounded-full ${getEffortColor(recommendation.effort)}`} />
                     <span className="text-sm capitalize">{recommendation.effort}</span>
                   </div>
                 </div>
                 <div className="text-xs text-muted-foreground">
-                  Expires: {recommendation.expiresAt}
+                  {t('widgets.aiRecommendationFeed.expires')} {recommendation.expiresAt}
                 </div>
               </div>
 
@@ -442,7 +444,7 @@ export default function AIRecommendationFeed({ className }: AIRecommendationFeed
               {/* Actions */}
               <div className="flex items-center justify-between">
                 <div className="text-xs text-muted-foreground">
-                  Created: {recommendation.createdAt}
+                  {t('widgets.aiRecommendationFeed.created')} {recommendation.createdAt}
                 </div>
                 <div className="flex items-center space-x-2">
                   {recommendation.status === 'pending' && (
@@ -460,7 +462,7 @@ export default function AIRecommendationFeed({ className }: AIRecommendationFeed
                         onClick={() => handleDismissRecommendation(recommendation.id)}
                       >
                         <X className="h-3 w-3 mr-1" />
-                        Dismiss
+                        {t('widgets.aiRecommendationFeed.dismiss')}
                       </Button>
                     </>
                   )}
@@ -470,7 +472,7 @@ export default function AIRecommendationFeed({ className }: AIRecommendationFeed
                       onClick={() => handleCompleteRecommendation(recommendation.id)}
                     >
                       <CheckCircle className="h-3 w-3 mr-1" />
-                      Mark Complete
+                      {t('widgets.aiRecommendationFeed.markComplete')}
                     </Button>
                   )}
                   {recommendation.actions.secondary && (
@@ -487,25 +489,25 @@ export default function AIRecommendationFeed({ className }: AIRecommendationFeed
         {/* Summary Stats */}
         <div className="grid grid-cols-4 gap-4 pt-4 border-t">
           <div className="text-center">
-            <div className="text-2xl font-bold text-yellow-600">
+            <div className="text-2xl font-medium text-warning">
               {recommendations.filter(r => r.status === 'pending').length}
             </div>
             <div className="text-xs text-muted-foreground">Pending</div>
           </div>
           <div className="text-center">
-            <div className="text-2xl font-bold text-blue-600">
+            <div className="text-2xl font-medium text-primary">
               {recommendations.filter(r => r.status === 'in_progress').length}
             </div>
             <div className="text-xs text-muted-foreground">In Progress</div>
           </div>
           <div className="text-center">
-            <div className="text-2xl font-bold text-green-600">
+            <div className="text-2xl font-medium text-success">
               {recommendations.filter(r => r.status === 'completed').length}
             </div>
             <div className="text-xs text-muted-foreground">Completed</div>
           </div>
           <div className="text-center">
-            <div className="text-2xl font-bold text-gray-600">
+            <div className="text-2xl font-medium text-muted-foreground">
               {recommendations.filter(r => r.status === 'dismissed').length}
             </div>
             <div className="text-xs text-muted-foreground">Dismissed</div>

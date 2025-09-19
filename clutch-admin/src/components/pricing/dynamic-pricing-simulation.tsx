@@ -140,8 +140,65 @@ export default function DynamicPricingSimulation({ className }: DynamicPricingSi
   const [filterStatus, setFilterStatus] = useState<string>('all');
 
   useEffect(() => {
-    const loadPricingData = () => {
-      const mockScenarios: PricingScenario[] = [
+    const loadPricingData = async () => {
+      try {
+        // Load pricing scenarios from API
+        const scenariosResponse = await fetch('/api/v1/revenue/pricing/scenarios', {
+          headers: {
+            'Authorization': `Bearer ${localStorage.getItem('token')}`,
+            'Content-Type': 'application/json'
+          }
+        });
+        
+        if (scenariosResponse.ok) {
+          const scenariosData = await scenariosResponse.json();
+          setScenarios(scenariosData.data || []);
+        } else {
+          setScenarios([]);
+        }
+
+        // Load pricing tests from API
+        const testsResponse = await fetch('/api/v1/revenue/pricing/tests', {
+          headers: {
+            'Authorization': `Bearer ${localStorage.getItem('token')}`,
+            'Content-Type': 'application/json'
+          }
+        });
+        
+        if (testsResponse.ok) {
+          const testsData = await testsResponse.json();
+          setTests(testsData.data || []);
+        } else {
+          setTests([]);
+        }
+
+        // Load market analysis from API
+        const analysisResponse = await fetch('/api/v1/revenue/pricing/market-analysis', {
+          headers: {
+            'Authorization': `Bearer ${localStorage.getItem('token')}`,
+            'Content-Type': 'application/json'
+          }
+        });
+        
+        if (analysisResponse.ok) {
+          const analysisData = await analysisResponse.json();
+          setMarketAnalysis(analysisData.data || []);
+        } else {
+          setMarketAnalysis([]);
+        }
+      } catch (error) {
+        console.error('Failed to load pricing data:', error);
+        setScenarios([]);
+        setTests([]);
+        setMarketAnalysis([]);
+      }
+    };
+
+    loadPricingData();
+  }, []);
+
+  // Keep mock data as fallback for development
+  const getMockScenarios = (): PricingScenario[] => [
         {
           id: 'scenario-001',
           name: 'Premium Tier Price Increase',
@@ -400,22 +457,22 @@ export default function DynamicPricingSimulation({ className }: DynamicPricingSi
 
   const getStatusColor = (status: string) => {
     switch (status) {
-      case 'draft': return 'bg-gray-100 text-gray-800';
-      case 'testing': return 'bg-blue-100 text-blue-800';
-      case 'active': return 'bg-green-100 text-green-800';
-      case 'paused': return 'bg-yellow-100 text-yellow-800';
-      case 'completed': return 'bg-purple-100 text-purple-800';
-      default: return 'bg-gray-100 text-gray-800';
+      case 'draft': return 'bg-muted text-gray-800';
+      case 'testing': return 'bg-primary/10 text-blue-800';
+      case 'active': return 'bg-success/10 text-green-800';
+      case 'paused': return 'bg-warning/10 text-yellow-800';
+      case 'completed': return 'bg-primary/10 text-purple-800';
+      default: return 'bg-muted text-gray-800';
     }
   };
 
   const getRiskColor = (risk: string) => {
     switch (risk) {
-      case 'low': return 'bg-green-100 text-green-800';
-      case 'medium': return 'bg-yellow-100 text-yellow-800';
-      case 'high': return 'bg-orange-100 text-orange-800';
-      case 'critical': return 'bg-red-100 text-red-800';
-      default: return 'bg-gray-100 text-gray-800';
+      case 'low': return 'bg-success/10 text-green-800';
+      case 'medium': return 'bg-warning/10 text-yellow-800';
+      case 'high': return 'bg-warning/10 text-orange-800';
+      case 'critical': return 'bg-destructive/10 text-red-800';
+      default: return 'bg-muted text-gray-800';
     }
   };
 
@@ -432,20 +489,20 @@ export default function DynamicPricingSimulation({ className }: DynamicPricingSi
 
   const getTestStatusColor = (status: string) => {
     switch (status) {
-      case 'running': return 'bg-blue-100 text-blue-800';
-      case 'completed': return 'bg-green-100 text-green-800';
-      case 'failed': return 'bg-red-100 text-red-800';
-      case 'paused': return 'bg-yellow-100 text-yellow-800';
-      default: return 'bg-gray-100 text-gray-800';
+      case 'running': return 'bg-primary/10 text-blue-800';
+      case 'completed': return 'bg-success/10 text-green-800';
+      case 'failed': return 'bg-destructive/10 text-red-800';
+      case 'paused': return 'bg-warning/10 text-yellow-800';
+      default: return 'bg-muted text-gray-800';
     }
   };
 
   const getTrendIcon = (trend: string) => {
     switch (trend) {
-      case 'increasing': return <ArrowUp className="h-4 w-4 text-red-500" />;
-      case 'decreasing': return <ArrowDown className="h-4 w-4 text-green-500" />;
-      case 'stable': return <Minus className="h-4 w-4 text-blue-500" />;
-      default: return <Minus className="h-4 w-4 text-gray-500" />;
+      case 'increasing': return <ArrowUp className="h-4 w-4 text-destructive" />;
+      case 'decreasing': return <ArrowDown className="h-4 w-4 text-success" />;
+      case 'stable': return <Minus className="h-4 w-4 text-primary" />;
+      default: return <Minus className="h-4 w-4 text-muted-foreground" />;
     }
   };
 
@@ -487,7 +544,7 @@ export default function DynamicPricingSimulation({ className }: DynamicPricingSi
                 variant="outline"
                 size="sm"
                 onClick={() => setIsSimulating(!isSimulating)}
-                className={isSimulating ? 'bg-green-100 text-green-800' : ''}
+                className={isSimulating ? 'bg-success/10 text-green-800' : ''}
               >
                 {isSimulating ? <Play className="h-4 w-4 mr-2" /> : <Pause className="h-4 w-4 mr-2" />}
                 {isSimulating ? 'Simulating' : 'Paused'}
@@ -506,20 +563,20 @@ export default function DynamicPricingSimulation({ className }: DynamicPricingSi
         <CardContent className="space-y-6">
           {/* Simulation Summary */}
           <div className="grid grid-cols-4 gap-4">
-            <div className="text-center p-3 bg-green-50 rounded-lg">
-              <div className="text-2xl font-bold text-green-600">{activeScenarios}</div>
+            <div className="text-center p-3 bg-success/10 rounded-[0.625rem]">
+              <div className="text-2xl font-bold text-success">{activeScenarios}</div>
               <div className="text-sm text-muted-foreground">Active Scenarios</div>
             </div>
-            <div className="text-center p-3 bg-blue-50 rounded-lg">
-              <div className="text-2xl font-bold text-blue-600">{testingScenarios}</div>
+            <div className="text-center p-3 bg-primary/10 rounded-[0.625rem]">
+              <div className="text-2xl font-bold text-primary">{testingScenarios}</div>
               <div className="text-sm text-muted-foreground">Testing Scenarios</div>
             </div>
-            <div className="text-center p-3 bg-purple-50 rounded-lg">
-              <div className="text-2xl font-bold text-purple-600">{avgConfidence}%</div>
+            <div className="text-center p-3 bg-primary/10 rounded-[0.625rem]">
+              <div className="text-2xl font-bold text-primary">{avgConfidence}%</div>
               <div className="text-sm text-muted-foreground">Avg Confidence</div>
             </div>
-            <div className="text-center p-3 bg-yellow-50 rounded-lg">
-              <div className="text-2xl font-bold text-yellow-600">{formatCurrency(totalExpectedRevenue)}</div>
+            <div className="text-center p-3 bg-warning/10 rounded-[0.625rem]">
+              <div className="text-2xl font-bold text-warning">{formatCurrency(totalExpectedRevenue)}</div>
               <div className="text-sm text-muted-foreground">Expected Revenue</div>
             </div>
           </div>
@@ -529,7 +586,7 @@ export default function DynamicPricingSimulation({ className }: DynamicPricingSi
             <h4 className="font-medium mb-3">Competitive Market Analysis</h4>
             <div className="space-y-2">
               {marketAnalysis.map((competitor) => (
-                <div key={competitor.competitor} className="p-3 border rounded-lg">
+                <div key={competitor.competitor} className="p-3 border rounded-[0.625rem]">
                   <div className="flex items-center justify-between mb-2">
                     <div className="flex items-center gap-2">
                       <span className="font-medium">{competitor.competitor}</span>
@@ -582,8 +639,8 @@ export default function DynamicPricingSimulation({ className }: DynamicPricingSi
               {filteredScenarios.map((scenario) => (
                 <div
                   key={scenario.id}
-                  className={`p-3 border rounded-lg cursor-pointer transition-colors ${
-                    selectedScenario?.id === scenario.id ? 'border-blue-500 bg-blue-50' : 'hover:bg-gray-50'
+                  className={`p-3 border rounded-[0.625rem] cursor-pointer transition-colors ${
+                    selectedScenario?.id === scenario.id ? 'border-blue-500 bg-primary/10' : 'hover:bg-muted/50'
                   }`}
                   onClick={() => setSelectedScenario(scenario)}
                 >
@@ -690,7 +747,7 @@ export default function DynamicPricingSimulation({ className }: DynamicPricingSi
                     <h5 className="font-medium mb-2">Assumptions</h5>
                     <div className="space-y-1">
                       {selectedScenario.assumptions.map((assumption, index) => (
-                        <div key={index} className="p-2 border rounded-lg text-sm">
+                        <div key={index} className="p-2 border rounded-[0.625rem] text-sm">
                           • {assumption}
                         </div>
                       ))}
@@ -760,7 +817,7 @@ export default function DynamicPricingSimulation({ className }: DynamicPricingSi
                     <h5 className="font-medium mb-2">A/B Tests</h5>
                     <div className="space-y-3">
                       {tests.filter(test => test.scenarioId === selectedScenario.id).map((test) => (
-                        <div key={test.id} className="p-3 border rounded-lg">
+                        <div key={test.id} className="p-3 border rounded-[0.625rem]">
                           <div className="flex items-center justify-between mb-2">
                             <span className="font-medium">{test.name}</span>
                             <Badge className={getTestStatusColor(test.status)}>

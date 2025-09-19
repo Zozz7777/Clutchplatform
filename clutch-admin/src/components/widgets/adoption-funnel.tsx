@@ -58,7 +58,7 @@ export function AdoptionFunnel({ className = '' }: AdoptionFunnelProps) {
             percentage: 100,
             conversionRate: 100,
             dropoffRate: 0,
-            color: 'text-blue-600',
+            color: 'text-primary',
             icon: Users
           },
           {
@@ -67,7 +67,7 @@ export function AdoptionFunnel({ className = '' }: AdoptionFunnelProps) {
             percentage: totalUsers > 0 ? (activeUsers / totalUsers) * 100 : 0,
             conversionRate: totalUsers > 0 ? (activeUsers / totalUsers) * 100 : 0,
             dropoffRate: totalUsers > 0 ? ((totalUsers - activeUsers) / totalUsers) * 100 : 0,
-            color: 'text-green-600',
+            color: 'text-success',
             icon: UserCheck
           },
           {
@@ -76,7 +76,7 @@ export function AdoptionFunnel({ className = '' }: AdoptionFunnelProps) {
             percentage: totalUsers > 0 ? (engagedUsers / totalUsers) * 100 : 0,
             conversionRate: activeUsers > 0 ? (engagedUsers / activeUsers) * 100 : 0,
             dropoffRate: activeUsers > 0 ? ((activeUsers - engagedUsers) / activeUsers) * 100 : 0,
-            color: 'text-purple-600',
+            color: 'text-primary',
             icon: Activity
           },
           {
@@ -85,7 +85,7 @@ export function AdoptionFunnel({ className = '' }: AdoptionFunnelProps) {
             percentage: totalUsers > 0 ? (payingUsers / totalUsers) * 100 : 0,
             conversionRate: engagedUsers > 0 ? (payingUsers / engagedUsers) * 100 : 0,
             dropoffRate: engagedUsers > 0 ? ((engagedUsers - payingUsers) / engagedUsers) * 100 : 0,
-            color: 'text-yellow-600',
+            color: 'text-warning',
             icon: DollarSign
           }
         ];
@@ -102,15 +102,15 @@ export function AdoptionFunnel({ className = '' }: AdoptionFunnelProps) {
   }, []);
 
   const getConversionColor = (rate: number) => {
-    if (rate >= 80) return 'text-green-600';
-    if (rate >= 60) return 'text-yellow-600';
-    return 'text-red-600';
+    if (rate >= 80) return 'text-success';
+    if (rate >= 60) return 'text-warning';
+    return 'text-destructive';
   };
 
   const getConversionBadge = (rate: number) => {
-    if (rate >= 80) return 'bg-green-100 text-green-800';
-    if (rate >= 60) return 'bg-yellow-100 text-yellow-800';
-    return 'bg-red-100 text-red-800';
+    if (rate >= 80) return 'bg-success/10 text-green-800';
+    if (rate >= 60) return 'bg-warning/10 text-yellow-800';
+    return 'bg-destructive/10 text-red-800';
   };
 
   const getConversionLevel = (rate: number) => {
@@ -132,16 +132,16 @@ export function AdoptionFunnel({ className = '' }: AdoptionFunnelProps) {
       <Card className={className}>
         <CardHeader>
           <CardTitle className="flex items-center space-x-2">
-            <BarChart3 className="h-5 w-5 text-blue-600" />
+            <BarChart3 className="h-5 w-5 text-primary" />
             <span>Adoption Funnel</span>
           </CardTitle>
           <CardDescription>Loading funnel data...</CardDescription>
         </CardHeader>
         <CardContent>
           <div className="animate-pulse space-y-4">
-            <div className="h-4 bg-gray-200 rounded-lg w-3/4"></div>
-            <div className="h-4 bg-gray-200 rounded-lg w-1/2"></div>
-            <div className="h-4 bg-gray-200 rounded-lg w-2/3"></div>
+            <div className="h-4 bg-muted rounded-[0.625rem] w-3/4"></div>
+            <div className="h-4 bg-muted rounded-[0.625rem] w-1/2"></div>
+            <div className="h-4 bg-muted rounded-[0.625rem] w-2/3"></div>
           </div>
         </CardContent>
       </Card>
@@ -154,7 +154,7 @@ export function AdoptionFunnel({ className = '' }: AdoptionFunnelProps) {
     <Card className={className}>
       <CardHeader>
         <CardTitle className="flex items-center space-x-2">
-          <BarChart3 className="h-5 w-5 text-blue-600" />
+          <BarChart3 className="h-5 w-5 text-primary" />
           <span>Adoption Funnel</span>
         </CardTitle>
         <CardDescription>
@@ -163,7 +163,7 @@ export function AdoptionFunnel({ className = '' }: AdoptionFunnelProps) {
       </CardHeader>
       <CardContent className="space-y-6">
         {/* Overall Conversion Rate */}
-        <div className="text-center p-4 bg-gray-50 rounded-lg-lg">
+        <div className="text-center p-4 bg-muted/50 rounded-[0.625rem]-lg">
           <div className="flex items-center justify-center space-x-2 mb-2">
             <Target className={`h-6 w-6 ${getConversionColor(overallConversionRate)}`} />
             <span className={`text-2xl font-bold ${getConversionColor(overallConversionRate)}`}>
@@ -173,7 +173,7 @@ export function AdoptionFunnel({ className = '' }: AdoptionFunnelProps) {
               {getConversionLevel(overallConversionRate)}
             </Badge>
           </div>
-          <p className="text-sm text-gray-600">Overall Conversion Rate</p>
+          <p className="text-sm text-muted-foreground">Overall Conversion Rate</p>
           <div className="mt-3">
             <Progress value={overallConversionRate} className="h-2" />
           </div>
@@ -187,14 +187,14 @@ export function AdoptionFunnel({ className = '' }: AdoptionFunnelProps) {
             
             return (
               <div key={stage.stage}>
-                <div className="flex items-center justify-between p-4 bg-gray-50 rounded-lg-lg">
+                <div className="flex items-center justify-between p-4 bg-muted/50 rounded-[0.625rem]-lg">
                   <div className="flex items-center space-x-3">
-                    <div className="flex items-center justify-center w-10 h-10 bg-blue-100 rounded-lg-full">
+                    <div className="flex items-center justify-center w-10 h-10 bg-primary/10 rounded-[0.625rem]-full">
                       <StageIcon className={`h-5 w-5 ${stage.color}`} />
                     </div>
                     <div>
-                      <p className="text-sm font-medium text-gray-900">{stage.stage}</p>
-                      <p className="text-xs text-gray-500">
+                      <p className="text-sm font-medium text-foreground">{stage.stage}</p>
+                      <p className="text-xs text-muted-foreground">
                         {stage.count.toLocaleString()} users ({stage.percentage.toFixed(1)}%)
                       </p>
                     </div>
@@ -202,13 +202,13 @@ export function AdoptionFunnel({ className = '' }: AdoptionFunnelProps) {
                   
                   <div className="text-right">
                     <div className="flex items-center space-x-2">
-                      <p className="text-lg font-semibold text-gray-900">{stage.count.toLocaleString()}</p>
+                      <p className="text-lg font-semibold text-foreground">{stage.count.toLocaleString()}</p>
                       <Badge className={getConversionBadge(stage.conversionRate)}>
                         {stage.conversionRate.toFixed(1)}%
                       </Badge>
                     </div>
                     {!isLastStage && (
-                      <p className="text-xs text-red-600 mt-1">
+                      <p className="text-xs text-destructive mt-1">
                         {stage.dropoffRate.toFixed(1)}% dropoff
                       </p>
                     )}
@@ -228,31 +228,31 @@ export function AdoptionFunnel({ className = '' }: AdoptionFunnelProps) {
 
         {/* Conversion Metrics */}
         <div className="grid grid-cols-2 gap-4">
-          <div className="text-center p-3 bg-green-50 rounded-lg-lg">
-            <TrendingUp className="h-4 w-4 text-green-600 mx-auto mb-1" />
-            <p className="text-sm font-bold text-green-600">
+          <div className="text-center p-3 bg-success/10 rounded-[0.625rem]-lg">
+            <TrendingUp className="h-4 w-4 text-success mx-auto mb-1" />
+            <p className="text-sm font-bold text-success">
               {funnelData.length > 0 ? funnelData[0].count.toLocaleString() : 0}
             </p>
-            <p className="text-xs text-gray-500">Total Signups</p>
+            <p className="text-xs text-muted-foreground">Total Signups</p>
           </div>
-          <div className="text-center p-3 bg-blue-50 rounded-lg-lg">
-            <DollarSign className="h-4 w-4 text-blue-600 mx-auto mb-1" />
-            <p className="text-sm font-bold text-blue-600">
+          <div className="text-center p-3 bg-primary/10 rounded-[0.625rem]-lg">
+            <DollarSign className="h-4 w-4 text-primary mx-auto mb-1" />
+            <p className="text-sm font-bold text-primary">
               {funnelData.length > 0 ? funnelData[funnelData.length - 1].count.toLocaleString() : 0}
             </p>
-            <p className="text-xs text-gray-500">Converted Users</p>
+            <p className="text-xs text-muted-foreground">Converted Users</p>
           </div>
         </div>
 
         {/* Stage Performance */}
         <div className="space-y-3">
-          <h4 className="text-sm font-medium text-gray-900">Stage Performance</h4>
+          <h4 className="text-sm font-medium text-foreground">Stage Performance</h4>
           <div className="space-y-2">
             {funnelData.map((stage) => (
               <div key={stage.stage} className="space-y-1">
                 <div className="flex justify-between text-sm">
-                  <span className="text-gray-600">{stage.stage}</span>
-                  <span className="text-gray-900 font-medium">{stage.conversionRate.toFixed(1)}%</span>
+                  <span className="text-muted-foreground">{stage.stage}</span>
+                  <span className="text-foreground font-medium">{stage.conversionRate.toFixed(1)}%</span>
                 </div>
                 <Progress value={stage.conversionRate} className="h-2" />
               </div>
@@ -273,7 +273,7 @@ export function AdoptionFunnel({ className = '' }: AdoptionFunnelProps) {
         </div>
 
         {/* Insights */}
-        <div className="p-3 bg-blue-50 rounded-lg-lg">
+        <div className="p-3 bg-primary/10 rounded-[0.625rem]-lg">
           <h5 className="text-sm font-medium text-blue-900 mb-2">💡 Funnel Insights</h5>
           <ul className="text-xs text-blue-800 space-y-1">
             <li>• Overall conversion rate: {overallConversionRate.toFixed(1)}%</li>

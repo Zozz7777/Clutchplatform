@@ -80,7 +80,7 @@ export function ChurnRiskCard({ className = '', showDetails = false }: ChurnRisk
 
   if (isLoading) {
     return (
-      <Card className={`${className} shadow-sm`}>
+      <Card className={`${className} shadow-2xs`}>
         <CardHeader>
           <CardTitle className="flex items-center space-x-2 text-card-foreground font-medium">
             <AlertTriangle className="h-5 w-5 text-warning" />
@@ -104,7 +104,7 @@ export function ChurnRiskCard({ className = '', showDetails = false }: ChurnRisk
   const totalAtRisk = churnRisks.length;
 
   return (
-    <Card className={`${className} shadow-sm`}>
+    <Card className={`${className} shadow-2xs`}>
       <CardHeader>
         <CardTitle className="flex items-center space-x-2 text-card-foreground font-medium">
           <AlertTriangle className="h-5 w-5 text-warning" />

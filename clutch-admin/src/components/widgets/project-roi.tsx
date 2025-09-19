@@ -130,15 +130,15 @@ export function ProjectROI({ className = '' }: ProjectROIProps) {
   }, []);
 
   const getROIColor = (roi: number) => {
-    if (roi >= 150) return 'text-green-600';
-    if (roi >= 100) return 'text-yellow-600';
-    return 'text-red-600';
+    if (roi >= 150) return 'text-success';
+    if (roi >= 100) return 'text-warning';
+    return 'text-destructive';
   };
 
   const getROIBadge = (roi: number) => {
-    if (roi >= 150) return 'bg-green-100 text-green-800';
-    if (roi >= 100) return 'bg-yellow-100 text-yellow-800';
-    return 'bg-red-100 text-red-800';
+    if (roi >= 150) return 'bg-success/10 text-green-800';
+    if (roi >= 100) return 'bg-warning/10 text-yellow-800';
+    return 'bg-destructive/10 text-red-800';
   };
 
   const getROILevel = (roi: number) => {
@@ -149,19 +149,19 @@ export function ProjectROI({ className = '' }: ProjectROIProps) {
 
   const getStatusColor = (status: string) => {
     switch (status) {
-      case 'completed': return 'text-green-600';
-      case 'in-progress': return 'text-blue-600';
-      case 'planned': return 'text-gray-600';
-      default: return 'text-gray-600';
+      case 'completed': return 'text-success';
+      case 'in-progress': return 'text-primary';
+      case 'planned': return 'text-muted-foreground';
+      default: return 'text-muted-foreground';
     }
   };
 
   const getStatusBadge = (status: string) => {
     switch (status) {
-      case 'completed': return 'bg-green-100 text-green-800';
-      case 'in-progress': return 'bg-blue-100 text-blue-800';
-      case 'planned': return 'bg-gray-100 text-gray-800';
-      default: return 'bg-gray-100 text-gray-800';
+      case 'completed': return 'bg-success/10 text-green-800';
+      case 'in-progress': return 'bg-primary/10 text-blue-800';
+      case 'planned': return 'bg-muted text-gray-800';
+      default: return 'bg-muted text-gray-800';
     }
   };
 
@@ -178,16 +178,16 @@ export function ProjectROI({ className = '' }: ProjectROIProps) {
       <Card className={className}>
         <CardHeader>
           <CardTitle className="flex items-center space-x-2">
-            <DollarSign className="h-5 w-5 text-green-600" />
+            <DollarSign className="h-5 w-5 text-success" />
             <span>Project ROI</span>
           </CardTitle>
           <CardDescription>Loading project ROI data...</CardDescription>
         </CardHeader>
         <CardContent>
           <div className="animate-pulse space-y-4">
-            <div className="h-4 bg-gray-200 rounded-lg w-3/4"></div>
-            <div className="h-4 bg-gray-200 rounded-lg w-1/2"></div>
-            <div className="h-4 bg-gray-200 rounded-lg w-2/3"></div>
+            <div className="h-4 bg-muted rounded-[0.625rem] w-3/4"></div>
+            <div className="h-4 bg-muted rounded-[0.625rem] w-1/2"></div>
+            <div className="h-4 bg-muted rounded-[0.625rem] w-2/3"></div>
           </div>
         </CardContent>
       </Card>
@@ -199,7 +199,7 @@ export function ProjectROI({ className = '' }: ProjectROIProps) {
       <Card className={className}>
         <CardHeader>
           <CardTitle className="flex items-center space-x-2">
-            <DollarSign className="h-5 w-5 text-green-600" />
+            <DollarSign className="h-5 w-5 text-success" />
             <span>Project ROI</span>
           </CardTitle>
           <CardDescription>Unable to load project ROI data</CardDescription>
@@ -212,7 +212,7 @@ export function ProjectROI({ className = '' }: ProjectROIProps) {
     <Card className={className}>
       <CardHeader>
         <CardTitle className="flex items-center space-x-2">
-          <DollarSign className="h-5 w-5 text-green-600" />
+          <DollarSign className="h-5 w-5 text-success" />
           <span>Project ROI</span>
         </CardTitle>
         <CardDescription>
@@ -222,33 +222,33 @@ export function ProjectROI({ className = '' }: ProjectROIProps) {
       <CardContent className="space-y-6">
         {/* Summary Stats */}
         <div className="grid grid-cols-2 gap-4">
-          <div className="text-center p-3 bg-green-50 rounded-lg-lg">
-            <DollarSign className="h-5 w-5 text-green-600 mx-auto mb-1" />
-            <p className="text-lg font-bold text-green-600">
+          <div className="text-center p-3 bg-success/10 rounded-[0.625rem]-lg">
+            <DollarSign className="h-5 w-5 text-success mx-auto mb-1" />
+            <p className="text-lg font-bold text-success">
               ${roiData.totalValue.toLocaleString()}
             </p>
-            <p className="text-xs text-gray-500">Total Value</p>
+            <p className="text-xs text-muted-foreground">Total Value</p>
           </div>
-          <div className="text-center p-3 bg-blue-50 rounded-lg-lg">
-            <Target className="h-5 w-5 text-blue-600 mx-auto mb-1" />
-            <p className="text-lg font-bold text-blue-600">
+          <div className="text-center p-3 bg-primary/10 rounded-[0.625rem]-lg">
+            <Target className="h-5 w-5 text-primary mx-auto mb-1" />
+            <p className="text-lg font-bold text-primary">
               {roiData.averageROI.toFixed(0)}%
             </p>
-            <p className="text-xs text-gray-500">Avg ROI</p>
+            <p className="text-xs text-muted-foreground">Avg ROI</p>
           </div>
         </div>
 
         {/* Best ROI Project */}
         {roiData.bestROI && (
-          <div className="text-center p-4 bg-gray-50 rounded-lg-lg">
+          <div className="text-center p-4 bg-muted/50 rounded-[0.625rem]-lg">
             <div className="flex items-center justify-center space-x-2 mb-2">
-              <TrendingUp className="h-6 w-6 text-green-600" />
-              <span className="text-xl font-bold text-gray-900">{roiData.bestROI.projectName}</span>
+              <TrendingUp className="h-6 w-6 text-success" />
+              <span className="text-xl font-bold text-foreground">{roiData.bestROI.projectName}</span>
               <Badge className={getROIBadge(roiData.bestROI.roi)}>
                 {getROILevel(roiData.bestROI.roi)}
               </Badge>
             </div>
-            <p className="text-sm text-gray-600">
+            <p className="text-sm text-muted-foreground">
               {roiData.bestROI.roi.toFixed(0)}% ROI • ${roiData.bestROI.value.toLocaleString()} value
             </p>
             <div className="mt-3">
@@ -259,19 +259,19 @@ export function ProjectROI({ className = '' }: ProjectROIProps) {
 
         {/* Projects */}
         <div className="space-y-3">
-          <h4 className="text-sm font-medium text-gray-900">Project ROI Analysis</h4>
+          <h4 className="text-sm font-medium text-foreground">Project ROI Analysis</h4>
           <div className="space-y-2">
             {roiData.projects.map((project) => (
-              <div key={project.projectId} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg-lg">
+              <div key={project.projectId} className="flex items-center justify-between p-3 bg-muted/50 rounded-[0.625rem]-lg">
                 <div className="flex items-center space-x-3">
-                  <div className="flex items-center justify-center w-8 h-8 bg-blue-100 rounded-lg-full">
-                    <span className="text-sm font-semibold text-blue-600">
+                  <div className="flex items-center justify-center w-8 h-8 bg-primary/10 rounded-[0.625rem]-full">
+                    <span className="text-sm font-semibold text-primary">
                       {project.projectName.charAt(0)}
                     </span>
                   </div>
                   <div>
-                    <p className="text-sm font-medium text-gray-900">{project.projectName}</p>
-                    <p className="text-xs text-gray-500">
+                    <p className="text-sm font-medium text-foreground">{project.projectName}</p>
+                    <p className="text-xs text-muted-foreground">
                       {project.duration} months • {project.teamSize} team members
                     </p>
                   </div>
@@ -287,7 +287,7 @@ export function ProjectROI({ className = '' }: ProjectROIProps) {
                     </Badge>
                   </div>
                   <div className="flex items-center space-x-1 mt-1">
-                    <span className="text-xs text-gray-500">
+                    <span className="text-xs text-muted-foreground">
                       ${project.value.toLocaleString()} value
                     </span>
                   </div>
@@ -299,13 +299,13 @@ export function ProjectROI({ className = '' }: ProjectROIProps) {
 
         {/* ROI Distribution */}
         <div className="space-y-3">
-          <h4 className="text-sm font-medium text-gray-900">ROI Distribution</h4>
+          <h4 className="text-sm font-medium text-foreground">ROI Distribution</h4>
           <div className="space-y-2">
             {roiData.projects.map((project) => (
               <div key={project.projectId} className="space-y-1">
                 <div className="flex justify-between text-sm">
-                  <span className="text-gray-600">{project.projectName}</span>
-                  <span className="text-gray-900 font-medium">{project.roi.toFixed(0)}%</span>
+                  <span className="text-muted-foreground">{project.projectName}</span>
+                  <span className="text-foreground font-medium">{project.roi.toFixed(0)}%</span>
                 </div>
                 <Progress value={Math.min(project.roi, 300)} className="h-2" />
               </div>
@@ -314,17 +314,17 @@ export function ProjectROI({ className = '' }: ProjectROIProps) {
         </div>
 
         {/* Investment vs Value */}
-        <div className="text-center p-3 bg-gray-50 rounded-lg-lg">
+        <div className="text-center p-3 bg-muted/50 rounded-[0.625rem]-lg">
           <div className="flex items-center justify-center space-x-2 mb-2">
-            <BarChart3 className="h-5 w-5 text-blue-600" />
-            <span className="text-lg font-bold text-blue-600">
+            <BarChart3 className="h-5 w-5 text-primary" />
+            <span className="text-lg font-bold text-primary">
               ${(roiData.totalValue - roiData.totalInvestment).toLocaleString()}
             </span>
             <Badge variant="outline" className="text-xs">
               Net Value
             </Badge>
           </div>
-          <p className="text-sm text-gray-600">Total Value - Total Investment</p>
+          <p className="text-sm text-muted-foreground">Total Value - Total Investment</p>
         </div>
 
         {/* Action Buttons */}
@@ -340,7 +340,7 @@ export function ProjectROI({ className = '' }: ProjectROIProps) {
         </div>
 
         {/* Insights */}
-        <div className="p-3 bg-blue-50 rounded-lg-lg">
+        <div className="p-3 bg-primary/10 rounded-[0.625rem]-lg">
           <h5 className="text-sm font-medium text-blue-900 mb-2">💡 Project ROI Insights</h5>
           <ul className="text-xs text-blue-800 space-y-1">
             <li>• Total investment: ${roiData.totalInvestment.toLocaleString()}</li>

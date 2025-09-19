@@ -1,5 +1,5 @@
 const request = require('supertest');
-const app = require('../../server');
+const { app } = require('../../server');
 const jwt = require('jsonwebtoken');
 
 describe('Critical Security Testing - Penetration Testing and Vulnerability Scanning', () => {

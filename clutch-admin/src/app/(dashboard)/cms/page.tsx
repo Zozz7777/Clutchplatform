@@ -6,6 +6,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useAuth } from "@/contexts/auth-context";
+import { useTranslations } from "@/hooks/use-translations";
 import { formatDate, formatRelativeTime } from "@/lib/utils";
 import { 
   FileText, 
@@ -105,6 +106,7 @@ export default function CMSPage() {
   const [activeTab, setActiveTab] = useState<"content" | "media" | "categories">("content");
   const [isLoading, setIsLoading] = useState(true);
   const { hasPermission } = useAuth();
+  const { t } = useTranslations();
 
   useEffect(() => {
     const loadCMSData = async () => {
@@ -340,7 +342,7 @@ export default function CMSPage() {
       <div className="flex items-center justify-center h-64">
         <div className="text-center">
           <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto mb-4"></div>
-          <p className="text-muted-foreground">Loading CMS data...</p>
+          <p className="text-muted-foreground">{t('cms.loadingCmsData')}</p>
         </div>
       </div>
     );
@@ -428,7 +430,7 @@ export default function CMSPage() {
       </div>
 
       {/* Tabs */}
-      <div className="flex space-x-1 bg-muted p-1 rounded-lg w-fit">
+      <div className="flex space-x-1 bg-muted p-1 rounded-[0.625rem] w-fit">
         <Button
           variant={activeTab === "content" ? "default" : "ghost"}
           size="sm"
@@ -503,7 +505,7 @@ export default function CMSPage() {
 
             <div className="space-y-4">
               {filteredContent.map((item) => (
-                <div key={item._id} className="flex items-center justify-between p-4 border rounded-lg hover:bg-muted/50 transition-colors">
+                <div key={item._id} className="flex items-center justify-between p-4 border rounded-[0.625rem] hover:bg-muted/50 transition-colors">
                   <div className="flex items-center space-x-4">
                     <div className="flex items-center space-x-2">
                       {getTypeIcon(item.type)}
@@ -563,7 +565,7 @@ export default function CMSPage() {
                         {item.status === "draft" && (
                           <DropdownMenuItem 
                             onClick={() => handleContentAction(item._id, "publish")}
-                            className="text-green-600"
+                            className="text-success"
                           >
                             <Send className="mr-2 h-4 w-4" />
                             Publish
@@ -572,7 +574,7 @@ export default function CMSPage() {
                         {item.status === "published" && (
                           <DropdownMenuItem 
                             onClick={() => handleContentAction(item._id, "unpublish")}
-                            className="text-yellow-600"
+                            className="text-warning"
                           >
                             <X className="mr-2 h-4 w-4" />
                             Unpublish
@@ -580,7 +582,7 @@ export default function CMSPage() {
                         )}
                         <DropdownMenuItem 
                           onClick={() => handleContentAction(item._id, "archive")}
-                          className="text-red-600"
+                          className="text-destructive"
                         >
                           <Archive className="mr-2 h-4 w-4" />
                           Archive
@@ -614,7 +616,7 @@ export default function CMSPage() {
           <CardContent>
             <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
               {media.map((item) => (
-                <div key={item._id} className="border rounded-lg p-4 hover:bg-muted/50 transition-colors">
+                <div key={item._id} className="border rounded-[0.625rem] p-4 hover:bg-muted/50 transition-colors">
                   <div className="flex items-center space-x-3 mb-3">
                     {getMediaTypeIcon(item.type)}
                     <div className="flex-1 min-w-0">
@@ -666,7 +668,7 @@ export default function CMSPage() {
                           <DropdownMenuSeparator />
                           <DropdownMenuItem 
                             onClick={() => handleMediaAction(item._id, "delete")}
-                            className="text-red-600"
+                            className="text-destructive"
                           >
                             <Trash2 className="mr-2 h-4 w-4" />
                             Delete
@@ -701,9 +703,9 @@ export default function CMSPage() {
           <CardContent>
             <div className="space-y-4">
               {categories.map((category) => (
-                <div key={category._id} className="flex items-center justify-between p-4 border rounded-lg hover:bg-muted/50 transition-colors">
+                <div key={category._id} className="flex items-center justify-between p-4 border rounded-[0.625rem] hover:bg-muted/50 transition-colors">
                   <div className="flex items-center space-x-4">
-                    <div className="w-10 h-10 rounded-lg bg-muted flex items-center justify-center">
+                    <div className="w-10 h-10 rounded-[0.625rem] bg-muted flex items-center justify-center">
                       <Tag className="h-5 w-5" />
                     </div>
                     <div>
@@ -748,7 +750,7 @@ export default function CMSPage() {
                           Add Subcategory
                         </DropdownMenuItem>
                         <DropdownMenuSeparator />
-                        <DropdownMenuItem className="text-red-600">
+                        <DropdownMenuItem className="text-destructive">
                           <Trash2 className="mr-2 h-4 w-4" />
                           Delete Category
                         </DropdownMenuItem>

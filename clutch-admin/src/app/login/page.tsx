@@ -35,7 +35,7 @@ export default function LoginPage() {
         setError(t('auth.invalidCredentials'));
       }
     } catch (err) {
-      const errorMessage = err instanceof Error ? err.message : "An error occurred. Please try again.";
+      const errorMessage = err instanceof Error ? err.message : t('auth.errorOccurred');
       setError(errorMessage);
     } finally {
       setIsLoading(false);
@@ -44,10 +44,10 @@ export default function LoginPage() {
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-background px-4 font-sans">
-      <Card className="w-full max-w-md shadow-md border border-border rounded-lg bg-card">
+      <Card className="w-full max-w-md shadow-sm border border-border rounded-[0.625rem] bg-card">
         <CardHeader className="text-center space-y-6 pb-8">
           <div className="flex justify-center">
-            <div className="flex items-center justify-center w-20 h-20 bg-primary/10 rounded-lg">
+            <div className="flex items-center justify-center w-20 h-20 bg-primary/10 rounded-[0.625rem]">
               <img
                 src="/logo.png"
                 alt="Clutch"
@@ -66,7 +66,7 @@ export default function LoginPage() {
             </div>
           </div>
           <div className="space-y-2">
-            <CardTitle className="text-3xl font-bold text-card-foreground font-sans">Clutch Admin</CardTitle>
+            <CardTitle className="text-3xl font-bold text-card-foreground font-sans">{t('auth.clutchAdmin')}</CardTitle>
             <CardDescription className="text-muted-foreground font-sans text-base">
               {t('auth.signInToDrive')}
             </CardDescription>
@@ -94,7 +94,7 @@ export default function LoginPage() {
                 <Input
                   id="password"
                   type={showPassword ? "text" : "password"}
-                  placeholder="Enter your password"
+                  placeholder={t('auth.enterPassword')}
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   required
@@ -133,7 +133,7 @@ export default function LoginPage() {
               {isLoading ? (
                 <>
                   <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                  Signing in...
+                  {t('auth.signingIn')}
                 </>
               ) : (
                 t('auth.login')

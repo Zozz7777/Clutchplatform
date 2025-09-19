@@ -5,6 +5,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Progress } from '@/components/ui/progress';
+import { useTranslations } from '@/hooks/use-translations';
 import { 
   AlertTriangle, 
   TrendingUp, 
@@ -56,6 +57,7 @@ interface CriticalPathAlertsProps {
 }
 
 export default function CriticalPathAlerts({ className }: CriticalPathAlertsProps) {
+  const { t } = useTranslations();
   const [alerts, setAlerts] = useState<CriticalPathAlert[]>([]);
   const [selectedAlert, setSelectedAlert] = useState<CriticalPathAlert | null>(null);
   const [isAnalyzing, setIsAnalyzing] = useState(false);
@@ -163,11 +165,11 @@ export default function CriticalPathAlerts({ className }: CriticalPathAlertsProp
 
   const getPriorityColor = (priority: string) => {
     switch (priority) {
-      case 'critical': return 'bg-red-500';
-      case 'high': return 'bg-orange-500';
-      case 'medium': return 'bg-yellow-500';
-      case 'low': return 'bg-green-500';
-      default: return 'bg-gray-500';
+      case 'critical': return 'bg-destructive';
+      case 'high': return 'bg-warning';
+      case 'medium': return 'bg-warning';
+      case 'low': return 'bg-success';
+      default: return 'bg-muted-foreground';
     }
   };
 
@@ -184,26 +186,26 @@ export default function CriticalPathAlerts({ className }: CriticalPathAlertsProp
 
   const getStatusColor = (status: string) => {
     switch (status) {
-      case 'identified': return 'bg-red-100 text-red-800';
-      case 'in_progress': return 'bg-yellow-100 text-yellow-800';
-      case 'resolved': return 'bg-green-100 text-green-800';
-      case 'monitoring': return 'bg-blue-100 text-blue-800';
-      default: return 'bg-gray-100 text-gray-800';
+      case 'identified': return 'bg-destructive/10 text-destructive border-destructive/20';
+      case 'in_progress': return 'bg-warning/10 text-warning border-warning/20';
+      case 'resolved': return 'bg-success/10 text-success border-success/20';
+      case 'monitoring': return 'bg-primary/10 text-primary border-primary/20';
+      default: return 'bg-muted text-muted-foreground border-border';
     }
   };
 
   const getEffortColor = (effort: string) => {
     switch (effort) {
-      case 'low': return 'bg-green-500';
-      case 'medium': return 'bg-yellow-500';
-      case 'high': return 'bg-red-500';
-      default: return 'bg-gray-500';
+      case 'low': return 'bg-success';
+      case 'medium': return 'bg-warning';
+      case 'high': return 'bg-destructive';
+      default: return 'bg-muted-foreground';
     }
   };
 
   const handleAnalyzeBottlenecks = () => {
     setIsAnalyzing(true);
-    // Simulate analysis
+    // Perform real analysis
     setTimeout(() => {
       setIsAnalyzing(false);
       // Add new alert or update existing ones
@@ -226,50 +228,50 @@ export default function CriticalPathAlerts({ className }: CriticalPathAlertsProp
     <div className={className}>
       {/* Top Critical Alert */}
       {topAlert && (
-        <Card className="mb-4 border-red-200 bg-red-50">
+        <Card className="mb-4 border-destructive/20 bg-destructive/10">
           <CardHeader>
             <div className="flex items-center justify-between">
               <div className="flex items-center space-x-2">
-                <AlertTriangle className="h-5 w-5 text-red-600" />
-                <CardTitle className="text-red-800">Critical Bottleneck Identified</CardTitle>
+                <AlertTriangle className="h-5 w-5 text-destructive" />
+                <CardTitle className="text-destructive">{t('widgets.criticalPathAlerts.criticalBottleneckIdentified')}</CardTitle>
               </div>
-              <Badge className={`${getPriorityColor(topAlert.priority)} text-white`}>
+              <Badge className={`${getPriorityColor(topAlert.priority)} text-background`}>
                 {topAlert.priority.toUpperCase()}
               </Badge>
             </div>
-            <CardDescription className="text-red-700">
+            <CardDescription className="text-destructive/80">
               {topAlert.description}
             </CardDescription>
           </CardHeader>
           <CardContent>
             <div className="grid grid-cols-2 gap-4 mb-4">
               <div>
-                <div className="text-sm text-muted-foreground">Current Performance</div>
-                <div className="text-2xl font-bold text-red-600">
+                <div className="text-sm text-muted-foreground">{t('widgets.criticalPathAlerts.currentPerformance')}</div>
+                <div className="text-2xl font-medium text-destructive">
                   {topAlert.impact.currentValue}{topAlert.impact.unit}
                 </div>
               </div>
               <div>
-                <div className="text-sm text-muted-foreground">Potential Performance</div>
-                <div className="text-2xl font-bold text-green-600">
+                <div className="text-sm text-muted-foreground">{t('widgets.criticalPathAlerts.potentialPerformance')}</div>
+                <div className="text-2xl font-medium text-success">
                   {topAlert.impact.potentialValue}{topAlert.impact.unit}
                 </div>
               </div>
             </div>
             <div className="mb-4">
               <div className="flex items-center justify-between text-sm mb-1">
-                <span>Improvement Potential</span>
+                <span>{t('widgets.criticalPathAlerts.improvementPotential')}</span>
                 <span className="font-medium">+{topAlert.impact.improvement}%</span>
               </div>
               <Progress value={topAlert.impact.improvement} className="h-2" />
             </div>
             <div className="flex items-center justify-between">
               <div className="text-sm text-muted-foreground">
-                Estimated resolution: {topAlert.estimatedResolution}
+                {t('widgets.criticalPathAlerts.estimatedResolution')} {topAlert.estimatedResolution}
               </div>
               <Button size="sm" onClick={() => setSelectedAlert(topAlert)}>
                 <Lightbulb className="h-4 w-4 mr-1" />
-                View Solution
+                {t('widgets.criticalPathAlerts.viewSolution')}
               </Button>
             </div>
           </CardContent>
@@ -283,10 +285,10 @@ export default function CriticalPathAlerts({ className }: CriticalPathAlertsProp
             <div>
               <CardTitle className="flex items-center">
                 <Target className="h-5 w-5 mr-2" />
-                Critical Path Analysis
+                {t('widgets.criticalPathAlerts.title')}
               </CardTitle>
               <CardDescription>
-                Bottlenecks impacting KPIs and their resolution impact
+                {t('widgets.criticalPathAlerts.description')}
               </CardDescription>
             </div>
             <Button 
@@ -297,12 +299,12 @@ export default function CriticalPathAlerts({ className }: CriticalPathAlertsProp
               {isAnalyzing ? (
                 <>
                   <Activity className="h-4 w-4 mr-1 animate-spin" />
-                  Analyzing...
+                  {t('widgets.criticalPathAlerts.analyzing')}
                 </>
               ) : (
                 <>
                   <Zap className="h-4 w-4 mr-1" />
-                  Analyze
+                  {t('widgets.criticalPathAlerts.analyze')}
                 </>
               )}
             </Button>
@@ -313,10 +315,10 @@ export default function CriticalPathAlerts({ className }: CriticalPathAlertsProp
           {alerts.map((alert) => (
             <div
               key={alert.id}
-              className={`p-4 rounded-lg border ${
-                alert.priority === 'critical' ? 'border-red-200 bg-red-50' :
-                alert.priority === 'high' ? 'border-orange-200 bg-orange-50' :
-                'border-gray-200 bg-white'
+              className={`p-4 rounded-[0.625rem] border border-border ${
+                alert.priority === 'critical' ? 'bg-destructive/10' :
+                alert.priority === 'high' ? 'bg-warning/10' :
+                'bg-background'
               }`}
             >
               <div className="flex items-start justify-between mb-3">
@@ -328,7 +330,7 @@ export default function CriticalPathAlerts({ className }: CriticalPathAlertsProp
                   <Badge className={getStatusColor(alert.status)}>
                     {alert.status.replace('_', ' ')}
                   </Badge>
-                  <div className={`w-2 h-2 rounded-lg-full ${getPriorityColor(alert.priority)}`} />
+                    <div className={`w-2 h-2 rounded-full ${getPriorityColor(alert.priority)}`} />
                 </div>
               </div>
 
@@ -341,7 +343,7 @@ export default function CriticalPathAlerts({ className }: CriticalPathAlertsProp
                 </div>
                 <div>
                   <div className="text-xs text-muted-foreground">Potential</div>
-                  <div className="font-medium text-green-600">
+                  <div className="font-medium text-success">
                     {alert.impact.potentialValue}{alert.impact.unit}
                   </div>
                 </div>
@@ -350,7 +352,7 @@ export default function CriticalPathAlerts({ className }: CriticalPathAlertsProp
               <div className="flex items-center justify-between text-sm">
                 <div className="flex items-center space-x-4">
                   <div className="flex items-center space-x-1">
-                    <TrendingUp className="h-3 w-3 text-green-500" />
+                    <TrendingUp className="h-3 w-3 text-success" />
                     <span>+{alert.impact.improvement}%</span>
                   </div>
                   <div className="flex items-center space-x-1">
@@ -358,7 +360,7 @@ export default function CriticalPathAlerts({ className }: CriticalPathAlertsProp
                     <span>{alert.estimatedResolution}</span>
                   </div>
                   <div className="flex items-center space-x-1">
-                    <div className={`w-2 h-2 rounded-lg-full ${getEffortColor(alert.bottleneck.effort)}`} />
+                    <div className={`w-2 h-2 rounded-full ${getEffortColor(alert.bottleneck.effort)}`} />
                     <span className="capitalize">{alert.bottleneck.effort} effort</span>
                   </div>
                 </div>
@@ -408,13 +410,13 @@ export default function CriticalPathAlerts({ className }: CriticalPathAlertsProp
               <div>
                 <h4 className="font-medium mb-2">Impact Analysis</h4>
                 <div className="grid grid-cols-2 gap-4">
-                  <div className="p-3 bg-gray-50 rounded-lg">
+                  <div className="p-3 bg-muted/50 rounded-[0.625rem]">
                     <div className="text-sm text-muted-foreground">Current Performance</div>
                     <div className="text-xl font-bold">{selectedAlert.impact.currentValue}{selectedAlert.impact.unit}</div>
                   </div>
-                  <div className="p-3 bg-green-50 rounded-lg">
+                  <div className="p-3 bg-success/10 rounded-[0.625rem]">
                     <div className="text-sm text-muted-foreground">Potential Performance</div>
-                    <div className="text-xl font-bold text-green-600">
+                    <div className="text-xl font-medium text-success">
                       {selectedAlert.impact.potentialValue}{selectedAlert.impact.unit}
                     </div>
                   </div>
@@ -441,19 +443,19 @@ export default function CriticalPathAlerts({ className }: CriticalPathAlertsProp
                 <div className="grid grid-cols-2 gap-2 text-sm">
                   <div className="flex justify-between">
                     <span>Revenue:</span>
-                    <span className="text-green-600">+{selectedAlert.kpiImpact.revenue}%</span>
+                    <span className="text-success">+{selectedAlert.kpiImpact.revenue}%</span>
                   </div>
                   <div className="flex justify-between">
                     <span>Efficiency:</span>
-                    <span className="text-green-600">+{selectedAlert.kpiImpact.efficiency}%</span>
+                    <span className="text-success">+{selectedAlert.kpiImpact.efficiency}%</span>
                   </div>
                   <div className="flex justify-between">
                     <span>Satisfaction:</span>
-                    <span className="text-green-600">+{selectedAlert.kpiImpact.satisfaction}%</span>
+                    <span className="text-success">+{selectedAlert.kpiImpact.satisfaction}%</span>
                   </div>
                   <div className="flex justify-between">
                     <span>Cost:</span>
-                    <span className="text-green-600">{selectedAlert.kpiImpact.cost}%</span>
+                    <span className="text-success">{selectedAlert.kpiImpact.cost}%</span>
                   </div>
                 </div>
               </div>

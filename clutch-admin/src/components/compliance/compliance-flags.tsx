@@ -110,8 +110,52 @@ export default function ComplianceFlags({ className }: ComplianceFlagsProps) {
   const [filterStatus, setFilterStatus] = useState<string>('all');
 
   useEffect(() => {
-    const loadComplianceData = () => {
-      const mockFlags: ComplianceFlag[] = [
+    const loadComplianceData = async () => {
+      try {
+        // Load compliance flags from API
+        const flagsResponse = await fetch('/api/v1/compliance/flags', {
+          headers: {
+            'Authorization': `Bearer ${localStorage.getItem('token')}`,
+            'Content-Type': 'application/json'
+          }
+        });
+        
+        if (flagsResponse.ok) {
+          const flagsData = await flagsResponse.json();
+          setFlags(flagsData.data || []);
+        } else {
+          // Fallback to empty array if API fails
+          setFlags([]);
+        }
+
+        // Load compliance frameworks from API
+        const frameworksResponse = await fetch('/api/v1/compliance/frameworks', {
+          headers: {
+            'Authorization': `Bearer ${localStorage.getItem('token')}`,
+            'Content-Type': 'application/json'
+          }
+        });
+        
+        if (frameworksResponse.ok) {
+          const frameworksData = await frameworksResponse.json();
+          setFrameworks(frameworksData.data || []);
+        } else {
+          // Fallback to empty array if API fails
+          setFrameworks([]);
+        }
+      } catch (error) {
+        console.error('Failed to load compliance data:', error);
+        // Set empty arrays as fallback
+        setFlags([]);
+        setFrameworks([]);
+      }
+    };
+
+    loadComplianceData();
+  }, []);
+
+  // Keep mock data as fallback for development
+  const getMockFlags = (): ComplianceFlag[] => [
         {
           id: 'FLAG-001',
           title: 'GDPR Data Retention Violation',
@@ -325,31 +369,71 @@ export default function ComplianceFlags({ className }: ComplianceFlagsProps) {
         }
       ];
 
-      setFlags(mockFlags);
-      setFrameworks(mockFrameworks);
-      setSelectedFlag(mockFlags[0]);
-    };
-
-    loadComplianceData();
-  }, []);
+  const getMockFrameworks = (): ComplianceFramework[] => [
+        {
+          id: 'framework-001',
+          name: 'GDPR',
+          description: 'General Data Protection Regulation',
+          status: 'partial',
+          score: 78,
+          lastAssessment: new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toISOString(),
+          nextAssessment: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString(),
+          requirements: {
+            total: 25,
+            compliant: 18,
+            nonCompliant: 4,
+            pending: 3
+          }
+        },
+        {
+          id: 'framework-002',
+          name: 'PCI DSS',
+          description: 'Payment Card Industry Data Security Standard',
+          status: 'partial',
+          score: 85,
+          lastAssessment: new Date(Date.now() - 15 * 24 * 60 * 60 * 1000).toISOString(),
+          nextAssessment: new Date(Date.now() + 45 * 24 * 60 * 60 * 1000).toISOString(),
+          requirements: {
+            total: 12,
+            compliant: 10,
+            nonCompliant: 1,
+            pending: 1
+          }
+        },
+        {
+          id: 'framework-003',
+          name: 'SOC 2',
+          description: 'Service Organization Control 2',
+          status: 'compliant',
+          score: 92,
+          lastAssessment: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString(),
+          nextAssessment: new Date(Date.now() + 60 * 24 * 60 * 60 * 1000).toISOString(),
+          requirements: {
+            total: 8,
+            compliant: 8,
+            nonCompliant: 0,
+            pending: 0
+          }
+        }
+      ];
 
   const getSeverityColor = (severity: string) => {
     switch (severity) {
-      case 'critical': return 'bg-red-500';
-      case 'high': return 'bg-orange-500';
-      case 'medium': return 'bg-yellow-500';
-      case 'low': return 'bg-green-500';
-      default: return 'bg-gray-500';
+      case 'critical': return 'bg-destructive/100';
+      case 'high': return 'bg-warning/100';
+      case 'medium': return 'bg-warning/100';
+      case 'low': return 'bg-success/100';
+      default: return 'bg-muted/500';
     }
   };
 
   const getStatusColor = (status: string) => {
     switch (status) {
-      case 'open': return 'bg-red-100 text-red-800';
-      case 'investigating': return 'bg-yellow-100 text-yellow-800';
-      case 'resolved': return 'bg-green-100 text-green-800';
-      case 'false_positive': return 'bg-gray-100 text-gray-800';
-      default: return 'bg-gray-100 text-gray-800';
+      case 'open': return 'bg-destructive/10 text-red-800';
+      case 'investigating': return 'bg-warning/10 text-yellow-800';
+      case 'resolved': return 'bg-success/10 text-green-800';
+      case 'false_positive': return 'bg-muted text-gray-800';
+      default: return 'bg-muted text-gray-800';
     }
   };
 
@@ -367,21 +451,21 @@ export default function ComplianceFlags({ className }: ComplianceFlagsProps) {
 
   const getFrameworkStatusColor = (status: string) => {
     switch (status) {
-      case 'compliant': return 'bg-green-100 text-green-800';
-      case 'partial': return 'bg-yellow-100 text-yellow-800';
-      case 'non_compliant': return 'bg-red-100 text-red-800';
-      case 'not_assessed': return 'bg-gray-100 text-gray-800';
-      default: return 'bg-gray-100 text-gray-800';
+      case 'compliant': return 'bg-success/10 text-green-800';
+      case 'partial': return 'bg-warning/10 text-yellow-800';
+      case 'non_compliant': return 'bg-destructive/10 text-red-800';
+      case 'not_assessed': return 'bg-muted text-gray-800';
+      default: return 'bg-muted text-gray-800';
     }
   };
 
   const getSensitivityColor = (sensitivity: string) => {
     switch (sensitivity) {
-      case 'public': return 'bg-green-100 text-green-800';
-      case 'internal': return 'bg-blue-100 text-blue-800';
-      case 'confidential': return 'bg-yellow-100 text-yellow-800';
-      case 'restricted': return 'bg-red-100 text-red-800';
-      default: return 'bg-gray-100 text-gray-800';
+      case 'public': return 'bg-success/10 text-green-800';
+      case 'internal': return 'bg-primary/10 text-blue-800';
+      case 'confidential': return 'bg-warning/10 text-yellow-800';
+      case 'restricted': return 'bg-destructive/10 text-red-800';
+      default: return 'bg-muted text-gray-800';
     }
   };
 
@@ -445,16 +529,16 @@ export default function ComplianceFlags({ className }: ComplianceFlagsProps) {
         <CardContent className="space-y-6">
           {/* Compliance Summary */}
           <div className="grid grid-cols-3 gap-4">
-            <div className="text-center p-3 bg-red-50 rounded-lg">
-              <div className="text-2xl font-bold text-red-600">{criticalFlags}</div>
+            <div className="text-center p-3 bg-destructive/10 rounded-[0.625rem]">
+              <div className="text-2xl font-bold text-destructive">{criticalFlags}</div>
               <div className="text-sm text-muted-foreground">Critical Flags</div>
             </div>
-            <div className="text-center p-3 bg-orange-50 rounded-lg">
-              <div className="text-2xl font-bold text-orange-600">{openFlags}</div>
+            <div className="text-center p-3 bg-warning/10 rounded-[0.625rem]">
+              <div className="text-2xl font-bold text-warning">{openFlags}</div>
               <div className="text-sm text-muted-foreground">Open Issues</div>
             </div>
-            <div className="text-center p-3 bg-green-50 rounded-lg">
-              <div className="text-2xl font-bold text-green-600">{avgComplianceScore}%</div>
+            <div className="text-center p-3 bg-success/10 rounded-[0.625rem]">
+              <div className="text-2xl font-bold text-success">{avgComplianceScore}%</div>
               <div className="text-sm text-muted-foreground">Compliance Score</div>
             </div>
           </div>
@@ -464,7 +548,7 @@ export default function ComplianceFlags({ className }: ComplianceFlagsProps) {
             <h4 className="font-medium mb-3">Compliance Frameworks</h4>
             <div className="grid gap-3">
               {frameworks.map((framework) => (
-                <div key={framework.id} className="p-3 border rounded-lg">
+                <div key={framework.id} className="p-3 border rounded-[0.625rem]">
                   <div className="flex items-center justify-between mb-2">
                     <div className="flex items-center gap-2">
                       <Shield className="h-4 w-4" />
@@ -526,8 +610,8 @@ export default function ComplianceFlags({ className }: ComplianceFlagsProps) {
               {filteredFlags.map((flag) => (
                 <div
                   key={flag.id}
-                  className={`p-3 border rounded-lg cursor-pointer transition-colors ${
-                    selectedFlag?.id === flag.id ? 'border-blue-500 bg-blue-50' : 'hover:bg-gray-50'
+                  className={`p-3 border rounded-[0.625rem] cursor-pointer transition-colors ${
+                    selectedFlag?.id === flag.id ? 'border-blue-500 bg-primary/10' : 'hover:bg-muted/50'
                   }`}
                   onClick={() => setSelectedFlag(flag)}
                 >
@@ -611,7 +695,7 @@ export default function ComplianceFlags({ className }: ComplianceFlagsProps) {
                 <h5 className="font-medium mb-2">Remediation Actions</h5>
                 <div className="space-y-2">
                   {selectedFlag.actions.map((action) => (
-                    <div key={action.id} className="flex items-center justify-between p-2 border rounded-lg">
+                    <div key={action.id} className="flex items-center justify-between p-2 border rounded-[0.625rem]">
                       <div>
                         <div className="font-medium text-sm">{action.description}</div>
                         <div className="text-xs text-muted-foreground">

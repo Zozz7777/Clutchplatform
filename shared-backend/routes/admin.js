@@ -7525,4 +7525,141 @@ router.get('/orders', authenticateToken, checkRole(['head_administrator', 'order
   }
 });
 
+// ============================================================================
+// FRAUD DETECTION ENDPOINTS
+// ============================================================================
+
+// GET /api/v1/admin/fraud/events - Get fraud events
+router.get('/fraud/events', authenticateToken, checkRole(['head_administrator', 'admin', 'security_manager']), async (req, res) => {
+  try {
+    const fraudCollection = await getCollection('fraud_events');
+    const { page = 1, limit = 50, type, severity, status } = req.query;
+    
+    const filter = {};
+    if (type) filter.type = type;
+    if (severity) filter.severity = severity;
+    if (status) filter.status = status;
+    
+    const skip = (parseInt(page) - 1) * parseInt(limit);
+    
+    const events = await fraudCollection
+      .find(filter)
+      .sort({ detectedAt: -1 })
+      .skip(skip)
+      .limit(parseInt(limit))
+      .toArray();
+    
+    const total = await fraudCollection.countDocuments(filter);
+    
+    res.json({
+      success: true,
+      data: events,
+      pagination: {
+        page: parseInt(page),
+        limit: parseInt(limit),
+        total,
+        pages: Math.ceil(total / parseInt(limit))
+      },
+      timestamp: new Date().toISOString()
+    });
+  } catch (error) {
+    logger.error('❌ Get fraud events error:', error);
+    res.status(500).json({
+      success: false,
+      error: 'GET_FRAUD_EVENTS_FAILED',
+      message: 'Failed to retrieve fraud events',
+      timestamp: new Date().toISOString()
+    });
+  }
+});
+
+// GET /api/v1/admin/fraud/rules - Get fraud detection rules
+router.get('/fraud/rules', authenticateToken, checkRole(['head_administrator', 'admin', 'security_manager']), async (req, res) => {
+  try {
+    const rulesCollection = await getCollection('fraud_rules');
+    const { page = 1, limit = 50, status } = req.query;
+    
+    const filter = {};
+    if (status) filter.status = status;
+    
+    const skip = (parseInt(page) - 1) * parseInt(limit);
+    
+    const rules = await rulesCollection
+      .find(filter)
+      .sort({ createdAt: -1 })
+      .skip(skip)
+      .limit(parseInt(limit))
+      .toArray();
+    
+    const total = await rulesCollection.countDocuments(filter);
+    
+    res.json({
+      success: true,
+      data: rules,
+      pagination: {
+        page: parseInt(page),
+        limit: parseInt(limit),
+        total,
+        pages: Math.ceil(total / parseInt(limit))
+      },
+      timestamp: new Date().toISOString()
+    });
+  } catch (error) {
+    logger.error('❌ Get fraud rules error:', error);
+    res.status(500).json({
+      success: false,
+      error: 'GET_FRAUD_RULES_FAILED',
+      message: 'Failed to retrieve fraud rules',
+      timestamp: new Date().toISOString()
+    });
+  }
+});
+
+// POST /api/v1/admin/fraud/events/:id/resolve - Resolve fraud event
+router.post('/fraud/events/:id/resolve', authenticateToken, checkRole(['head_administrator', 'admin', 'security_manager']), async (req, res) => {
+  try {
+    const fraudCollection = await getCollection('fraud_events');
+    const { id } = req.params;
+    const { resolution, notes } = req.body;
+    
+    const updateData = {
+      status: 'resolved',
+      resolution,
+      notes,
+      resolvedAt: new Date().toISOString(),
+      resolvedBy: req.user.id,
+      updatedAt: new Date().toISOString()
+    };
+    
+    const result = await fraudCollection.updateOne(
+      { id },
+      { $set: updateData }
+    );
+    
+    if (result.matchedCount === 0) {
+      return res.status(404).json({
+        success: false,
+        error: 'FRAUD_EVENT_NOT_FOUND',
+        message: 'Fraud event not found',
+        timestamp: new Date().toISOString()
+      });
+    }
+    
+    res.json({
+      success: true,
+      data: { id, ...updateData },
+      message: 'Fraud event resolved successfully',
+      timestamp: new Date().toISOString()
+    });
+  } catch (error) {
+    logger.error('❌ Resolve fraud event error:', error);
+    res.status(500).json({
+      success: false,
+      error: 'RESOLVE_FRAUD_EVENT_FAILED',
+      message: 'Failed to resolve fraud event',
+      timestamp: new Date().toISOString()
+    });
+  }
+});
+
 module.exports = router;

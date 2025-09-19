@@ -498,52 +498,52 @@ export default function PortfolioRiskDashboard({ className }: PortfolioRiskDashb
 
   const getCategoryColor = (category: string) => {
     switch (category) {
-      case 'infrastructure': return 'bg-blue-100 text-blue-800';
-      case 'security': return 'bg-red-100 text-red-800';
-      case 'compliance': return 'bg-yellow-100 text-yellow-800';
-      case 'financial': return 'bg-green-100 text-green-800';
-      case 'operational': return 'bg-orange-100 text-orange-800';
-      case 'technical': return 'bg-purple-100 text-purple-800';
+      case 'infrastructure': return 'bg-primary/10 text-blue-800';
+      case 'security': return 'bg-destructive/10 text-red-800';
+      case 'compliance': return 'bg-warning/10 text-yellow-800';
+      case 'financial': return 'bg-success/10 text-green-800';
+      case 'operational': return 'bg-warning/10 text-orange-800';
+      case 'technical': return 'bg-primary/10 text-purple-800';
       case 'market': return 'bg-pink-100 text-pink-800';
       case 'regulatory': return 'bg-indigo-100 text-indigo-800';
-      default: return 'bg-gray-100 text-gray-800';
+      default: return 'bg-muted text-gray-800';
     }
   };
 
   const getRiskLevelColor = (riskLevel: string) => {
     switch (riskLevel) {
-      case 'low': return 'bg-green-100 text-green-800';
-      case 'medium': return 'bg-yellow-100 text-yellow-800';
-      case 'high': return 'bg-orange-100 text-orange-800';
-      case 'critical': return 'bg-red-100 text-red-800';
-      case 'extreme': return 'bg-red-100 text-red-800';
-      default: return 'bg-gray-100 text-gray-800';
+      case 'low': return 'bg-success/10 text-green-800';
+      case 'medium': return 'bg-warning/10 text-yellow-800';
+      case 'high': return 'bg-warning/10 text-orange-800';
+      case 'critical': return 'bg-destructive/10 text-red-800';
+      case 'extreme': return 'bg-destructive/10 text-red-800';
+      default: return 'bg-muted text-gray-800';
     }
   };
 
   const getRiskScoreColor = (score: number) => {
-    if (score >= 80) return 'text-red-600';
-    if (score >= 60) return 'text-orange-600';
-    if (score >= 40) return 'text-yellow-600';
-    return 'text-green-600';
+    if (score >= 80) return 'text-destructive';
+    if (score >= 60) return 'text-warning';
+    if (score >= 40) return 'text-warning';
+    return 'text-success';
   };
 
   const getTrendIcon = (trend: string) => {
     switch (trend) {
-      case 'improving': return <TrendingUp className="h-4 w-4 text-green-600" />;
-      case 'deteriorating': return <TrendingDown className="h-4 w-4 text-red-600" />;
-      case 'stable': return <Minus className="h-4 w-4 text-gray-600" />;
-      default: return <Minus className="h-4 w-4 text-gray-600" />;
+      case 'improving': return <TrendingUp className="h-4 w-4 text-success" />;
+      case 'deteriorating': return <TrendingDown className="h-4 w-4 text-destructive" />;
+      case 'stable': return <Minus className="h-4 w-4 text-muted-foreground" />;
+      default: return <Minus className="h-4 w-4 text-muted-foreground" />;
     }
   };
 
   const getMitigationStatusColor = (status: string) => {
     switch (status) {
-      case 'completed': return 'bg-green-100 text-green-800';
-      case 'in_progress': return 'bg-blue-100 text-blue-800';
-      case 'planned': return 'bg-yellow-100 text-yellow-800';
-      case 'failed': return 'bg-red-100 text-red-800';
-      default: return 'bg-gray-100 text-gray-800';
+      case 'completed': return 'bg-success/10 text-green-800';
+      case 'in_progress': return 'bg-primary/10 text-blue-800';
+      case 'planned': return 'bg-warning/10 text-yellow-800';
+      case 'failed': return 'bg-destructive/10 text-red-800';
+      default: return 'bg-muted text-gray-800';
     }
   };
 
@@ -579,7 +579,7 @@ export default function PortfolioRiskDashboard({ className }: PortfolioRiskDashb
                 variant="outline"
                 size="sm"
                 onClick={() => setIsMonitoring(!isMonitoring)}
-                className={isMonitoring ? 'bg-green-100 text-green-800' : ''}
+                className={isMonitoring ? 'bg-success/10 text-green-800' : ''}
               >
                 {isMonitoring ? <Eye className="h-4 w-4 mr-2" /> : <EyeOff className="h-4 w-4 mr-2" />}
                 {isMonitoring ? 'Monitoring' : 'Paused'}
@@ -598,26 +598,26 @@ export default function PortfolioRiskDashboard({ className }: PortfolioRiskDashb
         <CardContent className="space-y-6">
           {/* Risk Summary */}
           <div className="grid grid-cols-4 gap-4">
-            <div className="text-center p-3 bg-red-50 rounded-lg">
-              <div className="text-2xl font-bold text-red-600">{formatCurrency(totalExposure)}</div>
+            <div className="text-center p-3 bg-destructive/10 rounded-[0.625rem]">
+              <div className="text-2xl font-bold text-destructive">{formatCurrency(totalExposure)}</div>
               <div className="text-sm text-muted-foreground">Total Exposure</div>
             </div>
-            <div className="text-center p-3 bg-orange-50 rounded-lg">
-              <div className="text-2xl font-bold text-orange-600">{avgRiskScore}</div>
+            <div className="text-center p-3 bg-warning/10 rounded-[0.625rem]">
+              <div className="text-2xl font-bold text-warning">{avgRiskScore}</div>
               <div className="text-sm text-muted-foreground">Avg Risk Score</div>
             </div>
-            <div className="text-center p-3 bg-yellow-50 rounded-lg">
-              <div className="text-2xl font-bold text-yellow-600">{criticalRisks}</div>
+            <div className="text-center p-3 bg-warning/10 rounded-[0.625rem]">
+              <div className="text-2xl font-bold text-warning">{criticalRisks}</div>
               <div className="text-sm text-muted-foreground">Critical Risks</div>
             </div>
-            <div className="text-center p-3 bg-purple-50 rounded-lg">
-              <div className="text-2xl font-bold text-purple-600">{totalMitigations}</div>
+            <div className="text-center p-3 bg-primary/10 rounded-[0.625rem]">
+              <div className="text-2xl font-bold text-primary">{totalMitigations}</div>
               <div className="text-sm text-muted-foreground">Mitigation Strategies</div>
             </div>
           </div>
 
           {/* Portfolio Risk Overview */}
-          <div className="p-4 bg-gradient-to-r from-red-50 to-orange-50 rounded-lg">
+          <div className="p-4 bg-gradient-to-r from-red-50 to-orange-50 rounded-[0.625rem]">
             <div className="flex items-center justify-between">
               <div>
                 <h4 className="font-medium">Portfolio Risk Analysis</h4>
@@ -626,7 +626,7 @@ export default function PortfolioRiskDashboard({ className }: PortfolioRiskDashb
                 </p>
               </div>
               <div className="text-right">
-                <div className="text-3xl font-bold text-red-600">
+                <div className="text-3xl font-bold text-destructive">
                   {risks.length}
                 </div>
                 <div className="text-sm text-muted-foreground">risks monitored</div>
@@ -671,8 +671,8 @@ export default function PortfolioRiskDashboard({ className }: PortfolioRiskDashb
               {filteredRisks.map((risk) => (
                 <div
                   key={risk.id}
-                  className={`p-3 border rounded-lg cursor-pointer transition-colors ${
-                    selectedRisk?.id === risk.id ? 'border-blue-500 bg-blue-50' : 'hover:bg-gray-50'
+                  className={`p-3 border rounded-[0.625rem] cursor-pointer transition-colors ${
+                    selectedRisk?.id === risk.id ? 'border-blue-500 bg-primary/10' : 'hover:bg-muted/50'
                   }`}
                   onClick={() => setSelectedRisk(risk)}
                 >
@@ -787,7 +787,7 @@ export default function PortfolioRiskDashboard({ className }: PortfolioRiskDashb
                     <h5 className="font-medium mb-2">Mitigation Strategies</h5>
                     <div className="space-y-2">
                       {selectedRisk.mitigation.map((strategy, index) => (
-                        <div key={index} className="p-3 border rounded-lg">
+                        <div key={index} className="p-3 border rounded-[0.625rem]">
                           <div className="flex items-center justify-between mb-2">
                             <span className="font-medium">{strategy.strategy}</span>
                             <Badge className={getMitigationStatusColor(strategy.status)}>
@@ -814,7 +814,7 @@ export default function PortfolioRiskDashboard({ className }: PortfolioRiskDashb
                     <h5 className="font-medium mb-2">Risk Dependencies</h5>
                     <div className="space-y-2">
                       {selectedRisk.dependencies.map((dependency) => (
-                        <div key={dependency.id} className="p-3 border rounded-lg">
+                        <div key={dependency.id} className="p-3 border rounded-[0.625rem]">
                           <div className="flex items-center justify-between mb-2">
                             <span className="font-medium">{dependency.name}</span>
                             <Badge className={getRiskLevelColor(dependency.riskLevel)}>

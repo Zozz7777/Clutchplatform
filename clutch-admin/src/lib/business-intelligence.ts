@@ -175,7 +175,7 @@ class BusinessIntelligenceService {
 
           if (riskScore > 50) {
             churnRisks.push({
-              userId: user.id || Math.random().toString(),
+              userId: user.id || `user-${Date.now()}`,
               userName: user.name || 'Unknown User',
               riskScore: Math.min(riskScore, 100),
               confidence: Math.min(riskScore * 0.8, 95),
@@ -305,7 +305,7 @@ class BusinessIntelligenceService {
         const growth = lastRevenue > 0 ? ((currentRevenue - lastRevenue) / lastRevenue) * 100 : 0;
 
         return {
-          id: customer.id || Math.random().toString(),
+          id: customer.id || `customer-${Date.now()}`,
           name: customer.name || customer.companyName || customer.email || 'Unknown Client',
           revenue,
           activity: Math.round(activity),

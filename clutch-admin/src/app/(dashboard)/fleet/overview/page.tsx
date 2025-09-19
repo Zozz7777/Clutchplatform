@@ -81,11 +81,11 @@ export default function FleetOverviewPage() {
           </p>
         </div>
         <div className="flex space-x-2">
-          <Button variant="outline" className="shadow-sm">
+          <Button variant="outline" className="shadow-2xs">
             <BarChart3 className="mr-2 h-4 w-4" />
             Generate Report
           </Button>
-          <Button className="shadow-sm">
+          <Button className="shadow-2xs">
             <TrendingUp className="mr-2 h-4 w-4" />
             View Analytics
           </Button>
@@ -94,7 +94,7 @@ export default function FleetOverviewPage() {
 
       {/* Key Metrics */}
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-        <Card className="shadow-sm">
+        <Card className="shadow-2xs">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium text-card-foreground">Total Vehicles</CardTitle>
             <Truck className="h-4 w-4 text-muted-foreground" />
@@ -102,11 +102,11 @@ export default function FleetOverviewPage() {
           <CardContent>
             <div className="text-2xl font-bold text-foreground">{(vehicles || []).length}</div>
             <p className="text-xs text-muted-foreground">
-              <span className="text-green-600">+2</span> this month
+              <span className="text-success">+2</span> this month
             </p>
           </CardContent>
         </Card>
-        <Card className="shadow-sm">
+        <Card className="shadow-2xs">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium text-card-foreground">Active Fleet</CardTitle>
             <CheckCircle className="h-4 w-4 text-muted-foreground" />
@@ -118,7 +118,7 @@ export default function FleetOverviewPage() {
             </p>
           </CardContent>
         </Card>
-        <Card className="shadow-sm">
+        <Card className="shadow-2xs">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium text-card-foreground">Total Mileage</CardTitle>
             <Gauge className="h-4 w-4 text-muted-foreground" />
@@ -126,11 +126,11 @@ export default function FleetOverviewPage() {
           <CardContent>
             <div className="text-2xl font-bold text-foreground">{totalMileage.toLocaleString()}</div>
             <p className="text-xs text-muted-foreground">
-              <span className="text-green-600">+5.2%</span> from last month
+              <span className="text-success">+5.2%</span> from last month
             </p>
           </CardContent>
         </Card>
-        <Card className="shadow-sm">
+        <Card className="shadow-2xs">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium text-card-foreground">Avg Fuel Efficiency</CardTitle>
             <Fuel className="h-4 w-4 text-muted-foreground" />
@@ -138,7 +138,7 @@ export default function FleetOverviewPage() {
           <CardContent>
             <div className="text-2xl font-bold text-foreground">{averageFuelEfficiency.toFixed(1)}</div>
             <p className="text-xs text-muted-foreground">
-              <span className="text-green-600">+0.3</span> MPG improvement
+              <span className="text-success">+0.3</span> MPG improvement
             </p>
           </CardContent>
         </Card>
@@ -146,7 +146,7 @@ export default function FleetOverviewPage() {
 
       {/* Fleet Status Overview */}
       <div className="grid gap-6 md:grid-cols-2">
-        <Card className="shadow-sm">
+        <Card className="shadow-2xs">
           <CardHeader>
             <CardTitle className="text-card-foreground">Fleet Status Distribution</CardTitle>
             <CardDescription>Current status of all fleet vehicles</CardDescription>
@@ -187,7 +187,7 @@ export default function FleetOverviewPage() {
           </CardContent>
         </Card>
 
-        <Card className="shadow-sm">
+        <Card className="shadow-2xs">
           <CardHeader>
             <CardTitle className="text-card-foreground">Recent Activity</CardTitle>
             <CardDescription>Latest fleet operations and updates</CardDescription>
@@ -234,24 +234,24 @@ export default function FleetOverviewPage() {
         </TabsList>
 
         <TabsContent value="performance" className="space-y-4">
-          <Card className="shadow-sm">
+          <Card className="shadow-2xs">
             <CardHeader>
               <CardTitle className="text-card-foreground">Fleet Performance Metrics</CardTitle>
               <CardDescription>Key performance indicators and trends</CardDescription>
             </CardHeader>
             <CardContent>
               <div className="grid gap-4 md:grid-cols-3">
-                <div className="text-center p-4 border rounded-lg">
+                <div className="text-center p-4 border rounded-[0.625rem]">
                   <LineChart className="h-8 w-8 text-primary mx-auto mb-2" />
                   <p className="text-2xl font-bold text-foreground">94.2%</p>
                   <p className="text-sm text-muted-foreground">Uptime</p>
                 </div>
-                <div className="text-center p-4 border rounded-lg">
+                <div className="text-center p-4 border rounded-[0.625rem]">
                   <Activity className="h-8 w-8 text-primary mx-auto mb-2" />
                   <p className="text-2xl font-bold text-foreground">87.5%</p>
                   <p className="text-sm text-muted-foreground">Efficiency</p>
                 </div>
-                <div className="text-center p-4 border rounded-lg">
+                <div className="text-center p-4 border rounded-[0.625rem]">
                   <TrendingUp className="h-8 w-8 text-primary mx-auto mb-2" />
                   <p className="text-2xl font-bold text-foreground">+12%</p>
                   <p className="text-sm text-muted-foreground">Growth</p>
@@ -262,7 +262,7 @@ export default function FleetOverviewPage() {
         </TabsContent>
 
         <TabsContent value="maintenance" className="space-y-4">
-          <Card className="shadow-sm">
+          <Card className="shadow-2xs">
             <CardHeader>
               <CardTitle className="text-card-foreground">Maintenance Schedule</CardTitle>
               <CardDescription>Upcoming and overdue maintenance tasks</CardDescription>
@@ -271,17 +271,17 @@ export default function FleetOverviewPage() {
               <div className="space-y-4">
                 <div className="flex justify-between items-center">
                   <h3 className="text-lg font-semibold">Upcoming Maintenance</h3>
-                  <Button size="sm" className="shadow-sm">
+                  <Button size="sm" className="shadow-2xs">
                     <Wrench className="mr-2 h-4 w-4" />
                     Schedule New
                   </Button>
                 </div>
                 <div className="space-y-3">
                   {vehicles.filter(v => v.status === "maintenance").map((vehicle) => (
-                    <div key={vehicle.id} className="flex items-center justify-between p-3 border rounded-lg">
+                    <div key={vehicle.id} className="flex items-center justify-between p-3 border rounded-[0.625rem]">
                       <div className="flex items-center space-x-3">
-                        <div className="w-10 h-10 rounded-full bg-yellow-100 flex items-center justify-center">
-                          <Wrench className="h-5 w-5 text-yellow-600" />
+                        <div className="w-10 h-10 rounded-full bg-warning/10 flex items-center justify-center">
+                          <Wrench className="h-5 w-5 text-warning" />
                         </div>
                         <div>
                           <p className="font-medium text-foreground">{vehicle.make} {vehicle.model}</p>
@@ -309,7 +309,7 @@ export default function FleetOverviewPage() {
         </TabsContent>
 
         <TabsContent value="fuel" className="space-y-4">
-          <Card className="shadow-sm">
+          <Card className="shadow-2xs">
             <CardHeader>
               <CardTitle className="text-card-foreground">Fuel Usage Analytics</CardTitle>
               <CardDescription>Fuel consumption patterns and optimization</CardDescription>
@@ -317,18 +317,18 @@ export default function FleetOverviewPage() {
             <CardContent>
               <div className="space-y-6">
                 <div className="grid gap-4 md:grid-cols-3">
-                  <div className="text-center p-4 border rounded-lg">
+                  <div className="text-center p-4 border rounded-[0.625rem]">
                     <Fuel className="h-8 w-8 text-primary mx-auto mb-2" />
                     <p className="text-2xl font-bold text-foreground">{averageFuelEfficiency.toFixed(1)}</p>
                     <p className="text-sm text-muted-foreground">Avg MPG</p>
                   </div>
-                  <div className="text-center p-4 border rounded-lg">
-                    <TrendingUp className="h-8 w-8 text-green-600 mx-auto mb-2" />
+                  <div className="text-center p-4 border rounded-[0.625rem]">
+                    <TrendingUp className="h-8 w-8 text-success mx-auto mb-2" />
                     <p className="text-2xl font-bold text-foreground">+5.2%</p>
                     <p className="text-sm text-muted-foreground">Efficiency</p>
                   </div>
-                  <div className="text-center p-4 border rounded-lg">
-                    <DollarSign className="h-8 w-8 text-blue-600 mx-auto mb-2" />
+                  <div className="text-center p-4 border rounded-[0.625rem]">
+                    <DollarSign className="h-8 w-8 text-primary mx-auto mb-2" />
                     <p className="text-2xl font-bold text-foreground">$2,340</p>
                     <p className="text-sm text-muted-foreground">Monthly Cost</p>
                   </div>
@@ -340,10 +340,10 @@ export default function FleetOverviewPage() {
                       .sort((a, b) => b.fuelEfficiency - a.fuelEfficiency)
                       .slice(0, 5)
                       .map((vehicle) => (
-                        <div key={vehicle.id} className="flex items-center justify-between p-3 border rounded-lg">
+                        <div key={vehicle.id} className="flex items-center justify-between p-3 border rounded-[0.625rem]">
                           <div className="flex items-center space-x-3">
-                            <div className="w-8 h-8 rounded-full bg-green-100 flex items-center justify-center">
-                              <Fuel className="h-4 w-4 text-green-600" />
+                            <div className="w-8 h-8 rounded-full bg-success/10 flex items-center justify-center">
+                              <Fuel className="h-4 w-4 text-success" />
                             </div>
                             <div>
                               <p className="font-medium text-foreground">{vehicle.make} {vehicle.model}</p>
@@ -364,7 +364,7 @@ export default function FleetOverviewPage() {
         </TabsContent>
 
         <TabsContent value="routes" className="space-y-4">
-          <Card className="shadow-sm">
+          <Card className="shadow-2xs">
             <CardHeader>
               <CardTitle className="text-card-foreground">Route Optimization</CardTitle>
               <CardDescription>Route planning and optimization tools</CardDescription>
@@ -372,18 +372,18 @@ export default function FleetOverviewPage() {
             <CardContent>
               <div className="space-y-6">
                 <div className="grid gap-4 md:grid-cols-3">
-                  <div className="text-center p-4 border rounded-lg">
+                  <div className="text-center p-4 border rounded-[0.625rem]">
                     <Route className="h-8 w-8 text-primary mx-auto mb-2" />
                     <p className="text-2xl font-bold text-foreground">24</p>
                     <p className="text-sm text-muted-foreground">Active Routes</p>
                   </div>
-                  <div className="text-center p-4 border rounded-lg">
-                    <Navigation className="h-8 w-8 text-green-600 mx-auto mb-2" />
+                  <div className="text-center p-4 border rounded-[0.625rem]">
+                    <Navigation className="h-8 w-8 text-success mx-auto mb-2" />
                     <p className="text-2xl font-bold text-foreground">-12%</p>
                     <p className="text-sm text-muted-foreground">Distance Saved</p>
                   </div>
-                  <div className="text-center p-4 border rounded-lg">
-                    <Clock className="h-8 w-8 text-blue-600 mx-auto mb-2" />
+                  <div className="text-center p-4 border rounded-[0.625rem]">
+                    <Clock className="h-8 w-8 text-primary mx-auto mb-2" />
                     <p className="text-2xl font-bold text-foreground">-18min</p>
                     <p className="text-sm text-muted-foreground">Avg Time Saved</p>
                   </div>
@@ -391,17 +391,17 @@ export default function FleetOverviewPage() {
                 <div className="space-y-4">
                   <div className="flex justify-between items-center">
                     <h3 className="text-lg font-semibold">Recent Route Optimizations</h3>
-                    <Button size="sm" variant="outline" className="shadow-sm">
+                    <Button size="sm" variant="outline" className="shadow-2xs">
                       <Route className="mr-2 h-4 w-4" />
                       Optimize All
                     </Button>
                   </div>
                   <div className="space-y-2">
                     {vehicles.slice(0, 5).map((vehicle) => (
-                      <div key={vehicle.id} className="flex items-center justify-between p-3 border rounded-lg">
+                      <div key={vehicle.id} className="flex items-center justify-between p-3 border rounded-[0.625rem]">
                         <div className="flex items-center space-x-3">
-                          <div className="w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center">
-                            <Navigation className="h-4 w-4 text-blue-600" />
+                          <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center">
+                            <Navigation className="h-4 w-4 text-primary" />
                           </div>
                           <div>
                             <p className="font-medium text-foreground">{vehicle.make} {vehicle.model}</p>

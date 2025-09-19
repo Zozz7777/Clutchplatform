@@ -69,15 +69,15 @@ export function UserGrowthCohort({ className = '' }: UserGrowthCohortProps) {
   };
 
   const getRetentionColor = (rate: number) => {
-    if (rate >= 80) return 'text-green-600';
-    if (rate >= 60) return 'text-yellow-600';
-    return 'text-red-600';
+    if (rate >= 80) return 'text-success';
+    if (rate >= 60) return 'text-warning';
+    return 'text-destructive';
   };
 
   const getRetentionBadge = (rate: number) => {
-    if (rate >= 80) return 'bg-green-100 text-green-800';
-    if (rate >= 60) return 'bg-yellow-100 text-yellow-800';
-    return 'bg-red-100 text-red-800';
+    if (rate >= 80) return 'bg-success/10 text-green-800';
+    if (rate >= 60) return 'bg-warning/10 text-yellow-800';
+    return 'bg-destructive/10 text-red-800';
   };
 
   const formatMonth = (monthStr: string) => {
@@ -91,16 +91,16 @@ export function UserGrowthCohort({ className = '' }: UserGrowthCohortProps) {
       <Card className={className}>
         <CardHeader>
           <CardTitle className="flex items-center space-x-2">
-            <Users className="h-5 w-5 text-blue-600" />
+            <Users className="h-5 w-5 text-primary" />
             <span>User Growth Cohort</span>
           </CardTitle>
           <CardDescription>Loading cohort analysis...</CardDescription>
         </CardHeader>
         <CardContent>
           <div className="animate-pulse space-y-4">
-            <div className="h-4 bg-gray-200 rounded-lg w-3/4"></div>
-            <div className="h-4 bg-gray-200 rounded-lg w-1/2"></div>
-            <div className="h-4 bg-gray-200 rounded-lg w-2/3"></div>
+            <div className="h-4 bg-muted rounded-[0.625rem] w-3/4"></div>
+            <div className="h-4 bg-muted rounded-[0.625rem] w-1/2"></div>
+            <div className="h-4 bg-muted rounded-[0.625rem] w-2/3"></div>
           </div>
         </CardContent>
       </Card>
@@ -116,7 +116,7 @@ export function UserGrowthCohort({ className = '' }: UserGrowthCohortProps) {
     <Card className={className}>
       <CardHeader>
         <CardTitle className="flex items-center space-x-2">
-          <Users className="h-5 w-5 text-blue-600" />
+          <Users className="h-5 w-5 text-primary" />
           <span>User Growth Cohort</span>
         </CardTitle>
         <CardDescription>
@@ -141,49 +141,49 @@ export function UserGrowthCohort({ className = '' }: UserGrowthCohortProps) {
 
         {/* Summary Stats */}
         <div className="grid grid-cols-3 gap-4">
-          <div className="text-center p-3 bg-blue-50 rounded-lg-lg">
-            <Users className="h-5 w-5 text-blue-600 mx-auto mb-1" />
-            <p className="text-lg font-bold text-blue-600">{totalNewUsers}</p>
-            <p className="text-xs text-gray-500">New Users</p>
+          <div className="text-center p-3 bg-primary/10 rounded-[0.625rem]-lg">
+            <Users className="h-5 w-5 text-primary mx-auto mb-1" />
+            <p className="text-lg font-bold text-primary">{totalNewUsers}</p>
+            <p className="text-xs text-muted-foreground">New Users</p>
           </div>
-          <div className="text-center p-3 bg-green-50 rounded-lg-lg">
-            <TrendingUp className="h-5 w-5 text-green-600 mx-auto mb-1" />
-            <p className="text-lg font-bold text-green-600">{totalRetained}</p>
-            <p className="text-xs text-gray-500">Retained</p>
+          <div className="text-center p-3 bg-success/10 rounded-[0.625rem]-lg">
+            <TrendingUp className="h-5 w-5 text-success mx-auto mb-1" />
+            <p className="text-lg font-bold text-success">{totalRetained}</p>
+            <p className="text-xs text-muted-foreground">Retained</p>
           </div>
-          <div className="text-center p-3 bg-purple-50 rounded-lg-lg">
-            <BarChart3 className="h-5 w-5 text-purple-600 mx-auto mb-1" />
-            <p className="text-lg font-bold text-purple-600">{averageRetention.toFixed(1)}%</p>
-            <p className="text-xs text-gray-500">Avg Retention</p>
+          <div className="text-center p-3 bg-primary/10 rounded-[0.625rem]-lg">
+            <BarChart3 className="h-5 w-5 text-primary mx-auto mb-1" />
+            <p className="text-lg font-bold text-primary">{averageRetention.toFixed(1)}%</p>
+            <p className="text-xs text-muted-foreground">Avg Retention</p>
           </div>
         </div>
 
         {/* Cohort Table */}
         <div className="space-y-3">
-          <h4 className="text-sm font-medium text-gray-900">Monthly Cohorts</h4>
+          <h4 className="text-sm font-medium text-foreground">Monthly Cohorts</h4>
           <div className="space-y-2 max-h-64 overflow-y-auto">
             {filteredCohorts.map((cohort, index) => (
-              <div key={cohort.month} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg-lg">
+              <div key={cohort.month} className="flex items-center justify-between p-3 bg-muted/50 rounded-[0.625rem]-lg">
                 <div className="flex items-center space-x-3">
-                  <div className="flex items-center justify-center w-8 h-8 bg-blue-100 rounded-lg-full">
-                    <span className="text-sm font-semibold text-blue-600">
+                  <div className="flex items-center justify-center w-8 h-8 bg-primary/10 rounded-[0.625rem]-full">
+                    <span className="text-sm font-semibold text-primary">
                       {filteredCohorts.length - index}
                     </span>
                   </div>
                   <div>
-                    <p className="text-sm font-medium text-gray-900">{formatMonth(cohort.month)}</p>
-                    <p className="text-xs text-gray-500">Cohort</p>
+                    <p className="text-sm font-medium text-foreground">{formatMonth(cohort.month)}</p>
+                    <p className="text-xs text-muted-foreground">Cohort</p>
                   </div>
                 </div>
                 
                 <div className="flex items-center space-x-4">
                   <div className="text-center">
-                    <p className="text-sm font-semibold text-gray-900">{cohort.newUsers}</p>
-                    <p className="text-xs text-gray-500">New</p>
+                    <p className="text-sm font-semibold text-foreground">{cohort.newUsers}</p>
+                    <p className="text-xs text-muted-foreground">New</p>
                   </div>
                   <div className="text-center">
-                    <p className="text-sm font-semibold text-gray-900">{cohort.retained}</p>
-                    <p className="text-xs text-gray-500">Retained</p>
+                    <p className="text-sm font-semibold text-foreground">{cohort.retained}</p>
+                    <p className="text-xs text-muted-foreground">Retained</p>
                   </div>
                   <div className="text-center">
                     <Badge className={getRetentionBadge(cohort.retentionRate)}>
@@ -198,17 +198,17 @@ export function UserGrowthCohort({ className = '' }: UserGrowthCohortProps) {
 
         {/* Retention Trend Chart */}
         <div className="space-y-3">
-          <h4 className="text-sm font-medium text-gray-900">Retention Trend</h4>
+          <h4 className="text-sm font-medium text-foreground">Retention Trend</h4>
           <div className="space-y-2">
             {filteredCohorts.slice(-6).map((cohort) => (
               <div key={cohort.month} className="flex items-center justify-between text-sm">
-                <span className="text-gray-600">{formatMonth(cohort.month)}</span>
+                <span className="text-muted-foreground">{formatMonth(cohort.month)}</span>
                 <div className="flex items-center space-x-2">
-                  <div className="w-24 bg-gray-200 rounded-lg-full h-2">
+                  <div className="w-24 bg-muted rounded-[0.625rem]-full h-2">
                     <div 
-                      className={`h-2 rounded-lg-full ${
-                        cohort.retentionRate >= 80 ? 'bg-green-500' :
-                        cohort.retentionRate >= 60 ? 'bg-yellow-500' : 'bg-red-500'
+                      className={`h-2 rounded-[0.625rem]-full ${
+                        cohort.retentionRate >= 80 ? 'bg-success/100' :
+                        cohort.retentionRate >= 60 ? 'bg-warning/100' : 'bg-destructive/100'
                       }`}
                       style={{ width: `${cohort.retentionRate}%` }}
                     ></div>
@@ -224,19 +224,19 @@ export function UserGrowthCohort({ className = '' }: UserGrowthCohortProps) {
 
         {/* Cohort Analysis */}
         <div className="grid grid-cols-2 gap-4">
-          <div className="text-center p-3 bg-green-50 rounded-lg-lg">
-            <TrendingUp className="h-4 w-4 text-green-600 mx-auto mb-1" />
-            <p className="text-sm font-bold text-green-600">
+          <div className="text-center p-3 bg-success/10 rounded-[0.625rem]-lg">
+            <TrendingUp className="h-4 w-4 text-success mx-auto mb-1" />
+            <p className="text-sm font-bold text-success">
               {filteredCohorts.filter(c => c.retentionRate >= 80).length}
             </p>
-            <p className="text-xs text-gray-500">High Retention</p>
+            <p className="text-xs text-muted-foreground">High Retention</p>
           </div>
-          <div className="text-center p-3 bg-red-50 rounded-lg-lg">
-            <TrendingDown className="h-4 w-4 text-red-600 mx-auto mb-1" />
-            <p className="text-sm font-bold text-red-600">
+          <div className="text-center p-3 bg-destructive/10 rounded-[0.625rem]-lg">
+            <TrendingDown className="h-4 w-4 text-destructive mx-auto mb-1" />
+            <p className="text-sm font-bold text-destructive">
               {filteredCohorts.filter(c => c.retentionRate < 60).length}
             </p>
-            <p className="text-xs text-gray-500">Low Retention</p>
+            <p className="text-xs text-muted-foreground">Low Retention</p>
           </div>
         </div>
 
@@ -253,7 +253,7 @@ export function UserGrowthCohort({ className = '' }: UserGrowthCohortProps) {
         </div>
 
         {/* Insights */}
-        <div className="p-3 bg-blue-50 rounded-lg-lg">
+        <div className="p-3 bg-primary/10 rounded-[0.625rem]-lg">
           <h5 className="text-sm font-medium text-blue-900 mb-2">💡 Cohort Insights</h5>
           <ul className="text-xs text-blue-800 space-y-1">
             <li>• Average retention rate: {averageRetention.toFixed(1)}%</li>

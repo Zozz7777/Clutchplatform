@@ -45,6 +45,7 @@ import {
   Activity,
 } from "lucide-react";
 import { productionApi } from "@/lib/production-api";
+import { useTranslations } from "@/hooks/use-translations";
 
 interface Integration {
   _id: string;
@@ -122,6 +123,7 @@ interface IntegrationTemplate {
 }
 
 export default function IntegrationsPage() {
+  const { t } = useTranslations();
   const [integrations, setIntegrations] = useState<Integration[]>([]);
   const [templates, setTemplates] = useState<IntegrationTemplate[]>([]);
   const [loading, setLoading] = useState(true);
@@ -356,10 +358,11 @@ export default function IntegrationsPage() {
     try {
       setLoading(true);
       const data = await productionApi.getIntegrations();
-      setIntegrations(data || mockIntegrations);
+      setIntegrations(data || []);
     } catch (error) {
       console.error("Error loading integrations:", error);
-      setIntegrations(mockIntegrations);
+      toast.error(t('integrations.failedToLoadIntegrations'));
+      setIntegrations([]);
     } finally {
       setLoading(false);
     }
@@ -367,11 +370,12 @@ export default function IntegrationsPage() {
 
   const loadTemplates = async () => {
     try {
-      const data = await productionApi.getIntegrations({ type: 'templates' });
-      setTemplates(data || mockTemplates);
+      const data = await productionApi.getIntegrationTemplates();
+      setTemplates(data || []);
     } catch (error) {
       console.error("Error loading templates:", error);
-      setTemplates(mockTemplates);
+      toast.error("Failed to load integration templates");
+      setTemplates([]);
     }
   };
 
@@ -458,9 +462,9 @@ export default function IntegrationsPage() {
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold tracking-tight">Integrations</h1>
+          <h1 className="text-3xl font-bold tracking-tight">{t('integrations.title')}</h1>
           <p className="text-muted-foreground">
-            Manage third-party integrations and API connections
+            {t('integrations.description')}
           </p>
         </div>
         <div className="flex items-center space-x-2">
@@ -479,13 +483,13 @@ export default function IntegrationsPage() {
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Total Integrations</CardTitle>
+            <CardTitle className="text-sm font-medium">{t('integrations.totalIntegrations')}</CardTitle>
             <Plug className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">{totalIntegrations}</div>
             <p className="text-xs text-muted-foreground">
-              {activeIntegrations} active, {errorIntegrations} with errors
+              {activeIntegrations} {t('integrations.active')}, {errorIntegrations} {t('integrations.activeWithErrors')}
             </p>
           </CardContent>
         </Card>
@@ -534,9 +538,9 @@ export default function IntegrationsPage() {
       {/* Integrations */}
       <Card>
         <CardHeader>
-          <CardTitle>Active Integrations</CardTitle>
+          <CardTitle>{t('integrations.activeIntegrationsList')}</CardTitle>
           <CardDescription>
-            Monitor and manage all your third-party integrations
+            {t('integrations.monitorAndManage')}
           </CardDescription>
         </CardHeader>
         <CardContent>
@@ -609,7 +613,7 @@ export default function IntegrationsPage() {
 
           <div className="space-y-4">
             {filteredIntegrations.map((integration) => (
-              <Card key={integration._id} className="hover:shadow-md transition-shadow">
+              <Card key={integration._id} className="hover:shadow-sm transition-shadow">
                 <CardContent className="p-6">
                   <div className="flex items-start justify-between">
                     <div className="flex-1">
@@ -798,7 +802,7 @@ export default function IntegrationsPage() {
           <div className="grid gap-4 py-4">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               {templates.map((template) => (
-                <Card key={template._id} className="hover:shadow-md transition-shadow">
+                <Card key={template._id} className="hover:shadow-sm transition-shadow">
                   <CardContent className="p-4">
                     <div className="flex items-start justify-between mb-2">
                       <div>

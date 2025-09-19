@@ -532,23 +532,23 @@ export default function BusinessValueAttribution({ className }: BusinessValueAtt
 
   const getBusinessAreaColor = (area: string) => {
     switch (area) {
-      case 'revenue': return 'bg-green-100 text-green-800';
-      case 'cost_reduction': return 'bg-blue-100 text-blue-800';
-      case 'customer_experience': return 'bg-purple-100 text-purple-800';
-      case 'operational_efficiency': return 'bg-orange-100 text-orange-800';
-      case 'risk_mitigation': return 'bg-red-100 text-red-800';
-      case 'compliance': return 'bg-yellow-100 text-yellow-800';
-      default: return 'bg-gray-100 text-gray-800';
+      case 'revenue': return 'bg-success/10 text-green-800';
+      case 'cost_reduction': return 'bg-primary/10 text-blue-800';
+      case 'customer_experience': return 'bg-primary/10 text-purple-800';
+      case 'operational_efficiency': return 'bg-warning/10 text-orange-800';
+      case 'risk_mitigation': return 'bg-destructive/10 text-red-800';
+      case 'compliance': return 'bg-warning/10 text-yellow-800';
+      default: return 'bg-muted text-gray-800';
     }
   };
 
   const getImpactTypeColor = (type: string) => {
     switch (type) {
-      case 'direct': return 'bg-green-100 text-green-800';
-      case 'indirect': return 'bg-blue-100 text-blue-800';
-      case 'cascading': return 'bg-orange-100 text-orange-800';
-      case 'compound': return 'bg-purple-100 text-purple-800';
-      default: return 'bg-gray-100 text-gray-800';
+      case 'direct': return 'bg-success/10 text-green-800';
+      case 'indirect': return 'bg-primary/10 text-blue-800';
+      case 'cascading': return 'bg-warning/10 text-orange-800';
+      case 'compound': return 'bg-primary/10 text-purple-800';
+      default: return 'bg-muted text-gray-800';
     }
   };
 
@@ -565,16 +565,16 @@ export default function BusinessValueAttribution({ className }: BusinessValueAtt
   };
 
   const getImprovementColor = (improvement: number) => {
-    if (improvement > 0) return 'text-green-600';
-    if (improvement < 0) return 'text-red-600';
-    return 'text-gray-600';
+    if (improvement > 0) return 'text-success';
+    if (improvement < 0) return 'text-destructive';
+    return 'text-muted-foreground';
   };
 
   const getConfidenceColor = (confidence: number) => {
-    if (confidence >= 90) return 'text-green-600';
-    if (confidence >= 80) return 'text-yellow-600';
-    if (confidence >= 70) return 'text-orange-600';
-    return 'text-red-600';
+    if (confidence >= 90) return 'text-success';
+    if (confidence >= 80) return 'text-warning';
+    if (confidence >= 70) return 'text-warning';
+    return 'text-destructive';
   };
 
   const filteredImpacts = modelImpacts.filter(impact => {
@@ -610,7 +610,7 @@ export default function BusinessValueAttribution({ className }: BusinessValueAtt
                 variant="outline"
                 size="sm"
                 onClick={() => setIsTracking(!isTracking)}
-                className={isTracking ? 'bg-green-100 text-green-800' : ''}
+                className={isTracking ? 'bg-success/10 text-green-800' : ''}
               >
                 {isTracking ? <Eye className="h-4 w-4 mr-2" /> : <EyeOff className="h-4 w-4 mr-2" />}
                 {isTracking ? 'Tracking' : 'Paused'}
@@ -629,26 +629,26 @@ export default function BusinessValueAttribution({ className }: BusinessValueAtt
         <CardContent className="space-y-6">
           {/* Value Summary */}
           <div className="grid grid-cols-4 gap-4">
-            <div className="text-center p-3 bg-green-50 rounded-lg">
-              <div className="text-2xl font-bold text-green-600">{formatCurrency(totalValue)}</div>
+            <div className="text-center p-3 bg-success/10 rounded-[0.625rem]">
+              <div className="text-2xl font-bold text-success">{formatCurrency(totalValue)}</div>
               <div className="text-sm text-muted-foreground">Total Value Created</div>
             </div>
-            <div className="text-center p-3 bg-blue-50 rounded-lg">
-              <div className="text-2xl font-bold text-blue-600">{formatCurrency(totalInvestment)}</div>
+            <div className="text-center p-3 bg-primary/10 rounded-[0.625rem]">
+              <div className="text-2xl font-bold text-primary">{formatCurrency(totalInvestment)}</div>
               <div className="text-sm text-muted-foreground">Total Investment</div>
             </div>
-            <div className="text-center p-3 bg-purple-50 rounded-lg">
-              <div className="text-2xl font-bold text-purple-600">{avgROI}%</div>
+            <div className="text-center p-3 bg-primary/10 rounded-[0.625rem]">
+              <div className="text-2xl font-bold text-primary">{avgROI}%</div>
               <div className="text-sm text-muted-foreground">Average ROI</div>
             </div>
-            <div className="text-center p-3 bg-orange-50 rounded-lg">
-              <div className="text-2xl font-bold text-orange-600">{avgConfidence}%</div>
+            <div className="text-center p-3 bg-warning/10 rounded-[0.625rem]">
+              <div className="text-2xl font-bold text-warning">{avgConfidence}%</div>
               <div className="text-sm text-muted-foreground">Avg Confidence</div>
             </div>
           </div>
 
           {/* Value Attribution Overview */}
-          <div className="p-4 bg-gradient-to-r from-blue-50 to-purple-50 rounded-lg">
+          <div className="p-4 bg-gradient-to-r from-blue-50 to-purple-50 rounded-[0.625rem]">
             <div className="flex items-center justify-between">
               <div>
                 <h4 className="font-medium">Business Value Attribution</h4>
@@ -657,7 +657,7 @@ export default function BusinessValueAttribution({ className }: BusinessValueAtt
                 </p>
               </div>
               <div className="text-right">
-                <div className="text-3xl font-bold text-green-600">
+                <div className="text-3xl font-bold text-success">
                   {formatCurrency(totalValue)}
                 </div>
                 <div className="text-sm text-muted-foreground">total value</div>
@@ -702,8 +702,8 @@ export default function BusinessValueAttribution({ className }: BusinessValueAtt
               {filteredImpacts.map((impact) => (
                 <div
                   key={impact.id}
-                  className={`p-3 border rounded-lg cursor-pointer transition-colors ${
-                    selectedImpact?.id === impact.id ? 'border-blue-500 bg-blue-50' : 'hover:bg-gray-50'
+                  className={`p-3 border rounded-[0.625rem] cursor-pointer transition-colors ${
+                    selectedImpact?.id === impact.id ? 'border-blue-500 bg-primary/10' : 'hover:bg-muted/50'
                   }`}
                   onClick={() => setSelectedImpact(impact)}
                 >
@@ -779,7 +779,7 @@ export default function BusinessValueAttribution({ className }: BusinessValueAtt
                         </div>
                         <div className="flex justify-between">
                           <span>Total Value:</span>
-                          <span className="font-medium text-green-600">{formatCurrency(selectedImpact.value.total)}</span>
+                          <span className="font-medium text-success">{formatCurrency(selectedImpact.value.total)}</span>
                         </div>
                       </div>
                     </div>
@@ -814,7 +814,7 @@ export default function BusinessValueAttribution({ className }: BusinessValueAtt
                     <h5 className="font-medium mb-2">Stakeholder Impact</h5>
                     <div className="grid grid-cols-2 gap-4">
                       {selectedImpact.stakeholders.map((stakeholder, index) => (
-                        <div key={index} className="p-3 border rounded-lg">
+                        <div key={index} className="p-3 border rounded-[0.625rem]">
                           <div className="flex items-center justify-between mb-2">
                             <span className="font-medium">{stakeholder.department}</span>
                             <span className="text-sm font-medium">{stakeholder.impact}% impact</span>
@@ -834,7 +834,7 @@ export default function BusinessValueAttribution({ className }: BusinessValueAtt
                     <h5 className="font-medium mb-2">Performance Metrics</h5>
                     <div className="space-y-2">
                       {selectedImpact.metrics.map((metric) => (
-                        <div key={metric.metric} className="p-3 border rounded-lg">
+                        <div key={metric.metric} className="p-3 border rounded-[0.625rem]">
                           <div className="flex items-center justify-between mb-2">
                             <span className="font-medium">{metric.metric}</span>
                             <div className="flex items-center gap-2">
@@ -891,10 +891,10 @@ export default function BusinessValueAttribution({ className }: BusinessValueAtt
                     <h5 className="font-medium mb-2">Impact Timeline</h5>
                     <div className="space-y-2">
                       {selectedImpact.timeline.milestones.map((milestone, index) => (
-                        <div key={index} className="p-3 border rounded-lg">
+                        <div key={index} className="p-3 border rounded-[0.625rem]">
                           <div className="flex items-center justify-between mb-2">
                             <span className="font-medium">{milestone.event}</span>
-                            <span className="text-sm font-medium text-green-600">
+                            <span className="text-sm font-medium text-success">
                               {formatCurrency(milestone.impact)}
                             </span>
                           </div>
@@ -917,11 +917,11 @@ export default function BusinessValueAttribution({ className }: BusinessValueAtt
                       </div>
                       <div className="flex justify-between">
                         <span>Returns:</span>
-                        <span className="font-medium text-green-600">{formatCurrency(selectedImpact.roi.returns)}</span>
+                        <span className="font-medium text-success">{formatCurrency(selectedImpact.roi.returns)}</span>
                       </div>
                       <div className="flex justify-between">
                         <span>Net Present Value:</span>
-                        <span className="font-medium text-green-600">{formatCurrency(selectedImpact.roi.netPresentValue)}</span>
+                        <span className="font-medium text-success">{formatCurrency(selectedImpact.roi.netPresentValue)}</span>
                       </div>
                       <div className="flex justify-between">
                         <span>Payback Period:</span>
@@ -929,7 +929,7 @@ export default function BusinessValueAttribution({ className }: BusinessValueAtt
                       </div>
                       <div className="flex justify-between">
                         <span>Internal Rate of Return:</span>
-                        <span className="font-medium text-green-600">{selectedImpact.roi.internalRateOfReturn}%</span>
+                        <span className="font-medium text-success">{selectedImpact.roi.internalRateOfReturn}%</span>
                       </div>
                     </div>
                   </div>

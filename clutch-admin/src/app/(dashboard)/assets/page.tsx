@@ -49,6 +49,7 @@ import {
 } from "lucide-react";
 import { formatCurrency } from "@/lib/utils";
 import { productionApi } from "@/lib/production-api";
+import { useTranslations } from "@/hooks/use-translations";
 
 interface Asset {
   _id: string;
@@ -143,6 +144,7 @@ interface AssetAssignment {
 }
 
 export default function AssetManagementPage() {
+  const { t } = useTranslations();
   const [assets, setAssets] = useState<Asset[]>([]);
   const [maintenanceRecords, setMaintenanceRecords] = useState<MaintenanceRecord[]>([]);
   const [assignments, setAssignments] = useState<AssetAssignment[]>([]);
@@ -452,13 +454,13 @@ export default function AssetManagementPage() {
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Total Assets</CardTitle>
+            <CardTitle className="text-sm font-medium">{t('assets.totalAssets')}</CardTitle>
             <Package className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">{totalAssets}</div>
             <p className="text-xs text-muted-foreground">
-              {activeAssets} active, {totalAssets - activeAssets} inactive
+              {activeAssets} {t('assets.active')}, {totalAssets - activeAssets} {t('assets.inactive')}
             </p>
           </CardContent>
         </Card>
@@ -488,7 +490,7 @@ export default function AssetManagementPage() {
         </Card>
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Assigned Assets</CardTitle>
+            <CardTitle className="text-sm font-medium">{t('assets.assignedAssets')}</CardTitle>
             <User className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
@@ -505,9 +507,9 @@ export default function AssetManagementPage() {
       {/* Assets */}
       <Card>
         <CardHeader>
-          <CardTitle>Assets</CardTitle>
+          <CardTitle>{t('assets.title')}</CardTitle>
           <CardDescription>
-            Manage and track all company assets
+            {t('assets.description')}
           </CardDescription>
         </CardHeader>
         <CardContent>
@@ -577,7 +579,7 @@ export default function AssetManagementPage() {
 
           <div className="space-y-4">
             {filteredAssets.map((asset) => (
-              <Card key={asset._id} className="hover:shadow-md transition-shadow">
+              <Card key={asset._id} className="hover:shadow-sm transition-shadow">
                 <CardContent className="p-6">
                   <div className="flex items-start justify-between">
                     <div className="flex-1">
@@ -593,7 +595,7 @@ export default function AssetManagementPage() {
                       </div>
                       <p className="text-muted-foreground mb-2">{asset.description}</p>
                       <p className="text-sm text-muted-foreground mb-4">
-                        Serial: <code className="bg-gray-100 px-2 py-1 rounded">{asset.serialNumber}</code>
+                        Serial: <code className="bg-muted px-2 py-1 rounded">{asset.serialNumber}</code>
                       </p>
                       
                       <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-4">
@@ -610,7 +612,7 @@ export default function AssetManagementPage() {
                         <div>
                           <p className="text-sm font-medium">Assigned To</p>
                           <p className="text-sm text-muted-foreground">
-                            {asset.assignedTo ? asset.assignedTo.name : "Unassigned"}
+                            {asset.assignedTo ? asset.assignedTo.name : t('assets.unassigned')}
                           </p>
                         </div>
                         <div>
@@ -689,9 +691,9 @@ export default function AssetManagementPage() {
         <CardContent>
           <div className="space-y-4">
             {maintenanceRecords.slice(0, 5).map((record) => (
-              <div key={record._id} className="flex items-center justify-between p-4 border rounded-lg">
+              <div key={record._id} className="flex items-center justify-between p-4 border rounded-[0.625rem]">
                 <div className="flex items-center space-x-4">
-                  <div className="p-2 bg-blue-100 rounded-lg">
+                  <div className="p-2 bg-primary/10 rounded-[0.625rem]">
                     <Wrench className="h-4 w-4 text-primary" />
                   </div>
                   <div>
@@ -729,7 +731,7 @@ export default function AssetManagementPage() {
                 <Label htmlFor="name">Asset Name</Label>
                 <Input 
                   id="name" 
-                  placeholder="Enter asset name" 
+                  placeholder={t('assets.searchAssets')} 
                   value={createAssetData.name}
                   onChange={(e) => setCreateAssetData(prev => ({ ...prev, name: e.target.value }))}
                 />
@@ -753,7 +755,7 @@ export default function AssetManagementPage() {
               <Label htmlFor="category">Category</Label>
               <Input 
                 id="category" 
-                placeholder="Asset category" 
+                placeholder={t('assets.filterByType')} 
                 value={createAssetData.category}
                 onChange={(e) => setCreateAssetData(prev => ({ ...prev, category: e.target.value }))}
               />

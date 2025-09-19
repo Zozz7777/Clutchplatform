@@ -415,41 +415,41 @@ export default function AIEscalationEngine({ className }: AIEscalationEngineProp
 
   const getStatusColor = (status: string) => {
     switch (status) {
-      case 'healthy': return 'bg-green-100 text-green-800';
-      case 'warning': return 'bg-yellow-100 text-yellow-800';
-      case 'critical': return 'bg-orange-100 text-orange-800';
-      case 'breach': return 'bg-red-100 text-red-800';
-      default: return 'bg-gray-100 text-gray-800';
+      case 'healthy': return 'bg-success/10 text-green-800';
+      case 'warning': return 'bg-warning/10 text-yellow-800';
+      case 'critical': return 'bg-warning/10 text-orange-800';
+      case 'breach': return 'bg-destructive/10 text-red-800';
+      default: return 'bg-muted text-gray-800';
     }
   };
 
   const getSeverityColor = (severity: string) => {
     switch (severity) {
-      case 'low': return 'bg-green-100 text-green-800';
-      case 'medium': return 'bg-yellow-100 text-yellow-800';
-      case 'high': return 'bg-orange-100 text-orange-800';
-      case 'critical': return 'bg-red-100 text-red-800';
-      default: return 'bg-gray-100 text-gray-800';
+      case 'low': return 'bg-success/10 text-green-800';
+      case 'medium': return 'bg-warning/10 text-yellow-800';
+      case 'high': return 'bg-warning/10 text-orange-800';
+      case 'critical': return 'bg-destructive/10 text-red-800';
+      default: return 'bg-muted text-gray-800';
     }
   };
 
   const getPriorityColor = (priority: string) => {
     switch (priority) {
-      case 'low': return 'bg-gray-100 text-gray-800';
-      case 'medium': return 'bg-blue-100 text-blue-800';
-      case 'high': return 'bg-orange-100 text-orange-800';
-      case 'critical': return 'bg-red-100 text-red-800';
-      default: return 'bg-gray-100 text-gray-800';
+      case 'low': return 'bg-muted text-gray-800';
+      case 'medium': return 'bg-primary/10 text-blue-800';
+      case 'high': return 'bg-warning/10 text-orange-800';
+      case 'critical': return 'bg-destructive/10 text-red-800';
+      default: return 'bg-muted text-gray-800';
     }
   };
 
   const getEventStatusColor = (status: string) => {
     switch (status) {
-      case 'pending': return 'bg-yellow-100 text-yellow-800';
-      case 'in_progress': return 'bg-blue-100 text-blue-800';
-      case 'resolved': return 'bg-green-100 text-green-800';
-      case 'escalated': return 'bg-red-100 text-red-800';
-      default: return 'bg-gray-100 text-gray-800';
+      case 'pending': return 'bg-warning/10 text-yellow-800';
+      case 'in_progress': return 'bg-primary/10 text-blue-800';
+      case 'resolved': return 'bg-success/10 text-green-800';
+      case 'escalated': return 'bg-destructive/10 text-red-800';
+      default: return 'bg-muted text-gray-800';
     }
   };
 
@@ -476,10 +476,10 @@ export default function AIEscalationEngine({ className }: AIEscalationEngineProp
   };
 
   const getBreachProbabilityColor = (probability: number) => {
-    if (probability >= 80) return 'text-red-600';
-    if (probability >= 60) return 'text-orange-600';
-    if (probability >= 40) return 'text-yellow-600';
-    return 'text-green-600';
+    if (probability >= 80) return 'text-destructive';
+    if (probability >= 60) return 'text-warning';
+    if (probability >= 40) return 'text-warning';
+    return 'text-success';
   };
 
   const filteredSLAs = slas.filter(sla => {
@@ -515,7 +515,7 @@ export default function AIEscalationEngine({ className }: AIEscalationEngineProp
                 variant="outline"
                 size="sm"
                 onClick={() => setIsMonitoring(!isMonitoring)}
-                className={isMonitoring ? 'bg-green-100 text-green-800' : ''}
+                className={isMonitoring ? 'bg-success/10 text-green-800' : ''}
               >
                 {isMonitoring ? <Eye className="h-4 w-4 mr-2" /> : <EyeOff className="h-4 w-4 mr-2" />}
                 {isMonitoring ? 'Monitoring' : 'Paused'}
@@ -534,26 +534,26 @@ export default function AIEscalationEngine({ className }: AIEscalationEngineProp
         <CardContent className="space-y-6">
           {/* SLA Summary */}
           <div className="grid grid-cols-4 gap-4">
-            <div className="text-center p-3 bg-green-50 rounded-lg">
-              <div className="text-2xl font-bold text-green-600">{healthySLAs}</div>
+            <div className="text-center p-3 bg-success/10 rounded-[0.625rem]">
+              <div className="text-2xl font-bold text-success">{healthySLAs}</div>
               <div className="text-sm text-muted-foreground">Healthy SLAs</div>
             </div>
-            <div className="text-center p-3 bg-yellow-50 rounded-lg">
-              <div className="text-2xl font-bold text-yellow-600">{warningSLAs}</div>
+            <div className="text-center p-3 bg-warning/10 rounded-[0.625rem]">
+              <div className="text-2xl font-bold text-warning">{warningSLAs}</div>
               <div className="text-sm text-muted-foreground">Warning SLAs</div>
             </div>
-            <div className="text-center p-3 bg-red-50 rounded-lg">
-              <div className="text-2xl font-bold text-red-600">{criticalSLAs}</div>
+            <div className="text-center p-3 bg-destructive/10 rounded-[0.625rem]">
+              <div className="text-2xl font-bold text-destructive">{criticalSLAs}</div>
               <div className="text-sm text-muted-foreground">Critical SLAs</div>
             </div>
-            <div className="text-center p-3 bg-purple-50 rounded-lg">
-              <div className="text-2xl font-bold text-purple-600">{activeEvents}</div>
+            <div className="text-center p-3 bg-primary/10 rounded-[0.625rem]">
+              <div className="text-2xl font-bold text-primary">{activeEvents}</div>
               <div className="text-sm text-muted-foreground">Active Events</div>
             </div>
           </div>
 
           {/* Breach Probability Overview */}
-          <div className="p-4 bg-gradient-to-r from-blue-50 to-purple-50 rounded-lg">
+          <div className="p-4 bg-gradient-to-r from-blue-50 to-purple-50 rounded-[0.625rem]">
             <div className="flex items-center justify-between">
               <div>
                 <h4 className="font-medium">Average Breach Probability</h4>
@@ -607,8 +607,8 @@ export default function AIEscalationEngine({ className }: AIEscalationEngineProp
               {filteredSLAs.map((sla) => (
                 <div
                   key={sla.id}
-                  className={`p-3 border rounded-lg cursor-pointer transition-colors ${
-                    selectedSLA?.id === sla.id ? 'border-blue-500 bg-blue-50' : 'hover:bg-gray-50'
+                  className={`p-3 border rounded-[0.625rem] cursor-pointer transition-colors ${
+                    selectedSLA?.id === sla.id ? 'border-blue-500 bg-primary/10' : 'hover:bg-muted/50'
                   }`}
                   onClick={() => setSelectedSLA(sla)}
                 >
@@ -648,7 +648,7 @@ export default function AIEscalationEngine({ className }: AIEscalationEngineProp
             <h4 className="font-medium mb-3">Recent Escalation Events</h4>
             <div className="space-y-2">
               {escalationEvents.slice(0, 5).map((event) => (
-                <div key={event.id} className="p-3 border rounded-lg">
+                <div key={event.id} className="p-3 border rounded-[0.625rem]">
                   <div className="flex items-center justify-between mb-2">
                     <div className="flex items-center gap-2">
                       <span className="font-medium">{event.type.replace('_', ' ')}</span>
@@ -757,7 +757,7 @@ export default function AIEscalationEngine({ className }: AIEscalationEngineProp
                     <h5 className="font-medium mb-2">Escalation Rules</h5>
                     <div className="space-y-2">
                       {escalationRules.filter(rule => rule.isActive).map((rule) => (
-                        <div key={rule.id} className="p-3 border rounded-lg">
+                        <div key={rule.id} className="p-3 border rounded-[0.625rem]">
                           <div className="flex items-center justify-between mb-2">
                             <span className="font-medium">{rule.name}</span>
                             <div className="flex items-center gap-2">
@@ -782,11 +782,11 @@ export default function AIEscalationEngine({ className }: AIEscalationEngineProp
                     <h5 className="font-medium mb-2">All Escalation Rules</h5>
                     <div className="space-y-2">
                       {escalationRules.map((rule) => (
-                        <div key={rule.id} className="p-3 border rounded-lg">
+                        <div key={rule.id} className="p-3 border rounded-[0.625rem]">
                           <div className="flex items-center justify-between mb-2">
                             <span className="font-medium">{rule.name}</span>
                             <div className="flex items-center gap-2">
-                              <Badge className={rule.isActive ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-800'}>
+                              <Badge className={rule.isActive ? 'bg-success/10 text-green-800' : 'bg-muted text-gray-800'}>
                                 {rule.isActive ? 'Active' : 'Inactive'}
                               </Badge>
                               <span className="text-sm font-medium">Level {rule.escalationLevel}</span>
@@ -809,7 +809,7 @@ export default function AIEscalationEngine({ className }: AIEscalationEngineProp
                     <h5 className="font-medium mb-2">Escalation History</h5>
                     <div className="space-y-2">
                       {escalationEvents.filter(event => event.slaId === selectedSLA.id).map((event) => (
-                        <div key={event.id} className="p-3 border rounded-lg">
+                        <div key={event.id} className="p-3 border rounded-[0.625rem]">
                           <div className="flex items-center justify-between mb-2">
                             <div className="flex items-center gap-2">
                               <span className="font-medium">{event.type.replace('_', ' ')}</span>
@@ -832,7 +832,7 @@ export default function AIEscalationEngine({ className }: AIEscalationEngineProp
                               <div key={action.id} className="flex items-center gap-2 text-sm">
                                 {getActionIcon(action.type)}
                                 <span>{action.description}</span>
-                                <Badge className={action.status === 'completed' ? 'bg-green-100 text-green-800' : 'bg-yellow-100 text-yellow-800'}>
+                                <Badge className={action.status === 'completed' ? 'bg-success/10 text-green-800' : 'bg-warning/10 text-yellow-800'}>
                                   {action.status}
                                 </Badge>
                                 {action.automated && (

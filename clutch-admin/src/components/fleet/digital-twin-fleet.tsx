@@ -357,22 +357,22 @@ export default function DigitalTwinFleet({ className }: DigitalTwinFleetProps) {
 
   const getStatusColor = (status: string) => {
     switch (status) {
-      case 'active': return 'bg-green-500';
-      case 'maintenance': return 'bg-yellow-500';
-      case 'offline': return 'bg-red-500';
-      case 'charging': return 'bg-blue-500';
-      case 'in_use': return 'bg-purple-500';
-      default: return 'bg-gray-500';
+      case 'active': return 'bg-success/100';
+      case 'maintenance': return 'bg-warning/100';
+      case 'offline': return 'bg-destructive/100';
+      case 'charging': return 'bg-primary/100';
+      case 'in_use': return 'bg-primary/100';
+      default: return 'bg-muted/500';
     }
   };
 
   const getSeverityColor = (severity: string) => {
     switch (severity) {
-      case 'critical': return 'bg-red-500';
-      case 'high': return 'bg-orange-500';
-      case 'medium': return 'bg-yellow-500';
-      case 'low': return 'bg-green-500';
-      default: return 'bg-gray-500';
+      case 'critical': return 'bg-destructive/100';
+      case 'high': return 'bg-warning/100';
+      case 'medium': return 'bg-warning/100';
+      case 'low': return 'bg-success/100';
+      default: return 'bg-muted/500';
     }
   };
 
@@ -399,10 +399,10 @@ export default function DigitalTwinFleet({ className }: DigitalTwinFleetProps) {
 
   const getTrendIcon = (trend: string) => {
     switch (trend) {
-      case 'improving': return <TrendingUp className="h-4 w-4 text-green-500" />;
-      case 'declining': return <TrendingDown className="h-4 w-4 text-red-500" />;
-      case 'stable': return <Activity className="h-4 w-4 text-blue-500" />;
-      default: return <Activity className="h-4 w-4 text-gray-500" />;
+      case 'improving': return <TrendingUp className="h-4 w-4 text-success" />;
+      case 'declining': return <TrendingDown className="h-4 w-4 text-destructive" />;
+      case 'stable': return <Activity className="h-4 w-4 text-primary" />;
+      default: return <Activity className="h-4 w-4 text-muted-foreground" />;
     }
   };
 
@@ -448,7 +448,7 @@ export default function DigitalTwinFleet({ className }: DigitalTwinFleetProps) {
                 variant="outline"
                 size="sm"
                 onClick={() => setIsMonitoring(!isMonitoring)}
-                className={isMonitoring ? 'bg-green-100 text-green-800' : ''}
+                className={isMonitoring ? 'bg-success/10 text-green-800' : ''}
               >
                 {isMonitoring ? <Eye className="h-4 w-4 mr-2" /> : <EyeOff className="h-4 w-4 mr-2" />}
                 {isMonitoring ? 'Monitoring' : 'Paused'}
@@ -468,20 +468,20 @@ export default function DigitalTwinFleet({ className }: DigitalTwinFleetProps) {
           {/* Fleet Health Summary */}
           {fleetHealth && (
             <div className="grid grid-cols-4 gap-4">
-              <div className="text-center p-3 bg-green-50 rounded-lg">
-                <div className="text-2xl font-bold text-green-600">{fleetHealth.activeVehicles}</div>
+              <div className="text-center p-3 bg-success/10 rounded-[0.625rem]">
+                <div className="text-2xl font-bold text-success">{fleetHealth.activeVehicles}</div>
                 <div className="text-sm text-muted-foreground">Active Vehicles</div>
               </div>
-              <div className="text-center p-3 bg-blue-50 rounded-lg">
-                <div className="text-2xl font-bold text-blue-600">{fleetHealth.avgHealthScore}%</div>
+              <div className="text-center p-3 bg-primary/10 rounded-[0.625rem]">
+                <div className="text-2xl font-bold text-primary">{fleetHealth.avgHealthScore}%</div>
                 <div className="text-sm text-muted-foreground">Avg Health Score</div>
               </div>
-              <div className="text-center p-3 bg-purple-50 rounded-lg">
-                <div className="text-2xl font-bold text-purple-600">{fleetHealth.avgUtilization}%</div>
+              <div className="text-center p-3 bg-primary/10 rounded-[0.625rem]">
+                <div className="text-2xl font-bold text-primary">{fleetHealth.avgUtilization}%</div>
                 <div className="text-sm text-muted-foreground">Avg Utilization</div>
               </div>
-              <div className="text-center p-3 bg-red-50 rounded-lg">
-                <div className="text-2xl font-bold text-red-600">{criticalAlerts}</div>
+              <div className="text-center p-3 bg-destructive/10 rounded-[0.625rem]">
+                <div className="text-2xl font-bold text-destructive">{criticalAlerts}</div>
                 <div className="text-sm text-muted-foreground">Critical Alerts</div>
               </div>
             </div>
@@ -521,8 +521,8 @@ export default function DigitalTwinFleet({ className }: DigitalTwinFleetProps) {
               {filteredVehicles.map((vehicle) => (
                 <div
                   key={vehicle.id}
-                  className={`p-3 border rounded-lg cursor-pointer transition-colors ${
-                    selectedVehicle?.id === vehicle.id ? 'border-blue-500 bg-blue-50' : 'hover:bg-gray-50'
+                  className={`p-3 border rounded-[0.625rem] cursor-pointer transition-colors ${
+                    selectedVehicle?.id === vehicle.id ? 'border-blue-500 bg-primary/10' : 'hover:bg-muted/50'
                   }`}
                   onClick={() => setSelectedVehicle(vehicle)}
                 >
@@ -542,7 +542,7 @@ export default function DigitalTwinFleet({ className }: DigitalTwinFleetProps) {
                         Health: {vehicle.health.overall}%
                       </div>
                       {vehicle.alerts.filter(alert => !alert.resolved).length > 0 && (
-                        <Badge className="bg-red-500">
+                        <Badge className="bg-destructive/100">
                           {vehicle.alerts.filter(alert => !alert.resolved).length} alerts
                         </Badge>
                       )}
@@ -749,7 +749,7 @@ export default function DigitalTwinFleet({ className }: DigitalTwinFleetProps) {
                     <h5 className="font-medium mb-2">Active Alerts</h5>
                     <div className="space-y-2">
                       {selectedVehicle.alerts.filter(alert => !alert.resolved).map((alert) => (
-                        <div key={alert.id} className="p-3 border rounded-lg">
+                        <div key={alert.id} className="p-3 border rounded-[0.625rem]">
                           <div className="flex items-center justify-between mb-2">
                             <div className="flex items-center gap-2">
                               {getAlertIcon(alert.type)}

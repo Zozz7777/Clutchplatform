@@ -371,7 +371,6 @@ class DataPersistenceService {
       if (currentData) {
         try {
           await saveFunction(currentData);
-          console.log(`Auto-saved data for key: ${key}`);
         } catch (error) {
           console.error(`Auto-save failed for key: ${key}`, error);
         }
@@ -406,7 +405,6 @@ class DataPersistenceService {
   // Cache management
   public async invalidateCache(endpoint: string): Promise<void> {
     // This would typically clear relevant cache entries
-    console.log(`Cache invalidated for endpoint: ${endpoint}`);
   }
 
   public async refreshData<T>(endpoint: string): Promise<T | null> {
@@ -527,7 +525,6 @@ class DataPersistenceService {
         lastError = error as Error;
         
         if (attempt < maxAttempts) {
-          console.log(`Attempt ${attempt} failed, retrying in ${delay}ms...`);
           await new Promise(resolve => setTimeout(resolve, delay));
           delay *= 2; // Exponential backoff
         }

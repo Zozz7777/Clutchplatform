@@ -135,7 +135,7 @@ export default function B2CUsersPage() {
           </p>
         </div>
         {hasPermission("create_users") && (
-          <Button className="shadow-sm">
+          <Button className="shadow-2xs">
             <Plus className="mr-2 h-4 w-4" />
             Add Customer
           </Button>
@@ -144,7 +144,7 @@ export default function B2CUsersPage() {
 
       {/* Analytics Cards */}
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-        <Card className="shadow-sm">
+        <Card className="shadow-2xs">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium text-card-foreground">Total Customers</CardTitle>
             <Users className="h-4 w-4 text-muted-foreground" />
@@ -152,11 +152,11 @@ export default function B2CUsersPage() {
           <CardContent>
             <div className="text-2xl font-bold text-foreground">{users.length}</div>
             <p className="text-xs text-muted-foreground">
-              <span className="text-green-600">+12%</span> from last month
+              <span className="text-success">+12%</span> from last month
             </p>
           </CardContent>
         </Card>
-        <Card className="shadow-sm">
+        <Card className="shadow-2xs">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium text-card-foreground">Active Customers</CardTitle>
             <UserCheck className="h-4 w-4 text-muted-foreground" />
@@ -166,11 +166,11 @@ export default function B2CUsersPage() {
               {users.filter(u => u.status === "active").length}
             </div>
             <p className="text-xs text-muted-foreground">
-              <span className="text-green-600">+8%</span> from last month
+              <span className="text-success">+8%</span> from last month
             </p>
           </CardContent>
         </Card>
-        <Card className="shadow-sm">
+        <Card className="shadow-2xs">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium text-card-foreground">New This Month</CardTitle>
             <TrendingUp className="h-4 w-4 text-muted-foreground" />
@@ -185,11 +185,11 @@ export default function B2CUsersPage() {
               }).length}
             </div>
             <p className="text-xs text-muted-foreground">
-              <span className="text-green-600">+15%</span> from last month
+              <span className="text-success">+15%</span> from last month
             </p>
           </CardContent>
         </Card>
-        <Card className="shadow-sm">
+        <Card className="shadow-2xs">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium text-card-foreground">Engagement Rate</CardTitle>
             <Activity className="h-4 w-4 text-muted-foreground" />
@@ -197,14 +197,14 @@ export default function B2CUsersPage() {
           <CardContent>
             <div className="text-2xl font-bold text-foreground">87%</div>
             <p className="text-xs text-muted-foreground">
-              <span className="text-green-600">+3%</span> from last month
+              <span className="text-success">+3%</span> from last month
             </p>
           </CardContent>
         </Card>
       </div>
 
       {/* Customer Management */}
-      <Card className="shadow-sm">
+      <Card className="shadow-2xs">
         <CardHeader>
           <CardTitle className="text-card-foreground">B2C Customer Directory</CardTitle>
           <CardDescription>Individual customers and their activity</CardDescription>
@@ -308,7 +308,7 @@ export default function B2CUsersPage() {
                           <CreditCard className="mr-2 h-4 w-4" />
                           Payment History
                         </DropdownMenuItem>
-                        <DropdownMenuItem className="text-red-600">
+                        <DropdownMenuItem className="text-destructive">
                           <UserX className="mr-2 h-4 w-4" />
                           Suspend Customer
                         </DropdownMenuItem>

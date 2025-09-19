@@ -74,15 +74,15 @@ export function RevenueExpenses({ className = '' }: RevenueExpensesProps) {
   }, []);
 
   const getMarginColor = (margin: number) => {
-    if (margin >= 20) return 'text-green-600';
-    if (margin >= 10) return 'text-yellow-600';
-    return 'text-red-600';
+    if (margin >= 20) return 'text-success';
+    if (margin >= 10) return 'text-warning';
+    return 'text-destructive';
   };
 
   const getMarginBadge = (margin: number) => {
-    if (margin >= 20) return 'bg-green-100 text-green-800';
-    if (margin >= 10) return 'bg-yellow-100 text-yellow-800';
-    return 'bg-red-100 text-red-800';
+    if (margin >= 20) return 'bg-success/10 text-green-800';
+    if (margin >= 10) return 'bg-warning/10 text-yellow-800';
+    return 'bg-destructive/10 text-red-800';
   };
 
   const getMarginLevel = (margin: number) => {
@@ -101,9 +101,9 @@ export function RevenueExpenses({ className = '' }: RevenueExpensesProps) {
 
   const getTrendColor = (trend: string) => {
     switch (trend) {
-      case 'improving': return 'text-green-600';
-      case 'declining': return 'text-red-600';
-      default: return 'text-gray-600';
+      case 'improving': return 'text-success';
+      case 'declining': return 'text-destructive';
+      default: return 'text-muted-foreground';
     }
   };
 
@@ -112,16 +112,16 @@ export function RevenueExpenses({ className = '' }: RevenueExpensesProps) {
       <Card className={className}>
         <CardHeader>
           <CardTitle className="flex items-center space-x-2">
-            <DollarSign className="h-5 w-5 text-green-600" />
+            <DollarSign className="h-5 w-5 text-success" />
             <span>Revenue vs Expenses</span>
           </CardTitle>
           <CardDescription>Loading financial data...</CardDescription>
         </CardHeader>
         <CardContent>
           <div className="animate-pulse space-y-4">
-            <div className="h-4 bg-gray-200 rounded-lg w-3/4"></div>
-            <div className="h-4 bg-gray-200 rounded-lg w-1/2"></div>
-            <div className="h-4 bg-gray-200 rounded-lg w-2/3"></div>
+            <div className="h-4 bg-muted rounded-[0.625rem] w-3/4"></div>
+            <div className="h-4 bg-muted rounded-[0.625rem] w-1/2"></div>
+            <div className="h-4 bg-muted rounded-[0.625rem] w-2/3"></div>
           </div>
         </CardContent>
       </Card>
@@ -133,7 +133,7 @@ export function RevenueExpenses({ className = '' }: RevenueExpensesProps) {
       <Card className={className}>
         <CardHeader>
           <CardTitle className="flex items-center space-x-2">
-            <DollarSign className="h-5 w-5 text-green-600" />
+            <DollarSign className="h-5 w-5 text-success" />
             <span>Revenue vs Expenses</span>
           </CardTitle>
           <CardDescription>Unable to load financial data</CardDescription>
@@ -146,7 +146,7 @@ export function RevenueExpenses({ className = '' }: RevenueExpensesProps) {
     <Card className={className}>
       <CardHeader>
         <CardTitle className="flex items-center space-x-2">
-          <DollarSign className="h-5 w-5 text-green-600" />
+          <DollarSign className="h-5 w-5 text-success" />
           <span>Revenue vs Expenses</span>
         </CardTitle>
         <CardDescription>
@@ -156,24 +156,24 @@ export function RevenueExpenses({ className = '' }: RevenueExpensesProps) {
       <CardContent className="space-y-6">
         {/* Summary Stats */}
         <div className="grid grid-cols-2 gap-4">
-          <div className="text-center p-3 bg-green-50 rounded-lg-lg">
-            <DollarSign className="h-5 w-5 text-green-600 mx-auto mb-1" />
-            <p className="text-lg font-bold text-green-600">
+          <div className="text-center p-3 bg-success/10 rounded-[0.625rem]-lg">
+            <DollarSign className="h-5 w-5 text-success mx-auto mb-1" />
+            <p className="text-lg font-bold text-success">
               ${financialData.revenue.toLocaleString()}
             </p>
-            <p className="text-xs text-gray-500">Revenue</p>
+            <p className="text-xs text-muted-foreground">Revenue</p>
           </div>
-          <div className="text-center p-3 bg-red-50 rounded-lg-lg">
-            <Calculator className="h-5 w-5 text-red-600 mx-auto mb-1" />
-            <p className="text-lg font-bold text-red-600">
+          <div className="text-center p-3 bg-destructive/10 rounded-[0.625rem]-lg">
+            <Calculator className="h-5 w-5 text-destructive mx-auto mb-1" />
+            <p className="text-lg font-bold text-destructive">
               ${financialData.expenses.toLocaleString()}
             </p>
-            <p className="text-xs text-gray-500">Expenses</p>
+            <p className="text-xs text-muted-foreground">Expenses</p>
           </div>
         </div>
 
         {/* Net Margin */}
-        <div className="text-center p-4 bg-gray-50 rounded-lg-lg">
+        <div className="text-center p-4 bg-muted/50 rounded-[0.625rem]-lg">
           <div className="flex items-center justify-center space-x-2 mb-2">
             <Target className={`h-6 w-6 ${getMarginColor(financialData.netMargin)}`} />
             <span className={`text-2xl font-bold ${getMarginColor(financialData.netMargin)}`}>
@@ -183,7 +183,7 @@ export function RevenueExpenses({ className = '' }: RevenueExpensesProps) {
               {getMarginLevel(financialData.netMargin)}
             </Badge>
           </div>
-          <p className="text-sm text-gray-600">Net Margin</p>
+          <p className="text-sm text-muted-foreground">Net Margin</p>
           <div className="mt-3">
             <Progress value={Math.min(financialData.netMargin, 100)} className="h-2" />
           </div>
@@ -191,14 +191,14 @@ export function RevenueExpenses({ className = '' }: RevenueExpensesProps) {
 
         {/* Margin Breakdown */}
         <div className="space-y-3">
-          <h4 className="text-sm font-medium text-gray-900">Margin Breakdown</h4>
+          <h4 className="text-sm font-medium text-foreground">Margin Breakdown</h4>
           <div className="space-y-2">
-            <div className="flex items-center justify-between p-3 bg-gray-50 rounded-lg-lg">
+            <div className="flex items-center justify-between p-3 bg-muted/50 rounded-[0.625rem]-lg">
               <div className="flex items-center space-x-3">
-                <PieChart className="h-4 w-4 text-blue-600" />
+                <PieChart className="h-4 w-4 text-primary" />
                 <div>
-                  <p className="text-sm font-medium text-gray-900">Gross Margin</p>
-                  <p className="text-xs text-gray-500">Revenue - COGS</p>
+                  <p className="text-sm font-medium text-foreground">Gross Margin</p>
+                  <p className="text-xs text-muted-foreground">Revenue - COGS</p>
                 </div>
               </div>
               <div className="text-right">
@@ -211,12 +211,12 @@ export function RevenueExpenses({ className = '' }: RevenueExpensesProps) {
               </div>
             </div>
 
-            <div className="flex items-center justify-between p-3 bg-gray-50 rounded-lg-lg">
+            <div className="flex items-center justify-between p-3 bg-muted/50 rounded-[0.625rem]-lg">
               <div className="flex items-center space-x-3">
-                <BarChart3 className="h-4 w-4 text-purple-600" />
+                <BarChart3 className="h-4 w-4 text-primary" />
                 <div>
-                  <p className="text-sm font-medium text-gray-900">Operating Margin</p>
-                  <p className="text-xs text-gray-500">Revenue - Operating Expenses</p>
+                  <p className="text-sm font-medium text-foreground">Operating Margin</p>
+                  <p className="text-xs text-muted-foreground">Revenue - Operating Expenses</p>
                 </div>
               </div>
               <div className="text-right">
@@ -233,18 +233,18 @@ export function RevenueExpenses({ className = '' }: RevenueExpensesProps) {
 
         {/* Growth Trends */}
         <div className="space-y-3">
-          <h4 className="text-sm font-medium text-gray-900">Growth Trends</h4>
+          <h4 className="text-sm font-medium text-foreground">Growth Trends</h4>
           <div className="space-y-2">
-            <div className="flex items-center justify-between p-3 bg-gray-50 rounded-lg-lg">
+            <div className="flex items-center justify-between p-3 bg-muted/50 rounded-[0.625rem]-lg">
               <div className="flex items-center space-x-3">
-                <TrendingUp className="h-4 w-4 text-green-600" />
+                <TrendingUp className="h-4 w-4 text-success" />
                 <div>
-                  <p className="text-sm font-medium text-gray-900">Revenue Growth</p>
-                  <p className="text-xs text-gray-500">Month over month</p>
+                  <p className="text-sm font-medium text-foreground">Revenue Growth</p>
+                  <p className="text-xs text-muted-foreground">Month over month</p>
                 </div>
               </div>
               <div className="text-right">
-                <p className="text-sm font-semibold text-green-600">
+                <p className="text-sm font-semibold text-success">
                   +{financialData.revenueGrowth.toFixed(1)}%
                 </p>
                 <Badge variant="outline" className="text-xs">
@@ -253,16 +253,16 @@ export function RevenueExpenses({ className = '' }: RevenueExpensesProps) {
               </div>
             </div>
 
-            <div className="flex items-center justify-between p-3 bg-gray-50 rounded-lg-lg">
+            <div className="flex items-center justify-between p-3 bg-muted/50 rounded-[0.625rem]-lg">
               <div className="flex items-center space-x-3">
-                <TrendingDown className="h-4 w-4 text-red-600" />
+                <TrendingDown className="h-4 w-4 text-destructive" />
                 <div>
-                  <p className="text-sm font-medium text-gray-900">Expense Growth</p>
-                  <p className="text-xs text-gray-500">Month over month</p>
+                  <p className="text-sm font-medium text-foreground">Expense Growth</p>
+                  <p className="text-xs text-muted-foreground">Month over month</p>
                 </div>
               </div>
               <div className="text-right">
-                <p className="text-sm font-semibold text-red-600">
+                <p className="text-sm font-semibold text-destructive">
                   +{financialData.expenseGrowth.toFixed(1)}%
                 </p>
                 <Badge variant="outline" className="text-xs">
@@ -286,7 +286,7 @@ export function RevenueExpenses({ className = '' }: RevenueExpensesProps) {
         </div>
 
         {/* Insights */}
-        <div className="p-3 bg-blue-50 rounded-lg-lg">
+        <div className="p-3 bg-primary/10 rounded-[0.625rem]-lg">
           <h5 className="text-sm font-medium text-blue-900 mb-2">💡 Financial Insights</h5>
           <ul className="text-xs text-blue-800 space-y-1">
             <li>• Net margin: {financialData.netMargin.toFixed(1)}%</li>

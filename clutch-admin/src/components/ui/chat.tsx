@@ -10,6 +10,7 @@ import { ScrollArea } from '@/components/ui/scroll-area';
 import { websocketService } from '@/lib/websocket-service';
 import { productionApi } from '@/lib/production-api';
 import { toast } from 'sonner';
+import { useTranslations } from '@/hooks/use-translations';
 import { 
   Send, 
   MessageSquare, 
@@ -64,6 +65,7 @@ interface ChatProps {
 }
 
 export function Chat({ className = '', initialSessionId, onSessionChange }: ChatProps) {
+  const { t } = useTranslations();
   const [sessions, setSessions] = useState<ChatSession[]>([]);
   const [activeSession, setActiveSession] = useState<ChatSession | null>(null);
   const [messages, setMessages] = useState<ChatMessage[]>([]);
@@ -190,31 +192,31 @@ export function Chat({ className = '', initialSessionId, onSessionChange }: Chat
 
   const handleStartCall = () => {
     if (activeSession) {
-      toast.success(`Voice call feature starting with ${activeSession.name}`);
+      toast.success(`${t('chat.voiceCall')} ${activeSession.name}`);
       // Voice call functionality is now available
     }
   };
 
   const handleStartVideoCall = () => {
     if (activeSession) {
-      toast.success(`Video call feature starting with ${activeSession.name}`);
+      toast.success(`${t('chat.videoCall')} ${activeSession.name}`);
       // Video call functionality is now available
     }
   };
 
   const handleToggleMute = () => {
     setIsMuted(!isMuted);
-    toast.info(isMuted ? 'Unmuted' : 'Muted');
+    toast.info(isMuted ? t('chat.unmuted') : t('chat.muted'));
   };
 
   const handleStartRecording = () => {
     setIsRecording(true);
-    toast.info('Recording started');
+    toast.info(t('chat.recordingStarted'));
   };
 
   const handleStopRecording = () => {
     setIsRecording(false);
-    toast.info('Recording stopped');
+    toast.info(t('chat.recordingStopped'));
   };
 
   const formatTime = (timestamp: string) => {
@@ -227,26 +229,26 @@ export function Chat({ className = '', initialSessionId, onSessionChange }: Chat
   const getStatusColor = (status: string) => {
     switch (status) {
       case 'online':
-        return 'bg-green-500';
+        return 'bg-success';
       case 'away':
-        return 'bg-yellow-500';
+        return 'bg-warning';
       case 'offline':
-        return 'bg-gray-500';
+        return 'bg-muted-foreground';
       default:
-        return 'bg-gray-500';
+        return 'bg-muted-foreground';
     }
   };
 
   return (
     <div className={`flex h-full ${className}`}>
       {/* Sessions Sidebar */}
-      <div className="w-80 border-r bg-gray-50 flex flex-col">
+      <div className="w-80 border-r bg-muted/50 flex flex-col">
         <div className="p-4 border-b">
-          <h2 className="text-lg font-semibold">Messages</h2>
+          <h2 className="text-lg font-semibold">{t('chat.title')}</h2>
           <div className="flex items-center space-x-2 mt-2">
-            <div className={`w-2 h-2 rounded-[0.625rem]-full ${isConnected ? 'bg-green-500' : 'bg-red-500'}`}></div>
+            <div className={`w-2 h-2 rounded-full ${isConnected ? 'bg-success' : 'bg-destructive'}`}></div>
             <span className="text-sm text-muted-foreground">
-              {isConnected ? 'Connected' : 'Disconnected'}
+              {isConnected ? t('chat.connected') : t('chat.disconnected')}
             </span>
           </div>
         </div>
@@ -259,7 +261,7 @@ export function Chat({ className = '', initialSessionId, onSessionChange }: Chat
                 className={`p-3 rounded-[0.625rem] cursor-pointer transition-colors ${
                   activeSession?.id === session.id 
                     ? 'bg-primary text-primary-foreground' 
-                    : 'hover:bg-gray-100'
+                    : 'hover:bg-muted'
                 }`}
                 onClick={() => handleSessionSelect(session)}
               >
@@ -272,7 +274,7 @@ export function Chat({ className = '', initialSessionId, onSessionChange }: Chat
                       </AvatarFallback>
                     </Avatar>
                     {session.participants[0]?.status === 'online' && (
-                      <div className={`absolute -bottom-1 -right-1 w-3 h-3 rounded-[0.625rem]-full border-2 border-white ${getStatusColor(session.participants[0].status)}`}></div>
+                      <div className={`absolute -bottom-1 -right-1 w-3 h-3 rounded-full border-2 border-background ${getStatusColor(session.participants[0].status)}`}></div>
                     )}
                   </div>
                   
@@ -303,7 +305,7 @@ export function Chat({ className = '', initialSessionId, onSessionChange }: Chat
         {activeSession ? (
           <>
             {/* Chat Header */}
-            <div className="p-4 border-b bg-white flex items-center justify-between">
+            <div className="p-4 border-b bg-background flex items-center justify-between">
               <div className="flex items-center space-x-3">
                 <Avatar className="h-10 w-10">
                   <AvatarImage src={activeSession.participants[0]?.avatar} />
@@ -314,7 +316,7 @@ export function Chat({ className = '', initialSessionId, onSessionChange }: Chat
                 <div>
                   <h3 className="font-semibold">{activeSession.name}</h3>
                   <p className="text-sm text-muted-foreground">
-                    {activeSession.participants.length} participant(s)
+                    {activeSession.participants.length} {t('chat.participants')}
                   </p>
                 </div>
               </div>
@@ -354,7 +356,7 @@ export function Chat({ className = '', initialSessionId, onSessionChange }: Chat
                       <div className={`rounded-[0.625rem] px-3 py-2 ${
                         message.senderId === 'current-user' 
                           ? 'bg-primary text-primary-foreground' 
-                          : 'bg-gray-100'
+                          : 'bg-muted'
                       }`}>
                         <p className="text-sm">{message.message}</p>
                         <p className={`text-xs mt-1 ${
@@ -375,11 +377,11 @@ export function Chat({ className = '', initialSessionId, onSessionChange }: Chat
                       <Avatar className="h-8 w-8">
                         <AvatarFallback>...</AvatarFallback>
                       </Avatar>
-                      <div className="bg-gray-100 rounded-[0.625rem] px-3 py-2">
+                      <div className="bg-muted rounded-[0.625rem] px-3 py-2">
                         <div className="flex space-x-1">
-                          <div className="w-2 h-2 bg-gray-400 rounded-[0.625rem]-full animate-bounce"></div>
-                          <div className="w-2 h-2 bg-gray-400 rounded-[0.625rem]-full animate-bounce" style={{ animationDelay: '0.1s' }}></div>
-                          <div className="w-2 h-2 bg-gray-400 rounded-[0.625rem]-full animate-bounce" style={{ animationDelay: '0.2s' }}></div>
+                          <div className="w-2 h-2 bg-muted-foreground rounded-full animate-bounce"></div>
+                          <div className="w-2 h-2 bg-muted-foreground rounded-full animate-bounce" style={{ animationDelay: '0.1s' }}></div>
+                          <div className="w-2 h-2 bg-muted-foreground rounded-full animate-bounce" style={{ animationDelay: '0.2s' }}></div>
                         </div>
                       </div>
                     </div>
@@ -391,7 +393,7 @@ export function Chat({ className = '', initialSessionId, onSessionChange }: Chat
             </ScrollArea>
 
             {/* Message Input */}
-            <div className="p-4 border-t bg-white">
+            <div className="p-4 border-t bg-background">
               <div className="flex items-center space-x-2">
                 <Button variant="ghost" size="sm">
                   <Paperclip className="h-4 w-4" />
@@ -406,7 +408,7 @@ export function Chat({ className = '', initialSessionId, onSessionChange }: Chat
                     value={newMessage}
                     onChange={(e) => setNewMessage(e.target.value)}
                     onKeyPress={handleKeyPress}
-                    placeholder="Type a message..."
+                    placeholder={t('chat.typeMessage')}
                     disabled={!isConnected}
                   />
                 </div>
@@ -435,8 +437,8 @@ export function Chat({ className = '', initialSessionId, onSessionChange }: Chat
           <div className="flex-1 flex items-center justify-center">
             <div className="text-center">
               <MessageSquare className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
-              <h3 className="text-lg font-semibold text-foreground mb-2">No chat selected</h3>
-              <p className="text-muted-foreground">Select a chat to start messaging</p>
+              <h3 className="text-lg font-semibold text-foreground mb-2">{t('chat.noChatSelected')}</h3>
+              <p className="text-muted-foreground">{t('chat.selectChatToStart')}</p>
             </div>
           </div>
         )}

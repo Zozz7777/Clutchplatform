@@ -70,9 +70,9 @@ export default function UserSegmentsPage() {
   const getStatusBadge = (status: string) => {
     switch (status) {
       case 'active':
-        return <Badge variant="default" className="bg-green-500">Active</Badge>;
+        return <Badge variant="default" className="bg-success/100">Active</Badge>;
       case 'draft':
-        return <Badge variant="default" className="bg-yellow-500">Draft</Badge>;
+        return <Badge variant="default" className="bg-warning/100">Draft</Badge>;
       case 'archived':
         return <Badge variant="secondary">Archived</Badge>;
       default:
@@ -243,9 +243,9 @@ export default function UserSegmentsPage() {
                         </p>
                       </div>
                       <div className="text-right">
-                        <div className="w-20 bg-gray-200 rounded-full h-2">
+                        <div className="w-20 bg-muted rounded-full h-2">
                           <div 
-                            className="bg-blue-500 h-2 rounded-full" 
+                            className="bg-primary/100 h-2 rounded-full" 
                             style={{ width: `${(segment.userCount / 300) * 100}%` }}
                           ></div>
                         </div>
@@ -273,8 +273,8 @@ export default function UserSegmentsPage() {
                     <div key={index} className="flex items-center justify-between">
                       <span className="text-sm font-sans">{item.segment}</span>
                       <div className="flex items-center space-x-2">
-                        <TrendingUp className={`h-4 w-4 ${item.trend === 'up' ? 'text-green-500' : 'text-red-500'}`} />
-                        <span className={`text-sm font-sans ${item.trend === 'up' ? 'text-green-500' : 'text-red-500'}`}>
+                        <TrendingUp className={`h-4 w-4 ${item.trend === 'up' ? 'text-success' : 'text-destructive'}`} />
+                        <span className={`text-sm font-sans ${item.trend === 'up' ? 'text-success' : 'text-destructive'}`}>
                           {item.growth > 0 ? '+' : ''}{item.growth}%
                         </span>
                       </div>
@@ -325,7 +325,7 @@ export default function UserSegmentsPage() {
                     clicked: 0
                   }
                 ].map((campaign, index) => (
-                  <div key={index} className="flex items-center justify-between p-4 border rounded-lg">
+                  <div key={index} className="flex items-center justify-between p-4 border rounded-[0.625rem]">
                     <div>
                       <h3 className="font-medium font-sans">{campaign.name}</h3>
                       <p className="text-sm text-muted-foreground font-sans">

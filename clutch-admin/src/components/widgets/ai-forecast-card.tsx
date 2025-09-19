@@ -86,7 +86,7 @@ export function AIForecastCard({ className = '' }: AIForecastCardProps) {
 
   if (isLoading) {
     return (
-      <Card className={`${className} shadow-sm`}>
+      <Card className={`${className} shadow-2xs`}>
         <CardHeader>
           <CardTitle className="flex items-center space-x-2 text-card-foreground font-medium">
             <Brain className="h-5 w-5 text-primary" />
@@ -113,7 +113,7 @@ export function AIForecastCard({ className = '' }: AIForecastCardProps) {
   const riskLevel = getRiskLevel();
 
   return (
-    <Card className={`${className} shadow-sm`}>
+    <Card className={`${className} shadow-2xs`}>
       <CardHeader>
         <CardTitle className="flex items-center space-x-2 text-card-foreground font-medium">
           <Brain className="h-5 w-5 text-primary" />

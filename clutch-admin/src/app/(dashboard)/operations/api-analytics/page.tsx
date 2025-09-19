@@ -73,7 +73,6 @@ export default function APIAnalyticsPage() {
     try {
       const exportData = await productionApi.exportAPIAnalytics();
       // Handle export functionality
-      console.log('Exporting API analytics data:', exportData);
     } catch (error) {
       console.error('Error exporting API analytics:', error);
     }
@@ -82,7 +81,6 @@ export default function APIAnalyticsPage() {
   const handleConfigureMonitoring = async () => {
     try {
       // Implementation for configuring monitoring
-      console.log('Configuring API monitoring...');
     } catch (error) {
       console.error('Error configuring monitoring:', error);
     }
@@ -95,10 +93,10 @@ export default function APIAnalyticsPage() {
   }, []);
 
   const getStatusColor = (code: number) => {
-    if (code >= 200 && code < 300) return 'text-green-500';
-    if (code >= 300 && code < 400) return 'text-blue-500';
-    if (code >= 400 && code < 500) return 'text-yellow-500';
-    return 'text-red-500';
+    if (code >= 200 && code < 300) return 'text-success';
+    if (code >= 300 && code < 400) return 'text-primary';
+    if (code >= 400 && code < 500) return 'text-warning';
+    return 'text-destructive';
   };
 
   const getDeviceIcon = (userAgent: string) => {
@@ -232,9 +230,9 @@ export default function APIAnalyticsPage() {
                       <div key={index} className="flex items-center justify-between">
                         <span className="text-sm font-sans">{stat.hour}</span>
                         <div className="flex items-center space-x-2">
-                          <div className="w-20 bg-gray-200 rounded-full h-2">
+                          <div className="w-20 bg-muted rounded-full h-2">
                             <div 
-                              className="bg-blue-500 h-2 rounded-full" 
+                              className="bg-primary/100 h-2 rounded-full" 
                               style={{ width: `${(stat.requests / 5000) * 100}%` }}
                             ></div>
                           </div>
@@ -252,7 +250,7 @@ export default function APIAnalyticsPage() {
                 </CardHeader>
                 <CardContent>
                   <div className="text-center py-8">
-                    <TrendingUp className="h-8 w-8 mx-auto text-green-500" />
+                    <TrendingUp className="h-8 w-8 mx-auto text-success" />
                     <p className="text-sm text-muted-foreground font-sans mt-2">
                       Average response time: {analytics.averageResponseTime}ms
                     </p>
@@ -276,7 +274,7 @@ export default function APIAnalyticsPage() {
               <CardContent>
                 <div className="space-y-4">
                   {analytics.topEndpoints.map((endpoint, index) => (
-                    <div key={index} className="flex items-center justify-between p-4 border rounded-lg">
+                    <div key={index} className="flex items-center justify-between p-4 border rounded-[0.625rem]">
                       <div className="flex items-center space-x-3">
                         <Badge variant="outline" className="font-sans">
                           {endpoint.method}
@@ -298,9 +296,9 @@ export default function APIAnalyticsPage() {
                           </div>
                         </div>
                         {endpoint.errorRate < 1 ? (
-                          <CheckCircle className="h-5 w-5 text-green-500" />
+                          <CheckCircle className="h-5 w-5 text-success" />
                         ) : (
-                          <AlertTriangle className="h-5 w-5 text-yellow-500" />
+                          <AlertTriangle className="h-5 w-5 text-warning" />
                         )}
                       </div>
                     </div>
@@ -321,7 +319,7 @@ export default function APIAnalyticsPage() {
               <CardContent>
                 <div className="space-y-4">
                   {analytics.userAgents.map((agent, index) => (
-                    <div key={index} className="flex items-center justify-between p-4 border rounded-lg">
+                    <div key={index} className="flex items-center justify-between p-4 border rounded-[0.625rem]">
                       <div className="flex items-center space-x-3">
                         {getDeviceIcon(agent.userAgent)}
                         <div>
@@ -340,9 +338,9 @@ export default function APIAnalyticsPage() {
                         <div className="text-sm font-sans">
                           {agent.percentage}%
                         </div>
-                        <div className="w-20 bg-gray-200 rounded-full h-2 mt-1">
+                        <div className="w-20 bg-muted rounded-full h-2 mt-1">
                           <div 
-                            className="bg-blue-500 h-2 rounded-full" 
+                            className="bg-primary/100 h-2 rounded-full" 
                             style={{ width: `${agent.percentage}%` }}
                           ></div>
                         </div>
@@ -365,7 +363,7 @@ export default function APIAnalyticsPage() {
               <CardContent>
                 <div className="space-y-4">
                   {analytics.statusCodes.map((status, index) => (
-                    <div key={index} className="flex items-center justify-between p-4 border rounded-lg">
+                    <div key={index} className="flex items-center justify-between p-4 border rounded-[0.625rem]">
                       <div className="flex items-center space-x-3">
                         <Badge 
                           variant="outline" 
@@ -390,12 +388,12 @@ export default function APIAnalyticsPage() {
                         <div className="text-sm font-sans">
                           {status.percentage}%
                         </div>
-                        <div className="w-20 bg-gray-200 rounded-full h-2 mt-1">
+                        <div className="w-20 bg-muted rounded-full h-2 mt-1">
                           <div 
                             className={`h-2 rounded-full ${
-                              status.code >= 200 && status.code < 300 ? 'bg-green-500' :
-                              status.code >= 300 && status.code < 400 ? 'bg-blue-500' :
-                              status.code >= 400 && status.code < 500 ? 'bg-yellow-500' : 'bg-red-500'
+                              status.code >= 200 && status.code < 300 ? 'bg-success/100' :
+                              status.code >= 300 && status.code < 400 ? 'bg-primary/100' :
+                              status.code >= 400 && status.code < 500 ? 'bg-warning/100' : 'bg-destructive/100'
                             }`}
                             style={{ width: `${status.percentage}%` }}
                           ></div>

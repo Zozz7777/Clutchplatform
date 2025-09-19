@@ -266,4 +266,163 @@ router.get('/status', authenticateToken, async (req, res) => {
   }
 });
 
+// GET /api/v1/compliance/flags - Get compliance flags
+router.get('/flags', checkRole(['head_administrator', 'admin', 'compliance_officer']), async (req, res) => {
+  try {
+    const flagsCollection = await getCollection('compliance_flags');
+    const { page = 1, limit = 50, category, severity, status } = req.query;
+    
+    const filter = {};
+    if (category) filter.category = category;
+    if (severity) filter.severity = severity;
+    if (status) filter.status = status;
+    
+    const skip = (parseInt(page) - 1) * parseInt(limit);
+    
+    const flags = await flagsCollection
+      .find(filter)
+      .sort({ detectedAt: -1 })
+      .skip(skip)
+      .limit(parseInt(limit))
+      .toArray();
+    
+    const total = await flagsCollection.countDocuments(filter);
+    
+    res.json({
+      success: true,
+      data: flags,
+      pagination: {
+        page: parseInt(page),
+        limit: parseInt(limit),
+        total,
+        pages: Math.ceil(total / parseInt(limit))
+      },
+      timestamp: new Date().toISOString()
+    });
+  } catch (error) {
+    console.error('Get compliance flags error:', error);
+    res.status(500).json({
+      success: false,
+      error: 'GET_COMPLIANCE_FLAGS_FAILED',
+      message: 'Failed to retrieve compliance flags',
+      timestamp: new Date().toISOString()
+    });
+  }
+});
+
+// GET /api/v1/compliance/frameworks - Get compliance frameworks
+router.get('/frameworks', checkRole(['head_administrator', 'admin', 'compliance_officer']), async (req, res) => {
+  try {
+    const frameworksCollection = await getCollection('compliance_frameworks');
+    const { page = 1, limit = 50, status } = req.query;
+    
+    const filter = {};
+    if (status) filter.status = status;
+    
+    const skip = (parseInt(page) - 1) * parseInt(limit);
+    
+    const frameworks = await frameworksCollection
+      .find(filter)
+      .sort({ lastAssessment: -1 })
+      .skip(skip)
+      .limit(parseInt(limit))
+      .toArray();
+    
+    const total = await frameworksCollection.countDocuments(filter);
+    
+    res.json({
+      success: true,
+      data: frameworks,
+      pagination: {
+        page: parseInt(page),
+        limit: parseInt(limit),
+        total,
+        pages: Math.ceil(total / parseInt(limit))
+      },
+      timestamp: new Date().toISOString()
+    });
+  } catch (error) {
+    console.error('Get compliance frameworks error:', error);
+    res.status(500).json({
+      success: false,
+      error: 'GET_COMPLIANCE_FRAMEWORKS_FAILED',
+      message: 'Failed to retrieve compliance frameworks',
+      timestamp: new Date().toISOString()
+    });
+  }
+});
+
+// POST /api/v1/compliance/flags - Create a new compliance flag
+router.post('/flags', checkRole(['head_administrator', 'admin', 'compliance_officer']), async (req, res) => {
+  try {
+    const flagsCollection = await getCollection('compliance_flags');
+    const flagData = {
+      ...req.body,
+      id: `FLAG-${Date.now()}`,
+      detectedAt: new Date().toISOString(),
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString()
+    };
+    
+    const result = await flagsCollection.insertOne(flagData);
+    
+    res.status(201).json({
+      success: true,
+      data: { id: result.insertedId, ...flagData },
+      message: 'Compliance flag created successfully',
+      timestamp: new Date().toISOString()
+    });
+  } catch (error) {
+    console.error('Create compliance flag error:', error);
+    res.status(500).json({
+      success: false,
+      error: 'CREATE_COMPLIANCE_FLAG_FAILED',
+      message: 'Failed to create compliance flag',
+      timestamp: new Date().toISOString()
+    });
+  }
+});
+
+// PUT /api/v1/compliance/flags/:id - Update a compliance flag
+router.put('/flags/:id', checkRole(['head_administrator', 'admin', 'compliance_officer']), async (req, res) => {
+  try {
+    const flagsCollection = await getCollection('compliance_flags');
+    const { id } = req.params;
+    
+    const updateData = {
+      ...req.body,
+      updatedAt: new Date().toISOString()
+    };
+    
+    const result = await flagsCollection.updateOne(
+      { id },
+      { $set: updateData }
+    );
+    
+    if (result.matchedCount === 0) {
+      return res.status(404).json({
+        success: false,
+        error: 'COMPLIANCE_FLAG_NOT_FOUND',
+        message: 'Compliance flag not found',
+        timestamp: new Date().toISOString()
+      });
+    }
+    
+    res.json({
+      success: true,
+      data: { id, ...updateData },
+      message: 'Compliance flag updated successfully',
+      timestamp: new Date().toISOString()
+    });
+  } catch (error) {
+    console.error('Update compliance flag error:', error);
+    res.status(500).json({
+      success: false,
+      error: 'UPDATE_COMPLIANCE_FLAG_FAILED',
+      message: 'Failed to update compliance flag',
+      timestamp: new Date().toISOString()
+    });
+  }
+});
+
 module.exports = router;

@@ -23,7 +23,14 @@ interface RevenueMarginCardProps {
 }
 
 export function RevenueMarginCard({ className = '' }: RevenueMarginCardProps) {
-  const [marginData, setMarginData] = React.useState<any>(null);
+  const [marginData, setMarginData] = React.useState<{
+    revenue: number;
+    expenses: number;
+    margin: number;
+    marginPercentage: number;
+    trend: 'up' | 'down' | 'stable';
+    period: string;
+  } | null>(null);
   const [isLoading, setIsLoading] = React.useState(true);
 
   React.useEffect(() => {
@@ -43,7 +50,7 @@ export function RevenueMarginCard({ className = '' }: RevenueMarginCardProps) {
 
   if (isLoading) {
     return (
-      <Card className={`${className} shadow-sm`}>
+      <Card className={`${className} shadow-2xs`}>
         <CardHeader>
           <CardTitle className="flex items-center space-x-2 text-card-foreground font-medium">
             <DollarSign className="h-5 w-5 text-success" />
@@ -64,7 +71,7 @@ export function RevenueMarginCard({ className = '' }: RevenueMarginCardProps) {
 
   if (!marginData) {
     return (
-      <Card className={`${className} shadow-sm`}>
+      <Card className={`${className} shadow-2xs`}>
         <CardHeader>
           <CardTitle className="flex items-center space-x-2 text-card-foreground font-medium">
             <DollarSign className="h-5 w-5 text-success" />
@@ -103,39 +110,39 @@ export function RevenueMarginCard({ className = '' }: RevenueMarginCardProps) {
       amount: marginData.breakdown.fleet,
       percentage: (marginData.breakdown.fleet / totalCosts) * 100,
       icon: Truck,
-      color: 'text-blue-600',
-      bgColor: 'bg-blue-50'
+      color: 'text-primary',
+      bgColor: 'bg-primary/10'
     },
     {
       name: 'Infrastructure',
       amount: marginData.breakdown.infrastructure,
       percentage: (marginData.breakdown.infrastructure / totalCosts) * 100,
       icon: Server,
-      color: 'text-purple-600',
-      bgColor: 'bg-purple-50'
+      color: 'text-primary',
+      bgColor: 'bg-primary/10'
     },
     {
       name: 'Maintenance',
       amount: marginData.breakdown.maintenance,
       percentage: (marginData.breakdown.maintenance / totalCosts) * 100,
       icon: Wrench,
-      color: 'text-orange-600',
-      bgColor: 'bg-orange-50'
+      color: 'text-warning',
+      bgColor: 'bg-warning/10'
     },
     {
       name: 'Other',
       amount: marginData.breakdown.other,
       percentage: (marginData.breakdown.other / totalCosts) * 100,
       icon: MoreHorizontal,
-      color: 'text-gray-600',
-      bgColor: 'bg-gray-50'
+      color: 'text-muted-foreground',
+      bgColor: 'bg-muted/50'
     }
   ];
 
   const trend = getMarginTrend(marginData.margin);
 
   return (
-    <Card className={`${className} shadow-sm`}>
+    <Card className={`${className} shadow-2xs`}>
       <CardHeader>
         <CardTitle className="flex items-center space-x-2 text-card-foreground font-medium">
           <DollarSign className="h-5 w-5 text-success" />

@@ -11,6 +11,7 @@ import { productionApi } from "@/lib/production-api";
 import { websocketService } from "@/lib/websocket-service";
 import { formatDate, formatRelativeTime } from "@/lib/utils";
 import { useAuth } from "@/contexts/auth-context";
+import { useTranslations } from "@/hooks/use-translations";
 import { useQuickActions } from "@/lib/quick-actions";
 import { toast } from "sonner";
 
@@ -81,6 +82,7 @@ export default function FleetPage() {
   const [statusFilter, setStatusFilter] = useState<string>("all");
   const [isLoading, setIsLoading] = useState(true);
   const { hasPermission } = useAuth();
+  const { t } = useTranslations();
   const { createFleet, optimizeRoutes } = useQuickActions(hasPermission);
 
   useEffect(() => {
@@ -92,7 +94,7 @@ export default function FleetPage() {
         setFilteredVehicles(vehicleData || []);
       } catch (error) {
         console.error("Failed to load fleet data:", error);
-        toast.error("Failed to load fleet data");
+        toast.error(t('fleet.failedToLoadFleetData'));
         // Set empty arrays on error - no mock data fallback
         setVehicles([]);
         setFilteredVehicles([]);
@@ -150,15 +152,15 @@ export default function FleetPage() {
   const getStatusIcon = (status: string) => {
     switch (status) {
       case "active":
-        return <CheckCircle className="h-4 w-4 text-green-600" />;
+        return <CheckCircle className="h-4 w-4 text-success" />;
       case "maintenance":
-        return <Wrench className="h-4 w-4 text-yellow-600" />;
+        return <Wrench className="h-4 w-4 text-warning" />;
       case "offline":
-        return <AlertTriangle className="h-4 w-4 text-red-600" />;
+        return <AlertTriangle className="h-4 w-4 text-destructive" />;
       case "idle":
-        return <Clock className="h-4 w-4 text-blue-600" />;
+        return <Clock className="h-4 w-4 text-primary" />;
       default:
-        return <Activity className="h-4 w-4 text-gray-600" />;
+        return <Activity className="h-4 w-4 text-muted-foreground" />;
     }
   };
 
@@ -178,40 +180,40 @@ export default function FleetPage() {
       {/* Page Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold tracking-tight text-foreground font-sans">Fleet Management</h1>
+          <h1 className="text-3xl font-bold tracking-tight text-foreground font-sans">{t('fleet.title')}</h1>
           <p className="text-muted-foreground font-sans">
-            Monitor and manage your fleet vehicles in real-time
+            {t('fleet.description')}
           </p>
         </div>
         <div className="flex items-center space-x-2">
-          <Button variant="outline" className="shadow-sm" onClick={optimizeRoutes}>
+          <Button variant="outline" className="shadow-2xs" onClick={optimizeRoutes}>
             <Route className="mr-2 h-4 w-4" />
-            Optimize Routes
+            {t('fleet.optimizeRoutes')}
           </Button>
-          <Button className="shadow-sm" onClick={createFleet}>
+          <Button className="shadow-2xs" onClick={createFleet}>
             <Plus className="mr-2 h-4 w-4" />
-            Add Vehicle
+            {t('fleet.addVehicle')}
           </Button>
         </div>
       </div>
 
       {/* Fleet Overview Cards */}
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-        <Card className="shadow-sm">
+        <Card className="shadow-2xs">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium text-card-foreground">Total Vehicles</CardTitle>
+            <CardTitle className="text-sm font-medium text-card-foreground">{t('fleet.totalVehicles')}</CardTitle>
             <Truck className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold text-foreground">{vehicles.length}</div>
             <p className="text-xs text-muted-foreground">
-              <span className="text-green-600">+2</span> this month
+              <span className="text-success">+2</span> {t('fleet.thisMonth')}
             </p>
           </CardContent>
         </Card>
-        <Card className="shadow-sm">
+        <Card className="shadow-2xs">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium text-card-foreground">Active Vehicles</CardTitle>
+            <CardTitle className="text-sm font-medium text-card-foreground">{t('fleet.activeVehicles')}</CardTitle>
             <CheckCircle className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
@@ -219,11 +221,11 @@ export default function FleetPage() {
               {vehicles.filter(v => v.status === "active").length}
             </div>
             <p className="text-xs text-muted-foreground">
-              <span className="text-green-600">+5%</span> efficiency
+              <span className="text-success">+5%</span> {t('fleet.efficiency')}
             </p>
           </CardContent>
         </Card>
-        <Card className="shadow-sm">
+        <Card className="shadow-2xs">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium text-card-foreground">Maintenance Due</CardTitle>
             <Wrench className="h-4 w-4 text-muted-foreground" />
@@ -233,11 +235,11 @@ export default function FleetPage() {
               {vehicles.filter(v => v.status === "maintenance").length}
             </div>
             <p className="text-xs text-muted-foreground">
-              <span className="text-yellow-600">3</span> overdue
+              <span className="text-warning">3</span> overdue
             </p>
           </CardContent>
         </Card>
-        <Card className="shadow-sm">
+        <Card className="shadow-2xs">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium text-card-foreground">Offline Vehicles</CardTitle>
             <AlertTriangle className="h-4 w-4 text-muted-foreground" />
@@ -247,20 +249,20 @@ export default function FleetPage() {
               {vehicles.filter(v => v.status === "offline").length}
             </div>
             <p className="text-xs text-muted-foreground">
-              <span className="text-red-600">-2</span> from yesterday
+              <span className="text-destructive">-2</span> from yesterday
             </p>
           </CardContent>
         </Card>
       </div>
 
       {/* Fleet Map Placeholder */}
-      <Card className="shadow-sm">
+      <Card className="shadow-2xs">
         <CardHeader>
           <CardTitle className="text-card-foreground">Fleet Map</CardTitle>
           <CardDescription>Real-time GPS tracking of all vehicles</CardDescription>
         </CardHeader>
         <CardContent>
-          <div className="h-64 bg-muted rounded-lg flex items-center justify-center">
+          <div className="h-64 bg-muted rounded-[0.625rem] flex items-center justify-center">
             <div className="text-center">
               <MapPin className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
               <p className="text-muted-foreground">Interactive fleet map will be displayed here</p>
@@ -273,7 +275,7 @@ export default function FleetPage() {
       </Card>
 
       {/* Fleet List */}
-      <Card className="shadow-sm">
+      <Card className="shadow-2xs">
         <CardHeader>
           <CardTitle className="text-card-foreground">Fleet Vehicles</CardTitle>
           <CardDescription>Detailed view of all vehicles with real-time status</CardDescription>
@@ -294,7 +296,7 @@ export default function FleetPage() {
             </div>
             <Select value={statusFilter} onValueChange={setStatusFilter}>
               <SelectTrigger className="w-[180px]">
-                <SelectValue placeholder="Filter by status" />
+                    <SelectValue placeholder={t('fleet.filterByStatus')} />
               </SelectTrigger>
               <SelectContent>
                 <SelectItem value="all">All Status</SelectItem>
@@ -365,7 +367,7 @@ export default function FleetPage() {
                     <div className="flex items-center space-x-2">
                       <Gauge className="h-3 w-3 text-muted-foreground" />
                       <span className="text-sm text-muted-foreground">
-                        {vehicle.obd2Health || "Good"}
+                        {vehicle.obd2Health || t('fleet.good')}
                       </span>
                     </div>
                   </TableCell>
@@ -400,7 +402,7 @@ export default function FleetPage() {
                           <Wrench className="mr-2 h-4 w-4" />
                           Schedule Maintenance
                         </DropdownMenuItem>
-                        <DropdownMenuItem className="text-red-600">
+                        <DropdownMenuItem className="text-destructive">
                           <AlertTriangle className="mr-2 h-4 w-4" />
                           Report Issue
                         </DropdownMenuItem>
@@ -415,28 +417,28 @@ export default function FleetPage() {
       </Card>
 
       {/* Alerts List */}
-      <Card className="shadow-sm">
+      <Card className="shadow-2xs">
         <CardHeader>
           <CardTitle className="text-card-foreground">Fleet Alerts</CardTitle>
           <CardDescription>Critical notifications and maintenance reminders</CardDescription>
         </CardHeader>
         <CardContent>
           <div className="space-y-3">
-            <div className="flex items-center space-x-3 p-3 rounded-lg bg-destructive/10 border border-destructive/20">
+            <div className="flex items-center space-x-3 p-3 rounded-[0.625rem] bg-destructive/10 border border-destructive/20">
               <AlertTriangle className="h-4 w-4 text-destructive" />
               <div>
                 <p className="text-sm font-medium text-destructive-foreground">Vehicle ABC-123 Offline</p>
                 <p className="text-xs text-destructive-foreground/80">No GPS signal for 2 hours</p>
               </div>
             </div>
-            <div className="flex items-center space-x-3 p-3 rounded-lg bg-secondary/10 border border-secondary/20">
+            <div className="flex items-center space-x-3 p-3 rounded-[0.625rem] bg-secondary/10 border border-secondary/20">
               <Wrench className="h-4 w-4 text-secondary" />
               <div>
                 <p className="text-sm font-medium text-secondary-foreground">Maintenance Due</p>
                 <p className="text-xs text-secondary-foreground/80">DEF-456 needs oil change</p>
               </div>
             </div>
-            <div className="flex items-center space-x-3 p-3 rounded-lg bg-primary/10 border border-primary/20">
+            <div className="flex items-center space-x-3 p-3 rounded-[0.625rem] bg-primary/10 border border-primary/20">
               <Fuel className="h-4 w-4 text-primary" />
               <div>
                 <p className="text-sm font-medium text-primary-foreground">Low Fuel Alert</p>

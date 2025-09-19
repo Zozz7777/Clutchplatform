@@ -10,8 +10,8 @@ interface RealtimeContextType {
   connectionState: string;
   connect: () => Promise<void>;
   disconnect: () => void;
-  sendMessage: (message: any) => boolean;
-  lastMessage: any;
+  sendMessage: (message: Record<string, unknown>) => boolean;
+  lastMessage: Record<string, unknown> | null;
   messageCount: number;
 }
 
@@ -22,7 +22,7 @@ export function RealtimeProvider({ children }: { children: React.ReactNode }) {
   const [isConnected, setIsConnected] = useState(false);
   const [isConnecting, setIsConnecting] = useState(false);
   const [connectionState, setConnectionState] = useState('disconnected');
-  const [lastMessage, setLastMessage] = useState<any>(null);
+  const [lastMessage, setLastMessage] = useState<Record<string, unknown> | null>(null);
   const [messageCount, setMessageCount] = useState(0);
 
   const handleConnect = useCallback(() => {
@@ -42,18 +42,16 @@ export function RealtimeProvider({ children }: { children: React.ReactNode }) {
     toast.error('Real-time connection error');
   }, []);
 
-  const handleMessage = useCallback((message: any) => {
+  const handleMessage = useCallback((message: Record<string, unknown>) => {
     setLastMessage(message);
     setMessageCount(prev => prev + 1);
     
     // Handle different message types
     switch (message.type) {
       case 'connection':
-        console.log('📨 WebSocket connection confirmed:', message.message);
         // Connection message is handled silently - no toast needed
         break;
       case 'pong':
-        console.log('📨 WebSocket pong received');
         // Pong response is handled silently
         break;
       case 'notification':
@@ -76,7 +74,6 @@ export function RealtimeProvider({ children }: { children: React.ReactNode }) {
         // Analytics updates are usually silent
         break;
       default:
-        console.log('📨 WebSocket message received:', message.type, message);
         // Log unknown message types for debugging
         break;
     }
@@ -100,19 +97,14 @@ export function RealtimeProvider({ children }: { children: React.ReactNode }) {
         },
         onMessage: handleMessage,
         onSystemHealth: (data) => {
-          console.log('System health update:', data);
         },
         onNotification: (data) => {
-          console.log('Notification received:', data);
         },
         onUserUpdate: (data) => {
-          console.log('User update received:', data);
         },
         onFleetUpdate: (data) => {
-          console.log('Fleet update received:', data);
         },
         onAnalyticsUpdate: (data) => {
-          console.log('Analytics update received:', data);
         },
       };
 
@@ -131,7 +123,7 @@ export function RealtimeProvider({ children }: { children: React.ReactNode }) {
     setConnectionState('disconnected');
   }, []);
 
-  const sendMessage = useCallback((message: any) => {
+  const sendMessage = useCallback((message: Record<string, unknown>) => {
     return websocketService.send(message);
   }, []);
 
@@ -144,7 +136,6 @@ export function RealtimeProvider({ children }: { children: React.ReactNode }) {
           // Check if token is available before attempting connection
           const token = localStorage.getItem("clutch-admin-token") || sessionStorage.getItem("clutch-admin-token");
           if (token) {
-            console.log('🔌 Token found, attempting WebSocket connection...');
             connect();
           } else {
             console.warn('🔌 No token found, skipping WebSocket connection');

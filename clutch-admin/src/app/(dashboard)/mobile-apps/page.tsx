@@ -28,6 +28,7 @@ import {
   CheckCircle,
   XCircle,
 } from "lucide-react";
+import { useTranslations } from "@/hooks/use-translations";
 
 interface AppVersion {
   _id: string;
@@ -93,6 +94,7 @@ interface AppStore {
 }
 
 export default function MobileAppsPage() {
+  const { t } = useTranslations();
   const [activeTab, setActiveTab] = useState("overview");
   const [searchTerm, setSearchTerm] = useState("");
 
@@ -107,8 +109,8 @@ export default function MobileAppsPage() {
       downloadCount: 15420,
       crashRate: 0.8,
       avgRating: 4.6,
-      features: ["New dashboard design", "Improved GPS tracking", "Push notifications"],
-      bugFixes: ["Fixed login issue", "Resolved map loading bug"],
+      features: [t('mobileApps.newDashboardDesign'), t('mobileApps.improvedGpsTracking'), t('mobileApps.pushNotifications')],
+      bugFixes: [t('mobileApps.fixedLoginIssue'), t('mobileApps.resolvedMapLoadingBug')],
       size: "45.2 MB",
       minOSVersion: "iOS 14.0",
     },
@@ -122,8 +124,8 @@ export default function MobileAppsPage() {
       downloadCount: 23890,
       crashRate: 1.2,
       avgRating: 4.4,
-      features: ["New dashboard design", "Improved GPS tracking", "Push notifications"],
-      bugFixes: ["Fixed login issue", "Resolved map loading bug"],
+      features: [t('mobileApps.newDashboardDesign'), t('mobileApps.improvedGpsTracking'), t('mobileApps.pushNotifications')],
+      bugFixes: [t('mobileApps.fixedLoginIssue'), t('mobileApps.resolvedMapLoadingBug')],
       size: "52.8 MB",
       minOSVersion: "Android 8.0",
     },
@@ -136,8 +138,8 @@ export default function MobileAppsPage() {
       downloadCount: 0,
       crashRate: 0,
       avgRating: 0,
-      features: ["Dark mode", "Offline mode", "Enhanced analytics"],
-      bugFixes: ["Performance improvements", "Memory optimization"],
+      features: [t('mobileApps.darkMode'), t('mobileApps.offlineMode'), t('mobileApps.enhancedAnalytics')],
+      bugFixes: [t('mobileApps.performanceImprovements'), t('mobileApps.memoryOptimization')],
       size: "47.1 MB",
       minOSVersion: "iOS 14.0",
     },
@@ -165,14 +167,14 @@ export default function MobileAppsPage() {
       platform: "android",
       device: "Samsung Galaxy S23",
       osVersion: "Android 14",
-      crashType: "NullPointerException",
+      crashType: t('mobileApps.nullPointerException'),
       stackTrace: "java.lang.NullPointerException at com.clutch.app.MainActivity.onCreate",
       userImpact: "medium",
       frequency: 23,
       firstSeen: "2024-01-13T14:20:00Z",
       lastSeen: "2024-01-15T12:30:00Z",
       status: "fixing",
-      assignedTo: "Android Team",
+      assignedTo: t('mobileApps.androidTeam'),
     },
     {
       _id: "3",
@@ -180,7 +182,7 @@ export default function MobileAppsPage() {
       platform: "ios",
       device: "iPhone 12",
       osVersion: "iOS 16.7",
-      crashType: "SIGABRT",
+      crashType: t('mobileApps.sigabrt'),
       stackTrace: "libc++abi: terminating with uncaught exception",
       userImpact: "low",
       frequency: 8,
@@ -203,10 +205,10 @@ export default function MobileAppsPage() {
       crashRate: 0.8,
       appOpens: 4560,
       featureUsage: {
-        "GPS Tracking": 89.2,
-        "Dashboard": 95.1,
-        "Notifications": 67.8,
-        "Settings": 23.4,
+        [t('mobileApps.gpsTracking')]: 89.2,
+        [t('mobileApps.dashboard')]: 95.1,
+        [t('mobileApps.notifications')]: 67.8,
+        [t('mobileApps.settings')]: 23.4,
       },
     },
     {
@@ -221,7 +223,7 @@ export default function MobileAppsPage() {
       crashRate: 1.2,
       appOpens: 6780,
       featureUsage: {
-        "GPS Tracking": 85.7,
+        [t('mobileApps.gpsTracking')]: 85.7,
         "Dashboard": 92.3,
         "Notifications": 71.2,
         "Settings": 28.9,
@@ -457,7 +459,7 @@ export default function MobileAppsPage() {
                   <div key={analytics._id} className="flex items-center justify-between">
                     <div className="flex items-center space-x-3">
                       {analytics.platform === "ios" ? (
-                        <Monitor className="h-5 w-5 text-gray-600" />
+                        <Monitor className="h-5 w-5 text-muted-foreground" />
                       ) : (
                         <Smartphone className="h-5 w-5 text-primary" />
                       )}
@@ -481,7 +483,7 @@ export default function MobileAppsPage() {
             <CardContent>
               <div className="space-y-3">
                 {mockCrashes.slice(0, 3).map((crash) => (
-                  <div key={crash._id} className="flex items-center justify-between p-3 border rounded-lg">
+                  <div key={crash._id} className="flex items-center justify-between p-3 border rounded-[0.625rem]">
                     <div>
                       <div className="font-medium">{crash.crashType}</div>
                       <div className="text-sm text-muted-foreground">
@@ -622,7 +624,7 @@ export default function MobileAppsPage() {
                       </div>
                     </div>
 
-                    <div className="bg-gray-50 p-3 rounded-lg mb-4">
+                    <div className="bg-muted/50 p-3 rounded-[0.625rem] mb-4">
                       <div className="text-sm font-medium mb-1">Stack Trace:</div>
                       <code className="text-xs text-muted-foreground break-all">
                         {crash.stackTrace}
@@ -727,7 +729,7 @@ export default function MobileAppsPage() {
                       <div key={feature} className="flex items-center justify-between">
                         <span className="text-sm">{feature}</span>
                         <div className="flex items-center space-x-2">
-                          <div className="w-32 bg-gray-200 rounded-full h-2">
+                          <div className="w-32 bg-muted rounded-full h-2">
                             <div
                               className="bg-primary h-2 rounded-full"
                               style={{ width: `${usage}%` }}

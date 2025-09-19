@@ -98,22 +98,22 @@ export default function SystemHealthPage() {
   const getStatusIcon = (status: string) => {
     switch (status.toLowerCase()) {
       case 'healthy':
-        return <CheckCircle className="h-5 w-5 text-green-500" />;
+        return <CheckCircle className="h-5 w-5 text-success" />;
       case 'warning':
-        return <AlertTriangle className="h-5 w-5 text-yellow-500" />;
+        return <AlertTriangle className="h-5 w-5 text-warning" />;
       case 'critical':
-        return <XCircle className="h-5 w-5 text-red-500" />;
+        return <XCircle className="h-5 w-5 text-destructive" />;
       default:
-        return <Activity className="h-5 w-5 text-gray-500" />;
+        return <Activity className="h-5 w-5 text-muted-foreground" />;
     }
   };
 
   const getStatusBadge = (status: string) => {
     switch (status.toLowerCase()) {
       case 'healthy':
-        return <Badge variant="default" className="bg-green-500">Healthy</Badge>;
+        return <Badge variant="default" className="bg-success/100">Healthy</Badge>;
       case 'warning':
-        return <Badge variant="default" className="bg-yellow-500">Warning</Badge>;
+        return <Badge variant="default" className="bg-warning/100">Warning</Badge>;
       case 'critical':
         return <Badge variant="destructive">Critical</Badge>;
       default:
@@ -295,7 +295,7 @@ export default function SystemHealthPage() {
               <CardContent>
                 <div className="space-y-4">
                   {services.map((service, index) => (
-                    <div key={index} className="flex items-center justify-between p-4 border rounded-lg">
+                    <div key={index} className="flex items-center justify-between p-4 border rounded-[0.625rem]">
                       <div className="flex items-center space-x-3">
                         {getStatusIcon(service.status)}
                         <div>
@@ -352,11 +352,11 @@ export default function SystemHealthPage() {
                     <p className="text-sm text-muted-foreground font-sans mt-2">
                       Memory usage: {systemHealth.memory.percentage}%
                     </p>
-                    <div className="w-full bg-gray-200 rounded-full h-2 mt-2">
+                    <div className="w-full bg-muted rounded-full h-2 mt-2">
                       <div 
                         className={`h-2 rounded-full ${
-                          systemHealth.memory.percentage > 80 ? 'bg-red-500' :
-                          systemHealth.memory.percentage > 60 ? 'bg-yellow-500' : 'bg-green-500'
+                          systemHealth.memory.percentage > 80 ? 'bg-destructive/100' :
+                          systemHealth.memory.percentage > 60 ? 'bg-warning/100' : 'bg-success/100'
                         }`}
                         style={{ width: `${systemHealth.memory.percentage}%` }}
                       ></div>

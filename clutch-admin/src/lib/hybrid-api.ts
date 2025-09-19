@@ -3,26 +3,10 @@ import { realApi } from "./real-api";
 // Note: mockAPI removed - use realApi instead
 import { API_BASE_URL } from "./constants";
 
-// Configuration for which APIs to use mock vs real
+// Configuration for real API only - no mock data in production
 const API_CONFIG = {
-  useMock: {
-    // Use real API for all endpoints - no mock data in production
-    users: false,
-    fleet: false,
-    dashboard: false,
-    chat: false,
-    notifications: false,
-    crm: false,
-    finance: false,
-    analytics: false,
-    systemHealth: false,
-    apiPerformance: false,
-    featureFlags: false,
-    settings: false,
-    reports: false,
-    auditTrail: false,
-    integrations: false,
-  },
+  // All endpoints use real API
+  useRealApi: true,
   // No fallback to mock in production
   fallbackToMock: false,
 };
@@ -83,7 +67,7 @@ class HybridApiService {
         throw error;
       }
     } else {
-      console.log("Backend unavailable, using mock data");
+
       return mockApiCall();
     }
   }

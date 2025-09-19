@@ -307,4 +307,156 @@ router.get('/analytics', checkRole(['head_administrator']), async (req, res) => 
   }
 });
 
+// ===== SYSTEM SETTINGS =====
+
+// GET /api/v1/settings/system - Get system settings
+router.get('/system', async (req, res) => {
+  try {
+    const settingsCollection = await getCollection('settings');
+    
+    const systemSettings = await settingsCollection
+      .find({ category: 'system' })
+      .toArray();
+    
+    // Convert array to object for easier frontend consumption
+    const settingsObject = systemSettings.reduce((acc, setting) => {
+      acc[setting.key] = setting.value;
+      return acc;
+    }, {});
+    
+    res.json({
+      success: true,
+      data: settingsObject
+    });
+  } catch (error) {
+    console.error('Error fetching system settings:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Failed to fetch system settings',
+      error: process.env.NODE_ENV === 'development' ? error.message : undefined
+    });
+  }
+});
+
+// PUT /api/v1/settings/system - Update system settings
+router.put('/system', checkRole(['head_administrator']), async (req, res) => {
+  try {
+    const settingsCollection = await getCollection('settings');
+    const { settings } = req.body;
+    
+    if (!settings || typeof settings !== 'object') {
+      return res.status(400).json({
+        success: false,
+        message: 'Settings object is required'
+      });
+    }
+    
+    // Update each setting
+    const updatePromises = Object.entries(settings).map(([key, value]) => 
+      settingsCollection.updateOne(
+        { category: 'system', key },
+        { 
+          $set: { 
+            value, 
+            updatedAt: new Date(),
+            updatedBy: req.user.userId || req.user.id
+          } 
+        },
+        { upsert: true }
+      )
+    );
+    
+    await Promise.all(updatePromises);
+    
+    res.json({
+      success: true,
+      message: 'System settings updated successfully'
+    });
+    
+  } catch (error) {
+    console.error('Error updating system settings:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Failed to update system settings',
+      error: process.env.NODE_ENV === 'development' ? error.message : undefined
+    });
+  }
+});
+
+// ===== INTEGRATION SETTINGS =====
+
+// GET /api/v1/settings/integrations - Get integration settings
+router.get('/integrations', async (req, res) => {
+  try {
+    const settingsCollection = await getCollection('settings');
+    
+    const integrationSettings = await settingsCollection
+      .find({ category: 'integrations' })
+      .toArray();
+    
+    // Convert array to object for easier frontend consumption
+    const settingsObject = integrationSettings.reduce((acc, setting) => {
+      acc[setting.key] = setting.value;
+      return acc;
+    }, {});
+    
+    res.json({
+      success: true,
+      data: settingsObject
+    });
+  } catch (error) {
+    console.error('Error fetching integration settings:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Failed to fetch integration settings',
+      error: process.env.NODE_ENV === 'development' ? error.message : undefined
+    });
+  }
+});
+
+// PUT /api/v1/settings/integrations - Update integration settings
+router.put('/integrations', checkRole(['head_administrator']), async (req, res) => {
+  try {
+    const settingsCollection = await getCollection('settings');
+    const { settings } = req.body;
+    
+    if (!settings || typeof settings !== 'object') {
+      return res.status(400).json({
+        success: false,
+        message: 'Settings object is required'
+      });
+    }
+    
+    // Update each setting
+    const updatePromises = Object.entries(settings).map(([key, value]) => 
+      settingsCollection.updateOne(
+        { category: 'integrations', key },
+        { 
+          $set: { 
+            value, 
+            updatedAt: new Date(),
+            updatedBy: req.user.userId || req.user.id
+          } 
+        },
+        { upsert: true }
+      )
+    );
+    
+    await Promise.all(updatePromises);
+    
+    res.json({
+      success: true,
+      message: 'Integration settings updated successfully'
+    });
+    
+  } catch (error) {
+    console.error('Error updating integration settings:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Failed to update integration settings',
+      error: process.env.NODE_ENV === 'development' ? error.message : undefined
+    });
+  }
+});
+
 module.exports = router;

@@ -247,49 +247,49 @@ export default function AIPoweredAnomalyDetection({ className }: AIPoweredAnomal
 
   const getTypeColor = (type: string) => {
     switch (type) {
-      case 'performance': return 'bg-blue-100 text-blue-800';
-      case 'security': return 'bg-red-100 text-red-800';
-      case 'business': return 'bg-green-100 text-green-800';
-      case 'infrastructure': return 'bg-orange-100 text-orange-800';
-      case 'user_behavior': return 'bg-purple-100 text-purple-800';
-      case 'financial': return 'bg-yellow-100 text-yellow-800';
-      default: return 'bg-gray-100 text-gray-800';
+      case 'performance': return 'bg-primary/10 text-blue-800';
+      case 'security': return 'bg-destructive/10 text-red-800';
+      case 'business': return 'bg-success/10 text-green-800';
+      case 'infrastructure': return 'bg-warning/10 text-orange-800';
+      case 'user_behavior': return 'bg-primary/10 text-purple-800';
+      case 'financial': return 'bg-warning/10 text-yellow-800';
+      default: return 'bg-muted text-gray-800';
     }
   };
 
   const getSeverityColor = (severity: string) => {
     switch (severity) {
-      case 'low': return 'bg-green-100 text-green-800';
-      case 'medium': return 'bg-yellow-100 text-yellow-800';
-      case 'high': return 'bg-orange-100 text-orange-800';
-      case 'critical': return 'bg-red-100 text-red-800';
-      default: return 'bg-gray-100 text-gray-800';
+      case 'low': return 'bg-success/10 text-green-800';
+      case 'medium': return 'bg-warning/10 text-yellow-800';
+      case 'high': return 'bg-warning/10 text-orange-800';
+      case 'critical': return 'bg-destructive/10 text-red-800';
+      default: return 'bg-muted text-gray-800';
     }
   };
 
   const getStatusColor = (status: string) => {
     switch (status) {
-      case 'detected': return 'bg-red-100 text-red-800';
-      case 'investigating': return 'bg-yellow-100 text-yellow-800';
-      case 'resolved': return 'bg-green-100 text-green-800';
-      case 'false_positive': return 'bg-gray-100 text-gray-800';
-      default: return 'bg-gray-100 text-gray-800';
+      case 'detected': return 'bg-destructive/10 text-red-800';
+      case 'investigating': return 'bg-warning/10 text-yellow-800';
+      case 'resolved': return 'bg-success/10 text-green-800';
+      case 'false_positive': return 'bg-muted text-gray-800';
+      default: return 'bg-muted text-gray-800';
     }
   };
 
   const getConfidenceColor = (confidence: number) => {
-    if (confidence >= 90) return 'text-red-600';
-    if (confidence >= 80) return 'text-orange-600';
-    if (confidence >= 70) return 'text-yellow-600';
-    return 'text-green-600';
+    if (confidence >= 90) return 'text-destructive';
+    if (confidence >= 80) return 'text-warning';
+    if (confidence >= 70) return 'text-warning';
+    return 'text-success';
   };
 
   const getTrendIcon = (trend: string) => {
     switch (trend) {
-      case 'up': return <TrendingUp className="h-4 w-4 text-red-600" />;
-      case 'down': return <TrendingDown className="h-4 w-4 text-green-600" />;
-      case 'stable': return <Minus className="h-4 w-4 text-gray-600" />;
-      default: return <Minus className="h-4 w-4 text-gray-600" />;
+      case 'up': return <TrendingUp className="h-4 w-4 text-destructive" />;
+      case 'down': return <TrendingDown className="h-4 w-4 text-success" />;
+      case 'stable': return <Minus className="h-4 w-4 text-muted-foreground" />;
+      default: return <Minus className="h-4 w-4 text-muted-foreground" />;
     }
   };
 
@@ -328,7 +328,7 @@ export default function AIPoweredAnomalyDetection({ className }: AIPoweredAnomal
                 variant="outline"
                 size="sm"
                 onClick={() => setIsMonitoring(!isMonitoring)}
-                className={isMonitoring ? 'bg-green-100 text-green-800' : ''}
+                className={isMonitoring ? 'bg-success/10 text-green-800' : ''}
               >
                 {isMonitoring ? <Eye className="h-4 w-4 mr-2" /> : <EyeOff className="h-4 w-4 mr-2" />}
                 {isMonitoring ? 'Monitoring' : 'Paused'}
@@ -347,26 +347,26 @@ export default function AIPoweredAnomalyDetection({ className }: AIPoweredAnomal
         <CardContent className="space-y-6">
           {/* Anomaly Summary */}
           <div className="grid grid-cols-4 gap-4">
-            <div className="text-center p-3 bg-red-50 rounded-lg">
-              <div className="text-2xl font-bold text-red-600">{formatNumber(totalUsers)}</div>
+            <div className="text-center p-3 bg-destructive/10 rounded-[0.625rem]">
+              <div className="text-2xl font-bold text-destructive">{formatNumber(totalUsers)}</div>
               <div className="text-sm text-muted-foreground">Users Affected</div>
             </div>
-            <div className="text-center p-3 bg-orange-50 rounded-lg">
-              <div className="text-2xl font-bold text-orange-600">{formatCurrency(totalRevenue)}</div>
+            <div className="text-center p-3 bg-warning/10 rounded-[0.625rem]">
+              <div className="text-2xl font-bold text-warning">{formatCurrency(totalRevenue)}</div>
               <div className="text-sm text-muted-foreground">Revenue Impact</div>
             </div>
-            <div className="text-center p-3 bg-yellow-50 rounded-lg">
-              <div className="text-2xl font-bold text-yellow-600">{avgConfidence}%</div>
+            <div className="text-center p-3 bg-warning/10 rounded-[0.625rem]">
+              <div className="text-2xl font-bold text-warning">{avgConfidence}%</div>
               <div className="text-sm text-muted-foreground">Avg Confidence</div>
             </div>
-            <div className="text-center p-3 bg-purple-50 rounded-lg">
-              <div className="text-2xl font-bold text-purple-600">{criticalAnomalies}</div>
+            <div className="text-center p-3 bg-primary/10 rounded-[0.625rem]">
+              <div className="text-2xl font-bold text-primary">{criticalAnomalies}</div>
               <div className="text-sm text-muted-foreground">Critical Anomalies</div>
             </div>
           </div>
 
           {/* AI Anomaly Overview */}
-          <div className="p-4 bg-gradient-to-r from-blue-50 to-purple-50 rounded-lg">
+          <div className="p-4 bg-gradient-to-r from-blue-50 to-purple-50 rounded-[0.625rem]">
             <div className="flex items-center justify-between">
               <div>
                 <h4 className="font-medium">AI-Powered Anomaly Detection</h4>
@@ -375,7 +375,7 @@ export default function AIPoweredAnomalyDetection({ className }: AIPoweredAnomal
                 </p>
               </div>
               <div className="text-right">
-                <div className="text-3xl font-bold text-blue-600">
+                <div className="text-3xl font-bold text-primary">
                   {anomalies.length}
                 </div>
                 <div className="text-sm text-muted-foreground">anomalies detected</div>
@@ -431,8 +431,8 @@ export default function AIPoweredAnomalyDetection({ className }: AIPoweredAnomal
               {filteredAnomalies.map((anomaly) => (
                 <div
                   key={anomaly.id}
-                  className={`p-3 border rounded-lg cursor-pointer transition-colors ${
-                    selectedAnomaly?.id === anomaly.id ? 'border-blue-500 bg-blue-50' : 'hover:bg-gray-50'
+                  className={`p-3 border rounded-[0.625rem] cursor-pointer transition-colors ${
+                    selectedAnomaly?.id === anomaly.id ? 'border-blue-500 bg-primary/10' : 'hover:bg-muted/50'
                   }`}
                   onClick={() => setSelectedAnomaly(anomaly)}
                 >
@@ -552,7 +552,7 @@ export default function AIPoweredAnomalyDetection({ className }: AIPoweredAnomal
                     <h5 className="font-medium mb-2">Anomaly Metrics</h5>
                     <div className="space-y-2">
                       {selectedAnomaly.metrics.map((metric, index) => (
-                        <div key={index} className="p-3 border rounded-lg">
+                        <div key={index} className="p-3 border rounded-[0.625rem]">
                           <div className="flex items-center justify-between mb-2">
                             <span className="font-medium">{metric.name}</span>
                             <div className="flex items-center gap-2">
@@ -581,7 +581,7 @@ export default function AIPoweredAnomalyDetection({ className }: AIPoweredAnomal
                     <h5 className="font-medium mb-2">Detected Patterns</h5>
                     <div className="space-y-2">
                       {selectedAnomaly.patterns.map((pattern) => (
-                        <div key={pattern.id} className="p-3 border rounded-lg">
+                        <div key={pattern.id} className="p-3 border rounded-[0.625rem]">
                           <div className="flex items-center justify-between mb-2">
                             <span className="font-medium">{pattern.name}</span>
                             <span className="text-sm font-medium">{pattern.correlation * 100}% correlation</span>
@@ -609,7 +609,7 @@ export default function AIPoweredAnomalyDetection({ className }: AIPoweredAnomal
                     <h5 className="font-medium mb-2">AI Recommendations</h5>
                     <div className="space-y-2">
                       {selectedAnomaly.recommendations.map((recommendation) => (
-                        <div key={recommendation.id} className="p-3 border rounded-lg">
+                        <div key={recommendation.id} className="p-3 border rounded-[0.625rem]">
                           <div className="flex items-center justify-between mb-2">
                             <span className="font-medium">{recommendation.action}</span>
                             <Badge className={getSeverityColor(recommendation.priority)}>
@@ -636,7 +636,7 @@ export default function AIPoweredAnomalyDetection({ className }: AIPoweredAnomal
                     <h5 className="font-medium mb-2">Anomaly Timeline</h5>
                     <div className="space-y-2">
                       {selectedAnomaly.timeline.map((event, index) => (
-                        <div key={index} className="p-3 border rounded-lg">
+                        <div key={index} className="p-3 border rounded-[0.625rem]">
                           <div className="flex items-center justify-between mb-2">
                             <span className="font-medium">{event.event}</span>
                             <span className="text-sm text-muted-foreground">

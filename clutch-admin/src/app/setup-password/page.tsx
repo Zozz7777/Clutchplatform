@@ -141,9 +141,9 @@ function SetupPasswordContent() {
     if (/\d/.test(password)) score++;
     if (/[^A-Za-z0-9]/.test(password)) score++;
     
-    if (score <= 2) return { strength: "Weak", color: "text-red-500", score };
-    if (score <= 4) return { strength: "Medium", color: "text-yellow-500", score };
-    return { strength: "Strong", color: "text-green-500", score };
+    if (score <= 2) return { strength: "Weak", color: "text-destructive", score };
+    if (score <= 4) return { strength: "Medium", color: "text-warning", score };
+    return { strength: "Strong", color: "text-success", score };
   };
 
   const passwordStrength = getPasswordStrength(password);
@@ -198,7 +198,7 @@ function SetupPasswordContent() {
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-background px-4">
-        <Card className="w-full max-w-md shadow-sm">
+        <Card className="w-full max-w-md shadow-2xs">
           <CardHeader className="text-center">
             <div className="mx-auto mb-4 w-12 h-12 bg-primary rounded-full flex items-center justify-center">
               <Shield className="h-6 w-6 text-primary-foreground" />
@@ -211,7 +211,7 @@ function SetupPasswordContent() {
         
         <CardContent>
           {invitationData && (
-            <div className="mb-6 p-4 bg-muted rounded-lg">
+            <div className="mb-6 p-4 bg-muted rounded-[0.625rem]">
               <h3 className="font-medium mb-2 flex items-center gap-2 font-sans">
                 <User className="h-4 w-4" />
                 Account Details
@@ -264,8 +264,8 @@ function SetupPasswordContent() {
                   <div className="w-full bg-muted rounded-full h-2">
                     <div 
                       className={`h-2 rounded-full transition-all ${
-                        passwordStrength.score <= 2 ? 'bg-red-500' :
-                        passwordStrength.score <= 4 ? 'bg-yellow-500' : 'bg-green-500'
+                        passwordStrength.score <= 2 ? 'bg-destructive/100' :
+                        passwordStrength.score <= 4 ? 'bg-warning/100' : 'bg-success/100'
                       }`}
                       style={{ width: `${(passwordStrength.score / 6) * 100}%` }}
                     />
@@ -274,7 +274,7 @@ function SetupPasswordContent() {
               )}
               
               {errors.password && (
-                <p className="text-sm text-red-500">{errors.password}</p>
+                <p className="text-sm text-destructive">{errors.password}</p>
               )}
             </div>
 
@@ -307,14 +307,14 @@ function SetupPasswordContent() {
               </div>
               
               {confirmPassword && password === confirmPassword && (
-                <div className="flex items-center gap-2 text-sm text-green-600">
+                <div className="flex items-center gap-2 text-sm text-success">
                   <CheckCircle className="h-4 w-4" />
                   Passwords match
                 </div>
               )}
               
               {errors.confirmPassword && (
-                <p className="text-sm text-red-500">{errors.confirmPassword}</p>
+                <p className="text-sm text-destructive">{errors.confirmPassword}</p>
               )}
             </div>
 

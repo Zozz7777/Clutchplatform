@@ -88,7 +88,7 @@ export default function RevenueForecastingPage() {
   };
 
   const getGrowthColor = (growth: number) => {
-    return growth > 0 ? 'text-green-500' : 'text-red-500';
+    return growth > 0 ? 'text-success' : 'text-destructive';
   };
 
   const getGrowthIcon = (growth: number) => {
@@ -131,7 +131,6 @@ export default function RevenueForecastingPage() {
       const report = await productionApi.generateRevenueReport();
       if (report) {
         // Handle report generation success
-        console.log('Report generated successfully:', report);
       }
     } catch (error) {
       console.error('Error generating report:', error);
@@ -249,7 +248,7 @@ export default function RevenueForecastingPage() {
               </CardHeader>
               <CardContent>
                 <div className="text-center py-8">
-                  <TrendingUp className="h-12 w-12 mx-auto text-green-500 mb-4" />
+                  <TrendingUp className="h-12 w-12 mx-auto text-success mb-4" />
                   <p className="text-lg font-medium font-sans">Steady Growth Pattern</p>
                   <p className="text-sm text-muted-foreground font-sans">
                     Revenue is projected to grow consistently over the next 12 months
@@ -317,9 +316,9 @@ export default function RevenueForecastingPage() {
                     </div>
                     <div>
                       <p className="text-sm text-muted-foreground font-sans">Probability</p>
-                      <div className="w-full bg-gray-200 rounded-full h-2 mt-2">
+                      <div className="w-full bg-muted rounded-full h-2 mt-2">
                         <div 
-                          className="bg-blue-500 h-2 rounded-full" 
+                          className="bg-primary/100 h-2 rounded-full" 
                           style={{ width: `${scenario.probability}%` }}
                         ></div>
                       </div>
@@ -379,9 +378,9 @@ export default function RevenueForecastingPage() {
                         <span className="text-sm font-sans">{source.source}</span>
                         <span className="text-sm font-sans">{formatCurrency(source.amount)}</span>
                       </div>
-                      <div className="w-full bg-gray-200 rounded-full h-2">
+                      <div className="w-full bg-muted rounded-full h-2">
                         <div 
-                          className="bg-blue-500 h-2 rounded-full" 
+                          className="bg-primary/100 h-2 rounded-full" 
                           style={{ width: `${source.percentage}%` }}
                         ></div>
                       </div>

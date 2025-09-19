@@ -233,32 +233,32 @@ export default function IncidentWarRoom({ className }: IncidentWarRoomProps) {
 
   const getSeverityColor = (severity: string) => {
     switch (severity) {
-      case 'critical': return 'bg-red-500';
-      case 'high': return 'bg-orange-500';
-      case 'medium': return 'bg-yellow-500';
-      case 'low': return 'bg-green-500';
-      default: return 'bg-gray-500';
+      case 'critical': return 'bg-destructive/100';
+      case 'high': return 'bg-warning/100';
+      case 'medium': return 'bg-warning/100';
+      case 'low': return 'bg-success/100';
+      default: return 'bg-muted/500';
     }
   };
 
   const getStatusColor = (status: string) => {
     switch (status) {
-      case 'detected': return 'bg-red-100 text-red-800';
-      case 'investigating': return 'bg-yellow-100 text-yellow-800';
-      case 'mitigating': return 'bg-orange-100 text-orange-800';
-      case 'resolved': return 'bg-green-100 text-green-800';
-      case 'post-mortem': return 'bg-blue-100 text-blue-800';
-      default: return 'bg-gray-100 text-gray-800';
+      case 'detected': return 'bg-destructive/10 text-red-800';
+      case 'investigating': return 'bg-warning/10 text-yellow-800';
+      case 'mitigating': return 'bg-warning/10 text-orange-800';
+      case 'resolved': return 'bg-success/10 text-green-800';
+      case 'post-mortem': return 'bg-primary/10 text-blue-800';
+      default: return 'bg-muted text-gray-800';
     }
   };
 
   const getActionStatusColor = (status: string) => {
     switch (status) {
-      case 'completed': return 'bg-green-100 text-green-800';
-      case 'in_progress': return 'bg-blue-100 text-blue-800';
-      case 'pending': return 'bg-yellow-100 text-yellow-800';
-      case 'failed': return 'bg-red-100 text-red-800';
-      default: return 'bg-gray-100 text-gray-800';
+      case 'completed': return 'bg-success/10 text-green-800';
+      case 'in_progress': return 'bg-primary/10 text-blue-800';
+      case 'pending': return 'bg-warning/10 text-yellow-800';
+      case 'failed': return 'bg-destructive/10 text-red-800';
+      default: return 'bg-muted text-gray-800';
     }
   };
 
@@ -275,10 +275,10 @@ export default function IncidentWarRoom({ className }: IncidentWarRoomProps) {
 
   const getCommunicationTypeColor = (type: string) => {
     switch (type) {
-      case 'internal': return 'bg-blue-100 text-blue-800';
-      case 'customer': return 'bg-green-100 text-green-800';
-      case 'stakeholder': return 'bg-purple-100 text-purple-800';
-      default: return 'bg-gray-100 text-gray-800';
+      case 'internal': return 'bg-primary/10 text-blue-800';
+      case 'customer': return 'bg-success/10 text-green-800';
+      case 'stakeholder': return 'bg-primary/10 text-purple-800';
+      default: return 'bg-muted text-gray-800';
     }
   };
 
@@ -339,7 +339,7 @@ export default function IncidentWarRoom({ className }: IncidentWarRoomProps) {
                 variant="outline"
                 size="sm"
                 onClick={() => setIsWarRoomActive(!isWarRoomActive)}
-                className={isWarRoomActive ? 'bg-red-100 text-red-800' : ''}
+                className={isWarRoomActive ? 'bg-destructive/10 text-red-800' : ''}
               >
                 {isWarRoomActive ? <Pause className="h-4 w-4 mr-2" /> : <Play className="h-4 w-4 mr-2" />}
                 {isWarRoomActive ? 'War Room Active' : 'Activate War Room'}
@@ -358,26 +358,26 @@ export default function IncidentWarRoom({ className }: IncidentWarRoomProps) {
         <CardContent className="space-y-6">
           {/* Crisis Summary */}
           <div className="grid grid-cols-3 gap-4">
-            <div className="text-center p-3 bg-red-50 rounded-lg">
-              <div className="text-2xl font-bold text-red-600">{criticalIncidents}</div>
+            <div className="text-center p-3 bg-destructive/10 rounded-[0.625rem]">
+              <div className="text-2xl font-bold text-destructive">{criticalIncidents}</div>
               <div className="text-sm text-muted-foreground">Critical Incidents</div>
             </div>
-            <div className="text-center p-3 bg-orange-50 rounded-lg">
-              <div className="text-2xl font-bold text-orange-600">{activeIncidents}</div>
+            <div className="text-center p-3 bg-warning/10 rounded-[0.625rem]">
+              <div className="text-2xl font-bold text-warning">{activeIncidents}</div>
               <div className="text-sm text-muted-foreground">Active Incidents</div>
             </div>
-            <div className="text-center p-3 bg-purple-50 rounded-lg">
-              <div className="text-2xl font-bold text-purple-600">{formatCurrency(totalRevenueImpact)}</div>
+            <div className="text-center p-3 bg-primary/10 rounded-[0.625rem]">
+              <div className="text-2xl font-bold text-primary">{formatCurrency(totalRevenueImpact)}</div>
               <div className="text-sm text-muted-foreground">Revenue Impact</div>
             </div>
           </div>
 
           {/* Active Incident Focus */}
           {activeIncident && (
-            <div className={`p-4 border-2 rounded-lg ${
-              activeIncident.severity === 'critical' ? 'border-red-200 bg-red-50' :
-              activeIncident.severity === 'high' ? 'border-orange-200 bg-orange-50' :
-              'border-yellow-200 bg-yellow-50'
+            <div className={`p-4 border-2 rounded-[0.625rem] ${
+              activeIncident.severity === 'critical' ? 'border-red-200 bg-destructive/10' :
+              activeIncident.severity === 'high' ? 'border-orange-200 bg-warning/10' :
+              'border-yellow-200 bg-warning/10'
             }`}>
               <div className="flex items-start justify-between mb-4">
                 <div>
@@ -397,19 +397,19 @@ export default function IncidentWarRoom({ className }: IncidentWarRoomProps) {
               {/* Impact Metrics */}
               <div className="grid grid-cols-4 gap-4 mb-4">
                 <div className="text-center">
-                  <div className="text-lg font-bold text-red-600">{formatNumber(activeIncident.impact.affectedUsers)}</div>
+                  <div className="text-lg font-bold text-destructive">{formatNumber(activeIncident.impact.affectedUsers)}</div>
                   <div className="text-xs text-muted-foreground">Affected Users</div>
                 </div>
                 <div className="text-center">
-                  <div className="text-lg font-bold text-orange-600">{activeIncident.impact.affectedServices.length}</div>
+                  <div className="text-lg font-bold text-warning">{activeIncident.impact.affectedServices.length}</div>
                   <div className="text-xs text-muted-foreground">Affected Services</div>
                 </div>
                 <div className="text-center">
-                  <div className="text-lg font-bold text-purple-600">{formatCurrency(activeIncident.impact.revenueImpact)}</div>
+                  <div className="text-lg font-bold text-primary">{formatCurrency(activeIncident.impact.revenueImpact)}</div>
                   <div className="text-xs text-muted-foreground">Revenue Impact</div>
                 </div>
                 <div className="text-center">
-                  <div className="text-lg font-bold text-blue-600">{activeIncident.metrics.mttr}m</div>
+                  <div className="text-lg font-bold text-primary">{activeIncident.metrics.mttr}m</div>
                   <div className="text-xs text-muted-foreground">MTTR</div>
                 </div>
               </div>
@@ -444,7 +444,7 @@ export default function IncidentWarRoom({ className }: IncidentWarRoomProps) {
               <TabsContent value="actions" className="space-y-4">
                 <div className="space-y-3">
                   {activeIncident.actions.map((action) => (
-                    <div key={action.id} className="p-3 border rounded-lg">
+                    <div key={action.id} className="p-3 border rounded-[0.625rem]">
                       <div className="flex items-center justify-between mb-2">
                         <div className="flex items-center gap-2">
                           <CheckCircle className="h-4 w-4" />
@@ -484,12 +484,12 @@ export default function IncidentWarRoom({ className }: IncidentWarRoomProps) {
                 <div className="space-y-3">
                   {Object.entries(activeIncident.timeline).map(([stage, timestamp]) => (
                     timestamp && (
-                      <div key={stage} className="flex items-center gap-3 p-3 border rounded-lg">
-                        <div className={`w-3 h-3 rounded-lg-full ${
-                          stage === 'resolved' ? 'bg-green-500' :
-                          stage === 'mitigating' ? 'bg-orange-500' :
-                          stage === 'investigating' ? 'bg-yellow-500' :
-                          'bg-red-500'
+                      <div key={stage} className="flex items-center gap-3 p-3 border rounded-[0.625rem]">
+                        <div className={`w-3 h-3 rounded-[0.625rem]-full ${
+                          stage === 'resolved' ? 'bg-success/100' :
+                          stage === 'mitigating' ? 'bg-warning/100' :
+                          stage === 'investigating' ? 'bg-warning/100' :
+                          'bg-destructive/100'
                         }`} />
                         <div className="flex-1">
                           <div className="font-medium capitalize">{stage}</div>
@@ -507,7 +507,7 @@ export default function IncidentWarRoom({ className }: IncidentWarRoomProps) {
               <TabsContent value="communications" className="space-y-4">
                 <div className="space-y-3">
                   {activeIncident.communications.map((comm) => (
-                    <div key={comm.id} className="p-3 border rounded-lg">
+                    <div key={comm.id} className="p-3 border rounded-[0.625rem]">
                       <div className="flex items-start justify-between mb-2">
                         <div className="flex items-center gap-2">
                           <MessageSquare className="h-4 w-4" />
@@ -537,8 +537,8 @@ export default function IncidentWarRoom({ className }: IncidentWarRoomProps) {
               {incidents.map((incident) => (
                 <div
                   key={incident.id}
-                  className={`p-3 border rounded-lg cursor-pointer transition-colors ${
-                    activeIncident?.id === incident.id ? 'border-blue-500 bg-blue-50' : 'hover:bg-gray-50'
+                  className={`p-3 border rounded-[0.625rem] cursor-pointer transition-colors ${
+                    activeIncident?.id === incident.id ? 'border-blue-500 bg-primary/10' : 'hover:bg-muted/50'
                   }`}
                   onClick={() => setActiveIncident(incident)}
                 >

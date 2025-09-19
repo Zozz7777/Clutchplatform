@@ -270,27 +270,27 @@ export default function CashBurnTracker({ className }: CashBurnTrackerProps) {
 
   const getTypeColor = (type: string) => {
     switch (type) {
-      case 'inflow': return 'text-green-600';
-      case 'outflow': return 'text-red-600';
-      default: return 'text-gray-600';
+      case 'inflow': return 'text-success';
+      case 'outflow': return 'text-destructive';
+      default: return 'text-muted-foreground';
     }
   };
 
   const getTrendIcon = (trend: string) => {
     switch (trend) {
-      case 'increasing': return <ArrowUp className="h-4 w-4 text-red-500" />;
-      case 'decreasing': return <ArrowDown className="h-4 w-4 text-green-500" />;
-      case 'stable': return <Minus className="h-4 w-4 text-blue-500" />;
-      default: return <Minus className="h-4 w-4 text-gray-500" />;
+      case 'increasing': return <ArrowUp className="h-4 w-4 text-destructive" />;
+      case 'decreasing': return <ArrowDown className="h-4 w-4 text-success" />;
+      case 'stable': return <Minus className="h-4 w-4 text-primary" />;
+      default: return <Minus className="h-4 w-4 text-muted-foreground" />;
     }
   };
 
   const getScenarioColor = (scenario: string) => {
     switch (scenario) {
-      case 'optimistic': return 'bg-green-100 text-green-800';
-      case 'realistic': return 'bg-blue-100 text-blue-800';
-      case 'pessimistic': return 'bg-red-100 text-red-800';
-      default: return 'bg-gray-100 text-gray-800';
+      case 'optimistic': return 'bg-success/10 text-green-800';
+      case 'realistic': return 'bg-primary/10 text-blue-800';
+      case 'pessimistic': return 'bg-destructive/10 text-red-800';
+      default: return 'bg-muted text-gray-800';
     }
   };
 
@@ -325,7 +325,7 @@ export default function CashBurnTracker({ className }: CashBurnTrackerProps) {
                 variant="outline"
                 size="sm"
                 onClick={() => setIsMonitoring(!isMonitoring)}
-                className={isMonitoring ? 'bg-green-100 text-green-800' : ''}
+                className={isMonitoring ? 'bg-success/10 text-green-800' : ''}
               >
                 {isMonitoring ? <Eye className="h-4 w-4 mr-2" /> : <EyeOff className="h-4 w-4 mr-2" />}
                 {isMonitoring ? 'Monitoring' : 'Paused'}
@@ -344,26 +344,26 @@ export default function CashBurnTracker({ className }: CashBurnTrackerProps) {
         <CardContent className="space-y-6">
           {/* Cash Position Summary */}
           <div className="grid grid-cols-4 gap-4">
-            <div className="text-center p-3 bg-blue-50 rounded-lg">
-              <div className="text-2xl font-bold text-blue-600">{formatCurrency(currentCash)}</div>
+            <div className="text-center p-3 bg-primary/10 rounded-[0.625rem]">
+              <div className="text-2xl font-bold text-primary">{formatCurrency(currentCash)}</div>
               <div className="text-sm text-muted-foreground">Current Cash</div>
             </div>
-            <div className="text-center p-3 bg-green-50 rounded-lg">
-              <div className="text-2xl font-bold text-green-600">{formatCurrency(totalInflows)}</div>
+            <div className="text-center p-3 bg-success/10 rounded-[0.625rem]">
+              <div className="text-2xl font-bold text-success">{formatCurrency(totalInflows)}</div>
               <div className="text-sm text-muted-foreground">Total Inflows</div>
             </div>
-            <div className="text-center p-3 bg-red-50 rounded-lg">
-              <div className="text-2xl font-bold text-red-600">{formatCurrency(totalOutflows)}</div>
+            <div className="text-center p-3 bg-destructive/10 rounded-[0.625rem]">
+              <div className="text-2xl font-bold text-destructive">{formatCurrency(totalOutflows)}</div>
               <div className="text-sm text-muted-foreground">Total Outflows</div>
             </div>
-            <div className="text-center p-3 bg-purple-50 rounded-lg">
-              <div className="text-2xl font-bold text-purple-600">{Math.round(runwayMonths)}</div>
+            <div className="text-center p-3 bg-primary/10 rounded-[0.625rem]">
+              <div className="text-2xl font-bold text-primary">{Math.round(runwayMonths)}</div>
               <div className="text-sm text-muted-foreground">Runway (Months)</div>
             </div>
           </div>
 
           {/* Net Cash Flow */}
-          <div className="p-4 bg-gradient-to-r from-blue-50 to-purple-50 rounded-lg">
+          <div className="p-4 bg-gradient-to-r from-blue-50 to-purple-50 rounded-[0.625rem]">
             <div className="flex items-center justify-between">
               <div>
                 <h4 className="font-medium">Net Cash Flow</h4>
@@ -372,7 +372,7 @@ export default function CashBurnTracker({ className }: CashBurnTrackerProps) {
                 </p>
               </div>
               <div className="text-right">
-                <div className={`text-2xl font-bold ${netCashFlow >= 0 ? 'text-green-600' : 'text-red-600'}`}>
+                <div className={`text-2xl font-bold ${netCashFlow >= 0 ? 'text-success' : 'text-destructive'}`}>
                   {formatCurrency(netCashFlow)}
                 </div>
                 <div className="text-sm text-muted-foreground">This month</div>
@@ -385,7 +385,7 @@ export default function CashBurnTracker({ className }: CashBurnTrackerProps) {
             <h4 className="font-medium mb-3">Burn Rate Analysis</h4>
             <div className="space-y-3">
               {burnRates.map((burnRate) => (
-                <div key={burnRate.period} className="p-3 border rounded-lg">
+                <div key={burnRate.period} className="p-3 border rounded-[0.625rem]">
                   <div className="flex items-center justify-between mb-2">
                     <span className="font-medium">{burnRate.period}</span>
                     <div className="flex items-center gap-2">
@@ -408,7 +408,7 @@ export default function CashBurnTracker({ className }: CashBurnTrackerProps) {
             <h4 className="font-medium mb-3">Runway Projections</h4>
             <div className="grid gap-3">
               {runwayProjections.map((projection) => (
-                <div key={projection.scenario} className="p-3 border rounded-lg">
+                <div key={projection.scenario} className="p-3 border rounded-[0.625rem]">
                   <div className="flex items-center justify-between mb-2">
                     <div className="flex items-center gap-2">
                       <Badge className={getScenarioColor(projection.scenario)}>
@@ -465,7 +465,7 @@ export default function CashBurnTracker({ className }: CashBurnTrackerProps) {
 
             <div className="space-y-2">
               {filteredCashFlows.map((flow) => (
-                <div key={flow.id} className="p-3 border rounded-lg">
+                <div key={flow.id} className="p-3 border rounded-[0.625rem]">
                   <div className="flex items-center justify-between mb-2">
                     <div className="flex items-center gap-3">
                       {getCategoryIcon(flow.category)}
@@ -495,20 +495,20 @@ export default function CashBurnTracker({ className }: CashBurnTrackerProps) {
           </div>
 
           {/* Cash Flow Chart */}
-          <div className="p-4 border rounded-lg">
+          <div className="p-4 border rounded-[0.625rem]">
             <h4 className="font-medium mb-3">Cash Flow Trend</h4>
-            <div className="h-32 bg-gradient-to-r from-blue-50 to-green-50 rounded-lg flex items-center justify-center">
+            <div className="h-32 bg-gradient-to-r from-blue-50 to-green-50 rounded-[0.625rem] flex items-center justify-center">
               <div className="text-center">
-                <BarChart3 className="h-8 w-8 mx-auto mb-2 text-blue-600" />
-                <p className="font-medium text-gray-900">Cash Flow Visualization</p>
-                <p className="text-sm text-gray-600">Real-time cash flow tracking active</p>
+                <BarChart3 className="h-8 w-8 mx-auto mb-2 text-primary" />
+                <p className="font-medium text-foreground">Cash Flow Visualization</p>
+                <p className="text-sm text-muted-foreground">Real-time cash flow tracking active</p>
                 <div className="mt-2 flex justify-center space-x-4 text-xs">
                   <span className="flex items-center">
-                    <div className="w-2 h-2 bg-green-500 rounded-full mr-1"></div>
+                    <div className="w-2 h-2 bg-success/100 rounded-full mr-1"></div>
                     Inflow: ${(cashFlow.reduce((sum, flow) => sum + (flow.amount > 0 ? flow.amount : 0), 0)).toLocaleString()}
                   </span>
                   <span className="flex items-center">
-                    <div className="w-2 h-2 bg-red-500 rounded-full mr-1"></div>
+                    <div className="w-2 h-2 bg-destructive/100 rounded-full mr-1"></div>
                     Outflow: ${(Math.abs(cashFlow.reduce((sum, flow) => sum + (flow.amount < 0 ? flow.amount : 0), 0))).toLocaleString()}
                   </span>
                 </div>

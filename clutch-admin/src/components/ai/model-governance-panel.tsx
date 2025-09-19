@@ -485,12 +485,12 @@ export default function ModelGovernancePanel({ className }: ModelGovernancePanel
 
   const getStatusColor = (status: string) => {
     switch (status) {
-      case 'development': return 'bg-blue-100 text-blue-800';
-      case 'testing': return 'bg-yellow-100 text-yellow-800';
-      case 'production': return 'bg-green-100 text-green-800';
-      case 'deprecated': return 'bg-orange-100 text-orange-800';
-      case 'retired': return 'bg-gray-100 text-gray-800';
-      default: return 'bg-gray-100 text-gray-800';
+      case 'development': return 'bg-primary/10 text-blue-800';
+      case 'testing': return 'bg-warning/10 text-yellow-800';
+      case 'production': return 'bg-success/10 text-green-800';
+      case 'deprecated': return 'bg-warning/10 text-orange-800';
+      case 'retired': return 'bg-muted text-gray-800';
+      default: return 'bg-muted text-gray-800';
     }
   };
 
@@ -507,59 +507,59 @@ export default function ModelGovernancePanel({ className }: ModelGovernancePanel
   };
 
   const getBiasColor = (bias: number) => {
-    if (bias <= 10) return 'text-green-600';
-    if (bias <= 20) return 'text-yellow-600';
-    if (bias <= 30) return 'text-orange-600';
-    return 'text-red-600';
+    if (bias <= 10) return 'text-success';
+    if (bias <= 20) return 'text-warning';
+    if (bias <= 30) return 'text-warning';
+    return 'text-destructive';
   };
 
   const getRiskColor = (risk: string) => {
     switch (risk) {
-      case 'low': return 'bg-green-100 text-green-800';
-      case 'medium': return 'bg-yellow-100 text-yellow-800';
-      case 'high': return 'bg-orange-100 text-orange-800';
-      case 'critical': return 'bg-red-100 text-red-800';
-      default: return 'bg-gray-100 text-gray-800';
+      case 'low': return 'bg-success/10 text-green-800';
+      case 'medium': return 'bg-warning/10 text-yellow-800';
+      case 'high': return 'bg-warning/10 text-orange-800';
+      case 'critical': return 'bg-destructive/10 text-red-800';
+      default: return 'bg-muted text-gray-800';
     }
   };
 
   const getApprovalStatusColor = (status: string) => {
     switch (status) {
-      case 'approved': return 'bg-green-100 text-green-800';
-      case 'pending': return 'bg-yellow-100 text-yellow-800';
-      case 'rejected': return 'bg-red-100 text-red-800';
-      case 'under_review': return 'bg-blue-100 text-blue-800';
-      default: return 'bg-gray-100 text-gray-800';
+      case 'approved': return 'bg-success/10 text-green-800';
+      case 'pending': return 'bg-warning/10 text-yellow-800';
+      case 'rejected': return 'bg-destructive/10 text-red-800';
+      case 'under_review': return 'bg-primary/10 text-blue-800';
+      default: return 'bg-muted text-gray-800';
     }
   };
 
   const getAlertSeverityColor = (severity: string) => {
     switch (severity) {
-      case 'low': return 'bg-green-100 text-green-800';
-      case 'medium': return 'bg-yellow-100 text-yellow-800';
-      case 'high': return 'bg-orange-100 text-orange-800';
-      case 'critical': return 'bg-red-100 text-red-800';
-      default: return 'bg-gray-100 text-gray-800';
+      case 'low': return 'bg-success/10 text-green-800';
+      case 'medium': return 'bg-warning/10 text-yellow-800';
+      case 'high': return 'bg-warning/10 text-orange-800';
+      case 'critical': return 'bg-destructive/10 text-red-800';
+      default: return 'bg-muted text-gray-800';
     }
   };
 
   const getAlertStatusColor = (status: string) => {
     switch (status) {
-      case 'active': return 'bg-red-100 text-red-800';
-      case 'investigating': return 'bg-yellow-100 text-yellow-800';
-      case 'resolved': return 'bg-green-100 text-green-800';
-      case 'false_positive': return 'bg-gray-100 text-gray-800';
-      default: return 'bg-gray-100 text-gray-800';
+      case 'active': return 'bg-destructive/10 text-red-800';
+      case 'investigating': return 'bg-warning/10 text-yellow-800';
+      case 'resolved': return 'bg-success/10 text-green-800';
+      case 'false_positive': return 'bg-muted text-gray-800';
+      default: return 'bg-muted text-gray-800';
     }
   };
 
   const getDataQualityColor = (quality: string) => {
     switch (quality) {
-      case 'excellent': return 'text-green-600';
-      case 'good': return 'text-blue-600';
-      case 'fair': return 'text-yellow-600';
-      case 'poor': return 'text-red-600';
-      default: return 'text-gray-600';
+      case 'excellent': return 'text-success';
+      case 'good': return 'text-primary';
+      case 'fair': return 'text-warning';
+      case 'poor': return 'text-destructive';
+      default: return 'text-muted-foreground';
     }
   };
 
@@ -596,7 +596,7 @@ export default function ModelGovernancePanel({ className }: ModelGovernancePanel
                 variant="outline"
                 size="sm"
                 onClick={() => setIsMonitoring(!isMonitoring)}
-                className={isMonitoring ? 'bg-green-100 text-green-800' : ''}
+                className={isMonitoring ? 'bg-success/10 text-green-800' : ''}
               >
                 {isMonitoring ? <Eye className="h-4 w-4 mr-2" /> : <EyeOff className="h-4 w-4 mr-2" />}
                 {isMonitoring ? 'Monitoring' : 'Paused'}
@@ -615,26 +615,26 @@ export default function ModelGovernancePanel({ className }: ModelGovernancePanel
         <CardContent className="space-y-6">
           {/* Model Summary */}
           <div className="grid grid-cols-4 gap-4">
-            <div className="text-center p-3 bg-green-50 rounded-lg">
-              <div className="text-2xl font-bold text-green-600">{productionModels}</div>
+            <div className="text-center p-3 bg-success/10 rounded-[0.625rem]">
+              <div className="text-2xl font-bold text-success">{productionModels}</div>
               <div className="text-sm text-muted-foreground">Production Models</div>
             </div>
-            <div className="text-center p-3 bg-orange-50 rounded-lg">
-              <div className="text-2xl font-bold text-orange-600">{highBiasModels}</div>
+            <div className="text-center p-3 bg-warning/10 rounded-[0.625rem]">
+              <div className="text-2xl font-bold text-warning">{highBiasModels}</div>
               <div className="text-sm text-muted-foreground">High Bias Models</div>
             </div>
-            <div className="text-center p-3 bg-yellow-50 rounded-lg">
-              <div className="text-2xl font-bold text-yellow-600">{pendingApprovals}</div>
+            <div className="text-center p-3 bg-warning/10 rounded-[0.625rem]">
+              <div className="text-2xl font-bold text-warning">{pendingApprovals}</div>
               <div className="text-sm text-muted-foreground">Pending Approvals</div>
             </div>
-            <div className="text-center p-3 bg-red-50 rounded-lg">
-              <div className="text-2xl font-bold text-red-600">{activeAlerts}</div>
+            <div className="text-center p-3 bg-destructive/10 rounded-[0.625rem]">
+              <div className="text-2xl font-bold text-destructive">{activeAlerts}</div>
               <div className="text-sm text-muted-foreground">Active Alerts</div>
             </div>
           </div>
 
           {/* Bias Overview */}
-          <div className="p-4 bg-gradient-to-r from-blue-50 to-purple-50 rounded-lg">
+          <div className="p-4 bg-gradient-to-r from-blue-50 to-purple-50 rounded-[0.625rem]">
             <div className="flex items-center justify-between">
               <div>
                 <h4 className="font-medium">Average Bias Score</h4>
@@ -659,7 +659,7 @@ export default function ModelGovernancePanel({ className }: ModelGovernancePanel
             <h4 className="font-medium mb-3">Bias & Fairness Alerts</h4>
             <div className="space-y-2">
               {biasAlerts.map((alert) => (
-                <div key={alert.id} className="p-3 border rounded-lg">
+                <div key={alert.id} className="p-3 border rounded-[0.625rem]">
                   <div className="flex items-center justify-between mb-2">
                     <div className="flex items-center gap-2">
                       <span className="font-medium">{alert.description}</span>
@@ -720,8 +720,8 @@ export default function ModelGovernancePanel({ className }: ModelGovernancePanel
               {filteredModels.map((model) => (
                 <div
                   key={model.id}
-                  className={`p-3 border rounded-lg cursor-pointer transition-colors ${
-                    selectedModel?.id === model.id ? 'border-blue-500 bg-blue-50' : 'hover:bg-gray-50'
+                  className={`p-3 border rounded-[0.625rem] cursor-pointer transition-colors ${
+                    selectedModel?.id === model.id ? 'border-blue-500 bg-primary/10' : 'hover:bg-muted/50'
                   }`}
                   onClick={() => setSelectedModel(model)}
                 >
@@ -969,31 +969,31 @@ export default function ModelGovernancePanel({ className }: ModelGovernancePanel
                     <div className="space-y-2 text-sm">
                       <div className="flex justify-between">
                         <span>GDPR:</span>
-                        <Badge className={selectedModel.compliance.gdpr ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}>
+                        <Badge className={selectedModel.compliance.gdpr ? 'bg-success/10 text-green-800' : 'bg-destructive/10 text-red-800'}>
                           {selectedModel.compliance.gdpr ? 'Compliant' : 'Non-compliant'}
                         </Badge>
                       </div>
                       <div className="flex justify-between">
                         <span>CCPA:</span>
-                        <Badge className={selectedModel.compliance.ccpa ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}>
+                        <Badge className={selectedModel.compliance.ccpa ? 'bg-success/10 text-green-800' : 'bg-destructive/10 text-red-800'}>
                           {selectedModel.compliance.ccpa ? 'Compliant' : 'Non-compliant'}
                         </Badge>
                       </div>
                       <div className="flex justify-between">
                         <span>SOX:</span>
-                        <Badge className={selectedModel.compliance.sox ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}>
+                        <Badge className={selectedModel.compliance.sox ? 'bg-success/10 text-green-800' : 'bg-destructive/10 text-red-800'}>
                           {selectedModel.compliance.sox ? 'Compliant' : 'Non-compliant'}
                         </Badge>
                       </div>
                       <div className="flex justify-between">
                         <span>HIPAA:</span>
-                        <Badge className={selectedModel.compliance.hipaa ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}>
+                        <Badge className={selectedModel.compliance.hipaa ? 'bg-success/10 text-green-800' : 'bg-destructive/10 text-red-800'}>
                           {selectedModel.compliance.hipaa ? 'Compliant' : 'Non-compliant'}
                         </Badge>
                       </div>
                       <div className="flex justify-between">
                         <span>ISO 27001:</span>
-                        <Badge className={selectedModel.compliance.iso27001 ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}>
+                        <Badge className={selectedModel.compliance.iso27001 ? 'bg-success/10 text-green-800' : 'bg-destructive/10 text-red-800'}>
                           {selectedModel.compliance.iso27001 ? 'Compliant' : 'Non-compliant'}
                         </Badge>
                       </div>
@@ -1031,13 +1031,13 @@ export default function ModelGovernancePanel({ className }: ModelGovernancePanel
                       )}
                       <div className="flex justify-between">
                         <span>Monitoring:</span>
-                        <Badge className={selectedModel.governance.monitoring ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}>
+                        <Badge className={selectedModel.governance.monitoring ? 'bg-success/10 text-green-800' : 'bg-destructive/10 text-red-800'}>
                           {selectedModel.governance.monitoring ? 'Enabled' : 'Disabled'}
                         </Badge>
                       </div>
                       <div className="flex justify-between">
                         <span>Alerts:</span>
-                        <Badge className={selectedModel.governance.alerts ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}>
+                        <Badge className={selectedModel.governance.alerts ? 'bg-success/10 text-green-800' : 'bg-destructive/10 text-red-800'}>
                           {selectedModel.governance.alerts ? 'Enabled' : 'Disabled'}
                         </Badge>
                       </div>
@@ -1048,7 +1048,7 @@ export default function ModelGovernancePanel({ className }: ModelGovernancePanel
                     <h5 className="font-medium mb-2">Documentation</h5>
                     <div className="space-y-1">
                       {selectedModel.governance.documentation.map((doc, index) => (
-                        <div key={index} className="p-2 border rounded-lg text-sm">
+                        <div key={index} className="p-2 border rounded-[0.625rem] text-sm">
                           • {doc}
                         </div>
                       ))}

@@ -131,39 +131,39 @@ export function IncidentCost({ className = '' }: IncidentCostProps) {
 
   const getSeverityColor = (severity: string) => {
     switch (severity) {
-      case 'critical': return 'text-red-600';
-      case 'high': return 'text-orange-600';
-      case 'medium': return 'text-yellow-600';
-      case 'low': return 'text-green-600';
-      default: return 'text-gray-600';
+      case 'critical': return 'text-destructive';
+      case 'high': return 'text-warning';
+      case 'medium': return 'text-warning';
+      case 'low': return 'text-success';
+      default: return 'text-muted-foreground';
     }
   };
 
   const getSeverityBadge = (severity: string) => {
     switch (severity) {
-      case 'critical': return 'bg-red-100 text-red-800';
-      case 'high': return 'bg-orange-100 text-orange-800';
-      case 'medium': return 'bg-yellow-100 text-yellow-800';
-      case 'low': return 'bg-green-100 text-green-800';
-      default: return 'bg-gray-100 text-gray-800';
+      case 'critical': return 'bg-destructive/10 text-red-800';
+      case 'high': return 'bg-warning/10 text-orange-800';
+      case 'medium': return 'bg-warning/10 text-yellow-800';
+      case 'low': return 'bg-success/10 text-green-800';
+      default: return 'bg-muted text-gray-800';
     }
   };
 
   const getStatusColor = (status: string) => {
     switch (status) {
-      case 'resolved': return 'text-green-600';
-      case 'investigating': return 'text-yellow-600';
-      case 'mitigated': return 'text-blue-600';
-      default: return 'text-gray-600';
+      case 'resolved': return 'text-success';
+      case 'investigating': return 'text-warning';
+      case 'mitigated': return 'text-primary';
+      default: return 'text-muted-foreground';
     }
   };
 
   const getStatusBadge = (status: string) => {
     switch (status) {
-      case 'resolved': return 'bg-green-100 text-green-800';
-      case 'investigating': return 'bg-yellow-100 text-yellow-800';
-      case 'mitigated': return 'bg-blue-100 text-blue-800';
-      default: return 'bg-gray-100 text-gray-800';
+      case 'resolved': return 'bg-success/10 text-green-800';
+      case 'investigating': return 'bg-warning/10 text-yellow-800';
+      case 'mitigated': return 'bg-primary/10 text-blue-800';
+      default: return 'bg-muted text-gray-800';
     }
   };
 
@@ -187,16 +187,16 @@ export function IncidentCost({ className = '' }: IncidentCostProps) {
       <Card className={className}>
         <CardHeader>
           <CardTitle className="flex items-center space-x-2">
-            <DollarSign className="h-5 w-5 text-red-600" />
+            <DollarSign className="h-5 w-5 text-destructive" />
             <span>Incident Cost</span>
           </CardTitle>
           <CardDescription>Loading incident cost data...</CardDescription>
         </CardHeader>
         <CardContent>
           <div className="animate-pulse space-y-4">
-            <div className="h-4 bg-gray-200 rounded-lg w-3/4"></div>
-            <div className="h-4 bg-gray-200 rounded-lg w-1/2"></div>
-            <div className="h-4 bg-gray-200 rounded-lg w-2/3"></div>
+            <div className="h-4 bg-muted rounded-[0.625rem] w-3/4"></div>
+            <div className="h-4 bg-muted rounded-[0.625rem] w-1/2"></div>
+            <div className="h-4 bg-muted rounded-[0.625rem] w-2/3"></div>
           </div>
         </CardContent>
       </Card>
@@ -208,7 +208,7 @@ export function IncidentCost({ className = '' }: IncidentCostProps) {
       <Card className={className}>
         <CardHeader>
           <CardTitle className="flex items-center space-x-2">
-            <DollarSign className="h-5 w-5 text-red-600" />
+            <DollarSign className="h-5 w-5 text-destructive" />
             <span>Incident Cost</span>
           </CardTitle>
           <CardDescription>Unable to load incident cost data</CardDescription>
@@ -221,7 +221,7 @@ export function IncidentCost({ className = '' }: IncidentCostProps) {
     <Card className={className}>
       <CardHeader>
         <CardTitle className="flex items-center space-x-2">
-          <DollarSign className="h-5 w-5 text-red-600" />
+          <DollarSign className="h-5 w-5 text-destructive" />
           <span>Incident Cost</span>
         </CardTitle>
         <CardDescription>
@@ -231,34 +231,34 @@ export function IncidentCost({ className = '' }: IncidentCostProps) {
       <CardContent className="space-y-6">
         {/* Summary Stats */}
         <div className="grid grid-cols-2 gap-4">
-          <div className="text-center p-3 bg-red-50 rounded-lg-lg">
-            <DollarSign className="h-5 w-5 text-red-600 mx-auto mb-1" />
-            <p className="text-lg font-bold text-red-600">
+          <div className="text-center p-3 bg-destructive/10 rounded-[0.625rem]-lg">
+            <DollarSign className="h-5 w-5 text-destructive mx-auto mb-1" />
+            <p className="text-lg font-bold text-destructive">
               ${incidentData.totalCost.toLocaleString()}
             </p>
-            <p className="text-xs text-gray-500">Total Cost</p>
+            <p className="text-xs text-muted-foreground">Total Cost</p>
           </div>
-          <div className="text-center p-3 bg-orange-50 rounded-lg-lg">
-            <Clock className="h-5 w-5 text-orange-600 mx-auto mb-1" />
-            <p className="text-lg font-bold text-orange-600">
+          <div className="text-center p-3 bg-warning/10 rounded-[0.625rem]-lg">
+            <Clock className="h-5 w-5 text-warning mx-auto mb-1" />
+            <p className="text-lg font-bold text-warning">
               {formatDuration(incidentData.totalDowntime)}
             </p>
-            <p className="text-xs text-gray-500">Total Downtime</p>
+            <p className="text-xs text-muted-foreground">Total Downtime</p>
           </div>
         </div>
 
         {/* Average Cost */}
-        <div className="text-center p-4 bg-gray-50 rounded-lg-lg">
+        <div className="text-center p-4 bg-muted/50 rounded-[0.625rem]-lg">
           <div className="flex items-center justify-center space-x-2 mb-2">
-            <Target className="h-6 w-6 text-red-600" />
-            <span className="text-2xl font-bold text-red-600">
+            <Target className="h-6 w-6 text-destructive" />
+            <span className="text-2xl font-bold text-destructive">
               ${incidentData.averageCost.toLocaleString()}
             </span>
-            <Badge className="bg-red-100 text-red-800">
+            <Badge className="bg-destructive/10 text-red-800">
               Average
             </Badge>
           </div>
-          <p className="text-sm text-gray-600">Average Cost per Incident</p>
+          <p className="text-sm text-muted-foreground">Average Cost per Incident</p>
           <div className="mt-3">
             <Progress value={Math.min((incidentData.averageCost / 20000) * 100, 100)} className="h-2" />
           </div>
@@ -266,50 +266,50 @@ export function IncidentCost({ className = '' }: IncidentCostProps) {
 
         {/* Severity Distribution */}
         <div className="space-y-3">
-          <h4 className="text-sm font-medium text-gray-900">Severity Distribution</h4>
+          <h4 className="text-sm font-medium text-foreground">Severity Distribution</h4>
           <div className="grid grid-cols-4 gap-2">
-            <div className="text-center p-2 bg-red-50 rounded-lg">
-              <p className="text-sm font-bold text-red-600">
+            <div className="text-center p-2 bg-destructive/10 rounded-[0.625rem]">
+              <p className="text-sm font-bold text-destructive">
                 {incidentData.severityDistribution.critical || 0}
               </p>
-              <p className="text-xs text-gray-500">Critical</p>
+              <p className="text-xs text-muted-foreground">Critical</p>
             </div>
-            <div className="text-center p-2 bg-orange-50 rounded-lg">
-              <p className="text-sm font-bold text-orange-600">
+            <div className="text-center p-2 bg-warning/10 rounded-[0.625rem]">
+              <p className="text-sm font-bold text-warning">
                 {incidentData.severityDistribution.high || 0}
               </p>
-              <p className="text-xs text-gray-500">High</p>
+              <p className="text-xs text-muted-foreground">High</p>
             </div>
-            <div className="text-center p-2 bg-yellow-50 rounded-lg">
-              <p className="text-sm font-bold text-yellow-600">
+            <div className="text-center p-2 bg-warning/10 rounded-[0.625rem]">
+              <p className="text-sm font-bold text-warning">
                 {incidentData.severityDistribution.medium || 0}
               </p>
-              <p className="text-xs text-gray-500">Medium</p>
+              <p className="text-xs text-muted-foreground">Medium</p>
             </div>
-            <div className="text-center p-2 bg-green-50 rounded-lg">
-              <p className="text-sm font-bold text-green-600">
+            <div className="text-center p-2 bg-success/10 rounded-[0.625rem]">
+              <p className="text-sm font-bold text-success">
                 {incidentData.severityDistribution.low || 0}
               </p>
-              <p className="text-xs text-gray-500">Low</p>
+              <p className="text-xs text-muted-foreground">Low</p>
             </div>
           </div>
         </div>
 
         {/* Recent Incidents */}
         <div className="space-y-3">
-          <h4 className="text-sm font-medium text-gray-900">Recent Incidents</h4>
+          <h4 className="text-sm font-medium text-foreground">Recent Incidents</h4>
           <div className="space-y-2 max-h-64 overflow-y-auto">
             {incidentData.incidents
               .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
               .map((incident) => (
-                <div key={incident.incidentId} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg-lg">
+                <div key={incident.incidentId} className="flex items-center justify-between p-3 bg-muted/50 rounded-[0.625rem]-lg">
                   <div className="flex items-center space-x-3">
-                    <div className="flex items-center justify-center w-8 h-8 bg-red-100 rounded-lg-full">
-                      <AlertTriangle className="h-4 w-4 text-red-600" />
+                    <div className="flex items-center justify-center w-8 h-8 bg-destructive/10 rounded-[0.625rem]-full">
+                      <AlertTriangle className="h-4 w-4 text-destructive" />
                     </div>
                     <div>
-                      <p className="text-sm font-medium text-gray-900">{incident.title}</p>
-                      <p className="text-xs text-gray-500">
+                      <p className="text-sm font-medium text-foreground">{incident.title}</p>
+                      <p className="text-xs text-muted-foreground">
                         {formatDate(incident.date)} • {formatDuration(incident.duration)}
                       </p>
                     </div>
@@ -317,7 +317,7 @@ export function IncidentCost({ className = '' }: IncidentCostProps) {
                   
                   <div className="text-right">
                     <div className="flex items-center space-x-2">
-                      <p className="text-sm font-semibold text-gray-900">
+                      <p className="text-sm font-semibold text-foreground">
                         ${incident.cost.toLocaleString()}
                       </p>
                       <Badge className={getSeverityBadge(incident.severity)}>
@@ -325,8 +325,8 @@ export function IncidentCost({ className = '' }: IncidentCostProps) {
                       </Badge>
                     </div>
                     <div className="flex items-center space-x-1 mt-1">
-                      <Users className="h-3 w-3 text-gray-500" />
-                      <span className="text-xs text-gray-500">
+                      <Users className="h-3 w-3 text-muted-foreground" />
+                      <span className="text-xs text-muted-foreground">
                         {incident.affectedUsers} users
                       </span>
                     </div>
@@ -338,7 +338,7 @@ export function IncidentCost({ className = '' }: IncidentCostProps) {
 
         {/* Cost by Severity */}
         <div className="space-y-3">
-          <h4 className="text-sm font-medium text-gray-900">Cost by Severity</h4>
+          <h4 className="text-sm font-medium text-foreground">Cost by Severity</h4>
           <div className="space-y-2">
             {Object.entries(incidentData.severityDistribution).map(([severity, count]) => {
               const severityIncidents = incidentData.incidents.filter(i => i.severity === severity);
@@ -348,8 +348,8 @@ export function IncidentCost({ className = '' }: IncidentCostProps) {
               return (
                 <div key={severity} className="space-y-1">
                   <div className="flex justify-between text-sm">
-                    <span className="text-gray-600 capitalize">{severity}</span>
-                    <span className="text-gray-900 font-medium">
+                    <span className="text-muted-foreground capitalize">{severity}</span>
+                    <span className="text-foreground font-medium">
                       ${severityCost.toLocaleString()} ({percentage.toFixed(1)}%)
                     </span>
                   </div>
@@ -373,7 +373,7 @@ export function IncidentCost({ className = '' }: IncidentCostProps) {
         </div>
 
         {/* Insights */}
-        <div className="p-3 bg-blue-50 rounded-lg-lg">
+        <div className="p-3 bg-primary/10 rounded-[0.625rem]-lg">
           <h5 className="text-sm font-medium text-blue-900 mb-2">💡 Incident Cost Insights</h5>
           <ul className="text-xs text-blue-800 space-y-1">
             <li>• Total incident cost: ${incidentData.totalCost.toLocaleString()}</li>

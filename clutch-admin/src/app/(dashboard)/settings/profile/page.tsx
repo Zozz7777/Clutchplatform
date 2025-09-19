@@ -62,8 +62,8 @@ interface UserProfile {
 }
 
 export default function ProfileSettingsPage() {
-  const { user, hasPermission } = useAuth();
   const { t } = useTranslations();
+  const { user, hasPermission } = useAuth();
   const [profile, setProfile] = useState<UserProfile | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [isSaving, setIsSaving] = useState(false);
@@ -361,12 +361,12 @@ export default function ProfileSettingsPage() {
         <div>
           <h1 className="text-3xl font-bold tracking-tight">{t('profile.title')}</h1>
           <p className="text-muted-foreground">
-            Manage your personal information and account settings
+            {t('profile.description')}
           </p>
         </div>
         <Button onClick={saveProfile} disabled={isSaving}>
           <Save className="mr-2 h-4 w-4" />
-          {isSaving ? t('common.loading') : t('profile.updateProfile')}
+          {isSaving ? t('profile.saving') : t('profile.updateProfile')}
         </Button>
       </div>
 
@@ -606,13 +606,13 @@ export default function ProfileSettingsPage() {
                   <div className="flex items-center gap-2">
                     {profile.security.twoFactorEnabled ? (
                       <>
-                        <Check className="h-4 w-4 text-green-600" />
-                        <span className="text-sm text-green-600">Enabled</span>
+                        <Check className="h-4 w-4 text-success" />
+                        <span className="text-sm text-success">Enabled</span>
                       </>
                     ) : (
                       <>
-                        <X className="h-4 w-4 text-red-600" />
-                        <span className="text-sm text-red-600">Disabled</span>
+                        <X className="h-4 w-4 text-destructive" />
+                        <span className="text-sm text-destructive">Disabled</span>
                       </>
                     )}
                   </div>

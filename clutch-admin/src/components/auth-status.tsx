@@ -41,28 +41,28 @@ export function AuthStatus() {
   const getStatusIcon = () => {
     switch (verificationStatus) {
       case 'valid':
-        return <CheckCircle className="h-4 w-4 text-green-500" />;
+        return <CheckCircle className="h-4 w-4 text-success" />;
       case 'invalid':
-        return <XCircle className="h-4 w-4 text-red-500" />;
+        return <XCircle className="h-4 w-4 text-destructive" />;
       case 'error':
-        return <AlertCircle className="h-4 w-4 text-yellow-500" />;
+        return <AlertCircle className="h-4 w-4 text-warning" />;
       case 'checking':
-        return <RefreshCw className="h-4 w-4 text-blue-500 animate-spin" />;
+        return <RefreshCw className="h-4 w-4 text-primary animate-spin" />;
       default:
-        return <AlertCircle className="h-4 w-4 text-gray-500" />;
+        return <AlertCircle className="h-4 w-4 text-muted-foreground" />;
     }
   };
 
   const getStatusBadge = () => {
     switch (verificationStatus) {
       case 'valid':
-        return <Badge variant="default" className="bg-green-500">Valid</Badge>;
+        return <Badge variant="default" className="bg-success/100">Valid</Badge>;
       case 'invalid':
         return <Badge variant="destructive">Invalid</Badge>;
       case 'error':
-        return <Badge variant="secondary" className="bg-yellow-500">Error</Badge>;
+        return <Badge variant="secondary" className="bg-warning/100">Error</Badge>;
       case 'checking':
-        return <Badge variant="secondary" className="bg-blue-500">Checking...</Badge>;
+        return <Badge variant="secondary" className="bg-primary/100">Checking...</Badge>;
       default:
         return <Badge variant="outline">Not Checked</Badge>;
     }

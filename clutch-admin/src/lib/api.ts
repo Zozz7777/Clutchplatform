@@ -39,19 +39,6 @@ class ApiService {
     if (typeof window !== "undefined") {
       this.token = localStorage.getItem("clutch-admin-token") || sessionStorage.getItem("clutch-admin-token");
       this.refreshToken = localStorage.getItem("clutch-admin-refresh-token");
-      
-      // Debug logging for token retrieval
-      if (process.env.NODE_ENV === 'development') {
-        console.log('🔑 Token retrieval:', {
-          hasToken: !!this.token,
-          hasRefreshToken: !!this.refreshToken,
-          tokenPreview: this.token ? `${this.token.substring(0, 20)}...` : 'none',
-          refreshTokenPreview: this.refreshToken ? `${this.refreshToken.substring(0, 20)}...` : 'none',
-          localStorage: localStorage.getItem("clutch-admin-token") ? 'exists' : 'missing',
-          sessionStorage: sessionStorage.getItem("clutch-admin-token") ? 'exists' : 'missing',
-          refreshTokenStorage: localStorage.getItem("clutch-admin-refresh-token") ? 'exists' : 'missing'
-        });
-      }
     }
     return this.token;
   }
@@ -60,12 +47,12 @@ class ApiService {
     // Check cooldown period to prevent rapid refresh attempts
     const now = Date.now();
     if (now - this.lastRefreshTime < this.refreshCooldown) {
-      console.log(`🔄 Refresh cooldown active, skipping refresh attempt`);
+      // Refresh cooldown active
       return null;
     }
 
     if (this.isRefreshing && this.refreshPromise) {
-      console.log(`🔄 Refresh already in progress, waiting...`);
+      // Refresh already in progress
       return this.refreshPromise;
     }
 
@@ -90,7 +77,7 @@ class ApiService {
     }
 
     try {
-      console.log("🔄 Attempting token refresh with refresh token:", this.refreshToken.substring(0, 20) + "...");
+      // Attempting token refresh
       const response = await fetch(`${this.baseURL}/api/v1/auth/refresh`, {
         method: "POST",
         headers: {
@@ -99,16 +86,11 @@ class ApiService {
         body: JSON.stringify({ refreshToken: this.refreshToken }),
       });
 
-      console.log("🔄 Refresh response status:", response.status);
+      // Refresh response received
       
       if (response.ok) {
         const data = await response.json();
-        console.log("🔄 Refresh response data:", { 
-          success: data.success, 
-          hasToken: !!data.token, 
-          hasRefreshToken: !!data.refreshToken,
-          responseStructure: Object.keys(data)
-        });
+        // Refresh successful
         
         // Handle both response formats: { success: true, token: ... } and { success: true, data: { token: ... } }
         const token = data.token || data.data?.token;
@@ -146,15 +128,7 @@ class ApiService {
       }
       
       // Debug logging for token storage
-      console.log('🔑 Tokens stored:', {
-        hasToken: !!token,
-        hasRefreshToken: !!refreshToken,
-        tokenPreview: token ? `${token.substring(0, 20)}...` : 'none',
-        refreshTokenPreview: refreshToken ? `${refreshToken.substring(0, 20)}...` : 'none',
-        localStorage: localStorage.getItem("clutch-admin-token") ? 'exists' : 'missing',
-        sessionStorage: sessionStorage.getItem("clutch-admin-token") ? 'exists' : 'missing',
-        refreshTokenStorage: localStorage.getItem("clutch-admin-refresh-token") ? 'exists' : 'missing'
-      });
+      // Tokens stored successfully
     }
   }
 
@@ -180,16 +154,7 @@ class ApiService {
 
     // Debug logging for auth headers
     if (process.env.NODE_ENV === 'development') {
-      console.log(`🔐 API Request to ${endpoint}:`, {
-        url,
-        hasToken: !!token,
-        tokenPreview: token ? `${token.substring(0, 20)}...` : 'none',
-        retryCount,
-        hasAuthHeader: !!(config.headers as any)?.Authorization,
-        authHeaderPreview: (config.headers as any)?.Authorization ? 
-          `${(config.headers as any).Authorization.substring(0, 30)}...` : 'none',
-        headers: config.headers
-      });
+      // API request initiated
     }
 
     try {
@@ -197,40 +162,36 @@ class ApiService {
       
       // Debug logging for response
       if (process.env.NODE_ENV === 'development') {
-        console.log(`📡 API Response from ${endpoint}:`, {
-          status: response.status,
-          statusText: response.statusText,
-          headers: Object.fromEntries(response.headers.entries())
-        });
+        // API response received
       }
       
       // Handle 401 Unauthorized - try to refresh token
       if (response.status === 401 && retryCount < maxRetries) {
-        console.log(`🔄 Token expired, attempting refresh for ${endpoint}`);
+        // Token expired, attempting refresh
         const newToken = await this.refreshAuthToken();
         
         if (newToken) {
-          console.log(`✅ Token refreshed successfully, retrying request for ${endpoint}`);
+          // Token refreshed successfully
           // Force reload tokens from storage to ensure we have the latest
           this.loadTokens();
           // Retry the request with new token
           return this.request<T>(endpoint, options, retryCount + 1);
         } else {
-          console.log(`❌ Token refresh failed or skipped for ${endpoint}`);
+          // Token refresh failed
           // If refresh failed due to cooldown or other reasons, try to use existing token
           if (retryCount === 0) {
             // First retry - try with current token from storage
             this.loadTokens();
             const currentToken = this.getToken();
             if (currentToken && currentToken !== token) {
-              console.log(`🔄 Using different token from storage for ${endpoint}`);
+              // Using different token from storage
               return this.request<T>(endpoint, options, retryCount + 1);
             }
           }
           
           // If we've exhausted retries or no valid token, redirect to login
           if (retryCount >= maxRetries - 1) {
-            console.log(`❌ Max retries reached for ${endpoint}, redirecting to login`);
+            // Max retries reached
             this.logout();
             window.location.href = '/login';
             return {
@@ -241,7 +202,7 @@ class ApiService {
           }
           
           // Continue with current request and let it fail naturally
-          console.log(`⚠️ Continuing with failed request for ${endpoint}`);
+          // Continuing with failed request
         }
       }
       
@@ -285,7 +246,7 @@ class ApiService {
       
       // Retry on network errors
       if (retryCount < maxRetries && error instanceof TypeError) {
-        console.log(`🔄 Network error, retrying ${endpoint} (${retryCount + 1}/${maxRetries})`);
+        // Network error, retrying
         await new Promise(resolve => setTimeout(resolve, 1000 * (retryCount + 1)));
         return this.request<T>(endpoint, options, retryCount + 1);
       }
@@ -299,39 +260,29 @@ class ApiService {
   }
 
   // Authentication with fallback to emergency auth
-  async login(email: string, password: string): Promise<ApiResponse<{ token: string; user: any }>> {
+  async login(email: string, password: string): Promise<ApiResponse<{ token: string; user: Record<string, unknown>; refreshToken?: string }>> {
     try {
       // Try main authentication first
-      const response = await this.request<{ token: string; user: any }>("/api/v1/auth/login", {
+      const response = await this.request<{ token: string; user: Record<string, unknown>; refreshToken?: string }>("/api/v1/auth/login", {
         method: "POST",
         body: JSON.stringify({ email, password }),
       });
 
       if (response.success && response.data) {
-        console.log('🔐 Main auth successful:', {
-          hasToken: !!response.data.token,
-          hasRefreshToken: !!response.data.refreshToken,
-          hasUser: !!response.data.user,
-          userRole: response.data.user?.role
-        });
+        // Main auth successful
         this.setTokens(response.data.token, response.data.refreshToken);
         return response;
       }
 
       // If main auth fails, try emergency authentication
-      console.log("Main auth failed, trying emergency auth...");
-      const emergencyResponse = await this.request<{ token: string; user: any }>("/api/v1/emergency-auth/login", {
+      // Main auth failed, trying emergency auth
+      const emergencyResponse = await this.request<{ token: string; user: Record<string, unknown>; refreshToken?: string }>("/api/v1/emergency-auth/login", {
         method: "POST",
         body: JSON.stringify({ email, password }),
       });
 
       if (emergencyResponse.success && emergencyResponse.data) {
-        console.log('🚨 Emergency auth successful:', {
-          hasToken: !!emergencyResponse.data.token,
-          hasRefreshToken: !!emergencyResponse.data.refreshToken,
-          hasUser: !!emergencyResponse.data.user,
-          userRole: emergencyResponse.data.user?.role
-        });
+        // Emergency auth successful
         this.setTokens(emergencyResponse.data.token, emergencyResponse.data.refreshToken);
         return emergencyResponse;
       }
@@ -343,8 +294,8 @@ class ApiService {
       
       // Try emergency auth as fallback
       try {
-        console.log("Trying emergency auth as fallback...");
-        const emergencyResponse = await this.request<{ token: string; user: any }>("/api/v1/emergency-auth/login", {
+        // Trying emergency auth as fallback
+        const emergencyResponse = await this.request<{ token: string; user: Record<string, unknown>; refreshToken?: string }>("/api/v1/emergency-auth/login", {
           method: "POST",
           body: JSON.stringify({ email, password }),
         });
@@ -361,19 +312,19 @@ class ApiService {
       if (error instanceof Error) {
         if (error.message.includes('502') || error.message.includes('Bad Gateway')) {
           return {
-            data: null as any,
+            data: null,
             success: false,
             error: "Server temporarily unavailable. Please try again in a few moments.",
           };
         } else if (error.message.includes('404')) {
           return {
-            data: null as any,
+            data: null,
             success: false,
             error: "Authentication service not found. Please contact support.",
           };
         } else if (error.message.includes('500')) {
           return {
-            data: null as any,
+            data: null,
             success: false,
             error: "Server error occurred. Please try again later.",
           };
@@ -381,7 +332,7 @@ class ApiService {
       }
       
       return {
-        data: null as any,
+        data: null,
         success: false,
         error: "Network error. Please check your connection and try again.",
       };
@@ -402,8 +353,8 @@ class ApiService {
   }
 
   // Verify current token
-  async verifyToken(): Promise<ApiResponse<{ valid: boolean; user?: any }>> {
-    return this.request<{ valid: boolean; user?: any }>("/api/v1/auth/verify");
+  async verifyToken(): Promise<ApiResponse<{ valid: boolean; user?: Record<string, unknown> }>> {
+    return this.request<{ valid: boolean; user?: Record<string, unknown> }>("/api/v1/auth/verify");
   }
 
   // Get current token status
@@ -421,23 +372,23 @@ class ApiService {
   }
 
   // Users API
-  async getUsers(): Promise<ApiResponse<any[]>> {
-    return this.request<any[]>("/api/users");
+  async getUsers(): Promise<ApiResponse<Record<string, unknown>[]>> {
+    return this.request<Record<string, unknown>[]>("/api/users");
   }
 
-  async getUserById(id: string): Promise<ApiResponse<any>> {
-    return this.request<any>(`/api/users/${id}`);
+  async getUserById(id: string): Promise<ApiResponse<Record<string, unknown>>> {
+    return this.request<Record<string, unknown>>(`/api/users/${id}`);
   }
 
-  async createUser(userData: any): Promise<ApiResponse<any>> {
-    return this.request<any>("/api/users", {
+  async createUser(userData: Record<string, unknown>): Promise<ApiResponse<Record<string, unknown>>> {
+    return this.request<Record<string, unknown>>("/api/users", {
       method: "POST",
       body: JSON.stringify(userData),
     });
   }
 
-  async updateUser(id: string, updates: any): Promise<ApiResponse<any>> {
-    return this.request<any>(`/api/users/${id}`, {
+  async updateUser(id: string, updates: Record<string, unknown>): Promise<ApiResponse<Record<string, unknown>>> {
+    return this.request<Record<string, unknown>>(`/api/users/${id}`, {
       method: "PUT",
       body: JSON.stringify(updates),
     });
@@ -450,19 +401,19 @@ class ApiService {
   }
 
   // Employee Management API
-  async getEmployees(): Promise<ApiResponse<any[]>> {
-    return this.request<any[]>("/api/v1/employees");
+  async getEmployees(): Promise<ApiResponse<Record<string, unknown>[]>> {
+    return this.request<Record<string, unknown>[]>("/api/v1/employees");
   }
 
-  async createEmployee(employeeData: any): Promise<ApiResponse<any>> {
-    return this.request<any>("/api/v1/employees/register", {
+  async createEmployee(employeeData: Record<string, unknown>): Promise<ApiResponse<Record<string, unknown>>> {
+    return this.request<Record<string, unknown>>("/api/v1/employees/register", {
       method: "POST",
       body: JSON.stringify(employeeData),
     });
   }
 
-  async updateEmployee(id: string, updates: any): Promise<ApiResponse<any>> {
-    return this.request<any>(`/api/v1/employees/${id}`, {
+  async updateEmployee(id: string, updates: Record<string, unknown>): Promise<ApiResponse<Record<string, unknown>>> {
+    return this.request<Record<string, unknown>>(`/api/v1/employees/${id}`, {
       method: "PUT",
       body: JSON.stringify(updates),
     });
@@ -482,24 +433,24 @@ class ApiService {
     department?: string;
     position?: string;
     permissions?: string[];
-  }): Promise<ApiResponse<any>> {
-    return this.request<any>("/api/v1/employees/invite", {
+  }): Promise<ApiResponse<Record<string, unknown>>> {
+    return this.request<Record<string, unknown>>("/api/v1/employees/invite", {
       method: "POST",
       body: JSON.stringify(invitationData),
     });
   }
 
-  async getEmployeeInvitations(status?: string): Promise<ApiResponse<any>> {
+  async getEmployeeInvitations(status?: string): Promise<ApiResponse<Record<string, unknown>>> {
     const url = status ? `/api/v1/employees/invitations?status=${status}` : "/api/v1/employees/invitations";
-    return this.request<any>(url);
+    return this.request<Record<string, unknown>>(url);
   }
 
-  async validateInvitationToken(token: string): Promise<ApiResponse<any>> {
-    return this.request<any>(`/api/v1/employees/validate-invitation/${token}`);
+  async validateInvitationToken(token: string): Promise<ApiResponse<Record<string, unknown>>> {
+    return this.request<Record<string, unknown>>(`/api/v1/employees/validate-invitation/${token}`);
   }
 
-  async acceptInvitation(token: string, password: string): Promise<ApiResponse<any>> {
-    return this.request<any>("/api/v1/employees/accept-invitation", {
+  async acceptInvitation(token: string, password: string): Promise<ApiResponse<Record<string, unknown>>> {
+    return this.request<Record<string, unknown>>("/api/v1/employees/accept-invitation", {
       method: "POST",
       body: JSON.stringify({ token, password }),
     });
@@ -518,45 +469,45 @@ class ApiService {
   }
 
   // Fleet API
-  async getFleetVehicles(): Promise<ApiResponse<any[]>> {
-    return this.request<any[]>("/api/fleet/vehicles");
+  async getFleetVehicles(): Promise<ApiResponse<Record<string, unknown>[]>> {
+    return this.request<Record<string, unknown>[]>("/api/fleet/vehicles");
   }
 
-  async getFleetVehicleById(id: string): Promise<ApiResponse<any>> {
-    return this.request<any>(`/api/fleet/vehicles/${id}`);
+  async getFleetVehicleById(id: string): Promise<ApiResponse<Record<string, unknown>>> {
+    return this.request<Record<string, unknown>>(`/api/fleet/vehicles/${id}`);
   }
 
-  async updateFleetVehicle(id: string, updates: any): Promise<ApiResponse<any>> {
-    return this.request<any>(`/api/fleet/vehicles/${id}`, {
+  async updateFleetVehicle(id: string, updates: Record<string, unknown>): Promise<ApiResponse<Record<string, unknown>>> {
+    return this.request<Record<string, unknown>>(`/api/fleet/vehicles/${id}`, {
       method: "PUT",
       body: JSON.stringify(updates),
     });
   }
 
   // Dashboard API
-  async getKPIMetrics(): Promise<ApiResponse<any[]>> {
-    return this.request<any[]>("/api/dashboard/kpis");
+  async getKPIMetrics(): Promise<ApiResponse<Record<string, unknown>[]>> {
+    return this.request<Record<string, unknown>[]>("/api/dashboard/kpis");
   }
 
-  async getDashboardStats(): Promise<ApiResponse<any>> {
-    return this.request<any>("/api/dashboard/stats");
+  async getDashboardStats(): Promise<ApiResponse<Record<string, unknown>>> {
+    return this.request<Record<string, unknown>>("/api/dashboard/stats");
   }
 
   // Chat API
-  async getChatMessages(): Promise<ApiResponse<any[]>> {
-    return this.request<any[]>("/api/chat/messages");
+  async getChatMessages(): Promise<ApiResponse<Record<string, unknown>[]>> {
+    return this.request<Record<string, unknown>[]>("/api/chat/messages");
   }
 
-  async sendMessage(message: any): Promise<ApiResponse<any>> {
-    return this.request<any>("/api/chat/messages", {
+  async sendMessage(message: Record<string, unknown>): Promise<ApiResponse<Record<string, unknown>>> {
+    return this.request<Record<string, unknown>>("/api/chat/messages", {
       method: "POST",
       body: JSON.stringify(message),
     });
   }
 
   // Notifications API
-  async getNotifications(): Promise<ApiResponse<any[]>> {
-    return this.request<any[]>("/api/notifications");
+  async getNotifications(): Promise<ApiResponse<Record<string, unknown>[]>> {
+    return this.request<Record<string, unknown>[]>("/api/notifications");
   }
 
   async markNotificationAsRead(id: string): Promise<ApiResponse<boolean>> {
@@ -566,104 +517,109 @@ class ApiService {
   }
 
   // CRM API
-  async getCustomers(): Promise<ApiResponse<any[]>> {
-    return this.request<any[]>("/api/crm/customers");
+  async getCustomers(): Promise<ApiResponse<Record<string, unknown>[]>> {
+    return this.request<Record<string, unknown>[]>("/api/crm/customers");
   }
 
-  async getCustomerById(id: string): Promise<ApiResponse<any>> {
-    return this.request<any>(`/api/crm/customers/${id}`);
+  async getCustomerById(id: string): Promise<ApiResponse<Record<string, unknown>>> {
+    return this.request<Record<string, unknown>>(`/api/crm/customers/${id}`);
   }
 
   // Finance API
-  async getPayments(): Promise<ApiResponse<any[]>> {
-    return this.request<any[]>("/api/finance/payments");
+  async getPayments(): Promise<ApiResponse<Record<string, unknown>[]>> {
+    return this.request<Record<string, unknown>[]>("/api/finance/payments");
   }
 
-  async processPayment(paymentData: any): Promise<ApiResponse<any>> {
-    return this.request<any>("/api/finance/payments", {
+  async processPayment(paymentData: Record<string, unknown>): Promise<ApiResponse<Record<string, unknown>>> {
+    return this.request<Record<string, unknown>>("/api/finance/payments", {
       method: "POST",
       body: JSON.stringify(paymentData),
     });
   }
 
   // Analytics API
-  async getAnalytics(timeRange: string = "30d"): Promise<ApiResponse<any>> {
-    return this.request<any>(`/api/analytics?range=${timeRange}`);
+  async getAnalytics(timeRange: string = "30d"): Promise<ApiResponse<Record<string, unknown>>> {
+    return this.request<Record<string, unknown>>(`/api/analytics?range=${timeRange}`);
   }
 
   // System Health API
-  async getSystemHealth(): Promise<ApiResponse<any>> {
-    return this.request<any>("/api/system/health");
+  async getSystemHealth(): Promise<ApiResponse<Record<string, unknown>>> {
+    return this.request<Record<string, unknown>>("/api/system/health");
   }
 
   // API Performance API
-  async getApiPerformance(): Promise<ApiResponse<any>> {
-    return this.request<any>("/api/system/api-performance");
+  async getApiPerformance(): Promise<ApiResponse<Record<string, unknown>>> {
+    return this.request<Record<string, unknown>>("/api/system/api-performance");
   }
 
   // Feature Flags API
-  async getFeatureFlags(): Promise<ApiResponse<any[]>> {
-    return this.request<any[]>("/api/feature-flags");
+  async getFeatureFlags(): Promise<ApiResponse<Record<string, unknown>[]>> {
+    return this.request<Record<string, unknown>[]>("/api/feature-flags");
   }
 
-  async updateFeatureFlag(id: string, updates: any): Promise<ApiResponse<any>> {
-    return this.request<any>(`/api/feature-flags/${id}`, {
+  async updateFeatureFlag(id: string, updates: Record<string, unknown>): Promise<ApiResponse<Record<string, unknown>>> {
+    return this.request<Record<string, unknown>>(`/api/feature-flags/${id}`, {
       method: "PUT",
       body: JSON.stringify(updates),
     });
   }
 
   // Settings API
-  async getSettings(): Promise<ApiResponse<any>> {
-    return this.request<any>("/api/settings");
+  async getSettings(): Promise<ApiResponse<Record<string, unknown>>> {
+    return this.request<Record<string, unknown>>("/api/settings");
   }
 
-  async updateSettings(settings: any): Promise<ApiResponse<any>> {
-    return this.request<any>("/api/settings", {
+  async updateSettings(settings: Record<string, unknown>): Promise<ApiResponse<Record<string, unknown>>> {
+    return this.request<Record<string, unknown>>("/api/settings", {
       method: "PUT",
       body: JSON.stringify(settings),
     });
   }
 
   // Reports API
-  async generateReport(reportType: string, params: any): Promise<ApiResponse<any>> {
-    return this.request<any>(`/api/reports/${reportType}`, {
+  async generateReport(reportType: string, params: Record<string, unknown>): Promise<ApiResponse<Record<string, unknown>>> {
+    return this.request<Record<string, unknown>>(`/api/reports/${reportType}`, {
       method: "POST",
       body: JSON.stringify(params),
     });
   }
 
   // Audit Trail API
-  async getAuditTrail(filters: any = {}): Promise<ApiResponse<any[]>> {
-    const queryParams = new URLSearchParams(filters).toString();
-    return this.request<any[]>(`/api/audit-trail?${queryParams}`);
+  async getAuditTrail(filters: Record<string, unknown> = {}): Promise<ApiResponse<Record<string, unknown>[]>> {
+    const queryParams = new URLSearchParams();
+    Object.entries(filters).forEach(([key, value]) => {
+      if (value !== undefined && value !== null) {
+        queryParams.append(key, String(value));
+      }
+    });
+    return this.request<Record<string, unknown>[]>(`/api/audit-trail?${queryParams.toString()}`);
   }
 
   // Integrations API
-  async getIntegrations(): Promise<ApiResponse<any[]>> {
-    return this.request<any[]>("/api/integrations");
+  async getIntegrations(): Promise<ApiResponse<Record<string, unknown>[]>> {
+    return this.request<Record<string, unknown>[]>("/api/integrations");
   }
 
-  async testIntegration(id: string): Promise<ApiResponse<any>> {
-    return this.request<any>(`/api/integrations/${id}/test`, {
+  async testIntegration(id: string): Promise<ApiResponse<Record<string, unknown>>> {
+    return this.request<Record<string, unknown>>(`/api/integrations/${id}/test`, {
       method: "POST",
     });
   }
 
   // A/B Testing API
-  async getABTests(): Promise<ApiResponse<any[]>> {
-    return this.request<any[]>("/api/v1/ab-tests");
+  async getABTests(): Promise<ApiResponse<Record<string, unknown>[]>> {
+    return this.request<Record<string, unknown>[]>("/api/v1/ab-tests");
   }
 
-  async createABTest(testData: any): Promise<ApiResponse<any>> {
-    return this.request<any>("/api/v1/ab-tests", {
+  async createABTest(testData: Record<string, unknown>): Promise<ApiResponse<Record<string, unknown>>> {
+    return this.request<Record<string, unknown>>("/api/v1/ab-tests", {
       method: "POST",
       body: JSON.stringify(testData),
     });
   }
 
-  async updateABTest(id: string, testData: any): Promise<ApiResponse<any>> {
-    return this.request<any>(`/api/v1/ab-tests/${id}`, {
+  async updateABTest(id: string, testData: Record<string, unknown>): Promise<ApiResponse<Record<string, unknown>>> {
+    return this.request<Record<string, unknown>>(`/api/v1/ab-tests/${id}`, {
       method: "PUT",
       body: JSON.stringify(testData),
     });
@@ -676,19 +632,19 @@ class ApiService {
   }
 
   // Rollouts API
-  async getRollouts(): Promise<ApiResponse<any[]>> {
-    return this.request<any[]>("/api/v1/rollouts");
+  async getRollouts(): Promise<ApiResponse<Record<string, unknown>[]>> {
+    return this.request<Record<string, unknown>[]>("/api/v1/rollouts");
   }
 
-  async createRollout(rolloutData: any): Promise<ApiResponse<any>> {
-    return this.request<any>("/api/v1/rollouts", {
+  async createRollout(rolloutData: Record<string, unknown>): Promise<ApiResponse<Record<string, unknown>>> {
+    return this.request<Record<string, unknown>>("/api/v1/rollouts", {
       method: "POST",
       body: JSON.stringify(rolloutData),
     });
   }
 
-  async updateRollout(id: string, rolloutData: any): Promise<ApiResponse<any>> {
-    return this.request<any>(`/api/v1/rollouts/${id}`, {
+  async updateRollout(id: string, rolloutData: Record<string, unknown>): Promise<ApiResponse<Record<string, unknown>>> {
+    return this.request<Record<string, unknown>>(`/api/v1/rollouts/${id}`, {
       method: "PUT",
       body: JSON.stringify(rolloutData),
     });
@@ -701,23 +657,23 @@ class ApiService {
   }
 
   // Assets API
-  async getAssets(): Promise<ApiResponse<any[]>> {
-    return this.request<any[]>("/api/v1/assets");
+  async getAssets(): Promise<ApiResponse<Record<string, unknown>[]>> {
+    return this.request<Record<string, unknown>[]>("/api/v1/assets");
   }
 
-  async getAssetById(id: string): Promise<ApiResponse<any>> {
-    return this.request<any>(`/api/v1/assets/${id}`);
+  async getAssetById(id: string): Promise<ApiResponse<Record<string, unknown>>> {
+    return this.request<Record<string, unknown>>(`/api/v1/assets/${id}`);
   }
 
-  async createAsset(assetData: any): Promise<ApiResponse<any>> {
-    return this.request<any>("/api/v1/assets", {
+  async createAsset(assetData: Record<string, unknown>): Promise<ApiResponse<Record<string, unknown>>> {
+    return this.request<Record<string, unknown>>("/api/v1/assets", {
       method: "POST",
       body: JSON.stringify(assetData),
     });
   }
 
-  async updateAsset(id: string, assetData: any): Promise<ApiResponse<any>> {
-    return this.request<any>(`/api/v1/assets/${id}`, {
+  async updateAsset(id: string, assetData: Record<string, unknown>): Promise<ApiResponse<Record<string, unknown>>> {
+    return this.request<Record<string, unknown>>(`/api/v1/assets/${id}`, {
       method: "PUT",
       body: JSON.stringify(assetData),
     });
@@ -730,23 +686,23 @@ class ApiService {
   }
 
   // Maintenance Records API
-  async getMaintenanceRecords(): Promise<ApiResponse<any[]>> {
-    return this.request<any[]>("/api/v1/maintenance-records");
+  async getMaintenanceRecords(): Promise<ApiResponse<Record<string, unknown>[]>> {
+    return this.request<Record<string, unknown>[]>("/api/v1/maintenance-records");
   }
 
-  async getMaintenanceRecordById(id: string): Promise<ApiResponse<any>> {
-    return this.request<any>(`/api/v1/maintenance-records/${id}`);
+  async getMaintenanceRecordById(id: string): Promise<ApiResponse<Record<string, unknown>>> {
+    return this.request<Record<string, unknown>>(`/api/v1/maintenance-records/${id}`);
   }
 
-  async createMaintenanceRecord(recordData: any): Promise<ApiResponse<any>> {
-    return this.request<any>("/api/v1/maintenance-records", {
+  async createMaintenanceRecord(recordData: Record<string, unknown>): Promise<ApiResponse<Record<string, unknown>>> {
+    return this.request<Record<string, unknown>>("/api/v1/maintenance-records", {
       method: "POST",
       body: JSON.stringify(recordData),
     });
   }
 
-  async updateMaintenanceRecord(id: string, recordData: any): Promise<ApiResponse<any>> {
-    return this.request<any>(`/api/v1/maintenance-records/${id}`, {
+  async updateMaintenanceRecord(id: string, recordData: Record<string, unknown>): Promise<ApiResponse<Record<string, unknown>>> {
+    return this.request<Record<string, unknown>>(`/api/v1/maintenance-records/${id}`, {
       method: "PUT",
       body: JSON.stringify(recordData),
     });
@@ -759,23 +715,23 @@ class ApiService {
   }
 
   // Asset Assignments API
-  async getAssetAssignments(): Promise<ApiResponse<any[]>> {
-    return this.request<any[]>("/api/v1/asset-assignments");
+  async getAssetAssignments(): Promise<ApiResponse<Record<string, unknown>[]>> {
+    return this.request<Record<string, unknown>[]>("/api/v1/asset-assignments");
   }
 
-  async getAssetAssignmentById(id: string): Promise<ApiResponse<any>> {
-    return this.request<any>(`/api/v1/asset-assignments/${id}`);
+  async getAssetAssignmentById(id: string): Promise<ApiResponse<Record<string, unknown>>> {
+    return this.request<Record<string, unknown>>(`/api/v1/asset-assignments/${id}`);
   }
 
-  async createAssetAssignment(assignmentData: any): Promise<ApiResponse<any>> {
-    return this.request<any>("/api/v1/asset-assignments", {
+  async createAssetAssignment(assignmentData: Record<string, unknown>): Promise<ApiResponse<Record<string, unknown>>> {
+    return this.request<Record<string, unknown>>("/api/v1/asset-assignments", {
       method: "POST",
       body: JSON.stringify(assignmentData),
     });
   }
 
-  async updateAssetAssignment(id: string, assignmentData: any): Promise<ApiResponse<any>> {
-    return this.request<any>(`/api/v1/asset-assignments/${id}`, {
+  async updateAssetAssignment(id: string, assignmentData: Record<string, unknown>): Promise<ApiResponse<Record<string, unknown>>> {
+    return this.request<Record<string, unknown>>(`/api/v1/asset-assignments/${id}`, {
       method: "PUT",
       body: JSON.stringify(assignmentData),
     });
@@ -788,23 +744,23 @@ class ApiService {
   }
 
   // Vendors API
-  async getVendors(): Promise<ApiResponse<any[]>> {
-    return this.request<any[]>("/api/v1/vendors");
+  async getVendors(): Promise<ApiResponse<Record<string, unknown>[]>> {
+    return this.request<Record<string, unknown>[]>("/api/v1/vendors");
   }
 
-  async getVendorById(id: string): Promise<ApiResponse<any>> {
-    return this.request<any>(`/api/v1/vendors/${id}`);
+  async getVendorById(id: string): Promise<ApiResponse<Record<string, unknown>>> {
+    return this.request<Record<string, unknown>>(`/api/v1/vendors/${id}`);
   }
 
-  async createVendor(vendorData: any): Promise<ApiResponse<any>> {
-    return this.request<any>("/api/v1/vendors", {
+  async createVendor(vendorData: Record<string, unknown>): Promise<ApiResponse<Record<string, unknown>>> {
+    return this.request<Record<string, unknown>>("/api/v1/vendors", {
       method: "POST",
       body: JSON.stringify(vendorData),
     });
   }
 
-  async updateVendor(id: string, vendorData: any): Promise<ApiResponse<any>> {
-    return this.request<any>(`/api/v1/vendors/${id}`, {
+  async updateVendor(id: string, vendorData: Record<string, unknown>): Promise<ApiResponse<Record<string, unknown>>> {
+    return this.request<Record<string, unknown>>(`/api/v1/vendors/${id}`, {
       method: "PUT",
       body: JSON.stringify(vendorData),
     });
@@ -817,23 +773,23 @@ class ApiService {
   }
 
   // Vendor Contracts API
-  async getVendorContracts(): Promise<ApiResponse<any[]>> {
-    return this.request<any[]>("/api/v1/vendor-contracts");
+  async getVendorContracts(): Promise<ApiResponse<Record<string, unknown>[]>> {
+    return this.request<Record<string, unknown>[]>("/api/v1/vendor-contracts");
   }
 
-  async getVendorContractById(id: string): Promise<ApiResponse<any>> {
-    return this.request<any>(`/api/v1/vendor-contracts/${id}`);
+  async getVendorContractById(id: string): Promise<ApiResponse<Record<string, unknown>>> {
+    return this.request<Record<string, unknown>>(`/api/v1/vendor-contracts/${id}`);
   }
 
-  async createVendorContract(contractData: any): Promise<ApiResponse<any>> {
-    return this.request<any>("/api/v1/vendor-contracts", {
+  async createVendorContract(contractData: Record<string, unknown>): Promise<ApiResponse<Record<string, unknown>>> {
+    return this.request<Record<string, unknown>>("/api/v1/vendor-contracts", {
       method: "POST",
       body: JSON.stringify(contractData),
     });
   }
 
-  async updateVendorContract(id: string, contractData: any): Promise<ApiResponse<any>> {
-    return this.request<any>(`/api/v1/vendor-contracts/${id}`, {
+  async updateVendorContract(id: string, contractData: Record<string, unknown>): Promise<ApiResponse<Record<string, unknown>>> {
+    return this.request<Record<string, unknown>>(`/api/v1/vendor-contracts/${id}`, {
       method: "PUT",
       body: JSON.stringify(contractData),
     });
@@ -846,23 +802,23 @@ class ApiService {
   }
 
   // Vendor Communications API
-  async getVendorCommunications(): Promise<ApiResponse<any[]>> {
-    return this.request<any[]>("/api/v1/vendor-communications");
+  async getVendorCommunications(): Promise<ApiResponse<Record<string, unknown>[]>> {
+    return this.request<Record<string, unknown>[]>("/api/v1/vendor-communications");
   }
 
-  async getVendorCommunicationById(id: string): Promise<ApiResponse<any>> {
-    return this.request<any>(`/api/v1/vendor-communications/${id}`);
+  async getVendorCommunicationById(id: string): Promise<ApiResponse<Record<string, unknown>>> {
+    return this.request<Record<string, unknown>>(`/api/v1/vendor-communications/${id}`);
   }
 
-  async createVendorCommunication(communicationData: any): Promise<ApiResponse<any>> {
-    return this.request<any>("/api/v1/vendor-communications", {
+  async createVendorCommunication(communicationData: Record<string, unknown>): Promise<ApiResponse<Record<string, unknown>>> {
+    return this.request<Record<string, unknown>>("/api/v1/vendor-communications", {
       method: "POST",
       body: JSON.stringify(communicationData),
     });
   }
 
-  async updateVendorCommunication(id: string, communicationData: any): Promise<ApiResponse<any>> {
-    return this.request<any>(`/api/v1/vendor-communications/${id}`, {
+  async updateVendorCommunication(id: string, communicationData: Record<string, unknown>): Promise<ApiResponse<Record<string, unknown>>> {
+    return this.request<Record<string, unknown>>(`/api/v1/vendor-communications/${id}`, {
       method: "PUT",
       body: JSON.stringify(communicationData),
     });
@@ -875,23 +831,23 @@ class ApiService {
   }
 
   // Projects API
-  async getProjects(): Promise<ApiResponse<any[]>> {
-    return this.request<any[]>("/api/v1/projects");
+  async getProjects(): Promise<ApiResponse<Record<string, unknown>[]>> {
+    return this.request<Record<string, unknown>[]>("/api/v1/projects");
   }
 
-  async getProjectById(id: string): Promise<ApiResponse<any>> {
-    return this.request<any>(`/api/v1/projects/${id}`);
+  async getProjectById(id: string): Promise<ApiResponse<Record<string, unknown>>> {
+    return this.request<Record<string, unknown>>(`/api/v1/projects/${id}`);
   }
 
-  async createProject(projectData: any): Promise<ApiResponse<any>> {
-    return this.request<any>("/api/v1/projects", {
+  async createProject(projectData: Record<string, unknown>): Promise<ApiResponse<Record<string, unknown>>> {
+    return this.request<Record<string, unknown>>("/api/v1/projects", {
       method: "POST",
       body: JSON.stringify(projectData),
     });
   }
 
-  async updateProject(id: string, projectData: any): Promise<ApiResponse<any>> {
-    return this.request<any>(`/api/v1/projects/${id}`, {
+  async updateProject(id: string, projectData: Record<string, unknown>): Promise<ApiResponse<Record<string, unknown>>> {
+    return this.request<Record<string, unknown>>(`/api/v1/projects/${id}`, {
       method: "PUT",
       body: JSON.stringify(projectData),
     });
@@ -903,19 +859,19 @@ class ApiService {
     });
   }
 
-  async getProjectTasks(projectId: string): Promise<ApiResponse<any[]>> {
-    return this.request<any[]>(`/api/v1/projects/${projectId}/tasks`);
+  async getProjectTasks(projectId: string): Promise<ApiResponse<Record<string, unknown>[]>> {
+    return this.request<Record<string, unknown>[]>(`/api/v1/projects/${projectId}/tasks`);
   }
 
-  async addProjectTask(projectId: string, taskData: any): Promise<ApiResponse<any>> {
-    return this.request<any>(`/api/v1/projects/${projectId}/tasks`, {
+  async addProjectTask(projectId: string, taskData: Record<string, unknown>): Promise<ApiResponse<Record<string, unknown>>> {
+    return this.request<Record<string, unknown>>(`/api/v1/projects/${projectId}/tasks`, {
       method: "POST",
       body: JSON.stringify(taskData),
     });
   }
 
-  async updateProjectTask(projectId: string, taskId: string, taskData: any): Promise<ApiResponse<any>> {
-    return this.request<any>(`/api/v1/projects/${projectId}/tasks/${taskId}`, {
+  async updateProjectTask(projectId: string, taskId: string, taskData: Record<string, unknown>): Promise<ApiResponse<Record<string, unknown>>> {
+    return this.request<Record<string, unknown>>(`/api/v1/projects/${projectId}/tasks/${taskId}`, {
       method: "PUT",
       body: JSON.stringify(taskData),
     });
@@ -927,35 +883,35 @@ class ApiService {
     });
   }
 
-  async getProjectTimeTracking(projectId: string): Promise<ApiResponse<any[]>> {
-    return this.request<any[]>(`/api/v1/projects/${projectId}/time-tracking`);
+  async getProjectTimeTracking(projectId: string): Promise<ApiResponse<Record<string, unknown>[]>> {
+    return this.request<Record<string, unknown>[]>(`/api/v1/projects/${projectId}/time-tracking`);
   }
 
-  async addTimeEntry(projectId: string, timeData: any): Promise<ApiResponse<any>> {
-    return this.request<any>(`/api/v1/projects/${projectId}/time-tracking`, {
+  async addTimeEntry(projectId: string, timeData: Record<string, unknown>): Promise<ApiResponse<Record<string, unknown>>> {
+    return this.request<Record<string, unknown>>(`/api/v1/projects/${projectId}/time-tracking`, {
       method: "POST",
       body: JSON.stringify(timeData),
     });
   }
 
   // Reports API
-  async getReports(): Promise<ApiResponse<any[]>> {
-    return this.request<any[]>("/api/v1/reports");
+  async getReports(): Promise<ApiResponse<Record<string, unknown>[]>> {
+    return this.request<Record<string, unknown>[]>("/api/v1/reports");
   }
 
-  async getReportById(id: string): Promise<ApiResponse<any>> {
-    return this.request<any>(`/api/v1/reports/${id}`);
+  async getReportById(id: string): Promise<ApiResponse<Record<string, unknown>>> {
+    return this.request<Record<string, unknown>>(`/api/v1/reports/${id}`);
   }
 
-  async createReport(reportData: any): Promise<ApiResponse<any>> {
-    return this.request<any>("/api/v1/reports", {
+  async createReport(reportData: Record<string, unknown>): Promise<ApiResponse<Record<string, unknown>>> {
+    return this.request<Record<string, unknown>>("/api/v1/reports", {
       method: "POST",
       body: JSON.stringify(reportData),
     });
   }
 
-  async updateReport(id: string, reportData: any): Promise<ApiResponse<any>> {
-    return this.request<any>(`/api/v1/reports/${id}`, {
+  async updateReport(id: string, reportData: Record<string, unknown>): Promise<ApiResponse<Record<string, unknown>>> {
+    return this.request<Record<string, unknown>>(`/api/v1/reports/${id}`, {
       method: "PUT",
       body: JSON.stringify(reportData),
     });
@@ -967,120 +923,102 @@ class ApiService {
     });
   }
 
-  async generateReport(reportData: any): Promise<ApiResponse<any>> {
-    return this.request<any>("/api/v1/reports/generate", {
+  async generateCustomReport(reportData: Record<string, unknown>): Promise<ApiResponse<Record<string, unknown>>> {
+    return this.request<Record<string, unknown>>("/api/v1/reports/generate", {
       method: "POST",
       body: JSON.stringify(reportData),
     });
   }
 
-  async getReportTemplates(): Promise<ApiResponse<any[]>> {
-    return this.request<any[]>("/api/v1/reports/templates");
+  async getReportTemplates(): Promise<ApiResponse<Record<string, unknown>[]>> {
+    return this.request<Record<string, unknown>[]>("/api/v1/reports/templates");
   }
 
-  async createReportTemplate(templateData: any): Promise<ApiResponse<any>> {
-    return this.request<any>("/api/v1/reports/templates", {
+  async createReportTemplate(templateData: Record<string, unknown>): Promise<ApiResponse<Record<string, unknown>>> {
+    return this.request<Record<string, unknown>>("/api/v1/reports/templates", {
       method: "POST",
       body: JSON.stringify(templateData),
     });
   }
 
   // CRM API
-  async getCustomers(): Promise<ApiResponse<any[]>> {
-    return this.request<any[]>("/api/crm/customers");
-  }
-
-  async getCustomerById(id: string): Promise<ApiResponse<any>> {
-    return this.request<any>(`/api/crm/customers/${id}`);
-  }
-
-  async createCustomer(customerData: any): Promise<ApiResponse<any>> {
-    return this.request<any>("/api/crm/customers", {
+  async createCustomer(customerData: Record<string, unknown>): Promise<ApiResponse<Record<string, unknown>>> {
+    return this.request<Record<string, unknown>>("/api/crm/customers", {
       method: "POST",
       body: JSON.stringify(customerData),
     });
   }
 
-  async getLeads(): Promise<ApiResponse<any[]>> {
-    return this.request<any[]>("/api/crm/leads");
+  async getLeads(): Promise<ApiResponse<Record<string, unknown>[]>> {
+    return this.request<Record<string, unknown>[]>("/api/crm/leads");
   }
 
-  async getSales(): Promise<ApiResponse<any[]>> {
-    return this.request<any[]>("/api/crm/sales");
+  async getSales(): Promise<ApiResponse<Record<string, unknown>[]>> {
+    return this.request<Record<string, unknown>[]>("/api/crm/sales");
   }
 
-  async getTickets(): Promise<ApiResponse<any[]>> {
-    return this.request<any[]>("/api/crm/tickets");
+  async getTickets(): Promise<ApiResponse<Record<string, unknown>[]>> {
+    return this.request<Record<string, unknown>[]>("/api/crm/tickets");
   }
 
-  async createTicket(ticketData: any): Promise<ApiResponse<any>> {
-    return this.request<any>("/api/crm/tickets", {
+  async createTicket(ticketData: Record<string, unknown>): Promise<ApiResponse<Record<string, unknown>>> {
+    return this.request<Record<string, unknown>>("/api/crm/tickets", {
       method: "POST",
       body: JSON.stringify(ticketData),
     });
   }
 
-  async getCRMAnalytics(): Promise<ApiResponse<any>> {
-    return this.request<any>("/api/crm/analytics");
+  async getCRMAnalytics(): Promise<ApiResponse<Record<string, unknown>>> {
+    return this.request<Record<string, unknown>>("/api/crm/analytics");
   }
 
   // Finance API
-  async getPayments(): Promise<ApiResponse<any[]>> {
-    return this.request<any[]>("/api/finance/payments");
+  async getPaymentById(id: string): Promise<ApiResponse<Record<string, unknown>>> {
+    return this.request<Record<string, unknown>>(`/api/finance/payments/${id}`);
   }
 
-  async getPaymentById(id: string): Promise<ApiResponse<any>> {
-    return this.request<any>(`/api/finance/payments/${id}`);
-  }
-
-  async createPayment(paymentData: any): Promise<ApiResponse<any>> {
-    return this.request<any>("/api/finance/payments", {
+  async createPayment(paymentData: Record<string, unknown>): Promise<ApiResponse<Record<string, unknown>>> {
+    return this.request<Record<string, unknown>>("/api/finance/payments", {
       method: "POST",
       body: JSON.stringify(paymentData),
     });
   }
 
-  async getInvoices(): Promise<ApiResponse<any[]>> {
-    return this.request<any[]>("/api/finance/invoices");
+  async getInvoices(): Promise<ApiResponse<Record<string, unknown>[]>> {
+    return this.request<Record<string, unknown>[]>("/api/finance/invoices");
   }
 
-  async createInvoice(invoiceData: any): Promise<ApiResponse<any>> {
-    return this.request<any>("/api/finance/invoices", {
+  async createInvoice(invoiceData: Record<string, unknown>): Promise<ApiResponse<Record<string, unknown>>> {
+    return this.request<Record<string, unknown>>("/api/finance/invoices", {
       method: "POST",
       body: JSON.stringify(invoiceData),
     });
   }
 
-  async getSubscriptions(): Promise<ApiResponse<any[]>> {
-    return this.request<any[]>("/api/finance/subscriptions");
+  async getSubscriptions(): Promise<ApiResponse<Record<string, unknown>[]>> {
+    return this.request<Record<string, unknown>[]>("/api/finance/subscriptions");
   }
 
-  async getFinanceMetrics(): Promise<ApiResponse<any>> {
-    return this.request<any>("/api/finance/metrics");
+  async getFinanceMetrics(): Promise<ApiResponse<Record<string, unknown>>> {
+    return this.request<Record<string, unknown>>("/api/finance/metrics");
   }
 
-  async getFinanceAnalytics(): Promise<ApiResponse<any>> {
-    return this.request<any>("/api/finance/analytics");
+  async getFinanceAnalytics(): Promise<ApiResponse<Record<string, unknown>>> {
+    return this.request<Record<string, unknown>>("/api/finance/analytics");
   }
 
   // Chat API
-  async getMessages(): Promise<ApiResponse<any[]>> {
-    return this.request<any[]>("/api/chat/messages");
+  async getMessages(): Promise<ApiResponse<Record<string, unknown>[]>> {
+    return this.request<Record<string, unknown>[]>("/api/chat/messages");
   }
 
-  async getMessageById(id: string): Promise<ApiResponse<any>> {
-    return this.request<any>(`/api/chat/messages/${id}`);
+  async getMessageById(id: string): Promise<ApiResponse<Record<string, unknown>>> {
+    return this.request<Record<string, unknown>>(`/api/chat/messages/${id}`);
   }
 
-  async sendMessage(messageData: any): Promise<ApiResponse<any>> {
-    return this.request<any>("/api/chat/messages", {
-      method: "POST",
-      body: JSON.stringify(messageData),
-    });
-  }
 
-  async updateMessage(id: string, messageData: any): Promise<ApiResponse<any>> {
-    return this.request<any>(`/api/chat/messages/${id}`, {
+  async updateMessage(id: string, messageData: Record<string, unknown>): Promise<ApiResponse<Record<string, unknown>>> {
+    return this.request<Record<string, unknown>>(`/api/chat/messages/${id}`, {
       method: "PUT",
       body: JSON.stringify(messageData),
     });
@@ -1092,88 +1030,84 @@ class ApiService {
     });
   }
 
-  async getChannels(): Promise<ApiResponse<any[]>> {
-    return this.request<any[]>("/api/chat/channels");
+  async getChannels(): Promise<ApiResponse<Record<string, unknown>[]>> {
+    return this.request<Record<string, unknown>[]>("/api/chat/channels");
   }
 
-  async createChannel(channelData: any): Promise<ApiResponse<any>> {
-    return this.request<any>("/api/chat/channels", {
+  async createChannel(channelData: Record<string, unknown>): Promise<ApiResponse<Record<string, unknown>>> {
+    return this.request<Record<string, unknown>>("/api/chat/channels", {
       method: "POST",
       body: JSON.stringify(channelData),
     });
   }
 
-  async getChatAnalytics(): Promise<ApiResponse<any>> {
-    return this.request<any>("/api/chat/analytics");
+  async getChatAnalytics(): Promise<ApiResponse<Record<string, unknown>>> {
+    return this.request<Record<string, unknown>>("/api/chat/analytics");
   }
 
   // Settings API
-  async getSettings(): Promise<ApiResponse<any[]>> {
-    return this.request<any[]>("/api/settings");
+  async getAllSettings(): Promise<ApiResponse<Record<string, unknown>[]>> {
+    return this.request<Record<string, unknown>[]>("/api/settings");
   }
 
-  async updateSettings(settings: any[]): Promise<ApiResponse<any>> {
-    return this.request<any>("/api/settings", {
+  async updateAllSettings(settings: Record<string, unknown>[]): Promise<ApiResponse<Record<string, unknown>>> {
+    return this.request<Record<string, unknown>>("/api/settings", {
       method: "PUT",
       body: JSON.stringify({ settings }),
     });
   }
 
-  async getSettingsByCategory(category: string): Promise<ApiResponse<any[]>> {
-    return this.request<any[]>(`/api/settings/${category}`);
+  async getSettingsByCategory(category: string): Promise<ApiResponse<Record<string, unknown>[]>> {
+    return this.request<Record<string, unknown>[]>(`/api/settings/${category}`);
   }
 
-  async updateSetting(category: string, key: string, value: any): Promise<ApiResponse<any>> {
-    return this.request<any>(`/api/settings/${category}/${key}`, {
+  async updateSetting(category: string, key: string, value: unknown): Promise<ApiResponse<Record<string, unknown>>> {
+    return this.request<Record<string, unknown>>(`/api/settings/${category}/${key}`, {
       method: "PUT",
       body: JSON.stringify({ value }),
     });
   }
 
-  async getUserPreferences(): Promise<ApiResponse<any>> {
-    return this.request<any>("/api/settings/user/preferences");
+  async getUserPreferences(): Promise<ApiResponse<Record<string, unknown>>> {
+    return this.request<Record<string, unknown>>("/api/settings/user/preferences");
   }
 
-  async updateUserPreferences(preferences: any): Promise<ApiResponse<any>> {
-    return this.request<any>("/api/settings/user/preferences", {
+  async updateUserPreferences(preferences: Record<string, unknown>): Promise<ApiResponse<Record<string, unknown>>> {
+    return this.request<Record<string, unknown>>("/api/settings/user/preferences", {
       method: "PUT",
       body: JSON.stringify({ preferences }),
     });
   }
 
-  async getSystemConfig(): Promise<ApiResponse<any>> {
-    return this.request<any>("/api/settings/system/config");
+  async getSystemConfig(): Promise<ApiResponse<Record<string, unknown>>> {
+    return this.request<Record<string, unknown>>("/api/settings/system/config");
   }
 
-  async updateSystemConfig(config: any): Promise<ApiResponse<any>> {
-    return this.request<any>("/api/settings/system/config", {
+  async updateSystemConfig(config: Record<string, unknown>): Promise<ApiResponse<Record<string, unknown>>> {
+    return this.request<Record<string, unknown>>("/api/settings/system/config", {
       method: "PUT",
       body: JSON.stringify({ config }),
     });
   }
 
-  async getSettingsAnalytics(): Promise<ApiResponse<any>> {
-    return this.request<any>("/api/settings/analytics");
+  async getSettingsAnalytics(): Promise<ApiResponse<Record<string, unknown>>> {
+    return this.request<Record<string, unknown>>("/api/settings/analytics");
   }
 
   // Integrations API
-  async getIntegrations(): Promise<ApiResponse<any[]>> {
-    return this.request<any[]>("/api/integrations");
+  async getIntegrationById(id: string): Promise<ApiResponse<Record<string, unknown>>> {
+    return this.request<Record<string, unknown>>(`/api/integrations/${id}`);
   }
 
-  async getIntegrationById(id: string): Promise<ApiResponse<any>> {
-    return this.request<any>(`/api/integrations/${id}`);
-  }
-
-  async createIntegration(integrationData: any): Promise<ApiResponse<any>> {
-    return this.request<any>("/api/integrations", {
+  async createIntegration(integrationData: Record<string, unknown>): Promise<ApiResponse<Record<string, unknown>>> {
+    return this.request<Record<string, unknown>>("/api/integrations", {
       method: "POST",
       body: JSON.stringify(integrationData),
     });
   }
 
-  async updateIntegration(id: string, integrationData: any): Promise<ApiResponse<any>> {
-    return this.request<any>(`/api/integrations/${id}`, {
+  async updateIntegration(id: string, integrationData: Record<string, unknown>): Promise<ApiResponse<Record<string, unknown>>> {
+    return this.request<Record<string, unknown>>(`/api/integrations/${id}`, {
       method: "PUT",
       body: JSON.stringify(integrationData),
     });
@@ -1185,83 +1119,73 @@ class ApiService {
     });
   }
 
-  async testIntegration(id: string): Promise<ApiResponse<any>> {
-    return this.request<any>(`/api/integrations/${id}/test`, {
-      method: "POST",
-    });
+  async getIntegrationTemplates(): Promise<ApiResponse<Record<string, unknown>[]>> {
+    return this.request<Record<string, unknown>[]>("/api/integrations/templates");
   }
 
-  async getIntegrationTemplates(): Promise<ApiResponse<any[]>> {
-    return this.request<any[]>("/api/integrations/templates");
-  }
-
-  async getIntegrationAnalytics(): Promise<ApiResponse<any>> {
-    return this.request<any>("/api/integrations/analytics");
+  async getIntegrationAnalytics(): Promise<ApiResponse<Record<string, unknown>>> {
+    return this.request<Record<string, unknown>>("/api/integrations/analytics");
   }
 
   // Audit Trail API
-  async getAuditLogs(): Promise<ApiResponse<any[]>> {
-    return this.request<any[]>("/api/audit-trail");
+  async getAuditLogs(): Promise<ApiResponse<Record<string, unknown>[]>> {
+    return this.request<Record<string, unknown>[]>("/api/audit-trail");
   }
 
-  async getAuditLogById(id: string): Promise<ApiResponse<any>> {
-    return this.request<any>(`/api/audit-trail/${id}`);
+  async getAuditLogById(id: string): Promise<ApiResponse<Record<string, unknown>>> {
+    return this.request<Record<string, unknown>>(`/api/audit-trail/${id}`);
   }
 
-  async createAuditLog(auditData: any): Promise<ApiResponse<any>> {
-    return this.request<any>("/api/audit-trail", {
+  async createAuditLog(auditData: Record<string, unknown>): Promise<ApiResponse<Record<string, unknown>>> {
+    return this.request<Record<string, unknown>>("/api/audit-trail", {
       method: "POST",
       body: JSON.stringify(auditData),
     });
   }
 
-  async getSecurityAuditLogs(): Promise<ApiResponse<any[]>> {
-    return this.request<any[]>("/api/audit-trail/security");
+  async getSecurityAuditLogs(): Promise<ApiResponse<Record<string, unknown>[]>> {
+    return this.request<Record<string, unknown>[]>("/api/audit-trail/security");
   }
 
-  async getUserActivityLogs(): Promise<ApiResponse<any[]>> {
-    return this.request<any[]>("/api/audit-trail/user-activity");
+  async getUserActivityLogs(): Promise<ApiResponse<Record<string, unknown>[]>> {
+    return this.request<Record<string, unknown>[]>("/api/audit-trail/user-activity");
   }
 
-  async getAuditAnalytics(): Promise<ApiResponse<any>> {
-    return this.request<any>("/api/audit-trail/analytics");
+  async getAuditAnalytics(): Promise<ApiResponse<Record<string, unknown>>> {
+    return this.request<Record<string, unknown>>("/api/audit-trail/analytics");
   }
 
-  async getComplianceLogs(): Promise<ApiResponse<any[]>> {
-    return this.request<any[]>("/api/audit-trail/compliance");
+  async getComplianceLogs(): Promise<ApiResponse<Record<string, unknown>[]>> {
+    return this.request<Record<string, unknown>[]>("/api/audit-trail/compliance");
   }
 
-  async exportAuditLogs(format: string = 'json'): Promise<ApiResponse<any>> {
-    return this.request<any>(`/api/audit-trail/export?format=${format}`);
+  async exportAuditLogs(format: string = 'json'): Promise<ApiResponse<Record<string, unknown>>> {
+    return this.request<Record<string, unknown>>(`/api/audit-trail/export?format=${format}`);
   }
 
   // System Health API
-  async getSystemHealth(): Promise<ApiResponse<any>> {
-    return this.request<any>("/api/v1/system-health");
+  async getDetailedSystemHealth(): Promise<ApiResponse<Record<string, unknown>>> {
+    return this.request<Record<string, unknown>>("/api/v1/system-health/detailed");
   }
 
-  async getDetailedSystemHealth(): Promise<ApiResponse<any>> {
-    return this.request<any>("/api/v1/system-health/detailed");
+  async getAPIPerformance(): Promise<ApiResponse<Record<string, unknown>>> {
+    return this.request<Record<string, unknown>>("/api/v1/system-health/api-performance");
   }
 
-  async getAPIPerformance(): Promise<ApiResponse<any>> {
-    return this.request<any>("/api/v1/system-health/api-performance");
+  async getDatabaseHealth(): Promise<ApiResponse<Record<string, unknown>>> {
+    return this.request<Record<string, unknown>>("/api/v1/system-health/database");
   }
 
-  async getDatabaseHealth(): Promise<ApiResponse<any>> {
-    return this.request<any>("/api/v1/system-health/database");
+  async getServicesHealth(): Promise<ApiResponse<Record<string, unknown>>> {
+    return this.request<Record<string, unknown>>("/api/v1/system-health/services");
   }
 
-  async getServicesHealth(): Promise<ApiResponse<any>> {
-    return this.request<any>("/api/v1/system-health/services");
+  async getSystemLogs(): Promise<ApiResponse<Record<string, unknown>>> {
+    return this.request<Record<string, unknown>>("/api/v1/system-health/logs");
   }
 
-  async getSystemLogs(): Promise<ApiResponse<any>> {
-    return this.request<any>("/api/v1/system-health/logs");
-  }
-
-  async testServiceConnection(service: string): Promise<ApiResponse<any>> {
-    return this.request<any>("/api/v1/system-health/test-connection", {
+  async testServiceConnection(service: string): Promise<ApiResponse<Record<string, unknown>>> {
+    return this.request<Record<string, unknown>>("/api/v1/system-health/test-connection", {
       method: "POST",
       body: JSON.stringify({ service }),
     });
@@ -1275,14 +1199,14 @@ class ApiService {
     const ws = new WebSocket(wsUrl);
     
     ws.onopen = () => {
-      console.log("WebSocket connected");
+      // WebSocket connected
       if (this.token) {
         ws.send(JSON.stringify({ type: "auth", token: this.token }));
       }
     };
     
     ws.onclose = () => {
-      console.log("WebSocket disconnected");
+      // WebSocket disconnected
     };
     
     ws.onerror = (error) => {

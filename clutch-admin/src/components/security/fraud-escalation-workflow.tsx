@@ -141,8 +141,49 @@ export default function FraudEscalationWorkflow({ className }: FraudEscalationWo
   const [filterSeverity, setFilterSeverity] = useState<string>('all');
 
   useEffect(() => {
-    const loadFraudData = () => {
-      const mockFraudEvents: FraudEvent[] = [
+    const loadFraudData = async () => {
+      try {
+        // Load fraud events from API
+        const eventsResponse = await fetch('/api/v1/admin/fraud/events', {
+          headers: {
+            'Authorization': `Bearer ${localStorage.getItem('token')}`,
+            'Content-Type': 'application/json'
+          }
+        });
+        
+        if (eventsResponse.ok) {
+          const eventsData = await eventsResponse.json();
+          setFraudEvents(eventsData.data || []);
+        } else {
+          setFraudEvents([]);
+        }
+
+        // Load fraud rules from API
+        const rulesResponse = await fetch('/api/v1/admin/fraud/rules', {
+          headers: {
+            'Authorization': `Bearer ${localStorage.getItem('token')}`,
+            'Content-Type': 'application/json'
+          }
+        });
+        
+        if (rulesResponse.ok) {
+          const rulesData = await rulesResponse.json();
+          setFraudRules(rulesData.data || []);
+        } else {
+          setFraudRules([]);
+        }
+      } catch (error) {
+        console.error('Failed to load fraud data:', error);
+        setFraudEvents([]);
+        setFraudRules([]);
+      }
+    };
+
+    loadFraudData();
+  }, []);
+
+  // Keep mock data as fallback for development
+  const getMockFraudEvents = (): FraudEvent[] => [
         {
           id: 'fraud-001',
           type: 'payment_fraud',
@@ -467,22 +508,22 @@ export default function FraudEscalationWorkflow({ className }: FraudEscalationWo
 
   const getSeverityColor = (severity: string) => {
     switch (severity) {
-      case 'critical': return 'bg-red-500';
-      case 'high': return 'bg-orange-500';
-      case 'medium': return 'bg-yellow-500';
-      case 'low': return 'bg-green-500';
-      default: return 'bg-gray-500';
+      case 'critical': return 'bg-destructive/100';
+      case 'high': return 'bg-warning/100';
+      case 'medium': return 'bg-warning/100';
+      case 'low': return 'bg-success/100';
+      default: return 'bg-muted/500';
     }
   };
 
   const getStatusColor = (status: string) => {
     switch (status) {
-      case 'detected': return 'bg-red-100 text-red-800';
-      case 'investigating': return 'bg-yellow-100 text-yellow-800';
-      case 'escalated': return 'bg-orange-100 text-orange-800';
-      case 'resolved': return 'bg-green-100 text-green-800';
-      case 'false_positive': return 'bg-gray-100 text-gray-800';
-      default: return 'bg-gray-100 text-gray-800';
+      case 'detected': return 'bg-destructive/10 text-red-800';
+      case 'investigating': return 'bg-warning/10 text-yellow-800';
+      case 'escalated': return 'bg-warning/10 text-orange-800';
+      case 'resolved': return 'bg-success/10 text-green-800';
+      case 'false_positive': return 'bg-muted text-gray-800';
+      default: return 'bg-muted text-gray-800';
     }
   };
 
@@ -512,11 +553,11 @@ export default function FraudEscalationWorkflow({ className }: FraudEscalationWo
 
   const getActionStatusColor = (status: string) => {
     switch (status) {
-      case 'pending': return 'bg-yellow-100 text-yellow-800';
-      case 'in_progress': return 'bg-blue-100 text-blue-800';
-      case 'completed': return 'bg-green-100 text-green-800';
-      case 'failed': return 'bg-red-100 text-red-800';
-      default: return 'bg-gray-100 text-gray-800';
+      case 'pending': return 'bg-warning/10 text-yellow-800';
+      case 'in_progress': return 'bg-primary/10 text-blue-800';
+      case 'completed': return 'bg-success/10 text-green-800';
+      case 'failed': return 'bg-destructive/10 text-red-800';
+      default: return 'bg-muted text-gray-800';
     }
   };
 
@@ -571,7 +612,7 @@ export default function FraudEscalationWorkflow({ className }: FraudEscalationWo
                 variant="outline"
                 size="sm"
                 onClick={() => setIsMonitoring(!isMonitoring)}
-                className={isMonitoring ? 'bg-green-100 text-green-800' : ''}
+                className={isMonitoring ? 'bg-success/10 text-green-800' : ''}
               >
                 {isMonitoring ? <Eye className="h-4 w-4 mr-2" /> : <EyeOff className="h-4 w-4 mr-2" />}
                 {isMonitoring ? 'Monitoring' : 'Paused'}
@@ -590,20 +631,20 @@ export default function FraudEscalationWorkflow({ className }: FraudEscalationWo
         <CardContent className="space-y-6">
           {/* Fraud Summary */}
           <div className="grid grid-cols-4 gap-4">
-            <div className="text-center p-3 bg-red-50 rounded-lg">
-              <div className="text-2xl font-bold text-red-600">{criticalEvents}</div>
+            <div className="text-center p-3 bg-destructive/10 rounded-[0.625rem]">
+              <div className="text-2xl font-bold text-destructive">{criticalEvents}</div>
               <div className="text-sm text-muted-foreground">Critical Events</div>
             </div>
-            <div className="text-center p-3 bg-orange-50 rounded-lg">
-              <div className="text-2xl font-bold text-orange-600">{activeEvents}</div>
+            <div className="text-center p-3 bg-warning/10 rounded-[0.625rem]">
+              <div className="text-2xl font-bold text-warning">{activeEvents}</div>
               <div className="text-sm text-muted-foreground">Active Events</div>
             </div>
-            <div className="text-center p-3 bg-purple-50 rounded-lg">
-              <div className="text-2xl font-bold text-purple-600">{avgRiskScore}</div>
+            <div className="text-center p-3 bg-primary/10 rounded-[0.625rem]">
+              <div className="text-2xl font-bold text-primary">{avgRiskScore}</div>
               <div className="text-sm text-muted-foreground">Avg Risk Score</div>
             </div>
-            <div className="text-center p-3 bg-yellow-50 rounded-lg">
-              <div className="text-2xl font-bold text-yellow-600">{formatCurrency(totalFinancialImpact)}</div>
+            <div className="text-center p-3 bg-warning/10 rounded-[0.625rem]">
+              <div className="text-2xl font-bold text-warning">{formatCurrency(totalFinancialImpact)}</div>
               <div className="text-sm text-muted-foreground">Financial Impact</div>
             </div>
           </div>
@@ -613,7 +654,7 @@ export default function FraudEscalationWorkflow({ className }: FraudEscalationWo
             <h4 className="font-medium mb-3">Active Fraud Rules</h4>
             <div className="space-y-2">
               {fraudRules.map((rule) => (
-                <div key={rule.id} className="p-3 border rounded-lg">
+                <div key={rule.id} className="p-3 border rounded-[0.625rem]">
                   <div className="flex items-center justify-between mb-2">
                     <div className="flex items-center gap-2">
                       <span className="font-medium">{rule.name}</span>
@@ -667,8 +708,8 @@ export default function FraudEscalationWorkflow({ className }: FraudEscalationWo
               {filteredEvents.map((event) => (
                 <div
                   key={event.id}
-                  className={`p-3 border rounded-lg cursor-pointer transition-colors ${
-                    selectedEvent?.id === event.id ? 'border-blue-500 bg-blue-50' : 'hover:bg-gray-50'
+                  className={`p-3 border rounded-[0.625rem] cursor-pointer transition-colors ${
+                    selectedEvent?.id === event.id ? 'border-blue-500 bg-primary/10' : 'hover:bg-muted/50'
                   }`}
                   onClick={() => setSelectedEvent(event)}
                 >
@@ -853,7 +894,7 @@ export default function FraudEscalationWorkflow({ className }: FraudEscalationWo
                     <h5 className="font-medium mb-2">Fraud Indicators</h5>
                     <div className="space-y-2">
                       {selectedEvent.indicators.map((indicator, index) => (
-                        <div key={index} className="p-3 border rounded-lg">
+                        <div key={index} className="p-3 border rounded-[0.625rem]">
                           <div className="flex items-center justify-between mb-2">
                             <span className="font-medium">{indicator.type.replace('_', ' ')}</span>
                             <div className="flex items-center gap-2">
@@ -875,7 +916,7 @@ export default function FraudEscalationWorkflow({ className }: FraudEscalationWo
                     <h5 className="font-medium mb-2">Actions Taken</h5>
                     <div className="space-y-2">
                       {selectedEvent.actions.map((action) => (
-                        <div key={action.id} className="p-3 border rounded-lg">
+                        <div key={action.id} className="p-3 border rounded-[0.625rem]">
                           <div className="flex items-center justify-between mb-2">
                             <div className="flex items-center gap-2">
                               {getActionIcon(action.type)}

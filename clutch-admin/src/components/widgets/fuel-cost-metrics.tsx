@@ -86,15 +86,15 @@ export function FuelCostMetrics({ className = '' }: FuelCostMetricsProps) {
   }, []);
 
   const getCostColor = (cost: number, threshold: number) => {
-    if (cost <= threshold * 0.8) return 'text-green-600';
-    if (cost <= threshold) return 'text-yellow-600';
-    return 'text-red-600';
+    if (cost <= threshold * 0.8) return 'text-success';
+    if (cost <= threshold) return 'text-warning';
+    return 'text-destructive';
   };
 
   const getCostBadge = (cost: number, threshold: number) => {
-    if (cost <= threshold * 0.8) return 'bg-green-100 text-green-800';
-    if (cost <= threshold) return 'bg-yellow-100 text-yellow-800';
-    return 'bg-red-100 text-red-800';
+    if (cost <= threshold * 0.8) return 'bg-success/10 text-green-800';
+    if (cost <= threshold) return 'bg-warning/10 text-yellow-800';
+    return 'bg-destructive/10 text-red-800';
   };
 
   const getCostLevel = (cost: number, threshold: number) => {
@@ -113,9 +113,9 @@ export function FuelCostMetrics({ className = '' }: FuelCostMetricsProps) {
 
   const getTrendColor = (trend: 'up' | 'down' | 'stable') => {
     switch (trend) {
-      case 'up': return 'text-red-600';
-      case 'down': return 'text-green-600';
-      default: return 'text-gray-600';
+      case 'up': return 'text-destructive';
+      case 'down': return 'text-success';
+      default: return 'text-muted-foreground';
     }
   };
 
@@ -124,16 +124,16 @@ export function FuelCostMetrics({ className = '' }: FuelCostMetricsProps) {
       <Card className={className}>
         <CardHeader>
           <CardTitle className="flex items-center space-x-2">
-            <Fuel className="h-5 w-5 text-green-600" />
+            <Fuel className="h-5 w-5 text-success" />
             <span>Fuel & Cost Metrics</span>
           </CardTitle>
           <CardDescription>Loading cost metrics...</CardDescription>
         </CardHeader>
         <CardContent>
           <div className="animate-pulse space-y-4">
-            <div className="h-4 bg-gray-200 rounded-lg w-3/4"></div>
-            <div className="h-4 bg-gray-200 rounded-lg w-1/2"></div>
-            <div className="h-4 bg-gray-200 rounded-lg w-2/3"></div>
+            <div className="h-4 bg-muted rounded-[0.625rem] w-3/4"></div>
+            <div className="h-4 bg-muted rounded-[0.625rem] w-1/2"></div>
+            <div className="h-4 bg-muted rounded-[0.625rem] w-2/3"></div>
           </div>
         </CardContent>
       </Card>
@@ -145,7 +145,7 @@ export function FuelCostMetrics({ className = '' }: FuelCostMetricsProps) {
       <Card className={className}>
         <CardHeader>
           <CardTitle className="flex items-center space-x-2">
-            <Fuel className="h-5 w-5 text-green-600" />
+            <Fuel className="h-5 w-5 text-success" />
             <span>Fuel & Cost Metrics</span>
           </CardTitle>
           <CardDescription>Unable to load cost metrics</CardDescription>
@@ -155,10 +155,10 @@ export function FuelCostMetrics({ className = '' }: FuelCostMetricsProps) {
   }
 
   const costBreakdown = [
-    { name: 'Fuel', cost: costMetrics.fuelCost, color: 'text-green-600', bgColor: 'bg-green-50' },
-    { name: 'Maintenance', cost: costMetrics.maintenanceCost, color: 'text-orange-600', bgColor: 'bg-orange-50' },
-    { name: 'Insurance', cost: costMetrics.insuranceCost, color: 'text-blue-600', bgColor: 'bg-blue-50' },
-    { name: 'Other', cost: costMetrics.otherCosts, color: 'text-gray-600', bgColor: 'bg-gray-50' }
+    { name: 'Fuel', cost: costMetrics.fuelCost, color: 'text-success', bgColor: 'bg-success/10' },
+    { name: 'Maintenance', cost: costMetrics.maintenanceCost, color: 'text-warning', bgColor: 'bg-warning/10' },
+    { name: 'Insurance', cost: costMetrics.insuranceCost, color: 'text-primary', bgColor: 'bg-primary/10' },
+    { name: 'Other', cost: costMetrics.otherCosts, color: 'text-muted-foreground', bgColor: 'bg-muted/50' }
   ];
 
   const targetCostPerVehicle = 1200; // Target monthly cost per vehicle
@@ -168,7 +168,7 @@ export function FuelCostMetrics({ className = '' }: FuelCostMetricsProps) {
     <Card className={className}>
       <CardHeader>
         <CardTitle className="flex items-center space-x-2">
-          <Fuel className="h-5 w-5 text-green-600" />
+          <Fuel className="h-5 w-5 text-success" />
           <span>Fuel & Cost Metrics</span>
         </CardTitle>
         <CardDescription>
@@ -178,22 +178,22 @@ export function FuelCostMetrics({ className = '' }: FuelCostMetricsProps) {
       <CardContent className="space-y-6">
         {/* Summary Stats */}
         <div className="grid grid-cols-2 gap-4">
-          <div className="text-center p-3 bg-green-50 rounded-lg-lg">
-            <DollarSign className="h-5 w-5 text-green-600 mx-auto mb-1" />
-            <p className="text-lg font-bold text-green-600">
+          <div className="text-center p-3 bg-success/10 rounded-[0.625rem]-lg">
+            <DollarSign className="h-5 w-5 text-success mx-auto mb-1" />
+            <p className="text-lg font-bold text-success">
               ${costMetrics.totalCost.toLocaleString()}
             </p>
-            <p className="text-xs text-gray-500">Total Monthly Cost</p>
+            <p className="text-xs text-muted-foreground">Total Monthly Cost</p>
           </div>
-          <div className="text-center p-3 bg-blue-50 rounded-lg-lg">
-            <Truck className="h-5 w-5 text-blue-600 mx-auto mb-1" />
-            <p className="text-lg font-bold text-blue-600">{costMetrics.totalVehicles}</p>
-            <p className="text-xs text-gray-500">Total Vehicles</p>
+          <div className="text-center p-3 bg-primary/10 rounded-[0.625rem]-lg">
+            <Truck className="h-5 w-5 text-primary mx-auto mb-1" />
+            <p className="text-lg font-bold text-primary">{costMetrics.totalVehicles}</p>
+            <p className="text-xs text-muted-foreground">Total Vehicles</p>
           </div>
         </div>
 
         {/* Cost Per Vehicle */}
-        <div className="text-center p-4 bg-gray-50 rounded-lg-lg">
+        <div className="text-center p-4 bg-muted/50 rounded-[0.625rem]-lg">
           <div className="flex items-center justify-center space-x-2 mb-2">
             <Target className={`h-6 w-6 ${getCostColor(costMetrics.costPerVehicle, targetCostPerVehicle)}`} />
             <span className={`text-2xl font-bold ${getCostColor(costMetrics.costPerVehicle, targetCostPerVehicle)}`}>
@@ -203,7 +203,7 @@ export function FuelCostMetrics({ className = '' }: FuelCostMetricsProps) {
               {getCostLevel(costMetrics.costPerVehicle, targetCostPerVehicle)}
             </Badge>
           </div>
-          <p className="text-sm text-gray-600">Cost Per Vehicle (Monthly)</p>
+          <p className="text-sm text-muted-foreground">Cost Per Vehicle (Monthly)</p>
           <div className="mt-3">
             <Progress value={(costMetrics.costPerVehicle / targetCostPerVehicle) * 100} className="h-2" />
           </div>
@@ -211,23 +211,23 @@ export function FuelCostMetrics({ className = '' }: FuelCostMetricsProps) {
 
         {/* Cost Breakdown */}
         <div className="space-y-3">
-          <h4 className="text-sm font-medium text-gray-900">Cost Breakdown</h4>
+          <h4 className="text-sm font-medium text-foreground">Cost Breakdown</h4>
           <div className="space-y-2">
             {costBreakdown.map((item) => {
               const percentage = (item.cost / costMetrics.totalCost) * 100;
               return (
-                <div key={item.name} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg-lg">
+                <div key={item.name} className="flex items-center justify-between p-3 bg-muted/50 rounded-[0.625rem]-lg">
                   <div className="flex items-center space-x-3">
-                    <div className={`p-2 rounded-lg-full ${item.bgColor}`}>
+                    <div className={`p-2 rounded-[0.625rem]-full ${item.bgColor}`}>
                       <Fuel className={`h-4 w-4 ${item.color}`} />
                     </div>
                     <div>
-                      <p className="text-sm font-medium text-gray-900">{item.name}</p>
-                      <p className="text-xs text-gray-500">{percentage.toFixed(1)}% of total</p>
+                      <p className="text-sm font-medium text-foreground">{item.name}</p>
+                      <p className="text-xs text-muted-foreground">{percentage.toFixed(1)}% of total</p>
                     </div>
                   </div>
                   <div className="text-right">
-                    <p className="text-sm font-semibold text-gray-900">
+                    <p className="text-sm font-semibold text-foreground">
                       ${item.cost.toLocaleString()}
                     </p>
                     <div className="w-16 mt-1">
@@ -242,50 +242,50 @@ export function FuelCostMetrics({ className = '' }: FuelCostMetricsProps) {
 
         {/* Performance Metrics */}
         <div className="grid grid-cols-2 gap-4">
-          <div className="text-center p-3 bg-purple-50 rounded-lg-lg">
-            <BarChart3 className="h-4 w-4 text-purple-600 mx-auto mb-1" />
-            <p className="text-sm font-bold text-purple-600">
+          <div className="text-center p-3 bg-primary/10 rounded-[0.625rem]-lg">
+            <BarChart3 className="h-4 w-4 text-primary mx-auto mb-1" />
+            <p className="text-sm font-bold text-primary">
               ${costMetrics.costPerMile.toFixed(2)}
             </p>
-            <p className="text-xs text-gray-500">Cost Per Mile</p>
+            <p className="text-xs text-muted-foreground">Cost Per Mile</p>
           </div>
-          <div className="text-center p-3 bg-yellow-50 rounded-lg-lg">
-            <Fuel className="h-4 w-4 text-yellow-600 mx-auto mb-1" />
-            <p className="text-sm font-bold text-yellow-600">
+          <div className="text-center p-3 bg-warning/10 rounded-[0.625rem]-lg">
+            <Fuel className="h-4 w-4 text-warning mx-auto mb-1" />
+            <p className="text-sm font-bold text-warning">
               {costMetrics.fuelEfficiency.toFixed(1)} MPG
             </p>
-            <p className="text-xs text-gray-500">Fuel Efficiency</p>
+            <p className="text-xs text-muted-foreground">Fuel Efficiency</p>
           </div>
         </div>
 
         {/* Cost Trends */}
         <div className="space-y-3">
-          <h4 className="text-sm font-medium text-gray-900">Cost Trends</h4>
+          <h4 className="text-sm font-medium text-foreground">Cost Trends</h4>
           <div className="space-y-2">
-            <div className="flex items-center justify-between p-3 bg-gray-50 rounded-lg-lg">
+            <div className="flex items-center justify-between p-3 bg-muted/50 rounded-[0.625rem]-lg">
               <div className="flex items-center space-x-3">
-                <Fuel className="h-4 w-4 text-green-600" />
+                <Fuel className="h-4 w-4 text-success" />
                 <div>
-                  <p className="text-sm font-medium text-gray-900">Fuel Costs</p>
-                  <p className="text-xs text-gray-500">Monthly trend</p>
+                  <p className="text-sm font-medium text-foreground">Fuel Costs</p>
+                  <p className="text-xs text-muted-foreground">Monthly trend</p>
                 </div>
               </div>
               <div className="flex items-center space-x-2">
-                <TrendingUp className="h-4 w-4 text-red-600" />
-                <span className="text-sm text-red-600">+5.2%</span>
+                <TrendingUp className="h-4 w-4 text-destructive" />
+                <span className="text-sm text-destructive">+5.2%</span>
               </div>
             </div>
-            <div className="flex items-center justify-between p-3 bg-gray-50 rounded-lg-lg">
+            <div className="flex items-center justify-between p-3 bg-muted/50 rounded-[0.625rem]-lg">
               <div className="flex items-center space-x-3">
-                <Truck className="h-4 w-4 text-orange-600" />
+                <Truck className="h-4 w-4 text-warning" />
                 <div>
-                  <p className="text-sm font-medium text-gray-900">Maintenance Costs</p>
-                  <p className="text-xs text-gray-500">Monthly trend</p>
+                  <p className="text-sm font-medium text-foreground">Maintenance Costs</p>
+                  <p className="text-xs text-muted-foreground">Monthly trend</p>
                 </div>
               </div>
               <div className="flex items-center space-x-2">
-                <TrendingDown className="h-4 w-4 text-green-600" />
-                <span className="text-sm text-green-600">-2.1%</span>
+                <TrendingDown className="h-4 w-4 text-success" />
+                <span className="text-sm text-success">-2.1%</span>
               </div>
             </div>
           </div>
@@ -304,7 +304,7 @@ export function FuelCostMetrics({ className = '' }: FuelCostMetricsProps) {
         </div>
 
         {/* Insights */}
-        <div className="p-3 bg-blue-50 rounded-lg-lg">
+        <div className="p-3 bg-primary/10 rounded-[0.625rem]-lg">
           <h5 className="text-sm font-medium text-blue-900 mb-2">💡 Cost Insights</h5>
           <ul className="text-xs text-blue-800 space-y-1">
             <li>• Total monthly fleet cost: ${costMetrics.totalCost.toLocaleString()}</li>

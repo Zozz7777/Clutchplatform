@@ -76,13 +76,13 @@ export default function MediaCMSPage() {
   const getFileIcon = (type: string) => {
     switch (type) {
       case 'image':
-        return <Image className="h-8 w-8 text-blue-500" />;
+        return <Image className="h-8 w-8 text-primary" />;
       case 'video':
-        return <Video className="h-8 w-8 text-red-500" />;
+        return <Video className="h-8 w-8 text-destructive" />;
       case 'document':
-        return <File className="h-8 w-8 text-gray-500" />;
+        return <File className="h-8 w-8 text-muted-foreground" />;
       default:
-        return <File className="h-8 w-8 text-gray-500" />;
+        return <File className="h-8 w-8 text-muted-foreground" />;
     }
   };
 
@@ -149,7 +149,7 @@ export default function MediaCMSPage() {
             <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
               {filteredFiles.map((file) => (
                 <Card key={file.id} className="overflow-hidden">
-                  <div className="aspect-square bg-gray-100 flex items-center justify-center">
+                  <div className="aspect-square bg-muted flex items-center justify-center">
                     {getFileIcon(file.type)}
                   </div>
                   <CardContent className="p-4">

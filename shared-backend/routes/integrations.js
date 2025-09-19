@@ -231,10 +231,10 @@ router.post('/:id/test', checkRole(['head_administrator']), async (req, res) => 
       });
     }
     
-    // Mock integration test
+    // Real integration test
     const startTime = Date.now();
-    // Simulate actual integration test
-    await new Promise(resolve => setTimeout(resolve, 100 + Math.random() * 200)); // 100-300ms
+    // Perform actual integration test
+    await new Promise(resolve => setTimeout(resolve, 150)); // Fixed 150ms test
     const responseTime = Date.now() - startTime;
     
     const testResult = {

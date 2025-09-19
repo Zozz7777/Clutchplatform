@@ -196,9 +196,9 @@ export default function AnalyticsPage() {
   const getChangeIcon = (changeType: string) => {
     switch (changeType) {
       case "increase":
-        return <TrendingUp className="h-4 w-4 text-green-500" />;
+        return <TrendingUp className="h-4 w-4 text-success" />;
       case "decrease":
-        return <TrendingDown className="h-4 w-4 text-red-500" />;
+        return <TrendingDown className="h-4 w-4 text-destructive" />;
       default:
         return <Activity className="h-4 w-4 text-muted-foreground" />;
     }
@@ -207,9 +207,9 @@ export default function AnalyticsPage() {
   const getChangeColor = (changeType: string) => {
     switch (changeType) {
       case "increase":
-        return "text-green-600";
+        return "text-success";
       case "decrease":
-        return "text-red-600";
+        return "text-destructive";
       default:
         return "text-muted-foreground";
     }
@@ -603,9 +603,9 @@ export default function AnalyticsPage() {
         <CardContent>
           <div className="space-y-4">
             {reports.map((report) => (
-              <div key={report._id} className="flex items-center justify-between p-4 border rounded-lg hover:bg-muted/50 transition-colors">
+              <div key={report._id} className="flex items-center justify-between p-4 border rounded-[0.625rem] hover:bg-muted/50 transition-colors">
                 <div className="flex items-center space-x-4">
-                  <div className="w-10 h-10 rounded-lg bg-muted flex items-center justify-center">
+                  <div className="w-10 h-10 rounded-[0.625rem] bg-muted flex items-center justify-center">
                     <BarChart3 className="h-5 w-5" />
                   </div>
                   <div>

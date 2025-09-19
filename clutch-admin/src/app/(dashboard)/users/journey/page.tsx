@@ -86,18 +86,18 @@ export default function UserJourneyPage() {
 
   const getStepIcon = (index: number, isLast: boolean) => {
     if (isLast) {
-      return <CheckCircle className="h-6 w-6 text-green-500" />;
+      return <CheckCircle className="h-6 w-6 text-success" />;
     }
     if (index === 0) {
-      return <Circle className="h-6 w-6 text-blue-500" />;
+      return <Circle className="h-6 w-6 text-primary" />;
     }
     return <Circle className="h-6 w-6 text-gray-400" />;
   };
 
   const getConversionColor = (rate: number) => {
-    if (rate >= 70) return 'text-green-500';
-    if (rate >= 40) return 'text-yellow-500';
-    return 'text-red-500';
+    if (rate >= 70) return 'text-success';
+    if (rate >= 40) return 'text-warning';
+    return 'text-destructive';
   };
 
   return (
@@ -215,16 +215,16 @@ export default function UserJourneyPage() {
                             </p>
                           </div>
                         </div>
-                        <div className="w-full bg-gray-200 rounded-full h-3">
+                        <div className="w-full bg-muted rounded-full h-3">
                           <div 
-                            className="bg-blue-500 h-3 rounded-full transition-all duration-500" 
+                            className="bg-primary/100 h-3 rounded-full transition-all duration-500" 
                             style={{ width: `${step.conversionRate}%` }}
                           ></div>
                         </div>
                         <div className="flex items-center justify-between mt-2 text-sm text-muted-foreground">
                           <span className="font-sans">Avg time: {step.averageTime}</span>
                           {step.dropoffRate > 0 && (
-                            <span className="font-sans text-red-500">
+                            <span className="font-sans text-destructive">
                               {step.dropoffRate}% dropoff
                             </span>
                           )}
@@ -280,7 +280,7 @@ export default function UserJourneyPage() {
                     </div>
                     <div>
                       <p className="text-sm font-medium font-sans mb-1">Dropoff Rate</p>
-                      <p className={`text-2xl font-bold font-sans ${step.dropoffRate > 0 ? 'text-red-500' : 'text-green-500'}`}>
+                      <p className={`text-2xl font-bold font-sans ${step.dropoffRate > 0 ? 'text-destructive' : 'text-success'}`}>
                         {step.dropoffRate}%
                       </p>
                     </div>
@@ -322,7 +322,7 @@ export default function UserJourneyPage() {
                       effort: 'High'
                     }
                   ].map((item, index) => (
-                    <div key={index} className="p-4 border rounded-lg">
+                    <div key={index} className="p-4 border rounded-[0.625rem]">
                       <div className="flex items-center justify-between mb-2">
                         <h3 className="font-medium font-sans">{item.step}</h3>
                         <div className="flex items-center space-x-2">
@@ -375,7 +375,7 @@ export default function UserJourneyPage() {
                       confidence: 0
                     }
                   ].map((test, index) => (
-                    <div key={index} className="flex items-center justify-between p-3 border rounded-lg">
+                    <div key={index} className="flex items-center justify-between p-3 border rounded-[0.625rem]">
                       <div>
                         <h3 className="font-medium font-sans">{test.test}</h3>
                         <p className="text-sm text-muted-foreground font-sans">
@@ -383,7 +383,7 @@ export default function UserJourneyPage() {
                         </p>
                       </div>
                       <div className="text-right">
-                        <p className="text-sm font-sans text-green-500 font-medium">
+                        <p className="text-sm font-sans text-success font-medium">
                           {test.improvement}
                         </p>
                         <Badge variant={test.status === 'Completed' ? 'default' : test.status === 'Running' ? 'default' : 'secondary'}>

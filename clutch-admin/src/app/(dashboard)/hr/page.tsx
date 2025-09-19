@@ -6,6 +6,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useAuth } from "@/contexts/auth-context";
+import { useTranslations } from "@/hooks/use-translations";
 import { formatDate, formatRelativeTime } from "@/lib/utils";
 import { EmployeeInvitationForm } from "@/components/employee-invitation-form";
 import { apiService } from "@/lib/api";
@@ -132,6 +133,7 @@ export default function HRPage() {
   const [showInvitationForm, setShowInvitationForm] = useState(false);
   const [invitations, setInvitations] = useState<any[]>([]);
   const { hasPermission } = useAuth();
+  const { t } = useTranslations();
 
   useEffect(() => {
     const loadHRData = async () => {
@@ -337,7 +339,7 @@ export default function HRPage() {
           break;
         case "promote":
           // This would open a promotion modal/form
-          console.log("Promote employee:", employeeId);
+          toast.success(`Promotion process initiated for employee ${employeeId}`);
           break;
       }
       
@@ -484,7 +486,7 @@ export default function HRPage() {
       <div className="flex items-center justify-center h-64">
         <div className="text-center">
           <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto mb-4"></div>
-          <p className="text-muted-foreground">Loading HR data...</p>
+          <p className="text-muted-foreground">{t('hr.loadingHrData')}</p>
         </div>
       </div>
     );
@@ -495,9 +497,9 @@ export default function HRPage() {
       {/* Page Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold tracking-tight font-sans">Human Resources</h1>
+          <h1 className="text-3xl font-medium tracking-tight">{t('hr.title')}</h1>
           <p className="text-muted-foreground font-sans">
-            Manage employees, recruitment, and HR operations
+            {t('hr.description')}
           </p>
         </div>
         {hasPermission("manage_hr") && (
@@ -522,7 +524,7 @@ export default function HRPage() {
             <Users className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">
+            <div className="text-2xl font-medium">
               {stats ? stats.totalEmployees : Array.isArray(employees) ? employees.length : 0}
             </div>
             <p className="text-xs text-muted-foreground">
@@ -537,7 +539,7 @@ export default function HRPage() {
             <UserPlus className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">
+            <div className="text-2xl font-medium">
               {stats ? stats.newHires : Array.isArray(employees) ? employees.filter(e => 
                 new Date(e.startDate) >= new Date(Date.now() - 30 * 24 * 60 * 60 * 1000)
               ).length : 0}
@@ -554,7 +556,7 @@ export default function HRPage() {
             <Briefcase className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">
+            <div className="text-2xl font-medium">
               {stats ? stats.pendingApplications : Array.isArray(applications) ? applications.filter(a => 
                 a.status === "applied" || a.status === "screening" || a.status === "interview"
               ).length : 0}
@@ -571,7 +573,7 @@ export default function HRPage() {
             <DollarSign className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">
+            <div className="text-2xl font-medium">
               ${stats ? Math.round(stats.averageSalary).toLocaleString() : 
                 Array.isArray(employees) && employees.length > 0 ? Math.round(employees.reduce((sum, e) => sum + e.salary, 0) / employees.length).toLocaleString() : 0}
             </div>
@@ -583,7 +585,7 @@ export default function HRPage() {
       </div>
 
       {/* Tabs */}
-      <div className="flex space-x-1 bg-muted p-1 rounded-lg w-fit">
+      <div className="flex space-x-1 bg-muted p-1 rounded-[0.625rem] w-fit">
         <Button
           variant={activeTab === "employees" ? "default" : "ghost"}
           size="sm"
@@ -646,7 +648,7 @@ export default function HRPage() {
 
             <div className="space-y-4">
               {filteredEmployees.map((employee) => (
-                <div key={employee._id} className="flex items-center justify-between p-4 border rounded-lg hover:bg-muted/50 transition-colors">
+                <div key={employee._id} className="flex items-center justify-between p-4 border border-border rounded-[0.625rem] hover:bg-muted/50 transition-colors">
                   <div className="flex items-center space-x-4">
                     <div className="w-10 h-10 rounded-full bg-primary flex items-center justify-center">
                       <span className="text-primary-foreground font-medium">
@@ -708,7 +710,7 @@ export default function HRPage() {
                         <DropdownMenuSeparator />
                         <DropdownMenuItem 
                           onClick={() => handleEmployeeAction(employee._id, "promote")}
-                          className="text-green-600"
+                          className="text-success"
                         >
                           <TrendingUp className="mr-2 h-4 w-4" />
                           Promote
@@ -716,7 +718,7 @@ export default function HRPage() {
                         {employee.status === "active" && (
                           <DropdownMenuItem 
                             onClick={() => handleEmployeeAction(employee._id, "terminate")}
-                            className="text-red-600"
+                            className="text-destructive"
                           >
                             <AlertTriangle className="mr-2 h-4 w-4" />
                             Terminate
@@ -751,7 +753,7 @@ export default function HRPage() {
           <CardContent>
             <div className="space-y-4">
               {(invitations || []).map((invitation) => (
-                <div key={invitation._id} className="flex items-center justify-between p-4 border rounded-lg hover:bg-muted/50 transition-colors">
+                <div key={invitation._id} className="flex items-center justify-between p-4 border border-border rounded-[0.625rem] hover:bg-muted/50 transition-colors">
                   <div className="flex items-center space-x-4">
                     <div className="w-10 h-10 rounded-full bg-muted flex items-center justify-center">
                       <span className="text-muted-foreground font-medium">
@@ -856,7 +858,7 @@ export default function HRPage() {
 
             <div className="space-y-4">
               {filteredApplications.map((application) => (
-                <div key={application._id} className="flex items-center justify-between p-4 border rounded-lg hover:bg-muted/50 transition-colors">
+                <div key={application._id} className="flex items-center justify-between p-4 border border-border rounded-[0.625rem] hover:bg-muted/50 transition-colors">
                   <div className="flex items-center space-x-4">
                     <div className="w-10 h-10 rounded-full bg-muted flex items-center justify-center">
                       <span className="text-muted-foreground font-medium">
@@ -920,7 +922,7 @@ export default function HRPage() {
                         {application.status === "applied" && (
                           <DropdownMenuItem 
                             onClick={() => handleApplicationAction(application._id, "schedule_interview")}
-                            className="text-blue-600"
+                            className="text-primary"
                           >
                             <Calendar className="mr-2 h-4 w-4" />
                             Schedule Interview
@@ -929,7 +931,7 @@ export default function HRPage() {
                         {application.status === "interview" && (
                           <DropdownMenuItem 
                             onClick={() => handleApplicationAction(application._id, "make_offer")}
-                            className="text-green-600"
+                            className="text-success"
                           >
                             <Award className="mr-2 h-4 w-4" />
                             Make Offer
@@ -938,7 +940,7 @@ export default function HRPage() {
                         {application.status === "offer" && (
                           <DropdownMenuItem 
                             onClick={() => handleApplicationAction(application._id, "hire")}
-                            className="text-green-600"
+                            className="text-success"
                           >
                             <CheckCircle className="mr-2 h-4 w-4" />
                             Hire Candidate
@@ -947,7 +949,7 @@ export default function HRPage() {
                         {application.status !== "hired" && application.status !== "rejected" && (
                           <DropdownMenuItem 
                             onClick={() => handleApplicationAction(application._id, "reject")}
-                            className="text-red-600"
+                            className="text-destructive"
                           >
                             <AlertTriangle className="mr-2 h-4 w-4" />
                             Reject Application
@@ -973,7 +975,7 @@ export default function HRPage() {
       {/* Invitation Form Modal */}
       {showInvitationForm && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50">
-          <div className="bg-background rounded-lg max-w-4xl w-full max-h-[90vh] overflow-y-auto">
+          <div className="bg-background rounded-[0.625rem] max-w-4xl w-full max-h-[90vh] overflow-y-auto">
             <EmployeeInvitationForm
               onSuccess={handleInvitationSuccess}
               onCancel={() => setShowInvitationForm(false)}

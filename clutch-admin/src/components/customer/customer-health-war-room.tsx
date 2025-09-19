@@ -484,21 +484,21 @@ export default function CustomerHealthWarRoom({ className }: CustomerHealthWarRo
 
   const getSeverityColor = (severity: string) => {
     switch (severity) {
-      case 'critical': return 'bg-red-100 text-red-800';
-      case 'high': return 'bg-orange-100 text-orange-800';
-      case 'medium': return 'bg-yellow-100 text-yellow-800';
-      case 'low': return 'bg-green-100 text-green-800';
-      default: return 'bg-gray-100 text-gray-800';
+      case 'critical': return 'bg-destructive/10 text-red-800';
+      case 'high': return 'bg-warning/10 text-orange-800';
+      case 'medium': return 'bg-warning/10 text-yellow-800';
+      case 'low': return 'bg-success/10 text-green-800';
+      default: return 'bg-muted text-gray-800';
     }
   };
 
   const getStatusColor = (status: string) => {
     switch (status) {
-      case 'active': return 'bg-red-100 text-red-800';
-      case 'escalated': return 'bg-orange-100 text-orange-800';
-      case 'resolved': return 'bg-green-100 text-green-800';
-      case 'monitoring': return 'bg-blue-100 text-blue-800';
-      default: return 'bg-gray-100 text-gray-800';
+      case 'active': return 'bg-destructive/10 text-red-800';
+      case 'escalated': return 'bg-warning/10 text-orange-800';
+      case 'resolved': return 'bg-success/10 text-green-800';
+      case 'monitoring': return 'bg-primary/10 text-blue-800';
+      default: return 'bg-muted text-gray-800';
     }
   };
 
@@ -516,39 +516,39 @@ export default function CustomerHealthWarRoom({ className }: CustomerHealthWarRo
 
   const getActionStatusColor = (status: string) => {
     switch (status) {
-      case 'pending': return 'bg-yellow-100 text-yellow-800';
-      case 'in_progress': return 'bg-blue-100 text-blue-800';
-      case 'completed': return 'bg-green-100 text-green-800';
-      case 'cancelled': return 'bg-gray-100 text-gray-800';
-      default: return 'bg-gray-100 text-gray-800';
+      case 'pending': return 'bg-warning/10 text-yellow-800';
+      case 'in_progress': return 'bg-primary/10 text-blue-800';
+      case 'completed': return 'bg-success/10 text-green-800';
+      case 'cancelled': return 'bg-muted text-gray-800';
+      default: return 'bg-muted text-gray-800';
     }
   };
 
   const getPriorityColor = (priority: string) => {
     switch (priority) {
-      case 'low': return 'bg-gray-100 text-gray-800';
-      case 'medium': return 'bg-blue-100 text-blue-800';
-      case 'high': return 'bg-orange-100 text-orange-800';
-      case 'critical': return 'bg-red-100 text-red-800';
-      default: return 'bg-gray-100 text-gray-800';
+      case 'low': return 'bg-muted text-gray-800';
+      case 'medium': return 'bg-primary/10 text-blue-800';
+      case 'high': return 'bg-warning/10 text-orange-800';
+      case 'critical': return 'bg-destructive/10 text-red-800';
+      default: return 'bg-muted text-gray-800';
     }
   };
 
   const getSentimentColor = (sentiment: string) => {
     switch (sentiment) {
-      case 'positive': return 'text-green-600';
-      case 'neutral': return 'text-blue-600';
-      case 'negative': return 'text-red-600';
-      default: return 'text-gray-600';
+      case 'positive': return 'text-success';
+      case 'neutral': return 'text-primary';
+      case 'negative': return 'text-destructive';
+      default: return 'text-muted-foreground';
     }
   };
 
   const getParticipantStatusColor = (status: string) => {
     switch (status) {
-      case 'active': return 'bg-green-100 text-green-800';
-      case 'away': return 'bg-yellow-100 text-yellow-800';
-      case 'offline': return 'bg-gray-100 text-gray-800';
-      default: return 'bg-gray-100 text-gray-800';
+      case 'active': return 'bg-success/10 text-green-800';
+      case 'away': return 'bg-warning/10 text-yellow-800';
+      case 'offline': return 'bg-muted text-gray-800';
+      default: return 'bg-muted text-gray-800';
     }
   };
 
@@ -585,7 +585,7 @@ export default function CustomerHealthWarRoom({ className }: CustomerHealthWarRo
                 variant="outline"
                 size="sm"
                 onClick={() => setIsWarRoomActive(!isWarRoomActive)}
-                className={isWarRoomActive ? 'bg-red-100 text-red-800' : ''}
+                className={isWarRoomActive ? 'bg-destructive/10 text-red-800' : ''}
               >
                 {isWarRoomActive ? <Users className="h-4 w-4 mr-2" /> : <UserX className="h-4 w-4 mr-2" />}
                 {isWarRoomActive ? 'War Room Active' : 'Start War Room'}
@@ -604,31 +604,31 @@ export default function CustomerHealthWarRoom({ className }: CustomerHealthWarRo
         <CardContent className="space-y-6">
           {/* Crisis Summary */}
           <div className="grid grid-cols-4 gap-4">
-            <div className="text-center p-3 bg-red-50 rounded-lg">
-              <div className="text-2xl font-bold text-red-600">{activeCrises}</div>
+            <div className="text-center p-3 bg-destructive/10 rounded-[0.625rem]">
+              <div className="text-2xl font-bold text-destructive">{activeCrises}</div>
               <div className="text-sm text-muted-foreground">Active Crises</div>
             </div>
-            <div className="text-center p-3 bg-orange-50 rounded-lg">
-              <div className="text-2xl font-bold text-orange-600">{escalatedCrises}</div>
+            <div className="text-center p-3 bg-warning/10 rounded-[0.625rem]">
+              <div className="text-2xl font-bold text-warning">{escalatedCrises}</div>
               <div className="text-sm text-muted-foreground">Escalated</div>
             </div>
-            <div className="text-center p-3 bg-green-50 rounded-lg">
-              <div className="text-2xl font-bold text-green-600">{resolvedCrises}</div>
+            <div className="text-center p-3 bg-success/10 rounded-[0.625rem]">
+              <div className="text-2xl font-bold text-success">{resolvedCrises}</div>
               <div className="text-sm text-muted-foreground">Resolved</div>
             </div>
-            <div className="text-center p-3 bg-purple-50 rounded-lg">
-              <div className="text-2xl font-bold text-purple-600">{formatCurrency(totalRevenueAtRisk)}</div>
+            <div className="text-center p-3 bg-primary/10 rounded-[0.625rem]">
+              <div className="text-2xl font-bold text-primary">{formatCurrency(totalRevenueAtRisk)}</div>
               <div className="text-sm text-muted-foreground">Revenue at Risk</div>
             </div>
           </div>
 
           {/* War Room Status */}
           {isWarRoomActive && (
-            <div className="p-4 bg-red-50 border border-red-200 rounded-lg">
+            <div className="p-4 bg-destructive/10 border border-red-200 rounded-[0.625rem]">
               <div className="flex items-center justify-between">
                 <div>
                   <h4 className="font-medium text-red-800">War Room Active</h4>
-                  <p className="text-sm text-red-600">
+                  <p className="text-sm text-destructive">
                     Emergency response team is actively managing customer crises
                   </p>
                 </div>
@@ -636,7 +636,7 @@ export default function CustomerHealthWarRoom({ className }: CustomerHealthWarRo
                   <div className="text-sm font-medium text-red-800">
                     {warRoomSessions.filter(session => !session.endTime).length} Active Sessions
                   </div>
-                  <div className="text-sm text-red-600">
+                  <div className="text-sm text-destructive">
                     Started: {new Date(warRoomSessions[0]?.startTime || Date.now()).toLocaleTimeString()}
                   </div>
                 </div>
@@ -678,8 +678,8 @@ export default function CustomerHealthWarRoom({ className }: CustomerHealthWarRo
               {filteredCrises.map((crisis) => (
                 <div
                   key={crisis.id}
-                  className={`p-3 border rounded-lg cursor-pointer transition-colors ${
-                    selectedCrisis?.id === crisis.id ? 'border-blue-500 bg-blue-50' : 'hover:bg-gray-50'
+                  className={`p-3 border rounded-[0.625rem] cursor-pointer transition-colors ${
+                    selectedCrisis?.id === crisis.id ? 'border-blue-500 bg-primary/10' : 'hover:bg-muted/50'
                   }`}
                   onClick={() => setSelectedCrisis(crisis)}
                 >
@@ -817,7 +817,7 @@ export default function CustomerHealthWarRoom({ className }: CustomerHealthWarRo
                     <h5 className="font-medium mb-2">Action Items</h5>
                     <div className="space-y-2">
                       {selectedCrisis.actions.map((action) => (
-                        <div key={action.id} className="p-3 border rounded-lg">
+                        <div key={action.id} className="p-3 border rounded-[0.625rem]">
                           <div className="flex items-center justify-between mb-2">
                             <div className="flex items-center gap-2">
                               <span className="font-medium">{action.description}</span>
@@ -851,11 +851,11 @@ export default function CustomerHealthWarRoom({ className }: CustomerHealthWarRo
                     <h5 className="font-medium mb-2">Communication History</h5>
                     <div className="space-y-2">
                       {selectedCrisis.communications.map((comm) => (
-                        <div key={comm.id} className="p-3 border rounded-lg">
+                        <div key={comm.id} className="p-3 border rounded-[0.625rem]">
                           <div className="flex items-center justify-between mb-2">
                             <div className="flex items-center gap-2">
                               <span className="font-medium">{comm.type} with {comm.participant}</span>
-                              <Badge className={comm.direction === 'inbound' ? 'bg-blue-100 text-blue-800' : 'bg-green-100 text-green-800'}>
+                              <Badge className={comm.direction === 'inbound' ? 'bg-primary/10 text-blue-800' : 'bg-success/10 text-green-800'}>
                                 {comm.direction}
                               </Badge>
                             </div>
@@ -885,7 +885,7 @@ export default function CustomerHealthWarRoom({ className }: CustomerHealthWarRo
                     <h5 className="font-medium mb-2">War Room Session</h5>
                     {warRoomSessions.find(session => session.crisisId === selectedCrisis.id) ? (
                       <div className="space-y-4">
-                        <div className="p-3 border rounded-lg">
+                        <div className="p-3 border rounded-[0.625rem]">
                           <h6 className="font-medium mb-2">Participants</h6>
                           <div className="grid grid-cols-2 gap-2">
                             {warRoomSessions.find(session => session.crisisId === selectedCrisis.id)?.participants.map((participant, index) => (
@@ -898,14 +898,14 @@ export default function CustomerHealthWarRoom({ className }: CustomerHealthWarRo
                             ))}
                           </div>
                         </div>
-                        <div className="p-3 border rounded-lg">
+                        <div className="p-3 border rounded-[0.625rem]">
                           <h6 className="font-medium mb-2">Decisions Made</h6>
                           <div className="space-y-2">
                             {warRoomSessions.find(session => session.crisisId === selectedCrisis.id)?.decisions.map((decision) => (
                               <div key={decision.id} className="text-sm">
                                 <div className="flex items-center justify-between">
                                   <span>{decision.description}</span>
-                                  <Badge className={decision.status === 'approved' ? 'bg-green-100 text-green-800' : 'bg-yellow-100 text-yellow-800'}>
+                                  <Badge className={decision.status === 'approved' ? 'bg-success/10 text-green-800' : 'bg-warning/10 text-yellow-800'}>
                                     {decision.status}
                                   </Badge>
                                 </div>

@@ -159,8 +159,33 @@ export default function CriticalAccountsTracker({ className }: CriticalAccountsT
   const [filterStatus, setFilterStatus] = useState<string>('all');
 
   useEffect(() => {
-    const loadCriticalAccountsData = () => {
-      const mockAccounts: CriticalAccount[] = [
+    const loadCriticalAccountsData = async () => {
+      try {
+        // Load critical accounts from API
+        const accountsResponse = await fetch('/api/v1/crm/critical-accounts', {
+          headers: {
+            'Authorization': `Bearer ${localStorage.getItem('token')}`,
+            'Content-Type': 'application/json'
+          }
+        });
+        
+        if (accountsResponse.ok) {
+          const accountsData = await accountsResponse.json();
+          setAccounts(accountsData.data || []);
+        } else {
+          setAccounts([]);
+        }
+      } catch (error) {
+        console.error('Failed to load critical accounts data:', error);
+        setAccounts([]);
+      }
+    };
+
+    loadCriticalAccountsData();
+  }, []);
+
+  // Keep mock data as fallback for development
+  const getMockAccounts = (): CriticalAccount[] => [
         {
           id: 'account-001',
           name: 'TechCorp Solutions',
@@ -448,40 +473,40 @@ export default function CriticalAccountsTracker({ className }: CriticalAccountsT
 
   const getStatusColor = (status: string) => {
     switch (status) {
-      case 'healthy': return 'bg-green-100 text-green-800';
-      case 'at_risk': return 'bg-yellow-100 text-yellow-800';
-      case 'critical': return 'bg-red-100 text-red-800';
-      case 'churned': return 'bg-gray-100 text-gray-800';
-      default: return 'bg-gray-100 text-gray-800';
+      case 'healthy': return 'bg-success/10 text-green-800';
+      case 'at_risk': return 'bg-warning/10 text-yellow-800';
+      case 'critical': return 'bg-destructive/10 text-red-800';
+      case 'churned': return 'bg-muted text-gray-800';
+      default: return 'bg-muted text-gray-800';
     }
   };
 
   const getTierColor = (tier: string) => {
     switch (tier) {
-      case 'enterprise': return 'bg-purple-100 text-purple-800';
-      case 'premium': return 'bg-blue-100 text-blue-800';
-      case 'standard': return 'bg-gray-100 text-gray-800';
-      default: return 'bg-gray-100 text-gray-800';
+      case 'enterprise': return 'bg-primary/10 text-purple-800';
+      case 'premium': return 'bg-primary/10 text-blue-800';
+      case 'standard': return 'bg-muted text-gray-800';
+      default: return 'bg-muted text-gray-800';
     }
   };
 
   const getRiskColor = (risk: string) => {
     switch (risk) {
-      case 'low': return 'bg-green-100 text-green-800';
-      case 'medium': return 'bg-yellow-100 text-yellow-800';
-      case 'high': return 'bg-orange-100 text-orange-800';
-      case 'critical': return 'bg-red-100 text-red-800';
-      default: return 'bg-gray-100 text-gray-800';
+      case 'low': return 'bg-success/10 text-green-800';
+      case 'medium': return 'bg-warning/10 text-yellow-800';
+      case 'high': return 'bg-warning/10 text-orange-800';
+      case 'critical': return 'bg-destructive/10 text-red-800';
+      default: return 'bg-muted text-gray-800';
     }
   };
 
   const getAlertSeverityColor = (severity: string) => {
     switch (severity) {
-      case 'critical': return 'bg-red-500';
-      case 'high': return 'bg-orange-500';
-      case 'medium': return 'bg-yellow-500';
-      case 'low': return 'bg-green-500';
-      default: return 'bg-gray-500';
+      case 'critical': return 'bg-destructive/100';
+      case 'high': return 'bg-warning/100';
+      case 'medium': return 'bg-warning/100';
+      case 'low': return 'bg-success/100';
+      default: return 'bg-muted/500';
     }
   };
 
@@ -497,10 +522,10 @@ export default function CriticalAccountsTracker({ className }: CriticalAccountsT
   };
 
   const getHealthScoreColor = (score: number) => {
-    if (score >= 80) return 'text-green-600';
-    if (score >= 60) return 'text-yellow-600';
-    if (score >= 40) return 'text-orange-600';
-    return 'text-red-600';
+    if (score >= 80) return 'text-success';
+    if (score >= 60) return 'text-warning';
+    if (score >= 40) return 'text-warning';
+    return 'text-destructive';
   };
 
   const filteredAccounts = accounts.filter(account => {
@@ -536,7 +561,7 @@ export default function CriticalAccountsTracker({ className }: CriticalAccountsT
                 variant="outline"
                 size="sm"
                 onClick={() => setIsMonitoring(!isMonitoring)}
-                className={isMonitoring ? 'bg-green-100 text-green-800' : ''}
+                className={isMonitoring ? 'bg-success/10 text-green-800' : ''}
               >
                 {isMonitoring ? <Eye className="h-4 w-4 mr-2" /> : <EyeOff className="h-4 w-4 mr-2" />}
                 {isMonitoring ? 'Monitoring' : 'Paused'}
@@ -555,26 +580,26 @@ export default function CriticalAccountsTracker({ className }: CriticalAccountsT
         <CardContent className="space-y-6">
           {/* Account Summary */}
           <div className="grid grid-cols-4 gap-4">
-            <div className="text-center p-3 bg-green-50 rounded-lg">
-              <div className="text-2xl font-bold text-green-600">{healthyAccounts}</div>
+            <div className="text-center p-3 bg-success/10 rounded-[0.625rem]">
+              <div className="text-2xl font-bold text-success">{healthyAccounts}</div>
               <div className="text-sm text-muted-foreground">Healthy Accounts</div>
             </div>
-            <div className="text-center p-3 bg-yellow-50 rounded-lg">
-              <div className="text-2xl font-bold text-yellow-600">{atRiskAccounts}</div>
+            <div className="text-center p-3 bg-warning/10 rounded-[0.625rem]">
+              <div className="text-2xl font-bold text-warning">{atRiskAccounts}</div>
               <div className="text-sm text-muted-foreground">At Risk</div>
             </div>
-            <div className="text-center p-3 bg-red-50 rounded-lg">
-              <div className="text-2xl font-bold text-red-600">{criticalAccounts}</div>
+            <div className="text-center p-3 bg-destructive/10 rounded-[0.625rem]">
+              <div className="text-2xl font-bold text-destructive">{criticalAccounts}</div>
               <div className="text-sm text-muted-foreground">Critical</div>
             </div>
-            <div className="text-center p-3 bg-purple-50 rounded-lg">
-              <div className="text-2xl font-bold text-purple-600">{formatCurrency(totalRevenue)}</div>
+            <div className="text-center p-3 bg-primary/10 rounded-[0.625rem]">
+              <div className="text-2xl font-bold text-primary">{formatCurrency(totalRevenue)}</div>
               <div className="text-sm text-muted-foreground">Total Revenue</div>
             </div>
           </div>
 
           {/* Health Score Overview */}
-          <div className="p-4 bg-gradient-to-r from-blue-50 to-purple-50 rounded-lg">
+          <div className="p-4 bg-gradient-to-r from-blue-50 to-purple-50 rounded-[0.625rem]">
             <div className="flex items-center justify-between">
               <div>
                 <h4 className="font-medium">Average Health Score</h4>
@@ -628,8 +653,8 @@ export default function CriticalAccountsTracker({ className }: CriticalAccountsT
               {filteredAccounts.map((account) => (
                 <div
                   key={account.id}
-                  className={`p-3 border rounded-lg cursor-pointer transition-colors ${
-                    selectedAccount?.id === account.id ? 'border-blue-500 bg-blue-50' : 'hover:bg-gray-50'
+                  className={`p-3 border rounded-[0.625rem] cursor-pointer transition-colors ${
+                    selectedAccount?.id === account.id ? 'border-blue-500 bg-primary/10' : 'hover:bg-muted/50'
                   }`}
                   onClick={() => setSelectedAccount(account)}
                 >
@@ -724,7 +749,7 @@ export default function CriticalAccountsTracker({ className }: CriticalAccountsT
                         </div>
                         <div className="flex justify-between">
                           <span>Growth:</span>
-                          <span className={`font-medium ${selectedAccount.revenue.growth >= 0 ? 'text-green-600' : 'text-red-600'}`}>
+                          <span className={`font-medium ${selectedAccount.revenue.growth >= 0 ? 'text-success' : 'text-destructive'}`}>
                             {selectedAccount.revenue.growth > 0 ? '+' : ''}{selectedAccount.revenue.growth}%
                           </span>
                         </div>
@@ -886,7 +911,7 @@ export default function CriticalAccountsTracker({ className }: CriticalAccountsT
                     <h5 className="font-medium mb-2">Risk Factors</h5>
                     <div className="space-y-1">
                       {selectedAccount.risk.factors.map((factor, index) => (
-                        <div key={index} className="p-2 border rounded-lg text-sm">
+                        <div key={index} className="p-2 border rounded-[0.625rem] text-sm">
                           • {factor}
                         </div>
                       ))}
@@ -915,7 +940,7 @@ export default function CriticalAccountsTracker({ className }: CriticalAccountsT
                       <div className="space-y-2">
                         <div className="flex justify-between">
                           <span>Total Opportunity:</span>
-                          <span className="font-medium text-green-600">{formatCurrency(selectedAccount.opportunities.total)}</span>
+                          <span className="font-medium text-success">{formatCurrency(selectedAccount.opportunities.total)}</span>
                         </div>
                       </div>
                     </div>
@@ -927,7 +952,7 @@ export default function CriticalAccountsTracker({ className }: CriticalAccountsT
                     <h5 className="font-medium mb-2">Active Alerts</h5>
                     <div className="space-y-2">
                       {selectedAccount.alerts.map((alert) => (
-                        <div key={alert.id} className="p-3 border rounded-lg">
+                        <div key={alert.id} className="p-3 border rounded-[0.625rem]">
                           <div className="flex items-center justify-between mb-2">
                             <div className="flex items-center gap-2">
                               {getAlertTypeIcon(alert.type)}

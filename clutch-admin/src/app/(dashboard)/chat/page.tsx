@@ -8,6 +8,7 @@ import { Input } from "@/components/ui/input";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { formatDate, formatRelativeTime } from "@/lib/utils";
 import { useAuth } from "@/contexts/auth-context";
+import { useTranslations } from "@/hooks/use-translations";
 import { 
   MessageSquare, 
   Search, 
@@ -60,6 +61,7 @@ interface ChatChannel {
 }
 
 export default function ChatPage() {
+  const { t } = useTranslations();
   const [channels, setChannels] = useState<ChatChannel[]>([]);
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [selectedChannel, setSelectedChannel] = useState<string>("1");
@@ -71,129 +73,49 @@ export default function ChatPage() {
   useEffect(() => {
     const loadChatData = async () => {
       try {
-        // Mock data for chat channels
-        const mockChannels: ChatChannel[] = [
-          {
-            id: "1",
-            name: "Ahmed Hassan",
-            type: "direct",
-            lastMessage: "Thanks for the help with the fleet management setup",
-            lastMessageTime: "2024-01-15T10:30:00Z",
-            unreadCount: 2,
-            isOnline: true
-          },
-          {
-            id: "2",
-            name: "Support Team",
-            type: "group",
-            lastMessage: "New ticket #1234 has been assigned",
-            lastMessageTime: "2024-01-15T09:15:00Z",
-            unreadCount: 0,
-            isOnline: true
-          },
-          {
-            id: "3",
-            name: "Fatma Mohamed",
-            type: "direct",
-            lastMessage: "Can you help me with the billing issue?",
-            lastMessageTime: "2024-01-14T16:45:00Z",
-            unreadCount: 1,
-            isOnline: false
-          },
-          {
-            id: "4",
-            name: "Omar Ali",
-            type: "direct",
-            lastMessage: "The new features look great!",
-            lastMessageTime: "2024-01-14T14:20:00Z",
-            unreadCount: 0,
-            isOnline: true
-          }
-        ];
+        setIsLoading(true);
+        
+        // Load real data from API
+        const [channelsData, messagesData] = await Promise.all([
+          productionApi.getChatChannels(),
+          productionApi.getChatMessages(selectedChannel)
+        ]);
 
-        const mockMessages: ChatMessage[] = [
-          {
-            id: "1",
-            sender: "Ahmed Hassan",
-            senderType: "user",
-            message: "Hi, I need help setting up fleet tracking for my vehicles",
-            timestamp: "2024-01-15T10:00:00Z",
-            status: "read"
-          },
-          {
-            id: "2",
-            sender: "You",
-            senderType: "user",
-            message: "I'll help you with that. Let me guide you through the setup process",
-            timestamp: "2024-01-15T10:05:00Z",
-            status: "read"
-          },
-          {
-            id: "3",
-            sender: "Ahmed Hassan",
-            senderType: "user",
-            message: "That would be great! I have 15 vehicles in my fleet",
-            timestamp: "2024-01-15T10:10:00Z",
-            status: "read"
-          },
-          {
-            id: "4",
-            sender: "You",
-            senderType: "user",
-            message: "Perfect! I'll create a custom configuration for your fleet size. Do you need GPS tracking for all vehicles?",
-            timestamp: "2024-01-15T10:15:00Z",
-            status: "read"
-          },
-          {
-            id: "5",
-            sender: "Ahmed Hassan",
-            senderType: "user",
-            message: "Yes, GPS tracking for all vehicles would be ideal. Also, I need real-time monitoring",
-            timestamp: "2024-01-15T10:20:00Z",
-            status: "read"
-          },
-          {
-            id: "6",
-            sender: "You",
-            senderType: "user",
-            message: "Excellent! I've set up real-time GPS tracking for all 15 vehicles. You can monitor them from the dashboard",
-            timestamp: "2024-01-15T10:25:00Z",
-            status: "read"
-          },
-          {
-            id: "7",
-            sender: "Ahmed Hassan",
-            senderType: "user",
-            message: "Thanks for the help with the fleet management setup",
-            timestamp: "2024-01-15T10:30:00Z",
-            status: "delivered"
-          }
-        ];
-
-        setChannels(mockChannels);
-        setMessages(mockMessages);
+        setChannels(channelsData || []);
+        setMessages(messagesData || []);
+        
       } catch (error) {
         console.error("Failed to load chat data:", error);
+        toast.error(t('chat.failedToLoadChatData'));
+        // Set empty arrays on error - no mock data fallback
+        setChannels([]);
+        setMessages([]);
       } finally {
         setIsLoading(false);
       }
     };
 
     loadChatData();
-  }, []);
+  }, [selectedChannel]);
 
-  const handleSendMessage = () => {
+  const handleSendMessage = async () => {
     if (newMessage.trim()) {
-      const message: ChatMessage = {
-        id: Date.now().toString(),
-        sender: "You",
-        senderType: "user",
-        message: newMessage,
-        timestamp: new Date().toISOString(),
-        status: "sent"
-      };
-      setMessages([...messages, message]);
-      setNewMessage("");
+      try {
+        const messageData = {
+          receiverId: selectedChannel,
+          message: newMessage,
+          type: "text"
+        };
+        
+        const result = await productionApi.sendChatMessage(messageData);
+        if (result) {
+          setMessages([...messages, result]);
+          setNewMessage("");
+        }
+      } catch (error) {
+        console.error("Failed to send message:", error);
+        toast.error("Failed to send message");
+      }
     }
   };
 
@@ -204,7 +126,7 @@ export default function ChatPage() {
       case "delivered":
         return <CheckCircle2 className="h-3 w-3 text-muted-foreground" />;
       case "read":
-        return <CheckCircle2 className="h-3 w-3 text-blue-500" />;
+        return <CheckCircle2 className="h-3 w-3 text-primary" />;
       default:
         return <Clock className="h-3 w-3 text-muted-foreground" />;
     }
@@ -239,17 +161,17 @@ export default function ChatPage() {
       {/* Page Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold tracking-tight text-foreground font-sans">Chat & Messaging</h1>
+          <h1 className="text-3xl font-bold tracking-tight text-foreground font-sans">{t('chat.title')}</h1>
           <p className="text-muted-foreground font-sans">
-            Real-time communication with users and service providers
+            {t('chat.description')}
           </p>
         </div>
         <div className="flex items-center space-x-2">
-          <Button variant="outline" className="shadow-sm">
+          <Button variant="outline" className="shadow-2xs">
             <Archive className="mr-2 h-4 w-4" />
             Archive
           </Button>
-          <Button className="shadow-sm">
+          <Button className="shadow-2xs">
             <Plus className="mr-2 h-4 w-4" />
             New Chat
           </Button>
@@ -259,7 +181,7 @@ export default function ChatPage() {
       {/* Chat Interface */}
       <div className="grid gap-6 lg:grid-cols-4">
         {/* Chat Channels List */}
-        <Card className="lg:col-span-1 shadow-sm">
+        <Card className="lg:col-span-1 shadow-2xs">
           <CardHeader>
             <CardTitle className="text-card-foreground">Conversations</CardTitle>
             <div className="relative">
@@ -315,7 +237,7 @@ export default function ChatPage() {
         </Card>
 
         {/* Chat Messages */}
-        <Card className="lg:col-span-3 shadow-sm">
+        <Card className="lg:col-span-3 shadow-2xs">
           <CardHeader>
             <div className="flex items-center justify-between">
               <div className="flex items-center space-x-3">
@@ -376,7 +298,7 @@ export default function ChatPage() {
                     <div className="w-6 h-6 rounded-full bg-muted flex items-center justify-center">
                       {getSenderIcon(message.senderType)}
                     </div>
-                    <div className={`rounded-lg p-3 ${message.sender === "You" ? "bg-primary text-primary-foreground" : "bg-muted"}`}>
+                    <div className={`rounded-[0.625rem] p-3 ${message.sender === "You" ? "bg-primary text-primary-foreground" : "bg-muted"}`}>
                       <p className="text-sm">{message.message}</p>
                       <div className={`flex items-center space-x-1 mt-1 ${message.sender === "You" ? "justify-end" : "justify-start"}`}>
                         <span className="text-xs opacity-70">
@@ -417,7 +339,7 @@ export default function ChatPage() {
       </div>
 
       {/* Chat History Search */}
-      <Card className="shadow-sm">
+      <Card className="shadow-2xs">
         <CardHeader>
           <CardTitle className="text-card-foreground">Search Chat History</CardTitle>
           <CardDescription>Find messages across all conversations</CardDescription>
@@ -433,11 +355,11 @@ export default function ChatPage() {
                 />
               </div>
             </div>
-            <Button variant="outline" className="shadow-sm">
+            <Button variant="outline" className="shadow-2xs">
               <Clock className="mr-2 h-4 w-4" />
               Filter by Date
             </Button>
-            <Button variant="outline" className="shadow-sm">
+            <Button variant="outline" className="shadow-2xs">
               <Users className="mr-2 h-4 w-4" />
               Filter by User
             </Button>

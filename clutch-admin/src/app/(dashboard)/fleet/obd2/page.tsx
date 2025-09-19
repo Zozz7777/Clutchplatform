@@ -395,7 +395,7 @@ export default function OBD2Page() {
                     <p className="text-sm text-muted-foreground">RPM</p>
                   </div>
                   <div className="text-center p-4 border rounded-[0.625rem]">
-                    <Fuel className="h-8 w-8 text-green-600 mx-auto mb-2" />
+                    <Fuel className="h-8 w-8 text-success mx-auto mb-2" />
                     <p className="text-2xl font-bold text-foreground">65%</p>
                     <p className="text-sm text-muted-foreground">Fuel Level</p>
                   </div>
@@ -405,7 +405,7 @@ export default function OBD2Page() {
                     <p className="text-sm text-muted-foreground">Engine Temp</p>
                   </div>
                   <div className="text-center p-4 border rounded-[0.625rem]">
-                    <Zap className="h-8 w-8 text-yellow-600 mx-auto mb-2" />
+                    <Zap className="h-8 w-8 text-warning mx-auto mb-2" />
                     <p className="text-2xl font-bold text-foreground">14.2V</p>
                     <p className="text-sm text-muted-foreground">Battery</p>
                   </div>
@@ -414,10 +414,10 @@ export default function OBD2Page() {
                   <h3 className="text-lg font-semibold">Active Vehicle Sensors</h3>
                   <div className="space-y-2">
                     {vehicles.slice(0, 5).map((vehicle) => (
-                      <div key={vehicle.id} className="flex items-center justify-between p-3 border rounded-lg">
+                      <div key={vehicle.id} className="flex items-center justify-between p-3 border rounded-[0.625rem]">
                         <div className="flex items-center space-x-3">
-                          <div className="w-8 h-8 rounded-full bg-green-100 flex items-center justify-center">
-                            <Cpu className="h-4 w-4 text-green-600" />
+                          <div className="w-8 h-8 rounded-full bg-success/10 flex items-center justify-center">
+                            <Cpu className="h-4 w-4 text-success" />
                           </div>
                           <div>
                             <p className="font-medium text-foreground">{vehicle.make} {vehicle.model}</p>
@@ -527,10 +527,10 @@ export default function OBD2Page() {
                   <h3 className="text-lg font-semibold">Predictive Maintenance Alerts</h3>
                   <div className="space-y-2">
                     {vehicles.slice(0, 3).map((vehicle) => (
-                      <div key={vehicle.id} className="flex items-center justify-between p-3 border rounded-lg">
+                      <div key={vehicle.id} className="flex items-center justify-between p-3 border rounded-[0.625rem]">
                         <div className="flex items-center space-x-3">
-                          <div className="w-8 h-8 rounded-full bg-yellow-100 flex items-center justify-center">
-                            <AlertTriangle className="h-4 w-4 text-yellow-600" />
+                          <div className="w-8 h-8 rounded-full bg-warning/10 flex items-center justify-center">
+                            <AlertTriangle className="h-4 w-4 text-warning" />
                           </div>
                           <div>
                             <p className="font-medium text-foreground">{vehicle.make} {vehicle.model}</p>

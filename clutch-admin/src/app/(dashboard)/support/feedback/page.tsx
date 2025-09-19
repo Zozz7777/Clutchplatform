@@ -147,11 +147,11 @@ export default function FeedbackPage() {
       case 'bug':
         return <Badge variant="destructive">Bug</Badge>;
       case 'feature':
-        return <Badge variant="default" className="bg-blue-500">Feature</Badge>;
+        return <Badge variant="default" className="bg-primary/100">Feature</Badge>;
       case 'general':
         return <Badge variant="secondary">General</Badge>;
       case 'complaint':
-        return <Badge variant="default" className="bg-red-500">Complaint</Badge>;
+        return <Badge variant="default" className="bg-destructive/100">Complaint</Badge>;
       default:
         return <Badge variant="outline">Unknown</Badge>;
     }
@@ -160,11 +160,11 @@ export default function FeedbackPage() {
   const getStatusBadge = (status: string) => {
     switch (status) {
       case 'new':
-        return <Badge variant="default" className="bg-green-500">New</Badge>;
+        return <Badge variant="default" className="bg-success/100">New</Badge>;
       case 'in_progress':
-        return <Badge variant="default" className="bg-yellow-500">In Progress</Badge>;
+        return <Badge variant="default" className="bg-warning/100">In Progress</Badge>;
       case 'resolved':
-        return <Badge variant="default" className="bg-blue-500">Resolved</Badge>;
+        return <Badge variant="default" className="bg-primary/100">Resolved</Badge>;
       case 'closed':
         return <Badge variant="secondary">Closed</Badge>;
       default:
@@ -177,9 +177,9 @@ export default function FeedbackPage() {
       case 'urgent':
         return <Badge variant="destructive">Urgent</Badge>;
       case 'high':
-        return <Badge variant="default" className="bg-red-500">High</Badge>;
+        return <Badge variant="default" className="bg-destructive/100">High</Badge>;
       case 'medium':
-        return <Badge variant="default" className="bg-yellow-500">Medium</Badge>;
+        return <Badge variant="default" className="bg-warning/100">Medium</Badge>;
       case 'low':
         return <Badge variant="secondary">Low</Badge>;
       default:
@@ -339,7 +339,7 @@ export default function FeedbackPage() {
             <Card>
               <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                 <CardTitle className="text-sm font-medium font-sans">New</CardTitle>
-                <Badge variant="default" className="bg-green-500">New</Badge>
+                <Badge variant="default" className="bg-success/100">New</Badge>
               </CardHeader>
               <CardContent>
                 <div className="text-2xl font-bold font-sans">
@@ -390,9 +390,9 @@ export default function FeedbackPage() {
                       <div key={type} className="flex items-center justify-between">
                         <span className="text-sm font-sans capitalize">{type}</span>
                         <div className="flex items-center space-x-2">
-                          <div className="w-20 bg-gray-200 rounded-full h-2">
+                          <div className="w-20 bg-muted rounded-full h-2">
                             <div 
-                              className="bg-blue-500 h-2 rounded-full" 
+                              className="bg-primary/100 h-2 rounded-full" 
                               style={{ width: `${percentage}%` }}
                             ></div>
                           </div>
@@ -418,9 +418,9 @@ export default function FeedbackPage() {
                       <div key={status} className="flex items-center justify-between">
                         <span className="text-sm font-sans capitalize">{status.replace('_', ' ')}</span>
                         <div className="flex items-center space-x-2">
-                          <div className="w-20 bg-gray-200 rounded-full h-2">
+                          <div className="w-20 bg-muted rounded-full h-2">
                             <div 
-                              className="bg-green-500 h-2 rounded-full" 
+                              className="bg-success/100 h-2 rounded-full" 
                               style={{ width: `${percentage}%` }}
                             ></div>
                           </div>
@@ -446,7 +446,7 @@ export default function FeedbackPage() {
             </DialogDescription>
           </DialogHeader>
           <div className="py-4">
-            <div className="mb-4 p-3 bg-gray-50 rounded-lg">
+            <div className="mb-4 p-3 bg-muted/50 rounded-[0.625rem]">
               <h4 className="font-medium">{selectedFeedback?.title}</h4>
               <p className="text-sm text-muted-foreground mt-1">
                 {selectedFeedback?.description}

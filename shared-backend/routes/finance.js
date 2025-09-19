@@ -292,9 +292,111 @@ router.get('/subscriptions', async (req, res) => {
   }
 });
 
+// ===== FINANCE SUBSCRIPTIONS =====
+
+// GET /api/v1/finance/subscriptions - Get all subscriptions
+router.get('/subscriptions', async (req, res) => {
+  try {
+    const subscriptionsCollection = await getCollection('subscriptions');
+    const { page = 1, limit = 10, status, plan } = req.query;
+    
+    const filter = {};
+    if (status) filter.status = status;
+    if (plan) filter.plan = plan;
+    
+    const skip = (parseInt(page) - 1) * parseInt(limit);
+    
+    const subscriptions = await subscriptionsCollection
+      .find(filter)
+      .skip(skip)
+      .limit(parseInt(limit))
+      .sort({ createdAt: -1 })
+      .toArray();
+    
+    const total = await subscriptionsCollection.countDocuments(filter);
+    
+    res.json({
+      success: true,
+      data: {
+        subscriptions,
+        pagination: {
+          page: parseInt(page),
+          limit: parseInt(limit),
+          total,
+          pages: Math.ceil(total / parseInt(limit))
+        }
+      }
+    });
+  } catch (error) {
+    console.error('Error fetching subscriptions:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Failed to fetch subscriptions',
+      error: process.env.NODE_ENV === 'development' ? error.message : undefined
+    });
+  }
+});
+
+// POST /api/v1/finance/subscriptions - Create new subscription
+router.post('/subscriptions', checkRole(['head_administrator', 'finance_officer']), async (req, res) => {
+  try {
+    const subscriptionsCollection = await getCollection('subscriptions');
+    const { 
+      customerId, 
+      plan, 
+      amount, 
+      billingCycle = 'monthly',
+      startDate,
+      endDate 
+    } = req.body;
+    
+    // Validate required fields
+    if (!customerId || !plan || !amount) {
+      return res.status(400).json({
+        success: false,
+        message: 'Customer ID, plan, and amount are required'
+      });
+    }
+    
+    const subscriptionData = {
+      customerId,
+      plan,
+      amount: parseFloat(amount),
+      billingCycle,
+      startDate: startDate ? new Date(startDate) : new Date(),
+      endDate: endDate ? new Date(endDate) : new Date(Date.now() + 30 * 24 * 60 * 60 * 1000), // 30 days from now
+      status: 'active',
+      createdBy: req.user.userId || req.user.id,
+      createdAt: new Date(),
+      updatedAt: new Date()
+    };
+    
+    const result = await subscriptionsCollection.insertOne(subscriptionData);
+    
+    res.json({
+      success: true,
+      data: {
+        subscription: {
+          ...subscriptionData,
+          _id: result.insertedId
+        }
+      },
+      message: 'Subscription created successfully'
+    });
+    
+  } catch (error) {
+    console.error('Error creating subscription:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Failed to create subscription',
+      error: process.env.NODE_ENV === 'development' ? error.message : undefined
+    });
+  }
+});
+
 // ===== FINANCE METRICS =====
 
-// GET /api/finance/metrics - Get finance metrics
+// GET /api/v1/finance/metrics - Get finance metrics
 router.get('/metrics', async (req, res) => {
   try {
     const paymentsCollection = await getCollection('payments');

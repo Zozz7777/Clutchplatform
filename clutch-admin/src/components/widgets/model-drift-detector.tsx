@@ -122,19 +122,19 @@ export function ModelDriftDetector({ className = '' }: ModelDriftDetectorProps) 
 
   const getStatusColor = (status: string) => {
     switch (status) {
-      case 'stable': return 'text-green-600';
-      case 'warning': return 'text-yellow-600';
-      case 'critical': return 'text-red-600';
-      default: return 'text-gray-600';
+      case 'stable': return 'text-success';
+      case 'warning': return 'text-warning';
+      case 'critical': return 'text-destructive';
+      default: return 'text-muted-foreground';
     }
   };
 
   const getStatusBadge = (status: string) => {
     switch (status) {
-      case 'stable': return 'bg-green-100 text-green-800';
-      case 'warning': return 'bg-yellow-100 text-yellow-800';
-      case 'critical': return 'bg-red-100 text-red-800';
-      default: return 'bg-gray-100 text-gray-800';
+      case 'stable': return 'bg-success/10 text-green-800';
+      case 'warning': return 'bg-warning/10 text-yellow-800';
+      case 'critical': return 'bg-destructive/10 text-red-800';
+      default: return 'bg-muted text-gray-800';
     }
   };
 
@@ -148,15 +148,15 @@ export function ModelDriftDetector({ className = '' }: ModelDriftDetectorProps) 
   };
 
   const getDriftColor = (drift: number, threshold: number) => {
-    if (drift <= threshold) return 'text-green-600';
-    if (drift <= threshold * 1.5) return 'text-yellow-600';
-    return 'text-red-600';
+    if (drift <= threshold) return 'text-success';
+    if (drift <= threshold * 1.5) return 'text-warning';
+    return 'text-destructive';
   };
 
   const getDriftBadge = (drift: number, threshold: number) => {
-    if (drift <= threshold) return 'bg-green-100 text-green-800';
-    if (drift <= threshold * 1.5) return 'bg-yellow-100 text-yellow-800';
-    return 'bg-red-100 text-red-800';
+    if (drift <= threshold) return 'bg-success/10 text-green-800';
+    if (drift <= threshold * 1.5) return 'bg-warning/10 text-yellow-800';
+    return 'bg-destructive/10 text-red-800';
   };
 
   const getDriftLevel = (drift: number, threshold: number) => {
@@ -166,9 +166,9 @@ export function ModelDriftDetector({ className = '' }: ModelDriftDetectorProps) 
   };
 
   const getChangeColor = (change: number) => {
-    if (change > 0) return 'text-green-600';
-    if (change < 0) return 'text-red-600';
-    return 'text-gray-600';
+    if (change > 0) return 'text-success';
+    if (change < 0) return 'text-destructive';
+    return 'text-muted-foreground';
   };
 
   const getChangeIcon = (change: number) => {
@@ -192,16 +192,16 @@ export function ModelDriftDetector({ className = '' }: ModelDriftDetectorProps) 
       <Card className={className}>
         <CardHeader>
           <CardTitle className="flex items-center space-x-2">
-            <AlertTriangle className="h-5 w-5 text-orange-600" />
+            <AlertTriangle className="h-5 w-5 text-warning" />
             <span>Model Drift Detector</span>
           </CardTitle>
           <CardDescription>Loading model drift data...</CardDescription>
         </CardHeader>
         <CardContent>
           <div className="animate-pulse space-y-4">
-            <div className="h-4 bg-gray-200 rounded-lg w-3/4"></div>
-            <div className="h-4 bg-gray-200 rounded-lg w-1/2"></div>
-            <div className="h-4 bg-gray-200 rounded-lg w-2/3"></div>
+            <div className="h-4 bg-muted rounded-[0.625rem] w-3/4"></div>
+            <div className="h-4 bg-muted rounded-[0.625rem] w-1/2"></div>
+            <div className="h-4 bg-muted rounded-[0.625rem] w-2/3"></div>
           </div>
         </CardContent>
       </Card>
@@ -216,7 +216,7 @@ export function ModelDriftDetector({ className = '' }: ModelDriftDetectorProps) 
     <Card className={className}>
       <CardHeader>
         <CardTitle className="flex items-center space-x-2">
-          <AlertTriangle className="h-5 w-5 text-orange-600" />
+          <AlertTriangle className="h-5 w-5 text-warning" />
           <span>Model Drift Detector</span>
         </CardTitle>
         <CardDescription>
@@ -226,26 +226,26 @@ export function ModelDriftDetector({ className = '' }: ModelDriftDetectorProps) 
       <CardContent className="space-y-6">
         {/* Summary Stats */}
         <div className="grid grid-cols-3 gap-4">
-          <div className="text-center p-3 bg-red-50 rounded-lg-lg">
-            <AlertTriangle className="h-5 w-5 text-red-600 mx-auto mb-1" />
-            <p className="text-lg font-bold text-red-600">{criticalModels}</p>
-            <p className="text-xs text-gray-500">Critical</p>
+          <div className="text-center p-3 bg-destructive/10 rounded-[0.625rem]-lg">
+            <AlertTriangle className="h-5 w-5 text-destructive mx-auto mb-1" />
+            <p className="text-lg font-bold text-destructive">{criticalModels}</p>
+            <p className="text-xs text-muted-foreground">Critical</p>
           </div>
-          <div className="text-center p-3 bg-yellow-50 rounded-lg-lg">
-            <AlertTriangle className="h-5 w-5 text-yellow-600 mx-auto mb-1" />
-            <p className="text-lg font-bold text-yellow-600">{warningModels}</p>
-            <p className="text-xs text-gray-500">Warning</p>
+          <div className="text-center p-3 bg-warning/10 rounded-[0.625rem]-lg">
+            <AlertTriangle className="h-5 w-5 text-warning mx-auto mb-1" />
+            <p className="text-lg font-bold text-warning">{warningModels}</p>
+            <p className="text-xs text-muted-foreground">Warning</p>
           </div>
-          <div className="text-center p-3 bg-green-50 rounded-lg-lg">
-            <CheckCircle className="h-5 w-5 text-green-600 mx-auto mb-1" />
-            <p className="text-lg font-bold text-green-600">{stableModels}</p>
-            <p className="text-xs text-gray-500">Stable</p>
+          <div className="text-center p-3 bg-success/10 rounded-[0.625rem]-lg">
+            <CheckCircle className="h-5 w-5 text-success mx-auto mb-1" />
+            <p className="text-lg font-bold text-success">{stableModels}</p>
+            <p className="text-xs text-muted-foreground">Stable</p>
           </div>
         </div>
 
         {/* Model Status Overview */}
         <div className="space-y-3">
-          <h4 className="text-sm font-medium text-gray-900">Model Status</h4>
+          <h4 className="text-sm font-medium text-foreground">Model Status</h4>
           <div className="space-y-2">
             {driftData.map((model) => {
               const StatusIcon = getStatusIcon(model.status);
@@ -253,12 +253,12 @@ export function ModelDriftDetector({ className = '' }: ModelDriftDetectorProps) 
               const ChangeIcon = getChangeIcon(accuracyChange);
               
               return (
-                <div key={model.modelName} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg-lg">
+                <div key={model.modelName} className="flex items-center justify-between p-3 bg-muted/50 rounded-[0.625rem]-lg">
                   <div className="flex items-center space-x-3">
                     <StatusIcon className={`h-4 w-4 ${getStatusColor(model.status)}`} />
                     <div>
-                      <p className="text-sm font-medium text-gray-900">{model.modelName}</p>
-                      <p className="text-xs text-gray-500">
+                      <p className="text-sm font-medium text-foreground">{model.modelName}</p>
+                      <p className="text-xs text-muted-foreground">
                         Accuracy: {model.accuracy.toFixed(1)}% 
                         <span className={`ml-1 ${getChangeColor(accuracyChange)}`}>
                           ({accuracyChange > 0 ? '+' : ''}{accuracyChange.toFixed(1)}%)
@@ -268,7 +268,7 @@ export function ModelDriftDetector({ className = '' }: ModelDriftDetectorProps) 
                   </div>
                   <div className="text-right">
                     <div className="flex items-center space-x-2">
-                      <p className="text-sm font-semibold text-gray-900">
+                      <p className="text-sm font-semibold text-foreground">
                         {model.driftScore.toFixed(2)}
                       </p>
                       <Badge className={getDriftBadge(model.driftScore, 0.1)}>
@@ -290,19 +290,19 @@ export function ModelDriftDetector({ className = '' }: ModelDriftDetectorProps) 
 
         {/* Data Distribution Drift */}
         <div className="space-y-3">
-          <h4 className="text-sm font-medium text-gray-900">Data Distribution Drift</h4>
+          <h4 className="text-sm font-medium text-foreground">Data Distribution Drift</h4>
           <div className="space-y-2">
             {driftData[0]?.dataDistribution.map((feature) => (
-              <div key={feature.feature} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg-lg">
+              <div key={feature.feature} className="flex items-center justify-between p-3 bg-muted/50 rounded-[0.625rem]-lg">
                 <div className="flex items-center space-x-3">
-                  <BarChart3 className="h-4 w-4 text-blue-600" />
+                  <BarChart3 className="h-4 w-4 text-primary" />
                   <div>
-                    <p className="text-sm font-medium text-gray-900">{feature.feature}</p>
-                    <p className="text-xs text-gray-500">Feature drift</p>
+                    <p className="text-sm font-medium text-foreground">{feature.feature}</p>
+                    <p className="text-xs text-muted-foreground">Feature drift</p>
                   </div>
                 </div>
                 <div className="text-right">
-                  <p className="text-sm font-semibold text-gray-900">
+                  <p className="text-sm font-semibold text-foreground">
                     {feature.drift.toFixed(3)}
                   </p>
                   <Badge className={getDriftBadge(feature.drift, feature.threshold)}>
@@ -316,17 +316,17 @@ export function ModelDriftDetector({ className = '' }: ModelDriftDetectorProps) 
 
         {/* Performance Metrics */}
         <div className="space-y-3">
-          <h4 className="text-sm font-medium text-gray-900">Performance Metrics</h4>
+          <h4 className="text-sm font-medium text-foreground">Performance Metrics</h4>
           <div className="space-y-2">
             {driftData[0]?.performanceMetrics.map((metric) => {
               const ChangeIcon = getChangeIcon(metric.change);
               return (
-                <div key={metric.metric} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg-lg">
+                <div key={metric.metric} className="flex items-center justify-between p-3 bg-muted/50 rounded-[0.625rem]-lg">
                   <div className="flex items-center space-x-3">
-                    <Target className="h-4 w-4 text-purple-600" />
+                    <Target className="h-4 w-4 text-primary" />
                     <div>
-                      <p className="text-sm font-medium text-gray-900">{metric.metric}</p>
-                      <p className="text-xs text-gray-500">
+                      <p className="text-sm font-medium text-foreground">{metric.metric}</p>
+                      <p className="text-xs text-muted-foreground">
                         Current: {metric.current.toFixed(3)} | Baseline: {metric.baseline.toFixed(3)}
                       </p>
                     </div>
@@ -358,7 +358,7 @@ export function ModelDriftDetector({ className = '' }: ModelDriftDetectorProps) 
         </div>
 
         {/* Insights */}
-        <div className="p-3 bg-blue-50 rounded-lg-lg">
+        <div className="p-3 bg-primary/10 rounded-[0.625rem]-lg">
           <h5 className="text-sm font-medium text-blue-900 mb-2">💡 Drift Detection Insights</h5>
           <ul className="text-xs text-blue-800 space-y-1">
             <li>• {driftData.length} models monitored for drift</li>

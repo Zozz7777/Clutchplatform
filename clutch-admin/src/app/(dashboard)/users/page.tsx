@@ -11,6 +11,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { productionApi } from "@/lib/production-api";
 import { formatDate, formatRelativeTime } from "@/lib/utils";
 import { useAuth } from "@/contexts/auth-context";
+import { useTranslations } from "@/hooks/use-translations";
 import { useQuickActions } from "@/lib/quick-actions";
 import { toast } from "sonner";
 
@@ -67,6 +68,7 @@ export default function UsersPage() {
   const [roleFilter, setRoleFilter] = useState<string>("all");
   const [isLoading, setIsLoading] = useState(true);
   const { hasPermission } = useAuth();
+  const { t } = useTranslations();
   const { addUser } = useQuickActions(hasPermission);
 
   useEffect(() => {
@@ -78,7 +80,7 @@ export default function UsersPage() {
         setFilteredUsers(userData || []);
       } catch (error) {
         console.error("Failed to load users:", error);
-        toast.error("Failed to load users");
+        toast.error(t('users.failedToLoadUsers'));
         // Set empty arrays on error - no mock data fallback
         setUsers([]);
         setFilteredUsers([]);
@@ -145,7 +147,7 @@ export default function UsersPage() {
       <div className="flex items-center justify-center h-64">
         <div className="text-center">
           <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto mb-4"></div>
-          <p className="text-muted-foreground font-sans">Loading users...</p>
+          <p className="text-muted-foreground font-sans">{t('users.loadingUsers')}</p>
         </div>
       </div>
     );
@@ -156,36 +158,36 @@ export default function UsersPage() {
       {/* Page Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold tracking-tight text-foreground font-sans">User Management</h1>
+          <h1 className="text-3xl font-bold tracking-tight text-foreground font-sans">{t('users.title')}</h1>
           <p className="text-muted-foreground font-sans">
-            Manage B2C customers, B2B enterprise accounts, and service providers
+            {t('users.description')}
           </p>
         </div>
         {hasPermission("create_users") && (
-          <Button className="shadow-sm" onClick={addUser}>
+          <Button className="shadow-2xs" onClick={addUser}>
             <Plus className="mr-2 h-4 w-4" />
-            Add User
+            {t('users.addUser')}
           </Button>
         )}
       </div>
 
       {/* Analytics Cards */}
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-        <Card className="shadow-sm">
+        <Card className="shadow-2xs">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium text-card-foreground">Total Users</CardTitle>
+            <CardTitle className="text-sm font-medium text-card-foreground">{t('users.totalUsers')}</CardTitle>
             <Users className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold text-foreground">{users.length}</div>
             <p className="text-xs text-muted-foreground">
-              <span className="text-green-600">+12%</span> from last month
+              <span className="text-success">+12%</span> {t('users.fromLastMonth')}
             </p>
           </CardContent>
         </Card>
-        <Card className="shadow-sm">
+        <Card className="shadow-2xs">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium text-card-foreground">Active Users</CardTitle>
+            <CardTitle className="text-sm font-medium text-card-foreground">{t('users.activeUsers')}</CardTitle>
             <UserCheck className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
@@ -193,13 +195,13 @@ export default function UsersPage() {
               {users.filter(u => u.status === "active").length}
             </div>
             <p className="text-xs text-muted-foreground">
-              <span className="text-green-600">+8%</span> from last month
+              <span className="text-success">+8%</span> {t('users.fromLastMonth')}
             </p>
           </CardContent>
         </Card>
-        <Card className="shadow-sm">
+        <Card className="shadow-2xs">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium text-card-foreground">Enterprise Clients</CardTitle>
+            <CardTitle className="text-sm font-medium text-card-foreground">{t('users.enterpriseClients')}</CardTitle>
             <Building2 className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
@@ -207,13 +209,13 @@ export default function UsersPage() {
               {users.filter(u => u.role === "enterprise_client").length}
             </div>
             <p className="text-xs text-muted-foreground">
-              <span className="text-green-600">+5%</span> from last month
+              <span className="text-success">+5%</span> {t('users.fromLastMonth')}
             </p>
           </CardContent>
         </Card>
-        <Card className="shadow-sm">
+        <Card className="shadow-2xs">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium text-card-foreground">Service Providers</CardTitle>
+            <CardTitle className="text-sm font-medium text-card-foreground">{t('users.serviceProviders')}</CardTitle>
             <UserCog className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
@@ -221,7 +223,7 @@ export default function UsersPage() {
               {users.filter(u => u.role === "service_provider").length}
             </div>
             <p className="text-xs text-muted-foreground">
-              <span className="text-green-600">+15%</span> from last month
+              <span className="text-success">+15%</span> from last month
             </p>
           </CardContent>
         </Card>
@@ -237,7 +239,7 @@ export default function UsersPage() {
         </TabsList>
 
         <TabsContent value="all" className="space-y-4">
-          <Card className="shadow-sm">
+          <Card className="shadow-2xs">
             <CardHeader>
               <CardTitle className="text-card-foreground">All Users</CardTitle>
               <CardDescription>Complete user directory with filtering and search</CardDescription>
@@ -258,7 +260,7 @@ export default function UsersPage() {
                 </div>
                 <Select value={statusFilter} onValueChange={setStatusFilter}>
                   <SelectTrigger className="w-[180px]">
-                    <SelectValue placeholder="Filter by status" />
+                    <SelectValue placeholder={t('users.filterByStatus')} />
                   </SelectTrigger>
                   <SelectContent>
                     <SelectItem value="all">All Status</SelectItem>
@@ -270,7 +272,7 @@ export default function UsersPage() {
                 </Select>
                 <Select value={roleFilter} onValueChange={setRoleFilter}>
                   <SelectTrigger className="w-[180px]">
-                    <SelectValue placeholder="Filter by role" />
+                    <SelectValue placeholder={t('users.filterByRole')} />
                   </SelectTrigger>
                   <SelectContent>
                     <SelectItem value="all">All Roles</SelectItem>
@@ -357,7 +359,7 @@ export default function UsersPage() {
                               <Shield className="mr-2 h-4 w-4" />
                               Manage Roles
                             </DropdownMenuItem>
-                            <DropdownMenuItem className="text-red-600">
+                            <DropdownMenuItem className="text-destructive">
                               <UserX className="mr-2 h-4 w-4" />
                               Suspend User
                             </DropdownMenuItem>
@@ -373,7 +375,7 @@ export default function UsersPage() {
         </TabsContent>
 
         <TabsContent value="customers" className="space-y-4">
-          <Card className="shadow-sm">
+          <Card className="shadow-2xs">
             <CardHeader>
               <CardTitle className="text-card-foreground">B2C Customers</CardTitle>
               <CardDescription>Individual customers using the platform</CardDescription>
@@ -381,20 +383,20 @@ export default function UsersPage() {
             <CardContent>
               <div className="space-y-6">
                 <div className="grid gap-4 md:grid-cols-3">
-                  <div className="text-center p-4 border rounded-lg">
+                  <div className="text-center p-4 border rounded-[0.625rem]">
                     <Users className="h-8 w-8 text-primary mx-auto mb-2" />
                     <p className="text-2xl font-bold text-foreground">
                       {users.filter(u => u.role === "customer").length}
                     </p>
                     <p className="text-sm text-muted-foreground">Total Customers</p>
                   </div>
-                  <div className="text-center p-4 border rounded-lg">
-                    <TrendingUp className="h-8 w-8 text-green-600 mx-auto mb-2" />
+                  <div className="text-center p-4 border rounded-[0.625rem]">
+                    <TrendingUp className="h-8 w-8 text-success mx-auto mb-2" />
                     <p className="text-2xl font-bold text-foreground">+18%</p>
                     <p className="text-sm text-muted-foreground">Growth Rate</p>
                   </div>
-                  <div className="text-center p-4 border rounded-lg">
-                    <Activity className="h-8 w-8 text-blue-600 mx-auto mb-2" />
+                  <div className="text-center p-4 border rounded-[0.625rem]">
+                    <Activity className="h-8 w-8 text-primary mx-auto mb-2" />
                     <p className="text-2xl font-bold text-foreground">87%</p>
                     <p className="text-sm text-muted-foreground">Active Rate</p>
                   </div>
@@ -406,7 +408,7 @@ export default function UsersPage() {
                       .filter(u => u.role === "customer")
                       .slice(0, 5)
                       .map((user) => (
-                        <div key={user.id} className="flex items-center justify-between p-3 border rounded-lg">
+                        <div key={user.id} className="flex items-center justify-between p-3 border rounded-[0.625rem]">
                           <div className="flex items-center space-x-3">
                             <div className="w-8 h-8 rounded-full bg-primary flex items-center justify-center">
                               <span className="text-primary-foreground text-sm font-medium">
@@ -436,7 +438,7 @@ export default function UsersPage() {
         </TabsContent>
 
         <TabsContent value="clients" className="space-y-4">
-          <Card className="shadow-sm">
+          <Card className="shadow-2xs">
             <CardHeader>
               <CardTitle className="text-card-foreground">Enterprise Clients</CardTitle>
               <CardDescription>B2B enterprise accounts and their management</CardDescription>
@@ -444,20 +446,20 @@ export default function UsersPage() {
             <CardContent>
               <div className="space-y-6">
                 <div className="grid gap-4 md:grid-cols-3">
-                  <div className="text-center p-4 border rounded-lg">
+                  <div className="text-center p-4 border rounded-[0.625rem]">
                     <Building2 className="h-8 w-8 text-primary mx-auto mb-2" />
                     <p className="text-2xl font-bold text-foreground">
                       {users.filter(u => u.role === "enterprise_client").length}
                     </p>
                     <p className="text-sm text-muted-foreground">Enterprise Clients</p>
                   </div>
-                  <div className="text-center p-4 border rounded-lg">
-                    <TrendingUp className="h-8 w-8 text-green-600 mx-auto mb-2" />
+                  <div className="text-center p-4 border rounded-[0.625rem]">
+                    <TrendingUp className="h-8 w-8 text-success mx-auto mb-2" />
                     <p className="text-2xl font-bold text-foreground">+5%</p>
                     <p className="text-sm text-muted-foreground">Growth Rate</p>
                   </div>
-                  <div className="text-center p-4 border rounded-lg">
-                    <Activity className="h-8 w-8 text-blue-600 mx-auto mb-2" />
+                  <div className="text-center p-4 border rounded-[0.625rem]">
+                    <Activity className="h-8 w-8 text-primary mx-auto mb-2" />
                     <p className="text-2xl font-bold text-foreground">92%</p>
                     <p className="text-sm text-muted-foreground">Active Rate</p>
                   </div>
@@ -469,10 +471,10 @@ export default function UsersPage() {
                       .filter(u => u.role === "enterprise_client")
                       .slice(0, 5)
                       .map((user) => (
-                        <div key={user.id} className="flex items-center justify-between p-3 border rounded-lg">
+                        <div key={user.id} className="flex items-center justify-between p-3 border rounded-[0.625rem]">
                           <div className="flex items-center space-x-3">
-                            <div className="w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center">
-                              <Building2 className="h-4 w-4 text-blue-600" />
+                            <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center">
+                              <Building2 className="h-4 w-4 text-primary" />
                             </div>
                             <div>
                               <p className="font-medium text-foreground">{user.name}</p>
@@ -497,7 +499,7 @@ export default function UsersPage() {
         </TabsContent>
 
         <TabsContent value="providers" className="space-y-4">
-          <Card className="shadow-sm">
+          <Card className="shadow-2xs">
             <CardHeader>
               <CardTitle className="text-card-foreground">Service Providers</CardTitle>
               <CardDescription>Service providers and their capabilities</CardDescription>
@@ -505,20 +507,20 @@ export default function UsersPage() {
             <CardContent>
               <div className="space-y-6">
                 <div className="grid gap-4 md:grid-cols-3">
-                  <div className="text-center p-4 border rounded-lg">
+                  <div className="text-center p-4 border rounded-[0.625rem]">
                     <UserCog className="h-8 w-8 text-primary mx-auto mb-2" />
                     <p className="text-2xl font-bold text-foreground">
                       {users.filter(u => u.role === "service_provider").length}
                     </p>
                     <p className="text-sm text-muted-foreground">Service Providers</p>
                   </div>
-                  <div className="text-center p-4 border rounded-lg">
-                    <TrendingUp className="h-8 w-8 text-green-600 mx-auto mb-2" />
+                  <div className="text-center p-4 border rounded-[0.625rem]">
+                    <TrendingUp className="h-8 w-8 text-success mx-auto mb-2" />
                     <p className="text-2xl font-bold text-foreground">+15%</p>
                     <p className="text-sm text-muted-foreground">Growth Rate</p>
                   </div>
-                  <div className="text-center p-4 border rounded-lg">
-                    <Activity className="h-8 w-8 text-blue-600 mx-auto mb-2" />
+                  <div className="text-center p-4 border rounded-[0.625rem]">
+                    <Activity className="h-8 w-8 text-primary mx-auto mb-2" />
                     <p className="text-2xl font-bold text-foreground">89%</p>
                     <p className="text-sm text-muted-foreground">Active Rate</p>
                   </div>
@@ -530,10 +532,10 @@ export default function UsersPage() {
                       .filter(u => u.role === "service_provider")
                       .slice(0, 5)
                       .map((user) => (
-                        <div key={user.id} className="flex items-center justify-between p-3 border rounded-lg">
+                        <div key={user.id} className="flex items-center justify-between p-3 border rounded-[0.625rem]">
                           <div className="flex items-center space-x-3">
-                            <div className="w-8 h-8 rounded-full bg-green-100 flex items-center justify-center">
-                              <UserCog className="h-4 w-4 text-green-600" />
+                            <div className="w-8 h-8 rounded-full bg-success/10 flex items-center justify-center">
+                              <UserCog className="h-4 w-4 text-success" />
                             </div>
                             <div>
                               <p className="font-medium text-foreground">{user.name}</p>

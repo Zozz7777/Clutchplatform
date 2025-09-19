@@ -355,41 +355,41 @@ export default function BlastRadiusEstimator({ className }: BlastRadiusEstimator
 
   const getSeverityColor = (severity: string) => {
     switch (severity) {
-      case 'low': return 'bg-green-100 text-green-800';
-      case 'medium': return 'bg-yellow-100 text-yellow-800';
-      case 'high': return 'bg-orange-100 text-orange-800';
-      case 'critical': return 'bg-red-100 text-red-800';
-      default: return 'bg-gray-100 text-gray-800';
+      case 'low': return 'bg-success/10 text-green-800';
+      case 'medium': return 'bg-warning/10 text-yellow-800';
+      case 'high': return 'bg-warning/10 text-orange-800';
+      case 'critical': return 'bg-destructive/10 text-red-800';
+      default: return 'bg-muted text-gray-800';
     }
   };
 
   const getFailureTypeColor = (type: string) => {
     switch (type) {
-      case 'outage': return 'bg-red-100 text-red-800';
-      case 'degradation': return 'bg-orange-100 text-orange-800';
-      case 'latency': return 'bg-yellow-100 text-yellow-800';
-      case 'error_rate': return 'bg-purple-100 text-purple-800';
-      case 'data_loss': return 'bg-red-100 text-red-800';
-      case 'security_breach': return 'bg-red-100 text-red-800';
-      default: return 'bg-gray-100 text-gray-800';
+      case 'outage': return 'bg-destructive/10 text-red-800';
+      case 'degradation': return 'bg-warning/10 text-orange-800';
+      case 'latency': return 'bg-warning/10 text-yellow-800';
+      case 'error_rate': return 'bg-primary/10 text-purple-800';
+      case 'data_loss': return 'bg-destructive/10 text-red-800';
+      case 'security_breach': return 'bg-destructive/10 text-red-800';
+      default: return 'bg-muted text-gray-800';
     }
   };
 
   const getDependencyTypeColor = (type: string) => {
     switch (type) {
-      case 'critical': return 'bg-red-100 text-red-800';
-      case 'important': return 'bg-yellow-100 text-yellow-800';
-      case 'optional': return 'bg-green-100 text-green-800';
-      default: return 'bg-gray-100 text-gray-800';
+      case 'critical': return 'bg-destructive/10 text-red-800';
+      case 'important': return 'bg-warning/10 text-yellow-800';
+      case 'optional': return 'bg-success/10 text-green-800';
+      default: return 'bg-muted text-gray-800';
     }
   };
 
   const getStatusColor = (status: string) => {
     switch (status) {
-      case 'healthy': return 'text-green-600';
-      case 'degraded': return 'text-yellow-600';
-      case 'down': return 'text-red-600';
-      default: return 'text-gray-600';
+      case 'healthy': return 'text-success';
+      case 'degraded': return 'text-warning';
+      case 'down': return 'text-destructive';
+      default: return 'text-muted-foreground';
     }
   };
 
@@ -426,7 +426,7 @@ export default function BlastRadiusEstimator({ className }: BlastRadiusEstimator
                 variant="outline"
                 size="sm"
                 onClick={() => setIsMonitoring(!isMonitoring)}
-                className={isMonitoring ? 'bg-green-100 text-green-800' : ''}
+                className={isMonitoring ? 'bg-success/10 text-green-800' : ''}
               >
                 {isMonitoring ? <Eye className="h-4 w-4 mr-2" /> : <EyeOff className="h-4 w-4 mr-2" />}
                 {isMonitoring ? 'Monitoring' : 'Paused'}
@@ -445,26 +445,26 @@ export default function BlastRadiusEstimator({ className }: BlastRadiusEstimator
         <CardContent className="space-y-6">
           {/* Impact Summary */}
           <div className="grid grid-cols-4 gap-4">
-            <div className="text-center p-3 bg-red-50 rounded-lg">
-              <div className="text-2xl font-bold text-red-600">{formatNumber(totalUsers)}</div>
+            <div className="text-center p-3 bg-destructive/10 rounded-[0.625rem]">
+              <div className="text-2xl font-bold text-destructive">{formatNumber(totalUsers)}</div>
               <div className="text-sm text-muted-foreground">Total Users Affected</div>
             </div>
-            <div className="text-center p-3 bg-orange-50 rounded-lg">
-              <div className="text-2xl font-bold text-orange-600">{formatCurrency(totalRevenue)}</div>
+            <div className="text-center p-3 bg-warning/10 rounded-[0.625rem]">
+              <div className="text-2xl font-bold text-warning">{formatCurrency(totalRevenue)}</div>
               <div className="text-sm text-muted-foreground">Revenue at Risk</div>
             </div>
-            <div className="text-center p-3 bg-yellow-50 rounded-lg">
-              <div className="text-2xl font-bold text-yellow-600">{totalServices}</div>
+            <div className="text-center p-3 bg-warning/10 rounded-[0.625rem]">
+              <div className="text-2xl font-bold text-warning">{totalServices}</div>
               <div className="text-sm text-muted-foreground">Services Impacted</div>
             </div>
-            <div className="text-center p-3 bg-purple-50 rounded-lg">
-              <div className="text-2xl font-bold text-purple-600">{totalRegions}</div>
+            <div className="text-center p-3 bg-primary/10 rounded-[0.625rem]">
+              <div className="text-2xl font-bold text-primary">{totalRegions}</div>
               <div className="text-sm text-muted-foreground">Regions Affected</div>
             </div>
           </div>
 
           {/* Blast Radius Overview */}
-          <div className="p-4 bg-gradient-to-r from-red-50 to-orange-50 rounded-lg">
+          <div className="p-4 bg-gradient-to-r from-red-50 to-orange-50 rounded-[0.625rem]">
             <div className="flex items-center justify-between">
               <div>
                 <h4 className="font-medium">Blast Radius Analysis</h4>
@@ -473,7 +473,7 @@ export default function BlastRadiusEstimator({ className }: BlastRadiusEstimator
                 </p>
               </div>
               <div className="text-right">
-                <div className="text-3xl font-bold text-red-600">
+                <div className="text-3xl font-bold text-destructive">
                   {avgConfidence}%
                 </div>
                 <div className="text-sm text-muted-foreground">avg confidence</div>
@@ -518,8 +518,8 @@ export default function BlastRadiusEstimator({ className }: BlastRadiusEstimator
               {filteredImpacts.map((impact) => (
                 <div
                   key={impact.id}
-                  className={`p-3 border rounded-lg cursor-pointer transition-colors ${
-                    selectedImpact?.id === impact.id ? 'border-blue-500 bg-blue-50' : 'hover:bg-gray-50'
+                  className={`p-3 border rounded-[0.625rem] cursor-pointer transition-colors ${
+                    selectedImpact?.id === impact.id ? 'border-blue-500 bg-primary/10' : 'hover:bg-muted/50'
                   }`}
                   onClick={() => setSelectedImpact(impact)}
                 >
@@ -615,11 +615,11 @@ export default function BlastRadiusEstimator({ className }: BlastRadiusEstimator
                         </div>
                         <div className="flex justify-between">
                           <span>Total Users:</span>
-                          <span className="font-medium text-red-600">{formatNumber(selectedImpact.blastRadius.total.users)}</span>
+                          <span className="font-medium text-destructive">{formatNumber(selectedImpact.blastRadius.total.users)}</span>
                         </div>
                         <div className="flex justify-between">
                           <span>Total Revenue:</span>
-                          <span className="font-medium text-red-600">{formatCurrency(selectedImpact.blastRadius.total.revenue)}</span>
+                          <span className="font-medium text-destructive">{formatCurrency(selectedImpact.blastRadius.total.revenue)}</span>
                         </div>
                       </div>
                     </div>
@@ -631,7 +631,7 @@ export default function BlastRadiusEstimator({ className }: BlastRadiusEstimator
                     <h5 className="font-medium mb-2">Service Dependencies</h5>
                     <div className="space-y-2">
                       {selectedImpact.dependencies.map((dependency, index) => (
-                        <div key={index} className="p-3 border rounded-lg">
+                        <div key={index} className="p-3 border rounded-[0.625rem]">
                           <div className="flex items-center justify-between mb-2">
                             <span className="font-medium">{dependency.service}</span>
                             <div className="flex items-center gap-2">
@@ -670,7 +670,7 @@ export default function BlastRadiusEstimator({ className }: BlastRadiusEstimator
                       </div>
                       <div className="flex justify-between">
                         <span>Total Downtime:</span>
-                        <span className="font-medium text-red-600">{selectedImpact.timeline.total} minutes</span>
+                        <span className="font-medium text-destructive">{selectedImpact.timeline.total} minutes</span>
                       </div>
                     </div>
                   </div>
@@ -681,7 +681,7 @@ export default function BlastRadiusEstimator({ className }: BlastRadiusEstimator
                     <h5 className="font-medium mb-2">Mitigation Strategies</h5>
                     <div className="space-y-2">
                       {selectedImpact.mitigation.map((strategy, index) => (
-                        <div key={index} className="p-3 border rounded-lg">
+                        <div key={index} className="p-3 border rounded-[0.625rem]">
                           <div className="flex items-center justify-between mb-2">
                             <span className="font-medium">{strategy.strategy}</span>
                             <span className="text-sm font-medium">{strategy.effectiveness}% effective</span>

@@ -61,6 +61,105 @@ router.get('/', async (req, res) => {
   }
 });
 
+// POST /api/v1/reports/generate - Generate a new report
+router.post('/generate', checkRole(['head_administrator', 'analyst', 'manager']), async (req, res) => {
+  try {
+    const { type, parameters, format = 'json', dateRange } = req.body;
+    
+    // Validate required fields
+    if (!type) {
+      return res.status(400).json({
+        success: false,
+        error: 'MISSING_REPORT_TYPE',
+        message: 'Report type is required',
+        timestamp: new Date().toISOString()
+      });
+    }
+    
+    const reportsCollection = await getCollection('reports');
+    
+    // Create report record
+    const reportData = {
+      type,
+      parameters: parameters || {},
+      format,
+      dateRange: dateRange || {
+        start: new Date(Date.now() - 30 * 24 * 60 * 60 * 1000), // Last 30 days
+        end: new Date()
+      },
+      status: 'generating',
+      createdBy: req.user.userId || req.user.id,
+      createdAt: new Date(),
+      updatedAt: new Date()
+    };
+    
+    const result = await reportsCollection.insertOne(reportData);
+    
+    // Simulate report generation (in real implementation, this would be async)
+    const generatedReport = {
+      id: result.insertedId,
+      type,
+      data: {
+        summary: {
+          totalRecords: Math.floor(Math.random() * 1000) + 100,
+          dateRange: reportData.dateRange,
+          generatedAt: new Date().toISOString()
+        },
+        metrics: {
+          revenue: Math.floor(Math.random() * 100000) + 50000,
+          users: Math.floor(Math.random() * 500) + 100,
+          orders: Math.floor(Math.random() * 200) + 50
+        },
+        charts: [
+          {
+            type: 'line',
+            title: 'Revenue Trend',
+            data: Array.from({ length: 30 }, (_, i) => ({
+              date: new Date(Date.now() - (29 - i) * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
+              value: Math.floor(Math.random() * 10000) + 1000
+            }))
+          }
+        ]
+      },
+      status: 'completed',
+      completedAt: new Date()
+    };
+    
+    // Update report with generated data
+    await reportsCollection.updateOne(
+      { _id: result.insertedId },
+      { 
+        $set: { 
+          ...generatedReport,
+          updatedAt: new Date()
+        }
+      }
+    );
+    
+    res.json({
+      success: true,
+      data: {
+        report: {
+          ...reportData,
+          _id: result.insertedId,
+          ...generatedReport
+        }
+      },
+      message: 'Report generated successfully',
+      timestamp: new Date().toISOString()
+    });
+    
+  } catch (error) {
+    console.error('Generate report error:', error);
+    res.status(500).json({
+      success: false,
+      error: 'GENERATE_REPORT_FAILED',
+      message: 'Failed to generate report',
+      timestamp: new Date().toISOString()
+    });
+  }
+});
+
 // GET /api/v1/reports/:id - Get report by ID
 router.get('/:id', async (req, res) => {
   try {

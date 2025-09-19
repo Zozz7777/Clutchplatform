@@ -285,7 +285,6 @@ export default function EnterprisePage() {
           break;
         case "upgrade":
           // This would open an upgrade modal
-          console.log("Upgrade client:", clientId);
           break;
         case "enable_whitelabel":
           await fetch(`https://clutch-main-nk7x.onrender.com/api/v1/enterprise/clients/${clientId}/whitelabel`, {
@@ -461,9 +460,9 @@ export default function EnterprisePage() {
 
           <div className="space-y-4">
             {filteredClients.map((client) => (
-              <div key={client._id} className="flex items-center justify-between p-4 border rounded-lg hover:bg-muted/50 transition-colors">
+              <div key={client._id} className="flex items-center justify-between p-4 border rounded-[0.625rem] hover:bg-muted/50 transition-colors">
                 <div className="flex items-center space-x-4">
-                  <div className="w-12 h-12 rounded-lg bg-primary flex items-center justify-center">
+                  <div className="w-12 h-12 rounded-[0.625rem] bg-primary flex items-center justify-center">
                     <span className="text-primary-foreground font-bold text-lg">
                       {client.companyName.charAt(0).toUpperCase()}
                     </span>
@@ -543,7 +542,7 @@ export default function EnterprisePage() {
                       {client.status === "active" && (
                         <DropdownMenuItem 
                           onClick={() => handleClientAction(client._id, "suspend")}
-                          className="text-red-600"
+                          className="text-destructive"
                         >
                           <AlertTriangle className="mr-2 h-4 w-4" />
                           Suspend Client
@@ -552,7 +551,7 @@ export default function EnterprisePage() {
                       {client.status === "suspended" && (
                         <DropdownMenuItem 
                           onClick={() => handleClientAction(client._id, "activate")}
-                          className="text-green-600"
+                          className="text-success"
                         >
                           <CheckCircle className="mr-2 h-4 w-4" />
                           Activate Client
@@ -560,7 +559,7 @@ export default function EnterprisePage() {
                       )}
                       <DropdownMenuItem 
                         onClick={() => handleClientAction(client._id, "upgrade")}
-                        className="text-blue-600"
+                        className="text-primary"
                       >
                         <TrendingUp className="mr-2 h-4 w-4" />
                         Upgrade Plan
@@ -568,7 +567,7 @@ export default function EnterprisePage() {
                       {!client.whiteLabel.enabled && (
                         <DropdownMenuItem 
                           onClick={() => handleClientAction(client._id, "enable_whitelabel")}
-                          className="text-purple-600"
+                          className="text-primary"
                         >
                           <Globe className="mr-2 h-4 w-4" />
                           Enable White-Label
@@ -620,7 +619,7 @@ export default function EnterprisePage() {
               </div>
               <div className="flex items-center justify-between">
                 <span className="text-sm">Rate Limit Violations</span>
-                <span className="font-medium text-red-600">12</span>
+                <span className="font-medium text-destructive">12</span>
               </div>
               <Button className="w-full" variant="outline">
                 <Settings className="mr-2 h-4 w-4" />
@@ -657,7 +656,7 @@ export default function EnterprisePage() {
               </div>
               <div className="flex items-center justify-between">
                 <span className="text-sm">Pending Configurations</span>
-                <span className="font-medium text-yellow-600">3</span>
+                <span className="font-medium text-warning">3</span>
               </div>
               <Button className="w-full" variant="outline">
                 <Globe className="mr-2 h-4 w-4" />

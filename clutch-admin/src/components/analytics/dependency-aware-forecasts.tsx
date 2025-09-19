@@ -184,39 +184,39 @@ export default function DependencyAwareForecasts({ className }: DependencyAwareF
 
   const getTypeColor = (type: string) => {
     switch (type) {
-      case 'revenue': return 'bg-green-100 text-green-800';
-      case 'users': return 'bg-blue-100 text-blue-800';
-      case 'performance': return 'bg-orange-100 text-orange-800';
-      case 'cost': return 'bg-red-100 text-red-800';
-      case 'capacity': return 'bg-purple-100 text-purple-800';
-      case 'risk': return 'bg-yellow-100 text-yellow-800';
-      default: return 'bg-gray-100 text-gray-800';
+      case 'revenue': return 'bg-success/10 text-green-800';
+      case 'users': return 'bg-primary/10 text-blue-800';
+      case 'performance': return 'bg-warning/10 text-orange-800';
+      case 'cost': return 'bg-destructive/10 text-red-800';
+      case 'capacity': return 'bg-primary/10 text-purple-800';
+      case 'risk': return 'bg-warning/10 text-yellow-800';
+      default: return 'bg-muted text-gray-800';
     }
   };
 
   const getDependencyTypeColor = (type: string) => {
     switch (type) {
-      case 'critical': return 'bg-red-100 text-red-800';
-      case 'important': return 'bg-yellow-100 text-yellow-800';
-      case 'optional': return 'bg-green-100 text-green-800';
-      default: return 'bg-gray-100 text-gray-800';
+      case 'critical': return 'bg-destructive/10 text-red-800';
+      case 'important': return 'bg-warning/10 text-yellow-800';
+      case 'optional': return 'bg-success/10 text-green-800';
+      default: return 'bg-muted text-gray-800';
     }
   };
 
   const getStatusColor = (status: string) => {
     switch (status) {
-      case 'healthy': return 'text-green-600';
-      case 'degraded': return 'text-yellow-600';
-      case 'down': return 'text-red-600';
-      default: return 'text-gray-600';
+      case 'healthy': return 'text-success';
+      case 'degraded': return 'text-warning';
+      case 'down': return 'text-destructive';
+      default: return 'text-muted-foreground';
     }
   };
 
   const getConfidenceColor = (confidence: number) => {
-    if (confidence >= 90) return 'text-green-600';
-    if (confidence >= 80) return 'text-yellow-600';
-    if (confidence >= 70) return 'text-orange-600';
-    return 'text-red-600';
+    if (confidence >= 90) return 'text-success';
+    if (confidence >= 80) return 'text-warning';
+    if (confidence >= 70) return 'text-warning';
+    return 'text-destructive';
   };
 
   const filteredForecasts = forecasts.filter(forecast => {
@@ -254,7 +254,7 @@ export default function DependencyAwareForecasts({ className }: DependencyAwareF
                 variant="outline"
                 size="sm"
                 onClick={() => setIsMonitoring(!isMonitoring)}
-                className={isMonitoring ? 'bg-green-100 text-green-800' : ''}
+                className={isMonitoring ? 'bg-success/10 text-green-800' : ''}
               >
                 {isMonitoring ? <Eye className="h-4 w-4 mr-2" /> : <EyeOff className="h-4 w-4 mr-2" />}
                 {isMonitoring ? 'Monitoring' : 'Paused'}
@@ -273,26 +273,26 @@ export default function DependencyAwareForecasts({ className }: DependencyAwareF
         <CardContent className="space-y-6">
           {/* Forecast Summary */}
           <div className="grid grid-cols-4 gap-4">
-            <div className="text-center p-3 bg-green-50 rounded-lg">
-              <div className="text-2xl font-bold text-green-600">{formatCurrency(totalCurrent)}</div>
+            <div className="text-center p-3 bg-success/10 rounded-[0.625rem]">
+              <div className="text-2xl font-bold text-success">{formatCurrency(totalCurrent)}</div>
               <div className="text-sm text-muted-foreground">Current Value</div>
             </div>
-            <div className="text-center p-3 bg-blue-50 rounded-lg">
-              <div className="text-2xl font-bold text-blue-600">{formatCurrency(totalPredicted)}</div>
+            <div className="text-center p-3 bg-primary/10 rounded-[0.625rem]">
+              <div className="text-2xl font-bold text-primary">{formatCurrency(totalPredicted)}</div>
               <div className="text-sm text-muted-foreground">Predicted Value</div>
             </div>
-            <div className="text-center p-3 bg-purple-50 rounded-lg">
-              <div className="text-2xl font-bold text-purple-600">{avgConfidence}%</div>
+            <div className="text-center p-3 bg-primary/10 rounded-[0.625rem]">
+              <div className="text-2xl font-bold text-primary">{avgConfidence}%</div>
               <div className="text-sm text-muted-foreground">Avg Confidence</div>
             </div>
-            <div className="text-center p-3 bg-orange-50 rounded-lg">
-              <div className="text-2xl font-bold text-orange-600">{totalDependencies}</div>
+            <div className="text-center p-3 bg-warning/10 rounded-[0.625rem]">
+              <div className="text-2xl font-bold text-warning">{totalDependencies}</div>
               <div className="text-sm text-muted-foreground">Total Dependencies</div>
             </div>
           </div>
 
           {/* Dependency Overview */}
-          <div className="p-4 bg-gradient-to-r from-blue-50 to-purple-50 rounded-lg">
+          <div className="p-4 bg-gradient-to-r from-blue-50 to-purple-50 rounded-[0.625rem]">
             <div className="flex items-center justify-between">
               <div>
                 <h4 className="font-medium">Dependency-Aware Forecasting</h4>
@@ -301,7 +301,7 @@ export default function DependencyAwareForecasts({ className }: DependencyAwareF
                 </p>
               </div>
               <div className="text-right">
-                <div className="text-3xl font-bold text-blue-600">
+                <div className="text-3xl font-bold text-primary">
                   {forecasts.length}
                 </div>
                 <div className="text-sm text-muted-foreground">forecasts active</div>
@@ -346,8 +346,8 @@ export default function DependencyAwareForecasts({ className }: DependencyAwareF
               {filteredForecasts.map((forecast) => (
                 <div
                   key={forecast.id}
-                  className={`p-3 border rounded-lg cursor-pointer transition-colors ${
-                    selectedForecast?.id === forecast.id ? 'border-blue-500 bg-blue-50' : 'hover:bg-gray-50'
+                  className={`p-3 border rounded-[0.625rem] cursor-pointer transition-colors ${
+                    selectedForecast?.id === forecast.id ? 'border-blue-500 bg-primary/10' : 'hover:bg-muted/50'
                   }`}
                   onClick={() => setSelectedForecast(forecast)}
                 >
@@ -428,11 +428,11 @@ export default function DependencyAwareForecasts({ className }: DependencyAwareF
                         </div>
                         <div className="flex justify-between">
                           <span>Predicted:</span>
-                          <span className="font-medium text-blue-600">{formatCurrency(selectedForecast.forecast.predicted)}</span>
+                          <span className="font-medium text-primary">{formatCurrency(selectedForecast.forecast.predicted)}</span>
                         </div>
                         <div className="flex justify-between">
                           <span>Growth:</span>
-                          <span className="font-medium text-green-600">
+                          <span className="font-medium text-success">
                             {((selectedForecast.forecast.predicted - selectedForecast.forecast.current) / selectedForecast.forecast.current * 100).toFixed(1)}%
                           </span>
                         </div>
@@ -472,7 +472,7 @@ export default function DependencyAwareForecasts({ className }: DependencyAwareF
                     <h5 className="font-medium mb-2">Service Dependencies</h5>
                     <div className="space-y-2">
                       {selectedForecast.dependencies.map((dependency, index) => (
-                        <div key={index} className="p-3 border rounded-lg">
+                        <div key={index} className="p-3 border rounded-[0.625rem]">
                           <div className="flex items-center justify-between mb-2">
                             <span className="font-medium">{dependency.service}</span>
                             <div className="flex items-center gap-2">
@@ -497,21 +497,21 @@ export default function DependencyAwareForecasts({ className }: DependencyAwareF
                   <div>
                     <h5 className="font-medium mb-2">Scenario Analysis</h5>
                     <div className="grid grid-cols-3 gap-4 text-sm">
-                      <div className="p-3 border rounded-lg text-center">
-                        <div className="font-medium text-green-600 mb-1">Optimistic</div>
-                        <div className="text-2xl font-bold text-green-600">
+                      <div className="p-3 border rounded-[0.625rem] text-center">
+                        <div className="font-medium text-success mb-1">Optimistic</div>
+                        <div className="text-2xl font-bold text-success">
                           {formatCurrency(selectedForecast.forecast.scenarios.optimistic)}
                         </div>
                       </div>
-                      <div className="p-3 border rounded-lg text-center">
-                        <div className="font-medium text-blue-600 mb-1">Realistic</div>
-                        <div className="text-2xl font-bold text-blue-600">
+                      <div className="p-3 border rounded-[0.625rem] text-center">
+                        <div className="font-medium text-primary mb-1">Realistic</div>
+                        <div className="text-2xl font-bold text-primary">
                           {formatCurrency(selectedForecast.forecast.scenarios.realistic)}
                         </div>
                       </div>
-                      <div className="p-3 border rounded-lg text-center">
-                        <div className="font-medium text-red-600 mb-1">Pessimistic</div>
-                        <div className="text-2xl font-bold text-red-600">
+                      <div className="p-3 border rounded-[0.625rem] text-center">
+                        <div className="font-medium text-destructive mb-1">Pessimistic</div>
+                        <div className="text-2xl font-bold text-destructive">
                           {formatCurrency(selectedForecast.forecast.scenarios.pessimistic)}
                         </div>
                       </div>
@@ -524,7 +524,7 @@ export default function DependencyAwareForecasts({ className }: DependencyAwareF
                     <h5 className="font-medium mb-2">Early Warning Triggers</h5>
                     <div className="space-y-2">
                       {selectedForecast.triggers.map((trigger, index) => (
-                        <div key={index} className="p-3 border rounded-lg">
+                        <div key={index} className="p-3 border rounded-[0.625rem]">
                           <div className="flex items-center justify-between mb-2">
                             <span className="font-medium">{trigger.condition}</span>
                             <span className="text-sm font-medium">Threshold: {trigger.threshold}</span>

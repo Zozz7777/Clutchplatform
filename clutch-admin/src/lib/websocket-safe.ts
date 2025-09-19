@@ -43,7 +43,6 @@ export class SafeWebSocketService {
     this.isClient = typeof window !== 'undefined';
     
     if (!this.isClient) {
-      console.log('🔌 WebSocket service initialized in SSR mode - WebSocket disabled');
       return;
     }
 
@@ -61,20 +60,17 @@ export class SafeWebSocketService {
     return new Promise((resolve, reject) => {
       // Skip WebSocket connection during SSR or build
       if (!this.isClient) {
-        console.log('🔌 Skipping WebSocket connection in SSR mode');
         this.startPollingFallback(handlers);
         resolve();
         return;
       }
 
       if (this.ws?.readyState === WebSocket.OPEN) {
-        console.log('🔌 WebSocket already connected');
         resolve();
         return;
       }
 
       if (this.isConnecting) {
-        console.log('🔌 WebSocket connection already in progress');
         reject(new Error('Connection already in progress'));
         return;
       }
@@ -88,26 +84,14 @@ export class SafeWebSocketService {
                     sessionStorage.getItem("clutch-admin-token") ||
                     (apiService.getTokenStatus().hasToken ? 
                       localStorage.getItem("clutch-admin-token") : null);
-
-        console.log('🔌 WebSocket token check:', {
-          hasToken: !!this.token,
-          tokenPreview: this.token ? `${this.token.substring(0, 20)}...` : 'none',
-          localStorage: localStorage.getItem("clutch-admin-token") ? 'exists' : 'missing',
-          sessionStorage: sessionStorage.getItem("clutch-admin-token") ? 'exists' : 'missing',
-          apiServiceStatus: apiService.getTokenStatus()
-        });
-
         if (!this.token) {
           this.isConnecting = false;
-          console.log('🔌 No token found, starting polling fallback');
           this.startPollingFallback(handlers);
           resolve();
           return;
         }
 
         const wsUrl = `${this.url}?token=${this.token}`;
-        console.log('🔌 Attempting WebSocket connection to:', wsUrl.replace(this.token, '[TOKEN]'));
-        
         // Close existing connection if any
         if (this.ws) {
           this.ws.close();
@@ -118,7 +102,6 @@ export class SafeWebSocketService {
         // Set connection timeout
         const connectionTimeout = setTimeout(() => {
           if (this.ws?.readyState === WebSocket.CONNECTING) {
-            console.log('🔌 WebSocket connection timeout, falling back to polling');
             this.ws.close();
             this.isConnecting = false;
             this.startPollingFallback(handlers);
@@ -127,7 +110,6 @@ export class SafeWebSocketService {
         }, 10000); // 10 second timeout
 
         this.ws.onopen = () => {
-          console.log('🔌 WebSocket connected successfully');
           clearTimeout(connectionTimeout);
           this.isConnecting = false;
           this.reconnectAttempts = 0;
@@ -157,16 +139,6 @@ export class SafeWebSocketService {
 
         this.ws.onclose = (event) => {
           clearTimeout(connectionTimeout);
-          console.log('🔌 WebSocket disconnected:', {
-            code: event.code,
-            reason: event.reason,
-            wasClean: event.wasClean,
-            url: wsUrl.replace(this.token || '', '[TOKEN]'),
-            hasToken: !!this.token,
-            tokenPreview: this.token ? `${this.token.substring(0, 20)}...` : 'none',
-            reconnectAttempts: this.reconnectAttempts,
-            maxReconnectAttempts: this.maxReconnectAttempts
-          });
           this.isConnecting = false;
           this.eventHandlers.onDisconnect?.();
           
@@ -175,13 +147,10 @@ export class SafeWebSocketService {
           
           // Only attempt reconnect for unexpected disconnections and if we haven't exceeded max attempts
           if (!event.wasClean && event.code !== 1000 && event.code !== 1001 && this.reconnectAttempts < this.maxReconnectAttempts) {
-            console.log('🔌 Scheduling reconnect due to unexpected disconnection');
             this.scheduleReconnect();
           } else if (event.code === 1001) {
-            console.log('🔌 WebSocket closed by server (1001), using polling fallback');
             this.startPollingFallback(handlers);
           } else if (this.reconnectAttempts >= this.maxReconnectAttempts) {
-            console.log('🔌 Max reconnect attempts reached, using polling fallback');
             this.startPollingFallback(handlers);
           }
         };
@@ -211,8 +180,6 @@ export class SafeWebSocketService {
   }
 
   private handleMessage(message: WebSocketMessage) {
-    console.log('📨 WebSocket message received:', message.type);
-    
     this.eventHandlers.onMessage?.(message);
 
     switch (message.type) {
@@ -238,16 +205,12 @@ export class SafeWebSocketService {
         // Pong response - handled silently
         break;
       default:
-        console.log('Unknown message type:', message.type);
     }
   }
 
   private scheduleReconnect() {
     this.reconnectAttempts++;
     const delay = this.reconnectInterval * Math.pow(2, this.reconnectAttempts - 1);
-    
-    console.log(`🔄 Scheduling reconnect attempt ${this.reconnectAttempts} in ${delay}ms`);
-    
     setTimeout(() => {
       if (this.reconnectAttempts <= this.maxReconnectAttempts) {
         this.connect(this.eventHandlers).catch(console.error);
@@ -259,8 +222,6 @@ export class SafeWebSocketService {
     if (this.isPolling) {
       return;
     }
-
-    console.log('🔄 Starting polling fallback for WebSocket');
     this.isPolling = true;
     this.lastPollTime = Date.now();
     this.eventHandlers = handlers;
@@ -283,7 +244,6 @@ export class SafeWebSocketService {
       this.pollingInterval = null;
     }
     this.isPolling = false;
-    console.log('🔄 Stopped polling fallback');
   }
 
   private async pollForUpdates(): Promise<void> {

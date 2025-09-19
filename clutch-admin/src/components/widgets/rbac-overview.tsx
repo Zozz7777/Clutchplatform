@@ -124,37 +124,37 @@ export function RBACOverview({ className = '' }: RBACOverviewProps) {
 
   const getStatusColor = (status: string) => {
     switch (status) {
-      case 'active': return 'text-green-600';
-      case 'inactive': return 'text-yellow-600';
-      case 'suspended': return 'text-red-600';
-      default: return 'text-gray-600';
+      case 'active': return 'text-success';
+      case 'inactive': return 'text-warning';
+      case 'suspended': return 'text-destructive';
+      default: return 'text-muted-foreground';
     }
   };
 
   const getStatusBadge = (status: string) => {
     switch (status) {
-      case 'active': return 'bg-green-100 text-green-800';
-      case 'inactive': return 'bg-yellow-100 text-yellow-800';
-      case 'suspended': return 'bg-red-100 text-red-800';
-      default: return 'bg-gray-100 text-gray-800';
+      case 'active': return 'bg-success/10 text-green-800';
+      case 'inactive': return 'bg-warning/10 text-yellow-800';
+      case 'suspended': return 'bg-destructive/10 text-red-800';
+      default: return 'bg-muted text-gray-800';
     }
   };
 
   const getRiskColor = (risk: string) => {
     switch (risk) {
-      case 'low': return 'text-green-600';
-      case 'medium': return 'text-yellow-600';
-      case 'high': return 'text-red-600';
-      default: return 'text-gray-600';
+      case 'low': return 'text-success';
+      case 'medium': return 'text-warning';
+      case 'high': return 'text-destructive';
+      default: return 'text-muted-foreground';
     }
   };
 
   const getRiskBadge = (risk: string) => {
     switch (risk) {
-      case 'low': return 'bg-green-100 text-green-800';
-      case 'medium': return 'bg-yellow-100 text-yellow-800';
-      case 'high': return 'bg-red-100 text-red-800';
-      default: return 'bg-gray-100 text-gray-800';
+      case 'low': return 'bg-success/10 text-green-800';
+      case 'medium': return 'bg-warning/10 text-yellow-800';
+      case 'high': return 'bg-destructive/10 text-red-800';
+      default: return 'bg-muted text-gray-800';
     }
   };
 
@@ -174,16 +174,16 @@ export function RBACOverview({ className = '' }: RBACOverviewProps) {
       <Card className={className}>
         <CardHeader>
           <CardTitle className="flex items-center space-x-2">
-            <Shield className="h-5 w-5 text-blue-600" />
+            <Shield className="h-5 w-5 text-primary" />
             <span>RBAC Overview</span>
           </CardTitle>
           <CardDescription>Loading RBAC data...</CardDescription>
         </CardHeader>
         <CardContent>
           <div className="animate-pulse space-y-4">
-            <div className="h-4 bg-gray-200 rounded-lg w-3/4"></div>
-            <div className="h-4 bg-gray-200 rounded-lg w-1/2"></div>
-            <div className="h-4 bg-gray-200 rounded-lg w-2/3"></div>
+            <div className="h-4 bg-muted rounded-[0.625rem] w-3/4"></div>
+            <div className="h-4 bg-muted rounded-[0.625rem] w-1/2"></div>
+            <div className="h-4 bg-muted rounded-[0.625rem] w-2/3"></div>
           </div>
         </CardContent>
       </Card>
@@ -195,7 +195,7 @@ export function RBACOverview({ className = '' }: RBACOverviewProps) {
       <Card className={className}>
         <CardHeader>
           <CardTitle className="flex items-center space-x-2">
-            <Shield className="h-5 w-5 text-blue-600" />
+            <Shield className="h-5 w-5 text-primary" />
             <span>RBAC Overview</span>
           </CardTitle>
           <CardDescription>Unable to load RBAC data</CardDescription>
@@ -208,7 +208,7 @@ export function RBACOverview({ className = '' }: RBACOverviewProps) {
     <Card className={className}>
       <CardHeader>
         <CardTitle className="flex items-center space-x-2">
-          <Shield className="h-5 w-5 text-blue-600" />
+          <Shield className="h-5 w-5 text-primary" />
           <span>RBAC Overview</span>
         </CardTitle>
         <CardDescription>
@@ -218,45 +218,45 @@ export function RBACOverview({ className = '' }: RBACOverviewProps) {
       <CardContent className="space-y-6">
         {/* Summary Stats */}
         <div className="grid grid-cols-2 gap-4">
-          <div className="text-center p-3 bg-blue-50 rounded-lg-lg">
-            <Users className="h-5 w-5 text-blue-600 mx-auto mb-1" />
-            <p className="text-lg font-bold text-blue-600">{rbacData.totalUsers}</p>
-            <p className="text-xs text-gray-500">Total Users</p>
+          <div className="text-center p-3 bg-primary/10 rounded-[0.625rem]-lg">
+            <Users className="h-5 w-5 text-primary mx-auto mb-1" />
+            <p className="text-lg font-bold text-primary">{rbacData.totalUsers}</p>
+            <p className="text-xs text-muted-foreground">Total Users</p>
           </div>
-          <div className="text-center p-3 bg-green-50 rounded-lg-lg">
-            <CheckCircle className="h-5 w-5 text-green-600 mx-auto mb-1" />
-            <p className="text-lg font-bold text-green-600">{rbacData.activeUsers}</p>
-            <p className="text-xs text-gray-500">Active Users</p>
+          <div className="text-center p-3 bg-success/10 rounded-[0.625rem]-lg">
+            <CheckCircle className="h-5 w-5 text-success mx-auto mb-1" />
+            <p className="text-lg font-bold text-success">{rbacData.activeUsers}</p>
+            <p className="text-xs text-muted-foreground">Active Users</p>
           </div>
         </div>
 
         {/* Security Status */}
         <div className="grid grid-cols-2 gap-4">
-          <div className="text-center p-3 bg-red-50 rounded-lg-lg">
-            <AlertTriangle className="h-5 w-5 text-red-600 mx-auto mb-1" />
-            <p className="text-lg font-bold text-red-600">{rbacData.riskUsers}</p>
-            <p className="text-xs text-gray-500">High Risk Users</p>
+          <div className="text-center p-3 bg-destructive/10 rounded-[0.625rem]-lg">
+            <AlertTriangle className="h-5 w-5 text-destructive mx-auto mb-1" />
+            <p className="text-lg font-bold text-destructive">{rbacData.riskUsers}</p>
+            <p className="text-xs text-muted-foreground">High Risk Users</p>
           </div>
-          <div className="text-center p-3 bg-orange-50 rounded-lg-lg">
-            <Shield className="h-5 w-5 text-orange-600 mx-auto mb-1" />
-            <p className="text-lg font-bold text-orange-600">{rbacData.anomalies}</p>
-            <p className="text-xs text-gray-500">Anomalies</p>
+          <div className="text-center p-3 bg-warning/10 rounded-[0.625rem]-lg">
+            <Shield className="h-5 w-5 text-warning mx-auto mb-1" />
+            <p className="text-lg font-bold text-warning">{rbacData.anomalies}</p>
+            <p className="text-xs text-muted-foreground">Anomalies</p>
           </div>
         </div>
 
         {/* Role Distribution */}
         <div className="space-y-3">
-          <h4 className="text-sm font-medium text-gray-900">Role Distribution</h4>
+          <h4 className="text-sm font-medium text-foreground">Role Distribution</h4>
           <div className="space-y-2">
             {rbacData.roles.map((role) => (
-              <div key={role.role} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg-lg">
+              <div key={role.role} className="flex items-center justify-between p-3 bg-muted/50 rounded-[0.625rem]-lg">
                 <div className="flex items-center space-x-3">
-                  <div className="flex items-center justify-center w-8 h-8 bg-blue-100 rounded-lg-full">
-                    <Lock className="h-4 w-4 text-blue-600" />
+                  <div className="flex items-center justify-center w-8 h-8 bg-primary/10 rounded-[0.625rem]-full">
+                    <Lock className="h-4 w-4 text-primary" />
                   </div>
                   <div>
-                    <p className="text-sm font-medium text-gray-900">{role.role}</p>
-                    <p className="text-xs text-gray-500">
+                    <p className="text-sm font-medium text-foreground">{role.role}</p>
+                    <p className="text-xs text-muted-foreground">
                       {role.permissions} permissions • Last activity: {formatDate(role.lastActivity)}
                     </p>
                   </div>
@@ -264,7 +264,7 @@ export function RBACOverview({ className = '' }: RBACOverviewProps) {
                 
                 <div className="text-right">
                   <div className="flex items-center space-x-2">
-                    <p className="text-sm font-semibold text-gray-900">{role.userCount}</p>
+                    <p className="text-sm font-semibold text-foreground">{role.userCount}</p>
                     <Badge className={getStatusBadge(role.status)}>
                       {role.status}
                     </Badge>
@@ -282,13 +282,13 @@ export function RBACOverview({ className = '' }: RBACOverviewProps) {
 
         {/* Permission Levels */}
         <div className="space-y-3">
-          <h4 className="text-sm font-medium text-gray-900">Permission Levels</h4>
+          <h4 className="text-sm font-medium text-foreground">Permission Levels</h4>
           <div className="space-y-2">
             {rbacData.roles.map((role) => (
               <div key={role.role} className="space-y-1">
                 <div className="flex justify-between text-sm">
-                  <span className="text-gray-600">{role.role}</span>
-                  <span className="text-gray-900 font-medium">{role.permissions}</span>
+                  <span className="text-muted-foreground">{role.role}</span>
+                  <span className="text-foreground font-medium">{role.permissions}</span>
                 </div>
                 <Progress value={(role.permissions / 25) * 100} className="h-2" />
               </div>
@@ -298,26 +298,26 @@ export function RBACOverview({ className = '' }: RBACOverviewProps) {
 
         {/* Security Alerts */}
         <div className="space-y-3">
-          <h4 className="text-sm font-medium text-gray-900 flex items-center space-x-2">
-            <AlertTriangle className="h-4 w-4 text-red-600" />
+          <h4 className="text-sm font-medium text-foreground flex items-center space-x-2">
+            <AlertTriangle className="h-4 w-4 text-destructive" />
             <span>Security Alerts</span>
           </h4>
           <div className="space-y-2">
-            <div className="p-3 bg-red-50 rounded-lg-lg border border-red-200">
+            <div className="p-3 bg-destructive/10 rounded-[0.625rem]-lg border border-red-200">
               <div className="flex items-center space-x-2">
-                <AlertTriangle className="h-4 w-4 text-red-600" />
+                <AlertTriangle className="h-4 w-4 text-destructive" />
                 <div>
                   <p className="text-sm font-medium text-red-900">High-risk users detected</p>
-                  <p className="text-xs text-red-700">{rbacData.riskUsers} users with elevated permissions</p>
+                  <p className="text-xs text-destructive">{rbacData.riskUsers} users with elevated permissions</p>
                 </div>
               </div>
             </div>
-            <div className="p-3 bg-yellow-50 rounded-lg-lg border border-yellow-200">
+            <div className="p-3 bg-warning/10 rounded-[0.625rem]-lg border border-yellow-200">
               <div className="flex items-center space-x-2">
-                <AlertTriangle className="h-4 w-4 text-yellow-600" />
+                <AlertTriangle className="h-4 w-4 text-warning" />
                 <div>
                   <p className="text-sm font-medium text-yellow-900">Access anomalies</p>
-                  <p className="text-xs text-yellow-700">{rbacData.anomalies} unusual access patterns detected</p>
+                  <p className="text-xs text-warning">{rbacData.anomalies} unusual access patterns detected</p>
                 </div>
               </div>
             </div>
@@ -337,7 +337,7 @@ export function RBACOverview({ className = '' }: RBACOverviewProps) {
         </div>
 
         {/* Insights */}
-        <div className="p-3 bg-blue-50 rounded-lg-lg">
+        <div className="p-3 bg-primary/10 rounded-[0.625rem]-lg">
           <h5 className="text-sm font-medium text-blue-900 mb-2">💡 RBAC Insights</h5>
           <ul className="text-xs text-blue-800 space-y-1">
             <li>• Total users: {rbacData.totalUsers}</li>

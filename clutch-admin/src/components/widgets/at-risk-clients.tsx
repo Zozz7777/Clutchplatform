@@ -115,7 +115,7 @@ export function AtRiskClients({ className = '' }: AtRiskClientsProps) {
           if (riskScore < 30) return null;
           
           return {
-            clientId: customer.id || Math.random().toString(),
+            clientId: customer.id || `client-${Date.now()}`,
             clientName: customer.name || customer.companyName || customer.email || 'Unknown Client',
             riskScore: Math.min(riskScore, 100),
             churnProbability: Math.min(riskScore * 0.8, 95),
@@ -349,7 +349,7 @@ export function AtRiskClients({ className = '' }: AtRiskClientsProps) {
               <div key={factor} className="flex items-center justify-between p-2 bg-muted/50 rounded-[0.625rem] border border-border">
                 <span className="text-sm text-foreground">{factor}</span>
                 <Badge variant="outline" className="text-xs">
-                  {Math.floor(Math.random() * 5) + 1} clients
+                  {atRiskData.clients.length} clients
                 </Badge>
               </div>
             ))}

@@ -198,26 +198,26 @@ export default function BlackSwanSimulator({ className }: BlackSwanSimulatorProp
 
   const getSeverityColor = (severity: string) => {
     switch (severity) {
-      case 'low': return 'bg-green-100 text-green-800';
-      case 'medium': return 'bg-yellow-100 text-yellow-800';
-      case 'high': return 'bg-orange-100 text-orange-800';
-      case 'extreme': return 'bg-red-100 text-red-800';
-      case 'catastrophic': return 'bg-red-100 text-red-800';
-      default: return 'bg-gray-100 text-gray-800';
+      case 'low': return 'bg-success/10 text-green-800';
+      case 'medium': return 'bg-warning/10 text-yellow-800';
+      case 'high': return 'bg-warning/10 text-orange-800';
+      case 'extreme': return 'bg-destructive/10 text-red-800';
+      case 'catastrophic': return 'bg-destructive/10 text-red-800';
+      default: return 'bg-muted text-gray-800';
     }
   };
 
   const getCategoryColor = (category: string) => {
     switch (category) {
-      case 'natural_disaster': return 'bg-blue-100 text-blue-800';
-      case 'cyber_attack': return 'bg-red-100 text-red-800';
-      case 'economic_crisis': return 'bg-yellow-100 text-yellow-800';
-      case 'pandemic': return 'bg-purple-100 text-purple-800';
-      case 'infrastructure_failure': return 'bg-orange-100 text-orange-800';
+      case 'natural_disaster': return 'bg-primary/10 text-blue-800';
+      case 'cyber_attack': return 'bg-destructive/10 text-red-800';
+      case 'economic_crisis': return 'bg-warning/10 text-yellow-800';
+      case 'pandemic': return 'bg-primary/10 text-purple-800';
+      case 'infrastructure_failure': return 'bg-warning/10 text-orange-800';
       case 'regulatory_change': return 'bg-indigo-100 text-indigo-800';
       case 'market_crash': return 'bg-pink-100 text-pink-800';
       case 'supply_chain_disruption': return 'bg-teal-100 text-teal-800';
-      default: return 'bg-gray-100 text-gray-800';
+      default: return 'bg-muted text-gray-800';
     }
   };
 
@@ -236,10 +236,10 @@ export default function BlackSwanSimulator({ className }: BlackSwanSimulatorProp
   };
 
   const getProbabilityColor = (probability: number) => {
-    if (probability >= 50) return 'text-red-600';
-    if (probability >= 25) return 'text-orange-600';
-    if (probability >= 10) return 'text-yellow-600';
-    return 'text-green-600';
+    if (probability >= 50) return 'text-destructive';
+    if (probability >= 25) return 'text-warning';
+    if (probability >= 10) return 'text-warning';
+    return 'text-success';
   };
 
   const filteredEvents = blackSwanEvents.filter(event => {
@@ -278,7 +278,7 @@ export default function BlackSwanSimulator({ className }: BlackSwanSimulatorProp
                 variant="outline"
                 size="sm"
                 onClick={() => setIsMonitoring(!isMonitoring)}
-                className={isMonitoring ? 'bg-green-100 text-green-800' : ''}
+                className={isMonitoring ? 'bg-success/10 text-green-800' : ''}
               >
                 {isMonitoring ? <Eye className="h-4 w-4 mr-2" /> : <EyeOff className="h-4 w-4 mr-2" />}
                 {isMonitoring ? 'Monitoring' : 'Paused'}
@@ -297,26 +297,26 @@ export default function BlackSwanSimulator({ className }: BlackSwanSimulatorProp
         <CardContent className="space-y-6">
           {/* Event Summary */}
           <div className="grid grid-cols-4 gap-4">
-            <div className="text-center p-3 bg-red-50 rounded-lg">
-              <div className="text-2xl font-bold text-red-600">{formatNumber(totalUsers)}</div>
+            <div className="text-center p-3 bg-destructive/10 rounded-[0.625rem]">
+              <div className="text-2xl font-bold text-destructive">{formatNumber(totalUsers)}</div>
               <div className="text-sm text-muted-foreground">Total Users at Risk</div>
             </div>
-            <div className="text-center p-3 bg-orange-50 rounded-lg">
-              <div className="text-2xl font-bold text-orange-600">{formatCurrency(totalRevenue)}</div>
+            <div className="text-center p-3 bg-warning/10 rounded-[0.625rem]">
+              <div className="text-2xl font-bold text-warning">{formatCurrency(totalRevenue)}</div>
               <div className="text-sm text-muted-foreground">Revenue at Risk</div>
             </div>
-            <div className="text-center p-3 bg-yellow-50 rounded-lg">
-              <div className="text-2xl font-bold text-yellow-600">{avgProbability}%</div>
+            <div className="text-center p-3 bg-warning/10 rounded-[0.625rem]">
+              <div className="text-2xl font-bold text-warning">{avgProbability}%</div>
               <div className="text-sm text-muted-foreground">Avg Probability</div>
             </div>
-            <div className="text-center p-3 bg-purple-50 rounded-lg">
-              <div className="text-2xl font-bold text-purple-600">{avgResilience}%</div>
+            <div className="text-center p-3 bg-primary/10 rounded-[0.625rem]">
+              <div className="text-2xl font-bold text-primary">{avgResilience}%</div>
               <div className="text-sm text-muted-foreground">Avg Resilience</div>
             </div>
           </div>
 
           {/* Black Swan Overview */}
-          <div className="p-4 bg-gradient-to-r from-red-50 to-orange-50 rounded-lg">
+          <div className="p-4 bg-gradient-to-r from-red-50 to-orange-50 rounded-[0.625rem]">
             <div className="flex items-center justify-between">
               <div>
                 <h4 className="font-medium">Black Swan Event Analysis</h4>
@@ -325,7 +325,7 @@ export default function BlackSwanSimulator({ className }: BlackSwanSimulatorProp
                 </p>
               </div>
               <div className="text-right">
-                <div className="text-3xl font-bold text-red-600">
+                <div className="text-3xl font-bold text-destructive">
                   {blackSwanEvents.length}
                 </div>
                 <div className="text-sm text-muted-foreground">events monitored</div>
@@ -370,8 +370,8 @@ export default function BlackSwanSimulator({ className }: BlackSwanSimulatorProp
               {filteredEvents.map((event) => (
                 <div
                   key={event.id}
-                  className={`p-3 border rounded-lg cursor-pointer transition-colors ${
-                    selectedEvent?.id === event.id ? 'border-blue-500 bg-blue-50' : 'hover:bg-gray-50'
+                  className={`p-3 border rounded-[0.625rem] cursor-pointer transition-colors ${
+                    selectedEvent?.id === event.id ? 'border-blue-500 bg-primary/10' : 'hover:bg-muted/50'
                   }`}
                   onClick={() => setSelectedEvent(event)}
                 >
@@ -481,7 +481,7 @@ export default function BlackSwanSimulator({ className }: BlackSwanSimulatorProp
                     <h5 className="font-medium mb-2">Scenario Analysis</h5>
                     <div className="space-y-2">
                       {selectedEvent.scenarios.map((scenario) => (
-                        <div key={scenario.id} className="p-3 border rounded-lg">
+                        <div key={scenario.id} className="p-3 border rounded-[0.625rem]">
                           <div className="flex items-center justify-between mb-2">
                             <span className="font-medium">{scenario.name}</span>
                             <span className="text-sm font-medium">{scenario.probability}% probability</span>
@@ -517,7 +517,7 @@ export default function BlackSwanSimulator({ className }: BlackSwanSimulatorProp
                     <h5 className="font-medium mb-2">Early Warning Triggers</h5>
                     <div className="space-y-2">
                       {selectedEvent.triggers.map((trigger, index) => (
-                        <div key={index} className="p-3 border rounded-lg">
+                        <div key={index} className="p-3 border rounded-[0.625rem]">
                           <div className="flex items-center justify-between mb-2">
                             <span className="font-medium">{trigger.condition}</span>
                             <span className="text-sm font-medium">Threshold: {trigger.threshold}</span>
@@ -547,7 +547,7 @@ export default function BlackSwanSimulator({ className }: BlackSwanSimulatorProp
                         <div className="font-medium mb-2">Resilience Gaps:</div>
                         <div className="space-y-1">
                           {selectedEvent.resilience.gaps.map((gap, index) => (
-                            <div key={index} className="p-2 border rounded-lg text-sm">
+                            <div key={index} className="p-2 border rounded-[0.625rem] text-sm">
                               • {gap}
                             </div>
                           ))}

@@ -56,15 +56,15 @@ export function RecommendationUplift({ className = '' }: RecommendationUpliftPro
   };
 
   const getAcceptanceColor = (rate: number) => {
-    if (rate >= 70) return 'text-green-600';
-    if (rate >= 50) return 'text-yellow-600';
-    return 'text-red-600';
+    if (rate >= 70) return 'text-success';
+    if (rate >= 50) return 'text-warning';
+    return 'text-destructive';
   };
 
   const getAcceptanceBadge = (rate: number) => {
-    if (rate >= 70) return 'bg-green-100 text-green-800';
-    if (rate >= 50) return 'bg-yellow-100 text-yellow-800';
-    return 'bg-red-100 text-red-800';
+    if (rate >= 70) return 'bg-success/10 text-green-800';
+    if (rate >= 50) return 'bg-warning/10 text-yellow-800';
+    return 'bg-destructive/10 text-red-800';
   };
 
   const getAcceptanceLevel = (rate: number) => {
@@ -75,15 +75,15 @@ export function RecommendationUplift({ className = '' }: RecommendationUpliftPro
   };
 
   const getEngagementColor = (improvement: number) => {
-    if (improvement >= 30) return 'text-green-600';
-    if (improvement >= 20) return 'text-yellow-600';
-    return 'text-red-600';
+    if (improvement >= 30) return 'text-success';
+    if (improvement >= 20) return 'text-warning';
+    return 'text-destructive';
   };
 
   const getEngagementBadge = (improvement: number) => {
-    if (improvement >= 30) return 'bg-green-100 text-green-800';
-    if (improvement >= 20) return 'bg-yellow-100 text-yellow-800';
-    return 'bg-red-100 text-red-800';
+    if (improvement >= 30) return 'bg-success/10 text-green-800';
+    if (improvement >= 20) return 'bg-warning/10 text-yellow-800';
+    return 'bg-destructive/10 text-red-800';
   };
 
   const getEngagementLevel = (improvement: number) => {
@@ -97,16 +97,16 @@ export function RecommendationUplift({ className = '' }: RecommendationUpliftPro
       <Card className={className}>
         <CardHeader>
           <CardTitle className="flex items-center space-x-2">
-            <Lightbulb className="h-5 w-5 text-yellow-600" />
+            <Lightbulb className="h-5 w-5 text-warning" />
             <span>Recommendation Uplift</span>
           </CardTitle>
           <CardDescription>Loading recommendation data...</CardDescription>
         </CardHeader>
         <CardContent>
           <div className="animate-pulse space-y-4">
-            <div className="h-4 bg-gray-200 rounded-lg w-3/4"></div>
-            <div className="h-4 bg-gray-200 rounded-lg w-1/2"></div>
-            <div className="h-4 bg-gray-200 rounded-lg w-2/3"></div>
+            <div className="h-4 bg-muted rounded-[0.625rem] w-3/4"></div>
+            <div className="h-4 bg-muted rounded-[0.625rem] w-1/2"></div>
+            <div className="h-4 bg-muted rounded-[0.625rem] w-2/3"></div>
           </div>
         </CardContent>
       </Card>
@@ -118,7 +118,7 @@ export function RecommendationUplift({ className = '' }: RecommendationUpliftPro
       <Card className={className}>
         <CardHeader>
           <CardTitle className="flex items-center space-x-2">
-            <Lightbulb className="h-5 w-5 text-yellow-600" />
+            <Lightbulb className="h-5 w-5 text-warning" />
             <span>Recommendation Uplift</span>
           </CardTitle>
           <CardDescription>Unable to load recommendation data</CardDescription>
@@ -133,7 +133,7 @@ export function RecommendationUplift({ className = '' }: RecommendationUpliftPro
     <Card className={className}>
       <CardHeader>
         <CardTitle className="flex items-center space-x-2">
-          <Lightbulb className="h-5 w-5 text-yellow-600" />
+          <Lightbulb className="h-5 w-5 text-warning" />
           <span>Recommendation Uplift</span>
         </CardTitle>
         <CardDescription>
@@ -143,20 +143,20 @@ export function RecommendationUplift({ className = '' }: RecommendationUpliftPro
       <CardContent className="space-y-6">
         {/* Summary Stats */}
         <div className="grid grid-cols-2 gap-4">
-          <div className="text-center p-3 bg-yellow-50 rounded-lg-lg">
-            <Lightbulb className="h-5 w-5 text-yellow-600 mx-auto mb-1" />
-            <p className="text-lg font-bold text-yellow-600">{upliftData.recommendationsSent}</p>
-            <p className="text-xs text-gray-500">Sent</p>
+          <div className="text-center p-3 bg-warning/10 rounded-[0.625rem]-lg">
+            <Lightbulb className="h-5 w-5 text-warning mx-auto mb-1" />
+            <p className="text-lg font-bold text-warning">{upliftData.recommendationsSent}</p>
+            <p className="text-xs text-muted-foreground">Sent</p>
           </div>
-          <div className="text-center p-3 bg-green-50 rounded-lg-lg">
-            <CheckCircle className="h-5 w-5 text-green-600 mx-auto mb-1" />
-            <p className="text-lg font-bold text-green-600">{upliftData.accepted}</p>
-            <p className="text-xs text-gray-500">Accepted</p>
+          <div className="text-center p-3 bg-success/10 rounded-[0.625rem]-lg">
+            <CheckCircle className="h-5 w-5 text-success mx-auto mb-1" />
+            <p className="text-lg font-bold text-success">{upliftData.accepted}</p>
+            <p className="text-xs text-muted-foreground">Accepted</p>
           </div>
         </div>
 
         {/* Acceptance Rate */}
-        <div className="text-center p-4 bg-gray-50 rounded-lg-lg">
+        <div className="text-center p-4 bg-muted/50 rounded-[0.625rem]-lg">
           <div className="flex items-center justify-center space-x-2 mb-2">
             <Target className={`h-6 w-6 ${getAcceptanceColor(acceptanceRate)}`} />
             <span className={`text-2xl font-bold ${getAcceptanceColor(acceptanceRate)}`}>
@@ -166,7 +166,7 @@ export function RecommendationUplift({ className = '' }: RecommendationUpliftPro
               {getAcceptanceLevel(acceptanceRate)}
             </Badge>
           </div>
-          <p className="text-sm text-gray-600">Acceptance Rate</p>
+          <p className="text-sm text-muted-foreground">Acceptance Rate</p>
           <div className="mt-3">
             <Progress value={acceptanceRate} className="h-2" />
           </div>
@@ -174,18 +174,18 @@ export function RecommendationUplift({ className = '' }: RecommendationUpliftPro
 
         {/* Impact Metrics */}
         <div className="space-y-3">
-          <h4 className="text-sm font-medium text-gray-900">Impact Metrics</h4>
+          <h4 className="text-sm font-medium text-foreground">Impact Metrics</h4>
           <div className="space-y-2">
-            <div className="flex items-center justify-between p-3 bg-gray-50 rounded-lg-lg">
+            <div className="flex items-center justify-between p-3 bg-muted/50 rounded-[0.625rem]-lg">
               <div className="flex items-center space-x-3">
-                <DollarSign className="h-4 w-4 text-green-600" />
+                <DollarSign className="h-4 w-4 text-success" />
                 <div>
-                  <p className="text-sm font-medium text-gray-900">Revenue Impact</p>
-                  <p className="text-xs text-gray-500">From accepted recommendations</p>
+                  <p className="text-sm font-medium text-foreground">Revenue Impact</p>
+                  <p className="text-xs text-muted-foreground">From accepted recommendations</p>
                 </div>
               </div>
               <div className="text-right">
-                <p className="text-sm font-semibold text-gray-900">
+                <p className="text-sm font-semibold text-foreground">
                   ${upliftData.revenueImpact.toLocaleString()}
                 </p>
                 <Badge variant="outline" className="text-xs">
@@ -194,12 +194,12 @@ export function RecommendationUplift({ className = '' }: RecommendationUpliftPro
               </div>
             </div>
 
-            <div className="flex items-center justify-between p-3 bg-gray-50 rounded-lg-lg">
+            <div className="flex items-center justify-between p-3 bg-muted/50 rounded-[0.625rem]-lg">
               <div className="flex items-center space-x-3">
-                <TrendingUp className="h-4 w-4 text-blue-600" />
+                <TrendingUp className="h-4 w-4 text-primary" />
                 <div>
-                  <p className="text-sm font-medium text-gray-900">Engagement Improvement</p>
-                  <p className="text-xs text-gray-500">User engagement increase</p>
+                  <p className="text-sm font-medium text-foreground">Engagement Improvement</p>
+                  <p className="text-xs text-muted-foreground">User engagement increase</p>
                 </div>
               </div>
               <div className="text-right">
@@ -216,21 +216,21 @@ export function RecommendationUplift({ className = '' }: RecommendationUpliftPro
 
         {/* Top Performing Types */}
         <div className="space-y-3">
-          <h4 className="text-sm font-medium text-gray-900">Top Performing Types</h4>
+          <h4 className="text-sm font-medium text-foreground">Top Performing Types</h4>
           <div className="space-y-2">
             {upliftData.topPerformingTypes.map((type, index) => (
-              <div key={type} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg-lg">
+              <div key={type} className="flex items-center justify-between p-3 bg-muted/50 rounded-[0.625rem]-lg">
                 <div className="flex items-center space-x-3">
-                  <div className="flex items-center justify-center w-6 h-6 bg-yellow-100 rounded-lg-full">
-                    <span className="text-xs font-semibold text-yellow-600">{index + 1}</span>
+                  <div className="flex items-center justify-center w-6 h-6 bg-warning/10 rounded-[0.625rem]-full">
+                    <span className="text-xs font-semibold text-warning">{index + 1}</span>
                   </div>
                   <div>
-                    <p className="text-sm font-medium text-gray-900">{type}</p>
-                    <p className="text-xs text-gray-500">Recommendation type</p>
+                    <p className="text-sm font-medium text-foreground">{type}</p>
+                    <p className="text-xs text-muted-foreground">Recommendation type</p>
                   </div>
                 </div>
                 <div className="text-right">
-                  <p className="text-sm font-semibold text-gray-900">
+                  <p className="text-sm font-semibold text-foreground">
                     {Math.floor(Math.random() * 30) + 70}%
                   </p>
                   <Badge variant="outline" className="text-xs">
@@ -244,25 +244,25 @@ export function RecommendationUplift({ className = '' }: RecommendationUpliftPro
 
         {/* Performance Metrics */}
         <div className="grid grid-cols-2 gap-4">
-          <div className="text-center p-3 bg-purple-50 rounded-lg-lg">
-            <BarChart3 className="h-4 w-4 text-purple-600 mx-auto mb-1" />
-            <p className="text-sm font-bold text-purple-600">
+          <div className="text-center p-3 bg-primary/10 rounded-[0.625rem]-lg">
+            <BarChart3 className="h-4 w-4 text-primary mx-auto mb-1" />
+            <p className="text-sm font-bold text-primary">
               {upliftData.accepted > 0 ? (upliftData.revenueImpact / upliftData.accepted).toFixed(0) : 0}
             </p>
-            <p className="text-xs text-gray-500">Avg Revenue Per Acceptance</p>
+            <p className="text-xs text-muted-foreground">Avg Revenue Per Acceptance</p>
           </div>
-          <div className="text-center p-3 bg-orange-50 rounded-lg-lg">
-            <Activity className="h-4 w-4 text-orange-600 mx-auto mb-1" />
-            <p className="text-sm font-bold text-orange-600">
+          <div className="text-center p-3 bg-warning/10 rounded-[0.625rem]-lg">
+            <Activity className="h-4 w-4 text-warning mx-auto mb-1" />
+            <p className="text-sm font-bold text-warning">
               {upliftData.engagementImprovement.toFixed(1)}%
             </p>
-            <p className="text-xs text-gray-500">Engagement Uplift</p>
+            <p className="text-xs text-muted-foreground">Engagement Uplift</p>
           </div>
         </div>
 
         {/* Recommendation Flow */}
         <div className="space-y-3">
-          <h4 className="text-sm font-medium text-gray-900">Recommendation Flow</h4>
+          <h4 className="text-sm font-medium text-foreground">Recommendation Flow</h4>
           <div className="space-y-2">
             <div className="flex justify-between text-sm">
               <span>Sent</span>
@@ -297,7 +297,7 @@ export function RecommendationUplift({ className = '' }: RecommendationUpliftPro
         </div>
 
         {/* Insights */}
-        <div className="p-3 bg-blue-50 rounded-lg-lg">
+        <div className="p-3 bg-primary/10 rounded-[0.625rem]-lg">
           <h5 className="text-sm font-medium text-blue-900 mb-2">💡 Recommendation Insights</h5>
           <ul className="text-xs text-blue-800 space-y-1">
             <li>• {upliftData.recommendationsSent} recommendations sent</li>

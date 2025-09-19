@@ -141,15 +141,15 @@ export function ForecastAccuracyTrend({ className = '' }: ForecastAccuracyTrendP
   }, []);
 
   const getAccuracyColor = (accuracy: number) => {
-    if (accuracy >= 95) return 'text-green-600';
-    if (accuracy >= 90) return 'text-yellow-600';
-    return 'text-red-600';
+    if (accuracy >= 95) return 'text-success';
+    if (accuracy >= 90) return 'text-warning';
+    return 'text-destructive';
   };
 
   const getAccuracyBadge = (accuracy: number) => {
-    if (accuracy >= 95) return 'bg-green-100 text-green-800';
-    if (accuracy >= 90) return 'bg-yellow-100 text-yellow-800';
-    return 'bg-red-100 text-red-800';
+    if (accuracy >= 95) return 'bg-success/10 text-green-800';
+    if (accuracy >= 90) return 'bg-warning/10 text-yellow-800';
+    return 'bg-destructive/10 text-red-800';
   };
 
   const getAccuracyLevel = (accuracy: number) => {
@@ -168,9 +168,9 @@ export function ForecastAccuracyTrend({ className = '' }: ForecastAccuracyTrendP
 
   const getTrendColor = (trend: string) => {
     switch (trend) {
-      case 'up': return 'text-green-600';
-      case 'down': return 'text-red-600';
-      default: return 'text-gray-600';
+      case 'up': return 'text-success';
+      case 'down': return 'text-destructive';
+      default: return 'text-muted-foreground';
     }
   };
 
@@ -179,16 +179,16 @@ export function ForecastAccuracyTrend({ className = '' }: ForecastAccuracyTrendP
       <Card className={className}>
         <CardHeader>
           <CardTitle className="flex items-center space-x-2">
-            <Target className="h-5 w-5 text-blue-600" />
+            <Target className="h-5 w-5 text-primary" />
             <span>Forecast Accuracy Trend</span>
           </CardTitle>
           <CardDescription>Loading forecast accuracy data...</CardDescription>
         </CardHeader>
         <CardContent>
           <div className="animate-pulse space-y-4">
-            <div className="h-4 bg-gray-200 rounded-lg w-3/4"></div>
-            <div className="h-4 bg-gray-200 rounded-lg w-1/2"></div>
-            <div className="h-4 bg-gray-200 rounded-lg w-2/3"></div>
+            <div className="h-4 bg-muted rounded-[0.625rem] w-3/4"></div>
+            <div className="h-4 bg-muted rounded-[0.625rem] w-1/2"></div>
+            <div className="h-4 bg-muted rounded-[0.625rem] w-2/3"></div>
           </div>
         </CardContent>
       </Card>
@@ -200,7 +200,7 @@ export function ForecastAccuracyTrend({ className = '' }: ForecastAccuracyTrendP
       <Card className={className}>
         <CardHeader>
           <CardTitle className="flex items-center space-x-2">
-            <Target className="h-5 w-5 text-blue-600" />
+            <Target className="h-5 w-5 text-primary" />
             <span>Forecast Accuracy Trend</span>
           </CardTitle>
           <CardDescription>Unable to load forecast accuracy data</CardDescription>
@@ -213,7 +213,7 @@ export function ForecastAccuracyTrend({ className = '' }: ForecastAccuracyTrendP
     <Card className={className}>
       <CardHeader>
         <CardTitle className="flex items-center space-x-2">
-          <Target className="h-5 w-5 text-blue-600" />
+          <Target className="h-5 w-5 text-primary" />
           <span>Forecast Accuracy Trend</span>
         </CardTitle>
         <CardDescription>
@@ -223,24 +223,24 @@ export function ForecastAccuracyTrend({ className = '' }: ForecastAccuracyTrendP
       <CardContent className="space-y-6">
         {/* Summary Stats */}
         <div className="grid grid-cols-2 gap-4">
-          <div className="text-center p-3 bg-blue-50 rounded-lg-lg">
-            <Target className="h-5 w-5 text-blue-600 mx-auto mb-1" />
-            <p className="text-lg font-bold text-blue-600">
+          <div className="text-center p-3 bg-primary/10 rounded-[0.625rem]-lg">
+            <Target className="h-5 w-5 text-primary mx-auto mb-1" />
+            <p className="text-lg font-bold text-primary">
               {accuracyData.averageAccuracy.toFixed(1)}%
             </p>
-            <p className="text-xs text-gray-500">Avg Accuracy</p>
+            <p className="text-xs text-muted-foreground">Avg Accuracy</p>
           </div>
-          <div className="text-center p-3 bg-green-50 rounded-lg-lg">
-            <TrendingUp className="h-5 w-5 text-green-600 mx-auto mb-1" />
-            <p className="text-lg font-bold text-green-600">
+          <div className="text-center p-3 bg-success/10 rounded-[0.625rem]-lg">
+            <TrendingUp className="h-5 w-5 text-success mx-auto mb-1" />
+            <p className="text-lg font-bold text-success">
               {accuracyData.improvement > 0 ? '+' : ''}{accuracyData.improvement.toFixed(1)}%
             </p>
-            <p className="text-xs text-gray-500">Improvement</p>
+            <p className="text-xs text-muted-foreground">Improvement</p>
           </div>
         </div>
 
         {/* Average Accuracy */}
-        <div className="text-center p-4 bg-gray-50 rounded-lg-lg">
+        <div className="text-center p-4 bg-muted/50 rounded-[0.625rem]-lg">
           <div className="flex items-center justify-center space-x-2 mb-2">
             <Target className={`h-6 w-6 ${getAccuracyColor(accuracyData.averageAccuracy)}`} />
             <span className={`text-2xl font-bold ${getAccuracyColor(accuracyData.averageAccuracy)}`}>
@@ -250,7 +250,7 @@ export function ForecastAccuracyTrend({ className = '' }: ForecastAccuracyTrendP
               {getAccuracyLevel(accuracyData.averageAccuracy)}
             </Badge>
           </div>
-          <p className="text-sm text-gray-600">Average Forecast Accuracy</p>
+          <p className="text-sm text-muted-foreground">Average Forecast Accuracy</p>
           <div className="mt-3">
             <Progress value={accuracyData.averageAccuracy} className="h-2" />
           </div>
@@ -258,40 +258,40 @@ export function ForecastAccuracyTrend({ className = '' }: ForecastAccuracyTrendP
 
         {/* Accuracy Range */}
         <div className="grid grid-cols-2 gap-4">
-          <div className="text-center p-3 bg-green-50 rounded-lg-lg">
-            <CheckCircle className="h-5 w-5 text-green-600 mx-auto mb-1" />
-            <p className="text-lg font-bold text-green-600">
+          <div className="text-center p-3 bg-success/10 rounded-[0.625rem]-lg">
+            <CheckCircle className="h-5 w-5 text-success mx-auto mb-1" />
+            <p className="text-lg font-bold text-success">
               {accuracyData.bestAccuracy.toFixed(1)}%
             </p>
-            <p className="text-xs text-gray-500">Best Accuracy</p>
+            <p className="text-xs text-muted-foreground">Best Accuracy</p>
           </div>
-          <div className="text-center p-3 bg-red-50 rounded-lg-lg">
-            <AlertTriangle className="h-5 w-5 text-red-600 mx-auto mb-1" />
-            <p className="text-lg font-bold text-red-600">
+          <div className="text-center p-3 bg-destructive/10 rounded-[0.625rem]-lg">
+            <AlertTriangle className="h-5 w-5 text-destructive mx-auto mb-1" />
+            <p className="text-lg font-bold text-destructive">
               {accuracyData.worstAccuracy.toFixed(1)}%
             </p>
-            <p className="text-xs text-gray-500">Worst Accuracy</p>
+            <p className="text-xs text-muted-foreground">Worst Accuracy</p>
           </div>
         </div>
 
         {/* Monthly Trends */}
         <div className="space-y-3">
-          <h4 className="text-sm font-medium text-gray-900">Monthly Accuracy Trends</h4>
+          <h4 className="text-sm font-medium text-foreground">Monthly Accuracy Trends</h4>
           <div className="space-y-2">
             {accuracyData.trends.map((trend) => {
               const TrendIcon = getTrendIcon(trend.trend);
               
               return (
-                <div key={trend.period} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg-lg">
+                <div key={trend.period} className="flex items-center justify-between p-3 bg-muted/50 rounded-[0.625rem]-lg">
                   <div className="flex items-center space-x-3">
-                    <div className="flex items-center justify-center w-8 h-8 bg-blue-100 rounded-lg-full">
-                      <span className="text-sm font-semibold text-blue-600">
+                    <div className="flex items-center justify-center w-8 h-8 bg-primary/10 rounded-[0.625rem]-full">
+                      <span className="text-sm font-semibold text-primary">
                         {trend.period.split(' ')[0].substring(0, 3)}
                       </span>
                     </div>
                     <div>
-                      <p className="text-sm font-medium text-gray-900">{trend.period}</p>
-                      <p className="text-xs text-gray-500">
+                      <p className="text-sm font-medium text-foreground">{trend.period}</p>
+                      <p className="text-xs text-muted-foreground">
                         Forecast: ${trend.forecasted.toLocaleString()} • Actual: ${trend.actual.toLocaleString()}
                       </p>
                     </div>
@@ -321,13 +321,13 @@ export function ForecastAccuracyTrend({ className = '' }: ForecastAccuracyTrendP
 
         {/* Accuracy Distribution */}
         <div className="space-y-3">
-          <h4 className="text-sm font-medium text-gray-900">Accuracy Distribution</h4>
+          <h4 className="text-sm font-medium text-foreground">Accuracy Distribution</h4>
           <div className="space-y-2">
             {accuracyData.trends.map((trend) => (
               <div key={trend.period} className="space-y-1">
                 <div className="flex justify-between text-sm">
-                  <span className="text-gray-600">{trend.period}</span>
-                  <span className="text-gray-900 font-medium">{trend.accuracy.toFixed(1)}%</span>
+                  <span className="text-muted-foreground">{trend.period}</span>
+                  <span className="text-foreground font-medium">{trend.accuracy.toFixed(1)}%</span>
                 </div>
                 <Progress value={trend.accuracy} className="h-2" />
               </div>
@@ -337,15 +337,15 @@ export function ForecastAccuracyTrend({ className = '' }: ForecastAccuracyTrendP
 
         {/* Model Performance */}
         <div className="space-y-3">
-          <h4 className="text-sm font-medium text-gray-900">Model Performance</h4>
+          <h4 className="text-sm font-medium text-foreground">Model Performance</h4>
           <div className="space-y-2">
             {Object.entries(accuracyData.modelPerformance).map(([model, accuracy]) => (
-              <div key={model} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg-lg">
+              <div key={model} className="flex items-center justify-between p-3 bg-muted/50 rounded-[0.625rem]-lg">
                 <div className="flex items-center space-x-3">
-                  <BarChart3 className="h-4 w-4 text-blue-600" />
+                  <BarChart3 className="h-4 w-4 text-primary" />
                   <div>
-                    <p className="text-sm font-medium text-gray-900">{model}</p>
-                    <p className="text-xs text-gray-500">Forecast model</p>
+                    <p className="text-sm font-medium text-foreground">{model}</p>
+                    <p className="text-xs text-muted-foreground">Forecast model</p>
                   </div>
                 </div>
                 
@@ -375,7 +375,7 @@ export function ForecastAccuracyTrend({ className = '' }: ForecastAccuracyTrendP
         </div>
 
         {/* Insights */}
-        <div className="p-3 bg-blue-50 rounded-lg-lg">
+        <div className="p-3 bg-primary/10 rounded-[0.625rem]-lg">
           <h5 className="text-sm font-medium text-blue-900 mb-2">💡 Forecast Accuracy Insights</h5>
           <ul className="text-xs text-blue-800 space-y-1">
             <li>• Average accuracy: {accuracyData.averageAccuracy.toFixed(1)}%</li>

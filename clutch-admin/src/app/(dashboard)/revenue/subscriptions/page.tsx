@@ -95,11 +95,11 @@ export default function SubscriptionsPage() {
   const getStatusBadge = (status: string) => {
     switch (status) {
       case 'active':
-        return <Badge variant="default" className="bg-green-500">Active</Badge>;
+        return <Badge variant="default" className="bg-success/100">Active</Badge>;
       case 'cancelled':
         return <Badge variant="destructive">Cancelled</Badge>;
       case 'past_due':
-        return <Badge variant="default" className="bg-yellow-500">Past Due</Badge>;
+        return <Badge variant="default" className="bg-warning/100">Past Due</Badge>;
       case 'trialing':
         return <Badge variant="secondary">Trialing</Badge>;
       default:
@@ -110,15 +110,15 @@ export default function SubscriptionsPage() {
   const getStatusIcon = (status: string) => {
     switch (status) {
       case 'active':
-        return <CheckCircle className="h-4 w-4 text-green-500" />;
+        return <CheckCircle className="h-4 w-4 text-success" />;
       case 'cancelled':
-        return <AlertTriangle className="h-4 w-4 text-red-500" />;
+        return <AlertTriangle className="h-4 w-4 text-destructive" />;
       case 'past_due':
-        return <AlertTriangle className="h-4 w-4 text-yellow-500" />;
+        return <AlertTriangle className="h-4 w-4 text-warning" />;
       case 'trialing':
-        return <Calendar className="h-4 w-4 text-blue-500" />;
+        return <Calendar className="h-4 w-4 text-primary" />;
       default:
-        return <AlertTriangle className="h-4 w-4 text-gray-500" />;
+        return <AlertTriangle className="h-4 w-4 text-muted-foreground" />;
     }
   };
 
@@ -264,7 +264,7 @@ export default function SubscriptionsPage() {
             <CardContent>
               <div className="space-y-4">
                 {filteredSubscriptions.map((subscription) => (
-                  <div key={subscription.id} className="flex items-center justify-between p-4 border rounded-lg">
+                  <div key={subscription.id} className="flex items-center justify-between p-4 border rounded-[0.625rem]">
                     <div className="flex items-center space-x-4">
                       {getStatusIcon(subscription.status)}
                       <div>
@@ -321,8 +321,8 @@ export default function SubscriptionsPage() {
                       <div className="flex items-center space-x-4">
                         <div className="text-right">
                           <p className="text-sm font-sans">{month.active} active</p>
-                          <p className="text-xs text-green-600 font-sans">+{month.new} new</p>
-                          <p className="text-xs text-red-600 font-sans">-{month.cancelled} cancelled</p>
+                          <p className="text-xs text-success font-sans">+{month.new} new</p>
+                          <p className="text-xs text-destructive font-sans">-{month.cancelled} cancelled</p>
                         </div>
                       </div>
                     </div>
@@ -347,9 +347,9 @@ export default function SubscriptionsPage() {
                         <span className="text-sm font-sans">{plan.plan}</span>
                         <span className="text-sm font-sans">{plan.count} ({plan.percentage}%)</span>
                       </div>
-                      <div className="w-full bg-gray-200 rounded-full h-2">
+                      <div className="w-full bg-muted rounded-full h-2">
                         <div 
-                          className="bg-blue-500 h-2 rounded-full" 
+                          className="bg-primary/100 h-2 rounded-full" 
                           style={{ width: `${plan.percentage}%` }}
                         ></div>
                       </div>
@@ -371,19 +371,19 @@ export default function SubscriptionsPage() {
             </CardHeader>
             <CardContent>
               <div className="grid gap-4 md:grid-cols-3">
-                <div className="text-center p-4 border rounded-lg">
+                <div className="text-center p-4 border rounded-[0.625rem]">
                   <h3 className="font-medium font-sans">Upcoming Billing</h3>
                   <p className="text-2xl font-bold font-sans mt-2">$45,230</p>
                   <p className="text-sm text-muted-foreground font-sans">Next 7 days</p>
                 </div>
-                <div className="text-center p-4 border rounded-lg">
+                <div className="text-center p-4 border rounded-[0.625rem]">
                   <h3 className="font-medium font-sans">Failed Payments</h3>
-                  <p className="text-2xl font-bold font-sans mt-2 text-red-500">12</p>
+                  <p className="text-2xl font-bold font-sans mt-2 text-destructive">12</p>
                   <p className="text-sm text-muted-foreground font-sans">Require attention</p>
                 </div>
-                <div className="text-center p-4 border rounded-lg">
+                <div className="text-center p-4 border rounded-[0.625rem]">
                   <h3 className="font-medium font-sans">Success Rate</h3>
-                  <p className="text-2xl font-bold font-sans mt-2 text-green-500">98.2%</p>
+                  <p className="text-2xl font-bold font-sans mt-2 text-success">98.2%</p>
                   <p className="text-sm text-muted-foreground font-sans">Payment success</p>
                 </div>
               </div>

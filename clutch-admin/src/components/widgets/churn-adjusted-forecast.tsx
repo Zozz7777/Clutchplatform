@@ -115,15 +115,15 @@ export function ChurnAdjustedForecast({ className = '' }: ChurnAdjustedForecastP
   }, []);
 
   const getChurnColor = (rate: number) => {
-    if (rate <= 5) return 'text-green-600';
-    if (rate <= 7) return 'text-yellow-600';
-    return 'text-red-600';
+    if (rate <= 5) return 'text-success';
+    if (rate <= 7) return 'text-warning';
+    return 'text-destructive';
   };
 
   const getChurnBadge = (rate: number) => {
-    if (rate <= 5) return 'bg-green-100 text-green-800';
-    if (rate <= 7) return 'bg-yellow-100 text-yellow-800';
-    return 'bg-red-100 text-red-800';
+    if (rate <= 5) return 'bg-success/10 text-green-800';
+    if (rate <= 7) return 'bg-warning/10 text-yellow-800';
+    return 'bg-destructive/10 text-red-800';
   };
 
   const getChurnLevel = (rate: number) => {
@@ -133,15 +133,15 @@ export function ChurnAdjustedForecast({ className = '' }: ChurnAdjustedForecastP
   };
 
   const getConfidenceColor = (confidence: number) => {
-    if (confidence >= 80) return 'text-green-600';
-    if (confidence >= 70) return 'text-yellow-600';
-    return 'text-red-600';
+    if (confidence >= 80) return 'text-success';
+    if (confidence >= 70) return 'text-warning';
+    return 'text-destructive';
   };
 
   const getConfidenceBadge = (confidence: number) => {
-    if (confidence >= 80) return 'bg-green-100 text-green-800';
-    if (confidence >= 70) return 'bg-yellow-100 text-yellow-800';
-    return 'bg-red-100 text-red-800';
+    if (confidence >= 80) return 'bg-success/10 text-green-800';
+    if (confidence >= 70) return 'bg-warning/10 text-yellow-800';
+    return 'bg-destructive/10 text-red-800';
   };
 
   const getTrendIcon = (trend: string) => {
@@ -154,9 +154,9 @@ export function ChurnAdjustedForecast({ className = '' }: ChurnAdjustedForecastP
 
   const getTrendColor = (trend: string) => {
     switch (trend) {
-      case 'up': return 'text-green-600';
-      case 'down': return 'text-red-600';
-      default: return 'text-gray-600';
+      case 'up': return 'text-success';
+      case 'down': return 'text-destructive';
+      default: return 'text-muted-foreground';
     }
   };
 
@@ -165,16 +165,16 @@ export function ChurnAdjustedForecast({ className = '' }: ChurnAdjustedForecastP
       <Card className={className}>
         <CardHeader>
           <CardTitle className="flex items-center space-x-2">
-            <TrendingUp className="h-5 w-5 text-blue-600" />
+            <TrendingUp className="h-5 w-5 text-primary" />
             <span>Churn-Adjusted Revenue Forecast</span>
           </CardTitle>
           <CardDescription>Loading forecast data...</CardDescription>
         </CardHeader>
         <CardContent>
           <div className="animate-pulse space-y-4">
-            <div className="h-4 bg-gray-200 rounded-lg w-3/4"></div>
-            <div className="h-4 bg-gray-200 rounded-lg w-1/2"></div>
-            <div className="h-4 bg-gray-200 rounded-lg w-2/3"></div>
+            <div className="h-4 bg-muted rounded-[0.625rem] w-3/4"></div>
+            <div className="h-4 bg-muted rounded-[0.625rem] w-1/2"></div>
+            <div className="h-4 bg-muted rounded-[0.625rem] w-2/3"></div>
           </div>
         </CardContent>
       </Card>
@@ -186,7 +186,7 @@ export function ChurnAdjustedForecast({ className = '' }: ChurnAdjustedForecastP
       <Card className={className}>
         <CardHeader>
           <CardTitle className="flex items-center space-x-2">
-            <TrendingUp className="h-5 w-5 text-blue-600" />
+            <TrendingUp className="h-5 w-5 text-primary" />
             <span>Churn-Adjusted Revenue Forecast</span>
           </CardTitle>
           <CardDescription>Unable to load forecast data</CardDescription>
@@ -199,7 +199,7 @@ export function ChurnAdjustedForecast({ className = '' }: ChurnAdjustedForecastP
     <Card className={className}>
       <CardHeader>
         <CardTitle className="flex items-center space-x-2">
-          <TrendingUp className="h-5 w-5 text-blue-600" />
+          <TrendingUp className="h-5 w-5 text-primary" />
           <span>Churn-Adjusted Revenue Forecast</span>
         </CardTitle>
         <CardDescription>
@@ -209,34 +209,34 @@ export function ChurnAdjustedForecast({ className = '' }: ChurnAdjustedForecastP
       <CardContent className="space-y-6">
         {/* Summary Stats */}
         <div className="grid grid-cols-2 gap-4">
-          <div className="text-center p-3 bg-blue-50 rounded-lg-lg">
-            <DollarSign className="h-5 w-5 text-blue-600 mx-auto mb-1" />
-            <p className="text-lg font-bold text-blue-600">
+          <div className="text-center p-3 bg-primary/10 rounded-[0.625rem]-lg">
+            <DollarSign className="h-5 w-5 text-primary mx-auto mb-1" />
+            <p className="text-lg font-bold text-primary">
               ${forecastData.totalAdjustedRevenue.toLocaleString()}
             </p>
-            <p className="text-xs text-gray-500">Adjusted Revenue</p>
+            <p className="text-xs text-muted-foreground">Adjusted Revenue</p>
           </div>
-          <div className="text-center p-3 bg-orange-50 rounded-lg-lg">
-            <AlertTriangle className="h-5 w-5 text-orange-600 mx-auto mb-1" />
-            <p className="text-lg font-bold text-orange-600">
+          <div className="text-center p-3 bg-warning/10 rounded-[0.625rem]-lg">
+            <AlertTriangle className="h-5 w-5 text-warning mx-auto mb-1" />
+            <p className="text-lg font-bold text-warning">
               {forecastData.averageChurnRate.toFixed(1)}%
             </p>
-            <p className="text-xs text-gray-500">Avg Churn Rate</p>
+            <p className="text-xs text-muted-foreground">Avg Churn Rate</p>
           </div>
         </div>
 
         {/* Revenue Impact */}
-        <div className="text-center p-4 bg-gray-50 rounded-lg-lg">
+        <div className="text-center p-4 bg-muted/50 rounded-[0.625rem]-lg">
           <div className="flex items-center justify-center space-x-2 mb-2">
-            <Target className="h-6 w-6 text-red-600" />
-            <span className="text-2xl font-bold text-red-600">
+            <Target className="h-6 w-6 text-destructive" />
+            <span className="text-2xl font-bold text-destructive">
               ${(forecastData.totalBaseRevenue - forecastData.totalAdjustedRevenue).toLocaleString()}
             </span>
-            <Badge className="bg-red-100 text-red-800">
+            <Badge className="bg-destructive/10 text-red-800">
               Churn Impact
             </Badge>
           </div>
-          <p className="text-sm text-gray-600">Total Revenue Impact from Churn</p>
+          <p className="text-sm text-muted-foreground">Total Revenue Impact from Churn</p>
           <div className="mt-3">
             <Progress value={((forecastData.totalBaseRevenue - forecastData.totalAdjustedRevenue) / forecastData.totalBaseRevenue) * 100} className="h-2" />
           </div>
@@ -244,22 +244,22 @@ export function ChurnAdjustedForecast({ className = '' }: ChurnAdjustedForecastP
 
         {/* Forecast Periods */}
         <div className="space-y-3">
-          <h4 className="text-sm font-medium text-gray-900">Forecast by Period</h4>
+          <h4 className="text-sm font-medium text-foreground">Forecast by Period</h4>
           <div className="space-y-2">
             {forecastData.forecasts.map((forecast) => {
               const TrendIcon = getTrendIcon(forecast.trend);
               
               return (
-                <div key={forecast.period} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg-lg">
+                <div key={forecast.period} className="flex items-center justify-between p-3 bg-muted/50 rounded-[0.625rem]-lg">
                   <div className="flex items-center space-x-3">
-                    <div className="flex items-center justify-center w-8 h-8 bg-blue-100 rounded-lg-full">
-                      <span className="text-sm font-semibold text-blue-600">
+                    <div className="flex items-center justify-center w-8 h-8 bg-primary/10 rounded-[0.625rem]-full">
+                      <span className="text-sm font-semibold text-primary">
                         {forecast.period.split(' ')[0]}
                       </span>
                     </div>
                     <div>
-                      <p className="text-sm font-medium text-gray-900">{forecast.period}</p>
-                      <p className="text-xs text-gray-500">
+                      <p className="text-sm font-medium text-foreground">{forecast.period}</p>
+                      <p className="text-xs text-muted-foreground">
                         Base: ${forecast.baseRevenue.toLocaleString()}
                       </p>
                     </div>
@@ -267,7 +267,7 @@ export function ChurnAdjustedForecast({ className = '' }: ChurnAdjustedForecastP
                   
                   <div className="text-right">
                     <div className="flex items-center space-x-2">
-                      <p className="text-sm font-semibold text-gray-900">
+                      <p className="text-sm font-semibold text-foreground">
                         ${forecast.adjustedRevenue.toLocaleString()}
                       </p>
                       <Badge className={getChurnBadge(forecast.churnRate)}>
@@ -289,13 +289,13 @@ export function ChurnAdjustedForecast({ className = '' }: ChurnAdjustedForecastP
 
         {/* Churn Rate Trends */}
         <div className="space-y-3">
-          <h4 className="text-sm font-medium text-gray-900">Churn Rate Trends</h4>
+          <h4 className="text-sm font-medium text-foreground">Churn Rate Trends</h4>
           <div className="space-y-2">
             {forecastData.forecasts.map((forecast) => (
               <div key={forecast.period} className="space-y-1">
                 <div className="flex justify-between text-sm">
-                  <span className="text-gray-600">{forecast.period}</span>
-                  <span className="text-gray-900 font-medium">{forecast.churnRate.toFixed(1)}%</span>
+                  <span className="text-muted-foreground">{forecast.period}</span>
+                  <span className="text-foreground font-medium">{forecast.churnRate.toFixed(1)}%</span>
                 </div>
                 <Progress value={Math.min(forecast.churnRate * 10, 100)} className="h-2" />
               </div>
@@ -304,7 +304,7 @@ export function ChurnAdjustedForecast({ className = '' }: ChurnAdjustedForecastP
         </div>
 
         {/* Confidence Score */}
-        <div className="text-center p-3 bg-gray-50 rounded-lg-lg">
+        <div className="text-center p-3 bg-muted/50 rounded-[0.625rem]-lg">
           <div className="flex items-center justify-center space-x-2 mb-2">
             <Target className={`h-5 w-5 ${getConfidenceColor(forecastData.confidenceScore)}`} />
             <span className={`text-lg font-bold ${getConfidenceColor(forecastData.confidenceScore)}`}>
@@ -314,7 +314,7 @@ export function ChurnAdjustedForecast({ className = '' }: ChurnAdjustedForecastP
               Confidence
             </Badge>
           </div>
-          <p className="text-sm text-gray-600">Overall Forecast Confidence</p>
+          <p className="text-sm text-muted-foreground">Overall Forecast Confidence</p>
         </div>
 
         {/* Action Buttons */}
@@ -330,7 +330,7 @@ export function ChurnAdjustedForecast({ className = '' }: ChurnAdjustedForecastP
         </div>
 
         {/* Insights */}
-        <div className="p-3 bg-blue-50 rounded-lg-lg">
+        <div className="p-3 bg-primary/10 rounded-[0.625rem]-lg">
           <h5 className="text-sm font-medium text-blue-900 mb-2">💡 Churn-Adjusted Forecast Insights</h5>
           <ul className="text-xs text-blue-800 space-y-1">
             <li>• Total adjusted revenue: ${forecastData.totalAdjustedRevenue.toLocaleString()}</li>

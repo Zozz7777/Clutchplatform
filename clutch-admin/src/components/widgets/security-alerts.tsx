@@ -74,39 +74,39 @@ export function SecurityAlerts({ className = '' }: SecurityAlertsProps) {
 
   const getSeverityColor = (severity: string) => {
     switch (severity) {
-      case 'critical': return 'text-red-600';
-      case 'high': return 'text-orange-600';
-      case 'medium': return 'text-yellow-600';
-      case 'low': return 'text-green-600';
-      default: return 'text-gray-600';
+      case 'critical': return 'text-destructive';
+      case 'high': return 'text-warning';
+      case 'medium': return 'text-warning';
+      case 'low': return 'text-success';
+      default: return 'text-muted-foreground';
     }
   };
 
   const getSeverityBadge = (severity: string) => {
     switch (severity) {
-      case 'critical': return 'bg-red-100 text-red-800';
-      case 'high': return 'bg-orange-100 text-orange-800';
-      case 'medium': return 'bg-yellow-100 text-yellow-800';
-      case 'low': return 'bg-green-100 text-green-800';
-      default: return 'bg-gray-100 text-gray-800';
+      case 'critical': return 'bg-destructive/10 text-red-800';
+      case 'high': return 'bg-warning/10 text-orange-800';
+      case 'medium': return 'bg-warning/10 text-yellow-800';
+      case 'low': return 'bg-success/10 text-green-800';
+      default: return 'bg-muted text-gray-800';
     }
   };
 
   const getStatusColor = (status: string) => {
     switch (status) {
-      case 'active': return 'text-red-600';
-      case 'investigating': return 'text-yellow-600';
-      case 'resolved': return 'text-green-600';
-      default: return 'text-gray-600';
+      case 'active': return 'text-destructive';
+      case 'investigating': return 'text-warning';
+      case 'resolved': return 'text-success';
+      default: return 'text-muted-foreground';
     }
   };
 
   const getStatusBadge = (status: string) => {
     switch (status) {
-      case 'active': return 'bg-red-100 text-red-800';
-      case 'investigating': return 'bg-yellow-100 text-yellow-800';
-      case 'resolved': return 'bg-green-100 text-green-800';
-      default: return 'bg-gray-100 text-gray-800';
+      case 'active': return 'bg-destructive/10 text-red-800';
+      case 'investigating': return 'bg-warning/10 text-yellow-800';
+      case 'resolved': return 'bg-success/10 text-green-800';
+      default: return 'bg-muted text-gray-800';
     }
   };
 
@@ -125,16 +125,16 @@ export function SecurityAlerts({ className = '' }: SecurityAlertsProps) {
       <Card className={className}>
         <CardHeader>
           <CardTitle className="flex items-center space-x-2">
-            <Shield className="h-5 w-5 text-red-600" />
+            <Shield className="h-5 w-5 text-destructive" />
             <span>Security Alerts</span>
           </CardTitle>
           <CardDescription>Loading security alerts...</CardDescription>
         </CardHeader>
         <CardContent>
           <div className="animate-pulse space-y-4">
-            <div className="h-4 bg-gray-200 rounded-lg w-3/4"></div>
-            <div className="h-4 bg-gray-200 rounded-lg w-1/2"></div>
-            <div className="h-4 bg-gray-200 rounded-lg w-2/3"></div>
+            <div className="h-4 bg-muted rounded-[0.625rem] w-3/4"></div>
+            <div className="h-4 bg-muted rounded-[0.625rem] w-1/2"></div>
+            <div className="h-4 bg-muted rounded-[0.625rem] w-2/3"></div>
           </div>
         </CardContent>
       </Card>
@@ -146,7 +146,7 @@ export function SecurityAlerts({ className = '' }: SecurityAlertsProps) {
       <Card className={className}>
         <CardHeader>
           <CardTitle className="flex items-center space-x-2">
-            <Shield className="h-5 w-5 text-red-600" />
+            <Shield className="h-5 w-5 text-destructive" />
             <span>Security Alerts</span>
           </CardTitle>
           <CardDescription>Unable to load security alerts</CardDescription>
@@ -159,7 +159,7 @@ export function SecurityAlerts({ className = '' }: SecurityAlertsProps) {
     <Card className={className}>
       <CardHeader>
         <CardTitle className="flex items-center space-x-2">
-          <Shield className="h-5 w-5 text-red-600" />
+          <Shield className="h-5 w-5 text-destructive" />
           <span>Security Alerts</span>
         </CardTitle>
         <CardDescription>
@@ -169,47 +169,47 @@ export function SecurityAlerts({ className = '' }: SecurityAlertsProps) {
       <CardContent className="space-y-6">
         {/* Summary Stats */}
         <div className="grid grid-cols-2 gap-4">
-          <div className="text-center p-3 bg-red-50 rounded-lg-lg">
-            <AlertTriangle className="h-5 w-5 text-red-600 mx-auto mb-1" />
-            <p className="text-lg font-bold text-red-600">{alertData.totalAlerts}</p>
-            <p className="text-xs text-gray-500">Total Alerts</p>
+          <div className="text-center p-3 bg-destructive/10 rounded-[0.625rem]-lg">
+            <AlertTriangle className="h-5 w-5 text-destructive mx-auto mb-1" />
+            <p className="text-lg font-bold text-destructive">{alertData.totalAlerts}</p>
+            <p className="text-xs text-muted-foreground">Total Alerts</p>
           </div>
-          <div className="text-center p-3 bg-orange-50 rounded-lg-lg">
-            <Shield className="h-5 w-5 text-orange-600 mx-auto mb-1" />
-            <p className="text-lg font-bold text-orange-600">{alertData.activeAlerts}</p>
-            <p className="text-xs text-gray-500">Active Alerts</p>
+          <div className="text-center p-3 bg-warning/10 rounded-[0.625rem]-lg">
+            <Shield className="h-5 w-5 text-warning mx-auto mb-1" />
+            <p className="text-lg font-bold text-warning">{alertData.activeAlerts}</p>
+            <p className="text-xs text-muted-foreground">Active Alerts</p>
           </div>
         </div>
 
         {/* Critical Alerts */}
-        <div className="text-center p-3 bg-red-50 rounded-lg-lg">
+        <div className="text-center p-3 bg-destructive/10 rounded-[0.625rem]-lg">
           <div className="flex items-center justify-center space-x-2 mb-2">
-            <AlertTriangle className="h-5 w-5 text-red-600" />
-            <span className="text-lg font-bold text-red-600">{alertData.criticalAlerts}</span>
-            <Badge className="bg-red-100 text-red-800">
+            <AlertTriangle className="h-5 w-5 text-destructive" />
+            <span className="text-lg font-bold text-destructive">{alertData.criticalAlerts}</span>
+            <Badge className="bg-destructive/10 text-red-800">
               Critical
             </Badge>
           </div>
-          <p className="text-sm text-gray-600">Critical Security Alerts</p>
+          <p className="text-sm text-muted-foreground">Critical Security Alerts</p>
         </div>
 
         {/* Recent Alerts */}
         <div className="space-y-3">
-          <h4 className="text-sm font-medium text-gray-900">Recent Security Alerts</h4>
+          <h4 className="text-sm font-medium text-foreground">Recent Security Alerts</h4>
           <div className="space-y-2">
             {alertData.alerts.map((alert) => (
-              <div key={alert.id} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg-lg">
+              <div key={alert.id} className="flex items-center justify-between p-3 bg-muted/50 rounded-[0.625rem]-lg">
                 <div className="flex items-center space-x-3">
-                  <div className={`p-2 rounded-lg-full ${
-                    alert.severity === 'critical' ? 'bg-red-100' :
-                    alert.severity === 'high' ? 'bg-orange-100' :
-                    alert.severity === 'medium' ? 'bg-yellow-100' : 'bg-green-100'
+                  <div className={`p-2 rounded-[0.625rem]-full ${
+                    alert.severity === 'critical' ? 'bg-destructive/10' :
+                    alert.severity === 'high' ? 'bg-warning/10' :
+                    alert.severity === 'medium' ? 'bg-warning/10' : 'bg-success/10'
                   }`}>
                     <AlertTriangle className={`h-4 w-4 ${getSeverityColor(alert.severity)}`} />
                   </div>
                   <div>
-                    <p className="text-sm font-medium text-gray-900">{alert.type}</p>
-                    <p className="text-xs text-gray-500">
+                    <p className="text-sm font-medium text-foreground">{alert.type}</p>
+                    <p className="text-xs text-muted-foreground">
                       {alert.description} • {formatTime(alert.timestamp)}
                     </p>
                   </div>
@@ -224,7 +224,7 @@ export function SecurityAlerts({ className = '' }: SecurityAlertsProps) {
                       {alert.status}
                     </Badge>
                   </div>
-                  <p className="text-xs text-gray-500 mt-1">{alert.source}</p>
+                  <p className="text-xs text-muted-foreground mt-1">{alert.source}</p>
                 </div>
               </div>
             ))}
@@ -233,11 +233,11 @@ export function SecurityAlerts({ className = '' }: SecurityAlertsProps) {
 
         {/* Alert Types */}
         <div className="space-y-3">
-          <h4 className="text-sm font-medium text-gray-900">Alert Types</h4>
+          <h4 className="text-sm font-medium text-foreground">Alert Types</h4>
           <div className="space-y-2">
             {['Failed Login Attempts', 'Unusual Access Pattern', 'Permission Escalation', 'Data Export Anomaly', 'API Rate Limit Exceeded'].map((type) => (
-              <div key={type} className="flex items-center justify-between p-2 bg-gray-50 rounded-lg">
-                <span className="text-sm text-gray-700">{type}</span>
+              <div key={type} className="flex items-center justify-between p-2 bg-muted/50 rounded-[0.625rem]">
+                <span className="text-sm text-foreground">{type}</span>
                 <Badge variant="outline" className="text-xs">
                   {Math.floor(Math.random() * 5) + 1} alerts
                 </Badge>
@@ -259,7 +259,7 @@ export function SecurityAlerts({ className = '' }: SecurityAlertsProps) {
         </div>
 
         {/* Insights */}
-        <div className="p-3 bg-blue-50 rounded-lg-lg">
+        <div className="p-3 bg-primary/10 rounded-[0.625rem]-lg">
           <h5 className="text-sm font-medium text-blue-900 mb-2">💡 Security Alert Insights</h5>
           <ul className="text-xs text-blue-800 space-y-1">
             <li>• Total alerts: {alertData.totalAlerts}</li>

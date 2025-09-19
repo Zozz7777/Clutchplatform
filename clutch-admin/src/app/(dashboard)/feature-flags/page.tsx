@@ -571,7 +571,7 @@ export default function FeatureFlagsPage() {
 
           <div className="space-y-4">
             {filteredFlags.map((flag) => (
-              <Card key={flag._id} className="hover:shadow-md transition-shadow">
+              <Card key={flag._id} className="hover:shadow-sm transition-shadow">
                 <CardContent className="p-6">
                   <div className="flex items-start justify-between">
                     <div className="flex-1">
@@ -589,7 +589,7 @@ export default function FeatureFlagsPage() {
                       </div>
                       <p className="text-muted-foreground mb-2">{flag.description}</p>
                       <p className="text-sm text-muted-foreground mb-4">
-                        <code className="bg-gray-100 px-2 py-1 rounded">{flag.key}</code>
+                        <code className="bg-muted px-2 py-1 rounded">{flag.key}</code>
                       </p>
                       
                       <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-4">
@@ -704,7 +704,7 @@ export default function FeatureFlagsPage() {
         <CardContent>
           <div className="space-y-4">
             {abTests.map((test) => (
-              <Card key={test._id} className="hover:shadow-md transition-shadow">
+              <Card key={test._id} className="hover:shadow-sm transition-shadow">
                 <CardContent className="p-6">
                   <div className="flex items-start justify-between">
                     <div className="flex-1">
@@ -743,7 +743,7 @@ export default function FeatureFlagsPage() {
                         <p className="text-sm font-medium">Variants:</p>
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
                           {test.variants.map((variant, index) => (
-                            <div key={index} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+                            <div key={index} className="flex items-center justify-between p-3 bg-muted/50 rounded-[0.625rem]">
                               <div>
                                 <p className="font-medium">{variant.name}</p>
                                 <p className="text-sm text-muted-foreground">

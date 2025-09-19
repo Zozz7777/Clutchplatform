@@ -136,7 +136,7 @@ export default function HealthPage() {
       case 'down':
         return <XCircle className="h-5 w-5 text-error" />;
       default:
-        return <Activity className="h-5 w-5 text-gray-500" />;
+        return <Activity className="h-5 w-5 text-muted-foreground" />;
     }
   };
 
@@ -162,7 +162,7 @@ export default function HealthPage() {
       case 'down':
         return <XCircle className="h-8 w-8 text-error" />;
       default:
-        return <Activity className="h-8 w-8 text-gray-500" />;
+        return <Activity className="h-8 w-8 text-muted-foreground" />;
     }
   };
 
@@ -275,11 +275,11 @@ export default function HealthPage() {
                     <div>
                       <p className="text-sm font-medium font-sans mb-1">Uptime</p>
                       <div className="flex items-center space-x-2">
-                        <div className="w-20 bg-gray-200 rounded-full h-2">
+                        <div className="w-20 bg-muted rounded-full h-2">
                           <div 
                             className={`h-2 rounded-full ${
-                              service.uptime >= 99 ? 'bg-green-500' :
-                              service.uptime >= 95 ? 'bg-yellow-500' : 'bg-red-500'
+                              service.uptime >= 99 ? 'bg-success/100' :
+                              service.uptime >= 95 ? 'bg-warning/100' : 'bg-destructive/100'
                             }`}
                             style={{ width: `${service.uptime}%` }}
                           ></div>
@@ -324,7 +324,7 @@ export default function HealthPage() {
                     { name: 'SendGrid', status: 'down', responseTime: 0 },
                     { name: 'MongoDB Atlas', status: 'healthy', responseTime: 25 }
                   ].map((dep, index) => (
-                    <div key={index} className="flex items-center justify-between p-3 border rounded-lg">
+                    <div key={index} className="flex items-center justify-between p-3 border rounded-[0.625rem]">
                       <div className="flex items-center space-x-3">
                         {getStatusIcon(dep.status)}
                         <div>
@@ -353,7 +353,7 @@ export default function HealthPage() {
                     { name: 'Queue Workers', status: 'healthy', instances: 5 },
                     { name: 'Background Jobs', status: 'healthy', instances: 2 }
                   ].map((service, index) => (
-                    <div key={index} className="flex items-center justify-between p-3 border rounded-lg">
+                    <div key={index} className="flex items-center justify-between p-3 border rounded-[0.625rem]">
                       <div className="flex items-center space-x-3">
                         {getStatusIcon(service.status)}
                         <div>
@@ -405,7 +405,7 @@ export default function HealthPage() {
                     status: 'resolved'
                   }
                 ].map((event, index) => (
-                  <div key={index} className="flex items-center justify-between p-4 border rounded-lg">
+                  <div key={index} className="flex items-center justify-between p-4 border rounded-[0.625rem]">
                     <div className="flex items-center space-x-3">
                       {getStatusIcon(event.status)}
                       <div>

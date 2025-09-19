@@ -142,8 +142,65 @@ export default function AIMaintenanceScheduling({ className }: AIMaintenanceSche
   const [filterPriority, setFilterPriority] = useState<string>('all');
 
   useEffect(() => {
-    const loadMaintenanceData = () => {
-      const mockTasks: MaintenanceTask[] = [
+    const loadMaintenanceData = async () => {
+      try {
+        // Load maintenance tasks from API
+        const tasksResponse = await fetch('/api/v1/fleet/maintenance/tasks', {
+          headers: {
+            'Authorization': `Bearer ${localStorage.getItem('token')}`,
+            'Content-Type': 'application/json'
+          }
+        });
+        
+        if (tasksResponse.ok) {
+          const tasksData = await tasksResponse.json();
+          setTasks(tasksData.data || []);
+        } else {
+          setTasks([]);
+        }
+
+        // Load maintenance schedules from API
+        const schedulesResponse = await fetch('/api/v1/fleet/maintenance/schedules', {
+          headers: {
+            'Authorization': `Bearer ${localStorage.getItem('token')}`,
+            'Content-Type': 'application/json'
+          }
+        });
+        
+        if (schedulesResponse.ok) {
+          const schedulesData = await schedulesResponse.json();
+          setSchedules(schedulesData.data || []);
+        } else {
+          setSchedules([]);
+        }
+
+        // Load technicians from API
+        const techniciansResponse = await fetch('/api/v1/fleet/technicians', {
+          headers: {
+            'Authorization': `Bearer ${localStorage.getItem('token')}`,
+            'Content-Type': 'application/json'
+          }
+        });
+        
+        if (techniciansResponse.ok) {
+          const techniciansData = await techniciansResponse.json();
+          setTechnicians(techniciansData.data || []);
+        } else {
+          setTechnicians([]);
+        }
+      } catch (error) {
+        console.error('Failed to load maintenance data:', error);
+        setTasks([]);
+        setSchedules([]);
+        setTechnicians([]);
+      }
+    };
+
+    loadMaintenanceData();
+  }, []);
+
+  // Keep mock data as fallback for development
+  const getMockTasks = (): MaintenanceTask[] => [
         {
           id: 'task-001',
           vehicleId: 'VH-001',
@@ -397,22 +454,22 @@ export default function AIMaintenanceScheduling({ className }: AIMaintenanceSche
 
   const getStatusColor = (status: string) => {
     switch (status) {
-      case 'scheduled': return 'bg-blue-100 text-blue-800';
-      case 'in_progress': return 'bg-yellow-100 text-yellow-800';
-      case 'completed': return 'bg-green-100 text-green-800';
-      case 'cancelled': return 'bg-gray-100 text-gray-800';
-      case 'overdue': return 'bg-red-100 text-red-800';
-      default: return 'bg-gray-100 text-gray-800';
+      case 'scheduled': return 'bg-primary/10 text-blue-800';
+      case 'in_progress': return 'bg-warning/10 text-yellow-800';
+      case 'completed': return 'bg-success/10 text-green-800';
+      case 'cancelled': return 'bg-muted text-gray-800';
+      case 'overdue': return 'bg-destructive/10 text-red-800';
+      default: return 'bg-muted text-gray-800';
     }
   };
 
   const getPriorityColor = (priority: string) => {
     switch (priority) {
-      case 'critical': return 'bg-red-500';
-      case 'high': return 'bg-orange-500';
-      case 'medium': return 'bg-yellow-500';
-      case 'low': return 'bg-green-500';
-      default: return 'bg-gray-500';
+      case 'critical': return 'bg-destructive/100';
+      case 'high': return 'bg-warning/100';
+      case 'medium': return 'bg-warning/100';
+      case 'low': return 'bg-success/100';
+      default: return 'bg-muted/500';
     }
   };
 
@@ -428,10 +485,10 @@ export default function AIMaintenanceScheduling({ className }: AIMaintenanceSche
 
   const getAvailabilityColor = (status: string) => {
     switch (status) {
-      case 'available': return 'bg-green-100 text-green-800';
-      case 'busy': return 'bg-yellow-100 text-yellow-800';
-      case 'offline': return 'bg-gray-100 text-gray-800';
-      default: return 'bg-gray-100 text-gray-800';
+      case 'available': return 'bg-success/10 text-green-800';
+      case 'busy': return 'bg-warning/10 text-yellow-800';
+      case 'offline': return 'bg-muted text-gray-800';
+      default: return 'bg-muted text-gray-800';
     }
   };
 
@@ -486,7 +543,7 @@ export default function AIMaintenanceScheduling({ className }: AIMaintenanceSche
                 variant="outline"
                 size="sm"
                 onClick={() => setIsAIOptimizationEnabled(!isAIOptimizationEnabled)}
-                className={isAIOptimizationEnabled ? 'bg-green-100 text-green-800' : ''}
+                className={isAIOptimizationEnabled ? 'bg-success/10 text-green-800' : ''}
               >
                 {isAIOptimizationEnabled ? <Zap className="h-4 w-4 mr-2" /> : <Zap className="h-4 w-4 mr-2" />}
                 AI Optimization
@@ -502,30 +559,30 @@ export default function AIMaintenanceScheduling({ className }: AIMaintenanceSche
         <CardContent className="space-y-6">
           {/* Maintenance Summary */}
           <div className="grid grid-cols-5 gap-4">
-            <div className="text-center p-3 bg-blue-50 rounded-lg">
-              <div className="text-2xl font-bold text-blue-600">{scheduledTasks}</div>
+            <div className="text-center p-3 bg-primary/10 rounded-[0.625rem]">
+              <div className="text-2xl font-bold text-primary">{scheduledTasks}</div>
               <div className="text-sm text-muted-foreground">Scheduled</div>
             </div>
-            <div className="text-center p-3 bg-yellow-50 rounded-lg">
-              <div className="text-2xl font-bold text-yellow-600">{inProgressTasks}</div>
+            <div className="text-center p-3 bg-warning/10 rounded-[0.625rem]">
+              <div className="text-2xl font-bold text-warning">{inProgressTasks}</div>
               <div className="text-sm text-muted-foreground">In Progress</div>
             </div>
-            <div className="text-center p-3 bg-green-50 rounded-lg">
-              <div className="text-2xl font-bold text-green-600">{completedTasks}</div>
+            <div className="text-center p-3 bg-success/10 rounded-[0.625rem]">
+              <div className="text-2xl font-bold text-success">{completedTasks}</div>
               <div className="text-sm text-muted-foreground">Completed</div>
             </div>
-            <div className="text-center p-3 bg-red-50 rounded-lg">
-              <div className="text-2xl font-bold text-red-600">{overdueTasks}</div>
+            <div className="text-center p-3 bg-destructive/10 rounded-[0.625rem]">
+              <div className="text-2xl font-bold text-destructive">{overdueTasks}</div>
               <div className="text-sm text-muted-foreground">Overdue</div>
             </div>
-            <div className="text-center p-3 bg-purple-50 rounded-lg">
-              <div className="text-2xl font-bold text-purple-600">{avgAIConfidence}%</div>
+            <div className="text-center p-3 bg-primary/10 rounded-[0.625rem]">
+              <div className="text-2xl font-bold text-primary">{avgAIConfidence}%</div>
               <div className="text-sm text-muted-foreground">AI Confidence</div>
             </div>
           </div>
 
           {/* AI Optimization Status */}
-          <div className="p-4 bg-gradient-to-r from-blue-50 to-purple-50 rounded-lg">
+          <div className="p-4 bg-gradient-to-r from-blue-50 to-purple-50 rounded-[0.625rem]">
             <div className="flex items-center justify-between">
               <div>
                 <h4 className="font-medium">AI Optimization Status</h4>
@@ -534,7 +591,7 @@ export default function AIMaintenanceScheduling({ className }: AIMaintenanceSche
                 </p>
               </div>
               <div className="text-right">
-                <div className="text-2xl font-bold text-purple-600">
+                <div className="text-2xl font-bold text-primary">
                   {schedules.reduce((sum, schedule) => sum + schedule.aiOptimization.efficiencyGain, 0) / schedules.length}%
                 </div>
                 <div className="text-sm text-muted-foreground">Efficiency Gain</div>
@@ -576,8 +633,8 @@ export default function AIMaintenanceScheduling({ className }: AIMaintenanceSche
               {filteredTasks.map((task) => (
                 <div
                   key={task.id}
-                  className={`p-3 border rounded-lg cursor-pointer transition-colors ${
-                    selectedTask?.id === task.id ? 'border-blue-500 bg-blue-50' : 'hover:bg-gray-50'
+                  className={`p-3 border rounded-[0.625rem] cursor-pointer transition-colors ${
+                    selectedTask?.id === task.id ? 'border-blue-500 bg-primary/10' : 'hover:bg-muted/50'
                   }`}
                   onClick={() => setSelectedTask(task)}
                 >
@@ -651,7 +708,7 @@ export default function AIMaintenanceScheduling({ className }: AIMaintenanceSche
                     <h5 className="font-medium mb-2">Required Parts</h5>
                     <div className="space-y-2">
                       {selectedTask.parts.map((part) => (
-                        <div key={part.id} className="flex items-center justify-between p-2 border rounded-lg">
+                        <div key={part.id} className="flex items-center justify-between p-2 border rounded-[0.625rem]">
                           <div>
                             <div className="font-medium text-sm">{part.name}</div>
                             <div className="text-xs text-muted-foreground">Qty: {part.quantity}</div>
@@ -699,7 +756,7 @@ export default function AIMaintenanceScheduling({ className }: AIMaintenanceSche
                     <h5 className="font-medium mb-2">Alternative Approaches</h5>
                     <div className="space-y-2">
                       {selectedTask.aiRecommendations.alternatives.map((alternative, index) => (
-                        <div key={index} className="p-2 border rounded-lg text-sm">
+                        <div key={index} className="p-2 border rounded-[0.625rem] text-sm">
                           {alternative}
                         </div>
                       ))}
@@ -742,7 +799,7 @@ export default function AIMaintenanceScheduling({ className }: AIMaintenanceSche
                     <h5 className="font-medium mb-2">Task History</h5>
                     <div className="space-y-2">
                       {selectedTask.history.map((entry) => (
-                        <div key={entry.id} className="p-2 border rounded-lg">
+                        <div key={entry.id} className="p-2 border rounded-[0.625rem]">
                           <div className="flex items-center justify-between mb-1">
                             <span className="font-medium text-sm">{entry.action}</span>
                             <span className="text-xs text-muted-foreground">{new Date(entry.timestamp).toLocaleString()}</span>

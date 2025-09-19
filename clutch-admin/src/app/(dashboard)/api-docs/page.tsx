@@ -23,6 +23,7 @@ import {
   Shield,
   Activity,
 } from "lucide-react";
+import { useTranslations } from "@/hooks/use-translations";
 
 interface APIEndpoint {
   _id: string;
@@ -52,6 +53,7 @@ interface APIEndpoint {
 }
 
 export default function APIDocsPage() {
+  const { t } = useTranslations();
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedCategory, setSelectedCategory] = useState<string>("all");
   const [selectedEndpoint, setSelectedEndpoint] = useState<APIEndpoint | null>(null);
@@ -247,9 +249,9 @@ export default function APIDocsPage() {
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold tracking-tight">API Documentation</h1>
+          <h1 className="text-3xl font-medium tracking-tight">{t('apiDocs.title')}</h1>
           <p className="text-muted-foreground">
-            Interactive documentation for all available API endpoints
+            {t('apiDocs.description')}
           </p>
         </div>
         <div className="flex items-center space-x-2">
@@ -272,7 +274,7 @@ export default function APIDocsPage() {
             <Code className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{mockEndpoints.length}</div>
+            <div className="text-2xl font-medium">{mockEndpoints.length}</div>
             <p className="text-xs text-muted-foreground">
               Available endpoints
             </p>
@@ -284,7 +286,7 @@ export default function APIDocsPage() {
             <Database className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">v1</div>
+            <div className="text-2xl font-medium">v1</div>
             <p className="text-xs text-muted-foreground">
               Current version
             </p>
@@ -377,7 +379,7 @@ export default function APIDocsPage() {
 
           <div className="space-y-4">
             {filteredEndpoints.map((endpoint) => (
-              <Card key={endpoint._id} className="hover:shadow-md transition-shadow">
+              <Card key={endpoint._id} className="hover:shadow-sm transition-shadow">
                 <CardContent className="p-6">
                   <div className="flex items-start justify-between">
                     <div className="flex-1">
@@ -439,8 +441,8 @@ export default function APIDocsPage() {
 
       {/* Endpoint Details Modal */}
       {selectedEndpoint && (
-        <Card className="fixed inset-4 z-50 overflow-auto bg-white border-2">
-          <CardHeader className="sticky top-0 bg-white border-b">
+        <Card className="fixed inset-4 z-50 overflow-auto bg-background border-2">
+          <CardHeader className="sticky top-0 bg-background border-b">
             <div className="flex items-center justify-between">
               <div>
                 <CardTitle className="flex items-center space-x-3">
@@ -465,11 +467,11 @@ export default function APIDocsPage() {
                   {Object.entries(selectedEndpoint.parameters).map(([type, params]) => (
                     <div key={type} className="mb-4">
                       <h4 className="font-medium capitalize mb-2">{type} Parameters</h4>
-                      <div className="bg-muted p-4 rounded-lg">
+                      <div className="bg-muted p-4 rounded-[0.625rem]">
                         {Object.entries(params).map(([name, param]) => (
                           <div key={name} className="mb-2">
                             <div className="flex items-center space-x-2">
-                              <code className="font-mono bg-white px-2 py-1 rounded border">
+                              <code className="font-mono bg-background px-2 py-1 rounded-[0.625rem] border border-border">
                                 {name}
                               </code>
                               <Badge variant={param.required ? "default" : "outline"}>
@@ -493,7 +495,7 @@ export default function APIDocsPage() {
                 <h3 className="text-lg font-semibold mb-3">Responses</h3>
                 <div className="space-y-3">
                   {Object.entries(selectedEndpoint.responses).map(([status, response]) => (
-                    <div key={status} className="border rounded-lg p-4">
+                    <div key={status} className="border border-border rounded-[0.625rem] p-4">
                       <div className="flex items-center space-x-2 mb-2">
                         <Badge className={status.startsWith("2") ? "bg-primary/10 text-primary-foreground" : "bg-destructive/10 text-destructive-foreground"}>
                           {status}
@@ -518,7 +520,7 @@ export default function APIDocsPage() {
                     {selectedEndpoint.examples.request && (
                       <div>
                         <h4 className="font-medium mb-2">Request</h4>
-                        <div className="bg-muted text-primary p-4 rounded-lg">
+                        <div className="bg-muted text-primary p-4 rounded-[0.625rem]">
                           <pre className="text-sm overflow-x-auto">
                             {selectedEndpoint.examples.request}
                           </pre>
@@ -537,7 +539,7 @@ export default function APIDocsPage() {
                     {selectedEndpoint.examples.response && (
                       <div>
                         <h4 className="font-medium mb-2">Response</h4>
-                        <div className="bg-muted text-secondary p-4 rounded-lg">
+                        <div className="bg-muted text-secondary p-4 rounded-[0.625rem]">
                           <pre className="text-sm overflow-x-auto">
                             {selectedEndpoint.examples.response}
                           </pre>

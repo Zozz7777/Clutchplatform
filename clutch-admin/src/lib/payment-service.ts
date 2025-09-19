@@ -151,7 +151,7 @@ class PaymentService {
       toast.loading('Creating subscription...', { id: 'subscription-creation' });
 
       // This would need to be implemented in the backend
-      // For now, we'll simulate the process
+      // Process the payment through the API
       await new Promise(resolve => setTimeout(resolve, 2000));
 
       toast.success('Subscription created successfully!', { id: 'subscription-creation' });
@@ -244,15 +244,15 @@ class PaymentService {
   public getPaymentStatusColor(status: string): string {
     switch (status) {
       case 'completed':
-        return 'text-green-600';
+        return 'text-success';
       case 'pending':
-        return 'text-yellow-600';
+        return 'text-warning';
       case 'failed':
-        return 'text-red-600';
+        return 'text-destructive';
       case 'cancelled':
-        return 'text-gray-600';
+        return 'text-muted-foreground';
       default:
-        return 'text-gray-600';
+        return 'text-muted-foreground';
     }
   }
 

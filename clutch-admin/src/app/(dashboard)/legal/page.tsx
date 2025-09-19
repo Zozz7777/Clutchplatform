@@ -6,6 +6,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useAuth } from "@/contexts/auth-context";
+import { useTranslations } from "@/hooks/use-translations";
 import { formatDate, formatRelativeTime } from "@/lib/utils";
 import { 
   Scale, 
@@ -100,6 +101,7 @@ export default function LegalPage() {
   const [activeTab, setActiveTab] = useState<"contracts" | "disputes">("contracts");
   const [isLoading, setIsLoading] = useState(true);
   const { hasPermission } = useAuth();
+  const { t } = useTranslations();
 
   useEffect(() => {
     const loadLegalData = async () => {
@@ -395,9 +397,9 @@ export default function LegalPage() {
       {/* Page Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold tracking-tight">Legal Management</h1>
+          <h1 className="text-3xl font-bold tracking-tight">{t('legal.title')}</h1>
           <p className="text-muted-foreground">
-            Manage contracts, disputes, and legal documentation
+            {t('legal.description')}
           </p>
         </div>
         {hasPermission("manage_legal") && (
@@ -484,7 +486,7 @@ export default function LegalPage() {
       </div>
 
       {/* Tabs */}
-      <div className="flex space-x-1 bg-muted p-1 rounded-lg w-fit">
+      <div className="flex space-x-1 bg-muted p-1 rounded-[0.625rem] w-fit">
         <Button
           variant={activeTab === "contracts" ? "default" : "ghost"}
           size="sm"
@@ -541,7 +543,7 @@ export default function LegalPage() {
 
             <div className="space-y-4">
               {filteredContracts.map((contract) => (
-                <div key={contract._id} className="flex items-center justify-between p-4 border rounded-lg hover:bg-muted/50 transition-colors">
+                <div key={contract._id} className="flex items-center justify-between p-4 border rounded-[0.625rem] hover:bg-muted/50 transition-colors">
                   <div className="flex items-center space-x-4">
                     <div className="flex items-center space-x-2">
                       {getTypeIcon(contract.type)}
@@ -599,7 +601,7 @@ export default function LegalPage() {
                         {contract.status === "draft" && (
                           <DropdownMenuItem 
                             onClick={() => handleContractAction(contract._id, "activate")}
-                            className="text-green-600"
+                            className="text-success"
                           >
                             <CheckCircle className="mr-2 h-4 w-4" />
                             Activate Contract
@@ -608,7 +610,7 @@ export default function LegalPage() {
                         {contract.status === "active" && (
                           <DropdownMenuItem 
                             onClick={() => handleContractAction(contract._id, "renew")}
-                            className="text-blue-600"
+                            className="text-primary"
                           >
                             <Calendar className="mr-2 h-4 w-4" />
                             Renew Contract
@@ -617,7 +619,7 @@ export default function LegalPage() {
                         {contract.status === "active" && (
                           <DropdownMenuItem 
                             onClick={() => handleContractAction(contract._id, "terminate")}
-                            className="text-red-600"
+                            className="text-destructive"
                           >
                             <X className="mr-2 h-4 w-4" />
                             Terminate Contract
@@ -678,7 +680,7 @@ export default function LegalPage() {
 
             <div className="space-y-4">
               {filteredDisputes.map((dispute) => (
-                <div key={dispute._id} className="flex items-center justify-between p-4 border rounded-lg hover:bg-muted/50 transition-colors">
+                <div key={dispute._id} className="flex items-center justify-between p-4 border rounded-[0.625rem] hover:bg-muted/50 transition-colors">
                   <div className="flex items-center space-x-4">
                     <div className="flex items-center space-x-2">
                       <Gavel className="h-5 w-5 text-muted-foreground" />
@@ -737,28 +739,28 @@ export default function LegalPage() {
                         <DropdownMenuSeparator />
                         <DropdownMenuItem 
                           onClick={() => handleDisputeAction(dispute._id, "assign")}
-                          className="text-blue-600"
+                          className="text-primary"
                         >
                           <User className="mr-2 h-4 w-4" />
                           Assign to Lawyer
                         </DropdownMenuItem>
                         <DropdownMenuItem 
                           onClick={() => handleDisputeAction(dispute._id, "resolve")}
-                          className="text-green-600"
+                          className="text-success"
                         >
                           <CheckCircle className="mr-2 h-4 w-4" />
                           Mark Resolved
                         </DropdownMenuItem>
                         <DropdownMenuItem 
                           onClick={() => handleDisputeAction(dispute._id, "escalate")}
-                          className="text-red-600"
+                          className="text-destructive"
                         >
                           <AlertTriangle className="mr-2 h-4 w-4" />
                           Escalate
                         </DropdownMenuItem>
                         <DropdownMenuItem 
                           onClick={() => handleDisputeAction(dispute._id, "close")}
-                          className="text-gray-600"
+                          className="text-muted-foreground"
                         >
                           <X className="mr-2 h-4 w-4" />
                           Close Dispute

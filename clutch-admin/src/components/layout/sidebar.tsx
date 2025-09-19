@@ -41,7 +41,7 @@ export function Sidebar({ isCollapsed, onToggle }: SidebarProps) {
     return pathname.startsWith(href);
   };
 
-  const hasAnyPermission = (permissions: string[]) => {
+  const hasAnyPermission = (permissions: readonly string[]) => {
     return permissions.some(permission => hasPermission(permission));
   };
 
@@ -70,7 +70,7 @@ export function Sidebar({ isCollapsed, onToggle }: SidebarProps) {
                   parent.innerHTML = '<div class="text-sm font-bold text-primary">C</div>';
                 }
               }}
-              onLoad={() => console.log('Logo loaded successfully')}
+              onLoad={() => {}}
             />
           </div>
         ) : (
@@ -90,7 +90,7 @@ export function Sidebar({ isCollapsed, onToggle }: SidebarProps) {
                     parent.innerHTML = '<div class="text-sm font-bold text-primary">C</div>';
                   }
                 }}
-                onLoad={() => console.log('Logo loaded successfully')}
+                onLoad={() => {}}
               />
             </div>
             <span className="text-xl font-bold text-foreground font-sans">{t('sidebar.clutchAdmin')}</span>
@@ -165,7 +165,7 @@ export function Sidebar({ isCollapsed, onToggle }: SidebarProps) {
                 {/* Children */}
                 {hasChildren && !isCollapsed && isExpanded && (
                   <div className="ml-4 mt-1 space-y-1">
-                    {item.children!.map((child) => {
+                    {item.children!.map((child: any) => {
                       const childHasPermission = hasAnyPermission(child.permissions);
                       if (!childHasPermission) return null;
 

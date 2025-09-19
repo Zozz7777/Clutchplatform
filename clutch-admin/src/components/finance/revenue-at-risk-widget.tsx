@@ -388,21 +388,21 @@ export default function RevenueAtRiskWidget({ className }: RevenueAtRiskWidgetPr
 
   const getSeverityColor = (severity: string) => {
     switch (severity) {
-      case 'critical': return 'bg-red-500';
-      case 'high': return 'bg-orange-500';
-      case 'medium': return 'bg-yellow-500';
-      case 'low': return 'bg-green-500';
-      default: return 'bg-gray-500';
+      case 'critical': return 'bg-destructive/100';
+      case 'high': return 'bg-warning/100';
+      case 'medium': return 'bg-warning/100';
+      case 'low': return 'bg-success/100';
+      default: return 'bg-muted/500';
     }
   };
 
   const getStatusColor = (status: string) => {
     switch (status) {
-      case 'active': return 'bg-red-100 text-red-800';
-      case 'monitoring': return 'bg-yellow-100 text-yellow-800';
-      case 'mitigated': return 'bg-blue-100 text-blue-800';
-      case 'resolved': return 'bg-green-100 text-green-800';
-      default: return 'bg-gray-100 text-gray-800';
+      case 'active': return 'bg-destructive/10 text-red-800';
+      case 'monitoring': return 'bg-warning/10 text-yellow-800';
+      case 'mitigated': return 'bg-primary/10 text-blue-800';
+      case 'resolved': return 'bg-success/10 text-green-800';
+      default: return 'bg-muted text-gray-800';
     }
   };
 
@@ -420,20 +420,20 @@ export default function RevenueAtRiskWidget({ className }: RevenueAtRiskWidgetPr
 
   const getTrendIcon = (trend: string) => {
     switch (trend) {
-      case 'improving': return <ArrowUp className="h-4 w-4 text-green-500" />;
-      case 'declining': return <ArrowDown className="h-4 w-4 text-red-500" />;
-      case 'stable': return <Minus className="h-4 w-4 text-blue-500" />;
-      default: return <Minus className="h-4 w-4 text-gray-500" />;
+      case 'improving': return <ArrowUp className="h-4 w-4 text-success" />;
+      case 'declining': return <ArrowDown className="h-4 w-4 text-destructive" />;
+      case 'stable': return <Minus className="h-4 w-4 text-primary" />;
+      default: return <Minus className="h-4 w-4 text-muted-foreground" />;
     }
   };
 
   const getTimeHorizonColor = (horizon: string) => {
     switch (horizon) {
-      case 'immediate': return 'bg-red-100 text-red-800';
-      case 'short_term': return 'bg-orange-100 text-orange-800';
-      case 'medium_term': return 'bg-yellow-100 text-yellow-800';
-      case 'long_term': return 'bg-green-100 text-green-800';
-      default: return 'bg-gray-100 text-gray-800';
+      case 'immediate': return 'bg-destructive/10 text-red-800';
+      case 'short_term': return 'bg-warning/10 text-orange-800';
+      case 'medium_term': return 'bg-warning/10 text-yellow-800';
+      case 'long_term': return 'bg-success/10 text-green-800';
+      default: return 'bg-muted text-gray-800';
     }
   };
 
@@ -475,7 +475,7 @@ export default function RevenueAtRiskWidget({ className }: RevenueAtRiskWidgetPr
                 variant="outline"
                 size="sm"
                 onClick={() => setIsMonitoring(!isMonitoring)}
-                className={isMonitoring ? 'bg-green-100 text-green-800' : ''}
+                className={isMonitoring ? 'bg-success/10 text-green-800' : ''}
               >
                 {isMonitoring ? <Eye className="h-4 w-4 mr-2" /> : <EyeOff className="h-4 w-4 mr-2" />}
                 {isMonitoring ? 'Monitoring' : 'Paused'}
@@ -494,20 +494,20 @@ export default function RevenueAtRiskWidget({ className }: RevenueAtRiskWidgetPr
         <CardContent className="space-y-6">
           {/* Risk Summary */}
           <div className="grid grid-cols-4 gap-4">
-            <div className="text-center p-3 bg-red-50 rounded-lg">
-              <div className="text-2xl font-bold text-red-600">{criticalRisks}</div>
+            <div className="text-center p-3 bg-destructive/10 rounded-[0.625rem]">
+              <div className="text-2xl font-bold text-destructive">{criticalRisks}</div>
               <div className="text-sm text-muted-foreground">Critical Risks</div>
             </div>
-            <div className="text-center p-3 bg-orange-50 rounded-lg">
-              <div className="text-2xl font-bold text-orange-600">{activeRisks}</div>
+            <div className="text-center p-3 bg-warning/10 rounded-[0.625rem]">
+              <div className="text-2xl font-bold text-warning">{activeRisks}</div>
               <div className="text-sm text-muted-foreground">Active Risks</div>
             </div>
-            <div className="text-center p-3 bg-purple-50 rounded-lg">
-              <div className="text-2xl font-bold text-purple-600">{avgRiskScore}</div>
+            <div className="text-center p-3 bg-primary/10 rounded-[0.625rem]">
+              <div className="text-2xl font-bold text-primary">{avgRiskScore}</div>
               <div className="text-sm text-muted-foreground">Avg Risk Score</div>
             </div>
-            <div className="text-center p-3 bg-yellow-50 rounded-lg">
-              <div className="text-2xl font-bold text-yellow-600">{formatCurrency(totalAtRisk)}</div>
+            <div className="text-center p-3 bg-warning/10 rounded-[0.625rem]">
+              <div className="text-2xl font-bold text-warning">{formatCurrency(totalAtRisk)}</div>
               <div className="text-sm text-muted-foreground">Total at Risk</div>
             </div>
           </div>
@@ -517,12 +517,12 @@ export default function RevenueAtRiskWidget({ className }: RevenueAtRiskWidgetPr
             <h4 className="font-medium mb-3">Revenue Projections</h4>
             <div className="space-y-3">
               {revenueProjections.map((projection) => (
-                <div key={projection.period} className="p-3 border rounded-lg">
+                <div key={projection.period} className="p-3 border rounded-[0.625rem]">
                   <div className="flex items-center justify-between mb-2">
                     <span className="font-medium">{projection.period}</span>
                     <div className="flex items-center gap-2">
                       <span className="text-sm font-medium">{projection.confidence}% confidence</span>
-                      <Badge className="bg-red-100 text-red-800">
+                      <Badge className="bg-destructive/10 text-red-800">
                         {formatCurrency(projection.atRisk)} at risk
                       </Badge>
                     </div>
@@ -534,11 +534,11 @@ export default function RevenueAtRiskWidget({ className }: RevenueAtRiskWidgetPr
                     </div>
                     <div>
                       <span className="text-muted-foreground">Optimistic:</span>
-                      <span className="font-medium ml-2 text-green-600">{formatCurrency(projection.optimistic)}</span>
+                      <span className="font-medium ml-2 text-success">{formatCurrency(projection.optimistic)}</span>
                     </div>
                     <div>
                       <span className="text-muted-foreground">Pessimistic:</span>
-                      <span className="font-medium ml-2 text-red-600">{formatCurrency(projection.pessimistic)}</span>
+                      <span className="font-medium ml-2 text-destructive">{formatCurrency(projection.pessimistic)}</span>
                     </div>
                   </div>
                 </div>
@@ -580,8 +580,8 @@ export default function RevenueAtRiskWidget({ className }: RevenueAtRiskWidgetPr
               {filteredRisks.map((risk) => (
                 <div
                   key={risk.id}
-                  className={`p-3 border rounded-lg cursor-pointer transition-colors ${
-                    selectedRisk?.id === risk.id ? 'border-blue-500 bg-blue-50' : 'hover:bg-gray-50'
+                  className={`p-3 border rounded-[0.625rem] cursor-pointer transition-colors ${
+                    selectedRisk?.id === risk.id ? 'border-blue-500 bg-primary/10' : 'hover:bg-muted/50'
                   }`}
                   onClick={() => setSelectedRisk(risk)}
                 >
@@ -687,7 +687,7 @@ export default function RevenueAtRiskWidget({ className }: RevenueAtRiskWidgetPr
                     <h5 className="font-medium mb-2">Risk Indicators</h5>
                     <div className="space-y-2">
                       {selectedRisk.indicators.map((indicator, index) => (
-                        <div key={index} className="p-3 border rounded-lg">
+                        <div key={index} className="p-3 border rounded-[0.625rem]">
                           <div className="flex items-center justify-between mb-2">
                             <span className="font-medium">{indicator.metric}</span>
                             <div className="flex items-center gap-2">
@@ -710,7 +710,7 @@ export default function RevenueAtRiskWidget({ className }: RevenueAtRiskWidgetPr
                     <h5 className="font-medium mb-2">Risk Scenarios</h5>
                     <div className="space-y-2">
                       {selectedRisk.scenarios.map((scenario, index) => (
-                        <div key={index} className="p-3 border rounded-lg">
+                        <div key={index} className="p-3 border rounded-[0.625rem]">
                           <div className="flex items-center justify-between mb-2">
                             <span className="font-medium">{scenario.scenario}</span>
                             <div className="flex items-center gap-2">
@@ -733,7 +733,7 @@ export default function RevenueAtRiskWidget({ className }: RevenueAtRiskWidgetPr
                         <h6 className="font-medium mb-2">Actions</h6>
                         <div className="space-y-1">
                           {selectedRisk.mitigation.actions.map((action, index) => (
-                            <div key={index} className="p-2 border rounded-lg text-sm">
+                            <div key={index} className="p-2 border rounded-[0.625rem] text-sm">
                               {action}
                             </div>
                           ))}

@@ -244,7 +244,7 @@ export class ErrorHandler {
         // Wait before retrying (exponential backoff)
         if (attempt < maxRetries) {
           const delay = Math.pow(2, attempt) * 1000; // 2s, 4s, 8s
-          console.log(`[${context}] Retry attempt ${attempt}/${maxRetries} in ${delay}ms`);
+          // Retry attempt
           await new Promise(resolve => setTimeout(resolve, delay));
         }
       }

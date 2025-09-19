@@ -437,21 +437,21 @@ export default function PredictiveKPIAlerts({ className }: PredictiveKPIAlertsPr
 
   const getSeverityColor = (severity: string) => {
     switch (severity) {
-      case 'critical': return 'bg-red-500';
-      case 'high': return 'bg-orange-500';
-      case 'medium': return 'bg-yellow-500';
-      case 'low': return 'bg-green-500';
-      default: return 'bg-gray-500';
+      case 'critical': return 'bg-destructive/100';
+      case 'high': return 'bg-warning/100';
+      case 'medium': return 'bg-warning/100';
+      case 'low': return 'bg-success/100';
+      default: return 'bg-muted/500';
     }
   };
 
   const getStatusColor = (status: string) => {
     switch (status) {
-      case 'active': return 'bg-red-100 text-red-800';
-      case 'acknowledged': return 'bg-yellow-100 text-yellow-800';
-      case 'resolved': return 'bg-green-100 text-green-800';
-      case 'false_positive': return 'bg-gray-100 text-gray-800';
-      default: return 'bg-gray-100 text-gray-800';
+      case 'active': return 'bg-destructive/10 text-red-800';
+      case 'acknowledged': return 'bg-warning/10 text-yellow-800';
+      case 'resolved': return 'bg-success/10 text-green-800';
+      case 'false_positive': return 'bg-muted text-gray-800';
+      default: return 'bg-muted text-gray-800';
     }
   };
 
@@ -469,10 +469,10 @@ export default function PredictiveKPIAlerts({ className }: PredictiveKPIAlertsPr
 
   const getTrendIcon = (trend: string) => {
     switch (trend) {
-      case 'increasing': return <ArrowUp className="h-4 w-4 text-red-500" />;
-      case 'decreasing': return <ArrowDown className="h-4 w-4 text-green-500" />;
-      case 'stable': return <Minus className="h-4 w-4 text-blue-500" />;
-      default: return <Minus className="h-4 w-4 text-gray-500" />;
+      case 'increasing': return <ArrowUp className="h-4 w-4 text-destructive" />;
+      case 'decreasing': return <ArrowDown className="h-4 w-4 text-success" />;
+      case 'stable': return <Minus className="h-4 w-4 text-primary" />;
+      default: return <Minus className="h-4 w-4 text-muted-foreground" />;
     }
   };
 
@@ -488,10 +488,10 @@ export default function PredictiveKPIAlerts({ className }: PredictiveKPIAlertsPr
 
   const getImpactColor = (impact: string) => {
     switch (impact) {
-      case 'high': return 'bg-red-100 text-red-800';
-      case 'medium': return 'bg-yellow-100 text-yellow-800';
-      case 'low': return 'bg-green-100 text-green-800';
-      default: return 'bg-gray-100 text-gray-800';
+      case 'high': return 'bg-destructive/10 text-red-800';
+      case 'medium': return 'bg-warning/10 text-yellow-800';
+      case 'low': return 'bg-success/10 text-green-800';
+      default: return 'bg-muted text-gray-800';
     }
   };
 
@@ -537,7 +537,7 @@ export default function PredictiveKPIAlerts({ className }: PredictiveKPIAlertsPr
                 variant="outline"
                 size="sm"
                 onClick={() => setIsMonitoring(!isMonitoring)}
-                className={isMonitoring ? 'bg-green-100 text-green-800' : ''}
+                className={isMonitoring ? 'bg-success/10 text-green-800' : ''}
               >
                 {isMonitoring ? <Play className="h-4 w-4 mr-2" /> : <Pause className="h-4 w-4 mr-2" />}
                 {isMonitoring ? 'Monitoring' : 'Paused'}
@@ -556,20 +556,20 @@ export default function PredictiveKPIAlerts({ className }: PredictiveKPIAlertsPr
         <CardContent className="space-y-6">
           {/* Alerts Summary */}
           <div className="grid grid-cols-4 gap-4">
-            <div className="text-center p-3 bg-red-50 rounded-lg">
-              <div className="text-2xl font-bold text-red-600">{activeAlerts}</div>
+            <div className="text-center p-3 bg-destructive/10 rounded-[0.625rem]">
+              <div className="text-2xl font-bold text-destructive">{activeAlerts}</div>
               <div className="text-sm text-muted-foreground">Active Alerts</div>
             </div>
-            <div className="text-center p-3 bg-orange-50 rounded-lg">
-              <div className="text-2xl font-bold text-orange-600">{criticalAlerts}</div>
+            <div className="text-center p-3 bg-warning/10 rounded-[0.625rem]">
+              <div className="text-2xl font-bold text-warning">{criticalAlerts}</div>
               <div className="text-sm text-muted-foreground">Critical Alerts</div>
             </div>
-            <div className="text-center p-3 bg-purple-50 rounded-lg">
-              <div className="text-2xl font-bold text-purple-600">{avgConfidence}%</div>
+            <div className="text-center p-3 bg-primary/10 rounded-[0.625rem]">
+              <div className="text-2xl font-bold text-primary">{avgConfidence}%</div>
               <div className="text-sm text-muted-foreground">Avg Confidence</div>
             </div>
-            <div className="text-center p-3 bg-yellow-50 rounded-lg">
-              <div className="text-2xl font-bold text-yellow-600">{formatCurrency(totalFinancialImpact)}</div>
+            <div className="text-center p-3 bg-warning/10 rounded-[0.625rem]">
+              <div className="text-2xl font-bold text-warning">{formatCurrency(totalFinancialImpact)}</div>
               <div className="text-sm text-muted-foreground">Total Impact</div>
             </div>
           </div>
@@ -597,8 +597,8 @@ export default function PredictiveKPIAlerts({ className }: PredictiveKPIAlertsPr
               {filteredKPIs.map((kpi) => (
                 <div
                   key={kpi.id}
-                  className={`p-3 border rounded-lg cursor-pointer transition-colors ${
-                    selectedKPI?.id === kpi.id ? 'border-blue-500 bg-blue-50' : 'hover:bg-gray-50'
+                  className={`p-3 border rounded-[0.625rem] cursor-pointer transition-colors ${
+                    selectedKPI?.id === kpi.id ? 'border-blue-500 bg-primary/10' : 'hover:bg-muted/50'
                   }`}
                   onClick={() => setSelectedKPI(kpi)}
                 >
@@ -619,7 +619,7 @@ export default function PredictiveKPIAlerts({ className }: PredictiveKPIAlertsPr
                         {kpi.confidence}% confidence
                       </div>
                       {kpi.alerts.filter(alert => alert.status === 'active').length > 0 && (
-                        <Badge className="bg-red-500">
+                        <Badge className="bg-destructive/100">
                           {kpi.alerts.filter(alert => alert.status === 'active').length} alerts
                         </Badge>
                       )}
@@ -655,7 +655,7 @@ export default function PredictiveKPIAlerts({ className }: PredictiveKPIAlertsPr
 
             <div className="space-y-3">
               {filteredAlerts.map((alert) => (
-                <div key={alert.id} className="p-3 border rounded-lg">
+                <div key={alert.id} className="p-3 border rounded-[0.625rem]">
                   <div className="flex items-center justify-between mb-2">
                     <div className="flex items-center gap-3">
                       {getAlertTypeIcon(alert.type)}
@@ -811,7 +811,7 @@ export default function PredictiveKPIAlerts({ className }: PredictiveKPIAlertsPr
                     <h5 className="font-medium mb-2">Historical Data</h5>
                     <div className="space-y-2">
                       {selectedKPI.historicalData.map((data, index) => (
-                        <div key={index} className="flex items-center justify-between p-2 border rounded-lg text-sm">
+                        <div key={index} className="flex items-center justify-between p-2 border rounded-[0.625rem] text-sm">
                           <span>{new Date(data.timestamp).toLocaleString()}</span>
                           <div className="flex items-center gap-2">
                             <span className="font-medium">{data.value}{selectedKPI.unit}</span>
@@ -832,7 +832,7 @@ export default function PredictiveKPIAlerts({ className }: PredictiveKPIAlertsPr
                     <h5 className="font-medium mb-2">Active Alerts</h5>
                     <div className="space-y-2">
                       {selectedKPI.alerts.filter(alert => alert.status === 'active').map((alert) => (
-                        <div key={alert.id} className="p-3 border rounded-lg">
+                        <div key={alert.id} className="p-3 border rounded-[0.625rem]">
                           <div className="flex items-center justify-between mb-2">
                             <div className="flex items-center gap-2">
                               {getAlertTypeIcon(alert.type)}

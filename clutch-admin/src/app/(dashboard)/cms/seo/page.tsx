@@ -37,14 +37,14 @@ export default function SEOCMSPage() {
   const [selectedPage, setSelectedPage] = useState<SEOData | null>(null);
 
   const getScoreColor = (score: number) => {
-    if (score >= 90) return 'text-green-500';
-    if (score >= 70) return 'text-yellow-500';
-    return 'text-red-500';
+    if (score >= 90) return 'text-success';
+    if (score >= 70) return 'text-warning';
+    return 'text-destructive';
   };
 
   const getScoreBadge = (score: number) => {
-    if (score >= 90) return <Badge variant="default" className="bg-green-500">Excellent</Badge>;
-    if (score >= 70) return <Badge variant="default" className="bg-yellow-500">Good</Badge>;
+    if (score >= 90) return <Badge variant="default" className="bg-success/100">Excellent</Badge>;
+    if (score >= 70) return <Badge variant="default" className="bg-warning/100">Good</Badge>;
     return <Badge variant="destructive">Needs Work</Badge>;
   };
   
@@ -192,11 +192,11 @@ export default function SEOCMSPage() {
                     <div key={index} className="flex items-center justify-between">
                       <span className="text-sm font-sans">{page.page}</span>
                       <div className="flex items-center space-x-2">
-                        <div className="w-20 bg-gray-200 rounded-full h-2">
+                        <div className="w-20 bg-muted rounded-full h-2">
                           <div 
                             className={`h-2 rounded-full ${
-                              page.score >= 90 ? 'bg-green-500' :
-                              page.score >= 70 ? 'bg-yellow-500' : 'bg-red-500'
+                              page.score >= 90 ? 'bg-success/100' :
+                              page.score >= 70 ? 'bg-warning/100' : 'bg-destructive/100'
                             }`}
                             style={{ width: `${page.score}%` }}
                           ></div>
@@ -290,10 +290,10 @@ export default function SEOCMSPage() {
                   
                   {page.issues.length > 0 && (
                     <div>
-                      <label className="text-sm font-medium font-sans text-red-600">Issues</label>
+                      <label className="text-sm font-medium font-sans text-destructive">Issues</label>
                       <div className="space-y-1">
                         {page.issues.map((issue, issueIndex) => (
-                          <div key={issueIndex} className="flex items-center space-x-2 text-sm text-red-600">
+                          <div key={issueIndex} className="flex items-center space-x-2 text-sm text-destructive">
                             <AlertTriangle className="h-4 w-4" />
                             <span className="font-sans">{issue}</span>
                           </div>
@@ -304,10 +304,10 @@ export default function SEOCMSPage() {
 
                   {page.suggestions.length > 0 && (
                     <div>
-                      <label className="text-sm font-medium font-sans text-blue-600">Suggestions</label>
+                      <label className="text-sm font-medium font-sans text-primary">Suggestions</label>
                       <div className="space-y-1">
                         {page.suggestions.map((suggestion, suggestionIndex) => (
-                          <div key={suggestionIndex} className="flex items-center space-x-2 text-sm text-blue-600">
+                          <div key={suggestionIndex} className="flex items-center space-x-2 text-sm text-primary">
                             <CheckCircle className="h-4 w-4" />
                             <span className="font-sans">{suggestion}</span>
                           </div>

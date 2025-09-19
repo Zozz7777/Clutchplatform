@@ -87,7 +87,7 @@ export function ComplianceRadar({ className = '' }: ComplianceRadarProps) {
 
   if (isLoading) {
     return (
-      <Card className={`${className} shadow-sm`}>
+      <Card className={`${className} shadow-2xs`}>
         <CardHeader>
           <CardTitle className="flex items-center space-x-2 text-card-foreground font-medium">
             <Shield className="h-5 w-5 text-primary" />
@@ -108,7 +108,7 @@ export function ComplianceRadar({ className = '' }: ComplianceRadarProps) {
 
   if (!compliance) {
     return (
-      <Card className={`${className} shadow-sm`}>
+      <Card className={`${className} shadow-2xs`}>
         <CardHeader>
           <CardTitle className="flex items-center space-x-2 text-card-foreground font-medium">
             <Shield className="h-5 w-5 text-primary" />
@@ -124,7 +124,7 @@ export function ComplianceRadar({ className = '' }: ComplianceRadarProps) {
   const daysUntilAudit = getDaysUntilAudit();
 
   return (
-    <Card className={`${className} shadow-sm`}>
+    <Card className={`${className} shadow-2xs`}>
       <CardHeader>
         <CardTitle className="flex items-center space-x-2 text-card-foreground font-medium">
           <Shield className="h-5 w-5 text-primary" />

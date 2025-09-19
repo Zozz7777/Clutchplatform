@@ -2,6 +2,9 @@ import { realApi } from "./real-api";
 import { apiService } from "./api";
 import { type KPIMetric, type FleetVehicle, type Notification, type User } from "./types";
 
+// Export types for use in other components
+export type { KPIMetric, FleetVehicle, Notification, User };
+
 // Production API service that only uses real APIs
 export class ProductionApiService {
   

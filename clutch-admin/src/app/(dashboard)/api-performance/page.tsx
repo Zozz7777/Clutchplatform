@@ -42,7 +42,6 @@ interface ApiPerformanceData {
 export default function ApiPerformancePage() {
   const [performanceData, setPerformanceData] = useState<ApiPerformanceData | null>(null);
   const [isLoading, setIsLoading] = useState(true);
-  const [isUsingMock, setIsUsingMock] = useState(false);
   const { hasPermission } = useAuth();
 
   useEffect(() => {
@@ -61,7 +60,6 @@ export default function ApiPerformancePage() {
             uptime: 0
           });
         }
-        setIsUsingMock(false);
       } catch (error) {
         logger.error("Failed to load API performance data:", error);
         setPerformanceData({
@@ -71,7 +69,6 @@ export default function ApiPerformancePage() {
           errorRate: 0,
           uptime: 0
         });
-        setIsUsingMock(false);
       } finally {
         setIsLoading(false);
       }
@@ -84,7 +81,6 @@ export default function ApiPerformancePage() {
     return () => clearInterval(interval);
   }, []);
 
-  // Mock data function removed - using real API only
 
   const getStatusColor = (status: string) => {
     switch (status) {
@@ -102,11 +98,11 @@ export default function ApiPerformancePage() {
   const getStatusIcon = (status: string) => {
     switch (status) {
       case "healthy":
-        return <CheckCircle className="h-4 w-4 text-green-500" />;
+        return <CheckCircle className="h-4 w-4 text-success" />;
       case "degraded":
-        return <AlertTriangle className="h-4 w-4 text-yellow-500" />;
+        return <AlertTriangle className="h-4 w-4 text-warning" />;
       case "down":
-        return <AlertTriangle className="h-4 w-4 text-red-500" />;
+        return <AlertTriangle className="h-4 w-4 text-destructive" />;
       default:
         return <Activity className="h-4 w-4" />;
     }
@@ -158,11 +154,6 @@ export default function ApiPerformancePage() {
           </p>
         </div>
         <div className="flex items-center space-x-2">
-          {isUsingMock && (
-            <Badge variant="warning" className="text-xs">
-              Demo Data
-            </Badge>
-          )}
           <Button variant="outline" size="sm">
             <Activity className="mr-2 h-4 w-4" />
             Refresh
@@ -244,7 +235,7 @@ export default function ApiPerformancePage() {
         <CardContent>
           <div className="space-y-4">
             {performanceData.endpoints.map((endpoint, index) => (
-              <div key={index} className="flex items-center justify-between p-4 border rounded-lg hover:bg-muted/50 transition-colors">
+              <div key={index} className="flex items-center justify-between p-4 border rounded-[0.625rem] hover:bg-muted/50 transition-colors">
                 <div className="flex items-center space-x-4">
                   <div className="flex items-center space-x-2">
                     {getStatusIcon(endpoint.status)}
@@ -272,7 +263,7 @@ export default function ApiPerformancePage() {
                   </div>
                   
                   <div className="text-center">
-                    <p className={`text-sm font-medium ${endpoint.errorRate > 2 ? "text-red-500" : endpoint.errorRate > 1 ? "text-yellow-500" : "text-green-500"}`}>
+                    <p className={`text-sm font-medium ${endpoint.errorRate > 2 ? "text-destructive" : endpoint.errorRate > 1 ? "text-warning" : "text-success"}`}>
                       {endpoint.errorRate.toFixed(2)}%
                     </p>
                     <p className="text-xs text-muted-foreground">Error Rate</p>

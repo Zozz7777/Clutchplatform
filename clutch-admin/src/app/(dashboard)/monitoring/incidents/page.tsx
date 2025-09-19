@@ -84,15 +84,15 @@ export default function IncidentsPage() {
   const getSeverityIcon = (severity: string) => {
     switch (severity) {
       case 'critical':
-        return <XCircle className="h-5 w-5 text-red-500" />;
+        return <XCircle className="h-5 w-5 text-destructive" />;
       case 'high':
-        return <AlertTriangle className="h-5 w-5 text-orange-500" />;
+        return <AlertTriangle className="h-5 w-5 text-warning" />;
       case 'medium':
-        return <AlertTriangle className="h-5 w-5 text-yellow-500" />;
+        return <AlertTriangle className="h-5 w-5 text-warning" />;
       case 'low':
-        return <AlertTriangle className="h-5 w-5 text-blue-500" />;
+        return <AlertTriangle className="h-5 w-5 text-primary" />;
       default:
-        return <AlertTriangle className="h-5 w-5 text-gray-500" />;
+        return <AlertTriangle className="h-5 w-5 text-muted-foreground" />;
     }
   };
 
@@ -101,11 +101,11 @@ export default function IncidentsPage() {
       case 'critical':
         return <Badge variant="destructive">Critical</Badge>;
       case 'high':
-        return <Badge variant="default" className="bg-orange-500">High</Badge>;
+        return <Badge variant="default" className="bg-warning/100">High</Badge>;
       case 'medium':
-        return <Badge variant="default" className="bg-yellow-500">Medium</Badge>;
+        return <Badge variant="default" className="bg-warning/100">Medium</Badge>;
       case 'low':
-        return <Badge variant="default" className="bg-blue-500">Low</Badge>;
+        return <Badge variant="default" className="bg-primary/100">Low</Badge>;
       default:
         return <Badge variant="outline">Unknown</Badge>;
     }
@@ -116,9 +116,9 @@ export default function IncidentsPage() {
       case 'open':
         return <Badge variant="destructive">Open</Badge>;
       case 'investigating':
-        return <Badge variant="default" className="bg-yellow-500">Investigating</Badge>;
+        return <Badge variant="default" className="bg-warning/100">Investigating</Badge>;
       case 'resolved':
-        return <Badge variant="default" className="bg-green-500">Resolved</Badge>;
+        return <Badge variant="default" className="bg-success/100">Resolved</Badge>;
       case 'closed':
         return <Badge variant="secondary">Closed</Badge>;
       default:
@@ -129,15 +129,15 @@ export default function IncidentsPage() {
   const getStatusIcon = (status: string) => {
     switch (status) {
       case 'open':
-        return <XCircle className="h-4 w-4 text-red-500" />;
+        return <XCircle className="h-4 w-4 text-destructive" />;
       case 'investigating':
-        return <Clock className="h-4 w-4 text-yellow-500" />;
+        return <Clock className="h-4 w-4 text-warning" />;
       case 'resolved':
-        return <CheckCircle className="h-4 w-4 text-green-500" />;
+        return <CheckCircle className="h-4 w-4 text-success" />;
       case 'closed':
-        return <CheckCircle className="h-4 w-4 text-gray-500" />;
+        return <CheckCircle className="h-4 w-4 text-muted-foreground" />;
       default:
-        return <AlertTriangle className="h-4 w-4 text-gray-500" />;
+        return <AlertTriangle className="h-4 w-4 text-muted-foreground" />;
     }
   };
 
@@ -347,11 +347,11 @@ export default function IncidentsPage() {
                     type: 'created'
                   }
                 ].map((event, index) => (
-                  <div key={index} className="flex items-start space-x-3 p-3 border rounded-lg">
+                  <div key={index} className="flex items-start space-x-3 p-3 border rounded-[0.625rem]">
                     <div className="flex-shrink-0 mt-1">
-                      {event.type === 'created' && <Plus className="h-4 w-4 text-blue-500" />}
-                      {event.type === 'status' && <Edit className="h-4 w-4 text-yellow-500" />}
-                      {event.type === 'resolved' && <CheckCircle className="h-4 w-4 text-green-500" />}
+                      {event.type === 'created' && <Plus className="h-4 w-4 text-primary" />}
+                      {event.type === 'status' && <Edit className="h-4 w-4 text-warning" />}
+                      {event.type === 'resolved' && <CheckCircle className="h-4 w-4 text-success" />}
                     </div>
                     <div className="flex-1">
                       <div className="flex items-center justify-between">
@@ -426,12 +426,12 @@ export default function IncidentsPage() {
                         <span className="text-sm font-sans">{item.severity}</span>
                         <span className="text-sm font-sans">{item.count} ({item.percentage}%)</span>
                       </div>
-                      <div className="w-full bg-gray-200 rounded-full h-2">
+                      <div className="w-full bg-muted rounded-full h-2">
                         <div 
                           className={`h-2 rounded-full ${
-                            item.severity === 'Critical' ? 'bg-red-500' :
-                            item.severity === 'High' ? 'bg-orange-500' :
-                            item.severity === 'Medium' ? 'bg-yellow-500' : 'bg-blue-500'
+                            item.severity === 'Critical' ? 'bg-destructive/100' :
+                            item.severity === 'High' ? 'bg-warning/100' :
+                            item.severity === 'Medium' ? 'bg-warning/100' : 'bg-primary/100'
                           }`}
                           style={{ width: `${item.percentage}%` }}
                         ></div>

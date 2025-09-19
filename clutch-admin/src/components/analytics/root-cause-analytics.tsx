@@ -550,21 +550,21 @@ export default function RootCauseAnalytics({ className }: RootCauseAnalyticsProp
 
   const getSeverityColor = (severity: string) => {
     switch (severity) {
-      case 'critical': return 'bg-red-500';
-      case 'high': return 'bg-orange-500';
-      case 'medium': return 'bg-yellow-500';
-      case 'low': return 'bg-green-500';
-      default: return 'bg-gray-500';
+      case 'critical': return 'bg-destructive/100';
+      case 'high': return 'bg-warning/100';
+      case 'medium': return 'bg-warning/100';
+      case 'low': return 'bg-success/100';
+      default: return 'bg-muted/500';
     }
   };
 
   const getStatusColor = (status: string) => {
     switch (status) {
-      case 'analyzing': return 'bg-blue-100 text-blue-800';
-      case 'identified': return 'bg-yellow-100 text-yellow-800';
-      case 'resolved': return 'bg-green-100 text-green-800';
-      case 'monitoring': return 'bg-purple-100 text-purple-800';
-      default: return 'bg-gray-100 text-gray-800';
+      case 'analyzing': return 'bg-primary/10 text-blue-800';
+      case 'identified': return 'bg-warning/10 text-yellow-800';
+      case 'resolved': return 'bg-success/10 text-green-800';
+      case 'monitoring': return 'bg-primary/10 text-purple-800';
+      default: return 'bg-muted text-gray-800';
     }
   };
 
@@ -582,29 +582,29 @@ export default function RootCauseAnalytics({ className }: RootCauseAnalyticsProp
 
   const getTrendIcon = (trend: string) => {
     switch (trend) {
-      case 'increasing': return <TrendingUp className="h-4 w-4 text-red-500" />;
-      case 'decreasing': return <TrendingDown className="h-4 w-4 text-green-500" />;
-      case 'stable': return <Activity className="h-4 w-4 text-blue-500" />;
-      default: return <Activity className="h-4 w-4 text-gray-500" />;
+      case 'increasing': return <TrendingUp className="h-4 w-4 text-destructive" />;
+      case 'decreasing': return <TrendingDown className="h-4 w-4 text-success" />;
+      case 'stable': return <Activity className="h-4 w-4 text-primary" />;
+      default: return <Activity className="h-4 w-4 text-muted-foreground" />;
     }
   };
 
   const getImpactColor = (impact: string) => {
     switch (impact) {
-      case 'positive': return 'text-green-600';
-      case 'negative': return 'text-red-600';
-      case 'neutral': return 'text-gray-600';
-      default: return 'text-gray-600';
+      case 'positive': return 'text-success';
+      case 'negative': return 'text-destructive';
+      case 'neutral': return 'text-muted-foreground';
+      default: return 'text-muted-foreground';
     }
   };
 
   const getPriorityColor = (priority: string) => {
     switch (priority) {
-      case 'critical': return 'bg-red-100 text-red-800';
-      case 'high': return 'bg-orange-100 text-orange-800';
-      case 'medium': return 'bg-yellow-100 text-yellow-800';
-      case 'low': return 'bg-green-100 text-green-800';
-      default: return 'bg-gray-100 text-gray-800';
+      case 'critical': return 'bg-destructive/10 text-red-800';
+      case 'high': return 'bg-warning/10 text-orange-800';
+      case 'medium': return 'bg-warning/10 text-yellow-800';
+      case 'low': return 'bg-success/10 text-green-800';
+      default: return 'bg-muted text-gray-800';
     }
   };
 
@@ -646,7 +646,7 @@ export default function RootCauseAnalytics({ className }: RootCauseAnalyticsProp
                 variant="outline"
                 size="sm"
                 onClick={() => setIsAnalyzing(!isAnalyzing)}
-                className={isAnalyzing ? 'bg-green-100 text-green-800' : ''}
+                className={isAnalyzing ? 'bg-success/10 text-green-800' : ''}
               >
                 {isAnalyzing ? <Play className="h-4 w-4 mr-2" /> : <Pause className="h-4 w-4 mr-2" />}
                 {isAnalyzing ? 'Analyzing' : 'Paused'}
@@ -665,20 +665,20 @@ export default function RootCauseAnalytics({ className }: RootCauseAnalyticsProp
         <CardContent className="space-y-6">
           {/* Analytics Summary */}
           <div className="grid grid-cols-4 gap-4">
-            <div className="text-center p-3 bg-red-50 rounded-lg">
-              <div className="text-2xl font-bold text-red-600">{criticalAnalyses}</div>
+            <div className="text-center p-3 bg-destructive/10 rounded-[0.625rem]">
+              <div className="text-2xl font-bold text-destructive">{criticalAnalyses}</div>
               <div className="text-sm text-muted-foreground">Critical Analyses</div>
             </div>
-            <div className="text-center p-3 bg-orange-50 rounded-lg">
-              <div className="text-2xl font-bold text-orange-600">{activeAnalyses}</div>
+            <div className="text-center p-3 bg-warning/10 rounded-[0.625rem]">
+              <div className="text-2xl font-bold text-warning">{activeAnalyses}</div>
               <div className="text-sm text-muted-foreground">Active Analyses</div>
             </div>
-            <div className="text-center p-3 bg-purple-50 rounded-lg">
-              <div className="text-2xl font-bold text-purple-600">{avgRecoveryTime}%</div>
+            <div className="text-center p-3 bg-primary/10 rounded-[0.625rem]">
+              <div className="text-2xl font-bold text-primary">{avgRecoveryTime}%</div>
               <div className="text-sm text-muted-foreground">Avg Recovery</div>
             </div>
-            <div className="text-center p-3 bg-yellow-50 rounded-lg">
-              <div className="text-2xl font-bold text-yellow-600">{formatCurrency(totalFinancialImpact)}</div>
+            <div className="text-center p-3 bg-warning/10 rounded-[0.625rem]">
+              <div className="text-2xl font-bold text-warning">{formatCurrency(totalFinancialImpact)}</div>
               <div className="text-sm text-muted-foreground">Total Impact</div>
             </div>
           </div>
@@ -689,7 +689,7 @@ export default function RootCauseAnalytics({ className }: RootCauseAnalyticsProp
               <h4 className="font-medium mb-3">Churn Analysis</h4>
               <div className="space-y-2">
                 {churnAnalyses.map((churn) => (
-                  <div key={churn.id} className="p-3 border rounded-lg">
+                  <div key={churn.id} className="p-3 border rounded-[0.625rem]">
                     <div className="flex items-center justify-between mb-2">
                       <span className="font-medium">{churn.customerSegment}</span>
                       <div className="flex items-center gap-2">
@@ -708,7 +708,7 @@ export default function RootCauseAnalytics({ className }: RootCauseAnalyticsProp
               <h4 className="font-medium mb-3">Downtime Analysis</h4>
               <div className="space-y-2">
                 {downtimeAnalyses.map((downtime) => (
-                  <div key={downtime.id} className="p-3 border rounded-lg">
+                  <div key={downtime.id} className="p-3 border rounded-[0.625rem]">
                     <div className="flex items-center justify-between mb-2">
                       <span className="font-medium">{downtime.service}</span>
                       <div className="flex items-center gap-2">
@@ -759,8 +759,8 @@ export default function RootCauseAnalytics({ className }: RootCauseAnalyticsProp
               {filteredAnalyses.map((analysis) => (
                 <div
                   key={analysis.id}
-                  className={`p-3 border rounded-lg cursor-pointer transition-colors ${
-                    selectedAnalysis?.id === analysis.id ? 'border-blue-500 bg-blue-50' : 'hover:bg-gray-50'
+                  className={`p-3 border rounded-[0.625rem] cursor-pointer transition-colors ${
+                    selectedAnalysis?.id === analysis.id ? 'border-blue-500 bg-primary/10' : 'hover:bg-muted/50'
                   }`}
                   onClick={() => setSelectedAnalysis(analysis)}
                 >
@@ -857,14 +857,14 @@ export default function RootCauseAnalytics({ className }: RootCauseAnalyticsProp
                     <h5 className="font-medium mb-2">Correlations</h5>
                     <div className="space-y-2">
                       {selectedAnalysis.correlations.map((correlation, index) => (
-                        <div key={index} className="flex items-center justify-between p-2 border rounded-lg text-sm">
+                        <div key={index} className="flex items-center justify-between p-2 border rounded-[0.625rem] text-sm">
                           <span className="font-medium">{correlation.metric}</span>
                           <div className="flex items-center gap-2">
                             <span className="font-medium">{correlation.correlation.toFixed(2)}</span>
                             <Badge className={getPriorityColor(correlation.significance)}>
                               {correlation.significance}
                             </Badge>
-                            <span className={correlation.direction === 'positive' ? 'text-green-600' : 'text-red-600'}>
+                            <span className={correlation.direction === 'positive' ? 'text-success' : 'text-destructive'}>
                               {correlation.direction}
                             </span>
                           </div>
@@ -877,7 +877,7 @@ export default function RootCauseAnalytics({ className }: RootCauseAnalyticsProp
                 <TabsContent value="causes" className="space-y-4">
                   <div>
                     <h5 className="font-medium mb-2">Primary Root Cause</h5>
-                    <div className="p-3 border rounded-lg">
+                    <div className="p-3 border rounded-[0.625rem]">
                       <div className="flex items-center justify-between mb-2">
                         <span className="font-medium">{selectedAnalysis.rootCauses.primary.factor}</span>
                         <div className="flex items-center gap-2">
@@ -900,7 +900,7 @@ export default function RootCauseAnalytics({ className }: RootCauseAnalyticsProp
                     <h5 className="font-medium mb-2">Secondary Causes</h5>
                     <div className="space-y-2">
                       {selectedAnalysis.rootCauses.secondary.map((cause, index) => (
-                        <div key={index} className="p-2 border rounded-lg">
+                        <div key={index} className="p-2 border rounded-[0.625rem]">
                           <div className="flex items-center justify-between mb-1">
                             <span className="font-medium text-sm">{cause.factor}</span>
                             <div className="flex items-center gap-2">
@@ -924,7 +924,7 @@ export default function RootCauseAnalytics({ className }: RootCauseAnalyticsProp
                     <h5 className="font-medium mb-2">Contributing Factors</h5>
                     <div className="space-y-2">
                       {selectedAnalysis.rootCauses.contributing.map((factor, index) => (
-                        <div key={index} className="p-2 border rounded-lg">
+                        <div key={index} className="p-2 border rounded-[0.625rem]">
                           <div className="flex items-center justify-between mb-1">
                             <span className="font-medium text-sm">{factor.factor}</span>
                             <div className="flex items-center gap-2">
@@ -950,8 +950,8 @@ export default function RootCauseAnalytics({ className }: RootCauseAnalyticsProp
                     <h5 className="font-medium mb-2">Event Timeline</h5>
                     <div className="space-y-3">
                       {selectedAnalysis.timeline.map((event) => (
-                        <div key={event.id} className="flex items-start gap-3 p-3 border rounded-lg">
-                          <div className={`p-1 rounded-lg-full ${getImpactColor(event.impact)}`}>
+                        <div key={event.id} className="flex items-start gap-3 p-3 border rounded-[0.625rem]">
+                          <div className={`p-1 rounded-[0.625rem]-full ${getImpactColor(event.impact)}`}>
                             {event.impact === 'positive' ? <ArrowRight className="h-4 w-4" /> : 
                              event.impact === 'negative' ? <ArrowLeft className="h-4 w-4" /> : 
                              <Info className="h-4 w-4" />}
@@ -984,7 +984,7 @@ export default function RootCauseAnalytics({ className }: RootCauseAnalyticsProp
                       <h5 className="font-medium mb-2">Immediate Actions</h5>
                       <div className="space-y-2">
                         {selectedAnalysis.recommendations.immediate.map((action, index) => (
-                          <div key={index} className="p-3 border rounded-lg">
+                          <div key={index} className="p-3 border rounded-[0.625rem]">
                             <div className="flex items-center justify-between mb-2">
                               <span className="font-medium text-sm">{action.action}</span>
                               <Badge className={getPriorityColor(action.priority)}>
@@ -1004,7 +1004,7 @@ export default function RootCauseAnalytics({ className }: RootCauseAnalyticsProp
                       <h5 className="font-medium mb-2">Long-term Solutions</h5>
                       <div className="space-y-2">
                         {selectedAnalysis.recommendations.longTerm.map((action, index) => (
-                          <div key={index} className="p-3 border rounded-lg">
+                          <div key={index} className="p-3 border rounded-[0.625rem]">
                             <div className="flex items-center justify-between mb-2">
                               <span className="font-medium text-sm">{action.action}</span>
                               <Badge className={getPriorityColor(action.priority)}>

@@ -420,7 +420,7 @@ export default function ReportsPage() {
 
           <div className="space-y-4">
             {filteredReports.map((report) => (
-              <Card key={report._id} className="hover:shadow-md transition-shadow">
+              <Card key={report._id} className="hover:shadow-sm transition-shadow">
                 <CardContent className="p-6">
                   <div className="flex items-start justify-between">
                     <div className="flex-1">
@@ -603,7 +603,7 @@ export default function ReportsPage() {
           <div className="grid gap-4 py-4">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               {templates.map((template) => (
-                <Card key={template._id} className="hover:shadow-md transition-shadow">
+                <Card key={template._id} className="hover:shadow-sm transition-shadow">
                   <CardContent className="p-4">
                     <div className="flex items-start justify-between mb-2">
                       <div>

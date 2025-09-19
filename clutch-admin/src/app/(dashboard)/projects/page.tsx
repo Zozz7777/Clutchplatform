@@ -403,7 +403,7 @@ export default function ProjectManagementPage() {
           {/* Projects Table */}
           <div className="space-y-4">
             {filteredProjects.map((project) => (
-              <Card key={project._id} className="hover:shadow-md transition-shadow">
+              <Card key={project._id} className="hover:shadow-sm transition-shadow">
                 <CardContent className="p-6">
                   <div className="flex items-start justify-between">
                     <div className="flex-1">
@@ -422,7 +422,7 @@ export default function ProjectManagementPage() {
                         <div>
                           <p className="text-sm font-medium">Progress</p>
                           <div className="flex items-center space-x-2">
-                            <div className="flex-1 bg-gray-200 rounded-full h-2">
+                            <div className="flex-1 bg-muted rounded-full h-2">
                               <div 
                                 className="bg-primary h-2 rounded-full" 
                                 style={{ width: `${project.progress}%` }}

@@ -78,17 +78,17 @@ export default function UserCohortsPage() {
   });
 
   const getRetentionColor = (retention: number) => {
-    if (retention >= 70) return 'bg-green-500';
-    if (retention >= 50) return 'bg-yellow-500';
-    if (retention >= 30) return 'bg-orange-500';
-    return 'bg-red-500';
+    if (retention >= 70) return 'bg-success/100';
+    if (retention >= 50) return 'bg-warning/100';
+    if (retention >= 30) return 'bg-warning/100';
+    return 'bg-destructive/100';
   };
 
   const getRetentionTextColor = (retention: number) => {
-    if (retention >= 70) return 'text-green-700';
-    if (retention >= 50) return 'text-yellow-700';
+    if (retention >= 70) return 'text-success';
+    if (retention >= 50) return 'text-warning';
     if (retention >= 30) return 'text-orange-700';
-    return 'text-red-700';
+    return 'text-destructive';
   };
 
   return (
@@ -282,11 +282,11 @@ export default function UserCohortsPage() {
                         <p className="text-sm font-medium font-sans mb-2">Performance</p>
                         <div className="space-y-2">
                           <div className="flex items-center space-x-2">
-                            <TrendingUp className="h-4 w-4 text-green-500" />
+                            <TrendingUp className="h-4 w-4 text-success" />
                             <span className="text-sm font-sans">Above average retention</span>
                           </div>
                           <div className="flex items-center space-x-2">
-                            <Target className="h-4 w-4 text-blue-500" />
+                            <Target className="h-4 w-4 text-primary" />
                             <span className="text-sm font-sans">Good long-term retention</span>
                           </div>
                         </div>
@@ -327,7 +327,7 @@ export default function UserCohortsPage() {
                       confidence: 'Medium'
                     }
                   ].map((item, index) => (
-                    <div key={index} className="p-4 border rounded-lg">
+                    <div key={index} className="p-4 border rounded-[0.625rem]">
                       <div className="flex items-center justify-between mb-2">
                         <h3 className="font-medium font-sans">{item.insight}</h3>
                         <Badge variant={item.impact === 'Positive' ? 'default' : 'destructive'}>
@@ -372,7 +372,7 @@ export default function UserCohortsPage() {
                       effort: 'Low'
                     }
                   ].map((item, index) => (
-                    <div key={index} className="p-4 border rounded-lg">
+                    <div key={index} className="p-4 border rounded-[0.625rem]">
                       <div className="flex items-center justify-between mb-2">
                         <h3 className="font-medium font-sans">{item.recommendation}</h3>
                         <div className="flex items-center space-x-2">

@@ -131,13 +131,13 @@ export default function MonitoringPerformancePage() {
   const getAlertIcon = (type: string) => {
     switch (type) {
       case 'critical':
-        return <AlertTriangle className="h-5 w-5 text-red-500" />;
+        return <AlertTriangle className="h-5 w-5 text-destructive" />;
       case 'warning':
-        return <AlertTriangle className="h-5 w-5 text-yellow-500" />;
+        return <AlertTriangle className="h-5 w-5 text-warning" />;
       case 'info':
-        return <CheckCircle className="h-5 w-5 text-blue-500" />;
+        return <CheckCircle className="h-5 w-5 text-primary" />;
       default:
-        return <Activity className="h-5 w-5 text-gray-500" />;
+        return <Activity className="h-5 w-5 text-muted-foreground" />;
     }
   };
 
@@ -146,9 +146,9 @@ export default function MonitoringPerformancePage() {
       case 'critical':
         return <Badge variant="destructive">Critical</Badge>;
       case 'warning':
-        return <Badge variant="default" className="bg-yellow-500">Warning</Badge>;
+        return <Badge variant="default" className="bg-warning/100">Warning</Badge>;
       case 'info':
-        return <Badge variant="default" className="bg-blue-500">Info</Badge>;
+        return <Badge variant="default" className="bg-primary/100">Info</Badge>;
       default:
         return <Badge variant="outline">Unknown</Badge>;
     }
@@ -159,7 +159,7 @@ export default function MonitoringPerformancePage() {
       case 'active':
         return <Badge variant="destructive">Active</Badge>;
       case 'resolved':
-        return <Badge variant="default" className="bg-green-500">Resolved</Badge>;
+        return <Badge variant="default" className="bg-success/100">Resolved</Badge>;
       default:
         return <Badge variant="outline">Unknown</Badge>;
     }
@@ -287,8 +287,8 @@ export default function MonitoringPerformancePage() {
                   <div className="flex items-center justify-between">
                     <span className="text-sm font-sans">CPU Usage:</span>
                     <div className="flex items-center space-x-2">
-                      <div className="w-20 bg-gray-200 rounded-full h-2">
-                        <div className="bg-green-500 h-2 rounded-full" style={{ width: '45%' }}></div>
+                      <div className="w-20 bg-muted rounded-full h-2">
+                        <div className="bg-success/100 h-2 rounded-full" style={{ width: '45%' }}></div>
                       </div>
                       <span className="text-sm font-sans font-medium">45%</span>
                     </div>
@@ -296,8 +296,8 @@ export default function MonitoringPerformancePage() {
                   <div className="flex items-center justify-between">
                     <span className="text-sm font-sans">Memory Usage:</span>
                     <div className="flex items-center space-x-2">
-                      <div className="w-20 bg-gray-200 rounded-full h-2">
-                        <div className="bg-yellow-500 h-2 rounded-full" style={{ width: '68%' }}></div>
+                      <div className="w-20 bg-muted rounded-full h-2">
+                        <div className="bg-warning/100 h-2 rounded-full" style={{ width: '68%' }}></div>
                       </div>
                       <span className="text-sm font-sans font-medium">68%</span>
                     </div>
@@ -305,8 +305,8 @@ export default function MonitoringPerformancePage() {
                   <div className="flex items-center justify-between">
                     <span className="text-sm font-sans">Disk Usage:</span>
                     <div className="flex items-center space-x-2">
-                      <div className="w-20 bg-gray-200 rounded-full h-2">
-                        <div className="bg-green-500 h-2 rounded-full" style={{ width: '32%' }}></div>
+                      <div className="w-20 bg-muted rounded-full h-2">
+                        <div className="bg-success/100 h-2 rounded-full" style={{ width: '32%' }}></div>
                       </div>
                       <span className="text-sm font-sans font-medium">32%</span>
                     </div>
@@ -314,8 +314,8 @@ export default function MonitoringPerformancePage() {
                   <div className="flex items-center justify-between">
                     <span className="text-sm font-sans">Network I/O:</span>
                     <div className="flex items-center space-x-2">
-                      <div className="w-20 bg-gray-200 rounded-full h-2">
-                        <div className="bg-blue-500 h-2 rounded-full" style={{ width: '55%' }}></div>
+                      <div className="w-20 bg-muted rounded-full h-2">
+                        <div className="bg-primary/100 h-2 rounded-full" style={{ width: '55%' }}></div>
                       </div>
                       <span className="text-sm font-sans font-medium">55%</span>
                     </div>
@@ -337,7 +337,7 @@ export default function MonitoringPerformancePage() {
             <CardContent>
               <div className="space-y-4">
                 {alerts.map((alert) => (
-                  <div key={alert.id} className="flex items-center justify-between p-4 border rounded-lg">
+                  <div key={alert.id} className="flex items-center justify-between p-4 border rounded-[0.625rem]">
                     <div className="flex items-center space-x-3">
                       {getAlertIcon(alert.type)}
                       <div>
@@ -369,7 +369,7 @@ export default function MonitoringPerformancePage() {
               </CardHeader>
               <CardContent>
                 <div className="text-center py-8">
-                  <TrendingDown className="h-12 w-12 mx-auto text-green-500 mb-4" />
+                  <TrendingDown className="h-12 w-12 mx-auto text-success mb-4" />
                   <p className="text-lg font-medium font-sans">Improving Performance</p>
                   <p className="text-sm text-muted-foreground font-sans">
                     Response times have decreased by 15% over the last 7 days
@@ -384,7 +384,7 @@ export default function MonitoringPerformancePage() {
               </CardHeader>
               <CardContent>
                 <div className="text-center py-8">
-                  <TrendingUp className="h-12 w-12 mx-auto text-red-500 mb-4" />
+                  <TrendingUp className="h-12 w-12 mx-auto text-destructive mb-4" />
                   <p className="text-lg font-medium font-sans">Error Rate Increasing</p>
                   <p className="text-sm text-muted-foreground font-sans">
                     Error rate has increased by 8% over the last 24 hours

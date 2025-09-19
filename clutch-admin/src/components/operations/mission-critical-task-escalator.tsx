@@ -614,43 +614,43 @@ export default function MissionCriticalTaskEscalator({ className }: MissionCriti
 
   const getTypeColor = (type: string) => {
     switch (type) {
-      case 'revenue_blocking': return 'bg-red-100 text-red-800';
-      case 'security_critical': return 'bg-orange-100 text-orange-800';
-      case 'compliance_urgent': return 'bg-yellow-100 text-yellow-800';
-      case 'customer_impact': return 'bg-blue-100 text-blue-800';
-      case 'system_failure': return 'bg-purple-100 text-purple-800';
+      case 'revenue_blocking': return 'bg-destructive/10 text-red-800';
+      case 'security_critical': return 'bg-warning/10 text-orange-800';
+      case 'compliance_urgent': return 'bg-warning/10 text-yellow-800';
+      case 'customer_impact': return 'bg-primary/10 text-blue-800';
+      case 'system_failure': return 'bg-primary/10 text-purple-800';
       case 'data_loss': return 'bg-pink-100 text-pink-800';
-      default: return 'bg-gray-100 text-gray-800';
+      default: return 'bg-muted text-gray-800';
     }
   };
 
   const getPriorityColor = (priority: string) => {
     switch (priority) {
-      case 'low': return 'bg-green-100 text-green-800';
-      case 'medium': return 'bg-yellow-100 text-yellow-800';
-      case 'high': return 'bg-orange-100 text-orange-800';
-      case 'critical': return 'bg-red-100 text-red-800';
-      case 'emergency': return 'bg-red-100 text-red-800';
-      default: return 'bg-gray-100 text-gray-800';
+      case 'low': return 'bg-success/10 text-green-800';
+      case 'medium': return 'bg-warning/10 text-yellow-800';
+      case 'high': return 'bg-warning/10 text-orange-800';
+      case 'critical': return 'bg-destructive/10 text-red-800';
+      case 'emergency': return 'bg-destructive/10 text-red-800';
+      default: return 'bg-muted text-gray-800';
     }
   };
 
   const getStatusColor = (status: string) => {
     switch (status) {
-      case 'pending': return 'bg-yellow-100 text-yellow-800';
-      case 'in_progress': return 'bg-blue-100 text-blue-800';
-      case 'escalated': return 'bg-red-100 text-red-800';
-      case 'resolved': return 'bg-green-100 text-green-800';
-      case 'cancelled': return 'bg-gray-100 text-gray-800';
-      default: return 'bg-gray-100 text-gray-800';
+      case 'pending': return 'bg-warning/10 text-yellow-800';
+      case 'in_progress': return 'bg-primary/10 text-blue-800';
+      case 'escalated': return 'bg-destructive/10 text-red-800';
+      case 'resolved': return 'bg-success/10 text-green-800';
+      case 'cancelled': return 'bg-muted text-gray-800';
+      default: return 'bg-muted text-gray-800';
     }
   };
 
   const getEscalationLevelColor = (level: number) => {
-    if (level >= 4) return 'text-red-600';
-    if (level >= 3) return 'text-orange-600';
-    if (level >= 2) return 'text-yellow-600';
-    return 'text-green-600';
+    if (level >= 4) return 'text-destructive';
+    if (level >= 3) return 'text-warning';
+    if (level >= 2) return 'text-warning';
+    return 'text-success';
   };
 
   const filteredTasks = tasks.filter(task => {
@@ -688,7 +688,7 @@ export default function MissionCriticalTaskEscalator({ className }: MissionCriti
                 variant="outline"
                 size="sm"
                 onClick={() => setIsMonitoring(!isMonitoring)}
-                className={isMonitoring ? 'bg-green-100 text-green-800' : ''}
+                className={isMonitoring ? 'bg-success/10 text-green-800' : ''}
               >
                 {isMonitoring ? <Eye className="h-4 w-4 mr-2" /> : <EyeOff className="h-4 w-4 mr-2" />}
                 {isMonitoring ? 'Monitoring' : 'Paused'}
@@ -707,26 +707,26 @@ export default function MissionCriticalTaskEscalator({ className }: MissionCriti
         <CardContent className="space-y-6">
           {/* Task Summary */}
           <div className="grid grid-cols-4 gap-4">
-            <div className="text-center p-3 bg-red-50 rounded-lg">
-              <div className="text-2xl font-bold text-red-600">{formatCurrency(totalRevenue)}</div>
+            <div className="text-center p-3 bg-destructive/10 rounded-[0.625rem]">
+              <div className="text-2xl font-bold text-destructive">{formatCurrency(totalRevenue)}</div>
               <div className="text-sm text-muted-foreground">Revenue at Risk</div>
             </div>
-            <div className="text-center p-3 bg-orange-50 rounded-lg">
-              <div className="text-2xl font-bold text-orange-600">{formatNumber(totalUsers)}</div>
+            <div className="text-center p-3 bg-warning/10 rounded-[0.625rem]">
+              <div className="text-2xl font-bold text-warning">{formatNumber(totalUsers)}</div>
               <div className="text-sm text-muted-foreground">Users Affected</div>
             </div>
-            <div className="text-center p-3 bg-yellow-50 rounded-lg">
-              <div className="text-2xl font-bold text-yellow-600">{avgEscalationLevel}</div>
+            <div className="text-center p-3 bg-warning/10 rounded-[0.625rem]">
+              <div className="text-2xl font-bold text-warning">{avgEscalationLevel}</div>
               <div className="text-sm text-muted-foreground">Avg Escalation Level</div>
             </div>
-            <div className="text-center p-3 bg-purple-50 rounded-lg">
-              <div className="text-2xl font-bold text-purple-600">{criticalTasks}</div>
+            <div className="text-center p-3 bg-primary/10 rounded-[0.625rem]">
+              <div className="text-2xl font-bold text-primary">{criticalTasks}</div>
               <div className="text-sm text-muted-foreground">Critical Tasks</div>
             </div>
           </div>
 
           {/* Escalation Overview */}
-          <div className="p-4 bg-gradient-to-r from-red-50 to-orange-50 rounded-lg">
+          <div className="p-4 bg-gradient-to-r from-red-50 to-orange-50 rounded-[0.625rem]">
             <div className="flex items-center justify-between">
               <div>
                 <h4 className="font-medium">Mission-Critical Task Escalation</h4>
@@ -735,7 +735,7 @@ export default function MissionCriticalTaskEscalator({ className }: MissionCriti
                 </p>
               </div>
               <div className="text-right">
-                <div className="text-3xl font-bold text-red-600">
+                <div className="text-3xl font-bold text-destructive">
                   {tasks.length}
                 </div>
                 <div className="text-sm text-muted-foreground">tasks monitored</div>
@@ -791,8 +791,8 @@ export default function MissionCriticalTaskEscalator({ className }: MissionCriti
               {filteredTasks.map((task) => (
                 <div
                   key={task.id}
-                  className={`p-3 border rounded-lg cursor-pointer transition-colors ${
-                    selectedTask?.id === task.id ? 'border-blue-500 bg-blue-50' : 'hover:bg-gray-50'
+                  className={`p-3 border rounded-[0.625rem] cursor-pointer transition-colors ${
+                    selectedTask?.id === task.id ? 'border-blue-500 bg-primary/10' : 'hover:bg-muted/50'
                   }`}
                   onClick={() => setSelectedTask(task)}
                 >
@@ -910,8 +910,8 @@ export default function MissionCriticalTaskEscalator({ className }: MissionCriti
                     <h5 className="font-medium mb-2">Escalation Path</h5>
                     <div className="space-y-2">
                       {selectedTask.escalation.escalationPath.map((level, index) => (
-                        <div key={index} className={`p-3 border rounded-lg ${
-                          level.level === selectedTask.escalation.level ? 'border-blue-500 bg-blue-50' : ''
+                        <div key={index} className={`p-3 border rounded-[0.625rem] ${
+                          level.level === selectedTask.escalation.level ? 'border-blue-500 bg-primary/10' : ''
                         }`}>
                           <div className="flex items-center justify-between mb-2">
                             <span className="font-medium">Level {level.level}: {level.owner}</span>
@@ -928,7 +928,7 @@ export default function MissionCriticalTaskEscalator({ className }: MissionCriti
                     <h5 className="font-medium mb-2">Escalation History</h5>
                     <div className="space-y-2">
                       {selectedTask.escalation.escalationHistory.map((event, index) => (
-                        <div key={index} className="p-3 border rounded-lg">
+                        <div key={index} className="p-3 border rounded-[0.625rem]">
                           <div className="flex items-center justify-between mb-2">
                             <span className="font-medium">Level {event.level}: {event.owner}</span>
                             <span className="text-sm text-muted-foreground">
@@ -949,7 +949,7 @@ export default function MissionCriticalTaskEscalator({ className }: MissionCriti
                     <h5 className="font-medium mb-2">Task Dependencies</h5>
                     <div className="space-y-2">
                       {selectedTask.dependencies.map((dependency) => (
-                        <div key={dependency.id} className="p-3 border rounded-lg">
+                        <div key={dependency.id} className="p-3 border rounded-[0.625rem]">
                           <div className="flex items-center justify-between mb-2">
                             <span className="font-medium">{dependency.name}</span>
                             <div className="flex items-center gap-2">
@@ -957,7 +957,7 @@ export default function MissionCriticalTaskEscalator({ className }: MissionCriti
                                 {dependency.status.replace('_', ' ')}
                               </Badge>
                               {dependency.blocker && (
-                                <Badge className="bg-red-100 text-red-800">
+                                <Badge className="bg-destructive/10 text-red-800">
                                   Blocker
                                 </Badge>
                               )}

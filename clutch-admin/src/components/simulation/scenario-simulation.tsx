@@ -255,10 +255,10 @@ export default function ScenarioSimulation({ className }: ScenarioSimulationProp
 
   const getImpactColor = (impact: string) => {
     switch (impact) {
-      case 'high': return 'bg-red-100 text-red-800';
-      case 'medium': return 'bg-yellow-100 text-yellow-800';
-      case 'low': return 'bg-green-100 text-green-800';
-      default: return 'bg-gray-100 text-gray-800';
+      case 'high': return 'bg-destructive/10 text-red-800';
+      case 'medium': return 'bg-warning/10 text-yellow-800';
+      case 'low': return 'bg-success/10 text-green-800';
+      default: return 'bg-muted text-gray-800';
     }
   };
 
@@ -275,11 +275,11 @@ export default function ScenarioSimulation({ className }: ScenarioSimulationProp
 
   const getResultCategoryColor = (category: string) => {
     switch (category) {
-      case 'revenue': return 'text-green-600';
-      case 'cost': return 'text-red-600';
-      case 'efficiency': return 'text-blue-600';
-      case 'satisfaction': return 'text-purple-600';
-      default: return 'text-gray-600';
+      case 'revenue': return 'text-success';
+      case 'cost': return 'text-destructive';
+      case 'efficiency': return 'text-primary';
+      case 'satisfaction': return 'text-primary';
+      default: return 'text-muted-foreground';
     }
   };
 
@@ -387,23 +387,23 @@ export default function ScenarioSimulation({ className }: ScenarioSimulationProp
 
         <CardContent className="space-y-6">
           {/* Scenario Description */}
-          <div className="p-4 bg-blue-50 rounded-lg">
+          <div className="p-4 bg-primary/10 rounded-[0.625rem]">
             <h3 className="font-semibold mb-2">{currentScenario.name}</h3>
             <p className="text-sm text-muted-foreground">{currentScenario.description}</p>
             <div className="flex items-center gap-4 mt-3 text-sm">
               <div className="flex items-center gap-1">
-                <CheckCircle className="h-4 w-4 text-blue-500" />
+                <CheckCircle className="h-4 w-4 text-primary" />
                 <span>{currentScenario.confidence}% confidence</span>
               </div>
               <div className="flex items-center gap-1">
-                <Clock className="h-4 w-4 text-gray-500" />
+                <Clock className="h-4 w-4 text-muted-foreground" />
                 <span>Created {new Date(currentScenario.createdAt).toLocaleDateString()}</span>
               </div>
             </div>
           </div>
 
           {/* Simulation Controls */}
-          <div className="flex items-center justify-between p-4 border rounded-lg">
+          <div className="flex items-center justify-between p-4 border rounded-[0.625rem]">
             <div className="flex items-center gap-4">
               <Button
                 onClick={runSimulation}
@@ -431,10 +431,10 @@ export default function ScenarioSimulation({ className }: ScenarioSimulationProp
             </div>
             <div className="flex items-center gap-2">
               <Badge className={
-                currentScenario.status === 'completed' ? 'bg-green-100 text-green-800' :
-                currentScenario.status === 'running' ? 'bg-blue-100 text-blue-800' :
-                currentScenario.status === 'saved' ? 'bg-purple-100 text-purple-800' :
-                'bg-gray-100 text-gray-800'
+                currentScenario.status === 'completed' ? 'bg-success/10 text-green-800' :
+                currentScenario.status === 'running' ? 'bg-primary/10 text-blue-800' :
+                currentScenario.status === 'saved' ? 'bg-primary/10 text-purple-800' :
+                'bg-muted text-gray-800'
               }>
                 {currentScenario.status.toUpperCase()}
               </Badge>
@@ -448,9 +448,9 @@ export default function ScenarioSimulation({ className }: ScenarioSimulationProp
                 <span>Simulation Progress</span>
                 <span>{simulationProgress}%</span>
               </div>
-              <div className="w-full bg-gray-200 rounded-lg-full h-2">
+              <div className="w-full bg-muted rounded-[0.625rem]-full h-2">
                 <div 
-                  className="bg-blue-600 h-2 rounded-lg-full transition-all duration-300"
+                  className="bg-blue-600 h-2 rounded-[0.625rem]-full transition-all duration-300"
                   style={{ width: `${simulationProgress}%` }}
                 />
               </div>
@@ -467,7 +467,7 @@ export default function ScenarioSimulation({ className }: ScenarioSimulationProp
             <TabsContent value="parameters" className="space-y-4">
               <div className="grid gap-4">
                 {currentScenario.parameters.map((parameter) => (
-                  <div key={parameter.id} className="p-4 border rounded-lg">
+                  <div key={parameter.id} className="p-4 border rounded-[0.625rem]">
                     <div className="flex items-center justify-between mb-3">
                       <div className="flex items-center gap-2">
                         {getCategoryIcon(parameter.category)}
@@ -509,7 +509,7 @@ export default function ScenarioSimulation({ className }: ScenarioSimulationProp
               {currentScenario.status === 'completed' ? (
                 <div className="grid gap-4">
                   {currentScenario.results.map((result, index) => (
-                    <div key={index} className="p-4 border rounded-lg">
+                    <div key={index} className="p-4 border rounded-[0.625rem]">
                       <div className="flex items-center justify-between mb-3">
                         <h4 className="font-medium">{result.metric}</h4>
                         <Badge className={getResultCategoryColor(result.category)}>
@@ -539,7 +539,7 @@ export default function ScenarioSimulation({ className }: ScenarioSimulationProp
                         <div className="text-center">
                           <div className="text-sm text-muted-foreground">Change</div>
                           <div className={`text-lg font-semibold ${
-                            result.change >= 0 ? 'text-green-600' : 'text-red-600'
+                            result.change >= 0 ? 'text-success' : 'text-destructive'
                           }`}>
                             {result.change >= 0 ? '+' : ''}
                             {result.unit === '$' 
@@ -574,8 +574,8 @@ export default function ScenarioSimulation({ className }: ScenarioSimulationProp
               {scenarios.map((scenario) => (
                 <div
                   key={scenario.id}
-                  className={`p-3 border rounded-lg cursor-pointer transition-colors ${
-                    currentScenario?.id === scenario.id ? 'border-blue-500 bg-blue-50' : 'hover:bg-gray-50'
+                  className={`p-3 border rounded-[0.625rem] cursor-pointer transition-colors ${
+                    currentScenario?.id === scenario.id ? 'border-blue-500 bg-primary/10' : 'hover:bg-muted/50'
                   }`}
                   onClick={() => setCurrentScenario(scenario)}
                 >

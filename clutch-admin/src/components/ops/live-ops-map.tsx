@@ -235,32 +235,32 @@ export default function LiveOpsMap({ className }: LiveOpsMapProps) {
 
   const getStatusColor = (status: string) => {
     switch (status) {
-      case 'active': return 'bg-green-500';
-      case 'idle': return 'bg-yellow-500';
-      case 'maintenance': return 'bg-orange-500';
-      case 'offline': return 'bg-red-500';
-      case 'online': return 'bg-green-500';
-      case 'busy': return 'bg-yellow-500';
-      default: return 'bg-gray-500';
+      case 'active': return 'bg-success/100';
+      case 'idle': return 'bg-warning/100';
+      case 'maintenance': return 'bg-warning/100';
+      case 'offline': return 'bg-destructive/100';
+      case 'online': return 'bg-success/100';
+      case 'busy': return 'bg-warning/100';
+      default: return 'bg-muted/500';
     }
   };
 
   const getTrendIcon = (trend: string) => {
     switch (trend) {
-      case 'up': return <TrendingUp className="h-3 w-3 text-green-500" />;
-      case 'down': return <TrendingDown className="h-3 w-3 text-red-500" />;
-      case 'stable': return <Activity className="h-3 w-3 text-blue-500" />;
-      default: return <Activity className="h-3 w-3 text-gray-500" />;
+      case 'up': return <TrendingUp className="h-3 w-3 text-success" />;
+      case 'down': return <TrendingDown className="h-3 w-3 text-destructive" />;
+      case 'stable': return <Activity className="h-3 w-3 text-primary" />;
+      default: return <Activity className="h-3 w-3 text-muted-foreground" />;
     }
   };
 
   const getCategoryColor = (category: string) => {
     switch (category) {
-      case 'commercial': return 'bg-blue-500';
-      case 'residential': return 'bg-green-500';
-      case 'airport': return 'bg-purple-500';
-      case 'station': return 'bg-orange-500';
-      default: return 'bg-gray-500';
+      case 'commercial': return 'bg-primary/100';
+      case 'residential': return 'bg-success/100';
+      case 'airport': return 'bg-primary/100';
+      case 'station': return 'bg-warning/100';
+      default: return 'bg-muted/500';
     }
   };
 
@@ -320,16 +320,10 @@ export default function LiveOpsMap({ className }: LiveOpsMapProps) {
         </div>
 
         {/* Map Visualization (Simplified) */}
-        <div className="relative h-64 bg-gray-100 rounded-lg overflow-hidden">
+        <div className="relative h-64 bg-muted rounded-[0.625rem] overflow-hidden">
           <div className="absolute inset-0 bg-gradient-to-br from-blue-50 to-green-50">
             {/* Grid pattern */}
-            <div className="absolute inset-0 opacity-20" style={{
-              backgroundImage: `
-                linear-gradient(rgba(0,0,0,0.1) 1px, transparent 1px),
-                linear-gradient(90deg, rgba(0,0,0,0.1) 1px, transparent 1px)
-              `,
-              backgroundSize: '20px 20px'
-            }} />
+            <div className="absolute inset-0 opacity-20 bg-grid-pattern" />
             
             {/* Fleet Locations */}
             {(selectedLayer === 'all' || selectedLayer === 'fleet') && fleetLocations.map((location) => (
@@ -342,8 +336,8 @@ export default function LiveOpsMap({ className }: LiveOpsMapProps) {
                 }}
               >
                 <div className="relative">
-                  <div className={`w-3 h-3 rounded-lg-full border-2 border-white ${getStatusColor(location.status)}`} />
-                  <div className="absolute -top-6 left-1/2 transform -translate-x-1/2 bg-black text-white text-xs px-1 py-0.5 rounded-lg whitespace-nowrap">
+                  <div className={`w-3 h-3 rounded-[0.625rem]-full border-2 border-white ${getStatusColor(location.status)}`} />
+                  <div className="absolute -top-6 left-1/2 transform -translate-x-1/2 bg-black text-white text-xs px-1 py-0.5 rounded-[0.625rem] whitespace-nowrap">
                     {location.name}
                   </div>
                 </div>
@@ -361,8 +355,8 @@ export default function LiveOpsMap({ className }: LiveOpsMapProps) {
                 }}
               >
                 <div className="relative">
-                  <div className={`w-4 h-4 rounded-lg-full border-2 border-white ${getCategoryColor(hotspot.category)}`} />
-                  <div className="absolute -top-8 left-1/2 transform -translate-x-1/2 bg-green-600 text-white text-xs px-1 py-0.5 rounded-lg whitespace-nowrap">
+                  <div className={`w-4 h-4 rounded-[0.625rem]-full border-2 border-white ${getCategoryColor(hotspot.category)}`} />
+                  <div className="absolute -top-8 left-1/2 transform -translate-x-1/2 bg-green-600 text-white text-xs px-1 py-0.5 rounded-[0.625rem] whitespace-nowrap">
                     ${(hotspot.revenue / 1000).toFixed(1)}k
                   </div>
                 </div>
@@ -380,8 +374,8 @@ export default function LiveOpsMap({ className }: LiveOpsMapProps) {
                 }}
               >
                 <div className="relative">
-                  <div className={`w-2 h-2 rounded-lg-full border border-white ${getStatusColor(user.status)}`} />
-                  <div className="absolute -top-6 left-1/2 transform -translate-x-1/2 bg-blue-600 text-white text-xs px-1 py-0.5 rounded-lg whitespace-nowrap">
+                  <div className={`w-2 h-2 rounded-[0.625rem]-full border border-white ${getStatusColor(user.status)}`} />
+                  <div className="absolute -top-6 left-1/2 transform -translate-x-1/2 bg-blue-600 text-white text-xs px-1 py-0.5 rounded-[0.625rem] whitespace-nowrap">
                     {user.name.split(' ')[0]}
                   </div>
                 </div>
@@ -393,15 +387,15 @@ export default function LiveOpsMap({ className }: LiveOpsMapProps) {
         {/* Summary Stats */}
         <div className="grid grid-cols-3 gap-4">
           <div className="text-center">
-            <div className="text-2xl font-bold text-green-600">{activeFleet}</div>
+            <div className="text-2xl font-bold text-success">{activeFleet}</div>
             <div className="text-sm text-muted-foreground">Active Fleet</div>
           </div>
           <div className="text-center">
-            <div className="text-2xl font-bold text-blue-600">${(totalRevenue / 1000).toFixed(1)}k</div>
+            <div className="text-2xl font-bold text-primary">${(totalRevenue / 1000).toFixed(1)}k</div>
             <div className="text-sm text-muted-foreground">Total Revenue</div>
           </div>
           <div className="text-center">
-            <div className="text-2xl font-bold text-purple-600">{onlineUsers}</div>
+            <div className="text-2xl font-bold text-primary">{onlineUsers}</div>
             <div className="text-sm text-muted-foreground">Online Users</div>
           </div>
         </div>
@@ -413,7 +407,7 @@ export default function LiveOpsMap({ className }: LiveOpsMapProps) {
             {fleetLocations.slice(0, 3).map((location) => (
               <div key={location.id} className="flex items-center justify-between text-xs">
                 <div className="flex items-center space-x-2">
-                  <div className={`w-2 h-2 rounded-lg-full ${getStatusColor(location.status)}`} />
+                  <div className={`w-2 h-2 rounded-[0.625rem]-full ${getStatusColor(location.status)}`} />
                   <span>{location.name}</span>
                 </div>
                 <div className="flex items-center space-x-2">

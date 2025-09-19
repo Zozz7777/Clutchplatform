@@ -6,6 +6,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useAuth } from "@/contexts/auth-context";
+import { useTranslations } from "@/hooks/use-translations";
 import { formatDate, formatRelativeTime, formatCurrency } from "@/lib/utils";
 import { 
   Megaphone, 
@@ -117,6 +118,7 @@ export default function MarketingPage() {
   const [activeTab, setActiveTab] = useState<"campaigns" | "leads">("campaigns");
   const [isLoading, setIsLoading] = useState(true);
   const { hasPermission } = useAuth();
+  const { t } = useTranslations();
 
   useEffect(() => {
     const loadMarketingData = async () => {
@@ -392,9 +394,9 @@ export default function MarketingPage() {
       {/* Page Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold tracking-tight">Marketing Dashboard</h1>
+          <h1 className="text-3xl font-bold tracking-tight">{t('marketing.title')}</h1>
           <p className="text-muted-foreground">
-            Manage campaigns, leads, and marketing performance
+            {t('marketing.description')}
           </p>
         </div>
         {hasPermission("manage_marketing") && (
@@ -439,7 +441,7 @@ export default function MarketingPage() {
                 formatCurrency(campaigns.reduce((sum, c) => sum + c.spent, 0))}
             </div>
             <p className="text-xs text-muted-foreground">
-              Marketing budget
+              {t('marketing.marketingBudget')}
             </p>
           </CardContent>
         </Card>
@@ -476,7 +478,7 @@ export default function MarketingPage() {
       </div>
 
       {/* Tabs */}
-      <div className="flex space-x-1 bg-muted p-1 rounded-lg w-fit">
+      <div className="flex space-x-1 bg-muted p-1 rounded-[0.625rem] w-fit">
         <Button
           variant={activeTab === "campaigns" ? "default" : "ghost"}
           size="sm"
@@ -499,9 +501,9 @@ export default function MarketingPage() {
       {activeTab === "campaigns" && (
         <Card>
           <CardHeader>
-            <CardTitle>Marketing Campaigns</CardTitle>
+            <CardTitle>{t('marketing.marketingCampaigns')}</CardTitle>
             <CardDescription>
-              Manage and monitor marketing campaigns
+              {t('marketing.manageAndMonitor')}
             </CardDescription>
           </CardHeader>
           <CardContent>
@@ -546,7 +548,7 @@ export default function MarketingPage() {
 
             <div className="space-y-4">
               {filteredCampaigns.map((campaign) => (
-                <div key={campaign._id} className="flex items-center justify-between p-4 border rounded-lg hover:bg-muted/50 transition-colors">
+                <div key={campaign._id} className="flex items-center justify-between p-4 border rounded-[0.625rem] hover:bg-muted/50 transition-colors">
                   <div className="flex items-center space-x-4">
                     <div className="flex items-center space-x-2">
                       {getTypeIcon(campaign.type)}
@@ -609,7 +611,7 @@ export default function MarketingPage() {
                         {campaign.status === "draft" && (
                           <DropdownMenuItem 
                             onClick={() => handleCampaignAction(campaign._id, "start")}
-                            className="text-green-600"
+                            className="text-success"
                           >
                             <Play className="mr-2 h-4 w-4" />
                             Start Campaign
@@ -618,7 +620,7 @@ export default function MarketingPage() {
                         {campaign.status === "active" && (
                           <DropdownMenuItem 
                             onClick={() => handleCampaignAction(campaign._id, "pause")}
-                            className="text-yellow-600"
+                            className="text-warning"
                           >
                             <Pause className="mr-2 h-4 w-4" />
                             Pause Campaign
@@ -678,7 +680,7 @@ export default function MarketingPage() {
 
             <div className="space-y-4">
               {filteredLeads.map((lead) => (
-                <div key={lead._id} className="flex items-center justify-between p-4 border rounded-lg hover:bg-muted/50 transition-colors">
+                <div key={lead._id} className="flex items-center justify-between p-4 border rounded-[0.625rem] hover:bg-muted/50 transition-colors">
                   <div className="flex items-center space-x-4">
                     <div className="w-10 h-10 rounded-full bg-primary flex items-center justify-center">
                       <span className="text-primary-foreground font-medium">
@@ -741,7 +743,7 @@ export default function MarketingPage() {
                         {lead.status === "new" && (
                           <DropdownMenuItem 
                             onClick={() => handleLeadAction(lead._id, "contact")}
-                            className="text-blue-600"
+                            className="text-primary"
                           >
                             <Send className="mr-2 h-4 w-4" />
                             Mark as Contacted
@@ -750,7 +752,7 @@ export default function MarketingPage() {
                         {lead.status === "contacted" && (
                           <DropdownMenuItem 
                             onClick={() => handleLeadAction(lead._id, "qualify")}
-                            className="text-green-600"
+                            className="text-success"
                           >
                             <CheckCircle className="mr-2 h-4 w-4" />
                             Qualify Lead
@@ -759,7 +761,7 @@ export default function MarketingPage() {
                         {lead.status === "qualified" && (
                           <DropdownMenuItem 
                             onClick={() => handleLeadAction(lead._id, "convert")}
-                            className="text-green-600"
+                            className="text-success"
                           >
                             <Target className="mr-2 h-4 w-4" />
                             Convert to Customer

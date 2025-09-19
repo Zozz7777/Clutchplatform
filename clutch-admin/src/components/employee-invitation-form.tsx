@@ -179,7 +179,7 @@ export function EmployeeInvitationForm({ onSuccess, onCancel }: EmployeeInvitati
   };
 
   return (
-    <Card className="w-full max-w-2xl mx-auto shadow-sm">
+    <Card className="w-full max-w-2xl mx-auto shadow-2xs">
       <CardHeader>
         <CardTitle className="flex items-center gap-2 font-sans">
           <UserPlus className="h-5 w-5" />
@@ -208,7 +208,7 @@ export function EmployeeInvitationForm({ onSuccess, onCancel }: EmployeeInvitati
                   className={errors.name ? "border-red-500" : ""}
                 />
                 {errors.name && (
-                  <p className="text-sm text-red-500">{errors.name}</p>
+                  <p className="text-sm text-destructive">{errors.name}</p>
                 )}
               </div>
               
@@ -227,7 +227,7 @@ export function EmployeeInvitationForm({ onSuccess, onCancel }: EmployeeInvitati
                   />
                 </div>
                 {errors.email && (
-                  <p className="text-sm text-red-500">{errors.email}</p>
+                  <p className="text-sm text-destructive">{errors.email}</p>
                 )}
               </div>
             </div>
@@ -260,7 +260,7 @@ export function EmployeeInvitationForm({ onSuccess, onCancel }: EmployeeInvitati
                   </SelectContent>
                 </Select>
                 {errors.role && (
-                  <p className="text-sm text-red-500">{errors.role}</p>
+                  <p className="text-sm text-destructive">{errors.role}</p>
                 )}
               </div>
               
@@ -286,7 +286,7 @@ export function EmployeeInvitationForm({ onSuccess, onCancel }: EmployeeInvitati
                   </SelectContent>
                 </Select>
                 {errors.department && (
-                  <p className="text-sm text-red-500">{errors.department}</p>
+                  <p className="text-sm text-destructive">{errors.department}</p>
                 )}
               </div>
               
@@ -301,7 +301,7 @@ export function EmployeeInvitationForm({ onSuccess, onCancel }: EmployeeInvitati
                   className={errors.position ? "border-red-500" : ""}
                 />
                 {errors.position && (
-                  <p className="text-sm text-red-500">{errors.position}</p>
+                  <p className="text-sm text-destructive">{errors.position}</p>
                 )}
               </div>
             </div>
@@ -341,7 +341,7 @@ export function EmployeeInvitationForm({ onSuccess, onCancel }: EmployeeInvitati
             </div>
             
             {errors.permissions && (
-              <p className="text-sm text-red-500">{errors.permissions}</p>
+              <p className="text-sm text-destructive">{errors.permissions}</p>
             )}
             
             <div className="flex flex-wrap gap-2">

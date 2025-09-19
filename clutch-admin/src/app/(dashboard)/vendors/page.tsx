@@ -52,6 +52,7 @@ import {
 } from "lucide-react";
 import { formatCurrency } from "@/lib/utils";
 import { productionApi } from "@/lib/production-api";
+import { useTranslations } from "@/hooks/use-translations";
 
 interface Vendor {
   _id: string;
@@ -185,6 +186,7 @@ interface Communication {
 }
 
 export default function VendorManagementPage() {
+  const { t } = useTranslations();
   const [vendors, setVendors] = useState<Vendor[]>([]);
   const [contracts, setContracts] = useState<Contract[]>([]);
   const [communications, setCommunications] = useState<Communication[]>([]);
@@ -555,13 +557,13 @@ export default function VendorManagementPage() {
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Total Vendors</CardTitle>
+            <CardTitle className="text-sm font-medium">{t('vendors.totalVendors')}</CardTitle>
             <Building2 className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">{totalVendors}</div>
             <p className="text-xs text-muted-foreground">
-              {activeVendors} active, {totalVendors - activeVendors} inactive
+              {activeVendors} {t('vendors.active')}, {totalVendors - activeVendors} {t('vendors.inactive')}
             </p>
           </CardContent>
         </Card>
@@ -608,9 +610,9 @@ export default function VendorManagementPage() {
       {/* Vendors */}
       <Card>
         <CardHeader>
-          <CardTitle>Vendors</CardTitle>
+          <CardTitle>{t('vendors.vendors')}</CardTitle>
           <CardDescription>
-            Manage vendor relationships and performance
+            {t('vendors.description')}
           </CardDescription>
         </CardHeader>
         <CardContent>
@@ -680,7 +682,7 @@ export default function VendorManagementPage() {
 
           <div className="space-y-4">
             {filteredVendors.map((vendor) => (
-              <Card key={vendor._id} className="hover:shadow-md transition-shadow">
+              <Card key={vendor._id} className="hover:shadow-sm transition-shadow">
                 <CardContent className="p-6">
                   <div className="flex items-start justify-between">
                     <div className="flex-1">
@@ -802,9 +804,9 @@ export default function VendorManagementPage() {
         <CardContent>
           <div className="space-y-4">
             {contracts.slice(0, 5).map((contract) => (
-              <div key={contract._id} className="flex items-center justify-between p-4 border rounded-lg">
+              <div key={contract._id} className="flex items-center justify-between p-4 border rounded-[0.625rem]">
                 <div className="flex items-center space-x-4">
-                  <div className="p-2 bg-blue-100 rounded-lg">
+                  <div className="p-2 bg-primary/10 rounded-[0.625rem]">
                     <FileText className="h-4 w-4 text-primary" />
                   </div>
                   <div>

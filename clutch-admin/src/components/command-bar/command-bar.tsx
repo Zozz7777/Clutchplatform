@@ -7,6 +7,7 @@ import { Badge } from '@/components/ui/badge';
 import { CommandModal, ConfirmModal, InputModal } from '@/components/ui/command-modal';
 import { toast } from 'sonner';
 import { logger } from '@/lib/logger';
+import { useTranslations } from '@/hooks/use-translations';
 import { 
   Search, 
   User, 
@@ -44,6 +45,7 @@ interface CommandBarProps {
 }
 
 export default function CommandBar({ isOpen, onClose }: CommandBarProps) {
+  const { t } = useTranslations();
   const [search, setSearch] = useState('');
   const [actions, setActions] = useState<CommandAction[]>([]);
   const [selectedAction, setSelectedAction] = useState<CommandAction | null>(null);
@@ -72,10 +74,10 @@ export default function CommandBar({ isOpen, onClose }: CommandBarProps) {
         // User Management
         {
           id: 'create-user',
-          title: 'Create User',
-          description: 'Add a new user to the system',
+          title: t('commandBar.actions.createUser'),
+          description: t('commandBar.actions.createUserDesc'),
           icon: <User className="h-4 w-4" />,
-          category: 'Users',
+          category: t('commandBar.categories.users'),
           keywords: ['user', 'create', 'add', 'new'],
           action: () => handleCreateUser(),
           shortcut: 'Ctrl+U',
@@ -83,10 +85,10 @@ export default function CommandBar({ isOpen, onClose }: CommandBarProps) {
         },
         {
           id: 'suspend-user',
-          title: 'Suspend User',
-          description: 'Temporarily disable user access',
+          title: t('commandBar.actions.suspendUser'),
+          description: t('commandBar.actions.suspendUserDesc'),
           icon: <Shield className="h-4 w-4" />,
-          category: 'Users',
+          category: t('commandBar.categories.users'),
           keywords: ['user', 'suspend', 'disable', 'block'],
           action: () => handleSuspendUser(),
           requiresConfirmation: true,
@@ -94,10 +96,10 @@ export default function CommandBar({ isOpen, onClose }: CommandBarProps) {
         },
         {
           id: 'bulk-user-import',
-          title: 'Bulk Import Users',
-          description: 'Import multiple users from CSV',
+          title: t('commandBar.actions.bulkUserImport'),
+          description: t('commandBar.actions.bulkUserImportDesc'),
           icon: <Users className="h-4 w-4" />,
-          category: 'Users',
+          category: t('commandBar.categories.users'),
           keywords: ['user', 'import', 'bulk', 'csv'],
           action: () => handleBulkImport(),
           impact: 'high'
@@ -106,10 +108,10 @@ export default function CommandBar({ isOpen, onClose }: CommandBarProps) {
         // Fleet Management
         {
           id: 'pause-vehicle',
-          title: 'Pause Vehicle',
-          description: 'Temporarily halt vehicle operations',
+          title: t('commandBar.actions.pauseVehicle'),
+          description: t('commandBar.actions.pauseVehicleDesc'),
           icon: <Truck className="h-4 w-4" />,
-          category: 'Fleet',
+          category: t('commandBar.categories.fleet'),
           keywords: ['vehicle', 'pause', 'stop', 'fleet'],
           action: () => handlePauseVehicle(),
           requiresConfirmation: true,
@@ -117,10 +119,10 @@ export default function CommandBar({ isOpen, onClose }: CommandBarProps) {
         },
         {
           id: 'emergency-stop',
-          title: 'Emergency Stop All Vehicles',
-          description: 'Immediately halt all fleet operations',
+          title: t('commandBar.actions.emergencyStop'),
+          description: t('commandBar.actions.emergencyStopDesc'),
           icon: <AlertTriangle className="h-4 w-4" />,
-          category: 'Fleet',
+          category: t('commandBar.categories.fleet'),
           keywords: ['emergency', 'stop', 'all', 'fleet', 'halt'],
           action: () => handleEmergencyStop(),
           requiresConfirmation: true,
@@ -128,10 +130,10 @@ export default function CommandBar({ isOpen, onClose }: CommandBarProps) {
         },
         {
           id: 'schedule-maintenance',
-          title: 'Schedule Maintenance',
-          description: 'Book maintenance for selected vehicles',
+          title: t('commandBar.actions.scheduleMaintenance'),
+          description: t('commandBar.actions.scheduleMaintenanceDesc'),
           icon: <Settings className="h-4 w-4" />,
-          category: 'Fleet',
+          category: t('commandBar.categories.fleet'),
           keywords: ['maintenance', 'schedule', 'service', 'repair'],
           action: () => handleScheduleMaintenance(),
           impact: 'medium'

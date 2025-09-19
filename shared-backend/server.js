@@ -10,12 +10,7 @@ const rateLimit = require('express-rate-limit');
 const compression = require('compression');
 require('dotenv').config();
 
-// Debug environment variables
-console.log('🔧 Environment Variables Debug:');
-console.log('ADMIN_EMAIL:', process.env.ADMIN_EMAIL);
-console.log('ADMIN_PASSWORD_HASH:', process.env.ADMIN_PASSWORD_HASH ? 'SET' : 'NOT SET');
-console.log('JWT_SECRET:', process.env.JWT_SECRET ? 'SET' : 'NOT SET');
-console.log('MONGODB_URI:', process.env.MONGODB_URI ? 'SET' : 'NOT SET');
+// Environment variables are loaded via dotenv
 
 // Import security middleware
 const securityHeaders = require('./middleware/securityHeaders');
@@ -110,6 +105,10 @@ const auditTrailRoutes = require('./routes/audit-trail');
 const reportsRoutes = require('./routes/reports');
 const rbacRoutes = require('./routes/rbac');
 const complianceRoutes = require('./routes/compliance');
+const businessIntelligenceRoutes = require('./routes/business-intelligence');
+const monitoringRoutes = require('./routes/monitoring');
+const revenueRoutes = require('./routes/revenue');
+const filesRoutes = require('./routes/files');
 
 // All route imports cleaned up - only existing routes imported above
 
@@ -127,7 +126,6 @@ app.use(responseMiddleware);
 
 // CRITICAL: Health endpoints first
 app.get('/health/ping', (req, res) => {
-  console.log('🏥 Health ping endpoint called');
   res.status(200).json({
     success: true,
     data: {
@@ -140,7 +138,6 @@ app.get('/health/ping', (req, res) => {
 });
 
 app.get('/ping', (req, res) => {
-  console.log('🏥 Alternative ping endpoint called');
   res.status(200).json({
     success: true,
     data: {
@@ -155,7 +152,6 @@ app.get('/ping', (req, res) => {
 // Mount routes
 const apiPrefix = `/api/${process.env.API_VERSION || 'v1'}`;
 
-console.log('🔧 Mounting routes...');
 
 // Mount only existing routes
 app.use(`${apiPrefix}/auth`, authRoutes);
@@ -261,10 +257,13 @@ app.use('/api/v1/performance', performanceRoutes);
 app.use('/api/v1/system/performance', performanceRoutes); // Add system performance route
 app.use('/api/v1/ai-ml', aiRoutes);
 app.use('/api/v1/compliance', complianceRoutes);
+app.use('/api/v1/analytics', businessIntelligenceRoutes);
+app.use('/api/v1/monitoring', monitoringRoutes);
+app.use('/api/v1/revenue', revenueRoutes);
+app.use('/api/v1/files', filesRoutes);
 
 // Test endpoints
 app.get('/test', (req, res) => {
-  console.log('🧪 Test endpoint called');
   res.json({ 
     success: true, 
     message: 'Basic routing works', 
@@ -274,7 +273,6 @@ app.get('/test', (req, res) => {
 
 // Root endpoint handler
 app.get('/', (req, res) => {
-  console.log('🏠 Root endpoint called');
   res.json({
     success: true,
     message: 'Clutch API Server is running',
@@ -293,12 +291,10 @@ app.get('/', (req, res) => {
 
 // Handle HEAD requests for root
 app.head('/', (req, res) => {
-  console.log('🏠 HEAD request to root endpoint');
   res.status(200).end();
 });
 
 app.get('/auth-test', (req, res) => {
-  console.log('🧪 Auth test endpoint called');
   res.json({ 
     success: true, 
     message: 'Auth test works', 
@@ -308,7 +304,6 @@ app.get('/auth-test', (req, res) => {
 
 // OPTIONS handler
 app.options('*', (req, res) => {
-  console.log('🔍 OPTIONS handler called:', req.path);
   res.header('Access-Control-Allow-Origin', req.headers.origin || '*');
   res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, PATCH, OPTIONS');
   res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization, X-Requested-With, x-session-token, X-API-Version, X-Correlation-ID, Accept, Origin');
@@ -372,7 +367,6 @@ app.get('/Logored.png', (req, res) => {
 
 // 404 handler
 app.use('*', (req, res) => {
-  console.log(`❌ 404 - Endpoint not found: ${req.method} ${req.originalUrl}`);
   res.status(404).json({
     success: false,
     error: 'ENDPOINT_NOT_FOUND',
@@ -539,37 +533,28 @@ async function initializeRedis() {
   try {
     // Check if Redis is configured
     if (!process.env.REDIS_URL && !process.env.REDIS_HOST) {
-      console.log('⚠️ Redis not configured - running without cache (Render compatible)');
       redisInitialized = false;
       return;
     }
 
     redisInitialized = await redisCache.initialize();
     if (redisInitialized) {
-      console.log('✅ Redis cache initialized successfully');
     } else {
-      console.log('⚠️ Redis cache initialization failed - continuing without cache');
     }
   } catch (error) {
     console.error('❌ Redis initialization error:', error);
-    console.log('⚠️ Continuing without Redis cache');
     redisInitialized = false;
   }
 }
 async function startServer() {
   try {
-    console.log('🚀 Starting minimal server...');
     
     // Initialize and validate environment
     const envConfig = initializeEnvironment();
-    console.log('✅ Environment configuration loaded');
 
-    console.log('✅ Environment validation passed');
 
     // Connect to database
-    console.log('🔄 Connecting to database...');
     await connectOptimizedDatabase();
-    console.log('✅ Database connection established');
     
     // Initialize Redis cache
     await initializeRedis();
@@ -577,19 +562,12 @@ async function startServer() {
     // Start HTTP server
     const PORT = process.env.PORT || 5000;
     const server = app.listen(PORT, () => {
-      console.log(`🚀 Enhanced server running on port ${PORT}`);
-      console.log(`🌍 Environment: ${process.env.NODE_ENV || 'development'}`);
-      console.log(`📊 Health check: https://clutch-main-nk7x.onrender.com/health/ping`);
-      console.log(`⚡ Performance monitoring: https://clutch-main-nk7x.onrender.com/api/v1/performance/monitor`);
-      console.log(`🔌 WebSocket server: wss://clutch-main-nk7x.onrender.com/ws`);
-      console.log(`🔄 Graceful restart: SIGUSR2 or SIGHUP`);
       
       // Initialize WebSocket server
       webSocketServer.initialize(server);
       
       // Run endpoint testing in production to generate logs
       if (process.env.NODE_ENV === 'production') {
-        console.log(`🧪 Starting endpoint testing for Render logs...`);
         setTimeout(() => {
           require('./scripts/test-endpoints-on-render.js');
         }, 5000); // Wait 5 seconds after server start
@@ -620,8 +598,6 @@ async function startServer() {
     }, 600000); // Run every 10 minutes to reduce memory pressure
 
     // Enhanced graceful shutdown (handled by graceful restart manager)
-    console.log('✅ Graceful restart manager initialized');
-    console.log('✅ Performance tuning system initialized');
 
   } catch (error) {
     console.error('❌ Failed to start server:', error);

@@ -154,11 +154,11 @@ export default function MobileCMSPage() {
               <CardContent className="space-y-4">
                 <div className="flex items-center justify-between">
                   <span className="font-sans">iOS Version</span>
-                  <Badge variant="default" className="bg-green-500">Live</Badge>
+                  <Badge variant="default" className="bg-success/100">Live</Badge>
                 </div>
                 <div className="flex items-center justify-between">
                   <span className="font-sans">Android Version</span>
-                  <Badge variant="default" className="bg-green-500">Live</Badge>
+                  <Badge variant="default" className="bg-success/100">Live</Badge>
                 </div>
                 <div className="flex items-center justify-between">
                   <span className="font-sans">Last Update</span>
@@ -303,9 +303,9 @@ export default function MobileCMSPage() {
               <CardContent className="space-y-4">
                 <div>
                   <label className="text-sm font-medium font-sans">App Logo</label>
-                  <div className="border-2 border-dashed border-gray-300 rounded-lg p-6 text-center">
+                  <div className="border-2 border-dashed border-gray-300 rounded-[0.625rem] p-6 text-center">
                     <Upload className="h-8 w-8 mx-auto text-gray-400 mb-2" />
-                    <p className="text-sm text-gray-600 font-sans">Upload app logo</p>
+                    <p className="text-sm text-muted-foreground font-sans">Upload app logo</p>
                     <Button variant="outline" size="sm" className="mt-2">
                       Choose File
                     </Button>
@@ -313,9 +313,9 @@ export default function MobileCMSPage() {
                 </div>
                 <div>
                   <label className="text-sm font-medium font-sans">Splash Screen</label>
-                  <div className="border-2 border-dashed border-gray-300 rounded-lg p-6 text-center">
+                  <div className="border-2 border-dashed border-gray-300 rounded-[0.625rem] p-6 text-center">
                     <Image className="h-8 w-8 mx-auto text-gray-400 mb-2" />
-                    <p className="text-sm text-gray-600 font-sans">Upload splash screen</p>
+                    <p className="text-sm text-muted-foreground font-sans">Upload splash screen</p>
                     <Button variant="outline" size="sm" className="mt-2">
                       Choose File
                     </Button>
@@ -344,7 +344,7 @@ export default function MobileCMSPage() {
                   { name: 'Route Optimization', enabled: false, description: 'AI-powered route suggestions' },
                   { name: 'Offline Mode', enabled: true, description: 'Work without internet connection' }
                 ].map((feature, index) => (
-                  <div key={index} className="flex items-center justify-between p-4 border rounded-lg">
+                  <div key={index} className="flex items-center justify-between p-4 border rounded-[0.625rem]">
                     <div>
                       <h3 className="font-medium font-sans">{feature.name}</h3>
                       <p className="text-sm text-muted-foreground font-sans">{feature.description}</p>

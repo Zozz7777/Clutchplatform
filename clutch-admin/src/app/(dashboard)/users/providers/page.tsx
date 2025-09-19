@@ -180,7 +180,7 @@ export default function ProvidersPage() {
       </div>
 
       {/* Provider Management */}
-      <Card className="shadow-sm">
+      <Card className="shadow-2xs">
         <CardHeader>
           <CardTitle className="text-card-foreground">Service Provider Directory</CardTitle>
           <CardDescription>Service providers and their capabilities</CardDescription>
@@ -246,7 +246,7 @@ export default function ProvidersPage() {
                   </TableCell>
                   <TableCell>
                     <div className="flex items-center space-x-1">
-                      <Star className="h-3 w-3 text-yellow-500 fill-current" />
+                      <Star className="h-3 w-3 text-warning fill-current" />
                       <span className="text-sm text-muted-foreground">4.7</span>
                     </div>
                   </TableCell>
@@ -297,7 +297,7 @@ export default function ProvidersPage() {
                           <Activity className="mr-2 h-4 w-4" />
                           Performance Metrics
                         </DropdownMenuItem>
-                        <DropdownMenuItem className="text-red-600">
+                        <DropdownMenuItem className="text-destructive">
                           <UserX className="mr-2 h-4 w-4" />
                           Suspend Provider
                         </DropdownMenuItem>
