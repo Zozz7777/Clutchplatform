@@ -475,7 +475,7 @@ export default function ComplianceFlags({ className }: ComplianceFlagsProps) {
         ? {
             ...flag,
             actions: flag.actions.map(action =>
-              action.id === actionId ? { ...action, status: newStatus as any } : action
+              action.id === actionId ? { ...action, status: newStatus as string } : action
             )
           }
         : flag
@@ -484,7 +484,7 @@ export default function ComplianceFlags({ className }: ComplianceFlagsProps) {
 
   const handleStatusUpdate = (flagId: string, newStatus: string) => {
     setFlags(prev => prev.map(flag =>
-      flag.id === flagId ? { ...flag, status: newStatus as any } : flag
+      flag.id === flagId ? { ...flag, status: newStatus as string } : flag
     ));
   };
 

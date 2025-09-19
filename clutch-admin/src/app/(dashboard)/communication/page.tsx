@@ -102,7 +102,7 @@ export default function CommunicationPage() {
         setTickets(ticketsData || []);
         
       } catch (error) {
-        console.error("Failed to load communication data:", error);
+        // Error handled by API service
         toast.error(t('communication.failedToLoadCommunicationData'));
         // Set empty arrays on error - no mock data fallback
         setNotifications([]);

@@ -639,6 +639,39 @@ export class RealApiService {
     )();
   }
 
+  async getEngagementHeatmap(): Promise<Record<string, unknown>> {
+    return withErrorHandling(
+      async () => {
+        const response = await apiService.request<Record<string, unknown>>("/api/v1/analytics/engagement-heatmap");
+        return handleApiResponse(response, 'getEngagementHeatmap', {});
+      },
+      'getEngagementHeatmap',
+      { fallbackValue: {}, showToast: false }
+    )();
+  }
+
+  async getTickets(): Promise<Record<string, unknown>[]> {
+    return withErrorHandling(
+      async () => {
+        const response = await apiService.request<Record<string, unknown>[]>("/api/v1/support/tickets");
+        return handleApiResponse(response, 'getTickets', []);
+      },
+      'getTickets',
+      { fallbackValue: [], showToast: false }
+    )();
+  }
+
+  async getUpsellOpportunities(): Promise<Record<string, unknown>[]> {
+    return withErrorHandling(
+      async () => {
+        const response = await apiService.request<Record<string, unknown>[]>("/api/v1/analytics/upsell-opportunities");
+        return handleApiResponse(response, 'getUpsellOpportunities', []);
+      },
+      'getUpsellOpportunities',
+      { fallbackValue: [], showToast: false }
+    )();
+  }
+
   // Compliance APIs
   async getComplianceStatus(): Promise<Record<string, unknown>> {
     return withErrorHandling(

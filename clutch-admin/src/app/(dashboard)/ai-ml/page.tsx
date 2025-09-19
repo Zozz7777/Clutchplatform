@@ -112,7 +112,7 @@ export default function AIMLPage() {
         setFilteredModels(modelsData || []);
         
       } catch (error) {
-        console.error("Failed to load AI/ML data:", error);
+        // Error handled by API service
         toast.error("Failed to load AI/ML data");
         // Set empty arrays on error - no mock data fallback
         setModels([]);

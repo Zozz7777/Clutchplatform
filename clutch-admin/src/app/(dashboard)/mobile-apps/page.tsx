@@ -124,7 +124,7 @@ export default function MobileAppsPage() {
         setStores(storesData || []);
         
       } catch (error) {
-        console.error("Failed to load mobile apps data:", error);
+        // Error handled by API service
         toast.error(t('mobileApps.failedToLoadMobileAppsData'));
         // Set empty arrays on error - no mock data fallback
         setVersions([]);

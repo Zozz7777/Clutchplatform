@@ -692,7 +692,7 @@ export default function LegalPage() {
                         <Badge variant={getStatusColor(dispute.status) as "default" | "secondary" | "destructive" | "outline"}>
                           {dispute.status}
                         </Badge>
-                        <Badge variant={getPriorityColor(dispute.priority) as any}>
+                        <Badge variant={getPriorityColor(dispute.priority) as "default" | "secondary" | "destructive" | "outline"}>
                           {dispute.priority}
                         </Badge>
                         <span className="text-xs text-muted-foreground">
