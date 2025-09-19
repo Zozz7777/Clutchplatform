@@ -264,6 +264,7 @@ app.use('/api/v1/monitoring', monitoringRoutes);
 app.use('/api/v1/revenue', revenueRoutes);
 app.use('/api/v1/files', filesRoutes);
 app.use('/api/v1/docs', apiDocsRoutes);
+app.use('/api/v1/mobile-apps', mobileAppsRoutes);
 
 // Test endpoints
 app.get('/test', (req, res) => {

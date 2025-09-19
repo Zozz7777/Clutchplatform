@@ -15,6 +15,130 @@ const employeeRateLimit = createRateLimit({ windowMs: 15 * 60 * 1000, max: 20 })
 
 // ==================== EMPLOYEE INVITATIONS ====================
 
+// POST /api/v1/employees/invite - Send employee invitation
+router.post('/invite', authenticateToken, checkRole(['head_administrator', 'hr']), employeeRateLimit, async (req, res) => {
+  try {
+    const { 
+      email, 
+      name, 
+      role = 'employee',
+      department,
+      position,
+      permissions = ['read'],
+      message
+    } = req.body;
+    
+    if (!email || !name) {
+      return res.status(400).json({
+        success: false,
+        error: 'MISSING_REQUIRED_FIELDS',
+        message: 'Email and name are required',
+        timestamp: new Date().toISOString()
+      });
+    }
+    
+    // Validate email format
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+      return res.status(400).json({
+        success: false,
+        error: 'INVALID_EMAIL',
+        message: 'Please provide a valid email address',
+        timestamp: new Date().toISOString()
+      });
+    }
+    
+    // Check if employee already exists
+    const usersCollection = await getCollection('users');
+    const existingEmployee = await usersCollection.findOne({ email: email.toLowerCase() });
+    
+    if (existingEmployee) {
+      return res.status(409).json({
+        success: false,
+        error: 'EMPLOYEE_EXISTS',
+        message: 'Employee with this email already exists',
+        timestamp: new Date().toISOString()
+      });
+    }
+    
+    // Check if invitation already exists
+    const invitationsCollection = await getCollection('employee_invitations');
+    const existingInvitation = await invitationsCollection.findOne({ 
+      email: email.toLowerCase(),
+      status: { $in: ['pending', 'sent'] }
+    });
+    
+    if (existingInvitation) {
+      return res.status(409).json({
+        success: false,
+        error: 'INVITATION_EXISTS',
+        message: 'An invitation has already been sent to this email',
+        timestamp: new Date().toISOString()
+      });
+    }
+    
+    // Generate invitation token
+    const crypto = require('crypto');
+    const invitationToken = crypto.randomBytes(32).toString('hex');
+    
+    // Create invitation
+    const invitation = {
+      email: email.toLowerCase(),
+      name,
+      role,
+      department: department || null,
+      position: position || null,
+      permissions,
+      message: message || null,
+      token: invitationToken,
+      status: 'pending',
+      expiresAt: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000), // 7 days
+      createdAt: new Date(),
+      createdBy: req.user.userId,
+      sentAt: null,
+      acceptedAt: null,
+      acceptedBy: null
+    };
+    
+    const result = await invitationsCollection.insertOne(invitation);
+    
+    // TODO: Send invitation email here
+    // For now, we'll just mark it as sent
+    await invitationsCollection.updateOne(
+      { _id: result.insertedId },
+      { 
+        $set: { 
+          status: 'sent',
+          sentAt: new Date()
+        }
+      }
+    );
+    
+    res.status(201).json({
+      success: true,
+      data: {
+        invitation: {
+          ...invitation,
+          _id: result.insertedId,
+          status: 'sent',
+          sentAt: new Date()
+        }
+      },
+      message: 'Employee invitation sent successfully',
+      timestamp: new Date().toISOString()
+    });
+    
+  } catch (error) {
+    console.error('Send employee invitation error:', error);
+    res.status(500).json({
+      success: false,
+      error: 'INVITATION_FAILED',
+      message: 'Failed to send employee invitation. Please try again.',
+      timestamp: new Date().toISOString()
+    });
+  }
+});
+
 // GET /api/v1/employees/invitations - Get all employee invitations
 router.get('/invitations', authenticateToken, checkRole(['head_administrator', 'hr']), async (req, res) => {
   try {
@@ -51,6 +175,125 @@ router.get('/invitations', authenticateToken, checkRole(['head_administrator', '
       success: false,
       error: 'GET_EMPLOYEE_INVITATIONS_FAILED',
       message: 'Failed to retrieve employee invitations',
+      timestamp: new Date().toISOString()
+    });
+  }
+});
+
+// POST /api/v1/employees/accept-invitation - Accept employee invitation
+router.post('/accept-invitation', async (req, res) => {
+  try {
+    const { token, password } = req.body;
+    
+    if (!token || !password) {
+      return res.status(400).json({
+        success: false,
+        error: 'MISSING_REQUIRED_FIELDS',
+        message: 'Token and password are required',
+        timestamp: new Date().toISOString()
+      });
+    }
+    
+    // Validate password strength
+    if (password.length < 8) {
+      return res.status(400).json({
+        success: false,
+        error: 'WEAK_PASSWORD',
+        message: 'Password must be at least 8 characters long',
+        timestamp: new Date().toISOString()
+      });
+    }
+    
+    const invitationsCollection = await getCollection('employee_invitations');
+    const usersCollection = await getCollection('users');
+    
+    // Find invitation
+    const invitation = await invitationsCollection.findOne({ 
+      token,
+      status: 'sent',
+      expiresAt: { $gt: new Date() }
+    });
+    
+    if (!invitation) {
+      return res.status(400).json({
+        success: false,
+        error: 'INVALID_OR_EXPIRED_TOKEN',
+        message: 'Invalid or expired invitation token',
+        timestamp: new Date().toISOString()
+      });
+    }
+    
+    // Check if employee already exists
+    const existingEmployee = await usersCollection.findOne({ email: invitation.email });
+    if (existingEmployee) {
+      return res.status(409).json({
+        success: false,
+        error: 'EMPLOYEE_EXISTS',
+        message: 'Employee with this email already exists',
+        timestamp: new Date().toISOString()
+      });
+    }
+    
+    // Hash password
+    const hashedPassword = await bcrypt.hash(password, 12);
+    
+    // Create employee
+    const newEmployee = {
+      email: invitation.email,
+      password: hashedPassword,
+      name: invitation.name,
+      role: invitation.role,
+      department: invitation.department,
+      position: invitation.position,
+      permissions: invitation.permissions,
+      isActive: true,
+      isEmployee: true,
+      createdAt: new Date(),
+      createdBy: invitation.createdBy,
+      lastLogin: null,
+      profile: {
+        avatar: null,
+        bio: null,
+        skills: [],
+        emergencyContact: null
+      }
+    };
+    
+    const result = await usersCollection.insertOne(newEmployee);
+    
+    // Update invitation status
+    await invitationsCollection.updateOne(
+      { _id: invitation._id },
+      { 
+        $set: { 
+          status: 'accepted',
+          acceptedAt: new Date(),
+          acceptedBy: result.insertedId
+        }
+      }
+    );
+    
+    // Remove password from response
+    delete newEmployee.password;
+    
+    res.status(201).json({
+      success: true,
+      data: {
+        employee: {
+          ...newEmployee,
+          _id: result.insertedId
+        }
+      },
+      message: 'Employee invitation accepted successfully',
+      timestamp: new Date().toISOString()
+    });
+    
+  } catch (error) {
+    console.error('Accept employee invitation error:', error);
+    res.status(500).json({
+      success: false,
+      error: 'ACCEPT_INVITATION_FAILED',
+      message: 'Failed to accept employee invitation. Please try again.',
       timestamp: new Date().toISOString()
     });
   }
