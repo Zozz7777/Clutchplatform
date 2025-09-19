@@ -65,12 +65,10 @@ export function useTranslations() {
       if (value && typeof value === 'object' && k in value) {
         value = value[k];
         if (key === 'common.loading') {
-          console.log(`✅ Found key "${k}", value:`, value);
+          // Found key
         }
       } else {
-        console.warn(`❌ Translation key "${key}" not found in ${language} translations`);
-        console.warn(`Failed at key "${k}" in path "${key}"`);
-        console.warn('Available keys at current level:', value ? Object.keys(value) : 'value is null/undefined');
+        // Translation key not found
         
         // Fallback for common keys
         if (key === 'common.loading') {

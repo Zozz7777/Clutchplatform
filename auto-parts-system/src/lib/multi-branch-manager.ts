@@ -410,7 +410,7 @@ export class MultiBranchManager {
       await this.updateBranchStock(transfer.to_branch_id, transfer.product_id, transfer.quantity);
     }
 
-    logger.info(`Completed transfer: ${transfer.transfer_number} - ${status}`);
+    logger.info(`Completed transfer: ${transfer.id} - ${status}`);
   }
 
   /**
