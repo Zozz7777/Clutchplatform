@@ -78,7 +78,7 @@ export default function APIDocsPage() {
         setCategories(categoriesData || []);
         
       } catch (error) {
-        console.error("Failed to load API docs data:", error);
+        // Error handled by API service
         toast.error(t('apiDocs.failedToLoadAPIDocsData'));
         // Set empty arrays on error - no mock data fallback
         setEndpoints([]);

@@ -117,7 +117,7 @@ export default function FleetPage() {
   }, []);
 
   useEffect(() => {
-    let filtered = vehicles;
+    let filtered = (vehicles || []);
 
     if (searchQuery) {
       filtered = filtered.filter(vehicle =>
@@ -218,7 +218,7 @@ export default function FleetPage() {
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold text-foreground">
-              {vehicles.filter(v => v.status === "active").length}
+              {(vehicles || []).filter(v => v.status === "active").length}
             </div>
             <p className="text-xs text-muted-foreground">
               <span className="text-success">+5%</span> {t('fleet.efficiency')}
@@ -232,7 +232,7 @@ export default function FleetPage() {
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold text-foreground">
-              {vehicles.filter(v => v.status === "maintenance").length}
+              {(vehicles || []).filter(v => v.status === "maintenance").length}
             </div>
             <p className="text-xs text-muted-foreground">
               <span className="text-warning">3</span> overdue

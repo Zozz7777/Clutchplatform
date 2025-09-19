@@ -62,7 +62,7 @@
     "jsonwebtoken": "^9.0.2",
     "mongoose": "^8.0.3",
     "morgan": "^1.10.0",
-    "node-barcode": "^0.1.8",
+    "jsbarcode": "^3.11.5",
     "sqlite3": "^5.1.6",
     "ws": "^8.14.2",
     "winston": "^3.11.0"

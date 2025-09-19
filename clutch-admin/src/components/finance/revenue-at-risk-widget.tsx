@@ -439,7 +439,7 @@ export default function RevenueAtRiskWidget({ className }: RevenueAtRiskWidgetPr
 
   const handleRiskStatusUpdate = (riskId: string, newStatus: string) => {
     setRevenueRisks(prev => prev.map(risk =>
-      risk.id === riskId ? { ...risk, status: newStatus as any } : risk
+      risk.id === riskId ? { ...risk, status: newStatus as string } : risk
     ));
   };
 

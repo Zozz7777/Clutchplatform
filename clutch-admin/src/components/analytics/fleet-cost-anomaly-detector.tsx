@@ -419,7 +419,7 @@ export default function FleetCostAnomalyDetector({ className }: FleetCostAnomaly
 
   const handleAnomalyStatusUpdate = (anomalyId: string, newStatus: string) => {
     setAnomalies(prev => prev.map(anomaly =>
-      anomaly.id === anomalyId ? { ...anomaly, status: newStatus as any } : anomaly
+      anomaly.id === anomalyId ? { ...anomaly, status: newStatus as string } : anomaly
     ));
   };
 

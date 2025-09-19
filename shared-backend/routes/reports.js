@@ -96,29 +96,151 @@ router.post('/generate', checkRole(['head_administrator', 'analyst', 'manager'])
     
     const result = await reportsCollection.insertOne(reportData);
     
-    // Simulate report generation (in real implementation, this would be async)
+    // Generate real report data based on type
+    let reportMetrics = {};
+    let chartData = [];
+    
+    // Get collections for data aggregation
+    const usersCollection = await getCollection('users');
+    const paymentsCollection = await getCollection('payments');
+    const bookingsCollection = await getCollection('bookings');
+    const ordersCollection = await getCollection('orders');
+    
+    // Calculate metrics based on report type
+    switch (type) {
+      case 'financial':
+        const [totalRevenue, totalUsers, totalOrders] = await Promise.all([
+          paymentsCollection.aggregate([
+            {
+              $match: {
+                status: 'completed',
+                createdAt: { $gte: reportData.dateRange.start, $lte: reportData.dateRange.end }
+              }
+            },
+            {
+              $group: {
+                _id: null,
+                total: { $sum: '$amount' }
+              }
+            }
+          ]).toArray(),
+          usersCollection.countDocuments({
+            createdAt: { $gte: reportData.dateRange.start, $lte: reportData.dateRange.end }
+          }),
+          ordersCollection.countDocuments({
+            createdAt: { $gte: reportData.dateRange.start, $lte: reportData.dateRange.end }
+          })
+        ]);
+        
+        // Generate revenue trend data
+        const revenueTrend = await paymentsCollection.aggregate([
+          {
+            $match: {
+              status: 'completed',
+              createdAt: { $gte: reportData.dateRange.start, $lte: reportData.dateRange.end }
+            }
+          },
+          {
+            $group: {
+              _id: {
+                year: { $year: '$createdAt' },
+                month: { $month: '$createdAt' },
+                day: { $dayOfMonth: '$createdAt' }
+              },
+              dailyRevenue: { $sum: '$amount' }
+            }
+          },
+          {
+            $sort: { '_id.year': 1, '_id.month': 1, '_id.day': 1 }
+          }
+        ]).toArray();
+        
+        reportMetrics = {
+          revenue: totalRevenue[0]?.total || 0,
+          users: totalUsers,
+          orders: totalOrders
+        };
+        
+        chartData = [
+          {
+            type: 'line',
+            title: 'Revenue Trend',
+            data: revenueTrend.map(item => ({
+              date: `${item._id.year}-${item._id.month.toString().padStart(2, '0')}-${item._id.day.toString().padStart(2, '0')}`,
+              value: item.dailyRevenue
+            }))
+          }
+        ];
+        break;
+        
+      case 'user_analytics':
+        const [newUsers, activeUsers, userGrowth] = await Promise.all([
+          usersCollection.countDocuments({
+            createdAt: { $gte: reportData.dateRange.start, $lte: reportData.dateRange.end }
+          }),
+          usersCollection.countDocuments({
+            lastActive: { $gte: reportData.dateRange.start, $lte: reportData.dateRange.end }
+          }),
+          usersCollection.aggregate([
+            {
+              $match: {
+                createdAt: { $gte: reportData.dateRange.start, $lte: reportData.dateRange.end }
+              }
+            },
+            {
+              $group: {
+                _id: {
+                  year: { $year: '$createdAt' },
+                  month: { $month: '$createdAt' },
+                  day: { $dayOfMonth: '$createdAt' }
+                },
+                dailyUsers: { $sum: 1 }
+              }
+            },
+            {
+              $sort: { '_id.year': 1, '_id.month': 1, '_id.day': 1 }
+            }
+          ]).toArray()
+        ]);
+        
+        reportMetrics = {
+          newUsers,
+          activeUsers,
+          totalUsers: newUsers + activeUsers
+        };
+        
+        chartData = [
+          {
+            type: 'bar',
+            title: 'User Growth',
+            data: userGrowth.map(item => ({
+              date: `${item._id.year}-${item._id.month.toString().padStart(2, '0')}-${item._id.day.toString().padStart(2, '0')}`,
+              value: item.dailyUsers
+            }))
+          }
+        ];
+        break;
+        
+      default:
+        reportMetrics = {
+          revenue: 0,
+          users: 0,
+          orders: 0
+        };
+        chartData = [];
+    }
+    
     const generatedReport = {
       id: result.insertedId,
       type,
       data: {
         summary: {
-          totalRecords: 0, // TODO: Get actual record count
+          totalRecords: Object.values(reportMetrics).reduce((sum, val) => sum + (typeof val === 'number' ? val : 0), 0),
           dateRange: reportData.dateRange,
           generatedAt: new Date().toISOString()
         },
-        metrics: {
-          revenue: 0, // TODO: Get actual revenue
-          users: 0, // TODO: Get actual user count
-          orders: 0 // TODO: Get actual order count
-        },
-        charts: [
-          {
-            type: 'line',
-            title: 'Revenue Trend',
-            data: [], // TODO: Get actual revenue trend data
-            note: 'Chart data not yet implemented - requires real data source'
-          }
-        ]
+        metrics: reportMetrics,
+        charts: chartData
       },
       status: 'completed',
       completedAt: new Date()

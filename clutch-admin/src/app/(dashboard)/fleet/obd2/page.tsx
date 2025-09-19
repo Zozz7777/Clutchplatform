@@ -109,7 +109,7 @@ export default function OBD2Page() {
   }, []);
 
   useEffect(() => {
-    let filtered = obd2Data || [];
+    let filtered = (obd2Data || []);
 
     if (searchQuery) {
       filtered = filtered.filter(item =>
@@ -173,9 +173,9 @@ export default function OBD2Page() {
     );
   }
 
-  const activeCodes = obd2Data.filter(item => item.status === "active").length;
-  const criticalCodes = obd2Data.filter(item => item.severity === "critical").length;
-  const resolvedCodes = obd2Data.filter(item => item.status === "resolved").length;
+  const activeCodes = (obd2Data || []).filter(item => item.status === "active").length;
+  const criticalCodes = (obd2Data || []).filter(item => item.severity === "critical").length;
+  const resolvedCodes = (obd2Data || []).filter(item => item.status === "resolved").length;
 
   return (
     <div className="space-y-6 font-sans">

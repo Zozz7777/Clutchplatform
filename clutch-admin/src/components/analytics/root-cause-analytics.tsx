@@ -610,7 +610,7 @@ export default function RootCauseAnalytics({ className }: RootCauseAnalyticsProp
 
   const handleAnalysisStatusUpdate = (analysisId: string, newStatus: string) => {
     setAnalyses(prev => prev.map(analysis =>
-      analysis.id === analysisId ? { ...analysis, status: newStatus as any } : analysis
+      analysis.id === analysisId ? { ...analysis, status: newStatus as string } : analysis
     ));
   };
 

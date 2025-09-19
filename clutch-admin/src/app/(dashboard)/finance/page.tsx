@@ -104,7 +104,7 @@ export default function FinancePage() {
         setFilteredPayments(updatedPayments || []);
       }
     } catch (error) {
-      console.error("Failed to process payment:", error);
+      // Error handled by payment service
     }
   };
 
@@ -118,7 +118,7 @@ export default function FinancePage() {
         setFilteredPayments(updatedPayments || []);
       }
     } catch (error) {
-      console.error("Failed to refund payment:", error);
+      // Error handled by payment service
     }
   };
 
@@ -180,7 +180,7 @@ export default function FinancePage() {
         setFilteredPayments(paymentsData || []);
         
       } catch (error) {
-        console.error("Failed to load finance data:", error);
+        // Error handled by API service
         toast.error(t('finance.failedToLoadFinanceData'));
         // Set empty arrays on error - no mock data fallback
         setPayments([]);

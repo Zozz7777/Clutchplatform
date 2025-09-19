@@ -471,7 +471,7 @@ export default function EnterprisePage() {
                     <p className="font-medium">{client.companyName}</p>
                     <p className="text-sm text-muted-foreground">{client.contactInfo.primaryContact} • {client.industry}</p>
                     <div className="flex items-center space-x-2 mt-1">
-                      <Badge variant={getStatusColor(client.status) as any}>
+                      <Badge variant={getStatusColor(client.status) as "default" | "secondary" | "destructive" | "outline"}>
                         {client.status}
                       </Badge>
                       <Badge variant={getTierColor(client.tier) as any}>

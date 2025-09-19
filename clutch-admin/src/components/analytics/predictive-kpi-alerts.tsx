@@ -497,7 +497,7 @@ export default function PredictiveKPIAlerts({ className }: PredictiveKPIAlertsPr
 
   const handleAlertStatusUpdate = (alertId: string, newStatus: string) => {
     setPredictiveAlerts(prev => prev.map(alert =>
-      alert.id === alertId ? { ...alert, status: newStatus as any } : alert
+      alert.id === alertId ? { ...alert, status: newStatus as string } : alert
     ));
   };
 
