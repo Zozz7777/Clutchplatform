@@ -6,6 +6,7 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Progress } from '@/components/ui/progress';
 import { productionApi } from '@/lib/production-api';
+import { useTranslations } from '@/hooks/use-translations';
 import { 
   Star, 
   TrendingUp, 
@@ -33,6 +34,7 @@ interface SatisfactionData {
 }
 
 export function CSATNPSTrends({ className = '' }: CSATNPSTrendsProps) {
+  const { t } = useTranslations();
   const [satisfactionData, setSatisfactionData] = React.useState<{
     currentCSAT: number;
     currentNPS: number;
@@ -162,9 +164,9 @@ export function CSATNPSTrends({ className = '' }: CSATNPSTrendsProps) {
   };
 
   const getCSATLevel = (csat: number) => {
-    if (csat >= 4.5) return 'Excellent';
-    if (csat >= 4.0) return 'Good';
-    return 'Poor';
+    if (csat >= 4.5) return t('csatNps.excellent');
+    if (csat >= 4.0) return t('csatNps.good');
+    return t('csatNps.poor');
   };
 
   const getNPSColor = (nps: number) => {
@@ -180,9 +182,9 @@ export function CSATNPSTrends({ className = '' }: CSATNPSTrendsProps) {
   };
 
   const getNPSLevel = (nps: number) => {
-    if (nps >= 50) return 'Excellent';
-    if (nps >= 30) return 'Good';
-    return 'Poor';
+    if (nps >= 50) return t('csatNps.excellent');
+    if (nps >= 30) return t('csatNps.good');
+    return t('csatNps.poor');
   };
 
   const getTrendIcon = (trend: string) => {
@@ -278,7 +280,7 @@ export function CSATNPSTrends({ className = '' }: CSATNPSTrendsProps) {
                 {getCSATLevel(satisfactionData.currentCSAT)}
               </Badge>
             </div>
-            <p className="text-sm text-muted-foreground">Customer Satisfaction</p>
+            <p className="text-sm text-muted-foreground">{t('csatNps.customerSatisfaction')}</p>
             <div className="mt-3">
               <Progress value={(satisfactionData.currentCSAT / 5) * 100} className="h-2" />
             </div>
@@ -294,7 +296,7 @@ export function CSATNPSTrends({ className = '' }: CSATNPSTrendsProps) {
                 {getNPSLevel(satisfactionData.currentNPS)}
               </Badge>
             </div>
-            <p className="text-sm text-muted-foreground">Net Promoter Score</p>
+            <p className="text-sm text-muted-foreground">{t('csatNps.netPromoterScore')}</p>
             <div className="mt-3">
               <Progress value={Math.min((satisfactionData.currentNPS + 100) / 2, 100)} className="h-2" />
             </div>
@@ -421,10 +423,10 @@ export function CSATNPSTrends({ className = '' }: CSATNPSTrendsProps) {
             <li>• Response rate: {satisfactionData.responseRate}%</li>
             <li>• {satisfactionData.trends.length} months of data</li>
             {satisfactionData.currentCSAT >= 4.5 && (
-              <li>• Excellent customer satisfaction - maintain quality</li>
+              <li>• {t('csatNps.excellentCustomerSatisfaction')}</li>
             )}
             {satisfactionData.currentNPS >= 50 && (
-              <li>• High NPS - strong customer advocacy</li>
+              <li>• {t('csatNps.highNpsStrongAdvocacy')}</li>
             )}
             {satisfactionData.responseRate < 50 && (
               <li>• Low response rate - consider survey optimization</li>

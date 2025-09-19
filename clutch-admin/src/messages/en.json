@@ -607,6 +607,18 @@
     "activeRate": "Active Rate",
     "maintenanceRate": "Maintenance Rate"
   },
+  "csatNps": {
+    "title": "CSAT & NPS Trends",
+    "description": "Customer satisfaction and net promoter score analytics",
+    "excellent": "Excellent",
+    "good": "Good",
+    "poor": "Poor",
+    "customerSatisfaction": "Customer Satisfaction",
+    "netPromoterScore": "Net Promoter Score",
+    "excellentCustomerSatisfaction": "Excellent customer satisfaction - maintain quality",
+    "highNpsStrongAdvocacy": "High NPS - strong customer advocacy",
+    "lowResponseRateOptimization": "Low response rate - consider survey optimization"
+  },
   "fleet": {
     "title": "Fleet Management",
     "description": "Monitor and manage your fleet vehicles in real-time",

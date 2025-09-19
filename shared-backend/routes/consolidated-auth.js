@@ -916,7 +916,7 @@ router.post('/logout', authenticateToken, async (req, res) => {
     });
     
   } catch (error) {
-    console.error('Logout error:', error);
+    logger.error('Logout error:', error);
     res.status(500).json({
       success: false,
       error: 'LOGOUT_FAILED',
@@ -1002,7 +1002,7 @@ router.post('/enterprise-login', loginRateLimit, async (req, res) => {
     });
     
   } catch (error) {
-    console.error('Enterprise login error:', error);
+    logger.error('Enterprise login error:', error);
     res.status(500).json({
       success: false,
       error: 'ENTERPRISE_LOGIN_FAILED',
@@ -1058,7 +1058,7 @@ router.post('/forgot-password', authRateLimit, async (req, res) => {
     });
     
   } catch (error) {
-    console.error('Forgot password error:', error);
+    logger.error('Forgot password error:', error);
     res.status(500).json({
       success: false,
       error: 'FORGOT_PASSWORD_FAILED',
@@ -1111,7 +1111,7 @@ router.post('/reset-password', authRateLimit, async (req, res) => {
     });
     
   } catch (error) {
-    console.error('Reset password error:', error);
+    logger.error('Reset password error:', error);
     res.status(500).json({
       success: false,
       error: 'RESET_PASSWORD_FAILED',
@@ -1149,7 +1149,7 @@ router.get('/profile', authenticateToken, async (req, res) => {
     });
     
   } catch (error) {
-    console.error('Get profile error:', error);
+    logger.error('Get profile error:', error);
     res.status(500).json({
       success: false,
       error: 'GET_PROFILE_FAILED',
@@ -1191,7 +1191,7 @@ router.put('/profile', authenticateToken, async (req, res) => {
     });
     
   } catch (error) {
-    console.error('Update profile error:', error);
+    logger.error('Update profile error:', error);
     res.status(500).json({
       success: false,
       error: 'UPDATE_PROFILE_FAILED',

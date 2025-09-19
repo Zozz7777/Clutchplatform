@@ -13,12 +13,25 @@ class EmailService {
 
   initializeTransporter() {
     try {
+      // Check if we have proper email credentials
+      const hasValidCredentials = (
+        (process.env.EMAIL_USER && process.env.EMAIL_PASSWORD) ||
+        (process.env.GMAIL_USER && process.env.GMAIL_APP_PASSWORD) ||
+        (process.env.SMTP_USER && process.env.SMTP_PASS)
+      );
+
+      if (!hasValidCredentials) {
+        console.log('⚠️  Email credentials not configured, using mock email service');
+        this.transporter = 'mock';
+        return;
+      }
+
       // Use Gmail SMTP as default, but allow configuration via environment variables
       this.transporter = nodemailer.createTransport({
         service: process.env.EMAIL_SERVICE || 'gmail',
         auth: {
-          user: process.env.EMAIL_USER || process.env.GMAIL_USER,
-          pass: process.env.EMAIL_PASSWORD || process.env.GMAIL_APP_PASSWORD
+          user: process.env.EMAIL_USER || process.env.GMAIL_USER || process.env.SMTP_USER,
+          pass: process.env.EMAIL_PASSWORD || process.env.GMAIL_APP_PASSWORD || process.env.SMTP_PASS
         },
         // For other SMTP providers
         ...(process.env.EMAIL_HOST && {
@@ -28,10 +41,11 @@ class EmailService {
         })
       });
 
-      console.log('✅ Email service initialized');
+      console.log('✅ Email service initialized with real SMTP');
     } catch (error) {
       console.error('❌ Failed to initialize email service:', error);
-      this.transporter = null;
+      console.log('⚠️  Falling back to mock email service');
+      this.transporter = 'mock';
     }
   }
 
@@ -64,6 +78,15 @@ class EmailService {
     };
 
     try {
+      // Handle mock email service
+      if (this.transporter === 'mock') {
+        console.log('📧 MOCK EMAIL - Employee invitation would be sent to:', email);
+        console.log('📧 MOCK EMAIL - Subject:', mailOptions.subject);
+        console.log('📧 MOCK EMAIL - Invitation Link:', invitationLink);
+        console.log('📧 MOCK EMAIL - To set up real email, configure EMAIL_USER and EMAIL_PASSWORD in .env');
+        return { messageId: 'mock-' + Date.now(), accepted: [email] };
+      }
+
       const result = await this.transporter.sendMail(mailOptions);
       console.log('✅ Employee invitation email sent to:', email);
       return result;

@@ -607,6 +607,18 @@
     "activeRate": "معدل النشاط",
     "maintenanceRate": "معدل الصيانة"
   },
+  "csatNps": {
+    "title": "اتجاهات رضا العملاء ودرجة التوصية",
+    "description": "تحليلات رضا العملاء ودرجة التوصية الصافية",
+    "excellent": "ممتاز",
+    "good": "جيد",
+    "poor": "ضعيف",
+    "customerSatisfaction": "رضا العملاء",
+    "netPromoterScore": "درجة التوصية الصافية",
+    "excellentCustomerSatisfaction": "رضا عملاء ممتاز - الحفاظ على الجودة",
+    "highNpsStrongAdvocacy": "درجة توصية عالية - دعوة قوية للعملاء",
+    "lowResponseRateOptimization": "معدل استجابة منخفض - النظر في تحسين الاستطلاع"
+  },
   "fleet": {
     "title": "إدارة الأسطول",
     "description": "مراقبة وإدارة مركبات الأسطول في الوقت الفعلي",

@@ -6,6 +6,7 @@
 
 const { MongoClient } = require('mongodb');
 require('dotenv').config();
+const logger = require('../utils/logger');
 
 let db = null;
 let client = null;
