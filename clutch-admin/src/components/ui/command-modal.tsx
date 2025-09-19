@@ -57,7 +57,7 @@ export function CommandModal({
       onClose();
       setFormData({});
     } catch (error) {
-      console.error('Command modal error:', error);
+      // Command modal error
       toast.error('Operation failed. Please try again.');
     } finally {
       setIsLoading(false);

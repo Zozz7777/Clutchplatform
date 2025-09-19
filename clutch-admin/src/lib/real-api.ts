@@ -141,6 +141,17 @@ export class RealApiService {
     )();
   }
 
+  async getMaintenanceForecast(): Promise<Record<string, unknown>[]> {
+    return withErrorHandling(
+      async () => {
+        const response = await apiService.request<Record<string, unknown>[]>("/api/v1/fleet/maintenance/forecast");
+        return handleApiResponse(response, 'getMaintenanceForecast', []);
+      },
+      'getMaintenanceForecast',
+      { fallbackValue: [], showToast: false }
+    )();
+  }
+
   // Finance APIs
   async getFinancialData(): Promise<Record<string, unknown>[]> {
     return withErrorHandling(

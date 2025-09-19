@@ -145,20 +145,20 @@ export default function AuditTrailPage() {
     loadAuditData();
   }, [t]);
 
-  const filteredAuditLogs = auditLogs.filter((log) => {
-    const matchesSearch = log.resourceName.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         log.action.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         log.userName.toLowerCase().includes(searchTerm.toLowerCase());
+  const filteredAuditLogs = (auditLogs || []).filter((log) => {
+    const matchesSearch = (log.resourceName || '').toLowerCase().includes(searchTerm.toLowerCase()) ||
+                         (log.action || '').toLowerCase().includes(searchTerm.toLowerCase()) ||
+                         (log.userName || '').toLowerCase().includes(searchTerm.toLowerCase());
     const matchesCategory = categoryFilter === "all" || log.category === categoryFilter;
     const matchesSeverity = severityFilter === "all" || log.severity === severityFilter;
     const matchesStatus = statusFilter === "all" || log.status === statusFilter;
     return matchesSearch && matchesCategory && matchesSeverity && matchesStatus;
   });
 
-  const totalLogs = auditLogs.length;
-  const criticalEvents = auditLogs.filter(l => l.severity === "critical").length;
-  const failedActions = auditLogs.filter(l => l.status === "failure").length;
-  const activeUsers = userActivities.filter(a => a.status === "active").length;
+  const totalLogs = (auditLogs || []).length;
+  const criticalEvents = (auditLogs || []).filter(l => l.severity === "critical").length;
+  const failedActions = (auditLogs || []).filter(l => l.status === "failure").length;
+  const activeUsers = (userActivities || []).filter(a => a.status === "active").length;
 
   const getSeverityColor = (severity: string) => {
     switch (severity) {

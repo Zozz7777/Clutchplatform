@@ -94,7 +94,7 @@ export function Chat({ className = '', initialSessionId, onSessionChange }: Chat
           onSessionChange?.(sessionsData[0].id);
         }
       } catch (error) {
-        console.error('Failed to load chat sessions:', error);
+        // Failed to load chat sessions
         toast.error('Failed to load chat sessions');
       }
     };
@@ -168,7 +168,7 @@ export function Chat({ className = '', initialSessionId, onSessionChange }: Chat
           : session
       ));
     } catch (error) {
-      console.error('Failed to send message:', error);
+      // Failed to send message
       toast.error('Failed to send message');
     }
   };
