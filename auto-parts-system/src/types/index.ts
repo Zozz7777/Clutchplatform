@@ -456,6 +456,4 @@ export interface ThemeConfig {
 }
 
 // Export all types
-export * from './api';
-export * from './forms';
-export * from './filters';
+// Additional type exports can be added here as needed

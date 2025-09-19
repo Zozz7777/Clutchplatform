@@ -477,7 +477,7 @@ export default function EnterprisePage() {
                       <Badge variant={getTierColor(client.tier) as "default" | "secondary" | "destructive" | "outline"}>
                         {client.tier}
                       </Badge>
-                      <Badge variant={getSizeColor(client.size) as any}>
+                      <Badge variant={getSizeColor(client.size) as "default" | "secondary" | "destructive" | "outline"}>
                         {client.size}
                       </Badge>
                       {client.whiteLabel.enabled && (

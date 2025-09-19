@@ -179,7 +179,7 @@ export default function HRPage() {
             setInvitations([]);
           }
         } catch (error) {
-          console.error('Failed to load employee invitations:', error);
+          // Error handled by API service
           setInvitations([]);
         }
 
@@ -220,7 +220,7 @@ export default function HRPage() {
           });
         }
       } catch (error) {
-        console.error("Failed to load HR data:", error);
+        // Error handled by API service
         // Ensure arrays are always initialized on error
         setEmployees([]);
         setApplications([]);
@@ -356,7 +356,7 @@ export default function HRPage() {
         setEmployees(data.data || data);
       }
     } catch (error) {
-      console.error(`Failed to ${action} employee:`, error);
+      // Error handled by API service
     }
   };
 
@@ -374,7 +374,7 @@ export default function HRPage() {
         toast.error("Failed to resend invitation");
       }
     } catch (error) {
-      console.error("Resend invitation error:", error);
+      // Error handled by API service
       toast.error("Failed to resend invitation");
     }
   };
@@ -394,7 +394,7 @@ export default function HRPage() {
         toast.error("Failed to cancel invitation");
       }
     } catch (error) {
-      console.error("Cancel invitation error:", error);
+      // Error handled by API service
       toast.error("Failed to cancel invitation");
     }
   };
@@ -477,7 +477,7 @@ export default function HRPage() {
         setApplications(data.data || data);
       }
     } catch (error) {
-      console.error(`Failed to ${action} application:`, error);
+      // Error handled by API service
     }
   };
 

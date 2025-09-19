@@ -93,7 +93,7 @@ export default function FleetPage() {
         setVehicles(vehicleData || []);
         setFilteredVehicles(vehicleData || []);
       } catch (error) {
-        console.error("Failed to load fleet data:", error);
+        // Error handled by API service
         toast.error(t('fleet.failedToLoadFleetData'));
         // Set empty arrays on error - no mock data fallback
         setVehicles([]);

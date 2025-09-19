@@ -269,7 +269,7 @@ export default function ApiPerformancePage() {
                     <p className="text-xs text-muted-foreground">Error Rate</p>
                   </div>
                   
-                  <Badge variant={getStatusColor(endpoint.status) as any}>
+                  <Badge variant={getStatusColor(endpoint.status) as "default" | "secondary" | "destructive" | "outline"}>
                     {endpoint.status}
                   </Badge>
                 </div>

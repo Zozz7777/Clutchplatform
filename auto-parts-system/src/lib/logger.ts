@@ -16,7 +16,7 @@ const logFormat = winston.format.combine(
 
 // Create logger instance
 export const logger = winston.createLogger({
-  level: process.env.NODE_ENV === 'development' ? 'debug' : 'info',
+  level: process.env['NODE_ENV'] === 'development' ? 'debug' : 'info',
   format: logFormat,
   defaultMeta: { service: 'clutch-auto-parts' },
   transports: [

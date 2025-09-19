@@ -359,12 +359,30 @@ export class ProductionApiService {
   }
 
   // Chat/Messaging APIs
+  async getChatChannels(): Promise<Record<string, unknown>[]> {
+    try {
+      return await realApi.getChatChannels();
+    } catch (error) {
+      logger.error("Failed to fetch chat channels:", error);
+      throw new Error("Failed to load chat channels");
+    }
+  }
+
   async getChatMessages(conversationId?: string): Promise<Record<string, unknown>[]> {
     try {
       return await realApi.getChatMessages(conversationId);
     } catch (error) {
       logger.error("Failed to fetch chat messages:", error);
       throw new Error("Failed to load chat messages");
+    }
+  }
+
+  async sendChatMessage(messageData: Record<string, unknown>): Promise<Record<string, unknown>> {
+    try {
+      return await realApi.sendChatMessage(messageData);
+    } catch (error) {
+      logger.error("Failed to send chat message:", error);
+      throw new Error("Failed to send chat message");
     }
   }
 

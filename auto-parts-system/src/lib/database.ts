@@ -420,15 +420,18 @@ export class DatabaseManager {
         return;
       }
 
-      this.db.backup(backupPath, (err) => {
-        if (err) {
-          logger.error('Database backup error:', err);
-          reject(err);
-        } else {
-          logger.info('Database backup completed successfully');
-          resolve();
-        }
-      });
+      // Simple file copy backup for now
+      const fs = require('fs');
+      const path = require('path');
+      
+      try {
+        fs.copyFileSync(this.config.filename, backupPath);
+        logger.info('Database backup completed successfully');
+        resolve();
+      } catch (err) {
+        logger.error('Database backup error:', err);
+        reject(err);
+      }
     });
   }
 }

@@ -2,19 +2,7 @@ import * as bcrypt from 'bcryptjs';
 import * as jwt from 'jsonwebtoken';
 import { DatabaseManager } from './database';
 import { logger } from './logger';
-
-export interface User {
-  id: number;
-  username: string;
-  email: string;
-  role: string;
-  first_name: string;
-  last_name: string;
-  phone?: string;
-  is_active: boolean;
-  created_at: string;
-  updated_at: string;
-}
+import { User, UserRole } from '../types';
 
 export interface LoginCredentials {
   username: string;
@@ -35,7 +23,7 @@ export class AuthManager {
 
   constructor() {
     this.db = new DatabaseManager();
-    this.jwtSecret = process.env.JWT_SECRET || 'clutch-auto-parts-secret-key';
+    this.jwtSecret = process.env['JWT_SECRET'] || 'clutch-auto-parts-secret-key';
   }
 
   async initialize(): Promise<void> {
@@ -46,7 +34,7 @@ export class AuthManager {
   async login(username: string, password: string): Promise<AuthResult> {
     try {
       // Find user by username or email
-      const user = await this.db.get(
+      const user = await this.db.get<User>(
         'SELECT * FROM users WHERE (username = ? OR email = ?) AND is_active = 1',
         [username, username]
       );

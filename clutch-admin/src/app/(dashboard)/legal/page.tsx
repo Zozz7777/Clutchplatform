@@ -170,7 +170,7 @@ export default function LegalPage() {
           });
         }
       } catch (error) {
-        console.error("Failed to load legal data:", error);
+        // Error handled by API service
       } finally {
         setIsLoading(false);
       }
@@ -313,7 +313,7 @@ export default function LegalPage() {
         setContracts(data.data || data);
       }
     } catch (error) {
-      console.error(`Failed to ${action} contract:`, error);
+      // Error handled by API service
     }
   };
 
@@ -377,7 +377,7 @@ export default function LegalPage() {
         setDisputes(data.data || data);
       }
     } catch (error) {
-      console.error(`Failed to ${action} dispute:`, error);
+      // Error handled by API service
     }
   };
 

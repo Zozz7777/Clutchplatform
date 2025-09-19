@@ -102,7 +102,7 @@ export default function CRMPage() {
         setFilteredTickets(ticketsData || []);
         
       } catch (error) {
-        console.error("Failed to load CRM data:", error);
+        // Error handled by API service
         toast.error(t('crm.failedToLoadCrmData'));
         // Set empty arrays on error - no mock data fallback
         setCustomers([]);

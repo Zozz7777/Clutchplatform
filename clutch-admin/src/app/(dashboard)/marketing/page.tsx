@@ -58,7 +58,7 @@ interface Campaign {
   startDate: string;
   endDate: string;
   targetAudience: {
-    demographics: Record<string, any>;
+    demographics: Record<string, unknown>;
     interests: string[];
     behaviors: string[];
     locations: string[];
@@ -92,7 +92,7 @@ interface Lead {
   notes: string;
   createdAt: string;
   lastActivity: string;
-  customFields: Record<string, any>;
+  customFields: Record<string, unknown>;
 }
 
 interface MarketingStats {

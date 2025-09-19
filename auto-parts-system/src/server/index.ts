@@ -32,7 +32,7 @@ class ClutchAutoPartsServer {
 
   constructor() {
     this.app = express();
-    this.port = parseInt(process.env.PORT || '3000');
+    this.port = parseInt(process.env['PORT'] || '3000');
     this.databaseManager = new DatabaseManager();
     this.authManager = new AuthManager();
     this.syncManager = new SyncManager();
@@ -109,7 +109,7 @@ class ClutchAutoPartsServer {
         status: 'healthy',
         timestamp: new Date().toISOString(),
         uptime: process.uptime(),
-        version: process.env.npm_package_version || '1.0.0'
+        version: process.env['npm_package_version'] || '1.0.0'
       });
     });
 
@@ -175,7 +175,7 @@ class ClutchAutoPartsServer {
 
       this.server = this.app.listen(this.port, () => {
         logger.info(`Clutch Auto Parts Server running on port ${this.port}`);
-        logger.info(`Environment: ${process.env.NODE_ENV || 'development'}`);
+        logger.info(`Environment: ${process.env['NODE_ENV'] || 'development'}`);
         logger.info(`Health check: http://localhost:${this.port}/health`);
       });
 

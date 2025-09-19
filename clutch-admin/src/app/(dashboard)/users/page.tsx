@@ -79,7 +79,7 @@ export default function UsersPage() {
         setUsers(userData || []);
         setFilteredUsers(userData || []);
       } catch (error) {
-        console.error("Failed to load users:", error);
+        // Error handled by API service
         toast.error(t('users.failedToLoadUsers'));
         // Set empty arrays on error - no mock data fallback
         setUsers([]);

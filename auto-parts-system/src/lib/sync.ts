@@ -212,7 +212,7 @@ export class SyncManager {
           // Mark as failed
           await this.db.exec(
             'UPDATE sync_log SET status = ?, error_message = ? WHERE id = ?',
-            ['failed', error.message, change.id]
+            ['failed', (error as Error).message, change.id]
           );
         }
       }

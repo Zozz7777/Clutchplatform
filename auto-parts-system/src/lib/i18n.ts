@@ -57,12 +57,13 @@ export class I18nManager {
     if (!this.isInitialized) {
       return key;
     }
-    return i18next.t(key, options);
+    const result = i18next.t(key, options);
+    return typeof result === 'string' ? result : key;
   }
 
-  changeLanguage(lng: string): Promise<void> {
+  async changeLanguage(lng: string): Promise<void> {
     this.config.lng = lng;
-    return i18next.changeLanguage(lng);
+    await i18next.changeLanguage(lng);
   }
 
   getCurrentLanguage(): string {

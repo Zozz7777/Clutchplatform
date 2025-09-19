@@ -77,7 +77,7 @@ export default function DashboardPage() {
   const [kpiMetrics, setKpiMetrics] = useState<KPIMetric[]>([]);
   const [fleetVehicles, setFleetVehicles] = useState<FleetVehicle[]>([]);
   const [notifications, setNotifications] = useState<Notification[]>([]);
-  const [performanceMetrics, setPerformanceMetrics] = useState<any>(null);
+  const [performanceMetrics, setPerformanceMetrics] = useState<Record<string, unknown> | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const { hasPermission } = useAuth();
   const { t } = useTranslations();
@@ -114,7 +114,7 @@ export default function DashboardPage() {
         setNotifications(Array.isArray(notifs) ? notifs.slice(0, 5) : []);
         setPerformanceMetrics(perf);
       } catch (error) {
-        console.error("Failed to load dashboard data:", error);
+        // Error handled by API service
         // Set empty arrays on error - no mock data fallback in production
         setKpiMetrics([]);
         setFleetVehicles([]);
