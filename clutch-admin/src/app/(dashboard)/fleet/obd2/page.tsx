@@ -427,7 +427,8 @@ export default function OBD2Page() {
                         <div className="text-right">
                           <Badge variant="secondary">Connected</Badge>
                           <p className="text-sm text-muted-foreground mt-1">
-                            {Math.floor(Math.random() * 20) + 15} sensors
+                            {/* TODO: Get actual sensor count from API */}
+                            N/A sensors
                           </p>
                         </div>
                       </div>
@@ -540,7 +541,8 @@ export default function OBD2Page() {
                         <div className="text-right">
                           <Badge variant="secondary">Maintenance Due</Badge>
                           <p className="text-sm text-muted-foreground mt-1">
-                            {Math.floor(Math.random() * 7) + 1} days
+                            {/* TODO: Get actual maintenance due date from API */}
+                            N/A days
                           </p>
                         </div>
                       </div>

@@ -31,7 +31,7 @@ interface FunnelStage {
   conversionRate: number;
   dropoffRate: number;
   color: string;
-  icon: any;
+  icon: React.ComponentType<{ className?: string }>;
 }
 
 export function AdoptionFunnel({ className = '' }: AdoptionFunnelProps) {

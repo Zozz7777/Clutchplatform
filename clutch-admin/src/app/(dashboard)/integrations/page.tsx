@@ -46,6 +46,8 @@ import {
 } from "lucide-react";
 import { productionApi } from "@/lib/production-api";
 import { useTranslations } from "@/hooks/use-translations";
+import { logger } from "@/lib/logger";
+import { toast } from "sonner";
 
 interface Integration {
   _id: string;
@@ -134,218 +136,6 @@ export default function IntegrationsPage() {
   const [showTemplatesDialog, setShowTemplatesDialog] = useState(false);
   const [selectedIntegration, setSelectedIntegration] = useState<Integration | null>(null);
 
-    {
-      _id: "1",
-      name: "Paymob Payment Gateway",
-      description: "Egyptian payment gateway for processing online payments",
-      type: "payment",
-      category: "Payment Processing",
-      status: "active",
-      provider: {
-        name: "Paymob",
-        website: "https://paymob.com",
-        logo: "/logos/paymob.png",
-      },
-      configuration: {
-        apiKey: "pk_test_***",
-        endpoints: ["/api/v1/payments", "/api/v1/refunds"],
-        rateLimit: 1000,
-        timeout: 30000,
-      },
-      health: {
-        status: "healthy",
-        lastCheck: "2024-03-15T14:30:00Z",
-        responseTime: 245,
-        uptime: 99.9,
-        errorRate: 0.1,
-      },
-      usage: {
-        requestsToday: 1250,
-        requestsThisMonth: 35000,
-        lastUsed: "2024-03-15T14:25:00Z",
-        quota: {
-          limit: 100000,
-          used: 35000,
-          resetDate: "2024-04-01T00:00:00Z",
-        },
-      },
-      security: {
-        encryption: true,
-        authentication: "API Key + OAuth",
-        dataRetention: 90,
-        compliance: ["PCI DSS", "GDPR"],
-      },
-      logs: {
-        total: 35000,
-        errors: 35,
-        lastError: {
-          message: "Timeout on payment processing",
-          timestamp: "2024-03-14T16:45:00Z",
-          severity: "medium",
-        },
-      },
-      createdAt: "2024-01-15T10:00:00Z",
-      updatedAt: "2024-03-15T14:30:00Z",
-    },
-    {
-      _id: "2",
-      name: "Twilio SMS Service",
-      description: "SMS and messaging service for notifications",
-      type: "communication",
-      category: "Messaging",
-      status: "active",
-      provider: {
-        name: "Twilio",
-        website: "https://twilio.com",
-        logo: "/logos/twilio.png",
-      },
-      configuration: {
-        apiKey: "AC***",
-        webhookUrl: "https://api.yourclutch.com/webhooks/twilio",
-        endpoints: ["/api/v1/messages", "/api/v1/phone-numbers"],
-        rateLimit: 500,
-        timeout: 15000,
-      },
-      health: {
-        status: "healthy",
-        lastCheck: "2024-03-15T14:30:00Z",
-        responseTime: 180,
-        uptime: 99.8,
-        errorRate: 0.2,
-      },
-      usage: {
-        requestsToday: 850,
-        requestsThisMonth: 25000,
-        lastUsed: "2024-03-15T14:20:00Z",
-        quota: {
-          limit: 50000,
-          used: 25000,
-          resetDate: "2024-04-01T00:00:00Z",
-        },
-      },
-      security: {
-        encryption: true,
-        authentication: "API Key",
-        dataRetention: 30,
-        compliance: ["GDPR", "HIPAA"],
-      },
-      logs: {
-        total: 25000,
-        errors: 50,
-        lastError: {
-          message: "Invalid phone number format",
-          timestamp: "2024-03-15T10:30:00Z",
-          severity: "low",
-        },
-      },
-      createdAt: "2024-02-01T09:00:00Z",
-      updatedAt: "2024-03-15T14:30:00Z",
-    },
-    {
-      _id: "3",
-      name: "Google Analytics 4",
-      description: "Web analytics service for tracking user behavior",
-      type: "analytics",
-      category: "Analytics",
-      status: "error",
-      provider: {
-        name: "Google",
-        website: "https://analytics.google.com",
-        logo: "/logos/google-analytics.png",
-      },
-      configuration: {
-        apiKey: "G-***",
-        endpoints: ["/api/v1/data", "/api/v1/reports"],
-        rateLimit: 10000,
-        timeout: 60000,
-      },
-      health: {
-        status: "down",
-        lastCheck: "2024-03-15T14:30:00Z",
-        responseTime: 0,
-        uptime: 95.2,
-        errorRate: 5.8,
-      },
-      usage: {
-        requestsToday: 0,
-        requestsThisMonth: 15000,
-        lastUsed: "2024-03-14T18:00:00Z",
-        quota: {
-          limit: 1000000,
-          used: 15000,
-          resetDate: "2024-04-01T00:00:00Z",
-        },
-      },
-      security: {
-        encryption: true,
-        authentication: "OAuth 2.0",
-        dataRetention: 365,
-        compliance: ["GDPR", "CCPA"],
-      },
-      logs: {
-        total: 15000,
-        errors: 870,
-        lastError: {
-          message: "Authentication token expired",
-          timestamp: "2024-03-15T12:00:00Z",
-          severity: "high",
-        },
-      },
-      createdAt: "2024-01-20T11:30:00Z",
-      updatedAt: "2024-03-15T12:00:00Z",
-    },
-  ];
-
-  const mockTemplates: IntegrationTemplate[] = [
-    {
-      _id: "1",
-      name: "Stripe Payment Gateway",
-      description: "Global payment processing with support for multiple currencies",
-      type: "payment",
-      category: "Payment Processing",
-      provider: "Stripe",
-      features: ["Credit Cards", "Digital Wallets", "Bank Transfers", "Cryptocurrency"],
-      pricing: {
-        model: "per_request",
-        cost: 0.029,
-        currency: "USD",
-      },
-      documentation: "https://stripe.com/docs",
-      setupSteps: [
-        "Create Stripe account",
-        "Get API keys",
-        "Configure webhook endpoints",
-        "Test integration",
-      ],
-      isPopular: true,
-      rating: 4.8,
-      reviewCount: 1250,
-    },
-    {
-      _id: "2",
-      name: "SendGrid Email Service",
-      description: "Reliable email delivery service for transactional and marketing emails",
-      type: "communication",
-      category: "Email",
-      provider: "SendGrid",
-      features: ["Transactional Email", "Marketing Campaigns", "Email Templates", "Analytics"],
-      pricing: {
-        model: "monthly",
-        cost: 19.95,
-        currency: "USD",
-      },
-      documentation: "https://sendgrid.com/docs",
-      setupSteps: [
-        "Create SendGrid account",
-        "Verify domain",
-        "Generate API key",
-        "Configure SMTP settings",
-      ],
-      isPopular: true,
-      rating: 4.6,
-      reviewCount: 890,
-    },
-  ];
 
   useEffect(() => {
     loadIntegrations();
@@ -358,7 +148,7 @@ export default function IntegrationsPage() {
       const data = await productionApi.getIntegrations();
       setIntegrations(data || []);
     } catch (error) {
-      console.error("Error loading integrations:", error);
+      logger.error("Error loading integrations:", error);
       toast.error(t('integrations.failedToLoadIntegrations'));
       setIntegrations([]);
     } finally {
@@ -371,7 +161,7 @@ export default function IntegrationsPage() {
       const data = await productionApi.getIntegrationTemplates();
       setTemplates(data || []);
     } catch (error) {
-      console.error("Error loading templates:", error);
+      logger.error("Error loading templates:", error);
       toast.error("Failed to load integration templates");
       setTemplates([]);
     }

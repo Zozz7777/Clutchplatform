@@ -222,8 +222,8 @@ export default function LiveOpsMap({ className }: LiveOpsMapProps) {
           prev.map(location => ({
             ...location,
             lastUpdate: 'Just now',
-            speed: location.status === 'active' ? Math.floor(Math.random() * 60) : 0,
-            fuel: Math.max(0, location.fuel! - Math.random() * 2)
+            speed: location.status === 'active' ? 0 : 0, // TODO: Get actual speed from API
+            fuel: location.fuel // TODO: Get actual fuel level from API
           }))
         );
         setLastUpdate(new Date());

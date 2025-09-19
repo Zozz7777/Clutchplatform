@@ -30,7 +30,7 @@ interface ChurnReason {
   count: number;
   impact: 'high' | 'medium' | 'low';
   description: string;
-  icon: any;
+  icon: React.ComponentType<{ className?: string }>;
   color: string;
   trend: 'up' | 'down' | 'stable';
 }

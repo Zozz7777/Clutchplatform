@@ -547,6 +547,51 @@ export class RealApiService {
       { fallbackValue: [], showToast: false }
     )();
   }
+
+  // Mobile Apps APIs
+  async getMobileAppVersions(): Promise<Record<string, unknown>[]> {
+    return withErrorHandling(
+      async () => {
+        const response = await apiService.request<Record<string, unknown>[]>("/api/v1/mobile-apps/versions");
+        return handleApiResponse(response, 'getMobileAppVersions', []);
+      },
+      'getMobileAppVersions',
+      { fallbackValue: [], showToast: false }
+    )();
+  }
+
+  async getMobileAppCrashes(): Promise<Record<string, unknown>[]> {
+    return withErrorHandling(
+      async () => {
+        const response = await apiService.request<Record<string, unknown>[]>("/api/v1/mobile-apps/crashes");
+        return handleApiResponse(response, 'getMobileAppCrashes', []);
+      },
+      'getMobileAppCrashes',
+      { fallbackValue: [], showToast: false }
+    )();
+  }
+
+  async getMobileAppAnalytics(): Promise<Record<string, unknown>[]> {
+    return withErrorHandling(
+      async () => {
+        const response = await apiService.request<Record<string, unknown>[]>("/api/v1/mobile-apps/analytics");
+        return handleApiResponse(response, 'getMobileAppAnalytics', []);
+      },
+      'getMobileAppAnalytics',
+      { fallbackValue: [], showToast: false }
+    )();
+  }
+
+  async getMobileAppStores(): Promise<Record<string, unknown>[]> {
+    return withErrorHandling(
+      async () => {
+        const response = await apiService.request<Record<string, unknown>[]>("/api/v1/mobile-apps/stores");
+        return handleApiResponse(response, 'getMobileAppStores', []);
+      },
+      'getMobileAppStores',
+      { fallbackValue: [], showToast: false }
+    )();
+  }
 }
 
 // Export singleton instance

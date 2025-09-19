@@ -460,10 +460,10 @@ export default function CriticalAccountsTracker({ className }: CriticalAccountsT
     const interval = setInterval(() => {
       setAccounts(prev => prev.map(account => ({
         ...account,
-        healthScore: Math.max(0, Math.min(100, account.healthScore + (Math.random() - 0.5) * 2)),
+        healthScore: account.healthScore, // Use actual health score without random variation
         engagement: {
           ...account.engagement,
-          score: Math.max(0, Math.min(100, account.engagement.score + (Math.random() - 0.5) * 2))
+          score: account.engagement.score // Use actual engagement score without random variation
         }
       })));
     }, 30000);

@@ -41,7 +41,7 @@ interface SystemHealth {
     };
   };
   cpu: {
-    usage: any;
+    usage: Record<string, unknown>;
     loadAverage: number[];
   };
   platform: {

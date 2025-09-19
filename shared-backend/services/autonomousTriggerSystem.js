@@ -645,8 +645,8 @@ class AutonomousTriggerSystem {
 
   // Helper methods for monitoring
   async getCpuUsage() {
-    // Simplified CPU usage calculation
-    return Math.random() * 100; // Replace with actual CPU monitoring
+    // TODO: Implement actual CPU monitoring
+    return 0; // TODO: Get actual CPU usage from system monitoring
   }
 
   async calculateErrorRate() {

@@ -31,7 +31,7 @@ interface FeatureData {
   trend: 'up' | 'down' | 'stable';
   category: string;
   description: string;
-  icon: any;
+  icon: React.ComponentType<{ className?: string }>;
 }
 
 export function FeatureUsage({ className = '' }: FeatureUsageProps) {

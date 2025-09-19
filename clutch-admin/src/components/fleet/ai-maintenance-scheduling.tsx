@@ -504,7 +504,7 @@ export default function AIMaintenanceScheduling({ className }: AIMaintenanceSche
       ...task,
       aiRecommendations: {
         ...task.aiRecommendations,
-        confidence: Math.min(100, task.aiRecommendations.confidence + Math.random() * 5)
+        confidence: task.aiRecommendations.confidence // Use actual confidence without random variation
       }
     })));
   };

@@ -411,7 +411,8 @@ export default function FleetOverviewPage() {
                         <div className="text-right">
                           <Badge variant="secondary">Optimized</Badge>
                           <p className="text-sm text-muted-foreground mt-1">
-                            {Math.floor(Math.random() * 20) + 5} min saved
+                            {/* TODO: Get actual time saved from API */}
+                            N/A min saved
                           </p>
                         </div>
                       </div>

@@ -24,7 +24,7 @@ interface CommandModalProps {
     required?: boolean;
     options?: { value: string; label: string }[];
   }[];
-  onSubmit: (data: any) => Promise<void>;
+  onSubmit: (data: Record<string, unknown>) => Promise<void>;
   submitText?: string;
   cancelText?: string;
   variant?: 'default' | 'destructive' | 'warning';
@@ -280,7 +280,7 @@ export function InputModal({
     required?: boolean;
     options?: { value: string; label: string }[];
   }[];
-  onSubmit: (data: any) => Promise<void>;
+  onSubmit: (data: Record<string, unknown>) => Promise<void>;
   submitText?: string;
   cancelText?: string;
 }) {
