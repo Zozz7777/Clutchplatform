@@ -164,10 +164,10 @@ export default function MarketingPage() {
           setStats(statsData.data || statsData);
         } else {
           // Calculate stats from loaded data
-          const totalCampaigns = campaigns.length;
-          const activeCampaigns = campaigns.filter(c => c.status === "active").length;
-          const totalSpent = campaigns.reduce((sum, c) => sum + c.spent, 0);
-          const totalLeads = leads.length;
+          const totalCampaigns = (campaigns || []).length;
+          const activeCampaigns = (campaigns || []).filter(c => c.status === "active").length;
+          const totalSpent = (campaigns || []).reduce((sum, c) => sum + (c.spent || 0), 0);
+          const totalLeads = (leads || []).length;
           const conversionRate = campaigns.length > 0 
             ? campaigns.reduce((sum, c) => sum + c.metrics.conversions, 0) / 
               campaigns.reduce((sum, c) => sum + c.metrics.clicks, 0) * 100 

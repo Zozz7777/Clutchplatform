@@ -7,10 +7,10 @@ const os = require('os');
 const fs = require('fs').promises;
 const RealSystemMonitoringService = require('../services/realSystemMonitoringService');
 
-// Rate limiting
+// Rate limiting - more lenient for dashboard polling
 const healthLimiter = rateLimit({
-  windowMs: 5 * 60 * 1000, // 5 minutes
-  max: 20, // limit each IP to 20 requests per windowMs
+  windowMs: 1 * 60 * 1000, // 1 minute
+  max: 100, // limit each IP to 100 requests per minute
   message: 'Too many health check requests from this IP, please try again later.'
 });
 

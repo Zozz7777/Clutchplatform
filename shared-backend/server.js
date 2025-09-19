@@ -115,6 +115,7 @@ const filesRoutes = require('./routes/files');
 const apiDocsRoutes = require('./routes/api-docs');
 const mobileAppsRoutes = require('./routes/mobile-apps');
 const operationsRoutes = require('./routes/operations');
+const securityRoutes = require('./routes/security');
 
 // Import newly created routes
 const supportRoutes = require('./routes/support');
@@ -280,6 +281,7 @@ app.use('/api/v1/files', filesRoutes);
 app.use('/api/v1/docs', apiDocsRoutes);
 app.use('/api/v1/mobile-apps', mobileAppsRoutes);
 app.use('/api/v1/operations', operationsRoutes);
+app.use('/api/v1/security', securityRoutes);
 
 // Test endpoints
 app.get('/test', (req, res) => {

@@ -4,10 +4,10 @@ const rateLimit = require('express-rate-limit');
 const { authenticateToken, checkRole } = require('../middleware/unified-auth');
 const { getCollection } = require('../config/optimized-database');
 
-// More lenient rate limit for notifications
+// More lenient rate limit for notifications - increased for dashboard polling
 const notificationLimiter = rateLimit({
-  windowMs: 15 * 60 * 1000, // 15 minutes
-  max: process.env.NODE_ENV === 'development' ? 500 : 50, // More lenient for notifications
+  windowMs: 1 * 60 * 1000, // 1 minute
+  max: process.env.NODE_ENV === 'development' ? 200 : 100, // Increased for dashboard polling
   message: { 
     success: false,
     error: 'RATE_LIMIT_EXCEEDED',

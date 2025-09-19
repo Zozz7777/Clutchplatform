@@ -122,7 +122,13 @@ const OPTIMIZED_COLLECTIONS = [
   'cms_categories',       // CMS content categories
   'cms_media',            // CMS media files
   'help_articles',        // Help articles
-  'seo_data'              // SEO data
+  'seo_data',             // SEO data
+  
+  // Security Collections
+  'security_alerts',      // Security alerts and threats
+  'security_logs',        // Security event logs
+  'threat_intelligence',  // Threat intelligence data
+  'security_incidents'    // Security incident reports
 ];
 
 // Collections to REMOVE (redundant/unused)

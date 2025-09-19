@@ -1198,6 +1198,18 @@ export class RealApiService {
       { fallbackValue: [], showToast: false }
     )();
   }
+
+  // Security APIs
+  async getSecurityAlerts(): Promise<Record<string, unknown>[]> {
+    return withErrorHandling(
+      async () => {
+        const response = await apiService.request<Record<string, unknown>[]>("/api/v1/security/alerts");
+        return handleApiResponse(response, 'getSecurityAlerts', []);
+      },
+      'getSecurityAlerts',
+      { fallbackValue: [], showToast: false }
+    )();
+  }
 }
 
 // Export singleton instance

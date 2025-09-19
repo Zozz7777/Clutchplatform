@@ -71,7 +71,7 @@ class ApiService {
 
   private async performTokenRefresh(): Promise<string | null> {
     if (!this.refreshToken) {
-      console.error("No refresh token available");
+      // No refresh token available
       this.logout();
       return null;
     }
@@ -100,11 +100,11 @@ class ApiService {
           this.setTokens(token, refreshToken);
           return token;
         } else {
-          console.error("🔄 Refresh response missing token:", data);
+          // Refresh response missing token
         }
       } else {
         const errorData = await response.json();
-        console.error("🔄 Refresh failed:", errorData);
+        // Refresh failed
       }
     } catch (error) {
       console.error("Token refresh failed:", error);
