@@ -65,7 +65,7 @@ export function Header({ onMenuToggle }: HeaderProps) {
         const notifications = response?.data?.notifications || response?.data || response || [];
         setNotifications(Array.isArray(notifications) ? notifications.slice(0, 5) : []);
       } catch (error) {
-        console.error("Failed to fetch notifications:", error);
+        // Failed to fetch notifications
         setNotifications([]); // Set empty array on error
       } finally {
         setNotificationsLoading(false);
