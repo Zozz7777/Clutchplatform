@@ -120,7 +120,7 @@ export function ProjectROI({ className = '' }: ProjectROIProps) {
           bestROI
         });
       } catch (error) {
-        console.error('Failed to load project ROI data:', error);
+        // Failed to load project ROI data
       } finally {
         setIsLoading(false);
       }

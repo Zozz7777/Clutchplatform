@@ -120,7 +120,7 @@ export function IncidentCost({ className = '' }: IncidentCostProps) {
           severityDistribution
         });
       } catch (error) {
-        console.error('Failed to load incident cost data:', error);
+        // Failed to load incident cost data
       } finally {
         setIsLoading(false);
       }

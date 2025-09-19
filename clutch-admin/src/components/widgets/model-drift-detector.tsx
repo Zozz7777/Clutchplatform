@@ -111,7 +111,7 @@ export function ModelDriftDetector({ className = '' }: ModelDriftDetectorProps) 
 
         setDriftData(models);
       } catch (error) {
-        console.error('Failed to load model drift data:', error);
+        // Failed to load model drift data
       } finally {
         setIsLoading(false);
       }

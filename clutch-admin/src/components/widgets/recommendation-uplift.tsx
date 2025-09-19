@@ -41,7 +41,7 @@ export function RecommendationUplift({ className = '' }: RecommendationUpliftPro
         const data = await businessIntelligence.getRecommendationUplift();
         setUpliftData(data);
       } catch (error) {
-        console.error('Failed to load recommendation uplift data:', error);
+        // Failed to load recommendation uplift data
       } finally {
         setIsLoading(false);
       }

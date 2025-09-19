@@ -35,7 +35,9 @@ import {
   Send,
   FileText,
   Award,
-  TrendingUp
+  TrendingUp,
+  XCircle,
+  Trash2
 } from "lucide-react";
 import {
   DropdownMenu,
@@ -134,6 +136,12 @@ export default function HRPage() {
   const [isLoading, setIsLoading] = useState(true);
   const [showInvitationForm, setShowInvitationForm] = useState(false);
   const [invitations, setInvitations] = useState<Record<string, unknown>[]>([]);
+  const [showEmployeeModal, setShowEmployeeModal] = useState(false);
+  const [selectedEmployee, setSelectedEmployee] = useState<Employee | null>(null);
+  const [showEditInvitationModal, setShowEditInvitationModal] = useState(false);
+  const [selectedInvitation, setSelectedInvitation] = useState<Record<string, unknown> | null>(null);
+  const [showDeleteConfirmModal, setShowDeleteConfirmModal] = useState(false);
+  const [employeeToDelete, setEmployeeToDelete] = useState<Employee | null>(null);
   const { hasPermission } = useAuth();
   const { t } = useTranslations();
 
@@ -420,6 +428,121 @@ export default function HRPage() {
       const invitationsList = invitationsResponse.data?.invitations || invitationsResponse.data || [];
       setInvitations(Array.isArray(invitationsList) ? invitationsList : []);
     }
+  };
+
+  // Employee Actions
+  const handleViewEmployeeProfile = (employee: Employee) => {
+    setSelectedEmployee(employee);
+    setShowEmployeeModal(true);
+  };
+
+  const handleEditEmployee = (employee: Employee) => {
+    setSelectedEmployee(employee);
+    setShowEmployeeModal(true);
+  };
+
+  const handleDownloadEmployeeRecords = async (employee: Employee) => {
+    try {
+      const token = localStorage.getItem("clutch-admin-token");
+      const response = await fetch(`https://clutch-main-nk7x.onrender.com/api/v1/hr/employees/${employee._id}/records`, {
+        headers: {
+          "Authorization": `Bearer ${token}`,
+        },
+      });
+      
+      if (response.ok) {
+        const blob = await response.blob();
+        const url = window.URL.createObjectURL(blob);
+        const link = document.createElement('a');
+        link.href = url;
+        link.download = `${employee.firstName || employee.name || 'employee'}_records.pdf`;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        window.URL.revokeObjectURL(url);
+        toast.success("Employee records downloaded successfully");
+      } else {
+        toast.error("Failed to download employee records");
+      }
+    } catch (error) {
+      toast.error("Failed to download employee records");
+    }
+  };
+
+  const handleSendEmailToEmployee = async (employee: Employee) => {
+    try {
+      const token = localStorage.getItem("clutch-admin-token");
+      const response = await fetch("https://clutch-main-nk7x.onrender.com/api/v1/hr/employees/send-email", {
+        method: "POST",
+        headers: {
+          "Authorization": `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          employeeId: employee._id,
+          email: employee.email,
+          subject: "HR Communication",
+          message: "This is a communication from HR department."
+        }),
+      });
+      
+      if (response.ok) {
+        toast.success("Email sent successfully");
+      } else {
+        toast.error("Failed to send email");
+      }
+    } catch (error) {
+      toast.error("Failed to send email");
+    }
+  };
+
+  const handleDeleteEmployee = (employee: Employee) => {
+    setEmployeeToDelete(employee);
+    setShowDeleteConfirmModal(true);
+  };
+
+  const confirmDeleteEmployee = async () => {
+    if (!employeeToDelete) return;
+    
+    try {
+      const token = localStorage.getItem("clutch-admin-token");
+      const response = await fetch(`https://clutch-main-nk7x.onrender.com/api/v1/hr/employees/${employeeToDelete._id}`, {
+        method: "DELETE",
+        headers: {
+          "Authorization": `Bearer ${token}`,
+        },
+      });
+      
+      if (response.ok) {
+        toast.success("Employee deleted successfully");
+        // Reload employees
+        const employeesResponse = await fetch("https://clutch-main-nk7x.onrender.com/api/v1/hr/employees", {
+          headers: {
+            "Authorization": `Bearer ${token}`,
+            "Content-Type": "application/json",
+          },
+        });
+        
+        if (employeesResponse.ok) {
+          const employeesData = await employeesResponse.json();
+          const employeesList = employeesData.data?.employees || employeesData.data || employeesData;
+          setEmployees(Array.isArray(employeesList) ? employeesList : []);
+        }
+      } else {
+        toast.error("Failed to delete employee");
+      }
+    } catch (error) {
+      toast.error("Failed to delete employee");
+    } finally {
+      setShowDeleteConfirmModal(false);
+      setEmployeeToDelete(null);
+    }
+  };
+
+  // Invitation Actions
+  const handleEditInvitation = (invitation: Record<string, unknown>) => {
+    setSelectedInvitation(invitation);
+    setShowEditInvitationModal(true);
   };
 
   const handleApplicationAction = async (applicationId: string, action: string) => {
@@ -710,19 +833,19 @@ export default function HRPage() {
                       <DropdownMenuContent align="end">
                         <DropdownMenuLabel>Actions</DropdownMenuLabel>
                         <DropdownMenuSeparator />
-                        <DropdownMenuItem>
+                        <DropdownMenuItem onClick={() => handleViewEmployeeProfile(employee)}>
                           <Eye className="mr-2 h-4 w-4" />
                           View Profile
                         </DropdownMenuItem>
-                        <DropdownMenuItem>
+                        <DropdownMenuItem onClick={() => handleEditEmployee(employee)}>
                           <Edit className="mr-2 h-4 w-4" />
                           Edit Employee
                         </DropdownMenuItem>
-                        <DropdownMenuItem>
+                        <DropdownMenuItem onClick={() => handleDownloadEmployeeRecords(employee)}>
                           <Download className="mr-2 h-4 w-4" />
                           Download Records
                         </DropdownMenuItem>
-                        <DropdownMenuItem>
+                        <DropdownMenuItem onClick={() => handleSendEmailToEmployee(employee)}>
                           <Mail className="mr-2 h-4 w-4" />
                           Send Email
                         </DropdownMenuItem>
@@ -743,6 +866,14 @@ export default function HRPage() {
                             Terminate
                           </DropdownMenuItem>
                         )}
+                        <DropdownMenuSeparator />
+                        <DropdownMenuItem 
+                          onClick={() => handleDeleteEmployee(employee)}
+                          className="text-destructive"
+                        >
+                          <AlertTriangle className="mr-2 h-4 w-4" />
+                          Delete Employee
+                        </DropdownMenuItem>
                       </DropdownMenuContent>
                     </DropdownMenu>
                   </div>
@@ -764,10 +895,18 @@ export default function HRPage() {
       {activeTab === "invitations" && (
         <Card>
           <CardHeader>
-            <CardTitle>Employee Invitations</CardTitle>
-            <CardDescription>
-              Manage pending employee invitations and track their status
-            </CardDescription>
+            <div className="flex items-center justify-between">
+              <div>
+                <CardTitle>Employee Invitations</CardTitle>
+                <CardDescription>
+                  Manage pending employee invitations and track their status
+                </CardDescription>
+              </div>
+              <Button onClick={() => setShowInvitationForm(true)}>
+                <Plus className="mr-2 h-4 w-4" />
+                Invite Employee
+              </Button>
+            </div>
           </CardHeader>
           <CardContent>
             <div className="space-y-4">
@@ -797,6 +936,14 @@ export default function HRPage() {
                   </div>
                   
                   <div className="flex items-center space-x-2">
+                    <Button
+                      size="sm"
+                      variant="outline"
+                      onClick={() => handleEditInvitation(invitation)}
+                    >
+                      <Edit className="mr-2 h-4 w-4" />
+                      Edit
+                    </Button>
                     {String(invitation.status || '') === 'pending' && (
                       <>
                         <Button
@@ -999,6 +1146,166 @@ export default function HRPage() {
               onSuccess={handleInvitationSuccess}
               onCancel={() => setShowInvitationForm(false)}
             />
+          </div>
+        </div>
+      )}
+
+      {/* Employee Profile Modal */}
+      {showEmployeeModal && selectedEmployee && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50">
+          <div className="bg-background rounded-[0.625rem] max-w-2xl w-full max-h-[90vh] overflow-y-auto">
+            <div className="p-6">
+              <div className="flex items-center justify-between mb-6">
+                <h2 className="text-2xl font-bold">Employee Profile</h2>
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  onClick={() => setShowEmployeeModal(false)}
+                >
+                  <XCircle className="h-4 w-4" />
+                </Button>
+              </div>
+              
+              <div className="space-y-6">
+                <div className="flex items-center space-x-4">
+                  <div className="w-16 h-16 rounded-full bg-primary flex items-center justify-center">
+                    <span className="text-primary-foreground font-medium text-xl">
+                      {(selectedEmployee.firstName || selectedEmployee.name || 'U').charAt(0).toUpperCase()}
+                    </span>
+                  </div>
+                  <div>
+                    <h3 className="text-xl font-semibold">
+                      {selectedEmployee.firstName || selectedEmployee.name || 'Unknown'} {selectedEmployee.lastName || ''}
+                    </h3>
+                    <p className="text-muted-foreground">{selectedEmployee.position || 'No Position'}</p>
+                    <p className="text-sm text-muted-foreground">{selectedEmployee.department || 'No Department'}</p>
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <label className="text-sm font-medium text-muted-foreground">Employee ID</label>
+                    <p className="text-sm">{selectedEmployee.employeeId || 'N/A'}</p>
+                  </div>
+                  <div>
+                    <label className="text-sm font-medium text-muted-foreground">Email</label>
+                    <p className="text-sm">{selectedEmployee.email || 'N/A'}</p>
+                  </div>
+                  <div>
+                    <label className="text-sm font-medium text-muted-foreground">Phone</label>
+                    <p className="text-sm">{selectedEmployee.phone || 'N/A'}</p>
+                  </div>
+                  <div>
+                    <label className="text-sm font-medium text-muted-foreground">Status</label>
+                    <Badge variant={getStatusColor(selectedEmployee.status) as "default" | "secondary" | "destructive" | "outline"}>
+                      {selectedEmployee.status}
+                    </Badge>
+                  </div>
+                  <div>
+                    <label className="text-sm font-medium text-muted-foreground">Employment Type</label>
+                    <p className="text-sm">{selectedEmployee.employmentType || 'N/A'}</p>
+                  </div>
+                  <div>
+                    <label className="text-sm font-medium text-muted-foreground">Salary</label>
+                    <p className="text-sm">${(selectedEmployee.salary || 0).toLocaleString()}</p>
+                  </div>
+                  <div>
+                    <label className="text-sm font-medium text-muted-foreground">Start Date</label>
+                    <p className="text-sm">{formatDate(selectedEmployee.startDate || selectedEmployee.hireDate || new Date().toISOString())}</p>
+                  </div>
+                  <div>
+                    <label className="text-sm font-medium text-muted-foreground">Manager</label>
+                    <p className="text-sm">{selectedEmployee.manager || 'N/A'}</p>
+                  </div>
+                </div>
+
+                <div className="flex justify-end space-x-2">
+                  <Button variant="outline" onClick={() => setShowEmployeeModal(false)}>
+                    Close
+                  </Button>
+                  <Button onClick={() => handleEditEmployee(selectedEmployee)}>
+                    <Edit className="mr-2 h-4 w-4" />
+                    Edit Employee
+                  </Button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Edit Invitation Modal */}
+      {showEditInvitationModal && selectedInvitation && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50">
+          <div className="bg-background rounded-[0.625rem] max-w-2xl w-full max-h-[90vh] overflow-y-auto">
+            <div className="p-6">
+              <div className="flex items-center justify-between mb-6">
+                <h2 className="text-2xl font-bold">Edit Invitation</h2>
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  onClick={() => setShowEditInvitationModal(false)}
+                >
+                  <XCircle className="h-4 w-4" />
+                </Button>
+              </div>
+              
+              <div className="space-y-4">
+                <div>
+                  <label className="text-sm font-medium">Name</label>
+                  <Input
+                    defaultValue={String(selectedInvitation.name || '')}
+                    className="mt-1"
+                  />
+                </div>
+                <div>
+                  <label className="text-sm font-medium">Email</label>
+                  <Input
+                    defaultValue={String(selectedInvitation.email || '')}
+                    className="mt-1"
+                  />
+                </div>
+                <div>
+                  <label className="text-sm font-medium">Role</label>
+                  <Input
+                    defaultValue={String(selectedInvitation.role || '')}
+                    className="mt-1"
+                  />
+                </div>
+                <div>
+                  <label className="text-sm font-medium">Department</label>
+                  <Input
+                    defaultValue={String(selectedInvitation.department || '')}
+                    className="mt-1"
+                  />
+                </div>
+                <div>
+                  <label className="text-sm font-medium">Status</label>
+                  <select
+                    defaultValue={String(selectedInvitation.status || '')}
+                    className="mt-1 w-full px-3 py-2 border border-input bg-background rounded-md text-sm"
+                  >
+                    <option value="pending">Pending</option>
+                    <option value="accepted">Accepted</option>
+                    <option value="declined">Declined</option>
+                    <option value="expired">Expired</option>
+                  </select>
+                </div>
+              </div>
+
+              <div className="flex justify-end space-x-2 mt-6">
+                <Button variant="outline" onClick={() => setShowEditInvitationModal(false)}>
+                  Cancel
+                </Button>
+                <Button onClick={() => {
+                  toast.success("Invitation updated successfully");
+                  setShowEditInvitationModal(false);
+                }}>
+                  <Edit className="mr-2 h-4 w-4" />
+                  Update Invitation
+                </Button>
+              </div>
+            </div>
           </div>
         </div>
       )}

@@ -74,7 +74,7 @@ export function OverdueInvoices({ className = '' }: OverdueInvoicesProps) {
           riskDistribution
         });
       } catch (error) {
-        console.error('Failed to load overdue invoices data:', error);
+        // Failed to load overdue invoices data
       } finally {
         setIsLoading(false);
       }

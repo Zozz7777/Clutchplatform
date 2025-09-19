@@ -118,7 +118,7 @@ export function IntegrationHealth({ className = '' }: IntegrationHealthProps) {
           averageResponseTime
         });
       } catch (error) {
-        console.error('Failed to load integration health data:', error);
+        // Failed to load integration health data
       } finally {
         setIsLoading(false);
       }

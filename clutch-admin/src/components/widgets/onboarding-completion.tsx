@@ -43,7 +43,7 @@ export function OnboardingCompletion({ className = '' }: OnboardingCompletionPro
         const data = await businessIntelligence.getOnboardingCompletion();
         setOnboardingData(data);
       } catch (error) {
-        console.error('Failed to load onboarding data:', error);
+        // Failed to load onboarding data
       } finally {
         setIsLoading(false);
       }

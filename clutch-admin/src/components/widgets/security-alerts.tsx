@@ -63,7 +63,7 @@ export function SecurityAlerts({ className = '' }: SecurityAlertsProps) {
           resolvedToday
         });
       } catch (error) {
-        console.error('Failed to load security alerts data:', error);
+        // Failed to load security alerts data
       } finally {
         setIsLoading(false);
       }

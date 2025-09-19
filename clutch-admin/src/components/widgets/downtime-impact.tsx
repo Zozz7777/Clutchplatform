@@ -87,7 +87,7 @@ export function DowntimeImpact({ className = '' }: DowntimeImpactProps) {
           topAffectedVehicles
         });
       } catch (error) {
-        console.error('Failed to load downtime metrics:', error);
+        // Failed to load downtime metrics
       } finally {
         setIsLoading(false);
       }

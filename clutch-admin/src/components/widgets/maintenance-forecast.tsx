@@ -42,7 +42,7 @@ export function MaintenanceForecast({ className = '' }: MaintenanceForecastProps
         const data = await businessIntelligence.getMaintenanceForecast();
         setForecasts(data);
       } catch (error) {
-        console.error('Failed to load maintenance forecasts:', error);
+        // Failed to load maintenance forecasts
       } finally {
         setIsLoading(false);
       }

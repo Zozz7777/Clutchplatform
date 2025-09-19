@@ -275,7 +275,6 @@ app.use('/api/v1/vendors', vendorsRoutes);
 app.use('/api/v1/performance', performanceRoutes);
 app.use('/api/v1/system/performance', performanceRoutes); // Add system performance route
 app.use('/api/v1/ai-ml', aiRoutes);
-app.use('/api/v1/analytics', businessIntelligenceRoutes);
 app.use('/api/v1/monitoring', monitoringRoutes);
 app.use('/api/v1/files', filesRoutes);
 app.use('/api/v1/docs', apiDocsRoutes);

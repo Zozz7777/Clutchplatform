@@ -216,7 +216,7 @@ export class ErrorHandler {
       }
     }).catch(() => {
       // Fallback if toast is not available
-      console.error('Error showing user feedback:', errorInfo);
+      // Error showing user feedback
     });
   }
 

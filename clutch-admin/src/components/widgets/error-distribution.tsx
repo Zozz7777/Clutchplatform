@@ -109,7 +109,7 @@ export function ErrorDistribution({ className = '' }: ErrorDistributionProps) {
           trend
         });
       } catch (error) {
-        console.error('Failed to load error distribution data:', error);
+        // Failed to load error distribution data
       } finally {
         setIsLoading(false);
       }

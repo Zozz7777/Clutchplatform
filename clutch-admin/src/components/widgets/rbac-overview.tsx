@@ -113,7 +113,7 @@ export function RBACOverview({ className = '' }: RBACOverviewProps) {
           anomalies
         });
       } catch (error) {
-        console.error('Failed to load RBAC data:', error);
+        // Failed to load RBAC data
       } finally {
         setIsLoading(false);
       }

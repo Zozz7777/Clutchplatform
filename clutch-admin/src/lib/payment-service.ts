@@ -95,7 +95,7 @@ class PaymentService {
       }
 
     } catch (error) {
-      console.error('Payment processing error:', error);
+      // Payment processing error
       const errorMessage = error instanceof Error ? error.message : 'Payment processing failed';
       toast.error(`Payment failed: ${errorMessage}`, { id: 'payment-processing' });
       
@@ -125,7 +125,7 @@ class PaymentService {
       }
 
     } catch (error) {
-      console.error('Refund processing error:', error);
+      // Refund processing error
       const errorMessage = error instanceof Error ? error.message : 'Refund processing failed';
       toast.error(`Refund failed: ${errorMessage}`, { id: 'refund-processing' });
       
@@ -140,7 +140,7 @@ class PaymentService {
     try {
       return await productionApi.getPaymentMethods();
     } catch (error) {
-      console.error('Failed to fetch payment methods:', error);
+      // Failed to fetch payment methods
       toast.error('Failed to load payment methods');
       return [];
     }
@@ -162,7 +162,7 @@ class PaymentService {
       };
 
     } catch (error) {
-      console.error('Subscription creation error:', error);
+      // Subscription creation error
       const errorMessage = error instanceof Error ? error.message : 'Subscription creation failed';
       toast.error(`Subscription creation failed: ${errorMessage}`, { id: 'subscription-creation' });
       
@@ -184,7 +184,7 @@ class PaymentService {
       return true;
 
     } catch (error) {
-      console.error('Subscription cancellation error:', error);
+      // Subscription cancellation error
       toast.error('Failed to cancel subscription', { id: 'subscription-cancellation' });
       return false;
     }
@@ -277,7 +277,7 @@ class PaymentService {
       // For now, return empty array
       return [];
     } catch (error) {
-      console.error('Failed to fetch payment history:', error);
+      // Failed to fetch payment history
       return [];
     }
   }
@@ -288,7 +288,7 @@ class PaymentService {
       // For now, return null
       return null;
     } catch (error) {
-      console.error('Failed to fetch subscription details:', error);
+      // Failed to fetch subscription details
       return null;
     }
   }

@@ -462,7 +462,7 @@ router.post('/quiz/submit', requireAuth, async (req, res) => {
 
     // Calculate score
     let correctAnswers = 0;
-    const results = [];
+    const results: any[] = [];
 
     for (const question of questions) {
       const userAnswer = answers[question.id];
@@ -490,7 +490,7 @@ router.post('/quiz/submit', requireAuth, async (req, res) => {
         correct_answer: question.type === 'multiple_choice' 
           ? question.options?.find((opt: any) => opt.is_correct)?.id 
           : question.correct_answer
-      });
+      } as any);
     }
 
     const score = Math.round((correctAnswers / questions.length) * 100);

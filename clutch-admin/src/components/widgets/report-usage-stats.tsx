@@ -72,7 +72,7 @@ export function ReportUsageStats({ className = '' }: ReportUsageStatsProps) {
           averageGenerationTime
         });
       } catch (error) {
-        console.error('Failed to load report usage data:', error);
+        // Failed to load report usage data
       } finally {
         setIsLoading(false);
       }

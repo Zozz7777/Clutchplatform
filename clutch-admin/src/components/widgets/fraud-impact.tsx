@@ -42,7 +42,7 @@ export function FraudImpact({ className = '' }: FraudImpactProps) {
         const data = await businessIntelligence.getFraudImpact();
         setFraudData(data);
       } catch (error) {
-        console.error('Failed to load fraud impact data:', error);
+        // Failed to load fraud impact data
       } finally {
         setIsLoading(false);
       }

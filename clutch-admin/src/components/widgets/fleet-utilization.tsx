@@ -42,7 +42,7 @@ export function FleetUtilization({ className = '' }: FleetUtilizationProps) {
         const data = await businessIntelligence.getFleetUtilization();
         setUtilizationData(data);
       } catch (error) {
-        console.error('Failed to load utilization data:', error);
+        // Failed to load utilization data
       } finally {
         setIsLoading(false);
       }

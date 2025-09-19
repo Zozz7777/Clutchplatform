@@ -6,7 +6,7 @@ import morgan from 'morgan';
 import { DatabaseManager } from '../lib/database';
 import { AuthManager } from '../lib/auth';
 import { SyncManager } from '../lib/sync-manager';
-import { WebSocketManager } from '../lib/websocket';
+import { WebSocketManager } from '../lib/websocket-manager';
 import { logger, morganStream } from '../lib/logger';
 import { isDev } from '../lib/utils';
 
@@ -26,6 +26,7 @@ import backupRoutes from './routes/backup';
 import companionRoutes from './routes/companion';
 import trainingRoutes from './routes/training';
 import rbacRoutes from './routes/rbac';
+import websocketRoutes, { setWebSocketManager } from './routes/websocket';
 
 class ClutchAutoPartsServer {
   private app: express.Application;
@@ -42,7 +43,7 @@ class ClutchAutoPartsServer {
     this.databaseManager = new DatabaseManager();
     this.authManager = new AuthManager();
     this.syncManager = new SyncManager();
-    this.websocketManager = new WebSocketManager();
+    this.websocketManager = new WebSocketManager(this.databaseManager, this.authManager);
   }
 
   async initialize(): Promise<void> {
@@ -51,7 +52,8 @@ class ClutchAutoPartsServer {
       await this.databaseManager.initialize();
       await this.authManager.initialize();
       await this.syncManager.initialize();
-      await this.websocketManager.initialize();
+      // Set WebSocket manager for routes
+      setWebSocketManager(this.websocketManager);
 
       // Setup middleware
       this.setupMiddleware();
@@ -135,6 +137,7 @@ class ClutchAutoPartsServer {
     this.app.use('/api/companion', companionRoutes);
     this.app.use('/api/training', trainingRoutes);
     this.app.use('/api/rbac', rbacRoutes);
+    this.app.use('/api/websocket', websocketRoutes);
 
     // Serve main app (for development)
     if (isDev()) {
@@ -189,6 +192,9 @@ class ClutchAutoPartsServer {
         logger.info(`Clutch Auto Parts Server running on port ${this.port}`);
         logger.info(`Environment: ${process.env['NODE_ENV'] || 'development'}`);
         logger.info(`Health check: http://localhost:${this.port}/health`);
+        
+        // Initialize WebSocket server after HTTP server starts
+        this.websocketManager.initialize(this.server);
       });
 
       // Graceful shutdown
@@ -213,7 +219,7 @@ class ClutchAutoPartsServer {
       }
 
       // Close WebSocket connections
-      await this.websocketManager.disconnect();
+      this.websocketManager.close();
 
       // Stop sync manager
       await this.syncManager.stop();

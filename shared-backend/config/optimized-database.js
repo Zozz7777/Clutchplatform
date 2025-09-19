@@ -100,7 +100,18 @@ const OPTIMIZED_COLLECTIONS = [
   'sessions',        // Keep for authentication
   
   // Employee Management
-  'employee_invitations'  // Keep for employee invitation system
+  'employee_invitations',  // Keep for employee invitation system
+  
+  // AI/ML Collections
+  'ai_models',            // AI model definitions and metadata
+  'ai_predictions',       // AI prediction results
+  'ai_training_jobs',     // AI model training jobs
+  'ai_recommendations',   // AI-generated recommendations
+  'ai_feedback',          // User feedback on AI predictions
+  'ai_model_performance', // AI model performance metrics
+  'ai_training',          // AI training data and ROI
+  'anomalies',            // Anomaly detection results
+  'fraud_cases'           // Fraud detection cases
 ];
 
 // Collections to REMOVE (redundant/unused)
@@ -124,7 +135,7 @@ const REMOVED_COLLECTIONS = [
   'user_analytics', 'service_analytics',
   
   // Unused collections
-  'ai_predictions', 'ai_models', 'geofences', 'geofence_events',
+  'geofences', 'geofence_events',
   'routes', 'mobile_versions', 'mobile_configs', 'corporate_accounts',
   'fleets', 'fleet_vehicles', 'telematics_data', 'gps_devices',
   'drivers', 'roadside_assistance', 'trade_ins', 'discounts',
