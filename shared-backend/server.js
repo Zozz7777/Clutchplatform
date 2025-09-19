@@ -114,6 +114,7 @@ const monitoringRoutes = require('./routes/monitoring');
 const filesRoutes = require('./routes/files');
 const apiDocsRoutes = require('./routes/api-docs');
 const mobileAppsRoutes = require('./routes/mobile-apps');
+const operationsRoutes = require('./routes/operations');
 
 // All route imports cleaned up - only existing routes imported above
 
