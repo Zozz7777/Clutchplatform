@@ -19,6 +19,7 @@ import {
   XCircle,
   MessageSquare
 } from 'lucide-react';
+import { realApi } from '@/lib/real-api';
 
 interface ChurnAttributionProps {
   className?: string;
@@ -35,6 +36,27 @@ interface ChurnReason {
   trend: 'up' | 'down' | 'stable';
 }
 
+// Helper functions
+const getIconForReason = (reason: string) => {
+  switch (reason.toLowerCase()) {
+    case 'inactivity': return Activity;
+    case 'billing issues': return DollarSign;
+    case 'fleet delays': return Clock;
+    case 'poor support': return MessageSquare;
+    case 'competitor switch': return XCircle;
+    default: return AlertTriangle;
+  }
+};
+
+const getColorForImpact = (impact: string) => {
+  switch (impact) {
+    case 'high': return 'text-destructive';
+    case 'medium': return 'text-warning';
+    case 'low': return 'text-primary';
+    default: return 'text-muted-foreground';
+  }
+};
+
 export function ChurnAttribution({ className = '' }: ChurnAttributionProps) {
   const [churnReasons, setChurnReasons] = React.useState<ChurnReason[]>([]);
   const [isLoading, setIsLoading] = React.useState(true);
@@ -42,63 +64,28 @@ export function ChurnAttribution({ className = '' }: ChurnAttributionProps) {
   React.useEffect(() => {
     const loadChurnAttribution = async () => {
       try {
-        // Simulate churn attribution data
-        const reasons: ChurnReason[] = [
-          {
-            reason: 'Inactivity',
-            percentage: 35,
-            count: 42,
-            impact: 'high',
-            description: 'Users stopped using the platform',
-            icon: Activity,
-            color: 'text-destructive',
-            trend: 'up'
-          },
-          {
-            reason: 'Billing Issues',
-            percentage: 25,
-            count: 30,
-            impact: 'high',
-            description: 'Payment problems or pricing concerns',
-            icon: DollarSign,
-            color: 'text-warning',
-            trend: 'stable'
-          },
-          {
-            reason: 'Fleet Delays',
-            percentage: 20,
-            count: 24,
-            impact: 'medium',
-            description: 'Service delivery delays',
-            icon: Clock,
-            color: 'text-warning',
-            trend: 'down'
-          },
-          {
-            reason: 'Poor Support',
-            percentage: 12,
-            count: 14,
-            impact: 'medium',
-            description: 'Customer service issues',
-            icon: MessageSquare,
-            color: 'text-primary',
-            trend: 'up'
-          },
-          {
-            reason: 'Competitor Switch',
-            percentage: 8,
-            count: 10,
-            impact: 'low',
-            description: 'Switched to competitor',
-            icon: XCircle,
-            color: 'text-primary',
-            trend: 'stable'
-          }
-        ];
+        setIsLoading(true);
+        
+        // Load real data from API
+        const churnData = await realApi.getChurnAttribution();
+        
+        // Transform API data to component format
+        const reasons: ChurnReason[] = (churnData || []).map((item: any) => ({
+          reason: item.reason,
+          percentage: item.percentage,
+          count: item.count,
+          impact: item.impact,
+          description: item.description,
+          icon: getIconForReason(item.reason),
+          color: getColorForImpact(item.impact),
+          trend: item.trend
+        }));
 
         setChurnReasons(reasons);
       } catch (error) {
         console.error('Failed to load churn attribution data:', error);
+        // Set empty array on error - no mock data fallback
+        setChurnReasons([]);
       } finally {
         setIsLoading(false);
       }

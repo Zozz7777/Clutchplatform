@@ -199,8 +199,7 @@ export default function AIMaintenanceScheduling({ className }: AIMaintenanceSche
     loadMaintenanceData();
   }, []);
 
-  // Keep mock data as fallback for development
-  const getMockTasks = (): MaintenanceTask[] => [
+  // Mock data removed - using real API data only
         {
           id: 'task-001',
           vehicleId: 'VH-001',
@@ -494,7 +493,7 @@ export default function AIMaintenanceScheduling({ className }: AIMaintenanceSche
 
   const handleTaskStatusUpdate = (taskId: string, newStatus: string) => {
     setTasks(prev => prev.map(task =>
-      task.id === taskId ? { ...task, status: newStatus as any } : task
+      task.id === taskId ? { ...task, status: newStatus as string } : task
     ));
   };
 

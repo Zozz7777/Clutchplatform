@@ -358,7 +358,7 @@ export default function AIRecommendationFeed({ className }: AIRecommendationFeed
               key={filterOption.key}
               variant={filter === filterOption.key ? 'default' : 'outline'}
               size="sm"
-              onClick={() => setFilter(filterOption.key as any)}
+              onClick={() => setFilter(filterOption.key as string)}
             >
               {filterOption.icon}
               <span className="ml-1">{filterOption.label}</span>

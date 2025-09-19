@@ -8,6 +8,7 @@ import { Input } from "@/components/ui/input";
 import { useAuth } from "@/contexts/auth-context";
 import { useTranslations } from "@/hooks/use-translations";
 import { formatDate, formatRelativeTime } from "@/lib/utils";
+import { realApi } from "@/lib/real-api";
 import { 
   FileText, 
   Search, 
@@ -111,48 +112,26 @@ export default function CMSPage() {
   useEffect(() => {
     const loadCMSData = async () => {
       try {
-        const token = localStorage.getItem("clutch-admin-token");
+        setIsLoading(true);
         
-        // Load content
-        const contentResponse = await fetch("https://clutch-main-nk7x.onrender.com/api/v1/cms/content", {
-          headers: {
-            "Authorization": `Bearer ${token}`,
-            "Content-Type": "application/json",
-          },
-        });
-        
-        if (contentResponse.ok) {
-          const contentData = await contentResponse.json();
-          setContent(contentData.data || contentData);
-        }
+        // Load real data from API using the proper API service
+        const [contentData, mediaData, categoriesData] = await Promise.all([
+          realApi.getCMSContent(),
+          realApi.getCMSMedia(),
+          realApi.getCMSCategories()
+        ]);
 
-        // Load media
-        const mediaResponse = await fetch("https://clutch-main-nk7x.onrender.com/api/v1/cms/media", {
-          headers: {
-            "Authorization": `Bearer ${token}`,
-            "Content-Type": "application/json",
-          },
-        });
-        
-        if (mediaResponse.ok) {
-          const mediaData = await mediaResponse.json();
-          setMedia(mediaData.data || mediaData);
-        }
-
-        // Load categories
-        const categoriesResponse = await fetch("https://clutch-main-nk7x.onrender.com/api/v1/cms/categories", {
-          headers: {
-            "Authorization": `Bearer ${token}`,
-            "Content-Type": "application/json",
-          },
-        });
-        
-        if (categoriesResponse.ok) {
-          const categoriesData = await categoriesResponse.json();
-          setCategories(categoriesData.data || categoriesData);
-        }
+        setContent(contentData || []);
+        setMedia(mediaData || []);
+        setCategories(categoriesData || []);
+        setFilteredContent(contentData || []);
       } catch (error) {
         console.error("Failed to load CMS data:", error);
+        // Set empty arrays on error - no mock data fallback
+        setContent([]);
+        setMedia([]);
+        setCategories([]);
+        setFilteredContent([]);
       } finally {
         setIsLoading(false);
       }
@@ -515,7 +494,7 @@ export default function CMSPage() {
                       <p className="font-medium">{item.title}</p>
                       <p className="text-sm text-muted-foreground">{item.excerpt}</p>
                       <div className="flex items-center space-x-2 mt-1">
-                        <Badge variant={getStatusColor(item.status) as any}>
+                        <Badge variant={getStatusColor(item.status) as "default" | "secondary" | "destructive" | "outline"}>
                           {item.status}
                         </Badge>
                         <span className="text-xs text-muted-foreground">

@@ -1,4 +1,4 @@
-const { getCollection } = require('../utils/databaseUtils');
+const { getCollection } = require('../config/database');
 const { MongoClient } = require('mongodb');
 
 class RealDatabaseMonitoringService {

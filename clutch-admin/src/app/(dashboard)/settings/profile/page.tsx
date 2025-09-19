@@ -216,7 +216,7 @@ export default function ProfileSettingsPage() {
         preferences: {
           ...prev.preferences,
           [category]: {
-            ...(prev.preferences as any)[category],
+            ...(prev.preferences as Record<string, unknown>)[category],
             [key]: value
           }
         }

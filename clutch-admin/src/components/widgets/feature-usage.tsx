@@ -64,7 +64,7 @@ export function FeatureUsage({ className = '' }: FeatureUsageProps) {
         const featuresData = await realApi.getFeatureUsage();
         
         // Transform API data to component format
-        const features: FeatureData[] = (featuresData || []).map((item: any) => ({
+        const features: FeatureData[] = (featuresData || []).map((item: Record<string, unknown>) => ({
           feature: item.feature,
           usage: item.usage,
           adoption: item.adoption,

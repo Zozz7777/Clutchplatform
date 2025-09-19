@@ -708,6 +708,40 @@ export class RealApiService {
       { fallbackValue: [], showToast: false }
     )();
   }
+
+  // CMS APIs
+  async getCMSContent(): Promise<Record<string, unknown>[]> {
+    return withErrorHandling(
+      async () => {
+        const response = await apiService.request<Record<string, unknown>[]>("/api/v1/cms/content");
+        return handleApiResponse(response, 'getCMSContent', []);
+      },
+      'getCMSContent',
+      { fallbackValue: [], showToast: false }
+    )();
+  }
+
+  async getCMSMedia(): Promise<Record<string, unknown>[]> {
+    return withErrorHandling(
+      async () => {
+        const response = await apiService.request<Record<string, unknown>[]>("/api/v1/cms/media");
+        return handleApiResponse(response, 'getCMSMedia', []);
+      },
+      'getCMSMedia',
+      { fallbackValue: [], showToast: false }
+    )();
+  }
+
+  async getCMSCategories(): Promise<Record<string, unknown>[]> {
+    return withErrorHandling(
+      async () => {
+        const response = await apiService.request<Record<string, unknown>[]>("/api/v1/cms/categories");
+        return handleApiResponse(response, 'getCMSCategories', []);
+      },
+      'getCMSCategories',
+      { fallbackValue: [], showToast: false }
+    )();
+  }
 }
 
 // Export singleton instance
