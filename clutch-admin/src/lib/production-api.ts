@@ -45,7 +45,7 @@ export class ProductionApiService {
 
   async getNotifications(): Promise<Notification[]> {
     try {
-      const data = await realApi.getNotifications();
+      const data = await realApi.getNotificationList();
       return data || [];
     } catch (error) {
       logger.error("Failed to fetch notifications:", error);

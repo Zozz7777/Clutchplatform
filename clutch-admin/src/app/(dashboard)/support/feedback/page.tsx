@@ -68,7 +68,7 @@ export default function FeedbackPage() {
     try {
       setLoading(true);
       const data = await productionApi.getFeedback();
-      setFeedback(data || []);
+      setFeedback((data || []) as unknown as Feedback[]);
     } catch (error) {
       // Error handled by API service
       setFeedback([]);

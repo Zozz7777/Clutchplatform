@@ -488,9 +488,9 @@ export default function FraudEscalationWorkflow({ className }: FraudEscalationWo
         }
       ];
 
-      setFraudEvents(mockFraudEvents);
-      setFraudRules(mockFraudRules);
-      setSelectedEvent(mockFraudEvents[0]);
+      setFraudEvents(getMockFraudEvents());
+      setFraudRules(getMockFraudRules());
+      setSelectedEvent(getMockFraudEvents()[0]);
     };
 
     loadFraudData();

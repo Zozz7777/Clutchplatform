@@ -2,6 +2,8 @@ const express = require('express');
 const router = express.Router();
 const { authenticateToken, checkRole, checkPermission } = require('../middleware/unified-auth');
 const RealAnalyticsService = require('../services/realAnalyticsService');
+const { getCollection } = require('../config/optimized-database');
+const { logger } = require('../config/logger');
 const rateLimit = require('express-rate-limit');
 
 // Rate limiting
@@ -365,5 +367,85 @@ function calculateRevenueTrends(revenueData) {
     lastWeekAvg: Math.round(lastWeekAvg)
   };
 }
+
+// ==================== PRICING ENDPOINTS ====================
+
+// GET /api/v1/revenue/pricing/scenarios - Get pricing scenarios
+router.get('/pricing/scenarios', revenueLimiter, authenticateToken, async (req, res) => {
+  try {
+    const scenariosCollection = await getCollection('pricing_scenarios');
+    
+    // Get all pricing scenarios
+    const scenarios = await scenariosCollection.find({}).toArray();
+    
+    // If no data exists, return empty array (no mock data)
+    res.json({
+      success: true,
+      data: scenarios,
+      message: 'Pricing scenarios retrieved successfully',
+      timestamp: new Date().toISOString()
+    });
+  } catch (error) {
+    logger.error('❌ Get pricing scenarios error:', error);
+    res.status(500).json({
+      success: false,
+      error: 'GET_PRICING_SCENARIOS_FAILED',
+      message: 'Failed to get pricing scenarios',
+      timestamp: new Date().toISOString()
+    });
+  }
+});
+
+// GET /api/v1/revenue/pricing/tests - Get pricing tests
+router.get('/pricing/tests', revenueLimiter, authenticateToken, async (req, res) => {
+  try {
+    const testsCollection = await getCollection('pricing_tests');
+    
+    // Get all pricing tests
+    const tests = await testsCollection.find({}).toArray();
+    
+    // If no data exists, return empty array (no mock data)
+    res.json({
+      success: true,
+      data: tests,
+      message: 'Pricing tests retrieved successfully',
+      timestamp: new Date().toISOString()
+    });
+  } catch (error) {
+    logger.error('❌ Get pricing tests error:', error);
+    res.status(500).json({
+      success: false,
+      error: 'GET_PRICING_TESTS_FAILED',
+      message: 'Failed to get pricing tests',
+      timestamp: new Date().toISOString()
+    });
+  }
+});
+
+// GET /api/v1/revenue/pricing/market-analysis - Get market analysis
+router.get('/pricing/market-analysis', revenueLimiter, authenticateToken, async (req, res) => {
+  try {
+    const marketAnalysisCollection = await getCollection('market_analysis');
+    
+    // Get all market analysis data
+    const marketAnalysis = await marketAnalysisCollection.find({}).toArray();
+    
+    // If no data exists, return empty array (no mock data)
+    res.json({
+      success: true,
+      data: marketAnalysis,
+      message: 'Market analysis retrieved successfully',
+      timestamp: new Date().toISOString()
+    });
+  } catch (error) {
+    logger.error('❌ Get market analysis error:', error);
+    res.status(500).json({
+      success: false,
+      error: 'GET_MARKET_ANALYSIS_FAILED',
+      message: 'Failed to get market analysis',
+      timestamp: new Date().toISOString()
+    });
+  }
+});
 
 module.exports = router;

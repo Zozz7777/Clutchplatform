@@ -198,7 +198,7 @@ export default function LiveOpsMap({ className }: LiveOpsMapProps) {
               key={layer.key}
               variant={selectedLayer === layer.key ? 'default' : 'outline'}
               size="sm"
-              onClick={() => setSelectedLayer(layer.key as 'all' | 'fleet' | 'revenue' | 'users')}
+              onClick={() => setSelectedLayer(layer.key as typeof selectedLayer)}
             >
               {layer.icon}
               <span className="ml-1">{layer.label}</span>

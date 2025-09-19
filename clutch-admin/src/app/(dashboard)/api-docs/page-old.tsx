@@ -74,7 +74,7 @@ export default function APIDocsPage() {
           realApi.getAPICategories()
         ]);
 
-        setEndpoints(endpointsData || []);
+        setEndpoints((endpointsData || []) as unknown as APIEndpoint[]);
         setCategories(categoriesData || []);
         
       } catch (error) {
@@ -227,17 +227,17 @@ export default function APIDocsPage() {
               <Code className="h-6 w-6" />
               <span className="text-sm">All</span>
             </Button>
-            {categories.map((category) => {
-              const Icon = category.icon;
+            {categories.map((category: any) => {
+              const Icon = category.icon as React.ComponentType<{ className?: string }>;
               return (
                 <Button
-                  key={category.name}
-                  variant={selectedCategory === category.name ? "default" : "outline"}
-                  onClick={() => setSelectedCategory(category.name)}
+                  key={category.name as string}
+                  variant={selectedCategory === (category.name as string) ? "default" : "outline"}
+                  onClick={() => setSelectedCategory(category.name as string)}
                   className="h-auto p-4 flex flex-col items-center space-y-2"
                 >
                   <Icon className="h-6 w-6" />
-                  <span className="text-sm">{category.name}</span>
+                  <span className="text-sm">{category.name as string}</span>
                 </Button>
               );
             })}

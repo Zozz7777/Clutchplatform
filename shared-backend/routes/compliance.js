@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const { authenticateToken, checkRole, checkPermission } = require('../middleware/unified-auth');
 const { getCollection } = require('../config/optimized-database');
+const { logger } = require('../config/logger');
 const rateLimit = require('express-rate-limit');
 
 // Rate limiting
@@ -354,6 +355,60 @@ router.get('/reports', complianceLimiter, authenticateToken, async (req, res) =>
       success: false,
       error: 'Failed to get compliance reports',
       message: error.message
+    });
+  }
+});
+
+// ==================== COMPLIANCE FLAGS ENDPOINTS ====================
+
+// GET /api/v1/compliance/flags - Get compliance flags
+router.get('/flags', complianceLimiter, authenticateToken, async (req, res) => {
+  try {
+    const flagsCollection = await getCollection('compliance_flags');
+    
+    // Get all compliance flags
+    const flags = await flagsCollection.find({}).toArray();
+    
+    // If no data exists, return empty array (no mock data)
+    res.json({
+      success: true,
+      data: flags,
+      message: 'Compliance flags retrieved successfully',
+      timestamp: new Date().toISOString()
+    });
+  } catch (error) {
+    logger.error('❌ Get compliance flags error:', error);
+    res.status(500).json({
+      success: false,
+      error: 'GET_COMPLIANCE_FLAGS_FAILED',
+      message: 'Failed to get compliance flags',
+      timestamp: new Date().toISOString()
+    });
+  }
+});
+
+// GET /api/v1/compliance/frameworks - Get compliance frameworks
+router.get('/frameworks', complianceLimiter, authenticateToken, async (req, res) => {
+  try {
+    const frameworksCollection = await getCollection('compliance_frameworks');
+    
+    // Get all compliance frameworks
+    const frameworks = await frameworksCollection.find({}).toArray();
+    
+    // If no data exists, return empty array (no mock data)
+    res.json({
+      success: true,
+      data: frameworks,
+      message: 'Compliance frameworks retrieved successfully',
+      timestamp: new Date().toISOString()
+    });
+  } catch (error) {
+    logger.error('❌ Get compliance frameworks error:', error);
+    res.status(500).json({
+      success: false,
+      error: 'GET_COMPLIANCE_FRAMEWORKS_FAILED',
+      message: 'Failed to get compliance frameworks',
+      timestamp: new Date().toISOString()
     });
   }
 });

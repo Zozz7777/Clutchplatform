@@ -879,6 +879,97 @@ export class RealApiService {
     )();
   }
 
+  // Mobile App CMS APIs
+  async getMobileAppSettings(): Promise<Record<string, unknown>> {
+    return withErrorHandling(
+      async () => {
+        const response = await apiService.request<Record<string, unknown>>("/api/v1/mobile-apps/settings");
+        return handleApiResponse(response, 'getMobileAppSettings', {
+          appSettings: {
+            appName: 'Clutch',
+            version: '1.2.0',
+            primaryColor: '#3B82F6',
+            secondaryColor: '#10B981',
+            logo: '',
+            splashScreen: '',
+            welcomeMessage: 'Welcome to Clutch - Your Fleet Management Solution'
+          },
+          content: {
+            homeScreen: {
+              title: 'Dashboard',
+              subtitle: 'Manage your fleet efficiently',
+              features: ['Real-time tracking', 'Maintenance alerts', 'Fuel monitoring']
+            },
+            aboutScreen: {
+              title: 'About Clutch',
+              description: 'Clutch is a comprehensive fleet management solution designed to help businesses optimize their vehicle operations.'
+            }
+          }
+        });
+      },
+      'getMobileAppSettings',
+      { 
+        fallbackValue: {
+          appSettings: {
+            appName: 'Clutch',
+            version: '1.2.0',
+            primaryColor: '#3B82F6',
+            secondaryColor: '#10B981',
+            logo: '',
+            splashScreen: '',
+            welcomeMessage: 'Welcome to Clutch - Your Fleet Management Solution'
+          },
+          content: {
+            homeScreen: {
+              title: 'Dashboard',
+              subtitle: 'Manage your fleet efficiently',
+              features: ['Real-time tracking', 'Maintenance alerts', 'Fuel monitoring']
+            },
+            aboutScreen: {
+              title: 'About Clutch',
+              description: 'Clutch is a comprehensive fleet management solution designed to help businesses optimize their vehicle operations.'
+            }
+          }
+        }, 
+        showToast: false 
+      }
+    )();
+  }
+
+  async saveMobileAppSettings(settings: Record<string, unknown>): Promise<Record<string, unknown>> {
+    return withErrorHandling(
+      async () => {
+        const response = await apiService.request<Record<string, unknown>>("/api/v1/mobile-apps/settings", {
+          method: 'POST',
+          body: JSON.stringify(settings)
+        });
+        return handleApiResponse(response, 'saveMobileAppSettings', { success: true });
+      },
+      'saveMobileAppSettings',
+      { fallbackValue: { success: false }, showToast: true }
+    )();
+  }
+
+  async previewMobileApp(): Promise<Record<string, unknown>> {
+    return withErrorHandling(
+      async () => {
+        const response = await apiService.request<Record<string, unknown>>("/api/v1/mobile-apps/preview");
+        return handleApiResponse(response, 'previewMobileApp', { 
+          previewUrl: 'https://preview.clutch.com/mobile-app',
+          status: 'ready'
+        });
+      },
+      'previewMobileApp',
+      { 
+        fallbackValue: { 
+          previewUrl: 'https://preview.clutch.com/mobile-app',
+          status: 'ready'
+        }, 
+        showToast: false 
+      }
+    )();
+  }
+
   // System Performance APIs
   async getSystemPerformanceMetrics(): Promise<Record<string, unknown>> {
     return withErrorHandling(

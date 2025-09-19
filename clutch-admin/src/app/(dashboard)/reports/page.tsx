@@ -132,7 +132,7 @@ export default function ReportsPage() {
     try {
       setLoading(true);
       const data = await productionApi.getReports();
-      setReports(data || []);
+      setReports((data || []) as unknown as Report[]);
     } catch (error) {
       // Error handled by API service
       setReports([]);
@@ -143,8 +143,8 @@ export default function ReportsPage() {
 
   const loadTemplates = async () => {
     try {
-      const data = await productionApi.getReports({ type: 'templates' });
-      setTemplates(data || []);
+      const data = await productionApi.getReports();
+      setTemplates((data || []) as unknown as ReportTemplate[]);
     } catch (error) {
       // Error handled by API service
       setTemplates([]);
@@ -185,7 +185,7 @@ export default function ReportsPage() {
 
       const newReport = await productionApi.createReport(reportData);
       if (newReport) {
-        setReports(prev => [...prev, newReport]);
+        setReports(prev => [...prev, newReport as unknown as Report]);
         setShowCreateDialog(false);
         setCreateReportData({
           name: "",

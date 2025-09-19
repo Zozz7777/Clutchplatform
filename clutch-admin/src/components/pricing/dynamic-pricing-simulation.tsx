@@ -196,10 +196,6 @@ export default function DynamicPricingSimulation({ className }: DynamicPricingSi
 
   useEffect(() => {
     loadPricingData();
-  }, []);
-
-  useEffect(() => {
-    loadPricingData();
 
     // Simulate real-time updates
     const interval = setInterval(() => {

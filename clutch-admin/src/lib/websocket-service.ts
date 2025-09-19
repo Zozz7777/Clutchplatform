@@ -82,8 +82,21 @@ class WebSocketService {
     this.connectionStatus = 'connecting';
 
     try {
-      // Use the stored baseUrl
-      const wsUrl = this.baseUrl.replace('http://', 'ws://').replace('https://', 'wss://') + '/ws';
+      // Get authentication token
+      const token = localStorage.getItem("clutch-admin-token") || 
+                   sessionStorage.getItem("clutch-admin-token");
+
+      if (!token) {
+        console.log('🔌 No authentication token found, skipping WebSocket connection');
+        this.connectionStatus = 'disconnected';
+        this.isConnecting = false;
+        return;
+      }
+
+      // Use the stored baseUrl with authentication
+      const wsUrl = this.baseUrl.replace('http://', 'ws://').replace('https://', 'wss://') + `/ws?token=${token}`;
+
+      console.log('🔌 Attempting WebSocket connection to:', wsUrl.replace(token, '[TOKEN]'));
 
       // WebSocket connection attempt
       this.ws = new WebSocket(wsUrl);
@@ -206,19 +219,19 @@ class WebSocketService {
 
   // Specific subscription methods for different data types
   public subscribeToSystemHealth(handler: (data: SystemHealthUpdate) => void): () => void {
-    return this.subscribe('system_health', handler);
+    return this.subscribe('system_health', handler as unknown as (data: Record<string, unknown>) => void);
   }
 
   public subscribeToPerformanceMetrics(handler: (data: PerformanceMetrics) => void): () => void {
-    return this.subscribe('performance_metrics', handler);
+    return this.subscribe('performance_metrics', handler as unknown as (data: Record<string, unknown>) => void);
   }
 
   public subscribeToNotifications(handler: (data: NotificationUpdate) => void): () => void {
-    return this.subscribe('notification', handler);
+    return this.subscribe('notification', handler as unknown as (data: Record<string, unknown>) => void);
   }
 
   public subscribeToChatMessages(handler: (data: ChatMessage) => void): () => void {
-    return this.subscribe('chat_message', handler);
+    return this.subscribe('chat_message', handler as unknown as (data: Record<string, unknown>) => void);
   }
 
   public subscribeToFleetUpdates(handler: (data: Record<string, unknown>) => void): () => void {
