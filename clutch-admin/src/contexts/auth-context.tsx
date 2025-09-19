@@ -65,6 +65,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         
         setUser(userWithPermissions);
         localStorage.setItem("clutch-admin-user", JSON.stringify(userWithPermissions));
+        localStorage.setItem("clutch-admin-token", token);
         
         setIsLoading(false);
         return true;

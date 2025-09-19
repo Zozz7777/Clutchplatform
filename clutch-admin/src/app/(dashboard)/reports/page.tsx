@@ -134,7 +134,7 @@ export default function ReportsPage() {
       const data = await productionApi.getReports();
       setReports(data || []);
     } catch (error) {
-      console.error("Error loading reports:", error);
+      // Error handled by API service
       setReports([]);
     } finally {
       setLoading(false);
@@ -146,7 +146,7 @@ export default function ReportsPage() {
       const data = await productionApi.getReports({ type: 'templates' });
       setTemplates(data || []);
     } catch (error) {
-      console.error("Error loading templates:", error);
+      // Error handled by API service
       setTemplates([]);
     }
   };
@@ -197,7 +197,7 @@ export default function ReportsPage() {
         });
       }
     } catch (error) {
-      console.error("Error creating report:", error);
+      // Error handled by API service
     }
   };
 

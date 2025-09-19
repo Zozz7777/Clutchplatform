@@ -95,7 +95,8 @@
         }
       ],
       "icon": "assets/icon.ico",
-      "sign": false
+      "sign": false,
+      "verifyUpdateCodeSignature": false
     },
     "nsis": {
       "oneClick": false,
