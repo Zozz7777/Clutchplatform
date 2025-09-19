@@ -114,7 +114,7 @@ export class AuthManager {
     try {
       const decoded = jwt.verify(token, this.jwtSecret) as any;
       
-      const user = await this.db.get(
+      const user = await this.db.get<User>(
         'SELECT * FROM users WHERE id = ? AND is_active = 1',
         [decoded.userId]
       );

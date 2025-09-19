@@ -177,7 +177,7 @@ export default function AnalyticsPage() {
         const reportsData = await productionApi.getReports();
         setReports(reportsData || []);
       } catch (error) {
-        console.error("Failed to load analytics data:", error);
+        // Error handled by API service
         // Set empty data instead of mock data
         setMetrics([]);
         setUserAnalytics(null);

@@ -43,7 +43,7 @@ export default function FleetOverviewPage() {
         // Ensure we always have an array
         setVehicles(Array.isArray(fleetData) ? fleetData : []);
       } catch (error) {
-        console.error("Failed to load fleet data:", error);
+        // Error handled by API service
         toast.error("Failed to load fleet overview");
         // Set empty array on error to prevent filter issues
         setVehicles([]);

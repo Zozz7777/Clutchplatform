@@ -444,9 +444,9 @@ class DataPersistenceService {
     return { success: true, data: result };
   }
 
-  private getAPIMethod(endpoint: string, operation: string): Function {
+  private getAPIMethod(endpoint: string, operation: string): (...args: unknown[]) => unknown {
     // Map endpoint patterns to API methods
-    const endpointMap: Record<string, Record<string, Function>> = {
+    const endpointMap: Record<string, Record<string, (...args: unknown[]) => unknown>> = {
       'users': {
         create: productionApi.createUser,
         read: productionApi.getUsers,

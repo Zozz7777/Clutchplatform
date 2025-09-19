@@ -3,6 +3,7 @@ import { DatabaseManager } from '../../lib/database';
 import { AuthManager } from '../../lib/auth';
 import { SyncManager } from '../../lib/sync';
 import { logger } from '../../lib/logger';
+import { User } from '../../types';
 
 const router = express.Router();
 const databaseManager = new DatabaseManager();
@@ -21,7 +22,7 @@ const requireAuth = async (req: express.Request, res: express.Response, next: ex
         timestamp: new Date().toISOString()
       });
     }
-    req.user = currentUser;
+    req.user = currentUser as User;
     next();
   } catch (error) {
     res.status(401).json({
@@ -112,7 +113,7 @@ router.get('/', requireAuth, async (req, res) => {
 router.post('/', requireAuth, async (req, res) => {
   try {
     const currentUser = req.user;
-    if (!authManager.hasPermission(currentUser, 'suppliers.create')) {
+    if (!currentUser || !authManager.hasPermission(currentUser, 'suppliers.create')) {
       return res.status(403).json({
         success: false,
         error: 'INSUFFICIENT_PERMISSIONS',

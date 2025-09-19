@@ -282,7 +282,7 @@ class PaymentService {
     }
   }
 
-  public async getSubscriptionDetails(subscriptionId: string): Promise<any> {
+  public async getSubscriptionDetails(subscriptionId: string): Promise<Record<string, unknown>> {
     try {
       // This would need to be implemented in the backend
       // For now, return null

@@ -4,6 +4,14 @@ import { AuthManager } from '../../lib/auth';
 import { SyncManager } from '../../lib/sync';
 import { logger } from '../../lib/logger';
 import { calculateTax, calculateDiscount } from '../../lib/utils';
+import { User } from '../../types';
+
+interface SaleItemInput {
+  product_id: number;
+  quantity: number;
+  unit_price: number;
+  discount_amount?: number;
+}
 
 const router = express.Router();
 const databaseManager = new DatabaseManager();
@@ -22,7 +30,7 @@ const requireAuth = async (req: express.Request, res: express.Response, next: ex
         timestamp: new Date().toISOString()
       });
     }
-    req.user = currentUser;
+    req.user = currentUser as User;
     next();
   } catch (error) {
     res.status(401).json({
@@ -212,7 +220,7 @@ router.get('/:id', requireAuth, async (req, res) => {
 router.post('/', requireAuth, async (req, res) => {
   try {
     const currentUser = req.user;
-    if (!authManager.hasPermission(currentUser, 'sales.create')) {
+    if (!currentUser || !authManager.hasPermission(currentUser, 'sales.create')) {
       return res.status(403).json({
         success: false,
         error: 'INSUFFICIENT_PERMISSIONS',
@@ -237,7 +245,13 @@ router.post('/', requireAuth, async (req, res) => {
 
     // Calculate totals
     let subtotal = 0;
-    const saleItems = [];
+    const saleItems: Array<{
+      product_id: number;
+      quantity: number;
+      unit_price: number;
+      discount_amount: number;
+      total_price: number;
+    }> = [];
 
     for (const item of items) {
       const product = await databaseManager.get('SELECT * FROM products WHERE id = ? AND is_active = 1', [item.product_id]);
@@ -287,7 +301,7 @@ router.post('/', requireAuth, async (req, res) => {
         payment_method, payment_status, notes
       ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, 'completed', ?)
     `, [
-      saleNumber, customer_id, currentUser.id, subtotal, totalDiscount, taxAmount, totalAmount,
+      saleNumber, customer_id, currentUser!.id, subtotal, totalDiscount, taxAmount, totalAmount,
       payment_method, notes
     ]);
 
@@ -310,7 +324,7 @@ router.post('/', requireAuth, async (req, res) => {
       await databaseManager.exec(`
         INSERT INTO stock_movements (product_id, movement_type, quantity, reference_type, reference_id, user_id)
         VALUES (?, 'out', ?, 'sale', ?, ?)
-      `, [item.product_id, item.quantity, saleId, currentUser.id]);
+      `, [item.product_id, item.quantity, saleId, currentUser!.id]);
     }
 
     // Log sync changes
@@ -363,7 +377,7 @@ router.post('/', requireAuth, async (req, res) => {
 router.post('/:id/refund', requireAuth, async (req, res) => {
   try {
     const currentUser = req.user;
-    if (!authManager.hasPermission(currentUser, 'sales.edit')) {
+    if (!currentUser || !authManager.hasPermission(currentUser, 'sales.edit')) {
       return res.status(403).json({
         success: false,
         error: 'INSUFFICIENT_PERMISSIONS',
@@ -420,7 +434,7 @@ router.post('/:id/refund', requireAuth, async (req, res) => {
       await databaseManager.exec(`
         INSERT INTO stock_movements (product_id, movement_type, quantity, reference_type, reference_id, notes, user_id)
         VALUES (?, 'in', ?, 'refund', ?, ?, ?)
-      `, [refundItem.product_id, refundQuantity, saleId, reason || 'Refund', currentUser.id]);
+      `, [refundItem.product_id, refundQuantity, saleId, reason || 'Refund', currentUser!.id]);
     }
 
     // Update sale status
@@ -457,7 +471,7 @@ router.post('/:id/refund', requireAuth, async (req, res) => {
 router.post('/tax-shortcut', requireAuth, async (req, res) => {
   try {
     const currentUser = req.user;
-    if (!authManager.hasPermission(currentUser, 'sales.create')) {
+    if (!currentUser || !authManager.hasPermission(currentUser, 'sales.create')) {
       return res.status(403).json({
         success: false,
         error: 'INSUFFICIENT_PERMISSIONS',

@@ -93,12 +93,12 @@ export default function OBD2Page() {
           setOBD2Data(obd2Data || []);
           setFilteredData(obd2Data || []);
         } catch (obd2Error) {
-          console.error("Failed to load OBD2 data:", obd2Error);
+          // Error handled by API service
           setOBD2Data([]);
           setFilteredData([]);
         }
       } catch (error) {
-        console.error("Failed to load OBD2 data:", error);
+        // Error handled by API service
         toast.error("Failed to load OBD2 diagnostics");
       } finally {
         setIsLoading(false);

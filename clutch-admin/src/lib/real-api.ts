@@ -477,6 +477,62 @@ export class RealApiService {
     )();
   }
 
+  // AI/ML APIs
+  async getAIModels(): Promise<Record<string, unknown>[]> {
+    return withErrorHandling(
+      async () => {
+        const response = await apiService.request<Record<string, unknown>[]>("/api/v1/ai/models");
+        return handleApiResponse(response, 'getAIModels', []);
+      },
+      'getAIModels',
+      { fallbackValue: [], showToast: false }
+    )();
+  }
+
+  async getFraudCases(): Promise<Record<string, unknown>[]> {
+    return withErrorHandling(
+      async () => {
+        const response = await apiService.request<Record<string, unknown>[]>("/api/v1/ai/fraud-cases");
+        return handleApiResponse(response, 'getFraudCases', []);
+      },
+      'getFraudCases',
+      { fallbackValue: [], showToast: false }
+    )();
+  }
+
+  async getRecommendations(): Promise<Record<string, unknown>[]> {
+    return withErrorHandling(
+      async () => {
+        const response = await apiService.request<Record<string, unknown>[]>("/api/v1/ai/recommendations");
+        return handleApiResponse(response, 'getRecommendations', []);
+      },
+      'getRecommendations',
+      { fallbackValue: [], showToast: false }
+    )();
+  }
+
+  async getTrainingROI(): Promise<Record<string, unknown>> {
+    return withErrorHandling(
+      async () => {
+        const response = await apiService.request<Record<string, unknown>>("/api/v1/ai/training-roi");
+        return handleApiResponse(response, 'getTrainingROI', {});
+      },
+      'getTrainingROI',
+      { fallbackValue: {}, showToast: false }
+    )();
+  }
+
+  async getRecommendationUplift(): Promise<Record<string, unknown>> {
+    return withErrorHandling(
+      async () => {
+        const response = await apiService.request<Record<string, unknown>>("/api/v1/ai/recommendation-uplift");
+        return handleApiResponse(response, 'getRecommendationUplift', {});
+      },
+      'getRecommendationUplift',
+      { fallbackValue: {}, showToast: false }
+    )();
+  }
+
   // Audit Trail APIs
   async getAuditLogs(filters?: Record<string, unknown>): Promise<Record<string, unknown>[]> {
     return withErrorHandling(

@@ -681,6 +681,24 @@ export class ProductionApiService {
     }
   }
 
+  async getTrainingROI(): Promise<Record<string, unknown>> {
+    try {
+      return await realApi.getTrainingROI();
+    } catch (error) {
+      logger.error("Failed to fetch training ROI:", error);
+      throw new Error("Failed to load training ROI data");
+    }
+  }
+
+  async getRecommendationUplift(): Promise<Record<string, unknown>> {
+    try {
+      return await realApi.getRecommendationUplift();
+    } catch (error) {
+      logger.error("Failed to fetch recommendation uplift:", error);
+      throw new Error("Failed to load recommendation uplift data");
+    }
+  }
+
   async trainModel(modelId: string): Promise<Record<string, unknown>> {
     try {
       return await realApi.trainModel(modelId);

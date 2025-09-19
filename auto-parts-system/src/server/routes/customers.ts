@@ -3,6 +3,7 @@ import { DatabaseManager } from '../../lib/database';
 import { AuthManager } from '../../lib/auth';
 import { SyncManager } from '../../lib/sync';
 import { logger } from '../../lib/logger';
+import { User } from '../../types';
 
 const router = express.Router();
 const databaseManager = new DatabaseManager();
@@ -21,7 +22,7 @@ const requireAuth = async (req: express.Request, res: express.Response, next: ex
         timestamp: new Date().toISOString()
       });
     }
-    req.user = currentUser;
+    req.user = currentUser as User;
     next();
   } catch (error) {
     res.status(401).json({
@@ -177,7 +178,7 @@ router.get('/:id', requireAuth, async (req, res) => {
 router.post('/', requireAuth, async (req, res) => {
   try {
     const currentUser = req.user;
-    if (!authManager.hasPermission(currentUser, 'customers.create')) {
+    if (!currentUser || !authManager.hasPermission(currentUser, 'customers.create')) {
       return res.status(403).json({
         success: false,
         error: 'INSUFFICIENT_PERMISSIONS',
@@ -225,7 +226,7 @@ router.post('/', requireAuth, async (req, res) => {
 router.put('/:id', requireAuth, async (req, res) => {
   try {
     const currentUser = req.user;
-    if (!authManager.hasPermission(currentUser, 'customers.edit')) {
+    if (!currentUser || !authManager.hasPermission(currentUser, 'customers.edit')) {
       return res.status(403).json({
         success: false,
         error: 'INSUFFICIENT_PERMISSIONS',
@@ -293,7 +294,7 @@ router.put('/:id', requireAuth, async (req, res) => {
 router.delete('/:id', requireAuth, async (req, res) => {
   try {
     const currentUser = req.user;
-    if (!authManager.hasPermission(currentUser, 'customers.delete')) {
+    if (!currentUser || !authManager.hasPermission(currentUser, 'customers.delete')) {
       return res.status(403).json({
         success: false,
         error: 'INSUFFICIENT_PERMISSIONS',

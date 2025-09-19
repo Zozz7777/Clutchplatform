@@ -4,6 +4,7 @@ import { AuthManager } from '../../lib/auth';
 import { SyncManager } from '../../lib/sync';
 import { logger } from '../../lib/logger';
 import { generateSKU, generateBarcode } from '../../lib/utils';
+import { User } from '../../types';
 
 const router = express.Router();
 const databaseManager = new DatabaseManager();
@@ -22,7 +23,7 @@ const requireAuth = async (req: express.Request, res: express.Response, next: ex
         timestamp: new Date().toISOString()
       });
     }
-    req.user = currentUser;
+    req.user = currentUser as User;
     next();
   } catch (error) {
     res.status(401).json({
@@ -193,7 +194,7 @@ router.get('/products/:id', requireAuth, async (req, res) => {
 router.post('/products', requireAuth, async (req, res) => {
   try {
     const currentUser = req.user;
-    if (!authManager.hasPermission(currentUser, 'inventory.create')) {
+    if (!currentUser || !authManager.hasPermission(currentUser, 'inventory.create')) {
       return res.status(403).json({
         success: false,
         error: 'INSUFFICIENT_PERMISSIONS',
@@ -252,7 +253,7 @@ router.post('/products', requireAuth, async (req, res) => {
 router.put('/products/:id', requireAuth, async (req, res) => {
   try {
     const currentUser = req.user;
-    if (!authManager.hasPermission(currentUser, 'inventory.edit')) {
+    if (!currentUser || !authManager.hasPermission(currentUser, 'inventory.edit')) {
       return res.status(403).json({
         success: false,
         error: 'INSUFFICIENT_PERMISSIONS',
@@ -320,7 +321,7 @@ router.put('/products/:id', requireAuth, async (req, res) => {
 router.delete('/products/:id', requireAuth, async (req, res) => {
   try {
     const currentUser = req.user;
-    if (!authManager.hasPermission(currentUser, 'inventory.delete')) {
+    if (!currentUser || !authManager.hasPermission(currentUser, 'inventory.delete')) {
       return res.status(403).json({
         success: false,
         error: 'INSUFFICIENT_PERMISSIONS',
@@ -430,7 +431,7 @@ router.get('/brands', requireAuth, async (req, res) => {
 router.post('/stock-movement', requireAuth, async (req, res) => {
   try {
     const currentUser = req.user;
-    if (!authManager.hasPermission(currentUser, 'inventory.edit')) {
+    if (!currentUser || !authManager.hasPermission(currentUser, 'inventory.edit')) {
       return res.status(403).json({
         success: false,
         error: 'INSUFFICIENT_PERMISSIONS',
@@ -485,7 +486,7 @@ router.post('/stock-movement', requireAuth, async (req, res) => {
       INSERT INTO stock_movements (
         product_id, movement_type, quantity, reference_type, reference_id, notes, user_id
       ) VALUES (?, ?, ?, ?, ?, ?, ?)
-    `, [product_id, movement_type, quantity, reference_type, reference_id, notes, currentUser.id]);
+    `, [product_id, movement_type, quantity, reference_type, reference_id, notes, currentUser!.id]);
 
     // Update product stock
     await databaseManager.exec(

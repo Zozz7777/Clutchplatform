@@ -188,7 +188,7 @@ export default function MarketingPage() {
           });
         }
       } catch (error) {
-        console.error("Failed to load marketing data:", error);
+        // Error handled by API service
       } finally {
         setIsLoading(false);
       }
@@ -320,7 +320,7 @@ export default function MarketingPage() {
         setCampaigns(data.data || data);
       }
     } catch (error) {
-      console.error(`Failed to ${action} campaign:`, error);
+      // Error handled by API service
     }
   };
 
@@ -374,7 +374,7 @@ export default function MarketingPage() {
         setLeads(data.data || data);
       }
     } catch (error) {
-      console.error(`Failed to ${action} lead:`, error);
+      // Error handled by API service
     }
   };
 
