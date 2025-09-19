@@ -18,7 +18,7 @@ class ClutchAutoPartsApp {
 
   constructor() {
     this.databaseManager = new DatabaseManager();
-    this.syncManager = new SyncManager();
+    this.syncManager = new SyncManager(this.databaseManager);
     this.websocketManager = new WebSocketManager();
     this.i18nManager = new I18nManager();
     this.authManager = new AuthManager();
@@ -190,11 +190,11 @@ class ClutchAutoPartsApp {
 
     // Sync operations
     ipcMain.handle('sync-now', async () => {
-      return await this.syncManager.syncNow();
+      return await this.syncManager.sync();
     });
 
     ipcMain.handle('sync-status', async () => {
-      return await this.syncManager.getStatus();
+      return await this.syncManager.getSyncStatus();
     });
 
     // Auth operations

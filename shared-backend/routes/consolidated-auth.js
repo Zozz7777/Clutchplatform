@@ -11,6 +11,7 @@ const router = express.Router();
 const { getCollection } = require('../config/optimized-database');
 const { authenticateToken, requireRole, hashPassword, comparePassword } = require('../middleware/auth');
 const { rateLimit: createRateLimit } = require('../middleware/rateLimit');
+const logger = require('../utils/logger');
 
 // Apply rate limiting
 const authRateLimit = createRateLimit({ windowMs: 15 * 60 * 1000, max: 50 }); // 50 attempts per 15 minutes
@@ -102,7 +103,7 @@ router.post('/create-ceo', async (req, res) => {
     });
     
   } catch (error) {
-    console.error('❌ Error creating CEO employee:', error);
+    logger.error('Error creating CEO employee:', error);
     res.status(500).json({
       success: false,
       error: 'CEO_CREATION_FAILED',
@@ -402,7 +403,7 @@ router.post('/login', loginRateLimit, async (req, res) => {
       });
       
     } catch (dbError) {
-      console.error('Database connection error:', dbError);
+      logger.error('Database connection error:', dbError);
       return res.status(401).json({
         success: false,
         error: 'INVALID_CREDENTIALS',
@@ -425,7 +426,7 @@ router.post('/login', loginRateLimit, async (req, res) => {
     try {
       isValidPassword = await comparePassword(password, user.password);
     } catch (passwordError) {
-      console.error('Password comparison error:', passwordError);
+      logger.error('Password comparison error:', passwordError);
       return res.status(401).json({
         success: false,
         error: 'INVALID_CREDENTIALS',
@@ -530,7 +531,7 @@ router.post('/login', loginRateLimit, async (req, res) => {
     });
     
   } catch (error) {
-    console.error('Login error:', error);
+    logger.error('Login error:', error);
     res.status(500).json({
       success: false,
       error: 'LOGIN_FAILED',

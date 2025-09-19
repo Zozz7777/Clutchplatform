@@ -692,7 +692,8 @@
     "yearly": "سنوي",
     "failedToLoadFinanceData": "فشل في تحميل البيانات المالية",
     "failedToExportPayments": "فشل في تصدير المدفوعات",
-    "paymentCreationDialog": "سيتم فتح حوار إنشاء الدفع هنا"
+    "paymentCreationDialog": "سيتم فتح حوار إنشاء الدفع هنا",
+    "monthlyRecurring": "المتكرر شهرياً"
   },
   "settings": {
     "title": "الإعدادات والتكوين",
@@ -895,7 +896,11 @@
     "social": "اجتماعي",
     "advertising": "إعلان",
     "event": "حدث",
-    "other": "أخرى"
+    "other": "أخرى",
+    "totalCustomers": "إجمالي العملاء",
+    "activeCustomers": "العملاء النشطون",
+    "openTickets": "التذاكر المفتوحة",
+    "avgSatisfaction": "متوسط الرضا"
   },
   "integrations": {
     "title": "التكاملات",
@@ -1205,7 +1210,9 @@
     "invitationSent": "تم إرسال الدعوة بنجاح",
     "invitationResent": "تم إعادة إرسال الدعوة بنجاح",
     "loadingHrData": "جاري تحميل بيانات الموارد البشرية...",
-    "failedToLoadHrData": "فشل في تحميل بيانات الموارد البشرية"
+    "failedToLoadHrData": "فشل في تحميل بيانات الموارد البشرية",
+    "pendingApplications": "الطلبات المعلقة",
+    "avgSalary": "متوسط الراتب"
   },
   "legal": {
     "title": "الإدارة القانونية",

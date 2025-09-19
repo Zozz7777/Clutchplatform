@@ -615,14 +615,14 @@ async function startServer() {
         
         await analyzeAndTune(metrics);
       } catch (error) {
-        console.error('❌ Error in performance tuning:', error);
+        logger.error('Error in performance tuning:', error);
       }
     }, 600000); // Run every 10 minutes to reduce memory pressure
 
     // Enhanced graceful shutdown (handled by graceful restart manager)
 
   } catch (error) {
-    console.error('❌ Failed to start server:', error);
+    logger.error('Failed to start server:', error);
     process.exit(1);
   }
 }

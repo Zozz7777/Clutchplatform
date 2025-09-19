@@ -181,6 +181,9 @@ export class SyncManager {
         )
       `);
       
+      // Wait a moment for table to be created
+      await new Promise(resolve => setTimeout(resolve, 100));
+      
       const configRecords = await this.db.query('SELECT key, value FROM sync_config');
       
       for (const record of configRecords) {

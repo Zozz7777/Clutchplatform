@@ -43,7 +43,7 @@ class ClutchAutoPartsServer {
     this.port = parseInt(process.env['PORT'] || '3000');
     this.databaseManager = new DatabaseManager();
     this.authManager = new AuthManager();
-    this.syncManager = new SyncManager();
+    this.syncManager = new SyncManager(this.databaseManager);
     this.websocketManager = new WebSocketManager(this.databaseManager, this.authManager);
   }
 

@@ -216,7 +216,7 @@ export default function CRMPage() {
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
         <Card className="shadow-2xs">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium text-card-foreground">Total Customers</CardTitle>
+            <CardTitle className="text-sm font-medium text-card-foreground">{t('crm.totalCustomers')}</CardTitle>
             <Users className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
@@ -228,7 +228,7 @@ export default function CRMPage() {
         </Card>
         <Card className="shadow-2xs">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium text-card-foreground">Active Customers</CardTitle>
+            <CardTitle className="text-sm font-medium text-card-foreground">{t('crm.activeCustomers')}</CardTitle>
             <CheckCircle className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
@@ -242,7 +242,7 @@ export default function CRMPage() {
         </Card>
         <Card className="shadow-2xs">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium text-card-foreground">Open Tickets</CardTitle>
+            <CardTitle className="text-sm font-medium text-card-foreground">{t('crm.openTickets')}</CardTitle>
             <MessageSquare className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
@@ -256,7 +256,7 @@ export default function CRMPage() {
         </Card>
         <Card className="shadow-2xs">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium text-card-foreground">Avg Satisfaction</CardTitle>
+            <CardTitle className="text-sm font-medium text-card-foreground">{t('crm.avgSatisfaction')}</CardTitle>
             <Star className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>

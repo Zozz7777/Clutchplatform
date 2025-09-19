@@ -692,7 +692,8 @@
     "yearly": "Yearly",
     "failedToLoadFinanceData": "Failed to load finance data",
     "failedToExportPayments": "Failed to export payments",
-    "paymentCreationDialog": "Payment creation dialog would open here"
+    "paymentCreationDialog": "Payment creation dialog would open here",
+    "monthlyRecurring": "Monthly Recurring"
   },
   "settings": {
     "title": "Settings & Configuration",
@@ -895,7 +896,11 @@
     "social": "Social",
     "advertising": "Advertising",
     "event": "Event",
-    "other": "Other"
+    "other": "Other",
+    "totalCustomers": "Total Customers",
+    "activeCustomers": "Active Customers",
+    "openTickets": "Open Tickets",
+    "avgSatisfaction": "Avg. Satisfaction"
   },
   "integrations": {
     "title": "Integrations",
@@ -1205,7 +1210,9 @@
     "invitationSent": "Invitation sent successfully",
     "invitationResent": "Invitation resent successfully",
     "loadingHrData": "Loading HR data...",
-    "failedToLoadHrData": "Failed to load HR data"
+    "failedToLoadHrData": "Failed to load HR data",
+    "pendingApplications": "Pending Applications",
+    "avgSalary": "Avg. Salary"
   },
   "legal": {
     "title": "Legal Management",
