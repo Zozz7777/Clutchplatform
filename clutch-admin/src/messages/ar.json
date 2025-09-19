@@ -693,7 +693,8 @@
     "failedToLoadFinanceData": "فشل في تحميل البيانات المالية",
     "failedToExportPayments": "فشل في تصدير المدفوعات",
     "paymentCreationDialog": "سيتم فتح حوار إنشاء الدفع هنا",
-    "monthlyRecurring": "المتكرر شهرياً"
+    "monthlyRecurring": "المتكرر شهرياً",
+    "clearPendingPayments": "مسح المدفوعات المعلقة"
   },
   "settings": {
     "title": "الإعدادات والتكوين",

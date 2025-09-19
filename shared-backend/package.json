@@ -30,6 +30,7 @@
     "test:ci": "npm run test:pipeline",
     "audit:database": "node scripts/direct-database-audit.js",
     "audit:collections": "node scripts/direct-database-audit.js",
+    "test:invitations": "node scripts/test-invitations.js",
     "test:backend": "jest tests/comprehensive-backend-tests.test.js --verbose --detectOpenHandles",
     "test:simple": "jest tests/simple-backend-tests.test.js --verbose --detectOpenHandles",
     "test:health": "npm run test:simple",

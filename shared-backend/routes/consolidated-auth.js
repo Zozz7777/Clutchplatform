@@ -707,8 +707,8 @@ router.post('/register', authRateLimit, async (req, res) => {
     });
     
   } catch (error) {
-    console.error('❌ Registration error:', error);
-    console.error('❌ Registration error details:', {
+    logger.error('Registration error:', error);
+    logger.error('Registration error details:', {
       message: error.message,
       stack: error.stack,
       name: error.name,
@@ -719,7 +719,7 @@ router.post('/register', authRateLimit, async (req, res) => {
     
     // Handle specific MongoDB errors
     if (error.code === 11000) {
-      console.error('❌ Duplicate key error detected:', {
+      logger.error('Duplicate key error detected:', {
         duplicateField: error.keyPattern,
         duplicateValue: error.keyValue
       });
@@ -776,7 +776,7 @@ router.post('/refresh', async (req, res) => {
         iat: decoded.iat
       });
     } catch (jwtError) {
-      console.error('🔄 JWT verification failed:', {
+      logger.error('JWT verification failed:', {
         error: jwtError.message,
         name: jwtError.name,
         refreshTokenPreview: refreshToken.substring(0, 20) + '...'
@@ -884,7 +884,7 @@ router.post('/refresh', async (req, res) => {
     });
     
   } catch (error) {
-    console.error('🔄 Token refresh error:', error);
+    logger.error('Token refresh error:', error);
     res.status(401).json({
       success: false,
       error: 'INVALID_REFRESH_TOKEN',

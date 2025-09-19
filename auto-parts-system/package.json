@@ -100,7 +100,10 @@
       ],
       "icon": "assets/icon.ico",
       "sign": false,
-      "verifyUpdateCodeSignature": false
+      "verifyUpdateCodeSignature": false,
+      "signingHashAlgorithms": null,
+      "certificateFile": null,
+      "certificatePassword": null
     },
     "nsis": {
       "oneClick": false,

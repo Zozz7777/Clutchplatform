@@ -693,7 +693,8 @@
     "failedToLoadFinanceData": "Failed to load finance data",
     "failedToExportPayments": "Failed to export payments",
     "paymentCreationDialog": "Payment creation dialog would open here",
-    "monthlyRecurring": "Monthly Recurring"
+    "monthlyRecurring": "Monthly Recurring",
+    "clearPendingPayments": "Clear Pending Payments"
   },
   "settings": {
     "title": "Settings & Configuration",

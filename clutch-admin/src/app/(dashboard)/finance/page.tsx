@@ -82,6 +82,18 @@ interface Payout {
   method: string;
 }
 
+interface PaymentData {
+  amount: number;
+  currency: string;
+  description: string;
+  customerId: string;
+}
+
+interface RefundData {
+  reason: string;
+  amount?: number;
+}
+
 export default function FinancePage() {
   const [payments, setPayments] = useState<Payment[]>([]);
   const [subscriptions, setSubscriptions] = useState<Subscription[]>([]);
@@ -96,12 +108,12 @@ export default function FinancePage() {
   // Payment processing functions
   const handleProcessPayment = async (paymentData: Record<string, unknown>) => {
     try {
-      const result = await paymentService.processPayment(paymentData);
+      const result = await paymentService.processPayment(paymentData as unknown as PaymentData);
       if (result.success) {
         // Refresh the payments list
         const updatedPayments = await productionApi.getPayments();
-        setPayments(updatedPayments || []);
-        setFilteredPayments(updatedPayments || []);
+        setPayments((updatedPayments || []) as unknown as Payment[]);
+        setFilteredPayments((updatedPayments || []) as unknown as Payment[]);
       }
     } catch (error) {
       // Error handled by payment service
@@ -110,12 +122,12 @@ export default function FinancePage() {
 
   const handleRefundPayment = async (paymentId: string, refundData: Record<string, unknown>) => {
     try {
-      const result = await paymentService.refundPayment(paymentId, refundData);
+      const result = await paymentService.refundPayment(paymentId, refundData as unknown as RefundData);
       if (result.success) {
         // Refresh the payments list
         const updatedPayments = await productionApi.getPayments();
-        setPayments(updatedPayments || []);
-        setFilteredPayments(updatedPayments || []);
+        setPayments((updatedPayments || []) as unknown as Payment[]);
+        setFilteredPayments((updatedPayments || []) as unknown as Payment[]);
       }
     } catch (error) {
       // Error handled by payment service
@@ -174,10 +186,10 @@ export default function FinancePage() {
           productionApi.getPayouts()
         ]);
 
-        setPayments(paymentsData || []);
-        setSubscriptions(subscriptionsData || []);
-        setPayouts(payoutsData || []);
-        setFilteredPayments(paymentsData || []);
+        setPayments((paymentsData || []) as unknown as Payment[]);
+        setSubscriptions((subscriptionsData || []) as unknown as Subscription[]);
+        setPayouts((payoutsData || []) as unknown as Payout[]);
+        setFilteredPayments((paymentsData || []) as unknown as Payment[]);
         
       } catch (error) {
         // Error handled by API service
@@ -298,7 +310,7 @@ export default function FinancePage() {
         </Card>
         <Card className="shadow-2xs">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium text-card-foreground">Pending Payments</CardTitle>
+            <CardTitle className="text-sm font-medium text-card-foreground">{t('finance.pendingPayments')}</CardTitle>
             <Clock className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
@@ -310,7 +322,7 @@ export default function FinancePage() {
         </Card>
         <Card className="shadow-2xs">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium text-card-foreground">Active Subscriptions</CardTitle>
+            <CardTitle className="text-sm font-medium text-card-foreground">{t('finance.activeSubscriptions')}</CardTitle>
             <Receipt className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
@@ -322,7 +334,7 @@ export default function FinancePage() {
         </Card>
         <Card className="shadow-2xs">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium text-card-foreground">Monthly Recurring</CardTitle>
+            <CardTitle className="text-sm font-medium text-card-foreground">{t('finance.monthlyRecurring')}</CardTitle>
             <TrendingUp className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
@@ -677,7 +689,7 @@ export default function FinancePage() {
                   <div className="space-y-2">
                     <Button className="w-full justify-start shadow-2xs">
                       <CheckCircle className="mr-2 h-4 w-4" />
-                      Clear Pending Payments
+                      {t('finance.clearPendingPayments')}
                     </Button>
                     <Button variant="outline" className="w-full justify-start shadow-2xs">
                       <AlertTriangle className="mr-2 h-4 w-4" />
