@@ -55,8 +55,8 @@ export default function MobileCMSPage() {
       setLoading(true);
       const data = await productionApi.getMobileAppSettings();
       if (data) {
-        setAppSettings(data.appSettings || appSettings);
-        setContent(data.content || content);
+        setAppSettings((data.appSettings || appSettings) as unknown as typeof appSettings);
+        setContent((data.content || content) as unknown as typeof content);
       }
     } catch (error) {
       // Error handled by API service
@@ -85,7 +85,7 @@ export default function MobileCMSPage() {
   const previewApp = async () => {
     try {
       const result = await productionApi.previewMobileApp();
-      if (result?.previewUrl) {
+      if (result?.previewUrl && typeof result.previewUrl === 'string') {
         window.open(result.previewUrl, '_blank');
         toast.success('Mobile app preview opened in new tab!');
       } else {

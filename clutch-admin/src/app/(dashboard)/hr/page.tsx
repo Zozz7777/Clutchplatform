@@ -46,6 +46,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 
+// Employee interface with hireDate support
 interface Employee {
   _id: string;
   employeeId: string;
@@ -58,7 +59,8 @@ interface Employee {
   manager: string;
   status: "active" | "inactive" | "on_leave" | "terminated";
   employmentType: "full_time" | "part_time" | "contract" | "intern";
-  startDate: string;
+  startDate?: string;
+  hireDate?: string;
   endDate?: string;
   salary: number;
   currency: string;
@@ -154,7 +156,7 @@ export default function HRPage() {
           const employeesList = employeesData.data?.employees || employeesData.data || employeesData;
           setEmployees(Array.isArray(employeesList) ? employeesList : []);
         } else {
-          console.error('Failed to load employees:', employeesResponse.status, employeesResponse.statusText);
+          // Error handled by API service
           setEmployees([]);
         }
 
@@ -172,7 +174,7 @@ export default function HRPage() {
           const applicationsList = applicationsData.data?.applications || applicationsData.data || applicationsData;
           setApplications(Array.isArray(applicationsList) ? applicationsList : []);
         } else {
-          console.error('Failed to load applications:', applicationsResponse.status, applicationsResponse.statusText);
+          // Error handled by API service
           setApplications([]);
         }
 
@@ -183,11 +185,11 @@ export default function HRPage() {
             const invitationsList = invitationsResponse.data?.invitations || invitationsResponse.data || [];
             setInvitations(Array.isArray(invitationsList) ? invitationsList : []);
           } else {
-            console.error('Failed to load invitations:', invitationsResponse);
+            // Error handled by API service
             setInvitations([]);
           }
         } catch (error) {
-          console.error('Error loading invitations:', error);
+          // Error handled by API service
           setInvitations([]);
         }
 
@@ -208,9 +210,10 @@ export default function HRPage() {
           // Calculate stats from loaded data
           const totalEmployees = employees.length;
           const activeEmployees = employees.filter(e => e.status === "active").length;
-          const newHires = employees.filter(e => 
-            new Date(e.startDate) >= new Date(Date.now() - 30 * 24 * 60 * 60 * 1000)
-          ).length;
+          const newHires = employees.filter(e => {
+            const hireDate = e.hireDate || e.startDate;
+            return hireDate && new Date(hireDate) >= new Date(Date.now() - 30 * 24 * 60 * 60 * 1000);
+          }).length;
           const pendingApplications = applications.filter(a => 
             a.status === "applied" || a.status === "screening" || a.status === "interview"
           ).length;
@@ -414,7 +417,8 @@ export default function HRPage() {
     // Reload invitations
     const invitationsResponse = await apiService.getEmployeeInvitations();
     if (invitationsResponse.success) {
-      setInvitations(invitationsResponse.data?.invitations || []);
+      const invitationsList = invitationsResponse.data?.invitations || invitationsResponse.data || [];
+      setInvitations(Array.isArray(invitationsList) ? invitationsList : []);
     }
   };
 
@@ -550,9 +554,10 @@ export default function HRPage() {
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-medium">
-              {stats ? stats.newHires : Array.isArray(employees) ? employees.filter(e => 
-                new Date(e.startDate) >= new Date(Date.now() - 30 * 24 * 60 * 60 * 1000)
-              ).length : 0}
+              {stats ? stats.newHires : Array.isArray(employees) ? employees.filter(e => {
+                const hireDate = e.hireDate || e.startDate;
+                return hireDate && new Date(hireDate) >= new Date(Date.now() - 30 * 24 * 60 * 60 * 1000);
+              }).length : 0}
             </div>
             <p className="text-xs text-muted-foreground">
               This month
@@ -691,7 +696,7 @@ export default function HRPage() {
                   
                   <div className="flex items-center space-x-4">
                     <div className="text-right text-sm text-muted-foreground">
-                      <p>Started: {formatDate(employee.startDate)}</p>
+                      <p>Started: {formatDate(employee.startDate || employee.hireDate || new Date().toISOString())}</p>
                       <p>Manager: {employee.manager}</p>
                       <p>Performance: {employee.performanceRating}/5</p>
                     </div>
@@ -1000,3 +1005,4 @@ export default function HRPage() {
     </div>
   );
 }
+

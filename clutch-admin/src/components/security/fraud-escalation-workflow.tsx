@@ -197,7 +197,7 @@ export default function FraudEscalationWorkflow({ className }: FraudEscalationWo
         setFraudRules([]);
       }
     } catch (error) {
-      console.error('Failed to load fraud data:', error);
+      // Error handled by API service
       setFraudEvents([]);
       setFraudRules([]);
     }

@@ -525,7 +525,7 @@ export class CompanionAppManager {
 
   // Helper methods
   private async getCompanionAlerts(userId: number): Promise<any[]> {
-    const alerts = [];
+    const alerts: any[] = [];
 
     try {
       // Low stock alerts

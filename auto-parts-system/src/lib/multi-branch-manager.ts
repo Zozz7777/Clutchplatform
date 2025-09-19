@@ -211,8 +211,8 @@ export class MultiBranchManager {
    * Update branch
    */
   async updateBranch(branchId: number, branchData: Partial<Branch>): Promise<Branch> {
-    const fields = [];
-    const values = [];
+    const fields: string[] = [];
+    const values: any[] = [];
 
     Object.entries(branchData).forEach(([key, value]) => {
       if (key !== 'id' && key !== 'created_at' && value !== undefined) {
@@ -348,7 +348,7 @@ export class MultiBranchManager {
 
     if (status) {
       query += ' AND bt.status = ?';
-      params.push(status);
+      params.push(status as any);
     }
 
     query += ' ORDER BY bt.created_at DESC';
@@ -376,7 +376,7 @@ export class MultiBranchManager {
       ['approved', approvedBy, transferId]
     );
 
-    logger.info(`Approved transfer: ${transfer.transfer_number}`);
+    logger.info(`Approved transfer: ${transfer.id}`);
   }
 
   /**

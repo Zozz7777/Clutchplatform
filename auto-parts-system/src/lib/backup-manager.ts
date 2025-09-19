@@ -486,7 +486,7 @@ export class BackupManager {
 
     } catch (error) {
       result.duration_ms = Date.now() - startTime;
-      result.errors.push(error.message);
+      result.errors.push(error instanceof Error ? error.message : String(error));
       logger.error('Data import failed:', error);
       return result;
     }

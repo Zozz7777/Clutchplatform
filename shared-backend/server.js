@@ -239,7 +239,7 @@ app.use('/api/notifications', notificationsRoutes);
 app.use('/api/dashboard', dashboardRoutes);
 app.use('/api/employees', employeesRoutes);
 app.use('/api/export', exportRoutes);
-app.use('/api/employees', employeeInvitationsRoutes);
+app.use(`${apiPrefix}/employees`, employeeInvitationsRoutes);
 app.use('/api/crm', crmRoutes);
 app.use('/api/finance', financeRoutes);
 app.use('/api/chat', chatRoutes);

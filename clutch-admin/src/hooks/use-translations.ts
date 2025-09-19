@@ -9,18 +9,15 @@ const { enTranslations, arTranslations } = getTranslations();
 // Ensure translations are properly loaded
 const ensureTranslations = () => {
   if (!enTranslations || !arTranslations) {
-    console.error('Translation files not loaded properly');
-    console.error('enTranslations:', enTranslations);
-    console.error('arTranslations:', arTranslations);
+    // Translation files not loaded properly
     return false;
   }
   
   // Debug: Check if common.loading exists
   if (enTranslations && enTranslations.common && enTranslations.common.loading) {
-    console.log('✅ common.loading found in en translations:', enTranslations.common.loading);
+    // common.loading found in en translations
   } else {
-    console.error('❌ common.loading NOT found in en translations');
-    console.error('enTranslations.common:', enTranslations?.common);
+    // common.loading NOT found in en translations
   }
   
   return true;
@@ -44,7 +41,7 @@ export function useTranslations() {
   
   // Ensure translations are loaded
   if (!ensureTranslations()) {
-    console.error('Translation files not available');
+    // Translation files not available
   }
   
   const translations = language === 'ar' ? arTranslations : enTranslations;
@@ -52,7 +49,7 @@ export function useTranslations() {
   const t = (key: TranslationKeys): string => {
     // Check if translations are available
     if (!translations) {
-      console.error('Translations not available for language:', language);
+      // Translations not available for language
       return key;
     }
     
@@ -61,9 +58,7 @@ export function useTranslations() {
     
     // Special debugging for common.loading
     if (key === 'common.loading') {
-      console.log(`🔍 Looking for key "${key}" in ${language} translations`);
-      console.log('Current translations object:', translations);
-      console.log('common object:', translations.common);
+      // Looking for key in translations
     }
     
     for (const k of keys) {

@@ -186,7 +186,7 @@ export default function DynamicPricingSimulation({ className }: DynamicPricingSi
         setMarketAnalysis([]);
       }
     } catch (error) {
-      console.error('Failed to load pricing data:', error);
+      // Error handled by API service
       // Set empty arrays on error
       setScenarios([]);
       setTests([]);
