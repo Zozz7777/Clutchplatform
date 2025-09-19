@@ -237,7 +237,7 @@ export class BackupManager {
               );
             } catch (error) {
               if (options.skip_errors) {
-                result.errors.push(`Failed to restore record in ${table}: ${error.message}`);
+                result.errors.push(`Failed to restore record in ${table}: ${error instanceof Error ? error.message : String(error)}`);
               } else {
                 throw error;
               }
@@ -249,7 +249,7 @@ export class BackupManager {
           logger.debug(`Restored ${records.length} records to ${table}`);
 
         } catch (error) {
-          const errorMsg = `Failed to restore table ${table}: ${error.message}`;
+          const errorMsg = `Failed to restore table ${table}: ${error instanceof Error ? error.message : String(error)}`;
           logger.error(errorMsg);
           result.errors.push(errorMsg);
           
@@ -268,7 +268,7 @@ export class BackupManager {
 
     } catch (error) {
       result.duration_ms = Date.now() - startTime;
-      result.errors.push(error.message);
+      result.errors.push(error instanceof Error ? error.message : String(error));
       logger.error('Backup restore failed:', error);
       return result;
     }
@@ -409,7 +409,7 @@ export class BackupManager {
 
       // Decompress if needed
       if (filePath.endsWith('.gz')) {
-        fileContent = await gunzip(fileContent);
+        fileContent = Buffer.from(await gunzip(fileContent));
       }
 
       let importData: any;
@@ -459,7 +459,7 @@ export class BackupManager {
 
               await this.db.exec(query, values);
             } catch (error) {
-              if (options.merge_mode === 'skip_existing' && error.message.includes('UNIQUE constraint')) {
+              if (options.merge_mode === 'skip_existing' && error instanceof Error && error.message.includes('UNIQUE constraint')) {
                 // Skip duplicate records
                 continue;
               }
@@ -471,7 +471,7 @@ export class BackupManager {
           result.restored_records += records.length;
 
         } catch (error) {
-          const errorMsg = `Failed to import table ${tableName}: ${error.message}`;
+          const errorMsg = `Failed to import table ${tableName}: ${error instanceof Error ? error.message : String(error)}`;
           logger.error(errorMsg);
           result.errors.push(errorMsg);
         }

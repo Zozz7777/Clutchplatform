@@ -366,4 +366,89 @@ router.get('/preview', authenticateToken, async (req, res) => {
   }
 });
 
+// GET /api/v1/mobile-apps/settings - Get mobile app settings
+router.get('/settings', authenticateToken, async (req, res) => {
+  try {
+    const { db } = await connectToDatabase();
+    const settingsCollection = db.collection('mobile_app_settings');
+    
+    const settings = await settingsCollection.findOne({});
+    
+    const defaultSettings = {
+      appSettings: {
+        appName: 'Clutch',
+        version: '1.2.0',
+        primaryColor: '#3B82F6',
+        secondaryColor: '#10B981',
+        logo: '',
+        splashScreen: '',
+        welcomeMessage: 'Welcome to Clutch - Your Fleet Management Solution'
+      },
+      content: {
+        homeScreen: {
+          title: 'Dashboard',
+          subtitle: 'Manage your fleet efficiently',
+          features: ['Real-time tracking', 'Maintenance alerts', 'Fuel monitoring']
+        },
+        aboutScreen: {
+          title: 'About Clutch',
+          description: 'Clutch is a comprehensive fleet management solution designed to help businesses optimize their vehicle operations.'
+        }
+      }
+    };
+
+    res.json({
+      success: true,
+      data: settings || defaultSettings,
+      message: 'Mobile app settings retrieved successfully',
+      timestamp: new Date().toISOString()
+    });
+  } catch (error) {
+    logger.error('❌ Get mobile app settings error:', error);
+    res.status(500).json({
+      success: false,
+      error: 'GET_MOBILE_APP_SETTINGS_FAILED',
+      message: 'Failed to get mobile app settings',
+      timestamp: new Date().toISOString()
+    });
+  }
+});
+
+// POST /api/v1/mobile-apps/settings - Save mobile app settings
+router.post('/settings', authenticateToken, async (req, res) => {
+  try {
+    const { db } = await connectToDatabase();
+    const settingsCollection = db.collection('mobile_app_settings');
+    
+    const settings = req.body;
+    
+    // Upsert settings (update if exists, insert if not)
+    await settingsCollection.replaceOne(
+      { _id: 'default' },
+      {
+        _id: 'default',
+        ...settings,
+        updatedAt: new Date(),
+        updatedBy: req.user?.userId || req.user?.id
+      },
+      { upsert: true }
+    );
+
+    res.json({
+      success: true,
+      data: { success: true },
+      message: 'Mobile app settings saved successfully',
+      timestamp: new Date().toISOString()
+    });
+  } catch (error) {
+    logger.error('❌ Save mobile app settings error:', error);
+    res.status(500).json({
+      success: false,
+      error: 'SAVE_MOBILE_APP_SETTINGS_FAILED',
+      message: 'Failed to save mobile app settings',
+      timestamp: new Date().toISOString()
+    });
+  }
+});
+
 module.exports = router;

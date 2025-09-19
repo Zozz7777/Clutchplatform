@@ -18,6 +18,7 @@ import {
   Eye
 } from 'lucide-react';
 import { productionApi } from '@/lib/production-api';
+import { toast } from 'sonner';
 
 export default function MobileCMSPage() {
   const [appSettings, setAppSettings] = useState({
@@ -52,11 +53,12 @@ export default function MobileCMSPage() {
   const loadMobileAppSettings = async () => {
     try {
       setLoading(true);
-      // Note: Mobile app settings API not yet implemented
-      // Using default settings for now
-      // Mobile app settings API not yet implemented
+      const data = await productionApi.getMobileAppSettings();
+      if (data) {
+        setAppSettings(data.appSettings || appSettings);
+        setContent(data.content || content);
+      }
     } catch (error) {
-      // Error handled by API service
       // Error handled by API service
     } finally {
       setLoading(false);
@@ -66,13 +68,15 @@ export default function MobileCMSPage() {
   const saveChanges = async () => {
     try {
       setSaving(true);
-      // Note: Mobile app settings save API not yet implemented
-      // Saving mobile app settings
-      // Simulate save delay
-      await new Promise(resolve => setTimeout(resolve, 1000));
+      const settingsData = {
+        appSettings,
+        content
+      };
+      await productionApi.saveMobileAppSettings(settingsData);
+      toast.success('Mobile app settings saved successfully!');
     } catch (error) {
       // Error handled by API service
-      // Error handled by API service
+      toast.error('Failed to save mobile app settings');
     } finally {
       setSaving(false);
     }
@@ -80,12 +84,16 @@ export default function MobileCMSPage() {
   
   const previewApp = async () => {
     try {
-      // Note: Mobile app preview API not yet implemented
-      // Mobile app preview not yet implemented
-      toast.info('Mobile app preview feature coming soon!');
+      const result = await productionApi.previewMobileApp();
+      if (result?.previewUrl) {
+        window.open(result.previewUrl, '_blank');
+        toast.success('Mobile app preview opened in new tab!');
+      } else {
+        toast.info('Mobile app preview feature coming soon!');
+      }
     } catch (error) {
       // Error handled by API service
-      // Error handled by API service
+      toast.error('Failed to preview mobile app');
     }
   };
 

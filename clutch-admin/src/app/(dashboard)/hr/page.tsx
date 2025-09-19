@@ -150,8 +150,11 @@ export default function HRPage() {
         
         if (employeesResponse.ok) {
           const employeesData = await employeesResponse.json();
-          setEmployees(Array.isArray(employeesData.data) ? employeesData.data : Array.isArray(employeesData) ? employeesData : []);
+          // Handle different response structures
+          const employeesList = employeesData.data?.employees || employeesData.data || employeesData;
+          setEmployees(Array.isArray(employeesList) ? employeesList : []);
         } else {
+          console.error('Failed to load employees:', employeesResponse.status, employeesResponse.statusText);
           setEmployees([]);
         }
 
@@ -165,8 +168,11 @@ export default function HRPage() {
         
         if (applicationsResponse.ok) {
           const applicationsData = await applicationsResponse.json();
-          setApplications(Array.isArray(applicationsData.data) ? applicationsData.data : Array.isArray(applicationsData) ? applicationsData : []);
+          // Handle different response structures
+          const applicationsList = applicationsData.data?.applications || applicationsData.data || applicationsData;
+          setApplications(Array.isArray(applicationsList) ? applicationsList : []);
         } else {
+          console.error('Failed to load applications:', applicationsResponse.status, applicationsResponse.statusText);
           setApplications([]);
         }
 
@@ -174,12 +180,14 @@ export default function HRPage() {
         try {
           const invitationsResponse = await apiService.getEmployeeInvitations();
           if (invitationsResponse.success) {
-            setInvitations(invitationsResponse.data?.invitations || []);
+            const invitationsList = invitationsResponse.data?.invitations || invitationsResponse.data || [];
+            setInvitations(Array.isArray(invitationsList) ? invitationsList : []);
           } else {
+            console.error('Failed to load invitations:', invitationsResponse);
             setInvitations([]);
           }
         } catch (error) {
-          // Error handled by API service
+          console.error('Error loading invitations:', error);
           setInvitations([]);
         }
 
@@ -193,7 +201,9 @@ export default function HRPage() {
         
         if (statsResponse.ok) {
           const statsData = await statsResponse.json();
-          setStats(statsData.data || statsData);
+          // Handle both data.stats and direct data structures
+          const statsResult = statsData.data?.stats || statsData.data || statsData;
+          setStats(statsResult);
         } else {
           // Calculate stats from loaded data
           const totalEmployees = employees.length;
@@ -205,7 +215,7 @@ export default function HRPage() {
             a.status === "applied" || a.status === "screening" || a.status === "interview"
           ).length;
           const averageSalary = employees.length > 0 
-            ? employees.reduce((sum, e) => sum + e.salary, 0) / employees.length 
+            ? employees.reduce((sum, e) => sum + (Number(e.salary) || 0), 0) / employees.length 
             : 0;
 
           setStats({
@@ -368,7 +378,7 @@ export default function HRPage() {
         // Reload invitations
         const invitationsResponse = await apiService.getEmployeeInvitations();
         if (invitationsResponse.success) {
-          setInvitations(invitationsResponse.data?.invitations || []);
+          setInvitations((invitationsResponse.data?.invitations || []) as Record<string, unknown>[]);
         }
       } else {
         toast.error("Failed to resend invitation");
@@ -388,7 +398,7 @@ export default function HRPage() {
         // Reload invitations
         const invitationsResponse = await apiService.getEmployeeInvitations();
         if (invitationsResponse.success) {
-          setInvitations(invitationsResponse.data?.invitations || []);
+          setInvitations((invitationsResponse.data?.invitations || []) as Record<string, unknown>[]);
         }
       } else {
         toast.error("Failed to cancel invitation");
@@ -574,8 +584,12 @@ export default function HRPage() {
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-medium">
-              ${stats ? Math.round(stats.averageSalary).toLocaleString() : 
-                Array.isArray(employees) && employees.length > 0 ? Math.round(employees.reduce((sum, e) => sum + e.salary, 0) / employees.length).toLocaleString() : 0}
+              ${stats ? (isNaN(stats.averageSalary) ? 0 : Math.round(stats.averageSalary).toLocaleString()) : 
+                Array.isArray(employees) && employees.length > 0 ? 
+                  (() => {
+                    const avg = employees.reduce((sum, e) => sum + (Number(e.salary) || 0), 0) / employees.length;
+                    return isNaN(avg) ? 0 : Math.round(avg).toLocaleString();
+                  })() : 0}
             </div>
             <p className="text-xs text-muted-foreground">
               Annual average
@@ -753,37 +767,37 @@ export default function HRPage() {
           <CardContent>
             <div className="space-y-4">
               {(invitations || []).map((invitation) => (
-                <div key={invitation._id} className="flex items-center justify-between p-4 border border-border rounded-[0.625rem] hover:bg-muted/50 transition-colors">
+                <div key={String(invitation._id)} className="flex items-center justify-between p-4 border border-border rounded-[0.625rem] hover:bg-muted/50 transition-colors">
                   <div className="flex items-center space-x-4">
                     <div className="w-10 h-10 rounded-full bg-muted flex items-center justify-center">
                       <span className="text-muted-foreground font-medium">
-                        {invitation.name.charAt(0).toUpperCase()}
+                        {String(invitation.name || '').charAt(0).toUpperCase()}
                       </span>
                     </div>
                     <div>
-                      <p className="font-medium">{invitation.name}</p>
-                      <p className="text-sm text-muted-foreground">{invitation.email}</p>
+                      <p className="font-medium">{String(invitation.name || '')}</p>
+                      <p className="text-sm text-muted-foreground">{String(invitation.email || '')}</p>
                       <div className="flex items-center space-x-2 mt-1">
-                        <Badge variant={getStatusColor(invitation.status) as "default" | "secondary" | "destructive" | "outline"}>
-                          {invitation.status}
+                        <Badge variant={getStatusColor(String(invitation.status || '')) as "default" | "secondary" | "destructive" | "outline"}>
+                          {String(invitation.status || '')}
                         </Badge>
                         <span className="text-xs text-muted-foreground">
-                          {invitation.role} • {invitation.department}
+                          {String(invitation.role || '')} • {String(invitation.department || '')}
                         </span>
                         <span className="text-xs text-muted-foreground">
-                          Expires: {formatDate(invitation.expiresAt)}
+                          Expires: {formatDate(String(invitation.expiresAt || ''))}
                         </span>
                       </div>
                     </div>
                   </div>
                   
                   <div className="flex items-center space-x-2">
-                    {invitation.status === 'pending' && (
+                    {String(invitation.status || '') === 'pending' && (
                       <>
                         <Button
                           size="sm"
                           variant="outline"
-                          onClick={() => handleResendInvitation(invitation._id)}
+                          onClick={() => handleResendInvitation(String(invitation._id))}
                         >
                           <Send className="mr-2 h-4 w-4" />
                           Resend
@@ -791,7 +805,7 @@ export default function HRPage() {
                         <Button
                           size="sm"
                           variant="destructive"
-                          onClick={() => handleCancelInvitation(invitation._id)}
+                          onClick={() => handleCancelInvitation(String(invitation._id))}
                         >
                           <AlertTriangle className="mr-2 h-4 w-4" />
                           Cancel
