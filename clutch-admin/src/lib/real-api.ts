@@ -742,6 +742,52 @@ export class RealApiService {
       { fallbackValue: [], showToast: false }
     )();
   }
+
+  // Maintenance APIs
+  async getMaintenanceTasks(): Promise<Record<string, unknown>[]> {
+    return withErrorHandling(
+      async () => {
+        const response = await apiService.request<Record<string, unknown>[]>("/api/v1/fleet/maintenance/tasks");
+        return handleApiResponse(response, 'getMaintenanceTasks', []);
+      },
+      'getMaintenanceTasks',
+      { fallbackValue: [], showToast: false }
+    )();
+  }
+
+  async getMaintenanceSchedules(): Promise<Record<string, unknown>[]> {
+    return withErrorHandling(
+      async () => {
+        const response = await apiService.request<Record<string, unknown>[]>("/api/v1/fleet/maintenance/schedules");
+        return handleApiResponse(response, 'getMaintenanceSchedules', []);
+      },
+      'getMaintenanceSchedules',
+      { fallbackValue: [], showToast: false }
+    )();
+  }
+
+  async getTechnicians(): Promise<Record<string, unknown>[]> {
+    return withErrorHandling(
+      async () => {
+        const response = await apiService.request<Record<string, unknown>[]>("/api/v1/fleet/technicians");
+        return handleApiResponse(response, 'getTechnicians', []);
+      },
+      'getTechnicians',
+      { fallbackValue: [], showToast: false }
+    )();
+  }
+
+  // Churn Attribution APIs
+  async getChurnAttribution(): Promise<Record<string, unknown>[]> {
+    return withErrorHandling(
+      async () => {
+        const response = await apiService.request<Record<string, unknown>[]>("/api/v1/analytics/churn-attribution");
+        return handleApiResponse(response, 'getChurnAttribution', []);
+      },
+      'getChurnAttribution',
+      { fallbackValue: [], showToast: false }
+    )();
+  }
 }
 
 // Export singleton instance

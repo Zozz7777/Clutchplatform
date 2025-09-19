@@ -70,7 +70,7 @@ export function ChurnAttribution({ className = '' }: ChurnAttributionProps) {
         const churnData = await realApi.getChurnAttribution();
         
         // Transform API data to component format
-        const reasons: ChurnReason[] = (churnData || []).map((item: any) => ({
+        const reasons: ChurnReason[] = (churnData || []).map((item: Record<string, unknown>) => ({
           reason: item.reason,
           percentage: item.percentage,
           count: item.count,
