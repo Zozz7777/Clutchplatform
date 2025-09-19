@@ -63,7 +63,7 @@ export function RootCauseTimeline({ className = '' }: RootCauseTimelineProps) {
           topCause
         });
       } catch (error) {
-        console.error('Failed to load root cause data:', error);
+        // Failed to load root cause data
       } finally {
         setIsLoading(false);
       }

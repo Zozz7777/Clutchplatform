@@ -385,7 +385,7 @@ export default function CommunicationPage() {
 
       {activeTab === "chat" && (
         <div className="space-y-4">
-          {channels.map((channel) => (
+          {(channels || []).map((channel) => (
             <Card key={channel._id}>
               <CardContent className="p-6">
                 <div className="flex items-center justify-between">
@@ -435,7 +435,7 @@ export default function CommunicationPage() {
 
       {activeTab === "tickets" && (
         <div className="space-y-4">
-          {tickets.map((ticket) => (
+          {(tickets || []).map((ticket) => (
             <Card key={ticket._id}>
               <CardContent className="p-6">
                 <div className="flex items-start justify-between">

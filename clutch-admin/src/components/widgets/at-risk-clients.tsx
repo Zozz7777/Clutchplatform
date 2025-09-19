@@ -145,7 +145,7 @@ export function AtRiskClients({ className = '' }: AtRiskClientsProps) {
           statusDistribution
         });
       } catch (error) {
-        console.error('Failed to load at-risk clients data:', error);
+        // Failed to load at-risk clients data
       } finally {
         setIsLoading(false);
       }

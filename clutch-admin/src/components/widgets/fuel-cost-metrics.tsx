@@ -76,7 +76,7 @@ export function FuelCostMetrics({ className = '' }: FuelCostMetricsProps) {
           totalVehicles
         });
       } catch (error) {
-        console.error('Failed to load cost metrics:', error);
+        // Failed to load cost metrics
       } finally {
         setIsLoading(false);
       }
