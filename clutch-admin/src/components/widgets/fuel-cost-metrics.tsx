@@ -54,10 +54,10 @@ export function FuelCostMetrics({ className = '' }: FuelCostMetricsProps) {
         const fuelEfficiency = 8.5; // MPG average
 
         // Simulate cost calculations
-        const fuelCost = (totalMiles / fuelEfficiency) * 3.50; // $3.50 per gallon
-        const maintenanceCost = totalVehicles * 450; // $450 per vehicle per month
-        const insuranceCost = totalVehicles * 200; // $200 per vehicle per month
-        const otherCosts = totalVehicles * 150; // $150 per vehicle per month
+        const fuelCost = (totalMiles / fuelEfficiency) * 3.50; // 3.50 EGP per gallon
+        const maintenanceCost = totalVehicles * 450; // 450 EGP per vehicle per month
+        const insuranceCost = totalVehicles * 200; // 200 EGP per vehicle per month
+        const otherCosts = totalVehicles * 150; // 150 EGP per vehicle per month
 
         const totalCost = fuelCost + maintenanceCost + insuranceCost + otherCosts;
         const costPerVehicle = totalVehicles > 0 ? totalCost / totalVehicles : 0;

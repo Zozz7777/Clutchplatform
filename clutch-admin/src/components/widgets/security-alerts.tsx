@@ -16,8 +16,7 @@ import {
   Activity,
   BarChart3,
   Calendar,
-  Users,
-  CheckCircle
+  Users
 } from 'lucide-react';
 
 interface SecurityAlertsProps {
