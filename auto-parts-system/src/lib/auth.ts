@@ -3,6 +3,7 @@ import * as jwt from 'jsonwebtoken';
 import { DatabaseManager } from './database';
 import { logger } from './logger';
 import { User, UserRole } from '../types';
+import { RBACManager } from './rbac-manager';
 
 export interface LoginCredentials {
   username: string;
@@ -18,16 +19,19 @@ export interface AuthResult {
 
 export class AuthManager {
   private db: DatabaseManager;
+  private rbacManager: RBACManager;
   private currentUser: User | null = null;
   private jwtSecret: string;
 
   constructor() {
     this.db = new DatabaseManager();
+    this.rbacManager = new RBACManager();
     this.jwtSecret = process.env['JWT_SECRET'] || 'clutch-auto-parts-secret-key';
   }
 
   async initialize(): Promise<void> {
-    // Auth manager is initialized when database is ready
+    // Initialize RBAC manager
+    await this.rbacManager.initialize();
     logger.info('Auth manager initialized');
   }
 
@@ -367,44 +371,12 @@ export class AuthManager {
     }
   }
 
-  hasPermission(user: User, permission: string): boolean {
-    const rolePermissions: Record<string, string[]> = {
-      owner: ['*'], // All permissions
-      manager: [
-        'inventory.view', 'inventory.edit', 'inventory.delete',
-        'sales.view', 'sales.create', 'sales.edit',
-        'customers.view', 'customers.edit',
-        'suppliers.view', 'suppliers.edit',
-        'reports.view', 'reports.create'
-      ],
-      accountant: [
-        'inventory.view',
-        'sales.view',
-        'customers.view',
-        'suppliers.view',
-        'reports.view', 'reports.create',
-        'finance.view', 'finance.edit'
-      ],
-      cashier: [
-        'sales.view', 'sales.create',
-        'customers.view',
-        'inventory.view'
-      ],
-      auditor: [
-        'inventory.view',
-        'sales.view',
-        'customers.view',
-        'suppliers.view',
-        'reports.view'
-      ],
-      sysadmin: [
-        'system.view', 'system.edit',
-        'users.view', 'users.edit',
-        'settings.view', 'settings.edit'
-      ]
-    };
-
-    const permissions = rolePermissions[user.role] || [];
-    return permissions.includes('*') || permissions.includes(permission);
+  async hasPermission(user: User, permission: string): Promise<boolean> {
+    try {
+      return await this.rbacManager.hasPermission(user.id, permission);
+    } catch (error) {
+      logger.error('Error checking permission:', error);
+      return false;
+    }
   }
 }

@@ -157,7 +157,7 @@ export default function FinancePage() {
 
       toast.success("Payments exported successfully!");
     } catch (error) {
-      console.error("Failed to export payments:", error);
+      // Error handled by API service
       toast.error(t('finance.failedToExportPayments'));
     }
   };

@@ -392,7 +392,7 @@ export default function UsersPage() {
                   </div>
                   <div className="text-center p-4 border rounded-[0.625rem]">
                     <TrendingUp className="h-8 w-8 text-success mx-auto mb-2" />
-                    <p className="text-2xl font-bold text-foreground">+18%</p>
+                    <p className="text-2xl font-bold text-foreground">N/A</p>
                     <p className="text-sm text-muted-foreground">Growth Rate</p>
                   </div>
                   <div className="text-center p-4 border rounded-[0.625rem]">
@@ -455,7 +455,7 @@ export default function UsersPage() {
                   </div>
                   <div className="text-center p-4 border rounded-[0.625rem]">
                     <TrendingUp className="h-8 w-8 text-success mx-auto mb-2" />
-                    <p className="text-2xl font-bold text-foreground">+5%</p>
+                    <p className="text-2xl font-bold text-foreground">N/A</p>
                     <p className="text-sm text-muted-foreground">Growth Rate</p>
                   </div>
                   <div className="text-center p-4 border rounded-[0.625rem]">
@@ -516,7 +516,7 @@ export default function UsersPage() {
                   </div>
                   <div className="text-center p-4 border rounded-[0.625rem]">
                     <TrendingUp className="h-8 w-8 text-success mx-auto mb-2" />
-                    <p className="text-2xl font-bold text-foreground">+15%</p>
+                    <p className="text-2xl font-bold text-foreground">N/A</p>
                     <p className="text-sm text-muted-foreground">Growth Rate</p>
                   </div>
                   <div className="text-center p-4 border rounded-[0.625rem]">

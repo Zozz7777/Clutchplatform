@@ -215,7 +215,7 @@ export default function AssetManagementPage() {
       const data = await productionApi.getMaintenanceRecords();
       setMaintenanceRecords(data || []);
     } catch (error) {
-      console.error("Error loading maintenance records:", error);
+      // Error handled by API service
       setMaintenanceRecords([]);
     }
   };

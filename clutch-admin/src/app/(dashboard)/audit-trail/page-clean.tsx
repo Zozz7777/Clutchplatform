@@ -132,7 +132,7 @@ export default function AuditTrailPage() {
         setUserActivities(activitiesData || []);
         
       } catch (error) {
-        console.error("Failed to load audit data:", error);
+        // Error handled by API service
         toast.error(t('auditTrail.failedToLoadAuditData'));
         setAuditLogs([]);
         setSecurityEvents([]);

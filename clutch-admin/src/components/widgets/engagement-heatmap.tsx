@@ -144,12 +144,12 @@ export function EngagementHeatmap({ className = '' }: EngagementHeatmapProps) {
       </CardHeader>
       <CardContent className="space-y-6">
         {/* Segment Selector */}
-        <div className="flex space-x-2">
+        <div className="flex flex-wrap gap-2 p-1 bg-muted/30 rounded-lg">
           <Button
             variant={selectedSegment === 'all' ? 'default' : 'outline'}
             size="sm"
             onClick={() => setSelectedSegment('all')}
-            className="flex-1"
+            className="flex-1 min-w-0"
           >
             All Segments
           </Button>
@@ -159,7 +159,7 @@ export function EngagementHeatmap({ className = '' }: EngagementHeatmapProps) {
               variant={selectedSegment === segment.segment ? 'default' : 'outline'}
               size="sm"
               onClick={() => setSelectedSegment(segment.segment)}
-              className="flex-1"
+              className="flex-1 min-w-0"
             >
               {segment.segment}
             </Button>
