@@ -35,7 +35,7 @@ class HybridApiService {
       this.isBackendAvailable = response.ok;
       this.lastHealthCheck = now;
     } catch {
-      console.warn("Backend health check failed");
+      // Backend health check failed
       this.isBackendAvailable = false;
       this.lastHealthCheck = now;
     }
@@ -60,7 +60,7 @@ class HybridApiService {
       try {
         return await realApiCall();
       } catch (error) {
-        console.warn("Real API call failed, falling back to mock:", error);
+        // Real API call failed, falling back to mock
         if (API_CONFIG.fallbackToMock) {
           return mockApiCall();
         }
@@ -81,7 +81,7 @@ class HybridApiService {
         return result;
       }
     } catch (error) {
-      console.warn("Real login failed, using mock authentication");
+      // Real login failed, using mock authentication
     }
 
     // Fallback to real API authentication
@@ -254,7 +254,7 @@ class HybridApiService {
           return () => ws.close();
         }
       } catch (error) {
-        console.warn("WebSocket connection failed, using mock subscription");
+        // WebSocket connection failed, using mock subscription
       }
     }
 
@@ -277,7 +277,7 @@ class HybridApiService {
           return () => ws.close();
         }
       } catch (error) {
-        console.warn("WebSocket connection failed, using mock subscription");
+        // WebSocket connection failed, using mock subscription
       }
     }
 

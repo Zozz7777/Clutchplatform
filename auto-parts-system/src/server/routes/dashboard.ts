@@ -226,7 +226,7 @@ router.get('/alerts', requireAuth, async (req, res) => {
       });
     }
 
-    const alerts = [];
+    const alerts: any[] = [];
 
     // Low stock alerts
     const lowStockProducts = await db.query(`

@@ -286,7 +286,7 @@ class ApiService {
       // Both failed, return the main auth error
       return response;
     } catch (error) {
-      console.error("Login API call failed:", error);
+      // Login API call failed
       
       // Try emergency auth as fallback
       try {
@@ -301,7 +301,7 @@ class ApiService {
           return emergencyResponse;
         }
       } catch (emergencyError) {
-        console.error("Emergency auth also failed:", emergencyError);
+        // Emergency auth also failed
       }
       
       // Handle specific error cases
@@ -1206,7 +1206,7 @@ class ApiService {
     };
     
     ws.onerror = (error) => {
-      console.error("WebSocket error:", error);
+      // WebSocket error
     };
     
     return ws;

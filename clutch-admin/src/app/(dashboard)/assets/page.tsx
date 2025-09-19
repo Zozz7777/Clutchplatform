@@ -397,20 +397,21 @@ export default function AssetManagementPage() {
     }
   };
 
-  const filteredAssets = (assets || []).filter((asset) => {
-    const matchesSearch = asset.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         asset.serialNumber.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         asset.description.toLowerCase().includes(searchTerm.toLowerCase());
-    const matchesType = typeFilter === "all" || asset.type === typeFilter;
-    const matchesStatus = statusFilter === "all" || asset.status === statusFilter;
+  const assetsArray = Array.isArray(assets) ? assets : [];
+  const filteredAssets = assetsArray.filter((asset) => {
+    const matchesSearch = asset?.name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                         asset?.serialNumber?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                         asset?.description?.toLowerCase().includes(searchTerm.toLowerCase());
+    const matchesType = typeFilter === "all" || asset?.type === typeFilter;
+    const matchesStatus = statusFilter === "all" || asset?.status === statusFilter;
     return matchesSearch && matchesType && matchesStatus;
   });
 
-  const totalAssets = (assets || []).length;
-  const activeAssets = (assets || []).filter(a => a.status === "active").length;
-  const totalValue = (assets || []).reduce((sum, a) => sum + a.currentValue, 0);
-  const maintenanceDue = (assets || []).filter(a => 
-    new Date(a.maintenance.nextService) <= new Date(Date.now() + 30 * 24 * 60 * 60 * 1000)
+  const totalAssets = assetsArray.length;
+  const activeAssets = assetsArray.filter(a => a?.status === "active").length;
+  const totalValue = assetsArray.reduce((sum, a) => sum + (a?.currentValue || 0), 0);
+  const maintenanceDue = assetsArray.filter(a => 
+    a?.maintenance?.nextService && new Date(a.maintenance.nextService) <= new Date(Date.now() + 30 * 24 * 60 * 60 * 1000)
   ).length;
 
   if (loading) {
@@ -495,7 +496,7 @@ export default function AssetManagementPage() {
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">
-              {assets.filter(a => a.assignedTo).length}
+              {assetsArray.filter(a => a?.assignedTo).length}
             </div>
             <p className="text-xs text-muted-foreground">
               Currently assigned
@@ -690,7 +691,7 @@ export default function AssetManagementPage() {
         </CardHeader>
         <CardContent>
           <div className="space-y-4">
-            {maintenanceRecords.slice(0, 5).map((record) => (
+            {Array.isArray(maintenanceRecords) ? maintenanceRecords.slice(0, 5).map((record) => (
               <div key={record._id} className="flex items-center justify-between p-4 border rounded-[0.625rem]">
                 <div className="flex items-center space-x-4">
                   <div className="p-2 bg-primary/10 rounded-[0.625rem]">

@@ -453,10 +453,10 @@ export default function MarketingPage() {
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">
-              {stats ? stats.totalLeads : leads.length}
+              {stats ? stats.totalLeads : (leads || []).length}
             </div>
             <p className="text-xs text-muted-foreground">
-              {leads.filter(l => l.status === "new").length} new leads
+              {(leads || []).filter(l => l.status === "new").length} new leads
             </p>
           </CardContent>
         </Card>

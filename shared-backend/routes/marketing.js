@@ -737,4 +737,119 @@ router.get('/', authenticateToken, checkRole(['head_administrator', 'marketing_m
   });
 });
 
+// ==================== MARKETING STATS ====================
+
+// GET /api/v1/marketing/stats - Get marketing statistics
+router.get('/stats', authenticateToken, checkRole(['head_administrator', 'marketing_manager', 'analyst']), marketingRateLimit, async (req, res) => {
+  try {
+    const campaignsCollection = await getCollection('campaigns');
+    const leadsCollection = await getCollection('leads');
+    const promotionsCollection = await getCollection('promotions');
+    
+    // Get basic counts
+    const [totalCampaigns, activeCampaigns, totalLeads, newLeads, totalPromotions] = await Promise.all([
+      campaignsCollection.countDocuments({}),
+      campaignsCollection.countDocuments({ status: 'active' }),
+      leadsCollection.countDocuments({}),
+      leadsCollection.countDocuments({ status: 'new' }),
+      promotionsCollection.countDocuments({})
+    ]);
+    
+    // Calculate campaign metrics
+    const campaignMetrics = await campaignsCollection.aggregate([
+      {
+        $group: {
+          _id: null,
+          totalSpent: { $sum: '$spent' },
+          totalConversions: { $sum: '$metrics.conversions' },
+          totalClicks: { $sum: '$metrics.clicks' },
+          totalImpressions: { $sum: '$metrics.impressions' },
+          totalRevenue: { $sum: '$metrics.revenue' },
+          avgROAS: { $avg: '$metrics.roas' }
+        }
+      }
+    ]).toArray();
+    
+    const metrics = campaignMetrics[0] || {
+      totalSpent: 0,
+      totalConversions: 0,
+      totalClicks: 0,
+      totalImpressions: 0,
+      totalRevenue: 0,
+      avgROAS: 0
+    };
+    
+    // Calculate conversion rate
+    const conversionRate = metrics.totalClicks > 0 
+      ? (metrics.totalConversions / metrics.totalClicks * 100).toFixed(2)
+      : 0;
+    
+    // Calculate ROI
+    const roi = metrics.totalSpent > 0 
+      ? ((metrics.totalRevenue - metrics.totalSpent) / metrics.totalSpent * 100).toFixed(2)
+      : 0;
+    
+    // Get recent campaign performance
+    const recentCampaigns = await campaignsCollection
+      .find({})
+      .sort({ createdAt: -1 })
+      .limit(5)
+      .toArray();
+    
+    // Get lead sources breakdown
+    const leadSources = await leadsCollection.aggregate([
+      {
+        $group: {
+          _id: '$source',
+          count: { $sum: 1 }
+        }
+      },
+      {
+        $sort: { count: -1 }
+      }
+    ]).toArray();
+    
+    const stats = {
+      totalCampaigns,
+      activeCampaigns,
+      totalLeads,
+      newLeads,
+      totalPromotions,
+      totalSpent: metrics.totalSpent,
+      totalRevenue: metrics.totalRevenue,
+      conversionRate: parseFloat(conversionRate),
+      roi: parseFloat(roi),
+      avgROAS: metrics.avgROAS || 0,
+      totalClicks: metrics.totalClicks,
+      totalImpressions: metrics.totalImpressions,
+      totalConversions: metrics.totalConversions,
+      recentCampaigns: recentCampaigns.map(campaign => ({
+        _id: campaign._id,
+        name: campaign.name,
+        status: campaign.status,
+        spent: campaign.spent,
+        conversions: campaign.metrics?.conversions || 0,
+        roas: campaign.metrics?.roas || 0
+      })),
+      leadSources: leadSources.map(source => ({
+        source: source._id || 'Unknown',
+        count: source.count
+      }))
+    };
+    
+    res.json({
+      success: true,
+      data: stats,
+      timestamp: new Date().toISOString()
+    });
+  } catch (error) {
+    console.error('Error getting marketing stats:', error);
+    res.status(500).json({
+      success: false,
+      error: 'Failed to get marketing stats',
+      message: error.message
+    });
+  }
+});
+
 module.exports = router;
