@@ -3,6 +3,7 @@ const router = express.Router();
 const { authenticateToken, checkRole, checkPermission } = require('../middleware/unified-auth');
 const { getCollection } = require('../config/optimized-database');
 const rateLimit = require('express-rate-limit');
+const RealAnalyticsService = require('../services/realAnalyticsService');
 
 // Rate limiting
 const reportLimiter = rateLimit({
@@ -565,34 +566,23 @@ router.get('/analytics/overview', async (req, res) => {
 // ===== HELPER FUNCTIONS =====
 
 async function generateDashboardReport(params) {
-  // Generate real dashboard report data from database
+  // Generate real dashboard report data using analytics service
   try {
-    const usersCollection = await getCollection('users');
-    const vehiclesCollection = await getCollection('vehicles');
-    const bookingsCollection = await getCollection('bookings');
+    const analyticsService = new RealAnalyticsService();
+    const timeRange = params.timeRange || '7d';
     
-    const totalUsers = await usersCollection.countDocuments();
-    const totalVehicles = await vehiclesCollection.countDocuments();
-    const totalBookings = await bookingsCollection.countDocuments();
-    
-    // Calculate total revenue from actual bookings
-    const revenueResult = await bookingsCollection.aggregate([
-      { $match: { status: 'completed' } },
-      { $group: { _id: null, totalRevenue: { $sum: '$amount' } } }
-    ]).toArray();
-    
-    const totalRevenue = revenueResult.length > 0 ? revenueResult[0].totalRevenue : 0;
+    const dashboardData = await analyticsService.getDashboardAnalytics(timeRange);
     
     return {
       summary: {
-        totalUsers,
-        totalVehicles,
-        totalBookings,
-        totalRevenue
+        totalUsers: dashboardData.users.totalUsers,
+        totalVehicles: dashboardData.fleet.totalVehicles,
+        totalBookings: dashboardData.bookings.totalBookings,
+        totalRevenue: dashboardData.revenue.totalRevenue
       },
       charts: {
-        userGrowth: [], // TODO: Implement real user growth data
-        revenueTrend: [] // TODO: Implement real revenue trend data
+        userGrowth: dashboardData.users.dailyGrowth || [],
+        revenueTrend: dashboardData.revenue.dailyRevenue || []
       },
       generatedAt: new Date()
     };

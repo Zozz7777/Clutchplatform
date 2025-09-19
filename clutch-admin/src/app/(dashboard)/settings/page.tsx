@@ -58,7 +58,7 @@ import {
 interface SystemSetting {
   _id: string;
   key: string;
-  value: any;
+  value: unknown;
   type: "string" | "number" | "boolean" | "json" | "array";
   category: "general" | "security" | "notifications" | "appearance" | "integrations" | "advanced";
   description: string;
@@ -78,7 +78,7 @@ interface UserPreference {
   _id: string;
   userId: string;
   key: string;
-  value: any;
+  value: unknown;
   type: "string" | "number" | "boolean" | "json";
   category: "appearance" | "notifications" | "privacy" | "accessibility";
   updatedAt: string;
@@ -188,7 +188,7 @@ export default function SettingsPage() {
     loadSettingsData();
   }, []);
 
-  const handleSettingChange = (settingKey: string, newValue: any) => {
+  const handleSettingChange = (settingKey: string, newValue: unknown) => {
     setSystemSettings(prev => 
       prev.map(setting => 
         setting.key === settingKey 
@@ -198,7 +198,7 @@ export default function SettingsPage() {
     );
   };
 
-  const handlePreferenceChange = (preferenceKey: string, newValue: any) => {
+  const handlePreferenceChange = (preferenceKey: string, newValue: unknown) => {
     setUserPreferences(prev => 
       prev.map(preference => 
         preference.key === preferenceKey 

@@ -21,13 +21,13 @@ export interface PersistenceResult<T> {
 
 class DataPersistenceService {
   private autoSaveTimers: Map<string, NodeJS.Timeout> = new Map();
-  private pendingChanges: Map<string, any> = new Map();
-  private validationRules: Map<string, (data: any) => boolean> = new Map();
+  private pendingChanges: Map<string, unknown> = new Map();
+  private validationRules: Map<string, (data: unknown) => boolean> = new Map();
 
   // Generic CRUD operations
   public async create<T>(
     endpoint: string,
-    data: any,
+    data: unknown,
     options: PersistenceOptions = {}
   ): Promise<PersistenceResult<T>> {
     const {
@@ -121,7 +121,7 @@ class DataPersistenceService {
   public async update<T>(
     endpoint: string,
     id: string,
-    data: any,
+    data: unknown,
     options: PersistenceOptions = {}
   ): Promise<PersistenceResult<T>> {
     const {
@@ -223,7 +223,7 @@ class DataPersistenceService {
   // Batch operations
   public async batchCreate<T>(
     endpoint: string,
-    items: any[],
+    items: unknown[],
     options: PersistenceOptions = {}
   ): Promise<PersistenceResult<T[]>> {
     const results: T[] = [];
@@ -267,7 +267,7 @@ class DataPersistenceService {
 
   public async batchUpdate<T>(
     endpoint: string,
-    updates: { id: string; data: any }[],
+    updates: { id: string; data: unknown }[],
     options: PersistenceOptions = {}
   ): Promise<PersistenceResult<T[]>> {
     const results: T[] = [];

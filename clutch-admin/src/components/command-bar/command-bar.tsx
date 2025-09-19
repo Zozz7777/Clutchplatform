@@ -55,8 +55,8 @@ export default function CommandBar({ isOpen, onClose }: CommandBarProps) {
     type: 'input' | 'confirm' | 'form' | null;
     title: string;
     description?: string;
-    fields?: any[];
-    onSubmit?: (data: any) => Promise<void>;
+    fields?: Record<string, unknown>[];
+    onSubmit?: (data: Record<string, unknown>) => Promise<void>;
     variant?: 'default' | 'destructive' | 'warning';
   }>({
     type: null,
@@ -386,7 +386,7 @@ export default function CommandBar({ isOpen, onClose }: CommandBarProps) {
             const users = lines.slice(1).map((line: string) => {
               const [name, email, role] = line.split(',');
               return { name, email, role: role?.trim() || 'user', status: 'active' };
-            }).filter((user: any) => user.name && user.email);
+            }).filter((user: Record<string, unknown>) => user.name && user.email);
 
             // Create users in batch
             for (const user of users) {

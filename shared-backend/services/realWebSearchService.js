@@ -1,368 +1,245 @@
-/**
- * Real Web Search Service for Autonomous AI Team
- * Provides actual web search capabilities for research-first approach
- */
-
 const axios = require('axios');
-const winston = require('winston');
 
 class RealWebSearchService {
   constructor() {
-    this.logger = winston.createLogger({
-      level: 'info',
-      format: winston.format.combine(
-        winston.format.timestamp(),
-        winston.format.json()
-      ),
-      transports: [
-        new winston.transports.File({ filename: 'logs/web-search.log' }),
-        new winston.transports.Console()
-      ]
-    });
-
-    // Search engines configuration
-    this.searchEngines = {
-      google: {
-        enabled: true,
-        apiKey: process.env.GOOGLE_SEARCH_API_KEY,
-        searchEngineId: process.env.GOOGLE_SEARCH_ENGINE_ID,
-        baseUrl: 'https://www.googleapis.com/customsearch/v1'
-      },
-      duckduckgo: {
-        enabled: true,
-        baseUrl: 'https://api.duckduckgo.com'
-      },
-      stackoverflow: {
-        enabled: true,
-        baseUrl: 'https://api.stackexchange.com/2.3'
-      },
-      github: {
-        enabled: true,
-        baseUrl: 'https://api.github.com'
-      }
+    this.apiKeys = {
+      google: process.env.GOOGLE_SEARCH_API_KEY,
+      googleCSE: process.env.GOOGLE_CSE_ID,
+      bing: process.env.BING_SEARCH_API_KEY,
+      duckduckgo: process.env.DUCKDUCKGO_API_KEY
     };
-
-    // Rate limiting
-    this.rateLimits = {
-      google: { requests: 0, resetTime: Date.now() + 86400000 }, // 100 requests per day
-      duckduckgo: { requests: 0, resetTime: Date.now() + 3600000 }, // No official limit
-      stackoverflow: { requests: 0, resetTime: Date.now() + 3600000 }, // 10,000 requests per day
-      github: { requests: 0, resetTime: Date.now() + 3600000 } // 5,000 requests per hour
-    };
-  }
-
-  /**
-   * Search for information across multiple sources
-   */
-  async search(query, context = {}) {
-    this.logger.info(`🔍 Real web search for: ${query}`);
-
-    const results = [];
-    const searchPromises = [];
-
-    // Google Custom Search (if configured)
-    if (this.searchEngines.google.enabled && this.searchEngines.google.apiKey) {
-      searchPromises.push(this.searchGoogle(query, context));
-    }
-
-    // DuckDuckGo (no API key required)
-    if (this.searchEngines.duckduckgo.enabled) {
-      searchPromises.push(this.searchDuckDuckGo(query, context));
-    }
-
-    // Stack Overflow (for technical queries)
-    if (this.searchEngines.stackoverflow.enabled && this.isTechnicalQuery(query)) {
-      searchPromises.push(this.searchStackOverflow(query, context));
-    }
-
-    // GitHub (for code-related queries)
-    if (this.searchEngines.github.enabled && this.isCodeQuery(query)) {
-      searchPromises.push(this.searchGitHub(query, context));
-    }
-
-    try {
-      const searchResults = await Promise.allSettled(searchPromises);
-      
-      searchResults.forEach((result, index) => {
-        if (result.status === 'fulfilled' && result.value) {
-          results.push(...result.value);
-        } else if (result.status === 'rejected') {
-          this.logger.warn(`Search engine ${index} failed:`, result.reason);
-        }
-      });
-
-      // Sort results by relevance and remove duplicates
-      const uniqueResults = this.deduplicateResults(results);
-      const sortedResults = this.sortByRelevance(uniqueResults, query);
-
-      this.logger.info(`✅ Found ${sortedResults.length} unique results`);
-      return sortedResults.slice(0, 10); // Return top 10 results
-
-    } catch (error) {
-      this.logger.error('Web search failed:', error);
-      return this.getFallbackResults(query);
-    }
+    this.cache = new Map();
+    this.cacheTimeout = 10 * 60 * 1000; // 10 minutes
   }
 
   /**
    * Search using Google Custom Search API
    */
-  async searchGoogle(query, context) {
-    if (!this.searchEngines.google.apiKey || !this.searchEngines.google.searchEngineId) {
-      return [];
-    }
-
+  async searchGoogle(query, options = {}) {
     try {
-      const response = await axios.get(this.searchEngines.google.baseUrl, {
-        params: {
-          key: this.searchEngines.google.apiKey,
-          cx: this.searchEngines.google.searchEngineId,
-          q: query,
-          num: 5,
-          safe: 'medium'
-        },
-        timeout: 10000
-      });
+      if (!this.apiKeys.google || !this.apiKeys.googleCSE) {
+        throw new Error('Google Search API key or CSE ID not configured');
+      }
 
+      const params = {
+        key: this.apiKeys.google,
+        cx: this.apiKeys.googleCSE,
+        q: query,
+        num: options.limit || 10,
+        start: options.offset || 1,
+        safe: options.safe || 'medium'
+      };
+
+      const response = await axios.get('https://www.googleapis.com/customsearch/v1', { params });
+      
       return response.data.items?.map(item => ({
         title: item.title,
-        url: item.link,
+        link: item.link,
         snippet: item.snippet,
-        source: 'google',
-        relevance: this.calculateRelevance(item.title + ' ' + item.snippet, query)
+        source: 'Google',
+        timestamp: new Date().toISOString()
       })) || [];
-
     } catch (error) {
-      this.logger.warn('Google search failed:', error.message);
+      console.error('Google search failed:', error.message);
       return [];
     }
   }
 
   /**
-   * Search using DuckDuckGo (no API key required)
+   * Search using Bing Search API
    */
-  async searchDuckDuckGo(query, context) {
+  async searchBing(query, options = {}) {
     try {
-      // DuckDuckGo doesn't have a public API, so we'll use their instant answer API
-      const response = await axios.get(this.searchEngines.duckduckgo.baseUrl, {
-        params: {
-          q: query,
-          format: 'json',
-          no_html: 1,
-          skip_disambig: 1
-        },
-        timeout: 10000
+      if (!this.apiKeys.bing) {
+        throw new Error('Bing Search API key not configured');
+      }
+
+      const params = {
+        q: query,
+        count: options.limit || 10,
+        offset: options.offset || 0,
+        mkt: options.market || 'en-US',
+        safeSearch: options.safe || 'Moderate'
+      };
+
+      const response = await axios.get('https://api.bing.microsoft.com/v7.0/search', {
+        params,
+        headers: {
+          'Ocp-Apim-Subscription-Key': this.apiKeys.bing
+        }
       });
 
+      return response.data.webPages?.value?.map(item => ({
+        title: item.name,
+        link: item.url,
+        snippet: item.snippet,
+        source: 'Bing',
+        timestamp: new Date().toISOString()
+      })) || [];
+    } catch (error) {
+      console.error('Bing search failed:', error.message);
+      return [];
+    }
+  }
+
+  /**
+   * Search using DuckDuckGo Instant Answer API
+   */
+  async searchDuckDuckGo(query, options = {}) {
+    try {
+      const params = {
+        q: query,
+        format: 'json',
+        no_html: 1,
+        skip_disambig: 1
+      };
+
+      const response = await axios.get('https://api.duckduckgo.com/', { params });
+      
       const results = [];
       
+      // Add abstract if available
       if (response.data.Abstract) {
         results.push({
           title: response.data.Heading || query,
-          url: response.data.AbstractURL || `https://duckduckgo.com/?q=${encodeURIComponent(query)}`,
+          link: response.data.AbstractURL || '',
           snippet: response.data.Abstract,
-          source: 'duckduckgo',
-          relevance: this.calculateRelevance(response.data.Abstract, query)
+          source: 'DuckDuckGo',
+          timestamp: new Date().toISOString()
         });
       }
 
+      // Add related topics
       if (response.data.RelatedTopics) {
-        response.data.RelatedTopics.slice(0, 3).forEach(topic => {
-          if (topic.Text) {
+        response.data.RelatedTopics.slice(0, options.limit || 5).forEach(topic => {
+          if (topic.Text && topic.FirstURL) {
             results.push({
-              title: topic.FirstURL ? topic.Text.split(' - ')[0] : query,
-              url: topic.FirstURL || `https://duckduckgo.com/?q=${encodeURIComponent(query)}`,
+              title: topic.Text.split(' - ')[0] || topic.Text,
+              link: topic.FirstURL,
               snippet: topic.Text,
-              source: 'duckduckgo',
-              relevance: this.calculateRelevance(topic.Text, query)
+              source: 'DuckDuckGo',
+              timestamp: new Date().toISOString()
             });
           }
         });
       }
 
       return results;
-
     } catch (error) {
-      this.logger.warn('DuckDuckGo search failed:', error.message);
+      console.error('DuckDuckGo search failed:', error.message);
       return [];
     }
   }
 
   /**
-   * Search Stack Overflow for technical solutions
+   * Search using multiple engines and combine results
    */
-  async searchStackOverflow(query, context) {
+  async searchWeb(query, options = {}) {
+    const cacheKey = `search_${query}_${JSON.stringify(options)}`;
+    const cached = this.cache.get(cacheKey);
+    
+    if (cached && Date.now() - cached.timestamp < this.cacheTimeout) {
+      return cached.results;
+    }
+
     try {
-      const response = await axios.get(`${this.searchEngines.stackoverflow.baseUrl}/search/advanced`, {
-        params: {
-          order: 'desc',
-          sort: 'relevance',
-          q: query,
-          site: 'stackoverflow',
-          pagesize: 5,
-          filter: 'withbody'
-        },
-        timeout: 10000
-      });
-
-      return response.data.items?.map(item => ({
-        title: item.title,
-        url: item.link,
-        snippet: this.extractSnippet(item.body),
-        source: 'stackoverflow',
-        relevance: this.calculateRelevance(item.title + ' ' + item.body, query),
-        score: item.score,
-        answerCount: item.answer_count
-      })) || [];
-
-    } catch (error) {
-      this.logger.warn('Stack Overflow search failed:', error.message);
-      return [];
-    }
-  }
-
-  /**
-   * Search GitHub for code examples and repositories
-   */
-  async searchGitHub(query, context) {
-    try {
-      const response = await axios.get(`${this.searchEngines.github.baseUrl}/search/repositories`, {
-        params: {
-          q: `${query} language:javascript language:typescript language:node`,
-          sort: 'stars',
-          order: 'desc',
-          per_page: 5
-        },
-        headers: {
-          'Accept': 'application/vnd.github.v3+json'
-        },
-        timeout: 10000
-      });
-
-      return response.data.items?.map(item => ({
-        title: item.name,
-        url: item.html_url,
-        snippet: item.description || 'GitHub repository',
-        source: 'github',
-        relevance: this.calculateRelevance(item.name + ' ' + item.description, query),
-        stars: item.stargazers_count,
-        language: item.language
-      })) || [];
-
-    } catch (error) {
-      this.logger.warn('GitHub search failed:', error.message);
-      return [];
-    }
-  }
-
-  /**
-   * Check if query is technical
-   */
-  isTechnicalQuery(query) {
-    const technicalTerms = [
-      'error', 'bug', 'fix', 'debug', 'code', 'programming', 'api', 'database',
-      'server', 'backend', 'frontend', 'javascript', 'node', 'express', 'mongodb',
-      'sql', 'docker', 'kubernetes', 'deployment', 'authentication', 'security'
-    ];
-    
-    return technicalTerms.some(term => 
-      query.toLowerCase().includes(term)
-    );
-  }
-
-  /**
-   * Check if query is code-related
-   */
-  isCodeQuery(query) {
-    const codeTerms = [
-      'code', 'repository', 'github', 'git', 'npm', 'package', 'library',
-      'framework', 'example', 'tutorial', 'implementation'
-    ];
-    
-    return codeTerms.some(term => 
-      query.toLowerCase().includes(term)
-    );
-  }
-
-  /**
-   * Calculate relevance score
-   */
-  calculateRelevance(text, query) {
-    const textLower = text.toLowerCase();
-    const queryLower = query.toLowerCase();
-    const queryWords = queryLower.split(' ');
-    
-    let score = 0;
-    queryWords.forEach(word => {
-      if (textLower.includes(word)) {
-        score += 1;
-      }
-    });
-    
-    return score / queryWords.length;
-  }
-
-  /**
-   * Extract snippet from HTML content
-   */
-  extractSnippet(html) {
-    if (!html) return '';
-    
-    // Remove HTML tags and get first 200 characters
-    const text = html.replace(/<[^>]*>/g, ' ').replace(/\s+/g, ' ').trim();
-    return text.length > 200 ? text.substring(0, 200) + '...' : text;
-  }
-
-  /**
-   * Remove duplicate results
-   */
-  deduplicateResults(results) {
-    const seen = new Set();
-    return results.filter(result => {
-      const key = result.url || result.title;
-      if (seen.has(key)) {
-        return false;
-      }
-      seen.add(key);
-      return true;
-    });
-  }
-
-  /**
-   * Sort results by relevance
-   */
-  sortByRelevance(results, query) {
-    return results.sort((a, b) => {
-      // Prioritize by relevance score
-      if (a.relevance !== b.relevance) {
-        return b.relevance - a.relevance;
+      const searchPromises = [];
+      
+      // Add Google search if API key is available
+      if (this.apiKeys.google && this.apiKeys.googleCSE) {
+        searchPromises.push(this.searchGoogle(query, options));
       }
       
-      // Then by source priority
-      const sourcePriority = {
-        'stackoverflow': 4,
-        'github': 3,
-        'google': 2,
-        'duckduckgo': 1
-      };
+      // Add Bing search if API key is available
+      if (this.apiKeys.bing) {
+        searchPromises.push(this.searchBing(query, options));
+      }
       
-      return (sourcePriority[b.source] || 0) - (sourcePriority[a.source] || 0);
-    });
+      // Always add DuckDuckGo (no API key required)
+      searchPromises.push(this.searchDuckDuckGo(query, options));
+
+      const results = await Promise.all(searchPromises);
+      const combinedResults = results.flat();
+      
+      // Remove duplicates based on URL
+      const uniqueResults = combinedResults.filter((result, index, self) => 
+        index === self.findIndex(r => r.link === result.link)
+      );
+
+      // Sort by relevance (you could implement more sophisticated ranking)
+      const sortedResults = uniqueResults.slice(0, options.limit || 20);
+
+      // Cache results
+      this.cache.set(cacheKey, {
+        results: sortedResults,
+        timestamp: Date.now()
+      });
+
+      return sortedResults;
+    } catch (error) {
+      console.error('Web search failed:', error);
+      return [];
+    }
   }
 
   /**
-   * Get fallback results when all searches fail
+   * Search for technical documentation
    */
-  getFallbackResults(query) {
-    return [
-      {
-        title: `${query} - Documentation`,
-        url: `https://docs.example.com/${query.replace(/\s+/g, '-')}`,
-        snippet: `Documentation and examples for ${query}. This is a fallback result when web search is unavailable.`,
-        source: 'fallback',
-        relevance: 0.5
-      }
-    ];
+  async searchTechnicalDocs(query, options = {}) {
+    const technicalQuery = `${query} documentation API reference`;
+    return this.searchWeb(technicalQuery, { ...options, limit: 10 });
+  }
+
+  /**
+   * Search for code examples
+   */
+  async searchCodeExamples(query, options = {}) {
+    const codeQuery = `${query} code example tutorial`;
+    return this.searchWeb(codeQuery, { ...options, limit: 10 });
+  }
+
+  /**
+   * Search for recent news
+   */
+  async searchNews(query, options = {}) {
+    const newsQuery = `${query} news latest 2024`;
+    return this.searchWeb(newsQuery, { ...options, limit: 10 });
+  }
+
+  /**
+   * Get search suggestions
+   */
+  async getSearchSuggestions(query) {
+    try {
+      const response = await axios.get('https://suggestqueries.google.com/complete/search', {
+        params: {
+          client: 'firefox',
+          q: query
+        }
+      });
+
+      return response.data[1] || [];
+    } catch (error) {
+      console.error('Failed to get search suggestions:', error);
+      return [];
+    }
+  }
+
+  /**
+   * Clear search cache
+   */
+  clearCache() {
+    this.cache.clear();
+  }
+
+  /**
+   * Get cache statistics
+   */
+  getCacheStats() {
+    return {
+      size: this.cache.size,
+      keys: Array.from(this.cache.keys())
+    };
   }
 }
 

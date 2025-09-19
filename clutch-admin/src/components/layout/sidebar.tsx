@@ -165,7 +165,7 @@ export function Sidebar({ isCollapsed, onToggle }: SidebarProps) {
                 {/* Children */}
                 {hasChildren && !isCollapsed && isExpanded && (
                   <div className="ml-4 mt-1 space-y-1">
-                    {item.children!.map((child: any) => {
+                    {item.children!.map((child: Record<string, unknown>) => {
                       const childHasPermission = hasAnyPermission(child.permissions);
                       if (!childHasPermission) return null;
 

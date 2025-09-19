@@ -6,10 +6,18 @@
 const { EventEmitter } = require('events');
 const { logger } = require('../config/logger');
 const advancedCacheService = require('./advancedCacheService');
+const RealSystemMonitoringService = require('./realSystemMonitoringService');
+const RealPerformanceMetricsService = require('./realPerformanceMetricsService');
+const RealDatabaseMonitoringService = require('./realDatabaseMonitoringService');
 
 class ProductionMonitoringService extends EventEmitter {
   constructor() {
     super();
+    
+    // Initialize real monitoring services
+    this.systemMonitor = new RealSystemMonitoringService();
+    this.performanceMonitor = new RealPerformanceMetricsService();
+    this.databaseMonitor = new RealDatabaseMonitoringService();
     
     this.metrics = {
       system: {
@@ -297,29 +305,25 @@ class ProductionMonitoringService extends EventEmitter {
   }
 
   getRequestCount() {
-    // TODO: Integrate with request logging middleware
-    return 0; // TODO: Get actual request count
+    return this.performanceMonitor.getRequestCount();
   }
 
   getAverageResponseTime() {
-    // TODO: Integrate with request logging middleware
-    return 0; // TODO: Get actual average response time
+    return this.performanceMonitor.getAverageResponseTime();
   }
 
   getErrorCount() {
-    // TODO: Integrate with error logging middleware
-    return 0; // TODO: Get actual error count
+    return this.performanceMonitor.getErrorCount();
   }
 
   getThroughput() {
-    // TODO: Integrate with request logging middleware
-    return 0; // TODO: Get actual throughput
+    return this.performanceMonitor.getThroughput();
   }
 
   async getDatabaseConnections() {
     try {
-      // TODO: Integrate with database connection pool
-      return 0; // TODO: Get actual database connections
+      const connectionPool = await this.databaseMonitor.getConnectionPool();
+      return connectionPool ? connectionPool.activeConnections : 0;
     } catch (error) {
       return 0;
     }
@@ -327,8 +331,8 @@ class ProductionMonitoringService extends EventEmitter {
 
   async getAverageQueryTime() {
     try {
-      // TODO: Integrate with database monitoring
-      return 0; // TODO: Get actual average query time
+      const queryMetrics = this.databaseMonitor.getQueryMetrics();
+      return queryMetrics.averageExecutionTime;
     } catch (error) {
       return 0;
     }
@@ -336,8 +340,8 @@ class ProductionMonitoringService extends EventEmitter {
 
   async getSlowQueryCount() {
     try {
-      // TODO: Integrate with database monitoring
-      return 0; // TODO: Get actual slow query count
+      const queryMetrics = this.databaseMonitor.getQueryMetrics();
+      return queryMetrics.slowQueries;
     } catch (error) {
       return 0;
     }

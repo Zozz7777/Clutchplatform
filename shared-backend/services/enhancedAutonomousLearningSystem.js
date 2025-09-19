@@ -353,8 +353,10 @@ class EnhancedAutonomousLearningSystem {
         return this.researchCache.get(cacheKey);
       }
 
-      // TODO: Implement actual web search API integration
-      const results = []; // TODO: Use actual web search API
+      // Use real web search API
+      const RealWebSearchService = require('./realWebSearchService');
+      const webSearchService = new RealWebSearchService();
+      const results = await webSearchService.searchWeb(query, { limit: 10 });
       
       // Cache results
       this.researchCache.set(cacheKey, results);

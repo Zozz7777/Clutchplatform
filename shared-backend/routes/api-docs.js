@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const logger = require('../services/logger');
+const logger = require('../utils/logger');
 
 // GET /api/v1/docs/endpoints - Get all API endpoints
 router.get('/endpoints', async (req, res) => {

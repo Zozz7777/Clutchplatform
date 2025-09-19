@@ -5,6 +5,7 @@ const { getCollection } = require('../config/optimized-database');
 const rateLimit = require('express-rate-limit');
 const os = require('os');
 const fs = require('fs').promises;
+const RealSystemMonitoringService = require('../services/realSystemMonitoringService');
 
 // Rate limiting
 const healthLimiter = rateLimit({
@@ -550,7 +551,7 @@ async function getSystemPerformanceMetrics() {
       errorRate: Math.round(errorRate * 10) / 10, // Round to 1 decimal
       activeSessions: activeSessions,
       memoryUsage: Math.round((usedMemory / totalMemory) * 100),
-      cpuUsage: 0, // TODO: Get real CPU usage
+      cpuUsage: await getRealCPUUsage(), // Get real CPU usage
       timestamp: new Date().toISOString()
     };
   } catch (error) {
@@ -1015,6 +1016,17 @@ async function getServiceHealth() {
       alerts: []
     }
   ];
+}
+
+// Helper function to get real CPU usage
+async function getRealCPUUsage() {
+  try {
+    const systemMonitor = new RealSystemMonitoringService();
+    return await systemMonitor.getCPUUsage();
+  } catch (error) {
+    console.error('Failed to get real CPU usage:', error);
+    return 0;
+  }
 }
 
 module.exports = router;

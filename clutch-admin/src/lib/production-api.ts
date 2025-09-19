@@ -273,7 +273,7 @@ export class ProductionApiService {
     }
   }
 
-  async updateSystemSettings(settings: any): Promise<boolean> {
+  async updateSystemSettings(settings: Record<string, unknown>): Promise<boolean> {
     try {
       return await realApi.updateSystemSettings(settings);
     } catch (error) {
@@ -291,7 +291,7 @@ export class ProductionApiService {
     }
   }
 
-  async updateIntegration(integrationId: string, config: any): Promise<boolean> {
+  async updateIntegration(integrationId: string, config: Record<string, unknown>): Promise<boolean> {
     try {
       return await realApi.updateIntegration(integrationId, config);
     } catch (error) {
@@ -348,7 +348,7 @@ export class ProductionApiService {
   }
 
   // Audit Trail APIs
-  async getAuditLogs(filters?: any): Promise<any[]> {
+  async getAuditLogs(filters?: Record<string, unknown>): Promise<Record<string, unknown>[]> {
     try {
       return await realApi.getAuditLogs(filters);
     } catch (error) {

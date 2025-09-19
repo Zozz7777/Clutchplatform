@@ -94,7 +94,7 @@ export default function FinancePage() {
   const { t } = useTranslations();
 
   // Payment processing functions
-  const handleProcessPayment = async (paymentData: any) => {
+  const handleProcessPayment = async (paymentData: Record<string, unknown>) => {
     try {
       const result = await paymentService.processPayment(paymentData);
       if (result.success) {
@@ -108,7 +108,7 @@ export default function FinancePage() {
     }
   };
 
-  const handleRefundPayment = async (paymentId: string, refundData: any) => {
+  const handleRefundPayment = async (paymentId: string, refundData: Record<string, unknown>) => {
     try {
       const result = await paymentService.refundPayment(paymentId, refundData);
       if (result.success) {

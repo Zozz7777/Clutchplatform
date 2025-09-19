@@ -206,7 +206,7 @@ export default function ProfileSettingsPage() {
     }));
   };
 
-  const handlePreferenceChange = (category: string, key: string, value: any) => {
+  const handlePreferenceChange = (category: string, key: string, value: unknown) => {
     if (!profile) return;
     
     setProfile(prev => {

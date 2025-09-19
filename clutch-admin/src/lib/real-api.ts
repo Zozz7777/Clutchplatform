@@ -524,6 +524,29 @@ export class RealApiService {
       { fallbackValue: [], showToast: false }
     )();
   }
+
+  // API Documentation APIs
+  async getAPIEndpoints(): Promise<Record<string, unknown>[]> {
+    return withErrorHandling(
+      async () => {
+        const response = await apiService.request<Record<string, unknown>[]>("/api/v1/docs/endpoints");
+        return handleApiResponse(response, 'getAPIEndpoints', []);
+      },
+      'getAPIEndpoints',
+      { fallbackValue: [], showToast: false }
+    )();
+  }
+
+  async getAPICategories(): Promise<Record<string, unknown>[]> {
+    return withErrorHandling(
+      async () => {
+        const response = await apiService.request<Record<string, unknown>[]>("/api/v1/docs/categories");
+        return handleApiResponse(response, 'getAPICategories', []);
+      },
+      'getAPICategories',
+      { fallbackValue: [], showToast: false }
+    )();
+  }
 }
 
 // Export singleton instance

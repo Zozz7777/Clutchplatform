@@ -19,7 +19,7 @@ interface CommandModalProps {
   fields?: {
     name: string;
     label: string;
-    type: 'text' | 'number' | 'email' | 'select' | 'textarea';
+    type: 'text' | 'number' | 'email' | 'select' | 'textarea' | 'file';
     placeholder?: string;
     required?: boolean;
     options?: { value: string; label: string }[];
@@ -64,7 +64,7 @@ export function CommandModal({
     }
   };
 
-  const handleInputChange = (name: string, value: string) => {
+  const handleInputChange = (name: string, value: string | File) => {
     setFormData(prev => ({ ...prev, [name]: value }));
   };
 
@@ -275,7 +275,7 @@ export function InputModal({
   fields: {
     name: string;
     label: string;
-    type: 'text' | 'number' | 'email' | 'select' | 'textarea';
+    type: 'text' | 'number' | 'email' | 'select' | 'textarea' | 'file';
     placeholder?: string;
     required?: boolean;
     options?: { value: string; label: string }[];
