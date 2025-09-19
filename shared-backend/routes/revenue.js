@@ -95,24 +95,168 @@ router.get('/breakdown', revenueLimiter, authenticateToken, async (req, res) => 
   try {
     const timeRange = req.query.timeRange || '30d';
     
-    // TODO: Implement revenue breakdown by category
-    // This would require additional database queries to categorize revenue
+    // Calculate date range
+    const endDate = new Date();
+    const startDate = new Date();
+    
+    switch (timeRange) {
+      case '7d':
+        startDate.setDate(endDate.getDate() - 7);
+        break;
+      case '30d':
+        startDate.setDate(endDate.getDate() - 30);
+        break;
+      case '90d':
+        startDate.setDate(endDate.getDate() - 90);
+        break;
+      case '1y':
+        startDate.setFullYear(endDate.getFullYear() - 1);
+        break;
+      default:
+        startDate.setDate(endDate.getDate() - 30);
+    }
+    
+    // Get collections
+    const paymentsCollection = await getCollection('payments');
+    const subscriptionsCollection = await getCollection('subscriptions');
+    const bookingsCollection = await getCollection('bookings');
+    const servicesCollection = await getCollection('services');
+    
+    // Query revenue by category
+    const [subscriptionsRevenue, bookingsRevenue, servicesRevenue, otherRevenue] = await Promise.all([
+      // Subscription revenue
+      subscriptionsCollection.aggregate([
+        {
+          $match: {
+            status: 'active',
+            createdAt: { $gte: startDate, $lte: endDate }
+          }
+        },
+        {
+          $lookup: {
+            from: 'payments',
+            localField: '_id',
+            foreignField: 'subscriptionId',
+            as: 'payments'
+          }
+        },
+        {
+          $unwind: '$payments'
+        },
+        {
+          $group: {
+            _id: null,
+            total: { $sum: '$payments.amount' }
+          }
+        }
+      ]).toArray(),
+      
+      // Booking revenue
+      bookingsCollection.aggregate([
+        {
+          $match: {
+            status: { $in: ['completed', 'confirmed'] },
+            createdAt: { $gte: startDate, $lte: endDate }
+          }
+        },
+        {
+          $lookup: {
+            from: 'payments',
+            localField: '_id',
+            foreignField: 'bookingId',
+            as: 'payments'
+          }
+        },
+        {
+          $unwind: '$payments'
+        },
+        {
+          $group: {
+            _id: null,
+            total: { $sum: '$payments.amount' }
+          }
+        }
+      ]).toArray(),
+      
+      // Service revenue
+      servicesCollection.aggregate([
+        {
+          $match: {
+            status: 'completed',
+            createdAt: { $gte: startDate, $lte: endDate }
+          }
+        },
+        {
+          $lookup: {
+            from: 'payments',
+            localField: '_id',
+            foreignField: 'serviceId',
+            as: 'payments'
+          }
+        },
+        {
+          $unwind: '$payments'
+        },
+        {
+          $group: {
+            _id: null,
+            total: { $sum: '$payments.amount' }
+          }
+        }
+      ]).toArray(),
+      
+      // Other revenue (direct payments not categorized)
+      paymentsCollection.aggregate([
+        {
+          $match: {
+            status: 'completed',
+            createdAt: { $gte: startDate, $lte: endDate },
+            $or: [
+              { subscriptionId: { $exists: false } },
+              { bookingId: { $exists: false } },
+              { serviceId: { $exists: false } }
+            ]
+          }
+        },
+        {
+          $group: {
+            _id: null,
+            total: { $sum: '$amount' }
+          }
+        }
+      ]).toArray()
+    ]);
+    
+    const breakdown = {
+      subscriptions: subscriptionsRevenue[0]?.total || 0,
+      bookings: bookingsRevenue[0]?.total || 0,
+      services: servicesRevenue[0]?.total || 0,
+      other: otherRevenue[0]?.total || 0
+    };
+    
+    const totalRevenue = breakdown.subscriptions + breakdown.bookings + breakdown.services + breakdown.other;
     
     res.json({
       success: true,
       data: {
-        breakdown: {
-          subscriptions: 0, // TODO: Get actual subscription revenue
-          bookings: 0, // TODO: Get actual booking revenue
-          services: 0, // TODO: Get actual service revenue
-          other: 0 // TODO: Get actual other revenue
+        breakdown,
+        totalRevenue,
+        timeRange,
+        dateRange: {
+          start: startDate.toISOString(),
+          end: endDate.toISOString()
         },
-        note: 'Revenue breakdown not yet implemented - requires additional database queries',
+        percentages: {
+          subscriptions: totalRevenue > 0 ? (breakdown.subscriptions / totalRevenue * 100).toFixed(2) : 0,
+          bookings: totalRevenue > 0 ? (breakdown.bookings / totalRevenue * 100).toFixed(2) : 0,
+          services: totalRevenue > 0 ? (breakdown.services / totalRevenue * 100).toFixed(2) : 0,
+          other: totalRevenue > 0 ? (breakdown.other / totalRevenue * 100).toFixed(2) : 0
+        },
         timestamp: new Date().toISOString()
       }
     });
   } catch (error) {
-    console.error('Error getting revenue breakdown:', error);
+    logger.error('Error getting revenue breakdown:', error);
     res.status(500).json({
       success: false,
       error: 'Failed to get revenue breakdown',

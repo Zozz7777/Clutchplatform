@@ -288,7 +288,7 @@ export default function IncidentWarRoom({ className }: IncidentWarRoomProps) {
     const updatedIncident = {
       ...activeIncident,
       actions: activeIncident.actions.map(action =>
-        action.id === actionId ? { ...action, status: newStatus as any } : action
+        action.id === actionId ? { ...action, status: newStatus as string } : action
       )
     };
 
@@ -303,7 +303,7 @@ export default function IncidentWarRoom({ className }: IncidentWarRoomProps) {
 
     const updatedIncident = {
       ...activeIncident,
-      status: newStatus as any,
+      status: newStatus as string,
       timeline: {
         ...activeIncident.timeline,
         [newStatus]: new Date().toISOString()

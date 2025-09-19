@@ -360,7 +360,7 @@ export default function IdentityThreatDetection({ className }: IdentityThreatDet
 
   const handleStatusUpdate = (eventId: string, newStatus: string) => {
     setThreatEvents(prev => prev.map(event =>
-      event.id === eventId ? { ...event, status: newStatus as any } : event
+      event.id === eventId ? { ...event, status: newStatus as string } : event
     ));
   };
 

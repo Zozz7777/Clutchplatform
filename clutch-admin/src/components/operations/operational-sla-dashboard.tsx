@@ -191,7 +191,7 @@ export default function OperationalSLADashboard({ className }: OperationalSLADas
 
   const handleSLAStatusUpdate = (slaId: string, newStatus: string) => {
     setSlas(prev => prev.map(sla =>
-      sla.id === slaId ? { ...sla, status: newStatus as any } : sla
+      sla.id === slaId ? { ...sla, status: newStatus as string } : sla
     ));
   };
 

@@ -188,20 +188,168 @@ router.get('/reports', complianceLimiter, authenticateToken, async (req, res) =>
     const timeRange = req.query.timeRange || '30d';
     const reportType = req.query.type || 'summary';
     
-    // TODO: Implement compliance reporting
-    // This would generate detailed compliance reports based on the time range and type
+    // Calculate date range
+    const endDate = new Date();
+    const startDate = new Date();
+    
+    switch (timeRange) {
+      case '7d':
+        startDate.setDate(endDate.getDate() - 7);
+        break;
+      case '30d':
+        startDate.setDate(endDate.getDate() - 30);
+        break;
+      case '90d':
+        startDate.setDate(endDate.getDate() - 90);
+        break;
+      case '1y':
+        startDate.setFullYear(endDate.getFullYear() - 1);
+        break;
+      default:
+        startDate.setDate(endDate.getDate() - 30);
+    }
+    
+    // Get collections
+    const complianceFlagsCollection = await getCollection('compliance_flags');
+    const auditLogsCollection = await getCollection('audit_logs');
+    const usersCollection = await getCollection('users');
+    
+    // Generate compliance report based on type
+    let reportData = {};
+    
+    switch (reportType) {
+      case 'summary':
+        // Summary report with key metrics
+        const [totalFlags, resolvedFlags, auditEvents, userCompliance] = await Promise.all([
+          complianceFlagsCollection.countDocuments({
+            createdAt: { $gte: startDate, $lte: endDate }
+          }),
+          complianceFlagsCollection.countDocuments({
+            status: 'resolved',
+            updatedAt: { $gte: startDate, $lte: endDate }
+          }),
+          auditLogsCollection.countDocuments({
+            type: 'compliance',
+            timestamp: { $gte: startDate, $lte: endDate }
+          }),
+          usersCollection.countDocuments({
+            complianceStatus: 'compliant',
+            lastComplianceCheck: { $gte: startDate, $lte: endDate }
+          })
+        ]);
+        
+        reportData = {
+          summary: {
+            totalFlags,
+            resolvedFlags,
+            pendingFlags: totalFlags - resolvedFlags,
+            auditEvents,
+            compliantUsers: userCompliance,
+            resolutionRate: totalFlags > 0 ? ((resolvedFlags / totalFlags) * 100).toFixed(2) : 0
+          }
+        };
+        break;
+        
+      case 'detailed':
+        // Detailed report with flag breakdown
+        const flagBreakdown = await complianceFlagsCollection.aggregate([
+          {
+            $match: {
+              createdAt: { $gte: startDate, $lte: endDate }
+            }
+          },
+          {
+            $group: {
+              _id: '$severity',
+              count: { $sum: 1 },
+              resolved: {
+                $sum: { $cond: [{ $eq: ['$status', 'resolved'] }, 1, 0] }
+              }
+            }
+          }
+        ]).toArray();
+        
+        const categoryBreakdown = await complianceFlagsCollection.aggregate([
+          {
+            $match: {
+              createdAt: { $gte: startDate, $lte: endDate }
+            }
+          },
+          {
+            $group: {
+              _id: '$category',
+              count: { $sum: 1 },
+              resolved: {
+                $sum: { $cond: [{ $eq: ['$status', 'resolved'] }, 1, 0] }
+              }
+            }
+          }
+        ]).toArray();
+        
+        reportData = {
+          flagBreakdown,
+          categoryBreakdown,
+          timeRange,
+          dateRange: {
+            start: startDate.toISOString(),
+            end: endDate.toISOString()
+          }
+        };
+        break;
+        
+      case 'trends':
+        // Trend analysis over time
+        const dailyTrends = await complianceFlagsCollection.aggregate([
+          {
+            $match: {
+              createdAt: { $gte: startDate, $lte: endDate }
+            }
+          },
+          {
+            $group: {
+              _id: {
+                year: { $year: '$createdAt' },
+                month: { $month: '$createdAt' },
+                day: { $dayOfMonth: '$createdAt' }
+              },
+              flagsCreated: { $sum: 1 },
+              flagsResolved: {
+                $sum: { $cond: [{ $eq: ['$status', 'resolved'] }, 1, 0] }
+              }
+            }
+          },
+          {
+            $sort: { '_id.year': 1, '_id.month': 1, '_id.day': 1 }
+          }
+        ]).toArray();
+        
+        reportData = {
+          dailyTrends,
+          timeRange,
+          dateRange: {
+            start: startDate.toISOString(),
+            end: endDate.toISOString()
+          }
+        };
+        break;
+        
+      default:
+        reportData = {
+          error: 'Invalid report type. Supported types: summary, detailed, trends'
+        };
+    }
     
     res.json({
       success: true,
       data: {
-        reportType: reportType,
-        timeRange: timeRange,
-        note: 'Compliance reporting not yet implemented - requires additional database queries and report generation',
-        timestamp: new Date().toISOString()
+        reportType,
+        timeRange,
+        generatedAt: new Date().toISOString(),
+        ...reportData
       }
     });
   } catch (error) {
-    console.error('Error getting compliance reports:', error);
+    logger.error('Error getting compliance reports:', error);
     res.status(500).json({
       success: false,
       error: 'Failed to get compliance reports',

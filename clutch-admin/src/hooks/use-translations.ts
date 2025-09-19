@@ -8,8 +8,19 @@ import arTranslations from '@/messages/ar.json';
 const ensureTranslations = () => {
   if (!enTranslations || !arTranslations) {
     console.error('Translation files not loaded properly');
+    console.error('enTranslations:', enTranslations);
+    console.error('arTranslations:', arTranslations);
     return false;
   }
+  
+  // Debug: Check if common.loading exists
+  if (enTranslations && enTranslations.common && enTranslations.common.loading) {
+    console.log('✅ common.loading found in en translations:', enTranslations.common.loading);
+  } else {
+    console.error('❌ common.loading NOT found in en translations');
+    console.error('enTranslations.common:', enTranslations?.common);
+  }
+  
   return true;
 };
 
@@ -46,16 +57,33 @@ export function useTranslations() {
     const keys = key.split('.');
     let value: Record<string, unknown> = translations;
     
+    // Special debugging for common.loading
+    if (key === 'common.loading') {
+      console.log(`🔍 Looking for key "${key}" in ${language} translations`);
+      console.log('Current translations object:', translations);
+      console.log('common object:', translations.common);
+    }
+    
     for (const k of keys) {
       if (value && typeof value === 'object' && k in value) {
         value = value[k];
+        if (key === 'common.loading') {
+          console.log(`✅ Found key "${k}", value:`, value);
+        }
       } else {
-        console.warn(`Translation key "${key}" not found in ${language} translations`);
+        console.warn(`❌ Translation key "${key}" not found in ${language} translations`);
+        console.warn(`Failed at key "${k}" in path "${key}"`);
+        console.warn('Available keys at current level:', value ? Object.keys(value) : 'value is null/undefined');
         return key;
       }
     }
     
-    return typeof value === 'string' ? value : key;
+    const result = typeof value === 'string' ? value : key;
+    if (key === 'common.loading') {
+      console.log(`🎯 Final result for "${key}":`, result);
+    }
+    
+    return result;
   };
 
   return { t, language };
