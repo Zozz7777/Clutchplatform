@@ -6,7 +6,15 @@ const { connectToDatabase } = require('../config/database-unified');
 // GET /api/v1/ai/models - Get AI models
 router.get('/models', authenticateToken, async (req, res) => {
   try {
-    const { db } = await connectToDatabase();
+    const db = await connectToDatabase();
+    if (!db) {
+      return res.status(500).json({
+        success: false,
+        error: 'Database connection failed',
+        message: 'Unable to connect to database',
+        timestamp: new Date().toISOString()
+      });
+    }
     const modelsCollection = db.collection('ai_models');
     
     const models = await modelsCollection.find({}).toArray();
@@ -31,7 +39,15 @@ router.get('/models', authenticateToken, async (req, res) => {
 // GET /api/v1/ai/anomaly-detection - Get anomaly detection results
 router.get('/anomaly-detection', authenticateToken, async (req, res) => {
   try {
-    const { db } = await connectToDatabase();
+    const db = await connectToDatabase();
+    if (!db) {
+      return res.status(500).json({
+        success: false,
+        error: 'Database connection failed',
+        message: 'Unable to connect to database',
+        timestamp: new Date().toISOString()
+      });
+    }
     const anomaliesCollection = db.collection('anomalies');
     
     const { limit = 50, type, severity } = req.query;
@@ -66,7 +82,15 @@ router.get('/anomaly-detection', authenticateToken, async (req, res) => {
 // GET /api/v1/ai/confidence-intervals - Get confidence intervals for predictions
 router.get('/confidence-intervals', authenticateToken, async (req, res) => {
   try {
-    const { db } = await connectToDatabase();
+    const db = await connectToDatabase();
+    if (!db) {
+      return res.status(500).json({
+        success: false,
+        error: 'Database connection failed',
+        message: 'Unable to connect to database',
+        timestamp: new Date().toISOString()
+      });
+    }
     const predictionsCollection = db.collection('ai_predictions');
     
     const { model, metric, period = '7d' } = req.query;
@@ -121,7 +145,15 @@ router.get('/confidence-intervals', authenticateToken, async (req, res) => {
 // GET /api/v1/ai/recommendations - Get AI recommendations
 router.get('/recommendations', authenticateToken, async (req, res) => {
   try {
-    const { db } = await connectToDatabase();
+    const db = await connectToDatabase();
+    if (!db) {
+      return res.status(500).json({
+        success: false,
+        error: 'Database connection failed',
+        message: 'Unable to connect to database',
+        timestamp: new Date().toISOString()
+      });
+    }
     const recommendationsCollection = db.collection('ai_recommendations');
     
     const { type, priority, limit = 20 } = req.query;
@@ -166,7 +198,15 @@ router.post('/train-model', authenticateToken, checkRole(['head_administrator', 
       });
     }
 
-    const { db } = await connectToDatabase();
+    const db = await connectToDatabase();
+    if (!db) {
+      return res.status(500).json({
+        success: false,
+        error: 'Database connection failed',
+        message: 'Unable to connect to database',
+        timestamp: new Date().toISOString()
+      });
+    }
     const trainingJobsCollection = db.collection('ai_training_jobs');
     
     // Create training job
@@ -213,7 +253,15 @@ router.post('/train-model', authenticateToken, checkRole(['head_administrator', 
 // GET /api/v1/ai/training-jobs - Get training job status
 router.get('/training-jobs', authenticateToken, async (req, res) => {
   try {
-    const { db } = await connectToDatabase();
+    const db = await connectToDatabase();
+    if (!db) {
+      return res.status(500).json({
+        success: false,
+        error: 'Database connection failed',
+        message: 'Unable to connect to database',
+        timestamp: new Date().toISOString()
+      });
+    }
     const trainingJobsCollection = db.collection('ai_training_jobs');
     
     const { status, limit = 20 } = req.query;
@@ -247,7 +295,15 @@ router.get('/training-jobs', authenticateToken, async (req, res) => {
 // GET /api/v1/ai/predictions - Get AI predictions
 router.get('/predictions', authenticateToken, async (req, res) => {
   try {
-    const { db } = await connectToDatabase();
+    const db = await connectToDatabase();
+    if (!db) {
+      return res.status(500).json({
+        success: false,
+        error: 'Database connection failed',
+        message: 'Unable to connect to database',
+        timestamp: new Date().toISOString()
+      });
+    }
     const predictionsCollection = db.collection('ai_predictions');
     
     const { model, metric, limit = 50 } = req.query;
@@ -292,7 +348,15 @@ router.post('/predict', authenticateToken, async (req, res) => {
       });
     }
 
-    const { db } = await connectToDatabase();
+    const db = await connectToDatabase();
+    if (!db) {
+      return res.status(500).json({
+        success: false,
+        error: 'Database connection failed',
+        message: 'Unable to connect to database',
+        timestamp: new Date().toISOString()
+      });
+    }
     const predictionsCollection = db.collection('ai_predictions');
     
     // TODO: Call actual AI model for prediction
@@ -368,7 +432,15 @@ router.post('/predict', authenticateToken, async (req, res) => {
 // GET /api/v1/ai/model-performance - Get model performance metrics
 router.get('/model-performance', authenticateToken, async (req, res) => {
   try {
-    const { db } = await connectToDatabase();
+    const db = await connectToDatabase();
+    if (!db) {
+      return res.status(500).json({
+        success: false,
+        error: 'Database connection failed',
+        message: 'Unable to connect to database',
+        timestamp: new Date().toISOString()
+      });
+    }
     const modelPerformanceCollection = db.collection('ai_model_performance');
     
     const { model, metric, period = '30d' } = req.query;
@@ -419,7 +491,15 @@ router.post('/feedback', authenticateToken, async (req, res) => {
       });
     }
 
-    const { db } = await connectToDatabase();
+    const db = await connectToDatabase();
+    if (!db) {
+      return res.status(500).json({
+        success: false,
+        error: 'Database connection failed',
+        message: 'Unable to connect to database',
+        timestamp: new Date().toISOString()
+      });
+    }
     const feedbackCollection = db.collection('ai_feedback');
     
     const feedbackRecord = {
@@ -453,7 +533,15 @@ router.post('/feedback', authenticateToken, async (req, res) => {
 // GET /api/v1/ai/fraud-cases - Get fraud detection cases
 router.get('/fraud-cases', authenticateToken, async (req, res) => {
   try {
-    const { db } = await connectToDatabase();
+    const db = await connectToDatabase();
+    if (!db) {
+      return res.status(500).json({
+        success: false,
+        error: 'Database connection failed',
+        message: 'Unable to connect to database',
+        timestamp: new Date().toISOString()
+      });
+    }
     const fraudCasesCollection = db.collection('fraud_cases');
     
     const { page = 1, limit = 20, status, risk } = req.query;
@@ -498,7 +586,15 @@ router.get('/fraud-cases', authenticateToken, async (req, res) => {
 // GET /api/v1/ai/recommendations - Get AI recommendations
 router.get('/recommendations', authenticateToken, async (req, res) => {
   try {
-    const { db } = await connectToDatabase();
+    const db = await connectToDatabase();
+    if (!db) {
+      return res.status(500).json({
+        success: false,
+        error: 'Database connection failed',
+        message: 'Unable to connect to database',
+        timestamp: new Date().toISOString()
+      });
+    }
     const recommendationsCollection = db.collection('ai_recommendations');
     
     const { page = 1, limit = 20, type, status } = req.query;
@@ -543,7 +639,15 @@ router.get('/recommendations', authenticateToken, async (req, res) => {
 // GET /api/v1/ai/training-roi - Get training ROI data
 router.get('/training-roi', authenticateToken, async (req, res) => {
   try {
-    const { db } = await connectToDatabase();
+    const db = await connectToDatabase();
+    if (!db) {
+      return res.status(500).json({
+        success: false,
+        error: 'Database connection failed',
+        message: 'Unable to connect to database',
+        timestamp: new Date().toISOString()
+      });
+    }
     const trainingCollection = db.collection('ai_training');
     
     const trainingData = await trainingCollection
@@ -595,7 +699,15 @@ router.get('/training-roi', authenticateToken, async (req, res) => {
 // GET /api/v1/ai/recommendation-uplift - Get recommendation uplift data
 router.get('/recommendation-uplift', authenticateToken, async (req, res) => {
   try {
-    const { db } = await connectToDatabase();
+    const db = await connectToDatabase();
+    if (!db) {
+      return res.status(500).json({
+        success: false,
+        error: 'Database connection failed',
+        message: 'Unable to connect to database',
+        timestamp: new Date().toISOString()
+      });
+    }
     const recommendationsCollection = db.collection('ai_recommendations');
     
     const recommendations = await recommendationsCollection

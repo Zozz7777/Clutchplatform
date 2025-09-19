@@ -5,7 +5,7 @@ import compression from 'compression';
 import morgan from 'morgan';
 import { DatabaseManager } from '../lib/database';
 import { AuthManager } from '../lib/auth';
-import { SyncManager } from '../lib/sync';
+import { SyncManager } from '../lib/sync-manager';
 import { WebSocketManager } from '../lib/websocket';
 import { logger, morganStream } from '../lib/logger';
 import { isDev } from '../lib/utils';

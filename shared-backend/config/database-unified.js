@@ -101,7 +101,17 @@ const OPTIMIZED_COLLECTIONS = [
   
   // Device & Token Management
   'device_tokens',   // Keep for push notifications
-  'sessions'         // Keep for authentication
+  'sessions',        // Keep for authentication
+  
+  // Additional Collections (from warnings)
+  'payments',        // Keep for payment processing
+  'compliance',      // Keep for compliance tracking
+  'employees',       // Keep for employee management
+  'job_applications', // Keep for HR recruitment
+  'recruitment',     // Keep for recruitment process
+  'user_activity',   // Keep for user activity tracking
+  'support_tickets', // Keep for customer support
+  'employee_invitations' // Keep for employee onboarding
 ];
 
 // Enhanced connection management
@@ -178,7 +188,7 @@ const initializeOptimizedDatabase = async () => {
       { name: 'sessions', indexes: [
         { key: { userId: 1 } },
         { key: { isActive: 1 } },
-        { key: { expiresAt: 1 }, expireAfterSeconds: 0 }
+        { key: { expiresAt: 1 }, expireAfterSeconds: 3600 }
       ]}
     ];
 

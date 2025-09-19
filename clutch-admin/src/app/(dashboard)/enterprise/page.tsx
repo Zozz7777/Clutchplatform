@@ -169,7 +169,7 @@ export default function EnterprisePage() {
         }
         
       } catch (error) {
-        console.error("Failed to load enterprise data:", error);
+        // Error handled by API service
         toast.error("Failed to load enterprise data");
         // Set empty arrays on error - no mock data fallback
         setClients([]);

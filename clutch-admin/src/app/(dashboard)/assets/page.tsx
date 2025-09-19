@@ -225,7 +225,7 @@ export default function AssetManagementPage() {
       const data = await productionApi.getAssetAssignments();
       setAssignments(data || []);
     } catch (error) {
-      console.error("Error loading assignments:", error);
+      // Error handled by API service
       setAssignments([]);
     }
   };
@@ -289,7 +289,7 @@ export default function AssetManagementPage() {
         });
       }
     } catch (error) {
-      console.error("Error creating asset:", error);
+      // Error handled by API service
     }
   };
   
@@ -324,7 +324,7 @@ export default function AssetManagementPage() {
         });
       }
     } catch (error) {
-      console.error("Error creating maintenance record:", error);
+      // Error handled by API service
     }
   };
   
@@ -359,7 +359,7 @@ export default function AssetManagementPage() {
         });
       }
     } catch (error) {
-      console.error("Error creating asset assignment:", error);
+      // Error handled by API service
     }
   };
 
