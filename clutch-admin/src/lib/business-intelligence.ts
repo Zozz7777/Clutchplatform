@@ -97,7 +97,7 @@ export interface RecommendationUplift {
 }
 
 class BusinessIntelligenceService {
-  private cache: Map<string, { data: any; timestamp: number }> = new Map();
+  private cache: Map<string, { data: unknown; timestamp: number }> = new Map();
   private cacheTimeout = 5 * 60 * 1000; // 5 minutes
 
   // Dashboard Widgets

@@ -82,6 +82,11 @@ const vendorsRoutes = require('./routes/vendors');
 const auditRoutes = require('./routes/audit');
 const systemHealthRoutes = require('./routes/system-health');
 const systemRoutes = require('./routes/system');
+const systemPerformanceRoutes = require('./routes/system-performance');
+const sessionsRoutes = require('./routes/sessions');
+const revenueRoutes = require('./routes/revenue');
+const complianceRoutes = require('./routes/compliance');
+const customersRoutes = require('./routes/customers');
 const adminCeoRoutes = require('./routes/admin-ceo');
 const authFallbackRoutes = require('./routes/auth-fallback');
 const emergencyAuthRoutes = require('./routes/emergency-auth');
@@ -185,6 +190,11 @@ app.use(`${apiPrefix}/vendors`, vendorsRoutes);
 app.use(`${apiPrefix}/audit`, auditRoutes);
 app.use(`${apiPrefix}/system-health`, systemHealthRoutes);
 app.use(`${apiPrefix}/system`, systemRoutes);
+app.use(`${apiPrefix}/system/performance`, systemPerformanceRoutes);
+app.use(`${apiPrefix}/sessions`, sessionsRoutes);
+app.use(`${apiPrefix}/revenue`, revenueRoutes);
+app.use(`${apiPrefix}/compliance`, complianceRoutes);
+app.use(`${apiPrefix}/customers`, customersRoutes);
 app.use(`${apiPrefix}/admin-ceo`, adminCeoRoutes);
 
 // Fallback authentication routes
@@ -265,6 +275,7 @@ app.use('/api/v1/revenue', revenueRoutes);
 app.use('/api/v1/files', filesRoutes);
 app.use('/api/v1/docs', apiDocsRoutes);
 app.use('/api/v1/mobile-apps', mobileAppsRoutes);
+app.use('/api/v1/operations', operationsRoutes);
 
 // Test endpoints
 app.get('/test', (req, res) => {

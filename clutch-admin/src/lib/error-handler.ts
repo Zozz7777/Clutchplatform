@@ -38,10 +38,10 @@ export class ErrorHandler {
    * Handle API errors with comprehensive logging and user feedback
    */
   async handleError(
-    error: any,
+    error: unknown,
     context: string,
     options: ErrorHandlerOptions = {}
-  ): Promise<any> {
+  ): Promise<unknown> {
     const {
       showToast = true,
       logError = true,
@@ -70,7 +70,7 @@ export class ErrorHandler {
   /**
    * Parse error object to extract meaningful information
    */
-  private parseError(error: any): ApiError {
+  private parseError(error: unknown): ApiError {
     // Network errors
     if (error.name === 'TypeError' && error.message.includes('fetch')) {
       return {
@@ -228,7 +228,7 @@ export class ErrorHandler {
     context: string,
     maxRetries: number = 3
   ): Promise<T> {
-    let lastError: any;
+    let lastError: unknown;
     
     for (let attempt = 1; attempt <= maxRetries; attempt++) {
       try {
@@ -256,7 +256,7 @@ export class ErrorHandler {
   /**
    * Check if error should not be retried
    */
-  private isNonRetryableError(error: any): boolean {
+  private isNonRetryableError(error: unknown): boolean {
     const statusCode = error.status || error.statusCode;
     
     // Don't retry client errors (4xx) except 429 (rate limit)
@@ -279,7 +279,7 @@ export const errorHandler = ErrorHandler.getInstance();
 /**
  * Higher-order function to wrap API calls with error handling
  */
-export function withErrorHandling<T extends any[], R>(
+export function withErrorHandling<T extends unknown[], R>(
   fn: (...args: T) => Promise<R>,
   context: string,
   options: ErrorHandlerOptions = {}
@@ -297,7 +297,7 @@ export function withErrorHandling<T extends any[], R>(
  * Utility function for handling API responses
  */
 export function handleApiResponse<T>(
-  response: any,
+  response: unknown,
   context: string,
   fallbackValue: T
 ): T {

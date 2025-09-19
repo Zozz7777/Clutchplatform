@@ -70,147 +70,27 @@ export default function LiveOpsMap({ className }: LiveOpsMapProps) {
   const [lastUpdate, setLastUpdate] = useState(new Date());
 
   useEffect(() => {
-    const loadMapData = () => {
-      // Mock fleet locations
-      const mockFleet: FleetLocation[] = [
-        {
-          id: '1',
-          name: 'Fleet-001',
-          type: 'vehicle',
-          lat: 40.7128,
-          lng: -74.0060,
-          status: 'active',
-          speed: 45,
-          fuel: 75,
-          lastUpdate: '2 minutes ago',
-          revenue: 125.50,
-          passengers: 2
-        },
-        {
-          id: '2',
-          name: 'Fleet-002',
-          type: 'vehicle',
-          lat: 40.7589,
-          lng: -73.9851,
-          status: 'idle',
-          speed: 0,
-          fuel: 60,
-          lastUpdate: '1 minute ago',
-          revenue: 0,
-          passengers: 0
-        },
-        {
-          id: '3',
-          name: 'Fleet-003',
-          type: 'vehicle',
-          lat: 40.7505,
-          lng: -73.9934,
-          status: 'maintenance',
-          speed: 0,
-          fuel: 90,
-          lastUpdate: '5 minutes ago',
-          revenue: 0,
-          passengers: 0
-        },
-        {
-          id: '4',
-          name: 'Driver-001',
-          type: 'driver',
-          lat: 40.7282,
-          lng: -73.7949,
-          status: 'active',
-          lastUpdate: '30 seconds ago',
-          revenue: 89.25,
-          passengers: 1
-        }
-      ];
+    const loadMapData = async () => {
+      try {
+        // Load real data from API
+        const [fleetData, hotspotsData, usersData] = await Promise.all([
+          realApi.getFleetLocations(),
+          realApi.getRevenueHotspots(),
+          realApi.getLiveUserActivities()
+        ]);
 
-      // Mock revenue hotspots
-      const mockHotspots: RevenueHotspot[] = [
-        {
-          id: '1',
-          name: 'Times Square',
-          lat: 40.7580,
-          lng: -73.9855,
-          revenue: 15420,
-          trend: 'up',
-          transactions: 89,
-          avgTicket: 173.26,
-          category: 'commercial'
-        },
-        {
-          id: '2',
-          name: 'JFK Airport',
-          lat: 40.6413,
-          lng: -73.7781,
-          revenue: 12850,
-          trend: 'stable',
-          transactions: 45,
-          avgTicket: 285.56,
-          category: 'airport'
-        },
-        {
-          id: '3',
-          name: 'Central Park',
-          lat: 40.7829,
-          lng: -73.9654,
-          revenue: 8750,
-          trend: 'down',
-          transactions: 67,
-          avgTicket: 130.60,
-          category: 'residential'
-        },
-        {
-          id: '4',
-          name: 'Grand Central',
-          lat: 40.7527,
-          lng: -73.9772,
-          revenue: 11200,
-          trend: 'up',
-          transactions: 78,
-          avgTicket: 143.59,
-          category: 'station'
-        }
-      ];
-
-      // Mock user activities
-      const mockUsers: UserActivity[] = [
-        {
-          id: '1',
-          name: 'Sarah Johnson',
-          lat: 40.7128,
-          lng: -74.0060,
-          status: 'online',
-          lastSeen: '1 minute ago',
-          role: 'Fleet Manager',
-          currentTask: 'Monitoring Fleet-001'
-        },
-        {
-          id: '2',
-          name: 'Mike Chen',
-          lat: 40.7589,
-          lng: -73.9851,
-          status: 'busy',
-          lastSeen: '2 minutes ago',
-          role: 'Operations',
-          currentTask: 'Maintenance Check'
-        },
-        {
-          id: '3',
-          name: 'Emily Rodriguez',
-          lat: 40.7505,
-          lng: -73.9934,
-          status: 'online',
-          lastSeen: '30 seconds ago',
-          role: 'Analyst',
-          currentTask: 'Revenue Analysis'
-        }
-      ];
-
-      setFleetLocations(mockFleet);
-      setRevenueHotspots(mockHotspots);
-      setUserActivities(mockUsers);
-      setLastUpdate(new Date());
+        setFleetLocations(fleetData || []);
+        setRevenueHotspots(hotspotsData || []);
+        setUserActivities(usersData || []);
+        setLastUpdate(new Date());
+      } catch (error) {
+        console.error("Failed to load map data:", error);
+        // Set empty arrays on error - no mock data fallback
+        setFleetLocations([]);
+        setRevenueHotspots([]);
+        setUserActivities([]);
+        setLastUpdate(new Date());
+      }
     };
 
     loadMapData();

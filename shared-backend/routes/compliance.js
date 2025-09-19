@@ -1,426 +1,211 @@
 const express = require('express');
 const router = express.Router();
-const { authenticateToken, checkRole } = require('../middleware/unified-auth');
+const { authenticateToken, checkRole, checkPermission } = require('../middleware/unified-auth');
 const { getCollection } = require('../config/optimized-database');
+const rateLimit = require('express-rate-limit');
 
-// Apply authentication to all routes
-router.use(authenticateToken);
-
-// ===== COMPLIANCE DATA =====
-
-// GET /api/v1/compliance - Get all compliance data
-router.get('/', checkRole(['head_administrator', 'admin', 'compliance_officer']), async (req, res) => {
-  try {
-    const complianceCollection = await getCollection('compliance');
-    const { page = 1, limit = 50, standard, status, category } = req.query;
-    
-    const filter = {};
-    if (standard) filter.standard = standard;
-    if (status) filter.status = status;
-    if (category) filter.category = category;
-    
-    const skip = (parseInt(page) - 1) * parseInt(limit);
-    
-    const complianceData = await complianceCollection
-      .find(filter)
-      .sort({ lastAudit: -1 })
-      .skip(skip)
-      .limit(parseInt(limit))
-      .toArray();
-    
-    const total = await complianceCollection.countDocuments(filter);
-    
-    res.json({
-      success: true,
-      data: complianceData,
-      pagination: {
-        page: parseInt(page),
-        limit: parseInt(limit),
-        total,
-        pages: Math.ceil(total / parseInt(limit))
-      },
-      timestamp: new Date().toISOString()
-    });
-  } catch (error) {
-    console.error('Get compliance data error:', error);
-    res.status(500).json({
-      success: false,
-      error: 'GET_COMPLIANCE_DATA_FAILED',
-      message: 'Failed to retrieve compliance data',
-      timestamp: new Date().toISOString()
-    });
-  }
+// Rate limiting
+const complianceLimiter = rateLimit({
+  windowMs: 1 * 60 * 1000, // 1 minute
+  max: 15, // limit each IP to 15 requests per windowMs
+  message: 'Too many compliance requests, please try again later.'
 });
 
-// GET /api/v1/compliance/:id - Get specific compliance item
-router.get('/:id', checkRole(['head_administrator', 'admin', 'compliance_officer']), async (req, res) => {
+// GET /api/v1/compliance/status - Get compliance status
+router.get('/status', complianceLimiter, authenticateToken, async (req, res) => {
   try {
-    const complianceCollection = await getCollection('compliance');
-    const { id } = req.params;
-    
-    const complianceItem = await complianceCollection.findOne({ _id: id });
-    
-    if (!complianceItem) {
-      return res.status(404).json({
-        success: false,
-        error: 'COMPLIANCE_ITEM_NOT_FOUND',
-        message: 'Compliance item not found',
-        timestamp: new Date().toISOString()
-      });
-    }
-    
-    res.json({
-      success: true,
-      data: complianceItem,
-      timestamp: new Date().toISOString()
-    });
-  } catch (error) {
-    console.error('Get compliance item error:', error);
-    res.status(500).json({
-      success: false,
-      error: 'GET_COMPLIANCE_ITEM_FAILED',
-      message: 'Failed to retrieve compliance item',
-      timestamp: new Date().toISOString()
-    });
-  }
-});
-
-// POST /api/v1/compliance - Create new compliance item
-router.post('/', checkRole(['head_administrator', 'admin', 'compliance_officer']), async (req, res) => {
-  try {
-    const complianceCollection = await getCollection('compliance');
-    const complianceData = {
-      ...req.body,
-      createdAt: new Date(),
-      updatedAt: new Date()
-    };
-    
-    const result = await complianceCollection.insertOne(complianceData);
-    
-    res.status(201).json({
-      success: true,
-      data: { _id: result.insertedId, ...complianceData },
-      message: 'Compliance item created successfully',
-      timestamp: new Date().toISOString()
-    });
-  } catch (error) {
-    console.error('Create compliance item error:', error);
-    res.status(500).json({
-      success: false,
-      error: 'CREATE_COMPLIANCE_ITEM_FAILED',
-      message: 'Failed to create compliance item',
-      timestamp: new Date().toISOString()
-    });
-  }
-});
-
-// PUT /api/v1/compliance/:id - Update compliance item
-router.put('/:id', checkRole(['head_administrator', 'admin', 'compliance_officer']), async (req, res) => {
-  try {
-    const complianceCollection = await getCollection('compliance');
-    const { id } = req.params;
-    
-    const updateData = {
-      ...req.body,
-      updatedAt: new Date()
-    };
-    
-    const result = await complianceCollection.updateOne(
-      { _id: id },
-      { $set: updateData }
-    );
-    
-    if (result.matchedCount === 0) {
-      return res.status(404).json({
-        success: false,
-        error: 'COMPLIANCE_ITEM_NOT_FOUND',
-        message: 'Compliance item not found',
-        timestamp: new Date().toISOString()
-      });
-    }
-    
-    res.json({
-      success: true,
-      data: { _id: id, ...updateData },
-      message: 'Compliance item updated successfully',
-      timestamp: new Date().toISOString()
-    });
-  } catch (error) {
-    console.error('Update compliance item error:', error);
-    res.status(500).json({
-      success: false,
-      error: 'UPDATE_COMPLIANCE_ITEM_FAILED',
-      message: 'Failed to update compliance item',
-      timestamp: new Date().toISOString()
-    });
-  }
-});
-
-// DELETE /api/v1/compliance/:id - Delete compliance item
-router.delete('/:id', checkRole(['head_administrator', 'admin']), async (req, res) => {
-  try {
-    const complianceCollection = await getCollection('compliance');
-    const { id } = req.params;
-    
-    const result = await complianceCollection.deleteOne({ _id: id });
-    
-    if (result.deletedCount === 0) {
-      return res.status(404).json({
-        success: false,
-        error: 'COMPLIANCE_ITEM_NOT_FOUND',
-        message: 'Compliance item not found',
-        timestamp: new Date().toISOString()
-      });
-    }
-    
-    res.json({
-      success: true,
-      message: 'Compliance item deleted successfully',
-      timestamp: new Date().toISOString()
-    });
-  } catch (error) {
-    console.error('Delete compliance item error:', error);
-    res.status(500).json({
-      success: false,
-      error: 'DELETE_COMPLIANCE_ITEM_FAILED',
-      message: 'Failed to delete compliance item',
-      timestamp: new Date().toISOString()
-    });
-  }
-});
-
-// GET /api/v1/compliance/status - Get compliance status summary
-router.get('/status', authenticateToken, async (req, res) => {
-  try {
-    const complianceCollection = await getCollection('compliance');
-    
     // Get compliance data from database
-    const complianceData = await complianceCollection.find({}).toArray();
+    const complianceCollection = await getCollection('compliance');
+    const complianceItems = await complianceCollection.find({}).toArray();
     
-    if (complianceData.length > 0) {
-      // Calculate real compliance metrics
-      const totalItems = complianceData.length;
-      const pendingApprovals = complianceData.filter(item => item.status === 'pending').length;
-      const violations = complianceData.filter(item => item.status === 'violation').length;
-      const securityIncidents = complianceData.filter(item => item.category === 'security' && item.status === 'violation').length;
-      
-      // Determine overall status
-      let overallStatus = 'green';
-      if (violations > 5 || securityIncidents > 0) {
-        overallStatus = 'red';
-      } else if (violations > 2 || pendingApprovals > 10) {
-        overallStatus = 'amber';
+    // Calculate overall compliance score
+    const totalItems = complianceItems.length;
+    const compliantItems = complianceItems.filter(item => item.status === 'compliant').length;
+    const nonCompliantItems = complianceItems.filter(item => item.status === 'non_compliant').length;
+    const pendingItems = complianceItems.filter(item => item.status === 'pending').length;
+    
+    const complianceScore = totalItems > 0 ? Math.round((compliantItems / totalItems) * 100) : 0;
+    
+    // Get compliance by category
+    const categories = {};
+    complianceItems.forEach(item => {
+      if (!categories[item.category]) {
+        categories[item.category] = {
+          total: 0,
+          compliant: 0,
+          nonCompliant: 0,
+          pending: 0
+        };
       }
-      
-      // Get last and next audit dates
-      const auditDates = complianceData
-        .filter(item => item.lastAudit || item.nextAudit)
-        .map(item => ({ lastAudit: item.lastAudit, nextAudit: item.nextAudit }))
-        .filter(dates => dates.lastAudit || dates.nextAudit);
-      
-      const lastAudit = auditDates.length > 0 ? 
-        auditDates.sort((a, b) => new Date(b.lastAudit) - new Date(a.lastAudit))[0].lastAudit :
-        new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toISOString();
-      
-      const nextAudit = auditDates.length > 0 ? 
-        auditDates.sort((a, b) => new Date(a.nextAudit) - new Date(b.nextAudit))[0].nextAudit :
-        new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString();
-      
-      res.json({
-        success: true,
-        data: {
-          pendingApprovals,
-          violations,
-          securityIncidents,
-          overallStatus,
-          lastAudit,
-          nextAudit
+      categories[item.category].total++;
+      categories[item.category][item.status === 'compliant' ? 'compliant' : 
+        item.status === 'non_compliant' ? 'nonCompliant' : 'pending']++;
+    });
+    
+    // Calculate category scores
+    Object.keys(categories).forEach(category => {
+      const cat = categories[category];
+      cat.score = cat.total > 0 ? Math.round((cat.compliant / cat.total) * 100) : 0;
+    });
+    
+    res.json({
+      success: true,
+      data: {
+        overall: {
+          score: complianceScore,
+          total: totalItems,
+          compliant: compliantItems,
+          nonCompliant: nonCompliantItems,
+          pending: pendingItems
         },
-        message: 'Compliance status retrieved successfully',
+        categories: categories,
+        items: complianceItems,
         timestamp: new Date().toISOString()
-      });
-    } else {
-      // No compliance data, return default status
-      res.json({
-        success: true,
-        data: {
-          pendingApprovals: 0,
-          violations: 0,
-          securityIncidents: 0,
-          overallStatus: 'green',
-          lastAudit: new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toISOString(),
-          nextAudit: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString()
-        },
-        message: 'Compliance status retrieved successfully',
+      }
+    });
+  } catch (error) {
+    console.error('Error getting compliance status:', error);
+    res.status(500).json({
+      success: false,
+      error: 'Failed to get compliance status',
+      message: error.message
+    });
+  }
+});
+
+// GET /api/v1/compliance/audit - Get compliance audit trail
+router.get('/audit', complianceLimiter, authenticateToken, async (req, res) => {
+  try {
+    const auditCollection = await getCollection('compliance_audit');
+    const auditLogs = await auditCollection.find({})
+      .sort({ timestamp: -1 })
+      .limit(100)
+      .toArray();
+    
+    res.json({
+      success: true,
+      data: {
+        auditLogs: auditLogs,
         timestamp: new Date().toISOString()
+      }
+    });
+  } catch (error) {
+    console.error('Error getting compliance audit:', error);
+    res.status(500).json({
+      success: false,
+      error: 'Failed to get compliance audit',
+      message: error.message
+    });
+  }
+});
+
+// GET /api/v1/compliance/requirements - Get compliance requirements
+router.get('/requirements', complianceLimiter, authenticateToken, async (req, res) => {
+  try {
+    const requirementsCollection = await getCollection('compliance_requirements');
+    const requirements = await requirementsCollection.find({}).toArray();
+    
+    res.json({
+      success: true,
+      data: {
+        requirements: requirements,
+        timestamp: new Date().toISOString()
+      }
+    });
+  } catch (error) {
+    console.error('Error getting compliance requirements:', error);
+    res.status(500).json({
+      success: false,
+      error: 'Failed to get compliance requirements',
+      message: error.message
+    });
+  }
+});
+
+// POST /api/v1/compliance/update - Update compliance status
+router.post('/update', complianceLimiter, authenticateToken, checkRole(['admin', 'compliance_officer']), async (req, res) => {
+  try {
+    const { itemId, status, notes, updatedBy } = req.body;
+    
+    if (!itemId || !status) {
+      return res.status(400).json({
+        success: false,
+        error: 'Item ID and status are required'
       });
     }
-  } catch (error) {
-    console.error('Error fetching compliance status:', error);
-    res.status(500).json({
-      success: false,
-      error: 'Failed to fetch compliance status',
-      message: error.message,
-      timestamp: new Date().toISOString()
-    });
-  }
-});
-
-// GET /api/v1/compliance/flags - Get compliance flags
-router.get('/flags', checkRole(['head_administrator', 'admin', 'compliance_officer']), async (req, res) => {
-  try {
-    const flagsCollection = await getCollection('compliance_flags');
-    const { page = 1, limit = 50, category, severity, status } = req.query;
     
-    const filter = {};
-    if (category) filter.category = category;
-    if (severity) filter.severity = severity;
-    if (status) filter.status = status;
+    const complianceCollection = await getCollection('compliance');
+    const auditCollection = await getCollection('compliance_audit');
     
-    const skip = (parseInt(page) - 1) * parseInt(limit);
-    
-    const flags = await flagsCollection
-      .find(filter)
-      .sort({ detectedAt: -1 })
-      .skip(skip)
-      .limit(parseInt(limit))
-      .toArray();
-    
-    const total = await flagsCollection.countDocuments(filter);
-    
-    res.json({
-      success: true,
-      data: flags,
-      pagination: {
-        page: parseInt(page),
-        limit: parseInt(limit),
-        total,
-        pages: Math.ceil(total / parseInt(limit))
-      },
-      timestamp: new Date().toISOString()
-    });
-  } catch (error) {
-    console.error('Get compliance flags error:', error);
-    res.status(500).json({
-      success: false,
-      error: 'GET_COMPLIANCE_FLAGS_FAILED',
-      message: 'Failed to retrieve compliance flags',
-      timestamp: new Date().toISOString()
-    });
-  }
-});
-
-// GET /api/v1/compliance/frameworks - Get compliance frameworks
-router.get('/frameworks', checkRole(['head_administrator', 'admin', 'compliance_officer']), async (req, res) => {
-  try {
-    const frameworksCollection = await getCollection('compliance_frameworks');
-    const { page = 1, limit = 50, status } = req.query;
-    
-    const filter = {};
-    if (status) filter.status = status;
-    
-    const skip = (parseInt(page) - 1) * parseInt(limit);
-    
-    const frameworks = await frameworksCollection
-      .find(filter)
-      .sort({ lastAssessment: -1 })
-      .skip(skip)
-      .limit(parseInt(limit))
-      .toArray();
-    
-    const total = await frameworksCollection.countDocuments(filter);
-    
-    res.json({
-      success: true,
-      data: frameworks,
-      pagination: {
-        page: parseInt(page),
-        limit: parseInt(limit),
-        total,
-        pages: Math.ceil(total / parseInt(limit))
-      },
-      timestamp: new Date().toISOString()
-    });
-  } catch (error) {
-    console.error('Get compliance frameworks error:', error);
-    res.status(500).json({
-      success: false,
-      error: 'GET_COMPLIANCE_FRAMEWORKS_FAILED',
-      message: 'Failed to retrieve compliance frameworks',
-      timestamp: new Date().toISOString()
-    });
-  }
-});
-
-// POST /api/v1/compliance/flags - Create a new compliance flag
-router.post('/flags', checkRole(['head_administrator', 'admin', 'compliance_officer']), async (req, res) => {
-  try {
-    const flagsCollection = await getCollection('compliance_flags');
-    const flagData = {
-      ...req.body,
-      id: `FLAG-${Date.now()}`,
-      detectedAt: new Date().toISOString(),
-      createdAt: new Date().toISOString(),
-      updatedAt: new Date().toISOString()
-    };
-    
-    const result = await flagsCollection.insertOne(flagData);
-    
-    res.status(201).json({
-      success: true,
-      data: { id: result.insertedId, ...flagData },
-      message: 'Compliance flag created successfully',
-      timestamp: new Date().toISOString()
-    });
-  } catch (error) {
-    console.error('Create compliance flag error:', error);
-    res.status(500).json({
-      success: false,
-      error: 'CREATE_COMPLIANCE_FLAG_FAILED',
-      message: 'Failed to create compliance flag',
-      timestamp: new Date().toISOString()
-    });
-  }
-});
-
-// PUT /api/v1/compliance/flags/:id - Update a compliance flag
-router.put('/flags/:id', checkRole(['head_administrator', 'admin', 'compliance_officer']), async (req, res) => {
-  try {
-    const flagsCollection = await getCollection('compliance_flags');
-    const { id } = req.params;
-    
-    const updateData = {
-      ...req.body,
-      updatedAt: new Date().toISOString()
-    };
-    
-    const result = await flagsCollection.updateOne(
-      { id },
-      { $set: updateData }
+    // Update compliance item
+    const result = await complianceCollection.updateOne(
+      { _id: itemId },
+      { 
+        $set: { 
+          status: status,
+          updatedAt: new Date(),
+          updatedBy: updatedBy || req.user.id,
+          notes: notes
+        }
+      }
     );
     
     if (result.matchedCount === 0) {
       return res.status(404).json({
         success: false,
-        error: 'COMPLIANCE_FLAG_NOT_FOUND',
-        message: 'Compliance flag not found',
-        timestamp: new Date().toISOString()
+        error: 'Compliance item not found'
       });
     }
     
+    // Log audit trail
+    await auditCollection.insertOne({
+      itemId: itemId,
+      action: 'status_update',
+      oldStatus: req.body.oldStatus,
+      newStatus: status,
+      notes: notes,
+      updatedBy: updatedBy || req.user.id,
+      timestamp: new Date()
+    });
+    
     res.json({
       success: true,
-      data: { id, ...updateData },
-      message: 'Compliance flag updated successfully',
-      timestamp: new Date().toISOString()
+      message: 'Compliance status updated successfully'
     });
   } catch (error) {
-    console.error('Update compliance flag error:', error);
+    console.error('Error updating compliance status:', error);
     res.status(500).json({
       success: false,
-      error: 'UPDATE_COMPLIANCE_FLAG_FAILED',
-      message: 'Failed to update compliance flag',
-      timestamp: new Date().toISOString()
+      error: 'Failed to update compliance status',
+      message: error.message
+    });
+  }
+});
+
+// GET /api/v1/compliance/reports - Get compliance reports
+router.get('/reports', complianceLimiter, authenticateToken, async (req, res) => {
+  try {
+    const timeRange = req.query.timeRange || '30d';
+    const reportType = req.query.type || 'summary';
+    
+    // TODO: Implement compliance reporting
+    // This would generate detailed compliance reports based on the time range and type
+    
+    res.json({
+      success: true,
+      data: {
+        reportType: reportType,
+        timeRange: timeRange,
+        note: 'Compliance reporting not yet implemented - requires additional database queries and report generation',
+        timestamp: new Date().toISOString()
+      }
+    });
+  } catch (error) {
+    console.error('Error getting compliance reports:', error);
+    res.status(500).json({
+      success: false,
+      error: 'Failed to get compliance reports',
+      message: error.message
     });
   }
 });

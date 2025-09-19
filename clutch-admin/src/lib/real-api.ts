@@ -592,6 +592,110 @@ export class RealApiService {
       { fallbackValue: [], showToast: false }
     )();
   }
+
+  // System Performance APIs
+  async getSystemPerformanceMetrics(): Promise<Record<string, unknown>> {
+    return withErrorHandling(
+      async () => {
+        const response = await apiService.request<Record<string, unknown>>("/api/v1/system/performance");
+        return handleApiResponse(response, 'getSystemPerformanceMetrics', {});
+      },
+      'getSystemPerformanceMetrics',
+      { fallbackValue: {}, showToast: false }
+    )();
+  }
+
+  async getActiveSessions(): Promise<Record<string, unknown>> {
+    return withErrorHandling(
+      async () => {
+        const response = await apiService.request<Record<string, unknown>>("/api/v1/sessions/active");
+        return handleApiResponse(response, 'getActiveSessions', {});
+      },
+      'getActiveSessions',
+      { fallbackValue: {}, showToast: false }
+    )();
+  }
+
+  // Revenue APIs
+  async getRevenueMetrics(): Promise<Record<string, unknown>> {
+    return withErrorHandling(
+      async () => {
+        const response = await apiService.request<Record<string, unknown>>("/api/v1/revenue/metrics");
+        return handleApiResponse(response, 'getRevenueMetrics', {});
+      },
+      'getRevenueMetrics',
+      { fallbackValue: {}, showToast: false }
+    )();
+  }
+
+  async getRevenueForecast(): Promise<Record<string, unknown>> {
+    return withErrorHandling(
+      async () => {
+        const response = await apiService.request<Record<string, unknown>>("/api/v1/revenue/forecast");
+        return handleApiResponse(response, 'getRevenueForecast', {});
+      },
+      'getRevenueForecast',
+      { fallbackValue: {}, showToast: false }
+    )();
+  }
+
+  // Compliance APIs
+  async getComplianceStatus(): Promise<Record<string, unknown>> {
+    return withErrorHandling(
+      async () => {
+        const response = await apiService.request<Record<string, unknown>>("/api/v1/compliance/status");
+        return handleApiResponse(response, 'getComplianceStatus', {});
+      },
+      'getComplianceStatus',
+      { fallbackValue: {}, showToast: false }
+    )();
+  }
+
+  // Customer APIs
+  async getCustomers(): Promise<Record<string, unknown>[]> {
+    return withErrorHandling(
+      async () => {
+        const response = await apiService.request<Record<string, unknown>[]>("/api/v1/customers");
+        return handleApiResponse(response, 'getCustomers', []);
+      },
+      'getCustomers',
+      { fallbackValue: [], showToast: false }
+    )();
+  }
+
+  // Live Operations APIs
+  async getFleetLocations(): Promise<Record<string, unknown>[]> {
+    return withErrorHandling(
+      async () => {
+        const response = await apiService.request<Record<string, unknown>[]>("/api/v1/operations/fleet-locations");
+        return handleApiResponse(response, 'getFleetLocations', []);
+      },
+      'getFleetLocations',
+      { fallbackValue: [], showToast: false }
+    )();
+  }
+
+  async getRevenueHotspots(): Promise<Record<string, unknown>[]> {
+    return withErrorHandling(
+      async () => {
+        const response = await apiService.request<Record<string, unknown>[]>("/api/v1/operations/revenue-hotspots");
+        return handleApiResponse(response, 'getRevenueHotspots', []);
+      },
+      'getRevenueHotspots',
+      { fallbackValue: [], showToast: false }
+    )();
+  }
+
+  async getLiveUserActivities(): Promise<Record<string, unknown>[]> {
+    return withErrorHandling(
+      async () => {
+        const response = await apiService.request<Record<string, unknown>[]>("/api/v1/operations/user-activities");
+        return handleApiResponse(response, 'getLiveUserActivities', []);
+      },
+      'getLiveUserActivities',
+      { fallbackValue: [], showToast: false }
+    )();
+  }
 }
 
 // Export singleton instance

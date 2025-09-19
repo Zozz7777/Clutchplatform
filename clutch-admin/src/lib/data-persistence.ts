@@ -426,7 +426,7 @@ class DataPersistenceService {
     return { success: true, data: result };
   }
 
-  private async callReadAPI(endpoint: string, id?: string): Promise<PersistenceResult<any>> {
+  private async callReadAPI(endpoint: string, id?: string): Promise<PersistenceResult<unknown>> {
     const apiMethod = this.getAPIMethod(endpoint, 'read');
     const result = await apiMethod(id);
     return { success: true, data: result };
@@ -438,7 +438,7 @@ class DataPersistenceService {
     return { success: true, data: result };
   }
 
-  private async callDeleteAPI(endpoint: string, id: string): Promise<PersistenceResult<any>> {
+  private async callDeleteAPI(endpoint: string, id: string): Promise<PersistenceResult<unknown>> {
     const apiMethod = this.getAPIMethod(endpoint, 'delete');
     const result = await apiMethod(id);
     return { success: true, data: result };
