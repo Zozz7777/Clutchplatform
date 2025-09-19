@@ -66,10 +66,10 @@ export function FleetUtilization({ className = '' }: FleetUtilizationProps) {
   };
 
   const getUtilizationLevel = (rate: number) => {
-    if (rate >= 80) return 'Excellent';
-    if (rate >= 60) return 'Good';
-    if (rate >= 40) return 'Fair';
-    return 'Poor';
+    if (rate >= 80) return t('fleetUtilization.excellent');
+    if (rate >= 60) return t('fleetUtilization.good');
+    if (rate >= 40) return t('fleetUtilization.fair');
+    return t('fleetUtilization.poor');
   };
 
   const getStatusColor = (status: string) => {
@@ -105,9 +105,9 @@ export function FleetUtilization({ className = '' }: FleetUtilizationProps) {
         <CardHeader>
           <CardTitle className="flex items-center space-x-2">
             <Truck className="h-5 w-5 text-primary" />
-            <span>Fleet Utilization</span>
+            <span>{t('fleetUtilization.title')}</span>
           </CardTitle>
-          <CardDescription>Loading fleet utilization data...</CardDescription>
+          <CardDescription>{t('fleetUtilization.loadingData')}</CardDescription>
         </CardHeader>
         <CardContent>
           <div className="animate-pulse space-y-4">
@@ -126,18 +126,18 @@ export function FleetUtilization({ className = '' }: FleetUtilizationProps) {
         <CardHeader>
           <CardTitle className="flex items-center space-x-2">
             <Truck className="h-5 w-5 text-primary" />
-            <span>Fleet Utilization</span>
+            <span>{t('fleetUtilization.title')}</span>
           </CardTitle>
-          <CardDescription>Unable to load fleet utilization data</CardDescription>
+          <CardDescription>{t('fleetUtilization.unableToLoad')}</CardDescription>
         </CardHeader>
       </Card>
     );
   }
 
   const statusData = [
-    { status: 'active', count: utilizationData.active, label: 'Active' },
-    { status: 'idle', count: utilizationData.idle, label: 'Idle' },
-    { status: 'maintenance', count: utilizationData.maintenance, label: 'Maintenance' }
+    { status: 'active', count: utilizationData.active, label: t('fleetUtilization.active') },
+    { status: 'idle', count: utilizationData.idle, label: t('fleetUtilization.idle') },
+    { status: 'maintenance', count: utilizationData.maintenance, label: t('fleetUtilization.maintenance') }
   ];
 
   return (
@@ -145,10 +145,10 @@ export function FleetUtilization({ className = '' }: FleetUtilizationProps) {
       <CardHeader>
         <CardTitle className="flex items-center space-x-2">
           <Truck className="h-5 w-5 text-primary" />
-          <span>Fleet Utilization</span>
+          <span>{t('fleetUtilization.title')}</span>
         </CardTitle>
         <CardDescription>
-          % of vehicles active vs idle
+          {t('fleetUtilization.description')}
         </CardDescription>
       </CardHeader>
       <CardContent className="space-y-6">
@@ -163,7 +163,7 @@ export function FleetUtilization({ className = '' }: FleetUtilizationProps) {
               {getUtilizationLevel(utilizationData.utilizationRate)}
             </Badge>
           </div>
-          <p className="text-sm text-muted-foreground">Overall Utilization Rate</p>
+          <p className="text-sm text-muted-foreground">{t('fleetUtilization.overallUtilizationRate')}</p>
           <div className="mt-3">
             <Progress value={utilizationData.utilizationRate} className="h-2" />
           </div>
@@ -174,23 +174,23 @@ export function FleetUtilization({ className = '' }: FleetUtilizationProps) {
           <div className="text-center p-3 bg-success/10 rounded-[0.625rem]-lg">
             <CheckCircle className="h-5 w-5 text-success mx-auto mb-1" />
             <p className="text-lg font-bold text-success">{utilizationData.active}</p>
-            <p className="text-xs text-muted-foreground">Active</p>
+            <p className="text-xs text-muted-foreground">{t('fleetUtilization.active')}</p>
           </div>
           <div className="text-center p-3 bg-warning/10 rounded-[0.625rem]-lg">
             <Clock className="h-5 w-5 text-warning mx-auto mb-1" />
             <p className="text-lg font-bold text-warning">{utilizationData.idle}</p>
-            <p className="text-xs text-muted-foreground">Idle</p>
+            <p className="text-xs text-muted-foreground">{t('fleetUtilization.idle')}</p>
           </div>
           <div className="text-center p-3 bg-destructive/10 rounded-[0.625rem]-lg">
             <AlertTriangle className="h-5 w-5 text-destructive mx-auto mb-1" />
             <p className="text-lg font-bold text-destructive">{utilizationData.maintenance}</p>
-            <p className="text-xs text-muted-foreground">Maintenance</p>
+            <p className="text-xs text-muted-foreground">{t('fleetUtilization.maintenance')}</p>
           </div>
         </div>
 
         {/* Fleet Status Breakdown */}
         <div className="space-y-3">
-          <h4 className="text-sm font-medium text-foreground">Fleet Status Breakdown</h4>
+          <h4 className="text-sm font-medium text-foreground">{t('fleetUtilization.fleetStatusBreakdown')}</h4>
           <div className="space-y-2">
             {statusData.map((status) => {
               const StatusIcon = getStatusIcon(status.status);
@@ -219,7 +219,7 @@ export function FleetUtilization({ className = '' }: FleetUtilizationProps) {
 
         {/* Utilization Distribution */}
         <div className="space-y-3">
-          <h4 className="text-sm font-medium text-foreground">Utilization Distribution</h4>
+          <h4 className="text-sm font-medium text-foreground">{t('fleetUtilization.utilizationDistribution')}</h4>
           <div className="space-y-2">
             {statusData.map((status) => {
               const percentage = utilizationData.total > 0 ? (status.count / utilizationData.total) * 100 : 0;

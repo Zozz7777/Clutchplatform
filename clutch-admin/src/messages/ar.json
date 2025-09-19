@@ -602,7 +602,10 @@
     "idle": "خامل",
     "maintenance": "صيانة",
     "viewDetails": "عرض التفاصيل",
-    "exportData": "تصدير البيانات"
+    "exportData": "تصدير البيانات",
+    "utilizationDistribution": "توزيع الاستخدام",
+    "activeRate": "معدل النشاط",
+    "maintenanceRate": "معدل الصيانة"
   },
   "fleet": {
     "title": "إدارة الأسطول",

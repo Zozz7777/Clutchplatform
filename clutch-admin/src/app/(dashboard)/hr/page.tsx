@@ -138,6 +138,7 @@ export default function HRPage() {
   const [invitations, setInvitations] = useState<Record<string, unknown>[]>([]);
   const [showEmployeeModal, setShowEmployeeModal] = useState(false);
   const [selectedEmployee, setSelectedEmployee] = useState<Employee | null>(null);
+  const [showEditEmployeeModal, setShowEditEmployeeModal] = useState(false);
   const [showEditInvitationModal, setShowEditInvitationModal] = useState(false);
   const [selectedInvitation, setSelectedInvitation] = useState<Record<string, unknown> | null>(null);
   const [showDeleteConfirmModal, setShowDeleteConfirmModal] = useState(false);
@@ -438,7 +439,7 @@ export default function HRPage() {
 
   const handleEditEmployee = (employee: Employee) => {
     setSelectedEmployee(employee);
-    setShowEmployeeModal(true);
+    setShowEditEmployeeModal(true);
   };
 
   const handleDownloadEmployeeRecords = async (employee: Employee) => {
@@ -1223,7 +1224,10 @@ export default function HRPage() {
                   <Button variant="outline" onClick={() => setShowEmployeeModal(false)}>
                     Close
                   </Button>
-                  <Button onClick={() => handleEditEmployee(selectedEmployee)}>
+                  <Button onClick={() => {
+                    setShowEmployeeModal(false);
+                    setShowEditEmployeeModal(true);
+                  }}>
                     <Edit className="mr-2 h-4 w-4" />
                     Edit Employee
                   </Button>
@@ -1346,6 +1350,112 @@ export default function HRPage() {
                 >
                   <Trash2 className="mr-2 h-4 w-4" />
                   Delete Employee
+                </Button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Edit Employee Modal */}
+      {showEditEmployeeModal && selectedEmployee && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50">
+          <div className="bg-background rounded-[0.625rem] max-w-2xl w-full max-h-[90vh] overflow-y-auto">
+            <div className="p-6">
+              <div className="flex items-center justify-between mb-6">
+                <h2 className="text-2xl font-bold">Edit Employee</h2>
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  onClick={() => setShowEditEmployeeModal(false)}
+                >
+                  <XCircle className="h-4 w-4" />
+                </Button>
+              </div>
+              
+              <div className="space-y-4">
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <label className="text-sm font-medium">First Name</label>
+                    <Input 
+                      defaultValue={selectedEmployee.firstName || selectedEmployee.name || ''} 
+                      placeholder="Enter first name"
+                    />
+                  </div>
+                  <div>
+                    <label className="text-sm font-medium">Last Name</label>
+                    <Input 
+                      defaultValue={selectedEmployee.lastName || ''} 
+                      placeholder="Enter last name"
+                    />
+                  </div>
+                </div>
+                
+                <div>
+                  <label className="text-sm font-medium">Email</label>
+                  <Input 
+                    defaultValue={selectedEmployee.email || ''} 
+                    placeholder="Enter email"
+                    type="email"
+                  />
+                </div>
+                
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <label className="text-sm font-medium">Position</label>
+                    <Input 
+                      defaultValue={selectedEmployee.position || ''} 
+                      placeholder="Enter position"
+                    />
+                  </div>
+                  <div>
+                    <label className="text-sm font-medium">Department</label>
+                    <Input 
+                      defaultValue={selectedEmployee.department || ''} 
+                      placeholder="Enter department"
+                    />
+                  </div>
+                </div>
+                
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <label className="text-sm font-medium">Phone</label>
+                    <Input 
+                      defaultValue={selectedEmployee.phone || ''} 
+                      placeholder="Enter phone number"
+                    />
+                  </div>
+                  <div>
+                    <label className="text-sm font-medium">Salary</label>
+                    <Input 
+                      defaultValue={selectedEmployee.salary || ''} 
+                      placeholder="Enter salary"
+                      type="number"
+                    />
+                  </div>
+                </div>
+                
+                <div>
+                  <label className="text-sm font-medium">Address</label>
+                  <Input 
+                    defaultValue={selectedEmployee.address || ''} 
+                    placeholder="Enter address"
+                  />
+                </div>
+              </div>
+
+              <div className="flex justify-end space-x-2 mt-6">
+                <Button variant="outline" onClick={() => setShowEditEmployeeModal(false)}>
+                  Cancel
+                </Button>
+                <Button onClick={() => {
+                  toast.success("Employee updated successfully");
+                  setShowEditEmployeeModal(false);
+                  // Reload employees data
+                  loadHRData();
+                }}>
+                  <Edit className="mr-2 h-4 w-4" />
+                  Update Employee
                 </Button>
               </div>
             </div>

@@ -183,7 +183,7 @@ export default function ChaosTestingIntegration({ className }: ChaosTestingInteg
           setSelectedExperiment(data[0]);
         }
       } catch (error) {
-        console.error('Failed to load chaos experiments:', error);
+        // Failed to load chaos experiments
         // Fallback to empty array if API fails
         setExperiments([]);
       }

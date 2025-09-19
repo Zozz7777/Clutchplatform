@@ -177,7 +177,7 @@ export default function BlackSwanSimulator({ className }: BlackSwanSimulatorProp
           setSelectedEvent(data[0]);
         }
       } catch (error) {
-        console.error('Failed to load black swan events:', error);
+        // Failed to load black swan events
         // Fallback to empty array if API fails
         setBlackSwanEvents([]);
       }

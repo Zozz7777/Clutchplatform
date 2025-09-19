@@ -80,10 +80,16 @@ export class SyncManager {
   }
 
   async initialize(): Promise<void> {
-    logger.info('Sync Manager initialized');
-    await this.createSyncTables();
-    await this.loadConfig();
-    await this.startAutoSync();
+    try {
+      logger.info('Sync Manager initializing...');
+      await this.createSyncTables();
+      await this.loadConfig();
+      await this.startAutoSync();
+      logger.info('Sync Manager initialized successfully');
+    } catch (error) {
+      logger.error('Sync Manager initialization failed:', error);
+      // Don't throw error, just log it and continue
+    }
   }
 
   /**
@@ -159,6 +165,12 @@ export class SyncManager {
    */
   private async loadConfig(): Promise<void> {
     try {
+      // Check if database is initialized
+      if (!this.db) {
+        logger.warn('Database not initialized, skipping config load');
+        return;
+      }
+
       // Check if sync_config table exists, if not create it
       await this.db.exec(`
         CREATE TABLE IF NOT EXISTS sync_config (

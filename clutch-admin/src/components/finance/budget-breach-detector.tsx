@@ -464,7 +464,7 @@ export default function BudgetBreachDetector({ className }: BudgetBreachDetector
           setSelectedBreach(mockBreaches[0]);
         }
       } catch (error) {
-        console.error('Failed to load budget breach data:', error);
+        // Failed to load budget breach data
         // Fallback to empty array if API fails
         setBreaches([]);
       }

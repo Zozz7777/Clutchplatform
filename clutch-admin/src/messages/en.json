@@ -602,7 +602,10 @@
     "idle": "Idle",
     "maintenance": "Maintenance",
     "viewDetails": "View Details",
-    "exportData": "Export Data"
+    "exportData": "Export Data",
+    "utilizationDistribution": "Utilization Distribution",
+    "activeRate": "Active Rate",
+    "maintenanceRate": "Maintenance Rate"
   },
   "fleet": {
     "title": "Fleet Management",

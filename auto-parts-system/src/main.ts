@@ -2,7 +2,7 @@ import { app, BrowserWindow, Menu, ipcMain, dialog, shell } from 'electron';
 import * as path from 'path';
 import { isDev } from './lib/utils';
 import { DatabaseManager } from './lib/database';
-import { SyncManager } from './lib/sync';
+import { SyncManager } from './lib/sync-manager';
 import { WebSocketManager } from './lib/websocket';
 import { I18nManager } from './lib/i18n';
 import { AuthManager } from './lib/auth';
@@ -30,6 +30,9 @@ class ClutchAutoPartsApp {
       await this.databaseManager.initialize();
       await this.i18nManager.initialize();
       await this.authManager.initialize();
+      
+      // Wait a moment for database to be fully ready
+      await new Promise(resolve => setTimeout(resolve, 1000));
       
       // Initialize sync and websocket after auth
       await this.syncManager.initialize();

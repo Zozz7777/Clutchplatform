@@ -9,6 +9,7 @@ const cors = require('cors');
 const rateLimit = require('express-rate-limit');
 const compression = require('compression');
 require('dotenv').config();
+const logger = require('./utils/logger');
 
 // Environment variables are loaded via dotenv
 
@@ -334,7 +335,7 @@ app.options('*', (req, res) => {
 
 // Enhanced error handling middleware
 app.use((err, req, res, next) => {
-  console.error('❌ Global error handler:', err);
+  logger.error('Global error handler:', err);
   
   // Track error for performance monitoring
   trackError(err, { 
