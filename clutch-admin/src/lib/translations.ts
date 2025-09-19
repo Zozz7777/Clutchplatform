@@ -63,7 +63,42 @@ export const getTranslations = () => {
       auditTrail: "Audit Trail",
       apiDocs: "API Docs",
       assets: "Assets",
-      vendors: "Vendors"
+      vendors: "Vendors",
+      // Missing navigation keys
+      b2cCustomers: "B2C Customers",
+      b2bEnterprise: "B2B Enterprise",
+      serviceProviders: "Service Providers",
+      fleetOverview: "Fleet Overview",
+      gpsTracking: "GPS Tracking",
+      obd2Devices: "OBD2 Devices",
+      chatMessaging: "Chat & Messaging",
+      aiMlDashboard: "AI & ML Dashboard",
+      enterpriseB2b: "Enterprise B2B",
+      projectManagement: "Project Management",
+      reporting: "Reporting",
+      apiDocumentation: "API Documentation",
+      assetManagement: "Asset Management",
+      vendorManagement: "Vendor Management",
+      systemHealth: "System Health"
+    },
+    sidebar: {
+      clutchAdmin: "Clutch Admin",
+      collapse: "Collapse"
+    },
+    language: {
+      english: "English",
+      arabic: "Arabic"
+    },
+    header: {
+      language: "Language",
+      search: "Search",
+      notifications: "Notifications",
+      myAccount: "My Account",
+      profile: "Profile",
+      settings: "Settings"
+    },
+    notifications: {
+      noNotifications: "No notifications"
     },
     auth: {
       login: "Login",
@@ -90,61 +125,67 @@ export const getTranslations = () => {
       totalRevenue: "Total Revenue",
       totalUsers: "Total Users",
       totalOrders: "Total Orders",
-      totalProducts: "Total Products"
+      totalProducts: "Total Products",
+      // Missing dashboard keys
+      loadingDashboard: "Loading Dashboard...",
+      welcomeMessage: "Welcome to Clutch Admin",
+      generateReport: "Generate Report",
+      exportData: "Export Data",
+      refresh: "Refresh",
+      realtimeActivityFeed: "Real-time Activity Feed",
+      latestActionsAndEvents: "Latest Actions and Events",
+      quickActions: "Quick Actions",
+      commonAdministrativeTasks: "Common Administrative Tasks",
+      fleetStatus: "Fleet Status",
+      realtimeFleetMonitoring: "Real-time Fleet Monitoring",
+      performanceMetrics: "Performance Metrics",
+      apiUptimeRequestsErrorsSessions: "API Uptime, Requests, Errors, Sessions",
+      apiUptime: "API Uptime",
+      requestRate: "Request Rate",
+      errorRate: "Error Rate",
+      activeSessions: "Active Sessions",
+      systemAlerts: "System Alerts",
+      criticalNotificationsRequiringAttention: "Critical Notifications Requiring Attention",
+      highErrorRate: "High Error Rate",
+      apiErrorsIncreased: "API Errors Increased",
+      maintenanceWindow: "Maintenance Window",
+      scheduledForTonight: "Scheduled for Tonight",
+      systemHealthy: "System Healthy",
+      allServicesOperational: "All Services Operational",
+      businessIntelligence: "Business Intelligence",
+      advancedAnalyticsAndPredictiveInsights: "Advanced Analytics and Predictive Insights"
     }
   };
 
-  // Use fallback if translations failed to load or are incomplete
-  if (!enTranslations || !enTranslations.common || !enTranslations.common.loading) {
-    console.warn('Using fallback translations for English');
-    enTranslations = fallbackTranslations;
-  }
-
-  if (!arTranslations || !arTranslations.common || !arTranslations.common.loading) {
-    console.warn('Using fallback translations for Arabic');
-    arTranslations = fallbackTranslations;
-  }
-
-  // Ensure common object has all required keys
-  const ensureCommonKeys = (translations: any) => {
-    if (!translations.common) {
-      translations.common = {};
+  // Merge fallback translations with loaded translations
+  const mergeTranslations = (loaded: any, fallback: any) => {
+    if (!loaded) {
+      console.warn('Using fallback translations');
+      return fallback;
     }
+
+    // Deep merge fallback into loaded translations
+    const merged = { ...loaded };
     
-    const requiredKeys = {
-      loading: "Loading...",
-      filter: "Filter",
-      search: "Search...",
-      error: "Error",
-      success: "Success",
-      save: "Save",
-      cancel: "Cancel",
-      delete: "Delete",
-      edit: "Edit",
-      add: "Add",
-      export: "Export",
-      import: "Import",
-      refresh: "Refresh",
-      close: "Close",
-      back: "Back",
-      next: "Next",
-      previous: "Previous",
-      submit: "Submit",
-      reset: "Reset",
-      confirm: "Confirm",
-      yes: "Yes",
-      no: "No"
+    const deepMerge = (target: any, source: any) => {
+      for (const key in source) {
+        if (source[key] && typeof source[key] === 'object' && !Array.isArray(source[key])) {
+          if (!target[key]) {
+            target[key] = {};
+          }
+          deepMerge(target[key], source[key]);
+        } else if (!target[key]) {
+          target[key] = source[key];
+        }
+      }
     };
 
-    Object.keys(requiredKeys).forEach(key => {
-      if (!translations.common[key]) {
-        translations.common[key] = requiredKeys[key as keyof typeof requiredKeys];
-      }
-    });
+    deepMerge(merged, fallback);
+    return merged;
   };
 
-  ensureCommonKeys(enTranslations);
-  ensureCommonKeys(arTranslations);
+  enTranslations = mergeTranslations(enTranslations, fallbackTranslations);
+  arTranslations = mergeTranslations(arTranslations, fallbackTranslations);
 
   return { enTranslations, arTranslations };
 };
