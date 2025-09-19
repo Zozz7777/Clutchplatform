@@ -1,9 +1,23 @@
 const express = require('express');
 const router = express.Router();
+const rateLimit = require('express-rate-limit');
 const logger = require('../utils/logger');
 
+// More lenient rate limit for API docs - allows frequent access for documentation
+const docsLimiter = rateLimit({
+  windowMs: 1 * 60 * 1000, // 1 minute
+  max: process.env.NODE_ENV === 'development' ? 500 : 300, // Very high limit for docs
+  message: { 
+    success: false,
+    error: 'RATE_LIMIT_EXCEEDED',
+    message: 'Too many API docs requests, please try again later.' 
+  },
+  standardHeaders: true,
+  legacyHeaders: false
+});
+
 // GET /api/v1/docs/endpoints - Get all API endpoints
-router.get('/endpoints', async (req, res) => {
+router.get('/endpoints', docsLimiter, async (req, res) => {
   try {
     const endpoints = [
       {
@@ -256,7 +270,7 @@ router.get('/endpoints', async (req, res) => {
 });
 
 // GET /api/v1/docs/categories - Get API categories
-router.get('/categories', async (req, res) => {
+router.get('/categories', docsLimiter, async (req, res) => {
   try {
     const categories = [
       {

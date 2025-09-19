@@ -396,7 +396,7 @@ export default function CommandBar({ isOpen, onClose }: CommandBarProps) {
             toast.success(`Successfully imported ${users.length} users!`, 'All users have been created successfully.');
             onClose();
           } catch (error) {
-            console.error('Error processing CSV:', error);
+            // Error processing CSV
             toast.error('Failed to process CSV file', 'Please check the format and try again.');
           }
         }
@@ -450,7 +450,7 @@ export default function CommandBar({ isOpen, onClose }: CommandBarProps) {
               stoppedCount++;
             }
           } catch (error) {
-            console.error(`Failed to stop vehicle ${vehicle.id || 'unknown'}:`, error);
+            // Failed to stop vehicle
           }
         }
         

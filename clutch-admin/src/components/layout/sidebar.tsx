@@ -63,7 +63,7 @@ export function Sidebar({ isCollapsed, onToggle }: SidebarProps) {
               height={32}
               className="object-contain max-w-full max-h-full"
               onError={(e) => {
-                console.error('Logo failed to load:', e.currentTarget.src);
+                // Logo failed to load
                 e.currentTarget.style.display = 'none';
                 const parent = e.currentTarget.parentElement;
                 if (parent) {
@@ -83,7 +83,7 @@ export function Sidebar({ isCollapsed, onToggle }: SidebarProps) {
                 height={32}
                 className="object-contain max-w-full max-h-full"
                 onError={(e) => {
-                  console.error('Logo failed to load:', e.currentTarget.src);
+                  // Logo failed to load
                   e.currentTarget.style.display = 'none';
                   const parent = e.currentTarget.parentElement;
                   if (parent) {
