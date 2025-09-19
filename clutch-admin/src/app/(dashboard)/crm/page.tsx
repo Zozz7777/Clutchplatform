@@ -96,10 +96,13 @@ export default function CRMPage() {
           productionApi.getTickets()
         ]);
 
-        setCustomers(customersData || []);
-        setTickets(ticketsData || []);
-        setFilteredCustomers(customersData || []);
-        setFilteredTickets(ticketsData || []);
+        // Ensure we always have arrays and handle type conversion safely
+        const customersArray = Array.isArray(customersData) ? customersData as unknown as Customer[] : [];
+        const ticketsArray = Array.isArray(ticketsData) ? ticketsData as unknown as Ticket[] : [];
+        setCustomers(customersArray);
+        setTickets(ticketsArray);
+        setFilteredCustomers(customersArray);
+        setFilteredTickets(ticketsArray);
         
       } catch (error) {
         // Error handled by API service
@@ -118,18 +121,20 @@ export default function CRMPage() {
   }, []);
 
   useEffect(() => {
-    let filtered = customers;
+    // Ensure customers is always an array
+    const customersArray = Array.isArray(customers) ? customers : [];
+    let filtered = customersArray;
 
     if (searchQuery) {
       filtered = filtered.filter(customer =>
-        customer.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        customer.email.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        customer.company?.toLowerCase().includes(searchQuery.toLowerCase())
+        customer?.name?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        customer?.email?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        customer?.company?.toLowerCase().includes(searchQuery.toLowerCase())
       );
     }
 
     if (statusFilter !== "all") {
-      filtered = filtered.filter(customer => customer.status === statusFilter);
+      filtered = filtered.filter(customer => customer?.status === statusFilter);
     }
 
     setFilteredCustomers(filtered);
@@ -228,7 +233,7 @@ export default function CRMPage() {
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold text-foreground">
-              {customers.filter(c => c.status === "active").length}
+              {Array.isArray(customers) ? customers.filter(c => c?.status === "active").length : 0}
             </div>
             <p className="text-xs text-muted-foreground">
               <span className="text-success">+8%</span> retention rate
@@ -242,7 +247,7 @@ export default function CRMPage() {
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold text-foreground">
-              {tickets.filter(t => t.status === "open").length}
+              {Array.isArray(tickets) ? tickets.filter(t => t?.status === "open").length : 0}
             </div>
             <p className="text-xs text-muted-foreground">
               <span className="text-destructive">+3</span> from yesterday
@@ -256,8 +261,8 @@ export default function CRMPage() {
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold text-foreground">
-              {customers.filter(c => c.satisfaction > 0).length > 0 
-                ? (customers.filter(c => c.satisfaction > 0).reduce((acc, c) => acc + c.satisfaction, 0) / customers.filter(c => c.satisfaction > 0).length).toFixed(1)
+              {Array.isArray(customers) && customers.filter(c => c?.satisfaction > 0).length > 0 
+                ? (customers.filter(c => c?.satisfaction > 0).reduce((acc, c) => acc + (c?.satisfaction || 0), 0) / customers.filter(c => c?.satisfaction > 0).length).toFixed(1)
                 : "0.0"
               }
             </div>
