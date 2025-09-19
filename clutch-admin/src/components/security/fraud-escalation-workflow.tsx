@@ -140,44 +140,45 @@ export default function FraudEscalationWorkflow({ className }: FraudEscalationWo
   const [filterType, setFilterType] = useState<string>('all');
   const [filterSeverity, setFilterSeverity] = useState<string>('all');
 
-  useEffect(() => {
-    const loadFraudData = async () => {
-      try {
-        // Load fraud events from API
-        const eventsResponse = await fetch('/api/v1/admin/fraud/events', {
-          headers: {
-            'Authorization': `Bearer ${localStorage.getItem('token')}`,
-            'Content-Type': 'application/json'
-          }
-        });
-        
-        if (eventsResponse.ok) {
-          const eventsData = await eventsResponse.json();
-          setFraudEvents(eventsData.data || []);
-        } else {
-          setFraudEvents([]);
+  const loadFraudData = async () => {
+    try {
+      // Load fraud events from API
+      const eventsResponse = await fetch('/api/v1/admin/fraud/events', {
+        headers: {
+          'Authorization': `Bearer ${localStorage.getItem('token')}`,
+          'Content-Type': 'application/json'
         }
-
-        // Load fraud rules from API
-        const rulesResponse = await fetch('/api/v1/admin/fraud/rules', {
-          headers: {
-            'Authorization': `Bearer ${localStorage.getItem('token')}`,
-            'Content-Type': 'application/json'
-          }
-        });
-        
-        if (rulesResponse.ok) {
-          const rulesData = await rulesResponse.json();
-          setFraudRules(rulesData.data || []);
-        } else {
-          setFraudRules([]);
-        }
-      } catch (error) {
-        console.error('Failed to load fraud data:', error);
+      });
+      
+      if (eventsResponse.ok) {
+        const eventsData = await eventsResponse.json();
+        setFraudEvents(eventsData.data || []);
+      } else {
         setFraudEvents([]);
+      }
+
+      // Load fraud rules from API
+      const rulesResponse = await fetch('/api/v1/admin/fraud/rules', {
+        headers: {
+          'Authorization': `Bearer ${localStorage.getItem('token')}`,
+          'Content-Type': 'application/json'
+        }
+      });
+      
+      if (rulesResponse.ok) {
+        const rulesData = await rulesResponse.json();
+        setFraudRules(rulesData.data || []);
+      } else {
         setFraudRules([]);
       }
-    };
+    } catch (error) {
+      console.error('Failed to load fraud data:', error);
+      setFraudEvents([]);
+      setFraudRules([]);
+    }
+  };
+
+  useEffect(() => {
 
     loadFraudData();
   }, []);
