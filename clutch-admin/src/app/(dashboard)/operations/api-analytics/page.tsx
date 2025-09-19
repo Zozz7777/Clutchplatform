@@ -62,7 +62,7 @@ export default function APIAnalyticsPage() {
       setAnalytics(data);
       setLastUpdated(new Date());
     } catch (error) {
-      console.error('Error fetching API analytics:', error);
+      // Error handled by API service
       setAnalytics(null);
     } finally {
       setLoading(false);
@@ -74,7 +74,7 @@ export default function APIAnalyticsPage() {
       const exportData = await productionApi.exportAPIAnalytics();
       // Handle export functionality
     } catch (error) {
-      console.error('Error exporting API analytics:', error);
+      // Error handled by API service
     }
   };
   
@@ -82,7 +82,7 @@ export default function APIAnalyticsPage() {
     try {
       // Implementation for configuring monitoring
     } catch (error) {
-      console.error('Error configuring monitoring:', error);
+      // Error handled by API service
     }
   };
 

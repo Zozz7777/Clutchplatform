@@ -1,10 +1,10 @@
 'use client';
 
 import { useLanguage } from '@/contexts/language-context';
+import { getTranslations } from '@/lib/translations';
 
-// Import translations directly
-import enTranslations from '@/messages/en.json';
-import arTranslations from '@/messages/ar.json';
+// Load translations using the robust translation loader
+const { enTranslations, arTranslations } = getTranslations();
 
 // Ensure translations are properly loaded
 const ensureTranslations = () => {

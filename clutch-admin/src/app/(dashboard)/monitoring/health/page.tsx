@@ -66,7 +66,7 @@ export default function HealthPage() {
           });
         }
       } catch (error) {
-        console.error('Failed to load system health:', error);
+        // Error handled by API service
         toast.error('Failed to load system health data');
         // Set empty data on error
         setServices([]);
@@ -120,7 +120,7 @@ export default function HealthPage() {
         });
       }
     } catch (error) {
-      console.error('Failed to refresh system health:', error);
+      // Error handled by API service
       toast.error('Failed to refresh system health data');
     } finally {
       setIsLoading(false);

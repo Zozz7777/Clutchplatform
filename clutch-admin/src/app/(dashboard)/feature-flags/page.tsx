@@ -194,7 +194,7 @@ export default function FeatureFlagsPage() {
       const data = await productionApi.getFeatureFlags();
       setFeatureFlags(data || []);
     } catch (error) {
-      console.error("Error loading feature flags:", error);
+      // Error handled by API service
       setFeatureFlags([]);
     } finally {
       setLoading(false);

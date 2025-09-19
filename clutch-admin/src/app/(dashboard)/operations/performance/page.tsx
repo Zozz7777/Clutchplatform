@@ -61,7 +61,7 @@ export default function PerformancePage() {
       
       setLastUpdated(new Date());
     } catch (error) {
-      console.error('Error fetching performance metrics:', error);
+      // Error handled by API service
     } finally {
       setLoading(false);
     }

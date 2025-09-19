@@ -20,6 +20,9 @@ import reportsRoutes from './routes/reports';
 import settingsRoutes from './routes/settings';
 import syncRoutes from './routes/sync';
 import aiRoutes from './routes/ai';
+import marketplaceRoutes from './routes/marketplace';
+import branchesRoutes from './routes/branches';
+import backupRoutes from './routes/backup';
 
 class ClutchAutoPartsServer {
   private app: express.Application;
@@ -123,6 +126,8 @@ class ClutchAutoPartsServer {
     this.app.use('/api/settings', settingsRoutes);
     this.app.use('/api/sync', syncRoutes);
     this.app.use('/api/ai', aiRoutes);
+    this.app.use('/api/marketplace', marketplaceRoutes);
+    this.app.use('/api/branches', branchesRoutes);
 
     // Serve main app (for development)
     if (isDev()) {
