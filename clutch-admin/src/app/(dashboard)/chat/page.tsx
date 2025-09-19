@@ -114,7 +114,9 @@ export default function ChatPage() {
         
         const result = await productionApi.sendChatMessage(messageData);
         if (result) {
-          setMessages([...messages, result]);
+          // Type conversion for API response
+          const newMessage = result as unknown as ChatMessage;
+          setMessages([...messages, newMessage]);
           setNewMessage("");
         }
       } catch (error) {
@@ -236,7 +238,7 @@ export default function ChatPage() {
                     </div>
                   </div>
                 </div>
-              )) : []}
+              )) : null}
             </div>
           </CardContent>
         </Card>
@@ -314,7 +316,7 @@ export default function ChatPage() {
                     </div>
                   </div>
                 </div>
-              )) : []}
+              )) : null}
             </div>
 
             {/* Message Input */}
