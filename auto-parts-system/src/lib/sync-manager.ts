@@ -56,8 +56,8 @@ export class SyncManager {
   private isRunning: boolean = false;
   private status: SyncStatus;
 
-  constructor() {
-    this.db = new DatabaseManager();
+  constructor(databaseManager?: DatabaseManager) {
+    this.db = databaseManager || new DatabaseManager();
     this.config = {
       clutchBackendUrl: 'https://clutch-main-nk7x.onrender.com',
       syncInterval: 30, // 30 minutes

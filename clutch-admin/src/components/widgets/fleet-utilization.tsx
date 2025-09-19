@@ -243,14 +243,14 @@ export function FleetUtilization({ className = '' }: FleetUtilizationProps) {
             <p className="text-sm font-bold text-primary">
               {utilizationData.total > 0 ? ((utilizationData.active / utilizationData.total) * 100).toFixed(1) : 0}%
             </p>
-            <p className="text-xs text-muted-foreground">Active Rate</p>
+            <p className="text-xs text-muted-foreground">{t('fleetUtilization.activeRate')}</p>
           </div>
           <div className="text-center p-3 bg-primary/10 rounded-[0.625rem]-lg">
             <BarChart3 className="h-4 w-4 text-primary mx-auto mb-1" />
             <p className="text-sm font-bold text-primary">
               {utilizationData.total > 0 ? ((utilizationData.maintenance / utilizationData.total) * 100).toFixed(1) : 0}%
             </p>
-            <p className="text-xs text-muted-foreground">Maintenance Rate</p>
+            <p className="text-xs text-muted-foreground">{t('fleetUtilization.maintenanceRate')}</p>
           </div>
         </div>
 
@@ -258,11 +258,11 @@ export function FleetUtilization({ className = '' }: FleetUtilizationProps) {
         <div className="flex space-x-2 pt-2">
           <Button variant="outline" size="sm" className="flex-1">
             <Eye className="h-4 w-4 mr-2" />
-            View Details
+{t('fleetUtilization.viewDetails')}
           </Button>
           <Button variant="outline" size="sm" className="flex-1">
             <Download className="h-4 w-4 mr-2" />
-            Export Data
+{t('fleetUtilization.exportData')}
           </Button>
         </div>
 

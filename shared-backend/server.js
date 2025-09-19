@@ -537,7 +537,7 @@ function validateEnvironment() {
   const missing = requiredVars.filter(varName => !process.env[varName]);
   
   if (missing.length > 0) {
-    console.error('❌ Missing required environment variables:', missing);
+    logger.error('Missing required environment variables:', missing);
     return { isValid: false, missing };
   }
   
@@ -564,7 +564,7 @@ async function initializeRedis() {
     } else {
     }
   } catch (error) {
-    console.error('❌ Redis initialization error:', error);
+    logger.error('Redis initialization error:', error);
     redisInitialized = false;
   }
 }
