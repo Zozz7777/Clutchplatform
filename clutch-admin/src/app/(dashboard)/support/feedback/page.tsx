@@ -70,7 +70,7 @@ export default function FeedbackPage() {
       const data = await productionApi.getFeedback();
       setFeedback(data || []);
     } catch (error) {
-      console.error('Error loading feedback:', error);
+      // Error handled by API service
       setFeedback([]);
     } finally {
       setLoading(false);
@@ -100,7 +100,7 @@ export default function FeedbackPage() {
       setReplyText('');
       setSelectedFeedback(null);
     } catch (error) {
-      console.error('Error replying to feedback:', error);
+      // Error handled by API service
     }
   };
   
@@ -115,7 +115,7 @@ export default function FeedbackPage() {
         )
       );
     } catch (error) {
-      console.error('Error archiving feedback:', error);
+      // Error handled by API service
     }
   };
   
@@ -124,7 +124,7 @@ export default function FeedbackPage() {
       await productionApi.deleteFeedback(feedbackId);
       setFeedback(prev => prev.filter(item => item.id !== feedbackId));
     } catch (error) {
-      console.error('Error deleting feedback:', error);
+      // Error handled by API service
     }
   };
   

@@ -79,7 +79,7 @@ export default function KnowledgeBasePage() {
       const data = await productionApi.getKnowledgeArticles();
       setArticles(data || []);
     } catch (error) {
-      console.error('Error loading articles:', error);
+      // Error handled by API service
       setArticles([]);
     } finally {
       setLoading(false);
@@ -115,7 +115,7 @@ export default function KnowledgeBasePage() {
         });
       }
     } catch (error) {
-      console.error('Error creating article:', error);
+      // Error handled by API service
     }
   };
   
@@ -147,7 +147,7 @@ export default function KnowledgeBasePage() {
         });
       }
     } catch (error) {
-      console.error('Error updating article:', error);
+      // Error handled by API service
     }
   };
   
@@ -158,7 +158,7 @@ export default function KnowledgeBasePage() {
         setArticles(prev => prev.filter(article => article._id !== articleId));
       }
     } catch (error) {
-      console.error('Error deleting article:', error);
+      // Error handled by API service
     }
   };
   

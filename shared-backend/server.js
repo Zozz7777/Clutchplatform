@@ -116,6 +116,11 @@ const apiDocsRoutes = require('./routes/api-docs');
 const mobileAppsRoutes = require('./routes/mobile-apps');
 const operationsRoutes = require('./routes/operations');
 
+// Import newly created routes
+const enterpriseRoutes = require('./routes/enterprise');
+const supportRoutes = require('./routes/support');
+const analyticsExtendedRoutes = require('./routes/analytics-extended');
+
 // All route imports cleaned up - only existing routes imported above
 
 // Initialize Express app
@@ -222,6 +227,10 @@ app.use(`${apiPrefix}/integrations`, integrationsRoutes);
 app.use(`${apiPrefix}/audit-trail`, auditTrailRoutes);
 app.use(`${apiPrefix}/reports`, reportsRoutes);
 app.use(`${apiPrefix}/rbac`, rbacRoutes);
+
+// Mount newly created routes
+app.use(`${apiPrefix}/support`, supportRoutes);
+app.use(`${apiPrefix}/analytics-extended`, analyticsExtendedRoutes);
 
 // Fallback routes (without v1 prefix for frontend compatibility)
 app.use('/auth', authRoutes);

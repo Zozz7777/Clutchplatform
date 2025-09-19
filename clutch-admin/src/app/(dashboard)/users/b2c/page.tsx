@@ -69,7 +69,7 @@ export default function B2CUsersPage() {
         setUsers(b2cUsers);
         setFilteredUsers(b2cUsers);
       } catch (error) {
-        console.error("Failed to load B2C users:", error);
+        // Error handled by API service
         toast.error("Failed to load customers");
         setUsers([]);
         setFilteredUsers([]);

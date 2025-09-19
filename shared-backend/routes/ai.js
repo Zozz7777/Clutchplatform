@@ -450,4 +450,199 @@ router.post('/feedback', authenticateToken, async (req, res) => {
   }
 });
 
+// GET /api/v1/ai/fraud-cases - Get fraud detection cases
+router.get('/fraud-cases', authenticateToken, async (req, res) => {
+  try {
+    const { db } = await connectToDatabase();
+    const fraudCasesCollection = db.collection('fraud_cases');
+    
+    const { page = 1, limit = 20, status, risk } = req.query;
+    const skip = (page - 1) * limit;
+    
+    const filter = {};
+    if (status) filter.status = status;
+    if (risk) filter.risk = risk;
+    
+    const fraudCases = await fraudCasesCollection
+      .find(filter)
+      .sort({ detectedAt: -1 })
+      .skip(skip)
+      .limit(parseInt(limit))
+      .toArray();
+    
+    const total = await fraudCasesCollection.countDocuments(filter);
+
+    res.json({
+      success: true,
+      data: fraudCases || [],
+      pagination: {
+        page: parseInt(page),
+        limit: parseInt(limit),
+        total,
+        pages: Math.ceil(total / limit)
+      },
+      message: 'Fraud cases retrieved successfully',
+      timestamp: new Date().toISOString()
+    });
+  } catch (error) {
+    console.error('Error fetching fraud cases:', error);
+    res.status(500).json({
+      success: false,
+      error: 'FAILED_TO_FETCH_FRAUD_CASES',
+      message: error.message,
+      timestamp: new Date().toISOString()
+    });
+  }
+});
+
+// GET /api/v1/ai/recommendations - Get AI recommendations
+router.get('/recommendations', authenticateToken, async (req, res) => {
+  try {
+    const { db } = await connectToDatabase();
+    const recommendationsCollection = db.collection('ai_recommendations');
+    
+    const { page = 1, limit = 20, type, status } = req.query;
+    const skip = (page - 1) * limit;
+    
+    const filter = {};
+    if (type) filter.type = type;
+    if (status) filter.status = status;
+    
+    const recommendations = await recommendationsCollection
+      .find(filter)
+      .sort({ createdAt: -1 })
+      .skip(skip)
+      .limit(parseInt(limit))
+      .toArray();
+    
+    const total = await recommendationsCollection.countDocuments(filter);
+
+    res.json({
+      success: true,
+      data: recommendations || [],
+      pagination: {
+        page: parseInt(page),
+        limit: parseInt(limit),
+        total,
+        pages: Math.ceil(total / limit)
+      },
+      message: 'AI recommendations retrieved successfully',
+      timestamp: new Date().toISOString()
+    });
+  } catch (error) {
+    console.error('Error fetching AI recommendations:', error);
+    res.status(500).json({
+      success: false,
+      error: 'FAILED_TO_FETCH_AI_RECOMMENDATIONS',
+      message: error.message,
+      timestamp: new Date().toISOString()
+    });
+  }
+});
+
+// GET /api/v1/ai/training-roi - Get training ROI data
+router.get('/training-roi', authenticateToken, async (req, res) => {
+  try {
+    const { db } = await connectToDatabase();
+    const trainingCollection = db.collection('ai_training');
+    
+    const trainingData = await trainingCollection
+      .find({})
+      .sort({ completedAt: -1 })
+      .limit(100)
+      .toArray();
+    
+    const totalGpuHours = trainingData.reduce((sum, item) => sum + (item.gpuHours || 0), 0);
+    const totalCost = trainingData.reduce((sum, item) => sum + (item.cost || 0), 0);
+    const totalValue = trainingData.reduce((sum, item) => sum + (item.businessValue || 0), 0);
+    const modelsTrained = trainingData.length;
+    const avgAccuracyImprovement = trainingData.length > 0 
+      ? trainingData.reduce((sum, item) => sum + (item.accuracyImprovement || 0), 0) / trainingData.length 
+      : 0;
+    
+    const roi = totalCost > 0 ? ((totalValue - totalCost) / totalCost) * 100 : 0;
+    const costPerModel = modelsTrained > 0 ? totalCost / modelsTrained : 0;
+    const valuePerModel = modelsTrained > 0 ? totalValue / modelsTrained : 0;
+
+    const roiData = {
+      gpuHours: totalGpuHours,
+      trainingCost: totalCost,
+      businessValue: totalValue,
+      roi: roi,
+      modelsTrained: modelsTrained,
+      accuracyImprovement: avgAccuracyImprovement,
+      costPerModel: costPerModel,
+      valuePerModel: valuePerModel
+    };
+
+    res.json({
+      success: true,
+      data: roiData,
+      message: 'Training ROI data retrieved successfully',
+      timestamp: new Date().toISOString()
+    });
+  } catch (error) {
+    console.error('Error fetching training ROI:', error);
+    res.status(500).json({
+      success: false,
+      error: 'FAILED_TO_FETCH_TRAINING_ROI',
+      message: error.message,
+      timestamp: new Date().toISOString()
+    });
+  }
+});
+
+// GET /api/v1/ai/recommendation-uplift - Get recommendation uplift data
+router.get('/recommendation-uplift', authenticateToken, async (req, res) => {
+  try {
+    const { db } = await connectToDatabase();
+    const recommendationsCollection = db.collection('ai_recommendations');
+    
+    const recommendations = await recommendationsCollection
+      .find({ status: 'implemented' })
+      .sort({ createdAt: -1 })
+      .limit(100)
+      .toArray();
+    
+    const recommendationsSent = recommendations.length;
+    const accepted = recommendations.filter(r => r.status === 'implemented').length;
+    const revenueImpact = recommendations.reduce((sum, r) => sum + (r.revenueImpact || 0), 0);
+    const engagementImprovement = recommendations.length > 0 
+      ? recommendations.reduce((sum, r) => sum + (r.engagementImprovement || 0), 0) / recommendations.length 
+      : 0;
+    
+    const typeCounts = {};
+    recommendations.forEach(r => {
+      typeCounts[r.type] = (typeCounts[r.type] || 0) + 1;
+    });
+    const topPerformingTypes = Object.entries(typeCounts)
+      .sort(([,a], [,b]) => b - a)
+      .slice(0, 5)
+      .map(([type]) => type);
+
+    const upliftData = {
+      recommendationsSent,
+      accepted,
+      revenueImpact,
+      engagementImprovement,
+      topPerformingTypes
+    };
+
+    res.json({
+      success: true,
+      data: upliftData,
+      message: 'Recommendation uplift data retrieved successfully',
+      timestamp: new Date().toISOString()
+    });
+  } catch (error) {
+    console.error('Error fetching recommendation uplift:', error);
+    res.status(500).json({
+      success: false,
+      error: 'FAILED_TO_FETCH_RECOMMENDATION_UPLIFT',
+      message: error.message,
+      timestamp: new Date().toISOString()
+    });
+  }
+});
+
 module.exports = router;

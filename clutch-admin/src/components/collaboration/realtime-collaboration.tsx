@@ -74,6 +74,10 @@ export default function RealtimeCollaboration({ currentUserId, currentPage }: Re
           role: user.role || 'User'
         }));
         setActiveUsers(activeUsersData);
+      } catch (error) {
+        // Error handled by API service
+        setActiveUsers([]);
+      }
     };
 
     const loadCollaborationEvents = async () => {

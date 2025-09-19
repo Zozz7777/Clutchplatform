@@ -54,7 +54,7 @@ export default function ProvidersPage() {
         setUsers(providerUsers);
         setFilteredUsers(providerUsers);
       } catch (error) {
-        console.error("Failed to load service providers:", error);
+        // Error handled by API service
         toast.error("Failed to load service providers");
       } finally {
         setIsLoading(false);

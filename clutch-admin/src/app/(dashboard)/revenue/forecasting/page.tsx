@@ -108,7 +108,7 @@ export default function RevenueForecastingPage() {
         setScenarios(data.scenarios || scenarios);
       }
     } catch (error) {
-      console.error('Error loading forecast data:', error);
+      // Error handled by API service
     } finally {
       setLoading(false);
     }
@@ -120,7 +120,7 @@ export default function RevenueForecastingPage() {
       await productionApi.refreshRevenueData();
       await loadForecastData();
     } catch (error) {
-      console.error('Error refreshing data:', error);
+      // Error handled by API service
     } finally {
       setRefreshing(false);
     }
@@ -133,7 +133,7 @@ export default function RevenueForecastingPage() {
         // Handle report generation success
       }
     } catch (error) {
-      console.error('Error generating report:', error);
+      // Error handled by API service
     }
   };
 

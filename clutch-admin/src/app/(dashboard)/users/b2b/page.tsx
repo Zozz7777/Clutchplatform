@@ -53,7 +53,7 @@ export default function B2BUsersPage() {
         setUsers(b2bUsers);
         setFilteredUsers(b2bUsers);
       } catch (error) {
-        console.error("Failed to load B2B users:", error);
+        // Error handled by API service
         toast.error("Failed to load enterprise clients");
       } finally {
         setIsLoading(false);
