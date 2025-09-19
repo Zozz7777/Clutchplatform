@@ -18,6 +18,7 @@ import {
   Star,
   Heart
 } from 'lucide-react';
+import { realApi } from '@/lib/real-api';
 
 interface FeatureUsageProps {
   className?: string;
@@ -33,6 +34,21 @@ interface FeatureData {
   description: string;
   icon: React.ComponentType<{ className?: string }>;
 }
+
+// Helper function to get icon for category
+const getIconForCategory = (category: string) => {
+  switch (category) {
+    case 'Analytics': return BarChart3;
+    case 'Fleet': return Activity;
+    case 'Users': return Users;
+    case 'Finance': return Target;
+    case 'AI/ML': return Zap;
+    case 'Reports': return BarChart3;
+    case 'Mobile': return Activity;
+    case 'Integration': return Zap;
+    default: return BarChart3;
+  }
+};
 
 export function FeatureUsage({ className = '' }: FeatureUsageProps) {
   const [featureData, setFeatureData] = React.useState<FeatureData[]>([]);

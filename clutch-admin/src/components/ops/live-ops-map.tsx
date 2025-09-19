@@ -19,6 +19,7 @@ import {
   Eye,
   EyeOff
 } from 'lucide-react';
+import { realApi } from '@/lib/real-api';
 
 interface FleetLocation {
   id: string;
@@ -96,18 +97,24 @@ export default function LiveOpsMap({ className }: LiveOpsMapProps) {
     loadMapData();
 
     if (isLive) {
-      const interval = setInterval(() => {
-        // Simulate real-time updates
-        setFleetLocations(prev => 
-          prev.map(location => ({
-            ...location,
-            lastUpdate: 'Just now',
-            speed: location.status === 'active' ? 0 : 0, // TODO: Get actual speed from API
-            fuel: location.fuel // TODO: Get actual fuel level from API
-          }))
-        );
-        setLastUpdate(new Date());
-      }, 5000);
+      const interval = setInterval(async () => {
+        try {
+          // Get real-time updates from API
+          const [fleetData, hotspotsData, usersData] = await Promise.all([
+            realApi.getFleetLocations(),
+            realApi.getRevenueHotspots(),
+            realApi.getLiveUserActivities()
+          ]);
+
+          setFleetLocations(fleetData || []);
+          setRevenueHotspots(hotspotsData || []);
+          setUserActivities(usersData || []);
+          setLastUpdate(new Date());
+        } catch (error) {
+          console.error("Failed to update map data:", error);
+          // Keep existing data on error
+        }
+      }, 10000); // Update every 10 seconds
 
       return () => clearInterval(interval);
     }

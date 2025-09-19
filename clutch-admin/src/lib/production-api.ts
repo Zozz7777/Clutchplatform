@@ -208,7 +208,7 @@ export class ProductionApiService {
     }
   }
 
-  async getTickets(): Promise<any[]> {
+  async getTickets(): Promise<Record<string, unknown>[]> {
     try {
       return await realApi.getTickets();
     } catch (error) {
@@ -236,7 +236,7 @@ export class ProductionApiService {
   }
 
   // Finance APIs
-  async getPayments(): Promise<any[]> {
+  async getPayments(): Promise<Record<string, unknown>[]> {
     try {
       return await realApi.getPayments();
     } catch (error) {
@@ -543,7 +543,7 @@ export class ProductionApiService {
   }
 
   // Finance APIs
-  async getPayments(): Promise<any[]> {
+  async getPayments(): Promise<Record<string, unknown>[]> {
     try {
       return await realApi.getPayments();
     } catch (error) {

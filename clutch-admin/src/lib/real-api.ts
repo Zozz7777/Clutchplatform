@@ -513,7 +513,7 @@ export class RealApiService {
   }
 
   // AI APIs
-  async getAIRecommendations(filters?: any): Promise<Record<string, unknown>[]> {
+  async getAIRecommendations(filters?: Record<string, unknown>): Promise<Record<string, unknown>[]> {
     return withErrorHandling(
       async () => {
         const queryParams = filters ? `?${new URLSearchParams(filters).toString()}` : '';
@@ -693,6 +693,18 @@ export class RealApiService {
         return handleApiResponse(response, 'getLiveUserActivities', []);
       },
       'getLiveUserActivities',
+      { fallbackValue: [], showToast: false }
+    )();
+  }
+
+  // Feature Usage APIs
+  async getFeatureUsage(): Promise<Record<string, unknown>[]> {
+    return withErrorHandling(
+      async () => {
+        const response = await apiService.request<Record<string, unknown>[]>("/api/v1/analytics/feature-usage");
+        return handleApiResponse(response, 'getFeatureUsage', []);
+      },
+      'getFeatureUsage',
       { fallbackValue: [], showToast: false }
     )();
   }
