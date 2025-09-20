@@ -65,53 +65,7 @@ export function IntegrationHealth({ className = '' }: IntegrationHealthProps) {
           lastCheck: integration.lastCheck || new Date().toISOString(),
           errorRate: integration.errorRate || 0,
           type: integration.type || 'Unknown'
-          },
-          {
-            name: 'Fleet Tracking API',
-            status: 'healthy',
-            uptime: 99.8,
-            responseTime: 200,
-            lastCheck: new Date(Date.now() - 2 * 60 * 1000).toISOString(),
-            errorRate: 0.2,
-            type: 'Fleet'
-          },
-          {
-            name: 'Email Service',
-            status: 'degraded',
-            uptime: 98.5,
-            responseTime: 500,
-            lastCheck: new Date(Date.now() - 3 * 60 * 1000).toISOString(),
-            errorRate: 1.5,
-            type: 'Communication'
-          },
-          {
-            name: 'SMS Gateway',
-            status: 'healthy',
-            uptime: 99.7,
-            responseTime: 300,
-            lastCheck: new Date(Date.now() - 4 * 60 * 1000).toISOString(),
-            errorRate: 0.3,
-            type: 'Communication'
-          },
-          {
-            name: 'Analytics API',
-            status: 'down',
-            uptime: 95.2,
-            responseTime: 2000,
-            lastCheck: new Date(Date.now() - 5 * 60 * 1000).toISOString(),
-            errorRate: 4.8,
-            type: 'Analytics'
-          },
-          {
-            name: 'Database Connection',
-            status: 'healthy',
-            uptime: 99.95,
-            responseTime: 50,
-            lastCheck: new Date(Date.now() - 1 * 60 * 1000).toISOString(),
-            errorRate: 0.05,
-            type: 'Database'
-          }
-        ];
+        }));
 
         const totalIntegrations = transformedIntegrations.length;
         const healthyIntegrations = transformedIntegrations.filter(i => i.status === 'healthy').length;

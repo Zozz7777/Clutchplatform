@@ -182,6 +182,72 @@ export class RealApiService {
     )();
   }
 
+  async getIntegrations(): Promise<Record<string, unknown>[]> {
+    return withErrorHandling(
+      async () => {
+        const response = await apiService.request<Record<string, unknown>[]>("/api/v1/integrations");
+        return handleApiResponse(response, 'getIntegrations', []);
+      },
+      'getIntegrations',
+      { fallbackValue: [], showToast: false }
+    )();
+  }
+
+  async getHealthChecks(): Promise<Record<string, unknown>[]> {
+    return withErrorHandling(
+      async () => {
+        const response = await apiService.request<Record<string, unknown>[]>("/api/v1/health-checks");
+        return handleApiResponse(response, 'getHealthChecks', []);
+      },
+      'getHealthChecks',
+      { fallbackValue: [], showToast: false }
+    )();
+  }
+
+  async getIntegrationMetrics(): Promise<Record<string, unknown>[]> {
+    return withErrorHandling(
+      async () => {
+        const response = await apiService.request<Record<string, unknown>[]>("/api/v1/integrations/metrics");
+        return handleApiResponse(response, 'getIntegrationMetrics', []);
+      },
+      'getIntegrationMetrics',
+      { fallbackValue: [], showToast: false }
+    )();
+  }
+
+  async getIncidents(): Promise<Record<string, unknown>[]> {
+    return withErrorHandling(
+      async () => {
+        const response = await apiService.request<Record<string, unknown>[]>("/api/v1/incidents");
+        return handleApiResponse(response, 'getIncidents', []);
+      },
+      'getIncidents',
+      { fallbackValue: [], showToast: false }
+    )();
+  }
+
+  async getAlerts(): Promise<Record<string, unknown>[]> {
+    return withErrorHandling(
+      async () => {
+        const response = await apiService.request<Record<string, unknown>[]>("/api/v1/alerts");
+        return handleApiResponse(response, 'getAlerts', []);
+      },
+      'getAlerts',
+      { fallbackValue: [], showToast: false }
+    )();
+  }
+
+  async getLogs(): Promise<Record<string, unknown>[]> {
+    return withErrorHandling(
+      async () => {
+        const response = await apiService.request<Record<string, unknown>[]>("/api/v1/logs");
+        return handleApiResponse(response, 'getLogs', []);
+      },
+      'getLogs',
+      { fallbackValue: [], showToast: false }
+    )();
+  }
+
   async getVehicleDetails(vehicleId: string): Promise<Record<string, unknown>> {
     return withErrorHandling(
       async () => {

@@ -2401,5 +2401,26 @@
     "allTimeSubscriptions": "جميع الاشتراكات على الإطلاق",
     "active": "نشط",
     "currentlyActive": "نشط حالياً"
+  },
+  "apiDocs": {
+    "authentication": "المصادقة",
+    "authenticationDesc": "نقاط نهاية مصادقة المستخدم",
+    "userManagement": "إدارة المستخدمين",
+    "userManagementDesc": "عمليات CRUD للمستخدمين",
+    "fleetManagement": "إدارة الأسطول",
+    "fleetManagementDesc": "عمليات المركبات"
+  },
+  "mobileApps": {
+    "overview": "نظرة عامة",
+    "appVersions": "إصدارات التطبيق",
+    "crashReports": "تقارير الأعطال",
+    "analytics": "التحليلات",
+    "appStores": "متاجر التطبيقات"
+  },
+  "communication": {
+    "notifications": "الإشعارات",
+    "chatChannels": "قنوات الدردشة",
+    "supportTickets": "تذاكر الدعم",
+    "allUsers": "جميع المستخدمين"
   }
 }

@@ -111,7 +111,7 @@ export default function CommunicationPage() {
                 type: notification.type || 'info',
                 channel: "in_app" as const,
                 status: "sent" as const,
-                targetAudience: "All Users",
+                targetAudience: t('communication.allUsers'),
                 sentAt: notification.timestamp || notification.sentAt || new Date().toISOString(),
                 deliveryRate: 95,
                 openRate: 75,
@@ -225,9 +225,9 @@ export default function CommunicationPage() {
   };
 
   const tabs = [
-    { id: "notifications", label: "Notifications", icon: Bell },
-    { id: "chat", label: "Chat Channels", icon: MessageSquare },
-    { id: "tickets", label: "Support Tickets", icon: AlertCircle },
+    { id: "notifications", label: t('communication.notifications'), icon: Bell },
+    { id: "chat", label: t('communication.chatChannels'), icon: MessageSquare },
+    { id: "tickets", label: t('communication.supportTickets'), icon: AlertCircle },
   ];
 
   return (

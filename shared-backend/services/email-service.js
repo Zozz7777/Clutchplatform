@@ -5,6 +5,7 @@
 
 const nodemailer = require('nodemailer');
 const { getCollection } = require('../config/optimized-database');
+const sendGridService = require('./sendgrid-service');
 
 class EmailService {
   constructor() {
@@ -51,13 +52,9 @@ class EmailService {
   }
 
   async sendEmployeeInvitation(invitationData) {
-    if (!this.transporter) {
-      throw new Error('Email service not configured');
-    }
-
     const { email, name, role, department, invitationToken } = invitationData;
     
-    const frontendUrl = process.env.FRONTEND_URL || 'http://localhost:3000';
+    const frontendUrl = process.env.FRONTEND_URL || 'https://admin.yourclutch.com';
     const invitationLink = `${frontendUrl}/setup-password?token=${invitationToken}`;
     
     const mailOptions = {
@@ -79,12 +76,27 @@ class EmailService {
     };
 
     try {
+      // Try SendGrid first (most reliable for transactional emails)
+      try {
+        console.log('📧 Attempting to send via SendGrid...');
+        const sendGridResult = await sendGridService.sendEmployeeInvitation(invitationData);
+        console.log('✅ Employee invitation sent via SendGrid to:', email);
+        return sendGridResult;
+      } catch (sendGridError) {
+        console.warn('⚠️  SendGrid failed, trying SMTP fallback:', sendGridError.message);
+      }
+
+      // Fallback to SMTP if Mailchimp fails
+      if (!this.transporter) {
+        throw new Error('Email service not configured');
+      }
+
       // Handle mock email service
       if (this.transporter === 'mock') {
         console.log('📧 MOCK EMAIL - Employee invitation would be sent to:', email);
         console.log('📧 MOCK EMAIL - Subject:', mailOptions.subject);
         console.log('📧 MOCK EMAIL - Invitation Link:', invitationLink);
-        console.log('📧 MOCK EMAIL - To set up real email, configure EMAIL_USER and EMAIL_PASSWORD in .env');
+        console.log('📧 MOCK EMAIL - To set up real email, configure SENDGRID_API_KEY or EMAIL_USER and EMAIL_PASSWORD in .env');
         
         // Store invitation in database for manual processing
         await this.storeInvitationForManualProcessing({
@@ -100,10 +112,21 @@ class EmailService {
       }
 
       const result = await this.transporter.sendMail(mailOptions);
-      console.log('✅ Employee invitation email sent to:', email);
+      console.log('✅ Employee invitation email sent via SMTP to:', email);
       return result;
     } catch (error) {
-      console.error('❌ Failed to send invitation email:', error);
+      console.error('❌ Failed to send invitation email via all methods:', error);
+      
+      // Store invitation for manual processing as last resort
+      await this.storeInvitationForManualProcessing({
+        email,
+        name: invitationData.name,
+        role: invitationData.role,
+        department: invitationData.department,
+        invitationLink,
+        mailOptions
+      });
+      
       throw error;
     }
   }

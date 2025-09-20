@@ -93,6 +93,8 @@
   "dependencies": {
     "@anthropic-ai/sdk": "^0.62.0",
     "@google/generative-ai": "^0.24.1",
+    "@mailchimp/mailchimp_marketing": "^3.0.80",
+    "@sendgrid/mail": "^8.1.6",
     "agenda": "^5.0.0",
     "archiver": "^6.0.1",
     "axios": "^1.6.2",

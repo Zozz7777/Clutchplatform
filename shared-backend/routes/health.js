@@ -16,6 +16,54 @@ try {
   connectDB = async () => { throw new Error('Database not available'); };
 }
 
+// GET /api/v1/health-checks - Get health check data
+router.get('/health-checks', authenticateToken, async (req, res) => {
+  try {
+    const healthChecksCollection = await getCollection('health_checks');
+    
+    if (!healthChecksCollection) {
+      return res.status(500).json({
+        success: false,
+        error: 'DATABASE_CONNECTION_FAILED',
+        message: 'Database connection failed',
+        timestamp: new Date().toISOString()
+      });
+    }
+    
+    const { startDate, endDate, service } = req.query;
+    const filter = {};
+    
+    if (startDate || endDate) {
+      filter.timestamp = {};
+      if (startDate) filter.timestamp.$gte = new Date(startDate);
+      if (endDate) filter.timestamp.$lte = new Date(endDate);
+    }
+    
+    if (service) filter.service = service;
+    
+    const healthChecks = await healthChecksCollection
+      .find(filter)
+      .sort({ timestamp: -1 })
+      .toArray();
+    
+    res.json({
+      success: true,
+      data: healthChecks,
+      message: 'Health checks retrieved successfully',
+      timestamp: new Date().toISOString()
+    });
+    
+  } catch (error) {
+    console.error('Get health checks error:', error);
+    res.status(500).json({
+      success: false,
+      error: 'GET_HEALTH_CHECKS_FAILED',
+      message: 'Failed to get health checks',
+      timestamp: new Date().toISOString()
+    });
+  }
+});
+
 // Lightweight ping endpoint for health monitoring
 router.get('/ping', (req, res) => {
     try {

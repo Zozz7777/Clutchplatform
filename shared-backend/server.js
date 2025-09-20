@@ -63,6 +63,8 @@ const otherRoutes = require('./routes/other');
 const errorsRoutes = require('./routes/errors');
 const knowledgeBaseRoutes = require('./routes/knowledge-base');
 const incidentsRoutes = require('./routes/incidents');
+const alertsRoutes = require('./routes/alerts');
+const logsRoutes = require('./routes/logs');
 // const autoPartsRoutes = require('./routes/auto-parts'); // Removed - file deleted
 const realtimeRoutes = require('./routes/realtime');
 const shopsRoutes = require('./routes/shops');
@@ -177,6 +179,8 @@ app.use('/api', otherRoutes);
 app.use('/errors', errorsRoutes);
 app.use(`${apiPrefix}/knowledge-base`, knowledgeBaseRoutes);
 app.use(`${apiPrefix}/incidents`, incidentsRoutes);
+app.use(`${apiPrefix}/alerts`, alertsRoutes);
+app.use(`${apiPrefix}/logs`, logsRoutes);
 // app.use(`${apiPrefix}/auto-parts`, autoPartsRoutes); // Removed - route deleted
 app.use(`${apiPrefix}/realtime`, realtimeRoutes);
 app.use(`${apiPrefix}/shops`, shopsRoutes);
@@ -286,6 +290,9 @@ app.use('/api/v1/pending-emails', pendingEmailsRoutes);
 app.use('/api/v1/mobile-apps', mobileAppsRoutes);
 app.use('/api/v1/operations', operationsRoutes);
 app.use('/api/v1/security', securityRoutes);
+app.use('/api/v1/alerts', alertsRoutes);
+app.use('/api/v1/logs', logsRoutes);
+app.use('/api/v1/health-checks', healthRoutes);
 
 // Test endpoints
 app.get('/test', (req, res) => {

@@ -68,48 +68,7 @@ export function IncidentCost({ className = '' }: IncidentCostProps) {
           affectedUsers: incident.affectedUsers || 0,
           date: incident.date || new Date().toISOString(),
           status: incident.status || 'resolved'
-          },
-          {
-            incidentId: '2',
-            title: 'Database Performance Issue',
-            severity: 'high',
-            duration: 90,
-            cost: 8500,
-            affectedUsers: 1200,
-            date: new Date(Date.now() - 5 * 24 * 60 * 60 * 1000).toISOString(),
-            status: 'resolved'
-          },
-          {
-            incidentId: '3',
-            title: 'Payment Processing Delay',
-            severity: 'medium',
-            duration: 45,
-            cost: 3200,
-            affectedUsers: 800,
-            date: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString(),
-            status: 'resolved'
-          },
-          {
-            incidentId: '4',
-            title: 'Fleet Tracking Interruption',
-            severity: 'low',
-            duration: 30,
-            cost: 1200,
-            affectedUsers: 300,
-            date: new Date(Date.now() - 10 * 24 * 60 * 60 * 1000).toISOString(),
-            status: 'resolved'
-          },
-          {
-            incidentId: '5',
-            title: 'User Authentication Issues',
-            severity: 'high',
-            duration: 60,
-            cost: 5500,
-            affectedUsers: 1500,
-            date: new Date(Date.now() - 14 * 24 * 60 * 60 * 1000).toISOString(),
-            status: 'resolved'
-          }
-        ];
+        }));
 
         const totalCost = transformedIncidents.reduce((sum, incident) => sum + incident.cost, 0);
         const averageCost = totalCost / transformedIncidents.length;

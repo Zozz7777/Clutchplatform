@@ -2346,5 +2346,26 @@
     "allTimeSubscriptions": "All time subscriptions",
     "active": "Active",
     "currentlyActive": "Currently active"
+  },
+  "apiDocs": {
+    "authentication": "Authentication",
+    "authenticationDesc": "User authentication endpoints",
+    "userManagement": "User Management",
+    "userManagementDesc": "User CRUD operations",
+    "fleetManagement": "Fleet Management",
+    "fleetManagementDesc": "Vehicle operations"
+  },
+  "mobileApps": {
+    "overview": "Overview",
+    "appVersions": "App Versions",
+    "crashReports": "Crash Reports",
+    "analytics": "Analytics",
+    "appStores": "App Stores"
+  },
+  "communication": {
+    "notifications": "Notifications",
+    "chatChannels": "Chat Channels",
+    "supportTickets": "Support Tickets",
+    "allUsers": "All Users"
   }
 }

@@ -188,11 +188,11 @@ export default function MobileAppsPage() {
   };
 
   const tabs = [
-    { id: "overview", label: "Overview", icon: BarChart3 },
-    { id: "versions", label: "App Versions", icon: Download },
-    { id: "crashes", label: "Crash Reports", icon: AlertTriangle },
-    { id: "analytics", label: "Analytics", icon: TrendingUp },
-    { id: "stores", label: "App Stores", icon: Globe },
+    { id: "overview", label: t('mobileApps.overview'), icon: BarChart3 },
+    { id: "versions", label: t('mobileApps.appVersions'), icon: Download },
+    { id: "crashes", label: t('mobileApps.crashReports'), icon: AlertTriangle },
+    { id: "analytics", label: t('mobileApps.analytics'), icon: TrendingUp },
+    { id: "stores", label: t('mobileApps.appStores'), icon: Globe },
   ];
 
   return (

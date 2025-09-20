@@ -1501,6 +1501,60 @@ export class ProductionApiService {
     }
   }
 
+  async getIntegrations(): Promise<Record<string, unknown>[]> {
+    try {
+      return await realApi.getIntegrations();
+    } catch (error) {
+      logger.error("Failed to fetch integrations:", error);
+      throw new Error("Failed to load integrations");
+    }
+  }
+
+  async getHealthChecks(): Promise<Record<string, unknown>[]> {
+    try {
+      return await realApi.getHealthChecks();
+    } catch (error) {
+      logger.error("Failed to fetch health checks:", error);
+      throw new Error("Failed to load health checks");
+    }
+  }
+
+  async getIntegrationMetrics(): Promise<Record<string, unknown>[]> {
+    try {
+      return await realApi.getIntegrationMetrics();
+    } catch (error) {
+      logger.error("Failed to fetch integration metrics:", error);
+      throw new Error("Failed to load integration metrics");
+    }
+  }
+
+  async getIncidents(): Promise<Record<string, unknown>[]> {
+    try {
+      return await realApi.getIncidents();
+    } catch (error) {
+      logger.error("Failed to fetch incidents:", error);
+      throw new Error("Failed to load incidents");
+    }
+  }
+
+  async getAlerts(): Promise<Record<string, unknown>[]> {
+    try {
+      return await realApi.getAlerts();
+    } catch (error) {
+      logger.error("Failed to fetch alerts:", error);
+      throw new Error("Failed to load alerts");
+    }
+  }
+
+  async getLogs(): Promise<Record<string, unknown>[]> {
+    try {
+      return await realApi.getLogs();
+    } catch (error) {
+      logger.error("Failed to fetch logs:", error);
+      throw new Error("Failed to load logs");
+    }
+  }
+
   async getComplianceData(): Promise<Record<string, unknown>[]> {
     try {
       return await realApi.getComplianceData();

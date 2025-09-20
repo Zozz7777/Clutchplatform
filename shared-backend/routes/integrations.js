@@ -17,6 +17,54 @@ router.use(authenticateToken);
 
 // ===== INTEGRATIONS MANAGEMENT =====
 
+// GET /api/v1/integrations/metrics - Get integration metrics
+router.get('/metrics', checkRole(['head_administrator', 'integration_manager']), async (req, res) => {
+  try {
+    const metricsCollection = await getCollection('integration_metrics');
+    
+    if (!metricsCollection) {
+      return res.status(500).json({
+        success: false,
+        error: 'DATABASE_CONNECTION_FAILED',
+        message: 'Database connection failed',
+        timestamp: new Date().toISOString()
+      });
+    }
+    
+    const { startDate, endDate, integrationId } = req.query;
+    const filter = {};
+    
+    if (startDate || endDate) {
+      filter.date = {};
+      if (startDate) filter.date.$gte = new Date(startDate);
+      if (endDate) filter.date.$lte = new Date(endDate);
+    }
+    
+    if (integrationId) filter.integrationId = integrationId;
+    
+    const metrics = await metricsCollection
+      .find(filter)
+      .sort({ date: -1 })
+      .toArray();
+    
+    res.json({
+      success: true,
+      data: metrics,
+      message: 'Integration metrics retrieved successfully',
+      timestamp: new Date().toISOString()
+    });
+    
+  } catch (error) {
+    console.error('Get integration metrics error:', error);
+    res.status(500).json({
+      success: false,
+      error: 'GET_INTEGRATION_METRICS_FAILED',
+      message: 'Failed to get integration metrics',
+      timestamp: new Date().toISOString()
+    });
+  }
+});
+
 // GET /api/integrations - Get all integrations
 router.get('/', async (req, res) => {
   try {

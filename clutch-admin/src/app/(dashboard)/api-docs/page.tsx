@@ -135,9 +135,9 @@ export default function APIDocsPage() {
           console.warn('Failed to load API categories:', categoriesData.reason);
           // Provide fallback categories data
           setCategories([
-            { _id: "fallback-1", name: "Authentication", description: "User authentication endpoints" },
-            { _id: "fallback-2", name: "User Management", description: "User CRUD operations" },
-            { _id: "fallback-3", name: "Fleet Management", description: "Vehicle operations" }
+            { _id: "fallback-1", name: t('apiDocs.authentication'), description: t('apiDocs.authenticationDesc') },
+            { _id: "fallback-2", name: t('apiDocs.userManagement'), description: t('apiDocs.userManagementDesc') },
+            { _id: "fallback-3", name: t('apiDocs.fleetManagement'), description: t('apiDocs.fleetManagementDesc') }
           ]);
         }
 
