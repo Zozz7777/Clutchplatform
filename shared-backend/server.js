@@ -144,49 +144,8 @@ applyOptimizedMiddleware(app);
 // Add standardized response format middleware
 app.use(responseMiddleware);
 
-// Import and apply global authentication middleware
+// Import authentication middleware (will be applied after routes are mounted)
 const { authenticateToken } = require('./middleware/unified-auth');
-
-// Apply authentication middleware to all API routes except public endpoints
-app.use('/api', (req, res, next) => {
-  // Skip auth for public endpoints
-  const publicPaths = [
-    '/api/v1/auth/login', 
-    '/api/v1/auth/register', 
-    '/api/v1/employee-login', 
-    '/api/v1/create-employee', 
-    '/api/v1/health', 
-    '/api/v1/test', 
-    '/api/v1/ping', 
-    '/api/v1/webhook/github', 
-    '/api/v1/emergency-auth/login', 
-    '/api/v1/auth-fallback/login',
-    '/api/v1/auth/refresh',
-    '/api/v1/auth/verify'
-  ];
-  
-  // Check if the current path matches any public path
-  const isPublicPath = publicPaths.some(path => {
-    // Exact match or starts with the path
-    return req.path === path || req.path.startsWith(path);
-  });
-  
-  // Also check for common public patterns
-  const isPublicPattern = req.path.includes('/health') || 
-                         req.path.includes('/test') || 
-                         req.path.includes('/ping') ||
-                         req.path.includes('/webhook') ||
-                         req.path.includes('/public');
-  
-  if (isPublicPath || isPublicPattern) {
-    console.log(`🔓 Skipping auth for public endpoint: ${req.path}`);
-    return next();
-  }
-  
-  console.log(`🔒 Applying auth to protected endpoint: ${req.path}`);
-  // Apply authentication to all other API routes
-  return authenticateToken(req, res, next);
-});
 
 // CRITICAL: Health endpoints first
 app.get('/health/ping', (req, res) => {
@@ -346,6 +305,50 @@ app.use('/api/v1/communication', communicationRoutes);
 app.use('/api/v1/mobile-cms', mobileCmsRoutes);
 app.use('/api/v1/ops', opsRoutes);
 app.use('/api/v1/testing', testingRoutes);
+
+// Apply authentication middleware to all API routes except public endpoints
+// This must be done AFTER all routes are mounted
+app.use('/api', (req, res, next) => {
+  // Skip auth for public endpoints
+  // Note: req.path does NOT include the '/api' prefix when using app.use('/api', ...)
+  const publicPaths = [
+    '/v1/auth/login', 
+    '/v1/auth/register', 
+    '/v1/employee-login', 
+    '/v1/create-employee', 
+    '/v1/health', 
+    '/v1/test', 
+    '/v1/ping', 
+    '/v1/webhook/github', 
+    '/v1/emergency-auth/login', 
+    '/v1/auth-fallback/login',
+    '/v1/auth/refresh',
+    '/v1/auth/verify',
+    '/v1/auth/create-ceo'
+  ];
+  
+  // Check if the current path matches any public path
+  const isPublicPath = publicPaths.some(path => {
+    // Exact match or starts with the path
+    return req.path === path || req.path.startsWith(path);
+  });
+  
+  // Also check for common public patterns
+  const isPublicPattern = req.path.includes('/health') || 
+                         req.path.includes('/test') || 
+                         req.path.includes('/ping') ||
+                         req.path.includes('/webhook') ||
+                         req.path.includes('/public');
+  
+  if (isPublicPath || isPublicPattern) {
+    console.log(`🔓 Skipping auth for public endpoint: ${req.path}`);
+    return next();
+  }
+  
+  console.log(`🔒 Applying auth to protected endpoint: ${req.path}`);
+  // Apply authentication to all other API routes
+  return authenticateToken(req, res, next);
+});
 
 // Test endpoints
 app.get('/test', (req, res) => {
