@@ -6313,10 +6313,10 @@ router.get('/business/customers', authenticateToken, checkRole(['head_administra
           { city: 'Other', count: 500, percentage: 40.0 }
         ],
         income: [
-          { range: '$30k-$50k', count: 300, percentage: 24.0 },
-          { range: '$50k-$75k', count: 400, percentage: 32.0 },
-          { range: '$75k-$100k', count: 350, percentage: 28.0 },
-          { range: '$100k+', count: 200, percentage: 16.0 }
+          { range: '30k-50k EGP', count: 300, percentage: 24.0 },
+          { range: '50k-75k EGP', count: 400, percentage: 32.0 },
+          { range: '75k-100k EGP', count: 350, percentage: 28.0 },
+          { range: '100k+ EGP', count: 200, percentage: 16.0 }
         ]
       },
       behavior: {

@@ -2381,6 +2381,11 @@
   "featureFlags": {
     "currentUser": "Current User"
   },
+  "userSegments": {
+    "title": "User Segments",
+    "totalSegments": "Total Segments",
+    "activeSegments": "Active Segments"
+  },
   "employeeInvitation": {
     "title": "Invite New Employee",
     "description": "Send an invitation to a new employee to join the Clutch platform",
@@ -2449,5 +2454,30 @@
       "reports": "Reports",
       "reportsDesc": "Generate reports"
     }
+  },
+  "userSegments": {
+    "title": "User Segments",
+    "description": "Create and manage user segments for targeted campaigns",
+    "totalSegments": "Total Segments",
+    "activeSegments": "Active Segments",
+    "totalUsers": "Total Users",
+    "averageSegmentSize": "Average Segment Size",
+    "createSegment": "Create Segment",
+    "segmentName": "Segment Name",
+    "description": "Description",
+    "criteria": "Criteria",
+    "userCount": "User Count",
+    "lastUpdated": "Last Updated",
+    "status": "Status",
+    "active": "Active",
+    "draft": "Draft",
+    "archived": "Archived",
+    "actions": "Actions",
+    "edit": "Edit",
+    "delete": "Delete",
+    "view": "View",
+    "searchSegments": "Search segments...",
+    "noSegmentsFound": "No segments found matching your criteria",
+    "loadingSegments": "Loading user segments..."
   }
 }

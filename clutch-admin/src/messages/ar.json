@@ -2436,6 +2436,11 @@
   "featureFlags": {
     "currentUser": "المستخدم الحالي"
   },
+  "userSegments": {
+    "title": "شرائح المستخدمين",
+    "totalSegments": "إجمالي الشرائح",
+    "activeSegments": "الشرائح النشطة"
+  },
   "employeeInvitation": {
     "title": "دعوة موظف جديد",
     "description": "إرسال دعوة لموظف جديد للانضمام إلى منصة Clutch",

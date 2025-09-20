@@ -421,6 +421,28 @@ export default function HRPage() {
     }
   };
 
+  const handleDeleteInvitation = async (invitationId: string) => {
+    // Show confirmation dialog
+    if (window.confirm(t('hr.deleteInvitationConfirm'))) {
+      try {
+        const response = await apiService.cancelInvitation(invitationId);
+        if (response.success) {
+          toast.success(t('hr.invitationDeleted'));
+          // Reload invitations
+          const invitationsResponse = await apiService.getEmployeeInvitations();
+          if (invitationsResponse.success) {
+            setInvitations((invitationsResponse.data?.invitations || []) as Record<string, unknown>[]);
+          }
+        } else {
+          toast.error("Failed to delete invitation");
+        }
+      } catch (error) {
+        // Error handled by API service
+        toast.error("Failed to delete invitation");
+      }
+    }
+  };
+
   const handleInvitationSuccess = async () => {
     setShowInvitationForm(false);
     // Reload invitations
@@ -965,6 +987,14 @@ export default function HRPage() {
                         </Button>
                       </>
                     )}
+                    <Button
+                      size="sm"
+                      variant="destructive"
+                      onClick={() => handleDeleteInvitation(String(invitation._id))}
+                    >
+                      <Trash2 className="mr-2 h-4 w-4" />
+                      {t('hr.deleteInvitation')}
+                    </Button>
                   </div>
                 </div>
               ))}
