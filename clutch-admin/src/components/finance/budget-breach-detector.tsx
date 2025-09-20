@@ -22,7 +22,6 @@ import {
   Bell,
   BellOff,
   CheckCircle,
-  XCircle,
   Info,
   ArrowUp,
   ArrowDown,
@@ -59,7 +58,6 @@ import {
   FileCheck,
   AlertCircle,
   CheckCircle2,
-  XCircle,
   Info as InfoIcon,
   RotateCcw as RollbackIcon,
   Power,
@@ -203,7 +201,6 @@ import {
   GitBranch as BranchIcon3
 } from 'lucide-react';
 import { formatCurrency, formatNumber } from '@/lib/utils';
-import { productionApi } from '@/lib/production-api';
 import { useTranslations } from 'next-intl';
 
 interface BudgetBreach {
