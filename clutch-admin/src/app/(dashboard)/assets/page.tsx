@@ -347,7 +347,7 @@ export default function AssetManagementPage() {
         assetId: createAssignmentData.assetId,
         assignedTo: {
           id: createAssignmentData.assignedTo,
-          name: "Selected Employee",
+          name: t('assets.selectedEmployee'),
           email: "employee@example.com",
           department: "Department"
         },

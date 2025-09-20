@@ -1,6 +1,8 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { productionApi } from '@/lib/production-api';
+import { toast } from 'sonner';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -38,6 +40,53 @@ export default function UserSegmentsPage() {
     averageSegmentSize: 0
   });
   const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    const loadSegmentsData = async () => {
+      try {
+        setIsLoading(true);
+        
+        // Load real user segments data from API
+        const segmentsData = await productionApi.getUserSegments();
+        setSegments(segmentsData || []);
+        
+        // Load analytics data
+        const analyticsData = await productionApi.getUserSegmentAnalytics();
+        setAnalytics(analyticsData || {
+          totalSegments: 0,
+          activeSegments: 0,
+          totalUsers: 0,
+          averageSegmentSize: 0
+        });
+        
+      } catch (error) {
+        toast.error('Failed to load user segments data');
+        // Set empty data on error - no mock data fallback
+        setSegments([]);
+        setAnalytics({
+          totalSegments: 0,
+          activeSegments: 0,
+          totalUsers: 0,
+          averageSegmentSize: 0
+        });
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    loadSegmentsData();
+  }, []);
+
+  if (isLoading) {
+    return (
+      <div className="flex items-center justify-center h-64">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto mb-4"></div>
+          <p className="text-muted-foreground font-sans">Loading user segments...</p>
+        </div>
+      </div>
+    );
+  }
 
   const getStatusBadge = (status: string) => {
     switch (status) {

@@ -2433,6 +2433,9 @@
     "fromLastMonth": "من الشهر الماضي",
     "activeVehicles": "المركبات النشطة"
   },
+  "featureFlags": {
+    "currentUser": "المستخدم الحالي"
+  },
   "employeeInvitation": {
     "title": "دعوة موظف جديد",
     "description": "إرسال دعوة لموظف جديد للانضمام إلى منصة Clutch",
