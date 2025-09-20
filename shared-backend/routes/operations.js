@@ -164,4 +164,328 @@ router.get('/user-activities', authenticateToken, async (req, res) => {
   }
 });
 
+// GET /api/v1/operations/mission-critical-tasks - Get mission critical tasks
+router.get('/mission-critical-tasks', authenticateToken, checkRole(['head_administrator', 'operations_manager']), async (req, res) => {
+  try {
+    const { db } = await connectToDatabase();
+    
+    // Get mission critical tasks from database
+    const tasksCollection = await db.collection('mission_critical_tasks');
+    const tasks = await tasksCollection.find({}).sort({ priority: -1, deadline: 1 }).toArray();
+
+    // If no tasks exist, return empty array (no mock data)
+    res.json({
+      success: true,
+      data: tasks || [],
+      message: 'Mission critical tasks retrieved successfully',
+      timestamp: new Date().toISOString()
+    });
+  } catch (error) {
+    console.error('Error fetching mission critical tasks:', error);
+    res.status(500).json({
+      success: false,
+      error: 'Failed to fetch mission critical tasks',
+      message: error.message,
+      timestamp: new Date().toISOString()
+    });
+  }
+});
+
+// GET /api/v1/operations/portfolio-risks - Get portfolio risks
+router.get('/portfolio-risks', authenticateToken, checkRole(['head_administrator', 'operations_manager', 'risk_manager']), async (req, res) => {
+  try {
+    const { db } = await connectToDatabase();
+    
+    // Get portfolio risks from database
+    const risksCollection = await db.collection('portfolio_risks');
+    const risks = await risksCollection.find({}).sort({ impact: -1, probability: -1 }).toArray();
+
+    // If no risks exist, return empty array (no mock data)
+    res.json({
+      success: true,
+      data: risks || [],
+      message: 'Portfolio risks retrieved successfully',
+      timestamp: new Date().toISOString()
+    });
+  } catch (error) {
+    console.error('Error fetching portfolio risks:', error);
+    res.status(500).json({
+      success: false,
+      error: 'Failed to fetch portfolio risks',
+      message: error.message,
+      timestamp: new Date().toISOString()
+    });
+  }
+});
+
+// GET /api/v1/operations/sla-metrics - Get SLA metrics
+router.get('/sla-metrics', authenticateToken, checkRole(['head_administrator', 'operations_manager']), async (req, res) => {
+  try {
+    const { db } = await connectToDatabase();
+    
+    // Get SLA metrics from database
+    const slaCollection = await db.collection('sla_metrics');
+    const slaMetrics = await slaCollection.find({}).sort({ timestamp: -1 }).limit(100).toArray();
+
+    // If no metrics exist, return empty array (no mock data)
+    res.json({
+      success: true,
+      data: slaMetrics || [],
+      message: 'SLA metrics retrieved successfully',
+      timestamp: new Date().toISOString()
+    });
+  } catch (error) {
+    console.error('Error fetching SLA metrics:', error);
+    res.status(500).json({
+      success: false,
+      error: 'Failed to fetch SLA metrics',
+      message: error.message,
+      timestamp: new Date().toISOString()
+    });
+  }
+});
+
+// GET /api/v1/operations/service-health - Get service health
+router.get('/service-health', authenticateToken, checkRole(['head_administrator', 'operations_manager']), async (req, res) => {
+  try {
+    const { db } = await connectToDatabase();
+    
+    // Get service health data from database
+    const healthCollection = await db.collection('service_health');
+    const serviceHealth = await healthCollection.find({}).sort({ timestamp: -1 }).limit(100).toArray();
+
+    // If no health data exists, return empty array (no mock data)
+    res.json({
+      success: true,
+      data: serviceHealth || [],
+      message: 'Service health retrieved successfully',
+      timestamp: new Date().toISOString()
+    });
+  } catch (error) {
+    console.error('Error fetching service health:', error);
+    res.status(500).json({
+      success: false,
+      error: 'Failed to fetch service health',
+      message: error.message,
+      timestamp: new Date().toISOString()
+    });
+  }
+});
+
+// GET /api/v1/operations/mission-critical-tasks - Get mission critical tasks
+router.get('/mission-critical-tasks', authenticateToken, checkRole(['head_administrator', 'operations_manager']), async (req, res) => {
+  try {
+    const { db } = await connectToDatabase();
+    
+    // Get mission critical tasks from database
+    const tasksCollection = await db.collection('mission_critical_tasks');
+    const tasks = await tasksCollection.find({}).sort({ priority: -1, deadline: 1 }).toArray();
+
+    // If no tasks exist, return empty array (no mock data)
+    res.json({
+      success: true,
+      data: tasks || [],
+      message: 'Mission critical tasks retrieved successfully',
+      timestamp: new Date().toISOString()
+    });
+  } catch (error) {
+    console.error('Error fetching mission critical tasks:', error);
+    res.status(500).json({
+      success: false,
+      error: 'Failed to fetch mission critical tasks',
+      message: error.message,
+      timestamp: new Date().toISOString()
+    });
+  }
+});
+
+// GET /api/v1/operations/portfolio-risks - Get portfolio risks
+router.get('/portfolio-risks', authenticateToken, checkRole(['head_administrator', 'operations_manager', 'risk_manager']), async (req, res) => {
+  try {
+    const { db } = await connectToDatabase();
+    
+    // Get portfolio risks from database
+    const risksCollection = await db.collection('portfolio_risks');
+    const risks = await risksCollection.find({}).sort({ impact: -1, probability: -1 }).toArray();
+
+    // If no risks exist, return empty array (no mock data)
+    res.json({
+      success: true,
+      data: risks || [],
+      message: 'Portfolio risks retrieved successfully',
+      timestamp: new Date().toISOString()
+    });
+  } catch (error) {
+    console.error('Error fetching portfolio risks:', error);
+    res.status(500).json({
+      success: false,
+      error: 'Failed to fetch portfolio risks',
+      message: error.message,
+      timestamp: new Date().toISOString()
+    });
+  }
+});
+
+// GET /api/v1/operations/sla-metrics - Get SLA metrics
+router.get('/sla-metrics', authenticateToken, checkRole(['head_administrator', 'operations_manager']), async (req, res) => {
+  try {
+    const { db } = await connectToDatabase();
+    
+    // Get SLA metrics from database
+    const slaCollection = await db.collection('sla_metrics');
+    const slaMetrics = await slaCollection.find({}).sort({ timestamp: -1 }).limit(100).toArray();
+
+    // If no metrics exist, return empty array (no mock data)
+    res.json({
+      success: true,
+      data: slaMetrics || [],
+      message: 'SLA metrics retrieved successfully',
+      timestamp: new Date().toISOString()
+    });
+  } catch (error) {
+    console.error('Error fetching SLA metrics:', error);
+    res.status(500).json({
+      success: false,
+      error: 'Failed to fetch SLA metrics',
+      message: error.message,
+      timestamp: new Date().toISOString()
+    });
+  }
+});
+
+// GET /api/v1/operations/service-health - Get service health
+router.get('/service-health', authenticateToken, checkRole(['head_administrator', 'operations_manager']), async (req, res) => {
+  try {
+    const { db } = await connectToDatabase();
+    
+    // Get service health data from database
+    const healthCollection = await db.collection('service_health');
+    const serviceHealth = await healthCollection.find({}).sort({ timestamp: -1 }).limit(100).toArray();
+
+    // If no health data exists, return empty array (no mock data)
+    res.json({
+      success: true,
+      data: serviceHealth || [],
+      message: 'Service health retrieved successfully',
+      timestamp: new Date().toISOString()
+    });
+  } catch (error) {
+    console.error('Error fetching service health:', error);
+    res.status(500).json({
+      success: false,
+      error: 'Failed to fetch service health',
+      message: error.message,
+      timestamp: new Date().toISOString()
+    });
+  }
+});
+
+// GET /api/v1/operations/mission-critical-tasks - Get mission critical tasks
+router.get('/mission-critical-tasks', authenticateToken, checkRole(['head_administrator', 'operations_manager']), async (req, res) => {
+  try {
+    const { db } = await connectToDatabase();
+    
+    // Get mission critical tasks from database
+    const tasksCollection = await db.collection('mission_critical_tasks');
+    const tasks = await tasksCollection.find({}).sort({ priority: -1, deadline: 1 }).toArray();
+
+    // If no tasks exist, return empty array (no mock data)
+    res.json({
+      success: true,
+      data: tasks || [],
+      message: 'Mission critical tasks retrieved successfully',
+      timestamp: new Date().toISOString()
+    });
+  } catch (error) {
+    console.error('Error fetching mission critical tasks:', error);
+    res.status(500).json({
+      success: false,
+      error: 'Failed to fetch mission critical tasks',
+      message: error.message,
+      timestamp: new Date().toISOString()
+    });
+  }
+});
+
+// GET /api/v1/operations/portfolio-risks - Get portfolio risks
+router.get('/portfolio-risks', authenticateToken, checkRole(['head_administrator', 'operations_manager', 'risk_manager']), async (req, res) => {
+  try {
+    const { db } = await connectToDatabase();
+    
+    // Get portfolio risks from database
+    const risksCollection = await db.collection('portfolio_risks');
+    const risks = await risksCollection.find({}).sort({ impact: -1, probability: -1 }).toArray();
+
+    // If no risks exist, return empty array (no mock data)
+    res.json({
+      success: true,
+      data: risks || [],
+      message: 'Portfolio risks retrieved successfully',
+      timestamp: new Date().toISOString()
+    });
+  } catch (error) {
+    console.error('Error fetching portfolio risks:', error);
+    res.status(500).json({
+      success: false,
+      error: 'Failed to fetch portfolio risks',
+      message: error.message,
+      timestamp: new Date().toISOString()
+    });
+  }
+});
+
+// GET /api/v1/operations/sla-metrics - Get SLA metrics
+router.get('/sla-metrics', authenticateToken, checkRole(['head_administrator', 'operations_manager']), async (req, res) => {
+  try {
+    const { db } = await connectToDatabase();
+    
+    // Get SLA metrics from database
+    const slaCollection = await db.collection('sla_metrics');
+    const slaMetrics = await slaCollection.find({}).sort({ timestamp: -1 }).limit(100).toArray();
+
+    // If no metrics exist, return empty array (no mock data)
+    res.json({
+      success: true,
+      data: slaMetrics || [],
+      message: 'SLA metrics retrieved successfully',
+      timestamp: new Date().toISOString()
+    });
+  } catch (error) {
+    console.error('Error fetching SLA metrics:', error);
+    res.status(500).json({
+      success: false,
+      error: 'Failed to fetch SLA metrics',
+      message: error.message,
+      timestamp: new Date().toISOString()
+    });
+  }
+});
+
+// GET /api/v1/operations/service-health - Get service health
+router.get('/service-health', authenticateToken, checkRole(['head_administrator', 'operations_manager']), async (req, res) => {
+  try {
+    const { db } = await connectToDatabase();
+    
+    // Get service health data from database
+    const healthCollection = await db.collection('service_health');
+    const serviceHealth = await healthCollection.find({}).sort({ timestamp: -1 }).limit(100).toArray();
+
+    // If no health data exists, return empty array (no mock data)
+    res.json({
+      success: true,
+      data: serviceHealth || [],
+      message: 'Service health retrieved successfully',
+      timestamp: new Date().toISOString()
+    });
+  } catch (error) {
+    console.error('Error fetching service health:', error);
+    res.status(500).json({
+      success: false,
+      error: 'Failed to fetch service health',
+      message: error.message,
+      timestamp: new Date().toISOString()
+    });
+  }
+});
+
 module.exports = router;

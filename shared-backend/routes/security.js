@@ -83,4 +83,85 @@ router.get('/zero-trust-metrics', authenticateToken, checkRole(['head_administra
   }
 });
 
+// GET /api/v1/security/alerts - Get security alerts
+router.get('/alerts', authenticateToken, checkRole(['head_administrator', 'security_manager']), async (req, res) => {
+  try {
+    const { db } = await connectToDatabase();
+    
+    // Get security alerts from database
+    const alertsCollection = await db.collection('security_alerts');
+    const alerts = await alertsCollection.find({}).sort({ timestamp: -1 }).limit(100).toArray();
+
+    // If no alerts exist, return empty array (no mock data)
+    res.json({
+      success: true,
+      data: alerts || [],
+      message: 'Security alerts retrieved successfully',
+      timestamp: new Date().toISOString()
+    });
+  } catch (error) {
+    console.error('Error fetching security alerts:', error);
+    res.status(500).json({
+      success: false,
+      error: 'Failed to fetch security alerts',
+      message: error.message,
+      timestamp: new Date().toISOString()
+    });
+  }
+});
+
+// GET /api/v1/security/alerts - Get security alerts
+router.get('/alerts', authenticateToken, checkRole(['head_administrator', 'security_manager']), async (req, res) => {
+  try {
+    const { db } = await connectToDatabase();
+    
+    // Get security alerts from database
+    const alertsCollection = await db.collection('security_alerts');
+    const alerts = await alertsCollection.find({}).sort({ timestamp: -1 }).limit(100).toArray();
+
+    // If no alerts exist, return empty array (no mock data)
+    res.json({
+      success: true,
+      data: alerts || [],
+      message: 'Security alerts retrieved successfully',
+      timestamp: new Date().toISOString()
+    });
+  } catch (error) {
+    console.error('Error fetching security alerts:', error);
+    res.status(500).json({
+      success: false,
+      error: 'Failed to fetch security alerts',
+      message: error.message,
+      timestamp: new Date().toISOString()
+    });
+  }
+});
+
+// GET /api/v1/security/alerts - Get security alerts
+router.get('/alerts', authenticateToken, checkRole(['head_administrator', 'security_manager']), async (req, res) => {
+  try {
+    const { db } = await connectToDatabase();
+    
+    // Get security alerts from database
+    const alertsCollection = await db.collection('security_alerts');
+    const alerts = await alertsCollection.find({}).sort({ timestamp: -1 }).limit(100).toArray();
+
+    // If no alerts exist, return empty array (no mock data)
+    res.json({
+      success: true,
+      data: alerts || [],
+      message: 'Security alerts retrieved successfully',
+      timestamp: new Date().toISOString()
+    });
+  } catch (error) {
+    console.error('Error fetching security alerts:', error);
+    res.status(500).json({
+      success: false,
+      error: 'Failed to fetch security alerts',
+      message: error.message,
+      timestamp: new Date().toISOString()
+    });
+  }
+});
+
 module.exports = router;

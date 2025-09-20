@@ -106,4 +106,496 @@ router.get('/tickets', authenticateToken, checkRole(['head_administrator', 'supp
   }
 });
 
+// GET /api/v1/communication/chat - Get chat messages
+router.get('/chat', authenticateToken, checkRole(['head_administrator', 'communication_manager', 'support_manager']), async (req, res) => {
+  try {
+    const { chatId } = req.query;
+    const messagesCollection = await getCollection('chat_messages');
+    
+    if (!messagesCollection) {
+      return res.status(500).json({ 
+        success: false, 
+        error: 'DATABASE_CONNECTION_FAILED', 
+        message: 'Database connection failed' 
+      });
+    }
+
+    let query = {};
+    if (chatId) {
+      query.chatId = chatId;
+    }
+
+    const messages = await messagesCollection.find(query).sort({ timestamp: -1 }).limit(50).toArray();
+
+    res.json({ 
+      success: true, 
+      data: messages, 
+      message: 'Chat messages retrieved successfully' 
+    });
+  } catch (error) {
+    console.error('Get chat messages error:', error);
+    res.status(500).json({ 
+      success: false, 
+      error: 'GET_CHAT_MESSAGES_FAILED', 
+      message: 'Failed to get chat messages' 
+    });
+  }
+});
+
+// POST /api/v1/communication/chat - Send chat message
+router.post('/chat', authenticateToken, checkRole(['head_administrator', 'communication_manager', 'support_manager', 'user']), async (req, res) => {
+  try {
+    const { chatId, message, senderId, senderName } = req.body;
+    
+    if (!message || !senderId) {
+      return res.status(400).json({ 
+        success: false, 
+        error: 'MISSING_REQUIRED_FIELDS', 
+        message: 'Message and senderId are required' 
+      });
+    }
+
+    const messagesCollection = await getCollection('chat_messages');
+    
+    if (!messagesCollection) {
+      return res.status(500).json({ 
+        success: false, 
+        error: 'DATABASE_CONNECTION_FAILED', 
+        message: 'Database connection failed' 
+      });
+    }
+
+    const newMessage = {
+      chatId: chatId || 'default',
+      message,
+      senderId,
+      senderName: senderName || 'Unknown User',
+      timestamp: new Date().toISOString(),
+      read: false
+    };
+
+    const result = await messagesCollection.insertOne(newMessage);
+
+    res.json({ 
+      success: true, 
+      data: { ...newMessage, _id: result.insertedId }, 
+      message: 'Message sent successfully' 
+    });
+  } catch (error) {
+    console.error('Send chat message error:', error);
+    res.status(500).json({ 
+      success: false, 
+      error: 'SEND_MESSAGE_FAILED', 
+      message: 'Failed to send message' 
+    });
+  }
+});
+
+// GET /api/v1/communication/email - Get email history
+router.get('/email', authenticateToken, checkRole(['head_administrator', 'communication_manager', 'support_manager']), async (req, res) => {
+  try {
+    const emailsCollection = await getCollection('email_history');
+    
+    if (!emailsCollection) {
+      return res.status(500).json({ 
+        success: false, 
+        error: 'DATABASE_CONNECTION_FAILED', 
+        message: 'Database connection failed' 
+      });
+    }
+
+    const emails = await emailsCollection.find({}).sort({ timestamp: -1 }).limit(100).toArray();
+
+    res.json({ 
+      success: true, 
+      data: emails, 
+      message: 'Email history retrieved successfully' 
+    });
+  } catch (error) {
+    console.error('Get email history error:', error);
+    res.status(500).json({ 
+      success: false, 
+      error: 'GET_EMAIL_HISTORY_FAILED', 
+      message: 'Failed to get email history' 
+    });
+  }
+});
+
+// POST /api/v1/communication/email - Send email
+router.post('/email', authenticateToken, checkRole(['head_administrator', 'communication_manager', 'support_manager']), async (req, res) => {
+  try {
+    const { to, subject, body, type = 'outbound' } = req.body;
+    
+    if (!to || !subject || !body) {
+      return res.status(400).json({ 
+        success: false, 
+        error: 'MISSING_REQUIRED_FIELDS', 
+        message: 'To, subject, and body are required' 
+      });
+    }
+
+    const emailsCollection = await getCollection('email_history');
+    
+    if (!emailsCollection) {
+      return res.status(500).json({ 
+        success: false, 
+        error: 'DATABASE_CONNECTION_FAILED', 
+        message: 'Database connection failed' 
+      });
+    }
+
+    const newEmail = {
+      to,
+      subject,
+      body,
+      type,
+      status: 'sent',
+      timestamp: new Date().toISOString()
+    };
+
+    const result = await emailsCollection.insertOne(newEmail);
+
+    res.json({ 
+      success: true, 
+      data: { ...newEmail, _id: result.insertedId }, 
+      message: 'Email sent successfully' 
+    });
+  } catch (error) {
+    console.error('Send email error:', error);
+    res.status(500).json({ 
+      success: false, 
+      error: 'SEND_EMAIL_FAILED', 
+      message: 'Failed to send email' 
+    });
+  }
+});
+
+// GET /api/v1/communication/chat - Get chat messages
+router.get('/chat', authenticateToken, checkRole(['head_administrator', 'communication_manager', 'support_manager']), async (req, res) => {
+  try {
+    const { chatId } = req.query;
+    const messagesCollection = await getCollection('chat_messages');
+    
+    if (!messagesCollection) {
+      return res.status(500).json({ 
+        success: false, 
+        error: 'DATABASE_CONNECTION_FAILED', 
+        message: 'Database connection failed' 
+      });
+    }
+
+    let query = {};
+    if (chatId) {
+      query.chatId = chatId;
+    }
+
+    const messages = await messagesCollection.find(query).sort({ timestamp: -1 }).limit(50).toArray();
+
+    res.json({ 
+      success: true, 
+      data: messages, 
+      message: 'Chat messages retrieved successfully' 
+    });
+  } catch (error) {
+    console.error('Get chat messages error:', error);
+    res.status(500).json({ 
+      success: false, 
+      error: 'GET_CHAT_MESSAGES_FAILED', 
+      message: 'Failed to get chat messages' 
+    });
+  }
+});
+
+// POST /api/v1/communication/chat - Send chat message
+router.post('/chat', authenticateToken, checkRole(['head_administrator', 'communication_manager', 'support_manager', 'user']), async (req, res) => {
+  try {
+    const { chatId, message, senderId, senderName } = req.body;
+    
+    if (!message || !senderId) {
+      return res.status(400).json({ 
+        success: false, 
+        error: 'MISSING_REQUIRED_FIELDS', 
+        message: 'Message and senderId are required' 
+      });
+    }
+
+    const messagesCollection = await getCollection('chat_messages');
+    
+    if (!messagesCollection) {
+      return res.status(500).json({ 
+        success: false, 
+        error: 'DATABASE_CONNECTION_FAILED', 
+        message: 'Database connection failed' 
+      });
+    }
+
+    const newMessage = {
+      chatId: chatId || 'default',
+      message,
+      senderId,
+      senderName: senderName || 'Unknown User',
+      timestamp: new Date().toISOString(),
+      read: false
+    };
+
+    const result = await messagesCollection.insertOne(newMessage);
+
+    res.json({ 
+      success: true, 
+      data: { ...newMessage, _id: result.insertedId }, 
+      message: 'Message sent successfully' 
+    });
+  } catch (error) {
+    console.error('Send chat message error:', error);
+    res.status(500).json({ 
+      success: false, 
+      error: 'SEND_MESSAGE_FAILED', 
+      message: 'Failed to send message' 
+    });
+  }
+});
+
+// GET /api/v1/communication/email - Get email history
+router.get('/email', authenticateToken, checkRole(['head_administrator', 'communication_manager', 'support_manager']), async (req, res) => {
+  try {
+    const emailsCollection = await getCollection('email_history');
+    
+    if (!emailsCollection) {
+      return res.status(500).json({ 
+        success: false, 
+        error: 'DATABASE_CONNECTION_FAILED', 
+        message: 'Database connection failed' 
+      });
+    }
+
+    const emails = await emailsCollection.find({}).sort({ timestamp: -1 }).limit(100).toArray();
+
+    res.json({ 
+      success: true, 
+      data: emails, 
+      message: 'Email history retrieved successfully' 
+    });
+  } catch (error) {
+    console.error('Get email history error:', error);
+    res.status(500).json({ 
+      success: false, 
+      error: 'GET_EMAIL_HISTORY_FAILED', 
+      message: 'Failed to get email history' 
+    });
+  }
+});
+
+// POST /api/v1/communication/email - Send email
+router.post('/email', authenticateToken, checkRole(['head_administrator', 'communication_manager', 'support_manager']), async (req, res) => {
+  try {
+    const { to, subject, body, type = 'outbound' } = req.body;
+    
+    if (!to || !subject || !body) {
+      return res.status(400).json({ 
+        success: false, 
+        error: 'MISSING_REQUIRED_FIELDS', 
+        message: 'To, subject, and body are required' 
+      });
+    }
+
+    const emailsCollection = await getCollection('email_history');
+    
+    if (!emailsCollection) {
+      return res.status(500).json({ 
+        success: false, 
+        error: 'DATABASE_CONNECTION_FAILED', 
+        message: 'Database connection failed' 
+      });
+    }
+
+    const newEmail = {
+      to,
+      subject,
+      body,
+      type,
+      status: 'sent',
+      timestamp: new Date().toISOString()
+    };
+
+    const result = await emailsCollection.insertOne(newEmail);
+
+    res.json({ 
+      success: true, 
+      data: { ...newEmail, _id: result.insertedId }, 
+      message: 'Email sent successfully' 
+    });
+  } catch (error) {
+    console.error('Send email error:', error);
+    res.status(500).json({ 
+      success: false, 
+      error: 'SEND_EMAIL_FAILED', 
+      message: 'Failed to send email' 
+    });
+  }
+});
+
+// GET /api/v1/communication/chat - Get chat messages
+router.get('/chat', authenticateToken, checkRole(['head_administrator', 'communication_manager', 'support_manager']), async (req, res) => {
+  try {
+    const { chatId } = req.query;
+    const messagesCollection = await getCollection('chat_messages');
+    
+    if (!messagesCollection) {
+      return res.status(500).json({ 
+        success: false, 
+        error: 'DATABASE_CONNECTION_FAILED', 
+        message: 'Database connection failed' 
+      });
+    }
+
+    let query = {};
+    if (chatId) {
+      query.chatId = chatId;
+    }
+
+    const messages = await messagesCollection.find(query).sort({ timestamp: -1 }).limit(50).toArray();
+
+    res.json({ 
+      success: true, 
+      data: messages, 
+      message: 'Chat messages retrieved successfully' 
+    });
+  } catch (error) {
+    console.error('Get chat messages error:', error);
+    res.status(500).json({ 
+      success: false, 
+      error: 'GET_CHAT_MESSAGES_FAILED', 
+      message: 'Failed to get chat messages' 
+    });
+  }
+});
+
+// POST /api/v1/communication/chat - Send chat message
+router.post('/chat', authenticateToken, checkRole(['head_administrator', 'communication_manager', 'support_manager', 'user']), async (req, res) => {
+  try {
+    const { chatId, message, senderId, senderName } = req.body;
+    
+    if (!message || !senderId) {
+      return res.status(400).json({ 
+        success: false, 
+        error: 'MISSING_REQUIRED_FIELDS', 
+        message: 'Message and senderId are required' 
+      });
+    }
+
+    const messagesCollection = await getCollection('chat_messages');
+    
+    if (!messagesCollection) {
+      return res.status(500).json({ 
+        success: false, 
+        error: 'DATABASE_CONNECTION_FAILED', 
+        message: 'Database connection failed' 
+      });
+    }
+
+    const newMessage = {
+      chatId: chatId || 'default',
+      message,
+      senderId,
+      senderName: senderName || 'Unknown User',
+      timestamp: new Date().toISOString(),
+      read: false
+    };
+
+    const result = await messagesCollection.insertOne(newMessage);
+
+    res.json({ 
+      success: true, 
+      data: { ...newMessage, _id: result.insertedId }, 
+      message: 'Message sent successfully' 
+    });
+  } catch (error) {
+    console.error('Send chat message error:', error);
+    res.status(500).json({ 
+      success: false, 
+      error: 'SEND_MESSAGE_FAILED', 
+      message: 'Failed to send message' 
+    });
+  }
+});
+
+// GET /api/v1/communication/email - Get email history
+router.get('/email', authenticateToken, checkRole(['head_administrator', 'communication_manager', 'support_manager']), async (req, res) => {
+  try {
+    const emailsCollection = await getCollection('email_history');
+    
+    if (!emailsCollection) {
+      return res.status(500).json({ 
+        success: false, 
+        error: 'DATABASE_CONNECTION_FAILED', 
+        message: 'Database connection failed' 
+      });
+    }
+
+    const emails = await emailsCollection.find({}).sort({ timestamp: -1 }).limit(100).toArray();
+
+    res.json({ 
+      success: true, 
+      data: emails, 
+      message: 'Email history retrieved successfully' 
+    });
+  } catch (error) {
+    console.error('Get email history error:', error);
+    res.status(500).json({ 
+      success: false, 
+      error: 'GET_EMAIL_HISTORY_FAILED', 
+      message: 'Failed to get email history' 
+    });
+  }
+});
+
+// POST /api/v1/communication/email - Send email
+router.post('/email', authenticateToken, checkRole(['head_administrator', 'communication_manager', 'support_manager']), async (req, res) => {
+  try {
+    const { to, subject, body, type = 'outbound' } = req.body;
+    
+    if (!to || !subject || !body) {
+      return res.status(400).json({ 
+        success: false, 
+        error: 'MISSING_REQUIRED_FIELDS', 
+        message: 'To, subject, and body are required' 
+      });
+    }
+
+    const emailsCollection = await getCollection('email_history');
+    
+    if (!emailsCollection) {
+      return res.status(500).json({ 
+        success: false, 
+        error: 'DATABASE_CONNECTION_FAILED', 
+        message: 'Database connection failed' 
+      });
+    }
+
+    const newEmail = {
+      to,
+      subject,
+      body,
+      type,
+      status: 'sent',
+      timestamp: new Date().toISOString()
+    };
+
+    const result = await emailsCollection.insertOne(newEmail);
+
+    res.json({ 
+      success: true, 
+      data: { ...newEmail, _id: result.insertedId }, 
+      message: 'Email sent successfully' 
+    });
+  } catch (error) {
+    console.error('Send email error:', error);
+    res.status(500).json({ 
+      success: false, 
+      error: 'SEND_EMAIL_FAILED', 
+      message: 'Failed to send email' 
+    });
+  }
+});
+
 module.exports = router;

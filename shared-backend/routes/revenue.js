@@ -448,4 +448,418 @@ router.get('/pricing/market-analysis', revenueLimiter, authenticateToken, async 
   }
 });
 
+// GET /api/v1/revenue/pricing-plans - Get pricing plans
+router.get('/pricing-plans', revenueLimiter, authenticateToken, async (req, res) => {
+  try {
+    const pricingPlans = [
+      {
+        id: 'basic',
+        name: 'Basic Plan',
+        price: 29.99,
+        currency: 'USD',
+        interval: 'monthly',
+        features: [
+          'Up to 10 vehicles',
+          'Basic tracking',
+          'Email support',
+          'Standard reports'
+        ],
+        popular: false,
+        timestamp: new Date().toISOString()
+      },
+      {
+        id: 'standard',
+        name: 'Standard Plan',
+        price: 49.99,
+        currency: 'USD',
+        interval: 'monthly',
+        features: [
+          'Up to 50 vehicles',
+          'Advanced tracking',
+          'Priority support',
+          'Advanced reports',
+          'API access'
+        ],
+        popular: true,
+        timestamp: new Date().toISOString()
+      },
+      {
+        id: 'premium',
+        name: 'Premium Plan',
+        price: 99.99,
+        currency: 'USD',
+        interval: 'monthly',
+        features: [
+          'Unlimited vehicles',
+          'Real-time tracking',
+          '24/7 support',
+          'Custom reports',
+          'Full API access',
+          'White-label options'
+        ],
+        popular: false,
+        timestamp: new Date().toISOString()
+      },
+      {
+        id: 'enterprise',
+        name: 'Enterprise Plan',
+        price: 199.99,
+        currency: 'USD',
+        interval: 'monthly',
+        features: [
+          'Unlimited everything',
+          'Custom integrations',
+          'Dedicated support',
+          'Custom development',
+          'SLA guarantees',
+          'On-premise options'
+        ],
+        popular: false,
+        timestamp: new Date().toISOString()
+      }
+    ];
+    
+    res.json({
+      success: true,
+      data: pricingPlans
+    });
+  } catch (error) {
+    console.error('Error getting pricing plans:', error);
+    res.status(500).json({
+      success: false,
+      error: 'Failed to get pricing plans',
+      message: error.message
+    });
+  }
+});
+
+// GET /api/v1/revenue/pricing-analytics - Get pricing analytics
+router.get('/pricing-analytics', revenueLimiter, authenticateToken, async (req, res) => {
+  try {
+    const pricingAnalytics = {
+      planDistribution: {
+        basic: 25,
+        standard: 45,
+        premium: 20,
+        enterprise: 10
+      },
+      revenueByPlan: {
+        basic: 7500,
+        standard: 22500,
+        premium: 20000,
+        enterprise: 20000
+      },
+      conversionRates: {
+        trialToBasic: 15,
+        basicToStandard: 30,
+        standardToPremium: 20,
+        premiumToEnterprise: 10
+      },
+      churnRates: {
+        basic: 5,
+        standard: 3,
+        premium: 2,
+        enterprise: 1
+      },
+      averageRevenuePerUser: 65.50,
+      lifetimeValue: 785.00,
+      recommendations: [
+        'Focus on standard plan conversion',
+        'Improve premium plan features',
+        'Reduce basic plan churn',
+        'Increase enterprise plan adoption'
+      ],
+      timestamp: new Date().toISOString()
+    };
+    
+    res.json({
+      success: true,
+      data: pricingAnalytics
+    });
+  } catch (error) {
+    console.error('Error getting pricing analytics:', error);
+    res.status(500).json({
+      success: false,
+      error: 'Failed to get pricing analytics',
+      message: error.message
+    });
+  }
+});
+
+// GET /api/v1/revenue/pricing-plans - Get pricing plans
+router.get('/pricing-plans', revenueLimiter, authenticateToken, async (req, res) => {
+  try {
+    const pricingPlans = [
+      {
+        id: 'basic',
+        name: 'Basic Plan',
+        price: 29.99,
+        currency: 'USD',
+        interval: 'monthly',
+        features: [
+          'Up to 10 vehicles',
+          'Basic tracking',
+          'Email support',
+          'Standard reports'
+        ],
+        popular: false,
+        timestamp: new Date().toISOString()
+      },
+      {
+        id: 'standard',
+        name: 'Standard Plan',
+        price: 49.99,
+        currency: 'USD',
+        interval: 'monthly',
+        features: [
+          'Up to 50 vehicles',
+          'Advanced tracking',
+          'Priority support',
+          'Advanced reports',
+          'API access'
+        ],
+        popular: true,
+        timestamp: new Date().toISOString()
+      },
+      {
+        id: 'premium',
+        name: 'Premium Plan',
+        price: 99.99,
+        currency: 'USD',
+        interval: 'monthly',
+        features: [
+          'Unlimited vehicles',
+          'Real-time tracking',
+          '24/7 support',
+          'Custom reports',
+          'Full API access',
+          'White-label options'
+        ],
+        popular: false,
+        timestamp: new Date().toISOString()
+      },
+      {
+        id: 'enterprise',
+        name: 'Enterprise Plan',
+        price: 199.99,
+        currency: 'USD',
+        interval: 'monthly',
+        features: [
+          'Unlimited everything',
+          'Custom integrations',
+          'Dedicated support',
+          'Custom development',
+          'SLA guarantees',
+          'On-premise options'
+        ],
+        popular: false,
+        timestamp: new Date().toISOString()
+      }
+    ];
+    
+    res.json({
+      success: true,
+      data: pricingPlans
+    });
+  } catch (error) {
+    console.error('Error getting pricing plans:', error);
+    res.status(500).json({
+      success: false,
+      error: 'Failed to get pricing plans',
+      message: error.message
+    });
+  }
+});
+
+// GET /api/v1/revenue/pricing-analytics - Get pricing analytics
+router.get('/pricing-analytics', revenueLimiter, authenticateToken, async (req, res) => {
+  try {
+    const pricingAnalytics = {
+      planDistribution: {
+        basic: 25,
+        standard: 45,
+        premium: 20,
+        enterprise: 10
+      },
+      revenueByPlan: {
+        basic: 7500,
+        standard: 22500,
+        premium: 20000,
+        enterprise: 20000
+      },
+      conversionRates: {
+        trialToBasic: 15,
+        basicToStandard: 30,
+        standardToPremium: 20,
+        premiumToEnterprise: 10
+      },
+      churnRates: {
+        basic: 5,
+        standard: 3,
+        premium: 2,
+        enterprise: 1
+      },
+      averageRevenuePerUser: 65.50,
+      lifetimeValue: 785.00,
+      recommendations: [
+        'Focus on standard plan conversion',
+        'Improve premium plan features',
+        'Reduce basic plan churn',
+        'Increase enterprise plan adoption'
+      ],
+      timestamp: new Date().toISOString()
+    };
+    
+    res.json({
+      success: true,
+      data: pricingAnalytics
+    });
+  } catch (error) {
+    console.error('Error getting pricing analytics:', error);
+    res.status(500).json({
+      success: false,
+      error: 'Failed to get pricing analytics',
+      message: error.message
+    });
+  }
+});
+
+// GET /api/v1/revenue/pricing-plans - Get pricing plans
+router.get('/pricing-plans', revenueLimiter, authenticateToken, async (req, res) => {
+  try {
+    const pricingPlans = [
+      {
+        id: 'basic',
+        name: 'Basic Plan',
+        price: 29.99,
+        currency: 'USD',
+        interval: 'monthly',
+        features: [
+          'Up to 10 vehicles',
+          'Basic tracking',
+          'Email support',
+          'Standard reports'
+        ],
+        popular: false,
+        timestamp: new Date().toISOString()
+      },
+      {
+        id: 'standard',
+        name: 'Standard Plan',
+        price: 49.99,
+        currency: 'USD',
+        interval: 'monthly',
+        features: [
+          'Up to 50 vehicles',
+          'Advanced tracking',
+          'Priority support',
+          'Advanced reports',
+          'API access'
+        ],
+        popular: true,
+        timestamp: new Date().toISOString()
+      },
+      {
+        id: 'premium',
+        name: 'Premium Plan',
+        price: 99.99,
+        currency: 'USD',
+        interval: 'monthly',
+        features: [
+          'Unlimited vehicles',
+          'Real-time tracking',
+          '24/7 support',
+          'Custom reports',
+          'Full API access',
+          'White-label options'
+        ],
+        popular: false,
+        timestamp: new Date().toISOString()
+      },
+      {
+        id: 'enterprise',
+        name: 'Enterprise Plan',
+        price: 199.99,
+        currency: 'USD',
+        interval: 'monthly',
+        features: [
+          'Unlimited everything',
+          'Custom integrations',
+          'Dedicated support',
+          'Custom development',
+          'SLA guarantees',
+          'On-premise options'
+        ],
+        popular: false,
+        timestamp: new Date().toISOString()
+      }
+    ];
+    
+    res.json({
+      success: true,
+      data: pricingPlans
+    });
+  } catch (error) {
+    console.error('Error getting pricing plans:', error);
+    res.status(500).json({
+      success: false,
+      error: 'Failed to get pricing plans',
+      message: error.message
+    });
+  }
+});
+
+// GET /api/v1/revenue/pricing-analytics - Get pricing analytics
+router.get('/pricing-analytics', revenueLimiter, authenticateToken, async (req, res) => {
+  try {
+    const pricingAnalytics = {
+      planDistribution: {
+        basic: 25,
+        standard: 45,
+        premium: 20,
+        enterprise: 10
+      },
+      revenueByPlan: {
+        basic: 7500,
+        standard: 22500,
+        premium: 20000,
+        enterprise: 20000
+      },
+      conversionRates: {
+        trialToBasic: 15,
+        basicToStandard: 30,
+        standardToPremium: 20,
+        premiumToEnterprise: 10
+      },
+      churnRates: {
+        basic: 5,
+        standard: 3,
+        premium: 2,
+        enterprise: 1
+      },
+      averageRevenuePerUser: 65.50,
+      lifetimeValue: 785.00,
+      recommendations: [
+        'Focus on standard plan conversion',
+        'Improve premium plan features',
+        'Reduce basic plan churn',
+        'Increase enterprise plan adoption'
+      ],
+      timestamp: new Date().toISOString()
+    };
+    
+    res.json({
+      success: true,
+      data: pricingAnalytics
+    });
+  } catch (error) {
+    console.error('Error getting pricing analytics:', error);
+    res.status(500).json({
+      success: false,
+      error: 'Failed to get pricing analytics',
+      message: error.message
+    });
+  }
+});
+
 module.exports = router;

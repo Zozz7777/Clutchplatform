@@ -88,6 +88,7 @@ const systemRoutes = require('./routes/system');
 const systemPerformanceRoutes = require('./routes/system-performance');
 const sessionsRoutes = require('./routes/sessions');
 const revenueRoutes = require('./routes/revenue');
+const testingRoutes = require('./routes/testing');
 const complianceRoutes = require('./routes/compliance');
 const customersRoutes = require('./routes/customers');
 const adminCeoRoutes = require('./routes/admin-ceo');
@@ -298,6 +299,7 @@ app.use('/api/v1/health-checks', healthRoutes);
 app.use('/api/v1/communication', communicationRoutes);
 app.use('/api/v1/mobile-cms', mobileCmsRoutes);
 app.use('/api/v1/ops', opsRoutes);
+app.use('/api/v1/testing', testingRoutes);
 
 // Test endpoints
 app.get('/test', (req, res) => {
