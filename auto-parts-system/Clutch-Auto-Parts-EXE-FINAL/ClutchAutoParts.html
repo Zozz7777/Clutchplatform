@@ -5,6 +5,60 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Clutch Auto Parts System</title>
     <style>
+        :root {
+            /* Light theme colors from design.json */
+            --background: oklch(1 0 0);
+            --foreground: oklch(0.1450 0 0);
+            --card: oklch(1 0 0);
+            --card-foreground: oklch(0.1450 0 0);
+            --primary: oklch(0.5770 0.2450 27.3250);
+            --primary-foreground: oklch(0.9850 0 0);
+            --secondary: oklch(0.5770 0.2450 27.3250);
+            --muted: oklch(0.9700 0 0);
+            --muted-foreground: oklch(0.5560 0 0);
+            --destructive: oklch(0.5770 0.2450 27.3250);
+            --border: oklch(0.9220 0 0);
+            --input: oklch(0.9220 0 0);
+            --ring: oklch(0.7080 0 0);
+            --sidebar: oklch(0.9850 0 0);
+            --sidebar-primary: oklch(0.2050 0 0);
+            --success: oklch(0.72 0.2 145);
+            --warning: oklch(0.85 0.18 75);
+            --info: oklch(0.75 0.1 220);
+            
+            /* Typography from design.json */
+            --font-sans: Roboto, ui-sans-serif, sans-serif, system-ui;
+            --font-serif: Roboto Serif, ui-serif, serif;
+            --font-mono: Roboto Mono, ui-monospace, monospace;
+            
+            /* Spacing and borders */
+            --radius: 0.625rem;
+            --spacing-base: 0.25rem;
+            
+            /* Shadows from design.json */
+            --shadow-2xs: 0 1px 3px 0px hsl(0 0% 0% / 0.05);
+            --shadow-sm: 0 1px 3px 0px hsl(0 0% 0% / 0.10), 0 1px 2px -1px hsl(0 0% 0% / 0.10);
+            --shadow-md: 0 1px 3px 0px hsl(0 0% 0% / 0.10), 0 2px 4px -1px hsl(0 0% 0% / 0.10);
+        }
+
+        [data-theme="dark"] {
+            /* Dark theme colors from design.json */
+            --background: oklch(0.1450 0 0);
+            --foreground: oklch(0.9850 0 0);
+            --card: oklch(0.2050 0 0);
+            --card-foreground: oklch(0.9710 0.0130 17.3800);
+            --primary: oklch(0.5050 0.2130 27.5180);
+            --primary-foreground: oklch(0.2050 0 0);
+            --secondary: oklch(0.2690 0 0);
+            --muted: oklch(0.2690 0 0);
+            --destructive: oklch(0.7040 0.1910 22.2160);
+            --border: oklch(0.2750 0 0);
+            --input: oklch(0.3250 0 0);
+            --ring: oklch(0.5560 0 0);
+            --sidebar: oklch(0.2050 0 0);
+            --sidebar-primary: oklch(0.5770 0.2450 27.3250);
+        }
+
         * {
             margin: 0;
             padding: 0;
@@ -12,10 +66,11 @@
         }
 
         body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: #333;
+            font-family: var(--font-sans);
+            background: var(--background);
+            color: var(--foreground);
             min-height: 100vh;
+            line-height: 1.5;
         }
 
         .container {
@@ -26,19 +81,19 @@
 
         .header {
             text-align: center;
-            color: white;
             margin-bottom: 3rem;
         }
 
         .header h1 {
-            font-size: 3rem;
-            font-weight: 300;
+            font-size: 1.875rem; /* 3xl from design.json */
+            font-weight: 600; /* semibold from design.json */
             margin-bottom: 1rem;
+            color: var(--foreground);
         }
 
         .header p {
-            font-size: 1.2rem;
-            opacity: 0.9;
+            font-size: 1.125rem; /* lg from design.json */
+            color: var(--muted-foreground);
         }
 
         .modules {
@@ -49,29 +104,30 @@
         }
 
         .module-card {
-            background: white;
-            border-radius: 15px;
-            padding: 2rem;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
-            transition: transform 0.3s, box-shadow 0.3s;
+            background: var(--card);
+            border-radius: var(--radius);
+            padding: 1rem; /* comfortable padding from design.json */
+            box-shadow: var(--shadow-sm);
+            border: 1px solid var(--border);
+            transition: all 300ms cubic-bezier(0.4, 0, 0.2, 1); /* normal duration, in-out easing */
             cursor: pointer;
         }
 
         .module-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 20px 40px rgba(0,0,0,0.15);
+            box-shadow: var(--shadow-md);
+            border-color: var(--primary);
         }
 
         .module-card h3 {
-            color: #2c3e50;
+            color: var(--card-foreground);
             margin-bottom: 1rem;
-            font-size: 1.5rem;
-            font-weight: 500;
+            font-size: 1.25rem; /* xl from design.json */
+            font-weight: 500; /* medium from design.json */
         }
 
         .module-card p {
-            color: #666;
-            line-height: 1.6;
+            color: var(--muted-foreground);
+            line-height: 1.5; /* normal from design.json */
             margin-bottom: 1.5rem;
         }
 

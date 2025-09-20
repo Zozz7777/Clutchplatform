@@ -270,6 +270,28 @@ export class RealApiService {
     )();
   }
 
+  async getPricingPlans(): Promise<Record<string, unknown>[]> {
+    return withErrorHandling(
+      async () => {
+        const response = await apiService.request<Record<string, unknown>[]>("/api/v1/revenue/pricing-plans");
+        return handleApiResponse(response, 'getPricingPlans', []);
+      },
+      'getPricingPlans',
+      { fallbackValue: [], showToast: false }
+    )();
+  }
+
+  async getPricingAnalytics(): Promise<Record<string, unknown>> {
+    return withErrorHandling(
+      async () => {
+        const response = await apiService.request<Record<string, unknown>>("/api/v1/revenue/pricing-analytics");
+        return handleApiResponse(response, 'getPricingAnalytics', {});
+      },
+      'getPricingAnalytics',
+      { fallbackValue: {}, showToast: false }
+    )();
+  }
+
   async getVehicleDetails(vehicleId: string): Promise<Record<string, unknown>> {
     return withErrorHandling(
       async () => {

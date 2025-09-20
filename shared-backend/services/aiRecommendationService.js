@@ -143,7 +143,7 @@ class AIRecommendationService {
             {
                 service: 'Oil Change',
                 priority: 'high',
-                estimatedCost: '$30-$80',
+                estimatedCost: '30-80 EGP',
                 description: 'Regular oil change to maintain engine health',
                 urgency: 'soon'
             },
@@ -227,7 +227,7 @@ class AIRecommendationService {
                 service: 'Oil Change',
                 predictedMileage: 'Every 5,000-7,500 miles',
                 confidence: 'high',
-                estimatedCost: '$30-$80',
+                estimatedCost: '30-80 EGP',
                 urgency: 'soon'
             },
             {

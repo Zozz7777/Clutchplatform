@@ -258,7 +258,7 @@ export default function AnalyticsPage() {
               </Button>
               <Button onClick={() => exportData('analytics')}>
                 <Download className="mr-2 h-4 w-4" />
-                Export Data
+{t('analytics.exportData')}
               </Button>
             </>
           )}

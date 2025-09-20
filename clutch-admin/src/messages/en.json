@@ -2380,7 +2380,16 @@
   "analytics": {
     "totalUsers": "Total Users",
     "fromLastMonth": "from last month",
-    "activeVehicles": "Active Vehicles"
+    "activeVehicles": "Active Vehicles",
+    "loadingData": "Loading analytics data...",
+    "dashboard": "Analytics Dashboard",
+    "description": "Business intelligence and performance analytics",
+    "last7Days": "Last 7 days",
+    "last30Days": "Last 30 days",
+    "last90Days": "Last 90 days",
+    "lastYear": "Last year",
+    "generateReport": "Generate Report",
+    "exportData": "Export Data"
   },
   "featureFlags": {
     "currentUser": "Current User"

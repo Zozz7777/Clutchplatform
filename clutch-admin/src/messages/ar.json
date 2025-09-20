@@ -2435,7 +2435,16 @@
   "analytics": {
     "totalUsers": "إجمالي المستخدمين",
     "fromLastMonth": "من الشهر الماضي",
-    "activeVehicles": "المركبات النشطة"
+    "activeVehicles": "المركبات النشطة",
+    "loadingData": "جاري تحميل بيانات التحليلات...",
+    "dashboard": "لوحة تحليلات البيانات",
+    "description": "ذكاء الأعمال وتحليلات الأداء",
+    "last7Days": "آخر 7 أيام",
+    "last30Days": "آخر 30 يوم",
+    "last90Days": "آخر 90 يوم",
+    "lastYear": "العام الماضي",
+    "generateReport": "إنشاء تقرير",
+    "exportData": "تصدير البيانات"
   },
   "featureFlags": {
     "currentUser": "المستخدم الحالي"

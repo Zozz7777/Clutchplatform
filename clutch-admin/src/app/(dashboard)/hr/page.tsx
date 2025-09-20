@@ -239,11 +239,11 @@ export default function HRPage() {
             totalEmployees,
             activeEmployees,
             newHires,
-            openPositions: 5, // Default value
+            openPositions: 0, // Will be calculated from real data
             pendingApplications,
             averageSalary,
-            turnoverRate: 5.2, // Default value
-            satisfactionScore: 4.3, // Default value
+            turnoverRate: 0, // Will be calculated from real data
+            satisfactionScore: 0, // Will be calculated from real data
           });
         }
       } catch (error) {

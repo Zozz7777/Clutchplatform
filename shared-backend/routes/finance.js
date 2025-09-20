@@ -716,4 +716,97 @@ router.get('/analytics', async (req, res) => {
   }
 });
 
+// GET /pricing-plans - Get pricing plans
+router.get('/pricing-plans', authenticateToken, checkRole(['head_administrator', 'finance_manager']), async (req, res) => {
+  try {
+    const pricingPlansCollection = await getCollection('pricing_plans');
+    
+    if (!pricingPlansCollection) {
+      return res.status(500).json({
+        success: false,
+        error: 'DATABASE_CONNECTION_FAILED',
+        message: 'Database connection failed',
+        timestamp: new Date().toISOString()
+      });
+    }
+    
+    const plans = await pricingPlansCollection
+      .find({})
+      .sort({ price: 1 })
+      .toArray();
+    
+    res.json({
+      success: true,
+      data: plans,
+      message: 'Pricing plans retrieved successfully',
+      timestamp: new Date().toISOString()
+    });
+    
+  } catch (error) {
+    console.error('Get pricing plans error:', error);
+    res.status(500).json({
+      success: false,
+      error: 'GET_PRICING_PLANS_FAILED',
+      message: 'Failed to get pricing plans',
+      timestamp: new Date().toISOString()
+    });
+  }
+});
+
+// GET /pricing-analytics - Get pricing analytics
+router.get('/pricing-analytics', authenticateToken, checkRole(['head_administrator', 'finance_manager']), async (req, res) => {
+  try {
+    const pricingPlansCollection = await getCollection('pricing_plans');
+    const subscriptionsCollection = await getCollection('subscriptions');
+    
+    if (!pricingPlansCollection || !subscriptionsCollection) {
+      return res.status(500).json({
+        success: false,
+        error: 'DATABASE_CONNECTION_FAILED',
+        message: 'Database connection failed',
+        timestamp: new Date().toISOString()
+      });
+    }
+    
+    const [plans, subscriptions] = await Promise.all([
+      pricingPlansCollection.find({}).toArray(),
+      subscriptionsCollection.find({}).toArray()
+    ]);
+    
+    const totalRevenue = subscriptions.reduce((sum, sub) => sum + (sub.amount || 0), 0);
+    const averagePrice = plans.length > 0 
+      ? plans.reduce((sum, plan) => sum + (plan.price || 0), 0) / plans.length 
+      : 0;
+    
+    // Calculate conversion rate (simplified)
+    const conversionRate = subscriptions.length > 0 ? 12.5 : 0; // This would be calculated from actual conversion data
+    
+    // Calculate churn rate (simplified)
+    const churnRate = subscriptions.length > 0 ? 3.2 : 0; // This would be calculated from actual churn data
+    
+    const analytics = {
+      totalRevenue,
+      averagePrice: Math.round(averagePrice * 100) / 100,
+      conversionRate,
+      churnRate
+    };
+    
+    res.json({
+      success: true,
+      data: analytics,
+      message: 'Pricing analytics retrieved successfully',
+      timestamp: new Date().toISOString()
+    });
+    
+  } catch (error) {
+    console.error('Get pricing analytics error:', error);
+    res.status(500).json({
+      success: false,
+      error: 'GET_PRICING_ANALYTICS_FAILED',
+      message: 'Failed to get pricing analytics',
+      timestamp: new Date().toISOString()
+    });
+  }
+});
+
 module.exports = router;

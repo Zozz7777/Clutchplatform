@@ -81,12 +81,17 @@ export default function FleetPage() {
   const [searchQuery, setSearchQuery] = useState("");
   const [statusFilter, setStatusFilter] = useState<string>("all");
   const [isLoading, setIsLoading] = useState(true);
-  const { hasPermission } = useAuth();
+  const { user, hasPermission } = useAuth();
   const { t } = useTranslations();
   const { createFleet, optimizeRoutes } = useQuickActions(hasPermission);
 
   useEffect(() => {
     const loadFleetData = async () => {
+      if (!user) {
+        setIsLoading(false);
+        return;
+      }
+      
       try {
         setIsLoading(true);
         const vehicleData = await productionApi.getFleetVehicles();
@@ -120,7 +125,7 @@ export default function FleetPage() {
     return () => {
       unsubscribe();
     };
-  }, []);
+  }, [user]);
 
   useEffect(() => {
     // Ensure vehicles is always an array
