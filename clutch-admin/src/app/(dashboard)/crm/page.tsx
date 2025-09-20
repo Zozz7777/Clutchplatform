@@ -171,16 +171,16 @@ export default function CRMPage() {
     }
   };
 
-  const getTicketStatusColor = (status: string) => {
+  const getTicketStatusVariant = (status: string) => {
     switch (status) {
       case "open":
-        return "bg-destructive/10 text-destructive-foreground";
+        return "destructive";
       case "in_progress":
-        return "bg-secondary/10 text-secondary-foreground";
+        return "secondary";
       case "closed":
-        return "bg-primary/10 text-primary-foreground";
+        return "default";
       default:
-        return "bg-muted text-muted-foreground";
+        return "outline";
     }
   };
 
@@ -448,7 +448,7 @@ export default function CRMPage() {
                         <span className="text-sm text-muted-foreground">{ticket.customer}</span>
                       </TableCell>
                       <TableCell>
-                        <Badge className={getTicketStatusColor(ticket.status)}>
+                        <Badge variant={getTicketStatusVariant(ticket.status)}>
                           {ticket.status}
                         </Badge>
                       </TableCell>

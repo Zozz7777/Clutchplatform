@@ -392,29 +392,80 @@
     </style>
 </head>
 <body>
-    <div class="container">
-        <div class="header">
-            <h1>🚗 Clutch Auto Parts System</h1>
-            <p>Complete Auto Parts Management Solution</p>
-        </div>
+    <div id="loginSection" class="login-form">
+        <h2>🚗 Clutch Auto Parts System</h2>
+        <p style="text-align: center; color: var(--muted-foreground); margin-bottom: 1.5rem;">Complete Auto Parts Management Solution</p>
+        <div id="alert" class="alert hidden"></div>
+        <form id="loginForm">
+            <div class="form-group">
+                <label for="username">Username:</label>
+                <input type="text" id="username" value="admin" required>
+            </div>
+            <div class="form-group">
+                <label for="password">Password:</label>
+                <input type="password" id="password" value="admin123" required>
+            </div>
+            <button type="submit" class="btn btn-success">Login</button>
+        </form>
+    </div>
 
-        <div id="loginSection" class="login-form">
-            <h2>Login</h2>
-            <div id="alert" class="alert hidden"></div>
-            <form id="loginForm">
-                <div class="form-group">
-                    <label for="username">Username:</label>
-                    <input type="text" id="username" value="admin" required>
-                </div>
-                <div class="form-group">
-                    <label for="password">Password:</label>
-                    <input type="password" id="password" value="admin123" required>
-                </div>
-                <button type="submit" class="btn btn-success">Login</button>
-            </form>
-        </div>
+    <div id="mainSection" class="app-layout hidden">
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <h1>🚗 Clutch</h1>
+                <p>Auto Parts System</p>
+            </div>
+            <nav>
+                <ul class="nav-menu">
+                    <li class="nav-item">
+                        <a href="#" class="nav-link active" data-module="dashboard">
+                            📊 Dashboard
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="#" class="nav-link" data-module="pos">
+                            🛒 Point of Sale
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="#" class="nav-link" data-module="inventory">
+                            📦 Inventory
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="#" class="nav-link" data-module="customers">
+                            👥 Customers
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="#" class="nav-link" data-module="suppliers">
+                            🏭 Suppliers
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="#" class="nav-link" data-module="reports">
+                            📈 Reports
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="#" class="nav-link" data-module="ai">
+                            🤖 AI Insights
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="#" class="nav-link" data-module="settings">
+                            ⚙️ Settings
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+        </aside>
 
-        <div id="mainSection" class="hidden">
+        <main class="main-content">
+            <div class="top-bar">
+                <h1 class="page-title">Dashboard</h1>
+                <button class="theme-toggle" onclick="toggleTheme()">🌙 Dark Mode</button>
+            </div>
             <div class="stats">
                 <h2>System Overview</h2>
                 <div class="stats-grid">
