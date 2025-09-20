@@ -25,15 +25,35 @@ router.get('/employees', authenticateToken, checkRole(['head_administrator', 'pl
     
     // Build query
     const query = {};
-    if (department) query.department = department;
-    if (status) query.status = status;
+    const orConditions = [];
+    
+    if (department) {
+      orConditions.push(
+        { 'employment.department': department },
+        { department: department } // Fallback for old structure
+      );
+    }
+    if (status) {
+      orConditions.push(
+        { status: status },
+        { isActive: status === 'active' } // Map active status to isActive field
+      );
+    }
     if (search) {
-      query.$or = [
+      orConditions.push(
+        { 'basicInfo.firstName': { $regex: search, $options: 'i' } },
+        { 'basicInfo.lastName': { $regex: search, $options: 'i' } },
+        { 'basicInfo.email': { $regex: search, $options: 'i' } },
+        { employeeId: { $regex: search, $options: 'i' } },
+        // Fallback for old structure
         { firstName: { $regex: search, $options: 'i' } },
         { lastName: { $regex: search, $options: 'i' } },
-        { email: { $regex: search, $options: 'i' } },
-        { employeeId: { $regex: search, $options: 'i' } }
-      ];
+        { email: { $regex: search, $options: 'i' } }
+      );
+    }
+    
+    if (orConditions.length > 0) {
+      query.$or = orConditions;
     }
     
     const employees = await employeesCollection
@@ -45,10 +65,49 @@ router.get('/employees', authenticateToken, checkRole(['head_administrator', 'pl
     
     const total = await employeesCollection.countDocuments(query);
     
+    // Transform employee data to match frontend interface
+    const transformedEmployees = employees.map(employee => ({
+      _id: employee._id,
+      employeeId: employee.employeeId || `EMP-${employee._id}`,
+      firstName: employee.basicInfo?.firstName || employee.firstName || 'Unknown',
+      lastName: employee.basicInfo?.lastName || employee.lastName || '',
+      email: employee.basicInfo?.email || employee.email || '',
+      phone: employee.basicInfo?.phone || employee.phone || '',
+      position: employee.employment?.position || employee.position || 'No Position',
+      department: employee.employment?.department || employee.department || 'No Department',
+      manager: employee.employment?.manager || employee.manager || '',
+      status: employee.isActive ? 'active' : (employee.status || 'inactive'),
+      employmentType: employee.employment?.employmentType || employee.employmentType || 'full_time',
+      startDate: employee.employment?.startDate || employee.startDate || employee.createdAt,
+      hireDate: employee.employment?.startDate || employee.hireDate || employee.createdAt,
+      endDate: employee.employment?.endDate || employee.endDate,
+      salary: employee.employment?.salary || employee.salary || 0,
+      currency: employee.employment?.currency || employee.currency || 'EGP',
+      address: employee.basicInfo?.address || employee.address || {
+        street: '',
+        city: '',
+        state: '',
+        zipCode: '',
+        country: ''
+      },
+      emergencyContact: employee.basicInfo?.emergencyContact || employee.emergencyContact || {
+        name: '',
+        relationship: '',
+        phone: ''
+      },
+      skills: employee.skills || [],
+      certifications: employee.certifications || [],
+      performanceRating: employee.performanceRating || 0,
+      lastReviewDate: employee.lastReviewDate || '',
+      nextReviewDate: employee.nextReviewDate || '',
+      createdAt: employee.createdAt,
+      updatedAt: employee.updatedAt
+    }));
+    
     res.json({
       success: true,
       data: {
-        employees,
+        employees: transformedEmployees,
         pagination: {
           page: parseInt(page),
           limit: parseInt(limit),
