@@ -248,6 +248,28 @@ export class RealApiService {
     )();
   }
 
+  async getUserSegments(): Promise<Record<string, unknown>[]> {
+    return withErrorHandling(
+      async () => {
+        const response = await apiService.request<Record<string, unknown>[]>("/api/v1/users/segments");
+        return handleApiResponse(response, 'getUserSegments', []);
+      },
+      'getUserSegments',
+      { fallbackValue: [], showToast: false }
+    )();
+  }
+
+  async getUserSegmentAnalytics(): Promise<Record<string, unknown>> {
+    return withErrorHandling(
+      async () => {
+        const response = await apiService.request<Record<string, unknown>>("/api/v1/users/segments/analytics");
+        return handleApiResponse(response, 'getUserSegmentAnalytics', {});
+      },
+      'getUserSegmentAnalytics',
+      { fallbackValue: {}, showToast: false }
+    )();
+  }
+
   async getVehicleDetails(vehicleId: string): Promise<Record<string, unknown>> {
     return withErrorHandling(
       async () => {

@@ -6,6 +6,94 @@ const { authenticateToken, checkRole, checkPermission } = require('../middleware
 const logger = require('../utils/logger');
 const { getCollection } = require('../config/optimized-database');
 
+// GET /segments - Get user segments
+router.get('/segments', authenticateToken, checkRole(['head_administrator', 'analytics_manager']), async (req, res) => {
+  try {
+    const segmentsCollection = await getCollection('user_segments');
+    
+    if (!segmentsCollection) {
+      return res.status(500).json({
+        success: false,
+        error: 'DATABASE_CONNECTION_FAILED',
+        message: 'Database connection failed',
+        timestamp: new Date().toISOString()
+      });
+    }
+    
+    const segments = await segmentsCollection
+      .find({})
+      .sort({ lastUpdated: -1 })
+      .toArray();
+    
+    res.json({
+      success: true,
+      data: segments,
+      message: 'User segments retrieved successfully',
+      timestamp: new Date().toISOString()
+    });
+    
+  } catch (error) {
+    console.error('Get user segments error:', error);
+    res.status(500).json({
+      success: false,
+      error: 'GET_USER_SEGMENTS_FAILED',
+      message: 'Failed to get user segments',
+      timestamp: new Date().toISOString()
+    });
+  }
+});
+
+// GET /segments/analytics - Get user segment analytics
+router.get('/segments/analytics', authenticateToken, checkRole(['head_administrator', 'analytics_manager']), async (req, res) => {
+  try {
+    const segmentsCollection = await getCollection('user_segments');
+    const usersCollection = await getCollection('users');
+    
+    if (!segmentsCollection || !usersCollection) {
+      return res.status(500).json({
+        success: false,
+        error: 'DATABASE_CONNECTION_FAILED',
+        message: 'Database connection failed',
+        timestamp: new Date().toISOString()
+      });
+    }
+    
+    const [segments, totalUsers] = await Promise.all([
+      segmentsCollection.find({}).toArray(),
+      usersCollection.countDocuments({})
+    ]);
+    
+    const totalSegments = segments.length;
+    const activeSegments = segments.filter(s => s.status === 'active').length;
+    const averageSegmentSize = totalSegments > 0 
+      ? segments.reduce((sum, s) => sum + (s.userCount || 0), 0) / totalSegments 
+      : 0;
+    
+    const analytics = {
+      totalSegments,
+      activeSegments,
+      totalUsers,
+      averageSegmentSize: Math.round(averageSegmentSize)
+    };
+    
+    res.json({
+      success: true,
+      data: analytics,
+      message: 'User segment analytics retrieved successfully',
+      timestamp: new Date().toISOString()
+    });
+    
+  } catch (error) {
+    console.error('Get user segment analytics error:', error);
+    res.status(500).json({
+      success: false,
+      error: 'GET_USER_SEGMENT_ANALYTICS_FAILED',
+      message: 'Failed to get user segment analytics',
+      timestamp: new Date().toISOString()
+    });
+  }
+});
+
 // GET /users - Get all users
 router.get('/', authenticateToken, checkRole(['head_administrator']), async (req, res) => {
   try {

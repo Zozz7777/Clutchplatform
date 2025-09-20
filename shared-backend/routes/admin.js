@@ -5520,7 +5520,7 @@ router.get('/support/tickets', authenticateToken, checkRole(['head_administrator
         id: 'ticket-002',
         ticketNumber: 'SUP-2024-002',
         subject: 'Billing inquiry - incorrect charge',
-        description: 'Customer received a charge for $150 but only requested a $89 oil change service.',
+        description: 'Customer received a charge for 150 EGP but only requested a 89 EGP oil change service.',
         status: 'in_progress',
         priority: 'medium',
         category: 'billing',
