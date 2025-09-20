@@ -314,7 +314,7 @@ export default function AssetManagementPage() {
         description: createMaintenanceData.description,
         performedBy: {
           id: "current-user",
-          name: "Current User"
+          name: t('assets.currentUser')
         },
         cost: parseFloat(createMaintenanceData.cost) || 0,
         date: createMaintenanceData.date,
@@ -353,7 +353,7 @@ export default function AssetManagementPage() {
         },
         assignedBy: {
           id: "current-user",
-          name: "Current User"
+          name: t('assets.currentUser')
         },
         assignedDate: createAssignmentData.assignedDate,
         status: "active",

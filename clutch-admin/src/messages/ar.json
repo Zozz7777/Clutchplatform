@@ -2424,6 +2424,10 @@
     "supportTickets": "تذاكر الدعم",
     "allUsers": "جميع المستخدمين"
   },
+  "assets": {
+    "currentUser": "المستخدم الحالي",
+    "selectedEmployee": "الموظف المحدد"
+  },
   "employeeInvitation": {
     "title": "دعوة موظف جديد",
     "description": "إرسال دعوة لموظف جديد للانضمام إلى منصة Clutch",

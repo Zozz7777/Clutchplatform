@@ -242,16 +242,6 @@ export default function ZeroTrustAuditCard() {
           criticalAnomalies: transformedAnomalies.filter(a => a.severity === 'critical').length,
           lastUpdated: new Date().toISOString()
         };
-              passedChecks: 14200,
-              failedChecks: 1220,
-              blockedAccess: 850,
-              allowedAccess: 13570
-            },
-            lastUpdated: new Date(Date.now() - 2 * 60 * 60 * 1000).toISOString(),
-            nextAudit: new Date(Date.now() + 5 * 24 * 60 * 60 * 1000).toISOString()
-          },
-          {
-            id: 'policy-002',
             name: 'Network Segmentation',
             description: 'Enforce network segmentation and micro-segmentation',
             type: 'network_segmentation',

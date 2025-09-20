@@ -332,7 +332,7 @@ export default function FleetOverviewPage() {
                   </div>
                   <div className="text-center p-4 border rounded-[0.625rem]">
                     <DollarSign className="h-8 w-8 text-primary mx-auto mb-2" />
-                    <p className="text-2xl font-bold text-foreground">$2,340</p>
+                    <p className="text-2xl font-bold text-foreground">2,340 EGP</p>
                     <p className="text-sm text-muted-foreground">Monthly Cost</p>
                   </div>
                 </div>
