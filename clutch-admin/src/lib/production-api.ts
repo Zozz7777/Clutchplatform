@@ -851,6 +851,16 @@ export class ProductionApiService {
     }
   }
 
+  async getIntegrationTemplates(): Promise<Record<string, unknown>[]> {
+    try {
+      const response = await realApi.getIntegrationTemplates();
+      return response.data || [];
+    } catch (error) {
+      logger.error("Failed to fetch integration templates:", error);
+      throw new Error("Failed to load integration templates");
+    }
+  }
+
   // Feature Flags APIs
   async createFeatureFlag(flagData: Record<string, unknown>): Promise<Record<string, unknown>> {
     try {
