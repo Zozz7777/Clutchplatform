@@ -6,6 +6,7 @@
 const express = require('express');
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
+const { ObjectId } = require('mongodb');
 const router = express.Router();
 const { getCollection } = require('../config/optimized-database');
 const { authenticateToken, requireRole, hashPassword } = require('../middleware/auth');
