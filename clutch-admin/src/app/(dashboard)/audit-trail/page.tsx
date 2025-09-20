@@ -132,7 +132,7 @@ export default function AuditTrailPage() {
 
         // Handle audit logs
         if (logsResult.status === 'fulfilled') {
-          setAuditLogs(logsResult.value || []);
+          setAuditLogs((logsResult.value as unknown as AuditLog[]) || []);
         } else {
           console.warn('Failed to load audit logs:', logsResult.reason);
           setAuditLogs([]);
@@ -140,7 +140,7 @@ export default function AuditTrailPage() {
 
         // Handle security events (may fail due to permissions)
         if (eventsResult.status === 'fulfilled') {
-          setSecurityEvents(eventsResult.value || []);
+          setSecurityEvents((eventsResult.value as unknown as SecurityEvent[]) || []);
         } else {
           console.warn('Failed to load security events:', eventsResult.reason);
           setSecurityEvents([]);
@@ -152,7 +152,7 @@ export default function AuditTrailPage() {
 
         // Handle user activities
         if (activitiesResult.status === 'fulfilled') {
-          setUserActivities(activitiesResult.value || []);
+          setUserActivities((activitiesResult.value as unknown as UserActivity[]) || []);
         } else {
           console.warn('Failed to load user activities:', activitiesResult.reason);
           setUserActivities([]);
@@ -197,18 +197,18 @@ export default function AuditTrailPage() {
   const failedActions = (auditLogs || []).filter(l => l.status === "failure").length;
   const activeUsers = (userActivities || []).filter(a => a.status === "active").length;
 
-  const getSeverityColor = (severity: string) => {
+  const getSeverityVariant = (severity: string) => {
     switch (severity) {
       case "critical":
-        return "bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200";
+        return "destructive";
       case "high":
-        return "bg-orange-100 text-orange-800 dark:bg-orange-900 dark:text-orange-200";
+        return "destructive";
       case "medium":
-        return "bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200";
+        return "secondary";
       case "low":
-        return "bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200";
+        return "default";
       default:
-        return "bg-gray-100 text-gray-800 dark:bg-gray-900 dark:text-gray-200";
+        return "outline";
     }
   };
 
@@ -447,7 +447,7 @@ export default function AuditTrailPage() {
                       </div>
                     </TableCell>
                     <TableCell>
-                      <Badge className={getSeverityColor(log.severity)}>
+                      <Badge variant={getSeverityVariant(log.severity)}>
                         {log.severity}
                       </Badge>
                     </TableCell>
