@@ -147,11 +147,16 @@ export default function AnalyticsPage() {
   const [reports, setReports] = useState<AnalyticsReport[]>([]);
   const [selectedTimeRange, setSelectedTimeRange] = useState<string>("30d");
   const [isLoading, setIsLoading] = useState(true);
-  const { hasPermission } = useAuth();
+  const { user, hasPermission } = useAuth();
   const { generateReport, exportData } = useQuickActions(hasPermission);
 
   useEffect(() => {
     const loadAnalyticsData = async () => {
+      if (!user) {
+        setIsLoading(false);
+        return;
+      }
+      
       try {
         setIsLoading(true);
         
@@ -193,7 +198,7 @@ export default function AnalyticsPage() {
     };
 
     loadAnalyticsData();
-  }, [selectedTimeRange]);
+  }, [user, selectedTimeRange]);
 
   const getChangeIcon = (changeType: string) => {
     switch (changeType) {
@@ -616,8 +621,8 @@ export default function AnalyticsPage() {
                       {report.type} • {report.metrics.length} metrics • {formatDate(report.generatedAt)}
                     </p>
                     <div className="flex items-center space-x-2 mt-1">
-                      <Badge variant={report.status === "completed" ? "success" : 
-                                     report.status === "failed" ? "destructive" : "warning"}>
+                      <Badge variant={report.status === "completed" ? "default" : 
+                                     report.status === "failed" ? "destructive" : "secondary"}>
                         {report.status}
                       </Badge>
                       <span className="text-xs text-muted-foreground">

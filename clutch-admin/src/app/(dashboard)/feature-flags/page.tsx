@@ -435,7 +435,7 @@ export default function FeatureFlagsPage() {
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold tracking-tight">Feature Flags</h1>
+          <h1 className="text-3xl font-bold tracking-tight">{t('featureFlags.title')}</h1>
           <p className="text-muted-foreground">
             Manage feature flags, A/B tests, and gradual rollouts
           </p>
@@ -443,7 +443,7 @@ export default function FeatureFlagsPage() {
         <div className="flex items-center space-x-2">
           <Button onClick={() => setShowRolloutDialog(true)} variant="outline">
             <Globe className="mr-2 h-4 w-4" />
-            Create Rollout
+{t('featureFlags.createRollout')}
           </Button>
           <Button onClick={() => setShowABTestDialog(true)} variant="outline">
             <BarChart3 className="mr-2 h-4 w-4" />
@@ -496,7 +496,7 @@ export default function FeatureFlagsPage() {
         </Card>
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Active A/B Tests</CardTitle>
+            <CardTitle className="text-sm font-medium">{t('featureFlags.activeABTests')}</CardTitle>
             <BarChart3 className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
@@ -513,7 +513,7 @@ export default function FeatureFlagsPage() {
       {/* Feature Flags */}
       <Card>
         <CardHeader>
-          <CardTitle>Feature Flags</CardTitle>
+          <CardTitle>{t('featureFlags.title')}</CardTitle>
           <CardDescription>
             Manage feature toggles and their configurations
           </CardDescription>
@@ -1087,7 +1087,7 @@ export default function FeatureFlagsPage() {
               Cancel
             </Button>
             <Button onClick={createRollout}>
-              Create Rollout
+  {t('featureFlags.createRollout')}
             </Button>
           </DialogFooter>
         </DialogContent>

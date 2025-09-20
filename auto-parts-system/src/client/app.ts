@@ -384,11 +384,11 @@ class ClutchApp {
               </div>
               <div class="summary-row">
                 <span>${i18nManager.t('tax')} (15%):</span>
-                <span id="cart-tax">$0.00</span>
+                <span id="cart-tax">0.00 EGP</span>
               </div>
               <div class="summary-row total">
                 <span>${i18nManager.t('total')}:</span>
-                <span id="cart-total">$0.00</span>
+                <span id="cart-total">0.00 EGP</span>
               </div>
             </div>
             
