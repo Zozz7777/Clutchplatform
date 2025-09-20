@@ -2510,6 +2510,17 @@
     "activeCustomers": "العملاء النشطون",
     "customerManagement": "إدارة العملاء"
   },
+  "mobileApps": {
+    "settings": "الإعدادات",
+    "osVersion": "إصدار نظام التشغيل",
+    "appVersion": "إصدار التطبيق"
+  },
+  "cms": {
+    "appSettings": "إعدادات التطبيق",
+    "basicSettings": "الإعدادات الأساسية",
+    "enabled": "مفعل",
+    "disabled": "معطل"
+  },
   "employeeInvitation": {
     "title": "دعوة موظف جديد",
     "description": "إرسال دعوة لموظف جديد للانضمام إلى منصة Clutch",

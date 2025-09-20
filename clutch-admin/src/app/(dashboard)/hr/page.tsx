@@ -669,7 +669,7 @@ export default function HRPage() {
             {t('hr.description')}
           </p>
         </div>
-        {hasPermission("manage_hr") && (
+        {user && hasPermission("manage_hr") && (
           <div className="flex space-x-2">
             <Button onClick={() => setShowInvitationForm(true)}>
               <Plus className="mr-2 h-4 w-4" />

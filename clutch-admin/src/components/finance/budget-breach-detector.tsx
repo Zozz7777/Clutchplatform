@@ -298,13 +298,13 @@ export default function BudgetBreachDetector({ className }: BudgetBreachDetector
               timeline: breach.impact?.timeline || 0,
               reputation: breach.impact?.reputation || 0
             },
-            mitigation: {
-              actions: breach.mitigation?.actions || [],
-              estimatedSavings: breach.mitigation?.estimatedSavings || 0,
-              timeframe: breach.mitigation?.timeframe || 0,
+            mitigation: [{
+              strategy: breach.mitigation?.strategy || 'Cost optimization',
+              cost: breach.mitigation?.cost || 0,
+              timeframe: breach.mitigation?.timeframe || 30,
               effectiveness: breach.mitigation?.effectiveness || 0,
-              status: breach.mitigation?.status || 'pending'
-            },
+              status: breach.mitigation?.status || 'planned'
+            }],
             lastUpdated: breach.lastUpdated || new Date().toISOString(),
             nextCheck: breach.nextCheck || new Date().toISOString()
           }));

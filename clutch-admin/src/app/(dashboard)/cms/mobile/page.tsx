@@ -122,7 +122,7 @@ export default function MobileCMSPage() {
 
       <Tabs defaultValue="settings" className="space-y-4">
         <TabsList>
-          <TabsTrigger value="settings">App Settings</TabsTrigger>
+          <TabsTrigger value="settings">{t('cms.appSettings')}</TabsTrigger>
           <TabsTrigger value="content">Content</TabsTrigger>
           <TabsTrigger value="branding">Branding</TabsTrigger>
           <TabsTrigger value="features">Features</TabsTrigger>
@@ -132,7 +132,7 @@ export default function MobileCMSPage() {
           <div className="grid gap-4 md:grid-cols-2">
             <Card>
               <CardHeader>
-                <CardTitle className="font-sans">Basic Settings</CardTitle>
+                <CardTitle className="font-sans">{t('cms.basicSettings')}</CardTitle>
               </CardHeader>
               <CardContent className="space-y-4">
                 <div>
@@ -363,7 +363,7 @@ export default function MobileCMSPage() {
                       <p className="text-sm text-muted-foreground font-sans">{feature.description}</p>
                     </div>
                     <Badge variant={feature.enabled ? "default" : "secondary"}>
-                      {feature.enabled ? "Enabled" : "Disabled"}
+                      {feature.enabled ? t('cms.enabled') : t('cms.disabled')}
                     </Badge>
                   </div>
                 ))}

@@ -2431,7 +2431,10 @@
     "noDepartment": "No Department",
     "salary": "Salary",
     "department": "Department",
-    "position": "Position"
+    "position": "Position",
+    "loadingHrData": "Loading HR data...",
+    "deleteInvitation": "Delete Invitation",
+    "deleteInvitationConfirm": "Are you sure you want to delete this invitation?"
   },
   "pricing": {
     "plans": "Pricing Plans",
@@ -2454,6 +2457,17 @@
     "totalCustomers": "Total Customers",
     "activeCustomers": "Active Customers",
     "customerManagement": "Customer Management"
+  },
+  "mobileApps": {
+    "settings": "Settings",
+    "osVersion": "OS Version",
+    "appVersion": "App Version"
+  },
+  "cms": {
+    "appSettings": "App Settings",
+    "basicSettings": "Basic Settings",
+    "enabled": "Enabled",
+    "disabled": "Disabled"
   },
   "employeeInvitation": {
     "title": "Invite New Employee",
