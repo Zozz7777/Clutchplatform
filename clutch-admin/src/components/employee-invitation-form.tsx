@@ -28,34 +28,34 @@ interface EmployeeInvitationFormProps {
 }
 
 const ROLE_OPTIONS = [
-  { value: "employee", label: "Employee", description: "Standard employee access" },
-  { value: "hr", label: "HR", description: "Human resources access" },
-  { value: "manager", label: "Manager", description: "Team management access" },
-  { value: "admin", label: "Admin", description: "Full administrative access" },
+  { value: "employee", label: "employeeInvitation.roles.employee", description: "employeeInvitation.roles.employeeDesc" },
+  { value: "hr", label: "employeeInvitation.roles.hr", description: "employeeInvitation.roles.hrDesc" },
+  { value: "manager", label: "employeeInvitation.roles.manager", description: "employeeInvitation.roles.managerDesc" },
+  { value: "admin", label: "employeeInvitation.roles.admin", description: "employeeInvitation.roles.adminDesc" },
 ];
 
 const DEPARTMENT_OPTIONS = [
-  "Engineering",
-  "Marketing",
-  "Sales",
-  "HR",
-  "Finance",
-  "Operations",
-  "Customer Support",
-  "Product",
-  "Design",
-  "Executive",
+  { value: "engineering", label: "employeeInvitation.departments.engineering" },
+  { value: "marketing", label: "employeeInvitation.departments.marketing" },
+  { value: "sales", label: "employeeInvitation.departments.sales" },
+  { value: "hr", label: "employeeInvitation.departments.hr" },
+  { value: "finance", label: "employeeInvitation.departments.finance" },
+  { value: "operations", label: "employeeInvitation.departments.operations" },
+  { value: "customerSupport", label: "employeeInvitation.departments.customerSupport" },
+  { value: "product", label: "employeeInvitation.departments.product" },
+  { value: "design", label: "employeeInvitation.departments.design" },
+  { value: "executive", label: "employeeInvitation.departments.executive" },
 ];
 
 const PERMISSION_OPTIONS = [
-  { value: "read", label: "Read", description: "View data and reports" },
-  { value: "write", label: "Write", description: "Create and edit data" },
-  { value: "delete", label: "Delete", description: "Remove data" },
-  { value: "admin", label: "Admin", description: "Full system access" },
-  { value: "hr", label: "HR", description: "HR management access" },
-  { value: "finance", label: "Finance", description: "Financial data access" },
-  { value: "fleet", label: "Fleet", description: "Fleet management access" },
-  { value: "reports", label: "Reports", description: "Generate reports" },
+  { value: "read", label: "employeeInvitation.permissions.read", description: "employeeInvitation.permissions.readDesc" },
+  { value: "write", label: "employeeInvitation.permissions.write", description: "employeeInvitation.permissions.writeDesc" },
+  { value: "delete", label: "employeeInvitation.permissions.delete", description: "employeeInvitation.permissions.deleteDesc" },
+  { value: "admin", label: "employeeInvitation.permissions.admin", description: "employeeInvitation.permissions.adminDesc" },
+  { value: "hr", label: "employeeInvitation.permissions.hr", description: "employeeInvitation.permissions.hrDesc" },
+  { value: "finance", label: "employeeInvitation.permissions.finance", description: "employeeInvitation.permissions.financeDesc" },
+  { value: "fleet", label: "employeeInvitation.permissions.fleet", description: "employeeInvitation.permissions.fleetDesc" },
+  { value: "reports", label: "employeeInvitation.permissions.reports", description: "employeeInvitation.permissions.reportsDesc" },
 ];
 
 export function EmployeeInvitationForm({ onSuccess, onCancel }: EmployeeInvitationFormProps) {
@@ -76,29 +76,29 @@ export function EmployeeInvitationForm({ onSuccess, onCancel }: EmployeeInvitati
     const newErrors: Record<string, string> = {};
 
     if (!formData.name.trim()) {
-      newErrors.name = "Name is required";
+      newErrors.name = t('employeeInvitation.nameRequired');
     }
 
     if (!formData.email.trim()) {
-      newErrors.email = "Email is required";
+      newErrors.email = t('employeeInvitation.emailRequired');
     } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
-      newErrors.email = "Please enter a valid email address";
+      newErrors.email = t('employeeInvitation.validEmail');
     }
 
     if (!formData.role) {
-      newErrors.role = "Role is required";
+      newErrors.role = t('employeeInvitation.roleRequired');
     }
 
     if (!formData.department.trim()) {
-      newErrors.department = "Department is required";
+      newErrors.department = t('employeeInvitation.departmentRequired');
     }
 
     if (!formData.position.trim()) {
-      newErrors.position = "Position is required";
+      newErrors.position = t('employeeInvitation.positionRequired');
     }
 
     if (formData.permissions.length === 0) {
-      newErrors.permissions = "At least one permission is required";
+      newErrors.permissions = t('employeeInvitation.permissionsRequired');
     }
 
     setErrors(newErrors);
@@ -119,8 +119,8 @@ export function EmployeeInvitationForm({ onSuccess, onCancel }: EmployeeInvitati
       const response = await apiService.inviteEmployee(formData);
       
       if (response.success) {
-        toast.success("Employee invitation sent successfully!", {
-          description: `Invitation sent to ${formData.email}`
+        toast.success(t('employeeInvitation.invitationSent'), {
+          description: t('employeeInvitation.invitationSentDesc').replace('{email}', formData.email)
         });
         
         // Reset form
@@ -135,14 +135,14 @@ export function EmployeeInvitationForm({ onSuccess, onCancel }: EmployeeInvitati
         
         onSuccess?.();
       } else {
-        toast.error("Failed to send invitation", {
-          description: response.error || "Please try again"
+        toast.error(t('employeeInvitation.invitationFailed'), {
+          description: response.error || t('employeeInvitation.invitationFailedDesc')
         });
       }
     } catch (error) {
       // Invitation error
-      toast.error("Failed to send invitation", {
-        description: "Please check your connection and try again"
+      toast.error(t('employeeInvitation.invitationFailed'), {
+        description: t('employeeInvitation.connectionError')
       });
     } finally {
       setIsLoading(false);
@@ -185,10 +185,10 @@ export function EmployeeInvitationForm({ onSuccess, onCancel }: EmployeeInvitati
       <CardHeader>
         <CardTitle className="flex items-center gap-2 font-sans">
           <UserPlus className="h-5 w-5" />
-          Invite New Employee
+          {t('employeeInvitation.title')}
         </CardTitle>
         <CardDescription className="font-sans">
-          Send an invitation to a new employee to join the Clutch platform
+          {t('employeeInvitation.description')}
         </CardDescription>
       </CardHeader>
       
@@ -196,11 +196,11 @@ export function EmployeeInvitationForm({ onSuccess, onCancel }: EmployeeInvitati
         <form onSubmit={handleSubmit} className="space-y-6">
           {/* Basic Information */}
           <div className="space-y-4">
-            <h3 className="text-lg font-medium font-sans">Basic Information</h3>
+            <h3 className="text-lg font-medium font-sans">{t('employeeInvitation.basicInformation')}</h3>
             
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div className="space-y-2">
-                <Label htmlFor="name">Full Name *</Label>
+                <Label htmlFor="name">{t('employeeInvitation.fullName')} *</Label>
                 <Input
                   id="name"
                   value={formData.name}
@@ -215,7 +215,7 @@ export function EmployeeInvitationForm({ onSuccess, onCancel }: EmployeeInvitati
               </div>
               
               <div className="space-y-2">
-                <Label htmlFor="email">Email Address *</Label>
+                <Label htmlFor="email">{t('employeeInvitation.emailAddress')} *</Label>
                 <div className="relative">
                   <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
                   <Input
@@ -237,25 +237,25 @@ export function EmployeeInvitationForm({ onSuccess, onCancel }: EmployeeInvitati
 
           {/* Job Information */}
           <div className="space-y-4">
-            <h3 className="text-lg font-medium font-sans">Job Information</h3>
+            <h3 className="text-lg font-medium font-sans">{t('employeeInvitation.jobInformation')}</h3>
             
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               <div className="space-y-2">
-                <Label htmlFor="role">Role *</Label>
+                <Label htmlFor="role">{t('employeeInvitation.role')} *</Label>
                 <Select
                   value={formData.role}
                   onValueChange={handleRoleChange}
                   disabled={isLoading}
                 >
                   <SelectTrigger className={errors.role ? "border-red-500" : ""}>
-                    <SelectValue placeholder="Select role" />
+                    <SelectValue placeholder={t('employeeInvitation.selectRole')} />
                   </SelectTrigger>
                   <SelectContent>
                     {ROLE_OPTIONS.map((role) => (
                       <SelectItem key={role.value} value={role.value}>
                         <div>
-                          <div className="font-medium">{role.label}</div>
-                          <div className="text-sm text-muted-foreground">{role.description}</div>
+                          <div className="font-medium">{t(role.label)}</div>
+                          <div className="text-sm text-muted-foreground">{t(role.description)}</div>
                         </div>
                       </SelectItem>
                     ))}
@@ -267,21 +267,21 @@ export function EmployeeInvitationForm({ onSuccess, onCancel }: EmployeeInvitati
               </div>
               
               <div className="space-y-2">
-                <Label htmlFor="department">Department *</Label>
+                <Label htmlFor="department">{t('employeeInvitation.department')} *</Label>
                 <Select
                   value={formData.department}
                   onValueChange={(value) => setFormData(prev => ({ ...prev, department: value }))}
                   disabled={isLoading}
                 >
                   <SelectTrigger className={errors.department ? "border-red-500" : ""}>
-                    <SelectValue placeholder="Select department" />
+                    <SelectValue placeholder={t('employeeInvitation.selectDepartment')} />
                   </SelectTrigger>
                   <SelectContent>
                     {DEPARTMENT_OPTIONS.map((dept) => (
-                      <SelectItem key={dept} value={dept}>
+                      <SelectItem key={dept.value} value={dept.value}>
                         <div className="flex items-center gap-2">
                           <Building2 className="h-4 w-4" />
-                          {dept}
+                          {t(dept.label)}
                         </div>
                       </SelectItem>
                     ))}
@@ -293,7 +293,7 @@ export function EmployeeInvitationForm({ onSuccess, onCancel }: EmployeeInvitati
               </div>
               
               <div className="space-y-2">
-                <Label htmlFor="position">Position *</Label>
+                <Label htmlFor="position">{t('employeeInvitation.position')} *</Label>
                 <Input
                   id="position"
                   value={formData.position}
@@ -311,9 +311,9 @@ export function EmployeeInvitationForm({ onSuccess, onCancel }: EmployeeInvitati
 
           {/* Permissions */}
           <div className="space-y-4">
-            <h3 className="text-lg font-medium font-sans">Permissions</h3>
+            <h3 className="text-lg font-medium font-sans">{t('employeeInvitation.permissions')}</h3>
             <p className="text-sm text-muted-foreground font-sans">
-              Select the permissions this employee should have. Some permissions are automatically assigned based on the role.
+              {t('employeeInvitation.permissionsDescription')}
             </p>
             
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -332,10 +332,10 @@ export function EmployeeInvitationForm({ onSuccess, onCancel }: EmployeeInvitati
                       htmlFor={permission.value}
                       className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 font-sans"
                     >
-                      {permission.label}
+                      {t(permission.label)}
                     </Label>
                     <p className="text-xs text-muted-foreground font-sans">
-                      {permission.description}
+                      {t(permission.description)}
                     </p>
                   </div>
                 </div>
@@ -365,7 +365,7 @@ export function EmployeeInvitationForm({ onSuccess, onCancel }: EmployeeInvitati
                 onClick={onCancel}
                 disabled={isLoading}
               >
-                Cancel
+{t('common.cancel')}
               </Button>
             )}
             <Button
@@ -376,12 +376,12 @@ export function EmployeeInvitationForm({ onSuccess, onCancel }: EmployeeInvitati
               {isLoading ? (
                 <>
                   <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                  Sending...
+                  {t('employeeInvitation.sending')}
                 </>
               ) : (
                 <>
                   <UserPlus className="mr-2 h-4 w-4" />
-                  Send Invitation
+                  {t('employeeInvitation.sendInvitation')}
                 </>
               )}
             </Button>

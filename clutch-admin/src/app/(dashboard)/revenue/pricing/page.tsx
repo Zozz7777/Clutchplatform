@@ -301,7 +301,7 @@ export default function PricingPage() {
                   {
                     name: 'Professional Plan Price Test',
                     status: 'Running',
-                    description: 'Testing $79 vs $89 for Professional plan',
+                    description: 'Testing 79 EGP vs 89 EGP for Professional plan',
                     startDate: '2024-01-01',
                     participants: 1250,
                     conversionA: 12.3,

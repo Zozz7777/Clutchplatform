@@ -414,7 +414,7 @@ export default function SubscriptionsPage() {
               <div className="grid gap-4 md:grid-cols-3">
                 <div className="text-center p-4 border rounded-[0.625rem]">
                   <h3 className="font-medium font-sans">Upcoming Billing</h3>
-                  <p className="text-2xl font-bold font-sans mt-2">$45,230</p>
+                  <p className="text-2xl font-bold font-sans mt-2">45,230 EGP</p>
                   <p className="text-sm text-muted-foreground font-sans">Next 7 days</p>
                 </div>
                 <div className="text-center p-4 border rounded-[0.625rem]">
