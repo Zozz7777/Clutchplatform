@@ -1,0 +1,426 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Clutch Auto Parts System</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: #333;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        .header {
+            text-align: center;
+            color: white;
+            margin-bottom: 3rem;
+        }
+
+        .header h1 {
+            font-size: 3rem;
+            font-weight: 300;
+            margin-bottom: 1rem;
+        }
+
+        .header p {
+            font-size: 1.2rem;
+            opacity: 0.9;
+        }
+
+        .modules {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-bottom: 3rem;
+        }
+
+        .module-card {
+            background: white;
+            border-radius: 15px;
+            padding: 2rem;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            transition: transform 0.3s, box-shadow 0.3s;
+            cursor: pointer;
+        }
+
+        .module-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.15);
+        }
+
+        .module-card h3 {
+            color: #2c3e50;
+            margin-bottom: 1rem;
+            font-size: 1.5rem;
+            font-weight: 500;
+        }
+
+        .module-card p {
+            color: #666;
+            line-height: 1.6;
+            margin-bottom: 1.5rem;
+        }
+
+        .module-card .features {
+            list-style: none;
+            margin-bottom: 1.5rem;
+        }
+
+        .module-card .features li {
+            color: #555;
+            margin-bottom: 0.5rem;
+            padding-left: 1.5rem;
+            position: relative;
+        }
+
+        .module-card .features li:before {
+            content: "✓";
+            position: absolute;
+            left: 0;
+            color: #27ae60;
+            font-weight: bold;
+        }
+
+        .btn {
+            background: #3498db;
+            color: white;
+            border: none;
+            padding: 1rem 2rem;
+            border-radius: 8px;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: background 0.3s;
+            width: 100%;
+        }
+
+        .btn:hover {
+            background: #2980b9;
+        }
+
+        .btn-success {
+            background: #27ae60;
+        }
+
+        .btn-success:hover {
+            background: #229954;
+        }
+
+        .btn-warning {
+            background: #f39c12;
+        }
+
+        .btn-warning:hover {
+            background: #e67e22;
+        }
+
+        .btn-danger {
+            background: #e74c3c;
+        }
+
+        .btn-danger:hover {
+            background: #c0392b;
+        }
+
+        .stats {
+            background: white;
+            border-radius: 15px;
+            padding: 2rem;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            margin-bottom: 2rem;
+        }
+
+        .stats h2 {
+            color: #2c3e50;
+            margin-bottom: 1.5rem;
+            text-align: center;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .stat-item {
+            text-align: center;
+            padding: 1rem;
+            background: #f8f9fa;
+            border-radius: 10px;
+        }
+
+        .stat-item .number {
+            font-size: 2rem;
+            font-weight: bold;
+            color: #3498db;
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-item .label {
+            color: #666;
+            font-size: 0.9rem;
+        }
+
+        .footer {
+            text-align: center;
+            color: white;
+            margin-top: 3rem;
+            opacity: 0.8;
+        }
+
+        .login-form {
+            background: white;
+            border-radius: 15px;
+            padding: 2rem;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            max-width: 400px;
+            margin: 0 auto;
+        }
+
+        .login-form h2 {
+            color: #2c3e50;
+            margin-bottom: 1.5rem;
+            text-align: center;
+        }
+
+        .form-group {
+            margin-bottom: 1rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: #555;
+            font-weight: 500;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 1rem;
+        }
+
+        .form-group input:focus {
+            outline: none;
+            border-color: #3498db;
+            box-shadow: 0 0 0 2px rgba(52, 152, 219, 0.2);
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        .alert {
+            padding: 1rem;
+            border-radius: 8px;
+            margin-bottom: 1rem;
+        }
+
+        .alert-success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+
+        .alert-error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🚗 Clutch Auto Parts System</h1>
+            <p>Complete Auto Parts Management Solution</p>
+        </div>
+
+        <div id="loginSection" class="login-form">
+            <h2>Login</h2>
+            <div id="alert" class="alert hidden"></div>
+            <form id="loginForm">
+                <div class="form-group">
+                    <label for="username">Username:</label>
+                    <input type="text" id="username" value="admin" required>
+                </div>
+                <div class="form-group">
+                    <label for="password">Password:</label>
+                    <input type="password" id="password" value="admin123" required>
+                </div>
+                <button type="submit" class="btn btn-success">Login</button>
+            </form>
+        </div>
+
+        <div id="mainSection" class="hidden">
+            <div class="stats">
+                <h2>System Overview</h2>
+                <div class="stats-grid">
+                    <div class="stat-item">
+                        <div class="number">1,247</div>
+                        <div class="label">Total Parts</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="number">89</div>
+                        <div class="label">Customers</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="number">23</div>
+                        <div class="label">Suppliers</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="number">$45,678</div>
+                        <div class="label">Monthly Sales</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="modules">
+                <div class="module-card">
+                    <h3>🛒 Point of Sale (POS)</h3>
+                    <p>Complete point of sale system with tax shortcuts and multiple payment methods.</p>
+                    <ul class="features">
+                        <li>Quick tax calculation</li>
+                        <li>Multiple payment methods</li>
+                        <li>Receipt printing</li>
+                        <li>Discount management</li>
+                    </ul>
+                    <button class="btn btn-success" onclick="openModule('pos')">Open POS</button>
+                </div>
+
+                <div class="module-card">
+                    <h3>📦 Inventory Management</h3>
+                    <p>Comprehensive inventory tracking and management system.</p>
+                    <ul class="features">
+                        <li>Stock tracking</li>
+                        <li>Low stock alerts</li>
+                        <li>Barcode scanning</li>
+                        <li>Supplier management</li>
+                    </ul>
+                    <button class="btn btn-success" onclick="openModule('inventory')">Manage Inventory</button>
+                </div>
+
+                <div class="module-card">
+                    <h3>👥 Customer Management</h3>
+                    <p>Complete customer database and relationship management.</p>
+                    <ul class="features">
+                        <li>Customer profiles</li>
+                        <li>Purchase history</li>
+                        <li>Loyalty programs</li>
+                        <li>Communication tools</li>
+                    </ul>
+                    <button class="btn btn-success" onclick="openModule('customers')">Manage Customers</button>
+                </div>
+
+                <div class="module-card">
+                    <h3>📊 Reports & Analytics</h3>
+                    <p>Comprehensive reporting and business intelligence.</p>
+                    <ul class="features">
+                        <li>Sales reports</li>
+                        <li>Inventory reports</li>
+                        <li>Financial analytics</li>
+                        <li>Export capabilities</li>
+                    </ul>
+                    <button class="btn btn-warning" onclick="openModule('reports')">View Reports</button>
+                </div>
+
+                <div class="module-card">
+                    <h3>🤖 AI Insights</h3>
+                    <p>AI-powered business insights and recommendations.</p>
+                    <ul class="features">
+                        <li>Demand forecasting</li>
+                        <li>Price optimization</li>
+                        <li>Inventory optimization</li>
+                        <li>Customer insights</li>
+                    </ul>
+                    <button class="btn btn-warning" onclick="openModule('ai')">View AI Insights</button>
+                </div>
+
+                <div class="module-card">
+                    <h3>⚙️ Settings</h3>
+                    <p>System configuration and user management.</p>
+                    <ul class="features">
+                        <li>User management</li>
+                        <li>System settings</li>
+                        <li>Backup & restore</li>
+                        <li>Multi-branch support</li>
+                    </ul>
+                    <button class="btn btn-danger" onclick="openModule('settings')">Open Settings</button>
+                </div>
+            </div>
+
+            <div class="footer">
+                <p>Clutch Auto Parts System v1.0.0 | © 2025 Clutch Platform</p>
+                <p>Offline-first • Arabic Support • AI-Powered</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Login functionality
+        document.getElementById('loginForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+            
+            if (username === 'admin' && password === 'admin123') {
+                showAlert('Login successful!', 'success');
+                setTimeout(() => {
+                    document.getElementById('loginSection').classList.add('hidden');
+                    document.getElementById('mainSection').classList.remove('hidden');
+                }, 1000);
+            } else {
+                showAlert('Invalid username or password!', 'error');
+            }
+        });
+
+        function showAlert(message, type) {
+            const alert = document.getElementById('alert');
+            alert.textContent = message;
+            alert.className = `alert alert-${type}`;
+            alert.classList.remove('hidden');
+            
+            setTimeout(() => {
+                alert.classList.add('hidden');
+            }, 3000);
+        }
+
+        function openModule(module) {
+            const messages = {
+                'pos': 'Point of Sale module opened!',
+                'inventory': 'Inventory Management module opened!',
+                'customers': 'Customer Management module opened!',
+                'reports': 'Reports & Analytics module opened!',
+                'ai': 'AI Insights module opened!',
+                'settings': 'Settings module opened!'
+            };
+            
+            alert(messages[module] || 'Module opened!');
+        }
+
+        // Auto-login for demo
+        setTimeout(() => {
+            if (document.getElementById('loginSection').classList.contains('hidden') === false) {
+                document.getElementById('username').value = 'admin';
+                document.getElementById('password').value = 'admin123';
+            }
+        }, 1000);
+    </script>
+</body>
+</html>

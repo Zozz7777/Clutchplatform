@@ -223,7 +223,7 @@ export default function AnalyticsPage() {
       <div className="flex items-center justify-center h-64">
         <div className="text-center">
           <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto mb-4"></div>
-          <p className="text-muted-foreground">Loading analytics data...</p>
+          <p className="text-muted-foreground">{t('analytics.loadingData')}</p>
         </div>
       </div>
     );
@@ -234,9 +234,9 @@ export default function AnalyticsPage() {
       {/* Page Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold tracking-tight">Analytics Dashboard</h1>
+          <h1 className="text-3xl font-bold tracking-tight">{t('analytics.dashboard')}</h1>
           <p className="text-muted-foreground">
-            Business intelligence and performance analytics
+            {t('analytics.description')}
           </p>
         </div>
         <div className="flex items-center space-x-2">
@@ -245,16 +245,16 @@ export default function AnalyticsPage() {
             onChange={(e) => setSelectedTimeRange(e.target.value)}
             className="px-3 py-2 border border-input bg-background rounded-md text-sm"
           >
-            <option value="7d">Last 7 days</option>
-            <option value="30d">Last 30 days</option>
-            <option value="90d">Last 90 days</option>
-            <option value="1y">Last year</option>
+            <option value="7d">{t('analytics.last7Days')}</option>
+            <option value="30d">{t('analytics.last30Days')}</option>
+            <option value="90d">{t('analytics.last90Days')}</option>
+            <option value="1y">{t('analytics.lastYear')}</option>
           </select>
           {hasPermission("generate_reports") && (
             <>
               <Button variant="outline" onClick={generateReport}>
                 <RefreshCw className="mr-2 h-4 w-4" />
-                Generate Report
+{t('analytics.generateReport')}
               </Button>
               <Button onClick={() => exportData('analytics')}>
                 <Download className="mr-2 h-4 w-4" />

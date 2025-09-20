@@ -143,11 +143,16 @@ export default function HRPage() {
   const [selectedInvitation, setSelectedInvitation] = useState<Record<string, unknown> | null>(null);
   const [showDeleteConfirmModal, setShowDeleteConfirmModal] = useState(false);
   const [employeeToDelete, setEmployeeToDelete] = useState<Employee | null>(null);
-  const { hasPermission } = useAuth();
+  const { user, hasPermission } = useAuth();
   const { t } = useTranslations();
 
   useEffect(() => {
     const loadHRData = async () => {
+      if (!user) {
+        setIsLoading(false);
+        return;
+      }
+      
       try {
         const token = localStorage.getItem("clutch-admin-token");
         
@@ -253,7 +258,7 @@ export default function HRPage() {
     };
 
     loadHRData();
-  }, []);
+  }, [user]);
 
   useEffect(() => {
     let filteredEmps = Array.isArray(employees) ? employees : [];
@@ -289,7 +294,7 @@ export default function HRPage() {
     switch (status) {
       case "active":
       case "hired":
-        return "success";
+        return "default";
       case "inactive":
       case "terminated":
       case "rejected":
@@ -297,10 +302,12 @@ export default function HRPage() {
       case "on_leave":
       case "applied":
       case "screening":
-        return "warning";
+        return "secondary";
       case "interview":
       case "offer":
-        return "info";
+        return "outline";
+      case "pending":
+        return "secondary";
       default:
         return "default";
     }
@@ -311,9 +318,9 @@ export default function HRPage() {
       case "high":
         return "destructive";
       case "medium":
-        return "warning";
+        return "secondary";
       case "low":
-        return "success";
+        return "outline";
       default:
         return "default";
     }
@@ -322,11 +329,11 @@ export default function HRPage() {
   const getEmploymentTypeColor = (type: string) => {
     switch (type) {
       case "full_time":
-        return "success";
+        return "default";
       case "part_time":
-        return "info";
+        return "secondary";
       case "contract":
-        return "warning";
+        return "outline";
       case "intern":
         return "default";
       default:
@@ -423,11 +430,11 @@ export default function HRPage() {
 
   const handleDeleteInvitation = async (invitationId: string) => {
     // Show confirmation dialog
-    if (window.confirm("Are you sure you want to permanently delete this invitation? This action cannot be undone.")) {
+    if (window.confirm(t('hr.deleteInvitationConfirm'))) {
       try {
         const response = await apiService.cancelInvitation(invitationId);
         if (response.success) {
-          toast.success("Invitation deleted successfully");
+          toast.success(t('hr.invitationDeleted'));
           // Reload invitations
           const invitationsResponse = await apiService.getEmployeeInvitations();
           if (invitationsResponse.success) {
@@ -478,7 +485,7 @@ export default function HRPage() {
         const url = window.URL.createObjectURL(blob);
         const link = document.createElement('a');
         link.href = url;
-        link.download = `${employee.firstName || employee.name || 'employee'}_records.pdf`;
+        link.download = `${employee.firstName || 'employee'}_records.pdf`;
         document.body.appendChild(link);
         link.click();
         document.body.removeChild(link);
@@ -817,11 +824,11 @@ export default function HRPage() {
                   <div className="flex items-center space-x-4">
                     <div className="w-10 h-10 rounded-full bg-primary flex items-center justify-center">
                       <span className="text-primary-foreground font-medium">
-                        {(employee.firstName || employee.name || 'U').charAt(0).toUpperCase()}
+                        {(employee.firstName || 'U').charAt(0).toUpperCase()}
                       </span>
                     </div>
                     <div>
-                      <p className="font-medium">{employee.firstName || employee.name || 'Unknown'} {employee.lastName || ''}</p>
+                      <p className="font-medium">{employee.firstName || 'Unknown'} {employee.lastName || ''}</p>
                       <p className="text-sm text-muted-foreground">{employee.position || t('hr.noPosition')} • {employee.department || t('hr.noDepartment')}</p>
                       <div className="flex items-center space-x-2 mt-1">
                         <Badge variant={getStatusColor(employee.status) as "default" | "secondary" | "destructive" | "outline"}>
@@ -1208,8 +1215,8 @@ export default function HRPage() {
                     <h3 className="text-xl font-semibold">
                       {selectedEmployee.firstName || selectedEmployee.name || 'Unknown'} {selectedEmployee.lastName || ''}
                     </h3>
-                    <p className="text-muted-foreground">{selectedEmployee.position || 'No Position'}</p>
-                    <p className="text-sm text-muted-foreground">{selectedEmployee.department || 'No Department'}</p>
+                    <p className="text-muted-foreground">{selectedEmployee.position || t('hr.noPosition')}</p>
+                    <p className="text-sm text-muted-foreground">{selectedEmployee.department || t('hr.noDepartment')}</p>
                   </div>
                 </div>
 
@@ -1237,7 +1244,7 @@ export default function HRPage() {
                     <p className="text-sm">{selectedEmployee.employmentType || 'N/A'}</p>
                   </div>
                   <div>
-                    <label className="text-sm font-medium text-muted-foreground">Salary</label>
+                    <label className="text-sm font-medium text-muted-foreground">{t('hr.salary')}</label>
                     <p className="text-sm">{(selectedEmployee.salary || 0).toLocaleString()} EGP</p>
                   </div>
                   <div>
@@ -1307,7 +1314,7 @@ export default function HRPage() {
                   />
                 </div>
                 <div>
-                  <label className="text-sm font-medium">Department</label>
+                  <label className="text-sm font-medium">{t('hr.department')}</label>
                   <Input
                     defaultValue={String(selectedInvitation.department || '')}
                     className="mt-1"
@@ -1439,7 +1446,7 @@ export default function HRPage() {
                     />
                   </div>
                   <div>
-                    <label className="text-sm font-medium">Department</label>
+                    <label className="text-sm font-medium">{t('hr.department')}</label>
                     <Input 
                       defaultValue={selectedEmployee.department || ''} 
                       placeholder="Enter department"

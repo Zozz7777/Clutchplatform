@@ -6710,7 +6710,7 @@ router.get('/dashboard/consolidated', authenticateToken, checkRole(['head_admini
         {
           id: 'activity-003',
           type: 'payment',
-          description: 'Payment of $89.99 processed',
+          description: 'Payment of 89.99 EGP processed',
           user: 'customer@example.com',
           timestamp: new Date(Date.now() - 600000).toISOString()
         }

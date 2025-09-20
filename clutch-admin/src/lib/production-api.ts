@@ -1573,6 +1573,24 @@ export class ProductionApiService {
     }
   }
 
+  async getPricingPlans(): Promise<Record<string, unknown>[]> {
+    try {
+      return await realApi.getPricingPlans();
+    } catch (error) {
+      logger.error("Failed to fetch pricing plans:", error);
+      throw new Error("Failed to load pricing plans");
+    }
+  }
+
+  async getPricingAnalytics(): Promise<Record<string, unknown>> {
+    try {
+      return await realApi.getPricingAnalytics();
+    } catch (error) {
+      logger.error("Failed to fetch pricing analytics:", error);
+      throw new Error("Failed to load pricing analytics");
+    }
+  }
+
   async getComplianceData(): Promise<Record<string, unknown>[]> {
     try {
       return await realApi.getComplianceData();

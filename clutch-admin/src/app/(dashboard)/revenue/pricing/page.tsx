@@ -1,6 +1,8 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { productionApi } from '@/lib/production-api';
+import { toast } from 'sonner';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -30,45 +32,61 @@ interface PricingPlan {
 }
 
 export default function PricingPage() {
-  const [plans, setPlans] = useState<PricingPlan[]>([
-    {
-      id: '1',
-      name: 'Starter',
-      price: 29,
-      interval: 'monthly',
-      features: ['Up to 5 vehicles', 'Basic tracking', 'Email support'],
-      popular: false,
-      customers: 450,
-      revenue: 13050
-    },
-    {
-      id: '2',
-      name: 'Professional',
-      price: 79,
-      interval: 'monthly',
-      features: ['Up to 25 vehicles', 'Advanced analytics', 'Priority support', 'API access'],
-      popular: true,
-      customers: 680,
-      revenue: 53720
-    },
-    {
-      id: '3',
-      name: 'Enterprise',
-      price: 199,
-      interval: 'monthly',
-      features: ['Unlimited vehicles', 'Custom integrations', '24/7 support', 'White-label options'],
-      popular: false,
-      customers: 120,
-      revenue: 23880
-    }
-  ]);
-
-  const [analytics] = useState({
-    totalRevenue: 90650,
-    averagePrice: 62.33,
-    conversionRate: 12.5,
-    churnRate: 3.2
+  const [plans, setPlans] = useState<PricingPlan[]>([]);
+  const [analytics, setAnalytics] = useState({
+    totalRevenue: 0,
+    averagePrice: 0,
+    conversionRate: 0,
+    churnRate: 0
   });
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    const loadPricingData = async () => {
+      try {
+        setIsLoading(true);
+        
+        // Load real pricing plans data from API
+        const plansData = await productionApi.getPricingPlans();
+        setPlans(plansData || []);
+        
+        // Load analytics data
+        const analyticsData = await productionApi.getPricingAnalytics();
+        setAnalytics(analyticsData || {
+          totalRevenue: 0,
+          averagePrice: 0,
+          conversionRate: 0,
+          churnRate: 0
+        });
+        
+      } catch (error) {
+        toast.error('Failed to load pricing data');
+        // Set empty data on error - no mock data fallback
+        setPlans([]);
+        setAnalytics({
+          totalRevenue: 0,
+          averagePrice: 0,
+          conversionRate: 0,
+          churnRate: 0
+        });
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    loadPricingData();
+  }, []);
+
+  if (isLoading) {
+    return (
+      <div className="flex items-center justify-center h-64">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto mb-4"></div>
+          <p className="text-muted-foreground font-sans">Loading pricing data...</p>
+        </div>
+      </div>
+    );
+  }
 
   const formatCurrency = (amount: number) => {
     return new Intl.NumberFormat('ar-EG', {

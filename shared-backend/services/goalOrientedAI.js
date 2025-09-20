@@ -30,8 +30,8 @@ class GoalOrientedAI {
     this.organizationGoals = {
       business: {
         revenue: {
-          target: 2500000, // $2.5M annual revenue
-          current: 1800000, // $1.8M current
+          target: 2500000, // 2.5M EGP annual revenue
+          current: 1800000, // 1.8M EGP current
           growthRate: 0.25, // 25% growth
           priority: 'critical',
           metrics: ['monthly_revenue', 'customer_lifetime_value', 'average_order_value']

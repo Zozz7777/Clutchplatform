@@ -2371,7 +2371,11 @@
   },
   "assets": {
     "currentUser": "Current User",
-    "selectedEmployee": "Selected Employee"
+    "selectedEmployee": "Selected Employee",
+    "totalValue": "Total Value",
+    "currentMarketValue": "Current market value",
+    "maintenanceDue": "Maintenance Due",
+    "next30Days": "Next 30 days"
   },
   "analytics": {
     "totalUsers": "Total Users",
@@ -2385,6 +2389,14 @@
     "title": "User Segments",
     "totalSegments": "Total Segments",
     "activeSegments": "Active Segments"
+  },
+  "hr": {
+    "employeeManagement": "Employee Management",
+    "noPosition": "No Position",
+    "noDepartment": "No Department",
+    "salary": "Salary",
+    "department": "Department",
+    "position": "Position"
   },
   "employeeInvitation": {
     "title": "Invite New Employee",

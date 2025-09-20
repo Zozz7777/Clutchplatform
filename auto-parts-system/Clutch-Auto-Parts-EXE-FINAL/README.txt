@@ -4,8 +4,9 @@
 ========================================
 
 🎯 QUICK START:
-1. Double-click "ClutchAutoParts-Simple.bat"
-2. The system will automatically start
+1. Double-click "ClutchAutoParts-WORKING.bat" (HTML Version - RECOMMENDED)
+2. OR Double-click "ClutchAutoParts-Simple.bat" (Full Electron Version)
+3. The system will automatically start
 
 📋 SYSTEM REQUIREMENTS:
 - Windows 10/11

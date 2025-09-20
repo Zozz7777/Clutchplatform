@@ -83,7 +83,7 @@ class EnhancedAutonomousAITeam {
         researchFirst: true,
         maxAIApiUsage: 0.03, // Only 3% of tasks should use AI API
         certifications: ['AWS DevOps Engineer', 'Kubernetes Administrator', 'Terraform Associate'],
-        achievements: ['Automated deployments for 100+ services', 'Reduced deployment time by 90%', 'Led cloud migrations saving $2M+ annually']
+        achievements: ['Automated deployments for 100+ services', 'Reduced deployment time by 90%', 'Led cloud migrations saving 2M+ EGP annually']
       },
       performanceEngineer: {
         name: 'David Kim',

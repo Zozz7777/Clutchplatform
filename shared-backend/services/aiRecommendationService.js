@@ -127,7 +127,7 @@ class AIRecommendationService {
                     recommendations.push({
                         service,
                         priority: 'medium',
-                        estimatedCost: '$50-$200',
+                        estimatedCost: '50-200 EGP',
                         description: 'Recommended automotive service',
                         urgency: 'soon'
                     });
@@ -150,14 +150,14 @@ class AIRecommendationService {
             {
                 service: 'Tire Rotation',
                 priority: 'medium',
-                estimatedCost: '$20-$50',
+                estimatedCost: '20-50 EGP',
                 description: 'Rotate tires for even wear and extended life',
                 urgency: 'later'
             },
             {
                 service: 'Brake Inspection',
                 priority: 'high',
-                estimatedCost: '$50-$150',
+                estimatedCost: '50-150 EGP',
                 description: 'Check brake system for safety',
                 urgency: 'immediate'
             }

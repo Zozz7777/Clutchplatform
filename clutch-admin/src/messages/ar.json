@@ -2426,7 +2426,11 @@
   },
   "assets": {
     "currentUser": "المستخدم الحالي",
-    "selectedEmployee": "الموظف المحدد"
+    "selectedEmployee": "الموظف المحدد",
+    "totalValue": "إجمالي القيمة",
+    "currentMarketValue": "القيمة السوقية الحالية",
+    "maintenanceDue": "الصيانة المستحقة",
+    "next30Days": "الـ 30 يوم القادمة"
   },
   "analytics": {
     "totalUsers": "إجمالي المستخدمين",
@@ -2440,6 +2444,14 @@
     "title": "شرائح المستخدمين",
     "totalSegments": "إجمالي الشرائح",
     "activeSegments": "الشرائح النشطة"
+  },
+  "hr": {
+    "employeeManagement": "إدارة الموظفين",
+    "noPosition": "لا يوجد منصب",
+    "noDepartment": "لا يوجد قسم",
+    "salary": "الراتب",
+    "department": "القسم",
+    "position": "المنصب"
   },
   "employeeInvitation": {
     "title": "دعوة موظف جديد",
