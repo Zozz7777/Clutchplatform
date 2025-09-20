@@ -124,6 +124,7 @@ const notificationServiceRoutes = require('./routes/notification-service');
 const mobileAppsRoutes = require('./routes/mobile-apps');
 const operationsRoutes = require('./routes/operations');
 const securityRoutes = require('./routes/security');
+const debugRoutes = require('./routes/debug');
 
 // Import newly created routes
 const supportRoutes = require('./routes/support');
@@ -293,6 +294,7 @@ app.use('/api/v1/pending-emails', pendingEmailsRoutes);
 app.use('/api/v1/mobile-apps', mobileAppsRoutes);
 app.use('/api/v1/operations', operationsRoutes);
 app.use('/api/v1/security', securityRoutes);
+app.use('/api/v1/debug', debugRoutes);
 app.use('/api/v1/alerts', alertsRoutes);
 app.use('/api/v1/logs', logsRoutes);
 app.use('/api/v1/health-checks', healthRoutes);
