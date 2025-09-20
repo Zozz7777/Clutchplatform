@@ -176,19 +176,19 @@ export default function SubscriptionsPage() {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold font-sans">Subscription Management</h1>
+          <h1 className="text-3xl font-bold font-sans">{t('subscriptions.title')}</h1>
           <p className="text-muted-foreground font-sans">
-            Manage customer subscriptions and billing
+            {t('subscriptions.description')}
           </p>
         </div>
         <div className="flex items-center space-x-2">
           <Button variant="outline">
             <Download className="h-4 w-4 mr-2" />
-            Export
+{t('common.export')}
           </Button>
           <Button>
             <CreditCard className="h-4 w-4 mr-2" />
-            New Subscription
+{t('subscriptions.newSubscription')}
           </Button>
         </div>
       </div>
@@ -196,26 +196,26 @@ export default function SubscriptionsPage() {
       <div className="grid gap-4 md:grid-cols-5">
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium font-sans">Total Subscriptions</CardTitle>
+            <CardTitle className="text-sm font-medium font-sans">{t('subscriptions.totalSubscriptions')}</CardTitle>
             <Users className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold font-sans">{stats.totalSubscriptions}</div>
             <p className="text-xs text-muted-foreground font-sans">
-              All time subscriptions
+              {t('subscriptions.allTimeSubscriptions')}
             </p>
           </CardContent>
         </Card>
 
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium font-sans">Active</CardTitle>
+            <CardTitle className="text-sm font-medium font-sans">{t('subscriptions.active')}</CardTitle>
             <CheckCircle className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold font-sans">{stats.activeSubscriptions}</div>
             <p className="text-xs text-muted-foreground font-sans">
-              Currently active
+              {t('subscriptions.currentlyActive')}
             </p>
           </CardContent>
         </Card>

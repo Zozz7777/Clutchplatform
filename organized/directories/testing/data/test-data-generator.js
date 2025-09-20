@@ -122,7 +122,7 @@ class TestDataGenerator {
           employees: faker.number.int({ min: 1, max: 50 })
         },
         settings: {
-          currency: faker.helpers.arrayElement(['USD', 'EGP', 'SAR']),
+          currency: faker.helpers.arrayElement(['EGP', 'SAR', 'AED']),
           timezone: faker.location.timeZone(),
           workingHours: {
             monday: { open: '09:00', close: '18:00' },
@@ -230,7 +230,7 @@ class TestDataGenerator {
           method: faker.helpers.arrayElement(paymentMethods),
           status: faker.helpers.arrayElement(['pending', 'paid', 'failed', 'refunded']),
           amount: faker.commerce.price({ min: 50, max: 5000 }),
-          currency: 'USD',
+          currency: 'EGP',
           transactionId: faker.string.alphanumeric(20)
         },
         shipping: {

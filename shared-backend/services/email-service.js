@@ -4,6 +4,7 @@
  */
 
 const nodemailer = require('nodemailer');
+const { getCollection } = require('../config/optimized-database');
 
 class EmailService {
   constructor() {
@@ -15,9 +16,9 @@ class EmailService {
     try {
       // Check if we have proper email credentials
       const hasValidCredentials = (
-        (process.env.EMAIL_USER && process.env.EMAIL_PASSWORD) ||
+        (process.env.EMAIL_USER && process.env.EMAIL_PASSWORD && process.env.EMAIL_PASSWORD !== 'your-app-password-here') ||
         (process.env.GMAIL_USER && process.env.GMAIL_APP_PASSWORD) ||
-        (process.env.SMTP_USER && process.env.SMTP_PASS)
+        (process.env.SMTP_USER && process.env.SMTP_PASS && process.env.SMTP_PASS !== 'your-app-password-here')
       );
 
       if (!hasValidCredentials) {
@@ -84,6 +85,17 @@ class EmailService {
         console.log('📧 MOCK EMAIL - Subject:', mailOptions.subject);
         console.log('📧 MOCK EMAIL - Invitation Link:', invitationLink);
         console.log('📧 MOCK EMAIL - To set up real email, configure EMAIL_USER and EMAIL_PASSWORD in .env');
+        
+        // Store invitation in database for manual processing
+        await this.storeInvitationForManualProcessing({
+          email,
+          name: invitationData.name,
+          role: invitationData.role,
+          department: invitationData.department,
+          invitationLink,
+          mailOptions
+        });
+        
         return { messageId: 'mock-' + Date.now(), accepted: [email] };
       }
 
@@ -225,6 +237,35 @@ This is an automated message from Clutch Platform. Please do not reply to this e
       return { success: true, message: 'Email service connection successful' };
     } catch (error) {
       return { success: false, error: error.message };
+    }
+  }
+
+  async storeInvitationForManualProcessing(invitationData) {
+    try {
+      const pendingEmailsCollection = await getCollection('pending_emails');
+      
+      const pendingEmail = {
+        type: 'employee_invitation',
+        to: invitationData.email,
+        subject: invitationData.mailOptions.subject,
+        html: invitationData.mailOptions.html,
+        text: invitationData.mailOptions.text,
+        invitationLink: invitationData.invitationLink,
+        employeeData: {
+          name: invitationData.name,
+          role: invitationData.role,
+          department: invitationData.department
+        },
+        status: 'pending',
+        createdAt: new Date(),
+        attempts: 0,
+        lastAttempt: null
+      };
+
+      await pendingEmailsCollection.insertOne(pendingEmail);
+      console.log('📧 Stored invitation for manual processing:', invitationData.email);
+    } catch (error) {
+      console.error('❌ Failed to store invitation for manual processing:', error);
     }
   }
 }

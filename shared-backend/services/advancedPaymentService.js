@@ -21,7 +21,7 @@ class AdvancedPaymentService {
     try {
       const {
         amount,
-        currency = 'USD',
+        currency = 'EGP',
         paymentMethod,
         customerId,
         bookingId,
@@ -235,7 +235,7 @@ class AdvancedPaymentService {
       // Process first installment
       const firstPayment = await this.processPayment({
         amount: installmentAmount,
-        currency: 'USD',
+        currency: 'EGP',
         paymentMethod,
         customerId,
         bookingId,
@@ -280,7 +280,7 @@ class AdvancedPaymentService {
       // Process payment for this installment
       const payment = await this.processPayment({
         amount: plan.installmentAmount,
-        currency: 'USD',
+        currency: 'EGP',
         paymentMethod: 'stripe', // Default to Stripe for installments
         customerId: plan.customerId,
         bookingId: plan.bookingId,
@@ -332,7 +332,7 @@ class AdvancedPaymentService {
       for (const split of splits) {
         const result = await this.processPayment({
           amount: split.amount,
-          currency: split.currency || 'USD',
+          currency: split.currency || 'EGP',
           paymentMethod: split.paymentMethod,
           customerId,
           bookingId,
@@ -366,7 +366,7 @@ class AdvancedPaymentService {
         bookingId,
         items,
         taxRate = 0,
-        currency = 'USD'
+        currency = 'EGP'
       } = invoiceData;
 
       const subtotal = items.reduce((sum, item) => sum + item.amount, 0);

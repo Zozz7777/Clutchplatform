@@ -36,7 +36,7 @@ const testData = {
   audioData: 'base64_encoded_audio_data_here',
   coordinates: { latitude: 40.7128, longitude: -74.0060 },
   sensorData: { oilLevel: 0.75, engineTemp: 195, mileage: 45000 },
-  transactionData: { id: 'txn_123', amount: 150.00, currency: 'USD' }
+  transactionData: { id: 'txn_123', amount: 150.00, currency: 'EGP' }
 };
 
 /**

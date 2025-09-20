@@ -1000,6 +1000,10 @@
   "auditTrail": {
     "title": "Audit Trail",
     "description": "Monitor system activities, security events, and user actions",
+    "totalLogs": "Total Logs",
+    "auditEntries": "Audit entries",
+    "criticalEvents": "Critical Events",
+    "requireAttention": "Require attention",
     "systemActivities": "System Activities",
     "securityEvents": "Security Events",
     "userActivities": "User Activities",
@@ -1582,7 +1586,8 @@
     "search": "Search...",
     "all": "All",
     "cancel": "Cancel",
-    "close": "Close"
+    "close": "Close",
+    "unableToLoad": "Unable to load data"
   },
   "commandBar": {
     "categories": {
@@ -2274,7 +2279,14 @@
     "high": "High",
     "enterprise": "Enterprise",
     "smb": "SMB",
-    "individual": "Individual"
+    "individual": "Individual",
+    "customersAtLowRisk": "customers at low risk",
+    "customersAtMediumRisk": "customers at medium risk",
+    "customersAtHighRisk": "customers at high risk",
+    "topPerformingCustomers": "top performing customers",
+    "customersNeedAttention": "customers need immediate attention",
+    "excellentOverallHealth": "Excellent overall customer health",
+    "healthBelowTarget": "Customer health below target - focus on retention"
   },
   "downtime": {
     "downtimeImpact": "Downtime Impact",
@@ -2293,6 +2305,46 @@
     "downtimeByReason": "Downtime by Reason",
     "vehicleName": "Vehicle Name",
     "downtimeHours": "Downtime Hours",
-    "revenueLoss": "Revenue Loss"
+    "revenueLoss": "Revenue Loss",
+    "exportReport": "Export Report",
+    "downtimeInsights": "Downtime Insights",
+    "totalDowntimeHours": "Total downtime",
+    "revenueImpactingDowntime": "Revenue-impacting downtime",
+    "totalRevenueImpact": "Total revenue impact",
+    "averageDowntimePerVehicle": "Average downtime per vehicle",
+    "topDowntimeReason": "Top downtime reason",
+    "revenueImpactAboveTarget": "Revenue impact above target - consider preventive measures",
+    "lostRevenueHoursDescription": "Lost revenue hours due to vehicle unavailability"
+  },
+  "projectRoi": {
+    "projectRoiInsights": "Project ROI Insights",
+    "totalInvestment": "Total investment",
+    "totalValue": "Total value",
+    "averageRoi": "Average ROI",
+    "bestRoi": "Best ROI",
+    "projectsAnalyzed": "projects analyzed",
+    "completedProjects": "completed projects",
+    "excellentAverageRoi": "Excellent average ROI - strong project performance",
+    "outstandingRoiAchieved": "Outstanding ROI achieved - replicate success factors"
+  },
+  "incidentCost": {
+    "incidentCostInsights": "Incident Cost Insights",
+    "totalIncidentCost": "Total incident cost",
+    "averageCostPerIncident": "Average cost per incident",
+    "totalDowntime": "Total downtime",
+    "incidentsAnalyzed": "incidents analyzed",
+    "criticalIncidents": "critical incidents",
+    "highSeverityIncidents": "high severity incidents",
+    "criticalIncidentsHighestCost": "Critical incidents have highest cost impact",
+    "highAverageCost": "High average cost - focus on prevention"
+  },
+  "subscriptions": {
+    "title": "Subscription Management",
+    "description": "Manage customer subscriptions and billing",
+    "newSubscription": "New Subscription",
+    "totalSubscriptions": "Total Subscriptions",
+    "allTimeSubscriptions": "All time subscriptions",
+    "active": "Active",
+    "currentlyActive": "Currently active"
   }
 }

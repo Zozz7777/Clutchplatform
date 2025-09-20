@@ -8,6 +8,102 @@ const router = express.Router();
 const { authenticateToken, checkRole, checkPermission } = require('../middleware/unified-auth');
 const { getCollection } = require('../config/optimized-database');
 
+// GET /api/v1/fleet/fuel-cost-metrics - Get fuel cost metrics
+router.get('/fuel-cost-metrics', authenticateToken, checkRole(['head_administrator', 'asset_manager']), async (req, res) => {
+  try {
+    const fuelCostsCollection = await getCollection('fuel_costs');
+    
+    if (!fuelCostsCollection) {
+      return res.status(500).json({
+        success: false,
+        error: 'DATABASE_CONNECTION_FAILED',
+        message: 'Database connection failed',
+        timestamp: new Date().toISOString()
+      });
+    }
+    
+    const { startDate, endDate, vehicleId } = req.query;
+    const filter = {};
+    
+    if (startDate || endDate) {
+      filter.date = {};
+      if (startDate) filter.date.$gte = new Date(startDate);
+      if (endDate) filter.date.$lte = new Date(endDate);
+    }
+    
+    if (vehicleId) filter.vehicleId = vehicleId;
+    
+    const fuelCosts = await fuelCostsCollection
+      .find(filter)
+      .sort({ date: -1 })
+      .toArray();
+    
+    res.json({
+      success: true,
+      data: fuelCosts,
+      message: 'Fuel cost metrics retrieved successfully',
+      timestamp: new Date().toISOString()
+    });
+    
+  } catch (error) {
+    console.error('Get fuel cost metrics error:', error);
+    res.status(500).json({
+      success: false,
+      error: 'GET_FUEL_COST_METRICS_FAILED',
+      message: 'Failed to get fuel cost metrics',
+      timestamp: new Date().toISOString()
+    });
+  }
+});
+
+// GET /api/v1/fleet/downtime-metrics - Get downtime metrics
+router.get('/downtime-metrics', authenticateToken, checkRole(['head_administrator', 'asset_manager']), async (req, res) => {
+  try {
+    const downtimeCollection = await getCollection('downtime_records');
+    
+    if (!downtimeCollection) {
+      return res.status(500).json({
+        success: false,
+        error: 'DATABASE_CONNECTION_FAILED',
+        message: 'Database connection failed',
+        timestamp: new Date().toISOString()
+      });
+    }
+    
+    const { startDate, endDate, vehicleId } = req.query;
+    const filter = {};
+    
+    if (startDate || endDate) {
+      filter.startTime = {};
+      if (startDate) filter.startTime.$gte = new Date(startDate);
+      if (endDate) filter.startTime.$lte = new Date(endDate);
+    }
+    
+    if (vehicleId) filter.vehicleId = vehicleId;
+    
+    const downtimeRecords = await downtimeCollection
+      .find(filter)
+      .sort({ startTime: -1 })
+      .toArray();
+    
+    res.json({
+      success: true,
+      data: downtimeRecords,
+      message: 'Downtime metrics retrieved successfully',
+      timestamp: new Date().toISOString()
+    });
+    
+  } catch (error) {
+    console.error('Get downtime metrics error:', error);
+    res.status(500).json({
+      success: false,
+      error: 'GET_DOWNTIME_METRICS_FAILED',
+      message: 'Failed to get downtime metrics',
+      timestamp: new Date().toISOString()
+    });
+  }
+});
+
 // GET /api/v1/fleet/vehicles - Get all fleet vehicles
 router.get('/vehicles', authenticateToken, checkRole(['head_administrator', 'asset_manager']), async (req, res) => {
   try {

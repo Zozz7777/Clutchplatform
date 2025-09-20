@@ -35,7 +35,7 @@ class PaymentService {
 
       // Set default values
       paymentData.status = paymentData.status || 'pending';
-      paymentData.currency = paymentData.currency || 'USD';
+      paymentData.currency = paymentData.currency || 'EGP';
       paymentData.createdAt = new Date();
       paymentData.updatedAt = new Date();
 

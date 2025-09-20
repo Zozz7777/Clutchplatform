@@ -116,7 +116,7 @@ class EnterprisePaymentService {
             id: 'basic',
             name: 'Basic Plan',
             price: 29.99,
-            currency: 'USD',
+            currency: 'EGP',
             interval: 'month',
             features: ['basic_support', 'standard_services', 'email_notifications'],
             maxUsers: 1,
@@ -127,7 +127,7 @@ class EnterprisePaymentService {
             id: 'professional',
             name: 'Professional Plan',
             price: 79.99,
-            currency: 'USD',
+            currency: 'EGP',
             interval: 'month',
             features: ['priority_support', 'advanced_services', 'sms_notifications', 'ai_recommendations'],
             maxUsers: 5,
@@ -138,7 +138,7 @@ class EnterprisePaymentService {
             id: 'enterprise',
             name: 'Enterprise Plan',
             price: 199.99,
-            currency: 'USD',
+            currency: 'EGP',
             interval: 'month',
             features: ['dedicated_support', 'premium_services', 'all_notifications', 'ai_recommendations', 'fleet_management'],
             maxUsers: -1, // Unlimited
@@ -232,7 +232,7 @@ class EnterprisePaymentService {
             const {
                 userId,
                 amount,
-                currency = 'USD',
+                currency = 'EGP',
                 paymentMethod,
                 gateway = 'stripe',
                 description,
@@ -589,7 +589,7 @@ class EnterprisePaymentService {
                 paymentCount: payments.length,
                 averageOrderValue: totalRevenue / payments.length,
                 revenueByGateway,
-                currency: 'USD'
+                currency: 'EGP'
             };
 
         } catch (error) {

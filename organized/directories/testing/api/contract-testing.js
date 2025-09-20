@@ -140,7 +140,7 @@ class APIContractTester {
                 enum: ['pending', 'paid', 'failed', 'refunded'] 
               },
               amount: { type: 'number', minimum: 0 },
-              currency: { type: 'string', default: 'USD' },
+              currency: { type: 'string', default: 'EGP' },
               transactionId: { type: 'string' }
             }
           },

@@ -1000,6 +1000,10 @@
   "auditTrail": {
     "title": "مسار التدقيق",
     "description": "مراقبة أنشطة النظام والأحداث الأمنية وإجراءات المستخدمين",
+    "totalLogs": "إجمالي السجلات",
+    "auditEntries": "إدخالات التدقيق",
+    "criticalEvents": "الأحداث الحرجة",
+    "requireAttention": "تتطلب الاهتمام",
     "systemActivities": "أنشطة النظام",
     "securityEvents": "الأحداث الأمنية",
     "userActivities": "أنشطة المستخدمين",
@@ -1582,7 +1586,8 @@
     "search": "بحث...",
     "all": "الكل",
     "cancel": "إلغاء",
-    "close": "إغلاق"
+    "close": "إغلاق",
+    "unableToLoad": "غير قادر على تحميل البيانات"
   },
   "commandBar": {
     "categories": {
@@ -2329,7 +2334,14 @@
     "high": "عالي",
     "enterprise": "مؤسسة",
     "smb": "شركة صغيرة ومتوسطة",
-    "individual": "فردي"
+    "individual": "فردي",
+    "customersAtLowRisk": "عملاء في خطر منخفض",
+    "customersAtMediumRisk": "عملاء في خطر متوسط",
+    "customersAtHighRisk": "عملاء في خطر عالي",
+    "topPerformingCustomers": "أفضل العملاء أداءً",
+    "customersNeedAttention": "عملاء يحتاجون إلى اهتمام فوري",
+    "excellentOverallHealth": "صحة عملاء ممتازة بشكل عام",
+    "healthBelowTarget": "صحة العملاء أقل من الهدف - ركز على الاحتفاظ"
   },
   "downtime": {
     "downtimeImpact": "تأثير التوقف",
@@ -2348,6 +2360,46 @@
     "downtimeByReason": "التوقف حسب السبب",
     "vehicleName": "اسم المركبة",
     "downtimeHours": "ساعات التوقف",
-    "revenueLoss": "فقدان الإيرادات"
+    "revenueLoss": "فقدان الإيرادات",
+    "exportReport": "تصدير التقرير",
+    "downtimeInsights": "رؤى التوقف",
+    "totalDowntimeHours": "إجمالي التوقف",
+    "revenueImpactingDowntime": "التوقف المؤثر على الإيرادات",
+    "totalRevenueImpact": "إجمالي تأثير الإيرادات",
+    "averageDowntimePerVehicle": "متوسط التوقف لكل مركبة",
+    "topDowntimeReason": "أهم سبب للتوقف",
+    "revenueImpactAboveTarget": "تأثير الإيرادات أعلى من الهدف - فكر في التدابير الوقائية",
+    "lostRevenueHoursDescription": "ساعات الإيرادات المفقودة بسبب عدم توفر المركبات"
+  },
+  "projectRoi": {
+    "projectRoiInsights": "رؤى عائد الاستثمار للمشاريع",
+    "totalInvestment": "إجمالي الاستثمار",
+    "totalValue": "إجمالي القيمة",
+    "averageRoi": "متوسط عائد الاستثمار",
+    "bestRoi": "أفضل عائد استثمار",
+    "projectsAnalyzed": "مشاريع تم تحليلها",
+    "completedProjects": "مشاريع مكتملة",
+    "excellentAverageRoi": "متوسط عائد استثمار ممتاز - أداء قوي للمشاريع",
+    "outstandingRoiAchieved": "تم تحقيق عائد استثمار استثنائي - كرر عوامل النجاح"
+  },
+  "incidentCost": {
+    "incidentCostInsights": "رؤى تكلفة الحوادث",
+    "totalIncidentCost": "إجمالي تكلفة الحوادث",
+    "averageCostPerIncident": "متوسط التكلفة لكل حادث",
+    "totalDowntime": "إجمالي التوقف",
+    "incidentsAnalyzed": "حوادث تم تحليلها",
+    "criticalIncidents": "حوادث حرجة",
+    "highSeverityIncidents": "حوادث عالية الخطورة",
+    "criticalIncidentsHighestCost": "الحوادث الحرجة لها أعلى تأثير على التكلفة",
+    "highAverageCost": "متوسط تكلفة عالي - ركز على الوقاية"
+  },
+  "subscriptions": {
+    "title": "إدارة الاشتراكات",
+    "description": "إدارة اشتراكات العملاء والفواتير",
+    "newSubscription": "اشتراك جديد",
+    "totalSubscriptions": "إجمالي الاشتراكات",
+    "allTimeSubscriptions": "جميع الاشتراكات على الإطلاق",
+    "active": "نشط",
+    "currentlyActive": "نشط حالياً"
   }
 }

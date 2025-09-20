@@ -49,32 +49,68 @@ export function FuelCostMetrics({ className = '' }: FuelCostMetricsProps) {
           productionApi.getPayments()
         ]);
 
-        const totalVehicles = vehicles?.length || 0;
-        const totalMiles = totalVehicles * 1200; // Simulated monthly miles per vehicle
-        const fuelEfficiency = 8.5; // MPG average
+        // Load real fuel cost data from API
+        try {
+          const fuelCostData = await productionApi.getFuelCostMetrics();
+          
+          if (fuelCostData && Array.isArray(fuelCostData) && fuelCostData.length > 0) {
+            // Aggregate real fuel cost data
+            const totalVehicles = vehicles?.length || 0;
+            const totalCost = fuelCostData.reduce((sum, record) => sum + (record.totalCost || 0), 0);
+            const fuelCost = fuelCostData.reduce((sum, record) => sum + (record.fuelCost || 0), 0);
+            const maintenanceCost = fuelCostData.reduce((sum, record) => sum + (record.maintenanceCost || 0), 0);
+            const insuranceCost = fuelCostData.reduce((sum, record) => sum + (record.insuranceCost || 0), 0);
+            const otherCosts = fuelCostData.reduce((sum, record) => sum + (record.otherCosts || 0), 0);
+            const totalMiles = fuelCostData.reduce((sum, record) => sum + (record.miles || 0), 0);
+            const fuelEfficiency = fuelCostData.length > 0 
+              ? fuelCostData.reduce((sum, record) => sum + (record.fuelEfficiency || 0), 0) / fuelCostData.length 
+              : 8.5; // Default fallback
 
-        // Simulate cost calculations
-        const fuelCost = (totalMiles / fuelEfficiency) * 3.50; // 3.50 EGP per gallon
-        const maintenanceCost = totalVehicles * 450; // 450 EGP per vehicle per month
-        const insuranceCost = totalVehicles * 200; // 200 EGP per vehicle per month
-        const otherCosts = totalVehicles * 150; // 150 EGP per vehicle per month
+            const costPerVehicle = totalVehicles > 0 ? totalCost / totalVehicles : 0;
+            const costPerMile = totalMiles > 0 ? totalCost / totalMiles : 0;
 
-        const totalCost = fuelCost + maintenanceCost + insuranceCost + otherCosts;
-        const costPerVehicle = totalVehicles > 0 ? totalCost / totalVehicles : 0;
-        const costPerMile = totalMiles > 0 ? totalCost / totalMiles : 0;
-
-        setCostMetrics({
-          totalCost,
-          fuelCost,
-          maintenanceCost,
-          insuranceCost,
-          otherCosts,
-          costPerVehicle,
-          costPerMile,
-          fuelEfficiency,
-          totalMiles,
-          totalVehicles
-        });
+            setCostMetrics({
+              totalCost,
+              fuelCost,
+              maintenanceCost,
+              insuranceCost,
+              otherCosts,
+              costPerVehicle,
+              costPerMile,
+              fuelEfficiency,
+              totalMiles,
+              totalVehicles
+            });
+          } else {
+            // No fuel cost data available, set empty data
+            setCostMetrics({
+              totalCost: 0,
+              fuelCost: 0,
+              maintenanceCost: 0,
+              insuranceCost: 0,
+              otherCosts: 0,
+              costPerVehicle: 0,
+              costPerMile: 0,
+              fuelEfficiency: 0,
+              totalMiles: 0,
+              totalVehicles: vehicles?.length || 0
+            });
+          }
+        } catch (error) {
+          // If fuel cost API fails, set empty data
+          setCostMetrics({
+            totalCost: 0,
+            fuelCost: 0,
+            maintenanceCost: 0,
+            insuranceCost: 0,
+            otherCosts: 0,
+            costPerVehicle: 0,
+            costPerMile: 0,
+            fuelEfficiency: 0,
+            totalMiles: 0,
+            totalVehicles: vehicles?.length || 0
+          });
+        }
       } catch (error) {
         // Failed to load cost metrics
       } finally {

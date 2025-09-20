@@ -78,8 +78,8 @@ export class I18nManager {
     return this.isRTL() ? 'rtl' : 'ltr';
   }
 
-  formatCurrency(amount: number, currency: string = 'SAR'): string {
-    const locale = this.config.lng === 'ar' ? 'ar-SA' : 'en-US';
+  formatCurrency(amount: number, currency: string = 'EGP'): string {
+    const locale = this.config.lng === 'ar' ? 'ar-EG' : 'en-US';
     return new Intl.NumberFormat(locale, {
       style: 'currency',
       currency: currency,

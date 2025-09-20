@@ -138,6 +138,50 @@ export class RealApiService {
     )();
   }
 
+  async getFuelCostMetrics(): Promise<Record<string, unknown>[]> {
+    return withErrorHandling(
+      async () => {
+        const response = await apiService.request<Record<string, unknown>[]>("/api/v1/fleet/fuel-cost-metrics");
+        return handleApiResponse(response, 'getFuelCostMetrics', []);
+      },
+      'getFuelCostMetrics',
+      { fallbackValue: [], showToast: false }
+    )();
+  }
+
+  async getProjects(): Promise<Record<string, unknown>[]> {
+    return withErrorHandling(
+      async () => {
+        const response = await apiService.request<Record<string, unknown>[]>("/api/v1/projects");
+        return handleApiResponse(response, 'getProjects', []);
+      },
+      'getProjects',
+      { fallbackValue: [], showToast: false }
+    )();
+  }
+
+  async getBudgets(): Promise<Record<string, unknown>[]> {
+    return withErrorHandling(
+      async () => {
+        const response = await apiService.request<Record<string, unknown>[]>("/api/v1/finance/budgets");
+        return handleApiResponse(response, 'getBudgets', []);
+      },
+      'getBudgets',
+      { fallbackValue: [], showToast: false }
+    )();
+  }
+
+  async getExpenses(): Promise<Record<string, unknown>[]> {
+    return withErrorHandling(
+      async () => {
+        const response = await apiService.request<Record<string, unknown>[]>("/api/v1/finance/expenses");
+        return handleApiResponse(response, 'getExpenses', []);
+      },
+      'getExpenses',
+      { fallbackValue: [], showToast: false }
+    )();
+  }
+
   async getVehicleDetails(vehicleId: string): Promise<Record<string, unknown>> {
     return withErrorHandling(
       async () => {

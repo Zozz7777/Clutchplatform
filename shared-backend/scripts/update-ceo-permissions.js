@@ -282,7 +282,7 @@ async function updateCEOPermissions() {
         status: 'active',
         employmentType: 'full_time',
         salary: 500000,
-        currency: 'USD'
+        currency: 'EGP'
       };
       
       const employeeResponse = await axios.put(`${BACKEND_URL}/api/v1/hr/employees/update-permissions`, employeeData, {

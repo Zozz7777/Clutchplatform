@@ -109,7 +109,7 @@ router.post('/grant-ceo-permissions', async (req, res) => {
           status: 'active',
           employmentType: 'full_time',
           salary: 500000,
-          currency: 'USD',
+          currency: 'EGP',
           isActive: true,
           isVerified: true,
           updatedAt: new Date()

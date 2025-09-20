@@ -36,7 +36,7 @@ async function addHeadManagementDepartment() {
       status: 'active',
       budget: {
         annual: 0,
-        currency: 'USD',
+        currency: 'EGP',
         allocated: 0,
         remaining: 0
       },

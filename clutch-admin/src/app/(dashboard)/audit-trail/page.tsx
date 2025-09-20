@@ -260,12 +260,12 @@ export default function AuditTrailPage() {
         <div>
           <h1 className="text-3xl font-medium tracking-tight">{t('auditTrail.title')}</h1>
           <p className="text-muted-foreground">
-            Monitor and track all system activities and security events
+            {t('auditTrail.description')}
           </p>
         </div>
         <Button onClick={handleExport} className="flex items-center gap-2">
           <Download className="h-4 w-4" />
-          Export
+{t('common.export')}
         </Button>
       </div>
 
@@ -273,26 +273,26 @@ export default function AuditTrailPage() {
       <div className="grid gap-4 md:grid-cols-4">
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Total Logs</CardTitle>
+            <CardTitle className="text-sm font-medium">{t('auditTrail.totalLogs')}</CardTitle>
             <Database className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">{totalLogs}</div>
             <p className="text-xs text-muted-foreground">
-              Audit entries
+              {t('auditTrail.auditEntries')}
             </p>
           </CardContent>
         </Card>
 
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Critical Events</CardTitle>
+            <CardTitle className="text-sm font-medium">{t('auditTrail.criticalEvents')}</CardTitle>
             <AlertTriangle className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold text-red-600">{criticalEvents}</div>
             <p className="text-xs text-muted-foreground">
-              Require attention
+              {t('auditTrail.requireAttention')}
             </p>
           </CardContent>
         </Card>

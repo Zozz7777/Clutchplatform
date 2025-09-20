@@ -68,52 +68,7 @@ export function ProjectROI({ className = '' }: ProjectROIProps) {
           duration: project.duration || 0,
           teamSize: project.teamSize || 0,
           completionDate: project.completionDate || new Date().toISOString()
-          },
-          {
-            projectId: '2',
-            projectName: 'AI-Powered Analytics',
-            status: 'in-progress',
-            investment: 200000,
-            value: 350000,
-            roi: 75,
-            duration: 8,
-            teamSize: 12,
-            completionDate: new Date(Date.now() + 60 * 24 * 60 * 60 * 1000).toISOString()
-          },
-          {
-            projectId: '3',
-            projectName: 'Mobile App Development',
-            status: 'completed',
-            investment: 120000,
-            value: 280000,
-            roi: 133,
-            duration: 4,
-            teamSize: 6,
-            completionDate: new Date(Date.now() - 60 * 24 * 60 * 60 * 1000).toISOString()
-          },
-          {
-            projectId: '4',
-            projectName: 'Security Enhancement',
-            status: 'completed',
-            investment: 80000,
-            value: 150000,
-            roi: 87.5,
-            duration: 3,
-            teamSize: 4,
-            completionDate: new Date(Date.now() - 90 * 24 * 60 * 60 * 1000).toISOString()
-          },
-          {
-            projectId: '5',
-            projectName: 'API Integration Platform',
-            status: 'planned',
-            investment: 100000,
-            value: 200000,
-            roi: 100,
-            duration: 5,
-            teamSize: 7,
-            completionDate: new Date(Date.now() + 120 * 24 * 60 * 60 * 1000).toISOString()
-          }
-        ];
+        }));
 
         const totalInvestment = transformedProjects.reduce((sum, project) => sum + project.investment, 0);
         const totalValue = transformedProjects.reduce((sum, project) => sum + project.value, 0);
@@ -349,19 +304,19 @@ export function ProjectROI({ className = '' }: ProjectROIProps) {
 
         {/* Insights */}
         <div className="p-3 bg-primary/10 rounded-[0.625rem]-lg">
-          <h5 className="text-sm font-medium text-blue-900 mb-2">💡 Project ROI Insights</h5>
+          <h5 className="text-sm font-medium text-blue-900 mb-2">💡 {t('projectRoi.projectRoiInsights')}</h5>
           <ul className="text-xs text-blue-800 space-y-1">
-            <li>• Total investment: ${roiData.totalInvestment.toLocaleString()}</li>
-            <li>• Total value: ${roiData.totalValue.toLocaleString()}</li>
-            <li>• Average ROI: {roiData.averageROI.toFixed(0)}%</li>
-            <li>• Best ROI: {roiData.bestROI?.projectName} ({roiData.bestROI?.roi.toFixed(0)}%)</li>
-            <li>• {roiData.projects.length} projects analyzed</li>
-            <li>• {roiData.projects.filter(p => p.status === 'completed').length} completed projects</li>
+            <li>• {t('projectRoi.totalInvestment')}: ${roiData.totalInvestment.toLocaleString()}</li>
+            <li>• {t('projectRoi.totalValue')}: ${roiData.totalValue.toLocaleString()}</li>
+            <li>• {t('projectRoi.averageRoi')}: {roiData.averageROI.toFixed(0)}%</li>
+            <li>• {t('projectRoi.bestRoi')}: {roiData.bestROI?.projectName} ({roiData.bestROI?.roi.toFixed(0)}%)</li>
+            <li>• {roiData.projects.length} {t('projectRoi.projectsAnalyzed')}</li>
+            <li>• {roiData.projects.filter(p => p.status === 'completed').length} {t('projectRoi.completedProjects')}</li>
             {roiData.averageROI >= 100 && (
-              <li>• Excellent average ROI - strong project performance</li>
+              <li>• {t('projectRoi.excellentAverageRoi')}</li>
             )}
             {roiData.bestROI && roiData.bestROI.roi >= 200 && (
-              <li>• Outstanding ROI achieved - replicate success factors</li>
+              <li>• {t('projectRoi.outstandingRoiAchieved')}</li>
             )}
           </ul>
         </div>

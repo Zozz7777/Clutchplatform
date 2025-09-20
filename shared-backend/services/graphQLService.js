@@ -351,7 +351,7 @@ class GraphQLService {
         bookingId: ID!
         amount: Float!
         method: PaymentMethod!
-        currency: String = "USD"
+        currency: String = "EGP"
       }
     `;
 

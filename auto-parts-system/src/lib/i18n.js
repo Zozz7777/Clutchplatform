@@ -55,8 +55,8 @@ export class I18nManager {
     getDirection() {
         return this.isRTL() ? 'rtl' : 'ltr';
     }
-    formatCurrency(amount, currency = 'SAR') {
-        const locale = this.config.lng === 'ar' ? 'ar-SA' : 'en-US';
+    formatCurrency(amount, currency = 'EGP') {
+        const locale = this.config.lng === 'ar' ? 'ar-EG' : 'en-US';
         return new Intl.NumberFormat(locale, {
             style: 'currency',
             currency: currency,

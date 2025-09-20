@@ -17,6 +17,55 @@ router.use(authenticateToken);
 
 // ===== CRM CUSTOMERS =====
 
+// GET /api/v1/crm/customer-health-scores - Get customer health scores
+router.get('/customer-health-scores', checkRole(['head_administrator', 'crm_manager']), async (req, res) => {
+  try {
+    const healthScoresCollection = await getCollection('customer_health_scores');
+    
+    if (!healthScoresCollection) {
+      return res.status(500).json({
+        success: false,
+        error: 'DATABASE_CONNECTION_FAILED',
+        message: 'Database connection failed',
+        timestamp: new Date().toISOString()
+      });
+    }
+    
+    const { startDate, endDate, customerId, riskLevel } = req.query;
+    const filter = {};
+    
+    if (startDate || endDate) {
+      filter.date = {};
+      if (startDate) filter.date.$gte = new Date(startDate);
+      if (endDate) filter.date.$lte = new Date(endDate);
+    }
+    
+    if (customerId) filter.customerId = customerId;
+    if (riskLevel) filter.riskLevel = riskLevel;
+    
+    const healthScores = await healthScoresCollection
+      .find(filter)
+      .sort({ date: -1 })
+      .toArray();
+    
+    res.json({
+      success: true,
+      data: healthScores,
+      message: 'Customer health scores retrieved successfully',
+      timestamp: new Date().toISOString()
+    });
+    
+  } catch (error) {
+    console.error('Get customer health scores error:', error);
+    res.status(500).json({
+      success: false,
+      error: 'GET_CUSTOMER_HEALTH_SCORES_FAILED',
+      message: 'Failed to get customer health scores',
+      timestamp: new Date().toISOString()
+    });
+  }
+});
+
 // GET /api/crm/customers - Get all customers
 router.get('/customers', async (req, res) => {
   try {

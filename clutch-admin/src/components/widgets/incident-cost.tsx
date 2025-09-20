@@ -382,19 +382,19 @@ export function IncidentCost({ className = '' }: IncidentCostProps) {
 
         {/* Insights */}
         <div className="p-3 bg-primary/10 rounded-[0.625rem]-lg">
-          <h5 className="text-sm font-medium text-blue-900 mb-2">💡 Incident Cost Insights</h5>
+          <h5 className="text-sm font-medium text-blue-900 mb-2">💡 {t('incidentCost.incidentCostInsights')}</h5>
           <ul className="text-xs text-blue-800 space-y-1">
-            <li>• Total incident cost: ${incidentData.totalCost.toLocaleString()}</li>
-            <li>• Average cost per incident: ${incidentData.averageCost.toLocaleString()}</li>
-            <li>• Total downtime: {formatDuration(incidentData.totalDowntime)}</li>
-            <li>• {incidentData.incidents.length} incidents analyzed</li>
-            <li>• {incidentData.severityDistribution.critical || 0} critical incidents</li>
-            <li>• {incidentData.severityDistribution.high || 0} high severity incidents</li>
+            <li>• {t('incidentCost.totalIncidentCost')}: ${incidentData.totalCost.toLocaleString()}</li>
+            <li>• {t('incidentCost.averageCostPerIncident')}: ${incidentData.averageCost.toLocaleString()}</li>
+            <li>• {t('incidentCost.totalDowntime')}: {formatDuration(incidentData.totalDowntime)}</li>
+            <li>• {incidentData.incidents.length} {t('incidentCost.incidentsAnalyzed')}</li>
+            <li>• {incidentData.severityDistribution.critical || 0} {t('incidentCost.criticalIncidents')}</li>
+            <li>• {incidentData.severityDistribution.high || 0} {t('incidentCost.highSeverityIncidents')}</li>
             {incidentData.severityDistribution.critical > 0 && (
-              <li>• Critical incidents have highest cost impact</li>
+              <li>• {t('incidentCost.criticalIncidentsHighestCost')}</li>
             )}
             {incidentData.averageCost > 10000 && (
-              <li>• High average cost - focus on prevention</li>
+              <li>• {t('incidentCost.highAverageCost')}</li>
             )}
           </ul>
         </div>

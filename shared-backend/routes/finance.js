@@ -17,6 +17,104 @@ router.use(authenticateToken);
 
 // ===== FINANCE PAYMENTS =====
 
+// GET /api/v1/finance/budgets - Get all budgets
+router.get('/budgets', checkRole(['head_administrator', 'finance_manager']), async (req, res) => {
+  try {
+    const budgetsCollection = await getCollection('budgets');
+    
+    if (!budgetsCollection) {
+      return res.status(500).json({
+        success: false,
+        error: 'DATABASE_CONNECTION_FAILED',
+        message: 'Database connection failed',
+        timestamp: new Date().toISOString()
+      });
+    }
+    
+    const { startDate, endDate, category, status } = req.query;
+    const filter = {};
+    
+    if (startDate || endDate) {
+      filter.date = {};
+      if (startDate) filter.date.$gte = new Date(startDate);
+      if (endDate) filter.date.$lte = new Date(endDate);
+    }
+    
+    if (category) filter.category = category;
+    if (status) filter.status = status;
+    
+    const budgets = await budgetsCollection
+      .find(filter)
+      .sort({ date: -1 })
+      .toArray();
+    
+    res.json({
+      success: true,
+      data: budgets,
+      message: 'Budgets retrieved successfully',
+      timestamp: new Date().toISOString()
+    });
+    
+  } catch (error) {
+    console.error('Get budgets error:', error);
+    res.status(500).json({
+      success: false,
+      error: 'GET_BUDGETS_FAILED',
+      message: 'Failed to get budgets',
+      timestamp: new Date().toISOString()
+    });
+  }
+});
+
+// GET /api/v1/finance/expenses - Get all expenses
+router.get('/expenses', checkRole(['head_administrator', 'finance_manager']), async (req, res) => {
+  try {
+    const expensesCollection = await getCollection('expenses');
+    
+    if (!expensesCollection) {
+      return res.status(500).json({
+        success: false,
+        error: 'DATABASE_CONNECTION_FAILED',
+        message: 'Database connection failed',
+        timestamp: new Date().toISOString()
+      });
+    }
+    
+    const { startDate, endDate, category, projectId } = req.query;
+    const filter = {};
+    
+    if (startDate || endDate) {
+      filter.date = {};
+      if (startDate) filter.date.$gte = new Date(startDate);
+      if (endDate) filter.date.$lte = new Date(endDate);
+    }
+    
+    if (category) filter.category = category;
+    if (projectId) filter.projectId = projectId;
+    
+    const expenses = await expensesCollection
+      .find(filter)
+      .sort({ date: -1 })
+      .toArray();
+    
+    res.json({
+      success: true,
+      data: expenses,
+      message: 'Expenses retrieved successfully',
+      timestamp: new Date().toISOString()
+    });
+    
+  } catch (error) {
+    console.error('Get expenses error:', error);
+    res.status(500).json({
+      success: false,
+      error: 'GET_EXPENSES_FAILED',
+      message: 'Failed to get expenses',
+      timestamp: new Date().toISOString()
+    });
+  }
+});
+
 // GET /api/finance/payments - Get all payments
 router.get('/payments', async (req, res) => {
   try {

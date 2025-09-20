@@ -39,7 +39,7 @@ const sampleTemplates = [
       type: 'transaction',
       rate: 2.9,
       fixed: 0.30,
-      currency: 'USD'
+      currency: 'EGP'
     },
     documentation: 'https://stripe.com/docs',
     support: {
@@ -77,7 +77,7 @@ const sampleTemplates = [
     pricing: {
       type: 'per_message',
       rate: 0.0075,
-      currency: 'USD'
+      currency: 'EGP'
     },
     documentation: 'https://www.twilio.com/docs',
     support: {
@@ -114,7 +114,7 @@ const sampleTemplates = [
     pricing: {
       type: 'free',
       rate: 0,
-      currency: 'USD'
+      currency: 'EGP'
     },
     documentation: 'https://developers.google.com/analytics',
     support: {
@@ -151,7 +151,7 @@ const sampleTemplates = [
     pricing: {
       type: 'per_email',
       rate: 0.0008,
-      currency: 'USD'
+      currency: 'EGP'
     },
     documentation: 'https://docs.sendgrid.com',
     support: {
@@ -188,7 +188,7 @@ const sampleTemplates = [
     pricing: {
       type: 'tiered',
       rate: 0.25,
-      currency: 'USD',
+      currency: 'EGP',
       unit: 'per_hour'
     },
     documentation: 'https://docs.atlas.mongodb.com',
@@ -228,7 +228,7 @@ const sampleTemplates = [
     pricing: {
       type: 'per_gb',
       rate: 0.023,
-      currency: 'USD'
+      currency: 'EGP'
     },
     documentation: 'https://docs.aws.amazon.com/s3',
     support: {

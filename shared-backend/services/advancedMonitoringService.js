@@ -470,7 +470,7 @@ class AdvancedMonitoringService {
       return {
         total: totalRevenue,
         today: todayRevenue,
-        currency: 'USD'
+        currency: 'EGP'
       };
     } catch (error) {
       logger.error('Failed to get revenue metrics:', error);

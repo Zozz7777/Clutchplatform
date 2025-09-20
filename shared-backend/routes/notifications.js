@@ -1,298 +1,165 @@
+/**
+ * Notifications Routes
+ * Handles manual notifications when email service is not available
+ */
+
 const express = require('express');
 const router = express.Router();
-const rateLimit = require('express-rate-limit');
 const { authenticateToken, checkRole } = require('../middleware/unified-auth');
 const { getCollection } = require('../config/optimized-database');
 
-// More lenient rate limit for notifications - increased for dashboard polling and API docs
-const notificationLimiter = rateLimit({
-  windowMs: 1 * 60 * 1000, // 1 minute
-  max: process.env.NODE_ENV === 'development' ? 500 : 300, // Further increased for API docs and dashboard polling
-  message: { 
-    success: false,
-    error: 'RATE_LIMIT_EXCEEDED',
-    message: 'Too many notification requests, please try again later.' 
-  },
-  standardHeaders: true,
-  legacyHeaders: false
-});
-
-// GET /api/v1/notifications - Get all notifications for the authenticated user
-router.get('/', notificationLimiter, authenticateToken, async (req, res) => {
+// GET /api/v1/notifications/pending-invitations - Get pending invitations that need manual notification
+router.get('/pending-invitations', authenticateToken, checkRole(['head_administrator', 'hr_manager']), async (req, res) => {
   try {
-    const notificationsCollection = await getCollection('notifications');
+    const invitationsCollection = await getCollection('employee_invitations');
+    const pendingEmailsCollection = await getCollection('pending_emails');
     
-    if (!notificationsCollection) {
-      return res.status(500).json({
-        success: false,
-        error: 'DATABASE_CONNECTION_FAILED',
-        message: 'Database connection failed',
-        timestamp: new Date().toISOString()
-      });
-    }
-    
-    // Get notifications for the current user
-    const notifications = await notificationsCollection
-      .find({ 
-        userId: req.user.userId || req.user.id,
-        isRead: false 
-      })
-      .sort({ timestamp: -1 })
-      .limit(50)
+    // Get pending invitations
+    const pendingInvitations = await invitationsCollection
+      .find({ status: 'pending' })
+      .sort({ createdAt: -1 })
       .toArray();
-
+    
+    // Get pending emails
+    const pendingEmails = await pendingEmailsCollection
+      .find({ type: 'employee_invitation', status: 'pending' })
+      .sort({ createdAt: -1 })
+      .toArray();
+    
+    // Combine and format data
+    const notifications = pendingInvitations.map(invitation => {
+      const relatedEmail = pendingEmails.find(email => email.to === invitation.email);
+      
+      return {
+        invitationId: invitation._id,
+        email: invitation.email,
+        name: invitation.name,
+        role: invitation.role,
+        department: invitation.department,
+        invitationToken: invitation.invitationToken,
+        invitationLink: `${process.env.FRONTEND_URL || 'https://admin.yourclutch.com'}/setup-password?token=${invitation.invitationToken}`,
+        createdAt: invitation.createdAt,
+        expiresAt: invitation.expiresAt,
+        hasPendingEmail: !!relatedEmail,
+        emailId: relatedEmail?._id
+      };
+    });
+    
     res.json({
       success: true,
-      data: notifications || [],
-      message: 'Notifications retrieved successfully',
+      data: { notifications },
+      message: 'Pending invitations retrieved successfully',
       timestamp: new Date().toISOString()
     });
+    
   } catch (error) {
-    console.error('Error fetching notifications:', error);
+    console.error('Get pending invitations error:', error);
     res.status(500).json({
       success: false,
-      error: 'Failed to fetch notifications',
-      message: error.message,
+      error: 'GET_PENDING_INVITATIONS_FAILED',
+      message: 'Failed to retrieve pending invitations',
       timestamp: new Date().toISOString()
     });
   }
 });
 
-// GET /api/v1/notifications/all - Get all notifications (including read ones)
-router.get('/all', notificationLimiter, authenticateToken, async (req, res) => {
+// POST /api/v1/notifications/send-manual - Send manual notification
+router.post('/send-manual', authenticateToken, checkRole(['head_administrator', 'hr_manager']), async (req, res) => {
   try {
-    const notificationsCollection = await getCollection('notifications');
+    const { invitationId, method, contactInfo } = req.body;
     
-    const { page = 1, limit = 20 } = req.query;
-    const skip = (page - 1) * limit;
-    
-    const notifications = await notificationsCollection
-      .find({ userId: req.user.userId || req.user.id })
-      .sort({ timestamp: -1 })
-      .skip(skip)
-      .limit(parseInt(limit))
-      .toArray();
-
-    const total = await notificationsCollection.countDocuments({ 
-      userId: req.user.userId || req.user.id 
-    });
-
-    res.json({
-      success: true,
-      data: notifications,
-      pagination: {
-        page: parseInt(page),
-        limit: parseInt(limit),
-        total,
-        totalPages: Math.ceil(total / limit)
-      },
-      message: 'All notifications retrieved successfully',
-      timestamp: new Date().toISOString()
-    });
-  } catch (error) {
-    console.error('Error fetching all notifications:', error);
-    res.status(500).json({
-      success: false,
-      error: 'Failed to fetch all notifications',
-      message: error.message,
-      timestamp: new Date().toISOString()
-    });
-  }
-});
-
-// POST /api/v1/notifications - Create a new notification
-router.post('/', authenticateToken, checkRole(['head_administrator', 'admin']), async (req, res) => {
-  try {
-    const { title, message, type = 'info', priority = 'medium', targetUsers = [] } = req.body;
-    
-    if (!title || !message) {
+    if (!invitationId || !method) {
       return res.status(400).json({
         success: false,
-        error: 'Title and message are required',
+        error: 'MISSING_REQUIRED_FIELDS',
+        message: 'Invitation ID and method are required',
         timestamp: new Date().toISOString()
       });
     }
-
-    const notificationsCollection = await getCollection('notifications');
     
+    const invitationsCollection = await getCollection('employee_invitations');
+    const invitation = await invitationsCollection.findOne({ _id: invitationId });
+    
+    if (!invitation) {
+      return res.status(404).json({
+        success: false,
+        error: 'INVITATION_NOT_FOUND',
+        message: 'Invitation not found',
+        timestamp: new Date().toISOString()
+      });
+    }
+    
+    // Create notification record
+    const notificationsCollection = await getCollection('manual_notifications');
     const notification = {
-      title,
-      message,
-      type,
-      priority,
-      targetUsers: targetUsers.length > 0 ? targetUsers : ['all'],
-      createdBy: req.user.userId || req.user.id,
-      timestamp: new Date().toISOString(),
-      isRead: false
+      invitationId,
+      method, // 'email', 'sms', 'phone', 'whatsapp', etc.
+      contactInfo,
+      status: 'sent',
+      sentBy: req.user.userId,
+      sentAt: new Date(),
+      invitationLink: `${process.env.FRONTEND_URL || 'https://admin.yourclutch.com'}/setup-password?token=${invitation.invitationToken}`
     };
-
-    const result = await notificationsCollection.insertOne(notification);
-
-    res.status(201).json({
-      success: true,
-      data: { id: result.insertedId, ...notification },
-      message: 'Notification created successfully',
-      timestamp: new Date().toISOString()
-    });
-  } catch (error) {
-    console.error('Error creating notification:', error);
-    res.status(500).json({
-      success: false,
-      error: 'Failed to create notification',
-      message: error.message,
-      timestamp: new Date().toISOString()
-    });
-  }
-});
-
-// PUT /api/v1/notifications/:id/read - Mark notification as read
-router.put('/:id/read', authenticateToken, async (req, res) => {
-  try {
-    const { id } = req.params;
-    const notificationsCollection = await getCollection('notifications');
     
-    const result = await notificationsCollection.updateOne(
-      { 
-        _id: new require('mongodb').ObjectId(id),
-        userId: req.user.userId || req.user.id 
-      },
-      { 
-        $set: { 
-          isRead: true,
-          readAt: new Date().toISOString()
-        } 
-      }
-    );
-
-    if (result.matchedCount === 0) {
-      return res.status(404).json({
-        success: false,
-        error: 'Notification not found',
-        timestamp: new Date().toISOString()
-      });
-    }
-
+    await notificationsCollection.insertOne(notification);
+    
     res.json({
       success: true,
-      message: 'Notification marked as read',
+      data: { notification },
+      message: 'Manual notification sent successfully',
       timestamp: new Date().toISOString()
     });
+    
   } catch (error) {
-    console.error('Error marking notification as read:', error);
+    console.error('Send manual notification error:', error);
     res.status(500).json({
       success: false,
-      error: 'Failed to mark notification as read',
-      message: error.message,
+      error: 'SEND_MANUAL_NOTIFICATION_FAILED',
+      message: 'Failed to send manual notification',
       timestamp: new Date().toISOString()
     });
   }
 });
 
-// PUT /api/v1/notifications/read-all - Mark all notifications as read
-router.put('/read-all', authenticateToken, async (req, res) => {
+// GET /api/v1/notifications/manual-history - Get manual notification history
+router.get('/manual-history', authenticateToken, checkRole(['head_administrator', 'hr_manager']), async (req, res) => {
   try {
-    const notificationsCollection = await getCollection('notifications');
+    const { page = 1, limit = 20 } = req.query;
+    const skip = (parseInt(page) - 1) * parseInt(limit);
     
-    const result = await notificationsCollection.updateMany(
-      { 
-        userId: req.user.userId || req.user.id,
-        isRead: false 
-      },
-      { 
-        $set: { 
-          isRead: true,
-          readAt: new Date().toISOString()
-        } 
-      }
-    );
-
-    res.json({
-      success: true,
-      data: { updatedCount: result.modifiedCount },
-      message: `${result.modifiedCount} notifications marked as read`,
-      timestamp: new Date().toISOString()
-    });
-  } catch (error) {
-    console.error('Error marking all notifications as read:', error);
-    res.status(500).json({
-      success: false,
-      error: 'Failed to mark all notifications as read',
-      message: error.message,
-      timestamp: new Date().toISOString()
-    });
-  }
-});
-
-// DELETE /api/v1/notifications/:id - Delete a notification
-router.delete('/:id', authenticateToken, checkRole(['head_administrator', 'admin']), async (req, res) => {
-  try {
-    const { id } = req.params;
-    const notificationsCollection = await getCollection('notifications');
+    const notificationsCollection = await getCollection('manual_notifications');
     
-    const result = await notificationsCollection.deleteOne({
-      _id: new require('mongodb').ObjectId(id)
-    });
-
-    if (result.deletedCount === 0) {
-      return res.status(404).json({
-        success: false,
-        error: 'Notification not found',
-        timestamp: new Date().toISOString()
-      });
-    }
-
-    res.json({
-      success: true,
-      message: 'Notification deleted successfully',
-      timestamp: new Date().toISOString()
-    });
-  } catch (error) {
-    console.error('Error deleting notification:', error);
-    res.status(500).json({
-      success: false,
-      error: 'Failed to delete notification',
-      message: error.message,
-      timestamp: new Date().toISOString()
-    });
-  }
-});
-
-// GET /api/v1/notifications/stats - Get notification statistics
-router.get('/stats', authenticateToken, async (req, res) => {
-  try {
-    const notificationsCollection = await getCollection('notifications');
-    
-    const userId = req.user.userId || req.user.id;
-    
-    const [total, unread, byType] = await Promise.all([
-      notificationsCollection.countDocuments({ userId }),
-      notificationsCollection.countDocuments({ userId, isRead: false }),
-      notificationsCollection.aggregate([
-        { $match: { userId } },
-        { $group: { _id: '$type', count: { $sum: 1 } } }
-      ]).toArray()
+    const [notifications, total] = await Promise.all([
+      notificationsCollection
+        .find({})
+        .sort({ sentAt: -1 })
+        .skip(skip)
+        .limit(parseInt(limit))
+        .toArray(),
+      notificationsCollection.countDocuments({})
     ]);
-
+    
     res.json({
       success: true,
       data: {
-        total,
-        unread,
-        read: total - unread,
-        byType: byType.reduce((acc, item) => {
-          acc[item._id] = item.count;
-          return acc;
-        }, {})
+        notifications,
+        pagination: {
+          page: parseInt(page),
+          limit: parseInt(limit),
+          total,
+          pages: Math.ceil(total / parseInt(limit))
+        }
       },
-      message: 'Notification statistics retrieved successfully',
+      message: 'Manual notification history retrieved successfully',
       timestamp: new Date().toISOString()
     });
+    
   } catch (error) {
-    console.error('Error fetching notification stats:', error);
+    console.error('Get manual notification history error:', error);
     res.status(500).json({
       success: false,
-      error: 'Failed to fetch notification statistics',
-      message: error.message,
+      error: 'GET_MANUAL_NOTIFICATION_HISTORY_FAILED',
+      message: 'Failed to retrieve manual notification history',
       timestamp: new Date().toISOString()
     });
   }

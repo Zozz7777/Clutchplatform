@@ -15,8 +15,8 @@ export const getLogsPath = () => {
 export const getAssetsPath = () => {
     return path.join(getAppPath(), 'assets');
 };
-export const formatCurrency = (amount, currency = 'SAR') => {
-    return new Intl.NumberFormat('ar-SA', {
+export const formatCurrency = (amount, currency = 'EGP') => {
+    return new Intl.NumberFormat('ar-EG', {
         style: 'currency',
         currency: currency,
         minimumFractionDigits: 2

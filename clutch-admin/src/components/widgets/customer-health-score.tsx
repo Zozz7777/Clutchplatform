@@ -398,19 +398,19 @@ export function CustomerHealthScore({ className = '' }: CustomerHealthScoreProps
         <div className="p-3 bg-primary/10 rounded-[0.625rem]-lg">
           <h5 className="text-sm font-medium text-blue-900 mb-2">💡 {t('customerHealth.healthScoreInsights')}</h5>
           <ul className="text-xs text-blue-800 space-y-1">
-            <li>• Average health score: {healthData.averageScore.toFixed(0)}</li>
-            <li>• {healthData.distribution.low || 0} customers at low risk</li>
-            <li>• {healthData.distribution.medium || 0} customers at medium risk</li>
-            <li>• {healthData.distribution.high || 0} customers at high risk</li>
-            <li>• {healthData.topPerformers.length} top performing customers</li>
+            <li>• {t('customerHealth.averageHealthScore')}: {healthData.averageScore.toFixed(0)}</li>
+            <li>• {healthData.distribution.low || 0} {t('customerHealth.customersAtLowRisk')}</li>
+            <li>• {healthData.distribution.medium || 0} {t('customerHealth.customersAtMediumRisk')}</li>
+            <li>• {healthData.distribution.high || 0} {t('customerHealth.customersAtHighRisk')}</li>
+            <li>• {healthData.topPerformers.length} {t('customerHealth.topPerformingCustomers')}</li>
             {healthData.distribution.high > 0 && (
-              <li>• {healthData.distribution.high} customers need immediate attention</li>
+              <li>• {healthData.distribution.high} {t('customerHealth.customersNeedAttention')}</li>
             )}
             {healthData.averageScore >= 80 && (
-              <li>• Excellent overall customer health</li>
+              <li>• {t('customerHealth.excellentOverallHealth')}</li>
             )}
             {healthData.averageScore < 60 && (
-              <li>• Customer health below target - focus on retention</li>
+              <li>• {t('customerHealth.healthBelowTarget')}</li>
             )}
           </ul>
         </div>

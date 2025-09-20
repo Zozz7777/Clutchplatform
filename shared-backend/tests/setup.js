@@ -121,7 +121,7 @@ global.testUtils = {
   // Payment generation utilities
   generateTestPayment: (overrides = {}) => ({
     amount: 150.00,
-    currency: 'USD',
+    currency: 'EGP',
     method: 'credit_card',
     status: 'completed',
     transactionId: 'TEST_TXN_' + Date.now(),

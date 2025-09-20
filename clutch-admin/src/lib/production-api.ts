@@ -1465,6 +1465,42 @@ export class ProductionApiService {
     }
   }
 
+  async getFuelCostMetrics(): Promise<Record<string, unknown>[]> {
+    try {
+      return await realApi.getFuelCostMetrics();
+    } catch (error) {
+      logger.error("Failed to fetch fuel cost metrics:", error);
+      throw new Error("Failed to load fuel cost metrics");
+    }
+  }
+
+  async getProjects(): Promise<Record<string, unknown>[]> {
+    try {
+      return await realApi.getProjects();
+    } catch (error) {
+      logger.error("Failed to fetch projects:", error);
+      throw new Error("Failed to load projects");
+    }
+  }
+
+  async getBudgets(): Promise<Record<string, unknown>[]> {
+    try {
+      return await realApi.getBudgets();
+    } catch (error) {
+      logger.error("Failed to fetch budgets:", error);
+      throw new Error("Failed to load budgets");
+    }
+  }
+
+  async getExpenses(): Promise<Record<string, unknown>[]> {
+    try {
+      return await realApi.getExpenses();
+    } catch (error) {
+      logger.error("Failed to fetch expenses:", error);
+      throw new Error("Failed to load expenses");
+    }
+  }
+
   async getComplianceData(): Promise<Record<string, unknown>[]> {
     try {
       return await realApi.getComplianceData();

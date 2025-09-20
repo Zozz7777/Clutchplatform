@@ -342,7 +342,7 @@ class LocationService {
         // Placeholder for pricing information
         return {
             basePrice: 150,
-            currency: 'USD',
+            currency: 'EGP',
             estimatedRange: {
                 min: 120,
                 max: 200

@@ -198,7 +198,7 @@ export function DowntimeImpact({ className = '' }: DowntimeImpactProps) {
             <Clock className="h-5 w-5 text-destructive" />
             <span>{t('downtime.downtimeImpact')}</span>
           </CardTitle>
-          <CardDescription>Unable to load downtime metrics</CardDescription>
+          <CardDescription>{t('common.unableToLoad')}</CardDescription>
         </CardHeader>
       </Card>
     );
@@ -215,7 +215,7 @@ export function DowntimeImpact({ className = '' }: DowntimeImpactProps) {
           <span>{t('downtime.downtimeImpact')}</span>
         </CardTitle>
         <CardDescription>
-          Lost revenue hours due to vehicle unavailability
+          {t('downtime.lostRevenueHoursDescription')}
         </CardDescription>
       </CardHeader>
       <CardContent className="space-y-6">
@@ -343,21 +343,21 @@ export function DowntimeImpact({ className = '' }: DowntimeImpactProps) {
           </Button>
           <Button variant="outline" size="sm" className="flex-1">
             <Download className="h-4 w-4 mr-2" />
-            Export Report
+{t('downtime.exportReport')}
           </Button>
         </div>
 
         {/* Insights */}
         <div className="p-3 bg-primary/10 rounded-[0.625rem]-lg">
-          <h5 className="text-sm font-medium text-blue-900 mb-2">💡 Downtime Insights</h5>
+          <h5 className="text-sm font-medium text-blue-900 mb-2">💡 {t('downtime.downtimeInsights')}</h5>
           <ul className="text-xs text-blue-800 space-y-1">
-            <li>• Total downtime: {downtimeMetrics.totalDowntimeHours} hours</li>
-            <li>• Revenue-impacting downtime: {downtimeMetrics.lostRevenueHours} hours</li>
-            <li>• Total revenue impact: ${downtimeMetrics.revenueImpact.toLocaleString()}</li>
-            <li>• Average downtime per vehicle: {downtimeMetrics.averageDowntimePerVehicle.toFixed(1)} hours</li>
-            <li>• Top downtime reason: {downtimeMetrics.downtimeByReason[0]?.reason} ({downtimeMetrics.downtimeByReason[0]?.percentage.toFixed(0)}%)</li>
+            <li>• {t('downtime.totalDowntimeHours')}: {downtimeMetrics.totalDowntimeHours} {t('downtime.hours')}</li>
+            <li>• {t('downtime.revenueImpactingDowntime')}: {downtimeMetrics.lostRevenueHours} {t('downtime.hours')}</li>
+            <li>• {t('downtime.totalRevenueImpact')}: ${downtimeMetrics.revenueImpact.toLocaleString()}</li>
+            <li>• {t('downtime.averageDowntimePerVehicle')}: {downtimeMetrics.averageDowntimePerVehicle.toFixed(1)} {t('downtime.hours')}</li>
+            <li>• {t('downtime.topDowntimeReason')}: {downtimeMetrics.downtimeByReason[0]?.reason} ({downtimeMetrics.downtimeByReason[0]?.percentage.toFixed(0)}%)</li>
             {downtimeMetrics.revenueImpact > targetRevenueImpact && (
-              <li>• Revenue impact above target - consider preventive measures</li>
+              <li>• {t('downtime.revenueImpactAboveTarget')}</li>
             )}
           </ul>
         </div>

@@ -283,8 +283,8 @@ export class ClientI18nManager {
     document.documentElement.setAttribute('dir', this.getDirection());
   }
 
-  formatCurrency(amount: number, currency: string = 'SAR'): string {
-    const locale = this.currentLanguage === 'ar' ? 'ar-SA' : 'en-US';
+  formatCurrency(amount: number, currency: string = 'EGP'): string {
+    const locale = this.currentLanguage === 'ar' ? 'ar-EG' : 'en-US';
     return new Intl.NumberFormat(locale, {
       style: 'currency',
       currency: currency,

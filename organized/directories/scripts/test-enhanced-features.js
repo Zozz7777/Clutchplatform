@@ -165,7 +165,7 @@ const testAdvancedPayments = async () => {
       `${BASE_URL}/api/enhanced/payments/process`,
       {
         amount: 150.00,
-        currency: 'USD',
+        currency: 'EGP',
         paymentMethod: 'stripe',
         customerId: 'test-customer-123',
         bookingId: 'test-booking-123',
@@ -529,7 +529,7 @@ const testValidationSchemas = async () => {
       `${BASE_URL}/api/enhanced/payments/process`,
       {
         amount: -50.00, // Invalid negative amount
-        currency: 'USD',
+        currency: 'EGP',
         paymentMethod: 'stripe',
         customerId: 'test-customer-123',
         bookingId: 'test-booking-123'
