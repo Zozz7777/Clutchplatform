@@ -124,6 +124,11 @@ export default function SettingsPage() {
 
   useEffect(() => {
     const loadSettingsData = async () => {
+      if (!user) {
+        setIsLoading(false);
+        return;
+      }
+      
       try {
         const token = localStorage.getItem("clutch-admin-token");
         
@@ -186,7 +191,7 @@ export default function SettingsPage() {
     };
 
     loadSettingsData();
-  }, []);
+  }, [user]);
 
   const handleSettingChange = (settingKey: string, newValue: unknown) => {
     setSystemSettings(prev => 
@@ -248,16 +253,16 @@ export default function SettingsPage() {
     }));
   };
 
-  const getStatusColor = (status: string) => {
+  const getStatusVariant = (status: string) => {
     switch (status) {
       case "active":
-        return "success";
-      case "inactive":
         return "default";
+      case "inactive":
+        return "outline";
       case "error":
         return "destructive";
       case "pending":
-        return "warning";
+        return "secondary";
       default:
         return "default";
     }
@@ -651,7 +656,7 @@ export default function SettingsPage() {
                       <p className="font-medium">{integration.name}</p>
                       <p className="text-sm text-muted-foreground">{integration.description}</p>
                       <div className="flex items-center space-x-2 mt-1">
-                        <Badge variant={getStatusColor(integration.status) as "default" | "secondary" | "destructive" | "outline"}>
+                        <Badge variant={getStatusVariant(integration.status)}>
                           {integration.status}
                         </Badge>
                         <span className="text-xs text-muted-foreground">

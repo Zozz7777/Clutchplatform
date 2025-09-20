@@ -2392,7 +2392,22 @@
     "exportData": "Export Data"
   },
   "featureFlags": {
-    "currentUser": "Current User"
+    "currentUser": "Current User",
+    "title": "Feature Flags",
+    "createRollout": "Create Rollout",
+    "activeABTests": "Active A/B Tests",
+    "enabled": "Enabled",
+    "disabled": "Disabled",
+    "rollout": "Rollout",
+    "disable": "Disable",
+    "enable": "Enable",
+    "editFlag": "Edit Flag",
+    "configureRollout": "Configure Rollout",
+    "deleteFlag": "Delete Flag",
+    "createFlag": "Create Flag",
+    "rolloutName": "Rollout Name",
+    "rolloutType": "Rollout Type",
+    "percentage": "Percentage"
   },
   "userSegments": {
     "title": "User Segments",

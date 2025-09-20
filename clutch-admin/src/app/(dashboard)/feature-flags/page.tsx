@@ -896,7 +896,7 @@ export default function FeatureFlagsPage() {
               Cancel
             </Button>
             <Button onClick={createFeatureFlag}>
-              Create Flag
+{t('featureFlags.createFlag')}
             </Button>
           </DialogFooter>
         </DialogContent>
@@ -1004,14 +1004,14 @@ export default function FeatureFlagsPage() {
       <Dialog open={showRolloutDialog} onOpenChange={setShowRolloutDialog}>
         <DialogContent>
           <DialogHeader>
-            <DialogTitle>Create Rollout</DialogTitle>
+            <DialogTitle>{t('featureFlags.createRollout')}</DialogTitle>
             <DialogDescription>
               Create a gradual rollout for a feature flag.
             </DialogDescription>
           </DialogHeader>
           <div className="grid gap-4 py-4">
             <div>
-              <Label htmlFor="rolloutName">Rollout Name</Label>
+              <Label htmlFor="rolloutName">{t('featureFlags.rolloutName')}</Label>
               <Input 
                 id="rolloutName" 
                 placeholder="Enter rollout name" 
@@ -1036,20 +1036,20 @@ export default function FeatureFlagsPage() {
             </div>
             <div className="grid grid-cols-2 gap-4">
               <div>
-                <Label htmlFor="rolloutType">Rollout Type</Label>
+                <Label htmlFor="rolloutType">{t('featureFlags.rolloutType')}</Label>
                 <select 
                   className="w-full p-2 border rounded-md"
                   value={createRolloutData.type}
                   onChange={(e) => setCreateRolloutData(prev => ({ ...prev, type: e.target.value }))}
                 >
-                  <option value="percentage">Percentage</option>
+                  <option value="percentage">{t('featureFlags.percentage')}</option>
                   <option value="user_list">User List</option>
                   <option value="segment">User Segment</option>
                   <option value="geographic">Geographic</option>
                 </select>
               </div>
               <div>
-                <Label htmlFor="rolloutPercentage">Percentage</Label>
+                <Label htmlFor="rolloutPercentage">{t('featureFlags.percentage')}</Label>
                 <Input 
                   id="rolloutPercentage" 
                   type="number" 
