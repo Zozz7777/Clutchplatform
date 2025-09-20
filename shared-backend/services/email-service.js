@@ -28,19 +28,19 @@ class EmailService {
         return;
       }
 
-      // Use Gmail SMTP as default, but allow configuration via environment variables
+      // Use custom SMTP configuration (SpaceMail server)
       this.transporter = nodemailer.createTransport({
-        service: process.env.EMAIL_SERVICE || 'gmail',
+        host: process.env.SMTP_HOST || 'mail.spacemail.com',
+        port: parseInt(process.env.SMTP_PORT) || 465,
+        secure: process.env.EMAIL_SECURE === 'true' || true, // SSL for port 465
         auth: {
-          user: process.env.EMAIL_USER || process.env.GMAIL_USER || process.env.SMTP_USER,
-          pass: process.env.EMAIL_PASSWORD || process.env.GMAIL_APP_PASSWORD || process.env.SMTP_PASS
+          user: process.env.SMTP_USER || process.env.EMAIL_USER,
+          pass: process.env.SMTP_PASS || process.env.EMAIL_PASSWORD
         },
-        // For other SMTP providers
-        ...(process.env.EMAIL_HOST && {
-          host: process.env.EMAIL_HOST,
-          port: process.env.EMAIL_PORT || 587,
-          secure: process.env.EMAIL_SECURE === 'true'
-        })
+        // Additional options for better compatibility
+        tls: {
+          rejectUnauthorized: false // Allow self-signed certificates if needed
+        }
       });
 
       console.log('✅ Email service initialized with real SMTP');
