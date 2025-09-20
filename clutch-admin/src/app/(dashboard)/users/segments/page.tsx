@@ -50,11 +50,11 @@ export default function UserSegmentsPage() {
         
         // Load real user segments data from API
         const segmentsData = await productionApi.getUserSegments();
-        setSegments(segmentsData || []);
+        setSegments((segmentsData as unknown as UserSegment[]) || []);
         
         // Load analytics data
         const analyticsData = await productionApi.getUserSegmentAnalytics();
-        setAnalytics(analyticsData || {
+        setAnalytics((analyticsData as typeof analytics) || {
           totalSegments: 0,
           activeSegments: 0,
           totalUsers: 0,

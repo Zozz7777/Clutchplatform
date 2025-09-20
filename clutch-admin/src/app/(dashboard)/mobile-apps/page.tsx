@@ -118,10 +118,10 @@ export default function MobileAppsPage() {
           realApi.getMobileAppStores()
         ]);
 
-        setVersions(versionsData || []);
-        setCrashes(crashesData || []);
-        setAnalytics(analyticsData || []);
-        setStores(storesData || []);
+        setVersions((versionsData as unknown as AppVersion[]) || []);
+        setCrashes((crashesData as unknown as CrashReport[]) || []);
+        setAnalytics((analyticsData as unknown as AppAnalytics[]) || []);
+        setStores((storesData as unknown as AppStore[]) || []);
         
       } catch (error) {
         // Error handled by API service

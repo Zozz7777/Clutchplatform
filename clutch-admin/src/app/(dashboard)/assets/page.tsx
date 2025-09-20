@@ -206,7 +206,7 @@ export default function AssetManagementPage() {
         // Handle assets data
         if (assetsData.status === 'fulfilled') {
           const assets = assetsData.value || [];
-          setAssets(Array.isArray(assets) ? assets : []);
+          setAssets(Array.isArray(assets) ? assets as unknown as Asset[] : []);
         } else {
           console.warn('Failed to load assets:', assetsData.reason);
           setAssets([]);
@@ -215,7 +215,7 @@ export default function AssetManagementPage() {
         // Handle maintenance records data
         if (maintenanceData.status === 'fulfilled') {
           const maintenance = maintenanceData.value || [];
-          setMaintenanceRecords(Array.isArray(maintenance) ? maintenance : []);
+          setMaintenanceRecords(Array.isArray(maintenance) ? maintenance as unknown as MaintenanceRecord[] : []);
         } else {
           console.warn('Failed to load maintenance records:', maintenanceData.reason);
           setMaintenanceRecords([]);
@@ -224,7 +224,7 @@ export default function AssetManagementPage() {
         // Handle assignments data
         if (assignmentsData.status === 'fulfilled') {
           const assignments = assignmentsData.value || [];
-          setAssignments(Array.isArray(assignments) ? assignments : []);
+          setAssignments(Array.isArray(assignments) ? assignments as unknown as AssetAssignment[] : []);
         } else {
           console.warn('Failed to load asset assignments:', assignmentsData.reason);
           setAssignments([]);
@@ -283,7 +283,7 @@ export default function AssetManagementPage() {
       
       const newAsset = await productionApi.createAsset(assetData);
       if (newAsset) {
-        setAssets(prev => [...prev, newAsset]);
+        setAssets(prev => [...prev, newAsset as unknown as Asset]);
         setShowCreateDialog(false);
         setCreateAssetData({
           name: "",
@@ -325,7 +325,7 @@ export default function AssetManagementPage() {
       
       const newRecord = await productionApi.createMaintenanceRecord(maintenanceData);
       if (newRecord) {
-        setMaintenanceRecords(prev => [...prev, newRecord]);
+        setMaintenanceRecords(prev => [...prev, newRecord as unknown as MaintenanceRecord]);
         setShowMaintenanceDialog(false);
         setCreateMaintenanceData({
           assetId: "",
@@ -362,7 +362,7 @@ export default function AssetManagementPage() {
       
       const newAssignment = await productionApi.createAssetAssignment(assignmentData);
       if (newAssignment) {
-        setAssignments(prev => [...prev, newAssignment]);
+        setAssignments(prev => [...prev, newAssignment as unknown as AssetAssignment]);
         setShowAssignmentDialog(false);
         setCreateAssignmentData({
           assetId: "",
