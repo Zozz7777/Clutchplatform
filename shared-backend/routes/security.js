@@ -55,7 +55,7 @@ router.get('/zero-trust-metrics', authenticateToken, checkRole(['head_administra
     const accessControl = Math.min(97, Math.max(85, 90 + Math.random() * 7));
     const deviceTrust = Math.min(96, Math.max(80, 88 + Math.random() * 8));
     const networkSecurity = Math.min(94, Math.max(75, 85 + Math.random() * 9));
-    const dataProtection = Math.min(98, Math.max(85, 89 + Math.random() * 9);
+    const dataProtection = Math.min(98, Math.max(85, 89 + Math.random() * 9));
 
     const metrics = {
       overallScore: Math.round(overallScore),
