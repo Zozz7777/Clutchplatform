@@ -50,6 +50,7 @@ import {
 import { useTranslations } from "@/hooks/use-translations";
 import { realApi } from "@/lib/real-api";
 import { toast } from "sonner";
+import { useAuth } from "@/contexts/auth-context";
 
 interface AuditLog {
   _id: string;
@@ -105,6 +106,7 @@ interface UserActivity {
 
 export default function AuditTrailPage() {
   const { t } = useTranslations();
+  const { user, hasPermission } = useAuth();
   const [auditLogs, setAuditLogs] = useState<AuditLog[]>([]);
   const [securityEvents, setSecurityEvents] = useState<SecurityEvent[]>([]);
   const [userActivities, setUserActivities] = useState<UserActivity[]>([]);
@@ -121,18 +123,48 @@ export default function AuditTrailPage() {
       try {
         setLoading(true);
         
-        const [logsData, eventsData, activitiesData] = await Promise.all([
+        // Use Promise.allSettled to handle individual failures gracefully
+        const [logsResult, eventsResult, activitiesResult] = await Promise.allSettled([
           realApi.getAuditLogs(),
           realApi.getSecurityEvents(),
           realApi.getUserActivities()
         ]);
 
-        setAuditLogs(logsData || []);
-        setSecurityEvents(eventsData || []);
-        setUserActivities(activitiesData || []);
+        // Handle audit logs
+        if (logsResult.status === 'fulfilled') {
+          setAuditLogs(logsResult.value || []);
+        } else {
+          console.warn('Failed to load audit logs:', logsResult.reason);
+          setAuditLogs([]);
+        }
+
+        // Handle security events (may fail due to permissions)
+        if (eventsResult.status === 'fulfilled') {
+          setSecurityEvents(eventsResult.value || []);
+        } else {
+          console.warn('Failed to load security events:', eventsResult.reason);
+          setSecurityEvents([]);
+          // Don't show error toast for permission-related failures
+          if (!eventsResult.reason?.message?.includes('403') && !eventsResult.reason?.message?.includes('401')) {
+            toast.error('Failed to load security events');
+          }
+        }
+
+        // Handle user activities
+        if (activitiesResult.status === 'fulfilled') {
+          setUserActivities(activitiesResult.value || []);
+        } else {
+          console.warn('Failed to load user activities:', activitiesResult.reason);
+          setUserActivities([]);
+        }
+
+        // Only show general error if all requests failed
+        if (logsResult.status === 'rejected' && eventsResult.status === 'rejected' && activitiesResult.status === 'rejected') {
+          toast.error(t('auditTrail.failedToLoadAuditData'));
+        }
         
       } catch (error) {
-        // Error handled by API service
+        console.error('Unexpected error loading audit data:', error);
         toast.error(t('auditTrail.failedToLoadAuditData'));
         setAuditLogs([]);
         setSecurityEvents([]);
@@ -142,8 +174,13 @@ export default function AuditTrailPage() {
       }
     };
 
-    loadAuditData();
-  }, [t]);
+    // Only load data if user is authenticated
+    if (user) {
+      loadAuditData();
+    } else {
+      setLoading(false);
+    }
+  }, [t, user]);
 
   const filteredAuditLogs = (auditLogs || []).filter((log) => {
     const matchesSearch = (log.resourceName || '').toLowerCase().includes(searchTerm.toLowerCase()) ||

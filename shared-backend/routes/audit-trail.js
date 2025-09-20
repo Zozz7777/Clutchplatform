@@ -164,7 +164,7 @@ router.post('/', checkRole(['head_administrator']), async (req, res) => {
 // ===== SECURITY AUDIT =====
 
 // GET /api/audit-trail/security - Get security audit logs
-router.get('/security', checkRole(['head_administrator']), async (req, res) => {
+router.get('/security', checkRole(['head_administrator', 'hr_manager', 'admin']), async (req, res) => {
   try {
     const auditCollection = await getCollection('audit_logs');
     const { page = 1, limit = 50, dateFrom, dateTo } = req.query;
@@ -223,7 +223,7 @@ router.get('/security', checkRole(['head_administrator']), async (req, res) => {
 // ===== USER ACTIVITY AUDIT =====
 
 // GET /api/audit-trail/user-activity - Get user activity audit logs
-router.get('/user-activity', checkRole(['head_administrator']), async (req, res) => {
+router.get('/user-activity', checkRole(['head_administrator', 'hr_manager', 'admin']), async (req, res) => {
   try {
     const auditCollection = await getCollection('audit_logs');
     const { page = 1, limit = 50, userId, dateFrom, dateTo } = req.query;
