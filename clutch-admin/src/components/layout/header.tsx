@@ -74,8 +74,8 @@ export function Header({ onMenuToggle }: HeaderProps) {
 
     fetchNotifications();
     
-    // Refresh notifications every 30 seconds
-    const interval = setInterval(fetchNotifications, 30000);
+    // Refresh notifications every 2 minutes to avoid rate limiting
+    const interval = setInterval(fetchNotifications, 120000);
     return () => clearInterval(interval);
   }, [user]);
 

@@ -497,7 +497,7 @@ router.delete('/invitations/:id', authenticateToken, checkRole(['head_administra
     const invitationsCollection = await getCollection('employee_invitations');
     
     // Check if invitation exists
-    const invitation = await invitationsCollection.findOne({ _id: id });
+    const invitation = await invitationsCollection.findOne({ _id: new ObjectId(id) });
     if (!invitation) {
       return res.status(404).json({
         success: false,
@@ -519,7 +519,7 @@ router.delete('/invitations/:id', authenticateToken, checkRole(['head_administra
     
     // Mark invitation as cancelled
     const result = await invitationsCollection.updateOne(
-      { _id: id },
+      { _id: new ObjectId(id) },
       { 
         $set: { 
           status: 'cancelled',
@@ -562,7 +562,7 @@ router.post('/invitations/:id/resend', authenticateToken, checkRole(['head_admin
     const invitationsCollection = await getCollection('employee_invitations');
     
     // Find the invitation
-    const invitation = await invitationsCollection.findOne({ _id: id });
+    const invitation = await invitationsCollection.findOne({ _id: new ObjectId(id) });
     if (!invitation) {
       return res.status(404).json({
         success: false,
@@ -595,7 +595,7 @@ router.post('/invitations/:id/resend', authenticateToken, checkRole(['head_admin
     
     // Update invitation with new token and extended expiry
     await invitationsCollection.updateOne(
-      { _id: id },
+      { _id: new ObjectId(id) },
       { 
         $set: { 
           invitationToken: newInvitationToken,

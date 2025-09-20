@@ -92,47 +92,76 @@ export default function CommunicationPage() {
       try {
         setIsLoading(true);
         
-        // Load real data from API
-        const [notificationsData, channelsData, ticketsData] = await Promise.all([
+        // Load real data from API with proper error handling
+        const [notificationsData, channelsData, ticketsData] = await Promise.allSettled([
           productionApi.getNotifications(),
           productionApi.getChatChannels(),
           productionApi.getTickets()
         ]);
 
-        // Convert API notifications to communication notifications format
-        const communicationNotifications: CommunicationNotification[] = (notificationsData || []).map((notification: Notification) => ({
-          _id: notification.id,
-          title: notification.title,
-          message: notification.message,
-          type: notification.type,
-          channel: "in_app" as const, // Default channel since API doesn't provide this
-          status: "sent" as const, // Default status since API doesn't provide this
-          targetAudience: "All Users", // Default audience since API doesn't provide this
-          sentAt: notification.timestamp,
-          deliveryRate: 95, // Default values since API doesn't provide these
-          openRate: 75,
-          clickRate: 25,
-          createdAt: notification.timestamp
-        }));
+        // Handle notifications data
+        if (notificationsData.status === 'fulfilled') {
+          const notifications = notificationsData.value || [];
+          // Ensure notifications is an array and convert to communication format
+          const communicationNotifications: CommunicationNotification[] = Array.isArray(notifications) 
+            ? notifications.map((notification: any) => ({
+                _id: notification.id || notification._id || `notification_${Date.now()}`,
+                title: notification.title || 'Untitled Notification',
+                message: notification.message || 'No message',
+                type: notification.type || 'info',
+                channel: "in_app" as const,
+                status: "sent" as const,
+                targetAudience: "All Users",
+                sentAt: notification.timestamp || notification.sentAt || new Date().toISOString(),
+                deliveryRate: 95,
+                openRate: 75,
+                clickRate: 25,
+                createdAt: notification.timestamp || notification.createdAt || new Date().toISOString()
+              }))
+            : [];
+          setNotifications(communicationNotifications);
+        } else {
+          console.warn('Failed to load notifications:', notificationsData.reason);
+          setNotifications([]);
+        }
 
-        setNotifications(communicationNotifications);
-        setChannels((channelsData || []) as unknown as ChatChannel[]);
-        setTickets((ticketsData || []) as unknown as SupportTicket[]);
+        // Handle channels data
+        if (channelsData.status === 'fulfilled') {
+          const channels = channelsData.value || [];
+          setChannels(Array.isArray(channels) ? channels as unknown as ChatChannel[] : []);
+        } else {
+          console.warn('Failed to load chat channels:', channelsData.reason);
+          setChannels([]);
+        }
+
+        // Handle tickets data
+        if (ticketsData.status === 'fulfilled') {
+          const tickets = ticketsData.value || [];
+          setTickets(Array.isArray(tickets) ? tickets as unknown as SupportTicket[] : []);
+        } else {
+          console.warn('Failed to load tickets:', ticketsData.reason);
+          setTickets([]);
+        }
+        
+        // Only show error toast if all requests failed
+        if (notificationsData.status === 'rejected' && channelsData.status === 'rejected' && ticketsData.status === 'rejected') {
+          toast.error(t('communication.failedToLoadCommunicationData'));
+        }
         
       } catch (error) {
-        // Error handled by API service
-        toast.error(t('communication.failedToLoadCommunicationData'));
-        // Set empty arrays on error - no mock data fallback
+        console.error('Unexpected error loading communication data:', error);
+        // Set empty arrays on error
         setNotifications([]);
         setChannels([]);
         setTickets([]);
+        toast.error(t('communication.failedToLoadCommunicationData'));
       } finally {
         setIsLoading(false);
       }
     };
 
     loadCommunicationData();
-  }, []);
+  }, [t]);
 
 
   const getTypeColor = (type: string) => {

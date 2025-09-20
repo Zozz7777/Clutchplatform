@@ -126,7 +126,7 @@ export default function RealtimeCollaboration({ currentUserId, currentPage }: Re
       } catch (error) {
         // Failed to fetch new events
       }
-    }, 10000);
+    }, 60000); // Reduced from 10 seconds to 1 minute to avoid rate limiting
 
     return () => clearInterval(interval);
   }, [activeUsers, currentPage]);

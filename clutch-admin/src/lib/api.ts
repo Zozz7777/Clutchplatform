@@ -193,7 +193,13 @@ class ApiService {
           if (retryCount >= maxRetries - 1) {
             // Max retries reached
             this.logout();
-            window.location.href = '/login';
+            
+            // Prevent redirect loops by checking current path
+            const currentPath = window.location.pathname;
+            if (currentPath !== '/login' && currentPath !== '/api-docs') {
+              window.location.href = '/login';
+            }
+            
             return {
               data: null as T,
               success: false,

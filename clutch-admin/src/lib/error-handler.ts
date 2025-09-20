@@ -184,9 +184,12 @@ export class ErrorHandler {
       switch (errorInfo.code) {
         case 'UNAUTHORIZED':
           toast.error('Session expired. Please log in again.');
-          // Redirect to login after a delay
+          // Redirect to login after a delay, but prevent redirect loops
           setTimeout(() => {
-            window.location.href = '/login';
+            const currentPath = window.location.pathname;
+            if (currentPath !== '/login' && currentPath !== '/api-docs') {
+              window.location.href = '/login';
+            }
           }, 2000);
           break;
           
