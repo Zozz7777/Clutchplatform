@@ -1555,6 +1555,24 @@ export class ProductionApiService {
     }
   }
 
+  async getUserSegments(): Promise<Record<string, unknown>[]> {
+    try {
+      return await realApi.getUserSegments();
+    } catch (error) {
+      logger.error("Failed to fetch user segments:", error);
+      throw new Error("Failed to load user segments");
+    }
+  }
+
+  async getUserSegmentAnalytics(): Promise<Record<string, unknown>> {
+    try {
+      return await realApi.getUserSegmentAnalytics();
+    } catch (error) {
+      logger.error("Failed to fetch user segment analytics:", error);
+      throw new Error("Failed to load user segment analytics");
+    }
+  }
+
   async getComplianceData(): Promise<Record<string, unknown>[]> {
     try {
       return await realApi.getComplianceData();

@@ -4599,11 +4599,11 @@ router.get('/hr', authenticateToken, checkRole(['head_administrator', 'hr_manage
         totalPayroll: 625000,
         averageSalary: 50000,
         salaryDistribution: [
-          { range: '$30k-$40k', count: 25, percentage: 20.0 },
-          { range: '$40k-$50k', count: 35, percentage: 28.0 },
-          { range: '$50k-$60k', count: 30, percentage: 24.0 },
-          { range: '$60k-$70k', count: 20, percentage: 16.0 },
-          { range: '$70k+', count: 15, percentage: 12.0 }
+          { range: '30k-40k EGP', count: 25, percentage: 20.0 },
+          { range: '40k-50k EGP', count: 35, percentage: 28.0 },
+          { range: '50k-60k EGP', count: 30, percentage: 24.0 },
+          { range: '60k-70k EGP', count: 20, percentage: 16.0 },
+          { range: '70k+ EGP', count: 15, percentage: 12.0 }
         ],
         benefits: {
           healthInsurance: 45000,
