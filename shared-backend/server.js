@@ -96,6 +96,8 @@ const emergencyAuthRoutes = require('./routes/emergency-auth');
 const fleetRoutes = require('./routes/fleet');
 const paymentsRoutes = require('./routes/payments');
 const communicationRoutes = require('./routes/communication');
+const mobileCmsRoutes = require('./routes/mobile-cms');
+const opsRoutes = require('./routes/ops');
 const performanceRoutes = require('./routes/performance');
 const dashboardRoutes = require('./routes/dashboard');
 const notificationsRoutes = require('./routes/notifications');
@@ -293,6 +295,9 @@ app.use('/api/v1/security', securityRoutes);
 app.use('/api/v1/alerts', alertsRoutes);
 app.use('/api/v1/logs', logsRoutes);
 app.use('/api/v1/health-checks', healthRoutes);
+app.use('/api/v1/communication', communicationRoutes);
+app.use('/api/v1/mobile-cms', mobileCmsRoutes);
+app.use('/api/v1/ops', opsRoutes);
 
 // Test endpoints
 app.get('/test', (req, res) => {

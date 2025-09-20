@@ -336,6 +336,138 @@ export class RealApiService {
     )();
   }
 
+  // Communication API methods
+  async getChatChannels(): Promise<Record<string, unknown>[]> {
+    return withErrorHandling(
+      async () => {
+        const response = await apiService.request<Record<string, unknown>[]>("/api/v1/communication/chat-channels");
+        return handleApiResponse(response, 'getChatChannels', []);
+      },
+      'getChatChannels',
+      { fallbackValue: [], showToast: false }
+    )();
+  }
+
+  async getTickets(): Promise<Record<string, unknown>[]> {
+    return withErrorHandling(
+      async () => {
+        const response = await apiService.request<Record<string, unknown>[]>("/api/v1/communication/tickets");
+        return handleApiResponse(response, 'getTickets', []);
+      },
+      'getTickets',
+      { fallbackValue: [], showToast: false }
+    )();
+  }
+
+  // Mobile CMS API methods
+  async getMobileAppSettings(): Promise<Record<string, unknown>> {
+    return withErrorHandling(
+      async () => {
+        const response = await apiService.request<Record<string, unknown>>("/api/v1/mobile-cms/settings");
+        return handleApiResponse(response, 'getMobileAppSettings', {});
+      },
+      'getMobileAppSettings',
+      { fallbackValue: {}, showToast: false }
+    )();
+  }
+
+  async saveMobileAppSettings(settings: Record<string, unknown>): Promise<Record<string, unknown>> {
+    return withErrorHandling(
+      async () => {
+        const response = await apiService.request<Record<string, unknown>>("/api/v1/mobile-cms/settings", {
+          method: 'POST',
+          body: JSON.stringify(settings)
+        });
+        return handleApiResponse(response, 'saveMobileAppSettings', {});
+      },
+      'saveMobileAppSettings',
+      { fallbackValue: {}, showToast: false }
+    )();
+  }
+
+  async previewMobileApp(): Promise<Record<string, unknown>> {
+    return withErrorHandling(
+      async () => {
+        const response = await apiService.request<Record<string, unknown>>("/api/v1/mobile-cms/preview");
+        return handleApiResponse(response, 'previewMobileApp', {});
+      },
+      'previewMobileApp',
+      { fallbackValue: {}, showToast: false }
+    )();
+  }
+
+  // Live Ops Map API methods
+  async getFleetLocations(): Promise<Record<string, unknown>[]> {
+    return withErrorHandling(
+      async () => {
+        const response = await apiService.request<Record<string, unknown>[]>("/api/v1/ops/fleet-locations");
+        return handleApiResponse(response, 'getFleetLocations', []);
+      },
+      'getFleetLocations',
+      { fallbackValue: [], showToast: false }
+    )();
+  }
+
+  async getRevenueHotspots(): Promise<Record<string, unknown>[]> {
+    return withErrorHandling(
+      async () => {
+        const response = await apiService.request<Record<string, unknown>[]>("/api/v1/ops/revenue-hotspots");
+        return handleApiResponse(response, 'getRevenueHotspots', []);
+      },
+      'getRevenueHotspots',
+      { fallbackValue: [], showToast: false }
+    )();
+  }
+
+  async getLiveUserActivities(): Promise<Record<string, unknown>[]> {
+    return withErrorHandling(
+      async () => {
+        const response = await apiService.request<Record<string, unknown>[]>("/api/v1/ops/user-activities");
+        return handleApiResponse(response, 'getLiveUserActivities', []);
+      },
+      'getLiveUserActivities',
+      { fallbackValue: [], showToast: false }
+    )();
+  }
+
+  // Chat API methods
+  async getChatMessages(channelId: string): Promise<Record<string, unknown>[]> {
+    return withErrorHandling(
+      async () => {
+        const response = await apiService.request<Record<string, unknown>[]>(`/api/v1/chat/messages/${channelId}`);
+        return handleApiResponse(response, 'getChatMessages', []);
+      },
+      'getChatMessages',
+      { fallbackValue: [], showToast: false }
+    )();
+  }
+
+  async sendChatMessage(messageData: Record<string, unknown>): Promise<Record<string, unknown>> {
+    return withErrorHandling(
+      async () => {
+        const response = await apiService.request<Record<string, unknown>>("/api/v1/chat/send", {
+          method: 'POST',
+          body: JSON.stringify(messageData)
+        });
+        return handleApiResponse(response, 'sendChatMessage', {});
+      },
+      'sendChatMessage',
+      { fallbackValue: {}, showToast: false }
+    )();
+  }
+
+  // CRM API methods
+  async getCustomers(): Promise<Record<string, unknown>[]> {
+    return withErrorHandling(
+      async () => {
+        const response = await apiService.request<Record<string, unknown>[]>("/api/v1/crm/customers");
+        return handleApiResponse(response, 'getCustomers', []);
+      },
+      'getCustomers',
+      { fallbackValue: [], showToast: false }
+    )();
+  }
+
   async getVehicleDetails(vehicleId: string): Promise<Record<string, unknown>> {
     return withErrorHandling(
       async () => {

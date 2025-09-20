@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const { authenticateToken, checkRole, checkPermission } = require('../middleware/unified-auth');
 const { getCollection } = require('../config/optimized-database');
+const { ObjectId } = require('mongodb');
 const rateLimit = require('express-rate-limit');
 const webSocketServer = require('../services/websocket-server');
 
@@ -104,6 +105,87 @@ router.get('/messages', async (req, res) => {
       message: 'Failed to fetch messages',
       error: process.env.NODE_ENV === 'development' ? error.message : undefined
     });
+  }
+});
+
+// GET /api/v1/chat/messages/:channelId - Get messages for a specific channel
+router.get('/messages/:channelId', checkRole(['head_administrator', 'admin', 'support_agent', 'user']), async (req, res) => {
+  try {
+    const messagesCollection = await getCollection('chat_messages');
+    const { channelId } = req.params;
+    const { page = 1, limit = 50 } = req.query;
+    
+    const skip = (parseInt(page) - 1) * parseInt(limit);
+    
+    const messages = await messagesCollection
+      .find({ channelId })
+      .sort({ timestamp: -1 })
+      .skip(skip)
+      .limit(parseInt(limit))
+      .toArray();
+    
+    const total = await messagesCollection.countDocuments({ channelId });
+    
+    res.json({
+      success: true,
+      data: messages,
+      pagination: {
+        page: parseInt(page),
+        limit: parseInt(limit),
+        total,
+        pages: Math.ceil(total / parseInt(limit))
+      },
+      message: 'Messages retrieved successfully'
+    });
+  } catch (error) {
+    console.error('Get messages error:', error);
+    res.status(500).json({ success: false, error: 'GET_MESSAGES_FAILED', message: 'Failed to get messages' });
+  }
+});
+
+// POST /api/v1/chat/send - Send a chat message
+router.post('/send', checkRole(['head_administrator', 'admin', 'support_agent', 'user']), async (req, res) => {
+  try {
+    const messagesCollection = await getCollection('chat_messages');
+    const { receiverId, message, type = 'text' } = req.body;
+    
+    if (!receiverId || !message) {
+      return res.status(400).json({ 
+        success: false, 
+        error: 'MISSING_FIELDS', 
+        message: 'Receiver ID and message are required' 
+      });
+    }
+    
+    const messageData = {
+      _id: new ObjectId(),
+      channelId: receiverId,
+      senderId: req.user.id,
+      senderName: req.user.name || 'Unknown User',
+      message,
+      type,
+      timestamp: new Date().toISOString(),
+      status: 'sent'
+    };
+    
+    await messagesCollection.insertOne(messageData);
+    
+    // Emit real-time update via WebSocket
+    if (webSocketServer) {
+      webSocketServer.broadcastToChannel(receiverId, {
+        type: 'new_message',
+        data: messageData
+      });
+    }
+    
+    res.json({ 
+      success: true, 
+      data: messageData, 
+      message: 'Message sent successfully' 
+    });
+  } catch (error) {
+    console.error('Send message error:', error);
+    res.status(500).json({ success: false, error: 'SEND_MESSAGE_FAILED', message: 'Failed to send message' });
   }
 });
 

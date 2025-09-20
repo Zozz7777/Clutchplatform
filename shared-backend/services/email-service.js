@@ -146,27 +146,27 @@ class EmailService {
             <td align="center">
               <table width="600" cellpadding="0" cellspacing="0" style="background-color: #ffffff; border-radius: 10px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); overflow: hidden; max-width: 600px;">
                 
-                <!-- Header -->
-                <tr>
-                  <td style="background: linear-gradient(135deg, #d97706 0%, #ea580c 100%); color: #ffffff; padding: 40px 30px; text-align: center;">
-                    <div style="margin-bottom: 20px;">
-                      <img src="https://admin.yourclutch.com/Assets/logos/logowhite.png" alt="Clutch Platform" style="height: 48px; width: auto; max-width: 200px;" />
-                    </div>
-                    <h1 style="font-size: 28px; font-weight: bold; margin: 0 0 10px 0; color: #ffffff;">Welcome to Clutch Platform</h1>
-                    <p style="font-size: 16px; margin: 0; opacity: 0.9;">You've been invited to join our team</p>
-                  </td>
-                </tr>
+                    <!-- Header -->
+                    <tr>
+                      <td style="background: linear-gradient(135deg, #E7000B 0%, #C7000A 100%); color: #ffffff; padding: 40px 30px; text-align: center;">
+                        <div style="margin-bottom: 20px;">
+                          <img src="https://clutch-main-nk7x.onrender.com/Assets/logos/logowhite.png" alt="Clutch Platform" style="height: 48px; width: auto; max-width: 200px;" />
+                        </div>
+                        <h1 style="font-size: 28px; font-weight: bold; margin: 0 0 10px 0; color: #ffffff;">Welcome to Clutch Platform</h1>
+                        <p style="font-size: 16px; margin: 0; opacity: 0.9;">You've been invited to join our team</p>
+                      </td>
+                    </tr>
                 
                 <!-- Content -->
                 <tr>
                   <td style="padding: 40px 30px; background-color: #ffffff;">
                     <h2 style="font-size: 24px; font-weight: 600; color: #1f2937; margin: 0 0 20px 0;">Hello ${name}!</h2>
                     
-                    <p style="font-size: 16px; color: #374151; margin: 0 0 20px 0;">
-                      We're excited to welcome you to the Clutch team! You've been invited to join us as a 
-                      <strong style="color: #d97706;">${role}</strong> in the 
-                      <strong style="color: #d97706;">${department}</strong> department.
-                    </p>
+                        <p style="font-size: 16px; color: #374151; margin: 0 0 20px 0;">
+                          We're excited to welcome you to the Clutch team! You've been invited to join us as a 
+                          <strong style="color: #E7000B;">${role}</strong> in the 
+                          <strong style="color: #E7000B;">${department}</strong> department.
+                        </p>
                     
                     <!-- Info Box -->
                     <table width="100%" cellpadding="0" cellspacing="0" style="background-color: #f8f9fa; border: 1px solid #e5e7eb; border-radius: 10px; margin: 30px 0;">
@@ -186,15 +186,15 @@ class EmailService {
                       To get started, please set up your account password by clicking the button below:
                     </p>
                     
-                    <!-- CTA Button -->
-                    <div style="text-align: center; margin: 30px 0;">
-                      <a href="${invitationLink}" style="display: inline-block; background: linear-gradient(135deg, #d97706 0%, #ea580c 100%); color: #ffffff; padding: 15px 30px; text-decoration: none; border-radius: 10px; font-weight: 600; font-size: 16px; box-shadow: 0 2px 8px rgba(217, 119, 6, 0.3);">
-                        Set Up My Account
-                      </a>
-                    </div>
+                        <!-- CTA Button -->
+                        <div style="text-align: center; margin: 30px 0;">
+                          <a href="${invitationLink}" style="display: inline-block; background: linear-gradient(135deg, #E7000B 0%, #C7000A 100%); color: #ffffff; padding: 15px 30px; text-decoration: none; border-radius: 10px; font-weight: 600; font-size: 16px; box-shadow: 0 2px 8px rgba(231, 0, 11, 0.3);">
+                            Set Up My Account
+                          </a>
+                        </div>
                     
                     <p style="font-size: 16px; color: #374151; margin: 0 0 20px 0;">
-                      <span style="color: #f59e0b; font-weight: 600;">Important:</span> This invitation link will expire in 7 days. If you have any questions or need assistance, please contact your HR department.
+                      <span style="color: #E7000B; font-weight: 600;">Important:</span> This invitation link will expire in 7 days. If you have any questions or need assistance, please contact your HR department.
                     </p>
                     
                     <p style="font-size: 16px; color: #374151; margin: 0 0 20px 0;">
@@ -211,9 +211,9 @@ class EmailService {
                 <!-- Footer -->
                 <tr>
                   <td style="background-color: #f8f9fa; border-top: 1px solid #e5e7eb; padding: 30px; text-align: center;">
-                    <div style="margin-bottom: 20px;">
-                      <img src="https://admin.yourclutch.com/Assets/logos/Logored.png" alt="Clutch Platform" style="height: 32px; width: auto; max-width: 150px;" />
-                    </div>
+                        <div style="margin-bottom: 20px;">
+                          <img src="https://clutch-main-nk7x.onrender.com/Assets/logos/Logored.png" alt="Clutch Platform" style="height: 32px; width: auto; max-width: 150px;" />
+                        </div>
                     <p style="color: #6b7280; font-size: 14px; margin: 5px 0;">
                       This is an automated message from Clutch Platform. Please do not reply to this email.
                     </p>

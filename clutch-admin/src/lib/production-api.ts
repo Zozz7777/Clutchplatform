@@ -1363,6 +1363,110 @@ export class ProductionApiService {
     }
   }
 
+  // Communication API methods
+  async getChatChannels(): Promise<Record<string, unknown>[]> {
+    try {
+      return await realApi.getChatChannels();
+    } catch (error) {
+      logger.error("Failed to fetch chat channels:", error);
+      throw new Error("Failed to load chat channels");
+    }
+  }
+
+  async getTickets(): Promise<Record<string, unknown>[]> {
+    try {
+      return await realApi.getTickets();
+    } catch (error) {
+      logger.error("Failed to fetch tickets:", error);
+      throw new Error("Failed to load tickets");
+    }
+  }
+
+  // Mobile CMS API methods
+  async getMobileAppSettings(): Promise<Record<string, unknown>> {
+    try {
+      return await realApi.getMobileAppSettings();
+    } catch (error) {
+      logger.error("Failed to fetch mobile app settings:", error);
+      throw new Error("Failed to load mobile app settings");
+    }
+  }
+
+  async saveMobileAppSettings(settings: Record<string, unknown>): Promise<Record<string, unknown>> {
+    try {
+      return await realApi.saveMobileAppSettings(settings);
+    } catch (error) {
+      logger.error("Failed to save mobile app settings:", error);
+      throw new Error("Failed to save mobile app settings");
+    }
+  }
+
+  async previewMobileApp(): Promise<Record<string, unknown>> {
+    try {
+      return await realApi.previewMobileApp();
+    } catch (error) {
+      logger.error("Failed to preview mobile app:", error);
+      throw new Error("Failed to preview mobile app");
+    }
+  }
+
+  // Live Ops Map API methods
+  async getFleetLocations(): Promise<Record<string, unknown>[]> {
+    try {
+      return await realApi.getFleetLocations();
+    } catch (error) {
+      logger.error("Failed to fetch fleet locations:", error);
+      throw new Error("Failed to load fleet locations");
+    }
+  }
+
+  async getRevenueHotspots(): Promise<Record<string, unknown>[]> {
+    try {
+      return await realApi.getRevenueHotspots();
+    } catch (error) {
+      logger.error("Failed to fetch revenue hotspots:", error);
+      throw new Error("Failed to load revenue hotspots");
+    }
+  }
+
+  async getLiveUserActivities(): Promise<Record<string, unknown>[]> {
+    try {
+      return await realApi.getLiveUserActivities();
+    } catch (error) {
+      logger.error("Failed to fetch live user activities:", error);
+      throw new Error("Failed to load live user activities");
+    }
+  }
+
+  // Chat API methods
+  async getChatMessages(channelId: string): Promise<Record<string, unknown>[]> {
+    try {
+      return await realApi.getChatMessages(channelId);
+    } catch (error) {
+      logger.error("Failed to fetch chat messages:", error);
+      throw new Error("Failed to load chat messages");
+    }
+  }
+
+  async sendChatMessage(messageData: Record<string, unknown>): Promise<Record<string, unknown>> {
+    try {
+      return await realApi.sendChatMessage(messageData);
+    } catch (error) {
+      logger.error("Failed to send chat message:", error);
+      throw new Error("Failed to send chat message");
+    }
+  }
+
+  // CRM API methods
+  async getCustomers(): Promise<Record<string, unknown>[]> {
+    try {
+      return await realApi.getCustomers();
+    } catch (error) {
+      logger.error("Failed to fetch customers:", error);
+      throw new Error("Failed to load customers");
+    }
+  }
+
   // Testing APIs - New endpoints for testing components
   async getChaosExperiments(): Promise<Record<string, unknown>[]> {
     try {

@@ -80,9 +80,9 @@ export default function LiveOpsMap({ className }: LiveOpsMapProps) {
           realApi.getLiveUserActivities()
         ]);
 
-        setFleetLocations((fleetData || []) as unknown as FleetLocation[]);
-        setRevenueHotspots((hotspotsData || []) as unknown as RevenueHotspot[]);
-        setUserActivities((usersData || []) as unknown as UserActivity[]);
+        setFleetLocations(Array.isArray(fleetData) ? (fleetData as unknown as FleetLocation[]) : []);
+        setRevenueHotspots(Array.isArray(hotspotsData) ? (hotspotsData as unknown as RevenueHotspot[]) : []);
+        setUserActivities(Array.isArray(usersData) ? (usersData as unknown as UserActivity[]) : []);
         setLastUpdate(new Date());
       } catch (error) {
         // Error handled by API service
@@ -106,9 +106,9 @@ export default function LiveOpsMap({ className }: LiveOpsMapProps) {
             realApi.getLiveUserActivities()
           ]);
 
-          setFleetLocations((fleetData || []) as unknown as FleetLocation[]);
-          setRevenueHotspots((hotspotsData || []) as unknown as RevenueHotspot[]);
-          setUserActivities((usersData || []) as unknown as UserActivity[]);
+          setFleetLocations(Array.isArray(fleetData) ? (fleetData as unknown as FleetLocation[]) : []);
+          setRevenueHotspots(Array.isArray(hotspotsData) ? (hotspotsData as unknown as RevenueHotspot[]) : []);
+          setUserActivities(Array.isArray(usersData) ? (usersData as unknown as UserActivity[]) : []);
           setLastUpdate(new Date());
         } catch (error) {
           // Error handled by API service
@@ -198,7 +198,7 @@ export default function LiveOpsMap({ className }: LiveOpsMapProps) {
               key={layer.key}
               variant={selectedLayer === layer.key ? 'default' : 'outline'}
               size="sm"
-              onClick={() => setSelectedLayer(layer.key as typeof selectedLayer)}
+              onClick={() => setSelectedLayer(layer.key as 'all' | 'fleet' | 'revenue' | 'users')}
             >
               {layer.icon}
               <span className="ml-1">{layer.label}</span>

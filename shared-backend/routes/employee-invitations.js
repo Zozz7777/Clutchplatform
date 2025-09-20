@@ -17,6 +17,65 @@ const emailService = require('../services/email-service');
 // Apply rate limiting
 const invitationRateLimit = createRateLimit({ windowMs: 15 * 60 * 1000, max: 10 }); // 10 invitations per 15 minutes
 
+// Helper function to ensure invitation token consistency
+async function ensureInvitationTokenConsistency(invitation) {
+  try {
+    // Verify the stored token is valid
+    const decoded = jwt.verify(invitation.invitationToken, process.env.JWT_SECRET);
+    
+    // Check if token matches the invitation data
+    if (decoded.email !== invitation.email || decoded.type !== 'employee_invitation') {
+      console.log('⚠️ Token mismatch detected, regenerating token for invitation:', invitation._id);
+      
+      // Generate new token
+      const newToken = jwt.sign(
+        { 
+          email: invitation.email.toLowerCase(), 
+          type: 'employee_invitation',
+          invitedBy: invitation.invitedBy
+        },
+        process.env.JWT_SECRET,
+        { expiresIn: '7d' }
+      );
+      
+      // Update invitation with new token
+      const invitationsCollection = await getCollection('employee_invitations');
+      await invitationsCollection.updateOne(
+        { _id: invitation._id },
+        { $set: { invitationToken: newToken } }
+      );
+      
+      console.log('✅ Token regenerated for invitation:', invitation._id);
+      return newToken;
+    }
+    
+    return invitation.invitationToken;
+  } catch (error) {
+    console.log('⚠️ Invalid token detected, regenerating token for invitation:', invitation._id);
+    
+    // Generate new token
+    const newToken = jwt.sign(
+      { 
+        email: invitation.email.toLowerCase(), 
+        type: 'employee_invitation',
+        invitedBy: invitation.invitedBy
+      },
+      process.env.JWT_SECRET,
+      { expiresIn: '7d' }
+    );
+    
+    // Update invitation with new token
+    const invitationsCollection = await getCollection('employee_invitations');
+    await invitationsCollection.updateOne(
+      { _id: invitation._id },
+      { $set: { invitationToken: newToken } }
+    );
+    
+    console.log('✅ Token regenerated for invitation:', invitation._id);
+    return newToken;
+  }
+}
+
 // ==================== EMPLOYEE INVITATIONS ====================
 
 // POST /api/v1/employees/invite - Send employee invitation
@@ -272,17 +331,49 @@ router.post('/accept-invitation', async (req, res) => {
     const invitationsCollection = await getCollection('employee_invitations');
     const usersCollection = await getCollection('users');
     
-    // Find the invitation
-    const invitation = await invitationsCollection.findOne({
+    // Find the invitation - try multiple approaches for better reliability
+    let invitation = await invitationsCollection.findOne({
       invitationToken: token,
       status: 'pending'
     });
     
+    // If not found by token, try to find by email and verify token manually
+    if (!invitation && decoded.email) {
+      console.log('🔍 Invitation not found by token, trying email lookup for:', decoded.email);
+      const invitationsByEmail = await invitationsCollection.find({
+        email: decoded.email.toLowerCase(),
+        status: 'pending'
+      }).toArray();
+      
+      // Check each invitation to see if the token matches
+      for (const inv of invitationsByEmail) {
+        if (inv.invitationToken === token) {
+          invitation = inv;
+          console.log('✅ Found invitation by email and token match');
+          break;
+        }
+      }
+    }
+    
     if (!invitation) {
+      console.log('❌ Invitation not found - Token:', token.substring(0, 20) + '...');
+      console.log('❌ Decoded email:', decoded.email);
+      
+      // Try to find any pending invitations for this email for debugging
+      const debugInvitations = await invitationsCollection.find({
+        email: decoded.email?.toLowerCase(),
+        status: 'pending'
+      }).toArray();
+      
+      console.log('🔍 Debug - Found pending invitations for email:', debugInvitations.length);
+      if (debugInvitations.length > 0) {
+        console.log('🔍 Debug - Invitation tokens:', debugInvitations.map(inv => inv.invitationToken?.substring(0, 20) + '...'));
+      }
+      
       return res.status(404).json({
         success: false,
         error: 'INVITATION_NOT_FOUND',
-        message: 'Invitation not found or already processed',
+        message: 'Invitation not found or already processed. Please request a new invitation.',
         timestamp: new Date().toISOString()
       });
     }
@@ -433,17 +524,38 @@ router.get('/validate-invitation/:token', async (req, res) => {
     
     const invitationsCollection = await getCollection('employee_invitations');
     
-    // Find the invitation
-    const invitation = await invitationsCollection.findOne({
+    // Find the invitation - try multiple approaches for better reliability
+    let invitation = await invitationsCollection.findOne({
       invitationToken: token,
       status: 'pending'
     });
     
+    // If not found by token, try to find by email and verify token manually
+    if (!invitation && decoded.email) {
+      console.log('🔍 [VALIDATE] Invitation not found by token, trying email lookup for:', decoded.email);
+      const invitationsByEmail = await invitationsCollection.find({
+        email: decoded.email.toLowerCase(),
+        status: 'pending'
+      }).toArray();
+      
+      // Check each invitation to see if the token matches
+      for (const inv of invitationsByEmail) {
+        if (inv.invitationToken === token) {
+          invitation = inv;
+          console.log('✅ [VALIDATE] Found invitation by email and token match');
+          break;
+        }
+      }
+    }
+    
     if (!invitation) {
+      console.log('❌ [VALIDATE] Invitation not found - Token:', token.substring(0, 20) + '...');
+      console.log('❌ [VALIDATE] Decoded email:', decoded.email);
+      
       return res.status(404).json({
         success: false,
         error: 'INVITATION_NOT_FOUND',
-        message: 'Invitation not found or already processed',
+        message: 'Invitation not found or already processed. Please request a new invitation.',
         timestamp: new Date().toISOString()
       });
     }
