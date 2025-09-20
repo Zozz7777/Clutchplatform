@@ -543,10 +543,10 @@ export default function FeatureFlagsPage() {
                   All Status
                 </DropdownMenuItem>
                 <DropdownMenuItem onClick={() => setStatusFilter("enabled")}>
-                  Enabled
+{t('featureFlags.enabled')}
                 </DropdownMenuItem>
                 <DropdownMenuItem onClick={() => setStatusFilter("disabled")}>
-                  Disabled
+{t('featureFlags.disabled')}
                 </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
@@ -583,7 +583,7 @@ export default function FeatureFlagsPage() {
                       <div className="flex items-center space-x-3 mb-2">
                         <h3 className="text-lg font-semibold">{flag.name}</h3>
                         <Badge variant={getStatusVariant(flag.enabled)}>
-                          {flag.enabled ? "Enabled" : "Disabled"}
+                          {flag.enabled ? t('featureFlags.enabled') : t('featureFlags.disabled')}
                         </Badge>
                         <Badge variant={getEnvironmentVariant(flag.environment)}>
                           {flag.environment}
@@ -607,7 +607,7 @@ export default function FeatureFlagsPage() {
                           </p>
                         </div>
                         <div>
-                          <p className="text-sm font-medium">Rollout</p>
+                          <p className="text-sm font-medium">{t('featureFlags.rollout')}</p>
                           <p className="text-sm text-muted-foreground">
                             {flag.rollout.percentage}%
                           </p>
@@ -651,12 +651,12 @@ export default function FeatureFlagsPage() {
                         {flag.enabled ? (
                           <>
                             <ToggleRight className="mr-2 h-4 w-4" />
-                            Disable
+{t('featureFlags.disable')}
                           </>
                         ) : (
                           <>
                             <ToggleLeft className="mr-2 h-4 w-4" />
-                            Enable
+{t('featureFlags.enable')}
                           </>
                         )}
                       </Button>
@@ -673,7 +673,7 @@ export default function FeatureFlagsPage() {
                           </DropdownMenuItem>
                           <DropdownMenuItem>
                             <Edit className="mr-2 h-4 w-4" />
-                            Edit Flag
+{t('featureFlags.editFlag')}
                           </DropdownMenuItem>
                           <DropdownMenuItem>
                             <BarChart3 className="mr-2 h-4 w-4" />
@@ -681,7 +681,7 @@ export default function FeatureFlagsPage() {
                           </DropdownMenuItem>
                           <DropdownMenuItem>
                             <Settings className="mr-2 h-4 w-4" />
-                            Configure Rollout
+{t('featureFlags.configureRollout')}
                           </DropdownMenuItem>
                           <DropdownMenuItem className="text-destructive">
                             <Trash2 className="mr-2 h-4 w-4" />

@@ -216,35 +216,35 @@ export default function ProjectManagementPage() {
     }
   };
 
-  const getStatusColor = (status: string) => {
+  const getStatusVariant = (status: string) => {
     switch (status) {
       case "active":
-        return "bg-primary/10 text-primary-foreground";
+        return "default";
       case "planning":
-        return "bg-secondary/10 text-secondary-foreground";
+        return "secondary";
       case "on_hold":
-        return "bg-secondary/10 text-secondary-foreground";
+        return "secondary";
       case "completed":
-        return "bg-muted text-muted-foreground";
+        return "outline";
       case "cancelled":
-        return "bg-destructive/10 text-destructive-foreground";
+        return "destructive";
       default:
-        return "bg-muted text-muted-foreground";
+        return "outline";
     }
   };
 
-  const getPriorityColor = (priority: string) => {
+  const getPriorityVariant = (priority: string) => {
     switch (priority) {
       case "urgent":
-        return "bg-destructive/10 text-destructive-foreground";
+        return "destructive";
       case "high":
-        return "bg-secondary/10 text-secondary-foreground";
+        return "secondary";
       case "medium":
-        return "bg-secondary/10 text-secondary-foreground";
+        return "secondary";
       case "low":
-        return "bg-primary/10 text-primary-foreground";
+        return "outline";
       default:
-        return "bg-muted text-muted-foreground";
+        return "outline";
     }
   };
 
@@ -343,7 +343,7 @@ export default function ProjectManagementPage() {
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">
-              {new Set(projects.flatMap(p => p.team.map(t => t.id))).size}
+              {new Set((projects || []).flatMap(p => p.team.map(t => t.id))).size}
             </div>
             <p className="text-xs text-muted-foreground">
               Active team members
@@ -409,10 +409,10 @@ export default function ProjectManagementPage() {
                     <div className="flex-1">
                       <div className="flex items-center space-x-3 mb-2">
                         <h3 className="text-lg font-semibold">{project.name}</h3>
-                        <Badge className={getStatusColor(project.status)}>
+                        <Badge variant={getStatusVariant(project.status)}>
                           {project.status.replace("_", " ")}
                         </Badge>
-                        <Badge className={getPriorityColor(project.priority)}>
+                        <Badge variant={getPriorityVariant(project.priority)}>
                           {project.priority}
                         </Badge>
                       </div>
