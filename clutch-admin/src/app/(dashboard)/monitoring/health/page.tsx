@@ -85,13 +85,22 @@ export default function HealthPage() {
     loadSystemHealth();
 
     // Subscribe to real-time health updates
-    const unsubscribe = websocketService.subscribeToSystemHealth((data) => {
-      setServices(prevServices => 
-        prevServices.map(service => 
-          service.name === data.service ? { ...service, ...data } : service
-        )
-      );
-    });
+    let unsubscribe: (() => void) | null = null;
+    try {
+      if (websocketService && typeof websocketService.subscribeToSystemHealth === 'function') {
+        unsubscribe = websocketService.subscribeToSystemHealth((data) => {
+          setServices(prevServices => 
+            prevServices.map(service => 
+              service.name === data.service ? { ...service, ...data } : service
+            )
+          );
+        });
+      } else {
+        console.warn('WebSocket service not available or subscribeToSystemHealth method not found');
+      }
+    } catch (error) {
+      console.error('WebSocket subscription error:', error);
+    }
 
     // Monitor connection status
     const statusInterval = setInterval(() => {
@@ -99,7 +108,13 @@ export default function HealthPage() {
     }, 1000);
 
     return () => {
-      unsubscribe();
+      if (unsubscribe) {
+        try {
+          unsubscribe();
+        } catch (error) {
+          console.error('WebSocket unsubscribe error:', error);
+        }
+      }
       clearInterval(statusInterval);
     };
   }, []);

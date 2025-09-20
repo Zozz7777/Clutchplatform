@@ -92,7 +92,9 @@ export default function FleetPage() {
   let optimizeRoutes: (() => void) | null = null;
   
   try {
-    const quickActions = useQuickActions(hasPermission);
+    // Ensure hasPermission is a function before using it
+    const permissionCheck = typeof hasPermission === 'function' ? hasPermission : () => true;
+    const quickActions = useQuickActions(permissionCheck);
     createFleet = quickActions.createFleet;
     optimizeRoutes = quickActions.optimizeRoutes;
   } catch (error) {
@@ -132,9 +134,9 @@ export default function FleetPage() {
     // Subscribe to real-time updates via WebSocket with error handling
     let unsubscribe: (() => void) | null = null;
     try {
-      const subscribeFn = websocketService.subscribeToFleetUpdates as ((callback: (data: any) => void) => () => void) | undefined;
-      if (subscribeFn) {
-        unsubscribe = subscribeFn((data: any) => {
+      // Check if websocketService exists and has the method
+      if (websocketService && typeof websocketService.subscribeToFleetUpdates === 'function') {
+        unsubscribe = websocketService.subscribeToFleetUpdates((data: any) => {
           try {
             // Handle different data structures from WebSocket
             const vehiclesData = Array.isArray(data) ? data : 
@@ -146,6 +148,8 @@ export default function FleetPage() {
             console.error('WebSocket data processing error:', wsError);
           }
         });
+      } else {
+        console.warn('WebSocket service not available or subscribeToFleetUpdates method not found');
       }
     } catch (wsError) {
       console.error('WebSocket subscription error:', wsError);

@@ -84,14 +84,28 @@ export default function MonitoringPerformancePage() {
     loadPerformanceData();
 
     // Subscribe to real-time performance updates
-    const unsubscribe = websocketService.subscribeToPerformanceMetrics((data) => {
-      setMetrics(data);
-    });
+    let unsubscribe: (() => void) | null = null;
+    let unsubscribeAlerts: (() => void) | null = null;
+    
+    try {
+      if (websocketService && typeof websocketService.subscribeToPerformanceMetrics === 'function') {
+        unsubscribe = websocketService.subscribeToPerformanceMetrics((data) => {
+          setMetrics(data);
+        });
+      } else {
+        console.warn('WebSocket service not available or subscribeToPerformanceMetrics method not found');
+      }
 
-    // Subscribe to real-time alerts
-    const unsubscribeAlerts = websocketService.subscribeToNotifications((data) => {
-      setAlerts(prevAlerts => [data, ...prevAlerts.slice(0, 9)]); // Keep last 10 alerts
-    });
+      if (websocketService && typeof websocketService.subscribeToNotifications === 'function') {
+        unsubscribeAlerts = websocketService.subscribeToNotifications((data) => {
+          setAlerts(prevAlerts => [data, ...prevAlerts.slice(0, 9)]); // Keep last 10 alerts
+        });
+      } else {
+        console.warn('WebSocket service not available or subscribeToNotifications method not found');
+      }
+    } catch (error) {
+      console.error('WebSocket subscription error:', error);
+    }
 
     // Monitor connection status
     const statusInterval = setInterval(() => {
@@ -99,8 +113,20 @@ export default function MonitoringPerformancePage() {
     }, 1000);
 
     return () => {
-      unsubscribe();
-      unsubscribeAlerts();
+      if (unsubscribe) {
+        try {
+          unsubscribe();
+        } catch (error) {
+          console.error('WebSocket unsubscribe error:', error);
+        }
+      }
+      if (unsubscribeAlerts) {
+        try {
+          unsubscribeAlerts();
+        } catch (error) {
+          console.error('WebSocket unsubscribe error:', error);
+        }
+      }
       clearInterval(statusInterval);
     };
   }, []);
