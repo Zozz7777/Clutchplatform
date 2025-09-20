@@ -150,16 +150,40 @@ const { authenticateToken } = require('./middleware/unified-auth');
 // Apply authentication middleware to all API routes except public endpoints
 app.use('/api', (req, res, next) => {
   // Skip auth for public endpoints
-  const publicPaths = ['/api/v1/auth/login', '/api/v1/auth/register', '/api/v1/employee-login', '/api/v1/create-employee', '/api/v1/health', '/api/v1/test', '/api/v1/ping', '/api/v1/webhook/github', '/api/v1/emergency-auth/login', '/api/v1/auth-fallback/login'];
+  const publicPaths = [
+    '/api/v1/auth/login', 
+    '/api/v1/auth/register', 
+    '/api/v1/employee-login', 
+    '/api/v1/create-employee', 
+    '/api/v1/health', 
+    '/api/v1/test', 
+    '/api/v1/ping', 
+    '/api/v1/webhook/github', 
+    '/api/v1/emergency-auth/login', 
+    '/api/v1/auth-fallback/login',
+    '/api/v1/auth/refresh',
+    '/api/v1/auth/verify'
+  ];
   
-  if (publicPaths.some(path => req.path.startsWith(path)) || 
-      req.path.includes('/health') || 
-      req.path.includes('/test') || 
-      req.path.includes('/ping') ||
-      req.path.includes('/webhook')) {
+  // Check if the current path matches any public path
+  const isPublicPath = publicPaths.some(path => {
+    // Exact match or starts with the path
+    return req.path === path || req.path.startsWith(path);
+  });
+  
+  // Also check for common public patterns
+  const isPublicPattern = req.path.includes('/health') || 
+                         req.path.includes('/test') || 
+                         req.path.includes('/ping') ||
+                         req.path.includes('/webhook') ||
+                         req.path.includes('/public');
+  
+  if (isPublicPath || isPublicPattern) {
+    console.log(`🔓 Skipping auth for public endpoint: ${req.path}`);
     return next();
   }
   
+  console.log(`🔒 Applying auth to protected endpoint: ${req.path}`);
   // Apply authentication to all other API routes
   return authenticateToken(req, res, next);
 });
