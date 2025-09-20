@@ -5,6 +5,7 @@ import { useAuth } from "@/contexts/auth-context";
 import { MainLayout } from "@/components/layout/main-layout";
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
+import { ErrorBoundary } from "@/components/error-boundary";
 
 export default function DashboardLayout({
   children,
@@ -35,5 +36,9 @@ export default function DashboardLayout({
     return null;
   }
 
-  return <MainLayout>{children}</MainLayout>;
+  return (
+    <ErrorBoundary>
+      <MainLayout>{children}</MainLayout>
+    </ErrorBoundary>
+  );
 }

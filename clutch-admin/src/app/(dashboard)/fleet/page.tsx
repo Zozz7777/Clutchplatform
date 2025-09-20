@@ -39,6 +39,7 @@ import FleetUtilization from "@/components/widgets/fleet-utilization";
 import MaintenanceForecast from "@/components/widgets/maintenance-forecast";
 import FuelCostMetrics from "@/components/widgets/fuel-cost-metrics";
 import DowntimeImpact from "@/components/widgets/downtime-impact";
+import { ErrorBoundary } from "@/components/error-boundary";
 
 // Define FleetVehicle type locally since we're not using mock API
 interface FleetVehicle {
@@ -562,14 +563,22 @@ export default function FleetPage() {
 
         {/* Top Row - Utilization & Maintenance */}
         <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-          <FleetUtilization className="lg:col-span-2" />
-          <MaintenanceForecast />
+          <ErrorBoundary>
+            <FleetUtilization className="lg:col-span-2" />
+          </ErrorBoundary>
+          <ErrorBoundary>
+            <MaintenanceForecast />
+          </ErrorBoundary>
         </div>
 
         {/* Second Row - Cost & Downtime */}
         <div className="grid gap-6 md:grid-cols-2">
-          <FuelCostMetrics />
-          <DowntimeImpact />
+          <ErrorBoundary>
+            <FuelCostMetrics />
+          </ErrorBoundary>
+          <ErrorBoundary>
+            <DowntimeImpact />
+          </ErrorBoundary>
         </div>
       </div>
     </div>
