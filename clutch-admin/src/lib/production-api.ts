@@ -257,19 +257,31 @@ export class ProductionApiService {
   // Finance APIs
   async getPayments(): Promise<Record<string, unknown>[]> {
     try {
-      return await realApi.getPayments();
+      const response = await realApi.getPayments();
+      return response.data || [];
     } catch (error) {
       logger.error("Failed to fetch payments:", error);
-      throw new Error("Failed to load payments");
+      return [];
     }
   }
 
   async getSubscriptions(): Promise<Record<string, unknown>[]> {
     try {
-      return await realApi.getSubscriptions();
+      const response = await realApi.getSubscriptions();
+      return response.data || [];
     } catch (error) {
       logger.error("Failed to fetch subscriptions:", error);
-      throw new Error("Failed to load subscriptions");
+      return [];
+    }
+  }
+
+  async getPayouts(): Promise<Record<string, unknown>[]> {
+    try {
+      const response = await realApi.getPayouts();
+      return response.data || [];
+    } catch (error) {
+      logger.error("Failed to fetch payouts:", error);
+      return [];
     }
   }
 
@@ -579,33 +591,6 @@ export class ProductionApiService {
     }
   }
 
-  // Finance APIs
-  async getPayments(): Promise<Record<string, unknown>[]> {
-    try {
-      return await realApi.getPayments();
-    } catch (error) {
-      logger.error("Failed to fetch payments:", error);
-      throw new Error("Failed to load payments");
-    }
-  }
-
-  async getSubscriptions(): Promise<Record<string, unknown>[]> {
-    try {
-      return await realApi.getSubscriptions();
-    } catch (error) {
-      logger.error("Failed to fetch subscriptions:", error);
-      throw new Error("Failed to load subscriptions");
-    }
-  }
-
-  async getPayouts(): Promise<Record<string, unknown>[]> {
-    try {
-      return await realApi.getPayouts();
-    } catch (error) {
-      logger.error("Failed to fetch payouts:", error);
-      throw new Error("Failed to load payouts");
-    }
-  }
 
   async createPayment(paymentData: Record<string, unknown>): Promise<Record<string, unknown>> {
     try {

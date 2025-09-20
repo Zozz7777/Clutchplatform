@@ -123,57 +123,71 @@ export default function MarketingPage() {
   useEffect(() => {
     const loadMarketingData = async () => {
       try {
+        setIsLoading(true);
         const token = localStorage.getItem("clutch-admin-token");
         
-        // Load campaigns
-        const campaignsResponse = await fetch("https://clutch-main-nk7x.onrender.com/api/v1/marketing/campaigns", {
-          headers: {
-            "Authorization": `Bearer ${token}`,
-            "Content-Type": "application/json",
-          },
-        });
-        
-        if (campaignsResponse.ok) {
-          const campaignsData = await campaignsResponse.json();
-          setCampaigns(campaignsData.data || campaignsData);
+        // Load all data with proper error handling
+        const [campaignsResponse, leadsResponse, statsResponse] = await Promise.allSettled([
+          fetch("https://clutch-main-nk7x.onrender.com/api/v1/marketing/campaigns", {
+            headers: {
+              "Authorization": `Bearer ${token}`,
+              "Content-Type": "application/json",
+            },
+          }),
+          fetch("https://clutch-main-nk7x.onrender.com/api/v1/marketing/leads", {
+            headers: {
+              "Authorization": `Bearer ${token}`,
+              "Content-Type": "application/json",
+            },
+          }),
+          fetch("https://clutch-main-nk7x.onrender.com/api/v1/marketing/stats", {
+            headers: {
+              "Authorization": `Bearer ${token}`,
+              "Content-Type": "application/json",
+            },
+          })
+        ]);
+
+        // Handle campaigns data
+        if (campaignsResponse.status === 'fulfilled' && campaignsResponse.value.ok) {
+          const campaignsData = await campaignsResponse.value.json();
+          const campaigns = campaignsData.data || campaignsData;
+          setCampaigns(Array.isArray(campaigns) ? campaigns : []);
+        } else {
+          console.warn('Failed to load campaigns:', campaignsResponse.status === 'rejected' ? campaignsResponse.reason : 'Response not ok');
+          setCampaigns([]);
         }
 
-        // Load leads
-        const leadsResponse = await fetch("https://clutch-main-nk7x.onrender.com/api/v1/marketing/leads", {
-          headers: {
-            "Authorization": `Bearer ${token}`,
-            "Content-Type": "application/json",
-          },
-        });
-        
-        if (leadsResponse.ok) {
-          const leadsData = await leadsResponse.json();
-          setLeads(leadsData.data || leadsData);
+        // Handle leads data
+        if (leadsResponse.status === 'fulfilled' && leadsResponse.value.ok) {
+          const leadsData = await leadsResponse.value.json();
+          const leads = leadsData.data || leadsData;
+          setLeads(Array.isArray(leads) ? leads : []);
+        } else {
+          console.warn('Failed to load leads:', leadsResponse.status === 'rejected' ? leadsResponse.reason : 'Response not ok');
+          setLeads([]);
         }
 
-        // Load marketing stats
-        const statsResponse = await fetch("https://clutch-main-nk7x.onrender.com/api/v1/marketing/stats", {
-          headers: {
-            "Authorization": `Bearer ${token}`,
-            "Content-Type": "application/json",
-          },
-        });
-        
-        if (statsResponse.ok) {
-          const statsData = await statsResponse.json();
+        // Handle stats data
+        if (statsResponse.status === 'fulfilled' && statsResponse.value.ok) {
+          const statsData = await statsResponse.value.json();
           setStats(statsData.data || statsData);
         } else {
-          // Calculate stats from loaded data
-          const totalCampaigns = (campaigns || []).length;
-          const activeCampaigns = (campaigns || []).filter(c => c.status === "active").length;
-          const totalSpent = (campaigns || []).reduce((sum, c) => sum + (c.spent || 0), 0);
-          const totalLeads = (leads || []).length;
-          const conversionRate = (campaigns || []).length > 0 
-            ? (campaigns || []).reduce((sum, c) => sum + (c.metrics?.conversions || 0), 0) / 
-              (campaigns || []).reduce((sum, c) => sum + (c.metrics?.clicks || 0), 0) * 100 
+          console.warn('Failed to load stats, calculating from loaded data');
+          // Calculate stats from loaded data with proper array checks
+          const currentCampaigns = Array.isArray(campaigns) ? campaigns : [];
+          const currentLeads = Array.isArray(leads) ? leads : [];
+          
+          const totalCampaigns = currentCampaigns.length;
+          const activeCampaigns = currentCampaigns.filter(c => c.status === "active").length;
+          const totalSpent = currentCampaigns.reduce((sum, c) => sum + (c.spent || 0), 0);
+          const totalLeads = currentLeads.length;
+          const conversionRate = currentCampaigns.length > 0 
+            ? currentCampaigns.reduce((sum, c) => sum + (c.metrics?.conversions || 0), 0) / 
+              Math.max(currentCampaigns.reduce((sum, c) => sum + (c.metrics?.clicks || 0), 0), 1) * 100 
             : 0;
-          const averageROAS = (campaigns || []).length > 0 
-            ? (campaigns || []).reduce((sum, c) => sum + (c.metrics?.roas || 0), 0) / (campaigns || []).length 
+          const averageROAS = currentCampaigns.length > 0 
+            ? currentCampaigns.reduce((sum, c) => sum + (c.metrics?.roas || 0), 0) / currentCampaigns.length 
             : 0;
 
           setStats({
@@ -187,8 +201,22 @@ export default function MarketingPage() {
             clickThroughRate: 3.2, // Default value
           });
         }
+        
       } catch (error) {
-        // Error handled by API service
+        console.error('Unexpected error loading marketing data:', error);
+        // Set empty arrays on error
+        setCampaigns([]);
+        setLeads([]);
+        setStats({
+          totalCampaigns: 0,
+          activeCampaigns: 0,
+          totalSpent: 0,
+          totalLeads: 0,
+          conversionRate: 0,
+          averageROAS: 0,
+          emailOpenRate: 0,
+          clickThroughRate: 0,
+        });
       } finally {
         setIsLoading(false);
       }
@@ -198,8 +226,12 @@ export default function MarketingPage() {
   }, []);
 
   useEffect(() => {
-    let filteredCamps = campaigns || [];
-    let filteredLeadsList = leads || [];
+    // Ensure we have arrays before filtering
+    const campaignsArray = Array.isArray(campaigns) ? campaigns : [];
+    const leadsArray = Array.isArray(leads) ? leads : [];
+    
+    let filteredCamps = campaignsArray;
+    let filteredLeadsList = leadsArray;
 
     // Search filter
     if (searchQuery) {
@@ -422,10 +454,10 @@ export default function MarketingPage() {
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">
-              {stats ? stats.activeCampaigns : (campaigns || []).filter(c => c.status === "active").length}
+              {stats ? stats.activeCampaigns : (Array.isArray(campaigns) ? campaigns.filter(c => c.status === "active").length : 0)}
             </div>
             <p className="text-xs text-muted-foreground">
-              {stats ? stats.totalCampaigns : (campaigns || []).length} total campaigns
+              {stats ? stats.totalCampaigns : (Array.isArray(campaigns) ? campaigns.length : 0)} total campaigns
             </p>
           </CardContent>
         </Card>
@@ -438,7 +470,7 @@ export default function MarketingPage() {
           <CardContent>
             <div className="text-2xl font-bold">
               {stats ? formatCurrency(stats.totalSpent) : 
-                formatCurrency(campaigns.reduce((sum, c) => sum + c.spent, 0))}
+                formatCurrency(Array.isArray(campaigns) ? campaigns.reduce((sum, c) => sum + (c.spent || 0), 0) : 0)}
             </div>
             <p className="text-xs text-muted-foreground">
               {t('marketing.marketingBudget')}

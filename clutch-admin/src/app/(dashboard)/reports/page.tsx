@@ -124,32 +124,46 @@ export default function ReportsPage() {
 
 
   useEffect(() => {
-    loadReports();
-    loadTemplates();
+    const loadAllData = async () => {
+      try {
+        setLoading(true);
+        
+        // Load both reports and templates with proper error handling
+        const [reportsData, templatesData] = await Promise.allSettled([
+          productionApi.getReports(),
+          productionApi.getReports() // Note: This should probably be a different API call for templates
+        ]);
+
+        // Handle reports data
+        if (reportsData.status === 'fulfilled') {
+          const reports = reportsData.value || [];
+          setReports(Array.isArray(reports) ? reports as unknown as Report[] : []);
+        } else {
+          console.warn('Failed to load reports:', reportsData.reason);
+          setReports([]);
+        }
+
+        // Handle templates data
+        if (templatesData.status === 'fulfilled') {
+          const templates = templatesData.value || [];
+          setTemplates(Array.isArray(templates) ? templates as unknown as ReportTemplate[] : []);
+        } else {
+          console.warn('Failed to load templates:', templatesData.reason);
+          setTemplates([]);
+        }
+        
+      } catch (error) {
+        console.error('Unexpected error loading reports data:', error);
+        setReports([]);
+        setTemplates([]);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    loadAllData();
   }, []);
 
-  const loadReports = async () => {
-    try {
-      setLoading(true);
-      const data = await productionApi.getReports();
-      setReports((data || []) as unknown as Report[]);
-    } catch (error) {
-      // Error handled by API service
-      setReports([]);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const loadTemplates = async () => {
-    try {
-      const data = await productionApi.getReports();
-      setTemplates((data || []) as unknown as ReportTemplate[]);
-    } catch (error) {
-      // Error handled by API service
-      setTemplates([]);
-    }
-  };
 
   const createReport = async () => {
     try {
@@ -241,7 +255,11 @@ export default function ReportsPage() {
     return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + " " + sizes[i];
   };
 
-  const filteredReports = (reports || []).filter((report) => {
+  // Ensure we have arrays before filtering
+  const reportsArray = Array.isArray(reports) ? reports : [];
+  const templatesArray = Array.isArray(templates) ? templates : [];
+  
+  const filteredReports = reportsArray.filter((report) => {
     const matchesSearch = (report.name || '').toLowerCase().includes(searchTerm.toLowerCase()) ||
                          (report.description || '').toLowerCase().includes(searchTerm.toLowerCase());
     const matchesType = typeFilter === "all" || report.type === typeFilter;
@@ -249,10 +267,10 @@ export default function ReportsPage() {
     return matchesSearch && matchesType && matchesStatus;
   });
 
-  const totalReports = (reports || []).length;
-  const completedReports = (reports || []).filter(r => r.status === "completed").length;
-  const scheduledReports = (reports || []).filter(r => r.status === "scheduled").length;
-  const totalTemplates = (templates || []).length;
+  const totalReports = reportsArray.length;
+  const completedReports = reportsArray.filter(r => r.status === "completed").length;
+  const scheduledReports = reportsArray.filter(r => r.status === "scheduled").length;
+  const totalTemplates = templatesArray.length;
 
   if (loading) {
     return (

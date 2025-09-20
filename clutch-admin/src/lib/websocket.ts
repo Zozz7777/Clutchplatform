@@ -32,6 +32,8 @@ export class WebSocketService {
   private isPolling = false;
   private pollingIntervalMs = 30000; // 30 seconds
   private lastPollTime = 0;
+  private consecutiveErrors = 0;
+  private maxConsecutiveErrors = 3;
 
   constructor(baseURL: string) {
     // Handle WebSocket URL construction properly
@@ -322,18 +324,31 @@ export class WebSocketService {
       return;
     }
 
+    // Skip polling if we have too many consecutive errors
+    if (this.consecutiveErrors >= this.maxConsecutiveErrors) {
+      logger.log('Too many consecutive polling errors, skipping this poll');
+      return;
+    }
+
     try {
       const baseURL = this.url.replace('wss://', 'https://').replace('ws://', 'http://').replace('/ws', '');
       
-      // Poll for notifications
+      // Poll for notifications with timeout
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 10000); // 10 second timeout
+      
       const notificationsResponse = await fetch(`${baseURL}/api/v1/notifications`, {
         headers: {
           'Authorization': `Bearer ${this.token}`,
           'Content-Type': 'application/json'
-        }
+        },
+        signal: controller.signal
       });
 
+      clearTimeout(timeoutId);
+
       if (notificationsResponse.ok) {
+        this.consecutiveErrors = 0; // Reset error count on success
         const notificationsData = await notificationsResponse.json();
         if (notificationsData.success && notificationsData.data?.length > 0) {
           // Check for new notifications since last poll
@@ -374,7 +389,22 @@ export class WebSocketService {
 
       this.lastPollTime = Date.now();
     } catch (error) {
+      this.consecutiveErrors++;
       logger.error('Polling request failed:', error);
+      
+      // If we get rate limited, increase the polling interval
+      if (error instanceof Error && error.message.includes('429')) {
+        this.pollingIntervalMs = Math.min(this.pollingIntervalMs * 2, 300000); // Max 5 minutes
+        logger.log('Rate limited, increasing polling interval to', this.pollingIntervalMs, 'ms');
+        
+        // Restart polling with new interval
+        this.stopPolling();
+        setTimeout(() => {
+          if (this.isPolling) {
+            this.startPolling();
+          }
+        }, 5000);
+      }
     }
   }
 

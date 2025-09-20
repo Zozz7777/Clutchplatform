@@ -79,9 +79,9 @@ export default function RevenueForecastingPage() {
   const [refreshing, setRefreshing] = useState(false);
 
   const formatCurrency = (amount: number) => {
-    return new Intl.NumberFormat('en-US', {
+    return new Intl.NumberFormat('ar-EG', {
       style: 'currency',
-      currency: 'USD',
+      currency: 'EGP',
       minimumFractionDigits: 0,
       maximumFractionDigits: 0,
     }).format(amount);
@@ -268,11 +268,11 @@ export default function RevenueForecastingPage() {
                 </div>
                 <div className="flex items-center justify-between">
                   <span className="font-sans">Average Revenue Per User</span>
-                  <span className="font-sans font-medium">$125</span>
+                  <span className="font-sans font-medium">125 EGP</span>
                 </div>
                 <div className="flex items-center justify-between">
                   <span className="font-sans">Customer Lifetime Value</span>
-                  <span className="font-sans font-medium">$2,450</span>
+                  <span className="font-sans font-medium">2,450 EGP</span>
                 </div>
                 <div className="flex items-center justify-between">
                   <span className="font-sans">Churn Rate</span>

@@ -1009,6 +1009,10 @@ class ApiService {
     return this.request<Record<string, unknown>>("/api/finance/analytics");
   }
 
+  async getPayouts(): Promise<ApiResponse<Record<string, unknown>[]>> {
+    return this.request<Record<string, unknown>[]>("/api/finance/payouts");
+  }
+
   // Chat API
   async getMessages(): Promise<ApiResponse<Record<string, unknown>[]>> {
     return this.request<Record<string, unknown>[]>("/api/chat/messages");
