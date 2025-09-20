@@ -234,7 +234,7 @@ class AIRecommendationService {
                 service: 'Brake Service',
                 predictedMileage: 'Every 20,000-30,000 miles',
                 confidence: 'medium',
-                estimatedCost: '$150-$300',
+                estimatedCost: '150-300 EGP',
                 urgency: 'later'
             }
         ];

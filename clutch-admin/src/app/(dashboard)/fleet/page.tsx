@@ -147,18 +147,18 @@ export default function FleetPage() {
     setFilteredVehicles(filtered);
   }, [vehicles, searchQuery, statusFilter]);
 
-  const getStatusColor = (status: string) => {
+  const getStatusVariant = (status: string) => {
     switch (status) {
       case "active":
-        return "bg-primary/10 text-primary-foreground";
+        return "default";
       case "maintenance":
-        return "bg-secondary/10 text-secondary-foreground";
+        return "secondary";
       case "offline":
-        return "bg-destructive/10 text-destructive-foreground";
+        return "destructive";
       case "idle":
-        return "bg-muted text-muted-foreground";
+        return "outline";
       default:
-        return "bg-muted text-muted-foreground";
+        return "default";
     }
   };
 
@@ -351,7 +351,7 @@ export default function FleetPage() {
                   <TableCell>
                     <div className="flex items-center space-x-2">
                       {getStatusIcon(vehicle.status)}
-                      <Badge className={getStatusColor(vehicle.status)}>
+                      <Badge variant={getStatusVariant(vehicle.status)}>
                         {vehicle.status}
                       </Badge>
                     </div>

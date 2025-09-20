@@ -166,7 +166,7 @@ export default function PricingPage() {
                   </div>
                   <div className="pt-4 border-t">
                     <div className="flex items-center justify-between text-sm">
-                      <span className="font-sans">Monthly Revenue:</span>
+                      <span className="font-sans">{t('pricing.monthlyRevenue')}:</span>
                       <span className="font-sans font-medium">
                         {formatCurrency(plan.revenue)}
                       </span>
@@ -190,7 +190,7 @@ export default function PricingPage() {
           <div className="grid gap-4 md:grid-cols-4">
             <Card>
               <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                <CardTitle className="text-sm font-medium font-sans">Total Revenue</CardTitle>
+                <CardTitle className="text-sm font-medium font-sans">{t('pricing.totalRevenue')}</CardTitle>
                 <DollarSign className="h-4 w-4 text-muted-foreground" />
               </CardHeader>
               <CardContent>
