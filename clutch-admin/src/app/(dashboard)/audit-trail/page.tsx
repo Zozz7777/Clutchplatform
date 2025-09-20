@@ -372,7 +372,7 @@ export default function AuditTrailPage() {
                 </SelectTrigger>
                 <SelectContent>
                   <SelectItem value="all">All Severities</SelectItem>
-                  <SelectItem value="critical">Critical</SelectItem>
+                  <SelectItem value="critical">{t('auditTrail.critical')}</SelectItem>
                   <SelectItem value="high">High</SelectItem>
                   <SelectItem value="medium">Medium</SelectItem>
                   <SelectItem value="low">Low</SelectItem>
@@ -521,7 +521,7 @@ export default function AuditTrailPage() {
 
               {/* User Information */}
               <div className="space-y-2">
-                <Label className="text-sm font-medium">User Information</Label>
+                <Label className="text-sm font-medium">{t('auditTrail.userInformation')}</Label>
                 <div className="grid gap-2 md:grid-cols-3">
                   <div className="p-3 border rounded-lg">
                     <div className="text-sm font-medium">Name</div>

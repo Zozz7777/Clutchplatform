@@ -1028,6 +1028,8 @@
     "metadata": "Metadata",
     "location": "Location",
     "country": "Country",
+    "critical": "Critical",
+    "userInformation": "User Information",
     "city": "City",
     "create": "CREATE",
     "update": "UPDATE",

@@ -96,260 +96,94 @@ class SendGridEmailService {
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>Welcome to Clutch Platform</title>
-        <style>
-          /* Design System Colors from design.json */
-          :root {
-            --primary: oklch(0.5770 0.2450 27.3250);
-            --primary-foreground: oklch(0.9850 0 0);
-            --background: oklch(1 0 0);
-            --foreground: oklch(0.1450 0 0);
-            --card: oklch(1 0 0);
-            --card-foreground: oklch(0.1450 0 0);
-            --muted: oklch(0.9700 0 0);
-            --muted-foreground: oklch(0.5560 0 0);
-            --border: oklch(0.9220 0 0);
-            --success: oklch(0.72 0.2 145);
-            --info: oklch(0.75 0.1 220);
-            --warning: oklch(0.85 0.18 75);
-          }
-          
-          /* Typography from design.json */
-          body { 
-            font-family: 'Roboto', ui-sans-serif, sans-serif, system-ui;
-            line-height: 1.5;
-            color: var(--foreground);
-            background-color: var(--muted);
-            margin: 0;
-            padding: 0;
-          }
-          
-          .email-container { 
-            max-width: 600px; 
-            margin: 0 auto; 
-            background-color: var(--background);
-            border-radius: 0.625rem;
-            overflow: hidden;
-            box-shadow: 0 1px 3px 0px hsl(0 0% 0% / 0.10), 0 2px 4px -1px hsl(0 0% 0% / 0.10);
-          }
-          
-          .header { 
-            background: var(--primary); 
-            color: var(--primary-foreground); 
-            padding: 2rem 1.5rem; 
-            text-align: center;
-          }
-          
-          .logo-container {
-            margin-bottom: 1rem;
-          }
-          
-          .logo {
-            height: 48px;
-            width: auto;
-            max-width: 200px;
-            object-fit: contain;
-          }
-          
-          .header h1 {
-            font-size: 1.875rem;
-            font-weight: 700;
-            margin: 0 0 0.5rem 0;
-            line-height: 1.25;
-          }
-          
-          .header p {
-            font-size: 1rem;
-            margin: 0;
-            opacity: 0.9;
-          }
-          
-          .content { 
-            padding: 2rem 1.5rem; 
-            background-color: var(--card);
-          }
-          
-          .content h2 {
-            font-size: 1.5rem;
-            font-weight: 600;
-            color: var(--foreground);
-            margin: 0 0 1rem 0;
-            line-height: 1.25;
-          }
-          
-          .content p {
-            font-size: 1rem;
-            line-height: 1.5;
-            color: var(--foreground);
-            margin: 0 0 1rem 0;
-          }
-          
-          .button { 
-            display: inline-block; 
-            background: var(--primary); 
-            color: var(--primary-foreground); 
-            padding: 0.75rem 1.5rem; 
-            text-decoration: none; 
-            border-radius: 0.625rem; 
-            margin: 1.5rem 0;
-            font-weight: 600;
-            font-size: 1rem;
-            transition: all 300ms cubic-bezier(0.4, 0, 0.2, 1);
-            box-shadow: 0 1px 3px 0px hsl(0 0% 0% / 0.10);
-          }
-          
-          .button:hover {
-            transform: translateY(-1px);
-            box-shadow: 0 2px 6px 0px hsl(0 0% 0% / 0.15);
-          }
-          
-          .info-box { 
-            background: var(--muted); 
-            border: 1px solid var(--border);
-            border-radius: 0.625rem;
-            padding: 1.5rem; 
-            margin: 1.5rem 0;
-          }
-          
-          .info-box h3 {
-            font-size: 1.125rem;
-            font-weight: 600;
-            color: var(--foreground);
-            margin: 0 0 1rem 0;
-          }
-          
-          .info-box ul {
-            margin: 0;
-            padding-left: 1.5rem;
-          }
-          
-          .info-box li {
-            font-size: 1rem;
-            line-height: 1.5;
-            color: var(--foreground);
-            margin-bottom: 0.5rem;
-          }
-          
-          .footer { 
-            text-align: center; 
-            padding: 1.5rem;
-            background-color: var(--muted);
-            border-top: 1px solid var(--border);
-          }
-          
-          .footer-logo {
-            margin-bottom: 1rem;
-          }
-          
-          .footer-logo-img {
-            height: 32px;
-            width: auto;
-            max-width: 150px;
-            object-fit: contain;
-          }
-          
-          .footer p {
-            color: var(--muted-foreground); 
-            font-size: 0.875rem;
-            margin: 0.25rem 0;
-          }
-          
-          .link-fallback {
-            word-break: break-all; 
-            background: var(--muted); 
-            padding: 1rem; 
-            border-radius: 0.625rem; 
-            font-family: 'Roboto Mono', ui-monospace, monospace;
-            font-size: 0.875rem;
-            color: var(--muted-foreground);
-            border: 1px solid var(--border);
-            margin: 1rem 0;
-          }
-          
-          .text-center {
-            text-align: center;
-          }
-          
-          .text-bold {
-            font-weight: 600;
-          }
-          
-          .text-success {
-            color: var(--success);
-          }
-          
-          .text-warning {
-            color: var(--warning);
-          }
-          
-          .text-info {
-            color: var(--info);
-          }
-          
-          /* Responsive design */
-          @media (max-width: 600px) {
-            .email-container {
-              margin: 0;
-              border-radius: 0;
-            }
-            
-            .header, .content, .footer {
-              padding: 1rem;
-            }
-            
-            .header h1 {
-              font-size: 1.5rem;
-            }
-            
-            .content h2 {
-              font-size: 1.25rem;
-            }
-          }
-        </style>
       </head>
-      <body>
-        <div class="email-container">
-          <div class="header">
-            <div class="logo-container">
-              <img src="https://admin.yourclutch.com/Assets/logos/logowhite.png" alt="Clutch Platform" class="logo" />
-            </div>
-            <h1>Welcome to Clutch Platform</h1>
-            <p>You've been invited to join our team</p>
-          </div>
-          
-          <div class="content">
-            <h2>Hello ${name}!</h2>
-            
-            <p>We're excited to welcome you to the Clutch team! You've been invited to join us as a <span class="text-bold">${role}</span> in the <span class="text-bold">${department}</span> department.</p>
-            
-            <div class="info-box">
-              <h3>Your Role Details</h3>
-              <ul>
-                <li><span class="text-bold">Position:</span> ${role}</li>
-                <li><span class="text-bold">Department:</span> ${department}</li>
-                <li><span class="text-bold">Access Level:</span> Employee Portal</li>
-              </ul>
-            </div>
-            
-            <p>To get started, please set up your account password by clicking the button below:</p>
-            
-            <div class="text-center">
-              <a href="${invitationLink}" class="button">Set Up My Account</a>
-            </div>
-            
-            <p><span class="text-warning text-bold">Important:</span> This invitation link will expire in 7 days. If you have any questions or need assistance, please contact your HR department.</p>
-            
-            <p>If the button doesn't work, you can copy and paste this link into your browser:</p>
-            <div class="link-fallback">${invitationLink}</div>
-          </div>
-          
-          <div class="footer">
-            <div class="footer-logo">
-              <img src="https://admin.yourclutch.com/Assets/logos/Logored.png" alt="Clutch Platform" class="footer-logo-img" />
-            </div>
-            <p>This is an automated message from Clutch Platform. Please do not reply to this email.</p>
-            <p>© 2025 Clutch Platform. All rights reserved.</p>
-          </div>
-        </div>
+      <body style="margin: 0; padding: 0; font-family: Arial, sans-serif; background-color: #f8f9fa; line-height: 1.6;">
+        <table width="100%" cellpadding="0" cellspacing="0" style="background-color: #f8f9fa; padding: 20px 0;">
+          <tr>
+            <td align="center">
+              <table width="600" cellpadding="0" cellspacing="0" style="background-color: #ffffff; border-radius: 10px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); overflow: hidden; max-width: 600px;">
+                
+                <!-- Header -->
+                <tr>
+                  <td style="background: linear-gradient(135deg, #d97706 0%, #ea580c 100%); color: #ffffff; padding: 40px 30px; text-align: center;">
+                    <div style="margin-bottom: 20px;">
+                      <img src="https://admin.yourclutch.com/Assets/logos/logowhite.png" alt="Clutch Platform" style="height: 48px; width: auto; max-width: 200px;" />
+                    </div>
+                    <h1 style="font-size: 28px; font-weight: bold; margin: 0 0 10px 0; color: #ffffff;">Welcome to Clutch Platform</h1>
+                    <p style="font-size: 16px; margin: 0; opacity: 0.9;">You've been invited to join our team</p>
+                  </td>
+                </tr>
+                
+                <!-- Content -->
+                <tr>
+                  <td style="padding: 40px 30px; background-color: #ffffff;">
+                    <h2 style="font-size: 24px; font-weight: 600; color: #1f2937; margin: 0 0 20px 0;">Hello ${name}!</h2>
+                    
+                    <p style="font-size: 16px; color: #374151; margin: 0 0 20px 0;">
+                      We're excited to welcome you to the Clutch team! You've been invited to join us as a 
+                      <strong style="color: #d97706;">${role}</strong> in the 
+                      <strong style="color: #d97706;">${department}</strong> department.
+                    </p>
+                    
+                    <!-- Info Box -->
+                    <table width="100%" cellpadding="0" cellspacing="0" style="background-color: #f8f9fa; border: 1px solid #e5e7eb; border-radius: 10px; margin: 30px 0;">
+                      <tr>
+                        <td style="padding: 30px;">
+                          <h3 style="font-size: 18px; font-weight: 600; color: #1f2937; margin: 0 0 20px 0;">Your Role Details</h3>
+                          <ul style="margin: 0; padding-left: 20px; color: #374151;">
+                            <li style="margin-bottom: 8px; font-size: 16px;"><strong>Position:</strong> ${role}</li>
+                            <li style="margin-bottom: 8px; font-size: 16px;"><strong>Department:</strong> ${department}</li>
+                            <li style="margin-bottom: 8px; font-size: 16px;"><strong>Access Level:</strong> Employee Portal</li>
+                          </ul>
+                        </td>
+                      </tr>
+                    </table>
+                    
+                    <p style="font-size: 16px; color: #374151; margin: 0 0 30px 0;">
+                      To get started, please set up your account password by clicking the button below:
+                    </p>
+                    
+                    <!-- CTA Button -->
+                    <div style="text-align: center; margin: 30px 0;">
+                      <a href="${invitationLink}" style="display: inline-block; background: linear-gradient(135deg, #d97706 0%, #ea580c 100%); color: #ffffff; padding: 15px 30px; text-decoration: none; border-radius: 10px; font-weight: 600; font-size: 16px; box-shadow: 0 2px 8px rgba(217, 119, 6, 0.3);">
+                        Set Up My Account
+                      </a>
+                    </div>
+                    
+                    <p style="font-size: 16px; color: #374151; margin: 0 0 20px 0;">
+                      <span style="color: #f59e0b; font-weight: 600;">Important:</span> This invitation link will expire in 7 days. If you have any questions or need assistance, please contact your HR department.
+                    </p>
+                    
+                    <p style="font-size: 16px; color: #374151; margin: 0 0 20px 0;">
+                      If the button doesn't work, you can copy and paste this link into your browser:
+                    </p>
+                    
+                    <!-- Link Fallback -->
+                    <div style="background-color: #f8f9fa; padding: 15px; border-radius: 10px; border: 1px solid #e5e7eb; margin: 20px 0; word-break: break-all; font-family: monospace; font-size: 14px; color: #6b7280;">
+                      ${invitationLink}
+                    </div>
+                  </td>
+                </tr>
+                
+                <!-- Footer -->
+                <tr>
+                  <td style="background-color: #f8f9fa; border-top: 1px solid #e5e7eb; padding: 30px; text-align: center;">
+                    <div style="margin-bottom: 20px;">
+                      <img src="https://admin.yourclutch.com/Assets/logos/Logored.png" alt="Clutch Platform" style="height: 32px; width: auto; max-width: 150px;" />
+                    </div>
+                    <p style="color: #6b7280; font-size: 14px; margin: 5px 0;">
+                      This is an automated message from Clutch Platform. Please do not reply to this email.
+                    </p>
+                    <p style="color: #6b7280; font-size: 14px; margin: 5px 0;">
+                      © 2025 Clutch Platform. All rights reserved.
+                    </p>
+                  </td>
+                </tr>
+                
+              </table>
+            </td>
+          </tr>
+        </table>
       </body>
       </html>
     `;

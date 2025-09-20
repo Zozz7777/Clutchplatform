@@ -1028,6 +1028,8 @@
     "metadata": "البيانات الوصفية",
     "location": "الموقع",
     "country": "البلد",
+    "critical": "حرج",
+    "userInformation": "معلومات المستخدم",
     "city": "المدينة",
     "create": "إنشاء",
     "update": "تحديث",
