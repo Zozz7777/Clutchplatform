@@ -395,19 +395,19 @@ export default function ReportsPage() {
               </DropdownMenuTrigger>
               <DropdownMenuContent>
                 <DropdownMenuItem onClick={() => setTypeFilter("all")}>
-                  All Types
+                  {t('common.all')} {t('reports.reportType')}s
                 </DropdownMenuItem>
                 <DropdownMenuItem onClick={() => setTypeFilter("financial")}>
-                  Financial
+                  {t('reports.financial')}
                 </DropdownMenuItem>
                 <DropdownMenuItem onClick={() => setTypeFilter("operational")}>
-                  Operational
+                  {t('reports.operational')}
                 </DropdownMenuItem>
                 <DropdownMenuItem onClick={() => setTypeFilter("user_analytics")}>
-                  User Analytics
+                  {t('reports.userAnalytics')}
                 </DropdownMenuItem>
                 <DropdownMenuItem onClick={() => setTypeFilter("fleet")}>
-                  Fleet
+                  {t('reports.fleet')}
                 </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
@@ -415,24 +415,24 @@ export default function ReportsPage() {
               <DropdownMenuTrigger asChild>
                 <Button variant="outline">
                   <Filter className="mr-2 h-4 w-4" />
-                  Status: {statusFilter === "all" ? "All" : statusFilter}
+                  {t('reports.status')}: {statusFilter === "all" ? t('common.all') : statusFilter}
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent>
                 <DropdownMenuItem onClick={() => setStatusFilter("all")}>
-                  All Status
+                  {t('common.all')} {t('reports.status')}
                 </DropdownMenuItem>
                 <DropdownMenuItem onClick={() => setStatusFilter("completed")}>
-                  Completed
+                  {t('reports.completed')}
                 </DropdownMenuItem>
                 <DropdownMenuItem onClick={() => setStatusFilter("generating")}>
-                  Generating
+                  {t('reports.generating')}
                 </DropdownMenuItem>
                 <DropdownMenuItem onClick={() => setStatusFilter("scheduled")}>
-                  Scheduled
+                  {t('reports.scheduled')}
                 </DropdownMenuItem>
                 <DropdownMenuItem onClick={() => setStatusFilter("failed")}>
-                  Failed
+                  {t('reports.failed')}
                 </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
@@ -458,23 +458,23 @@ export default function ReportsPage() {
                       
                       <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-4">
                         <div>
-                          <p className="text-sm font-medium">Created By</p>
+                          <p className="text-sm font-medium">{t('reports.createdBy')}</p>
                           <p className="text-sm text-muted-foreground">{report.createdBy.name}</p>
                         </div>
                         <div>
-                          <p className="text-sm font-medium">Schedule</p>
+                          <p className="text-sm font-medium">{t('reports.schedule')}</p>
                           <p className="text-sm text-muted-foreground">
                             {report.schedule.frequency}
                           </p>
                         </div>
                         <div>
-                          <p className="text-sm font-medium">Records</p>
+                          <p className="text-sm font-medium">{t('reports.records')}</p>
                           <p className="text-sm text-muted-foreground">
                             {report.results.totalRecords.toLocaleString()}
                           </p>
                         </div>
                         <div>
-                          <p className="text-sm font-medium">File Size</p>
+                          <p className="text-sm font-medium">{t('reports.fileSize')}</p>
                           <p className="text-sm text-muted-foreground">
                             {formatFileSize(report.results.fileSize)}
                           </p>
@@ -484,18 +484,18 @@ export default function ReportsPage() {
                       <div className="flex items-center space-x-4 text-sm text-muted-foreground">
                         <div className="flex items-center space-x-1">
                           <Calendar className="h-4 w-4" />
-                          <span>Created: {new Date(report.createdAt).toLocaleDateString()}</span>
+                          <span>{t('reports.createdAt')}: {new Date(report.createdAt).toLocaleDateString()}</span>
                         </div>
                         {report.results.generatedAt && (
                           <div className="flex items-center space-x-1">
                             <Clock className="h-4 w-4" />
-                            <span>Generated: {new Date(report.results.generatedAt).toLocaleDateString()}</span>
+                            <span>{t('reports.generatedAt')}: {new Date(report.results.generatedAt).toLocaleDateString()}</span>
                           </div>
                         )}
                         {report.schedule.nextRun && (
                           <div className="flex items-center space-x-1">
                             <Calendar className="h-4 w-4" />
-                            <span>Next: {new Date(report.schedule.nextRun).toLocaleDateString()}</span>
+                            <span>{t('reports.nextRun')}: {new Date(report.schedule.nextRun).toLocaleDateString()}</span>
                           </div>
                         )}
                       </div>
@@ -505,12 +505,12 @@ export default function ReportsPage() {
                       {report.status === "completed" && report.results.downloadUrl && (
                         <Button variant="outline" size="sm">
                           <Download className="mr-2 h-4 w-4" />
-                          Download
+                          {t('reports.downloadReport')}
                         </Button>
                       )}
                       <Button variant="outline" size="sm">
                         <Eye className="mr-2 h-4 w-4" />
-                        View
+                        {t('reports.viewReport')}
                       </Button>
                     </div>
                   </div>
@@ -525,49 +525,49 @@ export default function ReportsPage() {
       <Dialog open={showCreateDialog} onOpenChange={setShowCreateDialog}>
         <DialogContent className="max-w-2xl">
           <DialogHeader>
-            <DialogTitle>Create New Report</DialogTitle>
+            <DialogTitle>{t('reports.createReport')}</DialogTitle>
             <DialogDescription>
-              Generate a new report with custom parameters and filters.
+              {t('reports.createReportDescription')}
             </DialogDescription>
           </DialogHeader>
           <div className="grid gap-4 py-4">
             <div className="grid grid-cols-2 gap-4">
               <div>
-                <Label htmlFor="reportName">Report Name</Label>
+                <Label htmlFor="reportName">{t('reports.reportName')}</Label>
                 <Input 
                   id="reportName" 
-                  placeholder="Enter report name" 
+                  placeholder={t('reports.enterReportName')} 
                   value={createReportData.name}
                   onChange={(e) => setCreateReportData({...createReportData, name: e.target.value})}
                 />
               </div>
               <div>
-                <Label htmlFor="reportType">Type</Label>
+                <Label htmlFor="reportType">{t('reports.reportType')}</Label>
                 <select 
                   className="w-full p-2 border rounded-md"
                   value={createReportData.type}
                   onChange={(e) => setCreateReportData({...createReportData, type: e.target.value})}
                 >
-                  <option value="financial">Financial</option>
-                  <option value="operational">Operational</option>
-                  <option value="user_analytics">User Analytics</option>
-                  <option value="fleet">Fleet</option>
-                  <option value="custom">Custom</option>
+                  <option value="financial">{t('reports.financial')}</option>
+                  <option value="operational">{t('reports.operational')}</option>
+                  <option value="user_analytics">{t('reports.userAnalytics')}</option>
+                  <option value="fleet">{t('reports.fleet')}</option>
+                  <option value="custom">{t('reports.custom')}</option>
                 </select>
               </div>
             </div>
             <div>
-              <Label htmlFor="reportDescription">Description</Label>
+              <Label htmlFor="reportDescription">{t('reports.reportDescription')}</Label>
               <Input 
                 id="reportDescription" 
-                placeholder="Report description" 
+                placeholder={t('reports.reportDescription')} 
                 value={createReportData.description}
                 onChange={(e) => setCreateReportData({...createReportData, description: e.target.value})}
               />
             </div>
             <div className="grid grid-cols-2 gap-4">
               <div>
-                <Label htmlFor="startDate">Start Date</Label>
+                <Label htmlFor="startDate">{t('reports.startDate')}</Label>
                 <Input 
                   id="startDate" 
                   type="date" 
@@ -576,7 +576,7 @@ export default function ReportsPage() {
                 />
               </div>
               <div>
-                <Label htmlFor="endDate">End Date</Label>
+                <Label htmlFor="endDate">{t('reports.endDate')}</Label>
                 <Input 
                   id="endDate" 
                   type="date" 
@@ -586,26 +586,26 @@ export default function ReportsPage() {
               </div>
             </div>
             <div>
-              <Label htmlFor="schedule">Schedule</Label>
+              <Label htmlFor="schedule">{t('reports.schedule')}</Label>
               <select 
                 className="w-full p-2 border rounded-md"
                 value={createReportData.schedule}
                 onChange={(e) => setCreateReportData({...createReportData, schedule: e.target.value})}
               >
-                <option value="once">Run Once</option>
-                <option value="daily">Daily</option>
-                <option value="weekly">Weekly</option>
-                <option value="monthly">Monthly</option>
-                <option value="quarterly">Quarterly</option>
+                <option value="once">{t('reports.once')}</option>
+                <option value="daily">{t('reports.daily')}</option>
+                <option value="weekly">{t('reports.weekly')}</option>
+                <option value="monthly">{t('reports.monthly')}</option>
+                <option value="quarterly">{t('reports.quarterly')}</option>
               </select>
             </div>
           </div>
           <DialogFooter>
             <Button variant="outline" onClick={() => setShowCreateDialog(false)}>
-              Cancel
+              {t('common.cancel')}
             </Button>
             <Button onClick={createReport}>
-              Create Report
+              {t('reports.createReport')}
             </Button>
           </DialogFooter>
         </DialogContent>

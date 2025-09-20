@@ -177,8 +177,8 @@ Get-ChildItem $OutputDir | ForEach-Object {
 
 Write-Host ""
 Write-Host "🚀 To use the executable package:" -ForegroundColor Yellow
-Write-Host "1. Copy the '$OutputDir' folder to any location" -ForegroundColor White
-Write-Host "2. Run 'Install.bat' for first-time setup" -ForegroundColor White
+Write-Host "1. Copy the $OutputDir folder to any location" -ForegroundColor White
+Write-Host "2. Run Install.bat for first-time setup" -ForegroundColor White
 Write-Host "3. Use Clutch Auto Parts System.bat to start the application" -ForegroundColor White
 Write-Host ""
 Write-Host "📦 Package size: $([math]::Round((Get-ChildItem -Recurse $OutputDir | Measure-Object -Property Length -Sum).Sum / 1MB, 2)) MB" -ForegroundColor Blue

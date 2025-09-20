@@ -17,7 +17,8 @@ import {
   Activity,
   BarChart3,
   Calendar,
-  AlertTriangle
+  AlertTriangle,
+  CheckCircle
 } from 'lucide-react';
 
 interface AuditTrailInsightsProps {
