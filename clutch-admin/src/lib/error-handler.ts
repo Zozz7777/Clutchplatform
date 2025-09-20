@@ -304,17 +304,21 @@ export function handleApiResponse<T>(
   context: string,
   fallbackValue: T
 ): T {
-  if (response && response.success) {
-    return response.data;
-  }
-  
-  // Handle API error response
-  if (response && response.error) {
-    errorHandler.handleError(response, context, {
-      showToast: true,
-      logError: true,
-      fallbackValue
-    });
+  // Type guard to check if response has the expected structure
+  if (response && typeof response === 'object' && 'success' in response) {
+    const apiResponse = response as { success: boolean; data?: T; error?: string };
+    if (apiResponse.success) {
+      return apiResponse.data || fallbackValue;
+    }
+    
+    // Handle API error response
+    if (apiResponse.error) {
+      errorHandler.handleError(apiResponse, context, {
+        showToast: true,
+        logError: true,
+        fallbackValue
+      });
+    }
   }
   
   return fallbackValue;
