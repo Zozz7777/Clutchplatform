@@ -44,6 +44,7 @@ import {
   Zap,
 } from "lucide-react";
 import { productionApi } from "@/lib/production-api";
+import { useTranslations } from "next-intl";
 
 interface FeatureFlag {
   _id: string;
@@ -139,6 +140,7 @@ interface Rollout {
 }
 
 export default function FeatureFlagsPage() {
+  const t = useTranslations();
   const [featureFlags, setFeatureFlags] = useState<FeatureFlag[]>([]);
   const [abTests, setABTests] = useState<ABTest[]>([]);
   const [rollouts, setRollouts] = useState<Rollout[]>([]);
@@ -235,7 +237,7 @@ export default function FeatureFlagsPage() {
         tags: createFlagData.tags.split(',').map(tag => tag.trim()).filter(tag => tag),
         createdBy: {
           id: "current-user",
-          name: "Current User",
+          name: t('featureFlags.currentUser'),
           email: "user@example.com"
         },
         rollout: {

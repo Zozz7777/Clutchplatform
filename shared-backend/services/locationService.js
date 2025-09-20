@@ -430,7 +430,7 @@ class LocationService {
     calculateTotalCost(waypoints) {
         // Placeholder for cost calculation
         const distance = this.calculateTotalDistance(waypoints);
-        const fuelCost = distance * 0.15; // $0.15 per km
+        const fuelCost = distance * 0.15; // 0.15 EGP per km
         const tollCost = 0; // Placeholder for toll calculation
         return fuelCost + tollCost;
     }

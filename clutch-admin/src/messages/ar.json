@@ -2428,6 +2428,11 @@
     "currentUser": "المستخدم الحالي",
     "selectedEmployee": "الموظف المحدد"
   },
+  "analytics": {
+    "totalUsers": "إجمالي المستخدمين",
+    "fromLastMonth": "من الشهر الماضي",
+    "activeVehicles": "المركبات النشطة"
+  },
   "employeeInvitation": {
     "title": "دعوة موظف جديد",
     "description": "إرسال دعوة لموظف جديد للانضمام إلى منصة Clutch",

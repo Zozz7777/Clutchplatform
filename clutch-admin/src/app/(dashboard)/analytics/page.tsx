@@ -9,6 +9,7 @@ import { useAuth } from "@/contexts/auth-context";
 import { useQuickActions } from "@/lib/quick-actions";
 import { productionApi } from "@/lib/production-api";
 import { formatDate, formatRelativeTime, formatCurrency } from "@/lib/utils";
+import { useTranslations } from "next-intl";
 
 // Import new Phase 2 widgets
 import AdoptionFunnel from "@/components/widgets/adoption-funnel";
@@ -137,6 +138,7 @@ interface AnalyticsReport {
 }
 
 export default function AnalyticsPage() {
+  const t = useTranslations();
   const [metrics, setMetrics] = useState<AnalyticsMetric[]>([]);
   const [userAnalytics, setUserAnalytics] = useState<UserAnalytics | null>(null);
   const [revenueAnalytics, setRevenueAnalytics] = useState<RevenueAnalytics | null>(null);
@@ -267,7 +269,7 @@ export default function AnalyticsPage() {
       <div className="grid gap-4 md:grid-cols-4">
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Total Users</CardTitle>
+            <CardTitle className="text-sm font-medium">{t('analytics.totalUsers')}</CardTitle>
             <Users className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
@@ -298,14 +300,14 @@ export default function AnalyticsPage() {
               <span className={getChangeColor("increase")}>
                 +{revenueAnalytics ? revenueAnalytics.revenueGrowth.toFixed(1) : 0}%
               </span>
-              <span>from last month</span>
+              <span>{t('analytics.fromLastMonth')}</span>
             </div>
           </CardContent>
         </Card>
         
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Active Vehicles</CardTitle>
+            <CardTitle className="text-sm font-medium">{t('analytics.activeVehicles')}</CardTitle>
             <Car className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>

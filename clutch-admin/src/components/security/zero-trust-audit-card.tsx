@@ -242,31 +242,6 @@ export default function ZeroTrustAuditCard() {
           criticalAnomalies: transformedAnomalies.filter(a => a.severity === 'critical').length,
           lastUpdated: new Date().toISOString()
         };
-            name: 'Network Segmentation',
-            description: 'Enforce network segmentation and micro-segmentation',
-            type: 'network_segmentation',
-            status: 'active',
-            severity: 'critical',
-            enforcement: 'strict',
-            coverage: {
-              users: 1000,
-              devices: 850,
-              networks: 15,
-              applications: 25,
-              data: 100
-            },
-            compliance: {
-              score: 88,
-              violations: 12,
-              exceptions: 1,
-              lastAudit: new Date(Date.now() - 3 * 24 * 60 * 60 * 1000).toISOString()
-            },
-            rules: [
-              {
-                id: 'rule-003',
-                name: 'Network Access Control',
-                condition: 'network.segment == user.assigned_segment',
-                action: 'allow',
                 status: 'enabled',
                 violations: 8
               },
@@ -340,28 +315,6 @@ export default function ZeroTrustAuditCard() {
           }
         ];
 
-        const mockAnomalies: AnomalyDetection[] = [
-          {
-            id: 'anomaly-001',
-            type: 'unusual_location',
-            severity: 'high',
-            status: 'detected',
-            confidence: 92,
-            timestamp: new Date(Date.now() - 2 * 60 * 60 * 1000).toISOString(),
-            userId: 'user-123',
-            userName: 'John Doe',
-            userEmail: 'john@example.com',
-            details: {
-              description: 'User accessed system from unusual geographic location',
-              riskFactors: ['new_country', 'unusual_time', 'suspicious_ip'],
-              evidence: ['IP geolocation', 'access_time', 'device_fingerprint'],
-              context: {
-                previousLocation: 'New York, US',
-                currentLocation: 'Moscow, Russia',
-                timeDifference: '2 hours',
-                deviceChange: false
-              }
-            },
             impact: {
               users: 1,
               systems: 3,

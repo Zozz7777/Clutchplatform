@@ -30,42 +30,14 @@ interface UserSegment {
 }
 
 export default function UserSegmentsPage() {
-  const [segments, setSegments] = useState<UserSegment[]>([
-    {
-      id: '1',
-      name: 'High-Value Customers',
-      description: 'Customers with high lifetime value and engagement',
-      criteria: ['LTV > $5000', 'Active in last 30 days', 'Plan: Professional or Enterprise'],
-      userCount: 245,
-      lastUpdated: '2024-01-15',
-      status: 'active'
-    },
-    {
-      id: '2',
-      name: 'At-Risk Users',
-      description: 'Users showing signs of potential churn',
-      criteria: ['Last login > 14 days ago', 'Support tickets > 3', 'Plan downgrade in last 30 days'],
-      userCount: 89,
-      lastUpdated: '2024-01-14',
-      status: 'active'
-    },
-    {
-      id: '3',
-      name: 'New Users',
-      description: 'Recently registered users in their first month',
-      criteria: ['Registration date < 30 days ago', 'Has completed onboarding'],
-      userCount: 156,
-      lastUpdated: '2024-01-13',
-      status: 'active'
-    }
-  ]);
-
-  const [analytics] = useState({
-    totalSegments: 12,
-    activeSegments: 8,
-    totalUsers: 1250,
-    averageSegmentSize: 104
+  const [segments, setSegments] = useState<UserSegment[]>([]);
+  const [analytics, setAnalytics] = useState({
+    totalSegments: 0,
+    activeSegments: 0,
+    totalUsers: 0,
+    averageSegmentSize: 0
   });
+  const [isLoading, setIsLoading] = useState(true);
 
   const getStatusBadge = (status: string) => {
     switch (status) {

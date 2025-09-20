@@ -62,7 +62,7 @@ router.get('/dashboard/consolidated', authenticateToken, checkRole(['head_admini
       ],
       activityLogs: [
         { id: '1', type: 'user_registration', action: 'New user registered', description: 'John Doe registered for the service', timestamp: new Date().toISOString(), status: 'completed' },
-        { id: '2', type: 'payment_received', action: 'Payment processed', description: 'Payment of $150 received from Jane Smith', timestamp: new Date().toISOString(), status: 'completed' },
+        { id: '2', type: 'payment_received', action: 'Payment processed', description: 'Payment of 150 EGP received from Jane Smith', timestamp: new Date().toISOString(), status: 'completed' },
         { id: '3', type: 'system_alert', action: 'System monitoring', description: 'High CPU usage detected on server', timestamp: new Date().toISOString(), status: 'pending' },
         { id: '4', type: 'order_completed', action: 'Order completed', description: 'Service order #1234 completed successfully', timestamp: new Date().toISOString(), status: 'completed' },
         { id: '5', type: 'maintenance_scheduled', action: 'Maintenance scheduled', description: 'Vehicle maintenance scheduled for tomorrow', timestamp: new Date().toISOString(), status: 'processing' }

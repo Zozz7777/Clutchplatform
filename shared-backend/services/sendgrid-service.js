@@ -95,68 +95,259 @@ class SendGridEmailService {
       <head>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Welcome to Clutch</title>
+        <title>Welcome to Clutch Platform</title>
         <style>
-          body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; margin: 0; padding: 0; }
-          .container { max-width: 600px; margin: 0 auto; background-color: #ffffff; }
-          .header { background: linear-gradient(135deg, #007bff, #0056b3); color: white; padding: 30px 20px; text-align: center; }
-          .content { padding: 30px 20px; background-color: #f8f9fa; }
-          .button { display: inline-block; background: linear-gradient(135deg, #007bff, #0056b3); color: white; padding: 15px 30px; text-decoration: none; border-radius: 8px; margin: 20px 0; font-weight: bold; }
-          .button:hover { background: linear-gradient(135deg, #0056b3, #004085); }
-          .footer { text-align: center; margin-top: 30px; color: #666; font-size: 14px; padding: 20px; }
-          .info-box { background-color: #e3f2fd; border-left: 4px solid #2196f3; padding: 20px; margin: 20px 0; border-radius: 4px; }
-          .link-box { background-color: #f1f3f4; padding: 15px; border-radius: 8px; margin: 20px 0; word-break: break-all; font-family: monospace; font-size: 14px; }
-          h1 { margin: 0; font-size: 28px; }
-          h2 { color: #333; margin-top: 0; }
-          .role-badge { background-color: #28a745; color: white; padding: 4px 12px; border-radius: 20px; font-size: 12px; font-weight: bold; }
-          .department-badge { background-color: #17a2b8; color: white; padding: 4px 12px; border-radius: 20px; font-size: 12px; font-weight: bold; }
+          /* Design System Colors from design.json */
+          :root {
+            --primary: oklch(0.5770 0.2450 27.3250);
+            --primary-foreground: oklch(0.9850 0 0);
+            --background: oklch(1 0 0);
+            --foreground: oklch(0.1450 0 0);
+            --card: oklch(1 0 0);
+            --card-foreground: oklch(0.1450 0 0);
+            --muted: oklch(0.9700 0 0);
+            --muted-foreground: oklch(0.5560 0 0);
+            --border: oklch(0.9220 0 0);
+            --success: oklch(0.72 0.2 145);
+            --info: oklch(0.75 0.1 220);
+            --warning: oklch(0.85 0.18 75);
+          }
+          
+          /* Typography from design.json */
+          body { 
+            font-family: 'Roboto', ui-sans-serif, sans-serif, system-ui;
+            line-height: 1.5;
+            color: var(--foreground);
+            background-color: var(--muted);
+            margin: 0;
+            padding: 0;
+          }
+          
+          .email-container { 
+            max-width: 600px; 
+            margin: 0 auto; 
+            background-color: var(--background);
+            border-radius: 0.625rem;
+            overflow: hidden;
+            box-shadow: 0 1px 3px 0px hsl(0 0% 0% / 0.10), 0 2px 4px -1px hsl(0 0% 0% / 0.10);
+          }
+          
+          .header { 
+            background: var(--primary); 
+            color: var(--primary-foreground); 
+            padding: 2rem 1.5rem; 
+            text-align: center;
+          }
+          
+          .logo-container {
+            margin-bottom: 1rem;
+          }
+          
+          .logo {
+            height: 48px;
+            width: auto;
+            max-width: 200px;
+            object-fit: contain;
+          }
+          
+          .header h1 {
+            font-size: 1.875rem;
+            font-weight: 700;
+            margin: 0 0 0.5rem 0;
+            line-height: 1.25;
+          }
+          
+          .header p {
+            font-size: 1rem;
+            margin: 0;
+            opacity: 0.9;
+          }
+          
+          .content { 
+            padding: 2rem 1.5rem; 
+            background-color: var(--card);
+          }
+          
+          .content h2 {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: var(--foreground);
+            margin: 0 0 1rem 0;
+            line-height: 1.25;
+          }
+          
+          .content p {
+            font-size: 1rem;
+            line-height: 1.5;
+            color: var(--foreground);
+            margin: 0 0 1rem 0;
+          }
+          
+          .button { 
+            display: inline-block; 
+            background: var(--primary); 
+            color: var(--primary-foreground); 
+            padding: 0.75rem 1.5rem; 
+            text-decoration: none; 
+            border-radius: 0.625rem; 
+            margin: 1.5rem 0;
+            font-weight: 600;
+            font-size: 1rem;
+            transition: all 300ms cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 1px 3px 0px hsl(0 0% 0% / 0.10);
+          }
+          
+          .button:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 2px 6px 0px hsl(0 0% 0% / 0.15);
+          }
+          
+          .info-box { 
+            background: var(--muted); 
+            border: 1px solid var(--border);
+            border-radius: 0.625rem;
+            padding: 1.5rem; 
+            margin: 1.5rem 0;
+          }
+          
+          .info-box h3 {
+            font-size: 1.125rem;
+            font-weight: 600;
+            color: var(--foreground);
+            margin: 0 0 1rem 0;
+          }
+          
+          .info-box ul {
+            margin: 0;
+            padding-left: 1.5rem;
+          }
+          
+          .info-box li {
+            font-size: 1rem;
+            line-height: 1.5;
+            color: var(--foreground);
+            margin-bottom: 0.5rem;
+          }
+          
+          .footer { 
+            text-align: center; 
+            padding: 1.5rem;
+            background-color: var(--muted);
+            border-top: 1px solid var(--border);
+          }
+          
+          .footer-logo {
+            margin-bottom: 1rem;
+          }
+          
+          .footer-logo-img {
+            height: 32px;
+            width: auto;
+            max-width: 150px;
+            object-fit: contain;
+          }
+          
+          .footer p {
+            color: var(--muted-foreground); 
+            font-size: 0.875rem;
+            margin: 0.25rem 0;
+          }
+          
+          .link-fallback {
+            word-break: break-all; 
+            background: var(--muted); 
+            padding: 1rem; 
+            border-radius: 0.625rem; 
+            font-family: 'Roboto Mono', ui-monospace, monospace;
+            font-size: 0.875rem;
+            color: var(--muted-foreground);
+            border: 1px solid var(--border);
+            margin: 1rem 0;
+          }
+          
+          .text-center {
+            text-align: center;
+          }
+          
+          .text-bold {
+            font-weight: 600;
+          }
+          
+          .text-success {
+            color: var(--success);
+          }
+          
+          .text-warning {
+            color: var(--warning);
+          }
+          
+          .text-info {
+            color: var(--info);
+          }
+          
+          /* Responsive design */
+          @media (max-width: 600px) {
+            .email-container {
+              margin: 0;
+              border-radius: 0;
+            }
+            
+            .header, .content, .footer {
+              padding: 1rem;
+            }
+            
+            .header h1 {
+              font-size: 1.5rem;
+            }
+            
+            .content h2 {
+              font-size: 1.25rem;
+            }
+          }
         </style>
       </head>
       <body>
-        <div class="container">
+        <div class="email-container">
           <div class="header">
-            <h1>🚗 Welcome to Clutch!</h1>
-            <p style="margin: 10px 0 0 0; font-size: 18px;">Your invitation to join our platform</p>
+            <div class="logo-container">
+              <img src="https://admin.yourclutch.com/Assets/logos/logowhite.png" alt="Clutch Platform" class="logo" />
+            </div>
+            <h1>Welcome to Clutch Platform</h1>
+            <p>You've been invited to join our team</p>
           </div>
           
           <div class="content">
-            <h2>Hello ${name}! 👋</h2>
+            <h2>Hello ${name}!</h2>
             
-            <p>You have been invited to join <strong>Clutch</strong> as a <span class="role-badge">${role}</span> in the <span class="department-badge">${department}</span> department.</p>
+            <p>We're excited to welcome you to the Clutch team! You've been invited to join us as a <span class="text-bold">${role}</span> in the <span class="text-bold">${department}</span> department.</p>
             
             <div class="info-box">
-              <h3 style="margin-top: 0; color: #1976d2;">📋 Your Account Details:</h3>
-              <ul style="margin: 10px 0;">
-                <li><strong>Name:</strong> ${name}</li>
-                <li><strong>Role:</strong> ${role}</li>
-                <li><strong>Department:</strong> ${department}</li>
+              <h3>Your Role Details</h3>
+              <ul>
+                <li><span class="text-bold">Position:</span> ${role}</li>
+                <li><span class="text-bold">Department:</span> ${department}</li>
+                <li><span class="text-bold">Access Level:</span> Employee Portal</li>
               </ul>
             </div>
             
-            <p>To get started, please click the button below to set up your account:</p>
+            <p>To get started, please set up your account password by clicking the button below:</p>
             
-            <div style="text-align: center;">
-              <a href="${invitationLink}" class="button">🔧 Set Up My Account</a>
+            <div class="text-center">
+              <a href="${invitationLink}" class="button">Set Up My Account</a>
             </div>
             
-            <p>Or copy and paste this link into your browser:</p>
-            <div class="link-box">
-              ${invitationLink}
-            </div>
+            <p><span class="text-warning text-bold">Important:</span> This invitation link will expire in 7 days. If you have any questions or need assistance, please contact your HR department.</p>
             
-            <div class="info-box">
-              <p style="margin: 0;"><strong>⏰ Important:</strong> This invitation will expire in 7 days. Please set up your account as soon as possible.</p>
-            </div>
-            
-            <p>If you have any questions or need assistance, please contact your administrator.</p>
-            
-            <p>Welcome to the team! 🎉</p>
-            <p><strong>The Clutch Team</strong></p>
+            <p>If the button doesn't work, you can copy and paste this link into your browser:</p>
+            <div class="link-fallback">${invitationLink}</div>
           </div>
           
           <div class="footer">
-            <p>This email was sent by Clutch Platform</p>
-            <p>If you didn't expect this invitation, please ignore this email.</p>
+            <div class="footer-logo">
+              <img src="https://admin.yourclutch.com/Assets/logos/Logored.png" alt="Clutch Platform" class="footer-logo-img" />
+            </div>
+            <p>This is an automated message from Clutch Platform. Please do not reply to this email.</p>
+            <p>© 2025 Clutch Platform. All rights reserved.</p>
           </div>
         </div>
       </body>

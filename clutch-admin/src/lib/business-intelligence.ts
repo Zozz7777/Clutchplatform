@@ -685,7 +685,7 @@ class BusinessIntelligenceService {
 
       // Calculate operational costs based on real data
       const paymentProcessingCosts = (Array.isArray(payments) ? payments.length : 0) * 0.03; // 3% processing fee
-      const userSupportCosts = (Array.isArray(users) ? users.length : 0) * 2; // $2 per user per month
+      const userSupportCosts = (Array.isArray(users) ? users.length : 0) * 2; // 2 EGP per user per month
       const systemMaintenanceCosts = systemMetrics?.monthlyCost * 0.1 || 1000; // 10% of infrastructure cost
       const marketingCosts = 2000; // Fixed marketing budget
       const legalComplianceCosts = 1500; // Fixed compliance costs
