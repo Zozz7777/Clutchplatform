@@ -111,13 +111,12 @@ router.post('/invite', authenticateToken, checkRole(['head_administrator', 'hr_m
       });
     }
     
-    const usersCollection = await getCollection('users');
+    const employeesCollection = await getCollection('employees');
     const invitationsCollection = await getCollection('employee_invitations');
     
     // Check if employee already exists
-    const existingEmployee = await usersCollection.findOne({ 
-      email: email.toLowerCase(),
-      isEmployee: true 
+    const existingEmployee = await employeesCollection.findOne({ 
+      email: email.toLowerCase()
     });
     
     if (existingEmployee) {
@@ -329,7 +328,7 @@ router.post('/accept-invitation', async (req, res) => {
     }
     
     const invitationsCollection = await getCollection('employee_invitations');
-    const usersCollection = await getCollection('users');
+    const employeesCollection = await getCollection('employees');
     
     // Find the invitation - try multiple approaches for better reliability
     let invitation = await invitationsCollection.findOne({
@@ -397,29 +396,31 @@ router.post('/accept-invitation', async (req, res) => {
     // Hash password
     const hashedPassword = await hashPassword(password);
     
-    // Create employee record
+    // Create employee record with proper structure for employees collection
     const newEmployee = {
-      email: invitation.email,
       password: hashedPassword,
-      name: invitation.name,
       role: invitation.role,
-      department: invitation.department,
-      position: invitation.position,
-      permissions: invitation.permissions,
       isActive: true,
-      isEmployee: true,
-      createdAt: new Date(),
-      createdBy: invitation.invitedBy,
+      basicInfo: {
+        firstName: invitation.name.split(' ')[0] || invitation.name,
+        lastName: invitation.name.split(' ').slice(1).join(' ') || '',
+        email: invitation.email.toLowerCase()
+      },
+      employment: {
+        department: invitation.department || 'General',
+        position: invitation.position || 'Employee',
+        employmentType: 'full_time',
+        startDate: new Date()
+      },
+      permissions: invitation.permissions || [],
+      loginAttempts: 0,
+      isLocked: false,
       lastLogin: null,
-      profile: {
-        avatar: null,
-        bio: null,
-        skills: [],
-        emergencyContact: null
-      }
+      createdAt: new Date(),
+      updatedAt: new Date()
     };
     
-    const result = await usersCollection.insertOne(newEmployee);
+    const result = await employeesCollection.insertOne(newEmployee);
     
     // Mark invitation as accepted
     await invitationsCollection.updateOne(
