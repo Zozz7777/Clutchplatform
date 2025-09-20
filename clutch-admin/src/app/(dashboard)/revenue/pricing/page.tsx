@@ -198,14 +198,14 @@ export default function PricingPage() {
                   {formatCurrency(analytics.totalRevenue)}
                 </div>
                 <p className="text-xs text-muted-foreground font-sans">
-                  Monthly recurring revenue
+{t('pricing.monthlyRecurringRevenue')}
                 </p>
               </CardContent>
             </Card>
 
             <Card>
               <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                <CardTitle className="text-sm font-medium font-sans">Average Price</CardTitle>
+                <CardTitle className="text-sm font-medium font-sans">{t('pricing.averagePrice')}</CardTitle>
                 <TrendingUp className="h-4 w-4 text-muted-foreground" />
               </CardHeader>
               <CardContent>
@@ -220,7 +220,7 @@ export default function PricingPage() {
 
             <Card>
               <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                <CardTitle className="text-sm font-medium font-sans">Conversion Rate</CardTitle>
+                <CardTitle className="text-sm font-medium font-sans">{t('pricing.conversionRate')}</CardTitle>
                 <Target className="h-4 w-4 text-muted-foreground" />
               </CardHeader>
               <CardContent>
@@ -235,7 +235,7 @@ export default function PricingPage() {
 
             <Card>
               <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                <CardTitle className="text-sm font-medium font-sans">Churn Rate</CardTitle>
+                <CardTitle className="text-sm font-medium font-sans">{t('pricing.churnRate')}</CardTitle>
                 <Users className="h-4 w-4 text-muted-foreground" />
               </CardHeader>
               <CardContent>
@@ -243,7 +243,7 @@ export default function PricingPage() {
                   {analytics.churnRate}%
                 </div>
                 <p className="text-xs text-muted-foreground font-sans">
-                  Monthly churn rate
+{t('pricing.monthlyChurnRate')}
                 </p>
               </CardContent>
             </Card>

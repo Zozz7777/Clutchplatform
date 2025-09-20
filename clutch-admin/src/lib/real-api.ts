@@ -292,6 +292,17 @@ export class RealApiService {
     )();
   }
 
+  async getBudgetBreaches(): Promise<Record<string, unknown>[]> {
+    return withErrorHandling(
+      async () => {
+        const response = await apiService.request<Record<string, unknown>[]>("/api/v1/finance/budget-breaches");
+        return handleApiResponse(response, 'getBudgetBreaches', []);
+      },
+      'getBudgetBreaches',
+      { fallbackValue: [], showToast: false }
+    )();
+  }
+
   async getVehicleDetails(vehicleId: string): Promise<Record<string, unknown>> {
     return withErrorHandling(
       async () => {

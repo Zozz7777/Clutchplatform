@@ -1591,6 +1591,15 @@ export class ProductionApiService {
     }
   }
 
+  async getBudgetBreaches(): Promise<Record<string, unknown>[]> {
+    try {
+      return await realApi.getBudgetBreaches();
+    } catch (error) {
+      logger.error("Failed to fetch budget breaches:", error);
+      throw new Error("Failed to load budget breaches");
+    }
+  }
+
   async getComplianceData(): Promise<Record<string, unknown>[]> {
     try {
       return await realApi.getComplianceData();

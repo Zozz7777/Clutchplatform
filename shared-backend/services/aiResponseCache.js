@@ -330,11 +330,11 @@ class AIResponseCache {
   estimateCostSavings() {
     // Rough estimates based on typical API costs
     const costPerRequest = {
-      'openai': 0.002, // $0.002 per request
-      'gemini': 0.001, // $0.001 per request
-      'deepseek': 0.0005, // $0.0005 per request
-      'anthropic': 0.003, // $0.003 per request
-      'grok': 0.001 // $0.001 per request
+      'openai': 0.002, // 0.002 EGP per request
+      'gemini': 0.001, // 0.001 EGP per request
+      'deepseek': 0.0005, // 0.0005 EGP per request
+      'anthropic': 0.003, // 0.003 EGP per request
+      'grok': 0.001 // 0.001 EGP per request
     };
 
     const averageCost = Object.values(costPerRequest).reduce((a, b) => a + b, 0) / Object.keys(costPerRequest).length;

@@ -2407,6 +2407,17 @@
     "department": "Department",
     "position": "Position"
   },
+  "pricing": {
+    "plans": "Pricing Plans",
+    "mostPopular": "Most Popular",
+    "monthlyRevenue": "Monthly Revenue",
+    "totalRevenue": "Total Revenue",
+    "monthlyRecurringRevenue": "Monthly recurring revenue",
+    "averagePrice": "Average Price",
+    "conversionRate": "Conversion Rate",
+    "churnRate": "Churn Rate",
+    "monthlyChurnRate": "Monthly churn rate"
+  },
   "employeeInvitation": {
     "title": "Invite New Employee",
     "description": "Send an invitation to a new employee to join the Clutch platform",

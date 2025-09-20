@@ -809,4 +809,41 @@ router.get('/pricing-analytics', authenticateToken, checkRole(['head_administrat
   }
 });
 
+// GET /budget-breaches - Get budget breaches
+router.get('/budget-breaches', authenticateToken, checkRole(['head_administrator', 'finance_manager']), async (req, res) => {
+  try {
+    const budgetBreachesCollection = await getCollection('budget_breaches');
+    
+    if (!budgetBreachesCollection) {
+      return res.status(500).json({
+        success: false,
+        error: 'DATABASE_CONNECTION_FAILED',
+        message: 'Database connection failed',
+        timestamp: new Date().toISOString()
+      });
+    }
+    
+    const breaches = await budgetBreachesCollection
+      .find({})
+      .sort({ severity: -1, lastUpdated: -1 })
+      .toArray();
+    
+    res.json({
+      success: true,
+      data: breaches,
+      message: 'Budget breaches retrieved successfully',
+      timestamp: new Date().toISOString()
+    });
+    
+  } catch (error) {
+    console.error('Get budget breaches error:', error);
+    res.status(500).json({
+      success: false,
+      error: 'GET_BUDGET_BREACHES_FAILED',
+      message: 'Failed to get budget breaches',
+      timestamp: new Date().toISOString()
+    });
+  }
+});
+
 module.exports = router;

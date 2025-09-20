@@ -2462,6 +2462,17 @@
     "department": "القسم",
     "position": "المنصب"
   },
+  "pricing": {
+    "plans": "خطط التسعير",
+    "mostPopular": "الأكثر شعبية",
+    "monthlyRevenue": "الإيرادات الشهرية",
+    "totalRevenue": "إجمالي الإيرادات",
+    "monthlyRecurringRevenue": "الإيرادات الشهرية المتكررة",
+    "averagePrice": "متوسط السعر",
+    "conversionRate": "معدل التحويل",
+    "churnRate": "معدل التسرب",
+    "monthlyChurnRate": "معدل التسرب الشهري"
+  },
   "employeeInvitation": {
     "title": "دعوة موظف جديد",
     "description": "إرسال دعوة لموظف جديد للانضمام إلى منصة Clutch",

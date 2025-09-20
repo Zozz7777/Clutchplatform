@@ -622,8 +622,8 @@ class CostOptimizationService {
      */
     estimateSystemCost(memoryGB, cpuLoad) {
         // Rough estimation based on typical cloud pricing
-        const memoryCost = memoryGB * 0.1; // $0.1 per GB
-        const cpuCost = cpuLoad * 0.05; // $0.05 per CPU load
+        const memoryCost = memoryGB * 0.1; // 0.1 EGP per GB
+        const cpuCost = cpuLoad * 0.05; // 0.05 EGP per CPU load
         return memoryCost + cpuCost;
     }
 
@@ -632,7 +632,7 @@ class CostOptimizationService {
      */
     estimateDatabaseCost(dataSizeGB) {
         // Rough estimation for MongoDB Atlas
-        return dataSizeGB * 0.25; // $0.25 per GB
+        return dataSizeGB * 0.25; // 0.25 EGP per GB
     }
 
     /**

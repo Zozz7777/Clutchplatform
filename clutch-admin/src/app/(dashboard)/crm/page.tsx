@@ -82,11 +82,16 @@ export default function CRMPage() {
   const [searchQuery, setSearchQuery] = useState("");
   const [statusFilter, setStatusFilter] = useState<string>("all");
   const [isLoading, setIsLoading] = useState(true);
-  const { hasPermission } = useAuth();
+  const { user, hasPermission } = useAuth();
   const { t } = useTranslations();
 
   useEffect(() => {
     const loadCRMData = async () => {
+      if (!user) {
+        setIsLoading(false);
+        return;
+      }
+      
       try {
         setIsLoading(true);
         
@@ -118,7 +123,7 @@ export default function CRMPage() {
     };
 
     loadCRMData();
-  }, []);
+  }, [user]);
 
   useEffect(() => {
     // Ensure customers is always an array
@@ -140,29 +145,29 @@ export default function CRMPage() {
     setFilteredCustomers(filtered);
   }, [customers, searchQuery, statusFilter]);
 
-  const getStatusColor = (status: string) => {
+  const getStatusVariant = (status: string) => {
     switch (status) {
       case "active":
-        return "bg-primary/10 text-primary-foreground";
+        return "default";
       case "prospect":
-        return "bg-secondary/10 text-secondary-foreground";
+        return "secondary";
       case "inactive":
-        return "bg-muted text-muted-foreground";
+        return "outline";
       default:
-        return "bg-muted text-muted-foreground";
+        return "default";
     }
   };
 
-  const getPriorityColor = (priority: string) => {
+  const getPriorityVariant = (priority: string) => {
     switch (priority) {
       case "high":
-        return "bg-destructive/10 text-destructive-foreground";
+        return "destructive";
       case "medium":
-        return "bg-secondary/10 text-secondary-foreground";
+        return "secondary";
       case "low":
-        return "bg-primary/10 text-primary-foreground";
+        return "outline";
       default:
-        return "bg-muted text-muted-foreground";
+        return "default";
     }
   };
 
@@ -348,7 +353,7 @@ export default function CRMPage() {
                         </div>
                       </TableCell>
                       <TableCell>
-                        <Badge className={getStatusColor(customer.status)}>
+                        <Badge variant={getStatusVariant(customer.status)}>
                           {customer.status}
                         </Badge>
                       </TableCell>
@@ -448,7 +453,7 @@ export default function CRMPage() {
                         </Badge>
                       </TableCell>
                       <TableCell>
-                        <Badge className={getPriorityColor(ticket.priority)}>
+                        <Badge variant={getPriorityVariant(ticket.priority)}>
                           {ticket.priority}
                         </Badge>
                       </TableCell>
