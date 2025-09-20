@@ -403,7 +403,7 @@ export default function GlobalSecurityCenter() {
           <div>
             <CardTitle className="flex items-center gap-2">
               <Shield className="h-5 w-5" />
-              Global Security Center
+              {t('security.globalSecurityCenter')}
             </CardTitle>
             <CardDescription>
               Real-time security monitoring, access control, and threat detection
@@ -436,15 +436,15 @@ export default function GlobalSecurityCenter() {
         <div className="grid grid-cols-4 gap-4">
           <div className="text-center p-3 bg-info/10 rounded-[0.625rem]">
             <div className="text-2xl font-bold text-info">{metrics.totalEvents}</div>
-            <div className="text-sm text-muted-foreground">Total Events</div>
+            <div className="text-sm text-muted-foreground">{t('security.totalEvents')}</div>
           </div>
           <div className="text-center p-3 bg-success/10 rounded-[0.625rem]">
             <div className="text-2xl font-bold text-success">{metrics.activeSessions}</div>
-            <div className="text-sm text-muted-foreground">Active Sessions</div>
+            <div className="text-sm text-muted-foreground">{t('security.activeSessions')}</div>
           </div>
           <div className="text-center p-3 bg-warning/10 rounded-[0.625rem]">
             <div className="text-2xl font-bold text-warning">{metrics.suspiciousActivities}</div>
-            <div className="text-sm text-muted-foreground">Suspicious Activities</div>
+            <div className="text-sm text-muted-foreground">{t('security.suspiciousActivities')}</div>
           </div>
           <div className="text-center p-3 bg-destructive/10 rounded-[0.625rem]">
             <div className="text-2xl font-bold text-destructive">{metrics.failedLogins}</div>

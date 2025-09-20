@@ -142,10 +142,10 @@ export default function CommandBar({ isOpen, onClose }: CommandBarProps) {
         // Financial Operations
         {
           id: 'trigger-payout',
-          title: 'Trigger Payout',
-          description: 'Process immediate payment to vendor',
+          title: t('commandBar.actions.triggerPayout'),
+          description: t('commandBar.actions.triggerPayoutDesc'),
           icon: <DollarSign className="h-4 w-4" />,
-          category: 'Finance',
+          category: t('commandBar.categories.finance'),
           keywords: ['payout', 'payment', 'vendor', 'trigger'],
           action: () => handleTriggerPayout(),
           requiresConfirmation: true,
@@ -153,10 +153,10 @@ export default function CommandBar({ isOpen, onClose }: CommandBarProps) {
         },
         {
           id: 'freeze-transactions',
-          title: 'Freeze All Transactions',
-          description: 'Temporarily halt all financial transactions',
+          title: t('commandBar.actions.freezeTransactions'),
+          description: t('commandBar.actions.freezeTransactionsDesc'),
           icon: <Shield className="h-4 w-4" />,
-          category: 'Finance',
+          category: t('commandBar.categories.finance'),
           keywords: ['freeze', 'transactions', 'halt', 'stop'],
           action: () => handleFreezeTransactions(),
           requiresConfirmation: true,
@@ -164,10 +164,10 @@ export default function CommandBar({ isOpen, onClose }: CommandBarProps) {
         },
         {
           id: 'generate-invoice',
-          title: 'Generate Invoice',
-          description: 'Create invoice for selected client',
+          title: t('commandBar.actions.generateInvoice'),
+          description: t('commandBar.actions.generateInvoiceDesc'),
           icon: <FileText className="h-4 w-4" />,
-          category: 'Finance',
+          category: t('commandBar.categories.finance'),
           keywords: ['invoice', 'generate', 'billing', 'client'],
           action: () => handleGenerateInvoice(),
           impact: 'medium'
@@ -176,30 +176,30 @@ export default function CommandBar({ isOpen, onClose }: CommandBarProps) {
         // System Operations
         {
           id: 'system-health-check',
-          title: 'System Health Check',
-          description: 'Run comprehensive system diagnostics',
+          title: t('commandBar.actions.systemHealthCheck'),
+          description: t('commandBar.actions.systemHealthCheckDesc'),
           icon: <Activity className="h-4 w-4" />,
-          category: 'System',
+          category: t('commandBar.categories.system'),
           keywords: ['health', 'check', 'diagnostics', 'system'],
           action: () => handleSystemHealthCheck(),
           impact: 'low'
         },
         {
           id: 'clear-cache',
-          title: 'Clear System Cache',
-          description: 'Clear all system caches and temporary data',
+          title: t('commandBar.actions.clearCache'),
+          description: t('commandBar.actions.clearCacheDesc'),
           icon: <Zap className="h-4 w-4" />,
-          category: 'System',
+          category: t('commandBar.categories.system'),
           keywords: ['cache', 'clear', 'temp', 'data'],
           action: () => handleClearCache(),
           impact: 'medium'
         },
         {
           id: 'backup-system',
-          title: 'Backup System',
-          description: 'Create full system backup',
+          title: t('commandBar.actions.backupSystem'),
+          description: t('commandBar.actions.backupSystemDesc'),
           icon: <Shield className="h-4 w-4" />,
-          category: 'System',
+          category: t('commandBar.categories.system'),
           keywords: ['backup', 'system', 'data', 'save'],
           action: () => handleBackupSystem(),
           impact: 'high'
@@ -208,20 +208,20 @@ export default function CommandBar({ isOpen, onClose }: CommandBarProps) {
         // Analytics & Reports
         {
           id: 'generate-report',
-          title: 'Generate Report',
-          description: 'Create custom analytics report',
+          title: t('commandBar.actions.generateReport'),
+          description: t('commandBar.actions.generateReportDesc'),
           icon: <BarChart3 className="h-4 w-4" />,
-          category: 'Analytics',
+          category: t('commandBar.categories.analytics'),
           keywords: ['report', 'generate', 'analytics', 'data'],
           action: () => handleGenerateReport(),
           impact: 'low'
         },
         {
           id: 'export-data',
-          title: 'Export Data',
-          description: 'Export selected data to CSV/Excel',
+          title: t('commandBar.actions.exportData'),
+          description: t('commandBar.actions.exportDataDesc'),
           icon: <TrendingUp className="h-4 w-4" />,
-          category: 'Analytics',
+          category: t('commandBar.categories.analytics'),
           keywords: ['export', 'data', 'csv', 'excel'],
           action: () => handleExportData(),
           impact: 'low'
@@ -230,10 +230,10 @@ export default function CommandBar({ isOpen, onClose }: CommandBarProps) {
         // Emergency Actions
         {
           id: 'incident-response',
-          title: 'Activate Incident Response',
-          description: 'Trigger emergency incident response protocol',
+          title: t('commandBar.actions.incidentResponse'),
+          description: t('commandBar.actions.incidentResponseDesc'),
           icon: <AlertTriangle className="h-4 w-4" />,
-          category: 'Emergency',
+          category: t('commandBar.categories.emergency'),
           keywords: ['incident', 'emergency', 'response', 'protocol'],
           action: () => handleIncidentResponse(),
           requiresConfirmation: true,
@@ -241,10 +241,10 @@ export default function CommandBar({ isOpen, onClose }: CommandBarProps) {
         },
         {
           id: 'war-room-mode',
-          title: 'Enter War Room Mode',
-          description: 'Activate crisis management dashboard',
+          title: t('commandBar.actions.warRoomMode'),
+          description: t('commandBar.actions.warRoomModeDesc'),
           icon: <Target className="h-4 w-4" />,
-          category: 'Emergency',
+          category: t('commandBar.categories.emergency'),
           keywords: ['war', 'room', 'crisis', 'management'],
           action: () => handleWarRoomMode(),
           impact: 'critical'
@@ -299,38 +299,38 @@ export default function CommandBar({ isOpen, onClose }: CommandBarProps) {
   const handleCreateUser = async () => {
     setModalState({
       type: 'form',
-      title: 'Create New User',
-      description: 'Enter the details for the new user',
+      title: t('commandBar.forms.createUser.title'),
+      description: t('commandBar.forms.createUser.description'),
       fields: [
-        { name: 'name', label: 'Full Name', type: 'text', placeholder: 'John Doe', required: true },
-        { name: 'email', label: 'Email Address', type: 'email', placeholder: 'john@example.com', required: true },
+        { name: 'name', label: t('commandBar.forms.createUser.fields.name'), type: 'text', placeholder: t('commandBar.forms.createUser.placeholders.name'), required: true },
+        { name: 'email', label: t('commandBar.forms.createUser.fields.email'), type: 'email', placeholder: t('commandBar.forms.createUser.placeholders.email'), required: true },
         { 
           name: 'role', 
-          label: 'Role', 
+          label: t('commandBar.forms.createUser.fields.role'), 
           type: 'select', 
           required: true,
           options: [
-            { value: 'user', label: 'User' },
-            { value: 'admin', label: 'Admin' },
-            { value: 'head_administrator', label: 'Head Administrator' }
+            { value: 'user', label: t('commandBar.forms.createUser.options.roles.user') },
+            { value: 'admin', label: t('commandBar.forms.createUser.options.roles.admin') },
+            { value: 'head_administrator', label: t('commandBar.forms.createUser.options.roles.head_administrator') }
           ]
         },
         { 
           name: 'status', 
-          label: 'Status', 
+          label: t('commandBar.forms.createUser.fields.status'), 
           type: 'select', 
           required: true,
           options: [
-            { value: 'active', label: 'Active' },
-            { value: 'inactive', label: 'Inactive' },
-            { value: 'pending', label: 'Pending' }
+            { value: 'active', label: t('commandBar.forms.createUser.options.statuses.active') },
+            { value: 'inactive', label: t('commandBar.forms.createUser.options.statuses.inactive') },
+            { value: 'pending', label: t('commandBar.forms.createUser.options.statuses.pending') }
           ]
         }
       ],
       onSubmit: async (data) => {
         const createdUser = await productionApi.createUser(data);
         if (createdUser) {
-          toast.success('User created successfully!', `User ${data.name} has been created.`);
+          toast.success(t('commandBar.messages.userCreated'), `User ${data.name} has been created.`);
         }
         onClose();
       }
@@ -340,10 +340,10 @@ export default function CommandBar({ isOpen, onClose }: CommandBarProps) {
   const handleSuspendUser = async () => {
     setModalState({
       type: 'form',
-      title: 'Suspend User',
-      description: 'Enter the user ID to suspend',
+      title: t('commandBar.forms.suspendUser.title'),
+      description: t('commandBar.forms.suspendUser.description'),
       fields: [
-        { name: 'userId', label: 'User ID', type: 'text', placeholder: 'user-123', required: true }
+        { name: 'userId', label: t('commandBar.forms.suspendUser.fields.userId'), type: 'text', placeholder: t('commandBar.forms.suspendUser.placeholders.userId'), required: true }
       ],
       onSubmit: async (data) => {
         const user = await productionApi.getUserById(data.userId);
@@ -353,10 +353,10 @@ export default function CommandBar({ isOpen, onClose }: CommandBarProps) {
             status: 'inactive' 
           });
           if (updatedUser) {
-            toast.success('User suspended successfully!', `User ${user.name} has been suspended.`);
+            toast.success(t('commandBar.messages.userSuspended'), `User ${user.name} has been suspended.`);
           }
         } else {
-          toast.error('User not found!', 'Please check the User ID and try again.');
+          toast.error(t('commandBar.errors.userNotFound'), 'Please check the User ID and try again.');
         }
         onClose();
       }
@@ -755,19 +755,17 @@ export default function CommandBar({ isOpen, onClose }: CommandBarProps) {
             <div className="flex items-center border-b px-3">
               <Search className="mr-2 h-4 w-4 shrink-0 opacity-50" />
               <CommandInput
-                placeholder="Type a command or search..."
+                placeholder={t('commandBar.placeholders.search')}
                 value={search}
                 onValueChange={setSearch}
                 className="flex h-11 w-full rounded-[0.625rem] bg-transparent py-3 text-sm outline-none placeholder:text-muted-foreground disabled:cursor-not-allowed disabled:opacity-50"
               />
               <div className="ml-auto text-xs text-muted-foreground">
-                Press <kbd className="pointer-events-none inline-flex h-5 select-none items-center gap-1 rounded-[0.625rem] border bg-muted px-1.5 font-mono text-[10px] font-medium text-muted-foreground opacity-100">
-                  <span className="text-xs">⌘</span>K
-                </kbd> to open
+                {t('commandBar.shortcuts.open')}
               </div>
             </div>
             <CommandList className="max-h-[400px] overflow-y-auto">
-              <CommandEmpty>No results found.</CommandEmpty>
+              <CommandEmpty>{t('commandBar.placeholders.noResults')}</CommandEmpty>
               {Object.entries(groupedActions).map(([category, categoryActions]) => (
                 <CommandGroup key={category} heading={category}>
                   {categoryActions.map((action) => (
@@ -829,15 +827,14 @@ export default function CommandBar({ isOpen, onClose }: CommandBarProps) {
                 </Badge>
               </div>
               <p className="text-sm text-muted-foreground">
-                This action will have a <strong>{selectedAction.impact}</strong> impact on the system. 
-                Are you sure you want to proceed?
+                {t('commandBar.confirmations.impactWarning').replace('{impact}', selectedAction.impact || 'low')}
               </p>
               <div className="flex justify-end space-x-2">
                 <button
                   onClick={() => setSelectedAction(null)}
                   className="px-4 py-2 text-sm border rounded-[0.625rem] hover:bg-muted/50"
                 >
-                  Cancel
+                  {t('commandBar.confirmations.cancel')}
                 </button>
                 <button
                   onClick={() => {
@@ -846,7 +843,7 @@ export default function CommandBar({ isOpen, onClose }: CommandBarProps) {
                   }}
                   className="px-4 py-2 text-sm bg-destructive text-destructive-foreground rounded-[0.625rem] hover:bg-destructive/90"
                 >
-                  Confirm
+                  {t('commandBar.confirmations.confirm')}
                 </button>
               </div>
             </div>

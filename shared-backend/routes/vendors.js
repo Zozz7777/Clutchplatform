@@ -337,7 +337,7 @@ router.post('/contracts', checkRole(['head_administrator', 'vendor_manager']), a
       startDate: startDate ? new Date(startDate) : new Date(),
       endDate: endDate ? new Date(endDate) : null,
       value: value || 0,
-      currency: currency || 'USD',
+      currency: currency || 'EGP',
       terms: terms || '',
       status: status || 'active',
       renewalDate: renewalDate ? new Date(renewalDate) : null,

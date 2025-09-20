@@ -34,7 +34,7 @@ export class SafeWebSocketService {
   private eventHandlers: WebSocketEventHandlers = {};
   private pollingInterval: NodeJS.Timeout | null = null;
   private isPolling = false;
-  private pollingIntervalMs = 30000; // 30 seconds
+  private pollingIntervalMs = 120000; // 2 minutes
   private lastPollTime = 0;
   private isClient = false;
 

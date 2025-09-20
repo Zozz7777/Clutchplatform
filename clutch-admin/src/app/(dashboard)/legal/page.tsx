@@ -426,7 +426,7 @@ export default function LegalPage() {
       <div className="grid gap-4 md:grid-cols-4">
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Active Contracts</CardTitle>
+            <CardTitle className="text-sm font-medium">{t('legal.activeContracts')}</CardTitle>
             <FileText className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
@@ -437,14 +437,14 @@ export default function LegalPage() {
               {stats ? stats.expiringContracts : (Array.isArray(contracts) ? contracts.filter(c => 
                 c?.status === "active" && 
                 new Date(c?.endDate || new Date()) <= new Date(Date.now() + 30 * 24 * 60 * 60 * 1000)
-              ).length : 0)} expiring soon
+              ).length : 0)} {t('legal.expiringSoon')}
             </p>
           </CardContent>
         </Card>
         
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Open Disputes</CardTitle>
+            <CardTitle className="text-sm font-medium">{t('legal.openDisputes')}</CardTitle>
             <Gavel className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
@@ -454,14 +454,14 @@ export default function LegalPage() {
               ).length : 0)}
             </div>
             <p className="text-xs text-muted-foreground">
-              {Array.isArray(disputes) ? disputes.filter(d => d?.priority === "critical").length : 0} critical
+              {Array.isArray(disputes) ? disputes.filter(d => d?.priority === "critical").length : 0} {t('legal.critical')}
             </p>
           </CardContent>
         </Card>
         
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Total Contract Value</CardTitle>
+            <CardTitle className="text-sm font-medium">{t('legal.totalContractValue')}</CardTitle>
             <Scale className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
@@ -470,22 +470,22 @@ export default function LegalPage() {
                 (Array.isArray(contracts) ? contracts.filter(c => c?.status === "active").reduce((sum, c) => sum + (c?.value || 0), 0).toLocaleString() : "0")}
             </div>
             <p className="text-xs text-muted-foreground">
-              Active contracts
+              {t('legal.activeContractsDesc')}
             </p>
           </CardContent>
         </Card>
         
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Resolution Time</CardTitle>
+            <CardTitle className="text-sm font-medium">{t('legal.resolutionTime')}</CardTitle>
             <Clock className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">
-              {stats ? stats.averageResolutionTime : 15} days
+              {stats ? stats.averageResolutionTime : 15} {t('legal.days')}
             </div>
             <p className="text-xs text-muted-foreground">
-              Average dispute resolution
+              {t('legal.averageDisputeResolution')}
             </p>
           </CardContent>
         </Card>

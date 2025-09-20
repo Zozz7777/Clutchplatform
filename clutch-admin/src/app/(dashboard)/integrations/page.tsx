@@ -610,28 +610,28 @@ export default function IntegrationsPage() {
                     </div>
                     <div className="space-y-2">
                       <div className="flex items-center justify-between">
-                        <span className="text-sm font-medium">Rating</span>
+                        <span className="text-sm font-medium">{t('integrations.rating')}</span>
                         <div className="flex items-center space-x-1">
                           <span className="text-sm">{template.rating}</span>
                           <span className="text-xs text-muted-foreground">({template.reviewCount} reviews)</span>
                         </div>
                       </div>
                       <div className="flex items-center justify-between">
-                        <span className="text-sm font-medium">Pricing</span>
+                        <span className="text-sm font-medium">{t('integrations.pricing')}</span>
                         <span className="text-sm text-muted-foreground">
-                          {template.pricing.model === "free" ? "Free" : 
-                           template.pricing.model === "per_request" ? `$${template.pricing.cost}/request` :
-                           template.pricing.model === "monthly" ? `$${template.pricing.cost}/month` :
-                           "Enterprise"}
+                          {template.pricing.model === "free" ? t('integrations.free') : 
+                           template.pricing.model === "per_request" ? `$${template.pricing.cost}/${t('integrations.perRequest')}` :
+                           template.pricing.model === "monthly" ? `$${template.pricing.cost}/${t('integrations.perMonth')}` :
+                           t('integrations.enterprise')}
                         </span>
                       </div>
                     </div>
                     <div className="mt-4 flex items-center justify-between">
                       <Button size="sm" variant="outline">
-                        View Details
+                        {t('integrations.viewDetails')}
                       </Button>
                       <Button size="sm">
-                        Install
+                        {t('integrations.install')}
                       </Button>
                     </div>
                   </CardContent>
@@ -641,7 +641,7 @@ export default function IntegrationsPage() {
           </div>
           <DialogFooter>
             <Button variant="outline" onClick={() => setShowTemplatesDialog(false)}>
-              Close
+              {t('integrations.close')}
             </Button>
           </DialogFooter>
         </DialogContent>

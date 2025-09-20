@@ -1584,6 +1584,315 @@
     "cancel": "إلغاء",
     "close": "إغلاق"
   },
+  "commandBar": {
+    "categories": {
+      "users": "المستخدمون",
+      "fleet": "الأسطول",
+      "finance": "المالية",
+      "system": "النظام",
+      "analytics": "التحليلات",
+      "emergency": "الطوارئ"
+    },
+    "actions": {
+      "createUser": "إنشاء مستخدم",
+      "createUserDesc": "إضافة مستخدم جديد إلى النظام",
+      "suspendUser": "تعليق المستخدم",
+      "suspendUserDesc": "تعطيل حساب المستخدم مؤقتاً",
+      "bulkUserImport": "استيراد المستخدمين بالجملة",
+      "bulkUserImportDesc": "استيراد عدة مستخدمين من ملف CSV",
+      "pauseVehicle": "إيقاف المركبة",
+      "pauseVehicleDesc": "إيقاف المركبة مؤقتاً",
+      "emergencyStop": "إيقاف طارئ لجميع المركبات",
+      "emergencyStopDesc": "إيقاف جميع المركبات في الأسطول فوراً",
+      "scheduleMaintenance": "جدولة الصيانة",
+      "scheduleMaintenanceDesc": "جدولة صيانة المركبة",
+      "triggerPayout": "تشغيل الدفع",
+      "triggerPayoutDesc": "معالجة الدفع الفوري للمورد",
+      "freezeTransactions": "تجميد جميع المعاملات",
+      "freezeTransactionsDesc": "إيقاف جميع المعاملات المالية مؤقتاً",
+      "generateInvoice": "إنشاء فاتورة",
+      "generateInvoiceDesc": "إنشاء فاتورة للعميل المحدد",
+      "systemHealthCheck": "فحص صحة النظام",
+      "systemHealthCheckDesc": "تشغيل تشخيصات شاملة للنظام",
+      "clearCache": "مسح ذاكرة التخزين المؤقت",
+      "clearCacheDesc": "مسح جميع ذاكرات التخزين المؤقت والبيانات المؤقتة",
+      "backupSystem": "نسخ احتياطي للنظام",
+      "backupSystemDesc": "إنشاء نسخة احتياطية كاملة للنظام",
+      "generateReport": "إنشاء تقرير",
+      "generateReportDesc": "إنشاء تقرير تحليلات مخصص",
+      "exportData": "تصدير البيانات",
+      "exportDataDesc": "تصدير البيانات المحددة إلى CSV/Excel",
+      "incidentResponse": "تفعيل الاستجابة للحوادث",
+      "incidentResponseDesc": "تشغيل بروتوكول الاستجابة الطارئة للحوادث",
+      "warRoomMode": "دخول وضع غرفة الحرب",
+      "warRoomModeDesc": "تفعيل لوحة إدارة الأزمات"
+    },
+    "placeholders": {
+      "search": "اكتب أمراً أو ابحث...",
+      "noResults": "لم يتم العثور على نتائج."
+    },
+    "shortcuts": {
+      "open": "اضغط ⌘K للفتح"
+    },
+    "confirmations": {
+      "cancel": "إلغاء",
+      "confirm": "تأكيد",
+      "impactWarning": "هذا الإجراء سيكون له تأثير {impact} على النظام. هل أنت متأكد من أنك تريد المتابعة؟"
+    },
+    "forms": {
+      "createUser": {
+        "title": "إنشاء مستخدم جديد",
+        "description": "أدخل تفاصيل المستخدم الجديد",
+        "fields": {
+          "name": "الاسم الكامل",
+          "email": "عنوان البريد الإلكتروني",
+          "role": "الدور",
+          "status": "الحالة"
+        },
+        "placeholders": {
+          "name": "أحمد محمد",
+          "email": "ahmed@example.com"
+        },
+        "options": {
+          "roles": {
+            "user": "مستخدم",
+            "admin": "مدير",
+            "head_administrator": "مدير رئيسي"
+          },
+          "statuses": {
+            "active": "نشط",
+            "inactive": "غير نشط",
+            "pending": "في الانتظار"
+          }
+        }
+      },
+      "suspendUser": {
+        "title": "تعليق المستخدم",
+        "description": "أدخل معرف المستخدم لتعليقه",
+        "fields": {
+          "userId": "معرف المستخدم"
+        },
+        "placeholders": {
+          "userId": "user-123"
+        }
+      },
+      "bulkImport": {
+        "title": "استيراد المستخدمين بالجملة",
+        "description": "قم بتحميل ملف CSV لاستيراد عدة مستخدمين في مرة واحدة",
+        "fields": {
+          "file": "ملف CSV"
+        },
+        "placeholders": {
+          "file": "اختر ملف CSV"
+        }
+      },
+      "pauseVehicle": {
+        "title": "إيقاف المركبة",
+        "description": "أدخل معرف المركبة لإيقافها",
+        "fields": {
+          "vehicleId": "معرف المركبة"
+        },
+        "placeholders": {
+          "vehicleId": "vehicle-123"
+        }
+      },
+      "emergencyStop": {
+        "title": "إيقاف طارئ لجميع المركبات",
+        "description": "هل أنت متأكد من أنك تريد إيقاف جميع المركبات بشكل طارئ؟ لا يمكن التراجع عن هذا الإجراء."
+      },
+      "scheduleMaintenance": {
+        "title": "جدولة صيانة المركبة",
+        "description": "أدخل تفاصيل الصيانة",
+        "fields": {
+          "vehicleId": "معرف المركبة",
+          "type": "نوع الصيانة",
+          "description": "الوصف"
+        },
+        "placeholders": {
+          "vehicleId": "vehicle-123",
+          "description": "تفاصيل إضافية للصيانة"
+        },
+        "options": {
+          "types": {
+            "routine": "روتينية",
+            "emergency": "طارئة",
+            "inspection": "فحص"
+          }
+        }
+      },
+      "triggerPayout": {
+        "title": "تشغيل دفع يدوي",
+        "description": "أدخل تفاصيل الدفع",
+        "fields": {
+          "amount": "المبلغ",
+          "recipient": "معرف المستلم",
+          "description": "الوصف"
+        },
+        "placeholders": {
+          "amount": "100.00",
+          "recipient": "user-123",
+          "description": "سبب الدفع"
+        }
+      },
+      "generateInvoice": {
+        "title": "إنشاء فاتورة",
+        "description": "أدخل تفاصيل الفاتورة",
+        "fields": {
+          "customerId": "معرف العميل",
+          "amount": "المبلغ",
+          "description": "الوصف"
+        },
+        "placeholders": {
+          "customerId": "customer-123",
+          "amount": "1000.00",
+          "description": "وصف الفاتورة"
+        }
+      },
+      "generateReport": {
+        "title": "إنشاء تقرير",
+        "description": "اختر نوع التقرير والتنسيق",
+        "fields": {
+          "type": "نوع التقرير",
+          "format": "التنسيق"
+        },
+        "options": {
+          "types": {
+            "analytics": "التحليلات",
+            "financial": "المالية",
+            "users": "المستخدمون",
+            "fleet": "الأسطول"
+          },
+          "formats": {
+            "pdf": "PDF",
+            "csv": "CSV",
+            "excel": "Excel"
+          }
+        }
+      },
+      "exportData": {
+        "title": "تصدير البيانات",
+        "description": "اختر نوع البيانات وتنسيق التصدير",
+        "fields": {
+          "dataType": "نوع البيانات",
+          "format": "تنسيق التصدير"
+        },
+        "options": {
+          "dataTypes": {
+            "users": "المستخدمون",
+            "vehicles": "المركبات",
+            "payments": "المدفوعات",
+            "analytics": "التحليلات"
+          },
+          "formats": {
+            "csv": "CSV",
+            "excel": "Excel",
+            "json": "JSON"
+          }
+        }
+      },
+      "incidentResponse": {
+        "title": "تفعيل بروتوكول الاستجابة للحوادث",
+        "description": "هل أنت متأكد من أنك تريد تفعيل بروتوكول الاستجابة للحوادث؟ سيتم إشعار جميع جهات الاتصال الطارئة وتفعيل إجراءات إدارة الأزمات."
+      },
+      "warRoomMode": {
+        "title": "دخول وضع غرفة الحرب",
+        "description": "هل أنت متأكد من أنك تريد دخول وضع غرفة الحرب؟ سيتم تفعيل لوحة إدارة الأزمات وبروتوكولات الطوارئ."
+      }
+    },
+    "messages": {
+      "userCreated": "تم إنشاء المستخدم بنجاح!",
+      "userSuspended": "تم تعليق المستخدم بنجاح!",
+      "usersImported": "تم استيراد {count} مستخدم بنجاح!",
+      "vehiclePaused": "تم إيقاف المركبة بنجاح!",
+      "emergencyStopActivated": "تم تفعيل الإيقاف الطارئ لـ {count} مركبة!",
+      "maintenanceScheduled": "تم جدولة الصيانة بنجاح!",
+      "payoutTriggered": "تم تشغيل الدفع بنجاح!",
+      "transactionsFrozen": "تم تجميد جميع المعاملات!",
+      "invoiceGenerated": "تم إنشاء الفاتورة بنجاح!",
+      "healthCheckCompleted": "تم إكمال فحص صحة النظام!",
+      "cacheCleared": "تم مسح ذاكرة التخزين المؤقت بنجاح!",
+      "backupInitiated": "تم بدء النسخ الاحتياطي للنظام!",
+      "reportGenerated": "تم إنشاء التقرير بنجاح!",
+      "dataExported": "تم تصدير البيانات بنجاح!",
+      "incidentResponseActivated": "تم تفعيل بروتوكول الاستجابة للحوادث!",
+      "warRoomModeActivated": "تم تفعيل وضع غرفة الحرب!"
+    },
+    "errors": {
+      "userNotFound": "لم يتم العثور على المستخدم!",
+      "vehicleNotFound": "لم يتم العثور على المركبة!",
+      "csvProcessingFailed": "فشل في معالجة ملف CSV",
+      "freezeTransactionsFailed": "فشل في تجميد المعاملات. يرجى المحاولة مرة أخرى.",
+      "healthCheckFailed": "فشل في تشغيل فحص صحة النظام. يرجى المحاولة مرة أخرى.",
+      "clearCacheFailed": "فشل في مسح ذاكرة التخزين المؤقت. يرجى المحاولة مرة أخرى.",
+      "backupFailed": "فشل في إنشاء النسخة الاحتياطية. يرجى المحاولة مرة أخرى."
+    }
+  },
+  "compliance": {
+    "title": "علامات الامتثال",
+    "description": "كشف انتهاكات سياسات KYC/GDPR ومراقبة الامتثال",
+    "exportReport": "تصدير التقرير",
+    "criticalFlags": "العلامات الحرجة",
+    "openIssues": "القضايا المفتوحة",
+    "complianceScore": "درجة الامتثال",
+    "complianceFrameworks": "أطر الامتثال",
+    "complianceFlags": "علامات الامتثال",
+    "category": "الفئة",
+    "status": "الحالة",
+    "flagDetails": "تفاصيل العلامة",
+    "complianceInformation": "معلومات الامتثال",
+    "riskAssessment": "تقييم المخاطر",
+    "affectedData": "البيانات المتأثرة",
+    "remediationActions": "إجراءات الإصلاح",
+    "markResolved": "وضع علامة كمحلول",
+    "falsePositive": "إيجابي خاطئ",
+    "uploadEvidence": "رفع الأدلة",
+    "regulation": "اللائحة",
+    "requirement": "المتطلب",
+    "assignee": "المكلف",
+    "dueDate": "تاريخ الاستحقاق",
+    "financial": "مالي",
+    "reputational": "سمعة",
+    "operational": "تشغيلي",
+    "legal": "قانوني",
+    "records": "سجلات",
+    "requirementsMet": "متطلبات مستوفاة",
+    "nextAssessment": "التقييم التالي",
+    "due": "مستحق",
+    "categories": {
+      "all": "الكل",
+      "kyc": "KYC",
+      "gdpr": "GDPR",
+      "pci": "PCI",
+      "sox": "SOX",
+      "hipaa": "HIPAA",
+      "iso27001": "ISO27001"
+    },
+    "statuses": {
+      "all": "الكل",
+      "open": "مفتوح",
+      "investigating": "قيد التحقيق",
+      "resolved": "محلول",
+      "false_positive": "إيجابي خاطئ"
+    },
+    "severities": {
+      "critical": "حرج",
+      "high": "عالي",
+      "medium": "متوسط",
+      "low": "منخفض"
+    },
+    "sensitivities": {
+      "public": "عام",
+      "internal": "داخلي",
+      "confidential": "سري",
+      "restricted": "مقيد"
+    },
+    "frameworkStatuses": {
+      "compliant": "متوافق",
+      "partial": "جزئي",
+      "non_compliant": "غير متوافق",
+      "not_assessed": "لم يتم تقييمه"
+    }
+  },
   "reports": {
     "title": "التقارير",
     "description": "إنشاء وإدارة تقارير النظام",
@@ -1916,5 +2225,82 @@
     "documentCreated": "تم إنشاء المستند بنجاح",
     "documentUpdated": "تم تحديث المستند بنجاح",
     "documentDeleted": "تم حذف المستند بنجاح"
+  },
+  "legal": {
+    "activeContracts": "العقود النشطة",
+    "openDisputes": "النزاعات المفتوحة",
+    "totalContractValue": "إجمالي قيمة العقود",
+    "resolutionTime": "وقت الحل",
+    "expiringSoon": "تنتهي قريباً",
+    "critical": "حرج",
+    "activeContractsDesc": "العقود النشطة",
+    "averageDisputeResolution": "متوسط حل النزاعات",
+    "days": "أيام"
+  },
+  "security": {
+    "globalSecurityCenter": "مركز الأمان العالمي",
+    "securityEvents": "أحداث الأمان",
+    "activeSessions": "الجلسات النشطة",
+    "riskScore": "درجة المخاطر",
+    "complianceScore": "درجة الامتثال",
+    "totalEvents": "إجمالي الأحداث",
+    "suspiciousActivities": "الأنشطة المشبوهة",
+    "failedLogins": "محاولات تسجيل الدخول الفاشلة",
+    "lastUpdated": "آخر تحديث",
+    "monitoring": "المراقبة",
+    "notifications": "الإشعارات",
+    "filterByType": "تصفية حسب النوع",
+    "filterBySeverity": "تصفية حسب الخطورة",
+    "filterByStatus": "تصفية حسب الحالة",
+    "all": "الكل",
+    "low": "منخفض",
+    "medium": "متوسط",
+    "high": "عالي",
+    "critical": "حرج",
+    "active": "نشط",
+    "investigating": "قيد التحقيق",
+    "resolved": "محلول",
+    "suspicious": "مشبوه",
+    "normal": "عادي",
+    "device": "الجهاز",
+    "location": "الموقع",
+    "user": "المستخدم",
+    "timestamp": "الطابع الزمني",
+    "details": "التفاصيل",
+    "tags": "العلامات",
+    "permissions": "الأذونات",
+    "flags": "الأعلام",
+    "startTime": "وقت البداية",
+    "lastActivity": "آخر نشاط",
+    "ipAddress": "عنوان IP",
+    "userAgent": "وكيل المستخدم",
+    "action": "الإجراء",
+    "resource": "المورد",
+    "metadata": "البيانات الوصفية",
+    "country": "البلد",
+    "city": "المدينة",
+    "coordinates": "الإحداثيات",
+    "type": "النوع",
+    "os": "نظام التشغيل",
+    "browser": "المتصفح",
+    "attempts": "المحاولات",
+    "reason": "السبب",
+    "recordsAccessed": "السجلات المُتاحة",
+    "timeRange": "النطاق الزمني",
+    "oldRole": "الدور القديم",
+    "newRole": "الدور الجديد",
+    "unknown": "غير معروف",
+    "securityEventDetected": "تم اكتشاف حدث أمني",
+    "system": "النظام",
+    "securityEvent": "حدث أمني",
+    "normalActivity": "نشاط عادي",
+    "unusualLocation": "موقع غير عادي",
+    "highPrivilegeAccess": "وصول بصلاحيات عالية",
+    "bruteForce": "قوة غاشمة",
+    "suspiciousIp": "IP مشبوه",
+    "dataExfiltration": "استخراج البيانات",
+    "privilegeEscalation": "تصعيد الصلاحيات",
+    "roleChange": "تغيير الدور",
+    "adminAction": "إجراء إداري"
   }
 }

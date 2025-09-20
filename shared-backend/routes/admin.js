@@ -5751,7 +5751,7 @@ router.get('/users/:id', authenticateToken, checkRole(['head_administrator', 'us
         },
         language: 'en',
         timezone: 'America/New_York',
-        currency: 'USD'
+        currency: 'EGP'
       },
       activity: {
         totalOrders: 25,

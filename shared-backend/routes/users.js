@@ -1,5 +1,7 @@
 const express = require('express');
 const router = express.Router();
+const bcrypt = require('bcryptjs');
+const { ObjectId } = require('mongodb');
 const { authenticateToken, checkRole, checkPermission } = require('../middleware/unified-auth');
 const logger = require('../utils/logger');
 const { getCollection } = require('../config/optimized-database');

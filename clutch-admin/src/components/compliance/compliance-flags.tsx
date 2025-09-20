@@ -31,6 +31,8 @@ import {
   Zap
 } from 'lucide-react';
 import { formatCurrency, formatNumber } from '@/lib/utils';
+import { useTranslations } from '@/hooks/use-translations';
+import { productionApi } from '@/lib/production-api';
 
 interface ComplianceFlag {
   id: string;
@@ -103,6 +105,7 @@ interface ComplianceFlagsProps {
 }
 
 export default function ComplianceFlags({ className }: ComplianceFlagsProps) {
+  const { t } = useTranslations();
   const [flags, setFlags] = useState<ComplianceFlag[]>([]);
   const [frameworks, setFrameworks] = useState<ComplianceFramework[]>([]);
   const [selectedFlag, setSelectedFlag] = useState<ComplianceFlag | null>(null);
@@ -112,40 +115,15 @@ export default function ComplianceFlags({ className }: ComplianceFlagsProps) {
   useEffect(() => {
     const loadComplianceData = async () => {
       try {
-        // Load compliance flags from API
-        const flagsResponse = await fetch('/api/v1/compliance/flags', {
-          headers: {
-            'Authorization': `Bearer ${localStorage.getItem('token')}`,
-            'Content-Type': 'application/json'
-          }
-        });
-        
-        if (flagsResponse.ok) {
-          const flagsData = await flagsResponse.json();
-          setFlags(flagsData.data || []);
-        } else {
-          // Fallback to empty array if API fails
-          setFlags([]);
-        }
+        // Load compliance flags from production API
+        const flagsData = await productionApi.getComplianceFlags();
+        setFlags(Array.isArray(flagsData) ? flagsData : []);
 
-        // Load compliance frameworks from API
-        const frameworksResponse = await fetch('/api/v1/compliance/frameworks', {
-          headers: {
-            'Authorization': `Bearer ${localStorage.getItem('token')}`,
-            'Content-Type': 'application/json'
-          }
-        });
-        
-        if (frameworksResponse.ok) {
-          const frameworksData = await frameworksResponse.json();
-          setFrameworks(frameworksData.data || []);
-        } else {
-          // Fallback to empty array if API fails
-          setFrameworks([]);
-        }
+        // Load compliance frameworks from production API
+        const frameworksData = await productionApi.getComplianceFrameworks();
+        setFrameworks(Array.isArray(frameworksData) ? frameworksData : []);
       } catch (error) {
-        // Failed to load compliance data
-        // Set empty arrays as fallback
+        // Failed to load compliance data - set empty arrays as fallback
         setFlags([]);
         setFrameworks([]);
       }
@@ -154,268 +132,6 @@ export default function ComplianceFlags({ className }: ComplianceFlagsProps) {
     loadComplianceData();
   }, []);
 
-  // Keep mock data as fallback for development
-  const getMockFlags = (): ComplianceFlag[] => [
-        {
-          id: 'FLAG-001',
-          title: 'GDPR Data Retention Violation',
-          description: 'Customer data retained beyond the 7-year limit specified in GDPR Article 5(1)(e)',
-          category: 'gdpr',
-          severity: 'critical',
-          status: 'open',
-          regulation: 'GDPR',
-          requirement: 'Article 5(1)(e) - Data Minimization',
-          affectedData: {
-            type: 'Personal Identifiable Information',
-            volume: 15420,
-            sensitivity: 'confidential'
-          },
-          risk: {
-            financial: 85,
-            reputational: 90,
-            operational: 60,
-            legal: 95
-          },
-          detectedAt: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000).toISOString(),
-          dueDate: new Date(Date.now() + 5 * 24 * 60 * 60 * 1000).toISOString(),
-          assignee: {
-            id: 'user-001',
-            name: 'Sarah Chen',
-            role: 'Data Protection Officer'
-          },
-          actions: [
-            {
-              id: 'act-001',
-              description: 'Audit all customer data retention policies',
-              status: 'in_progress',
-              dueDate: new Date(Date.now() + 2 * 24 * 60 * 60 * 1000).toISOString(),
-              assignee: 'Data Team'
-            },
-            {
-              id: 'act-002',
-              description: 'Implement automated data deletion process',
-              status: 'pending',
-              dueDate: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString(),
-              assignee: 'Engineering Team'
-            }
-          ],
-          evidence: [
-            {
-              id: 'ev-001',
-              type: 'document',
-              name: 'Data Retention Policy Review',
-              url: '/documents/retention-policy.pdf',
-              uploadedAt: new Date(Date.now() - 1 * 24 * 60 * 60 * 1000).toISOString()
-            }
-          ],
-          auditTrail: [
-            {
-              id: 'audit-001',
-              action: 'Flag Created',
-              user: 'Compliance System',
-              timestamp: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000).toISOString(),
-              details: 'Automated scan detected data retention violation'
-            },
-            {
-              id: 'audit-002',
-              action: 'Assigned',
-              user: 'Compliance Manager',
-              timestamp: new Date(Date.now() - 1 * 24 * 60 * 60 * 1000).toISOString(),
-              details: 'Assigned to Data Protection Officer'
-            }
-          ]
-        },
-        {
-          id: 'FLAG-002',
-          title: 'KYC Documentation Incomplete',
-          description: 'Missing identity verification documents for 23 high-risk customers',
-          category: 'kyc',
-          severity: 'high',
-          status: 'investigating',
-          regulation: 'AML/KYC',
-          requirement: 'Customer Due Diligence (CDD)',
-          affectedData: {
-            type: 'Customer Identity Documents',
-            volume: 23,
-            sensitivity: 'restricted'
-          },
-          risk: {
-            financial: 75,
-            reputational: 60,
-            operational: 80,
-            legal: 85
-          },
-          detectedAt: new Date(Date.now() - 5 * 24 * 60 * 60 * 1000).toISOString(),
-          dueDate: new Date(Date.now() + 3 * 24 * 60 * 60 * 1000).toISOString(),
-          assignee: {
-            id: 'user-002',
-            name: 'Mike Rodriguez',
-            role: 'Compliance Analyst'
-          },
-          actions: [
-            {
-              id: 'act-003',
-              description: 'Contact customers for missing documents',
-              status: 'in_progress',
-              dueDate: new Date(Date.now() + 1 * 24 * 60 * 60 * 1000).toISOString(),
-              assignee: 'Customer Success Team'
-            }
-          ],
-          evidence: [],
-          auditTrail: [
-            {
-              id: 'audit-003',
-              action: 'Flag Created',
-              user: 'KYC System',
-              timestamp: new Date(Date.now() - 5 * 24 * 60 * 60 * 1000).toISOString(),
-              details: 'Automated KYC check failed for high-risk customers'
-            }
-          ]
-        },
-        {
-          id: 'FLAG-003',
-          title: 'PCI DSS Network Segmentation Gap',
-          description: 'Payment card data network not properly segmented from other systems',
-          category: 'pci',
-          severity: 'high',
-          status: 'open',
-          regulation: 'PCI DSS',
-          requirement: 'Requirement 1 - Network Segmentation',
-          affectedData: {
-            type: 'Payment Card Data',
-            volume: 0,
-            sensitivity: 'restricted'
-          },
-          risk: {
-            financial: 90,
-            reputational: 85,
-            operational: 70,
-            legal: 80
-          },
-          detectedAt: new Date(Date.now() - 1 * 24 * 60 * 60 * 1000).toISOString(),
-          dueDate: new Date(Date.now() + 14 * 24 * 60 * 60 * 1000).toISOString(),
-          assignee: {
-            id: 'user-003',
-            name: 'Alex Kim',
-            role: 'Security Engineer'
-          },
-          actions: [
-            {
-              id: 'act-004',
-              description: 'Implement network segmentation controls',
-              status: 'pending',
-              dueDate: new Date(Date.now() + 10 * 24 * 60 * 60 * 1000).toISOString(),
-              assignee: 'Network Team'
-            }
-          ],
-          evidence: [],
-          auditTrail: [
-            {
-              id: 'audit-004',
-              action: 'Flag Created',
-              user: 'Security Scanner',
-              timestamp: new Date(Date.now() - 1 * 24 * 60 * 60 * 1000).toISOString(),
-              details: 'Network scan detected segmentation gap'
-            }
-          ]
-        }
-      ];
-
-      const mockFrameworks: ComplianceFramework[] = [
-        {
-          id: 'framework-001',
-          name: 'GDPR',
-          description: 'General Data Protection Regulation',
-          status: 'partial',
-          score: 78,
-          lastAssessment: new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toISOString(),
-          nextAssessment: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString(),
-          requirements: {
-            total: 25,
-            compliant: 18,
-            nonCompliant: 4,
-            pending: 3
-          }
-        },
-        {
-          id: 'framework-002',
-          name: 'PCI DSS',
-          description: 'Payment Card Industry Data Security Standard',
-          status: 'partial',
-          score: 85,
-          lastAssessment: new Date(Date.now() - 15 * 24 * 60 * 60 * 1000).toISOString(),
-          nextAssessment: new Date(Date.now() + 45 * 24 * 60 * 60 * 1000).toISOString(),
-          requirements: {
-            total: 12,
-            compliant: 10,
-            nonCompliant: 1,
-            pending: 1
-          }
-        },
-        {
-          id: 'framework-003',
-          name: 'SOC 2',
-          description: 'Service Organization Control 2',
-          status: 'compliant',
-          score: 92,
-          lastAssessment: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString(),
-          nextAssessment: new Date(Date.now() + 60 * 24 * 60 * 60 * 1000).toISOString(),
-          requirements: {
-            total: 8,
-            compliant: 8,
-            nonCompliant: 0,
-            pending: 0
-          }
-        }
-      ];
-
-  const getMockFrameworks = (): ComplianceFramework[] => [
-        {
-          id: 'framework-001',
-          name: 'GDPR',
-          description: 'General Data Protection Regulation',
-          status: 'partial',
-          score: 78,
-          lastAssessment: new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toISOString(),
-          nextAssessment: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString(),
-          requirements: {
-            total: 25,
-            compliant: 18,
-            nonCompliant: 4,
-            pending: 3
-          }
-        },
-        {
-          id: 'framework-002',
-          name: 'PCI DSS',
-          description: 'Payment Card Industry Data Security Standard',
-          status: 'partial',
-          score: 85,
-          lastAssessment: new Date(Date.now() - 15 * 24 * 60 * 60 * 1000).toISOString(),
-          nextAssessment: new Date(Date.now() + 45 * 24 * 60 * 60 * 1000).toISOString(),
-          requirements: {
-            total: 12,
-            compliant: 10,
-            nonCompliant: 1,
-            pending: 1
-          }
-        },
-        {
-          id: 'framework-003',
-          name: 'SOC 2',
-          description: 'Service Organization Control 2',
-          status: 'compliant',
-          score: 92,
-          lastAssessment: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString(),
-          nextAssessment: new Date(Date.now() + 60 * 24 * 60 * 60 * 1000).toISOString(),
-          requirements: {
-            total: 8,
-            compliant: 8,
-            nonCompliant: 0,
-            pending: 0
-          }
-        }
-      ];
 
   const getSeverityColor = (severity: string) => {
     switch (severity) {
@@ -508,10 +224,10 @@ export default function ComplianceFlags({ className }: ComplianceFlagsProps) {
             <div>
               <CardTitle className="flex items-center gap-2">
                 <Shield className="h-5 w-5" />
-                Compliance Flags
+                {t('compliance.title')}
               </CardTitle>
               <CardDescription>
-                KYC/GDPR policy breach detection and compliance monitoring
+                {t('compliance.description')}
               </CardDescription>
             </div>
             <div className="flex items-center gap-2">

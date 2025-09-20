@@ -432,27 +432,33 @@ export default function FleetPage() {
         </CardHeader>
         <CardContent>
           <div className="space-y-3">
-            <div className="flex items-center space-x-3 p-3 rounded-[0.625rem] bg-destructive/10 border border-destructive/20">
-              <AlertTriangle className="h-4 w-4 text-destructive" />
-              <div>
-                <p className="text-sm font-medium text-destructive-foreground">{t('fleet.vehicleOffline', { plate: 'ABC-123' })}</p>
-                <p className="text-xs text-destructive-foreground/80">No GPS signal for 2 hours</p>
+            {vehicles.filter(v => v.status === 'offline').slice(0, 1).map(vehicle => (
+              <div key={vehicle.id} className="flex items-center space-x-3 p-3 rounded-[0.625rem] bg-destructive/10 border border-destructive/20">
+                <AlertTriangle className="h-4 w-4 text-destructive" />
+                <div>
+                  <p className="text-sm font-medium text-destructive-foreground">{t('fleet.vehicleOffline', { plate: vehicle.licensePlate })}</p>
+                  <p className="text-xs text-destructive-foreground/80">No GPS signal for 2 hours</p>
+                </div>
               </div>
-            </div>
-            <div className="flex items-center space-x-3 p-3 rounded-[0.625rem] bg-secondary/10 border border-secondary/20">
-              <Wrench className="h-4 w-4 text-secondary" />
-              <div>
-                <p className="text-sm font-medium text-secondary-foreground">{t('fleet.maintenanceDue')}</p>
-                <p className="text-xs text-secondary-foreground/80">DEF-456 needs oil change</p>
+            ))}
+            {vehicles.filter(v => v.status === 'maintenance').slice(0, 1).map(vehicle => (
+              <div key={vehicle.id} className="flex items-center space-x-3 p-3 rounded-[0.625rem] bg-secondary/10 border border-secondary/20">
+                <Wrench className="h-4 w-4 text-secondary" />
+                <div>
+                  <p className="text-sm font-medium text-secondary-foreground">{t('fleet.maintenanceDue')}</p>
+                  <p className="text-xs text-secondary-foreground/80">{vehicle.licensePlate} needs oil change</p>
+                </div>
               </div>
-            </div>
-            <div className="flex items-center space-x-3 p-3 rounded-[0.625rem] bg-primary/10 border border-primary/20">
-              <Fuel className="h-4 w-4 text-primary" />
-              <div>
-                <p className="text-sm font-medium text-primary-foreground">Low Fuel Alert</p>
-                <p className="text-xs text-primary-foreground/80">GHI-789 fuel level at 15%</p>
+            ))}
+            {vehicles.filter(v => v.status === 'active').slice(0, 1).map(vehicle => (
+              <div key={vehicle.id} className="flex items-center space-x-3 p-3 rounded-[0.625rem] bg-primary/10 border border-primary/20">
+                <Fuel className="h-4 w-4 text-primary" />
+                <div>
+                  <p className="text-sm font-medium text-primary-foreground">Low Fuel Alert</p>
+                  <p className="text-xs text-primary-foreground/80">{vehicle.licensePlate} fuel level at 15%</p>
+                </div>
               </div>
-            </div>
+            ))}
           </div>
         </CardContent>
       </Card>

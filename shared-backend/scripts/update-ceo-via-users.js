@@ -121,7 +121,7 @@ async function updateCEOViaUsers() {
       status: 'active',
       employmentType: 'full_time',
       salary: 500000,
-      currency: 'USD'
+      currency: 'EGP'
     };
     
     try {

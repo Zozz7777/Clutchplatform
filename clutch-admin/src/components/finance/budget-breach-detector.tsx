@@ -202,6 +202,7 @@ import {
 } from 'lucide-react';
 import { formatCurrency, formatNumber } from '@/lib/utils';
 import { productionApi } from '@/lib/production-api';
+import { useTranslations } from 'next-intl';
 
 interface BudgetBreach {
   id: string;
@@ -307,33 +308,22 @@ export default function BudgetBreachDetector({ className }: BudgetBreachDetector
                 escalationLevel: 1
               }
             ],
-            impact: {
-              financial: 2000,
-              operational: 75,
-              timeline: 60,
-              reputation: 40
-            },
-            mitigation: [
-              {
-                strategy: 'Optimize instance sizes',
-                cost: 5000,
-                timeframe: 7,
-                effectiveness: 80,
-                status: 'in_progress'
-              },
-              {
-                strategy: 'Implement auto-scaling',
-                cost: 10000,
-                timeframe: 14,
-                effectiveness: 90,
-                status: 'planned'
-              }
-            ],
-            lastUpdated: new Date(Date.now() - 2 * 60 * 60 * 1000).toISOString(),
-            nextCheck: new Date(Date.now() + 2 * 60 * 60 * 1000).toISOString()
+          impact: {
+            financial: budget.impact?.financial || 0,
+            operational: budget.impact?.operational || 0,
+            reputational: budget.impact?.reputational || 0,
+            compliance: budget.impact?.compliance || 0
           },
-          {
-            id: 'breach-002',
+          mitigation: {
+            actions: budget.mitigation?.actions || [],
+            estimatedSavings: budget.mitigation?.estimatedSavings || 0,
+            timeframe: budget.mitigation?.timeframe || 0,
+            effectiveness: budget.mitigation?.effectiveness || 0,
+            status: budget.mitigation?.status || 'pending'
+          },
+          lastUpdated: budget.lastUpdated || new Date().toISOString(),
+          nextCheck: budget.nextCheck || new Date().toISOString()
+        }));
             name: 'Marketing Campaign Budget',
             description: 'Digital marketing spend approaching quarterly limit',
             category: 'marketing',
@@ -459,9 +449,9 @@ export default function BudgetBreachDetector({ className }: BudgetBreachDetector
           }
         ];
 
-        setBreaches(mockBreaches);
-        if (mockBreaches.length > 0) {
-          setSelectedBreach(mockBreaches[0]);
+        setBreaches(transformedBreaches);
+        if (transformedBreaches.length > 0) {
+          setSelectedBreach(transformedBreaches[0]);
         }
       } catch (error) {
         // Failed to load budget breach data

@@ -228,7 +228,7 @@ router.get('/preferences', authenticateToken, async (req, res) => {
       pushNotifications: true,
       timezone: 'UTC',
       dateFormat: 'MM/DD/YYYY',
-      currency: 'USD'
+      currency: 'EGP'
     };
     
     res.json({
