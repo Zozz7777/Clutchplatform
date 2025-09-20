@@ -368,35 +368,35 @@ export default function FeatureFlagsPage() {
     }
   };
 
-  const getStatusColor = (enabled: boolean) => {
-    return enabled ? "bg-primary/10 text-primary-foreground" : "bg-muted text-muted-foreground";
+  const getStatusVariant = (enabled: boolean) => {
+    return enabled ? "default" : "outline";
   };
 
-  const getEnvironmentColor = (environment: string) => {
+  const getEnvironmentVariant = (environment: string) => {
     switch (environment) {
       case "production":
-        return "bg-destructive/10 text-destructive-foreground";
+        return "destructive";
       case "staging":
-        return "bg-secondary/10 text-secondary-foreground";
+        return "secondary";
       case "development":
-        return "bg-secondary/10 text-secondary-foreground";
+        return "secondary";
       default:
-        return "bg-muted text-muted-foreground";
+        return "outline";
     }
   };
 
-  const getABTestStatusColor = (status: string) => {
+  const getABTestStatusVariant = (status: string) => {
     switch (status) {
       case "running":
-        return "bg-primary/10 text-primary-foreground";
+        return "default";
       case "paused":
-        return "bg-secondary/10 text-secondary-foreground";
+        return "secondary";
       case "completed":
-        return "bg-secondary/10 text-secondary-foreground";
+        return "secondary";
       case "draft":
-        return "bg-muted text-muted-foreground";
+        return "outline";
       default:
-        return "bg-muted text-muted-foreground";
+        return "outline";
     }
   };
 
@@ -582,10 +582,10 @@ export default function FeatureFlagsPage() {
                     <div className="flex-1">
                       <div className="flex items-center space-x-3 mb-2">
                         <h3 className="text-lg font-semibold">{flag.name}</h3>
-                        <Badge className={getStatusColor(flag.enabled)}>
+                        <Badge variant={getStatusVariant(flag.enabled)}>
                           {flag.enabled ? "Enabled" : "Disabled"}
                         </Badge>
-                        <Badge className={getEnvironmentColor(flag.environment)}>
+                        <Badge variant={getEnvironmentVariant(flag.environment)}>
                           {flag.environment}
                         </Badge>
                         <Badge variant="outline">
@@ -715,7 +715,7 @@ export default function FeatureFlagsPage() {
                     <div className="flex-1">
                       <div className="flex items-center space-x-3 mb-2">
                         <h3 className="text-lg font-semibold">{test.name}</h3>
-                        <Badge className={getABTestStatusColor(test.status)}>
+                        <Badge variant={getABTestStatusVariant(test.status)}>
                           {test.status}
                         </Badge>
                       </div>

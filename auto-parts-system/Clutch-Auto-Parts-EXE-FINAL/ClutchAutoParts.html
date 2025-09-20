@@ -601,16 +601,69 @@
 
         function openModule(module) {
             const messages = {
+                'dashboard': 'Dashboard module opened!',
                 'pos': 'Point of Sale module opened!',
                 'inventory': 'Inventory Management module opened!',
                 'customers': 'Customer Management module opened!',
+                'suppliers': 'Supplier Management module opened!',
                 'reports': 'Reports & Analytics module opened!',
                 'ai': 'AI Insights module opened!',
                 'settings': 'Settings module opened!'
             };
             
+            // Update page title
+            const pageTitle = document.querySelector('.page-title');
+            const moduleNames = {
+                'dashboard': 'Dashboard',
+                'pos': 'Point of Sale',
+                'inventory': 'Inventory',
+                'customers': 'Customers',
+                'suppliers': 'Suppliers',
+                'reports': 'Reports',
+                'ai': 'AI Insights',
+                'settings': 'Settings'
+            };
+            
+            if (pageTitle && moduleNames[module]) {
+                pageTitle.textContent = moduleNames[module];
+            }
+            
             alert(messages[module] || 'Module opened!');
         }
+
+        function toggleTheme() {
+            const body = document.body;
+            const themeToggle = document.querySelector('.theme-toggle');
+            
+            if (body.getAttribute('data-theme') === 'dark') {
+                body.removeAttribute('data-theme');
+                themeToggle.textContent = '🌙 Dark Mode';
+            } else {
+                body.setAttribute('data-theme', 'dark');
+                themeToggle.textContent = '☀️ Light Mode';
+            }
+        }
+
+        // Navigation handling
+        document.addEventListener('DOMContentLoaded', function() {
+            const navLinks = document.querySelectorAll('.nav-link');
+            
+            navLinks.forEach(link => {
+                link.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    
+                    // Remove active class from all links
+                    navLinks.forEach(l => l.classList.remove('active'));
+                    
+                    // Add active class to clicked link
+                    this.classList.add('active');
+                    
+                    // Get module name and open it
+                    const module = this.getAttribute('data-module');
+                    openModule(module);
+                });
+            });
+        });
 
         // Auto-login for demo
         setTimeout(() => {

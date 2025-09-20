@@ -640,7 +640,7 @@ class CostOptimizationService {
      */
     estimateRedisCost(memoryMB) {
         // Rough estimation for Redis Cloud
-        return (memoryMB / 1024) * 0.15; // $0.15 per GB
+        return (memoryMB / 1024) * 0.15; // 0.15 EGP per GB
     }
 
     /**
