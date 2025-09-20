@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const { asyncHandler } = require('../middleware/asyncHandler');
-const { authenticateToken } = require('../middleware/auth');
+const { authenticateToken } = require('../middleware/unified-auth');
 
 /**
  * @swagger

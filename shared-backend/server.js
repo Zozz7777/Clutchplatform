@@ -144,6 +144,26 @@ applyOptimizedMiddleware(app);
 // Add standardized response format middleware
 app.use(responseMiddleware);
 
+// Import and apply global authentication middleware
+const { authenticateToken } = require('./middleware/unified-auth');
+
+// Apply authentication middleware to all API routes except public endpoints
+app.use('/api', (req, res, next) => {
+  // Skip auth for public endpoints
+  const publicPaths = ['/api/v1/auth/login', '/api/v1/auth/register', '/api/v1/employee-login', '/api/v1/create-employee', '/api/v1/health', '/api/v1/test', '/api/v1/ping', '/api/v1/webhook/github', '/api/v1/emergency-auth/login', '/api/v1/auth-fallback/login'];
+  
+  if (publicPaths.some(path => req.path.startsWith(path)) || 
+      req.path.includes('/health') || 
+      req.path.includes('/test') || 
+      req.path.includes('/ping') ||
+      req.path.includes('/webhook')) {
+    return next();
+  }
+  
+  // Apply authentication to all other API routes
+  return authenticateToken(req, res, next);
+});
+
 // CRITICAL: Health endpoints first
 app.get('/health/ping', (req, res) => {
   res.status(200).json({

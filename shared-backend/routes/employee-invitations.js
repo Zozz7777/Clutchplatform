@@ -9,8 +9,8 @@ const bcrypt = require('bcryptjs');
 const { ObjectId } = require('mongodb');
 const router = express.Router();
 const { getCollection } = require('../config/optimized-database');
-const { authenticateToken, requireRole, hashPassword } = require('../middleware/auth');
-const { checkRole, checkPermission } = require('../middleware/unified-auth');
+const { authenticateToken, checkRole, checkPermission } = require('../middleware/unified-auth');
+const { hashPassword } = require('../utils/password-utils');
 const { rateLimit: createRateLimit } = require('../middleware/rateLimit');
 const emailService = require('../services/email-service');
 

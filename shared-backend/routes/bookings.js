@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const { authenticateToken } = require('../middleware/auth');
+const { authenticateToken } = require('../middleware/unified-auth');
 // const { validateBooking } = require('../middleware/validation'); // Not implemented yet
 const { getCollection } = require('../config/database');
 const { ObjectId } = require('mongodb');
