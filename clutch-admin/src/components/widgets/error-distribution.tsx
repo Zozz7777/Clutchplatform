@@ -6,6 +6,7 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Progress } from '@/components/ui/progress';
 import { productionApi } from '@/lib/production-api';
+import { useTranslations } from 'next-intl';
 import { 
   AlertTriangle, 
   Bug, 
@@ -35,6 +36,7 @@ interface ErrorData {
 }
 
 export function ErrorDistribution({ className = '' }: ErrorDistributionProps) {
+  const t = useTranslations();
   const [errorData, setErrorData] = React.useState<{
     errors: ErrorData[];
     totalErrors: number;
@@ -47,62 +49,31 @@ export function ErrorDistribution({ className = '' }: ErrorDistributionProps) {
   React.useEffect(() => {
     const loadErrorData = async () => {
       try {
-        // Simulate error distribution data
-        const errors: ErrorData[] = [
-          {
-            type: 'Authentication',
-            count: 45,
-            percentage: 35,
-            trend: 'down',
-            severity: 'high',
-            lastOccurrence: new Date(Date.now() - 2 * 60 * 60 * 1000).toISOString(),
-            description: 'Failed login attempts and token validation errors'
-          },
-          {
-            type: 'Payment',
-            count: 28,
-            percentage: 22,
-            trend: 'up',
-            severity: 'critical',
-            lastOccurrence: new Date(Date.now() - 1 * 60 * 60 * 1000).toISOString(),
-            description: 'Payment processing and billing errors'
-          },
-          {
-            type: 'Fleet',
-            count: 22,
-            percentage: 17,
-            trend: 'stable',
-            severity: 'medium',
-            lastOccurrence: new Date(Date.now() - 3 * 60 * 60 * 1000).toISOString(),
-            description: 'Vehicle tracking and fleet management errors'
-          },
-          {
-            type: 'API',
-            count: 18,
-            percentage: 14,
-            trend: 'down',
-            severity: 'medium',
-            lastOccurrence: new Date(Date.now() - 4 * 60 * 60 * 1000).toISOString(),
-            description: 'API endpoint and integration errors'
-          },
-          {
-            type: 'Database',
-            count: 15,
-            percentage: 12,
-            trend: 'up',
-            severity: 'critical',
-            lastOccurrence: new Date(Date.now() - 30 * 60 * 1000).toISOString(),
-            description: 'Database connection and query errors'
-          }
-        ];
+        // Load real error data from API
+        const [errors, alerts, logs] = await Promise.all([
+          productionApi.getErrors(),
+          productionApi.getAlerts(),
+          productionApi.getLogs()
+        ]);
 
-        const totalErrors = errors.reduce((sum, error) => sum + error.count, 0);
-        const criticalErrors = errors.filter(e => e.severity === 'critical').reduce((sum, error) => sum + error.count, 0);
-        const averageErrors = totalErrors / errors.length;
-        const trend = errors.filter(e => e.trend === 'up').length > errors.filter(e => e.trend === 'down').length ? 'up' : 'down';
+        // Transform API data to component format
+        const transformedErrors: ErrorData[] = errors.map((error: any, index: number) => ({
+          type: error.type || 'Unknown Error',
+          count: error.count || 0,
+          percentage: error.percentage || 0,
+          trend: error.trend || 'stable',
+          severity: error.severity || 'medium',
+          lastOccurrence: error.lastOccurrence || new Date().toISOString(),
+          description: error.description || 'Error occurred in the system'
+        }));
+
+        const totalErrors = transformedErrors.reduce((sum, error) => sum + error.count, 0);
+        const criticalErrors = transformedErrors.filter(e => e.severity === 'critical').reduce((sum, error) => sum + error.count, 0);
+        const averageErrors = totalErrors / transformedErrors.length;
+        const trend = transformedErrors.filter(e => e.trend === 'up').length > transformedErrors.filter(e => e.trend === 'down').length ? 'up' : 'down';
 
         setErrorData({
-          errors,
+          errors: transformedErrors,
           totalErrors,
           criticalErrors,
           averageErrors,

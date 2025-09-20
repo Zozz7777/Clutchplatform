@@ -324,9 +324,6 @@ export default function BudgetBreachDetector({ className }: BudgetBreachDetector
           lastUpdated: budget.lastUpdated || new Date().toISOString(),
           nextCheck: budget.nextCheck || new Date().toISOString()
         }));
-            name: 'Marketing Campaign Budget',
-            description: 'Digital marketing spend approaching quarterly limit',
-            category: 'marketing',
             severity: 'medium',
             status: 'alert',
             budget: {

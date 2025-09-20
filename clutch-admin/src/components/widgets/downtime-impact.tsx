@@ -6,6 +6,7 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Progress } from '@/components/ui/progress';
 import { productionApi } from '@/lib/production-api';
+import { useTranslations } from 'next-intl';
 import { 
   Clock, 
   DollarSign, 
@@ -45,6 +46,7 @@ interface DowntimeMetrics {
 }
 
 export function DowntimeImpact({ className = '' }: DowntimeImpactProps) {
+  const t = useTranslations();
   const [downtimeMetrics, setDowntimeMetrics] = React.useState<DowntimeMetrics | null>(null);
   const [isLoading, setIsLoading] = React.useState(true);
 
@@ -54,38 +56,71 @@ export function DowntimeImpact({ className = '' }: DowntimeImpactProps) {
         const vehicles = await productionApi.getFleetVehicles();
         const totalVehicles = vehicles?.length || 0;
 
-        // Simulate downtime calculations
-        const totalDowntimeHours = totalVehicles * 24; // 24 hours per vehicle per month
-        const lostRevenueHours = totalDowntimeHours * 0.3; // 30% of downtime is revenue-impacting
-        const revenuePerHour = 150; // 150 EGP per hour of lost revenue
-        const revenueImpact = lostRevenueHours * revenuePerHour;
-        const averageDowntimePerVehicle = totalVehicles > 0 ? totalDowntimeHours / totalVehicles : 0;
+        // Load real downtime data from API
+        try {
+          const downtimeData = await productionApi.getDowntimeMetrics();
+          
+          if (downtimeData && Array.isArray(downtimeData)) {
+            const totalDowntimeHours = downtimeData.reduce((sum, record) => sum + (record.downtimeHours || 0), 0);
+            const totalRevenueLoss = downtimeData.reduce((sum, record) => sum + (record.revenueLoss || 0), 0);
+            const averageDowntimePerVehicle = totalVehicles > 0 ? totalDowntimeHours / totalVehicles : 0;
 
-        // Simulate downtime by reason
-        const downtimeByReason = [
-          { reason: 'Maintenance', hours: totalDowntimeHours * 0.4, percentage: 40, cost: revenueImpact * 0.4 },
-          { reason: 'Breakdown', hours: totalDowntimeHours * 0.25, percentage: 25, cost: revenueImpact * 0.25 },
-          { reason: 'Driver Issues', hours: totalDowntimeHours * 0.15, percentage: 15, cost: revenueImpact * 0.15 },
-          { reason: 'Weather', hours: totalDowntimeHours * 0.1, percentage: 10, cost: revenueImpact * 0.1 },
-          { reason: 'Other', hours: totalDowntimeHours * 0.1, percentage: 10, cost: revenueImpact * 0.1 }
-        ];
+            // Group downtime by reason from real data
+            const downtimeByReasonMap = downtimeData.reduce((acc, record) => {
+              const reason = record.reason || t('downtime.other');
+              if (!acc[reason]) {
+                acc[reason] = { hours: 0, cost: 0 };
+              }
+              acc[reason].hours += record.downtimeHours || 0;
+              acc[reason].cost += record.revenueLoss || 0;
+              return acc;
+            }, {} as Record<string, { hours: number; cost: number }>);
 
-        // Simulate top affected vehicles
-        const topAffectedVehicles = (vehicles || []).slice(0, 5).map((vehicle, index) => ({
-          vehicleId: vehicle.id,
-          vehicleName: `${vehicle.make} ${vehicle.model} (${vehicle.licensePlate})`,
-          downtimeHours: 20 + (index * 5), // Varying downtime
-          revenueLoss: (20 + (index * 5)) * revenuePerHour
-        }));
+            const downtimeByReason = Object.entries(downtimeByReasonMap).map(([reason, data]) => ({
+              reason,
+              hours: data.hours,
+              percentage: totalDowntimeHours > 0 ? (data.hours / totalDowntimeHours) * 100 : 0,
+              cost: data.cost
+            }));
 
-        setDowntimeMetrics({
-          totalDowntimeHours,
-          lostRevenueHours,
-          revenueImpact,
-          averageDowntimePerVehicle,
-          downtimeByReason,
-          topAffectedVehicles
-        });
+            // Get top affected vehicles from real data
+            const topAffectedVehicles = downtimeData
+              .sort((a, b) => (b.downtimeHours || 0) - (a.downtimeHours || 0))
+              .slice(0, 5)
+              .map(record => ({
+                vehicleId: record.vehicleId || 'unknown',
+                vehicleName: record.vehicleName || 'Unknown Vehicle',
+                downtimeHours: record.downtimeHours || 0,
+                revenueLoss: record.revenueLoss || 0
+              }));
+
+            setDowntimeMetrics({
+              totalDowntimeHours,
+              totalRevenueLoss,
+              averageDowntimePerVehicle,
+              downtimeByReason,
+              topAffectedVehicles
+            });
+          } else {
+            // Fallback to empty data if no downtime records exist
+            setDowntimeMetrics({
+              totalDowntimeHours: 0,
+              totalRevenueLoss: 0,
+              averageDowntimePerVehicle: 0,
+              downtimeByReason: [],
+              topAffectedVehicles: []
+            });
+          }
+        } catch (error) {
+          // If downtime API fails, set empty data
+          setDowntimeMetrics({
+            totalDowntimeHours: 0,
+            totalRevenueLoss: 0,
+            averageDowntimePerVehicle: 0,
+            downtimeByReason: [],
+            topAffectedVehicles: []
+          });
+        }
       } catch (error) {
         // Failed to load downtime metrics
       } finally {
@@ -140,7 +175,7 @@ export function DowntimeImpact({ className = '' }: DowntimeImpactProps) {
         <CardHeader>
           <CardTitle className="flex items-center space-x-2">
             <Clock className="h-5 w-5 text-destructive" />
-            <span>Downtime Impact</span>
+            <span>{t('downtime.downtimeImpact')}</span>
           </CardTitle>
           <CardDescription>Loading downtime metrics...</CardDescription>
         </CardHeader>
@@ -161,7 +196,7 @@ export function DowntimeImpact({ className = '' }: DowntimeImpactProps) {
         <CardHeader>
           <CardTitle className="flex items-center space-x-2">
             <Clock className="h-5 w-5 text-destructive" />
-            <span>Downtime Impact</span>
+            <span>{t('downtime.downtimeImpact')}</span>
           </CardTitle>
           <CardDescription>Unable to load downtime metrics</CardDescription>
         </CardHeader>
@@ -177,7 +212,7 @@ export function DowntimeImpact({ className = '' }: DowntimeImpactProps) {
       <CardHeader>
         <CardTitle className="flex items-center space-x-2">
           <Clock className="h-5 w-5 text-destructive" />
-          <span>Downtime Impact</span>
+          <span>{t('downtime.downtimeImpact')}</span>
         </CardTitle>
         <CardDescription>
           Lost revenue hours due to vehicle unavailability
@@ -194,7 +229,7 @@ export function DowntimeImpact({ className = '' }: DowntimeImpactProps) {
           <div className="text-center p-3 bg-warning/10 rounded-[0.625rem]-lg">
             <AlertTriangle className="h-5 w-5 text-warning mx-auto mb-1" />
             <p className="text-lg font-bold text-warning">{downtimeMetrics.lostRevenueHours}</p>
-            <p className="text-xs text-muted-foreground">Lost Revenue Hours</p>
+            <p className="text-xs text-muted-foreground">{t('downtime.lostRevenueHours')}</p>
           </div>
           <div className="text-center p-3 bg-warning/10 rounded-[0.625rem]-lg">
             <DollarSign className="h-5 w-5 text-warning mx-auto mb-1" />
@@ -254,7 +289,7 @@ export function DowntimeImpact({ className = '' }: DowntimeImpactProps) {
 
         {/* Top Affected Vehicles */}
         <div className="space-y-3">
-          <h4 className="text-sm font-medium text-foreground">Top Affected Vehicles</h4>
+          <h4 className="text-sm font-medium text-foreground">{t('downtime.topAffectedVehicles')}</h4>
           <div className="space-y-2">
             {downtimeMetrics.topAffectedVehicles.map((vehicle, index) => (
               <div key={vehicle.vehicleId} className="flex items-center justify-between p-3 bg-muted/50 rounded-[0.625rem]-lg">

@@ -6,6 +6,7 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Progress } from '@/components/ui/progress';
 import { productionApi } from '@/lib/production-api';
+import { useTranslations } from 'next-intl';
 import { 
   DollarSign, 
   AlertTriangle, 
@@ -37,6 +38,7 @@ interface IncidentCostData {
 }
 
 export function IncidentCost({ className = '' }: IncidentCostProps) {
+  const t = useTranslations();
   const [incidentData, setIncidentData] = React.useState<{
     incidents: IncidentCostData[];
     totalCost: number;
@@ -49,17 +51,23 @@ export function IncidentCost({ className = '' }: IncidentCostProps) {
   React.useEffect(() => {
     const loadIncidentData = async () => {
       try {
-        // Simulate incident cost data
-        const incidents: IncidentCostData[] = [
-          {
-            incidentId: '1',
-            title: 'API Gateway Outage',
-            severity: 'critical',
-            duration: 120,
-            cost: 15000,
-            affectedUsers: 2500,
-            date: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000).toISOString(),
-            status: 'resolved'
+        // Load real incident data from API
+        const [incidentsData, alertsData, logsData] = await Promise.all([
+          productionApi.getIncidents(),
+          productionApi.getAlerts(),
+          productionApi.getLogs()
+        ]);
+
+        // Transform API data to component format
+        const transformedIncidents: IncidentCostData[] = incidentsData.map((incident: any, index: number) => ({
+          incidentId: incident.id || `incident-${index}`,
+          title: incident.title || 'Incident',
+          severity: incident.severity || 'medium',
+          duration: incident.duration || 0,
+          cost: incident.cost || 0,
+          affectedUsers: incident.affectedUsers || 0,
+          date: incident.date || new Date().toISOString(),
+          status: incident.status || 'resolved'
           },
           {
             incidentId: '2',
@@ -103,17 +111,17 @@ export function IncidentCost({ className = '' }: IncidentCostProps) {
           }
         ];
 
-        const totalCost = incidents.reduce((sum, incident) => sum + incident.cost, 0);
-        const averageCost = totalCost / incidents.length;
-        const totalDowntime = incidents.reduce((sum, incident) => sum + incident.duration, 0);
+        const totalCost = transformedIncidents.reduce((sum, incident) => sum + incident.cost, 0);
+        const averageCost = totalCost / transformedIncidents.length;
+        const totalDowntime = transformedIncidents.reduce((sum, incident) => sum + incident.duration, 0);
         
-        const severityDistribution = incidents.reduce((acc, incident) => {
+        const severityDistribution = transformedIncidents.reduce((acc, incident) => {
           acc[incident.severity] = (acc[incident.severity] || 0) + 1;
           return acc;
         }, {} as Record<string, number>);
 
         setIncidentData({
-          incidents,
+          incidents: transformedIncidents,
           totalCost,
           averageCost,
           totalDowntime,

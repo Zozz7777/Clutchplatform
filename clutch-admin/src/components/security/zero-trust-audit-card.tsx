@@ -79,6 +79,7 @@ import {
 } from 'lucide-react';
 import { formatCurrency, formatNumber } from '@/lib/utils';
 import { productionApi } from '@/lib/production-api';
+import { useTranslations } from 'next-intl';
 
 interface ZeroTrustPolicy {
   id: string;
@@ -165,6 +166,7 @@ interface ZeroTrustMetrics {
 }
 
 export default function ZeroTrustAuditCard() {
+  const t = useTranslations();
   const [policies, setPolicies] = useState<ZeroTrustPolicy[]>([]);
   const [anomalies, setAnomalies] = useState<AnomalyDetection[]>([]);
   const [selectedPolicy, setSelectedPolicy] = useState<ZeroTrustPolicy | null>(null);
@@ -179,13 +181,67 @@ export default function ZeroTrustAuditCard() {
   useEffect(() => {
     const loadZeroTrustData = async () => {
       try {
-        // Mock zero-trust data - in production this would come from API
-        const mockPolicies: ZeroTrustPolicy[] = [
-          {
-            id: 'policy-001',
-            name: 'Device Trust Verification',
-            description: 'Verify device trustworthiness before granting access',
-            type: 'device_trust',
+        // Load real zero-trust data from API
+        const [policiesData, anomaliesData, metricsData] = await Promise.all([
+          productionApi.getZeroTrustPolicies(),
+          productionApi.getAnomalyDetections(),
+          productionApi.getZeroTrustMetrics()
+        ]);
+
+        // Transform API data to component format
+        const transformedPolicies: ZeroTrustPolicy[] = policiesData.map((policy: any, index: number) => ({
+          id: policy.id || `policy-${index}`,
+          name: policy.name || 'Zero Trust Policy',
+          description: policy.description || 'Zero trust security policy',
+          type: policy.type || 'device_trust',
+          status: policy.status || 'active',
+          severity: policy.severity || 'medium',
+          enforcement: policy.enforcement || 'strict',
+          coverage: policy.coverage || {
+            users: 0,
+            devices: 0,
+            networks: 0,
+            applications: 0,
+            data: 0
+          },
+          compliance: policy.compliance || {
+            score: 0,
+            violations: 0,
+            exceptions: 0,
+            lastAudit: new Date().toISOString()
+          },
+          rules: policy.rules || [],
+          metrics: policy.metrics || {
+            totalChecks: 0,
+            passedChecks: 0,
+            failedChecks: 0,
+            blockedAccess: 0,
+            allowedAccess: 0
+          },
+          lastUpdated: policy.lastUpdated || new Date().toISOString(),
+          nextAudit: policy.nextAudit || new Date().toISOString()
+        }));
+
+        const transformedAnomalies: AnomalyDetection[] = anomaliesData.map((anomaly: any, index: number) => ({
+          id: anomaly.id || `anomaly-${index}`,
+          type: anomaly.type || 'suspicious_activity',
+          severity: anomaly.severity || 'medium',
+          status: anomaly.status || 'detected',
+          description: anomaly.description || 'Anomaly detected',
+          detectedAt: anomaly.detectedAt || new Date().toISOString(),
+          source: anomaly.source || 'system',
+          confidence: anomaly.confidence || 0.5,
+          affectedResources: anomaly.affectedResources || [],
+          mitigationActions: anomaly.mitigationActions || []
+        }));
+
+        const transformedMetrics: ZeroTrustMetrics = {
+          totalPolicies: transformedPolicies.length,
+          activePolicies: transformedPolicies.filter(p => p.status === 'active').length,
+          totalAnomalies: transformedAnomalies.length,
+          criticalAnomalies: transformedAnomalies.filter(a => a.severity === 'critical').length,
+          lastUpdated: new Date().toISOString()
+        };
             status: 'active',
             severity: 'high',
             enforcement: 'strict',
@@ -414,15 +470,15 @@ export default function ZeroTrustAuditCard() {
           lastUpdated: new Date().toISOString()
         };
 
-        setPolicies(mockPolicies);
-        setAnomalies(mockAnomalies);
-        setMetrics(mockMetrics);
+        setPolicies(transformedPolicies);
+        setAnomalies(transformedAnomalies);
+        setMetrics(transformedMetrics);
         
-        if (mockPolicies.length > 0) {
-          setSelectedPolicy(mockPolicies[0]);
+        if (transformedPolicies.length > 0) {
+          setSelectedPolicy(transformedPolicies[0]);
         }
-        if (mockAnomalies.length > 0) {
-          setSelectedAnomaly(mockAnomalies[0]);
+        if (transformedAnomalies.length > 0) {
+          setSelectedAnomaly(transformedAnomalies[0]);
         }
       } catch (error) {
         // Failed to load zero-trust data

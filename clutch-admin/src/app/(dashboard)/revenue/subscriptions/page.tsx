@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -19,6 +19,9 @@ import {
   Filter,
   Download
 } from 'lucide-react';
+import { productionApi } from '@/lib/production-api';
+import { useTranslations } from '@/hooks/use-translations';
+import { toast } from 'sonner';
 
 interface Subscription {
   id: string;
@@ -34,55 +37,82 @@ interface Subscription {
 }
 
 export default function SubscriptionsPage() {
-  const [subscriptions, setSubscriptions] = useState<Subscription[]>([
-    {
-      id: '1',
-      customerName: 'John Smith',
-      email: 'john@example.com',
-      plan: 'Professional',
-      status: 'active',
-      amount: 79,
-      interval: 'monthly',
-      startDate: '2024-01-15',
-      nextBilling: '2024-02-15',
-      paymentMethod: 'Visa **** 4242'
-    },
-    {
-      id: '2',
-      customerName: 'Sarah Johnson',
-      email: 'sarah@example.com',
-      plan: 'Enterprise',
-      status: 'active',
-      amount: 199,
-      interval: 'monthly',
-      startDate: '2024-01-10',
-      nextBilling: '2024-02-10',
-      paymentMethod: 'Mastercard **** 5555'
-    },
-    {
-      id: '3',
-      customerName: 'Mike Wilson',
-      email: 'mike@example.com',
-      plan: 'Starter',
-      status: 'past_due',
-      amount: 29,
-      interval: 'monthly',
-      startDate: '2024-01-05',
-      nextBilling: '2024-02-05',
-      paymentMethod: 'Visa **** 1234'
-    }
-  ]);
-
-  const [stats] = useState({
-    totalSubscriptions: 1250,
-    activeSubscriptions: 1180,
-    monthlyRevenue: 90650,
-    churnRate: 3.2,
-    growthRate: 12.5
+  const [subscriptions, setSubscriptions] = useState<Subscription[]>([]);
+  const [stats, setStats] = useState({
+    totalSubscriptions: 0,
+    activeSubscriptions: 0,
+    monthlyRevenue: 0,
+    churnRate: 0,
+    growthRate: 0
   });
+  const [isLoading, setIsLoading] = useState(true);
 
   const [searchTerm, setSearchTerm] = useState('');
   const [statusFilter, setStatusFilter] = useState('all');
+  const { t } = useTranslations();
+
+  useEffect(() => {
+    const loadSubscriptionsData = async () => {
+      try {
+        setIsLoading(true);
+        
+        // Load real subscription data from API
+        const subscriptionsData = await productionApi.getSubscriptions();
+        
+        // Ensure we always have an array and handle type conversion safely
+        const subscriptionsArray = Array.isArray(subscriptionsData) ? subscriptionsData as unknown as Subscription[] : [];
+        setSubscriptions(subscriptionsArray);
+        
+        // Calculate stats from real data
+        const totalSubscriptions = subscriptionsArray.length;
+        const activeSubscriptions = subscriptionsArray.filter(sub => sub.status === 'active').length;
+        const monthlyRevenue = subscriptionsArray
+          .filter(sub => sub.status === 'active' && sub.interval === 'monthly')
+          .reduce((sum, sub) => sum + sub.amount, 0);
+        const yearlyRevenue = subscriptionsArray
+          .filter(sub => sub.status === 'active' && sub.interval === 'yearly')
+          .reduce((sum, sub) => sum + sub.amount, 0);
+        const totalMonthlyRevenue = monthlyRevenue + (yearlyRevenue / 12);
+        
+        // Calculate churn rate (simplified - would need historical data for accurate calculation)
+        const cancelledSubscriptions = subscriptionsArray.filter(sub => sub.status === 'cancelled').length;
+        const churnRate = totalSubscriptions > 0 ? (cancelledSubscriptions / totalSubscriptions) * 100 : 0;
+        
+        // Calculate growth rate (simplified - would need historical data for accurate calculation)
+        const newSubscriptions = subscriptionsArray.filter(sub => {
+          const startDate = new Date(sub.startDate);
+          const thirtyDaysAgo = new Date(Date.now() - 30 * 24 * 60 * 60 * 1000);
+          return startDate >= thirtyDaysAgo;
+        }).length;
+        const growthRate = totalSubscriptions > 0 ? (newSubscriptions / totalSubscriptions) * 100 : 0;
+        
+        setStats({
+          totalSubscriptions,
+          activeSubscriptions,
+          monthlyRevenue: totalMonthlyRevenue,
+          churnRate,
+          growthRate
+        });
+        
+      } catch (error) {
+        // Error handled by API service
+        toast.error('Failed to load subscriptions data');
+        // Set empty arrays on error - no mock data fallback
+        setSubscriptions([]);
+        setStats({
+          totalSubscriptions: 0,
+          activeSubscriptions: 0,
+          monthlyRevenue: 0,
+          churnRate: 0,
+          growthRate: 0
+        });
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    loadSubscriptionsData();
+  }, []);
 
   const filteredSubscriptions = subscriptions.filter(sub => {
     const matchesSearch = sub.customerName.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -130,6 +160,17 @@ export default function SubscriptionsPage() {
       maximumFractionDigits: 0,
     }).format(amount);
   };
+
+  if (isLoading) {
+    return (
+      <div className="flex items-center justify-center h-64">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto mb-4"></div>
+          <p className="text-muted-foreground font-sans">Loading subscriptions...</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-6">

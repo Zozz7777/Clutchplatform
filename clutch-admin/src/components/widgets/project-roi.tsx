@@ -6,6 +6,7 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Progress } from '@/components/ui/progress';
 import { productionApi } from '@/lib/production-api';
+import { useTranslations } from 'next-intl';
 import { 
   DollarSign, 
   TrendingUp, 
@@ -36,6 +37,7 @@ interface ProjectROIData {
 }
 
 export function ProjectROI({ className = '' }: ProjectROIProps) {
+  const t = useTranslations();
   const [roiData, setRoiData] = React.useState<{
     projects: ProjectROIData[];
     totalInvestment: number;
@@ -48,18 +50,24 @@ export function ProjectROI({ className = '' }: ProjectROIProps) {
   React.useEffect(() => {
     const loadROIData = async () => {
       try {
-        // Simulate project ROI data
-        const projects: ProjectROIData[] = [
-          {
-            projectId: '1',
-            projectName: 'Fleet Management System',
-            status: 'completed',
-            investment: 150000,
-            value: 450000,
-            roi: 200,
-            duration: 6,
-            teamSize: 8,
-            completionDate: new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toISOString()
+        // Load real project data from API
+        const [projectsData, budgetsData, expensesData] = await Promise.all([
+          productionApi.getProjects(),
+          productionApi.getBudgets(),
+          productionApi.getExpenses()
+        ]);
+
+        // Transform API data to component format
+        const transformedProjects: ProjectROIData[] = projectsData.map((project: any, index: number) => ({
+          projectId: project.id || `project-${index}`,
+          projectName: project.name || 'Project',
+          status: project.status || 'planned',
+          investment: project.investment || 0,
+          value: project.value || 0,
+          roi: project.roi || 0,
+          duration: project.duration || 0,
+          teamSize: project.teamSize || 0,
+          completionDate: project.completionDate || new Date().toISOString()
           },
           {
             projectId: '2',
@@ -107,13 +115,13 @@ export function ProjectROI({ className = '' }: ProjectROIProps) {
           }
         ];
 
-        const totalInvestment = projects.reduce((sum, project) => sum + project.investment, 0);
-        const totalValue = projects.reduce((sum, project) => sum + project.value, 0);
-        const averageROI = projects.reduce((sum, project) => sum + project.roi, 0) / projects.length;
-        const bestROI = projects.reduce((best, project) => project.roi > best.roi ? project : best, projects[0]);
+        const totalInvestment = transformedProjects.reduce((sum, project) => sum + project.investment, 0);
+        const totalValue = transformedProjects.reduce((sum, project) => sum + project.value, 0);
+        const averageROI = transformedProjects.reduce((sum, project) => sum + project.roi, 0) / transformedProjects.length;
+        const bestROI = transformedProjects.reduce((best, project) => project.roi > best.roi ? project : best, transformedProjects[0]);
 
         setRoiData({
-          projects,
+          projects: transformedProjects,
           totalInvestment,
           totalValue,
           averageROI,

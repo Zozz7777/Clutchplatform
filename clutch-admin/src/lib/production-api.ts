@@ -1447,6 +1447,24 @@ export class ProductionApiService {
     }
   }
 
+  async getDowntimeMetrics(): Promise<Record<string, unknown>[]> {
+    try {
+      return await realApi.getDowntimeMetrics();
+    } catch (error) {
+      logger.error("Failed to fetch downtime metrics:", error);
+      throw new Error("Failed to load downtime metrics");
+    }
+  }
+
+  async getCustomerHealthScores(): Promise<Record<string, unknown>[]> {
+    try {
+      return await realApi.getCustomerHealthScores();
+    } catch (error) {
+      logger.error("Failed to fetch customer health scores:", error);
+      throw new Error("Failed to load customer health scores");
+    }
+  }
+
   async getComplianceData(): Promise<Record<string, unknown>[]> {
     try {
       return await realApi.getComplianceData();

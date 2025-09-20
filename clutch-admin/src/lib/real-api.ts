@@ -116,6 +116,28 @@ export class RealApiService {
     )();
   }
 
+  async getDowntimeMetrics(): Promise<Record<string, unknown>[]> {
+    return withErrorHandling(
+      async () => {
+        const response = await apiService.request<Record<string, unknown>[]>("/api/v1/fleet/downtime-metrics");
+        return handleApiResponse(response, 'getDowntimeMetrics', []);
+      },
+      'getDowntimeMetrics',
+      { fallbackValue: [], showToast: false }
+    )();
+  }
+
+  async getCustomerHealthScores(): Promise<Record<string, unknown>[]> {
+    return withErrorHandling(
+      async () => {
+        const response = await apiService.request<Record<string, unknown>[]>("/api/v1/crm/customer-health-scores");
+        return handleApiResponse(response, 'getCustomerHealthScores', []);
+      },
+      'getCustomerHealthScores',
+      { fallbackValue: [], showToast: false }
+    )();
+  }
+
   async getVehicleDetails(vehicleId: string): Promise<Record<string, unknown>> {
     return withErrorHandling(
       async () => {

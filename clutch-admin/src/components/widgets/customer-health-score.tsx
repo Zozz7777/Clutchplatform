@@ -6,6 +6,7 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Progress } from '@/components/ui/progress';
 import { productionApi } from '@/lib/production-api';
+import { useTranslations } from 'next-intl';
 import { 
   Heart, 
   Users, 
@@ -39,6 +40,7 @@ interface CustomerHealth {
 }
 
 export function CustomerHealthScore({ className = '' }: CustomerHealthScoreProps) {
+  const t = useTranslations();
   const [healthData, setHealthData] = React.useState<{
     customers: CustomerHealth[];
     averageScore: number;
@@ -56,69 +58,23 @@ export function CustomerHealthScore({ className = '' }: CustomerHealthScoreProps
           productionApi.getPayments()
         ]);
 
-        // Simulate customer health scores
-        const customerHealth: CustomerHealth[] = [
-          {
-            customerId: '1',
-            customerName: 'Enterprise Client A',
-            healthScore: 92,
-            usage: 95,
-            tickets: 2,
-            satisfaction: 4.8,
-            lastActivity: new Date(Date.now() - 1 * 24 * 60 * 60 * 1000).toISOString(),
-            riskLevel: 'low',
-            trend: 'improving',
-            segment: 'Enterprise'
-          },
-          {
-            customerId: '2',
-            customerName: 'SMB Client B',
-            healthScore: 78,
-            usage: 82,
-            tickets: 5,
-            satisfaction: 4.2,
-            lastActivity: new Date(Date.now() - 3 * 24 * 60 * 60 * 1000).toISOString(),
-            riskLevel: 'medium',
-            trend: 'stable',
-            segment: 'SMB'
-          },
-          {
-            customerId: '3',
-            customerName: 'Individual Client C',
-            healthScore: 45,
-            usage: 35,
-            tickets: 12,
-            satisfaction: 3.1,
-            lastActivity: new Date(Date.now() - 14 * 24 * 60 * 60 * 1000).toISOString(),
-            riskLevel: 'high',
-            trend: 'declining',
-            segment: 'Individual'
-          },
-          {
-            customerId: '4',
-            customerName: 'Enterprise Client D',
-            healthScore: 88,
-            usage: 90,
-            tickets: 3,
-            satisfaction: 4.6,
-            lastActivity: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000).toISOString(),
-            riskLevel: 'low',
-            trend: 'improving',
-            segment: 'Enterprise'
-          },
-          {
-            customerId: '5',
-            customerName: 'SMB Client E',
-            healthScore: 65,
-            usage: 70,
-            tickets: 8,
-            satisfaction: 3.8,
-            lastActivity: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString(),
-            riskLevel: 'medium',
-            trend: 'declining',
-            segment: 'SMB'
-          }
-        ];
+        // Load real customer health data from API
+        try {
+          const healthData = await productionApi.getCustomerHealthScores();
+          
+          if (healthData && Array.isArray(healthData)) {
+            const customerHealth: CustomerHealth[] = healthData.map((record: any) => ({
+              customerId: record.customerId || 'unknown',
+              customerName: record.customerName || 'Unknown Customer',
+              healthScore: record.healthScore || 0,
+              usage: record.usage || 0,
+              tickets: record.tickets || 0,
+              satisfaction: record.satisfaction || 0,
+              lastActivity: record.lastActivity || new Date().toISOString(),
+              riskLevel: record.riskLevel || 'medium',
+              trend: record.trend || 'stable',
+              segment: record.segment || 'Unknown'
+            }));
 
         const averageScore = customerHealth.reduce((sum, customer) => sum + customer.healthScore, 0) / customerHealth.length;
         
@@ -136,13 +92,33 @@ export function CustomerHealthScore({ className = '' }: CustomerHealthScoreProps
           .filter(c => c.riskLevel === 'high')
           .sort((a, b) => a.healthScore - b.healthScore);
 
-        setHealthData({
-          customers: customerHealth,
-          averageScore,
-          distribution,
-          topPerformers,
-          atRisk
-        });
+            setHealthData({
+              customers: customerHealth,
+              averageScore,
+              distribution,
+              topPerformers,
+              atRisk
+            });
+          } else {
+            // No health data available, set empty data
+            setHealthData({
+              customers: [],
+              averageScore: 0,
+              distribution: {},
+              topPerformers: [],
+              atRisk: []
+            });
+          }
+        } catch (error) {
+          // Failed to load customer health data, set empty data
+          setHealthData({
+            customers: [],
+            averageScore: 0,
+            distribution: {},
+            topPerformers: [],
+            atRisk: []
+          });
+        }
       } catch (error) {
         // Failed to load customer health data
       } finally {
@@ -168,7 +144,7 @@ export function CustomerHealthScore({ className = '' }: CustomerHealthScoreProps
   const getHealthLevel = (score: number) => {
     if (score >= 80) return 'Healthy';
     if (score >= 60) return 'Moderate';
-    return 'At Risk';
+    return t('customerHealth.atRisk');
   };
 
   const getRiskColor = (risk: string) => {
@@ -222,7 +198,7 @@ export function CustomerHealthScore({ className = '' }: CustomerHealthScoreProps
         <CardHeader>
           <CardTitle className="flex items-center space-x-2">
             <Heart className="h-5 w-5 text-destructive" />
-            <span>Customer Health Score</span>
+            <span>{t('customerHealth.customerHealthScore')}</span>
           </CardTitle>
           <CardDescription>Loading customer health data...</CardDescription>
         </CardHeader>
@@ -243,7 +219,7 @@ export function CustomerHealthScore({ className = '' }: CustomerHealthScoreProps
         <CardHeader>
           <CardTitle className="flex items-center space-x-2">
             <Heart className="h-5 w-5 text-destructive" />
-            <span>Customer Health Score</span>
+            <span>{t('customerHealth.customerHealthScore')}</span>
           </CardTitle>
           <CardDescription>Unable to load customer health data</CardDescription>
         </CardHeader>
@@ -256,7 +232,7 @@ export function CustomerHealthScore({ className = '' }: CustomerHealthScoreProps
       <CardHeader>
         <CardTitle className="flex items-center space-x-2">
           <Heart className="h-5 w-5 text-destructive" />
-          <span>Customer Health Score</span>
+          <span>{t('customerHealth.customerHealthScore')}</span>
         </CardTitle>
         <CardDescription>
           Weighted score: usage, tickets, satisfaction
@@ -270,7 +246,7 @@ export function CustomerHealthScore({ className = '' }: CustomerHealthScoreProps
             <p className="text-lg font-bold text-destructive">
               {healthData.averageScore.toFixed(0)}
             </p>
-            <p className="text-xs text-muted-foreground">Avg Health Score</p>
+            <p className="text-xs text-muted-foreground">{t('customerHealth.avgHealthScore')}</p>
           </div>
           <div className="text-center p-3 bg-primary/10 rounded-[0.625rem]-lg">
             <Users className="h-5 w-5 text-primary mx-auto mb-1" />
@@ -290,7 +266,7 @@ export function CustomerHealthScore({ className = '' }: CustomerHealthScoreProps
               {getHealthLevel(healthData.averageScore)}
             </Badge>
           </div>
-          <p className="text-sm text-muted-foreground">Average Customer Health Score</p>
+          <p className="text-sm text-muted-foreground">{t('customerHealth.averageCustomerHealthScore')}</p>
           <div className="mt-3">
             <Progress value={healthData.averageScore} className="h-2" />
           </div>
@@ -323,7 +299,7 @@ export function CustomerHealthScore({ className = '' }: CustomerHealthScoreProps
 
         {/* Top Performers */}
         <div className="space-y-3">
-          <h4 className="text-sm font-medium text-foreground">Top Performers</h4>
+          <h4 className="text-sm font-medium text-foreground">{t('customerHealth.topPerformers')}</h4>
           <div className="space-y-2">
             {healthData.topPerformers.map((customer, index) => {
               const TrendIcon = getTrendIcon(customer.trend);
@@ -367,7 +343,7 @@ export function CustomerHealthScore({ className = '' }: CustomerHealthScoreProps
           <div className="space-y-3">
             <h4 className="text-sm font-medium text-foreground flex items-center space-x-2">
               <AlertTriangle className="h-4 w-4 text-destructive" />
-              <span>At Risk Customers</span>
+              <span>{t('customerHealth.atRiskCustomers')}</span>
             </h4>
             <div className="space-y-2">
               {healthData.atRisk.map((customer) => {
@@ -389,7 +365,7 @@ export function CustomerHealthScore({ className = '' }: CustomerHealthScoreProps
                           {customer.healthScore}
                         </p>
                         <Badge className="bg-destructive/10 text-red-800">
-                          At Risk
+                          {t('customerHealth.atRisk')}
                         </Badge>
                       </div>
                       <div className="flex items-center space-x-1 mt-1">
@@ -420,7 +396,7 @@ export function CustomerHealthScore({ className = '' }: CustomerHealthScoreProps
 
         {/* Insights */}
         <div className="p-3 bg-primary/10 rounded-[0.625rem]-lg">
-          <h5 className="text-sm font-medium text-blue-900 mb-2">💡 Health Score Insights</h5>
+          <h5 className="text-sm font-medium text-blue-900 mb-2">💡 {t('customerHealth.healthScoreInsights')}</h5>
           <ul className="text-xs text-blue-800 space-y-1">
             <li>• Average health score: {healthData.averageScore.toFixed(0)}</li>
             <li>• {healthData.distribution.low || 0} customers at low risk</li>

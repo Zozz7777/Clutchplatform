@@ -6,6 +6,7 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Progress } from '@/components/ui/progress';
 import { productionApi } from '@/lib/production-api';
+import { useTranslations } from 'next-intl';
 import { 
   Link, 
   CheckCircle, 
@@ -35,6 +36,7 @@ interface Integration {
 }
 
 export function IntegrationHealth({ className = '' }: IntegrationHealthProps) {
+  const t = useTranslations();
   const [integrationData, setIntegrationData] = React.useState<{
     integrations: Integration[];
     totalIntegrations: number;
@@ -47,16 +49,22 @@ export function IntegrationHealth({ className = '' }: IntegrationHealthProps) {
   React.useEffect(() => {
     const loadIntegrationData = async () => {
       try {
-        // Simulate integration health data
-        const integrations: Integration[] = [
-          {
-            name: 'Payment Gateway',
-            status: 'healthy',
-            uptime: 99.9,
-            responseTime: 150,
-            lastCheck: new Date(Date.now() - 1 * 60 * 1000).toISOString(),
-            errorRate: 0.1,
-            type: 'Payment'
+        // Load real integration data from API
+        const [integrationsData, healthChecksData, metricsData] = await Promise.all([
+          productionApi.getIntegrations(),
+          productionApi.getHealthChecks(),
+          productionApi.getIntegrationMetrics()
+        ]);
+
+        // Transform API data to component format
+        const transformedIntegrations: Integration[] = integrationsData.map((integration: any, index: number) => ({
+          name: integration.name || 'Integration',
+          status: integration.status || 'healthy',
+          uptime: integration.uptime || 0,
+          responseTime: integration.responseTime || 0,
+          lastCheck: integration.lastCheck || new Date().toISOString(),
+          errorRate: integration.errorRate || 0,
+          type: integration.type || 'Unknown'
           },
           {
             name: 'Fleet Tracking API',
@@ -105,13 +113,13 @@ export function IntegrationHealth({ className = '' }: IntegrationHealthProps) {
           }
         ];
 
-        const totalIntegrations = integrations.length;
-        const healthyIntegrations = integrations.filter(i => i.status === 'healthy').length;
-        const averageUptime = integrations.reduce((sum, i) => sum + i.uptime, 0) / integrations.length;
-        const averageResponseTime = integrations.reduce((sum, i) => sum + i.responseTime, 0) / integrations.length;
+        const totalIntegrations = transformedIntegrations.length;
+        const healthyIntegrations = transformedIntegrations.filter(i => i.status === 'healthy').length;
+        const averageUptime = transformedIntegrations.reduce((sum, i) => sum + i.uptime, 0) / transformedIntegrations.length;
+        const averageResponseTime = transformedIntegrations.reduce((sum, i) => sum + i.responseTime, 0) / transformedIntegrations.length;
 
         setIntegrationData({
-          integrations,
+          integrations: transformedIntegrations,
           totalIntegrations,
           healthyIntegrations,
           averageUptime,
