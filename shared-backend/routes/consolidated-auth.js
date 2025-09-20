@@ -9,7 +9,8 @@ const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
 const router = express.Router();
 const { getCollection } = require('../config/optimized-database');
-const { authenticateToken, requireRole, hashPassword, comparePassword } = require('../middleware/auth');
+const { authenticateToken, checkRole } = require('../middleware/unified-auth');
+const { hashPassword, comparePassword } = require('../utils/password-utils');
 const { rateLimit: createRateLimit } = require('../middleware/rateLimit');
 const logger = require('../utils/logger');
 
