@@ -2,7 +2,7 @@ const express = require('express');
 const router = express.Router();
 const { authenticateToken } = require('../middleware/auth');
 const { logger } = require('../config/logger');
-const { connectToDatabase } = require('../config/database-unified');
+const { getCollection } = require('../config/optimized-database');
 const rateLimit = require('express-rate-limit');
 
 // Rate limiting for mobile apps endpoints
@@ -25,8 +25,16 @@ router.use(mobileAppsLimiter);
 // GET /api/v1/mobile-apps/versions - Get mobile app versions
 router.get('/versions', authenticateToken, async (req, res) => {
   try {
-    const { db } = await connectToDatabase();
-    const versionsCollection = db.collection('mobile_app_versions');
+    const versionsCollection = await getCollection('mobile_app_versions');
+    
+    if (!versionsCollection) {
+      return res.status(500).json({
+        success: false,
+        error: 'DATABASE_CONNECTION_FAILED',
+        message: 'Database connection failed',
+        timestamp: new Date().toISOString()
+      });
+    }
     
     // Check if collection exists and has data
     const collectionExists = await versionsCollection.countDocuments({});
@@ -60,8 +68,16 @@ router.get('/versions', authenticateToken, async (req, res) => {
 // GET /api/v1/mobile-apps/crashes - Get mobile app crash reports
 router.get('/crashes', authenticateToken, async (req, res) => {
   try {
-    const { db } = await connectToDatabase();
-    const crashesCollection = db.collection('mobile_app_crashes');
+    const crashesCollection = await getCollection('mobile_app_crashes');
+    
+    if (!crashesCollection) {
+      return res.status(500).json({
+        success: false,
+        error: 'DATABASE_CONNECTION_FAILED',
+        message: 'Database connection failed',
+        timestamp: new Date().toISOString()
+      });
+    }
     
     const { limit = 50, status, severity } = req.query;
     
@@ -102,8 +118,16 @@ router.get('/crashes', authenticateToken, async (req, res) => {
 // GET /api/v1/mobile-apps/analytics - Get mobile app analytics
 router.get('/analytics', authenticateToken, async (req, res) => {
   try {
-    const { db } = await connectToDatabase();
-    const analyticsCollection = db.collection('mobile_app_analytics');
+    const analyticsCollection = await getCollection('mobile_app_analytics');
+    
+    if (!analyticsCollection) {
+      return res.status(500).json({
+        success: false,
+        error: 'DATABASE_CONNECTION_FAILED',
+        message: 'Database connection failed',
+        timestamp: new Date().toISOString()
+      });
+    }
     
     const { period = '30d', metric } = req.query;
     
@@ -142,8 +166,16 @@ router.get('/analytics', authenticateToken, async (req, res) => {
 // GET /api/v1/mobile-apps/stores - Get mobile app store listings
 router.get('/stores', authenticateToken, async (req, res) => {
   try {
-    const { db } = await connectToDatabase();
-    const storesCollection = db.collection('mobile_app_stores');
+    const storesCollection = await getCollection('mobile_app_stores');
+    
+    if (!storesCollection) {
+      return res.status(500).json({
+        success: false,
+        error: 'DATABASE_CONNECTION_FAILED',
+        message: 'Database connection failed',
+        timestamp: new Date().toISOString()
+      });
+    }
     
     const { platform, status } = req.query;
     

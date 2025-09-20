@@ -125,7 +125,7 @@ export default function MobileAppsPage() {
         
       } catch (error) {
         // Error handled by API service
-        toast.error(t('mobileApps.failedToLoadMobileAppsData'));
+        toast.error('Failed to load mobile apps data');
         // Set empty arrays on error - no mock data fallback
         setVersions([]);
         setCrashes([]);
@@ -137,7 +137,7 @@ export default function MobileAppsPage() {
     };
 
     loadMobileAppsData();
-  }, [t]);
+  }, []); // Remove [t] dependency to prevent infinite reload
 
 
   const getStatusColor = (status: string) => {

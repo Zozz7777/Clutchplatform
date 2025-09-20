@@ -182,7 +182,7 @@ class ClutchApp {
       <div class="dashboard-grid">
         <div class="card">
           <h3>${i18nManager.t('total_sales')}</h3>
-          <div class="metric-value">$0.00</div>
+          <div class="metric-value">0.00 EGP</div>
         </div>
         <div class="card">
           <h3>${i18nManager.t('total_customers')}</h3>
