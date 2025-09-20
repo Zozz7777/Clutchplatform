@@ -242,16 +242,6 @@ export default function ZeroTrustAuditCard() {
           criticalAnomalies: transformedAnomalies.filter(a => a.severity === 'critical').length,
           lastUpdated: new Date().toISOString()
         };
-                id: 'rule-002',
-                name: 'Device Compliance Check',
-                condition: 'device.compliance.score >= 80',
-                action: 'allow',
-                status: 'enabled',
-                violations: 5
-              }
-            ],
-            metrics: {
-              totalChecks: 15420,
               passedChecks: 14200,
               failedChecks: 1220,
               blockedAccess: 850,
@@ -360,8 +350,76 @@ export default function ZeroTrustAuditCard() {
           }
         ];
 
-        // Use real API data only - no mock data
-        const realMetrics: ZeroTrustMetrics = {
+        const mockAnomalies: AnomalyDetection[] = [
+          {
+            id: 'anomaly-001',
+            type: 'unusual_location',
+            severity: 'high',
+            status: 'detected',
+            confidence: 92,
+            timestamp: new Date(Date.now() - 2 * 60 * 60 * 1000).toISOString(),
+            userId: 'user-123',
+            userName: 'John Doe',
+            userEmail: 'john@example.com',
+            details: {
+              description: 'User accessed system from unusual geographic location',
+              riskFactors: ['new_country', 'unusual_time', 'suspicious_ip'],
+              evidence: ['IP geolocation', 'access_time', 'device_fingerprint'],
+              context: {
+                previousLocation: 'New York, US',
+                currentLocation: 'Moscow, Russia',
+                timeDifference: '2 hours',
+                deviceChange: false
+              }
+            },
+            impact: {
+              users: 1,
+              systems: 3,
+              data: 2,
+              reputation: 5
+            },
+            mitigation: {
+              actions: ['challenge_authentication', 'notify_security_team', 'monitor_session'],
+              status: 'in_progress',
+              effectiveness: 85
+            }
+          },
+          {
+            id: 'anomaly-002',
+            type: 'privilege_escalation',
+            severity: 'critical',
+            status: 'investigating',
+            confidence: 98,
+            timestamp: new Date(Date.now() - 4 * 60 * 60 * 1000).toISOString(),
+            userId: 'user-456',
+            userName: 'Jane Smith',
+            userEmail: 'jane@example.com',
+            details: {
+              description: 'Attempted privilege escalation detected',
+              riskFactors: ['admin_access_request', 'unusual_permissions', 'suspicious_timing'],
+              evidence: ['permission_logs', 'access_attempts', 'user_behavior'],
+              context: {
+                requestedPermissions: ['admin:all', 'user:delete', 'system:config'],
+                currentRole: 'user',
+                requestTime: 'off_hours',
+                previousAttempts: 3
+              }
+            },
+            impact: {
+              users: 1,
+              systems: 10,
+              data: 8,
+              reputation: 15
+            },
+            mitigation: {
+              actions: ['block_access', 'escalate_to_security', 'investigate_user'],
+              status: 'in_progress',
+              effectiveness: 95
+            }
+          }
+        ];
+
+        const mockMetrics: ZeroTrustMetrics = {
           overallScore: 87,
           policyCompliance: 92,
           anomalyDetection: 85,
@@ -369,10 +427,10 @@ export default function ZeroTrustAuditCard() {
           deviceTrust: 88,
           networkSecurity: 85,
           dataProtection: 89,
-          totalPolicies: transformedPolicies.length,
-          activePolicies: transformedPolicies.filter(p => p.status === 'active').length,
-          totalAnomalies: transformedAnomalies.length,
-          criticalAnomalies: transformedAnomalies.filter(a => a.severity === 'critical').length,
+          totalPolicies: mockPolicies.length,
+          activePolicies: mockPolicies.filter(p => p.status === 'active').length,
+          totalAnomalies: mockAnomalies.length,
+          criticalAnomalies: mockAnomalies.filter(a => a.severity === 'critical').length,
           lastUpdated: new Date().toISOString()
         };
 

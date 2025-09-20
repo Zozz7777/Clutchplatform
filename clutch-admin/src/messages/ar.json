@@ -1900,6 +1900,7 @@
   },
   "reports": {
     "title": "التقارير",
+    "currentUser": "المستخدم الحالي",
     "description": "إنشاء وإدارة تقارير النظام",
     "createReport": "إنشاء تقرير",
     "reportTemplates": "قوالب التقارير",

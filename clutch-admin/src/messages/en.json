@@ -1834,6 +1834,7 @@
   },
   "reports": {
     "title": "Reports",
+    "currentUser": "Current User",
     "description": "Generate and manage system reports",
     "createReport": "Create Report",
     "reportTemplates": "Report Templates",

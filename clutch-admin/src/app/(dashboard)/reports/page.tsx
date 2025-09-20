@@ -176,7 +176,7 @@ export default function ReportsPage() {
         status: "draft",
         createdBy: {
           id: "current-user",
-          name: "Current User",
+          name: t('reports.currentUser'),
           email: "user@example.com"
         },
         schedule: {

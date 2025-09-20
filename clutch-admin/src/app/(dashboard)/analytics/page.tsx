@@ -291,7 +291,7 @@ export default function AnalyticsPage() {
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">
-              {revenueAnalytics ? formatCurrency(revenueAnalytics.monthlyRevenue) : "$0"}
+              {revenueAnalytics ? formatCurrency(revenueAnalytics.monthlyRevenue) : "0 EGP"}
             </div>
             <div className="flex items-center space-x-1 text-xs text-muted-foreground">
               {getChangeIcon("increase")}
