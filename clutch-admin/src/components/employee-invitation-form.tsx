@@ -11,7 +11,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { apiService } from "@/lib/api";
 import { toast } from "sonner";
 import { Loader2, UserPlus, Mail, Building2, Shield, Check } from "lucide-react";
-import { useTranslations } from "next-intl";
+import { useTranslations } from "@/hooks/use-translations";
 
 interface InvitationFormData {
   name: string;

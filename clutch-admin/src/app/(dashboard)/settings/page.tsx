@@ -550,7 +550,7 @@ export default function SettingsPage() {
       {activeTab === "notifications" && (
         <Card>
           <CardHeader>
-            <CardTitle>Notification Settings</CardTitle>
+            <CardTitle>{t('settings.notificationSettings')}</CardTitle>
             <CardDescription>
               Configure notification preferences and channels
             </CardDescription>
@@ -582,7 +582,7 @@ export default function SettingsPage() {
       {activeTab === "appearance" && (
         <Card>
           <CardHeader>
-            <CardTitle>Appearance Settings</CardTitle>
+            <CardTitle>{t('settings.appearanceSettings')}</CardTitle>
             <CardDescription>
               Customize the look and feel of the application
             </CardDescription>

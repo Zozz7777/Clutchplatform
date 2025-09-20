@@ -2499,6 +2499,17 @@
     "churnRate": "معدل التسرب",
     "monthlyChurnRate": "معدل التسرب الشهري"
   },
+  "settings": {
+    "generalSettings": "الإعدادات العامة",
+    "securitySettings": "إعدادات الأمان",
+    "notificationSettings": "إعدادات الإشعارات",
+    "appearanceSettings": "إعدادات المظهر"
+  },
+  "b2c": {
+    "totalCustomers": "إجمالي العملاء",
+    "activeCustomers": "العملاء النشطون",
+    "customerManagement": "إدارة العملاء"
+  },
   "employeeInvitation": {
     "title": "دعوة موظف جديد",
     "description": "إرسال دعوة لموظف جديد للانضمام إلى منصة Clutch",

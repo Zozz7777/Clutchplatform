@@ -9,6 +9,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { productionApi } from "@/lib/production-api";
 import { formatDate, formatRelativeTime } from "@/lib/utils";
+import { useTranslations } from "next-intl";
 
 // Define User type locally
 interface User {
@@ -49,6 +50,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 
 export default function B2CUsersPage() {
+  const t = useTranslations();
   const [users, setUsers] = useState<User[]>([]);
   const [filteredUsers, setFilteredUsers] = useState<User[]>([]);
   const [searchQuery, setSearchQuery] = useState("");
@@ -146,7 +148,7 @@ export default function B2CUsersPage() {
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
         <Card className="shadow-2xs">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium text-card-foreground">Total Customers</CardTitle>
+            <CardTitle className="text-sm font-medium text-card-foreground">{t('b2c.totalCustomers')}</CardTitle>
             <Users className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
@@ -158,7 +160,7 @@ export default function B2CUsersPage() {
         </Card>
         <Card className="shadow-2xs">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium text-card-foreground">Active Customers</CardTitle>
+            <CardTitle className="text-sm font-medium text-card-foreground">{t('b2c.activeCustomers')}</CardTitle>
             <UserCheck className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
@@ -203,7 +205,7 @@ export default function B2CUsersPage() {
         </Card>
       </div>
 
-      {/* Customer Management */}
+      {/* {t('b2c.customerManagement')} */}
       <Card className="shadow-2xs">
         <CardHeader>
           <CardTitle className="text-card-foreground">B2C Customer Directory</CardTitle>

@@ -2444,6 +2444,17 @@
     "churnRate": "Churn Rate",
     "monthlyChurnRate": "Monthly churn rate"
   },
+  "settings": {
+    "generalSettings": "General Settings",
+    "securitySettings": "Security Settings",
+    "notificationSettings": "Notification Settings",
+    "appearanceSettings": "Appearance Settings"
+  },
+  "b2c": {
+    "totalCustomers": "Total Customers",
+    "activeCustomers": "Active Customers",
+    "customerManagement": "Customer Management"
+  },
   "employeeInvitation": {
     "title": "Invite New Employee",
     "description": "Send an invitation to a new employee to join the Clutch platform",

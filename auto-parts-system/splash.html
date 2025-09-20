@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Loading...</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+
+        .splash-container {
+            text-align: center;
+            animation: fadeIn 1s ease-in-out;
+        }
+
+        .logo {
+            width: 120px;
+            height: 120px;
+            margin-bottom: 2rem;
+            animation: pulse 2s infinite;
+        }
+
+        .app-title {
+            font-size: 2.5rem;
+            font-weight: 300;
+            margin-bottom: 1rem;
+            opacity: 0.9;
+        }
+
+        .app-subtitle {
+            font-size: 1.2rem;
+            opacity: 0.7;
+            margin-bottom: 3rem;
+        }
+
+        .loading-spinner {
+            width: 50px;
+            height: 50px;
+            border: 3px solid rgba(255, 255, 255, 0.3);
+            border-top: 3px solid white;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto;
+        }
+
+        .loading-text {
+            margin-top: 1rem;
+            font-size: 0.9rem;
+            opacity: 0.8;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .progress-bar {
+            width: 200px;
+            height: 4px;
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 2px;
+            margin: 2rem auto 0;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: white;
+            border-radius: 2px;
+            animation: progress 3s ease-in-out;
+        }
+
+        @keyframes progress {
+            from { width: 0%; }
+            to { width: 100%; }
+        }
+    </style>
+</head>
+<body>
+    <div class="splash-container">
+        <img src="assets/clutch-logo.png" alt="Clutch Logo" class="logo">
+        <h1 class="app-title">Shop Management System</h1>
+        <p class="app-subtitle">Powered by Clutch Platform</p>
+        
+        <div class="loading-spinner"></div>
+        <p class="loading-text">Initializing system...</p>
+        
+        <div class="progress-bar">
+            <div class="progress-fill"></div>
+        </div>
+    </div>
+
+    <script>
+        // Simulate loading time
+        setTimeout(() => {
+            window.location.href = 'main.html';
+        }, 3000);
+    </script>
+</body>
+</html>

@@ -19,8 +19,10 @@ import {
 } from 'lucide-react';
 import { productionApi } from '@/lib/production-api';
 import { toast } from 'sonner';
+import { useTranslations } from 'next-intl';
 
 export default function MobileCMSPage() {
+  const t = useTranslations();
   const [appSettings, setAppSettings] = useState({
     appName: 'Clutch',
     version: '1.2.0',

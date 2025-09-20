@@ -208,7 +208,7 @@ export default function MobileAppsPage() {
         <div className="flex items-center space-x-2">
           <Button variant="outline">
             <Settings className="mr-2 h-4 w-4" />
-            Settings
+{t('mobileApps.settings')}
           </Button>
           <Button>
             <Plus className="mr-2 h-4 w-4" />
@@ -485,7 +485,7 @@ export default function MobileAppsPage() {
                         <div className="font-semibold">{crash.device}</div>
                       </div>
                       <div>
-                        <div className="text-sm text-muted-foreground">OS Version</div>
+                        <div className="text-sm text-muted-foreground">{t('mobileApps.osVersion')}</div>
                         <div className="font-semibold">{crash.osVersion}</div>
                       </div>
                       <div>
@@ -493,7 +493,7 @@ export default function MobileAppsPage() {
                         <div className="font-semibold">{crash.frequency} times</div>
                       </div>
                       <div>
-                        <div className="text-sm text-muted-foreground">App Version</div>
+                        <div className="text-sm text-muted-foreground">{t('mobileApps.appVersion')}</div>
                         <div className="font-semibold">v{crash.appVersion}</div>
                       </div>
                     </div>

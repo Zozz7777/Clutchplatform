@@ -59,7 +59,7 @@ import {
   FileCheck,
   AlertCircle,
   CheckCircle2,
-  XCircle2,
+  XCircle,
   Info as InfoIcon,
   RotateCcw as RollbackIcon,
   Power,
@@ -295,8 +295,8 @@ export default function BudgetBreachDetector({ className }: BudgetBreachDetector
             impact: {
               financial: breach.impact?.financial || 0,
               operational: breach.impact?.operational || 0,
-              reputational: breach.impact?.reputational || 0,
-              compliance: breach.impact?.compliance || 0
+              timeline: breach.impact?.timeline || 0,
+              reputation: breach.impact?.reputation || 0
             },
             mitigation: {
               actions: breach.mitigation?.actions || [],

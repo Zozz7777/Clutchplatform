@@ -831,10 +831,10 @@ export default function HRPage() {
                       <p className="font-medium">{employee.firstName || 'Unknown'} {employee.lastName || ''}</p>
                       <p className="text-sm text-muted-foreground">{employee.position || t('hr.noPosition')} • {employee.department || t('hr.noDepartment')}</p>
                       <div className="flex items-center space-x-2 mt-1">
-                        <Badge variant={getStatusColor(employee.status) as "default" | "secondary" | "destructive" | "outline"}>
+                        <Badge variant={getStatusColor(employee.status)}>
                           {employee.status}
                         </Badge>
-                        <Badge variant={getEmploymentTypeColor(employee.employmentType) as "default" | "secondary" | "destructive" | "outline"}>
+                        <Badge variant={getEmploymentTypeColor(employee.employmentType)}>
                           {employee.employmentType}
                         </Badge>
                         <span className="text-xs text-muted-foreground">
@@ -952,7 +952,7 @@ export default function HRPage() {
                       <p className="font-medium">{String(invitation.name || '')}</p>
                       <p className="text-sm text-muted-foreground">{String(invitation.email || '')}</p>
                       <div className="flex items-center space-x-2 mt-1">
-                        <Badge variant={getStatusColor(String(invitation.status || '')) as "default" | "secondary" | "destructive" | "outline"}>
+                        <Badge variant={getStatusColor(String(invitation.status || ''))}>
                           {String(invitation.status || '')}
                         </Badge>
                         <span className="text-xs text-muted-foreground">
@@ -1073,10 +1073,10 @@ export default function HRPage() {
                       <p className="font-medium">{application.candidateName || 'Unknown Candidate'}</p>
                       <p className="text-sm text-muted-foreground">{application.jobTitle} • {application.department}</p>
                       <div className="flex items-center space-x-2 mt-1">
-                        <Badge variant={getStatusColor(application.status) as "default" | "secondary" | "destructive" | "outline"}>
+                        <Badge variant={getStatusColor(application.status)}>
                           {application.status}
                         </Badge>
-                        <Badge variant={getPriorityColor(application.priority) as "default" | "secondary" | "destructive" | "outline"}>
+                        <Badge variant={getPriorityColor(application.priority)}>
                           {application.priority}
                         </Badge>
                         <span className="text-xs text-muted-foreground">
@@ -1208,12 +1208,12 @@ export default function HRPage() {
                 <div className="flex items-center space-x-4">
                   <div className="w-16 h-16 rounded-full bg-primary flex items-center justify-center">
                     <span className="text-primary-foreground font-medium text-xl">
-                      {(selectedEmployee.firstName || selectedEmployee.name || 'U').charAt(0).toUpperCase()}
+                      {(selectedEmployee.firstName || 'U').charAt(0).toUpperCase()}
                     </span>
                   </div>
                   <div>
                     <h3 className="text-xl font-semibold">
-                      {selectedEmployee.firstName || selectedEmployee.name || 'Unknown'} {selectedEmployee.lastName || ''}
+                      {selectedEmployee.firstName || 'Unknown'} {selectedEmployee.lastName || ''}
                     </h3>
                     <p className="text-muted-foreground">{selectedEmployee.position || t('hr.noPosition')}</p>
                     <p className="text-sm text-muted-foreground">{selectedEmployee.department || t('hr.noDepartment')}</p>
@@ -1235,7 +1235,7 @@ export default function HRPage() {
                   </div>
                   <div>
                     <label className="text-sm font-medium text-muted-foreground">Status</label>
-                    <Badge variant={getStatusColor(selectedEmployee.status) as "default" | "secondary" | "destructive" | "outline"}>
+                    <Badge variant={getStatusColor(selectedEmployee.status)}>
                       {selectedEmployee.status}
                     </Badge>
                   </div>
@@ -1367,7 +1367,7 @@ export default function HRPage() {
               </div>
               
               <p className="text-sm mb-6">
-                Are you sure you want to delete <strong>{employeeToDelete.firstName || employeeToDelete.name || 'this employee'}</strong>? 
+                Are you sure you want to delete <strong>{employeeToDelete.firstName || 'this employee'}</strong>? 
                 This will permanently remove all their data from the system.
               </p>
 
