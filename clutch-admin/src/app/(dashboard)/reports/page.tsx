@@ -48,6 +48,7 @@ import { useAuth } from "@/contexts/auth-context";
 // Import new Phase 2 widgets
 import ReportUsageStats from '@/components/widgets/report-usage-stats';
 import { useQuickActions } from "@/lib/quick-actions";
+import { useTranslations } from "@/hooks/use-translations";
 
 interface Report {
   _id: string;
@@ -121,6 +122,7 @@ export default function ReportsPage() {
   });
   const { hasPermission } = useAuth();
   const { generateReport, exportData } = useQuickActions(hasPermission);
+  const { t } = useTranslations();
 
 
   useEffect(() => {
@@ -288,23 +290,23 @@ export default function ReportsPage() {
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold tracking-tight">Reporting</h1>
+          <h1 className="text-3xl font-bold tracking-tight">{t('reports.title')}</h1>
           <p className="text-muted-foreground">
-            Generate and manage detailed reports from various modules
+            {t('reports.description')}
           </p>
         </div>
         <div className="flex items-center space-x-2">
           <Button onClick={() => setShowTemplateDialog(true)} variant="outline">
             <FileText className="mr-2 h-4 w-4" />
-            Templates
+            {t('reports.reportTemplates')}
           </Button>
           <Button onClick={() => setShowCreateDialog(true)}>
             <Plus className="mr-2 h-4 w-4" />
-            New Report
+            {t('reports.createReport')}
           </Button>
           <Button variant="outline" onClick={generateReport}>
             <FileBarChart className="mr-2 h-4 w-4" />
-            Generate Report
+            {t('reports.generateReport')}
           </Button>
         </div>
       </div>

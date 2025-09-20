@@ -192,46 +192,56 @@ export default function AssetManagementPage() {
 
 
   useEffect(() => {
-    loadAssets();
-    loadMaintenanceRecords();
-    loadAssignments();
+    const loadAllAssetsData = async () => {
+      try {
+        setLoading(true);
+        
+        // Load all assets data with proper error handling
+        const [assetsData, maintenanceData, assignmentsData] = await Promise.allSettled([
+          productionApi.getAssets(),
+          productionApi.getMaintenanceRecords(),
+          productionApi.getAssetAssignments()
+        ]);
+
+        // Handle assets data
+        if (assetsData.status === 'fulfilled') {
+          const assets = assetsData.value || [];
+          setAssets(Array.isArray(assets) ? assets : []);
+        } else {
+          console.warn('Failed to load assets:', assetsData.reason);
+          setAssets([]);
+        }
+
+        // Handle maintenance records data
+        if (maintenanceData.status === 'fulfilled') {
+          const maintenance = maintenanceData.value || [];
+          setMaintenanceRecords(Array.isArray(maintenance) ? maintenance : []);
+        } else {
+          console.warn('Failed to load maintenance records:', maintenanceData.reason);
+          setMaintenanceRecords([]);
+        }
+
+        // Handle assignments data
+        if (assignmentsData.status === 'fulfilled') {
+          const assignments = assignmentsData.value || [];
+          setAssignments(Array.isArray(assignments) ? assignments : []);
+        } else {
+          console.warn('Failed to load asset assignments:', assignmentsData.reason);
+          setAssignments([]);
+        }
+        
+      } catch (error) {
+        console.error('Unexpected error loading assets data:', error);
+        setAssets([]);
+        setMaintenanceRecords([]);
+        setAssignments([]);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    loadAllAssetsData();
   }, []);
-
-  const loadAssets = async () => {
-    try {
-      setLoading(true);
-      const data = await productionApi.getAssets();
-      const assetsArray = Array.isArray(data) ? data : [];
-      setAssets(assetsArray);
-    } catch (error) {
-      // Error handled by API service
-      setAssets([]);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const loadMaintenanceRecords = async () => {
-    try {
-      const data = await productionApi.getMaintenanceRecords();
-      const maintenanceArray = Array.isArray(data) ? data : [];
-      setMaintenanceRecords(maintenanceArray);
-    } catch (error) {
-      // Error handled by API service
-      setMaintenanceRecords([]);
-    }
-  };
-
-  const loadAssignments = async () => {
-    try {
-      const data = await productionApi.getAssetAssignments();
-      const assignmentsArray = Array.isArray(data) ? data : [];
-      setAssignments(assignmentsArray);
-    } catch (error) {
-      // Error handled by API service
-      setAssignments([]);
-    }
-  };
   
   const createAsset = async () => {
     try {
