@@ -491,7 +491,7 @@ router.get('/validate-invitation/:token', async (req, res) => {
   }
 });
 
-// DELETE /api/v1/employees/invitations/:id - Cancel invitation
+// DELETE /api/v1/employees/invitations/:id - Delete invitation
 router.delete('/invitations/:id', authenticateToken, checkRole(['head_administrator', 'hr', 'hr_manager']), async (req, res) => {
   try {
     const { id } = req.params;
@@ -508,49 +508,40 @@ router.delete('/invitations/:id', authenticateToken, checkRole(['head_administra
       });
     }
     
-    // Only allow cancellation of pending invitations
-    if (invitation.status !== 'pending') {
+    // Only allow deletion of pending or cancelled invitations
+    if (invitation.status === 'accepted') {
       return res.status(400).json({
         success: false,
-        error: 'INVITATION_NOT_PENDING',
-        message: 'Only pending invitations can be cancelled',
+        error: 'INVITATION_ALREADY_ACCEPTED',
+        message: 'Cannot delete an invitation that has already been accepted',
         timestamp: new Date().toISOString()
       });
     }
     
-    // Mark invitation as cancelled
-    const result = await invitationsCollection.updateOne(
-      { _id: new ObjectId(id) },
-      { 
-        $set: { 
-          status: 'cancelled',
-          cancelledAt: new Date(),
-          cancelledBy: req.user.userId
-        }
-      }
-    );
+    // Delete the invitation from the database
+    const result = await invitationsCollection.deleteOne({ _id: new ObjectId(id) });
     
-    if (result.modifiedCount === 0) {
+    if (result.deletedCount === 0) {
       return res.status(400).json({
         success: false,
-        error: 'CANCELLATION_FAILED',
-        message: 'Failed to cancel invitation',
+        error: 'DELETION_FAILED',
+        message: 'Failed to delete invitation',
         timestamp: new Date().toISOString()
       });
     }
     
     res.json({
       success: true,
-      message: 'Invitation cancelled successfully',
+      message: 'Invitation deleted successfully',
       timestamp: new Date().toISOString()
     });
     
   } catch (error) {
-    console.error('Cancel invitation error:', error);
+    console.error('Delete invitation error:', error);
     res.status(500).json({
       success: false,
-      error: 'CANCEL_INVITATION_FAILED',
-      message: 'Failed to cancel invitation',
+      error: 'DELETE_INVITATION_FAILED',
+      message: 'Failed to delete invitation',
       timestamp: new Date().toISOString()
     });
   }
