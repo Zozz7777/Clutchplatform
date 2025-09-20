@@ -69,7 +69,17 @@ export default function UsersPage() {
   const [isLoading, setIsLoading] = useState(true);
   const { hasPermission } = useAuth();
   const { t } = useTranslations();
-  const { addUser } = useQuickActions(hasPermission);
+  // Safely get quick actions with error handling
+  let addUser: (() => void) | null = null;
+  
+  try {
+    // Ensure hasPermission is a function before using it
+    const permissionCheck = typeof hasPermission === 'function' ? hasPermission : () => true;
+    const quickActions = useQuickActions(permissionCheck);
+    addUser = quickActions.addUser;
+  } catch (error) {
+    console.error('Failed to initialize quick actions:', error);
+  }
 
   useEffect(() => {
     const loadUsers = async () => {

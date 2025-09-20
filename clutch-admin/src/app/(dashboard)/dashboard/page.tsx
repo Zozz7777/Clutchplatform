@@ -81,16 +81,31 @@ export default function DashboardPage() {
   const [isLoading, setIsLoading] = useState(true);
   const { hasPermission } = useAuth();
   const { t } = useTranslations();
-  const {
-    quickActions,
-    generateReport,
-    exportData,
-    addUser,
-    createFleet,
-    optimizeRoutes,
-    refreshData,
-    navigateToAnalytics
-  } = useQuickActions(hasPermission);
+  // Safely get quick actions with error handling
+  let quickActions: any[] = [];
+  let generateReport: (() => void) | null = null;
+  let exportData: (() => void) | null = null;
+  let addUser: (() => void) | null = null;
+  let createFleet: (() => void) | null = null;
+  let optimizeRoutes: (() => void) | null = null;
+  let refreshData: (() => void) | null = null;
+  let navigateToAnalytics: (() => void) | null = null;
+  
+  try {
+    // Ensure hasPermission is a function before using it
+    const permissionCheck = typeof hasPermission === 'function' ? hasPermission : () => true;
+    const quickActionsResult = useQuickActions(permissionCheck);
+    quickActions = quickActionsResult.quickActions || [];
+    generateReport = quickActionsResult.generateReport;
+    exportData = quickActionsResult.exportData;
+    addUser = quickActionsResult.addUser;
+    createFleet = quickActionsResult.createFleet;
+    optimizeRoutes = quickActionsResult.optimizeRoutes;
+    refreshData = quickActionsResult.refreshData;
+    navigateToAnalytics = quickActionsResult.navigateToAnalytics;
+  } catch (error) {
+    console.error('Failed to initialize quick actions:', error);
+  }
 
   useEffect(() => {
     const loadDashboardData = async () => {

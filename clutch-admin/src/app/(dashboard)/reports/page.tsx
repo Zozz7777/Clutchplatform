@@ -121,7 +121,19 @@ export default function ReportsPage() {
     schedule: "once"
   });
   const { hasPermission } = useAuth();
-  const { generateReport, exportData } = useQuickActions(hasPermission);
+  // Safely get quick actions with error handling
+  let generateReport: (() => void) | null = null;
+  let exportData: (() => void) | null = null;
+  
+  try {
+    // Ensure hasPermission is a function before using it
+    const permissionCheck = typeof hasPermission === 'function' ? hasPermission : () => true;
+    const quickActions = useQuickActions(permissionCheck);
+    generateReport = quickActions.generateReport;
+    exportData = quickActions.exportData;
+  } catch (error) {
+    console.error('Failed to initialize quick actions:', error);
+  }
   const { t } = useTranslations();
 
 
