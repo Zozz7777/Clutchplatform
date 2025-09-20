@@ -79,7 +79,7 @@ async function ensureInvitationTokenConsistency(invitation) {
 // ==================== EMPLOYEE INVITATIONS ====================
 
 // POST /api/v1/employees/invite - Send employee invitation
-router.post('/invite', authenticateToken, checkRole(['head_administrator', 'hr_manager']), invitationRateLimit, async (req, res) => {
+router.post('/invite', authenticateToken, checkRole(['head_administrator', 'hr', 'hr_manager']), invitationRateLimit, async (req, res) => {
   try {
     const { 
       email, 
@@ -222,7 +222,7 @@ router.post('/invite', authenticateToken, checkRole(['head_administrator', 'hr_m
 });
 
 // GET /api/v1/employees/invitations - List pending invitations
-router.get('/invitations', authenticateToken, checkRole(['head_administrator', 'hr_manager']), async (req, res) => {
+router.get('/invitations', authenticateToken, checkRole(['head_administrator', 'hr', 'hr_manager']), async (req, res) => {
   try {
     const { page = 1, limit = 20, status = 'all' } = req.query;
     const skip = (parseInt(page) - 1) * parseInt(limit);
