@@ -86,7 +86,7 @@ export default function ProfileSettingsPage() {
       try {
         const token = localStorage.getItem("clutch-admin-token");
         
-        const response = await fetch("https://clutch-main-nk7x.onrender.com/api/v1/user/profile", {
+        const response = await fetch("https://clutch-main-nk7x.onrender.com/api/v1/employees/profile/me", {
           headers: {
             "Authorization": `Bearer ${token}`,
             "Content-Type": "application/json",
@@ -95,16 +95,16 @@ export default function ProfileSettingsPage() {
         
         if (response.ok) {
           const profileData = await response.json();
-          const userProfile = profileData.data || profileData;
-          setProfile(userProfile);
+          const employee = profileData.data?.employee || profileData.data || profileData;
+          setProfile(employee);
           setFormData({
-            name: userProfile.name || "",
-            email: userProfile.email || "",
-            phone: userProfile.phone || "",
-            department: userProfile.department || "",
-            position: userProfile.position || "",
-            location: userProfile.location || "",
-            bio: userProfile.bio || "",
+            name: employee.name || "",
+            email: employee.email || "",
+            phone: employee.phoneNumber || "",
+            department: employee.profile?.department || "",
+            position: employee.profile?.position || "",
+            location: employee.profile?.location || "",
+            bio: employee.profile?.bio || "",
             currentPassword: "",
             newPassword: "",
             confirmPassword: "",
@@ -229,7 +229,7 @@ export default function ProfileSettingsPage() {
     try {
       const token = localStorage.getItem("clutch-admin-token");
       
-      const response = await fetch("https://clutch-main-nk7x.onrender.com/api/v1/user/profile", {
+      const response = await fetch("https://clutch-main-nk7x.onrender.com/api/v1/employees/profile/me", {
         method: "PUT",
         headers: {
           "Authorization": `Bearer ${token}`,
@@ -237,12 +237,13 @@ export default function ProfileSettingsPage() {
         },
         body: JSON.stringify({
           name: formData.name,
-          email: formData.email,
-          phone: formData.phone,
-          department: formData.department,
-          position: formData.position,
-          location: formData.location,
-          bio: formData.bio,
+          phoneNumber: formData.phone,
+          profile: {
+            department: formData.department,
+            position: formData.position,
+            location: formData.location,
+            bio: formData.bio,
+          },
         }),
       });
 
@@ -289,7 +290,7 @@ export default function ProfileSettingsPage() {
     try {
       const token = localStorage.getItem("clutch-admin-token");
       
-      const response = await fetch("https://clutch-main-nk7x.onrender.com/api/v1/user/change-password", {
+      const response = await fetch("https://clutch-main-nk7x.onrender.com/api/v1/employees/change-password", {
         method: "POST",
         headers: {
           "Authorization": `Bearer ${token}`,
