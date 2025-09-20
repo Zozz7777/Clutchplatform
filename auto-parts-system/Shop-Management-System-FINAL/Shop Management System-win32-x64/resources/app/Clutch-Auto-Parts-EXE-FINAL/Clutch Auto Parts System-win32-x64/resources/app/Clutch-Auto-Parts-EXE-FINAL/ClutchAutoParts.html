@@ -1,0 +1,677 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Clutch Auto Parts System</title>
+    <style>
+        :root {
+            /* Light theme colors from design.json */
+            --background: oklch(1 0 0);
+            --foreground: oklch(0.1450 0 0);
+            --card: oklch(1 0 0);
+            --card-foreground: oklch(0.1450 0 0);
+            --primary: oklch(0.5770 0.2450 27.3250);
+            --primary-foreground: oklch(0.9850 0 0);
+            --secondary: oklch(0.5770 0.2450 27.3250);
+            --muted: oklch(0.9700 0 0);
+            --muted-foreground: oklch(0.5560 0 0);
+            --destructive: oklch(0.5770 0.2450 27.3250);
+            --border: oklch(0.9220 0 0);
+            --input: oklch(0.9220 0 0);
+            --ring: oklch(0.7080 0 0);
+            --sidebar: oklch(0.9850 0 0);
+            --sidebar-primary: oklch(0.2050 0 0);
+            --success: oklch(0.72 0.2 145);
+            --warning: oklch(0.85 0.18 75);
+            --info: oklch(0.75 0.1 220);
+            
+            /* Typography from design.json */
+            --font-sans: Roboto, ui-sans-serif, sans-serif, system-ui;
+            --font-serif: Roboto Serif, ui-serif, serif;
+            --font-mono: Roboto Mono, ui-monospace, monospace;
+            
+            /* Spacing and borders */
+            --radius: 0.625rem;
+            --spacing-base: 0.25rem;
+            
+            /* Shadows from design.json */
+            --shadow-2xs: 0 1px 3px 0px hsl(0 0% 0% / 0.05);
+            --shadow-sm: 0 1px 3px 0px hsl(0 0% 0% / 0.10), 0 1px 2px -1px hsl(0 0% 0% / 0.10);
+            --shadow-md: 0 1px 3px 0px hsl(0 0% 0% / 0.10), 0 2px 4px -1px hsl(0 0% 0% / 0.10);
+        }
+
+        [data-theme="dark"] {
+            /* Dark theme colors from design.json */
+            --background: oklch(0.1450 0 0);
+            --foreground: oklch(0.9850 0 0);
+            --card: oklch(0.2050 0 0);
+            --card-foreground: oklch(0.9710 0.0130 17.3800);
+            --primary: oklch(0.5050 0.2130 27.5180);
+            --primary-foreground: oklch(0.2050 0 0);
+            --secondary: oklch(0.2690 0 0);
+            --muted: oklch(0.2690 0 0);
+            --destructive: oklch(0.7040 0.1910 22.2160);
+            --border: oklch(0.2750 0 0);
+            --input: oklch(0.3250 0 0);
+            --ring: oklch(0.5560 0 0);
+            --sidebar: oklch(0.2050 0 0);
+            --sidebar-primary: oklch(0.5770 0.2450 27.3250);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: var(--font-sans);
+            background: var(--background);
+            color: var(--foreground);
+            min-height: 100vh;
+            line-height: 1.5;
+        }
+
+        .app-layout {
+            display: flex;
+            min-height: 100vh;
+        }
+
+        .sidebar {
+            width: 280px;
+            background: var(--sidebar);
+            border-right: 1px solid var(--border);
+            padding: 1.5rem;
+            position: fixed;
+            height: 100vh;
+            overflow-y: auto;
+        }
+
+        .sidebar-header {
+            margin-bottom: 2rem;
+        }
+
+        .sidebar-header h1 {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: var(--foreground);
+            margin-bottom: 0.5rem;
+        }
+
+        .sidebar-header p {
+            font-size: 0.875rem;
+            color: var(--muted-foreground);
+        }
+
+        .nav-menu {
+            list-style: none;
+        }
+
+        .nav-item {
+            margin-bottom: 0.5rem;
+        }
+
+        .nav-link {
+            display: flex;
+            align-items: center;
+            padding: 0.75rem 1rem;
+            color: var(--muted-foreground);
+            text-decoration: none;
+            border-radius: var(--radius);
+            transition: all 150ms cubic-bezier(0.4, 0, 0.2, 1);
+            font-weight: 500;
+        }
+
+        .nav-link:hover {
+            background: var(--muted);
+            color: var(--foreground);
+        }
+
+        .nav-link.active {
+            background: var(--primary);
+            color: var(--primary-foreground);
+        }
+
+        .main-content {
+            flex: 1;
+            margin-left: 280px;
+            padding: 2rem;
+        }
+
+        .top-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .page-title {
+            font-size: 1.875rem;
+            font-weight: 600;
+            color: var(--foreground);
+        }
+
+        .theme-toggle {
+            background: var(--muted);
+            border: 1px solid var(--border);
+            color: var(--foreground);
+            padding: 0.5rem 1rem;
+            border-radius: var(--radius);
+            cursor: pointer;
+            font-size: 0.875rem;
+            transition: all 150ms cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .theme-toggle:hover {
+            background: var(--primary);
+            color: var(--primary-foreground);
+        }
+
+        .modules {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .module-card {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 1.5rem;
+            box-shadow: var(--shadow-sm);
+            transition: all 300ms cubic-bezier(0.4, 0, 0.2, 1);
+            cursor: pointer;
+        }
+
+        .module-card:hover {
+            box-shadow: var(--shadow-md);
+            transform: translateY(-2px);
+        }
+
+        .module-card h3 {
+            color: var(--card-foreground);
+            margin-bottom: 0.75rem;
+            font-size: 1.25rem;
+            font-weight: 600;
+        }
+
+        .module-card p {
+            color: var(--muted-foreground);
+            line-height: 1.5;
+            margin-bottom: 1rem;
+            font-size: 0.875rem;
+        }
+
+        .module-card .features {
+            list-style: none;
+            margin-bottom: 1.5rem;
+        }
+
+        .module-card .features li {
+            color: #555;
+            margin-bottom: 0.5rem;
+            padding-left: 1.5rem;
+            position: relative;
+        }
+
+        .module-card .features li:before {
+            content: "✓";
+            position: absolute;
+            left: 0;
+            color: #27ae60;
+            font-weight: bold;
+        }
+
+        .btn {
+            background: var(--primary);
+            color: var(--primary-foreground);
+            border: 1px solid var(--primary);
+            padding: 0.75rem 1.5rem;
+            border-radius: var(--radius);
+            font-size: 0.875rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 150ms cubic-bezier(0.4, 0, 0.2, 1);
+            width: 100%;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .btn:hover {
+            background: var(--primary);
+            opacity: 0.9;
+        }
+
+        .btn:focus {
+            outline: none;
+            box-shadow: 0 0 0 2px var(--ring);
+        }
+
+        .btn-success {
+            background: var(--success);
+            color: var(--background);
+            border-color: var(--success);
+        }
+
+        .btn-warning {
+            background: var(--warning);
+            color: var(--background);
+            border-color: var(--warning);
+        }
+
+        .btn-danger {
+            background: var(--destructive);
+            color: var(--primary-foreground);
+            border-color: var(--destructive);
+        }
+
+        .stats {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 1.5rem;
+            box-shadow: var(--shadow-sm);
+            margin-bottom: 2rem;
+        }
+
+        .stats h2 {
+            color: var(--card-foreground);
+            margin-bottom: 1.5rem;
+            text-align: center;
+            font-size: 1.5rem;
+            font-weight: 600;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+        }
+
+        .stat-item {
+            text-align: center;
+            padding: 1rem;
+            background: var(--muted);
+            border-radius: var(--radius);
+            border: 1px solid var(--border);
+        }
+
+        .stat-item .number {
+            font-size: 1.875rem;
+            font-weight: 700;
+            color: var(--primary);
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-item .label {
+            color: var(--muted-foreground);
+            font-size: 0.875rem;
+            font-weight: 500;
+        }
+
+        .footer {
+            text-align: center;
+            color: white;
+            margin-top: 3rem;
+            opacity: 0.8;
+        }
+
+        .login-form {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 2rem;
+            box-shadow: var(--shadow-md);
+            max-width: 400px;
+            margin: 0 auto;
+        }
+
+        .login-form h2 {
+            color: var(--card-foreground);
+            margin-bottom: 1.5rem;
+            text-align: center;
+            font-size: 1.5rem;
+            font-weight: 600;
+        }
+
+        .form-group {
+            margin-bottom: 1rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: var(--foreground);
+            font-weight: 500;
+            font-size: 0.875rem;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            font-size: 0.875rem;
+            background: var(--input);
+            color: var(--foreground);
+            transition: all 150ms cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .form-group input:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 2px var(--ring);
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        .alert {
+            padding: 1rem;
+            border-radius: 8px;
+            margin-bottom: 1rem;
+        }
+
+        .alert-success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+
+        .alert-error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+    </style>
+</head>
+<body>
+    <div id="loginSection" class="login-form">
+        <h2>🚗 Clutch Auto Parts System</h2>
+        <p style="text-align: center; color: var(--muted-foreground); margin-bottom: 1.5rem;">Complete Auto Parts Management Solution</p>
+        <div id="alert" class="alert hidden"></div>
+        <form id="loginForm">
+            <div class="form-group">
+                <label for="username">Username:</label>
+                <input type="text" id="username" value="admin" required>
+            </div>
+            <div class="form-group">
+                <label for="password">Password:</label>
+                <input type="password" id="password" value="admin123" required>
+            </div>
+            <button type="submit" class="btn btn-success">Login</button>
+        </form>
+    </div>
+
+    <div id="mainSection" class="app-layout hidden">
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <h1>🚗 Clutch</h1>
+                <p>Auto Parts System</p>
+            </div>
+            <nav>
+                <ul class="nav-menu">
+                    <li class="nav-item">
+                        <a href="#" class="nav-link active" data-module="dashboard">
+                            📊 Dashboard
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="#" class="nav-link" data-module="pos">
+                            🛒 Point of Sale
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="#" class="nav-link" data-module="inventory">
+                            📦 Inventory
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="#" class="nav-link" data-module="customers">
+                            👥 Customers
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="#" class="nav-link" data-module="suppliers">
+                            🏭 Suppliers
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="#" class="nav-link" data-module="reports">
+                            📈 Reports
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="#" class="nav-link" data-module="ai">
+                            🤖 AI Insights
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="#" class="nav-link" data-module="settings">
+                            ⚙️ Settings
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+        </aside>
+
+        <main class="main-content">
+            <div class="top-bar">
+                <h1 class="page-title">Dashboard</h1>
+                <button class="theme-toggle" onclick="toggleTheme()">🌙 Dark Mode</button>
+            </div>
+            <div class="stats">
+                <h2>System Overview</h2>
+                <div class="stats-grid">
+                    <div class="stat-item">
+                        <div class="number">1,247</div>
+                        <div class="label">Total Parts</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="number">89</div>
+                        <div class="label">Customers</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="number">23</div>
+                        <div class="label">Suppliers</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="number">45,678 EGP</div>
+                        <div class="label">Monthly Sales</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="modules">
+                <div class="module-card">
+                    <h3>🛒 Point of Sale (POS)</h3>
+                    <p>Complete point of sale system with tax shortcuts and multiple payment methods.</p>
+                    <ul class="features">
+                        <li>Quick tax calculation</li>
+                        <li>Multiple payment methods</li>
+                        <li>Receipt printing</li>
+                        <li>Discount management</li>
+                    </ul>
+                    <button class="btn btn-success" onclick="openModule('pos')">Open POS</button>
+                </div>
+
+                <div class="module-card">
+                    <h3>📦 Inventory Management</h3>
+                    <p>Comprehensive inventory tracking and management system.</p>
+                    <ul class="features">
+                        <li>Stock tracking</li>
+                        <li>Low stock alerts</li>
+                        <li>Barcode scanning</li>
+                        <li>Supplier management</li>
+                    </ul>
+                    <button class="btn btn-success" onclick="openModule('inventory')">Manage Inventory</button>
+                </div>
+
+                <div class="module-card">
+                    <h3>👥 Customer Management</h3>
+                    <p>Complete customer database and relationship management.</p>
+                    <ul class="features">
+                        <li>Customer profiles</li>
+                        <li>Purchase history</li>
+                        <li>Loyalty programs</li>
+                        <li>Communication tools</li>
+                    </ul>
+                    <button class="btn btn-success" onclick="openModule('customers')">Manage Customers</button>
+                </div>
+
+                <div class="module-card">
+                    <h3>📊 Reports & Analytics</h3>
+                    <p>Comprehensive reporting and business intelligence.</p>
+                    <ul class="features">
+                        <li>Sales reports</li>
+                        <li>Inventory reports</li>
+                        <li>Financial analytics</li>
+                        <li>Export capabilities</li>
+                    </ul>
+                    <button class="btn btn-warning" onclick="openModule('reports')">View Reports</button>
+                </div>
+
+                <div class="module-card">
+                    <h3>🤖 AI Insights</h3>
+                    <p>AI-powered business insights and recommendations.</p>
+                    <ul class="features">
+                        <li>Demand forecasting</li>
+                        <li>Price optimization</li>
+                        <li>Inventory optimization</li>
+                        <li>Customer insights</li>
+                    </ul>
+                    <button class="btn btn-warning" onclick="openModule('ai')">View AI Insights</button>
+                </div>
+
+                <div class="module-card">
+                    <h3>⚙️ Settings</h3>
+                    <p>System configuration and user management.</p>
+                    <ul class="features">
+                        <li>User management</li>
+                        <li>System settings</li>
+                        <li>Backup & restore</li>
+                        <li>Multi-branch support</li>
+                    </ul>
+                    <button class="btn btn-danger" onclick="openModule('settings')">Open Settings</button>
+                </div>
+            </div>
+
+            <div class="footer">
+                <p>Clutch Auto Parts System v1.0.0 | © 2025 Clutch Platform</p>
+                <p>Offline-first • Arabic Support • AI-Powered</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Login functionality
+        document.getElementById('loginForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+            
+            if (username === 'admin' && password === 'admin123') {
+                showAlert('Login successful!', 'success');
+                setTimeout(() => {
+                    document.getElementById('loginSection').classList.add('hidden');
+                    document.getElementById('mainSection').classList.remove('hidden');
+                }, 1000);
+            } else {
+                showAlert('Invalid username or password!', 'error');
+            }
+        });
+
+        function showAlert(message, type) {
+            const alert = document.getElementById('alert');
+            alert.textContent = message;
+            alert.className = `alert alert-${type}`;
+            alert.classList.remove('hidden');
+            
+            setTimeout(() => {
+                alert.classList.add('hidden');
+            }, 3000);
+        }
+
+        function openModule(module) {
+            const messages = {
+                'dashboard': 'Dashboard module opened!',
+                'pos': 'Point of Sale module opened!',
+                'inventory': 'Inventory Management module opened!',
+                'customers': 'Customer Management module opened!',
+                'suppliers': 'Supplier Management module opened!',
+                'reports': 'Reports & Analytics module opened!',
+                'ai': 'AI Insights module opened!',
+                'settings': 'Settings module opened!'
+            };
+            
+            // Update page title
+            const pageTitle = document.querySelector('.page-title');
+            const moduleNames = {
+                'dashboard': 'Dashboard',
+                'pos': 'Point of Sale',
+                'inventory': 'Inventory',
+                'customers': 'Customers',
+                'suppliers': 'Suppliers',
+                'reports': 'Reports',
+                'ai': 'AI Insights',
+                'settings': 'Settings'
+            };
+            
+            if (pageTitle && moduleNames[module]) {
+                pageTitle.textContent = moduleNames[module];
+            }
+            
+            alert(messages[module] || 'Module opened!');
+        }
+
+        function toggleTheme() {
+            const body = document.body;
+            const themeToggle = document.querySelector('.theme-toggle');
+            
+            if (body.getAttribute('data-theme') === 'dark') {
+                body.removeAttribute('data-theme');
+                themeToggle.textContent = '🌙 Dark Mode';
+            } else {
+                body.setAttribute('data-theme', 'dark');
+                themeToggle.textContent = '☀️ Light Mode';
+            }
+        }
+
+        // Navigation handling
+        document.addEventListener('DOMContentLoaded', function() {
+            const navLinks = document.querySelectorAll('.nav-link');
+            
+            navLinks.forEach(link => {
+                link.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    
+                    // Remove active class from all links
+                    navLinks.forEach(l => l.classList.remove('active'));
+                    
+                    // Add active class to clicked link
+                    this.classList.add('active');
+                    
+                    // Get module name and open it
+                    const module = this.getAttribute('data-module');
+                    openModule(module);
+                });
+            });
+        });
+
+        // Auto-login for demo
+        setTimeout(() => {
+            if (document.getElementById('loginSection').classList.contains('hidden') === false) {
+                document.getElementById('username').value = 'admin';
+                document.getElementById('password').value = 'admin123';
+            }
+        }, 1000);
+    </script>
+</body>
+</html>

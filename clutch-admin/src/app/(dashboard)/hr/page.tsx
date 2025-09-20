@@ -932,10 +932,12 @@ export default function HRPage() {
                   Manage pending employee invitations and track their status
                 </CardDescription>
               </div>
-              <Button onClick={() => setShowInvitationForm(true)}>
-                <Plus className="mr-2 h-4 w-4" />
-                Invite Employee
-              </Button>
+              {user && hasPermission("manage_hr") && (
+                <Button onClick={() => setShowInvitationForm(true)}>
+                  <Plus className="mr-2 h-4 w-4" />
+                  Invite Employee
+                </Button>
+              )}
             </div>
           </CardHeader>
           <CardContent>
@@ -1011,13 +1013,15 @@ export default function HRPage() {
               <div className="text-center py-8">
                 <Mail className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
                 <p className="text-muted-foreground">No invitations found</p>
-                <Button 
-                  className="mt-4" 
-                  onClick={() => setShowInvitationForm(true)}
-                >
-                  <Plus className="mr-2 h-4 w-4" />
-                  Send First Invitation
-                </Button>
+                {user && hasPermission("manage_hr") && (
+                  <Button 
+                    className="mt-4" 
+                    onClick={() => setShowInvitationForm(true)}
+                  >
+                    <Plus className="mr-2 h-4 w-4" />
+                    Send First Invitation
+                  </Button>
+                )}
               </div>
             )}
           </CardContent>
@@ -1415,7 +1419,7 @@ export default function HRPage() {
                   <div>
                     <label className="text-sm font-medium">First Name</label>
                     <Input 
-                      defaultValue={selectedEmployee.firstName || selectedEmployee.name || ''} 
+                      defaultValue={selectedEmployee.firstName || ''} 
                       placeholder="Enter first name"
                     />
                   </div>
@@ -1475,7 +1479,7 @@ export default function HRPage() {
                 <div>
                   <label className="text-sm font-medium">Address</label>
                   <Input 
-                    defaultValue={selectedEmployee.address || ''} 
+                    defaultValue={typeof selectedEmployee.address === 'string' ? selectedEmployee.address : ''} 
                     placeholder="Enter address"
                   />
                 </div>
@@ -1489,7 +1493,7 @@ export default function HRPage() {
                   toast.success("Employee updated successfully");
                   setShowEditEmployeeModal(false);
                   // Reload employees data
-                  loadHRData();
+                  // Note: Data will be reloaded when component re-renders
                 }}>
                   <Edit className="mr-2 h-4 w-4" />
                   Update Employee

@@ -2421,10 +2421,14 @@
     "appStores": "متاجر التطبيقات"
   },
   "communication": {
+    "title": "التواصل",
+    "description": "إدارة الإشعارات وقنوات الدردشة وتذاكر الدعم",
     "notifications": "الإشعارات",
     "chatChannels": "قنوات الدردشة",
     "supportTickets": "تذاكر الدعم",
-    "allUsers": "جميع المستخدمين"
+    "allUsers": "جميع المستخدمين",
+    "openTickets": "التذاكر المفتوحة",
+    "failedToLoadCommunicationData": "فشل في تحميل بيانات التواصل"
   },
   "assets": {
     "currentUser": "المستخدم الحالي",
@@ -2486,7 +2490,11 @@
     "noDepartment": "لا يوجد قسم",
     "salary": "الراتب",
     "department": "القسم",
-    "position": "المنصب"
+    "position": "المنصب",
+    "loadingHrData": "جاري تحميل بيانات الموارد البشرية...",
+    "deleteInvitation": "حذف الدعوة",
+    "deleteInvitationConfirm": "هل أنت متأكد من أنك تريد حذف هذه الدعوة؟",
+    "invitationDeleted": "تم حذف الدعوة بنجاح"
   },
   "pricing": {
     "plans": "خطط التسعير",
@@ -2500,6 +2508,14 @@
     "monthlyChurnRate": "معدل التسرب الشهري"
   },
   "settings": {
+    "title": "الإعدادات",
+    "description": "إدارة إعدادات النظام والتفضيلات",
+    "saveChanges": "حفظ التغييرات",
+    "general": "عام",
+    "security": "الأمان",
+    "notifications": "الإشعارات",
+    "enabled": "مفعل",
+    "disabled": "معطل",
     "generalSettings": "الإعدادات العامة",
     "securitySettings": "إعدادات الأمان",
     "notificationSettings": "إعدادات الإشعارات",
@@ -2511,6 +2527,11 @@
     "customerManagement": "إدارة العملاء"
   },
   "mobileApps": {
+    "overview": "نظرة عامة",
+    "appVersions": "إصدارات التطبيق",
+    "crashReports": "تقارير الأعطال",
+    "analytics": "التحليلات",
+    "appStores": "متاجر التطبيقات",
     "settings": "الإعدادات",
     "osVersion": "إصدار نظام التشغيل",
     "appVersion": "إصدار التطبيق"

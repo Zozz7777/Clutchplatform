@@ -1,0 +1,17 @@
+{
+  "name": "clutch-auto-parts-executable",
+  "version": "1.0.0",
+  "description": "Clutch Auto Parts System - Windows Executable",
+  "main": "electron-launcher.js",
+  "scripts": {
+    "start": "electron .",
+    "build": "electron-packager . \"Clutch Auto Parts System\" --platform=win32 --arch=x64 --out=dist --overwrite"
+  },
+  "keywords": ["auto-parts", "inventory", "pos", "electron"],
+  "author": "Clutch Platform",
+  "license": "MIT",
+  "devDependencies": {
+    "electron": "^28.1.4",
+    "electron-packager": "^17.1.2"
+  }
+}

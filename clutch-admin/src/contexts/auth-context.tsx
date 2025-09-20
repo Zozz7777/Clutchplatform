@@ -100,7 +100,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   };
 
   const hasPermission = (permission: string): boolean => {
-    if (!user) return false;
+    if (!user || !user.permissions || !Array.isArray(user.permissions)) return false;
     return user.permissions.includes(permission);
   };
 
