@@ -48,23 +48,25 @@ interface FleetVehicle {
   model: string;
   year: number;
   status: string;
-  location: {
-    lat: number;
-    lng: number;
+  location?: {
+    latitude: number;
+    longitude: number;
     address: string;
   };
-  mileage: number;
-  fuelLevel: number;
-  lastMaintenance: string;
-  nextMaintenance: string;
+  mileage?: number;
+  fuelLevel?: number;
+  lastMaintenance?: string;
+  nextMaintenance?: string;
   driver?: {
     id: string;
     name: string;
     phone: string;
   };
-  fuelEfficiency: number;
-  createdAt: string;
-  updatedAt: string;
+  fuelEfficiency?: number;
+  createdAt?: string;
+  updatedAt?: string;
+  lastUpdate?: string;
+  obd2Health?: string;
 }
 import {
   DropdownMenu,
@@ -81,9 +83,21 @@ export default function FleetPage() {
   const [searchQuery, setSearchQuery] = useState("");
   const [statusFilter, setStatusFilter] = useState<string>("all");
   const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
   const { user, hasPermission } = useAuth();
   const { t } = useTranslations();
-  const { createFleet, optimizeRoutes } = useQuickActions(hasPermission);
+  
+  // Safely get quick actions with error handling
+  let createFleet: (() => void) | null = null;
+  let optimizeRoutes: (() => void) | null = null;
+  
+  try {
+    const quickActions = useQuickActions(hasPermission);
+    createFleet = quickActions.createFleet;
+    optimizeRoutes = quickActions.optimizeRoutes;
+  } catch (error) {
+    console.error('Failed to initialize quick actions:', error);
+  }
 
   useEffect(() => {
     const loadFleetData = async () => {
@@ -95,11 +109,14 @@ export default function FleetPage() {
       try {
         setIsLoading(true);
         const vehicleData = await productionApi.getFleetVehicles();
-        // Ensure we always have an array
-        const vehiclesArray = Array.isArray(vehicleData) ? vehicleData : [];
+        // Ensure we always have an array and handle potential null/undefined
+        const vehiclesArray = Array.isArray(vehicleData) ? vehicleData as FleetVehicle[] : [];
         setVehicles(vehiclesArray);
         setFilteredVehicles(vehiclesArray);
       } catch (error) {
+        console.error('Failed to load fleet data:', error);
+        const errorMessage = error instanceof Error ? error.message : 'Unknown error occurred';
+        setError(errorMessage);
         // Failed to load fleet data
         toast.error(t('fleet.failedToLoadFleetData'));
         // Set empty arrays on error - no mock data fallback
@@ -112,36 +129,58 @@ export default function FleetPage() {
 
     loadFleetData();
 
-    // Subscribe to real-time updates via WebSocket
-    const unsubscribe = websocketService.subscribeToFleetUpdates((data) => {
-      // Handle different data structures from WebSocket
-      const vehiclesData = Array.isArray(data) ? data : 
-                          Array.isArray(data?.vehicles) ? data.vehicles : 
-                          Array.isArray(data?.data) ? data.data : [];
-      setVehicles(vehiclesData);
-      setFilteredVehicles(vehiclesData);
-    });
+    // Subscribe to real-time updates via WebSocket with error handling
+    let unsubscribe: (() => void) | null = null;
+    try {
+      const subscribeFn = websocketService.subscribeToFleetUpdates as ((callback: (data: any) => void) => () => void) | undefined;
+      if (subscribeFn) {
+        unsubscribe = subscribeFn((data: any) => {
+          try {
+            // Handle different data structures from WebSocket
+            const vehiclesData = Array.isArray(data) ? data : 
+                                Array.isArray(data?.vehicles) ? data.vehicles : 
+                                Array.isArray(data?.data) ? data.data : [];
+            setVehicles(vehiclesData as FleetVehicle[]);
+            setFilteredVehicles(vehiclesData as FleetVehicle[]);
+          } catch (wsError) {
+            console.error('WebSocket data processing error:', wsError);
+          }
+        });
+      }
+    } catch (wsError) {
+      console.error('WebSocket subscription error:', wsError);
+    }
 
     return () => {
-      unsubscribe();
+      if (unsubscribe) {
+        try {
+          unsubscribe();
+        } catch (error) {
+          console.error('WebSocket unsubscribe error:', error);
+        }
+      }
     };
-  }, [user]);
+  }, [user, t]);
 
   useEffect(() => {
-    // Ensure vehicles is always an array
+    // Ensure vehicles is always an array and handle null/undefined values
     const vehiclesArray = Array.isArray(vehicles) ? vehicles : [];
-    let filtered = vehiclesArray;
+    let filtered = vehiclesArray.filter(vehicle => vehicle != null);
 
     if (searchQuery) {
-      filtered = filtered.filter(vehicle =>
-        vehicle?.licensePlate?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        vehicle?.model?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        vehicle?.make?.toLowerCase().includes(searchQuery.toLowerCase())
-      );
+      filtered = filtered.filter(vehicle => {
+        if (!vehicle) return false;
+        const searchLower = searchQuery.toLowerCase();
+        return (
+          (vehicle.licensePlate && vehicle.licensePlate.toLowerCase().includes(searchLower)) ||
+          (vehicle.model && vehicle.model.toLowerCase().includes(searchLower)) ||
+          (vehicle.make && vehicle.make.toLowerCase().includes(searchLower))
+        );
+      });
     }
 
     if (statusFilter !== "all") {
-      filtered = filtered.filter(vehicle => vehicle?.status === statusFilter);
+      filtered = filtered.filter(vehicle => vehicle && vehicle.status === statusFilter);
     }
 
     setFilteredVehicles(filtered);
@@ -199,16 +238,40 @@ export default function FleetPage() {
           </p>
         </div>
         <div className="flex items-center space-x-2">
-          <Button variant="outline" className="shadow-2xs" onClick={optimizeRoutes}>
+          <Button 
+            variant="outline" 
+            className="shadow-2xs" 
+            onClick={optimizeRoutes || (() => console.warn('Optimize routes not available'))}
+            disabled={!optimizeRoutes}
+          >
             <Route className="mr-2 h-4 w-4" />
             {t('fleet.optimizeRoutes')}
           </Button>
-          <Button className="shadow-2xs" onClick={createFleet}>
+          <Button 
+            className="shadow-2xs" 
+            onClick={createFleet || (() => console.warn('Create fleet not available'))}
+            disabled={!createFleet}
+          >
             <Plus className="mr-2 h-4 w-4" />
             {t('fleet.addVehicle')}
           </Button>
         </div>
       </div>
+
+      {/* Error Display */}
+      {error && (
+        <Card className="shadow-2xs border-destructive">
+          <CardContent className="pt-6">
+            <div className="flex items-center space-x-3">
+              <AlertTriangle className="h-5 w-5 text-destructive" />
+              <div>
+                <p className="text-sm font-medium text-destructive">Error Loading Fleet Data</p>
+                <p className="text-xs text-destructive/80">{error}</p>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+      )}
 
       {/* Fleet Overview Cards */}
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
@@ -335,95 +398,103 @@ export default function FleetPage() {
               </TableRow>
             </TableHeader>
             <TableBody>
-              {filteredVehicles.map((vehicle) => (
-                <TableRow key={vehicle.id}>
-                  <TableCell>
-                    <div className="flex items-center space-x-3">
-                      <div className="w-8 h-8 rounded-full bg-primary flex items-center justify-center">
-                        <Car className="h-4 w-4 text-primary-foreground" />
+              {filteredVehicles.map((vehicle) => {
+                if (!vehicle || !vehicle.id) return null;
+                
+                return (
+                  <TableRow key={vehicle.id}>
+                    <TableCell>
+                      <div className="flex items-center space-x-3">
+                        <div className="w-8 h-8 rounded-full bg-primary flex items-center justify-center">
+                          <Car className="h-4 w-4 text-primary-foreground" />
+                        </div>
+                        <div>
+                          <p className="text-sm font-medium text-foreground">
+                            {vehicle.licensePlate || 'N/A'}
+                          </p>
+                          <p className="text-xs text-muted-foreground">
+                            {vehicle.make || 'Unknown'} {vehicle.model || 'Model'}
+                          </p>
+                        </div>
                       </div>
-                      <div>
-                        <p className="text-sm font-medium text-foreground">{vehicle.licensePlate}</p>
-                        <p className="text-xs text-muted-foreground">{vehicle.make} {vehicle.model}</p>
+                    </TableCell>
+                    <TableCell>
+                      <div className="flex items-center space-x-2">
+                        {getStatusIcon(vehicle.status || 'unknown')}
+                        <Badge variant={getStatusVariant(vehicle.status || 'unknown')}>
+                          {vehicle.status || 'Unknown'}
+                        </Badge>
                       </div>
-                    </div>
-                  </TableCell>
-                  <TableCell>
-                    <div className="flex items-center space-x-2">
-                      {getStatusIcon(vehicle.status)}
-                      <Badge variant={getStatusVariant(vehicle.status)}>
-                        {vehicle.status}
-                      </Badge>
-                    </div>
-                  </TableCell>
-                  <TableCell>
-                    {vehicle.location ? (
-                      <div className="flex items-center space-x-1">
-                        <MapPin className="h-3 w-3 text-muted-foreground" />
+                    </TableCell>
+                    <TableCell>
+                      {vehicle.location ? (
+                        <div className="flex items-center space-x-1">
+                          <MapPin className="h-3 w-3 text-muted-foreground" />
+                          <span className="text-sm text-muted-foreground">
+                            {vehicle.location.latitude?.toFixed(2) || '0.00'}, {vehicle.location.longitude?.toFixed(2) || '0.00'}
+                          </span>
+                        </div>
+                      ) : (
+                        <span className="text-sm text-muted-foreground">No location data</span>
+                      )}
+                    </TableCell>
+                    <TableCell>
+                      <div className="flex items-center space-x-2">
+                        <Fuel className="h-3 w-3 text-muted-foreground" />
                         <span className="text-sm text-muted-foreground">
-                          {vehicle.location.lat.toFixed(2)}, {vehicle.location.lng.toFixed(2)}
+                          {vehicle.fuelLevel || 0}%
                         </span>
                       </div>
-                    ) : (
-                      <span className="text-sm text-muted-foreground">No location data</span>
-                    )}
-                  </TableCell>
-                  <TableCell>
-                    <div className="flex items-center space-x-2">
-                      <Fuel className="h-3 w-3 text-muted-foreground" />
+                    </TableCell>
+                    <TableCell>
+                      <div className="flex items-center space-x-2">
+                        <Gauge className="h-3 w-3 text-muted-foreground" />
+                        <span className="text-sm text-muted-foreground">
+                          {vehicle.obd2Health || t('fleet.good')}
+                        </span>
+                      </div>
+                    </TableCell>
+                    <TableCell>
                       <span className="text-sm text-muted-foreground">
-                        {vehicle.fuelLevel || 0}%
+                        {formatRelativeTime(vehicle.lastUpdate || vehicle.updatedAt || new Date())}
                       </span>
-                    </div>
-                  </TableCell>
-                  <TableCell>
-                    <div className="flex items-center space-x-2">
-                      <Gauge className="h-3 w-3 text-muted-foreground" />
-                      <span className="text-sm text-muted-foreground">
-                        {vehicle.obd2Health || t('fleet.good')}
-                      </span>
-                    </div>
-                  </TableCell>
-                  <TableCell>
-                    <span className="text-sm text-muted-foreground">
-                      {formatRelativeTime(vehicle.lastUpdate)}
-                    </span>
-                  </TableCell>
-                  <TableCell className="text-right">
-                    <DropdownMenu>
-                      <DropdownMenuTrigger asChild>
-                        <Button variant="ghost" className="h-8 w-8 p-0">
-                          <MoreHorizontal className="h-4 w-4" />
-                        </Button>
-                      </DropdownMenuTrigger>
-                      <DropdownMenuContent align="end">
-                        <DropdownMenuLabel>Actions</DropdownMenuLabel>
-                        <DropdownMenuItem>
-                          <Navigation className="mr-2 h-4 w-4" />
-                          View on Map
-                        </DropdownMenuItem>
-                        <DropdownMenuItem>
-                          <Route className="mr-2 h-4 w-4" />
-                          Plan Route
-                        </DropdownMenuItem>
-                        <DropdownMenuItem>
-                          <Activity className="mr-2 h-4 w-4" />
-                          View Details
-                        </DropdownMenuItem>
-                        <DropdownMenuSeparator />
-                        <DropdownMenuItem>
-                          <Wrench className="mr-2 h-4 w-4" />
-                          Schedule Maintenance
-                        </DropdownMenuItem>
-                        <DropdownMenuItem className="text-destructive">
-                          <AlertTriangle className="mr-2 h-4 w-4" />
-                          Report Issue
-                        </DropdownMenuItem>
-                      </DropdownMenuContent>
-                    </DropdownMenu>
-                  </TableCell>
-                </TableRow>
-              ))}
+                    </TableCell>
+                    <TableCell className="text-right">
+                      <DropdownMenu>
+                        <DropdownMenuTrigger asChild>
+                          <Button variant="ghost" className="h-8 w-8 p-0">
+                            <MoreHorizontal className="h-4 w-4" />
+                          </Button>
+                        </DropdownMenuTrigger>
+                        <DropdownMenuContent align="end">
+                          <DropdownMenuLabel>Actions</DropdownMenuLabel>
+                          <DropdownMenuItem>
+                            <Navigation className="mr-2 h-4 w-4" />
+                            View on Map
+                          </DropdownMenuItem>
+                          <DropdownMenuItem>
+                            <Route className="mr-2 h-4 w-4" />
+                            Plan Route
+                          </DropdownMenuItem>
+                          <DropdownMenuItem>
+                            <Activity className="mr-2 h-4 w-4" />
+                            View Details
+                          </DropdownMenuItem>
+                          <DropdownMenuSeparator />
+                          <DropdownMenuItem>
+                            <Wrench className="mr-2 h-4 w-4" />
+                            Schedule Maintenance
+                          </DropdownMenuItem>
+                          <DropdownMenuItem className="text-destructive">
+                            <AlertTriangle className="mr-2 h-4 w-4" />
+                            Report Issue
+                          </DropdownMenuItem>
+                        </DropdownMenuContent>
+                      </DropdownMenu>
+                    </TableCell>
+                  </TableRow>
+                );
+              })}
             </TableBody>
           </Table>
         </CardContent>
@@ -437,30 +508,36 @@ export default function FleetPage() {
         </CardHeader>
         <CardContent>
           <div className="space-y-3">
-            {vehicles.filter(v => v.status === 'offline').slice(0, 1).map(vehicle => (
+            {vehicles.filter(v => v && v.status === 'offline').slice(0, 1).map(vehicle => (
               <div key={vehicle.id} className="flex items-center space-x-3 p-3 rounded-[0.625rem] bg-destructive/10 border border-destructive/20">
                 <AlertTriangle className="h-4 w-4 text-destructive" />
                 <div>
-                  <p className="text-sm font-medium text-destructive-foreground">{t('fleet.vehicleOffline', { plate: vehicle.licensePlate })}</p>
+                  <p className="text-sm font-medium text-destructive-foreground">
+                    {t('fleet.vehicleOffline').replace('{plate}', vehicle.licensePlate || 'Unknown')}
+                  </p>
                   <p className="text-xs text-destructive-foreground/80">No GPS signal for 2 hours</p>
                 </div>
               </div>
             ))}
-            {vehicles.filter(v => v.status === 'maintenance').slice(0, 1).map(vehicle => (
+            {vehicles.filter(v => v && v.status === 'maintenance').slice(0, 1).map(vehicle => (
               <div key={vehicle.id} className="flex items-center space-x-3 p-3 rounded-[0.625rem] bg-secondary/10 border border-secondary/20">
                 <Wrench className="h-4 w-4 text-secondary" />
                 <div>
                   <p className="text-sm font-medium text-secondary-foreground">{t('fleet.maintenanceDue')}</p>
-                  <p className="text-xs text-secondary-foreground/80">{vehicle.licensePlate} needs oil change</p>
+                  <p className="text-xs text-secondary-foreground/80">
+                    {vehicle.licensePlate || 'Unknown'} needs oil change
+                  </p>
                 </div>
               </div>
             ))}
-            {vehicles.filter(v => v.status === 'active').slice(0, 1).map(vehicle => (
+            {vehicles.filter(v => v && v.status === 'active').slice(0, 1).map(vehicle => (
               <div key={vehicle.id} className="flex items-center space-x-3 p-3 rounded-[0.625rem] bg-primary/10 border border-primary/20">
                 <Fuel className="h-4 w-4 text-primary" />
                 <div>
                   <p className="text-sm font-medium text-primary-foreground">Low Fuel Alert</p>
-                  <p className="text-xs text-primary-foreground/80">{vehicle.licensePlate} fuel level at 15%</p>
+                  <p className="text-xs text-primary-foreground/80">
+                    {vehicle.licensePlate || 'Unknown'} fuel level at 15%
+                  </p>
                 </div>
               </div>
             ))}

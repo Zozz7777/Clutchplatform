@@ -669,18 +669,16 @@ export default function HRPage() {
             {t('hr.description')}
           </p>
         </div>
-        {user && hasPermission("manage_hr") && (
-          <div className="flex space-x-2">
-            <Button onClick={() => setShowInvitationForm(true)}>
-              <Plus className="mr-2 h-4 w-4" />
-              Invite Employee
-            </Button>
-            <Button variant="outline">
-              <Plus className="mr-2 h-4 w-4" />
-              Post Job
-            </Button>
-          </div>
-        )}
+        <div className="flex space-x-2">
+          <Button onClick={() => setShowInvitationForm(true)}>
+            <Plus className="mr-2 h-4 w-4" />
+            Invite Employee
+          </Button>
+          <Button variant="outline">
+            <Plus className="mr-2 h-4 w-4" />
+            Post Job
+          </Button>
+        </div>
       </div>
 
       {/* Stats Cards */}
@@ -932,12 +930,10 @@ export default function HRPage() {
                   Manage pending employee invitations and track their status
                 </CardDescription>
               </div>
-              {user && hasPermission("manage_hr") && (
-                <Button onClick={() => setShowInvitationForm(true)}>
-                  <Plus className="mr-2 h-4 w-4" />
-                  Invite Employee
-                </Button>
-              )}
+              <Button onClick={() => setShowInvitationForm(true)}>
+                <Plus className="mr-2 h-4 w-4" />
+                Invite Employee
+              </Button>
             </div>
           </CardHeader>
           <CardContent>
@@ -1013,15 +1009,13 @@ export default function HRPage() {
               <div className="text-center py-8">
                 <Mail className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
                 <p className="text-muted-foreground">No invitations found</p>
-                {user && hasPermission("manage_hr") && (
-                  <Button 
-                    className="mt-4" 
-                    onClick={() => setShowInvitationForm(true)}
-                  >
-                    <Plus className="mr-2 h-4 w-4" />
-                    Send First Invitation
-                  </Button>
-                )}
+                <Button 
+                  className="mt-4" 
+                  onClick={() => setShowInvitationForm(true)}
+                >
+                  <Plus className="mr-2 h-4 w-4" />
+                  Send First Invitation
+                </Button>
               </div>
             )}
           </CardContent>
