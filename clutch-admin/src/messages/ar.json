@@ -2447,7 +2447,22 @@
     "exportData": "تصدير البيانات"
   },
   "featureFlags": {
-    "currentUser": "المستخدم الحالي"
+    "currentUser": "المستخدم الحالي",
+    "title": "علامات الميزات",
+    "createRollout": "إنشاء نشر تدريجي",
+    "activeABTests": "اختبارات A/B النشطة",
+    "enabled": "مفعل",
+    "disabled": "معطل",
+    "rollout": "النشر التدريجي",
+    "disable": "تعطيل",
+    "enable": "تفعيل",
+    "editFlag": "تعديل العلامة",
+    "configureRollout": "تكوين النشر التدريجي",
+    "deleteFlag": "حذف العلامة",
+    "createFlag": "إنشاء علامة",
+    "rolloutName": "اسم النشر التدريجي",
+    "rolloutType": "نوع النشر التدريجي",
+    "percentage": "النسبة المئوية"
   },
   "userSegments": {
     "title": "شرائح المستخدمين",

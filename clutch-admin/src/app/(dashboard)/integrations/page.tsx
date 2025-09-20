@@ -146,7 +146,7 @@ export default function IntegrationsPage() {
     try {
       setLoading(true);
       const data = await productionApi.getIntegrations();
-      const integrationsArray = Array.isArray(data) ? data : [];
+      const integrationsArray = Array.isArray(data) ? data as unknown as Integration[] : [];
       setIntegrations(integrationsArray);
     } catch (error) {
       logger.error("Error loading integrations:", error);
@@ -160,7 +160,7 @@ export default function IntegrationsPage() {
   const loadTemplates = async () => {
     try {
       const data = await productionApi.getIntegrationTemplates();
-      const templatesArray = Array.isArray(data) ? data : [];
+      const templatesArray = Array.isArray(data) ? data as unknown as IntegrationTemplate[] : [];
       setTemplates(templatesArray);
     } catch (error) {
       logger.error("Error loading templates:", error);
@@ -169,33 +169,33 @@ export default function IntegrationsPage() {
     }
   };
 
-  const getStatusColor = (status: string) => {
+  const getStatusVariant = (status: string) => {
     switch (status) {
       case "active":
-        return "bg-primary/10 text-primary-foreground";
+        return "default";
       case "inactive":
-        return "bg-muted text-muted-foreground";
+        return "outline";
       case "error":
-        return "bg-destructive/10 text-destructive-foreground";
+        return "destructive";
       case "pending":
-        return "bg-secondary/10 text-secondary-foreground";
+        return "secondary";
       case "maintenance":
-        return "bg-secondary/10 text-secondary-foreground";
+        return "secondary";
       default:
-        return "bg-muted text-muted-foreground";
+        return "outline";
     }
   };
 
-  const getHealthColor = (status: string) => {
+  const getHealthVariant = (status: string) => {
     switch (status) {
       case "healthy":
-        return "bg-primary/10 text-primary-foreground";
+        return "default";
       case "degraded":
-        return "bg-secondary/10 text-secondary-foreground";
+        return "secondary";
       case "down":
-        return "bg-destructive/10 text-destructive-foreground";
+        return "destructive";
       default:
-        return "bg-muted text-muted-foreground";
+        return "outline";
     }
   };
 
@@ -411,10 +411,10 @@ export default function IntegrationsPage() {
                       <div className="flex items-center space-x-3 mb-2">
                         {getTypeIcon(integration.type)}
                         <h3 className="text-lg font-semibold">{integration.name}</h3>
-                        <Badge className={getStatusColor(integration.status)}>
+                        <Badge variant={getStatusVariant(integration.status)}>
                           {integration.status}
                         </Badge>
-                        <Badge className={getHealthColor(integration.health.status)}>
+                        <Badge variant={getHealthVariant(integration.health.status)}>
                           {integration.health.status}
                         </Badge>
                         <Badge variant="outline">
@@ -603,7 +603,7 @@ export default function IntegrationsPage() {
                       </div>
                       <div className="flex items-center space-x-2">
                         {template.isPopular && (
-                          <Badge className="bg-secondary/10 text-secondary-foreground">Popular</Badge>
+                          <Badge variant="secondary">Popular</Badge>
                         )}
                         <Badge variant="outline">{template.type}</Badge>
                       </div>
