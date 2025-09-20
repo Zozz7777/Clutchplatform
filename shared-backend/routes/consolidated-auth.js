@@ -388,17 +388,40 @@ router.post('/login', loginRateLimit, async (req, res) => {
     
     // Try database authentication - check employees first, then regular users
     let user = null;
+    let isEmployee = false;
     try {
-      const usersCollection = await getCollection('users');
-      
-      // Optimized: Single query with $or to find user (employee or regular)
-      user = await usersCollection.findOne({ 
-        email: email.toLowerCase()
+      // First check employees collection
+      const employeesCollection = await getCollection('employees');
+      const employee = await employeesCollection.findOne({ 
+        'basicInfo.email': email.toLowerCase()
       });
+      
+      if (employee) {
+        // Convert employee record to user format for authentication
+        user = {
+          _id: employee._id,
+          email: employee.basicInfo.email,
+          password: employee.password,
+          role: employee.role,
+          isEmployee: true,
+          isActive: employee.isActive,
+          firstName: employee.basicInfo.firstName,
+          lastName: employee.basicInfo.lastName,
+          department: employee.employment?.department,
+          position: employee.employment?.position
+        };
+        isEmployee = true;
+      } else {
+        // If not found in employees, check users collection
+        const usersCollection = await getCollection('users');
+        user = await usersCollection.findOne({ 
+          email: email.toLowerCase()
+        });
+      }
       
       console.log('🔍 Database lookup result:', {
         found: !!user,
-        isEmployee: user?.isEmployee,
+        isEmployee: isEmployee,
         role: user?.role,
         email: user?.email
       });
