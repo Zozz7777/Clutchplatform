@@ -1580,7 +1580,9 @@
   },
   "common": {
     "search": "بحث...",
-    "all": "الكل"
+    "all": "الكل",
+    "cancel": "إلغاء",
+    "close": "إغلاق"
   },
   "reports": {
     "title": "التقارير",
@@ -1648,7 +1650,12 @@
     "createReportDescription": "إنشاء تقرير جديد بمعاملات ومرشحات مخصصة",
     "enterReportName": "أدخل اسم التقرير",
     "startDate": "تاريخ البداية",
-    "endDate": "تاريخ النهاية"
+    "endDate": "تاريخ النهاية",
+    "useTemplatesDescription": "استخدم القوالب الجاهزة لإنشاء التقارير بسرعة",
+    "usedTimes": "تم الاستخدام {count} مرة",
+    "useTemplate": "استخدام القالب",
+    "reportsAnalytics": "تحليلات التقارير",
+    "automateAndMeasure": "أتمتة وقياس فعالية التقارير"
   },
   "communication": {
     "title": "التواصل",

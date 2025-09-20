@@ -615,9 +615,9 @@ export default function ReportsPage() {
       <Dialog open={showTemplateDialog} onOpenChange={setShowTemplateDialog}>
         <DialogContent className="max-w-4xl">
           <DialogHeader>
-            <DialogTitle>Report Templates</DialogTitle>
+            <DialogTitle>{t('reports.reportTemplates')}</DialogTitle>
             <DialogDescription>
-              Use pre-built templates to quickly create reports.
+              {t('reports.useTemplatesDescription')}
             </DialogDescription>
           </DialogHeader>
           <div className="grid gap-4 py-4">
@@ -634,10 +634,10 @@ export default function ReportsPage() {
                     </div>
                     <div className="flex items-center justify-between">
                       <span className="text-sm text-muted-foreground">
-                        Used {template.usageCount} times
+                        {t('reports.usedTimes').replace('{count}', template.usageCount.toString())}
                       </span>
                       <Button size="sm" variant="outline">
-                        Use Template
+                        {t('reports.useTemplate')}
                       </Button>
                     </div>
                   </CardContent>
@@ -647,7 +647,7 @@ export default function ReportsPage() {
           </div>
           <DialogFooter>
             <Button variant="outline" onClick={() => setShowTemplateDialog(false)}>
-              Close
+              {t('common.close')}
             </Button>
           </DialogFooter>
         </DialogContent>
@@ -657,9 +657,9 @@ export default function ReportsPage() {
       <div className="space-y-6 mt-8">
         <div className="flex items-center justify-between">
           <div>
-            <h2 className="text-2xl font-bold tracking-tight text-foreground">Reports Analytics</h2>
+            <h2 className="text-2xl font-bold tracking-tight text-foreground">{t('reports.reportsAnalytics')}</h2>
             <p className="text-muted-foreground">
-              Automate and measure report effectiveness
+              {t('reports.automateAndMeasure')}
             </p>
           </div>
         </div>

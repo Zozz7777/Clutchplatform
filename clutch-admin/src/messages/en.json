@@ -1580,7 +1580,252 @@
   },
   "common": {
     "search": "Search...",
-    "all": "All"
+    "all": "All",
+    "cancel": "Cancel",
+    "close": "Close"
+  },
+  "commandBar": {
+    "categories": {
+      "users": "Users",
+      "fleet": "Fleet",
+      "finance": "Finance",
+      "system": "System",
+      "analytics": "Analytics",
+      "emergency": "Emergency"
+    },
+    "actions": {
+      "createUser": "Create User",
+      "createUserDesc": "Add a new user to the system",
+      "suspendUser": "Suspend User",
+      "suspendUserDesc": "Temporarily disable a user account",
+      "bulkUserImport": "Bulk Import Users",
+      "bulkUserImportDesc": "Import multiple users from CSV file",
+      "pauseVehicle": "Pause Vehicle",
+      "pauseVehicleDesc": "Temporarily stop a vehicle",
+      "emergencyStop": "Emergency Stop All Vehicles",
+      "emergencyStopDesc": "Immediately stop all vehicles in the fleet",
+      "scheduleMaintenance": "Schedule Maintenance",
+      "scheduleMaintenanceDesc": "Schedule vehicle maintenance",
+      "triggerPayout": "Trigger Payout",
+      "triggerPayoutDesc": "Process immediate payment to vendor",
+      "freezeTransactions": "Freeze All Transactions",
+      "freezeTransactionsDesc": "Temporarily halt all financial transactions",
+      "generateInvoice": "Generate Invoice",
+      "generateInvoiceDesc": "Create invoice for selected client",
+      "systemHealthCheck": "System Health Check",
+      "systemHealthCheckDesc": "Run comprehensive system diagnostics",
+      "clearCache": "Clear System Cache",
+      "clearCacheDesc": "Clear all system caches and temporary data",
+      "backupSystem": "Backup System",
+      "backupSystemDesc": "Create full system backup",
+      "generateReport": "Generate Report",
+      "generateReportDesc": "Create custom analytics report",
+      "exportData": "Export Data",
+      "exportDataDesc": "Export selected data to CSV/Excel",
+      "incidentResponse": "Activate Incident Response",
+      "incidentResponseDesc": "Trigger emergency incident response protocol",
+      "warRoomMode": "Enter War Room Mode",
+      "warRoomModeDesc": "Activate crisis management dashboard"
+    },
+    "placeholders": {
+      "search": "Type a command or search...",
+      "noResults": "No results found."
+    },
+    "shortcuts": {
+      "open": "Press ⌘K to open"
+    },
+    "confirmations": {
+      "cancel": "Cancel",
+      "confirm": "Confirm",
+      "impactWarning": "This action will have a {impact} impact on the system. Are you sure you want to proceed?"
+    },
+    "forms": {
+      "createUser": {
+        "title": "Create New User",
+        "description": "Enter the details for the new user",
+        "fields": {
+          "name": "Full Name",
+          "email": "Email Address",
+          "role": "Role",
+          "status": "Status"
+        },
+        "placeholders": {
+          "name": "John Doe",
+          "email": "john@example.com"
+        },
+        "options": {
+          "roles": {
+            "user": "User",
+            "admin": "Admin",
+            "head_administrator": "Head Administrator"
+          },
+          "statuses": {
+            "active": "Active",
+            "inactive": "Inactive",
+            "pending": "Pending"
+          }
+        }
+      },
+      "suspendUser": {
+        "title": "Suspend User",
+        "description": "Enter the user ID to suspend",
+        "fields": {
+          "userId": "User ID"
+        },
+        "placeholders": {
+          "userId": "user-123"
+        }
+      },
+      "bulkImport": {
+        "title": "Bulk Import Users",
+        "description": "Upload a CSV file to import multiple users at once",
+        "fields": {
+          "file": "CSV File"
+        },
+        "placeholders": {
+          "file": "Select CSV file"
+        }
+      },
+      "pauseVehicle": {
+        "title": "Pause Vehicle",
+        "description": "Enter the vehicle ID to pause",
+        "fields": {
+          "vehicleId": "Vehicle ID"
+        },
+        "placeholders": {
+          "vehicleId": "vehicle-123"
+        }
+      },
+      "emergencyStop": {
+        "title": "Emergency Stop All Vehicles",
+        "description": "Are you sure you want to emergency stop ALL vehicles? This action cannot be undone."
+      },
+      "scheduleMaintenance": {
+        "title": "Schedule Vehicle Maintenance",
+        "description": "Enter the maintenance details",
+        "fields": {
+          "vehicleId": "Vehicle ID",
+          "type": "Maintenance Type",
+          "description": "Description"
+        },
+        "placeholders": {
+          "vehicleId": "vehicle-123",
+          "description": "Additional maintenance details"
+        },
+        "options": {
+          "types": {
+            "routine": "Routine",
+            "emergency": "Emergency",
+            "inspection": "Inspection"
+          }
+        }
+      },
+      "triggerPayout": {
+        "title": "Trigger Manual Payout",
+        "description": "Enter the payout details",
+        "fields": {
+          "amount": "Amount",
+          "recipient": "Recipient ID",
+          "description": "Description"
+        },
+        "placeholders": {
+          "amount": "100.00",
+          "recipient": "user-123",
+          "description": "Reason for payout"
+        }
+      },
+      "generateInvoice": {
+        "title": "Generate Invoice",
+        "description": "Enter the invoice details",
+        "fields": {
+          "customerId": "Customer ID",
+          "amount": "Amount",
+          "description": "Description"
+        },
+        "placeholders": {
+          "customerId": "customer-123",
+          "amount": "1000.00",
+          "description": "Invoice description"
+        }
+      },
+      "generateReport": {
+        "title": "Generate Report",
+        "description": "Select the report type and format",
+        "fields": {
+          "type": "Report Type",
+          "format": "Format"
+        },
+        "options": {
+          "types": {
+            "analytics": "Analytics",
+            "financial": "Financial",
+            "users": "Users",
+            "fleet": "Fleet"
+          },
+          "formats": {
+            "pdf": "PDF",
+            "csv": "CSV",
+            "excel": "Excel"
+          }
+        }
+      },
+      "exportData": {
+        "title": "Export Data",
+        "description": "Select the data type and export format",
+        "fields": {
+          "dataType": "Data Type",
+          "format": "Export Format"
+        },
+        "options": {
+          "dataTypes": {
+            "users": "Users",
+            "vehicles": "Vehicles",
+            "payments": "Payments",
+            "analytics": "Analytics"
+          },
+          "formats": {
+            "csv": "CSV",
+            "excel": "Excel",
+            "json": "JSON"
+          }
+        }
+      },
+      "incidentResponse": {
+        "title": "Activate Incident Response Protocol",
+        "description": "Are you sure you want to activate incident response protocol? This will notify all emergency contacts and activate crisis management procedures."
+      },
+      "warRoomMode": {
+        "title": "Enter War Room Mode",
+        "description": "Are you sure you want to enter War Room Mode? This will activate crisis management dashboard and emergency protocols."
+      }
+    },
+    "messages": {
+      "userCreated": "User created successfully!",
+      "userSuspended": "User suspended successfully!",
+      "usersImported": "Successfully imported {count} users!",
+      "vehiclePaused": "Vehicle paused successfully!",
+      "emergencyStopActivated": "Emergency stop activated for {count} vehicles!",
+      "maintenanceScheduled": "Maintenance scheduled successfully!",
+      "payoutTriggered": "Payout triggered successfully!",
+      "transactionsFrozen": "All transactions have been frozen!",
+      "invoiceGenerated": "Invoice generated successfully!",
+      "healthCheckCompleted": "System health check completed!",
+      "cacheCleared": "System cache cleared successfully!",
+      "backupInitiated": "System backup initiated!",
+      "reportGenerated": "Report generated successfully!",
+      "dataExported": "Data exported successfully!",
+      "incidentResponseActivated": "Incident response protocol activated!",
+      "warRoomModeActivated": "War Room Mode activated!"
+    },
+    "errors": {
+      "userNotFound": "User not found!",
+      "vehicleNotFound": "Vehicle not found!",
+      "csvProcessingFailed": "Failed to process CSV file",
+      "freezeTransactionsFailed": "Failed to freeze transactions. Please try again.",
+      "healthCheckFailed": "Failed to run system health check. Please try again.",
+      "clearCacheFailed": "Failed to clear cache. Please try again.",
+      "backupFailed": "Failed to create backup. Please try again."
+    }
   },
   "reports": {
     "title": "Reports",
@@ -1648,7 +1893,12 @@
     "createReportDescription": "Generate a new report with custom parameters and filters",
     "enterReportName": "Enter report name",
     "startDate": "Start Date",
-    "endDate": "End Date"
+    "endDate": "End Date",
+    "useTemplatesDescription": "Use pre-built templates to quickly create reports",
+    "usedTimes": "Used {count} times",
+    "useTemplate": "Use Template",
+    "reportsAnalytics": "Reports Analytics",
+    "automateAndMeasure": "Automate and measure report effectiveness"
   },
   "communication": {
     "title": "Communication",

@@ -424,8 +424,8 @@ export default function AuditTrailPage() {
                       <div className="flex items-center space-x-2">
                         <Globe className="h-4 w-4 text-muted-foreground" />
                         <div className="text-sm">
-                          <div>{log.location.city}</div>
-                          <div className="text-muted-foreground">{log.location.country}</div>
+                          <div>{log.location?.city || 'Unknown'}</div>
+                          <div className="text-muted-foreground">{log.location?.country || 'Unknown'}</div>
                         </div>
                       </div>
                     </TableCell>

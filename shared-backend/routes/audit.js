@@ -621,6 +621,125 @@ router.get('/analytics', authenticateToken, checkRole(['head_administrator', 'au
 
 // ==================== GENERIC HANDLERS ====================
 
+// GET /api/v1/audit-trail/user-activity - Get all user activities (frontend compatibility)
+router.get('/user-activity', authenticateToken, checkRole(['head_administrator', 'auditor']), auditRateLimit, async (req, res) => {
+  try {
+    const { page = 1, limit = 50, startDate, endDate } = req.query;
+    const skip = (page - 1) * limit;
+    
+    const activitiesCollection = await getCollection('user_activities');
+    
+    if (!activitiesCollection) {
+      return res.status(500).json({
+        success: false,
+        error: 'DATABASE_CONNECTION_FAILED',
+        message: 'Database connection failed',
+        timestamp: new Date().toISOString()
+      });
+    }
+    
+    const filter = {};
+    if (startDate || endDate) {
+      filter.timestamp = {};
+      if (startDate) filter.timestamp.$gte = new Date(startDate);
+      if (endDate) filter.timestamp.$lte = new Date(endDate);
+    }
+    
+    const activities = await activitiesCollection
+      .find(filter)
+      .sort({ timestamp: -1 })
+      .skip(skip)
+      .limit(parseInt(limit))
+      .toArray();
+    
+    const total = await activitiesCollection.countDocuments(filter);
+    
+    res.json({
+      success: true,
+      data: activities,
+      pagination: {
+        page: parseInt(page),
+        limit: parseInt(limit),
+        total,
+        pages: Math.ceil(total / limit)
+      },
+      message: 'User activities retrieved successfully',
+      timestamp: new Date().toISOString()
+    });
+  } catch (error) {
+    console.error('❌ Get user activities error:', error);
+    res.status(500).json({
+      success: false,
+      error: 'GET_USER_ACTIVITIES_FAILED',
+      message: 'Failed to get user activities',
+      timestamp: new Date().toISOString()
+    });
+  }
+});
+
+// GET /api/v1/audit-trail/security - Get security events (frontend compatibility)
+router.get('/security', authenticateToken, checkRole(['head_administrator', 'security']), auditRateLimit, async (req, res) => {
+  try {
+    const { 
+      page = 1, 
+      limit = 50, 
+      severity,
+      startDate, 
+      endDate 
+    } = req.query;
+    const skip = (page - 1) * limit;
+    
+    const securityCollection = await getCollection('security_events');
+    
+    if (!securityCollection) {
+      return res.status(500).json({
+        success: false,
+        error: 'DATABASE_CONNECTION_FAILED',
+        message: 'Database connection failed',
+        timestamp: new Date().toISOString()
+      });
+    }
+    
+    const filter = {};
+    if (severity) filter.severity = severity;
+    if (startDate || endDate) {
+      filter.timestamp = {};
+      if (startDate) filter.timestamp.$gte = new Date(startDate);
+      if (endDate) filter.timestamp.$lte = new Date(endDate);
+    }
+    
+    const events = await securityCollection
+      .find(filter)
+      .sort({ timestamp: -1 })
+      .skip(skip)
+      .limit(parseInt(limit))
+      .toArray();
+    
+    const total = await securityCollection.countDocuments(filter);
+    
+    res.json({
+      success: true,
+      data: events,
+      pagination: {
+        page: parseInt(page),
+        limit: parseInt(limit),
+        total,
+        pages: Math.ceil(total / limit)
+      },
+      message: 'Security events retrieved successfully',
+      timestamp: new Date().toISOString()
+    });
+  } catch (error) {
+    console.error('❌ Get security events error:', error);
+    res.status(500).json({
+      success: false,
+      error: 'GET_SECURITY_EVENTS_FAILED',
+      message: 'Failed to get security events',
+      timestamp: new Date().toISOString()
+    });
+  }
+});
+
 // GET /api/v1/audit - Get audit overview
 router.get('/', authenticateToken, checkRole(['head_administrator', 'auditor']), auditRateLimit, async (req, res) => {
   res.json({
@@ -629,7 +748,9 @@ router.get('/', authenticateToken, checkRole(['head_administrator', 'auditor']),
     endpoints: {
       logs: '/api/v1/audit/logs',
       userActivity: '/api/v1/audit/user-activity/:userId',
+      userActivities: '/api/v1/audit-trail/user-activity',
       securityEvents: '/api/v1/audit/security-events',
+      security: '/api/v1/audit-trail/security',
       complianceReport: '/api/v1/audit/compliance-report',
       analytics: '/api/v1/audit/analytics'
     },

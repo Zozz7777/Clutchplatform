@@ -218,7 +218,7 @@ router.post('/invoices', checkRole(['head_administrator', 'finance_officer']), a
       invoiceNumber,
       customerId,
       amount: parseFloat(amount),
-      currency: currency || 'USD',
+      currency: currency || 'EGP',
       dueDate: dueDate ? new Date(dueDate) : null,
       items: items || [],
       status: status || 'draft',
