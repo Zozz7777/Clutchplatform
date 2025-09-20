@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -64,14 +64,20 @@ export default function APIDocsPage() {
   const [endpoints, setEndpoints] = useState<APIEndpoint[]>([]);
   const [categories, setCategories] = useState<Record<string, unknown>[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const hasLoadedRef = useRef(false);
 
   useEffect(() => {
     const loadAPIDocsData = async () => {
       try {
+        // Prevent multiple simultaneous loads
+        if (isLoading || hasLoadedRef.current) {
+          return;
+        }
+        
         setIsLoading(true);
         
-        // Only load data if user is authenticated
-        if (!user && !authLoading) {
+        // Only load data if user is authenticated and not loading
+        if (!user || authLoading) {
           setIsLoading(false);
           return;
         }
@@ -85,7 +91,7 @@ export default function APIDocsPage() {
         // Handle endpoints data
         if (endpointsData.status === 'fulfilled') {
           const endpoints = endpointsData.value || [];
-          setEndpoints(endpoints as unknown as APIEndpoint[]);
+          setEndpoints(Array.isArray(endpoints) ? endpoints as unknown as APIEndpoint[] : []);
         } else {
           console.warn('Failed to load API endpoints:', endpointsData.reason);
           // Provide fallback endpoints data
@@ -123,7 +129,8 @@ export default function APIDocsPage() {
 
         // Handle categories data
         if (categoriesData.status === 'fulfilled') {
-          setCategories(categoriesData.value || []);
+          const categories = categoriesData.value || [];
+          setCategories(Array.isArray(categories) ? categories : []);
         } else {
           console.warn('Failed to load API categories:', categoriesData.reason);
           // Provide fallback categories data
@@ -133,25 +140,26 @@ export default function APIDocsPage() {
             { _id: "fallback-3", name: "Fleet Management", description: "Vehicle operations" }
           ]);
         }
-        
+
         // Only show error toast if both requests failed
         if (endpointsData.status === 'rejected' && categoriesData.status === 'rejected') {
-          toast.error(t('apiDocs.failedToLoadAPIDocsData'));
+          toast.error('Failed to load API documentation data');
         }
-        
+
       } catch (error) {
         console.error('Unexpected error loading API docs:', error);
         // Set empty arrays on error - no mock data fallback
         setEndpoints([]);
         setCategories([]);
-        toast.error(t('apiDocs.failedToLoadAPIDocsData'));
+        toast.error('Failed to load API documentation data');
       } finally {
         setIsLoading(false);
+        hasLoadedRef.current = true;
       }
     };
 
     loadAPIDocsData();
-  }, [t, user, authLoading]);
+  }, [user, authLoading]); // Removed 't' from dependencies to prevent infinite reloads
 
   const getMethodColor = (method: string) => {
     switch (method) {
