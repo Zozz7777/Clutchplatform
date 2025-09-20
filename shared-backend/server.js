@@ -226,7 +226,7 @@ app.use(`${apiPrefix}/performance`, performanceRoutes);
 app.use(`${apiPrefix}/dashboard`, dashboardRoutes);
 app.use(`${apiPrefix}/notifications`, notificationsRoutes);
 app.use(`${apiPrefix}/employees`, employeesRoutes);
-app.use(`${apiPrefix}/employee-invitations`, employeeInvitationsRoutes);
+app.use(`${apiPrefix}/employees`, employeeInvitationsRoutes);
 app.use(`${apiPrefix}/export`, exportRoutes);
 
 // Mount new missing route files with correct v1 prefix
