@@ -26,15 +26,15 @@ export const getAssetsPath = (): string => {
   return path.join(getAppPath(), 'assets');
 };
 
-export const formatCurrency = (amount: number, currency: string = 'SAR'): string => {
-  return new Intl.NumberFormat('ar-SA', {
+export const formatCurrency = (amount: number, currency: string = 'EGP'): string => {
+  return new Intl.NumberFormat('ar-EG', {
     style: 'currency',
     currency: currency,
     minimumFractionDigits: 2
   }).format(amount);
 };
 
-export const formatDate = (date: Date, locale: string = 'ar-SA'): string => {
+export const formatDate = (date: Date, locale: string = 'ar-EG'): string => {
   return new Intl.DateTimeFormat(locale, {
     year: 'numeric',
     month: 'long',
@@ -42,7 +42,7 @@ export const formatDate = (date: Date, locale: string = 'ar-SA'): string => {
   }).format(date);
 };
 
-export const formatDateTime = (date: Date, locale: string = 'ar-SA'): string => {
+export const formatDateTime = (date: Date, locale: string = 'ar-EG'): string => {
   return new Intl.DateTimeFormat(locale, {
     year: 'numeric',
     month: 'long',

@@ -270,19 +270,19 @@ export function TrainingROI({ className = '' }: TrainingROIProps) {
           <div className="space-y-2">
             <div className="flex justify-between text-sm">
               <span>GPU Compute</span>
-              <span>${roiData.trainingCost.toLocaleString()}</span>
+              <span>{roiData.trainingCost.toLocaleString()} EGP</span>
             </div>
             <Progress value={100} className="h-2" />
             
             <div className="flex justify-between text-sm">
               <span>Data Storage</span>
-              <span>$500</span>
+              <span>500 EGP</span>
             </div>
             <Progress value={20} className="h-2" />
             
             <div className="flex justify-between text-sm">
               <span>Model Deployment</span>
-              <span>$300</span>
+              <span>300 EGP</span>
             </div>
             <Progress value={12} className="h-2" />
           </div>

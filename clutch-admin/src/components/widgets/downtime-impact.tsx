@@ -57,7 +57,7 @@ export function DowntimeImpact({ className = '' }: DowntimeImpactProps) {
         // Simulate downtime calculations
         const totalDowntimeHours = totalVehicles * 24; // 24 hours per vehicle per month
         const lostRevenueHours = totalDowntimeHours * 0.3; // 30% of downtime is revenue-impacting
-        const revenuePerHour = 150; // $150 per hour of lost revenue
+        const revenuePerHour = 150; // 150 EGP per hour of lost revenue
         const revenueImpact = lostRevenueHours * revenuePerHour;
         const averageDowntimePerVehicle = totalVehicles > 0 ? totalDowntimeHours / totalVehicles : 0;
 

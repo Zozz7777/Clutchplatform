@@ -713,12 +713,12 @@ export default function HRPage() {
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-medium">
-              ${stats ? (isNaN(stats.averageSalary) ? 0 : Math.round(stats.averageSalary).toLocaleString()) : 
+              {stats ? (isNaN(stats.averageSalary) ? 0 : Math.round(stats.averageSalary).toLocaleString()) : 
                 Array.isArray(employees) && employees.length > 0 ? 
                   (() => {
                     const avg = employees.reduce((sum, e) => sum + (Number(e.salary) || 0), 0) / employees.length;
                     return isNaN(avg) ? 0 : Math.round(avg).toLocaleString();
-                  })() : 0}
+                  })() : 0} EGP
             </div>
             <p className="text-xs text-muted-foreground">
               Annual average
@@ -812,7 +812,7 @@ export default function HRPage() {
                           ID: {employee.employeeId}
                         </span>
                         <span className="text-xs text-muted-foreground">
-                          ${(employee.salary || 0).toLocaleString()}
+                          {(employee.salary || 0).toLocaleString()} EGP
                         </span>
                       </div>
                     </div>
@@ -1059,7 +1059,7 @@ export default function HRPage() {
                         <p>Interview: {formatDate(application.interviewDate)}</p>
                       )}
                       {application.salary && (
-                        <p>Salary: ${application.salary.toLocaleString()}</p>
+                        <p>Salary: {application.salary.toLocaleString()} EGP</p>
                       )}
                       <p>Assigned: {application.assignedTo}</p>
                     </div>
@@ -1208,7 +1208,7 @@ export default function HRPage() {
                   </div>
                   <div>
                     <label className="text-sm font-medium text-muted-foreground">Salary</label>
-                    <p className="text-sm">${(selectedEmployee.salary || 0).toLocaleString()}</p>
+                    <p className="text-sm">{(selectedEmployee.salary || 0).toLocaleString()} EGP</p>
                   </div>
                   <div>
                     <label className="text-sm font-medium text-muted-foreground">Start Date</label>

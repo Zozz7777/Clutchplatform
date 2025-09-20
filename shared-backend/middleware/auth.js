@@ -1,6 +1,7 @@
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
 const { getRedisClient } = require('../config/redis');
+const logger = require('../utils/logger');
 
 // Password hashing utilities
 const SALT_ROUNDS = parseInt(process.env.BCRYPT_ROUNDS) || 12;
@@ -17,7 +18,7 @@ const hashPassword = async (password) => {
 const comparePassword = async (password, hashedPassword) => {
   try {
     if (!password || !hashedPassword) {
-      console.error('Password comparison: missing password or hash');
+      logger.error('Password comparison: missing password or hash');
       return false;
     }
     
@@ -25,7 +26,7 @@ const comparePassword = async (password, hashedPassword) => {
     console.log('Password comparison result:', result);
     return result;
   } catch (error) {
-    console.error('Password comparison error:', error);
+    logger.error('Password comparison error:', error);
     return false; // Return false instead of throwing error
   }
 };
@@ -87,7 +88,7 @@ const authenticateToken = async (req, res, next) => {
         
         return next();
       } catch (error) {
-        console.error('Session token validation error:', error);
+        logger.error('Session token validation error:', error);
         return res.status(401).json({ error: 'Session validation failed' });
       }
     }
@@ -113,7 +114,7 @@ const authenticateToken = async (req, res, next) => {
     }
     
   } catch (error) {
-    console.error('Authentication error:', error);
+    logger.error('Authentication error:', error);
     return res.status(500).json({ error: 'Authentication failed' });
   }
 };
@@ -156,7 +157,7 @@ const requireRole = (roles) => {
       });
       
     } catch (error) {
-      console.error('Role check error:', error);
+      logger.error('Role check error:', error);
       return res.status(500).json({ error: 'Role validation failed' });
     }
   };
@@ -210,7 +211,7 @@ const requirePermission = (permission) => {
       
       next();
     } catch (error) {
-      console.error('Permission check error:', error);
+      logger.error('Permission check error:', error);
       return res.status(500).json({ error: 'Permission validation failed' });
     }
   };
@@ -245,7 +246,7 @@ const optionalAuth = async (req, res, next) => {
           };
         }
       } catch (error) {
-        console.error('Optional session validation error:', error);
+        logger.error('Optional session validation error:', error);
       }
     } else {
       // Handle JWT tokens
@@ -253,13 +254,13 @@ const optionalAuth = async (req, res, next) => {
         const decoded = jwt.verify(token, process.env.JWT_SECRET);
         req.user = decoded;
       } catch (error) {
-        console.error('Optional JWT validation error:', error);
+        logger.error('Optional JWT validation error:', error);
       }
     }
     
     next();
   } catch (error) {
-    console.error('Optional authentication error:', error);
+    logger.error('Optional authentication error:', error);
     next(); // Continue without user
   }
 };

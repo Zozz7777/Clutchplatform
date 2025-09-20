@@ -222,7 +222,7 @@ const initializeOptimizedDatabase = async () => {
         if (error.code === 48) { // Collection already exists
           console.log(`✅ Optimized collection '${collectionName}' already exists`);
         } else {
-          console.error(`❌ Error creating optimized collection '${collectionName}':`, error.message);
+          logger.error(`Error creating optimized collection '${collectionName}':`, error.message);
         }
       }
     }
@@ -233,7 +233,7 @@ const initializeOptimizedDatabase = async () => {
     console.log('✅ Optimized database initialization completed');
     
   } catch (error) {
-    console.error('❌ Optimized database initialization error:', error);
+    logger.error('Optimized database initialization error:', error);
   }
 };
 
@@ -296,13 +296,13 @@ const createOptimizedIndexes = async () => {
       try {
         await createIndexSafely(collectionName, index, options);
       } catch (error) {
-        console.error(`❌ Error creating optimized index for ${collectionName}:`, error.message);
+        logger.error(`Error creating optimized index for ${collectionName}:`, error.message);
       }
     }
 
     console.log('✅ Optimized database indexes created successfully');
   } catch (error) {
-    console.error('❌ Optimized index creation error:', error);
+    logger.error('Optimized index creation error:', error);
   }
 };
 
@@ -364,7 +364,7 @@ const getCollection = async (collectionName) => {
     
     return collection;
   } catch (error) {
-    console.error(`❌ Error getting optimized collection ${collectionName}:`, error);
+    logger.error(`Error getting optimized collection ${collectionName}:`, error);
     throw error;
   }
 };
@@ -412,7 +412,7 @@ const closeDatabaseConnection = async () => {
       console.log('✅ Optimized MongoDB client connection closed gracefully');
     }
   } catch (error) {
-    console.error('❌ Error closing optimized database connection:', error);
+    logger.error('Error closing optimized database connection:', error);
   }
 };
 

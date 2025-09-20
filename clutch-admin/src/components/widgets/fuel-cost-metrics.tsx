@@ -181,7 +181,7 @@ export function FuelCostMetrics({ className = '' }: FuelCostMetricsProps) {
           <div className="text-center p-3 bg-success/10 rounded-[0.625rem]-lg">
             <DollarSign className="h-5 w-5 text-success mx-auto mb-1" />
             <p className="text-lg font-bold text-success">
-              ${costMetrics.totalCost.toLocaleString()}
+              {costMetrics.totalCost.toLocaleString()} EGP
             </p>
             <p className="text-xs text-muted-foreground">Total Monthly Cost</p>
           </div>
@@ -197,7 +197,7 @@ export function FuelCostMetrics({ className = '' }: FuelCostMetricsProps) {
           <div className="flex items-center justify-center space-x-2 mb-2">
             <Target className={`h-6 w-6 ${getCostColor(costMetrics.costPerVehicle, targetCostPerVehicle)}`} />
             <span className={`text-2xl font-bold ${getCostColor(costMetrics.costPerVehicle, targetCostPerVehicle)}`}>
-              ${costMetrics.costPerVehicle.toFixed(0)}
+              {costMetrics.costPerVehicle.toFixed(0)} EGP
             </span>
             <Badge className={getCostBadge(costMetrics.costPerVehicle, targetCostPerVehicle)}>
               {getCostLevel(costMetrics.costPerVehicle, targetCostPerVehicle)}
@@ -228,7 +228,7 @@ export function FuelCostMetrics({ className = '' }: FuelCostMetricsProps) {
                   </div>
                   <div className="text-right">
                     <p className="text-sm font-semibold text-foreground">
-                      ${item.cost.toLocaleString()}
+                      {item.cost.toLocaleString()} EGP
                     </p>
                     <div className="w-16 mt-1">
                       <Progress value={percentage} className="h-1" />
@@ -245,7 +245,7 @@ export function FuelCostMetrics({ className = '' }: FuelCostMetricsProps) {
           <div className="text-center p-3 bg-primary/10 rounded-[0.625rem]-lg">
             <BarChart3 className="h-4 w-4 text-primary mx-auto mb-1" />
             <p className="text-sm font-bold text-primary">
-              ${costMetrics.costPerMile.toFixed(2)}
+              {costMetrics.costPerMile.toFixed(2)} EGP
             </p>
             <p className="text-xs text-muted-foreground">Cost Per Mile</p>
           </div>
@@ -307,9 +307,9 @@ export function FuelCostMetrics({ className = '' }: FuelCostMetricsProps) {
         <div className="p-3 bg-primary/10 rounded-[0.625rem]-lg">
           <h5 className="text-sm font-medium text-blue-900 mb-2">💡 Cost Insights</h5>
           <ul className="text-xs text-blue-800 space-y-1">
-            <li>• Total monthly fleet cost: ${costMetrics.totalCost.toLocaleString()}</li>
-            <li>• Cost per vehicle: ${costMetrics.costPerVehicle.toFixed(0)} (target: ${targetCostPerVehicle})</li>
-            <li>• Cost per mile: ${costMetrics.costPerMile.toFixed(2)} (target: ${targetCostPerMile})</li>
+            <li>• Total monthly fleet cost: {costMetrics.totalCost.toLocaleString()} EGP</li>
+            <li>• Cost per vehicle: {costMetrics.costPerVehicle.toFixed(0)} EGP (target: {targetCostPerVehicle} EGP)</li>
+            <li>• Cost per mile: {costMetrics.costPerMile.toFixed(2)} EGP (target: {targetCostPerMile} EGP)</li>
             <li>• Fuel efficiency: {costMetrics.fuelEfficiency.toFixed(1)} MPG</li>
             <li>• Total miles driven: {costMetrics.totalMiles.toLocaleString()}</li>
             {costMetrics.costPerVehicle > targetCostPerVehicle && (
