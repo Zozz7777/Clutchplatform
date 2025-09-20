@@ -25,8 +25,8 @@ async function debugAcceptInvitation() {
     const db = client.db(DB_NAME);
     const invitationsCollection = db.collection('employee_invitations');
     
-    // Test token
-    const testToken = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InRlc3QtaW52aXRhdGlvbkBleGFtcGxlLmNvbSIsInR5cGUiOiJlbXBsb3llZV9pbnZpdGF0aW9uIiwiaW52aXRlZEJ5Ijoic3lzdGVtIiwiaWF0IjoxNzU4Mzg5MTQ3LCJleHAiOjE3NTg5OTM5NDd9.ysiKJoVwnGxRLdog51crk4O0oW0BC4AzqHt557dHqGs';
+    // Test token - using the actual token from the URL
+    const testToken = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImZ1c2lvbmVneUBnbWFpbC5jb20iLCJ0eXBlIjoiZW1wbG95ZWVfaW52aXRhdGlvbiIsImludml0ZWRCeSI6InN5c3RlbSIsImlhdCI6MTc1ODQxMDU3MSwiZXhwIjoxNzU5MDE1MzcxfQ.afj2wuIjRgQWA-BZItWGlheoL1lyR1C5rXuchwHCzW4';
     
     console.log('1️⃣ TOKEN VERIFICATION');
     console.log('-'.repeat(30));

@@ -446,11 +446,7 @@ app.use((err, req, res, next) => {
 
 // Logo route (for frontend compatibility)
 app.get('/Logored.png', (req, res) => {
-  res.status(404).json({
-    success: false,
-    message: 'Logo file not found - please check the frontend static files',
-    timestamp: new Date().toISOString()
-  });
+  res.redirect('https://drive.google.com/uc?export=view&id=1UyOznOrD4lNpeS93t3TBWBhfNMdbykVQ');
 });
 
 // 404 handler

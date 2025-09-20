@@ -107,7 +107,7 @@ class SendGridEmailService {
                 <tr>
                   <td style="background: linear-gradient(135deg, #E7000B 0%, #C7000A 100%); color: #ffffff; padding: 40px 30px; text-align: center;">
                         <div style="margin-bottom: 20px;">
-                          <img src="https://clutch-main-nk7x.onrender.com/Assets/logos/logowhite.png" alt="Clutch Platform" style="height: 48px; width: auto; max-width: 200px;" />
+                          <img src="https://drive.google.com/uc?export=view&id=1UyOznOrD4lNpeS93t3TBWBhfNMdbykVQ" alt="Clutch Platform" style="height: 48px; width: auto; max-width: 200px;" />
                         </div>
                     <h1 style="font-size: 28px; font-weight: bold; margin: 0 0 10px 0; color: #ffffff;">Welcome to Clutch Platform</h1>
                     <p style="font-size: 16px; margin: 0; opacity: 0.9;">You've been invited to join our team</p>
