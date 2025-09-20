@@ -1012,6 +1012,8 @@
     "filterByUser": "Filter by user",
     "filterByResource": "Filter by resource",
     "filterByDate": "Filter by date",
+    "critical": "Critical",
+    "userInformation": "User Information",
     "failedToLoadAuditData": "Failed to load audit data",
     "exportStarted": "Export started successfully",
     "exportLogs": "Export Logs",

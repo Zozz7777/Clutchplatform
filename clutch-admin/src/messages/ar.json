@@ -1012,6 +1012,8 @@
     "filterByUser": "تصفية حسب المستخدم",
     "filterByResource": "تصفية حسب المورد",
     "filterByDate": "تصفية حسب التاريخ",
+    "critical": "حرج",
+    "userInformation": "معلومات المستخدم",
     "failedToLoadAuditData": "فشل في تحميل بيانات التدقيق",
     "exportStarted": "تم بدء التصدير بنجاح",
     "exportLogs": "تصدير السجلات",
