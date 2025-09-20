@@ -480,7 +480,7 @@ export default function SettingsPage() {
       {activeTab === "general" && (
         <Card>
           <CardHeader>
-            <CardTitle>General Settings</CardTitle>
+            <CardTitle>{t('settings.generalSettings')}</CardTitle>
             <CardDescription>
               Basic system configuration and preferences
             </CardDescription>
@@ -515,7 +515,7 @@ export default function SettingsPage() {
       {activeTab === "security" && (
         <Card>
           <CardHeader>
-            <CardTitle>Security Settings</CardTitle>
+            <CardTitle>{t('settings.securitySettings')}</CardTitle>
             <CardDescription>
               Configure security policies and authentication
             </CardDescription>

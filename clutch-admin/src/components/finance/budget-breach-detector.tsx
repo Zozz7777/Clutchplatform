@@ -2,6 +2,8 @@
 
 import React, { useState, useEffect } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { productionApi } from '@/lib/production-api';
+import { toast } from 'sonner';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Progress } from '@/components/ui/progress';
@@ -264,74 +266,58 @@ export default function BudgetBreachDetector({ className }: BudgetBreachDetector
   useEffect(() => {
     const loadBudgetBreachData = async () => {
       try {
-        // This would typically call a budget breach API
-        // For now, we'll use mock data that simulates real budget monitoring
-        const mockBreaches: BudgetBreach[] = [
-          {
-            id: 'breach-001',
-            name: 'Cloud Infrastructure Costs',
-            description: 'AWS and Azure spending exceeding allocated budget',
-            category: 'infrastructure',
-            severity: 'high',
-            status: 'breach',
+        // Load real budget breach data from API
+        const breachesData = await productionApi.getBudgetBreaches();
+        
+        if (breachesData && Array.isArray(breachesData)) {
+          const transformedBreaches: BudgetBreach[] = breachesData.map((breach: any) => ({
+            id: breach.id || 'breach-unknown',
+            name: breach.name || 'Unknown Breach',
+            description: breach.description || 'No description available',
+            category: breach.category || 'general',
+            severity: breach.severity || 'medium',
+            status: breach.status || 'monitoring',
             budget: {
-              allocated: 50000,
-              spent: 52000,
-              remaining: -2000,
-              percentage: 104,
-              velocity: 2500,
-              projected: 75000
+              allocated: breach.budget?.allocated || 0,
+              spent: breach.budget?.spent || 0,
+              remaining: breach.budget?.remaining || 0,
+              percentage: breach.budget?.percentage || 0,
+              velocity: breach.budget?.velocity || 0,
+              projected: breach.budget?.projected || 0
             },
             timeline: {
-              startDate: new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toISOString(),
-              endDate: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString(),
-              currentPeriod: 'Q1 2024',
-              lastUpdated: new Date(Date.now() - 2 * 60 * 60 * 1000).toISOString()
+              startDate: breach.timeline?.startDate || new Date().toISOString(),
+              endDate: breach.timeline?.endDate || new Date().toISOString(),
+              currentPeriod: breach.timeline?.currentPeriod || 'Current',
+              lastUpdated: breach.timeline?.lastUpdated || new Date().toISOString()
             },
-            alerts: [
-              {
-                threshold: 80,
-                current: 104,
-                triggered: true,
-                escalationLevel: 3
-              },
-              {
-                threshold: 90,
-                current: 104,
-                triggered: true,
-                escalationLevel: 2
-              },
-              {
-                threshold: 100,
-                current: 104,
-                triggered: true,
-                escalationLevel: 1
-              }
-            ],
-          impact: {
-            financial: budget.impact?.financial || 0,
-            operational: budget.impact?.operational || 0,
-            reputational: budget.impact?.reputational || 0,
-            compliance: budget.impact?.compliance || 0
-          },
-          mitigation: {
-            actions: budget.mitigation?.actions || [],
-            estimatedSavings: budget.mitigation?.estimatedSavings || 0,
-            timeframe: budget.mitigation?.timeframe || 0,
-            effectiveness: budget.mitigation?.effectiveness || 0,
-            status: budget.mitigation?.status || 'pending'
-          },
-          lastUpdated: budget.lastUpdated || new Date().toISOString(),
-          nextCheck: budget.nextCheck || new Date().toISOString()
-        }));
+            alerts: breach.alerts || [],
+            impact: {
+              financial: breach.impact?.financial || 0,
+              operational: breach.impact?.operational || 0,
+              reputational: breach.impact?.reputational || 0,
+              compliance: breach.impact?.compliance || 0
+            },
+            mitigation: {
+              actions: breach.mitigation?.actions || [],
+              estimatedSavings: breach.mitigation?.estimatedSavings || 0,
+              timeframe: breach.mitigation?.timeframe || 0,
+              effectiveness: breach.mitigation?.effectiveness || 0,
+              status: breach.mitigation?.status || 'pending'
+            },
+            lastUpdated: breach.lastUpdated || new Date().toISOString(),
+            nextCheck: breach.nextCheck || new Date().toISOString()
+          }));
 
-        setBreaches(transformedBreaches);
-        if (transformedBreaches.length > 0) {
-          setSelectedBreach(transformedBreaches[0]);
+          setBreaches(transformedBreaches);
+          if (transformedBreaches.length > 0) {
+            setSelectedBreach(transformedBreaches[0]);
+          }
+        } else {
+          setBreaches([]);
         }
       } catch (error) {
-        // Failed to load budget breach data
-        // Fallback to empty array if API fails
+        toast.error('Failed to load budget breach data');
         setBreaches([]);
       }
     };

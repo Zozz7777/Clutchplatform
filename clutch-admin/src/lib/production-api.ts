@@ -1345,6 +1345,24 @@ export class ProductionApiService {
     }
   }
 
+  async getZeroTrustPolicies(): Promise<Record<string, unknown>[]> {
+    try {
+      return await realApi.getZeroTrustPolicies();
+    } catch (error) {
+      logger.error("Failed to fetch zero trust policies:", error);
+      throw new Error("Failed to load zero trust policies");
+    }
+  }
+
+  async getZeroTrustMetrics(): Promise<Record<string, unknown>> {
+    try {
+      return await realApi.getZeroTrustMetrics();
+    } catch (error) {
+      logger.error("Failed to fetch zero trust metrics:", error);
+      throw new Error("Failed to load zero trust metrics");
+    }
+  }
+
   // Testing APIs - New endpoints for testing components
   async getChaosExperiments(): Promise<Record<string, unknown>[]> {
     try {

@@ -2417,6 +2417,15 @@
     "activeSegments": "Active Segments"
   },
   "hr": {
+    "title": "HR Management",
+    "description": "Manage employees, recruitment, and HR operations",
+    "totalEmployees": "Total Employees",
+    "newHires": "New Hires",
+    "pendingApplications": "Pending Applications",
+    "avgSalary": "Average Salary",
+    "active": "active",
+    "thisMonth": "This month",
+    "openPositions": "open positions",
     "employeeManagement": "Employee Management",
     "noPosition": "No Position",
     "noDepartment": "No Department",

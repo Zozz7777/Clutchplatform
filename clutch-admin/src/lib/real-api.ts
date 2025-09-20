@@ -303,6 +303,39 @@ export class RealApiService {
     )();
   }
 
+  async getAnomalyDetections(): Promise<Record<string, unknown>[]> {
+    return withErrorHandling(
+      async () => {
+        const response = await apiService.request<Record<string, unknown>[]>("/api/v1/ai/anomaly-detections");
+        return handleApiResponse(response, 'getAnomalyDetections', []);
+      },
+      'getAnomalyDetections',
+      { fallbackValue: [], showToast: false }
+    )();
+  }
+
+  async getZeroTrustPolicies(): Promise<Record<string, unknown>[]> {
+    return withErrorHandling(
+      async () => {
+        const response = await apiService.request<Record<string, unknown>[]>("/api/v1/security/zero-trust-policies");
+        return handleApiResponse(response, 'getZeroTrustPolicies', []);
+      },
+      'getZeroTrustPolicies',
+      { fallbackValue: [], showToast: false }
+    )();
+  }
+
+  async getZeroTrustMetrics(): Promise<Record<string, unknown>> {
+    return withErrorHandling(
+      async () => {
+        const response = await apiService.request<Record<string, unknown>>("/api/v1/security/zero-trust-metrics");
+        return handleApiResponse(response, 'getZeroTrustMetrics', {});
+      },
+      'getZeroTrustMetrics',
+      { fallbackValue: {}, showToast: false }
+    )();
+  }
+
   async getVehicleDetails(vehicleId: string): Promise<Record<string, unknown>> {
     return withErrorHandling(
       async () => {

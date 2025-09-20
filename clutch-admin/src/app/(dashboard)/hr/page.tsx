@@ -695,7 +695,7 @@ export default function HRPage() {
               {stats ? stats.totalEmployees : Array.isArray(employees) ? employees.length : 0}
             </div>
             <p className="text-xs text-muted-foreground">
-              {stats ? stats.activeEmployees : Array.isArray(employees) ? employees.filter(e => e.status === "active").length : 0} active
+              {stats ? stats.activeEmployees : Array.isArray(employees) ? employees.filter(e => e.status === "active").length : 0} {t('hr.active')}
             </p>
           </CardContent>
         </Card>
@@ -713,7 +713,7 @@ export default function HRPage() {
               }).length : 0}
             </div>
             <p className="text-xs text-muted-foreground">
-              This month
+{t('hr.thisMonth')}
             </p>
           </CardContent>
         </Card>
@@ -730,7 +730,7 @@ export default function HRPage() {
               ).length : 0}
             </div>
             <p className="text-xs text-muted-foreground">
-              {stats ? stats.openPositions : 5} open positions
+              {stats ? stats.openPositions : 5} {t('hr.openPositions')}
             </p>
           </CardContent>
         </Card>
