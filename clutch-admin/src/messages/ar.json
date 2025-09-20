@@ -2509,5 +2509,30 @@
       "reports": "التقارير",
       "reportsDesc": "إنشاء التقارير"
     }
+  },
+  "userSegments": {
+    "title": "شرائح المستخدمين",
+    "description": "إنشاء وإدارة شرائح المستخدمين للحملات المستهدفة",
+    "totalSegments": "إجمالي الشرائح",
+    "activeSegments": "الشرائح النشطة",
+    "totalUsers": "إجمالي المستخدمين",
+    "averageSegmentSize": "متوسط حجم الشريحة",
+    "createSegment": "إنشاء شريحة",
+    "segmentName": "اسم الشريحة",
+    "description": "الوصف",
+    "criteria": "المعايير",
+    "userCount": "عدد المستخدمين",
+    "lastUpdated": "آخر تحديث",
+    "status": "الحالة",
+    "active": "نشط",
+    "draft": "مسودة",
+    "archived": "مؤرشف",
+    "actions": "الإجراءات",
+    "edit": "تعديل",
+    "delete": "حذف",
+    "view": "عرض",
+    "searchSegments": "البحث في الشرائح...",
+    "noSegmentsFound": "لم يتم العثور على شرائح تطابق معايير البحث",
+    "loadingSegments": "جاري تحميل شرائح المستخدمين..."
   }
 }

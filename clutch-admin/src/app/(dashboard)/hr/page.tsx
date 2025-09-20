@@ -423,11 +423,11 @@ export default function HRPage() {
 
   const handleDeleteInvitation = async (invitationId: string) => {
     // Show confirmation dialog
-    if (window.confirm(t('hr.deleteInvitationConfirm'))) {
+    if (window.confirm("Are you sure you want to permanently delete this invitation? This action cannot be undone.")) {
       try {
         const response = await apiService.cancelInvitation(invitationId);
         if (response.success) {
-          toast.success(t('hr.invitationDeleted'));
+          toast.success("Invitation deleted successfully");
           // Reload invitations
           const invitationsResponse = await apiService.getEmployeeInvitations();
           if (invitationsResponse.success) {
@@ -781,7 +781,7 @@ export default function HRPage() {
       {activeTab === "employees" && (
         <Card>
           <CardHeader>
-            <CardTitle>Employee Management</CardTitle>
+            <CardTitle>{t('hr.employeeManagement')}</CardTitle>
             <CardDescription>
               Manage employee information and records
             </CardDescription>
@@ -822,7 +822,7 @@ export default function HRPage() {
                     </div>
                     <div>
                       <p className="font-medium">{employee.firstName || employee.name || 'Unknown'} {employee.lastName || ''}</p>
-                      <p className="text-sm text-muted-foreground">{employee.position || 'No Position'} • {employee.department || 'No Department'}</p>
+                      <p className="text-sm text-muted-foreground">{employee.position || t('hr.noPosition')} • {employee.department || t('hr.noDepartment')}</p>
                       <div className="flex items-center space-x-2 mt-1">
                         <Badge variant={getStatusColor(employee.status) as "default" | "secondary" | "destructive" | "outline"}>
                           {employee.status}
@@ -1089,7 +1089,7 @@ export default function HRPage() {
                         <p>Interview: {formatDate(application.interviewDate)}</p>
                       )}
                       {application.salary && (
-                        <p>Salary: {application.salary.toLocaleString()} EGP</p>
+                        <p>{t('hr.salary')}: {application.salary.toLocaleString()} EGP</p>
                       )}
                       <p>Assigned: {application.assignedTo}</p>
                     </div>
