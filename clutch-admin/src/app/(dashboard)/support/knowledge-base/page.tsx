@@ -48,7 +48,7 @@ interface KnowledgeArticle {
 }
 
 export default function KnowledgeBasePage() {
-  const t = (key: string, params?: any) => key;
+  const { t } = useTranslations();
   const [articles, setArticles] = useState<KnowledgeArticle[]>([]);
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('all');

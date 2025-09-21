@@ -337,26 +337,26 @@ class BusinessIntelligenceService {
         
         // Calculate growth based on payment trends
         const currentMonthPayments = customerPayments.filter(p => {
-          const paymentDate = new Date(p.createdAt || p.timestamp);
+          const paymentDate = new Date(p.createdAt || p.timestamp || new Date().toISOString());
           const now = new Date();
           return paymentDate.getMonth() === now.getMonth() && paymentDate.getFullYear() === now.getFullYear();
         });
         
         const lastMonthPayments = customerPayments.filter(p => {
-          const paymentDate = new Date(p.createdAt || p.timestamp);
+          const paymentDate = new Date(p.createdAt || p.timestamp || new Date().toISOString());
           const now = new Date();
           const lastMonth = new Date(now.getFullYear(), now.getMonth() - 1);
           return paymentDate.getMonth() === lastMonth.getMonth() && paymentDate.getFullYear() === lastMonth.getFullYear();
         });
         
-        const currentRevenue = currentMonthPayments.reduce((sum, p) => sum + (p.amount || 0), 0);
-        const lastRevenue = lastMonthPayments.reduce((sum, p) => sum + (p.amount || 0), 0);
+        const currentRevenue = currentMonthPayments.reduce((sum: number, p: any) => sum + (Number(p.amount) || 0), 0);
+        const lastRevenue = lastMonthPayments.reduce((sum: number, p: any) => sum + (Number(p.amount) || 0), 0);
         
         const growth = lastRevenue > 0 ? ((currentRevenue - lastRevenue) / lastRevenue) * 100 : 0;
 
         return {
           id: customer.id || `customer-${Date.now()}`,
-          name: customer.name || customer.companyName || customer.email || 'Unknown Client',
+          name: customer.name || (customer as any).companyName || customer.email || 'Unknown Client',
           revenue,
           activity: Math.round(activity),
           growth: Math.round(growth * 100) / 100 // Round to 2 decimal places
@@ -377,7 +377,7 @@ class BusinessIntelligenceService {
       // Try to get real forecast data from API first
       const realForecast = await Promise.resolve(null); // getRevenueForecast doesn't exist
       if (realForecast && Array.isArray(realForecast)) {
-        return realForecast.map(f => ({
+        return (realForecast as any[]).map((f: any) => ({
           period: f.period || f.date,
           base: f.base || f.amount || 0,
           optimistic: f.optimistic || f.high || f.base * 1.15,

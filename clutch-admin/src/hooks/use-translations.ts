@@ -273,21 +273,37 @@ const fallbackTranslations = {
 };
 
 export function useTranslations() {
-  console.log('🔍 [useTranslations] Hook called from:', new Error().stack?.split('\n')[2]?.trim());
+  // Only log in development mode
+  if (process.env.NODE_ENV === 'development') {
+    console.log('🔍 [useTranslations] Hook called from:', new Error().stack?.split('\n')[2]?.trim());
+  }
   
   const { language } = useLanguage();
-  console.log('🌐 [useTranslations] Current language:', language);
   
+  // Only log in development mode
+  if (process.env.NODE_ENV === 'development') {
+    console.log('🌐 [useTranslations] Current language:', language);
+  }
+
   // Use fallback translations for now
   const translations = fallbackTranslations;
-  console.log('📚 [useTranslations] Using fallback translations:', !!translations);
+  
+  // Only log in development mode
+  if (process.env.NODE_ENV === 'development') {
+    console.log('📚 [useTranslations] Using fallback translations:', !!translations);
+  }
 
   const t = (key: TranslationKey): string => {
-    console.log('🔑 [useTranslations] Translation key requested:', key);
+    // Only log in development mode
+    if (process.env.NODE_ENV === 'development') {
+      console.log('🔑 [useTranslations] Translation key requested:', key);
+    }
     
     // Check if translations are available
     if (!translations) {
-      console.warn('⚠️ [useTranslations] No translations available for key:', key);
+      if (process.env.NODE_ENV === 'development') {
+        console.warn('⚠️ [useTranslations] No translations available for key:', key);
+      }
       return key;
     }
     
@@ -301,13 +317,15 @@ export function useTranslations() {
     
     for (const k of keys) {
       if (value && typeof value === 'object' && k in value) {
-        value = value[k];
+        value = value[k] as Record<string, unknown>;
         if (key === 'common.loading') {
           // Found key
         }
       } else {
         // Translation key not found
-        console.warn('❌ [useTranslations] Translation key not found:', key, 'at segment:', k);
+        if (process.env.NODE_ENV === 'development') {
+          console.warn('❌ [useTranslations] Translation key not found:', key, 'at segment:', k);
+        }
         
         // Fallback for common keys
         if (key === 'common.loading') {

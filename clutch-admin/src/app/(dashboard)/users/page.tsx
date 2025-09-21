@@ -442,7 +442,7 @@ export default function UsersPage() {
                   <div className="text-center p-4 border rounded-[0.625rem]">
                     <Users className="h-8 w-8 text-primary mx-auto mb-2" />
                     <p className="text-2xl font-bold text-foreground">
-                      {users.filter(u => ["enterprise_client", "service_provider"].includes(u.role)).length}
+                      {Array.isArray(users) ? users.filter(u => u && ["enterprise_client", "service_provider"].includes(u.role)).length : 0}
                     </p>
                     <p className="text-sm text-muted-foreground">{t('dashboard.totalCustomers')}</p>
                   </div>
@@ -644,4 +644,4 @@ export default function UsersPage() {
   );
 }
 
-
+export const dynamic = 'force-dynamic';
