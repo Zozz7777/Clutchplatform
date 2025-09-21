@@ -3,9 +3,6 @@
 import { useLanguage } from '@/contexts/language-context';
 import { getTranslations } from '@/lib/translations';
 
-// Load translations using the robust translation loader
-const { enTranslations, arTranslations } = getTranslations();
-
 // Ensure translations are properly loaded
 const ensureTranslations = () => {
   if (!enTranslations || !arTranslations) {

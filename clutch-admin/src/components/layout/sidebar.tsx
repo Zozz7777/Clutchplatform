@@ -42,7 +42,17 @@ export function Sidebar({ isCollapsed, onToggle }: SidebarProps) {
   };
 
   const hasAnyPermission = (permissions: readonly string[]) => {
-    return permissions.some(permission => hasPermission(permission));
+    const result = permissions.some(permission => hasPermission(permission));
+    // Debug logging
+    if (!result && user) {
+      console.log('🚫 No permission for navigation item:', {
+        permissions,
+        userRole: user.role,
+        userPermissions: user.permissions,
+        hasPermission: permissions.map(p => ({ permission: p, has: hasPermission(p) }))
+      });
+    }
+    return result;
   };
 
   return (

@@ -112,8 +112,19 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   };
 
   const hasPermission = (permission: string): boolean => {
-    if (!user || !user.permissions || !Array.isArray(user.permissions)) return false;
-    return user.permissions.includes(permission);
+    if (!user || !user.permissions || !Array.isArray(user.permissions)) {
+      console.log('🚫 No user or permissions:', { user, permissions: user?.permissions });
+      return false;
+    }
+    const hasIt = user.permissions.includes(permission);
+    if (!hasIt && permission === 'view_dashboard') {
+      console.log('🚫 Missing view_dashboard permission:', {
+        userRole: user.role,
+        userPermissions: user.permissions,
+        permission
+      });
+    }
+    return hasIt;
   };
 
   return (

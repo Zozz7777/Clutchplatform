@@ -14,6 +14,158 @@ const { hashPassword, comparePassword } = require('../utils/password-utils');
 const { rateLimit: createRateLimit } = require('../middleware/rateLimit');
 const logger = require('../utils/logger');
 
+// Role permissions mapping (matching frontend constants)
+const ROLE_PERMISSIONS = {
+  // Level 1: Executive Leadership - Full access
+  'super_admin': ['*'], // All permissions
+  'head_administrator': ['*'], // All permissions
+  'executive': ['*'], // All permissions
+  'platform_admin': ['*'], // All permissions
+  'admin': ['*'], // All permissions
+  
+  // Level 2: Department Heads
+  'hr_manager': [
+    'view_dashboard', 'view_analytics', 'export_analytics', 'view_system_health',
+    'view_kpi_metrics', 'manage_kpi_metrics', 'view_business_intelligence', 'manage_business_intelligence',
+    'view_dashboard_config', 'manage_dashboard_config', 'view_system_monitoring', 'manage_system_monitoring',
+    'view_users', 'create_users', 'edit_users', 'delete_users', 'view_employees', 'manage_employees',
+    'view_hr', 'manage_hr', 'view_onboarding', 'manage_onboarding', 'view_profiles', 'manage_profiles',
+    'view_chat', 'send_messages', 'view_communication', 'manage_communication', 'view_support', 'manage_support',
+    'view_feedback', 'manage_feedback', 'view_announcements', 'manage_announcements',
+    'view_reports', 'generate_reports'
+  ],
+  
+  'finance_officer': [
+    'view_dashboard', 'view_analytics', 'export_analytics', 'view_system_health',
+    'view_kpi_metrics', 'manage_kpi_metrics', 'view_business_intelligence', 'manage_business_intelligence',
+    'view_dashboard_config', 'manage_dashboard_config', 'view_system_monitoring', 'manage_system_monitoring',
+    'view_finance', 'manage_finance', 'process_payments', 'view_billing', 'manage_billing',
+    'view_reports', 'generate_reports'
+  ],
+  
+  'operations_manager': [
+    'view_dashboard', 'view_analytics', 'export_analytics', 'view_system_health',
+    'view_kpi_metrics', 'manage_kpi_metrics', 'view_business_intelligence', 'manage_business_intelligence',
+    'view_dashboard_config', 'manage_dashboard_config', 'view_system_monitoring', 'manage_system_monitoring',
+    'view_fleet', 'manage_fleet', 'view_gps_tracking', 'view_assets', 'manage_assets', 'view_vendors', 'manage_vendors', 'view_operations',
+    'view_employees', 'manage_employees', 'view_hr', 'manage_hr',
+    'view_reports', 'generate_reports'
+  ],
+  
+  'marketing_manager': [
+    'view_dashboard', 'view_analytics', 'export_analytics', 'view_system_health',
+    'view_kpi_metrics', 'manage_kpi_metrics', 'view_business_intelligence', 'manage_business_intelligence',
+    'view_dashboard_config', 'manage_dashboard_config', 'view_system_monitoring', 'manage_system_monitoring',
+    'view_marketing', 'manage_marketing', 'view_crm', 'manage_crm'
+  ],
+  
+  'legal_team': [
+    'view_dashboard', 'view_analytics', 'export_analytics', 'view_system_health',
+    'view_kpi_metrics', 'manage_kpi_metrics', 'view_business_intelligence', 'manage_business_intelligence',
+    'view_dashboard_config', 'manage_dashboard_config', 'view_system_monitoring', 'manage_system_monitoring',
+    'view_legal', 'manage_legal', 'view_contracts', 'manage_contracts',
+    'view_reports', 'generate_reports'
+  ],
+  
+  'security_manager': [
+    'view_dashboard', 'view_analytics', 'export_analytics', 'view_system_health',
+    'view_kpi_metrics', 'manage_kpi_metrics', 'view_business_intelligence', 'manage_business_intelligence',
+    'view_dashboard_config', 'manage_dashboard_config', 'view_system_monitoring', 'manage_system_monitoring',
+    'view_audit_trail', 'view_security_settings', 'view_users', 'create_users', 'edit_users', 'delete_users'
+  ],
+  
+  // Level 3: Specialized Managers
+  'business_analyst': [
+    'view_dashboard', 'view_analytics', 'export_analytics', 'view_system_health',
+    'view_kpi_metrics', 'manage_kpi_metrics', 'view_business_intelligence', 'manage_business_intelligence',
+    'view_dashboard_config', 'manage_dashboard_config', 'view_system_monitoring', 'manage_system_monitoring',
+    'view_reports', 'generate_reports'
+  ],
+  
+  'project_manager': [
+    'view_dashboard', 'view_analytics', 'export_analytics', 'view_system_health',
+    'view_kpi_metrics', 'manage_kpi_metrics', 'view_business_intelligence', 'manage_business_intelligence',
+    'view_dashboard_config', 'manage_dashboard_config', 'view_system_monitoring', 'manage_system_monitoring',
+    'view_projects', 'manage_projects', 'view_users', 'create_users', 'edit_users'
+  ],
+  
+  'asset_manager': [
+    'view_dashboard', 'view_analytics', 'export_analytics', 'view_system_health',
+    'view_kpi_metrics', 'manage_kpi_metrics', 'view_business_intelligence', 'manage_business_intelligence',
+    'view_dashboard_config', 'manage_dashboard_config', 'view_system_monitoring', 'manage_system_monitoring',
+    'view_fleet', 'manage_fleet', 'view_gps_tracking', 'view_assets', 'manage_assets', 'view_vendors', 'manage_vendors', 'view_operations',
+    'view_reports', 'generate_reports'
+  ],
+  
+  'crm_manager': [
+    'view_dashboard', 'view_analytics', 'export_analytics', 'view_system_health',
+    'view_kpi_metrics', 'manage_kpi_metrics', 'view_business_intelligence', 'manage_business_intelligence',
+    'view_dashboard_config', 'manage_dashboard_config', 'view_system_monitoring', 'manage_system_monitoring',
+    'view_crm', 'manage_crm', 'view_chat', 'send_messages', 'view_communication', 'manage_communication',
+    'view_support', 'manage_support', 'view_feedback', 'manage_feedback', 'view_announcements', 'manage_announcements'
+  ],
+  
+  'system_admin': [
+    'view_dashboard', 'view_analytics', 'export_analytics', 'view_system_health',
+    'view_kpi_metrics', 'manage_kpi_metrics', 'view_business_intelligence', 'manage_business_intelligence',
+    'view_dashboard_config', 'manage_dashboard_config', 'view_system_monitoring', 'manage_system_monitoring',
+    'view_ai_dashboard', 'manage_ai_models', 'view_mobile_apps', 'manage_mobile_apps', 'view_cms', 'manage_cms',
+    'view_integrations', 'manage_integrations', 'view_api_docs', 'view_feature_flags', 'manage_feature_flags',
+    'view_scheduled_jobs', 'manage_scheduled_jobs', 'view_development_tools', 'manage_development_tools',
+    'view_technical_documentation', 'view_settings', 'manage_settings', 'view_system_config', 'manage_system_config'
+  ],
+  
+  // Level 4: Functional Specialists
+  'hr': [
+    'view_dashboard', 'view_hr', 'view_employees', 'view_users', 'view_chat', 'view_communication'
+  ],
+  
+  'finance': [
+    'view_dashboard', 'view_finance', 'view_analytics', 'view_reports'
+  ],
+  
+  'customer_support': [
+    'view_dashboard', 'view_crm', 'manage_crm', 'view_chat', 'send_messages', 'view_communication', 'manage_communication'
+  ],
+  
+  'developer': [
+    'view_dashboard', 'view_ai_dashboard', 'view_mobile_apps', 'view_system_health', 'view_chat', 'view_support'
+  ],
+  
+  // Level 5: Operational Staff
+  'employee': [
+    'view_dashboard', 'view_profiles', 'manage_profiles', 'view_chat', 'send_messages', 'view_communication', 'view_support'
+  ],
+  
+  'support_agent': [
+    'view_dashboard', 'view_support', 'manage_support', 'view_chat', 'send_messages', 'view_communication'
+  ],
+  
+  // Level 6: External Users
+  'enterprise_client': [
+    'view_dashboard', 'view_fleet', 'manage_fleet', 'view_gps_tracking', 'view_crm', 'view_chat', 'view_analytics', 'view_reports'
+  ],
+  
+  'service_provider': [
+    'view_dashboard', 'view_chat', 'send_messages', 'view_crm'
+  ]
+};
+
+// Helper function to get permissions for a role
+function getRolePermissions(role) {
+  if (!role) return [];
+  
+  const permissions = ROLE_PERMISSIONS[role];
+  if (!permissions) return [];
+  
+  // If role has '*' permission, return all possible permissions
+  if (permissions.includes('*')) {
+    return Object.values(ROLE_PERMISSIONS).flat().filter(p => p !== '*');
+  }
+  
+  return permissions;
+}
+
 // Apply rate limiting
 const authRateLimit = createRateLimit({ windowMs: 15 * 60 * 1000, max: 50 }); // 50 attempts per 15 minutes
 const loginRateLimit = createRateLimit({ windowMs: 15 * 60 * 1000, max: 10 }); // 10 login attempts per 15 minutes
@@ -374,7 +526,7 @@ router.post('/login', loginRateLimit, async (req, res) => {
             email: fallbackUser.email,
             name: fallbackUser.name,
             role: fallbackUser.role,
-            permissions: fallbackUser.permissions,
+            permissions: fallbackUser.permissions && fallbackUser.permissions.length > 0 ? fallbackUser.permissions : getRolePermissions(fallbackUser.role),
             isActive: true,
             isEmployee: true,
             createdAt: new Date().toISOString(),
@@ -546,7 +698,7 @@ router.post('/login', loginRateLimit, async (req, res) => {
           firstName: user.firstName,
           lastName: user.lastName,
           role: user.role,
-          permissions: user.permissions || [],
+          permissions: user.permissions && user.permissions.length > 0 ? user.permissions : getRolePermissions(user.role),
           isActive: user.isActive,
           isEmployee: user.isEmployee,
           createdAt: user.createdAt,
