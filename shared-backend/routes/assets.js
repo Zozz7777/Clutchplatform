@@ -94,33 +94,6 @@ router.get('/', async (req, res) => {
   }
 });
 
-// GET /api/v1/assets/:id - Get asset by ID
-router.get('/:id', async (req, res) => {
-  try {
-    const assetsCollection = await getCollection('assets');
-    const asset = await assetsCollection.findOne({ _id: req.params.id });
-    
-    if (!asset) {
-      return res.status(404).json({
-        success: false,
-        message: 'Asset not found'
-      });
-    }
-    
-    res.json({
-      success: true,
-      data: asset
-    });
-  } catch (error) {
-    console.error('Error fetching asset:', error);
-    res.status(500).json({
-      success: false,
-      message: 'Failed to fetch asset',
-      error: process.env.NODE_ENV === 'development' ? error.message : undefined
-    });
-  }
-});
-
 // POST /api/v1/assets - Create new asset
 router.post('/', async (req, res) => {
   try {
@@ -187,94 +160,7 @@ router.post('/', async (req, res) => {
   }
 });
 
-// PUT /api/v1/assets/:id - Update asset
-router.put('/:id', async (req, res) => {
-  try {
-    const assetsCollection = await getCollection('assets');
-    const { 
-      name, 
-      type, 
-      description, 
-      serialNumber, 
-      model, 
-      manufacturer, 
-      purchaseDate, 
-      purchasePrice, 
-      location, 
-      status, 
-      assignedTo,
-      tags 
-    } = req.body;
-    
-    const updateData = {
-      updatedAt: new Date()
-    };
-    
-    if (name) updateData.name = name;
-    if (type) updateData.type = type;
-    if (description) updateData.description = description;
-    if (serialNumber) updateData.serialNumber = serialNumber;
-    if (model) updateData.model = model;
-    if (manufacturer) updateData.manufacturer = manufacturer;
-    if (purchaseDate) updateData.purchaseDate = new Date(purchaseDate);
-    if (purchasePrice !== undefined) updateData.purchasePrice = purchasePrice;
-    if (location) updateData.location = location;
-    if (status) updateData.status = status;
-    if (assignedTo !== undefined) updateData.assignedTo = assignedTo;
-    if (tags) updateData.tags = tags;
-    
-    const result = await assetsCollection.updateOne(
-      { _id: req.params.id },
-      { $set: updateData }
-    );
-    
-    if (result.matchedCount === 0) {
-      return res.status(404).json({
-        success: false,
-        message: 'Asset not found'
-      });
-    }
-    
-    res.json({
-      success: true,
-      message: 'Asset updated successfully'
-    });
-  } catch (error) {
-    console.error('Error updating asset:', error);
-    res.status(500).json({
-      success: false,
-      message: 'Failed to update asset',
-      error: process.env.NODE_ENV === 'development' ? error.message : undefined
-    });
-  }
-});
 
-// DELETE /api/v1/assets/:id - Delete asset
-router.delete('/:id', async (req, res) => {
-  try {
-    const assetsCollection = await getCollection('assets');
-    const result = await assetsCollection.deleteOne({ _id: req.params.id });
-    
-    if (result.deletedCount === 0) {
-      return res.status(404).json({
-        success: false,
-        message: 'Asset not found'
-      });
-    }
-    
-    res.json({
-      success: true,
-      message: 'Asset deleted successfully'
-    });
-  } catch (error) {
-    console.error('Error deleting asset:', error);
-    res.status(500).json({
-      success: false,
-      message: 'Failed to delete asset',
-      error: process.env.NODE_ENV === 'development' ? error.message : undefined
-    });
-  }
-});
 
 // ===== MAINTENANCE RECORDS =====
 
@@ -829,6 +715,124 @@ router.post('/assignments', async (req, res) => {
     res.status(500).json({
       success: false,
       message: 'Failed to create asset assignment',
+      error: process.env.NODE_ENV === 'development' ? error.message : undefined
+    });
+  }
+});
+
+// ===== PARAMETERIZED ROUTES (MUST BE LAST) =====
+
+// GET /api/v1/assets/:id - Get asset by ID
+router.get('/:id', async (req, res) => {
+  try {
+    const assetsCollection = await getCollection('assets');
+    const asset = await assetsCollection.findOne({ _id: req.params.id });
+    
+    if (!asset) {
+      return res.status(404).json({
+        success: false,
+        message: 'Asset not found'
+      });
+    }
+    
+    res.json({
+      success: true,
+      data: asset
+    });
+  } catch (error) {
+    console.error('Error fetching asset:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Failed to fetch asset',
+      error: process.env.NODE_ENV === 'development' ? error.message : undefined
+    });
+  }
+});
+
+// PUT /api/v1/assets/:id - Update asset
+router.put('/:id', async (req, res) => {
+  try {
+    const assetsCollection = await getCollection('assets');
+    const { 
+      name, 
+      type, 
+      description, 
+      serialNumber, 
+      model, 
+      manufacturer, 
+      purchaseDate, 
+      purchasePrice, 
+      location, 
+      status, 
+      assignedTo,
+      tags 
+    } = req.body;
+    
+    const updateData = {
+      updatedAt: new Date()
+    };
+    
+    if (name) updateData.name = name;
+    if (type) updateData.type = type;
+    if (description) updateData.description = description;
+    if (serialNumber) updateData.serialNumber = serialNumber;
+    if (model) updateData.model = model;
+    if (manufacturer) updateData.manufacturer = manufacturer;
+    if (purchaseDate) updateData.purchaseDate = new Date(purchaseDate);
+    if (purchasePrice !== undefined) updateData.purchasePrice = purchasePrice;
+    if (location) updateData.location = location;
+    if (status) updateData.status = status;
+    if (assignedTo !== undefined) updateData.assignedTo = assignedTo;
+    if (tags) updateData.tags = tags;
+    
+    const result = await assetsCollection.updateOne(
+      { _id: req.params.id },
+      { $set: updateData }
+    );
+    
+    if (result.matchedCount === 0) {
+      return res.status(404).json({
+        success: false,
+        message: 'Asset not found'
+      });
+    }
+    
+    res.json({
+      success: true,
+      message: 'Asset updated successfully'
+    });
+  } catch (error) {
+    console.error('Error updating asset:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Failed to update asset',
+      error: process.env.NODE_ENV === 'development' ? error.message : undefined
+    });
+  }
+});
+
+// DELETE /api/v1/assets/:id - Delete asset
+router.delete('/:id', async (req, res) => {
+  try {
+    const assetsCollection = await getCollection('assets');
+    const result = await assetsCollection.deleteOne({ _id: req.params.id });
+    
+    if (result.deletedCount === 0) {
+      return res.status(404).json({
+        success: false,
+        message: 'Asset not found'
+      });
+    }
+    
+    res.json({
+      success: true,
+      message: 'Asset deleted successfully'
+    });
+  } catch (error) {
+    console.error('Error deleting asset:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Failed to delete asset',
       error: process.env.NODE_ENV === 'development' ? error.message : undefined
     });
   }
