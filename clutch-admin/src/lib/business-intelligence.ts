@@ -305,7 +305,7 @@ class BusinessIntelligenceService {
   }>> {
     try {
       const [customers, payments] = await Promise.all([
-        productionApi.getCustomers().catch(() => []),
+        productionApi.getUsers().catch(() => []), // Use getUsers as fallback since getCustomers doesn't exist
         productionApi.getPayments().catch(() => [])
       ]);
 
