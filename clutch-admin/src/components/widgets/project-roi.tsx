@@ -6,7 +6,7 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Progress } from '@/components/ui/progress';
 import { productionApi } from '@/lib/production-api';
-import { useTranslations } from 'next-intl';
+// import { useTranslations } from 'next-intl';
 import { 
   DollarSign, 
   TrendingUp, 
@@ -37,7 +37,7 @@ interface ProjectROIData {
 }
 
 export function ProjectROI({ className = '' }: ProjectROIProps) {
-  const t = useTranslations();
+  const t = (key: string, params?: any) => key;
   const [roiData, setRoiData] = React.useState<{
     projects: ProjectROIData[];
     totalInvestment: number;
@@ -326,3 +326,6 @@ export function ProjectROI({ className = '' }: ProjectROIProps) {
 }
 
 export default ProjectROI;
+
+
+

@@ -401,3 +401,6 @@ export function ForecastAccuracyTrend({ className = '' }: ForecastAccuracyTrendP
 }
 
 export default ForecastAccuracyTrend;
+
+
+

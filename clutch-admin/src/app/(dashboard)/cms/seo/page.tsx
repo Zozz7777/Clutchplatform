@@ -45,9 +45,9 @@ export default function SEOCMSPage() {
   };
 
   const getScoreBadge = (score: number) => {
-    if (score >= 90) return <Badge variant="default" className="bg-success/100">Excellent</Badge>;
-    if (score >= 70) return <Badge variant="default" className="bg-warning/100">Good</Badge>;
-    return <Badge variant="destructive">Needs Work</Badge>;
+    if (score >= 90) return <Badge variant="default" className="bg-success/100">{t('dashboard.excellent')}</Badge>;
+    if (score >= 70) return <Badge variant="default" className="bg-warning/100">{t('dashboard.good')}</Badge>;
+    return <Badge variant="destructive">{t('dashboard.needsWork')}</Badge>;
   };
   
   useEffect(() => {
@@ -95,15 +95,15 @@ export default function SEOCMSPage() {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold font-sans">SEO Management</h1>
+          <h1 className="text-3xl font-bold font-sans">{t('dashboard.seoCms')}</h1>
           <p className="text-muted-foreground font-sans">
-            Optimize your website for search engines
+            {t('dashboard.manageSeoOptimization')}
           </p>
         </div>
         <div className="flex items-center space-x-2">
           <Button variant="outline" onClick={refreshAnalysis} disabled={refreshing}>
             <RefreshCw className={`h-4 w-4 mr-2 ${refreshing ? 'animate-spin' : ''}`} />
-            {refreshing ? 'Refreshing...' : 'Refresh Analysis'}
+            {refreshing ? t('dashboard.refreshing') : t('dashboard.refresh')}
           </Button>
           <Button onClick={optimizeAll}>
             <Target className="h-4 w-4 mr-2" />

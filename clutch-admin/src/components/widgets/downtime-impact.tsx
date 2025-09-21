@@ -6,7 +6,7 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Progress } from '@/components/ui/progress';
 import { productionApi } from '@/lib/production-api';
-import { useTranslations } from 'next-intl';
+// import { useTranslations } from 'next-intl';
 import { 
   Clock, 
   DollarSign, 
@@ -46,7 +46,7 @@ interface DowntimeMetrics {
 }
 
 export function DowntimeImpact({ className = '' }: DowntimeImpactProps) {
-  const t = useTranslations();
+  const t = (key: string, params?: any) => key;
   const [downtimeMetrics, setDowntimeMetrics] = React.useState<DowntimeMetrics | null>(null);
   const [isLoading, setIsLoading] = React.useState(true);
 
@@ -367,3 +367,6 @@ export function DowntimeImpact({ className = '' }: DowntimeImpactProps) {
 }
 
 export default DowntimeImpact;
+
+
+

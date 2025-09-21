@@ -271,3 +271,6 @@ export function UserGrowthCohort({ className = '' }: UserGrowthCohortProps) {
 }
 
 export default UserGrowthCohort;
+
+
+

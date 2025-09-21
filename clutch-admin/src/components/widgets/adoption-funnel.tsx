@@ -294,3 +294,6 @@ export function AdoptionFunnel({ className = '' }: AdoptionFunnelProps) {
 }
 
 export default AdoptionFunnel;
+
+
+

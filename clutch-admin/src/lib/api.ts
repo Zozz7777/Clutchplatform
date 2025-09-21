@@ -132,6 +132,14 @@ class ApiService {
     }
   }
 
+  // Public wrapper for the private request method
+  public async makeRequest<T>(
+    endpoint: string,
+    options: RequestInit = {}
+  ): Promise<ApiResponse<T>> {
+    return this.request<T>(endpoint, options);
+  }
+
   private async request<T>(
     endpoint: string,
     options: RequestInit = {},

@@ -315,3 +315,6 @@ export function OnboardingCompletion({ className = '' }: OnboardingCompletionPro
 }
 
 export default OnboardingCompletion;
+
+
+

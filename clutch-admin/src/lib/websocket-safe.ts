@@ -158,6 +158,7 @@ export class SafeWebSocketService {
         this.ws.onerror = (error) => {
           clearTimeout(connectionTimeout);
           // WebSocket error, falling back to polling
+          console.log('WebSocket connection error:', {
             url: wsUrl.replace(this.token || '', '[TOKEN]'),
             hasToken: !!this.token,
             tokenPreview: this.token ? `${this.token.substring(0, 20)}...` : 'none'

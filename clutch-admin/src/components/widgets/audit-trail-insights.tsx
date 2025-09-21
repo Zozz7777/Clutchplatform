@@ -386,3 +386,6 @@ export function AuditTrailInsights({ className = '' }: AuditTrailInsightsProps) 
 }
 
 export default AuditTrailInsights;
+
+
+

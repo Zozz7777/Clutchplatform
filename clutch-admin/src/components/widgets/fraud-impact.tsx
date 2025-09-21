@@ -307,3 +307,6 @@ export function FraudImpact({ className = '' }: FraudImpactProps) {
 }
 
 export default FraudImpact;
+
+
+

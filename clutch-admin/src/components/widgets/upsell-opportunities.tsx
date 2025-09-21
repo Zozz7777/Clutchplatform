@@ -350,3 +350,6 @@ export function UpsellOpportunities({ className = '' }: UpsellOpportunitiesProps
 }
 
 export default UpsellOpportunities;
+
+
+

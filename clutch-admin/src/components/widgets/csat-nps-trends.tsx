@@ -6,7 +6,7 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Progress } from '@/components/ui/progress';
 import { productionApi } from '@/lib/production-api';
-import { useTranslations } from 'next-intl';
+// import { useTranslations } from 'next-intl';
 import { 
   Star, 
   TrendingUp, 
@@ -34,7 +34,7 @@ interface SatisfactionData {
 }
 
 export function CSATNPSTrends({ className = '' }: CSATNPSTrendsProps) {
-  const t = useTranslations() as any;
+  const t = (key: string, params?: any) => key;
   const [satisfactionData, setSatisfactionData] = React.useState<{
     currentCSAT: number;
     currentNPS: number;
@@ -439,3 +439,6 @@ export function CSATNPSTrends({ className = '' }: CSATNPSTrendsProps) {
 }
 
 export default CSATNPSTrends;
+
+
+

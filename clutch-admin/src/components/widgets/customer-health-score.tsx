@@ -6,7 +6,7 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Progress } from '@/components/ui/progress';
 import { productionApi } from '@/lib/production-api';
-import { useTranslations } from 'next-intl';
+// import { useTranslations } from 'next-intl';
 import { 
   Heart, 
   Users, 
@@ -40,7 +40,7 @@ interface CustomerHealth {
 }
 
 export function CustomerHealthScore({ className = '' }: CustomerHealthScoreProps) {
-  const t = useTranslations();
+  const t = (key: string, params?: any) => key;
   const [healthData, setHealthData] = React.useState<{
     customers: CustomerHealth[];
     averageScore: number;
@@ -420,3 +420,6 @@ export function CustomerHealthScore({ className = '' }: CustomerHealthScoreProps
 }
 
 export default CustomerHealthScore;
+
+
+

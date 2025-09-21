@@ -7,7 +7,7 @@ import { Button } from '@/components/ui/button';
 import { Progress } from '@/components/ui/progress';
 import { businessIntelligence, type ChurnRisk } from '@/lib/business-intelligence';
 import { logger } from '@/lib/logger';
-import { useTranslations } from 'next-intl';
+// import { useTranslations } from 'next-intl';
 import { 
   AlertTriangle, 
   Users, 
@@ -25,7 +25,7 @@ interface ChurnRiskCardProps {
 }
 
 export function ChurnRiskCard({ className = '', showDetails = false }: ChurnRiskCardProps) {
-  const t = useTranslations() as any;
+  const t = (key: string, params?: any) => key;
   const [churnRisks, setChurnRisks] = useState<ChurnRisk[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [showAll, setShowAll] = useState(showDetails);
@@ -300,3 +300,6 @@ export function ChurnRiskCard({ className = '', showDetails = false }: ChurnRisk
 }
 
 export default ChurnRiskCard;
+
+
+
