@@ -244,12 +244,45 @@ router.post('/employees', authenticateToken, checkRole(['head_administrator', 'h
 });
 
 // PUT /api/v1/hr/employees/:id - Update employee
-router.put('/employees/:id', authenticateToken, checkRole(['head_administrator', 'hr_manager']), hrRateLimit, async (req, res) => {
+router.put('/employees/:id', authenticateToken, checkRole(['head_administrator', 'hr_manager', 'hr']), hrRateLimit, async (req, res) => {
   try {
     const { id } = req.params;
     const updateData = { ...req.body, updatedAt: new Date() };
     
     const employeesCollection = await getCollection('employees');
+    
+    // Check if employee exists and get current data
+    const existingEmployee = await employeesCollection.findOne({ _id: new ObjectId(id) });
+    if (!existingEmployee) {
+      return res.status(404).json({
+        success: false,
+        error: 'EMPLOYEE_NOT_FOUND',
+        message: 'Employee not found',
+        timestamp: new Date().toISOString()
+      });
+    }
+    
+    // Check if HR user is trying to edit executive/board level employee
+    if ((req.user.role === 'hr' || req.user.role === 'hr_manager') && 
+        ['executive', 'head_administrator', 'platform_admin', 'admin'].includes(existingEmployee.role)) {
+      return res.status(403).json({
+        success: false,
+        error: 'INSUFFICIENT_PERMISSIONS',
+        message: 'HR users cannot edit executive or board level employees',
+        timestamp: new Date().toISOString()
+      });
+    }
+    
+    // Check if HR user is trying to assign executive/board level role
+    if ((req.user.role === 'hr' || req.user.role === 'hr_manager') && 
+        updateData.role && ['executive', 'head_administrator', 'platform_admin', 'admin'].includes(updateData.role)) {
+      return res.status(403).json({
+        success: false,
+        error: 'INSUFFICIENT_PERMISSIONS',
+        message: 'HR users cannot assign executive or board level roles',
+        timestamp: new Date().toISOString()
+      });
+    }
     
     const result = await employeesCollection.updateOne(
       { _id: new ObjectId(id) },

@@ -351,7 +351,7 @@ export default function ProjectManagementPage() {
               {new Set(projectsArray.flatMap(p => Array.isArray(p?.team) ? p.team.map(t => t?.id).filter(Boolean) : [])).size}
             </div>
             <p className="text-xs text-muted-foreground">
-              Active team members
+              {t('dashboard.activeTeamMembers')}
             </p>
           </CardContent>
         </Card>
@@ -360,9 +360,9 @@ export default function ProjectManagementPage() {
       {/* Filters */}
       <Card>
         <CardHeader>
-          <CardTitle>Projects</CardTitle>
+          <CardTitle>{t('dashboard.projects')}</CardTitle>
           <CardDescription>
-            Manage and track all your projects
+            {t('dashboard.manageAndTrackAllProjects')}
           </CardDescription>
         </CardHeader>
         <CardContent>
@@ -382,12 +382,12 @@ export default function ProjectManagementPage() {
               <DropdownMenuTrigger asChild>
                 <Button variant="outline">
                   <Filter className="mr-2 h-4 w-4" />
-                  Status: {statusFilter === "all" ? "All" : statusFilter}
+                  {t('dashboard.status')}: {statusFilter === "all" ? t('dashboard.all') : statusFilter}
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent>
                 <DropdownMenuItem onClick={() => setStatusFilter("all")}>
-                  All Status
+                  {t('dashboard.allStatus')}
                 </DropdownMenuItem>
                 <DropdownMenuItem onClick={() => setStatusFilter("active")}>
                   Active
