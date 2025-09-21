@@ -103,6 +103,8 @@ const OPTIMIZED_COLLECTIONS = [
   // Employee Management
   'employees',             // Keep for employee records
   'employee_invitations',  // Keep for employee invitation system
+  'job_applications',      // Keep for job application tracking
+  'recruitment',           // Keep for recruitment process management
   
   // AI/ML Collections
   'ai_models',            // AI model definitions and metadata
