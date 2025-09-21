@@ -11,7 +11,8 @@ import { RealtimeStatus } from "@/components/realtime-status";
 import { useQuickActions } from "@/lib/quick-actions";
 import { useAuth } from "@/contexts/auth-context";
 import { handleError } from "@/lib/error-handler";
-import { useTranslations } from "next-intl";
+import { useTranslations } from "@/hooks/use-translations";
+import { TranslationTest } from "@/components/translation-test";
 
 // Import new Phase 2 widgets
 import UnifiedOpsPulse from "@/components/widgets/unified-ops-pulse";
@@ -81,7 +82,7 @@ export default function DashboardPage() {
   const [performanceMetrics, setPerformanceMetrics] = useState<Record<string, unknown> | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const { hasPermission } = useAuth();
-  const t = (key: string, params?: any) => key;
+  const { t } = useTranslations();
   // Safely get quick actions with error handling
   let quickActions: any[] = [];
   let generateReport: (() => void) | null = null;
@@ -220,6 +221,9 @@ export default function DashboardPage() {
           </Button>
         </div>
       </div>
+
+      {/* Translation Test - Temporary */}
+      <TranslationTest />
 
       {/* KPI Cards */}
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-5">

@@ -1,6 +1,9 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
+
+// Prevent static generation for this page
+export const dynamic = 'force-dynamic';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -47,7 +50,7 @@ import {
   Smartphone,
   Monitor,
 } from "lucide-react";
-import { useTranslations } from "next-intl";
+// import { useTranslations } from "next-intl";
 import { realApi } from "@/lib/real-api";
 import { toast } from "sonner";
 

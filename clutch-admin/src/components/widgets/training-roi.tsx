@@ -43,20 +43,55 @@ export function TrainingROI({ className = '' }: TrainingROIProps) {
       try {
         // Get training ROI data from API
         const roiData = await productionApi.getTrainingROI();
-        const { gpuHours, trainingCost, businessValue, roi, modelsTrained, accuracyImprovement, costPerModel, valuePerModel } = roiData;
+        
+        // Ensure roiData exists and has the expected structure
+        if (roiData && typeof roiData === 'object') {
+          const { 
+            gpuHours = 0, 
+            trainingCost = 0, 
+            businessValue = 0, 
+            roi = 0, 
+            modelsTrained = 0, 
+            accuracyImprovement = 0, 
+            costPerModel = 0, 
+            valuePerModel = 0 
+          } = roiData;
 
-        setRoiData({
-          gpuHours,
-          trainingCost,
-          businessValue,
-          roi,
-          modelsTrained,
-          accuracyImprovement,
-          costPerModel,
-          valuePerModel
-        });
+          setRoiData({
+            gpuHours: Number(gpuHours) || 0,
+            trainingCost: Number(trainingCost) || 0,
+            businessValue: Number(businessValue) || 0,
+            roi: Number(roi) || 0,
+            modelsTrained: Number(modelsTrained) || 0,
+            accuracyImprovement: Number(accuracyImprovement) || 0,
+            costPerModel: Number(costPerModel) || 0,
+            valuePerModel: Number(valuePerModel) || 0
+          });
+        } else {
+          // Set default values if API returns invalid data
+          setRoiData({
+            gpuHours: 0,
+            trainingCost: 0,
+            businessValue: 0,
+            roi: 0,
+            modelsTrained: 0,
+            accuracyImprovement: 0,
+            costPerModel: 0,
+            valuePerModel: 0
+          });
+        }
       } catch (error) {
-        // Failed to load training ROI data
+        // Failed to load training ROI data - set default values
+        setRoiData({
+          gpuHours: 0,
+          trainingCost: 0,
+          businessValue: 0,
+          roi: 0,
+          modelsTrained: 0,
+          accuracyImprovement: 0,
+          costPerModel: 0,
+          valuePerModel: 0
+        });
       } finally {
         setIsLoading(false);
       }
@@ -153,7 +188,7 @@ export function TrainingROI({ className = '' }: TrainingROIProps) {
         <div className="grid grid-cols-2 gap-4">
           <div className="text-center p-3 bg-primary/10 rounded-[0.625rem]-lg">
             <Cpu className="h-5 w-5 text-primary mx-auto mb-1" />
-            <p className="text-lg font-bold text-primary">{roiData.gpuHours.toLocaleString()}</p>
+            <p className="text-lg font-bold text-primary">{(roiData.gpuHours || 0).toLocaleString()}</p>
             <p className="text-xs text-muted-foreground">GPU Hours</p>
           </div>
           <div className="text-center p-3 bg-primary/10 rounded-[0.625rem]-lg">
@@ -194,7 +229,7 @@ export function TrainingROI({ className = '' }: TrainingROIProps) {
               </div>
               <div className="text-right">
                 <p className="text-sm font-semibold text-foreground">
-                  ${roiData.trainingCost.toLocaleString()}
+                  ${(roiData.trainingCost || 0).toLocaleString()}
                 </p>
                 <Badge variant="outline" className="text-xs">
                   ${roiData.costPerModel.toFixed(0)}/model
@@ -212,7 +247,7 @@ export function TrainingROI({ className = '' }: TrainingROIProps) {
               </div>
               <div className="text-right">
                 <p className="text-sm font-semibold text-foreground">
-                  ${roiData.businessValue.toLocaleString()}
+                  ${(roiData.businessValue || 0).toLocaleString()}
                 </p>
                 <Badge variant="outline" className="text-xs">
                   ${roiData.valuePerModel.toFixed(0)}/model
