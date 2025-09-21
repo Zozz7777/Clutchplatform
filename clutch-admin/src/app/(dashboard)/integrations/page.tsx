@@ -125,7 +125,7 @@ interface IntegrationTemplate {
 }
 
 export default function IntegrationsPage() {
-  const { t } = useTranslations();
+  const t = useTranslations();
   const [integrations, setIntegrations] = useState<Integration[]>([]);
   const [templates, setTemplates] = useState<IntegrationTemplate[]>([]);
   const [loading, setLoading] = useState(true);
