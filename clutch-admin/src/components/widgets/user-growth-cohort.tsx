@@ -165,7 +165,7 @@ export function UserGrowthCohort({ className = '' }: UserGrowthCohortProps) {
             {filteredCohorts.map((cohort, index) => (
               <div key={cohort.month} className="flex items-center justify-between p-3 bg-muted/50 rounded-[0.625rem]-lg">
                 <div className="flex items-center space-x-3">
-                  <div className="flex items-center justify-center w-8 h-8 bg-primary/10 rounded-[0.625rem]-full">
+                  <div className="flex items-center justify-center w-8 h-8 bg-primary/10 rounded-full">
                     <span className="text-sm font-semibold text-primary">
                       {filteredCohorts.length - index}
                     </span>
@@ -204,9 +204,9 @@ export function UserGrowthCohort({ className = '' }: UserGrowthCohortProps) {
               <div key={cohort.month} className="flex items-center justify-between text-sm">
                 <span className="text-muted-foreground">{formatMonth(cohort.month)}</span>
                 <div className="flex items-center space-x-2">
-                  <div className="w-24 bg-muted rounded-[0.625rem]-full h-2">
+                  <div className="w-24 bg-muted rounded-full h-2">
                     <div 
-                      className={`h-2 rounded-[0.625rem]-full ${
+                      className={`h-2 rounded-full ${
                         cohort.retentionRate >= 80 ? 'bg-success/100' :
                         cohort.retentionRate >= 60 ? 'bg-warning/100' : 'bg-destructive/100'
                       }`}

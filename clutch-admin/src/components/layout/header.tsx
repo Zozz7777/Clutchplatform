@@ -120,7 +120,7 @@ export function Header({ onMenuToggle }: HeaderProps) {
               {notifications.length > 0 && (
                 <Badge
                   variant="destructive"
-                  className="absolute -top-1 -right-1 h-5 w-5 rounded-[0.625rem]-full p-0 flex items-center justify-center text-xs"
+                  className="absolute -top-1 -right-1 h-5 w-5 rounded-full p-0 flex items-center justify-center text-xs"
                 >
                   {notifications.length}
                 </Badge>
@@ -162,7 +162,7 @@ export function Header({ onMenuToggle }: HeaderProps) {
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <Button variant="ghost" className="flex items-center space-x-2 hover:bg-muted focus:ring-2 focus:ring-ring focus:ring-offset-2">
-              <div className="w-8 h-8 rounded-[0.625rem]-full bg-primary flex items-center justify-center">
+              <div className="w-8 h-8 rounded-full bg-primary flex items-center justify-center">
                 <User className="h-4 w-4 text-primary-foreground" />
               </div>
               <div className="hidden md:block text-left">

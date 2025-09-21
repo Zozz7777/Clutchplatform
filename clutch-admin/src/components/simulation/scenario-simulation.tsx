@@ -448,9 +448,9 @@ export default function ScenarioSimulation({ className }: ScenarioSimulationProp
                 <span>Simulation Progress</span>
                 <span>{simulationProgress}%</span>
               </div>
-              <div className="w-full bg-muted rounded-[0.625rem]-full h-2">
+              <div className="w-full bg-muted rounded-full h-2">
                 <div 
-                  className="bg-blue-600 h-2 rounded-[0.625rem]-full transition-all duration-300"
+                  className="bg-blue-600 h-2 rounded-full transition-all duration-300"
                   style={{ width: `${simulationProgress}%` }}
                 />
               </div>

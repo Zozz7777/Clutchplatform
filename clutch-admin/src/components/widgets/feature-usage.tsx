@@ -241,7 +241,7 @@ export function FeatureUsage({ className = '' }: FeatureUsageProps) {
               return (
                 <div key={feature.feature} className="flex items-center justify-between p-3 bg-muted/50 rounded-[0.625rem]-lg">
                   <div className="flex items-center space-x-3">
-                    <div className="flex items-center justify-center w-6 h-6 bg-primary/10 rounded-[0.625rem]-full">
+                    <div className="flex items-center justify-center w-6 h-6 bg-primary/10 rounded-full">
                       <span className="text-xs font-semibold text-primary">{index + 1}</span>
                     </div>
                     <FeatureIcon className="h-4 w-4 text-primary" />

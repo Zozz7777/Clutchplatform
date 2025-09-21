@@ -485,7 +485,7 @@ export default function IncidentWarRoom({ className }: IncidentWarRoomProps) {
                   {Object.entries(activeIncident.timeline).map(([stage, timestamp]) => (
                     timestamp && (
                       <div key={stage} className="flex items-center gap-3 p-3 border rounded-[0.625rem]">
-                        <div className={`w-3 h-3 rounded-[0.625rem]-full ${
+                        <div className={`w-3 h-3 rounded-full ${
                           stage === 'resolved' ? 'bg-success/100' :
                           stage === 'mitigating' ? 'bg-warning/100' :
                           stage === 'investigating' ? 'bg-warning/100' :

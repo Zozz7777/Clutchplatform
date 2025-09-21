@@ -1414,6 +1414,25 @@ export class ProductionApiService {
     }
   }
 
+  // Maintenance and operational costs APIs
+  async getMaintenanceCosts(): Promise<Record<string, unknown>> {
+    try {
+      return await realApi.getMaintenanceCosts();
+    } catch (error) {
+      logger.error("Failed to fetch maintenance costs:", error);
+      throw new Error("Failed to load maintenance costs");
+    }
+  }
+
+  async getOtherOperationalCosts(): Promise<Record<string, unknown>> {
+    try {
+      return await realApi.getOtherOperationalCosts();
+    } catch (error) {
+      logger.error("Failed to fetch operational costs:", error);
+      throw new Error("Failed to load operational costs");
+    }
+  }
+
   async saveMobileAppSettings(settings: Record<string, unknown>): Promise<Record<string, unknown>> {
     try {
       return await realApi.saveMobileAppSettings(settings);

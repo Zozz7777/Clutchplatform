@@ -362,7 +362,7 @@ export function FileUpload({
       {/* Upload Status */}
       {isUploading && (
         <div className="flex items-center space-x-2 text-sm text-info">
-          <div className="animate-spin rounded-[0.625rem]-full h-4 w-4 border-b-2 border-info"></div>
+          <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-info"></div>
           <span>Uploading files...</span>
         </div>
       )}

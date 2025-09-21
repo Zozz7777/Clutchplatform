@@ -951,7 +951,7 @@ export default function RootCauseAnalytics({ className }: RootCauseAnalyticsProp
                     <div className="space-y-3">
                       {selectedAnalysis.timeline.map((event) => (
                         <div key={event.id} className="flex items-start gap-3 p-3 border rounded-[0.625rem]">
-                          <div className={`p-1 rounded-[0.625rem]-full ${getImpactColor(event.impact)}`}>
+                          <div className={`p-1 rounded-full ${getImpactColor(event.impact)}`}>
                             {event.impact === 'positive' ? <ArrowRight className="h-4 w-4" /> : 
                              event.impact === 'negative' ? <ArrowLeft className="h-4 w-4" /> : 
                              <Info className="h-4 w-4" />}

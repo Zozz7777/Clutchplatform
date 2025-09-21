@@ -6,9 +6,9 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useAuth } from "@/contexts/auth-context";
-import { useTranslations } from "next-intl";
+import { useTranslations } from "@/hooks/use-translations";
 import { formatDate, formatRelativeTime } from "@/lib/utils";
-import { productionApi } from "@/lib/production-api";
+import { realApi } from "@/lib/real-api";
 import { 
   FileText, 
   Search, 
@@ -107,7 +107,7 @@ export default function CMSPage() {
   const [activeTab, setActiveTab] = useState<"content" | "media" | "categories">("content");
   const [isLoading, setIsLoading] = useState(true);
   const { hasPermission } = useAuth();
-  const t = useTranslations();
+  const { t } = useTranslations();
 
   useEffect(() => {
     const loadCMSData = async () => {
@@ -116,9 +116,9 @@ export default function CMSPage() {
         
         // Load real data from API using the proper API service
         const [contentData, mediaData, categoriesData] = await Promise.allSettled([
-          productionApi.getCMSContent(),
-          productionApi.getCMSMedia(),
-          productionApi.getCMSCategories()
+          realApi.getCMSContent(),
+          realApi.getCMSMedia(),
+          realApi.getCMSCategories()
         ]);
 
         const contentArray = contentData.status === 'fulfilled' && Array.isArray(contentData.value) 
@@ -332,7 +332,7 @@ export default function CMSPage() {
       <div className="flex items-center justify-center h-64">
         <div className="text-center">
           <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto mb-4"></div>
-          <p className="text-muted-foreground">{t('cms.loadingCmsData')}</p>
+          <p className="text-muted-foreground">{t('dashboard.loadingCmsData')}</p>
         </div>
       </div>
     );
@@ -343,20 +343,20 @@ export default function CMSPage() {
       {/* Page Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold tracking-tight">Content Management System</h1>
+          <h1 className="text-3xl font-bold tracking-tight">{t('dashboard.contentManagementSystem')}</h1>
           <p className="text-muted-foreground">
-            Manage website content, media, and help documentation
+            {t('dashboard.manageWebsiteContent')}
           </p>
         </div>
         {hasPermission("manage_content") && (
           <div className="flex space-x-2">
             <Button>
               <Plus className="mr-2 h-4 w-4" />
-              New Content
+              {t('dashboard.newContent')}
             </Button>
             <Button variant="outline">
               <Upload className="mr-2 h-4 w-4" />
-              Upload Media
+              {t('dashboard.uploadMedia')}
             </Button>
           </div>
         )}
@@ -366,26 +366,26 @@ export default function CMSPage() {
       <div className="grid gap-4 md:grid-cols-4">
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Total Content</CardTitle>
+            <CardTitle className="text-sm font-medium">{t('dashboard.totalContent')}</CardTitle>
             <FileText className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">{Array.isArray(content) ? content.length : 0}</div>
             <p className="text-xs text-muted-foreground">
-              {Array.isArray(content) ? content.filter(c => c?.status === "published").length : 0} published
+              {Array.isArray(content) ? content.filter(c => c?.status === "published").length : 0} {t('dashboard.published')}
             </p>
           </CardContent>
         </Card>
         
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Media Files</CardTitle>
+            <CardTitle className="text-sm font-medium">{t('dashboard.mediaFiles')}</CardTitle>
             <Image className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">{Array.isArray(media) ? media.length : 0}</div>
             <p className="text-xs text-muted-foreground">
-              {Array.isArray(media) ? media.filter(m => m?.type === "image").length : 0} images
+              {Array.isArray(media) ? media.filter(m => m?.type === "image").length : 0} {t('dashboard.images')}
             </p>
           </CardContent>
         </Card>

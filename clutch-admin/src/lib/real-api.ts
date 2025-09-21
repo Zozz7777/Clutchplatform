@@ -1618,6 +1618,29 @@ export class RealApiService {
       { fallbackValue: [], showToast: false }
     )();
   }
+
+  // Maintenance and operational costs APIs
+  async getMaintenanceCosts(): Promise<Record<string, unknown>> {
+    return withErrorHandling(
+      async () => {
+        const response = await apiService.request<Record<string, unknown>>("/api/v1/operations/maintenance-costs");
+        return handleApiResponse(response, 'getMaintenanceCosts', {});
+      },
+      'getMaintenanceCosts',
+      { fallbackValue: {}, showToast: false }
+    )();
+  }
+
+  async getOtherOperationalCosts(): Promise<Record<string, unknown>> {
+    return withErrorHandling(
+      async () => {
+        const response = await apiService.request<Record<string, unknown>>("/api/v1/operations/operational-costs");
+        return handleApiResponse(response, 'getOtherOperationalCosts', {});
+      },
+      'getOtherOperationalCosts',
+      { fallbackValue: {}, showToast: false }
+    )();
+  }
 }
 
 // Export singleton instance

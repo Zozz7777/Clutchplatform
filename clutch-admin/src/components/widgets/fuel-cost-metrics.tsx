@@ -254,7 +254,7 @@ export function FuelCostMetrics({ className = '' }: FuelCostMetricsProps) {
               return (
                 <div key={item.name} className="flex items-center justify-between p-3 bg-muted/50 rounded-[0.625rem]-lg">
                   <div className="flex items-center space-x-3">
-                    <div className={`p-2 rounded-[0.625rem]-full ${item.bgColor}`}>
+                    <div className={`p-2 rounded-full ${item.bgColor}`}>
                       <Fuel className={`h-4 w-4 ${item.color}`} />
                     </div>
                     <div>

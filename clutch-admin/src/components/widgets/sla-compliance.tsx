@@ -245,7 +245,7 @@ export function SLACompliance({ className = '' }: SLAComplianceProps) {
               return (
                 <div key={metric.service} className="flex items-center justify-between p-3 bg-muted/50 rounded-[0.625rem]-lg">
                   <div className="flex items-center space-x-3">
-                    <div className="flex items-center justify-center w-8 h-8 bg-primary/10 rounded-[0.625rem]-full">
+                    <div className="flex items-center justify-center w-8 h-8 bg-primary/10 rounded-full">
                       <span className="text-sm font-semibold text-primary">
                         {metric.service.charAt(0)}
                       </span>

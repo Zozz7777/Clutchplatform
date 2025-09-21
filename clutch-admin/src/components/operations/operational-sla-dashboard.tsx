@@ -285,7 +285,7 @@ export default function OperationalSLADashboard({ className }: OperationalSLADas
                 <div key={service.id} className="p-3 border rounded-[0.625rem]">
                   <div className="flex items-center justify-between mb-2">
                     <div className="flex items-center gap-2">
-                      <div className={`h-3 w-3 rounded-[0.625rem]-full ${getServiceStatusColor(service.status)}`} />
+                      <div className={`h-3 w-3 rounded-full ${getServiceStatusColor(service.status)}`} />
                       <span className="font-medium">{service.name}</span>
                     </div>
                     <div className="flex items-center gap-2">

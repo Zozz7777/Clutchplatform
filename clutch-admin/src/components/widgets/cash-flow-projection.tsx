@@ -296,7 +296,7 @@ export function CashFlowProjection({ className = '' }: CashFlowProjectionProps) 
             {cashFlowData.scenarios.map((scenario) => (
               <div key={scenario.scenario} className="flex items-center justify-between p-3 bg-muted/50 rounded-[0.625rem]-lg">
                 <div className="flex items-center space-x-3">
-                  <div className="flex items-center justify-center w-8 h-8 bg-primary/10 rounded-[0.625rem]-full">
+                  <div className="flex items-center justify-center w-8 h-8 bg-primary/10 rounded-full">
                     <span className="text-sm font-semibold text-primary">
                       {scenario.scenario.charAt(0)}
                     </span>
@@ -329,7 +329,7 @@ export function CashFlowProjection({ className = '' }: CashFlowProjectionProps) 
             {cashFlowData.upcomingPayments.map((payment, index) => (
               <div key={index} className="flex items-center justify-between p-3 bg-muted/50 rounded-[0.625rem]-lg">
                 <div className="flex items-center space-x-3">
-                  <div className={`p-2 rounded-[0.625rem]-full ${
+                  <div className={`p-2 rounded-full ${
                     payment.type === 'inflow' ? 'bg-success/10' : 'bg-destructive/10'
                   }`}>
                     {payment.type === 'inflow' ? (

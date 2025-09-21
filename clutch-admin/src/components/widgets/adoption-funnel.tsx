@@ -189,7 +189,7 @@ export function AdoptionFunnel({ className = '' }: AdoptionFunnelProps) {
               <div key={stage.stage}>
                 <div className="flex items-center justify-between p-4 bg-muted/50 rounded-[0.625rem]-lg">
                   <div className="flex items-center space-x-3">
-                    <div className="flex items-center justify-center w-10 h-10 bg-primary/10 rounded-[0.625rem]-full">
+                    <div className="flex items-center justify-center w-10 h-10 bg-primary/10 rounded-full">
                       <StageIcon className={`h-5 w-5 ${stage.color}`} />
                     </div>
                     <div>

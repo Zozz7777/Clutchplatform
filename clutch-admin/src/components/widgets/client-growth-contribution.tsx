@@ -292,7 +292,7 @@ export function ClientGrowthContribution({ className = '' }: ClientGrowthContrib
               return (
                 <div key={client.clientId} className="flex items-center justify-between p-3 bg-muted/50 rounded-[0.625rem]-lg">
                   <div className="flex items-center space-x-3">
-                    <div className="flex items-center justify-center w-6 h-6 bg-success/10 rounded-[0.625rem]-full">
+                    <div className="flex items-center justify-center w-6 h-6 bg-success/10 rounded-full">
                       <span className="text-xs font-semibold text-success">{index + 1}</span>
                     </div>
                     <Building2 className="h-4 w-4 text-primary" />
@@ -334,7 +334,7 @@ export function ClientGrowthContribution({ className = '' }: ClientGrowthContrib
               return (
                 <div key={client.clientId} className="flex items-center justify-between p-3 bg-muted/50 rounded-[0.625rem]-lg">
                   <div className="flex items-center space-x-3">
-                    <div className="flex items-center justify-center w-8 h-8 bg-primary/10 rounded-[0.625rem]-full">
+                    <div className="flex items-center justify-center w-8 h-8 bg-primary/10 rounded-full">
                       <span className="text-sm font-semibold text-primary">
                         {client.clientName.charAt(0)}
                       </span>

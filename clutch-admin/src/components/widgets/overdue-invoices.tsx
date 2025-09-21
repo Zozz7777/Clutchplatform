@@ -237,7 +237,7 @@ export function OverdueInvoices({ className = '' }: OverdueInvoicesProps) {
             {overdueData.invoices.map((invoice) => (
               <div key={invoice.id} className="flex items-center justify-between p-3 bg-muted/50 rounded-[0.625rem]-lg">
                 <div className="flex items-center space-x-3">
-                  <div className="flex items-center justify-center w-8 h-8 bg-destructive/10 rounded-[0.625rem]-full">
+                  <div className="flex items-center justify-center w-8 h-8 bg-destructive/10 rounded-full">
                     <span className="text-sm font-semibold text-destructive">
                       {invoice.daysOverdue}
                     </span>

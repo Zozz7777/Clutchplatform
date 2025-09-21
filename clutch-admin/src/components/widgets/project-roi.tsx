@@ -227,7 +227,7 @@ export function ProjectROI({ className = '' }: ProjectROIProps) {
             {roiData.projects.map((project) => (
               <div key={project.projectId} className="flex items-center justify-between p-3 bg-muted/50 rounded-[0.625rem]-lg">
                 <div className="flex items-center space-x-3">
-                  <div className="flex items-center justify-center w-8 h-8 bg-primary/10 rounded-[0.625rem]-full">
+                  <div className="flex items-center justify-center w-8 h-8 bg-primary/10 rounded-full">
                     <span className="text-sm font-semibold text-primary">
                       {project.projectName.charAt(0)}
                     </span>

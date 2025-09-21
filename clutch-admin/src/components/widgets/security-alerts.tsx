@@ -200,7 +200,7 @@ export function SecurityAlerts({ className = '' }: SecurityAlertsProps) {
             {alertData.alerts.map((alert) => (
               <div key={alert.id} className="flex items-center justify-between p-3 bg-muted/50 rounded-[0.625rem]-lg">
                 <div className="flex items-center space-x-3">
-                  <div className={`p-2 rounded-[0.625rem]-full ${
+                  <div className={`p-2 rounded-full ${
                     alert.severity === 'critical' ? 'bg-destructive/10' :
                     alert.severity === 'high' ? 'bg-warning/10' :
                     alert.severity === 'medium' ? 'bg-warning/10' : 'bg-success/10'

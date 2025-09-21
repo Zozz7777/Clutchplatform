@@ -252,7 +252,7 @@ export function AuditTrailInsights({ className = '' }: AuditTrailInsightsProps) 
             {auditData.topActions.map((action, index) => (
               <div key={action.action} className="flex items-center justify-between p-3 bg-muted/50 rounded-[0.625rem]-lg">
                 <div className="flex items-center space-x-3">
-                  <div className="flex items-center justify-center w-6 h-6 bg-primary/10 rounded-[0.625rem]-full">
+                  <div className="flex items-center justify-center w-6 h-6 bg-primary/10 rounded-full">
                     <span className="text-xs font-semibold text-primary">{index + 1}</span>
                   </div>
                   <div>
@@ -279,7 +279,7 @@ export function AuditTrailInsights({ className = '' }: AuditTrailInsightsProps) 
             {auditData.topUsers.map((user, index) => (
               <div key={user.user} className="flex items-center justify-between p-3 bg-muted/50 rounded-[0.625rem]-lg">
                 <div className="flex items-center space-x-3">
-                  <div className="flex items-center justify-center w-6 h-6 bg-success/10 rounded-[0.625rem]-full">
+                  <div className="flex items-center justify-center w-6 h-6 bg-success/10 rounded-full">
                     <span className="text-xs font-semibold text-success">{index + 1}</span>
                   </div>
                   <div>
@@ -306,7 +306,7 @@ export function AuditTrailInsights({ className = '' }: AuditTrailInsightsProps) 
             {auditData.recentEvents.map((event) => (
               <div key={event.id} className="flex items-center justify-between p-3 bg-muted/50 rounded-[0.625rem]-lg">
                 <div className="flex items-center space-x-3">
-                  <div className={`p-2 rounded-[0.625rem]-full ${
+                  <div className={`p-2 rounded-full ${
                     event.success ? 'bg-success/10' : 'bg-destructive/10'
                   }`}>
                     {event.success ? (
