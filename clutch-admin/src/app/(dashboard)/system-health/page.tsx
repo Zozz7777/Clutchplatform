@@ -258,9 +258,9 @@ export default function SystemHealthPage() {
     return <Minus className="h-4 w-4 text-muted-foreground" />;
   };
 
-  const openAlerts = alerts.filter(a => a.status === "open").length;
-  const criticalAlerts = alerts.filter(a => a.severity === "critical").length;
-  const errorLogs = logs.filter(l => l.level === "error" || l.level === "fatal").length;
+  const openAlerts = alerts?.filter(a => a.status === "open").length || 0;
+  const criticalAlerts = alerts?.filter(a => a.severity === "critical").length || 0;
+  const errorLogs = logs?.filter(l => l.level === "error" || l.level === "fatal").length || 0;
 
   if (loading && !systemStatus) {
     return (
@@ -357,10 +357,10 @@ export default function SystemHealthPage() {
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">
-              {systemStatus?.services.filter(s => s.status === "healthy").length || 0}
+              {systemStatus?.services?.filter(s => s.status === "healthy").length || 0}
             </div>
             <p className="text-xs text-muted-foreground">
-              / {systemStatus?.services.length || 0} healthy
+              / {systemStatus?.services?.length || 0} healthy
             </p>
           </CardContent>
         </Card>
@@ -454,7 +454,7 @@ export default function SystemHealthPage() {
         </CardHeader>
         <CardContent>
           <div className="space-y-4">
-            {systemStatus?.services.map((service) => (
+            {systemStatus?.services?.map((service) => (
               <div key={service.name} className="flex items-center justify-between p-4 border rounded-[0.625rem]">
                 <div className="flex items-center space-x-4">
                   <div className="p-2 bg-primary/10 rounded-[0.625rem]">
@@ -498,7 +498,7 @@ export default function SystemHealthPage() {
         </CardHeader>
         <CardContent>
           <div className="space-y-4">
-            {alerts.slice(0, 10).map((alert) => (
+            {alerts?.slice(0, 10).map((alert) => (
               <div key={alert._id} className="flex items-center justify-between p-4 border rounded-[0.625rem]">
                 <div className="flex items-center space-x-4">
                   <div className="p-2 bg-destructive/10 rounded-[0.625rem]">
@@ -546,7 +546,7 @@ export default function SystemHealthPage() {
         </CardHeader>
         <CardContent>
           <div className="space-y-2">
-            {logs.slice(0, 20).map((log) => (
+            {logs?.slice(0, 20).map((log) => (
               <div key={log._id} className="flex items-center justify-between p-3 border rounded-[0.625rem]">
                 <div className="flex items-center space-x-4">
                   <Badge className={getLogLevelColor(log.level)}>
@@ -558,7 +558,7 @@ export default function SystemHealthPage() {
                       {log.source} • {new Date(log.timestamp).toLocaleString()}
                     </p>
                     <div className="flex items-center space-x-2 mt-1">
-                      {log.tags.map((tag) => (
+                      {log.tags?.map((tag) => (
                         <Badge key={tag} variant="outline" className="text-xs">
                           {tag}
                         </Badge>
@@ -633,13 +633,13 @@ export default function SystemHealthPage() {
               <Button onClick={async () => {
                 try {
                   // Acknowledge the alert via API
-                  await productionApi.acknowledgeAlert(selectedAlert.id);
+                  await productionApi.acknowledgeAlert(selectedAlert._id);
                   // Update local state
-                  setAlerts(prev => prev.map(alert => 
-                    alert.id === selectedAlert.id 
+                  setAlerts(prev => prev?.map(alert => 
+                    alert._id === selectedAlert._id 
                       ? { ...alert, status: 'acknowledged' }
                       : alert
-                  ));
+                  ) || []);
                   setShowAlertDialog(false);
                   logger.log('Alert acknowledged successfully');
                 } catch (error) {
