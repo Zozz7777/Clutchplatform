@@ -130,3 +130,36 @@ export const handleApiError = (error: unknown, endpoint: string, method: string)
 
 export const handleDataLoadError = (error: unknown, dataType: string) => 
   errorHandler.handleDataLoadError(error, dataType);
+
+// API response handler
+export const handleApiResponse = <T>(
+  response: any,
+  context: string,
+  fallbackValue: T
+): T => {
+  try {
+    if (response && response.success !== false) {
+      return response.data || response || fallbackValue;
+    }
+    return fallbackValue;
+  } catch (error) {
+    errorHandler.handleError(error, context, { showToast: false });
+    return fallbackValue;
+  }
+};
+
+// Error handling wrapper
+export const withErrorHandling = <T extends any[], R>(
+  fn: (...args: T) => Promise<R>,
+  context: string,
+  options: { fallbackValue: R; showToast?: boolean } = { fallbackValue: null as R, showToast: false }
+) => {
+  return async (...args: T): Promise<R> => {
+    try {
+      return await fn(...args);
+    } catch (error) {
+      errorHandler.handleError(error, context, options);
+      return options.fallbackValue;
+    }
+  };
+};

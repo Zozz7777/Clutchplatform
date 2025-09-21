@@ -8,6 +8,7 @@ import { Input } from "@/components/ui/input";
 import { useAuth } from "@/contexts/auth-context";
 import { useTranslations } from "next-intl";
 import { formatDate, formatRelativeTime, formatCurrency } from "@/lib/utils";
+import { handleError, handleWarning, handleDataLoadError } from "@/lib/error-handler";
 import { 
   Megaphone, 
   Search, 
@@ -203,7 +204,7 @@ export default function MarketingPage() {
         }
         
       } catch (error) {
-        console.error('Unexpected error loading marketing data:', error);
+        handleDataLoadError(error, 'marketing_data');
         // Set empty arrays on error
         setCampaigns([]);
         setLeads([]);

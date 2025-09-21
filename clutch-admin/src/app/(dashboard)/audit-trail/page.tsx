@@ -51,6 +51,7 @@ import { useTranslations } from "next-intl";
 import { productionApi } from "@/lib/production-api";
 import { toast } from "sonner";
 import { useAuth } from "@/contexts/auth-context";
+import { handleError, handleWarning, handleDataLoadError } from "@/lib/error-handler";
 
 interface AuditLog {
   _id: string;
@@ -134,7 +135,7 @@ export default function AuditTrailPage() {
         if (logsResult.status === 'fulfilled') {
           setAuditLogs((logsResult.value as unknown as AuditLog[]) || []);
         } else {
-          console.warn('Failed to load audit logs:', logsResult.reason);
+          handleWarning(`Failed to load audit logs: ${logsResult.reason}`, { component: 'AuditTrailPage' });
           setAuditLogs([]);
         }
 
@@ -142,7 +143,7 @@ export default function AuditTrailPage() {
         if (eventsResult.status === 'fulfilled') {
           setSecurityEvents((eventsResult.value as unknown as SecurityEvent[]) || []);
         } else {
-          console.warn('Failed to load security events:', eventsResult.reason);
+          handleWarning(`Failed to load security events: ${eventsResult.reason}`, { component: 'AuditTrailPage' });
           setSecurityEvents([]);
           // Don't show error toast for permission-related failures
           if (!eventsResult.reason?.message?.includes('403') && !eventsResult.reason?.message?.includes('401')) {
@@ -154,7 +155,7 @@ export default function AuditTrailPage() {
         if (activitiesResult.status === 'fulfilled') {
           setUserActivities((activitiesResult.value as unknown as UserActivity[]) || []);
         } else {
-          console.warn('Failed to load user activities:', activitiesResult.reason);
+          handleWarning(`Failed to load user activities: ${activitiesResult.reason}`, { component: 'AuditTrailPage' });
           setUserActivities([]);
         }
 
@@ -164,7 +165,7 @@ export default function AuditTrailPage() {
         }
         
       } catch (error) {
-        console.error('Unexpected error loading audit data:', error);
+        handleDataLoadError(error, 'audit_data');
         toast.error(t('auditTrail.failedToLoadAuditData'));
         setAuditLogs([]);
         setSecurityEvents([]);

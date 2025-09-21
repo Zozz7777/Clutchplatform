@@ -17,12 +17,12 @@ import {
   Save,
   Eye
 } from 'lucide-react';
-import { productionApi } from '@/lib/production-api';
+import { realApi } from '@/lib/real-api';
 import { toast } from 'sonner';
-import { useTranslations } from 'next-intl';
+import { useTranslations } from '@/hooks/use-translations';
 
 export default function MobileCMSPage() {
-  const t = useTranslations();
+  const { t } = useTranslations();
   const [appSettings, setAppSettings] = useState({
     appName: 'Clutch',
     version: '1.2.0',
@@ -55,7 +55,7 @@ export default function MobileCMSPage() {
   const loadMobileAppSettings = async () => {
     try {
       setLoading(true);
-      const data = await productionApi.getMobileAppSettings();
+      const data = await realApi.getMobileAppSettings();
       if (data) {
         setAppSettings((data.appSettings || appSettings) as unknown as typeof appSettings);
         setContent((data.content || content) as unknown as typeof content);
@@ -74,7 +74,7 @@ export default function MobileCMSPage() {
         appSettings,
         content
       };
-      await productionApi.saveMobileAppSettings(settingsData);
+      await realApi.saveMobileAppSettings(settingsData);
       toast.success('Mobile app settings saved successfully!');
     } catch (error) {
       // Error handled by API service
@@ -86,7 +86,7 @@ export default function MobileCMSPage() {
   
   const previewApp = async () => {
     try {
-      const result = await productionApi.previewMobileApp();
+      const result = await realApi.previewMobileApp();
       if (result?.previewUrl && typeof result.previewUrl === 'string') {
         window.open(result.previewUrl, '_blank');
         toast.success('Mobile app preview opened in new tab!');

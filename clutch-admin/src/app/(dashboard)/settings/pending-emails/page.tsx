@@ -36,6 +36,7 @@ import {
 } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { toast } from "sonner";
+import { handleError, handleDataLoadError } from "@/lib/error-handler";
 import { useAuth } from "@/contexts/auth-context";
 
 interface PendingEmail {
@@ -86,11 +87,11 @@ export default function PendingEmailsPage() {
           const data = await response.json();
           setPendingEmails(data.data?.pendingEmails || []);
         } else {
-          console.error('Failed to load pending emails');
+          handleDataLoadError(new Error('Failed to load pending emails'), 'pending_emails');
           toast.error('Failed to load pending emails');
         }
       } catch (error) {
-        console.error('Error loading pending emails:', error);
+        handleDataLoadError(error, 'pending_emails');
         toast.error('Failed to load pending emails');
       } finally {
         setLoading(false);
@@ -136,7 +137,7 @@ export default function PendingEmailsPage() {
         toast.error('Failed to mark email as sent');
       }
     } catch (error) {
-      console.error('Error marking email as sent:', error);
+      handleError(error, { component: 'PendingEmailsPage', action: 'mark_email_sent' });
       toast.error('Failed to mark email as sent');
     }
   };

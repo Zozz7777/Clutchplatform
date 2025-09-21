@@ -25,6 +25,7 @@ import {
 } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { productionApi } from "@/lib/production-api";
+import { handleError, handleWarning, handleDataLoadError } from "@/lib/error-handler";
 import { toast } from "sonner";
 import { useAuth } from "@/contexts/auth-context";
 
@@ -93,7 +94,7 @@ export default function APIDocsPage() {
           const endpoints = endpointsData.value || [];
           setEndpoints(Array.isArray(endpoints) ? endpoints as unknown as APIEndpoint[] : []);
         } else {
-          console.warn('Failed to load API endpoints:', endpointsData.reason);
+          handleWarning(`Failed to load API endpoints: ${endpointsData.reason}`, { component: 'ApiDocsPage' });
           // Provide fallback endpoints data
           setEndpoints([
             {
@@ -132,7 +133,7 @@ export default function APIDocsPage() {
           const categories = categoriesData.value || [];
           setCategories(Array.isArray(categories) ? categories : []);
         } else {
-          console.warn('Failed to load API categories:', categoriesData.reason);
+          handleWarning(`Failed to load API categories: ${categoriesData.reason}`, { component: 'ApiDocsPage' });
           // Provide fallback categories data
           setCategories([
             { _id: "fallback-1", name: t('apiDocs.authentication'), description: t('apiDocs.authenticationDesc') },
@@ -147,7 +148,7 @@ export default function APIDocsPage() {
         }
 
       } catch (error) {
-        console.error('Unexpected error loading API docs:', error);
+        handleDataLoadError(error, 'api_docs');
         // Set empty arrays on error - no mock data fallback
         setEndpoints([]);
         setCategories([]);

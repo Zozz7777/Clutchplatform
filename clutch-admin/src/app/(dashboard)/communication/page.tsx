@@ -28,6 +28,7 @@ import {
 import { useTranslations } from "next-intl";
 import { productionApi, type Notification } from "@/lib/production-api";
 import { toast } from "@/lib/toast";
+import { handleError, handleWarning, handleDataLoadError } from "@/lib/error-handler";
 
 interface CommunicationNotification {
   _id: string;
@@ -121,7 +122,7 @@ export default function CommunicationPage() {
             : [];
           setNotifications(communicationNotifications);
         } else {
-          console.warn('Failed to load notifications:', notificationsData.reason);
+          handleWarning(`Failed to load notifications: ${notificationsData.reason}`, { component: 'CommunicationPage' });
           setNotifications([]);
         }
 
@@ -130,7 +131,7 @@ export default function CommunicationPage() {
           const channels = channelsData.value || [];
           setChannels(Array.isArray(channels) ? channels as unknown as ChatChannel[] : []);
         } else {
-          console.warn('Failed to load chat channels:', channelsData.reason);
+          handleWarning(`Failed to load chat channels: ${channelsData.reason}`, { component: 'CommunicationPage' });
           setChannels([]);
         }
 
@@ -139,7 +140,7 @@ export default function CommunicationPage() {
           const tickets = ticketsData.value || [];
           setTickets(Array.isArray(tickets) ? tickets as unknown as SupportTicket[] : []);
         } else {
-          console.warn('Failed to load tickets:', ticketsData.reason);
+          handleWarning(`Failed to load tickets: ${ticketsData.reason}`, { component: 'CommunicationPage' });
           setTickets([]);
         }
         
@@ -149,7 +150,7 @@ export default function CommunicationPage() {
         }
         
       } catch (error) {
-        console.error('Unexpected error loading communication data:', error);
+        handleDataLoadError(error, 'communication_data');
         // Set empty arrays on error
         setNotifications([]);
         setChannels([]);

@@ -50,6 +50,7 @@ import {
 import { formatCurrency } from "@/lib/utils";
 import { productionApi } from "@/lib/production-api";
 import { useTranslations } from "next-intl";
+import { handleError, handleWarning, handleDataLoadError } from "@/lib/error-handler";
 
 interface Asset {
   _id: string;
@@ -208,7 +209,7 @@ export default function AssetManagementPage() {
           const assets = assetsData.value || [];
           setAssets(Array.isArray(assets) ? assets as unknown as Asset[] : []);
         } else {
-          console.warn('Failed to load assets:', assetsData.reason);
+          handleWarning(`Failed to load assets: ${assetsData.reason}`, { component: 'AssetsPage' });
           setAssets([]);
         }
 
@@ -217,7 +218,7 @@ export default function AssetManagementPage() {
           const maintenance = maintenanceData.value || [];
           setMaintenanceRecords(Array.isArray(maintenance) ? maintenance as unknown as MaintenanceRecord[] : []);
         } else {
-          console.warn('Failed to load maintenance records:', maintenanceData.reason);
+          handleWarning(`Failed to load maintenance records: ${maintenanceData.reason}`, { component: 'AssetsPage' });
           setMaintenanceRecords([]);
         }
 
@@ -226,12 +227,12 @@ export default function AssetManagementPage() {
           const assignments = assignmentsData.value || [];
           setAssignments(Array.isArray(assignments) ? assignments as unknown as AssetAssignment[] : []);
         } else {
-          console.warn('Failed to load asset assignments:', assignmentsData.reason);
+          handleWarning(`Failed to load asset assignments: ${assignmentsData.reason}`, { component: 'AssetsPage' });
           setAssignments([]);
         }
         
       } catch (error) {
-        console.error('Unexpected error loading assets data:', error);
+        handleDataLoadError(error, 'assets_data');
         setAssets([]);
         setMaintenanceRecords([]);
         setAssignments([]);

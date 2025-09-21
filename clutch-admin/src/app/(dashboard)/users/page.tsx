@@ -14,6 +14,7 @@ import { useAuth } from "@/contexts/auth-context";
 import { useTranslations } from "next-intl";
 import { useQuickActions } from "@/lib/quick-actions";
 import { toast } from "sonner";
+import { handleError } from "@/lib/error-handler";
 
 // Import new Phase 2 widgets
 import UserGrowthCohort from "@/components/widgets/user-growth-cohort";
@@ -79,7 +80,7 @@ export default function UsersPage() {
     const quickActions = useQuickActions(permissionCheck);
     addUser = quickActions.addUser;
   } catch (error) {
-    console.error('Failed to initialize quick actions:', error);
+    handleError(error, { component: 'UsersPage', action: 'initialize_quick_actions' });
   }
 
   useEffect(() => {
