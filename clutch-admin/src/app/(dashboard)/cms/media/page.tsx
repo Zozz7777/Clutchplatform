@@ -70,9 +70,9 @@ export default function MediaCMSPage() {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold font-sans">Media Library</h1>
+          <h1 className="text-3xl font-bold font-sans">{t('dashboard.mediaLibrary')}</h1>
           <p className="text-muted-foreground font-sans">
-            Manage images, videos, and documents
+            {t('dashboard.manageImagesVideosDocuments')}
           </p>
         </div>
         <div className="flex items-center space-x-2">
@@ -81,7 +81,7 @@ export default function MediaCMSPage() {
           </Button>
           <Button>
             <Upload className="h-4 w-4 mr-2" />
-            Upload
+            {t('dashboard.upload')}
           </Button>
         </div>
       </div>
@@ -91,7 +91,7 @@ export default function MediaCMSPage() {
           <div className="relative">
             <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
             <Input
-              placeholder="Search media files..."
+              placeholder={t('dashboard.searchMediaFiles')}
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
               className="pl-10"
@@ -103,18 +103,18 @@ export default function MediaCMSPage() {
           onChange={(e) => setSelectedType(e.target.value)}
           className="px-3 py-2 border border-gray-300 rounded-md"
         >
-          <option value="all">All Types</option>
-          <option value="image">Images</option>
-          <option value="video">Videos</option>
-          <option value="document">Documents</option>
+          <option value="all">{t('dashboard.allTypes')}</option>
+          <option value="image">{t('dashboard.images')}</option>
+          <option value="video">{t('dashboard.videos')}</option>
+          <option value="document">{t('dashboard.documents')}</option>
         </select>
       </div>
 
       <Tabs defaultValue="library" className="space-y-4">
         <TabsList>
-          <TabsTrigger value="library">Library</TabsTrigger>
-          <TabsTrigger value="folders">Folders</TabsTrigger>
-          <TabsTrigger value="analytics">Analytics</TabsTrigger>
+          <TabsTrigger value="library">{t('dashboard.library')}</TabsTrigger>
+          <TabsTrigger value="folders">{t('dashboard.folders')}</TabsTrigger>
+          <TabsTrigger value="analytics">{t('dashboard.analytics')}</TabsTrigger>
         </TabsList>
 
         <TabsContent value="library" className="space-y-4">
@@ -179,11 +179,11 @@ export default function MediaCMSPage() {
                       <div className="flex items-center space-x-2">
                         <Button variant="outline" size="sm">
                           <Eye className="h-4 w-4 mr-2" />
-                          View
+                          {t('dashboard.view')}
                         </Button>
                         <Button variant="outline" size="sm">
                           <Download className="h-4 w-4 mr-2" />
-                          Download
+                          {t('dashboard.download')}
                         </Button>
                         <Button variant="outline" size="sm">
                           <Trash2 className="h-4 w-4" />
@@ -200,12 +200,12 @@ export default function MediaCMSPage() {
         <TabsContent value="folders" className="space-y-4">
           <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
             {[
-              { name: 'Images', count: mediaFiles.filter(f => f.type === 'image').length, icon: <Image className="h-8 w-8" /> },
-              { name: 'Videos', count: mediaFiles.filter(f => f.type === 'video').length, icon: <Video className="h-8 w-8" /> },
-              { name: 'Documents', count: mediaFiles.filter(f => f.type === 'document').length, icon: <File className="h-8 w-8" /> },
-              { name: 'Branding', count: mediaFiles.filter(f => f.tags.includes('branding')).length, icon: <Folder className="h-8 w-8" /> },
-              { name: 'Screenshots', count: mediaFiles.filter(f => f.tags.includes('screenshot')).length, icon: <Folder className="h-8 w-8" /> },
-              { name: 'Demos', count: mediaFiles.filter(f => f.tags.includes('demo')).length, icon: <Folder className="h-8 w-8" /> }
+              { name: t('dashboard.images'), count: mediaFiles.filter(f => f.type === 'image').length, icon: <Image className="h-8 w-8" /> },
+              { name: t('dashboard.videos'), count: mediaFiles.filter(f => f.type === 'video').length, icon: <Video className="h-8 w-8" /> },
+              { name: t('dashboard.documents'), count: mediaFiles.filter(f => f.type === 'document').length, icon: <File className="h-8 w-8" /> },
+              { name: t('dashboard.branding'), count: mediaFiles.filter(f => f.tags.includes('branding')).length, icon: <Folder className="h-8 w-8" /> },
+              { name: t('dashboard.screenshots'), count: mediaFiles.filter(f => f.tags.includes('screenshot')).length, icon: <Folder className="h-8 w-8" /> },
+              { name: t('dashboard.demos'), count: mediaFiles.filter(f => f.tags.includes('demo')).length, icon: <Folder className="h-8 w-8" /> }
             ].map((folder, index) => (
               <Card key={index}>
                 <CardHeader>
@@ -214,7 +214,7 @@ export default function MediaCMSPage() {
                     <div>
                       <CardTitle className="font-sans">{folder.name}</CardTitle>
                       <CardDescription className="font-sans">
-                        {folder.count} files
+                        {folder.count} {t('dashboard.files')}
                       </CardDescription>
                     </div>
                   </div>
@@ -222,7 +222,7 @@ export default function MediaCMSPage() {
                 <CardContent>
                   <Button variant="outline" className="w-full">
                     <Eye className="h-4 w-4 mr-2" />
-                    View Files
+                    {t('dashboard.viewFiles')}
                   </Button>
                 </CardContent>
               </Card>
@@ -234,7 +234,7 @@ export default function MediaCMSPage() {
           <div className="grid gap-4 md:grid-cols-4">
             <Card>
               <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                <CardTitle className="text-sm font-medium font-sans">Total Files</CardTitle>
+                <CardTitle className="text-sm font-medium font-sans">{t('dashboard.totalFiles')}</CardTitle>
                 <File className="h-4 w-4 text-muted-foreground" />
               </CardHeader>
               <CardContent>
@@ -244,7 +244,7 @@ export default function MediaCMSPage() {
 
             <Card>
               <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                <CardTitle className="text-sm font-medium font-sans">Images</CardTitle>
+                <CardTitle className="text-sm font-medium font-sans">{t('dashboard.images')}</CardTitle>
                 <Image className="h-4 w-4 text-muted-foreground" />
               </CardHeader>
               <CardContent>
@@ -256,7 +256,7 @@ export default function MediaCMSPage() {
 
             <Card>
               <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                <CardTitle className="text-sm font-medium font-sans">Videos</CardTitle>
+                <CardTitle className="text-sm font-medium font-sans">{t('dashboard.videos')}</CardTitle>
                 <Video className="h-4 w-4 text-muted-foreground" />
               </CardHeader>
               <CardContent>
@@ -268,7 +268,7 @@ export default function MediaCMSPage() {
 
             <Card>
               <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                <CardTitle className="text-sm font-medium font-sans">Total Size</CardTitle>
+                <CardTitle className="text-sm font-medium font-sans">{t('dashboard.totalSize')}</CardTitle>
                 <Folder className="h-4 w-4 text-muted-foreground" />
               </CardHeader>
               <CardContent>
