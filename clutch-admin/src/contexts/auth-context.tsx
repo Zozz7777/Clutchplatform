@@ -35,13 +35,16 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
             permissions: rolePermissions
           };
           
-          console.log('🔄 Loading user from localStorage:', {
-            originalUser: parsedUser,
-            userWithPermissions,
-            rolePermissions,
-            originalPermissions: parsedUser.permissions,
-            finalPermissions: userWithPermissions.permissions
-          });
+          // Only log in development mode
+          if (process.env.NODE_ENV === 'development') {
+            console.log('🔄 Loading user from localStorage:', {
+              originalUser: parsedUser,
+              userWithPermissions,
+              rolePermissions,
+              originalPermissions: parsedUser.permissions,
+              finalPermissions: userWithPermissions.permissions
+            });
+          }
           
           setUser(userWithPermissions);
           
@@ -135,7 +138,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   const hasPermission = (permission: string): boolean => {
     if (!user) {
-      console.log('🚫 No user found');
       return false;
     }
     
@@ -144,11 +146,10 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     
     // If user doesn't have permissions or has empty permissions, get them from role
     if (!userPermissions || !Array.isArray(userPermissions) || userPermissions.length === 0) {
-      console.log('🔄 No user permissions, getting from role:', { userRole: user.role });
       userPermissions = ROLE_PERMISSIONS[user.role as keyof typeof ROLE_PERMISSIONS] || [];
       
-      // Update user with correct permissions
-      if (userPermissions.length > 0) {
+      // Update user with correct permissions (only once)
+      if (userPermissions.length > 0 && (!user.permissions || user.permissions.length === 0)) {
         const updatedUser = { ...user, permissions: userPermissions };
         setUser(updatedUser);
         if (typeof window !== 'undefined') {
@@ -157,18 +158,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       }
     }
     
-    const hasIt = userPermissions.includes(permission);
-    
-    // Only log permission checks in development mode and for failed permissions
-    if (process.env.NODE_ENV === 'development' && !hasIt) {
-      console.log('🔍 Permission denied:', {
-        permission,
-        userRole: user.role,
-        source: user.permissions && user.permissions.length > 0 ? 'user' : 'role'
-      });
-    }
-    
-    return hasIt;
+    return userPermissions.includes(permission);
   };
 
   return (

@@ -555,7 +555,7 @@ class BusinessIntelligenceService {
         steps
       };
     } catch (error) {
-      errorHandler.handleError(error as Error, 'Get onboarding completion');
+      errorHandler.handleError(error as Error, { component: 'BusinessIntelligence', action: 'Get onboarding completion' });
       return {
         total: 0,
         completed: 0,
@@ -588,7 +588,7 @@ class BusinessIntelligenceService {
         utilizationRate: total > 0 ? (active / total) * 100 : 0
       };
     } catch (error) {
-      errorHandler.handleError(error as Error, 'Get fleet utilization');
+      errorHandler.handleError(error as Error, { component: 'BusinessIntelligence', action: 'Get fleet utilization' });
       return {
         total: 0,
         active: 0,
@@ -617,7 +617,7 @@ class BusinessIntelligenceService {
       // Fallback to empty array if API fails
       return [];
     } catch (error) {
-      errorHandler.handleError(error as Error, 'Get maintenance forecast');
+      errorHandler.handleError(error as Error, { component: 'BusinessIntelligence', action: 'Get maintenance forecast' });
       return [];
     }
   }
@@ -639,7 +639,7 @@ class BusinessIntelligenceService {
         trend: 'improving'
       };
     } catch (error) {
-      errorHandler.handleError(error as Error, 'Get fraud impact');
+      errorHandler.handleError(error as Error, { component: 'BusinessIntelligence', action: 'Get fraud impact' });
       return {
         casesDetected: 0,
         amountSaved: 0,
@@ -674,7 +674,7 @@ class BusinessIntelligenceService {
         topPerformingTypes: []
       };
     } catch (error) {
-      errorHandler.handleError(error as Error, 'Get recommendation uplift');
+      errorHandler.handleError(error as Error, { component: 'BusinessIntelligence', action: 'Get recommendation uplift' });
       return {
         recommendationsSent: 0,
         accepted: 0,
@@ -703,7 +703,7 @@ class BusinessIntelligenceService {
         networkUsage: systemData?.networkUsage || 0
       };
     } catch (error) {
-      errorHandler.handleError(error as Error, 'Get system performance metrics', { showToast: false });
+      errorHandler.handleError(error as Error, { component: 'BusinessIntelligence', action: 'Get system performance metrics' });
       return {
         monthlyCost: 0,
         cpuUsage: 0,
@@ -726,7 +726,7 @@ class BusinessIntelligenceService {
       // If no API data, return 0 instead of hardcoded values
       return 0;
     } catch (error) {
-      errorHandler.handleError(error as Error, 'Get fleet operational costs', { showToast: false });
+      errorHandler.handleError(error as Error, { component: 'BusinessIntelligence', action: 'Get fleet operational costs' });
       return 0;
     }
   }
@@ -743,7 +743,7 @@ class BusinessIntelligenceService {
       // If no API data, return 0 instead of hardcoded values
       return 0;
     } catch (error) {
-      errorHandler.handleError(error as Error, 'Get maintenance costs', { showToast: false });
+      errorHandler.handleError(error as Error, { component: 'BusinessIntelligence', action: 'Get maintenance costs' });
       return 0;
     }
   }
@@ -760,7 +760,7 @@ class BusinessIntelligenceService {
       // If no API data, return 0 instead of hardcoded values
       return 0;
     } catch (error) {
-      errorHandler.handleError(error as Error, 'Get other operational costs', { showToast: false });
+      errorHandler.handleError(error as Error, { component: 'BusinessIntelligence', action: 'Get other operational costs' });
       return 0;
     }
   }

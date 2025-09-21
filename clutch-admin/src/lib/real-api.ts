@@ -490,6 +490,17 @@ export class RealApiService {
     )();
   }
 
+  async getIntegrationTemplates(): Promise<Record<string, unknown>[]> {
+    return withErrorHandling(
+      async () => {
+        const response = await apiService.makeRequest<Record<string, unknown>[]>("/api/v1/integrations/templates");
+        return handleApiResponse(response, 'getIntegrationTemplates', []);
+      },
+      'getIntegrationTemplates',
+      { fallbackValue: [], showToast: false }
+    )();
+  }
+
   async testIntegration(integrationId: string): Promise<boolean> {
     return withErrorHandling(
       async () => {

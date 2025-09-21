@@ -397,7 +397,7 @@ export default function ChatPage() {
           </CardHeader>
           <CardContent className="p-0">
             <div className="space-y-1">
-              {Array.isArray(channels) ? channels.map((channel) => (
+              {Array.isArray(channels) && channels.length > 0 ? channels.map((channel) => (
                 <div
                   key={channel.id}
                   className={`p-3 cursor-pointer hover:bg-muted/50 transition-colors ${
@@ -427,12 +427,18 @@ export default function ChatPage() {
                       </div>
                       <p className="text-xs text-muted-foreground truncate">{channel.lastMessage || 'No messages'}</p>
                       <p className="text-xs text-muted-foreground">
-                        {formatRelativeTime(channel.lastMessageTime)}
+                        {formatRelativeTime(channel.lastMessageTime || new Date())}
                       </p>
                     </div>
                   </div>
                 </div>
-              )) : null}
+              )) : (
+                <div className="p-4 text-center text-muted-foreground">
+                  <MessageSquare className="h-8 w-8 mx-auto mb-2 opacity-50" />
+                  <p className="text-sm">No conversations yet</p>
+                  <p className="text-xs">Create a new chat to get started</p>
+                </div>
+              )}
             </div>
           </CardContent>
         </Card>
@@ -490,7 +496,7 @@ export default function ChatPage() {
           <CardContent className="p-0">
             {/* Messages Area */}
             <div className="h-96 overflow-y-auto p-4 space-y-4">
-              {Array.isArray(messages) ? messages.map((message) => (
+              {Array.isArray(messages) && messages.length > 0 ? messages.map((message) => (
                 <div
                   key={message.id}
                   className={`flex ${message.sender === t('chat.you') ? "justify-end" : "justify-start"}`}
@@ -503,14 +509,22 @@ export default function ChatPage() {
                       <p className="text-sm">{message.message}</p>
                       <div className={`flex items-center space-x-1 mt-1 ${message.sender === t('chat.you') ? "justify-end" : "justify-start"}`}>
                         <span className="text-xs opacity-70">
-                          {formatRelativeTime(message.timestamp)}
+                          {formatRelativeTime(message.timestamp || new Date())}
                         </span>
                         {message.sender === t('chat.you') && getStatusIcon(message.status)}
                       </div>
                     </div>
                   </div>
                 </div>
-              )) : null}
+              )) : (
+                <div className="flex items-center justify-center h-full text-muted-foreground">
+                  <div className="text-center">
+                    <MessageSquare className="h-12 w-12 mx-auto mb-4 opacity-50" />
+                    <p className="text-sm">No messages yet</p>
+                    <p className="text-xs">Start a conversation by typing a message below</p>
+                  </div>
+                </div>
+              )}
             </div>
 
             {/* Message Input */}
@@ -571,4 +585,4 @@ export default function ChatPage() {
   );
 }
 
-
+export const dynamic = 'force-dynamic';

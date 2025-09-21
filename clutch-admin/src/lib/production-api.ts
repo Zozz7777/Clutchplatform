@@ -277,6 +277,15 @@ export class ProductionApiService {
     }
   }
 
+  async getIntegrationTemplates(): Promise<Record<string, unknown>[]> {
+    try {
+      return await realApi.getIntegrationTemplates();
+    } catch (error) {
+      logger.error("Failed to fetch integration templates:", error);
+      throw new Error("Failed to load integration templates");
+    }
+  }
+
   async testIntegration(integrationId: string): Promise<boolean> {
     try {
       return await realApi.testIntegration(integrationId);
