@@ -8,7 +8,7 @@ import { Input } from "@/components/ui/input";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { formatDate, formatRelativeTime } from "@/lib/utils";
 import { useAuth } from "@/contexts/auth-context";
-import { useTranslations } from "@/hooks/use-translations";
+import { useTranslations } from "next-intl";
 import { productionApi } from "@/lib/production-api";
 import { toast } from "sonner";
 import { 
@@ -63,7 +63,7 @@ interface ChatChannel {
 }
 
 export default function ChatPage() {
-  const { t } = useTranslations();
+  const t = useTranslations();
   const [channels, setChannels] = useState<ChatChannel[]>([]);
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [selectedChannel, setSelectedChannel] = useState<string>("1");
@@ -73,35 +73,81 @@ export default function ChatPage() {
   const { hasPermission } = useAuth();
 
   useEffect(() => {
+    let isMounted = true;
+    let timeoutId: NodeJS.Timeout | null = null;
+
     const loadChatData = async () => {
+      if (!isMounted) {
+        setIsLoading(false);
+        return;
+      }
+      
       try {
         setIsLoading(true);
         
-        // Load real data from API
-        const [channelsData, messagesData] = await Promise.all([
-          productionApi.getChatChannels(),
-          productionApi.getChatMessages(selectedChannel)
-        ]);
+        // Add debouncing to prevent excessive API calls
+        if (timeoutId) {
+          clearTimeout(timeoutId);
+        }
+        
+        timeoutId = setTimeout(async () => {
+          if (!isMounted) return;
+          
+          // Load real data from API with error handling
+          const [channelsData, messagesData] = await Promise.allSettled([
+            productionApi.getChatChannels(),
+            productionApi.getChatMessages(selectedChannel)
+          ]);
 
-        // Ensure we always have arrays
-        const channelsArray = Array.isArray(channelsData) ? channelsData as unknown as ChatChannel[] : [];
-        const messagesArray = Array.isArray(messagesData) ? messagesData as unknown as ChatMessage[] : [];
-        setChannels(channelsArray);
-        setMessages(messagesArray);
+          // Handle channels data
+          const channelsArray = channelsData.status === 'fulfilled' && Array.isArray(channelsData.value) 
+            ? channelsData.value as unknown as ChatChannel[] 
+            : [];
+          
+          // Handle messages data
+          const messagesArray = messagesData.status === 'fulfilled' && Array.isArray(messagesData.value) 
+            ? messagesData.value as unknown as ChatMessage[] 
+            : [];
+          
+          if (isMounted) {
+            setChannels(channelsArray);
+            setMessages(messagesArray);
+          }
+          
+          // Log any errors
+          if (channelsData.status === 'rejected') {
+            console.error('Failed to load channels:', channelsData.reason);
+          }
+          if (messagesData.status === 'rejected') {
+            console.error('Failed to load messages:', messagesData.reason);
+          }
+          
+        }, 300); // 300ms debounce
         
       } catch (error) {
-        // Error handled by API service
-        toast.error(t('chat.failedToLoadChatData'));
+        if (!isMounted) return;
+        
+        console.error('Failed to load chat data:', error);
+        toast.error(t('chat.failedToLoadChatData') || 'Failed to load chat data');
         // Set empty arrays on error - no mock data fallback
         setChannels([]);
         setMessages([]);
       } finally {
-        setIsLoading(false);
+        if (isMounted) {
+          setIsLoading(false);
+        }
       }
     };
 
     loadChatData();
-  }, [selectedChannel]);
+
+    return () => {
+      isMounted = false;
+      if (timeoutId) {
+        clearTimeout(timeoutId);
+      }
+    };
+  }, [selectedChannel, t]);
 
   const handleSendMessage = async () => {
     if (newMessage.trim()) {

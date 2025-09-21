@@ -390,16 +390,16 @@ export default function ProjectManagementPage() {
                   {t('dashboard.allStatus')}
                 </DropdownMenuItem>
                 <DropdownMenuItem onClick={() => setStatusFilter("active")}>
-                  Active
+                  {t('dashboard.active')}
                 </DropdownMenuItem>
                 <DropdownMenuItem onClick={() => setStatusFilter("planning")}>
-                  Planning
+                  {t('dashboard.planning')}
                 </DropdownMenuItem>
                 <DropdownMenuItem onClick={() => setStatusFilter("on_hold")}>
-                  On Hold
+                  {t('dashboard.onHold')}
                 </DropdownMenuItem>
                 <DropdownMenuItem onClick={() => setStatusFilter("completed")}>
-                  Completed
+                  {t('dashboard.completed')}
                 </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
@@ -437,7 +437,7 @@ export default function ProjectManagementPage() {
                           </div>
                         </div>
                         <div>
-                          <p className="text-sm font-medium">Budget</p>
+                          <p className="text-sm font-medium">{t('dashboard.budget')}</p>
                           <p className="text-sm text-muted-foreground">{formatCurrency(project?.budget || 0)}</p>
                         </div>
                         <div>
@@ -447,7 +447,7 @@ export default function ProjectManagementPage() {
                         <div>
                           <p className="text-sm font-medium">Tasks</p>
                           <p className="text-sm text-muted-foreground">
-                            {project?.tasks?.completed || 0}/{project?.tasks?.total || 0} completed
+                            {project?.tasks?.completed || 0}/{project?.tasks?.total || 0} {t('dashboard.completed')}
                           </p>
                         </div>
                       </div>
@@ -505,18 +505,18 @@ export default function ProjectManagementPage() {
       <Dialog open={showCreateDialog} onOpenChange={setShowCreateDialog}>
         <DialogContent className="max-w-2xl">
           <DialogHeader>
-            <DialogTitle>Create New Project</DialogTitle>
+            <DialogTitle>{t('dashboard.createNewProject')}</DialogTitle>
             <DialogDescription>
-              Create a new project to track tasks, time, and team collaboration.
+              {t('dashboard.createNewProjectToTrack')}
             </DialogDescription>
           </DialogHeader>
           <div className="grid gap-4 py-4">
             <div className="grid grid-cols-2 gap-4">
               <div>
-                <Label htmlFor="name">Project Name</Label>
+                <Label htmlFor="name">{t('dashboard.projectName')}</Label>
                 <Input 
                   id="name" 
-                  placeholder="Enter project name" 
+                  placeholder={t('dashboard.enterProjectName')} 
                   value={createProjectData.name}
                   onChange={(e) => setCreateProjectData({...createProjectData, name: e.target.value})}
                 />
