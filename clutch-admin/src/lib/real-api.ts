@@ -617,7 +617,7 @@ export class RealApiService {
   async getMaintenanceCosts(): Promise<Record<string, unknown>> {
     return withErrorHandling(
       async () => {
-        const response = await apiService.makeRequest<Record<string, unknown>>("/api/v1/maintenance-costs");
+        const response = await apiService.makeRequest<Record<string, unknown>>("/api/v1/assets/maintenance-costs");
         return handleApiResponse(response, 'getMaintenanceCosts', {});
       },
       'getMaintenanceCosts',
@@ -628,7 +628,7 @@ export class RealApiService {
   async getOtherOperationalCosts(): Promise<Record<string, unknown>> {
     return withErrorHandling(
       async () => {
-        const response = await apiService.makeRequest<Record<string, unknown>>("/api/v1/operational-costs");
+        const response = await apiService.makeRequest<Record<string, unknown>>("/api/v1/assets/operational-costs");
         return handleApiResponse(response, 'getOtherOperationalCosts', {});
       },
       'getOtherOperationalCosts',
