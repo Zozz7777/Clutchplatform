@@ -347,13 +347,13 @@ export default function AIMLPage() {
                             <Brain className="h-4 w-4 text-primary-foreground" />
                           </div>
                           <div>
-                            <p className="text-sm font-medium text-foreground">{model.name}</p>
+                            <p className="text-sm font-medium text-foreground">{model.name || 'Unknown Model'}</p>
                             <p className="text-xs text-muted-foreground">{(model.predictions || 0).toLocaleString()} predictions</p>
                           </div>
                         </div>
                       </TableCell>
                       <TableCell>
-                        <Badge variant="outline">{model.type}</Badge>
+                        <Badge variant="outline">{model.type || 'Unknown'}</Badge>
                       </TableCell>
                       <TableCell>
                         <div className="flex items-center space-x-2">
@@ -368,23 +368,23 @@ export default function AIMLPage() {
                       </TableCell>
                       <TableCell>
                         <div className="flex items-center space-x-2">
-                          <span className="text-sm font-medium text-foreground">{model.performance}%</span>
+                          <span className="text-sm font-medium text-foreground">{model.performance || 0}%</span>
                           <div className="w-16 bg-muted rounded-full h-2">
                             <div 
                               className="bg-primary h-2 rounded-full" 
-                              style={{ width: `${model.performance}%` }}
+                              style={{ width: `${model.performance || 0}%` }}
                             ></div>
                           </div>
                         </div>
                       </TableCell>
                       <TableCell>
                         <Badge className={getStatusColor(model.status)}>
-                          {model.status}
+                          {model.status || 'Unknown'}
                         </Badge>
                       </TableCell>
                       <TableCell>
                         <span className="text-sm text-muted-foreground">
-                          {formatRelativeTime(model.lastTrained)}
+                          {model.lastTrained ? formatRelativeTime(model.lastTrained) : 'Never'}
                         </span>
                       </TableCell>
                       <TableCell className="text-right">
@@ -452,31 +452,31 @@ export default function AIMLPage() {
                     <TableRow key={case_.id}>
                       <TableCell>
                         <div>
-                          <p className="text-sm font-medium text-foreground">Case #{case_.id}</p>
-                          <p className="text-xs text-muted-foreground">{case_.description}</p>
+                          <p className="text-sm font-medium text-foreground">Case #{case_.id || 'Unknown'}</p>
+                          <p className="text-xs text-muted-foreground">{case_.description || 'No description'}</p>
                         </div>
                       </TableCell>
                       <TableCell>
-                        <span className="text-sm text-muted-foreground">{case_.customer}</span>
+                        <span className="text-sm text-muted-foreground">{case_.customer || 'Unknown Customer'}</span>
                       </TableCell>
                       <TableCell>
                         <span className="text-sm font-medium text-foreground">
-                          EGP {case_.amount.toLocaleString()}
+                          EGP {(case_.amount || 0).toLocaleString()}
                         </span>
                       </TableCell>
                       <TableCell>
                         <Badge className={getRiskColor(case_.risk)}>
-                          {case_.risk}
+                          {case_.risk || 'Unknown'}
                         </Badge>
                       </TableCell>
                       <TableCell>
                         <Badge className={getStatusColor(case_.status)}>
-                          {case_.status}
+                          {case_.status || 'Unknown'}
                         </Badge>
                       </TableCell>
                       <TableCell>
                         <span className="text-sm text-muted-foreground">
-                          {formatRelativeTime(case_.detectedAt)}
+                          {case_.detectedAt ? formatRelativeTime(case_.detectedAt) : 'Unknown'}
                         </span>
                       </TableCell>
                       <TableCell className="text-right">
@@ -540,37 +540,37 @@ export default function AIMLPage() {
                     <TableRow key={rec.id}>
                       <TableCell>
                         <div>
-                          <p className="text-sm font-medium text-foreground">{rec.title}</p>
-                          <p className="text-xs text-muted-foreground">ID: {rec.id}</p>
+                          <p className="text-sm font-medium text-foreground">{rec.title || 'Unknown Title'}</p>
+                          <p className="text-xs text-muted-foreground">ID: {rec.id || 'Unknown'}</p>
                         </div>
                       </TableCell>
                       <TableCell>
-                        <Badge variant="outline">{rec.type}</Badge>
+                        <Badge variant="outline">{rec.type || 'Unknown'}</Badge>
                       </TableCell>
                       <TableCell>
                         <div className="flex items-center space-x-2">
-                          <span className="text-sm font-medium text-foreground">{rec.confidence}%</span>
+                          <span className="text-sm font-medium text-foreground">{rec.confidence || 0}%</span>
                           <div className="w-16 bg-muted rounded-full h-2">
                             <div 
                               className="bg-primary h-2 rounded-full" 
-                              style={{ width: `${rec.confidence}%` }}
+                              style={{ width: `${rec.confidence || 0}%` }}
                             ></div>
                           </div>
                         </div>
                       </TableCell>
                       <TableCell>
                         <Badge className={getImpactColor(rec.impact)}>
-                          {rec.impact}
+                          {rec.impact || 'Unknown'}
                         </Badge>
                       </TableCell>
                       <TableCell>
                         <Badge className={getStatusColor(rec.status)}>
-                          {rec.status}
+                          {rec.status || 'Unknown'}
                         </Badge>
                       </TableCell>
                       <TableCell>
                         <span className="text-sm text-muted-foreground">
-                          {formatRelativeTime(rec.createdAt)}
+                          {rec.createdAt ? formatRelativeTime(rec.createdAt) : 'Unknown'}
                         </span>
                       </TableCell>
                       <TableCell className="text-right">
