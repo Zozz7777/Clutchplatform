@@ -106,10 +106,15 @@ export default function AIMLPage() {
           productionApi.getRecommendations()
         ]);
 
-        setModels(modelsData || []);
-        setFraudCases(fraudCasesData || []);
-        setRecommendations(recommendationsData || []);
-        setFilteredModels(modelsData || []);
+        // Ensure we always have arrays and handle type conversion safely
+        const modelsArray = Array.isArray(modelsData) ? modelsData as AIModel[] : [];
+        const fraudCasesArray = Array.isArray(fraudCasesData) ? fraudCasesData as FraudCase[] : [];
+        const recommendationsArray = Array.isArray(recommendationsData) ? recommendationsData as Recommendation[] : [];
+        
+        setModels(modelsArray);
+        setFraudCases(fraudCasesArray);
+        setRecommendations(recommendationsArray);
+        setFilteredModels(modelsArray);
         
       } catch (error) {
         // Error handled by API service
@@ -128,17 +133,19 @@ export default function AIMLPage() {
   }, []);
 
   useEffect(() => {
-    let filtered = models;
+    // Ensure models is always an array and handle null/undefined values
+    const modelsArray = Array.isArray(models) ? models : [];
+    let filtered = modelsArray.filter(model => model != null);
 
     if (searchQuery) {
       filtered = filtered.filter(model =>
-        model.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        model.type.toLowerCase().includes(searchQuery.toLowerCase())
+        (model.name || '').toLowerCase().includes(searchQuery.toLowerCase()) ||
+        (model.type || '').toLowerCase().includes(searchQuery.toLowerCase())
       );
     }
 
     if (statusFilter !== "all") {
-      filtered = filtered.filter(model => model.status === statusFilter);
+      filtered = filtered.filter(model => model && model.status === statusFilter);
     }
 
     setFilteredModels(filtered);

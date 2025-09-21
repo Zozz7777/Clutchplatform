@@ -180,7 +180,7 @@ export default function ChatPage() {
           </Button>
           <Button className="shadow-2xs">
             <Plus className="mr-2 h-4 w-4" />
-            New Chat
+            {t('dashboard.newChat')}
           </Button>
         </div>
       </div>
@@ -190,7 +190,7 @@ export default function ChatPage() {
         {/* Chat Channels List */}
         <Card className="lg:col-span-1 shadow-2xs">
           <CardHeader>
-            <CardTitle className="text-card-foreground">Conversations</CardTitle>
+            <CardTitle className="text-card-foreground">{t('dashboard.conversations')}</CardTitle>
             <div className="relative">
               <Search className="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground" />
               <Input
@@ -327,7 +327,7 @@ export default function ChatPage() {
                 </Button>
                 <div className="flex-1">
                   <Input
-                    placeholder="Type a message..."
+                    placeholder={t('dashboard.typeAMessage')}
                     value={newMessage}
                     onChange={(e) => setNewMessage(e.target.value)}
                     onKeyPress={(e) => e.key === "Enter" && handleSendMessage()}
