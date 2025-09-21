@@ -31,7 +31,7 @@ interface SEOData {
 }
 
 export default function SEOCMSPage() {
-  const t = (key: string, params?: any) => key;
+  const { t } = useTranslations();
   const [seoData, setSeoData] = useState<SEOData[]>([]);
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);

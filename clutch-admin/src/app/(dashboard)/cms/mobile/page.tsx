@@ -22,7 +22,7 @@ import { toast } from 'sonner';
 import { useTranslations } from '@/hooks/use-translations';
 
 export default function MobileCMSPage() {
-  const t = (key: string, params?: any) => key;
+  const { t } = useTranslations();
   const [appSettings, setAppSettings] = useState({
     appName: 'Clutch',
     version: '1.2.0',

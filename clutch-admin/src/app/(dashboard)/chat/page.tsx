@@ -82,7 +82,7 @@ interface ChatChannel {
 }
 
 export default function ChatPage() {
-  const { t } = useTranslations();
+  const t = (key: string, params?: any) => key;
   const [channels, setChannels] = useState<ChatChannel[]>([]);
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [selectedChannel, setSelectedChannel] = useState<string>("1");
@@ -126,15 +126,34 @@ export default function ChatPage() {
             productionApi.getChatMessages()
           ]);
 
-          // Handle channels data
-          const channelsArray = channelsData.status === 'fulfilled' && Array.isArray(channelsData.value) 
-            ? channelsData.value as unknown as ChatChannel[] 
-            : [];
+          // Handle channels data with proper validation
+          let channelsArray: ChatChannel[] = [];
+          if (channelsData.status === 'fulfilled' && Array.isArray(channelsData.value)) {
+            channelsArray = channelsData.value.map((channel: any) => ({
+              id: channel.id || channel._id || `channel_${Date.now()}_${Math.random()}`,
+              name: channel.name || 'Unknown Channel',
+              type: channel.type || 'group',
+              lastMessage: channel.lastMessage || '',
+              lastMessageTime: channel.lastMessageTime || channel.updatedAt || new Date().toISOString(),
+              unreadCount: channel.unreadCount || 0,
+              isOnline: channel.isOnline || false,
+              avatar: channel.avatar
+            }));
+          }
           
-          // Handle messages data
-          const messagesArray = messagesData.status === 'fulfilled' && Array.isArray(messagesData.value) 
-            ? messagesData.value as unknown as ChatMessage[] 
-            : [];
+          // Handle messages data with proper validation
+          let messagesArray: ChatMessage[] = [];
+          if (messagesData.status === 'fulfilled' && Array.isArray(messagesData.value)) {
+            messagesArray = messagesData.value.map((msg: any) => ({
+              id: msg.id || msg._id || `msg_${Date.now()}_${Math.random()}`,
+              sender: msg.sender || msg.from || 'Unknown',
+              senderType: msg.senderType || 'user',
+              message: msg.message || msg.content || msg.text || '',
+              timestamp: msg.timestamp || msg.createdAt || new Date().toISOString(),
+              status: msg.status || 'sent',
+              attachments: msg.attachments || []
+            }));
+          }
           
           if (isMounted) {
             setChannels(channelsArray);
@@ -397,7 +416,13 @@ export default function ChatPage() {
           </CardHeader>
           <CardContent className="p-0">
             <div className="space-y-1">
-              {Array.isArray(channels) && channels.length > 0 ? channels.map((channel) => (
+              {Array.isArray(channels) && channels.length > 0 ? channels.map((channel) => {
+                // Validate channel object before rendering
+                if (!channel || typeof channel !== 'object' || !channel.id) {
+                  return null;
+                }
+                
+                return (
                 <div
                   key={channel.id}
                   className={`p-3 cursor-pointer hover:bg-muted/50 transition-colors ${
@@ -432,7 +457,8 @@ export default function ChatPage() {
                     </div>
                   </div>
                 </div>
-              )) : (
+                );
+              }) : (
                 <div className="p-4 text-center text-muted-foreground">
                   <MessageSquare className="h-8 w-8 mx-auto mb-2 opacity-50" />
                   <p className="text-sm">No conversations yet</p>
@@ -496,7 +522,13 @@ export default function ChatPage() {
           <CardContent className="p-0">
             {/* Messages Area */}
             <div className="h-96 overflow-y-auto p-4 space-y-4">
-              {Array.isArray(messages) && messages.length > 0 ? messages.map((message) => (
+              {Array.isArray(messages) && messages.length > 0 ? messages.map((message) => {
+                // Validate message object before rendering
+                if (!message || typeof message !== 'object' || !message.id) {
+                  return null;
+                }
+                
+                return (
                 <div
                   key={message.id}
                   className={`flex ${message.sender === t('chat.you') ? "justify-end" : "justify-start"}`}
@@ -516,7 +548,8 @@ export default function ChatPage() {
                     </div>
                   </div>
                 </div>
-              )) : (
+                );
+              }) : (
                 <div className="flex items-center justify-center h-full text-muted-foreground">
                   <div className="text-center">
                     <MessageSquare className="h-12 w-12 mx-auto mb-4 opacity-50" />

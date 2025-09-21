@@ -322,7 +322,7 @@ class BusinessIntelligenceService {
         
         // Calculate activity based on recent payments and customer status
         const recentPayments = customerPayments.filter(p => {
-          const paymentDate = new Date(p.createdAt || p.timestamp || new Date().toISOString());
+          const paymentDate = new Date(String(p.createdAt || p.timestamp || new Date().toISOString()));
           return (Date.now() - paymentDate.getTime()) < (30 * 24 * 60 * 60 * 1000);
         });
         
@@ -337,13 +337,13 @@ class BusinessIntelligenceService {
         
         // Calculate growth based on payment trends
         const currentMonthPayments = customerPayments.filter(p => {
-          const paymentDate = new Date(p.createdAt || p.timestamp || new Date().toISOString());
+          const paymentDate = new Date(String(p.createdAt || p.timestamp || new Date().toISOString()));
           const now = new Date();
           return paymentDate.getMonth() === now.getMonth() && paymentDate.getFullYear() === now.getFullYear();
         });
         
         const lastMonthPayments = customerPayments.filter(p => {
-          const paymentDate = new Date(p.createdAt || p.timestamp || new Date().toISOString());
+          const paymentDate = new Date(String(p.createdAt || p.timestamp || new Date().toISOString()));
           const now = new Date();
           const lastMonth = new Date(now.getFullYear(), now.getMonth() - 1);
           return paymentDate.getMonth() === lastMonth.getMonth() && paymentDate.getFullYear() === lastMonth.getFullYear();
@@ -423,12 +423,12 @@ class BusinessIntelligenceService {
       
       if (complianceData) {
         return {
-          pendingApprovals: complianceData.pendingApprovals || 0,
-          violations: complianceData.violations || 0,
-          securityIncidents: complianceData.securityIncidents || 0,
-          overallStatus: complianceData.overallStatus || 'green',
-          lastAudit: complianceData.lastAudit || new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toISOString(),
-          nextAudit: complianceData.nextAudit || new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString()
+          pendingApprovals: (complianceData as any).pendingApprovals || 0,
+          violations: (complianceData as any).violations || 0,
+          securityIncidents: (complianceData as any).securityIncidents || 0,
+          overallStatus: (complianceData as any).overallStatus || 'green',
+          lastAudit: (complianceData as any).lastAudit || new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toISOString(),
+          nextAudit: (complianceData as any).nextAudit || new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString()
         };
       }
       
@@ -513,7 +513,7 @@ class BusinessIntelligenceService {
       // Get real engagement data from API
       const engagementData = await Promise.resolve(null); // getEngagementHeatmap doesn't exist
       
-      if (engagementData && engagementData.segments) {
+      if (engagementData && (engagementData as any).segments) {
         return engagementData;
       }
       
@@ -770,7 +770,7 @@ class BusinessIntelligenceService {
     try {
       // Get real active sessions from API
       const sessionData = await Promise.resolve(null); // getActiveSessions doesn't exist
-      return sessionData?.count || 0;
+      return (sessionData as any)?.count || 0;
     } catch (error) {
       // Fallback to 0 if API fails
       return 0;
@@ -784,9 +784,9 @@ class BusinessIntelligenceService {
       
       if (revenueData) {
         return {
-          monthly: revenueData.monthly || 0,
-          total: revenueData.total || 0,
-          growth: revenueData.growth || 0
+          monthly: (revenueData as any).monthly || 0,
+          total: (revenueData as any).total || 0,
+          growth: (revenueData as any).growth || 0
         };
       }
       

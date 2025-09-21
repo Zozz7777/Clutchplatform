@@ -33,7 +33,7 @@ interface PricingPlan {
 }
 
 export default function PricingPage() {
-  const t = (key: string, params?: any) => key;
+  const { t } = useTranslations();
   const [plans, setPlans] = useState<PricingPlan[]>([]);
   const [analytics, setAnalytics] = useState({
     totalRevenue: 0,
