@@ -45,7 +45,7 @@ import {
   Activity,
 } from "lucide-react";
 import { productionApi } from "@/lib/production-api";
-import { useTranslations } from "next-intl";
+import { useTranslations } from "@/hooks/use-translations";
 import { logger } from "@/lib/logger";
 import { toast } from "sonner";
 
@@ -150,7 +150,7 @@ export default function IntegrationsPage() {
       setIntegrations(integrationsArray);
     } catch (error) {
       logger.error("Error loading integrations:", error);
-      toast.error(t('integrations.failedToLoadIntegrations'));
+      toast.error(t('dashboard.failedToLoadIntegrations'));
       setIntegrations([]);
     } finally {
       setLoading(false);
@@ -164,7 +164,7 @@ export default function IntegrationsPage() {
       setTemplates(templatesArray);
     } catch (error) {
       logger.error("Error loading templates:", error);
-      toast.error("Failed to load integration templates");
+      toast.error(t('dashboard.failedToLoadIntegrationTemplates'));
       setTemplates([]);
     }
   };
@@ -242,7 +242,7 @@ export default function IntegrationsPage() {
       <div className="flex items-center justify-center h-64">
         <div className="text-center">
           <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto"></div>
-          <p className="mt-2 text-muted-foreground">Loading integrations...</p>
+          <p className="mt-2 text-muted-foreground">{t('dashboard.loadingIntegrations')}</p>
         </div>
       </div>
     );
@@ -253,19 +253,19 @@ export default function IntegrationsPage() {
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold tracking-tight">{t('integrations.title')}</h1>
+          <h1 className="text-3xl font-bold tracking-tight">{t('dashboard.integrations')}</h1>
           <p className="text-muted-foreground">
-            {t('integrations.description')}
+            {t('dashboard.integrationsDescription')}
           </p>
         </div>
         <div className="flex items-center space-x-2">
           <Button onClick={() => setShowTemplatesDialog(true)} variant="outline">
             <Plus className="mr-2 h-4 w-4" />
-            Browse Templates
+            {t('dashboard.browseTemplates')}
           </Button>
           <Button onClick={() => setShowCreateDialog(true)}>
             <Plus className="mr-2 h-4 w-4" />
-            Add Integration
+            {t('dashboard.addIntegration')}
           </Button>
         </div>
       </div>
@@ -274,25 +274,25 @@ export default function IntegrationsPage() {
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">{t('integrations.totalIntegrations')}</CardTitle>
+            <CardTitle className="text-sm font-medium">{t('dashboard.totalIntegrations')}</CardTitle>
             <Plug className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">{totalIntegrations}</div>
             <p className="text-xs text-muted-foreground">
-              {activeIntegrations} {t('integrations.active')}, {errorIntegrations} {t('integrations.activeWithErrors')}
+              {activeIntegrations} {t('dashboard.active')}, {errorIntegrations} {t('dashboard.activeWithErrors')}
             </p>
           </CardContent>
         </Card>
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Monthly Requests</CardTitle>
+            <CardTitle className="text-sm font-medium">{t('dashboard.monthlyRequests')}</CardTitle>
             <Activity className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">{totalRequests.toLocaleString()}</div>
             <p className="text-xs text-muted-foreground">
-              API calls this month
+              {t('dashboard.apiCallsThisMonth')}
             </p>
           </CardContent>
         </Card>
@@ -575,7 +575,7 @@ export default function IntegrationsPage() {
               Cancel
             </Button>
             <Button onClick={() => setShowCreateDialog(false)}>
-              Add Integration
+              {t('dashboard.addIntegration')}
             </Button>
           </DialogFooter>
         </DialogContent>

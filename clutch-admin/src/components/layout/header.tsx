@@ -35,7 +35,7 @@ interface HeaderProps {
 
 export function Header({ onMenuToggle }: HeaderProps) {
   const { user, logout } = useAuth();
-  const t = useTranslations();
+  const t = useTranslations() as any;
   const [searchQuery, setSearchQuery] = useState("");
   const [notifications, setNotifications] = useState<Notification[]>([]);
   const [notificationsLoading, setNotificationsLoading] = useState(false);
@@ -62,7 +62,7 @@ export function Header({ onMenuToggle }: HeaderProps) {
       try {
         const response = await productionApi.getNotifications();
         // Handle the API response structure properly
-        const notifications = response?.data?.notifications || response?.data || response || [];
+        const notifications = Array.isArray(response) ? response : [];
         setNotifications(Array.isArray(notifications) ? notifications.slice(0, 5) : []);
       } catch (error) {
         // Failed to fetch notifications

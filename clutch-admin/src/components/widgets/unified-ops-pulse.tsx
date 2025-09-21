@@ -7,7 +7,7 @@ import { Progress } from '@/components/ui/progress';
 import { businessIntelligence, type OperationalPulse } from '@/lib/business-intelligence';
 import { Users, Activity, Truck, DollarSign, TrendingUp, Zap } from 'lucide-react';
 import { logger } from '@/lib/logger';
-import { useTranslations } from '@/hooks/use-translations';
+import { useTranslations } from 'next-intl';
 
 interface UnifiedOpsPulseProps {
   className?: string;

@@ -96,7 +96,7 @@ interface AppStore {
 }
 
 export default function MobileAppsPage() {
-  const t = useTranslations();
+  const { t } = useTranslations();
   const [activeTab, setActiveTab] = useState("overview");
   const [searchTerm, setSearchTerm] = useState("");
   const [versions, setVersions] = useState<AppVersion[]>([]);
@@ -178,7 +178,7 @@ export default function MobileAppsPage() {
         if (!isMounted) return;
         
         console.error('Error loading mobile apps data:', error);
-        toast.error(t('dashboard.failedToLoadData'));
+        toast.error(t('dashboard.failedToLoadData') || 'Failed to load data');
         // Set empty arrays on error - no mock data fallback
         setVersions([]);
         setCrashes([]);
@@ -250,11 +250,11 @@ export default function MobileAppsPage() {
   };
 
   const tabs = [
-    { id: "overview", label: t('dashboard.overview'), icon: BarChart3 },
-    { id: "versions", label: t('dashboard.appVersions'), icon: Download },
-    { id: "crashes", label: t('dashboard.crashReports'), icon: AlertTriangle },
-    { id: "analytics", label: t('dashboard.analytics'), icon: TrendingUp },
-    { id: "stores", label: t('dashboard.appStores'), icon: Globe },
+    { id: "overview", label: t('dashboard.overview') || 'Overview', icon: BarChart3 },
+    { id: "versions", label: t('dashboard.appVersions') || 'App Versions', icon: Download },
+    { id: "crashes", label: t('dashboard.crashReports') || 'Crash Reports', icon: AlertTriangle },
+    { id: "analytics", label: t('dashboard.analytics') || 'Analytics', icon: TrendingUp },
+    { id: "stores", label: t('dashboard.appStores') || 'App Stores', icon: Globe },
   ];
 
   return (
@@ -262,19 +262,19 @@ export default function MobileAppsPage() {
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold tracking-tight">{t('dashboard.mobileAppManagement')}</h1>
+          <h1 className="text-3xl font-bold tracking-tight">{t('dashboard.mobileAppManagement') || 'Mobile App Management'}</h1>
           <p className="text-muted-foreground">
-            {t('dashboard.monitorAndManageMobileApplications')}
+            {t('dashboard.monitorAndManageMobileApplications') || 'Monitor and manage mobile applications'}
           </p>
         </div>
         <div className="flex items-center space-x-2">
           <Button variant="outline">
             <Settings className="mr-2 h-4 w-4" />
-{t('dashboard.settings')}
+{t('dashboard.settings') || 'Settings'}
           </Button>
           <Button>
             <Plus className="mr-2 h-4 w-4" />
-            {t('dashboard.newRelease')}
+            {t('dashboard.newRelease') || 'New Release'}
           </Button>
         </div>
       </div>
@@ -283,7 +283,7 @@ export default function MobileAppsPage() {
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">{t('dashboard.totalDownloads')}</CardTitle>
+            <CardTitle className="text-sm font-medium">{t('dashboard.totalDownloads') || 'Total Downloads'}</CardTitle>
             <Download className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
@@ -291,13 +291,13 @@ export default function MobileAppsPage() {
               {Array.isArray(versions) ? versions.reduce((sum, v) => sum + (v?.downloadCount || 0), 0).toLocaleString() : "0"}
             </div>
             <p className="text-xs text-muted-foreground">
-              <span className="text-primary">+15%</span> {t('dashboard.fromLastMonth')}
+              <span className="text-primary">+15%</span> {t('dashboard.fromLastMonth') || 'from last month'}
             </p>
           </CardContent>
         </Card>
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">{t('dashboard.activeUsers')}</CardTitle>
+            <CardTitle className="text-sm font-medium">{t('dashboard.activeUsers') || 'Active Users'}</CardTitle>
             <Users className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
@@ -311,7 +311,7 @@ export default function MobileAppsPage() {
         </Card>
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">{t('dashboard.crashRate')}</CardTitle>
+            <CardTitle className="text-sm font-medium">{t('dashboard.crashRate') || 'Crash Rate'}</CardTitle>
             <AlertTriangle className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
@@ -325,7 +325,7 @@ export default function MobileAppsPage() {
         </Card>
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">{t('dashboard.avgRating')}</CardTitle>
+            <CardTitle className="text-sm font-medium">{t('dashboard.avgRating') || 'Average Rating'}</CardTitle>
             <TrendingUp className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
@@ -368,7 +368,7 @@ export default function MobileAppsPage() {
           <div className="relative">
             <Search className="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground" />
             <Input
-              placeholder={t('dashboard.search')}
+              placeholder={t('dashboard.search') || 'Search'}
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
               className="pl-8"
@@ -377,7 +377,7 @@ export default function MobileAppsPage() {
         </div>
         <Button variant="outline">
           <Filter className="mr-2 h-4 w-4" />
-          {t('dashboard.filters')}
+          {t('dashboard.filters') || 'Filters'}
         </Button>
       </div>
 
@@ -547,7 +547,7 @@ export default function MobileAppsPage() {
                         <div className="font-semibold">{crash.device}</div>
                       </div>
                       <div>
-                        <div className="text-sm text-muted-foreground">{t('mobileApps.osVersion')}</div>
+                        <div className="text-sm text-muted-foreground">{t('mobileApps.osVersion') || 'OS Version'}</div>
                         <div className="font-semibold">{crash.osVersion}</div>
                       </div>
                       <div>
@@ -555,7 +555,7 @@ export default function MobileAppsPage() {
                         <div className="font-semibold">{crash.frequency} times</div>
                       </div>
                       <div>
-                        <div className="text-sm text-muted-foreground">{t('mobileApps.appVersion')}</div>
+                        <div className="text-sm text-muted-foreground">{t('mobileApps.appVersion') || 'App Version'}</div>
                         <div className="font-semibold">v{crash.appVersion}</div>
                       </div>
                     </div>

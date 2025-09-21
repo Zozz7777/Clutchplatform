@@ -1373,6 +1373,47 @@ export class ProductionApiService {
     }
   }
 
+  // Mobile App specific APIs
+  async getMobileAppVersions(): Promise<Record<string, unknown>[]> {
+    try {
+      const data = await realApi.getMobileAppVersions();
+      return Array.isArray(data) ? data : [];
+    } catch (error) {
+      logger.error("Failed to fetch mobile app versions:", error);
+      return [];
+    }
+  }
+
+  async getMobileAppCrashes(): Promise<Record<string, unknown>[]> {
+    try {
+      const data = await realApi.getMobileAppCrashes();
+      return Array.isArray(data) ? data : [];
+    } catch (error) {
+      logger.error("Failed to fetch mobile app crashes:", error);
+      return [];
+    }
+  }
+
+  async getMobileAppAnalytics(): Promise<Record<string, unknown>[]> {
+    try {
+      const data = await realApi.getMobileAppAnalytics();
+      return Array.isArray(data) ? data : [];
+    } catch (error) {
+      logger.error("Failed to fetch mobile app analytics:", error);
+      return [];
+    }
+  }
+
+  async getMobileAppStores(): Promise<Record<string, unknown>[]> {
+    try {
+      const data = await realApi.getMobileAppStores();
+      return Array.isArray(data) ? data : [];
+    } catch (error) {
+      logger.error("Failed to fetch mobile app stores:", error);
+      return [];
+    }
+  }
+
   async saveMobileAppSettings(settings: Record<string, unknown>): Promise<Record<string, unknown>> {
     try {
       return await realApi.saveMobileAppSettings(settings);
