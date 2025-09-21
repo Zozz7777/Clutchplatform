@@ -374,6 +374,7 @@ export default function HRPage() {
       }
       
       try {
+        setIsLoading(true);
         const token = localStorage.getItem("clutch-admin-token");
         
         // Load employees
@@ -388,7 +389,49 @@ export default function HRPage() {
           const employeesData = await employeesResponse.json();
           // Handle different response structures
           const employeesList = employeesData.data?.employees || employeesData.data || employeesData;
-          setEmployees(Array.isArray(employeesList) ? employeesList : []);
+          
+          // Ensure all employees have required fields with fallbacks
+          const safeEmployees = Array.isArray(employeesList) ? employeesList.map(emp => ({
+            _id: emp._id || '',
+            employeeId: emp.employeeId || `EMP-${emp._id}`,
+            firstName: emp.firstName || 'Unknown',
+            lastName: emp.lastName || '',
+            email: emp.email || '',
+            phone: emp.phone || '',
+            position: emp.position || 'No Position',
+            department: emp.department || 'No Department',
+            manager: emp.manager || '',
+            status: emp.status || 'active',
+            employmentType: emp.employmentType || 'full_time',
+            startDate: emp.startDate || emp.createdAt || new Date().toISOString(),
+            hireDate: emp.hireDate || emp.createdAt || new Date().toISOString(),
+            endDate: emp.endDate || '',
+            salary: emp.salary || 0,
+            currency: emp.currency || 'EGP',
+            role: emp.role || 'employee',
+            permissions: emp.permissions || [],
+            address: emp.address || {
+              street: '',
+              city: '',
+              state: '',
+              zipCode: '',
+              country: ''
+            },
+            emergencyContact: emp.emergencyContact || {
+              name: '',
+              relationship: '',
+              phone: ''
+            },
+            skills: emp.skills || [],
+            certifications: emp.certifications || [],
+            performanceRating: emp.performanceRating || 0,
+            lastReviewDate: emp.lastReviewDate || '',
+            nextReviewDate: emp.nextReviewDate || '',
+            createdAt: emp.createdAt || new Date().toISOString(),
+            updatedAt: emp.updatedAt || new Date().toISOString()
+          })) : [];
+          
+          setEmployees(safeEmployees);
         } else {
           // Error handled by API service
           setEmployees([]);
@@ -481,29 +524,29 @@ export default function HRPage() {
   }, [user]);
 
   useEffect(() => {
-    let filteredEmps = Array.isArray(employees) ? employees : [];
-    let filteredApps = Array.isArray(applications) ? applications : [];
+    let filteredEmps = Array.isArray(employees) ? employees.filter(emp => emp && emp._id) : [];
+    let filteredApps = Array.isArray(applications) ? applications.filter(app => app && app._id) : [];
 
     // Search filter
     if (searchQuery) {
       filteredEmps = filteredEmps.filter(employee =>
-        employee.firstName.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        employee.lastName.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        employee.email.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        employee.position.toLowerCase().includes(searchQuery.toLowerCase())
+        (employee.firstName || '').toLowerCase().includes(searchQuery.toLowerCase()) ||
+        (employee.lastName || '').toLowerCase().includes(searchQuery.toLowerCase()) ||
+        (employee.email || '').toLowerCase().includes(searchQuery.toLowerCase()) ||
+        (employee.position || '').toLowerCase().includes(searchQuery.toLowerCase())
       );
       
       filteredApps = filteredApps.filter(application =>
-        application.candidateName.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        application.jobTitle.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        application.department.toLowerCase().includes(searchQuery.toLowerCase())
+        (application.candidateName || '').toLowerCase().includes(searchQuery.toLowerCase()) ||
+        (application.jobTitle || '').toLowerCase().includes(searchQuery.toLowerCase()) ||
+        (application.department || '').toLowerCase().includes(searchQuery.toLowerCase())
       );
     }
 
     // Status filter
     if (statusFilter !== "all") {
-      filteredEmps = filteredEmps.filter(employee => employee.status === statusFilter);
-      filteredApps = filteredApps.filter(application => application.status === statusFilter);
+      filteredEmps = filteredEmps.filter(employee => (employee.status || 'active') === statusFilter);
+      filteredApps = filteredApps.filter(application => (application.status || 'applied') === statusFilter);
     }
 
     setFilteredEmployees(filteredEmps);

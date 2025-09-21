@@ -250,11 +250,11 @@ export default function MobileAppsPage() {
   };
 
   const tabs = [
-    { id: "overview", label: t('mobileApps.overview'), icon: BarChart3 },
-    { id: "versions", label: t('mobileApps.appVersions'), icon: Download },
-    { id: "crashes", label: t('mobileApps.crashReports'), icon: AlertTriangle },
-    { id: "analytics", label: t('mobileApps.analytics'), icon: TrendingUp },
-    { id: "stores", label: t('mobileApps.appStores'), icon: Globe },
+    { id: "overview", label: t('dashboard.overview'), icon: BarChart3 },
+    { id: "versions", label: t('dashboard.appVersions'), icon: Download },
+    { id: "crashes", label: t('dashboard.crashReports'), icon: AlertTriangle },
+    { id: "analytics", label: t('dashboard.analytics'), icon: TrendingUp },
+    { id: "stores", label: t('dashboard.appStores'), icon: Globe },
   ];
 
   return (
@@ -262,15 +262,15 @@ export default function MobileAppsPage() {
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold tracking-tight">Mobile App Management</h1>
+          <h1 className="text-3xl font-bold tracking-tight">{t('dashboard.mobileAppManagement')}</h1>
           <p className="text-muted-foreground">
-            Monitor and manage mobile applications across iOS and Android platforms
+            {t('dashboard.monitorAndManageMobileApplications')}
           </p>
         </div>
         <div className="flex items-center space-x-2">
           <Button variant="outline">
             <Settings className="mr-2 h-4 w-4" />
-{t('mobileApps.settings')}
+{t('dashboard.settings')}
           </Button>
           <Button>
             <Plus className="mr-2 h-4 w-4" />
