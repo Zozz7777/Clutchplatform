@@ -195,7 +195,7 @@ export default function CRMPage() {
       <div className="flex items-center justify-center h-64">
         <div className="text-center">
           <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto mb-4"></div>
-          <p className="text-muted-foreground font-sans">Loading CRM data...</p>
+          <p className="text-muted-foreground font-sans">{t('dashboard.loadingCrmData')}</p>
         </div>
       </div>
     );
@@ -206,9 +206,9 @@ export default function CRMPage() {
       {/* Page Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold tracking-tight text-foreground font-sans">CRM Dashboard</h1>
+          <h1 className="text-3xl font-bold tracking-tight text-foreground font-sans">{t('dashboard.crmDashboard')}</h1>
           <p className="text-muted-foreground font-sans">
-            Manage customer relationships and support tickets
+            {t('dashboard.manageCustomerRelationships')}
           </p>
         </div>
         <div className="flex items-center space-x-2">
@@ -425,8 +425,8 @@ export default function CRMPage() {
         <TabsContent value="tickets" className="space-y-4">
           <Card className="shadow-2xs">
             <CardHeader>
-              <CardTitle className="text-card-foreground">Support Tickets</CardTitle>
-              <CardDescription>Manage customer support requests and issues</CardDescription>
+            <CardTitle className="text-card-foreground">{t('dashboard.supportTickets')}</CardTitle>
+            <CardDescription>{t('dashboard.manageCustomerSupport')}</CardDescription>
             </CardHeader>
             <CardContent>
               <Table>
@@ -562,9 +562,9 @@ export default function CRMPage() {
       <div className="space-y-6 mt-8">
         <div className="flex items-center justify-between">
           <div>
-            <h2 className="text-2xl font-bold tracking-tight text-foreground">CRM Analytics</h2>
+            <h2 className="text-2xl font-bold tracking-tight text-foreground">{t('dashboard.crmAnalytics')}</h2>
             <p className="text-muted-foreground">
-              Move beyond tickets → predict churn & satisfaction
+              {t('dashboard.moveBeyondTickets')}
             </p>
           </div>
         </div>
