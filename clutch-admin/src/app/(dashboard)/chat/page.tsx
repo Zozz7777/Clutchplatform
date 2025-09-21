@@ -215,7 +215,7 @@ export default function ChatPage() {
                     <div className="relative">
                       <div className="w-10 h-10 rounded-full bg-primary flex items-center justify-center">
                         <span className="text-primary-foreground text-sm font-medium">
-                          {channel.name.charAt(0).toUpperCase()}
+                          {channel.name ? channel.name.charAt(0).toUpperCase() : '?'}
                         </span>
                       </div>
                       {channel.isOnline && (
@@ -224,14 +224,14 @@ export default function ChatPage() {
                     </div>
                     <div className="flex-1 min-w-0">
                       <div className="flex items-center justify-between">
-                        <p className="text-sm font-medium text-foreground truncate">{channel.name}</p>
+                        <p className="text-sm font-medium text-foreground truncate">{channel.name || 'Unknown Channel'}</p>
                         {channel.unreadCount > 0 && (
                           <Badge variant="destructive" className="text-xs">
                             {channel.unreadCount}
                           </Badge>
                         )}
                       </div>
-                      <p className="text-xs text-muted-foreground truncate">{channel.lastMessage}</p>
+                      <p className="text-xs text-muted-foreground truncate">{channel.lastMessage || 'No messages'}</p>
                       <p className="text-xs text-muted-foreground">
                         {formatRelativeTime(channel.lastMessageTime)}
                       </p>
@@ -250,11 +250,11 @@ export default function ChatPage() {
               <div className="flex items-center space-x-3">
                 <div className="w-8 h-8 rounded-full bg-primary flex items-center justify-center">
                   <span className="text-primary-foreground text-sm font-medium">
-                    {selectedChannelData?.name.charAt(0).toUpperCase()}
+                    {selectedChannelData?.name ? selectedChannelData.name.charAt(0).toUpperCase() : '?'}
                   </span>
                 </div>
                 <div>
-                  <h3 className="text-sm font-medium text-foreground">{selectedChannelData?.name}</h3>
+                  <h3 className="text-sm font-medium text-foreground">{selectedChannelData?.name || 'Unknown Channel'}</h3>
                   <p className="text-xs text-muted-foreground">
                     {selectedChannelData?.isOnline ? t('chat.online') : t('chat.offline')}
                   </p>

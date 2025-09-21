@@ -340,7 +340,7 @@ export class RealApiService {
   async getChatChannels(): Promise<Record<string, unknown>[]> {
     return withErrorHandling(
       async () => {
-        const response = await apiService.request<Record<string, unknown>[]>("/api/v1/communication/chat-channels");
+        const response = await apiService.request<Record<string, unknown>[]>("/api/chat/channels");
         return handleApiResponse(response, 'getChatChannels', []);
       },
       'getChatChannels',
@@ -1002,7 +1002,7 @@ export class RealApiService {
   async getChatChannels(): Promise<Record<string, unknown>[]> {
     return withErrorHandling(
       async () => {
-        const response = await apiService.request<Record<string, unknown>[]>("/api/v1/communication/chat/conversations");
+        const response = await apiService.request<Record<string, unknown>[]>("/api/chat/channels");
         return handleApiResponse(response, 'getChatChannels', []);
       },
       'getChatChannels',
@@ -1013,7 +1013,7 @@ export class RealApiService {
   async getChatMessages(channelId?: string): Promise<Record<string, unknown>[]> {
     return withErrorHandling(
       async () => {
-        const endpoint = channelId ? `/api/v1/communication/chat?chatId=${channelId}` : "/api/v1/communication/chat";
+        const endpoint = channelId ? `/api/v1/chat/messages/${channelId}` : "/api/v1/chat/messages";
         const response = await apiService.request<Record<string, unknown>[]>(endpoint);
         return handleApiResponse(response, 'getChatMessages', []);
       },
@@ -1025,7 +1025,7 @@ export class RealApiService {
   async sendChatMessage(messageData: Record<string, unknown>): Promise<Record<string, unknown>> {
     return withErrorHandling(
       async () => {
-        const response = await apiService.request<Record<string, unknown>>("/api/v1/communication/chat", {
+        const response = await apiService.request<Record<string, unknown>>("/api/v1/chat/send", {
           method: "POST",
           body: JSON.stringify(messageData),
         });
