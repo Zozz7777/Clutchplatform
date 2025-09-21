@@ -443,9 +443,9 @@ export default function AssetManagementPage() {
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold tracking-tight">Asset Management</h1>
+          <h1 className="text-3xl font-bold tracking-tight">{t('dashboard.assetManagement')}</h1>
           <p className="text-muted-foreground">
-            Track and manage company assets, maintenance, and assignments
+            {t('dashboard.trackAndManageAssets')}
           </p>
         </div>
         <div className="flex items-center space-x-2">
@@ -459,7 +459,7 @@ export default function AssetManagementPage() {
           </Button>
           <Button onClick={() => setShowCreateDialog(true)}>
             <Plus className="mr-2 h-4 w-4" />
-            Add Asset
+            {t('dashboard.addAsset')}
           </Button>
         </div>
       </div>
@@ -480,13 +480,13 @@ export default function AssetManagementPage() {
         </Card>
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">{t('assets.totalValue')}</CardTitle>
+            <CardTitle className="text-sm font-medium">{t('dashboard.totalValue')}</CardTitle>
             <DollarSign className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">{formatCurrency(totalValue)}</div>
             <p className="text-xs text-muted-foreground">
-{t('assets.currentMarketValue')}
+{t('dashboard.currentMarketValue')}
             </p>
           </CardContent>
         </Card>
@@ -568,24 +568,24 @@ export default function AssetManagementPage() {
               <DropdownMenuTrigger asChild>
                 <Button variant="outline">
                   <Filter className="mr-2 h-4 w-4" />
-                  Status: {statusFilter === "all" ? "All" : statusFilter}
+                  Status: {statusFilter === "all" ? t('dashboard.all') : statusFilter}
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent>
                 <DropdownMenuItem onClick={() => setStatusFilter("all")}>
-                  All Status
+                  {t('dashboard.allStatus')}
                 </DropdownMenuItem>
                 <DropdownMenuItem onClick={() => setStatusFilter("active")}>
-                  Active
+                  {t('dashboard.active')}
                 </DropdownMenuItem>
                 <DropdownMenuItem onClick={() => setStatusFilter("inactive")}>
-                  Inactive
+                  {t('dashboard.inactive')}
                 </DropdownMenuItem>
                 <DropdownMenuItem onClick={() => setStatusFilter("maintenance")}>
-                  Maintenance
+                  {t('dashboard.maintenance')}
                 </DropdownMenuItem>
                 <DropdownMenuItem onClick={() => setStatusFilter("retired")}>
-                  Retired
+                  {t('dashboard.retired')}
                 </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
@@ -614,11 +614,11 @@ export default function AssetManagementPage() {
                       
                       <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-4">
                         <div>
-                          <p className="text-sm font-medium">Current Value</p>
+                          <p className="text-sm font-medium">{t('dashboard.currentValue')}</p>
                           <p className="text-sm text-muted-foreground">{formatCurrency(asset.currentValue)}</p>
                         </div>
                         <div>
-                          <p className="text-sm font-medium">Location</p>
+                          <p className="text-sm font-medium">{t('dashboard.location')}</p>
                           <p className="text-sm text-muted-foreground">
                             {asset.location.building}, {asset.location.room}
                           </p>
@@ -814,7 +814,7 @@ export default function AssetManagementPage() {
             </div>
             <div className="grid grid-cols-3 gap-4">
               <div>
-                <Label htmlFor="purchaseDate">Purchase Date</Label>
+                <Label htmlFor="purchaseDate">{t('dashboard.purchaseDate')}</Label>
                 <Input 
                   id="purchaseDate" 
                   type="date" 
@@ -833,7 +833,7 @@ export default function AssetManagementPage() {
                 />
               </div>
               <div>
-                <Label htmlFor="currentValue">Current Value (EGP)</Label>
+                <Label htmlFor="currentValue">{t('dashboard.currentValueEgp')}</Label>
                 <Input 
                   id="currentValue" 
                   type="number" 
@@ -878,7 +878,7 @@ export default function AssetManagementPage() {
               Cancel
             </Button>
             <Button onClick={createAsset}>
-              Add Asset
+              {t('dashboard.addAsset')}
             </Button>
           </DialogFooter>
         </DialogContent>
