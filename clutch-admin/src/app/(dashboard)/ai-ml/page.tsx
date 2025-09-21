@@ -10,7 +10,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { formatDate, formatRelativeTime } from "@/lib/utils";
 import { useAuth } from "@/contexts/auth-context";
-import { useTranslations } from "next-intl";
+import { useTranslations } from "@/hooks/use-translations";
 import { productionApi } from "@/lib/production-api";
 import { toast } from "sonner";
 import { handleDataLoadError } from "@/lib/error-handler";
@@ -93,7 +93,7 @@ export default function AIMLPage() {
   const [statusFilter, setStatusFilter] = useState<string>("all");
   const [isLoading, setIsLoading] = useState(true);
   const { hasPermission } = useAuth();
-  const t = (key: string, params?: any) => key;
+  const { t } = useTranslations();
 
   useEffect(() => {
     let isMounted = true;

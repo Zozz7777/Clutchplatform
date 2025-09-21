@@ -45,7 +45,7 @@ import {
   Activity,
 } from "lucide-react";
 import { productionApi } from "@/lib/production-api";
-import { useTranslations } from "next-intl";
+import { useTranslations } from "@/hooks/use-translations";
 import { logger } from "@/lib/logger";
 import { toast } from "sonner";
 
@@ -125,7 +125,7 @@ interface IntegrationTemplate {
 }
 
 export default function IntegrationsPage() {
-  const t = (key: string, params?: any) => key;
+  const { t } = useTranslations();
   const [integrations, setIntegrations] = useState<Integration[]>([]);
   const [templates, setTemplates] = useState<IntegrationTemplate[]>([]);
   const [loading, setLoading] = useState(true);

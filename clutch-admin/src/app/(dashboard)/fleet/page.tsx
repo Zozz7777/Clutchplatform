@@ -11,7 +11,7 @@ import { productionApi } from "@/lib/production-api";
 import { websocketService } from "@/lib/websocket-service";
 import { formatDate, formatRelativeTime } from "@/lib/utils";
 import { useAuth } from "@/contexts/auth-context";
-// import { useTranslations } from "next-intl";
+// import { useTranslations } from "@/hooks/use-translations";
 import { useQuickActions } from "@/lib/quick-actions";
 import { toast } from "sonner";
 import { handleError, handleWarning, handleWebSocketError, handleDataLoadError } from "@/lib/error-handler";
@@ -87,7 +87,7 @@ export default function FleetPage() {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const { user, hasPermission } = useAuth();
-  const t = (key: string, params?: any) => key;
+  const { t } = useTranslations();
   
   // Safely get quick actions with error handling
   let createFleet: (() => void) | null = null;

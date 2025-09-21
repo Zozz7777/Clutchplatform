@@ -468,24 +468,24 @@ export default function UsersPage() {
                           <div className="flex items-center space-x-3">
                             <div className="w-8 h-8 rounded-full bg-primary flex items-center justify-center">
                               <span className="text-primary-foreground text-sm font-medium">
-                                {user.name.charAt(0).toUpperCase()}
+                                {(user.name || 'U').charAt(0).toUpperCase()}
                               </span>
                             </div>
                             <div>
-                              <p className="font-medium text-foreground">{user.name}</p>
-                              <p className="text-sm text-muted-foreground">{user.email}</p>
+                              <p className="font-medium text-foreground">{user.name || 'Unknown User'}</p>
+                              <p className="text-sm text-muted-foreground">{user.email || 'No email'}</p>
                             </div>
                           </div>
                           <div className="text-right">
-                            <Badge className={getStatusColor(user.status)}>
-                              {user.status}
+                            <Badge className={getStatusColor(user.status || 'unknown')}>
+                              {user.status || 'Unknown'}
                             </Badge>
                             <p className="text-sm text-muted-foreground mt-1">
-                              {formatRelativeTime(user.lastLogin)}
+                              {user.lastLogin ? formatRelativeTime(user.lastLogin) : 'Never'}
                             </p>
                           </div>
                         </div>
-                      ))}
+                      )) : []}
                   </div>
                 </div>
               </div>
@@ -533,20 +533,20 @@ export default function UsersPage() {
                               <Building2 className="h-4 w-4 text-primary" />
                             </div>
                             <div>
-                              <p className="font-medium text-foreground">{user.name}</p>
-                              <p className="text-sm text-muted-foreground">{user.email}</p>
+                              <p className="font-medium text-foreground">{user.name || 'Unknown User'}</p>
+                              <p className="text-sm text-muted-foreground">{user.email || 'No email'}</p>
                             </div>
                           </div>
                           <div className="text-right">
-                            <Badge className={getStatusColor(user.status)}>
-                              {user.status}
+                            <Badge className={getStatusColor(user.status || 'unknown')}>
+                              {user.status || 'Unknown'}
                             </Badge>
                             <p className="text-sm text-muted-foreground mt-1">
-                              {formatRelativeTime(user.lastLogin)}
+                              {user.lastLogin ? formatRelativeTime(user.lastLogin) : 'Never'}
                             </p>
                           </div>
                         </div>
-                      ))}
+                      )) : []}
                   </div>
                 </div>
               </div>
@@ -594,20 +594,20 @@ export default function UsersPage() {
                               <UserCog className="h-4 w-4 text-success" />
                             </div>
                             <div>
-                              <p className="font-medium text-foreground">{user.name}</p>
-                              <p className="text-sm text-muted-foreground">{user.email}</p>
+                              <p className="font-medium text-foreground">{user.name || 'Unknown User'}</p>
+                              <p className="text-sm text-muted-foreground">{user.email || 'No email'}</p>
                             </div>
                           </div>
                           <div className="text-right">
-                            <Badge className={getStatusColor(user.status)}>
-                              {user.status}
+                            <Badge className={getStatusColor(user.status || 'unknown')}>
+                              {user.status || 'Unknown'}
                             </Badge>
                             <p className="text-sm text-muted-foreground mt-1">
-                              {formatRelativeTime(user.lastLogin)}
+                              {user.lastLogin ? formatRelativeTime(user.lastLogin) : 'Never'}
                             </p>
                           </div>
                         </div>
-                      ))}
+                      )) : []}
                   </div>
                 </div>
               </div>

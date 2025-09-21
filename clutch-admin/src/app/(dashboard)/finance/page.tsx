@@ -10,7 +10,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { formatCurrency, formatDate, formatRelativeTime } from "@/lib/utils";
 import { useAuth } from "@/contexts/auth-context";
-import { useTranslations } from "next-intl";
+import { useTranslations } from "@/hooks/use-translations";
 import { productionApi } from "@/lib/production-api";
 import { paymentService } from "@/lib/payment-service";
 
@@ -103,7 +103,7 @@ export default function FinancePage() {
   const [statusFilter, setStatusFilter] = useState<string>("all");
   const [isLoading, setIsLoading] = useState(true);
   const { hasPermission } = useAuth();
-  const t = (key: string, params?: any) => key;
+  const { t } = useTranslations();
 
   // Payment processing functions
   const handleProcessPayment = async (paymentData: Record<string, unknown>) => {

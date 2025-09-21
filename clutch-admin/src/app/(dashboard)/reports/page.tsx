@@ -48,7 +48,7 @@ import { useAuth } from "@/contexts/auth-context";
 // Import new Phase 2 widgets
 import ReportUsageStats from '@/components/widgets/report-usage-stats';
 import { useQuickActions } from "@/lib/quick-actions";
-import { useTranslations } from "next-intl";
+import { useTranslations } from "@/hooks/use-translations";
 import { handleError, handleWarning, handleDataLoadError } from "@/lib/error-handler";
 
 interface Report {
@@ -135,7 +135,7 @@ export default function ReportsPage() {
   } catch (error) {
     handleError(error, { component: 'ReportsPage', action: 'initialize_quick_actions' });
   }
-  const t = (key: string, params?: any) => key;
+  const { t } = useTranslations();
 
 
   useEffect(() => {

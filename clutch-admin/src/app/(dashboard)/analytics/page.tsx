@@ -10,7 +10,7 @@ import { useQuickActions } from "@/lib/quick-actions";
 import { handleError, handleDataLoadError } from "@/lib/error-handler";
 import { productionApi } from "@/lib/production-api";
 import { formatDate, formatRelativeTime, formatCurrency } from "@/lib/utils";
-import { useTranslations } from "next-intl";
+import { useTranslations } from "@/hooks/use-translations";
 
 // Import new Phase 2 widgets
 import AdoptionFunnel from "@/components/widgets/adoption-funnel";
@@ -139,7 +139,7 @@ interface AnalyticsReport {
 }
 
 export default function AnalyticsPage() {
-  const t = (key: string, params?: any) => key;
+  const { t } = useTranslations();
   const [metrics, setMetrics] = useState<AnalyticsMetric[]>([]);
   const [userAnalytics, setUserAnalytics] = useState<UserAnalytics | null>(null);
   const [revenueAnalytics, setRevenueAnalytics] = useState<RevenueAnalytics | null>(null);

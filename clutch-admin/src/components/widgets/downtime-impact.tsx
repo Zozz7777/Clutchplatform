@@ -49,7 +49,6 @@ interface DowntimeMetrics {
 }
 
 export function DowntimeImpact({ className = '' }: DowntimeImpactProps) {
-  const { t } = useTranslations();
   const [downtimeMetrics, setDowntimeMetrics] = React.useState<DowntimeMetrics | null>(null);
   const [isLoading, setIsLoading] = React.useState(true);
 
@@ -79,12 +78,15 @@ export function DowntimeImpact({ className = '' }: DowntimeImpactProps) {
               return acc;
             }, {} as Record<string, { hours: number; cost: number }>);
 
-            const downtimeByReason = Object.entries(downtimeByReasonMap).map(([reason, data]) => ({
-              reason,
-              hours: data.hours,
-              percentage: totalDowntimeHours > 0 ? (data.hours / totalDowntimeHours) * 100 : 0,
-              cost: data.cost
-            }));
+            const downtimeByReason = Object.entries(downtimeByReasonMap).map(([reason, data]) => {
+              const typedData = data as { hours: number; cost: number };
+              return {
+                reason,
+                hours: typedData.hours,
+                percentage: totalDowntimeHours > 0 ? (typedData.hours / totalDowntimeHours) * 100 : 0,
+                cost: typedData.cost
+              };
+            });
 
             // Get top affected vehicles from real data
             const topAffectedVehicles = downtimeData
@@ -102,7 +104,8 @@ export function DowntimeImpact({ className = '' }: DowntimeImpactProps) {
               averageDowntimePerVehicle,
               downtimeByReason,
               topAffectedVehicles,
-              lostRevenueHours: totalRevenueLoss / 50 // Assuming $50/hour average
+              lostRevenueHours: totalRevenueLoss / 50, // Assuming $50/hour average
+              revenueImpact: totalRevenueLoss
             });
           } else {
             // Fallback to empty data if no downtime records exist
@@ -111,27 +114,28 @@ export function DowntimeImpact({ className = '' }: DowntimeImpactProps) {
               averageDowntimePerVehicle: 0,
               downtimeByReason: [],
               topAffectedVehicles: [],
-              lostRevenueHours: 0
+              lostRevenueHours: 0,
+              revenueImpact: 0
             });
           }
         } catch (error) {
           // If downtime API fails, set empty data
           setDowntimeMetrics({
             totalDowntimeHours: 0,
-            totalRevenueLoss: 0,
             averageDowntimePerVehicle: 0,
             downtimeByReason: [],
-            topAffectedVehicles: []
+            topAffectedVehicles: [],
+            lostRevenueHours: 0
           });
         }
       } catch (error) {
         // Failed to load downtime metrics - set default values
         setDowntimeMetrics({
           totalDowntimeHours: 0,
-          totalRevenueLoss: 0,
           averageDowntimePerVehicle: 0,
           downtimeByReason: [],
-          topAffectedVehicles: []
+          topAffectedVehicles: [],
+          lostRevenueHours: 0
         });
       } finally {
         setIsLoading(false);
