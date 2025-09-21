@@ -445,50 +445,7 @@ router.put('/maintenance-records/:id', async (req, res) => {
 });
 
 // ===== ASSET ASSIGNMENTS =====
-
-// GET /api/v1/asset-assignments - Get all asset assignments
-router.get('/asset-assignments', async (req, res) => {
-  try {
-    const assignmentsCollection = await getCollection('asset_assignments');
-    const { page = 1, limit = 10, assetId, userId, status } = req.query;
-    
-    const filter = {};
-    if (assetId) filter.assetId = assetId;
-    if (userId) filter.userId = userId;
-    if (status) filter.status = status;
-    
-    const skip = (parseInt(page) - 1) * parseInt(limit);
-    
-    const assignments = await assignmentsCollection
-      .find(filter)
-      .skip(skip)
-      .limit(parseInt(limit))
-      .sort({ createdAt: -1 })
-      .toArray();
-    
-    const total = await assignmentsCollection.countDocuments(filter);
-    
-    res.json({
-      success: true,
-      data: {
-        assignments,
-        pagination: {
-          page: parseInt(page),
-          limit: parseInt(limit),
-          total,
-          pages: Math.ceil(total / parseInt(limit))
-        }
-      }
-    });
-  } catch (error) {
-    console.error('Error fetching asset assignments:', error);
-    res.status(500).json({
-      success: false,
-      message: 'Failed to fetch asset assignments',
-      error: process.env.NODE_ENV === 'development' ? error.message : undefined
-    });
-  }
-});
+// (Duplicate removed - see below for the actual implementation)
 
 // POST /api/v1/asset-assignments - Create asset assignment
 router.post('/asset-assignments', async (req, res) => {
