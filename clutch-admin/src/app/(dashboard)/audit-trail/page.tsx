@@ -299,26 +299,26 @@ export default function AuditTrailPage() {
 
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Failed Actions</CardTitle>
+            <CardTitle className="text-sm font-medium">{t('dashboard.failedActions')}</CardTitle>
             <XCircle className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold text-orange-600">{failedActions}</div>
             <p className="text-xs text-muted-foreground">
-              Failed operations
+              {t('dashboard.failedOperations')}
             </p>
           </CardContent>
         </Card>
 
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Active Users</CardTitle>
+            <CardTitle className="text-sm font-medium">{t('dashboard.activeUsers')}</CardTitle>
             <User className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold text-green-600">{activeUsers}</div>
             <p className="text-xs text-muted-foreground">
-              Currently active
+              {t('dashboard.currentlyActive')}
             </p>
           </CardContent>
         </Card>
@@ -357,9 +357,9 @@ export default function AuditTrailPage() {
                 <SelectContent>
                   <SelectItem value="all">All Categories</SelectItem>
                   <SelectItem value="authentication">Authentication</SelectItem>
-                  <SelectItem value="data_modification">Data Modification</SelectItem>
-                  <SelectItem value="system_configuration">System Configuration</SelectItem>
-                  <SelectItem value="user_management">User Management</SelectItem>
+                  <SelectItem value="data_modification">{t('dashboard.dataModification')}</SelectItem>
+                  <SelectItem value="system_configuration">{t('dashboard.systemConfiguration')}</SelectItem>
+                  <SelectItem value="user_management">{t('dashboard.userManagement')}</SelectItem>
                 </SelectContent>
               </Select>
             </div>
@@ -381,16 +381,16 @@ export default function AuditTrailPage() {
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="status">Status</Label>
+              <Label htmlFor="status">{t('dashboard.status')}</Label>
               <Select value={statusFilter} onValueChange={setStatusFilter}>
                 <SelectTrigger>
-                  <SelectValue placeholder="Select status" />
+                  <SelectValue placeholder={t('dashboard.selectStatus')} />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="all">All Statuses</SelectItem>
-                  <SelectItem value="success">Success</SelectItem>
-                  <SelectItem value="failure">Failure</SelectItem>
-                  <SelectItem value="pending">Pending</SelectItem>
+                  <SelectItem value="all">{t('dashboard.allStatuses')}</SelectItem>
+                  <SelectItem value="success">{t('dashboard.success')}</SelectItem>
+                  <SelectItem value="failure">{t('dashboard.failure')}</SelectItem>
+                  <SelectItem value="pending">{t('dashboard.pending')}</SelectItem>
                 </SelectContent>
               </Select>
             </div>
@@ -411,14 +411,14 @@ export default function AuditTrailPage() {
             <Table>
               <TableHeader>
                 <TableRow>
-                  <TableHead>Timestamp</TableHead>
-                  <TableHead>User</TableHead>
-                  <TableHead>Action</TableHead>
-                  <TableHead>Resource</TableHead>
-                  <TableHead>Severity</TableHead>
-                  <TableHead>Status</TableHead>
-                  <TableHead>Location</TableHead>
-                  <TableHead>Actions</TableHead>
+                  <TableHead>{t('dashboard.timestamp')}</TableHead>
+                  <TableHead>{t('dashboard.user')}</TableHead>
+                  <TableHead>{t('dashboard.action')}</TableHead>
+                  <TableHead>{t('dashboard.resource')}</TableHead>
+                  <TableHead>{t('dashboard.severity')}</TableHead>
+                  <TableHead>{t('dashboard.status')}</TableHead>
+                  <TableHead>{t('dashboard.location')}</TableHead>
+                  <TableHead>{t('dashboard.actions')}</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
@@ -499,7 +499,7 @@ export default function AuditTrailPage() {
               {/* Basic Information */}
               <div className="grid gap-4 md:grid-cols-2">
                 <div className="space-y-2">
-                  <Label className="text-sm font-medium">Timestamp</Label>
+                  <Label className="text-sm font-medium">{t('dashboard.timestamp')}</Label>
                   <p className="text-sm font-mono">{new Date(selectedLog.timestamp).toLocaleString()}</p>
                 </div>
                 <div className="space-y-2">
@@ -507,11 +507,11 @@ export default function AuditTrailPage() {
                   <p className="text-sm font-mono">{selectedLog.sessionId}</p>
                 </div>
                 <div className="space-y-2">
-                  <Label className="text-sm font-medium">IP Address</Label>
+                  <Label className="text-sm font-medium">{t('dashboard.ipAddress')}</Label>
                   <p className="text-sm font-mono">{selectedLog.ipAddress}</p>
                 </div>
                 <div className="space-y-2">
-                  <Label className="text-sm font-medium">User Agent</Label>
+                  <Label className="text-sm font-medium">{t('dashboard.userAgent')}</Label>
                   <div className="flex items-center space-x-2">
                     {getDeviceIcon(selectedLog.userAgent)}
                     <p className="text-sm truncate">{selectedLog.userAgent}</p>
@@ -540,14 +540,14 @@ export default function AuditTrailPage() {
 
               {/* Action Details */}
               <div className="space-y-2">
-                <Label className="text-sm font-medium">Action Details</Label>
+                <Label className="text-sm font-medium">{t('dashboard.actionDetails')}</Label>
                 <div className="grid gap-2 md:grid-cols-2">
                   <div className="p-3 border rounded-lg">
-                    <div className="text-sm font-medium">Action</div>
+                    <div className="text-sm font-medium">{t('dashboard.action')}</div>
                     <div className="text-sm text-muted-foreground">{selectedLog.action}</div>
                   </div>
                   <div className="p-3 border rounded-lg">
-                    <div className="text-sm font-medium">Resource</div>
+                    <div className="text-sm font-medium">{t('dashboard.resource')}</div>
                     <div className="text-sm text-muted-foreground">{selectedLog.resource}</div>
                   </div>
                   <div className="p-3 border rounded-lg">

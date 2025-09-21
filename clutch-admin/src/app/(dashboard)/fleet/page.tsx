@@ -461,7 +461,10 @@ export default function FleetPage() {
                     </TableCell>
                     <TableCell>
                       <span className="text-sm text-muted-foreground">
-                        {formatRelativeTime(vehicle.lastUpdate || vehicle.updatedAt || new Date())}
+                        {vehicle.lastUpdate || vehicle.updatedAt ? 
+                          formatRelativeTime(vehicle.lastUpdate || vehicle.updatedAt) : 
+                          "Never"
+                        }
                       </span>
                     </TableCell>
                     <TableCell className="text-right">
