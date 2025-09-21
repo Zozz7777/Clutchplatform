@@ -25,7 +25,7 @@ export interface WebSocketEventHandlers {
 
 export class SafeWebSocketService {
   private ws: WebSocket | null = null;
-  private url: string;
+  private url: string = '';
   private token: string | null = null;
   private reconnectAttempts = 0;
   private maxReconnectAttempts = 5;

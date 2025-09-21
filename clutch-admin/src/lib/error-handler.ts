@@ -133,23 +133,26 @@ export const handleDataLoadError = (error: unknown, dataType: string) =>
 
 // API response handler
 export const handleApiResponse = <T>(
-  response: any,
+  response: unknown,
   context: string,
   fallbackValue: T
 ): T => {
   try {
-    if (response && response.success !== false) {
-      return response.data || response || fallbackValue;
+    if (response && typeof response === 'object' && response !== null) {
+      const responseObj = response as Record<string, unknown>;
+      if (responseObj.success !== false) {
+        return (responseObj.data as T) || (response as T) || fallbackValue;
+      }
     }
     return fallbackValue;
   } catch (error) {
-    errorHandler.handleError(error, context, { showToast: false });
+    errorHandler.handleError(error, { component: context });
     return fallbackValue;
   }
 };
 
 // Error handling wrapper
-export const withErrorHandling = <T extends any[], R>(
+export const withErrorHandling = <T extends unknown[], R>(
   fn: (...args: T) => Promise<R>,
   context: string,
   options: { fallbackValue: R; showToast?: boolean } = { fallbackValue: null as R, showToast: false }
@@ -158,7 +161,7 @@ export const withErrorHandling = <T extends any[], R>(
     try {
       return await fn(...args);
     } catch (error) {
-      errorHandler.handleError(error, context, options);
+      errorHandler.handleError(error, { component: context });
       return options.fallbackValue;
     }
   };
