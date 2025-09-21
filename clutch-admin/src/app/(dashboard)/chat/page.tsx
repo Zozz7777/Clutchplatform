@@ -145,14 +145,14 @@ export default function ChatPage() {
           let channelsArray: ChatChannel[] = [];
           if (channelsData.status === 'fulfilled' && Array.isArray(channelsData.value)) {
             channelsArray = channelsData.value.map((channel: any) => ({
-              id: channel.id || channel._id || `channel_${Date.now()}_${Math.random()}`,
-              name: channel.name || 'Unknown Channel',
-              type: channel.type || 'group',
-              lastMessage: channel.lastMessage || '',
-              lastMessageTime: channel.lastMessageTime || channel.updatedAt || new Date().toISOString(),
-              unreadCount: channel.unreadCount || 0,
-              isOnline: channel.isOnline || false,
-              avatar: channel.avatar
+              id: safeString(channel.id || channel._id || `channel_${Date.now()}_${Math.random()}`),
+              name: safeString(channel.name || 'Unknown Channel'),
+              type: safeString(channel.type || 'group') as "direct" | "group" | "support",
+              lastMessage: safeString(channel.lastMessage || ''),
+              lastMessageTime: safeString(channel.lastMessageTime || channel.updatedAt || new Date().toISOString()),
+              unreadCount: typeof channel.unreadCount === 'number' ? channel.unreadCount : 0,
+              isOnline: typeof channel.isOnline === 'boolean' ? channel.isOnline : false,
+              avatar: safeString(channel.avatar || '')
             }));
           }
           
@@ -164,19 +164,22 @@ export default function ChatPage() {
               console.log('🔍 Raw messages data from API:', messagesData.value);
             }
             messagesArray = messagesData.value.map((msg: any) => {
-              // Handle different API response structures
-              const messageContent = msg.message || msg.content || msg.text || msg.body || '';
-              const messageSender = msg.sender || msg.from || msg.user || msg.author || 'Unknown';
-              const messageTimestamp = msg.timestamp || msg.createdAt || msg.time || msg.date || new Date().toISOString();
+              // Handle different API response structures and ensure all values are properly typed
+              const messageContent = safeString(msg.message || msg.content || msg.text || msg.body || '');
+              const messageSender = safeString(msg.sender || msg.from || msg.user || msg.author || 'Unknown');
+              const messageTimestamp = safeString(msg.timestamp || msg.createdAt || msg.time || msg.date || new Date().toISOString());
+              const messageId = safeString(msg.id || msg._id || `msg_${Date.now()}_${Math.random()}`);
+              const senderType = safeString(msg.senderType || msg.type || 'user');
+              const status = safeString(msg.status || msg.state || 'sent');
               
               return {
-                id: msg.id || msg._id || `msg_${Date.now()}_${Math.random()}`,
+                id: messageId,
                 sender: messageSender,
-                senderType: msg.senderType || msg.type || 'user',
+                senderType: senderType as "user" | "bot" | "system",
                 message: messageContent,
                 timestamp: messageTimestamp,
-                status: msg.status || msg.state || 'sent',
-                attachments: Array.isArray(msg.attachments) ? msg.attachments : []
+                status: status as "sent" | "delivered" | "read",
+                attachments: Array.isArray(msg.attachments) ? msg.attachments.map((att: any) => safeString(att)) : []
               };
             });
           }
@@ -442,15 +445,18 @@ export default function ChatPage() {
           </CardHeader>
           <CardContent className="p-0">
             <div className="space-y-1">
-              {Array.isArray(channels) && channels.length > 0 ? channels.map((channel) => {
+              {Array.isArray(channels) && channels.length > 0 ? channels.map((channel, index) => {
                 // Validate channel object before rendering
                 if (!channel || typeof channel !== 'object' || !channel.id) {
                   return null;
                 }
                 
+                // Ensure we have a valid key
+                const channelKey = safeString(channel.id) || `channel_${index}`;
+                
                 return (
                 <div
-                  key={channel.id}
+                  key={channelKey}
                   className={`p-3 cursor-pointer hover:bg-muted/50 transition-colors ${
                     selectedChannel === channel.id ? "bg-muted border-r-2 border-primary" : ""
                   }`}
@@ -548,15 +554,18 @@ export default function ChatPage() {
           <CardContent className="p-0">
             {/* Messages Area */}
             <div className="h-96 overflow-y-auto p-4 space-y-4">
-              {Array.isArray(messages) && messages.length > 0 ? messages.map((message) => {
+              {Array.isArray(messages) && messages.length > 0 ? messages.map((message, index) => {
                 // Validate message object before rendering
                 if (!message || typeof message !== 'object' || !message.id) {
                   return null;
                 }
                 
+                // Ensure we have a valid key
+                const messageKey = safeString(message.id) || `message_${index}`;
+                
                 return (
                 <div
-                  key={message.id}
+                  key={messageKey}
                   className={`flex ${safeString(message.sender) === t('chat.you') ? "justify-end" : "justify-start"}`}
                 >
                   <div className={`flex space-x-2 max-w-xs lg:max-w-md ${safeString(message.sender) === t('chat.you') ? "flex-row-reverse space-x-reverse" : ""}`}>
