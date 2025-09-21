@@ -147,9 +147,9 @@ export default function ProjectManagementPage() {
     try {
       setLoading(true);
       const data = await productionApi.getProjects();
-      setProjects(data || []);
+      setProjects(Array.isArray(data) ? data : []);
     } catch (error) {
-      // Error handled by API service
+      console.error('Error loading projects:', error);
       setProjects([]);
     } finally {
       setLoading(false);
@@ -159,9 +159,9 @@ export default function ProjectManagementPage() {
   const loadTasks = async () => {
     try {
       const data = await productionApi.getProjectTasks(selectedProject?._id || "");
-      setTasks(data || []);
+      setTasks(Array.isArray(data) ? data : []);
     } catch (error) {
-      // Error handled by API service
+      console.error('Error loading tasks:', error);
       setTasks([]);
     }
   };
@@ -169,9 +169,9 @@ export default function ProjectManagementPage() {
   const loadTimeEntries = async () => {
     try {
       const data = await productionApi.getTimeTracking(selectedProject?._id || "");
-      setTimeEntries(data || []);
+      setTimeEntries(Array.isArray(data) ? data : []);
     } catch (error) {
-      // Error handled by API service
+      console.error('Error loading time entries:', error);
       setTimeEntries([]);
     }
   };
@@ -248,18 +248,21 @@ export default function ProjectManagementPage() {
     }
   };
 
-  const filteredProjects = (projects || []).filter((project) => {
-    const matchesSearch = project.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         project.description.toLowerCase().includes(searchTerm.toLowerCase());
+  const projectsArray = Array.isArray(projects) ? projects : [];
+  
+  const filteredProjects = projectsArray.filter((project) => {
+    if (!project) return false;
+    const matchesSearch = (project.name || '').toLowerCase().includes(searchTerm.toLowerCase()) ||
+                         (project.description || '').toLowerCase().includes(searchTerm.toLowerCase());
     const matchesStatus = statusFilter === "all" || project.status === statusFilter;
     return matchesSearch && matchesStatus;
   });
 
-  const totalProjects = (projects || []).length;
-  const activeProjects = (projects || []).filter(p => p.status === "active").length;
-  const completedProjects = (projects || []).filter(p => p.status === "completed").length;
-  const totalBudget = (projects || []).reduce((sum, p) => sum + p.budget, 0);
-  const totalLoggedHours = (projects || []).reduce((sum, p) => sum + p.timeTracking.logged, 0);
+  const totalProjects = projectsArray.length;
+  const activeProjects = projectsArray.filter(p => p?.status === "active").length;
+  const completedProjects = projectsArray.filter(p => p?.status === "completed").length;
+  const totalBudget = projectsArray.reduce((sum, p) => sum + (p?.budget || 0), 0);
+  const totalLoggedHours = projectsArray.reduce((sum, p) => sum + (p?.timeTracking?.logged || 0), 0);
 
   if (loading) {
     return (
@@ -343,7 +346,7 @@ export default function ProjectManagementPage() {
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">
-              {new Set((projects || []).flatMap(p => p.team.map(t => t.id))).size}
+              {new Set(projectsArray.flatMap(p => (p?.team || []).map(t => t?.id).filter(Boolean))).size}
             </div>
             <p className="text-xs text-muted-foreground">
               Active team members
@@ -403,20 +406,20 @@ export default function ProjectManagementPage() {
           {/* Projects Table */}
           <div className="space-y-4">
             {filteredProjects.map((project) => (
-              <Card key={project._id} className="hover:shadow-sm transition-shadow">
+              <Card key={project?._id} className="hover:shadow-sm transition-shadow">
                 <CardContent className="p-6">
                   <div className="flex items-start justify-between">
                     <div className="flex-1">
                       <div className="flex items-center space-x-3 mb-2">
-                        <h3 className="text-lg font-semibold">{project.name}</h3>
-                        <Badge variant={getStatusVariant(project.status)}>
-                          {project.status.replace("_", " ")}
+                        <h3 className="text-lg font-semibold">{project?.name || 'Unknown Project'}</h3>
+                        <Badge variant={getStatusVariant(project?.status || 'unknown')}>
+                          {(project?.status || 'unknown').replace("_", " ")}
                         </Badge>
-                        <Badge variant={getPriorityVariant(project.priority)}>
-                          {project.priority}
+                        <Badge variant={getPriorityVariant(project?.priority || 'unknown')}>
+                          {project?.priority || 'unknown'}
                         </Badge>
                       </div>
-                      <p className="text-muted-foreground mb-4">{project.description}</p>
+                      <p className="text-muted-foreground mb-4">{project?.description || 'No description'}</p>
                       
                       <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-4">
                         <div>
@@ -425,24 +428,24 @@ export default function ProjectManagementPage() {
                             <div className="flex-1 bg-muted rounded-full h-2">
                               <div 
                                 className="bg-primary h-2 rounded-full" 
-                                style={{ width: `${project.progress}%` }}
+                                style={{ width: `${project?.progress || 0}%` }}
                               ></div>
                             </div>
-                            <span className="text-sm text-muted-foreground">{project.progress}%</span>
+                            <span className="text-sm text-muted-foreground">{project?.progress || 0}%</span>
                           </div>
                         </div>
                         <div>
                           <p className="text-sm font-medium">Budget</p>
-                          <p className="text-sm text-muted-foreground">{formatCurrency(project.budget)}</p>
+                          <p className="text-sm text-muted-foreground">{formatCurrency(project?.budget || 0)}</p>
                         </div>
                         <div>
                           <p className="text-sm font-medium">Team Size</p>
-                          <p className="text-sm text-muted-foreground">{project.team.length} members</p>
+                          <p className="text-sm text-muted-foreground">{(project?.team || []).length} members</p>
                         </div>
                         <div>
                           <p className="text-sm font-medium">Tasks</p>
                           <p className="text-sm text-muted-foreground">
-                            {project.tasks.completed}/{project.tasks.total} completed
+                            {project?.tasks?.completed || 0}/{project?.tasks?.total || 0} completed
                           </p>
                         </div>
                       </div>
@@ -678,9 +681,9 @@ export default function ProjectManagementPage() {
               <Label htmlFor="project">Project</Label>
               <select className="w-full p-2 border rounded-md">
                 <option value="">Select project</option>
-                {projects.map((project) => (
-                  <option key={project._id} value={project._id}>
-                    {project.name}
+                {projectsArray.map((project) => (
+                  <option key={project?._id} value={project?._id}>
+                    {project?.name || 'Unknown Project'}
                   </option>
                 ))}
               </select>
@@ -689,9 +692,9 @@ export default function ProjectManagementPage() {
               <Label htmlFor="task">Task</Label>
               <select className="w-full p-2 border rounded-md">
                 <option value="">Select task</option>
-                {tasks.map((task) => (
-                  <option key={task._id} value={task._id}>
-                    {task.title}
+                {(Array.isArray(tasks) ? tasks : []).map((task) => (
+                  <option key={task?._id} value={task?._id}>
+                    {task?.title || 'Unknown Task'}
                   </option>
                 ))}
               </select>
