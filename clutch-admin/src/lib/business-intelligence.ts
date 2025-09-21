@@ -367,7 +367,7 @@ class BusinessIntelligenceService {
         .sort((a, b) => b.revenue - a.revenue)
         .slice(0, 5);
     } catch (error) {
-      errorHandler.handleError(error as Error, 'Get top enterprise clients', { showToast: false });
+      errorHandler.handleError(error as Error, { component: 'BusinessIntelligence', action: 'Get top enterprise clients' });
       return [];
     }
   }
@@ -411,7 +411,7 @@ class BusinessIntelligenceService {
 
       return forecasts;
     } catch (error) {
-      errorHandler.handleError(error as Error, 'Get AI revenue forecast');
+      errorHandler.handleError(error as Error, { component: 'BusinessIntelligence', action: 'Get AI revenue forecast' });
       return [];
     }
   }
@@ -442,7 +442,7 @@ class BusinessIntelligenceService {
         nextAudit: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString()
       };
     } catch (error) {
-      errorHandler.handleError(error as Error, 'Get compliance radar');
+      errorHandler.handleError(error as Error, { component: 'BusinessIntelligence', action: 'Get compliance radar' });
       return {
         pendingApprovals: 0,
         violations: 0,
@@ -498,7 +498,7 @@ class BusinessIntelligenceService {
 
       return { cohorts };
     } catch (error) {
-      errorHandler.handleError(error as Error, 'Get user growth cohort');
+      errorHandler.handleError(error as Error, { component: 'BusinessIntelligence', action: 'Get user growth cohort' });
       return { cohorts: [] };
     }
   }
@@ -520,7 +520,7 @@ class BusinessIntelligenceService {
       // Fallback to empty data if API fails
       return { segments: [] };
     } catch (error) {
-      errorHandler.handleError(error as Error, 'Get engagement heatmap');
+      errorHandler.handleError(error as Error, { component: 'BusinessIntelligence', action: 'Get engagement heatmap' });
       return { segments: [] };
     }
   }

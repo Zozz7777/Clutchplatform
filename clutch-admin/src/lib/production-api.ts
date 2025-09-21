@@ -56,7 +56,7 @@ export class ProductionApiService {
   // User Management
   async getUsers(): Promise<User[]> {
     try {
-      const data = await realApi.getEnterpriseClients();
+      const data = await realApi.getUsers();
       return (data || []) as unknown as User[];
     } catch (error) {
       logger.error("Failed to fetch users:", error);
@@ -66,11 +66,32 @@ export class ProductionApiService {
 
   async getUserById(userId: string): Promise<User> {
     try {
-      const data = await realApi.getEnterpriseStats();
+      const data = await realApi.getUserById(userId);
       return data as unknown as User;
     } catch (error) {
       logger.error("Failed to fetch user:", error);
       throw new Error("Failed to load user");
+    }
+  }
+
+  // Enterprise Management
+  async getEnterpriseClients(): Promise<Record<string, unknown>[]> {
+    try {
+      const data = await realApi.getEnterpriseClients();
+      return (data || []) as unknown as Record<string, unknown>[];
+    } catch (error) {
+      logger.error("Failed to fetch enterprise clients:", error);
+      throw new Error("Failed to load enterprise clients");
+    }
+  }
+
+  async getEnterpriseStats(): Promise<Record<string, unknown>> {
+    try {
+      const data = await realApi.getEnterpriseStats();
+      return (data || {}) as unknown as Record<string, unknown>;
+    } catch (error) {
+      logger.error("Failed to fetch enterprise stats:", error);
+      throw new Error("Failed to load enterprise stats");
     }
   }
 

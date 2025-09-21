@@ -45,7 +45,7 @@ import {
 } from "lucide-react";
 import { productionApi } from "@/lib/production-api";
 import { handleDataLoadError } from "@/lib/error-handler";
-import { useTranslations } from "next-intl";
+import { useTranslations } from "@/hooks/use-translations";
 
 interface FeatureFlag {
   _id: string;
@@ -141,7 +141,7 @@ interface Rollout {
 }
 
 export default function FeatureFlagsPage() {
-  const t = (key: string, params?: any) => key;
+  const { t } = useTranslations();
   const [featureFlags, setFeatureFlags] = useState<FeatureFlag[]>([]);
   const [abTests, setABTests] = useState<ABTest[]>([]);
   const [rollouts, setRollouts] = useState<Rollout[]>([]);

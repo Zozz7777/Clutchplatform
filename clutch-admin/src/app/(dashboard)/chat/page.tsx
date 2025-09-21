@@ -8,7 +8,7 @@ import { Input } from "@/components/ui/input";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { formatDate, formatRelativeTime } from "@/lib/utils";
 import { useAuth } from "@/contexts/auth-context";
-import { useTranslations } from "next-intl";
+// import { useTranslations } from "next-intl";
 import { productionApi } from "@/lib/production-api";
 import { toast } from "sonner";
 import { handleDataLoadError } from "@/lib/error-handler";
@@ -82,7 +82,7 @@ interface ChatChannel {
 }
 
 export default function ChatPage() {
-  const { t } = useTranslations();
+  const t = (key: string, params?: any) => key;
   const [channels, setChannels] = useState<ChatChannel[]>([]);
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [selectedChannel, setSelectedChannel] = useState<string>("1");
@@ -97,7 +97,7 @@ export default function ChatPage() {
     type: "group" as "direct" | "group" | "support",
     isPrivate: false
   });
-  const { hasPermission } = useAuth();
+  // const { hasPermission } = useAuth();
 
   useEffect(() => {
     let isMounted = true;

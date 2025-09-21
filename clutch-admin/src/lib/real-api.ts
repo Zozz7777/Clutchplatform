@@ -195,6 +195,29 @@ export class RealApiService {
     )();
   }
 
+  // User Management APIs
+  async getUsers(): Promise<Record<string, unknown>[]> {
+    return withErrorHandling(
+      async () => {
+        const response = await apiService.makeRequest<Record<string, unknown>[]>("/api/v1/admin/users");
+        return handleApiResponse(response, 'getUsers', []);
+      },
+      'getUsers',
+      { fallbackValue: [], showToast: false }
+    )();
+  }
+
+  async getUserById(userId: string): Promise<Record<string, unknown>> {
+    return withErrorHandling(
+      async () => {
+        const response = await apiService.makeRequest<Record<string, unknown>>(`/api/v1/admin/users/${userId}`);
+        return handleApiResponse(response, 'getUserById', {});
+      },
+      'getUserById',
+      { fallbackValue: {}, showToast: false }
+    )();
+  }
+
   // Assets APIs
   async getAssets(): Promise<Record<string, unknown>[]> {
     return withErrorHandling(

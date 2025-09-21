@@ -159,15 +159,14 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     
     const hasIt = userPermissions.includes(permission);
     
-    // Enhanced debugging for all permission checks
-    console.log('🔍 Permission check:', {
-      permission,
-      userRole: user.role,
-      userPermissions: userPermissions,
-      hasPermission: hasIt,
-      permissionCount: userPermissions.length,
-      source: user.permissions && user.permissions.length > 0 ? 'user' : 'role'
-    });
+    // Only log permission checks in development mode and for failed permissions
+    if (process.env.NODE_ENV === 'development' && !hasIt) {
+      console.log('🔍 Permission denied:', {
+        permission,
+        userRole: user.role,
+        source: user.permissions && user.permissions.length > 0 ? 'user' : 'role'
+      });
+    }
     
     return hasIt;
   };

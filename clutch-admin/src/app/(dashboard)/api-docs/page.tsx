@@ -23,7 +23,7 @@ import {
   Shield,
   Activity,
 } from "lucide-react";
-import { useTranslations } from "next-intl";
+import { useTranslations } from "@/hooks/use-translations";
 import { productionApi } from "@/lib/production-api";
 import { handleError, handleWarning, handleDataLoadError } from "@/lib/error-handler";
 import { toast } from "sonner";
@@ -57,7 +57,7 @@ interface APIEndpoint {
 }
 
 export default function APIDocsPage() {
-  const t = (key: string, params?: any) => key;
+  const { t } = useTranslations();
   const { user, isLoading: authLoading } = useAuth();
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedCategory, setSelectedCategory] = useState<string>("all");

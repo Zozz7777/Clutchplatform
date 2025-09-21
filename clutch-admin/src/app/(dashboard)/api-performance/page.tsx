@@ -8,7 +8,7 @@ import { productionApi } from "@/lib/production-api";
 import { formatNumber } from "@/lib/utils";
 import { useAuth } from "@/contexts/auth-context";
 import { logger } from "@/lib/logger";
-import { useTranslations } from "next-intl";
+import { useTranslations } from "@/hooks/use-translations";
 import { 
   Activity, 
   Clock, 
@@ -41,7 +41,7 @@ interface ApiPerformanceData {
 }
 
 export default function ApiPerformancePage() {
-  const t = (key: string, params?: any) => key;
+  const { t } = useTranslations();
   const [performanceData, setPerformanceData] = useState<ApiPerformanceData | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const { hasPermission } = useAuth();
