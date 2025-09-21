@@ -749,7 +749,7 @@ router.get('/:id', async (req, res) => {
 });
 
 // PUT /api/v1/assets/:id - Update asset
-router.put('/:id', checkRole(['head_administrator', 'fleet_manager']), async (req, res) => {
+router.put('/:id', checkRole(['head_administrator', 'asset_manager', 'operations_manager']), async (req, res) => {
   try {
     const assetsCollection = await getCollection('assets');
     const { 

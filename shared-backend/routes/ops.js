@@ -76,7 +76,7 @@ const generateMockUserActivities = (count = 20) => {
 };
 
 // GET fleet locations
-router.get('/fleet-locations', authenticateToken, checkRole(['head_administrator', 'fleet_manager', 'operations_manager']), async (req, res) => {
+router.get('/fleet-locations', authenticateToken, checkRole(['head_administrator', 'asset_manager', 'operations_manager']), async (req, res) => {
   try {
     const locationsCollection = await getCollection('fleet_locations');
     if (!locationsCollection) {
@@ -100,7 +100,7 @@ router.get('/fleet-locations', authenticateToken, checkRole(['head_administrator
 });
 
 // GET revenue hotspots
-router.get('/revenue-hotspots', authenticateToken, checkRole(['head_administrator', 'finance_manager', 'operations_manager']), async (req, res) => {
+router.get('/revenue-hotspots', authenticateToken, checkRole(['head_administrator', 'finance_officer', 'operations_manager']), async (req, res) => {
   try {
     const hotspotsCollection = await getCollection('revenue_hotspots');
     if (!hotspotsCollection) {

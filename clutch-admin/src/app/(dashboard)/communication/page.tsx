@@ -28,7 +28,7 @@ import {
   Smartphone,
   Monitor,
 } from "lucide-react";
-import { useTranslations } from "next-intl";
+import { useTranslations } from "@/hooks/use-translations";
 import { productionApi, type Notification } from "@/lib/production-api";
 import { toast } from "@/lib/toast";
 import { handleError, handleWarning, handleDataLoadError } from "@/lib/error-handler";
@@ -83,7 +83,7 @@ interface SupportTicket {
 }
 
 export default function CommunicationPage() {
-  const t = (key: string, params?: any) => key;
+  const { t } = useTranslations();
   const [activeTab, setActiveTab] = useState("notifications");
   const [searchTerm, setSearchTerm] = useState("");
   const [notifications, setNotifications] = useState<CommunicationNotification[]>([]);

@@ -456,7 +456,7 @@ class DataPersistenceService {
         delete: () => Promise.resolve({ success: false, data: null, message: 'Method not implemented' })
       },
       'payments': {
-        create: productionApi.createPayment,
+        create: (...args: unknown[]) => productionApi.createPayment(args[0] as Record<string, unknown>),
         read: productionApi.getPayments,
         update: () => Promise.resolve({ success: false, data: null, message: 'Method not implemented' }),
         delete: () => Promise.resolve({ success: false, data: null, message: 'Method not implemented' })
