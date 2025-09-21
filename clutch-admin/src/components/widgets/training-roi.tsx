@@ -201,17 +201,17 @@ export function TrainingROI({ className = '' }: TrainingROIProps) {
         {/* ROI Display */}
         <div className="text-center p-4 bg-muted/50 rounded-[0.625rem]-lg">
           <div className="flex items-center justify-center space-x-2 mb-2">
-            <TrendingUp className={`h-6 w-6 ${getROIColor(roiData.roi)}`} />
-            <span className={`text-2xl font-bold ${getROIColor(roiData.roi)}`}>
-              {roiData.roi.toFixed(0)}%
+            <TrendingUp className={`h-6 w-6 ${getROIColor(roiData.roi || 0)}`} />
+            <span className={`text-2xl font-bold ${getROIColor(roiData.roi || 0)}`}>
+              {(roiData.roi || 0).toFixed(0)}%
             </span>
-            <Badge className={getROIBadge(roiData.roi)}>
-              {getROILevel(roiData.roi)}
+            <Badge className={getROIBadge(roiData.roi || 0)}>
+              {getROILevel(roiData.roi || 0)}
             </Badge>
           </div>
           <p className="text-sm text-muted-foreground">Return on Investment</p>
           <div className="mt-3">
-            <Progress value={Math.min(roiData.roi / 3, 100)} className="h-2" />
+            <Progress value={Math.min((roiData.roi || 0) / 3, 100)} className="h-2" />
           </div>
         </div>
 
@@ -232,7 +232,7 @@ export function TrainingROI({ className = '' }: TrainingROIProps) {
                   ${(roiData.trainingCost || 0).toLocaleString()}
                 </p>
                 <Badge variant="outline" className="text-xs">
-                  ${roiData.costPerModel.toFixed(0)}/model
+                  ${(roiData.costPerModel || 0).toFixed(0)}/model
                 </Badge>
               </div>
             </div>
@@ -250,7 +250,7 @@ export function TrainingROI({ className = '' }: TrainingROIProps) {
                   ${(roiData.businessValue || 0).toLocaleString()}
                 </p>
                 <Badge variant="outline" className="text-xs">
-                  ${roiData.valuePerModel.toFixed(0)}/model
+                  ${(roiData.valuePerModel || 0).toFixed(0)}/model
                 </Badge>
               </div>
             </div>
@@ -305,7 +305,7 @@ export function TrainingROI({ className = '' }: TrainingROIProps) {
           <div className="space-y-2">
             <div className="flex justify-between text-sm">
               <span>GPU Compute</span>
-              <span>{roiData.trainingCost.toLocaleString()} EGP</span>
+              <span>{(roiData.trainingCost || 0).toLocaleString()} EGP</span>
             </div>
             <Progress value={100} className="h-2" />
             
@@ -339,17 +339,17 @@ export function TrainingROI({ className = '' }: TrainingROIProps) {
         <div className="p-3 bg-primary/10 rounded-[0.625rem]-lg">
           <h5 className="text-sm font-medium text-blue-900 mb-2">💡 Training ROI Insights</h5>
           <ul className="text-xs text-blue-800 space-y-1">
-            <li>• Total ROI: {roiData.roi.toFixed(0)}%</li>
-            <li>• Training cost: ${roiData.trainingCost.toLocaleString()}</li>
-            <li>• Business value: ${roiData.businessValue.toLocaleString()}</li>
-            <li>• {roiData.modelsTrained} models trained with {roiData.gpuHours.toLocaleString()} GPU hours</li>
-            <li>• Average accuracy improvement: +{roiData.accuracyImprovement.toFixed(1)}%</li>
-            <li>• Cost per model: ${roiData.costPerModel.toFixed(0)}</li>
-            <li>• Value per model: ${roiData.valuePerModel.toFixed(0)}</li>
-            {roiData.roi >= 200 && (
+            <li>• Total ROI: {(roiData.roi || 0).toFixed(0)}%</li>
+            <li>• Training cost: ${(roiData.trainingCost || 0).toLocaleString()}</li>
+            <li>• Business value: ${(roiData.businessValue || 0).toLocaleString()}</li>
+            <li>• {roiData.modelsTrained || 0} models trained with {(roiData.gpuHours || 0).toLocaleString()} GPU hours</li>
+            <li>• Average accuracy improvement: +{(roiData.accuracyImprovement || 0).toFixed(1)}%</li>
+            <li>• Cost per model: ${(roiData.costPerModel || 0).toFixed(0)}</li>
+            <li>• Value per model: ${(roiData.valuePerModel || 0).toFixed(0)}</li>
+            {(roiData.roi || 0) >= 200 && (
               <li>• Excellent ROI - training investments are highly profitable</li>
             )}
-            {roiData.roi < 100 && (
+            {(roiData.roi || 0) < 100 && (
               <li>• ROI below target - consider optimizing training efficiency</li>
             )}
           </ul>
