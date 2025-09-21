@@ -9,7 +9,7 @@ import { useAuth } from "@/contexts/auth-context";
 import { useQuickActions } from "@/lib/quick-actions";
 import { productionApi } from "@/lib/production-api";
 import { formatDate, formatRelativeTime, formatCurrency } from "@/lib/utils";
-import { useTranslations } from "@/hooks/use-translations";
+import { useTranslations } from "next-intl";
 
 // Import new Phase 2 widgets
 import AdoptionFunnel from "@/components/widgets/adoption-funnel";
@@ -174,29 +174,29 @@ export default function AnalyticsPage() {
         
         // Load analytics metrics using production API
         const metricsData = await productionApi.getAnalyticsMetrics();
-        setMetrics(metricsData || []);
+        setMetrics(Array.isArray(metricsData) ? metricsData : []);
 
         // Load user analytics
         const userData = await productionApi.getAnalyticsData('users', { period: selectedTimeRange });
-        setUserAnalytics(userData || null);
+        setUserAnalytics(userData as UserAnalytics || null);
 
         // Load revenue analytics
         const revenueData = await productionApi.getAnalyticsData('revenue', { period: selectedTimeRange });
-        setRevenueAnalytics(revenueData || null);
+        setRevenueAnalytics(revenueData as RevenueAnalytics || null);
 
         // Load fleet analytics
         const fleetData = await productionApi.getAnalyticsData('fleet', { period: selectedTimeRange });
-        setFleetAnalytics(fleetData || null);
+        setFleetAnalytics(fleetData as FleetAnalytics || null);
 
         // Load engagement analytics
         const engagementData = await productionApi.getAnalyticsData('engagement', { period: selectedTimeRange });
-        setEngagementAnalytics(engagementData || null);
+        setEngagementAnalytics(engagementData as EngagementAnalytics || null);
 
         // Load analytics reports
         const reportsData = await productionApi.getReports();
-        setReports(reportsData || []);
+        setReports(Array.isArray(reportsData) ? reportsData as AnalyticsReport[] : []);
       } catch (error) {
-        // Error handled by API service
+        console.error('Error loading analytics data:', error);
         // Set empty data instead of mock data
         setMetrics([]);
         setUserAnalytics(null);
@@ -240,7 +240,7 @@ export default function AnalyticsPage() {
       <div className="flex items-center justify-center h-64">
         <div className="text-center">
           <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto mb-4"></div>
-          <p className="text-muted-foreground">{t('analytics.loadingData')}</p>
+          <p className="text-muted-foreground">Loading analytics data...</p>
         </div>
       </div>
     );
@@ -251,9 +251,9 @@ export default function AnalyticsPage() {
       {/* Page Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold tracking-tight">{t('analytics.dashboard')}</h1>
+          <h1 className="text-3xl font-bold tracking-tight">Analytics Dashboard</h1>
           <p className="text-muted-foreground">
-            {t('analytics.description')}
+            Comprehensive analytics and insights for your platform
           </p>
         </div>
         <div className="flex items-center space-x-2">
@@ -262,20 +262,20 @@ export default function AnalyticsPage() {
             onChange={(e) => setSelectedTimeRange(e.target.value)}
             className="px-3 py-2 border border-input bg-background rounded-md text-sm"
           >
-            <option value="7d">{t('analytics.last7Days')}</option>
-            <option value="30d">{t('analytics.last30Days')}</option>
-            <option value="90d">{t('analytics.last90Days')}</option>
-            <option value="1y">{t('analytics.lastYear')}</option>
+            <option value="7d">Last 7 Days</option>
+            <option value="30d">Last 30 Days</option>
+            <option value="90d">Last 90 Days</option>
+            <option value="1y">Last Year</option>
           </select>
           {hasPermission("generate_reports") && (
             <>
-              <Button variant="outline" onClick={generateReport}>
+              <Button variant="outline" onClick={generateReport || (() => {})}>
                 <RefreshCw className="mr-2 h-4 w-4" />
-{t('analytics.generateReport')}
+                Generate Report
               </Button>
-              <Button onClick={() => exportData('analytics')}>
+              <Button onClick={() => exportData?.()}>
                 <Download className="mr-2 h-4 w-4" />
-{t('analytics.exportData')}
+                Export Data
               </Button>
             </>
           )}
@@ -286,19 +286,19 @@ export default function AnalyticsPage() {
       <div className="grid gap-4 md:grid-cols-4">
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">{t('analytics.totalUsers')}</CardTitle>
+            <CardTitle className="text-sm font-medium">Total Users</CardTitle>
             <Users className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">
-              {userAnalytics ? userAnalytics.totalUsers.toLocaleString() : "0"}
+              {userAnalytics?.totalUsers ? userAnalytics.totalUsers.toLocaleString() : "0"}
             </div>
             <div className="flex items-center space-x-1 text-xs text-muted-foreground">
               {getChangeIcon("increase")}
               <span className={getChangeColor("increase")}>
-                +{userAnalytics ? userAnalytics.userGrowth.toFixed(1) : 0}%
+                +{userAnalytics?.userGrowth ? userAnalytics.userGrowth.toFixed(1) : 0}%
               </span>
-              <span>{t('dashboard.fromLastPeriod')}</span>
+              <span>from last period</span>
             </div>
           </CardContent>
         </Card>
@@ -315,7 +315,7 @@ export default function AnalyticsPage() {
             <div className="flex items-center space-x-1 text-xs text-muted-foreground">
               {getChangeIcon("increase")}
               <span className={getChangeColor("increase")}>
-                +{revenueAnalytics ? revenueAnalytics.revenueGrowth.toFixed(1) : 0}%
+                +{revenueAnalytics?.revenueGrowth ? revenueAnalytics.revenueGrowth.toFixed(1) : 0}%
               </span>
               <span>{t('analytics.fromLastMonth')}</span>
             </div>
@@ -329,12 +329,12 @@ export default function AnalyticsPage() {
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">
-              {fleetAnalytics ? fleetAnalytics.activeVehicles.toLocaleString() : "0"}
+              {fleetAnalytics?.activeVehicles ? fleetAnalytics.activeVehicles.toLocaleString() : "0"}
             </div>
             <div className="flex items-center space-x-1 text-xs text-muted-foreground">
               <Activity className="h-4 w-4 text-muted-foreground" />
               <span>
-                {fleetAnalytics ? (fleetAnalytics.utilizationRate * 100).toFixed(1) : 0}% {t('dashboard.utilizationRate')}
+                {fleetAnalytics?.utilizationRate ? (fleetAnalytics.utilizationRate * 100).toFixed(1) : 0}% {t('dashboard.utilizationRate')}
               </span>
             </div>
           </CardContent>
@@ -352,7 +352,7 @@ export default function AnalyticsPage() {
             <div className="flex items-center space-x-1 text-xs text-muted-foreground">
               <Eye className="h-4 w-4 text-muted-foreground" />
               <span>
-                {engagementAnalytics ? engagementAnalytics.pageViews.toLocaleString() : 0} {t('dashboard.pageViews')}
+                {engagementAnalytics?.pageViews ? engagementAnalytics.pageViews.toLocaleString() : 0} {t('dashboard.pageViews')}
               </span>
             </div>
           </CardContent>
@@ -378,32 +378,32 @@ export default function AnalyticsPage() {
                 <div className="grid grid-cols-2 gap-4">
                   <div>
                     <p className="text-sm text-muted-foreground">{t('dashboard.newUsers')}</p>
-                    <p className="text-2xl font-bold">{userAnalytics.newUsers.toLocaleString()}</p>
+                    <p className="text-2xl font-bold">{userAnalytics?.newUsers ? userAnalytics.newUsers.toLocaleString() : "0"}</p>
                   </div>
                   <div>
                     <p className="text-sm text-muted-foreground">{t('dashboard.retentionRate')}</p>
-                    <p className="text-2xl font-bold">{(userAnalytics.retentionRate * 100).toFixed(1)}%</p>
+                    <p className="text-2xl font-bold">{userAnalytics?.retentionRate ? (userAnalytics.retentionRate * 100).toFixed(1) : "0"}%</p>
                   </div>
                 </div>
                 
                 <div>
                   <p className="text-sm font-medium mb-2">{t('dashboard.topLocations')}</p>
                   <div className="space-y-2">
-                    {Object.entries(userAnalytics.demographics.locations)
+                    {userAnalytics?.demographics?.locations ? Object.entries(userAnalytics.demographics.locations)
                       .slice(0, 3)
                       .map(([location, count]) => (
                         <div key={location} className="flex justify-between text-sm">
                           <span>{location}</span>
-                          <span>{count.toLocaleString()}</span>
+                          <span>{(count || 0).toLocaleString()}</span>
                         </div>
-                      ))}
+                      )) : null}
                   </div>
                 </div>
                 
                 <div>
                   <p className="text-sm font-medium mb-2">{t('dashboard.deviceBreakdown')}</p>
                   <div className="space-y-2">
-                    {Object.entries(userAnalytics.demographics.devices).map(([device, count]) => (
+                    {userAnalytics?.demographics?.devices ? Object.entries(userAnalytics.demographics.devices).map(([device, count]) => (
                       <div key={device} className="flex justify-between text-sm">
                         <span className="flex items-center">
                           {device === "mobile" ? <Smartphone className="mr-1 h-3 w-3" /> : 
@@ -411,9 +411,9 @@ export default function AnalyticsPage() {
                            <Globe className="mr-1 h-3 w-3" />}
                           {device}
                         </span>
-                        <span>{count.toLocaleString()}</span>
+                        <span>{(count || 0).toLocaleString()}</span>
                       </div>
-                    ))}
+                    )) : null}
                   </div>
                 </div>
               </div>
@@ -503,23 +503,23 @@ export default function AnalyticsPage() {
                 <div className="grid grid-cols-2 gap-4">
                   <div>
                     <p className="text-sm text-muted-foreground">{t('dashboard.totalVehicles')}</p>
-                    <p className="text-2xl font-bold">{fleetAnalytics.totalVehicles.toLocaleString()}</p>
+                    <p className="text-2xl font-bold">{fleetAnalytics?.totalVehicles ? fleetAnalytics.totalVehicles.toLocaleString() : "0"}</p>
                   </div>
                   <div>
                     <p className="text-sm text-muted-foreground">{t('dashboard.avgMileage')}</p>
-                    <p className="text-2xl font-bold">{fleetAnalytics.averageMileage.toLocaleString()} mi</p>
+                    <p className="text-2xl font-bold">{fleetAnalytics?.averageMileage ? fleetAnalytics.averageMileage.toLocaleString() : "0"} mi</p>
                   </div>
                 </div>
                 
                 <div>
                   <p className="text-sm font-medium mb-2">Vehicles by Type</p>
                   <div className="space-y-2">
-                    {Object.entries(fleetAnalytics.vehiclesByType).map(([type, count]) => (
+                    {fleetAnalytics?.vehiclesByType ? Object.entries(fleetAnalytics.vehiclesByType).map(([type, count]) => (
                       <div key={type} className="flex justify-between text-sm">
                         <span>{type}</span>
-                        <span>{count.toLocaleString()}</span>
+                        <span>{(count || 0).toLocaleString()}</span>
                       </div>
-                    ))}
+                    )) : null}
                   </div>
                 </div>
                 
@@ -528,15 +528,15 @@ export default function AnalyticsPage() {
                   <div className="space-y-2">
                     <div className="flex justify-between text-sm">
                       <span>Fuel Efficiency</span>
-                      <span>{fleetAnalytics.fuelEfficiency.toFixed(1)} MPG</span>
+                      <span>{fleetAnalytics?.fuelEfficiency ? fleetAnalytics.fuelEfficiency.toFixed(1) : "0"} MPG</span>
                     </div>
                     <div className="flex justify-between text-sm">
                       <span>Maintenance Costs</span>
-                      <span>{formatCurrency(fleetAnalytics.maintenanceCosts)}</span>
+                      <span>{fleetAnalytics?.maintenanceCosts ? formatCurrency(fleetAnalytics.maintenanceCosts) : "0 EGP"}</span>
                     </div>
                     <div className="flex justify-between text-sm">
                       <span>Utilization Rate</span>
-                      <span>{(fleetAnalytics.utilizationRate * 100).toFixed(1)}%</span>
+                      <span>{fleetAnalytics?.utilizationRate ? (fleetAnalytics.utilizationRate * 100).toFixed(1) : "0"}%</span>
                     </div>
                   </div>
                 </div>
@@ -567,37 +567,37 @@ export default function AnalyticsPage() {
                 <div className="grid grid-cols-2 gap-4">
                   <div>
                     <p className="text-sm text-muted-foreground">Total Sessions</p>
-                    <p className="text-2xl font-bold">{engagementAnalytics.totalSessions.toLocaleString()}</p>
+                    <p className="text-2xl font-bold">{engagementAnalytics?.totalSessions ? engagementAnalytics.totalSessions.toLocaleString() : "0"}</p>
                   </div>
                   <div>
                     <p className="text-sm text-muted-foreground">Unique Visitors</p>
-                    <p className="text-2xl font-bold">{engagementAnalytics.uniqueVisitors.toLocaleString()}</p>
+                    <p className="text-2xl font-bold">{engagementAnalytics?.uniqueVisitors ? engagementAnalytics.uniqueVisitors.toLocaleString() : "0"}</p>
                   </div>
                 </div>
                 
                 <div>
                   <p className="text-sm font-medium mb-2">Top Pages</p>
                   <div className="space-y-2">
-                    {engagementAnalytics.topPages.slice(0, 3).map((page) => (
+                    {engagementAnalytics?.topPages ? engagementAnalytics.topPages.slice(0, 3).map((page) => (
                       <div key={page.path} className="flex justify-between text-sm">
                         <span className="truncate">{page.path}</span>
-                        <span>{page.views.toLocaleString()}</span>
+                        <span>{(page.views || 0).toLocaleString()}</span>
                       </div>
-                    ))}
+                    )) : null}
                   </div>
                 </div>
                 
                 <div>
                   <p className="text-sm font-medium mb-2">Traffic Sources</p>
                   <div className="space-y-2">
-                    {Object.entries(engagementAnalytics.trafficSources)
+                    {engagementAnalytics?.trafficSources ? Object.entries(engagementAnalytics.trafficSources)
                       .slice(0, 3)
                       .map(([source, count]) => (
                         <div key={source} className="flex justify-between text-sm">
                           <span>{source}</span>
-                          <span>{count.toLocaleString()}</span>
+                          <span>{(count || 0).toLocaleString()}</span>
                         </div>
-                      ))}
+                      )) : null}
                   </div>
                 </div>
               </div>
@@ -630,7 +630,7 @@ export default function AnalyticsPage() {
                   <div>
                     <p className="font-medium">{report.name}</p>
                     <p className="text-sm text-muted-foreground">
-                      {report.type} • {report.metrics.length} metrics • {formatDate(report.generatedAt)}
+                      {report.type} • {report.metrics?.length || 0} metrics • {report.generatedAt ? formatDate(report.generatedAt) : 'Unknown'}
                     </p>
                     <div className="flex items-center space-x-2 mt-1">
                       <Badge variant={report.status === "completed" ? "default" : 
@@ -679,7 +679,7 @@ export default function AnalyticsPage() {
             ))}
           </div>
 
-          {reports.length === 0 && (
+          {(!reports || reports.length === 0) && (
             <div className="text-center py-8">
               <BarChart3 className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
               <p className="text-muted-foreground">No analytics reports available</p>
