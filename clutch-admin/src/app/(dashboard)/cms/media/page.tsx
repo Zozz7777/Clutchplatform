@@ -6,6 +6,7 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { useTranslations } from '@/hooks/use-translations';
 import { 
   Image, 
   Video, 
@@ -31,36 +32,8 @@ interface MediaFile {
 }
 
 export default function MediaCMSPage() {
-  const [mediaFiles, setMediaFiles] = useState<MediaFile[]>([
-    {
-      id: '1',
-      name: 'clutch-logo.png',
-      type: 'image',
-      size: 245760,
-      url: '/images/clutch-logo.png',
-      uploadedAt: '2024-01-15T10:30:00Z',
-      tags: ['logo', 'branding']
-    },
-    {
-      id: '2',
-      name: 'app-screenshot.jpg',
-      type: 'image',
-      size: 1024000,
-      url: '/images/app-screenshot.jpg',
-      uploadedAt: '2024-01-14T15:20:00Z',
-      tags: ['screenshot', 'mobile']
-    },
-    {
-      id: '3',
-      name: 'demo-video.mp4',
-      type: 'video',
-      size: 15728640,
-      url: '/videos/demo-video.mp4',
-      uploadedAt: '2024-01-13T11:45:00Z',
-      tags: ['demo', 'video']
-    }
-  ]);
-
+  const { t } = useTranslations();
+  const [mediaFiles, setMediaFiles] = useState<MediaFile[]>([]);
   const [searchTerm, setSearchTerm] = useState('');
   const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
   const [selectedType, setSelectedType] = useState('all');

@@ -21,13 +21,15 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    // Check for stored user session
-    const storedUser = localStorage.getItem("clutch-admin-user");
-    if (storedUser) {
-      try {
-        setUser(JSON.parse(storedUser));
-      } catch (error) {
-        localStorage.removeItem("clutch-admin-user");
+    // Check for stored user session only on client side
+    if (typeof window !== 'undefined') {
+      const storedUser = localStorage.getItem("clutch-admin-user");
+      if (storedUser) {
+        try {
+          setUser(JSON.parse(storedUser));
+        } catch (error) {
+          localStorage.removeItem("clutch-admin-user");
+        }
       }
     }
     setIsLoading(false);
@@ -56,20 +58,22 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         console.log("🔍 User role from backend:", user.role);
         
         // Map backend user to frontend user format
-        const userWithPermissions = {
-          id: user._id || user.id || `user_${Date.now()}`,
-          email: user.email || email,
-          name: user.name || `${user.firstName || ''} ${user.lastName || ''}`.trim() || "User",
-          role: user.role || "employee", // Default to employee instead of platform_admin
+        const userWithPermissions: User = {
+          id: String(user._id || user.id || `user_${Date.now()}`),
+          email: String(user.email || email),
+          name: String(user.name || `${user.firstName || ''} ${user.lastName || ''}`.trim() || "User"),
+          role: String(user.role || "employee"), // Default to employee instead of platform_admin
           status: user.isActive !== undefined ? (user.isActive ? "active" : "inactive") : "active",
-          createdAt: user.createdAt || new Date().toISOString(),
+          createdAt: String(user.createdAt || new Date().toISOString()),
           lastLogin: new Date().toISOString(),
-          permissions: user.permissions || ROLE_PERMISSIONS[user.role as keyof typeof ROLE_PERMISSIONS] || [],
+          permissions: Array.isArray(user.permissions) ? user.permissions : (ROLE_PERMISSIONS[user.role as keyof typeof ROLE_PERMISSIONS] || []),
         };
         
         setUser(userWithPermissions);
-        localStorage.setItem("clutch-admin-user", JSON.stringify(userWithPermissions));
-        localStorage.setItem("clutch-admin-token", token);
+        if (typeof window !== 'undefined') {
+          localStorage.setItem("clutch-admin-user", JSON.stringify(userWithPermissions));
+          localStorage.setItem("clutch-admin-token", token);
+        }
         
         setIsLoading(false);
         return true;
@@ -94,10 +98,10 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     } finally {
       // Clear local state regardless of API call result
       setUser(null);
-      localStorage.removeItem("clutch-admin-user");
-      localStorage.removeItem("clutch-admin-token");
-      localStorage.removeItem("clutch-admin-refresh-token");
-      if (typeof window !== "undefined") {
+      if (typeof window !== 'undefined') {
+        localStorage.removeItem("clutch-admin-user");
+        localStorage.removeItem("clutch-admin-token");
+        localStorage.removeItem("clutch-admin-refresh-token");
         sessionStorage.removeItem("clutch-admin-token");
       }
     }
