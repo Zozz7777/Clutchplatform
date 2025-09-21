@@ -18,8 +18,19 @@ router.use(assetLimiter);
 
 // ===== ASSETS MANAGEMENT =====
 
+// GET /api/v1/assets/test - Simple test endpoint
+router.get('/test', (req, res) => {
+  console.log('Assets test endpoint hit');
+  res.json({
+    success: true,
+    message: 'Assets endpoint is working',
+    timestamp: new Date().toISOString()
+  });
+});
+
 // GET /api/v1/assets - Get all assets
 router.get('/', async (req, res) => {
+  console.log('Assets endpoint hit - no auth required');
   try {
     const assetsCollection = await getCollection('assets');
     const { page = 1, limit = 10, type, status, location, assignedTo } = req.query;
