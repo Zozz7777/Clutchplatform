@@ -21,7 +21,10 @@ import {
   Check,
   X,
   AlertTriangle,
-  Info
+  Info,
+  Camera,
+  Upload,
+  Trash2
 } from "lucide-react";
 import { toast } from "sonner";
 
@@ -67,6 +70,7 @@ export default function ProfileSettingsPage() {
   const [profile, setProfile] = useState<UserProfile | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [isSaving, setIsSaving] = useState(false);
+  const [isUploadingAvatar, setIsUploadingAvatar] = useState(false);
   const [showPasswords, setShowPasswords] = useState<Record<string, boolean>>({});
   const [formData, setFormData] = useState({
     name: "",
@@ -248,20 +252,13 @@ export default function ProfileSettingsPage() {
       });
 
       if (response.ok) {
-        toast({
-          title: t('profile.profileUpdated'),
-          description: "Your profile has been updated successfully.",
-        });
+        toast.success("Your profile has been updated successfully.");
       } else {
         throw new Error("Failed to update profile");
       }
     } catch (error) {
       // Error handled by API service
-      toast({
-        title: "Error",
-        description: "Failed to update profile. Please try again.",
-        variant: "destructive",
-      });
+      toast.error("Failed to update profile. Please try again.");
     } finally {
       setIsSaving(false);
     }
@@ -269,20 +266,12 @@ export default function ProfileSettingsPage() {
 
   const changePassword = async () => {
     if (formData.newPassword !== formData.confirmPassword) {
-      toast({
-        title: "Error",
-        description: "New passwords do not match.",
-        variant: "destructive",
-      });
+      toast.error("New passwords do not match.");
       return;
     }
 
     if (formData.newPassword.length < 8) {
-      toast({
-        title: "Error",
-        description: "Password must be at least 8 characters long.",
-        variant: "destructive",
-      });
+      toast.error("Password must be at least 8 characters long.");
       return;
     }
 
@@ -335,6 +324,143 @@ export default function ProfileSettingsPage() {
     }));
   };
 
+  const handleAvatarUpload = async (results: any[]) => {
+    if (results.length === 0) return;
+    
+    setIsUploadingAvatar(true);
+    try {
+      const result = results[0];
+      if (result.success && result.fileUrl) {
+        // Update profile with new avatar URL
+        const token = localStorage.getItem("clutch-admin-token");
+        
+        const response = await fetch("https://clutch-main-nk7x.onrender.com/api/v1/employees/profile/me", {
+          method: "PUT",
+          headers: {
+            "Authorization": `Bearer ${token}`,
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            avatar: result.fileUrl
+          }),
+        });
+
+        if (response.ok) {
+          // Update local profile state
+          setProfile(prev => prev ? { ...prev, avatar: result.fileUrl } : null);
+          toast.success("Profile picture updated successfully!");
+        } else {
+          throw new Error("Failed to update profile picture");
+        }
+      }
+    } catch (error) {
+      toast.error("Failed to update profile picture. Please try again.");
+    } finally {
+      setIsUploadingAvatar(false);
+    }
+  };
+
+  const handleRemoveAvatar = async () => {
+    setIsUploadingAvatar(true);
+    try {
+      const token = localStorage.getItem("clutch-admin-token");
+      
+      const response = await fetch("https://clutch-main-nk7x.onrender.com/api/v1/employees/profile/me", {
+        method: "PUT",
+        headers: {
+          "Authorization": `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          avatar: null
+        }),
+      });
+
+      if (response.ok) {
+        setProfile(prev => prev ? { ...prev, avatar: undefined } : null);
+        toast.success("Profile picture removed successfully!");
+      } else {
+        throw new Error("Failed to remove profile picture");
+      }
+    } catch (error) {
+      toast.error("Failed to remove profile picture. Please try again.");
+    } finally {
+      setIsUploadingAvatar(false);
+    }
+  };
+
+  const handleAvatarFileSelect = async (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (!file) return;
+
+    // Validate file type
+    if (!file.type.startsWith('image/')) {
+      toast.error("Please select an image file");
+      return;
+    }
+
+    // Validate file size (5MB max)
+    if (file.size > 5 * 1024 * 1024) {
+      toast.error("Image size must be less than 5MB");
+      return;
+    }
+
+    setIsUploadingAvatar(true);
+    try {
+      // Create FormData for file upload
+      const formData = new FormData();
+      formData.append('file', file);
+      formData.append('type', 'avatar');
+
+      const token = localStorage.getItem("clutch-admin-token");
+      
+      // Upload file first
+      const uploadResponse = await fetch("https://clutch-main-nk7x.onrender.com/api/v1/upload", {
+        method: "POST",
+        headers: {
+          "Authorization": `Bearer ${token}`,
+        },
+        body: formData,
+      });
+
+      if (!uploadResponse.ok) {
+        throw new Error("Failed to upload image");
+      }
+
+      const uploadResult = await uploadResponse.json();
+      const imageUrl = uploadResult.data?.url || uploadResult.url;
+
+      if (!imageUrl) {
+        throw new Error("No image URL returned from upload");
+      }
+
+      // Update profile with new avatar URL
+      const profileResponse = await fetch("https://clutch-main-nk7x.onrender.com/api/v1/employees/profile/me", {
+        method: "PUT",
+        headers: {
+          "Authorization": `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          avatar: imageUrl
+        }),
+      });
+
+      if (profileResponse.ok) {
+        setProfile(prev => prev ? { ...prev, avatar: imageUrl } : null);
+        toast.success("Profile picture updated successfully!");
+      } else {
+        throw new Error("Failed to update profile picture");
+      }
+    } catch (error) {
+      toast.error("Failed to update profile picture. Please try again.");
+    } finally {
+      setIsUploadingAvatar(false);
+      // Reset file input
+      event.target.value = '';
+    }
+  };
+
   if (isLoading) {
     return (
       <div className="flex items-center justify-center h-64">
@@ -382,16 +508,55 @@ export default function ProfileSettingsPage() {
               </CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
-              <div className="flex items-center justify-center">
-                <div className="w-20 h-20 rounded-full bg-primary/10 flex items-center justify-center">
-                  {profile.avatar ? (
-                    <img
-                      src={profile.avatar}
-                      alt={profile.name}
-                      className="w-20 h-20 rounded-full object-cover"
-                    />
-                  ) : (
-                    <User className="h-10 w-10 text-primary" />
+              <div className="flex flex-col items-center space-y-4">
+                <div className="relative">
+                  <div className="w-24 h-24 rounded-full bg-primary/10 flex items-center justify-center overflow-hidden">
+                    {profile.avatar ? (
+                      <img
+                        src={profile.avatar}
+                        alt={profile.name}
+                        className="w-24 h-24 rounded-full object-cover"
+                      />
+                    ) : (
+                      <User className="h-12 w-12 text-primary" />
+                    )}
+                  </div>
+                  {isUploadingAvatar && (
+                    <div className="absolute inset-0 bg-black/50 rounded-full flex items-center justify-center">
+                      <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-white"></div>
+                    </div>
+                  )}
+                </div>
+                
+                <div className="flex flex-col items-center space-y-2">
+                  <input
+                    type="file"
+                    accept="image/*"
+                    onChange={handleAvatarFileSelect}
+                    className="hidden"
+                    id="avatar-upload"
+                    disabled={isUploadingAvatar}
+                  />
+                  <label htmlFor="avatar-upload">
+                    <Button variant="outline" size="sm" disabled={isUploadingAvatar} asChild>
+                      <span className="cursor-pointer">
+                        <Camera className="mr-2 h-4 w-4" />
+                        {profile.avatar ? 'Change Photo' : 'Add Photo'}
+                      </span>
+                    </Button>
+                  </label>
+                  
+                  {profile.avatar && (
+                    <Button 
+                      variant="ghost" 
+                      size="sm" 
+                      onClick={handleRemoveAvatar}
+                      disabled={isUploadingAvatar}
+                      className="text-destructive hover:text-destructive/80"
+                    >
+                      <Trash2 className="mr-2 h-4 w-4" />
+                      Remove Photo
+                    </Button>
                   )}
                 </div>
               </div>

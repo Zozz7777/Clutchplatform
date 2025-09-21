@@ -94,7 +94,7 @@ router.get('/', async (req, res) => {
 });
 
 // POST /api/v1/assets - Create new asset
-router.post('/', checkRole(['head_administrator', 'fleet_manager']), async (req, res) => {
+router.post('/', checkRole(['head_administrator', 'asset_manager', 'operations_manager']), async (req, res) => {
   try {
     const assetsCollection = await getCollection('assets');
     const { 
@@ -208,7 +208,7 @@ router.get('/maintenance-records', async (req, res) => {
 });
 
 // POST /api/v1/maintenance-records - Create maintenance record
-router.post('/maintenance-records', checkRole(['head_administrator', 'fleet_manager', 'maintenance_technician']), async (req, res) => {
+router.post('/maintenance-records', checkRole(['head_administrator', 'asset_manager', 'operations_manager']), async (req, res) => {
   try {
     const maintenanceCollection = await getCollection('maintenance_records');
     const { 
@@ -276,7 +276,7 @@ router.post('/maintenance-records', checkRole(['head_administrator', 'fleet_mana
 });
 
 // PUT /api/v1/maintenance-records/:id - Update maintenance record
-router.put('/maintenance-records/:id', checkRole(['head_administrator', 'fleet_manager', 'maintenance_technician']), async (req, res) => {
+router.put('/maintenance-records/:id', checkRole(['head_administrator', 'asset_manager', 'operations_manager']), async (req, res) => {
   try {
     const maintenanceCollection = await getCollection('maintenance_records');
     const { 
@@ -333,7 +333,7 @@ router.put('/maintenance-records/:id', checkRole(['head_administrator', 'fleet_m
 // (Duplicate removed - see below for the actual implementation)
 
 // POST /api/v1/asset-assignments - Create asset assignment
-router.post('/asset-assignments', checkRole(['head_administrator', 'fleet_manager']), async (req, res) => {
+router.post('/asset-assignments', checkRole(['head_administrator', 'asset_manager', 'operations_manager']), async (req, res) => {
   try {
     const assignmentsCollection = await getCollection('asset_assignments');
     const { assetId, userId, assignedDate, returnDate, purpose, notes } = req.body;
@@ -392,7 +392,7 @@ router.post('/asset-assignments', checkRole(['head_administrator', 'fleet_manage
 });
 
 // PUT /api/v1/asset-assignments/:id - Update asset assignment
-router.put('/asset-assignments/:id', checkRole(['head_administrator', 'fleet_manager']), async (req, res) => {
+router.put('/asset-assignments/:id', checkRole(['head_administrator', 'asset_manager', 'operations_manager']), async (req, res) => {
   try {
     const assignmentsCollection = await getCollection('asset_assignments');
     const { returnDate, purpose, notes, status } = req.body;
@@ -561,7 +561,7 @@ router.get('/asset-maintenance', async (req, res) => {
 });
 
 // POST /api/v1/assets/maintenance - Create asset maintenance record
-router.post('/maintenance', checkRole(['head_administrator', 'fleet_manager', 'maintenance_technician']), async (req, res) => {
+router.post('/maintenance', checkRole(['head_administrator', 'asset_manager', 'operations_manager']), async (req, res) => {
   try {
     const maintenanceCollection = await getCollection('maintenance_records');
     const { 
@@ -665,7 +665,7 @@ router.get('/asset-assignments', async (req, res) => {
 });
 
 // POST /api/v1/assets/assignments - Create asset assignment
-router.post('/assignments', checkRole(['head_administrator', 'fleet_manager']), async (req, res) => {
+router.post('/assignments', checkRole(['head_administrator', 'asset_manager', 'operations_manager']), async (req, res) => {
   try {
     const assignmentsCollection = await getCollection('asset_assignments');
     const { 
@@ -832,6 +832,94 @@ router.delete('/:id', checkRole(['head_administrator']), async (req, res) => {
     res.status(500).json({
       success: false,
       message: 'Failed to delete asset',
+      error: process.env.NODE_ENV === 'development' ? error.message : undefined
+    });
+  }
+});
+
+// GET /api/v1/assets/maintenance-costs - Get maintenance costs data
+router.get('/maintenance-costs', async (req, res) => {
+  try {
+    // Mock maintenance costs data for business intelligence
+    const maintenanceCosts = {
+      totalCost: 12500,
+      monthlyCost: 2100,
+      averageCostPerAsset: 125,
+      costByType: {
+        preventive: 8500,
+        corrective: 3200,
+        emergency: 800
+      },
+      costByMonth: [
+        { month: '2024-01', cost: 1800 },
+        { month: '2024-02', cost: 2200 },
+        { month: '2024-03', cost: 1900 },
+        { month: '2024-04', cost: 2400 },
+        { month: '2024-05', cost: 2100 },
+        { month: '2024-06', cost: 2300 }
+      ],
+      topExpensiveAssets: [
+        { assetId: 'A001', name: 'Fleet Vehicle #1', cost: 850 },
+        { assetId: 'A002', name: 'Fleet Vehicle #2', cost: 720 },
+        { assetId: 'A003', name: 'Fleet Vehicle #3', cost: 680 }
+      ]
+    };
+
+    res.json({
+      success: true,
+      data: maintenanceCosts,
+      message: 'Maintenance costs retrieved successfully'
+    });
+  } catch (error) {
+    console.error('Error getting maintenance costs:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Failed to get maintenance costs',
+      error: process.env.NODE_ENV === 'development' ? error.message : undefined
+    });
+  }
+});
+
+// GET /api/v1/assets/operational-costs - Get operational costs data
+router.get('/operational-costs', async (req, res) => {
+  try {
+    // Mock operational costs data for business intelligence
+    const operationalCosts = {
+      totalCost: 18500,
+      monthlyCost: 3200,
+      costByCategory: {
+        fuel: 8500,
+        insurance: 4200,
+        licensing: 1800,
+        repairs: 2400,
+        other: 1600
+      },
+      costByMonth: [
+        { month: '2024-01', cost: 2800 },
+        { month: '2024-02', cost: 3100 },
+        { month: '2024-03', cost: 2900 },
+        { month: '2024-04', cost: 3400 },
+        { month: '2024-05', cost: 3200 },
+        { month: '2024-06', cost: 3300 }
+      ],
+      costPerVehicle: 185,
+      fuelEfficiency: {
+        averageMPG: 22.5,
+        totalGallons: 1200,
+        costPerGallon: 3.25
+      }
+    };
+
+    res.json({
+      success: true,
+      data: operationalCosts,
+      message: 'Operational costs retrieved successfully'
+    });
+  } catch (error) {
+    console.error('Error getting operational costs:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Failed to get operational costs',
       error: process.env.NODE_ENV === 'development' ? error.message : undefined
     });
   }
