@@ -44,7 +44,7 @@ import {
   Zap,
 } from "lucide-react";
 import { productionApi } from "@/lib/production-api";
-import { useTranslations } from "@/hooks/use-translations";
+import { useTranslations } from "next-intl";
 
 interface FeatureFlag {
   _id: string;
@@ -185,43 +185,88 @@ export default function FeatureFlagsPage() {
 
 
   useEffect(() => {
-    loadFeatureFlags();
-    loadABTests();
-    loadRollouts();
+    let isMounted = true;
+    let timeoutId: NodeJS.Timeout | null = null;
+
+    const loadAllData = async () => {
+      if (!isMounted) return;
+      
+      try {
+        setLoading(true);
+        
+        // Add debouncing to prevent excessive API calls
+        if (timeoutId) {
+          clearTimeout(timeoutId);
+        }
+        
+        timeoutId = setTimeout(async () => {
+          if (!isMounted) return;
+          
+          // Load all data with error handling
+          const [flagsData, abTestsData, rolloutsData] = await Promise.allSettled([
+            productionApi.getFeatureFlags(),
+            productionApi.getABTests(),
+            productionApi.getRollouts()
+          ]);
+
+          // Handle feature flags data
+          const flagsArray = flagsData.status === 'fulfilled' && Array.isArray(flagsData.value) 
+            ? flagsData.value as unknown as FeatureFlag[] 
+            : [];
+          
+          // Handle AB tests data
+          const abTestsArray = abTestsData.status === 'fulfilled' && Array.isArray(abTestsData.value) 
+            ? abTestsData.value as unknown as ABTest[] 
+            : [];
+          
+          // Handle rollouts data
+          const rolloutsArray = rolloutsData.status === 'fulfilled' && Array.isArray(rolloutsData.value) 
+            ? rolloutsData.value as unknown as Rollout[] 
+            : [];
+          
+          if (isMounted) {
+            setFeatureFlags(flagsArray);
+            setABTests(abTestsArray);
+            setRollouts(rolloutsArray);
+          }
+          
+          // Log any errors
+          if (flagsData.status === 'rejected') {
+            console.error('Failed to load feature flags:', flagsData.reason);
+          }
+          if (abTestsData.status === 'rejected') {
+            console.error('Failed to load AB tests:', abTestsData.reason);
+          }
+          if (rolloutsData.status === 'rejected') {
+            console.error('Failed to load rollouts:', rolloutsData.reason);
+          }
+          
+        }, 300); // 300ms debounce
+        
+      } catch (error) {
+        if (!isMounted) return;
+        
+        console.error('Failed to load feature flags data:', error);
+        setFeatureFlags([]);
+        setABTests([]);
+        setRollouts([]);
+      } finally {
+        if (isMounted) {
+          setLoading(false);
+        }
+      }
+    };
+
+    loadAllData();
+
+    return () => {
+      isMounted = false;
+      if (timeoutId) {
+        clearTimeout(timeoutId);
+      }
+    };
   }, []);
 
-  const loadFeatureFlags = async () => {
-    try {
-      setLoading(true);
-      const data = await productionApi.getFeatureFlags();
-      setFeatureFlags(Array.isArray(data) ? data : []);
-    } catch (error) {
-      console.error('Error loading feature flags:', error);
-      setFeatureFlags([]);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const loadABTests = async () => {
-    try {
-      const data = await productionApi.getABTests();
-      setABTests(Array.isArray(data) ? data : []);
-    } catch (error) {
-      console.error('Error loading AB tests:', error);
-      setABTests([]);
-    }
-  };
-
-  const loadRollouts = async () => {
-    try {
-      const data = await productionApi.getRollouts();
-      setRollouts(Array.isArray(data) ? data : []);
-    } catch (error) {
-      console.error('Error loading rollouts:', error);
-      setRollouts([]);
-    }
-  };
   
   const createFeatureFlag = async () => {
     try {

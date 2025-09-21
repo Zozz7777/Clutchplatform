@@ -613,19 +613,19 @@ export default function ProjectManagementPage() {
       <Dialog open={showTaskDialog} onOpenChange={setShowTaskDialog}>
         <DialogContent>
           <DialogHeader>
-            <DialogTitle>Add New Task</DialogTitle>
+            <DialogTitle>{t('dashboard.addNewTask')}</DialogTitle>
             <DialogDescription>
-              Create a new task for the selected project.
+              {t('dashboard.createNewTaskForProject')}
             </DialogDescription>
           </DialogHeader>
           <div className="grid gap-4 py-4">
             <div>
-              <Label htmlFor="taskTitle">Task Title</Label>
-              <Input id="taskTitle" placeholder="Enter task title" />
+              <Label htmlFor="taskTitle">{t('dashboard.taskTitle')}</Label>
+              <Input id="taskTitle" placeholder={t('dashboard.enterTaskTitle')} />
             </div>
             <div>
-              <Label htmlFor="taskDescription">Description</Label>
-              <Input id="taskDescription" placeholder="Task description" />
+              <Label htmlFor="taskDescription">{t('dashboard.description')}</Label>
+              <Input id="taskDescription" placeholder={t('dashboard.taskDescription')} />
             </div>
             <div className="grid grid-cols-2 gap-4">
               <div>
@@ -673,9 +673,9 @@ export default function ProjectManagementPage() {
       <Dialog open={showTimeDialog} onOpenChange={setShowTimeDialog}>
         <DialogContent>
           <DialogHeader>
-            <DialogTitle>Log Time Entry</DialogTitle>
+            <DialogTitle>{t('dashboard.logTimeEntry')}</DialogTitle>
             <DialogDescription>
-              Log time spent on a specific task.
+              {t('dashboard.logTimeSpentOnTask')}
             </DialogDescription>
           </DialogHeader>
           <div className="grid gap-4 py-4">
@@ -693,7 +693,7 @@ export default function ProjectManagementPage() {
             <div>
               <Label htmlFor="task">Task</Label>
               <select className="w-full p-2 border rounded-md">
-                <option value="">Select task</option>
+                <option value="">{t('dashboard.selectTask')}</option>
                 {(Array.isArray(tasks) ? tasks : []).map((task) => (
                   <option key={task?._id} value={task?._id}>
                     {task?.title || 'Unknown Task'}
@@ -702,8 +702,8 @@ export default function ProjectManagementPage() {
               </select>
             </div>
             <div>
-              <Label htmlFor="description">Description</Label>
-              <Input id="description" placeholder="What did you work on?" />
+              <Label htmlFor="description">{t('dashboard.description')}</Label>
+              <Input id="description" placeholder={t('dashboard.whatDidYouWorkOn')} />
             </div>
             <div className="grid grid-cols-2 gap-4">
               <div>

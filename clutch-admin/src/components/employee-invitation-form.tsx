@@ -28,24 +28,43 @@ interface EmployeeInvitationFormProps {
   onCancel?: () => void;
 }
 
-const ROLE_OPTIONS = [
-  { value: "employee", label: "employeeInvitation.roles.employee", description: "employeeInvitation.roles.employeeDesc" },
-  { value: "hr", label: "employeeInvitation.roles.hr", description: "employeeInvitation.roles.hrDesc" },
-  { value: "manager", label: "employeeInvitation.roles.manager", description: "employeeInvitation.roles.managerDesc" },
-  { value: "executive", label: "employeeInvitation.roles.executive", description: "employeeInvitation.roles.executiveDesc" },
-  { value: "admin", label: "employeeInvitation.roles.admin", description: "employeeInvitation.roles.adminDesc" },
-  { value: "head_administrator", label: "employeeInvitation.roles.head_administrator", description: "employeeInvitation.roles.head_administratorDesc" },
-  { value: "platform_admin", label: "employeeInvitation.roles.platform_admin", description: "employeeInvitation.roles.platform_adminDesc" },
-  { value: "enterprise_client", label: "employeeInvitation.roles.enterprise_client", description: "employeeInvitation.roles.enterprise_clientDesc" },
-  { value: "service_provider", label: "employeeInvitation.roles.service_provider", description: "employeeInvitation.roles.service_providerDesc" },
-  { value: "business_analyst", label: "employeeInvitation.roles.business_analyst", description: "employeeInvitation.roles.business_analystDesc" },
-  { value: "customer_support", label: "employeeInvitation.roles.customer_support", description: "employeeInvitation.roles.customer_supportDesc" },
-  { value: "finance_officer", label: "employeeInvitation.roles.finance_officer", description: "employeeInvitation.roles.finance_officerDesc" },
-  { value: "legal_team", label: "employeeInvitation.roles.legal_team", description: "employeeInvitation.roles.legal_teamDesc" },
-  { value: "project_manager", label: "employeeInvitation.roles.project_manager", description: "employeeInvitation.roles.project_managerDesc" },
-  { value: "asset_manager", label: "employeeInvitation.roles.asset_manager", description: "employeeInvitation.roles.asset_managerDesc" },
-  { value: "vendor_manager", label: "employeeInvitation.roles.vendor_manager", description: "employeeInvitation.roles.vendor_managerDesc" },
-];
+  const ROLE_OPTIONS = [
+    // Level 1: Executive Leadership (Level 10-9)
+    { value: "super_admin", label: "employeeInvitation.roles.super_admin", description: "employeeInvitation.roles.super_adminDesc", level: 10 },
+    { value: "head_administrator", label: "employeeInvitation.roles.head_administrator", description: "employeeInvitation.roles.head_administratorDesc", level: 9 },
+    { value: "executive", label: "employeeInvitation.roles.executive", description: "employeeInvitation.roles.executiveDesc", level: 9 },
+    { value: "platform_admin", label: "employeeInvitation.roles.platform_admin", description: "employeeInvitation.roles.platform_adminDesc", level: 9 },
+    { value: "admin", label: "employeeInvitation.roles.admin", description: "employeeInvitation.roles.adminDesc", level: 9 },
+    
+    // Level 2: Department Heads (Level 8)
+    { value: "hr_manager", label: "employeeInvitation.roles.hr_manager", description: "employeeInvitation.roles.hr_managerDesc", level: 8 },
+    { value: "finance_officer", label: "employeeInvitation.roles.finance_officer", description: "employeeInvitation.roles.finance_officerDesc", level: 8 },
+    { value: "operations_manager", label: "employeeInvitation.roles.operations_manager", description: "employeeInvitation.roles.operations_managerDesc", level: 8 },
+    { value: "marketing_manager", label: "employeeInvitation.roles.marketing_manager", description: "employeeInvitation.roles.marketing_managerDesc", level: 8 },
+    { value: "legal_team", label: "employeeInvitation.roles.legal_team", description: "employeeInvitation.roles.legal_teamDesc", level: 8 },
+    { value: "security_manager", label: "employeeInvitation.roles.security_manager", description: "employeeInvitation.roles.security_managerDesc", level: 8 },
+    
+    // Level 3: Specialized Managers (Level 7)
+    { value: "business_analyst", label: "employeeInvitation.roles.business_analyst", description: "employeeInvitation.roles.business_analystDesc", level: 7 },
+    { value: "project_manager", label: "employeeInvitation.roles.project_manager", description: "employeeInvitation.roles.project_managerDesc", level: 7 },
+    { value: "asset_manager", label: "employeeInvitation.roles.asset_manager", description: "employeeInvitation.roles.asset_managerDesc", level: 7 },
+    { value: "crm_manager", label: "employeeInvitation.roles.crm_manager", description: "employeeInvitation.roles.crm_managerDesc", level: 7 },
+    { value: "system_admin", label: "employeeInvitation.roles.system_admin", description: "employeeInvitation.roles.system_adminDesc", level: 7 },
+    
+    // Level 4: Functional Specialists (Level 6)
+    { value: "hr", label: "employeeInvitation.roles.hr", description: "employeeInvitation.roles.hrDesc", level: 6 },
+    { value: "finance", label: "employeeInvitation.roles.finance", description: "employeeInvitation.roles.financeDesc", level: 6 },
+    { value: "customer_support", label: "employeeInvitation.roles.customer_support", description: "employeeInvitation.roles.customer_supportDesc", level: 6 },
+    { value: "developer", label: "employeeInvitation.roles.developer", description: "employeeInvitation.roles.developerDesc", level: 6 },
+    
+    // Level 5: Operational Staff (Level 5)
+    { value: "employee", label: "employeeInvitation.roles.employee", description: "employeeInvitation.roles.employeeDesc", level: 5 },
+    { value: "support_agent", label: "employeeInvitation.roles.support_agent", description: "employeeInvitation.roles.support_agentDesc", level: 5 },
+    
+    // Level 6: External Users (Level 4)
+    { value: "enterprise_client", label: "employeeInvitation.roles.enterprise_client", description: "employeeInvitation.roles.enterprise_clientDesc", level: 4 },
+    { value: "service_provider", label: "employeeInvitation.roles.service_provider", description: "employeeInvitation.roles.service_providerDesc", level: 4 },
+  ];
 
 const DEPARTMENT_OPTIONS = [
   { value: "engineering", label: "employeeInvitation.departments.engineering" },
@@ -288,9 +307,9 @@ export function EmployeeInvitationForm({ onSuccess, onCancel }: EmployeeInvitati
                   <SelectContent>
                     {ROLE_OPTIONS
                       .filter(role => {
-                        // If user is HR, filter out restricted roles
+                        // If user is HR, filter out restricted roles (Level 1: Executive Leadership)
                         if ((user?.role === "hr_manager" || user?.role === "hr") && 
-                            ["executive", "head_administrator", "platform_admin", "admin"].includes(role.value)) {
+                            role.level >= 9) {
                           return false;
                         }
                         return true;

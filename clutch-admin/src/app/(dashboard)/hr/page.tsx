@@ -129,25 +129,43 @@ interface HRStats {
 }
 
 // Role and permission options
-const ROLE_OPTIONS = [
-  { value: "employee", label: "Employee" },
-  { value: "manager", label: "Manager" },
-  { value: "hr", label: "HR Manager" },
-  { value: "hr_manager", label: "HR Manager" },
-  { value: "executive", label: "Executive" },
-  { value: "admin", label: "Administrator" },
-  { value: "head_administrator", label: "Head Administrator" },
-  { value: "platform_admin", label: "Platform Admin" },
-  { value: "enterprise_client", label: "Enterprise Client" },
-  { value: "service_provider", label: "Service Provider" },
-  { value: "business_analyst", label: "Business Analyst" },
-  { value: "customer_support", label: "Customer Support" },
-  { value: "finance_officer", label: "Finance Officer" },
-  { value: "legal_team", label: "Legal Team" },
-  { value: "project_manager", label: "Project Manager" },
-  { value: "asset_manager", label: "Asset Manager" },
-  { value: "vendor_manager", label: "Vendor Manager" }
-];
+  const ROLE_OPTIONS = [
+    // Level 1: Executive Leadership (Level 10-9)
+    { value: "super_admin", label: "Super Administrator", level: 10 },
+    { value: "head_administrator", label: "Head Administrator", level: 9 },
+    { value: "executive", label: "Executive", level: 9 },
+    { value: "platform_admin", label: "Platform Administrator", level: 9 },
+    { value: "admin", label: "Administrator", level: 9 },
+    
+    // Level 2: Department Heads (Level 8)
+    { value: "hr_manager", label: "HR Manager", level: 8 },
+    { value: "finance_officer", label: "Finance Officer", level: 8 },
+    { value: "operations_manager", label: "Operations Manager", level: 8 },
+    { value: "marketing_manager", label: "Marketing Manager", level: 8 },
+    { value: "legal_team", label: "Legal Team", level: 8 },
+    { value: "security_manager", label: "Security Manager", level: 8 },
+    
+    // Level 3: Specialized Managers (Level 7)
+    { value: "business_analyst", label: "Business Analyst", level: 7 },
+    { value: "project_manager", label: "Project Manager", level: 7 },
+    { value: "asset_manager", label: "Asset Manager", level: 7 },
+    { value: "crm_manager", label: "CRM Manager", level: 7 },
+    { value: "system_admin", label: "System Administrator", level: 7 },
+    
+    // Level 4: Functional Specialists (Level 6)
+    { value: "hr", label: "HR Employee", level: 6 },
+    { value: "finance", label: "Finance Employee", level: 6 },
+    { value: "customer_support", label: "Customer Support", level: 6 },
+    { value: "developer", label: "Developer", level: 6 },
+    
+    // Level 5: Operational Staff (Level 5)
+    { value: "employee", label: "Employee", level: 5 },
+    { value: "support_agent", label: "Support Agent", level: 5 },
+    
+    // Level 6: External Users (Level 4)
+    { value: "enterprise_client", label: "Enterprise Client", level: 4 },
+    { value: "service_provider", label: "Service Provider", level: 4 },
+  ];
 
 const PERMISSION_OPTIONS = [
   { value: "read", label: "Read", description: "View data and information" },
@@ -232,9 +250,9 @@ export default function HRPage() {
       return true;
     }
     
-    // If user is hr_manager, they cannot edit executive/board level employees
+    // If user is hr_manager, they cannot edit executive/board level employees (Level 9+)
     if (user?.role === "hr_manager" || user?.role === "hr") {
-      const restrictedRoles = ["executive", "head_administrator", "platform_admin", "admin"];
+      const restrictedRoles = ["super_admin", "head_administrator", "executive", "platform_admin", "admin"];
       return !restrictedRoles.includes(employee.role || "");
     }
     
@@ -257,9 +275,9 @@ export default function HRPage() {
   };
 
   const handleRoleChange = (role: string) => {
-    // Check if HR user is trying to assign a restricted role
+    // Check if HR user is trying to assign a restricted role (Level 9+)
     if ((user?.role === "hr_manager" || user?.role === "hr") && 
-        ["executive", "head_administrator", "platform_admin", "admin"].includes(role)) {
+        ["super_admin", "head_administrator", "executive", "platform_admin", "admin"].includes(role)) {
       toast.error("You don't have permission to assign this role");
       return;
     }
@@ -1665,9 +1683,9 @@ export default function HRPage() {
                         <SelectContent>
                           {ROLE_OPTIONS
                             .filter(role => {
-                              // If user is HR, filter out restricted roles
+                              // If user is HR, filter out restricted roles (Level 9+)
                               if ((user?.role === "hr_manager" || user?.role === "hr") && 
-                                  ["executive", "head_administrator", "platform_admin", "admin"].includes(role.value)) {
+                                  role.level >= 9) {
                                 return false;
                               }
                               return true;
