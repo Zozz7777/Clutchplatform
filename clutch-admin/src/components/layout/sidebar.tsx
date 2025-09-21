@@ -2,7 +2,7 @@
 
 import React, { useState } from "react";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { cn } from "@/lib/utils";
 import { useAuth } from "@/contexts/auth-context";
 import { ChevronDown, ChevronRight } from "lucide-react";
@@ -19,6 +19,7 @@ interface SidebarProps {
 
 export function Sidebar({ isCollapsed, onToggle }: SidebarProps) {
   const pathname = usePathname();
+  const router = useRouter();
   const { hasPermission, user } = useAuth();
   const { t } = useTranslations();
   const [expandedItems, setExpandedItems] = useState<string[]>([]);
@@ -152,25 +153,24 @@ export function Sidebar({ isCollapsed, onToggle }: SidebarProps) {
                     )}
                   </div>
                 ) : (
-                  <Link
-                    href={item.href}
+                  <button
+                    onClick={() => {
+                      console.log('🔗 Navigation clicked:', item.href, item.title);
+                      router.push(item.href);
+                    }}
                     className={cn(
-                      "flex items-center px-3 py-2 text-sm font-medium rounded-[0.625rem] cursor-pointer transition-all duration-normal ease-in-out font-sans focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 focus:ring-offset-sidebar",
+                      "flex items-center px-3 py-2 text-sm font-medium rounded-[0.625rem] cursor-pointer transition-all duration-normal ease-in-out font-sans focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 focus:ring-offset-sidebar w-full text-left",
                       isActive
                         ? "bg-sidebar-primary text-white shadow-2xs"
                         : "text-foreground hover:bg-sidebar-primary/10 hover:text-sidebar-primary active:bg-sidebar-primary/20",
                       isCollapsed && "justify-center"
                     )}
-                    onClick={(e) => {
-                      console.log('🔗 Link clicked:', item.href, item.title);
-                      // Don't prevent default - let Next.js handle the navigation
-                    }}
                   >
                     <IconComponent className="w-4 h-4" />
                     {!isCollapsed && (
                       <span className="flex-1 ml-3">{item.title}</span>
                     )}
-                  </Link>
+                  </button>
                 )}
 
                 {/* Children */}
@@ -182,18 +182,21 @@ export function Sidebar({ isCollapsed, onToggle }: SidebarProps) {
 
                       const isChildActive = isItemActive(child.href);
                       return (
-                        <Link
+                        <button
                           key={child.href}
-                          href={child.href}
+                          onClick={() => {
+                            console.log('🔗 Child navigation clicked:', child.href, child.title);
+                            router.push(child.href);
+                          }}
                           className={cn(
-                            "block px-3 py-2 text-sm rounded-[0.625rem] transition-all duration-normal ease-in-out font-sans focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 focus:ring-offset-sidebar",
+                            "block px-3 py-2 text-sm rounded-[0.625rem] transition-all duration-normal ease-in-out font-sans focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 focus:ring-offset-sidebar w-full text-left",
                             isChildActive
                               ? "bg-sidebar-primary text-white shadow-2xs"
                               : "text-foreground hover:bg-sidebar-primary/10 hover:text-sidebar-primary active:bg-sidebar-primary/20"
                           )}
                         >
                           {child.title}
-                        </Link>
+                        </button>
                       );
                     })}
                   </div>
