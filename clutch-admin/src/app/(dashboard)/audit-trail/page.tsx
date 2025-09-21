@@ -426,7 +426,7 @@ export default function AuditTrailPage() {
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {filteredAuditLogs.map((log) => (
+                {(filteredAuditLogs || []).map((log) => (
                   <TableRow key={log._id}>
                     <TableCell className="font-mono text-sm">
                       {new Date(log.timestamp).toLocaleString()}
@@ -570,7 +570,7 @@ export default function AuditTrailPage() {
                 <div className="space-y-2">
                   <Label className="text-sm font-medium">Tags</Label>
                   <div className="flex flex-wrap gap-1">
-                    {selectedLog.tags.map((tag) => (
+                    {(selectedLog.tags || []).map((tag) => (
                       <Badge key={tag} variant="secondary" className="text-xs">
                         {tag}
                       </Badge>
