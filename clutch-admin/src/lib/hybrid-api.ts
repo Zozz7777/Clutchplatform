@@ -1,7 +1,7 @@
 import { apiService } from "./api";
 import { realApi } from "./real-api";
-// Note: mockAPI removed - use realApi instead
 import { API_BASE_URL } from "./constants";
+import { type User, type FleetVehicle, type KPIMetric, type ChatMessage } from "./types";
 
 // Configuration for real API only - no mock data in production
 const API_CONFIG = {
@@ -27,10 +27,15 @@ class HybridApiService {
     }
 
     try {
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 5000);
+      
       const response = await fetch(`${API_BASE_URL}/ping`, {
         method: "GET",
-        timeout: 5000,
+        signal: controller.signal,
       });
+      
+      clearTimeout(timeoutId);
       
       this.isBackendAvailable = response.ok;
       this.lastHealthCheck = now;
@@ -81,11 +86,19 @@ class HybridApiService {
         return result;
       }
     } catch (error) {
-      // Real login failed, using mock authentication
+      // Real login failed, fallback to mock authentication
+      return {
+        success: false,
+        data: null,
+        message: "Authentication failed"
+      };
     }
 
-    // Fallback to real API authentication
-    return await realApi.login(email, password);
+    return {
+      success: false,
+      data: null,
+      message: "Authentication failed"
+    };
   }
 
   async logout() {

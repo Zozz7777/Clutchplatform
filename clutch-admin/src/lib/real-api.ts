@@ -52,7 +52,7 @@ export class RealApiService {
   async getChatChannels(): Promise<Record<string, unknown>[]> {
     return withErrorHandling(
       async () => {
-        const response = await apiService.makeRequest<Record<string, unknown>[]>("/api/v1/chat-channels");
+        const response = await apiService.makeRequest<Record<string, unknown>[]>("/api/v1/communication/chat-channels");
         return handleApiResponse(response, 'getChatChannels', []);
       },
       'getChatChannels',
@@ -496,7 +496,7 @@ export class RealApiService {
   async getChatMessages(): Promise<Record<string, unknown>[]> {
     return withErrorHandling(
       async () => {
-        const response = await apiService.makeRequest<Record<string, unknown>[]>("/api/v1/chat/messages");
+        const response = await apiService.makeRequest<Record<string, unknown>[]>("/api/v1/communication/chat");
         return handleApiResponse(response, 'getChatMessages', []);
       },
       'getChatMessages',
@@ -507,7 +507,7 @@ export class RealApiService {
   async sendChatMessage(messageData: Record<string, unknown>): Promise<Record<string, unknown>> {
     return withErrorHandling(
       async () => {
-        const response = await apiService.makeRequest<Record<string, unknown>>("/api/v1/chat/messages", {
+        const response = await apiService.makeRequest<Record<string, unknown>>("/api/v1/communication/chat", {
           method: 'POST',
           body: JSON.stringify(messageData)
         });

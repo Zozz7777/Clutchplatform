@@ -7,10 +7,20 @@ export const getTranslations = () => {
 
   // Try to load translations from JSON files
   try {
-    enTranslations = require('@/messages/en.json');
-    arTranslations = require('@/messages/ar.json');
+    // Use dynamic imports for client-side compatibility
+    if (typeof window === 'undefined') {
+      // Server-side
+      enTranslations = require('@/messages/en.json');
+      arTranslations = require('@/messages/ar.json');
+    } else {
+      // Client-side - use fallback for now
+      enTranslations = null;
+      arTranslations = null;
+    }
   } catch (error) {
     // Failed to load translation files, using fallback
+    enTranslations = null;
+    arTranslations = null;
   }
 
   // Fallback translations if loading fails
