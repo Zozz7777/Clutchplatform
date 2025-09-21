@@ -157,7 +157,7 @@ class BusinessIntelligenceService {
         revenueGrowth: Math.round(revenueGrowth * 10) / 10
       };
     } catch (error) {
-      errorHandler.handleError(error as Error, 'Get unified ops pulse', { showToast: false });
+      errorHandler.handleError(error as Error, { component: 'BusinessIntelligence', action: 'Get unified ops pulse' });
       return {
         newUsers: 0,
         activeSessions: 0,
@@ -220,7 +220,7 @@ class BusinessIntelligenceService {
 
       return churnRisks.sort((a, b) => b.riskScore - a.riskScore).slice(0, 10);
     } catch (error) {
-      errorHandler.handleError(error as Error, 'Get churn risk', { showToast: false });
+      errorHandler.handleError(error as Error, { component: 'BusinessIntelligence', action: 'Get churn risk' });
       return [];
     }
   }
@@ -284,7 +284,7 @@ class BusinessIntelligenceService {
         costGrowth: Math.round(costGrowth * 10) / 10
       };
     } catch (error) {
-      errorHandler.handleError(error as Error, 'Get revenue vs cost margin', { showToast: false });
+      errorHandler.handleError(error as Error, { component: 'BusinessIntelligence', action: 'Get revenue vs cost margin' });
       return {
         revenue: 0,
         costs: 0,

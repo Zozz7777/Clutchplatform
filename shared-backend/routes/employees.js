@@ -317,7 +317,7 @@ router.get('/:id', authenticateToken, checkRole(['head_administrator', 'hr']), a
 router.put('/:id', authenticateToken, checkRole(['head_administrator', 'hr', 'hr_manager']), async (req, res) => {
   try {
     const { id } = req.params;
-    const { name, phoneNumber, role, department, position, permissions, isActive } = req.body;
+    const { name, phoneNumber, role, department, position, salary, permissions, isActive } = req.body;
     
     const employeesCollection = await getCollection('employees');
     
@@ -388,6 +388,9 @@ router.put('/:id', authenticateToken, checkRole(['head_administrator', 'hr', 'hr
     // Handle department and position updates
     if (department !== undefined) updateData['employment.department'] = department;
     if (position !== undefined) updateData['employment.position'] = position;
+    
+    // Handle salary updates
+    if (salary !== undefined) updateData['employment.salary'] = salary;
     
     // Handle permissions and status updates
     if (permissions) updateData.permissions = permissions;

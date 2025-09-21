@@ -6,7 +6,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useAuth } from "@/contexts/auth-context";
-import { useTranslations } from "next-intl";
+import { useTranslations } from "@/hooks/use-translations";
 import { formatDate, formatRelativeTime, formatCurrency } from "@/lib/utils";
 import { handleError, handleWarning, handleDataLoadError } from "@/lib/error-handler";
 import { 
@@ -119,7 +119,7 @@ export default function MarketingPage() {
   const [activeTab, setActiveTab] = useState<"campaigns" | "leads">("campaigns");
   const [isLoading, setIsLoading] = useState(true);
   const { hasPermission } = useAuth();
-  const t = (key: string, params?: any) => key;
+  const { t } = useTranslations();
 
   useEffect(() => {
     const loadMarketingData = async () => {

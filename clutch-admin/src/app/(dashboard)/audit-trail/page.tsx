@@ -50,7 +50,7 @@ import {
   Smartphone,
   Monitor,
 } from "lucide-react";
-// import { useTranslations } from "next-intl";
+// import { useTranslations } from "@/hooks/use-translations";
 import { productionApi } from "@/lib/production-api";
 import { toast } from "sonner";
 import { useAuth } from "@/contexts/auth-context";
@@ -109,7 +109,7 @@ interface UserActivity {
 }
 
 export default function AuditTrailPage() {
-  const t = (key: string, params?: any) => key;
+  const { t } = useTranslations();
   const { user, hasPermission } = useAuth();
   const [auditLogs, setAuditLogs] = useState<AuditLog[]>([]);
   const [securityEvents, setSecurityEvents] = useState<SecurityEvent[]>([]);

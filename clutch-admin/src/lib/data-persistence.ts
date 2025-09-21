@@ -482,7 +482,7 @@ class DataPersistenceService {
       'feature-flags': {
         create: () => Promise.resolve({ success: false, data: null, message: 'Method not implemented' }),
         read: productionApi.getFeatureFlags,
-        update: productionApi.updateFeatureFlag,
+        update: (...args: unknown[]) => productionApi.updateFeatureFlag(args[0] as string, args[1] as Record<string, unknown>),
         delete: () => Promise.resolve({ success: false, data: null, message: 'Method not implemented' })
       },
       'knowledge-articles': {

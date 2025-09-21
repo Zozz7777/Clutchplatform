@@ -760,11 +760,16 @@ router.get('/stats', authenticateToken, checkRole(['head_administrator', 'hr_man
     
     const averageSalary = salaryAggregation.length > 0 ? salaryAggregation[0].avgSalary : 0;
     
+    // Calculate open positions from applications that are still in progress
+    const openPositions = await applicationsCollection.countDocuments({ 
+      status: { $in: ['applied', 'screening', 'interview'] } 
+    });
+    
     const stats = {
       totalEmployees,
       activeEmployees,
       newHires,
-      openPositions: 5, // Default value - could be calculated from job postings
+      openPositions: openPositions || 0, // Calculate from actual applications
       pendingApplications,
       averageSalary: averageSalary || 0,
       turnoverRate: 5.2, // Default value - could be calculated from historical data

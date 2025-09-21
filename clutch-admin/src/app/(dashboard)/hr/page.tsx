@@ -339,6 +339,7 @@ export default function HRPage() {
         role: editFormData.role,
         department: editFormData.department,
         position: editFormData.position,
+        salary: editFormData.salary,
         permissions: editFormData.permissions,
         isActive: editFormData.isActive !== false
       };
@@ -1725,7 +1726,8 @@ export default function HRPage() {
                   <div>
                     <label className="text-sm font-medium">Salary</label>
                     <Input 
-                      defaultValue={selectedEmployee.salary || ''} 
+                      value={editFormData.salary || ''} 
+                      onChange={(e) => setEditFormData(prev => ({ ...prev, salary: Number(e.target.value) || 0 }))}
                       placeholder="Enter salary"
                       type="number"
                     />
