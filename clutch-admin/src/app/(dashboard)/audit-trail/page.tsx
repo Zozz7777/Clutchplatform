@@ -50,7 +50,7 @@ import {
   Smartphone,
   Monitor,
 } from "lucide-react";
-// import { useTranslations } from "@/hooks/use-translations";
+import { useTranslations } from "@/hooks/use-translations";
 import { productionApi } from "@/lib/production-api";
 import { toast } from "sonner";
 import { useAuth } from "@/contexts/auth-context";
