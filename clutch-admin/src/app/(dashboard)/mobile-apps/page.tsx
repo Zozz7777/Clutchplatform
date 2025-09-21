@@ -28,8 +28,8 @@ import {
   CheckCircle,
   XCircle,
 } from "lucide-react";
-import { useTranslations } from "@/hooks/use-translations";
-import { realApi } from "@/lib/real-api";
+import { useTranslations } from "next-intl";
+import { productionApi } from "@/lib/production-api";
 import { toast } from "sonner";
 
 interface AppVersion {
@@ -96,7 +96,7 @@ interface AppStore {
 }
 
 export default function MobileAppsPage() {
-  const { t } = useTranslations();
+  const t = useTranslations();
   const [activeTab, setActiveTab] = useState("overview");
   const [searchTerm, setSearchTerm] = useState("");
   const [versions, setVersions] = useState<AppVersion[]>([]);
@@ -106,38 +106,100 @@ export default function MobileAppsPage() {
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
+    let isMounted = true;
+    let timeoutId: NodeJS.Timeout | null = null;
+
     const loadMobileAppsData = async () => {
+      if (!isMounted) return;
+      
       try {
         setIsLoading(true);
         
-        // Load real data from API
-        const [versionsData, crashesData, analyticsData, storesData] = await Promise.all([
-          realApi.getMobileAppVersions(),
-          realApi.getMobileAppCrashes(),
-          realApi.getMobileAppAnalytics(),
-          realApi.getMobileAppStores()
-        ]);
+        // Add debouncing to prevent excessive API calls
+        if (timeoutId) {
+          clearTimeout(timeoutId);
+        }
+        
+        timeoutId = setTimeout(async () => {
+          if (!isMounted) return;
+          
+          // Load all data with error handling using Promise.allSettled
+          const [versionsData, crashesData, analyticsData, storesData] = await Promise.allSettled([
+            productionApi.getMobileAppVersions(),
+            productionApi.getMobileAppCrashes(),
+            productionApi.getMobileAppAnalytics(),
+            productionApi.getMobileAppStores()
+          ]);
 
-        setVersions((versionsData as unknown as AppVersion[]) || []);
-        setCrashes((crashesData as unknown as CrashReport[]) || []);
-        setAnalytics((analyticsData as unknown as AppAnalytics[]) || []);
-        setStores((storesData as unknown as AppStore[]) || []);
+          // Handle versions data
+          const versionsArray = versionsData.status === 'fulfilled' && Array.isArray(versionsData.value) 
+            ? versionsData.value as unknown as AppVersion[] 
+            : [];
+          
+          // Handle crashes data
+          const crashesArray = crashesData.status === 'fulfilled' && Array.isArray(crashesData.value) 
+            ? crashesData.value as unknown as CrashReport[] 
+            : [];
+          
+          // Handle analytics data
+          const analyticsArray = analyticsData.status === 'fulfilled' && Array.isArray(analyticsData.value) 
+            ? analyticsData.value as unknown as AppAnalytics[] 
+            : [];
+          
+          // Handle stores data
+          const storesArray = storesData.status === 'fulfilled' && Array.isArray(storesData.value) 
+            ? storesData.value as unknown as AppStore[] 
+            : [];
+          
+          if (isMounted) {
+            setVersions(versionsArray);
+            setCrashes(crashesArray);
+            setAnalytics(analyticsArray);
+            setStores(storesArray);
+          }
+          
+          // Log any errors
+          if (versionsData.status === 'rejected') {
+            console.error('Failed to load mobile app versions:', versionsData.reason);
+          }
+          if (crashesData.status === 'rejected') {
+            console.error('Failed to load mobile app crashes:', crashesData.reason);
+          }
+          if (analyticsData.status === 'rejected') {
+            console.error('Failed to load mobile app analytics:', analyticsData.reason);
+          }
+          if (storesData.status === 'rejected') {
+            console.error('Failed to load mobile app stores:', storesData.reason);
+          }
+          
+        }, 300); // 300ms debounce
         
       } catch (error) {
-        // Error handled by API service
-        toast.error('Failed to load mobile apps data');
+        if (!isMounted) return;
+        
+        console.error('Error loading mobile apps data:', error);
+        toast.error(t('mobileApps.failedToLoadData') || 'Failed to load mobile apps data');
         // Set empty arrays on error - no mock data fallback
         setVersions([]);
         setCrashes([]);
         setAnalytics([]);
         setStores([]);
       } finally {
-        setIsLoading(false);
+        if (isMounted) {
+          setIsLoading(false);
+        }
       }
     };
 
     loadMobileAppsData();
-  }, []); // Remove [t] dependency to prevent infinite reload
+
+    return () => {
+      isMounted = false;
+      if (timeoutId) {
+        clearTimeout(timeoutId);
+      }
+    };
+  }, [t]); // Remove [t] dependency to prevent infinite reload
 
 
   const getStatusColor = (status: string) => {

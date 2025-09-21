@@ -64,7 +64,7 @@ interface SystemSetting {
   category: "general" | "security" | "notifications" | "appearance" | "integrations" | "advanced";
   description: string;
   isPublic: boolean;
-  is{t('dashboard.required')}: boolean;
+  isRequired: boolean;
   validation?: {
     min?: number;
     max?: number;
@@ -491,7 +491,7 @@ export default function SettingsPage() {
                       <div className="flex items-center space-x-2">
                         {getCategoryIcon(setting?.category || 'general')}
                         <label className="text-sm font-medium">{setting?.key || t('dashboard.unknownSetting')}</label>
-                        {setting?.is{t('dashboard.required')} && (
+                        {setting?.isRequired && (
                           <Badge variant="destructive" className="text-xs">{t('dashboard.required')}</Badge>
                         )}
                       </div>
@@ -511,9 +511,9 @@ export default function SettingsPage() {
       {activeTab === "security" && (
         <Card>
           <CardHeader>
-            <CardTitle>{t('settings.securitySettings')}</CardTitle>
+            <CardTitle>{t('dashboard.securitySettings')}</CardTitle>
             <CardDescription>
-              Configure security policies and authentication
+              {t('dashboard.securityConfigurationAndAccess')}
             </CardDescription>
           </CardHeader>
           <CardContent>
@@ -526,7 +526,7 @@ export default function SettingsPage() {
                       <div className="flex items-center space-x-2">
                         <Shield className="h-4 w-4" />
                         <label className="text-sm font-medium">{setting.key}</label>
-                        {setting.is{t('dashboard.required')} && (
+                        {setting.isRequired && (
                           <Badge variant="destructive" className="text-xs">{t('dashboard.required')}</Badge>
                         )}
                       </div>
@@ -546,9 +546,9 @@ export default function SettingsPage() {
       {activeTab === "notifications" && (
         <Card>
           <CardHeader>
-            <CardTitle>{t('settings.notificationSettings')}</CardTitle>
+            <CardTitle>{t('dashboard.notificationSettings')}</CardTitle>
             <CardDescription>
-              Configure notification preferences and channels
+              {t('dashboard.notificationPreferencesAndAlerts')}
             </CardDescription>
           </CardHeader>
           <CardContent>
@@ -578,9 +578,9 @@ export default function SettingsPage() {
       {activeTab === "appearance" && (
         <Card>
           <CardHeader>
-            <CardTitle>{t('settings.appearanceSettings')}</CardTitle>
+            <CardTitle>{t('dashboard.appearanceSettings')}</CardTitle>
             <CardDescription>
-              Customize the look and feel of the application
+              {t('dashboard.themeAndDisplayPreferences')}
             </CardDescription>
           </CardHeader>
           <CardContent>

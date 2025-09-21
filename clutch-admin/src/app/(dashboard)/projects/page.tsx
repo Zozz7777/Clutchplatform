@@ -254,8 +254,8 @@ export default function ProjectManagementPage() {
   
   const filteredProjects = projectsArray.filter((project) => {
     if (!project) return false;
-    const matchesSearch = (project.name || '').to{t('dashboard.low')}erCase().includes(searchTerm.to{t('dashboard.low')}erCase()) ||
-                         (project.description || '').to{t('dashboard.low')}erCase().includes(searchTerm.to{t('dashboard.low')}erCase());
+    const matchesSearch = (project.name || '').toLowerCase().includes(searchTerm.toLowerCase()) ||
+                         (project.description || '').toLowerCase().includes(searchTerm.toLowerCase());
     const matchesStatus = statusFilter === "all" || project.status === statusFilter;
     return matchesSearch && matchesStatus;
   });
