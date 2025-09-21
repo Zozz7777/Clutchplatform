@@ -204,7 +204,7 @@ export function SLACompliance({ className = '' }: SLAComplianceProps) {
               {getComplianceLevel(slaData.overallCompliance)}
             </Badge>
           </div>
-          <p className="text-sm text-muted-foreground">Overall SLA Compliance</p>
+          <p className="text-sm text-muted-foreground">{t('sla.overallSlaCompliance')}</p>
           <div className="mt-3">
             <Progress value={slaData.overallCompliance} className="h-2" />
           </div>
@@ -212,32 +212,32 @@ export function SLACompliance({ className = '' }: SLAComplianceProps) {
 
         {/* Status Distribution */}
         <div className="space-y-3">
-          <h4 className="text-sm font-medium text-foreground">Status Distribution</h4>
+          <h4 className="text-sm font-medium text-foreground">{t('sla.statusDistribution')}</h4>
           <div className="grid grid-cols-3 gap-2">
             <div className="text-center p-2 bg-success/10 rounded-[0.625rem]">
               <p className="text-sm font-bold text-success">
                 {slaData.statusDistribution.compliant || 0}
               </p>
-              <p className="text-xs text-muted-foreground">Compliant</p>
+              <p className="text-xs text-muted-foreground">{t('sla.compliant')}</p>
             </div>
             <div className="text-center p-2 bg-warning/10 rounded-[0.625rem]">
               <p className="text-sm font-bold text-warning">
                 {slaData.statusDistribution.warning || 0}
               </p>
-              <p className="text-xs text-muted-foreground">Warning</p>
+              <p className="text-xs text-muted-foreground">{t('sla.warning')}</p>
             </div>
             <div className="text-center p-2 bg-destructive/10 rounded-[0.625rem]">
               <p className="text-sm font-bold text-destructive">
                 {slaData.statusDistribution.breach || 0}
               </p>
-              <p className="text-xs text-muted-foreground">Breach</p>
+              <p className="text-xs text-muted-foreground">{t('sla.breach')}</p>
             </div>
           </div>
         </div>
 
         {/* Service Metrics */}
         <div className="space-y-3">
-          <h4 className="text-sm font-medium text-foreground">Service Metrics</h4>
+          <h4 className="text-sm font-medium text-foreground">{t('sla.serviceMetrics')}</h4>
           <div className="space-y-2">
             {slaData.metrics.map((metric) => {
               const TrendIcon = getTrendIcon(metric.trend);
@@ -291,7 +291,7 @@ export function SLACompliance({ className = '' }: SLAComplianceProps) {
               Average MTTR
             </Badge>
           </div>
-          <p className="text-sm text-muted-foreground">Mean Time To Recovery</p>
+          <p className="text-sm text-muted-foreground">{t('sla.meanTimeToRecovery')}</p>
         </div>
 
         {/* Action Buttons */}

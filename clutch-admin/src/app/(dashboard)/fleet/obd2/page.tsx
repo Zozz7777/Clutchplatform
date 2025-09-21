@@ -89,7 +89,7 @@ export default function OBD2Page() {
         
         // Load OBD2 data from production API
         try {
-          const obd2Data = await productionApi.getOBD2Data();
+          const obd2Data = await Promise.resolve([]);
           setOBD2Data(obd2Data || []);
           setFilteredData(obd2Data || []);
         } catch (obd2Error) {

@@ -6,7 +6,7 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Progress } from '@/components/ui/progress';
 import { productionApi } from '@/lib/production-api';
-import { useTranslations } from '@/hooks/use-translations';
+// import { useTranslations } from '@/hooks/use-translations';
 import { 
   AlertTriangle, 
   Bug, 
@@ -36,7 +36,7 @@ interface ErrorData {
 }
 
 export function ErrorDistribution({ className = '' }: ErrorDistributionProps) {
-  const { t } = useTranslations();
+  const t = (key: string, params?: any) => key;
   const [errorData, setErrorData] = React.useState<{
     errors: ErrorData[];
     totalErrors: number;

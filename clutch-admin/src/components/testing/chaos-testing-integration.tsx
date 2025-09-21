@@ -73,7 +73,7 @@ import {
   FileCheck,
   AlertCircle,
   CheckCircle2,
-  XCircle2,
+  XCircle,
   Info as InfoIcon,
   RotateCcw as RollbackIcon,
   Power,

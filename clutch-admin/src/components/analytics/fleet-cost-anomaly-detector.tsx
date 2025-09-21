@@ -16,6 +16,7 @@ import {
   Fuel, 
   Battery,
   Activity,
+  Shield,
   Zap,
   Eye,
   EyeOff,
