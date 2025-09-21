@@ -7,6 +7,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { useTranslations } from 'next-intl';
 import { 
   HelpCircle, 
   Plus, 
@@ -31,29 +32,8 @@ interface HelpArticle {
 }
 
 export default function HelpCMSPage() {
-  const [articles, setArticles] = useState<HelpArticle[]>([
-    {
-      id: '1',
-      title: 'Getting Started Guide',
-      content: 'Complete guide to setting up your Clutch account...',
-      category: 'Getting Started',
-      tags: ['setup', 'onboarding'],
-      status: 'published',
-      views: 1250,
-      lastUpdated: '2024-01-15'
-    },
-    {
-      id: '2',
-      title: 'Fleet Management Basics',
-      content: 'Learn how to manage your vehicle fleet effectively...',
-      category: 'Fleet Management',
-      tags: ['fleet', 'vehicles'],
-      status: 'published',
-      views: 890,
-      lastUpdated: '2024-01-14'
-    }
-  ]);
-
+  const t = useTranslations() as any;
+  const [articles, setArticles] = useState<HelpArticle[]>([]);
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('all');
 

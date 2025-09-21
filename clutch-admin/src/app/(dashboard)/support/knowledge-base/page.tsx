@@ -27,7 +27,7 @@ import {
   Calendar,
   User
 } from 'lucide-react';
-import { useTranslations } from '@/hooks/use-translations';
+import { useTranslations } from 'next-intl';
 import { productionApi } from '@/lib/production-api';
 
 interface KnowledgeArticle {
@@ -48,7 +48,7 @@ interface KnowledgeArticle {
 }
 
 export default function KnowledgeBasePage() {
-  const { t } = useTranslations();
+  const t = useTranslations() as any;
   const [articles, setArticles] = useState<KnowledgeArticle[]>([]);
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('all');

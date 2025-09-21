@@ -6,7 +6,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useAuth } from "@/contexts/auth-context";
-import { useTranslations } from "@/hooks/use-translations";
+import { useTranslations } from "next-intl";
 import { formatDate, formatRelativeTime, formatCurrency } from "@/lib/utils";
 import { productionApi } from "@/lib/production-api";
 import { toast } from "sonner";
@@ -128,7 +128,7 @@ export default function EnterprisePage() {
   const [tierFilter, setTierFilter] = useState<string>("all");
   const [isLoading, setIsLoading] = useState(true);
   const { hasPermission } = useAuth();
-  const { t } = useTranslations();
+  const t = useTranslations() as any;
 
   useEffect(() => {
     const loadEnterpriseData = async () => {

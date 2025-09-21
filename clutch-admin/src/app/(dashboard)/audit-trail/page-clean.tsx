@@ -47,7 +47,7 @@ import {
   Smartphone,
   Monitor,
 } from "lucide-react";
-import { useTranslations } from "@/hooks/use-translations";
+import { useTranslations } from "next-intl";
 import { realApi } from "@/lib/real-api";
 import { toast } from "sonner";
 
@@ -104,7 +104,7 @@ interface UserActivity {
 }
 
 export default function AuditTrailPage() {
-  const { t } = useTranslations();
+  const t = useTranslations() as any;
   const [auditLogs, setAuditLogs] = useState<AuditLog[]>([]);
   const [securityEvents, setSecurityEvents] = useState<SecurityEvent[]>([]);
   const [userActivities, setUserActivities] = useState<UserActivity[]>([]);

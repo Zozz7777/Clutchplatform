@@ -10,7 +10,7 @@ import { ScrollArea } from '@/components/ui/scroll-area';
 import { websocketService } from '@/lib/websocket-service';
 import { productionApi } from '@/lib/production-api';
 import { toast } from 'sonner';
-import { useTranslations } from '@/hooks/use-translations';
+import { useTranslations } from 'next-intl';
 import { 
   Send, 
   MessageSquare, 
@@ -65,7 +65,7 @@ interface ChatProps {
 }
 
 export function Chat({ className = '', initialSessionId, onSessionChange }: ChatProps) {
-  const { t } = useTranslations();
+  const t = useTranslations() as any;
   const [sessions, setSessions] = useState<ChatSession[]>([]);
   const [activeSession, setActiveSession] = useState<ChatSession | null>(null);
   const [messages, setMessages] = useState<ChatMessage[]>([]);

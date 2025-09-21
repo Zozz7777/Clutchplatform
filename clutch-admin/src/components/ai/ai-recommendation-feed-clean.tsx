@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { useTranslations } from '@/hooks/use-translations';
+import { useTranslations } from 'next-intl';
 import { realApi } from '@/lib/real-api';
 import { toast } from 'sonner';
 import { 
@@ -52,7 +52,7 @@ interface AIRecommendation {
 }
 
 export default function AIRecommendationFeed() {
-  const { t } = useTranslations();
+  const t = useTranslations() as any;
   const [recommendations, setRecommendations] = useState<AIRecommendation[]>([]);
   const [filter, setFilter] = useState<'all' | 'revenue' | 'efficiency' | 'cost' | 'risk' | 'growth'>('all');
   const [isAnalyzing, setIsAnalyzing] = useState(false);

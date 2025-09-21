@@ -23,7 +23,7 @@ import {
   Shield,
   Activity,
 } from "lucide-react";
-import { useTranslations } from "@/hooks/use-translations";
+import { useTranslations } from "next-intl";
 import { realApi } from "@/lib/real-api";
 import { toast } from "sonner";
 
@@ -55,7 +55,7 @@ interface APIEndpoint {
 }
 
 export default function APIDocsPage() {
-  const { t } = useTranslations();
+  const t = useTranslations() as any;
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedCategory, setSelectedCategory] = useState<string>("all");
   const [selectedEndpoint, setSelectedEndpoint] = useState<APIEndpoint | null>(null);

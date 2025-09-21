@@ -52,7 +52,7 @@ import {
 } from "lucide-react";
 import { formatCurrency } from "@/lib/utils";
 import { productionApi } from "@/lib/production-api";
-import { useTranslations } from "@/hooks/use-translations";
+import { useTranslations } from "next-intl";
 
 interface Vendor {
   _id: string;
@@ -186,7 +186,7 @@ interface Communication {
 }
 
 export default function VendorManagementPage() {
-  const { t } = useTranslations();
+  const t = useTranslations() as any;
   const [vendors, setVendors] = useState<Vendor[]>([]);
   const [contracts, setContracts] = useState<Contract[]>([]);
   const [communications, setCommunications] = useState<Communication[]>([]);

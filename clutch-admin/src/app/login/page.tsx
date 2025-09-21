@@ -9,7 +9,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Label } from "@/components/ui/label";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Loader2, Eye, EyeOff } from "lucide-react";
-import { useTranslations } from "@/hooks/use-translations";
+import { useTranslations } from "next-intl";
 
 export default function LoginPage() {
   const [email, setEmail] = useState("");
@@ -19,7 +19,7 @@ export default function LoginPage() {
   const [isLoading, setIsLoading] = useState(false);
   
   const { login } = useAuth();
-  const { t } = useTranslations();
+  const t = useTranslations() as any;
   const router = useRouter();
 
   const handleSubmit = async (e: React.FormEvent) => {

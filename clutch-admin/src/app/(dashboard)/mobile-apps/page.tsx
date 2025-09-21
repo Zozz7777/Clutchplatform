@@ -28,7 +28,7 @@ import {
   CheckCircle,
   XCircle,
 } from "lucide-react";
-import { useTranslations } from "@/hooks/use-translations";
+import { useTranslations } from "next-intl";
 import { productionApi } from "@/lib/production-api";
 import { toast } from "sonner";
 
@@ -96,7 +96,7 @@ interface AppStore {
 }
 
 export default function MobileAppsPage() {
-  const { t } = useTranslations();
+  const t = useTranslations() as any;
   const [activeTab, setActiveTab] = useState("overview");
   const [searchTerm, setSearchTerm] = useState("");
   const [versions, setVersions] = useState<AppVersion[]>([]);

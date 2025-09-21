@@ -7,7 +7,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
 import { useAuth } from "@/contexts/auth-context";
-import { useTranslations } from "@/hooks/use-translations";
+import { useTranslations } from "next-intl";
 import { 
   User, 
   Mail, 
@@ -62,7 +62,7 @@ interface UserProfile {
 }
 
 export default function ProfileSettingsPage() {
-  const { t } = useTranslations();
+  const t = useTranslations() as any;
   const { user, hasPermission } = useAuth();
   const [profile, setProfile] = useState<UserProfile | null>(null);
   const [isLoading, setIsLoading] = useState(true);

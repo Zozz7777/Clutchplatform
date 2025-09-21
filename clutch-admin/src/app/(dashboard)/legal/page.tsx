@@ -6,7 +6,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useAuth } from "@/contexts/auth-context";
-import { useTranslations } from "@/hooks/use-translations";
+import { useTranslations } from "next-intl";
 import { formatDate, formatRelativeTime } from "@/lib/utils";
 import { 
   Scale, 
@@ -101,7 +101,7 @@ export default function LegalPage() {
   const [activeTab, setActiveTab] = useState<"contracts" | "disputes">("contracts");
   const [isLoading, setIsLoading] = useState(true);
   const { hasPermission } = useAuth();
-  const { t } = useTranslations();
+  const t = useTranslations() as any;
 
   useEffect(() => {
     const loadLegalData = async () => {
