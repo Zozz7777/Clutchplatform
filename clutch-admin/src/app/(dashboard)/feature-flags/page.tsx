@@ -348,7 +348,7 @@ export default function FeatureFlagsPage() {
       
       const newFlag = await productionApi.createFeatureFlag(flagData);
       if (newFlag) {
-        setFeatureFlags(prev => [...(Array.isArray(prev) ? prev : []), newFlag as FeatureFlag]);
+        setFeatureFlags(prev => [...(Array.isArray(prev) ? prev : []), newFlag as unknown as FeatureFlag]);
         setShowCreateDialog(false);
         setCreateFlagData({
           name: "",
@@ -388,7 +388,7 @@ export default function FeatureFlagsPage() {
       
       const newTest = await productionApi.createABTest(abTestData);
       if (newTest) {
-        setABTests(prev => [...(Array.isArray(prev) ? prev : []), newTest as ABTest]);
+        setABTests(prev => [...(Array.isArray(prev) ? prev : []), newTest as unknown as ABTest]);
         setShowABTestDialog(false);
         setCreateABTestData({
           name: "",
@@ -429,7 +429,7 @@ export default function FeatureFlagsPage() {
       
       const newRollout = await productionApi.createRollout(rolloutData);
       if (newRollout) {
-        setRollouts(prev => [...(Array.isArray(prev) ? prev : []), newRollout as Rollout]);
+        setRollouts(prev => [...(Array.isArray(prev) ? prev : []), newRollout as unknown as Rollout]);
         setShowRolloutDialog(false);
         setCreateRolloutData({
           name: "",
@@ -447,7 +447,7 @@ export default function FeatureFlagsPage() {
 
   const toggleFeatureFlag = async (flagId: string, enabled: boolean) => {
     try {
-      await productionApi.updateFeatureFlag(flagId, enabled);
+      await productionApi.updateFeatureFlag(flagId, { enabled: enabled });
       setFeatureFlags(prev => 
         (Array.isArray(prev) ? prev : []).map(flag => 
           flag?._id === flagId 
@@ -668,7 +668,13 @@ export default function FeatureFlagsPage() {
           </div>
 
           <div className="space-y-4">
-            {Array.isArray(filteredFlags) ? filteredFlags.map((flag) => (
+            {Array.isArray(filteredFlags) ? filteredFlags.map((flag) => {
+              // Validate flag object before rendering
+              if (!flag || typeof flag !== 'object' || !flag._id) {
+                return null;
+              }
+              
+              return (
               <Card key={flag._id} className="hover:shadow-sm transition-shadow">
                 <CardContent className="p-6">
                   <div className="flex items-start justify-between">
@@ -786,7 +792,8 @@ export default function FeatureFlagsPage() {
                   </div>
                 </CardContent>
               </Card>
-            )) : null}
+              );
+            }) : null}
           </div>
         </CardContent>
       </Card>
@@ -801,7 +808,13 @@ export default function FeatureFlagsPage() {
         </CardHeader>
         <CardContent>
           <div className="space-y-4">
-            {Array.isArray(abTests) ? abTests.map((test) => (
+            {Array.isArray(abTests) ? abTests.map((test) => {
+              // Validate test object before rendering
+              if (!test || typeof test !== 'object' || !test._id) {
+                return null;
+              }
+              
+              return (
               <Card key={test._id} className="hover:shadow-sm transition-shadow">
                 <CardContent className="p-6">
                   <div className="flex items-start justify-between">
@@ -894,7 +907,8 @@ export default function FeatureFlagsPage() {
                   </div>
                 </CardContent>
               </Card>
-            )) : null}
+              );
+            }) : null}
           </div>
         </CardContent>
       </Card>

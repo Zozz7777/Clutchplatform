@@ -8,7 +8,7 @@ import { Input } from "@/components/ui/input";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { formatDate, formatRelativeTime } from "@/lib/utils";
 import { useAuth } from "@/contexts/auth-context";
-// import { useTranslations } from "next-intl";
+import { useTranslations } from "@/hooks/use-translations";
 import { productionApi } from "@/lib/production-api";
 import { toast } from "sonner";
 import { handleDataLoadError } from "@/lib/error-handler";

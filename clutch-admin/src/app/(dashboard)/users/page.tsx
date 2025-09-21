@@ -11,7 +11,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { productionApi } from "@/lib/production-api";
 import { formatDate, formatRelativeTime } from "@/lib/utils";
 import { useAuth } from "@/contexts/auth-context";
-// import { useTranslations } from "@/hooks/use-translations";
+import { useTranslations } from "@/hooks/use-translations";
 import { useQuickActions } from "@/lib/quick-actions";
 import { toast } from "sonner";
 import { handleError } from "@/lib/error-handler";
