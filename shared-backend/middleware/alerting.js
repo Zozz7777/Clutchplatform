@@ -34,10 +34,11 @@ const addAlert = (type, message, severity = 'warning', metadata = {}) => {
   
   alerts[severity].push(alert);
   
-  // Keep only last 100 alerts
-  if (alerts[severity].length > 100) {
-    alerts[severity] = alerts[severity].slice(-100);
-  }
+  // Keep only last 50 alerts and remove alerts older than 1 hour
+  const oneHourAgo = Date.now() - (60 * 60 * 1000);
+  alerts[severity] = alerts[severity]
+    .filter(alert => new Date(alert.timestamp).getTime() > oneHourAgo)
+    .slice(-50);
   
   console.log(`🚨 ${severity.toUpperCase()} ALERT [${type}]: ${message}`);
   

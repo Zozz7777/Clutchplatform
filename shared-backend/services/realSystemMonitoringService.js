@@ -230,7 +230,7 @@ class RealSystemMonitoringService {
   /**
    * Start continuous monitoring
    */
-  startMonitoring(intervalMs = 30000) {
+  startMonitoring(intervalMs = 60000) { // Reduced frequency from 30s to 60s to reduce memory overhead
     if (this.monitoringInterval) {
       clearInterval(this.monitoringInterval);
     }
