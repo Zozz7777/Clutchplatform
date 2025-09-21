@@ -121,7 +121,7 @@ router.get('/status', (req, res) => {
   }
 });
 
-// GET /api/v1/system/health - Comprehensive system health check
+// GET /api/v1/system/health - Comprehensive system health check (v2)
 router.get('/health', async (req, res) => {
   try {
     const startTime = Date.now();
