@@ -46,7 +46,7 @@ import {
 } from "lucide-react";
 import { formatCurrency } from "@/lib/utils";
 import { productionApi } from "@/lib/production-api";
-import { useTranslations } from "next-intl";
+import { useTranslations } from "@/hooks/use-translations";
 import { handleDataLoadError } from "@/lib/error-handler";
 
 // Import new Phase 2 widgets
@@ -117,7 +117,7 @@ interface TimeEntry {
 }
 
 export default function ProjectManagementPage() {
-  const t = (key: string, params?: any) => key;
+  const { t } = useTranslations();
   const [projects, setProjects] = useState<Project[]>([]);
   const [tasks, setTasks] = useState<Task[]>([]);
   const [timeEntries, setTimeEntries] = useState<TimeEntry[]>([]);

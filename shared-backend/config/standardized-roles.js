@@ -11,7 +11,7 @@ const STANDARDIZED_ROLES = {
     department: 'Executive',
     permissions: ['*'], // All permissions
     frontendRole: 'super_admin',
-    backendRoles: ['super_admin']
+    backendRoles: ['super_admin', 'head_administrator', 'platform_admin', 'executive', 'admin']
   },
 
   HEAD_ADMINISTRATOR: {

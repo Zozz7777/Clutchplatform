@@ -6,7 +6,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useAuth } from "@/contexts/auth-context";
-import { useTranslations } from "next-intl";
+import { useTranslations } from "@/hooks/use-translations";
 import { formatDate, formatRelativeTime } from "@/lib/utils";
 import { realApi } from "@/lib/real-api";
 import { 
@@ -107,7 +107,7 @@ export default function CMSPage() {
   const [activeTab, setActiveTab] = useState<"content" | "media" | "categories">("content");
   const [isLoading, setIsLoading] = useState(true);
   const { hasPermission } = useAuth();
-  const t = (key: string, params?: any) => key;
+  const { t } = useTranslations();
 
   useEffect(() => {
     const loadCMSData = async () => {
