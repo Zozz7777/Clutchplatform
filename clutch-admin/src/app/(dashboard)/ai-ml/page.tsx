@@ -259,7 +259,7 @@ export default function AIMLPage() {
         </Card>
         <Card className="shadow-2xs">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium text-card-foreground">Active Models</CardTitle>
+            <CardTitle className="text-sm font-medium text-card-foreground">{t('dashboard.activeModels')}</CardTitle>
             <Brain className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
@@ -286,17 +286,17 @@ export default function AIMLPage() {
       {/* AI/ML Tabs */}
       <Tabs defaultValue="models" className="space-y-4">
         <TabsList className="grid w-full grid-cols-4">
-          <TabsTrigger value="models">AI Models</TabsTrigger>
-          <TabsTrigger value="fraud">Fraud Detection</TabsTrigger>
-          <TabsTrigger value="recommendations">Recommendations</TabsTrigger>
-          <TabsTrigger value="training">Training Status</TabsTrigger>
+          <TabsTrigger value="models">{t('dashboard.aiModels')}</TabsTrigger>
+          <TabsTrigger value="fraud">{t('dashboard.fraudDetection')}</TabsTrigger>
+          <TabsTrigger value="recommendations">{t('dashboard.recommendations')}</TabsTrigger>
+          <TabsTrigger value="training">{t('dashboard.trainingStatus')}</TabsTrigger>
         </TabsList>
 
         <TabsContent value="models" className="space-y-4">
           <Card className="shadow-2xs">
             <CardHeader>
-              <CardTitle className="text-card-foreground">AI Models</CardTitle>
-              <CardDescription>Manage and monitor machine learning models</CardDescription>
+              <CardTitle className="text-card-foreground">{t('dashboard.aiModels')}</CardTitle>
+              <CardDescription>{t('dashboard.manageAndMonitorModels')}</CardDescription>
             </CardHeader>
             <CardContent>
               {/* Filters */}
@@ -317,10 +317,10 @@ export default function AIMLPage() {
                     <SelectValue placeholder={t('common.filter')} />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="all">All Status</SelectItem>
-                    <SelectItem value="active">Active</SelectItem>
-                    <SelectItem value="training">Training</SelectItem>
-                    <SelectItem value="inactive">Inactive</SelectItem>
+                    <SelectItem value="all">{t('dashboard.allStatus')}</SelectItem>
+                    <SelectItem value="active">{t('dashboard.active')}</SelectItem>
+                    <SelectItem value="training">{t('dashboard.training')}</SelectItem>
+                    <SelectItem value="inactive">{t('dashboard.inactive')}</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
@@ -431,8 +431,8 @@ export default function AIMLPage() {
         <TabsContent value="fraud" className="space-y-4">
           <Card className="shadow-2xs">
             <CardHeader>
-              <CardTitle className="text-card-foreground">Fraud Detection Cases</CardTitle>
-              <CardDescription>Monitor and investigate potential fraud cases</CardDescription>
+              <CardTitle className="text-card-foreground">{t('dashboard.fraudDetectionCases')}</CardTitle>
+              <CardDescription>{t('dashboard.monitorAndInvestigateFraud')}</CardDescription>
             </CardHeader>
             <CardContent>
               <Table>
@@ -519,8 +519,8 @@ export default function AIMLPage() {
         <TabsContent value="recommendations" className="space-y-4">
           <Card className="shadow-2xs">
             <CardHeader>
-              <CardTitle className="text-card-foreground">AI Recommendations</CardTitle>
-              <CardDescription>Intelligent recommendations for business optimization</CardDescription>
+              <CardTitle className="text-card-foreground">{t('dashboard.aiRecommendations')}</CardTitle>
+              <CardDescription>{t('dashboard.intelligentRecommendations')}</CardDescription>
             </CardHeader>
             <CardContent>
               <Table>
@@ -613,8 +613,8 @@ export default function AIMLPage() {
         <TabsContent value="training" className="space-y-4">
           <Card className="shadow-2xs">
             <CardHeader>
-              <CardTitle className="text-card-foreground">Training Status & Logs</CardTitle>
-              <CardDescription>Monitor model training progress and view logs</CardDescription>
+              <CardTitle className="text-card-foreground">{t('dashboard.trainingStatusAndLogs')}</CardTitle>
+              <CardDescription>{t('dashboard.monitorTrainingProgress')}</CardDescription>
             </CardHeader>
             <CardContent>
               <div className="space-y-4">
@@ -635,8 +635,8 @@ export default function AIMLPage() {
                   <div className="flex items-center space-x-3">
                     <div className="w-2 h-2 rounded-full bg-primary"></div>
                     <div>
-                      <p className="text-sm font-medium text-foreground">Fraud Detection Model</p>
-                      <p className="text-xs text-muted-foreground">Training completed successfully</p>
+                      <p className="text-sm font-medium text-foreground">{t('dashboard.fraudDetectionModel')}</p>
+                      <p className="text-xs text-muted-foreground">{t('dashboard.trainingCompletedSuccessfully')}</p>
                     </div>
                   </div>
                   <div className="text-right">
