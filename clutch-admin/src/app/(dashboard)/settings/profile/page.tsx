@@ -220,7 +220,7 @@ export default function ProfileSettingsPage() {
         preferences: {
           ...prev.preferences,
           [category]: {
-            ...(prev.preferences as Record<string, unknown>)[category],
+            ...(prev.preferences as any)[category],
             [key]: value
           }
         }
@@ -292,10 +292,7 @@ export default function ProfileSettingsPage() {
       });
 
       if (response.ok) {
-        toast({
-          title: "Success",
-          description: "Password changed successfully.",
-        });
+        toast.success("Password changed successfully.");
         setFormData(prev => ({
           ...prev,
           currentPassword: "",
@@ -307,11 +304,7 @@ export default function ProfileSettingsPage() {
       }
     } catch (error) {
       // Error handled by API service
-      toast({
-        title: "Error",
-        description: "Failed to change password. Please try again.",
-        variant: "destructive",
-      });
+      toast.error("Failed to change password. Please try again.");
     } finally {
       setIsSaving(false);
     }

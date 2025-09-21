@@ -452,7 +452,7 @@ class DataPersistenceService {
       'fleet': {
         create: () => Promise.resolve({ success: false, data: null, message: 'Method not implemented' }),
         read: productionApi.getFleetVehicles,
-        update: productionApi.updateFleetVehicle,
+        update: (...args: unknown[]) => productionApi.updateFleetVehicle(args[0] as string, args[1] as Record<string, unknown>),
         delete: () => Promise.resolve({ success: false, data: null, message: 'Method not implemented' })
       },
       'payments': {
