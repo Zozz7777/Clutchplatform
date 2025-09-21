@@ -436,7 +436,7 @@ export default function FleetPage() {
                         <div className="flex items-center space-x-1">
                           <MapPin className="h-3 w-3 text-muted-foreground" />
                           <span className="text-sm text-muted-foreground">
-                            {vehicle.location.latitude?.toFixed(2) || '0.00'}, {vehicle.location.longitude?.toFixed(2) || '0.00'}
+                            {(vehicle.location.latitude || 0).toFixed(2)}, {(vehicle.location.longitude || 0).toFixed(2)}
                           </span>
                         </div>
                       ) : (
@@ -521,7 +521,7 @@ export default function FleetPage() {
                 <AlertTriangle className="h-4 w-4 text-destructive" />
                 <div>
                   <p className="text-sm font-medium text-destructive-foreground">
-                    {t('fleet.vehicleOffline').replace('{plate}', vehicle.licensePlate || 'Unknown')}
+                    {(t('fleet.vehicleOffline') || 'Vehicle {plate} is offline').replace('{plate}', vehicle.licensePlate || 'Unknown')}
                   </p>
                   <p className="text-xs text-destructive-foreground/80">No GPS signal for 2 hours</p>
                 </div>
