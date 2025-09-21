@@ -402,7 +402,7 @@ export default function MobileAppsPage() {
                       <span className="font-medium capitalize">{analytics.platform}</span>
                     </div>
                     <div className="text-right">
-                      <div className="font-semibold">{analytics.activeUsers.toLocaleString()}</div>
+                      <div className="font-semibold">{(analytics?.activeUsers || 0).toLocaleString()}</div>
                       <div className="text-sm text-muted-foreground">active users</div>
                     </div>
                   </div>
@@ -458,15 +458,15 @@ export default function MobileAppsPage() {
                     <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-4">
                       <div>
                         <div className="text-sm text-muted-foreground">Downloads</div>
-                        <div className="font-semibold">{version.downloadCount.toLocaleString()}</div>
+                        <div className="font-semibold">{(version?.downloadCount || 0).toLocaleString()}</div>
                       </div>
                       <div>
                         <div className="text-sm text-muted-foreground">Crash Rate</div>
-                        <div className="font-semibold">{version.crashRate}%</div>
+                        <div className="font-semibold">{version?.crashRate || 0}%</div>
                       </div>
                       <div>
                         <div className="text-sm text-muted-foreground">Rating</div>
-                        <div className="font-semibold">{version.avgRating}/5.0</div>
+                        <div className="font-semibold">{version?.avgRating || 0}/5.0</div>
                       </div>
                       <div>
                         <div className="text-sm text-muted-foreground">Size</div>
@@ -679,13 +679,13 @@ export default function MobileAppsPage() {
                 </div>
               </CardContent>
             </Card>
-          ))}
+          )) : null}
         </div>
       )}
 
       {activeTab === "stores" && (
         <div className="space-y-4">
-          {stores.map((store) => (
+          {Array.isArray(stores) ? stores.map((store) => (
             <Card key={store._id}>
               <CardContent className="p-6">
                 <div className="flex items-start justify-between">
@@ -761,7 +761,7 @@ export default function MobileAppsPage() {
                 </div>
               </CardContent>
             </Card>
-          ))}
+          )) : null}
         </div>
       )}
     </div>
