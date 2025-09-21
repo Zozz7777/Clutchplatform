@@ -222,7 +222,6 @@ app.use(`${apiPrefix}/auth-fallback`, authFallbackRoutes);
 app.use(`${apiPrefix}/emergency-auth`, emergencyAuthRoutes);
 
 // New missing routes
-app.use(`${apiPrefix}/fleet`, fleetRoutes);
 app.use(`${apiPrefix}/payments`, paymentsRoutes);
 app.use(`${apiPrefix}/communication`, communicationRoutes);
 app.use(`${apiPrefix}/performance`, performanceRoutes);
@@ -233,7 +232,6 @@ app.use(`${apiPrefix}/employees`, employeeInvitationsRoutes);
 app.use(`${apiPrefix}/export`, exportRoutes);
 
 // Mount new missing route files with correct v1 prefix
-app.use(`${apiPrefix}/crm`, crmRoutes);
 app.use(`${apiPrefix}/finance`, financeRoutes);
 app.use(`${apiPrefix}/chat`, chatRoutes);
 app.use(`${apiPrefix}/settings`, settingsRoutes);
@@ -249,15 +247,11 @@ app.use(`${apiPrefix}/analytics`, analyticsExtendedRoutes);
 // Fallback routes (without v1 prefix for frontend compatibility)
 app.use('/auth', authRoutes);
 app.use('/admin', adminRoutes);
-app.use('/api/fleet', fleetRoutes);
 app.use('/api/notifications', notificationsRoutes);
 app.use('/api/dashboard', dashboardRoutes);
 app.use('/api/employees', employeesRoutes);
 app.use('/api/export', exportRoutes);
 app.use(`${apiPrefix}/employees`, employeeInvitationsRoutes);
-app.use('/api/crm', crmRoutes);
-app.use('/api/finance', financeRoutes);
-app.use('/api/chat', chatRoutes);
 app.use('/api/settings', settingsRoutes);
 app.use('/api/integrations', integrationsRoutes);
 app.use('/api/audit-trail', auditTrailRoutes);
@@ -266,14 +260,12 @@ app.use('/api/rbac', rbacRoutes);
 
 // API v1 routes (for frontend compatibility)
 app.use('/api/v1/fleet', fleetRoutes);
+app.use('/api/v1/crm', crmRoutes);
 app.use('/api/v1/notifications', notificationsRoutes);
 app.use('/api/v1/dashboard', dashboardRoutes);
 app.use('/api/v1/users', usersRoutes);
 app.use('/api/v1/employees', employeesRoutes);
 app.use('/api/v1/export', exportRoutes);
-app.use('/api/v1/crm', crmRoutes);
-app.use('/api/v1/finance', financeRoutes);
-app.use('/api/v1/chat', chatRoutes);
 app.use('/api/v1/settings', settingsRoutes);
 app.use('/api/v1/integrations', integrationsRoutes);
 app.use('/api/v1/audit-trail', auditTrailRoutes);

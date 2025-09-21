@@ -351,7 +351,7 @@ export class RealApiService {
   async getTickets(): Promise<Record<string, unknown>[]> {
     return withErrorHandling(
       async () => {
-        const response = await apiService.request<Record<string, unknown>[]>("/api/v1/communication/tickets");
+        const response = await apiService.request<Record<string, unknown>[]>("/api/v1/crm/tickets");
         return handleApiResponse(response, 'getTickets', []);
       },
       'getTickets',
