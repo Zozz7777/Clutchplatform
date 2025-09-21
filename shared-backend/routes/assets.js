@@ -655,6 +655,7 @@ router.get('/analytics/overview', async (req, res) => {
 
 // GET /api/v1/assets/maintenance - Get asset maintenance records
 router.get('/maintenance', async (req, res) => {
+  console.log('Maintenance endpoint hit');
   try {
     const maintenanceCollection = await getCollection('asset_maintenance');
     const { page = 1, limit = 10, assetId, status, type } = req.query;
@@ -758,6 +759,7 @@ router.post('/maintenance', async (req, res) => {
 
 // GET /api/v1/assets/assignments - Get asset assignments
 router.get('/assignments', async (req, res) => {
+  console.log('Assignments endpoint hit');
   try {
     const assignmentsCollection = await getCollection('asset_assignments');
     const { page = 1, limit = 10, assetId, userId, status } = req.query;
