@@ -108,32 +108,6 @@ router.get('/', async (req, res) => {
   }
 });
 
-// GET /api/integrations/:id - Get integration by ID
-router.get('/:id', async (req, res) => {
-  try {
-    const integrationsCollection = await getCollection('integrations');
-    const integration = await integrationsCollection.findOne({ _id: req.params.id });
-    
-    if (!integration) {
-      return res.status(404).json({
-        success: false,
-        message: 'Integration not found'
-      });
-    }
-    
-    res.json({
-      success: true,
-      data: integration
-    });
-  } catch (error) {
-    console.error('Error fetching integration:', error);
-    res.status(500).json({
-      success: false,
-      message: 'Failed to fetch integration',
-      error: process.env.NODE_ENV === 'development' ? error.message : undefined
-    });
-  }
-});
 
 // POST /api/integrations - Create new integration
 router.post('/', checkRole(['head_administrator']), async (req, res) => {
@@ -182,6 +156,113 @@ router.post('/', checkRole(['head_administrator']), async (req, res) => {
     res.status(500).json({
       success: false,
       message: 'Failed to create integration',
+      error: process.env.NODE_ENV === 'development' ? error.message : undefined
+    });
+  }
+});
+
+
+
+// ===== INTEGRATION TESTING =====
+
+
+// ===== INTEGRATION TEMPLATES =====
+
+// GET /api/integrations/templates - Get integration templates
+router.get('/templates', async (req, res) => {
+  try {
+    const templatesCollection = await getCollection('integration_templates');
+    const { type } = req.query;
+    
+    const filter = {};
+    if (type) filter.type = type;
+    
+    const templates = await templatesCollection
+      .find(filter)
+      .sort({ name: 1 })
+      .toArray();
+    
+    res.json({
+      success: true,
+      data: templates
+    });
+  } catch (error) {
+    console.error('Error fetching integration templates:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Failed to fetch integration templates',
+      error: process.env.NODE_ENV === 'development' ? error.message : undefined
+    });
+  }
+});
+
+// ===== INTEGRATION ANALYTICS =====
+
+// GET /api/integrations/analytics - Get integration analytics
+router.get('/analytics', async (req, res) => {
+  try {
+    const integrationsCollection = await getCollection('integrations');
+    
+    const totalIntegrations = await integrationsCollection.countDocuments();
+    const activeIntegrations = await integrationsCollection.countDocuments({ status: 'active' });
+    const inactiveIntegrations = await integrationsCollection.countDocuments({ status: 'inactive' });
+    
+    // Get integrations by type
+    const typeStats = await integrationsCollection.aggregate([
+      { $group: { _id: '$type', count: { $sum: 1 } } }
+    ]).toArray();
+    
+    // Get integrations by status
+    const statusStats = await integrationsCollection.aggregate([
+      { $group: { _id: '$status', count: { $sum: 1 } } }
+    ]).toArray();
+    
+    res.json({
+      success: true,
+      data: {
+        overview: {
+          totalIntegrations,
+          activeIntegrations,
+          inactiveIntegrations
+        },
+        typeStats,
+        statusStats
+      }
+    });
+  } catch (error) {
+    console.error('Error fetching integration analytics:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Failed to fetch integration analytics',
+      error: process.env.NODE_ENV === 'development' ? error.message : undefined
+    });
+  }
+});
+
+// ===== PARAMETERIZED ROUTES (MUST BE LAST) =====
+
+// GET /api/integrations/:id - Get integration by ID
+router.get('/:id', async (req, res) => {
+  try {
+    const integrationsCollection = await getCollection('integrations');
+    const integration = await integrationsCollection.findOne({ _id: req.params.id });
+    
+    if (!integration) {
+      return res.status(404).json({
+        success: false,
+        message: 'Integration not found'
+      });
+    }
+    
+    res.json({
+      success: true,
+      data: integration
+    });
+  } catch (error) {
+    console.error('Error fetching integration:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Failed to fetch integration',
       error: process.env.NODE_ENV === 'development' ? error.message : undefined
     });
   }
@@ -264,8 +345,6 @@ router.delete('/:id', checkRole(['head_administrator']), async (req, res) => {
   }
 });
 
-// ===== INTEGRATION TESTING =====
-
 // POST /api/integrations/:id/test - Test integration
 router.post('/:id/test', checkRole(['head_administrator']), async (req, res) => {
   try {
@@ -302,79 +381,6 @@ router.post('/:id/test', checkRole(['head_administrator']), async (req, res) => 
     res.status(500).json({
       success: false,
       message: 'Failed to test integration',
-      error: process.env.NODE_ENV === 'development' ? error.message : undefined
-    });
-  }
-});
-
-// ===== INTEGRATION TEMPLATES =====
-
-// GET /api/integrations/templates - Get integration templates
-router.get('/templates', async (req, res) => {
-  try {
-    const templatesCollection = await getCollection('integration_templates');
-    const { type } = req.query;
-    
-    const filter = {};
-    if (type) filter.type = type;
-    
-    const templates = await templatesCollection
-      .find(filter)
-      .sort({ name: 1 })
-      .toArray();
-    
-    res.json({
-      success: true,
-      data: templates
-    });
-  } catch (error) {
-    console.error('Error fetching integration templates:', error);
-    res.status(500).json({
-      success: false,
-      message: 'Failed to fetch integration templates',
-      error: process.env.NODE_ENV === 'development' ? error.message : undefined
-    });
-  }
-});
-
-// ===== INTEGRATION ANALYTICS =====
-
-// GET /api/integrations/analytics - Get integration analytics
-router.get('/analytics', async (req, res) => {
-  try {
-    const integrationsCollection = await getCollection('integrations');
-    
-    const totalIntegrations = await integrationsCollection.countDocuments();
-    const activeIntegrations = await integrationsCollection.countDocuments({ status: 'active' });
-    const inactiveIntegrations = await integrationsCollection.countDocuments({ status: 'inactive' });
-    
-    // Get integrations by type
-    const typeStats = await integrationsCollection.aggregate([
-      { $group: { _id: '$type', count: { $sum: 1 } } }
-    ]).toArray();
-    
-    // Get integrations by status
-    const statusStats = await integrationsCollection.aggregate([
-      { $group: { _id: '$status', count: { $sum: 1 } } }
-    ]).toArray();
-    
-    res.json({
-      success: true,
-      data: {
-        overview: {
-          totalIntegrations,
-          activeIntegrations,
-          inactiveIntegrations
-        },
-        typeStats,
-        statusStats
-      }
-    });
-  } catch (error) {
-    console.error('Error fetching integration analytics:', error);
-    res.status(500).json({
-      success: false,
-      message: 'Failed to fetch integration analytics',
       error: process.env.NODE_ENV === 'development' ? error.message : undefined
     });
   }
