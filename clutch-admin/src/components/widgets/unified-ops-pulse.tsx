@@ -7,12 +7,14 @@ import { Progress } from '@/components/ui/progress';
 import { businessIntelligence, type OperationalPulse } from '@/lib/business-intelligence';
 import { Users, Activity, Truck, DollarSign, TrendingUp, Zap } from 'lucide-react';
 import { logger } from '@/lib/logger';
+import { useTranslations } from '@/hooks/use-translations';
 
 interface UnifiedOpsPulseProps {
   className?: string;
 }
 
 export function UnifiedOpsPulse({ className = '' }: UnifiedOpsPulseProps) {
+  const { t } = useTranslations();
   const [pulse, setPulse] = React.useState<OperationalPulse | null>(null);
   const [isLoading, setIsLoading] = React.useState(true);
 
@@ -83,10 +85,10 @@ export function UnifiedOpsPulse({ className = '' }: UnifiedOpsPulseProps) {
       <CardHeader>
         <CardTitle className="flex items-center space-x-2 text-card-foreground font-medium">
           <Zap className="h-5 w-5 text-primary" />
-          <span>Unified Ops Pulse</span>
+          <span>{t('dashboard.unifiedOpsPulse')}</span>
         </CardTitle>
         <CardDescription className="text-muted-foreground">
-          Real-time operational funnel from users to revenue
+          {t('dashboard.realtimeOperationalFunnel')}
         </CardDescription>
       </CardHeader>
       <CardContent className="space-y-6">

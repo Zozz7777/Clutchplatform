@@ -696,7 +696,7 @@ class BusinessIntelligenceService {
     try {
       const systemData = await realApi.getSystemPerformanceMetrics();
       return {
-        monthlyCost: systemData?.monthlyCost || 10000,
+        monthlyCost: systemData?.monthlyCost || 0,
         cpuUsage: systemData?.cpuUsage || 0,
         memoryUsage: systemData?.memoryUsage || 0,
         diskUsage: systemData?.diskUsage || 0,
@@ -705,7 +705,7 @@ class BusinessIntelligenceService {
     } catch (error) {
       errorHandler.handleError(error as Error, 'Get system performance metrics', { showToast: false });
       return {
-        monthlyCost: 10000,
+        monthlyCost: 0,
         cpuUsage: 0,
         memoryUsage: 0,
         diskUsage: 0,

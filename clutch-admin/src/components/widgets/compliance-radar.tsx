@@ -6,6 +6,7 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Progress } from '@/components/ui/progress';
 import { businessIntelligence, type ComplianceStatus } from '@/lib/business-intelligence';
+import { useTranslations } from '@/hooks/use-translations';
 import { 
   Shield, 
   AlertTriangle, 
@@ -24,6 +25,7 @@ interface ComplianceRadarProps {
 }
 
 export function ComplianceRadar({ className = '' }: ComplianceRadarProps) {
+  const { t } = useTranslations();
   const [compliance, setCompliance] = React.useState<ComplianceStatus | null>(null);
   const [isLoading, setIsLoading] = React.useState(true);
 
@@ -128,10 +130,10 @@ export function ComplianceRadar({ className = '' }: ComplianceRadarProps) {
       <CardHeader>
         <CardTitle className="flex items-center space-x-2 text-card-foreground font-medium">
           <Shield className="h-5 w-5 text-primary" />
-          <span>Compliance Radar</span>
+          <span>{t('dashboard.complianceRadar')}</span>
         </CardTitle>
         <CardDescription className="text-muted-foreground">
-          Red-amber-green summary of compliance status
+          {t('dashboard.complianceStatusSummary')}
         </CardDescription>
       </CardHeader>
       <CardContent className="space-y-6">

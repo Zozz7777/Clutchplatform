@@ -204,8 +204,8 @@ export default function AIMLPage() {
     );
   }
 
-  const totalPredictions = models.reduce((sum, model) => sum + model.predictions, 0);
-  const avgAccuracy = models.length > 0 ? models.reduce((sum, model) => sum + model.accuracy, 0) / models.length : 0;
+  const totalPredictions = models.reduce((sum, model) => sum + (model.predictions || 0), 0);
+  const avgAccuracy = models.length > 0 ? models.reduce((sum, model) => sum + (model.accuracy || 0), 0) / models.length : 0;
   const activeModels = models.filter(m => m.status === "active").length;
   const fraudCasesDetected = fraudCases.length;
 
@@ -239,7 +239,7 @@ export default function AIMLPage() {
             <Target className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold text-foreground">{totalPredictions.toLocaleString()}</div>
+            <div className="text-2xl font-bold text-foreground">{(totalPredictions || 0).toLocaleString()}</div>
             <p className="text-xs text-muted-foreground">
               <span className="text-primary">+15%</span> from last month
             </p>
@@ -251,7 +251,7 @@ export default function AIMLPage() {
             <BarChart3 className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold text-foreground">{avgAccuracy.toFixed(1)}%</div>
+            <div className="text-2xl font-bold text-foreground">{(avgAccuracy || 0).toFixed(1)}%</div>
             <p className="text-xs text-muted-foreground">
               <span className="text-primary">+2.3%</span> improvement
             </p>
@@ -348,7 +348,7 @@ export default function AIMLPage() {
                           </div>
                           <div>
                             <p className="text-sm font-medium text-foreground">{model.name}</p>
-                            <p className="text-xs text-muted-foreground">{model.predictions.toLocaleString()} predictions</p>
+                            <p className="text-xs text-muted-foreground">{(model.predictions || 0).toLocaleString()} predictions</p>
                           </div>
                         </div>
                       </TableCell>
@@ -357,11 +357,11 @@ export default function AIMLPage() {
                       </TableCell>
                       <TableCell>
                         <div className="flex items-center space-x-2">
-                          <span className="text-sm font-medium text-foreground">{model.accuracy}%</span>
+                          <span className="text-sm font-medium text-foreground">{model.accuracy || 0}%</span>
                           <div className="w-16 bg-muted rounded-full h-2">
                             <div 
                               className="bg-primary h-2 rounded-full" 
-                              style={{ width: `${model.accuracy}%` }}
+                              style={{ width: `${model.accuracy || 0}%` }}
                             ></div>
                           </div>
                         </div>

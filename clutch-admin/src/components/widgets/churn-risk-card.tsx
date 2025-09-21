@@ -7,6 +7,7 @@ import { Button } from '@/components/ui/button';
 import { Progress } from '@/components/ui/progress';
 import { businessIntelligence, type ChurnRisk } from '@/lib/business-intelligence';
 import { logger } from '@/lib/logger';
+import { useTranslations } from '@/hooks/use-translations';
 import { 
   AlertTriangle, 
   Users, 
@@ -24,6 +25,7 @@ interface ChurnRiskCardProps {
 }
 
 export function ChurnRiskCard({ className = '', showDetails = false }: ChurnRiskCardProps) {
+  const { t } = useTranslations();
   const [churnRisks, setChurnRisks] = useState<ChurnRisk[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [showAll, setShowAll] = useState(showDetails);
@@ -84,7 +86,7 @@ export function ChurnRiskCard({ className = '', showDetails = false }: ChurnRisk
         <CardHeader>
           <CardTitle className="flex items-center space-x-2 text-card-foreground font-medium">
             <AlertTriangle className="h-5 w-5 text-warning" />
-            <span>Churn Risk Analysis</span>
+            <span>{t('dashboard.churnRiskAnalysis')}</span>
           </CardTitle>
           <CardDescription className="text-muted-foreground">Loading churn risk data...</CardDescription>
         </CardHeader>
@@ -108,7 +110,7 @@ export function ChurnRiskCard({ className = '', showDetails = false }: ChurnRisk
       <CardHeader>
         <CardTitle className="flex items-center space-x-2 text-card-foreground font-medium">
           <AlertTriangle className="h-5 w-5 text-warning" />
-          <span>Churn Risk Analysis</span>
+          <span>{t('dashboard.churnRiskAnalysis')}</span>
         </CardTitle>
         <CardDescription className="text-muted-foreground">
           AI-powered prediction of customer churn risk
