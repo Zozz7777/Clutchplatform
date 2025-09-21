@@ -121,13 +121,130 @@ router.get('/status', (req, res) => {
   }
 });
 
-// GET /api/v1/system/health - Simple health check
-router.get('/health', (req, res) => {
-  res.json({
-    success: true,
-    status: 'healthy',
-    timestamp: new Date().toISOString()
-  });
+// GET /api/v1/system/health - Comprehensive system health check
+router.get('/health', async (req, res) => {
+  try {
+    const startTime = Date.now();
+    
+    // Get system uptime
+    const uptime = process.uptime();
+    
+    // Get memory usage
+    const memoryUsage = process.memoryUsage();
+    const memoryUsedMB = Math.round(memoryUsage.heapUsed / 1024 / 1024);
+    const memoryTotalMB = Math.round(memoryUsage.heapTotal / 1024 / 1024);
+    const memoryPercentage = Math.round((memoryUsage.heapUsed / memoryUsage.heapTotal) * 100);
+    
+    // Check database connectivity
+    let dbStatus = 'unknown';
+    let dbResponseTime = 0;
+    try {
+      const dbStartTime = Date.now();
+      const { getCollection } = require('../config/database');
+      const testCollection = await getCollection('users');
+      await testCollection.findOne({}, { limit: 1 });
+      dbResponseTime = Date.now() - dbStartTime;
+      dbStatus = 'healthy';
+    } catch (error) {
+      dbStatus = 'down';
+      console.error('Database health check failed:', error.message);
+    }
+    
+    // Check Redis connectivity (if configured)
+    let redisStatus = 'unknown';
+    let redisResponseTime = 0;
+    try {
+      if (process.env.REDIS_URL) {
+        const redis = require('redis');
+        const client = redis.createClient({ url: process.env.REDIS_URL });
+        await client.connect();
+        const redisStartTime = Date.now();
+        await client.ping();
+        redisResponseTime = Date.now() - redisStartTime;
+        await client.disconnect();
+        redisStatus = 'healthy';
+      } else {
+        redisStatus = 'not_configured';
+      }
+    } catch (error) {
+      redisStatus = 'down';
+      console.error('Redis health check failed:', error.message);
+    }
+    
+    // Define services to monitor
+    const services = [
+      {
+        name: 'API Server',
+        status: 'healthy',
+        responseTime: Date.now() - startTime,
+        lastCheck: new Date().toISOString(),
+        dependencies: []
+      },
+      {
+        name: 'Database',
+        status: dbStatus,
+        responseTime: dbResponseTime,
+        lastCheck: new Date().toISOString(),
+        dependencies: []
+      },
+      {
+        name: 'Redis Cache',
+        status: redisStatus,
+        responseTime: redisResponseTime,
+        lastCheck: new Date().toISOString(),
+        dependencies: []
+      },
+      {
+        name: 'Email Service',
+        status: process.env.SENDGRID_API_KEY ? 'healthy' : 'not_configured',
+        responseTime: 0,
+        lastCheck: new Date().toISOString(),
+        dependencies: []
+      }
+    ];
+    
+    // Calculate overall health
+    const healthyServices = services.filter(s => s.status === 'healthy').length;
+    const totalServices = services.filter(s => s.status !== 'not_configured').length;
+    const overallStatus = healthyServices === totalServices ? 'healthy' : 
+                         healthyServices > totalServices / 2 ? 'degraded' : 'down';
+    
+    const overallHealth = {
+      status: overallStatus,
+      uptime: Math.round(uptime),
+      servicesUp: healthyServices,
+      servicesDown: totalServices - healthyServices,
+      lastIncident: overallStatus === 'healthy' ? '' : 'Service degradation detected'
+    };
+    
+    res.json({
+      success: true,
+      data: {
+        services,
+        overall: overallHealth,
+        system: {
+          uptime: Math.round(uptime),
+          memory: {
+            used: memoryUsedMB,
+            total: memoryTotalMB,
+            percentage: memoryPercentage
+          },
+          nodeVersion: process.version,
+          platform: process.platform,
+          environment: process.env.NODE_ENV || 'development'
+        }
+      },
+      timestamp: new Date().toISOString()
+    });
+  } catch (error) {
+    console.error('System health check error:', error);
+    res.status(500).json({
+      success: false,
+      error: 'HEALTH_CHECK_FAILED',
+      message: 'Failed to perform system health check',
+      timestamp: new Date().toISOString()
+    });
+  }
 });
 
 // GET /api/v1/system/ping - Simple ping endpoint
