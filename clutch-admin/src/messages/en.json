@@ -400,6 +400,8 @@
     "analytics": "Analytics",
     "appStores": "App Stores",
     "failedToLoadData": "Failed to load mobile apps data",
+    "search": "Search...",
+    "filters": "Filters",
     "enterpriseB2b": "Enterprise B2B",
     "vendorManagement": "Vendor Management",
     "usermanagement": "User Management",

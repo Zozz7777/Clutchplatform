@@ -274,7 +274,7 @@ export default function MobileAppsPage() {
           </Button>
           <Button>
             <Plus className="mr-2 h-4 w-4" />
-            New Release
+            {t('dashboard.newRelease')}
           </Button>
         </div>
       </div>
@@ -283,7 +283,7 @@ export default function MobileAppsPage() {
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Total Downloads</CardTitle>
+            <CardTitle className="text-sm font-medium">{t('dashboard.totalDownloads')}</CardTitle>
             <Download className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
@@ -291,13 +291,13 @@ export default function MobileAppsPage() {
               {Array.isArray(versions) ? versions.reduce((sum, v) => sum + (v?.downloadCount || 0), 0).toLocaleString() : "0"}
             </div>
             <p className="text-xs text-muted-foreground">
-              <span className="text-primary">+15%</span> from last month
+              <span className="text-primary">+15%</span> {t('dashboard.fromLastMonth')}
             </p>
           </CardContent>
         </Card>
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Active Users</CardTitle>
+            <CardTitle className="text-sm font-medium">{t('dashboard.activeUsers')}</CardTitle>
             <Users className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
@@ -311,7 +311,7 @@ export default function MobileAppsPage() {
         </Card>
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Crash Rate</CardTitle>
+            <CardTitle className="text-sm font-medium">{t('dashboard.crashRate')}</CardTitle>
             <AlertTriangle className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
@@ -325,7 +325,7 @@ export default function MobileAppsPage() {
         </Card>
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Avg Rating</CardTitle>
+            <CardTitle className="text-sm font-medium">{t('dashboard.avgRating')}</CardTitle>
             <TrendingUp className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
@@ -368,7 +368,7 @@ export default function MobileAppsPage() {
           <div className="relative">
             <Search className="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground" />
             <Input
-              placeholder="Search..."
+              placeholder={t('dashboard.search')}
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
               className="pl-8"
@@ -377,7 +377,7 @@ export default function MobileAppsPage() {
         </div>
         <Button variant="outline">
           <Filter className="mr-2 h-4 w-4" />
-          Filters
+          {t('dashboard.filters')}
         </Button>
       </div>
 

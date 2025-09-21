@@ -8,7 +8,7 @@ import { useAuth } from "@/contexts/auth-context";
 import { ChevronDown, ChevronRight } from "lucide-react";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { LanguageSwitcher } from "@/components/language-switcher";
-import { useTranslations } from "@/hooks/use-translations";
+import { useTranslations } from "next-intl";
 import { getTranslatedNavigationItems } from "@/lib/navigation";
 import { iconMap, type IconName } from "@/lib/icons";
 
@@ -20,7 +20,7 @@ interface SidebarProps {
 export function Sidebar({ isCollapsed, onToggle }: SidebarProps) {
   const pathname = usePathname();
   const { hasPermission, user } = useAuth();
-  const { t } = useTranslations();
+  const t = useTranslations();
   const [expandedItems, setExpandedItems] = useState<string[]>([]);
   
   const navigationItems = getTranslatedNavigationItems(t);

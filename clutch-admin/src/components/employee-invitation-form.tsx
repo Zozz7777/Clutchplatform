@@ -11,7 +11,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { apiService } from "@/lib/api";
 import { toast } from "sonner";
 import { Loader2, UserPlus, Mail, Building2, Shield, Check } from "lucide-react";
-import { useTranslations } from "@/hooks/use-translations";
+import { useTranslations } from "next-intl";
 import { useAuth } from "@/contexts/auth-context";
 
 interface InvitationFormData {
@@ -91,7 +91,7 @@ const PERMISSION_OPTIONS = [
 ];
 
 export function EmployeeInvitationForm({ onSuccess, onCancel }: EmployeeInvitationFormProps) {
-  const { t } = useTranslations();
+  const t = useTranslations();
   const { user } = useAuth();
   const [formData, setFormData] = useState<InvitationFormData>({
     name: "",

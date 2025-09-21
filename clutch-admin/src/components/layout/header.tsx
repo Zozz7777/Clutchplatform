@@ -27,7 +27,7 @@ import { type Notification } from "@/lib/types";
 import { useRouter } from "next/navigation";
 import { LanguageSwitcher } from "@/components/language-switcher";
 import { ThemeToggle } from "@/components/theme-toggle";
-import { useTranslations } from "@/hooks/use-translations";
+import { useTranslations } from "next-intl";
 
 interface HeaderProps {
   onMenuToggle: () => void;
@@ -35,7 +35,7 @@ interface HeaderProps {
 
 export function Header({ onMenuToggle }: HeaderProps) {
   const { user, logout } = useAuth();
-  const { t } = useTranslations();
+  const t = useTranslations();
   const [searchQuery, setSearchQuery] = useState("");
   const [notifications, setNotifications] = useState<Notification[]>([]);
   const [notificationsLoading, setNotificationsLoading] = useState(false);
