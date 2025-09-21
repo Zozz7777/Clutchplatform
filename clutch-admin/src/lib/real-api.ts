@@ -340,7 +340,7 @@ export class RealApiService {
   async getChatChannels(): Promise<Record<string, unknown>[]> {
     return withErrorHandling(
       async () => {
-        const response = await apiService.request<Record<string, unknown>[]>("/api/chat/channels");
+        const response = await apiService.request<Record<string, unknown>[]>("/api/v1/chat/channels");
         return handleApiResponse(response, 'getChatChannels', []);
       },
       'getChatChannels',
@@ -1002,7 +1002,7 @@ export class RealApiService {
   async getChatChannels(): Promise<Record<string, unknown>[]> {
     return withErrorHandling(
       async () => {
-        const response = await apiService.request<Record<string, unknown>[]>("/api/chat/channels");
+        const response = await apiService.request<Record<string, unknown>[]>("/api/v1/chat/channels");
         return handleApiResponse(response, 'getChatChannels', []);
       },
       'getChatChannels',
