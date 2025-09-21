@@ -1,6 +1,7 @@
 const jwt = require('jsonwebtoken');
 const { getCollection } = require('../config/optimized-database');
 const { getBackendRoles, canAccessRole } = require('../config/standardized-roles');
+const { ObjectId } = require('mongodb');
 
 /**
  * Unified authentication middleware that combines auth.js and rbac.js functionality
@@ -166,9 +167,18 @@ const checkRole = (roles) => {
 
       // For regular users, check against database
       try {
-        const { db } = await getCollection('employees');
+        const employeesCollection = await getCollection('employees');
         const userId = req.user.id || req.user.userId;
-        const employee = await db.findOne({ _id: userId });
+        
+        // Handle ObjectId conversion
+        let query = {};
+        try {
+          query._id = new ObjectId(userId);
+        } catch (error) {
+          query._id = userId;
+        }
+        
+        const employee = await employeesCollection.findOne(query);
         
         if (!employee) {
           console.log('❌ Employee not found in database');

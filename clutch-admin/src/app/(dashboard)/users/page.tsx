@@ -112,22 +112,24 @@ export default function UsersPage() {
   }, []);
 
   useEffect(() => {
-    let filtered = users;
+    // Ensure users is always an array and handle null/undefined values
+    const usersArray = Array.isArray(users) ? users : [];
+    let filtered = usersArray.filter(user => user != null);
 
     if (searchQuery) {
       filtered = filtered.filter(user =>
-        user.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        user.email.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        user.role.toLowerCase().includes(searchQuery.toLowerCase())
+        (user.name || '').toLowerCase().includes(searchQuery.toLowerCase()) ||
+        (user.email || '').toLowerCase().includes(searchQuery.toLowerCase()) ||
+        (user.role || '').toLowerCase().includes(searchQuery.toLowerCase())
       );
     }
 
     if (statusFilter !== "all") {
-      filtered = filtered.filter(user => user.status === statusFilter);
+      filtered = filtered.filter(user => user && user.status === statusFilter);
     }
 
     if (roleFilter !== "all") {
-      filtered = filtered.filter(user => user.role === roleFilter);
+      filtered = filtered.filter(user => user && user.role === roleFilter);
     }
 
     setFilteredUsers(filtered);
@@ -348,43 +350,46 @@ export default function UsersPage() {
                   </TableRow>
                 </TableHeader>
                 <TableBody>
-                  {filteredUsers.map((user) => (
+                  {filteredUsers.map((user) => {
+                    if (!user || !user.id) return null;
+                    
+                    return (
                     <TableRow key={user.id}>
                       <TableCell>
                         <div className="flex items-center space-x-3">
                           <div className="w-8 h-8 rounded-full bg-primary flex items-center justify-center">
                             <span className="text-primary-foreground text-sm font-medium">
-                              {user.name.charAt(0).toUpperCase()}
+                              {(user.name || 'U').charAt(0).toUpperCase()}
                             </span>
                           </div>
                           <div>
-                            <p className="text-sm font-medium text-foreground">{user.name}</p>
-                            <p className="text-xs text-muted-foreground">{user.email}</p>
+                            <p className="text-sm font-medium text-foreground">{user.name || 'Unknown User'}</p>
+                            <p className="text-xs text-muted-foreground">{user.email || 'No email'}</p>
                           </div>
                         </div>
                       </TableCell>
                       <TableCell>
                         <div className="flex items-center space-x-2">
-                          {getRoleIcon(user.role)}
-                          <span className="text-sm capitalize">{user.role.replace('_', ' ')}</span>
+                          {getRoleIcon(user.role || 'user')}
+                          <span className="text-sm capitalize">{(user.role || 'user').replace('_', ' ')}</span>
                         </div>
                       </TableCell>
                       <TableCell>
-                        <Badge className={getStatusColor(user.status)}>
-                          {user.status}
+                        <Badge className={getStatusColor(user.status || 'unknown')}>
+                          {user.status || 'Unknown'}
                         </Badge>
                       </TableCell>
                       <TableCell>
                         <div className="flex items-center space-x-1">
                           <Calendar className="h-3 w-3 text-muted-foreground" />
                           <span className="text-sm text-muted-foreground">
-                            {formatRelativeTime(user.lastLogin)}
+                            {user.lastLogin ? formatRelativeTime(user.lastLogin) : 'Never'}
                           </span>
                         </div>
                       </TableCell>
                       <TableCell>
                         <span className="text-sm text-muted-foreground">
-                          {formatDate(user.createdAt)}
+                          {user.createdAt ? formatDate(user.createdAt) : 'Unknown'}
                         </span>
                       </TableCell>
                       <TableCell className="text-right">

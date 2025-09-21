@@ -101,6 +101,7 @@ const OPTIMIZED_COLLECTIONS = [
   'sessions',        // Keep for authentication
   
   // Employee Management
+  'employees',             // Keep for employee records
   'employee_invitations',  // Keep for employee invitation system
   
   // AI/ML Collections
