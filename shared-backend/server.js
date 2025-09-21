@@ -209,6 +209,7 @@ app.use(`${apiPrefix}/audit`, auditRoutes);
 app.use(`${apiPrefix}/system-health`, systemHealthRoutes);
 app.use(`${apiPrefix}/system`, systemRoutes);
 app.use(`${apiPrefix}/system/performance`, systemPerformanceRoutes);
+app.use(`${apiPrefix}/system-performance`, systemPerformanceRoutes);
 app.use(`${apiPrefix}/sessions`, sessionsRoutes);
 app.use(`${apiPrefix}/revenue`, revenueRoutes);
 app.use(`${apiPrefix}/compliance`, complianceRoutes);
