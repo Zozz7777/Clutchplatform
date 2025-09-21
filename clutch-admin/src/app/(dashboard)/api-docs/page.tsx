@@ -23,8 +23,8 @@ import {
   Shield,
   Activity,
 } from "lucide-react";
-import { useTranslations } from "@/hooks/use-translations";
-import { realApi } from "@/lib/real-api";
+import { useTranslations } from "next-intl";
+import { productionApi } from "@/lib/production-api";
 import { toast } from "sonner";
 import { useAuth } from "@/contexts/auth-context";
 
@@ -56,7 +56,7 @@ interface APIEndpoint {
 }
 
 export default function APIDocsPage() {
-  const { t } = useTranslations();
+  const t = useTranslations();
   const { user, isLoading: authLoading } = useAuth();
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedCategory, setSelectedCategory] = useState<string>("all");
@@ -84,8 +84,8 @@ export default function APIDocsPage() {
         
         // Load real data from API with error handling
         const [endpointsData, categoriesData] = await Promise.allSettled([
-          realApi.getAPIEndpoints(),
-          realApi.getAPICategories()
+          productionApi.getAPIEndpoints(),
+          productionApi.getAPICategories()
         ]);
 
         // Handle endpoints data

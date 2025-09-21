@@ -517,7 +517,7 @@ export default function MobileAppsPage() {
                 </div>
               </CardContent>
             </Card>
-          ))}
+          )) : null}
         </div>
       )}
 
@@ -600,7 +600,7 @@ export default function MobileAppsPage() {
                 </div>
               </CardContent>
             </Card>
-          ))}
+          )) : null}
         </div>
       )}
 
@@ -679,7 +679,7 @@ export default function MobileAppsPage() {
                 </div>
               </CardContent>
             </Card>
-          ))}
+          )) : null}
         </div>
       )}
 
@@ -761,7 +761,7 @@ export default function MobileAppsPage() {
                 </div>
               </CardContent>
             </Card>
-          ))}
+          )) : null}
         </div>
       )}
     </div>
