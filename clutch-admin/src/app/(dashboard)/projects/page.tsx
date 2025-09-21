@@ -522,27 +522,27 @@ export default function ProjectManagementPage() {
                 />
               </div>
               <div>
-                <Label htmlFor="client">Client</Label>
+                <Label htmlFor="client">{t('dashboard.client')}</Label>
                 <Input 
                   id="client" 
-                  placeholder="Client name" 
+                  placeholder={t('dashboard.clientName')} 
                   value={createProjectData.client}
                   onChange={(e) => setCreateProjectData({...createProjectData, client: e.target.value})}
                 />
               </div>
             </div>
             <div>
-              <Label htmlFor="description">Description</Label>
+              <Label htmlFor="description">{t('dashboard.description')}</Label>
               <Input 
                 id="description" 
-                placeholder="Project description" 
+                placeholder={t('dashboard.projectDescription')} 
                 value={createProjectData.description}
                 onChange={(e) => setCreateProjectData({...createProjectData, description: e.target.value})}
               />
             </div>
             <div className="grid grid-cols-3 gap-4">
               <div>
-                <Label htmlFor="startDate">Start Date</Label>
+                <Label htmlFor="startDate">{t('dashboard.startDate')}</Label>
                 <Input 
                   id="startDate" 
                   type="date" 
@@ -551,7 +551,7 @@ export default function ProjectManagementPage() {
                 />
               </div>
               <div>
-                <Label htmlFor="endDate">End Date</Label>
+                <Label htmlFor="endDate">{t('dashboard.endDate')}</Label>
                 <Input 
                   id="endDate" 
                   type="date" 
@@ -560,7 +560,7 @@ export default function ProjectManagementPage() {
                 />
               </div>
               <div>
-                <Label htmlFor="budget">Budget (EGP)</Label>
+                <Label htmlFor="budget">{t('dashboard.budgetEgp')}</Label>
                 <Input 
                   id="budget" 
                   type="number" 

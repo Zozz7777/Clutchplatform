@@ -13,8 +13,6 @@ import { formatDate, formatRelativeTime } from "@/lib/utils";
 import { EmployeeInvitationForm } from "@/components/employee-invitation-form";
 import { apiService } from "@/lib/api";
 import { toast } from "sonner";
-import { apiService } from "@/lib/api";
-import { toast } from "sonner";
 import { 
   UserCog, 
   Search, 
@@ -280,6 +278,44 @@ export default function HRPage() {
         ? [...(prev.permissions || []), permission]
         : (prev.permissions || []).filter(p => p !== permission)
     }));
+  };
+
+  const handleSaveEmployee = async () => {
+    if (!selectedEmployee) return;
+    
+    try {
+      const updateData = {
+        name: `${editFormData.firstName || ''} ${editFormData.lastName || ''}`.trim(),
+        phoneNumber: editFormData.phone,
+        role: editFormData.role,
+        department: editFormData.department,
+        position: editFormData.position,
+        permissions: editFormData.permissions,
+        isActive: editFormData.isActive !== false
+      };
+      
+      const response = await apiService.updateEmployee(selectedEmployee._id, updateData);
+      
+      if (response.success) {
+        toast.success("Employee updated successfully");
+        
+        // Update the employee in the local state
+        setEmployees(prev => prev.map(emp => 
+          emp._id === selectedEmployee._id 
+            ? { ...emp, ...editFormData }
+            : emp
+        ));
+        
+        setShowEditEmployeeModal(false);
+        setSelectedEmployee(null);
+        setEditFormData({});
+      } else {
+        toast.error(response.message || "Failed to update employee");
+      }
+    } catch (error) {
+      console.error("Error updating employee:", error);
+      toast.error("Failed to update employee");
+    }
   };
 
   useEffect(() => {
@@ -1545,14 +1581,16 @@ export default function HRPage() {
                   <div>
                     <label className="text-sm font-medium">First Name</label>
                     <Input 
-                      defaultValue={selectedEmployee.firstName || ''} 
+                      value={editFormData.firstName || ''} 
+                      onChange={(e) => setEditFormData(prev => ({ ...prev, firstName: e.target.value }))}
                       placeholder="Enter first name"
                     />
                   </div>
                   <div>
                     <label className="text-sm font-medium">Last Name</label>
                     <Input 
-                      defaultValue={selectedEmployee.lastName || ''} 
+                      value={editFormData.lastName || ''} 
+                      onChange={(e) => setEditFormData(prev => ({ ...prev, lastName: e.target.value }))}
                       placeholder="Enter last name"
                     />
                   </div>
@@ -1676,12 +1714,7 @@ export default function HRPage() {
                 <Button variant="outline" onClick={() => setShowEditEmployeeModal(false)}>
                   Cancel
                 </Button>
-                <Button onClick={() => {
-                  toast.success("Employee updated successfully");
-                  setShowEditEmployeeModal(false);
-                  // Reload employees data
-                  // Note: Data will be reloaded when component re-renders
-                }}>
+                <Button onClick={handleSaveEmployee}>
                   <Edit className="mr-2 h-4 w-4" />
                   Update Employee
                 </Button>

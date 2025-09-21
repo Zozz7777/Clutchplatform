@@ -51,12 +51,16 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
           throw new Error("User data not received from server");
         }
         
+        // Debug: Log the user data received from backend
+        console.log("🔍 User data from backend:", user);
+        console.log("🔍 User role from backend:", user.role);
+        
         // Map backend user to frontend user format
         const userWithPermissions = {
           id: user._id || user.id || `user_${Date.now()}`,
           email: user.email || email,
           name: user.name || `${user.firstName || ''} ${user.lastName || ''}`.trim() || "User",
-          role: user.role || "platform_admin",
+          role: user.role || "employee", // Default to employee instead of platform_admin
           status: user.isActive !== undefined ? (user.isActive ? "active" : "inactive") : "active",
           createdAt: user.createdAt || new Date().toISOString(),
           lastLogin: new Date().toISOString(),

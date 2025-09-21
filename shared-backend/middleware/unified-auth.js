@@ -191,11 +191,21 @@ const checkRole = (roles) => {
 
         const allowedRoles = Array.isArray(roles) ? roles : [roles];
         
-        // Map executive role to head_administrator for backward compatibility
-        const userRole = employee.role === 'executive' ? 'head_administrator' : employee.role;
-        const mappedAllowedRoles = allowedRoles.map(role => 
-          role === 'head_administrator' ? ['head_administrator', 'executive'] : [role]
-        ).flat();
+        // Map executive and admin roles to have broader access
+        const userRole = employee.role === 'executive' ? 'head_administrator' : 
+                        employee.role === 'admin' ? 'head_administrator' : employee.role;
+        const mappedAllowedRoles = allowedRoles.map(role => {
+          if (role === 'head_administrator') {
+            return ['head_administrator', 'executive', 'admin'];
+          } else if (role === 'fleet_manager') {
+            return ['fleet_manager', 'head_administrator', 'executive', 'admin'];
+          } else if (role === 'asset_manager') {
+            return ['asset_manager', 'head_administrator', 'executive', 'admin'];
+          } else if (role === 'system_admin') {
+            return ['system_admin', 'head_administrator', 'executive', 'admin'];
+          }
+          return [role];
+        }).flat();
         
         if (mappedAllowedRoles.includes(userRole) || allowedRoles.includes(employee.role)) {
           console.log('✅ Database user role check passed');
@@ -216,11 +226,21 @@ const checkRole = (roles) => {
         // Fallback to JWT role check if database fails
         const allowedRoles = Array.isArray(roles) ? roles : [roles];
         
-        // Map executive role to head_administrator for backward compatibility
-        const userRole = req.user.role === 'executive' ? 'head_administrator' : req.user.role;
-        const mappedAllowedRoles = allowedRoles.map(role => 
-          role === 'head_administrator' ? ['head_administrator', 'executive'] : [role]
-        ).flat();
+        // Map executive and admin roles to have broader access
+        const userRole = req.user.role === 'executive' ? 'head_administrator' : 
+                        req.user.role === 'admin' ? 'head_administrator' : req.user.role;
+        const mappedAllowedRoles = allowedRoles.map(role => {
+          if (role === 'head_administrator') {
+            return ['head_administrator', 'executive', 'admin'];
+          } else if (role === 'fleet_manager') {
+            return ['fleet_manager', 'head_administrator', 'executive', 'admin'];
+          } else if (role === 'asset_manager') {
+            return ['asset_manager', 'head_administrator', 'executive', 'admin'];
+          } else if (role === 'system_admin') {
+            return ['system_admin', 'head_administrator', 'executive', 'admin'];
+          }
+          return [role];
+        }).flat();
         
         if (mappedAllowedRoles.includes(userRole) || allowedRoles.includes(req.user.role)) {
           console.log('✅ Fallback JWT role check passed');
