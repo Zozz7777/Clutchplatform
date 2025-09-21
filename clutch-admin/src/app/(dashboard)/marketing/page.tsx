@@ -473,14 +473,14 @@ export default function MarketingPage() {
                 formatCurrency(Array.isArray(campaigns) ? campaigns.reduce((sum, c) => sum + (c.spent || 0), 0) : 0)}
             </div>
             <p className="text-xs text-muted-foreground">
-              {t('marketing.marketingBudget')}
+              {t('dashboard.marketingBudget')}
             </p>
           </CardContent>
         </Card>
         
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Total Leads</CardTitle>
+            <CardTitle className="text-sm font-medium">{t('dashboard.totalLeads')}</CardTitle>
             <Users className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
@@ -488,14 +488,14 @@ export default function MarketingPage() {
               {stats ? stats.totalLeads : (leads || []).length}
             </div>
             <p className="text-xs text-muted-foreground">
-              {(leads || []).filter(l => l.status === "new").length} new leads
+              {(leads || []).filter(l => l.status === "new").length} {t('dashboard.newLeads')}
             </p>
           </CardContent>
         </Card>
         
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Conversion Rate</CardTitle>
+            <CardTitle className="text-sm font-medium">{t('dashboard.conversionRate')}</CardTitle>
             <Target className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
@@ -503,7 +503,7 @@ export default function MarketingPage() {
               {stats ? stats.conversionRate.toFixed(1) : 0}%
             </div>
             <p className="text-xs text-muted-foreground">
-              Lead to customer
+              {t('dashboard.leadToCustomer')}
             </p>
           </CardContent>
         </Card>
@@ -533,9 +533,9 @@ export default function MarketingPage() {
       {activeTab === "campaigns" && (
         <Card>
           <CardHeader>
-            <CardTitle>{t('marketing.marketingCampaigns')}</CardTitle>
+            <CardTitle>{t('dashboard.marketingCampaigns')}</CardTitle>
             <CardDescription>
-              {t('marketing.manageAndMonitor')}
+              {t('dashboard.manageAndMonitor')}
             </CardDescription>
           </CardHeader>
           <CardContent>
@@ -543,7 +543,7 @@ export default function MarketingPage() {
               <div className="relative flex-1">
                 <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4" />
                 <Input
-                  placeholder="Search campaigns..."
+                  placeholder={t('dashboard.searchCampaigns')}
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                   className="pl-10"
@@ -555,12 +555,12 @@ export default function MarketingPage() {
                 onChange={(e) => setStatusFilter(e.target.value)}
                 className="px-3 py-2 border border-input bg-background rounded-md text-sm"
               >
-                <option value="all">All Status</option>
-                <option value="active">Active</option>
-                <option value="draft">Draft</option>
-                <option value="paused">Paused</option>
-                <option value="completed">Completed</option>
-                <option value="cancelled">Cancelled</option>
+                <option value="all">{t('dashboard.allStatus')}</option>
+                <option value="active">{t('dashboard.active')}</option>
+                <option value="draft">{t('dashboard.draft')}</option>
+                <option value="paused">{t('dashboard.paused')}</option>
+                <option value="completed">{t('dashboard.completed')}</option>
+                <option value="cancelled">{t('dashboard.cancelled')}</option>
               </select>
               
               <select
@@ -568,13 +568,13 @@ export default function MarketingPage() {
                 onChange={(e) => setTypeFilter(e.target.value)}
                 className="px-3 py-2 border border-input bg-background rounded-md text-sm"
               >
-                <option value="all">All Types</option>
-                <option value="email">Email</option>
-                <option value="social">Social</option>
-                <option value="display">Display</option>
-                <option value="search">Search</option>
-                <option value="content">Content</option>
-                <option value="affiliate">Affiliate</option>
+                <option value="all">{t('dashboard.allTypes')}</option>
+                <option value="email">{t('dashboard.email')}</option>
+                <option value="social">{t('dashboard.social')}</option>
+                <option value="display">{t('dashboard.display')}</option>
+                <option value="search">{t('dashboard.search')}</option>
+                <option value="content">{t('dashboard.content')}</option>
+                <option value="affiliate">{t('dashboard.affiliate')}</option>
               </select>
             </div>
 
@@ -594,10 +594,10 @@ export default function MarketingPage() {
                           {campaign.status}
                         </Badge>
                         <span className="text-xs text-muted-foreground">
-                          Budget: {formatCurrency(campaign.budget)}
+                          {t('dashboard.budget')}: {formatCurrency(campaign.budget)}
                         </span>
                         <span className="text-xs text-muted-foreground">
-                          Spent: {formatCurrency(campaign.spent)}
+                          {t('dashboard.spent')}: {formatCurrency(campaign.spent)}
                         </span>
                         <span className="text-xs text-muted-foreground">
                           ROAS: {campaign.metrics.roas.toFixed(1)}x
@@ -608,10 +608,10 @@ export default function MarketingPage() {
                   
                   <div className="flex items-center space-x-4">
                     <div className="text-right text-sm text-muted-foreground">
-                      <p>Impressions: {campaign.metrics.impressions.toLocaleString()}</p>
-                      <p>Clicks: {campaign.metrics.clicks.toLocaleString()}</p>
-                      <p>CTR: {campaign.metrics.ctr.toFixed(2)}%</p>
-                      <p>CPC: {formatCurrency(campaign.metrics.cpc)}</p>
+                      <p>{t('dashboard.impressions')}: {campaign.metrics.impressions.toLocaleString()}</p>
+                      <p>{t('dashboard.clicks')}: {campaign.metrics.clicks.toLocaleString()}</p>
+                      <p>{t('dashboard.ctr')}: {campaign.metrics.ctr.toFixed(2)}%</p>
+                      <p>{t('dashboard.cpc')}: {formatCurrency(campaign.metrics.cpc)}</p>
                     </div>
                     
                     <DropdownMenu>
@@ -621,23 +621,23 @@ export default function MarketingPage() {
                         </Button>
                       </DropdownMenuTrigger>
                       <DropdownMenuContent align="end">
-                        <DropdownMenuLabel>Actions</DropdownMenuLabel>
+                        <DropdownMenuLabel>{t('dashboard.actions')}</DropdownMenuLabel>
                         <DropdownMenuSeparator />
                         <DropdownMenuItem>
                           <Eye className="mr-2 h-4 w-4" />
-                          View Details
+                          {t('dashboard.viewDetails')}
                         </DropdownMenuItem>
                         <DropdownMenuItem>
                           <BarChart3 className="mr-2 h-4 w-4" />
-                          View Analytics
+                          {t('dashboard.viewAnalytics')}
                         </DropdownMenuItem>
                         <DropdownMenuItem>
                           <Edit className="mr-2 h-4 w-4" />
-                          Edit Campaign
+                          {t('dashboard.editCampaign')}
                         </DropdownMenuItem>
                         <DropdownMenuItem>
                           <Copy className="mr-2 h-4 w-4" />
-                          Duplicate
+                          {t('dashboard.duplicate')}
                         </DropdownMenuItem>
                         <DropdownMenuSeparator />
                         {campaign.status === "draft" && (
@@ -646,7 +646,7 @@ export default function MarketingPage() {
                             className="text-success"
                           >
                             <Play className="mr-2 h-4 w-4" />
-                            Start Campaign
+                            {t('dashboard.startCampaign')}
                           </DropdownMenuItem>
                         )}
                         {campaign.status === "active" && (
@@ -655,7 +655,7 @@ export default function MarketingPage() {
                             className="text-warning"
                           >
                             <Pause className="mr-2 h-4 w-4" />
-                            Pause Campaign
+                            {t('dashboard.pauseCampaign')}
                           </DropdownMenuItem>
                         )}
                       </DropdownMenuContent>
@@ -668,7 +668,7 @@ export default function MarketingPage() {
             {filteredCampaigns.length === 0 && (
               <div className="text-center py-8">
                 <Megaphone className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
-                <p className="text-muted-foreground">No campaigns found matching your criteria</p>
+                <p className="text-muted-foreground">{t('dashboard.noCampaignsFound')}</p>
               </div>
             )}
           </CardContent>
@@ -679,9 +679,9 @@ export default function MarketingPage() {
       {activeTab === "leads" && (
         <Card>
           <CardHeader>
-            <CardTitle>Lead Management</CardTitle>
+            <CardTitle>{t('dashboard.leadManagement')}</CardTitle>
             <CardDescription>
-              Track and manage marketing leads
+              {t('dashboard.trackAndManage')}
             </CardDescription>
           </CardHeader>
           <CardContent>
@@ -689,7 +689,7 @@ export default function MarketingPage() {
               <div className="relative flex-1">
                 <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4" />
                 <Input
-                  placeholder="Search leads..."
+                  placeholder={t('dashboard.searchLeads')}
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                   className="pl-10"
@@ -701,12 +701,12 @@ export default function MarketingPage() {
                 onChange={(e) => setStatusFilter(e.target.value)}
                 className="px-3 py-2 border border-input bg-background rounded-md text-sm"
               >
-                <option value="all">All Status</option>
-                <option value="new">New</option>
-                <option value="contacted">Contacted</option>
-                <option value="qualified">Qualified</option>
-                <option value="converted">Converted</option>
-                <option value="lost">Lost</option>
+                <option value="all">{t('dashboard.allStatus')}</option>
+                <option value="new">{t('dashboard.new')}</option>
+                <option value="contacted">{t('dashboard.contacted')}</option>
+                <option value="qualified">{t('dashboard.qualified')}</option>
+                <option value="converted">{t('dashboard.converted')}</option>
+                <option value="lost">{t('dashboard.lost')}</option>
               </select>
             </div>
 
@@ -727,10 +727,10 @@ export default function MarketingPage() {
                           {lead.status}
                         </Badge>
                         <span className="text-xs text-muted-foreground">
-                          Score: {lead.score}/100
+                          {t('dashboard.score')}: {lead.score}/100
                         </span>
                         <span className="text-xs text-muted-foreground">
-                          Source: {lead.source}
+                          {t('dashboard.source')}: {lead.source}
                         </span>
                         {lead.company && (
                           <span className="text-xs text-muted-foreground">
@@ -743,10 +743,10 @@ export default function MarketingPage() {
                   
                   <div className="flex items-center space-x-4">
                     <div className="text-right text-sm text-muted-foreground">
-                      <p>Created: {formatDate(lead.createdAt)}</p>
-                      <p>Last activity: {formatRelativeTime(lead.lastActivity)}</p>
+                      <p>{t('dashboard.created')}: {formatDate(lead.createdAt)}</p>
+                      <p>{t('dashboard.lastActivity')}: {formatRelativeTime(lead.lastActivity)}</p>
                       {lead.phone && (
-                        <p>Phone: {lead.phone}</p>
+                        <p>{t('dashboard.phone')}: {lead.phone}</p>
                       )}
                     </div>
                     
@@ -757,19 +757,19 @@ export default function MarketingPage() {
                         </Button>
                       </DropdownMenuTrigger>
                       <DropdownMenuContent align="end">
-                        <DropdownMenuLabel>Actions</DropdownMenuLabel>
+                        <DropdownMenuLabel>{t('dashboard.actions')}</DropdownMenuLabel>
                         <DropdownMenuSeparator />
                         <DropdownMenuItem>
                           <Eye className="mr-2 h-4 w-4" />
-                          View Details
+                          {t('dashboard.viewDetails')}
                         </DropdownMenuItem>
                         <DropdownMenuItem>
                           <Mail className="mr-2 h-4 w-4" />
-                          Send Email
+                          {t('dashboard.sendEmail')}
                         </DropdownMenuItem>
                         <DropdownMenuItem>
                           <Edit className="mr-2 h-4 w-4" />
-                          Edit Lead
+                          {t('dashboard.editLead')}
                         </DropdownMenuItem>
                         <DropdownMenuSeparator />
                         {lead.status === "new" && (
@@ -778,7 +778,7 @@ export default function MarketingPage() {
                             className="text-primary"
                           >
                             <Send className="mr-2 h-4 w-4" />
-                            Mark as Contacted
+                            {t('dashboard.markAsContacted')}
                           </DropdownMenuItem>
                         )}
                         {lead.status === "contacted" && (
@@ -787,7 +787,7 @@ export default function MarketingPage() {
                             className="text-success"
                           >
                             <CheckCircle className="mr-2 h-4 w-4" />
-                            Qualify Lead
+                            {t('dashboard.qualifyLead')}
                           </DropdownMenuItem>
                         )}
                         {lead.status === "qualified" && (
@@ -796,7 +796,7 @@ export default function MarketingPage() {
                             className="text-success"
                           >
                             <Target className="mr-2 h-4 w-4" />
-                            Convert to Customer
+                            {t('dashboard.convertToCustomer')}
                           </DropdownMenuItem>
                         )}
                       </DropdownMenuContent>
@@ -809,7 +809,7 @@ export default function MarketingPage() {
             {filteredLeads.length === 0 && (
               <div className="text-center py-8">
                 <Users className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
-                <p className="text-muted-foreground">No leads found matching your criteria</p>
+                <p className="text-muted-foreground">{t('dashboard.noLeadsFound')}</p>
               </div>
             )}
           </CardContent>
