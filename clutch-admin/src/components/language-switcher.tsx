@@ -13,7 +13,7 @@ import { Languages } from 'lucide-react';
 
 export function LanguageSwitcher() {
   const { language, setLanguage } = useLanguage();
-  const t = (key: string, params?: any) => key;
+  const { t } = useTranslations();
 
   const languages = [
     { code: 'en' as const, name: t('language.english'), flag: '🇺🇸' },

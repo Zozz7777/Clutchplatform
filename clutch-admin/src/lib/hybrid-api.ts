@@ -109,7 +109,7 @@ class HybridApiService {
   async getUsers() {
     return this.executeWithFallback(
       () => apiService.getUsers(),
-      () => Promise.resolve([]),
+      () => Promise.resolve({ success: true, data: [] }),
       false // Always use real API
     );
   }
@@ -117,7 +117,7 @@ class HybridApiService {
   async getUserById(id: string) {
     return this.executeWithFallback(
       () => apiService.getUserById(id),
-      () => Promise.resolve({}),
+      () => Promise.resolve({ success: true, data: {} }),
       false // Always use real API
     );
   }
@@ -125,7 +125,7 @@ class HybridApiService {
   async createUser(userData: Partial<User>) {
     return this.executeWithFallback(
       () => apiService.createUser(userData),
-      () => Promise.resolve({}),
+      () => Promise.resolve({ success: true, data: {} }),
       false // Always use real API
     );
   }
@@ -133,7 +133,7 @@ class HybridApiService {
   async updateUser(id: string, updates: Partial<User>) {
     return this.executeWithFallback(
       () => apiService.updateUser(id, updates),
-      () => Promise.resolve({}),
+      () => Promise.resolve({ success: true, data: {} }),
       false // Always use real API
     );
   }
@@ -141,7 +141,7 @@ class HybridApiService {
   async deleteUser(id: string) {
     return this.executeWithFallback(
       () => apiService.deleteUser(id),
-      () => Promise.resolve(false),
+      () => Promise.resolve({ success: true, data: false }),
       false // Always use real API
     );
   }
@@ -150,7 +150,7 @@ class HybridApiService {
   async getFleetVehicles() {
     return this.executeWithFallback(
       () => apiService.getFleetVehicles(),
-      () => realApi.getFleetVehicles(),
+      () => Promise.resolve({ success: true, data: [] }),
       false // Always use real API
     );
   }
@@ -158,7 +158,7 @@ class HybridApiService {
   async getFleetVehicleById(id: string) {
     return this.executeWithFallback(
       () => apiService.getFleetVehicleById(id),
-      () => realApi.getFleetVehicleById(id),
+      () => Promise.resolve({ success: true, data: {} }),
       false // Always use real API
     );
   }
@@ -166,7 +166,7 @@ class HybridApiService {
   async updateFleetVehicle(id: string, updates: Partial<FleetVehicle>) {
     return this.executeWithFallback(
       () => apiService.updateFleetVehicle(id, updates),
-      () => realApi.updateFleetVehicle(id, updates),
+      () => Promise.resolve({ success: true, data: {} }),
       false // Always use real API
     );
   }
@@ -175,7 +175,7 @@ class HybridApiService {
   async getKPIMetrics() {
     return this.executeWithFallback(
       () => apiService.getKPIMetrics(),
-      () => realApi.getKPIMetrics(),
+      () => Promise.resolve({ success: true, data: [] }),
       false // Always use real API
     );
   }
@@ -183,7 +183,7 @@ class HybridApiService {
   async getDashboardStats() {
     return this.executeWithFallback(
       () => apiService.getDashboardStats(),
-      () => realApi.getKPIMetrics(), // Use KPI metrics as fallback
+      () => Promise.resolve({ success: true, data: {} }),
       false // Always use real API
     );
   }

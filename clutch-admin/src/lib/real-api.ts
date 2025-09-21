@@ -751,7 +751,7 @@ export class RealApiService {
   async getExpenses(): Promise<Record<string, unknown>[]> {
     return withErrorHandling(
       async () => {
-        const response = await apiService.makeRequest<Record<string, unknown>[]>("/api/v1/expenses");
+        const response = await apiService.makeRequest<Record<string, unknown>[]>("/api/v1/finance/expenses");
         return handleApiResponse(response, 'getExpenses', []);
       },
       'getExpenses',
@@ -773,7 +773,7 @@ export class RealApiService {
   async getBudgets(): Promise<Record<string, unknown>[]> {
     return withErrorHandling(
       async () => {
-        const response = await apiService.makeRequest<Record<string, unknown>[]>("/api/v1/budgets");
+        const response = await apiService.makeRequest<Record<string, unknown>[]>("/api/v1/finance/budgets");
         return handleApiResponse(response, 'getBudgets', []);
       },
       'getBudgets',
@@ -973,7 +973,7 @@ export class RealApiService {
   async getBudgetBreaches(): Promise<Record<string, unknown>[]> {
     return withErrorHandling(
       async () => {
-        const response = await apiService.makeRequest<Record<string, unknown>[]>("/api/v1/budget-breaches");
+        const response = await apiService.makeRequest<Record<string, unknown>[]>("/api/v1/finance/budget-breaches");
         return handleApiResponse(response, 'getBudgetBreaches', []);
       },
       'getBudgetBreaches',
