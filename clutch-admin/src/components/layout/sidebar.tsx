@@ -43,6 +43,16 @@ export function Sidebar({ isCollapsed, onToggle }: SidebarProps) {
 
   const hasAnyPermission = (permissions: readonly string[]) => {
     const result = permissions.some(permission => hasPermission(permission));
+    
+    // Debug logging for permission checks (only in development)
+    if (process.env.NODE_ENV === 'development' && !result) {
+      console.log('🚫 Navigation item filtered out due to missing permissions:', {
+        permissions,
+        userRole: user?.role,
+        userPermissions: user?.permissions?.length || 0
+      });
+    }
+    
     return result;
   };
 
@@ -151,6 +161,10 @@ export function Sidebar({ isCollapsed, onToggle }: SidebarProps) {
                         : "text-foreground hover:bg-sidebar-primary/10 hover:text-sidebar-primary active:bg-sidebar-primary/20",
                       isCollapsed && "justify-center"
                     )}
+                    onClick={(e) => {
+                      console.log('🔗 Link clicked:', item.href, item.title);
+                      // Don't prevent default - let Next.js handle the navigation
+                    }}
                   >
                     <IconComponent className="w-4 h-4" />
                     {!isCollapsed && (

@@ -7,7 +7,7 @@ import { Button } from '@/components/ui/button';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { businessIntelligence, type RevenueForecast } from '@/lib/business-intelligence';
 import { logger } from '@/lib/logger';
-// // import { useTranslations } from '@/hooks/use-translations';
+import { useTranslations } from '@/hooks/use-translations';
 import { 
   Brain, 
   TrendingUp, 

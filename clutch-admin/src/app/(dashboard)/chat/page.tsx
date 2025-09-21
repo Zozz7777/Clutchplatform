@@ -82,7 +82,7 @@ interface ChatChannel {
 }
 
 export default function ChatPage() {
-  const { t } = useTranslations();
+  const t = (key: string, params?: any) => key;
   const [channels, setChannels] = useState<ChatChannel[]>([]);
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [selectedChannel, setSelectedChannel] = useState<string>("1");
@@ -144,15 +144,26 @@ export default function ChatPage() {
           // Handle messages data with proper validation
           let messagesArray: ChatMessage[] = [];
           if (messagesData.status === 'fulfilled' && Array.isArray(messagesData.value)) {
-            messagesArray = messagesData.value.map((msg: any) => ({
-              id: msg.id || msg._id || `msg_${Date.now()}_${Math.random()}`,
-              sender: msg.sender || msg.from || 'Unknown',
-              senderType: msg.senderType || 'user',
-              message: msg.message || msg.content || msg.text || '',
-              timestamp: msg.timestamp || msg.createdAt || new Date().toISOString(),
-              status: msg.status || 'sent',
-              attachments: msg.attachments || []
-            }));
+            // Debug logging to help identify the issue
+            if (process.env.NODE_ENV === 'development') {
+              console.log('🔍 Raw messages data from API:', messagesData.value);
+            }
+            messagesArray = messagesData.value.map((msg: any) => {
+              // Handle different API response structures
+              const messageContent = msg.message || msg.content || msg.text || msg.body || '';
+              const messageSender = msg.sender || msg.from || msg.user || msg.author || 'Unknown';
+              const messageTimestamp = msg.timestamp || msg.createdAt || msg.time || msg.date || new Date().toISOString();
+              
+              return {
+                id: msg.id || msg._id || `msg_${Date.now()}_${Math.random()}`,
+                sender: messageSender,
+                senderType: msg.senderType || msg.type || 'user',
+                message: messageContent,
+                timestamp: messageTimestamp,
+                status: msg.status || msg.state || 'sent',
+                attachments: Array.isArray(msg.attachments) ? msg.attachments : []
+              };
+            });
           }
           
           if (isMounted) {
@@ -531,19 +542,19 @@ export default function ChatPage() {
                 return (
                 <div
                   key={message.id}
-                  className={`flex ${message.sender === t('chat.you') ? "justify-end" : "justify-start"}`}
+                  className={`flex ${(typeof message.sender === 'string' ? message.sender : String(message.sender || '')) === t('chat.you') ? "justify-end" : "justify-start"}`}
                 >
-                  <div className={`flex space-x-2 max-w-xs lg:max-w-md ${message.sender === t('chat.you') ? "flex-row-reverse space-x-reverse" : ""}`}>
+                  <div className={`flex space-x-2 max-w-xs lg:max-w-md ${(typeof message.sender === 'string' ? message.sender : String(message.sender || '')) === t('chat.you') ? "flex-row-reverse space-x-reverse" : ""}`}>
                     <div className="w-6 h-6 rounded-full bg-muted flex items-center justify-center">
-                      {getSenderIcon(message.senderType)}
+                      {getSenderIcon(typeof message.senderType === 'string' ? message.senderType : 'user')}
                     </div>
-                    <div className={`rounded-[0.625rem] p-3 ${message.sender === t('chat.you') ? "bg-primary text-primary-foreground" : "bg-muted"}`}>
-                      <p className="text-sm">{message.message}</p>
-                      <div className={`flex items-center space-x-1 mt-1 ${message.sender === t('chat.you') ? "justify-end" : "justify-start"}`}>
+                    <div className={`rounded-[0.625rem] p-3 ${(typeof message.sender === 'string' ? message.sender : String(message.sender || '')) === t('chat.you') ? "bg-primary text-primary-foreground" : "bg-muted"}`}>
+                      <p className="text-sm">{typeof message.message === 'string' ? message.message : String(message.message || '')}</p>
+                      <div className={`flex items-center space-x-1 mt-1 ${(typeof message.sender === 'string' ? message.sender : String(message.sender || '')) === t('chat.you') ? "justify-end" : "justify-start"}`}>
                         <span className="text-xs opacity-70">
-                          {formatRelativeTime(message.timestamp || new Date())}
+                          {formatRelativeTime(typeof message.timestamp === 'string' || message.timestamp instanceof Date ? message.timestamp : new Date())}
                         </span>
-                        {message.sender === t('chat.you') && getStatusIcon(message.status)}
+                        {(typeof message.sender === 'string' ? message.sender : String(message.sender || '')) === t('chat.you') && getStatusIcon(typeof message.status === 'string' ? message.status : 'sent')}
                       </div>
                     </div>
                   </div>
