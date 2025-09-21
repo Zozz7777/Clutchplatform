@@ -38,6 +38,28 @@ export class RealApiService {
     )();
   }
 
+  async getTickets(): Promise<Record<string, unknown>[]> {
+    return withErrorHandling(
+      async () => {
+        const response = await apiService.makeRequest<Record<string, unknown>[]>("/api/v1/tickets");
+        return handleApiResponse(response, 'getTickets', []);
+      },
+      'getTickets',
+      { fallbackValue: [], showToast: false }
+    )();
+  }
+
+  async getChatChannels(): Promise<Record<string, unknown>[]> {
+    return withErrorHandling(
+      async () => {
+        const response = await apiService.makeRequest<Record<string, unknown>[]>("/api/v1/chat-channels");
+        return handleApiResponse(response, 'getChatChannels', []);
+      },
+      'getChatChannels',
+      { fallbackValue: [], showToast: false }
+    )();
+  }
+
   // Fleet APIs
   async getFleetVehicleById(vehicleId: string): Promise<Record<string, unknown>> {
     return withErrorHandling(

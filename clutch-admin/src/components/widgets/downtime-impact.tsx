@@ -234,7 +234,7 @@ export function DowntimeImpact({ className = '' }: DowntimeImpactProps) {
           <div className="text-center p-3 bg-warning/10 rounded-[0.625rem]-lg">
             <DollarSign className="h-5 w-5 text-warning mx-auto mb-1" />
             <p className="text-lg font-bold text-warning">
-              ${downtimeMetrics.revenueImpact.toLocaleString()}
+              ${(downtimeMetrics.revenueImpact || 0).toLocaleString()}
             </p>
             <p className="text-xs text-muted-foreground">Revenue Impact</p>
           </div>
@@ -245,7 +245,7 @@ export function DowntimeImpact({ className = '' }: DowntimeImpactProps) {
           <div className="flex items-center justify-center space-x-2 mb-2">
             <DollarSign className={`h-6 w-6 ${getImpactColor(downtimeMetrics.revenueImpact, targetRevenueImpact)}`} />
             <span className={`text-2xl font-bold ${getImpactColor(downtimeMetrics.revenueImpact, targetRevenueImpact)}`}>
-              ${downtimeMetrics.revenueImpact.toLocaleString()}
+              ${(downtimeMetrics.revenueImpact || 0).toLocaleString()}
             </span>
             <Badge className={getImpactBadge(downtimeMetrics.revenueImpact, targetRevenueImpact)}>
               {getImpactLevel(downtimeMetrics.revenueImpact, targetRevenueImpact)}
