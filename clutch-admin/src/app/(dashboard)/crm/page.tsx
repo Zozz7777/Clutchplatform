@@ -18,7 +18,7 @@ import AtRiskClients from "@/components/widgets/at-risk-clients";
 import CSATNPSTrends from "@/components/widgets/csat-nps-trends";
 import UpsellOpportunities from "@/components/widgets/upsell-opportunities";
 import { useAuth } from "@/contexts/auth-context";
-import { useTranslations } from "next-intl";
+import { useTranslations } from "@/hooks/use-translations";
 import { toast } from "sonner";
 import { 
   Users, 
@@ -84,7 +84,7 @@ export default function CRMPage() {
   const [statusFilter, setStatusFilter] = useState<string>("all");
   const [isLoading, setIsLoading] = useState(true);
   const { user, hasPermission } = useAuth();
-  const t = (key: string, params?: any) => key;
+  const { t } = useTranslations();
 
   useEffect(() => {
     let isMounted = true;

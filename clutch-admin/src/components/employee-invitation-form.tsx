@@ -91,7 +91,7 @@ const PERMISSION_OPTIONS = [
 ];
 
 export function EmployeeInvitationForm({ onSuccess, onCancel }: EmployeeInvitationFormProps) {
-  const t = (key: string, params?: any) => key;
+  const { t } = useTranslations();
   const { user } = useAuth();
   const [formData, setFormData] = useState<InvitationFormData>({
     name: "",

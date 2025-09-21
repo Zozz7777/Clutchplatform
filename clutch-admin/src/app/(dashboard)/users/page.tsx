@@ -11,7 +11,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { productionApi } from "@/lib/production-api";
 import { formatDate, formatRelativeTime } from "@/lib/utils";
 import { useAuth } from "@/contexts/auth-context";
-import { useTranslations } from "next-intl";
+import { useTranslations } from "@/hooks/use-translations";
 import { useQuickActions } from "@/lib/quick-actions";
 import { toast } from "sonner";
 import { handleError } from "@/lib/error-handler";
@@ -76,7 +76,7 @@ export default function UsersPage() {
   const [roleFilter, setRoleFilter] = useState<string>("all");
   const [isLoading, setIsLoading] = useState(true);
   const { hasPermission } = useAuth();
-  const t = (key: string, params?: any) => key;
+  const { t } = useTranslations();
   // Safely get quick actions with error handling
   let addUser: (() => void) | null = null;
   
@@ -222,7 +222,7 @@ export default function UsersPage() {
             <Users className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold text-foreground">{users.length}</div>
+            <div className="text-2xl font-bold text-foreground">{Array.isArray(users) ? users.length : 0}</div>
             <p className="text-xs text-muted-foreground">
               <span className="text-muted-foreground">N/A</span> {t('users.fromLastMonth')}
             </p>
@@ -249,7 +249,7 @@ export default function UsersPage() {
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold text-foreground">
-              {users.filter(u => u.role === "enterprise_client").length}
+              {Array.isArray(users) ? users.filter(u => u && u.role === "enterprise_client").length : 0}
             </div>
             <p className="text-xs text-muted-foreground">
               <span className="text-muted-foreground">N/A</span> {t('users.fromLastMonth')}
@@ -263,7 +263,7 @@ export default function UsersPage() {
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold text-foreground">
-              {users.filter(u => u.role === "service_provider").length}
+              {Array.isArray(users) ? users.filter(u => u && u.role === "service_provider").length : 0}
             </div>
             <p className="text-xs text-muted-foreground">
               <span className="text-muted-foreground">N/A</span> from last month
@@ -422,7 +422,8 @@ export default function UsersPage() {
                         </DropdownMenu>
                       </TableCell>
                     </TableRow>
-                  ))}
+                    );
+                  })}
                 </TableBody>
               </Table>
             </CardContent>
@@ -459,8 +460,8 @@ export default function UsersPage() {
                 <div className="space-y-4">
                   <h3 className="text-lg font-semibold">Recent Customer Activity</h3>
                   <div className="space-y-2">
-                    {users
-                      .filter(u => u.role === "customer")
+                    {Array.isArray(users) ? users
+                      .filter(u => u && u.role === "customer")
                       .slice(0, 5)
                       .map((user) => (
                         <div key={user.id} className="flex items-center justify-between p-3 border rounded-[0.625rem]">
@@ -504,7 +505,7 @@ export default function UsersPage() {
                   <div className="text-center p-4 border rounded-[0.625rem]">
                     <Building2 className="h-8 w-8 text-primary mx-auto mb-2" />
                     <p className="text-2xl font-bold text-foreground">
-                      {users.filter(u => u.role === "enterprise_client").length}
+                      {Array.isArray(users) ? users.filter(u => u && u.role === "enterprise_client").length : 0}
                     </p>
                     <p className="text-sm text-muted-foreground">{t('dashboard.enterpriseClients')}</p>
                   </div>
@@ -522,8 +523,8 @@ export default function UsersPage() {
                 <div className="space-y-4">
                   <h3 className="text-lg font-semibold">Enterprise Client Overview</h3>
                   <div className="space-y-2">
-                    {users
-                      .filter(u => u.role === "enterprise_client")
+                    {Array.isArray(users) ? users
+                      .filter(u => u && u.role === "enterprise_client")
                       .slice(0, 5)
                       .map((user) => (
                         <div key={user.id} className="flex items-center justify-between p-3 border rounded-[0.625rem]">
@@ -565,7 +566,7 @@ export default function UsersPage() {
                   <div className="text-center p-4 border rounded-[0.625rem]">
                     <UserCog className="h-8 w-8 text-primary mx-auto mb-2" />
                     <p className="text-2xl font-bold text-foreground">
-                      {users.filter(u => u.role === "service_provider").length}
+                      {Array.isArray(users) ? users.filter(u => u && u.role === "service_provider").length : 0}
                     </p>
                     <p className="text-sm text-muted-foreground">{t('dashboard.totalServiceProviders')}</p>
                   </div>
@@ -583,8 +584,8 @@ export default function UsersPage() {
                 <div className="space-y-4">
                   <h3 className="text-lg font-semibold">Service Provider Overview</h3>
                   <div className="space-y-2">
-                    {users
-                      .filter(u => u.role === "service_provider")
+                    {Array.isArray(users) ? users
+                      .filter(u => u && u.role === "service_provider")
                       .slice(0, 5)
                       .map((user) => (
                         <div key={user.id} className="flex items-center justify-between p-3 border rounded-[0.625rem]">

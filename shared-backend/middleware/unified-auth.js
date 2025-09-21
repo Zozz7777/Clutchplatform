@@ -202,18 +202,19 @@ const checkRole = (roles) => {
 
         const allowedRoles = Array.isArray(roles) ? roles : [roles];
         
-        // Map executive and admin roles to have broader access
-        const userRole = employee.role === 'executive' ? 'head_administrator' : 
+        // Map executive, admin, and super_admin roles to have broader access
+        const userRole = employee.role === 'super_admin' ? 'head_administrator' :
+                        employee.role === 'executive' ? 'head_administrator' : 
                         employee.role === 'admin' ? 'head_administrator' : employee.role;
         const mappedAllowedRoles = allowedRoles.map(role => {
           if (role === 'head_administrator') {
-            return ['head_administrator', 'executive', 'admin'];
+            return ['head_administrator', 'super_admin', 'executive', 'admin'];
           } else if (role === 'fleet_manager') {
-            return ['fleet_manager', 'head_administrator', 'executive', 'admin'];
+            return ['fleet_manager', 'head_administrator', 'super_admin', 'executive', 'admin'];
           } else if (role === 'asset_manager') {
-            return ['asset_manager', 'head_administrator', 'executive', 'admin'];
+            return ['asset_manager', 'head_administrator', 'super_admin', 'executive', 'admin'];
           } else if (role === 'system_admin') {
-            return ['system_admin', 'head_administrator', 'executive', 'admin'];
+            return ['system_admin', 'head_administrator', 'super_admin', 'executive', 'admin'];
           }
           return [role];
         }).flat();
@@ -237,18 +238,19 @@ const checkRole = (roles) => {
         // Fallback to JWT role check if database fails
         const allowedRoles = Array.isArray(roles) ? roles : [roles];
         
-        // Map executive and admin roles to have broader access
-        const userRole = req.user.role === 'executive' ? 'head_administrator' : 
+        // Map executive, admin, and super_admin roles to have broader access
+        const userRole = req.user.role === 'super_admin' ? 'head_administrator' :
+                        req.user.role === 'executive' ? 'head_administrator' : 
                         req.user.role === 'admin' ? 'head_administrator' : req.user.role;
         const mappedAllowedRoles = allowedRoles.map(role => {
           if (role === 'head_administrator') {
-            return ['head_administrator', 'executive', 'admin'];
+            return ['head_administrator', 'super_admin', 'executive', 'admin'];
           } else if (role === 'fleet_manager') {
-            return ['fleet_manager', 'head_administrator', 'executive', 'admin'];
+            return ['fleet_manager', 'head_administrator', 'super_admin', 'executive', 'admin'];
           } else if (role === 'asset_manager') {
-            return ['asset_manager', 'head_administrator', 'executive', 'admin'];
+            return ['asset_manager', 'head_administrator', 'super_admin', 'executive', 'admin'];
           } else if (role === 'system_admin') {
-            return ['system_admin', 'head_administrator', 'executive', 'admin'];
+            return ['system_admin', 'head_administrator', 'super_admin', 'executive', 'admin'];
           }
           return [role];
         }).flat();

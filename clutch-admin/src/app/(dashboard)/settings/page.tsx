@@ -6,7 +6,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useAuth } from "@/contexts/auth-context";
-import { useTranslations } from "next-intl";
+import { useTranslations } from "@/hooks/use-translations";
 import { productionApi } from "@/lib/production-api";
 import { formatDate, formatRelativeTime } from "@/lib/utils";
 import { handleError, handleDataLoadError } from "@/lib/error-handler";
@@ -122,7 +122,7 @@ export default function SettingsPage() {
   const [isSaving, setIsSaving] = useState(false);
   const [showPasswords, setShowPasswords] = useState<Record<string, boolean>>({});
   const { user, hasPermission } = useAuth();
-  const t = (key: string, params?: any) => key;
+  const { t } = useTranslations();
 
   useEffect(() => {
     const loadSettingsData = async () => {
