@@ -2878,7 +2878,7 @@ router.get('/activity/recent', authenticateToken, checkRole(['head_administrator
 });
 
 // GET /admin/analytics/export - Export admin analytics data
-router.get('/analytics/export', authenticateToken, checkRole(['head_administrator', 'analyst']), async (req, res) => {
+router.get('/analytics/export', authenticateToken, checkRole(['head_administrator', 'business_analyst']), async (req, res) => {
   try {
     const { format = 'json', dateFrom, dateTo, metrics } = req.query;
     
@@ -2914,7 +2914,7 @@ router.get('/analytics/export', authenticateToken, checkRole(['head_administrato
 });
 
 // GET /admin/analytics/revenue - Get revenue analytics
-router.get('/analytics/revenue', authenticateToken, checkRole(['head_administrator', 'finance']), async (req, res) => {
+router.get('/analytics/revenue', authenticateToken, checkRole(['head_administrator', 'finance_officer', 'finance']), async (req, res) => {
   try {
     const { period = '30d', breakdown } = req.query;
     
@@ -2973,7 +2973,7 @@ router.get('/analytics/revenue', authenticateToken, checkRole(['head_administrat
 });
 
 // GET /admin/analytics/users - Get user analytics
-router.get('/analytics/users', authenticateToken, checkRole(['head_administrator', 'user_manager']), async (req, res) => {
+router.get('/analytics/users', authenticateToken, checkRole(['head_administrator', 'hr_manager', 'hr']), async (req, res) => {
   try {
     const { period = '30d', segment } = req.query;
     
@@ -3039,7 +3039,7 @@ router.get('/analytics/users', authenticateToken, checkRole(['head_administrator
 });
 
 // GET /admin/business/customer-insights - Get customer insights
-router.get('/business/customer-insights', authenticateToken, checkRole(['head_administrator', 'business_analyst']), async (req, res) => {
+router.get('/business/customer-insights', authenticateToken, checkRole(['head_administrator', 'business_analyst', 'crm_manager']), async (req, res) => {
   try {
     const { period = '30d', segment } = req.query;
     
@@ -3418,7 +3418,7 @@ router.get('/business/metrics', authenticateToken, checkRole(['head_administrato
 // ============================================================================
 
 // GET /admin/chat/channels/:id/messages - Get chat channel messages
-router.get('/chat/channels/:id/messages', authenticateToken, checkRole(['head_administrator', 'support']), async (req, res) => {
+router.get('/chat/channels/:id/messages', authenticateToken, checkRole(['head_administrator', 'customer_support', 'support_agent']), async (req, res) => {
   try {
     const { id } = req.params;
     const { page = 1, limit = 50, dateFrom, dateTo } = req.query;

@@ -738,7 +738,7 @@ router.post('/maintenance/tasks', authenticateToken, checkRole(['head_administra
 });
 
 // GET /api/v1/fleet/maintenance/forecast - Get maintenance forecast predictions
-router.get('/maintenance/forecast', authenticateToken, checkRole(['head_administrator', 'asset_manager', 'fleet_manager']), async (req, res) => {
+router.get('/maintenance/forecast', authenticateToken, checkRole(['head_administrator', 'asset_manager', 'operations_manager']), async (req, res) => {
   try {
     const vehiclesCollection = await getCollection('vehicles');
     const maintenanceCollection = await getCollection('maintenance_records');
@@ -1011,7 +1011,7 @@ router.get('/vehicles/:id', authenticateToken, checkRole(['head_administrator', 
 });
 
 // PUT /api/v1/fleet/maintenance/tasks/:id - Update maintenance task
-router.put('/maintenance/tasks/:id', authenticateToken, checkRole(['head_administrator', 'asset_manager', 'fleet_manager']), async (req, res) => {
+router.put('/maintenance/tasks/:id', authenticateToken, checkRole(['head_administrator', 'asset_manager', 'operations_manager']), async (req, res) => {
   try {
     const tasksCollection = await getCollection('maintenance_tasks');
     const { id } = req.params;

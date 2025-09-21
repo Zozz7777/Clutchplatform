@@ -435,6 +435,15 @@ export class ProductionApiService {
     }
   }
 
+  async createChatChannel(channelData: Record<string, unknown>): Promise<Record<string, unknown>> {
+    try {
+      return await realApi.createChatChannel(channelData);
+    } catch (error) {
+      logger.error("Failed to create chat channel:", error);
+      throw new Error("Failed to create chat channel");
+    }
+  }
+
   // Asset Assignments
   async getAssetAssignments(): Promise<Record<string, unknown>[]> {
     try {

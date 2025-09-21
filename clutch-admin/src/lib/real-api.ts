@@ -60,6 +60,20 @@ export class RealApiService {
     )();
   }
 
+  async createChatChannel(channelData: Record<string, unknown>): Promise<Record<string, unknown>> {
+    return withErrorHandling(
+      async () => {
+        const response = await apiService.makeRequest<Record<string, unknown>>("/api/v1/chat/channels", {
+          method: 'POST',
+          body: JSON.stringify(channelData)
+        });
+        return handleApiResponse(response, 'createChatChannel', {});
+      },
+      'createChatChannel',
+      { fallbackValue: {}, showToast: true }
+    )();
+  }
+
 
   // Fleet APIs
   async getFleetVehicleById(vehicleId: string): Promise<Record<string, unknown>> {

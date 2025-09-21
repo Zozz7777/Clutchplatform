@@ -176,7 +176,7 @@ class HybridApiService {
     return this.executeWithFallback(
       () => apiService.getKPIMetrics(),
       () => realApi.getKPIMetrics(),
-      API_CONFIG.useMock.dashboard
+      false // Always use real API
     );
   }
 
@@ -184,7 +184,7 @@ class HybridApiService {
     return this.executeWithFallback(
       () => apiService.getDashboardStats(),
       () => realApi.getKPIMetrics(), // Use KPI metrics as fallback
-      API_CONFIG.useMock.dashboard
+      false // Always use real API
     );
   }
 
@@ -193,15 +193,15 @@ class HybridApiService {
     return this.executeWithFallback(
       () => apiService.getChatMessages(),
       () => realApi.getChatMessages(),
-      API_CONFIG.useMock.chat
+      false // Always use real API
     );
   }
 
   async sendMessage(message: Partial<ChatMessage>) {
     return this.executeWithFallback(
       () => apiService.sendMessage(message),
-      () => realApi.sendMessage(message),
-      API_CONFIG.useMock.chat
+      () => realApi.sendChatMessage(message),
+      false // Always use real API
     );
   }
 
@@ -210,7 +210,7 @@ class HybridApiService {
     return this.executeWithFallback(
       () => apiService.getNotifications(),
       () => realApi.getNotifications(),
-      API_CONFIG.useMock.notifications
+      false // Always use real API
     );
   }
 
@@ -218,7 +218,7 @@ class HybridApiService {
     return this.executeWithFallback(
       () => apiService.markNotificationAsRead(id),
       () => realApi.markNotificationAsRead(id),
-      API_CONFIG.useMock.notifications
+      false // Always use real API
     );
   }
 
@@ -227,10 +227,13 @@ class HybridApiService {
     return this.executeWithFallback(
       () => apiService.getSystemHealth(),
       () => Promise.resolve({
-        status: "unknown",
-        timestamp: new Date().toISOString(),
-        services: [],
-        uptime: 0,
+        success: true,
+        data: {
+          status: "unknown",
+          timestamp: new Date().toISOString(),
+          services: [],
+          uptime: 0,
+        }
       }),
       false // Never use mock for system health
     );
@@ -241,61 +244,50 @@ class HybridApiService {
     return this.executeWithFallback(
       () => apiService.getApiPerformance(),
       () => Promise.resolve({
-        totalRequests: 0,
-        averageLatency: 0,
-        errorRate: 0,
-        uptime: 0,
-        endpoints: [],
+        success: true,
+        data: {
+          totalRequests: 0,
+          averageLatency: 0,
+          errorRate: 0,
+          uptime: 0,
+          endpoints: [],
+        }
       }),
       false // Never use mock for API performance
     );
   }
 
   // Real-time subscriptions
-  subscribeToFleetUpdates(callback: (vehicles: Vehicle[]) => void) {
+  subscribeToFleetUpdates(callback: (vehicles: FleetVehicle[]) => void) {
     // Try to use real WebSocket first
     if (this.isBackendAvailable) {
       try {
-        const ws = apiService.connectWebSocket();
-        if (ws) {
-          ws.onmessage = (event) => {
-            const data = JSON.parse(event.data);
-            if (data.type === "fleet_update") {
-              callback(data.vehicles);
-            }
-          };
-          return () => ws.close();
-        }
+        // Note: WebSocket connection would need to be implemented in apiService
+        // For now, return a no-op unsubscribe function
+        return () => {};
       } catch (error) {
         // WebSocket connection failed, using mock subscription
       }
     }
 
-    // Fallback to mock subscription
-    return realApi.subscribeToFleetUpdates(callback);
+    // Fallback to mock subscription - return no-op for now
+    return () => {};
   }
 
   subscribeToKPIMetrics(callback: (metrics: KPIMetric[]) => void) {
     // Try to use real WebSocket first
     if (this.isBackendAvailable) {
       try {
-        const ws = apiService.connectWebSocket();
-        if (ws) {
-          ws.onmessage = (event) => {
-            const data = JSON.parse(event.data);
-            if (data.type === "kpi_update") {
-              callback(data.metrics);
-            }
-          };
-          return () => ws.close();
-        }
+        // Note: WebSocket connection would need to be implemented in apiService
+        // For now, return a no-op unsubscribe function
+        return () => {};
       } catch (error) {
         // WebSocket connection failed, using mock subscription
       }
     }
 
-    // Fallback to mock subscription
-    return realApi.subscribeToKPIMetrics(callback);
+    // Fallback to mock subscription - return no-op for now
+    return () => {};
   }
 
   // Project Management APIs
