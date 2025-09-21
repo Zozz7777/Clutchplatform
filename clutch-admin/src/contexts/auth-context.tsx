@@ -66,6 +66,13 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
           permissions: Array.isArray(user.permissions) ? user.permissions : (ROLE_PERMISSIONS[user.role as keyof typeof ROLE_PERMISSIONS] || []),
         };
         
+        // Debug logging for user data
+        console.log('🔍 User data received from backend:', {
+          originalUser: user,
+          mappedUser: userWithPermissions,
+          rolePermissions: ROLE_PERMISSIONS[user.role as keyof typeof ROLE_PERMISSIONS]
+        });
+        
         setUser(userWithPermissions);
         if (typeof window !== 'undefined') {
           localStorage.setItem("clutch-admin-user", JSON.stringify(userWithPermissions));

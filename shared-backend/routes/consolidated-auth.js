@@ -408,7 +408,8 @@ router.post('/login', loginRateLimit, async (req, res) => {
           firstName: employee.basicInfo.firstName,
           lastName: employee.basicInfo.lastName,
           department: employee.employment?.department,
-          position: employee.employment?.position
+          position: employee.employment?.position,
+          permissions: employee.permissions || []
         };
         isEmployee = true;
       } else {
@@ -541,7 +542,9 @@ router.post('/login', loginRateLimit, async (req, res) => {
           id: user._id,
           _id: user._id,
           email: user.email,
-          name: user.name,
+          name: user.name || `${user.firstName || ''} ${user.lastName || ''}`.trim() || 'User',
+          firstName: user.firstName,
+          lastName: user.lastName,
           role: user.role,
           permissions: user.permissions || [],
           isActive: user.isActive,
