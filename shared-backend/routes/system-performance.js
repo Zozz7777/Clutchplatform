@@ -16,6 +16,30 @@ const performanceLimiter = rateLimit({
 const systemMonitor = new RealSystemMonitoringService();
 const performanceMonitor = new RealPerformanceMetricsService();
 
+// GET /api/v1/system-performance - Get system performance metrics (root route)
+router.get('/', performanceLimiter, authenticateToken, checkRole(['head_administrator', 'platform_admin', 'executive', 'admin', 'asset_manager']), async (req, res) => {
+  try {
+    const systemMetrics = await systemMonitor.getSystemMetrics();
+    const performanceMetrics = performanceMonitor.getPerformanceMetrics();
+    
+    res.json({
+      success: true,
+      data: {
+        system: systemMetrics,
+        performance: performanceMetrics,
+        timestamp: new Date().toISOString()
+      }
+    });
+  } catch (error) {
+    console.error('Error fetching system performance metrics:', error);
+    res.status(500).json({
+      success: false,
+      error: 'Failed to fetch system performance metrics',
+      message: error.message
+    });
+  }
+});
+
 // GET /api/v1/system/performance - Get system performance metrics
 router.get('/performance', performanceLimiter, authenticateToken, checkRole(['head_administrator', 'platform_admin', 'executive', 'admin', 'asset_manager']), async (req, res) => {
   try {
