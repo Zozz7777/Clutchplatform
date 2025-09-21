@@ -719,7 +719,7 @@ export class RealApiService {
   async getSystemPerformanceMetrics(): Promise<Record<string, unknown>> {
     return withErrorHandling(
       async () => {
-        const response = await apiService.makeRequest<Record<string, unknown>>("/api/v1/system-performance");
+        const response = await apiService.makeRequest<Record<string, unknown>>("/api/v1/system-performance/performance");
         return handleApiResponse(response, 'getSystemPerformanceMetrics', {});
       },
       'getSystemPerformanceMetrics',
