@@ -301,13 +301,13 @@ export default function CommandBar({ isOpen, onClose }: CommandBarProps) {
       type: 'form',
       title: t('commandBar.forms.createUser.title'),
       description: t('commandBar.forms.createUser.description'),
-      fields: [
-        { name: 'name', label: t('commandBar.forms.createUser.fields.name'), type: 'text', placeholder: t('commandBar.forms.createUser.placeholders.name'), required: true },
-        { name: 'email', label: t('commandBar.forms.createUser.fields.email'), type: 'email', placeholder: t('commandBar.forms.createUser.placeholders.email'), required: true },
+          fields: [
+        { name: 'name', label: t('commandBar.forms.createUser.fields.name'), type: 'text' as const, placeholder: t('commandBar.forms.createUser.placeholders.name'), required: true },
+        { name: 'email', label: t('commandBar.forms.createUser.fields.email'), type: 'email' as const, placeholder: t('commandBar.forms.createUser.placeholders.email'), required: true },
         { 
           name: 'role', 
           label: t('commandBar.forms.createUser.fields.role'), 
-          type: 'select', 
+          type: 'select' as const, 
           required: true,
           options: [
             { value: 'user', label: t('commandBar.forms.createUser.options.roles.user') },
@@ -318,7 +318,7 @@ export default function CommandBar({ isOpen, onClose }: CommandBarProps) {
         { 
           name: 'status', 
           label: t('commandBar.forms.createUser.fields.status'), 
-          type: 'select', 
+          type: 'select' as const, 
           required: true,
           options: [
             { value: 'active', label: t('commandBar.forms.createUser.options.statuses.active') },
@@ -326,7 +326,7 @@ export default function CommandBar({ isOpen, onClose }: CommandBarProps) {
             { value: 'pending', label: t('commandBar.forms.createUser.options.statuses.pending') }
           ]
         }
-      ],
+      ] as const,
       onSubmit: async (data) => {
         const createdUser = await Promise.resolve({ id: `user_${Date.now()}`, ...data });
         if (createdUser) {
@@ -348,10 +348,7 @@ export default function CommandBar({ isOpen, onClose }: CommandBarProps) {
       onSubmit: async (data) => {
         const user = await productionApi.getUserById(String(data.userId));
         if (user) {
-          const updatedUser = await Promise.resolve({ id: String(data.userId), ...user, status: 'inactive' }); 
-            ...user, 
-            status: 'inactive' 
-          });
+          const updatedUser = await Promise.resolve({ ...user, id: String(data.userId), status: 'inactive' });
           if (updatedUser) {
             toast.success(t('commandBar.messages.userSuspended'));
           }
@@ -510,7 +507,7 @@ export default function CommandBar({ isOpen, onClose }: CommandBarProps) {
       ],
       onSubmit: async (data) => {
         const payoutData = {
-          amount: parseFloat(data.amount),
+          amount: parseFloat(String(data.amount)),
           recipient: data.recipient,
           type: 'manual',
           status: 'pending',
@@ -551,7 +548,7 @@ export default function CommandBar({ isOpen, onClose }: CommandBarProps) {
       onSubmit: async (data) => {
         const invoiceData = {
           customerId: data.customerId,
-          amount: parseFloat(data.amount),
+          amount: parseFloat(String(data.amount)),
           type: 'invoice',
           status: 'pending',
           description: 'Invoice generated from command bar',
@@ -859,7 +856,7 @@ export default function CommandBar({ isOpen, onClose }: CommandBarProps) {
           title={modalState.title}
           description={modalState.description}
           type={modalState.type}
-          fields={modalState.fields}
+          fields={modalState.fields as any}
           onSubmit={modalState.onSubmit || (() => Promise.resolve())}
           variant={modalState.variant}
         />

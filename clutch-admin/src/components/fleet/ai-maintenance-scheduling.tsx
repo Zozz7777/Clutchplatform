@@ -80,7 +80,7 @@ import {
 } from 'lucide-react';
 import { productionApi } from '@/lib/production-api';
 import { useAuth } from '@/contexts/auth-context';
-// import { useTranslations } from '@/hooks/use-translations';
+import { useTranslations } from '@/hooks/use-translations';
 import { toast } from 'sonner';
 
 interface MaintenanceTask {

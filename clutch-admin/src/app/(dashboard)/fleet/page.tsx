@@ -11,7 +11,7 @@ import { productionApi } from "@/lib/production-api";
 import { websocketService } from "@/lib/websocket-service";
 import { formatDate, formatRelativeTime } from "@/lib/utils";
 import { useAuth } from "@/contexts/auth-context";
-// import { useTranslations } from "@/hooks/use-translations";
+import { useTranslations } from "@/hooks/use-translations";
 import { useQuickActions } from "@/lib/quick-actions";
 import { toast } from "sonner";
 import { handleError, handleWarning, handleWebSocketError, handleDataLoadError } from "@/lib/error-handler";

@@ -81,6 +81,21 @@ interface ChatChannel {
   avatar?: string;
 }
 
+// Helper function to safely extract string values
+const safeString = (value: any): string => {
+  if (typeof value === 'string') return value;
+  if (value === null || value === undefined) return '';
+  if (typeof value === 'object') {
+    // If it's an object, try to extract a meaningful string representation
+    if (value.content) return String(value.content);
+    if (value.message) return String(value.message);
+    if (value.text) return String(value.text);
+    if (value.body) return String(value.body);
+    return JSON.stringify(value);
+  }
+  return String(value);
+};
+
 export default function ChatPage() {
   const t = (key: string, params?: any) => key;
   const [channels, setChannels] = useState<ChatChannel[]>([]);
@@ -542,19 +557,25 @@ export default function ChatPage() {
                 return (
                 <div
                   key={message.id}
-                  className={`flex ${(typeof message.sender === 'string' ? message.sender : String(message.sender || '')) === t('chat.you') ? "justify-end" : "justify-start"}`}
+                  className={`flex ${safeString(message.sender) === t('chat.you') ? "justify-end" : "justify-start"}`}
                 >
-                  <div className={`flex space-x-2 max-w-xs lg:max-w-md ${(typeof message.sender === 'string' ? message.sender : String(message.sender || '')) === t('chat.you') ? "flex-row-reverse space-x-reverse" : ""}`}>
+                  <div className={`flex space-x-2 max-w-xs lg:max-w-md ${safeString(message.sender) === t('chat.you') ? "flex-row-reverse space-x-reverse" : ""}`}>
                     <div className="w-6 h-6 rounded-full bg-muted flex items-center justify-center">
                       {getSenderIcon(typeof message.senderType === 'string' ? message.senderType : 'user')}
                     </div>
-                    <div className={`rounded-[0.625rem] p-3 ${(typeof message.sender === 'string' ? message.sender : String(message.sender || '')) === t('chat.you') ? "bg-primary text-primary-foreground" : "bg-muted"}`}>
-                      <p className="text-sm">{typeof message.message === 'string' ? message.message : String(message.message || '')}</p>
-                      <div className={`flex items-center space-x-1 mt-1 ${(typeof message.sender === 'string' ? message.sender : String(message.sender || '')) === t('chat.you') ? "justify-end" : "justify-start"}`}>
+                    <div className={`rounded-[0.625rem] p-3 ${safeString(message.sender) === t('chat.you') ? "bg-primary text-primary-foreground" : "bg-muted"}`}>
+                      <p className="text-sm">{safeString(message.message)}</p>
+                      <div className={`flex items-center space-x-1 mt-1 ${safeString(message.sender) === t('chat.you') ? "justify-end" : "justify-start"}`}>
                         <span className="text-xs opacity-70">
-                          {formatRelativeTime(typeof message.timestamp === 'string' || message.timestamp instanceof Date ? message.timestamp : new Date())}
+                          {(() => {
+                            try {
+                              return formatRelativeTime(message.timestamp || new Date());
+                            } catch {
+                              return formatRelativeTime(new Date());
+                            }
+                          })()}
                         </span>
-                        {(typeof message.sender === 'string' ? message.sender : String(message.sender || '')) === t('chat.you') && getStatusIcon(typeof message.status === 'string' ? message.status : 'sent')}
+                        {safeString(message.sender) === t('chat.you') && getStatusIcon(typeof message.status === 'string' ? message.status : 'sent')}
                       </div>
                     </div>
                   </div>
