@@ -177,16 +177,16 @@ export function Sidebar({ isCollapsed, onToggle }: SidebarProps) {
                 {hasChildren && !isCollapsed && isExpanded && (
                   <div className="ml-4 mt-1 space-y-1">
                     {item.children!.map((child: Record<string, unknown>) => {
-                      const childHasPermission = hasAnyPermission(child.permissions);
+                      const childHasPermission = hasAnyPermission(child.permissions as readonly string[] || []);
                       if (!childHasPermission) return null;
 
-                      const isChildActive = isItemActive(child.href);
+                      const isChildActive = isItemActive(child.href as string);
                       return (
                         <button
-                          key={child.href}
+                          key={child.href as string}
                           onClick={() => {
-                            console.log('🔗 Child navigation clicked:', child.href, child.title);
-                            router.push(child.href);
+                            console.log('🔗 Child navigation clicked:', child.href as string, child.title as string);
+                            router.push(child.href as string);
                           }}
                           className={cn(
                             "block px-3 py-2 text-sm rounded-[0.625rem] transition-all duration-normal ease-in-out font-sans focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 focus:ring-offset-sidebar w-full text-left",
@@ -195,7 +195,7 @@ export function Sidebar({ isCollapsed, onToggle }: SidebarProps) {
                               : "text-foreground hover:bg-sidebar-primary/10 hover:text-sidebar-primary active:bg-sidebar-primary/20"
                           )}
                         >
-                          {child.title}
+                          {child.title as string}
                         </button>
                       );
                     })}

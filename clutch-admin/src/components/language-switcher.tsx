@@ -1,7 +1,7 @@
 'use client';
 
 import { useLanguage } from '@/contexts/language-context';
-import { useTranslations } from '@/hooks/use-translations';
+// import { useTranslations } from '@/hooks/use-translations';
 import { Button } from '@/components/ui/button';
 import {
   DropdownMenu,
@@ -13,7 +13,7 @@ import { Languages } from 'lucide-react';
 
 export function LanguageSwitcher() {
   const { language, setLanguage } = useLanguage();
-  const { t } = useTranslations();
+  const t = (key: string, params?: any) => key;
 
   const languages = [
     { code: 'en' as const, name: t('language.english'), flag: '🇺🇸' },
