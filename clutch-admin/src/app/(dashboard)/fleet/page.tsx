@@ -339,8 +339,8 @@ export default function FleetPage() {
       {/* Fleet Map Placeholder */}
       <Card className="shadow-2xs">
         <CardHeader>
-          <CardTitle className="text-card-foreground">Fleet Map</CardTitle>
-          <CardDescription>Real-time GPS tracking of all vehicles</CardDescription>
+          <CardTitle className="text-card-foreground">{t('dashboard.fleetMap')}</CardTitle>
+          <CardDescription>{t('dashboard.realtimeGpsTracking')}</CardDescription>
         </CardHeader>
         <CardContent>
           <div className="h-64 bg-muted rounded-[0.625rem] flex items-center justify-center">
@@ -358,8 +358,8 @@ export default function FleetPage() {
       {/* Fleet List */}
       <Card className="shadow-2xs">
         <CardHeader>
-          <CardTitle className="text-card-foreground">Fleet Vehicles</CardTitle>
-          <CardDescription>Detailed view of all vehicles with real-time status</CardDescription>
+          <CardTitle className="text-card-foreground">{t('dashboard.fleetVehicles')}</CardTitle>
+          <CardDescription>{t('dashboard.detailedViewOfAllVehicles')}</CardDescription>
         </CardHeader>
         <CardContent>
           {/* Filters */}
@@ -393,12 +393,12 @@ export default function FleetPage() {
           <Table>
             <TableHeader>
               <TableRow>
-                <TableHead>Vehicle</TableHead>
-                <TableHead>Status</TableHead>
-                <TableHead>Location</TableHead>
-                <TableHead>Fuel Level</TableHead>
-                <TableHead>OBD2 Health</TableHead>
-                <TableHead>Last Update</TableHead>
+                <TableHead>{t('dashboard.vehicle')}</TableHead>
+                <TableHead>{t('dashboard.status')}</TableHead>
+                <TableHead>{t('dashboard.location')}</TableHead>
+                <TableHead>{t('dashboard.fuelLevel')}</TableHead>
+                <TableHead>{t('dashboard.obd2Health')}</TableHead>
+                <TableHead>{t('dashboard.lastUpdate')}</TableHead>
                 <TableHead className="text-right">Actions</TableHead>
               </TableRow>
             </TableHeader>
@@ -486,12 +486,12 @@ export default function FleetPage() {
                           </DropdownMenuItem>
                           <DropdownMenuItem>
                             <Activity className="mr-2 h-4 w-4" />
-                            View Details
+                            {t('dashboard.viewDetails')}
                           </DropdownMenuItem>
                           <DropdownMenuSeparator />
                           <DropdownMenuItem>
                             <Wrench className="mr-2 h-4 w-4" />
-                            Schedule Maintenance
+                            {t('dashboard.scheduleMaintenance')}
                           </DropdownMenuItem>
                           <DropdownMenuItem className="text-destructive">
                             <AlertTriangle className="mr-2 h-4 w-4" />
@@ -511,8 +511,8 @@ export default function FleetPage() {
       {/* Alerts List */}
       <Card className="shadow-2xs">
         <CardHeader>
-          <CardTitle className="text-card-foreground">Fleet Alerts</CardTitle>
-          <CardDescription>Critical notifications and maintenance reminders</CardDescription>
+          <CardTitle className="text-card-foreground">{t('dashboard.fleetAlerts')}</CardTitle>
+          <CardDescription>{t('dashboard.criticalNotificationsAndMaintenance')}</CardDescription>
         </CardHeader>
         <CardContent>
           <div className="space-y-3">
@@ -542,7 +542,7 @@ export default function FleetPage() {
               <div key={vehicle.id} className="flex items-center space-x-3 p-3 rounded-[0.625rem] bg-primary/10 border border-primary/20">
                 <Fuel className="h-4 w-4 text-primary" />
                 <div>
-                  <p className="text-sm font-medium text-primary-foreground">Low Fuel Alert</p>
+                  <p className="text-sm font-medium text-primary-foreground">{t('dashboard.lowFuelAlert')}</p>
                   <p className="text-xs text-primary-foreground/80">
                     {vehicle.licensePlate || 'Unknown'} fuel level at 15%
                   </p>
@@ -557,9 +557,9 @@ export default function FleetPage() {
       <div className="space-y-6 mt-8">
         <div className="flex items-center justify-between">
           <div>
-            <h2 className="text-2xl font-bold tracking-tight text-foreground">Fleet Analytics</h2>
+            <h2 className="text-2xl font-bold tracking-tight text-foreground">{t('dashboard.fleetAnalytics')}</h2>
             <p className="text-muted-foreground">
-              Optimize utilization, costs, and downtime
+              {t('dashboard.optimizeUtilizationCosts')}
             </p>
           </div>
         </div>
