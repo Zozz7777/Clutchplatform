@@ -153,6 +153,8 @@ export default function CRMPage() {
         return "secondary";
       case "inactive":
         return "outline";
+      case "unknown":
+        return "outline";
       default:
         return "default";
     }
@@ -165,6 +167,8 @@ export default function CRMPage() {
       case "medium":
         return "secondary";
       case "low":
+        return "outline";
+      case "unknown":
         return "outline";
       default:
         return "default";
@@ -179,6 +183,8 @@ export default function CRMPage() {
         return "secondary";
       case "closed":
         return "default";
+      case "unknown":
+        return "outline";
       default:
         return "outline";
     }
@@ -341,8 +347,8 @@ export default function CRMPage() {
                             <User className="h-4 w-4 text-primary-foreground" />
                           </div>
                           <div>
-                            <p className="text-sm font-medium text-foreground">{customer.name}</p>
-                            <p className="text-xs text-muted-foreground">{customer.email}</p>
+                            <p className="text-sm font-medium text-foreground">{customer.name || "Unknown Customer"}</p>
+                            <p className="text-xs text-muted-foreground">{customer.email || "No email"}</p>
                           </div>
                         </div>
                       </TableCell>
@@ -353,26 +359,26 @@ export default function CRMPage() {
                         </div>
                       </TableCell>
                       <TableCell>
-                        <Badge variant={getStatusVariant(customer.status)}>
-                          {customer.status}
+                        <Badge variant={getStatusVariant(customer.status || "unknown")}>
+                          {customer.status || "Unknown"}
                         </Badge>
                       </TableCell>
                       <TableCell>
                         <span className="text-sm font-medium text-foreground">
-                          EGP {customer.totalSpent.toLocaleString()}
+                          EGP {(customer.totalSpent || 0).toLocaleString()}
                         </span>
                       </TableCell>
                       <TableCell>
                         <div className="flex items-center space-x-1">
                           <Star className="h-3 w-3 text-warning" />
                           <span className="text-sm text-muted-foreground">
-                            {customer.satisfaction > 0 ? customer.satisfaction.toFixed(1) : "N/A"}
+                            {(customer.satisfaction || 0) > 0 ? (customer.satisfaction || 0).toFixed(1) : "N/A"}
                           </span>
                         </div>
                       </TableCell>
                       <TableCell>
                         <span className="text-sm text-muted-foreground">
-                          {formatRelativeTime(customer.lastContact)}
+                          {customer.lastContact ? formatRelativeTime(customer.lastContact) : "Never"}
                         </span>
                       </TableCell>
                       <TableCell className="text-right">
@@ -440,29 +446,29 @@ export default function CRMPage() {
                     <TableRow key={ticket.id}>
                       <TableCell>
                         <div>
-                          <p className="text-sm font-medium text-foreground">{ticket.title}</p>
-                          <p className="text-xs text-muted-foreground line-clamp-1">{ticket.description}</p>
+                          <p className="text-sm font-medium text-foreground">{ticket.title || "Untitled Ticket"}</p>
+                          <p className="text-xs text-muted-foreground line-clamp-1">{ticket.description || "No description"}</p>
                         </div>
                       </TableCell>
                       <TableCell>
-                        <span className="text-sm text-muted-foreground">{ticket.customer}</span>
+                        <span className="text-sm text-muted-foreground">{ticket.customer || "Unknown Customer"}</span>
                       </TableCell>
                       <TableCell>
-                        <Badge variant={getTicketStatusVariant(ticket.status)}>
-                          {ticket.status}
+                        <Badge variant={getTicketStatusVariant(ticket.status || "unknown")}>
+                          {ticket.status || "Unknown"}
                         </Badge>
                       </TableCell>
                       <TableCell>
-                        <Badge variant={getPriorityVariant(ticket.priority)}>
-                          {ticket.priority}
+                        <Badge variant={getPriorityVariant(ticket.priority || "unknown")}>
+                          {ticket.priority || "Unknown"}
                         </Badge>
                       </TableCell>
                       <TableCell>
-                        <span className="text-sm text-muted-foreground">{ticket.assignedTo}</span>
+                        <span className="text-sm text-muted-foreground">{ticket.assignedTo || "Unassigned"}</span>
                       </TableCell>
                       <TableCell>
                         <span className="text-sm text-muted-foreground">
-                          {formatRelativeTime(ticket.createdAt)}
+                          {ticket.createdAt ? formatRelativeTime(ticket.createdAt) : "Unknown"}
                         </span>
                       </TableCell>
                       <TableCell className="text-right">
