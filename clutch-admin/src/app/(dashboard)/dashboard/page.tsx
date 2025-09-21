@@ -115,7 +115,7 @@ export default function DashboardPage() {
           productionApi.getKPIMetrics(),
           productionApi.getFleetVehicles(),
           productionApi.getNotifications(),
-          productionApi.getSystemPerformanceMetrics(),
+          productionApi.getAPIPerformance(),
         ]);
         
         // Handle API response structure properly with Promise.allSettled
@@ -404,7 +404,7 @@ export default function DashboardPage() {
           <CardContent>
             <div className="space-y-3">
               {notifications.length > 0 ? (
-                notifications.map((notification) => (
+                Array.isArray(notifications) && notifications.map((notification) => (
                   <div key={notification.id} className={`flex items-center space-x-3 p-3 rounded-[0.625rem] border ${
                     notification.type === 'error' ? 'bg-destructive/10 border-destructive/20' :
                     notification.type === 'warning' ? 'bg-warning/10 border-warning/20' :
