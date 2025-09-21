@@ -11,7 +11,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { productionApi } from "@/lib/production-api";
 import { formatDate, formatRelativeTime } from "@/lib/utils";
 import { useAuth } from "@/contexts/auth-context";
-import { useTranslations } from "@/hooks/use-translations";
+// import { useTranslations } from "@/hooks/use-translations";
 import { useQuickActions } from "@/lib/quick-actions";
 import { toast } from "sonner";
 import { handleError } from "@/lib/error-handler";
@@ -76,7 +76,7 @@ export default function UsersPage() {
   const [roleFilter, setRoleFilter] = useState<string>("all");
   const [isLoading, setIsLoading] = useState(true);
   const { hasPermission } = useAuth();
-  const { t } = useTranslations();
+  const t = (key: string, params?: any) => key;
   // Safely get quick actions with error handling
   let addUser: (() => void) | null = null;
   
@@ -643,5 +643,3 @@ export default function UsersPage() {
     </div>
   );
 }
-
-export const dynamic = 'force-dynamic';
