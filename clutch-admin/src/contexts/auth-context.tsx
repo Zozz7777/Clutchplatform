@@ -26,7 +26,22 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       const storedUser = localStorage.getItem("clutch-admin-user");
       if (storedUser) {
         try {
-          setUser(JSON.parse(storedUser));
+          const parsedUser = JSON.parse(storedUser);
+          // Ensure user has correct permissions based on their role
+          const userWithPermissions = {
+            ...parsedUser,
+            permissions: Array.isArray(parsedUser.permissions) && parsedUser.permissions.length > 0 
+              ? parsedUser.permissions 
+              : (ROLE_PERMISSIONS[parsedUser.role as keyof typeof ROLE_PERMISSIONS] || [])
+          };
+          
+          console.log('🔄 Loading user from localStorage:', {
+            originalUser: parsedUser,
+            userWithPermissions,
+            rolePermissions: ROLE_PERMISSIONS[parsedUser.role as keyof typeof ROLE_PERMISSIONS]
+          });
+          
+          setUser(userWithPermissions);
         } catch (error) {
           localStorage.removeItem("clutch-admin-user");
         }
@@ -112,18 +127,27 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   };
 
   const hasPermission = (permission: string): boolean => {
-    if (!user || !user.permissions || !Array.isArray(user.permissions)) {
-      console.log('🚫 No user or permissions:', { user, permissions: user?.permissions });
+    if (!user) {
+      console.log('🚫 No user found');
       return false;
     }
-    const hasIt = user.permissions.includes(permission);
-    if (!hasIt && permission === 'view_dashboard') {
-      console.log('🚫 Missing view_dashboard permission:', {
-        userRole: user.role,
-        userPermissions: user.permissions,
-        permission
-      });
+    
+    if (!user.permissions || !Array.isArray(user.permissions)) {
+      console.log('🚫 No permissions array:', { user, permissions: user?.permissions });
+      return false;
     }
+    
+    const hasIt = user.permissions.includes(permission);
+    
+    // Enhanced debugging for all permission checks
+    console.log('🔍 Permission check:', {
+      permission,
+      userRole: user.role,
+      userPermissions: user.permissions,
+      hasPermission: hasIt,
+      permissionCount: user.permissions.length
+    });
+    
     return hasIt;
   };
 

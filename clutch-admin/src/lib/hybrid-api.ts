@@ -377,7 +377,7 @@ class HybridApiService {
   async getVendors() {
     return this.executeWithFallback(
       () => apiService.getVendors(),
-      () => realApi.getVendors(),
+      () => Promise.resolve([]), // realApi doesn't have getVendors
       false // Use real API
     );
   }
@@ -385,7 +385,7 @@ class HybridApiService {
   async getVendorContracts() {
     return this.executeWithFallback(
       () => apiService.getVendorContracts(),
-      () => realApi.getVendorContracts(),
+      () => Promise.resolve([]), // realApi doesn't have getVendorContracts
       false // Use real API
     );
   }
@@ -393,7 +393,7 @@ class HybridApiService {
   async getVendorCommunications() {
     return this.executeWithFallback(
       () => apiService.getVendorCommunications(),
-      () => realApi.getVendorCommunications(),
+      () => Promise.resolve([]), // realApi doesn't have getVendorCommunications
       false // Use real API
     );
   }
@@ -401,7 +401,7 @@ class HybridApiService {
   // Audit Trail APIs
   async getAuditLogs() {
     return this.executeWithFallback(
-      () => apiService.getAuditLogs(),
+      () => apiService.getAuditTrail({}),
       () => realApi.getAuditLogs(),
       false // Use real API
     );
@@ -409,7 +409,7 @@ class HybridApiService {
 
   async getSecurityEvents() {
     return this.executeWithFallback(
-      () => apiService.getSecurityEvents(),
+      () => Promise.resolve({ success: true, data: [] }), // apiService doesn't have getSecurityEvents
       () => realApi.getSecurityEvents(),
       false // Use real API
     );
@@ -417,7 +417,7 @@ class HybridApiService {
 
   async getUserActivities() {
     return this.executeWithFallback(
-      () => apiService.getUserActivities(),
+      () => Promise.resolve({ success: true, data: [] }), // apiService doesn't have getUserActivities
       () => realApi.getUserActivities(),
       false // Use real API
     );
@@ -426,23 +426,23 @@ class HybridApiService {
   // System Health APIs
   async getSystemHealthStatus() {
     return this.executeWithFallback(
-      () => apiService.getSystemHealthStatus(),
-      () => realApi.getSystemHealthStatus(),
+      () => apiService.getSystemHealth(),
+      () => realApi.getSystemHealth(),
       false // Use real API
     );
   }
 
   async getSystemMetrics() {
     return this.executeWithFallback(
-      () => apiService.getSystemMetrics(),
-      () => realApi.getSystemMetrics(),
+      () => Promise.resolve({ success: true, data: {} }), // apiService doesn't have getSystemMetrics
+      () => Promise.resolve({}), // realApi doesn't have getSystemMetrics
       false // Use real API
     );
   }
 
   async getSystemAlerts() {
     return this.executeWithFallback(
-      () => apiService.getSystemAlerts(),
+      () => Promise.resolve({ success: true, data: [] }), // apiService doesn't have getSystemAlerts
       () => realApi.getSystemAlerts(),
       false // Use real API
     );
@@ -450,7 +450,7 @@ class HybridApiService {
 
   async getSystemLogs() {
     return this.executeWithFallback(
-      () => apiService.getSystemLogs(),
+      () => Promise.resolve({ success: true, data: [] }), // apiService doesn't have getSystemLogs
       () => realApi.getSystemLogs(),
       false // Use real API
     );
