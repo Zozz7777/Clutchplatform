@@ -782,14 +782,14 @@ export class RealApiService {
   }
 
   // Settings APIs
-  async getSettings(): Promise<Record<string, unknown>> {
+  async getSettings(category: string): Promise<Record<string, unknown>[]> {
     return withErrorHandling(
       async () => {
-        const response = await apiService.request<Record<string, unknown>>("/api/v1/settings");
-        return handleApiResponse(response, 'getSettings', {});
+        const response = await apiService.request<Record<string, unknown>[]>(`/api/v1/settings/${category}`);
+        return handleApiResponse(response, 'getSettings', []);
       },
       'getSettings',
-      { fallbackValue: {}, showToast: false }
+      { fallbackValue: [], showToast: false }
     )();
   }
 

@@ -359,6 +359,16 @@ export class ProductionApiService {
     }
   }
 
+  // Settings APIs
+  async getSettings(category: string): Promise<Record<string, unknown>[]> {
+    try {
+      return await realApi.getSettings(category);
+    } catch (error) {
+      logger.error(`Failed to fetch ${category} settings:`, error);
+      throw new Error(`Failed to load ${category} settings`);
+    }
+  }
+
   // Feature Flags APIs
   async getFeatureFlags(): Promise<Record<string, unknown>[]> {
     try {

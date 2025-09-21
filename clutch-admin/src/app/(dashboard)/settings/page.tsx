@@ -6,7 +6,8 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useAuth } from "@/contexts/auth-context";
-import { useTranslations } from "@/hooks/use-translations";
+import { useTranslations } from "next-intl";
+import { productionApi } from "@/lib/production-api";
 import { formatDate, formatRelativeTime } from "@/lib/utils";
 
 // Import new Phase 2 widgets
@@ -130,61 +131,50 @@ export default function SettingsPage() {
       }
       
       try {
-        const token = localStorage.getItem("clutch-admin-token");
+        setIsLoading(true);
         
         // Load system settings
-        const settingsResponse = await fetch("https://clutch-main-nk7x.onrender.com/api/v1/settings/system", {
-          headers: {
-            "Authorization": `Bearer ${token}`,
-            "Content-Type": "application/json",
-          },
-        });
-        
-        if (settingsResponse.ok) {
-          const settingsData = await settingsResponse.json();
-          setSystemSettings(settingsData.data || settingsData);
+        try {
+          const settingsData = await productionApi.getSettings('system');
+          setSystemSettings(Array.isArray(settingsData) ? settingsData : []);
+        } catch (error) {
+          console.error('Error loading system settings:', error);
+          setSystemSettings([]);
         }
 
         // Load user preferences
-        const preferencesResponse = await fetch("https://clutch-main-nk7x.onrender.com/api/v1/settings/preferences", {
-          headers: {
-            "Authorization": `Bearer ${token}`,
-            "Content-Type": "application/json",
-          },
-        });
-        
-        if (preferencesResponse.ok) {
-          const preferencesData = await preferencesResponse.json();
-          setUserPreferences(preferencesData.data || preferencesData);
+        try {
+          const preferencesData = await productionApi.getSettings('preferences');
+          setUserPreferences(Array.isArray(preferencesData) ? preferencesData : []);
+        } catch (error) {
+          console.error('Error loading user preferences:', error);
+          setUserPreferences([]);
         }
 
         // Load integrations
-        const integrationsResponse = await fetch("https://clutch-main-nk7x.onrender.com/api/v1/settings/integrations", {
-          headers: {
-            "Authorization": `Bearer ${token}`,
-            "Content-Type": "application/json",
-          },
-        });
-        
-        if (integrationsResponse.ok) {
-          const integrationsData = await integrationsResponse.json();
-          setIntegrations(integrationsData.data || integrationsData);
+        try {
+          const integrationsData = await productionApi.getSettings('integrations');
+          setIntegrations(Array.isArray(integrationsData) ? integrationsData : []);
+        } catch (error) {
+          console.error('Error loading integrations:', error);
+          setIntegrations([]);
         }
 
         // Load audit logs
-        const auditResponse = await fetch("https://clutch-main-nk7x.onrender.com/api/v1/settings/audit", {
-          headers: {
-            "Authorization": `Bearer ${token}`,
-            "Content-Type": "application/json",
-          },
-        });
-        
-        if (auditResponse.ok) {
-          const auditData = await auditResponse.json();
-          setAuditLogs(auditData.data || auditData);
+        try {
+          const auditData = await productionApi.getSettings('audit');
+          setAuditLogs(Array.isArray(auditData) ? auditData : []);
+        } catch (error) {
+          console.error('Error loading audit logs:', error);
+          setAuditLogs([]);
         }
       } catch (error) {
-        // Error handled by API service
+        console.error('Error loading settings data:', error);
+        // Set empty arrays as fallback
+        setSystemSettings([]);
+        setUserPreferences([]);
+        setIntegrations([]);
+        setAuditLogs([]);
       } finally {
         setIsLoading(false);
       }
@@ -195,8 +185,8 @@ export default function SettingsPage() {
 
   const handleSettingChange = (settingKey: string, newValue: unknown) => {
     setSystemSettings(prev => 
-      prev.map(setting => 
-        setting.key === settingKey 
+      (Array.isArray(prev) ? prev : []).map(setting => 
+        setting?.key === settingKey 
           ? { ...setting, value: newValue }
           : setting
       )
@@ -205,8 +195,8 @@ export default function SettingsPage() {
 
   const handlePreferenceChange = (preferenceKey: string, newValue: unknown) => {
     setUserPreferences(prev => 
-      prev.map(preference => 
-        preference.key === preferenceKey 
+      (Array.isArray(prev) ? prev : []).map(preference => 
+        preference?.key === preferenceKey 
           ? { ...preference, value: newValue }
           : preference
       )
@@ -391,6 +381,12 @@ export default function SettingsPage() {
     }
   };
 
+  // Create safe array variables
+  const systemSettingsArray = Array.isArray(systemSettings) ? systemSettings : [];
+  const userPreferencesArray = Array.isArray(userPreferences) ? userPreferences : [];
+  const integrationsArray = Array.isArray(integrations) ? integrations : [];
+  const auditLogsArray = Array.isArray(auditLogs) ? auditLogs : [];
+
   if (isLoading) {
     return (
       <div className="flex items-center justify-center h-64">
@@ -487,19 +483,19 @@ export default function SettingsPage() {
           </CardHeader>
           <CardContent>
             <div className="space-y-6">
-              {systemSettings
-                .filter(setting => setting.category === "general")
+              {systemSettingsArray
+                .filter(setting => setting?.category === "general")
                 .map((setting) => (
-                  <div key={setting.key} className="flex items-center justify-between">
+                  <div key={setting?.key} className="flex items-center justify-between">
                     <div className="flex-1">
                       <div className="flex items-center space-x-2">
-                        {getCategoryIcon(setting.category)}
-                        <label className="text-sm font-medium">{setting.key}</label>
-                        {setting.isRequired && (
+                        {getCategoryIcon(setting?.category || 'general')}
+                        <label className="text-sm font-medium">{setting?.key || 'Unknown Setting'}</label>
+                        {setting?.isRequired && (
                           <Badge variant="destructive" className="text-xs">Required</Badge>
                         )}
                       </div>
-                      <p className="text-xs text-muted-foreground mt-1">{setting.description}</p>
+                      <p className="text-xs text-muted-foreground mt-1">{setting?.description || 'No description'}</p>
                     </div>
                     <div className="ml-4">
                       {renderSettingInput(setting)}
@@ -522,8 +518,8 @@ export default function SettingsPage() {
           </CardHeader>
           <CardContent>
             <div className="space-y-6">
-              {systemSettings
-                .filter(setting => setting.category === "security")
+              {systemSettingsArray
+                .filter(setting => setting?.category === "security")
                 .map((setting) => (
                   <div key={setting.key} className="flex items-center justify-between">
                     <div className="flex-1">
@@ -557,8 +553,8 @@ export default function SettingsPage() {
           </CardHeader>
           <CardContent>
             <div className="space-y-6">
-              {systemSettings
-                .filter(setting => setting.category === "notifications")
+              {systemSettingsArray
+                .filter(setting => setting?.category === "notifications")
                 .map((setting) => (
                   <div key={setting.key} className="flex items-center justify-between">
                     <div className="flex-1">
@@ -593,8 +589,8 @@ export default function SettingsPage() {
               <div>
                 <h4 className="text-sm font-medium mb-4">User Preferences</h4>
                 <div className="space-y-4">
-                  {userPreferences
-                    .filter(pref => pref.category === "appearance")
+                  {userPreferencesArray
+                    .filter(pref => pref?.category === "appearance")
                     .map((preference) => (
                       <div key={preference.key} className="flex items-center justify-between">
                         <div className="flex-1">
@@ -612,8 +608,8 @@ export default function SettingsPage() {
               <div>
                 <h4 className="text-sm font-medium mb-4">System Appearance</h4>
                 <div className="space-y-4">
-                  {systemSettings
-                    .filter(setting => setting.category === "appearance")
+                  {systemSettingsArray
+                    .filter(setting => setting?.category === "appearance")
                     .map((setting) => (
                       <div key={setting.key} className="flex items-center justify-between">
                         <div className="flex-1">
@@ -646,7 +642,7 @@ export default function SettingsPage() {
           </CardHeader>
           <CardContent>
             <div className="space-y-4">
-              {integrations.map((integration) => (
+              {integrationsArray.map((integration) => (
                 <div key={integration._id} className="flex items-center justify-between p-4 border rounded-[0.625rem]">
                   <div className="flex items-center space-x-4">
                     <div className="w-10 h-10 rounded-[0.625rem] bg-muted flex items-center justify-center">
@@ -714,7 +710,7 @@ export default function SettingsPage() {
               ))}
             </div>
 
-            {integrations.length === 0 && (
+            {integrationsArray.length === 0 && (
               <div className="text-center py-8">
                 <Key className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
                 <p className="text-muted-foreground">No integrations configured</p>
@@ -735,7 +731,7 @@ export default function SettingsPage() {
           </CardHeader>
           <CardContent>
             <div className="space-y-4">
-              {auditLogs.slice(0, 50).map((log) => (
+              {auditLogsArray.slice(0, 50).map((log) => (
                 <div key={log._id} className="flex items-center justify-between p-4 border rounded-[0.625rem]">
                   <div className="flex items-center space-x-4">
                     <div className="w-8 h-8 rounded-full bg-muted flex items-center justify-center">
@@ -780,7 +776,7 @@ export default function SettingsPage() {
               ))}
             </div>
 
-            {auditLogs.length === 0 && (
+            {auditLogsArray.length === 0 && (
               <div className="text-center py-8">
                 <Database className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
                 <p className="text-muted-foreground">No audit logs available</p>
