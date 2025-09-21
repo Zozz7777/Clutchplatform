@@ -51,7 +51,13 @@ import {
   UserCog,
   TrendingUp,
   Activity,
-  Crown
+  Crown,
+  BarChart3,
+  Headphones,
+  DollarSign,
+  Scale,
+  FolderKanban,
+  Package
 } from "lucide-react";
 import {
   DropdownMenu,
@@ -92,7 +98,8 @@ export default function UsersPage() {
         setFilteredUsers(userData || []);
       } catch (error) {
         // Error handled by API service
-        toast.error(t('users.failedToLoadUsers'));
+        const errorMessage = error instanceof Error ? error.message : 'Unknown error occurred';
+        toast.error(`Failed to load users: ${errorMessage}`);
         // Set empty arrays on error - no mock data fallback
         setUsers([]);
         setFilteredUsers([]);

@@ -5,7 +5,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Progress } from '@/components/ui/progress';
-// import { useTranslations } from 'next-intl';
+// import { useTranslations } from '@/hooks/use-translations';
 import { 
   AlertTriangle, 
   TrendingUp, 
@@ -57,7 +57,7 @@ interface CriticalPathAlertsProps {
 }
 
 export default function CriticalPathAlerts({ className }: CriticalPathAlertsProps) {
-  const t = (key: string, params?: any) => key;
+  const { t } = useTranslations();
   const [alerts, setAlerts] = useState<CriticalPathAlert[]>([]);
   const [selectedAlert, setSelectedAlert] = useState<CriticalPathAlert | null>(null);
   const [isAnalyzing, setIsAnalyzing] = useState(false);

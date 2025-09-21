@@ -273,12 +273,12 @@ export function DowntimeImpact({ className = '' }: DowntimeImpactProps) {
                 <div className="flex items-center space-x-3">
                   <div className="flex items-center justify-center w-8 h-8 bg-primary/10 rounded-full">
                     <span className="text-sm font-semibold text-primary">
-                      {reason.percentage.toFixed(0)}%
+                      {(reason.percentage || 0).toFixed(0)}%
                     </span>
                   </div>
                   <div>
                     <p className="text-sm font-medium text-foreground">{reason.reason}</p>
-                    <p className="text-xs text-muted-foreground">{reason.hours.toFixed(0)} hours</p>
+                    <p className="text-xs text-muted-foreground">{(reason.hours || 0).toFixed(0)} hours</p>
                   </div>
                 </div>
                 <div className="text-right">
@@ -308,7 +308,7 @@ export function DowntimeImpact({ className = '' }: DowntimeImpactProps) {
                   </div>
                   <div>
                     <p className="text-sm font-medium text-foreground">{vehicle.vehicleName}</p>
-                    <p className="text-xs text-muted-foreground">{vehicle.downtimeHours.toFixed(0)} hours downtime</p>
+                    <p className="text-xs text-muted-foreground">{(vehicle.downtimeHours || 0).toFixed(0)} hours downtime</p>
                   </div>
                 </div>
                 <div className="text-right">
@@ -329,14 +329,14 @@ export function DowntimeImpact({ className = '' }: DowntimeImpactProps) {
           <div className="text-center p-3 bg-primary/10 rounded-[0.625rem]-lg">
             <Truck className="h-4 w-4 text-primary mx-auto mb-1" />
             <p className="text-sm font-bold text-primary">
-              {downtimeMetrics.averageDowntimePerVehicle.toFixed(1)}h
+              {(downtimeMetrics.averageDowntimePerVehicle || 0).toFixed(1)}h
             </p>
             <p className="text-xs text-muted-foreground">Avg Per Vehicle</p>
           </div>
           <div className="text-center p-3 bg-primary/10 rounded-[0.625rem]-lg">
             <BarChart3 className="h-4 w-4 text-primary mx-auto mb-1" />
             <p className="text-sm font-bold text-primary">
-              {((downtimeMetrics.lostRevenueHours / downtimeMetrics.totalDowntimeHours) * 100).toFixed(1)}%
+              {((downtimeMetrics.lostRevenueHours || 0) / (downtimeMetrics.totalDowntimeHours || 1)) * 100).toFixed(1)}%
             </p>
             <p className="text-xs text-muted-foreground">Revenue Impact Rate</p>
           </div>
@@ -361,8 +361,8 @@ export function DowntimeImpact({ className = '' }: DowntimeImpactProps) {
             <li>• {t('downtime.totalDowntimeHours')}: {downtimeMetrics.totalDowntimeHours} {t('downtime.hours')}</li>
             <li>• {t('downtime.revenueImpactingDowntime')}: {downtimeMetrics.lostRevenueHours} {t('downtime.hours')}</li>
             <li>• {t('downtime.totalRevenueImpact')}: ${(downtimeMetrics.revenueImpact || 0).toLocaleString()}</li>
-            <li>• {t('downtime.averageDowntimePerVehicle')}: {downtimeMetrics.averageDowntimePerVehicle.toFixed(1)} {t('downtime.hours')}</li>
-            <li>• {t('downtime.topDowntimeReason')}: {downtimeMetrics.downtimeByReason[0]?.reason} ({downtimeMetrics.downtimeByReason[0]?.percentage.toFixed(0)}%)</li>
+            <li>• {t('downtime.averageDowntimePerVehicle')}: {(downtimeMetrics.averageDowntimePerVehicle || 0).toFixed(1)} {t('downtime.hours')}</li>
+            <li>• {t('downtime.topDowntimeReason')}: {downtimeMetrics.downtimeByReason[0]?.reason} ({(downtimeMetrics.downtimeByReason[0]?.percentage || 0).toFixed(0)}%)</li>
             {downtimeMetrics.revenueImpact > targetRevenueImpact && (
               <li>• {t('downtime.revenueImpactAboveTarget')}</li>
             )}

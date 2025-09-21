@@ -80,7 +80,7 @@ import {
 } from 'lucide-react';
 import { productionApi } from '@/lib/production-api';
 import { useAuth } from '@/contexts/auth-context';
-// import { useTranslations } from 'next-intl';
+// import { useTranslations } from '@/hooks/use-translations';
 import { toast } from 'sonner';
 
 interface MaintenanceTask {
@@ -174,7 +174,7 @@ export default function AIMaintenanceScheduling() {
   const [filterType, setFilterType] = useState<string>('all');
   const [isLoading, setIsLoading] = useState(true);
   const { hasPermission } = useAuth();
-  const t = (key: string, params?: any) => key;
+  const { t } = useTranslations();
 
   useEffect(() => {
     const loadMaintenanceData = async () => {

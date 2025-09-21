@@ -300,7 +300,7 @@ export function FuelCostMetrics({ className = '' }: FuelCostMetricsProps) {
           <div className="text-center p-3 bg-warning/10 rounded-[0.625rem]-lg">
             <Fuel className="h-4 w-4 text-warning mx-auto mb-1" />
             <p className="text-sm font-bold text-warning">
-              {costMetrics.fuelEfficiency.toFixed(1)} MPG
+              {(costMetrics.fuelEfficiency || 0).toFixed(1)} MPG
             </p>
             <p className="text-xs text-muted-foreground">Fuel Efficiency</p>
           </div>
@@ -356,9 +356,9 @@ export function FuelCostMetrics({ className = '' }: FuelCostMetricsProps) {
           <h5 className="text-sm font-medium text-blue-900 mb-2">💡 Cost Insights</h5>
           <ul className="text-xs text-blue-800 space-y-1">
             <li>• Total monthly fleet cost: {(costMetrics.totalCost || 0).toLocaleString()} EGP</li>
-            <li>• Cost per vehicle: {costMetrics.costPerVehicle.toFixed(0)} EGP (target: {targetCostPerVehicle} EGP)</li>
-            <li>• Cost per mile: {costMetrics.costPerMile.toFixed(2)} EGP (target: {targetCostPerMile} EGP)</li>
-            <li>• Fuel efficiency: {costMetrics.fuelEfficiency.toFixed(1)} MPG</li>
+            <li>• Cost per vehicle: {(costMetrics.costPerVehicle || 0).toFixed(0)} EGP (target: {targetCostPerVehicle} EGP)</li>
+            <li>• Cost per mile: {(costMetrics.costPerMile || 0).toFixed(2)} EGP (target: {targetCostPerMile} EGP)</li>
+            <li>• Fuel efficiency: {(costMetrics.fuelEfficiency || 0).toFixed(1)} MPG</li>
             <li>• Total miles driven: {(costMetrics.totalMiles || 0).toLocaleString()}</li>
             {costMetrics.costPerVehicle > targetCostPerVehicle && (
               <li>• Cost per vehicle above target - consider optimization</li>

@@ -6,7 +6,7 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Progress } from '@/components/ui/progress';
 import { productionApi } from '@/lib/production-api';
-// // import { useTranslations } from 'next-intl';
+// // import { useTranslations } from '@/hooks/use-translations';
 import { 
   Link, 
   CheckCircle, 
@@ -36,7 +36,7 @@ interface Integration {
 }
 
 export function IntegrationHealth({ className = '' }: IntegrationHealthProps) {
-  const t = (key: string, params?: any) => key;
+  const { t } = useTranslations();
   const [integrationData, setIntegrationData] = React.useState<{
     integrations: Integration[];
     totalIntegrations: number;

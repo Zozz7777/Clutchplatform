@@ -7,14 +7,14 @@ import { Progress } from '@/components/ui/progress';
 import { businessIntelligence, type OperationalPulse } from '@/lib/business-intelligence';
 import { Users, Activity, Truck, DollarSign, TrendingUp, Zap } from 'lucide-react';
 import { logger } from '@/lib/logger';
-// // import { useTranslations } from 'next-intl';
+// // import { useTranslations } from '@/hooks/use-translations';
 
 interface UnifiedOpsPulseProps {
   className?: string;
 }
 
 export function UnifiedOpsPulse({ className = '' }: UnifiedOpsPulseProps) {
-  const t = (key: string, params?: any) => key;
+  const { t } = useTranslations();
   const [pulse, setPulse] = React.useState<OperationalPulse | null>(null);
   const [isLoading, setIsLoading] = React.useState(true);
 

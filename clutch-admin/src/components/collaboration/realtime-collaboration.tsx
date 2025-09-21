@@ -7,7 +7,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { productionApi } from '@/lib/production-api';
-// import { useTranslations } from 'next-intl';
+// import { useTranslations } from '@/hooks/use-translations';
 import { 
   Users, 
   MessageSquare, 
@@ -51,7 +51,7 @@ interface RealtimeCollaborationProps {
 }
 
 export default function RealtimeCollaboration({ currentUserId, currentPage }: RealtimeCollaborationProps) {
-  const t = (key: string, params?: any) => key;
+  const { t } = useTranslations();
   const [activeUsers, setActiveUsers] = useState<ActiveUser[]>([]);
   const [collaborationEvents, setCollaborationEvents] = useState<CollaborationEvent[]>([]);
   const [newComment, setNewComment] = useState('');
