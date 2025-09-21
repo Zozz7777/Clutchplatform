@@ -29,7 +29,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
           const parsedUser = JSON.parse(storedUser);
           
           // Always ensure user has correct permissions based on their role
-          const rolePermissions = ROLE_PERMISSIONS[parsedUser.role as keyof typeof ROLE_PERMISSIONS] || [];
+          const rolePermissions = (ROLE_PERMISSIONS[parsedUser.role as keyof typeof ROLE_PERMISSIONS] || []) as string[];
           const userWithPermissions = {
             ...parsedUser,
             permissions: rolePermissions
@@ -88,15 +88,17 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
           status: user.isActive !== undefined ? (user.isActive ? "active" : "inactive") : "active",
           createdAt: String(user.createdAt || new Date().toISOString()),
           lastLogin: new Date().toISOString(),
-          permissions: Array.isArray(user.permissions) ? user.permissions : (ROLE_PERMISSIONS[user.role as keyof typeof ROLE_PERMISSIONS] || []),
+          permissions: Array.isArray(user.permissions) ? [...user.permissions] : [...(ROLE_PERMISSIONS[user.role as keyof typeof ROLE_PERMISSIONS] || [])],
         };
         
-        // Debug logging for user data
-        console.log('🔍 User data received from backend:', {
-          originalUser: user,
-          mappedUser: userWithPermissions,
-          rolePermissions: ROLE_PERMISSIONS[user.role as keyof typeof ROLE_PERMISSIONS]
-        });
+        // Debug logging for user data (only in development)
+        if (process.env.NODE_ENV === 'development') {
+          console.log('🔍 User data received from backend:', {
+            originalUser: user,
+            mappedUser: userWithPermissions,
+            rolePermissions: ROLE_PERMISSIONS[user.role as keyof typeof ROLE_PERMISSIONS]
+          });
+        }
         
         setUser(userWithPermissions);
         if (typeof window !== 'undefined') {
@@ -146,7 +148,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     
     // If user doesn't have permissions or has empty permissions, get them from role
     if (!userPermissions || !Array.isArray(userPermissions) || userPermissions.length === 0) {
-      userPermissions = ROLE_PERMISSIONS[user.role as keyof typeof ROLE_PERMISSIONS] || [];
+      userPermissions = (ROLE_PERMISSIONS[user.role as keyof typeof ROLE_PERMISSIONS] || []) as string[];
       
       // Update user with correct permissions (only once)
       if (userPermissions.length > 0 && (!user.permissions || user.permissions.length === 0)) {

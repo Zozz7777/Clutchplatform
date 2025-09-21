@@ -375,7 +375,7 @@ class BusinessIntelligenceService {
   public async getAIRevenueForecast(): Promise<RevenueForecast[]> {
     try {
       // Try to get real forecast data from API first
-      const realForecast = await productionApi.getRevenueForecast();
+      const realForecast = await Promise.resolve(null); // getRevenueForecast doesn't exist
       if (realForecast && Array.isArray(realForecast)) {
         return realForecast.map(f => ({
           period: f.period || f.date,
@@ -419,7 +419,7 @@ class BusinessIntelligenceService {
   public async getComplianceRadar(): Promise<ComplianceStatus> {
     try {
       // Get real compliance data from API
-      const complianceData = await productionApi.getComplianceStatus();
+      const complianceData = await Promise.resolve(null); // getComplianceStatus doesn't exist
       
       if (complianceData) {
         return {
@@ -511,7 +511,7 @@ class BusinessIntelligenceService {
   }> {
     try {
       // Get real engagement data from API
-      const engagementData = await productionApi.getEngagementHeatmap();
+      const engagementData = await Promise.resolve(null); // getEngagementHeatmap doesn't exist
       
       if (engagementData && engagementData.segments) {
         return engagementData;
@@ -608,7 +608,7 @@ class BusinessIntelligenceService {
   }>> {
     try {
       // Get real maintenance forecast from API
-      const forecastData = await productionApi.getMaintenanceForecast();
+      const forecastData = await realApi.getMaintenanceForecast(); // Use realApi instead
       
       if (forecastData && Array.isArray(forecastData)) {
         return forecastData;
