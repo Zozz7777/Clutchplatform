@@ -173,6 +173,8 @@ export default function CommunicationPage() {
             category: 'Authentication',
             assignedTo: 'John Smith',
             createdAt: '2024-01-20T13:20:00Z',
+            updatedAt: '2024-01-20T15:30:00Z',
+            responseTime: 120,
             customer: {
               name: 'John Doe',
               email: 'user@example.com'
@@ -188,6 +190,8 @@ export default function CommunicationPage() {
             category: 'Enhancement',
             assignedTo: 'Sarah Johnson',
             createdAt: '2024-01-19T09:15:00Z',
+            updatedAt: '2024-01-20T11:45:00Z',
+            responseTime: 90,
             customer: {
               name: 'Jane Smith',
               email: 'customer@example.com'

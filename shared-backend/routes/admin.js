@@ -4538,73 +4538,118 @@ router.get('/hr', authenticateToken, checkRole(['head_administrator', 'hr_manage
   try {
     const { period = 'monthly' } = req.query;
     
+    // Get real employee data from database
+    const employeesCollection = await getCollection('employees');
+    const applicationsCollection = await getCollection('job_applications');
+    
+    // Calculate real employee statistics
+    const totalEmployees = await employeesCollection.countDocuments();
+    const activeEmployees = await employeesCollection.countDocuments({ status: 'active' });
+    const newHires = await employeesCollection.countDocuments({
+      $or: [
+        { hireDate: { $gte: new Date(Date.now() - 30 * 24 * 60 * 60 * 1000) } },
+        { startDate: { $gte: new Date(Date.now() - 30 * 24 * 60 * 60 * 1000) } }
+      ]
+    });
+    const terminations = await employeesCollection.countDocuments({
+      $or: [
+        { terminationDate: { $gte: new Date(Date.now() - 30 * 24 * 60 * 60 * 1000) } },
+        { status: 'terminated' }
+      ]
+    });
+    
+    // Calculate average salary from real data
+    const salaryAggregation = await employeesCollection.aggregate([
+      { $match: { salary: { $exists: true, $ne: null } } },
+      { $group: { _id: null, avgSalary: { $avg: "$salary" } } }
+    ]).toArray();
+    const averageSalary = salaryAggregation.length > 0 ? Math.round(salaryAggregation[0].avgSalary) : 0;
+    
+    // Calculate total payroll
+    const payrollAggregation = await employeesCollection.aggregate([
+      { $match: { salary: { $exists: true, $ne: null } } },
+      { $group: { _id: null, totalPayroll: { $sum: "$salary" } } }
+    ]).toArray();
+    const totalPayroll = payrollAggregation.length > 0 ? Math.round(payrollAggregation[0].totalPayroll) : 0;
+    
+    // Calculate department statistics with real data
+    const departmentStats = await employeesCollection.aggregate([
+      {
+        $group: {
+          _id: '$department',
+          totalEmployees: { $sum: 1 },
+          activeEmployees: {
+            $sum: { $cond: [{ $eq: ['$status', 'active'] }, 1, 0] }
+          },
+          averageSalary: { $avg: '$salary' }
+        }
+      }
+    ]).toArray();
+    
+    // Calculate salary distribution
+    const salaryDistribution = await employeesCollection.aggregate([
+      { $match: { salary: { $exists: true, $ne: null } } },
+      {
+        $bucket: {
+          groupBy: "$salary",
+          boundaries: [0, 30000, 40000, 50000, 60000, 70000, Infinity],
+          default: "70k+ EGP",
+          output: {
+            count: { $sum: 1 },
+            salaries: { $push: "$salary" }
+          }
+        }
+      }
+    ]).toArray();
+    
+    // Format salary distribution
+    const formattedSalaryDistribution = [
+      { range: '30k-40k EGP', count: 0, percentage: 0 },
+      { range: '40k-50k EGP', count: 0, percentage: 0 },
+      { range: '50k-60k EGP', count: 0, percentage: 0 },
+      { range: '60k-70k EGP', count: 0, percentage: 0 },
+      { range: '70k+ EGP', count: 0, percentage: 0 }
+    ];
+    
+    salaryDistribution.forEach(bucket => {
+      const rangeIndex = Math.floor(bucket._id / 10000) - 3;
+      if (rangeIndex >= 0 && rangeIndex < formattedSalaryDistribution.length) {
+        formattedSalaryDistribution[rangeIndex].count = bucket.count;
+      }
+    });
+    
+    // Calculate percentages
+    const totalWithSalary = formattedSalaryDistribution.reduce((sum, range) => sum + range.count, 0);
+    formattedSalaryDistribution.forEach(range => {
+      range.percentage = totalWithSalary > 0 ? Math.round((range.count / totalWithSalary) * 100 * 10) / 10 : 0;
+    });
+    
+    // Format departments with real data
+    const departments = departmentStats.map(dept => ({
+      name: dept._id || 'Unknown',
+      totalEmployees: dept.totalEmployees,
+      activeEmployees: dept.activeEmployees,
+      newHires: 0, // Could be calculated with date filtering
+      terminations: 0, // Could be calculated with date filtering
+      averageSalary: Math.round(dept.averageSalary || 0),
+      turnoverRate: 0 // Could be calculated from historical data
+    }));
+    
     const hrData = {
       period: period,
       overview: {
-        totalEmployees: 125,
-        activeEmployees: 118,
-        newHires: 8,
-        terminations: 3,
-        turnoverRate: 2.4,
-        averageTenure: 3.2
+        totalEmployees,
+        activeEmployees,
+        newHires,
+        terminations,
+        turnoverRate: totalEmployees > 0 ? Math.round((terminations / totalEmployees) * 100 * 10) / 10 : 0,
+        averageTenure: 3.2 // Could be calculated from hire dates
       },
-      departments: [
-        {
-          name: 'Operations',
-          totalEmployees: 45,
-          activeEmployees: 42,
-          newHires: 3,
-          terminations: 1,
-          averageSalary: 55000,
-          turnoverRate: 2.2
-        },
-        {
-          name: 'Customer Service',
-          totalEmployees: 25,
-          activeEmployees: 24,
-          newHires: 2,
-          terminations: 0,
-          averageSalary: 42000,
-          turnoverRate: 0.0
-        },
-        {
-          name: 'Sales',
-          totalEmployees: 20,
-          activeEmployees: 19,
-          newHires: 2,
-          terminations: 1,
-          averageSalary: 48000,
-          turnoverRate: 5.0
-        },
-        {
-          name: 'Administration',
-          totalEmployees: 15,
-          activeEmployees: 15,
-          newHires: 1,
-          terminations: 0,
-          averageSalary: 45000,
-          turnoverRate: 0.0
-        },
-        {
-          name: 'Management',
-          totalEmployees: 20,
-          activeEmployees: 18,
-          newHires: 0,
-          terminations: 1,
-          averageSalary: 75000,
-          turnoverRate: 5.0
-        }
-      ],
+      departments,
       payroll: {
-        totalPayroll: 625000,
-        averageSalary: 50000,
-        salaryDistribution: [
-          { range: '30k-40k EGP', count: 25, percentage: 20.0 },
-          { range: '40k-50k EGP', count: 35, percentage: 28.0 },
-          { range: '50k-60k EGP', count: 30, percentage: 24.0 },
-          { range: '60k-70k EGP', count: 20, percentage: 16.0 },
-          { range: '70k+ EGP', count: 15, percentage: 12.0 }
-        ],
+        totalPayroll,
+        averageSalary,
+        salaryDistribution: formattedSalaryDistribution,
         benefits: {
           healthInsurance: 45000,
           retirement: 25000,

@@ -233,7 +233,25 @@ const fallbackTranslations = {
     maintenance: "Maintenance",
     retired: "Retired",
     currentValue: "Current Value",
-    location: "Location"
+    location: "Location",
+    fromLastMonth: "from last month",
+    noLocation: "No location data",
+    noAlerts: "No alerts at this time",
+    communication: "Communication",
+    communicationDescription: "Manage notifications, chat channels, and support tickets",
+    settings: "Settings",
+    newNotification: "New Notification",
+    totalNotifications: "Total Notifications",
+    activeChannels: "Active Channels",
+    unreadMessages: "unread messages",
+    openTickets: "Open Tickets",
+    avgResponseTime: "Avg Response Time",
+    excellent: "Excellent",
+    good: "Good",
+    needsWork: "Needs Work",
+    seoCms: "SEO & CMS",
+    manageSeoOptimization: "Manage SEO optimization and content",
+    refreshing: "Refreshing..."
   },
   chat: {
     failedToLoadChatData: "Failed to load chat data",
@@ -293,7 +311,33 @@ const fallbackTranslations = {
     muted: "Muted",
     unmuted: "Unmuted",
     recordingStarted: "Recording started",
-    recordingStopped: "Recording stopped"
+    recordingStopped: "Recording stopped",
+    typeMessage: "Type a message...",
+    noChatSelected: "No chat selected",
+    selectChatToStart: "Select a chat to start messaging"
+  },
+  notifications: {
+    noNotifications: "No notifications"
+  },
+  communication: {
+    failedToLoadCommunicationData: "Failed to load communication data",
+    notifications: "Notifications",
+    chatChannels: "Chat Channels",
+    supportTickets: "Support Tickets"
+  },
+  sla: {
+    compliance: "SLA Compliance",
+    loadingData: "Loading SLA compliance data",
+    unableToLoad: "Unable to load SLA compliance data",
+    overallCompliance: "Overall Compliance",
+    totalIncidents: "Total Incidents",
+    overallSlaCompliance: "Overall SLA Compliance",
+    statusDistribution: "Status Distribution",
+    compliant: "Compliant",
+    warning: "Warning",
+    breach: "Breach",
+    serviceMetrics: "Service Metrics",
+    meanTimeToRecovery: "Mean Time To Recovery"
   }
 };
 

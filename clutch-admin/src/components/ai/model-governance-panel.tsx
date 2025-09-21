@@ -75,7 +75,7 @@ import {
   FileCheck,
   AlertCircle,
   CheckCircle2,
-  XCircle2,
+  XCircle,
   Info as InfoIcon
 } from 'lucide-react';
 import { formatCurrency, formatNumber } from '@/lib/utils';

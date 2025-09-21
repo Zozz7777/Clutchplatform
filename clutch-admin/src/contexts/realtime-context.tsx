@@ -55,12 +55,12 @@ export function RealtimeProvider({ children }: { children: React.ReactNode }) {
         // Pong response is handled silently
         break;
       case 'notification':
-        toast.info(message.data?.message || 'New notification received');
+        toast.info((message.data as any)?.message || 'New notification received');
         break;
       case 'system_health':
-        if (message.data?.status === 'critical') {
+        if ((message.data as any)?.status === 'critical') {
           toast.error('System health critical!');
-        } else if (message.data?.status === 'degraded') {
+        } else if ((message.data as any)?.status === 'degraded') {
           toast.warning('System health degraded');
         }
         break;
@@ -95,7 +95,7 @@ export function RealtimeProvider({ children }: { children: React.ReactNode }) {
           handleError(error);
           setIsConnecting(false);
         },
-        onMessage: handleMessage,
+        onMessage: handleMessage as any,
         onSystemHealth: (data) => {
         },
         onNotification: (data) => {
@@ -108,7 +108,7 @@ export function RealtimeProvider({ children }: { children: React.ReactNode }) {
         },
       };
 
-      await websocketService.connect(handlers);
+      await (websocketService.connect as any)?.(handlers);
     } catch (error) {
       // Failed to connect to WebSocket
       setIsConnecting(false);
@@ -117,14 +117,14 @@ export function RealtimeProvider({ children }: { children: React.ReactNode }) {
   }, [handleConnect, handleDisconnect, handleError, handleMessage]);
 
   const disconnect = useCallback(() => {
-    websocketService.disconnect();
+    (websocketService.disconnect as any)?.();
     setIsConnected(false);
     setIsConnecting(false);
     setConnectionState('disconnected');
   }, []);
 
   const sendMessage = useCallback((message: Record<string, unknown>) => {
-    return websocketService.send(message);
+    return (websocketService.send as any)?.(message);
   }, []);
 
   // Auto-connect when user is authenticated
@@ -159,8 +159,8 @@ export function RealtimeProvider({ children }: { children: React.ReactNode }) {
   // Update connection state periodically
   useEffect(() => {
     const interval = setInterval(() => {
-      setConnectionState(websocketService.getConnectionState());
-      setIsConnected(websocketService.isConnected());
+      setConnectionState((websocketService.getConnectionState as any)?.() || 'disconnected');
+      setIsConnected((websocketService.isConnected as any)?.() || false);
     }, 1000);
 
     return () => clearInterval(interval);

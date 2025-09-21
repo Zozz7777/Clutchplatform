@@ -136,9 +136,9 @@ export function SLACompliance({ className = '' }: SLAComplianceProps) {
         <CardHeader>
           <CardTitle className="flex items-center space-x-2">
             <Shield className="h-5 w-5 text-primary" />
-            <span>SLA Compliance</span>
+            <span>{t('sla.compliance')}</span>
           </CardTitle>
-          <CardDescription>Loading SLA compliance data...</CardDescription>
+          <CardDescription>{t('sla.loadingData')}</CardDescription>
         </CardHeader>
         <CardContent>
           <div className="animate-pulse space-y-4">
@@ -157,9 +157,9 @@ export function SLACompliance({ className = '' }: SLAComplianceProps) {
         <CardHeader>
           <CardTitle className="flex items-center space-x-2">
             <Shield className="h-5 w-5 text-primary" />
-            <span>SLA Compliance</span>
+            <span>{t('sla.compliance')}</span>
           </CardTitle>
-          <CardDescription>Unable to load SLA compliance data</CardDescription>
+          <CardDescription>{t('sla.unableToLoad')}</CardDescription>
         </CardHeader>
       </Card>
     );
@@ -170,7 +170,7 @@ export function SLACompliance({ className = '' }: SLAComplianceProps) {
       <CardHeader>
         <CardTitle className="flex items-center space-x-2">
           <Shield className="h-5 w-5 text-primary" />
-          <span>SLA Compliance</span>
+          <span>{t('sla.compliance')}</span>
         </CardTitle>
         <CardDescription>
           % uptime vs SLA commitment
@@ -184,12 +184,12 @@ export function SLACompliance({ className = '' }: SLAComplianceProps) {
             <p className="text-lg font-bold text-primary">
               {slaData.overallCompliance.toFixed(1)}%
             </p>
-            <p className="text-xs text-muted-foreground">Overall Compliance</p>
+            <p className="text-xs text-muted-foreground">{t('sla.overallCompliance')}</p>
           </div>
           <div className="text-center p-3 bg-warning/10 rounded-[0.625rem]-lg">
             <AlertTriangle className="h-5 w-5 text-warning mx-auto mb-1" />
             <p className="text-lg font-bold text-warning">{slaData.totalIncidents}</p>
-            <p className="text-xs text-muted-foreground">Total Incidents</p>
+            <p className="text-xs text-muted-foreground">{t('sla.totalIncidents')}</p>
           </div>
         </div>
 
