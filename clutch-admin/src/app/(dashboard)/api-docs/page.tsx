@@ -270,20 +270,20 @@ export default function APIDocsPage() {
               {endpoints.length > 0 ? Math.round(endpoints.reduce((sum, e) => sum + e.rateLimit, 0) / endpoints.length) : 0}
             </div>
             <p className="text-xs text-muted-foreground">
-              Average per hour
+              {t('dashboard.averagePerHour')}
             </p>
           </CardContent>
         </Card>
 
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Version</CardTitle>
+            <CardTitle className="text-sm font-medium">{t('dashboard.version')}</CardTitle>
             <Settings className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-medium">v1</div>
             <p className="text-xs text-muted-foreground">
-              Current API version
+              {t('dashboard.currentApiVersion')}
             </p>
           </CardContent>
         </Card>
@@ -292,9 +292,9 @@ export default function APIDocsPage() {
       {/* Search and Filters */}
       <Card>
         <CardHeader>
-          <CardTitle>Search & Filter</CardTitle>
+          <CardTitle>{t('dashboard.searchAndFilter')}</CardTitle>
           <CardDescription>
-            Find specific endpoints by path, description, or tags
+            {t('dashboard.findSpecificEndpointsByPath')}
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">

@@ -462,11 +462,11 @@ export default function MobileAppsPage() {
                       </div>
                       <div>
                         <div className="text-sm text-muted-foreground">Crash Rate</div>
-                        <div className="font-semibold">{version?.crashRate || 0}%</div>
+                        <div className="font-semibold">{version.crashRate}%</div>
                       </div>
                       <div>
                         <div className="text-sm text-muted-foreground">Rating</div>
-                        <div className="font-semibold">{version?.avgRating || 0}/5.0</div>
+                        <div className="font-semibold">{version.avgRating}/5.0</div>
                       </div>
                       <div>
                         <div className="text-sm text-muted-foreground">Size</div>
@@ -517,7 +517,7 @@ export default function MobileAppsPage() {
                 </div>
               </CardContent>
             </Card>
-          )) : null}
+          ))}
         </div>
       )}
 
@@ -600,7 +600,7 @@ export default function MobileAppsPage() {
                 </div>
               </CardContent>
             </Card>
-          )) : null}
+          ))}
         </div>
       )}
 
@@ -679,7 +679,7 @@ export default function MobileAppsPage() {
                 </div>
               </CardContent>
             </Card>
-          )) : null}
+          ))}
         </div>
       )}
 
@@ -761,7 +761,7 @@ export default function MobileAppsPage() {
                 </div>
               </CardContent>
             </Card>
-          )) : null}
+          ))}
         </div>
       )}
     </div>
