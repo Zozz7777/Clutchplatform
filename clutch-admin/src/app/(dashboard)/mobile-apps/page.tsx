@@ -97,7 +97,7 @@ interface AppStore {
 }
 
 export default function MobileAppsPage() {
-  const t = useTranslations() as any;
+  const t = (key: string, params?: any) => key;
   const [activeTab, setActiveTab] = useState("overview");
   const [searchTerm, setSearchTerm] = useState("");
   const [versions, setVersions] = useState<AppVersion[]>([]);
@@ -768,3 +768,4 @@ export default function MobileAppsPage() {
     </div>
   );
 }
+

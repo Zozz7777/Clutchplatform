@@ -724,3 +724,4 @@ export default function ChaosTestingIntegration({ className }: ChaosTestingInteg
     </div>
   );
 }
+

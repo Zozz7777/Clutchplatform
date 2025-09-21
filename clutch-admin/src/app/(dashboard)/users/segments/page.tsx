@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 import { productionApi } from '@/lib/production-api';
 import { toast } from 'sonner';
-import { useTranslations } from 'next-intl';
+// import { useTranslations } from 'next-intl';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -33,7 +33,7 @@ interface UserSegment {
 }
 
 export default function UserSegmentsPage() {
-  const t = useTranslations();
+  const t = (key: string, params?: any) => key;
   const [segments, setSegments] = useState<UserSegment[]>([]);
   const [analytics, setAnalytics] = useState({
     totalSegments: 0,
@@ -375,3 +375,4 @@ export default function UserSegmentsPage() {
     </div>
   );
 }
+

@@ -101,3 +101,4 @@ export function FocusTrap({ children, active, className = '' }: FocusTrapProps) 
     </div>
   );
 }
+

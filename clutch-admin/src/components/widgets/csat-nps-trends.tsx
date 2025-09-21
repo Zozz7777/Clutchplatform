@@ -6,7 +6,7 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Progress } from '@/components/ui/progress';
 import { productionApi } from '@/lib/production-api';
-// import { useTranslations } from 'next-intl';
+// // import { useTranslations } from 'next-intl';
 import { 
   Star, 
   TrendingUp, 
@@ -439,6 +439,7 @@ export function CSATNPSTrends({ className = '' }: CSATNPSTrendsProps) {
 }
 
 export default CSATNPSTrends;
+
 
 
 

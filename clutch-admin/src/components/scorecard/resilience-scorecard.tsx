@@ -361,3 +361,4 @@ export default function ResilienceScorecard({ className }: ResilienceScorecardPr
     </Card>
   );
 }
+

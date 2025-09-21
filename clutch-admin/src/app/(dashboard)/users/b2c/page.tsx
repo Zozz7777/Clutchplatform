@@ -50,7 +50,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 
 export default function B2CUsersPage() {
-  const t = useTranslations();
+  const t = (key: string, params?: any) => key;
   const [users, setUsers] = useState<User[]>([]);
   const [filteredUsers, setFilteredUsers] = useState<User[]>([]);
   const [searchQuery, setSearchQuery] = useState("");
@@ -326,3 +326,4 @@ export default function B2CUsersPage() {
     </div>
   );
 }
+

@@ -201,7 +201,7 @@ export default function HRPage() {
   const [employeeToDelete, setEmployeeToDelete] = useState<Employee | null>(null);
   const [editFormData, setEditFormData] = useState<Partial<Employee>>({});
   const { user, hasPermission } = useAuth();
-  const t = useTranslations();
+  const t = (key: string, params?: any) => key;
 
   // Helper functions for role and permission management
   const getRolePermissions = (role: string): string[] => {
@@ -1818,4 +1818,5 @@ export default function HRPage() {
     </div>
   );
 }
+
 

@@ -35,7 +35,7 @@ interface HeaderProps {
 
 export function Header({ onMenuToggle }: HeaderProps) {
   const { user, logout } = useAuth();
-  const t = useTranslations() as any;
+  const t = (key: string, params?: any) => key;
   const [searchQuery, setSearchQuery] = useState("");
   const [notifications, setNotifications] = useState<Notification[]>([]);
   const [notificationsLoading, setNotificationsLoading] = useState(false);
@@ -193,3 +193,4 @@ export function Header({ onMenuToggle }: HeaderProps) {
     </header>
   );
 }
+

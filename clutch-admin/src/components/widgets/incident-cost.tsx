@@ -6,7 +6,7 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Progress } from '@/components/ui/progress';
 import { productionApi } from '@/lib/production-api';
-// import { useTranslations } from 'next-intl';
+// // import { useTranslations } from 'next-intl';
 import { 
   DollarSign, 
   AlertTriangle, 
@@ -363,6 +363,7 @@ export function IncidentCost({ className = '' }: IncidentCostProps) {
 }
 
 export default IncidentCost;
+
 
 
 

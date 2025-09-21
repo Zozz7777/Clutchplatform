@@ -6,7 +6,7 @@ import { Badge } from '@/components/ui/badge';
 import { Progress } from '@/components/ui/progress';
 import { businessIntelligence } from '@/lib/business-intelligence';
 import { logger } from '@/lib/logger';
-// import { useTranslations } from 'next-intl';
+// // import { useTranslations } from 'next-intl';
 import { 
   DollarSign, 
   TrendingUp, 
@@ -290,6 +290,7 @@ export function RevenueMarginCard({ className = '' }: RevenueMarginCardProps) {
 }
 
 export default RevenueMarginCard;
+
 
 
 

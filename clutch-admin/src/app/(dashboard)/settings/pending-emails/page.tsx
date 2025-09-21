@@ -61,7 +61,7 @@ interface PendingEmail {
 }
 
 export default function PendingEmailsPage() {
-  const t = useTranslations() as any;
+  const t = (key: string, params?: any) => key;
   const { user, hasPermission } = useAuth();
   const [pendingEmails, setPendingEmails] = useState<PendingEmail[]>([]);
   const [loading, setLoading] = useState(true);
@@ -407,3 +407,4 @@ export default function PendingEmailsPage() {
     </div>
   );
 }
+

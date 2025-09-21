@@ -141,7 +141,7 @@ interface Rollout {
 }
 
 export default function FeatureFlagsPage() {
-  const t = useTranslations();
+  const t = (key: string, params?: any) => key;
   const [featureFlags, setFeatureFlags] = useState<FeatureFlag[]>([]);
   const [abTests, setABTests] = useState<ABTest[]>([]);
   const [rollouts, setRollouts] = useState<Rollout[]>([]);
@@ -1142,3 +1142,4 @@ export default function FeatureFlagsPage() {
     </div>
   );
 }
+

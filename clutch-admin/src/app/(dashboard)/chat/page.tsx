@@ -64,7 +64,7 @@ interface ChatChannel {
 }
 
 export default function ChatPage() {
-  const t = useTranslations();
+  const t = (key: string, params?: any) => key;
   const [channels, setChannels] = useState<ChatChannel[]>([]);
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [selectedChannel, setSelectedChannel] = useState<string>("1");
@@ -423,3 +423,4 @@ export default function ChatPage() {
     </div>
   );
 }
+

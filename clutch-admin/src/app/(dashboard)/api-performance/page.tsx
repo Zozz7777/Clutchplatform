@@ -41,7 +41,7 @@ interface ApiPerformanceData {
 }
 
 export default function ApiPerformancePage() {
-  const t = useTranslations();
+  const t = (key: string, params?: any) => key;
   const [performanceData, setPerformanceData] = useState<ApiPerformanceData | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const { hasPermission } = useAuth();
@@ -322,3 +322,4 @@ export default function ApiPerformancePage() {
     </div>
   );
 }
+

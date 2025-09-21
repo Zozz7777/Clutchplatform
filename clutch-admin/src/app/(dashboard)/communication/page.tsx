@@ -80,7 +80,7 @@ interface SupportTicket {
 }
 
 export default function CommunicationPage() {
-  const t = useTranslations();
+  const t = (key: string, params?: any) => key;
   const [activeTab, setActiveTab] = useState("notifications");
   const [searchTerm, setSearchTerm] = useState("");
   const [notifications, setNotifications] = useState<CommunicationNotification[]>([]);
@@ -526,3 +526,4 @@ export default function CommunicationPage() {
     </div>
   );
 }
+

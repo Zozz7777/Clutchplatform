@@ -119,7 +119,7 @@ export default function MarketingPage() {
   const [activeTab, setActiveTab] = useState<"campaigns" | "leads">("campaigns");
   const [isLoading, setIsLoading] = useState(true);
   const { hasPermission } = useAuth();
-  const t = useTranslations() as any;
+  const t = (key: string, params?: any) => key;
 
   useEffect(() => {
     const loadMarketingData = async () => {
@@ -819,3 +819,4 @@ export default function MarketingPage() {
     </div>
   );
 }
+

@@ -186,7 +186,7 @@ interface Communication {
 }
 
 export default function VendorManagementPage() {
-  const t = useTranslations() as any;
+  const t = (key: string, params?: any) => key;
   const [vendors, setVendors] = useState<Vendor[]>([]);
   const [contracts, setContracts] = useState<Contract[]>([]);
   const [communications, setCommunications] = useState<Communication[]>([]);
@@ -1275,4 +1275,5 @@ export default function VendorManagementPage() {
     </div>
   );
 }
+
 

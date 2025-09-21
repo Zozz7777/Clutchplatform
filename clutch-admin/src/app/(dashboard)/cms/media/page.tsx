@@ -32,7 +32,7 @@ interface MediaFile {
 }
 
 export default function MediaCMSPage() {
-  const { t } = useTranslations();
+  const t = (key: string, params?: any) => key;
   const [mediaFiles, setMediaFiles] = useState<MediaFile[]>([]);
   const [searchTerm, setSearchTerm] = useState('');
   const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
@@ -283,3 +283,4 @@ export default function MediaCMSPage() {
     </div>
   );
 }
+

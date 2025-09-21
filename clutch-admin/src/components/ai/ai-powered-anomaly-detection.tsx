@@ -678,3 +678,4 @@ export default function AIPoweredAnomalyDetection({ className }: AIPoweredAnomal
     </div>
   );
 }
+

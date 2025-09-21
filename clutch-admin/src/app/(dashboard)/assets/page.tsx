@@ -145,7 +145,7 @@ interface AssetAssignment {
 }
 
 export default function AssetManagementPage() {
-  const t = useTranslations();
+  const t = (key: string, params?: any) => key;
   const [assets, setAssets] = useState<Asset[]>([]);
   const [maintenanceRecords, setMaintenanceRecords] = useState<MaintenanceRecord[]>([]);
   const [assignments, setAssignments] = useState<AssetAssignment[]>([]);
@@ -1045,3 +1045,4 @@ export default function AssetManagementPage() {
     </div>
   );
 }
+

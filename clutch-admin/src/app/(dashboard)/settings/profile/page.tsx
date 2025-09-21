@@ -62,7 +62,7 @@ interface UserProfile {
 }
 
 export default function ProfileSettingsPage() {
-  const t = useTranslations() as any;
+  const t = (key: string, params?: any) => key;
   const { user, hasPermission } = useAuth();
   const [profile, setProfile] = useState<UserProfile | null>(null);
   const [isLoading, setIsLoading] = useState(true);
@@ -651,3 +651,4 @@ export default function ProfileSettingsPage() {
     </div>
   );
 }
+

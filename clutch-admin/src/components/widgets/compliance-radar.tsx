@@ -6,7 +6,7 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Progress } from '@/components/ui/progress';
 import { businessIntelligence, type ComplianceStatus } from '@/lib/business-intelligence';
-// import { useTranslations } from 'next-intl';
+// // import { useTranslations } from 'next-intl';
 import { 
   Shield, 
   AlertTriangle, 
@@ -333,6 +333,7 @@ export function ComplianceRadar({ className = '' }: ComplianceRadarProps) {
 }
 
 export default ComplianceRadar;
+
 
 
 

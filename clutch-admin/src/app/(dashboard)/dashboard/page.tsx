@@ -81,7 +81,7 @@ export default function DashboardPage() {
   const [performanceMetrics, setPerformanceMetrics] = useState<Record<string, unknown> | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const { hasPermission } = useAuth();
-  const t = useTranslations();
+  const t = (key: string, params?: any) => key;
   // Safely get quick actions with error handling
   let quickActions: any[] = [];
   let generateReport: (() => void) | null = null;
@@ -483,3 +483,4 @@ export default function DashboardPage() {
     </div>
   );
 }
+

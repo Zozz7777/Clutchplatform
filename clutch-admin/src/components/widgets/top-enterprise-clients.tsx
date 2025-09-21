@@ -6,7 +6,7 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Progress } from '@/components/ui/progress';
 import { businessIntelligence } from '@/lib/business-intelligence';
-// import { useTranslations } from 'next-intl';
+// // import { useTranslations } from 'next-intl';
 import { 
   Building2, 
   DollarSign, 
@@ -278,6 +278,7 @@ export function TopEnterpriseClients({ className = '' }: TopEnterpriseClientsPro
 }
 
 export default TopEnterpriseClients;
+
 
 
 

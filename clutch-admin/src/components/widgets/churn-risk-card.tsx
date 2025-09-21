@@ -7,7 +7,7 @@ import { Button } from '@/components/ui/button';
 import { Progress } from '@/components/ui/progress';
 import { businessIntelligence, type ChurnRisk } from '@/lib/business-intelligence';
 import { logger } from '@/lib/logger';
-// import { useTranslations } from 'next-intl';
+// // import { useTranslations } from 'next-intl';
 import { 
   AlertTriangle, 
   Users, 
@@ -300,6 +300,7 @@ export function ChurnRiskCard({ className = '', showDetails = false }: ChurnRisk
 }
 
 export default ChurnRiskCard;
+
 
 
 

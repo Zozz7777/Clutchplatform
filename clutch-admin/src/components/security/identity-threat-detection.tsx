@@ -589,3 +589,4 @@ export default function IdentityThreatDetection({ className }: IdentityThreatDet
     </div>
   );
 }
+

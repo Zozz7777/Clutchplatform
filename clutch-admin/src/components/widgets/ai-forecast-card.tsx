@@ -7,7 +7,7 @@ import { Button } from '@/components/ui/button';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { businessIntelligence, type RevenueForecast } from '@/lib/business-intelligence';
 import { logger } from '@/lib/logger';
-// import { useTranslations } from 'next-intl';
+// // import { useTranslations } from 'next-intl';
 import { 
   Brain, 
   TrendingUp, 
@@ -283,6 +283,7 @@ export function AIForecastCard({ className = '' }: AIForecastCardProps) {
 }
 
 export default AIForecastCard;
+
 
 
 

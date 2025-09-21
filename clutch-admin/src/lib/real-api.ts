@@ -8,7 +8,7 @@ export class RealApiService {
   async getKPIMetrics(): Promise<Record<string, unknown>[]> {
     return withErrorHandling(
       async () => {
-        const response = await apiService.request<Record<string, unknown>[]>("/api/v1/dashboard/kpis");
+        const response = await apiService.makeRequest<Record<string, unknown>[]>("/api/v1/dashboard/kpis");
         return handleApiResponse(response, 'getKPIMetrics', []);
       },
       'getKPIMetrics',
@@ -19,7 +19,7 @@ export class RealApiService {
   async getFleetVehicles(): Promise<Record<string, unknown>[]> {
     return withErrorHandling(
       async () => {
-        const response = await apiService.request<Record<string, unknown>[]>("/api/v1/fleet/vehicles");
+        const response = await apiService.makeRequest<Record<string, unknown>[]>("/api/v1/fleet/vehicles");
         return handleApiResponse(response, 'getFleetVehicles', []);
       },
       'getFleetVehicles',
@@ -30,7 +30,7 @@ export class RealApiService {
   async getNotifications(): Promise<Record<string, unknown>[]> {
     return withErrorHandling(
       async () => {
-        const response = await apiService.request<Record<string, unknown>[]>("/api/v1/notifications");
+        const response = await apiService.makeRequest<Record<string, unknown>[]>("/api/v1/notifications");
         return handleApiResponse(response, 'getNotifications', []);
       },
       'getNotifications',
@@ -42,7 +42,7 @@ export class RealApiService {
   async getUsers(): Promise<Record<string, unknown>[]> {
     return withErrorHandling(
       async () => {
-        const response = await apiService.request<Record<string, unknown>[]>("/api/v1/users");
+        const response = await apiService.makeRequest<Record<string, unknown>[]>("/api/v1/users");
         return handleApiResponse(response, 'getUsers', []);
       },
       'getUsers',
@@ -53,7 +53,7 @@ export class RealApiService {
   async createUser(userData: Record<string, unknown>): Promise<Record<string, unknown>> {
     return withErrorHandling(
       async () => {
-        const response = await apiService.request<Record<string, unknown>>("/api/v1/users", {
+        const response = await apiService.makeRequest<Record<string, unknown>>("/api/v1/users", {
           method: "POST",
           body: JSON.stringify(userData),
         });
@@ -67,7 +67,7 @@ export class RealApiService {
   async updateUser(userId: string, userData: Record<string, unknown>): Promise<Record<string, unknown>> {
     return withErrorHandling(
       async () => {
-        const response = await apiService.request<Record<string, unknown>>(`/api/v1/users/${userId}`, {
+        const response = await apiService.makeRequest<Record<string, unknown>>(`/api/v1/users/${userId}`, {
           method: "PUT",
           body: JSON.stringify(userData),
         });
@@ -81,7 +81,7 @@ export class RealApiService {
   async deleteUser(userId: string): Promise<boolean> {
     return withErrorHandling(
       async () => {
-        const response = await apiService.request<boolean>(`/api/v1/users/${userId}`, {
+        const response = await apiService.makeRequest<boolean>(`/api/v1/users/${userId}`, {
           method: "DELETE",
         });
         return handleApiResponse(response, 'deleteUser', false);
@@ -94,7 +94,7 @@ export class RealApiService {
   async cleanupTestUsers(): Promise<{ deletedCount: number }> {
     return withErrorHandling(
       async () => {
-        const response = await apiService.request<{ deletedCount: number }>("/api/v1/users/cleanup/test", {
+        const response = await apiService.makeRequest<{ deletedCount: number }>("/api/v1/users/cleanup/test", {
           method: "DELETE",
         });
         return handleApiResponse(response, 'cleanupTestUsers', { deletedCount: 0 });
@@ -108,7 +108,7 @@ export class RealApiService {
   async getFleetData(): Promise<Record<string, unknown>[]> {
     return withErrorHandling(
       async () => {
-        const response = await apiService.request<Record<string, unknown>[]>("/api/v1/fleet");
+        const response = await apiService.makeRequest<Record<string, unknown>[]>("/api/v1/fleet");
         return handleApiResponse(response, 'getFleetData', []);
       },
       'getFleetData',
@@ -119,7 +119,7 @@ export class RealApiService {
   async getDowntimeMetrics(): Promise<Record<string, unknown>[]> {
     return withErrorHandling(
       async () => {
-        const response = await apiService.request<Record<string, unknown>[]>("/api/v1/fleet/downtime-metrics");
+        const response = await apiService.makeRequest<Record<string, unknown>[]>("/api/v1/fleet/downtime-metrics");
         return handleApiResponse(response, 'getDowntimeMetrics', []);
       },
       'getDowntimeMetrics',
@@ -130,7 +130,7 @@ export class RealApiService {
   async getCustomerHealthScores(): Promise<Record<string, unknown>[]> {
     return withErrorHandling(
       async () => {
-        const response = await apiService.request<Record<string, unknown>[]>("/api/v1/crm/customer-health-scores");
+        const response = await apiService.makeRequest<Record<string, unknown>[]>("/api/v1/crm/customer-health-scores");
         return handleApiResponse(response, 'getCustomerHealthScores', []);
       },
       'getCustomerHealthScores',
@@ -141,7 +141,7 @@ export class RealApiService {
   async getFuelCostMetrics(): Promise<Record<string, unknown>[]> {
     return withErrorHandling(
       async () => {
-        const response = await apiService.request<Record<string, unknown>[]>("/api/v1/fleet/fuel-cost-metrics");
+        const response = await apiService.makeRequest<Record<string, unknown>[]>("/api/v1/fleet/fuel-cost-metrics");
         return handleApiResponse(response, 'getFuelCostMetrics', []);
       },
       'getFuelCostMetrics',
@@ -152,7 +152,7 @@ export class RealApiService {
   async getProjects(): Promise<Record<string, unknown>[]> {
     return withErrorHandling(
       async () => {
-        const response = await apiService.request<Record<string, unknown>[]>("/api/v1/projects");
+        const response = await apiService.makeRequest<Record<string, unknown>[]>("/api/v1/projects");
         return handleApiResponse(response, 'getProjects', []);
       },
       'getProjects',
@@ -163,7 +163,7 @@ export class RealApiService {
   async getBudgets(): Promise<Record<string, unknown>[]> {
     return withErrorHandling(
       async () => {
-        const response = await apiService.request<Record<string, unknown>[]>("/api/v1/finance/budgets");
+        const response = await apiService.makeRequest<Record<string, unknown>[]>("/api/v1/finance/budgets");
         return handleApiResponse(response, 'getBudgets', []);
       },
       'getBudgets',
@@ -174,7 +174,7 @@ export class RealApiService {
   async getExpenses(): Promise<Record<string, unknown>[]> {
     return withErrorHandling(
       async () => {
-        const response = await apiService.request<Record<string, unknown>[]>("/api/v1/finance/expenses");
+        const response = await apiService.makeRequest<Record<string, unknown>[]>("/api/v1/finance/expenses");
         return handleApiResponse(response, 'getExpenses', []);
       },
       'getExpenses',
@@ -185,7 +185,7 @@ export class RealApiService {
   async getIntegrations(): Promise<Record<string, unknown>[]> {
     return withErrorHandling(
       async () => {
-        const response = await apiService.request<Record<string, unknown>[]>("/api/v1/integrations");
+        const response = await apiService.makeRequest<Record<string, unknown>[]>("/api/v1/integrations");
         return handleApiResponse(response, 'getIntegrations', []);
       },
       'getIntegrations',
@@ -196,7 +196,7 @@ export class RealApiService {
   async getHealthChecks(): Promise<Record<string, unknown>[]> {
     return withErrorHandling(
       async () => {
-        const response = await apiService.request<Record<string, unknown>[]>("/api/v1/health-checks");
+        const response = await apiService.makeRequest<Record<string, unknown>[]>("/api/v1/health-checks");
         return handleApiResponse(response, 'getHealthChecks', []);
       },
       'getHealthChecks',
@@ -207,7 +207,7 @@ export class RealApiService {
   async getIntegrationMetrics(): Promise<Record<string, unknown>[]> {
     return withErrorHandling(
       async () => {
-        const response = await apiService.request<Record<string, unknown>[]>("/api/v1/integrations/metrics");
+        const response = await apiService.makeRequest<Record<string, unknown>[]>("/api/v1/integrations/metrics");
         return handleApiResponse(response, 'getIntegrationMetrics', []);
       },
       'getIntegrationMetrics',
@@ -218,7 +218,7 @@ export class RealApiService {
   async getIncidents(): Promise<Record<string, unknown>[]> {
     return withErrorHandling(
       async () => {
-        const response = await apiService.request<Record<string, unknown>[]>("/api/v1/incidents");
+        const response = await apiService.makeRequest<Record<string, unknown>[]>("/api/v1/incidents");
         return handleApiResponse(response, 'getIncidents', []);
       },
       'getIncidents',
@@ -229,7 +229,7 @@ export class RealApiService {
   async getAlerts(): Promise<Record<string, unknown>[]> {
     return withErrorHandling(
       async () => {
-        const response = await apiService.request<Record<string, unknown>[]>("/api/v1/alerts");
+        const response = await apiService.makeRequest<Record<string, unknown>[]>("/api/v1/alerts");
         return handleApiResponse(response, 'getAlerts', []);
       },
       'getAlerts',
@@ -240,7 +240,7 @@ export class RealApiService {
   async getLogs(): Promise<Record<string, unknown>[]> {
     return withErrorHandling(
       async () => {
-        const response = await apiService.request<Record<string, unknown>[]>("/api/v1/logs");
+        const response = await apiService.makeRequest<Record<string, unknown>[]>("/api/v1/logs");
         return handleApiResponse(response, 'getLogs', []);
       },
       'getLogs',
@@ -251,7 +251,7 @@ export class RealApiService {
   async getUserSegments(): Promise<Record<string, unknown>[]> {
     return withErrorHandling(
       async () => {
-        const response = await apiService.request<Record<string, unknown>[]>("/api/v1/users/segments");
+        const response = await apiService.makeRequest<Record<string, unknown>[]>("/api/v1/users/segments");
         return handleApiResponse(response, 'getUserSegments', []);
       },
       'getUserSegments',
@@ -262,7 +262,7 @@ export class RealApiService {
   async getUserSegmentAnalytics(): Promise<Record<string, unknown>> {
     return withErrorHandling(
       async () => {
-        const response = await apiService.request<Record<string, unknown>>("/api/v1/users/segments/analytics");
+        const response = await apiService.makeRequest<Record<string, unknown>>("/api/v1/users/segments/analytics");
         return handleApiResponse(response, 'getUserSegmentAnalytics', {});
       },
       'getUserSegmentAnalytics',
@@ -273,7 +273,7 @@ export class RealApiService {
   async getPricingPlans(): Promise<Record<string, unknown>[]> {
     return withErrorHandling(
       async () => {
-        const response = await apiService.request<Record<string, unknown>[]>("/api/v1/revenue/pricing-plans");
+        const response = await apiService.makeRequest<Record<string, unknown>[]>("/api/v1/revenue/pricing-plans");
         return handleApiResponse(response, 'getPricingPlans', []);
       },
       'getPricingPlans',
@@ -284,7 +284,7 @@ export class RealApiService {
   async getPricingAnalytics(): Promise<Record<string, unknown>> {
     return withErrorHandling(
       async () => {
-        const response = await apiService.request<Record<string, unknown>>("/api/v1/revenue/pricing-analytics");
+        const response = await apiService.makeRequest<Record<string, unknown>>("/api/v1/revenue/pricing-analytics");
         return handleApiResponse(response, 'getPricingAnalytics', {});
       },
       'getPricingAnalytics',
@@ -295,7 +295,7 @@ export class RealApiService {
   async getBudgetBreaches(): Promise<Record<string, unknown>[]> {
     return withErrorHandling(
       async () => {
-        const response = await apiService.request<Record<string, unknown>[]>("/api/v1/finance/budget-breaches");
+        const response = await apiService.makeRequest<Record<string, unknown>[]>("/api/v1/finance/budget-breaches");
         return handleApiResponse(response, 'getBudgetBreaches', []);
       },
       'getBudgetBreaches',
@@ -306,7 +306,7 @@ export class RealApiService {
   async getAnomalyDetections(): Promise<Record<string, unknown>[]> {
     return withErrorHandling(
       async () => {
-        const response = await apiService.request<Record<string, unknown>[]>("/api/v1/ai/anomaly-detections");
+        const response = await apiService.makeRequest<Record<string, unknown>[]>("/api/v1/ai/anomaly-detections");
         return handleApiResponse(response, 'getAnomalyDetections', []);
       },
       'getAnomalyDetections',
@@ -317,7 +317,7 @@ export class RealApiService {
   async getZeroTrustPolicies(): Promise<Record<string, unknown>[]> {
     return withErrorHandling(
       async () => {
-        const response = await apiService.request<Record<string, unknown>[]>("/api/v1/security/zero-trust-policies");
+        const response = await apiService.makeRequest<Record<string, unknown>[]>("/api/v1/security/zero-trust-policies");
         return handleApiResponse(response, 'getZeroTrustPolicies', []);
       },
       'getZeroTrustPolicies',
@@ -328,7 +328,7 @@ export class RealApiService {
   async getZeroTrustMetrics(): Promise<Record<string, unknown>> {
     return withErrorHandling(
       async () => {
-        const response = await apiService.request<Record<string, unknown>>("/api/v1/security/zero-trust-metrics");
+        const response = await apiService.makeRequest<Record<string, unknown>>("/api/v1/security/zero-trust-metrics");
         return handleApiResponse(response, 'getZeroTrustMetrics', {});
       },
       'getZeroTrustMetrics',
@@ -340,7 +340,7 @@ export class RealApiService {
   async getChatChannels(): Promise<Record<string, unknown>[]> {
     return withErrorHandling(
       async () => {
-        const response = await apiService.request<Record<string, unknown>[]>("/api/v1/chat/channels");
+        const response = await apiService.makeRequest<Record<string, unknown>[]>("/api/v1/chat/channels");
         return handleApiResponse(response, 'getChatChannels', []);
       },
       'getChatChannels',
@@ -351,7 +351,7 @@ export class RealApiService {
   async getTickets(): Promise<Record<string, unknown>[]> {
     return withErrorHandling(
       async () => {
-        const response = await apiService.request<Record<string, unknown>[]>("/api/v1/crm/tickets");
+        const response = await apiService.makeRequest<Record<string, unknown>[]>("/api/v1/crm/tickets");
         return handleApiResponse(response, 'getTickets', []);
       },
       'getTickets',
@@ -363,7 +363,7 @@ export class RealApiService {
   async getMobileAppSettings(): Promise<Record<string, unknown>> {
     return withErrorHandling(
       async () => {
-        const response = await apiService.request<Record<string, unknown>>("/api/v1/mobile-cms/settings");
+        const response = await apiService.makeRequest<Record<string, unknown>>("/api/v1/mobile-cms/settings");
         return handleApiResponse(response, 'getMobileAppSettings', {});
       },
       'getMobileAppSettings',
@@ -374,7 +374,7 @@ export class RealApiService {
   async saveMobileAppSettings(settings: Record<string, unknown>): Promise<Record<string, unknown>> {
     return withErrorHandling(
       async () => {
-        const response = await apiService.request<Record<string, unknown>>("/api/v1/mobile-cms/settings", {
+        const response = await apiService.makeRequest<Record<string, unknown>>("/api/v1/mobile-cms/settings", {
           method: 'POST',
           body: JSON.stringify(settings)
         });
@@ -388,7 +388,7 @@ export class RealApiService {
   async previewMobileApp(): Promise<Record<string, unknown>> {
     return withErrorHandling(
       async () => {
-        const response = await apiService.request<Record<string, unknown>>("/api/v1/mobile-cms/preview");
+        const response = await apiService.makeRequest<Record<string, unknown>>("/api/v1/mobile-cms/preview");
         return handleApiResponse(response, 'previewMobileApp', {});
       },
       'previewMobileApp',
@@ -400,7 +400,7 @@ export class RealApiService {
   async getMobileAppVersions(): Promise<Record<string, unknown>[]> {
     return withErrorHandling(
       async () => {
-        const response = await apiService.request<Record<string, unknown>[]>("/api/v1/mobile-apps/versions");
+        const response = await apiService.makeRequest<Record<string, unknown>[]>("/api/v1/mobile-apps/versions");
         return handleApiResponse(response, 'getMobileAppVersions', []);
       },
       'getMobileAppVersions',
@@ -411,7 +411,7 @@ export class RealApiService {
   async getMobileAppCrashes(): Promise<Record<string, unknown>[]> {
     return withErrorHandling(
       async () => {
-        const response = await apiService.request<Record<string, unknown>[]>("/api/v1/mobile-apps/crashes");
+        const response = await apiService.makeRequest<Record<string, unknown>[]>("/api/v1/mobile-apps/crashes");
         return handleApiResponse(response, 'getMobileAppCrashes', []);
       },
       'getMobileAppCrashes',
@@ -422,7 +422,7 @@ export class RealApiService {
   async getMobileAppAnalytics(): Promise<Record<string, unknown>[]> {
     return withErrorHandling(
       async () => {
-        const response = await apiService.request<Record<string, unknown>[]>("/api/v1/mobile-apps/analytics");
+        const response = await apiService.makeRequest<Record<string, unknown>[]>("/api/v1/mobile-apps/analytics");
         return handleApiResponse(response, 'getMobileAppAnalytics', []);
       },
       'getMobileAppAnalytics',
@@ -433,7 +433,7 @@ export class RealApiService {
   async getMobileAppStores(): Promise<Record<string, unknown>[]> {
     return withErrorHandling(
       async () => {
-        const response = await apiService.request<Record<string, unknown>[]>("/api/v1/mobile-apps/stores");
+        const response = await apiService.makeRequest<Record<string, unknown>[]>("/api/v1/mobile-apps/stores");
         return handleApiResponse(response, 'getMobileAppStores', []);
       },
       'getMobileAppStores',
@@ -445,7 +445,7 @@ export class RealApiService {
   async getFleetLocations(): Promise<Record<string, unknown>[]> {
     return withErrorHandling(
       async () => {
-        const response = await apiService.request<Record<string, unknown>[]>("/api/v1/ops/fleet-locations");
+        const response = await apiService.makeRequest<Record<string, unknown>[]>("/api/v1/ops/fleet-locations");
         return handleApiResponse(response, 'getFleetLocations', []);
       },
       'getFleetLocations',
@@ -456,7 +456,7 @@ export class RealApiService {
   async getRevenueHotspots(): Promise<Record<string, unknown>[]> {
     return withErrorHandling(
       async () => {
-        const response = await apiService.request<Record<string, unknown>[]>("/api/v1/ops/revenue-hotspots");
+        const response = await apiService.makeRequest<Record<string, unknown>[]>("/api/v1/ops/revenue-hotspots");
         return handleApiResponse(response, 'getRevenueHotspots', []);
       },
       'getRevenueHotspots',
@@ -467,7 +467,7 @@ export class RealApiService {
   async getLiveUserActivities(): Promise<Record<string, unknown>[]> {
     return withErrorHandling(
       async () => {
-        const response = await apiService.request<Record<string, unknown>[]>("/api/v1/ops/user-activities");
+        const response = await apiService.makeRequest<Record<string, unknown>[]>("/api/v1/ops/user-activities");
         return handleApiResponse(response, 'getLiveUserActivities', []);
       },
       'getLiveUserActivities',
@@ -479,7 +479,7 @@ export class RealApiService {
   async getChatMessages(channelId: string): Promise<Record<string, unknown>[]> {
     return withErrorHandling(
       async () => {
-        const response = await apiService.request<Record<string, unknown>[]>(`/api/v1/chat/messages/${channelId}`);
+        const response = await apiService.makeRequest<Record<string, unknown>[]>(`/api/v1/chat/messages/${channelId}`);
         return handleApiResponse(response, 'getChatMessages', []);
       },
       'getChatMessages',
@@ -490,7 +490,7 @@ export class RealApiService {
   async sendChatMessage(messageData: Record<string, unknown>): Promise<Record<string, unknown>> {
     return withErrorHandling(
       async () => {
-        const response = await apiService.request<Record<string, unknown>>("/api/v1/chat/send", {
+        const response = await apiService.makeRequest<Record<string, unknown>>("/api/v1/chat/send", {
           method: 'POST',
           body: JSON.stringify(messageData)
         });
@@ -505,7 +505,7 @@ export class RealApiService {
   async getCustomers(): Promise<Record<string, unknown>[]> {
     return withErrorHandling(
       async () => {
-        const response = await apiService.request<Record<string, unknown>[]>("/api/v1/crm/customers");
+        const response = await apiService.makeRequest<Record<string, unknown>[]>("/api/v1/crm/customers");
         return handleApiResponse(response, 'getCustomers', []);
       },
       'getCustomers',
@@ -516,7 +516,7 @@ export class RealApiService {
   async getVehicleDetails(vehicleId: string): Promise<Record<string, unknown>> {
     return withErrorHandling(
       async () => {
-        const response = await apiService.request<Record<string, unknown>>(`/api/v1/fleet/vehicles/${vehicleId}`);
+        const response = await apiService.makeRequest<Record<string, unknown>>(`/api/v1/fleet/vehicles/${vehicleId}`);
         return handleApiResponse(response, 'getVehicleDetails', null);
       },
       'getVehicleDetails',
@@ -527,7 +527,7 @@ export class RealApiService {
   async updateVehicle(vehicleId: string, vehicleData: Record<string, unknown>): Promise<Record<string, unknown>> {
     return withErrorHandling(
       async () => {
-        const response = await apiService.request<Record<string, unknown>>(`/api/v1/fleet/vehicles/${vehicleId}`, {
+        const response = await apiService.makeRequest<Record<string, unknown>>(`/api/v1/fleet/vehicles/${vehicleId}`, {
           method: "PUT",
           body: JSON.stringify(vehicleData),
         });
@@ -541,7 +541,7 @@ export class RealApiService {
   async getMaintenanceForecast(): Promise<Record<string, unknown>[]> {
     return withErrorHandling(
       async () => {
-        const response = await apiService.request<Record<string, unknown>[]>("/api/v1/fleet/maintenance/forecast");
+        const response = await apiService.makeRequest<Record<string, unknown>[]>("/api/v1/fleet/maintenance/forecast");
         return handleApiResponse(response, 'getMaintenanceForecast', []);
       },
       'getMaintenanceForecast',
@@ -553,7 +553,7 @@ export class RealApiService {
   async getFinancialData(): Promise<Record<string, unknown>[]> {
     return withErrorHandling(
       async () => {
-        const response = await apiService.request<Record<string, unknown>[]>("/api/v1/finance");
+        const response = await apiService.makeRequest<Record<string, unknown>[]>("/api/v1/finance");
         return handleApiResponse(response, 'getFinancialData', []);
       },
       'getFinancialData',
@@ -564,7 +564,7 @@ export class RealApiService {
   async getPayments(): Promise<Record<string, unknown>[]> {
     return withErrorHandling(
       async () => {
-        const response = await apiService.request<Record<string, unknown>[]>("/api/v1/finance/payments");
+        const response = await apiService.makeRequest<Record<string, unknown>[]>("/api/v1/finance/payments");
         return handleApiResponse(response, 'getPayments', []);
       },
       'getPayments',
@@ -575,7 +575,7 @@ export class RealApiService {
   async processPayment(paymentData: Record<string, unknown>): Promise<Record<string, unknown>> {
     return withErrorHandling(
       async () => {
-        const response = await apiService.request<Record<string, unknown>>("/api/v1/finance/payments", {
+        const response = await apiService.makeRequest<Record<string, unknown>>("/api/v1/finance/payments", {
           method: "POST",
           body: JSON.stringify(paymentData),
         });
@@ -590,7 +590,7 @@ export class RealApiService {
   async getAnalyticsData(timeRange: string = "30d"): Promise<Record<string, unknown>> {
     return withErrorHandling(
       async () => {
-        const response = await apiService.request<Record<string, unknown>>(`/api/v1/analytics?range=${timeRange}`);
+        const response = await apiService.makeRequest<Record<string, unknown>>(`/api/v1/analytics?range=${timeRange}`);
         return handleApiResponse(response, 'getAnalyticsData', {});
       },
       'getAnalyticsData',
@@ -601,7 +601,7 @@ export class RealApiService {
   async getDashboardMetrics(): Promise<Record<string, unknown>> {
     return withErrorHandling(
       async () => {
-        const response = await apiService.request<Record<string, unknown>>("/api/v1/dashboard/metrics");
+        const response = await apiService.makeRequest<Record<string, unknown>>("/api/v1/dashboard/metrics");
         return handleApiResponse(response, 'getDashboardMetrics', {});
       },
       'getDashboardMetrics',
@@ -613,7 +613,7 @@ export class RealApiService {
   async getEnterpriseClients(): Promise<Record<string, unknown>[]> {
     return withErrorHandling(
       async () => {
-        const response = await apiService.request<Record<string, unknown>[]>("/api/v1/enterprise/clients");
+        const response = await apiService.makeRequest<Record<string, unknown>[]>("/api/v1/enterprise/clients");
         return handleApiResponse(response, 'getEnterpriseClients', []);
       },
       'getEnterpriseClients',
@@ -624,7 +624,7 @@ export class RealApiService {
   async getEnterpriseStats(): Promise<Record<string, unknown>> {
     return withErrorHandling(
       async () => {
-        const response = await apiService.request<Record<string, unknown>>("/api/v1/enterprise/stats");
+        const response = await apiService.makeRequest<Record<string, unknown>>("/api/v1/enterprise/stats");
         return handleApiResponse(response, 'getEnterpriseStats', {});
       },
       'getEnterpriseStats',
@@ -636,7 +636,7 @@ export class RealApiService {
   async getAssets(): Promise<Record<string, unknown>[]> {
     return withErrorHandling(
       async () => {
-        const response = await apiService.request<Record<string, unknown>[]>("/api/v1/assets");
+        const response = await apiService.makeRequest<Record<string, unknown>[]>("/api/v1/assets");
         return handleApiResponse(response, 'getAssets', []);
       },
       'getAssets',
@@ -647,7 +647,7 @@ export class RealApiService {
   async getMaintenanceRecords(): Promise<Record<string, unknown>[]> {
     return withErrorHandling(
       async () => {
-        const response = await apiService.request<Record<string, unknown>[]>("/api/v1/assets/asset-maintenance");
+        const response = await apiService.makeRequest<Record<string, unknown>[]>("/api/v1/assets/asset-maintenance");
         return handleApiResponse(response, 'getMaintenanceRecords', []);
       },
       'getMaintenanceRecords',
@@ -658,7 +658,7 @@ export class RealApiService {
   async getAssetAssignments(): Promise<Record<string, unknown>[]> {
     return withErrorHandling(
       async () => {
-        const response = await apiService.request<Record<string, unknown>[]>("/api/v1/assets/asset-assignments");
+        const response = await apiService.makeRequest<Record<string, unknown>[]>("/api/v1/assets/asset-assignments");
         return handleApiResponse(response, 'getAssetAssignments', []);
       },
       'getAssetAssignments',
@@ -669,7 +669,7 @@ export class RealApiService {
   async createAsset(assetData: Record<string, unknown>): Promise<Record<string, unknown>> {
     return withErrorHandling(
       async () => {
-        const response = await apiService.request<Record<string, unknown>>("/api/v1/assets", {
+        const response = await apiService.makeRequest<Record<string, unknown>>("/api/v1/assets", {
           method: "POST",
           body: JSON.stringify(assetData),
         });
@@ -683,7 +683,7 @@ export class RealApiService {
   async createMaintenanceRecord(maintenanceData: Record<string, unknown>): Promise<Record<string, unknown>> {
     return withErrorHandling(
       async () => {
-        const response = await apiService.request<Record<string, unknown>>("/api/v1/assets/maintenance", {
+        const response = await apiService.makeRequest<Record<string, unknown>>("/api/v1/assets/maintenance", {
           method: "POST",
           body: JSON.stringify(maintenanceData),
         });
@@ -697,7 +697,7 @@ export class RealApiService {
   async createAssetAssignment(assignmentData: Record<string, unknown>): Promise<Record<string, unknown>> {
     return withErrorHandling(
       async () => {
-        const response = await apiService.request<Record<string, unknown>>("/api/v1/assets/assignments", {
+        const response = await apiService.makeRequest<Record<string, unknown>>("/api/v1/assets/assignments", {
           method: "POST",
           body: JSON.stringify(assignmentData),
         });
@@ -712,7 +712,7 @@ export class RealApiService {
   async getSubscriptions(): Promise<Record<string, unknown>[]> {
     return withErrorHandling(
       async () => {
-        const response = await apiService.request<Record<string, unknown>[]>("/api/v1/finance/subscriptions");
+        const response = await apiService.makeRequest<Record<string, unknown>[]>("/api/v1/finance/subscriptions");
         return handleApiResponse(response, 'getSubscriptions', []);
       },
       'getSubscriptions',
@@ -723,7 +723,7 @@ export class RealApiService {
   async getPayouts(): Promise<Record<string, unknown>[]> {
     return withErrorHandling(
       async () => {
-        const response = await apiService.request<Record<string, unknown>[]>("/api/v1/finance/payouts");
+        const response = await apiService.makeRequest<Record<string, unknown>[]>("/api/v1/finance/payouts");
         return handleApiResponse(response, 'getPayouts', []);
       },
       'getPayouts',
@@ -735,7 +735,7 @@ export class RealApiService {
   async getSEOData(): Promise<Record<string, unknown>[]> {
     return withErrorHandling(
       async () => {
-        const response = await apiService.request<Record<string, unknown>[]>("/api/v1/cms/seo");
+        const response = await apiService.makeRequest<Record<string, unknown>[]>("/api/v1/cms/seo");
         return handleApiResponse(response, 'getSEOData', []);
       },
       'getSEOData',
@@ -746,7 +746,7 @@ export class RealApiService {
   async refreshSEOAnalysis(): Promise<Record<string, unknown>> {
     return withErrorHandling(
       async () => {
-        const response = await apiService.request<Record<string, unknown>>("/api/v1/cms/seo/refresh", {
+        const response = await apiService.makeRequest<Record<string, unknown>>("/api/v1/cms/seo/refresh", {
           method: "POST",
         });
         return handleApiResponse(response, 'refreshSEOAnalysis', null);
@@ -759,7 +759,7 @@ export class RealApiService {
   async optimizeSEO(): Promise<Record<string, unknown>> {
     return withErrorHandling(
       async () => {
-        const response = await apiService.request<Record<string, unknown>>("/api/v1/cms/seo/optimize", {
+        const response = await apiService.makeRequest<Record<string, unknown>>("/api/v1/cms/seo/optimize", {
           method: "POST",
         });
         return handleApiResponse(response, 'optimizeSEO', null);
@@ -773,7 +773,7 @@ export class RealApiService {
   async getAuditLogs(): Promise<Record<string, unknown>[]> {
     return withErrorHandling(
       async () => {
-        const response = await apiService.request<Record<string, unknown>[]>("/api/v1/audit/logs");
+        const response = await apiService.makeRequest<Record<string, unknown>[]>("/api/v1/audit/logs");
         return handleApiResponse(response, 'getAuditLogs', []);
       },
       'getAuditLogs',
@@ -784,7 +784,7 @@ export class RealApiService {
   async getSecurityEvents(): Promise<Record<string, unknown>[]> {
     return withErrorHandling(
       async () => {
-        const response = await apiService.request<Record<string, unknown>[]>("/api/v1/audit/security-events");
+        const response = await apiService.makeRequest<Record<string, unknown>[]>("/api/v1/audit/security-events");
         return handleApiResponse(response, 'getSecurityEvents', []);
       },
       'getSecurityEvents',
@@ -795,7 +795,7 @@ export class RealApiService {
   async getUserActivities(): Promise<Record<string, unknown>[]> {
     return withErrorHandling(
       async () => {
-        const response = await apiService.request<Record<string, unknown>[]>("/api/v1/audit/user-activities");
+        const response = await apiService.makeRequest<Record<string, unknown>[]>("/api/v1/audit/user-activities");
         return handleApiResponse(response, 'getUserActivities', []);
       },
       'getUserActivities',
@@ -807,7 +807,7 @@ export class RealApiService {
   async getSystemHealth(): Promise<Record<string, unknown>> {
     return withErrorHandling(
       async () => {
-        const response = await apiService.request<Record<string, unknown>>("/api/v1/system/health");
+        const response = await apiService.makeRequest<Record<string, unknown>>("/api/v1/system/health");
         return handleApiResponse(response, 'getSystemHealth', {});
       },
       'getSystemHealth',
@@ -818,7 +818,7 @@ export class RealApiService {
   async getApiPerformance(): Promise<Record<string, unknown>> {
     return withErrorHandling(
       async () => {
-        const response = await apiService.request<Record<string, unknown>>("/api/v1/system/api-performance");
+        const response = await apiService.makeRequest<Record<string, unknown>>("/api/v1/system/api-performance");
         return handleApiResponse(response, 'getApiPerformance', {});
       },
       'getApiPerformance',
@@ -830,7 +830,7 @@ export class RealApiService {
   async getSettings(category: string): Promise<Record<string, unknown>[]> {
     return withErrorHandling(
       async () => {
-        const response = await apiService.request<Record<string, unknown>[]>(`/api/v1/settings/${category}`);
+        const response = await apiService.makeRequest<Record<string, unknown>[]>(`/api/v1/settings/${category}`);
         return handleApiResponse(response, 'getSettings', []);
       },
       'getSettings',
@@ -841,7 +841,7 @@ export class RealApiService {
   async updateSettings(settings: Record<string, unknown>): Promise<Record<string, unknown>> {
     return withErrorHandling(
       async () => {
-        const response = await apiService.request<Record<string, unknown>>("/api/v1/settings", {
+        const response = await apiService.makeRequest<Record<string, unknown>>("/api/v1/settings", {
           method: "PUT",
           body: JSON.stringify(settings),
         });
@@ -856,7 +856,7 @@ export class RealApiService {
   async generateReport(reportType: string, params: Record<string, unknown>): Promise<Record<string, unknown>> {
     return withErrorHandling(
       async () => {
-        const response = await apiService.request<Record<string, unknown>>(`/api/v1/reports/${reportType}`, {
+        const response = await apiService.makeRequest<Record<string, unknown>>(`/api/v1/reports/${reportType}`, {
           method: "POST",
           body: JSON.stringify(params),
         });
@@ -870,7 +870,7 @@ export class RealApiService {
   async getReports(): Promise<Record<string, unknown>[]> {
     return withErrorHandling(
       async () => {
-        const response = await apiService.request<Record<string, unknown>[]>("/api/v1/reports");
+        const response = await apiService.makeRequest<Record<string, unknown>[]>("/api/v1/reports");
         return handleApiResponse(response, 'getReports', []);
       },
       'getReports',
@@ -883,7 +883,7 @@ export class RealApiService {
     return withErrorHandling(
       async () => {
         const queryParams = new URLSearchParams(filters).toString();
-        const response = await apiService.request<Record<string, unknown>[]>(`/api/v1/audit-trail?${queryParams}`);
+        const response = await apiService.makeRequest<Record<string, unknown>[]>(`/api/v1/audit-trail?${queryParams}`);
         return handleApiResponse(response, 'getAuditTrail', []);
       },
       'getAuditTrail',
@@ -895,7 +895,7 @@ export class RealApiService {
   async getIntegrations(): Promise<Record<string, unknown>[]> {
     return withErrorHandling(
       async () => {
-        const response = await apiService.request<Record<string, unknown>[]>("/api/v1/integrations");
+        const response = await apiService.makeRequest<Record<string, unknown>[]>("/api/v1/integrations");
         return handleApiResponse(response, 'getIntegrations', []);
       },
       'getIntegrations',
@@ -906,7 +906,7 @@ export class RealApiService {
   async testIntegration(integrationId: string): Promise<boolean> {
     return withErrorHandling(
       async () => {
-        const response = await apiService.request<boolean>(`/api/v1/integrations/${integrationId}/test`, {
+        const response = await apiService.makeRequest<boolean>(`/api/v1/integrations/${integrationId}/test`, {
           method: "POST",
         });
         return handleApiResponse(response, 'testIntegration', false);
@@ -920,7 +920,7 @@ export class RealApiService {
   async getFeatureFlags(): Promise<Record<string, unknown>[]> {
     return withErrorHandling(
       async () => {
-        const response = await apiService.request<Record<string, unknown>[]>("/api/v1/feature-flags");
+        const response = await apiService.makeRequest<Record<string, unknown>[]>("/api/v1/feature-flags");
         return handleApiResponse(response, 'getFeatureFlags', []);
       },
       'getFeatureFlags',
@@ -931,7 +931,7 @@ export class RealApiService {
   async updateFeatureFlag(flagId: string, updates: Record<string, unknown>): Promise<Record<string, unknown>> {
     return withErrorHandling(
       async () => {
-        const response = await apiService.request<Record<string, unknown>>(`/api/v1/feature-flags/${flagId}`, {
+        const response = await apiService.makeRequest<Record<string, unknown>>(`/api/v1/feature-flags/${flagId}`, {
           method: "PUT",
           body: JSON.stringify(updates),
         });
@@ -946,7 +946,7 @@ export class RealApiService {
   async getChatMessages(): Promise<Record<string, unknown>[]> {
     return withErrorHandling(
       async () => {
-        const response = await apiService.request<Record<string, unknown>[]>("/api/v1/chat/messages");
+        const response = await apiService.makeRequest<Record<string, unknown>[]>("/api/v1/chat/messages");
         return handleApiResponse(response, 'getChatMessages', []);
       },
       'getChatMessages',
@@ -957,7 +957,7 @@ export class RealApiService {
   async sendMessage(message: Record<string, unknown>): Promise<Record<string, unknown>> {
     return withErrorHandling(
       async () => {
-        const response = await apiService.request<Record<string, unknown>>("/api/v1/chat/messages", {
+        const response = await apiService.makeRequest<Record<string, unknown>>("/api/v1/chat/messages", {
           method: "POST",
           body: JSON.stringify(message),
         });
@@ -972,7 +972,7 @@ export class RealApiService {
   async getNotificationList(): Promise<Record<string, unknown>[]> {
     return withErrorHandling(
       async () => {
-        const response = await apiService.request<Record<string, unknown>[]>("/api/v1/notifications");
+        const response = await apiService.makeRequest<Record<string, unknown>[]>("/api/v1/notifications");
         return handleApiResponse(response, 'getNotificationList', []);
       },
       'getNotificationList',
@@ -983,7 +983,7 @@ export class RealApiService {
   async markNotificationAsRead(notificationId: string): Promise<boolean> {
     return withErrorHandling(
       async () => {
-        const response = await apiService.request<boolean>(`/api/v1/notifications/${notificationId}/read`, {
+        const response = await apiService.makeRequest<boolean>(`/api/v1/notifications/${notificationId}/read`, {
           method: "PUT",
         });
         return handleApiResponse(response, 'markNotificationAsRead', false);
@@ -997,7 +997,7 @@ export class RealApiService {
   async getIntegrations(): Promise<Record<string, unknown>[]> {
     return withErrorHandling(
       async () => {
-        const response = await apiService.request<Record<string, unknown>[]>("/api/v1/integrations");
+        const response = await apiService.makeRequest<Record<string, unknown>[]>("/api/v1/integrations");
         return handleApiResponse(response, 'getIntegrations', []);
       },
       'getIntegrations',
@@ -1008,7 +1008,7 @@ export class RealApiService {
   async getIntegrationTemplates(): Promise<Record<string, unknown>[]> {
     return withErrorHandling(
       async () => {
-        const response = await apiService.request<Record<string, unknown>[]>("/api/v1/integrations/templates");
+        const response = await apiService.makeRequest<Record<string, unknown>[]>("/api/v1/integrations/templates");
         return handleApiResponse(response, 'getIntegrationTemplates', []);
       },
       'getIntegrationTemplates',
@@ -1019,7 +1019,7 @@ export class RealApiService {
   async createIntegration(integrationData: Record<string, unknown>): Promise<Record<string, unknown>> {
     return withErrorHandling(
       async () => {
-        const response = await apiService.request<Record<string, unknown>>("/api/v1/integrations", {
+        const response = await apiService.makeRequest<Record<string, unknown>>("/api/v1/integrations", {
           method: "POST",
           body: JSON.stringify(integrationData),
         });
@@ -1033,7 +1033,7 @@ export class RealApiService {
   async testIntegration(integrationId: string): Promise<Record<string, unknown>> {
     return withErrorHandling(
       async () => {
-        const response = await apiService.request<Record<string, unknown>>(`/api/v1/integrations/${integrationId}/test`, {
+        const response = await apiService.makeRequest<Record<string, unknown>>(`/api/v1/integrations/${integrationId}/test`, {
           method: "POST",
         });
         return handleApiResponse(response, 'testIntegration', null);
@@ -1047,7 +1047,7 @@ export class RealApiService {
   async getChatChannels(): Promise<Record<string, unknown>[]> {
     return withErrorHandling(
       async () => {
-        const response = await apiService.request<Record<string, unknown>[]>("/api/v1/chat/channels");
+        const response = await apiService.makeRequest<Record<string, unknown>[]>("/api/v1/chat/channels");
         return handleApiResponse(response, 'getChatChannels', []);
       },
       'getChatChannels',
@@ -1059,7 +1059,7 @@ export class RealApiService {
     return withErrorHandling(
       async () => {
         const endpoint = channelId ? `/api/v1/chat/messages/${channelId}` : "/api/v1/chat/messages";
-        const response = await apiService.request<Record<string, unknown>[]>(endpoint);
+        const response = await apiService.makeRequest<Record<string, unknown>[]>(endpoint);
         return handleApiResponse(response, 'getChatMessages', []);
       },
       'getChatMessages',
@@ -1070,7 +1070,7 @@ export class RealApiService {
   async sendChatMessage(messageData: Record<string, unknown>): Promise<Record<string, unknown>> {
     return withErrorHandling(
       async () => {
-        const response = await apiService.request<Record<string, unknown>>("/api/v1/chat/send", {
+        const response = await apiService.makeRequest<Record<string, unknown>>("/api/v1/chat/send", {
           method: "POST",
           body: JSON.stringify(messageData),
         });
@@ -1084,7 +1084,7 @@ export class RealApiService {
   async getEmailHistory(): Promise<Record<string, unknown>[]> {
     return withErrorHandling(
       async () => {
-        const response = await apiService.request<Record<string, unknown>[]>("/api/v1/communication/email");
+        const response = await apiService.makeRequest<Record<string, unknown>[]>("/api/v1/communication/email");
         return handleApiResponse(response, 'getEmailHistory', []);
       },
       'getEmailHistory',
@@ -1096,7 +1096,7 @@ export class RealApiService {
   async getAIModels(): Promise<Record<string, unknown>[]> {
     return withErrorHandling(
       async () => {
-        const response = await apiService.request<Record<string, unknown>[]>("/api/v1/ai/models");
+        const response = await apiService.makeRequest<Record<string, unknown>[]>("/api/v1/ai/models");
         return handleApiResponse(response, 'getAIModels', []);
       },
       'getAIModels',
@@ -1107,7 +1107,7 @@ export class RealApiService {
   async getFraudCases(): Promise<Record<string, unknown>[]> {
     return withErrorHandling(
       async () => {
-        const response = await apiService.request<Record<string, unknown>[]>("/api/v1/ai/fraud-cases");
+        const response = await apiService.makeRequest<Record<string, unknown>[]>("/api/v1/ai/fraud-cases");
         return handleApiResponse(response, 'getFraudCases', []);
       },
       'getFraudCases',
@@ -1118,7 +1118,7 @@ export class RealApiService {
   async getRecommendations(): Promise<Record<string, unknown>[]> {
     return withErrorHandling(
       async () => {
-        const response = await apiService.request<Record<string, unknown>[]>("/api/v1/ai/recommendations");
+        const response = await apiService.makeRequest<Record<string, unknown>[]>("/api/v1/ai/recommendations");
         return handleApiResponse(response, 'getRecommendations', []);
       },
       'getRecommendations',
@@ -1129,7 +1129,7 @@ export class RealApiService {
   async getTrainingROI(): Promise<Record<string, unknown>> {
     return withErrorHandling(
       async () => {
-        const response = await apiService.request<Record<string, unknown>>("/api/v1/ai/training-roi");
+        const response = await apiService.makeRequest<Record<string, unknown>>("/api/v1/ai/training-roi");
         return handleApiResponse(response, 'getTrainingROI', {});
       },
       'getTrainingROI',
@@ -1140,7 +1140,7 @@ export class RealApiService {
   async getRecommendationUplift(): Promise<Record<string, unknown>> {
     return withErrorHandling(
       async () => {
-        const response = await apiService.request<Record<string, unknown>>("/api/v1/ai/recommendation-uplift");
+        const response = await apiService.makeRequest<Record<string, unknown>>("/api/v1/ai/recommendation-uplift");
         return handleApiResponse(response, 'getRecommendationUplift', {});
       },
       'getRecommendationUplift',
@@ -1152,7 +1152,7 @@ export class RealApiService {
   async getEnterpriseClients(): Promise<Record<string, unknown>[]> {
     return withErrorHandling(
       async () => {
-        const response = await apiService.request<Record<string, unknown>[]>("/api/v1/enterprise/clients");
+        const response = await apiService.makeRequest<Record<string, unknown>[]>("/api/v1/enterprise/clients");
         return handleApiResponse(response, 'getEnterpriseClients', []);
       },
       'getEnterpriseClients',
@@ -1163,7 +1163,7 @@ export class RealApiService {
   async getEnterpriseStats(): Promise<Record<string, unknown>> {
     return withErrorHandling(
       async () => {
-        const response = await apiService.request<Record<string, unknown>>("/api/v1/enterprise/stats");
+        const response = await apiService.makeRequest<Record<string, unknown>>("/api/v1/enterprise/stats");
         return handleApiResponse(response, 'getEnterpriseStats', {});
       },
       'getEnterpriseStats',
@@ -1176,7 +1176,7 @@ export class RealApiService {
     return withErrorHandling(
       async () => {
         const queryParams = filters ? `?${new URLSearchParams(Object.entries(filters).map(([key, value]) => [key, String(value)])).toString()}` : '';
-        const response = await apiService.request<Record<string, unknown>[]>(`/api/v1/audit-trail${queryParams}`);
+        const response = await apiService.makeRequest<Record<string, unknown>[]>(`/api/v1/audit-trail${queryParams}`);
         return handleApiResponse(response, 'getAuditLogs', []);
       },
       'getAuditLogs',
@@ -1187,7 +1187,7 @@ export class RealApiService {
   async getSecurityEvents(): Promise<Record<string, unknown>[]> {
     return withErrorHandling(
       async () => {
-        const response = await apiService.request<Record<string, unknown>[]>("/api/v1/audit-trail/security");
+        const response = await apiService.makeRequest<Record<string, unknown>[]>("/api/v1/audit-trail/security");
         return handleApiResponse(response, 'getSecurityEvents', []);
       },
       'getSecurityEvents',
@@ -1198,7 +1198,7 @@ export class RealApiService {
   async getUserActivities(): Promise<Record<string, unknown>[]> {
     return withErrorHandling(
       async () => {
-        const response = await apiService.request<Record<string, unknown>[]>("/api/v1/audit-trail/user-activity");
+        const response = await apiService.makeRequest<Record<string, unknown>[]>("/api/v1/audit-trail/user-activity");
         return handleApiResponse(response, 'getUserActivities', []);
       },
       'getUserActivities',
@@ -1211,7 +1211,7 @@ export class RealApiService {
     return withErrorHandling(
       async () => {
         const queryParams = filters ? `?${new URLSearchParams(filters).toString()}` : '';
-        const response = await apiService.request<Record<string, unknown>[]>(`/api/v1/ai/recommendations${queryParams}`);
+        const response = await apiService.makeRequest<Record<string, unknown>[]>(`/api/v1/ai/recommendations${queryParams}`);
         return handleApiResponse(response, 'getAIRecommendations', []);
       },
       'getAIRecommendations',
@@ -1223,7 +1223,7 @@ export class RealApiService {
   async getAPIEndpoints(): Promise<Record<string, unknown>[]> {
     return withErrorHandling(
       async () => {
-        const response = await apiService.request<Record<string, unknown>[]>("/api/v1/docs/endpoints");
+        const response = await apiService.makeRequest<Record<string, unknown>[]>("/api/v1/docs/endpoints");
         return handleApiResponse(response, 'getAPIEndpoints', []);
       },
       'getAPIEndpoints',
@@ -1234,7 +1234,7 @@ export class RealApiService {
   async getAPICategories(): Promise<Record<string, unknown>[]> {
     return withErrorHandling(
       async () => {
-        const response = await apiService.request<Record<string, unknown>[]>("/api/v1/docs/categories");
+        const response = await apiService.makeRequest<Record<string, unknown>[]>("/api/v1/docs/categories");
         return handleApiResponse(response, 'getAPICategories', []);
       },
       'getAPICategories',
@@ -1246,7 +1246,7 @@ export class RealApiService {
   async getMobileAppVersions(): Promise<Record<string, unknown>[]> {
     return withErrorHandling(
       async () => {
-        const response = await apiService.request<Record<string, unknown>[]>("/api/v1/mobile-apps/versions");
+        const response = await apiService.makeRequest<Record<string, unknown>[]>("/api/v1/mobile-apps/versions");
         return handleApiResponse(response, 'getMobileAppVersions', []);
       },
       'getMobileAppVersions',
@@ -1257,7 +1257,7 @@ export class RealApiService {
   async getMobileAppCrashes(): Promise<Record<string, unknown>[]> {
     return withErrorHandling(
       async () => {
-        const response = await apiService.request<Record<string, unknown>[]>("/api/v1/mobile-apps/crashes");
+        const response = await apiService.makeRequest<Record<string, unknown>[]>("/api/v1/mobile-apps/crashes");
         return handleApiResponse(response, 'getMobileAppCrashes', []);
       },
       'getMobileAppCrashes',
@@ -1268,7 +1268,7 @@ export class RealApiService {
   async getMobileAppAnalytics(): Promise<Record<string, unknown>[]> {
     return withErrorHandling(
       async () => {
-        const response = await apiService.request<Record<string, unknown>[]>("/api/v1/mobile-apps/analytics");
+        const response = await apiService.makeRequest<Record<string, unknown>[]>("/api/v1/mobile-apps/analytics");
         return handleApiResponse(response, 'getMobileAppAnalytics', []);
       },
       'getMobileAppAnalytics',
@@ -1279,7 +1279,7 @@ export class RealApiService {
   async getMobileAppStores(): Promise<Record<string, unknown>[]> {
     return withErrorHandling(
       async () => {
-        const response = await apiService.request<Record<string, unknown>[]>("/api/v1/mobile-apps/stores");
+        const response = await apiService.makeRequest<Record<string, unknown>[]>("/api/v1/mobile-apps/stores");
         return handleApiResponse(response, 'getMobileAppStores', []);
       },
       'getMobileAppStores',
@@ -1291,7 +1291,7 @@ export class RealApiService {
   async getMobileAppSettings(): Promise<Record<string, unknown>> {
     return withErrorHandling(
       async () => {
-        const response = await apiService.request<Record<string, unknown>>("/api/v1/mobile-apps/settings");
+        const response = await apiService.makeRequest<Record<string, unknown>>("/api/v1/mobile-apps/settings");
         return handleApiResponse(response, 'getMobileAppSettings', {
           appSettings: {
             appName: 'Clutch',
@@ -1347,7 +1347,7 @@ export class RealApiService {
   async saveMobileAppSettings(settings: Record<string, unknown>): Promise<Record<string, unknown>> {
     return withErrorHandling(
       async () => {
-        const response = await apiService.request<Record<string, unknown>>("/api/v1/mobile-apps/settings", {
+        const response = await apiService.makeRequest<Record<string, unknown>>("/api/v1/mobile-apps/settings", {
           method: 'POST',
           body: JSON.stringify(settings)
         });
@@ -1361,7 +1361,7 @@ export class RealApiService {
   async previewMobileApp(): Promise<Record<string, unknown>> {
     return withErrorHandling(
       async () => {
-        const response = await apiService.request<Record<string, unknown>>("/api/v1/mobile-apps/preview");
+        const response = await apiService.makeRequest<Record<string, unknown>>("/api/v1/mobile-apps/preview");
         return handleApiResponse(response, 'previewMobileApp', { 
           previewUrl: 'https://preview.clutch.com/mobile-app',
           status: 'ready'
@@ -1382,7 +1382,7 @@ export class RealApiService {
   async getSystemPerformanceMetrics(): Promise<Record<string, unknown>> {
     return withErrorHandling(
       async () => {
-        const response = await apiService.request<Record<string, unknown>>("/api/v1/system/performance");
+        const response = await apiService.makeRequest<Record<string, unknown>>("/api/v1/system/performance");
         return handleApiResponse(response, 'getSystemPerformanceMetrics', {});
       },
       'getSystemPerformanceMetrics',
@@ -1393,7 +1393,7 @@ export class RealApiService {
   async getActiveSessions(): Promise<Record<string, unknown>> {
     return withErrorHandling(
       async () => {
-        const response = await apiService.request<Record<string, unknown>>("/api/v1/sessions/active");
+        const response = await apiService.makeRequest<Record<string, unknown>>("/api/v1/sessions/active");
         return handleApiResponse(response, 'getActiveSessions', {});
       },
       'getActiveSessions',
@@ -1405,7 +1405,7 @@ export class RealApiService {
   async getRevenueMetrics(): Promise<Record<string, unknown>> {
     return withErrorHandling(
       async () => {
-        const response = await apiService.request<Record<string, unknown>>("/api/v1/revenue/metrics");
+        const response = await apiService.makeRequest<Record<string, unknown>>("/api/v1/revenue/metrics");
         return handleApiResponse(response, 'getRevenueMetrics', {});
       },
       'getRevenueMetrics',
@@ -1416,7 +1416,7 @@ export class RealApiService {
   async getRevenueForecast(): Promise<Record<string, unknown>> {
     return withErrorHandling(
       async () => {
-        const response = await apiService.request<Record<string, unknown>>("/api/v1/revenue/forecast");
+        const response = await apiService.makeRequest<Record<string, unknown>>("/api/v1/revenue/forecast");
         return handleApiResponse(response, 'getRevenueForecast', {});
       },
       'getRevenueForecast',
@@ -1427,7 +1427,7 @@ export class RealApiService {
   async getEngagementHeatmap(): Promise<Record<string, unknown>> {
     return withErrorHandling(
       async () => {
-        const response = await apiService.request<Record<string, unknown>>("/api/v1/analytics/engagement-heatmap");
+        const response = await apiService.makeRequest<Record<string, unknown>>("/api/v1/analytics/engagement-heatmap");
         return handleApiResponse(response, 'getEngagementHeatmap', {});
       },
       'getEngagementHeatmap',
@@ -1438,7 +1438,7 @@ export class RealApiService {
   async getTickets(): Promise<Record<string, unknown>[]> {
     return withErrorHandling(
       async () => {
-        const response = await apiService.request<Record<string, unknown>[]>("/api/v1/support/tickets");
+        const response = await apiService.makeRequest<Record<string, unknown>[]>("/api/v1/support/tickets");
         return handleApiResponse(response, 'getTickets', []);
       },
       'getTickets',
@@ -1449,7 +1449,7 @@ export class RealApiService {
   async getUpsellOpportunities(): Promise<Record<string, unknown>[]> {
     return withErrorHandling(
       async () => {
-        const response = await apiService.request<Record<string, unknown>[]>("/api/v1/analytics/upsell-opportunities");
+        const response = await apiService.makeRequest<Record<string, unknown>[]>("/api/v1/analytics/upsell-opportunities");
         return handleApiResponse(response, 'getUpsellOpportunities', []);
       },
       'getUpsellOpportunities',
@@ -1461,7 +1461,7 @@ export class RealApiService {
   async getComplianceStatus(): Promise<Record<string, unknown>> {
     return withErrorHandling(
       async () => {
-        const response = await apiService.request<Record<string, unknown>>("/api/v1/compliance/status");
+        const response = await apiService.makeRequest<Record<string, unknown>>("/api/v1/compliance/status");
         return handleApiResponse(response, 'getComplianceStatus', {});
       },
       'getComplianceStatus',
@@ -1473,7 +1473,7 @@ export class RealApiService {
   async getCustomers(): Promise<Record<string, unknown>[]> {
     return withErrorHandling(
       async () => {
-        const response = await apiService.request<Record<string, unknown>[]>("/api/v1/customers");
+        const response = await apiService.makeRequest<Record<string, unknown>[]>("/api/v1/customers");
         return handleApiResponse(response, 'getCustomers', []);
       },
       'getCustomers',
@@ -1485,7 +1485,7 @@ export class RealApiService {
   async getFleetLocations(): Promise<Record<string, unknown>[]> {
     return withErrorHandling(
       async () => {
-        const response = await apiService.request<Record<string, unknown>[]>("/api/v1/operations/fleet-locations");
+        const response = await apiService.makeRequest<Record<string, unknown>[]>("/api/v1/operations/fleet-locations");
         return handleApiResponse(response, 'getFleetLocations', []);
       },
       'getFleetLocations',
@@ -1496,7 +1496,7 @@ export class RealApiService {
   async getRevenueHotspots(): Promise<Record<string, unknown>[]> {
     return withErrorHandling(
       async () => {
-        const response = await apiService.request<Record<string, unknown>[]>("/api/v1/operations/revenue-hotspots");
+        const response = await apiService.makeRequest<Record<string, unknown>[]>("/api/v1/operations/revenue-hotspots");
         return handleApiResponse(response, 'getRevenueHotspots', []);
       },
       'getRevenueHotspots',
@@ -1507,7 +1507,7 @@ export class RealApiService {
   async getLiveUserActivities(): Promise<Record<string, unknown>[]> {
     return withErrorHandling(
       async () => {
-        const response = await apiService.request<Record<string, unknown>[]>("/api/v1/operations/user-activities");
+        const response = await apiService.makeRequest<Record<string, unknown>[]>("/api/v1/operations/user-activities");
         return handleApiResponse(response, 'getLiveUserActivities', []);
       },
       'getLiveUserActivities',
@@ -1519,7 +1519,7 @@ export class RealApiService {
   async getFeatureUsage(): Promise<Record<string, unknown>[]> {
     return withErrorHandling(
       async () => {
-        const response = await apiService.request<Record<string, unknown>[]>("/api/v1/analytics/feature-usage");
+        const response = await apiService.makeRequest<Record<string, unknown>[]>("/api/v1/analytics/feature-usage");
         return handleApiResponse(response, 'getFeatureUsage', []);
       },
       'getFeatureUsage',
@@ -1531,7 +1531,7 @@ export class RealApiService {
   async getCMSContent(): Promise<Record<string, unknown>[]> {
     return withErrorHandling(
       async () => {
-        const response = await apiService.request<Record<string, unknown>[]>("/api/v1/cms/content");
+        const response = await apiService.makeRequest<Record<string, unknown>[]>("/api/v1/cms/content");
         return handleApiResponse(response, 'getCMSContent', []);
       },
       'getCMSContent',
@@ -1542,7 +1542,7 @@ export class RealApiService {
   async getCMSMedia(): Promise<Record<string, unknown>[]> {
     return withErrorHandling(
       async () => {
-        const response = await apiService.request<Record<string, unknown>[]>("/api/v1/cms/media");
+        const response = await apiService.makeRequest<Record<string, unknown>[]>("/api/v1/cms/media");
         return handleApiResponse(response, 'getCMSMedia', []);
       },
       'getCMSMedia',
@@ -1553,7 +1553,7 @@ export class RealApiService {
   async getCMSCategories(): Promise<Record<string, unknown>[]> {
     return withErrorHandling(
       async () => {
-        const response = await apiService.request<Record<string, unknown>[]>("/api/v1/cms/categories");
+        const response = await apiService.makeRequest<Record<string, unknown>[]>("/api/v1/cms/categories");
         return handleApiResponse(response, 'getCMSCategories', []);
       },
       'getCMSCategories',
@@ -1565,7 +1565,7 @@ export class RealApiService {
   async getMaintenanceTasks(): Promise<Record<string, unknown>[]> {
     return withErrorHandling(
       async () => {
-        const response = await apiService.request<Record<string, unknown>[]>("/api/v1/fleet/maintenance/tasks");
+        const response = await apiService.makeRequest<Record<string, unknown>[]>("/api/v1/fleet/maintenance/tasks");
         return handleApiResponse(response, 'getMaintenanceTasks', []);
       },
       'getMaintenanceTasks',
@@ -1576,7 +1576,7 @@ export class RealApiService {
   async getMaintenanceSchedules(): Promise<Record<string, unknown>[]> {
     return withErrorHandling(
       async () => {
-        const response = await apiService.request<Record<string, unknown>[]>("/api/v1/fleet/maintenance/schedules");
+        const response = await apiService.makeRequest<Record<string, unknown>[]>("/api/v1/fleet/maintenance/schedules");
         return handleApiResponse(response, 'getMaintenanceSchedules', []);
       },
       'getMaintenanceSchedules',
@@ -1587,7 +1587,7 @@ export class RealApiService {
   async getTechnicians(): Promise<Record<string, unknown>[]> {
     return withErrorHandling(
       async () => {
-        const response = await apiService.request<Record<string, unknown>[]>("/api/v1/fleet/technicians");
+        const response = await apiService.makeRequest<Record<string, unknown>[]>("/api/v1/fleet/technicians");
         return handleApiResponse(response, 'getTechnicians', []);
       },
       'getTechnicians',
@@ -1599,7 +1599,7 @@ export class RealApiService {
   async getChurnAttribution(): Promise<Record<string, unknown>[]> {
     return withErrorHandling(
       async () => {
-        const response = await apiService.request<Record<string, unknown>[]>("/api/v1/analytics/churn-attribution");
+        const response = await apiService.makeRequest<Record<string, unknown>[]>("/api/v1/analytics/churn-attribution");
         return handleApiResponse(response, 'getChurnAttribution', []);
       },
       'getChurnAttribution',
@@ -1611,7 +1611,7 @@ export class RealApiService {
   async getSecurityAlerts(): Promise<Record<string, unknown>[]> {
     return withErrorHandling(
       async () => {
-        const response = await apiService.request<Record<string, unknown>[]>("/api/v1/security/alerts");
+        const response = await apiService.makeRequest<Record<string, unknown>[]>("/api/v1/security/alerts");
         return handleApiResponse(response, 'getSecurityAlerts', []);
       },
       'getSecurityAlerts',
@@ -1623,7 +1623,7 @@ export class RealApiService {
   async getMaintenanceCosts(): Promise<Record<string, unknown>> {
     return withErrorHandling(
       async () => {
-        const response = await apiService.request<Record<string, unknown>>("/api/v1/operations/maintenance-costs");
+        const response = await apiService.makeRequest<Record<string, unknown>>("/api/v1/operations/maintenance-costs");
         return handleApiResponse(response, 'getMaintenanceCosts', {});
       },
       'getMaintenanceCosts',
@@ -1634,7 +1634,7 @@ export class RealApiService {
   async getOtherOperationalCosts(): Promise<Record<string, unknown>> {
     return withErrorHandling(
       async () => {
-        const response = await apiService.request<Record<string, unknown>>("/api/v1/operations/operational-costs");
+        const response = await apiService.makeRequest<Record<string, unknown>>("/api/v1/operations/operational-costs");
         return handleApiResponse(response, 'getOtherOperationalCosts', {});
       },
       'getOtherOperationalCosts',

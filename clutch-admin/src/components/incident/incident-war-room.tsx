@@ -570,3 +570,4 @@ export default function IncidentWarRoom({ className }: IncidentWarRoomProps) {
     </div>
   );
 }
+

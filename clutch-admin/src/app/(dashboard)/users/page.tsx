@@ -70,7 +70,7 @@ export default function UsersPage() {
   const [roleFilter, setRoleFilter] = useState<string>("all");
   const [isLoading, setIsLoading] = useState(true);
   const { hasPermission } = useAuth();
-  const t = useTranslations();
+  const t = (key: string, params?: any) => key;
   // Safely get quick actions with error handling
   let addUser: (() => void) | null = null;
   
@@ -630,3 +630,4 @@ export default function UsersPage() {
     </div>
   );
 }
+

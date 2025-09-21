@@ -87,7 +87,7 @@ export default function FleetPage() {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const { user, hasPermission } = useAuth();
-  const t = useTranslations();
+  const t = (key: string, params?: any) => key;
   
   // Safely get quick actions with error handling
   let createFleet: (() => void) | null = null;
@@ -616,3 +616,4 @@ export default function FleetPage() {
     </div>
   );
 }
+

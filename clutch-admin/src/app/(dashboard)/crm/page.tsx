@@ -84,7 +84,7 @@ export default function CRMPage() {
   const [statusFilter, setStatusFilter] = useState<string>("all");
   const [isLoading, setIsLoading] = useState(true);
   const { user, hasPermission } = useAuth();
-  const t = useTranslations();
+  const t = (key: string, params?: any) => key;
 
   useEffect(() => {
     let isMounted = true;
@@ -626,3 +626,4 @@ export default function CRMPage() {
     </div>
   );
 }
+

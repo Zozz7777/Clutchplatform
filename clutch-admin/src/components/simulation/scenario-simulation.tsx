@@ -602,3 +602,4 @@ export default function ScenarioSimulation({ className }: ScenarioSimulationProp
     </div>
   );
 }
+

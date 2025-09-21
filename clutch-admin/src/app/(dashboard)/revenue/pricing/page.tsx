@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 import { productionApi } from '@/lib/production-api';
 import { toast } from 'sonner';
-import { useTranslations } from 'next-intl';
+// import { useTranslations } from 'next-intl';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -33,7 +33,7 @@ interface PricingPlan {
 }
 
 export default function PricingPage() {
-  const t = useTranslations();
+  const t = (key: string, params?: any) => key;
   const [plans, setPlans] = useState<PricingPlan[]>([]);
   const [analytics, setAnalytics] = useState({
     totalRevenue: 0,
@@ -379,3 +379,4 @@ export default function PricingPage() {
     </div>
   );
 }
+

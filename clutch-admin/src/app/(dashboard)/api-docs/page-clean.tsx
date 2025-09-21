@@ -55,7 +55,7 @@ interface APIEndpoint {
 }
 
 export default function APIDocsPage() {
-  const t = useTranslations() as any;
+  const t = (key: string, params?: any) => key;
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedCategory, setSelectedCategory] = useState<string>("all");
   const [selectedEndpoint, setSelectedEndpoint] = useState<APIEndpoint | null>(null);
@@ -469,3 +469,4 @@ export default function APIDocsPage() {
     </div>
   );
 }
+

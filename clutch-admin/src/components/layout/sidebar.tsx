@@ -20,7 +20,7 @@ interface SidebarProps {
 export function Sidebar({ isCollapsed, onToggle }: SidebarProps) {
   const pathname = usePathname();
   const { hasPermission, user } = useAuth();
-  const t = useTranslations();
+  const t = (key: string, params?: any) => key;
   const [expandedItems, setExpandedItems] = useState<string[]>([]);
   
   const navigationItems = getTranslatedNavigationItems(t);
@@ -219,3 +219,4 @@ export function Sidebar({ isCollapsed, onToggle }: SidebarProps) {
     </div>
   );
 }
+

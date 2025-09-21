@@ -91,7 +91,7 @@ const PERMISSION_OPTIONS = [
 ];
 
 export function EmployeeInvitationForm({ onSuccess, onCancel }: EmployeeInvitationFormProps) {
-  const t = useTranslations();
+  const t = (key: string, params?: any) => key;
   const { user } = useAuth();
   const [formData, setFormData] = useState<InvitationFormData>({
     name: "",
@@ -454,3 +454,4 @@ export function EmployeeInvitationForm({ onSuccess, onCancel }: EmployeeInvitati
     </Card>
   );
 }
+

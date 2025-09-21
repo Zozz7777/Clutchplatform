@@ -103,7 +103,7 @@ export default function FinancePage() {
   const [statusFilter, setStatusFilter] = useState<string>("all");
   const [isLoading, setIsLoading] = useState(true);
   const { hasPermission } = useAuth();
-  const t = useTranslations();
+  const t = (key: string, params?: any) => key;
 
   // Payment processing functions
   const handleProcessPayment = async (paymentData: Record<string, unknown>) => {
@@ -760,3 +760,4 @@ export default function FinancePage() {
     </div>
   );
 }
+

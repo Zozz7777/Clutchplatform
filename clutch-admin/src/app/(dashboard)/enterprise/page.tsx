@@ -128,7 +128,7 @@ export default function EnterprisePage() {
   const [tierFilter, setTierFilter] = useState<string>("all");
   const [isLoading, setIsLoading] = useState(true);
   const { hasPermission } = useAuth();
-  const t = useTranslations() as any;
+  const t = (key: string, params?: any) => key;
 
   useEffect(() => {
     const loadEnterpriseData = async () => {
@@ -667,3 +667,4 @@ export default function EnterprisePage() {
     </div>
   );
 }
+

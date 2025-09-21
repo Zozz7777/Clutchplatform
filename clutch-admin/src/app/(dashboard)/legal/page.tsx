@@ -101,7 +101,7 @@ export default function LegalPage() {
   const [activeTab, setActiveTab] = useState<"contracts" | "disputes">("contracts");
   const [isLoading, setIsLoading] = useState(true);
   const { hasPermission } = useAuth();
-  const t = useTranslations() as any;
+  const t = (key: string, params?: any) => key;
 
   useEffect(() => {
     const loadLegalData = async () => {
@@ -790,3 +790,4 @@ export default function LegalPage() {
     </div>
   );
 }
+

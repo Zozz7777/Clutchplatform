@@ -135,7 +135,7 @@ export default function ReportsPage() {
   } catch (error) {
     handleError(error, { component: 'ReportsPage', action: 'initialize_quick_actions' });
   }
-  const t = useTranslations();
+  const t = (key: string, params?: any) => key;
 
 
   useEffect(() => {
@@ -685,3 +685,4 @@ export default function ReportsPage() {
     </div>
   );
 }
+

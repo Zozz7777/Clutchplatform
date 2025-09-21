@@ -117,7 +117,7 @@ interface TimeEntry {
 }
 
 export default function ProjectManagementPage() {
-  const t = useTranslations();
+  const t = (key: string, params?: any) => key;
   const [projects, setProjects] = useState<Project[]>([]);
   const [tasks, setTasks] = useState<Task[]>([]);
   const [timeEntries, setTimeEntries] = useState<TimeEntry[]>([]);
@@ -747,3 +747,4 @@ export default function ProjectManagementPage() {
     </div>
   );
 }
+

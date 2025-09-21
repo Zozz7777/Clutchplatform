@@ -93,7 +93,7 @@ export default function AIMLPage() {
   const [statusFilter, setStatusFilter] = useState<string>("all");
   const [isLoading, setIsLoading] = useState(true);
   const { hasPermission } = useAuth();
-  const t = useTranslations();
+  const t = (key: string, params?: any) => key;
 
   useEffect(() => {
     let isMounted = true;
@@ -749,3 +749,4 @@ export default function AIMLPage() {
     </div>
   );
 }
+

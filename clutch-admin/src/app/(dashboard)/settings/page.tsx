@@ -122,7 +122,7 @@ export default function SettingsPage() {
   const [isSaving, setIsSaving] = useState(false);
   const [showPasswords, setShowPasswords] = useState<Record<string, boolean>>({});
   const { user, hasPermission } = useAuth();
-  const t = useTranslations();
+  const t = (key: string, params?: any) => key;
 
   useEffect(() => {
     const loadSettingsData = async () => {
@@ -813,3 +813,4 @@ export default function SettingsPage() {
     </div>
   );
 }
+

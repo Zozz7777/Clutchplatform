@@ -677,3 +677,4 @@ export default function DynamicPricingSimulation({ className }: DynamicPricingSi
     </div>
   );
 }
+

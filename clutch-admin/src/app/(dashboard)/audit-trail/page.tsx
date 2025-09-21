@@ -106,7 +106,7 @@ interface UserActivity {
 }
 
 export default function AuditTrailPage() {
-  const t = useTranslations();
+  const t = (key: string, params?: any) => key;
   const { user, hasPermission } = useAuth();
   const [auditLogs, setAuditLogs] = useState<AuditLog[]>([]);
   const [securityEvents, setSecurityEvents] = useState<SecurityEvent[]>([]);
@@ -600,3 +600,4 @@ export default function AuditTrailPage() {
     </div>
   );
 }
+

@@ -583,3 +583,4 @@ export default function BlackSwanSimulator({ className }: BlackSwanSimulatorProp
     </div>
   );
 }
+

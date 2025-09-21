@@ -31,7 +31,7 @@ import {
   Zap
 } from 'lucide-react';
 import { formatCurrency, formatNumber } from '@/lib/utils';
-import { useTranslations } from 'next-intl';
+// import { useTranslations } from 'next-intl';
 import { productionApi } from '@/lib/production-api';
 
 interface ComplianceFlag {
@@ -105,7 +105,7 @@ interface ComplianceFlagsProps {
 }
 
 export default function ComplianceFlags({ className }: ComplianceFlagsProps) {
-  const t = useTranslations() as any;
+  const t = (key: string, params?: any) => key;
   const [flags, setFlags] = useState<ComplianceFlag[]>([]);
   const [frameworks, setFrameworks] = useState<ComplianceFramework[]>([]);
   const [selectedFlag, setSelectedFlag] = useState<ComplianceFlag | null>(null);
@@ -447,3 +447,4 @@ export default function ComplianceFlags({ className }: ComplianceFlagsProps) {
     </div>
   );
 }
+

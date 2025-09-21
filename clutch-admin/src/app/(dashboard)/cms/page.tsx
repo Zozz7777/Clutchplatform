@@ -107,7 +107,7 @@ export default function CMSPage() {
   const [activeTab, setActiveTab] = useState<"content" | "media" | "categories">("content");
   const [isLoading, setIsLoading] = useState(true);
   const { hasPermission } = useAuth();
-  const t = useTranslations() as any;
+  const t = (key: string, params?: any) => key;
 
   useEffect(() => {
     const loadCMSData = async () => {
@@ -763,3 +763,4 @@ export default function CMSPage() {
     </div>
   );
 }
+

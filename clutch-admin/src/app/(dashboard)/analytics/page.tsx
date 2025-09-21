@@ -139,7 +139,7 @@ interface AnalyticsReport {
 }
 
 export default function AnalyticsPage() {
-  const t = useTranslations();
+  const t = (key: string, params?: any) => key;
   const [metrics, setMetrics] = useState<AnalyticsMetric[]>([]);
   const [userAnalytics, setUserAnalytics] = useState<UserAnalytics | null>(null);
   const [revenueAnalytics, setRevenueAnalytics] = useState<RevenueAnalytics | null>(null);
@@ -790,3 +790,4 @@ export default function AnalyticsPage() {
     </div>
   );
 }
+

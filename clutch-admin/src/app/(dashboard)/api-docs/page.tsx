@@ -57,7 +57,7 @@ interface APIEndpoint {
 }
 
 export default function APIDocsPage() {
-  const t = useTranslations();
+  const t = (key: string, params?: any) => key;
   const { user, isLoading: authLoading } = useAuth();
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedCategory, setSelectedCategory] = useState<string>("all");
@@ -540,3 +540,4 @@ export default function APIDocsPage() {
     </div>
   );
 }
+

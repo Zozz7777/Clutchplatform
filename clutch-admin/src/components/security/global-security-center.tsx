@@ -59,7 +59,7 @@ import {
 } from 'lucide-react';
 import { formatCurrency, formatNumber } from '@/lib/utils';
 import { productionApi } from '@/lib/production-api';
-import { useTranslations } from 'next-intl';
+// import { useTranslations } from 'next-intl';
 
 interface SecurityEvent {
   id: string;
@@ -136,7 +136,7 @@ interface SecurityMetrics {
 }
 
 export default function GlobalSecurityCenter() {
-  const t = useTranslations() as any;
+  const t = (key: string, params?: any) => key;
   const [securityEvents, setSecurityEvents] = useState<SecurityEvent[]>([]);
   const [accessSessions, setAccessSessions] = useState<AccessSession[]>([]);
   const [selectedEvent, setSelectedEvent] = useState<SecurityEvent | null>(null);
@@ -882,3 +882,4 @@ export default function GlobalSecurityCenter() {
     </Card>
   );
 }
+

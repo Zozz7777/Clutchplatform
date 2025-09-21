@@ -106,3 +106,4 @@ export function useErrorBoundary() {
 
   return { captureError, resetError };
 }
+
