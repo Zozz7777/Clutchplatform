@@ -47,6 +47,7 @@ import {
 import { formatCurrency } from "@/lib/utils";
 import { productionApi } from "@/lib/production-api";
 import { useTranslations } from "next-intl";
+import { handleDataLoadError } from "@/lib/error-handler";
 
 // Import new Phase 2 widgets
 import ProjectROI from '@/components/widgets/project-roi';
@@ -151,7 +152,7 @@ export default function ProjectManagementPage() {
       const data = await productionApi.getProjects();
       setProjects(Array.isArray(data) ? data : []);
     } catch (error) {
-      console.error('Error loading projects:', error);
+      handleDataLoadError(error, 'projects');
       setProjects([]);
     } finally {
       setLoading(false);
@@ -163,7 +164,7 @@ export default function ProjectManagementPage() {
       const data = await productionApi.getProjectTasks(selectedProject?._id || "");
       setTasks(Array.isArray(data) ? data : []);
     } catch (error) {
-      console.error('Error loading tasks:', error);
+      handleDataLoadError(error, 'tasks');
       setTasks([]);
     }
   };
@@ -173,7 +174,7 @@ export default function ProjectManagementPage() {
       const data = await productionApi.getTimeTracking(selectedProject?._id || "");
       setTimeEntries(Array.isArray(data) ? data : []);
     } catch (error) {
-      console.error('Error loading time entries:', error);
+      handleDataLoadError(error, 'time_entries');
       setTimeEntries([]);
     }
   };

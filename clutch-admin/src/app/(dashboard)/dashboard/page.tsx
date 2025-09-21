@@ -10,6 +10,7 @@ import { AuthStatus } from "@/components/auth-status";
 import { RealtimeStatus } from "@/components/realtime-status";
 import { useQuickActions } from "@/lib/quick-actions";
 import { useAuth } from "@/contexts/auth-context";
+import { handleError } from "@/lib/error-handler";
 import { useTranslations } from "next-intl";
 
 // Import new Phase 2 widgets
@@ -104,7 +105,7 @@ export default function DashboardPage() {
     refreshData = quickActionsResult.refreshData;
     navigateToAnalytics = quickActionsResult.navigateToAnalytics;
   } catch (error) {
-    console.error('Failed to initialize quick actions:', error);
+    handleError(error, { component: 'DashboardPage', action: 'initialize_quick_actions' });
   }
 
   useEffect(() => {

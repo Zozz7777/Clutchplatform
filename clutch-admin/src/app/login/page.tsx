@@ -10,7 +10,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Label } from "@/components/ui/label";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Loader2, Eye, EyeOff } from "lucide-react";
-import { useTranslations } from "next-intl";
+// import { useTranslations } from "next-intl";
 
 // Prevent static generation for this page
 export const dynamic = 'force-dynamic';
@@ -23,9 +23,49 @@ function LoginForm() {
   const [error, setError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   
-  const { login } = useAuth();
-  const t = useTranslations() as any;
+  // Safe auth context access
+  let login: (email: string, password: string) => Promise<boolean>;
+  try {
+    const authContext = useAuth();
+    login = authContext.login;
+  } catch (error) {
+    console.warn('Auth context error:', error);
+    login = async () => false; // Fallback function
+  }
+  
   const router = useRouter();
+  
+  // Fallback translation function
+  const t = (key: string) => {
+    const translations: Record<string, string> = {
+      'auth.login': 'Login',
+      'auth.email': 'Email',
+      'auth.password': 'Password',
+      'auth.signingIn': 'Signing in...',
+      'auth.invalidCredentials': 'Invalid email or password',
+      'auth.loginError': 'Login failed. Please try again.',
+      'auth.enterEmail': 'Enter your email',
+      'auth.enterPassword': 'Enter your password',
+      'auth.showPassword': 'Show password',
+      'auth.hidePassword': 'Hide password',
+      'auth.forgotPassword': 'Forgot your password?',
+      'auth.rememberMe': 'Remember me',
+      'auth.noAccount': "Don't have an account?",
+      'auth.signUp': 'Sign up',
+      'auth.welcomeBack': 'Welcome back',
+      'auth.signInToAccount': 'Sign in to your account',
+      'auth.continue': 'Continue',
+      'auth.or': 'or',
+      'auth.withGoogle': 'Continue with Google',
+      'auth.withMicrosoft': 'Continue with Microsoft',
+      'auth.withApple': 'Continue with Apple',
+      'auth.terms': 'Terms of Service',
+      'auth.privacy': 'Privacy Policy',
+      'auth.agreeTo': 'By continuing, you agree to our',
+      'auth.and': 'and'
+    };
+    return translations[key] || key;
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -152,6 +192,62 @@ function LoginForm() {
   );
 }
 
+// Error boundary component
+class LoginErrorBoundary extends React.Component<
+  { children: React.ReactNode },
+  { hasError: boolean; error?: Error }
+> {
+  constructor(props: { children: React.ReactNode }) {
+    super(props);
+    this.state = { hasError: false };
+  }
+
+  static getDerivedStateFromError(error: Error) {
+    return { hasError: true, error };
+  }
+
+  componentDidCatch(error: Error, errorInfo: React.ErrorInfo) {
+    console.error('Login page error:', error, errorInfo);
+  }
+
+  render() {
+    if (this.state.hasError) {
+      return (
+        <div className="min-h-screen flex items-center justify-center bg-background px-4 font-sans">
+          <Card className="w-full max-w-md shadow-sm border border-border rounded-[0.625rem] bg-card">
+            <CardHeader className="text-center space-y-6 pb-8">
+              <div className="flex justify-center">
+                <div className="flex items-center justify-center w-20 h-20 bg-red-100 rounded-[0.625rem]">
+                  <svg className="w-10 h-10 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.732-.833-2.5 0L4.268 19.5c-.77.833.192 2.5 1.732 2.5z" />
+                  </svg>
+                </div>
+              </div>
+              <div className="space-y-2">
+                <CardTitle className="text-2xl font-semibold text-foreground">Login Error</CardTitle>
+                <CardDescription className="text-muted-foreground">
+                  Something went wrong while loading the login page. Please refresh the page.
+                </CardDescription>
+              </div>
+            </CardHeader>
+            <CardContent className="space-y-6">
+              <Button 
+                onClick={() => window.location.reload()} 
+                className="w-full"
+                variant="default"
+              >
+                Refresh Page
+              </Button>
+            </CardContent>
+          </Card>
+        </div>
+      );
+    }
+
+    return this.props.children;
+  }
+}
+
 export default function LoginPage() {
   const [isClient, setIsClient] = useState(false);
 
@@ -170,5 +266,9 @@ export default function LoginPage() {
     );
   }
 
-  return <LoginForm />;
+  return (
+    <LoginErrorBoundary>
+      <LoginForm />
+    </LoginErrorBoundary>
+  );
 }

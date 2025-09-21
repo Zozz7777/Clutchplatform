@@ -9,6 +9,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { productionApi } from "@/lib/production-api";
+import { handleDataLoadError } from "@/lib/error-handler";
 import { formatDate, formatRelativeTime } from "@/lib/utils";
 
 // Import new Phase 2 widgets
@@ -131,10 +132,10 @@ export default function CRMPage() {
           
           // Log any errors
           if (customersData.status === 'rejected') {
-            console.error('Failed to load customers:', customersData.reason);
+            handleDataLoadError(customersData.reason, 'customers');
           }
           if (ticketsData.status === 'rejected') {
-            console.error('Failed to load tickets:', ticketsData.reason);
+            handleDataLoadError(ticketsData.reason, 'tickets');
           }
           
         }, 300); // 300ms debounce
@@ -142,7 +143,7 @@ export default function CRMPage() {
       } catch (error) {
         if (!isMounted) return;
         
-        console.error('Failed to load CRM data:', error);
+        handleDataLoadError(error, 'crm_data');
         toast.error(t('crm.failedToLoadCrmData') || 'Failed to load CRM data');
         // Set empty arrays on error - no mock data fallback
         setCustomers([]);

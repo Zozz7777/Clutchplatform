@@ -9,6 +9,7 @@ import { useAuth } from "@/contexts/auth-context";
 import { useTranslations } from "next-intl";
 import { productionApi } from "@/lib/production-api";
 import { formatDate, formatRelativeTime } from "@/lib/utils";
+import { handleError, handleDataLoadError } from "@/lib/error-handler";
 
 // Import new Phase 2 widgets
 import RBACOverview from '@/components/widgets/rbac-overview';
@@ -138,7 +139,7 @@ export default function SettingsPage() {
           const settingsData = await productionApi.getSettings('system');
           setSystemSettings(Array.isArray(settingsData) ? settingsData : []);
         } catch (error) {
-          console.error('Error loading system settings:', error);
+          handleDataLoadError(error, 'system_settings');
           setSystemSettings([]);
         }
 
@@ -147,7 +148,7 @@ export default function SettingsPage() {
           const preferencesData = await productionApi.getSettings('preferences');
           setUserPreferences(Array.isArray(preferencesData) ? preferencesData : []);
         } catch (error) {
-          console.error('Error loading user preferences:', error);
+          handleDataLoadError(error, 'user_preferences');
           setUserPreferences([]);
         }
 
@@ -156,7 +157,7 @@ export default function SettingsPage() {
           const integrationsData = await productionApi.getSettings('integrations');
           setIntegrations(Array.isArray(integrationsData) ? integrationsData : []);
         } catch (error) {
-          console.error('Error loading integrations:', error);
+          handleDataLoadError(error, 'integrations');
           setIntegrations([]);
         }
 
@@ -165,11 +166,11 @@ export default function SettingsPage() {
           const auditData = await productionApi.getSettings('audit');
           setAuditLogs(Array.isArray(auditData) ? auditData : []);
         } catch (error) {
-          console.error('Error loading audit logs:', error);
+          handleDataLoadError(error, 'audit_logs');
           setAuditLogs([]);
         }
       } catch (error) {
-        console.error('Error loading settings data:', error);
+        handleDataLoadError(error, 'settings_data');
         // Set empty arrays as fallback
         setSystemSettings([]);
         setUserPreferences([]);

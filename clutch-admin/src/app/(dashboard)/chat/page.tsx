@@ -11,6 +11,7 @@ import { useAuth } from "@/contexts/auth-context";
 import { useTranslations } from "next-intl";
 import { productionApi } from "@/lib/production-api";
 import { toast } from "sonner";
+import { handleDataLoadError } from "@/lib/error-handler";
 import { 
   MessageSquare, 
   Search, 
@@ -116,10 +117,10 @@ export default function ChatPage() {
           
           // Log any errors
           if (channelsData.status === 'rejected') {
-            console.error('Failed to load channels:', channelsData.reason);
+            handleDataLoadError(channelsData.reason, 'channels');
           }
           if (messagesData.status === 'rejected') {
-            console.error('Failed to load messages:', messagesData.reason);
+            handleDataLoadError(messagesData.reason, 'messages');
           }
           
         }, 300); // 300ms debounce
@@ -127,7 +128,7 @@ export default function ChatPage() {
       } catch (error) {
         if (!isMounted) return;
         
-        console.error('Failed to load chat data:', error);
+        handleDataLoadError(error, 'chat_data');
         toast.error(t('chat.failedToLoadChatData') || 'Failed to load chat data');
         // Set empty arrays on error - no mock data fallback
         setChannels([]);

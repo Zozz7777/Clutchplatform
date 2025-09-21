@@ -17,7 +17,8 @@ import {
   AlertTriangle,
   RefreshCw
 } from 'lucide-react';
-import { productionApi } from '@/lib/production-api';
+import { realApi } from '@/lib/real-api';
+import { useTranslations } from '@/hooks/use-translations';
 
 interface SEOData {
   page: string;
@@ -30,6 +31,7 @@ interface SEOData {
 }
 
 export default function SEOCMSPage() {
+  const { t } = useTranslations();
   const [seoData, setSeoData] = useState<SEOData[]>([]);
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);

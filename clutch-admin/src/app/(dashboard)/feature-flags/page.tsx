@@ -44,6 +44,7 @@ import {
   Zap,
 } from "lucide-react";
 import { productionApi } from "@/lib/production-api";
+import { handleDataLoadError } from "@/lib/error-handler";
 import { useTranslations } from "next-intl";
 
 interface FeatureFlag {
@@ -232,13 +233,13 @@ export default function FeatureFlagsPage() {
           
           // Log any errors
           if (flagsData.status === 'rejected') {
-            console.error('Failed to load feature flags:', flagsData.reason);
+            handleDataLoadError(flagsData.reason, 'feature_flags');
           }
           if (abTestsData.status === 'rejected') {
-            console.error('Failed to load AB tests:', abTestsData.reason);
+            handleDataLoadError(abTestsData.reason, 'ab_tests');
           }
           if (rolloutsData.status === 'rejected') {
-            console.error('Failed to load rollouts:', rolloutsData.reason);
+            handleDataLoadError(rolloutsData.reason, 'rollouts');
           }
           
         }, 300); // 300ms debounce
@@ -246,7 +247,7 @@ export default function FeatureFlagsPage() {
       } catch (error) {
         if (!isMounted) return;
         
-        console.error('Failed to load feature flags data:', error);
+        handleDataLoadError(error, 'feature_flags_data');
         setFeatureFlags([]);
         setABTests([]);
         setRollouts([]);

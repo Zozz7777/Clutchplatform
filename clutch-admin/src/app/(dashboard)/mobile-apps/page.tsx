@@ -31,6 +31,7 @@ import {
 import { useTranslations } from "next-intl";
 import { productionApi } from "@/lib/production-api";
 import { toast } from "sonner";
+import { handleError, handleDataLoadError } from "@/lib/error-handler";
 
 interface AppVersion {
   _id: string;
@@ -160,16 +161,16 @@ export default function MobileAppsPage() {
           
           // Log any errors
           if (versionsData.status === 'rejected') {
-            console.error('Failed to load mobile app versions:', versionsData.reason);
+            handleDataLoadError(versionsData.reason, 'mobile_app_versions');
           }
           if (crashesData.status === 'rejected') {
-            console.error('Failed to load mobile app crashes:', crashesData.reason);
+            handleDataLoadError(crashesData.reason, 'mobile_app_crashes');
           }
           if (analyticsData.status === 'rejected') {
-            console.error('Failed to load mobile app analytics:', analyticsData.reason);
+            handleDataLoadError(analyticsData.reason, 'mobile_app_analytics');
           }
           if (storesData.status === 'rejected') {
-            console.error('Failed to load mobile app stores:', storesData.reason);
+            handleDataLoadError(storesData.reason, 'mobile_app_stores');
           }
           
         }, 300); // 300ms debounce
@@ -177,7 +178,7 @@ export default function MobileAppsPage() {
       } catch (error) {
         if (!isMounted) return;
         
-        console.error('Error loading mobile apps data:', error);
+        handleDataLoadError(error, 'mobile_apps_data');
         toast.error(t('dashboard.failedToLoadData') || 'Failed to load data');
         // Set empty arrays on error - no mock data fallback
         setVersions([]);

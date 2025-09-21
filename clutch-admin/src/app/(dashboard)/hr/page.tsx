@@ -13,6 +13,7 @@ import { formatDate, formatRelativeTime } from "@/lib/utils";
 import { EmployeeInvitationForm } from "@/components/employee-invitation-form";
 import { apiService } from "@/lib/api";
 import { toast } from "sonner";
+import { handleError } from "@/lib/error-handler";
 import { 
   UserCog, 
   Search, 
@@ -361,7 +362,7 @@ export default function HRPage() {
         toast.error(response.message || "Failed to update employee");
       }
     } catch (error) {
-      console.error("Error updating employee:", error);
+      handleError(error, { component: 'HRPage', action: 'update_employee' });
       toast.error("Failed to update employee");
     }
   };

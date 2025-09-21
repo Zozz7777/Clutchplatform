@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useAuth } from "@/contexts/auth-context";
 import { useQuickActions } from "@/lib/quick-actions";
+import { handleError, handleDataLoadError } from "@/lib/error-handler";
 import { productionApi } from "@/lib/production-api";
 import { formatDate, formatRelativeTime, formatCurrency } from "@/lib/utils";
 import { useTranslations } from "next-intl";
@@ -159,7 +160,7 @@ export default function AnalyticsPage() {
     generateReport = quickActions.generateReport;
     exportData = quickActions.exportData;
   } catch (error) {
-    console.error('Failed to initialize quick actions:', error);
+    handleError(error, { component: 'AnalyticsPage', action: 'initialize_quick_actions' });
   }
 
   useEffect(() => {
@@ -234,22 +235,22 @@ export default function AnalyticsPage() {
           
           // Log any errors
           if (metricsData.status === 'rejected') {
-            console.error('Failed to load metrics:', metricsData.reason);
+            handleDataLoadError(metricsData.reason, 'metrics');
           }
           if (userData.status === 'rejected') {
-            console.error('Failed to load user analytics:', userData.reason);
+            handleDataLoadError(userData.reason, 'user_analytics');
           }
           if (revenueData.status === 'rejected') {
-            console.error('Failed to load revenue analytics:', revenueData.reason);
+            handleDataLoadError(revenueData.reason, 'revenue_analytics');
           }
           if (fleetData.status === 'rejected') {
-            console.error('Failed to load fleet analytics:', fleetData.reason);
+            handleDataLoadError(fleetData.reason, 'fleet_analytics');
           }
           if (engagementData.status === 'rejected') {
-            console.error('Failed to load engagement analytics:', engagementData.reason);
+            handleDataLoadError(engagementData.reason, 'engagement_analytics');
           }
           if (reportsData.status === 'rejected') {
-            console.error('Failed to load reports:', reportsData.reason);
+            handleDataLoadError(reportsData.reason, 'reports');
           }
           
         }, 300); // 300ms debounce
@@ -257,7 +258,7 @@ export default function AnalyticsPage() {
       } catch (error) {
         if (!isMounted) return;
         
-        console.error('Error loading analytics data:', error);
+        handleDataLoadError(error, 'analytics_data');
         // Set empty data instead of mock data
         setMetrics([]);
         setUserAnalytics(null);

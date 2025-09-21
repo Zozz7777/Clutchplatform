@@ -13,6 +13,7 @@ import { useAuth } from "@/contexts/auth-context";
 import { useTranslations } from "next-intl";
 import { productionApi } from "@/lib/production-api";
 import { toast } from "sonner";
+import { handleDataLoadError } from "@/lib/error-handler";
 
 // Import new Phase 2 widgets
 import FraudImpact from "@/components/widgets/fraud-impact";
@@ -146,13 +147,13 @@ export default function AIMLPage() {
           
           // Log any errors
           if (modelsData.status === 'rejected') {
-            console.error('Failed to load AI models:', modelsData.reason);
+            handleDataLoadError(modelsData.reason, 'ai_models');
           }
           if (fraudCasesData.status === 'rejected') {
-            console.error('Failed to load fraud cases:', fraudCasesData.reason);
+            handleDataLoadError(fraudCasesData.reason, 'fraud_cases');
           }
           if (recommendationsData.status === 'rejected') {
-            console.error('Failed to load recommendations:', recommendationsData.reason);
+            handleDataLoadError(recommendationsData.reason, 'recommendations');
           }
           
         }, 300); // 300ms debounce
@@ -160,7 +161,7 @@ export default function AIMLPage() {
       } catch (error) {
         if (!isMounted) return;
         
-        console.error('Failed to load AI/ML data:', error);
+        handleDataLoadError(error, 'ai_ml_data');
         toast.error("Failed to load AI/ML data");
         // Set empty arrays on error - no mock data fallback
         setModels([]);
