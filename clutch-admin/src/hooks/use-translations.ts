@@ -340,11 +340,9 @@ export function useTranslations() {
     }
     
     const result = typeof value === 'string' ? value : key;
-    console.log('✅ [useTranslations] Translation result:', key, '->', result);
     
     return result;
   };
 
-  console.log('🎯 [useTranslations] Hook initialized successfully');
   return { t, language };
 }
