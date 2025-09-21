@@ -7,7 +7,7 @@ import { Button } from '@/components/ui/button';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { businessIntelligence, type RevenueForecast } from '@/lib/business-intelligence';
 import { logger } from '@/lib/logger';
-import { useTranslations } from '@/hooks/use-translations';
+// import { useTranslations } from '@/hooks/use-translations';
 import { 
   Brain, 
   TrendingUp, 
@@ -26,7 +26,7 @@ interface AIForecastCardProps {
 }
 
 export function AIForecastCard({ className = '' }: AIForecastCardProps) {
-  const { t } = useTranslations();
+  const t = (key: string, params?: any) => key;
   const [forecast, setForecast] = useState<RevenueForecast[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [selectedPeriod, setSelectedPeriod] = useState<'7d' | '30d' | '90d'>('30d');
