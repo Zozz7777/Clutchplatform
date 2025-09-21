@@ -27,7 +27,7 @@ import {
   Calendar,
   User
 } from 'lucide-react';
-// import { useTranslations } from 'next-intl';
+// // import { useTranslations } from 'next-intl';
 import { productionApi } from '@/lib/production-api';
 
 interface KnowledgeArticle {
@@ -534,4 +534,5 @@ export default function KnowledgeBasePage() {
     </div>
   );
 }
+
 

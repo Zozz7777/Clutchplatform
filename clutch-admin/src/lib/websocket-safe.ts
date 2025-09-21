@@ -274,7 +274,7 @@ export class SafeWebSocketService {
             this.eventHandlers.onMessage?.({
               type: 'notification',
               data: notification,
-              timestamp: notification.timestamp
+              timestamp: String(notification.timestamp || new Date().toISOString())
             });
           });
         }

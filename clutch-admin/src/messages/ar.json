@@ -632,6 +632,42 @@
     "vendormanagement": "إدارة البائعين",
     "systemhealth": "صحة النظام"
   },
+  "sidebar": {
+    "clutchAdmin": "كلتش الإدارة",
+    "collapse": "طي"
+  },
+  "header": {
+    "search": "بحث...",
+    "language": "اللغة",
+    "notifications": "الإشعارات",
+    "myAccount": "حسابي",
+    "profile": "الملف الشخصي",
+    "settings": "الإعدادات"
+  },
+  "language": {
+    "english": "الإنجليزية",
+    "arabic": "العربية"
+  },
+  "hr": {
+    "title": "الموارد البشرية",
+    "description": "إدارة الموظفين والتوظيف وعمليات الموارد البشرية",
+    "totalEmployees": "إجمالي الموظفين",
+    "active": "نشط",
+    "newHires": "موظفين جدد",
+    "thisMonth": "هذا الشهر",
+    "pendingApplications": "الطلبات المعلقة",
+    "openPositions": "مناصب مفتوحة",
+    "avgSalary": "متوسط الراتب",
+    "employeeManagement": "إدارة الموظفين",
+    "noPosition": "لا يوجد منصب",
+    "noDepartment": "لا يوجد قسم",
+    "salary": "الراتب",
+    "department": "القسم",
+    "deleteInvitation": "حذف الدعوة",
+    "deleteInvitationConfirm": "هل أنت متأكد من حذف هذه الدعوة؟",
+    "invitationDeleted": "تم حذف الدعوة بنجاح",
+    "loadingHrData": "جاري تحميل بيانات الموارد البشرية..."
+  },
   "auth": {
     "login": "تسجيل الدخول",
     "logout": "تسجيل الخروج",

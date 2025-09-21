@@ -27,7 +27,7 @@ import { type Notification } from "@/lib/types";
 import { useRouter } from "next/navigation";
 import { LanguageSwitcher } from "@/components/language-switcher";
 import { ThemeToggle } from "@/components/theme-toggle";
-import { useTranslations } from "next-intl";
+import { useTranslations } from "@/hooks/use-translations";
 
 interface HeaderProps {
   onMenuToggle: () => void;
@@ -193,4 +193,5 @@ export function Header({ onMenuToggle }: HeaderProps) {
     </header>
   );
 }
+
 

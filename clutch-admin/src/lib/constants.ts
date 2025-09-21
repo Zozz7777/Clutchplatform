@@ -270,7 +270,7 @@ export const PERMISSIONS = {
 
 // Helper functions for permission management
 export const getPermissionsByGroup = (groupName: keyof typeof PERMISSION_GROUPS): string[] => {
-  return PERMISSION_GROUPS[groupName];
+  return [...PERMISSION_GROUPS[groupName]];
 };
 
 export const getAllPermissions = (): string[] => {

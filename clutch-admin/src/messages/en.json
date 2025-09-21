@@ -527,6 +527,42 @@
     "vendormanagement": "Vendor Management",
     "systemhealth": "System Health"
   },
+  "sidebar": {
+    "clutchAdmin": "Clutch Admin",
+    "collapse": "Collapse"
+  },
+  "header": {
+    "search": "Search...",
+    "language": "Language",
+    "notifications": "Notifications",
+    "myAccount": "My Account",
+    "profile": "Profile",
+    "settings": "Settings"
+  },
+  "language": {
+    "english": "English",
+    "arabic": "Arabic"
+  },
+  "hr": {
+    "title": "Human Resources",
+    "description": "Manage employees, recruitment, and HR operations",
+    "totalEmployees": "Total Employees",
+    "active": "active",
+    "newHires": "New Hires",
+    "thisMonth": "this month",
+    "pendingApplications": "Pending Applications",
+    "openPositions": "open positions",
+    "avgSalary": "Average Salary",
+    "employeeManagement": "Employee Management",
+    "noPosition": "No Position",
+    "noDepartment": "No Department",
+    "salary": "Salary",
+    "department": "Department",
+    "deleteInvitation": "Delete Invitation",
+    "deleteInvitationConfirm": "Are you sure you want to delete this invitation?",
+    "invitationDeleted": "Invitation deleted successfully",
+    "loadingHrData": "Loading HR data..."
+  },
   "auth": {
     "login": "Sign In",
     "logout": "Sign Out",

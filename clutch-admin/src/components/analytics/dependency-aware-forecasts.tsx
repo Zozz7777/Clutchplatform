@@ -565,3 +565,4 @@ export default function DependencyAwareForecasts({ className }: DependencyAwareF
   );
 }
 
+

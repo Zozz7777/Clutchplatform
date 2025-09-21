@@ -8,7 +8,7 @@ import { useAuth } from "@/contexts/auth-context";
 import { ChevronDown, ChevronRight } from "lucide-react";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { LanguageSwitcher } from "@/components/language-switcher";
-import { useTranslations } from "next-intl";
+import { useTranslations } from "@/hooks/use-translations";
 import { getTranslatedNavigationItems } from "@/lib/navigation";
 import { iconMap, type IconName } from "@/lib/icons";
 
@@ -219,4 +219,5 @@ export function Sidebar({ isCollapsed, onToggle }: SidebarProps) {
     </div>
   );
 }
+
 
