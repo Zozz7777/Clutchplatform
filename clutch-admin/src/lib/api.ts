@@ -1,7 +1,7 @@
 import { API_BASE_URL } from "./constants";
 
 export interface ApiResponse<T> {
-  data: T;
+  data: T | null;
   success: boolean;
   message?: string;
   error?: string;

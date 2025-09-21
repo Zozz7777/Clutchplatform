@@ -1,6 +1,8 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
+
+export const dynamic = 'force-dynamic';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -45,7 +47,7 @@ import {
 } from "lucide-react";
 import { productionApi } from "@/lib/production-api";
 import { handleDataLoadError } from "@/lib/error-handler";
-import { useTranslations } from "@/hooks/use-translations";
+// import { useTranslations } from "@/hooks/use-translations";
 
 interface FeatureFlag {
   _id: string;
@@ -141,7 +143,7 @@ interface Rollout {
 }
 
 export default function FeatureFlagsPage() {
-  const { t } = useTranslations();
+  const t = (key: string, params?: any) => key;
   const [featureFlags, setFeatureFlags] = useState<FeatureFlag[]>([]);
   const [abTests, setABTests] = useState<ABTest[]>([]);
   const [rollouts, setRollouts] = useState<Rollout[]>([]);
@@ -210,20 +212,64 @@ export default function FeatureFlagsPage() {
             productionApi.getRollouts()
           ]);
 
-          // Handle feature flags data
-          const flagsArray = flagsData.status === 'fulfilled' && Array.isArray(flagsData.value) 
-            ? flagsData.value as unknown as FeatureFlag[] 
-            : [];
+          // Handle feature flags data with validation
+          let flagsArray: FeatureFlag[] = [];
+          if (flagsData.status === 'fulfilled' && Array.isArray(flagsData.value)) {
+            flagsArray = flagsData.value.map((flag: any) => ({
+              _id: flag._id || flag.id || `flag_${Date.now()}_${Math.random()}`,
+              name: flag.name || 'Unnamed Flag',
+              key: flag.key || 'unnamed_flag',
+              description: flag.description || '',
+              enabled: Boolean(flag.enabled),
+              type: flag.type || 'boolean',
+              defaultValue: flag.defaultValue || false,
+              currentValue: flag.currentValue || flag.defaultValue || false,
+              environment: flag.environment || 'development',
+              tags: Array.isArray(flag.tags) ? flag.tags : [],
+              createdBy: flag.createdBy || { id: 'unknown', name: 'Unknown', email: 'unknown@example.com' },
+              createdAt: flag.createdAt || new Date().toISOString(),
+              updatedAt: flag.updatedAt || new Date().toISOString(),
+              lastModifiedBy: flag.lastModifiedBy || { id: 'unknown', name: 'Unknown', email: 'unknown@example.com' },
+              rollout: flag.rollout || { percentage: 0, targetUsers: [], targetSegments: [], conditions: {} },
+              analytics: flag.analytics || { impressions: 0, conversions: 0, conversionRate: 0, lastEvaluated: new Date().toISOString() }
+            }));
+          }
           
-          // Handle AB tests data
-          const abTestsArray = abTestsData.status === 'fulfilled' && Array.isArray(abTestsData.value) 
-            ? abTestsData.value as unknown as ABTest[] 
-            : [];
+          // Handle AB tests data with validation
+          let abTestsArray: ABTest[] = [];
+          if (abTestsData.status === 'fulfilled' && Array.isArray(abTestsData.value)) {
+            abTestsArray = abTestsData.value.map((test: any) => ({
+              _id: test._id || test.id || `test_${Date.now()}_${Math.random()}`,
+              name: test.name || 'Unnamed Test',
+              description: test.description || '',
+              featureFlagId: test.featureFlagId || '',
+              status: test.status || 'draft',
+              variants: Array.isArray(test.variants) ? test.variants : [],
+              startDate: test.startDate || new Date().toISOString(),
+              endDate: test.endDate || new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString(),
+              successMetric: test.successMetric || 'conversion_rate',
+              minimumSampleSize: test.minimumSampleSize || 1000,
+              confidenceLevel: test.confidenceLevel || 95,
+              results: test.results || { winner: '', confidence: 0, significance: false, lift: 0 },
+              createdAt: test.createdAt || new Date().toISOString()
+            }));
+          }
           
-          // Handle rollouts data
-          const rolloutsArray = rolloutsData.status === 'fulfilled' && Array.isArray(rolloutsData.value) 
-            ? rolloutsData.value as unknown as Rollout[] 
-            : [];
+          // Handle rollouts data with validation
+          let rolloutsArray: Rollout[] = [];
+          if (rolloutsData.status === 'fulfilled' && Array.isArray(rolloutsData.value)) {
+            rolloutsArray = rolloutsData.value.map((rollout: any) => ({
+              _id: rollout._id || rollout.id || `rollout_${Date.now()}_${Math.random()}`,
+              name: rollout.name || 'Unnamed Rollout',
+              featureFlagId: rollout.featureFlagId || '',
+              type: rollout.type || 'percentage',
+              status: rollout.status || 'scheduled',
+              target: rollout.target || { percentage: 0 },
+              schedule: rollout.schedule || { startDate: new Date().toISOString(), timezone: 'UTC' },
+              metrics: rollout.metrics || { totalUsers: 0, exposedUsers: 0, conversionRate: 0 },
+              createdAt: rollout.createdAt || new Date().toISOString()
+            }));
+          }
           
           if (isMounted) {
             setFeatureFlags(flagsArray);

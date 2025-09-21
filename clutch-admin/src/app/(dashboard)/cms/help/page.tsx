@@ -32,7 +32,7 @@ interface HelpArticle {
 }
 
 export default function HelpCMSPage() {
-  const t = (key: string, params?: any) => key;
+  const { t } = useTranslations();
   const [articles, setArticles] = useState<HelpArticle[]>([]);
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('all');
