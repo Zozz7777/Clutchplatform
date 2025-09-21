@@ -6,9 +6,9 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useAuth } from "@/contexts/auth-context";
-import { useTranslations } from "@/hooks/use-translations";
+import { useTranslations } from "next-intl";
 import { formatDate, formatRelativeTime } from "@/lib/utils";
-import { realApi } from "@/lib/real-api";
+import { productionApi } from "@/lib/production-api";
 import { 
   FileText, 
   Search, 
@@ -107,7 +107,7 @@ export default function CMSPage() {
   const [activeTab, setActiveTab] = useState<"content" | "media" | "categories">("content");
   const [isLoading, setIsLoading] = useState(true);
   const { hasPermission } = useAuth();
-  const { t } = useTranslations();
+  const t = useTranslations();
 
   useEffect(() => {
     const loadCMSData = async () => {
@@ -115,16 +115,26 @@ export default function CMSPage() {
         setIsLoading(true);
         
         // Load real data from API using the proper API service
-        const [contentData, mediaData, categoriesData] = await Promise.all([
-          realApi.getCMSContent(),
-          realApi.getCMSMedia(),
-          realApi.getCMSCategories()
+        const [contentData, mediaData, categoriesData] = await Promise.allSettled([
+          productionApi.getCMSContent(),
+          productionApi.getCMSMedia(),
+          productionApi.getCMSCategories()
         ]);
 
-        setContent(contentData || []);
-        setMedia(mediaData || []);
-        setCategories(categoriesData || []);
-        setFilteredContent(contentData || []);
+        const contentArray = contentData.status === 'fulfilled' && Array.isArray(contentData.value) 
+          ? contentData.value 
+          : [];
+        const mediaArray = mediaData.status === 'fulfilled' && Array.isArray(mediaData.value) 
+          ? mediaData.value 
+          : [];
+        const categoriesArray = categoriesData.status === 'fulfilled' && Array.isArray(categoriesData.value) 
+          ? categoriesData.value 
+          : [];
+        
+        setContent(contentArray);
+        setMedia(mediaArray);
+        setCategories(categoriesArray);
+        setFilteredContent(contentArray);
       } catch (error) {
         // Error handled by API service
         // Set empty arrays on error - no mock data fallback

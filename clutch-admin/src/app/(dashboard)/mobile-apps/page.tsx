@@ -28,7 +28,7 @@ import {
   CheckCircle,
   XCircle,
 } from "lucide-react";
-import { useTranslations } from "next-intl";
+import { useTranslations } from "@/hooks/use-translations";
 import { productionApi } from "@/lib/production-api";
 import { toast } from "sonner";
 
@@ -178,7 +178,7 @@ export default function MobileAppsPage() {
         if (!isMounted) return;
         
         console.error('Error loading mobile apps data:', error);
-        toast.error(t('mobileApps.failedToLoadData') || 'Failed to load mobile apps data');
+        toast.error(t('dashboard.failedToLoadData'));
         // Set empty arrays on error - no mock data fallback
         setVersions([]);
         setCrashes([]);

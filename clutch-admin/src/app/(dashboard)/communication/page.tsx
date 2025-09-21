@@ -25,7 +25,7 @@ import {
   Smartphone,
   Monitor,
 } from "lucide-react";
-import { useTranslations } from "@/hooks/use-translations";
+import { useTranslations } from "next-intl";
 import { productionApi, type Notification } from "@/lib/production-api";
 import { toast } from "@/lib/toast";
 
@@ -79,7 +79,7 @@ interface SupportTicket {
 }
 
 export default function CommunicationPage() {
-  const { t } = useTranslations();
+  const t = useTranslations();
   const [activeTab, setActiveTab] = useState("notifications");
   const [searchTerm, setSearchTerm] = useState("");
   const [notifications, setNotifications] = useState<CommunicationNotification[]>([]);
@@ -292,7 +292,7 @@ export default function CommunicationPage() {
         </Card>
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">{t('dashboard.deliveryRate')}</CardTitle>
+            <CardTitle className="text-sm font-medium">Delivery Rate</CardTitle>
             <TrendingUp className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
