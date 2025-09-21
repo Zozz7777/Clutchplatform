@@ -88,28 +88,6 @@ router.put('/', checkRole(['head_administrator']), async (req, res) => {
   }
 });
 
-// GET /api/settings/:category - Get settings by category
-router.get('/:category', async (req, res) => {
-  try {
-    const settingsCollection = await getCollection('settings');
-    const settings = await settingsCollection
-      .find({ category: req.params.category })
-      .sort({ key: 1 })
-      .toArray();
-    
-    res.json({
-      success: true,
-      data: settings
-    });
-  } catch (error) {
-    console.error('Error fetching settings by category:', error);
-    res.status(500).json({
-      success: false,
-      message: 'Failed to fetch settings',
-      error: process.env.NODE_ENV === 'development' ? error.message : undefined
-    });
-  }
-});
 
 // PUT /api/settings/:category/:key - Update specific setting
 router.put('/:category/:key', checkRole(['head_administrator']), async (req, res) => {
@@ -454,6 +432,31 @@ router.put('/integrations', checkRole(['head_administrator']), async (req, res) 
     res.status(500).json({
       success: false,
       message: 'Failed to update integration settings',
+      error: process.env.NODE_ENV === 'development' ? error.message : undefined
+    });
+  }
+});
+
+// ===== PARAMETERIZED ROUTES (MUST BE LAST) =====
+
+// GET /api/settings/:category - Get settings by category
+router.get('/:category', async (req, res) => {
+  try {
+    const settingsCollection = await getCollection('settings');
+    const settings = await settingsCollection
+      .find({ category: req.params.category })
+      .sort({ key: 1 })
+      .toArray();
+    
+    res.json({
+      success: true,
+      data: settings
+    });
+  } catch (error) {
+    console.error('Error fetching settings by category:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Failed to fetch settings',
       error: process.env.NODE_ENV === 'development' ? error.message : undefined
     });
   }
