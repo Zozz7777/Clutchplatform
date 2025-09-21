@@ -112,7 +112,19 @@ export function FuelCostMetrics({ className = '' }: FuelCostMetricsProps) {
           });
         }
       } catch (error) {
-        // Failed to load cost metrics
+        // Failed to load cost metrics - set default values
+        setCostMetrics({
+          totalCost: 0,
+          fuelCost: 0,
+          maintenanceCost: 0,
+          insuranceCost: 0,
+          otherCosts: 0,
+          costPerVehicle: 0,
+          costPerMile: 0,
+          fuelEfficiency: 8.5,
+          totalMiles: 0,
+          totalVehicles: 0
+        });
       } finally {
         setIsLoading(false);
       }
@@ -233,7 +245,7 @@ export function FuelCostMetrics({ className = '' }: FuelCostMetricsProps) {
           <div className="flex items-center justify-center space-x-2 mb-2">
             <Target className={`h-6 w-6 ${getCostColor(costMetrics.costPerVehicle, targetCostPerVehicle)}`} />
             <span className={`text-2xl font-bold ${getCostColor(costMetrics.costPerVehicle, targetCostPerVehicle)}`}>
-              {costMetrics.costPerVehicle.toFixed(0)} EGP
+              {(costMetrics.costPerVehicle || 0).toFixed(0)} EGP
             </span>
             <Badge className={getCostBadge(costMetrics.costPerVehicle, targetCostPerVehicle)}>
               {getCostLevel(costMetrics.costPerVehicle, targetCostPerVehicle)}
@@ -281,7 +293,7 @@ export function FuelCostMetrics({ className = '' }: FuelCostMetricsProps) {
           <div className="text-center p-3 bg-primary/10 rounded-[0.625rem]-lg">
             <BarChart3 className="h-4 w-4 text-primary mx-auto mb-1" />
             <p className="text-sm font-bold text-primary">
-              {costMetrics.costPerMile.toFixed(2)} EGP
+              {(costMetrics.costPerMile || 0).toFixed(2)} EGP
             </p>
             <p className="text-xs text-muted-foreground">Cost Per Mile</p>
           </div>

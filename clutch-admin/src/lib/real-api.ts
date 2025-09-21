@@ -742,6 +742,227 @@ export class RealApiService {
       { fallbackValue: [], showToast: false }
     )();
   }
+
+  // Additional missing API methods
+  async getSystemPerformanceMetrics(): Promise<Record<string, unknown>> {
+    return withErrorHandling(
+      async () => {
+        const response = await apiService.makeRequest<Record<string, unknown>>("/api/v1/system-performance");
+        return handleApiResponse(response, 'getSystemPerformanceMetrics', {});
+      },
+      'getSystemPerformanceMetrics',
+      { fallbackValue: {}, showToast: false }
+    )();
+  }
+
+  async getFuelCostMetrics(): Promise<Record<string, unknown>> {
+    return withErrorHandling(
+      async () => {
+        const response = await apiService.makeRequest<Record<string, unknown>>("/api/v1/fuel-cost-metrics");
+        return handleApiResponse(response, 'getFuelCostMetrics', {});
+      },
+      'getFuelCostMetrics',
+      { fallbackValue: {}, showToast: false }
+    )();
+  }
+
+  async getDowntimeMetrics(): Promise<Record<string, unknown>> {
+    return withErrorHandling(
+      async () => {
+        const response = await apiService.makeRequest<Record<string, unknown>>("/api/v1/downtime-metrics");
+        return handleApiResponse(response, 'getDowntimeMetrics', {});
+      },
+      'getDowntimeMetrics',
+      { fallbackValue: {}, showToast: false }
+    )();
+  }
+
+  async getUpsellOpportunities(): Promise<Record<string, unknown>[]> {
+    return withErrorHandling(
+      async () => {
+        const response = await apiService.makeRequest<Record<string, unknown>[]>("/api/v1/upsell-opportunities");
+        return handleApiResponse(response, 'getUpsellOpportunities', []);
+      },
+      'getUpsellOpportunities',
+      { fallbackValue: [], showToast: false }
+    )();
+  }
+
+  async getSLACompliance(): Promise<Record<string, unknown>> {
+    return withErrorHandling(
+      async () => {
+        const response = await apiService.makeRequest<Record<string, unknown>>("/api/v1/sla-compliance");
+        return handleApiResponse(response, 'getSLACompliance', {});
+      },
+      'getSLACompliance',
+      { fallbackValue: {}, showToast: false }
+    )();
+  }
+
+  async getRootCauseAnalysis(): Promise<Record<string, unknown>[]> {
+    return withErrorHandling(
+      async () => {
+        const response = await apiService.makeRequest<Record<string, unknown>[]>("/api/v1/root-cause-analysis");
+        return handleApiResponse(response, 'getRootCauseAnalysis', []);
+      },
+      'getRootCauseAnalysis',
+      { fallbackValue: [], showToast: false }
+    )();
+  }
+
+  async getExpenses(): Promise<Record<string, unknown>[]> {
+    return withErrorHandling(
+      async () => {
+        const response = await apiService.makeRequest<Record<string, unknown>[]>("/api/v1/expenses");
+        return handleApiResponse(response, 'getExpenses', []);
+      },
+      'getExpenses',
+      { fallbackValue: [], showToast: false }
+    )();
+  }
+
+  async getProjects(): Promise<Record<string, unknown>[]> {
+    return withErrorHandling(
+      async () => {
+        const response = await apiService.makeRequest<Record<string, unknown>[]>("/api/v1/projects");
+        return handleApiResponse(response, 'getProjects', []);
+      },
+      'getProjects',
+      { fallbackValue: [], showToast: false }
+    )();
+  }
+
+  async getBudgets(): Promise<Record<string, unknown>[]> {
+    return withErrorHandling(
+      async () => {
+        const response = await apiService.makeRequest<Record<string, unknown>[]>("/api/v1/budgets");
+        return handleApiResponse(response, 'getBudgets', []);
+      },
+      'getBudgets',
+      { fallbackValue: [], showToast: false }
+    )();
+  }
+
+  async getHealthChecks(): Promise<Record<string, unknown>[]> {
+    return withErrorHandling(
+      async () => {
+        const response = await apiService.makeRequest<Record<string, unknown>[]>("/api/v1/health-checks");
+        return handleApiResponse(response, 'getHealthChecks', []);
+      },
+      'getHealthChecks',
+      { fallbackValue: [], showToast: false }
+    )();
+  }
+
+  async getIntegrationMetrics(): Promise<Record<string, unknown>> {
+    return withErrorHandling(
+      async () => {
+        const response = await apiService.makeRequest<Record<string, unknown>>("/api/v1/integration-metrics");
+        return handleApiResponse(response, 'getIntegrationMetrics', {});
+      },
+      'getIntegrationMetrics',
+      { fallbackValue: {}, showToast: false }
+    )();
+  }
+
+  async getIncidents(): Promise<Record<string, unknown>[]> {
+    return withErrorHandling(
+      async () => {
+        const response = await apiService.makeRequest<Record<string, unknown>[]>("/api/v1/incidents");
+        return handleApiResponse(response, 'getIncidents', []);
+      },
+      'getIncidents',
+      { fallbackValue: [], showToast: false }
+    )();
+  }
+
+  async getAlerts(): Promise<Record<string, unknown>[]> {
+    return withErrorHandling(
+      async () => {
+        const response = await apiService.makeRequest<Record<string, unknown>[]>("/api/v1/alerts");
+        return handleApiResponse(response, 'getAlerts', []);
+      },
+      'getAlerts',
+      { fallbackValue: [], showToast: false }
+    )();
+  }
+
+  async getLogs(): Promise<Record<string, unknown>[]> {
+    return withErrorHandling(
+      async () => {
+        const response = await apiService.makeRequest<Record<string, unknown>[]>("/api/v1/logs");
+        return handleApiResponse(response, 'getLogs', []);
+      },
+      'getLogs',
+      { fallbackValue: [], showToast: false }
+    )();
+  }
+
+  async getErrors(): Promise<Record<string, unknown>[]> {
+    return withErrorHandling(
+      async () => {
+        const response = await apiService.makeRequest<Record<string, unknown>[]>("/api/v1/errors");
+        return handleApiResponse(response, 'getErrors', []);
+      },
+      'getErrors',
+      { fallbackValue: [], showToast: false }
+    )();
+  }
+
+  async getCustomerHealthScores(): Promise<Record<string, unknown>[]> {
+    return withErrorHandling(
+      async () => {
+        const response = await apiService.makeRequest<Record<string, unknown>[]>("/api/v1/customer-health-scores");
+        return handleApiResponse(response, 'getCustomerHealthScores', []);
+      },
+      'getCustomerHealthScores',
+      { fallbackValue: [], showToast: false }
+    )();
+  }
+
+  async getChatSessions(): Promise<Record<string, unknown>[]> {
+    return withErrorHandling(
+      async () => {
+        const response = await apiService.makeRequest<Record<string, unknown>[]>("/api/v1/chat-sessions");
+        return handleApiResponse(response, 'getChatSessions', []);
+      },
+      'getChatSessions',
+      { fallbackValue: [], showToast: false }
+    )();
+  }
+
+  async getSystemAlerts(): Promise<Record<string, unknown>[]> {
+    return withErrorHandling(
+      async () => {
+        const response = await apiService.makeRequest<Record<string, unknown>[]>("/api/v1/system-alerts");
+        return handleApiResponse(response, 'getSystemAlerts', []);
+      },
+      'getSystemAlerts',
+      { fallbackValue: [], showToast: false }
+    )();
+  }
+
+  async getSystemLogs(): Promise<Record<string, unknown>[]> {
+    return withErrorHandling(
+      async () => {
+        const response = await apiService.makeRequest<Record<string, unknown>[]>("/api/v1/system-logs");
+        return handleApiResponse(response, 'getSystemLogs', []);
+      },
+      'getSystemLogs',
+      { fallbackValue: [], showToast: false }
+    )();
+  }
+
+  async getPerformanceMetrics(): Promise<Record<string, unknown>> {
+    return withErrorHandling(
+      async () => {
+        const response = await apiService.makeRequest<Record<string, unknown>>("/api/v1/performance-metrics");
+        return handleApiResponse(response, 'getPerformanceMetrics', {});
+      },
+      'getPerformanceMetrics',
+      { fallbackValue: {}, showToast: false }
+    )();
+  }
 }
 
 // Export singleton instance

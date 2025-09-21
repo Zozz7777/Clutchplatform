@@ -6,7 +6,7 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Progress } from '@/components/ui/progress';
 import { businessIntelligence, type ComplianceStatus } from '@/lib/business-intelligence';
-// // import { useTranslations } from 'next-intl';
+// // import { useTranslations } from '@/hooks/use-translations';
 import { 
   Shield, 
   AlertTriangle, 
@@ -25,7 +25,7 @@ interface ComplianceRadarProps {
 }
 
 export function ComplianceRadar({ className = '' }: ComplianceRadarProps) {
-  const t = (key: string, params?: any) => key;
+  const { t } = useTranslations();
   const [compliance, setCompliance] = React.useState<ComplianceStatus | null>(null);
   const [isLoading, setIsLoading] = React.useState(true);
 
