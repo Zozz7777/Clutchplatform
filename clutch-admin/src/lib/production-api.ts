@@ -549,6 +549,230 @@ export class ProductionApiService {
       throw new Error("Failed to load audit trail");
     }
   }
+
+  // User Segments
+  async getUserSegments(): Promise<Record<string, unknown>[]> {
+    try {
+      return await realApi.getUserSegments();
+    } catch (error) {
+      logger.error("Failed to fetch user segments:", error);
+      throw new Error("Failed to load user segments");
+    }
+  }
+
+  async getUserSegmentAnalytics(): Promise<Record<string, unknown>> {
+    try {
+      return await realApi.getUserSegmentAnalytics();
+    } catch (error) {
+      logger.error("Failed to fetch user segment analytics:", error);
+      throw new Error("Failed to load user segment analytics");
+    }
+  }
+
+  // API Documentation
+  async getAPIEndpoints(): Promise<Record<string, unknown>[]> {
+    try {
+      return await realApi.getAPIEndpoints();
+    } catch (error) {
+      logger.error("Failed to fetch API endpoints:", error);
+      throw new Error("Failed to load API endpoints");
+    }
+  }
+
+  async getAPICategories(): Promise<Record<string, unknown>[]> {
+    try {
+      return await realApi.getAPICategories();
+    } catch (error) {
+      logger.error("Failed to fetch API categories:", error);
+      throw new Error("Failed to load API categories");
+    }
+  }
+
+  // Feature Flags Extended
+  async getABTests(): Promise<Record<string, unknown>[]> {
+    try {
+      return await realApi.getABTests();
+    } catch (error) {
+      logger.error("Failed to fetch AB tests:", error);
+      throw new Error("Failed to load AB tests");
+    }
+  }
+
+  async getRollouts(): Promise<Record<string, unknown>[]> {
+    try {
+      return await realApi.getRollouts();
+    } catch (error) {
+      logger.error("Failed to fetch rollouts:", error);
+      throw new Error("Failed to load rollouts");
+    }
+  }
+
+  async createFeatureFlag(flagData: Record<string, unknown>): Promise<Record<string, unknown>> {
+    try {
+      return await realApi.createFeatureFlag(flagData);
+    } catch (error) {
+      logger.error("Failed to create feature flag:", error);
+      throw new Error("Failed to create feature flag");
+    }
+  }
+
+  async createABTest(abTestData: Record<string, unknown>): Promise<Record<string, unknown>> {
+    try {
+      return await realApi.createABTest(abTestData);
+    } catch (error) {
+      logger.error("Failed to create AB test:", error);
+      throw new Error("Failed to create AB test");
+    }
+  }
+
+  async createRollout(rolloutData: Record<string, unknown>): Promise<Record<string, unknown>> {
+    try {
+      return await realApi.createRollout(rolloutData);
+    } catch (error) {
+      logger.error("Failed to create rollout:", error);
+      throw new Error("Failed to create rollout");
+    }
+  }
+
+  // Vendors
+  async getVendors(): Promise<Record<string, unknown>[]> {
+    try {
+      return await realApi.getVendors();
+    } catch (error) {
+      logger.error("Failed to fetch vendors:", error);
+      throw new Error("Failed to load vendors");
+    }
+  }
+
+  async getVendorContracts(): Promise<Record<string, unknown>[]> {
+    try {
+      return await realApi.getVendorContracts();
+    } catch (error) {
+      logger.error("Failed to fetch vendor contracts:", error);
+      throw new Error("Failed to load vendor contracts");
+    }
+  }
+
+  async getVendorCommunications(): Promise<Record<string, unknown>[]> {
+    try {
+      return await realApi.getVendorCommunications();
+    } catch (error) {
+      logger.error("Failed to fetch vendor communications:", error);
+      throw new Error("Failed to load vendor communications");
+    }
+  }
+
+  async createVendor(vendorData: Record<string, unknown>): Promise<Record<string, unknown>> {
+    try {
+      return await realApi.createVendor(vendorData);
+    } catch (error) {
+      logger.error("Failed to create vendor:", error);
+      throw new Error("Failed to create vendor");
+    }
+  }
+
+  async createVendorContract(contractData: Record<string, unknown>): Promise<Record<string, unknown>> {
+    try {
+      return await realApi.createVendorContract(contractData);
+    } catch (error) {
+      logger.error("Failed to create vendor contract:", error);
+      throw new Error("Failed to create vendor contract");
+    }
+  }
+
+  async createVendorCommunication(communicationData: Record<string, unknown>): Promise<Record<string, unknown>> {
+    try {
+      return await realApi.createVendorCommunication(communicationData);
+    } catch (error) {
+      logger.error("Failed to create vendor communication:", error);
+      throw new Error("Failed to create vendor communication");
+    }
+  }
+
+  // Security
+  async getSecurityAlerts(): Promise<Record<string, unknown>[]> {
+    try {
+      return await realApi.getSecurityAlerts();
+    } catch (error) {
+      logger.error("Failed to fetch security alerts:", error);
+      throw new Error("Failed to load security alerts");
+    }
+  }
+
+  async getLiveUserActivities(): Promise<Record<string, unknown>[]> {
+    try {
+      return await realApi.getLiveUserActivities();
+    } catch (error) {
+      logger.error("Failed to fetch live user activities:", error);
+      throw new Error("Failed to load live user activities");
+    }
+  }
+
+  // Analytics Extended
+  async getAnalyticsMetrics(): Promise<Record<string, unknown>> {
+    try {
+      return await realApi.getAnalyticsMetrics();
+    } catch (error) {
+      logger.error("Failed to fetch analytics metrics:", error);
+      throw new Error("Failed to load analytics metrics");
+    }
+  }
+
+  async getAnalyticsData(type: string, options: Record<string, unknown>): Promise<Record<string, unknown>> {
+    try {
+      return await realApi.getAnalyticsData(type, options);
+    } catch (error) {
+      logger.error("Failed to fetch analytics data:", error);
+      throw new Error("Failed to load analytics data");
+    }
+  }
+
+  // CRM
+  async getCustomers(): Promise<Record<string, unknown>[]> {
+    try {
+      return await realApi.getCustomers();
+    } catch (error) {
+      logger.error("Failed to fetch customers:", error);
+      throw new Error("Failed to load customers");
+    }
+  }
+
+  // Projects
+  async getProjects(): Promise<Record<string, unknown>[]> {
+    try {
+      return await realApi.getProjects();
+    } catch (error) {
+      logger.error("Failed to fetch projects:", error);
+      throw new Error("Failed to load projects");
+    }
+  }
+
+  async getProjectTasks(projectId: string): Promise<Record<string, unknown>[]> {
+    try {
+      return await realApi.getProjectTasks(projectId);
+    } catch (error) {
+      logger.error("Failed to fetch project tasks:", error);
+      throw new Error("Failed to load project tasks");
+    }
+  }
+
+  async getTimeTracking(projectId: string): Promise<Record<string, unknown>[]> {
+    try {
+      return await realApi.getTimeTracking(projectId);
+    } catch (error) {
+      logger.error("Failed to fetch time tracking:", error);
+      throw new Error("Failed to load time tracking");
+    }
+  }
+
+  async createProject(projectData: Record<string, unknown>): Promise<Record<string, unknown>> {
+    try {
+      return await realApi.createProject(projectData);
+    } catch (error) {
+      logger.error("Failed to create project:", error);
+      throw new Error("Failed to create project");
+    }
+  }
 }
 
 // Create and export a singleton instance

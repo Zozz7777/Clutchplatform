@@ -318,11 +318,11 @@ class BusinessIntelligenceService {
           (p.customer && p.customer === customer.name) || 
           (p.userId && p.userId === customer.id)
         );
-        const revenue = customerPayments.reduce((sum, p) => sum + (p.amount || 0), 0);
+        const revenue = customerPayments.reduce((sum: number, p: any) => sum + (Number(p.amount) || 0), 0);
         
         // Calculate activity based on recent payments and customer status
         const recentPayments = customerPayments.filter(p => {
-          const paymentDate = new Date(p.createdAt || p.timestamp);
+          const paymentDate = new Date(p.createdAt || p.timestamp || new Date().toISOString());
           return (Date.now() - paymentDate.getTime()) < (30 * 24 * 60 * 60 * 1000);
         });
         
@@ -793,7 +793,7 @@ class BusinessIntelligenceService {
       // Fallback to calculating from payments if API fails
       const payments = await productionApi.getPayments().catch(() => []);
       const paymentsArray = Array.isArray(payments) ? payments : [];
-      const monthly = paymentsArray.reduce((sum, p) => sum + (p.amount || 0), 0);
+      const monthly = paymentsArray.reduce((sum: number, p: any) => sum + (Number(p.amount) || 0), 0);
       const total = monthly * 12; // Annual projection
       const growth = 0; // No growth data available
 
@@ -806,7 +806,7 @@ class BusinessIntelligenceService {
   private getCachedData<T>(key: string): T | null {
     const cached = this.cache.get(key);
     if (cached && Date.now() - cached.timestamp < this.cacheTimeout) {
-      return cached.data;
+      return cached.data as T | null;
     }
     return null;
   }

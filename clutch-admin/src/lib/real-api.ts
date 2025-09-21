@@ -1102,6 +1102,302 @@ export class RealApiService {
       { fallbackValue: [], showToast: false }
     )();
   }
+
+  // User Segments APIs
+  async getUserSegments(): Promise<Record<string, unknown>[]> {
+    return withErrorHandling(
+      async () => {
+        const response = await apiService.makeRequest<Record<string, unknown>[]>("/api/v1/users/segments");
+        return handleApiResponse(response, 'getUserSegments', []);
+      },
+      'getUserSegments',
+      { fallbackValue: [], showToast: false }
+    )();
+  }
+
+  async getUserSegmentAnalytics(): Promise<Record<string, unknown>> {
+    return withErrorHandling(
+      async () => {
+        const response = await apiService.makeRequest<Record<string, unknown>>("/api/v1/users/segments/analytics");
+        return handleApiResponse(response, 'getUserSegmentAnalytics', {});
+      },
+      'getUserSegmentAnalytics',
+      { fallbackValue: {}, showToast: false }
+    )();
+  }
+
+  // API Documentation APIs
+  async getAPIEndpoints(): Promise<Record<string, unknown>[]> {
+    return withErrorHandling(
+      async () => {
+        const response = await apiService.makeRequest<Record<string, unknown>[]>("/api/v1/api-docs/endpoints");
+        return handleApiResponse(response, 'getAPIEndpoints', []);
+      },
+      'getAPIEndpoints',
+      { fallbackValue: [], showToast: false }
+    )();
+  }
+
+  async getAPICategories(): Promise<Record<string, unknown>[]> {
+    return withErrorHandling(
+      async () => {
+        const response = await apiService.makeRequest<Record<string, unknown>[]>("/api/v1/api-docs/categories");
+        return handleApiResponse(response, 'getAPICategories', []);
+      },
+      'getAPICategories',
+      { fallbackValue: [], showToast: false }
+    )();
+  }
+
+  // Feature Flags Extended APIs
+  async getABTests(): Promise<Record<string, unknown>[]> {
+    return withErrorHandling(
+      async () => {
+        const response = await apiService.makeRequest<Record<string, unknown>[]>("/api/v1/feature-flags/ab-tests");
+        return handleApiResponse(response, 'getABTests', []);
+      },
+      'getABTests',
+      { fallbackValue: [], showToast: false }
+    )();
+  }
+
+  async getRollouts(): Promise<Record<string, unknown>[]> {
+    return withErrorHandling(
+      async () => {
+        const response = await apiService.makeRequest<Record<string, unknown>[]>("/api/v1/feature-flags/rollouts");
+        return handleApiResponse(response, 'getRollouts', []);
+      },
+      'getRollouts',
+      { fallbackValue: [], showToast: false }
+    )();
+  }
+
+  async createFeatureFlag(flagData: Record<string, unknown>): Promise<Record<string, unknown>> {
+    return withErrorHandling(
+      async () => {
+        const response = await apiService.makeRequest<Record<string, unknown>>("/api/v1/feature-flags", {
+          method: 'POST',
+          body: JSON.stringify(flagData)
+        });
+        return handleApiResponse(response, 'createFeatureFlag', {});
+      },
+      'createFeatureFlag',
+      { fallbackValue: {}, showToast: false }
+    )();
+  }
+
+  async createABTest(abTestData: Record<string, unknown>): Promise<Record<string, unknown>> {
+    return withErrorHandling(
+      async () => {
+        const response = await apiService.makeRequest<Record<string, unknown>>("/api/v1/feature-flags/ab-tests", {
+          method: 'POST',
+          body: JSON.stringify(abTestData)
+        });
+        return handleApiResponse(response, 'createABTest', {});
+      },
+      'createABTest',
+      { fallbackValue: {}, showToast: false }
+    )();
+  }
+
+  async createRollout(rolloutData: Record<string, unknown>): Promise<Record<string, unknown>> {
+    return withErrorHandling(
+      async () => {
+        const response = await apiService.makeRequest<Record<string, unknown>>("/api/v1/feature-flags/rollouts", {
+          method: 'POST',
+          body: JSON.stringify(rolloutData)
+        });
+        return handleApiResponse(response, 'createRollout', {});
+      },
+      'createRollout',
+      { fallbackValue: {}, showToast: false }
+    )();
+  }
+
+  // Vendors APIs
+  async getVendors(): Promise<Record<string, unknown>[]> {
+    return withErrorHandling(
+      async () => {
+        const response = await apiService.makeRequest<Record<string, unknown>[]>("/api/v1/vendors");
+        return handleApiResponse(response, 'getVendors', []);
+      },
+      'getVendors',
+      { fallbackValue: [], showToast: false }
+    )();
+  }
+
+  async getVendorContracts(): Promise<Record<string, unknown>[]> {
+    return withErrorHandling(
+      async () => {
+        const response = await apiService.makeRequest<Record<string, unknown>[]>("/api/v1/vendors/contracts");
+        return handleApiResponse(response, 'getVendorContracts', []);
+      },
+      'getVendorContracts',
+      { fallbackValue: [], showToast: false }
+    )();
+  }
+
+  async getVendorCommunications(): Promise<Record<string, unknown>[]> {
+    return withErrorHandling(
+      async () => {
+        const response = await apiService.makeRequest<Record<string, unknown>[]>("/api/v1/vendors/communications");
+        return handleApiResponse(response, 'getVendorCommunications', []);
+      },
+      'getVendorCommunications',
+      { fallbackValue: [], showToast: false }
+    )();
+  }
+
+  async createVendor(vendorData: Record<string, unknown>): Promise<Record<string, unknown>> {
+    return withErrorHandling(
+      async () => {
+        const response = await apiService.makeRequest<Record<string, unknown>>("/api/v1/vendors", {
+          method: 'POST',
+          body: JSON.stringify(vendorData)
+        });
+        return handleApiResponse(response, 'createVendor', {});
+      },
+      'createVendor',
+      { fallbackValue: {}, showToast: false }
+    )();
+  }
+
+  async createVendorContract(contractData: Record<string, unknown>): Promise<Record<string, unknown>> {
+    return withErrorHandling(
+      async () => {
+        const response = await apiService.makeRequest<Record<string, unknown>>("/api/v1/vendors/contracts", {
+          method: 'POST',
+          body: JSON.stringify(contractData)
+        });
+        return handleApiResponse(response, 'createVendorContract', {});
+      },
+      'createVendorContract',
+      { fallbackValue: {}, showToast: false }
+    )();
+  }
+
+  async createVendorCommunication(communicationData: Record<string, unknown>): Promise<Record<string, unknown>> {
+    return withErrorHandling(
+      async () => {
+        const response = await apiService.makeRequest<Record<string, unknown>>("/api/v1/vendors/communications", {
+          method: 'POST',
+          body: JSON.stringify(communicationData)
+        });
+        return handleApiResponse(response, 'createVendorCommunication', {});
+      },
+      'createVendorCommunication',
+      { fallbackValue: {}, showToast: false }
+    )();
+  }
+
+  // Security APIs
+  async getSecurityAlerts(): Promise<Record<string, unknown>[]> {
+    return withErrorHandling(
+      async () => {
+        const response = await apiService.makeRequest<Record<string, unknown>[]>("/api/v1/security/alerts");
+        return handleApiResponse(response, 'getSecurityAlerts', []);
+      },
+      'getSecurityAlerts',
+      { fallbackValue: [], showToast: false }
+    )();
+  }
+
+  async getLiveUserActivities(): Promise<Record<string, unknown>[]> {
+    return withErrorHandling(
+      async () => {
+        const response = await apiService.makeRequest<Record<string, unknown>[]>("/api/v1/users/activities/live");
+        return handleApiResponse(response, 'getLiveUserActivities', []);
+      },
+      'getLiveUserActivities',
+      { fallbackValue: [], showToast: false }
+    )();
+  }
+
+  // Analytics Extended APIs
+  async getAnalyticsMetrics(): Promise<Record<string, unknown>> {
+    return withErrorHandling(
+      async () => {
+        const response = await apiService.makeRequest<Record<string, unknown>>("/api/v1/analytics/metrics");
+        return handleApiResponse(response, 'getAnalyticsMetrics', {});
+      },
+      'getAnalyticsMetrics',
+      { fallbackValue: {}, showToast: false }
+    )();
+  }
+
+  async getAnalyticsData(type: string, options: Record<string, unknown>): Promise<Record<string, unknown>> {
+    return withErrorHandling(
+      async () => {
+        const response = await apiService.makeRequest<Record<string, unknown>>(`/api/v1/analytics/data/${type}`, {
+          method: 'POST',
+          body: JSON.stringify(options)
+        });
+        return handleApiResponse(response, 'getAnalyticsData', {});
+      },
+      'getAnalyticsData',
+      { fallbackValue: {}, showToast: false }
+    )();
+  }
+
+  // CRM APIs
+  async getCustomers(): Promise<Record<string, unknown>[]> {
+    return withErrorHandling(
+      async () => {
+        const response = await apiService.makeRequest<Record<string, unknown>[]>("/api/v1/crm/customers");
+        return handleApiResponse(response, 'getCustomers', []);
+      },
+      'getCustomers',
+      { fallbackValue: [], showToast: false }
+    )();
+  }
+
+  // Projects APIs
+  async getProjects(): Promise<Record<string, unknown>[]> {
+    return withErrorHandling(
+      async () => {
+        const response = await apiService.makeRequest<Record<string, unknown>[]>("/api/v1/projects");
+        return handleApiResponse(response, 'getProjects', []);
+      },
+      'getProjects',
+      { fallbackValue: [], showToast: false }
+    )();
+  }
+
+  async getProjectTasks(projectId: string): Promise<Record<string, unknown>[]> {
+    return withErrorHandling(
+      async () => {
+        const response = await apiService.makeRequest<Record<string, unknown>[]>(`/api/v1/projects/${projectId}/tasks`);
+        return handleApiResponse(response, 'getProjectTasks', []);
+      },
+      'getProjectTasks',
+      { fallbackValue: [], showToast: false }
+    )();
+  }
+
+  async getTimeTracking(projectId: string): Promise<Record<string, unknown>[]> {
+    return withErrorHandling(
+      async () => {
+        const response = await apiService.makeRequest<Record<string, unknown>[]>(`/api/v1/projects/${projectId}/time-tracking`);
+        return handleApiResponse(response, 'getTimeTracking', []);
+      },
+      'getTimeTracking',
+      { fallbackValue: [], showToast: false }
+    )();
+  }
+
+  async createProject(projectData: Record<string, unknown>): Promise<Record<string, unknown>> {
+    return withErrorHandling(
+      async () => {
+        const response = await apiService.makeRequest<Record<string, unknown>>("/api/v1/projects", {
+          method: 'POST',
+          body: JSON.stringify(projectData)
+        });
+        return handleApiResponse(response, 'createProject', {});
+      },
+      'createProject',
+      { fallbackValue: {}, showToast: false }
+    )();
+  }
 }
 
 // Export singleton instance

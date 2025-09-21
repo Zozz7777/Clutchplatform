@@ -27,7 +27,7 @@ import {
   Calendar,
   User
 } from 'lucide-react';
-// // import { useTranslations } from 'next-intl';
+import { useTranslations } from '@/hooks/use-translations';
 import { productionApi } from '@/lib/production-api';
 
 interface KnowledgeArticle {
