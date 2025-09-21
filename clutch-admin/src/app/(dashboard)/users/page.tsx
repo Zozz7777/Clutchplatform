@@ -11,7 +11,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { productionApi } from "@/lib/production-api";
 import { formatDate, formatRelativeTime } from "@/lib/utils";
 import { useAuth } from "@/contexts/auth-context";
-import { useTranslations } from "@/hooks/use-translations";
+import { useTranslations } from "next-intl";
 import { useQuickActions } from "@/lib/quick-actions";
 import { toast } from "sonner";
 
@@ -69,7 +69,7 @@ export default function UsersPage() {
   const [roleFilter, setRoleFilter] = useState<string>("all");
   const [isLoading, setIsLoading] = useState(true);
   const { hasPermission } = useAuth();
-  const { t } = useTranslations();
+  const t = useTranslations();
   // Safely get quick actions with error handling
   let addUser: (() => void) | null = null;
   

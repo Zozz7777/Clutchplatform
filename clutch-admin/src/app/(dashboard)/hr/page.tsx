@@ -8,7 +8,7 @@ import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Checkbox } from "@/components/ui/checkbox";
 import { useAuth } from "@/contexts/auth-context";
-import { useTranslations } from "@/hooks/use-translations";
+import { useTranslations } from "next-intl";
 import { formatDate, formatRelativeTime } from "@/lib/utils";
 import { EmployeeInvitationForm } from "@/components/employee-invitation-form";
 import { apiService } from "@/lib/api";
@@ -200,7 +200,7 @@ export default function HRPage() {
   const [employeeToDelete, setEmployeeToDelete] = useState<Employee | null>(null);
   const [editFormData, setEditFormData] = useState<Partial<Employee>>({});
   const { user, hasPermission } = useAuth();
-  const { t } = useTranslations();
+  const t = useTranslations();
 
   // Helper functions for role and permission management
   const getRolePermissions = (role: string): string[] => {

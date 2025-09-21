@@ -47,8 +47,8 @@ import {
   Smartphone,
   Monitor,
 } from "lucide-react";
-import { useTranslations } from "@/hooks/use-translations";
-import { realApi } from "@/lib/real-api";
+import { useTranslations } from "next-intl";
+import { productionApi } from "@/lib/production-api";
 import { toast } from "sonner";
 import { useAuth } from "@/contexts/auth-context";
 
@@ -105,7 +105,7 @@ interface UserActivity {
 }
 
 export default function AuditTrailPage() {
-  const { t } = useTranslations();
+  const t = useTranslations();
   const { user, hasPermission } = useAuth();
   const [auditLogs, setAuditLogs] = useState<AuditLog[]>([]);
   const [securityEvents, setSecurityEvents] = useState<SecurityEvent[]>([]);
@@ -125,9 +125,9 @@ export default function AuditTrailPage() {
         
         // Use Promise.allSettled to handle individual failures gracefully
         const [logsResult, eventsResult, activitiesResult] = await Promise.allSettled([
-          realApi.getAuditLogs(),
-          realApi.getSecurityEvents(),
-          realApi.getUserActivities()
+          productionApi.getAuditLogs(),
+          productionApi.getSecurityEvents(),
+          productionApi.getUserActivities()
         ]);
 
         // Handle audit logs

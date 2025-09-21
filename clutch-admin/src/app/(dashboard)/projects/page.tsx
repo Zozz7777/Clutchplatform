@@ -46,7 +46,7 @@ import {
 } from "lucide-react";
 import { formatCurrency } from "@/lib/utils";
 import { productionApi } from "@/lib/production-api";
-import { useTranslations } from "@/hooks/use-translations";
+import { useTranslations } from "next-intl";
 
 // Import new Phase 2 widgets
 import ProjectROI from '@/components/widgets/project-roi';

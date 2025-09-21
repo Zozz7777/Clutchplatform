@@ -184,29 +184,47 @@ router.get('/', authenticateToken, checkRole(['head_administrator', 'hr']), asyn
     const { page = 1, limit = 20, role, department, isActive } = req.query;
     const skip = (parseInt(page) - 1) * parseInt(limit);
     
-    const usersCollection = await getCollection('users');
+    const employeesCollection = await getCollection('employees');
     
     // Build filter
-    const filter = { isEmployee: true };
+    const filter = {};
     if (role) filter.role = role;
-    if (department) filter.department = department;
+    if (department) filter['employment.department'] = department;
     if (isActive !== undefined) filter.isActive = isActive === 'true';
     
     // Get employees with pagination
     const [employees, total] = await Promise.all([
-      usersCollection
+      employeesCollection
         .find(filter, { projection: { password: 0 } })
         .sort({ createdAt: -1 })
         .skip(skip)
         .limit(parseInt(limit))
         .toArray(),
-      usersCollection.countDocuments(filter)
+      employeesCollection.countDocuments(filter)
     ]);
+    
+    // Transform employee data to match frontend interface
+    const transformedEmployees = employees.map(employee => ({
+      _id: employee._id,
+      email: employee.basicInfo?.email || employee.email,
+      role: employee.role,
+      isEmployee: true,
+      isActive: employee.isActive,
+      name: `${employee.basicInfo?.firstName || employee.firstName || ''} ${employee.basicInfo?.lastName || employee.lastName || ''}`.trim(),
+      firstName: employee.basicInfo?.firstName || employee.firstName,
+      lastName: employee.basicInfo?.lastName || employee.lastName,
+      phone: employee.basicInfo?.phone || employee.phone,
+      department: employee.employment?.department || employee.department,
+      position: employee.employment?.position || employee.position,
+      permissions: employee.permissions || [],
+      createdAt: employee.createdAt,
+      updatedAt: employee.updatedAt
+    }));
     
     res.json({
       success: true,
       data: {
-        employees,
+        employees: transformedEmployees,
         pagination: {
           page: parseInt(page),
           limit: parseInt(limit),
@@ -233,10 +251,10 @@ router.get('/', authenticateToken, checkRole(['head_administrator', 'hr']), asyn
 router.get('/:id', authenticateToken, checkRole(['head_administrator', 'hr']), async (req, res) => {
   try {
     const { id } = req.params;
-    const usersCollection = await getCollection('users');
+    const employeesCollection = await getCollection('employees');
     
     // Handle both string and ObjectId formats
-    let query = { isEmployee: true };
+    let query = {};
     try {
       // Try ObjectId first (for MongoDB ObjectIds)
       query._id = new ObjectId(id);
@@ -245,12 +263,12 @@ router.get('/:id', authenticateToken, checkRole(['head_administrator', 'hr']), a
       query._id = id;
     }
     
-    const employee = await usersCollection.findOne(
+    const employeeRecord = await employeesCollection.findOne(
       query,
       { projection: { password: 0 } }
     );
     
-    if (!employee) {
+    if (!employeeRecord) {
       return res.status(404).json({
         success: false,
         error: 'EMPLOYEE_NOT_FOUND',
@@ -258,6 +276,24 @@ router.get('/:id', authenticateToken, checkRole(['head_administrator', 'hr']), a
         timestamp: new Date().toISOString()
       });
     }
+    
+    // Transform employee record to match expected format
+    const employee = {
+      _id: employeeRecord._id,
+      email: employeeRecord.basicInfo?.email || employeeRecord.email,
+      role: employeeRecord.role,
+      isEmployee: true,
+      isActive: employeeRecord.isActive,
+      name: `${employeeRecord.basicInfo?.firstName || employeeRecord.firstName || ''} ${employeeRecord.basicInfo?.lastName || employeeRecord.lastName || ''}`.trim(),
+      firstName: employeeRecord.basicInfo?.firstName || employeeRecord.firstName,
+      lastName: employeeRecord.basicInfo?.lastName || employeeRecord.lastName,
+      phone: employeeRecord.basicInfo?.phone || employeeRecord.phone,
+      department: employeeRecord.employment?.department || employeeRecord.department,
+      position: employeeRecord.employment?.position || employeeRecord.position,
+      permissions: employeeRecord.permissions || [],
+      createdAt: employeeRecord.createdAt,
+      updatedAt: employeeRecord.updatedAt
+    };
     
     res.json({
       success: true,
@@ -283,10 +319,10 @@ router.put('/:id', authenticateToken, checkRole(['head_administrator', 'hr', 'hr
     const { id } = req.params;
     const { name, phoneNumber, role, department, position, permissions, isActive } = req.body;
     
-    const usersCollection = await getCollection('users');
+    const employeesCollection = await getCollection('employees');
     
-    // Check if employee exists - Handle both string and ObjectId formats
-    let query = { isEmployee: true };
+    // Handle both string and ObjectId formats
+    let query = {};
     try {
       // Try ObjectId first (for MongoDB ObjectIds)
       query._id = new ObjectId(id);
@@ -295,7 +331,8 @@ router.put('/:id', authenticateToken, checkRole(['head_administrator', 'hr', 'hr
       query._id = id;
     }
     
-    const existingEmployee = await usersCollection.findOne(query);
+    const existingEmployee = await employeesCollection.findOne(query);
+    
     if (!existingEmployee) {
       return res.status(404).json({
         success: false,
@@ -327,21 +364,36 @@ router.put('/:id', authenticateToken, checkRole(['head_administrator', 'hr', 'hr
       });
     }
     
-    // Build update object
+    // Build update object for employees collection structure
     const updateData = {
       updatedAt: new Date(),
       updatedBy: req.user.userId
     };
     
-    if (name) updateData.name = name;
-    if (phoneNumber !== undefined) updateData.phoneNumber = phoneNumber;
+    // Handle name updates (split into firstName and lastName)
+    if (name) {
+      const nameParts = name.trim().split(' ');
+      updateData['basicInfo.firstName'] = nameParts[0] || '';
+      updateData['basicInfo.lastName'] = nameParts.slice(1).join(' ') || '';
+    }
+    
+    // Handle phone updates
+    if (phoneNumber !== undefined) {
+      updateData['basicInfo.phone'] = phoneNumber;
+    }
+    
+    // Handle role updates
     if (role) updateData.role = role;
-    if (department !== undefined) updateData.department = department;
-    if (position !== undefined) updateData.position = position;
+    
+    // Handle department and position updates
+    if (department !== undefined) updateData['employment.department'] = department;
+    if (position !== undefined) updateData['employment.position'] = position;
+    
+    // Handle permissions and status updates
     if (permissions) updateData.permissions = permissions;
     if (isActive !== undefined) updateData.isActive = isActive;
     
-    const result = await usersCollection.updateOne(
+    const result = await employeesCollection.updateOne(
       query,
       { $set: updateData }
     );
@@ -356,10 +408,28 @@ router.put('/:id', authenticateToken, checkRole(['head_administrator', 'hr', 'hr
     }
     
     // Get updated employee
-    const updatedEmployee = await usersCollection.findOne(
-      { _id: id, isEmployee: true },
+    const updatedEmployeeRecord = await employeesCollection.findOne(
+      query,
       { projection: { password: 0 } }
     );
+    
+    // Transform updated employee record to match expected format
+    const updatedEmployee = {
+      _id: updatedEmployeeRecord._id,
+      email: updatedEmployeeRecord.basicInfo?.email || updatedEmployeeRecord.email,
+      role: updatedEmployeeRecord.role,
+      isEmployee: true,
+      isActive: updatedEmployeeRecord.isActive,
+      name: `${updatedEmployeeRecord.basicInfo?.firstName || updatedEmployeeRecord.firstName || ''} ${updatedEmployeeRecord.basicInfo?.lastName || updatedEmployeeRecord.lastName || ''}`.trim(),
+      firstName: updatedEmployeeRecord.basicInfo?.firstName || updatedEmployeeRecord.firstName,
+      lastName: updatedEmployeeRecord.basicInfo?.lastName || updatedEmployeeRecord.lastName,
+      phone: updatedEmployeeRecord.basicInfo?.phone || updatedEmployeeRecord.phone,
+      department: updatedEmployeeRecord.employment?.department || updatedEmployeeRecord.department,
+      position: updatedEmployeeRecord.employment?.position || updatedEmployeeRecord.position,
+      permissions: updatedEmployeeRecord.permissions || [],
+      createdAt: updatedEmployeeRecord.createdAt,
+      updatedAt: updatedEmployeeRecord.updatedAt
+    };
     
     res.json({
       success: true,

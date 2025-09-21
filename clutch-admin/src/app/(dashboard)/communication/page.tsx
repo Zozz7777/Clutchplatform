@@ -235,19 +235,19 @@ export default function CommunicationPage() {
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold tracking-tight">{t('communication.title')}</h1>
+          <h1 className="text-3xl font-bold tracking-tight">{t('dashboard.communication')}</h1>
           <p className="text-muted-foreground">
-            {t('communication.description')}
+            {t('dashboard.communicationDescription')}
           </p>
         </div>
         <div className="flex items-center space-x-2">
           <Button variant="outline">
             <Settings className="mr-2 h-4 w-4" />
-            Settings
+            {t('dashboard.settings')}
           </Button>
           <Button>
             <Plus className="mr-2 h-4 w-4" />
-            New Notification
+            {t('dashboard.newNotification')}
           </Button>
         </div>
       </div>
@@ -256,37 +256,37 @@ export default function CommunicationPage() {
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Total Notifications</CardTitle>
+            <CardTitle className="text-sm font-medium">{t('dashboard.totalNotifications')}</CardTitle>
             <Bell className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">{notifications.length}</div>
             <p className="text-xs text-muted-foreground">
-              <span className="text-primary">+12%</span> from last month
+              <span className="text-primary">+12%</span> {t('dashboard.fromLastMonth')}
             </p>
           </CardContent>
         </Card>
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Active Channels</CardTitle>
+            <CardTitle className="text-sm font-medium">{t('dashboard.activeChannels')}</CardTitle>
             <MessageSquare className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">{(channels || []).filter(c => c.status === "active").length}</div>
             <p className="text-xs text-muted-foreground">
-              {(channels || []).reduce((sum, c) => sum + (c.unreadMessages || 0), 0)} unread messages
+              {(channels || []).reduce((sum, c) => sum + (c.unreadMessages || 0), 0)} {t('dashboard.unreadMessages')}
             </p>
           </CardContent>
         </Card>
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">{t('communication.openTickets')}</CardTitle>
+            <CardTitle className="text-sm font-medium">{t('dashboard.openTickets')}</CardTitle>
             <AlertCircle className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">{(tickets || []).filter(t => t.status === "open" || t.status === "in_progress").length}</div>
             <p className="text-xs text-muted-foreground">
-              Avg response time: 2.3 hours
+              {t('dashboard.avgResponseTime')}: 2.3 hours
             </p>
           </CardContent>
         </Card>

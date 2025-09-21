@@ -10,7 +10,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { formatCurrency, formatDate, formatRelativeTime } from "@/lib/utils";
 import { useAuth } from "@/contexts/auth-context";
-import { useTranslations } from "@/hooks/use-translations";
+import { useTranslations } from "next-intl";
 import { productionApi } from "@/lib/production-api";
 import { paymentService } from "@/lib/payment-service";
 
@@ -103,7 +103,7 @@ export default function FinancePage() {
   const [statusFilter, setStatusFilter] = useState<string>("all");
   const [isLoading, setIsLoading] = useState(true);
   const { hasPermission } = useAuth();
-  const { t } = useTranslations();
+  const t = useTranslations();
 
   // Payment processing functions
   const handleProcessPayment = async (paymentData: Record<string, unknown>) => {
@@ -180,16 +180,26 @@ export default function FinancePage() {
         setIsLoading(true);
         
         // Load real data from API
-        const [paymentsData, subscriptionsData, payoutsData] = await Promise.all([
+        const [paymentsData, subscriptionsData, payoutsData] = await Promise.allSettled([
           productionApi.getPayments(),
           productionApi.getSubscriptions(),
           productionApi.getPayouts()
         ]);
 
-        setPayments((paymentsData || []) as unknown as Payment[]);
-        setSubscriptions((subscriptionsData || []) as unknown as Subscription[]);
-        setPayouts((payoutsData || []) as unknown as Payout[]);
-        setFilteredPayments((paymentsData || []) as unknown as Payment[]);
+        const paymentsArray = paymentsData.status === 'fulfilled' && Array.isArray(paymentsData.value) 
+          ? paymentsData.value as unknown as Payment[] 
+          : [];
+        const subscriptionsArray = subscriptionsData.status === 'fulfilled' && Array.isArray(subscriptionsData.value) 
+          ? subscriptionsData.value as unknown as Subscription[] 
+          : [];
+        const payoutsArray = payoutsData.status === 'fulfilled' && Array.isArray(payoutsData.value) 
+          ? payoutsData.value as unknown as Payout[] 
+          : [];
+        
+        setPayments(paymentsArray);
+        setSubscriptions(subscriptionsArray);
+        setPayouts(payoutsArray);
+        setFilteredPayments(paymentsArray);
         
       } catch (error) {
         // Error handled by API service

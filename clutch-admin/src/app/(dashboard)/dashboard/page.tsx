@@ -10,7 +10,7 @@ import { AuthStatus } from "@/components/auth-status";
 import { RealtimeStatus } from "@/components/realtime-status";
 import { useQuickActions } from "@/lib/quick-actions";
 import { useAuth } from "@/contexts/auth-context";
-import { useTranslations } from "@/hooks/use-translations";
+import { useTranslations } from "next-intl";
 
 // Import new Phase 2 widgets
 import UnifiedOpsPulse from "@/components/widgets/unified-ops-pulse";
@@ -80,7 +80,7 @@ export default function DashboardPage() {
   const [performanceMetrics, setPerformanceMetrics] = useState<Record<string, unknown> | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const { hasPermission } = useAuth();
-  const { t } = useTranslations();
+  const t = useTranslations();
   // Safely get quick actions with error handling
   let quickActions: any[] = [];
   let generateReport: (() => void) | null = null;
@@ -110,23 +110,31 @@ export default function DashboardPage() {
   useEffect(() => {
     const loadDashboardData = async () => {
       try {
-        const [metricsResponse, vehiclesResponse, notifsResponse, perfResponse] = await Promise.all([
+        const [metricsResponse, vehiclesResponse, notifsResponse, perfResponse] = await Promise.allSettled([
           productionApi.getKPIMetrics(),
           productionApi.getFleetVehicles(),
           productionApi.getNotifications(),
           productionApi.getSystemPerformanceMetrics(),
         ]);
         
-        // Handle API response structure properly
-        const metrics = metricsResponse || [];
-        const vehicles = vehiclesResponse || [];
-        const notifs = notifsResponse || [];
-        const perf = perfResponse?.data || perfResponse || null;
+        // Handle API response structure properly with Promise.allSettled
+        const metrics = metricsResponse.status === 'fulfilled' && Array.isArray(metricsResponse.value) 
+          ? metricsResponse.value 
+          : [];
+        const vehicles = vehiclesResponse.status === 'fulfilled' && Array.isArray(vehiclesResponse.value) 
+          ? vehiclesResponse.value 
+          : [];
+        const notifs = notifsResponse.status === 'fulfilled' && Array.isArray(notifsResponse.value) 
+          ? notifsResponse.value 
+          : [];
+        const perf = perfResponse.status === 'fulfilled' 
+          ? (perfResponse.value?.data || perfResponse.value || null)
+          : null;
         
         // Ensure data is arrays before calling slice
-        setKpiMetrics(Array.isArray(metrics) ? metrics : []);
-        setFleetVehicles(Array.isArray(vehicles) ? vehicles.slice(0, 5) : []);
-        setNotifications(Array.isArray(notifs) ? notifs.slice(0, 5) : []);
+        setKpiMetrics(metrics);
+        setFleetVehicles(vehicles.slice(0, 5));
+        setNotifications(notifs.slice(0, 5));
         setPerformanceMetrics(perf as Record<string, unknown> | null);
       } catch (error) {
         // Error handled by API service

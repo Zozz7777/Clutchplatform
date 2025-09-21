@@ -49,7 +49,7 @@ import {
 } from "lucide-react";
 import { formatCurrency } from "@/lib/utils";
 import { productionApi } from "@/lib/production-api";
-import { useTranslations } from "@/hooks/use-translations";
+import { useTranslations } from "next-intl";
 
 interface Asset {
   _id: string;
@@ -144,7 +144,7 @@ interface AssetAssignment {
 }
 
 export default function AssetManagementPage() {
-  const { t } = useTranslations();
+  const t = useTranslations();
   const [assets, setAssets] = useState<Asset[]>([]);
   const [maintenanceRecords, setMaintenanceRecords] = useState<MaintenanceRecord[]>([]);
   const [assignments, setAssignments] = useState<AssetAssignment[]>([]);

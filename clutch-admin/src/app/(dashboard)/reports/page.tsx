@@ -48,7 +48,7 @@ import { useAuth } from "@/contexts/auth-context";
 // Import new Phase 2 widgets
 import ReportUsageStats from '@/components/widgets/report-usage-stats';
 import { useQuickActions } from "@/lib/quick-actions";
-import { useTranslations } from "@/hooks/use-translations";
+import { useTranslations } from "next-intl";
 
 interface Report {
   _id: string;
@@ -134,7 +134,7 @@ export default function ReportsPage() {
   } catch (error) {
     console.error('Failed to initialize quick actions:', error);
   }
-  const { t } = useTranslations();
+  const t = useTranslations();
 
 
   useEffect(() => {
