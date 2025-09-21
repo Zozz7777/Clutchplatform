@@ -140,7 +140,14 @@ const checkRole = (roles) => {
       if (req.user.userId === 'fallback_ziad_ceo' || req.user.userId === 'admin-001') {
         // For fallback users, check role directly from JWT token
         const allowedRoles = Array.isArray(roles) ? roles : [roles];
-        if (allowedRoles.includes(req.user.role)) {
+        
+        // Map executive role to head_administrator for backward compatibility
+        const userRole = req.user.role === 'executive' ? 'head_administrator' : req.user.role;
+        const mappedAllowedRoles = allowedRoles.map(role => 
+          role === 'head_administrator' ? ['head_administrator', 'executive'] : [role]
+        ).flat();
+        
+        if (mappedAllowedRoles.includes(userRole) || allowedRoles.includes(req.user.role)) {
           console.log('✅ Fallback user role check passed');
           return next();
         } else {
@@ -183,7 +190,14 @@ const checkRole = (roles) => {
         }
 
         const allowedRoles = Array.isArray(roles) ? roles : [roles];
-        if (allowedRoles.includes(employee.role)) {
+        
+        // Map executive role to head_administrator for backward compatibility
+        const userRole = employee.role === 'executive' ? 'head_administrator' : employee.role;
+        const mappedAllowedRoles = allowedRoles.map(role => 
+          role === 'head_administrator' ? ['head_administrator', 'executive'] : [role]
+        ).flat();
+        
+        if (mappedAllowedRoles.includes(userRole) || allowedRoles.includes(employee.role)) {
           console.log('✅ Database user role check passed');
           return next();
         } else {
@@ -201,7 +215,14 @@ const checkRole = (roles) => {
         console.error('Database error during role check:', dbError);
         // Fallback to JWT role check if database fails
         const allowedRoles = Array.isArray(roles) ? roles : [roles];
-        if (allowedRoles.includes(req.user.role)) {
+        
+        // Map executive role to head_administrator for backward compatibility
+        const userRole = req.user.role === 'executive' ? 'head_administrator' : req.user.role;
+        const mappedAllowedRoles = allowedRoles.map(role => 
+          role === 'head_administrator' ? ['head_administrator', 'executive'] : [role]
+        ).flat();
+        
+        if (mappedAllowedRoles.includes(userRole) || allowedRoles.includes(req.user.role)) {
           console.log('✅ Fallback JWT role check passed');
           return next();
         } else {
@@ -246,9 +267,9 @@ const checkPermission = (permission) => {
         });
       }
 
-      // Handle fallback users (CEO, admin) - they have all permissions
-      if (req.user.userId === 'fallback_ziad_ceo' || req.user.userId === 'admin-001') {
-        console.log('✅ Fallback user permission check passed (all permissions)');
+      // Handle fallback users (CEO, admin) and executive users - they have all permissions
+      if (req.user.userId === 'fallback_ziad_ceo' || req.user.userId === 'admin-001' || req.user.role === 'executive') {
+        console.log('✅ Fallback/executive user permission check passed (all permissions)');
         return next();
       }
 

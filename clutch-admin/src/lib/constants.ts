@@ -5,6 +5,8 @@ export const ADMIN_DOMAIN = "admin.yourclutch.com";
 export const USER_ROLES = {
   HEAD_ADMINISTRATOR: "head_administrator",
   PLATFORM_ADMIN: "platform_admin",
+  EXECUTIVE: "executive",
+  ADMIN: "admin",
   ENTERPRISE_CLIENT: "enterprise_client",
   SERVICE_PROVIDER: "service_provider",
   BUSINESS_ANALYST: "business_analyst",
@@ -316,6 +318,20 @@ export const ROLE_PERMISSIONS = {
   ],
   
   [USER_ROLES.PLATFORM_ADMIN]: Object.values(PERMISSIONS),
+  
+  // Executive - Full access like head administrator
+  [USER_ROLES.EXECUTIVE]: [
+    ...PERMISSION_GROUPS.CORE_SYSTEM_DASHBOARD,
+    ...PERMISSION_GROUPS.USER_ORGANIZATION,
+    ...PERMISSION_GROUPS.FLEET_OPERATIONS,
+    ...PERMISSION_GROUPS.BUSINESS_CUSTOMER,
+    ...PERMISSION_GROUPS.TECHNOLOGY_DEVELOPMENT,
+    ...PERMISSION_GROUPS.COMMUNICATION_SUPPORT,
+    ...PERMISSION_GROUPS.ADMINISTRATION_CONFIG,
+  ],
+  
+  // Admin - Full access like platform admin
+  [USER_ROLES.ADMIN]: Object.values(PERMISSIONS),
   [USER_ROLES.ENTERPRISE_CLIENT]: [
     PERMISSIONS.VIEW_DASHBOARD,
     PERMISSIONS.VIEW_FLEET,

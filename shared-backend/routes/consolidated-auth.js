@@ -971,7 +971,7 @@ router.post('/enterprise-login', loginRateLimit, async (req, res) => {
     const user = await usersCollection.findOne({ 
       email: email.toLowerCase(),
       organizationId,
-      role: { $in: ['admin', 'enterprise_user', 'manager'] }
+      role: { $in: ['admin', 'enterprise_user', 'manager', 'executive', 'head_administrator', 'platform_admin'] }
     });
     
     if (!user) {

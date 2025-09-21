@@ -31,6 +31,7 @@ const ROLE_OPTIONS = [
   { value: "employee", label: "employeeInvitation.roles.employee", description: "employeeInvitation.roles.employeeDesc" },
   { value: "hr", label: "employeeInvitation.roles.hr", description: "employeeInvitation.roles.hrDesc" },
   { value: "manager", label: "employeeInvitation.roles.manager", description: "employeeInvitation.roles.managerDesc" },
+  { value: "executive", label: "employeeInvitation.roles.executive", description: "employeeInvitation.roles.executiveDesc" },
   { value: "admin", label: "employeeInvitation.roles.admin", description: "employeeInvitation.roles.adminDesc" },
 ];
 
@@ -161,6 +162,7 @@ export function EmployeeInvitationForm({ onSuccess, onCancel }: EmployeeInvitati
   const getRolePermissions = (role: string): string[] => {
     switch (role) {
       case "admin":
+      case "executive":
         return ["read", "write", "delete", "admin", "hr", "finance", "fleet", "reports"];
       case "hr":
         return ["read", "write", "hr", "reports"];

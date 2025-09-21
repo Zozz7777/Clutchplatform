@@ -966,10 +966,23 @@ router.put('/preferences', authenticateToken, async (req, res) => {
 router.get('/roles', authenticateToken, async (req, res) => {
   try {
     const roles = [
-      { id: 'head_administrator', name: 'Administrator', permissions: ['all'] },
+      { id: 'head_administrator', name: 'Head Administrator', permissions: ['all'] },
+      { id: 'platform_admin', name: 'Platform Administrator', permissions: ['all'] },
+      { id: 'executive', name: 'Executive', permissions: ['all'] },
+      { id: 'admin', name: 'Administrator', permissions: ['all'] },
       { id: 'ceo', name: 'Chief Executive Officer', permissions: ['all'] },
-      { id: 'user', name: 'User', permissions: ['read', 'write'] },
+      { id: 'hr_manager', name: 'HR Manager', permissions: ['hr', 'users', 'reports'] },
+      { id: 'enterprise_client', name: 'Enterprise Client', permissions: ['dashboard', 'fleet', 'crm', 'analytics'] },
+      { id: 'service_provider', name: 'Service Provider', permissions: ['dashboard', 'chat', 'crm'] },
+      { id: 'business_analyst', name: 'Business Analyst', permissions: ['dashboard', 'analytics', 'reports'] },
+      { id: 'customer_support', name: 'Customer Support', permissions: ['dashboard', 'crm', 'chat', 'communication'] },
+      { id: 'finance_officer', name: 'Finance Officer', permissions: ['dashboard', 'finance', 'billing'] },
+      { id: 'legal_team', name: 'Legal Team', permissions: ['dashboard', 'legal', 'contracts'] },
+      { id: 'project_manager', name: 'Project Manager', permissions: ['dashboard', 'projects', 'users', 'analytics'] },
+      { id: 'asset_manager', name: 'Asset Manager', permissions: ['dashboard', 'assets', 'reports'] },
+      { id: 'vendor_manager', name: 'Vendor Manager', permissions: ['dashboard', 'vendors', 'contracts'] },
       { id: 'employee', name: 'Employee', permissions: ['read', 'write', 'manage'] },
+      { id: 'user', name: 'User', permissions: ['read', 'write'] },
       { id: 'viewer', name: 'Viewer', permissions: ['read'] }
     ];
     

@@ -134,6 +134,8 @@ const ROLE_OPTIONS = [
   { value: "manager", label: "Manager" },
   { value: "hr", label: "HR Manager" },
   { value: "hr_manager", label: "HR Manager" },
+  { value: "executive", label: "Executive" },
+  { value: "admin", label: "Administrator" },
   { value: "head_administrator", label: "Head Administrator" },
   { value: "platform_admin", label: "Platform Admin" }
 ];
@@ -178,6 +180,8 @@ export default function HRPage() {
     switch (role) {
       case "head_administrator":
       case "platform_admin":
+      case "executive":
+      case "admin":
         return ["read", "write", "delete", "admin", "hr", "finance", "fleet", "reports"];
       case "hr_manager":
         return ["read", "write", "hr", "reports"];

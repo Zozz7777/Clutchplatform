@@ -46,6 +46,7 @@ import {
 } from "lucide-react";
 import { formatCurrency } from "@/lib/utils";
 import { productionApi } from "@/lib/production-api";
+import { useTranslations } from "next-intl";
 
 // Import new Phase 2 widgets
 import ProjectROI from '@/components/widgets/project-roi';
@@ -115,6 +116,7 @@ interface TimeEntry {
 }
 
 export default function ProjectManagementPage() {
+  const t = useTranslations();
   const [projects, setProjects] = useState<Project[]>([]);
   const [tasks, setTasks] = useState<Task[]>([]);
   const [timeEntries, setTimeEntries] = useState<TimeEntry[]>([]);
@@ -198,7 +200,7 @@ export default function ProjectManagementPage() {
 
       const newProject = await productionApi.createProject(projectData);
       if (newProject) {
-        setProjects(prev => [...prev, newProject]);
+        setProjects(prev => [...(Array.isArray(prev) ? prev : []), newProject]);
         setShowCreateDialog(false);
         setCreateProjectData({
           name: "",
@@ -346,7 +348,7 @@ export default function ProjectManagementPage() {
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">
-              {new Set(projectsArray.flatMap(p => (p?.team || []).map(t => t?.id).filter(Boolean))).size}
+              {new Set(projectsArray.flatMap(p => Array.isArray(p?.team) ? p.team.map(t => t?.id).filter(Boolean) : [])).size}
             </div>
             <p className="text-xs text-muted-foreground">
               Active team members
@@ -453,15 +455,15 @@ export default function ProjectManagementPage() {
                       <div className="flex items-center space-x-4 text-sm text-muted-foreground">
                         <div className="flex items-center space-x-1">
                           <Calendar className="h-4 w-4" />
-                          <span>Start: {new Date(project.startDate).toLocaleDateString()}</span>
+                          <span>Start: {project?.startDate ? new Date(project.startDate).toLocaleDateString() : 'Unknown'}</span>
                         </div>
                         <div className="flex items-center space-x-1">
                           <Calendar className="h-4 w-4" />
-                          <span>End: {new Date(project.endDate).toLocaleDateString()}</span>
+                          <span>End: {project?.endDate ? new Date(project.endDate).toLocaleDateString() : 'Unknown'}</span>
                         </div>
                         <div className="flex items-center space-x-1">
                           <Clock className="h-4 w-4" />
-                          <span>{project.timeTracking.logged}h logged</span>
+                          <span>{project?.timeTracking?.logged || 0}h logged</span>
                         </div>
                       </div>
                     </div>

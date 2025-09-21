@@ -44,7 +44,7 @@ import {
   Zap,
 } from "lucide-react";
 import { productionApi } from "@/lib/production-api";
-import { useTranslations } from "next-intl";
+import { useTranslations } from "@/hooks/use-translations";
 
 interface FeatureFlag {
   _id: string;
@@ -436,23 +436,23 @@ export default function FeatureFlagsPage() {
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold tracking-tight">{t('featureFlags.title') || 'Feature Flags'}</h1>
+          <h1 className="text-3xl font-bold tracking-tight">{t('dashboard.featureFlags')}</h1>
           <p className="text-muted-foreground">
-            Manage feature flags, A/B tests, and gradual rollouts
+            {t('dashboard.manageFeatureFlags')}
           </p>
         </div>
         <div className="flex items-center space-x-2">
           <Button onClick={() => setShowRolloutDialog(true)} variant="outline">
             <Globe className="mr-2 h-4 w-4" />
-            {t('featureFlags.createRollout') || 'Create Rollout'}
+            {t('dashboard.createRollout')}
           </Button>
           <Button onClick={() => setShowABTestDialog(true)} variant="outline">
             <BarChart3 className="mr-2 h-4 w-4" />
-            Create A/B Test
+            {t('dashboard.createAbTest')}
           </Button>
           <Button onClick={() => setShowCreateDialog(true)}>
             <Plus className="mr-2 h-4 w-4" />
-            New Flag
+            {t('dashboard.createFlag')}
           </Button>
         </div>
       </div>
@@ -514,9 +514,9 @@ export default function FeatureFlagsPage() {
       {/* Feature Flags */}
       <Card>
         <CardHeader>
-          <CardTitle>{t('featureFlags.title')}</CardTitle>
+          <CardTitle>{t('dashboard.featureFlags')}</CardTitle>
           <CardDescription>
-            Manage feature toggles and their configurations
+            {t('dashboard.manageFeatureToggles')}
           </CardDescription>
         </CardHeader>
         <CardContent>
@@ -536,18 +536,18 @@ export default function FeatureFlagsPage() {
               <DropdownMenuTrigger asChild>
                 <Button variant="outline">
                   <Filter className="mr-2 h-4 w-4" />
-                  Status: {statusFilter === "all" ? "All" : statusFilter}
+                  {t('dashboard.status')}: {statusFilter === "all" ? t('dashboard.all') : statusFilter}
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent>
                 <DropdownMenuItem onClick={() => setStatusFilter("all")}>
-                  All Status
+                  {t('dashboard.allStatus')}
                 </DropdownMenuItem>
                 <DropdownMenuItem onClick={() => setStatusFilter("enabled")}>
-{t('featureFlags.enabled')}
+{t('dashboard.enabled')}
                 </DropdownMenuItem>
                 <DropdownMenuItem onClick={() => setStatusFilter("disabled")}>
-{t('featureFlags.disabled')}
+{t('dashboard.disabled')}
                 </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
@@ -555,21 +555,21 @@ export default function FeatureFlagsPage() {
               <DropdownMenuTrigger asChild>
                 <Button variant="outline">
                   <Filter className="mr-2 h-4 w-4" />
-                  Env: {environmentFilter === "all" ? "All" : environmentFilter}
+                  {t('dashboard.env')}: {environmentFilter === "all" ? t('dashboard.all') : environmentFilter}
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent>
                 <DropdownMenuItem onClick={() => setEnvironmentFilter("all")}>
-                  All Environments
+                  {t('dashboard.allEnvironments')}
                 </DropdownMenuItem>
                 <DropdownMenuItem onClick={() => setEnvironmentFilter("production")}>
-                  Production
+                  {t('dashboard.production')}
                 </DropdownMenuItem>
                 <DropdownMenuItem onClick={() => setEnvironmentFilter("staging")}>
-                  Staging
+                  {t('dashboard.staging')}
                 </DropdownMenuItem>
                 <DropdownMenuItem onClick={() => setEnvironmentFilter("development")}>
-                  Development
+                  {t('dashboard.development')}
                 </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
@@ -584,7 +584,7 @@ export default function FeatureFlagsPage() {
                       <div className="flex items-center space-x-3 mb-2">
                         <h3 className="text-lg font-semibold">{flag.name}</h3>
                         <Badge variant={getStatusVariant(flag.enabled)}>
-                          {flag.enabled ? t('featureFlags.enabled') : t('featureFlags.disabled')}
+                          {flag.enabled ? t('dashboard.enabled') : t('dashboard.disabled')}
                         </Badge>
                         <Badge variant={getEnvironmentVariant(flag.environment)}>
                           {flag.environment}
@@ -702,9 +702,9 @@ export default function FeatureFlagsPage() {
       {/* A/B Tests */}
       <Card>
         <CardHeader>
-          <CardTitle>A/B Tests</CardTitle>
+          <CardTitle>{t('dashboard.abTests')}</CardTitle>
           <CardDescription>
-            Monitor and manage A/B testing experiments
+            {t('dashboard.monitorAndManageAbTests')}
           </CardDescription>
         </CardHeader>
         <CardContent>
@@ -724,7 +724,7 @@ export default function FeatureFlagsPage() {
                       
                       <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-4">
                         <div>
-                          <p className="text-sm font-medium">Success Metric</p>
+                          <p className="text-sm font-medium">{t('dashboard.successMetric')}</p>
                           <p className="text-sm text-muted-foreground">{test.successMetric}</p>
                         </div>
                         <div>
@@ -811,18 +811,18 @@ export default function FeatureFlagsPage() {
       <Dialog open={showCreateDialog} onOpenChange={setShowCreateDialog}>
         <DialogContent className="max-w-2xl">
           <DialogHeader>
-            <DialogTitle>Create Feature Flag</DialogTitle>
+            <DialogTitle>{t('dashboard.createFeatureFlag')}</DialogTitle>
             <DialogDescription>
-              Create a new feature flag to control feature rollouts.
+              {t('dashboard.createNewFeatureFlag')}
             </DialogDescription>
           </DialogHeader>
           <div className="grid gap-4 py-4">
             <div className="grid grid-cols-2 gap-4">
               <div>
-                <Label htmlFor="name">Flag Name</Label>
+                <Label htmlFor="name">{t('dashboard.flagName')}</Label>
                 <Input 
                   id="name" 
-                  placeholder="Enter flag name" 
+                  placeholder={t('dashboard.enterFlagName')} 
                   value={createFlagData.name}
                   onChange={(e) => setCreateFlagData(prev => ({ ...prev, name: e.target.value }))}
                 />
@@ -838,10 +838,10 @@ export default function FeatureFlagsPage() {
               </div>
             </div>
             <div>
-              <Label htmlFor="description">Description</Label>
+                <Label htmlFor="description">{t('dashboard.description')}</Label>
               <Input 
                 id="description" 
-                placeholder="Describe what this flag controls" 
+                placeholder={t('dashboard.describeWhatThisFlagControls')} 
                 value={createFlagData.description}
                 onChange={(e) => setCreateFlagData(prev => ({ ...prev, description: e.target.value }))}
               />
@@ -870,7 +870,7 @@ export default function FeatureFlagsPage() {
                 />
               </div>
               <div>
-                <Label htmlFor="environment">Environment</Label>
+                <Label htmlFor="environment">{t('dashboard.environment')}</Label>
                 <select 
                   className="w-full p-2 border rounded-md"
                   value={createFlagData.environment}
@@ -907,26 +907,26 @@ export default function FeatureFlagsPage() {
       <Dialog open={showABTestDialog} onOpenChange={setShowABTestDialog}>
         <DialogContent className="max-w-2xl">
           <DialogHeader>
-            <DialogTitle>Create A/B Test</DialogTitle>
+            <DialogTitle>{t('dashboard.createAbTest')}</DialogTitle>
             <DialogDescription>
-              Create a new A/B test to experiment with different variants.
+              {t('dashboard.createNewAbTest')}
             </DialogDescription>
           </DialogHeader>
           <div className="grid gap-4 py-4">
             <div>
-              <Label htmlFor="testName">Test Name</Label>
+              <Label htmlFor="testName">{t('dashboard.testName')}</Label>
               <Input 
                 id="testName" 
-                placeholder="Enter test name" 
+                placeholder={t('dashboard.enterTestName')} 
                 value={createABTestData.name}
                 onChange={(e) => setCreateABTestData(prev => ({ ...prev, name: e.target.value }))}
               />
             </div>
             <div>
-              <Label htmlFor="testDescription">Description</Label>
+              <Label htmlFor="testDescription">{t('dashboard.testDescription')}</Label>
               <Input 
                 id="testDescription" 
-                placeholder="Describe the test hypothesis" 
+                placeholder={t('dashboard.describeTheTestHypothesis')} 
                 value={createABTestData.description}
                 onChange={(e) => setCreateABTestData(prev => ({ ...prev, description: e.target.value }))}
               />
@@ -995,7 +995,7 @@ export default function FeatureFlagsPage() {
               Cancel
             </Button>
             <Button onClick={createABTest}>
-              Create Test
+              {t('dashboard.createTest')}
             </Button>
           </DialogFooter>
         </DialogContent>
@@ -1005,17 +1005,17 @@ export default function FeatureFlagsPage() {
       <Dialog open={showRolloutDialog} onOpenChange={setShowRolloutDialog}>
         <DialogContent>
           <DialogHeader>
-            <DialogTitle>{t('featureFlags.createRollout')}</DialogTitle>
+            <DialogTitle>{t('dashboard.createRollout')}</DialogTitle>
             <DialogDescription>
-              Create a gradual rollout for a feature flag.
+              {t('dashboard.createGradualRollout')}
             </DialogDescription>
           </DialogHeader>
           <div className="grid gap-4 py-4">
             <div>
-              <Label htmlFor="rolloutName">{t('featureFlags.rolloutName')}</Label>
+              <Label htmlFor="rolloutName">{t('dashboard.rolloutName')}</Label>
               <Input 
                 id="rolloutName" 
-                placeholder="Enter rollout name" 
+                placeholder={t('dashboard.enterRolloutName')} 
                 value={createRolloutData.name}
                 onChange={(e) => setCreateRolloutData(prev => ({ ...prev, name: e.target.value }))}
               />
