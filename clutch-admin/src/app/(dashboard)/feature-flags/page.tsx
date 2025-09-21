@@ -194,9 +194,9 @@ export default function FeatureFlagsPage() {
     try {
       setLoading(true);
       const data = await productionApi.getFeatureFlags();
-      setFeatureFlags(data || []);
+      setFeatureFlags(Array.isArray(data) ? data : []);
     } catch (error) {
-      // Error handled by API service
+      console.error('Error loading feature flags:', error);
       setFeatureFlags([]);
     } finally {
       setLoading(false);
@@ -206,9 +206,9 @@ export default function FeatureFlagsPage() {
   const loadABTests = async () => {
     try {
       const data = await productionApi.getABTests();
-      setABTests(data || []);
+      setABTests(Array.isArray(data) ? data : []);
     } catch (error) {
-      // Error handled by API service
+      console.error('Error loading AB tests:', error);
       setABTests([]);
     }
   };
@@ -216,9 +216,9 @@ export default function FeatureFlagsPage() {
   const loadRollouts = async () => {
     try {
       const data = await productionApi.getRollouts();
-      setRollouts(data || []);
+      setRollouts(Array.isArray(data) ? data : []);
     } catch (error) {
-      // Error handled by API service
+      console.error('Error loading rollouts:', error);
       setRollouts([]);
     }
   };
@@ -404,9 +404,10 @@ export default function FeatureFlagsPage() {
   const abTestsArray = Array.isArray(abTests) ? abTests : [];
   
   const filteredFlags = featureFlagsArray.filter((flag) => {
-    const matchesSearch = flag?.name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         flag?.key?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         flag?.description?.toLowerCase().includes(searchTerm.toLowerCase());
+    if (!flag) return false;
+    const matchesSearch = (flag?.name || '').toLowerCase().includes(searchTerm.toLowerCase()) ||
+                         (flag?.key || '').toLowerCase().includes(searchTerm.toLowerCase()) ||
+                         (flag?.description || '').toLowerCase().includes(searchTerm.toLowerCase());
     const matchesStatus = statusFilter === "all" || 
                          (statusFilter === "enabled" && flag?.enabled) ||
                          (statusFilter === "disabled" && !flag?.enabled);
@@ -435,7 +436,7 @@ export default function FeatureFlagsPage() {
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold tracking-tight">{t('featureFlags.title')}</h1>
+          <h1 className="text-3xl font-bold tracking-tight">{t('featureFlags.title') || 'Feature Flags'}</h1>
           <p className="text-muted-foreground">
             Manage feature flags, A/B tests, and gradual rollouts
           </p>
@@ -443,7 +444,7 @@ export default function FeatureFlagsPage() {
         <div className="flex items-center space-x-2">
           <Button onClick={() => setShowRolloutDialog(true)} variant="outline">
             <Globe className="mr-2 h-4 w-4" />
-{t('featureFlags.createRollout')}
+            {t('featureFlags.createRollout') || 'Create Rollout'}
           </Button>
           <Button onClick={() => setShowABTestDialog(true)} variant="outline">
             <BarChart3 className="mr-2 h-4 w-4" />
