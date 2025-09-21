@@ -167,7 +167,7 @@ export default function FinancePage() {
       document.body.removeChild(link);
       window.URL.revokeObjectURL(url);
 
-      toast.success("Payments exported successfully!");
+      toast.success(t('dashboard.paymentsExportedSuccessfully'));
     } catch (error) {
       // Error handled by API service
       toast.error(t('finance.failedToExportPayments'));
@@ -350,14 +350,14 @@ export default function FinancePage() {
       <div className="grid gap-6 md:grid-cols-2">
         <Card className="shadow-2xs">
           <CardHeader>
-            <CardTitle className="text-card-foreground">Revenue Trends</CardTitle>
-            <CardDescription>Monthly revenue over time</CardDescription>
+            <CardTitle className="text-card-foreground">{t('dashboard.revenueTrends')}</CardTitle>
+            <CardDescription>{t('dashboard.monthlyRevenueOverTime')}</CardDescription>
           </CardHeader>
           <CardContent>
             <div className="h-64 bg-muted rounded-[0.625rem] flex items-center justify-center">
               <div className="text-center">
                 <BarChart3 className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
-                <p className="text-muted-foreground">Revenue chart will be displayed here</p>
+                <p className="text-muted-foreground">{t('dashboard.revenueChartWillBeDisplayed')}</p>
               </div>
             </div>
           </CardContent>
@@ -693,7 +693,7 @@ export default function FinancePage() {
                     </Button>
                     <Button variant="outline" className="w-full justify-start shadow-2xs">
                       <AlertTriangle className="mr-2 h-4 w-4" />
-                      Hold Suspicious Payments
+                      {t('dashboard.holdSuspiciousPayments')}
                     </Button>
                     <Button variant="outline" className="w-full justify-start shadow-2xs">
                       <Download className="mr-2 h-4 w-4" />
