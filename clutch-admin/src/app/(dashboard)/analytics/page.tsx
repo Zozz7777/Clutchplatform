@@ -163,8 +163,11 @@ export default function AnalyticsPage() {
   }
 
   useEffect(() => {
+    let isMounted = true;
+    let timeoutId: NodeJS.Timeout | null = null;
+
     const loadAnalyticsData = async () => {
-      if (!user) {
+      if (!user || !isMounted) {
         setIsLoading(false);
         return;
       }
@@ -172,30 +175,88 @@ export default function AnalyticsPage() {
       try {
         setIsLoading(true);
         
-        // Load analytics metrics using production API
-        const metricsData = await productionApi.getAnalyticsMetrics();
-        setMetrics(Array.isArray(metricsData) ? metricsData : []);
+        // Add debouncing to prevent excessive API calls
+        if (timeoutId) {
+          clearTimeout(timeoutId);
+        }
+        
+        timeoutId = setTimeout(async () => {
+          if (!isMounted) return;
+          
+          // Load all analytics data with error handling
+          const [metricsData, userData, revenueData, fleetData, engagementData, reportsData] = await Promise.allSettled([
+            productionApi.getAnalyticsMetrics(),
+            productionApi.getAnalyticsData('users', { period: selectedTimeRange }),
+            productionApi.getAnalyticsData('revenue', { period: selectedTimeRange }),
+            productionApi.getAnalyticsData('fleet', { period: selectedTimeRange }),
+            productionApi.getAnalyticsData('engagement', { period: selectedTimeRange }),
+            productionApi.getReports()
+          ]);
 
-        // Load user analytics
-        const userData = await productionApi.getAnalyticsData('users', { period: selectedTimeRange });
-        setUserAnalytics(userData as UserAnalytics || null);
-
-        // Load revenue analytics
-        const revenueData = await productionApi.getAnalyticsData('revenue', { period: selectedTimeRange });
-        setRevenueAnalytics(revenueData as RevenueAnalytics || null);
-
-        // Load fleet analytics
-        const fleetData = await productionApi.getAnalyticsData('fleet', { period: selectedTimeRange });
-        setFleetAnalytics(fleetData as FleetAnalytics || null);
-
-        // Load engagement analytics
-        const engagementData = await productionApi.getAnalyticsData('engagement', { period: selectedTimeRange });
-        setEngagementAnalytics(engagementData as EngagementAnalytics || null);
-
-        // Load analytics reports
-        const reportsData = await productionApi.getReports();
-        setReports(Array.isArray(reportsData) ? reportsData as AnalyticsReport[] : []);
+          // Handle metrics data
+          const metricsArray = metricsData.status === 'fulfilled' && Array.isArray(metricsData.value) 
+            ? metricsData.value 
+            : [];
+          
+          // Handle user analytics data
+          const userAnalyticsData = userData.status === 'fulfilled' && userData.value 
+            ? userData.value as UserAnalytics 
+            : null;
+          
+          // Handle revenue analytics data
+          const revenueAnalyticsData = revenueData.status === 'fulfilled' && revenueData.value 
+            ? revenueData.value as RevenueAnalytics 
+            : null;
+          
+          // Handle fleet analytics data
+          const fleetAnalyticsData = fleetData.status === 'fulfilled' && fleetData.value 
+            ? fleetData.value as FleetAnalytics 
+            : null;
+          
+          // Handle engagement analytics data
+          const engagementAnalyticsData = engagementData.status === 'fulfilled' && engagementData.value 
+            ? engagementData.value as EngagementAnalytics 
+            : null;
+          
+          // Handle reports data
+          const reportsArray = reportsData.status === 'fulfilled' && Array.isArray(reportsData.value) 
+            ? reportsData.value as AnalyticsReport[] 
+            : [];
+          
+          if (isMounted) {
+            setMetrics(metricsArray);
+            setUserAnalytics(userAnalyticsData);
+            setRevenueAnalytics(revenueAnalyticsData);
+            setFleetAnalytics(fleetAnalyticsData);
+            setEngagementAnalytics(engagementAnalyticsData);
+            setReports(reportsArray);
+          }
+          
+          // Log any errors
+          if (metricsData.status === 'rejected') {
+            console.error('Failed to load metrics:', metricsData.reason);
+          }
+          if (userData.status === 'rejected') {
+            console.error('Failed to load user analytics:', userData.reason);
+          }
+          if (revenueData.status === 'rejected') {
+            console.error('Failed to load revenue analytics:', revenueData.reason);
+          }
+          if (fleetData.status === 'rejected') {
+            console.error('Failed to load fleet analytics:', fleetData.reason);
+          }
+          if (engagementData.status === 'rejected') {
+            console.error('Failed to load engagement analytics:', engagementData.reason);
+          }
+          if (reportsData.status === 'rejected') {
+            console.error('Failed to load reports:', reportsData.reason);
+          }
+          
+        }, 300); // 300ms debounce
+        
       } catch (error) {
+        if (!isMounted) return;
+        
         console.error('Error loading analytics data:', error);
         // Set empty data instead of mock data
         setMetrics([]);
@@ -205,11 +266,20 @@ export default function AnalyticsPage() {
         setEngagementAnalytics(null);
         setReports([]);
       } finally {
+        if (isMounted) {
         setIsLoading(false);
+        }
       }
     };
 
     loadAnalyticsData();
+
+    return () => {
+      isMounted = false;
+      if (timeoutId) {
+        clearTimeout(timeoutId);
+      }
+    };
   }, [user, selectedTimeRange]);
 
   const getChangeIcon = (changeType: string) => {
@@ -443,37 +513,37 @@ export default function AnalyticsPage() {
                 <div className="grid grid-cols-2 gap-4">
                   <div>
                     <p className="text-sm text-muted-foreground">{t('dashboard.totalRevenue')}</p>
-                    <p className="text-2xl font-bold">{formatCurrency(revenueAnalytics.totalRevenue)}</p>
+                    <p className="text-2xl font-bold">{revenueAnalytics?.totalRevenue ? formatCurrency(revenueAnalytics.totalRevenue) : "0 EGP"}</p>
                   </div>
                   <div>
                     <p className="text-sm text-muted-foreground">{t('dashboard.avgOrderValue')}</p>
-                    <p className="text-2xl font-bold">{formatCurrency(revenueAnalytics.averageOrderValue)}</p>
+                    <p className="text-2xl font-bold">{revenueAnalytics?.averageOrderValue ? formatCurrency(revenueAnalytics.averageOrderValue) : "0 EGP"}</p>
                   </div>
                 </div>
                 
                 <div>
                   <p className="text-sm font-medium mb-2">{t('dashboard.revenueBySource')}</p>
                   <div className="space-y-2">
-                    {Object.entries(revenueAnalytics.revenueBySource).map(([source, amount]) => (
+                    {revenueAnalytics?.revenueBySource ? Object.entries(revenueAnalytics.revenueBySource).map(([source, amount]) => (
                       <div key={source} className="flex justify-between text-sm">
                         <span>{source}</span>
                         <span>{formatCurrency(amount)}</span>
                       </div>
-                    ))}
+                    )) : null}
                   </div>
                 </div>
                 
                 <div>
                   <p className="text-sm font-medium mb-2">{t('dashboard.revenueByRegion')}</p>
                   <div className="space-y-2">
-                    {Object.entries(revenueAnalytics.revenueByRegion)
+                    {revenueAnalytics?.revenueByRegion ? Object.entries(revenueAnalytics.revenueByRegion)
                       .slice(0, 3)
                       .map(([region, amount]) => (
                         <div key={region} className="flex justify-between text-sm">
                           <span>{region}</span>
                           <span>{formatCurrency(amount)}</span>
                         </div>
-                      ))}
+                      )) : null}
                   </div>
                 </div>
               </div>
@@ -621,7 +691,7 @@ export default function AnalyticsPage() {
         </CardHeader>
         <CardContent>
           <div className="space-y-4">
-            {reports.map((report) => (
+            {Array.isArray(reports) ? reports.map((report) => (
               <div key={report._id} className="flex items-center justify-between p-4 border rounded-[0.625rem] hover:bg-muted/50 transition-colors">
                 <div className="flex items-center space-x-4">
                   <div className="w-10 h-10 rounded-[0.625rem] bg-muted flex items-center justify-center">
@@ -676,7 +746,7 @@ export default function AnalyticsPage() {
                   </DropdownMenu>
                 </div>
               </div>
-            ))}
+            )) : null}
           </div>
 
           {(!reports || reports.length === 0) && (

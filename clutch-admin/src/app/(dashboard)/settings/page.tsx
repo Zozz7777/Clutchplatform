@@ -6,7 +6,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useAuth } from "@/contexts/auth-context";
-import { useTranslations } from "next-intl";
+import { useTranslations } from "@/hooks/use-translations";
 import { productionApi } from "@/lib/production-api";
 import { formatDate, formatRelativeTime } from "@/lib/utils";
 
@@ -64,7 +64,7 @@ interface SystemSetting {
   category: "general" | "security" | "notifications" | "appearance" | "integrations" | "advanced";
   description: string;
   isPublic: boolean;
-  isRequired: boolean;
+  is{t('dashboard.required')}: boolean;
   validation?: {
     min?: number;
     max?: number;
@@ -403,9 +403,9 @@ export default function SettingsPage() {
       {/* Page Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold tracking-tight">{t('settings.title')}</h1>
+          <h1 className="text-3xl font-bold tracking-tight">{t('dashboard.settings')}</h1>
           <p className="text-muted-foreground">
-            {t('settings.description')}
+            {t('dashboard.settingsDescription')}
           </p>
         </div>
         {hasPermission("manage_settings") && (
@@ -415,7 +415,7 @@ export default function SettingsPage() {
             ) : (
               <Save className="mr-2 h-4 w-4" />
             )}
-            {t('settings.saveChanges')}
+            {t('dashboard.saveChanges')}
           </Button>
         )}
       </div>
@@ -428,7 +428,7 @@ export default function SettingsPage() {
           onClick={() => setActiveTab("general")}
         >
           <Settings className="mr-2 h-4 w-4" />
-          {t('settings.general')}
+          {t('dashboard.general')}
         </Button>
         <Button
           variant={activeTab === "security" ? "default" : "ghost"}
@@ -436,7 +436,7 @@ export default function SettingsPage() {
           onClick={() => setActiveTab("security")}
         >
           <Shield className="mr-2 h-4 w-4" />
-          {t('settings.security')}
+          {t('dashboard.security')}
         </Button>
         <Button
           variant={activeTab === "notifications" ? "default" : "ghost"}
@@ -444,7 +444,7 @@ export default function SettingsPage() {
           onClick={() => setActiveTab("notifications")}
         >
           <Bell className="mr-2 h-4 w-4" />
-          {t('settings.notifications')}
+          {t('dashboard.notifications')}
         </Button>
         <Button
           variant={activeTab === "appearance" ? "default" : "ghost"}
@@ -452,7 +452,7 @@ export default function SettingsPage() {
           onClick={() => setActiveTab("appearance")}
         >
           <Palette className="mr-2 h-4 w-4" />
-          Appearance
+          {t('dashboard.appearance')}
         </Button>
         <Button
           variant={activeTab === "integrations" ? "default" : "ghost"}
@@ -460,7 +460,7 @@ export default function SettingsPage() {
           onClick={() => setActiveTab("integrations")}
         >
           <Key className="mr-2 h-4 w-4" />
-          Integrations
+          {t('dashboard.integrations')}
         </Button>
         <Button
           variant={activeTab === "audit" ? "default" : "ghost"}
@@ -468,7 +468,7 @@ export default function SettingsPage() {
           onClick={() => setActiveTab("audit")}
         >
           <Database className="mr-2 h-4 w-4" />
-          Audit Log
+          {t('dashboard.auditLog')}
         </Button>
       </div>
 
@@ -476,9 +476,9 @@ export default function SettingsPage() {
       {activeTab === "general" && (
         <Card>
           <CardHeader>
-            <CardTitle>{t('settings.generalSettings')}</CardTitle>
+            <CardTitle>{t('dashboard.generalSettings')}</CardTitle>
             <CardDescription>
-              Basic system configuration and preferences
+              {t('dashboard.basicSystemConfiguration')}
             </CardDescription>
           </CardHeader>
           <CardContent>
@@ -490,12 +490,12 @@ export default function SettingsPage() {
                     <div className="flex-1">
                       <div className="flex items-center space-x-2">
                         {getCategoryIcon(setting?.category || 'general')}
-                        <label className="text-sm font-medium">{setting?.key || 'Unknown Setting'}</label>
-                        {setting?.isRequired && (
-                          <Badge variant="destructive" className="text-xs">Required</Badge>
+                        <label className="text-sm font-medium">{setting?.key || t('dashboard.unknownSetting')}</label>
+                        {setting?.is{t('dashboard.required')} && (
+                          <Badge variant="destructive" className="text-xs">{t('dashboard.required')}</Badge>
                         )}
                       </div>
-                      <p className="text-xs text-muted-foreground mt-1">{setting?.description || 'No description'}</p>
+                      <p className="text-xs text-muted-foreground mt-1">{setting?.description || t('dashboard.noDescription')}</p>
                     </div>
                     <div className="ml-4">
                       {renderSettingInput(setting)}
@@ -526,8 +526,8 @@ export default function SettingsPage() {
                       <div className="flex items-center space-x-2">
                         <Shield className="h-4 w-4" />
                         <label className="text-sm font-medium">{setting.key}</label>
-                        {setting.isRequired && (
-                          <Badge variant="destructive" className="text-xs">Required</Badge>
+                        {setting.is{t('dashboard.required')} && (
+                          <Badge variant="destructive" className="text-xs">{t('dashboard.required')}</Badge>
                         )}
                       </div>
                       <p className="text-xs text-muted-foreground mt-1">{setting.description}</p>
