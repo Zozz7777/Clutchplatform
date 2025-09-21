@@ -11,10 +11,9 @@ const assetLimiter = rateLimit({
   message: 'Too many asset requests from this IP, please try again later.'
 });
 
-// Apply rate limiting to all routes
+// Apply rate limiting and authentication to all routes
 router.use(assetLimiter);
-// Temporarily disable authentication for testing - TODO: Re-enable authentication
-// router.use(authenticateToken);
+router.use(authenticateToken);
 
 // ===== ASSETS MANAGEMENT =====
 
@@ -95,7 +94,7 @@ router.get('/', async (req, res) => {
 });
 
 // POST /api/v1/assets - Create new asset
-router.post('/', async (req, res) => {
+router.post('/', checkRole(['head_administrator', 'fleet_manager']), async (req, res) => {
   try {
     const assetsCollection = await getCollection('assets');
     const { 
@@ -133,7 +132,7 @@ router.post('/', async (req, res) => {
       status: status || 'available',
       assignedTo: assignedTo || null,
       tags: tags || [],
-      createdBy: 'system', // TODO: Restore user authentication
+      createdBy: req.user.userId,
       createdAt: new Date(),
       updatedAt: new Date(),
       maintenanceRecords: [],
@@ -209,7 +208,7 @@ router.get('/maintenance-records', async (req, res) => {
 });
 
 // POST /api/v1/maintenance-records - Create maintenance record
-router.post('/maintenance-records', async (req, res) => {
+router.post('/maintenance-records', checkRole(['head_administrator', 'fleet_manager', 'maintenance_technician']), async (req, res) => {
   try {
     const maintenanceCollection = await getCollection('maintenance_records');
     const { 
@@ -238,10 +237,10 @@ router.post('/maintenance-records', async (req, res) => {
       scheduledDate: scheduledDate ? new Date(scheduledDate) : null,
       completedDate: completedDate ? new Date(completedDate) : null,
       cost: cost || 0,
-      technician: technician || 'system', // TODO: Restore user authentication
+      technician: technician || req.user.userId,
       status: status || 'scheduled',
       notes: notes || '',
-      createdBy: 'system', // TODO: Restore user authentication
+      createdBy: req.user.userId,
       createdAt: new Date(),
       updatedAt: new Date()
     };
@@ -277,7 +276,7 @@ router.post('/maintenance-records', async (req, res) => {
 });
 
 // PUT /api/v1/maintenance-records/:id - Update maintenance record
-router.put('/maintenance-records/:id', async (req, res) => {
+router.put('/maintenance-records/:id', checkRole(['head_administrator', 'fleet_manager', 'maintenance_technician']), async (req, res) => {
   try {
     const maintenanceCollection = await getCollection('maintenance_records');
     const { 
@@ -334,7 +333,7 @@ router.put('/maintenance-records/:id', async (req, res) => {
 // (Duplicate removed - see below for the actual implementation)
 
 // POST /api/v1/asset-assignments - Create asset assignment
-router.post('/asset-assignments', async (req, res) => {
+router.post('/asset-assignments', checkRole(['head_administrator', 'fleet_manager']), async (req, res) => {
   try {
     const assignmentsCollection = await getCollection('asset_assignments');
     const { assetId, userId, assignedDate, returnDate, purpose, notes } = req.body;
@@ -354,7 +353,7 @@ router.post('/asset-assignments', async (req, res) => {
       purpose: purpose || '',
       notes: notes || '',
       status: 'active',
-      createdBy: 'system', // TODO: Restore user authentication
+      createdBy: req.user.userId,
       createdAt: new Date(),
       updatedAt: new Date()
     };
@@ -393,7 +392,7 @@ router.post('/asset-assignments', async (req, res) => {
 });
 
 // PUT /api/v1/asset-assignments/:id - Update asset assignment
-router.put('/asset-assignments/:id', async (req, res) => {
+router.put('/asset-assignments/:id', checkRole(['head_administrator', 'fleet_manager']), async (req, res) => {
   try {
     const assignmentsCollection = await getCollection('asset_assignments');
     const { returnDate, purpose, notes, status } = req.body;
@@ -562,7 +561,7 @@ router.get('/asset-maintenance', async (req, res) => {
 });
 
 // POST /api/v1/assets/maintenance - Create asset maintenance record
-router.post('/maintenance', async (req, res) => {
+router.post('/maintenance', checkRole(['head_administrator', 'fleet_manager', 'maintenance_technician']), async (req, res) => {
   try {
     const maintenanceCollection = await getCollection('maintenance_records');
     const { 
@@ -590,7 +589,7 @@ router.post('/maintenance', async (req, res) => {
       estimatedCost: estimatedCost ? parseFloat(estimatedCost) : 0,
       assignedTo,
       status: 'scheduled',
-      createdBy: 'system', // TODO: Restore user authentication
+      createdBy: req.user.userId,
       createdAt: new Date(),
       updatedAt: new Date()
     };
@@ -666,7 +665,7 @@ router.get('/asset-assignments', async (req, res) => {
 });
 
 // POST /api/v1/assets/assignments - Create asset assignment
-router.post('/assignments', async (req, res) => {
+router.post('/assignments', checkRole(['head_administrator', 'fleet_manager']), async (req, res) => {
   try {
     const assignmentsCollection = await getCollection('asset_assignments');
     const { 
@@ -692,7 +691,7 @@ router.post('/assignments', async (req, res) => {
       returnDate: returnDate ? new Date(returnDate) : null,
       notes: notes || '',
       status: 'active',
-      createdBy: 'system', // TODO: Restore user authentication
+      createdBy: req.user.userId,
       createdAt: new Date(),
       updatedAt: new Date()
     };
@@ -750,7 +749,7 @@ router.get('/:id', async (req, res) => {
 });
 
 // PUT /api/v1/assets/:id - Update asset
-router.put('/:id', async (req, res) => {
+router.put('/:id', checkRole(['head_administrator', 'fleet_manager']), async (req, res) => {
   try {
     const assetsCollection = await getCollection('assets');
     const { 
@@ -812,7 +811,7 @@ router.put('/:id', async (req, res) => {
 });
 
 // DELETE /api/v1/assets/:id - Delete asset
-router.delete('/:id', async (req, res) => {
+router.delete('/:id', checkRole(['head_administrator']), async (req, res) => {
   try {
     const assetsCollection = await getCollection('assets');
     const result = await assetsCollection.deleteOne({ _id: req.params.id });
