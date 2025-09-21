@@ -53,9 +53,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
           throw new Error("User data not received from server");
         }
         
-        // Debug: Log the user data received from backend
-        console.log("🔍 User data from backend:", user);
-        console.log("🔍 User role from backend:", user.role);
         
         // Map backend user to frontend user format
         const userWithPermissions: User = {

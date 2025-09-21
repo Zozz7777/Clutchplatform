@@ -8,6 +8,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { productionApi } from '@/lib/production-api';
 import { websocketService } from '@/lib/websocket-service';
 import { toast } from 'sonner';
+import { handleError, handleWarning, handleWebSocketError } from '@/lib/error-handler';
 import { 
   Activity, 
   Zap, 
@@ -93,7 +94,7 @@ export default function MonitoringPerformancePage() {
           setMetrics(data);
         });
       } else {
-        console.warn('WebSocket service not available or subscribeToPerformanceMetrics method not found');
+        handleWarning('WebSocket service not available or subscribeToPerformanceMetrics method not found', { component: 'PerformancePage' });
       }
 
       if (websocketService && typeof websocketService.subscribeToNotifications === 'function') {
@@ -101,10 +102,10 @@ export default function MonitoringPerformancePage() {
           setAlerts(prevAlerts => [data, ...prevAlerts.slice(0, 9)]); // Keep last 10 alerts
         });
       } else {
-        console.warn('WebSocket service not available or subscribeToNotifications method not found');
+        handleWarning('WebSocket service not available or subscribeToNotifications method not found', { component: 'PerformancePage' });
       }
     } catch (error) {
-      console.error('WebSocket subscription error:', error);
+      handleWebSocketError(error, 'performance', 'subscription');
     }
 
     // Monitor connection status
@@ -117,14 +118,14 @@ export default function MonitoringPerformancePage() {
         try {
           unsubscribe();
         } catch (error) {
-          console.error('WebSocket unsubscribe error:', error);
+          handleWebSocketError(error, 'performance', 'unsubscribe');
         }
       }
       if (unsubscribeAlerts) {
         try {
           unsubscribeAlerts();
         } catch (error) {
-          console.error('WebSocket unsubscribe error:', error);
+          handleWebSocketError(error, 'performance', 'unsubscribe');
         }
       }
       clearInterval(statusInterval);

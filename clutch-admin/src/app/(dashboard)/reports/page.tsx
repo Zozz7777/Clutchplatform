@@ -49,6 +49,7 @@ import { useAuth } from "@/contexts/auth-context";
 import ReportUsageStats from '@/components/widgets/report-usage-stats';
 import { useQuickActions } from "@/lib/quick-actions";
 import { useTranslations } from "next-intl";
+import { handleError, handleWarning, handleDataLoadError } from "@/lib/error-handler";
 
 interface Report {
   _id: string;
@@ -132,7 +133,7 @@ export default function ReportsPage() {
     generateReport = quickActions.generateReport;
     exportData = quickActions.exportData;
   } catch (error) {
-    console.error('Failed to initialize quick actions:', error);
+    handleError(error, { component: 'ReportsPage', action: 'initialize_quick_actions' });
   }
   const t = useTranslations();
 
@@ -153,7 +154,7 @@ export default function ReportsPage() {
           const reports = reportsData.value || [];
           setReports(Array.isArray(reports) ? reports as unknown as Report[] : []);
         } else {
-          console.warn('Failed to load reports:', reportsData.reason);
+          handleWarning(`Failed to load reports: ${reportsData.reason}`, { component: 'ReportsPage' });
           setReports([]);
         }
 
@@ -162,12 +163,12 @@ export default function ReportsPage() {
           const templates = templatesData.value || [];
           setTemplates(Array.isArray(templates) ? templates as unknown as ReportTemplate[] : []);
         } else {
-          console.warn('Failed to load templates:', templatesData.reason);
+          handleWarning(`Failed to load templates: ${templatesData.reason}`, { component: 'ReportsPage' });
           setTemplates([]);
         }
         
       } catch (error) {
-        console.error('Unexpected error loading reports data:', error);
+        handleDataLoadError(error, 'reports_data');
         setReports([]);
         setTemplates([]);
       } finally {

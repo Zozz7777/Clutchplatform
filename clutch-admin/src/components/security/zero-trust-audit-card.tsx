@@ -238,11 +238,11 @@ export default function ZeroTrustAuditCard() {
   }, []);
 
   const handlePolicyAction = (policyId: string, action: string) => {
-    console.log(`Policy ${policyId} action: ${action}`);
+    // Handle policy action
   };
 
   const handleAnomalyAction = (anomalyId: string, action: string) => {
-    console.log(`Anomaly ${anomalyId} action: ${action}`);
+    // Handle anomaly action
   };
 
   const getSeverityColor = (severity: string) => {

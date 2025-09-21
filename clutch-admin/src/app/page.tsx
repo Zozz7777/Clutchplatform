@@ -4,6 +4,9 @@ import { useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/contexts/auth-context";
 
+// Prevent static generation for this page
+export const dynamic = 'force-dynamic';
+
 export default function HomePage() {
   const { user, isLoading } = useAuth();
   const router = useRouter();

@@ -7,6 +7,9 @@ import { useRouter } from "next/navigation";
 import { useEffect } from "react";
 import { ErrorBoundary } from "@/components/error-boundary";
 
+// Prevent static generation for this layout
+export const dynamic = 'force-dynamic';
+
 export default function DashboardLayout({
   children,
 }: {

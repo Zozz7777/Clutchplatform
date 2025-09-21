@@ -154,7 +154,7 @@ export default function MarketingPage() {
           const campaigns = campaignsData.data || campaignsData;
           setCampaigns(Array.isArray(campaigns) ? campaigns : []);
         } else {
-          console.warn('Failed to load campaigns:', campaignsResponse.status === 'rejected' ? campaignsResponse.reason : 'Response not ok');
+          handleWarning(`Failed to load campaigns: ${campaignsResponse.status === 'rejected' ? campaignsResponse.reason : 'Response not ok'}`, { component: 'MarketingPage' });
           setCampaigns([]);
         }
 
@@ -164,7 +164,7 @@ export default function MarketingPage() {
           const leads = leadsData.data || leadsData;
           setLeads(Array.isArray(leads) ? leads : []);
         } else {
-          console.warn('Failed to load leads:', leadsResponse.status === 'rejected' ? leadsResponse.reason : 'Response not ok');
+          handleWarning(`Failed to load leads: ${leadsResponse.status === 'rejected' ? leadsResponse.reason : 'Response not ok'}`, { component: 'MarketingPage' });
           setLeads([]);
         }
 
@@ -173,7 +173,7 @@ export default function MarketingPage() {
           const statsData = await statsResponse.value.json();
           setStats(statsData.data || statsData);
         } else {
-          console.warn('Failed to load stats, calculating from loaded data');
+          handleWarning('Failed to load stats, calculating from loaded data', { component: 'MarketingPage' });
           // Calculate stats from loaded data with proper array checks
           const currentCampaigns = Array.isArray(campaigns) ? campaigns : [];
           const currentLeads = Array.isArray(leads) ? leads : [];

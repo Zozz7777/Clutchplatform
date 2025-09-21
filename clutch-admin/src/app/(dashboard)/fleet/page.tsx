@@ -14,6 +14,7 @@ import { useAuth } from "@/contexts/auth-context";
 import { useTranslations } from "next-intl";
 import { useQuickActions } from "@/lib/quick-actions";
 import { toast } from "sonner";
+import { handleError, handleWarning, handleWebSocketError, handleDataLoadError } from "@/lib/error-handler";
 import { 
   Truck, 
   Search, 
@@ -99,7 +100,7 @@ export default function FleetPage() {
     createFleet = quickActions.createFleet;
     optimizeRoutes = quickActions.optimizeRoutes;
   } catch (error) {
-    console.error('Failed to initialize quick actions:', error);
+    handleError(error, { component: 'FleetPage', action: 'initialize_quick_actions' });
   }
 
   useEffect(() => {
@@ -137,7 +138,7 @@ export default function FleetPage() {
       } catch (error) {
         if (!isMounted) return;
         
-        console.error('Failed to load fleet data:', error);
+        handleDataLoadError(error, 'fleet_data');
         const errorMessage = error instanceof Error ? error.message : 'Unknown error occurred';
         setError(errorMessage);
         // Failed to load fleet data
@@ -170,14 +171,14 @@ export default function FleetPage() {
             setVehicles(vehiclesData as FleetVehicle[]);
             setFilteredVehicles(vehiclesData as FleetVehicle[]);
           } catch (wsError) {
-            console.error('WebSocket data processing error:', wsError);
+            handleWebSocketError(wsError, 'fleet', 'data_processing');
           }
         });
       } else {
-        console.warn('WebSocket service not available or subscribeToFleetUpdates method not found');
+        handleWarning('WebSocket service not available or subscribeToFleetUpdates method not found', { component: 'FleetPage' });
       }
     } catch (wsError) {
-      console.error('WebSocket subscription error:', wsError);
+      handleWebSocketError(wsError, 'fleet', 'subscription');
     }
 
     return () => {
@@ -189,7 +190,7 @@ export default function FleetPage() {
         try {
           unsubscribe();
         } catch (error) {
-          console.error('WebSocket unsubscribe error:', error);
+          handleWebSocketError(error, 'fleet', 'unsubscribe');
         }
       }
     };
@@ -274,7 +275,7 @@ export default function FleetPage() {
           <Button 
             variant="outline" 
             className="shadow-2xs" 
-            onClick={optimizeRoutes || (() => console.warn('Optimize routes not available'))}
+            onClick={optimizeRoutes || (() => handleWarning('Optimize routes not available', { component: 'FleetPage' }))}
             disabled={!optimizeRoutes}
           >
             <Route className="mr-2 h-4 w-4" />
@@ -282,7 +283,7 @@ export default function FleetPage() {
           </Button>
           <Button 
             className="shadow-2xs" 
-            onClick={createFleet || (() => console.warn('Create fleet not available'))}
+            onClick={createFleet || (() => handleWarning('Create fleet not available', { component: 'FleetPage' }))}
             disabled={!createFleet}
           >
             <Plus className="mr-2 h-4 w-4" />

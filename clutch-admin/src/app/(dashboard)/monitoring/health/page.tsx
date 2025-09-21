@@ -7,6 +7,7 @@ import { Button } from '@/components/ui/button';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { productionApi } from '@/lib/production-api';
 import { websocketService } from '@/lib/websocket-service';
+import { handleError, handleWarning, handleWebSocketError } from '@/lib/error-handler';
 
 // Import new Phase 2 widgets
 import SLACompliance from '@/components/widgets/sla-compliance';
@@ -96,10 +97,10 @@ export default function HealthPage() {
           );
         });
       } else {
-        console.warn('WebSocket service not available or subscribeToSystemHealth method not found');
+        handleWarning('WebSocket service not available or subscribeToSystemHealth method not found', { component: 'HealthPage' });
       }
     } catch (error) {
-      console.error('WebSocket subscription error:', error);
+      handleWebSocketError(error, 'health', 'subscription');
     }
 
     // Monitor connection status
@@ -112,7 +113,7 @@ export default function HealthPage() {
         try {
           unsubscribe();
         } catch (error) {
-          console.error('WebSocket unsubscribe error:', error);
+          handleWebSocketError(error, 'health', 'unsubscribe');
         }
       }
       clearInterval(statusInterval);

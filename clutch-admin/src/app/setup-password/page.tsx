@@ -12,6 +12,9 @@ import { useAuth } from "@/contexts/auth-context";
 import { toast } from "sonner";
 import { Loader2, Eye, EyeOff, CheckCircle, AlertTriangle, Shield, User } from "lucide-react";
 
+// Prevent static generation for this page
+export const dynamic = 'force-dynamic';
+
 interface InvitationData {
   email: string;
   name: string;
