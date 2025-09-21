@@ -415,7 +415,7 @@ export default function MarketingPage() {
       <div className="flex items-center justify-center h-64">
         <div className="text-center">
           <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto mb-4"></div>
-          <p className="text-muted-foreground">Loading marketing data...</p>
+          <p className="text-muted-foreground">{t('dashboard.loadingMarketingData')}</p>
         </div>
       </div>
     );
@@ -426,20 +426,20 @@ export default function MarketingPage() {
       {/* Page Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold tracking-tight">{t('marketing.title')}</h1>
+          <h1 className="text-3xl font-bold tracking-tight">{t('dashboard.marketing')}</h1>
           <p className="text-muted-foreground">
-            {t('marketing.description')}
+            {t('dashboard.marketingDescription')}
           </p>
         </div>
         {hasPermission("manage_marketing") && (
           <div className="flex space-x-2">
             <Button>
               <Plus className="mr-2 h-4 w-4" />
-              New Campaign
+              {t('dashboard.newCampaign')}
             </Button>
             <Button variant="outline">
               <Plus className="mr-2 h-4 w-4" />
-              Import Leads
+              {t('dashboard.importLeads')}
             </Button>
           </div>
         )}
@@ -449,7 +449,7 @@ export default function MarketingPage() {
       <div className="grid gap-4 md:grid-cols-4">
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Active Campaigns</CardTitle>
+            <CardTitle className="text-sm font-medium">{t('dashboard.activeCampaigns')}</CardTitle>
             <Megaphone className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
@@ -457,14 +457,14 @@ export default function MarketingPage() {
               {stats ? stats.activeCampaigns : (Array.isArray(campaigns) ? campaigns.filter(c => c.status === "active").length : 0)}
             </div>
             <p className="text-xs text-muted-foreground">
-              {stats ? stats.totalCampaigns : (Array.isArray(campaigns) ? campaigns.length : 0)} total campaigns
+              {stats ? stats.totalCampaigns : (Array.isArray(campaigns) ? campaigns.length : 0)} {t('dashboard.totalCampaigns')}
             </p>
           </CardContent>
         </Card>
         
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Total Spent</CardTitle>
+            <CardTitle className="text-sm font-medium">{t('dashboard.totalSpent')}</CardTitle>
             <DollarSign className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>

@@ -33,7 +33,7 @@ interface ClientData {
 }
 
 export function TopEnterpriseClients({ className = '' }: TopEnterpriseClientsProps) {
-  const { t } = useTranslations();
+  const t = useTranslations() as any;
   const [clients, setClients] = React.useState<ClientData[]>([]);
   const [isLoading, setIsLoading] = React.useState(true);
 

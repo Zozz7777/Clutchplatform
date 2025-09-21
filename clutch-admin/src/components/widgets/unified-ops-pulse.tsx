@@ -14,7 +14,7 @@ interface UnifiedOpsPulseProps {
 }
 
 export function UnifiedOpsPulse({ className = '' }: UnifiedOpsPulseProps) {
-  const { t } = useTranslations();
+  const t = useTranslations() as any;
   const [pulse, setPulse] = React.useState<OperationalPulse | null>(null);
   const [isLoading, setIsLoading] = React.useState(true);
 

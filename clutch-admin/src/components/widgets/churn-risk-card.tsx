@@ -25,7 +25,7 @@ interface ChurnRiskCardProps {
 }
 
 export function ChurnRiskCard({ className = '', showDetails = false }: ChurnRiskCardProps) {
-  const { t } = useTranslations();
+  const t = useTranslations() as any;
   const [churnRisks, setChurnRisks] = useState<ChurnRisk[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [showAll, setShowAll] = useState(showDetails);
