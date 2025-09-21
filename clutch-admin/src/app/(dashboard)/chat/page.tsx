@@ -123,7 +123,7 @@ export default function ChatPage() {
           // Load real data from API with error handling
           const [channelsData, messagesData] = await Promise.allSettled([
             productionApi.getChatChannels(),
-            productionApi.getChatMessages(selectedChannel)
+            productionApi.getChatMessages()
           ]);
 
           // Handle channels data
@@ -199,6 +199,35 @@ export default function ChatPage() {
     }
   };
 
+  const handleCreateChannel = async () => {
+    if (!newChannelData.name.trim()) {
+      toast.error("Channel name is required");
+      return;
+    }
+
+    setIsCreating(true);
+    try {
+      const result = await productionApi.createChatChannel(newChannelData);
+      if (result) {
+        toast.success("Chat channel created successfully");
+        setIsCreateModalOpen(false);
+        setNewChannelData({
+          name: "",
+          description: "",
+          type: "group",
+          isPrivate: false
+        });
+        // Refresh channels list
+        const updatedChannels = await productionApi.getChatChannels();
+        setChannels(updatedChannels as unknown as ChatChannel[]);
+      }
+    } catch (error) {
+      toast.error("Failed to create chat channel");
+    } finally {
+      setIsCreating(false);
+    }
+  };
+
   const getStatusIcon = (status: string) => {
     switch (status) {
       case "sent":
@@ -251,10 +280,102 @@ export default function ChatPage() {
             <Archive className="mr-2 h-4 w-4" />
             Archive
           </Button>
-          <Button className="shadow-2xs">
-            <Plus className="mr-2 h-4 w-4" />
-            {t('dashboard.newChat')}
-          </Button>
+          <Dialog open={isCreateModalOpen} onOpenChange={setIsCreateModalOpen}>
+            <DialogTrigger asChild>
+              <Button className="shadow-2xs">
+                <Plus className="mr-2 h-4 w-4" />
+                {t('dashboard.newChat')}
+              </Button>
+            </DialogTrigger>
+            <DialogContent className="sm:max-w-[425px]">
+              <DialogHeader>
+                <DialogTitle>Create New Chat Channel</DialogTitle>
+                <DialogDescription>
+                  Create a new chat channel for your team or project.
+                </DialogDescription>
+              </DialogHeader>
+              <div className="grid gap-4 py-4">
+                <div className="grid grid-cols-4 items-center gap-4">
+                  <Label htmlFor="name" className="text-right">
+                    Name
+                  </Label>
+                  <Input
+                    id="name"
+                    value={newChannelData.name}
+                    onChange={(e) => setNewChannelData({...newChannelData, name: e.target.value})}
+                    className="col-span-3"
+                    placeholder="Enter channel name"
+                  />
+                </div>
+                <div className="grid grid-cols-4 items-center gap-4">
+                  <Label htmlFor="description" className="text-right">
+                    Description
+                  </Label>
+                  <Textarea
+                    id="description"
+                    value={newChannelData.description}
+                    onChange={(e) => setNewChannelData({...newChannelData, description: e.target.value})}
+                    className="col-span-3"
+                    placeholder="Enter channel description (optional)"
+                    rows={3}
+                  />
+                </div>
+                <div className="grid grid-cols-4 items-center gap-4">
+                  <Label htmlFor="type" className="text-right">
+                    Type
+                  </Label>
+                  <Select
+                    value={newChannelData.type}
+                    onValueChange={(value: "direct" | "group" | "support") => 
+                      setNewChannelData({...newChannelData, type: value})
+                    }
+                  >
+                    <SelectTrigger className="col-span-3">
+                      <SelectValue placeholder="Select channel type" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="direct">Direct Message</SelectItem>
+                      <SelectItem value="group">Group Chat</SelectItem>
+                      <SelectItem value="support">Support Channel</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div className="grid grid-cols-4 items-center gap-4">
+                  <Label htmlFor="private" className="text-right">
+                    Private
+                  </Label>
+                  <div className="col-span-3 flex items-center space-x-2">
+                    <input
+                      type="checkbox"
+                      id="private"
+                      checked={newChannelData.isPrivate}
+                      onChange={(e) => setNewChannelData({...newChannelData, isPrivate: e.target.checked})}
+                      className="rounded"
+                    />
+                    <Label htmlFor="private" className="text-sm text-muted-foreground">
+                      Make this channel private
+                    </Label>
+                  </div>
+                </div>
+              </div>
+              <DialogFooter>
+                <Button
+                  type="button"
+                  variant="outline"
+                  onClick={() => setIsCreateModalOpen(false)}
+                >
+                  Cancel
+                </Button>
+                <Button
+                  type="button"
+                  onClick={handleCreateChannel}
+                  disabled={isCreating || !newChannelData.name.trim()}
+                >
+                  {isCreating ? "Creating..." : "Create Channel"}
+                </Button>
+              </DialogFooter>
+            </DialogContent>
+          </Dialog>
         </div>
       </div>
 

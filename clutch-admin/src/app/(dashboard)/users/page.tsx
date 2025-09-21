@@ -442,7 +442,7 @@ export default function UsersPage() {
                   <div className="text-center p-4 border rounded-[0.625rem]">
                     <Users className="h-8 w-8 text-primary mx-auto mb-2" />
                     <p className="text-2xl font-bold text-foreground">
-                      {users.filter(u => u.role === "customer").length}
+                      {users.filter(u => ["enterprise_client", "service_provider"].includes(u.role)).length}
                     </p>
                     <p className="text-sm text-muted-foreground">{t('dashboard.totalCustomers')}</p>
                   </div>
@@ -461,7 +461,7 @@ export default function UsersPage() {
                   <h3 className="text-lg font-semibold">Recent Customer Activity</h3>
                   <div className="space-y-2">
                     {Array.isArray(users) ? users
-                      .filter(u => u && u.role === "customer")
+                      .filter(u => u && ["enterprise_client", "service_provider"].includes(u.role))
                       .slice(0, 5)
                       .map((user) => (
                         <div key={user.id} className="flex items-center justify-between p-3 border rounded-[0.625rem]">

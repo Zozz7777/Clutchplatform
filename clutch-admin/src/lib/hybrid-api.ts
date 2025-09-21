@@ -302,15 +302,15 @@ class HybridApiService {
   async getProjectTasks(projectId: string) {
     return this.executeWithFallback(
       () => apiService.getProjectTasks(projectId),
-      () => realApi.getProjectTasks(projectId),
+      () => Promise.resolve([]), // realApi doesn't have getProjectTasks
       false // Use real API
     );
   }
 
   async getTimeTracking(projectId: string) {
     return this.executeWithFallback(
-      () => apiService.getTimeTracking(projectId),
-      () => realApi.getTimeTracking(projectId),
+      () => apiService.getProjectTimeTracking(projectId),
+      () => Promise.resolve([]), // realApi doesn't have getTimeTracking
       false // Use real API
     );
   }
@@ -326,8 +326,8 @@ class HybridApiService {
 
   async toggleFeatureFlag(flagId: string, enabled: boolean) {
     return this.executeWithFallback(
-      () => apiService.toggleFeatureFlag(flagId, enabled),
-      () => realApi.toggleFeatureFlag(flagId, enabled),
+      () => apiService.updateFeatureFlag(flagId, { enabled }),
+      () => realApi.updateFeatureFlag(flagId, { enabled }),
       false // Use real API
     );
   }
@@ -343,7 +343,7 @@ class HybridApiService {
   async getRollouts() {
     return this.executeWithFallback(
       () => apiService.getRollouts(),
-      () => realApi.getRollouts(),
+      () => Promise.resolve([]), // realApi doesn't have getRollouts
       false // Use real API
     );
   }

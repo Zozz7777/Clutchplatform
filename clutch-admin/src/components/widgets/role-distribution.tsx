@@ -50,27 +50,133 @@ export function RoleDistribution({ className = '' }: RoleDistributionProps) {
 
         const totalUsers = users?.length || 0;
         const roleDefinitions = {
+          // Level 1: Executive Leadership
+          super_admin: { 
+            color: 'text-destructive', 
+            icon: Shield, 
+            description: 'Full system access and control' 
+          },
+          head_administrator: { 
+            color: 'text-destructive', 
+            icon: Shield, 
+            description: 'System administration and management' 
+          },
+          executive: { 
+            color: 'text-destructive', 
+            icon: Shield, 
+            description: 'Executive leadership and oversight' 
+          },
+          platform_admin: { 
+            color: 'text-destructive', 
+            icon: Shield, 
+            description: 'Platform administration and control' 
+          },
           admin: { 
             color: 'text-destructive', 
             icon: Shield, 
-            description: 'Full system access and management' 
+            description: 'Administrative access and management' 
           },
-          manager: { 
+          
+          // Level 2: Department Heads
+          hr_manager: { 
             color: 'text-primary', 
             icon: UserCheck, 
-            description: 'Team and project management' 
+            description: 'Human resources management' 
           },
-          staff: { 
+          finance_officer: { 
+            color: 'text-primary', 
+            icon: UserCheck, 
+            description: 'Financial management and oversight' 
+          },
+          operations_manager: { 
+            color: 'text-primary', 
+            icon: UserCheck, 
+            description: 'Operations and fleet management' 
+          },
+          marketing_manager: { 
+            color: 'text-primary', 
+            icon: UserCheck, 
+            description: 'Marketing and customer acquisition' 
+          },
+          legal_team: { 
+            color: 'text-primary', 
+            icon: UserCheck, 
+            description: 'Legal and compliance management' 
+          },
+          security_manager: { 
+            color: 'text-primary', 
+            icon: UserCheck, 
+            description: 'Security and risk management' 
+          },
+          
+          // Level 3: Specialized Managers
+          business_analyst: { 
+            color: 'text-blue-600', 
+            icon: User, 
+            description: 'Business analysis and insights' 
+          },
+          project_manager: { 
+            color: 'text-blue-600', 
+            icon: User, 
+            description: 'Project management and coordination' 
+          },
+          asset_manager: { 
+            color: 'text-blue-600', 
+            icon: User, 
+            description: 'Asset and fleet management' 
+          },
+          crm_manager: { 
+            color: 'text-blue-600', 
+            icon: User, 
+            description: 'Customer relationship management' 
+          },
+          system_admin: { 
+            color: 'text-blue-600', 
+            icon: User, 
+            description: 'System administration and maintenance' 
+          },
+          
+          // Level 4: Functional Specialists
+          hr: { 
+            color: 'text-green-600', 
+            icon: User, 
+            description: 'Human resources specialist' 
+          },
+          finance: { 
+            color: 'text-green-600', 
+            icon: User, 
+            description: 'Financial operations specialist' 
+          },
+          customer_support: { 
+            color: 'text-green-600', 
+            icon: User, 
+            description: 'Customer support specialist' 
+          },
+          developer: { 
+            color: 'text-green-600', 
+            icon: User, 
+            description: 'Development and technical specialist' 
+          },
+          
+          // Level 5: Operational Staff
+          employee: { 
             color: 'text-success', 
             icon: User, 
-            description: 'Standard user access' 
+            description: 'Standard employee access' 
           },
-          customer: { 
-            color: 'text-primary', 
+          support_agent: { 
+            color: 'text-success', 
+            icon: User, 
+            description: 'Support and assistance specialist' 
+          },
+          
+          // Level 6: External Users
+          enterprise_client: { 
+            color: 'text-warning', 
             icon: Users, 
-            description: 'Customer portal access' 
+            description: 'Enterprise client access' 
           },
-          provider: { 
+          service_provider: { 
             color: 'text-warning', 
             icon: Settings, 
             description: 'Service provider access' 
@@ -283,11 +389,11 @@ export function RoleDistribution({ className = '' }: RoleDistributionProps) {
             <li>• {roleData.length} different roles in the system</li>
             <li>• Largest role: {largestRole?.role} ({largestRole?.percentage.toFixed(1)}%)</li>
             <li>• Smallest role: {smallestRole?.role} ({smallestRole?.percentage.toFixed(1)}%)</li>
-            {roleData.filter(r => r.role === 'admin').length > 0 && (
-              <li>• {roleData.find(r => r.role === 'admin')?.count} admin users</li>
+            {roleData.filter(r => ['super_admin', 'head_administrator', 'executive', 'platform_admin', 'admin'].includes(r.role)).length > 0 && (
+              <li>• {roleData.filter(r => ['super_admin', 'head_administrator', 'executive', 'platform_admin', 'admin'].includes(r.role)).reduce((sum, r) => sum + r.count, 0)} admin users</li>
             )}
-            {roleData.filter(r => r.role === 'customer').length > 0 && (
-              <li>• {roleData.find(r => r.role === 'customer')?.count} customer users</li>
+            {roleData.filter(r => ['enterprise_client', 'service_provider'].includes(r.role)).length > 0 && (
+              <li>• {roleData.filter(r => ['enterprise_client', 'service_provider'].includes(r.role)).reduce((sum, r) => sum + r.count, 0)} external users</li>
             )}
           </ul>
         </div>
