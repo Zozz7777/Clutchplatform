@@ -276,7 +276,7 @@ export function DowntimeImpact({ className = '' }: DowntimeImpactProps) {
                 </div>
                 <div className="text-right">
                   <p className="text-sm font-semibold text-foreground">
-                    ${reason.cost.toLocaleString()}
+                    ${(reason.cost || 0).toLocaleString()}
                   </p>
                   <Badge className={getReasonBadge(reason.reason)}>
                     {reason.percentage.toFixed(0)}%
@@ -306,7 +306,7 @@ export function DowntimeImpact({ className = '' }: DowntimeImpactProps) {
                 </div>
                 <div className="text-right">
                   <p className="text-sm font-semibold text-foreground">
-                    ${vehicle.revenueLoss.toLocaleString()}
+                    ${(vehicle.revenueLoss || 0).toLocaleString()}
                   </p>
                   <Badge variant="outline" className="text-xs">
                     Revenue Loss
@@ -353,7 +353,7 @@ export function DowntimeImpact({ className = '' }: DowntimeImpactProps) {
           <ul className="text-xs text-blue-800 space-y-1">
             <li>• {t('downtime.totalDowntimeHours')}: {downtimeMetrics.totalDowntimeHours} {t('downtime.hours')}</li>
             <li>• {t('downtime.revenueImpactingDowntime')}: {downtimeMetrics.lostRevenueHours} {t('downtime.hours')}</li>
-            <li>• {t('downtime.totalRevenueImpact')}: ${downtimeMetrics.revenueImpact.toLocaleString()}</li>
+            <li>• {t('downtime.totalRevenueImpact')}: ${(downtimeMetrics.revenueImpact || 0).toLocaleString()}</li>
             <li>• {t('downtime.averageDowntimePerVehicle')}: {downtimeMetrics.averageDowntimePerVehicle.toFixed(1)} {t('downtime.hours')}</li>
             <li>• {t('downtime.topDowntimeReason')}: {downtimeMetrics.downtimeByReason[0]?.reason} ({downtimeMetrics.downtimeByReason[0]?.percentage.toFixed(0)}%)</li>
             {downtimeMetrics.revenueImpact > targetRevenueImpact && (

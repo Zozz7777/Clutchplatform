@@ -60,6 +60,83 @@ export class RealApiService {
     )();
   }
 
+  async getFleetOperationalCosts(): Promise<Record<string, unknown>> {
+    return withErrorHandling(
+      async () => {
+        const response = await apiService.makeRequest<Record<string, unknown>>("/api/v1/fleet-operational-costs");
+        return handleApiResponse(response, 'getFleetOperationalCosts', {});
+      },
+      'getFleetOperationalCosts',
+      { fallbackValue: {}, showToast: false }
+    )();
+  }
+
+  async getOperationalCosts(): Promise<Record<string, unknown>> {
+    return withErrorHandling(
+      async () => {
+        const response = await apiService.makeRequest<Record<string, unknown>>("/api/v1/operational-costs");
+        return handleApiResponse(response, 'getOperationalCosts', {});
+      },
+      'getOperationalCosts',
+      { fallbackValue: {}, showToast: false }
+    )();
+  }
+
+  async getActiveSessions(): Promise<Record<string, unknown>> {
+    return withErrorHandling(
+      async () => {
+        const response = await apiService.makeRequest<Record<string, unknown>>("/api/v1/active-sessions");
+        return handleApiResponse(response, 'getActiveSessions', {});
+      },
+      'getActiveSessions',
+      { fallbackValue: {}, showToast: false }
+    )();
+  }
+
+  async getRevenueMetrics(): Promise<Record<string, unknown>> {
+    return withErrorHandling(
+      async () => {
+        const response = await apiService.makeRequest<Record<string, unknown>>("/api/v1/revenue-metrics");
+        return handleApiResponse(response, 'getRevenueMetrics', {});
+      },
+      'getRevenueMetrics',
+      { fallbackValue: {}, showToast: false }
+    )();
+  }
+
+  async getRevenueForecast(): Promise<Record<string, unknown>[]> {
+    return withErrorHandling(
+      async () => {
+        const response = await apiService.makeRequest<Record<string, unknown>[]>("/api/v1/revenue-forecast");
+        return handleApiResponse(response, 'getRevenueForecast', []);
+      },
+      'getRevenueForecast',
+      { fallbackValue: [], showToast: false }
+    )();
+  }
+
+  async getComplianceStatus(): Promise<Record<string, unknown>> {
+    return withErrorHandling(
+      async () => {
+        const response = await apiService.makeRequest<Record<string, unknown>>("/api/v1/compliance-status");
+        return handleApiResponse(response, 'getComplianceStatus', {});
+      },
+      'getComplianceStatus',
+      { fallbackValue: {}, showToast: false }
+    )();
+  }
+
+  async getEngagementHeatmap(): Promise<Record<string, unknown>> {
+    return withErrorHandling(
+      async () => {
+        const response = await apiService.makeRequest<Record<string, unknown>>("/api/v1/engagement-heatmap");
+        return handleApiResponse(response, 'getEngagementHeatmap', {});
+      },
+      'getEngagementHeatmap',
+      { fallbackValue: {}, showToast: false }
+    )();
+  }
+
   // Fleet APIs
   async getFleetVehicleById(vehicleId: string): Promise<Record<string, unknown>> {
     return withErrorHandling(
