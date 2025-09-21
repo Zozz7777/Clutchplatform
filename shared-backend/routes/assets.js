@@ -634,7 +634,7 @@ router.get('/analytics/overview', async (req, res) => {
 router.get('/asset-maintenance', async (req, res) => {
   console.log('Maintenance endpoint hit');
   try {
-    const maintenanceCollection = await getCollection('asset_maintenance');
+    const maintenanceCollection = await getCollection('maintenance_records');
     const { page = 1, limit = 10, assetId, status, type } = req.query;
     
     const filter = {};
@@ -678,7 +678,7 @@ router.get('/asset-maintenance', async (req, res) => {
 // POST /api/v1/assets/maintenance - Create asset maintenance record
 router.post('/maintenance', async (req, res) => {
   try {
-    const maintenanceCollection = await getCollection('asset_maintenance');
+    const maintenanceCollection = await getCollection('maintenance_records');
     const { 
       assetId, 
       type, 
