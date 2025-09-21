@@ -36,7 +36,7 @@ interface UtilizationData {
 export function FleetUtilization({ className = '' }: FleetUtilizationProps) {
   const [utilizationData, setUtilizationData] = React.useState<UtilizationData | null>(null);
   const [isLoading, setIsLoading] = React.useState(true);
-  const { t } = useTranslations();
+  const t = (key: string, params?: any) => key;
 
   React.useEffect(() => {
     const loadUtilizationData = async () => {
