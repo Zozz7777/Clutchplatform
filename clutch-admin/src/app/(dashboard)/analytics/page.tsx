@@ -201,27 +201,27 @@ export default function AnalyticsPage() {
           
           // Handle user analytics data
           const userAnalyticsData = userData.status === 'fulfilled' && userData.value 
-            ? userData.value as UserAnalytics 
+            ? userData.value as unknown as UserAnalytics 
             : null;
           
           // Handle revenue analytics data
           const revenueAnalyticsData = revenueData.status === 'fulfilled' && revenueData.value 
-            ? revenueData.value as RevenueAnalytics 
+            ? revenueData.value as unknown as RevenueAnalytics 
             : null;
           
           // Handle fleet analytics data
           const fleetAnalyticsData = fleetData.status === 'fulfilled' && fleetData.value 
-            ? fleetData.value as FleetAnalytics 
+            ? fleetData.value as unknown as FleetAnalytics 
             : null;
           
           // Handle engagement analytics data
           const engagementAnalyticsData = engagementData.status === 'fulfilled' && engagementData.value 
-            ? engagementData.value as EngagementAnalytics 
+            ? engagementData.value as unknown as EngagementAnalytics 
             : null;
           
           // Handle reports data
           const reportsArray = reportsData.status === 'fulfilled' && Array.isArray(reportsData.value) 
-            ? reportsData.value as AnalyticsReport[] 
+            ? reportsData.value as unknown as AnalyticsReport[] 
             : [];
           
           if (isMounted) {

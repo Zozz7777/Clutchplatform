@@ -130,9 +130,9 @@ export default function AuditTrailPage() {
           realApi.getUserActivities()
         ]);
 
-        setAuditLogs(logsData || []);
-        setSecurityEvents(eventsData || []);
-        setUserActivities(activitiesData || []);
+        setAuditLogs((logsData || []) as AuditLog[]);
+        setSecurityEvents((eventsData || []) as SecurityEvent[]);
+        setUserActivities((activitiesData || []) as UserActivity[]);
         
       } catch (error) {
         // Error handled by API service
