@@ -136,22 +136,28 @@ export default function CommunicationPage() {
           {
             _id: '1',
             name: 'General Support',
-            type: 'public',
-            memberCount: 1250,
-            lastMessage: 'How can I reset my password?',
-            lastMessageAt: '2024-01-20T15:30:00Z',
-            isActive: true,
-            unreadCount: 3
+            type: 'support',
+            participants: 1250,
+            unreadMessages: 3,
+            lastMessage: {
+              content: 'How can I reset my password?',
+              sender: 'user123',
+              timestamp: '2024-01-20T15:30:00Z'
+            },
+            status: 'active'
           },
           {
             _id: '2',
             name: 'Technical Issues',
-            type: 'private',
-            memberCount: 45,
-            lastMessage: 'The API is responding normally now',
-            lastMessageAt: '2024-01-20T14:45:00Z',
-            isActive: true,
-            unreadCount: 0
+            type: 'internal',
+            participants: 45,
+            unreadMessages: 0,
+            lastMessage: {
+              content: 'The API is responding normally now',
+              sender: 'admin',
+              timestamp: '2024-01-20T14:45:00Z'
+            },
+            status: 'active'
           }
         ];
 
@@ -159,27 +165,33 @@ export default function CommunicationPage() {
         const mockTickets: SupportTicket[] = [
           {
             _id: '1',
-            title: 'Login Issues',
+            ticketNumber: 'TICKET-001',
+            subject: 'Login Issues',
             description: 'Unable to log in with correct credentials',
             status: 'open',
             priority: 'high',
             category: 'Authentication',
             assignedTo: 'John Smith',
             createdAt: '2024-01-20T13:20:00Z',
-            updatedAt: '2024-01-20T15:30:00Z',
-            customerEmail: 'user@example.com'
+            customer: {
+              name: 'John Doe',
+              email: 'user@example.com'
+            }
           },
           {
             _id: '2',
-            title: 'Feature Request',
+            ticketNumber: 'TICKET-002',
+            subject: 'Feature Request',
             description: 'Add dark mode to the mobile app',
             status: 'in_progress',
             priority: 'medium',
             category: 'Enhancement',
             assignedTo: 'Sarah Johnson',
             createdAt: '2024-01-19T09:15:00Z',
-            updatedAt: '2024-01-20T11:45:00Z',
-            customerEmail: 'customer@example.com'
+            customer: {
+              name: 'Jane Smith',
+              email: 'customer@example.com'
+            }
           }
         ];
 

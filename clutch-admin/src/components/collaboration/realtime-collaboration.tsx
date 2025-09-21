@@ -5,9 +5,9 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+// import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { productionApi } from '@/lib/production-api';
-// import { useTranslations } from '@/hooks/use-translations';
+import { useTranslations } from '@/hooks/use-translations';
 import { 
   Users, 
   MessageSquare, 
@@ -84,14 +84,14 @@ export default function RealtimeCollaboration({ currentUserId, currentPage }: Re
       try {
         // Load real collaboration events from API
         const events = await productionApi.getNotifications();
-        const collaborationEvents: CollaborationEvent[] = events.slice(0, 10).map((event, index) => ({
+        const collaborationEvents: CollaborationEvent[] = events.slice(0, 10).map((event: any, index) => ({
           id: event.id || `event-${Date.now()}-${index}`,
           type: event.type === 'alert' ? 'alert' : 'comment',
-          userId: event.userId || 'system',
-          userName: event.userName || 'System',
+          userId: (event as any).userId || 'system',
+          userName: (event as any).userName || 'System',
           message: event.message || 'System notification',
           timestamp: event.timestamp || `${index + 1} minutes ago`,
-          page: event.page || '/dashboard',
+          page: (event as any).page || '/dashboard',
           priority: event.priority || 'medium'
         }));
         setCollaborationEvents(collaborationEvents);
@@ -113,9 +113,9 @@ export default function RealtimeCollaboration({ currentUserId, currentPage }: Re
           const latestEvent = newEvents[0];
           const newEvent: CollaborationEvent = {
             id: latestEvent.id || Date.now().toString(),
-            type: latestEvent.type === 'alert' ? 'alert' : 'comment',
-            userId: latestEvent.userId || 'system',
-            userName: latestEvent.userName || 'System',
+            type: (latestEvent as any).type === 'alert' ? 'alert' : 'comment',
+            userId: (latestEvent as any).userId || 'system',
+            userName: (latestEvent as any).userName || 'System',
             message: latestEvent.message || 'New system update available',
             timestamp: 'Just now',
             page: currentPage,
@@ -254,12 +254,9 @@ export default function RealtimeCollaboration({ currentUserId, currentPage }: Re
                 <div key={user.id} className="flex items-center justify-between">
                   <div className="flex items-center space-x-2">
                     <div className="relative">
-                      <Avatar className="h-6 w-6">
-                        <AvatarImage src={user.avatar} />
-                        <AvatarFallback className="text-xs">
-                          {user.name.split(' ').map(n => n[0]).join('')}
-                        </AvatarFallback>
-                      </Avatar>
+                      <div className="h-6 w-6 bg-gray-200 rounded-full flex items-center justify-center text-xs">
+                        {user.name.split(' ').map(n => n[0]).join('')}
+                      </div>
                       <div className={`absolute -bottom-0.5 -right-0.5 h-2 w-2 rounded-full border border-background ${getStatusColor(user.status)}`} />
                     </div>
                     <div>

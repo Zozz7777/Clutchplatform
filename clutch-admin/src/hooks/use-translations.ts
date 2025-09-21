@@ -111,10 +111,15 @@ const fallbackTranslations = {
     login: "Sign In",
     logout: "Sign Out",
     password: "Password",
+    email: "Email",
+    enterPassword: "Enter your password",
+    signingIn: "Signing in...",
+    clutchAdmin: "Clutch Admin",
     forgotPassword: "Forgot Password?",
     rememberMe: "Remember Me",
     signInToDrive: "Sign in to drive the automotive revolution",
     invalidCredentials: "Invalid email or password",
+    errorOccurred: "An error occurred",
     loginSuccess: "Login successful",
     logoutSuccess: "Logout successful"
   },
@@ -269,6 +274,26 @@ const fallbackTranslations = {
     averageDowntimePerVehicle: "Average Downtime Per Vehicle",
     topDowntimeReason: "Top Downtime Reason",
     revenueImpactAboveTarget: "Revenue impact above target threshold"
+  },
+  collaboration: {
+    title: "Real-time Collaboration",
+    description: "Collaborate with your team in real-time",
+    activeNow: "Active Now",
+    recentActivity: "Recent Activity",
+    quickComment: "Quick Comment",
+    addComment: "Add a comment..."
+  },
+  chat: {
+    title: "Chat",
+    connected: "Connected",
+    disconnected: "Disconnected",
+    participants: "participants",
+    voiceCall: "Voice call started with",
+    videoCall: "Video call started with",
+    muted: "Muted",
+    unmuted: "Unmuted",
+    recordingStarted: "Recording started",
+    recordingStopped: "Recording stopped"
   }
 };
 

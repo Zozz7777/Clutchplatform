@@ -223,7 +223,7 @@ export default function DashboardPage() {
 
       {/* KPI Cards */}
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-5">
-        {kpiMetrics.map((metric) => {
+        {Array.isArray(kpiMetrics) && kpiMetrics.map((metric) => {
           const Icon = iconMap[metric.icon as keyof typeof iconMap] || Activity;
           return (
             <Card key={metric.id} className="shadow-2xs">
@@ -255,7 +255,7 @@ export default function DashboardPage() {
           </CardHeader>
           <CardContent>
             <div className="space-y-4">
-              {notifications.map((notification) => (
+              {Array.isArray(notifications) && notifications.map((notification) => (
                 <div key={notification.id} className="flex items-start space-x-3 p-3 rounded-[0.625rem] bg-muted/50 border border-border">
                   <div className="w-2 h-2 rounded-full bg-primary mt-2"></div>
                   <div className="flex-1">
@@ -278,7 +278,7 @@ export default function DashboardPage() {
             <CardDescription className="text-muted-foreground">{t('dashboard.commonAdministrativeTasks')}</CardDescription>
           </CardHeader>
           <CardContent className="space-y-3">
-            {quickActions.slice(0, 6).map((action) => {
+            {Array.isArray(quickActions) && quickActions.slice(0, 6).map((action) => {
               const Icon = iconMap[action.icon as keyof typeof iconMap] || Plus;
               return (
                 <Button 
@@ -304,7 +304,7 @@ export default function DashboardPage() {
           </CardHeader>
           <CardContent>
             <div className="space-y-4">
-              {fleetVehicles.map((vehicle) => (
+              {Array.isArray(fleetVehicles) && fleetVehicles.map((vehicle) => (
                 <div key={vehicle.id} className="flex items-center justify-between p-3 rounded-[0.625rem] bg-muted/50 border border-border">
                   <div className="flex items-center space-x-3">
                     <div className="w-2 h-2 rounded-full bg-primary"></div>
