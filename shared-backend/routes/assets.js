@@ -28,6 +28,26 @@ router.get('/test', (req, res) => {
   });
 });
 
+// GET /api/v1/assets/maintenance-test - Simple maintenance test endpoint
+router.get('/maintenance-test', (req, res) => {
+  console.log('Maintenance test endpoint hit');
+  res.json({
+    success: true,
+    message: 'Maintenance endpoint is working',
+    timestamp: new Date().toISOString()
+  });
+});
+
+// GET /api/v1/assets/assignments-test - Simple assignments test endpoint
+router.get('/assignments-test', (req, res) => {
+  console.log('Assignments test endpoint hit');
+  res.json({
+    success: true,
+    message: 'Assignments endpoint is working',
+    timestamp: new Date().toISOString()
+  });
+});
+
 // GET /api/v1/assets - Get all assets
 router.get('/', async (req, res) => {
   console.log('Assets endpoint hit - no auth required');
