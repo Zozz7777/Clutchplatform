@@ -11,7 +11,7 @@ import { productionApi } from "@/lib/production-api";
 import { websocketService } from "@/lib/websocket-service";
 import { formatDate, formatRelativeTime } from "@/lib/utils";
 import { useAuth } from "@/contexts/auth-context";
-import { useTranslations } from "@/hooks/use-translations";
+import { useTranslations } from "next-intl";
 import { useQuickActions } from "@/lib/quick-actions";
 import { toast } from "sonner";
 import { 
@@ -86,7 +86,7 @@ export default function FleetPage() {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const { user, hasPermission } = useAuth();
-  const { t } = useTranslations();
+  const t = useTranslations();
   
   // Safely get quick actions with error handling
   let createFleet: (() => void) | null = null;
@@ -103,30 +103,52 @@ export default function FleetPage() {
   }
 
   useEffect(() => {
+    let isMounted = true;
+    let timeoutId: NodeJS.Timeout | null = null;
+
     const loadFleetData = async () => {
-      if (!user) {
+      if (!user || !isMounted) {
         setIsLoading(false);
         return;
       }
       
       try {
         setIsLoading(true);
-        const vehicleData = await productionApi.getFleetVehicles();
-        // Ensure we always have an array and handle potential null/undefined
-        const vehiclesArray = Array.isArray(vehicleData) ? vehicleData as FleetVehicle[] : [];
-        setVehicles(vehiclesArray);
-        setFilteredVehicles(vehiclesArray);
+        setError(null);
+        
+        // Add debouncing to prevent excessive API calls
+        if (timeoutId) {
+          clearTimeout(timeoutId);
+        }
+        
+        timeoutId = setTimeout(async () => {
+          if (!isMounted) return;
+          
+          const vehicleData = await productionApi.getFleetVehicles();
+          // Ensure we always have an array and handle potential null/undefined
+          const vehiclesArray = Array.isArray(vehicleData) ? vehicleData as FleetVehicle[] : [];
+          
+          if (isMounted) {
+            setVehicles(vehiclesArray);
+            setFilteredVehicles(vehiclesArray);
+          }
+        }, 300); // 300ms debounce
+        
       } catch (error) {
+        if (!isMounted) return;
+        
         console.error('Failed to load fleet data:', error);
         const errorMessage = error instanceof Error ? error.message : 'Unknown error occurred';
         setError(errorMessage);
         // Failed to load fleet data
-        toast.error(t('fleet.failedToLoadFleetData'));
+        toast.error(t('fleet.failedToLoadFleetData') || 'Failed to load fleet data');
         // Set empty arrays on error - no mock data fallback
         setVehicles([]);
         setFilteredVehicles([]);
       } finally {
-        setIsLoading(false);
+        if (isMounted) {
+          setIsLoading(false);
+        }
       }
     };
 
@@ -138,6 +160,8 @@ export default function FleetPage() {
       // Check if websocketService exists and has the method
       if (websocketService && typeof websocketService.subscribeToFleetUpdates === 'function') {
         unsubscribe = websocketService.subscribeToFleetUpdates((data: any) => {
+          if (!isMounted) return;
+          
           try {
             // Handle different data structures from WebSocket
             const vehiclesData = Array.isArray(data) ? data : 
@@ -157,6 +181,10 @@ export default function FleetPage() {
     }
 
     return () => {
+      isMounted = false;
+      if (timeoutId) {
+        clearTimeout(timeoutId);
+      }
       if (unsubscribe) {
         try {
           unsubscribe();

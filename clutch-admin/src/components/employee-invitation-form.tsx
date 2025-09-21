@@ -12,6 +12,7 @@ import { apiService } from "@/lib/api";
 import { toast } from "sonner";
 import { Loader2, UserPlus, Mail, Building2, Shield, Check } from "lucide-react";
 import { useTranslations } from "@/hooks/use-translations";
+import { useAuth } from "@/contexts/auth-context";
 
 interface InvitationFormData {
   name: string;
@@ -33,6 +34,17 @@ const ROLE_OPTIONS = [
   { value: "manager", label: "employeeInvitation.roles.manager", description: "employeeInvitation.roles.managerDesc" },
   { value: "executive", label: "employeeInvitation.roles.executive", description: "employeeInvitation.roles.executiveDesc" },
   { value: "admin", label: "employeeInvitation.roles.admin", description: "employeeInvitation.roles.adminDesc" },
+  { value: "head_administrator", label: "employeeInvitation.roles.head_administrator", description: "employeeInvitation.roles.head_administratorDesc" },
+  { value: "platform_admin", label: "employeeInvitation.roles.platform_admin", description: "employeeInvitation.roles.platform_adminDesc" },
+  { value: "enterprise_client", label: "employeeInvitation.roles.enterprise_client", description: "employeeInvitation.roles.enterprise_clientDesc" },
+  { value: "service_provider", label: "employeeInvitation.roles.service_provider", description: "employeeInvitation.roles.service_providerDesc" },
+  { value: "business_analyst", label: "employeeInvitation.roles.business_analyst", description: "employeeInvitation.roles.business_analystDesc" },
+  { value: "customer_support", label: "employeeInvitation.roles.customer_support", description: "employeeInvitation.roles.customer_supportDesc" },
+  { value: "finance_officer", label: "employeeInvitation.roles.finance_officer", description: "employeeInvitation.roles.finance_officerDesc" },
+  { value: "legal_team", label: "employeeInvitation.roles.legal_team", description: "employeeInvitation.roles.legal_teamDesc" },
+  { value: "project_manager", label: "employeeInvitation.roles.project_manager", description: "employeeInvitation.roles.project_managerDesc" },
+  { value: "asset_manager", label: "employeeInvitation.roles.asset_manager", description: "employeeInvitation.roles.asset_managerDesc" },
+  { value: "vendor_manager", label: "employeeInvitation.roles.vendor_manager", description: "employeeInvitation.roles.vendor_managerDesc" },
 ];
 
 const DEPARTMENT_OPTIONS = [
@@ -61,6 +73,7 @@ const PERMISSION_OPTIONS = [
 
 export function EmployeeInvitationForm({ onSuccess, onCancel }: EmployeeInvitationFormProps) {
   const { t } = useTranslations();
+  const { user } = useAuth();
   const [formData, setFormData] = useState<InvitationFormData>({
     name: "",
     email: "",
@@ -163,9 +176,29 @@ export function EmployeeInvitationForm({ onSuccess, onCancel }: EmployeeInvitati
     switch (role) {
       case "admin":
       case "executive":
+      case "head_administrator":
+      case "platform_admin":
         return ["read", "write", "delete", "admin", "hr", "finance", "fleet", "reports"];
       case "hr":
         return ["read", "write", "hr", "reports"];
+      case "finance_officer":
+        return ["read", "write", "finance", "reports"];
+      case "legal_team":
+        return ["read", "write", "legal", "reports"];
+      case "project_manager":
+        return ["read", "write", "projects", "reports"];
+      case "asset_manager":
+        return ["read", "write", "assets", "reports"];
+      case "vendor_manager":
+        return ["read", "write", "vendors", "reports"];
+      case "business_analyst":
+        return ["read", "analytics", "reports"];
+      case "customer_support":
+        return ["read", "write", "crm", "chat"];
+      case "enterprise_client":
+        return ["read", "fleet", "crm", "analytics"];
+      case "service_provider":
+        return ["read", "chat", "crm"];
       case "manager":
         return ["read", "write", "reports"];
       case "employee":
@@ -253,14 +286,23 @@ export function EmployeeInvitationForm({ onSuccess, onCancel }: EmployeeInvitati
                     <SelectValue placeholder={t('employeeInvitation.selectRole')} />
                   </SelectTrigger>
                   <SelectContent>
-                    {ROLE_OPTIONS.map((role) => (
-                      <SelectItem key={role.value} value={role.value}>
-                        <div>
-                          <div className="font-medium">{t(role.label)}</div>
-                          <div className="text-sm text-muted-foreground">{t(role.description)}</div>
-                        </div>
-                      </SelectItem>
-                    ))}
+                    {ROLE_OPTIONS
+                      .filter(role => {
+                        // If user is HR, filter out restricted roles
+                        if ((user?.role === "hr_manager" || user?.role === "hr") && 
+                            ["executive", "head_administrator", "platform_admin", "admin"].includes(role.value)) {
+                          return false;
+                        }
+                        return true;
+                      })
+                      .map((role) => (
+                        <SelectItem key={role.value} value={role.value}>
+                          <div>
+                            <div className="font-medium">{t(role.label)}</div>
+                            <div className="text-sm text-muted-foreground">{t(role.description)}</div>
+                          </div>
+                        </SelectItem>
+                      ))}
                   </SelectContent>
                 </Select>
                 {errors.role && (

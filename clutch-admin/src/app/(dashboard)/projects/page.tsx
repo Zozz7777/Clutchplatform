@@ -46,7 +46,7 @@ import {
 } from "lucide-react";
 import { formatCurrency } from "@/lib/utils";
 import { productionApi } from "@/lib/production-api";
-import { useTranslations } from "next-intl";
+import { useTranslations } from "@/hooks/use-translations";
 
 // Import new Phase 2 widgets
 import ProjectROI from '@/components/widgets/project-roi';
@@ -282,9 +282,9 @@ export default function ProjectManagementPage() {
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold tracking-tight">Project Management</h1>
+          <h1 className="text-3xl font-bold tracking-tight">{t('dashboard.projectManagement')}</h1>
           <p className="text-muted-foreground">
-            Manage projects, tasks, and time tracking across your organization
+            {t('dashboard.manageProjectsTasksTimeTracking')}
           </p>
         </div>
         <div className="flex items-center space-x-2">
@@ -298,7 +298,7 @@ export default function ProjectManagementPage() {
           </Button>
           <Button onClick={() => setShowCreateDialog(true)}>
             <Plus className="mr-2 h-4 w-4" />
-            New Project
+            {t('dashboard.newProject')}
           </Button>
         </div>
       </div>
@@ -319,7 +319,7 @@ export default function ProjectManagementPage() {
         </Card>
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Total Budget</CardTitle>
+            <CardTitle className="text-sm font-medium">{t('dashboard.totalBudget')}</CardTitle>
             <Target className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
@@ -343,7 +343,7 @@ export default function ProjectManagementPage() {
         </Card>
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Team Members</CardTitle>
+            <CardTitle className="text-sm font-medium">{t('dashboard.teamMembers')}</CardTitle>
             <Users className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>

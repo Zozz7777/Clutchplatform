@@ -17,7 +17,7 @@ import AtRiskClients from "@/components/widgets/at-risk-clients";
 import CSATNPSTrends from "@/components/widgets/csat-nps-trends";
 import UpsellOpportunities from "@/components/widgets/upsell-opportunities";
 import { useAuth } from "@/contexts/auth-context";
-import { useTranslations } from "@/hooks/use-translations";
+import { useTranslations } from "next-intl";
 import { toast } from "sonner";
 import { 
   Users, 
@@ -83,11 +83,14 @@ export default function CRMPage() {
   const [statusFilter, setStatusFilter] = useState<string>("all");
   const [isLoading, setIsLoading] = useState(true);
   const { user, hasPermission } = useAuth();
-  const { t } = useTranslations();
+  const t = useTranslations();
 
   useEffect(() => {
+    let isMounted = true;
+    let timeoutId: NodeJS.Timeout | null = null;
+
     const loadCRMData = async () => {
-      if (!user) {
+      if (!user || !isMounted) {
         setIsLoading(false);
         return;
       }
@@ -95,35 +98,73 @@ export default function CRMPage() {
       try {
         setIsLoading(true);
         
-        // Load real data from API
-        const [customersData, ticketsData] = await Promise.all([
-          productionApi.getCustomers(),
-          productionApi.getTickets()
-        ]);
+        // Add debouncing to prevent excessive API calls
+        if (timeoutId) {
+          clearTimeout(timeoutId);
+        }
+        
+        timeoutId = setTimeout(async () => {
+          if (!isMounted) return;
+          
+          // Load real data from API with error handling
+          const [customersData, ticketsData] = await Promise.allSettled([
+            productionApi.getCustomers(),
+            productionApi.getTickets()
+          ]);
 
-        // Ensure we always have arrays and handle type conversion safely
-        const customersArray = Array.isArray(customersData) ? customersData as unknown as Customer[] : [];
-        const ticketsArray = Array.isArray(ticketsData) ? ticketsData as unknown as Ticket[] : [];
-        setCustomers(customersArray);
-        setTickets(ticketsArray);
-        setFilteredCustomers(customersArray);
-        setFilteredTickets(ticketsArray);
+          // Handle customers data
+          const customersArray = customersData.status === 'fulfilled' && Array.isArray(customersData.value) 
+            ? customersData.value as unknown as Customer[] 
+            : [];
+          
+          // Handle tickets data
+          const ticketsArray = ticketsData.status === 'fulfilled' && Array.isArray(ticketsData.value) 
+            ? ticketsData.value as unknown as Ticket[] 
+            : [];
+          
+          if (isMounted) {
+            setCustomers(customersArray);
+            setTickets(ticketsArray);
+            setFilteredCustomers(customersArray);
+            setFilteredTickets(ticketsArray);
+          }
+          
+          // Log any errors
+          if (customersData.status === 'rejected') {
+            console.error('Failed to load customers:', customersData.reason);
+          }
+          if (ticketsData.status === 'rejected') {
+            console.error('Failed to load tickets:', ticketsData.reason);
+          }
+          
+        }, 300); // 300ms debounce
         
       } catch (error) {
-        // Error handled by API service
-        toast.error(t('crm.failedToLoadCrmData'));
+        if (!isMounted) return;
+        
+        console.error('Failed to load CRM data:', error);
+        toast.error(t('crm.failedToLoadCrmData') || 'Failed to load CRM data');
         // Set empty arrays on error - no mock data fallback
         setCustomers([]);
         setTickets([]);
         setFilteredCustomers([]);
         setFilteredTickets([]);
       } finally {
-        setIsLoading(false);
+        if (isMounted) {
+          setIsLoading(false);
+        }
       }
     };
 
     loadCRMData();
-  }, [user]);
+
+    return () => {
+      isMounted = false;
+      if (timeoutId) {
+        clearTimeout(timeoutId);
+      }
+    };
+  }, [user, t]);
 
   useEffect(() => {
     // Ensure customers is always an array

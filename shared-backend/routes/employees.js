@@ -267,7 +267,7 @@ router.get('/:id', authenticateToken, checkRole(['head_administrator', 'hr']), a
 });
 
 // PUT /api/v1/employees/:id - Update employee
-router.put('/:id', authenticateToken, checkRole(['head_administrator', 'hr']), async (req, res) => {
+router.put('/:id', authenticateToken, checkRole(['head_administrator', 'hr', 'hr_manager']), async (req, res) => {
   try {
     const { id } = req.params;
     const { name, phoneNumber, role, department, position, permissions, isActive } = req.body;
@@ -281,6 +281,28 @@ router.put('/:id', authenticateToken, checkRole(['head_administrator', 'hr']), a
         success: false,
         error: 'EMPLOYEE_NOT_FOUND',
         message: 'Employee not found',
+        timestamp: new Date().toISOString()
+      });
+    }
+    
+    // Check if HR user is trying to edit executive/board level employee
+    if ((req.user.role === 'hr' || req.user.role === 'hr_manager') && 
+        ['executive', 'head_administrator', 'platform_admin', 'admin'].includes(existingEmployee.role)) {
+      return res.status(403).json({
+        success: false,
+        error: 'INSUFFICIENT_PERMISSIONS',
+        message: 'HR users cannot edit executive or board level employees',
+        timestamp: new Date().toISOString()
+      });
+    }
+    
+    // Check if HR user is trying to assign executive/board level role
+    if ((req.user.role === 'hr' || req.user.role === 'hr_manager') && 
+        role && ['executive', 'head_administrator', 'platform_admin', 'admin'].includes(role)) {
+      return res.status(403).json({
+        success: false,
+        error: 'INSUFFICIENT_PERMISSIONS',
+        message: 'HR users cannot assign executive or board level roles',
         timestamp: new Date().toISOString()
       });
     }

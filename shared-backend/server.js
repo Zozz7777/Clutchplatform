@@ -232,6 +232,8 @@ app.use(`${apiPrefix}/employees`, employeeInvitationsRoutes);
 app.use(`${apiPrefix}/export`, exportRoutes);
 
 // Mount new missing route files with correct v1 prefix
+app.use(`${apiPrefix}/fleet`, fleetRoutes);
+app.use(`${apiPrefix}/crm`, crmRoutes);
 app.use(`${apiPrefix}/finance`, financeRoutes);
 app.use(`${apiPrefix}/chat`, chatRoutes);
 app.use(`${apiPrefix}/settings`, settingsRoutes);
@@ -258,9 +260,9 @@ app.use('/api/audit-trail', auditTrailRoutes);
 app.use('/api/reports', reportsRoutes);
 app.use('/api/rbac', rbacRoutes);
 
-// API v1 routes (for frontend compatibility)
-app.use('/api/v1/fleet', fleetRoutes);
-app.use('/api/v1/crm', crmRoutes);
+// API v1 routes (for frontend compatibility) - Fleet and CRM routes already mounted above
+// app.use('/api/v1/fleet', fleetRoutes); // Removed duplicate - already mounted with apiPrefix
+// app.use('/api/v1/crm', crmRoutes); // Removed duplicate - already mounted with apiPrefix
 app.use('/api/v1/notifications', notificationsRoutes);
 app.use('/api/v1/dashboard', dashboardRoutes);
 app.use('/api/v1/users', usersRoutes);

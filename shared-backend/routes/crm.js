@@ -15,7 +15,9 @@ const crmLimiter = rateLimit({
 router.use(crmLimiter);
 router.use(authenticateToken);
 
-// ===== CRM CUSTOMERS =====
+// ============================================================================
+// NON-PARAMETERIZED ROUTES (MUST COME FIRST)
+// ============================================================================
 
 // GET /api/v1/crm/customer-health-scores - Get customer health scores
 router.get('/customer-health-scores', checkRole(['head_administrator', 'crm_manager']), async (req, res) => {
@@ -66,7 +68,7 @@ router.get('/customer-health-scores', checkRole(['head_administrator', 'crm_mana
   }
 });
 
-// GET /api/crm/customers - Get all customers
+// GET /api/v1/crm/customers - Get all customers
 router.get('/customers', async (req, res) => {
   try {
     const customersCollection = await getCollection('customers');
@@ -109,34 +111,7 @@ router.get('/customers', async (req, res) => {
   }
 });
 
-// GET /api/crm/customers/:id - Get customer by ID
-router.get('/customers/:id', async (req, res) => {
-  try {
-    const customersCollection = await getCollection('customers');
-    const customer = await customersCollection.findOne({ _id: req.params.id });
-    
-    if (!customer) {
-      return res.status(404).json({
-        success: false,
-        message: 'Customer not found'
-      });
-    }
-    
-    res.json({
-      success: true,
-      data: customer
-    });
-  } catch (error) {
-    console.error('Error fetching customer:', error);
-    res.status(500).json({
-      success: false,
-      message: 'Failed to fetch customer',
-      error: process.env.NODE_ENV === 'development' ? error.message : undefined
-    });
-  }
-});
-
-// POST /api/crm/customers - Create new customer
+// POST /api/v1/crm/customers - Create new customer
 router.post('/customers', checkRole(['head_administrator', 'customer_support']), async (req, res) => {
   try {
     const customersCollection = await getCollection('customers');
@@ -192,7 +167,7 @@ router.post('/customers', checkRole(['head_administrator', 'customer_support']),
 
 // ===== CRM LEADS =====
 
-// GET /api/crm/leads - Get all leads
+// GET /api/v1/crm/leads - Get all leads
 router.get('/leads', async (req, res) => {
   try {
     const leadsCollection = await getCollection('leads');
@@ -237,7 +212,7 @@ router.get('/leads', async (req, res) => {
 
 // ===== CRM SALES =====
 
-// GET /api/crm/sales - Get all sales
+// GET /api/v1/crm/sales - Get all sales
 router.get('/sales', async (req, res) => {
   try {
     const salesCollection = await getCollection('sales');
@@ -286,7 +261,7 @@ router.get('/sales', async (req, res) => {
 
 // ===== CRM TICKETS =====
 
-// GET /api/crm/tickets - Get all tickets
+// GET /api/v1/crm/tickets - Get all tickets
 router.get('/tickets', async (req, res) => {
   try {
     const ticketsCollection = await getCollection('tickets');
@@ -330,7 +305,7 @@ router.get('/tickets', async (req, res) => {
   }
 });
 
-// POST /api/crm/tickets - Create new ticket
+// POST /api/v1/crm/tickets - Create new ticket
 router.post('/tickets', checkRole(['head_administrator', 'customer_support']), async (req, res) => {
   try {
     const ticketsCollection = await getCollection('tickets');
@@ -389,7 +364,7 @@ router.post('/tickets', checkRole(['head_administrator', 'customer_support']), a
 
 // ===== CRM ANALYTICS =====
 
-// GET /api/crm/analytics - Get CRM analytics
+// GET /api/v1/crm/analytics - Get CRM analytics
 router.get('/analytics', async (req, res) => {
   try {
     const customersCollection = await getCollection('customers');
@@ -484,6 +459,133 @@ router.get('/critical-accounts', checkRole(['head_administrator', 'admin', 'crm_
       error: 'GET_CRITICAL_ACCOUNTS_FAILED',
       message: 'Failed to retrieve critical accounts',
       timestamp: new Date().toISOString()
+    });
+  }
+});
+
+// POST /api/v1/crm/critical-accounts - Create critical account
+router.post('/critical-accounts', checkRole(['head_administrator', 'admin', 'crm_manager', 'account_manager']), async (req, res) => {
+  try {
+    const accountsCollection = await getCollection('critical_accounts');
+    const accountData = {
+      ...req.body,
+      id: `account-${Date.now()}`,
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString()
+    };
+    
+    const result = await accountsCollection.insertOne(accountData);
+    
+    res.status(201).json({
+      success: true,
+      data: { id: result.insertedId, ...accountData },
+      message: 'Critical account created successfully',
+      timestamp: new Date().toISOString()
+    });
+  } catch (error) {
+    console.error('Create critical account error:', error);
+    res.status(500).json({
+      success: false,
+      error: 'CREATE_CRITICAL_ACCOUNT_FAILED',
+      message: 'Failed to create critical account',
+      timestamp: new Date().toISOString()
+    });
+  }
+});
+
+// ============================================================================
+// PARAMETERIZED ROUTES (MUST COME LAST TO AVOID CONFLICTS)
+// ============================================================================
+
+// GET /api/v1/crm/customers/:id - Get customer by ID
+router.get('/customers/:id', async (req, res) => {
+  try {
+    const customersCollection = await getCollection('customers');
+    const customer = await customersCollection.findOne({ _id: req.params.id });
+    
+    if (!customer) {
+      return res.status(404).json({
+        success: false,
+        message: 'Customer not found'
+      });
+    }
+    
+    res.json({
+      success: true,
+      data: customer
+    });
+  } catch (error) {
+    console.error('Error fetching customer:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Failed to fetch customer',
+      error: process.env.NODE_ENV === 'development' ? error.message : undefined
+    });
+  }
+});
+
+// PUT /api/v1/crm/customers/:id - Update customer
+router.put('/customers/:id', checkRole(['head_administrator', 'customer_support']), async (req, res) => {
+  try {
+    const customersCollection = await getCollection('customers');
+    const { id } = req.params;
+    const updateData = {
+      ...req.body,
+      updatedAt: new Date()
+    };
+    
+    const result = await customersCollection.updateOne(
+      { _id: id },
+      { $set: updateData }
+    );
+    
+    if (result.matchedCount === 0) {
+      return res.status(404).json({
+        success: false,
+        message: 'Customer not found'
+      });
+    }
+    
+    res.json({
+      success: true,
+      data: { id, ...updateData },
+      message: 'Customer updated successfully'
+    });
+  } catch (error) {
+    console.error('Error updating customer:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Failed to update customer',
+      error: process.env.NODE_ENV === 'development' ? error.message : undefined
+    });
+  }
+});
+
+// DELETE /api/v1/crm/customers/:id - Delete customer
+router.delete('/customers/:id', checkRole(['head_administrator']), async (req, res) => {
+  try {
+    const customersCollection = await getCollection('customers');
+    const { id } = req.params;
+    
+    const result = await customersCollection.deleteOne({ _id: id });
+    
+    if (result.deletedCount === 0) {
+      return res.status(404).json({
+        success: false,
+        message: 'Customer not found'
+      });
+    }
+    
+    res.json({
+      success: true,
+      message: 'Customer deleted successfully'
+    });
+  } catch (error) {
+    console.error('Error deleting customer:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Failed to delete customer',
+      error: process.env.NODE_ENV === 'development' ? error.message : undefined
     });
   }
 });

@@ -49,7 +49,8 @@ import {
   Building2,
   UserCog,
   TrendingUp,
-  Activity
+  Activity,
+  Crown
 } from "lucide-react";
 import {
   DropdownMenu,
@@ -141,12 +142,34 @@ export default function UsersPage() {
 
   const getRoleIcon = (role: string) => {
     switch (role) {
+      case "head_administrator":
+        return <Shield className="h-4 w-4" />;
       case "platform_admin":
+        return <Shield className="h-4 w-4" />;
+      case "executive":
+        return <Crown className="h-4 w-4" />;
+      case "admin":
         return <Shield className="h-4 w-4" />;
       case "enterprise_client":
         return <Building2 className="h-4 w-4" />;
       case "service_provider":
         return <UserCog className="h-4 w-4" />;
+      case "business_analyst":
+        return <BarChart3 className="h-4 w-4" />;
+      case "customer_support":
+        return <Headphones className="h-4 w-4" />;
+      case "hr_manager":
+        return <Users className="h-4 w-4" />;
+      case "finance_officer":
+        return <DollarSign className="h-4 w-4" />;
+      case "legal_team":
+        return <Scale className="h-4 w-4" />;
+      case "project_manager":
+        return <FolderKanban className="h-4 w-4" />;
+      case "asset_manager":
+        return <Package className="h-4 w-4" />;
+      case "vendor_manager":
+        return <Building2 className="h-4 w-4" />;
       default:
         return <Users className="h-4 w-4" />;
     }
@@ -174,7 +197,7 @@ export default function UsersPage() {
           </p>
         </div>
         {hasPermission("create_users") && (
-          <Button className="shadow-2xs" onClick={addUser}>
+          <Button className="shadow-2xs" onClick={addUser || (() => {})}>
             <Plus className="mr-2 h-4 w-4" />
             {t('users.addUser')}
           </Button>
@@ -286,11 +309,20 @@ export default function UsersPage() {
                   </SelectTrigger>
                   <SelectContent>
                     <SelectItem value="all">All Roles</SelectItem>
+                    <SelectItem value="head_administrator">Head Administrator</SelectItem>
                     <SelectItem value="platform_admin">Platform Admin</SelectItem>
+                    <SelectItem value="executive">Executive</SelectItem>
+                    <SelectItem value="admin">Administrator</SelectItem>
                     <SelectItem value="enterprise_client">Enterprise Client</SelectItem>
                     <SelectItem value="service_provider">Service Provider</SelectItem>
                     <SelectItem value="business_analyst">Business Analyst</SelectItem>
                     <SelectItem value="customer_support">Customer Support</SelectItem>
+                    <SelectItem value="hr_manager">HR Manager</SelectItem>
+                    <SelectItem value="finance_officer">Finance Officer</SelectItem>
+                    <SelectItem value="legal_team">Legal Team</SelectItem>
+                    <SelectItem value="project_manager">Project Manager</SelectItem>
+                    <SelectItem value="asset_manager">Asset Manager</SelectItem>
+                    <SelectItem value="vendor_manager">Vendor Manager</SelectItem>
                   </SelectContent>
                 </Select>
               </div>

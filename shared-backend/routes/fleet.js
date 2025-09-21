@@ -8,6 +8,10 @@ const router = express.Router();
 const { authenticateToken, checkRole, checkPermission } = require('../middleware/unified-auth');
 const { getCollection } = require('../config/optimized-database');
 
+// ============================================================================
+// NON-PARAMETERIZED ROUTES (MUST COME FIRST)
+// ============================================================================
+
 // GET /api/v1/fleet/fuel-cost-metrics - Get fuel cost metrics
 router.get('/fuel-cost-metrics', authenticateToken, checkRole(['head_administrator', 'asset_manager']), async (req, res) => {
   try {
@@ -299,160 +303,6 @@ router.post('/vehicles', authenticateToken, checkRole(['head_administrator', 'as
       success: false,
       error: 'ADD_FLEET_VEHICLE_FAILED',
       message: 'Failed to add vehicle to fleet',
-      timestamp: new Date().toISOString()
-    });
-  }
-});
-
-// PUT /api/v1/fleet/vehicles/:id - Update vehicle
-router.put('/vehicles/:id', authenticateToken, checkRole(['head_administrator', 'asset_manager']), async (req, res) => {
-  try {
-    const { id } = req.params;
-    const updateData = req.body;
-    
-    const vehiclesCollection = await getCollection('vehicles');
-    
-    // Check if vehicle exists
-    const existingVehicle = await vehiclesCollection.findOne({ _id: id });
-    if (!existingVehicle) {
-      return res.status(404).json({
-        success: false,
-        error: 'VEHICLE_NOT_FOUND',
-        message: 'Vehicle not found',
-        timestamp: new Date().toISOString()
-      });
-    }
-    
-    // Remove fields that shouldn't be updated directly
-    delete updateData._id;
-    delete updateData.createdAt;
-    delete updateData.createdBy;
-    
-    // Add update metadata
-    updateData.updatedAt = new Date();
-    updateData.updatedBy = req.user.userId;
-    
-    const result = await vehiclesCollection.updateOne(
-      { _id: id },
-      { $set: updateData }
-    );
-    
-    if (result.modifiedCount === 0) {
-      return res.status(400).json({
-        success: false,
-        error: 'UPDATE_FAILED',
-        message: 'No changes made to vehicle',
-        timestamp: new Date().toISOString()
-      });
-    }
-    
-    // Get updated vehicle
-    const updatedVehicle = await vehiclesCollection.findOne({ _id: id });
-    
-    res.json({
-      success: true,
-      data: { vehicle: updatedVehicle },
-      message: 'Vehicle updated successfully',
-      timestamp: new Date().toISOString()
-    });
-    
-  } catch (error) {
-    console.error('Update fleet vehicle error:', error);
-    res.status(500).json({
-      success: false,
-      error: 'UPDATE_FLEET_VEHICLE_FAILED',
-      message: 'Failed to update vehicle',
-      timestamp: new Date().toISOString()
-    });
-  }
-});
-
-// DELETE /api/v1/fleet/vehicles/:id - Remove vehicle from fleet
-router.delete('/vehicles/:id', authenticateToken, checkRole(['head_administrator']), async (req, res) => {
-  try {
-    const { id } = req.params;
-    const vehiclesCollection = await getCollection('vehicles');
-    
-    // Check if vehicle exists
-    const existingVehicle = await vehiclesCollection.findOne({ _id: id });
-    if (!existingVehicle) {
-      return res.status(404).json({
-        success: false,
-        error: 'VEHICLE_NOT_FOUND',
-        message: 'Vehicle not found',
-        timestamp: new Date().toISOString()
-      });
-    }
-    
-    // Soft delete - deactivate vehicle
-    const result = await vehiclesCollection.updateOne(
-      { _id: id },
-      { 
-        $set: { 
-          isActive: false,
-          status: 'decommissioned',
-          deactivatedAt: new Date(),
-          deactivatedBy: req.user.userId
-        }
-      }
-    );
-    
-    if (result.modifiedCount === 0) {
-      return res.status(400).json({
-        success: false,
-        error: 'DEACTIVATION_FAILED',
-        message: 'Failed to remove vehicle from fleet',
-        timestamp: new Date().toISOString()
-      });
-    }
-    
-    res.json({
-      success: true,
-      message: 'Vehicle removed from fleet successfully',
-      timestamp: new Date().toISOString()
-    });
-    
-  } catch (error) {
-    console.error('Remove fleet vehicle error:', error);
-    res.status(500).json({
-      success: false,
-      error: 'REMOVE_FLEET_VEHICLE_FAILED',
-      message: 'Failed to remove vehicle from fleet',
-      timestamp: new Date().toISOString()
-    });
-  }
-});
-
-// GET /api/v1/fleet/vehicles/:id - Get vehicle details
-router.get('/vehicles/:id', authenticateToken, checkRole(['head_administrator', 'asset_manager']), async (req, res) => {
-  try {
-    const { id } = req.params;
-    const vehiclesCollection = await getCollection('vehicles');
-    
-    const vehicle = await vehiclesCollection.findOne({ _id: id });
-    
-    if (!vehicle) {
-      return res.status(404).json({
-        success: false,
-        error: 'VEHICLE_NOT_FOUND',
-        message: 'Vehicle not found',
-        timestamp: new Date().toISOString()
-      });
-    }
-    
-    res.json({
-      success: true,
-      data: { vehicle },
-      message: 'Vehicle details retrieved successfully',
-      timestamp: new Date().toISOString()
-    });
-    
-  } catch (error) {
-    console.error('Get vehicle details error:', error);
-    res.status(500).json({
-      success: false,
-      error: 'GET_VEHICLE_DETAILS_FAILED',
-      message: 'Failed to retrieve vehicle details',
       timestamp: new Date().toISOString()
     });
   }
@@ -887,48 +737,6 @@ router.post('/maintenance/tasks', authenticateToken, checkRole(['head_administra
   }
 });
 
-// PUT /api/v1/fleet/maintenance/tasks/:id - Update maintenance task
-router.put('/maintenance/tasks/:id', authenticateToken, checkRole(['head_administrator', 'asset_manager', 'fleet_manager']), async (req, res) => {
-  try {
-    const tasksCollection = await getCollection('maintenance_tasks');
-    const { id } = req.params;
-    
-    const updateData = {
-      ...req.body,
-      updatedAt: new Date().toISOString()
-    };
-    
-    const result = await tasksCollection.updateOne(
-      { id },
-      { $set: updateData }
-    );
-    
-    if (result.matchedCount === 0) {
-      return res.status(404).json({
-        success: false,
-        error: 'MAINTENANCE_TASK_NOT_FOUND',
-        message: 'Maintenance task not found',
-        timestamp: new Date().toISOString()
-      });
-    }
-    
-    res.json({
-      success: true,
-      data: { id, ...updateData },
-      message: 'Maintenance task updated successfully',
-      timestamp: new Date().toISOString()
-    });
-  } catch (error) {
-    console.error('Update maintenance task error:', error);
-    res.status(500).json({
-      success: false,
-      error: 'UPDATE_MAINTENANCE_TASK_FAILED',
-      message: 'Failed to update maintenance task',
-      timestamp: new Date().toISOString()
-    });
-  }
-});
-
 // GET /api/v1/fleet/maintenance/forecast - Get maintenance forecast predictions
 router.get('/maintenance/forecast', authenticateToken, checkRole(['head_administrator', 'asset_manager', 'fleet_manager']), async (req, res) => {
   try {
@@ -1039,6 +847,206 @@ router.get('/maintenance/forecast', authenticateToken, checkRole(['head_administ
       success: false,
       error: 'GET_MAINTENANCE_FORECAST_FAILED',
       message: 'Failed to retrieve maintenance forecast',
+      timestamp: new Date().toISOString()
+    });
+  }
+});
+
+// ============================================================================
+// PARAMETERIZED ROUTES (MUST COME LAST TO AVOID CONFLICTS)
+// ============================================================================
+
+// PUT /api/v1/fleet/vehicles/:id - Update vehicle
+router.put('/vehicles/:id', authenticateToken, checkRole(['head_administrator', 'asset_manager']), async (req, res) => {
+  try {
+    const { id } = req.params;
+    const updateData = req.body;
+    
+    const vehiclesCollection = await getCollection('vehicles');
+    
+    // Check if vehicle exists
+    const existingVehicle = await vehiclesCollection.findOne({ _id: id });
+    if (!existingVehicle) {
+      return res.status(404).json({
+        success: false,
+        error: 'VEHICLE_NOT_FOUND',
+        message: 'Vehicle not found',
+        timestamp: new Date().toISOString()
+      });
+    }
+    
+    // Remove fields that shouldn't be updated directly
+    delete updateData._id;
+    delete updateData.createdAt;
+    delete updateData.createdBy;
+    
+    // Add update metadata
+    updateData.updatedAt = new Date();
+    updateData.updatedBy = req.user.userId;
+    
+    const result = await vehiclesCollection.updateOne(
+      { _id: id },
+      { $set: updateData }
+    );
+    
+    if (result.modifiedCount === 0) {
+      return res.status(400).json({
+        success: false,
+        error: 'UPDATE_FAILED',
+        message: 'No changes made to vehicle',
+        timestamp: new Date().toISOString()
+      });
+    }
+    
+    // Get updated vehicle
+    const updatedVehicle = await vehiclesCollection.findOne({ _id: id });
+    
+    res.json({
+      success: true,
+      data: { vehicle: updatedVehicle },
+      message: 'Vehicle updated successfully',
+      timestamp: new Date().toISOString()
+    });
+    
+  } catch (error) {
+    console.error('Update fleet vehicle error:', error);
+    res.status(500).json({
+      success: false,
+      error: 'UPDATE_FLEET_VEHICLE_FAILED',
+      message: 'Failed to update vehicle',
+      timestamp: new Date().toISOString()
+    });
+  }
+});
+
+// DELETE /api/v1/fleet/vehicles/:id - Remove vehicle from fleet
+router.delete('/vehicles/:id', authenticateToken, checkRole(['head_administrator']), async (req, res) => {
+  try {
+    const { id } = req.params;
+    const vehiclesCollection = await getCollection('vehicles');
+    
+    // Check if vehicle exists
+    const existingVehicle = await vehiclesCollection.findOne({ _id: id });
+    if (!existingVehicle) {
+      return res.status(404).json({
+        success: false,
+        error: 'VEHICLE_NOT_FOUND',
+        message: 'Vehicle not found',
+        timestamp: new Date().toISOString()
+      });
+    }
+    
+    // Soft delete - deactivate vehicle
+    const result = await vehiclesCollection.updateOne(
+      { _id: id },
+      { 
+        $set: { 
+          isActive: false,
+          status: 'decommissioned',
+          deactivatedAt: new Date(),
+          deactivatedBy: req.user.userId
+        }
+      }
+    );
+    
+    if (result.modifiedCount === 0) {
+      return res.status(400).json({
+        success: false,
+        error: 'DEACTIVATION_FAILED',
+        message: 'Failed to remove vehicle from fleet',
+        timestamp: new Date().toISOString()
+      });
+    }
+    
+    res.json({
+      success: true,
+      message: 'Vehicle removed from fleet successfully',
+      timestamp: new Date().toISOString()
+    });
+    
+  } catch (error) {
+    console.error('Remove fleet vehicle error:', error);
+    res.status(500).json({
+      success: false,
+      error: 'REMOVE_FLEET_VEHICLE_FAILED',
+      message: 'Failed to remove vehicle from fleet',
+      timestamp: new Date().toISOString()
+    });
+  }
+});
+
+// GET /api/v1/fleet/vehicles/:id - Get vehicle details
+router.get('/vehicles/:id', authenticateToken, checkRole(['head_administrator', 'asset_manager']), async (req, res) => {
+  try {
+    const { id } = req.params;
+    const vehiclesCollection = await getCollection('vehicles');
+    
+    const vehicle = await vehiclesCollection.findOne({ _id: id });
+    
+    if (!vehicle) {
+      return res.status(404).json({
+        success: false,
+        error: 'VEHICLE_NOT_FOUND',
+        message: 'Vehicle not found',
+        timestamp: new Date().toISOString()
+      });
+    }
+    
+    res.json({
+      success: true,
+      data: { vehicle },
+      message: 'Vehicle details retrieved successfully',
+      timestamp: new Date().toISOString()
+    });
+    
+  } catch (error) {
+    console.error('Get vehicle details error:', error);
+    res.status(500).json({
+      success: false,
+      error: 'GET_VEHICLE_DETAILS_FAILED',
+      message: 'Failed to retrieve vehicle details',
+      timestamp: new Date().toISOString()
+    });
+  }
+});
+
+// PUT /api/v1/fleet/maintenance/tasks/:id - Update maintenance task
+router.put('/maintenance/tasks/:id', authenticateToken, checkRole(['head_administrator', 'asset_manager', 'fleet_manager']), async (req, res) => {
+  try {
+    const tasksCollection = await getCollection('maintenance_tasks');
+    const { id } = req.params;
+    
+    const updateData = {
+      ...req.body,
+      updatedAt: new Date().toISOString()
+    };
+    
+    const result = await tasksCollection.updateOne(
+      { id },
+      { $set: updateData }
+    );
+    
+    if (result.matchedCount === 0) {
+      return res.status(404).json({
+        success: false,
+        error: 'MAINTENANCE_TASK_NOT_FOUND',
+        message: 'Maintenance task not found',
+        timestamp: new Date().toISOString()
+      });
+    }
+    
+    res.json({
+      success: true,
+      data: { id, ...updateData },
+      message: 'Maintenance task updated successfully',
+      timestamp: new Date().toISOString()
+    });
+  } catch (error) {
+    console.error('Update maintenance task error:', error);
+    res.status(500).json({
+      success: false,
+      error: 'UPDATE_MAINTENANCE_TASK_FAILED',
+      message: 'Failed to update maintenance task',
       timestamp: new Date().toISOString()
     });
   }

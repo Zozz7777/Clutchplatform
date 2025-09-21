@@ -137,7 +137,16 @@ const ROLE_OPTIONS = [
   { value: "executive", label: "Executive" },
   { value: "admin", label: "Administrator" },
   { value: "head_administrator", label: "Head Administrator" },
-  { value: "platform_admin", label: "Platform Admin" }
+  { value: "platform_admin", label: "Platform Admin" },
+  { value: "enterprise_client", label: "Enterprise Client" },
+  { value: "service_provider", label: "Service Provider" },
+  { value: "business_analyst", label: "Business Analyst" },
+  { value: "customer_support", label: "Customer Support" },
+  { value: "finance_officer", label: "Finance Officer" },
+  { value: "legal_team", label: "Legal Team" },
+  { value: "project_manager", label: "Project Manager" },
+  { value: "asset_manager", label: "Asset Manager" },
+  { value: "vendor_manager", label: "Vendor Manager" }
 ];
 
 const PERMISSION_OPTIONS = [
@@ -185,6 +194,24 @@ export default function HRPage() {
         return ["read", "write", "delete", "admin", "hr", "finance", "fleet", "reports"];
       case "hr_manager":
         return ["read", "write", "hr", "reports"];
+      case "finance_officer":
+        return ["read", "write", "finance", "reports"];
+      case "legal_team":
+        return ["read", "write", "legal", "reports"];
+      case "project_manager":
+        return ["read", "write", "projects", "reports"];
+      case "asset_manager":
+        return ["read", "write", "assets", "reports"];
+      case "vendor_manager":
+        return ["read", "write", "vendors", "reports"];
+      case "business_analyst":
+        return ["read", "analytics", "reports"];
+      case "customer_support":
+        return ["read", "write", "crm", "chat"];
+      case "enterprise_client":
+        return ["read", "fleet", "crm", "analytics"];
+      case "service_provider":
+        return ["read", "chat", "crm"];
       case "manager":
         return ["read", "write", "reports"];
       case "employee":
@@ -193,7 +220,34 @@ export default function HRPage() {
     }
   };
 
+  // Check if current user can edit the specified employee
+  const canEditEmployee = (employee: Employee): boolean => {
+    // If user is head_administrator, platform_admin, or admin, they can edit anyone
+    if (user?.role === "head_administrator" || user?.role === "platform_admin" || user?.role === "admin") {
+      return true;
+    }
+    
+    // If user is executive, they can edit anyone
+    if (user?.role === "executive") {
+      return true;
+    }
+    
+    // If user is hr_manager, they cannot edit executive/board level employees
+    if (user?.role === "hr_manager" || user?.role === "hr") {
+      const restrictedRoles = ["executive", "head_administrator", "platform_admin", "admin"];
+      return !restrictedRoles.includes(employee.role || "");
+    }
+    
+    // Default: cannot edit
+    return false;
+  };
+
   const handleEditEmployee = (employee: Employee) => {
+    if (!canEditEmployee(employee)) {
+      toast.error("You don't have permission to edit this employee");
+      return;
+    }
+    
     setSelectedEmployee(employee);
     setEditFormData({
       ...employee,
@@ -203,6 +257,13 @@ export default function HRPage() {
   };
 
   const handleRoleChange = (role: string) => {
+    // Check if HR user is trying to assign a restricted role
+    if ((user?.role === "hr_manager" || user?.role === "hr") && 
+        ["executive", "head_administrator", "platform_admin", "admin"].includes(role)) {
+      toast.error("You don't have permission to assign this role");
+      return;
+    }
+    
     setEditFormData(prev => ({
       ...prev,
       role,
@@ -1562,11 +1623,20 @@ export default function HRPage() {
                           <SelectValue placeholder="Select role" />
                         </SelectTrigger>
                         <SelectContent>
-                          {ROLE_OPTIONS.map((role) => (
-                            <SelectItem key={role.value} value={role.value}>
-                              {role.label}
-                            </SelectItem>
-                          ))}
+                          {ROLE_OPTIONS
+                            .filter(role => {
+                              // If user is HR, filter out restricted roles
+                              if ((user?.role === "hr_manager" || user?.role === "hr") && 
+                                  ["executive", "head_administrator", "platform_admin", "admin"].includes(role.value)) {
+                                return false;
+                              }
+                              return true;
+                            })
+                            .map((role) => (
+                              <SelectItem key={role.value} value={role.value}>
+                                {role.label}
+                              </SelectItem>
+                            ))}
                         </SelectContent>
                       </Select>
                     </div>
