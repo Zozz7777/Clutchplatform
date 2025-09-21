@@ -105,7 +105,9 @@ export function UnifiedOpsPulse({ className = '' }: UnifiedOpsPulseProps) {
             </div>
             <div className="text-right">
               <p className="text-lg font-bold text-primary">{pulse.newUsers}</p>
-              <Badge variant="secondary" className="text-xs">+12%</Badge>
+              <Badge variant="secondary" className="text-xs">
+                {pulse.userGrowth > 0 ? '+' : ''}{pulse.userGrowth.toFixed(1)}%
+              </Badge>
             </div>
           </div>
 
@@ -158,9 +160,11 @@ export function UnifiedOpsPulse({ className = '' }: UnifiedOpsPulseProps) {
             </div>
             <div className="text-right">
               <p className="text-lg font-bold text-warning">
-                ${pulse.revenueImpact.toLocaleString()}
+                {pulse.revenueImpact.toLocaleString()} EGP
               </p>
-              <Badge variant="secondary" className="text-xs">+8%</Badge>
+              <Badge variant="secondary" className="text-xs">
+                {pulse.revenueGrowth > 0 ? '+' : ''}{pulse.revenueGrowth.toFixed(1)}%
+              </Badge>
             </div>
           </div>
         </div>

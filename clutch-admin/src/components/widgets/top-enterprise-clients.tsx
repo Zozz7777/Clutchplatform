@@ -128,7 +128,7 @@ export function TopEnterpriseClients({ className = '' }: TopEnterpriseClientsPro
           <div className="text-center p-3 bg-success/10 rounded-[0.625rem] border border-success/20">
             <DollarSign className="h-5 w-5 text-success mx-auto mb-1" />
             <p className="text-lg font-bold text-success">
-              ${totalRevenue.toLocaleString()}
+              {totalRevenue.toLocaleString()} EGP
             </p>
             <p className="text-xs text-muted-foreground">Total Revenue</p>
           </div>
@@ -168,7 +168,7 @@ export function TopEnterpriseClients({ className = '' }: TopEnterpriseClientsPro
                       <div className="flex items-center space-x-1">
                         <DollarSign className="h-3 w-3 text-muted-foreground" />
                         <span className="text-xs text-muted-foreground">
-                          ${client.revenue.toLocaleString()}
+                          {client.revenue.toLocaleString()} EGP
                         </span>
                       </div>
                       <div className="flex items-center space-x-1">
@@ -220,7 +220,7 @@ export function TopEnterpriseClients({ className = '' }: TopEnterpriseClientsPro
                   <div className="flex items-center space-x-2">
                     <span className="text-muted-foreground">{percentage.toFixed(1)}%</span>
                     <span className="text-card-foreground font-medium">
-                      ${client.revenue.toLocaleString()}
+                      {client.revenue.toLocaleString()} EGP
                     </span>
                   </div>
                 </div>
@@ -267,7 +267,7 @@ export function TopEnterpriseClients({ className = '' }: TopEnterpriseClientsPro
             <li>• Top client contributes {(clients[0]?.revenue / totalRevenue * 100 || 0).toFixed(1)}% of total revenue</li>
             <li>• {clients.filter(c => c.growth > 0).length} out of {clients.length} clients showing positive growth</li>
             <li>• Average client activity level: {clients.reduce((sum, c) => sum + c.activity, 0) / clients.length || 0}%</li>
-            <li>• Total enterprise revenue: ${totalRevenue.toLocaleString()}</li>
+            <li>• Total enterprise revenue: {totalRevenue.toLocaleString()} EGP</li>
           </ul>
         </div>
       </CardContent>

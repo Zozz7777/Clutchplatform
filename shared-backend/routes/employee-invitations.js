@@ -224,7 +224,7 @@ router.post('/invite', authenticateToken, checkRole(['head_administrator', 'hr',
 // GET /api/v1/employees/invitations - List pending invitations
 router.get('/invitations', authenticateToken, checkRole(['head_administrator', 'hr', 'hr_manager']), async (req, res) => {
   try {
-    const { page = 1, limit = 20, status = 'all' } = req.query;
+    const { page = 1, limit = 20, status = 'pending' } = req.query;
     const skip = (parseInt(page) - 1) * parseInt(limit);
     
     const invitationsCollection = await getCollection('employee_invitations');
@@ -238,9 +238,16 @@ router.get('/invitations', authenticateToken, checkRole(['head_administrator', '
       });
     }
     
-    // Build filter
+    // Build filter - exclude accepted invitations by default
     const filter = {};
-    if (status !== 'all') {
+    if (status === 'all') {
+      // Show all invitations including accepted ones
+      // No filter applied
+    } else if (status === 'pending') {
+      // Show only pending invitations (default behavior)
+      filter.status = 'pending';
+    } else {
+      // Show specific status
       filter.status = status;
     }
     

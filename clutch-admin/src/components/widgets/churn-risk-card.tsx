@@ -198,13 +198,40 @@ export function ChurnRiskCard({ className = '', showDetails = false }: ChurnRisk
                   </div>
                   
                   <div className="flex items-center space-x-1">
-                    <Button variant="ghost" size="sm" className="h-8 w-8 p-0 hover:bg-muted focus:ring-2 focus:ring-ring">
+                    <Button 
+                      variant="ghost" 
+                      size="sm" 
+                      className="h-8 w-8 p-0 hover:bg-muted focus:ring-2 focus:ring-ring"
+                      onClick={() => {
+                        // Navigate to user details
+                        window.open(`/users?highlight=${risk.userId}`, '_blank');
+                      }}
+                      title="View User Details"
+                    >
                       <Eye className="h-4 w-4" />
                     </Button>
-                    <Button variant="ghost" size="sm" className="h-8 w-8 p-0 hover:bg-muted focus:ring-2 focus:ring-ring">
+                    <Button 
+                      variant="ghost" 
+                      size="sm" 
+                      className="h-8 w-8 p-0 hover:bg-muted focus:ring-2 focus:ring-ring"
+                      onClick={() => {
+                        // Send email to user
+                        window.open(`mailto:${risk.userName}@example.com?subject=Retention Campaign`, '_blank');
+                      }}
+                      title="Send Email"
+                    >
                       <Mail className="h-4 w-4" />
                     </Button>
-                    <Button variant="ghost" size="sm" className="h-8 w-8 p-0 hover:bg-muted focus:ring-2 focus:ring-ring">
+                    <Button 
+                      variant="ghost" 
+                      size="sm" 
+                      className="h-8 w-8 p-0 hover:bg-muted focus:ring-2 focus:ring-ring"
+                      onClick={() => {
+                        // Call user (placeholder)
+                        alert(`Calling ${risk.userName}...`);
+                      }}
+                      title="Call User"
+                    >
                       <Phone className="h-4 w-4" />
                     </Button>
                   </div>
@@ -239,11 +266,28 @@ export function ChurnRiskCard({ className = '', showDetails = false }: ChurnRisk
 
         {/* Action Buttons */}
         <div className="flex flex-col space-y-2 pt-4 border-t border-border">
-          <Button variant="outline" size="sm" className="w-full hover:bg-muted focus:ring-2 focus:ring-ring">
+          <Button 
+            variant="outline" 
+            size="sm" 
+            className="w-full hover:bg-muted focus:ring-2 focus:ring-ring"
+            onClick={() => {
+              // Send retention campaign to all at-risk users
+              const emails = churnRisks.map(risk => `${risk.userName}@example.com`).join(',');
+              window.open(`mailto:${emails}?subject=Retention Campaign&body=We noticed you haven't been active recently. We'd love to help you get back on track!`, '_blank');
+            }}
+          >
             <Mail className="h-4 w-4 mr-2" />
             Send Retention Campaign
           </Button>
-          <Button variant="outline" size="sm" className="w-full hover:bg-muted focus:ring-2 focus:ring-ring">
+          <Button 
+            variant="outline" 
+            size="sm" 
+            className="w-full hover:bg-muted focus:ring-2 focus:ring-ring"
+            onClick={() => {
+              // Navigate to users page
+              window.open('/users', '_blank');
+            }}
+          >
             <Users className="h-4 w-4 mr-2" />
             View All Users
           </Button>

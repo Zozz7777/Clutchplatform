@@ -25,11 +25,16 @@ interface RevenueMarginCardProps {
 export function RevenueMarginCard({ className = '' }: RevenueMarginCardProps) {
   const [marginData, setMarginData] = React.useState<{
     revenue: number;
-    expenses: number;
+    costs: number;
     margin: number;
-    marginPercentage: number;
-    trend: 'up' | 'down' | 'stable';
-    period: string;
+    breakdown: {
+      fleet: number;
+      infrastructure: number;
+      maintenance: number;
+      other: number;
+    };
+    revenueGrowth: number;
+    costGrowth: number;
   } | null>(null);
   const [isLoading, setIsLoading] = React.useState(true);
 
@@ -157,20 +162,24 @@ export function RevenueMarginCard({ className = '' }: RevenueMarginCardProps) {
         <div className="grid grid-cols-2 gap-6">
           <div className="text-center">
             <p className="text-3xl font-bold text-success">
-              ${marginData.revenue.toLocaleString()}
+              {marginData.revenue.toLocaleString()} EGP
             </p>
             <p className="text-sm text-muted-foreground">Monthly Revenue</p>
             <div className="mt-2">
-              <Badge variant="secondary" className="text-xs">+12% vs last month</Badge>
+              <Badge variant="secondary" className="text-xs">
+                {marginData.revenueGrowth > 0 ? '+' : ''}{marginData.revenueGrowth.toFixed(1)}% vs last month
+              </Badge>
             </div>
           </div>
           <div className="text-center">
             <p className="text-3xl font-bold text-destructive">
-              ${marginData.costs.toLocaleString()}
+              {marginData.costs.toLocaleString()} EGP
             </p>
             <p className="text-sm text-muted-foreground">Monthly Costs</p>
             <div className="mt-2">
-              <Badge variant="secondary" className="text-xs">+5% vs last month</Badge>
+              <Badge variant="secondary" className="text-xs">
+                {marginData.costGrowth > 0 ? '+' : ''}{marginData.costGrowth.toFixed(1)}% vs last month
+              </Badge>
             </div>
           </div>
         </div>
@@ -213,7 +222,7 @@ export function RevenueMarginCard({ className = '' }: RevenueMarginCardProps) {
                 </div>
                 <div className="text-right">
                   <p className="text-sm font-semibold text-card-foreground">
-                    ${item.amount.toLocaleString()}
+                    {item.amount.toLocaleString()} EGP
                   </p>
                   <div className="w-16 mt-1">
                     <Progress value={item.percentage} className="h-1" />
@@ -234,7 +243,7 @@ export function RevenueMarginCard({ className = '' }: RevenueMarginCardProps) {
           <div className="space-y-2">
             <div className="flex items-center justify-between">
               <span className="text-sm text-muted-foreground">Revenue</span>
-              <span className="text-sm font-medium text-card-foreground">${marginData.revenue.toLocaleString()}</span>
+              <span className="text-sm font-medium text-card-foreground">{marginData.revenue.toLocaleString()} EGP</span>
             </div>
             <div className="w-full bg-muted rounded-full h-2">
               <div 
@@ -245,7 +254,7 @@ export function RevenueMarginCard({ className = '' }: RevenueMarginCardProps) {
             
             <div className="flex items-center justify-between">
               <span className="text-sm text-muted-foreground">Costs</span>
-              <span className="text-sm font-medium text-card-foreground">${marginData.costs.toLocaleString()}</span>
+              <span className="text-sm font-medium text-card-foreground">{marginData.costs.toLocaleString()} EGP</span>
             </div>
             <div className="w-full bg-muted rounded-full h-2">
               <div 
@@ -270,7 +279,7 @@ export function RevenueMarginCard({ className = '' }: RevenueMarginCardProps) {
               <li>• Margin needs improvement - review cost optimization strategies</li>
             )}
             <li>• Fleet operations represent {(costBreakdown[0].percentage).toFixed(0)}% of total costs</li>
-            <li>• Infrastructure costs are stable at ${marginData.breakdown.infrastructure.toLocaleString()}/month</li>
+            <li>• Infrastructure costs are stable at {marginData.breakdown.infrastructure.toLocaleString()} EGP/month</li>
           </ul>
         </div>
       </CardContent>
