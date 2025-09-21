@@ -629,18 +629,6 @@ export class ProductionApiService {
     }
   }
 
-  // CRM APIs
-  async getCustomers(): Promise<Record<string, unknown>[]> {
-    try {
-      const data = await realApi.getCustomers();
-      // Ensure we always return an array
-      return Array.isArray(data) ? data : [];
-    } catch (error) {
-      logger.error("Failed to fetch customers:", error);
-      throw new Error("Failed to load customers");
-    }
-  }
-
   async createCustomer(customerData: Record<string, unknown>): Promise<Record<string, unknown>> {
     try {
       return await realApi.createCustomer(customerData);
@@ -1373,24 +1361,7 @@ export class ProductionApiService {
     }
   }
 
-  // Communication API methods
-  async getChatChannels(): Promise<Record<string, unknown>[]> {
-    try {
-      return await realApi.getChatChannels();
-    } catch (error) {
-      logger.error("Failed to fetch chat channels:", error);
-      throw new Error("Failed to load chat channels");
-    }
-  }
 
-  async getTickets(): Promise<Record<string, unknown>[]> {
-    try {
-      return await realApi.getTickets();
-    } catch (error) {
-      logger.error("Failed to fetch tickets:", error);
-      throw new Error("Failed to load tickets");
-    }
-  }
 
   // Mobile CMS API methods
   async getMobileAppSettings(): Promise<Record<string, unknown>> {
@@ -1467,15 +1438,6 @@ export class ProductionApiService {
     }
   }
 
-  // CRM API methods
-  async getCustomers(): Promise<Record<string, unknown>[]> {
-    try {
-      return await realApi.getCustomers();
-    } catch (error) {
-      logger.error("Failed to fetch customers:", error);
-      throw new Error("Failed to load customers");
-    }
-  }
 
   // Testing APIs - New endpoints for testing components
   async getChaosExperiments(): Promise<Record<string, unknown>[]> {

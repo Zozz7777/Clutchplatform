@@ -9,7 +9,7 @@ const { authenticateToken, checkRole, checkPermission } = require('../middleware
 const { getCollection } = require('../config/optimized-database');
 
 // GET /api/v1/performance/monitor - Get performance metrics
-router.get('/monitor', authenticateToken, checkRole(['head_administrator', 'system_admin']), async (req, res) => {
+router.get('/monitor', authenticateToken, checkRole(['head_administrator', 'platform_admin', 'executive', 'admin', 'system_admin']), async (req, res) => {
   try {
     const analyticsCollection = await getCollection('analytics');
     

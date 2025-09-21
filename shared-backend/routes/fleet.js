@@ -109,7 +109,7 @@ router.get('/downtime-metrics', authenticateToken, checkRole(['head_administrato
 });
 
 // GET /api/v1/fleet/vehicles - Get all fleet vehicles
-router.get('/vehicles', authenticateToken, checkRole(['head_administrator', 'asset_manager']), async (req, res) => {
+router.get('/vehicles', authenticateToken, checkRole(['head_administrator', 'platform_admin', 'executive', 'admin', 'asset_manager']), async (req, res) => {
   try {
     const { page = 1, limit = 20, status, make, model } = req.query;
     const skip = (parseInt(page) - 1) * parseInt(limit);

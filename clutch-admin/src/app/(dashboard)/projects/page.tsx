@@ -254,8 +254,8 @@ export default function ProjectManagementPage() {
   
   const filteredProjects = projectsArray.filter((project) => {
     if (!project) return false;
-    const matchesSearch = (project.name || '').toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         (project.description || '').toLowerCase().includes(searchTerm.toLowerCase());
+    const matchesSearch = (project.name || '').to{t('dashboard.low')}erCase().includes(searchTerm.to{t('dashboard.low')}erCase()) ||
+                         (project.description || '').to{t('dashboard.low')}erCase().includes(searchTerm.to{t('dashboard.low')}erCase());
     const matchesStatus = statusFilter === "all" || project.status === statusFilter;
     return matchesSearch && matchesStatus;
   });
@@ -578,9 +578,9 @@ export default function ProjectManagementPage() {
                   value={createProjectData.status}
                   onChange={(e) => setCreateProjectData({...createProjectData, status: e.target.value})}
                 >
-                  <option value="planning">Planning</option>
-                  <option value="active">Active</option>
-                  <option value="on_hold">On Hold</option>
+                  <option value="planning">{t('dashboard.planning')}</option>
+                  <option value="active">{t('dashboard.active')}</option>
+                  <option value="on_hold">{t('dashboard.onHold')}</option>
                 </select>
               </div>
               <div>
@@ -590,10 +590,10 @@ export default function ProjectManagementPage() {
                   value={createProjectData.priority}
                   onChange={(e) => setCreateProjectData({...createProjectData, priority: e.target.value})}
                 >
-                  <option value="low">Low</option>
-                  <option value="medium">Medium</option>
-                  <option value="high">High</option>
-                  <option value="urgent">Urgent</option>
+                  <option value="low">{t('dashboard.low')}</option>
+                  <option value="medium">{t('dashboard.medium')}</option>
+                  <option value="high">{t('dashboard.high')}</option>
+                  <option value="urgent">{t('dashboard.urgent')}</option>
                 </select>
               </div>
             </div>
@@ -603,7 +603,7 @@ export default function ProjectManagementPage() {
               Cancel
             </Button>
             <Button onClick={createProject}>
-              Create Project
+              {t('dashboard.createProject')}
             </Button>
           </DialogFooter>
         </DialogContent>
@@ -646,10 +646,10 @@ export default function ProjectManagementPage() {
               <div>
                 <Label htmlFor="priority">Priority</Label>
                 <select className="w-full p-2 border rounded-md">
-                  <option value="low">Low</option>
-                  <option value="medium">Medium</option>
-                  <option value="high">High</option>
-                  <option value="urgent">Urgent</option>
+                  <option value="low">{t('dashboard.low')}</option>
+                  <option value="medium">{t('dashboard.medium')}</option>
+                  <option value="high">{t('dashboard.high')}</option>
+                  <option value="urgent">{t('dashboard.urgent')}</option>
                 </select>
               </div>
               <div>

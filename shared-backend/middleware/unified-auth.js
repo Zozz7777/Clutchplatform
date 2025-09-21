@@ -1,5 +1,6 @@
 const jwt = require('jsonwebtoken');
 const { getCollection } = require('../config/optimized-database');
+const { getBackendRoles, canAccessRole } = require('../config/standardized-roles');
 
 /**
  * Unified authentication middleware that combines auth.js and rbac.js functionality

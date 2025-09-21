@@ -10,7 +10,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { formatDate, formatRelativeTime } from "@/lib/utils";
 import { useAuth } from "@/contexts/auth-context";
-import { useTranslations } from "@/hooks/use-translations";
+import { useTranslations } from "next-intl";
 import { productionApi } from "@/lib/production-api";
 import { toast } from "sonner";
 
@@ -92,32 +92,75 @@ export default function AIMLPage() {
   const [statusFilter, setStatusFilter] = useState<string>("all");
   const [isLoading, setIsLoading] = useState(true);
   const { hasPermission } = useAuth();
-  const { t } = useTranslations();
+  const t = useTranslations();
 
   useEffect(() => {
+    let isMounted = true;
+    let timeoutId: NodeJS.Timeout | null = null;
+
     const loadAIMLData = async () => {
+      if (!isMounted) {
+        setIsLoading(false);
+        return;
+      }
+      
       try {
         setIsLoading(true);
         
-        // Load real data from API
-        const [modelsData, fraudCasesData, recommendationsData] = await Promise.all([
-          productionApi.getAIModels(),
-          productionApi.getFraudCases(),
-          productionApi.getRecommendations()
-        ]);
-
-        // Ensure we always have arrays and handle type conversion safely
-        const modelsArray = Array.isArray(modelsData) ? modelsData as unknown as AIModel[] : [];
-        const fraudCasesArray = Array.isArray(fraudCasesData) ? fraudCasesData as unknown as FraudCase[] : [];
-        const recommendationsArray = Array.isArray(recommendationsData) ? recommendationsData as unknown as Recommendation[] : [];
+        // Add debouncing to prevent excessive API calls
+        if (timeoutId) {
+          clearTimeout(timeoutId);
+        }
         
-        setModels(modelsArray);
-        setFraudCases(fraudCasesArray);
-        setRecommendations(recommendationsArray);
-        setFilteredModels(modelsArray);
+        timeoutId = setTimeout(async () => {
+          if (!isMounted) return;
+          
+          // Load real data from API with error handling
+          const [modelsData, fraudCasesData, recommendationsData] = await Promise.allSettled([
+            productionApi.getAIModels(),
+            productionApi.getFraudCases(),
+            productionApi.getRecommendations()
+          ]);
+
+          // Handle models data
+          const modelsArray = modelsData.status === 'fulfilled' && Array.isArray(modelsData.value) 
+            ? modelsData.value as unknown as AIModel[] 
+            : [];
+          
+          // Handle fraud cases data
+          const fraudCasesArray = fraudCasesData.status === 'fulfilled' && Array.isArray(fraudCasesData.value) 
+            ? fraudCasesData.value as unknown as FraudCase[] 
+            : [];
+          
+          // Handle recommendations data
+          const recommendationsArray = recommendationsData.status === 'fulfilled' && Array.isArray(recommendationsData.value) 
+            ? recommendationsData.value as unknown as Recommendation[] 
+            : [];
+          
+          if (isMounted) {
+            setModels(modelsArray);
+            setFraudCases(fraudCasesArray);
+            setRecommendations(recommendationsArray);
+            setFilteredModels(modelsArray);
+          }
+          
+          // Log any errors
+          if (modelsData.status === 'rejected') {
+            console.error('Failed to load AI models:', modelsData.reason);
+          }
+          if (fraudCasesData.status === 'rejected') {
+            console.error('Failed to load fraud cases:', fraudCasesData.reason);
+          }
+          if (recommendationsData.status === 'rejected') {
+            console.error('Failed to load recommendations:', recommendationsData.reason);
+          }
+          
+        }, 300); // 300ms debounce
         
       } catch (error) {
-        // Error handled by API service
+        if (!isMounted) return;
+        
+        console.error('Failed to load AI/ML data:', error);
         toast.error("Failed to load AI/ML data");
         // Set empty arrays on error - no mock data fallback
         setModels([]);
@@ -125,11 +168,20 @@ export default function AIMLPage() {
         setRecommendations([]);
         setFilteredModels([]);
       } finally {
-        setIsLoading(false);
+        if (isMounted) {
+          setIsLoading(false);
+        }
       }
     };
 
     loadAIMLData();
+
+    return () => {
+      isMounted = false;
+      if (timeoutId) {
+        clearTimeout(timeoutId);
+      }
+    };
   }, []);
 
   useEffect(() => {
@@ -211,10 +263,10 @@ export default function AIMLPage() {
     );
   }
 
-  const totalPredictions = models.reduce((sum, model) => sum + (model.predictions || 0), 0);
-  const avgAccuracy = models.length > 0 ? models.reduce((sum, model) => sum + (model.accuracy || 0), 0) / models.length : 0;
-  const activeModels = models.filter(m => m.status === "active").length;
-  const fraudCasesDetected = fraudCases.length;
+  const totalPredictions = Array.isArray(models) ? models.reduce((sum, model) => sum + (model?.predictions || 0), 0) : 0;
+  const avgAccuracy = Array.isArray(models) && models.length > 0 ? models.reduce((sum, model) => sum + (model?.accuracy || 0), 0) / models.length : 0;
+  const activeModels = Array.isArray(models) ? models.filter(m => m?.status === "active").length : 0;
+  const fraudCasesDetected = Array.isArray(fraudCases) ? fraudCases.length : 0;
 
   return (
     <div className="space-y-6 font-sans">

@@ -264,7 +264,7 @@ router.get('/dashboard/services', authenticateToken, checkRole(['head_administra
 // ============================================================================
 
 // GET /api/v1/admin/users - Get all users
-router.get('/users', authenticateToken, checkRole(['head_administrator']), async (req, res) => {
+router.get('/users', authenticateToken, checkRole(['head_administrator', 'platform_admin', 'executive', 'admin']), async (req, res) => {
   try {
     const { page = 1, limit = 20, search, role, status } = req.query;
     
