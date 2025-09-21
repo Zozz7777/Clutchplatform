@@ -27,21 +27,28 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       if (storedUser) {
         try {
           const parsedUser = JSON.parse(storedUser);
-          // Ensure user has correct permissions based on their role
+          
+          // Always ensure user has correct permissions based on their role
+          const rolePermissions = ROLE_PERMISSIONS[parsedUser.role as keyof typeof ROLE_PERMISSIONS] || [];
           const userWithPermissions = {
             ...parsedUser,
-            permissions: Array.isArray(parsedUser.permissions) && parsedUser.permissions.length > 0 
-              ? parsedUser.permissions 
-              : (ROLE_PERMISSIONS[parsedUser.role as keyof typeof ROLE_PERMISSIONS] || [])
+            permissions: rolePermissions
           };
           
           console.log('🔄 Loading user from localStorage:', {
             originalUser: parsedUser,
             userWithPermissions,
-            rolePermissions: ROLE_PERMISSIONS[parsedUser.role as keyof typeof ROLE_PERMISSIONS]
+            rolePermissions,
+            originalPermissions: parsedUser.permissions,
+            finalPermissions: userWithPermissions.permissions
           });
           
           setUser(userWithPermissions);
+          
+          // Update localStorage with correct permissions
+          if (typeof window !== 'undefined') {
+            localStorage.setItem("clutch-admin-user", JSON.stringify(userWithPermissions));
+          }
         } catch (error) {
           localStorage.removeItem("clutch-admin-user");
         }
@@ -132,20 +139,34 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       return false;
     }
     
-    if (!user.permissions || !Array.isArray(user.permissions)) {
-      console.log('🚫 No permissions array:', { user, permissions: user?.permissions });
-      return false;
+    // Get permissions from user or fallback to role-based permissions
+    let userPermissions = user.permissions;
+    
+    // If user doesn't have permissions or has empty permissions, get them from role
+    if (!userPermissions || !Array.isArray(userPermissions) || userPermissions.length === 0) {
+      console.log('🔄 No user permissions, getting from role:', { userRole: user.role });
+      userPermissions = ROLE_PERMISSIONS[user.role as keyof typeof ROLE_PERMISSIONS] || [];
+      
+      // Update user with correct permissions
+      if (userPermissions.length > 0) {
+        const updatedUser = { ...user, permissions: userPermissions };
+        setUser(updatedUser);
+        if (typeof window !== 'undefined') {
+          localStorage.setItem("clutch-admin-user", JSON.stringify(updatedUser));
+        }
+      }
     }
     
-    const hasIt = user.permissions.includes(permission);
+    const hasIt = userPermissions.includes(permission);
     
     // Enhanced debugging for all permission checks
     console.log('🔍 Permission check:', {
       permission,
       userRole: user.role,
-      userPermissions: user.permissions,
+      userPermissions: userPermissions,
       hasPermission: hasIt,
-      permissionCount: user.permissions.length
+      permissionCount: userPermissions.length,
+      source: user.permissions && user.permissions.length > 0 ? 'user' : 'role'
     });
     
     return hasIt;
