@@ -5,6 +5,8 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Checkbox } from "@/components/ui/checkbox";
 import { useAuth } from "@/contexts/auth-context";
 import { useTranslations } from "@/hooks/use-translations";
 import { formatDate, formatRelativeTime } from "@/lib/utils";
@@ -66,6 +68,8 @@ interface Employee {
   endDate?: string;
   salary: number;
   currency: string;
+  role?: string;
+  permissions?: string[];
   address: {
     street: string;
     city: string;
@@ -124,6 +128,27 @@ interface HRStats {
   satisfactionScore: number;
 }
 
+// Role and permission options
+const ROLE_OPTIONS = [
+  { value: "employee", label: "Employee" },
+  { value: "manager", label: "Manager" },
+  { value: "hr", label: "HR Manager" },
+  { value: "hr_manager", label: "HR Manager" },
+  { value: "head_administrator", label: "Head Administrator" },
+  { value: "platform_admin", label: "Platform Admin" }
+];
+
+const PERMISSION_OPTIONS = [
+  { value: "read", label: "Read", description: "View data and information" },
+  { value: "write", label: "Write", description: "Create and edit data" },
+  { value: "delete", label: "Delete", description: "Remove data and records" },
+  { value: "admin", label: "Admin", description: "Administrative privileges" },
+  { value: "hr", label: "HR", description: "Human resources management" },
+  { value: "finance", label: "Finance", description: "Financial data access" },
+  { value: "fleet", label: "Fleet", description: "Fleet management" },
+  { value: "reports", label: "Reports", description: "Generate and view reports" }
+];
+
 export default function HRPage() {
   const [employees, setEmployees] = useState<Employee[]>([]);
   const [applications, setApplications] = useState<JobApplication[]>([]);
@@ -136,6 +161,7 @@ export default function HRPage() {
   const [isLoading, setIsLoading] = useState(true);
   const [showInvitationForm, setShowInvitationForm] = useState(false);
   const [invitations, setInvitations] = useState<Record<string, unknown>[]>([]);
+  const [invitationStatusFilter, setInvitationStatusFilter] = useState<string>("pending");
   const [showEmployeeModal, setShowEmployeeModal] = useState(false);
   const [selectedEmployee, setSelectedEmployee] = useState<Employee | null>(null);
   const [showEditEmployeeModal, setShowEditEmployeeModal] = useState(false);
@@ -143,8 +169,51 @@ export default function HRPage() {
   const [selectedInvitation, setSelectedInvitation] = useState<Record<string, unknown> | null>(null);
   const [showDeleteConfirmModal, setShowDeleteConfirmModal] = useState(false);
   const [employeeToDelete, setEmployeeToDelete] = useState<Employee | null>(null);
+  const [editFormData, setEditFormData] = useState<Partial<Employee>>({});
   const { user, hasPermission } = useAuth();
   const { t } = useTranslations();
+
+  // Helper functions for role and permission management
+  const getRolePermissions = (role: string): string[] => {
+    switch (role) {
+      case "head_administrator":
+      case "platform_admin":
+        return ["read", "write", "delete", "admin", "hr", "finance", "fleet", "reports"];
+      case "hr_manager":
+        return ["read", "write", "hr", "reports"];
+      case "manager":
+        return ["read", "write", "reports"];
+      case "employee":
+      default:
+        return ["read"];
+    }
+  };
+
+  const handleEditEmployee = (employee: Employee) => {
+    setSelectedEmployee(employee);
+    setEditFormData({
+      ...employee,
+      permissions: employee.permissions || getRolePermissions(employee.role || "employee")
+    });
+    setShowEditEmployeeModal(true);
+  };
+
+  const handleRoleChange = (role: string) => {
+    setEditFormData(prev => ({
+      ...prev,
+      role,
+      permissions: getRolePermissions(role)
+    }));
+  };
+
+  const handlePermissionChange = (permission: string, checked: boolean) => {
+    setEditFormData(prev => ({
+      ...prev,
+      permissions: checked 
+        ? [...(prev.permissions || []), permission]
+        : (prev.permissions || []).filter(p => p !== permission)
+    }));
+  };
 
   useEffect(() => {
     const loadHRData = async () => {
@@ -194,7 +263,7 @@ export default function HRPage() {
 
         // Load employee invitations
         try {
-          const invitationsResponse = await apiService.getEmployeeInvitations();
+          const invitationsResponse = await apiService.getEmployeeInvitations(invitationStatusFilter);
           if (invitationsResponse.success) {
             const invitationsList = invitationsResponse.data?.invitations || invitationsResponse.data || [];
             setInvitations(Array.isArray(invitationsList) ? invitationsList : []);
@@ -466,10 +535,6 @@ export default function HRPage() {
     setShowEmployeeModal(true);
   };
 
-  const handleEditEmployee = (employee: Employee) => {
-    setSelectedEmployee(employee);
-    setShowEditEmployeeModal(true);
-  };
 
   const handleDownloadEmployeeRecords = async (employee: Employee) => {
     try {
@@ -1476,6 +1541,58 @@ export default function HRPage() {
                     defaultValue={typeof selectedEmployee.address === 'string' ? selectedEmployee.address : ''} 
                     placeholder="Enter address"
                   />
+                </div>
+
+                {/* RBAC Role and Permissions Section */}
+                <div className="border-t pt-4">
+                  <h3 className="text-lg font-medium mb-4">Role & Permissions</h3>
+                  
+                  <div className="space-y-4">
+                    <div>
+                      <label className="text-sm font-medium">Role</label>
+                      <Select 
+                        value={editFormData.role || selectedEmployee?.role || "employee"} 
+                        onValueChange={handleRoleChange}
+                      >
+                        <SelectTrigger>
+                          <SelectValue placeholder="Select role" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          {ROLE_OPTIONS.map((role) => (
+                            <SelectItem key={role.value} value={role.value}>
+                              {role.label}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                    </div>
+
+                    <div>
+                      <label className="text-sm font-medium">Permissions</label>
+                      <div className="grid grid-cols-2 gap-3 mt-2">
+                        {PERMISSION_OPTIONS.map((permission) => (
+                          <div key={permission.value} className="flex items-center space-x-2">
+                            <Checkbox
+                              id={`permission-${permission.value}`}
+                              checked={(editFormData.permissions || []).includes(permission.value)}
+                              onCheckedChange={(checked) => 
+                                handlePermissionChange(permission.value, checked as boolean)
+                              }
+                            />
+                            <label 
+                              htmlFor={`permission-${permission.value}`}
+                              className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+                            >
+                              {permission.label}
+                            </label>
+                          </div>
+                        ))}
+                      </div>
+                      <p className="text-xs text-muted-foreground mt-2">
+                        Permissions are automatically set based on role, but can be customized.
+                      </p>
+                    </div>
+                  </div>
                 </div>
               </div>
 
