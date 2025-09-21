@@ -281,32 +281,6 @@ router.post('/generate', checkRole(['head_administrator', 'analyst', 'manager'])
   }
 });
 
-// GET /api/v1/reports/:id - Get report by ID
-router.get('/:id', async (req, res) => {
-  try {
-    const reportsCollection = await getCollection('reports');
-    const report = await reportsCollection.findOne({ _id: req.params.id });
-    
-    if (!report) {
-      return res.status(404).json({
-        success: false,
-        message: 'Report not found'
-      });
-    }
-    
-    res.json({
-      success: true,
-      data: report
-    });
-  } catch (error) {
-    console.error('Error fetching report:', error);
-    res.status(500).json({
-      success: false,
-      message: 'Failed to fetch report',
-      error: process.env.NODE_ENV === 'development' ? error.message : undefined
-    });
-  }
-});
 
 // POST /api/v1/reports - Create new report
 router.post('/', checkRole(['head_administrator', 'report_manager']), async (req, res) => {
@@ -368,88 +342,7 @@ router.post('/', checkRole(['head_administrator', 'report_manager']), async (req
   }
 });
 
-// PUT /api/v1/reports/:id - Update report
-router.put('/:id', checkRole(['head_administrator', 'report_manager']), async (req, res) => {
-  try {
-    const reportsCollection = await getCollection('reports');
-    const { 
-      name, 
-      type, 
-      category, 
-      description, 
-      parameters, 
-      schedule, 
-      format, 
-      recipients, 
-      status 
-    } = req.body;
-    
-    const updateData = {
-      updatedAt: new Date()
-    };
-    
-    if (name) updateData.name = name;
-    if (type) updateData.type = type;
-    if (category) updateData.category = category;
-    if (description) updateData.description = description;
-    if (parameters) updateData.parameters = parameters;
-    if (schedule) updateData.schedule = schedule;
-    if (format) updateData.format = format;
-    if (recipients) updateData.recipients = recipients;
-    if (status) updateData.status = status;
-    
-    const result = await reportsCollection.updateOne(
-      { _id: req.params.id },
-      { $set: updateData }
-    );
-    
-    if (result.matchedCount === 0) {
-      return res.status(404).json({
-        success: false,
-        message: 'Report not found'
-      });
-    }
-    
-    res.json({
-      success: true,
-      message: 'Report updated successfully'
-    });
-  } catch (error) {
-    console.error('Error updating report:', error);
-    res.status(500).json({
-      success: false,
-      message: 'Failed to update report',
-      error: process.env.NODE_ENV === 'development' ? error.message : undefined
-    });
-  }
-});
 
-// DELETE /api/v1/reports/:id - Delete report
-router.delete('/:id', checkRole(['head_administrator']), async (req, res) => {
-  try {
-    const reportsCollection = await getCollection('reports');
-    const result = await reportsCollection.deleteOne({ _id: req.params.id });
-    
-    if (result.deletedCount === 0) {
-      return res.status(404).json({
-        success: false,
-        message: 'Report not found'
-      });
-    }
-    
-    res.json({
-      success: true,
-      message: 'Report deleted successfully'
-    });
-  } catch (error) {
-    console.error('Error deleting report:', error);
-    res.status(500).json({
-      success: false,
-      message: 'Failed to delete report',
-      error: process.env.NODE_ENV === 'development' ? error.message : undefined
-    });
-  }
-});
 
 // ===== REPORT GENERATION =====
 
@@ -807,5 +700,117 @@ async function generatePerformanceReport(params) {
     throw new Error('Failed to generate performance report');
   }
 }
+
+// ===== PARAMETERIZED ROUTES (MUST BE LAST) =====
+
+// GET /api/v1/reports/:id - Get report by ID
+router.get('/:id', async (req, res) => {
+  try {
+    const reportsCollection = await getCollection('reports');
+    const report = await reportsCollection.findOne({ _id: req.params.id });
+    
+    if (!report) {
+      return res.status(404).json({
+        success: false,
+        message: 'Report not found'
+      });
+    }
+    
+    res.json({
+      success: true,
+      data: report
+    });
+  } catch (error) {
+    console.error('Error fetching report:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Failed to fetch report',
+      error: process.env.NODE_ENV === 'development' ? error.message : undefined
+    });
+  }
+});
+
+// PUT /api/v1/reports/:id - Update report
+router.put('/:id', checkRole(['head_administrator', 'report_manager']), async (req, res) => {
+  try {
+    const reportsCollection = await getCollection('reports');
+    const { 
+      name, 
+      type, 
+      category, 
+      description, 
+      parameters, 
+      schedule, 
+      format, 
+      recipients, 
+      status 
+    } = req.body;
+    
+    const updateData = {
+      updatedAt: new Date()
+    };
+    
+    if (name) updateData.name = name;
+    if (type) updateData.type = type;
+    if (category) updateData.category = category;
+    if (description) updateData.description = description;
+    if (parameters) updateData.parameters = parameters;
+    if (schedule) updateData.schedule = schedule;
+    if (format) updateData.format = format;
+    if (recipients) updateData.recipients = recipients;
+    if (status) updateData.status = status;
+    
+    const result = await reportsCollection.updateOne(
+      { _id: req.params.id },
+      { $set: updateData }
+    );
+    
+    if (result.matchedCount === 0) {
+      return res.status(404).json({
+        success: false,
+        message: 'Report not found'
+      });
+    }
+    
+    res.json({
+      success: true,
+      message: 'Report updated successfully'
+    });
+  } catch (error) {
+    console.error('Error updating report:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Failed to update report',
+      error: process.env.NODE_ENV === 'development' ? error.message : undefined
+    });
+  }
+});
+
+// DELETE /api/v1/reports/:id - Delete report
+router.delete('/:id', checkRole(['head_administrator']), async (req, res) => {
+  try {
+    const reportsCollection = await getCollection('reports');
+    const result = await reportsCollection.deleteOne({ _id: req.params.id });
+    
+    if (result.deletedCount === 0) {
+      return res.status(404).json({
+        success: false,
+        message: 'Report not found'
+      });
+    }
+    
+    res.json({
+      success: true,
+      message: 'Report deleted successfully'
+    });
+  } catch (error) {
+    console.error('Error deleting report:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Failed to delete report',
+      error: process.env.NODE_ENV === 'development' ? error.message : undefined
+    });
+  }
+});
 
 module.exports = router;
