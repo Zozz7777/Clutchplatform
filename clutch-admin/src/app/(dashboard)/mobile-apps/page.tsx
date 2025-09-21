@@ -302,7 +302,7 @@ export default function MobileAppsPage() {
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">
-              {analytics.reduce((sum, a) => sum + a.activeUsers, 0).toLocaleString()}
+              {Array.isArray(analytics) ? analytics.reduce((sum, a) => sum + (a?.activeUsers || 0), 0).toLocaleString() : "0"}
             </div>
             <p className="text-xs text-muted-foreground">
               <span className="text-primary">+8%</span> from last week
@@ -316,7 +316,7 @@ export default function MobileAppsPage() {
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">
-              {versions.length > 0 ? (versions.reduce((sum, v) => sum + v.crashRate, 0) / versions.length).toFixed(1) : '0.0'}%
+              {Array.isArray(versions) && versions.length > 0 ? (versions.reduce((sum, v) => sum + (v?.crashRate || 0), 0) / versions.length).toFixed(1) : '0.0'}%
             </div>
             <p className="text-xs text-muted-foreground">
               <span className="text-destructive">+0.2%</span> from last week
@@ -330,7 +330,7 @@ export default function MobileAppsPage() {
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">
-              {versions.length > 0 ? (versions.reduce((sum, v) => sum + v.avgRating, 0) / versions.length).toFixed(1) : '0.0'}
+              {Array.isArray(versions) && versions.length > 0 ? (versions.reduce((sum, v) => sum + (v?.avgRating || 0), 0) / versions.length).toFixed(1) : '0.0'}
             </div>
             <p className="text-xs text-muted-foreground">
               <span className="text-primary">+0.1</span> from last month
@@ -391,7 +391,7 @@ export default function MobileAppsPage() {
             </CardHeader>
             <CardContent>
               <div className="space-y-4">
-                {analytics.map((analytics) => (
+                {Array.isArray(analytics) ? analytics.map((analytics) => (
                   <div key={analytics._id} className="flex items-center justify-between">
                     <div className="flex items-center space-x-3">
                       {analytics.platform === "ios" ? (
@@ -406,7 +406,7 @@ export default function MobileAppsPage() {
                       <div className="text-sm text-muted-foreground">active users</div>
                     </div>
                   </div>
-                ))}
+                )) : null}
               </div>
             </CardContent>
           </Card>
@@ -418,7 +418,7 @@ export default function MobileAppsPage() {
             </CardHeader>
             <CardContent>
               <div className="space-y-3">
-                {crashes.slice(0, 3).map((crash) => (
+                {Array.isArray(crashes) ? crashes.slice(0, 3).map((crash) => (
                   <div key={crash._id} className="flex items-center justify-between p-3 border rounded-[0.625rem]">
                     <div>
                       <div className="font-medium">{crash.crashType}</div>
@@ -430,7 +430,7 @@ export default function MobileAppsPage() {
                       {crash.userImpact}
                     </Badge>
                   </div>
-                ))}
+                )) : null}
               </div>
             </CardContent>
           </Card>
@@ -439,7 +439,7 @@ export default function MobileAppsPage() {
 
       {activeTab === "versions" && (
         <div className="space-y-4">
-          {versions.map((version) => (
+          {Array.isArray(versions) ? versions.map((version) => (
             <Card key={version._id}>
               <CardContent className="p-6">
                 <div className="flex items-start justify-between">
@@ -517,13 +517,13 @@ export default function MobileAppsPage() {
                 </div>
               </CardContent>
             </Card>
-          ))}
+          )) : null}
         </div>
       )}
 
       {activeTab === "crashes" && (
         <div className="space-y-4">
-          {crashes.map((crash) => (
+          {Array.isArray(crashes) ? crashes.map((crash) => (
             <Card key={crash._id}>
               <CardContent className="p-6">
                 <div className="flex items-start justify-between">
@@ -600,13 +600,13 @@ export default function MobileAppsPage() {
                 </div>
               </CardContent>
             </Card>
-          ))}
+          )) : null}
         </div>
       )}
 
       {activeTab === "analytics" && (
         <div className="space-y-6">
-          {analytics.map((analytics) => (
+          {Array.isArray(analytics) ? analytics.map((analytics) => (
             <Card key={analytics._id}>
               <CardHeader>
                 <CardTitle className="flex items-center space-x-2">

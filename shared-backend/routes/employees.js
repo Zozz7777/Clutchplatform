@@ -9,6 +9,7 @@ const router = express.Router();
 const { getCollection } = require('../config/optimized-database');
 const { authenticateToken, checkRole, checkPermission } = require('../middleware/unified-auth');
 const { rateLimit: createRateLimit } = require('../middleware/rateLimit');
+const { ObjectId } = require('mongodb');
 
 // Apply rate limiting
 const employeeRateLimit = createRateLimit({ windowMs: 15 * 60 * 1000, max: 20 }); // 20 attempts per 15 minutes
@@ -234,8 +235,18 @@ router.get('/:id', authenticateToken, checkRole(['head_administrator', 'hr']), a
     const { id } = req.params;
     const usersCollection = await getCollection('users');
     
+    // Handle both string and ObjectId formats
+    let query = { isEmployee: true };
+    try {
+      // Try ObjectId first (for MongoDB ObjectIds)
+      query._id = new ObjectId(id);
+    } catch (error) {
+      // Fallback to string comparison (for legacy IDs)
+      query._id = id;
+    }
+    
     const employee = await usersCollection.findOne(
-      { _id: id, isEmployee: true },
+      query,
       { projection: { password: 0 } }
     );
     
@@ -274,8 +285,17 @@ router.put('/:id', authenticateToken, checkRole(['head_administrator', 'hr', 'hr
     
     const usersCollection = await getCollection('users');
     
-    // Check if employee exists
-    const existingEmployee = await usersCollection.findOne({ _id: id, isEmployee: true });
+    // Check if employee exists - Handle both string and ObjectId formats
+    let query = { isEmployee: true };
+    try {
+      // Try ObjectId first (for MongoDB ObjectIds)
+      query._id = new ObjectId(id);
+    } catch (error) {
+      // Fallback to string comparison (for legacy IDs)
+      query._id = id;
+    }
+    
+    const existingEmployee = await usersCollection.findOne(query);
     if (!existingEmployee) {
       return res.status(404).json({
         success: false,
@@ -322,7 +342,7 @@ router.put('/:id', authenticateToken, checkRole(['head_administrator', 'hr', 'hr
     if (isActive !== undefined) updateData.isActive = isActive;
     
     const result = await usersCollection.updateOne(
-      { _id: id, isEmployee: true },
+      query,
       { $set: updateData }
     );
     

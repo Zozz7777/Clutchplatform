@@ -210,7 +210,7 @@ export default function APIDocsPage() {
       <div className="flex items-center justify-center h-64">
         <div className="text-center">
           <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto mb-4"></div>
-          <p className="text-muted-foreground">Loading API documentation...</p>
+          <p className="text-muted-foreground">{t('dashboard.loadingApiDocumentation')}</p>
         </div>
       </div>
     );
@@ -221,14 +221,14 @@ export default function APIDocsPage() {
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold tracking-tight">API Documentation</h1>
+          <h1 className="text-3xl font-bold tracking-tight">{t('dashboard.apiDocumentation')}</h1>
           <p className="text-muted-foreground">
-            Complete reference for all Clutch Admin API endpoints
+            {t('dashboard.completeReferenceForAllClutchAdminApiEndpoints')}
           </p>
         </div>
         <Button variant="outline" size="sm">
           <ExternalLink className="h-4 w-4 mr-2" />
-          OpenAPI Spec
+          {t('dashboard.openApiSpec')}
         </Button>
       </div>
 
