@@ -107,9 +107,9 @@ export default function AIMLPage() {
         ]);
 
         // Ensure we always have arrays and handle type conversion safely
-        const modelsArray = Array.isArray(modelsData) ? modelsData as AIModel[] : [];
-        const fraudCasesArray = Array.isArray(fraudCasesData) ? fraudCasesData as FraudCase[] : [];
-        const recommendationsArray = Array.isArray(recommendationsData) ? recommendationsData as Recommendation[] : [];
+        const modelsArray = Array.isArray(modelsData) ? modelsData as unknown as AIModel[] : [];
+        const fraudCasesArray = Array.isArray(fraudCasesData) ? fraudCasesData as unknown as FraudCase[] : [];
+        const recommendationsArray = Array.isArray(recommendationsData) ? recommendationsData as unknown as Recommendation[] : [];
         
         setModels(modelsArray);
         setFraudCases(fraudCasesArray);
