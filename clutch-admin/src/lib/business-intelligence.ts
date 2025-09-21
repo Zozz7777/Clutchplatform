@@ -625,7 +625,7 @@ class BusinessIntelligenceService {
   // AI/ML Analytics
   public async getFraudImpact(): Promise<FraudImpact> {
     try {
-      const fraudCases = await productionApi.getFraudCases();
+      const fraudCases = await realApi.getFraudCases(); // Use realApi instead
       const casesDetected = fraudCases?.length || 0;
       const amountSaved = fraudCases?.reduce((sum, case_) => sum + case_.amount, 0) || 0;
       const falsePositives = Math.floor(casesDetected * 0.1); // 10% false positive rate
