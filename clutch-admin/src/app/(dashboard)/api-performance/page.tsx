@@ -8,6 +8,7 @@ import { productionApi } from "@/lib/production-api";
 import { formatNumber } from "@/lib/utils";
 import { useAuth } from "@/contexts/auth-context";
 import { logger } from "@/lib/logger";
+import { useTranslations } from "@/hooks/use-translations";
 import { 
   Activity, 
   Clock, 
@@ -40,6 +41,7 @@ interface ApiPerformanceData {
 }
 
 export default function ApiPerformancePage() {
+  const { t } = useTranslations();
   const [performanceData, setPerformanceData] = useState<ApiPerformanceData | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const { hasPermission } = useAuth();
@@ -148,9 +150,9 @@ export default function ApiPerformancePage() {
       {/* Page Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold tracking-tight">API Performance & Usage</h1>
+          <h1 className="text-3xl font-bold tracking-tight">{t('dashboard.apiPerformanceAndUsage')}</h1>
           <p className="text-muted-foreground">
-            Monitor API endpoints, latency, and error rates in real-time
+            {t('dashboard.monitorApiEndpoints')}
           </p>
         </div>
         <div className="flex items-center space-x-2">
@@ -165,7 +167,7 @@ export default function ApiPerformancePage() {
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Total Requests</CardTitle>
+            <CardTitle className="text-sm font-medium">{t('dashboard.totalRequests')}</CardTitle>
             <Zap className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
@@ -180,7 +182,7 @@ export default function ApiPerformancePage() {
         
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Average Latency</CardTitle>
+            <CardTitle className="text-sm font-medium">{t('dashboard.averageLatency')}</CardTitle>
             <Clock className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
@@ -195,7 +197,7 @@ export default function ApiPerformancePage() {
         
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Error Rate</CardTitle>
+            <CardTitle className="text-sm font-medium">{t('dashboard.errorRate')}</CardTitle>
             <AlertTriangle className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
@@ -210,7 +212,7 @@ export default function ApiPerformancePage() {
         
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Uptime</CardTitle>
+            <CardTitle className="text-sm font-medium">{t('dashboard.uptime')}</CardTitle>
             <Server className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
@@ -259,14 +261,14 @@ export default function ApiPerformancePage() {
                   
                   <div className="text-center">
                     <p className="text-sm font-medium">{endpoint.p95Latency}ms</p>
-                    <p className="text-xs text-muted-foreground">P95 Latency</p>
+                    <p className="text-xs text-muted-foreground">{t('dashboard.p95Latency')}</p>
                   </div>
                   
                   <div className="text-center">
                     <p className={`text-sm font-medium ${endpoint.errorRate > 2 ? "text-destructive" : endpoint.errorRate > 1 ? "text-warning" : "text-success"}`}>
                       {endpoint.errorRate.toFixed(2)}%
                     </p>
-                    <p className="text-xs text-muted-foreground">Error Rate</p>
+                    <p className="text-xs text-muted-foreground">{t('dashboard.errorRate')}</p>
                   </div>
                   
                   <Badge variant={getStatusColor(endpoint.status) as "default" | "secondary" | "destructive" | "outline"}>
