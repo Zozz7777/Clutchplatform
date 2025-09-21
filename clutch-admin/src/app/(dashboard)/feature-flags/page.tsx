@@ -282,7 +282,7 @@ export default function FeatureFlagsPage() {
         tags: createFlagData.tags.split(',').map(tag => tag.trim()).filter(tag => tag),
         createdBy: {
           id: "current-user",
-          name: t('featureFlags.currentUser'),
+          name: t('featureFlags.currentUser') || 'Current User',
           email: "user@example.com"
         },
         rollout: {
@@ -301,7 +301,7 @@ export default function FeatureFlagsPage() {
       
       const newFlag = await productionApi.createFeatureFlag(flagData);
       if (newFlag) {
-        setFeatureFlags(prev => [...(Array.isArray(prev) ? prev : []), newFlag]);
+        setFeatureFlags(prev => [...(Array.isArray(prev) ? prev : []), newFlag as FeatureFlag]);
         setShowCreateDialog(false);
         setCreateFlagData({
           name: "",
@@ -341,7 +341,7 @@ export default function FeatureFlagsPage() {
       
       const newTest = await productionApi.createABTest(abTestData);
       if (newTest) {
-        setABTests(prev => [...(Array.isArray(prev) ? prev : []), newTest]);
+        setABTests(prev => [...(Array.isArray(prev) ? prev : []), newTest as ABTest]);
         setShowABTestDialog(false);
         setCreateABTestData({
           name: "",
@@ -382,7 +382,7 @@ export default function FeatureFlagsPage() {
       
       const newRollout = await productionApi.createRollout(rolloutData);
       if (newRollout) {
-        setRollouts(prev => [...(Array.isArray(prev) ? prev : []), newRollout]);
+        setRollouts(prev => [...(Array.isArray(prev) ? prev : []), newRollout as Rollout]);
         setShowRolloutDialog(false);
         setCreateRolloutData({
           name: "",

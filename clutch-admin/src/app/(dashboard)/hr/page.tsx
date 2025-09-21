@@ -205,34 +205,68 @@ export default function HRPage() {
   // Helper functions for role and permission management
   const getRolePermissions = (role: string): string[] => {
     switch (role) {
+      // Level 1: Executive Leadership - Full access
+      case "super_admin":
       case "head_administrator":
-      case "platform_admin":
       case "executive":
+      case "platform_admin":
       case "admin":
-        return ["read", "write", "delete", "admin", "hr", "finance", "fleet", "reports"];
+        return ["read", "write", "delete", "admin", "hr", "finance", "fleet", "reports", "all"];
+      
+      // Level 2: Department Heads
       case "hr_manager":
-        return ["read", "write", "hr", "reports"];
+        return ["read", "write", "hr", "users", "reports"];
       case "finance_officer":
-        return ["read", "write", "finance", "reports"];
+        return ["read", "write", "finance", "billing", "reports"];
+      case "operations_manager":
+        return ["read", "write", "operations", "fleet", "reports"];
+      case "marketing_manager":
+        return ["read", "write", "marketing", "analytics", "reports"];
       case "legal_team":
-        return ["read", "write", "legal", "reports"];
+        return ["read", "write", "legal", "contracts", "reports"];
+      case "security_manager":
+        return ["read", "write", "security", "audit", "reports"];
+      
+      // Level 3: Specialized Managers
+      case "business_analyst":
+        return ["read", "analytics", "reports"];
       case "project_manager":
         return ["read", "write", "projects", "reports"];
       case "asset_manager":
-        return ["read", "write", "assets", "reports"];
-      case "vendor_manager":
-        return ["read", "write", "vendors", "reports"];
-      case "business_analyst":
-        return ["read", "analytics", "reports"];
+        return ["read", "write", "assets", "fleet", "reports"];
+      case "crm_manager":
+        return ["read", "write", "crm", "chat", "reports"];
+      case "system_admin":
+        return ["read", "write", "system", "settings", "reports"];
+      
+      // Level 4: Functional Specialists
+      case "hr":
+        return ["read", "write", "hr"];
+      case "finance":
+        return ["read", "finance", "reports"];
       case "customer_support":
         return ["read", "write", "crm", "chat"];
+      case "developer":
+        return ["read", "ai", "mobile", "system", "chat"];
+      
+      // Level 5: Operational Staff
+      case "employee":
+        return ["read"];
+      case "support_agent":
+        return ["read", "support", "chat"];
+      
+      // Level 6: External Users
       case "enterprise_client":
         return ["read", "fleet", "crm", "analytics"];
       case "service_provider":
         return ["read", "chat", "crm"];
+      
+      // Legacy roles
       case "manager":
         return ["read", "write", "reports"];
-      case "employee":
+      case "vendor_manager":
+        return ["read", "write", "vendors", "reports"];
+      
       default:
         return ["read"];
     }
@@ -240,13 +274,9 @@ export default function HRPage() {
 
   // Check if current user can edit the specified employee
   const canEditEmployee = (employee: Employee): boolean => {
-    // If user is head_administrator, platform_admin, or admin, they can edit anyone
-    if (user?.role === "head_administrator" || user?.role === "platform_admin" || user?.role === "admin") {
-      return true;
-    }
-    
-    // If user is executive, they can edit anyone
-    if (user?.role === "executive") {
+    // Level 1: Executive Leadership can edit anyone
+    if (user?.role === "super_admin" || user?.role === "head_administrator" || 
+        user?.role === "executive" || user?.role === "platform_admin" || user?.role === "admin") {
       return true;
     }
     
