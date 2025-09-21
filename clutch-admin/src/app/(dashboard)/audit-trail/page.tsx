@@ -130,8 +130,8 @@ export default function AuditTrailPage() {
         // Use Promise.allSettled to handle individual failures gracefully
         const [logsResult, eventsResult, activitiesResult] = await Promise.allSettled([
           productionApi.getAuditLogs(),
-          productionApi.getSecurityAlerts(),
-          productionApi.getLiveUserActivities()
+          productionApi.getSecurityEvents(),
+          productionApi.getUserActivities()
         ]);
 
         // Handle audit logs
@@ -186,7 +186,8 @@ export default function AuditTrailPage() {
     }
   }, [t, user]);
 
-  const filteredAuditLogs = (auditLogs || []).filter((log) => {
+  const filteredAuditLogs = Array.isArray(auditLogs) ? auditLogs.filter((log) => {
+    if (!log || typeof log !== 'object') return false;
     const matchesSearch = (log.resourceName || '').toLowerCase().includes(searchTerm.toLowerCase()) ||
                          (log.action || '').toLowerCase().includes(searchTerm.toLowerCase()) ||
                          (log.userName || '').toLowerCase().includes(searchTerm.toLowerCase());
@@ -194,12 +195,12 @@ export default function AuditTrailPage() {
     const matchesSeverity = severityFilter === "all" || log.severity === severityFilter;
     const matchesStatus = statusFilter === "all" || log.status === statusFilter;
     return matchesSearch && matchesCategory && matchesSeverity && matchesStatus;
-  });
+  }) : [];
 
-  const totalLogs = (auditLogs || []).length;
-  const criticalEvents = (auditLogs || []).filter(l => l.severity === "critical").length;
-  const failedActions = (auditLogs || []).filter(l => l.status === "failure").length;
-  const activeUsers = (userActivities || []).filter(a => a.status === "active").length;
+  const totalLogs = Array.isArray(auditLogs) ? auditLogs.length : 0;
+  const criticalEvents = Array.isArray(auditLogs) ? auditLogs.filter(l => l && l.severity === "critical").length : 0;
+  const failedActions = Array.isArray(auditLogs) ? auditLogs.filter(l => l && l.status === "failure").length : 0;
+  const activeUsers = Array.isArray(userActivities) ? userActivities.filter(a => a && a.status === "active").length : 0;
 
   const getSeverityVariant = (severity: string) => {
     switch (severity) {
