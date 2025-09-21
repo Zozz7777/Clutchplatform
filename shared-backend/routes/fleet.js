@@ -493,7 +493,7 @@ router.get('/maintenance', authenticateToken, checkRole(['head_administrator', '
 });
 
 // POST /api/v1/fleet/optimize-routes - Optimize fleet routes
-router.post('/optimize-routes', authenticateToken, checkRole(['head_administrator', 'fleet_manager']), async (req, res) => {
+router.post('/optimize-routes', authenticateToken, checkRole(['head_administrator', 'asset_manager', 'operations_manager']), async (req, res) => {
   try {
     const { vehicles, destinations, constraints } = req.body;
     
@@ -540,7 +540,7 @@ router.post('/optimize-routes', authenticateToken, checkRole(['head_administrato
 });
 
 // GET /api/v1/fleet/obd2 - Get OBD2 data for vehicles
-router.get('/obd2', authenticateToken, checkRole(['head_administrator', 'admin', 'fleet_manager']), async (req, res) => {
+router.get('/obd2', authenticateToken, checkRole(['head_administrator', 'admin', 'asset_manager', 'operations_manager']), async (req, res) => {
   try {
     const { vehicleId, limit = 100 } = req.query;
     
@@ -579,7 +579,7 @@ router.get('/obd2', authenticateToken, checkRole(['head_administrator', 'admin',
 // ============================================================================
 
 // GET /api/v1/fleet/maintenance/tasks - Get AI maintenance tasks
-router.get('/maintenance/tasks', authenticateToken, checkRole(['head_administrator', 'asset_manager', 'fleet_manager']), async (req, res) => {
+router.get('/maintenance/tasks', authenticateToken, checkRole(['head_administrator', 'asset_manager', 'operations_manager']), async (req, res) => {
   try {
     const tasksCollection = await getCollection('maintenance_tasks');
     const { page = 1, limit = 50, status, priority, vehicleId } = req.query;
@@ -623,7 +623,7 @@ router.get('/maintenance/tasks', authenticateToken, checkRole(['head_administrat
 });
 
 // GET /api/v1/fleet/maintenance/schedules - Get maintenance schedules
-router.get('/maintenance/schedules', authenticateToken, checkRole(['head_administrator', 'asset_manager', 'fleet_manager']), async (req, res) => {
+router.get('/maintenance/schedules', authenticateToken, checkRole(['head_administrator', 'asset_manager', 'operations_manager']), async (req, res) => {
   try {
     const schedulesCollection = await getCollection('maintenance_schedules');
     const { page = 1, limit = 50, status } = req.query;
@@ -665,7 +665,7 @@ router.get('/maintenance/schedules', authenticateToken, checkRole(['head_adminis
 });
 
 // GET /api/v1/fleet/technicians - Get technicians
-router.get('/technicians', authenticateToken, checkRole(['head_administrator', 'asset_manager', 'fleet_manager']), async (req, res) => {
+router.get('/technicians', authenticateToken, checkRole(['head_administrator', 'asset_manager', 'operations_manager']), async (req, res) => {
   try {
     const techniciansCollection = await getCollection('technicians');
     const { page = 1, limit = 50, availability, skill } = req.query;
@@ -708,7 +708,7 @@ router.get('/technicians', authenticateToken, checkRole(['head_administrator', '
 });
 
 // POST /api/v1/fleet/maintenance/tasks - Create maintenance task
-router.post('/maintenance/tasks', authenticateToken, checkRole(['head_administrator', 'asset_manager', 'fleet_manager']), async (req, res) => {
+router.post('/maintenance/tasks', authenticateToken, checkRole(['head_administrator', 'asset_manager', 'operations_manager']), async (req, res) => {
   try {
     const tasksCollection = await getCollection('maintenance_tasks');
     const taskData = {

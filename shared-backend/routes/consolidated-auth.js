@@ -160,7 +160,43 @@ function getRolePermissions(role) {
   
   // If role has '*' permission, return all possible permissions
   if (permissions.includes('*')) {
-    return Object.values(ROLE_PERMISSIONS).flat().filter(p => p !== '*');
+    // Return all possible permissions from frontend constants
+    return [
+      // Core System & Dashboard
+      'view_dashboard', 'view_analytics', 'export_analytics', 'view_system_health',
+      'view_kpi_metrics', 'manage_kpi_metrics', 'view_business_intelligence', 'manage_business_intelligence',
+      'view_dashboard_config', 'manage_dashboard_config', 'view_system_monitoring', 'manage_system_monitoring',
+      
+      // User & Organization
+      'view_users', 'create_users', 'edit_users', 'delete_users', 'view_employees', 'manage_employees',
+      'view_hr', 'manage_hr', 'view_onboarding', 'manage_onboarding', 'view_profiles', 'manage_profiles',
+      
+      // Fleet & Operations
+      'view_fleet', 'manage_fleet', 'view_gps_tracking', 'view_assets', 'manage_assets',
+      'view_vendors', 'manage_vendors', 'view_operations',
+      
+      // Business & Customer
+      'view_crm', 'manage_crm', 'view_enterprise', 'manage_enterprise', 'view_finance', 'manage_finance',
+      'process_payments', 'view_billing', 'manage_billing', 'view_legal', 'manage_legal',
+      'view_contracts', 'manage_contracts', 'view_partners', 'manage_partners', 'view_customer_data',
+      
+      // Technology & Development
+      'view_ai_dashboard', 'manage_ai_models', 'view_mobile_apps', 'manage_mobile_apps',
+      'view_cms', 'manage_cms', 'view_integrations', 'manage_integrations', 'view_api_docs',
+      'view_feature_flags', 'manage_feature_flags', 'view_scheduled_jobs', 'manage_scheduled_jobs',
+      'view_development_tools', 'manage_development_tools', 'view_technical_documentation',
+      
+      // Communication & Support
+      'view_chat', 'send_messages', 'view_communication', 'manage_communication',
+      'view_support', 'manage_support', 'view_feedback', 'manage_feedback',
+      'view_announcements', 'manage_announcements',
+      
+      // Administration & Config
+      'view_settings', 'manage_settings', 'view_reports', 'generate_reports',
+      'view_audit_trail', 'view_marketing', 'manage_marketing', 'view_projects', 'manage_projects',
+      'view_localization', 'manage_localization', 'view_accessibility', 'manage_accessibility',
+      'view_system_config', 'manage_system_config', 'view_security_settings'
+    ];
   }
   
   return permissions;

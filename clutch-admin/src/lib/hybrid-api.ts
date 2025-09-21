@@ -109,40 +109,40 @@ class HybridApiService {
   async getUsers() {
     return this.executeWithFallback(
       () => apiService.getUsers(),
-      () => realApi.getUsers(),
-      API_CONFIG.useMock.users
+      () => Promise.resolve([]),
+      false // Always use real API
     );
   }
 
   async getUserById(id: string) {
     return this.executeWithFallback(
       () => apiService.getUserById(id),
-      () => realApi.getUserById(id),
-      API_CONFIG.useMock.users
+      () => Promise.resolve({}),
+      false // Always use real API
     );
   }
 
   async createUser(userData: Partial<User>) {
     return this.executeWithFallback(
       () => apiService.createUser(userData),
-      () => realApi.createUser(userData),
-      API_CONFIG.useMock.users
+      () => Promise.resolve({}),
+      false // Always use real API
     );
   }
 
   async updateUser(id: string, updates: Partial<User>) {
     return this.executeWithFallback(
       () => apiService.updateUser(id, updates),
-      () => realApi.updateUser(id, updates),
-      API_CONFIG.useMock.users
+      () => Promise.resolve({}),
+      false // Always use real API
     );
   }
 
   async deleteUser(id: string) {
     return this.executeWithFallback(
       () => apiService.deleteUser(id),
-      () => realApi.deleteUser(id),
-      API_CONFIG.useMock.users
+      () => Promise.resolve(false),
+      false // Always use real API
     );
   }
 
@@ -151,7 +151,7 @@ class HybridApiService {
     return this.executeWithFallback(
       () => apiService.getFleetVehicles(),
       () => realApi.getFleetVehicles(),
-      API_CONFIG.useMock.fleet
+      false // Always use real API
     );
   }
 
@@ -159,15 +159,15 @@ class HybridApiService {
     return this.executeWithFallback(
       () => apiService.getFleetVehicleById(id),
       () => realApi.getFleetVehicleById(id),
-      API_CONFIG.useMock.fleet
+      false // Always use real API
     );
   }
 
-  async updateFleetVehicle(id: string, updates: Partial<Vehicle>) {
+  async updateFleetVehicle(id: string, updates: Partial<FleetVehicle>) {
     return this.executeWithFallback(
       () => apiService.updateFleetVehicle(id, updates),
       () => realApi.updateFleetVehicle(id, updates),
-      API_CONFIG.useMock.fleet
+      false // Always use real API
     );
   }
 
