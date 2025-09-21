@@ -43,14 +43,14 @@ export default function HelpCMSPage() {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold font-sans">Help Articles CMS</h1>
+          <h1 className="text-3xl font-bold font-sans">{t('dashboard.helpArticlesCms')}</h1>
           <p className="text-muted-foreground font-sans">
-            Manage help articles and documentation
+            {t('dashboard.manageHelpArticles')}
           </p>
         </div>
         <Button>
           <Plus className="h-4 w-4 mr-2" />
-          New Article
+          {t('dashboard.newArticle')}
         </Button>
       </div>
 
@@ -59,7 +59,7 @@ export default function HelpCMSPage() {
           <div className="relative">
             <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
             <Input
-              placeholder="Search articles..."
+              placeholder={t('dashboard.searchArticles')}
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
               className="pl-10"
@@ -73,7 +73,7 @@ export default function HelpCMSPage() {
         >
           {categories.map(category => (
             <option key={category} value={category}>
-              {category === 'all' ? 'All Categories' : category}
+              {category === 'all' ? t('dashboard.allCategories') : category}
             </option>
           ))}
         </select>
@@ -81,9 +81,9 @@ export default function HelpCMSPage() {
 
       <Tabs defaultValue="articles" className="space-y-4">
         <TabsList>
-          <TabsTrigger value="articles">Articles</TabsTrigger>
-          <TabsTrigger value="categories">Categories</TabsTrigger>
-          <TabsTrigger value="analytics">Analytics</TabsTrigger>
+          <TabsTrigger value="articles">{t('dashboard.articles')}</TabsTrigger>
+          <TabsTrigger value="categories">{t('dashboard.categories')}</TabsTrigger>
+          <TabsTrigger value="analytics">{t('dashboard.analytics')}</TabsTrigger>
         </TabsList>
 
         <TabsContent value="articles" className="space-y-4">
@@ -104,11 +104,11 @@ export default function HelpCMSPage() {
                       </Badge>
                       <Button variant="outline" size="sm">
                         <Eye className="h-4 w-4 mr-2" />
-                        View
+                        {t('dashboard.view')}
                       </Button>
                       <Button variant="outline" size="sm">
                         <Edit className="h-4 w-4 mr-2" />
-                        Edit
+                        {t('dashboard.edit')}
                       </Button>
                       <Button variant="outline" size="sm">
                         <Trash2 className="h-4 w-4" />
@@ -124,11 +124,11 @@ export default function HelpCMSPage() {
                     </div>
                     <div className="flex items-center space-x-1">
                       <Eye className="h-4 w-4" />
-                      <span className="font-sans">{article.views} views</span>
+                      <span className="font-sans">{article.views} {t('dashboard.views')}</span>
                     </div>
                     <div className="flex items-center space-x-1">
                       <FileText className="h-4 w-4" />
-                      <span className="font-sans">Updated {article.lastUpdated}</span>
+                      <span className="font-sans">{t('dashboard.updated')} {article.lastUpdated}</span>
                     </div>
                   </div>
                   <div className="flex items-center space-x-2 mt-2">
@@ -151,13 +151,13 @@ export default function HelpCMSPage() {
                 <CardHeader>
                   <CardTitle className="font-sans">{category}</CardTitle>
                   <CardDescription className="font-sans">
-                    {articles.filter(article => article.category === category).length} articles
+                    {articles.filter(article => article.category === category).length} {t('dashboard.articles')}
                   </CardDescription>
                 </CardHeader>
                 <CardContent>
                   <Button variant="outline" className="w-full">
                     <Edit className="h-4 w-4 mr-2" />
-                    Manage
+                    {t('dashboard.manage')}
                   </Button>
                 </CardContent>
               </Card>
@@ -169,7 +169,7 @@ export default function HelpCMSPage() {
           <div className="grid gap-4 md:grid-cols-4">
             <Card>
               <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                <CardTitle className="text-sm font-medium font-sans">Total Articles</CardTitle>
+                <CardTitle className="text-sm font-medium font-sans">{t('dashboard.totalArticles')}</CardTitle>
                 <BookOpen className="h-4 w-4 text-muted-foreground" />
               </CardHeader>
               <CardContent>
@@ -179,7 +179,7 @@ export default function HelpCMSPage() {
 
             <Card>
               <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                <CardTitle className="text-sm font-medium font-sans">Published</CardTitle>
+                <CardTitle className="text-sm font-medium font-sans">{t('dashboard.published')}</CardTitle>
                 <FileText className="h-4 w-4 text-muted-foreground" />
               </CardHeader>
               <CardContent>
@@ -191,7 +191,7 @@ export default function HelpCMSPage() {
 
             <Card>
               <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                <CardTitle className="text-sm font-medium font-sans">Total Views</CardTitle>
+                <CardTitle className="text-sm font-medium font-sans">{t('dashboard.totalViews')}</CardTitle>
                 <Eye className="h-4 w-4 text-muted-foreground" />
               </CardHeader>
               <CardContent>
@@ -203,7 +203,7 @@ export default function HelpCMSPage() {
 
             <Card>
               <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                <CardTitle className="text-sm font-medium font-sans">Categories</CardTitle>
+                <CardTitle className="text-sm font-medium font-sans">{t('dashboard.categories')}</CardTitle>
                 <Tag className="h-4 w-4 text-muted-foreground" />
               </CardHeader>
               <CardContent>
