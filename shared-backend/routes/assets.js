@@ -674,7 +674,7 @@ router.get('/analytics/overview', async (req, res) => {
 // ===== ASSET MAINTENANCE =====
 
 // GET /api/v1/assets/maintenance - Get asset maintenance records
-router.get('/maintenance', async (req, res) => {
+router.get('/asset-maintenance', async (req, res) => {
   console.log('Maintenance endpoint hit');
   try {
     const maintenanceCollection = await getCollection('asset_maintenance');
@@ -778,7 +778,7 @@ router.post('/maintenance', async (req, res) => {
 // ===== ASSET ASSIGNMENTS =====
 
 // GET /api/v1/assets/assignments - Get asset assignments
-router.get('/assignments', async (req, res) => {
+router.get('/asset-assignments', async (req, res) => {
   console.log('Assignments endpoint hit');
   try {
     const assignmentsCollection = await getCollection('asset_assignments');

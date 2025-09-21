@@ -602,7 +602,7 @@ export class RealApiService {
   async getMaintenanceRecords(): Promise<Record<string, unknown>[]> {
     return withErrorHandling(
       async () => {
-        const response = await apiService.request<Record<string, unknown>[]>("/api/v1/assets/maintenance");
+        const response = await apiService.request<Record<string, unknown>[]>("/api/v1/assets/asset-maintenance");
         return handleApiResponse(response, 'getMaintenanceRecords', []);
       },
       'getMaintenanceRecords',
@@ -613,7 +613,7 @@ export class RealApiService {
   async getAssetAssignments(): Promise<Record<string, unknown>[]> {
     return withErrorHandling(
       async () => {
-        const response = await apiService.request<Record<string, unknown>[]>("/api/v1/assets/assignments");
+        const response = await apiService.request<Record<string, unknown>[]>("/api/v1/assets/asset-assignments");
         return handleApiResponse(response, 'getAssetAssignments', []);
       },
       'getAssetAssignments',
