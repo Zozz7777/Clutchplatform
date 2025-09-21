@@ -276,10 +276,16 @@ export function ComplianceRadar({ className = '' }: ComplianceRadarProps) {
           <div className="space-y-2">
             <div className="flex justify-between text-sm">
               <span className="text-muted-foreground">Overall Compliance</span>
-              <span className="text-card-foreground">{compliance.overallStatus === 'green' ? '100%' : compliance.overallStatus === 'amber' ? '75%' : '50%'}</span>
+              <span className="text-card-foreground">
+                {compliance.overallStatus === 'green' ? '100%' : 
+                 compliance.overallStatus === 'amber' ? '75%' : 
+                 compliance.overallStatus === 'red' ? '50%' : 'N/A'}
+              </span>
             </div>
             <Progress 
-              value={compliance.overallStatus === 'green' ? 100 : compliance.overallStatus === 'amber' ? 75 : 50} 
+              value={compliance.overallStatus === 'green' ? 100 : 
+                     compliance.overallStatus === 'amber' ? 75 : 
+                     compliance.overallStatus === 'red' ? 50 : 0} 
               className="h-2" 
             />
           </div>

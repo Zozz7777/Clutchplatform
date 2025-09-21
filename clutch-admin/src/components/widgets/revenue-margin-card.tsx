@@ -6,6 +6,7 @@ import { Badge } from '@/components/ui/badge';
 import { Progress } from '@/components/ui/progress';
 import { businessIntelligence } from '@/lib/business-intelligence';
 import { logger } from '@/lib/logger';
+import { useTranslations } from '@/hooks/use-translations';
 import { 
   DollarSign, 
   TrendingUp, 
@@ -23,6 +24,7 @@ interface RevenueMarginCardProps {
 }
 
 export function RevenueMarginCard({ className = '' }: RevenueMarginCardProps) {
+  const { t } = useTranslations();
   const [marginData, setMarginData] = React.useState<{
     revenue: number;
     costs: number;

@@ -143,7 +143,7 @@ export function AIForecastCard({ className = '' }: AIForecastCardProps) {
         <div className="grid grid-cols-2 gap-4">
           <div className="text-center p-3 bg-success/10 rounded-[0.625rem] border border-success/20">
             <p className="text-2xl font-bold text-success">
-              ${totalRevenue.toLocaleString()}
+              {totalRevenue.toLocaleString()} EGP
             </p>
             <p className="text-xs text-muted-foreground">Projected Revenue</p>
             <div className="mt-1">
@@ -176,21 +176,21 @@ export function AIForecastCard({ className = '' }: AIForecastCardProps) {
             <div className="text-center p-3 bg-success/10 rounded-[0.625rem] border border-success/20">
               <TrendingUp className="h-4 w-4 text-success mx-auto mb-1" />
               <p className="text-sm font-semibold text-success">
-                ${optimisticRevenue.toLocaleString()}
+                {optimisticRevenue.toLocaleString()} EGP
               </p>
               <p className="text-xs text-muted-foreground">Optimistic</p>
             </div>
             <div className="text-center p-3 bg-muted/50 rounded-[0.625rem] border border-border">
               <Target className="h-4 w-4 text-muted-foreground mx-auto mb-1" />
               <p className="text-sm font-semibold text-card-foreground">
-                ${totalRevenue.toLocaleString()}
+                {totalRevenue.toLocaleString()} EGP
               </p>
               <p className="text-xs text-muted-foreground">Base Case</p>
             </div>
             <div className="text-center p-3 bg-destructive/10 rounded-[0.625rem] border border-destructive/20">
               <TrendingDown className="h-4 w-4 text-destructive mx-auto mb-1" />
               <p className="text-sm font-semibold text-destructive">
-                ${pessimisticRevenue.toLocaleString()}
+                {pessimisticRevenue.toLocaleString()} EGP
               </p>
               <p className="text-xs text-muted-foreground">Pessimistic</p>
             </div>
@@ -214,7 +214,7 @@ export function AIForecastCard({ className = '' }: AIForecastCardProps) {
                 <div className="flex items-center space-x-4">
                   <div className="text-right">
                     <p className="text-sm font-semibold text-card-foreground">
-                      ${day.base.toLocaleString()}
+                      {day.base.toLocaleString()} EGP
                     </p>
                     <p className="text-xs text-muted-foreground">
                       {day.confidence.toFixed(0)}% confidence

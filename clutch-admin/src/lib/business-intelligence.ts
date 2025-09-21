@@ -245,18 +245,18 @@ class BusinessIntelligenceService {
         productionApi.getPayments().catch(() => [])
       ]);
 
-      // Calculate real costs based on actual data
-      const fleetCosts = (Array.isArray(fleet) ? fleet.length : 0) * 500; // Monthly cost per vehicle
+      // Calculate real costs based on actual data from API
+      const fleetCosts = await this.getFleetOperationalCosts(fleet).catch(() => 0);
       
       // Get real infrastructure costs from system metrics
       const systemMetrics = await this.getSystemPerformanceMetrics().catch(() => ({}));
-      const infrastructureCosts = systemMetrics?.monthlyCost || 10000; // Real server costs
+      const infrastructureCosts = (systemMetrics as any)?.monthlyCost || 0; // Real server costs from API
       
       // Calculate maintenance costs based on actual maintenance records
-      const maintenanceCosts = (Array.isArray(fleet) ? fleet.filter(v => v.status === 'maintenance').length : 0) * 2000;
+      const maintenanceCosts = await this.getMaintenanceCosts(fleet).catch(() => 0);
       
       // Calculate other costs from actual expense data
-      const otherCosts = await this.getOtherOperationalCosts().catch(() => 5000);
+      const otherCosts = await this.getOtherOperationalCosts().catch(() => 0);
 
       const totalCosts = fleetCosts + infrastructureCosts + maintenanceCosts + otherCosts;
       const monthlyRevenue = revenue?.monthly || 0;
@@ -714,27 +714,54 @@ class BusinessIntelligenceService {
     }
   }
 
+  // Fleet Operational Costs
+  public async getFleetOperationalCosts(fleet: any[]): Promise<number> {
+    try {
+      // Get real fleet operational costs from API
+      const fleetCosts = await productionApi.getFleetOperationalCosts().catch(() => null);
+      if (fleetCosts && typeof fleetCosts === 'number') {
+        return fleetCosts;
+      }
+      
+      // If no API data, return 0 instead of hardcoded values
+      return 0;
+    } catch (error) {
+      errorHandler.handleError(error as Error, 'Get fleet operational costs', { showToast: false });
+      return 0;
+    }
+  }
+
+  // Maintenance Costs
+  public async getMaintenanceCosts(fleet: any[]): Promise<number> {
+    try {
+      // Get real maintenance costs from API
+      const maintenanceCosts = await productionApi.getMaintenanceCosts().catch(() => null);
+      if (maintenanceCosts && typeof maintenanceCosts === 'number') {
+        return maintenanceCosts;
+      }
+      
+      // If no API data, return 0 instead of hardcoded values
+      return 0;
+    } catch (error) {
+      errorHandler.handleError(error as Error, 'Get maintenance costs', { showToast: false });
+      return 0;
+    }
+  }
+
   // Other Operational Costs
   public async getOtherOperationalCosts(): Promise<number> {
     try {
-      // Get real operational costs from various sources
-      const [payments, users, systemMetrics] = await Promise.all([
-        productionApi.getPayments().catch(() => []),
-        productionApi.getUsers().catch(() => []),
-        this.getSystemPerformanceMetrics().catch(() => ({}))
-      ]);
-
-      // Calculate operational costs based on real data
-      const paymentProcessingCosts = (Array.isArray(payments) ? payments.length : 0) * 0.03; // 3% processing fee
-      const userSupportCosts = (Array.isArray(users) ? users.length : 0) * 2; // 2 EGP per user per month
-      const systemMaintenanceCosts = systemMetrics?.monthlyCost * 0.1 || 1000; // 10% of infrastructure cost
-      const marketingCosts = 2000; // Fixed marketing budget
-      const legalComplianceCosts = 1500; // Fixed compliance costs
-
-      return paymentProcessingCosts + userSupportCosts + systemMaintenanceCosts + marketingCosts + legalComplianceCosts;
+      // Get real operational costs from API
+      const operationalCosts = await productionApi.getOperationalCosts().catch(() => null);
+      if (operationalCosts && typeof operationalCosts === 'number') {
+        return operationalCosts;
+      }
+      
+      // If no API data, return 0 instead of hardcoded values
+      return 0;
     } catch (error) {
       errorHandler.handleError(error as Error, 'Get other operational costs', { showToast: false });
-      return 5000; // Fallback estimate
+      return 0;
     }
   }
 

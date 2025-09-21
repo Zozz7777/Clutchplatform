@@ -127,7 +127,7 @@ export default function DashboardPage() {
         setKpiMetrics(Array.isArray(metrics) ? metrics : []);
         setFleetVehicles(Array.isArray(vehicles) ? vehicles.slice(0, 5) : []);
         setNotifications(Array.isArray(notifs) ? notifs.slice(0, 5) : []);
-        setPerformanceMetrics(perf);
+        setPerformanceMetrics(perf as Record<string, unknown> | null);
       } catch (error) {
         // Error handled by API service
         // Set empty arrays on error - no mock data fallback in production
@@ -197,15 +197,15 @@ export default function DashboardPage() {
         </div>
         <div className="flex items-center space-x-2">
           <RealtimeStatus />
-          <Button variant="outline" className="shadow-2xs" onClick={generateReport}>
+          <Button variant="outline" className="shadow-2xs" onClick={generateReport || (() => {})}>
             <FileText className="mr-2 h-4 w-4" />
             {t('dashboard.generateReport')}
           </Button>
-          <Button className="shadow-2xs" onClick={() => exportData('dashboard')}>
+          <Button className="shadow-2xs" onClick={() => exportData?.('dashboard')}>
             <Download className="mr-2 h-4 w-4" />
             {t('dashboard.exportData')}
           </Button>
-          <Button variant="outline" className="shadow-2xs" onClick={refreshData}>
+          <Button variant="outline" className="shadow-2xs" onClick={refreshData || (() => {})}>
             <RefreshCw className="mr-2 h-4 w-4" />
             {t('dashboard.refresh')}
           </Button>
@@ -330,13 +330,13 @@ export default function DashboardPage() {
                 <div className="flex items-center justify-between">
                   <span className="text-sm font-medium text-card-foreground">{t('dashboard.apiUptime')}</span>
                   <span className="text-sm text-muted-foreground">
-                    {performanceMetrics?.uptime ? `${performanceMetrics.uptime}%` : '99.9%'}
+                    {performanceMetrics?.uptime ? `${performanceMetrics.uptime}%` : 'N/A'}
                   </span>
                 </div>
                 <div className="w-full bg-muted rounded-full h-2">
                   <div 
                     className="bg-primary h-2 rounded-full" 
-                    style={{ width: `${performanceMetrics?.uptime || 99.9}%` }}
+                    style={{ width: `${performanceMetrics?.uptime || 0}%` }}
                   ></div>
                 </div>
               </div>
@@ -344,13 +344,13 @@ export default function DashboardPage() {
                 <div className="flex items-center justify-between">
                   <span className="text-sm font-medium text-card-foreground">{t('dashboard.requestRate')}</span>
                   <span className="text-sm text-muted-foreground">
-                    {performanceMetrics?.requestRate ? `${performanceMetrics.requestRate.toLocaleString()}/min` : '1,234/min'}
+                    {performanceMetrics?.requestRate ? `${performanceMetrics.requestRate.toLocaleString()}/min` : 'N/A'}
                   </span>
                 </div>
                 <div className="w-full bg-muted rounded-full h-2">
                   <div 
                     className="bg-primary h-2 rounded-full" 
-                    style={{ width: `${Math.min((performanceMetrics?.requestRate || 1234) / 20, 100)}%` }}
+                    style={{ width: `${Math.min((Number(performanceMetrics?.requestRate) || 0) / 20, 100)}%` }}
                   ></div>
                 </div>
               </div>
@@ -358,13 +358,13 @@ export default function DashboardPage() {
                 <div className="flex items-center justify-between">
                   <span className="text-sm font-medium text-card-foreground">{t('dashboard.errorRate')}</span>
                   <span className="text-sm text-muted-foreground">
-                    {performanceMetrics?.errorRate ? `${performanceMetrics.errorRate}%` : '0.1%'}
+                    {performanceMetrics?.errorRate ? `${performanceMetrics.errorRate}%` : 'N/A'}
                   </span>
                 </div>
                 <div className="w-full bg-muted rounded-full h-2">
                   <div 
                     className="bg-destructive h-2 rounded-full" 
-                    style={{ width: `${Math.min((performanceMetrics?.errorRate || 0.1) * 10, 100)}%` }}
+                    style={{ width: `${Math.min((Number(performanceMetrics?.errorRate) || 0) * 10, 100)}%` }}
                   ></div>
                 </div>
               </div>
@@ -372,13 +372,13 @@ export default function DashboardPage() {
                 <div className="flex items-center justify-between">
                   <span className="text-sm font-medium text-card-foreground">{t('dashboard.activeSessions')}</span>
                   <span className="text-sm text-muted-foreground">
-                    {performanceMetrics?.activeSessions ? performanceMetrics.activeSessions.toLocaleString() : '456'}
+                    {performanceMetrics?.activeSessions ? performanceMetrics.activeSessions.toLocaleString() : 'N/A'}
                   </span>
                 </div>
                 <div className="w-full bg-muted rounded-full h-2">
                   <div 
                     className="bg-secondary h-2 rounded-full" 
-                    style={{ width: `${Math.min((performanceMetrics?.activeSessions || 456) / 10, 100)}%` }}
+                    style={{ width: `${Math.min((Number(performanceMetrics?.activeSessions) || 0) / 10, 100)}%` }}
                   ></div>
                 </div>
               </div>
@@ -394,27 +394,49 @@ export default function DashboardPage() {
           </CardHeader>
           <CardContent>
             <div className="space-y-3">
-              <div className="flex items-center space-x-3 p-3 rounded-[0.625rem] bg-destructive/10 border border-destructive/20">
-                <AlertTriangle className="h-4 w-4 text-destructive" />
-                <div>
-                  <p className="text-sm font-medium text-destructive">{t('dashboard.highErrorRate')}</p>
-                  <p className="text-xs text-destructive/80">{t('dashboard.apiErrorsIncreased')}</p>
+              {notifications.length > 0 ? (
+                notifications.map((notification) => (
+                  <div key={notification.id} className={`flex items-center space-x-3 p-3 rounded-[0.625rem] border ${
+                    notification.type === 'error' ? 'bg-destructive/10 border-destructive/20' :
+                    notification.type === 'warning' ? 'bg-warning/10 border-warning/20' :
+                    notification.type === 'success' ? 'bg-success/10 border-success/20' :
+                    'bg-muted/50 border-border'
+                  }`}>
+                    {notification.type === 'error' ? (
+                      <AlertTriangle className="h-4 w-4 text-destructive" />
+                    ) : notification.type === 'warning' ? (
+                      <Clock className="h-4 w-4 text-warning" />
+                    ) : notification.type === 'success' ? (
+                      <CheckCircle className="h-4 w-4 text-success" />
+                    ) : (
+                      <AlertTriangle className="h-4 w-4 text-muted-foreground" />
+                    )}
+                    <div>
+                      <p className={`text-sm font-medium ${
+                        notification.type === 'error' ? 'text-destructive' :
+                        notification.type === 'warning' ? 'text-warning' :
+                        notification.type === 'success' ? 'text-success' :
+                        'text-card-foreground'
+                      }`}>
+                        {notification.title}
+                      </p>
+                      <p className={`text-xs ${
+                        notification.type === 'error' ? 'text-destructive/80' :
+                        notification.type === 'warning' ? 'text-warning/80' :
+                        notification.type === 'success' ? 'text-success/80' :
+                        'text-muted-foreground'
+                      }`}>
+                        {notification.message}
+                      </p>
+                    </div>
+                  </div>
+                ))
+              ) : (
+                <div className="text-center py-8">
+                  <CheckCircle className="h-8 w-8 text-success mx-auto mb-2" />
+                  <p className="text-sm text-muted-foreground">{t('dashboard.noAlerts')}</p>
                 </div>
-              </div>
-              <div className="flex items-center space-x-3 p-3 rounded-[0.625rem] bg-muted/50 border border-border">
-                <Clock className="h-4 w-4 text-muted-foreground" />
-                <div>
-                  <p className="text-sm font-medium text-card-foreground">{t('dashboard.maintenanceWindow')}</p>
-                  <p className="text-xs text-muted-foreground">{t('dashboard.scheduledForTonight')}</p>
-                </div>
-              </div>
-              <div className="flex items-center space-x-3 p-3 rounded-[0.625rem] bg-success/10 border border-success/20">
-                <CheckCircle className="h-4 w-4 text-success" />
-                <div>
-                  <p className="text-sm font-medium text-success">{t('dashboard.systemHealthy')}</p>
-                  <p className="text-xs text-success/80">{t('dashboard.allServicesOperational')}</p>
-                </div>
-              </div>
+              )}
             </div>
           </CardContent>
         </Card>
