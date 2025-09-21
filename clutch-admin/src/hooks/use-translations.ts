@@ -273,15 +273,21 @@ const fallbackTranslations = {
 };
 
 export function useTranslations() {
+  console.log('🔍 [useTranslations] Hook called from:', new Error().stack?.split('\n')[2]?.trim());
+  
   const { language } = useLanguage();
+  console.log('🌐 [useTranslations] Current language:', language);
   
   // Use fallback translations for now
   const translations = fallbackTranslations;
+  console.log('📚 [useTranslations] Using fallback translations:', !!translations);
 
   const t = (key: TranslationKey): string => {
+    console.log('🔑 [useTranslations] Translation key requested:', key);
+    
     // Check if translations are available
     if (!translations) {
-      // Translations not available for language
+      console.warn('⚠️ [useTranslations] No translations available for key:', key);
       return key;
     }
     
@@ -301,6 +307,7 @@ export function useTranslations() {
         }
       } else {
         // Translation key not found
+        console.warn('❌ [useTranslations] Translation key not found:', key, 'at segment:', k);
         
         // Fallback for common keys
         if (key === 'common.loading') {
@@ -315,12 +322,11 @@ export function useTranslations() {
     }
     
     const result = typeof value === 'string' ? value : key;
-    if (key === 'common.loading') {
-      // Final result
-    }
+    console.log('✅ [useTranslations] Translation result:', key, '->', result);
     
     return result;
   };
 
+  console.log('🎯 [useTranslations] Hook initialized successfully');
   return { t, language };
 }

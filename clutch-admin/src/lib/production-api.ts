@@ -220,6 +220,24 @@ export class ProductionApiService {
     }
   }
 
+  async getSystemAlerts(): Promise<Record<string, unknown>[]> {
+    try {
+      return await realApi.getSystemAlerts();
+    } catch (error) {
+      logger.error("Failed to fetch system alerts:", error);
+      throw new Error("Failed to load system alerts");
+    }
+  }
+
+  async getSystemLogs(): Promise<Record<string, unknown>[]> {
+    try {
+      return await realApi.getSystemLogs();
+    } catch (error) {
+      logger.error("Failed to fetch system logs:", error);
+      throw new Error("Failed to load system logs");
+    }
+  }
+
   async getAPIPerformance(): Promise<Record<string, unknown>> {
     try {
       return await realApi.getAPIPerformance();

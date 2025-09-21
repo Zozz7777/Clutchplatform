@@ -906,7 +906,7 @@ export class RealApiService {
   async getSystemAlerts(): Promise<Record<string, unknown>[]> {
     return withErrorHandling(
       async () => {
-        const response = await apiService.makeRequest<Record<string, unknown>[]>("/api/v1/system-alerts");
+        const response = await apiService.makeRequest<Record<string, unknown>[]>("/api/v1/system/alerts");
         return handleApiResponse(response, 'getSystemAlerts', []);
       },
       'getSystemAlerts',
@@ -917,7 +917,7 @@ export class RealApiService {
   async getSystemLogs(): Promise<Record<string, unknown>[]> {
     return withErrorHandling(
       async () => {
-        const response = await apiService.makeRequest<Record<string, unknown>[]>("/api/v1/system-logs");
+        const response = await apiService.makeRequest<Record<string, unknown>[]>("/api/v1/system/logs");
         return handleApiResponse(response, 'getSystemLogs', []);
       },
       'getSystemLogs',
