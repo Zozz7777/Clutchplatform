@@ -242,17 +242,17 @@ export default function UsersPage() {
       {/* User Management Tabs */}
       <Tabs defaultValue="all" className="space-y-4">
         <TabsList className="grid w-full grid-cols-4">
-          <TabsTrigger value="all">All Users</TabsTrigger>
-          <TabsTrigger value="customers">Customers</TabsTrigger>
-          <TabsTrigger value="clients">Enterprise Clients</TabsTrigger>
-          <TabsTrigger value="providers">Service Providers</TabsTrigger>
+          <TabsTrigger value="all">{t('dashboard.allUsers')}</TabsTrigger>
+          <TabsTrigger value="customers">{t('dashboard.b2cCustomers')}</TabsTrigger>
+          <TabsTrigger value="clients">{t('dashboard.enterpriseClients')}</TabsTrigger>
+          <TabsTrigger value="providers">{t('dashboard.serviceProviders')}</TabsTrigger>
         </TabsList>
 
         <TabsContent value="all" className="space-y-4">
           <Card className="shadow-2xs">
             <CardHeader>
-              <CardTitle className="text-card-foreground">All Users</CardTitle>
-              <CardDescription>Complete user directory with filtering and search</CardDescription>
+              <CardTitle className="text-card-foreground">{t('dashboard.allUsers')}</CardTitle>
+              <CardDescription>{t('dashboard.completeUserDirectory')}</CardDescription>
             </CardHeader>
             <CardContent>
               {/* Filters */}
@@ -299,11 +299,11 @@ export default function UsersPage() {
               <Table>
                 <TableHeader>
                   <TableRow>
-                    <TableHead>User</TableHead>
-                    <TableHead>Role</TableHead>
-                    <TableHead>Status</TableHead>
-                    <TableHead>Last Login</TableHead>
-                    <TableHead>Created</TableHead>
+                    <TableHead>{t('dashboard.user')}</TableHead>
+                    <TableHead>{t('dashboard.role')}</TableHead>
+                    <TableHead>{t('dashboard.status')}</TableHead>
+                    <TableHead>{t('dashboard.lastLogin')}</TableHead>
+                    <TableHead>{t('dashboard.created')}</TableHead>
                     <TableHead className="text-right">Actions</TableHead>
                   </TableRow>
                 </TableHeader>
@@ -358,7 +358,7 @@ export default function UsersPage() {
                             <DropdownMenuLabel>Actions</DropdownMenuLabel>
                             <DropdownMenuItem>
                               <UserCheck className="mr-2 h-4 w-4" />
-                              View Profile
+                              {t('dashboard.viewProfile')}
                             </DropdownMenuItem>
                             <DropdownMenuItem>
                               <Mail className="mr-2 h-4 w-4" />
@@ -367,11 +367,11 @@ export default function UsersPage() {
                             <DropdownMenuSeparator />
                             <DropdownMenuItem>
                               <Shield className="mr-2 h-4 w-4" />
-                              Manage Roles
+                              {t('dashboard.manageRoles')}
                             </DropdownMenuItem>
                             <DropdownMenuItem className="text-destructive">
                               <UserX className="mr-2 h-4 w-4" />
-                              Suspend User
+                              {t('dashboard.suspendUser')}
                             </DropdownMenuItem>
                           </DropdownMenuContent>
                         </DropdownMenu>
@@ -387,8 +387,8 @@ export default function UsersPage() {
         <TabsContent value="customers" className="space-y-4">
           <Card className="shadow-2xs">
             <CardHeader>
-              <CardTitle className="text-card-foreground">B2C Customers</CardTitle>
-              <CardDescription>Individual customers using the platform</CardDescription>
+              <CardTitle className="text-card-foreground">{t('dashboard.b2cCustomers')}</CardTitle>
+              <CardDescription>{t('dashboard.individualCustomersUsing')}</CardDescription>
             </CardHeader>
             <CardContent>
               <div className="space-y-6">
@@ -398,17 +398,17 @@ export default function UsersPage() {
                     <p className="text-2xl font-bold text-foreground">
                       {users.filter(u => u.role === "customer").length}
                     </p>
-                    <p className="text-sm text-muted-foreground">Total Customers</p>
+                    <p className="text-sm text-muted-foreground">{t('dashboard.totalCustomers')}</p>
                   </div>
                   <div className="text-center p-4 border rounded-[0.625rem]">
                     <TrendingUp className="h-8 w-8 text-success mx-auto mb-2" />
                     <p className="text-2xl font-bold text-foreground">N/A</p>
-                    <p className="text-sm text-muted-foreground">Growth Rate</p>
+                    <p className="text-sm text-muted-foreground">{t('dashboard.growthRate')}</p>
                   </div>
                   <div className="text-center p-4 border rounded-[0.625rem]">
                     <Activity className="h-8 w-8 text-primary mx-auto mb-2" />
                     <p className="text-2xl font-bold text-foreground">87%</p>
-                    <p className="text-sm text-muted-foreground">Active Rate</p>
+                    <p className="text-sm text-muted-foreground">{t('dashboard.activeRate')}</p>
                   </div>
                 </div>
                 <div className="space-y-4">
@@ -450,8 +450,8 @@ export default function UsersPage() {
         <TabsContent value="clients" className="space-y-4">
           <Card className="shadow-2xs">
             <CardHeader>
-              <CardTitle className="text-card-foreground">Enterprise Clients</CardTitle>
-              <CardDescription>B2B enterprise accounts and their management</CardDescription>
+              <CardTitle className="text-card-foreground">{t('dashboard.enterpriseClients')}</CardTitle>
+              <CardDescription>{t('dashboard.b2bEnterpriseAccounts')}</CardDescription>
             </CardHeader>
             <CardContent>
               <div className="space-y-6">
@@ -461,17 +461,17 @@ export default function UsersPage() {
                     <p className="text-2xl font-bold text-foreground">
                       {users.filter(u => u.role === "enterprise_client").length}
                     </p>
-                    <p className="text-sm text-muted-foreground">Enterprise Clients</p>
+                    <p className="text-sm text-muted-foreground">{t('dashboard.enterpriseClients')}</p>
                   </div>
                   <div className="text-center p-4 border rounded-[0.625rem]">
                     <TrendingUp className="h-8 w-8 text-success mx-auto mb-2" />
                     <p className="text-2xl font-bold text-foreground">N/A</p>
-                    <p className="text-sm text-muted-foreground">Growth Rate</p>
+                    <p className="text-sm text-muted-foreground">{t('dashboard.growthRate')}</p>
                   </div>
                   <div className="text-center p-4 border rounded-[0.625rem]">
                     <Activity className="h-8 w-8 text-primary mx-auto mb-2" />
                     <p className="text-2xl font-bold text-foreground">92%</p>
-                    <p className="text-sm text-muted-foreground">Active Rate</p>
+                    <p className="text-sm text-muted-foreground">{t('dashboard.activeRate')}</p>
                   </div>
                 </div>
                 <div className="space-y-4">
@@ -511,8 +511,8 @@ export default function UsersPage() {
         <TabsContent value="providers" className="space-y-4">
           <Card className="shadow-2xs">
             <CardHeader>
-              <CardTitle className="text-card-foreground">Service Providers</CardTitle>
-              <CardDescription>Service providers and their capabilities</CardDescription>
+              <CardTitle className="text-card-foreground">{t('dashboard.serviceProviders')}</CardTitle>
+              <CardDescription>{t('dashboard.thirdPartyServiceProviders')}</CardDescription>
             </CardHeader>
             <CardContent>
               <div className="space-y-6">
@@ -522,17 +522,17 @@ export default function UsersPage() {
                     <p className="text-2xl font-bold text-foreground">
                       {users.filter(u => u.role === "service_provider").length}
                     </p>
-                    <p className="text-sm text-muted-foreground">Service Providers</p>
+                    <p className="text-sm text-muted-foreground">{t('dashboard.totalServiceProviders')}</p>
                   </div>
                   <div className="text-center p-4 border rounded-[0.625rem]">
                     <TrendingUp className="h-8 w-8 text-success mx-auto mb-2" />
                     <p className="text-2xl font-bold text-foreground">N/A</p>
-                    <p className="text-sm text-muted-foreground">Growth Rate</p>
+                    <p className="text-sm text-muted-foreground">{t('dashboard.growthRate')}</p>
                   </div>
                   <div className="text-center p-4 border rounded-[0.625rem]">
                     <Activity className="h-8 w-8 text-primary mx-auto mb-2" />
                     <p className="text-2xl font-bold text-foreground">89%</p>
-                    <p className="text-sm text-muted-foreground">Active Rate</p>
+                    <p className="text-sm text-muted-foreground">{t('dashboard.activeRate')}</p>
                   </div>
                 </div>
                 <div className="space-y-4">
@@ -574,9 +574,9 @@ export default function UsersPage() {
       <div className="space-y-6 mt-8">
         <div className="flex items-center justify-between">
           <div>
-            <h2 className="text-2xl font-bold tracking-tight text-foreground">User Analytics</h2>
+            <h2 className="text-2xl font-bold tracking-tight text-foreground">{t('dashboard.userAnalytics')}</h2>
             <p className="text-muted-foreground">
-              Deep insights into user adoption, engagement, and retention
+              {t('dashboard.deepInsightsIntoUser')}
             </p>
           </div>
         </div>
