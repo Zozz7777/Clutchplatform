@@ -122,13 +122,13 @@ export default function CMSPage() {
         ]);
 
         const contentArray = contentData.status === 'fulfilled' && Array.isArray(contentData.value) 
-          ? contentData.value 
+          ? contentData.value as unknown as ContentItem[]
           : [];
         const mediaArray = mediaData.status === 'fulfilled' && Array.isArray(mediaData.value) 
-          ? mediaData.value 
+          ? mediaData.value as unknown as MediaItem[]
           : [];
         const categoriesArray = categoriesData.status === 'fulfilled' && Array.isArray(categoriesData.value) 
-          ? categoriesData.value 
+          ? categoriesData.value as unknown as CMSCategory[]
           : [];
         
         setContent(contentArray);
@@ -392,20 +392,20 @@ export default function CMSPage() {
         
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Categories</CardTitle>
+            <CardTitle className="text-sm font-medium">{t('dashboard.categories')}</CardTitle>
             <Tag className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">{Array.isArray(categories) ? categories.length : 0}</div>
             <p className="text-xs text-muted-foreground">
-              Content categories
+              {t('dashboard.contentCategories')}
             </p>
           </CardContent>
         </Card>
         
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Total Views</CardTitle>
+            <CardTitle className="text-sm font-medium">{t('dashboard.totalViews')}</CardTitle>
             <Eye className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
@@ -413,7 +413,7 @@ export default function CMSPage() {
               {Array.isArray(content) ? content.reduce((sum, c) => sum + (c?.views || 0), 0).toLocaleString() : "0"}
             </div>
             <p className="text-xs text-muted-foreground">
-              All time views
+              {t('dashboard.allTimeViews')}
             </p>
           </CardContent>
         </Card>
@@ -427,7 +427,7 @@ export default function CMSPage() {
           onClick={() => setActiveTab("content")}
         >
           <FileText className="mr-2 h-4 w-4" />
-          Content
+          {t('dashboard.content')}
         </Button>
         <Button
           variant={activeTab === "media" ? "default" : "ghost"}
@@ -435,7 +435,7 @@ export default function CMSPage() {
           onClick={() => setActiveTab("media")}
         >
           <Image className="mr-2 h-4 w-4" />
-          Media
+          {t('dashboard.media')}
         </Button>
         <Button
           variant={activeTab === "categories" ? "default" : "ghost"}
@@ -443,7 +443,7 @@ export default function CMSPage() {
           onClick={() => setActiveTab("categories")}
         >
           <Tag className="mr-2 h-4 w-4" />
-          Categories
+          {t('dashboard.categories')}
         </Button>
       </div>
 
@@ -451,9 +451,9 @@ export default function CMSPage() {
       {activeTab === "content" && (
         <Card>
           <CardHeader>
-            <CardTitle>Content Management</CardTitle>
+            <CardTitle>{t('dashboard.contentManagement')}</CardTitle>
             <CardDescription>
-              Manage pages, posts, articles, and help documentation
+              {t('dashboard.managePagesPosts')}
             </CardDescription>
           </CardHeader>
           <CardContent>
@@ -461,7 +461,7 @@ export default function CMSPage() {
               <div className="relative flex-1">
                 <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4" />
                 <Input
-                  placeholder="Search content..."
+                  placeholder={t('dashboard.searchContent')}
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                   className="pl-10"
@@ -473,11 +473,11 @@ export default function CMSPage() {
                 onChange={(e) => setStatusFilter(e.target.value)}
                 className="px-3 py-2 border border-input bg-background rounded-md text-sm"
               >
-                <option value="all">All Status</option>
-                <option value="published">Published</option>
-                <option value="draft">Draft</option>
-                <option value="scheduled">Scheduled</option>
-                <option value="archived">Archived</option>
+                <option value="all">{t('dashboard.allStatus')}</option>
+                <option value="published">{t('dashboard.published')}</option>
+                <option value="draft">{t('dashboard.draft')}</option>
+                <option value="scheduled">{t('dashboard.scheduled')}</option>
+                <option value="archived">{t('dashboard.archived')}</option>
               </select>
               
               <select
@@ -485,11 +485,11 @@ export default function CMSPage() {
                 onChange={(e) => setTypeFilter(e.target.value)}
                 className="px-3 py-2 border border-input bg-background rounded-md text-sm"
               >
-                <option value="all">All Types</option>
-                <option value="page">Pages</option>
-                <option value="post">Posts</option>
-                <option value="article">Articles</option>
-                <option value="help_doc">Help Docs</option>
+                <option value="all">{t('dashboard.allTypes')}</option>
+                <option value="page">{t('dashboard.pages')}</option>
+                <option value="post">{t('dashboard.posts')}</option>
+                <option value="article">{t('dashboard.articles')}</option>
+                <option value="help_doc">{t('dashboard.helpDocs')}</option>
               </select>
             </div>
 
@@ -512,10 +512,10 @@ export default function CMSPage() {
                           {item.type}
                         </span>
                         <span className="text-xs text-muted-foreground">
-                          by {item.authorName}
+                          {t('dashboard.by')} {item.authorName}
                         </span>
                         <span className="text-xs text-muted-foreground">
-                          {item.views} views
+                          {item.views} {t('dashboard.views')}
                         </span>
                       </div>
                     </div>
@@ -523,10 +523,10 @@ export default function CMSPage() {
                   
                   <div className="flex items-center space-x-4">
                     <div className="text-right text-sm text-muted-foreground">
-                      <p>Created: {formatDate(item.createdAt)}</p>
-                      <p>Updated: {formatRelativeTime(item.updatedAt)}</p>
+                      <p>{t('dashboard.created')}: {formatDate(item.createdAt)}</p>
+                      <p>{t('dashboard.updated')}: {formatRelativeTime(item.updatedAt)}</p>
                       {item.publishedAt && (
-                        <p>Published: {formatDate(item.publishedAt)}</p>
+                        <p>{t('dashboard.published')}: {formatDate(item.publishedAt)}</p>
                       )}
                     </div>
                     
@@ -537,19 +537,19 @@ export default function CMSPage() {
                         </Button>
                       </DropdownMenuTrigger>
                       <DropdownMenuContent align="end">
-                        <DropdownMenuLabel>Actions</DropdownMenuLabel>
+                        <DropdownMenuLabel>{t('dashboard.actions')}</DropdownMenuLabel>
                         <DropdownMenuSeparator />
                         <DropdownMenuItem>
                           <Eye className="mr-2 h-4 w-4" />
-                          View Content
+                          {t('dashboard.viewContent')}
                         </DropdownMenuItem>
                         <DropdownMenuItem>
                           <Edit className="mr-2 h-4 w-4" />
-                          Edit Content
+                          {t('dashboard.editContent')}
                         </DropdownMenuItem>
                         <DropdownMenuItem>
                           <Copy className="mr-2 h-4 w-4" />
-                          Duplicate
+                          {t('dashboard.duplicate')}
                         </DropdownMenuItem>
                         <DropdownMenuSeparator />
                         {item.status === "draft" && (
@@ -558,7 +558,7 @@ export default function CMSPage() {
                             className="text-success"
                           >
                             <Send className="mr-2 h-4 w-4" />
-                            Publish
+                            {t('dashboard.publish')}
                           </DropdownMenuItem>
                         )}
                         {item.status === "published" && (
@@ -567,7 +567,7 @@ export default function CMSPage() {
                             className="text-warning"
                           >
                             <X className="mr-2 h-4 w-4" />
-                            Unpublish
+                            {t('dashboard.unpublish')}
                           </DropdownMenuItem>
                         )}
                         <DropdownMenuItem 
@@ -575,7 +575,7 @@ export default function CMSPage() {
                           className="text-destructive"
                         >
                           <Archive className="mr-2 h-4 w-4" />
-                          Archive
+                          {t('dashboard.archive')}
                         </DropdownMenuItem>
                       </DropdownMenuContent>
                     </DropdownMenu>
@@ -587,7 +587,7 @@ export default function CMSPage() {
             {Array.isArray(filteredContent) && filteredContent.length === 0 && (
               <div className="text-center py-8">
                 <FileText className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
-                <p className="text-muted-foreground">No content found matching your criteria</p>
+                <p className="text-muted-foreground">{t('dashboard.noContentFound')}</p>
               </div>
             )}
           </CardContent>
@@ -598,9 +598,9 @@ export default function CMSPage() {
       {activeTab === "media" && (
         <Card>
           <CardHeader>
-            <CardTitle>Media Library</CardTitle>
+            <CardTitle>{t('dashboard.mediaLibrary')}</CardTitle>
             <CardDescription>
-              Manage images, videos, and other media files
+              {t('dashboard.manageImagesVideos')}
             </CardDescription>
           </CardHeader>
           <CardContent>
@@ -627,18 +627,18 @@ export default function CMSPage() {
                   
                   <div className="space-y-2">
                     <div className="flex items-center justify-between text-xs text-muted-foreground">
-                      <span>Uploaded: {formatDate(item.uploadedAt)}</span>
-                      <span>{item.usedIn.length} uses</span>
+                      <span>{t('dashboard.uploaded')}: {formatDate(item.uploadedAt)}</span>
+                      <span>{item.usedIn.length} {t('dashboard.uses')}</span>
                     </div>
                     
                     <div className="flex space-x-1">
                       <Button variant="outline" size="sm" className="flex-1">
                         <Eye className="mr-1 h-3 w-3" />
-                        View
+                        {t('dashboard.view')}
                       </Button>
                       <Button variant="outline" size="sm" className="flex-1">
                         <Download className="mr-1 h-3 w-3" />
-                        Download
+                        {t('dashboard.download')}
                       </Button>
                       <DropdownMenu>
                         <DropdownMenuTrigger asChild>
@@ -649,11 +649,11 @@ export default function CMSPage() {
                         <DropdownMenuContent align="end">
                           <DropdownMenuItem>
                             <Edit className="mr-2 h-4 w-4" />
-                            Edit Details
+                            {t('dashboard.editDetails')}
                           </DropdownMenuItem>
                           <DropdownMenuItem>
                             <Copy className="mr-2 h-4 w-4" />
-                            Copy URL
+                            {t('dashboard.copyUrl')}
                           </DropdownMenuItem>
                           <DropdownMenuSeparator />
                           <DropdownMenuItem 
@@ -661,7 +661,7 @@ export default function CMSPage() {
                             className="text-destructive"
                           >
                             <Trash2 className="mr-2 h-4 w-4" />
-                            Delete
+                            {t('dashboard.delete')}
                           </DropdownMenuItem>
                         </DropdownMenuContent>
                       </DropdownMenu>
@@ -674,7 +674,7 @@ export default function CMSPage() {
             {Array.isArray(media) && media.length === 0 && (
               <div className="text-center py-8">
                 <Image className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
-                <p className="text-muted-foreground">No media files found</p>
+                <p className="text-muted-foreground">{t('dashboard.noMediaFilesFound')}</p>
               </div>
             )}
           </CardContent>
@@ -685,9 +685,9 @@ export default function CMSPage() {
       {activeTab === "categories" && (
         <Card>
           <CardHeader>
-            <CardTitle>Content Categories</CardTitle>
+            <CardTitle>{t('dashboard.contentCategories')}</CardTitle>
             <CardDescription>
-              Organize content with categories and tags
+              {t('dashboard.organizeContentWithCategories')}
             </CardDescription>
           </CardHeader>
           <CardContent>
@@ -703,10 +703,10 @@ export default function CMSPage() {
                       <p className="text-sm text-muted-foreground">{category.description}</p>
                       <div className="flex items-center space-x-2 mt-1">
                         <span className="text-xs text-muted-foreground">
-                          {category.contentCount} items
+                          {category.contentCount} {t('dashboard.items')}
                         </span>
                         <span className="text-xs text-muted-foreground">
-                          {category.children.length} subcategories
+                          {category.children.length} {t('dashboard.subcategories')}
                         </span>
                       </div>
                     </div>
@@ -714,8 +714,8 @@ export default function CMSPage() {
                   
                   <div className="flex items-center space-x-4">
                     <div className="text-right text-sm text-muted-foreground">
-                      <p>Created: {formatDate(category.createdAt)}</p>
-                      <p>Slug: {category.slug}</p>
+                      <p>{t('dashboard.created')}: {formatDate(category.createdAt)}</p>
+                      <p>{t('dashboard.slug')}: {category.slug}</p>
                     </div>
                     
                     <DropdownMenu>
@@ -725,24 +725,24 @@ export default function CMSPage() {
                         </Button>
                       </DropdownMenuTrigger>
                       <DropdownMenuContent align="end">
-                        <DropdownMenuLabel>Actions</DropdownMenuLabel>
+                        <DropdownMenuLabel>{t('dashboard.actions')}</DropdownMenuLabel>
                         <DropdownMenuSeparator />
                         <DropdownMenuItem>
                           <Eye className="mr-2 h-4 w-4" />
-                          View Content
+                          {t('dashboard.viewContent')}
                         </DropdownMenuItem>
                         <DropdownMenuItem>
                           <Edit className="mr-2 h-4 w-4" />
-                          Edit Category
+                          {t('dashboard.editCategory')}
                         </DropdownMenuItem>
                         <DropdownMenuItem>
                           <Plus className="mr-2 h-4 w-4" />
-                          Add Subcategory
+                          {t('dashboard.addSubcategory')}
                         </DropdownMenuItem>
                         <DropdownMenuSeparator />
                         <DropdownMenuItem className="text-destructive">
                           <Trash2 className="mr-2 h-4 w-4" />
-                          Delete Category
+                          {t('dashboard.deleteCategory')}
                         </DropdownMenuItem>
                       </DropdownMenuContent>
                     </DropdownMenu>
@@ -754,7 +754,7 @@ export default function CMSPage() {
             {Array.isArray(categories) && categories.length === 0 && (
               <div className="text-center py-8">
                 <Tag className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
-                <p className="text-muted-foreground">No categories found</p>
+                <p className="text-muted-foreground">{t('dashboard.noCategoriesFound')}</p>
               </div>
             )}
           </CardContent>
