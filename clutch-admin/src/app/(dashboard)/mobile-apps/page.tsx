@@ -199,7 +199,7 @@ export default function MobileAppsPage() {
         clearTimeout(timeoutId);
       }
     };
-  }, [t]); // Remove [t] dependency to prevent infinite reload
+  }, []); // Remove [t] dependency to prevent infinite reload
 
 
   const getStatusColor = (status: string) => {
@@ -288,7 +288,7 @@ export default function MobileAppsPage() {
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">
-              {versions.reduce((sum, v) => sum + v.downloadCount, 0).toLocaleString()}
+              {Array.isArray(versions) ? versions.reduce((sum, v) => sum + (v?.downloadCount || 0), 0).toLocaleString() : "0"}
             </div>
             <p className="text-xs text-muted-foreground">
               <span className="text-primary">+15%</span> from last month
