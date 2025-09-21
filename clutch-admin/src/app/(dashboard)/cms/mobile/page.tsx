@@ -75,7 +75,7 @@ export default function MobileCMSPage() {
         content
       };
       await realApi.saveMobileAppSettings(settingsData);
-      toast.success('Mobile app settings saved successfully!');
+      toast.success(t('dashboard.mobileAppSettingsSaved'));
     } catch (error) {
       // Error handled by API service
       toast.error('Failed to save mobile app settings');
@@ -103,47 +103,47 @@ export default function MobileCMSPage() {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold font-sans">Mobile App CMS</h1>
+          <h1 className="text-3xl font-bold font-sans">{t('dashboard.mobileAppCms')}</h1>
           <p className="text-muted-foreground font-sans">
-            Manage mobile app content and settings
+            {t('dashboard.manageMobileAppContent')}
           </p>
         </div>
         <div className="flex items-center space-x-2">
           <Button variant="outline" onClick={previewApp}>
             <Eye className="h-4 w-4 mr-2" />
-            Preview
+            {t('dashboard.preview')}
           </Button>
           <Button onClick={saveChanges} disabled={saving}>
             <Save className="h-4 w-4 mr-2" />
-            {saving ? 'Saving...' : 'Save Changes'}
+            {saving ? t('dashboard.saving') : t('dashboard.saveChanges')}
           </Button>
         </div>
       </div>
 
       <Tabs defaultValue="settings" className="space-y-4">
         <TabsList>
-          <TabsTrigger value="settings">{t('cms.appSettings')}</TabsTrigger>
-          <TabsTrigger value="content">Content</TabsTrigger>
-          <TabsTrigger value="branding">Branding</TabsTrigger>
-          <TabsTrigger value="features">Features</TabsTrigger>
+          <TabsTrigger value="settings">{t('dashboard.appSettings')}</TabsTrigger>
+          <TabsTrigger value="content">{t('dashboard.content')}</TabsTrigger>
+          <TabsTrigger value="branding">{t('dashboard.branding')}</TabsTrigger>
+          <TabsTrigger value="features">{t('dashboard.features')}</TabsTrigger>
         </TabsList>
 
         <TabsContent value="settings" className="space-y-4">
           <div className="grid gap-4 md:grid-cols-2">
             <Card>
               <CardHeader>
-                <CardTitle className="font-sans">{t('cms.basicSettings')}</CardTitle>
+                <CardTitle className="font-sans">{t('dashboard.basicSettings')}</CardTitle>
               </CardHeader>
               <CardContent className="space-y-4">
                 <div>
-                  <label className="text-sm font-medium font-sans">App Name</label>
+                  <label className="text-sm font-medium font-sans">{t('dashboard.appName')}</label>
                   <Input
                     value={appSettings.appName}
                     onChange={(e) => setAppSettings({...appSettings, appName: e.target.value})}
                   />
                 </div>
                 <div>
-                  <label className="text-sm font-medium font-sans">Version</label>
+                  <label className="text-sm font-medium font-sans">{t('dashboard.version')}</label>
                   <Input
                     value={appSettings.version}
                     onChange={(e) => setAppSettings({...appSettings, version: e.target.value})}
