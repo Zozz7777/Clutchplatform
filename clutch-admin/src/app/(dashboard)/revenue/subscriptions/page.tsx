@@ -20,7 +20,7 @@ import {
   Download
 } from 'lucide-react';
 import { productionApi } from '@/lib/production-api';
-import { useTranslations } from '@/hooks/use-translations';
+// Translation system removed - using hardcoded strings
 import { toast } from 'sonner';
 
 interface Subscription {
@@ -49,7 +49,7 @@ export default function SubscriptionsPage() {
 
   const [searchTerm, setSearchTerm] = useState('');
   const [statusFilter, setStatusFilter] = useState('all');
-  const { t } = useTranslations();
+  // Translation system removed - using hardcoded strings
 
   useEffect(() => {
     const loadSubscriptionsData = async () => {
@@ -176,9 +176,9 @@ export default function SubscriptionsPage() {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold font-sans">{t('subscriptions.title')}</h1>
+          <h1 className="text-3xl font-bold font-sans">Subscriptions</h1>
           <p className="text-muted-foreground font-sans">
-            {t('subscriptions.description')}
+            Manage customer subscriptions and billing
           </p>
         </div>
         <div className="flex items-center space-x-2">

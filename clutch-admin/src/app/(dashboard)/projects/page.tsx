@@ -46,7 +46,7 @@ import {
 } from "lucide-react";
 import { formatCurrency } from "@/lib/utils";
 import { productionApi } from "@/lib/production-api";
-import { useTranslations } from "@/hooks/use-translations";
+// Translation system removed - using hardcoded strings
 import { handleDataLoadError } from "@/lib/error-handler";
 
 // Import new Phase 2 widgets
@@ -117,7 +117,7 @@ interface TimeEntry {
 }
 
 export default function ProjectManagementPage() {
-  const { t } = useTranslations();
+  // Translation system removed - using hardcoded strings
   const [projects, setProjects] = useState<Project[]>([]);
   const [tasks, setTasks] = useState<Task[]>([]);
   const [timeEntries, setTimeEntries] = useState<TimeEntry[]>([]);
@@ -283,9 +283,9 @@ export default function ProjectManagementPage() {
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold tracking-tight">{t('dashboard.projectManagement')}</h1>
+          <h1 className="text-3xl font-bold tracking-tight">Project Management</h1>
           <p className="text-muted-foreground">
-            {t('dashboard.manageProjectsTasksTimeTracking')}
+            Manage projects, tasks, and time tracking
           </p>
         </div>
         <div className="flex items-center space-x-2">

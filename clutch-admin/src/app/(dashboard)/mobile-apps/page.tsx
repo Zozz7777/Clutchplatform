@@ -31,7 +31,7 @@ import {
   CheckCircle,
   XCircle,
 } from "lucide-react";
-import { useTranslations } from "@/hooks/use-translations";
+// Translation system removed - using hardcoded strings
 import { productionApi } from "@/lib/production-api";
 import { toast } from "sonner";
 import { handleError, handleDataLoadError } from "@/lib/error-handler";
@@ -100,7 +100,7 @@ interface AppStore {
 }
 
 export default function MobileAppsPage() {
-  const { t } = useTranslations();
+  // Translation system removed - using hardcoded strings
   const [activeTab, setActiveTab] = useState("overview");
   const [searchTerm, setSearchTerm] = useState("");
   const [versions, setVersions] = useState<AppVersion[]>([]);
@@ -336,9 +336,9 @@ export default function MobileAppsPage() {
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold tracking-tight">{t('dashboard.mobileAppManagement') || 'Mobile App Management'}</h1>
+          <h1 className="text-3xl font-bold tracking-tight">Mobile App Management</h1>
           <p className="text-muted-foreground">
-            {t('dashboard.monitorAndManageMobileApplications') || 'Monitor and manage mobile applications'}
+            Monitor and manage mobile applications
           </p>
         </div>
         <div className="flex items-center space-x-2">

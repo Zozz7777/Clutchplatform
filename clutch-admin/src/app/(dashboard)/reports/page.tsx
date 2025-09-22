@@ -48,7 +48,7 @@ import { useAuth } from "@/contexts/auth-context";
 // Import new Phase 2 widgets
 import ReportUsageStats from '@/components/widgets/report-usage-stats';
 import { useQuickActions } from "@/lib/quick-actions";
-import { useTranslations } from "@/hooks/use-translations";
+// Translation system removed - using hardcoded strings
 import { handleError, handleWarning, handleDataLoadError } from "@/lib/error-handler";
 
 interface Report {
@@ -135,7 +135,7 @@ export default function ReportsPage() {
   } catch (error) {
     handleError(error, { component: 'ReportsPage', action: 'initialize_quick_actions' });
   }
-  const { t } = useTranslations();
+  // Translation system removed - using hardcoded strings
 
 
   useEffect(() => {
@@ -303,9 +303,9 @@ export default function ReportsPage() {
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold tracking-tight">{t('reports.title')}</h1>
+          <h1 className="text-3xl font-bold tracking-tight">Reports</h1>
           <p className="text-muted-foreground">
-            {t('reports.description')}
+            Generate and manage business reports
           </p>
         </div>
         <div className="flex items-center space-x-2">
@@ -381,7 +381,7 @@ export default function ReportsPage() {
       {/* Reports */}
       <Card>
         <CardHeader>
-          <CardTitle>{t('reports.title')}</CardTitle>
+          <CardTitle>Reports</CardTitle>
           <CardDescription>
             {t('reports.manageAndViewReports')}
           </CardDescription>

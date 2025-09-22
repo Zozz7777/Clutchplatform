@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 import { productionApi } from '@/lib/production-api';
 import { toast } from 'sonner';
-import { useTranslations } from '@/hooks/use-translations';
+// Translation system removed - using hardcoded strings
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -33,7 +33,7 @@ interface PricingPlan {
 }
 
 export default function PricingPage() {
-  const { t } = useTranslations();
+  // Translation system removed - using hardcoded strings
   const [plans, setPlans] = useState<PricingPlan[]>([]);
   const [analytics, setAnalytics] = useState({
     totalRevenue: 0,
@@ -122,7 +122,7 @@ export default function PricingPage() {
 
       <Tabs defaultValue="plans" className="space-y-4">
         <TabsList>
-          <TabsTrigger value="plans">{t('pricing.plans')}</TabsTrigger>
+          <TabsTrigger value="plans">Plans</TabsTrigger>
           <TabsTrigger value="analytics">Analytics</TabsTrigger>
           <TabsTrigger value="experiments">A/B Tests</TabsTrigger>
         </TabsList>
@@ -133,7 +133,7 @@ export default function PricingPage() {
               <Card key={plan.id} className={plan.popular ? 'border-blue-500 shadow-lg' : ''}>
                 {plan.popular && (
                   <div className="bg-primary/100 text-white text-center py-2 text-sm font-medium font-sans">
-{t('pricing.mostPopular')}
+Most Popular
                   </div>
                 )}
                 <CardHeader>
