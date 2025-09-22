@@ -81,7 +81,7 @@ export default function DashboardPage() {
   const [performanceMetrics, setPerformanceMetrics] = useState<Record<string, unknown> | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const { hasPermission } = useAuth();
-  const { t } = useTranslations();
+  // Translation system removed - using hardcoded strings
   // Safely get quick actions with error handling
   let quickActions: any[] = [];
   let generateReport: (() => void) | null = null;
@@ -188,7 +188,7 @@ export default function DashboardPage() {
       <div className="flex items-center justify-center h-64">
         <div className="text-center">
           <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto mb-4"></div>
-          <p className="text-muted-foreground font-sans">{t('dashboard.loadingDashboard')}</p>
+          <p className="text-muted-foreground font-sans">Loading dashboard...</p>
         </div>
       </div>
     );
@@ -199,16 +199,16 @@ export default function DashboardPage() {
       {/* Page Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold tracking-tight text-foreground font-sans">{t('dashboard.title')}</h1>
+          <h1 className="text-3xl font-bold tracking-tight text-foreground font-sans">Dashboard</h1>
           <p className="text-muted-foreground font-sans">
-            {t('dashboard.welcomeMessage')}
+            Welcome to your Clutch Admin dashboard
           </p>
         </div>
         <div className="flex items-center space-x-2">
           <RealtimeStatus />
           <Button variant="outline" className="shadow-2xs" onClick={generateReport || (() => {})}>
             <FileText className="mr-2 h-4 w-4" />
-            {t('dashboard.generateReport')}
+            Generate Report
           </Button>
           <Button className="shadow-2xs" onClick={() => exportData?.()}>
             <Download className="mr-2 h-4 w-4" />
