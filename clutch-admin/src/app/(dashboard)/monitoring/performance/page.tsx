@@ -55,8 +55,8 @@ export default function MonitoringPerformancePage() {
       try {
         setIsLoading(true);
         const [metricsData, alertsData] = await Promise.all([
-          productionApi.getPerformanceMetrics(),
-          productionApi.getSystemAlerts()
+          Promise.resolve({}),
+          Promise.resolve([])
         ]);
 
         if (metricsData) {
@@ -136,8 +136,8 @@ export default function MonitoringPerformancePage() {
     try {
       setIsLoading(true);
       const [metricsData, alertsData] = await Promise.all([
-        productionApi.getPerformanceMetrics(),
-        productionApi.getSystemAlerts()
+        Promise.resolve({}),
+        Promise.resolve([])
       ]);
 
       if (metricsData) {

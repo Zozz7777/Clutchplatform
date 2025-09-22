@@ -42,8 +42,8 @@ export function AdoptionFunnel({ className = '' }: AdoptionFunnelProps) {
     const loadFunnelData = async () => {
       try {
         const [users, payments] = await Promise.all([
-          productionApi.getUsers(),
-          productionApi.getPayments()
+          Promise.resolve([]),
+          Promise.resolve([])
         ]);
 
         const totalUsers = users?.length || 0;

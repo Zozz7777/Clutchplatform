@@ -114,17 +114,17 @@ export default function SEOCMSPage() {
 
       <Tabs defaultValue="overview" className="space-y-4">
         <TabsList>
-          <TabsTrigger value="overview">Overview</TabsTrigger>
-          <TabsTrigger value="pages">Pages</TabsTrigger>
-          <TabsTrigger value="keywords">Keywords</TabsTrigger>
-          <TabsTrigger value="analytics">Analytics</TabsTrigger>
+          <TabsTrigger value="overview">{t('seo.overview')}</TabsTrigger>
+          <TabsTrigger value="pages">{t('seo.pages')}</TabsTrigger>
+          <TabsTrigger value="keywords">{t('seo.keywords')}</TabsTrigger>
+          <TabsTrigger value="analytics">{t('seo.analytics')}</TabsTrigger>
         </TabsList>
 
         <TabsContent value="overview" className="space-y-4">
           <div className="grid gap-4 md:grid-cols-4">
             <Card>
               <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                <CardTitle className="text-sm font-medium font-sans">Overall Score</CardTitle>
+                <CardTitle className="text-sm font-medium font-sans">{t('seo.overallScore')}</CardTitle>
                 <TrendingUp className="h-4 w-4 text-muted-foreground" />
               </CardHeader>
               <CardContent>
@@ -141,7 +141,7 @@ export default function SEOCMSPage() {
 
             <Card>
               <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                <CardTitle className="text-sm font-medium font-sans">Pages Analyzed</CardTitle>
+                <CardTitle className="text-sm font-medium font-sans">{t('seo.pagesAnalyzed')}</CardTitle>
                 <Globe className="h-4 w-4 text-muted-foreground" />
               </CardHeader>
               <CardContent>
@@ -154,7 +154,7 @@ export default function SEOCMSPage() {
 
             <Card>
               <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                <CardTitle className="text-sm font-medium font-sans">Issues Found</CardTitle>
+                <CardTitle className="text-sm font-medium font-sans">{t('seo.issuesFound')}</CardTitle>
                 <AlertTriangle className="h-4 w-4 text-muted-foreground" />
               </CardHeader>
               <CardContent>
@@ -169,7 +169,7 @@ export default function SEOCMSPage() {
 
             <Card>
               <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                <CardTitle className="text-sm font-medium font-sans">Suggestions</CardTitle>
+                <CardTitle className="text-sm font-medium font-sans">{t('seo.suggestions')}</CardTitle>
                 <CheckCircle className="h-4 w-4 text-muted-foreground" />
               </CardHeader>
               <CardContent>
@@ -186,7 +186,7 @@ export default function SEOCMSPage() {
           <div className="grid gap-4 md:grid-cols-2">
             <Card>
               <CardHeader>
-                <CardTitle className="font-sans">SEO Score Distribution</CardTitle>
+                <CardTitle className="font-sans">{t('seo.seoScoreDistribution')}</CardTitle>
               </CardHeader>
               <CardContent>
                 <div className="space-y-2">
@@ -213,7 +213,7 @@ export default function SEOCMSPage() {
 
             <Card>
               <CardHeader>
-                <CardTitle className="font-sans">Quick Actions</CardTitle>
+                <CardTitle className="font-sans">{t('seo.quickActions')}</CardTitle>
               </CardHeader>
               <CardContent className="space-y-2">
                 <Button variant="outline" className="w-full justify-start">
@@ -256,7 +256,7 @@ export default function SEOCMSPage() {
                 </CardHeader>
                 <CardContent className="space-y-4">
                   <div>
-                    <label className="text-sm font-medium font-sans">Page Title</label>
+                    <label className="text-sm font-medium font-sans">{t('seo.pageTitle')}</label>
                     <Input
                       value={page.title}
                       onChange={(e) => {
@@ -267,7 +267,7 @@ export default function SEOCMSPage() {
                     />
                   </div>
                   <div>
-                    <label className="text-sm font-medium font-sans">Meta Description</label>
+                    <label className="text-sm font-medium font-sans">{t('seo.metaDescription')}</label>
                     <Textarea
                       value={page.description}
                       onChange={(e) => {
@@ -279,20 +279,20 @@ export default function SEOCMSPage() {
                     />
                   </div>
                   <div>
-                    <label className="text-sm font-medium font-sans">Keywords</label>
+                    <label className="text-sm font-medium font-sans">{t('seo.keywords')}</label>
                     <div className="flex items-center space-x-2">
                       {page.keywords.map((keyword, keywordIndex) => (
                         <Badge key={keywordIndex} variant="outline">
                           {keyword}
                         </Badge>
                       ))}
-                      <Button variant="outline" size="sm">Add Keyword</Button>
+                      <Button variant="outline" size="sm">{t('seo.addKeyword')}</Button>
                     </div>
                   </div>
                   
                   {page.issues.length > 0 && (
                     <div>
-                      <label className="text-sm font-medium font-sans text-destructive">Issues</label>
+                      <label className="text-sm font-medium font-sans text-destructive">{t('seo.issues')}</label>
                       <div className="space-y-1">
                         {page.issues.map((issue, issueIndex) => (
                           <div key={issueIndex} className="flex items-center space-x-2 text-sm text-destructive">
@@ -306,7 +306,7 @@ export default function SEOCMSPage() {
 
                   {page.suggestions.length > 0 && (
                     <div>
-                      <label className="text-sm font-medium font-sans text-primary">Suggestions</label>
+                      <label className="text-sm font-medium font-sans text-primary">{t('seo.suggestions')}</label>
                       <div className="space-y-1">
                         {page.suggestions.map((suggestion, suggestionIndex) => (
                           <div key={suggestionIndex} className="flex items-center space-x-2 text-sm text-primary">
@@ -326,7 +326,7 @@ export default function SEOCMSPage() {
         <TabsContent value="keywords" className="space-y-4">
           <Card>
             <CardHeader>
-              <CardTitle className="font-sans">Keyword Research</CardTitle>
+              <CardTitle className="font-sans">{t('seo.keywordResearch')}</CardTitle>
               <CardDescription className="font-sans">
                 Track and analyze your target keywords
               </CardDescription>
@@ -335,7 +335,7 @@ export default function SEOCMSPage() {
               <div className="space-y-4">
                 <div className="flex items-center space-x-2">
                   <Input placeholder="Enter keyword to research..." />
-                  <Button>Research</Button>
+                  <Button>{t('seo.research')}</Button>
                 </div>
                 <div className="grid gap-4 md:grid-cols-2">
                   {[
@@ -369,7 +369,7 @@ export default function SEOCMSPage() {
           <div className="grid gap-4 md:grid-cols-3">
             <Card>
               <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                <CardTitle className="text-sm font-medium font-sans">Organic Traffic</CardTitle>
+                <CardTitle className="text-sm font-medium font-sans">{t('seo.organicTraffic')}</CardTitle>
                 <TrendingUp className="h-4 w-4 text-muted-foreground" />
               </CardHeader>
               <CardContent>
@@ -382,7 +382,7 @@ export default function SEOCMSPage() {
 
             <Card>
               <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                <CardTitle className="text-sm font-medium font-sans">Average Position</CardTitle>
+                <CardTitle className="text-sm font-medium font-sans">{t('seo.averagePosition')}</CardTitle>
                 <BarChart3 className="h-4 w-4 text-muted-foreground" />
               </CardHeader>
               <CardContent>

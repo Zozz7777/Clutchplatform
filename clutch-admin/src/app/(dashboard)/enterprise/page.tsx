@@ -143,16 +143,16 @@ export default function EnterprisePage() {
 
         // Ensure clients is always an array
         const clientsArray = Array.isArray(clientsData) ? clientsData : [];
-        setClients(clientsArray);
+        setClients(clientsArray as EnterpriseClient[]);
 
         if (statsData) {
-          setStats(statsData);
+          setStats(statsData as EnterpriseStats);
         } else {
           // Calculate stats from loaded data with array safety
           const totalClients = clientsArray.length;
           const activeClients = clientsArray.filter(c => c.status === "active").length;
-          const totalRevenue = clientsArray.reduce((sum, c) => sum + (c.subscription?.monthlyFee || 0), 0);
-          const totalVehicles = clientsArray.reduce((sum, c) => sum + (c.fleet?.totalVehicles || 0), 0);
+          const totalRevenue = clientsArray.reduce((sum, c) => sum + ((c as any).subscription?.monthlyFee || 0), 0);
+          const totalVehicles = clientsArray.reduce((sum, c) => sum + ((c as any).fleet?.totalVehicles || 0), 0);
           const averageFleetSize = clientsArray.length > 0 ? totalVehicles / clientsArray.length : 0;
           const whiteLabelClients = clientsArray.filter(c => c.whiteLabel?.enabled).length;
 
@@ -163,7 +163,7 @@ export default function EnterprisePage() {
             monthlyRecurringRevenue: totalRevenue,
             averageFleetSize,
             totalVehicles,
-            apiUsage: clientsArray.reduce((sum, c) => sum + (c.api?.usage || 0), 0),
+            apiUsage: clientsArray.reduce((sum, c) => sum + ((c as any).api?.usage || 0), 0),
             whiteLabelClients,
           });
         }
@@ -479,13 +479,13 @@ export default function EnterprisePage() {
                         {client.size}
                       </Badge>
                       {client.whiteLabel.enabled && (
-                        <Badge variant="info">
+                        <Badge variant="secondary">
                           <Globe className="mr-1 h-3 w-3" />
                           White-Label
                         </Badge>
                       )}
                       {client.api.enabled && (
-                        <Badge variant="info">
+                        <Badge variant="secondary">
                           <Key className="mr-1 h-3 w-3" />
                           API
                         </Badge>

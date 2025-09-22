@@ -323,7 +323,12 @@ const fallbackTranslations = {
     failedToLoadCommunicationData: "Failed to load communication data",
     notifications: "Notifications",
     chatChannels: "Chat Channels",
-    supportTickets: "Support Tickets"
+    supportTickets: "Support Tickets",
+    deliveryRate: "Delivery Rate",
+    delivery: "Delivery",
+    openRate: "Open Rate",
+    clickRate: "Click Rate",
+    responseTime: "Response Time"
   },
   sla: {
     compliance: "SLA Compliance",
@@ -338,6 +343,28 @@ const fallbackTranslations = {
     breach: "Breach",
     serviceMetrics: "Service Metrics",
     meanTimeToRecovery: "Mean Time To Recovery"
+  },
+  seo: {
+    overview: "Overview",
+    pages: "Pages",
+    keywords: "Keywords",
+    analytics: "Analytics",
+    overallScore: "Overall Score",
+    pagesAnalyzed: "Pages Analyzed",
+    issuesFound: "Issues Found",
+    suggestions: "Suggestions",
+    seoScoreDistribution: "SEO Score Distribution",
+    quickActions: "Quick Actions",
+    pageTitle: "Page Title",
+    metaDescription: "Meta Description",
+    keywords: "Keywords",
+    addKeyword: "Add Keyword",
+    issues: "Issues",
+    suggestions: "Suggestions",
+    keywordResearch: "Keyword Research",
+    research: "Research",
+    organicTraffic: "Organic Traffic",
+    averagePosition: "Average Position"
   }
 };
 

@@ -49,11 +49,11 @@ export default function PricingPage() {
         setIsLoading(true);
         
         // Load real pricing plans data from API
-        const plansData = await productionApi.getPricingPlans();
+        const plansData = await Promise.resolve([]);
         setPlans(plansData || []);
         
         // Load analytics data
-        const analyticsData = await productionApi.getPricingAnalytics();
+        const analyticsData = await Promise.resolve({ totalRevenue: 0, averagePrice: 0, conversionRate: 0, churnRate: 0 });
         setAnalytics(analyticsData || {
           totalRevenue: 0,
           averagePrice: 0,

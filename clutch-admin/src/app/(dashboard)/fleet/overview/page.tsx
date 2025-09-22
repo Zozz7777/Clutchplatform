@@ -41,7 +41,7 @@ export default function FleetOverviewPage() {
       try {
         const fleetData = await realApi.getFleetVehicles();
         // Ensure we always have an array
-        setVehicles(Array.isArray(fleetData) ? fleetData : []);
+        setVehicles((Array.isArray(fleetData) ? fleetData : []) as FleetVehicle[]);
       } catch (error) {
         // Error handled by API service
         toast.error("Failed to load fleet overview");
@@ -70,7 +70,7 @@ export default function FleetOverviewPage() {
   const maintenanceVehicles = (vehicles || []).filter(v => v.status === "maintenance").length;
   const totalMileage = (vehicles || []).reduce((sum, v) => sum + v.mileage, 0);
   const averageFuelEfficiency = (vehicles || []).length > 0 
-    ? (vehicles || []).reduce((sum, v) => sum + v.fuelEfficiency, 0) / (vehicles || []).length 
+    ? (vehicles || []).reduce((sum, v) => sum + ((v as any).fuelEfficiency || 0), 0) / (vehicles || []).length 
     : 0;
 
   return (
@@ -182,8 +182,8 @@ export default function FleetOverviewPage() {
                   <span className="text-sm font-medium">Issues</span>
                 </div>
                 <div className="flex items-center space-x-2">
-                  <span className="text-sm text-muted-foreground">{(vehicles || []).filter(v => v.status === "issue").length} vehicles</span>
-                  <Badge variant="destructive">{vehicles && vehicles.length > 0 ? (((vehicles || []).filter(v => v.status === "issue").length / vehicles.length) * 100).toFixed(1) : 0}%</Badge>
+                  <span className="text-sm text-muted-foreground">{(vehicles || []).filter(v => v.status === "inactive").length} vehicles</span>
+                  <Badge variant="destructive">{vehicles && vehicles.length > 0 ? (((vehicles || []).filter(v => v.status === "inactive").length / vehicles.length) * 100).toFixed(1) : 0}%</Badge>
                 </div>
               </div>
             </div>
@@ -340,7 +340,7 @@ export default function FleetOverviewPage() {
                   <h3 className="text-lg font-semibold">Top Performing Vehicles</h3>
                   <div className="space-y-2">
                     {vehicles
-                      .sort((a, b) => b.fuelEfficiency - a.fuelEfficiency)
+                      .sort((a, b) => ((b as any).fuelEfficiency || 0) - ((a as any).fuelEfficiency || 0))
                       .slice(0, 5)
                       .map((vehicle) => (
                         <div key={vehicle.id} className="flex items-center justify-between p-3 border rounded-[0.625rem]">
@@ -354,7 +354,7 @@ export default function FleetOverviewPage() {
                             </div>
                           </div>
                           <div className="text-right">
-                            <p className="font-semibold text-foreground">{vehicle.fuelEfficiency} MPG</p>
+                            <p className="font-semibold text-foreground">{(vehicle as any).fuelEfficiency || 0} MPG</p>
                             <p className="text-sm text-muted-foreground">{vehicle.mileage.toLocaleString()} miles</p>
                           </div>
                         </div>

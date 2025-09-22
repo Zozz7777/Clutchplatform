@@ -505,11 +505,11 @@ export default function CashBurnTracker({ className }: CashBurnTrackerProps) {
                 <div className="mt-2 flex justify-center space-x-4 text-xs">
                   <span className="flex items-center">
                     <div className="w-2 h-2 bg-success/100 rounded-full mr-1"></div>
-                    Inflow: ${(cashFlow.reduce((sum, flow) => sum + (flow.amount > 0 ? flow.amount : 0), 0)).toLocaleString()}
+                    Inflow: ${(cashFlows.reduce((sum: number, flow: any) => sum + (flow.amount > 0 ? flow.amount : 0), 0)).toLocaleString()}
                   </span>
                   <span className="flex items-center">
                     <div className="w-2 h-2 bg-destructive/100 rounded-full mr-1"></div>
-                    Outflow: ${(Math.abs(cashFlow.reduce((sum, flow) => sum + (flow.amount < 0 ? flow.amount : 0), 0))).toLocaleString()}
+                    Outflow: ${(Math.abs(cashFlows.reduce((sum: number, flow: any) => sum + (flow.amount < 0 ? flow.amount : 0), 0))).toLocaleString()}
                   </span>
                 </div>
               </div>
