@@ -28,7 +28,7 @@ import {
   Smartphone,
   Monitor,
 } from "lucide-react";
-import { useTranslations } from "@/hooks/use-translations";
+// Translation system removed - using hardcoded strings
 import { productionApi, type Notification } from "@/lib/production-api";
 import { toast } from "@/lib/toast";
 import { handleError, handleWarning, handleDataLoadError } from "@/lib/error-handler";
@@ -83,7 +83,7 @@ interface SupportTicket {
 }
 
 export default function CommunicationPage() {
-  const { t } = useTranslations();
+  // Translation system removed - using hardcoded strings
   const [activeTab, setActiveTab] = useState("notifications");
   const [searchTerm, setSearchTerm] = useState("");
   const [notifications, setNotifications] = useState<CommunicationNotification[]>([]);
@@ -291,19 +291,19 @@ export default function CommunicationPage() {
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold tracking-tight">{t('dashboard.communication')}</h1>
+          <h1 className="text-3xl font-bold tracking-tight">Communication</h1>
           <p className="text-muted-foreground">
-            {t('dashboard.communicationDescription')}
+            Manage notifications, chat channels, and support tickets
           </p>
         </div>
         <div className="flex items-center space-x-2">
           <Button variant="outline">
             <Settings className="mr-2 h-4 w-4" />
-            {t('dashboard.settings')}
+            Settings
           </Button>
           <Button>
             <Plus className="mr-2 h-4 w-4" />
-            {t('dashboard.newNotification')}
+            New Notification
           </Button>
         </div>
       </div>
@@ -312,31 +312,31 @@ export default function CommunicationPage() {
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">{t('dashboard.totalNotifications')}</CardTitle>
+            <CardTitle className="text-sm font-medium">Total Notifications</CardTitle>
             <Bell className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">{notifications.length}</div>
             <p className="text-xs text-muted-foreground">
-              <span className="text-primary">+12%</span> {t('dashboard.fromLastMonth')}
+              <span className="text-primary">+12%</span> from last month
             </p>
           </CardContent>
         </Card>
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">{t('dashboard.activeChannels')}</CardTitle>
+            <CardTitle className="text-sm font-medium">Active Channels</CardTitle>
             <MessageSquare className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">{(channels || []).filter(c => c.status === "active").length}</div>
             <p className="text-xs text-muted-foreground">
-              {(channels || []).reduce((sum, c) => sum + (c.unreadMessages || 0), 0)} {t('dashboard.unreadMessages')}
+              {(channels || []).reduce((sum, c) => sum + (c.unreadMessages || 0), 0)} unread messages
             </p>
           </CardContent>
         </Card>
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">{t('dashboard.openTickets')}</CardTitle>
+            <CardTitle className="text-sm font-medium">Open Tickets</CardTitle>
             <AlertCircle className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>

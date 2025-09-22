@@ -10,7 +10,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { productionApi } from "@/lib/production-api";
 import { formatDate, formatRelativeTime } from "@/lib/utils";
-import { useTranslations } from "@/hooks/use-translations";
+// Translation system removed - using hardcoded strings
 
 // Define FleetVehicle type locally
 interface FleetVehicle {
@@ -72,7 +72,7 @@ interface OBD2Data {
 }
 
 export default function OBD2Page() {
-  const { t } = useTranslations();
+  // Translation system removed - using hardcoded strings
   const [vehicles, setVehicles] = useState<FleetVehicle[]>([]);
   const [obd2Data, setOBD2Data] = useState<OBD2Data[]>([]);
   const [filteredData, setFilteredData] = useState<OBD2Data[]>([]);
@@ -204,7 +204,7 @@ export default function OBD2Page() {
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
         <Card className="shadow-2xs">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium text-card-foreground">{t('obd2.activeCodes')}</CardTitle>
+            <CardTitle className="text-sm font-medium text-card-foreground">Active Codes</CardTitle>
             <AlertTriangle className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
@@ -216,7 +216,7 @@ export default function OBD2Page() {
         </Card>
         <Card className="shadow-2xs">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium text-card-foreground">{t('obd2.criticalIssues')}</CardTitle>
+            <CardTitle className="text-sm font-medium text-card-foreground">Critical Issues</CardTitle>
             <AlertTriangle className="h-4 w-4 text-destructive" />
           </CardHeader>
           <CardContent>
@@ -228,7 +228,7 @@ export default function OBD2Page() {
         </Card>
         <Card className="shadow-2xs">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium text-card-foreground">{t('obd2.resolved')}</CardTitle>
+            <CardTitle className="text-sm font-medium text-card-foreground">Resolved</CardTitle>
             <CheckCircle className="h-4 w-4 text-success" />
           </CardHeader>
           <CardContent>
@@ -240,7 +240,7 @@ export default function OBD2Page() {
         </Card>
         <Card className="shadow-2xs">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium text-card-foreground">{t('obd2.fleetHealth')}</CardTitle>
+            <CardTitle className="text-sm font-medium text-card-foreground">Fleet Health</CardTitle>
             <Activity className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>

@@ -10,7 +10,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { formatCurrency, formatDate, formatRelativeTime } from "@/lib/utils";
 import { useAuth } from "@/contexts/auth-context";
-import { useTranslations } from "@/hooks/use-translations";
+// Translation system removed - using hardcoded strings
 import { productionApi } from "@/lib/production-api";
 import { paymentService } from "@/lib/payment-service";
 
@@ -103,7 +103,7 @@ export default function FinancePage() {
   const [statusFilter, setStatusFilter] = useState<string>("all");
   const [isLoading, setIsLoading] = useState(true);
   const { hasPermission } = useAuth();
-  const { t } = useTranslations();
+  // Translation system removed - using hardcoded strings
 
   // Payment processing functions
   const handleProcessPayment = async (paymentData: Record<string, unknown>) => {
@@ -287,19 +287,19 @@ export default function FinancePage() {
       {/* Page Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold tracking-tight text-foreground font-sans">{t('finance.title')}</h1>
+          <h1 className="text-3xl font-bold tracking-tight text-foreground font-sans">Finance Dashboard</h1>
           <p className="text-muted-foreground font-sans">
-            {t('finance.description')}
+            Manage payments, invoices, and financial reports
           </p>
         </div>
         <div className="flex items-center space-x-2">
           <Button variant="outline" className="shadow-2xs">
             <Download className="mr-2 h-4 w-4" />
-            {t('finance.exportReport')}
+            Export Report
           </Button>
           <Button className="shadow-2xs">
             <Plus className="mr-2 h-4 w-4" />
-            {t('finance.processPayment')}
+            Process Payment
           </Button>
         </div>
       </div>

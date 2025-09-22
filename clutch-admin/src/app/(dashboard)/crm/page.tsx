@@ -18,7 +18,7 @@ import AtRiskClients from "@/components/widgets/at-risk-clients";
 import CSATNPSTrends from "@/components/widgets/csat-nps-trends";
 import UpsellOpportunities from "@/components/widgets/upsell-opportunities";
 import { useAuth } from "@/contexts/auth-context";
-import { useTranslations } from "@/hooks/use-translations";
+// Translation system removed - using hardcoded strings
 import { toast } from "sonner";
 import { 
   Users, 
@@ -84,7 +84,7 @@ export default function CRMPage() {
   const [statusFilter, setStatusFilter] = useState<string>("all");
   const [isLoading, setIsLoading] = useState(true);
   const { user, hasPermission } = useAuth();
-  const { t } = useTranslations();
+  // Translation system removed - using hardcoded strings
 
   useEffect(() => {
     let isMounted = true;
@@ -237,7 +237,7 @@ export default function CRMPage() {
       <div className="flex items-center justify-center h-64">
         <div className="text-center">
           <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto mb-4"></div>
-          <p className="text-muted-foreground font-sans">{t('dashboard.loadingCrmData')}</p>
+          <p className="text-muted-foreground font-sans">Loading CRM data...</p>
         </div>
       </div>
     );
@@ -248,9 +248,9 @@ export default function CRMPage() {
       {/* Page Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold tracking-tight text-foreground font-sans">{t('dashboard.crmDashboard')}</h1>
+          <h1 className="text-3xl font-bold tracking-tight text-foreground font-sans">CRM Dashboard</h1>
           <p className="text-muted-foreground font-sans">
-            {t('dashboard.manageCustomerRelationships')}
+            Manage customer relationships and interactions
           </p>
         </div>
         <div className="flex items-center space-x-2">
@@ -269,7 +269,7 @@ export default function CRMPage() {
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
         <Card className="shadow-2xs">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium text-card-foreground">{t('crm.totalCustomers')}</CardTitle>
+            <CardTitle className="text-sm font-medium text-card-foreground">Total Customers</CardTitle>
             <Users className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
