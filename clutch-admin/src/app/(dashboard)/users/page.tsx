@@ -11,7 +11,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { productionApi } from "@/lib/production-api";
 import { formatDate, formatRelativeTime } from "@/lib/utils";
 import { useAuth } from "@/contexts/auth-context";
-// import { useTranslations } from "@/hooks/use-translations";
+import { useLanguage } from "@/contexts/language-context";
 import { useQuickActions } from "@/lib/quick-actions";
 import { toast } from "sonner";
 import { handleError } from "@/lib/error-handler";
@@ -76,7 +76,7 @@ export default function UsersPage() {
   const [roleFilter, setRoleFilter] = useState<string>("all");
   const [isLoading, setIsLoading] = useState(true);
   const { hasPermission } = useAuth();
-  const t = (key: string, params?: any) => key;
+  const { t } = useLanguage();
   // Safely get quick actions with error handling
   let addUser: (() => void) | null = null;
   
@@ -201,15 +201,15 @@ export default function UsersPage() {
       {/* Page Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold tracking-tight text-foreground font-sans">User Management</h1>
+          <h1 className="text-3xl font-bold tracking-tight text-foreground font-sans">{t('users.title')}</h1>
           <p className="text-muted-foreground font-sans">
-            Manage users, roles, and permissions
+            {t('users.description')}
           </p>
         </div>
         {hasPermission("create_users") && (
           <Button className="shadow-2xs" onClick={addUser || (() => {})}>
             <Plus className="mr-2 h-4 w-4" />
-            Add User
+{t('users.addUser')}
           </Button>
         )}
       </div>

@@ -11,7 +11,7 @@ import { RealtimeStatus } from "@/components/realtime-status";
 import { useQuickActions } from "@/lib/quick-actions";
 import { useAuth } from "@/contexts/auth-context";
 import { handleError } from "@/lib/error-handler";
-// Translation system removed - using hardcoded strings
+import { useLanguage } from "@/contexts/language-context";
 
 // Import new Phase 2 widgets
 import UnifiedOpsPulse from "@/components/widgets/unified-ops-pulse";
@@ -81,7 +81,7 @@ export default function DashboardPage() {
   const [performanceMetrics, setPerformanceMetrics] = useState<Record<string, unknown> | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const { hasPermission } = useAuth();
-  // Translation system removed - using hardcoded strings
+  const { t } = useLanguage();
   // Safely get quick actions with error handling
   let quickActions: any[] = [];
   let generateReport: (() => void) | null = null;
@@ -188,7 +188,7 @@ export default function DashboardPage() {
       <div className="flex items-center justify-center h-64">
         <div className="text-center">
           <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto mb-4"></div>
-          <p className="text-muted-foreground font-sans">Loading dashboard...</p>
+          <p className="text-muted-foreground font-sans">{t('dashboard.loadingDashboard')}</p>
         </div>
       </div>
     );
@@ -199,24 +199,24 @@ export default function DashboardPage() {
       {/* Page Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold tracking-tight text-foreground font-sans">Dashboard</h1>
+          <h1 className="text-3xl font-bold tracking-tight text-foreground font-sans">{t('dashboard.title')}</h1>
           <p className="text-muted-foreground font-sans">
-            Welcome to your Clutch Admin dashboard
+            {t('dashboard.welcomeToClutch')}
           </p>
         </div>
         <div className="flex items-center space-x-2">
           <RealtimeStatus />
           <Button variant="outline" className="shadow-2xs" onClick={generateReport || (() => {})}>
             <FileText className="mr-2 h-4 w-4" />
-            Generate Report
+            {t('dashboard.generateReport')}
           </Button>
           <Button className="shadow-2xs" onClick={() => exportData?.()}>
             <Download className="mr-2 h-4 w-4" />
-            Export Data
+            {t('dashboard.exportData')}
           </Button>
           <Button variant="outline" className="shadow-2xs" onClick={refreshData || (() => {})}>
             <RefreshCw className="mr-2 h-4 w-4" />
-            Refresh
+            {t('dashboard.refresh')}
           </Button>
         </div>
       </div>
@@ -250,7 +250,7 @@ export default function DashboardPage() {
         {/* Real-time Activity Feed */}
         <Card className="lg:col-span-2 shadow-2xs">
           <CardHeader>
-            <CardTitle className="text-card-foreground">Real-time Activity Feed</CardTitle>
+            <CardTitle className="text-card-foreground">{t('dashboard.realtimeActivityFeed')}</CardTitle>
             <CardDescription className="text-muted-foreground">{t('dashboard.latestActionsAndEvents')}</CardDescription>
           </CardHeader>
           <CardContent>

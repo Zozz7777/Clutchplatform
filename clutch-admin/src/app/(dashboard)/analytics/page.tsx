@@ -10,7 +10,7 @@ import { useQuickActions } from "@/lib/quick-actions";
 import { handleError, handleDataLoadError } from "@/lib/error-handler";
 import { productionApi } from "@/lib/production-api";
 import { formatDate, formatRelativeTime, formatCurrency } from "@/lib/utils";
-// Translation system removed - using hardcoded strings
+import { useLanguage } from "@/contexts/language-context";
 
 // Import new Phase 2 widgets
 import AdoptionFunnel from "@/components/widgets/adoption-funnel";
@@ -139,8 +139,6 @@ interface AnalyticsReport {
 }
 
 export default function AnalyticsPage() {
-  // Translation system removed - using hardcoded strings
-  
   const [metrics, setMetrics] = useState<AnalyticsMetric[]>([]);
   const [userAnalytics, setUserAnalytics] = useState<UserAnalytics | null>(null);
   const [revenueAnalytics, setRevenueAnalytics] = useState<RevenueAnalytics | null>(null);
@@ -149,10 +147,9 @@ export default function AnalyticsPage() {
   const [reports, setReports] = useState<AnalyticsReport[]>([]);
   const [selectedTimeRange, setSelectedTimeRange] = useState<string>("30d");
 
-  // Safe translation function with fallbacks - now using the robust t function
-  // Translation function removed - using hardcoded strings
   const [isLoading, setIsLoading] = useState(true);
   const { user, hasPermission } = useAuth();
+  const { t } = useLanguage();
   // Safely get quick actions with error handling
   let generateReport: (() => void) | null = null;
   let exportData: (() => void) | null = null;
@@ -315,7 +312,7 @@ export default function AnalyticsPage() {
       <div className="flex items-center justify-center h-64">
         <div className="text-center">
           <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto mb-4"></div>
-          <p className="text-muted-foreground">Loading analytics data...</p>
+          <p className="text-muted-foreground">{t('analytics.loadingAnalytics')}</p>
         </div>
       </div>
     );
@@ -326,9 +323,9 @@ export default function AnalyticsPage() {
       {/* Page Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold tracking-tight">Analytics Dashboard</h1>
+          <h1 className="text-3xl font-bold tracking-tight">{t('analytics.title')}</h1>
           <p className="text-muted-foreground">
-            Comprehensive analytics and insights for your platform
+            {t('analytics.description')}
           </p>
         </div>
         <div className="flex items-center space-x-2">
@@ -441,7 +438,7 @@ export default function AnalyticsPage() {
           <CardHeader>
             <CardTitle className="flex items-center">
               <Users className="mr-2 h-5 w-5" />
-              User Analytics
+              {t('analytics.userAnalytics')}
             </CardTitle>
             <CardDescription>
               User growth and engagement metrics
@@ -506,7 +503,7 @@ export default function AnalyticsPage() {
           <CardHeader>
             <CardTitle className="flex items-center">
               <DollarSign className="mr-2 h-5 w-5" />
-              Revenue Analytics
+              {t('analytics.revenueAnalytics')}
             </CardTitle>
             <CardDescription>
               Revenue trends and sources
