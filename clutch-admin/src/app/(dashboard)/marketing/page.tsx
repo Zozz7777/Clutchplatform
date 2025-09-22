@@ -6,7 +6,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useAuth } from "@/contexts/auth-context";
-import { useTranslations } from "@/hooks/use-translations";
+// Translation system removed - using hardcoded strings
 import { formatDate, formatRelativeTime, formatCurrency } from "@/lib/utils";
 import { handleError, handleWarning, handleDataLoadError } from "@/lib/error-handler";
 import { 
@@ -119,7 +119,7 @@ export default function MarketingPage() {
   const [activeTab, setActiveTab] = useState<"campaigns" | "leads">("campaigns");
   const [isLoading, setIsLoading] = useState(true);
   const { hasPermission } = useAuth();
-  const { t } = useTranslations();
+  // Translation system removed - using hardcoded strings
 
   useEffect(() => {
     const loadMarketingData = async () => {
@@ -416,7 +416,7 @@ export default function MarketingPage() {
       <div className="flex items-center justify-center h-64">
         <div className="text-center">
           <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto mb-4"></div>
-          <p className="text-muted-foreground">{t('dashboard.loadingMarketingData')}</p>
+          <p className="text-muted-foreground">Loading marketing data...</p>
         </div>
       </div>
     );
@@ -427,7 +427,7 @@ export default function MarketingPage() {
       {/* Page Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold tracking-tight">{t('dashboard.marketing')}</h1>
+          <h1 className="text-3xl font-bold tracking-tight">Marketing</h1>
           <p className="text-muted-foreground">
             {t('dashboard.marketingDescription')}
           </p>

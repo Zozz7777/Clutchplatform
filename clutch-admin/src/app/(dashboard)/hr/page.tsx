@@ -8,7 +8,7 @@ import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Checkbox } from "@/components/ui/checkbox";
 import { useAuth } from "@/contexts/auth-context";
-import { useTranslations } from "@/hooks/use-translations";
+// Translation system removed - using hardcoded strings
 import { formatDate, formatRelativeTime } from "@/lib/utils";
 import { EmployeeInvitationForm } from "@/components/employee-invitation-form";
 import { apiService } from "@/lib/api";
@@ -201,7 +201,7 @@ export default function HRPage() {
   const [employeeToDelete, setEmployeeToDelete] = useState<Employee | null>(null);
   const [editFormData, setEditFormData] = useState<Partial<Employee>>({});
   const { user, hasPermission } = useAuth();
-  const { t } = useTranslations();
+  // Translation system removed - using hardcoded strings
 
   // Helper functions for role and permission management
   const getRolePermissions = (role: string): string[] => {
@@ -914,7 +914,7 @@ export default function HRPage() {
       <div className="flex items-center justify-center h-64">
         <div className="text-center">
           <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto mb-4"></div>
-          <p className="text-muted-foreground">{t('hr.loadingHrData')}</p>
+          <p className="text-muted-foreground">Loading HR data...</p>
         </div>
       </div>
     );
@@ -925,7 +925,7 @@ export default function HRPage() {
       {/* Page Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-medium tracking-tight">{t('hr.title')}</h1>
+          <h1 className="text-3xl font-medium tracking-tight">HR Management</h1>
           <p className="text-muted-foreground font-sans">
             {t('hr.description')}
           </p>

@@ -45,7 +45,7 @@ import {
   Activity,
 } from "lucide-react";
 import { productionApi } from "@/lib/production-api";
-import { useTranslations } from "@/hooks/use-translations";
+// Translation system removed - using hardcoded strings
 import { logger } from "@/lib/logger";
 import { toast } from "sonner";
 
@@ -125,7 +125,7 @@ interface IntegrationTemplate {
 }
 
 export default function IntegrationsPage() {
-  const { t } = useTranslations();
+  // Translation system removed - using hardcoded strings
   const [integrations, setIntegrations] = useState<Integration[]>([]);
   const [templates, setTemplates] = useState<IntegrationTemplate[]>([]);
   const [loading, setLoading] = useState(true);
@@ -242,7 +242,7 @@ export default function IntegrationsPage() {
       <div className="flex items-center justify-center h-64">
         <div className="text-center">
           <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto"></div>
-          <p className="mt-2 text-muted-foreground">{t('dashboard.loadingIntegrations')}</p>
+          <p className="mt-2 text-muted-foreground">Loading integrations...</p>
         </div>
       </div>
     );
@@ -253,7 +253,7 @@ export default function IntegrationsPage() {
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold tracking-tight">{t('dashboard.integrations')}</h1>
+          <h1 className="text-3xl font-bold tracking-tight">Integrations</h1>
           <p className="text-muted-foreground">
             {t('dashboard.integrationsDescription')}
           </p>

@@ -6,7 +6,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useAuth } from "@/contexts/auth-context";
-import { useTranslations } from "@/hooks/use-translations";
+// Translation system removed - using hardcoded strings
 import { formatDate, formatRelativeTime } from "@/lib/utils";
 import { 
   Scale, 
@@ -101,7 +101,7 @@ export default function LegalPage() {
   const [activeTab, setActiveTab] = useState<"contracts" | "disputes">("contracts");
   const [isLoading, setIsLoading] = useState(true);
   const { hasPermission } = useAuth();
-  const { t } = useTranslations();
+  // Translation system removed - using hardcoded strings
 
   useEffect(() => {
     const loadLegalData = async () => {
@@ -403,9 +403,9 @@ export default function LegalPage() {
       {/* Page Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold tracking-tight">{t('legal.title')}</h1>
+          <h1 className="text-3xl font-bold tracking-tight">Legal Management</h1>
           <p className="text-muted-foreground">
-            {t('legal.description')}
+            Manage contracts, legal documents, and compliance
           </p>
         </div>
         {hasPermission("manage_legal") && (

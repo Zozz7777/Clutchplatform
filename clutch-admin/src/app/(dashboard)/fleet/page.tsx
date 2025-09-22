@@ -11,7 +11,7 @@ import { productionApi } from "@/lib/production-api";
 import { websocketService } from "@/lib/websocket-service";
 import { formatDate, formatRelativeTime } from "@/lib/utils";
 import { useAuth } from "@/contexts/auth-context";
-import { useTranslations } from "@/hooks/use-translations";
+// Translation system removed - using hardcoded strings
 import { useQuickActions } from "@/lib/quick-actions";
 import { toast } from "sonner";
 import { handleError, handleWarning, handleWebSocketError, handleDataLoadError } from "@/lib/error-handler";
@@ -87,7 +87,7 @@ export default function FleetPage() {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const { user, hasPermission } = useAuth();
-  const { t } = useTranslations();
+  // Translation system removed - using hardcoded strings
   
   // Safely get quick actions with error handling
   let createFleet: (() => void) | null = null;
@@ -266,9 +266,9 @@ export default function FleetPage() {
       {/* Page Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold tracking-tight text-foreground font-sans">{t('fleet.title')}</h1>
+          <h1 className="text-3xl font-bold tracking-tight text-foreground font-sans">Fleet Management</h1>
           <p className="text-muted-foreground font-sans">
-            {t('fleet.description')}
+            Manage your vehicle fleet, track performance, and optimize operations
           </p>
         </div>
         <div className="flex items-center space-x-2">
