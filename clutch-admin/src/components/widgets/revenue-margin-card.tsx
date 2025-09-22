@@ -6,7 +6,7 @@ import { Badge } from '@/components/ui/badge';
 import { Progress } from '@/components/ui/progress';
 import { businessIntelligence } from '@/lib/business-intelligence';
 import { logger } from '@/lib/logger';
-// Translation system removed - using hardcoded strings
+import { useLanguage } from '@/contexts/language-context';
 import { 
   DollarSign, 
   TrendingUp, 
@@ -24,7 +24,7 @@ interface RevenueMarginCardProps {
 }
 
 export function RevenueMarginCard({ className = '' }: RevenueMarginCardProps) {
-  const t = (key: string, params?: any) => key;
+  const { t } = useLanguage();
   const [marginData, setMarginData] = React.useState<{
     revenue: number;
     costs: number;
@@ -61,7 +61,7 @@ export function RevenueMarginCard({ className = '' }: RevenueMarginCardProps) {
         <CardHeader>
           <CardTitle className="flex items-center space-x-2 text-card-foreground font-medium">
             <DollarSign className="h-5 w-5 text-success" />
-            <span>Revenue vs Cost Margin</span>
+            <span>{t('widgets.revenueVsCostMargin')}</span>
           </CardTitle>
           <CardDescription className="text-muted-foreground">Loading financial metrics...</CardDescription>
         </CardHeader>
@@ -82,7 +82,7 @@ export function RevenueMarginCard({ className = '' }: RevenueMarginCardProps) {
         <CardHeader>
           <CardTitle className="flex items-center space-x-2 text-card-foreground font-medium">
             <DollarSign className="h-5 w-5 text-success" />
-            <span>Revenue vs Cost Margin</span>
+            <span>{t('widgets.revenueVsCostMargin')}</span>
           </CardTitle>
           <CardDescription className="text-muted-foreground">Unable to load financial metrics</CardDescription>
         </CardHeader>
@@ -153,7 +153,7 @@ export function RevenueMarginCard({ className = '' }: RevenueMarginCardProps) {
       <CardHeader>
         <CardTitle className="flex items-center space-x-2 text-card-foreground font-medium">
           <DollarSign className="h-5 w-5 text-success" />
-          <span>Revenue vs Cost Margin</span>
+          <span>{t('widgets.revenueVsCostMargin')}</span>
         </CardTitle>
         <CardDescription className="text-muted-foreground">
           Monthly Revenue vs Operational Costs

@@ -7,14 +7,14 @@ import { Progress } from '@/components/ui/progress';
 import { businessIntelligence, type OperationalPulse } from '@/lib/business-intelligence';
 import { Users, Activity, Truck, DollarSign, TrendingUp, Zap } from 'lucide-react';
 import { logger } from '@/lib/logger';
-// Translation system removed - using hardcoded strings
+import { useLanguage } from '@/contexts/language-context';
 
 interface UnifiedOpsPulseProps {
   className?: string;
 }
 
 export function UnifiedOpsPulse({ className = '' }: UnifiedOpsPulseProps) {
-  const t = (key: string, params?: any) => key;
+  const { t } = useLanguage();
   const [pulse, setPulse] = React.useState<OperationalPulse | null>(null);
   const [isLoading, setIsLoading] = React.useState(true);
 
@@ -39,7 +39,7 @@ export function UnifiedOpsPulse({ className = '' }: UnifiedOpsPulseProps) {
         <CardHeader>
           <CardTitle className="flex items-center space-x-2 text-card-foreground font-medium">
             <Zap className="h-5 w-5 text-primary" />
-            <span>Unified Ops Pulse</span>
+            <span>{t('widgets.unifiedOpsPulse')}</span>
           </CardTitle>
           <CardDescription className="text-muted-foreground">Loading operational metrics...</CardDescription>
         </CardHeader>
@@ -60,7 +60,7 @@ export function UnifiedOpsPulse({ className = '' }: UnifiedOpsPulseProps) {
         <CardHeader>
           <CardTitle className="flex items-center space-x-2 text-card-foreground font-medium">
             <Zap className="h-5 w-5 text-primary" />
-            <span>Unified Ops Pulse</span>
+            <span>{t('widgets.unifiedOpsPulse')}</span>
           </CardTitle>
           <CardDescription className="text-muted-foreground">Unable to load operational metrics</CardDescription>
         </CardHeader>

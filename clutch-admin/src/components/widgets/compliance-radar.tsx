@@ -6,7 +6,7 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Progress } from '@/components/ui/progress';
 import { businessIntelligence, type ComplianceStatus } from '@/lib/business-intelligence';
-// Translation system removed - using hardcoded strings
+import { useLanguage } from '@/contexts/language-context';
 import { 
   Shield, 
   AlertTriangle, 
@@ -25,7 +25,7 @@ interface ComplianceRadarProps {
 }
 
 export function ComplianceRadar({ className = '' }: ComplianceRadarProps) {
-  const t = (key: string, params?: any) => key;
+  const { t } = useLanguage();
   const [compliance, setCompliance] = React.useState<ComplianceStatus | null>(null);
   const [isLoading, setIsLoading] = React.useState(true);
 
@@ -93,7 +93,7 @@ export function ComplianceRadar({ className = '' }: ComplianceRadarProps) {
         <CardHeader>
           <CardTitle className="flex items-center space-x-2 text-card-foreground font-medium">
             <Shield className="h-5 w-5 text-primary" />
-            <span>Compliance Radar</span>
+            <span>{t('widgets.complianceRadar')}</span>
           </CardTitle>
           <CardDescription className="text-muted-foreground">Loading compliance status...</CardDescription>
         </CardHeader>
@@ -114,7 +114,7 @@ export function ComplianceRadar({ className = '' }: ComplianceRadarProps) {
         <CardHeader>
           <CardTitle className="flex items-center space-x-2 text-card-foreground font-medium">
             <Shield className="h-5 w-5 text-primary" />
-            <span>Compliance Radar</span>
+            <span>{t('widgets.complianceRadar')}</span>
           </CardTitle>
           <CardDescription className="text-muted-foreground">Unable to load compliance status</CardDescription>
         </CardHeader>
@@ -130,7 +130,7 @@ export function ComplianceRadar({ className = '' }: ComplianceRadarProps) {
       <CardHeader>
         <CardTitle className="flex items-center space-x-2 text-card-foreground font-medium">
           <Shield className="h-5 w-5 text-primary" />
-          <span>Compliance Radar</span>
+          <span>{t('widgets.complianceRadar')}</span>
         </CardTitle>
         <CardDescription className="text-muted-foreground">
           Compliance status summary across all areas

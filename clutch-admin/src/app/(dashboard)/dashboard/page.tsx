@@ -95,7 +95,7 @@ export default function DashboardPage() {
   try {
     // Ensure hasPermission is a function before using it
     const permissionCheck = typeof hasPermission === 'function' ? hasPermission : () => true;
-    const quickActionsResult = useQuickActions(permissionCheck);
+    const quickActionsResult = useQuickActions(permissionCheck, t);
     quickActions = quickActionsResult.quickActions || [];
     generateReport = quickActionsResult.generateReport;
     exportData = quickActionsResult.exportData;

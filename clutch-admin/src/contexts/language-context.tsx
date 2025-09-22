@@ -258,7 +258,19 @@ export function LanguageProvider({ children }: LanguageProviderProps) {
       'users.engagement': 'Engagement',
       'users.onboarding': 'Onboarding',
       'users.roleDistribution': 'Role Distribution',
-      'users.churnRisk': 'Churn Risk'
+      'users.churnRisk': 'Churn Risk',
+      'quickActions.addUser': 'Add User',
+      'quickActions.createFleet': 'Create Fleet',
+      'quickActions.generateReport': 'Generate Report',
+      'quickActions.viewAnalytics': 'View Analytics',
+      'quickActions.optimizeRoutes': 'Optimize Routes',
+      'quickActions.exportData': 'Export Data',
+      'widgets.unifiedOpsPulse': 'Unified Ops Pulse',
+      'widgets.churnRiskAnalysis': 'Churn Risk Analysis',
+      'widgets.revenueVsCostMargin': 'Revenue vs Cost Margin',
+      'widgets.aiPoweredForecast': 'AI-Powered Forecast',
+      'widgets.complianceRadar': 'Compliance Radar',
+      'widgets.top5EnterpriseClients': 'Top 5 Enterprise Clients'
     };
 
     // Helper function to get nested value from object

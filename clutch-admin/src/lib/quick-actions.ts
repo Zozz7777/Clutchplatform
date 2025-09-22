@@ -15,10 +15,12 @@ export interface QuickAction {
 export class QuickActionsService {
   private router: { push: (path: string) => void };
   private hasPermission: (permission: string) => boolean;
+  private t: (key: string) => string;
 
-  constructor(router: { push: (path: string) => void }, hasPermission: (permission: string) => boolean) {
+  constructor(router: { push: (path: string) => void }, hasPermission: (permission: string) => boolean, t: (key: string) => string) {
     this.router = router;
     this.hasPermission = hasPermission;
+    this.t = t;
   }
 
   // Navigation actions
@@ -220,7 +222,7 @@ export class QuickActionsService {
     return [
       {
         id: 'add-user',
-        title: 'Add User',
+        title: this.t('quickActions.addUser'),
         description: 'Create a new user account',
         icon: 'Users',
         action: this.addUser,
@@ -229,7 +231,7 @@ export class QuickActionsService {
       },
       {
         id: 'create-fleet',
-        title: 'Create Fleet',
+        title: this.t('quickActions.createFleet'),
         description: 'Add a new vehicle to the fleet',
         icon: 'Truck',
         action: this.createFleet,
@@ -238,7 +240,7 @@ export class QuickActionsService {
       },
       {
         id: 'generate-report',
-        title: 'Generate Report',
+        title: this.t('quickActions.generateReport'),
         description: 'Create a comprehensive dashboard report',
         icon: 'FileText',
         action: this.generateReport,
@@ -247,7 +249,7 @@ export class QuickActionsService {
       },
       {
         id: 'view-analytics',
-        title: 'View Analytics',
+        title: this.t('quickActions.viewAnalytics'),
         description: 'Open detailed analytics dashboard',
         icon: 'BarChart3',
         action: this.navigateToAnalytics,
@@ -256,7 +258,7 @@ export class QuickActionsService {
       },
       {
         id: 'optimize-routes',
-        title: 'Optimize Routes',
+        title: this.t('quickActions.optimizeRoutes'),
         description: 'Optimize fleet routes for efficiency',
         icon: 'Route',
         action: this.optimizeRoutes,
@@ -265,7 +267,7 @@ export class QuickActionsService {
       },
       {
         id: 'export-data',
-        title: 'Export Data',
+        title: this.t('quickActions.exportData'),
         description: 'Export dashboard data to CSV',
         icon: 'Download',
         action: () => this.exportData('dashboard'),
@@ -321,9 +323,9 @@ export class QuickActionsService {
 }
 
 // Hook for using quick actions
-export function useQuickActions(hasPermission: (permission: string) => boolean) {
+export function useQuickActions(hasPermission: (permission: string) => boolean, t: (key: string) => string) {
   const router = useRouter();
-  const quickActionsService = new QuickActionsService(router, hasPermission);
+  const quickActionsService = new QuickActionsService(router, hasPermission, t);
   
   return {
     quickActions: quickActionsService.getFilteredQuickActions(),
