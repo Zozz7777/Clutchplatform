@@ -217,7 +217,7 @@ export default function CommunicationPage() {
     };
 
     loadCommunicationData();
-  }, [t]);
+  }, []); // Remove 't' dependency to prevent infinite re-renders
 
 
   const getTypeColor = (type: string) => {
