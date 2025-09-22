@@ -31,25 +31,49 @@ export function ComplianceRadar({ className = '' }: ComplianceRadarProps) {
     const { t } = useLanguage();
     const [compliance, setCompliance] = React.useState<ComplianceStatus | null>(null);
     const [isLoading, setIsLoading] = React.useState(true);
+    const [hasError, setHasError] = React.useState(false);
 
-  React.useEffect(() => {
-    const loadCompliance = async () => {
-      try {
-        const data = await businessIntelligence.getComplianceRadar();
-        console.log('ComplianceRadar received data:', data);
-        console.log('Data type:', typeof data);
-        console.log('Data keys:', data ? Object.keys(data) : 'null');
-        setCompliance(data);
-      } catch (error) {
-        console.error('Failed to load compliance data:', error);
-        setCompliance(null);
-      } finally {
-        setIsLoading(false);
-      }
-    };
-
-    loadCompliance();
-  }, []);
+    React.useEffect(() => {
+      const loadCompliance = async () => {
+        try {
+          const data = await businessIntelligence.getComplianceRadar();
+          console.log('ComplianceRadar received data:', data);
+          console.log('Data type:', typeof data);
+          console.log('Data keys:', data ? Object.keys(data) : 'null');
+          
+          // Validate data structure before setting state
+          if (data && typeof data === 'object') {
+            // Check if data has the expected ComplianceStatus structure
+            const hasValidStructure = 
+              typeof data.pendingApprovals === 'number' &&
+              typeof data.violations === 'number' &&
+              typeof data.securityIncidents === 'number' &&
+              typeof data.overallStatus === 'string';
+              
+            if (hasValidStructure) {
+              console.log('✅ ComplianceRadar: Valid data structure confirmed');
+              setCompliance(data);
+              setHasError(false);
+            } else {
+              console.error('❌ ComplianceRadar: Invalid data structure:', data);
+              setHasError(true);
+              setCompliance(null);
+            }
+          } else {
+            console.error('❌ ComplianceRadar: Invalid data type:', data);
+            setHasError(true);
+            setCompliance(null);
+          }
+        } catch (error) {
+          console.error('❌ ComplianceRadar: Failed to load:', error);
+          setHasError(true);
+          setCompliance(null);
+        } finally {
+          setIsLoading(false);
+        }
+      };
+      loadCompliance();
+    }, []);
 
   const getStatusColor = (status: string) => {
     switch (status) {
@@ -111,6 +135,27 @@ export function ComplianceRadar({ className = '' }: ComplianceRadarProps) {
             <div className="h-4 bg-muted rounded-[0.625rem] w-2/3"></div>
           </div>
         </CardContent>
+      </Card>
+    );
+  }
+
+  if (hasError) {
+    return (
+      <Card className={`${className} shadow-2xs border-destructive/20`}>
+        <CardHeader>
+          <CardTitle className="flex items-center space-x-2 text-card-foreground font-medium">
+            <Shield className="h-5 w-5 text-destructive" />
+            <span>{t('widgets.complianceRadar')}</span>
+          </CardTitle>
+          <CardDescription className="text-destructive">
+            Data structure error - Check console for details
+          </CardDescription>
+        </CardHeader>
+        <div className="p-4">
+          <p className="text-sm text-muted-foreground">
+            The compliance data received does not match the expected format.
+          </p>
+        </div>
       </Card>
     );
   }
