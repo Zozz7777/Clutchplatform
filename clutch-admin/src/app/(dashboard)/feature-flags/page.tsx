@@ -47,7 +47,7 @@ import {
 } from "lucide-react";
 import { productionApi } from "@/lib/production-api";
 import { handleDataLoadError } from "@/lib/error-handler";
-// import { useTranslations } from "@/hooks/use-translations";
+// Translation system removed - using hardcoded strings
 
 interface FeatureFlag {
   _id: string;
@@ -528,9 +528,9 @@ export default function FeatureFlagsPage() {
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold tracking-tight">{t('dashboard.featureFlags')}</h1>
+          <h1 className="text-3xl font-bold tracking-tight">Feature Flags</h1>
           <p className="text-muted-foreground">
-            {t('dashboard.manageFeatureFlags')}
+            Manage feature flags and toggles
           </p>
         </div>
         <div className="flex items-center space-x-2">
@@ -606,7 +606,7 @@ export default function FeatureFlagsPage() {
       {/* Feature Flags */}
       <Card>
         <CardHeader>
-          <CardTitle>{t('dashboard.featureFlags')}</CardTitle>
+          <CardTitle>Feature Flags</CardTitle>
           <CardDescription>
             {t('dashboard.manageFeatureToggles')}
           </CardDescription>

@@ -8,7 +8,7 @@ import { Input } from "@/components/ui/input";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { formatDate, formatRelativeTime } from "@/lib/utils";
 import { useAuth } from "@/contexts/auth-context";
-import { useTranslations } from "@/hooks/use-translations";
+// Translation system removed - using hardcoded strings
 import { productionApi } from "@/lib/production-api";
 import { toast } from "sonner";
 import { handleDataLoadError } from "@/lib/error-handler";
@@ -318,9 +318,9 @@ export default function ChatPage() {
       {/* Page Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold tracking-tight text-foreground font-sans">{t('chat.title')}</h1>
+          <h1 className="text-3xl font-bold tracking-tight text-foreground font-sans">Chat</h1>
           <p className="text-muted-foreground font-sans">
-            {t('chat.description')}
+            Communicate with your team and customers
           </p>
         </div>
         <div className="flex items-center space-x-2">

@@ -10,7 +10,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Label } from "@/components/ui/label";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Loader2, Eye, EyeOff } from "lucide-react";
-// import { useTranslations } from "next-intl";
+// Translation system removed - using hardcoded strings
 
 // Prevent static generation for this page
 export const dynamic = 'force-dynamic';
@@ -111,9 +111,9 @@ function LoginForm() {
             </div>
           </div>
           <div className="space-y-2">
-            <CardTitle className="text-3xl font-bold text-card-foreground font-sans">{t('auth.clutchAdmin')}</CardTitle>
+            <CardTitle className="text-3xl font-bold text-card-foreground font-sans">Clutch Admin</CardTitle>
             <CardDescription className="text-muted-foreground font-sans text-base">
-              {t('auth.signInToDrive')}
+              Sign in to drive your business forward
             </CardDescription>
           </div>
         </CardHeader>
