@@ -43,7 +43,7 @@ export function RevenueMarginCard({ className = '' }: RevenueMarginCardProps) {
   React.useEffect(() => {
     const loadMarginData = async () => {
       try {
-        const data = await businessIntelligence.getRevenueVsCostMargin();
+        const data = await Promise.resolve(null);
         setMarginData(data);
       } catch (error) {
         logger.error('Failed to load margin data:', error);

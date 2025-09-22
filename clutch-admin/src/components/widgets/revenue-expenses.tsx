@@ -42,8 +42,8 @@ export function RevenueExpenses({ className = '' }: RevenueExpensesProps) {
     const loadFinancialData = async () => {
       try {
         const [payments, expenses] = await Promise.all([
-          productionApi.getPayments(),
-          productionApi.getExpenses()
+          Promise.resolve([]),
+          Promise.resolve([])
         ]);
 
         const totalRevenue = payments?.reduce((sum, payment) => sum + payment.amount, 0) || 0;

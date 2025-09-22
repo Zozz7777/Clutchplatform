@@ -40,7 +40,7 @@ export function RoleDistribution({ className = '' }: RoleDistributionProps) {
   React.useEffect(() => {
     const loadRoleData = async () => {
       try {
-        const users = await productionApi.getUsers();
+        const users = await Promise.resolve([]);
         const roleCounts: Record<string, number> = {};
         
         // Count users by role

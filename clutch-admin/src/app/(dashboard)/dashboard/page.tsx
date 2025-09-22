@@ -210,7 +210,7 @@ export default function DashboardPage() {
             <FileText className="mr-2 h-4 w-4" />
             {t('dashboard.generateReport')}
           </Button>
-          <Button className="shadow-2xs" onClick={() => exportData?.('dashboard')}>
+          <Button className="shadow-2xs" onClick={() => exportData?.()}>
             <Download className="mr-2 h-4 w-4" />
             {t('dashboard.exportData')}
           </Button>

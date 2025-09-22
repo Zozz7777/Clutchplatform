@@ -341,7 +341,7 @@ export default function HRPage() {
         position: editFormData.position,
         salary: editFormData.salary,
         permissions: editFormData.permissions,
-        isActive: editFormData.isActive !== false
+        isActive: (editFormData as any).isActive !== false
       };
       
       const response = await apiService.updateEmployee(selectedEmployee._id, updateData);

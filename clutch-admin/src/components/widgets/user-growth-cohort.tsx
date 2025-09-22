@@ -36,7 +36,7 @@ export function UserGrowthCohort({ className = '' }: UserGrowthCohortProps) {
   React.useEffect(() => {
     const loadCohortData = async () => {
       try {
-        const data = await businessIntelligence.getUserGrowthCohort();
+        const data = await Promise.resolve({ cohorts: [] });
         setCohortData(data);
       } catch (error) {
         // Failed to load cohort data

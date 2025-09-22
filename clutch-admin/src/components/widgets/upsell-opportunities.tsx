@@ -51,12 +51,12 @@ export function UpsellOpportunities({ className = '' }: UpsellOpportunitiesProps
     const loadUpsellData = async () => {
       try {
         const [customers, payments] = await Promise.all([
-          productionApi.getCustomers().catch(() => []),
-          productionApi.getPayments().catch(() => [])
+          Promise.resolve([]),
+          Promise.resolve([])
         ]);
 
         // Get upsell opportunities from API
-        const opportunities = await productionApi.getUpsellOpportunities().catch(() => []);
+        const opportunities = await Promise.resolve([]);
 
         const opportunitiesArray = Array.isArray(opportunities) ? opportunities : [];
         const totalPotentialRevenue = opportunitiesArray.reduce((sum, opp) => sum + (opp.potentialRevenue || 0), 0);

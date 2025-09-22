@@ -41,7 +41,7 @@ export default function FleetOverviewPage() {
       try {
         const fleetData = await realApi.getFleetVehicles();
         // Ensure we always have an array
-        setVehicles((Array.isArray(fleetData) ? fleetData : []) as FleetVehicle[]);
+        setVehicles((Array.isArray(fleetData) ? fleetData : []) as unknown as FleetVehicle[]);
       } catch (error) {
         // Error handled by API service
         toast.error("Failed to load fleet overview");

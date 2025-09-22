@@ -394,6 +394,31 @@ const fallbackTranslations = {
     complianceViolations: "Compliance Violations",
     policyBreaches: "Policy breaches",
     securityBreaches: "Security breaches"
+  },
+  enterprise: {
+    totalRevenue: "Total Revenue",
+    avgGrowth: "Avg Growth",
+    revenueShare: "Revenue Share",
+    revenueDistribution: "Revenue Distribution",
+    growthAnalysis: "Growth Analysis",
+    growingClients: "Growing Clients",
+    decliningClients: "Declining Clients"
+  },
+  obd2: {
+    activeCodes: "Active Codes",
+    criticalIssues: "Critical Issues",
+    resolved: "Resolved",
+    fleetHealth: "Fleet Health",
+    errorCodes: "Error Codes",
+    liveData: "Live Data",
+    history: "History",
+    analytics: "Analytics",
+    currentAndHistoricalErrorCodes: "Current and historical error codes from fleet vehicles",
+    allSeverity: "All Severity",
+    critical: "Critical",
+    high: "High",
+    medium: "Medium",
+    allStatus: "All Status"
   }
 };
 

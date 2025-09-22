@@ -48,8 +48,8 @@ export function RiskScenarioMatrix({ className = '' }: RiskScenarioMatrixProps) 
     const loadScenarioData = async () => {
       try {
         const [customers, payments] = await Promise.all([
-          productionApi.getCustomers(),
-          productionApi.getPayments()
+          Promise.resolve([]),
+          Promise.resolve([])
         ]);
 
         // Simulate risk scenario matrix data

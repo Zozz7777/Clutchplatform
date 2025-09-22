@@ -93,7 +93,7 @@ export function ComplianceRadar({ className = '' }: ComplianceRadarProps) {
         <CardHeader>
           <CardTitle className="flex items-center space-x-2 text-card-foreground font-medium">
             <Shield className="h-5 w-5 text-primary" />
-            <span>Compliance Radar</span>
+            <span>{t('compliance.radar')}</span>
           </CardTitle>
           <CardDescription className="text-muted-foreground">Loading compliance status...</CardDescription>
         </CardHeader>
@@ -114,9 +114,9 @@ export function ComplianceRadar({ className = '' }: ComplianceRadarProps) {
         <CardHeader>
           <CardTitle className="flex items-center space-x-2 text-card-foreground font-medium">
             <Shield className="h-5 w-5 text-primary" />
-            <span>Compliance Radar</span>
+            <span>{t('compliance.radar')}</span>
           </CardTitle>
-          <CardDescription className="text-muted-foreground">Unable to load compliance status</CardDescription>
+          <CardDescription className="text-muted-foreground">{t('compliance.unableToLoadStatus')}</CardDescription>
         </CardHeader>
       </Card>
     );
@@ -150,7 +150,7 @@ export function ComplianceRadar({ className = '' }: ComplianceRadarProps) {
                'Action Required'}
             </Badge>
           </div>
-          <p className="text-sm text-muted-foreground">Overall Compliance Status</p>
+          <p className="text-sm text-muted-foreground">{t('compliance.overallComplianceStatus')}</p>
         </div>
 
         {/* Compliance Metrics */}
@@ -158,31 +158,31 @@ export function ComplianceRadar({ className = '' }: ComplianceRadarProps) {
           <div className="text-center p-3 bg-primary/10 rounded-[0.625rem] border border-primary/20">
             <FileText className="h-5 w-5 text-primary mx-auto mb-1" />
             <p className="text-lg font-bold text-primary">{compliance.pendingApprovals}</p>
-            <p className="text-xs text-muted-foreground">Pending Approvals</p>
+            <p className="text-xs text-muted-foreground">{t('compliance.pendingApprovals')}</p>
           </div>
           <div className="text-center p-3 bg-warning/10 rounded-[0.625rem] border border-warning/20">
             <AlertTriangle className="h-5 w-5 text-warning mx-auto mb-1" />
             <p className="text-lg font-bold text-warning">{compliance.violations}</p>
-            <p className="text-xs text-muted-foreground">Violations</p>
+            <p className="text-xs text-muted-foreground">{t('compliance.violations')}</p>
           </div>
           <div className="text-center p-3 bg-destructive/10 rounded-[0.625rem] border border-destructive/20">
             <Lock className="h-5 w-5 text-destructive mx-auto mb-1" />
             <p className="text-lg font-bold text-destructive">{compliance.securityIncidents}</p>
-            <p className="text-xs text-muted-foreground">Security Incidents</p>
+            <p className="text-xs text-muted-foreground">{t('compliance.securityIncidents')}</p>
           </div>
         </div>
 
         {/* Compliance Breakdown */}
         <div className="space-y-3">
-          <h4 className="text-sm font-medium text-card-foreground">Compliance Breakdown</h4>
+          <h4 className="text-sm font-medium text-card-foreground">{t('compliance.complianceBreakdown')}</h4>
           
           <div className="space-y-2">
             <div className="flex items-center justify-between p-3 bg-muted/50 rounded-[0.625rem] border border-border">
               <div className="flex items-center space-x-3">
                 <FileText className="h-4 w-4 text-primary" />
                 <div>
-                  <p className="text-sm font-medium text-card-foreground">Pending Approvals</p>
-                  <p className="text-xs text-muted-foreground">Awaiting review</p>
+                  <p className="text-sm font-medium text-card-foreground">{t('compliance.pendingApprovals')}</p>
+                  <p className="text-xs text-muted-foreground">{t('compliance.awaitingReview')}</p>
                 </div>
               </div>
               <div className="text-right">
@@ -197,8 +197,8 @@ export function ComplianceRadar({ className = '' }: ComplianceRadarProps) {
               <div className="flex items-center space-x-3">
                 <AlertTriangle className="h-4 w-4 text-warning" />
                 <div>
-                  <p className="text-sm font-medium text-card-foreground">Compliance Violations</p>
-                  <p className="text-xs text-muted-foreground">Policy breaches</p>
+                  <p className="text-sm font-medium text-card-foreground">{t('compliance.complianceViolations')}</p>
+                  <p className="text-xs text-muted-foreground">{t('compliance.policyBreaches')}</p>
                 </div>
               </div>
               <div className="text-right">
@@ -213,8 +213,8 @@ export function ComplianceRadar({ className = '' }: ComplianceRadarProps) {
               <div className="flex items-center space-x-3">
                 <Lock className="h-4 w-4 text-destructive" />
                 <div>
-                  <p className="text-sm font-medium text-card-foreground">Security Incidents</p>
-                  <p className="text-xs text-muted-foreground">Security breaches</p>
+                  <p className="text-sm font-medium text-card-foreground">{t('compliance.securityIncidents')}</p>
+                  <p className="text-xs text-muted-foreground">{t('compliance.securityBreaches')}</p>
                 </div>
               </div>
               <div className="text-right">

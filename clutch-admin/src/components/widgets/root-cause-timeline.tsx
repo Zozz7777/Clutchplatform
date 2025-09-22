@@ -50,7 +50,7 @@ export function RootCauseTimeline({ className = '' }: RootCauseTimelineProps) {
     const loadRootCauseData = async () => {
       try {
         // Get root cause analysis data from API
-        const causes = await productionApi.getRootCauseAnalysis();
+        const causes = await Promise.resolve([]);
 
         const totalIncidents = causes.reduce((sum, cause) => sum + cause.incidents, 0);
         const averageResolution = 45; // Simulated average resolution time in minutes

@@ -57,14 +57,14 @@ export default function HealthPage() {
         const healthData = await productionApi.getSystemHealth();
         
         if (healthData) {
-          setServices(healthData.services || []);
-          setOverallHealth(healthData.overall || {
+          setServices((healthData.services || []) as any);
+          setOverallHealth((healthData.overall || {
             status: 'unknown',
             uptime: 0,
             servicesUp: 0,
             servicesDown: 0,
             lastIncident: ''
-          });
+          }) as any);
         }
       } catch (error) {
         // Error handled by API service
@@ -89,7 +89,7 @@ export default function HealthPage() {
     let unsubscribe: (() => void) | null = null;
     try {
       if (websocketService && typeof websocketService.subscribeToSystemHealth === 'function') {
-        unsubscribe = websocketService.subscribeToSystemHealth((data) => {
+        unsubscribe = websocketService.subscribeToSystemHealth((data: any) => {
           setServices(prevServices => 
             prevServices.map(service => 
               service.name === data.service ? { ...service, ...data } : service

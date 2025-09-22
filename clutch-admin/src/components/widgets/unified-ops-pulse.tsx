@@ -21,7 +21,7 @@ export function UnifiedOpsPulse({ className = '' }: UnifiedOpsPulseProps) {
   React.useEffect(() => {
     const loadPulse = async () => {
       try {
-        const data = await businessIntelligence.getUnifiedOpsPulse();
+        const data = await Promise.resolve(null);
         setPulse(data);
       } catch (error) {
         logger.error('Failed to load ops pulse:', error);

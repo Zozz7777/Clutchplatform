@@ -143,10 +143,10 @@ export default function EnterprisePage() {
 
         // Ensure clients is always an array
         const clientsArray = Array.isArray(clientsData) ? clientsData : [];
-        setClients(clientsArray as EnterpriseClient[]);
+        setClients(clientsArray as unknown as EnterpriseClient[]);
 
         if (statsData) {
-          setStats(statsData as EnterpriseStats);
+          setStats(statsData as unknown as EnterpriseStats);
         } else {
           // Calculate stats from loaded data with array safety
           const totalClients = clientsArray.length;
@@ -154,7 +154,7 @@ export default function EnterprisePage() {
           const totalRevenue = clientsArray.reduce((sum, c) => sum + ((c as any).subscription?.monthlyFee || 0), 0);
           const totalVehicles = clientsArray.reduce((sum, c) => sum + ((c as any).fleet?.totalVehicles || 0), 0);
           const averageFleetSize = clientsArray.length > 0 ? totalVehicles / clientsArray.length : 0;
-          const whiteLabelClients = clientsArray.filter(c => c.whiteLabel?.enabled).length;
+          const whiteLabelClients = clientsArray.filter(c => (c as any).whiteLabel?.enabled).length;
 
           setStats({
             totalClients,

@@ -203,7 +203,7 @@ export default function OBD2Page() {
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
         <Card className="shadow-2xs">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium text-card-foreground">Active Codes</CardTitle>
+            <CardTitle className="text-sm font-medium text-card-foreground">{t('obd2.activeCodes')}</CardTitle>
             <AlertTriangle className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
@@ -215,7 +215,7 @@ export default function OBD2Page() {
         </Card>
         <Card className="shadow-2xs">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium text-card-foreground">Critical Issues</CardTitle>
+            <CardTitle className="text-sm font-medium text-card-foreground">{t('obd2.criticalIssues')}</CardTitle>
             <AlertTriangle className="h-4 w-4 text-destructive" />
           </CardHeader>
           <CardContent>
@@ -227,7 +227,7 @@ export default function OBD2Page() {
         </Card>
         <Card className="shadow-2xs">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium text-card-foreground">Resolved</CardTitle>
+            <CardTitle className="text-sm font-medium text-card-foreground">{t('obd2.resolved')}</CardTitle>
             <CheckCircle className="h-4 w-4 text-success" />
           </CardHeader>
           <CardContent>
@@ -239,7 +239,7 @@ export default function OBD2Page() {
         </Card>
         <Card className="shadow-2xs">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium text-card-foreground">Fleet Health</CardTitle>
+            <CardTitle className="text-sm font-medium text-card-foreground">{t('obd2.fleetHealth')}</CardTitle>
             <Activity className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
@@ -256,17 +256,17 @@ export default function OBD2Page() {
       {/* OBD2 Data Tabs */}
       <Tabs defaultValue="codes" className="space-y-4">
         <TabsList className="grid w-full grid-cols-4">
-          <TabsTrigger value="codes">Error Codes</TabsTrigger>
-          <TabsTrigger value="live">Live Data</TabsTrigger>
-          <TabsTrigger value="history">History</TabsTrigger>
-          <TabsTrigger value="analytics">Analytics</TabsTrigger>
+          <TabsTrigger value="codes">{t('obd2.errorCodes')}</TabsTrigger>
+          <TabsTrigger value="live">{t('obd2.liveData')}</TabsTrigger>
+          <TabsTrigger value="history">{t('obd2.history')}</TabsTrigger>
+          <TabsTrigger value="analytics">{t('obd2.analytics')}</TabsTrigger>
         </TabsList>
 
         <TabsContent value="codes" className="space-y-4">
           <Card className="shadow-2xs">
             <CardHeader>
               <CardTitle className="text-card-foreground">Diagnostic Trouble Codes (DTCs)</CardTitle>
-              <CardDescription>Current and historical error codes from fleet vehicles</CardDescription>
+              <CardDescription>{t('obd2.currentAndHistoricalErrorCodes')}</CardDescription>
             </CardHeader>
             <CardContent>
               {/* Filters */}
@@ -287,10 +287,10 @@ export default function OBD2Page() {
                     <SelectValue placeholder="Filter by severity" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="all">All Severity</SelectItem>
-                    <SelectItem value="critical">Critical</SelectItem>
-                    <SelectItem value="high">High</SelectItem>
-                    <SelectItem value="medium">Medium</SelectItem>
+                    <SelectItem value="all">{t('obd2.allSeverity')}</SelectItem>
+                    <SelectItem value="critical">{t('obd2.critical')}</SelectItem>
+                    <SelectItem value="high">{t('obd2.high')}</SelectItem>
+                    <SelectItem value="medium">{t('obd2.medium')}</SelectItem>
                     <SelectItem value="low">Low</SelectItem>
                   </SelectContent>
                 </Select>
@@ -299,7 +299,7 @@ export default function OBD2Page() {
                     <SelectValue placeholder="Filter by status" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="all">All Status</SelectItem>
+                    <SelectItem value="all">{t('obd2.allStatus')}</SelectItem>
                     <SelectItem value="active">Active</SelectItem>
                     <SelectItem value="pending">Pending</SelectItem>
                     <SelectItem value="resolved">Resolved</SelectItem>
