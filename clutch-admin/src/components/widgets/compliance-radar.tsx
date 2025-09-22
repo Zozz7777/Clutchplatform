@@ -27,53 +27,52 @@ interface ComplianceRadarProps {
 export function ComplianceRadar({ className = '' }: ComplianceRadarProps) {
   console.log('ComplianceRadar component initializing...');
   
-  try {
-    const { t } = useLanguage();
-    const [compliance, setCompliance] = React.useState<ComplianceStatus | null>(null);
-    const [isLoading, setIsLoading] = React.useState(true);
-    const [hasError, setHasError] = React.useState(false);
+  const { t } = useLanguage();
+  const [compliance, setCompliance] = React.useState<ComplianceStatus | null>(null);
+  const [isLoading, setIsLoading] = React.useState(true);
+  const [hasError, setHasError] = React.useState(false);
 
-    React.useEffect(() => {
-      const loadCompliance = async () => {
-        try {
-          const data = await businessIntelligence.getComplianceRadar();
-          console.log('ComplianceRadar received data:', data);
-          console.log('Data type:', typeof data);
-          console.log('Data keys:', data ? Object.keys(data) : 'null');
-          
-          // Validate data structure before setting state
-          if (data && typeof data === 'object') {
-            // Check if data has the expected ComplianceStatus structure
-            const hasValidStructure = 
-              typeof data.pendingApprovals === 'number' &&
-              typeof data.violations === 'number' &&
-              typeof data.securityIncidents === 'number' &&
-              typeof data.overallStatus === 'string';
-              
-            if (hasValidStructure) {
-              console.log('✅ ComplianceRadar: Valid data structure confirmed');
-              setCompliance(data);
-              setHasError(false);
-            } else {
-              console.error('❌ ComplianceRadar: Invalid data structure:', data);
-              setHasError(true);
-              setCompliance(null);
-            }
+  React.useEffect(() => {
+    const loadCompliance = async () => {
+      try {
+        const data = await businessIntelligence.getComplianceRadar();
+        console.log('ComplianceRadar received data:', data);
+        console.log('Data type:', typeof data);
+        console.log('Data keys:', data ? Object.keys(data) : 'null');
+        
+        // Validate data structure before setting state
+        if (data && typeof data === 'object') {
+          // Check if data has the expected ComplianceStatus structure
+          const hasValidStructure = 
+            typeof data.pendingApprovals === 'number' &&
+            typeof data.violations === 'number' &&
+            typeof data.securityIncidents === 'number' &&
+            typeof data.overallStatus === 'string';
+            
+          if (hasValidStructure) {
+            console.log('✅ ComplianceRadar: Valid data structure confirmed');
+            setCompliance(data);
+            setHasError(false);
           } else {
-            console.error('❌ ComplianceRadar: Invalid data type:', data);
+            console.error('❌ ComplianceRadar: Invalid data structure:', data);
             setHasError(true);
             setCompliance(null);
           }
-        } catch (error) {
-          console.error('❌ ComplianceRadar: Failed to load:', error);
+        } else {
+          console.error('❌ ComplianceRadar: Invalid data type:', data);
           setHasError(true);
           setCompliance(null);
-        } finally {
-          setIsLoading(false);
         }
-      };
-      loadCompliance();
-    }, []);
+      } catch (error) {
+        console.error('❌ ComplianceRadar: Failed to load:', error);
+        setHasError(true);
+        setCompliance(null);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+    loadCompliance();
+  }, []);
 
   const getStatusColor = (status: string) => {
     switch (status) {
