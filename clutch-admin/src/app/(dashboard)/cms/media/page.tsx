@@ -6,7 +6,7 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { useTranslations } from '@/hooks/use-translations';
+// Translation system removed - using hardcoded strings
 import { 
   Image, 
   Video, 
@@ -32,7 +32,7 @@ interface MediaFile {
 }
 
 export default function MediaCMSPage() {
-  const { t } = useTranslations();
+  // Translation system removed - using hardcoded strings
   const [mediaFiles, setMediaFiles] = useState<MediaFile[]>([]);
   const [searchTerm, setSearchTerm] = useState('');
   const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
@@ -70,9 +70,9 @@ export default function MediaCMSPage() {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold font-sans">{t('dashboard.mediaLibrary')}</h1>
+          <h1 className="text-3xl font-bold font-sans">Media Library</h1>
           <p className="text-muted-foreground font-sans">
-            {t('dashboard.manageImagesVideosDocuments')}
+            Manage images, videos, and documents
           </p>
         </div>
         <div className="flex items-center space-x-2">
@@ -81,7 +81,7 @@ export default function MediaCMSPage() {
           </Button>
           <Button>
             <Upload className="h-4 w-4 mr-2" />
-            {t('dashboard.upload')}
+            Upload
           </Button>
         </div>
       </div>
@@ -91,7 +91,7 @@ export default function MediaCMSPage() {
           <div className="relative">
             <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
             <Input
-              placeholder={t('dashboard.searchMediaFiles')}
+              placeholder=Search media files...
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
               className="pl-10"
@@ -103,18 +103,18 @@ export default function MediaCMSPage() {
           onChange={(e) => setSelectedType(e.target.value)}
           className="px-3 py-2 border border-gray-300 rounded-md"
         >
-          <option value="all">{t('dashboard.allTypes')}</option>
-          <option value="image">{t('dashboard.images')}</option>
-          <option value="video">{t('dashboard.videos')}</option>
-          <option value="document">{t('dashboard.documents')}</option>
+          <option value="all">All Types</option>
+          <option value="image">Images</option>
+          <option value="video">Videos</option>
+          <option value="document">Documents</option>
         </select>
       </div>
 
       <Tabs defaultValue="library" className="space-y-4">
         <TabsList>
-          <TabsTrigger value="library">{t('dashboard.library')}</TabsTrigger>
-          <TabsTrigger value="folders">{t('dashboard.folders')}</TabsTrigger>
-          <TabsTrigger value="analytics">{t('dashboard.analytics')}</TabsTrigger>
+          <TabsTrigger value="library">Library</TabsTrigger>
+          <TabsTrigger value="folders">Folders</TabsTrigger>
+          <TabsTrigger value="analytics">Analytics</TabsTrigger>
         </TabsList>
 
         <TabsContent value="library" className="space-y-4">
@@ -179,11 +179,11 @@ export default function MediaCMSPage() {
                       <div className="flex items-center space-x-2">
                         <Button variant="outline" size="sm">
                           <Eye className="h-4 w-4 mr-2" />
-                          {t('dashboard.view')}
+                          View
                         </Button>
                         <Button variant="outline" size="sm">
                           <Download className="h-4 w-4 mr-2" />
-                          {t('dashboard.download')}
+                          Download
                         </Button>
                         <Button variant="outline" size="sm">
                           <Trash2 className="h-4 w-4" />
@@ -214,7 +214,7 @@ export default function MediaCMSPage() {
                     <div>
                       <CardTitle className="font-sans">{folder.name}</CardTitle>
                       <CardDescription className="font-sans">
-                        {folder.count} {t('dashboard.files')}
+                        {folder.count} files
                       </CardDescription>
                     </div>
                   </div>
@@ -222,7 +222,7 @@ export default function MediaCMSPage() {
                 <CardContent>
                   <Button variant="outline" className="w-full">
                     <Eye className="h-4 w-4 mr-2" />
-                    {t('dashboard.viewFiles')}
+                    View Files
                   </Button>
                 </CardContent>
               </Card>
@@ -234,7 +234,7 @@ export default function MediaCMSPage() {
           <div className="grid gap-4 md:grid-cols-4">
             <Card>
               <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                <CardTitle className="text-sm font-medium font-sans">{t('dashboard.totalFiles')}</CardTitle>
+                <CardTitle className="text-sm font-medium font-sans">Total Files</CardTitle>
                 <File className="h-4 w-4 text-muted-foreground" />
               </CardHeader>
               <CardContent>
@@ -244,7 +244,7 @@ export default function MediaCMSPage() {
 
             <Card>
               <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                <CardTitle className="text-sm font-medium font-sans">{t('dashboard.images')}</CardTitle>
+                <CardTitle className="text-sm font-medium font-sans">Images</CardTitle>
                 <Image className="h-4 w-4 text-muted-foreground" />
               </CardHeader>
               <CardContent>
@@ -256,7 +256,7 @@ export default function MediaCMSPage() {
 
             <Card>
               <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                <CardTitle className="text-sm font-medium font-sans">{t('dashboard.videos')}</CardTitle>
+                <CardTitle className="text-sm font-medium font-sans">Videos</CardTitle>
                 <Video className="h-4 w-4 text-muted-foreground" />
               </CardHeader>
               <CardContent>
@@ -268,7 +268,7 @@ export default function MediaCMSPage() {
 
             <Card>
               <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                <CardTitle className="text-sm font-medium font-sans">{t('dashboard.totalSize')}</CardTitle>
+                <CardTitle className="text-sm font-medium font-sans">Total Size</CardTitle>
                 <Folder className="h-4 w-4 text-muted-foreground" />
               </CardHeader>
               <CardContent>

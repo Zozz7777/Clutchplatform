@@ -7,7 +7,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { useTranslations } from '@/hooks/use-translations';
+// Translation system removed - using hardcoded strings
 import { 
   HelpCircle, 
   Plus, 
@@ -32,7 +32,7 @@ interface HelpArticle {
 }
 
 export default function HelpCMSPage() {
-  const { t } = useTranslations();
+  // Translation system removed - using hardcoded strings
   const [articles, setArticles] = useState<HelpArticle[]>([]);
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('all');
@@ -43,14 +43,14 @@ export default function HelpCMSPage() {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold font-sans">{t('dashboard.helpArticlesCms')}</h1>
+          <h1 className="text-3xl font-bold font-sans">Help Articles CMS</h1>
           <p className="text-muted-foreground font-sans">
-            {t('dashboard.manageHelpArticles')}
+            Manage and organize help articles for your users
           </p>
         </div>
         <Button>
           <Plus className="h-4 w-4 mr-2" />
-          {t('dashboard.newArticle')}
+          New Article
         </Button>
       </div>
 
@@ -59,7 +59,7 @@ export default function HelpCMSPage() {
           <div className="relative">
             <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
             <Input
-              placeholder={t('dashboard.searchArticles')}
+              placeholder=Search articles...
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
               className="pl-10"
@@ -81,9 +81,9 @@ export default function HelpCMSPage() {
 
       <Tabs defaultValue="articles" className="space-y-4">
         <TabsList>
-          <TabsTrigger value="articles">{t('dashboard.articles')}</TabsTrigger>
-          <TabsTrigger value="categories">{t('dashboard.categories')}</TabsTrigger>
-          <TabsTrigger value="analytics">{t('dashboard.analytics')}</TabsTrigger>
+          <TabsTrigger value="articles">Articles</TabsTrigger>
+          <TabsTrigger value="categories">Categories</TabsTrigger>
+          <TabsTrigger value="analytics">Analytics</TabsTrigger>
         </TabsList>
 
         <TabsContent value="articles" className="space-y-4">
@@ -104,11 +104,11 @@ export default function HelpCMSPage() {
                       </Badge>
                       <Button variant="outline" size="sm">
                         <Eye className="h-4 w-4 mr-2" />
-                        {t('dashboard.view')}
+                        View
                       </Button>
                       <Button variant="outline" size="sm">
                         <Edit className="h-4 w-4 mr-2" />
-                        {t('dashboard.edit')}
+                        Edit
                       </Button>
                       <Button variant="outline" size="sm">
                         <Trash2 className="h-4 w-4" />
@@ -124,11 +124,11 @@ export default function HelpCMSPage() {
                     </div>
                     <div className="flex items-center space-x-1">
                       <Eye className="h-4 w-4" />
-                      <span className="font-sans">{article.views} {t('dashboard.views')}</span>
+                      <span className="font-sans">{article.views} views</span>
                     </div>
                     <div className="flex items-center space-x-1">
                       <FileText className="h-4 w-4" />
-                      <span className="font-sans">{t('dashboard.updated')} {article.lastUpdated}</span>
+                      <span className="font-sans">Updated {article.lastUpdated}</span>
                     </div>
                   </div>
                   <div className="flex items-center space-x-2 mt-2">
@@ -151,13 +151,13 @@ export default function HelpCMSPage() {
                 <CardHeader>
                   <CardTitle className="font-sans">{category}</CardTitle>
                   <CardDescription className="font-sans">
-                    {articles.filter(article => article.category === category).length} {t('dashboard.articles')}
+                    {articles.filter(article => article.category === category).length} Articles
                   </CardDescription>
                 </CardHeader>
                 <CardContent>
                   <Button variant="outline" className="w-full">
                     <Edit className="h-4 w-4 mr-2" />
-                    {t('dashboard.manage')}
+                    Manage
                   </Button>
                 </CardContent>
               </Card>
@@ -169,7 +169,7 @@ export default function HelpCMSPage() {
           <div className="grid gap-4 md:grid-cols-4">
             <Card>
               <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                <CardTitle className="text-sm font-medium font-sans">{t('dashboard.totalArticles')}</CardTitle>
+                <CardTitle className="text-sm font-medium font-sans">Total Articles</CardTitle>
                 <BookOpen className="h-4 w-4 text-muted-foreground" />
               </CardHeader>
               <CardContent>
@@ -179,7 +179,7 @@ export default function HelpCMSPage() {
 
             <Card>
               <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                <CardTitle className="text-sm font-medium font-sans">{t('dashboard.published')}</CardTitle>
+                <CardTitle className="text-sm font-medium font-sans">Published</CardTitle>
                 <FileText className="h-4 w-4 text-muted-foreground" />
               </CardHeader>
               <CardContent>
@@ -191,7 +191,7 @@ export default function HelpCMSPage() {
 
             <Card>
               <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                <CardTitle className="text-sm font-medium font-sans">{t('dashboard.totalViews')}</CardTitle>
+                <CardTitle className="text-sm font-medium font-sans">Total Views</CardTitle>
                 <Eye className="h-4 w-4 text-muted-foreground" />
               </CardHeader>
               <CardContent>
@@ -203,7 +203,7 @@ export default function HelpCMSPage() {
 
             <Card>
               <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                <CardTitle className="text-sm font-medium font-sans">{t('dashboard.categories')}</CardTitle>
+                <CardTitle className="text-sm font-medium font-sans">Categories</CardTitle>
                 <Tag className="h-4 w-4 text-muted-foreground" />
               </CardHeader>
               <CardContent>

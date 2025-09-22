@@ -11,7 +11,7 @@ import { RealtimeStatus } from "@/components/realtime-status";
 import { useQuickActions } from "@/lib/quick-actions";
 import { useAuth } from "@/contexts/auth-context";
 import { handleError } from "@/lib/error-handler";
-import { useTranslations } from "@/hooks/use-translations";
+// Translation system removed - using hardcoded strings
 
 // Import new Phase 2 widgets
 import UnifiedOpsPulse from "@/components/widgets/unified-ops-pulse";

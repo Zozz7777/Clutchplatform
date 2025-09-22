@@ -19,10 +19,10 @@ import {
 } from 'lucide-react';
 import { realApi } from '@/lib/real-api';
 import { toast } from 'sonner';
-import { useTranslations } from '@/hooks/use-translations';
+// Translation system removed - using hardcoded strings
 
 export default function MobileCMSPage() {
-  const { t } = useTranslations();
+  // Translation system removed - using hardcoded strings
   const [appSettings, setAppSettings] = useState({
     appName: 'Clutch',
     version: '1.2.0',
@@ -103,15 +103,15 @@ export default function MobileCMSPage() {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold font-sans">{t('dashboard.mobileAppCms')}</h1>
+          <h1 className="text-3xl font-bold font-sans">Mobile App CMS</h1>
           <p className="text-muted-foreground font-sans">
-            {t('dashboard.manageMobileAppContent')}
+            Manage mobile app content and settings
           </p>
         </div>
         <div className="flex items-center space-x-2">
           <Button variant="outline" onClick={previewApp}>
             <Eye className="h-4 w-4 mr-2" />
-            {t('dashboard.preview')}
+            Preview
           </Button>
           <Button onClick={saveChanges} disabled={saving}>
             <Save className="h-4 w-4 mr-2" />
@@ -122,28 +122,28 @@ export default function MobileCMSPage() {
 
       <Tabs defaultValue="settings" className="space-y-4">
         <TabsList>
-          <TabsTrigger value="settings">{t('dashboard.appSettings')}</TabsTrigger>
-          <TabsTrigger value="content">{t('dashboard.content')}</TabsTrigger>
-          <TabsTrigger value="branding">{t('dashboard.branding')}</TabsTrigger>
-          <TabsTrigger value="features">{t('dashboard.features')}</TabsTrigger>
+          <TabsTrigger value="settings">App Settings</TabsTrigger>
+          <TabsTrigger value="content">Content</TabsTrigger>
+          <TabsTrigger value="branding">Branding</TabsTrigger>
+          <TabsTrigger value="features">Features</TabsTrigger>
         </TabsList>
 
         <TabsContent value="settings" className="space-y-4">
           <div className="grid gap-4 md:grid-cols-2">
             <Card>
               <CardHeader>
-                <CardTitle className="font-sans">{t('dashboard.basicSettings')}</CardTitle>
+                <CardTitle className="font-sans">Basic Settings</CardTitle>
               </CardHeader>
               <CardContent className="space-y-4">
                 <div>
-                  <label className="text-sm font-medium font-sans">{t('dashboard.appName')}</label>
+                  <label className="text-sm font-medium font-sans">App Name</label>
                   <Input
                     value={appSettings.appName}
                     onChange={(e) => setAppSettings({...appSettings, appName: e.target.value})}
                   />
                 </div>
                 <div>
-                  <label className="text-sm font-medium font-sans">{t('dashboard.version')}</label>
+                  <label className="text-sm font-medium font-sans">Version</label>
                   <Input
                     value={appSettings.version}
                     onChange={(e) => setAppSettings({...appSettings, version: e.target.value})}
