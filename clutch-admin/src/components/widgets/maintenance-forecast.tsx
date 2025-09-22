@@ -5,6 +5,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { businessIntelligence } from '@/lib/business-intelligence';
+import { useLanguage } from '@/contexts/language-context';
 import { 
   Wrench, 
   Calendar, 
@@ -32,7 +33,7 @@ interface MaintenanceForecast {
 }
 
 export function MaintenanceForecast({ className = '' }: MaintenanceForecastProps) {
-  const { t } = useTranslations();
+  const { t } = useLanguage();
   const [forecasts, setForecasts] = React.useState<MaintenanceForecast[]>([]);
   const [isLoading, setIsLoading] = React.useState(true);
   const [selectedPeriod, setSelectedPeriod] = React.useState<'7d' | '30d' | '90d'>('30d');
@@ -74,9 +75,9 @@ export function MaintenanceForecast({ className = '' }: MaintenanceForecastProps
   };
 
   const getConfidenceLevel = (confidence: number) => {
-    if (confidence >= 80) return 'High';
-    if (confidence >= 60) return 'Medium';
-    return 'Low';
+    if (confidence >= 80) return t('widgets.high');
+    if (confidence >= 60) return t('widgets.medium');
+    return t('widgets.low');
   };
 
   const getUrgencyColor = (dateString: string) => {

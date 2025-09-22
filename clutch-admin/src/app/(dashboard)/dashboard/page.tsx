@@ -237,7 +237,7 @@ export default function DashboardPage() {
                 <div className="text-2xl font-bold text-card-foreground">{formatMetricValue(metric)}</div>
                 <div className="flex items-center space-x-1 text-xs text-muted-foreground">
                   {getTrendIcon(metric.changeType === 'increase' ? 'up' : 'down')}
-                  <span>{metric.change}% from last month</span>
+                  <span>{metric.change}% {t('widgets.fromLastMonth')}</span>
                 </div>
               </CardContent>
             </Card>

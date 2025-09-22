@@ -177,7 +177,6 @@ export function LanguageProvider({ children }: LanguageProviderProps) {
       'dashboard.advancedAnalyticsAndPredictiveInsights': 'Advanced Analytics and Predictive Insights',
       'dashboard.noLocation': 'No location data',
       'dashboard.noAlerts': 'No alerts at this time',
-      'dashboard.loadingDashboard': 'Loading dashboard...',
       'dashboard.welcomeToClutch': 'Welcome to your Clutch Admin dashboard',
       'analytics.title': 'Analytics',
       'analytics.overview': 'Analytics Overview',
@@ -306,7 +305,27 @@ export function LanguageProvider({ children }: LanguageProviderProps) {
       'widgets.viewDetails': 'View Details',
       'widgets.loading': 'Loading...',
       'widgets.noData': 'No data available',
-      'widgets.refresh': 'Refresh'
+      'widgets.refresh': 'Refresh',
+      'widgets.freshSignups': 'Fresh signups',
+      'widgets.monthlyRevenue': 'Monthly revenue',
+      'widgets.fromLastMonth': 'from last month',
+      'widgets.fromLastPeriod': 'from last period',
+      'widgets.noLocationData': 'No location data',
+      'widgets.noAlertsAtThisTime': 'No alerts at this time',
+      'widgets.monthlyRevenuePredictions': 'Monthly revenue predictions',
+      'widgets.allClear': 'All Clear',
+      'widgets.attentionNeeded': 'Attention Needed',
+      'widgets.actionRequired': 'Action Required',
+      'widgets.high': 'High',
+      'widgets.medium': 'Medium',
+      'widgets.low': 'Low',
+      'widgets.none': 'None',
+      'widgets.overdue': 'Overdue',
+      'widgets.days': 'days',
+      'widgets.excellent': 'Excellent',
+      'widgets.good': 'Good',
+      'widgets.fair': 'Fair',
+      'widgets.poor': 'Poor'
     };
 
     // Helper function to get nested value from object

@@ -6,6 +6,7 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Progress } from '@/components/ui/progress';
 import { businessIntelligence } from '@/lib/business-intelligence';
+import { useLanguage } from '@/contexts/language-context';
 import { 
   Shield, 
   DollarSign, 
@@ -33,7 +34,7 @@ interface FraudImpactData {
 }
 
 export function FraudImpact({ className = '' }: FraudImpactProps) {
-  const { t } = useTranslations();
+  const { t } = useLanguage();
   const [fraudData, setFraudData] = React.useState<FraudImpactData | null>(null);
   const [isLoading, setIsLoading] = React.useState(true);
 
@@ -89,10 +90,10 @@ export function FraudImpact({ className = '' }: FraudImpactProps) {
   };
 
   const getAccuracyLevel = (accuracy: number) => {
-    if (accuracy >= 90) return 'Excellent';
-    if (accuracy >= 80) return 'Good';
-    if (accuracy >= 70) return 'Fair';
-    return 'Poor';
+    if (accuracy >= 90) return t('widgets.excellent');
+    if (accuracy >= 80) return t('widgets.good');
+    if (accuracy >= 70) return t('widgets.fair');
+    return t('widgets.poor');
   };
 
   if (isLoading) {

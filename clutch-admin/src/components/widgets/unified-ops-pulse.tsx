@@ -102,7 +102,7 @@ export function UnifiedOpsPulse({ className = '' }: UnifiedOpsPulseProps) {
               </div>
               <div>
                 <p className="text-sm font-medium text-card-foreground">{t('widgets.newUsers')} (30d)</p>
-                <p className="text-xs text-muted-foreground">Fresh signups</p>
+                <p className="text-xs text-muted-foreground">{t('widgets.freshSignups')}</p>
               </div>
             </div>
             <div className="text-right">
@@ -157,7 +157,7 @@ export function UnifiedOpsPulse({ className = '' }: UnifiedOpsPulseProps) {
               </div>
               <div>
                 <p className="text-sm font-medium text-card-foreground">{t('widgets.revenue')} Impact</p>
-                <p className="text-xs text-muted-foreground">Monthly revenue</p>
+                <p className="text-xs text-muted-foreground">{t('widgets.monthlyRevenue')}</p>
               </div>
             </div>
             <div className="text-right">

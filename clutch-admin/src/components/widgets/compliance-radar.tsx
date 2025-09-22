@@ -145,9 +145,9 @@ export function ComplianceRadar({ className = '' }: ComplianceRadarProps) {
               {compliance.overallStatus.toUpperCase()}
             </span>
             <Badge className={getStatusBadge(compliance.overallStatus)}>
-              {compliance.overallStatus === 'green' ? 'All Clear' :
-               compliance.overallStatus === 'amber' ? 'Attention Needed' :
-               'Action Required'}
+              {compliance.overallStatus === 'green' ? t('widgets.allClear') :
+               compliance.overallStatus === 'amber' ? t('widgets.attentionNeeded') :
+               t('widgets.actionRequired')}
             </Badge>
           </div>
           <p className="text-sm text-muted-foreground">Overall Compliance Status</p>
@@ -188,7 +188,7 @@ export function ComplianceRadar({ className = '' }: ComplianceRadarProps) {
               <div className="text-right">
                 <p className="text-sm font-semibold text-card-foreground">{compliance.pendingApprovals}</p>
                 <Badge variant="outline" className="text-xs">
-                  {compliance.pendingApprovals > 5 ? 'High' : compliance.pendingApprovals > 2 ? 'Medium' : 'Low'}
+                  {compliance.pendingApprovals > 5 ? t('widgets.high') : compliance.pendingApprovals > 2 ? t('widgets.medium') : t('widgets.low')}
                 </Badge>
               </div>
             </div>
@@ -204,7 +204,7 @@ export function ComplianceRadar({ className = '' }: ComplianceRadarProps) {
               <div className="text-right">
                 <p className="text-sm font-semibold text-card-foreground">{compliance.violations}</p>
                 <Badge variant="outline" className="text-xs">
-                  {compliance.violations > 2 ? 'High' : compliance.violations > 0 ? 'Medium' : 'None'}
+                  {compliance.violations > 2 ? t('widgets.high') : compliance.violations > 0 ? t('widgets.medium') : t('widgets.none')}
                 </Badge>
               </div>
             </div>
@@ -220,7 +220,7 @@ export function ComplianceRadar({ className = '' }: ComplianceRadarProps) {
               <div className="text-right">
                 <p className="text-sm font-semibold text-card-foreground">{compliance.securityIncidents}</p>
                 <Badge variant="outline" className="text-xs">
-                  {compliance.securityIncidents > 0 ? 'Critical' : 'None'}
+                  {compliance.securityIncidents > 0 ? t('widgets.critical') : t('widgets.none')}
                 </Badge>
               </div>
             </div>
@@ -264,7 +264,7 @@ export function ComplianceRadar({ className = '' }: ComplianceRadarProps) {
                   {formatDate(compliance.nextAudit)}
                 </p>
                 <Badge variant="outline" className="text-xs">
-                  {daysUntilAudit > 0 ? `${daysUntilAudit} days` : 'Overdue'}
+                  {daysUntilAudit > 0 ? `${daysUntilAudit} ${t('widgets.days')}` : t('widgets.overdue')}
                 </Badge>
               </div>
             </div>
