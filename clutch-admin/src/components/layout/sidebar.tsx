@@ -9,7 +9,7 @@ import { ChevronDown, ChevronRight } from "lucide-react";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { LanguageSwitcher } from "@/components/language-switcher";
 // Translation system removed - using hardcoded strings
-import { getTranslatedNavigationItems } from "@/lib/navigation";
+import { NAVIGATION_ITEMS } from "@/lib/constants";
 import { iconMap, type IconName } from "@/lib/icons";
 
 interface SidebarProps {
@@ -24,7 +24,8 @@ export function Sidebar({ isCollapsed, onToggle }: SidebarProps) {
   // Translation system removed - using hardcoded strings
   const [expandedItems, setExpandedItems] = useState<string[]>([]);
   
-  const navigationItems = getTranslatedNavigationItems(t);
+  // Translation system removed - using navigation items directly
+  const navigationItems = NAVIGATION_ITEMS;
 
   // Debug router state
   console.log('🔍 Sidebar Debug:', {
