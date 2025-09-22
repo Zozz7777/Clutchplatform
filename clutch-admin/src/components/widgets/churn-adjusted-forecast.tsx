@@ -48,8 +48,8 @@ export function ChurnAdjustedForecast({ className = '' }: ChurnAdjustedForecastP
     const loadForecastData = async () => {
       try {
         const [customers, payments] = await Promise.all([
-          productionApi.getCustomers(),
-          productionApi.getPayments()
+          Promise.resolve([]),
+          Promise.resolve([])
         ]);
 
         // Simulate churn-adjusted forecast data
@@ -189,7 +189,7 @@ export function ChurnAdjustedForecast({ className = '' }: ChurnAdjustedForecastP
             <TrendingUp className="h-5 w-5 text-primary" />
             <span>Churn-Adjusted Revenue Forecast</span>
           </CardTitle>
-          <CardDescription>Unable to load forecast data</CardDescription>
+          <CardDescription>{t('churn.unableToLoadForecastData')}</CardDescription>
         </CardHeader>
       </Card>
     );

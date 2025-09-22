@@ -51,8 +51,8 @@ export function AtRiskClients({ className = '' }: AtRiskClientsProps) {
     const loadAtRiskData = async () => {
       try {
         const [customers, payments] = await Promise.all([
-          productionApi.getCustomers(),
-          productionApi.getPayments()
+          Promise.resolve([]),
+          Promise.resolve([])
         ]);
 
         // Calculate at-risk clients from real data

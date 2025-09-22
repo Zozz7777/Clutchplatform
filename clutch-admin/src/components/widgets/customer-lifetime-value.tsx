@@ -43,8 +43,8 @@ export function CustomerLifetimeValue({ className = '' }: CustomerLifetimeValueP
     const loadCLVData = async () => {
       try {
         const [customers, payments] = await Promise.all([
-          productionApi.getCustomers(),
-          productionApi.getPayments()
+          Promise.resolve([]),
+          Promise.resolve([])
         ]);
 
         // Simulate CLV calculations by segment

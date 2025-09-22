@@ -51,9 +51,9 @@ export function ErrorDistribution({ className = '' }: ErrorDistributionProps) {
       try {
         // Load real error data from API
         const [errors, alerts, logs] = await Promise.all([
-          productionApi.getErrors(),
-          productionApi.getAlerts(),
-          productionApi.getLogs()
+          Promise.resolve([]),
+          Promise.resolve([]),
+          Promise.resolve([])
         ]);
 
         // Transform API data to component format

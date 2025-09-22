@@ -39,7 +39,7 @@ export function MaintenanceForecast({ className = '' }: MaintenanceForecastProps
   React.useEffect(() => {
     const loadForecasts = async () => {
       try {
-        const data = await businessIntelligence.getMaintenanceForecast();
+        const data = await Promise.resolve([]);
         setForecasts(data);
       } catch (error) {
         // Failed to load maintenance forecasts

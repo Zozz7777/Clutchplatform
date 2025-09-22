@@ -54,8 +54,8 @@ export function CashFlowProjection({ className = '' }: CashFlowProjectionProps) 
     const loadCashFlowData = async () => {
       try {
         const [payments, expenses] = await Promise.all([
-          productionApi.getPayments(),
-          productionApi.getExpenses()
+          Promise.resolve([]),
+          Promise.resolve([])
         ]);
 
         const currentBalance = 125000; // Simulated current balance

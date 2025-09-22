@@ -100,6 +100,126 @@ router.get('/detailed', checkRole(['head_administrator']), async (req, res) => {
   }
 });
 
+// GET /api/v1/system/alerts - Get system alerts
+router.get('/alerts', checkRole(['head_administrator', 'platform_admin', 'admin']), async (req, res) => {
+  try {
+    const { 
+      page = 1, 
+      limit = 50, 
+      severity, 
+      status, 
+      startDate, 
+      endDate 
+    } = req.query;
+    const skip = (page - 1) * limit;
+    
+    const alertsCollection = await getCollection('system_alerts');
+    
+    // Build query
+    const query = {};
+    if (severity) query.severity = severity;
+    if (status) query.status = status;
+    if (startDate && endDate) {
+      query.timestamp = {
+        $gte: new Date(startDate),
+        $lte: new Date(endDate)
+      };
+    }
+    
+    const alerts = await alertsCollection
+      .find(query)
+      .sort({ timestamp: -1 })
+      .skip(skip)
+      .limit(parseInt(limit))
+      .toArray();
+    
+    const total = await alertsCollection.countDocuments(query);
+    
+    res.json({
+      success: true,
+      data: {
+        alerts,
+        pagination: {
+          page: parseInt(page),
+          limit: parseInt(limit),
+          total,
+          pages: Math.ceil(total / limit)
+        }
+      },
+      message: 'System alerts retrieved successfully',
+      timestamp: new Date().toISOString()
+    });
+  } catch (error) {
+    console.error('Get system alerts error:', error);
+    res.status(500).json({
+      success: false,
+      error: 'GET_SYSTEM_ALERTS_FAILED',
+      message: 'Failed to retrieve system alerts',
+      timestamp: new Date().toISOString()
+    });
+  }
+});
+
+// GET /api/v1/system/logs - Get system logs
+router.get('/logs', checkRole(['head_administrator', 'platform_admin', 'admin']), async (req, res) => {
+  try {
+    const { 
+      page = 1, 
+      limit = 50, 
+      level, 
+      service, 
+      startDate, 
+      endDate 
+    } = req.query;
+    const skip = (page - 1) * limit;
+    
+    const logsCollection = await getCollection('system_logs');
+    
+    // Build query
+    const query = {};
+    if (level) query.level = level;
+    if (service) query.service = service;
+    if (startDate && endDate) {
+      query.timestamp = {
+        $gte: new Date(startDate),
+        $lte: new Date(endDate)
+      };
+    }
+    
+    const logs = await logsCollection
+      .find(query)
+      .sort({ timestamp: -1 })
+      .skip(skip)
+      .limit(parseInt(limit))
+      .toArray();
+    
+    const total = await logsCollection.countDocuments(query);
+    
+    res.json({
+      success: true,
+      data: {
+        logs,
+        pagination: {
+          page: parseInt(page),
+          limit: parseInt(limit),
+          total,
+          pages: Math.ceil(total / limit)
+        }
+      },
+      message: 'System logs retrieved successfully',
+      timestamp: new Date().toISOString()
+    });
+  } catch (error) {
+    console.error('Get system logs error:', error);
+    res.status(500).json({
+      success: false,
+      error: 'GET_SYSTEM_LOGS_FAILED',
+      message: 'Failed to retrieve system logs',
+      timestamp: new Date().toISOString()
+    });
+  }
+});
+
 // GET /api/v1/system-health/api-performance - Get API performance metrics
 router.get('/api-performance', checkRole(['head_administrator']), async (req, res) => {
   try {

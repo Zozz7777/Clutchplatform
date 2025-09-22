@@ -300,8 +300,12 @@ export class RealApiService {
   async getAuditLogs(): Promise<Record<string, unknown>[]> {
     return withErrorHandling(
       async () => {
-        const response = await apiService.makeRequest<Record<string, unknown>[]>("/api/v1/audit/logs");
-        return handleApiResponse(response, 'getAuditLogs', []);
+        const response = await apiService.makeRequest<Record<string, unknown>>("/api/v1/audit/logs");
+        const result = handleApiResponse(response, 'getAuditLogs', {});
+        // Handle nested response structure from audit endpoint
+        const auditLogs = (result as any)?.data?.auditLogs || result || [];
+        // Ensure we always return an array
+        return Array.isArray(auditLogs) ? auditLogs : [];
       },
       'getAuditLogs',
       { fallbackValue: [], showToast: false }
@@ -311,8 +315,12 @@ export class RealApiService {
   async getSecurityEvents(): Promise<Record<string, unknown>[]> {
     return withErrorHandling(
       async () => {
-        const response = await apiService.makeRequest<Record<string, unknown>[]>("/api/v1/audit/security-events");
-        return handleApiResponse(response, 'getSecurityEvents', []);
+        const response = await apiService.makeRequest<Record<string, unknown>>("/api/v1/audit/security-events");
+        const result = handleApiResponse(response, 'getSecurityEvents', {});
+        // Handle nested response structure from security events endpoint
+        const securityEvents = (result as any)?.data?.securityEvents || result || [];
+        // Ensure we always return an array
+        return Array.isArray(securityEvents) ? securityEvents : [];
       },
       'getSecurityEvents',
       { fallbackValue: [], showToast: false }
@@ -322,8 +330,12 @@ export class RealApiService {
   async getUserActivities(): Promise<Record<string, unknown>[]> {
     return withErrorHandling(
       async () => {
-        const response = await apiService.makeRequest<Record<string, unknown>[]>("/api/v1/audit/user-activities");
-        return handleApiResponse(response, 'getUserActivities', []);
+        const response = await apiService.makeRequest<Record<string, unknown>>("/api/v1/audit/user-activities");
+        const result = handleApiResponse(response, 'getUserActivities', {});
+        // Handle nested response structure from user activities endpoint
+        const userActivities = (result as any)?.data?.userActivities || result || [];
+        // Ensure we always return an array
+        return Array.isArray(userActivities) ? userActivities : [];
       },
       'getUserActivities',
       { fallbackValue: [], showToast: false }
@@ -345,7 +357,7 @@ export class RealApiService {
   async getAPIPerformance(): Promise<Record<string, unknown>> {
     return withErrorHandling(
       async () => {
-        const response = await apiService.makeRequest<Record<string, unknown>>("/api/v1/system/api-performance");
+        const response = await apiService.makeRequest<Record<string, unknown>>("/api/v1/system-performance");
         return handleApiResponse(response, 'getAPIPerformance', {});
       },
       'getAPIPerformance',

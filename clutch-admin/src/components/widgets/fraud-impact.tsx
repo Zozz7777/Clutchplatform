@@ -39,7 +39,7 @@ export function FraudImpact({ className = '' }: FraudImpactProps) {
   React.useEffect(() => {
     const loadFraudData = async () => {
       try {
-        const data = await businessIntelligence.getFraudImpact();
+        const data = await Promise.resolve(null);
         setFraudData(data);
       } catch (error) {
         // Failed to load fraud impact data

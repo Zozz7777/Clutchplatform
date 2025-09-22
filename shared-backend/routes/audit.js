@@ -86,6 +86,126 @@ router.get('/logs', authenticateToken, checkRole(['head_administrator', 'auditor
   }
 });
 
+// GET /api/v1/audit/security-events - Get security events
+router.get('/security-events', authenticateToken, checkRole(['head_administrator', 'auditor', 'security_admin']), auditRateLimit, async (req, res) => {
+  try {
+    const { 
+      page = 1, 
+      limit = 50, 
+      severity, 
+      eventType, 
+      startDate, 
+      endDate 
+    } = req.query;
+    const skip = (page - 1) * limit;
+    
+    const securityEventsCollection = await getCollection('security_events');
+    
+    // Build query
+    const query = {};
+    if (severity) query.severity = severity;
+    if (eventType) query.eventType = eventType;
+    if (startDate && endDate) {
+      query.timestamp = {
+        $gte: new Date(startDate),
+        $lte: new Date(endDate)
+      };
+    }
+    
+    const securityEvents = await securityEventsCollection
+      .find(query)
+      .sort({ timestamp: -1 })
+      .skip(skip)
+      .limit(parseInt(limit))
+      .toArray();
+    
+    const total = await securityEventsCollection.countDocuments(query);
+    
+    res.json({
+      success: true,
+      data: {
+        securityEvents,
+        pagination: {
+          page: parseInt(page),
+          limit: parseInt(limit),
+          total,
+          pages: Math.ceil(total / limit)
+        }
+      },
+      message: 'Security events retrieved successfully',
+      timestamp: new Date().toISOString()
+    });
+  } catch (error) {
+    console.error('Get security events error:', error);
+    res.status(500).json({
+      success: false,
+      error: 'GET_SECURITY_EVENTS_FAILED',
+      message: 'Failed to retrieve security events',
+      timestamp: new Date().toISOString()
+    });
+  }
+});
+
+// GET /api/v1/audit/user-activities - Get user activities
+router.get('/user-activities', authenticateToken, checkRole(['head_administrator', 'auditor']), auditRateLimit, async (req, res) => {
+  try {
+    const { 
+      page = 1, 
+      limit = 50, 
+      userId, 
+      activityType, 
+      startDate, 
+      endDate 
+    } = req.query;
+    const skip = (page - 1) * limit;
+    
+    const userActivitiesCollection = await getCollection('user_activities');
+    
+    // Build query
+    const query = {};
+    if (userId) query.userId = userId;
+    if (activityType) query.activityType = activityType;
+    if (startDate && endDate) {
+      query.timestamp = {
+        $gte: new Date(startDate),
+        $lte: new Date(endDate)
+      };
+    }
+    
+    const userActivities = await userActivitiesCollection
+      .find(query)
+      .sort({ timestamp: -1 })
+      .skip(skip)
+      .limit(parseInt(limit))
+      .toArray();
+    
+    const total = await userActivitiesCollection.countDocuments(query);
+    
+    res.json({
+      success: true,
+      data: {
+        userActivities,
+        pagination: {
+          page: parseInt(page),
+          limit: parseInt(limit),
+          total,
+          pages: Math.ceil(total / limit)
+        }
+      },
+      message: 'User activities retrieved successfully',
+      timestamp: new Date().toISOString()
+    });
+  } catch (error) {
+    console.error('Get user activities error:', error);
+    res.status(500).json({
+      success: false,
+      error: 'GET_USER_ACTIVITIES_FAILED',
+      message: 'Failed to retrieve user activities',
+      timestamp: new Date().toISOString()
+    });
+  }
+});
+
 // GET /api/v1/audit/logs/:id - Get audit log by ID
 router.get('/logs/:id', authenticateToken, checkRole(['head_administrator', 'auditor']), auditRateLimit, async (req, res) => {
   try {

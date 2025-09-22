@@ -166,13 +166,6 @@ export function Sidebar({ isCollapsed, onToggle }: SidebarProps) {
                     href={item.href}
                     onClick={(e) => {
                       console.log('🔗 Link navigation clicked:', item.href, item.title);
-                      // Fallback to router.push if Link doesn't work
-                      setTimeout(() => {
-                        if (window.location.pathname === pathname) {
-                          console.log('⚠️ Link navigation failed, trying router.push fallback');
-                          router.push(item.href);
-                        }
-                      }, 100);
                     }}
                     className={cn(
                       "flex items-center px-3 py-2 text-sm font-medium rounded-[0.625rem] cursor-pointer transition-all duration-normal ease-in-out font-sans focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 focus:ring-offset-sidebar w-full text-left",
@@ -203,13 +196,6 @@ export function Sidebar({ isCollapsed, onToggle }: SidebarProps) {
                           href={child.href as string}
                           onClick={(e) => {
                             console.log('🔗 Child Link navigation clicked:', child.href as string, child.title as string);
-                            // Fallback to router.push if Link doesn't work
-                            setTimeout(() => {
-                              if (window.location.pathname === pathname) {
-                                console.log('⚠️ Child Link navigation failed, trying router.push fallback');
-                                router.push(child.href as string);
-                              }
-                            }, 100);
                           }}
                           className={cn(
                             "block px-3 py-2 text-sm rounded-[0.625rem] transition-all duration-normal ease-in-out font-sans focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 focus:ring-offset-sidebar w-full text-left",

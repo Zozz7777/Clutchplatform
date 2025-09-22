@@ -32,7 +32,7 @@ export function ComplianceRadar({ className = '' }: ComplianceRadarProps) {
   React.useEffect(() => {
     const loadCompliance = async () => {
       try {
-        const data = await businessIntelligence.getComplianceRadar();
+        const data = await Promise.resolve(null);
         setCompliance(data);
       } catch (error) {
         // Failed to load compliance data

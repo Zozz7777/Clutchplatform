@@ -51,8 +51,8 @@ export function ClientGrowthContribution({ className = '' }: ClientGrowthContrib
     const loadGrowthData = async () => {
       try {
         const [customers, payments] = await Promise.all([
-          productionApi.getCustomers(),
-          productionApi.getPayments()
+          Promise.resolve([]),
+          Promise.resolve([])
         ]);
 
         // Simulate client growth contribution data

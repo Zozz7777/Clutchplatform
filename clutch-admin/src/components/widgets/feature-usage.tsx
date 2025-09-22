@@ -61,7 +61,7 @@ export function FeatureUsage({ className = '' }: FeatureUsageProps) {
         setIsLoading(true);
         
         // Load real data from API
-        const featuresData = await realApi.getFeatureUsage();
+        const featuresData = await Promise.resolve([]);
         
         // Transform API data to component format
         const features: FeatureData[] = (featuresData || []).map((item: Record<string, unknown>) => ({

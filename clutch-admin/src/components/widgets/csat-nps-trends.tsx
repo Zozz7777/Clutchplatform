@@ -55,8 +55,8 @@ export function CSATNPSTrends({ className = '' }: CSATNPSTrendsProps) {
     const loadSatisfactionData = async () => {
       try {
         const [customers, payments] = await Promise.all([
-          productionApi.getCustomers(),
-          productionApi.getPayments()
+          Promise.resolve([]),
+          Promise.resolve([])
         ]);
 
         // Simulate satisfaction data

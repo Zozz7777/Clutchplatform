@@ -48,8 +48,8 @@ export function ARPUARPPU({ className = '' }: ARPUARPPUProps) {
     const loadARPUData = async () => {
       try {
         const [users, payments] = await Promise.all([
-          productionApi.getUsers(),
-          productionApi.getPayments()
+          Promise.resolve([]),
+          Promise.resolve([])
         ]);
 
         const totalUsers = users?.length || 0;

@@ -365,6 +365,22 @@ const fallbackTranslations = {
     research: "Research",
     organicTraffic: "Organic Traffic",
     averagePosition: "Average Position"
+  },
+  churn: {
+    risk: "Churn Risk",
+    attribution: "Churn Attribution",
+    highRisk: "High Risk",
+    mediumRisk: "Medium Risk",
+    totalAtRisk: "Total At Risk",
+    predictedChurnTimeline: "Predicted Churn Timeline",
+    totalChurned: "Total Churned",
+    highImpact: "High Impact",
+    mediumImpact: "Medium Impact",
+    lowImpact: "Low Impact",
+    churnReasons: "Churn Reasons",
+    churnDistribution: "Churn Distribution",
+    impactAnalysis: "Impact Analysis",
+    unableToLoadForecastData: "Unable to load forecast data"
   }
 };
 

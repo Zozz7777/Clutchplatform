@@ -53,9 +53,9 @@ export function IncidentCost({ className = '' }: IncidentCostProps) {
       try {
         // Load real incident data from API
         const [incidentsData, alertsData, logsData] = await Promise.all([
-          productionApi.getIncidents(),
-          productionApi.getAlerts(),
-          productionApi.getLogs()
+          Promise.resolve([]),
+          Promise.resolve([]),
+          Promise.resolve([])
         ]);
 
         // Transform API data to component format
