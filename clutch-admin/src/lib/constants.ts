@@ -474,7 +474,7 @@ export const NAVIGATION_ITEMS = [
   {
     title: "Test Navigation",
     href: "/test-navigation",
-    icon: "TestTube",
+    icon: "LayoutDashboard",
     permissions: [PERMISSIONS.VIEW_DASHBOARD],
   },
   {
