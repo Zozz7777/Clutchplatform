@@ -41,7 +41,7 @@ export function FleetUtilization({ className = '' }: FleetUtilizationProps) {
   React.useEffect(() => {
     const loadUtilizationData = async () => {
       try {
-        const data = await Promise.resolve(null);
+        const data = await businessIntelligence.getFleetUtilization();
         setUtilizationData(data);
       } catch (error) {
         // Failed to load utilization data

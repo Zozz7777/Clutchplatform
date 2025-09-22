@@ -33,7 +33,7 @@ export function ChurnRiskCard({ className = '', showDetails = false }: ChurnRisk
   React.useEffect(() => {
     const loadChurnRisks = async () => {
       try {
-        const data = await Promise.resolve([]);
+        const data = await businessIntelligence.getChurnRisk();
         setChurnRisks(Array.isArray(data) ? data : []);
       } catch (error) {
         logger.error('Failed to load churn risks:', error);
@@ -121,11 +121,11 @@ export function ChurnRiskCard({ className = '', showDetails = false }: ChurnRisk
         <div className="grid grid-cols-3 gap-4">
           <div className="text-center p-3 bg-destructive/10 rounded-[0.625rem] border border-destructive/20">
             <p className="text-2xl font-bold text-destructive">{highRiskCount}</p>
-            <p className="text-xs text-muted-foreground">High Risk</p>
+            <p className="text-xs text-muted-foreground">{t('widgets.highRisk')}</p>
           </div>
           <div className="text-center p-3 bg-warning/10 rounded-[0.625rem] border border-warning/20">
             <p className="text-2xl font-bold text-warning">{mediumRiskCount}</p>
-            <p className="text-xs text-muted-foreground">Medium Risk</p>
+            <p className="text-xs text-muted-foreground">{t('widgets.mediumRisk')}</p>
           </div>
           <div className="text-center p-3 bg-primary/10 rounded-[0.625rem] border border-primary/20">
             <p className="text-2xl font-bold text-primary">{totalAtRisk}</p>
@@ -136,13 +136,13 @@ export function ChurnRiskCard({ className = '', showDetails = false }: ChurnRisk
         {/* Risk Distribution */}
         <div className="space-y-2">
           <div className="flex justify-between text-sm">
-            <span className="text-muted-foreground">High Risk (80%+)</span>
+            <span className="text-muted-foreground">{t('widgets.highRisk')} (80%+)</span>
             <span className="text-card-foreground">{highRiskCount}</span>
           </div>
           <Progress value={(highRiskCount / Math.max(totalAtRisk, 1)) * 100} className="h-2" />
           
           <div className="flex justify-between text-sm">
-            <span className="text-muted-foreground">Medium Risk (60-79%)</span>
+            <span className="text-muted-foreground">{t('widgets.mediumRisk')} (60-79%)</span>
             <span className="text-card-foreground">{mediumRiskCount}</span>
           </div>
           <Progress value={(mediumRiskCount / Math.max(totalAtRisk, 1)) * 100} className="h-2" />

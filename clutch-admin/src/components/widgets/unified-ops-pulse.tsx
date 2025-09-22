@@ -21,7 +21,7 @@ export function UnifiedOpsPulse({ className = '' }: UnifiedOpsPulseProps) {
   React.useEffect(() => {
     const loadPulse = async () => {
       try {
-        const data = await Promise.resolve(null);
+        const data = await businessIntelligence.getUnifiedOpsPulse();
         setPulse(data);
       } catch (error) {
         logger.error('Failed to load ops pulse:', error);
@@ -41,7 +41,7 @@ export function UnifiedOpsPulse({ className = '' }: UnifiedOpsPulseProps) {
             <Zap className="h-5 w-5 text-primary" />
             <span>{t('widgets.unifiedOpsPulse')}</span>
           </CardTitle>
-          <CardDescription className="text-muted-foreground">Loading operational metrics...</CardDescription>
+          <CardDescription className="text-muted-foreground">{t('widgets.loadingOperationalMetrics')}</CardDescription>
         </CardHeader>
         <CardContent>
           <div className="animate-pulse space-y-4">
@@ -62,7 +62,7 @@ export function UnifiedOpsPulse({ className = '' }: UnifiedOpsPulseProps) {
             <Zap className="h-5 w-5 text-primary" />
             <span>{t('widgets.unifiedOpsPulse')}</span>
           </CardTitle>
-          <CardDescription className="text-muted-foreground">Unable to load operational metrics</CardDescription>
+          <CardDescription className="text-muted-foreground">{t('widgets.unableToLoadOperationalMetrics')}</CardDescription>
         </CardHeader>
       </Card>
     );
@@ -85,10 +85,10 @@ export function UnifiedOpsPulse({ className = '' }: UnifiedOpsPulseProps) {
       <CardHeader>
         <CardTitle className="flex items-center space-x-2 text-card-foreground font-medium">
           <Zap className="h-5 w-5 text-primary" />
-          <span>Unified Operations Pulse</span>
+          <span>{t('widgets.unifiedOpsPulse')}</span>
         </CardTitle>
         <CardDescription className="text-muted-foreground">
-          Real-time Operational Funnel
+          {t('widgets.realTimeOperationalFunnel')}
         </CardDescription>
       </CardHeader>
       <CardContent className="space-y-6">
@@ -101,7 +101,7 @@ export function UnifiedOpsPulse({ className = '' }: UnifiedOpsPulseProps) {
                 <Users className="h-4 w-4 text-primary" />
               </div>
               <div>
-                <p className="text-sm font-medium text-card-foreground">New Users (30d)</p>
+                <p className="text-sm font-medium text-card-foreground">{t('widgets.newUsers')} (30d)</p>
                 <p className="text-xs text-muted-foreground">Fresh signups</p>
               </div>
             </div>
@@ -156,7 +156,7 @@ export function UnifiedOpsPulse({ className = '' }: UnifiedOpsPulseProps) {
                 <DollarSign className="h-4 w-4 text-warning" />
               </div>
               <div>
-                <p className="text-sm font-medium text-card-foreground">Revenue Impact</p>
+                <p className="text-sm font-medium text-card-foreground">{t('widgets.revenue')} Impact</p>
                 <p className="text-xs text-muted-foreground">Monthly revenue</p>
               </div>
             </div>
@@ -184,7 +184,7 @@ export function UnifiedOpsPulse({ className = '' }: UnifiedOpsPulseProps) {
             <p className={`text-2xl font-bold ${getEfficiencyColor(pulse.efficiency)}`}>
               {pulse.efficiency.toFixed(1)}%
             </p>
-            <p className="text-xs text-muted-foreground">Fleet Efficiency</p>
+            <p className="text-xs text-muted-foreground">{t('widgets.efficiency')}</p>
             <div className="mt-2">
               <Progress value={pulse.efficiency} className="h-2" />
             </div>

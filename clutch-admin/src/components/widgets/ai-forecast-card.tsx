@@ -34,7 +34,7 @@ export function AIForecastCard({ className = '' }: AIForecastCardProps) {
   React.useEffect(() => {
     const loadForecast = async () => {
       try {
-        const data = await Promise.resolve([]);
+        const data = await businessIntelligence.getAIRevenueForecast();
         setForecast(data);
       } catch (error) {
         logger.error('Failed to load forecast:', error);

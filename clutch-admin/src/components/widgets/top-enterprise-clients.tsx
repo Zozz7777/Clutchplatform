@@ -40,7 +40,7 @@ export function TopEnterpriseClients({ className = '' }: TopEnterpriseClientsPro
   React.useEffect(() => {
     const loadClients = async () => {
       try {
-        const data = await Promise.resolve([]);
+        const data = await businessIntelligence.getTopEnterpriseClients();
         setClients(Array.isArray(data) ? data : []);
       } catch (error) {
         // Failed to load enterprise clients
