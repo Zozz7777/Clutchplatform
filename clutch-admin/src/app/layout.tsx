@@ -3,7 +3,7 @@ import { Roboto, Roboto_Serif, Roboto_Mono } from "next/font/google";
 import "./globals.css";
 import { AuthProvider } from "@/contexts/auth-context";
 import { RealtimeProvider } from "@/contexts/realtime-context";
-import { LanguageProvider } from "@/contexts/language-context";
+// Translation system removed - LanguageProvider no longer needed
 import { Toaster } from "@/components/ui/toaster";
 import { ThemeProvider } from "next-themes";
 import { Favicon } from "@/components/favicon";
@@ -64,15 +64,13 @@ export default function RootLayout({
           enableSystem
           disableTransitionOnChange
         >
-          <LanguageProvider>
-            <Favicon />
-            <AuthProvider>
-              <RealtimeProvider>
-                {children}
-                <Toaster />
-              </RealtimeProvider>
-            </AuthProvider>
-          </LanguageProvider>
+          <Favicon />
+          <AuthProvider>
+            <RealtimeProvider>
+              {children}
+              <Toaster />
+            </RealtimeProvider>
+          </AuthProvider>
         </ThemeProvider>
       </body>
     </html>
