@@ -26,11 +26,20 @@ interface ComplianceRadarProps {
 
 export function ComplianceRadar({ className = '' }: ComplianceRadarProps) {
   console.log('ComplianceRadar component initializing...');
+  console.log('ComplianceRadar props:', { className });
   
-  const { t } = useLanguage();
-  const [compliance, setCompliance] = React.useState<ComplianceStatus | null>(null);
-  const [isLoading, setIsLoading] = React.useState(true);
-  const [hasError, setHasError] = React.useState(false);
+  try {
+    const { t } = useLanguage();
+    console.log('ComplianceRadar: useLanguage hook successful');
+    
+    const [compliance, setCompliance] = React.useState<ComplianceStatus | null>(null);
+    console.log('ComplianceRadar: compliance state initialized');
+    
+    const [isLoading, setIsLoading] = React.useState(true);
+    console.log('ComplianceRadar: isLoading state initialized');
+    
+    const [hasError, setHasError] = React.useState(false);
+    console.log('ComplianceRadar: hasError state initialized');
 
   React.useEffect(() => {
     const loadCompliance = async () => {
@@ -397,6 +406,27 @@ export function ComplianceRadar({ className = '' }: ComplianceRadarProps) {
       </CardContent>
     </Card>
   );
+  } catch (error) {
+    console.error('❌ ComplianceRadar: Component initialization error:', error);
+    return (
+      <Card className={`${className} shadow-2xs border-destructive/20`}>
+        <CardHeader>
+          <CardTitle className="flex items-center space-x-2 text-card-foreground font-medium">
+            <Shield className="h-5 w-5 text-destructive" />
+            <span>Compliance Radar</span>
+          </CardTitle>
+          <CardDescription className="text-destructive">
+            Component initialization failed
+          </CardDescription>
+        </CardHeader>
+        <div className="p-4">
+          <p className="text-sm text-muted-foreground">
+            Error: {error instanceof Error ? error.message : 'Unknown error'}
+          </p>
+        </div>
+      </Card>
+    );
+  }
 }
 
 export default ComplianceRadar;
