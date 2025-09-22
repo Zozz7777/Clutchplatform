@@ -474,8 +474,13 @@ export default function DashboardPage() {
           <RevenueMarginCard />
           <AIForecastCard />
           {(() => {
-            console.log('About to render ComplianceRadar component...');
-            return <ComplianceRadar />;
+            console.log('ComplianceRadar TEMPORARILY DISABLED for debugging...');
+            return (
+              <div className="p-4 border rounded-lg bg-yellow-50 border-yellow-200">
+                <h3 className="font-medium text-yellow-800">ComplianceRadar Disabled</h3>
+                <p className="text-sm text-yellow-600">Temporarily disabled for debugging React error #31</p>
+              </div>
+            );
           })()}
         </div>
 

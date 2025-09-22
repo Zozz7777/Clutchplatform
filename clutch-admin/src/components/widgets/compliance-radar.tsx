@@ -25,9 +25,12 @@ interface ComplianceRadarProps {
 }
 
 export function ComplianceRadar({ className = '' }: ComplianceRadarProps) {
-  const { t } = useLanguage();
-  const [compliance, setCompliance] = React.useState<ComplianceStatus | null>(null);
-  const [isLoading, setIsLoading] = React.useState(true);
+  console.log('ComplianceRadar component initializing...');
+  
+  try {
+    const { t } = useLanguage();
+    const [compliance, setCompliance] = React.useState<ComplianceStatus | null>(null);
+    const [isLoading, setIsLoading] = React.useState(true);
 
   React.useEffect(() => {
     const loadCompliance = async () => {
