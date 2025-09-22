@@ -143,17 +143,6 @@ export default function AnalyticsPage() {
   const { language } = useLanguage();
   const { t } = useTranslations();
   
-  // Safety check for translation function and language context
-  if (!t || !language) {
-    return (
-      <div className="container mx-auto p-6">
-        <div className="text-center">
-          <h1 className="text-2xl font-bold mb-4">Loading Analytics...</h1>
-          <p className="text-muted-foreground">Initializing translation system...</p>
-        </div>
-      </div>
-    );
-  }
   const [metrics, setMetrics] = useState<AnalyticsMetric[]>([]);
   const [userAnalytics, setUserAnalytics] = useState<UserAnalytics | null>(null);
   const [revenueAnalytics, setRevenueAnalytics] = useState<RevenueAnalytics | null>(null);
@@ -161,6 +150,16 @@ export default function AnalyticsPage() {
   const [engagementAnalytics, setEngagementAnalytics] = useState<EngagementAnalytics | null>(null);
   const [reports, setReports] = useState<AnalyticsReport[]>([]);
   const [selectedTimeRange, setSelectedTimeRange] = useState<string>("30d");
+
+  // Safe translation function with fallbacks
+  const safeT = (key: string, fallback?: string) => {
+    if (!t) return fallback || key;
+    try {
+      return t(key);
+    } catch (error) {
+      return fallback || key;
+    }
+  };
   const [isLoading, setIsLoading] = useState(true);
   const { user, hasPermission } = useAuth();
   // Safely get quick actions with error handling
@@ -402,14 +401,14 @@ export default function AnalyticsPage() {
               <span className={getChangeColor("increase")}>
                 +{revenueAnalytics?.revenueGrowth ? revenueAnalytics.revenueGrowth.toFixed(1) : 0}%
               </span>
-              <span>{t('analytics.fromLastMonth')}</span>
+              <span>{safeT('analytics.fromLastMonth', 'from last month')}</span>
             </div>
           </CardContent>
         </Card>
         
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">{t('analytics.activeVehicles')}</CardTitle>
+            <CardTitle className="text-sm font-medium">{safeT('analytics.activeVehicles', 'Active Vehicles')}</CardTitle>
             <Car className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
@@ -419,7 +418,7 @@ export default function AnalyticsPage() {
             <div className="flex items-center space-x-1 text-xs text-muted-foreground">
               <Activity className="h-4 w-4 text-muted-foreground" />
               <span>
-                {fleetAnalytics?.utilizationRate ? (fleetAnalytics.utilizationRate * 100).toFixed(1) : 0}% {t('dashboard.utilizationRate')}
+                {fleetAnalytics?.utilizationRate ? (fleetAnalytics.utilizationRate * 100).toFixed(1) : 0}% {safeT('dashboard.utilizationRate', 'utilization rate')}
               </span>
             </div>
           </CardContent>
@@ -437,7 +436,7 @@ export default function AnalyticsPage() {
             <div className="flex items-center space-x-1 text-xs text-muted-foreground">
               <Eye className="h-4 w-4 text-muted-foreground" />
               <span>
-                {engagementAnalytics?.pageViews ? engagementAnalytics.pageViews.toLocaleString() : 0} {t('dashboard.pageViews')}
+                {engagementAnalytics?.pageViews ? engagementAnalytics.pageViews.toLocaleString() : 0} {safeT('dashboard.pageViews', 'page views')}
               </span>
             </div>
           </CardContent>
@@ -451,7 +450,7 @@ export default function AnalyticsPage() {
           <CardHeader>
             <CardTitle className="flex items-center">
               <Users className="mr-2 h-5 w-5" />
-              {t('dashboard.userAnalytics')}
+              {safeT('dashboard.userAnalytics', 'User Analytics')}
             </CardTitle>
             <CardDescription>
               User growth and engagement metrics
@@ -462,17 +461,17 @@ export default function AnalyticsPage() {
               <div className="space-y-4">
                 <div className="grid grid-cols-2 gap-4">
                   <div>
-                    <p className="text-sm text-muted-foreground">{t('dashboard.newUsers')}</p>
+                    <p className="text-sm text-muted-foreground">{safeT('dashboard.newUsers', 'New Users')}</p>
                     <p className="text-2xl font-bold">{userAnalytics?.newUsers ? userAnalytics.newUsers.toLocaleString() : "0"}</p>
                   </div>
                   <div>
-                    <p className="text-sm text-muted-foreground">{t('dashboard.retentionRate')}</p>
+                    <p className="text-sm text-muted-foreground">{safeT('dashboard.retentionRate', 'Retention Rate')}</p>
                     <p className="text-2xl font-bold">{userAnalytics?.retentionRate ? (userAnalytics.retentionRate * 100).toFixed(1) : "0"}%</p>
                   </div>
                 </div>
                 
                 <div>
-                  <p className="text-sm font-medium mb-2">{t('dashboard.topLocations')}</p>
+                  <p className="text-sm font-medium mb-2">{safeT('dashboard.topLocations', 'Top Locations')}</p>
                   <div className="space-y-2">
                     {userAnalytics?.demographics?.locations ? Object.entries(userAnalytics.demographics.locations)
                       .slice(0, 3)
@@ -486,7 +485,7 @@ export default function AnalyticsPage() {
                 </div>
                 
                 <div>
-                  <p className="text-sm font-medium mb-2">{t('dashboard.deviceBreakdown')}</p>
+                  <p className="text-sm font-medium mb-2">{safeT('dashboard.deviceBreakdown', 'Device Breakdown')}</p>
                   <div className="space-y-2">
                     {userAnalytics?.demographics?.devices ? Object.entries(userAnalytics.demographics.devices).map(([device, count]) => (
                       <div key={device} className="flex justify-between text-sm">
@@ -516,7 +515,7 @@ export default function AnalyticsPage() {
           <CardHeader>
             <CardTitle className="flex items-center">
               <DollarSign className="mr-2 h-5 w-5" />
-              {t('dashboard.revenueAnalytics')}
+              {safeT('dashboard.revenueAnalytics', 'Revenue Analytics')}
             </CardTitle>
             <CardDescription>
               Revenue trends and sources
@@ -527,17 +526,17 @@ export default function AnalyticsPage() {
               <div className="space-y-4">
                 <div className="grid grid-cols-2 gap-4">
                   <div>
-                    <p className="text-sm text-muted-foreground">{t('dashboard.totalRevenue')}</p>
+                    <p className="text-sm text-muted-foreground">{safeT('dashboard.totalRevenue', 'Total Revenue')}</p>
                     <p className="text-2xl font-bold">{revenueAnalytics?.totalRevenue ? formatCurrency(revenueAnalytics.totalRevenue) : "0 EGP"}</p>
                   </div>
                   <div>
-                    <p className="text-sm text-muted-foreground">{t('dashboard.avgOrderValue')}</p>
+                    <p className="text-sm text-muted-foreground">{safeT('dashboard.avgOrderValue', 'Average Order Value')}</p>
                     <p className="text-2xl font-bold">{revenueAnalytics?.averageOrderValue ? formatCurrency(revenueAnalytics.averageOrderValue) : "0 EGP"}</p>
                   </div>
                 </div>
                 
                 <div>
-                  <p className="text-sm font-medium mb-2">{t('dashboard.revenueBySource')}</p>
+                  <p className="text-sm font-medium mb-2">{safeT('dashboard.revenueBySource', 'Revenue by Source')}</p>
                   <div className="space-y-2">
                     {revenueAnalytics?.revenueBySource ? Object.entries(revenueAnalytics.revenueBySource).map(([source, amount]) => (
                       <div key={source} className="flex justify-between text-sm">
@@ -549,7 +548,7 @@ export default function AnalyticsPage() {
                 </div>
                 
                 <div>
-                  <p className="text-sm font-medium mb-2">{t('dashboard.revenueByRegion')}</p>
+                  <p className="text-sm font-medium mb-2">{safeT('dashboard.revenueByRegion', 'Revenue by Region')}</p>
                   <div className="space-y-2">
                     {revenueAnalytics?.revenueByRegion ? Object.entries(revenueAnalytics.revenueByRegion)
                       .slice(0, 3)
@@ -576,7 +575,7 @@ export default function AnalyticsPage() {
           <CardHeader>
             <CardTitle className="flex items-center">
               <Car className="mr-2 h-5 w-5" />
-              {t('dashboard.fleetAnalytics')}
+              {safeT('dashboard.fleetAnalytics', 'Fleet Analytics')}
             </CardTitle>
             <CardDescription>
               Vehicle performance and utilization
@@ -587,11 +586,11 @@ export default function AnalyticsPage() {
               <div className="space-y-4">
                 <div className="grid grid-cols-2 gap-4">
                   <div>
-                    <p className="text-sm text-muted-foreground">{t('dashboard.totalVehicles')}</p>
+                    <p className="text-sm text-muted-foreground">{safeT('dashboard.totalVehicles', 'Total Vehicles')}</p>
                     <p className="text-2xl font-bold">{fleetAnalytics?.totalVehicles ? fleetAnalytics.totalVehicles.toLocaleString() : "0"}</p>
                   </div>
                   <div>
-                    <p className="text-sm text-muted-foreground">{t('dashboard.avgMileage')}</p>
+                    <p className="text-sm text-muted-foreground">{safeT('dashboard.avgMileage', 'Average Mileage')}</p>
                     <p className="text-2xl font-bold">{fleetAnalytics?.averageMileage ? fleetAnalytics.averageMileage.toLocaleString() : "0"} mi</p>
                   </div>
                 </div>
