@@ -7,7 +7,7 @@ import { Button } from '@/components/ui/button';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { businessIntelligence, type RevenueForecast } from '@/lib/business-intelligence';
 import { logger } from '@/lib/logger';
-// import { useTranslations } from '@/hooks/use-translations';
+// Translation system removed - using hardcoded strings
 import { 
   Brain, 
   TrendingUp, 
@@ -119,10 +119,10 @@ export function AIForecastCard({ className = '' }: AIForecastCardProps) {
       <CardHeader>
         <CardTitle className="flex items-center space-x-2 text-card-foreground font-medium">
           <Brain className="h-5 w-5 text-primary" />
-          <span>{t('dashboard.aiPoweredForecast')}</span>
+          <span>AI-Powered Forecast</span>
         </CardTitle>
         <CardDescription className="text-muted-foreground">
-          {t('dashboard.nextPeriodRevenueProjection', { period: selectedPeriod })}
+          Next Period Revenue Projection
         </CardDescription>
       </CardHeader>
       <CardContent className="space-y-6">
