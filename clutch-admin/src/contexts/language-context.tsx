@@ -378,7 +378,9 @@ export function LanguageProvider({ children }: LanguageProviderProps) {
       'quickActions.viewFinance': 'View Finance',
       'quickActions.openFinancialDashboard': 'Open financial dashboard',
       'quickActions.viewSettings': 'View Settings',
-      'quickActions.openSystemSettings': 'Open system settings'
+      'quickActions.openSystemSettings': 'Open system settings',
+      'widgets.invalidDataStructure': 'Invalid compliance data structure',
+      'widgets.complianceStatusSummary': 'Compliance status summary across all areas'
     };
 
     // Helper function to get nested value from object

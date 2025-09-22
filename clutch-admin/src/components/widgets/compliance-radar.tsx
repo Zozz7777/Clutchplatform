@@ -33,9 +33,13 @@ export function ComplianceRadar({ className = '' }: ComplianceRadarProps) {
     const loadCompliance = async () => {
       try {
         const data = await businessIntelligence.getComplianceRadar();
+        console.log('ComplianceRadar received data:', data);
+        console.log('Data type:', typeof data);
+        console.log('Data keys:', data ? Object.keys(data) : 'null');
         setCompliance(data);
       } catch (error) {
-        // Failed to load compliance data
+        console.error('Failed to load compliance data:', error);
+        setCompliance(null);
       } finally {
         setIsLoading(false);
       }
@@ -122,6 +126,22 @@ export function ComplianceRadar({ className = '' }: ComplianceRadarProps) {
     );
   }
 
+  // Validate data structure
+  if (!compliance.overallStatus || typeof compliance.pendingApprovals !== 'number') {
+    console.error('Invalid compliance data structure:', compliance);
+    return (
+      <Card className={`${className} shadow-2xs`}>
+        <CardHeader>
+          <CardTitle className="flex items-center space-x-2 text-card-foreground font-medium">
+            <Shield className="h-5 w-5 text-primary" />
+            <span>{t('widgets.complianceRadar')}</span>
+          </CardTitle>
+          <CardDescription className="text-muted-foreground">{t('widgets.invalidDataStructure')}</CardDescription>
+        </CardHeader>
+      </Card>
+    );
+  }
+
   const StatusIcon = getStatusIcon(compliance.overallStatus);
   const daysUntilAudit = getDaysUntilAudit();
 
@@ -133,7 +153,7 @@ export function ComplianceRadar({ className = '' }: ComplianceRadarProps) {
           <span>{t('widgets.complianceRadar')}</span>
         </CardTitle>
         <CardDescription className="text-muted-foreground">
-          Compliance status summary across all areas
+          {t('widgets.complianceStatusSummary')}
         </CardDescription>
       </CardHeader>
       <CardContent className="space-y-6">
