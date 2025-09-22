@@ -178,31 +178,31 @@ export function ComplianceRadar({ className = '' }: ComplianceRadarProps) {
           <div className="text-center p-3 bg-primary/10 rounded-[0.625rem] border border-primary/20">
             <FileText className="h-5 w-5 text-primary mx-auto mb-1" />
             <p className="text-lg font-bold text-primary">{compliance.pendingApprovals}</p>
-            <p className="text-xs text-muted-foreground">{t('compliance.pendingApprovals')}</p>
+            <p className="text-xs text-muted-foreground">{t('widgets.pendingApprovals')}</p>
           </div>
           <div className="text-center p-3 bg-warning/10 rounded-[0.625rem] border border-warning/20">
             <AlertTriangle className="h-5 w-5 text-warning mx-auto mb-1" />
             <p className="text-lg font-bold text-warning">{compliance.violations}</p>
-            <p className="text-xs text-muted-foreground">{t('compliance.violations')}</p>
+            <p className="text-xs text-muted-foreground">{t('widgets.violations')}</p>
           </div>
           <div className="text-center p-3 bg-destructive/10 rounded-[0.625rem] border border-destructive/20">
             <Lock className="h-5 w-5 text-destructive mx-auto mb-1" />
             <p className="text-lg font-bold text-destructive">{compliance.securityIncidents}</p>
-            <p className="text-xs text-muted-foreground">{t('compliance.securityIncidents')}</p>
+            <p className="text-xs text-muted-foreground">{t('widgets.securityIncidents')}</p>
           </div>
         </div>
 
         {/* Compliance Breakdown */}
         <div className="space-y-3">
-          <h4 className="text-sm font-medium text-card-foreground">{t('compliance.complianceBreakdown')}</h4>
+          <h4 className="text-sm font-medium text-card-foreground">{t('widgets.complianceBreakdown')}</h4>
           
           <div className="space-y-2">
             <div className="flex items-center justify-between p-3 bg-muted/50 rounded-[0.625rem] border border-border">
               <div className="flex items-center space-x-3">
                 <FileText className="h-4 w-4 text-primary" />
                 <div>
-                  <p className="text-sm font-medium text-card-foreground">{t('compliance.pendingApprovals')}</p>
-                  <p className="text-xs text-muted-foreground">{t('compliance.awaitingReview')}</p>
+                  <p className="text-sm font-medium text-card-foreground">{t('widgets.pendingApprovals')}</p>
+                  <p className="text-xs text-muted-foreground">{t('widgets.awaitingReview')}</p>
                 </div>
               </div>
               <div className="text-right">
@@ -217,8 +217,8 @@ export function ComplianceRadar({ className = '' }: ComplianceRadarProps) {
               <div className="flex items-center space-x-3">
                 <AlertTriangle className="h-4 w-4 text-warning" />
                 <div>
-                  <p className="text-sm font-medium text-card-foreground">{t('compliance.complianceViolations')}</p>
-                  <p className="text-xs text-muted-foreground">{t('compliance.policyBreaches')}</p>
+                  <p className="text-sm font-medium text-card-foreground">{t('widgets.complianceViolations')}</p>
+                  <p className="text-xs text-muted-foreground">{t('widgets.policyBreaches')}</p>
                 </div>
               </div>
               <div className="text-right">
@@ -233,8 +233,8 @@ export function ComplianceRadar({ className = '' }: ComplianceRadarProps) {
               <div className="flex items-center space-x-3">
                 <Lock className="h-4 w-4 text-destructive" />
                 <div>
-                  <p className="text-sm font-medium text-card-foreground">{t('compliance.securityIncidents')}</p>
-                  <p className="text-xs text-muted-foreground">{t('compliance.securityBreaches')}</p>
+                  <p className="text-sm font-medium text-card-foreground">{t('widgets.securityIncidents')}</p>
+                  <p className="text-xs text-muted-foreground">{t('widgets.securityBreaches')}</p>
                 </div>
               </div>
               <div className="text-right">

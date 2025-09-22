@@ -380,7 +380,15 @@ export function LanguageProvider({ children }: LanguageProviderProps) {
       'quickActions.viewSettings': 'View Settings',
       'quickActions.openSystemSettings': 'Open system settings',
       'widgets.invalidDataStructure': 'Invalid compliance data structure',
-      'widgets.complianceStatusSummary': 'Compliance status summary across all areas'
+      'widgets.complianceStatusSummary': 'Compliance status summary across all areas',
+      'widgets.pendingApprovals': 'Pending Approvals',
+      'widgets.violations': 'Violations',
+      'widgets.securityIncidents': 'Security Incidents',
+      'widgets.complianceBreakdown': 'Compliance Breakdown',
+      'widgets.awaitingReview': 'Awaiting Review',
+      'widgets.complianceViolations': 'Compliance Violations',
+      'widgets.policyBreaches': 'Policy Breaches',
+      'widgets.securityBreaches': 'Security Breaches'
     };
 
     // Helper function to get nested value from object
