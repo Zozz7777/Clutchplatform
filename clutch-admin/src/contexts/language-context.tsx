@@ -42,8 +42,24 @@ export function LanguageProvider({ children }: LanguageProviderProps) {
 
   // Translation function with fallback
   const t = (key: string, params?: any) => {
-    // For now, return the key as fallback
-    // This will be enhanced when we load actual translation files
+    // Try to load translations from JSON files
+    let translations: Record<string, string> = {};
+    
+    try {
+      if (language === 'ar') {
+        // Load Arabic translations
+        const arTranslations = require('@/messages/ar.json');
+        translations = arTranslations;
+      } else {
+        // Load English translations
+        const enTranslations = require('@/messages/en.json');
+        translations = enTranslations;
+      }
+    } catch (error) {
+      console.warn('Failed to load translation files, using fallback:', error);
+    }
+
+    // Fallback translations if loading fails
     const fallbackTranslations: Record<string, string> = {
       'common.loading': 'Loading...',
       'common.error': 'Error',
@@ -245,8 +261,13 @@ export function LanguageProvider({ children }: LanguageProviderProps) {
       'users.churnRisk': 'Churn Risk'
     };
 
-    // Handle parameter interpolation
-    let translation = fallbackTranslations[key] || key;
+    // Helper function to get nested value from object
+    const getNestedValue = (obj: any, path: string) => {
+      return path.split('.').reduce((current, key) => current?.[key], obj);
+    };
+
+    // Try to get translation from loaded translations first, then fallback
+    let translation = getNestedValue(translations, key) || fallbackTranslations[key] || key;
     
     if (params && typeof params === 'object') {
       Object.keys(params).forEach(paramKey => {
