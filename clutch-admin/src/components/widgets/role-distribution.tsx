@@ -6,7 +6,7 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Progress } from '@/components/ui/progress';
 import { productionApi } from '@/lib/production-api';
-import { useTranslations } from '@/hooks/use-translations';
+// Translation system removed - using hardcoded strings
 import { 
   Users, 
   UserCheck, 
@@ -35,19 +35,21 @@ interface RoleData {
 }
 
 export function RoleDistribution({ className = '' }: RoleDistributionProps) {
-  const { t } = useTranslations();
+  // Translation system removed - using hardcoded strings
   const [roleData, setRoleData] = React.useState<RoleData[]>([]);
   const [isLoading, setIsLoading] = React.useState(true);
 
   React.useEffect(() => {
     const loadRoleData = async () => {
       try {
-        const users = await Promise.resolve([]);
+        const users: any[] = await Promise.resolve([]);
         const roleCounts: Record<string, number> = {};
         
         // Count users by role
-        (users || []).forEach(user => {
-          roleCounts[user.role] = (roleCounts[user.role] || 0) + 1;
+        (users || []).forEach((user: any) => {
+          if (user && user.role) {
+            roleCounts[user.role] = (roleCounts[user.role] || 0) + 1;
+          }
         });
 
         const totalUsers = users?.length || 0;
@@ -235,7 +237,7 @@ export function RoleDistribution({ className = '' }: RoleDistributionProps) {
         <CardHeader>
           <CardTitle className="flex items-center space-x-2">
             <PieChart className="h-5 w-5 text-primary" />
-            <span>{t('dashboard.roleDistribution')}</span>
+            <span>Role Distribution</span>
           </CardTitle>
           <CardDescription>Loading role data...</CardDescription>
         </CardHeader>
@@ -271,25 +273,25 @@ export function RoleDistribution({ className = '' }: RoleDistributionProps) {
           <div className="text-center p-3 bg-primary/10 rounded-[0.625rem]-lg">
             <Users className="h-5 w-5 text-primary mx-auto mb-1" />
             <p className="text-lg font-bold text-primary">{totalUsers}</p>
-            <p className="text-xs text-muted-foreground">{t('dashboard.totalUsers')}</p>
+            <p className="text-xs text-muted-foreground">Total Users</p>
           </div>
           <div className="text-center p-3 bg-success/10 rounded-[0.625rem]-lg">
             <UserCheck className="h-5 w-5 text-success mx-auto mb-1" />
             <p className="text-lg font-bold text-success">{roleData.length}</p>
-            <p className="text-xs text-muted-foreground">{t('dashboard.roles')}</p>
+            <p className="text-xs text-muted-foreground">Roles</p>
           </div>
           <div className="text-center p-3 bg-primary/10 rounded-[0.625rem]-lg">
             <BarChart3 className="h-5 w-5 text-primary mx-auto mb-1" />
             <p className="text-lg font-bold text-primary">
               {largestRole ? largestRole.percentage.toFixed(1) : 0}%
             </p>
-            <p className="text-xs text-muted-foreground">{t('dashboard.largestRole')}</p>
+            <p className="text-xs text-muted-foreground">Largest Role</p>
           </div>
         </div>
 
         {/* Role List */}
         <div className="space-y-3">
-          <h4 className="text-sm font-medium text-foreground">{t('dashboard.roleBreakdown')}</h4>
+          <h4 className="text-sm font-medium text-foreground">Role Breakdown</h4>
           <div className="space-y-2">
             {roleData.map((role, index) => {
               const RoleIcon = role.icon;
@@ -339,7 +341,7 @@ export function RoleDistribution({ className = '' }: RoleDistributionProps) {
 
         {/* Role Distribution Chart */}
         <div className="space-y-3">
-          <h4 className="text-sm font-medium text-foreground">{t('dashboard.distribution')}</h4>
+          <h4 className="text-sm font-medium text-foreground">Distribution</h4>
           <div className="space-y-2">
             {roleData.map((role) => (
               <div key={role.role} className="space-y-1">
@@ -360,14 +362,14 @@ export function RoleDistribution({ className = '' }: RoleDistributionProps) {
             <p className="text-sm font-bold text-success capitalize">
               {largestRole?.role || 'N/A'}
             </p>
-            <p className="text-xs text-muted-foreground">{t('dashboard.largestRole')}</p>
+            <p className="text-xs text-muted-foreground">Largest Role</p>
           </div>
           <div className="text-center p-3 bg-destructive/10 rounded-[0.625rem]-lg">
             <User className="h-4 w-4 text-destructive mx-auto mb-1" />
             <p className="text-sm font-bold text-destructive capitalize">
               {smallestRole?.role || 'N/A'}
             </p>
-            <p className="text-xs text-muted-foreground">{t('dashboard.smallestRole')}</p>
+            <p className="text-xs text-muted-foreground">Smallest Role</p>
           </div>
         </div>
 

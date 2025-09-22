@@ -6,7 +6,7 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Progress } from '@/components/ui/progress';
 import { businessIntelligence } from '@/lib/business-intelligence';
-import { useTranslations } from '@/hooks/use-translations';
+// Translation system removed - using hardcoded strings
 import { 
   Users, 
   TrendingUp, 
@@ -30,7 +30,7 @@ interface CohortData {
 }
 
 export function UserGrowthCohort({ className = '' }: UserGrowthCohortProps) {
-  const { t } = useTranslations();
+  // Translation system removed - using hardcoded strings
   const [cohortData, setCohortData] = React.useState<{ cohorts: CohortData[] } | null>(null);
   const [isLoading, setIsLoading] = React.useState(true);
   const [selectedPeriod, setSelectedPeriod] = React.useState<'6m' | '12m'>('12m');
@@ -94,7 +94,7 @@ export function UserGrowthCohort({ className = '' }: UserGrowthCohortProps) {
         <CardHeader>
           <CardTitle className="flex items-center space-x-2">
             <Users className="h-5 w-5 text-primary" />
-            <span>{t('dashboard.userGrowthCohort')}</span>
+            <span>{'User Growth Cohort'}</span>
           </CardTitle>
           <CardDescription>Loading cohort analysis...</CardDescription>
         </CardHeader>
@@ -146,23 +146,23 @@ export function UserGrowthCohort({ className = '' }: UserGrowthCohortProps) {
           <div className="text-center p-3 bg-primary/10 rounded-[0.625rem]-lg">
             <Users className="h-5 w-5 text-primary mx-auto mb-1" />
             <p className="text-lg font-bold text-primary">{totalNewUsers}</p>
-            <p className="text-xs text-muted-foreground">{t('dashboard.newUsers')}</p>
+            <p className="text-xs text-muted-foreground">{'New Users'}</p>
           </div>
           <div className="text-center p-3 bg-success/10 rounded-[0.625rem]-lg">
             <TrendingUp className="h-5 w-5 text-success mx-auto mb-1" />
             <p className="text-lg font-bold text-success">{totalRetained}</p>
-            <p className="text-xs text-muted-foreground">{t('dashboard.retained')}</p>
+            <p className="text-xs text-muted-foreground">{'Retained'}</p>
           </div>
           <div className="text-center p-3 bg-primary/10 rounded-[0.625rem]-lg">
             <BarChart3 className="h-5 w-5 text-primary mx-auto mb-1" />
             <p className="text-lg font-bold text-primary">{averageRetention.toFixed(1)}%</p>
-            <p className="text-xs text-muted-foreground">{t('dashboard.avgRetention')}</p>
+            <p className="text-xs text-muted-foreground">{'Average Retention'}</p>
           </div>
         </div>
 
         {/* Cohort Table */}
         <div className="space-y-3">
-          <h4 className="text-sm font-medium text-foreground">{t('dashboard.monthlyCohorts')}</h4>
+          <h4 className="text-sm font-medium text-foreground">{'Monthly Cohorts'}</h4>
           <div className="space-y-2 max-h-64 overflow-y-auto">
             {filteredCohorts.map((cohort, index) => (
               <div key={cohort.month} className="flex items-center justify-between p-3 bg-muted/50 rounded-[0.625rem]-lg">
@@ -174,7 +174,7 @@ export function UserGrowthCohort({ className = '' }: UserGrowthCohortProps) {
                   </div>
                   <div>
                     <p className="text-sm font-medium text-foreground">{formatMonth(cohort.month)}</p>
-                    <p className="text-xs text-muted-foreground">{t('dashboard.cohort')}</p>
+                    <p className="text-xs text-muted-foreground">{'Cohort'}</p>
                   </div>
                 </div>
                 
@@ -185,7 +185,7 @@ export function UserGrowthCohort({ className = '' }: UserGrowthCohortProps) {
                   </div>
                   <div className="text-center">
                     <p className="text-sm font-semibold text-foreground">{cohort.retained}</p>
-                    <p className="text-xs text-muted-foreground">{t('dashboard.retained')}</p>
+                    <p className="text-xs text-muted-foreground">{'Retained'}</p>
                   </div>
                   <div className="text-center">
                     <Badge className={getRetentionBadge(cohort.retentionRate)}>
@@ -200,7 +200,7 @@ export function UserGrowthCohort({ className = '' }: UserGrowthCohortProps) {
 
         {/* Retention Trend Chart */}
         <div className="space-y-3">
-          <h4 className="text-sm font-medium text-foreground">{t('dashboard.retentionTrend')}</h4>
+          <h4 className="text-sm font-medium text-foreground">{'Retention Trend'}</h4>
           <div className="space-y-2">
             {filteredCohorts.slice(-6).map((cohort) => (
               <div key={cohort.month} className="flex items-center justify-between text-sm">
@@ -231,14 +231,14 @@ export function UserGrowthCohort({ className = '' }: UserGrowthCohortProps) {
             <p className="text-sm font-bold text-success">
               {filteredCohorts.filter(c => c.retentionRate >= 80).length}
             </p>
-            <p className="text-xs text-muted-foreground">{t('dashboard.highRetention')}</p>
+            <p className="text-xs text-muted-foreground">{'High Retention'}</p>
           </div>
           <div className="text-center p-3 bg-destructive/10 rounded-[0.625rem]-lg">
             <TrendingDown className="h-4 w-4 text-destructive mx-auto mb-1" />
             <p className="text-sm font-bold text-destructive">
               {filteredCohorts.filter(c => c.retentionRate < 60).length}
             </p>
-            <p className="text-xs text-muted-foreground">{t('dashboard.lowRetention')}</p>
+            <p className="text-xs text-muted-foreground">{'Low Retention'}</p>
           </div>
         </div>
 

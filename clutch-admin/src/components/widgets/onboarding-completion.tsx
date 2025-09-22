@@ -6,7 +6,7 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Progress } from '@/components/ui/progress';
 import { businessIntelligence } from '@/lib/business-intelligence';
-import { useTranslations } from '@/hooks/use-translations';
+// Translation system removed - using hardcoded strings
 import { 
   CheckCircle, 
   Circle, 
@@ -35,7 +35,7 @@ interface OnboardingData {
 }
 
 export function OnboardingCompletion({ className = '' }: OnboardingCompletionProps) {
-  const { t } = useTranslations();
+  // Translation system removed - using hardcoded strings
   const [onboardingData, setOnboardingData] = React.useState<OnboardingData | null>(null);
   const [isLoading, setIsLoading] = React.useState(true);
 
@@ -171,7 +171,7 @@ export function OnboardingCompletion({ className = '' }: OnboardingCompletionPro
           <div className="text-center p-3 bg-primary/10 rounded-[0.625rem]-lg">
             <Users className="h-5 w-5 text-primary mx-auto mb-1" />
             <p className="text-lg font-bold text-primary">{onboardingData.total}</p>
-            <p className="text-xs text-muted-foreground">{t('dashboard.totalUsers')}</p>
+            <p className="text-xs text-muted-foreground">{'Total Users'}</p>
           </div>
           <div className="text-center p-3 bg-success/10 rounded-[0.625rem]-lg">
             <CheckCircle className="h-5 w-5 text-success mx-auto mb-1" />
