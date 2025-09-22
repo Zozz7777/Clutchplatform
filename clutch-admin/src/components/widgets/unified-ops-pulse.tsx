@@ -7,7 +7,7 @@ import { Progress } from '@/components/ui/progress';
 import { businessIntelligence, type OperationalPulse } from '@/lib/business-intelligence';
 import { Users, Activity, Truck, DollarSign, TrendingUp, Zap } from 'lucide-react';
 import { logger } from '@/lib/logger';
-// import { useTranslations } from '@/hooks/use-translations';
+// Translation system removed - using hardcoded strings
 
 interface UnifiedOpsPulseProps {
   className?: string;
@@ -85,10 +85,10 @@ export function UnifiedOpsPulse({ className = '' }: UnifiedOpsPulseProps) {
       <CardHeader>
         <CardTitle className="flex items-center space-x-2 text-card-foreground font-medium">
           <Zap className="h-5 w-5 text-primary" />
-          <span>{t('dashboard.unifiedOpsPulse')}</span>
+          <span>Unified Operations Pulse</span>
         </CardTitle>
         <CardDescription className="text-muted-foreground">
-          {t('dashboard.realtimeOperationalFunnel')}
+          Real-time Operational Funnel
         </CardDescription>
       </CardHeader>
       <CardContent className="space-y-6">

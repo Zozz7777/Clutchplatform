@@ -6,7 +6,7 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Progress } from '@/components/ui/progress';
 import { businessIntelligence, type ComplianceStatus } from '@/lib/business-intelligence';
-// import { useTranslations } from '@/hooks/use-translations';
+// Translation system removed - using hardcoded strings
 import { 
   Shield, 
   AlertTriangle, 
@@ -93,7 +93,7 @@ export function ComplianceRadar({ className = '' }: ComplianceRadarProps) {
         <CardHeader>
           <CardTitle className="flex items-center space-x-2 text-card-foreground font-medium">
             <Shield className="h-5 w-5 text-primary" />
-            <span>{t('compliance.radar')}</span>
+            <span>Compliance Radar</span>
           </CardTitle>
           <CardDescription className="text-muted-foreground">Loading compliance status...</CardDescription>
         </CardHeader>
@@ -114,7 +114,7 @@ export function ComplianceRadar({ className = '' }: ComplianceRadarProps) {
         <CardHeader>
           <CardTitle className="flex items-center space-x-2 text-card-foreground font-medium">
             <Shield className="h-5 w-5 text-primary" />
-            <span>{t('compliance.radar')}</span>
+            <span>Compliance Radar</span>
           </CardTitle>
           <CardDescription className="text-muted-foreground">{t('compliance.unableToLoadStatus')}</CardDescription>
         </CardHeader>

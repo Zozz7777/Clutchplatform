@@ -6,7 +6,7 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Progress } from '@/components/ui/progress';
 import { businessIntelligence } from '@/lib/business-intelligence';
-// import { useTranslations } from '@/hooks/use-translations';
+// Translation system removed - using hardcoded strings
 import { 
   Building2, 
   DollarSign, 
@@ -98,7 +98,7 @@ export function TopEnterpriseClients({ className = '' }: TopEnterpriseClientsPro
         <CardHeader>
           <CardTitle className="flex items-center space-x-2 text-card-foreground font-medium">
             <Building2 className="h-5 w-5 text-primary" />
-            <span>{t('dashboard.top5EnterpriseClients')}</span>
+            <span>Top 5 Enterprise Clients</span>
           </CardTitle>
           <CardDescription className="text-muted-foreground">Loading client data...</CardDescription>
         </CardHeader>
@@ -118,7 +118,7 @@ export function TopEnterpriseClients({ className = '' }: TopEnterpriseClientsPro
       <CardHeader>
         <CardTitle className="flex items-center space-x-2 text-card-foreground font-medium">
           <Building2 className="h-5 w-5 text-primary" />
-          <span>{t('dashboard.top5EnterpriseClients')}</span>
+          <span>Top 5 Enterprise Clients</span>
         </CardTitle>
         <CardDescription className="text-muted-foreground">
           By revenue contribution & activity level

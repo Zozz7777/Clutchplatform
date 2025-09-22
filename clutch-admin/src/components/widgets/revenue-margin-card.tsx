@@ -6,7 +6,7 @@ import { Badge } from '@/components/ui/badge';
 import { Progress } from '@/components/ui/progress';
 import { businessIntelligence } from '@/lib/business-intelligence';
 import { logger } from '@/lib/logger';
-// import { useTranslations } from '@/hooks/use-translations';
+// Translation system removed - using hardcoded strings
 import { 
   DollarSign, 
   TrendingUp, 
@@ -153,10 +153,10 @@ export function RevenueMarginCard({ className = '' }: RevenueMarginCardProps) {
       <CardHeader>
         <CardTitle className="flex items-center space-x-2 text-card-foreground font-medium">
           <DollarSign className="h-5 w-5 text-success" />
-          <span>{t('dashboard.revenueVsCostMargin')}</span>
+          <span>Revenue vs Cost Margin</span>
         </CardTitle>
         <CardDescription className="text-muted-foreground">
-          {t('dashboard.monthlyRevenueVsOperationalCosts')}
+          Monthly Revenue vs Operational Costs
         </CardDescription>
       </CardHeader>
       <CardContent className="space-y-6">
