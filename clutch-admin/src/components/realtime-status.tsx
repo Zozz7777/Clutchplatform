@@ -2,6 +2,7 @@
 
 import React from 'react';
 import { useRealtime } from '@/contexts/realtime-context';
+import { useLanguage } from '@/contexts/language-context';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { 
@@ -15,6 +16,7 @@ import {
 
 export function RealtimeStatus() {
   const { isConnected, connectionState, connect, disconnect, messageCount } = useRealtime();
+  const { t } = useLanguage();
 
   const getStatusIcon = () => {
     switch (connectionState) {
@@ -34,15 +36,15 @@ export function RealtimeStatus() {
   const getStatusBadge = () => {
     switch (connectionState) {
       case 'connected':
-        return <Badge variant="default" className="bg-success/100 text-white">Live</Badge>;
+        return <Badge variant="default" className="bg-success/100 text-white">{t('dashboard.live')}</Badge>;
       case 'connecting':
-        return <Badge variant="secondary" className="bg-primary/100 text-white">Connecting</Badge>;
+        return <Badge variant="secondary" className="bg-primary/100 text-white">{t('common.connecting')}</Badge>;
       case 'disconnected':
-        return <Badge variant="destructive">Offline</Badge>;
+        return <Badge variant="destructive">{t('common.offline')}</Badge>;
       case 'closing':
-        return <Badge variant="secondary" className="bg-warning/100 text-white">Closing</Badge>;
+        return <Badge variant="secondary" className="bg-warning/100 text-white">{t('common.closing')}</Badge>;
       default:
-        return <Badge variant="outline">Unknown</Badge>;
+        return <Badge variant="outline">{t('common.unknown')}</Badge>;
     }
   };
 
@@ -59,7 +61,7 @@ export function RealtimeStatus() {
       <div className="flex items-center gap-2">
         {getStatusIcon()}
         <span className="text-xs font-medium text-muted-foreground">
-          Real-time
+          {t('dashboard.realTime')}
         </span>
       </div>
       
@@ -67,7 +69,7 @@ export function RealtimeStatus() {
       
       {messageCount > 0 && (
         <Badge variant="outline" className="text-xs">
-          {messageCount} msgs
+          {messageCount} {t('dashboard.messages')}
         </Badge>
       )}
       

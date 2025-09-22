@@ -202,7 +202,7 @@ export default function DashboardPage() {
         <div>
           <h1 className="text-3xl font-bold tracking-tight text-foreground font-sans">{t('dashboard.title')}</h1>
           <p className="text-muted-foreground font-sans">
-            {t('dashboard.welcomeToClutch')}
+            {t('dashboard.welcome')}
           </p>
         </div>
         <div className="flex items-center space-x-2">
