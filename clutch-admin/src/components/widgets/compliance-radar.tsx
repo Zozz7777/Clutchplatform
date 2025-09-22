@@ -134,7 +134,7 @@ export function ComplianceRadar({ className = '' }: ComplianceRadarProps) {
             <Shield className="h-5 w-5 text-primary" />
             <span>{t('widgets.complianceRadar')}</span>
           </CardTitle>
-          <CardDescription className="text-muted-foreground">Loading compliance status...</CardDescription>
+          <CardDescription className="text-muted-foreground">{t('widgets.loading')}</CardDescription>
         </CardHeader>
         <CardContent>
           <div className="animate-pulse space-y-4">
@@ -156,12 +156,12 @@ export function ComplianceRadar({ className = '' }: ComplianceRadarProps) {
             <span>{t('widgets.complianceRadar')}</span>
           </CardTitle>
           <CardDescription className="text-destructive">
-            Data structure error - Check console for details
+            {t('widgets.dataStructureError')}
           </CardDescription>
         </CardHeader>
         <div className="p-4">
           <p className="text-sm text-muted-foreground">
-            The compliance data received does not match the expected format.
+            {t('widgets.dataFormatMismatch')}
           </p>
         </div>
       </Card>
@@ -176,7 +176,7 @@ export function ComplianceRadar({ className = '' }: ComplianceRadarProps) {
             <Shield className="h-5 w-5 text-primary" />
             <span>{t('widgets.complianceRadar')}</span>
           </CardTitle>
-          <CardDescription className="text-muted-foreground">Unable to load compliance status</CardDescription>
+          <CardDescription className="text-muted-foreground">{t('widgets.unableToLoad')}</CardDescription>
         </CardHeader>
       </Card>
     );
@@ -307,7 +307,7 @@ export function ComplianceRadar({ className = '' }: ComplianceRadarProps) {
         <div className="space-y-3">
           <h4 className="text-sm font-medium text-card-foreground flex items-center space-x-2">
             <Calendar className="h-4 w-4" />
-            <span>Audit Timeline</span>
+            <span>{t('widgets.auditTimeline')}</span>
           </h4>
           
           <div className="space-y-3">
@@ -315,15 +315,15 @@ export function ComplianceRadar({ className = '' }: ComplianceRadarProps) {
               <div className="flex items-center space-x-3">
                 <CheckCircle className="h-4 w-4 text-success" />
                 <div>
-                  <p className="text-sm font-medium text-card-foreground">Last Audit</p>
-                  <p className="text-xs text-muted-foreground">Completed successfully</p>
+                  <p className="text-sm font-medium text-card-foreground">{t('widgets.lastAudit')}</p>
+                  <p className="text-xs text-muted-foreground">{t('widgets.completedSuccessfully')}</p>
                 </div>
               </div>
               <div className="text-right">
                 <p className="text-sm font-semibold text-card-foreground">
                   {formatDate(compliance.lastAudit)}
                 </p>
-                <Badge variant="secondary" className="text-xs">Passed</Badge>
+                <Badge variant="secondary" className="text-xs">{t('widgets.passed')}</Badge>
               </div>
             </div>
 
@@ -331,8 +331,8 @@ export function ComplianceRadar({ className = '' }: ComplianceRadarProps) {
               <div className="flex items-center space-x-3">
                 <Clock className="h-4 w-4 text-primary" />
                 <div>
-                  <p className="text-sm font-medium text-card-foreground">Next Audit</p>
-                  <p className="text-xs text-muted-foreground">Scheduled audit</p>
+                  <p className="text-sm font-medium text-card-foreground">{t('widgets.nextAudit')}</p>
+                  <p className="text-xs text-muted-foreground">{t('widgets.scheduledAudit')}</p>
                 </div>
               </div>
               <div className="text-right">
@@ -349,11 +349,11 @@ export function ComplianceRadar({ className = '' }: ComplianceRadarProps) {
 
         {/* Compliance Progress */}
         <div className="space-y-3">
-          <h4 className="text-sm font-medium text-card-foreground">Compliance Progress</h4>
+          <h4 className="text-sm font-medium text-card-foreground">{t('widgets.complianceProgress')}</h4>
           
           <div className="space-y-2">
             <div className="flex justify-between text-sm">
-              <span className="text-muted-foreground">Overall Compliance</span>
+              <span className="text-muted-foreground">{t('widgets.overallCompliance')}</span>
               <span className="text-card-foreground">
                 {compliance.overallStatus === 'green' ? '100%' : 
                  compliance.overallStatus === 'amber' ? '75%' : 
@@ -373,33 +373,33 @@ export function ComplianceRadar({ className = '' }: ComplianceRadarProps) {
         <div className="grid grid-cols-2 gap-2 pt-2">
           <Button variant="outline" size="sm" className="hover:bg-muted focus:ring-2 focus:ring-ring">
             <Eye className="h-4 w-4 mr-2" />
-            View Details
+            {t('widgets.viewDetails')}
           </Button>
           <Button variant="outline" size="sm" className="hover:bg-muted focus:ring-2 focus:ring-ring">
             <Download className="h-4 w-4 mr-2" />
-            Export Report
+            {t('widgets.exportReport')}
           </Button>
         </div>
 
         {/* Compliance Insights */}
         <div className="p-3 bg-primary/10 rounded-[0.625rem] border border-primary/20">
-          <h5 className="text-sm font-medium text-primary mb-2">💡 Compliance Insights</h5>
+          <h5 className="text-sm font-medium text-primary mb-2">💡 {t('widgets.complianceInsights')}</h5>
           <ul className="text-xs text-primary/80 space-y-1">
             {compliance.overallStatus === 'green' && (
-              <li>• All compliance requirements are met</li>
+              <li>• {t('widgets.allRequirementsMet')}</li>
             )}
             {compliance.overallStatus === 'amber' && (
-              <li>• Some areas need attention - review pending approvals</li>
+              <li>• {t('widgets.attentionNeededAreas')}</li>
             )}
             {compliance.overallStatus === 'red' && (
-              <li>• Immediate action required - address violations and incidents</li>
+              <li>• {t('widgets.immediateActionRequired')}</li>
             )}
-            <li>• Next audit in {daysUntilAudit} days</li>
+            <li>• {t('widgets.nextAuditIn', { days: daysUntilAudit })}</li>
             {compliance.pendingApprovals > 0 && (
-              <li>• {compliance.pendingApprovals} approvals pending review</li>
+              <li>• {t('widgets.approvalsPendingReview', { count: compliance.pendingApprovals })}</li>
             )}
             {compliance.violations > 0 && (
-              <li>• {compliance.violations} compliance violations need resolution</li>
+              <li>• {t('widgets.violationsNeedResolution', { count: compliance.violations })}</li>
             )}
           </ul>
         </div>
