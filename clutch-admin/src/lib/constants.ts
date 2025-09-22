@@ -472,6 +472,12 @@ export const NAVIGATION_ITEMS = [
     permissions: [PERMISSIONS.VIEW_DASHBOARD],
   },
   {
+    title: "Test Navigation",
+    href: "/test-navigation",
+    icon: "TestTube",
+    permissions: [PERMISSIONS.VIEW_DASHBOARD],
+  },
+  {
     title: "User Management",
     href: "/users",
     icon: "Users",
