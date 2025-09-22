@@ -112,7 +112,7 @@ export function EngagementHeatmap({ className = '' }: EngagementHeatmapProps) {
         <CardHeader>
           <CardTitle className="flex items-center space-x-2">
             <BarChart3 className="h-5 w-5 text-primary" />
-            <span>Engagement Heatmap</span>
+            <span>{t('dashboard.engagementHeatmap')}</span>
           </CardTitle>
           <CardDescription>Loading engagement data...</CardDescription>
         </CardHeader>
@@ -171,18 +171,18 @@ export function EngagementHeatmap({ className = '' }: EngagementHeatmapProps) {
           <div className="text-center p-3 bg-primary/10 rounded-[0.625rem] border border-primary/20">
             <Activity className="h-5 w-5 text-primary mx-auto mb-1" />
             <p className="text-lg font-bold text-primary">{totalUsage.toFixed(1)}%</p>
-            <p className="text-xs text-muted-foreground">Avg Usage</p>
+            <p className="text-xs text-muted-foreground">{t('dashboard.avgUsage')}</p>
           </div>
           <div className="text-center p-3 bg-secondary/10 rounded-[0.625rem] border border-secondary/20">
             <Users className="h-5 w-5 text-secondary mx-auto mb-1" />
             <p className="text-lg font-bold text-secondary">{filteredSegments.length}</p>
-            <p className="text-xs text-muted-foreground">Segments</p>
+            <p className="text-xs text-muted-foreground">{t('dashboard.segments')}</p>
           </div>
         </div>
 
         {/* Heatmap Grid */}
         <div className="space-y-3">
-          <h4 className="text-sm font-medium text-card-foreground">Feature Usage Heatmap</h4>
+          <h4 className="text-sm font-medium text-card-foreground">{t('dashboard.featureUsageHeatmap')}</h4>
           <div className="space-y-2">
             {filteredSegments.map((segment) => (
               <div key={segment.segment} className="space-y-2">
@@ -218,7 +218,7 @@ export function EngagementHeatmap({ className = '' }: EngagementHeatmapProps) {
 
         {/* Top Features */}
         <div className="space-y-3">
-          <h4 className="text-sm font-medium text-card-foreground">Top Performing Features</h4>
+          <h4 className="text-sm font-medium text-card-foreground">{t('dashboard.topPerformingFeatures')}</h4>
           <div className="space-y-2">
             {topFeatures.map((item, index) => (
               <div key={item.feature} className="flex items-center justify-between p-3 bg-muted/50 rounded-[0.625rem] border border-border">
@@ -228,7 +228,7 @@ export function EngagementHeatmap({ className = '' }: EngagementHeatmapProps) {
                   </div>
                   <div>
                     <p className="text-sm font-medium text-card-foreground">{item.feature}</p>
-                    <p className="text-xs text-muted-foreground">Feature usage</p>
+                    <p className="text-xs text-muted-foreground">{t('dashboard.featureUsage')}</p>
                   </div>
                 </div>
                 <div className="text-right">
@@ -246,7 +246,7 @@ export function EngagementHeatmap({ className = '' }: EngagementHeatmapProps) {
 
         {/* Usage Distribution */}
         <div className="space-y-3">
-          <h4 className="text-sm font-medium text-card-foreground">Usage Distribution</h4>
+          <h4 className="text-sm font-medium text-card-foreground">{t('dashboard.usageDistribution')}</h4>
           <div className="grid grid-cols-4 gap-2">
             <div className="text-center p-2 bg-success/10 rounded-[0.625rem] border border-success/20">
               <p className="text-sm font-bold text-success">

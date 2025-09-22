@@ -198,7 +198,7 @@ export function UserGrowthCohort({ className = '' }: UserGrowthCohortProps) {
 
         {/* Retention Trend Chart */}
         <div className="space-y-3">
-          <h4 className="text-sm font-medium text-foreground">Retention Trend</h4>
+          <h4 className="text-sm font-medium text-foreground">{t('dashboard.retentionTrend')}</h4>
           <div className="space-y-2">
             {filteredCohorts.slice(-6).map((cohort) => (
               <div key={cohort.month} className="flex items-center justify-between text-sm">
@@ -229,14 +229,14 @@ export function UserGrowthCohort({ className = '' }: UserGrowthCohortProps) {
             <p className="text-sm font-bold text-success">
               {filteredCohorts.filter(c => c.retentionRate >= 80).length}
             </p>
-            <p className="text-xs text-muted-foreground">High Retention</p>
+            <p className="text-xs text-muted-foreground">{t('dashboard.highRetention')}</p>
           </div>
           <div className="text-center p-3 bg-destructive/10 rounded-[0.625rem]-lg">
             <TrendingDown className="h-4 w-4 text-destructive mx-auto mb-1" />
             <p className="text-sm font-bold text-destructive">
               {filteredCohorts.filter(c => c.retentionRate < 60).length}
             </p>
-            <p className="text-xs text-muted-foreground">Low Retention</p>
+            <p className="text-xs text-muted-foreground">{t('dashboard.lowRetention')}</p>
           </div>
         </div>
 

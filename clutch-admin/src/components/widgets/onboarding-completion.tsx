@@ -103,7 +103,7 @@ export function OnboardingCompletion({ className = '' }: OnboardingCompletionPro
         <CardHeader>
           <CardTitle className="flex items-center space-x-2">
             <Target className="h-5 w-5 text-success" />
-            <span>Onboarding Completion</span>
+            <span>{t('dashboard.onboardingCompletion')}</span>
           </CardTitle>
           <CardDescription>Loading onboarding metrics...</CardDescription>
         </CardHeader>
@@ -124,9 +124,9 @@ export function OnboardingCompletion({ className = '' }: OnboardingCompletionPro
         <CardHeader>
           <CardTitle className="flex items-center space-x-2">
             <Target className="h-5 w-5 text-success" />
-            <span>Onboarding Completion</span>
+            <span>{t('dashboard.onboardingCompletion')}</span>
           </CardTitle>
-          <CardDescription>Unable to load onboarding data</CardDescription>
+          <CardDescription>{t('dashboard.unableToLoadOnboardingData')}</CardDescription>
         </CardHeader>
       </Card>
     );
@@ -158,7 +158,7 @@ export function OnboardingCompletion({ className = '' }: OnboardingCompletionPro
               {getCompletionLevel(onboardingData.completionRate)}
             </Badge>
           </div>
-          <p className="text-sm text-muted-foreground">Overall Completion Rate</p>
+          <p className="text-sm text-muted-foreground">{t('dashboard.overallCompletionRate')}</p>
           <div className="mt-3">
             <Progress value={onboardingData.completionRate} className="h-2" />
           </div>
@@ -169,25 +169,25 @@ export function OnboardingCompletion({ className = '' }: OnboardingCompletionPro
           <div className="text-center p-3 bg-primary/10 rounded-[0.625rem]-lg">
             <Users className="h-5 w-5 text-primary mx-auto mb-1" />
             <p className="text-lg font-bold text-primary">{onboardingData.total}</p>
-            <p className="text-xs text-muted-foreground">Total Users</p>
+            <p className="text-xs text-muted-foreground">{t('dashboard.totalUsers')}</p>
           </div>
           <div className="text-center p-3 bg-success/10 rounded-[0.625rem]-lg">
             <CheckCircle className="h-5 w-5 text-success mx-auto mb-1" />
             <p className="text-lg font-bold text-success">{onboardingData.completed}</p>
-            <p className="text-xs text-muted-foreground">Completed</p>
+            <p className="text-xs text-muted-foreground">{t('dashboard.completed')}</p>
           </div>
           <div className="text-center p-3 bg-destructive/10 rounded-[0.625rem]-lg">
             <AlertTriangle className="h-5 w-5 text-destructive mx-auto mb-1" />
             <p className="text-lg font-bold text-destructive">
               {onboardingData.total - onboardingData.completed}
             </p>
-            <p className="text-xs text-muted-foreground">Incomplete</p>
+            <p className="text-xs text-muted-foreground">{t('dashboard.incomplete')}</p>
           </div>
         </div>
 
         {/* Onboarding Steps */}
         <div className="space-y-3">
-          <h4 className="text-sm font-medium text-foreground">Onboarding Steps</h4>
+          <h4 className="text-sm font-medium text-foreground">{t('dashboard.onboardingSteps')}</h4>
           <div className="space-y-2">
             {onboardingData.steps.map((step) => {
               const StepIcon = getStepIcon(step.rate);

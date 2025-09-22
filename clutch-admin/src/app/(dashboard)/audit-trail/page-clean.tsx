@@ -146,7 +146,7 @@ export default function AuditTrailPage() {
     };
 
     loadAuditData();
-  }, [t]);
+  }, []);
 
   const filteredAuditLogs = auditLogs.filter((log) => {
     const matchesSearch = log.resourceName.toLowerCase().includes(searchTerm.toLowerCase()) ||

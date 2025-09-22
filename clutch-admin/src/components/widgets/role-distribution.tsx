@@ -233,7 +233,7 @@ export function RoleDistribution({ className = '' }: RoleDistributionProps) {
         <CardHeader>
           <CardTitle className="flex items-center space-x-2">
             <PieChart className="h-5 w-5 text-primary" />
-            <span>Role Distribution</span>
+            <span>{t('dashboard.roleDistribution')}</span>
           </CardTitle>
           <CardDescription>Loading role data...</CardDescription>
         </CardHeader>
@@ -269,12 +269,12 @@ export function RoleDistribution({ className = '' }: RoleDistributionProps) {
           <div className="text-center p-3 bg-primary/10 rounded-[0.625rem]-lg">
             <Users className="h-5 w-5 text-primary mx-auto mb-1" />
             <p className="text-lg font-bold text-primary">{totalUsers}</p>
-            <p className="text-xs text-muted-foreground">Total Users</p>
+            <p className="text-xs text-muted-foreground">{t('dashboard.totalUsers')}</p>
           </div>
           <div className="text-center p-3 bg-success/10 rounded-[0.625rem]-lg">
             <UserCheck className="h-5 w-5 text-success mx-auto mb-1" />
             <p className="text-lg font-bold text-success">{roleData.length}</p>
-            <p className="text-xs text-muted-foreground">Roles</p>
+            <p className="text-xs text-muted-foreground">{t('dashboard.roles')}</p>
           </div>
           <div className="text-center p-3 bg-primary/10 rounded-[0.625rem]-lg">
             <BarChart3 className="h-5 w-5 text-primary mx-auto mb-1" />

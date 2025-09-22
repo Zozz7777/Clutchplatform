@@ -10,9 +10,8 @@ import { useQuickActions } from "@/lib/quick-actions";
 import { handleError, handleDataLoadError } from "@/lib/error-handler";
 import { productionApi } from "@/lib/production-api";
 import { formatDate, formatRelativeTime, formatCurrency } from "@/lib/utils";
-// Temporarily disable translations to fix the error
-// import { useTranslations } from "@/hooks/use-translations";
-// import { useLanguage } from "@/contexts/language-context";
+import { useTranslations } from "@/hooks/use-translations";
+import { useLanguage } from "@/contexts/language-context";
 
 // Import new Phase 2 widgets
 import AdoptionFunnel from "@/components/widgets/adoption-funnel";
@@ -141,6 +140,9 @@ interface AnalyticsReport {
 }
 
 export default function AnalyticsPage() {
+  const { language } = useLanguage();
+  const { t } = useTranslations();
+  
   const [metrics, setMetrics] = useState<AnalyticsMetric[]>([]);
   const [userAnalytics, setUserAnalytics] = useState<UserAnalytics | null>(null);
   const [revenueAnalytics, setRevenueAnalytics] = useState<RevenueAnalytics | null>(null);
@@ -149,9 +151,15 @@ export default function AnalyticsPage() {
   const [reports, setReports] = useState<AnalyticsReport[]>([]);
   const [selectedTimeRange, setSelectedTimeRange] = useState<string>("30d");
 
-  // Simple translation function that just returns the fallback text
+  // Safe translation function with fallbacks - now using the robust t function
   const safeT = (key: string, fallback?: string) => {
-    return fallback || key;
+    try {
+      const result = t(key);
+      return result || fallback || key;
+    } catch (error) {
+      console.warn('Translation error for key:', key, error);
+      return fallback || key;
+    }
   };
   const [isLoading, setIsLoading] = useState(true);
   const { user, hasPermission } = useAuth();

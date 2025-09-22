@@ -197,8 +197,8 @@ const fallbackTranslations = {
     helpDocs: "Help Docs",
     by: "by",
     views: "views",
-    created: "Created",
-    updated: "Updated",
+    contentCreated: "Created",
+    contentUpdated: "Updated",
     actions: "Actions",
     viewContent: "View Content",
     editContent: "Edit Content",
@@ -261,7 +261,7 @@ const fallbackTranslations = {
     role: "Role",
     status: "Status",
     lastLogin: "Last Login",
-    created: "Created",
+    userCreated: "Created",
     viewProfile: "View Profile",
     manageRoles: "Manage Roles",
     suspendUser: "Suspend User",
@@ -277,7 +277,7 @@ const fallbackTranslations = {
     filterByStatus: "Filter by status",
     filterByRole: "Filter by role"
   },
-  chat: {
+  chatData: {
     failedToLoadChatData: "Failed to load chat data",
     failedToSendMessage: "Failed to send message",
     title: "Chat & Messaging",
@@ -381,10 +381,10 @@ const fallbackTranslations = {
     quickActions: "Quick Actions",
     pageTitle: "Page Title",
     metaDescription: "Meta Description",
-    keywords: "Keywords",
+    cmsKeywords: "Keywords",
     addKeyword: "Add Keyword",
     issues: "Issues",
-    suggestions: "Suggestions",
+    cmsSuggestions: "Suggestions",
     keywordResearch: "Keyword Research",
     research: "Research",
     organicTraffic: "Organic Traffic",
@@ -448,22 +448,22 @@ const fallbackTranslations = {
     title: "User Management",
     description: "Manage users, roles, and permissions across the platform",
     addUser: "Add User",
-    totalUsers: "Total Users",
+    analyticsTotalUsers: "Total Users",
     activeUsers: "Active Users",
     enterpriseClients: "Enterprise Clients",
     serviceProviders: "Service Providers",
     fromLastMonth: "from last month",
     loadingUsers: "Loading users...",
-    allUsers: "All Users",
-    b2cCustomers: "B2C Customers",
-    enterpriseClients: "Enterprise Clients",
-    serviceProviders: "Service Providers",
+    analyticsAllUsers: "All Users",
+    analyticsB2cCustomers: "B2C Customers",
+    analyticsEnterpriseClients: "Enterprise Clients",
+    analyticsServiceProviders: "Service Providers",
     completeUserDirectory: "Complete User Directory",
     user: "User",
     role: "Role",
     status: "Status",
     lastLogin: "Last Login",
-    created: "Created",
+    analyticsCreated: "Created",
     userAnalytics: "User Analytics",
     deepInsightsIntoUser: "Deep insights into user behavior and engagement patterns",
     userGrowthCohort: "User Growth Cohort",
@@ -483,7 +483,44 @@ const fallbackTranslations = {
     cohortsWithHighRetention: "cohorts with high retention (80%+)",
     totalNewUsersInPeriod: "Total new users in period",
     totalRetainedUsers: "Total retained users",
-    retentionBelowTarget: "Retention below target - consider onboarding improvements"
+    retentionBelowTarget: "Retention below target - consider onboarding improvements",
+    cohort: "Cohort",
+    engagementHeatmap: "Engagement Heatmap",
+    showsFeatureUsageByUser: "Shows feature usage by user segment",
+    avgUsage: "Avg Usage",
+    segments: "Segments",
+    featureUsageHeatmap: "Feature Usage Heatmap",
+    topPerformingFeatures: "Top Performing Features",
+    featureUsage: "Feature usage",
+    usageDistribution: "Usage Distribution",
+    high: "High",
+    medium: "Medium",
+    low: "Low",
+    veryLow: "Very Low",
+    engagementInsights: "Engagement Insights",
+    averageFeatureUsage: "Average feature usage",
+    topFeature: "Top feature",
+    featuresWithHighEngagement: "features with high engagement (80%+)",
+    featuresNeedAttention: "features need attention (<40% usage)",
+    onboardingCompletion: "Onboarding Completion",
+    unableToLoadOnboardingData: "Unable to load onboarding data",
+    overallCompletionRate: "Overall Completion Rate",
+    totalUsers: "Total Users",
+    completed: "Completed",
+    incomplete: "Incomplete",
+    onboardingSteps: "Onboarding Steps",
+    roleDistribution: "Role Distribution",
+    pieChartOfAdmins: "Pie chart of admins, managers, staff, etc.",
+    roles: "Roles",
+    largestRole: "Largest Role",
+    roleBreakdown: "Role Breakdown",
+    distribution: "Distribution",
+    smallestRole: "Smallest Role",
+    roleInsights: "Role Insights",
+    roleTotalUsers: "Total users",
+    differentRolesInSystem: "different roles in the system",
+    largestRolePercent: "Largest role",
+    smallestRolePercent: "Smallest role"
   }
 };
 
@@ -493,7 +530,14 @@ export function useTranslations() {
     console.log('🔍 [useTranslations] Hook called from:', new Error().stack?.split('\n')[2]?.trim());
   }
   
-  const { language } = useLanguage();
+  // Safely get language context with fallback
+  let language = 'en';
+  try {
+    const languageContext = useLanguage();
+    language = languageContext?.language || 'en';
+  } catch (error) {
+    console.warn('Language context not available, using fallback:', error);
+  }
   
   // Only log in development mode
   if (process.env.NODE_ENV === 'development') {
@@ -509,6 +553,11 @@ export function useTranslations() {
   }
 
   const t = (key: TranslationKey): string => {
+    // Always return a string, never undefined
+    if (!key || typeof key !== 'string') {
+      return 'Invalid key';
+    }
+    
     // Only log in development mode
     if (process.env.NODE_ENV === 'development') {
       console.log('🔑 [useTranslations] Translation key requested:', key);
@@ -556,8 +605,13 @@ export function useTranslations() {
     
     const result = typeof value === 'string' ? value : key;
     
-    return result;
+    // Always return a string, never undefined
+    return result || key;
   };
 
-  return { t, language };
+  // Ensure we always return valid objects
+  return { 
+    t: t || ((key: string) => key), 
+    language: language || 'en' 
+  };
 }

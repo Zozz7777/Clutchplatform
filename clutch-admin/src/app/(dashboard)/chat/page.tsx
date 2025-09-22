@@ -222,7 +222,7 @@ export default function ChatPage() {
         clearTimeout(timeoutId);
       }
     };
-  }, [selectedChannel, t]);
+  }, [selectedChannel]);
 
   const handleSendMessage = async () => {
     if (newMessage.trim()) {
