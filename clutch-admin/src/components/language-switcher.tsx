@@ -1,7 +1,6 @@
 'use client';
 
-// Translation system removed - using hardcoded strings
-// import { useTranslations } from '@/hooks/use-translations';
+import { useLanguage } from '@/contexts/language-context';
 import { Button } from '@/components/ui/button';
 import {
   DropdownMenu,
@@ -12,10 +11,7 @@ import {
 import { Languages } from 'lucide-react';
 
 export function LanguageSwitcher() {
-  // Translation system removed - using hardcoded strings
-  const language = 'en';
-  const setLanguage = () => {};
-  const t = (key: string, params?: any) => key;
+  const { language, setLanguage, t } = useLanguage();
 
   const languages = [
     { code: 'en' as const, name: t('language.english'), flag: '🇺🇸' },

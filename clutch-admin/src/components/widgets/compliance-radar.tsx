@@ -116,7 +116,7 @@ export function ComplianceRadar({ className = '' }: ComplianceRadarProps) {
             <Shield className="h-5 w-5 text-primary" />
             <span>Compliance Radar</span>
           </CardTitle>
-          <CardDescription className="text-muted-foreground">{t('compliance.unableToLoadStatus')}</CardDescription>
+          <CardDescription className="text-muted-foreground">Unable to load compliance status</CardDescription>
         </CardHeader>
       </Card>
     );
@@ -130,10 +130,10 @@ export function ComplianceRadar({ className = '' }: ComplianceRadarProps) {
       <CardHeader>
         <CardTitle className="flex items-center space-x-2 text-card-foreground font-medium">
           <Shield className="h-5 w-5 text-primary" />
-          <span>{t('dashboard.complianceRadar')}</span>
+          <span>Compliance Radar</span>
         </CardTitle>
         <CardDescription className="text-muted-foreground">
-          {t('dashboard.complianceStatusSummary')}
+          Compliance status summary across all areas
         </CardDescription>
       </CardHeader>
       <CardContent className="space-y-6">
@@ -150,7 +150,7 @@ export function ComplianceRadar({ className = '' }: ComplianceRadarProps) {
                'Action Required'}
             </Badge>
           </div>
-          <p className="text-sm text-muted-foreground">{t('compliance.overallComplianceStatus')}</p>
+          <p className="text-sm text-muted-foreground">Overall Compliance Status</p>
         </div>
 
         {/* Compliance Metrics */}

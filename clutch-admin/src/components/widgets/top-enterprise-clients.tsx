@@ -132,14 +132,14 @@ export function TopEnterpriseClients({ className = '' }: TopEnterpriseClientsPro
             <p className="text-lg font-bold text-success">
               {totalRevenue.toLocaleString()} EGP
             </p>
-            <p className="text-xs text-muted-foreground">{t('enterprise.totalRevenue')}</p>
+            <p className="text-xs text-muted-foreground">Total Revenue</p>
           </div>
           <div className="text-center p-3 bg-primary/10 rounded-[0.625rem] border border-primary/20">
             <TrendingUp className="h-5 w-5 text-primary mx-auto mb-1" />
             <p className="text-lg font-bold text-primary">
               {averageGrowth.toFixed(1)}%
             </p>
-            <p className="text-xs text-muted-foreground">{t('enterprise.avgGrowth')}</p>
+            <p className="text-xs text-muted-foreground">Avg Growth</p>
           </div>
         </div>
 
@@ -183,7 +183,7 @@ export function TopEnterpriseClients({ className = '' }: TopEnterpriseClientsPro
                     
                     <div className="mt-2">
                       <div className="flex justify-between text-xs text-muted-foreground mb-1">
-                        <span>{t('enterprise.revenueShare')}</span>
+                        <span>Revenue Share</span>
                         <span>{revenuePercentage.toFixed(1)}%</span>
                       </div>
                       <Progress value={revenuePercentage} className="h-1" />

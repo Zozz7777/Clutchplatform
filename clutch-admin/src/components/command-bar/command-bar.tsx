@@ -752,7 +752,7 @@ export default function CommandBar({ isOpen, onClose }: CommandBarProps) {
             <div className="flex items-center border-b px-3">
               <Search className="mr-2 h-4 w-4 shrink-0 opacity-50" />
               <CommandInput
-                placeholder=Search...
+                placeholder="Search..."
                 value={search}
                 onValueChange={setSearch}
                 className="flex h-11 w-full rounded-[0.625rem] bg-transparent py-3 text-sm outline-none placeholder:text-muted-foreground disabled:cursor-not-allowed disabled:opacity-50"

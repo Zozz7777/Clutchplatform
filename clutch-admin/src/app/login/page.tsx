@@ -10,7 +10,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Label } from "@/components/ui/label";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Loader2, Eye, EyeOff } from "lucide-react";
-// Translation system removed - using hardcoded strings
+import { useLanguage } from "@/contexts/language-context";
 
 // Prevent static generation for this page
 export const dynamic = 'force-dynamic';
@@ -34,38 +34,7 @@ function LoginForm() {
   }
   
   const router = useRouter();
-  
-  // Fallback translation function
-  const t = (key: string) => {
-    const translations: Record<string, string> = {
-      'auth.login': 'Login',
-      'auth.email': 'Email',
-      'auth.password': 'Password',
-      'auth.signingIn': 'Signing in...',
-      'auth.invalidCredentials': 'Invalid email or password',
-      'auth.loginError': 'Login failed. Please try again.',
-      'auth.enterEmail': 'Enter your email',
-      'auth.enterPassword': 'Enter your password',
-      'auth.showPassword': 'Show password',
-      'auth.hidePassword': 'Hide password',
-      'auth.forgotPassword': 'Forgot your password?',
-      'auth.rememberMe': 'Remember me',
-      'auth.noAccount': "Don't have an account?",
-      'auth.signUp': 'Sign up',
-      'auth.welcomeBack': 'Welcome back',
-      'auth.signInToAccount': 'Sign in to your account',
-      'auth.continue': 'Continue',
-      'auth.or': 'or',
-      'auth.withGoogle': 'Continue with Google',
-      'auth.withMicrosoft': 'Continue with Microsoft',
-      'auth.withApple': 'Continue with Apple',
-      'auth.terms': 'Terms of Service',
-      'auth.privacy': 'Privacy Policy',
-      'auth.agreeTo': 'By continuing, you agree to our',
-      'auth.and': 'and'
-    };
-    return translations[key] || key;
-  };
+  const { t } = useLanguage();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();

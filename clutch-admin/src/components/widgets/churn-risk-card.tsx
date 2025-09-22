@@ -121,15 +121,15 @@ export function ChurnRiskCard({ className = '', showDetails = false }: ChurnRisk
         <div className="grid grid-cols-3 gap-4">
           <div className="text-center p-3 bg-destructive/10 rounded-[0.625rem] border border-destructive/20">
             <p className="text-2xl font-bold text-destructive">{highRiskCount}</p>
-            <p className="text-xs text-muted-foreground">{t('churn.highRisk')}</p>
+            <p className="text-xs text-muted-foreground">High Risk</p>
           </div>
           <div className="text-center p-3 bg-warning/10 rounded-[0.625rem] border border-warning/20">
             <p className="text-2xl font-bold text-warning">{mediumRiskCount}</p>
-            <p className="text-xs text-muted-foreground">{t('churn.mediumRisk')}</p>
+            <p className="text-xs text-muted-foreground">Medium Risk</p>
           </div>
           <div className="text-center p-3 bg-primary/10 rounded-[0.625rem] border border-primary/20">
             <p className="text-2xl font-bold text-primary">{totalAtRisk}</p>
-            <p className="text-xs text-muted-foreground">{t('churn.totalAtRisk')}</p>
+            <p className="text-xs text-muted-foreground">Total at Risk</p>
           </div>
         </div>
 
@@ -246,7 +246,7 @@ export function ChurnRiskCard({ className = '', showDetails = false }: ChurnRisk
         {/* Predicted Churn Timeline */}
         {churnRisks.length > 0 && (
           <div className="pt-4 border-t border-border">
-            <h4 className="text-sm font-medium text-card-foreground mb-3">{t('churn.predictedChurnTimeline')}</h4>
+            <h4 className="text-sm font-medium text-card-foreground mb-3">Predicted Churn Timeline</h4>
             <div className="space-y-2">
               {churnRisks.slice(0, 3).map((risk) => (
                 <div key={risk.userId} className="flex items-center justify-between text-sm">

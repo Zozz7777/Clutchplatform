@@ -166,7 +166,7 @@ export function RevenueMarginCard({ className = '' }: RevenueMarginCardProps) {
             <p className="text-3xl font-bold text-success">
               {marginData.revenue.toLocaleString()} EGP
             </p>
-            <p className="text-sm text-muted-foreground">{t('dashboard.monthlyRevenue')}</p>
+            <p className="text-sm text-muted-foreground">Monthly Revenue</p>
             <div className="mt-2">
               <Badge variant="secondary" className="text-xs">
                 {marginData.revenueGrowth > 0 ? '+' : ''}{marginData.revenueGrowth.toFixed(1)}% vs last month
@@ -177,7 +177,7 @@ export function RevenueMarginCard({ className = '' }: RevenueMarginCardProps) {
             <p className="text-3xl font-bold text-destructive">
               {marginData.costs.toLocaleString()} EGP
             </p>
-            <p className="text-sm text-muted-foreground">{t('dashboard.monthlyCosts')}</p>
+            <p className="text-sm text-muted-foreground">Monthly Costs</p>
             <div className="mt-2">
               <Badge variant="secondary" className="text-xs">
                 {marginData.costGrowth > 0 ? '+' : ''}{marginData.costGrowth.toFixed(1)}% vs last month
