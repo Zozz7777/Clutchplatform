@@ -105,7 +105,7 @@ export default function HealthPage() {
 
     // Monitor connection status
     const statusInterval = setInterval(() => {
-      setConnectionStatus(websocketService.getConnectionStatus());
+      setConnectionStatus((websocketService as any).getConnectionStatus());
     }, 1000);
 
     return () => {
@@ -126,14 +126,14 @@ export default function HealthPage() {
       const healthData = await productionApi.getSystemHealth();
       
       if (healthData) {
-        setServices(healthData.services || []);
-        setOverallHealth(healthData.overall || {
+        setServices((healthData.services || []) as any);
+        setOverallHealth((healthData.overall || {
           status: 'unknown',
           uptime: 0,
           servicesUp: 0,
           servicesDown: 0,
           lastIncident: ''
-        });
+        }) as any);
       }
     } catch (error) {
       // Error handled by API service

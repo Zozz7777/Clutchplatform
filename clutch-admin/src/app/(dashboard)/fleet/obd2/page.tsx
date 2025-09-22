@@ -10,6 +10,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { productionApi } from "@/lib/production-api";
 import { formatDate, formatRelativeTime } from "@/lib/utils";
+import { useTranslations } from "@/hooks/use-translations";
 
 // Define FleetVehicle type locally
 interface FleetVehicle {
@@ -71,6 +72,7 @@ interface OBD2Data {
 }
 
 export default function OBD2Page() {
+  const { t } = useTranslations();
   const [vehicles, setVehicles] = useState<FleetVehicle[]>([]);
   const [obd2Data, setOBD2Data] = useState<OBD2Data[]>([]);
   const [filteredData, setFilteredData] = useState<OBD2Data[]>([]);
@@ -78,13 +80,12 @@ export default function OBD2Page() {
   const [severityFilter, setSeverityFilter] = useState<string>("all");
   const [statusFilter, setStatusFilter] = useState<string>("all");
   const [isLoading, setIsLoading] = useState(true);
-  const { hasPermission } = useAuth();
 
   useEffect(() => {
     const loadOBD2Data = async () => {
       try {
         const fleetData = await productionApi.getFleetVehicles();
-        setVehicles(fleetData || []);
+        setVehicles((fleetData || []) as any);
         
         
         // Load OBD2 data from production API

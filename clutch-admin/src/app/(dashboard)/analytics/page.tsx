@@ -11,6 +11,7 @@ import { handleError, handleDataLoadError } from "@/lib/error-handler";
 import { productionApi } from "@/lib/production-api";
 import { formatDate, formatRelativeTime, formatCurrency } from "@/lib/utils";
 import { useTranslations } from "@/hooks/use-translations";
+import { useLanguage } from "@/contexts/language-context";
 
 // Import new Phase 2 widgets
 import AdoptionFunnel from "@/components/widgets/adoption-funnel";
@@ -139,7 +140,20 @@ interface AnalyticsReport {
 }
 
 export default function AnalyticsPage() {
+  const { language } = useLanguage();
   const { t } = useTranslations();
+  
+  // Safety check for translation function and language context
+  if (!t || !language) {
+    return (
+      <div className="container mx-auto p-6">
+        <div className="text-center">
+          <h1 className="text-2xl font-bold mb-4">Loading Analytics...</h1>
+          <p className="text-muted-foreground">Initializing translation system...</p>
+        </div>
+      </div>
+    );
+  }
   const [metrics, setMetrics] = useState<AnalyticsMetric[]>([]);
   const [userAnalytics, setUserAnalytics] = useState<UserAnalytics | null>(null);
   const [revenueAnalytics, setRevenueAnalytics] = useState<RevenueAnalytics | null>(null);

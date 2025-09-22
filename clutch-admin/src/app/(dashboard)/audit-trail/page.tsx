@@ -184,7 +184,7 @@ export default function AuditTrailPage() {
     } else {
       setLoading(false);
     }
-  }, [t, user]);
+  }, [user]);
 
   const filteredAuditLogs = Array.isArray(auditLogs) ? auditLogs.filter((log) => {
     if (!log || typeof log !== 'object') return false;
