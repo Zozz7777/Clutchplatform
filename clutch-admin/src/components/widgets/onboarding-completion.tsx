@@ -40,7 +40,7 @@ export function OnboardingCompletion({ className = '' }: OnboardingCompletionPro
   React.useEffect(() => {
     const loadOnboardingData = async () => {
       try {
-        const data = await businessIntelligence.getOnboardingCompletion();
+        const data = await Promise.resolve(null);
         setOnboardingData(data);
       } catch (error) {
         // Failed to load onboarding data

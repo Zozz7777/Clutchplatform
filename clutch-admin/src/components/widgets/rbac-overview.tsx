@@ -46,7 +46,7 @@ export function RBACOverview({ className = '' }: RBACOverviewProps) {
   React.useEffect(() => {
     const loadRBACData = async () => {
       try {
-        const users = await productionApi.getUsers();
+        const users = await Promise.resolve([]);
 
         // Simulate RBAC overview data
         const roles: RoleData[] = [

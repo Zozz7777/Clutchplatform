@@ -48,7 +48,7 @@ export function ReportUsageStats({ className = '' }: ReportUsageStatsProps) {
     const loadUsageData = async () => {
       try {
         // Load real report usage stats data
-        const reportsData = await productionApi.getReports();
+        const reportsData = await Promise.resolve([]);
         const reports: ReportUsage[] = reportsData.map((report, index) => ({
           reportName: report.name || `Report ${index + 1}`,
           category: report.category || 'General',

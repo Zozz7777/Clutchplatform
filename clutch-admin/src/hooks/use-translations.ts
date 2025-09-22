@@ -381,6 +381,19 @@ const fallbackTranslations = {
     churnDistribution: "Churn Distribution",
     impactAnalysis: "Impact Analysis",
     unableToLoadForecastData: "Unable to load forecast data"
+  },
+  compliance: {
+    radar: "Compliance Radar",
+    unableToLoadStatus: "Unable to load compliance status",
+    overallComplianceStatus: "Overall Compliance Status",
+    pendingApprovals: "Pending Approvals",
+    violations: "Violations",
+    securityIncidents: "Security Incidents",
+    complianceBreakdown: "Compliance Breakdown",
+    awaitingReview: "Awaiting review",
+    complianceViolations: "Compliance Violations",
+    policyBreaches: "Policy breaches",
+    securityBreaches: "Security breaches"
   }
 };
 

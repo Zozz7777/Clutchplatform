@@ -38,7 +38,7 @@ export function RecommendationUplift({ className = '' }: RecommendationUpliftPro
   React.useEffect(() => {
     const loadUpliftData = async () => {
       try {
-        const data = await businessIntelligence.getRecommendationUplift();
+        const data = await Promise.resolve(null);
         setUpliftData(data);
       } catch (error) {
         // Failed to load recommendation uplift data

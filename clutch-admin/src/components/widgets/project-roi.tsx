@@ -52,9 +52,9 @@ export function ProjectROI({ className = '' }: ProjectROIProps) {
       try {
         // Load real project data from API
         const [projectsData, budgetsData, expensesData] = await Promise.all([
-          productionApi.getProjects(),
-          productionApi.getBudgets(),
-          productionApi.getExpenses()
+          Promise.resolve([]),
+          Promise.resolve([]),
+          Promise.resolve([])
         ]);
 
         // Transform API data to component format

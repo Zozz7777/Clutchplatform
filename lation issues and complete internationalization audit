@@ -1,0 +1,39 @@
+[33mcommit b6a908c048f31415ad5d6a9ec698afeb2a5d696a[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mmain[m[33m)[m
+Author: Zozz7777 <ziad@yourclutch.com>
+Date:   Mon Sep 22 09:50:45 2025 +0300
+
+    Add churn-related translation keys and fix hardcoded text
+    
+    - Added comprehensive churn translation keys: risk, attribution, highRisk, mediumRisk, totalAtRisk, predictedChurnTimeline, totalChurned, highImpact, mediumImpact, lowImpact, churnReasons, churnDistribution, impactAnalysis, unableToLoadForecastData
+    - Fixed hardcoded text in churn-risk-card component to use translation keys
+    - Fixed hardcoded text in churn-attribution component to use translation keys
+    - Fixed hardcoded text in churn-adjusted-forecast component to use translation keys
+    
+    This completes the translation audit for churn-related widgets and ensures consistent internationalization.
+
+clutch-admin/src/components/layout/sidebar.tsx
+clutch-admin/src/components/widgets/arpu-arppu.tsx
+clutch-admin/src/components/widgets/at-risk-clients.tsx
+clutch-admin/src/components/widgets/cash-flow-projection.tsx
+clutch-admin/src/components/widgets/churn-adjusted-forecast.tsx
+clutch-admin/src/components/widgets/churn-attribution.tsx
+clutch-admin/src/components/widgets/churn-risk-card.tsx
+clutch-admin/src/components/widgets/client-growth-contribution.tsx
+clutch-admin/src/components/widgets/compliance-radar.tsx
+clutch-admin/src/components/widgets/csat-nps-trends.tsx
+clutch-admin/src/components/widgets/customer-health-score.tsx
+clutch-admin/src/components/widgets/customer-lifetime-value.tsx
+clutch-admin/src/components/widgets/engagement-heatmap.tsx
+clutch-admin/src/components/widgets/error-distribution.tsx
+clutch-admin/src/components/widgets/feature-usage.tsx
+clutch-admin/src/components/widgets/fleet-utilization.tsx
+clutch-admin/src/components/widgets/fraud-impact.tsx
+clutch-admin/src/components/widgets/incident-cost.tsx
+clutch-admin/src/components/widgets/integration-health.tsx
+clutch-admin/src/components/widgets/maintenance-forecast.tsx
+clutch-admin/src/hooks/use-translations.ts
+clutch-admin/src/lib/real-api-clean.ts
+clutch-admin/src/lib/real-api-fixed.ts
+clutch-admin/src/lib/real-api.ts
+shared-backend/routes/audit.js
+shared-backend/routes/system-health.js
