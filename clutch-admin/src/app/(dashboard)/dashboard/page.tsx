@@ -75,6 +75,7 @@ const iconMap = {
 };
 
 export default function DashboardPage() {
+  console.log('DashboardPage component rendering...');
   const [kpiMetrics, setKpiMetrics] = useState<KPIMetric[]>([]);
   const [fleetVehicles, setFleetVehicles] = useState<FleetVehicle[]>([]);
   const [notifications, setNotifications] = useState<Notification[]>([]);
@@ -472,7 +473,10 @@ export default function DashboardPage() {
         <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
           <RevenueMarginCard />
           <AIForecastCard />
-          <ComplianceRadar />
+          {(() => {
+            console.log('About to render ComplianceRadar component...');
+            return <ComplianceRadar />;
+          })()}
         </div>
 
         {/* Third Row - Enterprise Clients */}

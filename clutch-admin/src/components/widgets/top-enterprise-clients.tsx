@@ -41,9 +41,12 @@ export function TopEnterpriseClients({ className = '' }: TopEnterpriseClientsPro
     const loadClients = async () => {
       try {
         const data = await businessIntelligence.getTopEnterpriseClients();
+        console.log('TopEnterpriseClients received data:', data);
+        console.log('TopEnterpriseClients data type:', typeof data);
+        console.log('TopEnterpriseClients data keys:', data ? Object.keys(data) : 'null');
         setClients(Array.isArray(data) ? data : []);
       } catch (error) {
-        // Failed to load enterprise clients
+        console.error('TopEnterpriseClients failed to load:', error);
         setClients([]);
       } finally {
         setIsLoading(false);

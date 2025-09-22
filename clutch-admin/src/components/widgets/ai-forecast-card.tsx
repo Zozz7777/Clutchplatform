@@ -35,8 +35,12 @@ export function AIForecastCard({ className = '' }: AIForecastCardProps) {
     const loadForecast = async () => {
       try {
         const data = await businessIntelligence.getAIRevenueForecast();
+        console.log('AIForecastCard received data:', data);
+        console.log('AIForecastCard data type:', typeof data);
+        console.log('AIForecastCard data keys:', data ? Object.keys(data) : 'null');
         setForecast(data);
       } catch (error) {
+        console.error('AIForecastCard failed to load:', error);
         logger.error('Failed to load forecast:', error);
       } finally {
         setIsLoading(false);

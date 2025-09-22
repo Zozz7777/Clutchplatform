@@ -44,8 +44,12 @@ export function RevenueMarginCard({ className = '' }: RevenueMarginCardProps) {
     const loadMarginData = async () => {
       try {
         const data = await businessIntelligence.getRevenueVsCostMargin();
+        console.log('RevenueMarginCard received data:', data);
+        console.log('RevenueMarginCard data type:', typeof data);
+        console.log('RevenueMarginCard data keys:', data ? Object.keys(data) : 'null');
         setMarginData(data);
       } catch (error) {
+        console.error('RevenueMarginCard failed to load:', error);
         logger.error('Failed to load margin data:', error);
       } finally {
         setIsLoading(false);
