@@ -50,7 +50,7 @@ import {
   Smartphone,
   Monitor,
 } from "lucide-react";
-import { useTranslations } from "@/hooks/use-translations";
+// Translation system removed - using hardcoded strings
 import { productionApi } from "@/lib/production-api";
 import { toast } from "sonner";
 import { useAuth } from "@/contexts/auth-context";
@@ -109,7 +109,7 @@ interface UserActivity {
 }
 
 export default function AuditTrailPage() {
-  const { t } = useTranslations();
+  // Translation system removed - using hardcoded strings
   const { user, hasPermission } = useAuth();
   const [auditLogs, setAuditLogs] = useState<AuditLog[]>([]);
   const [securityEvents, setSecurityEvents] = useState<SecurityEvent[]>([]);
@@ -164,12 +164,12 @@ export default function AuditTrailPage() {
 
         // Only show general error if all requests failed
         if (logsResult.status === 'rejected' && eventsResult.status === 'rejected' && activitiesResult.status === 'rejected') {
-          toast.error(t('auditTrail.failedToLoadAuditData'));
+          toast.error("Failed to load audit data");
         }
         
       } catch (error) {
         handleDataLoadError(error, 'audit_data');
-        toast.error(t('auditTrail.failedToLoadAuditData'));
+        toast.error("Failed to load audit data");
         setAuditLogs([]);
         setSecurityEvents([]);
         setUserActivities([]);
@@ -244,7 +244,7 @@ export default function AuditTrailPage() {
 
   const handleExport = () => {
     // Implement export functionality
-    toast.success(t('auditTrail.exportStarted'));
+    toast.success("Export started");
   };
 
   if (loading) {
@@ -263,14 +263,14 @@ export default function AuditTrailPage() {
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-medium tracking-tight">{t('auditTrail.title')}</h1>
+          <h1 className="text-3xl font-medium tracking-tight">Audit Trail</h1>
           <p className="text-muted-foreground">
-            {t('auditTrail.description')}
+            Monitor and track all system activities and user actions
           </p>
         </div>
         <Button onClick={handleExport} className="flex items-center gap-2">
           <Download className="h-4 w-4" />
-{t('common.export')}
+Export
         </Button>
       </div>
 
@@ -278,52 +278,52 @@ export default function AuditTrailPage() {
       <div className="grid gap-4 md:grid-cols-4">
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">{t('auditTrail.totalLogs')}</CardTitle>
+            <CardTitle className="text-sm font-medium">Total Logs</CardTitle>
             <Database className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">{totalLogs}</div>
             <p className="text-xs text-muted-foreground">
-              {t('auditTrail.auditEntries')}
+              Audit entries
             </p>
           </CardContent>
         </Card>
 
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">{t('auditTrail.criticalEvents')}</CardTitle>
+            <CardTitle className="text-sm font-medium">Critical Events</CardTitle>
             <AlertTriangle className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold text-red-600">{criticalEvents}</div>
             <p className="text-xs text-muted-foreground">
-              {t('auditTrail.requireAttention')}
+              Require attention
             </p>
           </CardContent>
         </Card>
 
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">{t('dashboard.failedActions')}</CardTitle>
+            <CardTitle className="text-sm font-medium">Failed Actions</CardTitle>
             <XCircle className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold text-orange-600">{failedActions}</div>
             <p className="text-xs text-muted-foreground">
-              {t('dashboard.failedOperations')}
+              Failed operations
             </p>
           </CardContent>
         </Card>
 
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">{t('dashboard.activeUsers')}</CardTitle>
+            <CardTitle className="text-sm font-medium">Active Users</CardTitle>
             <User className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold text-green-600">{activeUsers}</div>
             <p className="text-xs text-muted-foreground">
-              {t('dashboard.currentlyActive')}
+              Currently active
             </p>
           </CardContent>
         </Card>
@@ -345,7 +345,7 @@ export default function AuditTrailPage() {
                 <Search className="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground" />
                 <Input
                   id="search"
-                  placeholder={t('common.search')}
+                  placeholder="Search audit logs..."
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
                   className="pl-8"
@@ -362,9 +362,9 @@ export default function AuditTrailPage() {
                 <SelectContent>
                   <SelectItem value="all">All Categories</SelectItem>
                   <SelectItem value="authentication">Authentication</SelectItem>
-                  <SelectItem value="data_modification">{t('dashboard.dataModification')}</SelectItem>
-                  <SelectItem value="system_configuration">{t('dashboard.systemConfiguration')}</SelectItem>
-                  <SelectItem value="user_management">{t('dashboard.userManagement')}</SelectItem>
+                  <SelectItem value="data_modification">Data Modification</SelectItem>
+                  <SelectItem value="system_configuration">System Configuration</SelectItem>
+                  <SelectItem value="user_management">User Management</SelectItem>
                 </SelectContent>
               </Select>
             </div>
@@ -377,7 +377,7 @@ export default function AuditTrailPage() {
                 </SelectTrigger>
                 <SelectContent>
                   <SelectItem value="all">All Severities</SelectItem>
-                  <SelectItem value="critical">{t('auditTrail.critical')}</SelectItem>
+                  <SelectItem value="critical">Critical</SelectItem>
                   <SelectItem value="high">High</SelectItem>
                   <SelectItem value="medium">Medium</SelectItem>
                   <SelectItem value="low">Low</SelectItem>
@@ -386,16 +386,16 @@ export default function AuditTrailPage() {
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="status">{t('dashboard.status')}</Label>
+              <Label htmlFor="status">Status</Label>
               <Select value={statusFilter} onValueChange={setStatusFilter}>
                 <SelectTrigger>
-                  <SelectValue placeholder={t('dashboard.selectStatus')} />
+                  <SelectValue placeholder="Select status" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="all">{t('dashboard.allStatuses')}</SelectItem>
-                  <SelectItem value="success">{t('dashboard.success')}</SelectItem>
-                  <SelectItem value="failure">{t('dashboard.failure')}</SelectItem>
-                  <SelectItem value="pending">{t('dashboard.pending')}</SelectItem>
+                  <SelectItem value="all">All Statuses</SelectItem>
+                  <SelectItem value="success">Success</SelectItem>
+                  <SelectItem value="failure">Failure</SelectItem>
+                  <SelectItem value="pending">Pending</SelectItem>
                 </SelectContent>
               </Select>
             </div>
@@ -416,14 +416,14 @@ export default function AuditTrailPage() {
             <Table>
               <TableHeader>
                 <TableRow>
-                  <TableHead>{t('dashboard.timestamp')}</TableHead>
-                  <TableHead>{t('dashboard.user')}</TableHead>
-                  <TableHead>{t('dashboard.action')}</TableHead>
-                  <TableHead>{t('dashboard.resource')}</TableHead>
-                  <TableHead>{t('dashboard.severity')}</TableHead>
-                  <TableHead>{t('dashboard.status')}</TableHead>
-                  <TableHead>{t('dashboard.location')}</TableHead>
-                  <TableHead>{t('dashboard.actions')}</TableHead>
+                  <TableHead>Timestamp</TableHead>
+                  <TableHead>User</TableHead>
+                  <TableHead>Action</TableHead>
+                  <TableHead>Resource</TableHead>
+                  <TableHead>Severity</TableHead>
+                  <TableHead>Status</TableHead>
+                  <TableHead>Location</TableHead>
+                  <TableHead>Actions</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
@@ -504,7 +504,7 @@ export default function AuditTrailPage() {
               {/* Basic Information */}
               <div className="grid gap-4 md:grid-cols-2">
                 <div className="space-y-2">
-                  <Label className="text-sm font-medium">{t('dashboard.timestamp')}</Label>
+                  <Label className="text-sm font-medium">Timestamp</Label>
                   <p className="text-sm font-mono">{new Date(selectedLog.timestamp).toLocaleString()}</p>
                 </div>
                 <div className="space-y-2">
@@ -512,11 +512,11 @@ export default function AuditTrailPage() {
                   <p className="text-sm font-mono">{selectedLog.sessionId}</p>
                 </div>
                 <div className="space-y-2">
-                  <Label className="text-sm font-medium">{t('dashboard.ipAddress')}</Label>
+                  <Label className="text-sm font-medium">IP Address</Label>
                   <p className="text-sm font-mono">{selectedLog.ipAddress}</p>
                 </div>
                 <div className="space-y-2">
-                  <Label className="text-sm font-medium">{t('dashboard.userAgent')}</Label>
+                  <Label className="text-sm font-medium">User Agent</Label>
                   <div className="flex items-center space-x-2">
                     {getDeviceIcon(selectedLog.userAgent)}
                     <p className="text-sm truncate">{selectedLog.userAgent}</p>
@@ -526,7 +526,7 @@ export default function AuditTrailPage() {
 
               {/* User Information */}
               <div className="space-y-2">
-                <Label className="text-sm font-medium">{t('auditTrail.userInformation')}</Label>
+                <Label className="text-sm font-medium">User Information</Label>
                 <div className="grid gap-2 md:grid-cols-3">
                   <div className="p-3 border rounded-lg">
                     <div className="text-sm font-medium">Name</div>
@@ -545,14 +545,14 @@ export default function AuditTrailPage() {
 
               {/* Action Details */}
               <div className="space-y-2">
-                <Label className="text-sm font-medium">{t('dashboard.actionDetails')}</Label>
+                <Label className="text-sm font-medium">Action Details</Label>
                 <div className="grid gap-2 md:grid-cols-2">
                   <div className="p-3 border rounded-lg">
-                    <div className="text-sm font-medium">{t('dashboard.action')}</div>
+                    <div className="text-sm font-medium">Action</div>
                     <div className="text-sm text-muted-foreground">{selectedLog.action}</div>
                   </div>
                   <div className="p-3 border rounded-lg">
-                    <div className="text-sm font-medium">{t('dashboard.resource')}</div>
+                    <div className="text-sm font-medium">Resource</div>
                     <div className="text-sm text-muted-foreground">{selectedLog.resource}</div>
                   </div>
                   <div className="p-3 border rounded-lg">

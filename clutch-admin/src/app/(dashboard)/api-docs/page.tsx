@@ -23,7 +23,7 @@ import {
   Shield,
   Activity,
 } from "lucide-react";
-import { useTranslations } from "@/hooks/use-translations";
+// Translation system removed - using hardcoded strings
 import { productionApi } from "@/lib/production-api";
 import { handleError, handleWarning, handleDataLoadError } from "@/lib/error-handler";
 import { toast } from "sonner";
@@ -57,7 +57,7 @@ interface APIEndpoint {
 }
 
 export default function APIDocsPage() {
-  const { t } = useTranslations();
+  // Translation system removed - using hardcoded strings
   const { user, isLoading: authLoading } = useAuth();
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedCategory, setSelectedCategory] = useState<string>("all");
@@ -136,9 +136,9 @@ export default function APIDocsPage() {
           handleWarning(`Failed to load API categories: ${categoriesData.reason}`, { component: 'ApiDocsPage' });
           // Provide fallback categories data
           setCategories([
-            { _id: "fallback-1", name: t('apiDocs.authentication'), description: t('apiDocs.authenticationDesc') },
-            { _id: "fallback-2", name: t('apiDocs.userManagement'), description: t('apiDocs.userManagementDesc') },
-            { _id: "fallback-3", name: t('apiDocs.fleetManagement'), description: t('apiDocs.fleetManagementDesc') }
+            { _id: "fallback-1", name: "Authentication", description: "User authentication and authorization" },
+            { _id: "fallback-2", name: "User Management", description: "Manage users, roles, and permissions" },
+            { _id: "fallback-3", name: "Fleet Management", description: "Vehicle fleet operations and tracking" }
           ]);
         }
 
@@ -211,7 +211,7 @@ export default function APIDocsPage() {
       <div className="flex items-center justify-center h-64">
         <div className="text-center">
           <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto mb-4"></div>
-          <p className="text-muted-foreground">{t('dashboard.loadingApiDocumentation')}</p>
+          <p className="text-muted-foreground">Loading API documentation...</p>
         </div>
       </div>
     );
@@ -222,14 +222,14 @@ export default function APIDocsPage() {
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold tracking-tight">{t('dashboard.apiDocumentation')}</h1>
+          <h1 className="text-3xl font-bold tracking-tight">API Documentation</h1>
           <p className="text-muted-foreground">
-            {t('dashboard.completeReferenceForAllClutchAdminApiEndpoints')}
+            Complete reference for all Clutch Admin API endpoints
           </p>
         </div>
         <Button variant="outline" size="sm">
           <ExternalLink className="h-4 w-4 mr-2" />
-          {t('dashboard.openApiSpec')}
+          OpenAPI Spec
         </Button>
       </div>
 
@@ -237,33 +237,33 @@ export default function APIDocsPage() {
       <div className="grid gap-4 md:grid-cols-4">
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">{t('dashboard.totalEndpoints')}</CardTitle>
+            <CardTitle className="text-sm font-medium">Total Endpoints</CardTitle>
             <Code className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-medium">{endpoints.length}</div>
             <p className="text-xs text-muted-foreground">
-              {t('dashboard.availableEndpoints')}
+              Available endpoints
             </p>
           </CardContent>
         </Card>
 
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">{t('dashboard.categories')}</CardTitle>
+            <CardTitle className="text-sm font-medium">Categories</CardTitle>
             <BookOpen className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-medium">{categories.length}</div>
             <p className="text-xs text-muted-foreground">
-              {t('dashboard.apiCategories')}
+              API categories
             </p>
           </CardContent>
         </Card>
 
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">{t('dashboard.rateLimits')}</CardTitle>
+            <CardTitle className="text-sm font-medium">Rate Limits</CardTitle>
             <Database className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
@@ -271,20 +271,20 @@ export default function APIDocsPage() {
               {endpoints.length > 0 ? Math.round(endpoints.reduce((sum, e) => sum + e.rateLimit, 0) / endpoints.length) : 0}
             </div>
             <p className="text-xs text-muted-foreground">
-              {t('dashboard.averagePerHour')}
+              Average per hour
             </p>
           </CardContent>
         </Card>
 
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">{t('dashboard.version')}</CardTitle>
+            <CardTitle className="text-sm font-medium">Version</CardTitle>
             <Settings className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-medium">v1</div>
             <p className="text-xs text-muted-foreground">
-              {t('dashboard.currentApiVersion')}
+              Current API version
             </p>
           </CardContent>
         </Card>
@@ -293,16 +293,16 @@ export default function APIDocsPage() {
       {/* Search and Filters */}
       <Card>
         <CardHeader>
-          <CardTitle>{t('dashboard.searchAndFilter')}</CardTitle>
+          <CardTitle>Search and Filter</CardTitle>
           <CardDescription>
-            {t('dashboard.findSpecificEndpointsByPath')}
+            Find specific endpoints by path, method, or category
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
           <div className="relative">
             <Search className="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground" />
             <Input
-              placeholder={t('common.search')}
+              placeholder="Search endpoints..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
               className="pl-8"

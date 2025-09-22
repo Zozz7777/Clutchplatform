@@ -10,7 +10,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { formatDate, formatRelativeTime } from "@/lib/utils";
 import { useAuth } from "@/contexts/auth-context";
-import { useTranslations } from "@/hooks/use-translations";
+// Translation system removed - using hardcoded strings
 import { productionApi } from "@/lib/production-api";
 import { toast } from "sonner";
 import { handleDataLoadError } from "@/lib/error-handler";
@@ -93,7 +93,7 @@ export default function AIMLPage() {
   const [statusFilter, setStatusFilter] = useState<string>("all");
   const [isLoading, setIsLoading] = useState(true);
   const { hasPermission } = useAuth();
-  const { t } = useTranslations();
+  // Translation system removed - using hardcoded strings
 
   useEffect(() => {
     let isMounted = true;
@@ -319,7 +319,7 @@ export default function AIMLPage() {
         </Card>
         <Card className="shadow-2xs">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium text-card-foreground">{t('dashboard.activeModels')}</CardTitle>
+            <CardTitle className="text-sm font-medium text-card-foreground">Active Models</CardTitle>
             <Brain className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
@@ -346,17 +346,17 @@ export default function AIMLPage() {
       {/* AI/ML Tabs */}
       <Tabs defaultValue="models" className="space-y-4">
         <TabsList className="grid w-full grid-cols-4">
-          <TabsTrigger value="models">{t('dashboard.aiModels')}</TabsTrigger>
-          <TabsTrigger value="fraud">{t('dashboard.fraudDetection')}</TabsTrigger>
-          <TabsTrigger value="recommendations">{t('dashboard.recommendations')}</TabsTrigger>
-          <TabsTrigger value="training">{t('dashboard.trainingStatus')}</TabsTrigger>
+          <TabsTrigger value="models">AI Models</TabsTrigger>
+          <TabsTrigger value="fraud">Fraud Detection</TabsTrigger>
+          <TabsTrigger value="recommendations">Recommendations</TabsTrigger>
+          <TabsTrigger value="training">Training Status</TabsTrigger>
         </TabsList>
 
         <TabsContent value="models" className="space-y-4">
           <Card className="shadow-2xs">
             <CardHeader>
-              <CardTitle className="text-card-foreground">{t('dashboard.aiModels')}</CardTitle>
-              <CardDescription>{t('dashboard.manageAndMonitorModels')}</CardDescription>
+              <CardTitle className="text-card-foreground">AI Models</CardTitle>
+              <CardDescription>Manage and monitor AI models</CardDescription>
             </CardHeader>
             <CardContent>
               {/* Filters */}
@@ -374,13 +374,13 @@ export default function AIMLPage() {
                 </div>
                 <Select value={statusFilter} onValueChange={setStatusFilter}>
                   <SelectTrigger className="w-[180px]">
-                    <SelectValue placeholder={t('common.filter')} />
+                    <SelectValue placeholder="Filter" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="all">{t('dashboard.allStatus')}</SelectItem>
-                    <SelectItem value="active">{t('dashboard.active')}</SelectItem>
-                    <SelectItem value="training">{t('dashboard.training')}</SelectItem>
-                    <SelectItem value="inactive">{t('dashboard.inactive')}</SelectItem>
+                    <SelectItem value="all">All Status</SelectItem>
+                    <SelectItem value="active">Active</SelectItem>
+                    <SelectItem value="training">Training</SelectItem>
+                    <SelectItem value="inactive">Inactive</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
@@ -491,8 +491,8 @@ export default function AIMLPage() {
         <TabsContent value="fraud" className="space-y-4">
           <Card className="shadow-2xs">
             <CardHeader>
-              <CardTitle className="text-card-foreground">{t('dashboard.fraudDetectionCases')}</CardTitle>
-              <CardDescription>{t('dashboard.monitorAndInvestigateFraud')}</CardDescription>
+              <CardTitle className="text-card-foreground">Fraud Detection Cases</CardTitle>
+              <CardDescription>Monitor and investigate fraud cases</CardDescription>
             </CardHeader>
             <CardContent>
               <Table>
@@ -579,8 +579,8 @@ export default function AIMLPage() {
         <TabsContent value="recommendations" className="space-y-4">
           <Card className="shadow-2xs">
             <CardHeader>
-              <CardTitle className="text-card-foreground">{t('dashboard.aiRecommendations')}</CardTitle>
-              <CardDescription>{t('dashboard.intelligentRecommendations')}</CardDescription>
+              <CardTitle className="text-card-foreground">AI Recommendations</CardTitle>
+              <CardDescription>Intelligent recommendations for your business</CardDescription>
             </CardHeader>
             <CardContent>
               <Table>
@@ -673,8 +673,8 @@ export default function AIMLPage() {
         <TabsContent value="training" className="space-y-4">
           <Card className="shadow-2xs">
             <CardHeader>
-              <CardTitle className="text-card-foreground">{t('dashboard.trainingStatusAndLogs')}</CardTitle>
-              <CardDescription>{t('dashboard.monitorTrainingProgress')}</CardDescription>
+              <CardTitle className="text-card-foreground">Training Status and Logs</CardTitle>
+              <CardDescription>Monitor training progress and logs</CardDescription>
             </CardHeader>
             <CardContent>
               <div className="space-y-4">
@@ -695,8 +695,8 @@ export default function AIMLPage() {
                   <div className="flex items-center space-x-3">
                     <div className="w-2 h-2 rounded-full bg-primary"></div>
                     <div>
-                      <p className="text-sm font-medium text-foreground">{t('dashboard.fraudDetectionModel')}</p>
-                      <p className="text-xs text-muted-foreground">{t('dashboard.trainingCompletedSuccessfully')}</p>
+                      <p className="text-sm font-medium text-foreground">Fraud Detection Model</p>
+                      <p className="text-xs text-muted-foreground">Training completed successfully</p>
                     </div>
                   </div>
                   <div className="text-right">
