@@ -280,7 +280,7 @@ export function CSATNPSTrends({ className = '' }: CSATNPSTrendsProps) {
                 {getCSATLevel(satisfactionData.currentCSAT)}
               </Badge>
             </div>
-            <p className="text-sm text-muted-foreground">{t('csatNps.customerSatisfaction')}</p>
+            <p className="text-sm text-muted-foreground">Customer Satisfaction</p>
             <div className="mt-3">
               <Progress value={(satisfactionData.currentCSAT / 5) * 100} className="h-2" />
             </div>
@@ -296,7 +296,7 @@ export function CSATNPSTrends({ className = '' }: CSATNPSTrendsProps) {
                 {getNPSLevel(satisfactionData.currentNPS)}
               </Badge>
             </div>
-            <p className="text-sm text-muted-foreground">{t('csatNps.netPromoterScore')}</p>
+            <p className="text-sm text-muted-foreground">Net Promoter Score</p>
             <div className="mt-3">
               <Progress value={Math.min((satisfactionData.currentNPS + 100) / 2, 100)} className="h-2" />
             </div>

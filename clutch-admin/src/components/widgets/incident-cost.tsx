@@ -341,9 +341,9 @@ export function IncidentCost({ className = '' }: IncidentCostProps) {
 
         {/* Insights */}
         <div className="p-3 bg-primary/10 rounded-[0.625rem]-lg">
-          <h5 className="text-sm font-medium text-blue-900 mb-2">💡 {t('incidentCost.incidentCostInsights')}</h5>
+          <h5 className="text-sm font-medium text-blue-900 mb-2">💡 Incident Cost Insights</h5>
           <ul className="text-xs text-blue-800 space-y-1">
-            <li>• {t('incidentCost.totalIncidentCost')}: ${incidentData.totalCost.toLocaleString()}</li>
+            <li>• Total Incident Cost: ${incidentData.totalCost.toLocaleString()}</li>
             <li>• {t('incidentCost.averageCostPerIncident')}: ${incidentData.averageCost.toLocaleString()}</li>
             <li>• {t('incidentCost.totalDowntime')}: {formatDuration(incidentData.totalDowntime)}</li>
             <li>• {incidentData.incidents.length} {t('incidentCost.incidentsAnalyzed')}</li>

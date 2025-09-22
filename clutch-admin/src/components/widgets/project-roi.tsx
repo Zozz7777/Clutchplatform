@@ -304,9 +304,9 @@ export function ProjectROI({ className = '' }: ProjectROIProps) {
 
         {/* Insights */}
         <div className="p-3 bg-primary/10 rounded-[0.625rem]-lg">
-          <h5 className="text-sm font-medium text-blue-900 mb-2">💡 {t('projectRoi.projectRoiInsights')}</h5>
+          <h5 className="text-sm font-medium text-blue-900 mb-2">💡 Project ROI Insights</h5>
           <ul className="text-xs text-blue-800 space-y-1">
-            <li>• {t('projectRoi.totalInvestment')}: ${roiData.totalInvestment.toLocaleString()}</li>
+            <li>• Total Investment: ${roiData.totalInvestment.toLocaleString()}</li>
             <li>• {t('projectRoi.totalValue')}: ${roiData.totalValue.toLocaleString()}</li>
             <li>• {t('projectRoi.averageRoi')}: {roiData.averageROI.toFixed(0)}%</li>
             <li>• {t('projectRoi.bestRoi')}: {roiData.bestROI?.projectName} ({roiData.bestROI?.roi.toFixed(0)}%)</li>

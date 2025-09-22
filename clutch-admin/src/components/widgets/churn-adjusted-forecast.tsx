@@ -190,7 +190,7 @@ export function ChurnAdjustedForecast({ className = '' }: ChurnAdjustedForecastP
             <TrendingUp className="h-5 w-5 text-primary" />
             <span>Churn-Adjusted Revenue Forecast</span>
           </CardTitle>
-          <CardDescription>{t('churn.unableToLoadForecastData')}</CardDescription>
+          <CardDescription>Unable to load forecast data</CardDescription>
         </CardHeader>
       </Card>
     );

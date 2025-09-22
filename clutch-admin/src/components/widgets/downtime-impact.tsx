@@ -188,7 +188,7 @@ export function DowntimeImpact({ className = '' }: DowntimeImpactProps) {
         <CardHeader>
           <CardTitle className="flex items-center space-x-2">
             <Clock className="h-5 w-5 text-destructive" />
-            <span>{t('downtime.downtimeImpact')}</span>
+            <span>Downtime Impact</span>
           </CardTitle>
           <CardDescription>Loading downtime metrics...</CardDescription>
         </CardHeader>
@@ -209,7 +209,7 @@ export function DowntimeImpact({ className = '' }: DowntimeImpactProps) {
         <CardHeader>
           <CardTitle className="flex items-center space-x-2">
             <Clock className="h-5 w-5 text-destructive" />
-            <span>{t('downtime.downtimeImpact')}</span>
+            <span>Downtime Impact</span>
           </CardTitle>
           <CardDescription>{t('common.unableToLoad')}</CardDescription>
         </CardHeader>
@@ -225,7 +225,7 @@ export function DowntimeImpact({ className = '' }: DowntimeImpactProps) {
       <CardHeader>
         <CardTitle className="flex items-center space-x-2">
           <Clock className="h-5 w-5 text-destructive" />
-          <span>{t('downtime.downtimeImpact')}</span>
+          <span>Downtime Impact</span>
         </CardTitle>
         <CardDescription>
           {t('downtime.lostRevenueHoursDescription')}

@@ -105,9 +105,9 @@ export function FleetUtilization({ className = '' }: FleetUtilizationProps) {
         <CardHeader>
           <CardTitle className="flex items-center space-x-2">
             <Truck className="h-5 w-5 text-primary" />
-            <span>{t('fleetUtilization.title')}</span>
+            <span>Fleet Utilization</span>
           </CardTitle>
-          <CardDescription>{t('fleetUtilization.loadingData')}</CardDescription>
+          <CardDescription>Loading data...</CardDescription>
         </CardHeader>
         <CardContent>
           <div className="animate-pulse space-y-4">
@@ -126,7 +126,7 @@ export function FleetUtilization({ className = '' }: FleetUtilizationProps) {
         <CardHeader>
           <CardTitle className="flex items-center space-x-2">
             <Truck className="h-5 w-5 text-primary" />
-            <span>{t('fleetUtilization.title')}</span>
+            <span>Fleet Utilization</span>
           </CardTitle>
           <CardDescription>{t('fleetUtilization.unableToLoad')}</CardDescription>
         </CardHeader>
@@ -145,7 +145,7 @@ export function FleetUtilization({ className = '' }: FleetUtilizationProps) {
       <CardHeader>
         <CardTitle className="flex items-center space-x-2">
           <Truck className="h-5 w-5 text-primary" />
-          <span>{t('fleetUtilization.title')}</span>
+          <span>Fleet Utilization</span>
         </CardTitle>
         <CardDescription>
           {t('fleetUtilization.description')}

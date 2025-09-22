@@ -198,7 +198,7 @@ export function CustomerHealthScore({ className = '' }: CustomerHealthScoreProps
         <CardHeader>
           <CardTitle className="flex items-center space-x-2">
             <Heart className="h-5 w-5 text-destructive" />
-            <span>{t('customerHealth.customerHealthScore')}</span>
+            <span>Customer Health Score</span>
           </CardTitle>
           <CardDescription>Loading customer health data...</CardDescription>
         </CardHeader>
@@ -219,7 +219,7 @@ export function CustomerHealthScore({ className = '' }: CustomerHealthScoreProps
         <CardHeader>
           <CardTitle className="flex items-center space-x-2">
             <Heart className="h-5 w-5 text-destructive" />
-            <span>{t('customerHealth.customerHealthScore')}</span>
+            <span>Customer Health Score</span>
           </CardTitle>
           <CardDescription>Unable to load customer health data</CardDescription>
         </CardHeader>
@@ -232,7 +232,7 @@ export function CustomerHealthScore({ className = '' }: CustomerHealthScoreProps
       <CardHeader>
         <CardTitle className="flex items-center space-x-2">
           <Heart className="h-5 w-5 text-destructive" />
-          <span>{t('customerHealth.customerHealthScore')}</span>
+          <span>Customer Health Score</span>
         </CardTitle>
         <CardDescription>
           Weighted score: usage, tickets, satisfaction

@@ -147,7 +147,7 @@ export function ChurnAttribution({ className = '' }: ChurnAttributionProps) {
         <CardHeader>
           <CardTitle className="flex items-center space-x-2">
             <TrendingDown className="h-5 w-5 text-destructive" />
-            <span>{t('churn.attribution')}</span>
+            <span>Churn Attribution</span>
           </CardTitle>
           <CardDescription>Loading churn attribution data...</CardDescription>
         </CardHeader>
@@ -171,7 +171,7 @@ export function ChurnAttribution({ className = '' }: ChurnAttributionProps) {
       <CardHeader>
         <CardTitle className="flex items-center space-x-2">
           <TrendingDown className="h-5 w-5 text-destructive" />
-          <span>{t('churn.attribution')}</span>
+          <span>Churn Attribution</span>
         </CardTitle>
         <CardDescription>
           Why users leave (inactivity, billing issues, fleet delays)

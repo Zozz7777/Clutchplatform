@@ -113,7 +113,7 @@ export function EngagementHeatmap({ className = '' }: EngagementHeatmapProps) {
         <CardHeader>
           <CardTitle className="flex items-center space-x-2">
             <BarChart3 className="h-5 w-5 text-primary" />
-            <span>{t('dashboard.engagementHeatmap')}</span>
+            <span>Engagement Heatmap</span>
           </CardTitle>
           <CardDescription>Loading engagement data...</CardDescription>
         </CardHeader>
@@ -172,7 +172,7 @@ export function EngagementHeatmap({ className = '' }: EngagementHeatmapProps) {
           <div className="text-center p-3 bg-primary/10 rounded-[0.625rem] border border-primary/20">
             <Activity className="h-5 w-5 text-primary mx-auto mb-1" />
             <p className="text-lg font-bold text-primary">{totalUsage.toFixed(1)}%</p>
-            <p className="text-xs text-muted-foreground">{t('dashboard.avgUsage')}</p>
+            <p className="text-xs text-muted-foreground">Average Usage</p>
           </div>
           <div className="text-center p-3 bg-secondary/10 rounded-[0.625rem] border border-secondary/20">
             <Users className="h-5 w-5 text-secondary mx-auto mb-1" />

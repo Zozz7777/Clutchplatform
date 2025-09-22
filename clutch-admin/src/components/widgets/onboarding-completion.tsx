@@ -105,7 +105,7 @@ export function OnboardingCompletion({ className = '' }: OnboardingCompletionPro
         <CardHeader>
           <CardTitle className="flex items-center space-x-2">
             <Target className="h-5 w-5 text-success" />
-            <span>{t('dashboard.onboardingCompletion')}</span>
+            <span>Onboarding Completion</span>
           </CardTitle>
           <CardDescription>Loading onboarding metrics...</CardDescription>
         </CardHeader>
@@ -126,9 +126,9 @@ export function OnboardingCompletion({ className = '' }: OnboardingCompletionPro
         <CardHeader>
           <CardTitle className="flex items-center space-x-2">
             <Target className="h-5 w-5 text-success" />
-            <span>{t('dashboard.onboardingCompletion')}</span>
+            <span>Onboarding Completion</span>
           </CardTitle>
-          <CardDescription>{t('dashboard.unableToLoadOnboardingData')}</CardDescription>
+          <CardDescription>Unable to load onboarding data</CardDescription>
         </CardHeader>
       </Card>
     );
@@ -160,7 +160,7 @@ export function OnboardingCompletion({ className = '' }: OnboardingCompletionPro
               {getCompletionLevel(onboardingData.completionRate)}
             </Badge>
           </div>
-          <p className="text-sm text-muted-foreground">{t('dashboard.overallCompletionRate')}</p>
+          <p className="text-sm text-muted-foreground">Overall Completion Rate</p>
           <div className="mt-3">
             <Progress value={onboardingData.completionRate} className="h-2" />
           </div>

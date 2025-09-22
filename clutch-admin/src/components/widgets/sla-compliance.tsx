@@ -137,9 +137,9 @@ export function SLACompliance({ className = '' }: SLAComplianceProps) {
         <CardHeader>
           <CardTitle className="flex items-center space-x-2">
             <Shield className="h-5 w-5 text-primary" />
-            <span>{t('sla.compliance')}</span>
+            <span>SLA Compliance</span>
           </CardTitle>
-          <CardDescription>{t('sla.loadingData')}</CardDescription>
+          <CardDescription>Loading data...</CardDescription>
         </CardHeader>
         <CardContent>
           <div className="animate-pulse space-y-4">
@@ -158,9 +158,9 @@ export function SLACompliance({ className = '' }: SLAComplianceProps) {
         <CardHeader>
           <CardTitle className="flex items-center space-x-2">
             <Shield className="h-5 w-5 text-primary" />
-            <span>{t('sla.compliance')}</span>
+            <span>SLA Compliance</span>
           </CardTitle>
-          <CardDescription>{t('sla.unableToLoad')}</CardDescription>
+          <CardDescription>Unable to load data</CardDescription>
         </CardHeader>
       </Card>
     );
@@ -171,7 +171,7 @@ export function SLACompliance({ className = '' }: SLAComplianceProps) {
       <CardHeader>
         <CardTitle className="flex items-center space-x-2">
           <Shield className="h-5 w-5 text-primary" />
-          <span>{t('sla.compliance')}</span>
+          <span>SLA Compliance</span>
         </CardTitle>
         <CardDescription>
           % uptime vs SLA commitment
