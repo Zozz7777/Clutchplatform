@@ -192,14 +192,14 @@ export function Chat({ className = '', initialSessionId, onSessionChange }: Chat
 
   const handleStartCall = () => {
     if (activeSession) {
-      toast.success(`${t('chat.voiceCall')} ${activeSession.name}`);
+      toast.success(`$Voice call started with ${activeSession.name}`);
       // Voice call functionality is now available
     }
   };
 
   const handleStartVideoCall = () => {
     if (activeSession) {
-      toast.success(`${t('chat.videoCall')} ${activeSession.name}`);
+      toast.success(`$Video call started with ${activeSession.name}`);
       // Video call functionality is now available
     }
   };
