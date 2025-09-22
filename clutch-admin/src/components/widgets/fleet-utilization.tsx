@@ -128,7 +128,7 @@ export function FleetUtilization({ className = '' }: FleetUtilizationProps) {
             <Truck className="h-5 w-5 text-primary" />
             <span>Fleet Utilization</span>
           </CardTitle>
-          <CardDescription>{t('fleetUtilization.unableToLoad')}</CardDescription>
+          <CardDescription>Unable to load data</CardDescription>
         </CardHeader>
       </Card>
     );
@@ -148,7 +148,7 @@ export function FleetUtilization({ className = '' }: FleetUtilizationProps) {
           <span>Fleet Utilization</span>
         </CardTitle>
         <CardDescription>
-          {t('fleetUtilization.description')}
+          Monitor vehicle utilization rates and optimize fleet efficiency
         </CardDescription>
       </CardHeader>
       <CardContent className="space-y-6">
@@ -163,7 +163,7 @@ export function FleetUtilization({ className = '' }: FleetUtilizationProps) {
               {getUtilizationLevel(utilizationData.utilizationRate)}
             </Badge>
           </div>
-          <p className="text-sm text-muted-foreground">{t('fleetUtilization.overallUtilizationRate')}</p>
+          <p className="text-sm text-muted-foreground">Overall Utilization Rate</p>
           <div className="mt-3">
             <Progress value={utilizationData.utilizationRate} className="h-2" />
           </div>
@@ -174,7 +174,7 @@ export function FleetUtilization({ className = '' }: FleetUtilizationProps) {
           <div className="text-center p-3 bg-success/10 rounded-[0.625rem]-lg">
             <CheckCircle className="h-5 w-5 text-success mx-auto mb-1" />
             <p className="text-lg font-bold text-success">{utilizationData.active}</p>
-            <p className="text-xs text-muted-foreground">{t('fleetUtilization.active')}</p>
+            <p className="text-xs text-muted-foreground">Active</p>
           </div>
           <div className="text-center p-3 bg-warning/10 rounded-[0.625rem]-lg">
             <Clock className="h-5 w-5 text-warning mx-auto mb-1" />

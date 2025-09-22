@@ -211,7 +211,7 @@ export function DowntimeImpact({ className = '' }: DowntimeImpactProps) {
             <Clock className="h-5 w-5 text-destructive" />
             <span>Downtime Impact</span>
           </CardTitle>
-          <CardDescription>{t('common.unableToLoad')}</CardDescription>
+          <CardDescription>Unable to load data</CardDescription>
         </CardHeader>
       </Card>
     );
@@ -228,7 +228,7 @@ export function DowntimeImpact({ className = '' }: DowntimeImpactProps) {
           <span>Downtime Impact</span>
         </CardTitle>
         <CardDescription>
-          {t('downtime.lostRevenueHoursDescription')}
+          Hours of revenue-generating activity lost due to vehicle downtime
         </CardDescription>
       </CardHeader>
       <CardContent className="space-y-6">
@@ -242,7 +242,7 @@ export function DowntimeImpact({ className = '' }: DowntimeImpactProps) {
           <div className="text-center p-3 bg-warning/10 rounded-lg">
             <AlertTriangle className="h-5 w-5 text-warning mx-auto mb-1" />
             <p className="text-lg font-bold text-warning">{downtimeMetrics.lostRevenueHours}</p>
-            <p className="text-xs text-muted-foreground">{t('downtime.lostRevenueHours')}</p>
+            <p className="text-xs text-muted-foreground">Lost Revenue Hours</p>
           </div>
           <div className="text-center p-3 bg-warning/10 rounded-lg">
             <DollarSign className="h-5 w-5 text-warning mx-auto mb-1" />
@@ -302,7 +302,7 @@ export function DowntimeImpact({ className = '' }: DowntimeImpactProps) {
 
         {/* Top Affected Vehicles */}
         <div className="space-y-3">
-          <h4 className="text-sm font-medium text-foreground">{t('downtime.topAffectedVehicles')}</h4>
+          <h4 className="text-sm font-medium text-foreground">Top Affected Vehicles</h4>
           <div className="space-y-2">
             {downtimeMetrics.topAffectedVehicles.map((vehicle, index) => (
               <div key={vehicle.vehicleId} className="flex items-center justify-between p-3 bg-muted/50 rounded-lg">
@@ -360,21 +360,21 @@ export function DowntimeImpact({ className = '' }: DowntimeImpactProps) {
           </Button>
           <Button variant="outline" size="sm" className="flex-1">
             <Download className="h-4 w-4 mr-2" />
-{t('downtime.exportReport')}
+Export Report
           </Button>
         </div>
 
         {/* Insights */}
         <div className="p-3 bg-primary/10 rounded-lg">
-          <h5 className="text-sm font-medium text-blue-900 mb-2">💡 {t('downtime.downtimeInsights')}</h5>
+          <h5 className="text-sm font-medium text-blue-900 mb-2">💡 Downtime Insights</h5>
           <ul className="text-xs text-blue-800 space-y-1">
-            <li>• {t('downtime.totalDowntimeHours')}: {downtimeMetrics.totalDowntimeHours} {t('downtime.hours')}</li>
-            <li>• {t('downtime.revenueImpactingDowntime')}: {downtimeMetrics.lostRevenueHours} {t('downtime.hours')}</li>
-            <li>• {t('downtime.totalRevenueImpact')}: ${(downtimeMetrics.revenueImpact || 0).toLocaleString()}</li>
-            <li>• {t('downtime.averageDowntimePerVehicle')}: {(downtimeMetrics.averageDowntimePerVehicle || 0).toFixed(1)} {t('downtime.hours')}</li>
-            <li>• {t('downtime.topDowntimeReason')}: {downtimeMetrics.downtimeByReason[0]?.reason} ({(downtimeMetrics.downtimeByReason[0]?.percentage || 0).toFixed(0)}%)</li>
+            <li>• Total Downtime Hours: {downtimeMetrics.totalDowntimeHours} hours</li>
+            <li>• Revenue-Impacting Downtime: {downtimeMetrics.lostRevenueHours} hours</li>
+            <li>• Total Revenue Impact: ${(downtimeMetrics.revenueImpact || 0).toLocaleString()}</li>
+            <li>• Average Downtime per Vehicle: {(downtimeMetrics.averageDowntimePerVehicle || 0).toFixed(1)} hours</li>
+            <li>• Top Downtime Reason: {downtimeMetrics.downtimeByReason[0]?.reason} ({(downtimeMetrics.downtimeByReason[0]?.percentage || 0).toFixed(0)}%)</li>
             {downtimeMetrics.revenueImpact > targetRevenueImpact && (
-              <li>• {t('downtime.revenueImpactAboveTarget')}</li>
+              <li>• Revenue impact is above target threshold</li>
             )}
           </ul>
         </div>
