@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 import { productionApi } from '@/lib/production-api';
 import { toast } from 'sonner';
-import { useTranslations } from '@/hooks/use-translations';
+// Translation system removed - using hardcoded strings
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -33,7 +33,7 @@ interface UserSegment {
 }
 
 export default function UserSegmentsPage() {
-  const { t } = useTranslations();
+  // Translation system removed - using hardcoded strings
   const [segments, setSegments] = useState<UserSegment[]>([]);
   const [analytics, setAnalytics] = useState({
     totalSegments: 0,
@@ -107,7 +107,7 @@ export default function UserSegmentsPage() {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold font-sans">{t('userSegments.title')}</h1>
+          <h1 className="text-3xl font-bold font-sans">User Segments</h1>
           <p className="text-muted-foreground font-sans">
             Create and manage user segments for targeted campaigns
           </p>
@@ -121,7 +121,7 @@ export default function UserSegmentsPage() {
       <div className="grid gap-4 md:grid-cols-4">
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium font-sans">{t('userSegments.totalSegments')}</CardTitle>
+            <CardTitle className="text-sm font-medium font-sans">Total Segments</CardTitle>
             <Target className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>

@@ -11,7 +11,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { apiService } from "@/lib/api";
 import { toast } from "sonner";
 import { Loader2, UserPlus, Mail, Building2, Shield, Check } from "lucide-react";
-import { useTranslations } from "@/hooks/use-translations";
+// Translation system removed - using hardcoded strings
 import { useAuth } from "@/contexts/auth-context";
 
 interface InvitationFormData {
@@ -91,7 +91,7 @@ const PERMISSION_OPTIONS = [
 ];
 
 export function EmployeeInvitationForm({ onSuccess, onCancel }: EmployeeInvitationFormProps) {
-  const { t } = useTranslations();
+  // Translation system removed - using hardcoded strings
   const { user } = useAuth();
   const [formData, setFormData] = useState<InvitationFormData>({
     name: "",
@@ -239,10 +239,10 @@ export function EmployeeInvitationForm({ onSuccess, onCancel }: EmployeeInvitati
       <CardHeader>
         <CardTitle className="flex items-center gap-2 font-sans">
           <UserPlus className="h-5 w-5" />
-          {t('employeeInvitation.title')}
+          Invite Employee
         </CardTitle>
         <CardDescription className="font-sans">
-          {t('employeeInvitation.description')}
+          Send an invitation to a new employee
         </CardDescription>
       </CardHeader>
       

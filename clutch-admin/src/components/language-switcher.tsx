@@ -1,6 +1,6 @@
 'use client';
 
-import { useLanguage } from '@/contexts/language-context';
+// Translation system removed - using hardcoded strings
 // import { useTranslations } from '@/hooks/use-translations';
 import { Button } from '@/components/ui/button';
 import {
@@ -12,7 +12,9 @@ import {
 import { Languages } from 'lucide-react';
 
 export function LanguageSwitcher() {
-  const { language, setLanguage } = useLanguage();
+  // Translation system removed - using hardcoded strings
+  const language = 'en';
+  const setLanguage = () => {};
   const t = (key: string, params?: any) => key;
 
   const languages = [
@@ -27,10 +29,10 @@ export function LanguageSwitcher() {
           variant="ghost"
           size="sm"
           className="h-8 w-8 px-0"
-          aria-label={t('header.language')}
+          aria-label=Language
         >
           <Languages className="h-4 w-4" />
-          <span className="sr-only">{t('header.language')}</span>
+          <span className="sr-only">Language</span>
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end" className="w-40">

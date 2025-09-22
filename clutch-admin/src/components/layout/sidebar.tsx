@@ -8,7 +8,7 @@ import { useAuth } from "@/contexts/auth-context";
 import { ChevronDown, ChevronRight } from "lucide-react";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { LanguageSwitcher } from "@/components/language-switcher";
-import { useTranslations } from "@/hooks/use-translations";
+// Translation system removed - using hardcoded strings
 import { getTranslatedNavigationItems } from "@/lib/navigation";
 import { iconMap, type IconName } from "@/lib/icons";
 
@@ -21,7 +21,7 @@ export function Sidebar({ isCollapsed, onToggle }: SidebarProps) {
   const pathname = usePathname();
   const router = useRouter();
   const { hasPermission, user } = useAuth();
-  const { t } = useTranslations();
+  // Translation system removed - using hardcoded strings
   const [expandedItems, setExpandedItems] = useState<string[]>([]);
   
   const navigationItems = getTranslatedNavigationItems(t);
@@ -114,7 +114,7 @@ export function Sidebar({ isCollapsed, onToggle }: SidebarProps) {
                 onLoad={() => {}}
               />
             </div>
-            <span className="text-xl font-bold text-foreground font-sans">{t('sidebar.clutchAdmin')}</span>
+            <span className="text-xl font-bold text-foreground font-sans">Clutch Admin</span>
           </div>
         )}
       </div>
@@ -233,7 +233,7 @@ export function Sidebar({ isCollapsed, onToggle }: SidebarProps) {
             <ChevronRight className="w-4 h-4" />
           ) : (
             <>
-              <span className="flex-1 text-left">{t('sidebar.collapse')}</span>
+              <span className="flex-1 text-left">Collapse</span>
               <ChevronRight className="w-4 h-4" />
             </>
           )}
