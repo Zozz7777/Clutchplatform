@@ -38,6 +38,7 @@ interface AtRiskClient {
 }
 
 export function AtRiskClients({ className = '' }: AtRiskClientsProps) {
+  const { t } = useTranslations();
   const [atRiskData, setAtRiskData] = React.useState<{
     clients: AtRiskClient[];
     totalAtRisk: number;

@@ -6,6 +6,7 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Progress } from '@/components/ui/progress';
 import { productionApi } from '@/lib/production-api';
+import { useTranslations } from '@/hooks/use-translations';
 import { 
   Users, 
   UserCheck, 
@@ -34,6 +35,7 @@ interface RoleData {
 }
 
 export function RoleDistribution({ className = '' }: RoleDistributionProps) {
+  const { t } = useTranslations();
   const [roleData, setRoleData] = React.useState<RoleData[]>([]);
   const [isLoading, setIsLoading] = React.useState(true);
 
@@ -281,13 +283,13 @@ export function RoleDistribution({ className = '' }: RoleDistributionProps) {
             <p className="text-lg font-bold text-primary">
               {largestRole ? largestRole.percentage.toFixed(1) : 0}%
             </p>
-            <p className="text-xs text-muted-foreground">Largest Role</p>
+            <p className="text-xs text-muted-foreground">{t('dashboard.largestRole')}</p>
           </div>
         </div>
 
         {/* Role List */}
         <div className="space-y-3">
-          <h4 className="text-sm font-medium text-foreground">Role Breakdown</h4>
+          <h4 className="text-sm font-medium text-foreground">{t('dashboard.roleBreakdown')}</h4>
           <div className="space-y-2">
             {roleData.map((role, index) => {
               const RoleIcon = role.icon;
@@ -337,7 +339,7 @@ export function RoleDistribution({ className = '' }: RoleDistributionProps) {
 
         {/* Role Distribution Chart */}
         <div className="space-y-3">
-          <h4 className="text-sm font-medium text-foreground">Distribution</h4>
+          <h4 className="text-sm font-medium text-foreground">{t('dashboard.distribution')}</h4>
           <div className="space-y-2">
             {roleData.map((role) => (
               <div key={role.role} className="space-y-1">
@@ -358,14 +360,14 @@ export function RoleDistribution({ className = '' }: RoleDistributionProps) {
             <p className="text-sm font-bold text-success capitalize">
               {largestRole?.role || 'N/A'}
             </p>
-            <p className="text-xs text-muted-foreground">Largest Role</p>
+            <p className="text-xs text-muted-foreground">{t('dashboard.largestRole')}</p>
           </div>
           <div className="text-center p-3 bg-destructive/10 rounded-[0.625rem]-lg">
             <User className="h-4 w-4 text-destructive mx-auto mb-1" />
             <p className="text-sm font-bold text-destructive capitalize">
               {smallestRole?.role || 'N/A'}
             </p>
-            <p className="text-xs text-muted-foreground">Smallest Role</p>
+            <p className="text-xs text-muted-foreground">{t('dashboard.smallestRole')}</p>
           </div>
         </div>
 

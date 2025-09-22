@@ -41,6 +41,7 @@ interface ARPUData {
 }
 
 export function ARPUARPPU({ className = '' }: ARPUARPPUProps) {
+  const { t } = useTranslations();
   const [arpuData, setArpuData] = React.useState<ARPUData | null>(null);
   const [isLoading, setIsLoading] = React.useState(true);
 

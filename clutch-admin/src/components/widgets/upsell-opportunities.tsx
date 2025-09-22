@@ -38,6 +38,7 @@ interface UpsellOpportunity {
 }
 
 export function UpsellOpportunities({ className = '' }: UpsellOpportunitiesProps) {
+  const { t } = useTranslations();
   const [upsellData, setUpsellData] = React.useState<{
     opportunities: UpsellOpportunity[];
     totalPotentialRevenue: number;

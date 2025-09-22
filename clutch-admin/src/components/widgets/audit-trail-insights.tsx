@@ -37,6 +37,7 @@ interface AuditEvent {
 }
 
 export function AuditTrailInsights({ className = '' }: AuditTrailInsightsProps) {
+  const { t } = useTranslations();
   const [auditData, setAuditData] = React.useState<{
     events: AuditEvent[];
     totalEvents: number;

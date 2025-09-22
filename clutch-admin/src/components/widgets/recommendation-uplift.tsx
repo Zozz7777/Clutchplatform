@@ -32,6 +32,7 @@ interface RecommendationUpliftData {
 }
 
 export function RecommendationUplift({ className = '' }: RecommendationUpliftProps) {
+  const { t } = useTranslations();
   const [upliftData, setUpliftData] = React.useState<RecommendationUpliftData | null>(null);
   const [isLoading, setIsLoading] = React.useState(true);
 

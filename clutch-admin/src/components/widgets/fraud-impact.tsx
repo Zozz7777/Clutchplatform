@@ -33,6 +33,7 @@ interface FraudImpactData {
 }
 
 export function FraudImpact({ className = '' }: FraudImpactProps) {
+  const { t } = useTranslations();
   const [fraudData, setFraudData] = React.useState<FraudImpactData | null>(null);
   const [isLoading, setIsLoading] = React.useState(true);
 

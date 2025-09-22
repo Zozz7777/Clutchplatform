@@ -32,6 +32,7 @@ interface MaintenanceForecast {
 }
 
 export function MaintenanceForecast({ className = '' }: MaintenanceForecastProps) {
+  const { t } = useTranslations();
   const [forecasts, setForecasts] = React.useState<MaintenanceForecast[]>([]);
   const [isLoading, setIsLoading] = React.useState(true);
   const [selectedPeriod, setSelectedPeriod] = React.useState<'7d' | '30d' | '90d'>('30d');

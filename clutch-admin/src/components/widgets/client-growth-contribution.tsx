@@ -38,6 +38,7 @@ interface ClientGrowth {
 }
 
 export function ClientGrowthContribution({ className = '' }: ClientGrowthContributionProps) {
+  const { t } = useTranslations();
   const [growthData, setGrowthData] = React.useState<{
     clients: ClientGrowth[];
     totalCurrentRevenue: number;

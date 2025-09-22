@@ -34,6 +34,7 @@ interface RoleData {
 }
 
 export function RBACOverview({ className = '' }: RBACOverviewProps) {
+  const { t } = useTranslations();
   const [rbacData, setRbacData] = React.useState<{
     roles: RoleData[];
     totalUsers: number;

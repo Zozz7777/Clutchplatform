@@ -30,6 +30,7 @@ interface OverdueInvoice {
 }
 
 export function OverdueInvoices({ className = '' }: OverdueInvoicesProps) {
+  const { t } = useTranslations();
   const [overdueData, setOverdueData] = React.useState<{
     invoices: OverdueInvoice[];
     totalOverdue: number;

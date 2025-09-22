@@ -51,6 +51,7 @@ const getIconForCategory = (category: string) => {
 };
 
 export function FeatureUsage({ className = '' }: FeatureUsageProps) {
+  const { t } = useTranslations();
   const [featureData, setFeatureData] = React.useState<FeatureData[]>([]);
   const [isLoading, setIsLoading] = React.useState(true);
   const [selectedCategory, setSelectedCategory] = React.useState<string>('all');

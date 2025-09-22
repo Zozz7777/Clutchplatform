@@ -6,6 +6,7 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Progress } from '@/components/ui/progress';
 import { productionApi } from '@/lib/production-api';
+import { useTranslations } from '@/hooks/use-translations';
 import { 
   TrendingUp, 
   Users, 
@@ -35,6 +36,7 @@ interface FunnelStage {
 }
 
 export function AdoptionFunnel({ className = '' }: AdoptionFunnelProps) {
+  const { t } = useTranslations();
   const [funnelData, setFunnelData] = React.useState<FunnelStage[]>([]);
   const [isLoading, setIsLoading] = React.useState(true);
 

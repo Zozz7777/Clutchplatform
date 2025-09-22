@@ -35,6 +35,7 @@ interface AccuracyData {
 }
 
 export function ForecastAccuracyTrend({ className = '' }: ForecastAccuracyTrendProps) {
+  const { t } = useTranslations();
   const [accuracyData, setAccuracyData] = React.useState<{
     trends: AccuracyData[];
     averageAccuracy: number;

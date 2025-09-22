@@ -6,6 +6,7 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Progress } from '@/components/ui/progress';
 import { businessIntelligence } from '@/lib/business-intelligence';
+import { useTranslations } from '@/hooks/use-translations';
 import { 
   Users, 
   TrendingUp, 
@@ -29,6 +30,7 @@ interface CohortData {
 }
 
 export function UserGrowthCohort({ className = '' }: UserGrowthCohortProps) {
+  const { t } = useTranslations();
   const [cohortData, setCohortData] = React.useState<{ cohorts: CohortData[] } | null>(null);
   const [isLoading, setIsLoading] = React.useState(true);
   const [selectedPeriod, setSelectedPeriod] = React.useState<'6m' | '12m'>('12m');

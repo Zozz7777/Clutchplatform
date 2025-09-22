@@ -35,6 +35,7 @@ interface Scenario {
 }
 
 export function RiskScenarioMatrix({ className = '' }: RiskScenarioMatrixProps) {
+  const { t } = useTranslations();
   const [scenarioData, setScenarioData] = React.useState<{
     scenarios: Scenario[];
     baseRevenue: number;

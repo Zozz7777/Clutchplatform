@@ -58,6 +58,7 @@ const getColorForImpact = (impact: string) => {
 };
 
 export function ChurnAttribution({ className = '' }: ChurnAttributionProps) {
+  const { t } = useTranslations();
   const [churnReasons, setChurnReasons] = React.useState<ChurnReason[]>([]);
   const [isLoading, setIsLoading] = React.useState(true);
 

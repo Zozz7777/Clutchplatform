@@ -35,6 +35,7 @@ interface SecurityAlert {
 }
 
 export function SecurityAlerts({ className = '' }: SecurityAlertsProps) {
+  const { t } = useTranslations();
   const [alertData, setAlertData] = React.useState<{
     alerts: SecurityAlert[];
     totalAlerts: number;

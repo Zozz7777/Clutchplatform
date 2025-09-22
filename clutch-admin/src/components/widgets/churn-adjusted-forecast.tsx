@@ -35,6 +35,7 @@ interface ForecastData {
 }
 
 export function ChurnAdjustedForecast({ className = '' }: ChurnAdjustedForecastProps) {
+  const { t } = useTranslations();
   const [forecastData, setForecastData] = React.useState<{
     forecasts: ForecastData[];
     totalBaseRevenue: number;

@@ -37,6 +37,7 @@ interface ForecastAccuracyData {
 }
 
 export function ForecastAccuracy({ className = '' }: ForecastAccuracyProps) {
+  const { t } = useTranslations();
   const [accuracyData, setAccuracyData] = React.useState<ForecastAccuracyData[]>([]);
   const [isLoading, setIsLoading] = React.useState(true);
 

@@ -35,6 +35,7 @@ interface FinancialData {
 }
 
 export function RevenueExpenses({ className = '' }: RevenueExpensesProps) {
+  const { t } = useTranslations();
   const [financialData, setFinancialData] = React.useState<FinancialData | null>(null);
   const [isLoading, setIsLoading] = React.useState(true);
 

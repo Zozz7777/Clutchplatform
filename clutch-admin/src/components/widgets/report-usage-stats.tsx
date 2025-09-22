@@ -35,6 +35,7 @@ interface ReportUsage {
 }
 
 export function ReportUsageStats({ className = '' }: ReportUsageStatsProps) {
+  const { t } = useTranslations();
   const [usageData, setUsageData] = React.useState<{
     reports: ReportUsage[];
     totalUsage: number;

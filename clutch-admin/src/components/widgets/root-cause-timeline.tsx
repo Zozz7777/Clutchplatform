@@ -38,6 +38,7 @@ interface RootCause {
 }
 
 export function RootCauseTimeline({ className = '' }: RootCauseTimelineProps) {
+  const { t } = useTranslations();
   const [rootCauseData, setRootCauseData] = React.useState<{
     causes: RootCause[];
     totalIncidents: number;

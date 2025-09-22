@@ -38,6 +38,7 @@ interface CostMetrics {
 }
 
 export function FuelCostMetrics({ className = '' }: FuelCostMetricsProps) {
+  const { t } = useTranslations();
   const [costMetrics, setCostMetrics] = React.useState<CostMetrics | null>(null);
   const [isLoading, setIsLoading] = React.useState(true);
 

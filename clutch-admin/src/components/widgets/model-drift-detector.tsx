@@ -44,6 +44,7 @@ interface ModelDriftData {
 }
 
 export function ModelDriftDetector({ className = '' }: ModelDriftDetectorProps) {
+  const { t } = useTranslations();
   const [driftData, setDriftData] = React.useState<ModelDriftData[]>([]);
   const [isLoading, setIsLoading] = React.useState(true);
 

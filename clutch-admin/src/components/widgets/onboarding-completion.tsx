@@ -6,6 +6,7 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Progress } from '@/components/ui/progress';
 import { businessIntelligence } from '@/lib/business-intelligence';
+import { useTranslations } from '@/hooks/use-translations';
 import { 
   CheckCircle, 
   Circle, 
@@ -34,6 +35,7 @@ interface OnboardingData {
 }
 
 export function OnboardingCompletion({ className = '' }: OnboardingCompletionProps) {
+  const { t } = useTranslations();
   const [onboardingData, setOnboardingData] = React.useState<OnboardingData | null>(null);
   const [isLoading, setIsLoading] = React.useState(true);
 

@@ -26,6 +26,7 @@ interface SegmentData {
 }
 
 export function EngagementHeatmap({ className = '' }: EngagementHeatmapProps) {
+  const { t } = useTranslations();
   const [heatmapData, setHeatmapData] = React.useState<{ segments: SegmentData[] } | null>(null);
   const [isLoading, setIsLoading] = React.useState(true);
   const [selectedSegment, setSelectedSegment] = React.useState<string>('all');

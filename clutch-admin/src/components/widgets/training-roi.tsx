@@ -35,6 +35,7 @@ interface TrainingROIData {
 }
 
 export function TrainingROI({ className = '' }: TrainingROIProps) {
+  const { t } = useTranslations();
   const [roiData, setRoiData] = React.useState<TrainingROIData | null>(null);
   const [isLoading, setIsLoading] = React.useState(true);
 

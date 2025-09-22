@@ -6,6 +6,7 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Progress } from '@/components/ui/progress';
 import { productionApi } from '@/lib/production-api';
+import { useTranslations } from '@/hooks/use-translations';
 import { 
   DollarSign, 
   Users, 
@@ -36,6 +37,7 @@ interface CLVData {
 }
 
 export function CustomerLifetimeValue({ className = '' }: CustomerLifetimeValueProps) {
+  const { t } = useTranslations();
   const [clvData, setClvData] = React.useState<CLVData[]>([]);
   const [isLoading, setIsLoading] = React.useState(true);
 

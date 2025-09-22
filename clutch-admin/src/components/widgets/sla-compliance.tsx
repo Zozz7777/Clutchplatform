@@ -37,6 +37,7 @@ interface SLAMetric {
 }
 
 export function SLACompliance({ className = '' }: SLAComplianceProps) {
+  const { t } = useTranslations();
   const [slaData, setSlaData] = React.useState<{
     metrics: SLAMetric[];
     overallCompliance: number;
