@@ -34,7 +34,7 @@ import {
   Copy,
   Send,
 } from "lucide-react";
-import { useTranslations } from "@/hooks/use-translations";
+// Translation system removed - using hardcoded strings
 import { toast } from "sonner";
 import { handleError, handleDataLoadError } from "@/lib/error-handler";
 import { useAuth } from "@/contexts/auth-context";
@@ -61,7 +61,7 @@ interface PendingEmail {
 }
 
 export default function PendingEmailsPage() {
-  const { t } = useTranslations();
+  // Translation system removed - using hardcoded strings
   const { user, hasPermission } = useAuth();
   const [pendingEmails, setPendingEmails] = useState<PendingEmail[]>([]);
   const [loading, setLoading] = useState(true);

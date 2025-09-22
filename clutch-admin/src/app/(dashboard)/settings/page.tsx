@@ -6,7 +6,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useAuth } from "@/contexts/auth-context";
-import { useTranslations } from "@/hooks/use-translations";
+// Translation system removed - using hardcoded strings
 import { productionApi } from "@/lib/production-api";
 import { formatDate, formatRelativeTime } from "@/lib/utils";
 import { handleError, handleDataLoadError } from "@/lib/error-handler";
@@ -122,7 +122,7 @@ export default function SettingsPage() {
   const [isSaving, setIsSaving] = useState(false);
   const [showPasswords, setShowPasswords] = useState<Record<string, boolean>>({});
   const { user, hasPermission } = useAuth();
-  const { t } = useTranslations();
+  // Translation system removed - using hardcoded strings
 
   useEffect(() => {
     const loadSettingsData = async () => {
@@ -404,9 +404,9 @@ export default function SettingsPage() {
       {/* Page Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold tracking-tight">{t('dashboard.settings')}</h1>
+          <h1 className="text-3xl font-bold tracking-tight">Settings</h1>
           <p className="text-muted-foreground">
-            {t('dashboard.settingsDescription')}
+            Manage your account settings and preferences
           </p>
         </div>
         {hasPermission("manage_settings") && (

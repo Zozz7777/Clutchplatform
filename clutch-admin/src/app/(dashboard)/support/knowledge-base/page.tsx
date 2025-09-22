@@ -27,7 +27,7 @@ import {
   Calendar,
   User
 } from 'lucide-react';
-import { useTranslations } from '@/hooks/use-translations';
+// Translation system removed - using hardcoded strings
 import { productionApi } from '@/lib/production-api';
 
 interface KnowledgeArticle {
@@ -48,7 +48,7 @@ interface KnowledgeArticle {
 }
 
 export default function KnowledgeBasePage() {
-  const { t } = useTranslations();
+  // Translation system removed - using hardcoded strings
   const [articles, setArticles] = useState<KnowledgeArticle[]>([]);
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('all');
@@ -199,9 +199,9 @@ export default function KnowledgeBasePage() {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold font-sans">{t('support.knowledgeBase')}</h1>
+          <h1 className="text-3xl font-bold font-sans">Knowledge Base</h1>
           <p className="text-muted-foreground font-sans">
-            {t('support.manageHelpArticles')}
+            Manage help articles and documentation
           </p>
         </div>
         <Button onClick={() => setShowCreateDialog(true)}>
