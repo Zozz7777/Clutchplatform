@@ -59,9 +59,9 @@ export function ChurnRiskCard({ className = '', showDetails = false }: ChurnRisk
   };
 
   const getRiskLevel = (score: number) => {
-    if (score >= 80) return 'High';
-    if (score >= 60) return 'Medium';
-    return 'Low';
+    if (score >= 80) return t('widgets.high');
+    if (score >= 60) return t('widgets.medium');
+    return t('widgets.low');
   };
 
   const formatDate = (dateString: string) => {
@@ -73,8 +73,8 @@ export function ChurnRiskCard({ className = '', showDetails = false }: ChurnRisk
     const now = new Date();
     const diffInDays = Math.floor((now.getTime() - date.getTime()) / (1000 * 60 * 60 * 24));
     
-    if (diffInDays === 0) return 'Today';
-    if (diffInDays === 1) return 'Yesterday';
+    if (diffInDays === 0) return t('widgets.today');
+    if (diffInDays === 1) return t('widgets.yesterday');
     if (diffInDays < 7) return `${diffInDays} days ago`;
     if (diffInDays < 30) return `${Math.floor(diffInDays / 7)} weeks ago`;
     return `${Math.floor(diffInDays / 30)} months ago`;
@@ -208,7 +208,7 @@ export function ChurnRiskCard({ className = '', showDetails = false }: ChurnRisk
                         // Navigate to user details
                         window.open(`/users?highlight=${risk.userId}`, '_blank');
                       }}
-                      title="View User Details"
+                      title={t('widgets.viewUserDetails')}
                     >
                       <Eye className="h-4 w-4" />
                     </Button>
@@ -220,7 +220,7 @@ export function ChurnRiskCard({ className = '', showDetails = false }: ChurnRisk
                         // Send email to user
                         window.open(`mailto:${risk.userName}@example.com?subject=Retention Campaign`, '_blank');
                       }}
-                      title="Send Email"
+                      title={t('widgets.sendEmail')}
                     >
                       <Mail className="h-4 w-4" />
                     </Button>
@@ -232,7 +232,7 @@ export function ChurnRiskCard({ className = '', showDetails = false }: ChurnRisk
                         // Call user (placeholder)
                         alert(`Calling ${risk.userName}...`);
                       }}
-                      title="Call User"
+                      title={t('widgets.callUser')}
                     >
                       <Phone className="h-4 w-4" />
                     </Button>

@@ -74,9 +74,9 @@ export function AIForecastCard({ className = '' }: AIForecastCardProps) {
 
   const getRiskLevel = () => {
     const avgConfidence = getAverageConfidence();
-    if (avgConfidence >= 80) return { level: 'Low', color: 'green', icon: CheckCircle };
-    if (avgConfidence >= 60) return { level: 'Medium', color: 'yellow', icon: AlertCircle };
-    return { level: 'High', color: 'red', icon: AlertCircle };
+    if (avgConfidence >= 80) return { level: t('widgets.low'), color: 'green', icon: CheckCircle };
+    if (avgConfidence >= 60) return { level: t('widgets.medium'), color: 'yellow', icon: AlertCircle };
+    return { level: t('widgets.high'), color: 'red', icon: AlertCircle };
   };
 
   const formatDate = (dateString: string) => {
@@ -260,9 +260,9 @@ export function AIForecastCard({ className = '' }: AIForecastCardProps) {
             <h5 className="text-sm font-medium text-card-foreground">Risk Assessment</h5>
           </div>
           <p className="text-xs text-muted-foreground">
-            {riskLevel.level === 'Low' && 'Forecast shows high confidence with stable growth patterns.'}
-            {riskLevel.level === 'Medium' && 'Moderate confidence with some variability in projections.'}
-            {riskLevel.level === 'High' && 'High uncertainty - consider additional data sources.'}
+            {riskLevel.level === t('widgets.low') && t('widgets.forecastHighConfidence')}
+            {riskLevel.level === t('widgets.medium') && t('widgets.forecastModerateConfidence')}
+            {riskLevel.level === t('widgets.high') && t('widgets.forecastHighUncertainty')}
           </p>
         </div>
 

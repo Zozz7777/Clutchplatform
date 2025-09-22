@@ -84,9 +84,9 @@ export function TopEnterpriseClients({ className = '' }: TopEnterpriseClientsPro
   };
 
   const getActivityLevel = (activity: number) => {
-    if (activity >= 80) return 'High';
-    if (activity >= 60) return 'Medium';
-    return 'Low';
+    if (activity >= 80) return t('widgets.high');
+    if (activity >= 60) return t('widgets.medium');
+    return t('widgets.low');
   };
 
   const totalRevenue = clients.reduce((sum, client) => sum + client.revenue, 0);

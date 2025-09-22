@@ -103,9 +103,9 @@ export function RevenueMarginCard({ className = '' }: RevenueMarginCardProps) {
   };
 
   const getMarginTrend = (margin: number) => {
-    if (margin >= 30) return { icon: TrendingUp, color: 'text-success', text: 'Excellent' };
-    if (margin >= 15) return { icon: TrendingUp, color: 'text-warning', text: 'Good' };
-    return { icon: TrendingDown, color: 'text-destructive', text: 'Needs Attention' };
+    if (margin >= 30) return { icon: TrendingUp, color: 'text-success', text: t('widgets.excellent') };
+    if (margin >= 15) return { icon: TrendingUp, color: 'text-warning', text: t('widgets.good') };
+    return { icon: TrendingDown, color: 'text-destructive', text: t('widgets.needsAttention') };
   };
 
   const totalCosts = marginData.breakdown.fleet + marginData.breakdown.infrastructure + 
@@ -113,7 +113,7 @@ export function RevenueMarginCard({ className = '' }: RevenueMarginCardProps) {
 
   const costBreakdown = [
     {
-      name: 'Fleet Operations',
+      name: t('widgets.fleetOperations'),
       amount: marginData.breakdown.fleet,
       percentage: (marginData.breakdown.fleet / totalCosts) * 100,
       icon: Truck,
@@ -121,7 +121,7 @@ export function RevenueMarginCard({ className = '' }: RevenueMarginCardProps) {
       bgColor: 'bg-primary/10'
     },
     {
-      name: 'Infrastructure',
+      name: t('widgets.infrastructure'),
       amount: marginData.breakdown.infrastructure,
       percentage: (marginData.breakdown.infrastructure / totalCosts) * 100,
       icon: Server,
@@ -129,7 +129,7 @@ export function RevenueMarginCard({ className = '' }: RevenueMarginCardProps) {
       bgColor: 'bg-primary/10'
     },
     {
-      name: 'Maintenance',
+      name: t('widgets.maintenance'),
       amount: marginData.breakdown.maintenance,
       percentage: (marginData.breakdown.maintenance / totalCosts) * 100,
       icon: Wrench,
@@ -137,7 +137,7 @@ export function RevenueMarginCard({ className = '' }: RevenueMarginCardProps) {
       bgColor: 'bg-warning/10'
     },
     {
-      name: 'Other',
+      name: t('widgets.other'),
       amount: marginData.breakdown.other,
       percentage: (marginData.breakdown.other / totalCosts) * 100,
       icon: MoreHorizontal,

@@ -26,17 +26,17 @@ export class QuickActionsService {
   // Navigation actions
   navigateToUsers = () => {
     this.router.push('/users');
-    toast.success('Navigating to User Management');
+    toast.success(this.t('quickActions.navigatingToUserManagement'));
   };
 
   navigateToFleet = () => {
     this.router.push('/fleet');
-    toast.success('Navigating to Fleet Management');
+    toast.success(this.t('quickActions.navigatingToFleetManagement'));
   };
 
   navigateToAnalytics = () => {
     this.router.push('/analytics');
-    toast.success('Navigating to Analytics');
+    toast.success(this.t('quickActions.navigatingToAnalytics'));
   };
 
   navigateToReports = () => {
@@ -223,7 +223,7 @@ export class QuickActionsService {
       {
         id: 'add-user',
         title: this.t('quickActions.addUser'),
-        description: 'Create a new user account',
+        description: this.t('quickActions.createNewUserAccount'),
         icon: 'Users',
         action: this.addUser,
         requiresAuth: true,
@@ -232,7 +232,7 @@ export class QuickActionsService {
       {
         id: 'create-fleet',
         title: this.t('quickActions.createFleet'),
-        description: 'Add a new vehicle to the fleet',
+        description: this.t('quickActions.addNewVehicleToFleet'),
         icon: 'Truck',
         action: this.createFleet,
         requiresAuth: true,
@@ -276,8 +276,8 @@ export class QuickActionsService {
       },
       {
         id: 'refresh-data',
-        title: 'Refresh Data',
-        description: 'Refresh all dashboard data',
+        title: this.t('quickActions.refreshData'),
+        description: this.t('quickActions.refreshAllDashboardData'),
         icon: 'RefreshCw',
         action: this.refreshData,
         requiresAuth: false
