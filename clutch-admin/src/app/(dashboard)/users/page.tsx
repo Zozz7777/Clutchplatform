@@ -190,7 +190,7 @@ export default function UsersPage() {
       <div className="flex items-center justify-center h-64">
         <div className="text-center">
           <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto mb-4"></div>
-          <p className="text-muted-foreground font-sans">{t('users.loadingUsers')}</p>
+          <p className="text-muted-foreground font-sans">Loading users...</p>
         </div>
       </div>
     );
@@ -201,15 +201,15 @@ export default function UsersPage() {
       {/* Page Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold tracking-tight text-foreground font-sans">{t('users.title')}</h1>
+          <h1 className="text-3xl font-bold tracking-tight text-foreground font-sans">User Management</h1>
           <p className="text-muted-foreground font-sans">
-            {t('users.description')}
+            Manage users, roles, and permissions
           </p>
         </div>
         {hasPermission("create_users") && (
           <Button className="shadow-2xs" onClick={addUser || (() => {})}>
             <Plus className="mr-2 h-4 w-4" />
-            {t('users.addUser')}
+            Add User
           </Button>
         )}
       </div>

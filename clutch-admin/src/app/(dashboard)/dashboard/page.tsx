@@ -212,11 +212,11 @@ export default function DashboardPage() {
           </Button>
           <Button className="shadow-2xs" onClick={() => exportData?.()}>
             <Download className="mr-2 h-4 w-4" />
-            {t('dashboard.exportData')}
+            Export Data
           </Button>
           <Button variant="outline" className="shadow-2xs" onClick={refreshData || (() => {})}>
             <RefreshCw className="mr-2 h-4 w-4" />
-            {t('dashboard.refresh')}
+            Refresh
           </Button>
         </div>
       </div>
@@ -237,7 +237,7 @@ export default function DashboardPage() {
                 <div className="text-2xl font-bold text-card-foreground">{formatMetricValue(metric)}</div>
                 <div className="flex items-center space-x-1 text-xs text-muted-foreground">
                   {getTrendIcon(metric.changeType === 'increase' ? 'up' : 'down')}
-                  <span>{metric.change}% {t('dashboard.fromLastMonth')}</span>
+                  <span>{metric.change}% from last month</span>
                 </div>
               </CardContent>
             </Card>
@@ -250,7 +250,7 @@ export default function DashboardPage() {
         {/* Real-time Activity Feed */}
         <Card className="lg:col-span-2 shadow-2xs">
           <CardHeader>
-            <CardTitle className="text-card-foreground">{t('dashboard.realtimeActivityFeed')}</CardTitle>
+            <CardTitle className="text-card-foreground">Real-time Activity Feed</CardTitle>
             <CardDescription className="text-muted-foreground">{t('dashboard.latestActionsAndEvents')}</CardDescription>
           </CardHeader>
           <CardContent>

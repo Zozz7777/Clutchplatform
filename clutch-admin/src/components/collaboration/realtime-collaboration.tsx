@@ -204,7 +204,7 @@ export default function RealtimeCollaboration({ currentUserId, currentPage }: Re
           className="relative"
         >
           <Users className="h-4 w-4 mr-2" />
-          {t('collaboration.title')}
+          Real-time Collaboration
           {unreadCount > 0 && (
             <Badge className="absolute -top-2 -right-2 bg-destructive text-destructive-foreground text-xs">
               {unreadCount}
@@ -222,7 +222,7 @@ export default function RealtimeCollaboration({ currentUserId, currentPage }: Re
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-2">
               <Users className="h-5 w-5" />
-              <CardTitle className="text-lg">{t('collaboration.title')}</CardTitle>
+              <CardTitle className="text-lg">Real-time Collaboration</CardTitle>
               {unreadCount > 0 && (
                 <Badge className="bg-destructive text-destructive-foreground">
                   {unreadCount}
