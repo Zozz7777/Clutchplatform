@@ -4,7 +4,7 @@ const multer = require('multer');
 const path = require('path');
 const fs = require('fs-extra');
 const { body, validationResult, query } = require('express-validator');
-const auth = require('../middleware/auth');
+const { authenticateToken } = require('../middleware/auth');
 const { checkPermission } = require('../middleware/rbac');
 const Job = require('../models/Job');
 const JobApplication = require('../models/JobApplication');
@@ -371,7 +371,7 @@ router.post('/jobs/:jobId/apply', upload.fields([
 
 // Get all jobs for admin (with all statuses)
 router.get('/admin/jobs', 
-  auth, 
+  authenticateToken, 
   checkPermission('hr'), 
   [
     query('status').optional().isString(),
@@ -432,7 +432,7 @@ router.get('/admin/jobs',
 
 // Create new job
 router.post('/admin/jobs', 
-  auth, 
+  authenticateToken, 
   checkPermission('hr'), 
   [
     body('title').notEmpty().trim(),
@@ -495,7 +495,7 @@ router.post('/admin/jobs',
 
 // Update job
 router.put('/admin/jobs/:id', 
-  auth, 
+  authenticateToken, 
   checkPermission('hr'), 
   [
     body('title').optional().notEmpty().trim(),
@@ -561,7 +561,7 @@ router.put('/admin/jobs/:id',
 });
 
 // Delete job
-router.delete('/admin/jobs/:id', auth, checkPermission('hr'), async (req, res) => {
+router.delete('/admin/jobs/:id', authenticateToken, checkPermission('hr'), async (req, res) => {
   try {
     const job = await Job.findById(req.params.id);
     if (!job) {
@@ -601,7 +601,7 @@ router.delete('/admin/jobs/:id', auth, checkPermission('hr'), async (req, res) =
 
 // Get job applications
 router.get('/admin/applications', 
-  auth, 
+  authenticateToken, 
   checkPermission('hr'), 
   [
     query('jobId').optional().isMongoId(),
@@ -660,7 +660,7 @@ router.get('/admin/applications',
 });
 
 // Get single application
-router.get('/admin/applications/:id', auth, checkPermission('hr'), async (req, res) => {
+router.get('/admin/applications/:id', authenticateToken, checkPermission('hr'), async (req, res) => {
   try {
     const application = await JobApplication.findById(req.params.id)
       .populate('job', 'title department description requirements')
@@ -690,7 +690,7 @@ router.get('/admin/applications/:id', auth, checkPermission('hr'), async (req, r
 
 // Update application status
 router.put('/admin/applications/:id/status', 
-  auth, 
+  authenticateToken, 
   checkPermission('hr'), 
   [
     body('status').isIn(['applied', 'screened', 'interview_scheduled', 'interview_completed', 'offer_made', 'hired', 'rejected', 'withdrawn']),
@@ -743,7 +743,7 @@ router.put('/admin/applications/:id/status',
 });
 
 // Get approval workflows
-router.get('/admin/approvals', auth, checkPermission('hr'), async (req, res) => {
+router.get('/admin/approvals', authenticateToken, checkPermission('hr'), async (req, res) => {
   try {
     const approvals = await JobApproval.find({ status: 'pending' })
       .populate('job', 'title department')
@@ -767,7 +767,7 @@ router.get('/admin/approvals', auth, checkPermission('hr'), async (req, res) => 
 
 // Approve job
 router.post('/admin/approvals/:id/approve', 
-  auth, 
+  authenticateToken, 
   checkPermission('hr'), 
   [
     body('comments').optional().isString()
@@ -826,7 +826,7 @@ router.post('/admin/approvals/:id/approve',
 
 // Reject job
 router.post('/admin/approvals/:id/reject', 
-  auth, 
+  authenticateToken, 
   checkPermission('hr'), 
   [
     body('comments').notEmpty().isString()
@@ -882,7 +882,7 @@ router.post('/admin/approvals/:id/reject',
 });
 
 // Get careers analytics
-router.get('/admin/analytics', auth, checkPermission('hr'), async (req, res) => {
+router.get('/admin/analytics', authenticateToken, checkPermission('hr'), async (req, res) => {
   try {
     const [
       totalJobs,
