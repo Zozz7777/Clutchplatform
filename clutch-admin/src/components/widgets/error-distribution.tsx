@@ -175,10 +175,10 @@ export function ErrorDistribution({ className = '' }: ErrorDistributionProps) {
       <CardHeader>
         <CardTitle className="flex items-center space-x-2">
           <AlertTriangle className="h-5 w-5 text-destructive" />
-          <span>Error Distribution</span>
+          <span>{t('systemHealth.widgets.errorDistribution')}</span>
         </CardTitle>
         <CardDescription>
-          Types of errors (auth, payment, fleet)
+          {t('systemHealth.widgetDescriptions.errorDistribution')}
         </CardDescription>
       </CardHeader>
       <CardContent className="space-y-6">

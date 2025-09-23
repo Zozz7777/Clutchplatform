@@ -3,6 +3,7 @@
 import React, { useState } from "react";
 import { Sidebar } from "./sidebar";
 import { Header } from "./header";
+import { useLanguage } from "@/contexts/language-context";
 
 interface MainLayoutProps {
   children: React.ReactNode;
@@ -10,6 +11,7 @@ interface MainLayoutProps {
 
 export function MainLayout({ children }: MainLayoutProps) {
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
+  const { language } = useLanguage();
 
   const toggleSidebar = () => {
     setSidebarCollapsed(!sidebarCollapsed);
@@ -17,7 +19,7 @@ export function MainLayout({ children }: MainLayoutProps) {
 
   return (
     <div className="flex h-screen bg-background font-sans">
-      {/* Sidebar */}
+      {/* Sidebar - positioned based on language direction */}
       <Sidebar isCollapsed={sidebarCollapsed} onToggle={toggleSidebar} />
       
       {/* Main Content */}

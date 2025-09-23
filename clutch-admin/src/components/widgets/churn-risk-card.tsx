@@ -92,7 +92,7 @@ export function ChurnRiskCard({ className = '', showDetails = false }: ChurnRisk
             <AlertTriangle className="h-5 w-5 text-warning" />
             <span>{t('widgets.churnRiskAnalysis')}</span>
           </CardTitle>
-          <CardDescription className="text-muted-foreground">Loading churn risk data...</CardDescription>
+          <CardDescription className="text-muted-foreground">{t('widgets.loadingChurnRiskData')}</CardDescription>
         </CardHeader>
         <CardContent>
           <div className="animate-pulse space-y-4">
@@ -117,7 +117,7 @@ export function ChurnRiskCard({ className = '', showDetails = false }: ChurnRisk
           <span>{t('widgets.churnRiskAnalysis')}</span>
         </CardTitle>
         <CardDescription className="text-muted-foreground">
-          AI-powered prediction of customer churn risk
+          {t('widgets.aiPoweredPrediction')}
         </CardDescription>
       </CardHeader>
       <CardContent className="space-y-6">
@@ -133,7 +133,7 @@ export function ChurnRiskCard({ className = '', showDetails = false }: ChurnRisk
           </div>
           <div className="text-center p-3 bg-primary/10 rounded-[0.625rem] border border-primary/20">
             <p className="text-2xl font-bold text-primary">{totalAtRisk}</p>
-            <p className="text-xs text-muted-foreground">Total at Risk</p>
+            <p className="text-xs text-muted-foreground">{t('widgets.totalAtRisk')}</p>
           </div>
         </div>
 
@@ -156,7 +156,7 @@ export function ChurnRiskCard({ className = '', showDetails = false }: ChurnRisk
         {churnRisks.length > 0 && (
           <div className="space-y-3">
             <div className="flex items-center justify-between">
-              <h4 className="text-sm font-medium text-card-foreground">At-Risk Users</h4>
+              <h4 className="text-sm font-medium text-card-foreground">{t('widgets.atRiskUsers')}</h4>
               {!showAll && churnRisks.length > 3 && (
                 <Button
                   variant="ghost"
@@ -164,7 +164,7 @@ export function ChurnRiskCard({ className = '', showDetails = false }: ChurnRisk
                   onClick={() => setShowAll(true)}
                   className="text-xs hover:bg-muted focus:ring-2 focus:ring-ring"
                 >
-                  View All ({churnRisks.length})
+{t('widgets.viewAll', { count: churnRisks.length })}
                 </Button>
               )}
             </div>
@@ -183,20 +183,20 @@ export function ChurnRiskCard({ className = '', showDetails = false }: ChurnRisk
                       <div className="flex items-center space-x-1">
                         <TrendingDown className="h-3 w-3 text-muted-foreground" />
                         <span className="text-xs text-muted-foreground">
-                          {risk.riskScore.toFixed(0)}% risk
+{t('widgets.riskPercentage', { percentage: risk.riskScore.toFixed(0) })}
                         </span>
                       </div>
                       <div className="flex items-center space-x-1">
                         <Clock className="h-3 w-3 text-muted-foreground" />
                         <span className="text-xs text-muted-foreground">
-                          Last active: {formatRelativeTime(risk.lastActivity)}
+{t('widgets.lastActive')} {formatRelativeTime(risk.lastActivity)}
                         </span>
                       </div>
                     </div>
                     {risk.factors.length > 0 && (
                       <div className="mt-1">
                         <p className="text-xs text-muted-foreground">
-                          Factors: {risk.factors.slice(0, 2).join(', ')}
+{t('widgets.factors')} {risk.factors.slice(0, 2).join(', ')}
                           {risk.factors.length > 2 && ` +${risk.factors.length - 2} more`}
                         </p>
                       </div>
@@ -250,7 +250,7 @@ export function ChurnRiskCard({ className = '', showDetails = false }: ChurnRisk
         {/* Predicted Churn Timeline */}
         {churnRisks.length > 0 && (
           <div className="pt-4 border-t border-border">
-            <h4 className="text-sm font-medium text-card-foreground mb-3">Predicted Churn Timeline</h4>
+            <h4 className="text-sm font-medium text-card-foreground mb-3">{t('widgets.predictedChurnTimeline')}</h4>
             <div className="space-y-2">
               {churnRisks.slice(0, 3).map((risk) => (
                 <div key={risk.userId} className="flex items-center justify-between text-sm">
@@ -261,7 +261,7 @@ export function ChurnRiskCard({ className = '', showDetails = false }: ChurnRisk
                       {formatDate(risk.predictedChurnDate)}
                     </span>
                     <Badge variant="outline" className="text-xs">
-                      {risk.confidence.toFixed(0)}% confidence
+{risk.confidence.toFixed(0)}% {t('widgets.confidence')}
                     </Badge>
                   </div>
                 </div>
@@ -283,7 +283,7 @@ export function ChurnRiskCard({ className = '', showDetails = false }: ChurnRisk
             }}
           >
             <Mail className="h-4 w-4 mr-2" />
-            Send Retention Campaign
+{t('widgets.sendRetentionCampaign')}
           </Button>
           <Button 
             variant="outline" 
@@ -295,7 +295,7 @@ export function ChurnRiskCard({ className = '', showDetails = false }: ChurnRisk
             }}
           >
             <Users className="h-4 w-4 mr-2" />
-            View All Users
+{t('widgets.viewAllUsers')}
           </Button>
         </div>
       </CardContent>

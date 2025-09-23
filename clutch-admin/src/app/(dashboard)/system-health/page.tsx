@@ -290,7 +290,7 @@ export default function SystemHealthPage() {
                     <div className="flex items-center space-x-3">
                       {getStatusIcon(service.status)}
                       <div>
-                        <CardTitle className="font-sans">{service.name}</CardTitle>
+                        <CardTitle className="font-sans">{t(`systemHealth.services.${service.name.toLowerCase().replace(/\s+/g, '')}`) || service.name}</CardTitle>
                         <CardDescription className="font-sans">
                           {t('systemHealth.lastChecked')}: {new Date(service.lastCheck).toLocaleString()}
                         </CardDescription>
@@ -357,7 +357,7 @@ export default function SystemHealthPage() {
                       <div className="flex items-center space-x-3">
                         {getStatusIcon(dep.status)}
                   <div>
-                          <h3 className="font-medium font-sans">{dep.name}</h3>
+                          <h3 className="font-medium font-sans">{t(`systemHealth.externalServices.${dep.name.toLowerCase().replace(/\s+/g, '')}`) || dep.name}</h3>
                           <p className="text-sm text-muted-foreground font-sans">
                             {dep.responseTime > 0 ? `${dep.responseTime}ms` : t('systemHealth.unavailable')}
                     </p>
@@ -386,7 +386,7 @@ export default function SystemHealthPage() {
                       <div className="flex items-center space-x-3">
                         {getStatusIcon(service.status)}
                   <div>
-                          <h3 className="font-medium font-sans">{service.name}</h3>
+                          <h3 className="font-medium font-sans">{t(`systemHealth.services.${service.name.toLowerCase().replace(/\s+/g, '')}`) || service.name}</h3>
                           <p className="text-sm text-muted-foreground font-sans">
                             {t('systemHealth.instances', { count: service.instances })}
                     </p>
@@ -414,21 +414,21 @@ export default function SystemHealthPage() {
                 {[
                   {
                     time: '2024-01-15T14:30:00Z',
-                    event: 'Email Service Outage',
+                    event: 'emailServiceOutage',
                     duration: '2h 15m',
                     impact: 'Medium',
                     status: 'resolved'
                   },
                   {
                     time: '2024-01-14T09:15:00Z',
-                    event: 'Database Performance Degradation',
+                    event: 'databasePerformanceDegradation',
                     duration: '45m',
                     impact: 'Low',
                     status: 'resolved'
                   },
                   {
                     time: '2024-01-13T16:20:00Z',
-                    event: 'API Gateway Timeout',
+                    event: 'apiGatewayTimeout',
                     duration: '1h 30m',
                     impact: 'High',
                     status: 'resolved'
@@ -438,15 +438,15 @@ export default function SystemHealthPage() {
                     <div className="flex items-center space-x-3">
                       {getStatusIcon(event.status)}
                   <div>
-                        <h3 className="font-medium font-sans">{event.event}</h3>
+                        <h3 className="font-medium font-sans">{t(`systemHealth.history.${event.event}`)}</h3>
                         <p className="text-sm text-muted-foreground font-sans">
-                          {new Date(event.time).toLocaleString()} • Duration: {event.duration}
+                          {new Date(event.time).toLocaleString()} • {t('systemHealth.history.duration')}: {event.duration}
                         </p>
                       </div>
                     </div>
                     <div className="flex items-center space-x-2">
                       <Badge variant={event.impact === 'High' ? 'destructive' : event.impact === 'Medium' ? 'default' : 'secondary'}>
-                        {event.impact} Impact
+                        {t(`systemHealth.history.${event.impact.toLowerCase()}Impact`)}
                         </Badge>
                       {getStatusBadge(event.status)}
                     </div>

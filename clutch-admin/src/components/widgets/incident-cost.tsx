@@ -189,10 +189,10 @@ export function IncidentCost({ className = '' }: IncidentCostProps) {
       <CardHeader>
         <CardTitle className="flex items-center space-x-2">
           <DollarSign className="h-5 w-5 text-destructive" />
-          <span>Incident Cost</span>
+          <span>{t('systemHealth.widgets.incidentCost')}</span>
         </CardTitle>
         <CardDescription>
-          Estimated $ impact of downtime
+          {t('systemHealth.widgetDescriptions.incidentCost')}
         </CardDescription>
       </CardHeader>
       <CardContent className="space-y-6">

@@ -993,6 +993,63 @@
       "healthy": "healthy",
       "down": "down",
       "unknown": "unknown"
+    },
+    "services": {
+      "apiServer": "API Server",
+      "database": "Database",
+      "redisCache": "Redis Cache",
+      "emailService": "Email Service",
+      "loadBalancer": "Load Balancer",
+      "queueWorkers": "Queue Workers",
+      "backgroundJobs": "Background Jobs"
+    },
+    "externalServices": {
+      "awsS3": "AWS S3",
+      "stripeApi": "Stripe API",
+      "sendGrid": "SendGrid",
+      "mongoDbAtlas": "MongoDB Atlas"
+    },
+    "history": {
+      "emailServiceOutage": "Email Service Outage",
+      "databasePerformanceDegradation": "Database Performance Degradation",
+      "apiGatewayTimeout": "API Gateway Timeout",
+      "duration": "Duration",
+      "impact": "Impact",
+      "highImpact": "High Impact",
+      "mediumImpact": "Medium Impact",
+      "lowImpact": "Low Impact"
+    },
+    "widgetDescriptions": {
+      "slaCompliance": "% uptime vs SLA commitment",
+      "incidentCost": "Estimated $ impact of downtime",
+      "errorDistribution": "Types of errors (auth, payment, fleet)",
+      "rootCauseTimeline": "Automatically clusters incidents into causes"
+    },
+    "widgetLabels": {
+      "totalCost": "Total Cost",
+      "totalDowntime": "Total Downtime",
+      "averageCostPerIncident": "Average Cost per Incident",
+      "severityDistribution": "Severity Distribution",
+      "recentIncidents": "Recent Incidents",
+      "costBySeverity": "Cost by Severity",
+      "totalErrors": "Total Errors",
+      "criticalErrors": "Critical Errors",
+      "errorTypes": "Error Types",
+      "errorDistribution": "Error Distribution",
+      "recentErrors": "Recent Errors",
+      "totalIncidents": "Total Incidents",
+      "avgResolution": "Avg Resolution",
+      "rootCauses": "Root Causes",
+      "frequencyDistribution": "Frequency Distribution",
+      "recentResolutions": "Recent Resolutions",
+      "viewDetails": "View Details",
+      "exportReport": "Export Report"
+    },
+    "severity": {
+      "critical": "Critical",
+      "high": "High",
+      "medium": "Medium",
+      "low": "Low"
     }
   }
 }

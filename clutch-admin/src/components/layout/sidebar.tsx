@@ -21,7 +21,7 @@ export function Sidebar({ isCollapsed, onToggle }: SidebarProps) {
   const pathname = usePathname();
   const router = useRouter();
   const { hasPermission, user } = useAuth();
-  const { t } = useLanguage();
+  const { t, language } = useLanguage();
   const [expandedItems, setExpandedItems] = useState<string[]>([]);
   
   // Navigation items with translations
@@ -104,7 +104,9 @@ export function Sidebar({ isCollapsed, onToggle }: SidebarProps) {
   return (
     <div
       className={cn(
-        "flex flex-col h-full bg-sidebar border-r border-border transition-all duration-300 font-sans focus-within:ring-2 focus-within:ring-ring focus-within:ring-offset-2 focus-within:ring-offset-background",
+        "flex flex-col h-full bg-sidebar border-border transition-all duration-300 font-sans focus-within:ring-2 focus-within:ring-ring focus-within:ring-offset-2 focus-within:ring-offset-background",
+        // RTL-aware border positioning
+        language === 'ar' ? "border-l" : "border-r",
         isCollapsed ? "w-16" : "w-64"
       )}
     >
