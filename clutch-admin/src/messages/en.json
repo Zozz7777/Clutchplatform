@@ -980,6 +980,7 @@
     "analytics": {
       "title": "System Health Analytics",
       "description": "Go beyond uptime → proactive reliability insights"
-    }
+    },
+    "loading": "Loading system health..."
   }
 }

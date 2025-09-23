@@ -1,273 +1,195 @@
-"use client";
+'use client';
 
-import React, { useState, useEffect } from "react";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
+import { useState, useEffect } from 'react';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { productionApi } from '@/lib/production-api';
+import { websocketService } from '@/lib/websocket-service';
+import { handleError, handleWarning, handleWebSocketError } from '@/lib/error-handler';
+import { useLanguage } from '@/contexts/language-context';
+
+// Import new Phase 2 widgets
+import SLACompliance from '@/components/widgets/sla-compliance';
+import IncidentCost from '@/components/widgets/incident-cost';
+import ErrorDistribution from '@/components/widgets/error-distribution';
+import RootCauseTimeline from '@/components/widgets/root-cause-timeline';
+import { toast } from 'sonner';
 import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog";
-import {
-  Activity,
+  Heart, 
+  CheckCircle, 
   AlertTriangle,
-  CheckCircle,
   XCircle,
-  Clock,
+  Activity,
   Server,
   Database,
-  Cpu,
-  HardDrive,
-  MemoryStick,
-  Wifi,
   Globe,
-  Shield,
-  Zap,
-  TrendingUp,
-  TrendingDown,
-  Minus,
   RefreshCw,
-  Settings,
-  Eye,
-  Download,
-  BarChart3,
-  Monitor,
-  Smartphone,
-  Cloud,
-  Database as DbIcon,
-  FileText,
-  Users,
-  Calendar,
-  Filter,
-} from "lucide-react";
-import { productionApi } from "@/lib/production-api";
-import { logger } from "@/lib/logger";
-import { toast } from "sonner";
+  TrendingUp,
+  TrendingDown
+} from 'lucide-react';
 
-interface SystemStatus {
-  overall: "healthy" | "degraded" | "critical" | "down";
-  uptime: number; // seconds
+interface ServiceHealth {
+  name: string;
+  status: 'healthy' | 'degraded' | 'down';
+  uptime: number;
+  responseTime: number;
   lastCheck: string;
-  services: {
-    name: string;
-    status: "healthy" | "degraded" | "critical" | "down";
-    responseTime: number; // ms
-    uptime: number; // percentage
-    lastCheck: string;
-  }[];
-}
-
-interface SystemMetrics {
-  timestamp: string;
-  cpu: {
-    usage: number; // percentage
-    cores: number;
-    loadAverage: number[];
-  };
-  memory: {
-    total: number; // bytes
-    used: number; // bytes
-    free: number; // bytes
-    usage: number; // percentage
-  };
-  disk: {
-    total: number; // bytes
-    used: number; // bytes
-    free: number; // bytes
-    usage: number; // percentage
-  };
-  network: {
-    bytesIn: number;
-    bytesOut: number;
-    packetsIn: number;
-    packetsOut: number;
-    latency: number; // ms
-  };
-  database: {
-    connections: number;
-    maxConnections: number;
-    queryTime: number; // ms
-    slowQueries: number;
-  };
-}
-
-interface PerformanceMetric {
-  _id: string;
-  timestamp: string;
-  metric: string;
-  value: number;
-  unit: string;
-  tags: Record<string, string>;
-  createdAt: string;
-}
-
-interface SystemAlert {
-  _id: string;
-  timestamp: string;
-  severity: "low" | "medium" | "high" | "critical";
-  type: "cpu" | "memory" | "disk" | "network" | "database" | "service" | "security";
-  title: string;
-  description: string;
-  source: string;
-  status: "open" | "acknowledged" | "resolved" | "dismissed";
-  acknowledgedBy?: {
-    id: string;
-    name: string;
-  };
-  acknowledgedAt?: string;
-  resolvedAt?: string;
-  metadata: Record<string, unknown>;
-  createdAt: string;
-}
-
-interface SystemLog {
-  _id: string;
-  timestamp: string;
-  level: "debug" | "info" | "warn" | "error" | "fatal";
-  source: string;
-  message: string;
-  context: Record<string, unknown>;
-  tags: string[];
-  createdAt: string;
+  dependencies: string[];
 }
 
 export default function SystemHealthPage() {
-  const [systemStatus, setSystemStatus] = useState<SystemStatus | null>(null);
-  const [systemMetrics, setSystemMetrics] = useState<SystemMetrics | null>(null);
-  const [performanceMetrics, setPerformanceMetrics] = useState<PerformanceMetric[]>([]);
-  const [alerts, setAlerts] = useState<SystemAlert[]>([]);
-  const [logs, setLogs] = useState<SystemLog[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [autoRefresh, setAutoRefresh] = useState(true);
-  const [refreshInterval, setRefreshInterval] = useState(30); // seconds
-  const [selectedAlert, setSelectedAlert] = useState<SystemAlert | null>(null);
-  const [showAlertDialog, setShowAlertDialog] = useState(false);
-
-  // System status and metrics are loaded from API in loadSystemData function
-
-  // Load real data from API
-  const loadSystemData = async () => {
-    try {
-      setLoading(true);
-      const [healthData, alertsData, logsData] = await Promise.all([
-        productionApi.getSystemHealth(),
-        productionApi.getSystemAlerts(),
-        productionApi.getSystemLogs()
-      ]);
-      
-      setSystemStatus(healthData?.status || null);
-      setSystemMetrics(healthData?.metrics || null);
-      setAlerts(alertsData || []);
-      setLogs(logsData || []);
-    } catch (error) {
-      logger.error('Failed to load system data:', error);
-      // Set fallback data if API fails
-      setAlerts([]);
-      setLogs([]);
-    } finally {
-      setLoading(false);
-    }
-  };
+  const { t } = useLanguage();
+  const [services, setServices] = useState<ServiceHealth[]>([]);
+  const [overallHealth, setOverallHealth] = useState({
+    status: 'unknown' as 'healthy' | 'degraded' | 'down' | 'unknown',
+    uptime: 0,
+    servicesUp: 0,
+    servicesDown: 0,
+    lastIncident: ''
+  });
+  const [isLoading, setIsLoading] = useState(true);
+  const [connectionStatus, setConnectionStatus] = useState('disconnected');
 
   useEffect(() => {
-    loadSystemData();
-    
-    if (autoRefresh) {
-      const interval = setInterval(loadSystemData, refreshInterval * 1000);
-      return () => clearInterval(interval);
+    const loadSystemHealth = async () => {
+      try {
+        setIsLoading(true);
+        const healthData = await productionApi.getSystemHealth();
+        
+        if (healthData) {
+          setServices((healthData.services || []) as any);
+          setOverallHealth((healthData.overall || {
+            status: 'unknown',
+            uptime: 0,
+            servicesUp: 0,
+            servicesDown: 0,
+            lastIncident: ''
+          }) as any);
+        }
+      } catch (error) {
+        // Error handled by API service
+        toast.error(t('systemHealth.failedToLoadData'));
+        // Set empty data on error
+        setServices([]);
+        setOverallHealth({
+          status: 'unknown',
+          uptime: 0,
+          servicesUp: 0,
+          servicesDown: 0,
+          lastIncident: ''
+        });
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    loadSystemHealth();
+
+    // Subscribe to real-time health updates
+    let unsubscribe: (() => void) | null = null;
+    try {
+      if (websocketService && typeof websocketService.subscribeToSystemHealth === 'function') {
+        unsubscribe = websocketService.subscribeToSystemHealth((data: any) => {
+          setServices(prevServices => 
+            prevServices.map(service => 
+              service.name === data.service ? { ...service, ...data } : service
+            )
+          );
+        });
+      } else {
+        handleWarning('WebSocket service not available or subscribeToSystemHealth method not found', { component: 'SystemHealthPage' });
+      }
+    } catch (error) {
+      handleWebSocketError(error, 'health', 'subscription');
     }
-  }, [autoRefresh, refreshInterval]);
 
+    // Monitor connection status
+    const statusInterval = setInterval(() => {
+      setConnectionStatus((websocketService as any).getConnectionStatus());
+    }, 1000);
 
-  const getStatusColor = (status: string) => {
+    return () => {
+      if (unsubscribe) {
+        try {
+          unsubscribe();
+        } catch (error) {
+          handleWebSocketError(error, 'health', 'unsubscribe');
+        }
+      }
+      clearInterval(statusInterval);
+    };
+  }, []);
+
+  const handleRefresh = async () => {
+    try {
+      setIsLoading(true);
+      const healthData = await productionApi.getSystemHealth();
+      
+      if (healthData) {
+        setServices((healthData.services || []) as any);
+        setOverallHealth((healthData.overall || {
+          status: 'unknown',
+          uptime: 0,
+          servicesUp: 0,
+          servicesDown: 0,
+          lastIncident: ''
+        }) as any);
+      }
+    } catch (error) {
+      // Error handled by API service
+      toast.error(t('systemHealth.failedToRefreshData'));
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const getStatusIcon = (status: string) => {
     switch (status) {
-      case "healthy":
-        return "bg-primary/10 text-primary-foreground";
-      case "degraded":
-        return "bg-secondary/10 text-primary-foreground";
-      case "critical":
-        return "bg-secondary/10 text-primary-foreground";
-      case "down":
-        return "bg-destructive/10 text-destructive-foreground";
+      case 'healthy':
+        return <CheckCircle className="h-5 w-5 text-success" />;
+      case 'degraded':
+        return <AlertTriangle className="h-5 w-5 text-warning" />;
+      case 'down':
+        return <XCircle className="h-5 w-5 text-error" />;
       default:
-        return "bg-muted text-muted-foreground";
+        return <Activity className="h-5 w-5 text-muted-foreground" />;
     }
   };
 
-  const getSeverityColor = (severity: string) => {
-    switch (severity) {
-      case "critical":
-        return "bg-destructive/10 text-destructive-foreground";
-      case "high":
-        return "bg-secondary/10 text-primary-foreground";
-      case "medium":
-        return "bg-secondary/10 text-primary-foreground";
-      case "low":
-        return "bg-secondary/10 text-primary-foreground";
+  const getStatusBadge = (status: string) => {
+    switch (status) {
+      case 'healthy':
+        return <Badge variant="default" className="bg-success text-success-foreground">{t('systemHealth.status.healthy')}</Badge>;
+      case 'degraded':
+        return <Badge variant="default" className="bg-warning text-warning-foreground">{t('systemHealth.status.degraded')}</Badge>;
+      case 'down':
+        return <Badge variant="destructive">{t('systemHealth.status.down')}</Badge>;
       default:
-        return "bg-muted text-muted-foreground";
+        return <Badge variant="outline">{t('systemHealth.status.unknown')}</Badge>;
     }
   };
 
-  const getLogLevelColor = (level: string) => {
-    switch (level) {
-      case "fatal":
-      case "error":
-        return "bg-destructive/10 text-destructive-foreground";
-      case "warn":
-        return "bg-secondary/10 text-primary-foreground";
-      case "info":
-        return "bg-secondary/10 text-primary-foreground";
-      case "debug":
-        return "bg-muted text-muted-foreground";
+  const getOverallStatusIcon = (status: string) => {
+    switch (status) {
+      case 'healthy':
+        return <Heart className="h-8 w-8 text-success" />;
+      case 'degraded':
+        return <AlertTriangle className="h-8 w-8 text-warning" />;
+      case 'down':
+        return <XCircle className="h-8 w-8 text-error" />;
       default:
-        return "bg-muted text-muted-foreground";
+        return <Activity className="h-8 w-8 text-muted-foreground" />;
     }
   };
 
-  const formatBytes = (bytes: number) => {
-    const sizes = ["Bytes", "KB", "MB", "GB", "TB"];
-    if (bytes === 0) return "0 Bytes";
-    const i = Math.floor(Math.log(bytes) / Math.log(1024));
-    return Math.round(bytes / Math.pow(1024, i) * 100) / 100 + " " + sizes[i];
-  };
-
-  const formatUptime = (seconds: number) => {
-    const days = Math.floor(seconds / 86400);
-    const hours = Math.floor((seconds % 86400) / 3600);
-    const minutes = Math.floor((seconds % 3600) / 60);
-    return `${days}d ${hours}h ${minutes}m`;
-  };
-
-  const getTrendIcon = (current: number, previous: number) => {
-    if (current > previous) return <TrendingUp className="h-4 w-4 text-destructive" />;
-    if (current < previous) return <TrendingDown className="h-4 w-4 text-primary" />;
-    return <Minus className="h-4 w-4 text-muted-foreground" />;
-  };
-
-  const openAlerts = alerts?.filter(a => a.status === "open").length || 0;
-  const criticalAlerts = alerts?.filter(a => a.severity === "critical").length || 0;
-  const errorLogs = logs?.filter(l => l.level === "error" || l.level === "fatal").length || 0;
-
-  if (loading && !systemStatus) {
+  if (isLoading) {
     return (
-      <div className="flex items-center justify-center h-64">
+      <div className="flex items-center justify-center min-h-[400px]">
         <div className="text-center">
           <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto"></div>
-          <p className="mt-2 text-muted-foreground">Loading system health...</p>
+          <p className="mt-2 text-muted-foreground">{t('systemHealth.loading')}</p>
         </div>
       </div>
     );
@@ -275,386 +197,290 @@ export default function SystemHealthPage() {
 
   return (
     <div className="space-y-6">
-      {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold tracking-tight">System Health</h1>
-          <p className="text-muted-foreground">
-            Monitor system performance, alerts, and infrastructure status
+          <h1 className="text-3xl font-bold font-sans">{t('systemHealth.title')}</h1>
+          <p className="text-muted-foreground font-sans">
+            {t('systemHealth.description')}
           </p>
         </div>
         <div className="flex items-center space-x-2">
-          <Button
-            variant="outline"
-            onClick={() => setAutoRefresh(!autoRefresh)}
-            className={autoRefresh ? "bg-primary/10 border-primary/20" : ""}
-          >
-            <RefreshCw className={`mr-2 h-4 w-4 ${autoRefresh ? "animate-spin" : ""}`} />
-            Auto Refresh
+          <Button variant="outline" onClick={handleRefresh}>
+            <RefreshCw className="h-4 w-4 mr-2" />
+            {t('systemHealth.refresh')}
           </Button>
-          <Button variant="outline" onClick={loadSystemData}>
-            <RefreshCw className="mr-2 h-4 w-4" />
-            Refresh Now
-          </Button>
-          <Button variant="outline">
-            <Download className="mr-2 h-4 w-4" />
-            Export Report
+          <Button>
+            <Activity className="h-4 w-4 mr-2" />
+            {t('systemHealth.runHealthCheck')}
           </Button>
         </div>
       </div>
 
-      {/* System Status Overview */}
-      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+      <div className="grid gap-4 md:grid-cols-4">
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">System Status</CardTitle>
-            <Activity className="h-4 w-4 text-muted-foreground" />
+            <CardTitle className="text-sm font-medium font-sans">{t('systemHealth.overallStatus')}</CardTitle>
+            {getOverallStatusIcon(overallHealth.status)}
           </CardHeader>
           <CardContent>
-            <div className="flex items-center space-x-2">
-              {systemStatus?.overall === "healthy" ? (
-                <CheckCircle className="h-5 w-5 text-primary" />
-              ) : systemStatus?.overall === "degraded" ? (
-                <AlertTriangle className="h-5 w-5 text-secondary" />
-              ) : (
-                <XCircle className="h-5 w-5 text-destructive" />
-              )}
-              <span className="text-2xl font-bold capitalize">{systemStatus?.overall}</span>
+            <div className="text-2xl font-bold font-sans capitalize">
+              {overallHealth.status}
             </div>
-            <p className="text-xs text-muted-foreground">
-              Uptime: {systemStatus ? formatUptime(systemStatus.uptime) : "N/A"}
+            <p className="text-xs text-muted-foreground font-sans">
+              {overallHealth.uptime}% {t('systemHealth.uptime')}
             </p>
           </CardContent>
         </Card>
+
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Open Alerts</CardTitle>
-            <AlertTriangle className="h-4 w-4 text-muted-foreground" />
+            <CardTitle className="text-sm font-medium font-sans">{t('systemHealth.servicesUp')}</CardTitle>
+            <CheckCircle className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{openAlerts}</div>
-            <p className="text-xs text-muted-foreground">
-              {criticalAlerts} critical
+            <div className="text-2xl font-bold font-sans">{overallHealth.servicesUp}</div>
+            <p className="text-xs text-muted-foreground font-sans">
+              {t('systemHealth.outOfServices', { count: services.length })}
             </p>
           </CardContent>
         </Card>
+
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Error Logs</CardTitle>
+            <CardTitle className="text-sm font-medium font-sans">{t('systemHealth.servicesDown')}</CardTitle>
             <XCircle className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{errorLogs}</div>
-            <p className="text-xs text-muted-foreground">
-              Last hour
+            <div className="text-2xl font-bold font-sans">{overallHealth.servicesDown}</div>
+            <p className="text-xs text-muted-foreground font-sans">
+              {t('systemHealth.requireAttention')}
             </p>
           </CardContent>
         </Card>
+
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Services</CardTitle>
-            <Server className="h-4 w-4 text-muted-foreground" />
+            <CardTitle className="text-sm font-medium font-sans">{t('systemHealth.lastIncident')}</CardTitle>
+            <AlertTriangle className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">
-              {systemStatus?.services?.filter(s => s.status === "healthy").length || 0}
+            <div className="text-2xl font-bold font-sans">
+              {new Date(overallHealth.lastIncident).toLocaleDateString()}
             </div>
-            <p className="text-xs text-muted-foreground">
-              / {systemStatus?.services?.length || 0} healthy
+            <p className="text-xs text-muted-foreground font-sans">
+              {new Date(overallHealth.lastIncident).toLocaleTimeString()}
             </p>
           </CardContent>
         </Card>
       </div>
 
-      {/* System Metrics */}
-      {systemMetrics && (
-        <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-          <Card>
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">CPU Usage</CardTitle>
-              <Cpu className="h-4 w-4 text-muted-foreground" />
+      <Tabs defaultValue="services" className="space-y-4">
+        <TabsList>
+          <TabsTrigger value="services">{t('systemHealth.tabs.services')}</TabsTrigger>
+          <TabsTrigger value="dependencies">{t('systemHealth.tabs.dependencies')}</TabsTrigger>
+          <TabsTrigger value="history">{t('systemHealth.tabs.history')}</TabsTrigger>
+        </TabsList>
+
+        <TabsContent value="services" className="space-y-4">
+          <div className="space-y-4">
+            {services.map((service, index) => (
+              <Card key={index}>
+                <CardHeader>
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center space-x-3">
+                      {getStatusIcon(service.status)}
+                      <div>
+                        <CardTitle className="font-sans">{service.name}</CardTitle>
+                        <CardDescription className="font-sans">
+                          {t('systemHealth.lastChecked')}: {new Date(service.lastCheck).toLocaleString()}
+                        </CardDescription>
+                      </div>
+                    </div>
+                    {getStatusBadge(service.status)}
+                  </div>
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold">{systemMetrics.cpu.usage.toFixed(1)}%</div>
-              <div className="flex items-center space-x-2 mt-2">
-                <div className="flex-1 bg-muted rounded-full h-2">
-                  <div 
-                    className="bg-primary h-2 rounded-full" 
-                    style={{ width: `${systemMetrics.cpu.usage}%` }}
+                  <div className="grid gap-4 md:grid-cols-3">
+                    <div>
+                      <p className="text-sm font-medium font-sans mb-1">{t('systemHealth.uptime')}</p>
+                      <div className="flex items-center space-x-2">
+                        <div className="w-20 bg-muted rounded-full h-2">
+                          <div 
+                            className={`h-2 rounded-full ${
+                              service.uptime >= 99 ? 'bg-success/100' :
+                              service.uptime >= 95 ? 'bg-warning/100' : 'bg-destructive/100'
+                            }`}
+                            style={{ width: `${service.uptime}%` }}
                   ></div>
                 </div>
-                <span className="text-xs text-muted-foreground">
-                  {systemMetrics.cpu.cores} cores
-                </span>
+                        <span className="text-sm font-sans font-medium">{service.uptime}%</span>
+                      </div>
+              </div>
+                    <div>
+                      <p className="text-sm font-medium font-sans mb-1">{t('systemHealth.responseTime')}</p>
+                      <p className="text-sm font-sans">
+                        {service.responseTime > 0 ? `${service.responseTime}ms` : 'N/A'}
+                      </p>
+                </div>
+                    <div>
+                      <p className="text-sm font-medium font-sans mb-1">{t('systemHealth.dependencies')}</p>
+                      <div className="flex flex-wrap gap-1">
+                        {service.dependencies.map((dep, depIndex) => (
+                          <Badge key={depIndex} variant="outline" className="text-xs">
+                            {dep}
+                          </Badge>
+                        ))}
+              </div>
+                </div>
               </div>
             </CardContent>
           </Card>
-          <Card>
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">Memory Usage</CardTitle>
-              <MemoryStick className="h-4 w-4 text-muted-foreground" />
-            </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold">{systemMetrics.memory.usage.toFixed(1)}%</div>
-              <div className="flex items-center space-x-2 mt-2">
-                <div className="flex-1 bg-muted rounded-full h-2">
-                  <div 
-                    className="bg-primary h-2 rounded-full" 
-                    style={{ width: `${systemMetrics.memory.usage}%` }}
-                  ></div>
-                </div>
-                <span className="text-xs text-muted-foreground">
-                  {formatBytes(systemMetrics.memory.used)} / {formatBytes(systemMetrics.memory.total)}
-                </span>
-              </div>
-            </CardContent>
-          </Card>
-          <Card>
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">Disk Usage</CardTitle>
-              <HardDrive className="h-4 w-4 text-muted-foreground" />
-            </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold">{systemMetrics.disk.usage.toFixed(1)}%</div>
-              <div className="flex items-center space-x-2 mt-2">
-                <div className="flex-1 bg-muted rounded-full h-2">
-                  <div 
-                    className="bg-secondary h-2 rounded-full" 
-                    style={{ width: `${systemMetrics.disk.usage}%` }}
-                  ></div>
-                </div>
-                <span className="text-xs text-muted-foreground">
-                  {formatBytes(systemMetrics.disk.used)} / {formatBytes(systemMetrics.disk.total)}
-                </span>
-              </div>
-            </CardContent>
-          </Card>
-          <Card>
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">Network Latency</CardTitle>
-              <Wifi className="h-4 w-4 text-muted-foreground" />
-            </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold">{systemMetrics.network.latency}ms</div>
-              <p className="text-xs text-muted-foreground">
-                {formatBytes(systemMetrics.network.bytesIn)} in / {formatBytes(systemMetrics.network.bytesOut)} out
-              </p>
-            </CardContent>
-          </Card>
+            ))}
         </div>
-      )}
+        </TabsContent>
 
-      {/* Services Status */}
+        <TabsContent value="dependencies" className="space-y-4">
+          <div className="grid gap-4 md:grid-cols-2">
       <Card>
         <CardHeader>
-          <CardTitle>Services Status</CardTitle>
-          <CardDescription>
-            Real-time status of all system services
-          </CardDescription>
+                <CardTitle className="font-sans">{t('systemHealth.externalDependencies')}</CardTitle>
         </CardHeader>
         <CardContent>
           <div className="space-y-4">
-            {systemStatus?.services?.map((service) => (
-              <div key={service.name} className="flex items-center justify-between p-4 border rounded-[0.625rem]">
-                <div className="flex items-center space-x-4">
-                  <div className="p-2 bg-primary/10 rounded-[0.625rem]">
-                    <Server className="h-4 w-4 text-primary" />
-                  </div>
+                  {[
+                    { name: 'AWS S3', status: 'healthy', responseTime: 45 },
+                    { name: 'Stripe API', status: 'healthy', responseTime: 120 },
+                    { name: 'SendGrid', status: 'down', responseTime: 0 },
+                    { name: 'MongoDB Atlas', status: 'healthy', responseTime: 25 }
+                  ].map((dep, index) => (
+                    <div key={index} className="flex items-center justify-between p-3 border rounded-[0.625rem]">
+                      <div className="flex items-center space-x-3">
+                        {getStatusIcon(dep.status)}
                   <div>
-                    <p className="font-medium">{service.name}</p>
-                    <p className="text-sm text-muted-foreground">
-                      Response time: {service.responseTime}ms • Uptime: {service.uptime}%
-                    </p>
-                    <p className="text-xs text-muted-foreground">
-                      Last check: {new Date(service.lastCheck).toLocaleString()}
+                          <h3 className="font-medium font-sans">{dep.name}</h3>
+                          <p className="text-sm text-muted-foreground font-sans">
+                            {dep.responseTime > 0 ? `${dep.responseTime}ms` : t('systemHealth.unavailable')}
                     </p>
                   </div>
                 </div>
-                <div className="flex items-center space-x-2">
-                  <Badge className={getStatusColor(service.status)}>
-                    {service.status}
-                  </Badge>
-                  {service.status === "healthy" ? (
-                    <CheckCircle className="h-5 w-5 text-primary" />
-                  ) : service.status === "degraded" ? (
-                    <AlertTriangle className="h-5 w-5 text-secondary" />
-                  ) : (
-                    <XCircle className="h-5 w-5 text-destructive" />
-                  )}
-                </div>
+                      {getStatusBadge(dep.status)}
               </div>
             ))}
           </div>
         </CardContent>
       </Card>
 
-      {/* System Alerts */}
       <Card>
         <CardHeader>
-          <CardTitle>System Alerts</CardTitle>
-          <CardDescription>
-            Active and recent system alerts
-          </CardDescription>
+                <CardTitle className="font-sans">{t('systemHealth.internalServices')}</CardTitle>
         </CardHeader>
         <CardContent>
           <div className="space-y-4">
-            {alerts?.slice(0, 10).map((alert) => (
-              <div key={alert._id} className="flex items-center justify-between p-4 border rounded-[0.625rem]">
-                <div className="flex items-center space-x-4">
-                  <div className="p-2 bg-destructive/10 rounded-[0.625rem]">
-                    <AlertTriangle className="h-4 w-4 text-destructive" />
-                  </div>
+                  {[
+                    { name: 'Load Balancer', status: 'healthy', instances: 3 },
+                    { name: 'Redis Cache', status: 'degraded', instances: 2 },
+                    { name: 'Queue Workers', status: 'healthy', instances: 5 },
+                    { name: 'Background Jobs', status: 'healthy', instances: 2 }
+                  ].map((service, index) => (
+                    <div key={index} className="flex items-center justify-between p-3 border rounded-[0.625rem]">
+                      <div className="flex items-center space-x-3">
+                        {getStatusIcon(service.status)}
                   <div>
-                    <p className="font-medium">{alert.title}</p>
-                    <p className="text-sm text-muted-foreground">{alert.description}</p>
-                    <p className="text-xs text-muted-foreground">
-                      {alert.source} • {new Date(alert.timestamp).toLocaleString()}
+                          <h3 className="font-medium font-sans">{service.name}</h3>
+                          <p className="text-sm text-muted-foreground font-sans">
+                            {t('systemHealth.instances', { count: service.instances })}
                     </p>
                   </div>
                 </div>
-                <div className="flex items-center space-x-2">
-                  <Badge className={getSeverityColor(alert.severity)}>
-                    {alert.severity}
-                  </Badge>
-                  <Badge variant="outline">
-                    {alert.status}
-                  </Badge>
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    onClick={() => {
-                      setSelectedAlert(alert);
-                      setShowAlertDialog(true);
-                    }}
-                  >
-                    <Eye className="h-4 w-4" />
-                  </Button>
-                </div>
+                      {getStatusBadge(service.status)}
               </div>
             ))}
           </div>
         </CardContent>
       </Card>
+          </div>
+        </TabsContent>
 
-      {/* System Logs */}
+        <TabsContent value="history" className="space-y-4">
       <Card>
         <CardHeader>
-          <CardTitle>Recent System Logs</CardTitle>
-          <CardDescription>
-            Latest system log entries
+              <CardTitle className="font-sans">{t('systemHealth.healthHistory')}</CardTitle>
+              <CardDescription className="font-sans">
+                {t('systemHealth.historicalHealthStatus')}
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <div className="space-y-2">
-            {logs?.slice(0, 20).map((log) => (
-              <div key={log._id} className="flex items-center justify-between p-3 border rounded-[0.625rem]">
-                <div className="flex items-center space-x-4">
-                  <Badge className={getLogLevelColor(log.level)}>
-                    {log.level.toUpperCase()}
-                  </Badge>
+              <div className="space-y-4">
+                {[
+                  {
+                    time: '2024-01-15T14:30:00Z',
+                    event: 'Email Service Outage',
+                    duration: '2h 15m',
+                    impact: 'Medium',
+                    status: 'resolved'
+                  },
+                  {
+                    time: '2024-01-14T09:15:00Z',
+                    event: 'Database Performance Degradation',
+                    duration: '45m',
+                    impact: 'Low',
+                    status: 'resolved'
+                  },
+                  {
+                    time: '2024-01-13T16:20:00Z',
+                    event: 'API Gateway Timeout',
+                    duration: '1h 30m',
+                    impact: 'High',
+                    status: 'resolved'
+                  }
+                ].map((event, index) => (
+                  <div key={index} className="flex items-center justify-between p-4 border rounded-[0.625rem]">
+                    <div className="flex items-center space-x-3">
+                      {getStatusIcon(event.status)}
                   <div>
-                    <p className="font-medium">{log.message}</p>
-                    <p className="text-sm text-muted-foreground">
-                      {log.source} • {new Date(log.timestamp).toLocaleString()}
-                    </p>
-                    <div className="flex items-center space-x-2 mt-1">
-                      {log.tags?.map((tag) => (
-                        <Badge key={tag} variant="outline" className="text-xs">
-                          {tag}
+                        <h3 className="font-medium font-sans">{event.event}</h3>
+                        <p className="text-sm text-muted-foreground font-sans">
+                          {new Date(event.time).toLocaleString()} • Duration: {event.duration}
+                        </p>
+                      </div>
+                    </div>
+                    <div className="flex items-center space-x-2">
+                      <Badge variant={event.impact === 'High' ? 'destructive' : event.impact === 'Medium' ? 'default' : 'secondary'}>
+                        {event.impact} Impact
                         </Badge>
-                      ))}
+                      {getStatusBadge(event.status)}
                     </div>
                   </div>
-                </div>
-              </div>
-            ))}
+                ))}
           </div>
         </CardContent>
       </Card>
+        </TabsContent>
+      </Tabs>
 
-      {/* Alert Details Dialog */}
-      <Dialog open={showAlertDialog} onOpenChange={setShowAlertDialog}>
-        <DialogContent className="max-w-2xl">
-          <DialogHeader>
-            <DialogTitle>Alert Details</DialogTitle>
-            <DialogDescription>
-              Detailed information about the selected alert
-            </DialogDescription>
-          </DialogHeader>
-          {selectedAlert && (
-            <div className="space-y-4">
-              <div className="grid grid-cols-2 gap-4">
+      {/* Phase 2: System Health Analytics Widgets */}
+      <div className="space-y-6 mt-8">
+        <div className="flex items-center justify-between">
                 <div>
-                  <Label className="text-sm font-medium">Title</Label>
-                  <p className="text-sm text-muted-foreground">{selectedAlert.title}</p>
-                </div>
-                <div>
-                  <Label className="text-sm font-medium">Severity</Label>
-                  <Badge className={getSeverityColor(selectedAlert.severity)}>
-                    {selectedAlert.severity}
-                  </Badge>
+            <h2 className="text-2xl font-bold tracking-tight text-foreground">{t('systemHealth.analytics.title')}</h2>
+            <p className="text-muted-foreground">
+              {t('systemHealth.analytics.description')}
+            </p>
                 </div>
               </div>
-              <div>
-                <Label className="text-sm font-medium">Description</Label>
-                <p className="text-sm text-muted-foreground">{selectedAlert.description}</p>
+
+        {/* Top Row - SLA & Incident Cost */}
+        <div className="grid gap-6 md:grid-cols-2">
+          <SLACompliance />
+          <IncidentCost />
               </div>
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <Label className="text-sm font-medium">Source</Label>
-                  <p className="text-sm text-muted-foreground">{selectedAlert.source}</p>
-                </div>
-                <div>
-                  <Label className="text-sm font-medium">Status</Label>
-                  <Badge variant="outline">{selectedAlert.status}</Badge>
+
+        {/* Second Row - Error Distribution & Root Cause */}
+        <div className="grid gap-6 md:grid-cols-2">
+          <ErrorDistribution />
+          <RootCauseTimeline />
                 </div>
               </div>
-              <div>
-                <Label className="text-sm font-medium">Timestamp</Label>
-                <p className="text-sm text-muted-foreground">
-                  {new Date(selectedAlert.timestamp).toLocaleString()}
-                </p>
-              </div>
-              {selectedAlert.metadata && (
-                <div>
-                  <Label className="text-sm font-medium">Metadata</Label>
-                  <pre className="text-sm text-muted-foreground bg-muted p-2 rounded-[0.625rem]">
-                    {JSON.stringify(selectedAlert.metadata, null, 2)}
-                  </pre>
-                </div>
-              )}
-            </div>
-          )}
-          <DialogFooter>
-            <Button variant="outline" onClick={() => setShowAlertDialog(false)}>
-              Close
-            </Button>
-            {selectedAlert?.status === "open" && (
-              <Button onClick={async () => {
-                try {
-                  // Acknowledge the alert via API
-                  await productionApi.acknowledgeAlert(selectedAlert._id);
-                  // Update local state
-                  setAlerts(prev => prev?.map(alert => 
-                    alert._id === selectedAlert._id 
-                      ? { ...alert, status: 'acknowledged' }
-                      : alert
-                  ) || []);
-                  setShowAlertDialog(false);
-                  logger.log('Alert acknowledged successfully');
-                } catch (error) {
-                  logger.error('Failed to acknowledge alert:', error);
-                  toast.error('Failed to acknowledge alert. Please try again.');
-                }
-              }}>
-                Acknowledge Alert
-              </Button>
-            )}
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
     </div>
   );
 }
-
-

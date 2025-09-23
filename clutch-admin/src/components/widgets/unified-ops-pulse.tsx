@@ -124,13 +124,13 @@ export function UnifiedOpsPulse({ className = '' }: UnifiedOpsPulseProps) {
                 <Activity className="h-4 w-4 text-success" />
               </div>
               <div>
-                <p className="text-sm font-medium text-card-foreground">Active Sessions</p>
-                <p className="text-xs text-muted-foreground">Currently online</p>
+                <p className="text-sm font-medium text-card-foreground">{t('widgets.activeSessions')}</p>
+                <p className="text-xs text-muted-foreground">{t('widgets.currentlyOnline')}</p>
               </div>
             </div>
             <div className="text-right">
               <p className="text-lg font-bold text-success">{pulse.activeSessions}</p>
-              <Badge variant="secondary" className="text-xs">Live</Badge>
+              <Badge variant="secondary" className="text-xs">{t('widgets.live')}</Badge>
             </div>
           </div>
 
@@ -141,8 +141,8 @@ export function UnifiedOpsPulse({ className = '' }: UnifiedOpsPulseProps) {
                 <Truck className="h-4 w-4 text-info" />
               </div>
               <div>
-                <p className="text-sm font-medium text-card-foreground">Active Vehicles</p>
-                <p className="text-xs text-muted-foreground">Fleet utilization</p>
+                <p className="text-sm font-medium text-card-foreground">{t('widgets.activeVehicles')}</p>
+                <p className="text-xs text-muted-foreground">{t('widgets.fleetUtilization')}</p>
               </div>
             </div>
             <div className="text-right">

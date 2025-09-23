@@ -23,7 +23,11 @@
     "yes": "نعم",
     "no": "لا",
     "view": "عرض",
-    "manage": "إدارة"
+    "manage": "إدارة",
+    "connecting": "جاري الاتصال",
+    "offline": "غير متصل",
+    "closing": "جاري الإغلاق",
+    "unknown": "غير معروف"
   },
   "header": {
     "myAccount": "حسابي",
@@ -909,6 +913,9 @@
   "dashboard": {
     "title": "لوحة التحكم",
     "welcome": "مرحباً بعودتك",
+    "realTime": "في الوقت الفعلي",
+    "live": "مباشر",
+    "messages": "رسائل",
     "overview": "نظرة عامة",
     "quickActions": "إجراءات سريعة",
     "viewAnalytics": "عرض التحليلات",
@@ -1094,6 +1101,13 @@
     "violationsNeedResolution": "{count} انتهاكات امتثال تحتاج حل",
     "loadingOperationalMetrics": "جاري تحميل مقاييس العمليات...",
     "fromLastMonth": "من الشهر الماضي",
+    "newUsers": "مستخدمون جدد",
+    "activeSessions": "جلسات نشطة",
+    "currentlyOnline": "متصل حالياً",
+    "live": "مباشر",
+    "activeVehicles": "مركبات نشطة",
+    "fleetUtilization": "استخدام الأسطول",
+    "unableToLoadOperationalMetrics": "غير قادر على تحميل مقاييس العمليات",
     "aiRecommendationFeed": {
       "title": "تغذية توصيات الذكاء الاصطناعي",
       "description": "اقتراحات إجراءات مع التأثير المتوقع والعائد على الاستثمار",
@@ -3627,6 +3641,7 @@
     "analytics": {
       "title": "تحليلات صحة النظام",
       "description": "تجاوز وقت التشغيل → رؤى موثوقية استباقية"
-    }
+    },
+    "loading": "جاري تحميل صحة النظام..."
   }
 }
