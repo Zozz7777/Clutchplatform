@@ -2671,12 +2671,6 @@
     "loadingSupportData": "جاري تحميل بيانات الدعم...",
     "failedToLoadSupportData": "فشل في تحميل بيانات الدعم"
   },
-  "common": {
-    "search": "بحث...",
-    "all": "الكل",
-    "cancel": "إلغاء",
-    "close": "إغلاق",
-    "unableToLoad": "غير قادر على تحميل البيانات",
     "loading": "جاري التحميل...",
     "error": "خطأ",
     "success": "نجح",
@@ -3923,13 +3917,17 @@
         "causes": {
           "unknownCause": "سبب غير معروف",
           "systemError": "خطأ في النظام"
+        },
+        "incidentCost": {
+          "averageCostPerIncident": "متوسط التكلفة لكل حادث",
+          "totalDowntime": "إجمالي التوقف",
+          "incidentsAnalyzed": "حوادث تم تحليلها",
+          "criticalIncidents": "حوادث حرجة",
+          "highSeverityIncidents": "حوادث عالية الخطورة",
+          "criticalIncidentsHighestCost": "الحوادث الحرجة لها أعلى تأثير على التكلفة",
+          "highAverageCost": "متوسط تكلفة عالي - ركز على الوقاية"
         }
       }
-    },
-    "common": {
-      "today": "اليوم",
-      "yesterday": "أمس",
-      "daysAgo": "منذ {days} أيام"
     },
     "sla": {
       "overallCompliance": "الامتثال العام",

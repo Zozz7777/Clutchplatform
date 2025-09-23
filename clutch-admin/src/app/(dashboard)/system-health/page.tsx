@@ -457,10 +457,10 @@ export default function SystemHealthPage() {
         <CardContent>
           <div className="space-y-4">
                   {[
-                    { name: t('systemHealth.externalServices.awsS3'), status: 'healthy', responseTime: 45 },
-                    { name: t('systemHealth.externalServices.stripeApi'), status: 'healthy', responseTime: 120 },
-                    { name: t('systemHealth.externalServices.sendGrid'), status: 'down', responseTime: 0 },
-                    { name: t('systemHealth.externalServices.mongoDbAtlas'), status: 'healthy', responseTime: 25 }
+                    { name: 'AWS S3', status: 'healthy', responseTime: 45 },
+                    { name: 'Stripe API', status: 'healthy', responseTime: 120 },
+                    { name: 'SendGrid', status: 'down', responseTime: 0 },
+                    { name: 'MongoDB Atlas', status: 'healthy', responseTime: 25 }
                   ].map((dep, index) => (
                     <div key={index} className="flex items-center justify-between p-3 border rounded-[0.625rem]">
                       <div className="flex items-center space-x-3">
@@ -486,10 +486,10 @@ export default function SystemHealthPage() {
         <CardContent>
           <div className="space-y-4">
                   {[
-                    { name: t('systemHealth.services.loadBalancer'), status: 'healthy', instances: 3 },
-                    { name: t('systemHealth.services.redisCache'), status: 'degraded', instances: 2 },
-                    { name: t('systemHealth.services.queueWorkers'), status: 'healthy', instances: 5 },
-                    { name: t('systemHealth.services.backgroundJobs'), status: 'healthy', instances: 2 }
+                    { name: 'Load Balancer', status: 'healthy', instances: 3 },
+                    { name: 'Redis Cache', status: 'degraded', instances: 2 },
+                    { name: 'Queue Workers', status: 'healthy', instances: 5 },
+                    { name: 'Background Jobs', status: 'healthy', instances: 2 }
                   ].map((service, index) => (
                     <div key={index} className="flex items-center justify-between p-3 border rounded-[0.625rem]">
                       <div className="flex items-center space-x-3">

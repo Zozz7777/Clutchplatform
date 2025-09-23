@@ -903,16 +903,6 @@
     "excellentAverageRoi": "Excellent average ROI - strong project performance",
     "outstandingRoiAchieved": "Outstanding ROI achieved - replicate success factors"
   },
-  "incidentCost": {
-    "incidentCostInsights": "Incident Cost Insights",
-    "totalIncidentCost": "Total incident cost",
-    "averageCostPerIncident": "Average cost per incident",
-    "incidentsAnalyzed": "incidents analyzed",
-    "criticalIncidents": "critical incidents",
-    "highSeverityIncidents": "high severity incidents",
-    "criticalIncidentsHighestCost": "Critical incidents have highest cost impact",
-    "highAverageCost": "High average cost - focus on prevention"
-  },
   "subscriptions": {
     "newSubscription": "New Subscription",
     "totalSubscriptions": "Total Subscriptions",
@@ -1123,13 +1113,17 @@
         "causes": {
           "unknownCause": "Unknown Cause",
           "systemError": "System Error"
+        },
+        "incidentCost": {
+          "averageCostPerIncident": "Average cost per incident",
+          "totalDowntime": "Total downtime",
+          "incidentsAnalyzed": "incidents analyzed",
+          "criticalIncidents": "critical incidents",
+          "highSeverityIncidents": "high severity incidents",
+          "criticalIncidentsHighestCost": "Critical incidents have highest cost impact",
+          "highAverageCost": "High average cost - focus on prevention"
         }
       }
-    },
-    "common": {
-      "today": "Today",
-      "yesterday": "Yesterday",
-      "daysAgo": "{days} days ago"
     },
     "sla": {
       "overallCompliance": "Overall Compliance",
