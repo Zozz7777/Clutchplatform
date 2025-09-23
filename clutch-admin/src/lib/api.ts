@@ -1205,6 +1205,231 @@ class ApiService {
     });
   }
 
+  // Careers API Methods
+  async createJob(jobData: any): Promise<ApiResponse<any>> {
+    try {
+      const token = this.getToken();
+      if (!token) {
+        throw new Error("No authentication token available");
+      }
+
+      const response = await fetch(`${this.baseURL}/api/v1/careers/admin/jobs`, {
+        method: "POST",
+        headers: {
+          "Authorization": `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(jobData),
+      });
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      const data = await response.json();
+      return {
+        data: data.data || data,
+        success: true,
+        message: "Job created successfully"
+      };
+    } catch (error) {
+      console.error("Error creating job:", error);
+      return {
+        data: null,
+        success: false,
+        message: error instanceof Error ? error.message : "Failed to create job"
+      };
+    }
+  }
+
+  async updateJob(jobId: string, jobData: any): Promise<ApiResponse<any>> {
+    try {
+      const token = this.getToken();
+      if (!token) {
+        throw new Error("No authentication token available");
+      }
+
+      const response = await fetch(`${this.baseURL}/api/v1/careers/admin/jobs/${jobId}`, {
+        method: "PUT",
+        headers: {
+          "Authorization": `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(jobData),
+      });
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      const data = await response.json();
+      return {
+        data: data.data || data,
+        success: true,
+        message: "Job updated successfully"
+      };
+    } catch (error) {
+      console.error("Error updating job:", error);
+      return {
+        data: null,
+        success: false,
+        message: error instanceof Error ? error.message : "Failed to update job"
+      };
+    }
+  }
+
+  async getJobs(status?: string): Promise<ApiResponse<any>> {
+    try {
+      const token = this.getToken();
+      if (!token) {
+        throw new Error("No authentication token available");
+      }
+
+      const url = status 
+        ? `${this.baseURL}/api/v1/careers/admin/jobs?status=${status}`
+        : `${this.baseURL}/api/v1/careers/admin/jobs`;
+
+      const response = await fetch(url, {
+        method: "GET",
+        headers: {
+          "Authorization": `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+      });
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      const data = await response.json();
+      return {
+        data: data.data || data,
+        success: true,
+        message: "Jobs retrieved successfully"
+      };
+    } catch (error) {
+      console.error("Error fetching jobs:", error);
+      return {
+        data: null,
+        success: false,
+        message: error instanceof Error ? error.message : "Failed to fetch jobs"
+      };
+    }
+  }
+
+  async getApplications(jobId?: string, status?: string): Promise<ApiResponse<any>> {
+    try {
+      const token = this.getToken();
+      if (!token) {
+        throw new Error("No authentication token available");
+      }
+
+      let url = `${this.baseURL}/api/v1/careers/admin/applications`;
+      const params = new URLSearchParams();
+      if (jobId) params.append('jobId', jobId);
+      if (status) params.append('status', status);
+      if (params.toString()) url += `?${params.toString()}`;
+
+      const response = await fetch(url, {
+        method: "GET",
+        headers: {
+          "Authorization": `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+      });
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      const data = await response.json();
+      return {
+        data: data.data || data,
+        success: true,
+        message: "Applications retrieved successfully"
+      };
+    } catch (error) {
+      console.error("Error fetching applications:", error);
+      return {
+        data: null,
+        success: false,
+        message: error instanceof Error ? error.message : "Failed to fetch applications"
+      };
+    }
+  }
+
+  async updateApplicationStatus(applicationId: string, statusData: any): Promise<ApiResponse<any>> {
+    try {
+      const token = this.getToken();
+      if (!token) {
+        throw new Error("No authentication token available");
+      }
+
+      const response = await fetch(`${this.baseURL}/api/v1/careers/admin/applications/${applicationId}/status`, {
+        method: "PUT",
+        headers: {
+          "Authorization": `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(statusData),
+      });
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      const data = await response.json();
+      return {
+        data: data.data || data,
+        success: true,
+        message: "Application status updated successfully"
+      };
+    } catch (error) {
+      console.error("Error updating application status:", error);
+      return {
+        data: null,
+        success: false,
+        message: error instanceof Error ? error.message : "Failed to update application status"
+      };
+    }
+  }
+
+  async updateApplication(applicationId: string, applicationData: any): Promise<ApiResponse<any>> {
+    try {
+      const token = this.getToken();
+      if (!token) {
+        throw new Error("No authentication token available");
+      }
+
+      const response = await fetch(`${this.baseURL}/api/v1/careers/admin/applications/${applicationId}`, {
+        method: "PUT",
+        headers: {
+          "Authorization": `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(applicationData),
+      });
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      const data = await response.json();
+      return {
+        data: data.data || data,
+        success: true,
+        message: "Application updated successfully"
+      };
+    } catch (error) {
+      console.error("Error updating application:", error);
+      return {
+        data: null,
+        success: false,
+        message: error instanceof Error ? error.message : "Failed to update application"
+      };
+    }
+  }
+
   // WebSocket connection for real-time updates
   connectWebSocket(): WebSocket | null {
     if (typeof window === "undefined") return null;

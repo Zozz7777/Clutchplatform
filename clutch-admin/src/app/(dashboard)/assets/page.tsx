@@ -49,7 +49,7 @@ import {
 } from "lucide-react";
 import { formatCurrency } from "@/lib/utils";
 import { productionApi } from "@/lib/production-api";
-// Translation system removed - using hardcoded strings
+import { useLanguage } from "@/contexts/language-context";
 import { handleError, handleWarning, handleDataLoadError } from "@/lib/error-handler";
 
 interface Asset {
@@ -145,7 +145,7 @@ interface AssetAssignment {
 }
 
 export default function AssetManagementPage() {
-  // Translation system removed - using hardcoded strings
+  const { t } = useLanguage();
   const [assets, setAssets] = useState<Asset[]>([]);
   const [maintenanceRecords, setMaintenanceRecords] = useState<MaintenanceRecord[]>([]);
   const [assignments, setAssignments] = useState<AssetAssignment[]>([]);
@@ -433,7 +433,7 @@ export default function AssetManagementPage() {
       <div className="flex items-center justify-center h-64">
         <div className="text-center">
           <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto"></div>
-          <p className="mt-2 text-muted-foreground">Loading assets...</p>
+          <p className="mt-2 text-muted-foreground">{t('assets.loadingAssets')}</p>
         </div>
       </div>
     );
@@ -444,23 +444,23 @@ export default function AssetManagementPage() {
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold tracking-tight">Asset Management</h1>
+          <h1 className="text-3xl font-bold tracking-tight">{t('assets.title')}</h1>
           <p className="text-muted-foreground">
-            Track and manage your organization's assets
+            {t('assets.description')}
           </p>
         </div>
         <div className="flex items-center space-x-2">
           <Button onClick={() => setShowMaintenanceDialog(true)} variant="outline">
             <Wrench className="mr-2 h-4 w-4" />
-            Schedule Maintenance
+            {t('assets.scheduleMaintenance')}
           </Button>
           <Button onClick={() => setShowAssignmentDialog(true)} variant="outline">
             <User className="mr-2 h-4 w-4" />
-            Assign Asset
+            {t('assets.assignAsset')}
           </Button>
           <Button onClick={() => setShowCreateDialog(true)}>
             <Plus className="mr-2 h-4 w-4" />
-            Add Asset
+            {t('assets.addAsset')}
           </Button>
         </div>
       </div>
@@ -469,43 +469,43 @@ export default function AssetManagementPage() {
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Total Assets</CardTitle>
+            <CardTitle className="text-sm font-medium">{t('assets.totalAssets')}</CardTitle>
             <Package className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">{totalAssets}</div>
             <p className="text-xs text-muted-foreground">
-              {activeAssets} active, {totalAssets - activeAssets} inactive
+              {activeAssets} {t('assets.active')}, {totalAssets - activeAssets} {t('assets.inactive')}
             </p>
           </CardContent>
         </Card>
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Total Value</CardTitle>
+            <CardTitle className="text-sm font-medium">{t('assets.totalValue')}</CardTitle>
             <DollarSign className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">{formatCurrency(totalValue)}</div>
             <p className="text-xs text-muted-foreground">
-Current market value
+              {t('assets.currentMarketValue')}
             </p>
           </CardContent>
         </Card>
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Maintenance Due</CardTitle>
+            <CardTitle className="text-sm font-medium">{t('assets.maintenanceDue')}</CardTitle>
             <AlertTriangle className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">{maintenanceDue}</div>
             <p className="text-xs text-muted-foreground">
-Next 30 days
+              {t('assets.next30Days')}
             </p>
           </CardContent>
         </Card>
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Assigned Assets</CardTitle>
+            <CardTitle className="text-sm font-medium">{t('assets.assignedAssets')}</CardTitle>
             <User className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
@@ -513,7 +513,7 @@ Next 30 days
               {assetsArray.filter(a => a?.assignedTo).length}
             </div>
             <p className="text-xs text-muted-foreground">
-              Currently assigned
+              {t('assets.currentlyAssigned')}
             </p>
           </CardContent>
         </Card>
@@ -522,9 +522,9 @@ Next 30 days
       {/* Assets */}
       <Card>
         <CardHeader>
-          <CardTitle>Assets</CardTitle>
+          <CardTitle>{t('assets.assets')}</CardTitle>
           <CardDescription>
-            Manage and track your organization's assets
+            {t('assets.manageAndTrack')}
           </CardDescription>
         </CardHeader>
         <CardContent>
@@ -533,7 +533,7 @@ Next 30 days
               <div className="relative">
                 <Search className="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground" />
                 <Input
-                  placeholder="Search assets..."
+                  placeholder={t('assets.searchAssets')}
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
                   className="pl-8"
@@ -544,24 +544,24 @@ Next 30 days
               <DropdownMenuTrigger asChild>
                 <Button variant="outline">
                   <Filter className="mr-2 h-4 w-4" />
-                  Type: {typeFilter === "all" ? "All" : typeFilter}
+                  {t('assets.type')}: {typeFilter === "all" ? t('assets.allTypes') : typeFilter}
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent>
                 <DropdownMenuItem onClick={() => setTypeFilter("all")}>
-                  All Types
+                  {t('assets.allTypes')}
                 </DropdownMenuItem>
                 <DropdownMenuItem onClick={() => setTypeFilter("vehicle")}>
-                  Vehicle
+                  {t('assets.vehicle')}
                 </DropdownMenuItem>
                 <DropdownMenuItem onClick={() => setTypeFilter("it_hardware")}>
-                  IT Hardware
+                  {t('assets.itHardware')}
                 </DropdownMenuItem>
                 <DropdownMenuItem onClick={() => setTypeFilter("equipment")}>
-                  Equipment
+                  {t('assets.equipment')}
                 </DropdownMenuItem>
                 <DropdownMenuItem onClick={() => setTypeFilter("furniture")}>
-                  Furniture
+                  {t('assets.furniture')}
                 </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
@@ -569,24 +569,24 @@ Next 30 days
               <DropdownMenuTrigger asChild>
                 <Button variant="outline">
                   <Filter className="mr-2 h-4 w-4" />
-                  Status: {statusFilter === "all" ? "All" : statusFilter}
+                  {t('assets.status')}: {statusFilter === "all" ? t('assets.allStatus') : statusFilter}
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent>
                 <DropdownMenuItem onClick={() => setStatusFilter("all")}>
-                  All Status
+                  {t('assets.allStatus')}
                 </DropdownMenuItem>
                 <DropdownMenuItem onClick={() => setStatusFilter("active")}>
-                  Active
+                  {t('assets.active')}
                 </DropdownMenuItem>
                 <DropdownMenuItem onClick={() => setStatusFilter("inactive")}>
-                  Inactive
+                  {t('assets.inactive')}
                 </DropdownMenuItem>
                 <DropdownMenuItem onClick={() => setStatusFilter("maintenance")}>
-                  Maintenance
+                  {t('assets.maintenance')}
                 </DropdownMenuItem>
                 <DropdownMenuItem onClick={() => setStatusFilter("retired")}>
-                  Retired
+                  {t('assets.retired')}
                 </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
@@ -610,28 +610,28 @@ Next 30 days
                       </div>
                       <p className="text-muted-foreground mb-2">{asset.description}</p>
                       <p className="text-sm text-muted-foreground mb-4">
-                        Serial: <code className="bg-muted px-2 py-1 rounded">{asset.serialNumber}</code>
+                        {t('assets.serial')}: <code className="bg-muted px-2 py-1 rounded">{asset.serialNumber}</code>
                       </p>
                       
                       <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-4">
                         <div>
-                          <p className="text-sm font-medium">Current Value</p>
+                          <p className="text-sm font-medium">{t('assets.currentValue')}</p>
                           <p className="text-sm text-muted-foreground">{formatCurrency(asset.currentValue)}</p>
                         </div>
                         <div>
-                          <p className="text-sm font-medium">Location</p>
+                          <p className="text-sm font-medium">{t('assets.location')}</p>
                           <p className="text-sm text-muted-foreground">
                             {asset.location.building}, {asset.location.room}
                           </p>
                         </div>
                         <div>
-                          <p className="text-sm font-medium">Assigned To</p>
+                          <p className="text-sm font-medium">{t('assets.assignedTo')}</p>
                           <p className="text-sm text-muted-foreground">
-                            {asset.assignedTo ? asset.assignedTo.name : "Unassigned"}
+                            {asset.assignedTo ? asset.assignedTo.name : t('assets.unassigned')}
                           </p>
                         </div>
                         <div>
-                          <p className="text-sm font-medium">Next Service</p>
+                          <p className="text-sm font-medium">{t('assets.nextService')}</p>
                           <p className="text-sm text-muted-foreground">
                             {new Date(asset.maintenance.nextService).toLocaleDateString()}
                           </p>
@@ -641,7 +641,7 @@ Next 30 days
                       <div className="flex items-center space-x-4 text-sm text-muted-foreground">
                         <div className="flex items-center space-x-1">
                           <Calendar className="h-4 w-4" />
-                          <span>Purchased: {new Date(asset.purchaseDate).toLocaleDateString()}</span>
+                          <span>{t('assets.purchased')}: {new Date(asset.purchaseDate).toLocaleDateString()}</span>
                         </div>
                         <div className="flex items-center space-x-1">
                           <MapPin className="h-4 w-4" />
@@ -663,27 +663,27 @@ Next 30 days
                       <DropdownMenuContent align="end">
                         <DropdownMenuItem onClick={() => setSelectedAsset(asset)}>
                           <Eye className="mr-2 h-4 w-4" />
-                          View Details
+                          {t('assets.viewDetails')}
                         </DropdownMenuItem>
                         <DropdownMenuItem>
                           <Edit className="mr-2 h-4 w-4" />
-                          Edit Asset
+                          {t('assets.editAsset')}
                         </DropdownMenuItem>
                         <DropdownMenuItem>
                           <History className="mr-2 h-4 w-4" />
-                          Maintenance History
+                          {t('assets.maintenanceHistory')}
                         </DropdownMenuItem>
                         <DropdownMenuItem>
                           <BarChart3 className="mr-2 h-4 w-4" />
-                          View Analytics
+                          {t('assets.viewAnalytics')}
                         </DropdownMenuItem>
                         <DropdownMenuItem>
                           <Settings className="mr-2 h-4 w-4" />
-                          Manage Assignment
+                          {t('assets.manageAssignment')}
                         </DropdownMenuItem>
                         <DropdownMenuItem className="text-destructive">
                           <Trash2 className="mr-2 h-4 w-4" />
-                          Delete Asset
+                          {t('assets.deleteAsset')}
                         </DropdownMenuItem>
                       </DropdownMenuContent>
                     </DropdownMenu>
@@ -698,9 +698,9 @@ Next 30 days
       {/* Recent Maintenance */}
       <Card>
         <CardHeader>
-          <CardTitle>Recent Maintenance</CardTitle>
+          <CardTitle>{t('assets.recentMaintenance')}</CardTitle>
           <CardDescription>
-            Latest maintenance activities and upcoming services
+            {t('assets.latestMaintenanceActivities')}
           </CardDescription>
         </CardHeader>
         <CardContent>
@@ -715,7 +715,7 @@ Next 30 days
                     <p className="font-medium">{record.assetName}</p>
                     <p className="text-sm text-muted-foreground">{record.description}</p>
                     <p className="text-xs text-muted-foreground">
-                      By {record.performedBy.name} • {new Date(record.date).toLocaleDateString()}
+                      {t('assets.by')} {record.performedBy.name} • {new Date(record.date).toLocaleDateString()}
                     </p>
                   </div>
                 </div>
@@ -735,51 +735,51 @@ Next 30 days
       <Dialog open={showCreateDialog} onOpenChange={setShowCreateDialog}>
         <DialogContent className="max-w-2xl">
           <DialogHeader>
-            <DialogTitle>Add New Asset</DialogTitle>
+            <DialogTitle>{t('assets.addNewAsset')}</DialogTitle>
             <DialogDescription>
-              Register a new asset in the system.
+              {t('assets.registerNewAsset')}
             </DialogDescription>
           </DialogHeader>
           <div className="grid gap-4 py-4">
             <div className="grid grid-cols-2 gap-4">
               <div>
-                <Label htmlFor="name">Asset Name</Label>
+                <Label htmlFor="name">{t('assets.assetName')}</Label>
                 <Input 
                   id="name" 
-                  placeholder="Search assets..." 
+                  placeholder={t('assets.searchAssets')} 
                   value={createAssetData.name}
                   onChange={(e) => setCreateAssetData(prev => ({ ...prev, name: e.target.value }))}
                 />
               </div>
               <div>
-                <Label htmlFor="type">Type</Label>
+                <Label htmlFor="type">{t('assets.type')}</Label>
                 <select 
                   className="w-full p-2 border rounded-md"
                   value={createAssetData.type}
                   onChange={(e) => setCreateAssetData(prev => ({ ...prev, type: e.target.value }))}
                 >
-                  <option value="vehicle">Vehicle</option>
-                  <option value="it_hardware">IT Hardware</option>
-                  <option value="equipment">Equipment</option>
-                  <option value="furniture">Furniture</option>
+                  <option value="vehicle">{t('assets.vehicle')}</option>
+                  <option value="it_hardware">{t('assets.itHardware')}</option>
+                  <option value="equipment">{t('assets.equipment')}</option>
+                  <option value="furniture">{t('assets.furniture')}</option>
                   <option value="other">Other</option>
                 </select>
               </div>
             </div>
             <div>
-              <Label htmlFor="category">Category</Label>
+              <Label htmlFor="category">{t('assets.category')}</Label>
               <Input 
                 id="category" 
-                placeholder="Filter by type..." 
+                placeholder={t('assets.filterByType')} 
                 value={createAssetData.category}
                 onChange={(e) => setCreateAssetData(prev => ({ ...prev, category: e.target.value }))}
               />
             </div>
             <div>
-              <Label htmlFor="description">Description</Label>
+              <Label htmlFor="description">{t('assets.maintenanceDescription')}</Label>
               <Input 
                 id="description" 
-                placeholder="Asset description" 
+                placeholder={t('assets.assetDescription')} 
                 value={createAssetData.description}
                 onChange={(e) => setCreateAssetData(prev => ({ ...prev, description: e.target.value }))}
               />
