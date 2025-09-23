@@ -161,13 +161,13 @@ export default function HealthPage() {
   const getStatusBadge = (status: string) => {
     switch (status) {
       case 'healthy':
-        return <Badge variant="default" className="bg-success text-success-foreground">Healthy</Badge>;
+        return <Badge variant="default" className="bg-success text-success-foreground">{t('systemHealth.status.healthy')}</Badge>;
       case 'degraded':
-        return <Badge variant="default" className="bg-warning text-warning-foreground">Degraded</Badge>;
+        return <Badge variant="default" className="bg-warning text-warning-foreground">{t('systemHealth.status.degraded')}</Badge>;
       case 'down':
-        return <Badge variant="destructive">Down</Badge>;
+        return <Badge variant="destructive">{t('systemHealth.status.down')}</Badge>;
       default:
-        return <Badge variant="outline">Unknown</Badge>;
+        return <Badge variant="outline">{t('systemHealth.status.unknown')}</Badge>;
     }
   };
 
@@ -188,19 +188,19 @@ export default function HealthPage() {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold font-sans">System Health</h1>
+          <h1 className="text-3xl font-bold font-sans">{t('systemHealth.title')}</h1>
           <p className="text-muted-foreground font-sans">
-            Monitor the health and status of all system services
+            {t('systemHealth.description')}
           </p>
         </div>
         <div className="flex items-center space-x-2">
-          <Button variant="outline">
+          <Button variant="outline" onClick={handleRefresh}>
             <RefreshCw className="h-4 w-4 mr-2" />
-            Refresh
+            {t('systemHealth.refresh')}
           </Button>
           <Button>
             <Activity className="h-4 w-4 mr-2" />
-            Run Health Check
+            {t('systemHealth.runHealthCheck')}
           </Button>
         </div>
       </div>
@@ -208,7 +208,7 @@ export default function HealthPage() {
       <div className="grid gap-4 md:grid-cols-4">
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium font-sans">Overall Status</CardTitle>
+            <CardTitle className="text-sm font-medium font-sans">{t('systemHealth.overallStatus')}</CardTitle>
             {getOverallStatusIcon(overallHealth.status)}
           </CardHeader>
           <CardContent>
@@ -216,40 +216,40 @@ export default function HealthPage() {
               {overallHealth.status}
             </div>
             <p className="text-xs text-muted-foreground font-sans">
-              {overallHealth.uptime}% uptime
+              {overallHealth.uptime}% {t('systemHealth.uptime')}
             </p>
           </CardContent>
         </Card>
 
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium font-sans">Services Up</CardTitle>
+            <CardTitle className="text-sm font-medium font-sans">{t('systemHealth.servicesUp')}</CardTitle>
             <CheckCircle className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold font-sans">{overallHealth.servicesUp}</div>
             <p className="text-xs text-muted-foreground font-sans">
-              Out of {services.length} services
+              {t('systemHealth.outOfServices', { count: services.length })}
             </p>
           </CardContent>
         </Card>
 
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium font-sans">Services Down</CardTitle>
+            <CardTitle className="text-sm font-medium font-sans">{t('systemHealth.servicesDown')}</CardTitle>
             <XCircle className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold font-sans">{overallHealth.servicesDown}</div>
             <p className="text-xs text-muted-foreground font-sans">
-              Require attention
+              {t('systemHealth.requireAttention')}
             </p>
           </CardContent>
         </Card>
 
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium font-sans">Last Incident</CardTitle>
+            <CardTitle className="text-sm font-medium font-sans">{t('systemHealth.lastIncident')}</CardTitle>
             <AlertTriangle className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
@@ -265,9 +265,9 @@ export default function HealthPage() {
 
       <Tabs defaultValue="services" className="space-y-4">
         <TabsList>
-          <TabsTrigger value="services">Services</TabsTrigger>
-          <TabsTrigger value="dependencies">Dependencies</TabsTrigger>
-          <TabsTrigger value="history">History</TabsTrigger>
+          <TabsTrigger value="services">{t('systemHealth.tabs.services')}</TabsTrigger>
+          <TabsTrigger value="dependencies">{t('systemHealth.tabs.dependencies')}</TabsTrigger>
+          <TabsTrigger value="history">{t('systemHealth.tabs.history')}</TabsTrigger>
         </TabsList>
 
         <TabsContent value="services" className="space-y-4">
@@ -281,7 +281,7 @@ export default function HealthPage() {
                       <div>
                         <CardTitle className="font-sans">{service.name}</CardTitle>
                         <CardDescription className="font-sans">
-                          Last checked: {new Date(service.lastCheck).toLocaleString()}
+                          {t('systemHealth.lastChecked')}: {new Date(service.lastCheck).toLocaleString()}
                         </CardDescription>
                       </div>
                     </div>
@@ -291,7 +291,7 @@ export default function HealthPage() {
                 <CardContent>
                   <div className="grid gap-4 md:grid-cols-3">
                     <div>
-                      <p className="text-sm font-medium font-sans mb-1">Uptime</p>
+                      <p className="text-sm font-medium font-sans mb-1">{t('systemHealth.uptime')}</p>
                       <div className="flex items-center space-x-2">
                         <div className="w-20 bg-muted rounded-full h-2">
                           <div 
@@ -306,13 +306,13 @@ export default function HealthPage() {
                       </div>
                     </div>
                     <div>
-                      <p className="text-sm font-medium font-sans mb-1">Response Time</p>
+                      <p className="text-sm font-medium font-sans mb-1">{t('systemHealth.responseTime')}</p>
                       <p className="text-sm font-sans">
                         {service.responseTime > 0 ? `${service.responseTime}ms` : 'N/A'}
                       </p>
                     </div>
                     <div>
-                      <p className="text-sm font-medium font-sans mb-1">Dependencies</p>
+                      <p className="text-sm font-medium font-sans mb-1">{t('systemHealth.dependencies')}</p>
                       <div className="flex flex-wrap gap-1">
                         {service.dependencies.map((dep, depIndex) => (
                           <Badge key={depIndex} variant="outline" className="text-xs">
@@ -332,7 +332,7 @@ export default function HealthPage() {
           <div className="grid gap-4 md:grid-cols-2">
             <Card>
               <CardHeader>
-                <CardTitle className="font-sans">External Dependencies</CardTitle>
+                <CardTitle className="font-sans">{t('systemHealth.externalDependencies')}</CardTitle>
               </CardHeader>
               <CardContent>
                 <div className="space-y-4">
@@ -348,7 +348,7 @@ export default function HealthPage() {
                         <div>
                           <h3 className="font-medium font-sans">{dep.name}</h3>
                           <p className="text-sm text-muted-foreground font-sans">
-                            {dep.responseTime > 0 ? `${dep.responseTime}ms` : 'Unavailable'}
+                            {dep.responseTime > 0 ? `${dep.responseTime}ms` : t('systemHealth.unavailable')}
                           </p>
                         </div>
                       </div>
@@ -361,7 +361,7 @@ export default function HealthPage() {
 
             <Card>
               <CardHeader>
-                <CardTitle className="font-sans">Internal Services</CardTitle>
+                <CardTitle className="font-sans">{t('systemHealth.internalServices')}</CardTitle>
               </CardHeader>
               <CardContent>
                 <div className="space-y-4">
@@ -377,7 +377,7 @@ export default function HealthPage() {
                         <div>
                           <h3 className="font-medium font-sans">{service.name}</h3>
                           <p className="text-sm text-muted-foreground font-sans">
-                            {service.instances} instances
+                            {t('systemHealth.instances', { count: service.instances })}
                           </p>
                         </div>
                       </div>
@@ -393,9 +393,9 @@ export default function HealthPage() {
         <TabsContent value="history" className="space-y-4">
           <Card>
             <CardHeader>
-              <CardTitle className="font-sans">Health History</CardTitle>
+              <CardTitle className="font-sans">{t('systemHealth.healthHistory')}</CardTitle>
               <CardDescription className="font-sans">
-                Historical health status and incidents
+                {t('systemHealth.historicalHealthStatus')}
               </CardDescription>
             </CardHeader>
             <CardContent>
@@ -451,9 +451,9 @@ export default function HealthPage() {
       <div className="space-y-6 mt-8">
         <div className="flex items-center justify-between">
           <div>
-            <h2 className="text-2xl font-bold tracking-tight text-foreground">System Health Analytics</h2>
+            <h2 className="text-2xl font-bold tracking-tight text-foreground">{t('systemHealth.analytics.title')}</h2>
             <p className="text-muted-foreground">
-              Go beyond uptime → proactive reliability insights
+              {t('systemHealth.analytics.description')}
             </p>
           </div>
         </div>

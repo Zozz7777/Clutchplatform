@@ -1367,25 +1367,29 @@ export default function HRPage() {
 
       {/* Careers Tab */}
       {activeTab === "careers" && (
-        <Card>
-          <CardHeader>
+        <Card className="bg-card border-border rounded-[0.625rem] shadow-sm">
+          <CardHeader className="border-b border-border" style={{ padding: '1rem' }}>
             <div className="flex items-center justify-between">
               <div>
-                <CardTitle>Job Postings</CardTitle>
-                <CardDescription>
+                <CardTitle className="text-2xl font-bold text-foreground" style={{ fontFamily: 'Roboto, ui-sans-serif, sans-serif, system-ui' }}>Job Postings</CardTitle>
+                <CardDescription className="text-muted-foreground text-base" style={{ fontFamily: 'Roboto, ui-sans-serif, sans-serif, system-ui' }}>
                   Manage job postings and track their performance
                 </CardDescription>
               </div>
-              <Button onClick={() => {
-                setEditingJob(null);
-                setShowJobPostingOverlay(true);
-              }}>
+              <Button 
+                onClick={() => {
+                  setEditingJob(null);
+                  setShowJobPostingOverlay(true);
+                }}
+                className="bg-primary text-primary-foreground hover:bg-primary/90 rounded-[0.625rem] transition-all duration-150"
+                style={{ fontFamily: 'Roboto, ui-sans-serif, sans-serif, system-ui' }}
+              >
                 <Plus className="mr-2 h-4 w-4" />
                 Create Job Posting
               </Button>
             </div>
           </CardHeader>
-          <CardContent>
+          <CardContent style={{ padding: '1rem' }}>
             <div className="flex flex-col md:flex-row gap-4 mb-6">
               <div className="relative flex-1">
                 <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4" />
@@ -1393,14 +1397,16 @@ export default function HRPage() {
                   placeholder="Search jobs..."
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
-                  className="pl-10"
+                  className="pl-10 border-border bg-input text-foreground placeholder:text-muted-foreground focus:ring-2 focus:ring-ring focus:border-transparent rounded-[0.625rem] transition-all duration-150"
+                  style={{ fontFamily: 'Roboto, ui-sans-serif, sans-serif, system-ui' }}
                 />
               </div>
               
               <select
                 value={statusFilter}
                 onChange={(e) => setStatusFilter(e.target.value)}
-                className="px-3 py-2 border border-input bg-background rounded-md text-sm"
+                className="px-3 py-2 border border-border bg-input text-foreground rounded-[0.625rem] text-sm focus:ring-2 focus:ring-ring focus:border-transparent transition-all duration-150"
+                style={{ fontFamily: 'Roboto, ui-sans-serif, sans-serif, system-ui' }}
               >
                 <option value="all">All Status</option>
                 <option value="draft">Draft</option>

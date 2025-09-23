@@ -6,7 +6,7 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Progress } from '@/components/ui/progress';
 import { productionApi } from '@/lib/production-api';
-// import { useTranslations } from '@/hooks/use-translations';
+import { useLanguage } from '@/contexts/language-context';
 import { 
   DollarSign, 
   AlertTriangle, 
@@ -38,7 +38,7 @@ interface IncidentCostData {
 }
 
 export function IncidentCost({ className = '' }: IncidentCostProps) {
-  const t = (key: string, params?: any) => key;
+  const { t } = useLanguage();
   const [incidentData, setIncidentData] = React.useState<{
     incidents: IncidentCostData[];
     totalCost: number;

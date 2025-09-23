@@ -312,30 +312,30 @@ export function RecruitmentTab({ applications, jobs, onApplicationsUpdate }: Rec
             </div>
             
             <Select value={statusFilter} onValueChange={setStatusFilter}>
-              <SelectTrigger className="w-full md:w-48">
+              <SelectTrigger className="w-full md:w-48 border-border bg-input text-foreground focus:ring-2 focus:ring-ring focus:border-transparent rounded-[0.625rem] transition-all duration-150">
                 <SelectValue placeholder="All Status" />
               </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="all">All Status</SelectItem>
-                <SelectItem value="applied">Applied</SelectItem>
-                <SelectItem value="screened">Screened</SelectItem>
-                <SelectItem value="interview_scheduled">Interview Scheduled</SelectItem>
-                <SelectItem value="interview_completed">Interview Completed</SelectItem>
-                <SelectItem value="offer_made">Offer Made</SelectItem>
-                <SelectItem value="hired">Hired</SelectItem>
-                <SelectItem value="rejected">Rejected</SelectItem>
-                <SelectItem value="withdrawn">Withdrawn</SelectItem>
+              <SelectContent className="bg-card border-border rounded-[0.625rem] shadow-md">
+                <SelectItem value="all" className="text-foreground hover:bg-muted">All Status</SelectItem>
+                <SelectItem value="applied" className="text-foreground hover:bg-muted">Applied</SelectItem>
+                <SelectItem value="screened" className="text-foreground hover:bg-muted">Screened</SelectItem>
+                <SelectItem value="interview_scheduled" className="text-foreground hover:bg-muted">Interview Scheduled</SelectItem>
+                <SelectItem value="interview_completed" className="text-foreground hover:bg-muted">Interview Completed</SelectItem>
+                <SelectItem value="offer_made" className="text-foreground hover:bg-muted">Offer Made</SelectItem>
+                <SelectItem value="hired" className="text-foreground hover:bg-muted">Hired</SelectItem>
+                <SelectItem value="rejected" className="text-foreground hover:bg-muted">Rejected</SelectItem>
+                <SelectItem value="withdrawn" className="text-foreground hover:bg-muted">Withdrawn</SelectItem>
               </SelectContent>
             </Select>
 
             <Select value={jobFilter} onValueChange={setJobFilter}>
-              <SelectTrigger className="w-full md:w-48">
+              <SelectTrigger className="w-full md:w-48 border-border bg-input text-foreground focus:ring-2 focus:ring-ring focus:border-transparent rounded-[0.625rem] transition-all duration-150">
                 <SelectValue placeholder="All Jobs" />
               </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="all">All Jobs</SelectItem>
+              <SelectContent className="bg-card border-border rounded-[0.625rem] shadow-md">
+                <SelectItem value="all" className="text-foreground hover:bg-muted">All Jobs</SelectItem>
                 {jobs.map((job) => (
-                  <SelectItem key={job._id} value={job._id}>
+                  <SelectItem key={job._id} value={job._id} className="text-foreground hover:bg-muted">
                     {job.title}
                   </SelectItem>
                 ))}
@@ -343,15 +343,15 @@ export function RecruitmentTab({ applications, jobs, onApplicationsUpdate }: Rec
             </Select>
 
             <Select value={priorityFilter} onValueChange={setPriorityFilter}>
-              <SelectTrigger className="w-full md:w-48">
+              <SelectTrigger className="w-full md:w-48 border-border bg-input text-foreground focus:ring-2 focus:ring-ring focus:border-transparent rounded-[0.625rem] transition-all duration-150">
                 <SelectValue placeholder="All Priorities" />
               </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="all">All Priorities</SelectItem>
-                <SelectItem value="urgent">Urgent</SelectItem>
-                <SelectItem value="high">High</SelectItem>
-                <SelectItem value="medium">Medium</SelectItem>
-                <SelectItem value="low">Low</SelectItem>
+              <SelectContent className="bg-card border-border rounded-[0.625rem] shadow-md">
+                <SelectItem value="all" className="text-foreground hover:bg-muted">All Priorities</SelectItem>
+                <SelectItem value="urgent" className="text-foreground hover:bg-muted">Urgent</SelectItem>
+                <SelectItem value="high" className="text-foreground hover:bg-muted">High</SelectItem>
+                <SelectItem value="medium" className="text-foreground hover:bg-muted">Medium</SelectItem>
+                <SelectItem value="low" className="text-foreground hover:bg-muted">Low</SelectItem>
               </SelectContent>
             </Select>
           </div>
@@ -359,26 +359,26 @@ export function RecruitmentTab({ applications, jobs, onApplicationsUpdate }: Rec
           {/* Applications List */}
           <div className="space-y-4">
             {filteredApplications.map((application) => (
-              <div key={application._id} className="flex items-center justify-between p-4 border border-border rounded-[0.625rem] hover:bg-muted/50 transition-colors">
+              <div key={application._id} className="flex items-center justify-between p-4 border border-border rounded-[0.625rem] hover:bg-muted/50 transition-all duration-150 bg-card">
                 <div className="flex items-center space-x-4">
                   <div className="w-12 h-12 rounded-full bg-primary flex items-center justify-center">
-                    <span className="text-primary-foreground font-medium text-lg">
+                    <span className="text-primary-foreground font-medium text-lg" style={{ fontFamily: 'Roboto, ui-sans-serif, sans-serif, system-ui' }}>
                       {application.candidate.firstName.charAt(0).toUpperCase()}
                     </span>
                   </div>
                   <div className="flex-1">
                     <div className="flex items-center gap-2 mb-1">
-                      <p className="font-medium">
+                      <p className="font-medium text-foreground" style={{ fontFamily: 'Roboto, ui-sans-serif, sans-serif, system-ui' }}>
                         {application.candidate.firstName} {application.candidate.lastName}
                       </p>
-                      <Badge variant={getStatusColor(application.status)}>
+                      <Badge variant={getStatusColor(application.status)} className="rounded-[0.625rem]">
                         {application.status.replace('_', ' ')}
                       </Badge>
-                      <Badge variant={getPriorityColor(application.priority)}>
+                      <Badge variant={getPriorityColor(application.priority)} className="rounded-[0.625rem]">
                         {application.priority}
                       </Badge>
                     </div>
-                    <p className="text-sm text-muted-foreground mb-1">
+                    <p className="text-sm text-muted-foreground mb-1" style={{ fontFamily: 'Roboto, ui-sans-serif, sans-serif, system-ui' }}>
                       {application.job.title} • {application.job.department}
                     </p>
                     <div className="flex items-center gap-4 text-xs text-muted-foreground">
