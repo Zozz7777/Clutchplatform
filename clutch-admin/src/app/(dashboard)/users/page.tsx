@@ -8,6 +8,8 @@ import { Input } from "@/components/ui/input";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import { Label } from "@/components/ui/label";
 import { productionApi } from "@/lib/production-api";
 import { formatDate, formatRelativeTime } from "@/lib/utils";
 import { useAuth } from "@/contexts/auth-context";
@@ -15,6 +17,7 @@ import { useLanguage } from "@/contexts/language-context";
 import { useQuickActions } from "@/lib/quick-actions";
 import { toast } from "sonner";
 import { handleError } from "@/lib/error-handler";
+import { useSearchParams } from 'next/navigation';
 
 // Import new Phase 2 widgets
 import UserGrowthCohort from "@/components/widgets/user-growth-cohort";
@@ -75,8 +78,16 @@ export default function UsersPage() {
   const [statusFilter, setStatusFilter] = useState<string>("all");
   const [roleFilter, setRoleFilter] = useState<string>("all");
   const [isLoading, setIsLoading] = useState(true);
+  const [isCreateDialogOpen, setIsCreateDialogOpen] = useState(false);
+  const [newUser, setNewUser] = useState({
+    name: '',
+    email: '',
+    role: '',
+    status: 'active'
+  });
   const { hasPermission } = useAuth();
   const { t } = useLanguage();
+  const searchParams = useSearchParams();
   // Safely get quick actions with error handling
   let addUser: (() => void) | null = null;
   
@@ -98,8 +109,8 @@ export default function UsersPage() {
         setFilteredUsers(userData || []);
       } catch (error) {
         // Error handled by API service
-        const errorMessage = error instanceof Error ? error.message : 'Unknown error occurred';
-        toast.error(`Failed to load users: ${errorMessage}`);
+        const errorMessage = error instanceof Error ? error.message : t('users.unknownError');
+        toast.error(t('users.failedToLoadUsers', { error: errorMessage }));
         // Set empty arrays on error - no mock data fallback
         setUsers([]);
         setFilteredUsers([]);
@@ -109,7 +120,38 @@ export default function UsersPage() {
     };
 
     loadUsers();
-  }, []);
+  }, [t]);
+
+  // Handle URL parameters for create user action
+  useEffect(() => {
+    const action = searchParams.get('action');
+    if (action === 'create') {
+      setIsCreateDialogOpen(true);
+    }
+  }, [searchParams]);
+
+  const handleCreateUser = async () => {
+    try {
+      if (!newUser.name || !newUser.email || !newUser.role) {
+        toast.error(t('users.fillAllFields'));
+        return;
+      }
+
+      const createdUser = await productionApi.createUser(newUser);
+      if (createdUser) {
+        toast.success(t('users.userCreatedSuccessfully'));
+        setIsCreateDialogOpen(false);
+        setNewUser({ name: '', email: '', role: '', status: 'active' });
+        // Reload users
+        const userData = await productionApi.getUsers();
+        setUsers(userData || []);
+        setFilteredUsers(userData || []);
+      }
+    } catch (error) {
+      const errorMessage = error instanceof Error ? error.message : t('users.unknownError');
+      toast.error(t('users.failedToCreateUser', { error: errorMessage }));
+    }
+  };
 
   useEffect(() => {
     // Ensure users is always an array and handle null/undefined values
@@ -207,10 +249,107 @@ export default function UsersPage() {
           </p>
         </div>
         {hasPermission("create_users") && (
-          <Button className="shadow-2xs" onClick={addUser || (() => {})}>
-            <Plus className="mr-2 h-4 w-4" />
-{t('users.addUser')}
-          </Button>
+          <Dialog open={isCreateDialogOpen} onOpenChange={setIsCreateDialogOpen}>
+            <DialogTrigger asChild>
+              <Button className="shadow-2xs">
+                <Plus className="mr-2 h-4 w-4" />
+                {t('users.addUser')}
+              </Button>
+            </DialogTrigger>
+            <DialogContent className="sm:max-w-[425px]">
+              <DialogHeader>
+                <DialogTitle>{t('users.createNewUser')}</DialogTitle>
+                <DialogDescription>
+                  {t('users.userDetails')}
+                </DialogDescription>
+              </DialogHeader>
+              <div className="grid gap-4 py-4">
+                <div className="grid grid-cols-4 items-center gap-4">
+                  <Label htmlFor="name" className="text-right">
+                    {t('users.name')}
+                  </Label>
+                  <Input
+                    id="name"
+                    value={newUser.name}
+                    onChange={(e) => setNewUser({...newUser, name: e.target.value})}
+                    className="col-span-3"
+                    placeholder={t('users.enterUserName')}
+                  />
+                </div>
+                <div className="grid grid-cols-4 items-center gap-4">
+                  <Label htmlFor="email" className="text-right">
+                    {t('users.email')}
+                  </Label>
+                  <Input
+                    id="email"
+                    type="email"
+                    value={newUser.email}
+                    onChange={(e) => setNewUser({...newUser, email: e.target.value})}
+                    className="col-span-3"
+                    placeholder={t('users.enterEmail')}
+                  />
+                </div>
+                <div className="grid grid-cols-4 items-center gap-4">
+                  <Label htmlFor="role" className="text-right">
+                    {t('users.role')}
+                  </Label>
+                  <Select value={newUser.role} onValueChange={(value) => setNewUser({...newUser, role: value})}>
+                    <SelectTrigger className="col-span-3">
+                      <SelectValue placeholder={t('users.selectRole')} />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="head_administrator">{t('users.headAdministrator')}</SelectItem>
+                      <SelectItem value="platform_admin">{t('users.platformAdmin')}</SelectItem>
+                      <SelectItem value="admin">{t('users.administrator')}</SelectItem>
+                      <SelectItem value="manager">{t('users.manager')}</SelectItem>
+                      <SelectItem value="hr_manager">{t('users.hrManager')}</SelectItem>
+                      <SelectItem value="finance_manager">{t('users.financeManager')}</SelectItem>
+                      <SelectItem value="operations_manager">{t('users.operationsManager')}</SelectItem>
+                      <SelectItem value="marketing_manager">{t('users.marketingManager')}</SelectItem>
+                      <SelectItem value="legal_manager">{t('users.legalManager')}</SelectItem>
+                      <SelectItem value="security_manager">{t('users.securityManager')}</SelectItem>
+                      <SelectItem value="business_analyst">{t('users.businessAnalyst')}</SelectItem>
+                      <SelectItem value="project_manager">{t('users.projectManager')}</SelectItem>
+                      <SelectItem value="asset_manager">{t('users.assetManager')}</SelectItem>
+                      <SelectItem value="crm_manager">{t('users.crmManager')}</SelectItem>
+                      <SelectItem value="system_admin">{t('users.systemAdmin')}</SelectItem>
+                      <SelectItem value="hr_specialist">{t('users.hrSpecialist')}</SelectItem>
+                      <SelectItem value="finance_specialist">{t('users.financeSpecialist')}</SelectItem>
+                      <SelectItem value="customer_support">{t('users.customerSupport')}</SelectItem>
+                      <SelectItem value="developer">{t('users.developer')}</SelectItem>
+                      <SelectItem value="employee">{t('users.employee')}</SelectItem>
+                      <SelectItem value="support">{t('users.support')}</SelectItem>
+                      <SelectItem value="enterprise_client">{t('users.enterpriseClient')}</SelectItem>
+                      <SelectItem value="service_provider">{t('users.serviceProvider')}</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div className="grid grid-cols-4 items-center gap-4">
+                  <Label htmlFor="status" className="text-right">
+                    {t('users.status')}
+                  </Label>
+                  <Select value={newUser.status} onValueChange={(value) => setNewUser({...newUser, status: value})}>
+                    <SelectTrigger className="col-span-3">
+                      <SelectValue placeholder={t('users.selectStatus')} />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="active">{t('users.active')}</SelectItem>
+                      <SelectItem value="inactive">{t('users.inactive')}</SelectItem>
+                      <SelectItem value="pending">{t('users.pending')}</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+              </div>
+              <DialogFooter>
+                <Button type="button" variant="outline" onClick={() => setIsCreateDialogOpen(false)}>
+                  {t('users.cancel')}
+                </Button>
+                <Button type="button" onClick={handleCreateUser}>
+                  {t('users.create')}
+                </Button>
+              </DialogFooter>
+            </DialogContent>
+          </Dialog>
         )}
       </div>
 

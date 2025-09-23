@@ -1123,17 +1123,24 @@
         "causes": {
           "unknownCause": "Unknown Cause",
           "systemError": "System Error"
-        },
-        "sla": {
-          "overallCompliance": "Overall Compliance",
-          "totalIncidents": "Total Incidents",
-          "overallSlaCompliance": "Overall SLA Compliance",
-          "statusDistribution": "Status Distribution",
-          "compliant": "Compliant",
-          "warning": "Warning",
-          "breach": "Breach",
-          "serviceMetrics": "Service Metrics",
-          "meanTimeToRecovery": "Mean Time to Recovery"
         }
+      }
+    },
+    "common": {
+      "today": "Today",
+      "yesterday": "Yesterday",
+      "daysAgo": "{days} days ago"
+    },
+    "sla": {
+      "overallCompliance": "Overall Compliance",
+      "totalIncidents": "Total Incidents",
+      "overallSlaCompliance": "Overall SLA Compliance",
+      "statusDistribution": "Status Distribution",
+      "compliant": "Compliant",
+      "warning": "Warning",
+      "breach": "Breach",
+      "serviceMetrics": "Service Metrics",
+      "meanTimeToRecovery": "Mean Time to Recovery"
+    }
   }
 }

@@ -3923,17 +3923,24 @@
         "causes": {
           "unknownCause": "سبب غير معروف",
           "systemError": "خطأ في النظام"
-        },
-        "sla": {
-          "overallCompliance": "الامتثال العام",
-          "totalIncidents": "إجمالي الحوادث",
-          "overallSlaCompliance": "امتثال SLA العام",
-          "statusDistribution": "توزيع الحالة",
-          "compliant": "متوافق",
-          "warning": "تحذير",
-          "breach": "انتهاك",
-          "serviceMetrics": "مقاييس الخدمة",
-          "meanTimeToRecovery": "متوسط وقت الاسترداد"
         }
+      }
+    },
+    "common": {
+      "today": "اليوم",
+      "yesterday": "أمس",
+      "daysAgo": "منذ {days} أيام"
+    },
+    "sla": {
+      "overallCompliance": "الامتثال العام",
+      "totalIncidents": "إجمالي الحوادث",
+      "overallSlaCompliance": "امتثال SLA العام",
+      "statusDistribution": "توزيع الحالة",
+      "compliant": "متوافق",
+      "warning": "تحذير",
+      "breach": "انتهاك",
+      "serviceMetrics": "مقاييس الخدمة",
+      "meanTimeToRecovery": "متوسط وقت الاسترداد"
+    }
   }
 }

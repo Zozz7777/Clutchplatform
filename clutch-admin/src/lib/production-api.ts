@@ -64,6 +64,16 @@ export class ProductionApiService {
     }
   }
 
+  async createUser(userData: { name: string; email: string; role: string; status: string }): Promise<User> {
+    try {
+      const data = await realApi.createUser(userData);
+      return data as unknown as User;
+    } catch (error) {
+      logger.error("Failed to create user:", error);
+      throw new Error("Failed to create user");
+    }
+  }
+
   async getUserById(userId: string): Promise<User> {
     try {
       const data = await realApi.getUserById(userId);

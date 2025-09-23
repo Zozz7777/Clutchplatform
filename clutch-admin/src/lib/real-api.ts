@@ -212,6 +212,20 @@ export class RealApiService {
     )();
   }
 
+  async createUser(userData: { name: string; email: string; role: string; status: string }): Promise<Record<string, unknown>> {
+    return withErrorHandling(
+      async () => {
+        const response = await apiService.makeRequest<Record<string, unknown>>("/api/v1/admin/users", {
+          method: 'POST',
+          body: JSON.stringify(userData)
+        });
+        return handleApiResponse(response, 'createUser', {});
+      },
+      'createUser',
+      { fallbackValue: {}, showToast: true }
+    )();
+  }
+
   async getUserById(userId: string): Promise<Record<string, unknown>> {
     return withErrorHandling(
       async () => {
