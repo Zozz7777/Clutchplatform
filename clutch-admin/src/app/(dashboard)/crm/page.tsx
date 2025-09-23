@@ -574,11 +574,11 @@ export default function CRMPage() {
                   <div className="w-2 h-2 rounded-full bg-primary mt-2"></div>
                   <div className="flex-1">
                     <div className="flex items-center justify-between">
-                      <p className="text-sm font-medium text-foreground">Email - Fatma Mohamed</p>
-                      <span className="text-xs text-muted-foreground">1 day ago</span>
+                      <p className="text-sm font-medium text-foreground">{t('crm.email')} - Fatma Mohamed</p>
+                      <span className="text-xs text-muted-foreground">1 {t('crm.dayAgo')}</span>
                     </div>
                     <p className="text-xs text-muted-foreground mt-1">
-                      Sent monthly usage report and recommendations
+                      {t('crm.sentMonthlyReport')}
                     </p>
                   </div>
                 </div>
@@ -586,11 +586,11 @@ export default function CRMPage() {
                   <div className="w-2 h-2 rounded-full bg-primary mt-2"></div>
                   <div className="flex-1">
                     <div className="flex items-center justify-between">
-                      <p className="text-sm font-medium text-foreground">Meeting - Omar Ali</p>
-                      <span className="text-xs text-muted-foreground">3 days ago</span>
+                      <p className="text-sm font-medium text-foreground">{t('crm.meeting')} - Omar Ali</p>
+                      <span className="text-xs text-muted-foreground">3 {t('crm.daysAgo')}</span>
                     </div>
                     <p className="text-xs text-muted-foreground mt-1">
-                      Product demo and onboarding session completed
+                      {t('crm.productDemoCompleted')}
                     </p>
                   </div>
                 </div>
@@ -604,9 +604,9 @@ export default function CRMPage() {
       <div className="space-y-6 mt-8">
         <div className="flex items-center justify-between">
           <div>
-            <h2 className="text-2xl font-bold tracking-tight text-foreground">{t('dashboard.crmAnalytics')}</h2>
+            <h2 className="text-2xl font-bold tracking-tight text-foreground">{t('crm.crmAnalytics')}</h2>
             <p className="text-muted-foreground">
-              {t('dashboard.moveBeyondTickets')}
+              {t('crm.moveBeyondTickets')}
             </p>
           </div>
         </div>
