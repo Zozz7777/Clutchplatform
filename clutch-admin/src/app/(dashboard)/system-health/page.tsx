@@ -209,7 +209,7 @@ export default function SystemHealthPage() {
             <RefreshCw className="h-4 w-4 mr-2" />
             {t('systemHealth.refresh')}
           </Button>
-          <Button>
+          <Button onClick={handleRefresh}>
             <Activity className="h-4 w-4 mr-2" />
             {t('systemHealth.runHealthCheck')}
           </Button>
@@ -224,7 +224,7 @@ export default function SystemHealthPage() {
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold font-sans capitalize">
-              {t(`systemHealth.statusValues.${overallHealth.status}`)}
+              {t(`systemHealth.statusValues.${overallHealth.status}`) || t(`systemHealth.status.${overallHealth.status}`) || overallHealth.status}
             </div>
             <p className="text-xs text-muted-foreground font-sans">
               {overallHealth.uptime}% {t('systemHealth.uptime')}

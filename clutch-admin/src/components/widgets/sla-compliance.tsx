@@ -138,7 +138,7 @@ export function SLACompliance({ className = '' }: SLAComplianceProps) {
         <CardHeader>
           <CardTitle className="flex items-center space-x-2">
             <Shield className="h-5 w-5 text-primary" />
-            <span>SLA Compliance</span>
+            <span>{t('systemHealth.widgets.slaCompliance')}</span>
           </CardTitle>
           <CardDescription>Loading data...</CardDescription>
         </CardHeader>
@@ -159,7 +159,7 @@ export function SLACompliance({ className = '' }: SLAComplianceProps) {
         <CardHeader>
           <CardTitle className="flex items-center space-x-2">
             <Shield className="h-5 w-5 text-primary" />
-            <span>SLA Compliance</span>
+            <span>{t('systemHealth.widgets.slaCompliance')}</span>
           </CardTitle>
           <CardDescription>Unable to load data</CardDescription>
         </CardHeader>

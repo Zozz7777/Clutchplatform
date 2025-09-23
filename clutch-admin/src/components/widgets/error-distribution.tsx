@@ -141,7 +141,7 @@ export function ErrorDistribution({ className = '' }: ErrorDistributionProps) {
         <CardHeader>
           <CardTitle className="flex items-center space-x-2">
             <AlertTriangle className="h-5 w-5 text-destructive" />
-            <span>Error Distribution</span>
+            <span>{t('systemHealth.widgets.errorDistribution')}</span>
           </CardTitle>
           <CardDescription>Loading error distribution data...</CardDescription>
         </CardHeader>
@@ -162,7 +162,7 @@ export function ErrorDistribution({ className = '' }: ErrorDistributionProps) {
         <CardHeader>
           <CardTitle className="flex items-center space-x-2">
             <AlertTriangle className="h-5 w-5 text-destructive" />
-            <span>Error Distribution</span>
+            <span>{t('systemHealth.widgets.errorDistribution')}</span>
           </CardTitle>
           <CardDescription>Unable to load error distribution data</CardDescription>
         </CardHeader>

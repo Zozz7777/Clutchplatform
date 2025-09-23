@@ -127,7 +127,7 @@ export function RootCauseTimeline({ className = '' }: RootCauseTimelineProps) {
         <CardHeader>
           <CardTitle className="flex items-center space-x-2">
             <Search className="h-5 w-5 text-info" />
-            <span>Root Cause Timeline</span>
+            <span>{t('systemHealth.widgets.rootCauseTimeline')}</span>
           </CardTitle>
           <CardDescription>Loading root cause analysis data...</CardDescription>
         </CardHeader>
@@ -148,7 +148,7 @@ export function RootCauseTimeline({ className = '' }: RootCauseTimelineProps) {
         <CardHeader>
           <CardTitle className="flex items-center space-x-2">
             <Search className="h-5 w-5 text-info" />
-            <span>Root Cause Timeline</span>
+            <span>{t('systemHealth.widgets.rootCauseTimeline')}</span>
           </CardTitle>
           <CardDescription>Unable to load root cause analysis data</CardDescription>
         </CardHeader>
