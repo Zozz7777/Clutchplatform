@@ -1,6 +1,7 @@
 'use client';
 
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
+import { getTranslations, getNestedValue } from '@/lib/translations';
 
 interface LanguageContextType {
   language: 'en' | 'ar';
@@ -52,24 +53,9 @@ export function LanguageProvider({ children }: LanguageProviderProps) {
 
   // Translation function with fallback
   const t = (key: string, params?: any) => {
-    // Try to load translations from JSON files
-    let translations: Record<string, any> = {};
-    
-    try {
-      if (language === 'ar') {
-        // Load Arabic translations
-        const arTranslations = require('@/messages/ar.json');
-        translations = arTranslations;
-        console.log('Arabic translations loaded:', arTranslations);
-      } else {
-        // Load English translations
-        const enTranslations = require('@/messages/en.json');
-        translations = enTranslations;
-        console.log('English translations loaded:', enTranslations);
-      }
-    } catch (error) {
-      console.warn('Failed to load translation files, using fallback:', error);
-    }
+    // Load translations using the reliable loader
+    const translations = getTranslations(language);
+    console.log(`Loading translations for language: ${language}`, translations);
 
     // Fallback translations if loading fails
     const fallbackTranslations: Record<string, string> = {
@@ -1020,10 +1006,6 @@ export function LanguageProvider({ children }: LanguageProviderProps) {
       'assets.deleteAsset': 'Delete Asset'
     };
 
-    // Helper function to get nested value from object
-    const getNestedValue = (obj: any, path: string) => {
-      return path.split('.').reduce((current, key) => current?.[key], obj);
-    };
 
     // Try to get translation from loaded translations first, then fallback
     let translation = getNestedValue(translations, key) || fallbackTranslations[key] || key;
