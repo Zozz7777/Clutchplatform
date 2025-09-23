@@ -57,8 +57,8 @@ export function RootCauseTimeline({ className = '' }: RootCauseTimelineProps) {
           productionApi.getSystemLogs()
         ]);
 
-        const alertsData = alertsResponse?.data || [];
-        const logsData = logsResponse?.data || [];
+        const alertsData = Array.isArray(alertsResponse?.data) ? alertsResponse.data : [];
+        const logsData = Array.isArray(logsResponse?.data) ? logsResponse.data : [];
         
         // Analyze root causes from alerts and logs
         const rootCauses: Record<string, any> = {};

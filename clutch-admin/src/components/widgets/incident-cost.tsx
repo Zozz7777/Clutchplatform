@@ -58,8 +58,8 @@ export function IncidentCost({ className = '' }: IncidentCostProps) {
         ]);
 
         // Transform backend data to component format
-        const alertsData = alertsResponse?.data || [];
-        const logsData = logsResponse?.data || [];
+        const alertsData = Array.isArray(alertsResponse?.data) ? alertsResponse.data : [];
+        const logsData = Array.isArray(logsResponse?.data) ? logsResponse.data : [];
         
         // Create incidents from alerts and logs
         const transformedIncidents: IncidentCostData[] = alertsData.map((alert: any, index: number) => ({

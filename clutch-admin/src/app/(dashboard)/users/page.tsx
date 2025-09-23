@@ -362,7 +362,7 @@ export default function UsersPage() {
       </div>
 
       {/* Main Tabs */}
-      <Tabs defaultValue="all-users" className="space-y-4">
+      <Tabs defaultValue="all-users" className="space-y-6">
         <TabsList className="grid w-full grid-cols-7">
           <TabsTrigger value="all-users">All Users</TabsTrigger>
           <TabsTrigger value="b2c">B2C Users</TabsTrigger>
@@ -374,9 +374,9 @@ export default function UsersPage() {
         </TabsList>
 
         {/* All Users Tab */}
-        <TabsContent value="all-users" className="space-y-4">
+        <TabsContent value="all-users" className="space-y-6">
           {/* Analytics Widgets */}
-          <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+          <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-2">
             <WidgetErrorBoundary>
               <UserGrowthCohort />
             </WidgetErrorBoundary>

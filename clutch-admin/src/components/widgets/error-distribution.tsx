@@ -55,8 +55,8 @@ export function ErrorDistribution({ className = '' }: ErrorDistributionProps) {
           productionApi.getSystemAlerts()
         ]);
 
-        const logsData = logsResponse?.data || [];
-        const alertsData = alertsResponse?.data || [];
+        const logsData = Array.isArray(logsResponse?.data) ? logsResponse.data : [];
+        const alertsData = Array.isArray(alertsResponse?.data) ? alertsResponse.data : [];
         
         // Transform logs and alerts into error data
         const errorLogs = logsData.filter((log: any) => log.level === 'error' || log.level === 'critical' || log.level === 'warning');
