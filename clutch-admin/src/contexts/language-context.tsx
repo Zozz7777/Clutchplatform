@@ -403,6 +403,7 @@ export function LanguageProvider({ children }: LanguageProviderProps) {
         'widgets.differentRolesInSystem': '{count} different roles in the system',
         'widgets.largestRolePercentage': 'Largest role: {role} ({percentage}%)',
         'widgets.smallestRolePercentage': 'Smallest role: {role} ({percentage}%)',
+        'widgets.loadingRoleData': 'Loading role data...',
       
       // Dashboard specific translations
       'dashboard.title': 'Dashboard',

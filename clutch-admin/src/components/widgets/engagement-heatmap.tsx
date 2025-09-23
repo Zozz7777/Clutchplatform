@@ -63,10 +63,10 @@ export function EngagementHeatmap({ className = '' }: EngagementHeatmapProps) {
   };
 
   const getUsageLevel = (usage: number) => {
-    if (usage >= 80) return 'High';
-    if (usage >= 60) return 'Medium';
-    if (usage >= 40) return 'Low';
-    return 'Very Low';
+    if (usage >= 80) return t('widgets.high');
+    if (usage >= 60) return t('widgets.medium');
+    if (usage >= 40) return t('widgets.low');
+    return t('widgets.veryLow');
   };
 
   const getFilteredSegments = () => {
@@ -154,7 +154,7 @@ export function EngagementHeatmap({ className = '' }: EngagementHeatmapProps) {
             onClick={() => setSelectedSegment('all')}
             className="flex-1 min-w-0"
           >
-            All Segments
+            {t('widgets.allSegments')}
           </Button>
           {heatmapData?.segments.map((segment) => (
             <Button
@@ -174,7 +174,7 @@ export function EngagementHeatmap({ className = '' }: EngagementHeatmapProps) {
           <div className="text-center p-3 bg-primary/10 rounded-[0.625rem] border border-primary/20">
             <Activity className="h-5 w-5 text-primary mx-auto mb-1" />
             <p className="text-lg font-bold text-primary">{totalUsage.toFixed(1)}%</p>
-            <p className="text-xs text-muted-foreground">Average Usage</p>
+            <p className="text-xs text-muted-foreground">{t('widgets.averageUsage')}</p>
           </div>
           <div className="text-center p-3 bg-secondary/10 rounded-[0.625rem] border border-secondary/20">
             <Users className="h-5 w-5 text-secondary mx-auto mb-1" />
@@ -257,7 +257,7 @@ export function EngagementHeatmap({ className = '' }: EngagementHeatmapProps) {
                   count + Object.values(segment.features).filter(usage => usage >= 80).length, 0
                 )}
               </p>
-              <p className="text-xs text-muted-foreground">High (80%+)</p>
+              <p className="text-xs text-muted-foreground">{t('widgets.high')}</p>
             </div>
             <div className="text-center p-2 bg-warning/10 rounded-[0.625rem] border border-warning/20">
               <p className="text-sm font-bold text-warning">
@@ -265,7 +265,7 @@ export function EngagementHeatmap({ className = '' }: EngagementHeatmapProps) {
                   count + Object.values(segment.features).filter(usage => usage >= 60 && usage < 80).length, 0
                 )}
               </p>
-              <p className="text-xs text-muted-foreground">Medium (60-79%)</p>
+              <p className="text-xs text-muted-foreground">{t('widgets.medium')}</p>
             </div>
             <div className="text-center p-2 bg-info/10 rounded-[0.625rem] border border-info/20">
               <p className="text-sm font-bold text-info">
@@ -273,7 +273,7 @@ export function EngagementHeatmap({ className = '' }: EngagementHeatmapProps) {
                   count + Object.values(segment.features).filter(usage => usage >= 40 && usage < 60).length, 0
                 )}
               </p>
-              <p className="text-xs text-muted-foreground">Low (40-59%)</p>
+              <p className="text-xs text-muted-foreground">{t('widgets.low')}</p>
             </div>
             <div className="text-center p-2 bg-destructive/10 rounded-[0.625rem] border border-destructive/20">
               <p className="text-sm font-bold text-destructive">
@@ -281,7 +281,7 @@ export function EngagementHeatmap({ className = '' }: EngagementHeatmapProps) {
                   count + Object.values(segment.features).filter(usage => usage < 40).length, 0
                 )}
               </p>
-              <p className="text-xs text-muted-foreground">Very Low (&lt;40%)</p>
+              <p className="text-xs text-muted-foreground">{t('widgets.veryLow')}</p>
             </div>
           </div>
         </div>
@@ -290,26 +290,26 @@ export function EngagementHeatmap({ className = '' }: EngagementHeatmapProps) {
         <div className="flex space-x-2 pt-2">
           <Button variant="outline" size="sm" className="flex-1">
             <Eye className="h-4 w-4 mr-2" />
-            View Details
+            {t('widgets.viewDetails')}
           </Button>
           <Button variant="outline" size="sm" className="flex-1">
             <Download className="h-4 w-4 mr-2" />
-            Export Data
+            {t('widgets.exportData')}
           </Button>
         </div>
 
         {/* Insights */}
         <div className="p-3 bg-primary/10 rounded-[0.625rem] border border-primary/20">
-          <h5 className="text-sm font-medium text-primary mb-2">💡 Engagement Insights</h5>
+          <h5 className="text-sm font-medium text-primary mb-2">💡 {t('widgets.engagementInsights')}</h5>
           <ul className="text-xs text-primary/80 space-y-1">
-            <li>• Average feature usage: {totalUsage.toFixed(1)}%</li>
-            <li>• Top feature: {topFeatures[0]?.feature} ({topFeatures[0]?.usage.toFixed(1)}% usage)</li>
-            <li>• {filteredSegments.reduce((count, segment) => 
+            <li>• {t('widgets.averageFeatureUsage', { rate: totalUsage.toFixed(1) })}</li>
+            <li>• {t('widgets.topFeature', { feature: topFeatures[0]?.feature || 'N/A', rate: topFeatures[0]?.usage.toFixed(1) || '0' })}</li>
+            <li>• {t('widgets.featuresWithHighEngagement', { count: filteredSegments.reduce((count, segment) => 
               count + Object.values(segment.features).filter(usage => usage >= 80).length, 0
-            )} features with high engagement (80%+)</li>
-            <li>• {filteredSegments.reduce((count, segment) => 
+            ) })}</li>
+            <li>• {t('widgets.featuresNeedAttention', { count: filteredSegments.reduce((count, segment) => 
               count + Object.values(segment.features).filter(usage => usage < 40).length, 0
-            )} features need attention (&lt;40% usage)</li>
+            ) })}</li>
           </ul>
         </div>
       </CardContent>

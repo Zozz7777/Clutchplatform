@@ -237,9 +237,9 @@ export function RoleDistribution({ className = '' }: RoleDistributionProps) {
         <CardHeader>
           <CardTitle className="flex items-center space-x-2">
             <PieChart className="h-5 w-5 text-primary" />
-            <span>Role Distribution</span>
+            <span>{t('widgets.roleDistribution')}</span>
           </CardTitle>
-          <CardDescription>Loading role data...</CardDescription>
+          <CardDescription>{t('widgets.loadingRoleData')}</CardDescription>
         </CardHeader>
         <CardContent>
           <div className="animate-pulse space-y-4">
@@ -261,10 +261,10 @@ export function RoleDistribution({ className = '' }: RoleDistributionProps) {
       <CardHeader>
         <CardTitle className="flex items-center space-x-2">
           <PieChart className="h-5 w-5 text-primary" />
-          <span>Role Distribution</span>
+          <span>{t('widgets.roleDistribution')}</span>
         </CardTitle>
         <CardDescription>
-          Pie chart of admins, managers, staff, etc.
+          {t('widgets.pieChartOfRoles')}
         </CardDescription>
       </CardHeader>
       <CardContent className="space-y-6">
@@ -273,25 +273,25 @@ export function RoleDistribution({ className = '' }: RoleDistributionProps) {
           <div className="text-center p-3 bg-primary/10 rounded-[0.625rem]-lg">
             <Users className="h-5 w-5 text-primary mx-auto mb-1" />
             <p className="text-lg font-bold text-primary">{totalUsers}</p>
-            <p className="text-xs text-muted-foreground">Total Users</p>
+            <p className="text-xs text-muted-foreground">{t('widgets.totalUsers')}</p>
           </div>
           <div className="text-center p-3 bg-success/10 rounded-[0.625rem]-lg">
             <UserCheck className="h-5 w-5 text-success mx-auto mb-1" />
             <p className="text-lg font-bold text-success">{roleData.length}</p>
-            <p className="text-xs text-muted-foreground">Roles</p>
+            <p className="text-xs text-muted-foreground">{t('widgets.roles')}</p>
           </div>
           <div className="text-center p-3 bg-primary/10 rounded-[0.625rem]-lg">
             <BarChart3 className="h-5 w-5 text-primary mx-auto mb-1" />
             <p className="text-lg font-bold text-primary">
               {largestRole ? largestRole.percentage.toFixed(1) : 0}%
             </p>
-            <p className="text-xs text-muted-foreground">Largest Role</p>
+            <p className="text-xs text-muted-foreground">{t('widgets.largestRole')}</p>
           </div>
         </div>
 
         {/* Role List */}
         <div className="space-y-3">
-          <h4 className="text-sm font-medium text-foreground">Role Breakdown</h4>
+          <h4 className="text-sm font-medium text-foreground">{t('widgets.roleBreakdown')}</h4>
           <div className="space-y-2">
             {roleData.map((role, index) => {
               const RoleIcon = role.icon;
@@ -341,7 +341,7 @@ export function RoleDistribution({ className = '' }: RoleDistributionProps) {
 
         {/* Role Distribution Chart */}
         <div className="space-y-3">
-          <h4 className="text-sm font-medium text-foreground">Distribution</h4>
+          <h4 className="text-sm font-medium text-foreground">{t('widgets.distribution')}</h4>
           <div className="space-y-2">
             {roleData.map((role) => (
               <div key={role.role} className="space-y-1">
@@ -362,14 +362,14 @@ export function RoleDistribution({ className = '' }: RoleDistributionProps) {
             <p className="text-sm font-bold text-success capitalize">
               {largestRole?.role || 'N/A'}
             </p>
-            <p className="text-xs text-muted-foreground">Largest Role</p>
+            <p className="text-xs text-muted-foreground">{t('widgets.largestRole')}</p>
           </div>
           <div className="text-center p-3 bg-destructive/10 rounded-[0.625rem]-lg">
             <User className="h-4 w-4 text-destructive mx-auto mb-1" />
             <p className="text-sm font-bold text-destructive capitalize">
               {smallestRole?.role || 'N/A'}
             </p>
-            <p className="text-xs text-muted-foreground">Smallest Role</p>
+            <p className="text-xs text-muted-foreground">{t('widgets.smallestRole')}</p>
           </div>
         </div>
 
@@ -377,22 +377,22 @@ export function RoleDistribution({ className = '' }: RoleDistributionProps) {
         <div className="flex space-x-2 pt-2">
           <Button variant="outline" size="sm" className="flex-1">
             <Eye className="h-4 w-4 mr-2" />
-            View Details
+            {t('widgets.viewDetails')}
           </Button>
           <Button variant="outline" size="sm" className="flex-1">
             <Download className="h-4 w-4 mr-2" />
-            Export Data
+            {t('widgets.exportData')}
           </Button>
         </div>
 
         {/* Insights */}
         <div className="p-3 bg-primary/10 rounded-[0.625rem]-lg">
-          <h5 className="text-sm font-medium text-blue-900 mb-2">💡 Role Insights</h5>
+          <h5 className="text-sm font-medium text-blue-900 mb-2">💡 {t('widgets.roleInsights')}</h5>
           <ul className="text-xs text-blue-800 space-y-1">
-            <li>• Total users: {totalUsers}</li>
-            <li>• {roleData.length} different roles in the system</li>
-            <li>• Largest role: {largestRole?.role} ({largestRole?.percentage.toFixed(1)}%)</li>
-            <li>• Smallest role: {smallestRole?.role} ({smallestRole?.percentage.toFixed(1)}%)</li>
+            <li>• {t('widgets.totalUsersInSystem', { count: totalUsers })}</li>
+            <li>• {t('widgets.differentRolesInSystem', { count: roleData.length })}</li>
+            <li>• {t('widgets.largestRolePercentage', { role: largestRole?.role || 'N/A', percentage: largestRole?.percentage.toFixed(1) || '0' })}</li>
+            <li>• {t('widgets.smallestRolePercentage', { role: smallestRole?.role || 'N/A', percentage: smallestRole?.percentage.toFixed(1) || '0' })}</li>
             {roleData.filter(r => ['super_admin', 'head_administrator', 'executive', 'platform_admin', 'admin'].includes(r.role)).length > 0 && (
               <li>• {roleData.filter(r => ['super_admin', 'head_administrator', 'executive', 'platform_admin', 'admin'].includes(r.role)).reduce((sum, r) => sum + r.count, 0)} admin users</li>
             )}

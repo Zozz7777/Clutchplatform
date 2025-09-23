@@ -1396,6 +1396,7 @@
     "differentRolesInSystem": "{count} أدوار مختلفة في النظام",
     "largestRolePercentage": "أكبر دور: {role} ({percentage}%)",
     "smallestRolePercentage": "أصغر دور: {role} ({percentage}%)",
+    "loadingRoleData": "جاري تحميل بيانات الأدوار...",
     "sevenDays": "7 أيام",
     "thirtyDays": "30 يوم",
     "ninetyDays": "90 يوم",
