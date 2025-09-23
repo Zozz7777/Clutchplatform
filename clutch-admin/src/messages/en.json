@@ -644,19 +644,6 @@
       "satisfaction": "Satisfaction:",
       "markAsResolved": "Mark as Resolved"
     },
-    "complianceRadar": {
-      "overallStatus": "Overall Status",
-      "compliant": "Compliant",
-      "nonCompliant": "Non-Compliant",
-      "failed": "Failed",
-      "complianceMetrics": "Compliance Metrics",
-      "complianceBreakdown": "Compliance Breakdown",
-      "auditTimeline": "Audit Timeline",
-      "complianceProgress": "Compliance Progress",
-      "complianceInsights": "Compliance Insights",
-      "scheduleAudit": "Schedule Audit",
-      "updatePolicies": "Update Policies"
-    },
     "topEnterpriseClients": {
       "averageGrowth": "Average Growth",
       "clientList": "Client List",
