@@ -1103,25 +1103,14 @@
           "poor": "Poor"
         },
         "incidents": {
-          "systemIncident": "System Incident",
-          "systemError": "System Error"
+          "systemIncident": "System Incident"
         },
         "errors": {
           "systemError": "System Error",
           "systemAlert": "System Alert"
         },
         "causes": {
-          "unknownCause": "Unknown Cause",
-          "systemError": "System Error"
-        },
-        "incidentCost": {
-          "averageCostPerIncident": "Average cost per incident",
-          "totalDowntime": "Total downtime",
-          "incidentsAnalyzed": "incidents analyzed",
-          "criticalIncidents": "critical incidents",
-          "highSeverityIncidents": "high severity incidents",
-          "criticalIncidentsHighestCost": "Critical incidents have highest cost impact",
-          "highAverageCost": "High average cost - focus on prevention"
+          "unknownCause": "Unknown Cause"
         }
       }
     },

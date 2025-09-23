@@ -1429,9 +1429,6 @@
     }
   },
   "commandBar": {
-    "title": "شريط الأوامر",
-    "description": "إجراءات سريعة وأوامر النظام",
-    "searchPlaceholder": "البحث في الأوامر...",
     "categories": {
       "users": "المستخدمون",
       "fleet": "الأسطول",
