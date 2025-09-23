@@ -224,7 +224,7 @@ export default function SystemHealthPage() {
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold font-sans capitalize">
-              {overallHealth.status}
+              {t(`systemHealth.statusValues.${overallHealth.status}`)}
             </div>
             <p className="text-xs text-muted-foreground font-sans">
               {overallHealth.uptime}% {t('systemHealth.uptime')}

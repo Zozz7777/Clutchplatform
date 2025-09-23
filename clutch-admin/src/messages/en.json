@@ -981,6 +981,18 @@
       "title": "System Health Analytics",
       "description": "Go beyond uptime → proactive reliability insights"
     },
-    "loading": "Loading system health..."
+    "loading": "Loading system health...",
+    "widgets": {
+      "slaCompliance": "SLA Compliance",
+      "incidentCost": "Incident Cost",
+      "errorDistribution": "Error Distribution",
+      "rootCauseTimeline": "Root Cause Timeline"
+    },
+    "statusValues": {
+      "degraded": "degraded",
+      "healthy": "healthy",
+      "down": "down",
+      "unknown": "unknown"
+    }
   }
 }

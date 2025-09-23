@@ -3642,6 +3642,18 @@
       "title": "تحليلات صحة النظام",
       "description": "تجاوز وقت التشغيل → رؤى موثوقية استباقية"
     },
-    "loading": "جاري تحميل صحة النظام..."
+    "loading": "جاري تحميل صحة النظام...",
+    "widgets": {
+      "slaCompliance": "امتثال SLA",
+      "incidentCost": "تكلفة الحوادث",
+      "errorDistribution": "توزيع الأخطاء",
+      "rootCauseTimeline": "جدول زمني للأسباب الجذرية"
+    },
+    "statusValues": {
+      "degraded": "متدني",
+      "healthy": "سليم",
+      "down": "معطل",
+      "unknown": "غير معروف"
+    }
   }
 }
