@@ -942,5 +942,44 @@
       "design": "Design",
       "executive": "Executive"
     }
+  },
+  "systemHealth": {
+    "title": "System Health",
+    "description": "Monitor the health and status of all system services",
+    "failedToLoadData": "Failed to load system health data",
+    "failedToRefreshData": "Failed to refresh system health data",
+    "refresh": "Refresh",
+    "runHealthCheck": "Run Health Check",
+    "overallStatus": "Overall Status",
+    "uptime": "uptime",
+    "servicesUp": "Services Up",
+    "servicesDown": "Services Down",
+    "lastIncident": "Last Incident",
+    "outOfServices": "Out of {count} services",
+    "requireAttention": "Require attention",
+    "lastChecked": "Last checked",
+    "responseTime": "Response Time",
+    "dependencies": "Dependencies",
+    "unavailable": "Unavailable",
+    "instances": "{count} instances",
+    "externalDependencies": "External Dependencies",
+    "internalServices": "Internal Services",
+    "healthHistory": "Health History",
+    "historicalHealthStatus": "Historical health status and incidents",
+    "status": {
+      "healthy": "Healthy",
+      "degraded": "Degraded",
+      "down": "Down",
+      "unknown": "Unknown"
+    },
+    "tabs": {
+      "services": "Services",
+      "dependencies": "Dependencies",
+      "history": "History"
+    },
+    "analytics": {
+      "title": "System Health Analytics",
+      "description": "Go beyond uptime → proactive reliability insights"
+    }
   }
 }

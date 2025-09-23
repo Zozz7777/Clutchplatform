@@ -3589,5 +3589,44 @@
     "searchSegments": "البحث في الشرائح...",
     "noSegmentsFound": "لم يتم العثور على شرائح تطابق معايير البحث",
     "loadingSegments": "جاري تحميل شرائح المستخدمين..."
+  },
+  "systemHealth": {
+    "title": "صحة النظام",
+    "description": "مراقبة صحة وحالة جميع خدمات النظام",
+    "failedToLoadData": "فشل في تحميل بيانات صحة النظام",
+    "failedToRefreshData": "فشل في تحديث بيانات صحة النظام",
+    "refresh": "تحديث",
+    "runHealthCheck": "تشغيل فحص الصحة",
+    "overallStatus": "الحالة العامة",
+    "uptime": "وقت التشغيل",
+    "servicesUp": "الخدمات النشطة",
+    "servicesDown": "الخدمات المعطلة",
+    "lastIncident": "آخر حادث",
+    "outOfServices": "من أصل {count} خدمة",
+    "requireAttention": "تحتاج إلى انتباه",
+    "lastChecked": "آخر فحص",
+    "responseTime": "وقت الاستجابة",
+    "dependencies": "التبعيات",
+    "unavailable": "غير متاح",
+    "instances": "{count} مثيل",
+    "externalDependencies": "التبعيات الخارجية",
+    "internalServices": "الخدمات الداخلية",
+    "healthHistory": "تاريخ الصحة",
+    "historicalHealthStatus": "حالة الصحة التاريخية والحوادث",
+    "status": {
+      "healthy": "سليم",
+      "degraded": "متدني",
+      "down": "معطل",
+      "unknown": "غير معروف"
+    },
+    "tabs": {
+      "services": "الخدمات",
+      "dependencies": "التبعيات",
+      "history": "التاريخ"
+    },
+    "analytics": {
+      "title": "تحليلات صحة النظام",
+      "description": "تجاوز وقت التشغيل → رؤى موثوقية استباقية"
+    }
   }
 }

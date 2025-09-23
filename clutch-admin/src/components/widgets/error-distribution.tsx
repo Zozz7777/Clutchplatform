@@ -36,7 +36,7 @@ interface ErrorData {
 }
 
 export function ErrorDistribution({ className = '' }: ErrorDistributionProps) {
-  const t = (key: string, params?: any) => key;
+  const { t } = useLanguage();
   const [errorData, setErrorData] = React.useState<{
     errors: ErrorData[];
     totalErrors: number;
