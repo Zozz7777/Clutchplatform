@@ -25,7 +25,31 @@ import {
   CheckCircle,
   XCircle,
   Clock,
-  AlertTriangle
+  AlertTriangle,
+  Building2,
+  Store,
+  Truck,
+  Shield,
+  CreditCard,
+  Target,
+  BarChart3,
+  Activity,
+  UserCheck,
+  FileCheck,
+  Globe,
+  Settings,
+  Bell,
+  Star,
+  Award,
+  Zap,
+  MapPin,
+  Package,
+  Wrench,
+  Car,
+  DollarSign,
+  ArrowUpRight,
+  ArrowDownRight,
+  TrendingDown
 } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 import { 
@@ -58,7 +82,9 @@ import {
   SelectTrigger, 
   SelectValue 
 } from '@/components/ui/select';
+import { Progress } from '@/components/ui/progress';
 import { productionApi } from '@/lib/production-api';
+import { toast } from 'sonner';
 
 // Import sales widgets
 import SalesPipeline from '@/components/widgets/sales-pipeline';
@@ -68,84 +94,111 @@ import TeamPerformance from '@/components/widgets/team-performance';
 import ContractStatus from '@/components/widgets/contract-status';
 import CommunicationHistory from '@/components/widgets/communication-history';
 
-interface Lead {
+interface ClutchLead {
   id: string;
   title: string;
-  type: 'shop' | 'importer' | 'manufacturer' | 'fleet' | 'insurance';
+  type: 'shop' | 'repair_center' | 'accessories_store' | 'parts_importer' | 'manufacturer' | 'fleet_company' | 'insurance_company' | 'installment_company';
   companyName: string;
+  businessType: string;
   contact: {
     name: string;
     email: string;
     phone: string;
+    position: string;
   };
-  status: 'new' | 'contacted' | 'qualified' | 'converted' | 'lost';
+  businessDetails: {
+    address: string;
+    city: string;
+    governorate: string;
+    businessLicense: string;
+    taxId: string;
+  };
+  team: 'partners' | 'b2b';
+  pipeline: 'partners' | 'b2b_enterprise';
+  status: 'new' | 'contacted' | 'qualified' | 'proposal_sent' | 'contract_sent' | 'signed' | 'onboarded' | 'live' | 'lost';
+  priority: 'low' | 'medium' | 'high' | 'urgent';
   assignedTo: string;
+  source: string;
+  contract: {
+    status: 'not_started' | 'draft' | 'sent' | 'signed' | 'approved' | 'rejected';
+    templateId: string;
+    draftUrl: string;
+    signedUrl: string;
+    signedDate: string;
+  };
+  accounts: {
+    partnersApp: { created: boolean; status: string };
+    partsSystem: { created: boolean; status: string };
+    enterpriseDashboard: { created: boolean; status: string };
+  };
   createdAt: string;
-  value?: number;
+  lastActivityAt: string;
+  estimatedValue?: number;
 }
 
-interface Deal {
-  id: string;
-  leadId: string;
-  pipeline: 'b2b' | 'partners';
-  stage: 'prospect' | 'proposal' | 'negotiation' | 'signed';
-  valueEGP: number;
-  probability: number;
-  assignedTo: string;
-  createdAt: string;
-}
-
-interface Contract {
-  id: string;
-  leadId: string;
-  status: 'draft' | 'printed' | 'signed_uploaded' | 'pending_legal' | 'approved' | 'rejected';
-  templateId: string;
-  createdAt: string;
-}
-
-export default function SalesPage() {
+export default function SalesDepartmentPage() {
   const { t } = useLanguage();
-  const [leads, setLeads] = useState<Lead[]>([]);
-  const [deals, setDeals] = useState<Deal[]>([]);
-  const [contracts, setContracts] = useState<Contract[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [activeTab, setActiveTab] = useState('overview');
+  const [isLoading, setIsLoading] = useState(true);
+  const [leads, setLeads] = useState<ClutchLead[]>([]);
+  const [selectedTeam, setSelectedTeam] = useState<'all' | 'partners' | 'b2b'>('all');
+  const [selectedStatus, setSelectedStatus] = useState<string>('all');
   const [searchTerm, setSearchTerm] = useState('');
-  const [statusFilter, setStatusFilter] = useState<string>('all');
-  const [typeFilter, setTypeFilter] = useState<string>('all');
-  const [showCreateLead, setShowCreateLead] = useState(false);
-  const [showCreateDeal, setShowCreateDeal] = useState(false);
 
-  // Fetch data from API
+  // Department KPIs
+  const [departmentKPIs, setDepartmentKPIs] = useState({
+    totalLeads: 0,
+    partnersLeads: 0,
+    b2bLeads: 0,
+    totalContracts: 0,
+    pendingLegal: 0,
+    livePartners: 0,
+    activeEnterprise: 0,
+    monthlyRevenue: 0,
+    conversionRate: 0,
+    avgCycleTime: 0
+  });
+
   useEffect(() => {
-    fetchData();
+    loadSalesData();
   }, []);
 
-  const fetchData = async () => {
+  const loadSalesData = async () => {
     try {
-      setLoading(true);
+      setIsLoading(true);
       
-      // Fetch leads, deals, and contracts in parallel
-      const [leadsResponse, dealsResponse, contractsResponse] = await Promise.all([
-        productionApi.getLeads(),
-        productionApi.getDeals(),
-        productionApi.getContracts()
-      ]);
-
+      // Load leads data
+      const leadsResponse = await productionApi.getLeads();
       if (leadsResponse.success) {
         setLeads(leadsResponse.leads || []);
       }
-      
-      if (dealsResponse.success) {
-        setDeals(dealsResponse.deals || []);
+
+      // Load department KPIs
+      const kpisResponse = await productionApi.getSalesPerformanceTeam('monthly');
+      if (kpisResponse.success) {
+        setDepartmentKPIs(kpisResponse.kpis || departmentKPIs);
       }
-      
-      if (contractsResponse.success) {
-        setContracts(contractsResponse.contracts || []);
-      }
+
+      toast.success(t('sales.dataLoadedSuccessfully'));
     } catch (error) {
-      console.error('Error fetching sales data:', error);
+      console.error('Error loading sales data:', error);
+      toast.error(t('sales.failedToLoadSalesData'));
     } finally {
-      setLoading(false);
+      setIsLoading(false);
+    }
+  };
+
+  const getTypeIcon = (type: string) => {
+    switch (type) {
+      case 'shop': return <Store className="h-4 w-4" />;
+      case 'repair_center': return <Wrench className="h-4 w-4" />;
+      case 'accessories_store': return <Package className="h-4 w-4" />;
+      case 'parts_importer': return <Truck className="h-4 w-4" />;
+      case 'manufacturer': return <Building2 className="h-4 w-4" />;
+      case 'fleet_company': return <Car className="h-4 w-4" />;
+      case 'insurance_company': return <Shield className="h-4 w-4" />;
+      case 'installment_company': return <CreditCard className="h-4 w-4" />;
+      default: return <Building2 className="h-4 w-4" />;
     }
   };
 
@@ -154,239 +207,304 @@ export default function SalesPage() {
       case 'new': return 'bg-primary/10 text-primary';
       case 'contacted': return 'bg-secondary/10 text-secondary';
       case 'qualified': return 'bg-success/10 text-success';
-      case 'converted': return 'bg-success/20 text-success';
+      case 'proposal_sent': return 'bg-warning/10 text-warning';
+      case 'contract_sent': return 'bg-info/10 text-info';
+      case 'signed': return 'bg-success/20 text-success';
+      case 'onboarded': return 'bg-success/30 text-success';
+      case 'live': return 'bg-success/40 text-success';
       case 'lost': return 'bg-destructive/10 text-destructive';
-      case 'draft': return 'bg-muted text-muted-foreground';
-      case 'signed_uploaded': return 'bg-primary/10 text-primary';
-      case 'pending_legal': return 'bg-secondary/10 text-secondary';
-      case 'approved': return 'bg-success/10 text-success';
-      case 'rejected': return 'bg-destructive/10 text-destructive';
       default: return 'bg-muted text-muted-foreground';
     }
   };
 
-  const getTypeIcon = (type: string) => {
-    switch (type) {
-      case 'shop': return '🏪';
-      case 'importer': return '📦';
-      case 'manufacturer': return '🏭';
-      case 'fleet': return '🚛';
-      case 'insurance': return '🛡️';
-      default: return '🏢';
+  const getPriorityColor = (priority: string) => {
+    switch (priority) {
+      case 'urgent': return 'bg-red-100 text-red-800';
+      case 'high': return 'bg-orange-100 text-orange-800';
+      case 'medium': return 'bg-yellow-100 text-yellow-800';
+      case 'low': return 'bg-green-100 text-green-800';
+      default: return 'bg-gray-100 text-gray-800';
     }
   };
 
   const filteredLeads = leads.filter(lead => {
-    const matchesSearch = lead.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         lead.companyName.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         lead.contact.name.toLowerCase().includes(searchTerm.toLowerCase());
-    const matchesStatus = statusFilter === 'all' || lead.status === statusFilter;
-    const matchesType = typeFilter === 'all' || lead.type === typeFilter;
-    return matchesSearch && matchesStatus && matchesType;
+    const matchesTeam = selectedTeam === 'all' || lead.team === selectedTeam;
+    const matchesStatus = selectedStatus === 'all' || lead.status === selectedStatus;
+    const matchesSearch = searchTerm === '' || 
+      lead.companyName.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      lead.contact.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      lead.businessDetails.city.toLowerCase().includes(searchTerm.toLowerCase());
+    
+    return matchesTeam && matchesStatus && matchesSearch;
   });
 
-  const stats = {
-    totalLeads: leads.length,
-    newLeads: leads.filter(l => l.status === 'new').length,
-    qualifiedLeads: leads.filter(l => l.status === 'qualified').length,
-    totalDeals: deals.length,
-    totalValue: deals.reduce((sum, deal) => sum + deal.valueEGP, 0),
-    contractsPending: contracts.filter(c => c.status === 'pending_legal').length
-  };
-
-  if (loading) {
+  if (isLoading) {
     return (
       <div className="flex items-center justify-center h-64">
-        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto mb-4"></div>
+          <p className="text-muted-foreground font-sans">{t('common.loading')}</p>
+        </div>
       </div>
     );
   }
 
   return (
-    <div className="space-y-6 p-6">
-      {/* Header */}
+    <div className="space-y-6 font-sans">
+      {/* Department Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold text-gray-900">{t('title')}</h1>
-          <p className="text-gray-600 mt-1">{t('subtitle')}</p>
+          <h1 className="text-3xl font-bold tracking-tight text-foreground font-sans">
+            {t('sales.departmentTitle')}
+          </h1>
+          <p className="text-muted-foreground font-sans">
+            {t('sales.departmentDescription')}
+          </p>
         </div>
-        <div className="flex gap-2">
-          <Button variant="outline" size="sm">
-            <Download className="h-4 w-4 mr-2" />
-            {t('export')}
+        <div className="flex items-center space-x-2">
+          <Button variant="outline" className="shadow-2xs">
+            <Download className="mr-2 h-4 w-4" />
+            {t('sales.exportReport')}
           </Button>
-          <Button size="sm">
-            <Plus className="h-4 w-4 mr-2" />
-            {t('newLead')}
+          <Button className="shadow-2xs">
+            <Plus className="mr-2 h-4 w-4" />
+            {t('sales.newLead')}
           </Button>
         </div>
       </div>
 
-      {/* Stats Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-        <Card className="shadow-2xs rounded-[0.625rem] font-sans">
-          <CardContent className="p-6">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm font-medium text-gray-600">{t('totalLeads')}</p>
-                <p className="text-2xl font-bold text-gray-900">{stats.totalLeads}</p>
-              </div>
-              <Users className="h-8 w-8 text-primary" />
-            </div>
+      {/* Department KPIs */}
+      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-5">
+        <Card className="shadow-2xs">
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium text-card-foreground">
+              {t('sales.totalLeads')}
+            </CardTitle>
+            <Users className="h-4 w-4 text-muted-foreground" />
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold text-foreground">{departmentKPIs.totalLeads}</div>
+            <p className="text-xs text-muted-foreground">
+              <span className="text-success">+12%</span> {t('sales.fromLastMonth')}
+            </p>
           </CardContent>
         </Card>
 
-        <Card className="shadow-2xs rounded-[0.625rem] font-sans">
-          <CardContent className="p-6">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm font-medium text-gray-600">{t('qualifiedLeads')}</p>
-                <p className="text-2xl font-bold text-gray-900">{stats.qualifiedLeads}</p>
-              </div>
-              <CheckCircle className="h-8 w-8 text-green-600" />
-            </div>
+        <Card className="shadow-2xs">
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium text-card-foreground">
+              {t('sales.partnersTeam')}
+            </CardTitle>
+            <Store className="h-4 w-4 text-muted-foreground" />
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold text-foreground">{departmentKPIs.partnersLeads}</div>
+            <p className="text-xs text-muted-foreground">
+              <span className="text-success">+8%</span> {t('sales.fromLastMonth')}
+            </p>
           </CardContent>
         </Card>
 
-        <Card className="shadow-2xs rounded-[0.625rem] font-sans">
-          <CardContent className="p-6">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm font-medium text-gray-600">{t('totalDeals')}</p>
-                <p className="text-2xl font-bold text-gray-900">{stats.totalDeals}</p>
-              </div>
-              <TrendingUp className="h-8 w-8 text-purple-600" />
-            </div>
+        <Card className="shadow-2xs">
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium text-card-foreground">
+              {t('sales.b2bTeam')}
+            </CardTitle>
+            <Building2 className="h-4 w-4 text-muted-foreground" />
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold text-foreground">{departmentKPIs.b2bLeads}</div>
+            <p className="text-xs text-muted-foreground">
+              <span className="text-success">+15%</span> {t('sales.fromLastMonth')}
+            </p>
           </CardContent>
         </Card>
 
-        <Card className="shadow-2xs rounded-[0.625rem] font-sans">
-          <CardContent className="p-6">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm font-medium text-gray-600">{t('totalValue')}</p>
-                <p className="text-2xl font-bold text-gray-900">{stats.totalValue.toLocaleString()} EGP</p>
-              </div>
-              <FileText className="h-8 w-8 text-orange-600" />
+        <Card className="shadow-2xs">
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium text-card-foreground">
+              {t('sales.livePartners')}
+            </CardTitle>
+            <Globe className="h-4 w-4 text-muted-foreground" />
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold text-foreground">{departmentKPIs.livePartners}</div>
+            <p className="text-xs text-muted-foreground">
+              <span className="text-success">+5</span> {t('sales.thisWeek')}
+            </p>
+          </CardContent>
+        </Card>
+
+        <Card className="shadow-2xs">
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium text-card-foreground">
+              {t('sales.monthlyRevenue')}
+            </CardTitle>
+            <DollarSign className="h-4 w-4 text-muted-foreground" />
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold text-foreground">
+              EGP {(departmentKPIs.monthlyRevenue / 1000000).toFixed(1)}M
             </div>
+            <p className="text-xs text-muted-foreground">
+              <span className="text-success">+18%</span> {t('sales.fromLastMonth')}
+            </p>
           </CardContent>
         </Card>
       </div>
 
-      {/* Main Content Tabs */}
-      <Tabs defaultValue="overview" className="space-y-6">
-        <TabsList className="grid w-full grid-cols-5">
-          <TabsTrigger value="overview">{t('overview')}</TabsTrigger>
-          <TabsTrigger value="leads">{t('leads')}</TabsTrigger>
-          <TabsTrigger value="deals">{t('deals')}</TabsTrigger>
-          <TabsTrigger value="contracts">{t('contracts')}</TabsTrigger>
-          <TabsTrigger value="partners">{t('partners')}</TabsTrigger>
+      {/* Main Dashboard Tabs */}
+      <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-4">
+        <TabsList className="grid w-full grid-cols-6">
+          <TabsTrigger value="overview">{t('sales.overview')}</TabsTrigger>
+          <TabsTrigger value="partners">{t('sales.partnersTeam')}</TabsTrigger>
+          <TabsTrigger value="b2b">{t('sales.b2bTeam')}</TabsTrigger>
+          <TabsTrigger value="contracts">{t('sales.contracts')}</TabsTrigger>
+          <TabsTrigger value="activities">{t('sales.activities')}</TabsTrigger>
+          <TabsTrigger value="reports">{t('sales.reports')}</TabsTrigger>
         </TabsList>
 
         {/* Overview Tab */}
         <TabsContent value="overview" className="space-y-6">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
             <SalesPipeline />
             <LeadConversion />
-          </div>
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
             <RevenueForecast />
             <TeamPerformance />
-          </div>
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
             <ContractStatus />
             <CommunicationHistory />
           </div>
         </TabsContent>
 
-        {/* Leads Tab */}
-        <TabsContent value="leads" className="space-y-6">
-          <Card className="shadow-2xs rounded-[0.625rem] font-sans">
+        {/* Partners Team Tab */}
+        <TabsContent value="partners" className="space-y-6">
+          <div className="flex items-center justify-between">
+            <div>
+              <h2 className="text-2xl font-bold text-foreground">{t('sales.partnersTeam')}</h2>
+              <p className="text-muted-foreground">{t('sales.partnersDescription')}</p>
+            </div>
+            <div className="flex items-center space-x-2">
+              <Button variant="outline">
+                <Store className="mr-2 h-4 w-4" />
+                {t('sales.newPartner')}
+              </Button>
+            </div>
+          </div>
+
+          {/* Partners Pipeline */}
+          <Card className="shadow-2xs">
             <CardHeader>
-              <CardTitle className="flex items-center justify-between">
-                {t('leads')}
-                <div className="flex gap-2">
-                  <Input
-                    placeholder={t('searchLeads')}
-                    value={searchTerm}
-                    onChange={(e) => setSearchTerm(e.target.value)}
-                    className="w-64"
-                  />
-                  <Select value={statusFilter} onValueChange={setStatusFilter}>
-                    <SelectTrigger className="w-32">
-                      <SelectValue placeholder={t('status')} />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="all">{t('allStatuses')}</SelectItem>
-                      <SelectItem value="new">{t('new')}</SelectItem>
-                      <SelectItem value="contacted">{t('contacted')}</SelectItem>
-                      <SelectItem value="qualified">{t('qualified')}</SelectItem>
-                      <SelectItem value="converted">{t('converted')}</SelectItem>
-                      <SelectItem value="lost">{t('lost')}</SelectItem>
-                    </SelectContent>
-                  </Select>
-                  <Select value={typeFilter} onValueChange={setTypeFilter}>
-                    <SelectTrigger className="w-32">
-                      <SelectValue placeholder={t('type')} />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="all">{t('allTypes')}</SelectItem>
-                      <SelectItem value="shop">{t('shop')}</SelectItem>
-                      <SelectItem value="importer">{t('importer')}</SelectItem>
-                      <SelectItem value="manufacturer">{t('manufacturer')}</SelectItem>
-                      <SelectItem value="fleet">{t('fleet')}</SelectItem>
-                      <SelectItem value="insurance">{t('insurance')}</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
+              <CardTitle className="flex items-center gap-2">
+                <Store className="h-5 w-5" />
+                {t('sales.partnersPipeline')}
               </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="grid grid-cols-5 gap-4">
+                {['new', 'contacted', 'qualified', 'contract_sent', 'live'].map((stage) => (
+                  <div key={stage} className="text-center">
+                    <div className="p-4 bg-muted/50 rounded-lg">
+                      <p className="text-2xl font-bold text-foreground">
+                        {filteredLeads.filter(lead => lead.team === 'partners' && lead.status === stage).length}
+                      </p>
+                      <p className="text-sm text-muted-foreground">{t(`sales.${stage}`)}</p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* Partners Leads Table */}
+          <Card className="shadow-2xs">
+            <CardHeader>
+              <CardTitle>{t('sales.partnersLeads')}</CardTitle>
+              <div className="flex items-center space-x-2">
+                <Input
+                  placeholder={t('sales.searchLeads')}
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                  className="max-w-sm"
+                />
+                <Select value={selectedStatus} onValueChange={setSelectedStatus}>
+                  <SelectTrigger className="w-40">
+                    <SelectValue placeholder={t('sales.allStatuses')} />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="all">{t('sales.allStatuses')}</SelectItem>
+                    <SelectItem value="new">{t('sales.new')}</SelectItem>
+                    <SelectItem value="contacted">{t('sales.contacted')}</SelectItem>
+                    <SelectItem value="qualified">{t('sales.qualified')}</SelectItem>
+                    <SelectItem value="contract_sent">{t('sales.contract_sent')}</SelectItem>
+                    <SelectItem value="live">{t('sales.live')}</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
             </CardHeader>
             <CardContent>
               <Table>
                 <TableHeader>
                   <TableRow>
-                    <TableHead>{t('company')}</TableHead>
-                    <TableHead>{t('type')}</TableHead>
-                    <TableHead>{t('contact')}</TableHead>
-                    <TableHead>{t('status')}</TableHead>
-                    <TableHead>{t('assignedTo')}</TableHead>
-                    <TableHead>{t('value')}</TableHead>
-                    <TableHead>{t('created')}</TableHead>
-                    <TableHead className="w-[50px]">{t('actions')}</TableHead>
+                    <TableHead>{t('sales.company')}</TableHead>
+                    <TableHead>{t('sales.type')}</TableHead>
+                    <TableHead>{t('sales.contact')}</TableHead>
+                    <TableHead>{t('sales.location')}</TableHead>
+                    <TableHead>{t('sales.status')}</TableHead>
+                    <TableHead>{t('sales.priority')}</TableHead>
+                    <TableHead>{t('sales.assignedTo')}</TableHead>
+                    <TableHead>{t('sales.actions')}</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
-                  {filteredLeads.map((lead) => (
+                  {filteredLeads
+                    .filter(lead => lead.team === 'partners')
+                    .slice(0, 10)
+                    .map((lead) => (
                     <TableRow key={lead.id}>
                       <TableCell>
-                        <div>
-                          <div className="font-medium">{lead.title}</div>
-                          <div className="text-sm text-gray-500">{lead.companyName}</div>
-                        </div>
-                      </TableCell>
-                      <TableCell>
                         <div className="flex items-center gap-2">
-                          <span>{getTypeIcon(lead.type)}</span>
-                          <span className="capitalize">{lead.type}</span>
+                          {getTypeIcon(lead.type)}
+                          <div>
+                            <p className="font-medium">{lead.companyName}</p>
+                            <p className="text-sm text-muted-foreground">{lead.businessType}</p>
+                          </div>
                         </div>
                       </TableCell>
                       <TableCell>
+                        <Badge variant="outline">{t(`sales.${lead.type}`)}</Badge>
+                      </TableCell>
+                      <TableCell>
                         <div>
-                          <div className="font-medium">{lead.contact.name}</div>
-                          <div className="text-sm text-gray-500">{lead.contact.email}</div>
-                          <div className="text-sm text-gray-500">{lead.contact.phone}</div>
+                          <p className="font-medium">{lead.contact.name}</p>
+                          <p className="text-sm text-muted-foreground">{lead.contact.phone}</p>
+                        </div>
+                      </TableCell>
+                      <TableCell>
+                        <div className="flex items-center gap-1">
+                          <MapPin className="h-3 w-3" />
+                          <span className="text-sm">{lead.businessDetails.city}</span>
                         </div>
                       </TableCell>
                       <TableCell>
                         <Badge className={getStatusColor(lead.status)}>
-                          {t(lead.status)}
+                          {t(`sales.${lead.status}`)}
                         </Badge>
                       </TableCell>
-                      <TableCell>{lead.assignedTo}</TableCell>
                       <TableCell>
-                        {lead.value ? `${lead.value.toLocaleString()} EGP` : '-'}
+                        <Badge className={getPriorityColor(lead.priority)}>
+                          {t(`sales.${lead.priority}`)}
+                        </Badge>
                       </TableCell>
-                      <TableCell>{new Date(lead.createdAt).toLocaleDateString()}</TableCell>
+                      <TableCell>
+                        <div className="flex items-center gap-2">
+                          <div className="h-6 w-6 rounded-full bg-primary/10 flex items-center justify-center">
+                            <span className="text-xs font-bold text-primary">
+                              {lead.assignedTo?.charAt(0) || '?'}
+                            </span>
+                          </div>
+                          <span className="text-sm">{lead.assignedTo || t('sales.unassigned')}</span>
+                        </div>
+                      </TableCell>
                       <TableCell>
                         <DropdownMenu>
                           <DropdownMenuTrigger asChild>
@@ -396,24 +514,20 @@ export default function SalesPage() {
                           </DropdownMenuTrigger>
                           <DropdownMenuContent>
                             <DropdownMenuItem>
-                              <Eye className="h-4 w-4 mr-2" />
-                              {t('view')}
+                              <Eye className="mr-2 h-4 w-4" />
+                              {t('sales.view')}
                             </DropdownMenuItem>
                             <DropdownMenuItem>
-                              <Edit className="h-4 w-4 mr-2" />
-                              {t('edit')}
+                              <Edit className="mr-2 h-4 w-4" />
+                              {t('sales.edit')}
                             </DropdownMenuItem>
                             <DropdownMenuItem>
-                              <Phone className="h-4 w-4 mr-2" />
-                              {t('call')}
+                              <Phone className="mr-2 h-4 w-4" />
+                              {t('sales.call')}
                             </DropdownMenuItem>
                             <DropdownMenuItem>
-                              <Mail className="h-4 w-4 mr-2" />
-                              {t('email')}
-                            </DropdownMenuItem>
-                            <DropdownMenuItem className="text-red-600">
-                              <Trash2 className="h-4 w-4 mr-2" />
-                              {t('delete')}
+                              <Mail className="mr-2 h-4 w-4" />
+                              {t('sales.email')}
                             </DropdownMenuItem>
                           </DropdownMenuContent>
                         </DropdownMenu>
@@ -426,67 +540,113 @@ export default function SalesPage() {
           </Card>
         </TabsContent>
 
-        {/* Deals Tab */}
-        <TabsContent value="deals" className="space-y-6">
-          <Card className="shadow-2xs rounded-[0.625rem] font-sans">
+        {/* B2B Team Tab */}
+        <TabsContent value="b2b" className="space-y-6">
+          <div className="flex items-center justify-between">
+            <div>
+              <h2 className="text-2xl font-bold text-foreground">{t('sales.b2bTeam')}</h2>
+              <p className="text-muted-foreground">{t('sales.b2bDescription')}</p>
+            </div>
+            <div className="flex items-center space-x-2">
+              <Button variant="outline">
+                <Building2 className="mr-2 h-4 w-4" />
+                {t('sales.newEnterprise')}
+              </Button>
+            </div>
+          </div>
+
+          {/* B2B Pipeline */}
+          <Card className="shadow-2xs">
             <CardHeader>
-              <CardTitle className="flex items-center justify-between">
-                {t('deals')}
-                <Button size="sm">
-                  <Plus className="h-4 w-4 mr-2" />
-                  {t('newDeal')}
-                </Button>
+              <CardTitle className="flex items-center gap-2">
+                <Building2 className="h-5 w-5" />
+                {t('sales.b2bPipeline')}
               </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="grid grid-cols-5 gap-4">
+                {['new', 'contacted', 'qualified', 'proposal_sent', 'signed'].map((stage) => (
+                  <div key={stage} className="text-center">
+                    <div className="p-4 bg-muted/50 rounded-lg">
+                      <p className="text-2xl font-bold text-foreground">
+                        {filteredLeads.filter(lead => lead.team === 'b2b' && lead.status === stage).length}
+                      </p>
+                      <p className="text-sm text-muted-foreground">{t(`sales.${stage}`)}</p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* B2B Leads Table */}
+          <Card className="shadow-2xs">
+            <CardHeader>
+              <CardTitle>{t('sales.b2bLeads')}</CardTitle>
             </CardHeader>
             <CardContent>
               <Table>
                 <TableHeader>
                   <TableRow>
-                    <TableHead>{t('deal')}</TableHead>
-                    <TableHead>{t('pipeline')}</TableHead>
-                    <TableHead>{t('stage')}</TableHead>
-                    <TableHead>{t('value')}</TableHead>
-                    <TableHead>{t('probability')}</TableHead>
-                    <TableHead>{t('assignedTo')}</TableHead>
-                    <TableHead>{t('created')}</TableHead>
-                    <TableHead className="w-[50px]">{t('actions')}</TableHead>
+                    <TableHead>{t('sales.company')}</TableHead>
+                    <TableHead>{t('sales.type')}</TableHead>
+                    <TableHead>{t('sales.contact')}</TableHead>
+                    <TableHead>{t('sales.estimatedValue')}</TableHead>
+                    <TableHead>{t('sales.status')}</TableHead>
+                    <TableHead>{t('sales.priority')}</TableHead>
+                    <TableHead>{t('sales.assignedTo')}</TableHead>
+                    <TableHead>{t('sales.actions')}</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
-                  {deals.map((deal) => (
-                    <TableRow key={deal.id}>
+                  {filteredLeads
+                    .filter(lead => lead.team === 'b2b')
+                    .slice(0, 10)
+                    .map((lead) => (
+                    <TableRow key={lead.id}>
                       <TableCell>
-                        <div className="font-medium">Deal #{deal.id}</div>
-                        <div className="text-sm text-gray-500">
-                          {leads.find(l => l.id === deal.leadId)?.title}
+                        <div className="flex items-center gap-2">
+                          {getTypeIcon(lead.type)}
+                          <div>
+                            <p className="font-medium">{lead.companyName}</p>
+                            <p className="text-sm text-muted-foreground">{lead.businessType}</p>
+                          </div>
                         </div>
                       </TableCell>
                       <TableCell>
-                        <Badge variant="outline" className="uppercase">
-                          {deal.pipeline}
+                        <Badge variant="outline">{t(`sales.${lead.type}`)}</Badge>
+                      </TableCell>
+                      <TableCell>
+                        <div>
+                          <p className="font-medium">{lead.contact.name}</p>
+                          <p className="text-sm text-muted-foreground">{lead.contact.position}</p>
+                        </div>
+                      </TableCell>
+                      <TableCell>
+                        <div className="font-medium">
+                          EGP {lead.estimatedValue?.toLocaleString() || '0'}
+                        </div>
+                      </TableCell>
+                      <TableCell>
+                        <Badge className={getStatusColor(lead.status)}>
+                          {t(`sales.${lead.status}`)}
                         </Badge>
                       </TableCell>
                       <TableCell>
-                        <Badge className={getStatusColor(deal.stage)}>
-                          {t(deal.stage)}
+                        <Badge className={getPriorityColor(lead.priority)}>
+                          {t(`sales.${lead.priority}`)}
                         </Badge>
-                      </TableCell>
-                      <TableCell className="font-medium">
-                        {deal.valueEGP.toLocaleString()} EGP
                       </TableCell>
                       <TableCell>
                         <div className="flex items-center gap-2">
-                          <div className="w-16 bg-gray-200 rounded-full h-2">
-                            <div 
-                              className="bg-primary h-2 rounded-full" 
-                              style={{ width: `${deal.probability}%` }}
-                            ></div>
+                          <div className="h-6 w-6 rounded-full bg-primary/10 flex items-center justify-center">
+                            <span className="text-xs font-bold text-primary">
+                              {lead.assignedTo?.charAt(0) || '?'}
+                            </span>
                           </div>
-                          <span className="text-sm">{deal.probability}%</span>
+                          <span className="text-sm">{lead.assignedTo || t('sales.unassigned')}</span>
                         </div>
                       </TableCell>
-                      <TableCell>{deal.assignedTo}</TableCell>
-                      <TableCell>{new Date(deal.createdAt).toLocaleDateString()}</TableCell>
                       <TableCell>
                         <DropdownMenu>
                           <DropdownMenuTrigger asChild>
@@ -496,16 +656,20 @@ export default function SalesPage() {
                           </DropdownMenuTrigger>
                           <DropdownMenuContent>
                             <DropdownMenuItem>
-                              <Eye className="h-4 w-4 mr-2" />
-                              {t('view')}
+                              <Eye className="mr-2 h-4 w-4" />
+                              {t('sales.view')}
                             </DropdownMenuItem>
                             <DropdownMenuItem>
-                              <Edit className="h-4 w-4 mr-2" />
-                              {t('edit')}
+                              <Edit className="mr-2 h-4 w-4" />
+                              {t('sales.edit')}
                             </DropdownMenuItem>
                             <DropdownMenuItem>
-                              <FileText className="h-4 w-4 mr-2" />
-                              {t('createContract')}
+                              <FileText className="mr-2 h-4 w-4" />
+                              {t('sales.createProposal')}
+                            </DropdownMenuItem>
+                            <DropdownMenuItem>
+                              <Settings className="mr-2 h-4 w-4" />
+                              {t('sales.configureDashboard')}
                             </DropdownMenuItem>
                           </DropdownMenuContent>
                         </DropdownMenu>
@@ -520,98 +684,54 @@ export default function SalesPage() {
 
         {/* Contracts Tab */}
         <TabsContent value="contracts" className="space-y-6">
-          <Card className="shadow-2xs rounded-[0.625rem] font-sans">
-            <CardHeader>
-              <CardTitle className="flex items-center justify-between">
-                {t('contracts')}
-                <Button size="sm">
-                  <Plus className="h-4 w-4 mr-2" />
-                  {t('newContract')}
-                </Button>
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <Table>
-                <TableHeader>
-                  <TableRow>
-                    <TableHead>{t('contract')}</TableHead>
-                    <TableHead>{t('lead')}</TableHead>
-                    <TableHead>{t('template')}</TableHead>
-                    <TableHead>{t('status')}</TableHead>
-                    <TableHead>{t('created')}</TableHead>
-                    <TableHead className="w-[50px]">{t('actions')}</TableHead>
-                  </TableRow>
-                </TableHeader>
-                <TableBody>
-                  {contracts.map((contract) => (
-                    <TableRow key={contract.id}>
-                      <TableCell>
-                        <div className="font-medium">Contract #{contract.id}</div>
-                      </TableCell>
-                      <TableCell>
-                        {leads.find(l => l.id === contract.leadId)?.title}
-                      </TableCell>
-                      <TableCell>
-                        <Badge variant="outline">
-                          {contract.templateId}
-                        </Badge>
-                      </TableCell>
-                      <TableCell>
-                        <Badge className={getStatusColor(contract.status)}>
-                          {t(contract.status)}
-                        </Badge>
-                      </TableCell>
-                      <TableCell>{new Date(contract.createdAt).toLocaleDateString()}</TableCell>
-                      <TableCell>
-                        <DropdownMenu>
-                          <DropdownMenuTrigger asChild>
-                            <Button variant="ghost" size="sm">
-                              <MoreHorizontal className="h-4 w-4" />
-                            </Button>
-                          </DropdownMenuTrigger>
-                          <DropdownMenuContent>
-                            <DropdownMenuItem>
-                              <Eye className="h-4 w-4 mr-2" />
-                              {t('view')}
-                            </DropdownMenuItem>
-                            <DropdownMenuItem>
-                              <Download className="h-4 w-4 mr-2" />
-                              {t('download')}
-                            </DropdownMenuItem>
-                            <DropdownMenuItem>
-                              <Edit className="h-4 w-4 mr-2" />
-                              {t('edit')}
-                            </DropdownMenuItem>
-                          </DropdownMenuContent>
-                        </DropdownMenu>
-                      </TableCell>
-                    </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
-            </CardContent>
-          </Card>
+          <div className="flex items-center justify-between">
+            <div>
+              <h2 className="text-2xl font-bold text-foreground">{t('sales.contracts')}</h2>
+              <p className="text-muted-foreground">{t('sales.contractsDescription')}</p>
+            </div>
+            <div className="flex items-center space-x-2">
+              <Button variant="outline">
+                <FileText className="mr-2 h-4 w-4" />
+                {t('sales.newContract')}
+              </Button>
+            </div>
+          </div>
+
+          <ContractStatus />
         </TabsContent>
 
-        {/* Partners Tab */}
-        <TabsContent value="partners" className="space-y-6">
-          <Card className="shadow-2xs rounded-[0.625rem] font-sans">
-            <CardHeader>
-              <CardTitle className="flex items-center justify-between">
-                {t('partners')}
-                <Button size="sm">
-                  <Plus className="h-4 w-4 mr-2" />
-                  {t('newPartner')}
-                </Button>
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="text-center py-8 text-gray-500">
-                <Handshake className="h-12 w-12 mx-auto mb-4 text-gray-400" />
-                <p>{t('partnersComingSoon')}</p>
-              </div>
-            </CardContent>
-          </Card>
+        {/* Activities Tab */}
+        <TabsContent value="activities" className="space-y-6">
+          <div className="flex items-center justify-between">
+            <div>
+              <h2 className="text-2xl font-bold text-foreground">{t('sales.activities')}</h2>
+              <p className="text-muted-foreground">{t('sales.activitiesDescription')}</p>
+            </div>
+          </div>
+
+          <CommunicationHistory />
+        </TabsContent>
+
+        {/* Reports Tab */}
+        <TabsContent value="reports" className="space-y-6">
+          <div className="flex items-center justify-between">
+            <div>
+              <h2 className="text-2xl font-bold text-foreground">{t('sales.reports')}</h2>
+              <p className="text-muted-foreground">{t('sales.reportsDescription')}</p>
+            </div>
+            <div className="flex items-center space-x-2">
+              <Button variant="outline">
+                <Download className="mr-2 h-4 w-4" />
+                {t('sales.exportReport')}
+              </Button>
+            </div>
+          </div>
+
+          <div className="grid gap-6 md:grid-cols-2">
+            <LeadConversion />
+            <RevenueForecast />
+            <TeamPerformance />
+          </div>
         </TabsContent>
       </Tabs>
     </div>
