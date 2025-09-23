@@ -104,9 +104,7 @@ export function Sidebar({ isCollapsed, onToggle }: SidebarProps) {
   return (
     <div
       className={cn(
-        "flex flex-col h-full bg-sidebar border-border transition-all duration-300 font-sans focus-within:ring-2 focus-within:ring-ring focus-within:ring-offset-2 focus-within:ring-offset-background",
-        // RTL-aware border positioning
-        language === 'ar' ? "border-l" : "border-r",
+        "flex flex-col h-full bg-sidebar border-border transition-all duration-300 font-sans focus-within:ring-2 focus-within:ring-ring focus-within:ring-offset-2 focus-within:ring-offset-background sidebar-border",
         isCollapsed ? "w-16" : "w-64"
       )}
     >

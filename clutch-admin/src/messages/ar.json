@@ -876,7 +876,16 @@
   "theme": {
     "light": "فاتح",
     "dark": "داكن",
-    "system": "النظام"
+    "system": "النظام",
+    "toggle": "تبديل المظهر"
+  },
+  "jobTitles": {
+    "head_administrator": "الرئيس التنفيذي",
+    "admin": "مدير النظام",
+    "manager": "مدير",
+    "supervisor": "مشرف",
+    "employee": "موظف",
+    "viewer": "مشاهد"
   },
   "language": {
     "english": "الإنجليزية",
@@ -1176,6 +1185,9 @@
     "clientsShowingGrowth": "{growing} من أصل {total} عملاء يظهرون نمواً إيجابياً",
     "averageClientActivity": "متوسط مستوى نشاط العملاء: {percentage}%",
     "totalEnterpriseRevenue": "إجمالي إيرادات المؤسسة: {amount} جنيه",
+    "sidebar": {
+      "collapse": "طي"
+    },
     "aiRecommendationFeed": {
       "title": "تغذية توصيات الذكاء الاصطناعي",
       "description": "اقتراحات إجراءات مع التأثير المتوقع والعائد على الاستثمار",

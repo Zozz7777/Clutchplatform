@@ -53,6 +53,20 @@ export function Header({ onMenuToggle }: HeaderProps) {
     router.push("/settings");
   };
 
+  // Function to parse user name and get proper display format
+  const getUserDisplayInfo = () => {
+    if (!user) return { displayName: '', jobTitle: '' };
+    
+    // Parse name - remove role suffix if present (e.g., "Ziad - CEO" -> "Ziad")
+    const nameParts = user.name.split(' - ');
+    const displayName = nameParts[0] || user.name;
+    
+    // Get translated job title
+    const jobTitle = t(`jobTitles.${user.role}`) || user.role;
+    
+    return { displayName, jobTitle };
+  };
+
   // Fetch real notifications
   useEffect(() => {
     const fetchNotifications = async () => {
@@ -166,8 +180,8 @@ export function Header({ onMenuToggle }: HeaderProps) {
                 <User className="h-4 w-4 text-primary-foreground" />
               </div>
               <div className="hidden md:block text-left">
-                <p className="text-sm font-medium">{user?.name}</p>
-                <p className="text-xs text-muted-foreground">{user?.role}</p>
+                <p className="text-sm font-medium">{getUserDisplayInfo().displayName}</p>
+                <p className="text-xs text-muted-foreground">{getUserDisplayInfo().jobTitle}</p>
               </div>
             </Button>
           </DropdownMenuTrigger>

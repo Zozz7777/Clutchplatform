@@ -117,7 +117,9 @@ export function LanguageProvider({ children }: LanguageProviderProps) {
       'navigation.apiDocs': 'API Docs',
       'navigation.assets': 'Assets',
       'navigation.vendors': 'Vendors',
-      'navigation.systemHealth': 'System Health',
+        'navigation.systemHealth': 'System Health',
+        // Sidebar translations
+        'sidebar.collapse': 'Collapse',
       
       // Dashboard specific translations
       'dashboard.title': 'Dashboard',

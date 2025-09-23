@@ -173,7 +173,7 @@ export function RevenueMarginCard({ className = '' }: RevenueMarginCardProps) {
             <p className="text-sm text-muted-foreground">{t('widgets.monthlyRevenue')}</p>
             <div className="mt-2">
               <Badge variant="secondary" className="text-xs">
-                {marginData.revenueGrowth > 0 ? '+' : ''}{marginData.revenueGrowth.toFixed(1)}% vs last month
+{marginData.revenueGrowth > 0 ? '+' : ''}{marginData.revenueGrowth.toFixed(1)}% {t('widgets.vsLastMonth')}
               </Badge>
             </div>
           </div>
@@ -181,10 +181,10 @@ export function RevenueMarginCard({ className = '' }: RevenueMarginCardProps) {
             <p className="text-3xl font-bold text-destructive">
               {marginData.costs.toLocaleString()} EGP
             </p>
-            <p className="text-sm text-muted-foreground">Monthly Costs</p>
+            <p className="text-sm text-muted-foreground">{t('widgets.monthlyCosts')}</p>
             <div className="mt-2">
               <Badge variant="secondary" className="text-xs">
-                {marginData.costGrowth > 0 ? '+' : ''}{marginData.costGrowth.toFixed(1)}% vs last month
+{marginData.costGrowth > 0 ? '+' : ''}{marginData.costGrowth.toFixed(1)}% {t('widgets.vsLastMonth')}
               </Badge>
             </div>
           </div>
@@ -201,7 +201,7 @@ export function RevenueMarginCard({ className = '' }: RevenueMarginCardProps) {
               {trend.text}
             </Badge>
           </div>
-          <p className="text-sm text-muted-foreground">Net Profit Margin</p>
+          <p className="text-sm text-muted-foreground">{t('widgets.netProfitMargin')}</p>
           <div className="mt-3">
             <Progress value={marginData.margin} className="h-2" />
           </div>
@@ -211,7 +211,7 @@ export function RevenueMarginCard({ className = '' }: RevenueMarginCardProps) {
         <div className="space-y-3">
           <h4 className="text-sm font-medium text-card-foreground flex items-center space-x-2">
             <PieChart className="h-4 w-4" />
-            <span>Cost Breakdown</span>
+<span>{t('widgets.costBreakdown')}</span>
           </h4>
           
           <div className="space-y-2">
@@ -243,12 +243,12 @@ export function RevenueMarginCard({ className = '' }: RevenueMarginCardProps) {
         <div className="space-y-3">
           <h4 className="text-sm font-medium text-card-foreground flex items-center space-x-2">
             <BarChart3 className="h-4 w-4" />
-            <span>Revenue vs Costs</span>
+<span>{t('widgets.revenueVsCosts')}</span>
           </h4>
           
           <div className="space-y-2">
             <div className="flex items-center justify-between">
-              <span className="text-sm text-muted-foreground">Revenue</span>
+<span className="text-sm text-muted-foreground">{t('widgets.revenue')}</span>
               <span className="text-sm font-medium text-card-foreground">{marginData.revenue.toLocaleString()} EGP</span>
             </div>
             <div className="w-full bg-muted rounded-full h-2">
@@ -259,7 +259,7 @@ export function RevenueMarginCard({ className = '' }: RevenueMarginCardProps) {
             </div>
             
             <div className="flex items-center justify-between">
-              <span className="text-sm text-muted-foreground">Costs</span>
+<span className="text-sm text-muted-foreground">{t('widgets.costs')}</span>
               <span className="text-sm font-medium text-card-foreground">{marginData.costs.toLocaleString()} EGP</span>
             </div>
             <div className="w-full bg-muted rounded-full h-2">
@@ -273,16 +273,16 @@ export function RevenueMarginCard({ className = '' }: RevenueMarginCardProps) {
 
         {/* Insights */}
         <div className="p-3 bg-primary/10 rounded-[0.625rem] border border-primary/20">
-          <h5 className="text-sm font-medium text-primary mb-2">💡 Insights</h5>
+<h5 className="text-sm font-medium text-primary mb-2">💡 {t('widgets.insights')}</h5>
           <ul className="text-xs text-primary/80 space-y-1">
             {marginData.margin >= 30 && (
-              <li>• Excellent profit margin - consider expansion opportunities</li>
+<li>• {t('widgets.excellentProfitMargin')}</li>
             )}
             {marginData.margin < 30 && marginData.margin >= 15 && (
-              <li>• Good margin - monitor cost trends closely</li>
+<li>• {t('widgets.goodMargin')}</li>
             )}
             {marginData.margin < 15 && (
-              <li>• Margin needs improvement - review cost optimization strategies</li>
+<li>• {t('widgets.marginNeedsImprovement')}</li>
             )}
             <li>• Fleet operations represent {(costBreakdown[0].percentage).toFixed(0)}% of total costs</li>
             <li>• Infrastructure costs are stable at {marginData.breakdown.infrastructure.toLocaleString()} EGP/month</li>

@@ -12,6 +12,24 @@
     direction: ltr;
   }
 
+  /* RTL Layout Support for main layout */
+  [dir="rtl"] .main-layout {
+    flex-direction: row-reverse;
+  }
+  
+  [dir="ltr"] .main-layout {
+    flex-direction: row;
+  }
+
+  /* RTL Sidebar border positioning */
+  [dir="rtl"] .sidebar-border {
+    border-left: 1px solid var(--border);
+  }
+  
+  [dir="ltr"] .sidebar-border {
+    border-right: 1px solid var(--border);
+  }
+
   :root {
     /* Light theme colors from design.json - exact OKLCH values */
     --background: oklch(1 0 0);

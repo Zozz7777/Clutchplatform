@@ -545,7 +545,16 @@
   "theme": {
     "light": "Light",
     "dark": "Dark",
-    "system": "System"
+    "system": "System",
+    "toggle": "Toggle theme"
+  },
+  "jobTitles": {
+    "head_administrator": "Chief Executive Officer",
+    "admin": "Administrator",
+    "manager": "Manager",
+    "supervisor": "Supervisor",
+    "employee": "Employee",
+    "viewer": "Viewer"
   },
   "language": {
     "english": "English",

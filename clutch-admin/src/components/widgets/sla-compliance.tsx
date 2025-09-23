@@ -290,7 +290,7 @@ export function SLACompliance({ className = '' }: SLAComplianceProps) {
               {slaData.averageMTTR.toFixed(0)} min
             </span>
             <Badge variant="outline" className="text-xs">
-              Average MTTR
+              {t('systemHealth.widgetLabels.averageMTTR')}
             </Badge>
           </div>
           <p className="text-sm text-muted-foreground">{t('sla.meanTimeToRecovery')}</p>
@@ -300,11 +300,11 @@ export function SLACompliance({ className = '' }: SLAComplianceProps) {
         <div className="flex space-x-2 pt-2">
           <Button variant="outline" size="sm" className="flex-1">
             <Eye className="h-4 w-4 mr-2" />
-            View Details
+            {t('systemHealth.widgetLabels.viewDetails')}
           </Button>
           <Button variant="outline" size="sm" className="flex-1">
             <Download className="h-4 w-4 mr-2" />
-            Export Report
+            {t('systemHealth.widgetLabels.exportReport')}
           </Button>
         </div>
 
@@ -317,7 +317,7 @@ export function SLACompliance({ className = '' }: SLAComplianceProps) {
             <li>• {slaData.statusDistribution.warning || 0} services at warning</li>
             <li>• {slaData.statusDistribution.breach || 0} services in breach</li>
             <li>• Total incidents: {slaData.totalIncidents}</li>
-            <li>• Average MTTR: {slaData.averageMTTR.toFixed(0)} minutes</li>
+            <li>• {t('systemHealth.widgetLabels.averageMTTR')}: {slaData.averageMTTR.toFixed(0)} {t('common.minutes')}</li>
             {slaData.statusDistribution.breach > 0 && (
               <li>• {slaData.statusDistribution.breach} services in breach - immediate attention needed</li>
             )}

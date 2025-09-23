@@ -184,6 +184,23 @@ export default function SystemHealthPage() {
     }
   };
 
+  const getServiceTranslationKey = (serviceName: string) => {
+    const serviceMap: Record<string, string> = {
+      'API Server': 'apiServer',
+      'Database': 'database',
+      'Redis Cache': 'redisCache',
+      'Email Service': 'emailService',
+      'Load Balancer': 'loadBalancer',
+      'Queue Workers': 'queueWorkers',
+      'Background Jobs': 'backgroundJobs',
+      'AWS S3': 'awsS3',
+      'Stripe API': 'stripeApi',
+      'SendGrid': 'sendGrid',
+      'MongoDB Atlas': 'mongoDbAtlas'
+    };
+    return serviceMap[serviceName] || serviceName.toLowerCase().replace(/\s+/g, '');
+  };
+
   if (isLoading) {
     return (
       <div className="flex items-center justify-center min-h-[400px]">
@@ -290,7 +307,7 @@ export default function SystemHealthPage() {
                     <div className="flex items-center space-x-3">
                       {getStatusIcon(service.status)}
                       <div>
-                        <CardTitle className="font-sans">{t(`systemHealth.services.${service.name.toLowerCase().replace(/\s+/g, '')}`) || service.name}</CardTitle>
+                        <CardTitle className="font-sans">{t(`systemHealth.services.${getServiceTranslationKey(service.name)}`) || service.name}</CardTitle>
                         <CardDescription className="font-sans">
                           {t('systemHealth.lastChecked')}: {new Date(service.lastCheck).toLocaleString()}
                         </CardDescription>
@@ -357,7 +374,7 @@ export default function SystemHealthPage() {
                       <div className="flex items-center space-x-3">
                         {getStatusIcon(dep.status)}
                   <div>
-                          <h3 className="font-medium font-sans">{t(`systemHealth.externalServices.${dep.name.toLowerCase().replace(/\s+/g, '')}`) || dep.name}</h3>
+                          <h3 className="font-medium font-sans">{t(`systemHealth.externalServices.${getServiceTranslationKey(dep.name)}`) || dep.name}</h3>
                           <p className="text-sm text-muted-foreground font-sans">
                             {dep.responseTime > 0 ? `${dep.responseTime}ms` : t('systemHealth.unavailable')}
                     </p>
@@ -386,7 +403,7 @@ export default function SystemHealthPage() {
                       <div className="flex items-center space-x-3">
                         {getStatusIcon(service.status)}
                   <div>
-                          <h3 className="font-medium font-sans">{t(`systemHealth.services.${service.name.toLowerCase().replace(/\s+/g, '')}`) || service.name}</h3>
+                          <h3 className="font-medium font-sans">{t(`systemHealth.services.${getServiceTranslationKey(service.name)}`) || service.name}</h3>
                           <p className="text-sm text-muted-foreground font-sans">
                             {t('systemHealth.instances', { count: service.instances })}
                     </p>

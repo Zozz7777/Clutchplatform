@@ -25,10 +25,10 @@ export function LanguageSwitcher() {
           variant="ghost"
           size="sm"
           className="h-8 w-8 px-0"
-          aria-label="Language"
+          aria-label={t('header.language')}
         >
           <Languages className="h-4 w-4" />
-          <span className="sr-only">Language</span>
+          <span className="sr-only">{t('header.language')}</span>
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end" className="w-40">
