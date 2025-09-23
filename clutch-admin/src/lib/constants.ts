@@ -485,7 +485,7 @@ export const NAVIGATION_ITEMS = [
   },
   {
     title: "Sales",
-    href: "/crm",
+    href: "/sales",
     icon: "TrendingUp",
     permissions: [PERMISSIONS.VIEW_CRM],
   },
