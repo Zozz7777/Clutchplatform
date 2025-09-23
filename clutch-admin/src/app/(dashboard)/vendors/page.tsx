@@ -53,6 +53,7 @@ import {
 import { formatCurrency } from "@/lib/utils";
 import { productionApi } from "@/lib/production-api";
 import { useLanguage } from "@/contexts/language-context";
+import { DebugTranslation } from "@/components/debug-translation";
 
 interface Vendor {
   _id: string;

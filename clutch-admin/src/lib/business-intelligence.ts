@@ -542,45 +542,6 @@ class BusinessIntelligenceService {
     }
   }
 
-  public async getOnboardingCompletion(): Promise<{
-    total: number;
-    completed: number;
-    completionRate: number;
-    steps: Array<{
-      step: string;
-      completed: number;
-      rate: number;
-    }>;
-  }> {
-    try {
-      const users = await productionApi.getUsers();
-      const total = users?.length || 0;
-      const completed = Math.floor(total * 0.75); // 75% completion rate
-      
-      const steps = [
-        { step: 'Account Setup', completed: Math.floor(total * 0.95), rate: 95 },
-        { step: 'Profile Completion', completed: Math.floor(total * 0.85), rate: 85 },
-        { step: 'First Fleet Addition', completed: Math.floor(total * 0.70), rate: 70 },
-        { step: 'First Report Generated', completed: Math.floor(total * 0.60), rate: 60 },
-        { step: 'Team Invitation', completed: Math.floor(total * 0.45), rate: 45 }
-      ];
-
-      return {
-        total,
-        completed,
-        completionRate: total > 0 ? (completed / total) * 100 : 0,
-        steps
-      };
-    } catch (error) {
-      errorHandler.handleError(error as Error, { component: 'BusinessIntelligence', action: 'Get onboarding completion' });
-      return {
-        total: 0,
-        completed: 0,
-        completionRate: 0,
-        steps: []
-      };
-    }
-  }
 
   // Fleet Analytics
   public async getFleetUtilization(): Promise<{
