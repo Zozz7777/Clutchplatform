@@ -24,9 +24,12 @@ interface ComplianceRadarProps {
   className?: string;
 }
 
-export function ComplianceRadar({ className = '' }: ComplianceRadarProps) {
+export function ComplianceRadar(props: any) {
   console.log('ComplianceRadar component initializing...');
-  console.log('ComplianceRadar props:', { className });
+  console.log('ComplianceRadar ALL props received:', props);
+  console.log('ComplianceRadar props keys:', Object.keys(props || {}));
+  
+  const { className = '' } = props;
   
   try {
     const { t } = useLanguage();
