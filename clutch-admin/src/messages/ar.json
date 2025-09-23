@@ -21,7 +21,60 @@
     "reset": "إعادة تعيين",
     "confirm": "تأكيد",
     "yes": "نعم",
-    "no": "لا"
+    "no": "لا",
+    "view": "عرض",
+    "manage": "إدارة"
+  },
+  "cms": {
+    "help": {
+      "title": "نظام إدارة مقالات المساعدة",
+      "description": "إدارة وتنظيم مقالات المساعدة للمستخدمين",
+      "newArticle": "مقال جديد",
+      "searchPlaceholder": "البحث في المقالات...",
+      "allCategories": "جميع الفئات",
+      "articles": "المقالات",
+      "views": "مشاهدات",
+      "updated": "تم التحديث",
+      "tabs": {
+        "articles": "المقالات",
+        "categories": "الفئات",
+        "analytics": "التحليلات"
+      },
+      "categories": {
+        "gettingStarted": "البدء",
+        "fleetManagement": "إدارة الأسطول",
+        "billing": "الفواتير",
+        "technicalSupport": "الدعم الفني"
+      },
+      "tags": {
+        "basics": "أساسيات",
+        "tutorial": "دروس",
+        "fleet": "أسطول",
+        "management": "إدارة",
+        "billing": "فواتير",
+        "payment": "دفع"
+      },
+      "sampleArticles": {
+        "gettingStarted": {
+          "title": "البدء مع Clutch",
+          "content": "تعلم أساسيات استخدام Clutch لإدارة الأسطول. يغطي هذا الدليل إعداد الحساب والتنقل والميزات الأساسية."
+        },
+        "fleetManagement": {
+          "title": "أفضل ممارسات إدارة الأسطول",
+          "content": "اكتشف كيفية إدارة أسطولك بفعالية مع Clutch. تعلم عن تتبع المركبات وجدولة الصيانة ومراقبة الأداء."
+        },
+        "billing": {
+          "title": "فهم الفواتير الخاصة بك",
+          "content": "كل ما تحتاج لمعرفته حول الفواتير والمدفوعات وإدارة الاشتراكات في Clutch."
+        }
+      },
+      "analytics": {
+        "totalArticles": "إجمالي المقالات",
+        "published": "منشور",
+        "totalViews": "إجمالي المشاهدات",
+        "categories": "الفئات"
+      }
+    }
   },
   "navigation": {
     "dashboard": "لوحة التحكم",
