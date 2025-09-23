@@ -55,14 +55,6 @@ export function LanguageProvider({ children }: LanguageProviderProps) {
   const t = (key: string, params?: any) => {
     // Load translations using the reliable loader
     const translations = getTranslations(language);
-    console.log(`Loading translations for language: ${language}`, {
-      translations,
-      hasVendorManagement: !!translations.vendorManagement,
-      vendorManagementKeys: translations.vendorManagement ? Object.keys(translations.vendorManagement) : 'N/A',
-      allKeys: Object.keys(translations),
-      translationsType: typeof translations,
-      translationsConstructor: translations.constructor.name
-    });
 
     // Fallback translations if loading fails
     const fallbackTranslations: Record<string, string> = {
@@ -407,6 +399,19 @@ export function LanguageProvider({ children }: LanguageProviderProps) {
         'widgets.largestRolePercentage': 'Largest role: {role} ({percentage}%)',
         'widgets.smallestRolePercentage': 'Smallest role: {role} ({percentage}%)',
         'widgets.loadingRoleData': 'Loading role data...',
+        'widgets.atRiskUsers': 'At Risk Users',
+        'widgets.viewAll': 'View All',
+        'widgets.riskPercentage': 'Risk %',
+        'widgets.lastActive': 'Last Active',
+        'widgets.weeksAgo': 'weeks ago',
+        'widgets.factors': 'Factors',
+        'widgets.predictedChurnTimeline': 'Predicted Churn Timeline',
+        'widgets.confidence': 'confidence',
+        'widgets.yesterday': 'Yesterday',
+        'widgets.daysAgo': '{days} days ago',
+        'widgets.weeksAgo': '{weeks} weeks ago',
+        'widgets.monthsAgo': '{months} months ago',
+        'widgets.viewAllUsers': 'View All Users',
       
       // Dashboard specific translations
       'dashboard.title': 'Dashboard',
@@ -1068,21 +1073,6 @@ export function LanguageProvider({ children }: LanguageProviderProps) {
     const foundTranslation = getNestedValue(translations, key);
     let translation = foundTranslation || fallbackTranslations[key] || key;
     
-    // Debug logging
-    console.log(`Translation lookup for key "${key}":`, {
-      language,
-      translationsKeys: Object.keys(translations),
-      key,
-      found: foundTranslation,
-      fallback: fallbackTranslations[key],
-      result: translation,
-      resultType: typeof translation,
-      stepByStep: key.split('.').map((part, i, arr) => {
-        const path = arr.slice(0, i + 1).join('.');
-        const value = getNestedValue(translations, path);
-        return { path, value, type: typeof value };
-      })
-    });
     
     // Ensure we always return a string
     if (typeof translation !== 'string') {

@@ -53,7 +53,6 @@ import {
 import { formatCurrency } from "@/lib/utils";
 import { productionApi } from "@/lib/production-api";
 import { useLanguage } from "@/contexts/language-context";
-import { DebugTranslation } from "@/components/debug-translation";
 
 interface Vendor {
   _id: string;
@@ -564,7 +563,6 @@ export default function VendorManagementPage() {
 
   return (
     <div className="space-y-6">
-      <DebugTranslation />
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>

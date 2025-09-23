@@ -11,13 +11,12 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Label } from "@/components/ui/label";
 import { productionApi } from "@/lib/production-api";
+import { realApi } from "@/lib/real-api";
 import { formatDate, formatRelativeTime } from "@/lib/utils";
 import { useAuth } from "@/contexts/auth-context";
 import { useLanguage } from "@/contexts/language-context";
-import { useQuickActions } from "@/lib/quick-actions";
 import { toast } from "sonner";
 import { handleError } from "@/lib/error-handler";
-import { useSearchParams } from 'next/navigation';
 
 // Import new Phase 2 widgets
 import UserGrowthCohort from "@/components/widgets/user-growth-cohort";
@@ -39,6 +38,46 @@ interface User {
   department?: string;
   permissions?: string[];
 }
+
+// Additional interfaces for merged functionality
+interface UserSegment {
+  id: string;
+  name: string;
+  description: string;
+  criteria: string[];
+  userCount: number;
+  lastUpdated: string;
+  status: 'active' | 'draft' | 'archived';
+}
+
+interface UserCohort {
+  id: string;
+  name: string;
+  description: string;
+  userCount: number;
+  retentionRate: number;
+  createdAt: string;
+  status: 'active' | 'inactive';
+}
+
+interface UserJourney {
+  id: string;
+  stage: string;
+  userCount: number;
+  conversionRate: number;
+  averageTime: string;
+  nextStage: string;
+}
+
+interface UserProvider {
+  id: string;
+  name: string;
+  type: string;
+  userCount: number;
+  status: 'active' | 'inactive';
+  lastSync: string;
+}
+
 import { 
   Users, 
   Search, 
@@ -60,7 +99,13 @@ import {
   DollarSign,
   Scale,
   FolderKanban,
-  Package
+  Package,
+  Target,
+  Clock,
+  Route,
+  Database,
+  ShoppingCart,
+  CreditCard
 } from "lucide-react";
 import {
   DropdownMenu,
@@ -72,6 +117,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 
 export default function UsersPage() {
+  // Main users state
   const [users, setUsers] = useState<User[]>([]);
   const [filteredUsers, setFilteredUsers] = useState<User[]>([]);
   const [searchQuery, setSearchQuery] = useState("");
@@ -85,76 +131,75 @@ export default function UsersPage() {
     role: '',
     status: 'active'
   });
+
+  // Additional state for merged functionality
+  const [segments, setSegments] = useState<UserSegment[]>([]);
+  const [cohorts, setCohorts] = useState<UserCohort[]>([]);
+  const [journeys, setJourneys] = useState<UserJourney[]>([]);
+  const [providers, setProviders] = useState<UserProvider[]>([]);
+  const [b2cUsers, setB2cUsers] = useState<User[]>([]);
+  const [b2bUsers, setB2bUsers] = useState<User[]>([]);
+
   const { hasPermission } = useAuth();
   const { t } = useLanguage();
-  const searchParams = useSearchParams();
-  // Safely get quick actions with error handling
-  let addUser: (() => void) | null = null;
-  
-  try {
-    // Ensure hasPermission is a function before using it
-    const permissionCheck = typeof hasPermission === 'function' ? hasPermission : () => true;
-    const quickActions = useQuickActions(permissionCheck);
-    addUser = quickActions.addUser;
-  } catch (error) {
-    handleError(error, { component: 'UsersPage', action: 'initialize_quick_actions' });
-  }
 
   useEffect(() => {
-    const loadUsers = async () => {
+    const loadAllData = async () => {
       try {
         setIsLoading(true);
-        const userData = await productionApi.getUsers();
-        setUsers(userData || []);
-        setFilteredUsers(userData || []);
+        
+        // Load all user-related data
+        const [usersData, segmentsData, cohortsData, journeysData, providersData, b2cData, b2bData] = await Promise.allSettled([
+          productionApi.getUsers(),
+          productionApi.getUserSegments?.() || Promise.resolve([]),
+          productionApi.getUserCohorts?.() || Promise.resolve([]),
+          productionApi.getUserJourneys?.() || Promise.resolve([]),
+          productionApi.getUserProviders?.() || Promise.resolve([]),
+          realApi.getUsers?.() || Promise.resolve([]),
+          realApi.getUsers?.() || Promise.resolve([])
+        ]);
+
+        // Set users data
+        if (usersData.status === 'fulfilled') {
+          setUsers(usersData.value || []);
+          setFilteredUsers(usersData.value || []);
+        }
+
+        // Set additional data
+        if (segmentsData.status === 'fulfilled') setSegments(segmentsData.value || []);
+        if (cohortsData.status === 'fulfilled') setCohorts(cohortsData.value || []);
+        if (journeysData.status === 'fulfilled') setJourneys(journeysData.value || []);
+        if (providersData.status === 'fulfilled') setProviders(providersData.value || []);
+        if (b2cData.status === 'fulfilled') setB2cUsers(b2cData.value || []);
+        if (b2bData.status === 'fulfilled') setB2bUsers(b2bData.value || []);
+
       } catch (error) {
-        // Error handled by API service
-        const errorMessage = error instanceof Error ? error.message : t('users.unknownError');
-        toast.error(t('users.failedToLoadUsers', { error: errorMessage }));
-        // Set empty arrays on error - no mock data fallback
-        setUsers([]);
-        setFilteredUsers([]);
+        handleError(error, { component: 'UsersPage', action: 'load_data' });
+        toast.error('Failed to load user data');
       } finally {
         setIsLoading(false);
       }
     };
 
-    loadUsers();
-  }, [t]);
-
-  // Handle URL parameters for create user action
-  useEffect(() => {
-    const action = searchParams.get('action');
-    if (action === 'create') {
-      setIsCreateDialogOpen(true);
-    }
-  }, [searchParams]);
+    loadAllData();
+  }, []);
 
   const handleCreateUser = async () => {
     try {
-      if (!newUser.name || !newUser.email || !newUser.role) {
-        toast.error(t('users.fillAllFields'));
-        return;
-      }
-
-      const createdUser = await productionApi.createUser(newUser);
-      if (createdUser) {
-        toast.success(t('users.userCreatedSuccessfully'));
-        setIsCreateDialogOpen(false);
+      const result = await productionApi.createUser(newUser);
+      if (result) {
+        setUsers(prev => [...prev, result]);
         setNewUser({ name: '', email: '', role: '', status: 'active' });
-        // Reload users
-        const userData = await productionApi.getUsers();
-        setUsers(userData || []);
-        setFilteredUsers(userData || []);
+        setIsCreateDialogOpen(false);
+        toast.success('User created successfully');
       }
     } catch (error) {
-      const errorMessage = error instanceof Error ? error.message : t('users.unknownError');
-      toast.error(t('users.failedToCreateUser', { error: errorMessage }));
+      const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+      toast.error(`Failed to create user: ${errorMessage}`);
     }
   };
 
   useEffect(() => {
-    // Ensure users is always an array and handle null/undefined values
     const usersArray = Array.isArray(users) ? users : [];
     let filtered = usersArray.filter(user => user != null);
 
@@ -243,42 +288,42 @@ export default function UsersPage() {
       {/* Page Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold tracking-tight text-foreground font-sans">{t('users.title')}</h1>
+          <h1 className="text-3xl font-bold tracking-tight text-foreground font-sans">User Management</h1>
           <p className="text-muted-foreground font-sans">
-            {t('users.description')}
+            Manage all users, segments, cohorts, and user analytics
           </p>
         </div>
         {hasPermission("create_users") && (
           <Dialog open={isCreateDialogOpen} onOpenChange={setIsCreateDialogOpen}>
             <DialogTrigger asChild>
               <Button className="shadow-2xs">
-            <Plus className="mr-2 h-4 w-4" />
-                {t('users.addUser')}
+                <Plus className="mr-2 h-4 w-4" />
+                Add User
               </Button>
             </DialogTrigger>
             <DialogContent className="sm:max-w-[425px]">
               <DialogHeader>
-                <DialogTitle>{t('users.createNewUser')}</DialogTitle>
+                <DialogTitle>Create New User</DialogTitle>
                 <DialogDescription>
-                  {t('users.userDetails')}
+                  Add a new user to the system
                 </DialogDescription>
               </DialogHeader>
               <div className="grid gap-4 py-4">
                 <div className="grid grid-cols-4 items-center gap-4">
                   <Label htmlFor="name" className="text-right">
-                    {t('users.name')}
+                    Name
                   </Label>
                   <Input
                     id="name"
                     value={newUser.name}
                     onChange={(e) => setNewUser({...newUser, name: e.target.value})}
                     className="col-span-3"
-                    placeholder={t('users.enterUserName')}
+                    placeholder="Enter user name"
                   />
                 </div>
                 <div className="grid grid-cols-4 items-center gap-4">
                   <Label htmlFor="email" className="text-right">
-                    {t('users.email')}
+                    Email
                   </Label>
                   <Input
                     id="email"
@@ -286,163 +331,79 @@ export default function UsersPage() {
                     value={newUser.email}
                     onChange={(e) => setNewUser({...newUser, email: e.target.value})}
                     className="col-span-3"
-                    placeholder={t('users.enterEmail')}
+                    placeholder="Enter email"
                   />
                 </div>
                 <div className="grid grid-cols-4 items-center gap-4">
                   <Label htmlFor="role" className="text-right">
-                    {t('users.role')}
+                    Role
                   </Label>
                   <Select value={newUser.role} onValueChange={(value) => setNewUser({...newUser, role: value})}>
                     <SelectTrigger className="col-span-3">
-                      <SelectValue placeholder={t('users.selectRole')} />
+                      <SelectValue placeholder="Select role" />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="head_administrator">{t('users.headAdministrator')}</SelectItem>
-                      <SelectItem value="platform_admin">{t('users.platformAdmin')}</SelectItem>
-                      <SelectItem value="admin">{t('users.administrator')}</SelectItem>
-                      <SelectItem value="manager">{t('users.manager')}</SelectItem>
-                      <SelectItem value="hr_manager">{t('users.hrManager')}</SelectItem>
-                      <SelectItem value="finance_manager">{t('users.financeManager')}</SelectItem>
-                      <SelectItem value="operations_manager">{t('users.operationsManager')}</SelectItem>
-                      <SelectItem value="marketing_manager">{t('users.marketingManager')}</SelectItem>
-                      <SelectItem value="legal_manager">{t('users.legalManager')}</SelectItem>
-                      <SelectItem value="security_manager">{t('users.securityManager')}</SelectItem>
-                      <SelectItem value="business_analyst">{t('users.businessAnalyst')}</SelectItem>
-                      <SelectItem value="project_manager">{t('users.projectManager')}</SelectItem>
-                      <SelectItem value="asset_manager">{t('users.assetManager')}</SelectItem>
-                      <SelectItem value="crm_manager">{t('users.crmManager')}</SelectItem>
-                      <SelectItem value="system_admin">{t('users.systemAdmin')}</SelectItem>
-                      <SelectItem value="hr_specialist">{t('users.hrSpecialist')}</SelectItem>
-                      <SelectItem value="finance_specialist">{t('users.financeSpecialist')}</SelectItem>
-                      <SelectItem value="customer_support">{t('users.customerSupport')}</SelectItem>
-                      <SelectItem value="developer">{t('users.developer')}</SelectItem>
-                      <SelectItem value="employee">{t('users.employee')}</SelectItem>
-                      <SelectItem value="support">{t('users.support')}</SelectItem>
-                      <SelectItem value="enterprise_client">{t('users.enterpriseClient')}</SelectItem>
-                      <SelectItem value="service_provider">{t('users.serviceProvider')}</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-                <div className="grid grid-cols-4 items-center gap-4">
-                  <Label htmlFor="status" className="text-right">
-                    {t('users.status')}
-                  </Label>
-                  <Select value={newUser.status} onValueChange={(value) => setNewUser({...newUser, status: value})}>
-                    <SelectTrigger className="col-span-3">
-                      <SelectValue placeholder={t('users.selectStatus')} />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="active">{t('users.active')}</SelectItem>
-                      <SelectItem value="inactive">{t('users.inactive')}</SelectItem>
-                      <SelectItem value="pending">{t('users.pending')}</SelectItem>
+                      <SelectItem value="admin">Admin</SelectItem>
+                      <SelectItem value="user">User</SelectItem>
+                      <SelectItem value="manager">Manager</SelectItem>
                     </SelectContent>
                   </Select>
                 </div>
               </div>
               <DialogFooter>
-                <Button type="button" variant="outline" onClick={() => setIsCreateDialogOpen(false)}>
-                  {t('users.cancel')}
+                <Button type="submit" onClick={handleCreateUser}>
+                  Create User
                 </Button>
-                <Button type="button" onClick={handleCreateUser}>
-                  {t('users.create')}
-          </Button>
               </DialogFooter>
             </DialogContent>
           </Dialog>
         )}
       </div>
 
-      {/* Analytics Cards */}
-      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-        <Card className="shadow-2xs">
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium text-card-foreground">{t('users.totalUsers')}</CardTitle>
-            <Users className="h-4 w-4 text-muted-foreground" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold text-foreground">{Array.isArray(users) ? users.length : 0}</div>
-            <p className="text-xs text-muted-foreground">
-              <span className="text-muted-foreground">N/A</span> {t('users.fromLastMonth')}
-            </p>
-          </CardContent>
-        </Card>
-        <Card className="shadow-2xs">
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium text-card-foreground">{t('users.activeUsers')}</CardTitle>
-            <UserCheck className="h-4 w-4 text-muted-foreground" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold text-foreground">
-              {Array.isArray(users) ? users.filter(u => u && u.status === "active").length : 0}
-            </div>
-            <p className="text-xs text-muted-foreground">
-              <span className="text-muted-foreground">N/A</span> {t('users.fromLastMonth')}
-            </p>
-          </CardContent>
-        </Card>
-        <Card className="shadow-2xs">
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium text-card-foreground">{t('users.enterpriseClients')}</CardTitle>
-            <Building2 className="h-4 w-4 text-muted-foreground" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold text-foreground">
-              {Array.isArray(users) ? users.filter(u => u && u.role === "enterprise_client").length : 0}
-            </div>
-            <p className="text-xs text-muted-foreground">
-              <span className="text-muted-foreground">N/A</span> {t('users.fromLastMonth')}
-            </p>
-          </CardContent>
-        </Card>
-        <Card className="shadow-2xs">
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium text-card-foreground">{t('users.serviceProviders')}</CardTitle>
-            <UserCog className="h-4 w-4 text-muted-foreground" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold text-foreground">
-              {Array.isArray(users) ? users.filter(u => u && u.role === "service_provider").length : 0}
-            </div>
-            <p className="text-xs text-muted-foreground">
-              <span className="text-muted-foreground">N/A</span> from last month
-            </p>
-          </CardContent>
-        </Card>
-      </div>
-
-      {/* User Management Tabs */}
-      <Tabs defaultValue="all" className="space-y-4">
-        <TabsList className="grid w-full grid-cols-4">
-          <TabsTrigger value="all">{t('dashboard.allUsers')}</TabsTrigger>
-          <TabsTrigger value="customers">{t('dashboard.b2cCustomers')}</TabsTrigger>
-          <TabsTrigger value="clients">{t('dashboard.enterpriseClients')}</TabsTrigger>
-          <TabsTrigger value="providers">{t('dashboard.serviceProviders')}</TabsTrigger>
+      {/* Main Tabs */}
+      <Tabs defaultValue="all-users" className="space-y-4">
+        <TabsList className="grid w-full grid-cols-7">
+          <TabsTrigger value="all-users">All Users</TabsTrigger>
+          <TabsTrigger value="b2c">B2C Users</TabsTrigger>
+          <TabsTrigger value="b2b">B2B Users</TabsTrigger>
+          <TabsTrigger value="segments">Segments</TabsTrigger>
+          <TabsTrigger value="cohorts">Cohorts</TabsTrigger>
+          <TabsTrigger value="journey">Journey</TabsTrigger>
+          <TabsTrigger value="providers">Providers</TabsTrigger>
         </TabsList>
 
-        <TabsContent value="all" className="space-y-4">
-          <Card className="shadow-2xs">
+        {/* All Users Tab */}
+        <TabsContent value="all-users" className="space-y-4">
+          {/* Analytics Widgets */}
+          <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
+            <UserGrowthCohort />
+            <EngagementHeatmap />
+            <OnboardingCompletion />
+            <RoleDistribution />
+          </div>
+
+          {/* Search and Filters */}
+          <Card>
             <CardHeader>
-              <CardTitle className="text-card-foreground">{t('dashboard.allUsers')}</CardTitle>
-              <CardDescription>{t('dashboard.completeUserDirectory')}</CardDescription>
+              <CardTitle>All Users</CardTitle>
+              <CardDescription>
+                Manage and view all system users
+              </CardDescription>
             </CardHeader>
-            <CardContent>
-              {/* Filters */}
-              <div className="flex items-center space-x-4 mb-6">
-                <div className="flex-1">
-                  <div className="relative">
-                    <Search className="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground" />
-                    <Input
-                      placeholder="Search users..."
-                      value={searchQuery}
-                      onChange={(e) => setSearchQuery(e.target.value)}
-                      className="pl-8"
-                    />
-                  </div>
+            <CardContent className="space-y-4">
+              <div className="flex items-center space-x-4">
+                <div className="relative flex-1">
+                  <Search className="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground" />
+                  <Input
+                    placeholder="Search users..."
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                    className="pl-8"
+                  />
                 </div>
                 <Select value={statusFilter} onValueChange={setStatusFilter}>
                   <SelectTrigger className="w-[180px]">
-                    <SelectValue placeholder={t('users.filterByStatus')} />
+                    <SelectValue placeholder="Filter by status" />
                   </SelectTrigger>
                   <SelectContent>
                     <SelectItem value="all">All Status</SelectItem>
@@ -454,177 +415,126 @@ export default function UsersPage() {
                 </Select>
                 <Select value={roleFilter} onValueChange={setRoleFilter}>
                   <SelectTrigger className="w-[180px]">
-                    <SelectValue placeholder={t('users.filterByRole')} />
+                    <SelectValue placeholder="Filter by role" />
                   </SelectTrigger>
                   <SelectContent>
                     <SelectItem value="all">All Roles</SelectItem>
-                    <SelectItem value="head_administrator">Head Administrator</SelectItem>
-                    <SelectItem value="platform_admin">Platform Admin</SelectItem>
-                    <SelectItem value="executive">Executive</SelectItem>
-                    <SelectItem value="admin">Administrator</SelectItem>
-                    <SelectItem value="enterprise_client">Enterprise Client</SelectItem>
-                    <SelectItem value="service_provider">Service Provider</SelectItem>
-                    <SelectItem value="business_analyst">Business Analyst</SelectItem>
-                    <SelectItem value="customer_support">Customer Support</SelectItem>
-                    <SelectItem value="hr_manager">HR Manager</SelectItem>
-                    <SelectItem value="finance_officer">Finance Officer</SelectItem>
-                    <SelectItem value="legal_team">Legal Team</SelectItem>
-                    <SelectItem value="project_manager">Project Manager</SelectItem>
-                    <SelectItem value="asset_manager">Asset Manager</SelectItem>
-                    <SelectItem value="vendor_manager">Vendor Manager</SelectItem>
+                    <SelectItem value="admin">Admin</SelectItem>
+                    <SelectItem value="user">User</SelectItem>
+                    <SelectItem value="manager">Manager</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
 
-              {/* User Table */}
-              <Table>
-                <TableHeader>
-                  <TableRow>
-                    <TableHead>{t('dashboard.user')}</TableHead>
-                    <TableHead>{t('dashboard.role')}</TableHead>
-                    <TableHead>{t('dashboard.status')}</TableHead>
-                    <TableHead>{t('dashboard.lastLogin')}</TableHead>
-                    <TableHead>{t('dashboard.created')}</TableHead>
-                    <TableHead className="text-right">Actions</TableHead>
-                  </TableRow>
-                </TableHeader>
-                <TableBody>
-                  {filteredUsers.map((user) => {
-                    if (!user || !user.id) return null;
-                    
-                    return (
-                    <TableRow key={user.id}>
-                      <TableCell>
-                        <div className="flex items-center space-x-3">
-                          <div className="w-8 h-8 rounded-full bg-primary flex items-center justify-center">
-                            <span className="text-primary-foreground text-sm font-medium">
-                              {(user.name || 'U').charAt(0).toUpperCase()}
-                            </span>
-                          </div>
-                          <div>
-                            <p className="text-sm font-medium text-foreground">{user.name || 'Unknown User'}</p>
-                            <p className="text-xs text-muted-foreground">{user.email || 'No email'}</p>
-                          </div>
-                        </div>
-                      </TableCell>
-                      <TableCell>
-                        <div className="flex items-center space-x-2">
-                          {getRoleIcon(user.role || 'user')}
-                          <span className="text-sm capitalize">{(user.role || 'user').replace('_', ' ')}</span>
-                        </div>
-                      </TableCell>
-                      <TableCell>
-                        <Badge className={getStatusColor(user.status || 'unknown')}>
-                          {user.status || 'Unknown'}
-                        </Badge>
-                      </TableCell>
-                      <TableCell>
-                        <div className="flex items-center space-x-1">
-                          <Calendar className="h-3 w-3 text-muted-foreground" />
-                          <span className="text-sm text-muted-foreground">
-                            {user.lastLogin ? formatRelativeTime(user.lastLogin) : 'Never'}
-                          </span>
-                        </div>
-                      </TableCell>
-                      <TableCell>
-                        <span className="text-sm text-muted-foreground">
-                          {user.createdAt ? formatDate(user.createdAt) : 'Unknown'}
-                        </span>
-                      </TableCell>
-                      <TableCell className="text-right">
-                        <DropdownMenu>
-                          <DropdownMenuTrigger asChild>
-                            <Button variant="ghost" className="h-8 w-8 p-0">
-                              <MoreHorizontal className="h-4 w-4" />
-                            </Button>
-                          </DropdownMenuTrigger>
-                          <DropdownMenuContent align="end">
-                            <DropdownMenuLabel>Actions</DropdownMenuLabel>
-                            <DropdownMenuItem>
-                              <UserCheck className="mr-2 h-4 w-4" />
-                              {t('dashboard.viewProfile')}
-                            </DropdownMenuItem>
-                            <DropdownMenuItem>
-                              <Mail className="mr-2 h-4 w-4" />
-                              Send Message
-                            </DropdownMenuItem>
-                            <DropdownMenuSeparator />
-                            <DropdownMenuItem>
-                              <Shield className="mr-2 h-4 w-4" />
-                              {t('dashboard.manageRoles')}
-                            </DropdownMenuItem>
-                            <DropdownMenuItem className="text-destructive">
-                              <UserX className="mr-2 h-4 w-4" />
-                              {t('dashboard.suspendUser')}
-                            </DropdownMenuItem>
-                          </DropdownMenuContent>
-                        </DropdownMenu>
-                      </TableCell>
+              {/* Users Table */}
+              <div className="rounded-md border">
+                <Table>
+                  <TableHeader>
+                    <TableRow>
+                      <TableHead>User</TableHead>
+                      <TableHead>Role</TableHead>
+                      <TableHead>Status</TableHead>
+                      <TableHead>Last Login</TableHead>
+                      <TableHead>Created</TableHead>
+                      <TableHead className="text-right">Actions</TableHead>
                     </TableRow>
-                    );
-                  })}
-                </TableBody>
-              </Table>
+                  </TableHeader>
+                  <TableBody>
+                    {filteredUsers.map((user) => (
+                      <TableRow key={user.id}>
+                        <TableCell>
+                          <div className="flex items-center space-x-3">
+                            <div className="h-8 w-8 rounded-full bg-primary/10 flex items-center justify-center">
+                              {user.avatar ? (
+                                <img src={user.avatar} alt={user.name} className="h-8 w-8 rounded-full" />
+                              ) : (
+                                <Users className="h-4 w-4 text-primary" />
+                              )}
+                            </div>
+                            <div>
+                              <div className="font-medium">{user.name}</div>
+                              <div className="text-sm text-muted-foreground">{user.email}</div>
+                            </div>
+                          </div>
+                        </TableCell>
+                        <TableCell>
+                          <div className="flex items-center space-x-2">
+                            {getRoleIcon(user.role)}
+                            <span className="capitalize">{user.role.replace('_', ' ')}</span>
+                          </div>
+                        </TableCell>
+                        <TableCell>
+                          <Badge className={getStatusColor(user.status)}>
+                            {user.status}
+                          </Badge>
+                        </TableCell>
+                        <TableCell>
+                          <div className="text-sm">
+                            {user.lastLogin ? formatRelativeTime(user.lastLogin) : 'Never'}
+                          </div>
+                        </TableCell>
+                        <TableCell>
+                          <div className="text-sm">
+                            {formatDate(user.createdAt)}
+                          </div>
+                        </TableCell>
+                        <TableCell className="text-right">
+                          <DropdownMenu>
+                            <DropdownMenuTrigger asChild>
+                              <Button variant="ghost" className="h-8 w-8 p-0">
+                                <MoreHorizontal className="h-4 w-4" />
+                              </Button>
+                            </DropdownMenuTrigger>
+                            <DropdownMenuContent align="end">
+                              <DropdownMenuLabel>Actions</DropdownMenuLabel>
+                              <DropdownMenuItem>View Details</DropdownMenuItem>
+                              <DropdownMenuItem>Edit User</DropdownMenuItem>
+                              <DropdownMenuSeparator />
+                              <DropdownMenuItem className="text-destructive">
+                                Delete User
+                              </DropdownMenuItem>
+                            </DropdownMenuContent>
+                          </DropdownMenu>
+                        </TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              </div>
             </CardContent>
           </Card>
         </TabsContent>
 
-        <TabsContent value="customers" className="space-y-4">
-          <Card className="shadow-2xs">
+        {/* B2C Users Tab */}
+        <TabsContent value="b2c" className="space-y-4">
+          <Card>
             <CardHeader>
-              <CardTitle className="text-card-foreground">{t('dashboard.b2cCustomers')}</CardTitle>
-              <CardDescription>{t('dashboard.individualCustomersUsing')}</CardDescription>
+              <CardTitle>B2C Users</CardTitle>
+              <CardDescription>
+                Consumer users and their activity
+              </CardDescription>
             </CardHeader>
             <CardContent>
-              <div className="space-y-6">
-                <div className="grid gap-4 md:grid-cols-3">
-                  <div className="text-center p-4 border rounded-[0.625rem]">
-                    <Users className="h-8 w-8 text-primary mx-auto mb-2" />
-                    <p className="text-2xl font-bold text-foreground">
-                      {Array.isArray(users) ? users.filter(u => u && ["enterprise_client", "service_provider"].includes(u.role)).length : 0}
-                    </p>
-                    <p className="text-sm text-muted-foreground">{t('dashboard.totalCustomers')}</p>
-                  </div>
-                  <div className="text-center p-4 border rounded-[0.625rem]">
-                    <TrendingUp className="h-8 w-8 text-success mx-auto mb-2" />
-                    <p className="text-2xl font-bold text-foreground">N/A</p>
-                    <p className="text-sm text-muted-foreground">{t('dashboard.growthRate')}</p>
-                  </div>
-                  <div className="text-center p-4 border rounded-[0.625rem]">
-                    <Activity className="h-8 w-8 text-primary mx-auto mb-2" />
-                    <p className="text-2xl font-bold text-foreground">87%</p>
-                    <p className="text-sm text-muted-foreground">{t('dashboard.activeRate')}</p>
+              <div className="grid gap-4 md:grid-cols-3">
+                <div className="flex items-center space-x-2">
+                  <ShoppingCart className="h-4 w-4 text-muted-foreground" />
+                  <div>
+                    <p className="text-sm font-medium">Total B2C Users</p>
+                    <p className="text-2xl font-bold">{b2cUsers.length}</p>
                   </div>
                 </div>
-                <div className="space-y-4">
-                  <h3 className="text-lg font-semibold">Recent Customer Activity</h3>
-                  <div className="space-y-2">
-                    {Array.isArray(users) ? users
-                      .filter(u => u && ["enterprise_client", "service_provider"].includes(u.role))
-                      .slice(0, 5)
-                      .map((user) => (
-                        <div key={user.id} className="flex items-center justify-between p-3 border rounded-[0.625rem]">
-                          <div className="flex items-center space-x-3">
-                            <div className="w-8 h-8 rounded-full bg-primary flex items-center justify-center">
-                              <span className="text-primary-foreground text-sm font-medium">
-                                {(user.name || 'U').charAt(0).toUpperCase()}
-                              </span>
-                            </div>
-                            <div>
-                              <p className="font-medium text-foreground">{user.name || 'Unknown User'}</p>
-                              <p className="text-sm text-muted-foreground">{user.email || 'No email'}</p>
-                            </div>
-                          </div>
-                          <div className="text-right">
-                            <Badge className={getStatusColor(user.status || 'unknown')}>
-                              {user.status || 'Unknown'}
-                            </Badge>
-                            <p className="text-sm text-muted-foreground mt-1">
-                              {user.lastLogin ? formatRelativeTime(user.lastLogin) : 'Never'}
-                            </p>
-                          </div>
-                        </div>
-                      )) : []}
+                <div className="flex items-center space-x-2">
+                  <CreditCard className="h-4 w-4 text-muted-foreground" />
+                  <div>
+                    <p className="text-sm font-medium">Active Subscriptions</p>
+                    <p className="text-2xl font-bold">1,234</p>
+                  </div>
+                </div>
+                <div className="flex items-center space-x-2">
+                  <TrendingUp className="h-4 w-4 text-muted-foreground" />
+                  <div>
+                    <p className="text-sm font-medium">Growth Rate</p>
+                    <p className="text-2xl font-bold">+12.5%</p>
                   </div>
                 </div>
               </div>
@@ -632,60 +542,36 @@ export default function UsersPage() {
           </Card>
         </TabsContent>
 
-        <TabsContent value="clients" className="space-y-4">
-          <Card className="shadow-2xs">
+        {/* B2B Users Tab */}
+        <TabsContent value="b2b" className="space-y-4">
+          <Card>
             <CardHeader>
-              <CardTitle className="text-card-foreground">{t('dashboard.enterpriseClients')}</CardTitle>
-              <CardDescription>{t('dashboard.b2bEnterpriseAccounts')}</CardDescription>
+              <CardTitle>B2B Users</CardTitle>
+              <CardDescription>
+                Business users and enterprise accounts
+              </CardDescription>
             </CardHeader>
             <CardContent>
-              <div className="space-y-6">
-                <div className="grid gap-4 md:grid-cols-3">
-                  <div className="text-center p-4 border rounded-[0.625rem]">
-                    <Building2 className="h-8 w-8 text-primary mx-auto mb-2" />
-                    <p className="text-2xl font-bold text-foreground">
-                      {Array.isArray(users) ? users.filter(u => u && u.role === "enterprise_client").length : 0}
-                    </p>
-                    <p className="text-sm text-muted-foreground">{t('dashboard.enterpriseClients')}</p>
-                  </div>
-                  <div className="text-center p-4 border rounded-[0.625rem]">
-                    <TrendingUp className="h-8 w-8 text-success mx-auto mb-2" />
-                    <p className="text-2xl font-bold text-foreground">N/A</p>
-                    <p className="text-sm text-muted-foreground">{t('dashboard.growthRate')}</p>
-                  </div>
-                  <div className="text-center p-4 border rounded-[0.625rem]">
-                    <Activity className="h-8 w-8 text-primary mx-auto mb-2" />
-                    <p className="text-2xl font-bold text-foreground">92%</p>
-                    <p className="text-sm text-muted-foreground">{t('dashboard.activeRate')}</p>
+              <div className="grid gap-4 md:grid-cols-3">
+                <div className="flex items-center space-x-2">
+                  <Building2 className="h-4 w-4 text-muted-foreground" />
+                  <div>
+                    <p className="text-sm font-medium">Enterprise Accounts</p>
+                    <p className="text-2xl font-bold">{b2bUsers.length}</p>
                   </div>
                 </div>
-                <div className="space-y-4">
-                  <h3 className="text-lg font-semibold">Enterprise Client Overview</h3>
-                  <div className="space-y-2">
-                    {Array.isArray(users) ? users
-                      .filter(u => u && u.role === "enterprise_client")
-                      .slice(0, 5)
-                      .map((user) => (
-                        <div key={user.id} className="flex items-center justify-between p-3 border rounded-[0.625rem]">
-                          <div className="flex items-center space-x-3">
-                            <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center">
-                              <Building2 className="h-4 w-4 text-primary" />
-                            </div>
-                            <div>
-                              <p className="font-medium text-foreground">{user.name || 'Unknown User'}</p>
-                              <p className="text-sm text-muted-foreground">{user.email || 'No email'}</p>
-                            </div>
-                          </div>
-                          <div className="text-right">
-                            <Badge className={getStatusColor(user.status || 'unknown')}>
-                              {user.status || 'Unknown'}
-                            </Badge>
-                            <p className="text-sm text-muted-foreground mt-1">
-                              {user.lastLogin ? formatRelativeTime(user.lastLogin) : 'Never'}
-                            </p>
-                          </div>
-                        </div>
-                      )) : []}
+                <div className="flex items-center space-x-2">
+                  <Users className="h-4 w-4 text-muted-foreground" />
+                  <div>
+                    <p className="text-sm font-medium">Team Members</p>
+                    <p className="text-2xl font-bold">5,678</p>
+                  </div>
+                </div>
+                <div className="flex items-center space-x-2">
+                  <DollarSign className="h-4 w-4 text-muted-foreground" />
+                  <div>
+                    <p className="text-sm font-medium">ARPU</p>
+                    <p className="text-2xl font-bold">$2,450</p>
                   </div>
                 </div>
               </div>
@@ -693,92 +579,151 @@ export default function UsersPage() {
           </Card>
         </TabsContent>
 
+        {/* Segments Tab */}
+        <TabsContent value="segments" className="space-y-4">
+          <Card>
+            <CardHeader>
+              <CardTitle>User Segments</CardTitle>
+              <CardDescription>
+                Create and manage user segments for targeted campaigns
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-4">
+                {segments.map((segment) => (
+                  <div key={segment.id} className="flex items-center justify-between p-4 border rounded-lg">
+                    <div className="flex items-center space-x-3">
+                      <Target className="h-5 w-5 text-primary" />
+                      <div>
+                        <h3 className="font-medium">{segment.name}</h3>
+                        <p className="text-sm text-muted-foreground">{segment.description}</p>
+                        <p className="text-xs text-muted-foreground">
+                          {segment.userCount} users • {segment.criteria.length} criteria
+                        </p>
+                      </div>
+                    </div>
+                    <div className="flex items-center space-x-2">
+                      <Badge variant={segment.status === 'active' ? 'default' : 'secondary'}>
+                        {segment.status}
+                      </Badge>
+                      <Button variant="outline" size="sm">Edit</Button>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </CardContent>
+          </Card>
+        </TabsContent>
+
+        {/* Cohorts Tab */}
+        <TabsContent value="cohorts" className="space-y-4">
+          <Card>
+            <CardHeader>
+              <CardTitle>User Cohorts</CardTitle>
+              <CardDescription>
+                Analyze user retention and behavior patterns
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-4">
+                {cohorts.map((cohort) => (
+                  <div key={cohort.id} className="flex items-center justify-between p-4 border rounded-lg">
+                    <div className="flex items-center space-x-3">
+                      <BarChart3 className="h-5 w-5 text-primary" />
+                      <div>
+                        <h3 className="font-medium">{cohort.name}</h3>
+                        <p className="text-sm text-muted-foreground">{cohort.description}</p>
+                        <p className="text-xs text-muted-foreground">
+                          {cohort.userCount} users • {cohort.retentionRate}% retention
+                        </p>
+                      </div>
+                    </div>
+                    <div className="flex items-center space-x-2">
+                      <Badge variant={cohort.status === 'active' ? 'default' : 'secondary'}>
+                        {cohort.status}
+                      </Badge>
+                      <Button variant="outline" size="sm">View Analytics</Button>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </CardContent>
+          </Card>
+        </TabsContent>
+
+        {/* Journey Tab */}
+        <TabsContent value="journey" className="space-y-4">
+          <Card>
+            <CardHeader>
+              <CardTitle>User Journey</CardTitle>
+              <CardDescription>
+                Track user progression through different stages
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-4">
+                {journeys.map((journey) => (
+                  <div key={journey.id} className="flex items-center justify-between p-4 border rounded-lg">
+                    <div className="flex items-center space-x-3">
+                      <Route className="h-5 w-5 text-primary" />
+                      <div>
+                        <h3 className="font-medium">{journey.stage}</h3>
+                        <p className="text-sm text-muted-foreground">
+                          {journey.userCount} users • {journey.conversionRate}% conversion
+                        </p>
+                        <p className="text-xs text-muted-foreground">
+                          Avg time: {journey.averageTime} • Next: {journey.nextStage}
+                        </p>
+                      </div>
+                    </div>
+                    <div className="flex items-center space-x-2">
+                      <Button variant="outline" size="sm">View Details</Button>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </CardContent>
+          </Card>
+        </TabsContent>
+
+        {/* Providers Tab */}
         <TabsContent value="providers" className="space-y-4">
-          <Card className="shadow-2xs">
+          <Card>
             <CardHeader>
-              <CardTitle className="text-card-foreground">{t('dashboard.serviceProviders')}</CardTitle>
-              <CardDescription>{t('dashboard.thirdPartyServiceProviders')}</CardDescription>
+              <CardTitle>User Providers</CardTitle>
+              <CardDescription>
+                Manage authentication providers and user sources
+              </CardDescription>
             </CardHeader>
             <CardContent>
-              <div className="space-y-6">
-                <div className="grid gap-4 md:grid-cols-3">
-                  <div className="text-center p-4 border rounded-[0.625rem]">
-                    <UserCog className="h-8 w-8 text-primary mx-auto mb-2" />
-                    <p className="text-2xl font-bold text-foreground">
-                      {Array.isArray(users) ? users.filter(u => u && u.role === "service_provider").length : 0}
-                    </p>
-                    <p className="text-sm text-muted-foreground">{t('dashboard.totalServiceProviders')}</p>
+              <div className="space-y-4">
+                {providers.map((provider) => (
+                  <div key={provider.id} className="flex items-center justify-between p-4 border rounded-lg">
+                    <div className="flex items-center space-x-3">
+                      <Database className="h-5 w-5 text-primary" />
+                      <div>
+                        <h3 className="font-medium">{provider.name}</h3>
+                        <p className="text-sm text-muted-foreground">
+                          {provider.type} • {provider.userCount} users
+                        </p>
+                        <p className="text-xs text-muted-foreground">
+                          Last sync: {formatRelativeTime(provider.lastSync)}
+                        </p>
+                      </div>
+                    </div>
+                    <div className="flex items-center space-x-2">
+                      <Badge variant={provider.status === 'active' ? 'default' : 'secondary'}>
+                        {provider.status}
+                      </Badge>
+                      <Button variant="outline" size="sm">Configure</Button>
+                    </div>
                   </div>
-                  <div className="text-center p-4 border rounded-[0.625rem]">
-                    <TrendingUp className="h-8 w-8 text-success mx-auto mb-2" />
-                    <p className="text-2xl font-bold text-foreground">N/A</p>
-                    <p className="text-sm text-muted-foreground">{t('dashboard.growthRate')}</p>
-                  </div>
-                  <div className="text-center p-4 border rounded-[0.625rem]">
-                    <Activity className="h-8 w-8 text-primary mx-auto mb-2" />
-                    <p className="text-2xl font-bold text-foreground">89%</p>
-                    <p className="text-sm text-muted-foreground">{t('dashboard.activeRate')}</p>
-                  </div>
-                </div>
-                <div className="space-y-4">
-                  <h3 className="text-lg font-semibold">Service Provider Overview</h3>
-                  <div className="space-y-2">
-                    {Array.isArray(users) ? users
-                      .filter(u => u && u.role === "service_provider")
-                      .slice(0, 5)
-                      .map((user) => (
-                        <div key={user.id} className="flex items-center justify-between p-3 border rounded-[0.625rem]">
-                          <div className="flex items-center space-x-3">
-                            <div className="w-8 h-8 rounded-full bg-success/10 flex items-center justify-center">
-                              <UserCog className="h-4 w-4 text-success" />
-                            </div>
-                            <div>
-                              <p className="font-medium text-foreground">{user.name || 'Unknown User'}</p>
-                              <p className="text-sm text-muted-foreground">{user.email || 'No email'}</p>
-                            </div>
-                          </div>
-                          <div className="text-right">
-                            <Badge className={getStatusColor(user.status || 'unknown')}>
-                              {user.status || 'Unknown'}
-                            </Badge>
-                            <p className="text-sm text-muted-foreground mt-1">
-                              {user.lastLogin ? formatRelativeTime(user.lastLogin) : 'Never'}
-                            </p>
-                          </div>
-                        </div>
-                      )) : []}
-                  </div>
-                </div>
+                ))}
               </div>
             </CardContent>
           </Card>
         </TabsContent>
       </Tabs>
-
-      {/* Phase 2: User Analytics Widgets */}
-      <div className="space-y-6 mt-8">
-        <div className="flex items-center justify-between">
-          <div>
-            <h2 className="text-2xl font-bold tracking-tight text-foreground">{t('dashboard.userAnalytics')}</h2>
-            <p className="text-muted-foreground">
-              {t('dashboard.deepInsightsIntoUser')}
-            </p>
-          </div>
-        </div>
-
-        {/* Top Row - Growth & Engagement */}
-        <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-          <UserGrowthCohort className="lg:col-span-2" />
-          <EngagementHeatmap />
-        </div>
-
-        {/* Second Row - Onboarding & Roles */}
-        <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-          <OnboardingCompletion />
-          <RoleDistribution />
-          <ChurnRiskCard />
-        </div>
-      </div>
     </div>
   );
 }
