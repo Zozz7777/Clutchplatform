@@ -791,31 +791,31 @@ export default function VendorManagementPage() {
                       <DropdownMenuContent align="end">
                         <DropdownMenuItem onClick={() => setSelectedVendor(vendor)}>
                           <Eye className="mr-2 h-4 w-4" />
-                          View Details
+                          {t('vendorManagement.viewDetails')}
                         </DropdownMenuItem>
                         <DropdownMenuItem>
                           <Edit className="mr-2 h-4 w-4" />
-                          Edit Vendor
+                          {t('vendorManagement.editVendor')}
                         </DropdownMenuItem>
                         <DropdownMenuItem>
                           <FileText className="mr-2 h-4 w-4" />
-                          View Contracts
+                          {t('vendorManagement.viewContracts')}
                         </DropdownMenuItem>
                         <DropdownMenuItem>
                           <MessageSquare className="mr-2 h-4 w-4" />
-                          Communication History
+                          {t('vendorManagement.communicationHistory')}
                         </DropdownMenuItem>
                         <DropdownMenuItem>
                           <BarChart3 className="mr-2 h-4 w-4" />
-                          Performance Analytics
+                          {t('vendorManagement.performanceAnalytics')}
                         </DropdownMenuItem>
                         <DropdownMenuItem>
                           <Award className="mr-2 h-4 w-4" />
-                          Rate Vendor
+                          {t('vendorManagement.rateVendor')}
                         </DropdownMenuItem>
                         <DropdownMenuItem className="text-destructive">
                           <Trash2 className="mr-2 h-4 w-4" />
-                          Delete Vendor
+                          {t('vendorManagement.deleteVendor')}
                         </DropdownMenuItem>
                       </DropdownMenuContent>
                     </DropdownMenu>
@@ -830,9 +830,9 @@ export default function VendorManagementPage() {
       {/* Recent Contracts */}
       <Card>
         <CardHeader>
-          <CardTitle>Recent Contracts</CardTitle>
+          <CardTitle>{t('vendorManagement.recentContracts')}</CardTitle>
           <CardDescription>
-            Latest contract activities and status updates
+            {t('vendorManagement.recentContractsDescription')}
           </CardDescription>
         </CardHeader>
         <CardContent>
@@ -867,67 +867,67 @@ export default function VendorManagementPage() {
       <Dialog open={showCreateDialog} onOpenChange={setShowCreateDialog}>
         <DialogContent className="max-w-2xl">
           <DialogHeader>
-            <DialogTitle>Add New Vendor</DialogTitle>
+            <DialogTitle>{t('vendorManagement.addNewVendor')}</DialogTitle>
             <DialogDescription>
-              Register a new vendor in the system.
+              {t('vendorManagement.addNewVendorDescription')}
             </DialogDescription>
           </DialogHeader>
           <div className="grid gap-4 py-4">
             <div className="grid grid-cols-2 gap-4">
               <div>
-                <Label htmlFor="vendorName">Vendor Name</Label>
+                <Label htmlFor="vendorName">{t('vendorManagement.vendorName')}</Label>
                 <Input 
                   id="vendorName" 
-                  placeholder="Enter vendor name" 
+                  placeholder={t('vendorManagement.placeholders.enterVendorName')} 
                   value={createVendorData.name}
                   onChange={(e) => setCreateVendorData(prev => ({ ...prev, name: e.target.value }))}
                 />
               </div>
               <div>
-                <Label htmlFor="vendorType">Type</Label>
+                <Label htmlFor="vendorType">{t('vendorManagement.type')}</Label>
                 <select 
                   className="w-full p-2 border rounded-md"
                   value={createVendorData.type}
                   onChange={(e) => setCreateVendorData(prev => ({ ...prev, type: e.target.value }))}
                 >
-                  <option value="supplier">Supplier</option>
-                  <option value="service_provider">Service Provider</option>
-                  <option value="contractor">Contractor</option>
-                  <option value="consultant">Consultant</option>
-                  <option value="other">Other</option>
+                  <option value="supplier">{t('vendorManagement.supplier')}</option>
+                  <option value="service_provider">{t('vendorManagement.serviceProvider')}</option>
+                  <option value="contractor">{t('vendorManagement.contractor')}</option>
+                  <option value="consultant">{t('vendorManagement.consultant')}</option>
+                  <option value="other">{t('vendorManagement.other')}</option>
                 </select>
               </div>
             </div>
             <div>
-              <Label htmlFor="vendorCategory">Category</Label>
+              <Label htmlFor="vendorCategory">{t('vendorManagement.category')}</Label>
               <Input 
                 id="vendorCategory" 
-                placeholder="Vendor category" 
+                placeholder={t('vendorManagement.placeholders.vendorCategory')} 
                 value={createVendorData.category}
                 onChange={(e) => setCreateVendorData(prev => ({ ...prev, category: e.target.value }))}
               />
             </div>
             <div>
-              <Label htmlFor="vendorDescription">Description</Label>
+              <Label htmlFor="vendorDescription">{t('vendorManagement.description')}</Label>
               <Input 
                 id="vendorDescription" 
-                placeholder="Vendor description" 
+                placeholder={t('vendorManagement.placeholders.vendorDescription')} 
                 value={createVendorData.description}
                 onChange={(e) => setCreateVendorData(prev => ({ ...prev, description: e.target.value }))}
               />
             </div>
             <div className="grid grid-cols-2 gap-4">
               <div>
-                <Label htmlFor="contactName">Primary Contact Name</Label>
+                <Label htmlFor="contactName">{t('vendorManagement.primaryContactName')}</Label>
                 <Input 
                   id="contactName" 
-                  placeholder="Contact name" 
+                  placeholder={t('vendorManagement.placeholders.contactName')} 
                   value={createVendorData.primaryContactName}
                   onChange={(e) => setCreateVendorData(prev => ({ ...prev, primaryContactName: e.target.value }))}
                 />
               </div>
               <div>
-                <Label htmlFor="contactEmail">Email</Label>
+                <Label htmlFor="contactEmail">{t('vendorManagement.email')}</Label>
                 <Input 
                   id="contactEmail" 
                   type="email" 
@@ -939,7 +939,7 @@ export default function VendorManagementPage() {
             </div>
             <div className="grid grid-cols-2 gap-4">
               <div>
-                <Label htmlFor="contactPhone">Phone</Label>
+                <Label htmlFor="contactPhone">{t('vendorManagement.phone')}</Label>
                 <Input 
                   id="contactPhone" 
                   placeholder="+20 10 1234 5678" 
@@ -948,10 +948,10 @@ export default function VendorManagementPage() {
                 />
               </div>
               <div>
-                <Label htmlFor="contactTitle">Title</Label>
+                <Label htmlFor="contactTitle">{t('vendorManagement.title')}</Label>
                 <Input 
                   id="contactTitle" 
-                  placeholder="Job title" 
+                  placeholder={t('vendorManagement.placeholders.jobTitle')} 
                   value={createVendorData.primaryContactTitle}
                   onChange={(e) => setCreateVendorData(prev => ({ ...prev, primaryContactTitle: e.target.value }))}
                 />
@@ -959,28 +959,28 @@ export default function VendorManagementPage() {
             </div>
             <div className="grid grid-cols-3 gap-4">
               <div>
-                <Label htmlFor="street">Street</Label>
+                <Label htmlFor="street">{t('vendorManagement.street')}</Label>
                 <Input 
                   id="street" 
-                  placeholder="Street address" 
+                  placeholder={t('vendorManagement.placeholders.streetAddress')} 
                   value={createVendorData.street}
                   onChange={(e) => setCreateVendorData(prev => ({ ...prev, street: e.target.value }))}
                 />
               </div>
               <div>
-                <Label htmlFor="city">City</Label>
+                <Label htmlFor="city">{t('vendorManagement.city')}</Label>
                 <Input 
                   id="city" 
-                  placeholder="City" 
+                  placeholder={t('vendorManagement.placeholders.city')} 
                   value={createVendorData.city}
                   onChange={(e) => setCreateVendorData(prev => ({ ...prev, city: e.target.value }))}
                 />
               </div>
               <div>
-                <Label htmlFor="state">State</Label>
+                <Label htmlFor="state">{t('vendorManagement.state')}</Label>
                 <Input 
                   id="state" 
-                  placeholder="State" 
+                  placeholder={t('vendorManagement.placeholders.state')} 
                   value={createVendorData.state}
                   onChange={(e) => setCreateVendorData(prev => ({ ...prev, state: e.target.value }))}
                 />
@@ -988,28 +988,28 @@ export default function VendorManagementPage() {
             </div>
             <div className="grid grid-cols-3 gap-4">
               <div>
-                <Label htmlFor="country">Country</Label>
+                <Label htmlFor="country">{t('vendorManagement.country')}</Label>
                 <Input 
                   id="country" 
-                  placeholder="Country" 
+                  placeholder={t('vendorManagement.placeholders.country')} 
                   value={createVendorData.country}
                   onChange={(e) => setCreateVendorData(prev => ({ ...prev, country: e.target.value }))}
                 />
               </div>
               <div>
-                <Label htmlFor="zipCode">Zip Code</Label>
+                <Label htmlFor="zipCode">{t('vendorManagement.zipCode')}</Label>
                 <Input 
                   id="zipCode" 
-                  placeholder="Zip code" 
+                  placeholder={t('vendorManagement.placeholders.zipCode')} 
                   value={createVendorData.zipCode}
                   onChange={(e) => setCreateVendorData(prev => ({ ...prev, zipCode: e.target.value }))}
                 />
               </div>
               <div>
-                <Label htmlFor="website">Website</Label>
+                <Label htmlFor="website">{t('vendorManagement.website')}</Label>
                 <Input 
                   id="website" 
-                  placeholder="https://vendor.com" 
+                  placeholder={t('vendorManagement.placeholders.website')} 
                   value={createVendorData.website}
                   onChange={(e) => setCreateVendorData(prev => ({ ...prev, website: e.target.value }))}
                 />
@@ -1017,29 +1017,29 @@ export default function VendorManagementPage() {
             </div>
             <div className="grid grid-cols-3 gap-4">
               <div>
-                <Label htmlFor="registrationNumber">Registration Number</Label>
+                <Label htmlFor="registrationNumber">{t('vendorManagement.registrationNumber')}</Label>
                 <Input 
                   id="registrationNumber" 
-                  placeholder="Registration number" 
+                  placeholder={t('vendorManagement.placeholders.registrationNumber')} 
                   value={createVendorData.registrationNumber}
                   onChange={(e) => setCreateVendorData(prev => ({ ...prev, registrationNumber: e.target.value }))}
                 />
               </div>
               <div>
-                <Label htmlFor="taxId">Tax ID</Label>
+                <Label htmlFor="taxId">{t('vendorManagement.taxId')}</Label>
                 <Input 
                   id="taxId" 
-                  placeholder="Tax identification number" 
+                  placeholder={t('vendorManagement.placeholders.taxId')} 
                   value={createVendorData.taxId}
                   onChange={(e) => setCreateVendorData(prev => ({ ...prev, taxId: e.target.value }))}
                 />
               </div>
               <div>
-                <Label htmlFor="establishedYear">Established Year</Label>
+                <Label htmlFor="establishedYear">{t('vendorManagement.establishedYear')}</Label>
                 <Input 
                   id="establishedYear" 
                   type="number" 
-                  placeholder="2020" 
+                  placeholder={t('vendorManagement.placeholders.establishedYear')} 
                   value={createVendorData.establishedYear}
                   onChange={(e) => setCreateVendorData(prev => ({ ...prev, establishedYear: e.target.value }))}
                 />
@@ -1047,31 +1047,31 @@ export default function VendorManagementPage() {
             </div>
             <div className="grid grid-cols-2 gap-4">
               <div>
-                <Label htmlFor="employeeCount">Employee Count</Label>
+                <Label htmlFor="employeeCount">{t('vendorManagement.employeeCount')}</Label>
                 <Input 
                   id="employeeCount" 
                   type="number" 
-                  placeholder="50" 
+                  placeholder={t('vendorManagement.placeholders.employeeCount')} 
                   value={createVendorData.employeeCount}
                   onChange={(e) => setCreateVendorData(prev => ({ ...prev, employeeCount: e.target.value }))}
                 />
               </div>
               <div>
-                <Label htmlFor="annualRevenue">Annual Revenue (EGP)</Label>
+                <Label htmlFor="annualRevenue">{t('vendorManagement.annualRevenue')}</Label>
                 <Input 
                   id="annualRevenue" 
                   type="number" 
-                  placeholder="1000000" 
+                  placeholder={t('vendorManagement.placeholders.annualRevenue')} 
                   value={createVendorData.annualRevenue}
                   onChange={(e) => setCreateVendorData(prev => ({ ...prev, annualRevenue: e.target.value }))}
                 />
               </div>
             </div>
             <div>
-              <Label htmlFor="notes">Notes</Label>
+              <Label htmlFor="notes">{t('vendorManagement.notes')}</Label>
               <Input 
                 id="notes" 
-                placeholder="Additional notes" 
+                placeholder={t('vendorManagement.placeholders.additionalNotes')} 
                 value={createVendorData.notes}
                 onChange={(e) => setCreateVendorData(prev => ({ ...prev, notes: e.target.value }))}
               />
@@ -1079,10 +1079,10 @@ export default function VendorManagementPage() {
           </div>
           <DialogFooter>
             <Button variant="outline" onClick={() => setShowCreateDialog(false)}>
-              Cancel
+              {t('vendorManagement.cancel')}
             </Button>
             <Button onClick={createVendor}>
-              Add Vendor
+              {t('vendorManagement.addVendor')}
             </Button>
           </DialogFooter>
         </DialogContent>
@@ -1092,20 +1092,20 @@ export default function VendorManagementPage() {
       <Dialog open={showContractDialog} onOpenChange={setShowContractDialog}>
         <DialogContent>
           <DialogHeader>
-            <DialogTitle>Create New Contract</DialogTitle>
+            <DialogTitle>{t('vendorManagement.createNewContract')}</DialogTitle>
             <DialogDescription>
-              Create a new contract with a vendor.
+              {t('vendorManagement.createNewContractDescription')}
             </DialogDescription>
           </DialogHeader>
           <div className="grid gap-4 py-4">
             <div>
-              <Label htmlFor="contractVendor">Vendor</Label>
+              <Label htmlFor="contractVendor">{t('vendorManagement.vendorName')}</Label>
               <select 
                 className="w-full p-2 border rounded-md"
                 value={createContractData.vendorId}
                 onChange={(e) => setCreateContractData(prev => ({ ...prev, vendorId: e.target.value }))}
               >
-                <option value="">Select vendor</option>
+                <option value="">{t('vendorManagement.placeholders.selectVendor')}</option>
                 {vendors.map((vendor) => (
                   <option key={vendor._id} value={vendor._id}>
                     {vendor.name}
@@ -1114,40 +1114,40 @@ export default function VendorManagementPage() {
               </select>
             </div>
             <div>
-              <Label htmlFor="contractTitle">Contract Title</Label>
+              <Label htmlFor="contractTitle">{t('vendorManagement.contractTitle')}</Label>
               <Input 
                 id="contractTitle" 
-                placeholder="Enter contract title" 
+                placeholder={t('vendorManagement.placeholders.enterContractTitle')} 
                 value={createContractData.title}
                 onChange={(e) => setCreateContractData(prev => ({ ...prev, title: e.target.value }))}
               />
             </div>
             <div>
-              <Label htmlFor="contractDescription">Description</Label>
+              <Label htmlFor="contractDescription">{t('vendorManagement.contractDescription')}</Label>
               <Input 
                 id="contractDescription" 
-                placeholder="Contract description" 
+                placeholder={t('vendorManagement.placeholders.contractDescription')} 
                 value={createContractData.description}
                 onChange={(e) => setCreateContractData(prev => ({ ...prev, description: e.target.value }))}
               />
             </div>
             <div className="grid grid-cols-2 gap-4">
               <div>
-                <Label htmlFor="contractType">Type</Label>
+                <Label htmlFor="contractType">{t('vendorManagement.contractType')}</Label>
                 <select 
                   className="w-full p-2 border rounded-md"
                   value={createContractData.type}
                   onChange={(e) => setCreateContractData(prev => ({ ...prev, type: e.target.value }))}
                 >
-                  <option value="service">Service</option>
-                  <option value="supply">Supply</option>
-                  <option value="consulting">Consulting</option>
-                  <option value="maintenance">Maintenance</option>
-                  <option value="other">Other</option>
+                  <option value="service">{t('vendorManagement.service')}</option>
+                  <option value="supply">{t('vendorManagement.supply')}</option>
+                  <option value="consulting">{t('vendorManagement.consulting')}</option>
+                  <option value="maintenance">{t('vendorManagement.maintenance')}</option>
+                  <option value="other">{t('vendorManagement.other')}</option>
                 </select>
               </div>
               <div>
-                <Label htmlFor="contractValue">Value (EGP)</Label>
+                <Label htmlFor="contractValue">{t('vendorManagement.totalValue')} (EGP)</Label>
                 <Input 
                   id="contractValue" 
                   type="number" 
@@ -1159,7 +1159,7 @@ export default function VendorManagementPage() {
             </div>
             <div className="grid grid-cols-2 gap-4">
               <div>
-                <Label htmlFor="contractStart">Start Date</Label>
+                <Label htmlFor="contractStart">{t('vendorManagement.startDate')}</Label>
                 <Input 
                   id="contractStart" 
                   type="date" 
@@ -1168,7 +1168,7 @@ export default function VendorManagementPage() {
                 />
               </div>
               <div>
-                <Label htmlFor="contractEnd">End Date</Label>
+                <Label htmlFor="contractEnd">{t('vendorManagement.endDate')}</Label>
                 <Input 
                   id="contractEnd" 
                   type="date" 
