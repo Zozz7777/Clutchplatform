@@ -124,7 +124,7 @@ export function TopEnterpriseClients({ className = '' }: TopEnterpriseClientsPro
           <span>{t('widgets.top5EnterpriseClients')}</span>
         </CardTitle>
         <CardDescription className="text-muted-foreground">
-          By revenue contribution & activity level
+          {t('widgets.byRevenueContribution')}
         </CardDescription>
       </CardHeader>
       <CardContent className="space-y-6">
@@ -135,14 +135,14 @@ export function TopEnterpriseClients({ className = '' }: TopEnterpriseClientsPro
             <p className="text-lg font-bold text-success">
               {totalRevenue.toLocaleString()} EGP
             </p>
-            <p className="text-xs text-muted-foreground">Total Revenue</p>
+<p className="text-xs text-muted-foreground">{t('widgets.totalRevenue')}</p>
           </div>
           <div className="text-center p-3 bg-primary/10 rounded-[0.625rem] border border-primary/20">
             <TrendingUp className="h-5 w-5 text-primary mx-auto mb-1" />
             <p className="text-lg font-bold text-primary">
               {averageGrowth.toFixed(1)}%
             </p>
-            <p className="text-xs text-muted-foreground">Avg Growth</p>
+<p className="text-xs text-muted-foreground">{t('widgets.avgGrowth')}</p>
           </div>
         </div>
 
@@ -186,7 +186,7 @@ export function TopEnterpriseClients({ className = '' }: TopEnterpriseClientsPro
                     
                     <div className="mt-2">
                       <div className="flex justify-between text-xs text-muted-foreground mb-1">
-                        <span>Revenue Share</span>
+<span>{t('widgets.revenueShare')}</span>
                         <span>{revenuePercentage.toFixed(1)}%</span>
                       </div>
                       <Progress value={revenuePercentage} className="h-1" />
@@ -257,22 +257,22 @@ export function TopEnterpriseClients({ className = '' }: TopEnterpriseClientsPro
         <div className="flex space-x-2 pt-2">
           <Button variant="outline" size="sm" className="flex-1 hover:bg-muted focus:ring-2 focus:ring-ring">
             <Users className="h-4 w-4 mr-2" />
-            View All Clients
+{t('widgets.viewAllClients')}
           </Button>
           <Button variant="outline" size="sm" className="flex-1 hover:bg-muted focus:ring-2 focus:ring-ring">
             <Calendar className="h-4 w-4 mr-2" />
-            Schedule Review
+{t('widgets.scheduleReview')}
           </Button>
         </div>
 
         {/* Insights */}
         <div className="p-3 bg-primary/10 rounded-[0.625rem] border border-primary/20">
-          <h5 className="text-sm font-medium text-primary mb-2">💡 Client Insights</h5>
+<h5 className="text-sm font-medium text-primary mb-2">💡 {t('widgets.clientInsights')}</h5>
           <ul className="text-xs text-primary/80 space-y-1">
-            <li>• Top client contributes {(clients[0]?.revenue / totalRevenue * 100 || 0).toFixed(1)}% of total revenue</li>
-            <li>• {clients.filter(c => c.growth > 0).length} out of {clients.length} clients showing positive growth</li>
-            <li>• Average client activity level: {clients.reduce((sum, c) => sum + c.activity, 0) / clients.length || 0}%</li>
-            <li>• Total enterprise revenue: {totalRevenue.toLocaleString()} EGP</li>
+<li>• {t('widgets.topClientContributes', { percentage: (clients[0]?.revenue / totalRevenue * 100 || 0).toFixed(1) })}</li>
+            <li>• {t('widgets.clientsShowingGrowth', { growing: clients.filter(c => c.growth > 0).length, total: clients.length })}</li>
+            <li>• {t('widgets.averageClientActivity', { percentage: clients.reduce((sum, c) => sum + c.activity, 0) / clients.length || 0 })}</li>
+            <li>• {t('widgets.totalEnterpriseRevenue', { amount: totalRevenue.toLocaleString() })}</li>
           </ul>
         </div>
       </CardContent>
