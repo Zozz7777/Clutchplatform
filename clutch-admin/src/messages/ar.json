@@ -870,6 +870,14 @@
     "profile": "الملف الشخصي",
     "settings": "الإعدادات"
   },
+  "notifications": {
+    "noNotifications": "لا توجد إشعارات"
+  },
+  "theme": {
+    "light": "فاتح",
+    "dark": "داكن",
+    "system": "النظام"
+  },
   "language": {
     "english": "الإنجليزية",
     "arabic": "العربية"

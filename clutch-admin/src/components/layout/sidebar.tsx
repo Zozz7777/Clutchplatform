@@ -270,7 +270,7 @@ export function Sidebar({ isCollapsed, onToggle }: SidebarProps) {
             <ChevronRight className="w-4 h-4" />
           ) : (
             <>
-              <span className="flex-1 text-left">Collapse</span>
+              <span className="flex-1 text-left">{t('sidebar.collapse')}</span>
               <ChevronRight className="w-4 h-4" />
             </>
           )}

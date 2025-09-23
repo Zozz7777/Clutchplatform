@@ -67,7 +67,7 @@ export function RevenueMarginCard({ className = '' }: RevenueMarginCardProps) {
             <DollarSign className="h-5 w-5 text-success" />
             <span>{t('widgets.revenueVsCostMargin')}</span>
           </CardTitle>
-          <CardDescription className="text-muted-foreground">Loading financial metrics...</CardDescription>
+          <CardDescription className="text-muted-foreground">{t('widgets.loadingFinancialMetrics')}</CardDescription>
         </CardHeader>
         <CardContent>
           <div className="animate-pulse space-y-4">
@@ -88,7 +88,7 @@ export function RevenueMarginCard({ className = '' }: RevenueMarginCardProps) {
             <DollarSign className="h-5 w-5 text-success" />
             <span>{t('widgets.revenueVsCostMargin')}</span>
           </CardTitle>
-          <CardDescription className="text-muted-foreground">Unable to load financial metrics</CardDescription>
+          <CardDescription className="text-muted-foreground">{t('widgets.unableToLoadFinancialMetrics')}</CardDescription>
         </CardHeader>
       </Card>
     );
@@ -170,7 +170,7 @@ export function RevenueMarginCard({ className = '' }: RevenueMarginCardProps) {
             <p className="text-3xl font-bold text-success">
               {marginData.revenue.toLocaleString()} EGP
             </p>
-            <p className="text-sm text-muted-foreground">Monthly Revenue</p>
+            <p className="text-sm text-muted-foreground">{t('widgets.monthlyRevenue')}</p>
             <div className="mt-2">
               <Badge variant="secondary" className="text-xs">
                 {marginData.revenueGrowth > 0 ? '+' : ''}{marginData.revenueGrowth.toFixed(1)}% vs last month

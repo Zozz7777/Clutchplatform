@@ -79,9 +79,9 @@ export function ChurnRiskCard({ className = '', showDetails = false }: ChurnRisk
     
     if (diffInDays === 0) return t('widgets.today');
     if (diffInDays === 1) return t('widgets.yesterday');
-    if (diffInDays < 7) return `${diffInDays} days ago`;
-    if (diffInDays < 30) return `${Math.floor(diffInDays / 7)} weeks ago`;
-    return `${Math.floor(diffInDays / 30)} months ago`;
+    if (diffInDays < 7) return t('widgets.daysAgo', { days: diffInDays });
+    if (diffInDays < 30) return t('widgets.weeksAgo', { weeks: Math.floor(diffInDays / 7) });
+    return t('widgets.monthsAgo', { months: Math.floor(diffInDays / 30) });
   };
 
   if (isLoading) {

@@ -17,27 +17,37 @@ interface LanguageProviderProps {
 export function LanguageProvider({ children }: LanguageProviderProps) {
   const [language, setLanguageState] = useState<'en' | 'ar'>('en');
 
-  // Load language from localStorage on mount
+  // Load language from localStorage on mount and apply RTL immediately
   useEffect(() => {
     const savedLanguage = localStorage.getItem('clutch-language') as 'en' | 'ar';
     if (savedLanguage && (savedLanguage === 'en' || savedLanguage === 'ar')) {
       setLanguageState(savedLanguage);
+      // Apply RTL immediately on mount
+      if (savedLanguage === 'ar') {
+        document.documentElement.dir = 'rtl';
+        document.documentElement.lang = 'ar';
+      } else {
+        document.documentElement.dir = 'ltr';
+        document.documentElement.lang = 'en';
+      }
     }
   }, []);
 
-  // Save language to localStorage when it changes
-  const setLanguage = (lang: 'en' | 'ar') => {
-    setLanguageState(lang);
-    localStorage.setItem('clutch-language', lang);
-    
-    // Update document direction for RTL support
-    if (lang === 'ar') {
+  // Apply RTL direction whenever language changes
+  useEffect(() => {
+    if (language === 'ar') {
       document.documentElement.dir = 'rtl';
       document.documentElement.lang = 'ar';
     } else {
       document.documentElement.dir = 'ltr';
       document.documentElement.lang = 'en';
     }
+  }, [language]);
+
+  // Save language to localStorage when it changes
+  const setLanguage = (lang: 'en' | 'ar') => {
+    setLanguageState(lang);
+    localStorage.setItem('clutch-language', lang);
   };
 
   // Translation function with fallback

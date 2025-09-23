@@ -539,6 +539,14 @@
     "profile": "Profile",
     "settings": "Settings"
   },
+  "notifications": {
+    "noNotifications": "No notifications"
+  },
+  "theme": {
+    "light": "Light",
+    "dark": "Dark",
+    "system": "System"
+  },
   "language": {
     "english": "English",
     "arabic": "Arabic"
