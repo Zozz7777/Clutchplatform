@@ -1179,19 +1179,19 @@ export default function VendorManagementPage() {
             </div>
             <div className="grid grid-cols-2 gap-4">
               <div>
-                <Label htmlFor="paymentTerms">Payment Terms</Label>
+                <Label htmlFor="paymentTerms">{t('vendorManagement.paymentTerms')}</Label>
                 <Input 
                   id="paymentTerms" 
-                  placeholder="Payment terms" 
+                  placeholder={t('vendorManagement.placeholders.paymentTerms')} 
                   value={createContractData.paymentTerms}
                   onChange={(e) => setCreateContractData(prev => ({ ...prev, paymentTerms: e.target.value }))}
                 />
               </div>
               <div>
-                <Label htmlFor="deliveryTerms">Delivery Terms</Label>
+                <Label htmlFor="deliveryTerms">{t('vendorManagement.deliveryTerms')}</Label>
                 <Input 
                   id="deliveryTerms" 
-                  placeholder="Delivery terms" 
+                  placeholder={t('vendorManagement.placeholders.deliveryTerms')} 
                   value={createContractData.deliveryTerms}
                   onChange={(e) => setCreateContractData(prev => ({ ...prev, deliveryTerms: e.target.value }))}
                 />
@@ -1199,19 +1199,19 @@ export default function VendorManagementPage() {
             </div>
             <div className="grid grid-cols-2 gap-4">
               <div>
-                <Label htmlFor="warranty">Warranty</Label>
+                <Label htmlFor="warranty">{t('vendorManagement.warranty')}</Label>
                 <Input 
                   id="warranty" 
-                  placeholder="Warranty terms" 
+                  placeholder={t('vendorManagement.placeholders.warrantyTerms')} 
                   value={createContractData.warranty}
                   onChange={(e) => setCreateContractData(prev => ({ ...prev, warranty: e.target.value }))}
                 />
               </div>
               <div>
-                <Label htmlFor="termination">Termination</Label>
+                <Label htmlFor="termination">{t('vendorManagement.termination')}</Label>
                 <Input 
                   id="termination" 
-                  placeholder="Termination terms" 
+                  placeholder={t('vendorManagement.placeholders.terminationTerms')} 
                   value={createContractData.termination}
                   onChange={(e) => setCreateContractData(prev => ({ ...prev, termination: e.target.value }))}
                 />
@@ -1220,10 +1220,10 @@ export default function VendorManagementPage() {
           </div>
           <DialogFooter>
             <Button variant="outline" onClick={() => setShowContractDialog(false)}>
-              Cancel
+              {t('vendorManagement.cancel')}
             </Button>
             <Button onClick={createContract}>
-              Create Contract
+              {t('vendorManagement.createContract')}
             </Button>
           </DialogFooter>
         </DialogContent>
@@ -1233,20 +1233,20 @@ export default function VendorManagementPage() {
       <Dialog open={showCommunicationDialog} onOpenChange={setShowCommunicationDialog}>
         <DialogContent>
           <DialogHeader>
-            <DialogTitle>Log Communication</DialogTitle>
+            <DialogTitle>{t('vendorManagement.logCommunicationTitle')}</DialogTitle>
             <DialogDescription>
-              Record communication with a vendor.
+              {t('vendorManagement.logCommunicationDescription')}
             </DialogDescription>
           </DialogHeader>
           <div className="grid gap-4 py-4">
             <div>
-              <Label htmlFor="commVendor">Vendor</Label>
+              <Label htmlFor="commVendor">{t('vendorManagement.vendorName')}</Label>
               <select 
                 className="w-full p-2 border rounded-md"
                 value={createCommunicationData.vendorId}
                 onChange={(e) => setCreateCommunicationData(prev => ({ ...prev, vendorId: e.target.value }))}
               >
-                <option value="">Select vendor</option>
+                <option value="">{t('vendorManagement.placeholders.selectVendor')}</option>
                 {vendors.map((vendor) => (
                   <option key={vendor._id} value={vendor._id}>
                     {vendor.name}
@@ -1255,39 +1255,39 @@ export default function VendorManagementPage() {
               </select>
             </div>
             <div>
-              <Label htmlFor="commType">Type</Label>
+              <Label htmlFor="commType">{t('vendorManagement.communicationType')}</Label>
               <select 
                 className="w-full p-2 border rounded-md"
                 value={createCommunicationData.type}
                 onChange={(e) => setCreateCommunicationData(prev => ({ ...prev, type: e.target.value }))}
               >
-                <option value="email">Email</option>
-                <option value="phone">Phone</option>
-                <option value="meeting">Meeting</option>
-                <option value="document">Document</option>
-                <option value="other">Other</option>
+                <option value="email">{t('vendorManagement.email')}</option>
+                <option value="phone">{t('vendorManagement.phone')}</option>
+                <option value="meeting">{t('vendorManagement.meeting')}</option>
+                <option value="document">{t('vendorManagement.document')}</option>
+                <option value="other">{t('vendorManagement.other')}</option>
               </select>
             </div>
             <div>
-              <Label htmlFor="commSubject">Subject</Label>
+              <Label htmlFor="commSubject">{t('vendorManagement.subject')}</Label>
               <Input 
                 id="commSubject" 
-                placeholder="Communication subject" 
+                placeholder={t('vendorManagement.placeholders.communicationSubject')} 
                 value={createCommunicationData.subject}
                 onChange={(e) => setCreateCommunicationData(prev => ({ ...prev, subject: e.target.value }))}
               />
             </div>
             <div>
-              <Label htmlFor="commContent">Content</Label>
+              <Label htmlFor="commContent">{t('vendorManagement.content')}</Label>
               <Input 
                 id="commContent" 
-                placeholder="Communication details" 
+                placeholder={t('vendorManagement.placeholders.communicationDetails')} 
                 value={createCommunicationData.content}
                 onChange={(e) => setCreateCommunicationData(prev => ({ ...prev, content: e.target.value }))}
               />
             </div>
             <div>
-              <Label htmlFor="commDate">Date</Label>
+              <Label htmlFor="commDate">{t('vendorManagement.date')}</Label>
               <Input 
                 id="commDate" 
                 type="datetime-local" 
@@ -1298,10 +1298,10 @@ export default function VendorManagementPage() {
           </div>
           <DialogFooter>
             <Button variant="outline" onClick={() => setShowCommunicationDialog(false)}>
-              Cancel
+              {t('vendorManagement.cancel')}
             </Button>
             <Button onClick={createCommunication}>
-              Log Communication
+              {t('vendorManagement.logCommunicationButton')}
             </Button>
           </DialogFooter>
         </DialogContent>

@@ -125,6 +125,8 @@
       "supply": "Supply",
       "consulting": "Consulting",
       "maintenance": "Maintenance",
+      "meeting": "Meeting",
+      "document": "Document",
       "startDate": "Start Date",
       "endDate": "End Date",
       "paymentTerms": "Payment Terms",
