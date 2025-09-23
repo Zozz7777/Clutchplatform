@@ -67,496 +67,353 @@ import RevenueForecast from '@/components/widgets/revenue-forecast';
 import TeamPerformance from '@/components/widgets/team-performance';
 import ContractStatus from '@/components/widgets/contract-status';
 import CommunicationHistory from '@/components/widgets/communication-history';
-} from "@/components/ui/dropdown-menu";
 
-interface Customer {
-  id: string;
-  name: string;
-  email: string;
-  phone: string;
-  company?: string;
-  status: string;
-  lastContact: string;
-  totalSpent: number;
-  satisfaction: number;
-  tags: string[];
-}
-
-interface Ticket {
+interface Lead {
   id: string;
   title: string;
-  description: string;
-  customer: string;
-  status: string;
-  priority: string;
+  type: 'shop' | 'importer' | 'manufacturer' | 'fleet' | 'insurance';
+  companyName: string;
+  contact: {
+    name: string;
+    email: string;
+    phone: string;
+  };
+  status: 'new' | 'contacted' | 'qualified' | 'converted' | 'lost';
   assignedTo: string;
   createdAt: string;
-  updatedAt: string;
+  value?: number;
 }
 
-export default function CRMPage() {
-  const { t } = useLanguage();
-  const [customers, setCustomers] = useState<Customer[]>([]);
-  const [tickets, setTickets] = useState<Ticket[]>([]);
-  const [filteredCustomers, setFilteredCustomers] = useState<Customer[]>([]);
-  const [filteredTickets, setFilteredTickets] = useState<Ticket[]>([]);
-  const [searchQuery, setSearchQuery] = useState("");
-  const [statusFilter, setStatusFilter] = useState<string>("all");
-  const [isLoading, setIsLoading] = useState(true);
-  const { user, hasPermission } = useAuth();
+interface Deal {
+  id: string;
+  leadId: string;
+  pipeline: 'b2b' | 'partners';
+  stage: 'prospect' | 'proposal' | 'negotiation' | 'signed';
+  valueEGP: number;
+  probability: number;
+  assignedTo: string;
+  createdAt: string;
+}
 
+interface Contract {
+  id: string;
+  leadId: string;
+  status: 'draft' | 'printed' | 'signed_uploaded' | 'pending_legal' | 'approved' | 'rejected';
+  templateId: string;
+  createdAt: string;
+}
+
+export default function SalesPage() {
+  const t = useTranslations('sales');
+  const [leads, setLeads] = useState<Lead[]>([]);
+  const [deals, setDeals] = useState<Deal[]>([]);
+  const [contracts, setContracts] = useState<Contract[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [searchTerm, setSearchTerm] = useState('');
+  const [statusFilter, setStatusFilter] = useState<string>('all');
+  const [typeFilter, setTypeFilter] = useState<string>('all');
+  const [showCreateLead, setShowCreateLead] = useState(false);
+  const [showCreateDeal, setShowCreateDeal] = useState(false);
+
+  // Fetch data from API
   useEffect(() => {
-    let isMounted = true;
-    let timeoutId: NodeJS.Timeout | null = null;
+    fetchData();
+  }, []);
 
-    const loadCRMData = async () => {
-      if (!user || !isMounted) {
-        setIsLoading(false);
-        return;
+  const fetchData = async () => {
+    try {
+      setLoading(true);
+      
+      // Fetch leads, deals, and contracts in parallel
+      const [leadsResponse, dealsResponse, contractsResponse] = await Promise.all([
+        productionApi.getLeads(),
+        productionApi.getDeals(),
+        productionApi.getContracts()
+      ]);
+
+      if (leadsResponse.success) {
+        setLeads(leadsResponse.leads || []);
       }
       
-      try {
-        setIsLoading(true);
-        
-        // Add debouncing to prevent excessive API calls
-        if (timeoutId) {
-          clearTimeout(timeoutId);
-        }
-        
-        timeoutId = setTimeout(async () => {
-          if (!isMounted) return;
-          
-          // Load real data from API with error handling
-          const [customersData, ticketsData] = await Promise.allSettled([
-            productionApi.getCustomers(),
-            productionApi.getTickets()
-          ]);
-
-          // Handle customers data
-          const customersArray = customersData.status === 'fulfilled' && Array.isArray(customersData.value) 
-            ? customersData.value as unknown as Customer[] 
-            : [];
-          
-          // Handle tickets data
-          const ticketsArray = ticketsData.status === 'fulfilled' && Array.isArray(ticketsData.value) 
-            ? ticketsData.value as unknown as Ticket[] 
-            : [];
-          
-          if (isMounted) {
-            setCustomers(customersArray);
-            setTickets(ticketsArray);
-            setFilteredCustomers(customersArray);
-            setFilteredTickets(ticketsArray);
-          }
-          
-          // Log any errors
-          if (customersData.status === 'rejected') {
-            handleDataLoadError(customersData.reason, 'customers');
-          }
-          if (ticketsData.status === 'rejected') {
-            handleDataLoadError(ticketsData.reason, 'tickets');
-          }
-          
-        }, 300); // 300ms debounce
-        
-      } catch (error) {
-        if (!isMounted) return;
-        
-        handleDataLoadError(error, 'crm_data');
-        toast.error(t('crm.failedToLoadCrmData') || 'Failed to load CRM data');
-        // Set empty arrays on error - no mock data fallback
-        setCustomers([]);
-        setTickets([]);
-        setFilteredCustomers([]);
-        setFilteredTickets([]);
-      } finally {
-        if (isMounted) {
-          setIsLoading(false);
-        }
+      if (dealsResponse.success) {
+        setDeals(dealsResponse.deals || []);
       }
-    };
-
-    loadCRMData();
-
-    return () => {
-      isMounted = false;
-      if (timeoutId) {
-        clearTimeout(timeoutId);
+      
+      if (contractsResponse.success) {
+        setContracts(contractsResponse.contracts || []);
       }
-    };
-  }, [user, t]);
-
-  useEffect(() => {
-    // Ensure customers is always an array
-    const customersArray = Array.isArray(customers) ? customers : [];
-    let filtered = customersArray;
-
-    if (searchQuery) {
-      filtered = filtered.filter(customer =>
-        customer?.name?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        customer?.email?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        customer?.company?.toLowerCase().includes(searchQuery.toLowerCase())
-      );
+    } catch (error) {
+      console.error('Error fetching sales data:', error);
+    } finally {
+      setLoading(false);
     }
+  };
 
-    if (statusFilter !== "all") {
-      filtered = filtered.filter(customer => customer?.status === statusFilter);
-    }
-
-    setFilteredCustomers(filtered);
-  }, [customers, searchQuery, statusFilter]);
-
-  const getStatusVariant = (status: string) => {
+  const getStatusColor = (status: string) => {
     switch (status) {
-      case "active":
-        return "default";
-      case "prospect":
-        return "secondary";
-      case "inactive":
-        return "outline";
-      case "unknown":
-        return "outline";
-      default:
-        return "default";
+      case 'new': return 'bg-blue-100 text-blue-800';
+      case 'contacted': return 'bg-yellow-100 text-yellow-800';
+      case 'qualified': return 'bg-green-100 text-green-800';
+      case 'converted': return 'bg-emerald-100 text-emerald-800';
+      case 'lost': return 'bg-red-100 text-red-800';
+      case 'draft': return 'bg-gray-100 text-gray-800';
+      case 'signed_uploaded': return 'bg-blue-100 text-blue-800';
+      case 'pending_legal': return 'bg-yellow-100 text-yellow-800';
+      case 'approved': return 'bg-green-100 text-green-800';
+      case 'rejected': return 'bg-red-100 text-red-800';
+      default: return 'bg-gray-100 text-gray-800';
     }
   };
 
-  const getPriorityVariant = (priority: string) => {
-    switch (priority) {
-      case "high":
-        return "destructive";
-      case "medium":
-        return "secondary";
-      case "low":
-        return "outline";
-      case "unknown":
-        return "outline";
-      default:
-        return "default";
+  const getTypeIcon = (type: string) => {
+    switch (type) {
+      case 'shop': return '🏪';
+      case 'importer': return '📦';
+      case 'manufacturer': return '🏭';
+      case 'fleet': return '🚛';
+      case 'insurance': return '🛡️';
+      default: return '🏢';
     }
   };
 
-  const getTicketStatusVariant = (status: string) => {
-    switch (status) {
-      case "open":
-        return "destructive";
-      case "in_progress":
-        return "secondary";
-      case "closed":
-        return "default";
-      case "unknown":
-        return "outline";
-      default:
-        return "outline";
-    }
+  const filteredLeads = leads.filter(lead => {
+    const matchesSearch = lead.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                         lead.companyName.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                         lead.contact.name.toLowerCase().includes(searchTerm.toLowerCase());
+    const matchesStatus = statusFilter === 'all' || lead.status === statusFilter;
+    const matchesType = typeFilter === 'all' || lead.type === typeFilter;
+    return matchesSearch && matchesStatus && matchesType;
+  });
+
+  const stats = {
+    totalLeads: leads.length,
+    newLeads: leads.filter(l => l.status === 'new').length,
+    qualifiedLeads: leads.filter(l => l.status === 'qualified').length,
+    totalDeals: deals.length,
+    totalValue: deals.reduce((sum, deal) => sum + deal.valueEGP, 0),
+    contractsPending: contracts.filter(c => c.status === 'pending_legal').length
   };
 
-  if (isLoading) {
+  if (loading) {
     return (
       <div className="flex items-center justify-center h-64">
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto mb-4"></div>
-          <p className="text-muted-foreground font-sans">{t('crm.loadingData')}</p>
-        </div>
+        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
       </div>
     );
   }
 
   return (
-    <div className="space-y-6 font-sans">
-      {/* Page Header */}
+    <div className="space-y-6 p-6">
+      {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold tracking-tight text-foreground font-sans">{t('crm.title')}</h1>
-          <p className="text-muted-foreground font-sans">
-            {t('crm.description')}
-          </p>
+          <h1 className="text-3xl font-bold text-gray-900">{t('title')}</h1>
+          <p className="text-gray-600 mt-1">{t('subtitle')}</p>
         </div>
-        <div className="flex items-center space-x-2">
-          <Button variant="outline" className="shadow-2xs">
-            <BarChart3 className="mr-2 h-4 w-4" />
-            {t('crm.analytics')}
+        <div className="flex gap-2">
+          <Button variant="outline" size="sm">
+            <Download className="h-4 w-4 mr-2" />
+            {t('export')}
           </Button>
-          <Button className="shadow-2xs">
-            <Plus className="mr-2 h-4 w-4" />
-            {t('crm.addCustomer')}
+          <Button size="sm">
+            <Plus className="h-4 w-4 mr-2" />
+            {t('newLead')}
           </Button>
         </div>
       </div>
 
-      {/* CRM Analytics Cards */}
-      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-        <Card className="shadow-2xs">
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium text-card-foreground">{t('crm.totalCustomers')}</CardTitle>
-            <Users className="h-4 w-4 text-muted-foreground" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold text-foreground">{customers.length}</div>
-            <p className="text-xs text-muted-foreground">
-              <span className="text-success">+12%</span> {t('crm.fromLastMonth')}
-            </p>
+      {/* Stats Cards */}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        <Card className="shadow-2xs rounded-[0.625rem] font-sans">
+          <CardContent className="p-6">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-sm font-medium text-gray-600">{t('totalLeads')}</p>
+                <p className="text-2xl font-bold text-gray-900">{stats.totalLeads}</p>
+              </div>
+              <Users className="h-8 w-8 text-blue-600" />
+            </div>
           </CardContent>
         </Card>
-        <Card className="shadow-2xs">
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium text-card-foreground">{t('crm.activeCustomers')}</CardTitle>
-            <CheckCircle className="h-4 w-4 text-muted-foreground" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold text-foreground">
-              {Array.isArray(customers) ? customers.filter(c => c?.status === "active").length : 0}
+
+        <Card className="shadow-2xs rounded-[0.625rem] font-sans">
+          <CardContent className="p-6">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-sm font-medium text-gray-600">{t('qualifiedLeads')}</p>
+                <p className="text-2xl font-bold text-gray-900">{stats.qualifiedLeads}</p>
+              </div>
+              <CheckCircle className="h-8 w-8 text-green-600" />
             </div>
-            <p className="text-xs text-muted-foreground">
-              <span className="text-success">+8%</span> {t('crm.retentionRate')}
-            </p>
           </CardContent>
         </Card>
-        <Card className="shadow-2xs">
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium text-card-foreground">{t('crm.openTickets')}</CardTitle>
-            <MessageSquare className="h-4 w-4 text-muted-foreground" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold text-foreground">
-              {Array.isArray(tickets) ? tickets.filter(t => t?.status === "open").length : 0}
+
+        <Card className="shadow-2xs rounded-[0.625rem] font-sans">
+          <CardContent className="p-6">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-sm font-medium text-gray-600">{t('totalDeals')}</p>
+                <p className="text-2xl font-bold text-gray-900">{stats.totalDeals}</p>
+              </div>
+              <TrendingUp className="h-8 w-8 text-purple-600" />
             </div>
-            <p className="text-xs text-muted-foreground">
-              <span className="text-destructive">+3</span> {t('crm.fromYesterday')}
-            </p>
           </CardContent>
         </Card>
-        <Card className="shadow-2xs">
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium text-card-foreground">{t('crm.avgSatisfaction')}</CardTitle>
-            <Star className="h-4 w-4 text-muted-foreground" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold text-foreground">
-              {Array.isArray(customers) && customers.filter(c => c?.satisfaction > 0).length > 0 
-                ? (customers.filter(c => c?.satisfaction > 0).reduce((acc, c) => acc + (c?.satisfaction || 0), 0) / customers.filter(c => c?.satisfaction > 0).length).toFixed(1)
-                : "0.0"
-              }
+
+        <Card className="shadow-2xs rounded-[0.625rem] font-sans">
+          <CardContent className="p-6">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-sm font-medium text-gray-600">{t('totalValue')}</p>
+                <p className="text-2xl font-bold text-gray-900">{stats.totalValue.toLocaleString()} EGP</p>
+              </div>
+              <FileText className="h-8 w-8 text-orange-600" />
             </div>
-            <p className="text-xs text-muted-foreground">
-              <span className="text-success">+0.2</span> {t('crm.fromLastMonth')}
-            </p>
           </CardContent>
         </Card>
       </div>
 
-      {/* CRM Tabs */}
-      <Tabs defaultValue="customers" className="space-y-4">
-        <TabsList className="grid w-full grid-cols-3">
-          <TabsTrigger value="customers">{t('crm.customerProfiles')}</TabsTrigger>
-          <TabsTrigger value="tickets">{t('crm.ticketManagement')}</TabsTrigger>
-          <TabsTrigger value="communication">{t('crm.communicationHistory')}</TabsTrigger>
+      {/* Main Content Tabs */}
+      <Tabs defaultValue="overview" className="space-y-6">
+        <TabsList className="grid w-full grid-cols-5">
+          <TabsTrigger value="overview">{t('overview')}</TabsTrigger>
+          <TabsTrigger value="leads">{t('leads')}</TabsTrigger>
+          <TabsTrigger value="deals">{t('deals')}</TabsTrigger>
+          <TabsTrigger value="contracts">{t('contracts')}</TabsTrigger>
+          <TabsTrigger value="partners">{t('partners')}</TabsTrigger>
         </TabsList>
 
-        <TabsContent value="customers" className="space-y-4">
-          <Card className="shadow-2xs">
-            <CardHeader>
-              <CardTitle className="text-card-foreground">{t('crm.customerProfiles')}</CardTitle>
-              <CardDescription>{t('crm.manageCustomerInfo')}</CardDescription>
-            </CardHeader>
-            <CardContent>
-              {/* Filters */}
-              <div className="flex items-center space-x-4 mb-6">
-                <div className="flex-1">
-                  <div className="relative">
-                    <Search className="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground" />
-                    <Input
-                      placeholder={t('crm.searchCustomers')}
-                      value={searchQuery}
-                      onChange={(e) => setSearchQuery(e.target.value)}
-                      className="pl-8"
-                    />
-                  </div>
-                </div>
-                <Select value={statusFilter} onValueChange={setStatusFilter}>
-                  <SelectTrigger className="w-[180px]">
-                    <SelectValue placeholder={t('crm.filterByStatus')} />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="all">{t('crm.allStatus')}</SelectItem>
-                    <SelectItem value="active">{t('crm.active')}</SelectItem>
-                    <SelectItem value="prospect">{t('crm.prospect')}</SelectItem>
-                    <SelectItem value="inactive">{t('crm.inactive')}</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
-
-              {/* Customer Table */}
-              <Table>
-                <TableHeader>
-                  <TableRow>
-                    <TableHead>{t('crm.customer')}</TableHead>
-                    <TableHead>{t('crm.company')}</TableHead>
-                    <TableHead>{t('crm.status')}</TableHead>
-                    <TableHead>{t('crm.totalSpent')}</TableHead>
-                    <TableHead>{t('crm.satisfaction')}</TableHead>
-                    <TableHead>{t('crm.lastContact')}</TableHead>
-                    <TableHead className="text-right">{t('common.actions')}</TableHead>
-                  </TableRow>
-                </TableHeader>
-                <TableBody>
-                  {filteredCustomers.map((customer) => (
-                    <TableRow key={customer.id}>
-                      <TableCell>
-                        <div className="flex items-center space-x-3">
-                          <div className="w-8 h-8 rounded-full bg-primary flex items-center justify-center">
-                            <User className="h-4 w-4 text-primary-foreground" />
-                          </div>
-                          <div>
-                            <p className="text-sm font-medium text-foreground">{customer.name || "Unknown Customer"}</p>
-                            <p className="text-xs text-muted-foreground">{customer.email || "No email"}</p>
-                          </div>
-                        </div>
-                      </TableCell>
-                      <TableCell>
-                        <div className="flex items-center space-x-2">
-                          <Building2 className="h-3 w-3 text-muted-foreground" />
-                          <span className="text-sm text-muted-foreground">{customer.company || "N/A"}</span>
-                        </div>
-                      </TableCell>
-                      <TableCell>
-                        <Badge variant={getStatusVariant(customer.status || "unknown")}>
-                          {customer.status || "Unknown"}
-                        </Badge>
-                      </TableCell>
-                      <TableCell>
-                        <span className="text-sm font-medium text-foreground">
-                          EGP {(customer.totalSpent || 0).toLocaleString()}
-                        </span>
-                      </TableCell>
-                      <TableCell>
-                        <div className="flex items-center space-x-1">
-                          <Star className="h-3 w-3 text-warning" />
-                          <span className="text-sm text-muted-foreground">
-                            {(customer.satisfaction || 0) > 0 ? (customer.satisfaction || 0).toFixed(1) : "N/A"}
-                          </span>
-                        </div>
-                      </TableCell>
-                      <TableCell>
-                        <span className="text-sm text-muted-foreground">
-                          {customer.lastContact ? formatRelativeTime(customer.lastContact) : "Never"}
-                        </span>
-                      </TableCell>
-                      <TableCell className="text-right">
-                        <DropdownMenu>
-                          <DropdownMenuTrigger asChild>
-                            <Button variant="ghost" className="h-8 w-8 p-0">
-                              <MoreHorizontal className="h-4 w-4" />
-                            </Button>
-                          </DropdownMenuTrigger>
-                          <DropdownMenuContent align="end">
-                            <DropdownMenuLabel>{t('common.actions')}</DropdownMenuLabel>
-                            <DropdownMenuItem>
-                              <User className="mr-2 h-4 w-4" />
-                              {t('crm.viewProfile')}
-                            </DropdownMenuItem>
-                            <DropdownMenuItem>
-                              <MessageSquare className="mr-2 h-4 w-4" />
-                              {t('crm.sendMessage')}
-                            </DropdownMenuItem>
-                            <DropdownMenuItem>
-                              <Phone className="mr-2 h-4 w-4" />
-                              {t('crm.callCustomer')}
-                            </DropdownMenuItem>
-                            <DropdownMenuSeparator />
-                            <DropdownMenuItem>
-                              <Calendar className="mr-2 h-4 w-4" />
-                              {t('crm.scheduleMeeting')}
-                            </DropdownMenuItem>
-                            <DropdownMenuItem>
-                              <Activity className="mr-2 h-4 w-4" />
-                              {t('crm.viewActivity')}
-                            </DropdownMenuItem>
-                          </DropdownMenuContent>
-                        </DropdownMenu>
-                      </TableCell>
-                    </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
-            </CardContent>
-          </Card>
+        {/* Overview Tab */}
+        <TabsContent value="overview" className="space-y-6">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            <SalesPipeline />
+            <LeadConversion />
+          </div>
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            <RevenueForecast />
+            <TeamPerformance />
+          </div>
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            <ContractStatus />
+            <CommunicationHistory />
+          </div>
         </TabsContent>
 
-        <TabsContent value="tickets" className="space-y-4">
-          <Card className="shadow-2xs">
+        {/* Leads Tab */}
+        <TabsContent value="leads" className="space-y-6">
+          <Card className="shadow-2xs rounded-[0.625rem] font-sans">
             <CardHeader>
-            <CardTitle className="text-card-foreground">{t('crm.supportTickets')}</CardTitle>
-            <CardDescription>{t('crm.manageCustomerSupport')}</CardDescription>
+              <CardTitle className="flex items-center justify-between">
+                {t('leads')}
+                <div className="flex gap-2">
+                  <Input
+                    placeholder={t('searchLeads')}
+                    value={searchTerm}
+                    onChange={(e) => setSearchTerm(e.target.value)}
+                    className="w-64"
+                  />
+                  <Select value={statusFilter} onValueChange={setStatusFilter}>
+                    <SelectTrigger className="w-32">
+                      <SelectValue placeholder={t('status')} />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="all">{t('allStatuses')}</SelectItem>
+                      <SelectItem value="new">{t('new')}</SelectItem>
+                      <SelectItem value="contacted">{t('contacted')}</SelectItem>
+                      <SelectItem value="qualified">{t('qualified')}</SelectItem>
+                      <SelectItem value="converted">{t('converted')}</SelectItem>
+                      <SelectItem value="lost">{t('lost')}</SelectItem>
+                    </SelectContent>
+                  </Select>
+                  <Select value={typeFilter} onValueChange={setTypeFilter}>
+                    <SelectTrigger className="w-32">
+                      <SelectValue placeholder={t('type')} />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="all">{t('allTypes')}</SelectItem>
+                      <SelectItem value="shop">{t('shop')}</SelectItem>
+                      <SelectItem value="importer">{t('importer')}</SelectItem>
+                      <SelectItem value="manufacturer">{t('manufacturer')}</SelectItem>
+                      <SelectItem value="fleet">{t('fleet')}</SelectItem>
+                      <SelectItem value="insurance">{t('insurance')}</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+              </CardTitle>
             </CardHeader>
             <CardContent>
               <Table>
                 <TableHeader>
                   <TableRow>
-                    <TableHead>{t('crm.ticket')}</TableHead>
-                    <TableHead>{t('crm.customer')}</TableHead>
-                    <TableHead>{t('crm.status')}</TableHead>
-                    <TableHead>{t('crm.priority')}</TableHead>
-                    <TableHead>{t('crm.assignedTo')}</TableHead>
-                    <TableHead>{t('crm.created')}</TableHead>
-                    <TableHead className="text-right">{t('common.actions')}</TableHead>
+                    <TableHead>{t('company')}</TableHead>
+                    <TableHead>{t('type')}</TableHead>
+                    <TableHead>{t('contact')}</TableHead>
+                    <TableHead>{t('status')}</TableHead>
+                    <TableHead>{t('assignedTo')}</TableHead>
+                    <TableHead>{t('value')}</TableHead>
+                    <TableHead>{t('created')}</TableHead>
+                    <TableHead className="w-[50px]">{t('actions')}</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
-                  {tickets.map((ticket) => (
-                    <TableRow key={ticket.id}>
+                  {filteredLeads.map((lead) => (
+                    <TableRow key={lead.id}>
                       <TableCell>
                         <div>
-                          <p className="text-sm font-medium text-foreground">{ticket.title || "Untitled Ticket"}</p>
-                          <p className="text-xs text-muted-foreground line-clamp-1">{ticket.description || "No description"}</p>
+                          <div className="font-medium">{lead.title}</div>
+                          <div className="text-sm text-gray-500">{lead.companyName}</div>
                         </div>
                       </TableCell>
                       <TableCell>
-                        <span className="text-sm text-muted-foreground">{ticket.customer || "Unknown Customer"}</span>
+                        <div className="flex items-center gap-2">
+                          <span>{getTypeIcon(lead.type)}</span>
+                          <span className="capitalize">{lead.type}</span>
+                        </div>
                       </TableCell>
                       <TableCell>
-                        <Badge variant={getTicketStatusVariant(ticket.status || "unknown")}>
-                          {ticket.status || "Unknown"}
+                        <div>
+                          <div className="font-medium">{lead.contact.name}</div>
+                          <div className="text-sm text-gray-500">{lead.contact.email}</div>
+                          <div className="text-sm text-gray-500">{lead.contact.phone}</div>
+                        </div>
+                      </TableCell>
+                      <TableCell>
+                        <Badge className={getStatusColor(lead.status)}>
+                          {t(lead.status)}
                         </Badge>
                       </TableCell>
+                      <TableCell>{lead.assignedTo}</TableCell>
                       <TableCell>
-                        <Badge variant={getPriorityVariant(ticket.priority || "unknown")}>
-                          {ticket.priority || "Unknown"}
-                        </Badge>
+                        {lead.value ? `${lead.value.toLocaleString()} EGP` : '-'}
                       </TableCell>
+                      <TableCell>{new Date(lead.createdAt).toLocaleDateString()}</TableCell>
                       <TableCell>
-                        <span className="text-sm text-muted-foreground">{ticket.assignedTo || "Unassigned"}</span>
-                      </TableCell>
-                      <TableCell>
-                        <span className="text-sm text-muted-foreground">
-                          {ticket.createdAt ? formatRelativeTime(ticket.createdAt) : "Unknown"}
-                        </span>
-                      </TableCell>
-                      <TableCell className="text-right">
                         <DropdownMenu>
                           <DropdownMenuTrigger asChild>
-                            <Button variant="ghost" className="h-8 w-8 p-0">
+                            <Button variant="ghost" size="sm">
                               <MoreHorizontal className="h-4 w-4" />
                             </Button>
                           </DropdownMenuTrigger>
-                          <DropdownMenuContent align="end">
-                            <DropdownMenuLabel>{t('common.actions')}</DropdownMenuLabel>
+                          <DropdownMenuContent>
                             <DropdownMenuItem>
-                              <MessageSquare className="mr-2 h-4 w-4" />
-                              {t('crm.viewDetails')}
+                              <Eye className="h-4 w-4 mr-2" />
+                              {t('view')}
                             </DropdownMenuItem>
                             <DropdownMenuItem>
-                              <User className="mr-2 h-4 w-4" />
-                              {t('crm.assignToMe')}
+                              <Edit className="h-4 w-4 mr-2" />
+                              {t('edit')}
                             </DropdownMenuItem>
-                            <DropdownMenuSeparator />
                             <DropdownMenuItem>
-                              <CheckCircle className="mr-2 h-4 w-4" />
-                              {t('crm.markAsResolved')}
+                              <Phone className="h-4 w-4 mr-2" />
+                              {t('call')}
                             </DropdownMenuItem>
-                            <DropdownMenuItem className="text-destructive">
-                              <AlertTriangle className="mr-2 h-4 w-4" />
-                              {t('crm.escalate')}
+                            <DropdownMenuItem>
+                              <Mail className="h-4 w-4 mr-2" />
+                              {t('email')}
+                            </DropdownMenuItem>
+                            <DropdownMenuItem className="text-red-600">
+                              <Trash2 className="h-4 w-4 mr-2" />
+                              {t('delete')}
                             </DropdownMenuItem>
                           </DropdownMenuContent>
                         </DropdownMenu>
@@ -569,81 +426,194 @@ export default function CRMPage() {
           </Card>
         </TabsContent>
 
-        <TabsContent value="communication" className="space-y-4">
-          <Card className="shadow-2xs">
+        {/* Deals Tab */}
+        <TabsContent value="deals" className="space-y-6">
+          <Card className="shadow-2xs rounded-[0.625rem] font-sans">
             <CardHeader>
-              <CardTitle className="text-card-foreground">{t('crm.communicationHistory')}</CardTitle>
-              <CardDescription>{t('crm.timelineOfInteractions')}</CardDescription>
+              <CardTitle className="flex items-center justify-between">
+                {t('deals')}
+                <Button size="sm">
+                  <Plus className="h-4 w-4 mr-2" />
+                  {t('newDeal')}
+                </Button>
+              </CardTitle>
             </CardHeader>
             <CardContent>
-              <div className="space-y-4">
-                <div className="flex items-start space-x-3 p-4 rounded-[0.625rem] bg-muted/50">
-                  <div className="w-2 h-2 rounded-full bg-primary mt-2"></div>
-                  <div className="flex-1">
-                    <div className="flex items-center justify-between">
-                      <p className="text-sm font-medium text-foreground">{t('crm.phoneCall')} - Ahmed Hassan</p>
-                      <span className="text-xs text-muted-foreground">2 {t('crm.hoursAgo')}</span>
-                    </div>
-                    <p className="text-xs text-muted-foreground mt-1">
-                      {t('crm.discussedFleetFeatures')}
-                    </p>
-                  </div>
-                </div>
-                <div className="flex items-start space-x-3 p-4 rounded-[0.625rem] bg-muted/50">
-                  <div className="w-2 h-2 rounded-full bg-primary mt-2"></div>
-                  <div className="flex-1">
-                    <div className="flex items-center justify-between">
-                      <p className="text-sm font-medium text-foreground">{t('crm.email')} - Fatma Mohamed</p>
-                      <span className="text-xs text-muted-foreground">1 {t('crm.dayAgo')}</span>
-                    </div>
-                    <p className="text-xs text-muted-foreground mt-1">
-                      {t('crm.sentMonthlyReport')}
-                    </p>
-                  </div>
-                </div>
-                <div className="flex items-start space-x-3 p-4 rounded-[0.625rem] bg-muted/50">
-                  <div className="w-2 h-2 rounded-full bg-primary mt-2"></div>
-                  <div className="flex-1">
-                    <div className="flex items-center justify-between">
-                      <p className="text-sm font-medium text-foreground">{t('crm.meeting')} - Omar Ali</p>
-                      <span className="text-xs text-muted-foreground">3 {t('crm.daysAgo')}</span>
-                    </div>
-                    <p className="text-xs text-muted-foreground mt-1">
-                      {t('crm.productDemoCompleted')}
-                    </p>
-                  </div>
-                </div>
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead>{t('deal')}</TableHead>
+                    <TableHead>{t('pipeline')}</TableHead>
+                    <TableHead>{t('stage')}</TableHead>
+                    <TableHead>{t('value')}</TableHead>
+                    <TableHead>{t('probability')}</TableHead>
+                    <TableHead>{t('assignedTo')}</TableHead>
+                    <TableHead>{t('created')}</TableHead>
+                    <TableHead className="w-[50px]">{t('actions')}</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {deals.map((deal) => (
+                    <TableRow key={deal.id}>
+                      <TableCell>
+                        <div className="font-medium">Deal #{deal.id}</div>
+                        <div className="text-sm text-gray-500">
+                          {leads.find(l => l.id === deal.leadId)?.title}
+                        </div>
+                      </TableCell>
+                      <TableCell>
+                        <Badge variant="outline" className="uppercase">
+                          {deal.pipeline}
+                        </Badge>
+                      </TableCell>
+                      <TableCell>
+                        <Badge className={getStatusColor(deal.stage)}>
+                          {t(deal.stage)}
+                        </Badge>
+                      </TableCell>
+                      <TableCell className="font-medium">
+                        {deal.valueEGP.toLocaleString()} EGP
+                      </TableCell>
+                      <TableCell>
+                        <div className="flex items-center gap-2">
+                          <div className="w-16 bg-gray-200 rounded-full h-2">
+                            <div 
+                              className="bg-blue-600 h-2 rounded-full" 
+                              style={{ width: `${deal.probability}%` }}
+                            ></div>
+                          </div>
+                          <span className="text-sm">{deal.probability}%</span>
+                        </div>
+                      </TableCell>
+                      <TableCell>{deal.assignedTo}</TableCell>
+                      <TableCell>{new Date(deal.createdAt).toLocaleDateString()}</TableCell>
+                      <TableCell>
+                        <DropdownMenu>
+                          <DropdownMenuTrigger asChild>
+                            <Button variant="ghost" size="sm">
+                              <MoreHorizontal className="h-4 w-4" />
+                            </Button>
+                          </DropdownMenuTrigger>
+                          <DropdownMenuContent>
+                            <DropdownMenuItem>
+                              <Eye className="h-4 w-4 mr-2" />
+                              {t('view')}
+                            </DropdownMenuItem>
+                            <DropdownMenuItem>
+                              <Edit className="h-4 w-4 mr-2" />
+                              {t('edit')}
+                            </DropdownMenuItem>
+                            <DropdownMenuItem>
+                              <FileText className="h-4 w-4 mr-2" />
+                              {t('createContract')}
+                            </DropdownMenuItem>
+                          </DropdownMenuContent>
+                        </DropdownMenu>
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </CardContent>
+          </Card>
+        </TabsContent>
+
+        {/* Contracts Tab */}
+        <TabsContent value="contracts" className="space-y-6">
+          <Card className="shadow-2xs rounded-[0.625rem] font-sans">
+            <CardHeader>
+              <CardTitle className="flex items-center justify-between">
+                {t('contracts')}
+                <Button size="sm">
+                  <Plus className="h-4 w-4 mr-2" />
+                  {t('newContract')}
+                </Button>
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead>{t('contract')}</TableHead>
+                    <TableHead>{t('lead')}</TableHead>
+                    <TableHead>{t('template')}</TableHead>
+                    <TableHead>{t('status')}</TableHead>
+                    <TableHead>{t('created')}</TableHead>
+                    <TableHead className="w-[50px]">{t('actions')}</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {contracts.map((contract) => (
+                    <TableRow key={contract.id}>
+                      <TableCell>
+                        <div className="font-medium">Contract #{contract.id}</div>
+                      </TableCell>
+                      <TableCell>
+                        {leads.find(l => l.id === contract.leadId)?.title}
+                      </TableCell>
+                      <TableCell>
+                        <Badge variant="outline">
+                          {contract.templateId}
+                        </Badge>
+                      </TableCell>
+                      <TableCell>
+                        <Badge className={getStatusColor(contract.status)}>
+                          {t(contract.status)}
+                        </Badge>
+                      </TableCell>
+                      <TableCell>{new Date(contract.createdAt).toLocaleDateString()}</TableCell>
+                      <TableCell>
+                        <DropdownMenu>
+                          <DropdownMenuTrigger asChild>
+                            <Button variant="ghost" size="sm">
+                              <MoreHorizontal className="h-4 w-4" />
+                            </Button>
+                          </DropdownMenuTrigger>
+                          <DropdownMenuContent>
+                            <DropdownMenuItem>
+                              <Eye className="h-4 w-4 mr-2" />
+                              {t('view')}
+                            </DropdownMenuItem>
+                            <DropdownMenuItem>
+                              <Download className="h-4 w-4 mr-2" />
+                              {t('download')}
+                            </DropdownMenuItem>
+                            <DropdownMenuItem>
+                              <Edit className="h-4 w-4 mr-2" />
+                              {t('edit')}
+                            </DropdownMenuItem>
+                          </DropdownMenuContent>
+                        </DropdownMenu>
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </CardContent>
+          </Card>
+        </TabsContent>
+
+        {/* Partners Tab */}
+        <TabsContent value="partners" className="space-y-6">
+          <Card className="shadow-2xs rounded-[0.625rem] font-sans">
+            <CardHeader>
+              <CardTitle className="flex items-center justify-between">
+                {t('partners')}
+                <Button size="sm">
+                  <Plus className="h-4 w-4 mr-2" />
+                  {t('newPartner')}
+                </Button>
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="text-center py-8 text-gray-500">
+                <Handshake className="h-12 w-12 mx-auto mb-4 text-gray-400" />
+                <p>{t('partnersComingSoon')}</p>
               </div>
             </CardContent>
           </Card>
         </TabsContent>
       </Tabs>
-
-      {/* Phase 2: CRM Analytics Widgets */}
-      <div className="space-y-6 mt-8">
-        <div className="flex items-center justify-between">
-          <div>
-            <h2 className="text-2xl font-bold tracking-tight text-foreground">{t('crm.crmAnalytics')}</h2>
-            <p className="text-muted-foreground">
-              {t('crm.moveBeyondTickets')}
-            </p>
-          </div>
-        </div>
-
-        {/* Top Row - Health Score & At-Risk */}
-        <div className="grid gap-6 md:grid-cols-2">
-          <CustomerHealthScore />
-          <AtRiskClients />
-        </div>
-
-        {/* Second Row - CSAT/NPS & Upsell */}
-        <div className="grid gap-6 md:grid-cols-2">
-          <CSATNPSTrends />
-          <UpsellOpportunities />
-        </div>
-      </div>
     </div>
   );
 }
-
-
