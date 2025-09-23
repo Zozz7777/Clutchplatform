@@ -1,8 +1,6 @@
 'use client';
 
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
-import enTranslations from '@/messages/en.json';
-import arTranslations from '@/messages/ar.json';
 
 interface LanguageContextType {
   language: 'en' | 'ar';
@@ -54,13 +52,23 @@ export function LanguageProvider({ children }: LanguageProviderProps) {
 
   // Translation function with fallback
   const t = (key: string, params?: any) => {
-    // Use static imports for translations
+    // Try to load translations from JSON files
     let translations: Record<string, any> = {};
     
-    if (language === 'ar') {
-      translations = arTranslations;
-    } else {
-      translations = enTranslations;
+    try {
+      if (language === 'ar') {
+        // Load Arabic translations
+        const arTranslations = require('@/messages/ar.json');
+        translations = arTranslations;
+        console.log('Arabic translations loaded:', arTranslations);
+      } else {
+        // Load English translations
+        const enTranslations = require('@/messages/en.json');
+        translations = enTranslations;
+        console.log('English translations loaded:', enTranslations);
+      }
+    } catch (error) {
+      console.warn('Failed to load translation files, using fallback:', error);
     }
 
     // Fallback translations if loading fails
@@ -376,6 +384,9 @@ export function LanguageProvider({ children }: LanguageProviderProps) {
       'dashboard.status': 'Status',
       'dashboard.lastLogin': 'Last Login',
       'dashboard.created': 'Created',
+      'dashboard.completed': 'Completed',
+      'dashboard.incomplete': 'Incomplete',
+      'dashboard.onboardingSteps': 'Onboarding Steps',
       'dashboard.welcome': 'Welcome to your Clutch Admin dashboard',
       'dashboard.loadingDashboard': 'Loading dashboard...',
       'dashboard.realTime': 'Real-time',
@@ -1016,6 +1027,15 @@ export function LanguageProvider({ children }: LanguageProviderProps) {
 
     // Try to get translation from loaded translations first, then fallback
     let translation = getNestedValue(translations, key) || fallbackTranslations[key] || key;
+    
+    // Debug logging
+    console.log(`Translation lookup for key "${key}":`, {
+      language,
+      translations: Object.keys(translations),
+      found: getNestedValue(translations, key),
+      fallback: fallbackTranslations[key],
+      result: translation
+    });
     
     if (params && typeof params === 'object') {
       Object.keys(params).forEach(paramKey => {

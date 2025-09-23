@@ -919,22 +919,43 @@ class BusinessIntelligenceService {
     total: number;
     completed: number;
     completionRate: number;
+    steps: Array<{
+      step: string;
+      completed: number;
+      total: number;
+      completionRate: number;
+    }>;
   }> {
     try {
       // Try to get real onboarding completion data from API first
       const realOnboardingData = await realApi.getOnboardingCompletion().catch(() => null);
       if (realOnboardingData && typeof realOnboardingData === 'object') {
-        return realOnboardingData as {
-          total: number;
-          completed: number;
-          completionRate: number;
-        };
+        // Handle the API response structure: { success: true, data: { ... } }
+        const onboardingData = (realOnboardingData as any).data || realOnboardingData;
+        if (onboardingData && typeof onboardingData === 'object') {
+          return {
+            total: onboardingData.total || 0,
+            completed: onboardingData.completed || 0,
+            completionRate: onboardingData.completionRate || 0,
+            steps: onboardingData.steps || []
+          };
+        }
       }
 
       // Fallback to empty data if real API fails
-      return { total: 0, completed: 0, completionRate: 0 };
+      return { 
+        total: 0, 
+        completed: 0, 
+        completionRate: 0,
+        steps: []
+      };
     } catch (error) {
-      return { total: 0, completed: 0, completionRate: 0 };
+      return { 
+        total: 0, 
+        completed: 0, 
+        completionRate: 0,
+        steps: []
+      };
     }
   }
 

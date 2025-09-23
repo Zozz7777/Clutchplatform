@@ -31,7 +31,12 @@ interface OnboardingData {
   total: number;
   completed: number;
   completionRate: number;
-  steps: OnboardingStep[];
+  steps: Array<{
+    step: string;
+    completed: number;
+    total: number;
+    completionRate: number;
+  }>;
 }
 
 export function OnboardingCompletion({ className = '' }: OnboardingCompletionProps) {
@@ -88,15 +93,15 @@ export function OnboardingCompletion({ className = '' }: OnboardingCompletionPro
   const getBottleneckSteps = () => {
     if (!onboardingData) return [];
     return onboardingData.steps
-      .filter(step => step.rate < 60)
-      .sort((a, b) => a.rate - b.rate);
+      .filter(step => step.completionRate < 60)
+      .sort((a, b) => a.completionRate - b.completionRate);
   };
 
   const getTopPerformingSteps = () => {
     if (!onboardingData) return [];
     return onboardingData.steps
-      .filter(step => step.rate >= 80)
-      .sort((a, b) => b.rate - a.rate);
+      .filter(step => step.completionRate >= 80)
+      .sort((a, b) => b.completionRate - a.completionRate);
   };
 
   if (isLoading) {
@@ -183,31 +188,31 @@ export function OnboardingCompletion({ className = '' }: OnboardingCompletionPro
             <p className="text-lg font-bold text-destructive">
               {onboardingData.total - onboardingData.completed}
             </p>
-            <p className="text-xs text-muted-foreground">{t('dashboard.incomplete')}</p>
+            <p className="text-xs text-muted-foreground">{t('widgets.incomplete')}</p>
           </div>
         </div>
 
         {/* Onboarding Steps */}
         <div className="space-y-3">
-          <h4 className="text-sm font-medium text-foreground">{t('dashboard.onboardingSteps')}</h4>
+          <h4 className="text-sm font-medium text-foreground">{t('widgets.onboardingSteps')}</h4>
           <div className="space-y-2">
             {onboardingData.steps.map((step) => {
-              const StepIcon = getStepIcon(step.rate);
+              const StepIcon = getStepIcon(step.completionRate);
               return (
                 <div key={step.step} className="flex items-center justify-between p-3 bg-muted/50 rounded-[0.625rem]-lg">
                   <div className="flex items-center space-x-3">
-                    <StepIcon className={`h-4 w-4 ${getStepColor(step.rate)}`} />
+                    <StepIcon className={`h-4 w-4 ${getStepColor(step.completionRate)}`} />
                     <div>
                       <p className="text-sm font-medium text-foreground">{step.step}</p>
-                      <p className="text-xs text-muted-foreground">{step.completed} of {onboardingData.total} users</p>
+                      <p className="text-xs text-muted-foreground">{step.completed} of {step.total} users</p>
                     </div>
                   </div>
                   <div className="text-right">
-                    <p className={`text-sm font-semibold ${getCompletionColor(step.rate)}`}>
-                      {step.rate.toFixed(1)}%
+                    <p className={`text-sm font-semibold ${getCompletionColor(step.completionRate)}`}>
+                      {step.completionRate.toFixed(1)}%
                     </p>
-                    <Badge className={getCompletionBadge(step.rate)}>
-                      {getCompletionLevel(step.rate)}
+                    <Badge className={getCompletionBadge(step.completionRate)}>
+                      {getCompletionLevel(step.completionRate)}
                     </Badge>
                   </div>
                 </div>
@@ -218,15 +223,15 @@ export function OnboardingCompletion({ className = '' }: OnboardingCompletionPro
 
         {/* Step Progress Visualization */}
         <div className="space-y-3">
-          <h4 className="text-sm font-medium text-foreground">Step Progress</h4>
+          <h4 className="text-sm font-medium text-foreground">{t('widgets.stepProgress')}</h4>
           <div className="space-y-2">
             {onboardingData.steps.map((step) => (
               <div key={step.step} className="space-y-1">
                 <div className="flex justify-between text-sm">
                   <span className="text-muted-foreground">{step.step}</span>
-                  <span className="text-foreground font-medium">{step.rate.toFixed(1)}%</span>
+                  <span className="text-foreground font-medium">{step.completionRate.toFixed(1)}%</span>
                 </div>
-                <Progress value={step.rate} className="h-2" />
+                <Progress value={step.completionRate} className="h-2" />
               </div>
             ))}
           </div>
@@ -237,7 +242,7 @@ export function OnboardingCompletion({ className = '' }: OnboardingCompletionPro
           <div className="space-y-3">
             <h4 className="text-sm font-medium text-foreground flex items-center space-x-2">
               <AlertTriangle className="h-4 w-4 text-destructive" />
-              <span>Bottlenecks</span>
+              <span>{t('widgets.bottlenecks')}</span>
             </h4>
             <div className="space-y-2">
               {bottleneckSteps.map((step) => (
@@ -246,12 +251,12 @@ export function OnboardingCompletion({ className = '' }: OnboardingCompletionPro
                     <AlertTriangle className="h-4 w-4 text-destructive" />
                     <div>
                       <p className="text-sm font-medium text-red-900">{step.step}</p>
-                      <p className="text-xs text-destructive">Needs attention</p>
+                      <p className="text-xs text-destructive">{t('widgets.needsAttention')}</p>
                     </div>
                   </div>
                   <div className="text-right">
-                    <p className="text-sm font-semibold text-destructive">{step.rate.toFixed(1)}%</p>
-                    <Badge className="bg-destructive/10 text-red-800">Low</Badge>
+                    <p className="text-sm font-semibold text-destructive">{step.completionRate.toFixed(1)}%</p>
+                    <Badge className="bg-destructive/10 text-red-800">{t('widgets.low')}</Badge>
                   </div>
                 </div>
               ))}
@@ -264,7 +269,7 @@ export function OnboardingCompletion({ className = '' }: OnboardingCompletionPro
           <div className="space-y-3">
             <h4 className="text-sm font-medium text-foreground flex items-center space-x-2">
               <CheckCircle className="h-4 w-4 text-success" />
-              <span>Top Performing Steps</span>
+              <span>{t('widgets.topPerformingSteps')}</span>
             </h4>
             <div className="space-y-2">
               {topPerformingSteps.map((step) => (
@@ -273,12 +278,12 @@ export function OnboardingCompletion({ className = '' }: OnboardingCompletionPro
                     <CheckCircle className="h-4 w-4 text-success" />
                     <div>
                       <p className="text-sm font-medium text-green-900">{step.step}</p>
-                      <p className="text-xs text-success">Performing well</p>
+                      <p className="text-xs text-success">{t('widgets.performingWell')}</p>
                     </div>
                   </div>
                   <div className="text-right">
-                    <p className="text-sm font-semibold text-success">{step.rate.toFixed(1)}%</p>
-                    <Badge className="bg-success/10 text-green-800">High</Badge>
+                    <p className="text-sm font-semibold text-success">{step.completionRate.toFixed(1)}%</p>
+                    <Badge className="bg-success/10 text-green-800">{t('widgets.high')}</Badge>
                   </div>
                 </div>
               ))}
@@ -290,24 +295,24 @@ export function OnboardingCompletion({ className = '' }: OnboardingCompletionPro
         <div className="flex space-x-2 pt-2">
           <Button variant="outline" size="sm" className="flex-1">
             <Eye className="h-4 w-4 mr-2" />
-            View Details
+            {t('widgets.viewDetails')}
           </Button>
           <Button variant="outline" size="sm" className="flex-1">
             <Download className="h-4 w-4 mr-2" />
-            Export Data
+            {t('widgets.exportData')}
           </Button>
         </div>
 
         {/* Insights */}
         <div className="p-3 bg-primary/10 rounded-[0.625rem]-lg">
-          <h5 className="text-sm font-medium text-blue-900 mb-2">💡 Onboarding Insights</h5>
+          <h5 className="text-sm font-medium text-blue-900 mb-2">💡 {t('widgets.onboardingInsights')}</h5>
           <ul className="text-xs text-blue-800 space-y-1">
-            <li>• Overall completion rate: {onboardingData.completionRate.toFixed(1)}%</li>
-            <li>• {onboardingData.completed} users completed full onboarding</li>
-            <li>• {bottleneckSteps.length} steps need improvement</li>
-            <li>• {topPerformingSteps.length} steps performing excellently</li>
+            <li>• {t('widgets.overallCompletionRate')}: {onboardingData.completionRate.toFixed(1)}%</li>
+            <li>• {onboardingData.completed} {t('widgets.usersCompletedFullOnboarding')}</li>
+            <li>• {bottleneckSteps.length} {t('widgets.stepsNeedImprovement')}</li>
+            <li>• {topPerformingSteps.length} {t('widgets.stepsPerformingExcellent')}</li>
             {bottleneckSteps.length > 0 && (
-              <li>• Focus on: {bottleneckSteps[0]?.step} ({bottleneckSteps[0]?.rate.toFixed(1)}% completion)</li>
+              <li>• {t('widgets.focusOn')} {bottleneckSteps[0]?.step} ({bottleneckSteps[0]?.completionRate.toFixed(1)}% {t('widgets.completion')})</li>
             )}
           </ul>
         </div>
