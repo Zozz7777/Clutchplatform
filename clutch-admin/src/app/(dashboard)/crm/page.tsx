@@ -151,17 +151,17 @@ export default function SalesPage() {
 
   const getStatusColor = (status: string) => {
     switch (status) {
-      case 'new': return 'bg-blue-100 text-blue-800';
-      case 'contacted': return 'bg-yellow-100 text-yellow-800';
-      case 'qualified': return 'bg-green-100 text-green-800';
-      case 'converted': return 'bg-emerald-100 text-emerald-800';
-      case 'lost': return 'bg-red-100 text-red-800';
-      case 'draft': return 'bg-gray-100 text-gray-800';
-      case 'signed_uploaded': return 'bg-blue-100 text-blue-800';
-      case 'pending_legal': return 'bg-yellow-100 text-yellow-800';
-      case 'approved': return 'bg-green-100 text-green-800';
-      case 'rejected': return 'bg-red-100 text-red-800';
-      default: return 'bg-gray-100 text-gray-800';
+      case 'new': return 'bg-primary/10 text-primary';
+      case 'contacted': return 'bg-secondary/10 text-secondary';
+      case 'qualified': return 'bg-success/10 text-success';
+      case 'converted': return 'bg-success/20 text-success';
+      case 'lost': return 'bg-destructive/10 text-destructive';
+      case 'draft': return 'bg-muted text-muted-foreground';
+      case 'signed_uploaded': return 'bg-primary/10 text-primary';
+      case 'pending_legal': return 'bg-secondary/10 text-secondary';
+      case 'approved': return 'bg-success/10 text-success';
+      case 'rejected': return 'bg-destructive/10 text-destructive';
+      default: return 'bg-muted text-muted-foreground';
     }
   };
 
@@ -231,7 +231,7 @@ export default function SalesPage() {
                 <p className="text-sm font-medium text-gray-600">{t('totalLeads')}</p>
                 <p className="text-2xl font-bold text-gray-900">{stats.totalLeads}</p>
               </div>
-              <Users className="h-8 w-8 text-blue-600" />
+              <Users className="h-8 w-8 text-primary" />
             </div>
           </CardContent>
         </Card>
@@ -478,7 +478,7 @@ export default function SalesPage() {
                         <div className="flex items-center gap-2">
                           <div className="w-16 bg-gray-200 rounded-full h-2">
                             <div 
-                              className="bg-blue-600 h-2 rounded-full" 
+                              className="bg-primary h-2 rounded-full" 
                               style={{ width: `${deal.probability}%` }}
                             ></div>
                           </div>

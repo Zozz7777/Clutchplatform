@@ -102,17 +102,17 @@ export default function SalesPipeline() {
       <CardContent className="space-y-4">
         {/* Pipeline Overview */}
         <div className="grid grid-cols-2 gap-4 mb-6">
-          <div className="text-center p-4 bg-blue-50 rounded-lg">
-            <Users className="h-8 w-8 text-blue-600 mx-auto mb-2" />
-            <p className="text-2xl font-bold text-blue-900">{totalCount}</p>
-            <p className="text-sm text-blue-700">{t('totalDeals')}</p>
+          <div className="text-center p-4 bg-primary/10 rounded-lg">
+            <Users className="h-8 w-8 text-primary mx-auto mb-2" />
+            <p className="text-2xl font-bold text-primary">{totalCount}</p>
+            <p className="text-sm text-primary/80">{t('totalDeals')}</p>
           </div>
-          <div className="text-center p-4 bg-green-50 rounded-lg">
-            <DollarSign className="h-8 w-8 text-green-600 mx-auto mb-2" />
-            <p className="text-2xl font-bold text-green-900">
+          <div className="text-center p-4 bg-success/10 rounded-lg">
+            <DollarSign className="h-8 w-8 text-success mx-auto mb-2" />
+            <p className="text-2xl font-bold text-success">
               {(totalValue / 1000000).toFixed(1)}M
             </p>
-            <p className="text-sm text-green-700">EGP {t('pipelineValue')}</p>
+            <p className="text-sm text-success/80">EGP {t('pipelineValue')}</p>
           </div>
         </div>
 

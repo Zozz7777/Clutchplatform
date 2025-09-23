@@ -61,8 +61,8 @@ export function CashFlowProjection({ className = '' }: CashFlowProjectionProps) 
         ]);
 
         const currentBalance = 125000; // Simulated current balance
-        const monthlyInflow = payments?.reduce((sum, payment) => sum + payment.amount, 0) || 0;
-        const monthlyOutflow = expenses?.reduce((sum, expense) => sum + expense.amount, 0) || 0;
+        const monthlyInflow = Array.isArray(payments) ? payments.reduce((sum: number, payment: any) => sum + (payment?.amount || 0), 0) : 0;
+        const monthlyOutflow = Array.isArray(expenses) ? expenses.reduce((sum: number, expense: any) => sum + (expense?.amount || 0), 0) : 0;
         const netCashFlow = monthlyInflow - monthlyOutflow;
         
         const days = selectedPeriod === '30d' ? 30 : selectedPeriod === '90d' ? 90 : 180;

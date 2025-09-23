@@ -56,7 +56,7 @@ export function ARPUARPPU({ className = '' }: ARPUARPPUProps) {
 
         const totalUsers = users?.length || 0;
         const payingUsers = payments?.length || 0;
-        const totalRevenue = payments?.reduce((sum, payment) => sum + payment.amount, 0) || 0;
+        const totalRevenue = Array.isArray(payments) ? payments.reduce((sum: number, payment: any) => sum + (payment?.amount || 0), 0) : 0;
         
         const arpu = totalUsers > 0 ? totalRevenue / totalUsers : 0;
         const arppu = payingUsers > 0 ? totalRevenue / payingUsers : 0;
