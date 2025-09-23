@@ -52,7 +52,7 @@ import {
 } from "lucide-react";
 import { formatCurrency } from "@/lib/utils";
 import { productionApi } from "@/lib/production-api";
-// Translation system removed - using hardcoded strings
+import { useLanguage } from "@/contexts/language-context";
 
 interface Vendor {
   _id: string;
@@ -186,7 +186,7 @@ interface Communication {
 }
 
 export default function VendorManagementPage() {
-  // Translation system removed - using hardcoded strings
+  const { t } = useLanguage();
   const [vendors, setVendors] = useState<Vendor[]>([]);
   const [contracts, setContracts] = useState<Contract[]>([]);
   const [communications, setCommunications] = useState<Communication[]>([]);
@@ -521,7 +521,7 @@ export default function VendorManagementPage() {
       <div className="flex items-center justify-center h-64">
         <div className="text-center">
           <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto"></div>
-          <p className="mt-2 text-muted-foreground">Loading vendors...</p>
+          <p className="mt-2 text-muted-foreground">{t('vendorManagement.loading')}</p>
         </div>
       </div>
     );
@@ -532,23 +532,23 @@ export default function VendorManagementPage() {
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold tracking-tight">Vendor Management</h1>
+          <h1 className="text-3xl font-bold tracking-tight">{t('vendorManagement.title')}</h1>
           <p className="text-muted-foreground">
-            Manage vendor relationships, contracts, and performance
+            {t('vendorManagement.description')}
           </p>
         </div>
         <div className="flex items-center space-x-2">
           <Button onClick={() => setShowCommunicationDialog(true)} variant="outline">
             <MessageSquare className="mr-2 h-4 w-4" />
-            Log Communication
+            {t('vendorManagement.logCommunication')}
           </Button>
           <Button onClick={() => setShowContractDialog(true)} variant="outline">
             <FileText className="mr-2 h-4 w-4" />
-            New Contract
+            {t('vendorManagement.newContract')}
           </Button>
           <Button onClick={() => setShowCreateDialog(true)}>
             <Plus className="mr-2 h-4 w-4" />
-            Add Vendor
+            {t('vendorManagement.addVendor')}
           </Button>
         </div>
       </div>
@@ -557,43 +557,43 @@ export default function VendorManagementPage() {
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Total Vendors</CardTitle>
+            <CardTitle className="text-sm font-medium">{t('vendorManagement.totalVendors')}</CardTitle>
             <Building2 className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">{totalVendors}</div>
             <p className="text-xs text-muted-foreground">
-              {activeVendors} active, {totalVendors - activeVendors} inactive
+              {activeVendors} {t('vendorManagement.active')}, {totalVendors - activeVendors} {t('vendorManagement.inactive')}
             </p>
           </CardContent>
         </Card>
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Total Contract Value</CardTitle>
+            <CardTitle className="text-sm font-medium">{t('vendorManagement.totalContractValue')}</CardTitle>
             <DollarSign className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">{formatCurrency(totalContractValue)}</div>
             <p className="text-xs text-muted-foreground">
-              Across all contracts
+              {t('vendorManagement.acrossAllContracts')}
             </p>
           </CardContent>
         </Card>
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Average Rating</CardTitle>
+            <CardTitle className="text-sm font-medium">{t('vendorManagement.averageRating')}</CardTitle>
             <Star className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">{averageRating.toFixed(1)}</div>
             <p className="text-xs text-muted-foreground">
-              Out of 5.0 stars
+              {t('vendorManagement.outOf5Stars')}
             </p>
           </CardContent>
         </Card>
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Active Contracts</CardTitle>
+            <CardTitle className="text-sm font-medium">{t('vendorManagement.activeContracts')}</CardTitle>
             <Handshake className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
@@ -601,7 +601,7 @@ export default function VendorManagementPage() {
               {vendors.reduce((sum, v) => sum + v.contracts.active, 0)}
             </div>
             <p className="text-xs text-muted-foreground">
-              Currently active
+              {t('vendorManagement.currentlyActive')}
             </p>
           </CardContent>
         </Card>
@@ -610,9 +610,9 @@ export default function VendorManagementPage() {
       {/* Vendors */}
       <Card>
         <CardHeader>
-          <CardTitle>{t('vendors.vendors')}</CardTitle>
+          <CardTitle>{t('vendors')}</CardTitle>
           <CardDescription>
-            {t('vendors.description')}
+            {t('vendorManagement.description')}
           </CardDescription>
         </CardHeader>
         <CardContent>
@@ -621,7 +621,7 @@ export default function VendorManagementPage() {
               <div className="relative">
                 <Search className="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground" />
                 <Input
-                  placeholder="Search vendors..."
+                  placeholder={t('vendorManagement.searchPlaceholder')}
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
                   className="pl-8"
@@ -632,7 +632,7 @@ export default function VendorManagementPage() {
               <DropdownMenuTrigger asChild>
                 <Button variant="outline">
                   <Filter className="mr-2 h-4 w-4" />
-                  Type: {typeFilter === "all" ? "All" : typeFilter}
+                  {t('vendorManagement.typeFilter')}: {typeFilter === "all" ? t('vendorManagement.all') : typeFilter}
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent>

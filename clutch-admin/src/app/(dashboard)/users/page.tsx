@@ -252,7 +252,7 @@ export default function UsersPage() {
           <Dialog open={isCreateDialogOpen} onOpenChange={setIsCreateDialogOpen}>
             <DialogTrigger asChild>
               <Button className="shadow-2xs">
-                <Plus className="mr-2 h-4 w-4" />
+            <Plus className="mr-2 h-4 w-4" />
                 {t('users.addUser')}
               </Button>
             </DialogTrigger>
@@ -346,7 +346,7 @@ export default function UsersPage() {
                 </Button>
                 <Button type="button" onClick={handleCreateUser}>
                   {t('users.create')}
-                </Button>
+          </Button>
               </DialogFooter>
             </DialogContent>
           </Dialog>

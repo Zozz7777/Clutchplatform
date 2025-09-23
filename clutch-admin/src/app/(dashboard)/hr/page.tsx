@@ -1374,7 +1374,7 @@ export default function HRPage() {
                 <CardTitle className="text-2xl font-bold text-foreground" style={{ fontFamily: 'Roboto, ui-sans-serif, sans-serif, system-ui' }}>Job Postings</CardTitle>
                 <CardDescription className="text-muted-foreground text-base" style={{ fontFamily: 'Roboto, ui-sans-serif, sans-serif, system-ui' }}>
                   Manage job postings and track their performance
-                </CardDescription>
+            </CardDescription>
               </div>
               <Button 
                 onClick={() => {
