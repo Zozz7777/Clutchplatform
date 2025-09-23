@@ -1,6 +1,8 @@
 'use client';
 
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
+import enTranslations from '@/messages/en.json';
+import arTranslations from '@/messages/ar.json';
 
 interface LanguageContextType {
   language: 'en' | 'ar';
@@ -52,21 +54,13 @@ export function LanguageProvider({ children }: LanguageProviderProps) {
 
   // Translation function with fallback
   const t = (key: string, params?: any) => {
-    // Try to load translations from JSON files
-    let translations: Record<string, string> = {};
+    // Use static imports for translations
+    let translations: Record<string, any> = {};
     
-    try {
-      if (language === 'ar') {
-        // Load Arabic translations
-        const arTranslations = require('@/messages/ar.json');
-        translations = arTranslations;
-      } else {
-        // Load English translations
-        const enTranslations = require('@/messages/en.json');
-        translations = enTranslations;
-      }
-    } catch (error) {
-      console.warn('Failed to load translation files, using fallback:', error);
+    if (language === 'ar') {
+      translations = arTranslations;
+    } else {
+      translations = enTranslations;
     }
 
     // Fallback translations if loading fails
@@ -340,9 +334,29 @@ export function LanguageProvider({ children }: LanguageProviderProps) {
         'widgets.clientsShowingGrowth': '{growing} out of {total} clients showing positive growth',
         'widgets.averageClientActivity': 'Average client activity level: {percentage}%',
         'widgets.totalEnterpriseRevenue': 'Total enterprise revenue: {amount} EGP',
+        'users.fromLastMonth': 'from last month',
+        'users.enterpriseClients': 'Enterprise Clients',
+        'users.serviceProviders': 'Service Providers',
+        'users.userAnalytics': 'User Analytics',
+        'users.deepInsightsIntoUser': 'Deep insights into user behavior and engagement',
+        'users.segments': 'Segments',
+        'users.featureUsageHeatmap': 'Feature Usage Heatmap',
+        'users.topPerformingFeatures': 'Top Performing Features',
+        'users.usageDistribution': 'Usage Distribution',
+        'users.unableToLoadOnboardingData': 'Unable to load onboarding data',
       
       // Dashboard specific translations
       'dashboard.title': 'Dashboard',
+      'dashboard.allUsers': 'All Users',
+      'dashboard.b2cCustomers': 'B2C Customers',
+      'dashboard.enterpriseClients': 'Enterprise Clients',
+      'dashboard.serviceProviders': 'Service Providers',
+      'dashboard.completeUserDirectory': 'Complete User Directory',
+      'dashboard.user': 'User',
+      'dashboard.role': 'Role',
+      'dashboard.status': 'Status',
+      'dashboard.lastLogin': 'Last Login',
+      'dashboard.created': 'Created',
       'dashboard.welcome': 'Welcome to your Clutch Admin dashboard',
       'dashboard.loadingDashboard': 'Loading dashboard...',
       'dashboard.realTime': 'Real-time',

@@ -6,7 +6,7 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Progress } from '@/components/ui/progress';
 import { businessIntelligence } from '@/lib/business-intelligence';
-// Translation system removed - using hardcoded strings
+import { useLanguage } from '@/contexts/language-context';
 import { 
   CheckCircle, 
   Circle, 
@@ -35,7 +35,7 @@ interface OnboardingData {
 }
 
 export function OnboardingCompletion({ className = '' }: OnboardingCompletionProps) {
-  // Translation system removed - using hardcoded strings
+  const { t } = useLanguage();
   const [onboardingData, setOnboardingData] = React.useState<OnboardingData | null>(null);
   const [isLoading, setIsLoading] = React.useState(true);
 
@@ -67,10 +67,10 @@ export function OnboardingCompletion({ className = '' }: OnboardingCompletionPro
   };
 
   const getCompletionLevel = (rate: number) => {
-    if (rate >= 80) return 'Excellent';
-    if (rate >= 60) return 'Good';
-    if (rate >= 40) return 'Fair';
-    return 'Poor';
+    if (rate >= 80) return t('widgets.excellent');
+    if (rate >= 60) return t('widgets.good');
+    if (rate >= 40) return t('widgets.fair');
+    return t('widgets.poor');
   };
 
   const getStepIcon = (rate: number) => {
@@ -105,9 +105,9 @@ export function OnboardingCompletion({ className = '' }: OnboardingCompletionPro
         <CardHeader>
           <CardTitle className="flex items-center space-x-2">
             <Target className="h-5 w-5 text-success" />
-            <span>Onboarding Completion</span>
+            <span>{t('widgets.onboardingCompletion')}</span>
           </CardTitle>
-          <CardDescription>Loading onboarding metrics...</CardDescription>
+          <CardDescription>{t('widgets.loadingOnboardingData')}</CardDescription>
         </CardHeader>
         <CardContent>
           <div className="animate-pulse space-y-4">
