@@ -47,7 +47,7 @@ export function OverdueInvoices({ className = '' }: OverdueInvoicesProps) {
         const payments = await Promise.resolve([]);
         
         // Generate overdue invoices from real payment data
-        const overdueInvoices: OverdueInvoice[] = payments.filter(payment => 
+        const overdueInvoices: OverdueInvoice[] = (payments || []).filter(payment => 
           payment.status === 'overdue' || payment.status === 'pending'
         ).map((payment, index) => ({
           id: payment.id || `invoice-${Date.now()}-${index}`,

@@ -329,12 +329,12 @@ export function EngagementHeatmap({ className = '' }: EngagementHeatmapProps) {
           <h5 className="text-sm font-medium text-primary mb-2">💡 {t('widgets.engagementInsights')}</h5>
           <ul className="text-xs text-primary/80 space-y-1">
             <li>• {t('widgets.averageFeatureUsage', { rate: totalUsage.toFixed(1) })}</li>
-            <li>• {t('widgets.topFeature', { feature: topFeatures[0]?.feature || 'N/A', rate: topFeatures[0]?.usage.toFixed(1) || '0' })}</li>
+            <li>• {t('widgets.topFeature', { feature: topFeatures[0]?.feature || 'N/A', rate: (topFeatures[0]?.usage || 0).toFixed(1) })}</li>
             <li>• {t('widgets.featuresWithHighEngagement', { count: filteredSegments.reduce((count, segment) => 
-              count + Object.values(segment.features).filter(usage => usage >= 80).length, 0
+              count + (segment?.features ? Object.values(segment.features).filter(usage => (usage || 0) >= 80).length : 0), 0
             ) })}</li>
             <li>• {t('widgets.featuresNeedAttention', { count: filteredSegments.reduce((count, segment) => 
-              count + Object.values(segment.features).filter(usage => usage < 40).length, 0
+              count + (segment?.features ? Object.values(segment.features).filter(usage => (usage || 0) < 40).length : 0), 0
             ) })}</li>
           </ul>
         </div>
