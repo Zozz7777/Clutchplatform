@@ -52,23 +52,27 @@ export function UserGrowthCohort({ className = '' }: UserGrowthCohortProps) {
   }, []);
 
   const getFilteredCohorts = () => {
-    if (!cohortData) return [];
+    if (!cohortData || !cohortData.cohorts || !Array.isArray(cohortData.cohorts)) return [];
     const months = selectedPeriod === '6m' ? 6 : 12;
     return cohortData.cohorts.slice(-months);
   };
 
   const getTotalNewUsers = () => {
-    return getFilteredCohorts().reduce((sum, cohort) => sum + (cohort.newUsers || 0), 0);
+    const cohorts = getFilteredCohorts();
+    if (!Array.isArray(cohorts)) return 0;
+    return cohorts.reduce((sum, cohort) => sum + (cohort?.newUsers || 0), 0);
   };
 
   const getTotalRetained = () => {
-    return getFilteredCohorts().reduce((sum, cohort) => sum + (cohort.retained || 0), 0);
+    const cohorts = getFilteredCohorts();
+    if (!Array.isArray(cohorts)) return 0;
+    return cohorts.reduce((sum, cohort) => sum + (cohort?.retained || 0), 0);
   };
 
   const getAverageRetention = () => {
     const cohorts = getFilteredCohorts();
-    if (cohorts.length === 0) return 0;
-    const total = cohorts.reduce((sum, cohort) => sum + (cohort.retentionRate || 0), 0);
+    if (!Array.isArray(cohorts) || cohorts.length === 0) return 0;
+    const total = cohorts.reduce((sum, cohort) => sum + (cohort?.retentionRate || 0), 0);
     return total / cohorts.length;
   };
 
@@ -189,7 +193,7 @@ export function UserGrowthCohort({ className = '' }: UserGrowthCohortProps) {
           <h4 className="text-sm font-medium text-foreground">{t('widgets.monthlyCohorts')}</h4>
           <div className="space-y-2 max-h-64 overflow-y-auto">
             {filteredCohorts.map((cohort, index) => (
-              <div key={cohort.month} className="flex items-center justify-between p-3 bg-muted/50 rounded-[0.625rem]-lg">
+              <div key={cohort?.month || index} className="flex items-center justify-between p-3 bg-muted/50 rounded-[0.625rem]-lg">
                 <div className="flex items-center space-x-3">
                   <div className="flex items-center justify-center w-8 h-8 bg-primary/10 rounded-full">
                     <span className="text-sm font-semibold text-primary">
@@ -197,23 +201,23 @@ export function UserGrowthCohort({ className = '' }: UserGrowthCohortProps) {
                     </span>
                   </div>
                   <div>
-                    <p className="text-sm font-medium text-foreground">{formatMonth(cohort.month)}</p>
+                    <p className="text-sm font-medium text-foreground">{formatMonth(cohort?.month || '')}</p>
                     <p className="text-xs text-muted-foreground">{'Cohort'}</p>
                   </div>
                 </div>
                 
                 <div className="flex items-center space-x-4">
                   <div className="text-center">
-                    <p className="text-sm font-semibold text-foreground">{cohort.newUsers}</p>
+                    <p className="text-sm font-semibold text-foreground">{cohort?.newUsers || 0}</p>
                     <p className="text-xs text-muted-foreground">New</p>
                   </div>
                   <div className="text-center">
-                    <p className="text-sm font-semibold text-foreground">{cohort.retained}</p>
+                    <p className="text-sm font-semibold text-foreground">{cohort?.retained || 0}</p>
                     <p className="text-xs text-muted-foreground">{t('widgets.retained')}</p>
                   </div>
                   <div className="text-center">
-                    <Badge className={getRetentionBadge(cohort.retentionRate)}>
-                      {(cohort.retentionRate || 0).toFixed(1)}%
+                    <Badge className={getRetentionBadge(cohort?.retentionRate || 0)}>
+                      {(cohort?.retentionRate || 0).toFixed(1)}%
                     </Badge>
                   </div>
                 </div>
@@ -226,21 +230,21 @@ export function UserGrowthCohort({ className = '' }: UserGrowthCohortProps) {
         <div className="space-y-3">
           <h4 className="text-sm font-medium text-foreground">{t('widgets.retentionTrend')}</h4>
           <div className="space-y-2">
-            {filteredCohorts.slice(-6).map((cohort) => (
-              <div key={cohort.month} className="flex items-center justify-between text-sm">
-                <span className="text-muted-foreground">{formatMonth(cohort.month)}</span>
+            {filteredCohorts.slice(-6).map((cohort, index) => (
+              <div key={cohort?.month || index} className="flex items-center justify-between text-sm">
+                <span className="text-muted-foreground">{formatMonth(cohort?.month || '')}</span>
                 <div className="flex items-center space-x-2">
                   <div className="w-24 bg-muted rounded-full h-2">
                     <div 
                       className={`h-2 rounded-full ${
-                        cohort.retentionRate >= 80 ? 'bg-success/100' :
-                        cohort.retentionRate >= 60 ? 'bg-warning/100' : 'bg-destructive/100'
+                        (cohort?.retentionRate || 0) >= 80 ? 'bg-success/100' :
+                        (cohort?.retentionRate || 0) >= 60 ? 'bg-warning/100' : 'bg-destructive/100'
                       }`}
-                      style={{ width: `${cohort.retentionRate}%` }}
+                      style={{ width: `${cohort?.retentionRate || 0}%` }}
                     ></div>
                   </div>
-                  <span className={`text-sm font-medium ${getRetentionColor(cohort.retentionRate)}`}>
-                    {(cohort.retentionRate || 0).toFixed(1)}%
+                  <span className={`text-sm font-medium ${getRetentionColor(cohort?.retentionRate || 0)}`}>
+                    {(cohort?.retentionRate || 0).toFixed(1)}%
                   </span>
                 </div>
               </div>
@@ -253,14 +257,14 @@ export function UserGrowthCohort({ className = '' }: UserGrowthCohortProps) {
           <div className="text-center p-3 bg-success/10 rounded-[0.625rem]-lg">
             <TrendingUp className="h-4 w-4 text-success mx-auto mb-1" />
             <p className="text-sm font-bold text-success">
-              {filteredCohorts.filter(c => c.retentionRate >= 80).length}
+              {filteredCohorts.filter(c => (c?.retentionRate || 0) >= 80).length}
             </p>
             <p className="text-xs text-muted-foreground">{t('widgets.highRetention')}</p>
           </div>
           <div className="text-center p-3 bg-destructive/10 rounded-[0.625rem]-lg">
             <TrendingDown className="h-4 w-4 text-destructive mx-auto mb-1" />
             <p className="text-sm font-bold text-destructive">
-              {filteredCohorts.filter(c => c.retentionRate < 60).length}
+              {filteredCohorts.filter(c => (c?.retentionRate || 0) < 60).length}
             </p>
             <p className="text-xs text-muted-foreground">{t('widgets.lowRetention')}</p>
           </div>
@@ -283,7 +287,7 @@ export function UserGrowthCohort({ className = '' }: UserGrowthCohortProps) {
           <h5 className="text-sm font-medium text-blue-900 mb-2">💡 {t('widgets.cohortInsights')}</h5>
           <ul className="text-xs text-blue-800 space-y-1">
             <li>• {t('widgets.averageRetentionRate', { rate: (averageRetention || 0).toFixed(1) })}</li>
-            <li>• {t('widgets.cohortsWithHighRetention', { count: filteredCohorts.filter(c => c.retentionRate >= 80).length })}</li>
+            <li>• {t('widgets.cohortsWithHighRetention', { count: filteredCohorts.filter(c => (c?.retentionRate || 0) >= 80).length })}</li>
             <li>• {t('widgets.totalNewUsersInPeriod', { count: totalNewUsers })}</li>
             <li>• {t('widgets.totalRetainedUsers', { count: totalRetained })}</li>
             {averageRetention < 70 && (

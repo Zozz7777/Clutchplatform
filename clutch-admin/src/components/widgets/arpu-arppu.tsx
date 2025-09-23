@@ -6,6 +6,7 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Progress } from '@/components/ui/progress';
 import { productionApi } from '@/lib/production-api';
+import { useLanguage } from '@/contexts/language-context';
 import { 
   DollarSign, 
   Users, 
@@ -41,7 +42,7 @@ interface ARPUData {
 }
 
 export function ARPUARPPU({ className = '' }: ARPUARPPUProps) {
-  const { t } = useTranslations();
+  const { t } = useLanguage();
   const [arpuData, setArpuData] = React.useState<ARPUData | null>(null);
   const [isLoading, setIsLoading] = React.useState(true);
 

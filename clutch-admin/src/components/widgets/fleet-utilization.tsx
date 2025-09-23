@@ -6,7 +6,6 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Progress } from '@/components/ui/progress';
 import { businessIntelligence } from '@/lib/business-intelligence';
-// import { useTranslations } from '@/hooks/use-translations';
 import { 
   Truck, 
   Activity, 

@@ -6,6 +6,7 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Progress } from '@/components/ui/progress';
 import { productionApi } from '@/lib/production-api';
+import { useLanguage } from '@/contexts/language-context';
 import { 
   DollarSign, 
   TrendingUp, 
@@ -46,7 +47,7 @@ interface CashFlowData {
 }
 
 export function CashFlowProjection({ className = '' }: CashFlowProjectionProps) {
-  const { t } = useTranslations();
+  const { t } = useLanguage();
   const [cashFlowData, setCashFlowData] = React.useState<CashFlowData | null>(null);
   const [isLoading, setIsLoading] = React.useState(true);
   const [selectedPeriod, setSelectedPeriod] = React.useState<'30d' | '90d' | '180d'>('90d');

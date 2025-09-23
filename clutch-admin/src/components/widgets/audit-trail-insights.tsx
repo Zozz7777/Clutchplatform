@@ -6,6 +6,7 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Progress } from '@/components/ui/progress';
 import { productionApi } from '@/lib/production-api';
+import { useLanguage } from '@/contexts/language-context';
 import { 
   FileText, 
   Users, 
@@ -37,7 +38,7 @@ interface AuditEvent {
 }
 
 export function AuditTrailInsights({ className = '' }: AuditTrailInsightsProps) {
-  const { t } = useTranslations();
+  const { t } = useLanguage();
   const [auditData, setAuditData] = React.useState<{
     events: AuditEvent[];
     totalEvents: number;
