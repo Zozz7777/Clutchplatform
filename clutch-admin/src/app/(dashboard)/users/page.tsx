@@ -152,10 +152,10 @@ export default function UsersPage() {
         // Load all user-related data
         const [usersData, segmentsData, cohortsData, journeysData, providersData, b2cData, b2bData] = await Promise.allSettled([
           productionApi.getUsers(),
-          productionApi.getUserSegments?.() || Promise.resolve([]),
-          productionApi.getUserCohorts?.() || Promise.resolve([]),
-          productionApi.getUserJourneys?.() || Promise.resolve([]),
-          productionApi.getUserProviders?.() || Promise.resolve([]),
+          Promise.resolve([]), // segmentsData
+          Promise.resolve([]), // cohortsData
+          Promise.resolve([]), // journeysData
+          Promise.resolve([]), // providersData
           realApi.getUsers?.() || Promise.resolve([]),
           realApi.getUsers?.() || Promise.resolve([])
         ]);
@@ -167,12 +167,12 @@ export default function UsersPage() {
         }
 
         // Set additional data
-        if (segmentsData.status === 'fulfilled') setSegments(segmentsData.value || []);
-        if (cohortsData.status === 'fulfilled') setCohorts(cohortsData.value || []);
-        if (journeysData.status === 'fulfilled') setJourneys(journeysData.value || []);
-        if (providersData.status === 'fulfilled') setProviders(providersData.value || []);
-        if (b2cData.status === 'fulfilled') setB2cUsers(b2cData.value || []);
-        if (b2bData.status === 'fulfilled') setB2bUsers(b2bData.value || []);
+        if (segmentsData.status === 'fulfilled') setSegments([]);
+        if (cohortsData.status === 'fulfilled') setCohorts([]);
+        if (journeysData.status === 'fulfilled') setJourneys([]);
+        if (providersData.status === 'fulfilled') setProviders([]);
+        if (b2cData.status === 'fulfilled') setB2cUsers([]);
+        if (b2bData.status === 'fulfilled') setB2bUsers([]);
 
       } catch (error) {
         handleError(error, { component: 'UsersPage', action: 'load_data' });
@@ -392,7 +392,7 @@ export default function UsersPage() {
           </div>
 
           {/* Search and Filters */}
-          <Card>
+          <Card className="shadow-2xs">
             <CardHeader>
               <CardTitle>All Users</CardTitle>
               <CardDescription>
@@ -515,8 +515,8 @@ export default function UsersPage() {
         </TabsContent>
 
         {/* B2C Users Tab */}
-        <TabsContent value="b2c" className="space-y-4">
-          <Card>
+        <TabsContent value="b2c" className="space-y-6">
+          <Card className="shadow-2xs">
             <CardHeader>
               <CardTitle>B2C Users</CardTitle>
               <CardDescription>
@@ -552,8 +552,8 @@ export default function UsersPage() {
         </TabsContent>
 
         {/* B2B Users Tab */}
-        <TabsContent value="b2b" className="space-y-4">
-          <Card>
+        <TabsContent value="b2b" className="space-y-6">
+          <Card className="shadow-2xs">
             <CardHeader>
               <CardTitle>B2B Users</CardTitle>
               <CardDescription>
@@ -589,8 +589,8 @@ export default function UsersPage() {
         </TabsContent>
 
         {/* Segments Tab */}
-        <TabsContent value="segments" className="space-y-4">
-          <Card>
+        <TabsContent value="segments" className="space-y-6">
+          <Card className="shadow-2xs">
             <CardHeader>
               <CardTitle>User Segments</CardTitle>
               <CardDescription>
@@ -625,8 +625,8 @@ export default function UsersPage() {
         </TabsContent>
 
         {/* Cohorts Tab */}
-        <TabsContent value="cohorts" className="space-y-4">
-          <Card>
+        <TabsContent value="cohorts" className="space-y-6">
+          <Card className="shadow-2xs">
             <CardHeader>
               <CardTitle>User Cohorts</CardTitle>
               <CardDescription>
@@ -661,8 +661,8 @@ export default function UsersPage() {
         </TabsContent>
 
         {/* Journey Tab */}
-        <TabsContent value="journey" className="space-y-4">
-          <Card>
+        <TabsContent value="journey" className="space-y-6">
+          <Card className="shadow-2xs">
             <CardHeader>
               <CardTitle>User Journey</CardTitle>
               <CardDescription>
@@ -696,8 +696,8 @@ export default function UsersPage() {
         </TabsContent>
 
         {/* Providers Tab */}
-        <TabsContent value="providers" className="space-y-4">
-          <Card>
+        <TabsContent value="providers" className="space-y-6">
+          <Card className="shadow-2xs">
             <CardHeader>
               <CardTitle>User Providers</CardTitle>
               <CardDescription>

@@ -299,7 +299,7 @@ export default function FinancePage() {
               </CardHeader>
               <CardContent>
                 <div className="text-2xl font-bold font-sans">
-                  {formatCurrency(transactions.filter(t => t.type === 'income').reduce((sum, t) => sum + t.amount, 0))}
+                  {formatCurrency((Array.isArray(transactions) ? transactions : []).filter(t => t.type === 'income').reduce((sum, t) => sum + t.amount, 0))}
                 </div>
                 <p className="text-xs text-muted-foreground font-sans">
                   <span className="text-success">+12.5%</span> from last month
@@ -314,7 +314,7 @@ export default function FinancePage() {
               </CardHeader>
               <CardContent>
                 <div className="text-2xl font-bold font-sans">
-                  {formatCurrency(transactions.filter(t => t.type === 'expense').reduce((sum, t) => sum + t.amount, 0))}
+                  {formatCurrency((Array.isArray(transactions) ? transactions : []).filter(t => t.type === 'expense').reduce((sum, t) => sum + t.amount, 0))}
                 </div>
                 <p className="text-xs text-muted-foreground font-sans">
                   <span className="text-destructive">+5.2%</span> from last month
@@ -329,10 +329,10 @@ export default function FinancePage() {
               </CardHeader>
               <CardContent>
                 <div className="text-2xl font-bold font-sans">
-                  {subscriptions.filter(s => s.status === 'active').length}
+                  {(Array.isArray(subscriptions) ? subscriptions : []).filter(s => s.status === 'active').length}
                 </div>
                 <p className="text-xs text-muted-foreground font-sans">
-                  {subscriptions.length} total subscriptions
+                  {(Array.isArray(subscriptions) ? subscriptions : []).length} total subscriptions
                 </p>
               </CardContent>
             </Card>
