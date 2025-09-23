@@ -443,7 +443,18 @@ class BusinessIntelligenceService {
       // Try to get real compliance data from API first
       const realComplianceData = await realApi.getComplianceStatus().catch(() => null);
       if (realComplianceData && typeof realComplianceData === 'object') {
-        return realComplianceData as ComplianceStatus;
+        // Handle the API response structure: { success: true, data: { ... } }
+        const complianceData = (realComplianceData as any).data || realComplianceData;
+        if (complianceData && typeof complianceData === 'object') {
+          return {
+            pendingApprovals: complianceData.pendingApprovals || 0,
+            violations: complianceData.violations || 0,
+            securityIncidents: complianceData.securityIncidents || 0,
+            overallStatus: complianceData.overallStatus || 'green',
+            lastAudit: complianceData.lastAudit || new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toISOString(),
+            nextAudit: complianceData.nextAudit || new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString()
+          };
+        }
       }
 
       // Fallback to calculated data if real API fails
