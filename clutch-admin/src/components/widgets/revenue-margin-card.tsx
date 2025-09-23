@@ -223,7 +223,7 @@ export function RevenueMarginCard({ className = '' }: RevenueMarginCardProps) {
                   </div>
                   <div>
                     <p className="text-sm font-medium text-card-foreground">{item.name}</p>
-                    <p className="text-xs text-muted-foreground">{item.percentage.toFixed(1)}% of total costs</p>
+<p className="text-xs text-muted-foreground">{item.percentage.toFixed(1)}% {t('widgets.ofTotalCosts')}</p>
                   </div>
                 </div>
                 <div className="text-right">

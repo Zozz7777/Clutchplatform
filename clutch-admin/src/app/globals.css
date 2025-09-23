@@ -14,20 +14,41 @@
 
   /* RTL Layout Support for main layout */
   [dir="rtl"] .main-layout {
-    flex-direction: row-reverse;
+    flex-direction: row-reverse !important;
+    background-color: rgba(255, 0, 0, 0.1) !important; /* Debug: red tint for RTL */
   }
   
   [dir="ltr"] .main-layout {
-    flex-direction: row;
+    flex-direction: row !important;
+    background-color: rgba(0, 255, 0, 0.1) !important; /* Debug: green tint for LTR */
   }
 
   /* RTL Sidebar border positioning */
   [dir="rtl"] .sidebar-border {
-    border-left: 1px solid var(--border);
+    border-left: 1px solid var(--border) !important;
+    border-right: none !important;
   }
   
   [dir="ltr"] .sidebar-border {
-    border-right: 1px solid var(--border);
+    border-right: 1px solid var(--border) !important;
+    border-left: none !important;
+  }
+
+  /* Force RTL layout order */
+  [dir="rtl"] .main-layout > *:first-child {
+    order: 2;
+  }
+  
+  [dir="rtl"] .main-layout > *:last-child {
+    order: 1;
+  }
+  
+  [dir="ltr"] .main-layout > *:first-child {
+    order: 1;
+  }
+  
+  [dir="ltr"] .main-layout > *:last-child {
+    order: 2;
   }
 
   :root {

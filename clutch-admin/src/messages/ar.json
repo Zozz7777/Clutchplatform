@@ -1189,7 +1189,18 @@
       "collapse": "طي"
     },
     "theme": {
-      "toggle": "تبديل المظهر"
+      "toggle": "تبديل المظهر",
+      "light": "فاتح",
+      "dark": "داكن",
+      "system": "النظام"
+    },
+    "header": {
+      "search": "بحث...",
+      "notifications": "الإشعارات",
+      "myAccount": "حسابي",
+      "profile": "الملف الشخصي",
+      "settings": "الإعدادات",
+      "language": "اللغة"
     },
     "search": "بحث...",
     "conversionRate": "معدل التحويل",

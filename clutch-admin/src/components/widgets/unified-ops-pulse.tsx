@@ -179,7 +179,7 @@ export function UnifiedOpsPulse({ className = '' }: UnifiedOpsPulseProps) {
         <div className="grid grid-cols-2 gap-4 pt-4 border-t border-border">
           <div className="text-center">
             <p className="text-2xl font-bold text-card-foreground">{pulse.conversionRate.toFixed(1)}%</p>
-            <p className="text-xs text-muted-foreground">Conversion Rate</p>
+<p className="text-xs text-muted-foreground">{t('widgets.conversionRate')}</p>
             <div className="mt-2">
               <Progress value={pulse.conversionRate} className="h-2" />
             </div>
@@ -198,7 +198,7 @@ export function UnifiedOpsPulse({ className = '' }: UnifiedOpsPulseProps) {
         {/* Trend Indicator */}
         <div className="flex items-center justify-center space-x-2 pt-2">
           <TrendingUp className="h-4 w-4 text-success" />
-          <span className="text-sm text-muted-foreground">Operations trending positive</span>
+<span className="text-sm text-muted-foreground">{t('widgets.operationsTrendingPositive')}</span>
         </div>
       </CardContent>
     </Card>

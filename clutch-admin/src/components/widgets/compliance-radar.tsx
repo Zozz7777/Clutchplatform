@@ -226,7 +226,7 @@ export function ComplianceRadar({ className = '' }: ComplianceRadarProps) {
                t('widgets.actionRequired')}
             </Badge>
           </div>
-          <p className="text-sm text-muted-foreground">Overall Compliance Status</p>
+<p className="text-sm text-muted-foreground">{t('widgets.overallComplianceStatus')}</p>
         </div>
 
         {/* Compliance Metrics */}
