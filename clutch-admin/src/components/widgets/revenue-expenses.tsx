@@ -48,8 +48,8 @@ export function RevenueExpenses({ className = '' }: RevenueExpensesProps) {
           Promise.resolve([])
         ]);
 
-        const totalRevenue = payments?.reduce((sum, payment) => sum + payment.amount, 0) || 0;
-        const totalExpenses = expenses?.reduce((sum, expense) => sum + expense.amount, 0) || 0;
+        const totalRevenue = Array.isArray(payments) ? payments.reduce((sum: number, payment: any) => sum + (payment?.amount || 0), 0) : 0;
+        const totalExpenses = Array.isArray(expenses) ? expenses.reduce((sum: number, expense: any) => sum + (expense?.amount || 0), 0) : 0;
         
         const netMargin = totalRevenue > 0 ? ((totalRevenue - totalExpenses) / totalRevenue) * 100 : 0;
         const grossMargin = totalRevenue > 0 ? ((totalRevenue - (totalExpenses * 0.6)) / totalRevenue) * 100 : 0;

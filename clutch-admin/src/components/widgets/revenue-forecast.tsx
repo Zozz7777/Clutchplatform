@@ -1,7 +1,7 @@
 'use client';
 
 import React from 'react';
-import { useTranslations } from 'next-intl';
+import { useLanguage } from '@/contexts/language-context';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { TrendingUp, TrendingDown, DollarSign, Target } from 'lucide-react';
@@ -15,7 +15,7 @@ interface ForecastData {
 }
 
 export default function RevenueForecast() {
-  const t = useTranslations('sales');
+  const { t } = useLanguage();
 
   // Mock data - in production, this would come from API
   const forecastData: ForecastData[] = [

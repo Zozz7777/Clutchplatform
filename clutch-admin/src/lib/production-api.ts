@@ -1064,6 +1064,57 @@ export class ProductionApiService {
       throw new Error("Failed to create project");
     }
   }
+
+  // System Health APIs
+  async getSLAMetrics(): Promise<Record<string, unknown>> {
+    try {
+      const data = await realApi.getSLAMetrics();
+      return data || {};
+    } catch (error) {
+      logger.error("Failed to fetch SLA metrics:", error);
+      throw new Error("Failed to load SLA metrics");
+    }
+  }
+
+  async getSystemHealth(): Promise<Record<string, unknown>[]> {
+    try {
+      const data = await realApi.getSystemHealth();
+      return (data || []) as unknown as Record<string, unknown>[];
+    } catch (error) {
+      logger.error("Failed to fetch system health:", error);
+      throw new Error("Failed to load system health");
+    }
+  }
+
+  async getPerformanceMetrics(): Promise<Record<string, unknown> | null> {
+    try {
+      const data = await realApi.getPerformanceMetrics();
+      return data || null;
+    } catch (error) {
+      logger.error("Failed to fetch performance metrics:", error);
+      throw new Error("Failed to load performance metrics");
+    }
+  }
+
+  async getIncidents(): Promise<Record<string, unknown>[]> {
+    try {
+      const data = await realApi.getIncidents();
+      return (data || []) as unknown as Record<string, unknown>[];
+    } catch (error) {
+      logger.error("Failed to fetch incidents:", error);
+      throw new Error("Failed to load incidents");
+    }
+  }
+
+  async getApiAnalytics(): Promise<Record<string, unknown>[]> {
+    try {
+      const data = await realApi.getApiAnalytics();
+      return (data || []) as unknown as Record<string, unknown>[];
+    } catch (error) {
+      logger.error("Failed to fetch API analytics:", error);
+      throw new Error("Failed to load API analytics");
+    }
+  }
 }
 
 // Create and export a singleton instance

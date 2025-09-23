@@ -1295,6 +1295,17 @@ export class RealApiService {
       { fallbackValue: {}, showToast: false }
     )();
   }
+
+  async getApiAnalytics(): Promise<Record<string, unknown>[]> {
+    return withErrorHandling(
+      async () => {
+        const response = await apiService.makeRequest<Record<string, unknown>[]>("/api/v1/api-analytics");
+        return handleApiResponse(response, 'getApiAnalytics', []);
+      },
+      'getApiAnalytics',
+      { fallbackValue: [], showToast: false }
+    )();
+  }
 }
 
 // Export singleton instance

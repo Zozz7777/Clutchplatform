@@ -293,7 +293,7 @@ export default function SettingsPage() {
               onChange={(e) => handleSettingChange(setting.key, e.target.checked)}
               className="rounded border-input"
             />
-            <span className="text-sm">{setting.value ? t('settings.enabled') : t('settings.disabled')}</span>
+            <span className="text-sm">{setting.value ? 'Enabled' : 'Disabled'}</span>
           </div>
         );
       case "number":
@@ -359,7 +359,7 @@ export default function SettingsPage() {
               onChange={(e) => handlePreferenceChange(preference.key, e.target.checked)}
               className="rounded border-input"
             />
-            <span className="text-sm">{preference.value ? t('settings.enabled') : t('settings.disabled')}</span>
+            <span className="text-sm">{preference.value ? 'Enabled' : 'Disabled'}</span>
           </div>
         );
       case "number":
@@ -417,7 +417,7 @@ export default function SettingsPage() {
             ) : (
               <Save className="mr-2 h-4 w-4" />
             )}
-            {t('dashboard.saveChanges')}
+            Save Changes
           </Button>
         )}
       </div>
@@ -430,7 +430,7 @@ export default function SettingsPage() {
           onClick={() => setActiveTab("general")}
         >
           <Settings className="mr-2 h-4 w-4" />
-          {t('dashboard.general')}
+          General
         </Button>
         <Button
           variant={activeTab === "security" ? "default" : "ghost"}
@@ -438,7 +438,7 @@ export default function SettingsPage() {
           onClick={() => setActiveTab("security")}
         >
           <Shield className="mr-2 h-4 w-4" />
-          {t('dashboard.security')}
+          Security
         </Button>
         <Button
           variant={activeTab === "notifications" ? "default" : "ghost"}
@@ -446,7 +446,7 @@ export default function SettingsPage() {
           onClick={() => setActiveTab("notifications")}
         >
           <Bell className="mr-2 h-4 w-4" />
-          {t('dashboard.notifications')}
+          Notifications
         </Button>
         <Button
           variant={activeTab === "appearance" ? "default" : "ghost"}
@@ -454,7 +454,7 @@ export default function SettingsPage() {
           onClick={() => setActiveTab("appearance")}
         >
           <Palette className="mr-2 h-4 w-4" />
-          {t('dashboard.appearance')}
+          Appearance
         </Button>
         <Button
           variant={activeTab === "integrations" ? "default" : "ghost"}
@@ -462,7 +462,7 @@ export default function SettingsPage() {
           onClick={() => setActiveTab("integrations")}
         >
           <Key className="mr-2 h-4 w-4" />
-          {t('dashboard.integrations')}
+          Integrations
         </Button>
         <Button
           variant={activeTab === "audit" ? "default" : "ghost"}
@@ -470,7 +470,7 @@ export default function SettingsPage() {
           onClick={() => setActiveTab("audit")}
         >
           <Database className="mr-2 h-4 w-4" />
-          {t('dashboard.auditLog')}
+          Audit Log
         </Button>
       </div>
 
@@ -478,9 +478,9 @@ export default function SettingsPage() {
       {activeTab === "general" && (
         <Card>
           <CardHeader>
-            <CardTitle>{t('dashboard.generalSettings')}</CardTitle>
+            <CardTitle>General Settings</CardTitle>
             <CardDescription>
-              {t('dashboard.basicSystemConfiguration')}
+              Basic system configuration
             </CardDescription>
           </CardHeader>
           <CardContent>
@@ -492,12 +492,12 @@ export default function SettingsPage() {
                     <div className="flex-1">
                       <div className="flex items-center space-x-2">
                         {getCategoryIcon(setting?.category || 'general')}
-                        <label className="text-sm font-medium">{setting?.key || t('dashboard.unknownSetting')}</label>
+                        <label className="text-sm font-medium">{setting?.key || 'Unknown Setting'}</label>
                         {setting?.isRequired && (
-                          <Badge variant="destructive" className="text-xs">{t('dashboard.required')}</Badge>
+                          <Badge variant="destructive" className="text-xs">Required</Badge>
                         )}
                       </div>
-                      <p className="text-xs text-muted-foreground mt-1">{setting?.description || t('dashboard.noDescription')}</p>
+                      <p className="text-xs text-muted-foreground mt-1">{setting?.description || 'No description available'}</p>
                     </div>
                     <div className="ml-4">
                       {renderSettingInput(setting)}
@@ -513,9 +513,9 @@ export default function SettingsPage() {
       {activeTab === "security" && (
         <Card>
           <CardHeader>
-            <CardTitle>{t('dashboard.securitySettings')}</CardTitle>
+            <CardTitle>Security Settings</CardTitle>
             <CardDescription>
-              {t('dashboard.securityConfigurationAndAccess')}
+              Security configuration and access control
             </CardDescription>
           </CardHeader>
           <CardContent>
@@ -529,7 +529,7 @@ export default function SettingsPage() {
                         <Shield className="h-4 w-4" />
                         <label className="text-sm font-medium">{setting.key}</label>
                         {setting.isRequired && (
-                          <Badge variant="destructive" className="text-xs">{t('dashboard.required')}</Badge>
+                          <Badge variant="destructive" className="text-xs">Required</Badge>
                         )}
                       </div>
                       <p className="text-xs text-muted-foreground mt-1">{setting.description}</p>
@@ -548,9 +548,9 @@ export default function SettingsPage() {
       {activeTab === "notifications" && (
         <Card>
           <CardHeader>
-            <CardTitle>{t('dashboard.notificationSettings')}</CardTitle>
+            <CardTitle>Notification Settings</CardTitle>
             <CardDescription>
-              {t('dashboard.notificationPreferencesAndAlerts')}
+              Notification preferences and alerts
             </CardDescription>
           </CardHeader>
           <CardContent>
@@ -580,9 +580,9 @@ export default function SettingsPage() {
       {activeTab === "appearance" && (
         <Card>
           <CardHeader>
-            <CardTitle>{t('dashboard.appearanceSettings')}</CardTitle>
+            <CardTitle>Appearance Settings</CardTitle>
             <CardDescription>
-              {t('dashboard.themeAndDisplayPreferences')}
+              Theme and display preferences
             </CardDescription>
           </CardHeader>
           <CardContent>

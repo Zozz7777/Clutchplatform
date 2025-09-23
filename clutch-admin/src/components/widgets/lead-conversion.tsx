@@ -1,7 +1,7 @@
 'use client';
 
 import React from 'react';
-import { useTranslations } from 'next-intl';
+import { useLanguage } from '@/contexts/language-context';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Progress } from '@/components/ui/progress';
@@ -15,7 +15,7 @@ interface ConversionMetric {
 }
 
 export default function LeadConversion() {
-  const t = useTranslations('sales');
+  const { t } = useLanguage();
 
   // Mock data - in production, this would come from API
   const conversionMetrics: ConversionMetric[] = [

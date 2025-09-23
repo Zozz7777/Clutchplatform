@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import { useTranslations } from 'next-intl';
+import { useLanguage } from '@/contexts/language-context';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -28,7 +28,7 @@ interface Communication {
 }
 
 export default function CommunicationHistory() {
-  const t = useTranslations('sales');
+  const { t } = useLanguage();
   const [communications, setCommunications] = useState<Communication[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -45,10 +45,10 @@ export default function CommunicationHistory() {
       if (response.success) {
         setCommunications(response.communications || []);
       } else {
-        setError(response.message || t('errorFetchingCommunications'));
+        setError(response.message || 'Failed to fetch communications');
       }
     } catch (err) {
-      setError(t('errorFetchingCommunications'));
+      setError('Failed to fetch communications');
       console.error('Error fetching communications:', err);
     } finally {
       setLoading(false);
@@ -110,7 +110,7 @@ export default function CommunicationHistory() {
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
             <MessageSquare className="h-5 w-5" />
-            {t('communicationHistory')}
+            Communication History
           </CardTitle>
         </CardHeader>
         <CardContent>
@@ -128,7 +128,7 @@ export default function CommunicationHistory() {
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
             <MessageSquare className="h-5 w-5" />
-            {t('communicationHistory')}
+            Communication History
           </CardTitle>
         </CardHeader>
         <CardContent>
@@ -136,7 +136,7 @@ export default function CommunicationHistory() {
             <AlertTriangle className="h-12 w-12 text-red-500 mx-auto mb-4" />
             <p className="text-red-600 mb-4">{error}</p>
             <Button onClick={fetchCommunications} variant="outline">
-              {t('retry')}
+              Retry
             </Button>
           </div>
         </CardContent>
@@ -158,24 +158,24 @@ export default function CommunicationHistory() {
           <div className="text-center p-4 bg-blue-50 rounded-lg">
             <MessageSquare className="h-8 w-8 text-blue-600 mx-auto mb-2" />
             <p className="text-2xl font-bold text-blue-900">{totalCommunications}</p>
-            <p className="text-sm text-blue-700">{t('totalCommunications')}</p>
+            <p className="text-sm text-blue-700">Total Communications</p>
           </div>
           <div className="text-center p-4 bg-green-50 rounded-lg">
             <Phone className="h-8 w-8 text-green-600 mx-auto mb-2" />
             <p className="text-2xl font-bold text-green-900">
               {successfulRate.toFixed(0)}%
             </p>
-            <p className="text-sm text-green-700">{t('successRate')}</p>
+            <p className="text-sm text-green-700">Success Rate</p>
           </div>
         </div>
 
         {/* Recent Communications */}
         <div className="space-y-4">
-          <h4 className="font-semibold text-gray-900">{t('recentCommunications')}</h4>
+          <h4 className="font-semibold text-gray-900">Recent Communications</h4>
           {communications.length === 0 ? (
             <div className="text-center py-8 text-gray-500">
               <MessageSquare className="h-12 w-12 mx-auto mb-4 text-gray-400" />
-              <p>{t('noCommunications')}</p>
+              <p>No communications found</p>
             </div>
           ) : (
             <div className="space-y-3">
@@ -188,10 +188,10 @@ export default function CommunicationHistory() {
                     </div>
                     <div className="flex items-center gap-2">
                       <Badge className={getTypeColor(comm.type)}>
-                        {t(comm.type)}
+                        {comm.type}
                       </Badge>
                       <Badge className={getOutcomeColor(comm.outcome)}>
-                        {t(comm.outcome)}
+                        {comm.outcome}
                       </Badge>
                     </div>
                   </div>
@@ -215,16 +215,16 @@ export default function CommunicationHistory() {
 
         {/* Communication Breakdown */}
         <div className="space-y-3">
-          <h4 className="font-semibold text-gray-900">{t('communicationBreakdown')}</h4>
+          <h4 className="font-semibold text-gray-900">Communication Breakdown</h4>
           <div className="grid grid-cols-2 gap-4">
             <div>
-              <h5 className="text-sm font-medium text-gray-700 mb-2">{t('byType')}</h5>
+              <h5 className="text-sm font-medium text-gray-700 mb-2">By Type</h5>
               <div className="space-y-1">
                 {Object.entries(typeStats).map(([type, count]) => (
                   <div key={type} className="flex items-center justify-between text-sm">
                     <div className="flex items-center gap-2">
                       {getTypeIcon(type)}
-                      <span className="capitalize">{t(type)}</span>
+                      <span className="capitalize">{type}</span>
                     </div>
                     <span className="font-medium">{count}</span>
                   </div>
@@ -232,11 +232,11 @@ export default function CommunicationHistory() {
               </div>
             </div>
             <div>
-              <h5 className="text-sm font-medium text-gray-700 mb-2">{t('byOutcome')}</h5>
+              <h5 className="text-sm font-medium text-gray-700 mb-2">By Outcome</h5>
               <div className="space-y-1">
                 {Object.entries(outcomeStats).map(([outcome, count]) => (
                   <div key={outcome} className="flex items-center justify-between text-sm">
-                    <span className="capitalize">{t(outcome)}</span>
+                    <span className="capitalize">{outcome}</span>
                     <span className="font-medium">{count}</span>
                   </div>
                 ))}
