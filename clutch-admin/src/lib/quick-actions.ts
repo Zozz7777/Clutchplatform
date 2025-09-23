@@ -41,31 +41,31 @@ export class QuickActionsService {
 
   navigateToReports = () => {
     this.router.push('/reports');
-    toast.success('Navigating to Reports');
+    toast.success(this.t('quickActions.navigatingToReports'));
   };
 
   navigateToSettings = () => {
     this.router.push('/settings');
-    toast.success('Navigating to Settings');
+    toast.success(this.t('quickActions.navigatingToSettings'));
   };
 
   navigateToCRM = () => {
     this.router.push('/crm');
-    toast.success('Navigating to CRM');
+    toast.success(this.t('quickActions.navigatingToCRM'));
   };
 
   navigateToFinance = () => {
     this.router.push('/finance');
-    toast.success('Navigating to Finance');
+    toast.success(this.t('quickActions.navigatingToFinance'));
   };
 
   // Data generation actions
   generateReport = async () => {
     try {
-      toast.loading('Generating report...', { id: 'generate-report' });
+      toast.loading(this.t('quickActions.generatingReport'), { id: 'generate-report' });
       
       const reportData = {
-        name: `Dashboard Report - ${new Date().toLocaleDateString()}`,
+        name: `${this.t('quickActions.dashboardReport')} - ${new Date().toLocaleDateString()}`,
         type: 'dashboard_summary',
         dateRange: {
           start: new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toISOString(), // 30 days ago
@@ -76,20 +76,20 @@ export class QuickActionsService {
       const result = await productionApi.generateReport('dashboard', reportData);
       
       if (result) {
-        toast.success('Report generated successfully!', { id: 'generate-report' });
+        toast.success(this.t('quickActions.reportGeneratedSuccessfully'), { id: 'generate-report' });
         this.router.push(`/reports?highlight=${result.id}`);
       } else {
         throw new Error('No report data returned');
       }
     } catch (error) {
-      toast.error('Failed to generate report', { id: 'generate-report' });
+      toast.error(this.t('quickActions.failedToGenerateReport'), { id: 'generate-report' });
       // Report generation error
     }
   };
 
   exportData = async (type: string = 'dashboard') => {
     try {
-      toast.loading('Exporting data...', { id: 'export-data' });
+      toast.loading(this.t('quickActions.exportingData'), { id: 'export-data' });
       
       // Method doesn't exist, return mock result
       const result = await Promise.resolve({
@@ -108,12 +108,12 @@ export class QuickActionsService {
         link.click();
         document.body.removeChild(link);
         
-        toast.success('Data exported successfully!', { id: 'export-data' });
+        toast.success(this.t('quickActions.dataExportedSuccessfully'), { id: 'export-data' });
       } else {
         throw new Error('No download URL returned');
       }
     } catch (error) {
-      toast.error('Failed to export data', { id: 'export-data' });
+      toast.error(this.t('quickActions.failedToExportData'), { id: 'export-data' });
       // Export error
     }
   };
@@ -122,18 +122,18 @@ export class QuickActionsService {
   addUser = () => {
     // Open user creation dialog or navigate to user creation page
     this.router.push('/users?action=create');
-    toast.success('Opening user creation form');
+    toast.success(this.t('quickActions.openingUserCreationForm'));
   };
 
   // Fleet management actions
   createFleet = () => {
     this.router.push('/fleet?action=create');
-    toast.success('Opening fleet creation form');
+    toast.success(this.t('quickActions.openingFleetCreationForm'));
   };
 
   optimizeRoutes = async () => {
     try {
-      toast.loading('Optimizing routes...', { id: 'optimize-routes' });
+      toast.loading(this.t('quickActions.optimizingRoutes'), { id: 'optimize-routes' });
       
       // Method doesn't exist, return mock result
       const result = await Promise.resolve({
@@ -147,15 +147,15 @@ export class QuickActionsService {
       });
       
       if (result) {
-        toast.success(`Routes optimized! Saved ${result.timeSaved || 'time'} and ${result.fuelSaved || 'fuel'}`, { 
+        toast.success(this.t('quickActions.routesOptimizedSuccessfully'), { 
           id: 'optimize-routes',
-          description: `${result.optimizedRoutes || 0}/${result.totalRoutes || 0} routes optimized`
+          description: `${result.optimizedRoutes || 0}/${result.totalRoutes || 0} ${this.t('quickActions.routesOptimized')}`
         });
       } else {
         throw new Error('No optimization results returned');
       }
     } catch (error) {
-      toast.error('Failed to optimize routes', { id: 'optimize-routes' });
+      toast.error(this.t('quickActions.failedToOptimizeRoutes'), { id: 'optimize-routes' });
       // Route optimization error
     }
   };
@@ -163,7 +163,7 @@ export class QuickActionsService {
   // System actions
   refreshData = async () => {
     try {
-      toast.loading('Refreshing data...', { id: 'refresh-data' });
+      toast.loading(this.t('quickActions.refreshingData'), { id: 'refresh-data' });
       
       // Simulate data refresh
       await new Promise(resolve => setTimeout(resolve, 1000));
@@ -171,9 +171,9 @@ export class QuickActionsService {
       // In a real app, this would trigger a data refresh
       window.location.reload();
       
-      toast.success('Data refreshed successfully!', { id: 'refresh-data' });
+      toast.success(this.t('quickActions.dataRefreshedSuccessfully'), { id: 'refresh-data' });
     } catch (error) {
-      toast.error('Failed to refresh data', { id: 'refresh-data' });
+      toast.error(this.t('quickActions.failedToRefreshData'), { id: 'refresh-data' });
       // Data refresh error
     }
   };
@@ -181,14 +181,14 @@ export class QuickActionsService {
   // Notification actions
   sendNotification = async (message: string, type: 'info' | 'warning' | 'error' = 'info') => {
     try {
-      toast.loading('Sending notification...', { id: 'send-notification' });
+      toast.loading(this.t('quickActions.sendingNotification'), { id: 'send-notification' });
       
       // Simulate API call
       await new Promise(resolve => setTimeout(resolve, 1000));
       
-      toast.success('Notification sent successfully!', { id: 'send-notification' });
+      toast.success(this.t('quickActions.notificationSentSuccessfully'), { id: 'send-notification' });
     } catch (error) {
-      toast.error('Failed to send notification', { id: 'send-notification' });
+      toast.error(this.t('quickActions.failedToSendNotification'), { id: 'send-notification' });
       // Notification error
     }
   };
@@ -241,7 +241,7 @@ export class QuickActionsService {
       {
         id: 'generate-report',
         title: this.t('quickActions.generateReport'),
-        description: 'Create a comprehensive dashboard report',
+        description: this.t('quickActions.createComprehensiveDashboardReport'),
         icon: 'FileText',
         action: this.generateReport,
         requiresAuth: true,
@@ -250,7 +250,7 @@ export class QuickActionsService {
       {
         id: 'view-analytics',
         title: this.t('quickActions.viewAnalytics'),
-        description: 'Open detailed analytics dashboard',
+        description: this.t('quickActions.openDetailedAnalyticsDashboard'),
         icon: 'BarChart3',
         action: this.navigateToAnalytics,
         requiresAuth: true,
@@ -259,7 +259,7 @@ export class QuickActionsService {
       {
         id: 'optimize-routes',
         title: this.t('quickActions.optimizeRoutes'),
-        description: 'Optimize fleet routes for efficiency',
+        description: this.t('quickActions.optimizeFleetRoutesForEfficiency'),
         icon: 'Route',
         action: this.optimizeRoutes,
         requiresAuth: true,
@@ -268,7 +268,7 @@ export class QuickActionsService {
       {
         id: 'export-data',
         title: this.t('quickActions.exportData'),
-        description: 'Export dashboard data to CSV',
+        description: this.t('quickActions.exportDashboardDataToCSV'),
         icon: 'Download',
         action: () => this.exportData('dashboard'),
         requiresAuth: true,
@@ -284,8 +284,8 @@ export class QuickActionsService {
       },
       {
         id: 'view-crm',
-        title: 'View CRM',
-        description: 'Open customer relationship management',
+        title: this.t('quickActions.viewCRM'),
+        description: this.t('quickActions.openCustomerRelationshipManagement'),
         icon: 'UserCheck',
         action: this.navigateToCRM,
         requiresAuth: true,
@@ -293,8 +293,8 @@ export class QuickActionsService {
       },
       {
         id: 'view-finance',
-        title: 'View Finance',
-        description: 'Open financial dashboard',
+        title: this.t('quickActions.viewFinance'),
+        description: this.t('quickActions.openFinancialDashboard'),
         icon: 'DollarSign',
         action: this.navigateToFinance,
         requiresAuth: true,
@@ -302,8 +302,8 @@ export class QuickActionsService {
       },
       {
         id: 'view-settings',
-        title: 'View Settings',
-        description: 'Open system settings',
+        title: this.t('quickActions.viewSettings'),
+        description: this.t('quickActions.openSystemSettings'),
         icon: 'Settings',
         action: this.navigateToSettings,
         requiresAuth: true,
