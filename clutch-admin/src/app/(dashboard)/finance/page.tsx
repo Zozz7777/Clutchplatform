@@ -413,7 +413,7 @@ export default function FinancePage() {
                     </TableRow>
                   </TableHeader>
                   <TableBody>
-                    {filteredTransactions.map((transaction) => (
+                    {(Array.isArray(filteredTransactions) ? filteredTransactions : []).map((transaction) => (
                       <TableRow key={transaction.id}>
                         <TableCell>
                           <div>

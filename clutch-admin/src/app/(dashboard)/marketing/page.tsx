@@ -6,7 +6,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useAuth } from "@/contexts/auth-context";
-// Translation system removed - using hardcoded strings
+import { useLanguage } from "@/contexts/language-context";
 import { formatDate, formatRelativeTime, formatCurrency } from "@/lib/utils";
 import { handleError, handleWarning, handleDataLoadError } from "@/lib/error-handler";
 import { 
@@ -108,6 +108,7 @@ interface MarketingStats {
 }
 
 export default function MarketingPage() {
+  const { t } = useLanguage();
   const [campaigns, setCampaigns] = useState<Campaign[]>([]);
   const [leads, setLeads] = useState<Lead[]>([]);
   const [stats, setStats] = useState<MarketingStats | null>(null);

@@ -6,7 +6,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useAuth } from "@/contexts/auth-context";
-// Translation system removed - using hardcoded strings
+import { useLanguage } from "@/contexts/language-context";
 import { productionApi } from "@/lib/production-api";
 import { formatDate, formatRelativeTime } from "@/lib/utils";
 import { handleError, handleDataLoadError } from "@/lib/error-handler";
@@ -113,6 +113,7 @@ interface AuditLog {
 }
 
 export default function SettingsPage() {
+  const { t } = useLanguage();
   const [systemSettings, setSystemSettings] = useState<SystemSetting[]>([]);
   const [userPreferences, setUserPreferences] = useState<UserPreference[]>([]);
   const [integrations, setIntegrations] = useState<Integration[]>([]);

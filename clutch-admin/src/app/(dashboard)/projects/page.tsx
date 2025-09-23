@@ -46,7 +46,7 @@ import {
 } from "lucide-react";
 import { formatCurrency } from "@/lib/utils";
 import { productionApi } from "@/lib/production-api";
-// Translation system removed - using hardcoded strings
+import { useLanguage } from "@/contexts/language-context";
 import { handleDataLoadError } from "@/lib/error-handler";
 
 // Import new Phase 2 widgets
@@ -117,7 +117,7 @@ interface TimeEntry {
 }
 
 export default function ProjectManagementPage() {
-  // Translation system removed - using hardcoded strings
+  const { t } = useLanguage();
   const [projects, setProjects] = useState<Project[]>([]);
   const [tasks, setTasks] = useState<Task[]>([]);
   const [timeEntries, setTimeEntries] = useState<TimeEntry[]>([]);

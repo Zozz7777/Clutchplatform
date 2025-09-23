@@ -45,7 +45,7 @@ import {
   Activity,
 } from "lucide-react";
 import { productionApi } from "@/lib/production-api";
-// Translation system removed - using hardcoded strings
+import { useLanguage } from "@/contexts/language-context";
 import { logger } from "@/lib/logger";
 import { toast } from "sonner";
 
@@ -125,7 +125,7 @@ interface IntegrationTemplate {
 }
 
 export default function IntegrationsPage() {
-  // Translation system removed - using hardcoded strings
+  const { t } = useLanguage();
   const [integrations, setIntegrations] = useState<Integration[]>([]);
   const [templates, setTemplates] = useState<IntegrationTemplate[]>([]);
   const [loading, setLoading] = useState(true);

@@ -6,7 +6,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useAuth } from "@/contexts/auth-context";
-// Translation system removed - using hardcoded strings
+import { useLanguage } from "@/contexts/language-context";
 import { formatDate, formatRelativeTime } from "@/lib/utils";
 import { 
   Scale, 
@@ -91,6 +91,7 @@ interface LegalStats {
 }
 
 export default function LegalPage() {
+  const { t } = useLanguage();
   const [contracts, setContracts] = useState<Contract[]>([]);
   const [disputes, setDisputes] = useState<Dispute[]>([]);
   const [stats, setStats] = useState<LegalStats | null>(null);
