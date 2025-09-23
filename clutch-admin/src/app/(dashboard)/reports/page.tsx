@@ -44,11 +44,11 @@ import {
 import { formatCurrency } from "@/lib/utils";
 import { productionApi } from "@/lib/production-api";
 import { useAuth } from "@/contexts/auth-context";
+import { useLanguage } from "@/contexts/language-context";
 
 // Import new Phase 2 widgets
 import ReportUsageStats from '@/components/widgets/report-usage-stats';
 import { useQuickActions } from "@/lib/quick-actions";
-// Translation system removed - using hardcoded strings
 import { handleError, handleWarning, handleDataLoadError } from "@/lib/error-handler";
 
 interface Report {
@@ -105,6 +105,7 @@ interface ReportTemplate {
 }
 
 export default function ReportsPage() {
+  const { t } = useLanguage();
   const [reports, setReports] = useState<Report[]>([]);
   const [templates, setTemplates] = useState<ReportTemplate[]>([]);
   const [loading, setLoading] = useState(true);
@@ -292,7 +293,7 @@ export default function ReportsPage() {
       <div className="flex items-center justify-center h-64">
         <div className="text-center">
           <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto"></div>
-          <p className="mt-2 text-muted-foreground">Loading reports...</p>
+          <p className="mt-2 text-muted-foreground">{t('reports.loadingReports')}</p>
         </div>
       </div>
     );
@@ -303,9 +304,9 @@ export default function ReportsPage() {
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold tracking-tight">Reports</h1>
+          <h1 className="text-3xl font-bold tracking-tight">{t('reports.title')}</h1>
           <p className="text-muted-foreground">
-            Generate and manage business reports
+            {t('reports.description')}
           </p>
         </div>
         <div className="flex items-center space-x-2">
@@ -381,7 +382,7 @@ export default function ReportsPage() {
       {/* Reports */}
       <Card>
         <CardHeader>
-          <CardTitle>Reports</CardTitle>
+          <CardTitle>{t('reports.reports')}</CardTitle>
           <CardDescription>
             {t('reports.manageAndViewReports')}
           </CardDescription>
