@@ -18,7 +18,7 @@ import AtRiskClients from "@/components/widgets/at-risk-clients";
 import CSATNPSTrends from "@/components/widgets/csat-nps-trends";
 import UpsellOpportunities from "@/components/widgets/upsell-opportunities";
 import { useAuth } from "@/contexts/auth-context";
-// Translation system removed - using hardcoded strings
+import { useLanguage } from "@/contexts/language-context";
 import { toast } from "sonner";
 import { 
   Users, 
@@ -76,6 +76,7 @@ interface Ticket {
 }
 
 export default function CRMPage() {
+  const { t } = useLanguage();
   const [customers, setCustomers] = useState<Customer[]>([]);
   const [tickets, setTickets] = useState<Ticket[]>([]);
   const [filteredCustomers, setFilteredCustomers] = useState<Customer[]>([]);
@@ -84,7 +85,6 @@ export default function CRMPage() {
   const [statusFilter, setStatusFilter] = useState<string>("all");
   const [isLoading, setIsLoading] = useState(true);
   const { user, hasPermission } = useAuth();
-  // Translation system removed - using hardcoded strings
 
   useEffect(() => {
     let isMounted = true;
@@ -237,7 +237,7 @@ export default function CRMPage() {
       <div className="flex items-center justify-center h-64">
         <div className="text-center">
           <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto mb-4"></div>
-          <p className="text-muted-foreground font-sans">Loading CRM data...</p>
+          <p className="text-muted-foreground font-sans">{t('crm.loadingData')}</p>
         </div>
       </div>
     );
@@ -248,19 +248,19 @@ export default function CRMPage() {
       {/* Page Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold tracking-tight text-foreground font-sans">CRM Dashboard</h1>
+          <h1 className="text-3xl font-bold tracking-tight text-foreground font-sans">{t('crm.title')}</h1>
           <p className="text-muted-foreground font-sans">
-            Manage customer relationships and interactions
+            {t('crm.description')}
           </p>
         </div>
         <div className="flex items-center space-x-2">
           <Button variant="outline" className="shadow-2xs">
             <BarChart3 className="mr-2 h-4 w-4" />
-            Analytics
+            {t('crm.analytics')}
           </Button>
           <Button className="shadow-2xs">
             <Plus className="mr-2 h-4 w-4" />
-            Add Customer
+            {t('crm.addCustomer')}
           </Button>
         </div>
       </div>
@@ -269,13 +269,13 @@ export default function CRMPage() {
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
         <Card className="shadow-2xs">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium text-card-foreground">Total Customers</CardTitle>
+            <CardTitle className="text-sm font-medium text-card-foreground">{t('crm.totalCustomers')}</CardTitle>
             <Users className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold text-foreground">{customers.length}</div>
             <p className="text-xs text-muted-foreground">
-              <span className="text-success">+12%</span> from last month
+              <span className="text-success">+12%</span> {t('crm.fromLastMonth')}
             </p>
           </CardContent>
         </Card>
@@ -289,7 +289,7 @@ export default function CRMPage() {
               {Array.isArray(customers) ? customers.filter(c => c?.status === "active").length : 0}
             </div>
             <p className="text-xs text-muted-foreground">
-              <span className="text-success">+8%</span> retention rate
+              <span className="text-success">+8%</span> {t('crm.retentionRate')}
             </p>
           </CardContent>
         </Card>
@@ -303,7 +303,7 @@ export default function CRMPage() {
               {Array.isArray(tickets) ? tickets.filter(t => t?.status === "open").length : 0}
             </div>
             <p className="text-xs text-muted-foreground">
-              <span className="text-destructive">+3</span> from yesterday
+              <span className="text-destructive">+3</span> {t('crm.fromYesterday')}
             </p>
           </CardContent>
         </Card>
@@ -320,7 +320,7 @@ export default function CRMPage() {
               }
             </div>
             <p className="text-xs text-muted-foreground">
-              <span className="text-success">+0.2</span> from last month
+              <span className="text-success">+0.2</span> {t('crm.fromLastMonth')}
             </p>
           </CardContent>
         </Card>
@@ -329,16 +329,16 @@ export default function CRMPage() {
       {/* CRM Tabs */}
       <Tabs defaultValue="customers" className="space-y-4">
         <TabsList className="grid w-full grid-cols-3">
-          <TabsTrigger value="customers">Customer Profiles</TabsTrigger>
-          <TabsTrigger value="tickets">Ticket Management</TabsTrigger>
-          <TabsTrigger value="communication">Communication History</TabsTrigger>
+          <TabsTrigger value="customers">{t('crm.customerProfiles')}</TabsTrigger>
+          <TabsTrigger value="tickets">{t('crm.ticketManagement')}</TabsTrigger>
+          <TabsTrigger value="communication">{t('crm.communicationHistory')}</TabsTrigger>
         </TabsList>
 
         <TabsContent value="customers" className="space-y-4">
           <Card className="shadow-2xs">
             <CardHeader>
-              <CardTitle className="text-card-foreground">Customer Profiles</CardTitle>
-              <CardDescription>Manage customer information and relationships</CardDescription>
+              <CardTitle className="text-card-foreground">{t('crm.customerProfiles')}</CardTitle>
+              <CardDescription>{t('crm.manageCustomerInfo')}</CardDescription>
             </CardHeader>
             <CardContent>
               {/* Filters */}
@@ -347,7 +347,7 @@ export default function CRMPage() {
                   <div className="relative">
                     <Search className="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground" />
                     <Input
-                      placeholder="Search customers..."
+                      placeholder={t('crm.searchCustomers')}
                       value={searchQuery}
                       onChange={(e) => setSearchQuery(e.target.value)}
                       className="pl-8"
@@ -359,10 +359,10 @@ export default function CRMPage() {
                     <SelectValue placeholder={t('crm.filterByStatus')} />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="all">All Status</SelectItem>
-                    <SelectItem value="active">Active</SelectItem>
-                    <SelectItem value="prospect">Prospect</SelectItem>
-                    <SelectItem value="inactive">Inactive</SelectItem>
+                    <SelectItem value="all">{t('crm.allStatus')}</SelectItem>
+                    <SelectItem value="active">{t('crm.active')}</SelectItem>
+                    <SelectItem value="prospect">{t('crm.prospect')}</SelectItem>
+                    <SelectItem value="inactive">{t('crm.inactive')}</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
@@ -371,13 +371,13 @@ export default function CRMPage() {
               <Table>
                 <TableHeader>
                   <TableRow>
-                    <TableHead>Customer</TableHead>
-                    <TableHead>Company</TableHead>
-                    <TableHead>Status</TableHead>
-                    <TableHead>Total Spent</TableHead>
-                    <TableHead>Satisfaction</TableHead>
-                    <TableHead>Last Contact</TableHead>
-                    <TableHead className="text-right">Actions</TableHead>
+                    <TableHead>{t('crm.customer')}</TableHead>
+                    <TableHead>{t('crm.company')}</TableHead>
+                    <TableHead>{t('crm.status')}</TableHead>
+                    <TableHead>{t('crm.totalSpent')}</TableHead>
+                    <TableHead>{t('crm.satisfaction')}</TableHead>
+                    <TableHead>{t('crm.lastContact')}</TableHead>
+                    <TableHead className="text-right">{t('common.actions')}</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
@@ -431,27 +431,27 @@ export default function CRMPage() {
                             </Button>
                           </DropdownMenuTrigger>
                           <DropdownMenuContent align="end">
-                            <DropdownMenuLabel>Actions</DropdownMenuLabel>
+                            <DropdownMenuLabel>{t('common.actions')}</DropdownMenuLabel>
                             <DropdownMenuItem>
                               <User className="mr-2 h-4 w-4" />
-                              View Profile
+                              {t('crm.viewProfile')}
                             </DropdownMenuItem>
                             <DropdownMenuItem>
                               <MessageSquare className="mr-2 h-4 w-4" />
-                              Send Message
+                              {t('crm.sendMessage')}
                             </DropdownMenuItem>
                             <DropdownMenuItem>
                               <Phone className="mr-2 h-4 w-4" />
-                              Call Customer
+                              {t('crm.callCustomer')}
                             </DropdownMenuItem>
                             <DropdownMenuSeparator />
                             <DropdownMenuItem>
                               <Calendar className="mr-2 h-4 w-4" />
-                              Schedule Meeting
+                              {t('crm.scheduleMeeting')}
                             </DropdownMenuItem>
                             <DropdownMenuItem>
                               <Activity className="mr-2 h-4 w-4" />
-                              View Activity
+                              {t('crm.viewActivity')}
                             </DropdownMenuItem>
                           </DropdownMenuContent>
                         </DropdownMenu>
@@ -467,20 +467,20 @@ export default function CRMPage() {
         <TabsContent value="tickets" className="space-y-4">
           <Card className="shadow-2xs">
             <CardHeader>
-            <CardTitle className="text-card-foreground">{t('dashboard.supportTickets')}</CardTitle>
-            <CardDescription>{t('dashboard.manageCustomerSupport')}</CardDescription>
+            <CardTitle className="text-card-foreground">{t('crm.supportTickets')}</CardTitle>
+            <CardDescription>{t('crm.manageCustomerSupport')}</CardDescription>
             </CardHeader>
             <CardContent>
               <Table>
                 <TableHeader>
                   <TableRow>
-                    <TableHead>Ticket</TableHead>
-                    <TableHead>Customer</TableHead>
-                    <TableHead>Status</TableHead>
-                    <TableHead>Priority</TableHead>
-                    <TableHead>Assigned To</TableHead>
-                    <TableHead>Created</TableHead>
-                    <TableHead className="text-right">Actions</TableHead>
+                    <TableHead>{t('crm.ticket')}</TableHead>
+                    <TableHead>{t('crm.customer')}</TableHead>
+                    <TableHead>{t('crm.status')}</TableHead>
+                    <TableHead>{t('crm.priority')}</TableHead>
+                    <TableHead>{t('crm.assignedTo')}</TableHead>
+                    <TableHead>{t('crm.created')}</TableHead>
+                    <TableHead className="text-right">{t('common.actions')}</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
@@ -521,23 +521,23 @@ export default function CRMPage() {
                             </Button>
                           </DropdownMenuTrigger>
                           <DropdownMenuContent align="end">
-                            <DropdownMenuLabel>Actions</DropdownMenuLabel>
+                            <DropdownMenuLabel>{t('common.actions')}</DropdownMenuLabel>
                             <DropdownMenuItem>
                               <MessageSquare className="mr-2 h-4 w-4" />
-                              View Details
+                              {t('crm.viewDetails')}
                             </DropdownMenuItem>
                             <DropdownMenuItem>
                               <User className="mr-2 h-4 w-4" />
-                              Assign to Me
+                              {t('crm.assignToMe')}
                             </DropdownMenuItem>
                             <DropdownMenuSeparator />
                             <DropdownMenuItem>
                               <CheckCircle className="mr-2 h-4 w-4" />
-                              Mark as Resolved
+                              {t('crm.markAsResolved')}
                             </DropdownMenuItem>
                             <DropdownMenuItem className="text-destructive">
                               <AlertTriangle className="mr-2 h-4 w-4" />
-                              Escalate
+                              {t('crm.escalate')}
                             </DropdownMenuItem>
                           </DropdownMenuContent>
                         </DropdownMenu>
@@ -553,8 +553,8 @@ export default function CRMPage() {
         <TabsContent value="communication" className="space-y-4">
           <Card className="shadow-2xs">
             <CardHeader>
-              <CardTitle className="text-card-foreground">Communication History</CardTitle>
-              <CardDescription>Timeline of all customer interactions</CardDescription>
+              <CardTitle className="text-card-foreground">{t('crm.communicationHistory')}</CardTitle>
+              <CardDescription>{t('crm.timelineOfInteractions')}</CardDescription>
             </CardHeader>
             <CardContent>
               <div className="space-y-4">
@@ -562,11 +562,11 @@ export default function CRMPage() {
                   <div className="w-2 h-2 rounded-full bg-primary mt-2"></div>
                   <div className="flex-1">
                     <div className="flex items-center justify-between">
-                      <p className="text-sm font-medium text-foreground">Phone Call - Ahmed Hassan</p>
-                      <span className="text-xs text-muted-foreground">2 hours ago</span>
+                      <p className="text-sm font-medium text-foreground">{t('crm.phoneCall')} - Ahmed Hassan</p>
+                      <span className="text-xs text-muted-foreground">2 {t('crm.hoursAgo')}</span>
                     </div>
                     <p className="text-xs text-muted-foreground mt-1">
-                      Discussed fleet management features and pricing options
+                      {t('crm.discussedFleetFeatures')}
                     </p>
                   </div>
                 </div>
