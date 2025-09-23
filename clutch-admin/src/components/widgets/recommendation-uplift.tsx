@@ -6,6 +6,7 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Progress } from '@/components/ui/progress';
 import { businessIntelligence } from '@/lib/business-intelligence';
+import { useLanguage } from '@/contexts/language-context';
 import { 
   Lightbulb, 
   DollarSign, 
@@ -32,7 +33,7 @@ interface RecommendationUpliftData {
 }
 
 export function RecommendationUplift({ className = '' }: RecommendationUpliftProps) {
-  const { t } = useTranslations();
+  const { t } = useLanguage();
   const [upliftData, setUpliftData] = React.useState<RecommendationUpliftData | null>(null);
   const [isLoading, setIsLoading] = React.useState(true);
 

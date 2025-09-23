@@ -6,6 +6,7 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Progress } from '@/components/ui/progress';
 import { productionApi } from '@/lib/production-api';
+import { useLanguage } from '@/contexts/language-context';
 import { 
   TrendingUp, 
   TrendingDown, 
@@ -35,7 +36,7 @@ interface ForecastData {
 }
 
 export function ChurnAdjustedForecast({ className = '' }: ChurnAdjustedForecastProps) {
-  const { t } = useTranslations();
+  const { t } = useLanguage();
   const [forecastData, setForecastData] = React.useState<{
     forecasts: ForecastData[];
     totalBaseRevenue: number;

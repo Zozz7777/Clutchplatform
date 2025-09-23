@@ -5,6 +5,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Progress } from '@/components/ui/progress';
+import { useLanguage } from '@/contexts/language-context';
 import { 
   AlertTriangle, 
   CheckCircle, 
@@ -44,7 +45,7 @@ interface ModelDriftData {
 }
 
 export function ModelDriftDetector({ className = '' }: ModelDriftDetectorProps) {
-  const { t } = useTranslations();
+  const { t } = useLanguage();
   const [driftData, setDriftData] = React.useState<ModelDriftData[]>([]);
   const [isLoading, setIsLoading] = React.useState(true);
 

@@ -22,9 +22,6 @@ export function UnifiedOpsPulse({ className = '' }: UnifiedOpsPulseProps) {
     const loadPulse = async () => {
       try {
         const data = await businessIntelligence.getUnifiedOpsPulse();
-        console.log('UnifiedOpsPulse received data:', data);
-        console.log('UnifiedOpsPulse data type:', typeof data);
-        console.log('UnifiedOpsPulse data keys:', data ? Object.keys(data) : 'null');
         setPulse(data);
       } catch (error) {
         console.error('UnifiedOpsPulse failed to load:', error);

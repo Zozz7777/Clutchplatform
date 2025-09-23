@@ -7,7 +7,7 @@ import { Badge } from '@/components/ui/badge';
 import { CommandModal, ConfirmModal, InputModal } from '@/components/ui/command-modal';
 import { toast } from 'sonner';
 import { logger } from '@/lib/logger';
-import { useTranslations } from '@/hooks/use-translations';
+import { useLanguage } from '@/contexts/language-context';
 import { 
   Search, 
   User, 
@@ -45,7 +45,7 @@ interface CommandBarProps {
 }
 
 export default function CommandBar({ isOpen, onClose }: CommandBarProps) {
-  const { t } = useTranslations();
+  const { t } = useLanguage();
   const [search, setSearch] = useState('');
   const [actions, setActions] = useState<CommandAction[]>([]);
   const [selectedAction, setSelectedAction] = useState<CommandAction | null>(null);

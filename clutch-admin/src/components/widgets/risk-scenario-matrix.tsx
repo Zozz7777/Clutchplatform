@@ -6,6 +6,7 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Progress } from '@/components/ui/progress';
 import { productionApi } from '@/lib/production-api';
+import { useLanguage } from '@/contexts/language-context';
 import { 
   AlertTriangle, 
   TrendingUp, 
@@ -35,7 +36,7 @@ interface Scenario {
 }
 
 export function RiskScenarioMatrix({ className = '' }: RiskScenarioMatrixProps) {
-  const { t } = useTranslations();
+  const { t } = useLanguage();
   const [scenarioData, setScenarioData] = React.useState<{
     scenarios: Scenario[];
     baseRevenue: number;

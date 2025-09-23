@@ -6,6 +6,7 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Progress } from '@/components/ui/progress';
 import { productionApi } from '@/lib/production-api';
+import { useLanguage } from '@/contexts/language-context';
 import { 
   Fuel, 
   DollarSign, 
@@ -38,7 +39,7 @@ interface CostMetrics {
 }
 
 export function FuelCostMetrics({ className = '' }: FuelCostMetricsProps) {
-  const { t } = useTranslations();
+  const { t } = useLanguage();
   const [costMetrics, setCostMetrics] = React.useState<CostMetrics | null>(null);
   const [isLoading, setIsLoading] = React.useState(true);
 

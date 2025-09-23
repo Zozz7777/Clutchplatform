@@ -20,6 +20,7 @@ import {
   MessageSquare
 } from 'lucide-react';
 import { realApi } from '@/lib/real-api';
+import { useLanguage } from '@/contexts/language-context';
 
 interface ChurnAttributionProps {
   className?: string;
@@ -58,7 +59,7 @@ const getColorForImpact = (impact: string) => {
 };
 
 export function ChurnAttribution({ className = '' }: ChurnAttributionProps) {
-  const { t } = useTranslations();
+  const { t } = useLanguage();
   const [churnReasons, setChurnReasons] = React.useState<ChurnReason[]>([]);
   const [isLoading, setIsLoading] = React.useState(true);
 

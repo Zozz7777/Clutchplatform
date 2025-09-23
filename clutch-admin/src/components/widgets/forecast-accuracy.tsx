@@ -5,6 +5,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Progress } from '@/components/ui/progress';
+import { useLanguage } from '@/contexts/language-context';
 import { 
   Target, 
   TrendingUp, 
@@ -37,7 +38,7 @@ interface ForecastAccuracyData {
 }
 
 export function ForecastAccuracy({ className = '' }: ForecastAccuracyProps) {
-  const { t } = useTranslations();
+  const { t } = useLanguage();
   const [accuracyData, setAccuracyData] = React.useState<ForecastAccuracyData[]>([]);
   const [isLoading, setIsLoading] = React.useState(true);
 

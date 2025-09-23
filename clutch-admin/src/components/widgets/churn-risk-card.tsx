@@ -34,9 +34,6 @@ export function ChurnRiskCard({ className = '', showDetails = false }: ChurnRisk
     const loadChurnRisks = async () => {
       try {
         const data = await businessIntelligence.getChurnRisk();
-        console.log('ChurnRiskCard received data:', data);
-        console.log('ChurnRiskCard data type:', typeof data);
-        console.log('ChurnRiskCard data keys:', data ? Object.keys(data) : 'null');
         setChurnRisks(Array.isArray(data) ? data : []);
       } catch (error) {
         console.error('ChurnRiskCard failed to load:', error);

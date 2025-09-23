@@ -19,6 +19,7 @@ import {
   Heart
 } from 'lucide-react';
 import { realApi } from '@/lib/real-api';
+import { useLanguage } from '@/contexts/language-context';
 
 interface FeatureUsageProps {
   className?: string;
@@ -51,7 +52,7 @@ const getIconForCategory = (category: string) => {
 };
 
 export function FeatureUsage({ className = '' }: FeatureUsageProps) {
-  const { t } = useTranslations();
+  const { t } = useLanguage();
   const [featureData, setFeatureData] = React.useState<FeatureData[]>([]);
   const [isLoading, setIsLoading] = React.useState(true);
   const [selectedCategory, setSelectedCategory] = React.useState<string>('all');

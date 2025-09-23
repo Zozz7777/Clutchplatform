@@ -6,6 +6,7 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Progress } from '@/components/ui/progress';
 import { productionApi } from '@/lib/production-api';
+import { useLanguage } from '@/contexts/language-context';
 import { 
   Shield, 
   Users, 
@@ -34,7 +35,7 @@ interface RoleData {
 }
 
 export function RBACOverview({ className = '' }: RBACOverviewProps) {
-  const { t } = useTranslations();
+  const { t } = useLanguage();
   const [rbacData, setRbacData] = React.useState<{
     roles: RoleData[];
     totalUsers: number;

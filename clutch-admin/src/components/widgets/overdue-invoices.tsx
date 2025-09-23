@@ -6,6 +6,7 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Progress } from '@/components/ui/progress';
 import { productionApi } from '@/lib/production-api';
+import { useLanguage } from '@/contexts/language-context';
 import { 
   AlertTriangle, 
   DollarSign, 
@@ -30,7 +31,7 @@ interface OverdueInvoice {
 }
 
 export function OverdueInvoices({ className = '' }: OverdueInvoicesProps) {
-  const { t } = useTranslations();
+  const { t } = useLanguage();
   const [overdueData, setOverdueData] = React.useState<{
     invoices: OverdueInvoice[];
     totalOverdue: number;

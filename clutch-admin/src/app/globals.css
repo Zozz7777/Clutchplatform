@@ -15,12 +15,10 @@
   /* RTL Layout Support for main layout */
   [dir="rtl"] .main-layout {
     flex-direction: row-reverse !important;
-    background-color: rgba(255, 0, 0, 0.1) !important; /* Debug: red tint for RTL */
   }
   
   [dir="ltr"] .main-layout {
     flex-direction: row !important;
-    background-color: rgba(0, 255, 0, 0.1) !important; /* Debug: green tint for LTR */
   }
 
   /* RTL Sidebar border positioning */

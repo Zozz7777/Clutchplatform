@@ -6,6 +6,7 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Progress } from '@/components/ui/progress';
 import { productionApi } from '@/lib/production-api';
+import { useLanguage } from '@/contexts/language-context';
 import { 
   Cpu, 
   DollarSign, 
@@ -35,7 +36,7 @@ interface TrainingROIData {
 }
 
 export function TrainingROI({ className = '' }: TrainingROIProps) {
-  const { t } = useTranslations();
+  const { t } = useLanguage();
   const [roiData, setRoiData] = React.useState<TrainingROIData | null>(null);
   const [isLoading, setIsLoading] = React.useState(true);
 

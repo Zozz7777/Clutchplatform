@@ -25,29 +25,18 @@ interface ComplianceRadarProps {
 }
 
 export function ComplianceRadar({ className = '' }: ComplianceRadarProps) {
-  console.log('ComplianceRadar component initializing...');
-  console.log('ComplianceRadar props:', { className });
   
   try {
     const { t } = useLanguage();
-    console.log('ComplianceRadar: useLanguage hook successful');
     
     const [compliance, setCompliance] = React.useState<ComplianceStatus | null>(null);
-    console.log('ComplianceRadar: compliance state initialized');
-    
     const [isLoading, setIsLoading] = React.useState(true);
-    console.log('ComplianceRadar: isLoading state initialized');
-    
     const [hasError, setHasError] = React.useState(false);
-    console.log('ComplianceRadar: hasError state initialized');
 
   React.useEffect(() => {
     const loadCompliance = async () => {
       try {
         const data = await businessIntelligence.getComplianceRadar();
-        console.log('ComplianceRadar received data:', data);
-        console.log('Data type:', typeof data);
-        console.log('Data keys:', data ? Object.keys(data) : 'null');
         
         // Validate data structure before setting state
         if (data && typeof data === 'object') {
