@@ -152,18 +152,18 @@ export function UserGrowthCohort({ className = '' }: UserGrowthCohortProps) {
           <div className="text-center p-3 bg-success/10 rounded-[0.625rem]-lg">
             <TrendingUp className="h-5 w-5 text-success mx-auto mb-1" />
             <p className="text-lg font-bold text-success">{totalRetained}</p>
-            <p className="text-xs text-muted-foreground">{'Retained'}</p>
+            <p className="text-xs text-muted-foreground">{t('widgets.retained')}</p>
           </div>
           <div className="text-center p-3 bg-primary/10 rounded-[0.625rem]-lg">
             <BarChart3 className="h-5 w-5 text-primary mx-auto mb-1" />
             <p className="text-lg font-bold text-primary">{averageRetention.toFixed(1)}%</p>
-            <p className="text-xs text-muted-foreground">{'Average Retention'}</p>
+            <p className="text-xs text-muted-foreground">{t('widgets.averageRetention')}</p>
           </div>
         </div>
 
         {/* Cohort Table */}
         <div className="space-y-3">
-          <h4 className="text-sm font-medium text-foreground">{'Monthly Cohorts'}</h4>
+          <h4 className="text-sm font-medium text-foreground">{t('widgets.monthlyCohorts')}</h4>
           <div className="space-y-2 max-h-64 overflow-y-auto">
             {filteredCohorts.map((cohort, index) => (
               <div key={cohort.month} className="flex items-center justify-between p-3 bg-muted/50 rounded-[0.625rem]-lg">
@@ -186,7 +186,7 @@ export function UserGrowthCohort({ className = '' }: UserGrowthCohortProps) {
                   </div>
                   <div className="text-center">
                     <p className="text-sm font-semibold text-foreground">{cohort.retained}</p>
-                    <p className="text-xs text-muted-foreground">{'Retained'}</p>
+                    <p className="text-xs text-muted-foreground">{t('widgets.retained')}</p>
                   </div>
                   <div className="text-center">
                     <Badge className={getRetentionBadge(cohort.retentionRate)}>
@@ -201,7 +201,7 @@ export function UserGrowthCohort({ className = '' }: UserGrowthCohortProps) {
 
         {/* Retention Trend Chart */}
         <div className="space-y-3">
-          <h4 className="text-sm font-medium text-foreground">{'Retention Trend'}</h4>
+          <h4 className="text-sm font-medium text-foreground">{t('widgets.retentionTrend')}</h4>
           <div className="space-y-2">
             {filteredCohorts.slice(-6).map((cohort) => (
               <div key={cohort.month} className="flex items-center justify-between text-sm">
@@ -232,14 +232,14 @@ export function UserGrowthCohort({ className = '' }: UserGrowthCohortProps) {
             <p className="text-sm font-bold text-success">
               {filteredCohorts.filter(c => c.retentionRate >= 80).length}
             </p>
-            <p className="text-xs text-muted-foreground">{'High Retention'}</p>
+            <p className="text-xs text-muted-foreground">{t('widgets.highRetention')}</p>
           </div>
           <div className="text-center p-3 bg-destructive/10 rounded-[0.625rem]-lg">
             <TrendingDown className="h-4 w-4 text-destructive mx-auto mb-1" />
             <p className="text-sm font-bold text-destructive">
               {filteredCohorts.filter(c => c.retentionRate < 60).length}
             </p>
-            <p className="text-xs text-muted-foreground">{'Low Retention'}</p>
+            <p className="text-xs text-muted-foreground">{t('widgets.lowRetention')}</p>
           </div>
         </div>
 
@@ -247,24 +247,24 @@ export function UserGrowthCohort({ className = '' }: UserGrowthCohortProps) {
         <div className="flex space-x-2 pt-2">
           <Button variant="outline" size="sm" className="flex-1">
             <BarChart3 className="h-4 w-4 mr-2" />
-            View Details
+            {t('widgets.viewDetails')}
           </Button>
           <Button variant="outline" size="sm" className="flex-1">
             <Download className="h-4 w-4 mr-2" />
-            Export Data
+            {t('widgets.exportData')}
           </Button>
         </div>
 
         {/* Insights */}
         <div className="p-3 bg-primary/10 rounded-[0.625rem]-lg">
-          <h5 className="text-sm font-medium text-blue-900 mb-2">💡 Cohort Insights</h5>
+          <h5 className="text-sm font-medium text-blue-900 mb-2">💡 {t('widgets.cohortInsights')}</h5>
           <ul className="text-xs text-blue-800 space-y-1">
-            <li>• Average retention rate: {averageRetention.toFixed(1)}%</li>
-            <li>• {filteredCohorts.filter(c => c.retentionRate >= 80).length} cohorts with high retention (80%+)</li>
-            <li>• Total new users in period: {totalNewUsers}</li>
-            <li>• Total retained users: {totalRetained}</li>
+            <li>• {t('widgets.averageRetentionRate', { rate: averageRetention.toFixed(1) })}</li>
+            <li>• {t('widgets.cohortsWithHighRetention', { count: filteredCohorts.filter(c => c.retentionRate >= 80).length })}</li>
+            <li>• {t('widgets.totalNewUsersInPeriod', { count: totalNewUsers })}</li>
+            <li>• {t('widgets.totalRetainedUsers', { count: totalRetained })}</li>
             {averageRetention < 70 && (
-              <li>• Retention below target - consider onboarding improvements</li>
+              <li>• {t('widgets.retentionBelowTarget')}</li>
             )}
           </ul>
         </div>
