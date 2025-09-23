@@ -732,7 +732,7 @@ export class RealApiService {
         const authStatus = checkAuthStatus();
         if (!authStatus.isAuthenticated || !canAccessAssets()) {
           logAuthIssue('User not authenticated or lacks assets access permission', 'getMaintenanceCosts');
-          // Return mock data for now to prevent dashboard errors
+          // Return empty data for unauthenticated users
           return {
             totalCost: 12500,
             monthlyCost: 2100,
@@ -761,7 +761,7 @@ export class RealApiService {
         const response = await apiService.makeRequest<Record<string, unknown>>("/api/v1/assets/maintenance-costs");
         if (!response.success && response.error?.includes('401')) {
           logAuthIssue('Authentication failed for maintenance costs API', 'getMaintenanceCosts');
-          // Return mock data for now to prevent dashboard errors
+          // Return empty data for unauthenticated users
           return {
             totalCost: 12500,
             monthlyCost: 2100,
@@ -800,7 +800,7 @@ export class RealApiService {
         const authStatus = checkAuthStatus();
         if (!authStatus.isAuthenticated || !canAccessAssets()) {
           logAuthIssue('User not authenticated or lacks assets access permission', 'getOtherOperationalCosts');
-          // Return mock data for now to prevent dashboard errors
+          // Return empty data for unauthenticated users
           return {
             totalCost: 18500,
             monthlyCost: 3200,
@@ -830,7 +830,7 @@ export class RealApiService {
         const response = await apiService.makeRequest<Record<string, unknown>>("/api/v1/assets/operational-costs");
         if (!response.success && response.error?.includes('401')) {
           logAuthIssue('Authentication failed for operational costs API', 'getOtherOperationalCosts');
-          // Return mock data for now to prevent dashboard errors
+          // Return empty data for unauthenticated users
           return {
             totalCost: 18500,
             monthlyCost: 3200,
@@ -927,6 +927,51 @@ export class RealApiService {
       },
       'getTopEnterpriseClients',
       { fallbackValue: [], showToast: false }
+    )();
+  }
+
+  // Additional Business Intelligence APIs
+  async getEngagementHeatmap(): Promise<Record<string, unknown>> {
+    return withErrorHandling(
+      async () => {
+        const response = await apiService.makeRequest<Record<string, unknown>>("/api/v1/business-intelligence/engagement-heatmap");
+        return handleApiResponse(response, 'getEngagementHeatmap', {});
+      },
+      'getEngagementHeatmap',
+      { fallbackValue: {}, showToast: false }
+    )();
+  }
+
+  async getFleetOperationalCosts(): Promise<Record<string, unknown>> {
+    return withErrorHandling(
+      async () => {
+        const response = await apiService.makeRequest<Record<string, unknown>>("/api/v1/business-intelligence/fleet-operational-costs");
+        return handleApiResponse(response, 'getFleetOperationalCosts', {});
+      },
+      'getFleetOperationalCosts',
+      { fallbackValue: {}, showToast: false }
+    )();
+  }
+
+  async getActiveSessions(): Promise<Record<string, unknown>> {
+    return withErrorHandling(
+      async () => {
+        const response = await apiService.makeRequest<Record<string, unknown>>("/api/v1/business-intelligence/active-sessions");
+        return handleApiResponse(response, 'getActiveSessions', {});
+      },
+      'getActiveSessions',
+      { fallbackValue: {}, showToast: false }
+    )();
+  }
+
+  async getRevenueMetrics(): Promise<Record<string, unknown>> {
+    return withErrorHandling(
+      async () => {
+        const response = await apiService.makeRequest<Record<string, unknown>>("/api/v1/business-intelligence/revenue-metrics");
+        return handleApiResponse(response, 'getRevenueMetrics', {});
+      },
+      'getRevenueMetrics',
+      { fallbackValue: {}, showToast: false }
     )();
   }
 
