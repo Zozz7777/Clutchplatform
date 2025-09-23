@@ -484,9 +484,9 @@ export const NAVIGATION_ITEMS = [
     permissions: [PERMISSIONS.VIEW_FLEET],
   },
   {
-    title: "CRM",
+    title: "Sales",
     href: "/crm",
-    icon: "UserCheck",
+    icon: "TrendingUp",
     permissions: [PERMISSIONS.VIEW_CRM],
   },
   {

@@ -31,7 +31,7 @@ export function Sidebar({ isCollapsed, onToggle }: SidebarProps) {
       'Dashboard': 'navigation.dashboard',
       'User Management': 'navigation.userManagement',
       'Fleet Management': 'navigation.fleetManagement',
-      'CRM': 'navigation.crm',
+      'Sales': 'navigation.sales',
       'Chat & Messaging': 'navigation.chat',
       'AI & ML Dashboard': 'navigation.aiDashboard',
       'Enterprise B2B': 'navigation.enterprise',
