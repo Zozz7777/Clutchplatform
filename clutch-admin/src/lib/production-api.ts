@@ -1161,6 +1161,184 @@ export class ProductionApiService {
     }
   }
 
+  // Additional Sales API Methods for new components
+  async updateDeal(dealId: string, dealData: any) {
+    try {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'https://clutch-main-nk7x.onrender.com'}/api/v1/sales/deals/${dealId}`, {
+        method: 'PATCH',
+        headers: {
+          'Authorization': `Bearer ${localStorage.getItem('clutch-admin-token')}`,
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(dealData)
+      });
+      
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      
+      const data = await response.json();
+      return { success: true, deal: data.deal };
+    } catch (error) {
+      logger.error("Failed to update deal:", error);
+      return { success: false, message: "Failed to update deal" };
+    }
+  }
+
+  async getContractTemplates() {
+    try {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'https://clutch-main-nk7x.onrender.com'}/api/v1/sales/contract-templates`, {
+        headers: {
+          'Authorization': `Bearer ${localStorage.getItem('clutch-admin-token')}`,
+          'Content-Type': 'application/json'
+        }
+      });
+      
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      
+      const data = await response.json();
+      return { success: true, templates: data.templates || [] };
+    } catch (error) {
+      logger.error("Failed to fetch contract templates:", error);
+      return { success: false, message: "Failed to load contract templates" };
+    }
+  }
+
+  async generateContract(leadId: string, templateId: string) {
+    try {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'https://clutch-main-nk7x.onrender.com'}/api/v1/sales/contracts/generate`, {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${localStorage.getItem('clutch-admin-token')}`,
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ leadId, templateId })
+      });
+      
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      
+      const data = await response.json();
+      return { success: true, contract: data.contract };
+    } catch (error) {
+      logger.error("Failed to generate contract:", error);
+      return { success: false, message: "Failed to generate contract" };
+    }
+  }
+
+  async sendContract(contractId: string) {
+    try {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'https://clutch-main-nk7x.onrender.com'}/api/v1/sales/contracts/${contractId}/send`, {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${localStorage.getItem('clutch-admin-token')}`,
+          'Content-Type': 'application/json'
+        }
+      });
+      
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      
+      const data = await response.json();
+      return { success: true, message: data.message };
+    } catch (error) {
+      logger.error("Failed to send contract:", error);
+      return { success: false, message: "Failed to send contract" };
+    }
+  }
+
+  async uploadSignedContract(contractId: string, formData: FormData) {
+    try {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'https://clutch-main-nk7x.onrender.com'}/api/v1/sales/contracts/${contractId}/upload-signed`, {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${localStorage.getItem('clutch-admin-token')}`
+        },
+        body: formData
+      });
+      
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      
+      const data = await response.json();
+      return { success: true, contract: data.contract };
+    } catch (error) {
+      logger.error("Failed to upload signed contract:", error);
+      return { success: false, message: "Failed to upload signed contract" };
+    }
+  }
+
+  async startPartnerOnboarding(partnerId: string) {
+    try {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'https://clutch-main-nk7x.onrender.com'}/api/v1/sales/partners/${partnerId}/start-onboarding`, {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${localStorage.getItem('clutch-admin-token')}`,
+          'Content-Type': 'application/json'
+        }
+      });
+      
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      
+      const data = await response.json();
+      return { success: true, partner: data.partner };
+    } catch (error) {
+      logger.error("Failed to start partner onboarding:", error);
+      return { success: false, message: "Failed to start partner onboarding" };
+    }
+  }
+
+  async completeOnboardingStep(partnerId: string, stepId: string) {
+    try {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'https://clutch-main-nk7x.onrender.com'}/api/v1/sales/partners/${partnerId}/complete-step`, {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${localStorage.getItem('clutch-admin-token')}`,
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ stepId })
+      });
+      
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      
+      const data = await response.json();
+      return { success: true, partner: data.partner };
+    } catch (error) {
+      logger.error("Failed to complete onboarding step:", error);
+      return { success: false, message: "Failed to complete onboarding step" };
+    }
+  }
+
+  async goLivePartner(partnerId: string) {
+    try {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'https://clutch-main-nk7x.onrender.com'}/api/v1/sales/partners/${partnerId}/go-live`, {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${localStorage.getItem('clutch-admin-token')}`,
+          'Content-Type': 'application/json'
+        }
+      });
+      
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      
+      const data = await response.json();
+      return { success: true, partner: data.partner };
+    } catch (error) {
+      logger.error("Failed to go live partner:", error);
+      return { success: false, message: "Failed to go live partner" };
+    }
+  }
 }
 
 // Create and export a singleton instance

@@ -32,6 +32,10 @@ export function Sidebar({ isCollapsed, onToggle }: SidebarProps) {
       'User Management': 'navigation.userManagement',
       'Fleet Management': 'navigation.fleetManagement',
       'Sales': 'navigation.sales',
+      'Sales Rep Dashboard': 'navigation.salesRepDashboard',
+      'Executive Dashboard': 'navigation.executiveDashboard',
+      'HR Performance': 'navigation.hrPerformance',
+      'Legal Contracts': 'navigation.legalContracts',
       'Chat & Messaging': 'navigation.chat',
       'AI & ML Dashboard': 'navigation.aiDashboard',
       'Enterprise B2B': 'navigation.enterprise',
@@ -87,7 +91,17 @@ export function Sidebar({ isCollapsed, onToggle }: SidebarProps) {
   };
 
   const hasAnyPermission = (permissions: readonly string[]) => {
-    const result = permissions.some(permission => hasPermission(permission));
+    if (!user) return false;
+    
+    // Check if any permission matches or if user has the specific role
+    const result = permissions.some(permission => {
+      // Check if it's a role-based permission (not a standard permission)
+      if (['sales_rep', 'sales_director', 'ceo', 'hr', 'legal', 'admin'].includes(permission)) {
+        return user.role === permission || user.role === 'admin' || user.role === 'super_admin';
+      }
+      // Standard permission check
+      return hasPermission(permission);
+    });
     
     // Debug logging for permission checks (only in development)
     if (process.env.NODE_ENV === 'development' && !result) {
