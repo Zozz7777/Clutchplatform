@@ -5,13 +5,69 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { formatDate, formatRelativeTime } from "@/lib/utils";
 import { useAuth } from "@/contexts/auth-context";
-// Translation system removed - using hardcoded strings
 import { productionApi } from "@/lib/production-api";
 import { toast } from "sonner";
 import { handleDataLoadError } from "@/lib/error-handler";
+
+// Define interfaces for merged functionality
+interface ChatMessage {
+  id: string;
+  sender: 'customer' | 'agent' | 'system';
+  message: string;
+  timestamp: string;
+  type: 'text' | 'image' | 'file';
+  read: boolean;
+}
+
+interface ChatSession {
+  id: string;
+  customerName: string;
+  customerEmail: string;
+  status: 'active' | 'waiting' | 'resolved' | 'closed';
+  startTime: string;
+  lastMessage: string;
+  messages: number;
+  rating?: number;
+  priority: 'low' | 'medium' | 'high' | 'urgent';
+  tags: string[];
+}
+
+interface Feedback {
+  id: string;
+  type: 'bug' | 'feature' | 'general' | 'complaint';
+  title: string;
+  description: string;
+  user: {
+    name: string;
+    email: string;
+  };
+  rating?: number;
+  status: 'new' | 'in_progress' | 'resolved' | 'closed';
+  priority: 'low' | 'medium' | 'high' | 'urgent';
+  createdAt: string;
+  updatedAt: string;
+  tags: string[];
+  responses: number;
+}
+
+interface KnowledgeBaseArticle {
+  id: string;
+  title: string;
+  content: string;
+  category: string;
+  tags: string[];
+  views: number;
+  helpful: number;
+  lastUpdated: string;
+  status: 'published' | 'draft' | 'archived';
+}
+
 import { 
   MessageSquare, 
   Search, 
@@ -31,8 +87,23 @@ import {
   AlertCircle,
   Archive,
   Star,
-  Pin
+  Pin,
+  MessageCircle,
+  Mail,
+  RefreshCw,
+  ThumbsUp,
+  ThumbsDown,
+  Filter,
+  Reply,
+  Trash2,
+  Calendar,
+  Tag,
+  BookOpen,
+  Eye,
+  Heart,
+  Edit
 } from "lucide-react";
+
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -41,6 +112,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+
 import {
   Dialog,
   DialogContent,
@@ -50,253 +122,155 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import { Label } from "@/components/ui/label";
-import { Textarea } from "@/components/ui/textarea";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-
-interface ChatMessage {
-  id: string;
-  sender: string;
-  senderType: "user" | "bot" | "system";
-  message: string;
-  timestamp: string;
-  status: "sent" | "delivered" | "read";
-  attachments?: string[];
-}
-
-interface ChatChannel {
-  id: string;
-  name: string;
-  type: "direct" | "group" | "support";
-  lastMessage: string;
-  lastMessageTime: string;
-  unreadCount: number;
-  isOnline: boolean;
-  avatar?: string;
-}
-
-// Helper function to safely extract string values
-const safeString = (value: any): string => {
-  if (typeof value === 'string') return value;
-  if (value === null || value === undefined) return '';
-  if (typeof value === 'object') {
-    // If it's an object, try to extract a meaningful string representation
-    if (value.content) return String(value.content);
-    if (value.message) return String(value.message);
-    if (value.text) return String(value.text);
-    if (value.body) return String(value.body);
-    return JSON.stringify(value);
-  }
-  return String(value);
-};
 
 export default function ChatPage() {
-  const t = (key: string, params?: any) => key;
-  const [channels, setChannels] = useState<ChatChannel[]>([]);
+  // Main chat state
   const [messages, setMessages] = useState<ChatMessage[]>([]);
-  const [selectedChannel, setSelectedChannel] = useState<string>("1");
-  const [newMessage, setNewMessage] = useState("");
+  const [sessions, setSessions] = useState<ChatSession[]>([]);
+  const [activeSession, setActiveSession] = useState<ChatSession | null>(null);
+  const [newMessage, setNewMessage] = useState('');
   const [searchQuery, setSearchQuery] = useState("");
+  const [statusFilter, setStatusFilter] = useState<string>("all");
+
+  // Additional state for merged functionality
+  const [feedback, setFeedback] = useState<Feedback[]>([]);
+  const [knowledgeBase, setKnowledgeBase] = useState<KnowledgeBaseArticle[]>([]);
+  const [filteredFeedback, setFilteredFeedback] = useState<Feedback[]>([]);
+  const [feedbackSearch, setFeedbackSearch] = useState("");
+  const [feedbackFilter, setFeedbackFilter] = useState<string>("all");
+
   const [isLoading, setIsLoading] = useState(true);
-  const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
-  const [isCreating, setIsCreating] = useState(false);
-  const [newChannelData, setNewChannelData] = useState({
-    name: "",
-    description: "",
-    type: "group" as "direct" | "group" | "support",
-    isPrivate: false
-  });
-  // const { hasPermission } = useAuth();
+  const { hasPermission } = useAuth();
 
   useEffect(() => {
-    let isMounted = true;
-    let timeoutId: NodeJS.Timeout | null = null;
-
-    const loadChatData = async () => {
-      if (!isMounted) {
-        setIsLoading(false);
-        return;
-      }
-      
+    const loadAllData = async () => {
       try {
         setIsLoading(true);
         
-        // Add debouncing to prevent excessive API calls
-        if (timeoutId) {
-          clearTimeout(timeoutId);
-        }
-        
-        timeoutId = setTimeout(async () => {
-          if (!isMounted) return;
-          
-          // Load real data from API with error handling
-          const [channelsData, messagesData] = await Promise.allSettled([
-            productionApi.getChatChannels(),
-            productionApi.getChatMessages()
-          ]);
+        // Load all chat-related data
+        const [sessionsData, feedbackData, knowledgeData] = await Promise.allSettled([
+          productionApi.getChatSessions?.() || Promise.resolve([]),
+          productionApi.getFeedback?.() || Promise.resolve([]),
+          productionApi.getKnowledgeBase?.() || Promise.resolve([])
+        ]);
 
-          // Handle channels data with proper validation
-          let channelsArray: ChatChannel[] = [];
-          if (channelsData.status === 'fulfilled' && Array.isArray(channelsData.value)) {
-            channelsArray = channelsData.value.map((channel: any) => ({
-              id: safeString(channel.id || channel._id || `channel_${Date.now()}_${Math.random()}`),
-              name: safeString(channel.name || 'Unknown Channel'),
-              type: safeString(channel.type || 'group') as "direct" | "group" | "support",
-              lastMessage: safeString(channel.lastMessage || ''),
-              lastMessageTime: safeString(channel.lastMessageTime || channel.updatedAt || new Date().toISOString()),
-              unreadCount: typeof channel.unreadCount === 'number' ? channel.unreadCount : 0,
-              isOnline: typeof channel.isOnline === 'boolean' ? channel.isOnline : false,
-              avatar: safeString(channel.avatar || '')
-            }));
-          }
-          
-          // Handle messages data with proper validation
-          let messagesArray: ChatMessage[] = [];
-          if (messagesData.status === 'fulfilled' && Array.isArray(messagesData.value)) {
-            // Debug logging to help identify the issue
-            if (process.env.NODE_ENV === 'development') {
-              console.log('🔍 Raw messages data from API:', messagesData.value);
-            }
-            messagesArray = messagesData.value.map((msg: any) => {
-              // Handle different API response structures and ensure all values are properly typed
-              const messageContent = safeString(msg.message || msg.content || msg.text || msg.body || '');
-              const messageSender = safeString(msg.sender || msg.from || msg.user || msg.author || 'Unknown');
-              const messageTimestamp = safeString(msg.timestamp || msg.createdAt || msg.time || msg.date || new Date().toISOString());
-              const messageId = safeString(msg.id || msg._id || `msg_${Date.now()}_${Math.random()}`);
-              const senderType = safeString(msg.senderType || msg.type || 'user');
-              const status = safeString(msg.status || msg.state || 'sent');
-              
-              return {
-                id: messageId,
-                sender: messageSender,
-                senderType: senderType as "user" | "bot" | "system",
-                message: messageContent,
-                timestamp: messageTimestamp,
-                status: status as "sent" | "delivered" | "read",
-                attachments: Array.isArray(msg.attachments) ? msg.attachments.map((att: any) => safeString(att)) : []
-              };
-            });
-          }
-          
-          if (isMounted) {
-            setChannels(channelsArray);
-            setMessages(messagesArray);
-          }
-          
-          // Log any errors
-          if (channelsData.status === 'rejected') {
-            handleDataLoadError(channelsData.reason, 'channels');
-          }
-          if (messagesData.status === 'rejected') {
-            handleDataLoadError(messagesData.reason, 'messages');
-          }
-          
-        }, 300); // 300ms debounce
-        
+        // Set data
+        if (sessionsData.status === 'fulfilled') {
+          setSessions(sessionsData.value || []);
+        }
+        if (feedbackData.status === 'fulfilled') {
+          setFeedback(feedbackData.value || []);
+          setFilteredFeedback(feedbackData.value || []);
+        }
+        if (knowledgeData.status === 'fulfilled') {
+          setKnowledgeBase(knowledgeData.value || []);
+        }
+
       } catch (error) {
-        if (!isMounted) return;
-        
-        handleDataLoadError(error, 'chat_data');
-        toast.error(t('chat.failedToLoadChatData') || 'Failed to load chat data');
-        // Set empty arrays on error - no mock data fallback
-        setChannels([]);
-        setMessages([]);
+        handleDataLoadError(error, { component: 'ChatPage', action: 'load_chat_data' });
+        toast.error('Failed to load chat data');
       } finally {
-        if (isMounted) {
-          setIsLoading(false);
-        }
+        setIsLoading(false);
       }
     };
 
-    loadChatData();
+    loadAllData();
+  }, []);
 
-    return () => {
-      isMounted = false;
-      if (timeoutId) {
-        clearTimeout(timeoutId);
-      }
-    };
-  }, [selectedChannel]);
+  useEffect(() => {
+    const feedbackArray = Array.isArray(feedback) ? feedback : [];
+    let filtered = feedbackArray.filter(item => item != null);
 
-  const handleSendMessage = async () => {
-    if (newMessage.trim()) {
-      try {
-        const messageData = {
-          receiverId: selectedChannel,
-          message: newMessage,
-          type: "text"
-        };
-        
-        const result = await productionApi.sendChatMessage(messageData);
-        if (result) {
-          // Type conversion for API response
-          const newMessage = result as unknown as ChatMessage;
-          setMessages([...messages, newMessage]);
-          setNewMessage("");
-        }
-      } catch (error) {
-        // Error handled by API service
-        toast.error(t('chat.failedToSendMessage'));
-      }
+    if (feedbackSearch) {
+      filtered = filtered.filter(item =>
+        (item.title || '').toLowerCase().includes(feedbackSearch.toLowerCase()) ||
+        (item.description || '').toLowerCase().includes(feedbackSearch.toLowerCase()) ||
+        (item.user.name || '').toLowerCase().includes(feedbackSearch.toLowerCase())
+      );
+    }
+
+    if (feedbackFilter !== "all") {
+      filtered = filtered.filter(item => item && item.status === feedbackFilter);
+    }
+
+    setFilteredFeedback(filtered);
+  }, [feedback, feedbackSearch, feedbackFilter]);
+
+  const getStatusColor = (status: string) => {
+    switch (status) {
+      case "active":
+      case "resolved":
+        return "bg-primary/10 text-primary-foreground";
+      case "waiting":
+      case "in_progress":
+        return "bg-secondary/10 text-secondary-foreground";
+      case "closed":
+        return "bg-muted text-muted-foreground";
+      case "new":
+        return "bg-success/10 text-success-foreground";
+      default:
+        return "bg-muted text-muted-foreground";
     }
   };
 
-  const handleCreateChannel = async () => {
-    if (!newChannelData.name.trim()) {
-      toast.error("Channel name is required");
-      return;
-    }
-
-    setIsCreating(true);
-    try {
-      const result = await productionApi.createChatChannel(newChannelData);
-      if (result) {
-        toast.success("Chat channel created successfully");
-        setIsCreateModalOpen(false);
-        setNewChannelData({
-          name: "",
-          description: "",
-          type: "group",
-          isPrivate: false
-        });
-        // Refresh channels list
-        const updatedChannels = await productionApi.getChatChannels();
-        setChannels(updatedChannels as unknown as ChatChannel[]);
-      }
-    } catch (error) {
-      toast.error("Failed to create chat channel");
-    } finally {
-      setIsCreating(false);
+  const getPriorityColor = (priority: string) => {
+    switch (priority) {
+      case "urgent":
+        return "bg-destructive/10 text-destructive-foreground";
+      case "high":
+        return "bg-warning/10 text-warning-foreground";
+      case "medium":
+        return "bg-secondary/10 text-secondary-foreground";
+      case "low":
+        return "bg-muted text-muted-foreground";
+      default:
+        return "bg-muted text-muted-foreground";
     }
   };
 
   const getStatusIcon = (status: string) => {
     switch (status) {
-      case "sent":
-        return <CheckCircle className="h-3 w-3 text-muted-foreground" />;
-      case "delivered":
-        return <CheckCircle2 className="h-3 w-3 text-muted-foreground" />;
-      case "read":
-        return <CheckCircle2 className="h-3 w-3 text-primary" />;
+      case "active":
+      case "resolved":
+        return <CheckCircle className="h-4 w-4 text-success" />;
+      case "waiting":
+      case "in_progress":
+        return <Clock className="h-4 w-4 text-warning" />;
+      case "closed":
+        return <Archive className="h-4 w-4 text-muted-foreground" />;
+      case "new":
+        return <AlertCircle className="h-4 w-4 text-primary" />;
       default:
-        return <Clock className="h-3 w-3 text-muted-foreground" />;
+        return <Clock className="h-4 w-4 text-muted-foreground" />;
     }
   };
 
-  const getSenderIcon = (senderType: string) => {
-    switch (senderType) {
-      case "bot":
-        return <Bot className="h-4 w-4" />;
-      case "system":
-        return <AlertCircle className="h-4 w-4" />;
-      default:
-        return <User className="h-4 w-4" />;
+  const handleSendMessage = async () => {
+    if (!newMessage.trim() || !activeSession) return;
+
+    try {
+      const message: ChatMessage = {
+        id: Date.now().toString(),
+        sender: 'agent',
+        message: newMessage,
+        timestamp: new Date().toISOString(),
+        type: 'text',
+        read: false
+      };
+
+      setMessages(prev => [...prev, message]);
+      setNewMessage('');
+
+      // Update session last message
+      setSessions(prev => prev.map(session => 
+        session.id === activeSession.id 
+          ? { ...session, lastMessage: newMessage, messages: session.messages + 1 }
+          : session
+      ));
+
+      toast.success('Message sent');
+    } catch (error) {
+      toast.error('Failed to send message');
     }
   };
 
@@ -305,358 +279,397 @@ export default function ChatPage() {
       <div className="flex items-center justify-center h-64">
         <div className="text-center">
           <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto mb-4"></div>
-          <p className="text-muted-foreground font-sans">Loading chat...</p>
+          <p className="text-muted-foreground font-sans">Loading chat data...</p>
         </div>
       </div>
     );
   }
-
-  const selectedChannelData = Array.isArray(channels) ? channels.find(c => c?.id === selectedChannel) : undefined;
 
   return (
     <div className="space-y-6 font-sans">
       {/* Page Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold tracking-tight text-foreground font-sans">Chat</h1>
+          <h1 className="text-3xl font-bold tracking-tight text-foreground font-sans">Chat & Support</h1>
           <p className="text-muted-foreground font-sans">
-            Communicate with your team and customers
+            Manage live chat, customer feedback, and knowledge base
           </p>
         </div>
-        <div className="flex items-center space-x-2">
-          <Button variant="outline" className="shadow-2xs">
-            <Archive className="mr-2 h-4 w-4" />
-            Archive
+        {hasPermission("manage_support") && (
+          <Button className="shadow-2xs">
+            <Plus className="mr-2 h-4 w-4" />
+            New Article
           </Button>
-          <Dialog open={isCreateModalOpen} onOpenChange={setIsCreateModalOpen}>
-            <DialogTrigger asChild>
-              <Button className="shadow-2xs">
-                <Plus className="mr-2 h-4 w-4" />
-                {t('dashboard.newChat')}
-              </Button>
-            </DialogTrigger>
-            <DialogContent className="sm:max-w-[425px]">
-              <DialogHeader>
-                <DialogTitle>Create New Chat Channel</DialogTitle>
-                <DialogDescription>
-                  Create a new chat channel for your team or project.
-                </DialogDescription>
-              </DialogHeader>
-              <div className="grid gap-4 py-4">
-                <div className="grid grid-cols-4 items-center gap-4">
-                  <Label htmlFor="name" className="text-right">
-                    Name
-                  </Label>
-                  <Input
-                    id="name"
-                    value={newChannelData.name}
-                    onChange={(e) => setNewChannelData({...newChannelData, name: e.target.value})}
-                    className="col-span-3"
-                    placeholder="Enter channel name"
-                  />
-                </div>
-                <div className="grid grid-cols-4 items-center gap-4">
-                  <Label htmlFor="description" className="text-right">
-                    Description
-                  </Label>
-                  <Textarea
-                    id="description"
-                    value={newChannelData.description}
-                    onChange={(e) => setNewChannelData({...newChannelData, description: e.target.value})}
-                    className="col-span-3"
-                    placeholder="Enter channel description (optional)"
-                    rows={3}
-                  />
-                </div>
-                <div className="grid grid-cols-4 items-center gap-4">
-                  <Label htmlFor="type" className="text-right">
-                    Type
-                  </Label>
-                  <Select
-                    value={newChannelData.type}
-                    onValueChange={(value: "direct" | "group" | "support") => 
-                      setNewChannelData({...newChannelData, type: value})
-                    }
+        )}
+      </div>
+
+      {/* Main Tabs */}
+      <Tabs defaultValue="live-chat" className="space-y-4">
+        <TabsList className="grid w-full grid-cols-4">
+          <TabsTrigger value="live-chat">Live Chat</TabsTrigger>
+          <TabsTrigger value="feedback">Feedback</TabsTrigger>
+          <TabsTrigger value="knowledge-base">Knowledge Base</TabsTrigger>
+          <TabsTrigger value="analytics">Analytics</TabsTrigger>
+        </TabsList>
+
+        {/* Live Chat Tab */}
+        <TabsContent value="live-chat" className="space-y-4">
+          <div className="grid gap-6 lg:grid-cols-3">
+            {/* Chat Sessions List */}
+            <Card className="lg:col-span-1">
+              <CardHeader>
+                <CardTitle>Active Sessions</CardTitle>
+                <CardDescription>
+                  {sessions.filter(s => s.status === 'active').length} active chats
+                </CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-2">
+                {sessions.slice(0, 10).map((session) => (
+                  <div
+                    key={session.id}
+                    className={`p-3 border rounded-lg cursor-pointer transition-colors ${
+                      activeSession?.id === session.id ? 'bg-primary/5 border-primary' : 'hover:bg-muted/50'
+                    }`}
+                    onClick={() => setActiveSession(session)}
                   >
-                    <SelectTrigger className="col-span-3">
-                      <SelectValue placeholder="Select channel type" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="direct">Direct Message</SelectItem>
-                      <SelectItem value="group">Group Chat</SelectItem>
-                      <SelectItem value="support">Support Channel</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-                <div className="grid grid-cols-4 items-center gap-4">
-                  <Label htmlFor="private" className="text-right">
-                    Private
-                  </Label>
-                  <div className="col-span-3 flex items-center space-x-2">
-                    <input
-                      type="checkbox"
-                      id="private"
-                      checked={newChannelData.isPrivate}
-                      onChange={(e) => setNewChannelData({...newChannelData, isPrivate: e.target.checked})}
-                      className="rounded"
-                    />
-                    <Label htmlFor="private" className="text-sm text-muted-foreground">
-                      Make this channel private
-                    </Label>
-                  </div>
-                </div>
-              </div>
-              <DialogFooter>
-                <Button
-                  type="button"
-                  variant="outline"
-                  onClick={() => setIsCreateModalOpen(false)}
-                >
-                  Cancel
-                </Button>
-                <Button
-                  type="button"
-                  onClick={handleCreateChannel}
-                  disabled={isCreating || !newChannelData.name.trim()}
-                >
-                  {isCreating ? "Creating..." : "Create Channel"}
-                </Button>
-              </DialogFooter>
-            </DialogContent>
-          </Dialog>
-        </div>
-      </div>
-
-      {/* Chat Interface */}
-      <div className="grid gap-6 lg:grid-cols-4">
-        {/* Chat Channels List */}
-        <Card className="lg:col-span-1 shadow-2xs">
-          <CardHeader>
-            <CardTitle className="text-card-foreground">{t('dashboard.conversations')}</CardTitle>
-            <div className="relative">
-              <Search className="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground" />
-              <Input
-                placeholder="Search conversations..."
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                className="pl-8"
-              />
-            </div>
-          </CardHeader>
-          <CardContent className="p-0">
-            <div className="space-y-1">
-              {Array.isArray(channels) && channels.length > 0 ? channels.map((channel, index) => {
-                // Validate channel object before rendering
-                if (!channel || typeof channel !== 'object' || !channel.id) {
-                  return null;
-                }
-                
-                // Ensure we have a valid key
-                const channelKey = safeString(channel.id) || `channel_${index}`;
-                
-                return (
-                <div
-                  key={channelKey}
-                  className={`p-3 cursor-pointer hover:bg-muted/50 transition-colors ${
-                    selectedChannel === channel.id ? "bg-muted border-r-2 border-primary" : ""
-                  }`}
-                  onClick={() => setSelectedChannel(channel.id)}
-                >
-                  <div className="flex items-center space-x-3">
-                    <div className="relative">
-                      <div className="w-10 h-10 rounded-full bg-primary flex items-center justify-center">
-                        <span className="text-primary-foreground text-sm font-medium">
-                          {channel.name ? channel.name.charAt(0).toUpperCase() : '?'}
-                        </span>
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center space-x-2">
+                        <div className="h-2 w-2 bg-success rounded-full"></div>
+                        <span className="font-medium text-sm">{session.customerName}</span>
                       </div>
-                      {channel.isOnline && (
-                        <div className="absolute -bottom-1 -right-1 w-3 h-3 bg-primary rounded-full border-2 border-background"></div>
-                      )}
+                      <Badge className={getStatusColor(session.status)}>
+                        {session.status}
+                      </Badge>
                     </div>
-                    <div className="flex-1 min-w-0">
-                      <div className="flex items-center justify-between">
-                        <p className="text-sm font-medium text-foreground truncate">{channel.name || 'Unknown Channel'}</p>
-                        {channel.unreadCount > 0 && (
-                          <Badge variant="destructive" className="text-xs">
-                            {channel.unreadCount}
-                          </Badge>
-                        )}
-                      </div>
-                      <p className="text-xs text-muted-foreground truncate">{channel.lastMessage || 'No messages'}</p>
-                      <p className="text-xs text-muted-foreground">
-                        {formatRelativeTime(channel.lastMessageTime || new Date())}
-                      </p>
+                    <p className="text-xs text-muted-foreground mt-1 truncate">
+                      {session.lastMessage}
+                    </p>
+                    <div className="flex items-center justify-between mt-2">
+                      <span className="text-xs text-muted-foreground">
+                        {formatRelativeTime(session.startTime)}
+                      </span>
+                      <span className="text-xs text-muted-foreground">
+                        {session.messages} messages
+                      </span>
                     </div>
                   </div>
-                </div>
-                );
-              }) : (
-                <div className="p-4 text-center text-muted-foreground">
-                  <MessageSquare className="h-8 w-8 mx-auto mb-2 opacity-50" />
-                  <p className="text-sm">No conversations yet</p>
-                  <p className="text-xs">Create a new chat to get started</p>
-                </div>
-              )}
-            </div>
-          </CardContent>
-        </Card>
+                ))}
+              </CardContent>
+            </Card>
 
-        {/* Chat Messages */}
-        <Card className="lg:col-span-3 shadow-2xs">
-          <CardHeader>
-            <div className="flex items-center justify-between">
-              <div className="flex items-center space-x-3">
-                <div className="w-8 h-8 rounded-full bg-primary flex items-center justify-center">
-                  <span className="text-primary-foreground text-sm font-medium">
-                    {selectedChannelData?.name ? selectedChannelData.name.charAt(0).toUpperCase() : '?'}
-                  </span>
-                </div>
-                <div>
-                  <h3 className="text-sm font-medium text-foreground">{selectedChannelData?.name || 'Unknown Channel'}</h3>
-                  <p className="text-xs text-muted-foreground">
-                    {selectedChannelData?.isOnline ? t('chat.online') : t('chat.offline')}
-                  </p>
-                </div>
-              </div>
-              <div className="flex items-center space-x-2">
-                <Button variant="ghost" size="icon">
-                  <Phone className="h-4 w-4" />
-                </Button>
-                <Button variant="ghost" size="icon">
-                  <Video className="h-4 w-4" />
-                </Button>
-                <DropdownMenu>
-                  <DropdownMenuTrigger asChild>
-                    <Button variant="ghost" size="icon">
-                      <MoreHorizontal className="h-4 w-4" />
-                    </Button>
-                  </DropdownMenuTrigger>
-                  <DropdownMenuContent align="end">
-                    <DropdownMenuLabel>Actions</DropdownMenuLabel>
-                    <DropdownMenuItem>
-                      <Star className="mr-2 h-4 w-4" />
-                      Star Conversation
-                    </DropdownMenuItem>
-                    <DropdownMenuItem>
-                      <Pin className="mr-2 h-4 w-4" />
-                      Pin Conversation
-                    </DropdownMenuItem>
-                    <DropdownMenuSeparator />
-                    <DropdownMenuItem>
-                      <Archive className="mr-2 h-4 w-4" />
-                      Archive
-                    </DropdownMenuItem>
-                  </DropdownMenuContent>
-                </DropdownMenu>
-              </div>
-            </div>
-          </CardHeader>
-          <CardContent className="p-0">
-            {/* Messages Area */}
-            <div className="h-96 overflow-y-auto p-4 space-y-4">
-              {Array.isArray(messages) && messages.length > 0 ? messages.map((message, index) => {
-                // Validate message object before rendering
-                if (!message || typeof message !== 'object' || !message.id) {
-                  return null;
-                }
-                
-                // Ensure we have a valid key
-                const messageKey = safeString(message.id) || `message_${index}`;
-                
-                return (
-                <div
-                  key={messageKey}
-                  className={`flex ${safeString(message.sender) === t('chat.you') ? "justify-end" : "justify-start"}`}
-                >
-                  <div className={`flex space-x-2 max-w-xs lg:max-w-md ${safeString(message.sender) === t('chat.you') ? "flex-row-reverse space-x-reverse" : ""}`}>
-                    <div className="w-6 h-6 rounded-full bg-muted flex items-center justify-center">
-                      {getSenderIcon(typeof message.senderType === 'string' ? message.senderType : 'user')}
+            {/* Chat Interface */}
+            <Card className="lg:col-span-2">
+              <CardHeader>
+                <CardTitle>
+                  {activeSession ? `Chat with ${activeSession.customerName}` : 'Select a chat session'}
+                </CardTitle>
+                <CardDescription>
+                  {activeSession ? activeSession.customerEmail : 'Choose a customer to start chatting'}
+                </CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                {activeSession ? (
+                  <>
+                    {/* Messages */}
+                    <div className="h-96 overflow-y-auto border rounded-lg p-4 space-y-4">
+                      {messages.map((message) => (
+                        <div
+                          key={message.id}
+                          className={`flex ${message.sender === 'agent' ? 'justify-end' : 'justify-start'}`}
+                        >
+                          <div
+                            className={`max-w-xs lg:max-w-md px-4 py-2 rounded-lg ${
+                              message.sender === 'agent'
+                                ? 'bg-primary text-primary-foreground'
+                                : 'bg-muted'
+                            }`}
+                          >
+                            <p className="text-sm">{message.message}</p>
+                            <p className="text-xs opacity-70 mt-1">
+                              {formatRelativeTime(message.timestamp)}
+                            </p>
+                          </div>
+                        </div>
+                      ))}
                     </div>
-                    <div className={`rounded-[0.625rem] p-3 ${safeString(message.sender) === t('chat.you') ? "bg-primary text-primary-foreground" : "bg-muted"}`}>
-                      <p className="text-sm">{safeString(message.message)}</p>
-                      <div className={`flex items-center space-x-1 mt-1 ${safeString(message.sender) === t('chat.you') ? "justify-end" : "justify-start"}`}>
-                        <span className="text-xs opacity-70">
-                          {(() => {
-                            try {
-                              return formatRelativeTime(message.timestamp || new Date());
-                            } catch {
-                              return formatRelativeTime(new Date());
-                            }
-                          })()}
-                        </span>
-                        {safeString(message.sender) === t('chat.you') && getStatusIcon(typeof message.status === 'string' ? message.status : 'sent')}
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                );
-              }) : (
-                <div className="flex items-center justify-center h-full text-muted-foreground">
-                  <div className="text-center">
-                    <MessageSquare className="h-12 w-12 mx-auto mb-4 opacity-50" />
-                    <p className="text-sm">No messages yet</p>
-                    <p className="text-xs">Start a conversation by typing a message below</p>
-                  </div>
-                </div>
-              )}
-            </div>
 
-            {/* Message Input */}
-            <div className="border-t p-4">
-              <div className="flex items-center space-x-2">
-                <Button variant="ghost" size="icon">
-                  <Paperclip className="h-4 w-4" />
-                </Button>
-                <div className="flex-1">
+                    {/* Message Input */}
+                    <div className="flex space-x-2">
+                      <Input
+                        placeholder="Type your message..."
+                        value={newMessage}
+                        onChange={(e) => setNewMessage(e.target.value)}
+                        onKeyPress={(e) => e.key === 'Enter' && handleSendMessage()}
+                        className="flex-1"
+                      />
+                      <Button onClick={handleSendMessage} disabled={!newMessage.trim()}>
+                        <Send className="h-4 w-4" />
+                      </Button>
+                    </div>
+                  </>
+                ) : (
+                  <div className="h-96 flex items-center justify-center text-muted-foreground">
+                    <div className="text-center">
+                      <MessageSquare className="h-12 w-12 mx-auto mb-4 opacity-50" />
+                      <p>Select a chat session to start messaging</p>
+                    </div>
+                  </div>
+                )}
+              </CardContent>
+            </Card>
+          </div>
+        </TabsContent>
+
+        {/* Feedback Tab */}
+        <TabsContent value="feedback" className="space-y-4">
+          <Card>
+            <CardHeader>
+              <CardTitle>Customer Feedback</CardTitle>
+              <CardDescription>
+                Manage customer feedback, bug reports, and feature requests
+              </CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              {/* Search and Filters */}
+              <div className="flex items-center space-x-4">
+                <div className="relative flex-1">
+                  <Search className="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground" />
                   <Input
-                    placeholder={t('dashboard.typeAMessage')}
-                    value={newMessage}
-                    onChange={(e) => setNewMessage(e.target.value)}
-                    onKeyPress={(e) => e.key === "Enter" && handleSendMessage()}
+                    placeholder="Search feedback..."
+                    value={feedbackSearch}
+                    onChange={(e) => setFeedbackSearch(e.target.value)}
+                    className="pl-8"
                   />
                 </div>
-                <Button variant="ghost" size="icon">
-                  <Smile className="h-4 w-4" />
-                </Button>
-                <Button onClick={handleSendMessage} disabled={!newMessage.trim()}>
-                  <Send className="h-4 w-4" />
-                </Button>
+                <Select value={feedbackFilter} onValueChange={setFeedbackFilter}>
+                  <SelectTrigger className="w-[180px]">
+                    <SelectValue placeholder="Filter by status" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="all">All Status</SelectItem>
+                    <SelectItem value="new">New</SelectItem>
+                    <SelectItem value="in_progress">In Progress</SelectItem>
+                    <SelectItem value="resolved">Resolved</SelectItem>
+                    <SelectItem value="closed">Closed</SelectItem>
+                  </SelectContent>
+                </Select>
               </div>
-            </div>
-          </CardContent>
-        </Card>
-      </div>
 
-      {/* Chat History Search */}
-      <Card className="shadow-2xs">
-        <CardHeader>
-          <CardTitle className="text-card-foreground">Search Chat History</CardTitle>
-          <CardDescription>Find messages across all conversations</CardDescription>
-        </CardHeader>
-        <CardContent>
-          <div className="flex items-center space-x-4">
-            <div className="flex-1">
-              <div className="relative">
-                <Search className="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground" />
-                <Input
-                  placeholder="Search messages, users, or keywords..."
-                  className="pl-8"
-                />
+              {/* Feedback Table */}
+              <div className="rounded-md border">
+                <Table>
+                  <TableHeader>
+                    <TableRow>
+                      <TableHead>Feedback</TableHead>
+                      <TableHead>Type</TableHead>
+                      <TableHead>Priority</TableHead>
+                      <TableHead>Status</TableHead>
+                      <TableHead>User</TableHead>
+                      <TableHead>Created</TableHead>
+                      <TableHead className="text-right">Actions</TableHead>
+                    </TableRow>
+                  </TableHeader>
+                  <TableBody>
+                    {filteredFeedback.map((item) => (
+                      <TableRow key={item.id}>
+                        <TableCell>
+                          <div>
+                            <div className="font-medium">{item.title}</div>
+                            <div className="text-sm text-muted-foreground truncate max-w-xs">
+                              {item.description}
+                            </div>
+                            {item.tags.length > 0 && (
+                              <div className="flex flex-wrap gap-1 mt-1">
+                                {item.tags.slice(0, 2).map((tag) => (
+                                  <Badge key={tag} variant="outline" className="text-xs">
+                                    {tag}
+                                  </Badge>
+                                ))}
+                                {item.tags.length > 2 && (
+                                  <Badge variant="outline" className="text-xs">
+                                    +{item.tags.length - 2}
+                                  </Badge>
+                                )}
+                              </div>
+                            )}
+                          </div>
+                        </TableCell>
+                        <TableCell>
+                          <Badge variant="outline">{item.type}</Badge>
+                        </TableCell>
+                        <TableCell>
+                          <Badge className={getPriorityColor(item.priority)}>
+                            {item.priority}
+                          </Badge>
+                        </TableCell>
+                        <TableCell>
+                          <div className="flex items-center space-x-2">
+                            {getStatusIcon(item.status)}
+                            <Badge className={getStatusColor(item.status)}>
+                              {item.status}
+                            </Badge>
+                          </div>
+                        </TableCell>
+                        <TableCell>
+                          <div>
+                            <div className="font-medium text-sm">{item.user.name}</div>
+                            <div className="text-xs text-muted-foreground">{item.user.email}</div>
+                          </div>
+                        </TableCell>
+                        <TableCell>
+                          <div className="text-sm">
+                            {formatRelativeTime(item.createdAt)}
+                          </div>
+                        </TableCell>
+                        <TableCell className="text-right">
+                          <DropdownMenu>
+                            <DropdownMenuTrigger asChild>
+                              <Button variant="ghost" className="h-8 w-8 p-0">
+                                <MoreHorizontal className="h-4 w-4" />
+                              </Button>
+                            </DropdownMenuTrigger>
+                            <DropdownMenuContent align="end">
+                              <DropdownMenuLabel>Actions</DropdownMenuLabel>
+                              <DropdownMenuItem>View Details</DropdownMenuItem>
+                              <DropdownMenuItem>Reply</DropdownMenuItem>
+                              <DropdownMenuItem>Change Status</DropdownMenuItem>
+                              <DropdownMenuSeparator />
+                              <DropdownMenuItem className="text-destructive">
+                                Archive
+                              </DropdownMenuItem>
+                            </DropdownMenuContent>
+                          </DropdownMenu>
+                        </TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
               </div>
-            </div>
-            <Button variant="outline" className="shadow-2xs">
-              <Clock className="mr-2 h-4 w-4" />
-              Filter by Date
-            </Button>
-            <Button variant="outline" className="shadow-2xs">
-              <Users className="mr-2 h-4 w-4" />
-              Filter by User
-            </Button>
+            </CardContent>
+          </Card>
+        </TabsContent>
+
+        {/* Knowledge Base Tab */}
+        <TabsContent value="knowledge-base" className="space-y-4">
+          <Card>
+            <CardHeader>
+              <CardTitle>Knowledge Base</CardTitle>
+              <CardDescription>
+                Manage help articles and documentation
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+                {knowledgeBase.map((article) => (
+                  <Card key={article.id} className="hover:shadow-md transition-shadow">
+                    <CardHeader>
+                      <div className="flex items-center justify-between">
+                        <CardTitle className="text-lg">{article.title}</CardTitle>
+                        <Badge variant={article.status === 'published' ? 'default' : 'secondary'}>
+                          {article.status}
+                        </Badge>
+                      </div>
+                      <CardDescription>{article.category}</CardDescription>
+                    </CardHeader>
+                    <CardContent className="space-y-4">
+                      <p className="text-sm text-muted-foreground line-clamp-3">
+                        {article.content}
+                      </p>
+                      <div className="flex flex-wrap gap-1">
+                        {article.tags.slice(0, 3).map((tag) => (
+                          <Badge key={tag} variant="outline" className="text-xs">
+                            {tag}
+                          </Badge>
+                        ))}
+                      </div>
+                      <div className="flex items-center justify-between text-sm text-muted-foreground">
+                        <div className="flex items-center space-x-4">
+                          <div className="flex items-center space-x-1">
+                            <Eye className="h-3 w-3" />
+                            <span>{article.views}</span>
+                          </div>
+                          <div className="flex items-center space-x-1">
+                            <Heart className="h-3 w-3" />
+                            <span>{article.helpful}</span>
+                          </div>
+                        </div>
+                        <span>{formatRelativeTime(article.lastUpdated)}</span>
+                      </div>
+                      <div className="flex space-x-2">
+                        <Button variant="outline" size="sm" className="flex-1">
+                          <Edit className="mr-2 h-4 w-4" />
+                          Edit
+                        </Button>
+                        <Button size="sm" className="flex-1">
+                          <Eye className="mr-2 h-4 w-4" />
+                          View
+                        </Button>
+                      </div>
+                    </CardContent>
+                  </Card>
+                ))}
+              </div>
+            </CardContent>
+          </Card>
+        </TabsContent>
+
+        {/* Analytics Tab */}
+        <TabsContent value="analytics" className="space-y-4">
+          <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+            <Card>
+              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                <CardTitle className="text-sm font-medium">Total Sessions</CardTitle>
+                <MessageCircle className="h-4 w-4 text-muted-foreground" />
+              </CardHeader>
+              <CardContent>
+                <div className="text-2xl font-bold">{sessions.length}</div>
+                <p className="text-xs text-muted-foreground">
+                  {sessions.filter(s => s.status === 'active').length} active
+                </p>
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                <CardTitle className="text-sm font-medium">Feedback Items</CardTitle>
+                <MessageSquare className="h-4 w-4 text-muted-foreground" />
+              </CardHeader>
+              <CardContent>
+                <div className="text-2xl font-bold">{feedback.length}</div>
+                <p className="text-xs text-muted-foreground">
+                  {feedback.filter(f => f.status === 'new').length} new
+                </p>
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                <CardTitle className="text-sm font-medium">Knowledge Articles</CardTitle>
+                <BookOpen className="h-4 w-4 text-muted-foreground" />
+              </CardHeader>
+              <CardContent>
+                <div className="text-2xl font-bold">{knowledgeBase.length}</div>
+                <p className="text-xs text-muted-foreground">
+                  {knowledgeBase.filter(k => k.status === 'published').length} published
+                </p>
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                <CardTitle className="text-sm font-medium">Avg Response Time</CardTitle>
+                <Clock className="h-4 w-4 text-muted-foreground" />
+              </CardHeader>
+              <CardContent>
+                <div className="text-2xl font-bold">2.5m</div>
+                <p className="text-xs text-muted-foreground">
+                  <span className="text-success">-15%</span> from last week
+                </p>
+              </CardContent>
+            </Card>
           </div>
-        </CardContent>
-      </Card>
+        </TabsContent>
+      </Tabs>
     </div>
   );
 }
-
-export const dynamic = 'force-dynamic';

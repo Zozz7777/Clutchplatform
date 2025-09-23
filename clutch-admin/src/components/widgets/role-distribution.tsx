@@ -6,6 +6,7 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Progress } from '@/components/ui/progress';
 import { productionApi } from '@/lib/production-api';
+import { businessIntelligence } from '@/lib/business-intelligence';
 import { useLanguage } from '@/contexts/language-context';
 import { 
   Users, 
@@ -42,6 +43,14 @@ export function RoleDistribution({ className = '' }: RoleDistributionProps) {
   React.useEffect(() => {
     const loadRoleData = async () => {
       try {
+        // Try to get role distribution data from business intelligence service
+        const roleData = await businessIntelligence.getRoleDistribution();
+        if (roleData && roleData.length > 0) {
+          setRoleData(roleData);
+          return;
+        }
+
+        // Fallback to counting users by role
         const users: any[] = await productionApi.getUsers();
         const roleCounts: Record<string, number> = {};
         

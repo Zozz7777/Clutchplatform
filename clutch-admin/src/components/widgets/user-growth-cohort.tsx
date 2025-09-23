@@ -58,11 +58,11 @@ export function UserGrowthCohort({ className = '' }: UserGrowthCohortProps) {
   };
 
   const getTotalNewUsers = () => {
-    return getFilteredCohorts().reduce((sum, cohort) => sum + cohort.newUsers, 0);
+    return getFilteredCohorts().reduce((sum, cohort) => sum + (cohort.newUsers || 0), 0);
   };
 
   const getTotalRetained = () => {
-    return getFilteredCohorts().reduce((sum, cohort) => sum + cohort.retained, 0);
+    return getFilteredCohorts().reduce((sum, cohort) => sum + (cohort.retained || 0), 0);
   };
 
   const getAverageRetention = () => {

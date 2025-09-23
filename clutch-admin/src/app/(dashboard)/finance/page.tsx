@@ -10,16 +10,62 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { formatCurrency, formatDate, formatRelativeTime } from "@/lib/utils";
 import { useAuth } from "@/contexts/auth-context";
-// Translation system removed - using hardcoded strings
 import { productionApi } from "@/lib/production-api";
 import { paymentService } from "@/lib/payment-service";
+import { toast } from "sonner";
 
 // Import new Phase 2 widgets
 import RevenueExpenses from "@/components/widgets/revenue-expenses";
 import ARPUARPPU from "@/components/widgets/arpu-arppu";
 import CashFlowProjection from "@/components/widgets/cash-flow-projection";
 import OverdueInvoices from "@/components/widgets/overdue-invoices";
-import { toast } from "sonner";
+
+// Define interfaces for merged functionality
+interface Transaction {
+  id: string;
+  type: 'income' | 'expense';
+  amount: number;
+  description: string;
+  category: string;
+  date: string;
+  status: 'completed' | 'pending' | 'failed';
+  reference?: string;
+}
+
+interface Invoice {
+  id: string;
+  customerName: string;
+  amount: number;
+  status: 'paid' | 'pending' | 'overdue' | 'cancelled';
+  dueDate: string;
+  issueDate: string;
+  description: string;
+}
+
+interface PricingPlan {
+  id: string;
+  name: string;
+  price: number;
+  interval: 'monthly' | 'yearly';
+  features: string[];
+  popular: boolean;
+  customers: number;
+  revenue: number;
+}
+
+interface Subscription {
+  id: string;
+  customerName: string;
+  email: string;
+  plan: string;
+  status: 'active' | 'cancelled' | 'past_due' | 'trialing';
+  amount: number;
+  interval: 'monthly' | 'yearly';
+  startDate: string;
+  nextBilling: string;
+  paymentMethod: string;
+}
+
 import { 
   DollarSign, 
   Search, 
@@ -42,8 +88,14 @@ import {
   PieChart,
   FileText,
   Send,
-  Eye
+  Eye,
+  Users,
+  Target,
+  Check,
+  X,
+  Edit
 } from "lucide-react";
+
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -53,198 +105,117 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 
-interface Payment {
-  id: string;
-  customer: string;
-  amount: number;
-  status: string;
-  method: string;
-  date: string;
-  description: string;
-}
-
-interface Subscription {
-  id: string;
-  customer: string;
-  plan: string;
-  amount: number;
-  status: string;
-  nextBilling: string;
-  autoRenew: boolean;
-}
-
-interface Payout {
-  id: string;
-  recipient: string;
-  amount: number;
-  status: string;
-  date: string;
-  method: string;
-}
-
-interface PaymentData {
-  amount: number;
-  currency: string;
-  description: string;
-  customerId: string;
-}
-
-interface RefundData {
-  reason: string;
-  amount?: number;
-}
-
 export default function FinancePage() {
-  const [payments, setPayments] = useState<Payment[]>([]);
-  const [subscriptions, setSubscriptions] = useState<Subscription[]>([]);
-  const [payouts, setPayouts] = useState<Payout[]>([]);
-  const [filteredPayments, setFilteredPayments] = useState<Payment[]>([]);
+  // Main finance state
+  const [transactions, setTransactions] = useState<Transaction[]>([]);
+  const [invoices, setInvoices] = useState<Invoice[]>([]);
+  const [filteredTransactions, setFilteredTransactions] = useState<Transaction[]>([]);
+  const [filteredInvoices, setFilteredInvoices] = useState<Invoice[]>([]);
   const [searchQuery, setSearchQuery] = useState("");
   const [statusFilter, setStatusFilter] = useState<string>("all");
+  const [typeFilter, setTypeFilter] = useState<string>("all");
   const [isLoading, setIsLoading] = useState(true);
+
+  // Additional state for merged functionality
+  const [pricingPlans, setPricingPlans] = useState<PricingPlan[]>([]);
+  const [subscriptions, setSubscriptions] = useState<Subscription[]>([]);
+  const [filteredSubscriptions, setFilteredSubscriptions] = useState<Subscription[]>([]);
+  const [subscriptionSearch, setSubscriptionSearch] = useState("");
+
   const { hasPermission } = useAuth();
-  // Translation system removed - using hardcoded strings
-
-  // Payment processing functions
-  const handleProcessPayment = async (paymentData: Record<string, unknown>) => {
-    try {
-      const result = await paymentService.processPayment(paymentData as unknown as PaymentData);
-      if (result.success) {
-        // Refresh the payments list
-        const updatedPayments = await productionApi.getPayments();
-        setPayments((updatedPayments || []) as unknown as Payment[]);
-        setFilteredPayments((updatedPayments || []) as unknown as Payment[]);
-      }
-    } catch (error) {
-      // Error handled by payment service
-    }
-  };
-
-  const handleRefundPayment = async (paymentId: string, refundData: Record<string, unknown>) => {
-    try {
-      const result = await paymentService.refundPayment(paymentId, refundData as unknown as RefundData);
-      if (result.success) {
-        // Refresh the payments list
-        const updatedPayments = await productionApi.getPayments();
-        setPayments((updatedPayments || []) as unknown as Payment[]);
-        setFilteredPayments((updatedPayments || []) as unknown as Payment[]);
-      }
-    } catch (error) {
-      // Error handled by payment service
-    }
-  };
-
-  const handleCreatePayment = async () => {
-    // This would open a payment creation dialog
-    toast.info(t('finance.paymentCreationDialog'));
-  };
-
-  const handleExportPayments = async () => {
-    try {
-      // Export payments data
-      const paymentsData = payments.map(payment => ({
-        ID: payment.id,
-        Customer: payment.customer,
-        Amount: payment.amount,
-        Status: payment.status,
-        Method: payment.method,
-        Date: payment.date,
-        Description: payment.description
-      }));
-
-      const csvContent = [
-        Object.keys(paymentsData[0] || {}).join(','),
-        ...paymentsData.map(row => Object.values(row).join(','))
-      ].join('\n');
-
-      const blob = new Blob([csvContent], { type: 'text/csv' });
-      const url = window.URL.createObjectURL(blob);
-      const link = document.createElement('a');
-      link.href = url;
-      link.download = `payments-export-${new Date().toISOString().split('T')[0]}.csv`;
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
-      window.URL.revokeObjectURL(url);
-
-      toast.success(t('dashboard.paymentsExportedSuccessfully'));
-    } catch (error) {
-      // Error handled by API service
-      toast.error(t('finance.failedToExportPayments'));
-    }
-  };
 
   useEffect(() => {
-    const loadFinanceData = async () => {
+    const loadAllData = async () => {
       try {
         setIsLoading(true);
         
-        // Load real data from API
-        const [paymentsData, subscriptionsData, payoutsData] = await Promise.allSettled([
-          productionApi.getPayments(),
-          productionApi.getSubscriptions(),
-          productionApi.getPayouts()
+        // Load all finance-related data
+        const [transactionsData, invoicesData, pricingData, subscriptionsData] = await Promise.allSettled([
+          productionApi.getTransactions?.() || Promise.resolve([]),
+          productionApi.getInvoices?.() || Promise.resolve([]),
+          productionApi.getPricingPlans?.() || Promise.resolve([]),
+          productionApi.getSubscriptions?.() || Promise.resolve([])
         ]);
 
-        const paymentsArray = paymentsData.status === 'fulfilled' && Array.isArray(paymentsData.value) 
-          ? paymentsData.value as unknown as Payment[] 
-          : [];
-        const subscriptionsArray = subscriptionsData.status === 'fulfilled' && Array.isArray(subscriptionsData.value) 
-          ? subscriptionsData.value as unknown as Subscription[] 
-          : [];
-        const payoutsArray = payoutsData.status === 'fulfilled' && Array.isArray(payoutsData.value) 
-          ? payoutsData.value as unknown as Payout[] 
-          : [];
-        
-        setPayments(paymentsArray);
-        setSubscriptions(subscriptionsArray);
-        setPayouts(payoutsArray);
-        setFilteredPayments(paymentsArray);
-        
+        // Set data
+        if (transactionsData.status === 'fulfilled') {
+          setTransactions(transactionsData.value || []);
+          setFilteredTransactions(transactionsData.value || []);
+        }
+        if (invoicesData.status === 'fulfilled') {
+          setInvoices(invoicesData.value || []);
+          setFilteredInvoices(invoicesData.value || []);
+        }
+        if (pricingData.status === 'fulfilled') setPricingPlans(pricingData.value || []);
+        if (subscriptionsData.status === 'fulfilled') {
+          setSubscriptions(subscriptionsData.value || []);
+          setFilteredSubscriptions(subscriptionsData.value || []);
+        }
+
       } catch (error) {
-        // Error handled by API service
-        toast.error(t('finance.failedToLoadFinanceData'));
-        // Set empty arrays on error - no mock data fallback
-        setPayments([]);
-        setSubscriptions([]);
-        setPayouts([]);
-        setFilteredPayments([]);
+        toast.error('Failed to load finance data');
+        console.error('Error loading finance data:', error);
       } finally {
         setIsLoading(false);
       }
     };
 
-    loadFinanceData();
+    loadAllData();
   }, []);
 
   useEffect(() => {
-    const paymentsArray = Array.isArray(payments) ? payments : [];
-    let filtered = paymentsArray;
+    const transactionsArray = Array.isArray(transactions) ? transactions : [];
+    let filtered = transactionsArray.filter(transaction => transaction != null);
 
     if (searchQuery) {
-      filtered = filtered.filter(payment =>
-        payment?.customer?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        payment?.description?.toLowerCase().includes(searchQuery.toLowerCase())
+      filtered = filtered.filter(transaction =>
+        (transaction.description || '').toLowerCase().includes(searchQuery.toLowerCase()) ||
+        (transaction.category || '').toLowerCase().includes(searchQuery.toLowerCase()) ||
+        (transaction.reference || '').toLowerCase().includes(searchQuery.toLowerCase())
       );
     }
 
     if (statusFilter !== "all") {
-      filtered = filtered.filter(payment => payment?.status === statusFilter);
+      filtered = filtered.filter(transaction => transaction && transaction.status === statusFilter);
     }
 
-    setFilteredPayments(filtered);
-  }, [payments, searchQuery, statusFilter]);
+    if (typeFilter !== "all") {
+      filtered = filtered.filter(transaction => transaction && transaction.type === typeFilter);
+    }
+
+    setFilteredTransactions(filtered);
+  }, [transactions, searchQuery, statusFilter, typeFilter]);
+
+  useEffect(() => {
+    const subscriptionsArray = Array.isArray(subscriptions) ? subscriptions : [];
+    let filtered = subscriptionsArray.filter(subscription => subscription != null);
+
+    if (subscriptionSearch) {
+      filtered = filtered.filter(subscription =>
+        (subscription.customerName || '').toLowerCase().includes(subscriptionSearch.toLowerCase()) ||
+        (subscription.email || '').toLowerCase().includes(subscriptionSearch.toLowerCase()) ||
+        (subscription.plan || '').toLowerCase().includes(subscriptionSearch.toLowerCase())
+      );
+    }
+
+    setFilteredSubscriptions(filtered);
+  }, [subscriptions, subscriptionSearch]);
 
   const getStatusColor = (status: string) => {
     switch (status) {
       case "completed":
+      case "paid":
+      case "active":
         return "bg-primary/10 text-primary-foreground";
       case "pending":
+      case "trialing":
         return "bg-secondary/10 text-secondary-foreground";
       case "failed":
-        return "bg-destructive/10 text-destructive-foreground";
       case "cancelled":
         return "bg-muted text-muted-foreground";
+      case "overdue":
+      case "past_due":
+        return "bg-destructive/10 text-destructive-foreground";
       default:
         return "bg-muted text-muted-foreground";
     }
@@ -253,13 +224,20 @@ export default function FinancePage() {
   const getStatusIcon = (status: string) => {
     switch (status) {
       case "completed":
-        return <CheckCircle className="h-4 w-4 text-primary" />;
+      case "paid":
+      case "active":
+        return <CheckCircle className="h-4 w-4 text-success" />;
       case "pending":
-        return <Clock className="h-4 w-4 text-secondary" />;
+      case "trialing":
+        return <Clock className="h-4 w-4 text-warning" />;
       case "failed":
-        return <XCircle className="h-4 w-4 text-destructive" />;
+      case "cancelled":
+        return <XCircle className="h-4 w-4 text-muted-foreground" />;
+      case "overdue":
+      case "past_due":
+        return <AlertTriangle className="h-4 w-4 text-destructive" />;
       default:
-        return <AlertTriangle className="h-4 w-4 text-muted-foreground" />;
+        return <Clock className="h-4 w-4 text-muted-foreground" />;
     }
   };
 
@@ -274,152 +252,132 @@ export default function FinancePage() {
     );
   }
 
-  const paymentsArray = Array.isArray(payments) ? payments : [];
-  const subscriptionsArray = Array.isArray(subscriptions) ? subscriptions : [];
-  
-  const totalRevenue = paymentsArray.filter(p => p?.status === "completed").reduce((sum, p) => sum + (p?.amount || 0), 0);
-  const pendingPayments = paymentsArray.filter(p => p?.status === "pending").reduce((sum, p) => sum + (p?.amount || 0), 0);
-  const activeSubscriptions = subscriptionsArray.filter(s => s?.status === "active").length;
-  const monthlyRecurring = subscriptionsArray.filter(s => s?.status === "active").reduce((sum, s) => sum + (s?.amount || 0), 0);
-
   return (
     <div className="space-y-6 font-sans">
       {/* Page Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold tracking-tight text-foreground font-sans">Finance Dashboard</h1>
+          <h1 className="text-3xl font-bold tracking-tight text-foreground font-sans">Finance & Revenue</h1>
           <p className="text-muted-foreground font-sans">
-            Manage payments, invoices, and financial reports
+            Manage finances, pricing, subscriptions, and revenue analytics
           </p>
         </div>
-        <div className="flex items-center space-x-2">
-          <Button variant="outline" className="shadow-2xs">
-            <Download className="mr-2 h-4 w-4" />
-            Export Report
-          </Button>
+        {hasPermission("manage_finance") && (
           <Button className="shadow-2xs">
             <Plus className="mr-2 h-4 w-4" />
-            Process Payment
+            Add Transaction
           </Button>
-        </div>
+        )}
       </div>
 
-      {/* Revenue Dashboard Cards */}
-      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-        <Card className="shadow-2xs">
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium text-card-foreground">{t('finance.totalRevenue')}</CardTitle>
-            <DollarSign className="h-4 w-4 text-muted-foreground" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold text-foreground">{formatCurrency(totalRevenue)}</div>
-            <p className="text-xs text-muted-foreground">
-              <span className="text-primary">+15%</span> {t('finance.fromLastMonth')}
-            </p>
-          </CardContent>
-        </Card>
-        <Card className="shadow-2xs">
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium text-card-foreground">{t('finance.pendingPayments')}</CardTitle>
-            <Clock className="h-4 w-4 text-muted-foreground" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold text-foreground">{formatCurrency(pendingPayments)}</div>
-            <p className="text-xs text-muted-foreground">
-              <span className="text-secondary">{paymentsArray.filter(p => p?.status === "pending").length}</span> payments
-            </p>
-          </CardContent>
-        </Card>
-        <Card className="shadow-2xs">
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium text-card-foreground">{t('finance.activeSubscriptions')}</CardTitle>
-            <Receipt className="h-4 w-4 text-muted-foreground" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold text-foreground">{activeSubscriptions}</div>
-            <p className="text-xs text-muted-foreground">
-              <span className="text-primary">+8%</span> retention rate
-            </p>
-          </CardContent>
-        </Card>
-        <Card className="shadow-2xs">
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium text-card-foreground">{t('finance.monthlyRecurring')}</CardTitle>
-            <TrendingUp className="h-4 w-4 text-muted-foreground" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold text-foreground">{formatCurrency(monthlyRecurring)}</div>
-            <p className="text-xs text-muted-foreground">
-              <span className="text-primary">+12%</span> growth
-            </p>
-          </CardContent>
-        </Card>
-      </div>
-
-      {/* Revenue Charts Placeholder */}
-      <div className="grid gap-6 md:grid-cols-2">
-        <Card className="shadow-2xs">
-          <CardHeader>
-            <CardTitle className="text-card-foreground">{t('dashboard.revenueTrends')}</CardTitle>
-            <CardDescription>{t('dashboard.monthlyRevenueOverTime')}</CardDescription>
-          </CardHeader>
-          <CardContent>
-            <div className="h-64 bg-muted rounded-[0.625rem] flex items-center justify-center">
-              <div className="text-center">
-                <BarChart3 className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
-                <p className="text-muted-foreground">{t('dashboard.revenueChartWillBeDisplayed')}</p>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-        <Card className="shadow-2xs">
-          <CardHeader>
-            <CardTitle className="text-card-foreground">Payment Methods</CardTitle>
-            <CardDescription>Distribution of payment methods</CardDescription>
-          </CardHeader>
-          <CardContent>
-            <div className="h-64 bg-muted rounded-[0.625rem] flex items-center justify-center">
-              <div className="text-center">
-                <PieChart className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
-                <p className="text-muted-foreground">Payment methods chart will be displayed here</p>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-      </div>
-
-      {/* Finance Tabs */}
-      <Tabs defaultValue="payments" className="space-y-4">
-        <TabsList className="grid w-full grid-cols-4">
-          <TabsTrigger value="payments">Payment Queue</TabsTrigger>
+      {/* Main Tabs */}
+      <Tabs defaultValue="overview" className="space-y-4">
+        <TabsList className="grid w-full grid-cols-5">
+          <TabsTrigger value="overview">Overview</TabsTrigger>
+          <TabsTrigger value="transactions">Transactions</TabsTrigger>
+          <TabsTrigger value="invoices">Invoices</TabsTrigger>
+          <TabsTrigger value="pricing">Pricing</TabsTrigger>
           <TabsTrigger value="subscriptions">Subscriptions</TabsTrigger>
-          <TabsTrigger value="payouts">Payouts</TabsTrigger>
-          <TabsTrigger value="billing">Billing</TabsTrigger>
         </TabsList>
 
-        <TabsContent value="payments" className="space-y-4">
-          <Card className="shadow-2xs">
+        {/* Overview Tab */}
+        <TabsContent value="overview" className="space-y-4">
+          {/* Analytics Widgets */}
+          <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
+            <RevenueExpenses />
+            <ARPUARPPU />
+            <CashFlowProjection />
+            <OverdueInvoices />
+          </div>
+
+          {/* Finance Summary Cards */}
+          <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+            <Card>
+              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                <CardTitle className="text-sm font-medium font-sans">Total Revenue</CardTitle>
+                <DollarSign className="h-4 w-4 text-muted-foreground" />
+              </CardHeader>
+              <CardContent>
+                <div className="text-2xl font-bold font-sans">
+                  {formatCurrency(transactions.filter(t => t.type === 'income').reduce((sum, t) => sum + t.amount, 0))}
+                </div>
+                <p className="text-xs text-muted-foreground font-sans">
+                  <span className="text-success">+12.5%</span> from last month
+                </p>
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                <CardTitle className="text-sm font-medium font-sans">Total Expenses</CardTitle>
+                <TrendingDown className="h-4 w-4 text-muted-foreground" />
+              </CardHeader>
+              <CardContent>
+                <div className="text-2xl font-bold font-sans">
+                  {formatCurrency(transactions.filter(t => t.type === 'expense').reduce((sum, t) => sum + t.amount, 0))}
+                </div>
+                <p className="text-xs text-muted-foreground font-sans">
+                  <span className="text-destructive">+5.2%</span> from last month
+                </p>
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                <CardTitle className="text-sm font-medium font-sans">Active Subscriptions</CardTitle>
+                <Users className="h-4 w-4 text-muted-foreground" />
+              </CardHeader>
+              <CardContent>
+                <div className="text-2xl font-bold font-sans">
+                  {subscriptions.filter(s => s.status === 'active').length}
+                </div>
+                <p className="text-xs text-muted-foreground font-sans">
+                  {subscriptions.length} total subscriptions
+                </p>
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                <CardTitle className="text-sm font-medium font-sans">Overdue Invoices</CardTitle>
+                <AlertTriangle className="h-4 w-4 text-muted-foreground" />
+              </CardHeader>
+              <CardContent>
+                <div className="text-2xl font-bold font-sans">
+                  {invoices.filter(i => i.status === 'overdue').length}
+                </div>
+                <p className="text-xs text-muted-foreground font-sans">
+                  {formatCurrency(invoices.filter(i => i.status === 'overdue').reduce((sum, i) => sum + i.amount, 0))} total
+                </p>
+              </CardContent>
+            </Card>
+          </div>
+        </TabsContent>
+
+        {/* Transactions Tab */}
+        <TabsContent value="transactions" className="space-y-4">
+          <Card>
             <CardHeader>
-              <CardTitle className="text-card-foreground">Payment Queue</CardTitle>
-              <CardDescription>Manage incoming and outgoing payments</CardDescription>
+              <CardTitle>Financial Transactions</CardTitle>
+              <CardDescription>
+                Track all income and expense transactions
+              </CardDescription>
             </CardHeader>
-            <CardContent>
-              {/* Filters */}
-              <div className="flex items-center space-x-4 mb-6">
-                <div className="flex-1">
-                  <div className="relative">
-                    <Search className="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground" />
-                    <Input
-                      placeholder="Search payments..."
-                      value={searchQuery}
-                      onChange={(e) => setSearchQuery(e.target.value)}
-                      className="pl-8"
-                    />
-                  </div>
+            <CardContent className="space-y-4">
+              {/* Search and Filters */}
+              <div className="flex items-center space-x-4">
+                <div className="relative flex-1">
+                  <Search className="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground" />
+                  <Input
+                    placeholder="Search transactions..."
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                    className="pl-8"
+                  />
                 </div>
                 <Select value={statusFilter} onValueChange={setStatusFilter}>
                   <SelectTrigger className="w-[180px]">
-                    <SelectValue placeholder={t('finance.filterByStatus')} />
+                    <SelectValue placeholder="Filter by status" />
                   </SelectTrigger>
                   <SelectContent>
                     <SelectItem value="all">All Status</SelectItem>
@@ -428,337 +386,331 @@ export default function FinancePage() {
                     <SelectItem value="failed">Failed</SelectItem>
                   </SelectContent>
                 </Select>
+                <Select value={typeFilter} onValueChange={setTypeFilter}>
+                  <SelectTrigger className="w-[180px]">
+                    <SelectValue placeholder="Filter by type" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="all">All Types</SelectItem>
+                    <SelectItem value="income">Income</SelectItem>
+                    <SelectItem value="expense">Expense</SelectItem>
+                  </SelectContent>
+                </Select>
               </div>
 
-              {/* Payment Table */}
-              <Table>
-                <TableHeader>
-                  <TableRow>
-                    <TableHead>Payment</TableHead>
-                    <TableHead>Customer</TableHead>
-                    <TableHead>Amount</TableHead>
-                    <TableHead>Method</TableHead>
-                    <TableHead>Status</TableHead>
-                    <TableHead>Date</TableHead>
-                    <TableHead className="text-right">Actions</TableHead>
-                  </TableRow>
-                </TableHeader>
-                <TableBody>
-                  {filteredPayments.map((payment) => (
-                    <TableRow key={payment.id}>
-                      <TableCell>
-                        <div>
-                          <p className="text-sm font-medium text-foreground">{payment.description}</p>
-                          <p className="text-xs text-muted-foreground">ID: {payment.id}</p>
-                        </div>
-                      </TableCell>
-                      <TableCell>
-                        <span className="text-sm text-muted-foreground">{payment.customer}</span>
-                      </TableCell>
-                      <TableCell>
-                        <span className="text-sm font-medium text-foreground">
-                          {formatCurrency(payment.amount)}
-                        </span>
-                      </TableCell>
-                      <TableCell>
-                        <div className="flex items-center space-x-2">
-                          {payment.method === 'Credit Card' ? (
-                            <CreditCard className="h-3 w-3 text-muted-foreground" />
-                          ) : (
-                            <Banknote className="h-3 w-3 text-muted-foreground" />
-                          )}
-                          <span className="text-sm text-muted-foreground">{payment.method}</span>
-                        </div>
-                      </TableCell>
-                      <TableCell>
-                        <div className="flex items-center space-x-2">
-                          {getStatusIcon(payment.status)}
-                          <Badge className={getStatusColor(payment.status)}>
-                            {payment.status}
-                          </Badge>
-                        </div>
-                      </TableCell>
-                      <TableCell>
-                        <span className="text-sm text-muted-foreground">
-                          {formatRelativeTime(payment.date)}
-                        </span>
-                      </TableCell>
-                      <TableCell className="text-right">
-                        <DropdownMenu>
-                          <DropdownMenuTrigger asChild>
-                            <Button variant="ghost" className="h-8 w-8 p-0">
-                              <MoreHorizontal className="h-4 w-4" />
-                            </Button>
-                          </DropdownMenuTrigger>
-                          <DropdownMenuContent align="end">
-                            <DropdownMenuLabel>Actions</DropdownMenuLabel>
-                            <DropdownMenuItem>
-                              <Eye className="mr-2 h-4 w-4" />
-                              View Details
-                            </DropdownMenuItem>
-                            <DropdownMenuItem>
-                              <Receipt className="mr-2 h-4 w-4" />
-                              Generate Receipt
-                            </DropdownMenuItem>
-                            <DropdownMenuSeparator />
-                            <DropdownMenuItem>
-                              <CheckCircle className="mr-2 h-4 w-4" />
-                              Mark as Paid
-                            </DropdownMenuItem>
-                            <DropdownMenuItem className="text-destructive">
-                              <XCircle className="mr-2 h-4 w-4" />
-                              Refund Payment
-                            </DropdownMenuItem>
-                          </DropdownMenuContent>
-                        </DropdownMenu>
-                      </TableCell>
+              {/* Transactions Table */}
+              <div className="rounded-md border">
+                <Table>
+                  <TableHeader>
+                    <TableRow>
+                      <TableHead>Description</TableHead>
+                      <TableHead>Type</TableHead>
+                      <TableHead>Amount</TableHead>
+                      <TableHead>Category</TableHead>
+                      <TableHead>Status</TableHead>
+                      <TableHead>Date</TableHead>
+                      <TableHead className="text-right">Actions</TableHead>
                     </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
+                  </TableHeader>
+                  <TableBody>
+                    {filteredTransactions.map((transaction) => (
+                      <TableRow key={transaction.id}>
+                        <TableCell>
+                          <div>
+                            <div className="font-medium">{transaction.description}</div>
+                            {transaction.reference && (
+                              <div className="text-sm text-muted-foreground">Ref: {transaction.reference}</div>
+                            )}
+                          </div>
+                        </TableCell>
+                        <TableCell>
+                          <Badge variant={transaction.type === 'income' ? 'default' : 'secondary'}>
+                            {transaction.type}
+                          </Badge>
+                        </TableCell>
+                        <TableCell>
+                          <div className={`font-medium ${transaction.type === 'income' ? 'text-success' : 'text-destructive'}`}>
+                            {transaction.type === 'income' ? '+' : '-'}{formatCurrency(transaction.amount)}
+                          </div>
+                        </TableCell>
+                        <TableCell>
+                          <span className="text-sm">{transaction.category}</span>
+                        </TableCell>
+                        <TableCell>
+                          <div className="flex items-center space-x-2">
+                            {getStatusIcon(transaction.status)}
+                            <Badge className={getStatusColor(transaction.status)}>
+                              {transaction.status}
+                            </Badge>
+                          </div>
+                        </TableCell>
+                        <TableCell>
+                          <div className="text-sm">
+                            {formatDate(transaction.date)}
+                          </div>
+                        </TableCell>
+                        <TableCell className="text-right">
+                          <DropdownMenu>
+                            <DropdownMenuTrigger asChild>
+                              <Button variant="ghost" className="h-8 w-8 p-0">
+                                <MoreHorizontal className="h-4 w-4" />
+                              </Button>
+                            </DropdownMenuTrigger>
+                            <DropdownMenuContent align="end">
+                              <DropdownMenuLabel>Actions</DropdownMenuLabel>
+                              <DropdownMenuItem>View Details</DropdownMenuItem>
+                              <DropdownMenuItem>Edit Transaction</DropdownMenuItem>
+                              <DropdownMenuSeparator />
+                              <DropdownMenuItem className="text-destructive">
+                                Delete Transaction
+                              </DropdownMenuItem>
+                            </DropdownMenuContent>
+                          </DropdownMenu>
+                        </TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              </div>
             </CardContent>
           </Card>
         </TabsContent>
 
+        {/* Invoices Tab */}
+        <TabsContent value="invoices" className="space-y-4">
+          <Card>
+            <CardHeader>
+              <CardTitle>Invoices</CardTitle>
+              <CardDescription>
+                Manage customer invoices and payments
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="rounded-md border">
+                <Table>
+                  <TableHeader>
+                    <TableRow>
+                      <TableHead>Customer</TableHead>
+                      <TableHead>Amount</TableHead>
+                      <TableHead>Status</TableHead>
+                      <TableHead>Issue Date</TableHead>
+                      <TableHead>Due Date</TableHead>
+                      <TableHead className="text-right">Actions</TableHead>
+                    </TableRow>
+                  </TableHeader>
+                  <TableBody>
+                    {filteredInvoices.map((invoice) => (
+                      <TableRow key={invoice.id}>
+                        <TableCell>
+                          <div>
+                            <div className="font-medium">{invoice.customerName}</div>
+                            <div className="text-sm text-muted-foreground">{invoice.description}</div>
+                          </div>
+                        </TableCell>
+                        <TableCell>
+                          <div className="font-medium">{formatCurrency(invoice.amount)}</div>
+                        </TableCell>
+                        <TableCell>
+                          <div className="flex items-center space-x-2">
+                            {getStatusIcon(invoice.status)}
+                            <Badge className={getStatusColor(invoice.status)}>
+                              {invoice.status}
+                            </Badge>
+                          </div>
+                        </TableCell>
+                        <TableCell>
+                          <div className="text-sm">{formatDate(invoice.issueDate)}</div>
+                        </TableCell>
+                        <TableCell>
+                          <div className="text-sm">{formatDate(invoice.dueDate)}</div>
+                        </TableCell>
+                        <TableCell className="text-right">
+                          <DropdownMenu>
+                            <DropdownMenuTrigger asChild>
+                              <Button variant="ghost" className="h-8 w-8 p-0">
+                                <MoreHorizontal className="h-4 w-4" />
+                              </Button>
+                            </DropdownMenuTrigger>
+                            <DropdownMenuContent align="end">
+                              <DropdownMenuLabel>Actions</DropdownMenuLabel>
+                              <DropdownMenuItem>View Invoice</DropdownMenuItem>
+                              <DropdownMenuItem>Send Reminder</DropdownMenuItem>
+                              <DropdownMenuItem>Mark as Paid</DropdownMenuItem>
+                              <DropdownMenuSeparator />
+                              <DropdownMenuItem className="text-destructive">
+                                Cancel Invoice
+                              </DropdownMenuItem>
+                            </DropdownMenuContent>
+                          </DropdownMenu>
+                        </TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              </div>
+            </CardContent>
+          </Card>
+        </TabsContent>
+
+        {/* Pricing Tab */}
+        <TabsContent value="pricing" className="space-y-4">
+          <Card>
+            <CardHeader>
+              <CardTitle>Pricing Plans</CardTitle>
+              <CardDescription>
+                Manage subscription pricing and plans
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+                {pricingPlans.map((plan) => (
+                  <Card key={plan.id} className={plan.popular ? "ring-2 ring-primary" : ""}>
+                    <CardHeader>
+                      <div className="flex items-center justify-between">
+                        <CardTitle className="text-lg">{plan.name}</CardTitle>
+                        {plan.popular && (
+                          <Badge className="bg-primary">Popular</Badge>
+                        )}
+                      </div>
+                      <div className="text-3xl font-bold">
+                        {formatCurrency(plan.price)}
+                        <span className="text-sm font-normal text-muted-foreground">
+                          /{plan.interval}
+                        </span>
+                      </div>
+                    </CardHeader>
+                    <CardContent className="space-y-4">
+                      <div className="space-y-2">
+                        {plan.features.map((feature, index) => (
+                          <div key={index} className="flex items-center space-x-2">
+                            <Check className="h-4 w-4 text-success" />
+                            <span className="text-sm">{feature}</span>
+                          </div>
+                        ))}
+                      </div>
+                      <div className="pt-4 border-t">
+                        <div className="flex items-center justify-between text-sm text-muted-foreground">
+                          <span>{plan.customers} customers</span>
+                          <span>{formatCurrency(plan.revenue)} revenue</span>
+                        </div>
+                      </div>
+                      <div className="flex space-x-2">
+                        <Button variant="outline" size="sm" className="flex-1">
+                          <Edit className="mr-2 h-4 w-4" />
+                          Edit
+                        </Button>
+                        <Button size="sm" className="flex-1">
+                          <BarChart3 className="mr-2 h-4 w-4" />
+                          Analytics
+                        </Button>
+                      </div>
+                    </CardContent>
+                  </Card>
+                ))}
+              </div>
+            </CardContent>
+          </Card>
+        </TabsContent>
+
+        {/* Subscriptions Tab */}
         <TabsContent value="subscriptions" className="space-y-4">
-          <Card className="shadow-2xs">
+          <Card>
             <CardHeader>
-              <CardTitle className="text-card-foreground">Subscriptions</CardTitle>
-              <CardDescription>Manage customer subscriptions and billing</CardDescription>
+              <CardTitle>Subscriptions</CardTitle>
+              <CardDescription>
+                Manage customer subscriptions and billing
+              </CardDescription>
             </CardHeader>
-            <CardContent>
-              <Table>
-                <TableHeader>
-                  <TableRow>
-                    <TableHead>Customer</TableHead>
-                    <TableHead>Plan</TableHead>
-                    <TableHead>Amount</TableHead>
-                    <TableHead>Status</TableHead>
-                    <TableHead>Next Billing</TableHead>
-                    <TableHead>Auto Renew</TableHead>
-                    <TableHead className="text-right">Actions</TableHead>
-                  </TableRow>
-                </TableHeader>
-                <TableBody>
-                  {subscriptions.map((subscription) => (
-                    <TableRow key={subscription.id}>
-                      <TableCell>
-                        <span className="text-sm font-medium text-foreground">{subscription.customer}</span>
-                      </TableCell>
-                      <TableCell>
-                        <Badge variant="outline">{subscription.plan}</Badge>
-                      </TableCell>
-                      <TableCell>
-                        <span className="text-sm font-medium text-foreground">
-                          {formatCurrency(subscription.amount)}
-                        </span>
-                      </TableCell>
-                      <TableCell>
-                        <Badge className={getStatusColor(subscription.status)}>
-                          {subscription.status}
-                        </Badge>
-                      </TableCell>
-                      <TableCell>
-                        <span className="text-sm text-muted-foreground">
-                          {formatDate(subscription.nextBilling)}
-                        </span>
-                      </TableCell>
-                      <TableCell>
-                        <Badge variant={subscription.autoRenew ? "default" : "secondary"}>
-                          {subscription.autoRenew ? t('finance.yes') : t('finance.no')}
-                        </Badge>
-                      </TableCell>
-                      <TableCell className="text-right">
-                        <DropdownMenu>
-                          <DropdownMenuTrigger asChild>
-                            <Button variant="ghost" className="h-8 w-8 p-0">
-                              <MoreHorizontal className="h-4 w-4" />
-                            </Button>
-                          </DropdownMenuTrigger>
-                          <DropdownMenuContent align="end">
-                            <DropdownMenuLabel>Actions</DropdownMenuLabel>
-                            <DropdownMenuItem>
-                              <Eye className="mr-2 h-4 w-4" />
-                              View Details
-                            </DropdownMenuItem>
-                            <DropdownMenuItem>
-                              <FileText className="mr-2 h-4 w-4" />
-                              Generate Invoice
-                            </DropdownMenuItem>
-                            <DropdownMenuSeparator />
-                            <DropdownMenuItem>
-                              <Send className="mr-2 h-4 w-4" />
-                              Send Reminder
-                            </DropdownMenuItem>
-                            <DropdownMenuItem className="text-destructive">
-                              <XCircle className="mr-2 h-4 w-4" />
-                              Cancel Subscription
-                            </DropdownMenuItem>
-                          </DropdownMenuContent>
-                        </DropdownMenu>
-                      </TableCell>
-                    </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
-            </CardContent>
-          </Card>
-        </TabsContent>
-
-        <TabsContent value="payouts" className="space-y-4">
-          <Card className="shadow-2xs">
-            <CardHeader>
-              <CardTitle className="text-card-foreground">Payouts</CardTitle>
-              <CardDescription>Manage payouts to service providers</CardDescription>
-            </CardHeader>
-            <CardContent>
-              <Table>
-                <TableHeader>
-                  <TableRow>
-                    <TableHead>Recipient</TableHead>
-                    <TableHead>Amount</TableHead>
-                    <TableHead>Method</TableHead>
-                    <TableHead>Status</TableHead>
-                    <TableHead>Date</TableHead>
-                    <TableHead className="text-right">Actions</TableHead>
-                  </TableRow>
-                </TableHeader>
-                <TableBody>
-                  {payouts.map((payout) => (
-                    <TableRow key={payout.id}>
-                      <TableCell>
-                        <span className="text-sm font-medium text-foreground">{payout.recipient}</span>
-                      </TableCell>
-                      <TableCell>
-                        <span className="text-sm font-medium text-foreground">
-                          {formatCurrency(payout.amount)}
-                        </span>
-                      </TableCell>
-                      <TableCell>
-                        <div className="flex items-center space-x-2">
-                          <Banknote className="h-3 w-3 text-muted-foreground" />
-                          <span className="text-sm text-muted-foreground">{payout.method}</span>
-                        </div>
-                      </TableCell>
-                      <TableCell>
-                        <div className="flex items-center space-x-2">
-                          {getStatusIcon(payout.status)}
-                          <Badge className={getStatusColor(payout.status)}>
-                            {payout.status}
-                          </Badge>
-                        </div>
-                      </TableCell>
-                      <TableCell>
-                        <span className="text-sm text-muted-foreground">
-                          {formatRelativeTime(payout.date)}
-                        </span>
-                      </TableCell>
-                      <TableCell className="text-right">
-                        <DropdownMenu>
-                          <DropdownMenuTrigger asChild>
-                            <Button variant="ghost" className="h-8 w-8 p-0">
-                              <MoreHorizontal className="h-4 w-4" />
-                            </Button>
-                          </DropdownMenuTrigger>
-                          <DropdownMenuContent align="end">
-                            <DropdownMenuLabel>Actions</DropdownMenuLabel>
-                            <DropdownMenuItem>
-                              <Eye className="mr-2 h-4 w-4" />
-                              View Details
-                            </DropdownMenuItem>
-                            <DropdownMenuItem>
-                              <Upload className="mr-2 h-4 w-4" />
-                              Process Payout
-                            </DropdownMenuItem>
-                            <DropdownMenuSeparator />
-                            <DropdownMenuItem>
-                              <FileText className="mr-2 h-4 w-4" />
-                              Generate Report
-                            </DropdownMenuItem>
-                          </DropdownMenuContent>
-                        </DropdownMenu>
-                      </TableCell>
-                    </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
-            </CardContent>
-          </Card>
-        </TabsContent>
-
-        <TabsContent value="billing" className="space-y-4">
-          <Card className="shadow-2xs">
-            <CardHeader>
-              <CardTitle className="text-card-foreground">Billing Management</CardTitle>
-              <CardDescription>Hold or clear payments, manage billing cycles</CardDescription>
-            </CardHeader>
-            <CardContent>
-              <div className="grid gap-4 md:grid-cols-2">
-                <div className="space-y-4">
-                  <h3 className="text-lg font-semibold text-foreground">Payment Actions</h3>
-                  <div className="space-y-2">
-                    <Button className="w-full justify-start shadow-2xs">
-                      <CheckCircle className="mr-2 h-4 w-4" />
-                      {t('finance.clearPendingPayments')}
-                    </Button>
-                    <Button variant="outline" className="w-full justify-start shadow-2xs">
-                      <AlertTriangle className="mr-2 h-4 w-4" />
-                      {t('dashboard.holdSuspiciousPayments')}
-                    </Button>
-                    <Button variant="outline" className="w-full justify-start shadow-2xs">
-                      <Download className="mr-2 h-4 w-4" />
-                      Export Billing Report
-                    </Button>
-                  </div>
+            <CardContent className="space-y-4">
+              {/* Search */}
+              <div className="flex items-center space-x-4">
+                <div className="relative flex-1">
+                  <Search className="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground" />
+                  <Input
+                    placeholder="Search subscriptions..."
+                    value={subscriptionSearch}
+                    onChange={(e) => setSubscriptionSearch(e.target.value)}
+                    className="pl-8"
+                  />
                 </div>
-                <div className="space-y-4">
-                  <h3 className="text-lg font-semibold text-foreground">Billing Settings</h3>
-                  <div className="space-y-2">
-                    <Button variant="outline" className="w-full justify-start shadow-2xs">
-                      <Calendar className="mr-2 h-4 w-4" />
-                      Manage Billing Cycles
-                    </Button>
-                    <Button variant="outline" className="w-full justify-start shadow-2xs">
-                      <CreditCard className="mr-2 h-4 w-4" />
-                      Payment Methods
-                    </Button>
-                    <Button variant="outline" className="w-full justify-start shadow-2xs">
-                      <Receipt className="mr-2 h-4 w-4" />
-                      Invoice Templates
-                    </Button>
-                  </div>
-                </div>
+              </div>
+
+              {/* Subscriptions Table */}
+              <div className="rounded-md border">
+                <Table>
+                  <TableHeader>
+                    <TableRow>
+                      <TableHead>Customer</TableHead>
+                      <TableHead>Plan</TableHead>
+                      <TableHead>Amount</TableHead>
+                      <TableHead>Status</TableHead>
+                      <TableHead>Next Billing</TableHead>
+                      <TableHead>Payment Method</TableHead>
+                      <TableHead className="text-right">Actions</TableHead>
+                    </TableRow>
+                  </TableHeader>
+                  <TableBody>
+                    {filteredSubscriptions.map((subscription) => (
+                      <TableRow key={subscription.id}>
+                        <TableCell>
+                          <div>
+                            <div className="font-medium">{subscription.customerName}</div>
+                            <div className="text-sm text-muted-foreground">{subscription.email}</div>
+                          </div>
+                        </TableCell>
+                        <TableCell>
+                          <Badge variant="outline">{subscription.plan}</Badge>
+                        </TableCell>
+                        <TableCell>
+                          <div className="font-medium">
+                            {formatCurrency(subscription.amount)}/{subscription.interval}
+                          </div>
+                        </TableCell>
+                        <TableCell>
+                          <div className="flex items-center space-x-2">
+                            {getStatusIcon(subscription.status)}
+                            <Badge className={getStatusColor(subscription.status)}>
+                              {subscription.status}
+                            </Badge>
+                          </div>
+                        </TableCell>
+                        <TableCell>
+                          <div className="text-sm">{formatDate(subscription.nextBilling)}</div>
+                        </TableCell>
+                        <TableCell>
+                          <div className="flex items-center space-x-2">
+                            <CreditCard className="h-4 w-4 text-muted-foreground" />
+                            <span className="text-sm">{subscription.paymentMethod}</span>
+                          </div>
+                        </TableCell>
+                        <TableCell className="text-right">
+                          <DropdownMenu>
+                            <DropdownMenuTrigger asChild>
+                              <Button variant="ghost" className="h-8 w-8 p-0">
+                                <MoreHorizontal className="h-4 w-4" />
+                              </Button>
+                            </DropdownMenuTrigger>
+                            <DropdownMenuContent align="end">
+                              <DropdownMenuLabel>Actions</DropdownMenuLabel>
+                              <DropdownMenuItem>View Details</DropdownMenuItem>
+                              <DropdownMenuItem>Update Payment Method</DropdownMenuItem>
+                              <DropdownMenuItem>Pause Subscription</DropdownMenuItem>
+                              <DropdownMenuSeparator />
+                              <DropdownMenuItem className="text-destructive">
+                                Cancel Subscription
+                              </DropdownMenuItem>
+                            </DropdownMenuContent>
+                          </DropdownMenu>
+                        </TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
               </div>
             </CardContent>
           </Card>
         </TabsContent>
       </Tabs>
-
-      {/* Phase 2: Financial Analytics Widgets */}
-      <div className="space-y-6 mt-8">
-        <div className="flex items-center justify-between">
-          <div>
-            <h2 className="text-2xl font-bold tracking-tight text-foreground">Financial Analytics</h2>
-            <p className="text-muted-foreground">
-              Make revenue actionable & contextualized
-            </p>
-          </div>
-        </div>
-
-        {/* Top Row - Revenue & ARPU */}
-        <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-          <RevenueExpenses className="lg:col-span-2" />
-          <ARPUARPPU />
-        </div>
-
-        {/* Second Row - Cash Flow & Overdue */}
-        <div className="grid gap-6 md:grid-cols-2">
-          <CashFlowProjection />
-          <OverdueInvoices />
-        </div>
-      </div>
     </div>
   );
 }
-
-
