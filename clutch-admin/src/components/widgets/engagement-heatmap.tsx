@@ -46,7 +46,7 @@ export function EngagementHeatmap({ className = '' }: EngagementHeatmapProps) {
     };
 
     loadHeatmapData();
-  }, []);
+  }, [selectedSegment]);
 
   const getUsageColor = (usage: number) => {
     if (usage >= 80) return 'bg-success';

@@ -46,7 +46,16 @@ export function RoleDistribution({ className = '' }: RoleDistributionProps) {
         // Try to get role distribution data from business intelligence service
         const roleData = await businessIntelligence.getRoleDistribution();
         if (roleData && roleData.length > 0) {
-          setRoleData(roleData);
+          // Convert the simple role data to full RoleData objects
+          const fullRoleData: RoleData[] = roleData.map(role => ({
+            role: role.role,
+            count: role.count,
+            percentage: role.percentage,
+            color: 'text-muted-foreground',
+            icon: User,
+            description: 'User access'
+          }));
+          setRoleData(fullRoleData);
           return;
         }
 
@@ -205,7 +214,7 @@ export function RoleDistribution({ className = '' }: RoleDistributionProps) {
           description: roleDefinitions[role as keyof typeof roleDefinitions]?.description || 'User access'
         }));
 
-        setRoleData(roles.sort((a, b) => b.count - a.count));
+        setRoleData(roles.sort((a, b) => (b?.count || 0) - (a?.count || 0)));
       } catch (error) {
         // Failed to load role data
       } finally {
@@ -217,15 +226,18 @@ export function RoleDistribution({ className = '' }: RoleDistributionProps) {
   }, []);
 
   const getTotalUsers = () => {
-    return roleData.reduce((sum, role) => sum + role.count, 0);
+    if (!Array.isArray(roleData)) return 0;
+    return roleData.reduce((sum, role) => sum + (role?.count || 0), 0);
   };
 
   const getLargestRole = () => {
-    return roleData.length > 0 ? roleData[0] : null;
+    if (!Array.isArray(roleData) || roleData.length === 0) return null;
+    return roleData[0];
   };
 
   const getSmallestRole = () => {
-    return roleData.length > 0 ? roleData[roleData.length - 1] : null;
+    if (!Array.isArray(roleData) || roleData.length === 0) return null;
+    return roleData[roleData.length - 1];
   };
 
   const getRoleTrend = (role: string) => {
@@ -325,30 +337,30 @@ export function RoleDistribution({ className = '' }: RoleDistributionProps) {
           <h4 className="text-sm font-medium text-foreground">{t('widgets.roleBreakdown')}</h4>
           <div className="space-y-2">
             {roleData.map((role, index) => {
-              const RoleIcon = role.icon;
-              const trend = getRoleTrend(role.role);
+              const RoleIcon = role?.icon || Users;
+              const trend = getRoleTrend(role?.role || '');
               const TrendIcon = trend.trend === 'up' ? TrendingUp : trend.trend === 'down' ? TrendingDown : Users;
               
               return (
-                <div key={role.role} className="flex items-center justify-between p-3 bg-muted/50 rounded-[0.625rem]-lg">
+                <div key={role?.role || index} className="flex items-center justify-between p-3 bg-muted/50 rounded-[0.625rem]-lg">
                   <div className="flex items-center space-x-3">
                     <div className="flex items-center justify-center w-8 h-8 bg-primary/10 rounded-full">
                       <span className="text-sm font-semibold text-primary">
                         {index + 1}
                       </span>
                     </div>
-                    <RoleIcon className={`h-4 w-4 ${role.color}`} />
+                    <RoleIcon className={`h-4 w-4 ${role?.color || 'text-muted-foreground'}`} />
                     <div>
-                      <p className="text-sm font-medium text-foreground capitalize">{role.role}</p>
-                      <p className="text-xs text-muted-foreground">{role.description}</p>
+                      <p className="text-sm font-medium text-foreground capitalize">{role?.role || 'Unknown'}</p>
+                      <p className="text-xs text-muted-foreground">{role?.description || 'No description'}</p>
                     </div>
                   </div>
                   
                   <div className="text-right">
                     <div className="flex items-center space-x-2">
-                      <p className="text-sm font-semibold text-foreground">{role.count}</p>
+                      <p className="text-sm font-semibold text-foreground">{role?.count || 0}</p>
                       <Badge variant="outline" className="text-xs">
-                        {(role.percentage || 0).toFixed(1)}%
+                        {(role?.percentage || 0).toFixed(1)}%
                       </Badge>
                     </div>
                     <div className="flex items-center space-x-1 mt-1">
@@ -374,13 +386,13 @@ export function RoleDistribution({ className = '' }: RoleDistributionProps) {
         <div className="space-y-3">
           <h4 className="text-sm font-medium text-foreground">{t('widgets.distribution')}</h4>
           <div className="space-y-2">
-            {roleData.map((role) => (
-              <div key={role.role} className="space-y-1">
+            {roleData.map((role, index) => (
+              <div key={role?.role || index} className="space-y-1">
                 <div className="flex justify-between text-sm">
-                  <span className="text-muted-foreground capitalize">{role.role}</span>
-                  <span className="text-foreground font-medium">{(role.percentage || 0).toFixed(1)}%</span>
+                  <span className="text-muted-foreground capitalize">{role?.role || 'Unknown'}</span>
+                  <span className="text-foreground font-medium">{(role?.percentage || 0).toFixed(1)}%</span>
                 </div>
-                <Progress value={role.percentage} className="h-2" />
+                <Progress value={role?.percentage || 0} className="h-2" />
               </div>
             ))}
           </div>
@@ -424,11 +436,11 @@ export function RoleDistribution({ className = '' }: RoleDistributionProps) {
             <li>• {t('widgets.differentRolesInSystem', { count: roleData.length })}</li>
             <li>• {t('widgets.largestRolePercentage', { role: largestRole?.role || 'N/A', percentage: (largestRole?.percentage || 0).toFixed(1) })}</li>
             <li>• {t('widgets.smallestRolePercentage', { role: smallestRole?.role || 'N/A', percentage: (smallestRole?.percentage || 0).toFixed(1) })}</li>
-            {roleData.filter(r => ['super_admin', 'head_administrator', 'executive', 'platform_admin', 'admin'].includes(r.role)).length > 0 && (
-              <li>• {roleData.filter(r => ['super_admin', 'head_administrator', 'executive', 'platform_admin', 'admin'].includes(r.role)).reduce((sum, r) => sum + r.count, 0)} admin users</li>
+            {roleData.filter(r => ['super_admin', 'head_administrator', 'executive', 'platform_admin', 'admin'].includes(r?.role || '')).length > 0 && (
+              <li>• {roleData.filter(r => ['super_admin', 'head_administrator', 'executive', 'platform_admin', 'admin'].includes(r?.role || '')).reduce((sum, r) => sum + (r?.count || 0), 0)} admin users</li>
             )}
-            {roleData.filter(r => ['enterprise_client', 'service_provider'].includes(r.role)).length > 0 && (
-              <li>• {roleData.filter(r => ['enterprise_client', 'service_provider'].includes(r.role)).reduce((sum, r) => sum + r.count, 0)} external users</li>
+            {roleData.filter(r => ['enterprise_client', 'service_provider'].includes(r?.role || '')).length > 0 && (
+              <li>• {roleData.filter(r => ['enterprise_client', 'service_provider'].includes(r?.role || '')).reduce((sum, r) => sum + (r?.count || 0), 0)} external users</li>
             )}
           </ul>
         </div>

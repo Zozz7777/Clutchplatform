@@ -20,6 +20,7 @@ import RevenueMarginCard from "@/components/widgets/revenue-margin-card";
 import AIForecastCard from "@/components/widgets/ai-forecast-card";
 import ComplianceRadar from "@/components/widgets/compliance-radar";
 import TopEnterpriseClients from "@/components/widgets/top-enterprise-clients";
+import WidgetErrorBoundary from "@/components/widgets/widget-error-boundary";
 import { 
   Users, 
   Truck, 
@@ -247,7 +248,7 @@ export default function DashboardPage() {
       </div>
 
       {/* Main Content Grid */}
-      <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
         {/* Real-time Activity Feed */}
         <Card className="lg:col-span-2 shadow-2xs">
           <CardHeader>
@@ -453,7 +454,7 @@ export default function DashboardPage() {
       </div>
 
       {/* Phase 2: Business Intelligence Widgets */}
-      <div className="space-y-6">
+      <div className="space-y-4">
         <div className="flex items-center justify-between">
           <div>
             <h2 className="text-2xl font-bold tracking-tight text-card-foreground">{t('dashboard.businessIntelligence')}</h2>
@@ -464,21 +465,33 @@ export default function DashboardPage() {
         </div>
 
         {/* Top Row - Key Operational Metrics */}
-        <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-          <UnifiedOpsPulse className="lg:col-span-2" />
-          <ChurnRiskCard />
+        <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+          <WidgetErrorBoundary>
+            <UnifiedOpsPulse className="lg:col-span-2" />
+          </WidgetErrorBoundary>
+          <WidgetErrorBoundary>
+            <ChurnRiskCard />
+          </WidgetErrorBoundary>
         </div>
 
         {/* Second Row - Financial & Forecast */}
-        <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-          <RevenueMarginCard />
-          <AIForecastCard />
-          <ComplianceRadar />
+        <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+          <WidgetErrorBoundary>
+            <RevenueMarginCard />
+          </WidgetErrorBoundary>
+          <WidgetErrorBoundary>
+            <AIForecastCard />
+          </WidgetErrorBoundary>
+          <WidgetErrorBoundary>
+            <ComplianceRadar />
+          </WidgetErrorBoundary>
         </div>
 
         {/* Third Row - Enterprise Clients */}
-        <div className="grid gap-6">
-          <TopEnterpriseClients />
+        <div className="grid gap-4">
+          <WidgetErrorBoundary>
+            <TopEnterpriseClients />
+          </WidgetErrorBoundary>
         </div>
       </div>
     </div>

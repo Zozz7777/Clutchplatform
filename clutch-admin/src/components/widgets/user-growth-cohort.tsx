@@ -49,7 +49,7 @@ export function UserGrowthCohort({ className = '' }: UserGrowthCohortProps) {
     };
 
     loadCohortData();
-  }, []);
+  }, [selectedPeriod]);
 
   const getFilteredCohorts = () => {
     if (!cohortData || !cohortData.cohorts || !Array.isArray(cohortData.cohorts)) return [];

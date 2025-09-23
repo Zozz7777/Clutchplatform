@@ -24,6 +24,7 @@ import EngagementHeatmap from "@/components/widgets/engagement-heatmap";
 import OnboardingCompletion from "@/components/widgets/onboarding-completion";
 import RoleDistribution from "@/components/widgets/role-distribution";
 import ChurnRiskCard from "@/components/widgets/churn-risk-card";
+import WidgetErrorBoundary from "@/components/widgets/widget-error-boundary";
 
 // Define User type locally since we're not using mock API
 interface User {
@@ -375,11 +376,19 @@ export default function UsersPage() {
         {/* All Users Tab */}
         <TabsContent value="all-users" className="space-y-4">
           {/* Analytics Widgets */}
-          <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
-            <UserGrowthCohort />
-            <EngagementHeatmap />
-            <OnboardingCompletion />
-            <RoleDistribution />
+          <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+            <WidgetErrorBoundary>
+              <UserGrowthCohort />
+            </WidgetErrorBoundary>
+            <WidgetErrorBoundary>
+              <EngagementHeatmap />
+            </WidgetErrorBoundary>
+            <WidgetErrorBoundary>
+              <OnboardingCompletion />
+            </WidgetErrorBoundary>
+            <WidgetErrorBoundary>
+              <RoleDistribution />
+            </WidgetErrorBoundary>
           </div>
 
           {/* Search and Filters */}

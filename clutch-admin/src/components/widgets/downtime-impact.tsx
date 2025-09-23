@@ -6,6 +6,7 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Progress } from '@/components/ui/progress';
 import { productionApi } from '@/lib/production-api';
+import { useLanguage } from '@/contexts/language-context';
 
 import { 
   Clock, 
@@ -46,7 +47,7 @@ interface DowntimeMetrics {
 }
 
 export function DowntimeImpact({ className = '' }: DowntimeImpactProps) {
-  const t = (key: string, params?: any) => key;
+  const { t } = useLanguage();
   const [downtimeMetrics, setDowntimeMetrics] = React.useState<DowntimeMetrics | null>(null);
   const [isLoading, setIsLoading] = React.useState(true);
 
