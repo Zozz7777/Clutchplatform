@@ -139,10 +139,10 @@ export function EngagementHeatmap({ className = '' }: EngagementHeatmapProps) {
       <CardHeader>
         <CardTitle className="flex items-center space-x-2">
           <BarChart3 className="h-5 w-5 text-primary" />
-          <span>Engagement Heatmap</span>
+          <span>{t('widgets.engagementHeatmap')}</span>
         </CardTitle>
         <CardDescription>
-          Shows feature usage by user segment
+          {t('widgets.showsFeatureUsage')}
         </CardDescription>
       </CardHeader>
       <CardContent className="space-y-6">

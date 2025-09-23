@@ -55,7 +55,11 @@ export function LanguageProvider({ children }: LanguageProviderProps) {
   const t = (key: string, params?: any) => {
     // Load translations using the reliable loader
     const translations = getTranslations(language);
-    console.log(`Loading translations for language: ${language}`, translations);
+    console.log(`Loading translations for language: ${language}`, {
+      translations,
+      hasVendorManagement: !!translations.vendorManagement,
+      vendorManagementKeys: translations.vendorManagement ? Object.keys(translations.vendorManagement) : 'N/A'
+    });
 
     // Fallback translations if loading fails
     const fallbackTranslations: Record<string, string> = {
@@ -1063,11 +1067,17 @@ export function LanguageProvider({ children }: LanguageProviderProps) {
     // Debug logging
     console.log(`Translation lookup for key "${key}":`, {
       language,
-      translations: Object.keys(translations),
+      translationsKeys: Object.keys(translations),
+      key,
       found: foundTranslation,
       fallback: fallbackTranslations[key],
       result: translation,
-      resultType: typeof translation
+      resultType: typeof translation,
+      stepByStep: key.split('.').map((part, i, arr) => {
+        const path = arr.slice(0, i + 1).join('.');
+        const value = getNestedValue(translations, path);
+        return { path, value, type: typeof value };
+      })
     });
     
     // Ensure we always return a string
