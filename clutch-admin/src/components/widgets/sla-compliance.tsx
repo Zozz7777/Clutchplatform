@@ -52,7 +52,7 @@ export function SLACompliance({ className = '' }: SLAComplianceProps) {
     const loadSLAData = async () => {
       try {
         // Get SLA compliance data from real backend API
-        const slaResponse = await productionApi.getSLAMetrics();
+        const slaResponse = await productionApi.getSLAMetrics().catch(() => null);
         
         if (slaResponse && slaResponse.data) {
           const slaMetrics = slaResponse.data;

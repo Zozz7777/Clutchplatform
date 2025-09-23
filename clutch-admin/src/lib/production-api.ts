@@ -782,7 +782,7 @@ export class ProductionApiService {
     try {
       const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'https://clutch-main-nk7x.onrender.com'}/api/v1/sales/leads`, {
         headers: {
-          'Authorization': `Bearer ${localStorage.getItem('token')}`,
+          'Authorization': `Bearer ${localStorage.getItem('clutch-admin-token')}`,
           'Content-Type': 'application/json'
         }
       });
@@ -803,7 +803,7 @@ export class ProductionApiService {
     try {
       const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'https://clutch-main-nk7x.onrender.com'}/api/v1/sales/deals`, {
         headers: {
-          'Authorization': `Bearer ${localStorage.getItem('token')}`,
+          'Authorization': `Bearer ${localStorage.getItem('clutch-admin-token')}`,
           'Content-Type': 'application/json'
         }
       });
@@ -824,7 +824,7 @@ export class ProductionApiService {
     try {
       const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'https://clutch-main-nk7x.onrender.com'}/api/v1/sales/pipeline`, {
         headers: {
-          'Authorization': `Bearer ${localStorage.getItem('token')}`,
+          'Authorization': `Bearer ${localStorage.getItem('clutch-admin-token')}`,
           'Content-Type': 'application/json'
         }
       });
@@ -845,7 +845,7 @@ export class ProductionApiService {
     try {
       const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'https://clutch-main-nk7x.onrender.com'}/api/v1/sales/contracts`, {
         headers: {
-          'Authorization': `Bearer ${localStorage.getItem('token')}`,
+          'Authorization': `Bearer ${localStorage.getItem('clutch-admin-token')}`,
           'Content-Type': 'application/json'
         }
       });
@@ -866,7 +866,7 @@ export class ProductionApiService {
     try {
       const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'https://clutch-main-nk7x.onrender.com'}/api/v1/partners`, {
         headers: {
-          'Authorization': `Bearer ${localStorage.getItem('token')}`,
+          'Authorization': `Bearer ${localStorage.getItem('clutch-admin-token')}`,
           'Content-Type': 'application/json'
         }
       });
@@ -887,7 +887,7 @@ export class ProductionApiService {
     try {
       const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'https://clutch-main-nk7x.onrender.com'}/api/v1/sales/communications`, {
         headers: {
-          'Authorization': `Bearer ${localStorage.getItem('token')}`,
+          'Authorization': `Bearer ${localStorage.getItem('clutch-admin-token')}`,
           'Content-Type': 'application/json'
         }
       });
@@ -908,7 +908,7 @@ export class ProductionApiService {
     try {
       const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'https://clutch-main-nk7x.onrender.com'}/api/v1/sales/activities`, {
         headers: {
-          'Authorization': `Bearer ${localStorage.getItem('token')}`,
+          'Authorization': `Bearer ${localStorage.getItem('clutch-admin-token')}`,
           'Content-Type': 'application/json'
         }
       });
@@ -929,7 +929,7 @@ export class ProductionApiService {
     try {
       const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'https://clutch-main-nk7x.onrender.com'}/api/v1/sales/performance/team`, {
         headers: {
-          'Authorization': `Bearer ${localStorage.getItem('token')}`,
+          'Authorization': `Bearer ${localStorage.getItem('clutch-admin-token')}`,
           'Content-Type': 'application/json'
         }
       });
@@ -950,7 +950,7 @@ export class ProductionApiService {
     try {
       const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'https://clutch-main-nk7x.onrender.com'}/api/v1/sales/reports?reportType=${reportType}`, {
         headers: {
-          'Authorization': `Bearer ${localStorage.getItem('token')}`,
+          'Authorization': `Bearer ${localStorage.getItem('clutch-admin-token')}`,
           'Content-Type': 'application/json'
         }
       });
@@ -972,7 +972,7 @@ export class ProductionApiService {
       const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'https://clutch-main-nk7x.onrender.com'}/api/v1/sales/leads`, {
         method: 'POST',
         headers: {
-          'Authorization': `Bearer ${localStorage.getItem('token')}`,
+          'Authorization': `Bearer ${localStorage.getItem('clutch-admin-token')}`,
           'Content-Type': 'application/json'
         },
         body: JSON.stringify(leadData)
@@ -995,7 +995,7 @@ export class ProductionApiService {
       const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'https://clutch-main-nk7x.onrender.com'}/api/v1/sales/leads/${leadId}`, {
         method: 'PATCH',
         headers: {
-          'Authorization': `Bearer ${localStorage.getItem('token')}`,
+          'Authorization': `Bearer ${localStorage.getItem('clutch-admin-token')}`,
           'Content-Type': 'application/json'
         },
         body: JSON.stringify(leadData)
@@ -1018,7 +1018,7 @@ export class ProductionApiService {
       const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'https://clutch-main-nk7x.onrender.com'}/api/v1/sales/leads/${leadId}`, {
         method: 'DELETE',
         headers: {
-          'Authorization': `Bearer ${localStorage.getItem('token')}`,
+          'Authorization': `Bearer ${localStorage.getItem('clutch-admin-token')}`,
           'Content-Type': 'application/json'
         }
       });
