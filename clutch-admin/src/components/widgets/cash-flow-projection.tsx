@@ -295,7 +295,7 @@ export function CashFlowProjection({ className = '' }: CashFlowProjectionProps) 
         <div className="space-y-3">
           <h4 className="text-sm font-medium text-foreground">Projection Scenarios</h4>
           <div className="space-y-2">
-            {cashFlowData.scenarios.map((scenario) => (
+            {(Array.isArray(cashFlowData.scenarios) ? cashFlowData.scenarios : []).map((scenario) => (
               <div key={scenario.scenario} className="flex items-center justify-between p-3 bg-muted/50 rounded-[0.625rem]-lg">
                 <div className="flex items-center space-x-3">
                   <div className="flex items-center justify-center w-8 h-8 bg-primary/10 rounded-full">
@@ -328,7 +328,7 @@ export function CashFlowProjection({ className = '' }: CashFlowProjectionProps) 
         <div className="space-y-3">
           <h4 className="text-sm font-medium text-foreground">Upcoming Payments</h4>
           <div className="space-y-2">
-            {cashFlowData.upcomingPayments.map((payment, index) => (
+            {(Array.isArray(cashFlowData.upcomingPayments) ? cashFlowData.upcomingPayments : []).map((payment, index) => (
               <div key={index} className="flex items-center justify-between p-3 bg-muted/50 rounded-[0.625rem]-lg">
                 <div className="flex items-center space-x-3">
                   <div className={`p-2 rounded-full ${

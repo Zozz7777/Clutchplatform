@@ -236,7 +236,7 @@ export function OverdueInvoices({ className = '' }: OverdueInvoicesProps) {
         <div className="space-y-3">
           <h4 className="text-sm font-medium text-foreground">Overdue Invoices</h4>
           <div className="space-y-2 max-h-64 overflow-y-auto">
-            {overdueData.invoices.map((invoice) => (
+            {(Array.isArray(overdueData.invoices) ? overdueData.invoices : []).map((invoice) => (
               <div key={invoice.id} className="flex items-center justify-between p-3 bg-muted/50 rounded-[0.625rem]-lg">
                 <div className="flex items-center space-x-3">
                   <div className="flex items-center justify-center w-8 h-8 bg-destructive/10 rounded-full">

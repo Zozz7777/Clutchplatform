@@ -255,7 +255,7 @@ export function ARPUARPPU({ className = '' }: ARPUARPPUProps) {
         <div className="space-y-3">
           <h4 className="text-sm font-medium text-foreground">Segment Breakdown</h4>
           <div className="space-y-2">
-            {arpuData.segmentBreakdown.map((segment) => (
+            {(Array.isArray(arpuData.segmentBreakdown) ? arpuData.segmentBreakdown : []).map((segment) => (
               <div key={segment.segment} className="flex items-center justify-between p-3 bg-muted/50 rounded-[0.625rem]-lg">
                 <div className="flex items-center space-x-3">
                   <div className="flex items-center justify-center w-8 h-8 bg-primary/10 rounded-full">

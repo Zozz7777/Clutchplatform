@@ -563,7 +563,7 @@ export default function FinancePage() {
             </CardHeader>
             <CardContent>
               <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-                {pricingPlans.map((plan) => (
+                {(Array.isArray(pricingPlans) ? pricingPlans : []).map((plan) => (
                   <Card key={plan.id} className={plan.popular ? "ring-2 ring-primary" : ""}>
                     <CardHeader>
                       <div className="flex items-center justify-between">
@@ -581,7 +581,7 @@ export default function FinancePage() {
                     </CardHeader>
                     <CardContent className="space-y-4">
                       <div className="space-y-2">
-                        {plan.features.map((feature, index) => (
+                        {(Array.isArray(plan.features) ? plan.features : []).map((feature, index) => (
                           <div key={index} className="flex items-center space-x-2">
                             <Check className="h-4 w-4 text-success" />
                             <span className="text-sm">{feature}</span>
