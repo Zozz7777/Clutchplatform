@@ -276,6 +276,7 @@ app.use('/api/v1/audit-trail', auditTrailRoutes);
 app.use('/api/v1/reports', reportsRoutes);
 app.use('/api/v1/rbac', rbacRoutes);
 app.use('/api/v1/analytics', analyticsRoutes);
+app.use('/api/v1/business-intelligence', businessIntelligenceRoutes);
 app.use('/api/v1/ai', aiRoutes);
 app.use('/api/v1/system-health', systemHealthRoutes);
 app.use('/api/v1/feature-flags', featureFlagsRoutes);
