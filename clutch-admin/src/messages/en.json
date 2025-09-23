@@ -1044,7 +1044,8 @@
       "emailService": "Email Service",
       "loadBalancer": "Load Balancer",
       "queueWorkers": "Queue Workers",
-      "backgroundJobs": "Background Jobs"
+      "backgroundJobs": "Background Jobs",
+      "unknown": "Unknown Service"
     },
     "externalServices": {
       "awsS3": "AWS S3",
@@ -1111,9 +1112,6 @@
           "good": "Good",
           "poor": "Poor"
         },
-        "services": {
-          "unknown": "Unknown Service"
-        },
         "incidents": {
           "systemIncident": "System Incident",
           "systemError": "System Error"
@@ -1125,6 +1123,17 @@
         "causes": {
           "unknownCause": "Unknown Cause",
           "systemError": "System Error"
+        },
+        "sla": {
+          "overallCompliance": "Overall Compliance",
+          "totalIncidents": "Total Incidents",
+          "overallSlaCompliance": "Overall SLA Compliance",
+          "statusDistribution": "Status Distribution",
+          "compliant": "Compliant",
+          "warning": "Warning",
+          "breach": "Breach",
+          "serviceMetrics": "Service Metrics",
+          "meanTimeToRecovery": "Mean Time to Recovery"
         }
   }
 }

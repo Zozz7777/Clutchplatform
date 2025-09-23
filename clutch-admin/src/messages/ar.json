@@ -3849,7 +3849,8 @@
       "emailService": "خدمة البريد الإلكتروني",
       "loadBalancer": "موزع التحميل",
       "queueWorkers": "عمال الطوابير",
-      "backgroundJobs": "المهام الخلفية"
+      "backgroundJobs": "المهام الخلفية",
+      "unknown": "خدمة غير معروفة"
     },
     "externalServices": {
       "awsS3": "AWS S3",
@@ -3911,9 +3912,6 @@
           "good": "جيد",
           "poor": "ضعيف"
         },
-        "services": {
-          "unknown": "خدمة غير معروفة"
-        },
         "incidents": {
           "systemIncident": "حادث في النظام",
           "systemError": "خطأ في النظام"
@@ -3925,6 +3923,17 @@
         "causes": {
           "unknownCause": "سبب غير معروف",
           "systemError": "خطأ في النظام"
+        },
+        "sla": {
+          "overallCompliance": "الامتثال العام",
+          "totalIncidents": "إجمالي الحوادث",
+          "overallSlaCompliance": "امتثال SLA العام",
+          "statusDistribution": "توزيع الحالة",
+          "compliant": "متوافق",
+          "warning": "تحذير",
+          "breach": "انتهاك",
+          "serviceMetrics": "مقاييس الخدمة",
+          "meanTimeToRecovery": "متوسط وقت الاسترداد"
         }
   }
 }
