@@ -344,10 +344,10 @@ export default function FinancePage() {
               </CardHeader>
               <CardContent>
                 <div className="text-2xl font-bold font-sans">
-                  {invoices.filter(i => i.status === 'overdue').length}
+                  {(Array.isArray(invoices) ? invoices : []).filter(i => i.status === 'overdue').length}
                 </div>
                 <p className="text-xs text-muted-foreground font-sans">
-                  {formatCurrency(invoices.filter(i => i.status === 'overdue').reduce((sum, i) => sum + i.amount, 0))} total
+                  {formatCurrency((Array.isArray(invoices) ? invoices : []).filter(i => i.status === 'overdue').reduce((sum, i) => sum + i.amount, 0))} total
                 </p>
               </CardContent>
             </Card>
