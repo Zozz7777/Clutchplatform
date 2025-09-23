@@ -302,19 +302,19 @@ export function JobPostingOverlay({ isOpen, onClose, onSuccess, editingJob }: Jo
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50">
-      <div className="bg-background rounded-[0.625rem] max-w-6xl w-full max-h-[90vh] overflow-hidden">
+    <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-[1200]">
+      <div className="bg-card rounded-[0.625rem] max-w-6xl w-full max-h-[90vh] overflow-hidden shadow-md">
         {/* Header */}
-        <div className="flex items-center justify-between p-6 border-b">
+        <div className="flex items-center justify-between p-6 border-b border-border">
           <div>
-            <h2 className="text-2xl font-bold">
+            <h2 className="text-3xl font-bold text-foreground" style={{ fontFamily: 'Roboto, ui-sans-serif, sans-serif, system-ui' }}>
               {editingJob ? 'Edit Job Posting' : 'Create Job Posting'}
             </h2>
-            <p className="text-muted-foreground">
+            <p className="text-muted-foreground text-base mt-1" style={{ fontFamily: 'Roboto, ui-sans-serif, sans-serif, system-ui' }}>
               {editingJob ? 'Update job details and settings' : 'Create a new job posting for your team'}
             </p>
           </div>
-          <Button variant="ghost" size="icon" onClick={onClose}>
+          <Button variant="ghost" size="icon" onClick={onClose} className="text-foreground hover:bg-muted">
             <X className="h-4 w-4" />
           </Button>
         </div>
