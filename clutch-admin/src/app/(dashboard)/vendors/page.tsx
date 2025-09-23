@@ -186,7 +186,7 @@ interface Communication {
 }
 
 export default function VendorManagementPage() {
-  const { t } = useLanguage();
+  const { t, language } = useLanguage();
   const [vendors, setVendors] = useState<Vendor[]>([]);
   const [contracts, setContracts] = useState<Contract[]>([]);
   const [communications, setCommunications] = useState<Communication[]>([]);
@@ -607,7 +607,7 @@ export default function VendorManagementPage() {
             <DollarSign className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{formatCurrency(totalContractValue)}</div>
+            <div className="text-2xl font-bold">{formatCurrency(totalContractValue, "EGP", language === 'ar' ? 'ar-EG' : 'en-US')}</div>
             <p className="text-xs text-muted-foreground">
               {t('vendorManagement.acrossAllContracts')}
             </p>
@@ -751,7 +751,7 @@ export default function VendorManagementPage() {
                         <div>
                           <p className="text-sm font-medium">{t('vendorManagement.totalValue')}</p>
                           <p className="text-sm text-muted-foreground">
-                            {formatCurrency(vendor.contracts.totalValue)}
+                            {formatCurrency(vendor.contracts.totalValue, "EGP", language === 'ar' ? 'ar-EG' : 'en-US')}
                           </p>
                         </div>
                         <div>
@@ -852,7 +852,7 @@ export default function VendorManagementPage() {
                   </div>
                 </div>
                 <div className="text-right">
-                  <p className="font-medium">{formatCurrency(contract.value)}</p>
+                  <p className="font-medium">{formatCurrency(contract.value, "EGP", language === 'ar' ? 'ar-EG' : 'en-US')}</p>
                   <Badge className={contract.status === "active" ? "bg-primary/10 text-primary-foreground" : "bg-muted text-muted-foreground"}>
                     {contract.status}
                   </Badge>

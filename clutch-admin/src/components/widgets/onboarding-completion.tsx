@@ -126,9 +126,9 @@ export function OnboardingCompletion({ className = '' }: OnboardingCompletionPro
         <CardHeader>
           <CardTitle className="flex items-center space-x-2">
             <Target className="h-5 w-5 text-success" />
-            <span>Onboarding Completion</span>
+            <span>{t('widgets.onboardingCompletion')}</span>
           </CardTitle>
-          <CardDescription>Unable to load onboarding data</CardDescription>
+          <CardDescription>{t('users.unableToLoadOnboardingData')}</CardDescription>
         </CardHeader>
       </Card>
     );
@@ -139,15 +139,15 @@ export function OnboardingCompletion({ className = '' }: OnboardingCompletionPro
 
   return (
     <Card className={className}>
-      <CardHeader>
-        <CardTitle className="flex items-center space-x-2">
-          <Target className="h-5 w-5 text-success" />
-          <span>Onboarding Completion</span>
-        </CardTitle>
-        <CardDescription>
-          % of new users completing onboarding flows
-        </CardDescription>
-      </CardHeader>
+        <CardHeader>
+          <CardTitle className="flex items-center space-x-2">
+            <Target className="h-5 w-5 text-success" />
+            <span>{t('widgets.onboardingCompletion')}</span>
+          </CardTitle>
+          <CardDescription>
+            {t('widgets.percentageOfNewUsersCompletingOnboarding')}
+          </CardDescription>
+        </CardHeader>
       <CardContent className="space-y-6">
         {/* Overall Completion */}
         <div className="text-center p-4 bg-muted/50 rounded-[0.625rem]-lg">
@@ -160,7 +160,7 @@ export function OnboardingCompletion({ className = '' }: OnboardingCompletionPro
               {getCompletionLevel(onboardingData.completionRate)}
             </Badge>
           </div>
-          <p className="text-sm text-muted-foreground">Overall Completion Rate</p>
+          <p className="text-sm text-muted-foreground">{t('widgets.overallCompletionRate')}</p>
           <div className="mt-3">
             <Progress value={onboardingData.completionRate} className="h-2" />
           </div>
@@ -171,7 +171,7 @@ export function OnboardingCompletion({ className = '' }: OnboardingCompletionPro
           <div className="text-center p-3 bg-primary/10 rounded-[0.625rem]-lg">
             <Users className="h-5 w-5 text-primary mx-auto mb-1" />
             <p className="text-lg font-bold text-primary">{onboardingData.total}</p>
-            <p className="text-xs text-muted-foreground">{'Total Users'}</p>
+            <p className="text-xs text-muted-foreground">{t('widgets.totalUsers')}</p>
           </div>
           <div className="text-center p-3 bg-success/10 rounded-[0.625rem]-lg">
             <CheckCircle className="h-5 w-5 text-success mx-auto mb-1" />
