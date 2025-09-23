@@ -60,25 +60,7 @@ router.get('/health', async (req, res) => {
   }
 });
 
-// GET /api/v1/system/api-performance - Get API performance metrics
-router.get('/api-performance', async (req, res) => {
-  try {
-    const performanceData = await getAPIPerformanceData();
-    
-    res.json({
-      success: true,
-      data: performanceData,
-      timestamp: new Date()
-    });
-  } catch (error) {
-    console.error('Error fetching API performance:', error);
-    res.status(500).json({
-      success: false,
-      message: 'Failed to fetch API performance',
-      error: process.env.NODE_ENV === 'development' ? error.message : undefined
-    });
-  }
-});
+// Removed duplicate api-performance route - using the one below
 
 // GET /api/v1/system-health/detailed - Get detailed system health
 router.get('/detailed', checkRole(['head_administrator']), async (req, res) => {
@@ -100,125 +82,9 @@ router.get('/detailed', checkRole(['head_administrator']), async (req, res) => {
   }
 });
 
-// GET /api/v1/system/alerts - Get system alerts
-router.get('/alerts', checkRole(['head_administrator', 'platform_admin', 'admin']), async (req, res) => {
-  try {
-    const { 
-      page = 1, 
-      limit = 50, 
-      severity, 
-      status, 
-      startDate, 
-      endDate 
-    } = req.query;
-    const skip = (page - 1) * limit;
-    
-    const alertsCollection = await getCollection('system_alerts');
-    
-    // Build query
-    const query = {};
-    if (severity) query.severity = severity;
-    if (status) query.status = status;
-    if (startDate && endDate) {
-      query.timestamp = {
-        $gte: new Date(startDate),
-        $lte: new Date(endDate)
-      };
-    }
-    
-    const alerts = await alertsCollection
-      .find(query)
-      .sort({ timestamp: -1 })
-      .skip(skip)
-      .limit(parseInt(limit))
-      .toArray();
-    
-    const total = await alertsCollection.countDocuments(query);
-    
-    res.json({
-      success: true,
-      data: {
-        alerts,
-        pagination: {
-          page: parseInt(page),
-          limit: parseInt(limit),
-          total,
-          pages: Math.ceil(total / limit)
-        }
-      },
-      message: 'System alerts retrieved successfully',
-      timestamp: new Date().toISOString()
-    });
-  } catch (error) {
-    console.error('Get system alerts error:', error);
-    res.status(500).json({
-      success: false,
-      error: 'GET_SYSTEM_ALERTS_FAILED',
-      message: 'Failed to retrieve system alerts',
-      timestamp: new Date().toISOString()
-    });
-  }
-});
+// Removed duplicate alerts route - using the one below
 
-// GET /api/v1/system/logs - Get system logs
-router.get('/logs', checkRole(['head_administrator', 'platform_admin', 'admin']), async (req, res) => {
-  try {
-    const { 
-      page = 1, 
-      limit = 50, 
-      level, 
-      service, 
-      startDate, 
-      endDate 
-    } = req.query;
-    const skip = (page - 1) * limit;
-    
-    const logsCollection = await getCollection('system_logs');
-    
-    // Build query
-    const query = {};
-    if (level) query.level = level;
-    if (service) query.service = service;
-    if (startDate && endDate) {
-      query.timestamp = {
-        $gte: new Date(startDate),
-        $lte: new Date(endDate)
-      };
-    }
-    
-    const logs = await logsCollection
-      .find(query)
-      .sort({ timestamp: -1 })
-      .skip(skip)
-      .limit(parseInt(limit))
-      .toArray();
-    
-    const total = await logsCollection.countDocuments(query);
-    
-    res.json({
-      success: true,
-      data: {
-        logs,
-        pagination: {
-          page: parseInt(page),
-          limit: parseInt(limit),
-          total,
-          pages: Math.ceil(total / limit)
-        }
-      },
-      message: 'System logs retrieved successfully',
-      timestamp: new Date().toISOString()
-    });
-  } catch (error) {
-    console.error('Get system logs error:', error);
-    res.status(500).json({
-      success: false,
-      error: 'GET_SYSTEM_LOGS_FAILED',
-      message: 'Failed to retrieve system logs',
-      timestamp: new Date().toISOString()
-    });
-  }
-});
+// Removed duplicate logs route - using the one below
 
 // GET /api/v1/system-health/api-performance - Get API performance metrics
 router.get('/api-performance', checkRole(['head_administrator']), async (req, res) => {
@@ -280,25 +146,7 @@ router.get('/database', checkRole(['head_administrator']), async (req, res) => {
   }
 });
 
-// GET /api/v1/system-health/services - Get external services health
-router.get('/services', checkRole(['head_administrator']), async (req, res) => {
-  try {
-    const servicesHealthData = await getServicesHealthData();
-    
-    res.json({
-      success: true,
-      data: servicesHealthData,
-      timestamp: new Date()
-    });
-  } catch (error) {
-    console.error('Error fetching services health:', error);
-    res.status(500).json({
-      success: false,
-      message: 'Failed to fetch services health',
-      error: process.env.NODE_ENV === 'development' ? error.message : undefined
-    });
-  }
-});
+// Removed duplicate services route - using the one below
 
 // GET /api/v1/system-health/logs - Get system logs
 router.get('/logs', checkRole(['head_administrator']), async (req, res) => {
