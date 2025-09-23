@@ -203,14 +203,14 @@ export function IncidentCost({ className = '' }: IncidentCostProps) {
             <p className="text-lg font-bold text-destructive">
               ${incidentData.totalCost.toLocaleString()}
             </p>
-            <p className="text-xs text-muted-foreground">Total Cost</p>
+            <p className="text-xs text-muted-foreground">{t('systemHealth.widgetLabels.totalCost')}</p>
           </div>
           <div className="text-center p-3 bg-warning/10 rounded-[0.625rem]-lg">
             <Clock className="h-5 w-5 text-warning mx-auto mb-1" />
             <p className="text-lg font-bold text-warning">
               {formatDuration(incidentData.totalDowntime)}
             </p>
-            <p className="text-xs text-muted-foreground">Total Downtime</p>
+            <p className="text-xs text-muted-foreground">{t('systemHealth.widgetLabels.totalDowntime')}</p>
           </div>
         </div>
 
@@ -222,10 +222,10 @@ export function IncidentCost({ className = '' }: IncidentCostProps) {
               ${incidentData.averageCost.toLocaleString()}
             </span>
             <Badge className="bg-destructive/10 text-red-800">
-              Average
+              {t('common.average')}
             </Badge>
           </div>
-          <p className="text-sm text-muted-foreground">Average Cost per Incident</p>
+          <p className="text-sm text-muted-foreground">{t('systemHealth.widgetLabels.averageCostPerIncident')}</p>
           <div className="mt-3">
             <Progress value={Math.min((incidentData.averageCost / 20000) * 100, 100)} className="h-2" />
           </div>
@@ -233,38 +233,38 @@ export function IncidentCost({ className = '' }: IncidentCostProps) {
 
         {/* Severity Distribution */}
         <div className="space-y-3">
-          <h4 className="text-sm font-medium text-foreground">Severity Distribution</h4>
+          <h4 className="text-sm font-medium text-foreground">{t('systemHealth.widgetLabels.severityDistribution')}</h4>
           <div className="grid grid-cols-4 gap-2">
             <div className="text-center p-2 bg-destructive/10 rounded-[0.625rem]">
               <p className="text-sm font-bold text-destructive">
                 {incidentData.severityDistribution.critical || 0}
               </p>
-              <p className="text-xs text-muted-foreground">Critical</p>
+              <p className="text-xs text-muted-foreground">{t('systemHealth.severity.critical')}</p>
             </div>
             <div className="text-center p-2 bg-warning/10 rounded-[0.625rem]">
               <p className="text-sm font-bold text-warning">
                 {incidentData.severityDistribution.high || 0}
               </p>
-              <p className="text-xs text-muted-foreground">High</p>
+              <p className="text-xs text-muted-foreground">{t('systemHealth.severity.high')}</p>
             </div>
             <div className="text-center p-2 bg-warning/10 rounded-[0.625rem]">
               <p className="text-sm font-bold text-warning">
                 {incidentData.severityDistribution.medium || 0}
               </p>
-              <p className="text-xs text-muted-foreground">Medium</p>
+              <p className="text-xs text-muted-foreground">{t('systemHealth.severity.medium')}</p>
             </div>
             <div className="text-center p-2 bg-success/10 rounded-[0.625rem]">
               <p className="text-sm font-bold text-success">
                 {incidentData.severityDistribution.low || 0}
               </p>
-              <p className="text-xs text-muted-foreground">Low</p>
+              <p className="text-xs text-muted-foreground">{t('systemHealth.severity.low')}</p>
             </div>
           </div>
         </div>
 
         {/* Recent Incidents */}
         <div className="space-y-3">
-          <h4 className="text-sm font-medium text-foreground">Recent Incidents</h4>
+          <h4 className="text-sm font-medium text-foreground">{t('systemHealth.widgetLabels.recentIncidents')}</h4>
           <div className="space-y-2 max-h-64 overflow-y-auto">
             {incidentData.incidents
               .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
@@ -305,7 +305,7 @@ export function IncidentCost({ className = '' }: IncidentCostProps) {
 
         {/* Cost by Severity */}
         <div className="space-y-3">
-          <h4 className="text-sm font-medium text-foreground">Cost by Severity</h4>
+          <h4 className="text-sm font-medium text-foreground">{t('systemHealth.widgetLabels.costBySeverity')}</h4>
           <div className="space-y-2">
             {Object.entries(incidentData.severityDistribution).map(([severity, count]) => {
               const severityIncidents = incidentData.incidents.filter(i => i.severity === severity);
@@ -331,11 +331,11 @@ export function IncidentCost({ className = '' }: IncidentCostProps) {
         <div className="flex space-x-2 pt-2">
           <Button variant="outline" size="sm" className="flex-1">
             <Eye className="h-4 w-4 mr-2" />
-            View Details
+            {t('systemHealth.widgetLabels.viewDetails')}
           </Button>
           <Button variant="outline" size="sm" className="flex-1">
             <Download className="h-4 w-4 mr-2" />
-            Export Report
+            {t('systemHealth.widgetLabels.exportReport')}
           </Button>
         </div>
 

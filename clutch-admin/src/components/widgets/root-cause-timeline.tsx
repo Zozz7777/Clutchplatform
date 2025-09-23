@@ -173,12 +173,12 @@ export function RootCauseTimeline({ className = '' }: RootCauseTimelineProps) {
           <div className="text-center p-3 bg-info/10 rounded-[0.625rem]">
             <AlertTriangle className="h-5 w-5 text-info mx-auto mb-1" />
             <p className="text-lg font-bold text-info">{rootCauseData.totalIncidents}</p>
-            <p className="text-xs text-muted-foreground">Total Incidents</p>
+            <p className="text-xs text-muted-foreground">{t('systemHealth.widgetLabels.totalIncidents')}</p>
           </div>
           <div className="text-center p-3 bg-success/10 rounded-[0.625rem]">
             <Clock className="h-5 w-5 text-success mx-auto mb-1" />
             <p className="text-lg font-bold text-success">{rootCauseData.averageResolution}m</p>
-            <p className="text-xs text-muted-foreground">Avg Resolution</p>
+            <p className="text-xs text-muted-foreground">{t('systemHealth.widgetLabels.avgResolution')}</p>
           </div>
         </div>
 
@@ -201,7 +201,7 @@ export function RootCauseTimeline({ className = '' }: RootCauseTimelineProps) {
 
         {/* Root Causes */}
         <div className="space-y-3">
-          <h4 className="text-sm font-medium text-foreground">Root Causes</h4>
+          <h4 className="text-sm font-medium text-foreground">{t('systemHealth.widgetLabels.rootCauses')}</h4>
           <div className="space-y-2">
             {rootCauseData.causes.map((cause, index) => {
               const TrendIcon = getTrendIcon(cause.trend);
@@ -242,7 +242,7 @@ export function RootCauseTimeline({ className = '' }: RootCauseTimelineProps) {
 
         {/* Frequency Distribution */}
         <div className="space-y-3">
-          <h4 className="text-sm font-medium text-foreground">Frequency Distribution</h4>
+          <h4 className="text-sm font-medium text-foreground">{t('systemHealth.widgetLabels.frequencyDistribution')}</h4>
           <div className="space-y-2">
             {rootCauseData.causes.map((cause) => (
               <div key={cause.id} className="space-y-1">
@@ -258,7 +258,7 @@ export function RootCauseTimeline({ className = '' }: RootCauseTimelineProps) {
 
         {/* Resolution Timeline */}
         <div className="space-y-3">
-          <h4 className="text-sm font-medium text-foreground">Recent Resolutions</h4>
+          <h4 className="text-sm font-medium text-foreground">{t('systemHealth.widgetLabels.recentResolutions')}</h4>
           <div className="space-y-2">
             {rootCauseData.causes
               .sort((a, b) => new Date(b.lastOccurrence).getTime() - new Date(a.lastOccurrence).getTime())

@@ -187,18 +187,18 @@ export function ErrorDistribution({ className = '' }: ErrorDistributionProps) {
           <div className="text-center p-3 bg-destructive/10 rounded-[0.625rem]-lg">
             <Bug className="h-5 w-5 text-destructive mx-auto mb-1" />
             <p className="text-lg font-bold text-destructive">{errorData.totalErrors}</p>
-            <p className="text-xs text-muted-foreground">Total Errors</p>
+            <p className="text-xs text-muted-foreground">{t('systemHealth.widgetLabels.totalErrors')}</p>
           </div>
           <div className="text-center p-3 bg-warning/10 rounded-[0.625rem]-lg">
             <AlertTriangle className="h-5 w-5 text-warning mx-auto mb-1" />
             <p className="text-lg font-bold text-warning">{errorData.criticalErrors}</p>
-            <p className="text-xs text-muted-foreground">Critical Errors</p>
+            <p className="text-xs text-muted-foreground">{t('systemHealth.widgetLabels.criticalErrors')}</p>
           </div>
         </div>
 
         {/* Error Types */}
         <div className="space-y-3">
-          <h4 className="text-sm font-medium text-foreground">Error Types</h4>
+          <h4 className="text-sm font-medium text-foreground">{t('systemHealth.widgetLabels.errorTypes')}</h4>
           <div className="space-y-2">
             {errorData.errors.map((error, index) => {
               const TrendIcon = getTrendIcon(error.trend);
@@ -239,7 +239,7 @@ export function ErrorDistribution({ className = '' }: ErrorDistributionProps) {
 
         {/* Error Distribution Chart */}
         <div className="space-y-3">
-          <h4 className="text-sm font-medium text-foreground">Error Distribution</h4>
+          <h4 className="text-sm font-medium text-foreground">{t('systemHealth.widgetLabels.errorDistribution')}</h4>
           <div className="space-y-2">
             {errorData.errors.map((error) => (
               <div key={error.type} className="space-y-1">
@@ -255,7 +255,7 @@ export function ErrorDistribution({ className = '' }: ErrorDistributionProps) {
 
         {/* Recent Errors */}
         <div className="space-y-3">
-          <h4 className="text-sm font-medium text-foreground">Recent Errors</h4>
+          <h4 className="text-sm font-medium text-foreground">{t('systemHealth.widgetLabels.recentErrors')}</h4>
           <div className="space-y-2">
             {errorData.errors
               .sort((a, b) => new Date(b.lastOccurrence).getTime() - new Date(a.lastOccurrence).getTime())

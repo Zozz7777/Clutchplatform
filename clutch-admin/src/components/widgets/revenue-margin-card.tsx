@@ -284,8 +284,8 @@ export function RevenueMarginCard({ className = '' }: RevenueMarginCardProps) {
             {marginData.margin < 15 && (
 <li>• {t('widgets.marginNeedsImprovement')}</li>
             )}
-            <li>• Fleet operations represent {(costBreakdown[0].percentage).toFixed(0)}% of total costs</li>
-            <li>• Infrastructure costs are stable at {marginData.breakdown.infrastructure.toLocaleString()} EGP/month</li>
+<li>• {t('widgets.fleetOperationsRepresent', { percentage: costBreakdown[0].percentage.toFixed(0) })}</li>
+            <li>• {t('widgets.infrastructureCostsStable', { amount: marginData.breakdown.infrastructure.toLocaleString() })}</li>
           </ul>
         </div>
       </CardContent>
