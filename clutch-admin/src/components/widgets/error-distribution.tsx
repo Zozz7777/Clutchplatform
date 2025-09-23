@@ -281,11 +281,11 @@ export function ErrorDistribution({ className = '' }: ErrorDistributionProps) {
         <div className="flex space-x-2 pt-2">
           <Button variant="outline" size="sm" className="flex-1">
             <Eye className="h-4 w-4 mr-2" />
-            View Details
+            {t('systemHealth.widgetLabels.viewDetails')}
           </Button>
           <Button variant="outline" size="sm" className="flex-1">
             <Download className="h-4 w-4 mr-2" />
-            Export Report
+            {t('systemHealth.widgetLabels.exportReport')}
           </Button>
         </div>
 

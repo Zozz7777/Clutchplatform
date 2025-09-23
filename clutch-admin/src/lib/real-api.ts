@@ -411,18 +411,22 @@ export class RealApiService {
   async getSystemHealth(): Promise<Record<string, unknown>> {
     return withErrorHandling(
       async () => {
-        const response = await apiService.makeRequest<Record<string, unknown>>("/api/v1/system/health");
+        // Try the correct backend endpoint first
+        const response = await apiService.makeRequest<Record<string, unknown>>("/api/v1/system-health");
         return handleApiResponse(response, 'getSystemHealth', {});
       },
       'getSystemHealth',
-      { fallbackValue: {}, showToast: false }
+      { 
+        fallbackValue: {}, 
+        showToast: false 
+      }
     )();
   }
 
   async getAPIPerformance(): Promise<Record<string, unknown>> {
     return withErrorHandling(
       async () => {
-        const response = await apiService.makeRequest<Record<string, unknown>>("/api/v1/system-performance");
+        const response = await apiService.makeRequest<Record<string, unknown>>("/api/v1/system-health/api-performance");
         return handleApiResponse(response, 'getAPIPerformance', {});
       },
       'getAPIPerformance',
