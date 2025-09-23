@@ -267,7 +267,7 @@ export function RootCauseTimeline({ className = '' }: RootCauseTimelineProps) {
         <div className="space-y-3">
           <h4 className="text-sm font-medium text-foreground">{t('systemHealth.widgetLabels.rootCauses')}</h4>
           <div className="space-y-2">
-            {rootCauseData.causes.map((cause, index) => {
+            {(Array.isArray(rootCauseData.causes) ? rootCauseData.causes : []).map((cause, index) => {
               const TrendIcon = getTrendIcon(cause.trend);
               
               return (
@@ -308,7 +308,7 @@ export function RootCauseTimeline({ className = '' }: RootCauseTimelineProps) {
         <div className="space-y-3">
           <h4 className="text-sm font-medium text-foreground">{t('systemHealth.widgetLabels.frequencyDistribution')}</h4>
           <div className="space-y-2">
-            {rootCauseData.causes.map((cause) => (
+            {(Array.isArray(rootCauseData.causes) ? rootCauseData.causes : []).map((cause) => (
               <div key={cause.id} className="space-y-1">
                 <div className="flex justify-between text-sm">
                   <span className="text-muted-foreground">{cause.category}</span>

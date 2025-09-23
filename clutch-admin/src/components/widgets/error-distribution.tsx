@@ -244,7 +244,7 @@ export function ErrorDistribution({ className = '' }: ErrorDistributionProps) {
         <div className="space-y-3">
           <h4 className="text-sm font-medium text-foreground">{t('systemHealth.widgetLabels.errorTypes')}</h4>
           <div className="space-y-2">
-            {errorData.errors.map((error, index) => {
+            {(Array.isArray(errorData.errors) ? errorData.errors : []).map((error, index) => {
               const TrendIcon = getTrendIcon(error.trend);
               
               return (
@@ -285,7 +285,7 @@ export function ErrorDistribution({ className = '' }: ErrorDistributionProps) {
         <div className="space-y-3">
           <h4 className="text-sm font-medium text-foreground">{t('systemHealth.widgetLabels.errorDistribution')}</h4>
           <div className="space-y-2">
-            {errorData.errors.map((error) => (
+            {(Array.isArray(errorData.errors) ? errorData.errors : []).map((error) => (
               <div key={error.type} className="space-y-1">
                 <div className="flex justify-between text-sm">
                   <span className="text-muted-foreground">{error.type}</span>

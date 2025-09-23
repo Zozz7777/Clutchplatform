@@ -415,7 +415,7 @@ export default function SystemHealthPage() {
                     </TableRow>
                   </TableHeader>
                   <TableBody>
-                    {services.map((service) => (
+                    {(Array.isArray(services) ? services : []).map((service) => (
                       <TableRow key={service.name}>
                         <TableCell>
                           <div className="flex items-center space-x-3">
@@ -562,7 +562,7 @@ export default function SystemHealthPage() {
                     </TableRow>
                   </TableHeader>
                   <TableBody>
-                    {performanceMetrics?.endpoints.map((endpoint, index) => (
+                    {(Array.isArray(performanceMetrics?.endpoints) ? performanceMetrics.endpoints : []).map((endpoint, index) => (
                       <TableRow key={index}>
                         <TableCell>
                           <code className="text-sm bg-muted px-2 py-1 rounded">
@@ -619,7 +619,7 @@ export default function SystemHealthPage() {
                     </TableRow>
                   </TableHeader>
                   <TableBody>
-                    {incidents.map((incident) => (
+                    {(Array.isArray(incidents) ? incidents : []).map((incident) => (
                       <TableRow key={incident.id}>
                         <TableCell>
                           <div>
@@ -710,7 +710,7 @@ export default function SystemHealthPage() {
                     </TableRow>
                   </TableHeader>
                   <TableBody>
-                    {apiAnalytics.map((api) => (
+                    {(Array.isArray(apiAnalytics) ? apiAnalytics : []).map((api) => (
                       <TableRow key={`${api.endpoint}-${api.method}`}>
                         <TableCell>
                           <code className="text-sm bg-muted px-2 py-1 rounded">

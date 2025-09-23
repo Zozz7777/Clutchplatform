@@ -777,6 +777,264 @@ export class ProductionApiService {
     }
   }
 
+  // Sales APIs
+  async getLeads() {
+    try {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'https://clutch-main-nk7x.onrender.com'}/api/v1/sales/leads`, {
+        headers: {
+          'Authorization': `Bearer ${localStorage.getItem('token')}`,
+          'Content-Type': 'application/json'
+        }
+      });
+      
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      
+      const data = await response.json();
+      return { success: true, leads: data.leads || [] };
+    } catch (error) {
+      logger.error("Failed to fetch leads:", error);
+      return { success: false, message: "Failed to load leads" };
+    }
+  }
+
+  async getDeals() {
+    try {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'https://clutch-main-nk7x.onrender.com'}/api/v1/sales/deals`, {
+        headers: {
+          'Authorization': `Bearer ${localStorage.getItem('token')}`,
+          'Content-Type': 'application/json'
+        }
+      });
+      
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      
+      const data = await response.json();
+      return { success: true, deals: data.deals || [] };
+    } catch (error) {
+      logger.error("Failed to fetch deals:", error);
+      return { success: false, message: "Failed to load deals" };
+    }
+  }
+
+  async getPipeline() {
+    try {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'https://clutch-main-nk7x.onrender.com'}/api/v1/sales/pipeline`, {
+        headers: {
+          'Authorization': `Bearer ${localStorage.getItem('token')}`,
+          'Content-Type': 'application/json'
+        }
+      });
+      
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      
+      const data = await response.json();
+      return { success: true, pipeline: data.pipeline || [] };
+    } catch (error) {
+      logger.error("Failed to fetch pipeline:", error);
+      return { success: false, message: "Failed to load pipeline" };
+    }
+  }
+
+  async getContracts() {
+    try {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'https://clutch-main-nk7x.onrender.com'}/api/v1/sales/contracts`, {
+        headers: {
+          'Authorization': `Bearer ${localStorage.getItem('token')}`,
+          'Content-Type': 'application/json'
+        }
+      });
+      
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      
+      const data = await response.json();
+      return { success: true, contracts: data.contracts || [] };
+    } catch (error) {
+      logger.error("Failed to fetch contracts:", error);
+      return { success: false, message: "Failed to load contracts" };
+    }
+  }
+
+  async getPartners() {
+    try {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'https://clutch-main-nk7x.onrender.com'}/api/v1/partners`, {
+        headers: {
+          'Authorization': `Bearer ${localStorage.getItem('token')}`,
+          'Content-Type': 'application/json'
+        }
+      });
+      
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      
+      const data = await response.json();
+      return { success: true, partners: data.partners || [] };
+    } catch (error) {
+      logger.error("Failed to fetch partners:", error);
+      return { success: false, message: "Failed to load partners" };
+    }
+  }
+
+  async getCommunications() {
+    try {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'https://clutch-main-nk7x.onrender.com'}/api/v1/sales/communications`, {
+        headers: {
+          'Authorization': `Bearer ${localStorage.getItem('token')}`,
+          'Content-Type': 'application/json'
+        }
+      });
+      
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      
+      const data = await response.json();
+      return { success: true, communications: data.communications || [] };
+    } catch (error) {
+      logger.error("Failed to fetch communications:", error);
+      return { success: false, message: "Failed to load communications" };
+    }
+  }
+
+  async getSalesActivities() {
+    try {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'https://clutch-main-nk7x.onrender.com'}/api/v1/sales/activities`, {
+        headers: {
+          'Authorization': `Bearer ${localStorage.getItem('token')}`,
+          'Content-Type': 'application/json'
+        }
+      });
+      
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      
+      const data = await response.json();
+      return { success: true, activities: data.activities || [] };
+    } catch (error) {
+      logger.error("Failed to fetch sales activities:", error);
+      return { success: false, message: "Failed to load sales activities" };
+    }
+  }
+
+  async getTeamPerformance() {
+    try {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'https://clutch-main-nk7x.onrender.com'}/api/v1/sales/performance/team`, {
+        headers: {
+          'Authorization': `Bearer ${localStorage.getItem('token')}`,
+          'Content-Type': 'application/json'
+        }
+      });
+      
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      
+      const data = await response.json();
+      return { success: true, metrics: data.metrics || [] };
+    } catch (error) {
+      logger.error("Failed to fetch team performance:", error);
+      return { success: false, message: "Failed to load team performance" };
+    }
+  }
+
+  async getSalesReports(reportType: string) {
+    try {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'https://clutch-main-nk7x.onrender.com'}/api/v1/sales/reports?reportType=${reportType}`, {
+        headers: {
+          'Authorization': `Bearer ${localStorage.getItem('token')}`,
+          'Content-Type': 'application/json'
+        }
+      });
+      
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      
+      const data = await response.json();
+      return { success: true, data: data.data || {} };
+    } catch (error) {
+      logger.error("Failed to fetch sales reports:", error);
+      return { success: false, message: "Failed to load sales reports" };
+    }
+  }
+
+  async createLead(leadData: any) {
+    try {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'https://clutch-main-nk7x.onrender.com'}/api/v1/sales/leads`, {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${localStorage.getItem('token')}`,
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(leadData)
+      });
+      
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      
+      const data = await response.json();
+      return { success: true, lead: data.lead };
+    } catch (error) {
+      logger.error("Failed to create lead:", error);
+      return { success: false, message: "Failed to create lead" };
+    }
+  }
+
+  async updateLead(leadId: string, leadData: any) {
+    try {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'https://clutch-main-nk7x.onrender.com'}/api/v1/sales/leads/${leadId}`, {
+        method: 'PATCH',
+        headers: {
+          'Authorization': `Bearer ${localStorage.getItem('token')}`,
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(leadData)
+      });
+      
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      
+      const data = await response.json();
+      return { success: true, lead: data.lead };
+    } catch (error) {
+      logger.error("Failed to update lead:", error);
+      return { success: false, message: "Failed to update lead" };
+    }
+  }
+
+  async deleteLead(leadId: string) {
+    try {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'https://clutch-main-nk7x.onrender.com'}/api/v1/sales/leads/${leadId}`, {
+        method: 'DELETE',
+        headers: {
+          'Authorization': `Bearer ${localStorage.getItem('token')}`,
+          'Content-Type': 'application/json'
+        }
+      });
+      
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      
+      const data = await response.json();
+      return { success: true, message: data.message };
+    } catch (error) {
+      logger.error("Failed to delete lead:", error);
+      return { success: false, message: "Failed to delete lead" };
+    }
+  }
+
   async getProjectTasks(projectId: string): Promise<Record<string, unknown>[]> {
     try {
       // Method doesn't exist in realApi, return empty array

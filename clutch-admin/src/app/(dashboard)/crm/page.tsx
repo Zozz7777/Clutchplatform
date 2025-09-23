@@ -1,53 +1,72 @@
-"use client";
+'use client';
 
-import React, { useState, useEffect } from "react";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { productionApi } from "@/lib/production-api";
-import { handleDataLoadError } from "@/lib/error-handler";
-import { formatDate, formatRelativeTime } from "@/lib/utils";
-
-// Import new Phase 2 widgets
-import CustomerHealthScore from "@/components/widgets/customer-health-score";
-import AtRiskClients from "@/components/widgets/at-risk-clients";
-import CSATNPSTrends from "@/components/widgets/csat-nps-trends";
-import UpsellOpportunities from "@/components/widgets/upsell-opportunities";
-import { useAuth } from "@/contexts/auth-context";
-import { useLanguage } from "@/contexts/language-context";
-import { toast } from "sonner";
+import React, { useState, useEffect } from 'react';
+import { useTranslations } from 'next-intl';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
+import { Badge } from '@/components/ui/badge';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { 
   Users, 
-  Search, 
-  Filter, 
-  Plus, 
-  MoreHorizontal,
-  MessageSquare,
-  Phone,
-  Mail,
+  TrendingUp, 
+  FileText, 
+  Handshake, 
+  Phone, 
+  Mail, 
   Calendar,
-  TrendingUp,
-  TrendingDown,
-  Star,
-  Clock,
+  Plus,
+  Filter,
+  Download,
+  Search,
+  MoreHorizontal,
+  Eye,
+  Edit,
+  Trash2,
   CheckCircle,
-  AlertTriangle,
-  User,
-  Building2,
-  Activity,
-  BarChart3
-} from "lucide-react";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
+  XCircle,
+  Clock,
+  AlertTriangle
+} from 'lucide-react';
+import { Input } from '@/components/ui/input';
+import { 
+  DropdownMenu, 
+  DropdownMenuContent, 
+  DropdownMenuItem, 
+  DropdownMenuTrigger 
+} from '@/components/ui/dropdown-menu';
+import { 
+  Table, 
+  TableBody, 
+  TableCell, 
+  TableHead, 
+  TableHeader, 
+  TableRow 
+} from '@/components/ui/table';
+import { 
+  Dialog, 
+  DialogContent, 
+  DialogHeader, 
+  DialogTitle, 
+  DialogTrigger 
+} from '@/components/ui/dialog';
+import { Label } from '@/components/ui/label';
+import { Textarea } from '@/components/ui/textarea';
+import { 
+  Select, 
+  SelectContent, 
+  SelectItem, 
+  SelectTrigger, 
+  SelectValue 
+} from '@/components/ui/select';
+import { productionApi } from '@/lib/production-api';
+
+// Import sales widgets
+import SalesPipeline from '@/components/widgets/sales-pipeline';
+import LeadConversion from '@/components/widgets/lead-conversion';
+import RevenueForecast from '@/components/widgets/revenue-forecast';
+import TeamPerformance from '@/components/widgets/team-performance';
+import ContractStatus from '@/components/widgets/contract-status';
+import CommunicationHistory from '@/components/widgets/communication-history';
 } from "@/components/ui/dropdown-menu";
 
 interface Customer {

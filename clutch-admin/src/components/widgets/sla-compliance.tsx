@@ -276,7 +276,7 @@ export function SLACompliance({ className = '' }: SLAComplianceProps) {
         <div className="space-y-3">
           <h4 className="text-sm font-medium text-foreground">{t('sla.serviceMetrics')}</h4>
           <div className="space-y-2">
-            {slaData.metrics.map((metric) => {
+            {(Array.isArray(slaData.metrics) ? slaData.metrics : []).map((metric) => {
               const TrendIcon = getTrendIcon(metric.trend);
               
               return (
