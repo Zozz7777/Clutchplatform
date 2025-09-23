@@ -427,36 +427,36 @@ class BusinessIntelligenceService {
       return calculatedForecast.map((f: any) => ({
         period: f.period || f.date,
         base: f.base || f.amount || 0,
-          optimistic: f.optimistic || f.high || f.base * 1.15,
-          pessimistic: f.pessimistic || f.low || f.base * 0.85,
-          confidence: f.confidence || 85,
-          factors: f.factors || ['Historical trends', 'Seasonal patterns', 'Market conditions']
-        }));
-      }
+        optimistic: f.optimistic || f.high || f.base * 1.15,
+        pessimistic: f.pessimistic || f.low || f.base * 0.85,
+        confidence: f.confidence || 85,
+        factors: f.factors || ['Historical trends', 'Seasonal patterns', 'Market conditions']
+      }));
+    }
 
-      // Fallback to calculated forecast based on real revenue data
-      const currentRevenue = await this.getRevenueMetrics();
-      const forecasts: RevenueForecast[] = [];
+    // Fallback to calculated forecast based on real revenue data
+    const currentRevenue = await this.getRevenueMetrics();
+    const forecasts: RevenueForecast[] = [];
 
-      // Generate 30-day forecast based on historical trends
-      for (let i = 1; i <= 30; i++) {
-        const date = new Date(Date.now() + i * 24 * 60 * 60 * 1000);
-        
-        // Use a more realistic growth pattern based on historical data
-        const dailyGrowth = 0.02; // 2% daily growth assumption
-        const base = currentRevenue.monthly * (1 + dailyGrowth * i);
-        
-        forecasts.push({
-          period: date.toISOString().split('T')[0],
-          base: Math.round(base),
-          optimistic: Math.round(base * 1.15),
-          pessimistic: Math.round(base * 0.85),
-          confidence: Math.max(60, 85 - (i * 0.5)), // Decreasing confidence over time, min 60%
-          factors: ['Historical trends', 'Seasonal patterns', 'Market conditions']
-        });
-      }
+    // Generate 30-day forecast based on historical trends
+    for (let i = 1; i <= 30; i++) {
+      const date = new Date(Date.now() + i * 24 * 60 * 60 * 1000);
+      
+      // Use a more realistic growth pattern based on historical data
+      const dailyGrowth = 0.02; // 2% daily growth assumption
+      const base = currentRevenue.monthly * (1 + dailyGrowth * i);
+      
+      forecasts.push({
+        period: date.toISOString().split('T')[0],
+        base: Math.round(base),
+        optimistic: Math.round(base * 1.15),
+        pessimistic: Math.round(base * 0.85),
+        confidence: Math.max(60, 85 - (i * 0.5)), // Decreasing confidence over time, min 60%
+        factors: ['Historical trends', 'Seasonal patterns', 'Market conditions']
+      });
+    }
 
-      return forecasts;
+    return forecasts;
     } catch (error) {
       errorHandler.handleError(error as Error, { component: 'BusinessIntelligence', action: 'Get AI revenue forecast' });
       return [];
