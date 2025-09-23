@@ -14,8 +14,8 @@ export function LanguageSwitcher() {
   const { language, setLanguage, t } = useLanguage();
 
   const languages = [
-    { code: 'en' as const, name: t('language.english'), flag: '🇺🇸' },
-    { code: 'ar' as const, name: t('language.arabic'), flag: '🇸🇦' },
+    { code: 'en' as const, name: t('language.english'), flag: '🇬🇧' },
+    { code: 'ar' as const, name: t('language.arabic'), flag: '🇪🇬' },
   ];
 
   return (
