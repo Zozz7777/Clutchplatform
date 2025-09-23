@@ -129,6 +129,7 @@ const debugRoutes = require('./routes/debug');
 // Import newly created routes
 const supportRoutes = require('./routes/support');
 const analyticsExtendedRoutes = require('./routes/analytics-extended');
+const careersRoutes = require('./routes/careers');
 
 // All route imports cleaned up - only existing routes imported above
 
@@ -299,6 +300,7 @@ app.use('/api/v1/health-checks', healthRoutes);
 app.use('/api/v1/communication', communicationRoutes);
 app.use('/api/v1/mobile-cms', mobileCmsRoutes);
 app.use('/api/v1/ops', opsRoutes);
+app.use('/api/v1/careers', careersRoutes);
 app.use('/api/v1/testing', testingRoutes);
 
 // Apply authentication middleware to all API routes except public endpoints

@@ -148,6 +148,7 @@ export function LanguageProvider({ children }: LanguageProviderProps) {
       'widgets.activeVehicles': 'Active Vehicles',
       'widgets.fleetUtilization': 'Fleet utilization',
       'widgets.revenueImpact': 'Revenue Impact',
+      'widgets.revenue Impact': 'Revenue Impact',
       'widgets.monthlyRevenue': 'Monthly revenue',
       'widgets.conversionRate': 'Conversion Rate',
       'widgets.efficiency': 'Efficiency',
@@ -573,8 +574,19 @@ export function LanguageProvider({ children }: LanguageProviderProps) {
       'quickActions.openFinancialDashboard': 'Open financial dashboard',
       'quickActions.viewSettings': 'View Settings',
       'quickActions.openSystemSettings': 'Open system settings',
+      
+      // Quick Actions button titles (missing ones)
+      'quickActions.addUser': 'Add User',
+      'quickActions.createFleet': 'Create Fleet',
+      'quickActions.generateReport': 'Generate Report',
+      'quickActions.viewAnalytics': 'View Analytics',
+      'quickActions.optimizeRoutes': 'Optimize Routes',
+      'quickActions.exportData': 'Export Data',
+      'quickActions.refreshData': 'Refresh Data',
+      
       'widgets.invalidDataStructure': 'Invalid compliance data structure',
       'widgets.complianceStatusSummary': 'Compliance status summary across all areas',
+      'widgets.complianceRadar': 'Compliance Radar',
       'widgets.pendingApprovals': 'Pending Approvals',
       'widgets.violations': 'Violations',
       'widgets.securityIncidents': 'Security Incidents',
