@@ -501,53 +501,6 @@ class BusinessIntelligenceService {
   }
 
   // User Analytics
-  public async getUserGrowthCohort(): Promise<{
-    cohorts: Array<{
-      month: string;
-      newUsers: number;
-      retained: number;
-      retentionRate: number;
-    }>;
-  }> {
-    try {
-      const users = await productionApi.getUsers();
-      const cohorts = [];
-
-      // Generate cohort data for last 12 months
-      for (let i = 11; i >= 0; i--) {
-        const month = new Date(Date.now() - i * 30 * 24 * 60 * 60 * 1000);
-        const monthStr = month.toISOString().substring(0, 7);
-        
-        const newUsers = users?.filter(u => {
-          const created = new Date(u.createdAt);
-          return created.getMonth() === month.getMonth() && created.getFullYear() === month.getFullYear();
-        }).length || 0;
-
-        // Calculate actual retention based on user activity
-        const retained = users?.filter(u => {
-          const created = new Date(u.createdAt);
-          const lastLogin = new Date(u.lastLogin || new Date().toISOString());
-          const isInMonth = created.getMonth() === month.getMonth() && created.getFullYear() === month.getFullYear();
-          const isStillActive = (Date.now() - lastLogin.getTime()) < (90 * 24 * 60 * 60 * 1000); // Active within 90 days
-          return isInMonth && isStillActive;
-        }).length || 0;
-        
-        const retentionRate = newUsers > 0 ? (retained / newUsers) * 100 : 0;
-
-        cohorts.push({
-          month: monthStr,
-          newUsers,
-          retained,
-          retentionRate
-        });
-      }
-
-      return { cohorts };
-    } catch (error) {
-      errorHandler.handleError(error as Error, { component: 'BusinessIntelligence', action: 'Get user growth cohort' });
-      return { cohorts: [] };
-    }
-  }
 
   public async getEngagementHeatmap(): Promise<{
     segments: Array<{
@@ -979,4 +932,6 @@ class BusinessIntelligenceService {
   }
 }
 
+const businessIntelligence = new BusinessIntelligenceService();
+export { businessIntelligence };
 export default businessIntelligence;

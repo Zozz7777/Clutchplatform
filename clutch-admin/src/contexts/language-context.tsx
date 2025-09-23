@@ -1008,16 +1008,24 @@ export function LanguageProvider({ children }: LanguageProviderProps) {
 
 
     // Try to get translation from loaded translations first, then fallback
-    let translation = getNestedValue(translations, key) || fallbackTranslations[key] || key;
+    const foundTranslation = getNestedValue(translations, key);
+    let translation = foundTranslation || fallbackTranslations[key] || key;
     
     // Debug logging
     console.log(`Translation lookup for key "${key}":`, {
       language,
       translations: Object.keys(translations),
-      found: getNestedValue(translations, key),
+      found: foundTranslation,
       fallback: fallbackTranslations[key],
-      result: translation
+      result: translation,
+      resultType: typeof translation
     });
+    
+    // Ensure we always return a string
+    if (typeof translation !== 'string') {
+      console.warn(`Translation for key "${key}" is not a string:`, translation);
+      translation = key; // Fallback to the key itself
+    }
     
     if (params && typeof params === 'object') {
       Object.keys(params).forEach(paramKey => {
