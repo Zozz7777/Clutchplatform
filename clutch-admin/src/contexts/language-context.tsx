@@ -58,7 +58,10 @@ export function LanguageProvider({ children }: LanguageProviderProps) {
     console.log(`Loading translations for language: ${language}`, {
       translations,
       hasVendorManagement: !!translations.vendorManagement,
-      vendorManagementKeys: translations.vendorManagement ? Object.keys(translations.vendorManagement) : 'N/A'
+      vendorManagementKeys: translations.vendorManagement ? Object.keys(translations.vendorManagement) : 'N/A',
+      allKeys: Object.keys(translations),
+      translationsType: typeof translations,
+      translationsConstructor: translations.constructor.name
     });
 
     // Fallback translations if loading fails
