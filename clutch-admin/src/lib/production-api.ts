@@ -1161,26 +1161,6 @@ export class ProductionApiService {
     }
   }
 
-  async getSalesActivities() {
-    try {
-      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'https://clutch-main-nk7x.onrender.com'}/api/v1/sales/activities`, {
-        headers: {
-          'Authorization': `Bearer ${localStorage.getItem('clutch-admin-token')}`,
-          'Content-Type': 'application/json'
-        }
-      });
-      
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
-      }
-      
-      const data = await response.json();
-      return { success: true, activities: data.activities || [] };
-    } catch (error) {
-      logger.error("Failed to fetch sales activities:", error);
-      return { success: false, message: "Failed to load sales activities" };
-    }
-  }
 }
 
 // Create and export a singleton instance

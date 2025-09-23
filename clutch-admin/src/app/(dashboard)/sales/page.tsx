@@ -181,7 +181,6 @@ export default function SalesDepartmentPage() {
 
       toast.success(t('sales.dataLoadedSuccessfully'));
     } catch (error) {
-      console.error('Error loading sales data:', error);
       toast.error(t('sales.failedToLoadSalesData'));
     } finally {
       setIsLoading(false);

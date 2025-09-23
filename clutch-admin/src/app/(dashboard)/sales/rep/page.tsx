@@ -205,7 +205,6 @@ export default function SalesRepDashboard() {
 
       toast.success(t('sales.dataLoadedSuccessfully'));
     } catch (error) {
-      console.error('Error loading rep data:', error);
       toast.error(t('sales.failedToLoadSalesData'));
     } finally {
       setIsLoading(false);

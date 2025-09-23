@@ -122,7 +122,6 @@ export default function HRPerformanceView() {
 
       toast.success(t('sales.hrDataLoaded'));
     } catch (error) {
-      console.error('Error loading HR data:', error);
       toast.error(t('sales.failedToLoadHRData'));
     } finally {
       setIsLoading(false);

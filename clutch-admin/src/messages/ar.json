@@ -4540,6 +4540,7 @@
       "contractReviewSubmitted": "تم إرسال مراجعة العقد بنجاح",
       "failedToReviewContract": "فشل في مراجعة العقد",
       "legalDataLoaded": "تم تحميل البيانات القانونية بنجاح",
-      "failedToLoadLegalData": "فشل في تحميل البيانات القانونية"
+      "failedToLoadLegalData": "فشل في تحميل البيانات القانونية",
+      "failedToLoadRepData": "فشل في تحميل بيانات المندوب"
     }
   }

@@ -1577,6 +1577,7 @@
       "contractReviewSubmitted": "Contract review submitted successfully",
       "failedToReviewContract": "Failed to review contract",
       "legalDataLoaded": "Legal data loaded successfully",
-      "failedToLoadLegalData": "Failed to load legal data"
+      "failedToLoadLegalData": "Failed to load legal data",
+      "failedToLoadRepData": "Failed to load rep data"
     }
   }

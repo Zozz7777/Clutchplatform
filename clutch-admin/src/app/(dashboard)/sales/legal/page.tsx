@@ -166,7 +166,6 @@ export default function LegalContractsView() {
 
       toast.success(t('sales.legalDataLoaded'));
     } catch (error) {
-      console.error('Error loading legal data:', error);
       toast.error(t('sales.failedToLoadLegalData'));
     } finally {
       setIsLoading(false);
@@ -254,7 +253,6 @@ export default function LegalContractsView() {
         toast.error(t('sales.failedToReviewContract'));
       }
     } catch (error) {
-      console.error('Error reviewing contract:', error);
       toast.error(t('sales.failedToReviewContract'));
     }
   };

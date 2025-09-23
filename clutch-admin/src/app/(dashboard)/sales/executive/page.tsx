@@ -171,7 +171,6 @@ export default function ExecutiveDashboard() {
 
       toast.success(t('sales.executiveDataLoaded'));
     } catch (error) {
-      console.error('Error loading executive data:', error);
       toast.error(t('sales.failedToLoadExecutiveData'));
     } finally {
       setIsLoading(false);
