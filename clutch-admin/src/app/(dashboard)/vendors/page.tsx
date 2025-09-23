@@ -476,6 +476,40 @@ export default function VendorManagementPage() {
     }
   };
 
+  const getStatusTranslation = (status: string) => {
+    switch (status) {
+      case "active":
+        return t('vendorManagement.active');
+      case "inactive":
+        return t('vendorManagement.inactive');
+      case "suspended":
+        return t('vendorManagement.suspended');
+      case "pending_approval":
+        return t('vendorManagement.pendingApproval');
+      case "blacklisted":
+        return t('vendorManagement.blacklisted');
+      default:
+        return status;
+    }
+  };
+
+  const getTypeTranslation = (type: string) => {
+    switch (type) {
+      case "supplier":
+        return t('vendorManagement.supplier');
+      case "service_provider":
+        return t('vendorManagement.serviceProvider');
+      case "contractor":
+        return t('vendorManagement.contractor');
+      case "consultant":
+        return t('vendorManagement.consultant');
+      case "other":
+        return t('vendorManagement.other');
+      default:
+        return type;
+    }
+  };
+
   const getTypeIcon = (type: string) => {
     switch (type) {
       case "supplier":
@@ -637,19 +671,19 @@ export default function VendorManagementPage() {
               </DropdownMenuTrigger>
               <DropdownMenuContent>
                 <DropdownMenuItem onClick={() => setTypeFilter("all")}>
-                  All Types
+                  {t('vendorManagement.allTypes')}
                 </DropdownMenuItem>
                 <DropdownMenuItem onClick={() => setTypeFilter("supplier")}>
-                  Supplier
+                  {t('vendorManagement.supplier')}
                 </DropdownMenuItem>
                 <DropdownMenuItem onClick={() => setTypeFilter("service_provider")}>
-                  Service Provider
+                  {t('vendorManagement.serviceProvider')}
                 </DropdownMenuItem>
                 <DropdownMenuItem onClick={() => setTypeFilter("contractor")}>
-                  Contractor
+                  {t('vendorManagement.contractor')}
                 </DropdownMenuItem>
                 <DropdownMenuItem onClick={() => setTypeFilter("consultant")}>
-                  Consultant
+                  {t('vendorManagement.consultant')}
                 </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
@@ -657,24 +691,24 @@ export default function VendorManagementPage() {
               <DropdownMenuTrigger asChild>
                 <Button variant="outline">
                   <Filter className="mr-2 h-4 w-4" />
-                  Status: {statusFilter === "all" ? "All" : statusFilter}
+                  {t('vendorManagement.statusFilter')}: {statusFilter === "all" ? t('vendorManagement.all') : statusFilter}
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent>
                 <DropdownMenuItem onClick={() => setStatusFilter("all")}>
-                  All Status
+                  {t('vendorManagement.allStatus')}
                 </DropdownMenuItem>
                 <DropdownMenuItem onClick={() => setStatusFilter("active")}>
-                  Active
+                  {t('vendorManagement.active')}
                 </DropdownMenuItem>
                 <DropdownMenuItem onClick={() => setStatusFilter("inactive")}>
-                  Inactive
+                  {t('vendorManagement.inactive')}
                 </DropdownMenuItem>
                 <DropdownMenuItem onClick={() => setStatusFilter("suspended")}>
-                  Suspended
+                  {t('vendorManagement.suspended')}
                 </DropdownMenuItem>
                 <DropdownMenuItem onClick={() => setStatusFilter("pending_approval")}>
-                  Pending Approval
+                  {t('vendorManagement.pendingApproval')}
                 </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
@@ -690,17 +724,17 @@ export default function VendorManagementPage() {
                         {getTypeIcon(vendor.type)}
                         <h3 className="text-lg font-semibold">{vendor.name}</h3>
                         <Badge className={getStatusColor(vendor.status)}>
-                          {vendor.status.replace("_", " ")}
+                          {getStatusTranslation(vendor.status)}
                         </Badge>
                         <Badge variant="outline">
-                          {vendor.type.replace("_", " ")}
+                          {getTypeTranslation(vendor.type)}
                         </Badge>
                       </div>
                       <p className="text-muted-foreground mb-2">{vendor.description}</p>
                       
                       <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-4">
                         <div>
-                          <p className="text-sm font-medium">Rating</p>
+                          <p className="text-sm font-medium">{t('vendorManagement.rating')}</p>
                           <div className="flex items-center space-x-1">
                             {renderStars(vendor.rating.overall)}
                             <span className="text-sm text-muted-foreground">
@@ -709,19 +743,19 @@ export default function VendorManagementPage() {
                           </div>
                         </div>
                         <div>
-                          <p className="text-sm font-medium">Active Contracts</p>
+                          <p className="text-sm font-medium">{t('vendorManagement.activeContracts')}</p>
                           <p className="text-sm text-muted-foreground">
                             {vendor.contracts.active} / {vendor.contracts.total}
                           </p>
                         </div>
                         <div>
-                          <p className="text-sm font-medium">Total Value</p>
+                          <p className="text-sm font-medium">{t('vendorManagement.totalValue')}</p>
                           <p className="text-sm text-muted-foreground">
                             {formatCurrency(vendor.contracts.totalValue)}
                           </p>
                         </div>
                         <div>
-                          <p className="text-sm font-medium">On-Time Delivery</p>
+                          <p className="text-sm font-medium">{t('vendorManagement.onTimeDelivery')}</p>
                           <p className="text-sm text-muted-foreground">
                             {vendor.performance.onTimeDelivery}%
                           </p>

@@ -326,6 +326,20 @@ export function LanguageProvider({ children }: LanguageProviderProps) {
         'roles.supportSpecialist': 'Support and assistance specialist',
         'roles.enterpriseClientAccess': 'Enterprise client access',
         'roles.serviceProviderAccess': 'Service provider access',
+        // Additional widget translations
+        'widgets.unableToLoadFinancialMetrics': 'Unable to load financial metrics',
+        'widgets.sevenDays': '7 Days',
+        'widgets.thirtyDays': '30 Days',
+        'widgets.ninetyDays': '90 Days',
+        'widgets.risk': 'Risk',
+        'widgets.unableToLoadOperationalMetrics': 'Unable to load operational metrics',
+        'widgets.dataStructureError': 'Data structure error - Check console for details',
+        'widgets.complianceDataFormatError': 'The compliance data received does not match the expected format',
+        'widgets.highUncertainty': 'High uncertainty - consider additional data sources',
+        'widgets.topClientContributes': 'Top client contributes {percentage}% of total revenue',
+        'widgets.clientsShowingGrowth': '{growing} out of {total} clients showing positive growth',
+        'widgets.averageClientActivity': 'Average client activity level: {percentage}%',
+        'widgets.totalEnterpriseRevenue': 'Total enterprise revenue: {amount} EGP',
       
       // Dashboard specific translations
       'dashboard.title': 'Dashboard',
