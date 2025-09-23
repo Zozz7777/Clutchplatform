@@ -8,7 +8,7 @@ import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Checkbox } from "@/components/ui/checkbox";
 import { useAuth } from "@/contexts/auth-context";
-// Translation system removed - using hardcoded strings
+import { useLanguage } from "@/contexts/language-context";
 import { formatDate, formatRelativeTime } from "@/lib/utils";
 import { EmployeeInvitationForm } from "@/components/employee-invitation-form";
 import { apiService } from "@/lib/api";
@@ -180,6 +180,7 @@ const PERMISSION_OPTIONS = [
 ];
 
 export default function HRPage() {
+  const { t } = useLanguage();
   const [employees, setEmployees] = useState<Employee[]>([]);
   const [applications, setApplications] = useState<JobApplication[]>([]);
   const [stats, setStats] = useState<HRStats | null>(null);
