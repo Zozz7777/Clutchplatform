@@ -139,6 +139,21 @@ export function OnboardingCompletion({ className = '' }: OnboardingCompletionPro
     );
   }
 
+  // Safety check to prevent errors when data is not loaded
+  if (!onboardingData) {
+    return (
+      <Card className={className}>
+        <CardHeader>
+          <CardTitle className="flex items-center space-x-2">
+            <Target className="h-5 w-5 text-success" />
+            <span>{t('widgets.onboardingCompletion')}</span>
+          </CardTitle>
+          <CardDescription>{t('users.unableToLoadOnboardingData')}</CardDescription>
+        </CardHeader>
+      </Card>
+    );
+  }
+
   const bottleneckSteps = getBottleneckSteps();
   const topPerformingSteps = getTopPerformingSteps();
 

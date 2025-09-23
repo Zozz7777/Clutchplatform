@@ -111,6 +111,28 @@ export function UserGrowthCohort({ className = '' }: UserGrowthCohortProps) {
     );
   }
 
+  // Safety check to prevent errors when data is not loaded
+  if (!cohortData) {
+    return (
+      <Card className={className}>
+        <CardHeader>
+          <CardTitle className="flex items-center space-x-2">
+            <Users className="h-5 w-5 text-primary" />
+            <span>{t('widgets.userGrowthCohort')}</span>
+          </CardTitle>
+          <CardDescription>Loading cohort analysis...</CardDescription>
+        </CardHeader>
+        <CardContent>
+          <div className="animate-pulse space-y-4">
+            <div className="h-4 bg-muted rounded-[0.625rem] w-3/4"></div>
+            <div className="h-4 bg-muted rounded-[0.625rem] w-1/2"></div>
+            <div className="h-4 bg-muted rounded-[0.625rem] w-2/3"></div>
+          </div>
+        </CardContent>
+      </Card>
+    );
+  }
+
   const filteredCohorts = getFilteredCohorts();
   const totalNewUsers = getTotalNewUsers();
   const totalRetained = getTotalRetained();
