@@ -370,12 +370,16 @@ router.post('/jobs/:jobId/apply', upload.fields([
 // ==================== ADMIN ROUTES (Authentication Required) ====================
 
 // Get all jobs for admin (with all statuses)
-router.get('/admin/jobs', auth, checkPermission('hr'), [
-  query('status').optional().isString(),
-  query('department').optional().isString(),
-  query('page').optional().isInt({ min: 1 }),
-  query('limit').optional().isInt({ min: 1, max: 100 })
-], async (req, res) => {
+router.get('/admin/jobs', 
+  auth, 
+  checkPermission('hr'), 
+  [
+    query('status').optional().isString(),
+    query('department').optional().isString(),
+    query('page').optional().isInt({ min: 1 }),
+    query('limit').optional().isInt({ min: 1, max: 100 })
+  ],
+  async (req, res) => {
   try {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
@@ -427,16 +431,20 @@ router.get('/admin/jobs', auth, checkPermission('hr'), [
 });
 
 // Create new job
-router.post('/admin/jobs', auth, checkPermission('hr'), [
-  body('title').notEmpty().trim(),
-  body('department').notEmpty().isString(),
-  body('description').notEmpty().trim(),
-  body('employmentType').isIn(['full-time', 'part-time', 'contract', 'internship', 'temporary']),
-  body('experienceLevel').isIn(['entry', 'junior', 'mid-level', 'senior', 'lead', 'executive']),
-  body('salary.min').isNumeric(),
-  body('salary.max').isNumeric(),
-  body('hiringManager').isMongoId()
-], async (req, res) => {
+router.post('/admin/jobs', 
+  auth, 
+  checkPermission('hr'), 
+  [
+    body('title').notEmpty().trim(),
+    body('department').notEmpty().isString(),
+    body('description').notEmpty().trim(),
+    body('employmentType').isIn(['full-time', 'part-time', 'contract', 'internship', 'temporary']),
+    body('experienceLevel').isIn(['entry', 'junior', 'mid-level', 'senior', 'lead', 'executive']),
+    body('salary.min').isNumeric(),
+    body('salary.max').isNumeric(),
+    body('hiringManager').isMongoId()
+  ],
+  async (req, res) => {
   try {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
@@ -486,11 +494,15 @@ router.post('/admin/jobs', auth, checkPermission('hr'), [
 });
 
 // Update job
-router.put('/admin/jobs/:id', auth, checkPermission('hr'), [
-  body('title').optional().notEmpty().trim(),
-  body('department').optional().notEmpty().isString(),
-  body('description').optional().notEmpty().trim()
-], async (req, res) => {
+router.put('/admin/jobs/:id', 
+  auth, 
+  checkPermission('hr'), 
+  [
+    body('title').optional().notEmpty().trim(),
+    body('department').optional().notEmpty().isString(),
+    body('description').optional().notEmpty().trim()
+  ],
+  async (req, res) => {
   try {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
@@ -588,12 +600,16 @@ router.delete('/admin/jobs/:id', auth, checkPermission('hr'), async (req, res) =
 });
 
 // Get job applications
-router.get('/admin/applications', auth, checkPermission('hr'), [
-  query('jobId').optional().isMongoId(),
-  query('status').optional().isString(),
-  query('page').optional().isInt({ min: 1 }),
-  query('limit').optional().isInt({ min: 1, max: 100 })
-], async (req, res) => {
+router.get('/admin/applications', 
+  auth, 
+  checkPermission('hr'), 
+  [
+    query('jobId').optional().isMongoId(),
+    query('status').optional().isString(),
+    query('page').optional().isInt({ min: 1 }),
+    query('limit').optional().isInt({ min: 1, max: 100 })
+  ],
+  async (req, res) => {
   try {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
@@ -673,10 +689,14 @@ router.get('/admin/applications/:id', auth, checkPermission('hr'), async (req, r
 });
 
 // Update application status
-router.put('/admin/applications/:id/status', auth, checkPermission('hr'), [
-  body('status').isIn(['applied', 'screened', 'interview_scheduled', 'interview_completed', 'offer_made', 'hired', 'rejected', 'withdrawn']),
-  body('notes').optional().isString()
-], async (req, res) => {
+router.put('/admin/applications/:id/status', 
+  auth, 
+  checkPermission('hr'), 
+  [
+    body('status').isIn(['applied', 'screened', 'interview_scheduled', 'interview_completed', 'offer_made', 'hired', 'rejected', 'withdrawn']),
+    body('notes').optional().isString()
+  ],
+  async (req, res) => {
   try {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
@@ -746,9 +766,13 @@ router.get('/admin/approvals', auth, checkPermission('hr'), async (req, res) => 
 });
 
 // Approve job
-router.post('/admin/approvals/:id/approve', auth, checkPermission('hr'), [
-  body('comments').optional().isString()
-], async (req, res) => {
+router.post('/admin/approvals/:id/approve', 
+  auth, 
+  checkPermission('hr'), 
+  [
+    body('comments').optional().isString()
+  ],
+  async (req, res) => {
   try {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
@@ -801,9 +825,13 @@ router.post('/admin/approvals/:id/approve', auth, checkPermission('hr'), [
 });
 
 // Reject job
-router.post('/admin/approvals/:id/reject', auth, checkPermission('hr'), [
-  body('comments').notEmpty().isString()
-], async (req, res) => {
+router.post('/admin/approvals/:id/reject', 
+  auth, 
+  checkPermission('hr'), 
+  [
+    body('comments').notEmpty().isString()
+  ],
+  async (req, res) => {
   try {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
