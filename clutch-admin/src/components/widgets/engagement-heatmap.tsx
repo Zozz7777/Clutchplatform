@@ -5,6 +5,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { businessIntelligence } from '@/lib/business-intelligence';
+import { useLanguage } from '@/contexts/language-context';
 import { 
   BarChart3, 
   Users, 
@@ -26,7 +27,7 @@ interface SegmentData {
 }
 
 export function EngagementHeatmap({ className = '' }: EngagementHeatmapProps) {
-  const { t } = useTranslations();
+  const { t } = useLanguage();
   const [heatmapData, setHeatmapData] = React.useState<{ segments: SegmentData[] } | null>(null);
   const [isLoading, setIsLoading] = React.useState(true);
   const [selectedSegment, setSelectedSegment] = React.useState<string>('all');
@@ -34,10 +35,11 @@ export function EngagementHeatmap({ className = '' }: EngagementHeatmapProps) {
   React.useEffect(() => {
     const loadHeatmapData = async () => {
       try {
-        const data = await Promise.resolve({ segments: [] });
+        const data = await businessIntelligence.getEngagementHeatmap();
         setHeatmapData(data);
       } catch (error) {
-        // Failed to load heatmap data
+        console.error('Failed to load heatmap data:', error);
+        setHeatmapData({ segments: [] });
       } finally {
         setIsLoading(false);
       }

@@ -184,6 +184,23 @@ export function LanguageProvider({ children }: LanguageProviderProps) {
         'clientsShowingGrowth': '{growing} out of {total} clients showing positive growth',
         'averageClientActivity': 'Average client activity level: {percentage}%',
         'totalEnterpriseRevenue': 'Total enterprise revenue: {amount} EGP',
+        // User management widget translations
+        'widgets.userGrowthCohort': 'User Growth Cohort',
+        'widgets.engagementHeatmap': 'Engagement Heatmap',
+        'widgets.onboardingCompletion': 'Onboarding Completion',
+        'widgets.roleDistribution': 'Role Distribution',
+        'widgets.retained': 'Retained',
+        'widgets.retentionRate': 'Retention Rate',
+        'widgets.cohortAnalysis': 'Cohort Analysis',
+        'widgets.tracksNewSignups': 'Tracks new signups vs retained users per month',
+        'widgets.loadingCohortAnalysis': 'Loading cohort analysis...',
+        'widgets.noCohortData': 'No cohort data available',
+        'widgets.loadingHeatmapData': 'Loading engagement heatmap...',
+        'widgets.noHeatmapData': 'No engagement data available',
+        'widgets.loadingRoleData': 'Loading role distribution...',
+        'widgets.noRoleData': 'No role data available',
+        'widgets.loadingOnboardingData': 'Loading onboarding completion...',
+        'widgets.noOnboardingData': 'No onboarding data available',
       
       // Dashboard specific translations
       'dashboard.title': 'Dashboard',

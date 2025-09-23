@@ -6,7 +6,7 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Progress } from '@/components/ui/progress';
 import { businessIntelligence } from '@/lib/business-intelligence';
-// Translation system removed - using hardcoded strings
+import { useLanguage } from '@/contexts/language-context';
 import { 
   Users, 
   TrendingUp, 
@@ -30,7 +30,7 @@ interface CohortData {
 }
 
 export function UserGrowthCohort({ className = '' }: UserGrowthCohortProps) {
-  // Translation system removed - using hardcoded strings
+  const { t } = useLanguage();
   const [cohortData, setCohortData] = React.useState<{ cohorts: CohortData[] } | null>(null);
   const [isLoading, setIsLoading] = React.useState(true);
   const [selectedPeriod, setSelectedPeriod] = React.useState<'6m' | '12m'>('12m');
@@ -38,10 +38,11 @@ export function UserGrowthCohort({ className = '' }: UserGrowthCohortProps) {
   React.useEffect(() => {
     const loadCohortData = async () => {
       try {
-        const data = await Promise.resolve({ cohorts: [] });
+        const data = await businessIntelligence.getUserGrowthCohort();
         setCohortData(data);
       } catch (error) {
-        // Failed to load cohort data
+        console.error('Failed to load cohort data:', error);
+        setCohortData({ cohorts: [] });
       } finally {
         setIsLoading(false);
       }
@@ -94,7 +95,7 @@ export function UserGrowthCohort({ className = '' }: UserGrowthCohortProps) {
         <CardHeader>
           <CardTitle className="flex items-center space-x-2">
             <Users className="h-5 w-5 text-primary" />
-            <span>{'User Growth Cohort'}</span>
+<span>{t('widgets.userGrowthCohort')}</span>
           </CardTitle>
           <CardDescription>Loading cohort analysis...</CardDescription>
         </CardHeader>
@@ -119,7 +120,7 @@ export function UserGrowthCohort({ className = '' }: UserGrowthCohortProps) {
       <CardHeader>
         <CardTitle className="flex items-center space-x-2">
           <Users className="h-5 w-5 text-primary" />
-          <span>User Growth Cohort</span>
+<span>{t('widgets.userGrowthCohort')}</span>
         </CardTitle>
         <CardDescription>
           Tracks new signups vs retained users per month
@@ -146,7 +147,7 @@ export function UserGrowthCohort({ className = '' }: UserGrowthCohortProps) {
           <div className="text-center p-3 bg-primary/10 rounded-[0.625rem]-lg">
             <Users className="h-5 w-5 text-primary mx-auto mb-1" />
             <p className="text-lg font-bold text-primary">{totalNewUsers}</p>
-            <p className="text-xs text-muted-foreground">{'New Users'}</p>
+<p className="text-xs text-muted-foreground">{t('widgets.newUsers')}</p>
           </div>
           <div className="text-center p-3 bg-success/10 rounded-[0.625rem]-lg">
             <TrendingUp className="h-5 w-5 text-success mx-auto mb-1" />

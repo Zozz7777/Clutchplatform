@@ -6,7 +6,7 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Progress } from '@/components/ui/progress';
 import { productionApi } from '@/lib/production-api';
-// Translation system removed - using hardcoded strings
+import { useLanguage } from '@/contexts/language-context';
 import { 
   Users, 
   UserCheck, 
@@ -35,14 +35,14 @@ interface RoleData {
 }
 
 export function RoleDistribution({ className = '' }: RoleDistributionProps) {
-  // Translation system removed - using hardcoded strings
+  const { t } = useLanguage();
   const [roleData, setRoleData] = React.useState<RoleData[]>([]);
   const [isLoading, setIsLoading] = React.useState(true);
 
   React.useEffect(() => {
     const loadRoleData = async () => {
       try {
-        const users: any[] = await Promise.resolve([]);
+        const users: any[] = await productionApi.getUsers();
         const roleCounts: Record<string, number> = {};
         
         // Count users by role

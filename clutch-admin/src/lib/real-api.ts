@@ -975,6 +975,39 @@ export class RealApiService {
     )();
   }
 
+  async getUserGrowthCohort(): Promise<Record<string, unknown>> {
+    return withErrorHandling(
+      async () => {
+        const response = await apiService.makeRequest<Record<string, unknown>>("/api/v1/business-intelligence/user-growth-cohort");
+        return handleApiResponse(response, 'getUserGrowthCohort', {});
+      },
+      'getUserGrowthCohort',
+      { fallbackValue: {}, showToast: false }
+    )();
+  }
+
+  async getOnboardingCompletion(): Promise<Record<string, unknown>> {
+    return withErrorHandling(
+      async () => {
+        const response = await apiService.makeRequest<Record<string, unknown>>("/api/v1/business-intelligence/onboarding-completion");
+        return handleApiResponse(response, 'getOnboardingCompletion', {});
+      },
+      'getOnboardingCompletion',
+      { fallbackValue: {}, showToast: false }
+    )();
+  }
+
+  async getRoleDistribution(): Promise<Record<string, unknown>> {
+    return withErrorHandling(
+      async () => {
+        const response = await apiService.makeRequest<Record<string, unknown>>("/api/v1/business-intelligence/role-distribution");
+        return handleApiResponse(response, 'getRoleDistribution', {});
+      },
+      'getRoleDistribution',
+      { fallbackValue: {}, showToast: false }
+    )();
+  }
+
   // Mobile app APIs
   async getMobileAppVersions(): Promise<Record<string, unknown>[]> {
     return withErrorHandling(

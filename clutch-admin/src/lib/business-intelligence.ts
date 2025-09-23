@@ -874,7 +874,77 @@ class BusinessIntelligenceService {
   private setCachedData<T>(key: string, data: T): void {
     this.cache.set(key, { data, timestamp: Date.now() });
   }
+
+  public async getUserGrowthCohort(): Promise<{
+    cohorts: Array<{
+      month: string;
+      newUsers: number;
+      retained: number;
+      retentionRate: number;
+    }>;
+  }> {
+    try {
+      // Try to get real user growth cohort data from API first
+      const realCohortData = await realApi.getUserGrowthCohort().catch(() => null);
+      if (realCohortData && typeof realCohortData === 'object') {
+        return realCohortData as {
+          cohorts: Array<{
+            month: string;
+            newUsers: number;
+            retained: number;
+            retentionRate: number;
+          }>;
+        };
+      }
+
+      // Fallback to empty data if real API fails
+      return { cohorts: [] };
+    } catch (error) {
+      return { cohorts: [] };
+    }
+  }
+
+  public async getOnboardingCompletion(): Promise<{
+    total: number;
+    completed: number;
+    completionRate: number;
+  }> {
+    try {
+      // Try to get real onboarding completion data from API first
+      const realOnboardingData = await realApi.getOnboardingCompletion().catch(() => null);
+      if (realOnboardingData && typeof realOnboardingData === 'object') {
+        return realOnboardingData as {
+          total: number;
+          completed: number;
+          completionRate: number;
+        };
+      }
+
+      // Fallback to empty data if real API fails
+      return { total: 0, completed: 0, completionRate: 0 };
+    } catch (error) {
+      return { total: 0, completed: 0, completionRate: 0 };
+    }
+  }
+
+  public async getRoleDistribution(): Promise<Array<{
+    role: string;
+    count: number;
+    percentage: number;
+  }>> {
+    try {
+      // Try to get real role distribution data from API first
+      const realRoleData = await realApi.getRoleDistribution().catch(() => null);
+      if (realRoleData && typeof realRoleData === 'object') {
+        return (realRoleData as any).roles || [];
+      }
+
+      // Fallback to empty data if real API fails
+      return [];
+    } catch (error) {
+      return [];
+    }
+  }
 }
 
-export const businessIntelligence = new BusinessIntelligenceService();
 export default businessIntelligence;
