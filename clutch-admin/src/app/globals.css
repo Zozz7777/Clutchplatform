@@ -30,7 +30,7 @@
     --ring: oklch(0.7080 0 0);
     --ring-ring: oklch(0.7080 0 0);
     --sidebar: oklch(0.9850 0 0);
-    --sidebar-primary: oklch(0.2050 0 0);
+    --sidebar-primary: oklch(0.5770 0.2450 27.3250);
     --radius: 0.625rem;
     
     /* Semantic color variants from design.json - exact OKLCH values */

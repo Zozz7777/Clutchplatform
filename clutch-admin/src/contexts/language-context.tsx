@@ -631,6 +631,33 @@ export function LanguageProvider({ children }: LanguageProviderProps) {
       
       // Notifications translations
       'notifications.noNotifications': 'No notifications at this time',
+  
+  // Navigation translations
+  'navigation.dashboard': 'Dashboard',
+  'navigation.usermanagement': 'User Management',
+  'navigation.fleetmanagement': 'Fleet Management',
+  'navigation.crm': 'CRM',
+  'navigation.chat&messaging': 'Chat & Messaging',
+  'navigation.ai&mldashboard': 'AI & ML Dashboard',
+  'navigation.enterpriseb2b': 'Enterprise B2B',
+  'navigation.finance': 'Finance',
+  'navigation.legal': 'Legal',
+  'navigation.hr': 'HR',
+  'navigation.featureflags': 'Feature Flags',
+  'navigation.communication': 'Communication',
+  'navigation.analytics': 'Analytics',
+  'navigation.mobileapps': 'Mobile Apps',
+  'navigation.cms': 'CMS',
+  'navigation.marketing': 'Marketing',
+  'navigation.projectmanagement': 'Project Management',
+  'navigation.settings': 'Settings',
+  'navigation.reporting': 'Reporting',
+  'navigation.integrations': 'Integrations',
+  'navigation.audittrail': 'Audit Trail',
+  'navigation.apidocumentation': 'API Documentation',
+  'navigation.assetmanagement': 'Asset Management',
+  'navigation.vendormanagement': 'Vendor Management',
+  'navigation.systemhealth': 'System Health',
       
       // Assets translations
       'assets.title': 'Asset Management',

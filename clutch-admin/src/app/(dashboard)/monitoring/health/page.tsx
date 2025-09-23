@@ -8,6 +8,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { productionApi } from '@/lib/production-api';
 import { websocketService } from '@/lib/websocket-service';
 import { handleError, handleWarning, handleWebSocketError } from '@/lib/error-handler';
+import { useLanguage } from '@/contexts/language-context';
 
 // Import new Phase 2 widgets
 import SLACompliance from '@/components/widgets/sla-compliance';
@@ -39,6 +40,7 @@ interface ServiceHealth {
 }
 
 export default function HealthPage() {
+  const { t } = useLanguage();
   const [services, setServices] = useState<ServiceHealth[]>([]);
   const [overallHealth, setOverallHealth] = useState({
     status: 'unknown' as 'healthy' | 'degraded' | 'down' | 'unknown',
@@ -68,7 +70,7 @@ export default function HealthPage() {
         }
       } catch (error) {
         // Error handled by API service
-        toast.error('Failed to load system health data');
+        toast.error(t('systemHealth.failedToLoadData'));
         // Set empty data on error
         setServices([]);
         setOverallHealth({
@@ -137,7 +139,7 @@ export default function HealthPage() {
       }
     } catch (error) {
       // Error handled by API service
-      toast.error('Failed to refresh system health data');
+      toast.error(t('systemHealth.failedToRefreshData'));
     } finally {
       setIsLoading(false);
     }

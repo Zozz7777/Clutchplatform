@@ -8,7 +8,7 @@ import { useAuth } from "@/contexts/auth-context";
 import { ChevronDown, ChevronRight } from "lucide-react";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { LanguageSwitcher } from "@/components/language-switcher";
-// Translation system removed - using hardcoded strings
+import { useLanguage } from "@/contexts/language-context";
 import { NAVIGATION_ITEMS } from "@/lib/constants";
 import { iconMap, type IconName } from "@/lib/icons";
 
@@ -21,11 +21,45 @@ export function Sidebar({ isCollapsed, onToggle }: SidebarProps) {
   const pathname = usePathname();
   const router = useRouter();
   const { hasPermission, user } = useAuth();
-  // Translation system removed - using hardcoded strings
+  const { t } = useLanguage();
   const [expandedItems, setExpandedItems] = useState<string[]>([]);
   
-  // Translation system removed - using navigation items directly
-  const navigationItems = NAVIGATION_ITEMS;
+  // Navigation items with translations
+  const navigationItems = NAVIGATION_ITEMS.map(item => {
+    // Map English titles to translation keys
+    const titleMap: Record<string, string> = {
+      'Dashboard': 'navigation.dashboard',
+      'User Management': 'navigation.userManagement',
+      'Fleet Management': 'navigation.fleetManagement',
+      'CRM': 'navigation.crm',
+      'Chat & Messaging': 'navigation.chat',
+      'AI & ML Dashboard': 'navigation.aiDashboard',
+      'Enterprise B2B': 'navigation.enterprise',
+      'Finance': 'navigation.finance',
+      'Legal': 'navigation.legal',
+      'HR': 'navigation.hr',
+      'Feature Flags': 'navigation.featureFlags',
+      'Communication': 'navigation.communication',
+      'Analytics': 'navigation.analytics',
+      'Mobile Apps': 'navigation.mobileApps',
+      'CMS': 'navigation.cms',
+      'Marketing': 'navigation.marketing',
+      'Project Management': 'navigation.projects',
+      'Settings': 'navigation.settings',
+      'Reporting': 'navigation.reports',
+      'Integrations': 'navigation.integrations',
+      'Audit Trail': 'navigation.auditTrail',
+      'API Documentation': 'navigation.apiDocs',
+      'Asset Management': 'navigation.assets',
+      'Vendor Management': 'navigation.vendors',
+      'System Health': 'navigation.systemHealth'
+    };
+    
+    return {
+      ...item,
+      title: t(titleMap[item.title] || `navigation.${item.title.toLowerCase().replace(/\s+/g, '')}`) || item.title
+    };
+  });
 
   // Debug router state
   console.log('🔍 Sidebar Debug:', {

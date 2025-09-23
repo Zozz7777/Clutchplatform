@@ -291,14 +291,14 @@ export function RecruitmentTab({ applications, jobs, onApplicationsUpdate }: Rec
   return (
     <div className="space-y-6">
       {/* Filters */}
-      <Card>
-        <CardHeader>
-          <CardTitle>Job Applications</CardTitle>
-          <CardDescription>
+      <Card className="bg-card border-border rounded-[0.625rem] shadow-sm">
+        <CardHeader className="border-b border-border" style={{ padding: '1rem' }}>
+          <CardTitle className="text-2xl font-bold text-foreground" style={{ fontFamily: 'Roboto, ui-sans-serif, sans-serif, system-ui' }}>Job Applications</CardTitle>
+          <CardDescription className="text-muted-foreground text-base" style={{ fontFamily: 'Roboto, ui-sans-serif, sans-serif, system-ui' }}>
             Manage and track job applications from candidates
           </CardDescription>
         </CardHeader>
-        <CardContent>
+        <CardContent style={{ padding: '1rem' }}>
           <div className="flex flex-col md:flex-row gap-4 mb-6">
             <div className="relative flex-1">
               <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4" />
@@ -306,7 +306,8 @@ export function RecruitmentTab({ applications, jobs, onApplicationsUpdate }: Rec
                 placeholder="Search applications..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="pl-10"
+                className="pl-10 border-border bg-input text-foreground placeholder:text-muted-foreground focus:ring-2 focus:ring-ring focus:border-transparent rounded-[0.625rem] transition-all duration-150"
+                style={{ fontFamily: 'Roboto, ui-sans-serif, sans-serif, system-ui' }}
               />
             </div>
             

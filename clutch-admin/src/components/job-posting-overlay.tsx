@@ -320,7 +320,7 @@ export function JobPostingOverlay({ isOpen, onClose, onSuccess, editingJob }: Jo
         </div>
 
         {/* Tabs */}
-        <div className="flex border-b">
+        <div className="flex border-b border-border">
           {[
             { id: 'basic', label: 'Basic Info', icon: Briefcase },
             { id: 'details', label: 'Details', icon: FileText },
@@ -334,7 +334,12 @@ export function JobPostingOverlay({ isOpen, onClose, onSuccess, editingJob }: Jo
                 variant={activeTab === tab.id ? 'default' : 'ghost'}
                 size="sm"
                 onClick={() => setActiveTab(tab.id as any)}
-                className="rounded-none border-b-2 border-transparent data-[state=active]:border-primary"
+                className={`rounded-none border-b-2 border-transparent px-6 py-3 text-base font-medium transition-all duration-150 ${
+                  activeTab === tab.id 
+                    ? 'border-primary bg-primary text-primary-foreground' 
+                    : 'text-muted-foreground hover:text-foreground hover:bg-muted'
+                }`}
+                style={{ fontFamily: 'Roboto, ui-sans-serif, sans-serif, system-ui' }}
               >
                 <Icon className="mr-2 h-4 w-4" />
                 {tab.label}
@@ -344,28 +349,30 @@ export function JobPostingOverlay({ isOpen, onClose, onSuccess, editingJob }: Jo
         </div>
 
         {/* Content */}
-        <div className="p-6 overflow-y-auto max-h-[calc(90vh-200px)]">
+        <div className="overflow-y-auto max-h-[calc(90vh-200px)]" style={{ padding: '1rem' }}>
           {activeTab === 'basic' && (
             <div className="space-y-6">
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <Label htmlFor="title">Job Title *</Label>
+                  <Label htmlFor="title" className="text-base font-medium text-foreground mb-2 block" style={{ fontFamily: 'Roboto, ui-sans-serif, sans-serif, system-ui' }}>Job Title *</Label>
                   <Input
                     id="title"
                     value={formData.title}
                     onChange={(e) => handleInputChange('title', e.target.value)}
                     placeholder="e.g., Senior Software Engineer"
+                    className="border-border bg-input text-foreground placeholder:text-muted-foreground focus:ring-2 focus:ring-ring focus:border-transparent rounded-[0.625rem] transition-all duration-150"
+                    style={{ fontFamily: 'Roboto, ui-sans-serif, sans-serif, system-ui' }}
                   />
                 </div>
                 <div>
-                  <Label htmlFor="department">Department *</Label>
+                  <Label htmlFor="department" className="text-base font-medium text-foreground mb-2 block" style={{ fontFamily: 'Roboto, ui-sans-serif, sans-serif, system-ui' }}>Department *</Label>
                   <Select value={formData.department} onValueChange={(value) => handleInputChange('department', value)}>
-                    <SelectTrigger>
+                    <SelectTrigger className="border-border bg-input text-foreground focus:ring-2 focus:ring-ring focus:border-transparent rounded-[0.625rem] transition-all duration-150">
                       <SelectValue placeholder="Select department" />
                     </SelectTrigger>
-                    <SelectContent>
+                    <SelectContent className="bg-card border-border rounded-[0.625rem] shadow-md">
                       {DEPARTMENTS.map((dept) => (
-                        <SelectItem key={dept} value={dept}>{dept}</SelectItem>
+                        <SelectItem key={dept} value={dept} className="text-foreground hover:bg-muted">{dept}</SelectItem>
                       ))}
                     </SelectContent>
                   </Select>
@@ -373,39 +380,41 @@ export function JobPostingOverlay({ isOpen, onClose, onSuccess, editingJob }: Jo
               </div>
 
               <div>
-                <Label htmlFor="description">Job Description *</Label>
+                <Label htmlFor="description" className="text-base font-medium text-foreground mb-2 block" style={{ fontFamily: 'Roboto, ui-sans-serif, sans-serif, system-ui' }}>Job Description *</Label>
                 <Textarea
                   id="description"
                   value={formData.description}
                   onChange={(e) => handleInputChange('description', e.target.value)}
                   placeholder="Describe the role, responsibilities, and what makes this position exciting..."
                   rows={6}
+                  className="border-border bg-input text-foreground placeholder:text-muted-foreground focus:ring-2 focus:ring-ring focus:border-transparent rounded-[0.625rem] transition-all duration-150"
+                  style={{ fontFamily: 'Roboto, ui-sans-serif, sans-serif, system-ui' }}
                 />
               </div>
 
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <Label htmlFor="employmentType">Employment Type *</Label>
+                  <Label htmlFor="employmentType" className="text-base font-medium text-foreground mb-2 block" style={{ fontFamily: 'Roboto, ui-sans-serif, sans-serif, system-ui' }}>Employment Type *</Label>
                   <Select value={formData.employmentType} onValueChange={(value) => handleInputChange('employmentType', value)}>
-                    <SelectTrigger>
+                    <SelectTrigger className="border-border bg-input text-foreground focus:ring-2 focus:ring-ring focus:border-transparent rounded-[0.625rem] transition-all duration-150">
                       <SelectValue />
                     </SelectTrigger>
-                    <SelectContent>
+                    <SelectContent className="bg-card border-border rounded-[0.625rem] shadow-md">
                       {EMPLOYMENT_TYPES.map((type) => (
-                        <SelectItem key={type.value} value={type.value}>{type.label}</SelectItem>
+                        <SelectItem key={type.value} value={type.value} className="text-foreground hover:bg-muted">{type.label}</SelectItem>
                       ))}
                     </SelectContent>
                   </Select>
                 </div>
                 <div>
-                  <Label htmlFor="experienceLevel">Experience Level *</Label>
+                  <Label htmlFor="experienceLevel" className="text-base font-medium text-foreground mb-2 block" style={{ fontFamily: 'Roboto, ui-sans-serif, sans-serif, system-ui' }}>Experience Level *</Label>
                   <Select value={formData.experienceLevel} onValueChange={(value) => handleInputChange('experienceLevel', value)}>
-                    <SelectTrigger>
+                    <SelectTrigger className="border-border bg-input text-foreground focus:ring-2 focus:ring-ring focus:border-transparent rounded-[0.625rem] transition-all duration-150">
                       <SelectValue />
                     </SelectTrigger>
-                    <SelectContent>
+                    <SelectContent className="bg-card border-border rounded-[0.625rem] shadow-md">
                       {EXPERIENCE_LEVELS.map((level) => (
-                        <SelectItem key={level.value} value={level.value}>{level.label}</SelectItem>
+                        <SelectItem key={level.value} value={level.value} className="text-foreground hover:bg-muted">{level.label}</SelectItem>
                       ))}
                     </SelectContent>
                   </Select>
@@ -414,33 +423,39 @@ export function JobPostingOverlay({ isOpen, onClose, onSuccess, editingJob }: Jo
 
               <div className="grid grid-cols-3 gap-4">
                 <div>
-                  <Label htmlFor="salaryMin">Minimum Salary</Label>
+                  <Label htmlFor="salaryMin" className="text-base font-medium text-foreground mb-2 block" style={{ fontFamily: 'Roboto, ui-sans-serif, sans-serif, system-ui' }}>Minimum Salary</Label>
                   <Input
                     id="salaryMin"
                     type="number"
                     value={formData.salary.min}
                     onChange={(e) => handleNestedInputChange('salary', 'min', parseInt(e.target.value) || 0)}
                     placeholder="0"
+                    className="border-border bg-input text-foreground placeholder:text-muted-foreground focus:ring-2 focus:ring-ring focus:border-transparent rounded-[0.625rem] transition-all duration-150"
+                    style={{ fontFamily: 'Roboto, ui-sans-serif, sans-serif, system-ui' }}
                   />
                 </div>
                 <div>
-                  <Label htmlFor="salaryMax">Maximum Salary</Label>
+                  <Label htmlFor="salaryMax" className="text-base font-medium text-foreground mb-2 block" style={{ fontFamily: 'Roboto, ui-sans-serif, sans-serif, system-ui' }}>Maximum Salary</Label>
                   <Input
                     id="salaryMax"
                     type="number"
                     value={formData.salary.max}
                     onChange={(e) => handleNestedInputChange('salary', 'max', parseInt(e.target.value) || 0)}
                     placeholder="0"
+                    className="border-border bg-input text-foreground placeholder:text-muted-foreground focus:ring-2 focus:ring-ring focus:border-transparent rounded-[0.625rem] transition-all duration-150"
+                    style={{ fontFamily: 'Roboto, ui-sans-serif, sans-serif, system-ui' }}
                   />
                 </div>
                 <div>
-                  <Label htmlFor="positions">Number of Positions</Label>
+                  <Label htmlFor="positions" className="text-base font-medium text-foreground mb-2 block" style={{ fontFamily: 'Roboto, ui-sans-serif, sans-serif, system-ui' }}>Number of Positions</Label>
                   <Input
                     id="positions"
                     type="number"
                     value={formData.positions}
                     onChange={(e) => handleInputChange('positions', parseInt(e.target.value) || 1)}
                     min="1"
+                    className="border-border bg-input text-foreground placeholder:text-muted-foreground focus:ring-2 focus:ring-ring focus:border-transparent rounded-[0.625rem] transition-all duration-150"
+                    style={{ fontFamily: 'Roboto, ui-sans-serif, sans-serif, system-ui' }}
                   />
                 </div>
               </div>
@@ -848,19 +863,27 @@ export function JobPostingOverlay({ isOpen, onClose, onSuccess, editingJob }: Jo
         </div>
 
         {/* Footer */}
-        <div className="flex items-center justify-between p-6 border-t">
-          <div className="flex items-center gap-2 text-sm text-muted-foreground">
+        <div className="flex items-center justify-between p-6 border-t border-border" style={{ padding: '1rem' }}>
+          <div className="flex items-center gap-2 text-sm text-muted-foreground" style={{ fontFamily: 'Roboto, ui-sans-serif, sans-serif, system-ui' }}>
             <AlertCircle className="h-4 w-4" />
             <span>All fields marked with * are required</span>
           </div>
           <div className="flex items-center gap-2">
-            <Button variant="outline" onClick={onClose} disabled={isLoading}>
+            <Button 
+              variant="outline" 
+              onClick={onClose} 
+              disabled={isLoading}
+              className="border-border text-foreground hover:bg-muted hover:text-foreground rounded-[0.625rem] transition-all duration-150"
+              style={{ fontFamily: 'Roboto, ui-sans-serif, sans-serif, system-ui' }}
+            >
               Cancel
             </Button>
             <Button 
               variant="outline" 
               onClick={() => handleSubmit('draft')} 
               disabled={isLoading}
+              className="border-border text-foreground hover:bg-muted hover:text-foreground rounded-[0.625rem] transition-all duration-150"
+              style={{ fontFamily: 'Roboto, ui-sans-serif, sans-serif, system-ui' }}
             >
               <Save className="mr-2 h-4 w-4" />
               Save Draft
@@ -868,6 +891,8 @@ export function JobPostingOverlay({ isOpen, onClose, onSuccess, editingJob }: Jo
             <Button 
               onClick={() => handleSubmit('pending_manager_approval')} 
               disabled={isLoading}
+              className="bg-primary text-primary-foreground hover:bg-primary/90 rounded-[0.625rem] transition-all duration-150"
+              style={{ fontFamily: 'Roboto, ui-sans-serif, sans-serif, system-ui' }}
             >
               <Send className="mr-2 h-4 w-4" />
               Submit for Approval
