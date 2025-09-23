@@ -108,6 +108,7 @@ const exportRoutes = require('./routes/export');
 
 // Import new missing route files
 const crmRoutes = require('./routes/crm');
+const salesRoutes = require('./routes/sales');
 const financeRoutes = require('./routes/finance');
 const chatRoutes = require('./routes/chat');
 const settingsRoutes = require('./routes/settings');
@@ -236,6 +237,7 @@ app.use(`${apiPrefix}/export`, exportRoutes);
 // Mount new missing route files with correct v1 prefix
 app.use(`${apiPrefix}/fleet`, fleetRoutes);
 app.use(`${apiPrefix}/crm`, crmRoutes);
+app.use(`${apiPrefix}/sales`, salesRoutes);
 app.use(`${apiPrefix}/finance`, financeRoutes);
 app.use(`${apiPrefix}/chat`, chatRoutes);
 app.use(`${apiPrefix}/settings`, settingsRoutes);

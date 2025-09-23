@@ -1115,6 +1115,72 @@ export class ProductionApiService {
       throw new Error("Failed to load API analytics");
     }
   }
+
+  // Additional Sales API Methods
+  async getSalesPerformanceTeam(period: string) {
+    try {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'https://clutch-main-nk7x.onrender.com'}/api/v1/sales/performance/team?period=${period}`, {
+        headers: {
+          'Authorization': `Bearer ${localStorage.getItem('clutch-admin-token')}`,
+          'Content-Type': 'application/json'
+        }
+      });
+      
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      
+      const data = await response.json();
+      return { success: true, kpis: data.kpis || {} };
+    } catch (error) {
+      logger.error("Failed to fetch sales performance team:", error);
+      return { success: false, message: "Failed to load sales performance team" };
+    }
+  }
+
+  async updateContract(contractId: string, contractData: any) {
+    try {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'https://clutch-main-nk7x.onrender.com'}/api/v1/sales/contracts/${contractId}`, {
+        method: 'PATCH',
+        headers: {
+          'Authorization': `Bearer ${localStorage.getItem('clutch-admin-token')}`,
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(contractData)
+      });
+      
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      
+      const data = await response.json();
+      return { success: true, contract: data.contract };
+    } catch (error) {
+      logger.error("Failed to update contract:", error);
+      return { success: false, message: "Failed to update contract" };
+    }
+  }
+
+  async getSalesActivities() {
+    try {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'https://clutch-main-nk7x.onrender.com'}/api/v1/sales/activities`, {
+        headers: {
+          'Authorization': `Bearer ${localStorage.getItem('clutch-admin-token')}`,
+          'Content-Type': 'application/json'
+        }
+      });
+      
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      
+      const data = await response.json();
+      return { success: true, activities: data.activities || [] };
+    } catch (error) {
+      logger.error("Failed to fetch sales activities:", error);
+      return { success: false, message: "Failed to load sales activities" };
+    }
+  }
 }
 
 // Create and export a singleton instance
