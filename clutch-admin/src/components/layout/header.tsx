@@ -46,7 +46,7 @@ export function Header({ onMenuToggle }: HeaderProps) {
   };
 
   const handleProfileClick = () => {
-    router.push("/settings?tab=profile");
+    router.push("/settings/profile");
   };
 
   const handleSettingsClick = () => {
