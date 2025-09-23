@@ -106,6 +106,13 @@ class BusinessIntelligenceService {
   // Dashboard Widgets
   public async getUnifiedOpsPulse(): Promise<OperationalPulse> {
     try {
+      // Try to get real operational pulse data from API first
+      const realPulse = await realApi.getOperationalPulse().catch(() => null);
+      if (realPulse && typeof realPulse === 'object') {
+        return realPulse as OperationalPulse;
+      }
+
+      // Fallback to aggregated data if real API fails
       const [users, sessions, vehicles, revenue] = await Promise.all([
         productionApi.getUsers().catch(() => []),
         this.getActiveSessions().catch(() => 0),
@@ -173,6 +180,13 @@ class BusinessIntelligenceService {
 
   public async getChurnRisk(): Promise<ChurnRisk[]> {
     try {
+      // Try to get real churn risk data from API first
+      const realChurnRisk = await realApi.getChurnRisk().catch(() => null);
+      if (realChurnRisk && Array.isArray(realChurnRisk)) {
+        return realChurnRisk as ChurnRisk[];
+      }
+
+      // Fallback to calculated data if real API fails
       const users = await productionApi.getUsers().catch(() => []);
       const churnRisks: ChurnRisk[] = [];
 
@@ -239,6 +253,25 @@ class BusinessIntelligenceService {
     costGrowth: number;
   }> {
     try {
+      // Try to get real revenue vs cost margin data from API first
+      const realMarginData = await realApi.getRevenueVsCostMargin().catch(() => null);
+      if (realMarginData && typeof realMarginData === 'object') {
+        return realMarginData as {
+          revenue: number;
+          costs: number;
+          margin: number;
+          breakdown: {
+            fleet: number;
+            infrastructure: number;
+            maintenance: number;
+            other: number;
+          };
+          revenueGrowth: number;
+          costGrowth: number;
+        };
+      }
+
+      // Fallback to calculated data if real API fails
       const [revenue, fleet, payments] = await Promise.all([
         this.getRevenueMetrics().catch(() => ({ monthly: 0, total: 0, growth: 0 })),
         productionApi.getFleetVehicles().catch(() => []),
@@ -375,15 +408,25 @@ class BusinessIntelligenceService {
   public async getAIRevenueForecast(): Promise<RevenueForecast[]> {
     try {
       // Try to get real forecast data from API first
-      const realForecast = await Promise.resolve([
-        { period: '7d', base: 15000, optimistic: 18000, pessimistic: 12000, confidence: 85, factors: ['seasonal trends', 'user growth'] },
-        { period: '30d', base: 65000, optimistic: 78000, pessimistic: 52000, confidence: 80, factors: ['market conditions', 'competition'] },
-        { period: '90d', base: 195000, optimistic: 234000, pessimistic: 156000, confidence: 75, factors: ['economic outlook', 'product updates'] }
-      ]);
+      const realForecast = await realApi.getAIRevenueForecast().catch(() => null);
       if (realForecast && Array.isArray(realForecast)) {
-        return (realForecast as any[]).map((f: any) => ({
-          period: f.period || f.date,
-          base: f.base || f.amount || 0,
+        return realForecast as RevenueForecast[];
+      }
+
+      // Fallback to calculated forecast if real API fails
+      const revenueData = await this.getRevenueMetrics().catch(() => ({ monthly: 0, total: 0, growth: 0 }));
+      const baseRevenue = revenueData.monthly || 45000;
+      const growthRate = (revenueData.growth || 11.1) / 100;
+
+      const calculatedForecast = [
+        { period: '7d', base: baseRevenue * 0.33, optimistic: baseRevenue * 0.4, pessimistic: baseRevenue * 0.27, confidence: 85, factors: ['seasonal trends', 'user growth'] },
+        { period: '30d', base: baseRevenue, optimistic: baseRevenue * 1.2, pessimistic: baseRevenue * 0.8, confidence: 80, factors: ['market conditions', 'competition'] },
+        { period: '90d', base: baseRevenue * 2.9, optimistic: baseRevenue * 3.5, pessimistic: baseRevenue * 2.3, confidence: 75, factors: ['economic outlook', 'product updates'] }
+      ];
+
+      return calculatedForecast.map((f: any) => ({
+        period: f.period || f.date,
+        base: f.base || f.amount || 0,
           optimistic: f.optimistic || f.high || f.base * 1.15,
           pessimistic: f.pessimistic || f.low || f.base * 0.85,
           confidence: f.confidence || 85,

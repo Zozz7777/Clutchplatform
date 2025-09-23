@@ -2683,7 +2683,10 @@
     "no": "لا",
     "ok": "موافق",
     "minutes": "دقائق",
-    "average": "متوسط"
+    "average": "متوسط",
+    "today": "اليوم",
+    "yesterday": "أمس",
+    "daysAgo": "منذ {days} أيام"
   },
   "commandBar": {
     "categories": {
@@ -3881,11 +3884,31 @@
       "recentIncidents": "الحوادث الأخيرة",
       "costBySeverity": "التكلفة حسب الخطورة"
     },
-    "severity": {
-      "critical": "حرج",
-      "high": "عالي",
-      "medium": "متوسط",
-      "low": "منخفض"
-    }
+        "severity": {
+          "critical": "حرج",
+          "high": "عالي",
+          "medium": "متوسط",
+          "low": "منخفض"
+        },
+        "compliance": {
+          "excellent": "ممتاز",
+          "good": "جيد",
+          "poor": "ضعيف"
+        },
+        "services": {
+          "unknown": "خدمة غير معروفة"
+        },
+        "incidents": {
+          "systemIncident": "حادث في النظام",
+          "systemError": "خطأ في النظام"
+        },
+        "errors": {
+          "systemError": "خطأ في النظام",
+          "systemAlert": "تنبيه النظام"
+        },
+        "causes": {
+          "unknownCause": "سبب غير معروف",
+          "systemError": "خطأ في النظام"
+        }
   }
 }

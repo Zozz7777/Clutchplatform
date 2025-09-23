@@ -51,43 +51,68 @@ export function IncidentCost({ className = '' }: IncidentCostProps) {
   React.useEffect(() => {
     const loadIncidentData = async () => {
       try {
-        // Load real incident data from API
-        const [incidentsData, alertsData, logsData] = await Promise.all([
-          Promise.resolve([]),
-          Promise.resolve([]),
-          Promise.resolve([])
+        // Load real incident data from backend APIs
+        const [alertsResponse, logsResponse] = await Promise.all([
+          productionApi.getSystemAlerts(),
+          productionApi.getSystemLogs()
         ]);
 
-        // Transform API data to component format
-        const transformedIncidents: IncidentCostData[] = incidentsData.map((incident: any, index: number) => ({
-          incidentId: incident.id || `incident-${index}`,
-          title: incident.title || 'Incident',
-          severity: incident.severity || 'medium',
-          duration: incident.duration || 0,
-          cost: incident.cost || 0,
-          affectedUsers: incident.affectedUsers || 0,
-          date: incident.date || new Date().toISOString(),
-          status: incident.status || 'resolved'
+        // Transform backend data to component format
+        const alertsData = alertsResponse?.data || [];
+        const logsData = logsResponse?.data || [];
+        
+        // Create incidents from alerts and logs
+        const transformedIncidents: IncidentCostData[] = alertsData.map((alert: any, index: number) => ({
+          incidentId: alert.id || `incident-${index}`,
+          title: alert.title || alert.message || t('systemHealth.incidents.systemIncident'),
+          severity: alert.severity || 'medium',
+          duration: alert.duration || 30, // Default 30 minutes
+          cost: alert.cost || (alert.severity === 'critical' ? 5000 : alert.severity === 'high' ? 2000 : 500),
+          affectedUsers: alert.affectedUsers || 0,
+          date: alert.timestamp || alert.createdAt || new Date().toISOString(),
+          status: alert.status || 'resolved'
         }));
 
-        const totalCost = transformedIncidents.reduce((sum, incident) => sum + incident.cost, 0);
-        const averageCost = totalCost / transformedIncidents.length;
-        const totalDowntime = transformedIncidents.reduce((sum, incident) => sum + incident.duration, 0);
+        // Add incidents from error logs
+        const errorLogs = logsData.filter((log: any) => log.level === 'error' || log.level === 'critical');
+        const logIncidents = errorLogs.map((log: any, index: number) => ({
+          incidentId: `log-incident-${index}`,
+          title: log.message || t('systemHealth.incidents.systemError'),
+          severity: log.level === 'critical' ? 'critical' : 'high',
+          duration: 15, // Default 15 minutes for log-based incidents
+          cost: log.level === 'critical' ? 3000 : 1000,
+          affectedUsers: 0,
+          date: log.timestamp || new Date().toISOString(),
+          status: 'resolved'
+        }));
+
+        const allIncidents = [...transformedIncidents, ...logIncidents];
+        const totalCost = allIncidents.reduce((sum, incident) => sum + incident.cost, 0);
+        const averageCost = allIncidents.length > 0 ? totalCost / allIncidents.length : 0;
+        const totalDowntime = allIncidents.reduce((sum, incident) => sum + incident.duration, 0);
         
-        const severityDistribution = transformedIncidents.reduce((acc, incident) => {
+        const severityDistribution = allIncidents.reduce((acc, incident) => {
           acc[incident.severity] = (acc[incident.severity] || 0) + 1;
           return acc;
         }, {} as Record<string, number>);
 
         setIncidentData({
-          incidents: transformedIncidents,
+          incidents: allIncidents,
           totalCost,
           averageCost,
           totalDowntime,
           severityDistribution
         });
       } catch (error) {
-        // Failed to load incident cost data
+        console.error('Failed to load incident data:', error);
+        // Fallback data on error
+        setIncidentData({
+          incidents: [],
+          totalCost: 0,
+          averageCost: 0,
+          totalDowntime: 0,
+          severityDistribution: { critical: 0, high: 0, medium: 0, low: 0 }
+        });
       } finally {
         setIsLoading(false);
       }

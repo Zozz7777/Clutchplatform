@@ -31,11 +31,11 @@ import {
 } from 'lucide-react';
 
 interface ServiceHealth {
-  name: string;
+    name: string;
   status: 'healthy' | 'degraded' | 'down';
   uptime: number;
   responseTime: number;
-  lastCheck: string;
+    lastCheck: string;
   dependencies: string[];
 }
 
@@ -70,10 +70,10 @@ export default function SystemHealthPage() {
               uptime: actualData.uptime?.system || 0,
               responseTime: 150, // Default response time
               lastCheck: new Date().toISOString(),
-              dependencies: ['Database', 'Redis Cache']
+              dependencies: [t('systemHealth.services.database'), t('systemHealth.services.redisCache')]
             },
             {
-              name: 'Database',
+              name: t('systemHealth.services.database'),
               status: 'healthy',
               uptime: 99.9,
               responseTime: 44,
@@ -81,7 +81,7 @@ export default function SystemHealthPage() {
               dependencies: []
             },
             {
-              name: 'Redis Cache',
+              name: t('systemHealth.services.redisCache'),
               status: actualData.memory?.percentage > 90 ? 'down' : 'healthy',
               uptime: actualData.memory?.percentage > 90 ? 0 : 99.8,
               responseTime: actualData.memory?.percentage > 90 ? 0 : 12,
@@ -89,7 +89,7 @@ export default function SystemHealthPage() {
               dependencies: []
             },
             {
-              name: 'Email Service',
+              name: t('systemHealth.services.emailService'),
               status: 'unknown',
               uptime: 0,
               responseTime: 0,
@@ -190,10 +190,10 @@ export default function SystemHealthPage() {
             uptime: actualData.uptime?.system || 0,
             responseTime: 150, // Default response time
             lastCheck: new Date().toISOString(),
-            dependencies: ['Database', 'Redis Cache']
+            dependencies: [t('systemHealth.services.database'), t('systemHealth.services.redisCache')]
           },
           {
-            name: 'Database',
+            name: t('systemHealth.services.database'),
             status: 'healthy',
             uptime: 99.9,
             responseTime: 44,
@@ -201,7 +201,7 @@ export default function SystemHealthPage() {
             dependencies: []
           },
           {
-            name: 'Redis Cache',
+            name: t('systemHealth.services.redisCache'),
             status: actualData.memory?.percentage > 90 ? 'down' : 'healthy',
             uptime: actualData.memory?.percentage > 90 ? 0 : 99.8,
             responseTime: actualData.memory?.percentage > 90 ? 0 : 12,
@@ -209,7 +209,7 @@ export default function SystemHealthPage() {
             dependencies: []
           },
           {
-            name: 'Email Service',
+            name: t('systemHealth.services.emailService'),
             status: 'unknown',
             uptime: 0,
             responseTime: 0,
@@ -457,10 +457,10 @@ export default function SystemHealthPage() {
         <CardContent>
           <div className="space-y-4">
                   {[
-                    { name: 'AWS S3', status: 'healthy', responseTime: 45 },
-                    { name: 'Stripe API', status: 'healthy', responseTime: 120 },
-                    { name: 'SendGrid', status: 'down', responseTime: 0 },
-                    { name: 'MongoDB Atlas', status: 'healthy', responseTime: 25 }
+                    { name: t('systemHealth.externalServices.awsS3'), status: 'healthy', responseTime: 45 },
+                    { name: t('systemHealth.externalServices.stripeApi'), status: 'healthy', responseTime: 120 },
+                    { name: t('systemHealth.externalServices.sendGrid'), status: 'down', responseTime: 0 },
+                    { name: t('systemHealth.externalServices.mongoDbAtlas'), status: 'healthy', responseTime: 25 }
                   ].map((dep, index) => (
                     <div key={index} className="flex items-center justify-between p-3 border rounded-[0.625rem]">
                       <div className="flex items-center space-x-3">
@@ -486,10 +486,10 @@ export default function SystemHealthPage() {
         <CardContent>
           <div className="space-y-4">
                   {[
-                    { name: 'Load Balancer', status: 'healthy', instances: 3 },
-                    { name: 'Redis Cache', status: 'degraded', instances: 2 },
-                    { name: 'Queue Workers', status: 'healthy', instances: 5 },
-                    { name: 'Background Jobs', status: 'healthy', instances: 2 }
+                    { name: t('systemHealth.services.loadBalancer'), status: 'healthy', instances: 3 },
+                    { name: t('systemHealth.services.redisCache'), status: 'degraded', instances: 2 },
+                    { name: t('systemHealth.services.queueWorkers'), status: 'healthy', instances: 5 },
+                    { name: t('systemHealth.services.backgroundJobs'), status: 'healthy', instances: 2 }
                   ].map((service, index) => (
                     <div key={index} className="flex items-center justify-between p-3 border rounded-[0.625rem]">
                       <div className="flex items-center space-x-3">
@@ -525,21 +525,21 @@ export default function SystemHealthPage() {
                     time: '2024-01-15T14:30:00Z',
                     event: 'emailServiceOutage',
                     duration: '2h 15m',
-                    impact: 'Medium',
+                    impact: 'medium',
                     status: 'resolved'
                   },
                   {
                     time: '2024-01-14T09:15:00Z',
                     event: 'databasePerformanceDegradation',
                     duration: '45m',
-                    impact: 'Low',
+                    impact: 'low',
                     status: 'resolved'
                   },
                   {
                     time: '2024-01-13T16:20:00Z',
                     event: 'apiGatewayTimeout',
                     duration: '1h 30m',
-                    impact: 'High',
+                    impact: 'high',
                     status: 'resolved'
                   }
                 ].map((event, index) => (
@@ -551,16 +551,16 @@ export default function SystemHealthPage() {
                         <p className="text-sm text-muted-foreground font-sans">
                           {new Date(event.time).toLocaleString()} • {t('systemHealth.history.duration')}: {event.duration}
                         </p>
-                      </div>
-                    </div>
-                    <div className="flex items-center space-x-2">
-                      <Badge variant={event.impact === 'High' ? 'destructive' : event.impact === 'Medium' ? 'default' : 'secondary'}>
-                        {t(`systemHealth.history.${event.impact.toLowerCase()}Impact`)}
-                        </Badge>
-                      {getStatusBadge(event.status)}
                     </div>
                   </div>
-                ))}
+                    <div className="flex items-center space-x-2">
+                      <Badge variant={event.impact === 'high' ? 'destructive' : event.impact === 'medium' ? 'default' : 'secondary'}>
+                        {t(`systemHealth.history.${event.impact}Impact`)}
+                        </Badge>
+                      {getStatusBadge(event.status)}
+                </div>
+              </div>
+            ))}
           </div>
         </CardContent>
       </Card>

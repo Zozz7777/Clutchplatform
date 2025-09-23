@@ -49,28 +49,64 @@ export function ErrorDistribution({ className = '' }: ErrorDistributionProps) {
   React.useEffect(() => {
     const loadErrorData = async () => {
       try {
-        // Load real error data from API
-        const [errors, alerts, logs] = await Promise.all([
-          Promise.resolve([]),
-          Promise.resolve([]),
-          Promise.resolve([])
+        // Load real error data from backend APIs
+        const [logsResponse, alertsResponse] = await Promise.all([
+          productionApi.getSystemLogs(),
+          productionApi.getSystemAlerts()
         ]);
 
-        // Transform API data to component format
-        const transformedErrors: ErrorData[] = errors.map((error: any, index: number) => ({
-          type: error.type || 'Unknown Error',
-          count: error.count || 0,
-          percentage: error.percentage || 0,
-          trend: error.trend || 'stable',
-          severity: error.severity || 'medium',
-          lastOccurrence: error.lastOccurrence || new Date().toISOString(),
-          description: error.description || 'Error occurred in the system'
-        }));
+        const logsData = logsResponse?.data || [];
+        const alertsData = alertsResponse?.data || [];
+        
+        // Transform logs and alerts into error data
+        const errorLogs = logsData.filter((log: any) => log.level === 'error' || log.level === 'critical' || log.level === 'warning');
+        const errorAlerts = alertsData.filter((alert: any) => alert.severity === 'high' || alert.severity === 'critical');
+        
+        // Group errors by type
+        const errorGroups: Record<string, any[]> = {};
+        
+        errorLogs.forEach((log: any) => {
+          const type = log.type || log.category || t('systemHealth.errors.systemError');
+          if (!errorGroups[type]) errorGroups[type] = [];
+          errorGroups[type].push(log);
+        });
+        
+        errorAlerts.forEach((alert: any) => {
+          const type = alert.type || alert.category || t('systemHealth.errors.systemAlert');
+          if (!errorGroups[type]) errorGroups[type] = [];
+          errorGroups[type].push(alert);
+        });
+
+        // Transform grouped data to component format
+        const transformedErrors: ErrorData[] = Object.entries(errorGroups).map(([type, errors]) => {
+          const count = errors.length;
+          const severity = errors.some((e: any) => e.level === 'critical' || e.severity === 'critical') ? 'critical' : 
+                          errors.some((e: any) => e.level === 'error' || e.severity === 'high') ? 'high' : 'medium';
+          const lastOccurrence = errors.reduce((latest, error) => {
+            const errorTime = new Date(error.timestamp || error.createdAt || 0);
+            return errorTime > latest ? errorTime : latest;
+          }, new Date(0));
+          
+          return {
+            type,
+            count,
+            percentage: 0, // Will be calculated below
+            trend: 'stable',
+            severity,
+            lastOccurrence: lastOccurrence.toISOString(),
+            description: `Errors related to ${type.toLowerCase()}`
+          };
+        });
 
         const totalErrors = transformedErrors.reduce((sum, error) => sum + error.count, 0);
         const criticalErrors = transformedErrors.filter(e => e.severity === 'critical').reduce((sum, error) => sum + error.count, 0);
-        const averageErrors = totalErrors / transformedErrors.length;
-        const trend = transformedErrors.filter(e => e.trend === 'up').length > transformedErrors.filter(e => e.trend === 'down').length ? 'up' : 'down';
+        const averageErrors = transformedErrors.length > 0 ? totalErrors / transformedErrors.length : 0;
+        const trend = 'down'; // Default trend
+        
+        // Calculate percentages
+        transformedErrors.forEach(error => {
+          error.percentage = totalErrors > 0 ? (error.count / totalErrors) * 100 : 0;
+        });
 
         setErrorData({
           errors: transformedErrors,
@@ -80,7 +116,15 @@ export function ErrorDistribution({ className = '' }: ErrorDistributionProps) {
           trend
         });
       } catch (error) {
-        // Failed to load error distribution data
+        console.error('Failed to load error data:', error);
+        // Fallback data on error
+        setErrorData({
+          errors: [],
+          totalErrors: 0,
+          criticalErrors: 0,
+          averageErrors: 0,
+          trend: 'stable'
+        });
       } finally {
         setIsLoading(false);
       }

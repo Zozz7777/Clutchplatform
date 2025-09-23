@@ -423,6 +423,62 @@ export class RealApiService {
     )();
   }
 
+  async getSLAMetrics(): Promise<Record<string, unknown>> {
+    return withErrorHandling(
+      async () => {
+        const response = await apiService.makeRequest<Record<string, unknown>>("/api/v1/system-health/sla");
+        return handleApiResponse(response, 'getSLAMetrics', {});
+      },
+      'getSLAMetrics',
+      { 
+        fallbackValue: {}, 
+        showToast: false 
+      }
+    )();
+  }
+
+  async getSystemAlerts(): Promise<Record<string, unknown>> {
+    return withErrorHandling(
+      async () => {
+        const response = await apiService.makeRequest<Record<string, unknown>>("/api/v1/system-health/alerts");
+        return handleApiResponse(response, 'getSystemAlerts', {});
+      },
+      'getSystemAlerts',
+      { 
+        fallbackValue: {}, 
+        showToast: false 
+      }
+    )();
+  }
+
+  async getSystemLogs(): Promise<Record<string, unknown>> {
+    return withErrorHandling(
+      async () => {
+        const response = await apiService.makeRequest<Record<string, unknown>>("/api/v1/system-health/logs");
+        return handleApiResponse(response, 'getSystemLogs', {});
+      },
+      'getSystemLogs',
+      { 
+        fallbackValue: {}, 
+        showToast: false 
+      }
+    )();
+  }
+
+  async getServiceHealth(): Promise<Record<string, unknown>> {
+    return withErrorHandling(
+      async () => {
+        const response = await apiService.makeRequest<Record<string, unknown>>("/api/v1/system-health/services");
+        return handleApiResponse(response, 'getServiceHealth', {});
+      },
+      'getServiceHealth',
+      { 
+        fallbackValue: {}, 
+        showToast: false 
+      }
+    )();
+  }
+
   async getAPIPerformance(): Promise<Record<string, unknown>> {
     return withErrorHandling(
       async () => {
@@ -804,6 +860,73 @@ export class RealApiService {
       },
       'getOtherOperationalCosts',
       { fallbackValue: {}, showToast: false }
+    )();
+  }
+
+  // Business Intelligence APIs
+  async getOperationalPulse(): Promise<Record<string, unknown>> {
+    return withErrorHandling(
+      async () => {
+        const response = await apiService.makeRequest<Record<string, unknown>>("/api/v1/business-intelligence/operational-pulse");
+        return handleApiResponse(response, 'getOperationalPulse', {});
+      },
+      'getOperationalPulse',
+      { fallbackValue: {}, showToast: false }
+    )();
+  }
+
+  async getChurnRisk(): Promise<Record<string, unknown>[]> {
+    return withErrorHandling(
+      async () => {
+        const response = await apiService.makeRequest<Record<string, unknown>[]>("/api/v1/business-intelligence/churn-risk");
+        return handleApiResponse(response, 'getChurnRisk', []);
+      },
+      'getChurnRisk',
+      { fallbackValue: [], showToast: false }
+    )();
+  }
+
+  async getRevenueVsCostMargin(): Promise<Record<string, unknown>> {
+    return withErrorHandling(
+      async () => {
+        const response = await apiService.makeRequest<Record<string, unknown>>("/api/v1/business-intelligence/revenue-cost-margin");
+        return handleApiResponse(response, 'getRevenueVsCostMargin', {});
+      },
+      'getRevenueVsCostMargin',
+      { fallbackValue: {}, showToast: false }
+    )();
+  }
+
+  async getAIRevenueForecast(): Promise<Record<string, unknown>[]> {
+    return withErrorHandling(
+      async () => {
+        const response = await apiService.makeRequest<Record<string, unknown>[]>("/api/v1/business-intelligence/revenue-forecast");
+        return handleApiResponse(response, 'getAIRevenueForecast', []);
+      },
+      'getAIRevenueForecast',
+      { fallbackValue: [], showToast: false }
+    )();
+  }
+
+  async getComplianceStatus(): Promise<Record<string, unknown>> {
+    return withErrorHandling(
+      async () => {
+        const response = await apiService.makeRequest<Record<string, unknown>>("/api/v1/business-intelligence/compliance-status");
+        return handleApiResponse(response, 'getComplianceStatus', {});
+      },
+      'getComplianceStatus',
+      { fallbackValue: {}, showToast: false }
+    )();
+  }
+
+  async getTopEnterpriseClients(): Promise<Record<string, unknown>[]> {
+    return withErrorHandling(
+      async () => {
+        const response = await apiService.makeRequest<Record<string, unknown>[]>("/api/v1/business-intelligence/top-enterprise-clients");
+        return handleApiResponse(response, 'getTopEnterpriseClients', []);
+      },
+      'getTopEnterpriseClients',
+      { fallbackValue: [], showToast: false }
     )();
   }
 
