@@ -159,7 +159,7 @@ export function OnboardingCompletion({ className = '' }: OnboardingCompletionPro
           <div className="flex items-center justify-center space-x-2 mb-2">
             <Target className={`h-6 w-6 ${getCompletionColor(onboardingData.completionRate)}`} />
             <span className={`text-2xl font-bold ${getCompletionColor(onboardingData.completionRate)}`}>
-              {onboardingData.completionRate.toFixed(1)}%
+              {(onboardingData.completionRate || 0).toFixed(1)}%
             </span>
             <Badge className={getCompletionBadge(onboardingData.completionRate)}>
               {getCompletionLevel(onboardingData.completionRate)}
@@ -209,7 +209,7 @@ export function OnboardingCompletion({ className = '' }: OnboardingCompletionPro
                   </div>
                   <div className="text-right">
                     <p className={`text-sm font-semibold ${getCompletionColor(step.completionRate)}`}>
-                      {step.completionRate.toFixed(1)}%
+                      {(step.completionRate || 0).toFixed(1)}%
                     </p>
                     <Badge className={getCompletionBadge(step.completionRate)}>
                       {getCompletionLevel(step.completionRate)}
@@ -229,7 +229,7 @@ export function OnboardingCompletion({ className = '' }: OnboardingCompletionPro
               <div key={step.step} className="space-y-1">
                 <div className="flex justify-between text-sm">
                   <span className="text-muted-foreground">{step.step}</span>
-                  <span className="text-foreground font-medium">{step.completionRate.toFixed(1)}%</span>
+                  <span className="text-foreground font-medium">{(step.completionRate || 0).toFixed(1)}%</span>
                 </div>
                 <Progress value={step.completionRate} className="h-2" />
               </div>
@@ -255,7 +255,7 @@ export function OnboardingCompletion({ className = '' }: OnboardingCompletionPro
                     </div>
                   </div>
                   <div className="text-right">
-                    <p className="text-sm font-semibold text-destructive">{step.completionRate.toFixed(1)}%</p>
+                    <p className="text-sm font-semibold text-destructive">{(step.completionRate || 0).toFixed(1)}%</p>
                     <Badge className="bg-destructive/10 text-red-800">{t('widgets.low')}</Badge>
                   </div>
                 </div>
@@ -282,7 +282,7 @@ export function OnboardingCompletion({ className = '' }: OnboardingCompletionPro
                     </div>
                   </div>
                   <div className="text-right">
-                    <p className="text-sm font-semibold text-success">{step.completionRate.toFixed(1)}%</p>
+                    <p className="text-sm font-semibold text-success">{(step.completionRate || 0).toFixed(1)}%</p>
                     <Badge className="bg-success/10 text-green-800">{t('widgets.high')}</Badge>
                   </div>
                 </div>
@@ -307,12 +307,12 @@ export function OnboardingCompletion({ className = '' }: OnboardingCompletionPro
         <div className="p-3 bg-primary/10 rounded-[0.625rem]-lg">
           <h5 className="text-sm font-medium text-blue-900 mb-2">💡 {t('widgets.onboardingInsights')}</h5>
           <ul className="text-xs text-blue-800 space-y-1">
-            <li>• {t('widgets.overallCompletionRate')}: {onboardingData.completionRate.toFixed(1)}%</li>
+            <li>• {t('widgets.overallCompletionRate')}: {(onboardingData.completionRate || 0).toFixed(1)}%</li>
             <li>• {onboardingData.completed} {t('widgets.usersCompletedFullOnboarding')}</li>
             <li>• {bottleneckSteps.length} {t('widgets.stepsNeedImprovement')}</li>
             <li>• {topPerformingSteps.length} {t('widgets.stepsPerformingExcellent')}</li>
             {bottleneckSteps.length > 0 && (
-              <li>• {t('widgets.focusOn')} {bottleneckSteps[0]?.step} ({bottleneckSteps[0]?.completionRate.toFixed(1)}% {t('widgets.completion')})</li>
+              <li>• {t('widgets.focusOn')} {bottleneckSteps[0]?.step} ({(bottleneckSteps[0]?.completionRate || 0).toFixed(1)}% {t('widgets.completion')})</li>
             )}
           </ul>
         </div>

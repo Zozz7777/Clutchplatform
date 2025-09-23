@@ -283,7 +283,7 @@ export function RoleDistribution({ className = '' }: RoleDistributionProps) {
           <div className="text-center p-3 bg-primary/10 rounded-[0.625rem]-lg">
             <BarChart3 className="h-5 w-5 text-primary mx-auto mb-1" />
             <p className="text-lg font-bold text-primary">
-              {largestRole ? largestRole.percentage.toFixed(1) : 0}%
+              {largestRole ? (largestRole.percentage || 0).toFixed(1) : 0}%
             </p>
             <p className="text-xs text-muted-foreground">{t('widgets.largestRole')}</p>
           </div>
@@ -317,7 +317,7 @@ export function RoleDistribution({ className = '' }: RoleDistributionProps) {
                     <div className="flex items-center space-x-2">
                       <p className="text-sm font-semibold text-foreground">{role.count}</p>
                       <Badge variant="outline" className="text-xs">
-                        {role.percentage.toFixed(1)}%
+                        {(role.percentage || 0).toFixed(1)}%
                       </Badge>
                     </div>
                     <div className="flex items-center space-x-1 mt-1">
@@ -347,7 +347,7 @@ export function RoleDistribution({ className = '' }: RoleDistributionProps) {
               <div key={role.role} className="space-y-1">
                 <div className="flex justify-between text-sm">
                   <span className="text-muted-foreground capitalize">{role.role}</span>
-                  <span className="text-foreground font-medium">{role.percentage.toFixed(1)}%</span>
+                  <span className="text-foreground font-medium">{(role.percentage || 0).toFixed(1)}%</span>
                 </div>
                 <Progress value={role.percentage} className="h-2" />
               </div>
@@ -391,8 +391,8 @@ export function RoleDistribution({ className = '' }: RoleDistributionProps) {
           <ul className="text-xs text-blue-800 space-y-1">
             <li>• {t('widgets.totalUsersInSystem', { count: totalUsers })}</li>
             <li>• {t('widgets.differentRolesInSystem', { count: roleData.length })}</li>
-            <li>• {t('widgets.largestRolePercentage', { role: largestRole?.role || 'N/A', percentage: largestRole?.percentage.toFixed(1) || '0' })}</li>
-            <li>• {t('widgets.smallestRolePercentage', { role: smallestRole?.role || 'N/A', percentage: smallestRole?.percentage.toFixed(1) || '0' })}</li>
+            <li>• {t('widgets.largestRolePercentage', { role: largestRole?.role || 'N/A', percentage: (largestRole?.percentage || 0).toFixed(1) })}</li>
+            <li>• {t('widgets.smallestRolePercentage', { role: smallestRole?.role || 'N/A', percentage: (smallestRole?.percentage || 0).toFixed(1) })}</li>
             {roleData.filter(r => ['super_admin', 'head_administrator', 'executive', 'platform_admin', 'admin'].includes(r.role)).length > 0 && (
               <li>• {roleData.filter(r => ['super_admin', 'head_administrator', 'executive', 'platform_admin', 'admin'].includes(r.role)).reduce((sum, r) => sum + r.count, 0)} admin users</li>
             )}

@@ -68,7 +68,8 @@ export function UserGrowthCohort({ className = '' }: UserGrowthCohortProps) {
   const getAverageRetention = () => {
     const cohorts = getFilteredCohorts();
     if (cohorts.length === 0) return 0;
-    return cohorts.reduce((sum, cohort) => sum + cohort.retentionRate, 0) / cohorts.length;
+    const total = cohorts.reduce((sum, cohort) => sum + (cohort.retentionRate || 0), 0);
+    return total / cohorts.length;
   };
 
   const getRetentionColor = (rate: number) => {
@@ -156,7 +157,7 @@ export function UserGrowthCohort({ className = '' }: UserGrowthCohortProps) {
           </div>
           <div className="text-center p-3 bg-primary/10 rounded-[0.625rem]-lg">
             <BarChart3 className="h-5 w-5 text-primary mx-auto mb-1" />
-            <p className="text-lg font-bold text-primary">{averageRetention.toFixed(1)}%</p>
+            <p className="text-lg font-bold text-primary">{(averageRetention || 0).toFixed(1)}%</p>
             <p className="text-xs text-muted-foreground">{t('widgets.averageRetention')}</p>
           </div>
         </div>
@@ -190,7 +191,7 @@ export function UserGrowthCohort({ className = '' }: UserGrowthCohortProps) {
                   </div>
                   <div className="text-center">
                     <Badge className={getRetentionBadge(cohort.retentionRate)}>
-                      {cohort.retentionRate.toFixed(1)}%
+                      {(cohort.retentionRate || 0).toFixed(1)}%
                     </Badge>
                   </div>
                 </div>
@@ -217,7 +218,7 @@ export function UserGrowthCohort({ className = '' }: UserGrowthCohortProps) {
                     ></div>
                   </div>
                   <span className={`text-sm font-medium ${getRetentionColor(cohort.retentionRate)}`}>
-                    {cohort.retentionRate.toFixed(1)}%
+                    {(cohort.retentionRate || 0).toFixed(1)}%
                   </span>
                 </div>
               </div>
@@ -259,7 +260,7 @@ export function UserGrowthCohort({ className = '' }: UserGrowthCohortProps) {
         <div className="p-3 bg-primary/10 rounded-[0.625rem]-lg">
           <h5 className="text-sm font-medium text-blue-900 mb-2">💡 {t('widgets.cohortInsights')}</h5>
           <ul className="text-xs text-blue-800 space-y-1">
-            <li>• {t('widgets.averageRetentionRate', { rate: averageRetention.toFixed(1) })}</li>
+            <li>• {t('widgets.averageRetentionRate', { rate: (averageRetention || 0).toFixed(1) })}</li>
             <li>• {t('widgets.cohortsWithHighRetention', { count: filteredCohorts.filter(c => c.retentionRate >= 80).length })}</li>
             <li>• {t('widgets.totalNewUsersInPeriod', { count: totalNewUsers })}</li>
             <li>• {t('widgets.totalRetainedUsers', { count: totalRetained })}</li>
