@@ -57,9 +57,26 @@ export function Header({ onMenuToggle }: HeaderProps) {
   const getUserDisplayInfo = () => {
     if (!user) return { displayName: '', jobTitle: '' };
     
-    // Parse name - remove role suffix if present (e.g., "Ziad - CEO" -> "Ziad")
+    // Parse name - remove role suffix if present (e.g., "Ziad - CEO" -> "Ziad Shaaban")
     const nameParts = user.name.split(' - ');
-    const displayName = nameParts[0] || user.name;
+    const firstName = nameParts[0] || user.name;
+    
+    // User name mapping - map first names to full names
+    const userFullNames: Record<string, string> = {
+      'Ziad': 'Ziad Shaaban',
+      'Ahmed': 'Ahmed Hassan',
+      'Mohamed': 'Mohamed Ali',
+      'Sara': 'Sara Ahmed',
+      'Fatima': 'Fatima Omar'
+    };
+    
+    // Construct full name
+    let displayName = userFullNames[firstName] || firstName;
+    
+    // If the name already contains a space, use it as is
+    if (firstName.includes(' ')) {
+      displayName = firstName;
+    }
     
     // Get translated job title
     const jobTitle = t(`jobTitles.${user.role}`) || user.role;

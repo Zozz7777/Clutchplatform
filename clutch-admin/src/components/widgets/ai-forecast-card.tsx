@@ -223,7 +223,7 @@ export function AIForecastCard({ className = '' }: AIForecastCardProps) {
                       {day.base.toLocaleString()} EGP
                     </p>
                     <p className="text-xs text-muted-foreground">
-                      {day.confidence.toFixed(0)}% confidence
+{day.confidence.toFixed(0)}% {t('widgets.confidence')}
                     </p>
                   </div>
                   <div className="w-16">
@@ -242,7 +242,7 @@ export function AIForecastCard({ className = '' }: AIForecastCardProps) {
 
         {/* Key Factors */}
         <div className="space-y-3">
-          <h4 className="text-sm font-medium text-card-foreground">Key Factors</h4>
+<h4 className="text-sm font-medium text-card-foreground">{t('widgets.keyFactors')}</h4>
           <div className="space-y-2">
             {filteredForecast[0]?.factors.map((factor, index) => (
               <div key={index} className="flex items-center space-x-2 text-sm text-muted-foreground">
@@ -261,7 +261,7 @@ export function AIForecastCard({ className = '' }: AIForecastCardProps) {
               riskLevel.color === 'yellow' ? 'text-warning' :
               'text-destructive'
             }`} />
-            <h5 className="text-sm font-medium text-card-foreground">Risk Assessment</h5>
+<h5 className="text-sm font-medium text-card-foreground">{t('widgets.riskAssessment')}</h5>
           </div>
           <p className="text-xs text-muted-foreground">
             {riskLevel.level === t('widgets.low') && t('widgets.forecastHighConfidence')}
@@ -274,11 +274,11 @@ export function AIForecastCard({ className = '' }: AIForecastCardProps) {
         <div className="flex space-x-2 pt-2">
           <Button variant="outline" size="sm" className="flex-1 hover:bg-muted focus:ring-2 focus:ring-ring">
             <BarChart3 className="h-4 w-4 mr-2" />
-            View Details
+{t('widgets.viewDetails')}
           </Button>
           <Button variant="outline" size="sm" className="flex-1 hover:bg-muted focus:ring-2 focus:ring-ring">
             <Target className="h-4 w-4 mr-2" />
-            Set Targets
+{t('widgets.setTargets')}
           </Button>
         </div>
       </CardContent>

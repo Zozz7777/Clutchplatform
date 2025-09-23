@@ -103,7 +103,7 @@ export function TopEnterpriseClients({ className = '' }: TopEnterpriseClientsPro
             <Building2 className="h-5 w-5 text-primary" />
             <span>{t('widgets.top5EnterpriseClients')}</span>
           </CardTitle>
-          <CardDescription className="text-muted-foreground">Loading client data...</CardDescription>
+          <CardDescription className="text-muted-foreground">{t('widgets.loadingClientData')}</CardDescription>
         </CardHeader>
         <CardContent>
           <div className="animate-pulse space-y-4">
