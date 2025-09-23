@@ -6,6 +6,7 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Progress } from '@/components/ui/progress';
 import { productionApi } from '@/lib/production-api';
+import { useLanguage } from '@/contexts/language-context';
 import { 
   Star, 
   TrendingUp, 
@@ -33,7 +34,7 @@ interface SatisfactionData {
 }
 
 export function CSATNPSTrends({ className = '' }: CSATNPSTrendsProps) {
-  const t = (key: string, params?: any) => key;
+  const { t } = useLanguage();
   const [satisfactionData, setSatisfactionData] = React.useState<{
     currentCSAT: number;
     currentNPS: number;
