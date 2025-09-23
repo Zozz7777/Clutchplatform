@@ -4545,6 +4545,12 @@
       "failedToReviewContract": "فشل في مراجعة العقد",
       "legalDataLoaded": "تم تحميل البيانات القانونية بنجاح",
       "failedToLoadLegalData": "فشل في تحميل البيانات القانونية",
-      "failedToLoadRepData": "فشل في تحميل بيانات المندوب"
+      "failedToLoadRepData": "فشل في تحميل بيانات المندوب",
+      "dualPipeline": "خط الأنابيب المزدوج",
+      "dualPipelineDescription": "إدارة خطوط أنابيب المبيعات B2B والشركاء",
+      "contractAutomation": "أتمتة العقود",
+      "contractAutomationDescription": "أتمتة إنشاء العقود وسير عمل الموافقة",
+      "partnerOnboarding": "إعداد الشركاء",
+      "partnerOnboardingDescription": "إدارة عملية وسير عمل إعداد الشركاء"
     }
   }

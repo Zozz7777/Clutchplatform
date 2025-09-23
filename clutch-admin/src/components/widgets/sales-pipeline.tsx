@@ -35,11 +35,10 @@ export default function SalesPipeline() {
         const stages = response.pipeline || [];
         setPipelineStages(stages);
       } else {
-        setError(response.message || t('errorFetchingPipeline'));
+        setError(response.message || t('sales.errorFetchingPipeline'));
       }
     } catch (err) {
-      setError(t('errorFetchingPipeline'));
-      console.error('Error fetching pipeline data:', err);
+      setError(t('sales.errorFetchingPipeline'));
     } finally {
       setLoading(false);
     }
@@ -54,7 +53,7 @@ export default function SalesPipeline() {
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
             <TrendingUp className="h-5 w-5" />
-            {t('salesPipeline')}
+            {t('sales.salesPipeline')}
           </CardTitle>
         </CardHeader>
         <CardContent>
@@ -72,7 +71,7 @@ export default function SalesPipeline() {
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
             <TrendingUp className="h-5 w-5" />
-            {t('salesPipeline')}
+            {t('sales.salesPipeline')}
           </CardTitle>
         </CardHeader>
         <CardContent>
@@ -83,7 +82,7 @@ export default function SalesPipeline() {
               onClick={fetchPipelineData}
               className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
             >
-              {t('retry')}
+              {t('sales.retry')}
             </button>
           </div>
         </CardContent>

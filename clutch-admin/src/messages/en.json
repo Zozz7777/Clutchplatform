@@ -1582,6 +1582,12 @@
       "failedToReviewContract": "Failed to review contract",
       "legalDataLoaded": "Legal data loaded successfully",
       "failedToLoadLegalData": "Failed to load legal data",
-      "failedToLoadRepData": "Failed to load rep data"
+      "failedToLoadRepData": "Failed to load rep data",
+      "dualPipeline": "Dual Pipeline",
+      "dualPipelineDescription": "Manage both B2B and Partner sales pipelines",
+      "contractAutomation": "Contract Automation",
+      "contractAutomationDescription": "Automate contract generation and approval workflow",
+      "partnerOnboarding": "Partner Onboarding",
+      "partnerOnboardingDescription": "Manage partner onboarding process and workflow"
     }
   }
