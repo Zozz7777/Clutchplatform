@@ -130,14 +130,14 @@ export default function SalesPipeline() {
                   </div>
                   <div className="text-right">
                     <p className="font-semibold">{stage.count} {t('deals')}</p>
-                    <p className="text-sm text-gray-600">
+                    <p className="text-sm text-muted-foreground">
                       {stage.value.toLocaleString()} EGP
                     </p>
                   </div>
                 </div>
                 <div className="space-y-1">
                   <Progress value={percentage} className="h-2" />
-                  <div className="flex justify-between text-xs text-gray-500">
+                  <div className="flex justify-between text-xs text-muted-foreground">
                     <span>{percentage.toFixed(1)}% {t('ofDeals')}</span>
                     <span>{valuePercentage.toFixed(1)}% {t('ofValue')}</span>
                   </div>
@@ -148,14 +148,14 @@ export default function SalesPipeline() {
         </div>
 
         {/* Conversion Rate */}
-        <div className="mt-6 p-4 bg-gray-50 rounded-lg">
+        <div className="mt-6 p-4 bg-muted/50 rounded-lg">
           <div className="flex items-center justify-between">
             <span className="font-medium">{t('conversionRate')}</span>
-            <span className="text-2xl font-bold text-green-600">
+            <span className="text-2xl font-bold text-success">
               {totalCount > 0 ? ((pipelineStages[3].count / totalCount) * 100).toFixed(1) : 0}%
             </span>
           </div>
-          <p className="text-sm text-gray-600 mt-1">
+          <p className="text-sm text-muted-foreground mt-1">
             {t('conversionRateDescription')}
           </p>
         </div>

@@ -220,7 +220,7 @@ export function AdoptionFunnel({ className = '' }: AdoptionFunnelProps) {
                 {/* Conversion Arrow */}
                 {!isLastStage && (
                   <div className="flex justify-center py-2">
-                    <ArrowDown className="h-4 w-4 text-gray-400" />
+                    <ArrowDown className="h-4 w-4 text-muted-foreground" />
                   </div>
                 )}
               </div>

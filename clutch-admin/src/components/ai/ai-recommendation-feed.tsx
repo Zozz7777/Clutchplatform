@@ -100,7 +100,7 @@ export default function AIRecommendationFeed() {
       case 'low':
         return 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200';
       default:
-        return 'bg-gray-100 text-gray-800 dark:bg-gray-900 dark:text-gray-200';
+        return 'bg-muted text-foreground';
     }
   };
 
@@ -113,7 +113,7 @@ export default function AIRecommendationFeed() {
       case 'high':
         return 'text-red-600 dark:text-red-400';
       default:
-        return 'text-gray-600 dark:text-gray-400';
+        return 'text-muted-foreground';
     }
   };
 
@@ -124,7 +124,7 @@ export default function AIRecommendationFeed() {
       case 'in_progress':
         return <Activity className="h-4 w-4 text-blue-600" />;
       case 'dismissed':
-        return <X className="h-4 w-4 text-gray-600" />;
+        return <X className="h-4 w-4 text-muted-foreground" />;
       default:
         return <Clock className="h-4 w-4 text-yellow-600" />;
     }

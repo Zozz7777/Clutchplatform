@@ -71,7 +71,7 @@ export default function CommunicationHistory() {
       case 'visit': return 'bg-green-100 text-green-800';
       case 'email': return 'bg-purple-100 text-purple-800';
       case 'whatsapp': return 'bg-green-100 text-green-800';
-      default: return 'bg-gray-100 text-gray-800';
+      default: return 'bg-muted text-foreground';
     }
   };
 
@@ -80,7 +80,7 @@ export default function CommunicationHistory() {
       case 'successful': return 'bg-green-100 text-green-800';
       case 'left-msg': return 'bg-yellow-100 text-yellow-800';
       case 'no-answer': return 'bg-red-100 text-red-800';
-      default: return 'bg-gray-100 text-gray-800';
+      default: return 'bg-muted text-foreground';
     }
   };
 
@@ -171,10 +171,10 @@ export default function CommunicationHistory() {
 
         {/* Recent Communications */}
         <div className="space-y-4">
-          <h4 className="font-semibold text-gray-900">Recent Communications</h4>
+          <h4 className="font-semibold text-foreground">Recent Communications</h4>
           {communications.length === 0 ? (
-            <div className="text-center py-8 text-gray-500">
-              <MessageSquare className="h-12 w-12 mx-auto mb-4 text-gray-400" />
+            <div className="text-center py-8 text-muted-foreground">
+              <MessageSquare className="h-12 w-12 mx-auto mb-4 text-muted-foreground" />
               <p>No communications found</p>
             </div>
           ) : (
@@ -195,8 +195,8 @@ export default function CommunicationHistory() {
                       </Badge>
                     </div>
                   </div>
-                  <p className="text-sm text-gray-600 line-clamp-2">{comm.body}</p>
-                  <div className="flex items-center justify-between text-xs text-gray-500">
+                  <p className="text-sm text-muted-foreground line-clamp-2">{comm.body}</p>
+                  <div className="flex items-center justify-between text-xs text-muted-foreground">
                     <div className="flex items-center gap-4">
                       <span className="flex items-center gap-1">
                         <Calendar className="h-3 w-3" />
@@ -215,10 +215,10 @@ export default function CommunicationHistory() {
 
         {/* Communication Breakdown */}
         <div className="space-y-3">
-          <h4 className="font-semibold text-gray-900">Communication Breakdown</h4>
+          <h4 className="font-semibold text-foreground">Communication Breakdown</h4>
           <div className="grid grid-cols-2 gap-4">
             <div>
-              <h5 className="text-sm font-medium text-gray-700 mb-2">By Type</h5>
+              <h5 className="text-sm font-medium text-foreground mb-2">By Type</h5>
               <div className="space-y-1">
                 {Object.entries(typeStats).map(([type, count]) => (
                   <div key={type} className="flex items-center justify-between text-sm">
@@ -232,7 +232,7 @@ export default function CommunicationHistory() {
               </div>
             </div>
             <div>
-              <h5 className="text-sm font-medium text-gray-700 mb-2">By Outcome</h5>
+              <h5 className="text-sm font-medium text-foreground mb-2">By Outcome</h5>
               <div className="space-y-1">
                 {Object.entries(outcomeStats).map(([outcome, count]) => (
                   <div key={outcome} className="flex items-center justify-between text-sm">

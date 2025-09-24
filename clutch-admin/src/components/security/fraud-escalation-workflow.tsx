@@ -366,11 +366,11 @@ export default function FraudEscalationWorkflow({ className }: FraudEscalationWo
               <div className="flex items-center gap-4">
                 <div className="flex-1">
                   <div className="relative">
-                    <Filter className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
+                    <Filter className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4" />
                     <select
                       value={filterType}
                       onChange={(e) => setFilterType(e.target.value)}
-                      className="pl-10 pr-4 py-2 border border-gray-300 rounded-md bg-white"
+                      className="pl-10 pr-4 py-2 border border-border rounded-md bg-background"
                     >
                       <option value="all">All Types</option>
                       <option value="payment_fraud">Payment Fraud</option>
@@ -382,7 +382,7 @@ export default function FraudEscalationWorkflow({ className }: FraudEscalationWo
                 <select
                   value={filterSeverity}
                   onChange={(e) => setFilterSeverity(e.target.value)}
-                  className="px-3 py-2 border border-gray-300 rounded-md bg-white"
+                  className="px-3 py-2 border border-border rounded-md bg-background"
                 >
                   <option value="all">All Severities</option>
                   <option value="critical">Critical</option>

@@ -425,7 +425,7 @@ export default function MobileAppsPage() {
                 className={`flex items-center space-x-2 py-2 px-1 border-b-2 font-medium text-sm ${
                   activeTab === tab.id
                     ? "border-primary text-primary"
-                    : "border-transparent text-muted-foreground hover:text-foreground hover:border-gray-300"
+                    : "border-transparent text-muted-foreground hover:text-foreground hover:border-border"
                 }`}
               >
                 <Icon className="h-4 w-4" />

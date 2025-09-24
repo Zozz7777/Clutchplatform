@@ -31,7 +31,7 @@ export default function RevenueForecast() {
     ((currentQuarter.forecast - previousQuarter.actual) / previousQuarter.actual) * 100 : 0;
 
   const getPerformanceColor = (actual: number, target: number) => {
-    if (actual === 0) return 'text-gray-500'; // No data yet
+    if (actual === 0) return 'text-muted-foreground'; // No data yet
     const percentage = (actual / target) * 100;
     if (percentage >= 100) return 'text-green-600';
     if (percentage >= 80) return 'text-yellow-600';
@@ -58,20 +58,20 @@ export default function RevenueForecast() {
         {/* Current Quarter Overview */}
         <div className="p-4 bg-gradient-to-r from-blue-50 to-purple-50 rounded-lg">
           <div className="flex items-center justify-between mb-3">
-            <h4 className="font-semibold text-gray-900">{currentQuarter.period}</h4>
+            <h4 className="font-semibold text-foreground">{currentQuarter.period}</h4>
             <Badge variant="outline" className="text-blue-600">
               {currentQuarter.probability}% {t('probability')}
             </Badge>
           </div>
           <div className="grid grid-cols-2 gap-4">
             <div>
-              <p className="text-sm text-gray-600">{t('forecast')}</p>
+              <p className="text-sm text-muted-foreground">{t('forecast')}</p>
               <p className="text-2xl font-bold text-blue-600">
                 {(currentQuarter.forecast / 1000000).toFixed(1)}M EGP
               </p>
             </div>
             <div>
-              <p className="text-sm text-gray-600">{t('target')}</p>
+              <p className="text-sm text-muted-foreground">{t('target')}</p>
               <p className="text-2xl font-bold text-purple-600">
                 {(currentQuarter.target / 1000000).toFixed(1)}M EGP
               </p>
@@ -95,7 +95,7 @@ export default function RevenueForecast() {
 
         {/* Quarterly Performance */}
         <div className="space-y-4">
-          <h4 className="font-semibold text-gray-900">{t('quarterlyPerformance')}</h4>
+          <h4 className="font-semibold text-foreground">{t('quarterlyPerformance')}</h4>
           {forecastData.map((quarter, index) => (
             <div key={quarter.period} className="space-y-2">
               <div className="flex items-center justify-between">
@@ -122,7 +122,7 @@ export default function RevenueForecast() {
               
               <div className="grid grid-cols-3 gap-4 text-sm">
                 <div>
-                  <p className="text-gray-600">{t('actual')}</p>
+                  <p className="text-muted-foreground">{t('actual')}</p>
                   <p className="font-semibold">
                     {quarter.actual > 0 ? 
                       `${(quarter.actual / 1000000).toFixed(1)}M EGP` : 
@@ -131,13 +131,13 @@ export default function RevenueForecast() {
                   </p>
                 </div>
                 <div>
-                  <p className="text-gray-600">{t('forecast')}</p>
+                  <p className="text-muted-foreground">{t('forecast')}</p>
                   <p className="font-semibold">
                     {(quarter.forecast / 1000000).toFixed(1)}M EGP
                   </p>
                 </div>
                 <div>
-                  <p className="text-gray-600">{t('target')}</p>
+                  <p className="text-muted-foreground">{t('target')}</p>
                   <p className="font-semibold">
                     {(quarter.target / 1000000).toFixed(1)}M EGP
                   </p>

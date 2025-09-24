@@ -254,7 +254,7 @@ export function FileUpload({
         className={`border-2 border-dashed transition-colors ${
           isDragging 
             ? 'border-primary bg-primary/5' 
-            : 'border-gray-300 hover:border-gray-400'
+            : 'border-border hover:border-border/80'
         } ${disabled ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'}`}
         onDragOver={handleDragOver}
         onDragLeave={handleDragLeave}

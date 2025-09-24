@@ -77,7 +77,7 @@ export default function TeamPerformance() {
       case 'good': return 'text-blue-600 bg-blue-100';
       case 'average': return 'text-yellow-600 bg-yellow-100';
       case 'needs_improvement': return 'text-red-600 bg-red-100';
-      default: return 'text-gray-600 bg-gray-100';
+      default: return 'text-muted-foreground bg-muted';
     }
   };
 
@@ -124,7 +124,7 @@ export default function TeamPerformance() {
 
         {/* Individual Performance */}
         <div className="space-y-4">
-          <h4 className="font-semibold text-gray-900">{t('individualPerformance')}</h4>
+          <h4 className="font-semibold text-foreground">{t('individualPerformance')}</h4>
           {teamMembers.map((member) => {
             const quotaAchievement = member.quota > 0 ? (member.revenue / member.quota) * 100 : 0;
             
@@ -137,7 +137,7 @@ export default function TeamPerformance() {
                     </div>
                     <div>
                       <p className="font-medium">{member.name}</p>
-                      <p className="text-sm text-gray-600 capitalize">
+                      <p className="text-sm text-muted-foreground capitalize">
                         {t(member.role)}
                       </p>
                     </div>
@@ -152,28 +152,28 @@ export default function TeamPerformance() {
 
                 <div className="grid grid-cols-4 gap-4 text-sm">
                   <div>
-                    <p className="text-gray-600">{t('leads')}</p>
+                    <p className="text-muted-foreground">{t('leads')}</p>
                     <p className="font-semibold">{member.leads}</p>
                   </div>
                   <div>
-                    <p className="text-gray-600">{t('deals')}</p>
+                    <p className="text-muted-foreground">{t('deals')}</p>
                     <p className="font-semibold">{member.deals}</p>
                   </div>
                   <div>
-                    <p className="text-gray-600">{t('revenue')}</p>
+                    <p className="text-muted-foreground">{t('revenue')}</p>
                     <p className="font-semibold">
                       {(member.revenue / 1000).toFixed(0)}K EGP
                     </p>
                   </div>
                   <div>
-                    <p className="text-gray-600">{t('conversion')}</p>
+                    <p className="text-muted-foreground">{t('conversion')}</p>
                     <p className="font-semibold">{member.conversionRate}%</p>
                   </div>
                 </div>
 
                 <div className="space-y-2">
                   <div className="flex items-center justify-between text-sm">
-                    <span className="text-gray-600">{t('quotaProgress')}</span>
+                    <span className="text-muted-foreground">{t('quotaProgress')}</span>
                     <span className="font-medium">
                       {quotaAchievement.toFixed(0)}% ({member.revenue.toLocaleString()} / {member.quota.toLocaleString()} EGP)
                     </span>
@@ -190,7 +190,7 @@ export default function TeamPerformance() {
 
         {/* Team Insights */}
         <div className="space-y-3 pt-4 border-t">
-          <h4 className="font-semibold text-gray-900">{t('teamInsights')}</h4>
+          <h4 className="font-semibold text-foreground">{t('teamInsights')}</h4>
           <div className="space-y-2">
             <div className="flex items-start gap-2 p-3 bg-green-50 rounded-lg">
               <div className="w-2 h-2 bg-green-500 rounded-full mt-2"></div>

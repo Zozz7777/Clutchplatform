@@ -50,13 +50,13 @@ export default function ContractStatus() {
 
   const getStatusColor = (status: string) => {
     switch (status) {
-      case 'draft': return 'bg-gray-100 text-gray-800';
+      case 'draft': return 'bg-muted text-foreground';
       case 'printed': return 'bg-blue-100 text-blue-800';
       case 'signed_uploaded': return 'bg-yellow-100 text-yellow-800';
       case 'pending_legal': return 'bg-orange-100 text-orange-800';
       case 'approved': return 'bg-green-100 text-green-800';
       case 'rejected': return 'bg-red-100 text-red-800';
-      default: return 'bg-gray-100 text-gray-800';
+      default: return 'bg-muted text-foreground';
     }
   };
 
@@ -149,10 +149,10 @@ export default function ContractStatus() {
 
         {/* Recent Contracts */}
         <div className="space-y-4">
-          <h4 className="font-semibold text-gray-900">{t('recentContracts')}</h4>
+          <h4 className="font-semibold text-foreground">{t('recentContracts')}</h4>
           {contracts.length === 0 ? (
-            <div className="text-center py-8 text-gray-500">
-              <FileText className="h-12 w-12 mx-auto mb-4 text-gray-400" />
+            <div className="text-center py-8 text-muted-foreground">
+              <FileText className="h-12 w-12 mx-auto mb-4 text-muted-foreground" />
               <p>{t('noContracts')}</p>
             </div>
           ) : (
@@ -164,7 +164,7 @@ export default function ContractStatus() {
                       {getStatusIcon(contract.status)}
                       <div>
                         <p className="font-medium">Contract #{contract.id}</p>
-                        <p className="text-sm text-gray-600">
+                        <p className="text-sm text-muted-foreground">
                           {contract.lead?.title || contract.leadId}
                         </p>
                       </div>
@@ -174,7 +174,7 @@ export default function ContractStatus() {
                     <Badge className={getStatusColor(contract.status)}>
                       {t(contract.status)}
                     </Badge>
-                    <span className="text-sm text-gray-500">
+                    <span className="text-sm text-muted-foreground">
                       {new Date(contract.createdAt).toLocaleDateString()}
                     </span>
                   </div>
@@ -186,7 +186,7 @@ export default function ContractStatus() {
 
         {/* Status Breakdown */}
         <div className="space-y-3">
-          <h4 className="font-semibold text-gray-900">{t('statusBreakdown')}</h4>
+          <h4 className="font-semibold text-foreground">{t('statusBreakdown')}</h4>
           <div className="space-y-2">
             {Object.entries(statusCounts).map(([status, count]) => (
               <div key={status} className="flex items-center justify-between">
@@ -196,7 +196,7 @@ export default function ContractStatus() {
                 </div>
                 <div className="flex items-center gap-2">
                   <span className="font-semibold">{count}</span>
-                  <span className="text-sm text-gray-500">
+                  <span className="text-sm text-muted-foreground">
                     ({totalContracts > 0 ? ((count / totalContracts) * 100).toFixed(0) : 0}%)
                   </span>
                 </div>

@@ -316,8 +316,8 @@ export default function MobileCMSPage() {
               <CardContent className="space-y-4">
                 <div>
                   <label className="text-sm font-medium font-sans">App Logo</label>
-                  <div className="border-2 border-dashed border-gray-300 rounded-[0.625rem] p-6 text-center">
-                    <Upload className="h-8 w-8 mx-auto text-gray-400 mb-2" />
+                  <div className="border-2 border-dashed border-border rounded-[0.625rem] p-6 text-center">
+                    <Upload className="h-8 w-8 mx-auto text-muted-foreground mb-2" />
                     <p className="text-sm text-muted-foreground font-sans">Upload app logo</p>
                     <Button variant="outline" size="sm" className="mt-2">
                       Choose File
@@ -326,8 +326,8 @@ export default function MobileCMSPage() {
                 </div>
                 <div>
                   <label className="text-sm font-medium font-sans">Splash Screen</label>
-                  <div className="border-2 border-dashed border-gray-300 rounded-[0.625rem] p-6 text-center">
-                    <Image className="h-8 w-8 mx-auto text-gray-400 mb-2" />
+                  <div className="border-2 border-dashed border-border rounded-[0.625rem] p-6 text-center">
+                    <Image className="h-8 w-8 mx-auto text-muted-foreground mb-2" />
                     <p className="text-sm text-muted-foreground font-sans">Upload splash screen</p>
                     <Button variant="outline" size="sm" className="mt-2">
                       Choose File

@@ -144,7 +144,7 @@ export default function HRPerformanceView() {
 
   const getRankingIcon = (ranking: number) => {
     if (ranking === 1) return <Award className="h-4 w-4 text-yellow-500" />;
-    if (ranking === 2) return <Award className="h-4 w-4 text-gray-400" />;
+    if (ranking === 2) return <Award className="h-4 w-4 text-muted-foreground" />;
     if (ranking === 3) return <Award className="h-4 w-4 text-orange-500" />;
     return <Star className="h-4 w-4 text-muted-foreground" />;
   };

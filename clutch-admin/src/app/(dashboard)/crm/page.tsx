@@ -207,8 +207,8 @@ export default function SalesPage() {
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold text-gray-900">{t('title')}</h1>
-          <p className="text-gray-600 mt-1">{t('subtitle')}</p>
+          <h1 className="text-3xl font-bold text-foreground">{t('title')}</h1>
+          <p className="text-muted-foreground mt-1">{t('subtitle')}</p>
         </div>
         <div className="flex gap-2">
           <Button variant="outline" size="sm">
@@ -228,8 +228,8 @@ export default function SalesPage() {
           <CardContent className="p-6">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm font-medium text-gray-600">{t('totalLeads')}</p>
-                <p className="text-2xl font-bold text-gray-900">{stats.totalLeads}</p>
+                <p className="text-sm font-medium text-muted-foreground">{t('totalLeads')}</p>
+                <p className="text-2xl font-bold text-foreground">{stats.totalLeads}</p>
               </div>
               <Users className="h-8 w-8 text-primary" />
             </div>
@@ -240,8 +240,8 @@ export default function SalesPage() {
           <CardContent className="p-6">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm font-medium text-gray-600">{t('qualifiedLeads')}</p>
-                <p className="text-2xl font-bold text-gray-900">{stats.qualifiedLeads}</p>
+                <p className="text-sm font-medium text-muted-foreground">{t('qualifiedLeads')}</p>
+                <p className="text-2xl font-bold text-foreground">{stats.qualifiedLeads}</p>
               </div>
               <CheckCircle className="h-8 w-8 text-green-600" />
             </div>
@@ -252,8 +252,8 @@ export default function SalesPage() {
           <CardContent className="p-6">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm font-medium text-gray-600">{t('totalDeals')}</p>
-                <p className="text-2xl font-bold text-gray-900">{stats.totalDeals}</p>
+                <p className="text-sm font-medium text-muted-foreground">{t('totalDeals')}</p>
+                <p className="text-2xl font-bold text-foreground">{stats.totalDeals}</p>
               </div>
               <TrendingUp className="h-8 w-8 text-purple-600" />
             </div>
@@ -264,8 +264,8 @@ export default function SalesPage() {
           <CardContent className="p-6">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm font-medium text-gray-600">{t('totalValue')}</p>
-                <p className="text-2xl font-bold text-gray-900">{stats.totalValue.toLocaleString()} EGP</p>
+                <p className="text-sm font-medium text-muted-foreground">{t('totalValue')}</p>
+                <p className="text-2xl font-bold text-foreground">{stats.totalValue.toLocaleString()} EGP</p>
               </div>
               <FileText className="h-8 w-8 text-orange-600" />
             </div>
@@ -361,7 +361,7 @@ export default function SalesPage() {
                       <TableCell>
                         <div>
                           <div className="font-medium">{lead.title}</div>
-                          <div className="text-sm text-gray-500">{lead.companyName}</div>
+                          <div className="text-sm text-muted-foreground">{lead.companyName}</div>
                         </div>
                       </TableCell>
                       <TableCell>
@@ -373,8 +373,8 @@ export default function SalesPage() {
                       <TableCell>
                         <div>
                           <div className="font-medium">{lead.contact.name}</div>
-                          <div className="text-sm text-gray-500">{lead.contact.email}</div>
-                          <div className="text-sm text-gray-500">{lead.contact.phone}</div>
+                          <div className="text-sm text-muted-foreground">{lead.contact.email}</div>
+                          <div className="text-sm text-muted-foreground">{lead.contact.phone}</div>
                         </div>
                       </TableCell>
                       <TableCell>
@@ -457,7 +457,7 @@ export default function SalesPage() {
                     <TableRow key={deal.id}>
                       <TableCell>
                         <div className="font-medium">Deal #{deal.id}</div>
-                        <div className="text-sm text-gray-500">
+                        <div className="text-sm text-muted-foreground">
                           {leads.find(l => l.id === deal.leadId)?.title}
                         </div>
                       </TableCell>
@@ -606,8 +606,8 @@ export default function SalesPage() {
               </CardTitle>
             </CardHeader>
             <CardContent>
-              <div className="text-center py-8 text-gray-500">
-                <Handshake className="h-12 w-12 mx-auto mb-4 text-gray-400" />
+              <div className="text-center py-8 text-muted-foreground">
+                <Handshake className="h-12 w-12 mx-auto mb-4 text-muted-foreground" />
                 <p>{t('partnersComingSoon')}</p>
               </div>
             </CardContent>

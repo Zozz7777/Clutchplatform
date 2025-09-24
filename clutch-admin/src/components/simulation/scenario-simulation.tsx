@@ -350,7 +350,7 @@ export default function ScenarioSimulation({ className }: ScenarioSimulationProp
       <Card className={className}>
         <CardContent className="p-6">
           <div className="text-center">
-            <Target className="h-12 w-12 mx-auto mb-4 text-gray-400" />
+            <Target className="h-12 w-12 mx-auto mb-4 text-muted-foreground" />
             <h3 className="text-lg font-semibold mb-2">No Scenario Selected</h3>
             <p className="text-muted-foreground">Select a scenario to begin simulation</p>
           </div>
@@ -557,7 +557,7 @@ export default function ScenarioSimulation({ className }: ScenarioSimulationProp
                 </div>
               ) : (
                 <div className="text-center py-8">
-                  <BarChart3 className="h-12 w-12 mx-auto mb-4 text-gray-400" />
+                  <BarChart3 className="h-12 w-12 mx-auto mb-4 text-muted-foreground" />
                   <h3 className="text-lg font-semibold mb-2">No Results Yet</h3>
                   <p className="text-muted-foreground">
                     Run the simulation to see projected results and impact analysis

@@ -43,19 +43,19 @@ export default function LeadConversion() {
         <div className="text-center p-6 bg-gradient-to-r from-blue-50 to-green-50 rounded-lg">
           <div className="flex items-center justify-center gap-2 mb-2">
             <TrendingUp className="h-6 w-6 text-green-600" />
-            <span className="text-sm font-medium text-gray-600">{t('overallConversionRate')}</span>
+            <span className="text-sm font-medium text-muted-foreground">{t('overallConversionRate')}</span>
           </div>
           <p className="text-4xl font-bold text-green-600 mb-1">
             {overallConversionRate.toFixed(1)}%
           </p>
-          <p className="text-sm text-gray-600">
+          <p className="text-sm text-muted-foreground">
             {convertedLeads} {t('outOf')} {totalLeads} {t('leadsConverted')}
           </p>
         </div>
 
         {/* Conversion Funnel */}
         <div className="space-y-4">
-          <h4 className="font-semibold text-gray-900">{t('conversionFunnel')}</h4>
+          <h4 className="font-semibold text-foreground">{t('conversionFunnel')}</h4>
           {conversionMetrics.map((metric, index) => {
             const isLast = index === conversionMetrics.length - 1;
             const nextMetric = !isLast ? conversionMetrics[index + 1] : null;
@@ -77,7 +77,7 @@ export default function LeadConversion() {
                     </div>
                     <div>
                       <p className="font-medium capitalize">{t(metric.stage)}</p>
-                      <div className="flex items-center gap-2 text-sm text-gray-600">
+                      <div className="flex items-center gap-2 text-sm text-muted-foreground">
                         <Clock className="h-3 w-3" />
                         <span>{metric.avgDays} {t('avgDays')}</span>
                       </div>
@@ -86,7 +86,7 @@ export default function LeadConversion() {
                   <div className="text-right">
                     <p className="font-semibold">{metric.count} {t('leads')}</p>
                     {!isLast && (
-                      <p className="text-sm text-gray-600">
+                      <p className="text-sm text-muted-foreground">
                         {stageConversionRate.toFixed(1)}% {t('conversion')}
                       </p>
                     )}
@@ -105,7 +105,7 @@ export default function LeadConversion() {
 
         {/* Key Insights */}
         <div className="space-y-3">
-          <h4 className="font-semibold text-gray-900">{t('keyInsights')}</h4>
+          <h4 className="font-semibold text-foreground">{t('keyInsights')}</h4>
           <div className="space-y-2">
             <div className="flex items-start gap-2 p-3 bg-blue-50 rounded-lg">
               <div className="w-2 h-2 bg-blue-500 rounded-full mt-2"></div>
