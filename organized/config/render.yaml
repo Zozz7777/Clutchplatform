@@ -47,7 +47,7 @@ services:
         value: production
       - key: PORT
         value: 3001
-      - key: REACT_APP_API_URL
+      - key: NEXT_PUBLIC_API_URL
         value: https://clutch-main-nk7x.onrender.com
     autoDeploy: true
     branch: main
@@ -65,7 +65,7 @@ services:
         value: production
       - key: PORT
         value: 3002
-      - key: REACT_APP_API_URL
+      - key: NEXT_PUBLIC_API_URL
         value: https://clutch-main-nk7x.onrender.com
     autoDeploy: true
     branch: main
