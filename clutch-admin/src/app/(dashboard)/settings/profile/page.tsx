@@ -7,6 +7,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
 import { useAuth } from "@/contexts/auth-context";
+import { API_BASE_URL } from "@/lib/constants";
 // Translation system removed - using hardcoded strings
 import { 
   User, 
@@ -90,7 +91,7 @@ export default function ProfileSettingsPage() {
       try {
         const token = localStorage.getItem("clutch-admin-token");
         
-        const response = await fetch("https://clutch-main-nk7x.onrender.com/api/v1/employees/profile/me", {
+        const response = await fetch(`${API_BASE_URL}/api/v1/employees/profile/me`, {
           headers: {
             "Authorization": `Bearer ${token}`,
             "Content-Type": "application/json",
@@ -279,7 +280,7 @@ export default function ProfileSettingsPage() {
     try {
       const token = localStorage.getItem("clutch-admin-token");
       
-      const response = await fetch("https://clutch-main-nk7x.onrender.com/api/v1/employees/change-password", {
+      const response = await fetch(`${API_BASE_URL}/api/v1/employees/change-password`, {
         method: "POST",
         headers: {
           "Authorization": `Bearer ${token}`,
@@ -327,7 +328,7 @@ export default function ProfileSettingsPage() {
         // Update profile with new avatar URL
         const token = localStorage.getItem("clutch-admin-token");
         
-        const response = await fetch("https://clutch-main-nk7x.onrender.com/api/v1/employees/profile/me", {
+        const response = await fetch(`${API_BASE_URL}/api/v1/employees/profile/me`, {
           method: "PUT",
           headers: {
             "Authorization": `Bearer ${token}`,
@@ -408,7 +409,7 @@ export default function ProfileSettingsPage() {
       const token = localStorage.getItem("clutch-admin-token");
       
       // Upload file first
-      const uploadResponse = await fetch("https://clutch-main-nk7x.onrender.com/api/v1/upload", {
+      const uploadResponse = await fetch(`${API_BASE_URL}/api/v1/upload`, {
         method: "POST",
         headers: {
           "Authorization": `Bearer ${token}`,
@@ -428,7 +429,7 @@ export default function ProfileSettingsPage() {
       }
 
       // Update profile with new avatar URL
-      const profileResponse = await fetch("https://clutch-main-nk7x.onrender.com/api/v1/employees/profile/me", {
+      const profileResponse = await fetch(`${API_BASE_URL}/api/v1/employees/profile/me`, {
         method: "PUT",
         headers: {
           "Authorization": `Bearer ${token}`,
