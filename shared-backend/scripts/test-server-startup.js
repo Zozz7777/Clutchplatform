@@ -50,7 +50,7 @@ try {
   }
   
   try {
-    const auth = require('../middleware/auth');
+    const { authenticateToken: auth } = require('../middleware/auth');
     console.log('✅ auth.js - OK');
   } catch (error) {
     console.log('❌ auth.js - ERROR:', error.message);
