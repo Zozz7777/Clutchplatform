@@ -235,6 +235,7 @@ app.use(`${apiPrefix}/performance`, performanceRoutes);
 app.use(`${apiPrefix}/dashboard`, dashboardRoutes);
 app.use(`${apiPrefix}/notifications`, notificationsRoutes);
 app.use(`${apiPrefix}/employees`, employeesRoutes);
+console.log('🔍 Employee routes registered at:', `${apiPrefix}/employees`);
 app.use(`${apiPrefix}/employee-invitations`, employeeInvitationsRoutes);
 app.use(`${apiPrefix}/export`, exportRoutes);
 
