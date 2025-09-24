@@ -295,6 +295,7 @@ app.use('/api/v1/system/performance', performanceRoutes); // Add system performa
 app.use('/api/v1/ai-ml', aiRoutes);
 app.use('/api/v1/monitoring', monitoringRoutes);
 app.use('/api/v1/files', filesRoutes);
+app.use('/api/v1/upload', filesRoutes); // Alias for backward compatibility
 app.use('/api/v1/docs', apiDocsRoutes);
 app.use('/api/v1/pending-emails', pendingEmailsRoutes);
 app.use('/api/v1/mobile-apps', mobileAppsRoutes);
