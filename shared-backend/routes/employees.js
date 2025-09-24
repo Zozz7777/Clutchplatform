@@ -180,9 +180,6 @@ router.post('/register', authenticateToken, checkRole(['head_administrator', 'hr
 
 // GET /api/v1/employees/profile/me - Get current employee profile
 router.get('/profile/me', authenticateToken, async (req, res) => {
-  console.log('🔍 Employee profile endpoint hit:', req.originalUrl);
-  console.log('🔍 Request method:', req.method);
-  console.log('🔍 User from token:', req.user);
   try {
     const usersCollection = await getCollection('users');
     
@@ -220,9 +217,6 @@ router.get('/profile/me', authenticateToken, async (req, res) => {
 
 // PUT /api/v1/employees/profile/me - Update current employee profile
 router.put('/profile/me', authenticateToken, async (req, res) => {
-  console.log('🔍 Employee profile UPDATE endpoint hit:', req.originalUrl);
-  console.log('🔍 Request method:', req.method);
-  console.log('🔍 User from token:', req.user);
   try {
     const { name, phoneNumber, profile } = req.body;
     const usersCollection = await getCollection('users');
@@ -287,9 +281,6 @@ router.put('/profile/me', authenticateToken, async (req, res) => {
 
 // POST /api/v1/employees/change-password - Change employee password
 router.post('/change-password', authenticateToken, async (req, res) => {
-  console.log('🔍 Employee change-password endpoint hit:', req.originalUrl);
-  console.log('🔍 Request method:', req.method);
-  console.log('🔍 User from token:', req.user);
   try {
     const { currentPassword, newPassword } = req.body;
     const usersCollection = await getCollection('users');
