@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Light Theme Colors -->
+    <color name="light_background">#FFFFFF</color>
+    <color name="light_foreground">#252525</color>
+    <color name="light_card">#FFFFFF</color>
+    <color name="light_card_foreground">#252525</color>
+    <color name="light_primary">#D2691E</color>
+    <color name="light_primary_foreground">#FBFBFB</color>
+    <color name="light_secondary">#D2691E</color>
+    <color name="light_muted">#F7F7F7</color>
+    <color name="light_muted_foreground">#8E8E8E</color>
+    <color name="light_destructive">#D2691E</color>
+    <color name="light_border">#EBEBEB</color>
+    <color name="light_input">#EBEBEB</color>
+    <color name="light_ring">#B5B5B5</color>
+    <color name="light_sidebar">#FBFBFB</color>
+    <color name="light_sidebar_primary">#252525</color>
+    <color name="light_success">#4CAF50</color>
+    <color name="light_warning">#FF9800</color>
+    <color name="light_info">#2196F3</color>
+
+    <!-- Dark Theme Colors -->
+    <color name="dark_background">#252525</color>
+    <color name="dark_foreground">#FBFBFB</color>
+    <color name="dark_card">#343434</color>
+    <color name="dark_card_foreground">#F7F7F7</color>
+    <color name="dark_primary">#B8860B</color>
+    <color name="dark_primary_foreground">#343434</color>
+    <color name="dark_secondary">#444444</color>
+    <color name="dark_muted">#444444</color>
+    <color name="dark_destructive">#E57373</color>
+    <color name="dark_border">#464646</color>
+    <color name="dark_input">#525252</color>
+    <color name="dark_ring">#8E8E8E</color>
+    <color name="dark_sidebar">#343434</color>
+    <color name="dark_sidebar_primary">#D2691E</color>
+    <color name="dark_success">#4CAF50</color>
+    <color name="dark_warning">#FF9800</color>
+    <color name="dark_info">#2196F3</color>
+
+    <!-- Common Colors -->
+    <color name="primary">#D2691E</color>
+    <color name="primary_variant">#B8860B</color>
+    <color name="secondary">#D2691E</color>
+    <color name="background">#FFFFFF</color>
+    <color name="surface">#FFFFFF</color>
+    <color name="error">#F44336</color>
+    <color name="on_primary">#FBFBFB</color>
+    <color name="on_secondary">#252525</color>
+    <color name="on_background">#252525</color>
+    <color name="on_surface">#252525</color>
+    <color name="on_error">#FFFFFF</color>
+
+    <!-- Status Colors -->
+    <color name="pending">#FFA500</color>
+    <color name="confirmed">#2196F3</color>
+    <color name="in_progress">#FF9800</color>
+    <color name="completed">#4CAF50</color>
+    <color name="cancelled">#F44336</color>
+    <color name="rejected">#F44336</color>
+
+    <!-- Payment Status Colors -->
+    <color name="payment_pending">#FFA500</color>
+    <color name="payment_processing">#2196F3</color>
+    <color name="payment_completed">#4CAF50</color>
+    <color name="payment_failed">#F44336</color>
+    <color name="payment_cancelled">#9E9E9E</color>
+
+    <!-- Partner Type Colors -->
+    <color name="repair_center">#4CAF50</color>
+    <color name="auto_parts">#2196F3</color>
+    <color name="accessories">#9C27B0</color>
+    <color name="importer">#FF9800</color>
+    <color name="service_center">#F44336</color>
+</resources>

@@ -26,7 +26,7 @@ const validatePartnerSignup = [
 ];
 
 const validatePartnerSignin = [
-  body('email').isEmail().withMessage('Valid email is required'),
+  body('emailOrPhone').notEmpty().withMessage('Email or phone is required'),
   body('password').notEmpty().withMessage('Password is required')
 ];
 
@@ -77,10 +77,15 @@ router.post('/auth/signin', validatePartnerSignin, async (req, res) => {
       });
     }
 
-    const { email, password } = req.body;
+    const { emailOrPhone, password } = req.body;
 
-    // Find partner by email
-    const partner = await PartnerUser.findByEmail(email);
+    // Find partner by email or phone
+    let partner;
+    if (emailOrPhone.includes('@')) {
+      partner = await PartnerUser.findByEmail(emailOrPhone);
+    } else {
+      partner = await PartnerUser.findByPhone(emailOrPhone);
+    }
     if (!partner) {
       return res.status(401).json({
         success: false,
