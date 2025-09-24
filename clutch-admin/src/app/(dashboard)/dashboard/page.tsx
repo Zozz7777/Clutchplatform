@@ -76,7 +76,6 @@ const iconMap = {
 };
 
 export default function DashboardPage() {
-  console.log('DashboardPage component rendering...');
   const [kpiMetrics, setKpiMetrics] = useState<KPIMetric[]>([]);
   const [fleetVehicles, setFleetVehicles] = useState<FleetVehicle[]>([]);
   const [notifications, setNotifications] = useState<Notification[]>([]);

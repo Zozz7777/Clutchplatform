@@ -65,14 +65,6 @@ export function Sidebar({ isCollapsed, onToggle }: SidebarProps) {
     };
   });
 
-  // Debug router state
-  console.log('🔍 Sidebar Debug:', {
-    pathname,
-    routerReady: !!router,
-    userRole: user?.role,
-    navigationItemsCount: navigationItems.length,
-    routerMethods: router ? Object.keys(router) : 'No router'
-  });
 
 
   const toggleExpanded = (title: string) => {
@@ -214,7 +206,6 @@ export function Sidebar({ isCollapsed, onToggle }: SidebarProps) {
                   <Link
                     href={item.href}
                     onClick={(e) => {
-                      console.log('🔗 Link navigation clicked:', item.href, item.title);
                     }}
                     className={cn(
                       "flex items-center px-3 py-2 text-sm font-medium rounded-[0.625rem] cursor-pointer transition-all duration-normal ease-in-out font-sans focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 focus:ring-offset-sidebar w-full text-left",
@@ -244,7 +235,6 @@ export function Sidebar({ isCollapsed, onToggle }: SidebarProps) {
                           key={child.href as string}
                           href={child.href as string}
                           onClick={(e) => {
-                            console.log('🔗 Child Link navigation clicked:', child.href as string, child.title as string);
                           }}
                           className={cn(
                             "block px-3 py-2 text-sm rounded-[0.625rem] transition-all duration-normal ease-in-out font-sans focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 focus:ring-offset-sidebar w-full text-left",
