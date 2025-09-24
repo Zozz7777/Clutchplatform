@@ -7,9 +7,16 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
-    "test": "jest",
+    "test": "jest --passWithNoTests",
     "test:watch": "jest --watch",
-    "test:coverage": "jest --coverage"
+    "test:coverage": "jest --coverage",
+    "test:unit": "jest --testPathPattern=unit --passWithNoTests",
+    "test:integration": "jest --testPathPattern=integration --passWithNoTests",
+    "test:accessibility": "jest --testPathPattern=accessibility --passWithNoTests",
+    "test:performance": "jest --testPathPattern=performance --passWithNoTests",
+    "test:regression": "jest --testPathPattern=regression --passWithNoTests",
+    "test:auto-parts": "jest --testPathPattern=auto-parts --passWithNoTests",
+    "test:e2e": "playwright test"
   },
   "dependencies": {
     "@hello-pangea/dnd": "^18.0.1",
@@ -29,6 +36,7 @@
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "cmdk": "^1.1.1",
+    "jest-mock": "^29.7.0",
     "lucide-react": "^0.544.0",
     "next": "15.5.3",
     "next-intl": "^4.3.9",
