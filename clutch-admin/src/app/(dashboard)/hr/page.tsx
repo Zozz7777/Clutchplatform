@@ -487,9 +487,9 @@ export default function HRPage() {
               "Authorization": `Bearer ${token}`,
               "Content-Type": "application/json",
             },
-          });
+          }).catch(() => null);
           
-          if (jobsResponse.ok) {
+          if (jobsResponse && jobsResponse.ok) {
             const jobsData = await jobsResponse.json();
             const jobsList = jobsData.data?.jobs || jobsData.data || jobsData;
             setJobs(Array.isArray(jobsList) ? jobsList : []);
@@ -503,9 +503,9 @@ export default function HRPage() {
               "Authorization": `Bearer ${token}`,
               "Content-Type": "application/json",
             },
-          });
+          }).catch(() => null);
           
-          if (applicationsResponse.ok) {
+          if (applicationsResponse && applicationsResponse.ok) {
             const applicationsData = await applicationsResponse.json();
             const applicationsList = applicationsData.data?.applications || applicationsData.data || applicationsData;
             setCareerApplications(Array.isArray(applicationsList) ? applicationsList : []);
@@ -1352,7 +1352,7 @@ export default function HRPage() {
                 "Authorization": `Bearer ${token}`,
                 "Content-Type": "application/json",
               },
-            })
+            }).catch(() => null)
             .then(response => response.json())
             .then(data => {
               const applicationsList = data.data?.applications || data.data || data;
@@ -1945,7 +1945,7 @@ export default function HRPage() {
                 "Authorization": `Bearer ${token}`,
                 "Content-Type": "application/json",
               },
-            })
+            }).catch(() => null)
             .then(response => response.json())
             .then(data => {
               const jobsList = data.data?.jobs || data.data || data;

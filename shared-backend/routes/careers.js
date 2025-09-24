@@ -4,8 +4,7 @@ const multer = require('multer');
 const path = require('path');
 const fs = require('fs-extra');
 const { body, validationResult, query } = require('express-validator');
-const { authenticateToken } = require('../middleware/auth');
-const { checkPermission } = require('../middleware/rbac');
+const { authenticateToken, checkRole } = require('../middleware/unified-auth');
 const Job = require('../models/Job');
 const JobApplication = require('../models/JobApplication');
 const JobApproval = require('../models/JobApproval');
@@ -372,7 +371,7 @@ router.post('/jobs/:jobId/apply', upload.fields([
 // Get all jobs for admin (with all statuses)
 router.get('/admin/jobs', 
   authenticateToken, 
-  checkPermission('hr'), 
+  checkRole(['head_administrator', 'platform_admin', 'executive', 'admin', 'hr']), 
   [
     query('status').optional().isString(),
     query('department').optional().isString(),
@@ -433,7 +432,7 @@ router.get('/admin/jobs',
 // Create new job
 router.post('/admin/jobs', 
   authenticateToken, 
-  checkPermission('hr'), 
+  checkRole(['head_administrator', 'platform_admin', 'executive', 'admin', 'hr']), 
   [
     body('title').notEmpty().trim(),
     body('department').notEmpty().isString(),
@@ -496,7 +495,7 @@ router.post('/admin/jobs',
 // Update job
 router.put('/admin/jobs/:id', 
   authenticateToken, 
-  checkPermission('hr'), 
+  checkRole(['head_administrator', 'platform_admin', 'executive', 'admin', 'hr']), 
   [
     body('title').optional().notEmpty().trim(),
     body('department').optional().notEmpty().isString(),
@@ -561,7 +560,7 @@ router.put('/admin/jobs/:id',
 });
 
 // Delete job
-router.delete('/admin/jobs/:id', authenticateToken, checkPermission('hr'), async (req, res) => {
+router.delete('/admin/jobs/:id', authenticateToken, checkRole(['head_administrator', 'platform_admin', 'executive', 'admin', 'hr']), async (req, res) => {
   try {
     const job = await Job.findById(req.params.id);
     if (!job) {
@@ -602,7 +601,7 @@ router.delete('/admin/jobs/:id', authenticateToken, checkPermission('hr'), async
 // Get job applications
 router.get('/admin/applications', 
   authenticateToken, 
-  checkPermission('hr'), 
+  checkRole(['head_administrator', 'platform_admin', 'executive', 'admin', 'hr']), 
   [
     query('jobId').optional().isMongoId(),
     query('status').optional().isString(),
@@ -660,7 +659,7 @@ router.get('/admin/applications',
 });
 
 // Get single application
-router.get('/admin/applications/:id', authenticateToken, checkPermission('hr'), async (req, res) => {
+router.get('/admin/applications/:id', authenticateToken, checkRole(['head_administrator', 'platform_admin', 'executive', 'admin', 'hr']), async (req, res) => {
   try {
     const application = await JobApplication.findById(req.params.id)
       .populate('job', 'title department description requirements')
@@ -691,7 +690,7 @@ router.get('/admin/applications/:id', authenticateToken, checkPermission('hr'), 
 // Update application status
 router.put('/admin/applications/:id/status', 
   authenticateToken, 
-  checkPermission('hr'), 
+  checkRole(['head_administrator', 'platform_admin', 'executive', 'admin', 'hr']), 
   [
     body('status').isIn(['applied', 'screened', 'interview_scheduled', 'interview_completed', 'offer_made', 'hired', 'rejected', 'withdrawn']),
     body('notes').optional().isString()

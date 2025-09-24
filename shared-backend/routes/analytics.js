@@ -980,4 +980,105 @@ router.get('/root-cause-analysis', authenticateToken, async (req, res) => {
   }
 });
 
+// GET /api/v1/api-analytics - Get API analytics (frontend endpoint)
+router.get('/api-analytics', authenticateToken, checkRole(['head_administrator', 'platform_admin', 'executive', 'admin', 'system_admin']), async (req, res) => {
+  try {
+    const { db } = await connectToDatabase();
+    
+    // Get API analytics from database
+    const analyticsCollection = db.collection('analytics');
+    
+    // Get API usage statistics
+    const apiStats = await analyticsCollection.aggregate([
+      {
+        $match: {
+          type: 'api_usage',
+          createdAt: { $gte: new Date(Date.now() - 30 * 24 * 60 * 60 * 1000) } // Last 30 days
+        }
+      },
+      {
+        $group: {
+          _id: '$endpoint',
+          totalRequests: { $sum: '$requestCount' },
+          avgResponseTime: { $avg: '$responseTime' },
+          errorCount: { $sum: '$errorCount' },
+          lastUsed: { $max: '$createdAt' }
+        }
+      },
+      {
+        $sort: { totalRequests: -1 }
+      }
+    ]).toArray();
+    
+    // Get API performance metrics
+    const performanceMetrics = await analyticsCollection.aggregate([
+      {
+        $match: {
+          type: 'performance',
+          createdAt: { $gte: new Date(Date.now() - 24 * 60 * 60 * 1000) } // Last 24 hours
+        }
+      },
+      {
+        $group: {
+          _id: null,
+          avgResponseTime: { $avg: '$responseTime' },
+          totalRequests: { $sum: '$requestCount' },
+          errorRate: { $avg: '$errorRate' },
+          maxResponseTime: { $max: '$responseTime' },
+          minResponseTime: { $min: '$responseTime' }
+        }
+      }
+    ]).toArray();
+    
+    // Get API error distribution
+    const errorDistribution = await analyticsCollection.aggregate([
+      {
+        $match: {
+          type: 'api_error',
+          createdAt: { $gte: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000) } // Last 7 days
+        }
+      },
+      {
+        $group: {
+          _id: '$errorType',
+          count: { $sum: 1 },
+          endpoints: { $addToSet: '$endpoint' }
+        }
+      },
+      {
+        $sort: { count: -1 }
+      }
+    ]).toArray();
+    
+    const apiAnalytics = {
+      usage: apiStats,
+      performance: performanceMetrics[0] || {
+        avgResponseTime: 0,
+        totalRequests: 0,
+        errorRate: 0,
+        maxResponseTime: 0,
+        minResponseTime: 0
+      },
+      errors: errorDistribution,
+      timestamp: new Date().toISOString()
+    };
+    
+    res.json({
+      success: true,
+      data: apiAnalytics,
+      message: 'API analytics retrieved successfully',
+      timestamp: new Date().toISOString()
+    });
+    
+  } catch (error) {
+    console.error('Get API analytics error:', error);
+    res.status(500).json({
+      success: false,
+      error: 'GET_API_ANALYTICS_FAILED',
+      message: 'Failed to retrieve API analytics',
+      timestamp: new Date().toISOString()
+    });
+  }
+});
+
 module.exports = router;

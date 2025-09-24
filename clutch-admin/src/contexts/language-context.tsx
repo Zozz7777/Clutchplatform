@@ -53,8 +53,9 @@ export function LanguageProvider({ children }: LanguageProviderProps) {
 
   // Translation function with fallback
   const t = (key: string, params?: any) => {
-    // Load translations using the reliable loader
-    const translations = getTranslations(language);
+    try {
+      // Load translations using the reliable loader
+      const translations = getTranslations(language);
 
     // Fallback translations if loading fails
     const fallbackTranslations: Record<string, string> = {
@@ -1265,6 +1266,10 @@ export function LanguageProvider({ children }: LanguageProviderProps) {
     }
     
     return translation;
+    } catch (error) {
+      console.error(`Translation error for key "${key}":`, error);
+      return key; // Fallback to the key itself if there's any error
+    }
   };
 
   return (

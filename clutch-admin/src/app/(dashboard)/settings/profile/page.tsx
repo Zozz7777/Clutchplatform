@@ -95,9 +95,9 @@ export default function ProfileSettingsPage() {
             "Authorization": `Bearer ${token}`,
             "Content-Type": "application/json",
           },
-        });
+        }).catch(() => null);
         
-        if (response.ok) {
+        if (response && response.ok) {
           const profileData = await response.json();
           const employee = profileData.data?.employee || profileData.data || profileData;
           setProfile(employee);

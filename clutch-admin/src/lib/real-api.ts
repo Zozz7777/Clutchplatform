@@ -1288,8 +1288,13 @@ export class RealApiService {
   async getPerformanceMetrics(): Promise<Record<string, unknown>> {
     return withErrorHandling(
       async () => {
-        const response = await apiService.makeRequest<Record<string, unknown>>("/api/v1/performance-metrics");
-        return handleApiResponse(response, 'getPerformanceMetrics', {});
+        try {
+          const response = await apiService.makeRequest<Record<string, unknown>>("/api/v1/performance-metrics");
+          return handleApiResponse(response, 'getPerformanceMetrics', {});
+        } catch (error) {
+          // API endpoint doesn't exist, return empty object
+          return {};
+        }
       },
       'getPerformanceMetrics',
       { fallbackValue: {}, showToast: false }
@@ -1299,8 +1304,13 @@ export class RealApiService {
   async getApiAnalytics(): Promise<Record<string, unknown>[]> {
     return withErrorHandling(
       async () => {
-        const response = await apiService.makeRequest<Record<string, unknown>[]>("/api/v1/api-analytics");
-        return handleApiResponse(response, 'getApiAnalytics', []);
+        try {
+          const response = await apiService.makeRequest<Record<string, unknown>[]>("/api/v1/api-analytics");
+          return handleApiResponse(response, 'getApiAnalytics', []);
+        } catch (error) {
+          // API endpoint doesn't exist, return empty array
+          return [];
+        }
       },
       'getApiAnalytics',
       { fallbackValue: [], showToast: false }

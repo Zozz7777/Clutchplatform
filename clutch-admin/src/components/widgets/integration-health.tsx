@@ -35,7 +35,7 @@ interface Integration {
 }
 
 export function IntegrationHealth({ className = '' }: IntegrationHealthProps) {
-  const t = (key: string, params?: any) => key;
+  const { t } = useLanguage();
   const [integrationData, setIntegrationData] = React.useState<{
     integrations: Integration[];
     totalIntegrations: number;

@@ -426,4 +426,76 @@ router.get('/', authenticateToken, checkRole(['head_administrator', 'system_admi
   }
 });
 
+// GET /api/v1/performance-metrics - Get performance metrics (frontend endpoint)
+router.get('/performance-metrics', authenticateToken, checkRole(['head_administrator', 'platform_admin', 'executive', 'admin', 'system_admin']), async (req, res) => {
+  try {
+    const analyticsCollection = await getCollection('analytics');
+    
+    // Get real-time system metrics
+    const systemMetrics = {
+      uptime: process.uptime(),
+      memory: {
+        used: process.memoryUsage().heapUsed,
+        total: process.memoryUsage().heapTotal,
+        percentage: (process.memoryUsage().heapUsed / process.memoryUsage().heapTotal * 100).toFixed(2)
+      },
+      nodeVersion: process.version,
+      platform: process.platform,
+      arch: process.arch
+    };
+    
+    // Get database performance metrics
+    const dbMetrics = await analyticsCollection.aggregate([
+      {
+        $match: {
+          type: 'performance',
+          createdAt: { $gte: new Date(Date.now() - 24 * 60 * 60 * 1000) } // Last 24 hours
+        }
+      },
+      {
+        $group: {
+          _id: null,
+          avgResponseTime: { $avg: '$responseTime' },
+          totalRequests: { $sum: '$requestCount' },
+          errorRate: { $avg: '$errorRate' }
+        }
+      }
+    ]).toArray();
+    
+    // Get application metrics from database
+    const [userStats, bookingStats, transactionStats] = await Promise.all([
+      analyticsCollection.countDocuments({ type: 'user_activity' }),
+      analyticsCollection.countDocuments({ type: 'booking_activity' }),
+      analyticsCollection.countDocuments({ type: 'transaction_activity' })
+    ]);
+    
+    const metrics = {
+      system: systemMetrics,
+      database: dbMetrics[0] || { avgResponseTime: 0, totalRequests: 0, errorRate: 0 },
+      application: {
+        totalUsers: userStats,
+        totalBookings: bookingStats,
+        totalTransactions: transactionStats
+      },
+      timestamp: new Date().toISOString()
+    };
+    
+    res.json({
+      success: true,
+      data: metrics,
+      message: 'Performance metrics retrieved successfully',
+      timestamp: new Date().toISOString()
+    });
+    
+  } catch (error) {
+    console.error('Get performance metrics error:', error);
+    res.status(500).json({
+      success: false,
+      error: 'GET_PERFORMANCE_METRICS_FAILED',
+      message: 'Failed to retrieve performance metrics',
+      timestamp: new Date().toISOString()
+    });
+  }
+});
+
 module.exports = router;

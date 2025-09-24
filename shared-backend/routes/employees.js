@@ -700,4 +700,146 @@ router.post('/change-password', authenticateToken, async (req, res) => {
   }
 });
 
+// GET /api/v1/employees/profile/me - Get current employee profile
+router.get('/profile/me', authenticateToken, async (req, res) => {
+  try {
+    const usersCollection = await getCollection('users');
+    
+    // Get employee profile
+    const employee = await usersCollection.findOne(
+      { _id: req.user.userId, isEmployee: true },
+      { 
+        projection: { 
+          password: 0, // Exclude password from response
+          __v: 0 
+        } 
+      }
+    );
+    
+    if (!employee) {
+      return res.status(404).json({
+        success: false,
+        error: 'EMPLOYEE_NOT_FOUND',
+        message: 'Employee profile not found',
+        timestamp: new Date().toISOString()
+      });
+    }
+    
+    // Get additional employee data if needed
+    const employeeData = {
+      _id: employee._id,
+      name: employee.name || '',
+      email: employee.email || '',
+      phone: employee.phone || '',
+      department: employee.department || '',
+      position: employee.position || '',
+      role: employee.role || '',
+      status: employee.status || 'active',
+      avatar: employee.avatar || '',
+      bio: employee.bio || '',
+      skills: employee.skills || [],
+      location: employee.location || '',
+      timezone: employee.timezone || 'UTC',
+      language: employee.language || 'en',
+      notifications: employee.notifications || {
+        email: true,
+        push: true,
+        sms: false
+      },
+      preferences: employee.preferences || {
+        theme: 'light',
+        dashboard: 'default'
+      },
+      createdAt: employee.createdAt,
+      updatedAt: employee.updatedAt,
+      lastLogin: employee.lastLogin
+    };
+    
+    res.json({
+      success: true,
+      data: {
+        employee: employeeData
+      },
+      message: 'Employee profile retrieved successfully',
+      timestamp: new Date().toISOString()
+    });
+    
+  } catch (error) {
+    console.error('Get employee profile error:', error);
+    res.status(500).json({
+      success: false,
+      error: 'GET_EMPLOYEE_PROFILE_FAILED',
+      message: 'Failed to retrieve employee profile',
+      timestamp: new Date().toISOString()
+    });
+  }
+});
+
+// PUT /api/v1/employees/profile/me - Update current employee profile
+router.put('/profile/me', authenticateToken, async (req, res) => {
+  try {
+    const usersCollection = await getCollection('users');
+    const { name, phone, bio, skills, location, timezone, language, notifications, preferences } = req.body;
+    
+    // Build update object
+    const updateData = {
+      updatedAt: new Date()
+    };
+    
+    if (name !== undefined) updateData.name = name;
+    if (phone !== undefined) updateData.phone = phone;
+    if (bio !== undefined) updateData.bio = bio;
+    if (skills !== undefined) updateData.skills = skills;
+    if (location !== undefined) updateData.location = location;
+    if (timezone !== undefined) updateData.timezone = timezone;
+    if (language !== undefined) updateData.language = language;
+    if (notifications !== undefined) updateData.notifications = notifications;
+    if (preferences !== undefined) updateData.preferences = preferences;
+    
+    // Update employee profile
+    const result = await usersCollection.updateOne(
+      { _id: req.user.userId, isEmployee: true },
+      { $set: updateData }
+    );
+    
+    if (result.modifiedCount === 0) {
+      return res.status(400).json({
+        success: false,
+        error: 'PROFILE_UPDATE_FAILED',
+        message: 'Failed to update employee profile',
+        timestamp: new Date().toISOString()
+      });
+    }
+    
+    // Get updated profile
+    const updatedEmployee = await usersCollection.findOne(
+      { _id: req.user.userId, isEmployee: true },
+      { 
+        projection: { 
+          password: 0, // Exclude password from response
+          __v: 0 
+        } 
+      }
+    );
+    
+    res.json({
+      success: true,
+      data: {
+        employee: updatedEmployee
+      },
+      message: 'Employee profile updated successfully',
+      timestamp: new Date().toISOString()
+    });
+    
+  } catch (error) {
+    console.error('Update employee profile error:', error);
+    res.status(500).json({
+      success: false,
+      error: 'UPDATE_EMPLOYEE_PROFILE_FAILED',
+      message: 'Failed to update employee profile',
+      timestamp: new Date().toISOString()
+    });
+  }
+});
+
 module.exports = router;
