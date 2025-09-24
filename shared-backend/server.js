@@ -235,7 +235,7 @@ app.use(`${apiPrefix}/performance`, performanceRoutes);
 app.use(`${apiPrefix}/dashboard`, dashboardRoutes);
 app.use(`${apiPrefix}/notifications`, notificationsRoutes);
 app.use(`${apiPrefix}/employees`, employeesRoutes);
-app.use(`${apiPrefix}/employees`, employeeInvitationsRoutes);
+app.use(`${apiPrefix}/employee-invitations`, employeeInvitationsRoutes);
 app.use(`${apiPrefix}/export`, exportRoutes);
 
 // Mount new missing route files with correct v1 prefix
@@ -261,7 +261,6 @@ app.use('/api/notifications', notificationsRoutes);
 app.use('/api/dashboard', dashboardRoutes);
 app.use('/api/employees', employeesRoutes);
 app.use('/api/export', exportRoutes);
-app.use(`${apiPrefix}/employees`, employeeInvitationsRoutes);
 app.use('/api/settings', settingsRoutes);
 app.use('/api/integrations', integrationsRoutes);
 app.use('/api/audit-trail', auditTrailRoutes);
@@ -274,7 +273,6 @@ app.use('/api/rbac', rbacRoutes);
 app.use('/api/v1/notifications', notificationsRoutes);
 app.use('/api/v1/dashboard', dashboardRoutes);
 app.use('/api/v1/users', usersRoutes);
-app.use('/api/v1/employees', employeesRoutes);
 app.use('/api/v1/export', exportRoutes);
 app.use('/api/v1/settings', settingsRoutes);
 app.use('/api/v1/integrations', integrationsRoutes);
