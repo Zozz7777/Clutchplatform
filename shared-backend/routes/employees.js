@@ -176,6 +176,195 @@ router.post('/register', authenticateToken, checkRole(['head_administrator', 'hr
   }
 });
 
+// ==================== EMPLOYEE SELF-MANAGEMENT ====================
+
+// GET /api/v1/employees/profile/me - Get current employee profile
+router.get('/profile/me', authenticateToken, async (req, res) => {
+  try {
+    const usersCollection = await getCollection('users');
+    
+    const employee = await usersCollection.findOne(
+      { _id: req.user.userId, isEmployee: true },
+      { projection: { password: 0 } }
+    );
+    
+    if (!employee) {
+      return res.status(404).json({
+        success: false,
+        error: 'EMPLOYEE_NOT_FOUND',
+        message: 'Employee profile not found',
+        timestamp: new Date().toISOString()
+      });
+    }
+    
+    res.json({
+      success: true,
+      data: { employee },
+      message: 'Employee profile retrieved successfully',
+      timestamp: new Date().toISOString()
+    });
+    
+  } catch (error) {
+    console.error('Get employee profile error:', error);
+    res.status(500).json({
+      success: false,
+      error: 'GET_PROFILE_FAILED',
+      message: 'Failed to retrieve employee profile',
+      timestamp: new Date().toISOString()
+    });
+  }
+});
+
+// PUT /api/v1/employees/profile/me - Update current employee profile
+router.put('/profile/me', authenticateToken, async (req, res) => {
+  try {
+    const { name, phoneNumber, profile } = req.body;
+    const usersCollection = await getCollection('users');
+    
+    // Check if employee exists
+    const existingEmployee = await usersCollection.findOne({ _id: req.user.userId, isEmployee: true });
+    if (!existingEmployee) {
+      return res.status(404).json({
+        success: false,
+        error: 'EMPLOYEE_NOT_FOUND',
+        message: 'Employee profile not found',
+        timestamp: new Date().toISOString()
+      });
+    }
+    
+    // Build update object
+    const updateData = {
+      updatedAt: new Date()
+    };
+    
+    if (name) updateData.name = name;
+    if (phoneNumber !== undefined) updateData.phoneNumber = phoneNumber;
+    if (profile) updateData.profile = { ...existingEmployee.profile, ...profile };
+    
+    const result = await usersCollection.updateOne(
+      { _id: req.user.userId, isEmployee: true },
+      { $set: updateData }
+    );
+    
+    if (result.modifiedCount === 0) {
+      return res.status(400).json({
+        success: false,
+        error: 'UPDATE_FAILED',
+        message: 'No changes made to profile',
+        timestamp: new Date().toISOString()
+      });
+    }
+    
+    // Get updated employee
+    const updatedEmployee = await usersCollection.findOne(
+      { _id: req.user.userId, isEmployee: true },
+      { projection: { password: 0 } }
+    );
+    
+    res.json({
+      success: true,
+      data: { employee: updatedEmployee },
+      message: 'Employee profile updated successfully',
+      timestamp: new Date().toISOString()
+    });
+    
+  } catch (error) {
+    console.error('Update employee profile error:', error);
+    res.status(500).json({
+      success: false,
+      error: 'UPDATE_PROFILE_FAILED',
+      message: 'Failed to update employee profile',
+      timestamp: new Date().toISOString()
+    });
+  }
+});
+
+// POST /api/v1/employees/change-password - Change employee password
+router.post('/change-password', authenticateToken, async (req, res) => {
+  try {
+    const { currentPassword, newPassword } = req.body;
+    const usersCollection = await getCollection('users');
+    
+    if (!currentPassword || !newPassword) {
+      return res.status(400).json({
+        success: false,
+        error: 'MISSING_FIELDS',
+        message: 'Current password and new password are required',
+        timestamp: new Date().toISOString()
+      });
+    }
+    
+    if (newPassword.length < 8) {
+      return res.status(400).json({
+        success: false,
+        error: 'WEAK_PASSWORD',
+        message: 'New password must be at least 8 characters long',
+        timestamp: new Date().toISOString()
+      });
+    }
+    
+    // Get employee with password
+    const employee = await usersCollection.findOne({ _id: req.user.userId, isEmployee: true });
+    if (!employee) {
+      return res.status(404).json({
+        success: false,
+        error: 'EMPLOYEE_NOT_FOUND',
+        message: 'Employee not found',
+        timestamp: new Date().toISOString()
+      });
+    }
+    
+    // Verify current password
+    const isCurrentPasswordValid = await bcrypt.compare(currentPassword, employee.password);
+    if (!isCurrentPasswordValid) {
+      return res.status(400).json({
+        success: false,
+        error: 'INVALID_CURRENT_PASSWORD',
+        message: 'Current password is incorrect',
+        timestamp: new Date().toISOString()
+      });
+    }
+    
+    // Hash new password
+    const hashedNewPassword = await bcrypt.hash(newPassword, 12);
+    
+    // Update password
+    const result = await usersCollection.updateOne(
+      { _id: req.user.userId, isEmployee: true },
+      { 
+        $set: { 
+          password: hashedNewPassword,
+          updatedAt: new Date()
+        } 
+      }
+    );
+    
+    if (result.modifiedCount === 0) {
+      return res.status(400).json({
+        success: false,
+        error: 'PASSWORD_UPDATE_FAILED',
+        message: 'Failed to update password',
+        timestamp: new Date().toISOString()
+      });
+    }
+    
+    res.json({
+      success: true,
+      message: 'Password changed successfully',
+      timestamp: new Date().toISOString()
+    });
+    
+  } catch (error) {
+    console.error('Change password error:', error);
+    res.status(500).json({
+      success: false,
+      error: 'CHANGE_PASSWORD_FAILED',
+      message: 'Failed to change password',
+      timestamp: new Date().toISOString()
+    });
+  }
+});
+
 // ==================== EMPLOYEE MANAGEMENT ====================
 
 // GET /api/v1/employees - Get all employees (admin/hr only)
@@ -507,193 +696,5 @@ router.delete('/:id', authenticateToken, checkRole(['head_administrator']), asyn
   }
 });
 
-// ==================== EMPLOYEE SELF-MANAGEMENT ====================
-
-// GET /api/v1/employees/profile/me - Get current employee profile
-router.get('/profile/me', authenticateToken, async (req, res) => {
-  try {
-    const usersCollection = await getCollection('users');
-    
-    const employee = await usersCollection.findOne(
-      { _id: req.user.userId, isEmployee: true },
-      { projection: { password: 0 } }
-    );
-    
-    if (!employee) {
-      return res.status(404).json({
-        success: false,
-        error: 'EMPLOYEE_NOT_FOUND',
-        message: 'Employee profile not found',
-        timestamp: new Date().toISOString()
-      });
-    }
-    
-    res.json({
-      success: true,
-      data: { employee },
-      message: 'Employee profile retrieved successfully',
-      timestamp: new Date().toISOString()
-    });
-    
-  } catch (error) {
-    console.error('Get employee profile error:', error);
-    res.status(500).json({
-      success: false,
-      error: 'GET_PROFILE_FAILED',
-      message: 'Failed to retrieve employee profile',
-      timestamp: new Date().toISOString()
-    });
-  }
-});
-
-// PUT /api/v1/employees/profile/me - Update current employee profile
-router.put('/profile/me', authenticateToken, async (req, res) => {
-  try {
-    const { name, phoneNumber, profile } = req.body;
-    const usersCollection = await getCollection('users');
-    
-    // Check if employee exists
-    const existingEmployee = await usersCollection.findOne({ _id: req.user.userId, isEmployee: true });
-    if (!existingEmployee) {
-      return res.status(404).json({
-        success: false,
-        error: 'EMPLOYEE_NOT_FOUND',
-        message: 'Employee profile not found',
-        timestamp: new Date().toISOString()
-      });
-    }
-    
-    // Build update object
-    const updateData = {
-      updatedAt: new Date()
-    };
-    
-    if (name) updateData.name = name;
-    if (phoneNumber !== undefined) updateData.phoneNumber = phoneNumber;
-    if (profile) updateData.profile = { ...existingEmployee.profile, ...profile };
-    
-    const result = await usersCollection.updateOne(
-      { _id: req.user.userId, isEmployee: true },
-      { $set: updateData }
-    );
-    
-    if (result.modifiedCount === 0) {
-      return res.status(400).json({
-        success: false,
-        error: 'UPDATE_FAILED',
-        message: 'No changes made to profile',
-        timestamp: new Date().toISOString()
-      });
-    }
-    
-    // Get updated employee
-    const updatedEmployee = await usersCollection.findOne(
-      { _id: req.user.userId, isEmployee: true },
-      { projection: { password: 0 } }
-    );
-    
-    res.json({
-      success: true,
-      data: { employee: updatedEmployee },
-      message: 'Employee profile updated successfully',
-      timestamp: new Date().toISOString()
-    });
-    
-  } catch (error) {
-    console.error('Update employee profile error:', error);
-    res.status(500).json({
-      success: false,
-      error: 'UPDATE_PROFILE_FAILED',
-      message: 'Failed to update employee profile',
-      timestamp: new Date().toISOString()
-    });
-  }
-});
-
-// POST /api/v1/employees/change-password - Change employee password
-router.post('/change-password', authenticateToken, async (req, res) => {
-  try {
-    const { currentPassword, newPassword } = req.body;
-    const usersCollection = await getCollection('users');
-    
-    if (!currentPassword || !newPassword) {
-      return res.status(400).json({
-        success: false,
-        error: 'MISSING_FIELDS',
-        message: 'Current password and new password are required',
-        timestamp: new Date().toISOString()
-      });
-    }
-    
-    if (newPassword.length < 8) {
-      return res.status(400).json({
-        success: false,
-        error: 'WEAK_PASSWORD',
-        message: 'New password must be at least 8 characters long',
-        timestamp: new Date().toISOString()
-      });
-    }
-    
-    // Get employee with password
-    const employee = await usersCollection.findOne({ _id: req.user.userId, isEmployee: true });
-    if (!employee) {
-      return res.status(404).json({
-        success: false,
-        error: 'EMPLOYEE_NOT_FOUND',
-        message: 'Employee not found',
-        timestamp: new Date().toISOString()
-      });
-    }
-    
-    // Verify current password
-    const isCurrentPasswordValid = await bcrypt.compare(currentPassword, employee.password);
-    if (!isCurrentPasswordValid) {
-      return res.status(400).json({
-        success: false,
-        error: 'INVALID_CURRENT_PASSWORD',
-        message: 'Current password is incorrect',
-        timestamp: new Date().toISOString()
-      });
-    }
-    
-    // Hash new password
-    const hashedNewPassword = await bcrypt.hash(newPassword, 12);
-    
-    // Update password
-    const result = await usersCollection.updateOne(
-      { _id: req.user.userId, isEmployee: true },
-      { 
-        $set: { 
-          password: hashedNewPassword,
-          updatedAt: new Date()
-        } 
-      }
-    );
-    
-    if (result.modifiedCount === 0) {
-      return res.status(400).json({
-        success: false,
-        error: 'PASSWORD_UPDATE_FAILED',
-        message: 'Failed to update password',
-        timestamp: new Date().toISOString()
-      });
-    }
-    
-    res.json({
-      success: true,
-      message: 'Password changed successfully',
-      timestamp: new Date().toISOString()
-    });
-    
-  } catch (error) {
-    console.error('Change password error:', error);
-    res.status(500).json({
-      success: false,
-      error: 'CHANGE_PASSWORD_FAILED',
-      message: 'Failed to change password',
-      timestamp: new Date().toISOString()
-    });
-  }
-});
 
 module.exports = router;
