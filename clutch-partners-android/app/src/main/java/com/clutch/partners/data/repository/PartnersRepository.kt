@@ -483,6 +483,62 @@ class PartnersRepository @Inject constructor(
 
     // Local data access
     fun getCurrentUser(): Flow<PartnerUser?> = localDataSource.getCurrentUser()
+    
+    suspend fun getCurrentUser(): PartnerUser? {
+        return localDataSource.getCurrentUserSync()
+    }
+    
+    suspend fun getOrders(): List<PartnerOrder> {
+        return try {
+            val response = apiService.getOrders()
+            if (response.isSuccessful && response.body()?.success == true) {
+                response.body()?.data ?: emptyList()
+            } else {
+                emptyList()
+            }
+        } catch (e: Exception) {
+            emptyList()
+        }
+    }
+    
+    suspend fun getPayments(): List<PartnerPayment> {
+        return try {
+            val response = apiService.getPayments()
+            if (response.isSuccessful && response.body()?.success == true) {
+                response.body()?.data ?: emptyList()
+            } else {
+                emptyList()
+            }
+        } catch (e: Exception) {
+            emptyList()
+        }
+    }
+    
+    suspend fun getWeeklyIncome(): Double {
+        return try {
+            val response = apiService.getWeeklyIncome()
+            if (response.isSuccessful && response.body()?.success == true) {
+                response.body()?.data?.weeklyIncome ?: 0.0
+            } else {
+                0.0
+            }
+        } catch (e: Exception) {
+            0.0
+        }
+    }
+    
+    suspend fun getPayoutCountdown(): String {
+        return try {
+            val response = apiService.getWeeklyIncome()
+            if (response.isSuccessful && response.body()?.success == true) {
+                response.body()?.data?.payoutCountdown ?: "N/A"
+            } else {
+                "N/A"
+            }
+        } catch (e: Exception) {
+            "N/A"
+        }
+    }
     fun getCachedOrders(): Flow<List<PartnerOrder>> = localDataSource.getCachedOrders()
     fun getCachedPayments(): Flow<List<PartnerPayment>> = localDataSource.getCachedPayments()
 

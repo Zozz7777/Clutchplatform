@@ -25,7 +25,7 @@ fun ClutchPartnersNavigation(
     navController: NavHostController = rememberNavController()
 ) {
     val repository: PartnersRepository = koinInject()
-    val isAuthenticated by repository.isAuthenticated().collectAsState(initial = false)
+    val isAuthenticated = repository.isAuthenticated()
     
     NavHost(
         navController = navController,

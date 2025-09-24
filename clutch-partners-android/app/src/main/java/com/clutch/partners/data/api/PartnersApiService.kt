@@ -25,6 +25,9 @@ interface PartnersApiService {
         @Query("page") page: Int = 1,
         @Query("limit") limit: Int = 20
     ): Response<ApiResponse<OrdersResponse>>
+    
+    @GET("partners/orders")
+    suspend fun getOrders(): Response<ApiResponse<List<PartnerOrder>>>
 
     @PATCH("partners/orders/{id}/status")
     suspend fun updateOrderStatus(
@@ -61,6 +64,12 @@ interface PartnersApiService {
         @Query("page") page: Int = 1,
         @Query("limit") limit: Int = 20
     ): Response<ApiResponse<PaymentHistoryResponse>>
+    
+    @GET("partners/payments/weekly")
+    suspend fun getWeeklyIncome(): Response<ApiResponse<WeeklyIncomeData>>
+    
+    @GET("partners/payments")
+    suspend fun getPayments(): Response<ApiResponse<List<PartnerPayment>>>
 
     // Settings
     @GET("partners/settings")
@@ -272,4 +281,9 @@ data class Pagination(
     val current: Int,
     val pages: Int,
     val total: Int
+)
+
+data class WeeklyIncomeData(
+    val weeklyIncome: Double,
+    val payoutCountdown: String
 )

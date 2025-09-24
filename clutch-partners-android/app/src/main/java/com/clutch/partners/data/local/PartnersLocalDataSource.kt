@@ -27,6 +27,8 @@ class PartnersLocalDataSource @Inject constructor() {
     
     fun getCurrentUser(): Flow<PartnerUser?> = currentUser
     
+    fun getCurrentUserSync(): PartnerUser? = _currentUser.value
+    
     fun saveOrders(orders: List<PartnerOrder>) {
         _cachedOrders.value = orders
     }

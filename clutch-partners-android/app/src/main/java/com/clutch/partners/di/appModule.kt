@@ -75,4 +75,13 @@ val appModule = module {
     single<NotificationManager> {
         NotificationManager(get())
     }
+    
+    // ViewModels
+    single<com.clutch.partners.ui.viewmodel.AuthViewModel> {
+        com.clutch.partners.ui.viewmodel.AuthViewModel(get(), get())
+    }
+    
+    single<com.clutch.partners.ui.viewmodel.DashboardViewModel> {
+        com.clutch.partners.ui.viewmodel.DashboardViewModel(get())
+    }
 }
