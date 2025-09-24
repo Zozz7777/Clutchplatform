@@ -234,7 +234,7 @@ export default function ProfileSettingsPage() {
     try {
       const token = localStorage.getItem("clutch-admin-token");
       
-      const response = await fetch("https://clutch-main-nk7x.onrender.com/api/v1/employees/profile/me", {
+      const response = await fetch(`${API_BASE_URL}/api/v1/employees/profile/me`, {
         method: "PUT",
         headers: {
           "Authorization": `Bearer ${token}`,
@@ -359,7 +359,7 @@ export default function ProfileSettingsPage() {
     try {
       const token = localStorage.getItem("clutch-admin-token");
       
-      const response = await fetch("https://clutch-main-nk7x.onrender.com/api/v1/employees/profile/me", {
+      const response = await fetch(`${API_BASE_URL}/api/v1/employees/profile/me`, {
         method: "PUT",
         headers: {
           "Authorization": `Bearer ${token}`,

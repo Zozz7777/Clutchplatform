@@ -14,6 +14,7 @@ import { EmployeeInvitationForm } from "@/components/employee-invitation-form";
 import { JobPostingOverlay } from "@/components/job-posting-overlay";
 import { RecruitmentTab } from "@/components/recruitment-tab";
 import { apiService } from "@/lib/api";
+import { API_BASE_URL } from "@/lib/constants";
 import { toast } from "sonner";
 import { handleError } from "@/lib/error-handler";
 import { 
@@ -387,7 +388,7 @@ export default function HRPage() {
         const token = localStorage.getItem("clutch-admin-token");
         
         // Load employees
-        const employeesResponse = await fetch("https://clutch-main-nk7x.onrender.com/api/v1/hr/employees", {
+        const employeesResponse = await fetch("${API_BASE_URL}/api/v1/hr/employees", {
           headers: {
             "Authorization": `Bearer ${token}`,
             "Content-Type": "application/json",
@@ -447,7 +448,7 @@ export default function HRPage() {
         }
 
         // Load job applications
-        const applicationsResponse = await fetch("https://clutch-main-nk7x.onrender.com/api/v1/hr/applications", {
+        const applicationsResponse = await fetch("${API_BASE_URL}/api/v1/hr/applications", {
           headers: {
             "Authorization": `Bearer ${token}`,
             "Content-Type": "application/json",
@@ -482,7 +483,7 @@ export default function HRPage() {
         // Load careers data
         try {
           // Load jobs
-          const jobsResponse = await fetch("https://clutch-main-nk7x.onrender.com/api/v1/careers/admin/jobs", {
+          const jobsResponse = await fetch("${API_BASE_URL}/api/v1/careers/admin/jobs", {
             headers: {
               "Authorization": `Bearer ${token}`,
               "Content-Type": "application/json",
@@ -498,7 +499,7 @@ export default function HRPage() {
           }
 
           // Load career applications
-          const applicationsResponse = await fetch("https://clutch-main-nk7x.onrender.com/api/v1/careers/admin/applications", {
+          const applicationsResponse = await fetch("${API_BASE_URL}/api/v1/careers/admin/applications", {
             headers: {
               "Authorization": `Bearer ${token}`,
               "Content-Type": "application/json",
@@ -518,7 +519,7 @@ export default function HRPage() {
         }
 
         // Load HR stats
-        const statsResponse = await fetch("https://clutch-main-nk7x.onrender.com/api/v1/hr/stats", {
+        const statsResponse = await fetch("${API_BASE_URL}/api/v1/hr/stats", {
           headers: {
             "Authorization": `Bearer ${token}`,
             "Content-Type": "application/json",
@@ -657,7 +658,7 @@ export default function HRPage() {
       
       switch (action) {
         case "activate":
-          await fetch(`https://clutch-main-nk7x.onrender.com/api/v1/hr/employees/${employeeId}`, {
+          await fetch(`${API_BASE_URL}/api/v1/hr/employees/${employeeId}`, {
             method: "PUT",
             headers: {
               "Authorization": `Bearer ${token}`,
@@ -667,7 +668,7 @@ export default function HRPage() {
           });
           break;
         case "terminate":
-          await fetch(`https://clutch-main-nk7x.onrender.com/api/v1/hr/employees/${employeeId}`, {
+          await fetch(`${API_BASE_URL}/api/v1/hr/employees/${employeeId}`, {
             method: "PUT",
             headers: {
               "Authorization": `Bearer ${token}`,
@@ -683,7 +684,7 @@ export default function HRPage() {
       }
       
       // Reload employees
-      const response = await fetch("https://clutch-main-nk7x.onrender.com/api/v1/hr/employees", {
+      const response = await fetch("${API_BASE_URL}/api/v1/hr/employees", {
         headers: {
           "Authorization": `Bearer ${token}`,
           "Content-Type": "application/json",
@@ -780,7 +781,7 @@ export default function HRPage() {
   const handleDownloadEmployeeRecords = async (employee: Employee) => {
     try {
       const token = localStorage.getItem("clutch-admin-token");
-      const response = await fetch(`https://clutch-main-nk7x.onrender.com/api/v1/hr/employees/${employee._id}/records`, {
+      const response = await fetch(`${API_BASE_URL}/api/v1/hr/employees/${employee._id}/records`, {
         headers: {
           "Authorization": `Bearer ${token}`,
         },
@@ -808,7 +809,7 @@ export default function HRPage() {
   const handleSendEmailToEmployee = async (employee: Employee) => {
     try {
       const token = localStorage.getItem("clutch-admin-token");
-      const response = await fetch("https://clutch-main-nk7x.onrender.com/api/v1/hr/employees/send-email", {
+      const response = await fetch("${API_BASE_URL}/api/v1/hr/employees/send-email", {
         method: "POST",
         headers: {
           "Authorization": `Bearer ${token}`,
@@ -842,7 +843,7 @@ export default function HRPage() {
     
     try {
       const token = localStorage.getItem("clutch-admin-token");
-      const response = await fetch(`https://clutch-main-nk7x.onrender.com/api/v1/hr/employees/${employeeToDelete._id}`, {
+      const response = await fetch(`${API_BASE_URL}/api/v1/hr/employees/${employeeToDelete._id}`, {
         method: "DELETE",
         headers: {
           "Authorization": `Bearer ${token}`,
@@ -852,7 +853,7 @@ export default function HRPage() {
       if (response.ok) {
         toast.success("Employee deleted successfully");
         // Reload employees
-        const employeesResponse = await fetch("https://clutch-main-nk7x.onrender.com/api/v1/hr/employees", {
+        const employeesResponse = await fetch("${API_BASE_URL}/api/v1/hr/employees", {
           headers: {
             "Authorization": `Bearer ${token}`,
             "Content-Type": "application/json",
@@ -887,7 +888,7 @@ export default function HRPage() {
       
       switch (action) {
         case "schedule_interview":
-          await fetch(`https://clutch-main-nk7x.onrender.com/api/v1/hr/applications/${applicationId}`, {
+          await fetch(`${API_BASE_URL}/api/v1/hr/applications/${applicationId}`, {
             method: "PUT",
             headers: {
               "Authorization": `Bearer ${token}`,
@@ -900,7 +901,7 @@ export default function HRPage() {
           });
           break;
         case "make_offer":
-          await fetch(`https://clutch-main-nk7x.onrender.com/api/v1/hr/applications/${applicationId}`, {
+          await fetch(`${API_BASE_URL}/api/v1/hr/applications/${applicationId}`, {
             method: "PUT",
             headers: {
               "Authorization": `Bearer ${token}`,
@@ -913,7 +914,7 @@ export default function HRPage() {
           });
           break;
         case "hire":
-          await fetch(`https://clutch-main-nk7x.onrender.com/api/v1/hr/applications/${applicationId}`, {
+          await fetch(`${API_BASE_URL}/api/v1/hr/applications/${applicationId}`, {
             method: "PUT",
             headers: {
               "Authorization": `Bearer ${token}`,
@@ -926,7 +927,7 @@ export default function HRPage() {
           });
           break;
         case "reject":
-          await fetch(`https://clutch-main-nk7x.onrender.com/api/v1/hr/applications/${applicationId}`, {
+          await fetch(`${API_BASE_URL}/api/v1/hr/applications/${applicationId}`, {
             method: "PUT",
             headers: {
               "Authorization": `Bearer ${token}`,
@@ -938,7 +939,7 @@ export default function HRPage() {
       }
       
       // Reload applications
-      const response = await fetch("https://clutch-main-nk7x.onrender.com/api/v1/hr/applications", {
+      const response = await fetch("${API_BASE_URL}/api/v1/hr/applications", {
         headers: {
           "Authorization": `Bearer ${token}`,
           "Content-Type": "application/json",
@@ -1347,7 +1348,7 @@ export default function HRPage() {
           onApplicationsUpdate={() => {
             // Reload applications
             const token = localStorage.getItem("clutch-admin-token");
-            fetch("https://clutch-main-nk7x.onrender.com/api/v1/careers/admin/applications", {
+            fetch("${API_BASE_URL}/api/v1/careers/admin/applications", {
               headers: {
                 "Authorization": `Bearer ${token}`,
                 "Content-Type": "application/json",
@@ -1940,7 +1941,7 @@ export default function HRPage() {
           onSuccess={() => {
             // Reload jobs
             const token = localStorage.getItem("clutch-admin-token");
-            fetch("https://clutch-main-nk7x.onrender.com/api/v1/careers/admin/jobs", {
+            fetch("${API_BASE_URL}/api/v1/careers/admin/jobs", {
               headers: {
                 "Authorization": `Bearer ${token}`,
                 "Content-Type": "application/json",
