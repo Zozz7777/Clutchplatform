@@ -6,30 +6,33 @@ import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
 import android.os.Build
+import android.util.Log
 import androidx.core.app.NotificationCompat
 import com.clutch.partners.MainActivity
 import com.clutch.partners.R
+import com.clutch.partners.data.model.NotificationType
 import com.google.firebase.messaging.FirebaseMessagingService
 import com.google.firebase.messaging.RemoteMessage
+import org.koin.android.ext.android.inject
 
 class FirebaseMessagingService : FirebaseMessagingService() {
+    
+    private val notificationManager: NotificationManager by inject()
 
     override fun onMessageReceived(remoteMessage: RemoteMessage) {
         super.onMessageReceived(remoteMessage)
+        
+        Log.d("FCM", "From: ${remoteMessage.from}")
+        Log.d("FCM", "Message data payload: ${remoteMessage.data}")
 
-        // Handle data payload
-        remoteMessage.data.isNotEmpty().let {
-            // Process data payload
-        }
-
-        // Handle notification payload
-        remoteMessage.notification?.let {
-            sendNotification(it.title ?: "Clutch Partners", it.body ?: "")
-        }
+        // Handle FCM messages using NotificationManager
+        notificationManager.handleRemoteMessage(remoteMessage)
     }
 
     override fun onNewToken(token: String) {
         super.onNewToken(token)
+        
+        Log.d("FCM", "Refreshed token: $token")
         
         // Send token to server
         sendTokenToServer(token)

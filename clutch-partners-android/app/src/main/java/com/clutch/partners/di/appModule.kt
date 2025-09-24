@@ -5,6 +5,7 @@ import com.clutch.partners.data.api.PartnersApiService
 import com.clutch.partners.data.local.PartnersLocalDataSource
 import com.clutch.partners.data.local.PreferencesManager
 import com.clutch.partners.data.repository.PartnersRepository
+import com.clutch.partners.service.NotificationManager
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import okhttp3.OkHttpClient
@@ -68,5 +69,10 @@ val appModule = module {
             localDataSource = get(),
             preferencesManager = get()
         )
+    }
+    
+    // Services
+    single<NotificationManager> {
+        NotificationManager(get())
     }
 }

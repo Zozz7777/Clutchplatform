@@ -69,18 +69,18 @@
     <string name="skip">Skip</string>
     <string name="get_started">Get Started</string>
     
-    <!-- Arabic -->
-    <string name="app_name_ar">كلتش بارتنرز</string>
-    <string name="welcome_ar">مرحباً بك</string>
-    <string name="sign_in_ar">تسجيل الدخول</string>
-    <string name="sign_up_ar">إنشاء حساب</string>
-    <string name="email_ar">البريد الإلكتروني</string>
-    <string name="password_ar">كلمة المرور</string>
-    <string name="business_name_ar">اسم العمل</string>
-    <string name="owner_name_ar">اسم المالك</string>
-    <string name="phone_number_ar">رقم الهاتف</string>
-    <string name="orders_ar">الطلبات</string>
-    <string name="payments_ar">المدفوعات</string>
-    <string name="settings_ar">الإعدادات</string>
-    <string name="dashboard_ar">لوحة التحكم</string>
+    <!-- Language -->
+    <string name="select_language">Select Language</string>
+    <string name="arabic">العربية</string>
+    <string name="english">English</string>
+    
+    <!-- Theme -->
+    <string name="light_theme">Light</string>
+    <string name="dark_theme">Dark</string>
+    <string name="auto_theme">Auto</string>
+    
+    <!-- Permissions -->
+    <string name="access_denied">Access Denied</string>
+    <string name="insufficient_permissions">Insufficient Permissions</string>
+    <string name="permission_required">Permission Required</string>
 </resources>
