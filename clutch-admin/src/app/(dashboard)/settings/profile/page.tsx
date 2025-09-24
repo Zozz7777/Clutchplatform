@@ -481,12 +481,12 @@ export default function ProfileSettingsPage() {
         <div>
           <h1 className="text-3xl font-bold tracking-tight">Profile Settings</h1>
           <p className="text-muted-foreground">
-            {t('profile.description')}
+            Manage your personal information and account settings
           </p>
         </div>
         <Button onClick={saveProfile} disabled={isSaving}>
           <Save className="mr-2 h-4 w-4" />
-          {isSaving ? t('profile.saving') : t('profile.updateProfile')}
+          {isSaving ? 'Saving...' : 'Update Profile'}
         </Button>
       </div>
 
@@ -497,7 +497,7 @@ export default function ProfileSettingsPage() {
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
                 <User className="h-5 w-5" />
-                {t('profile.personalInfo')}
+                Personal Information
               </CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
@@ -595,7 +595,7 @@ export default function ProfileSettingsPage() {
           {/* Personal Information */}
           <Card>
             <CardHeader>
-              <CardTitle>{t('profile.personalInfo')}</CardTitle>
+              <CardTitle>Personal Information</CardTitle>
               <CardDescription>
                 Update your personal information and contact details
               </CardDescription>
@@ -674,14 +674,14 @@ export default function ProfileSettingsPage() {
           {/* Change Password */}
           <Card>
             <CardHeader>
-              <CardTitle>{t('profile.changePassword')}</CardTitle>
+              <CardTitle>Change Password</CardTitle>
               <CardDescription>
                 Update your password to keep your account secure
               </CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
               <div className="space-y-2">
-                <Label htmlFor="currentPassword">{t('profile.currentPassword')}</Label>
+                <Label htmlFor="currentPassword">Current Password</Label>
                 <div className="relative">
                   <Input
                     id="currentPassword"
@@ -702,7 +702,7 @@ export default function ProfileSettingsPage() {
                 </div>
               </div>
               <div className="space-y-2">
-                <Label htmlFor="newPassword">{t('profile.newPassword')}</Label>
+                <Label htmlFor="newPassword">New Password</Label>
                 <div className="relative">
                   <Input
                     id="newPassword"
@@ -723,7 +723,7 @@ export default function ProfileSettingsPage() {
                 </div>
               </div>
               <div className="space-y-2">
-                <Label htmlFor="confirmPassword">{t('profile.confirmPassword')}</Label>
+                <Label htmlFor="confirmPassword">Confirm Password</Label>
                 <div className="relative">
                   <Input
                     id="confirmPassword"
@@ -745,7 +745,7 @@ export default function ProfileSettingsPage() {
               </div>
               <Button onClick={changePassword} disabled={isSaving}>
                 <Shield className="mr-2 h-4 w-4" />
-                {isSaving ? t('common.loading') : t('profile.changePassword')}
+                {isSaving ? 'Loading...' : 'Change Password'}
               </Button>
             </CardContent>
           </Card>

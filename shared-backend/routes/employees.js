@@ -700,143 +700,87 @@ router.post('/change-password', authenticateToken, async (req, res) => {
   }
 });
 
-// GET /api/v1/employees/profile/me - Get current employee profile
-router.get('/profile/me', authenticateToken, async (req, res) => {
+// POST /api/v1/employees/change-password - Change employee password
+router.post('/change-password', authenticateToken, async (req, res) => {
   try {
+    const { currentPassword, newPassword } = req.body;
     const usersCollection = await getCollection('users');
     
-    // Get employee profile
-    const employee = await usersCollection.findOne(
-      { _id: req.user.userId, isEmployee: true },
-      { 
-        projection: { 
-          password: 0, // Exclude password from response
-          __v: 0 
-        } 
-      }
-    );
-    
-    if (!employee) {
-      return res.status(404).json({
+    if (!currentPassword || !newPassword) {
+      return res.status(400).json({
         success: false,
-        error: 'EMPLOYEE_NOT_FOUND',
-        message: 'Employee profile not found',
+        error: 'MISSING_FIELDS',
+        message: 'Current password and new password are required',
         timestamp: new Date().toISOString()
       });
     }
     
-    // Get additional employee data if needed
-    const employeeData = {
-      _id: employee._id,
-      name: employee.name || '',
-      email: employee.email || '',
-      phone: employee.phone || '',
-      department: employee.department || '',
-      position: employee.position || '',
-      role: employee.role || '',
-      status: employee.status || 'active',
-      avatar: employee.avatar || '',
-      bio: employee.bio || '',
-      skills: employee.skills || [],
-      location: employee.location || '',
-      timezone: employee.timezone || 'UTC',
-      language: employee.language || 'en',
-      notifications: employee.notifications || {
-        email: true,
-        push: true,
-        sms: false
-      },
-      preferences: employee.preferences || {
-        theme: 'light',
-        dashboard: 'default'
-      },
-      createdAt: employee.createdAt,
-      updatedAt: employee.updatedAt,
-      lastLogin: employee.lastLogin
-    };
+    if (newPassword.length < 8) {
+      return res.status(400).json({
+        success: false,
+        error: 'WEAK_PASSWORD',
+        message: 'New password must be at least 8 characters long',
+        timestamp: new Date().toISOString()
+      });
+    }
     
-    res.json({
-      success: true,
-      data: {
-        employee: employeeData
-      },
-      message: 'Employee profile retrieved successfully',
-      timestamp: new Date().toISOString()
-    });
+    // Get employee with password
+    const employee = await usersCollection.findOne({ _id: req.user.userId, isEmployee: true });
+    if (!employee) {
+      return res.status(404).json({
+        success: false,
+        error: 'EMPLOYEE_NOT_FOUND',
+        message: 'Employee not found',
+        timestamp: new Date().toISOString()
+      });
+    }
     
-  } catch (error) {
-    console.error('Get employee profile error:', error);
-    res.status(500).json({
-      success: false,
-      error: 'GET_EMPLOYEE_PROFILE_FAILED',
-      message: 'Failed to retrieve employee profile',
-      timestamp: new Date().toISOString()
-    });
-  }
-});
-
-// PUT /api/v1/employees/profile/me - Update current employee profile
-router.put('/profile/me', authenticateToken, async (req, res) => {
-  try {
-    const usersCollection = await getCollection('users');
-    const { name, phone, bio, skills, location, timezone, language, notifications, preferences } = req.body;
+    // Verify current password
+    const isCurrentPasswordValid = await bcrypt.compare(currentPassword, employee.password);
+    if (!isCurrentPasswordValid) {
+      return res.status(400).json({
+        success: false,
+        error: 'INVALID_CURRENT_PASSWORD',
+        message: 'Current password is incorrect',
+        timestamp: new Date().toISOString()
+      });
+    }
     
-    // Build update object
-    const updateData = {
-      updatedAt: new Date()
-    };
+    // Hash new password
+    const hashedNewPassword = await bcrypt.hash(newPassword, 12);
     
-    if (name !== undefined) updateData.name = name;
-    if (phone !== undefined) updateData.phone = phone;
-    if (bio !== undefined) updateData.bio = bio;
-    if (skills !== undefined) updateData.skills = skills;
-    if (location !== undefined) updateData.location = location;
-    if (timezone !== undefined) updateData.timezone = timezone;
-    if (language !== undefined) updateData.language = language;
-    if (notifications !== undefined) updateData.notifications = notifications;
-    if (preferences !== undefined) updateData.preferences = preferences;
-    
-    // Update employee profile
+    // Update password
     const result = await usersCollection.updateOne(
       { _id: req.user.userId, isEmployee: true },
-      { $set: updateData }
+      { 
+        $set: { 
+          password: hashedNewPassword,
+          updatedAt: new Date()
+        } 
+      }
     );
     
     if (result.modifiedCount === 0) {
       return res.status(400).json({
         success: false,
-        error: 'PROFILE_UPDATE_FAILED',
-        message: 'Failed to update employee profile',
+        error: 'PASSWORD_UPDATE_FAILED',
+        message: 'Failed to update password',
         timestamp: new Date().toISOString()
       });
     }
     
-    // Get updated profile
-    const updatedEmployee = await usersCollection.findOne(
-      { _id: req.user.userId, isEmployee: true },
-      { 
-        projection: { 
-          password: 0, // Exclude password from response
-          __v: 0 
-        } 
-      }
-    );
-    
     res.json({
       success: true,
-      data: {
-        employee: updatedEmployee
-      },
-      message: 'Employee profile updated successfully',
+      message: 'Password changed successfully',
       timestamp: new Date().toISOString()
     });
     
   } catch (error) {
-    console.error('Update employee profile error:', error);
+    console.error('Change password error:', error);
     res.status(500).json({
       success: false,
-      error: 'UPDATE_EMPLOYEE_PROFILE_FAILED',
-      message: 'Failed to update employee profile',
+      error: 'CHANGE_PASSWORD_FAILED',
+      message: 'Failed to change password',
       timestamp: new Date().toISOString()
     });
   }

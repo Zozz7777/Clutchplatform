@@ -132,6 +132,10 @@ const supportRoutes = require('./routes/support');
 const analyticsExtendedRoutes = require('./routes/analytics-extended');
 const careersRoutes = require('./routes/careers');
 
+// Import partners routes
+const partnersRoutes = require('./routes/partners');
+const partnerNotificationsRoutes = require('./routes/partner-notifications');
+
 // All route imports cleaned up - only existing routes imported above
 
 // Initialize Express app
@@ -306,6 +310,10 @@ app.use('/api/v1/ops', opsRoutes);
 app.use('/api/v1/careers', careersRoutes);
 app.use('/api/v1/testing', testingRoutes);
 
+// Partners routes
+app.use('/api/v1/partners', partnersRoutes);
+app.use('/api/v1/partners/notifications', partnerNotificationsRoutes);
+
 // Apply authentication middleware to all API routes except public endpoints
 // This must be done AFTER all routes are mounted
 app.use('/api', (req, res, next) => {
@@ -313,7 +321,10 @@ app.use('/api', (req, res, next) => {
   // Note: req.path does NOT include the '/api' prefix when using app.use('/api', ...)
   const publicPaths = [
     '/v1/auth/login', 
-    '/v1/auth/register', 
+    '/v1/auth/register',
+    '/v1/partners/auth/signin',
+    '/v1/partners/auth/signup',
+    '/v1/partners/auth/request-to-join', 
     '/v1/employee-login', 
     '/v1/create-employee', 
     '/v1/health', 
