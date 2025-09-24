@@ -245,8 +245,8 @@ docs/generated/
 performance-logs/
 monitoring-data/
 
-# AI/ML models
-models/
+# AI/ML models (but allow backend models)
+# models/ - commented out to allow backend models
 *.model
 *.pkl
 *.h5
