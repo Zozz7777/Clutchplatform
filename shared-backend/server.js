@@ -259,7 +259,6 @@ app.use('/auth', authRoutes);
 app.use('/admin', adminRoutes);
 app.use('/api/notifications', notificationsRoutes);
 app.use('/api/dashboard', dashboardRoutes);
-app.use('/api/employees', employeesRoutes);
 app.use('/api/export', exportRoutes);
 app.use('/api/settings', settingsRoutes);
 app.use('/api/integrations', integrationsRoutes);
