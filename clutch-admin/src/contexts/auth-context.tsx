@@ -94,7 +94,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         
         // Debug logging for user data (only in development)
         if (process.env.NODE_ENV === 'development') {
-          // User data received from backend
+          console.log({
+            // User data received from backend
             originalUser: user,
             mappedUser: userWithPermissions,
             rolePermissions: ROLE_PERMISSIONS[user.role as keyof typeof ROLE_PERMISSIONS]
