@@ -86,7 +86,6 @@ import { Progress } from '@/components/ui/progress';
 import { productionApi } from '@/lib/production-api';
 import { toast } from 'sonner';
 import CreateLeadDialog from '@/components/dialogs/create-lead-dialog';
-import ContractGenerator from '@/components/contract-generator';
 
 // Import sales widgets
 import SalesPipeline from '@/components/widgets/sales-pipeline';
@@ -692,7 +691,10 @@ export default function SalesDepartmentPage() {
               <p className="text-muted-foreground">{t('sales.contractsDescription')}</p>
             </div>
             <div className="flex items-center space-x-2">
-              <ContractGenerator />
+              <Button variant="outline" size="sm">
+                <FileText className="h-4 w-4 mr-2" />
+                {t('sales.generateContract')}
+              </Button>
             </div>
           </div>
 
