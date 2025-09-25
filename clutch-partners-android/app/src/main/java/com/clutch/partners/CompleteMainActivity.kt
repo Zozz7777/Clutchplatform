@@ -12,6 +12,8 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
@@ -822,6 +824,8 @@ fun SignUpForm(onAuthenticated: () -> Unit) {
     val context = LocalContext.current
     val isRTL = LanguageManager.isRTL(context)
     val layoutDirection = if (isRTL) LayoutDirection.Rtl else LayoutDirection.Ltr
+    val authViewModel: AuthViewModel = viewModel()
+    val authState by authViewModel.authState.collectAsState()
     
     CompositionLocalProvider(LocalLayoutDirection provides layoutDirection) {
         Column(
@@ -833,6 +837,10 @@ fun SignUpForm(onAuthenticated: () -> Unit) {
                 onValueChange = { partnerId = it },
                 label = { Text(if (isRTL) "معرف الشريك" else "Partner ID") },
                 modifier = Modifier.fillMaxWidth(),
+                keyboardOptions = KeyboardOptions(
+                    keyboardType = KeyboardType.Text,
+                    imeAction = ImeAction.Next
+                ),
                 colors = OutlinedTextFieldDefaults.colors(
                     focusedTextColor = Color.Black,
                     unfocusedTextColor = Color.Black,
@@ -851,6 +859,10 @@ fun SignUpForm(onAuthenticated: () -> Unit) {
                 onValueChange = { emailOrPhone = it },
                 label = { Text(if (isRTL) "البريد الإلكتروني أو رقم الهاتف" else "Email or Phone") },
                 modifier = Modifier.fillMaxWidth(),
+                keyboardOptions = KeyboardOptions(
+                    keyboardType = KeyboardType.Email,
+                    imeAction = ImeAction.Next
+                ),
                 colors = OutlinedTextFieldDefaults.colors(
                     focusedTextColor = Color.Black,
                     unfocusedTextColor = Color.Black,
@@ -887,20 +899,60 @@ fun SignUpForm(onAuthenticated: () -> Unit) {
             
             Spacer(modifier = Modifier.height(32.dp))
             
+            // Handle auth state
+            LaunchedEffect(authState) {
+                when (authState) {
+                    is AuthState.Success -> {
+                        onAuthenticated()
+                    }
+                    is AuthState.Error -> {
+                        // Show error message
+                    }
+                    else -> {}
+                }
+            }
+            
             Button(
-                onClick = onAuthenticated,
+                onClick = { 
+                    if (partnerId.isNotEmpty() && emailOrPhone.isNotEmpty() && password.isNotEmpty()) {
+                        authViewModel.signUp(partnerId, emailOrPhone, password)
+                    }
+                },
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(56.dp),
                 colors = ButtonDefaults.buttonColors(containerColor = LightPrimary),
-                shape = RoundedCornerShape(12.dp)
+                shape = RoundedCornerShape(12.dp),
+                enabled = authState !is AuthState.Loading
             ) {
-                Text(
-                    text = if (isRTL) "إنشاء حساب" else "Sign Up",
-                    fontSize = 18.sp,
-                    fontWeight = FontWeight.Bold,
-                    color = Color.White
-                )
+                if (authState is AuthState.Loading) {
+                    CircularProgressIndicator(
+                        color = Color.White,
+                        modifier = Modifier.size(20.dp)
+                    )
+                } else {
+                    Text(
+                        text = if (isRTL) "إنشاء حساب" else "Sign Up",
+                        fontSize = 18.sp,
+                        fontWeight = FontWeight.Bold,
+                        color = Color.White
+                    )
+                }
+            }
+            
+            // Show error message if any
+            val currentAuthState = authState
+            when (currentAuthState) {
+                is AuthState.Error -> {
+                    Spacer(modifier = Modifier.height(16.dp))
+                    Text(
+                        text = currentAuthState.message,
+                        color = Color.Red,
+                        fontSize = 14.sp,
+                        textAlign = TextAlign.Center
+                    )
+                }
+                else -> {}
             }
         }
     }
@@ -1044,11 +1096,134 @@ fun DashboardScreen() {
     val isRTL = LanguageManager.isRTL(context)
     val layoutDirection = if (isRTL) LayoutDirection.Rtl else LayoutDirection.Ltr
     
+    CompositionLocalProvider(LocalLayoutDirection provides layoutDirection) {
+        Scaffold(
+            topBar = {
+                TopAppBar(
+                    title = {
+                        Text(
+                            text = if (isRTL) "مرحباً، أحمد" else "Welcome, Ahmed",
+                            fontSize = 20.sp,
+                            fontWeight = FontWeight.Bold,
+                            color = Color.White
+                        )
+                    },
+                    colors = TopAppBarDefaults.topAppBarColors(
+                        containerColor = LightPrimary
+                    ),
+                    actions = {
+                        IconButton(onClick = { /* Notification */ }) {
+                            Icon(
+                                imageVector = Icons.Default.Notifications,
+                                contentDescription = if (isRTL) "الإشعارات" else "Notifications",
+                                tint = Color.White
+                            )
+                        }
+                    }
+                )
+            },
+            bottomBar = {
+                BottomNavigationBar(
+                    selectedTab = selectedTab,
+                    onTabSelected = { selectedTab = it },
+                    isRTL = isRTL
+                )
+            }
+        ) { paddingValues ->
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .background(LightBackground)
+                    .padding(paddingValues)
+            ) {
+                when (selectedTab) {
+                    0 -> OrdersTab()
+                    1 -> PaymentsTab()
+                    2 -> BusinessDashboardTab()
+                    3 -> SettingsTab()
+                }
+            }
+        }
+    }
+}
+
+@Composable
+fun BottomNavigationBar(
+    selectedTab: Int,
+    onTabSelected: (Int) -> Unit,
+    isRTL: Boolean
+) {
     val tabs = listOf(
-        if (isRTL) "الطلبات" else "Orders",
-        if (isRTL) "المدفوعات" else "Payments",
-        if (isRTL) "لوحة التحكم" else "Dashboard",
-        if (isRTL) "الإعدادات" else "Settings"
+        BottomNavItem(
+            title = if (isRTL) "الطلبات" else "Orders",
+            icon = Icons.Default.List,
+            selectedIcon = Icons.Default.List
+        ),
+        BottomNavItem(
+            title = if (isRTL) "المدفوعات" else "Payments",
+            icon = Icons.Default.Payment,
+            selectedIcon = Icons.Default.Payment
+        ),
+        BottomNavItem(
+            title = if (isRTL) "لوحة التحكم" else "Dashboard",
+            icon = Icons.Default.Dashboard,
+            selectedIcon = Icons.Default.Dashboard
+        ),
+        BottomNavItem(
+            title = if (isRTL) "الإعدادات" else "Settings",
+            icon = Icons.Default.Settings,
+            selectedIcon = Icons.Default.Settings
+        )
+    )
+    
+    NavigationBar(
+        containerColor = Color.White,
+        contentColor = LightPrimary
+    ) {
+        tabs.forEachIndexed { index, item ->
+            NavigationBarItem(
+                selected = selectedTab == index,
+                onClick = { onTabSelected(index) },
+                icon = {
+                    Icon(
+                        imageVector = if (selectedTab == index) item.selectedIcon else item.icon,
+                        contentDescription = item.title,
+                        tint = if (selectedTab == index) LightPrimary else LightMutedForeground
+                    )
+                },
+                label = {
+                    Text(
+                        text = item.title,
+                        fontSize = 12.sp,
+                        color = if (selectedTab == index) LightPrimary else LightMutedForeground
+                    )
+                }
+            )
+        }
+    }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun OrdersTab() {
+    var selectedFilter by remember { mutableStateOf(0) }
+    val context = LocalContext.current
+    val isRTL = LanguageManager.isRTL(context)
+    val layoutDirection = if (isRTL) LayoutDirection.Rtl else LayoutDirection.Ltr
+    
+    val orders = listOf(
+        MockOrder("1", "Oil Change", "Ahmed Ali", "2024-01-15", "Pending", "EGP 150", "10:30 AM"),
+        MockOrder("2", "Brake Repair", "Sara Mohamed", "2024-01-14", "Paid", "EGP 450", "2:15 PM"),
+        MockOrder("3", "Tire Replacement", "Omar Hassan", "2024-01-13", "Rejected", "EGP 800", "9:45 AM"),
+        MockOrder("4", "Engine Check", "Fatma Ibrahim", "2024-01-12", "Paid", "EGP 200", "11:20 AM"),
+        MockOrder("5", "AC Repair", "Mohamed Ali", "2024-01-11", "Pending", "EGP 300", "3:30 PM")
+    )
+    
+    val filters = listOf(
+        if (isRTL) "الكل" else "All",
+        if (isRTL) "معلق" else "Pending",
+        if (isRTL) "مدفوع" else "Paid",
+        if (isRTL) "مرفوض" else "Rejected"
     )
     
     CompositionLocalProvider(LocalLayoutDirection provides layoutDirection) {
@@ -1057,68 +1232,90 @@ fun DashboardScreen() {
                 .fillMaxSize()
                 .background(LightBackground)
         ) {
-            // Header
-            Box(
+            // Header with stats
+            Card(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .background(LightPrimary)
-                    .padding(20.dp)
+                    .padding(16.dp)
+                    .shadow(
+                        elevation = 4.dp,
+                        shape = RoundedCornerShape(16.dp)
+                    ),
+                shape = RoundedCornerShape(16.dp),
+                colors = CardDefaults.cardColors(containerColor = Color.White)
             ) {
-                Text(
-                    text = if (isRTL) "لوحة تحكم الشريك" else "Partner Dashboard",
-                    fontSize = 24.sp,
-                    fontWeight = FontWeight.Bold,
-                    color = Color.White
-                )
+                Column(
+                    modifier = Modifier.padding(20.dp)
+                ) {
+                    Text(
+                        text = if (isRTL) "إحصائيات اليوم" else "Today's Stats",
+                        fontSize = 18.sp,
+                        fontWeight = FontWeight.Bold,
+                        color = LightForeground
+                    )
+                    
+                    Spacer(modifier = Modifier.height(16.dp))
+                    
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.SpaceEvenly
+                    ) {
+                        StatItem(
+                            title = if (isRTL) "الطلبات" else "Orders",
+                            value = "12",
+                            color = LightPrimary
+                        )
+                        StatItem(
+                            title = if (isRTL) "المكتملة" else "Completed",
+                            value = "8",
+                            color = Color(0xFF4CAF50)
+                        )
+                        StatItem(
+                            title = if (isRTL) "الإيراد" else "Revenue",
+                            value = "EGP 2,400",
+                            color = Color(0xFFFF9800)
+                        )
+                    }
+                }
             }
             
-            // Tabs
-            TabRow(
-                selectedTabIndex = selectedTab,
-                containerColor = Color.White,
-                contentColor = LightPrimary
+            // Filter chips
+            LazyRow(
+                modifier = Modifier.padding(horizontal = 16.dp),
+                horizontalArrangement = Arrangement.spacedBy(8.dp)
             ) {
-                tabs.forEachIndexed { index, title ->
-                    Tab(
-                        selected = selectedTab == index,
-                        onClick = { selectedTab = index },
-                        text = { Text(title) }
+                items(filters.size) { index ->
+                    FilterChip(
+                        selected = selectedFilter == index,
+                        onClick = { selectedFilter = index },
+                        label = {
+                            Text(
+                                text = filters[index],
+                                fontSize = 14.sp,
+                                fontWeight = if (selectedFilter == index) FontWeight.Bold else FontWeight.Normal
+                            )
+                        },
+                        colors = FilterChipDefaults.filterChipColors(
+                            selectedContainerColor = LightPrimary,
+                            selectedLabelColor = Color.White,
+                            containerColor = Color.White
+                        )
                     )
                 }
             }
             
-            // Tab content
-            when (selectedTab) {
-                0 -> OrdersTab()
-                1 -> PaymentsTab()
-                2 -> BusinessDashboardTab()
-                3 -> SettingsTab()
-            }
-        }
-    }
-}
-
-@Composable
-fun OrdersTab() {
-    val context = LocalContext.current
-    val isRTL = LanguageManager.isRTL(context)
-    val layoutDirection = if (isRTL) LayoutDirection.Rtl else LayoutDirection.Ltr
-    
-    val orders = listOf(
-        MockOrder("1", "Oil Change", "Ahmed Ali", "2024-01-15", "Pending"),
-        MockOrder("2", "Brake Repair", "Sara Mohamed", "2024-01-14", "Paid"),
-        MockOrder("3", "Tire Replacement", "Omar Hassan", "2024-01-13", "Rejected")
-    )
-    
-    CompositionLocalProvider(LocalLayoutDirection provides layoutDirection) {
-        LazyColumn(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(16.dp),
-            verticalArrangement = Arrangement.spacedBy(12.dp)
-        ) {
-            items(orders) { order ->
-                OrderCard(order = order)
+            Spacer(modifier = Modifier.height(16.dp))
+            
+            // Orders list
+            LazyColumn(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(horizontal = 16.dp),
+                verticalArrangement = Arrangement.spacedBy(12.dp)
+            ) {
+                items(orders) { order ->
+                    EnhancedOrderCard(order = order)
+                }
             }
         }
     }
@@ -1134,25 +1331,151 @@ fun PaymentsTab() {
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(16.dp),
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.Center
+                .background(LightBackground)
         ) {
-            Text(
-                text = if (isRTL) "المدفوعات" else "Payments",
-                fontSize = 24.sp,
-                fontWeight = FontWeight.Bold,
-                color = LightForeground
-            )
+            // Weekly income card
+            Card(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(16.dp)
+                    .shadow(
+                        elevation = 6.dp,
+                        shape = RoundedCornerShape(20.dp)
+                    ),
+                shape = RoundedCornerShape(20.dp),
+                colors = CardDefaults.cardColors(
+                    containerColor = LightPrimary
+                )
+            ) {
+                Column(
+                    modifier = Modifier.padding(24.dp),
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    Text(
+                        text = if (isRTL) "إيراد هذا الأسبوع" else "This Week's Income",
+                        fontSize = 16.sp,
+                        color = Color.White.copy(alpha = 0.9f)
+                    )
+                    
+                    Spacer(modifier = Modifier.height(8.dp))
+                    
+                    Text(
+                        text = "EGP 8,450",
+                        fontSize = 32.sp,
+                        fontWeight = FontWeight.Bold,
+                        color = Color.White
+                    )
+                    
+                    Spacer(modifier = Modifier.height(16.dp))
+                    
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.SpaceBetween
+                    ) {
+                        Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                            Text(
+                                text = if (isRTL) "الطلبات" else "Orders",
+                                fontSize = 12.sp,
+                                color = Color.White.copy(alpha = 0.8f)
+                            )
+                            Text(
+                                text = "24",
+                                fontSize = 18.sp,
+                                fontWeight = FontWeight.Bold,
+                                color = Color.White
+                            )
+                        }
+                        
+                        Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                            Text(
+                                text = if (isRTL) "المتوسط" else "Average",
+                                fontSize = 12.sp,
+                                color = Color.White.copy(alpha = 0.8f)
+                            )
+                            Text(
+                                text = "EGP 352",
+                                fontSize = 18.sp,
+                                fontWeight = FontWeight.Bold,
+                                color = Color.White
+                            )
+                        }
+                    }
+                }
+            }
+            
+            // Payout countdown card
+            Card(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 16.dp)
+                    .shadow(
+                        elevation = 4.dp,
+                        shape = RoundedCornerShape(16.dp)
+                    ),
+                shape = RoundedCornerShape(16.dp),
+                colors = CardDefaults.cardColors(containerColor = Color.White)
+            ) {
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(20.dp),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.Schedule,
+                        contentDescription = null,
+                        tint = Color(0xFFFF9800),
+                        modifier = Modifier.size(32.dp)
+                    )
+                    
+                    Spacer(modifier = Modifier.width(16.dp))
+                    
+                    Column(modifier = Modifier.weight(1f)) {
+                        Text(
+                            text = if (isRTL) "الدفعة القادمة" else "Next Payout",
+                            fontSize = 16.sp,
+                            fontWeight = FontWeight.Bold,
+                            color = LightForeground
+                        )
+                        Text(
+                            text = if (isRTL) "متبقي 3 أيام" else "3 days remaining",
+                            fontSize = 14.sp,
+                            color = LightMutedForeground
+                        )
+                    }
+                    
+                    Text(
+                        text = "EGP 8,450",
+                        fontSize = 18.sp,
+                        fontWeight = FontWeight.Bold,
+                        color = Color(0xFFFF9800)
+                    )
+                }
+            }
             
             Spacer(modifier = Modifier.height(16.dp))
             
+            // Payment history
             Text(
-                text = if (isRTL) "سيتم إضافة محتوى المدفوعات قريباً" else "Payments content will be added soon",
-                fontSize = 16.sp,
-                color = LightMutedForeground,
-                textAlign = TextAlign.Center
+                text = if (isRTL) "سجل المدفوعات" else "Payment History",
+                fontSize = 18.sp,
+                fontWeight = FontWeight.Bold,
+                color = LightForeground,
+                modifier = Modifier.padding(horizontal = 16.dp)
             )
+            
+            Spacer(modifier = Modifier.height(12.dp))
+            
+            LazyColumn(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(horizontal = 16.dp),
+                verticalArrangement = Arrangement.spacedBy(8.dp)
+            ) {
+                items(getPaymentHistory()) { payment ->
+                    PaymentHistoryCard(payment = payment)
+                }
+            }
         }
     }
 }
@@ -1167,56 +1490,123 @@ fun BusinessDashboardTab() {
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(16.dp)
+                .background(LightBackground)
         ) {
-            Text(
-                text = if (isRTL) "لوحة التحكم التجارية" else "Business Dashboard",
-                fontSize = 24.sp,
-                fontWeight = FontWeight.Bold,
-                color = LightForeground
-            )
-            
-            Spacer(modifier = Modifier.height(24.dp))
-            
-            // Stats row
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceEvenly
+            // Revenue overview card
+            Card(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(16.dp)
+                    .shadow(
+                        elevation = 6.dp,
+                        shape = RoundedCornerShape(20.dp)
+                    ),
+                shape = RoundedCornerShape(20.dp),
+                colors = CardDefaults.cardColors(
+                    containerColor = Color(0xFF2E7D32)
+                )
             ) {
-                StatCard(
-                    title = if (isRTL) "الطلبات" else "Orders",
-                    value = "24",
-                    modifier = Modifier.weight(1f)
-                )
+                Column(
+                    modifier = Modifier.padding(24.dp),
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    Text(
+                        text = if (isRTL) "إجمالي الإيرادات" else "Total Revenue",
+                        fontSize = 16.sp,
+                        color = Color.White.copy(alpha = 0.9f)
+                    )
+                    
+                    Spacer(modifier = Modifier.height(8.dp))
+                    
+                    Text(
+                        text = "EGP 45,200",
+                        fontSize = 28.sp,
+                        fontWeight = FontWeight.Bold,
+                        color = Color.White
+                    )
+                    
+                    Spacer(modifier = Modifier.height(4.dp))
+                    
+                    Text(
+                        text = "+12% من الشهر الماضي",
+                        fontSize = 14.sp,
+                        color = Color(0xFF81C784)
+                    )
+                }
+            }
+            
+            // Quick stats grid
+            LazyVerticalGrid(
+                columns = GridCells.Fixed(2),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 16.dp),
+                horizontalArrangement = Arrangement.spacedBy(12.dp),
+                verticalArrangement = Arrangement.spacedBy(12.dp)
+            ) {
+                item {
+                    EnhancedStatCard(
+                        title = if (isRTL) "طلبات كلتش" else "Clutch Orders",
+                        value = "156",
+                        subtitle = if (isRTL) "هذا الشهر" else "This month",
+                        icon = Icons.Default.ShoppingCart,
+                        color = LightPrimary
+                    )
+                }
                 
-                Spacer(modifier = Modifier.width(16.dp))
+                item {
+                    EnhancedStatCard(
+                        title = if (isRTL) "مبيعات المتجر" else "Store Sales",
+                        value = "89",
+                        subtitle = if (isRTL) "هذا الشهر" else "This month",
+                        icon = Icons.Default.Store,
+                        color = Color(0xFFFF9800)
+                    )
+                }
                 
-                StatCard(
-                    title = if (isRTL) "الإيرادات" else "Revenue",
-                    value = "EGP 12,500",
-                    modifier = Modifier.weight(1f)
-                )
+                item {
+                    EnhancedStatCard(
+                        title = if (isRTL) "العملاء الجدد" else "New Customers",
+                        value = "23",
+                        subtitle = if (isRTL) "هذا الأسبوع" else "This week",
+                        icon = Icons.Default.PersonAdd,
+                        color = Color(0xFF4CAF50)
+                    )
+                }
+                
+                item {
+                    EnhancedStatCard(
+                        title = if (isRTL) "التقييم" else "Rating",
+                        value = "4.8",
+                        subtitle = if (isRTL) "من 5 نجوم" else "out of 5",
+                        icon = Icons.Default.Star,
+                        color = Color(0xFFFFC107)
+                    )
+                }
             }
             
             Spacer(modifier = Modifier.height(16.dp))
             
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceEvenly
+            // Recent activity
+            Text(
+                text = if (isRTL) "النشاط الأخير" else "Recent Activity",
+                fontSize = 18.sp,
+                fontWeight = FontWeight.Bold,
+                color = LightForeground,
+                modifier = Modifier.padding(horizontal = 16.dp)
+            )
+            
+            Spacer(modifier = Modifier.height(12.dp))
+            
+            LazyColumn(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(horizontal = 16.dp),
+                verticalArrangement = Arrangement.spacedBy(8.dp)
             ) {
-                StatCard(
-                    title = if (isRTL) "العملاء" else "Customers",
-                    value = "156",
-                    modifier = Modifier.weight(1f)
-                )
-                
-                Spacer(modifier = Modifier.width(16.dp))
-                
-                StatCard(
-                    title = if (isRTL) "التقييم" else "Rating",
-                    value = "4.8",
-                    modifier = Modifier.weight(1f)
-                )
+                items(getRecentActivity()) { activity ->
+                    ActivityCard(activity = activity)
+                }
             }
         }
     }
@@ -1439,6 +1829,355 @@ fun StatCard(
     }
 }
 
+// Enhanced Components
+@Composable
+fun EnhancedOrderCard(order: MockOrder) {
+    val context = LocalContext.current
+    val isRTL = LanguageManager.isRTL(context)
+    val layoutDirection = if (isRTL) LayoutDirection.Rtl else LayoutDirection.Ltr
+    
+    val statusColor = when (order.status) {
+        "Pending" -> Color(0xFFFF9800)
+        "Paid" -> Color(0xFF4CAF50)
+        "Rejected" -> Color(0xFFF44336)
+        else -> LightMutedForeground
+    }
+    
+    val statusIcon = when (order.status) {
+        "Pending" -> Icons.Default.Schedule
+        "Paid" -> Icons.Default.CheckCircle
+        "Rejected" -> Icons.Default.Cancel
+        else -> Icons.Default.Info
+    }
+    
+    CompositionLocalProvider(LocalLayoutDirection provides layoutDirection) {
+        Card(
+            modifier = Modifier
+                .fillMaxWidth()
+                .shadow(
+                    elevation = 3.dp,
+                    shape = RoundedCornerShape(12.dp)
+                ),
+            shape = RoundedCornerShape(12.dp),
+            colors = CardDefaults.cardColors(containerColor = Color.White)
+        ) {
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(16.dp)
+            ) {
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Row(verticalAlignment = Alignment.CenterVertically) {
+                        Icon(
+                            imageVector = statusIcon,
+                            contentDescription = null,
+                            tint = statusColor,
+                            modifier = Modifier.size(20.dp)
+                        )
+                        
+                        Spacer(modifier = Modifier.width(8.dp))
+                        
+                        Text(
+                            text = order.service,
+                            fontSize = 16.sp,
+                            fontWeight = FontWeight.Bold,
+                            color = LightForeground
+                        )
+                    }
+                    
+                    Box(
+                        modifier = Modifier
+                            .background(
+                                color = statusColor,
+                                shape = RoundedCornerShape(8.dp)
+                            )
+                            .padding(horizontal = 8.dp, vertical = 4.dp)
+                    ) {
+                        Text(
+                            text = order.status,
+                            fontSize = 10.sp,
+                            fontWeight = FontWeight.Bold,
+                            color = Color.White
+                        )
+                    }
+                }
+                
+                Spacer(modifier = Modifier.height(12.dp))
+                
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceBetween
+                ) {
+                    Column {
+                        Text(
+                            text = "${if (isRTL) "العميل:" else "Customer:"} ${order.customer}",
+                            fontSize = 14.sp,
+                            color = LightMutedForeground
+                        )
+                        Text(
+                            text = "${if (isRTL) "التاريخ:" else "Date:"} ${order.date}",
+                            fontSize = 14.sp,
+                            color = LightMutedForeground
+                        )
+                    }
+                    
+                    Column(horizontalAlignment = Alignment.End) {
+                        Text(
+                            text = order.price,
+                            fontSize = 16.sp,
+                            fontWeight = FontWeight.Bold,
+                            color = LightPrimary
+                        )
+                        Text(
+                            text = order.time,
+                            fontSize = 12.sp,
+                            color = LightMutedForeground
+                        )
+                    }
+                }
+            }
+        }
+    }
+}
+
+@Composable
+fun StatItem(
+    title: String,
+    value: String,
+    color: Color
+) {
+    Column(horizontalAlignment = Alignment.CenterHorizontally) {
+        Text(
+            text = value,
+            fontSize = 20.sp,
+            fontWeight = FontWeight.Bold,
+            color = color
+        )
+        Text(
+            text = title,
+            fontSize = 12.sp,
+            color = LightMutedForeground
+        )
+    }
+}
+
+@Composable
+fun PaymentHistoryCard(payment: PaymentHistory) {
+    val context = LocalContext.current
+    val isRTL = LanguageManager.isRTL(context)
+    val layoutDirection = if (isRTL) LayoutDirection.Rtl else LayoutDirection.Ltr
+    
+    CompositionLocalProvider(LocalLayoutDirection provides layoutDirection) {
+        Card(
+            modifier = Modifier
+                .fillMaxWidth()
+                .shadow(
+                    elevation = 2.dp,
+                    shape = RoundedCornerShape(8.dp)
+                ),
+            shape = RoundedCornerShape(8.dp),
+            colors = CardDefaults.cardColors(containerColor = Color.White)
+        ) {
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(16.dp),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Icon(
+                    imageVector = Icons.Default.Payment,
+                    contentDescription = null,
+                    tint = Color(0xFF4CAF50),
+                    modifier = Modifier.size(24.dp)
+                )
+                
+                Spacer(modifier = Modifier.width(12.dp))
+                
+                Column(modifier = Modifier.weight(1f)) {
+                    Text(
+                        text = payment.period,
+                        fontSize = 14.sp,
+                        fontWeight = FontWeight.Bold,
+                        color = LightForeground
+                    )
+                    Text(
+                        text = payment.date,
+                        fontSize = 12.sp,
+                        color = LightMutedForeground
+                    )
+                }
+                
+                Text(
+                    text = payment.amount,
+                    fontSize = 16.sp,
+                    fontWeight = FontWeight.Bold,
+                    color = Color(0xFF4CAF50)
+                )
+            }
+        }
+    }
+}
+
+@Composable
+fun EnhancedStatCard(
+    title: String,
+    value: String,
+    subtitle: String,
+    icon: ImageVector,
+    color: Color
+) {
+    Card(
+        modifier = Modifier
+            .shadow(
+                elevation = 4.dp,
+                shape = RoundedCornerShape(12.dp)
+            ),
+        shape = RoundedCornerShape(12.dp),
+        colors = CardDefaults.cardColors(containerColor = Color.White)
+    ) {
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(16.dp),
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            Icon(
+                imageVector = icon,
+                contentDescription = null,
+                tint = color,
+                modifier = Modifier.size(32.dp)
+            )
+            
+            Spacer(modifier = Modifier.height(8.dp))
+            
+            Text(
+                text = value,
+                fontSize = 24.sp,
+                fontWeight = FontWeight.Bold,
+                color = color
+            )
+            
+            Text(
+                text = title,
+                fontSize = 12.sp,
+                fontWeight = FontWeight.Bold,
+                color = LightForeground,
+                textAlign = TextAlign.Center
+            )
+            
+            Text(
+                text = subtitle,
+                fontSize = 10.sp,
+                color = LightMutedForeground,
+                textAlign = TextAlign.Center
+            )
+        }
+    }
+}
+
+@Composable
+fun ActivityCard(activity: RecentActivity) {
+    val context = LocalContext.current
+    val isRTL = LanguageManager.isRTL(context)
+    val layoutDirection = if (isRTL) LayoutDirection.Rtl else LayoutDirection.Ltr
+    
+    CompositionLocalProvider(LocalLayoutDirection provides layoutDirection) {
+        Card(
+            modifier = Modifier
+                .fillMaxWidth()
+                .shadow(
+                    elevation = 2.dp,
+                    shape = RoundedCornerShape(8.dp)
+                ),
+            shape = RoundedCornerShape(8.dp),
+            colors = CardDefaults.cardColors(containerColor = Color.White)
+        ) {
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(12.dp),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Icon(
+                    imageVector = activity.icon,
+                    contentDescription = null,
+                    tint = activity.color,
+                    modifier = Modifier.size(20.dp)
+                )
+                
+                Spacer(modifier = Modifier.width(12.dp))
+                
+                Column(modifier = Modifier.weight(1f)) {
+                    Text(
+                        text = activity.title,
+                        fontSize = 14.sp,
+                        fontWeight = FontWeight.Bold,
+                        color = LightForeground
+                    )
+                    Text(
+                        text = activity.description,
+                        fontSize = 12.sp,
+                        color = LightMutedForeground
+                    )
+                }
+                
+                Text(
+                    text = activity.time,
+                    fontSize = 10.sp,
+                    color = LightMutedForeground
+                )
+            }
+        }
+    }
+}
+
+// Helper functions
+fun getPaymentHistory(): List<PaymentHistory> {
+    return listOf(
+        PaymentHistory("Week 1", "Jan 1-7, 2024", "EGP 6,200"),
+        PaymentHistory("Week 2", "Jan 8-14, 2024", "EGP 7,800"),
+        PaymentHistory("Week 3", "Jan 15-21, 2024", "EGP 5,900"),
+        PaymentHistory("Week 4", "Jan 22-28, 2024", "EGP 8,100")
+    )
+}
+
+fun getRecentActivity(): List<RecentActivity> {
+    return listOf(
+        RecentActivity(
+            "New Order",
+            "Oil change service requested",
+            "2 min ago",
+            Icons.Default.ShoppingCart,
+            LightPrimary
+        ),
+        RecentActivity(
+            "Payment Received",
+            "EGP 450 payment processed",
+            "15 min ago",
+            Icons.Default.Payment,
+            Color(0xFF4CAF50)
+        ),
+        RecentActivity(
+            "Store Sale",
+            "Brake pads sold in store",
+            "1 hour ago",
+            Icons.Default.Store,
+            Color(0xFFFF9800)
+        ),
+        RecentActivity(
+            "Customer Review",
+            "5-star rating received",
+            "2 hours ago",
+            Icons.Default.Star,
+            Color(0xFFFFC107)
+        )
+    )
+}
+
 // Data classes
 data class OnboardingPage(
     val imageRes: Int,
@@ -1464,11 +2203,33 @@ data class MockOrder(
     val service: String,
     val customer: String,
     val date: String,
-    val status: String
+    val status: String,
+    val price: String,
+    val time: String
 )
 
 data class SettingsOption(
     val title: String,
     val description: String,
     val icon: ImageVector
+)
+
+data class BottomNavItem(
+    val title: String,
+    val icon: ImageVector,
+    val selectedIcon: ImageVector
+)
+
+data class PaymentHistory(
+    val period: String,
+    val date: String,
+    val amount: String
+)
+
+data class RecentActivity(
+    val title: String,
+    val description: String,
+    val time: String,
+    val icon: ImageVector,
+    val color: Color
 )

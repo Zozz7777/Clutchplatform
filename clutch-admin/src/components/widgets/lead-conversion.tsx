@@ -24,6 +24,17 @@ export default function LeadConversion() {
   React.useEffect(() => {
     // TODO: Implement real API call
     // fetchLeadConversionMetrics().then(setConversionMetrics).finally(() => setIsLoading(false));
+    
+    // Mock data for development
+    const mockConversionMetrics: ConversionMetric[] = [
+      { stage: 'leads', count: 150, percentage: 100 },
+      { stage: 'qualified', count: 120, percentage: 80 },
+      { stage: 'proposal', count: 90, percentage: 60 },
+      { stage: 'negotiation', count: 60, percentage: 40 },
+      { stage: 'converted', count: 45, percentage: 30 }
+    ];
+    
+    setConversionMetrics(mockConversionMetrics);
     setIsLoading(false);
   }, []);
 

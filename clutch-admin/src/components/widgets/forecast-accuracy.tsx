@@ -384,7 +384,7 @@ export function ForecastAccuracy({ className = '' }: ForecastAccuracyProps) {
 
         {/* Insights */}
         <div className="p-3 bg-primary/10 rounded-[0.625rem]-lg">
-          <h5 className="text-sm font-medium text-blue-900 mb-2">💡 Forecast Accuracy Insights</h5>
+          <h5 className="text-sm font-medium text-primary mb-2">💡 Forecast Accuracy Insights</h5>
           <ul className="text-xs text-blue-800 space-y-1">
             <li>• Average accuracy: {averageAccuracy.toFixed(1)}%</li>
             <li>• {accuracyData.filter(m => m.accuracy >= 80).length} models performing well (80%+)</li>

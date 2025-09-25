@@ -24,6 +24,40 @@ export default function RevenueForecast() {
   React.useEffect(() => {
     // TODO: Implement real API call
     // fetchForecastData().then(setForecastData).finally(() => setIsLoading(false));
+    
+    // Mock data for development
+    const mockForecastData: ForecastData[] = [
+      {
+        period: 'Q1 2024',
+        actual: 1200000,
+        forecast: 1200000,
+        target: 1000000,
+        probability: 95
+      },
+      {
+        period: 'Q2 2024',
+        actual: 1350000,
+        forecast: 1350000,
+        target: 1200000,
+        probability: 92
+      },
+      {
+        period: 'Q3 2024',
+        actual: 0,
+        forecast: 1500000,
+        target: 1400000,
+        probability: 88
+      },
+      {
+        period: 'Q4 2024',
+        actual: 0,
+        forecast: 1650000,
+        target: 1600000,
+        probability: 85
+      }
+    ];
+    
+    setForecastData(mockForecastData);
     setIsLoading(false);
   }, []);
 
@@ -42,8 +76,8 @@ export default function RevenueForecast() {
     );
   }
 
-  const currentQuarter = forecastData[2]; // Q3 2024
-  const previousQuarter = forecastData[1]; // Q2 2024
+  const currentQuarter = forecastData[2] || { period: 'Q3 2024', actual: 0, forecast: 0, target: 0, probability: 0 }; // Q3 2024
+  const previousQuarter = forecastData[1] || { period: 'Q2 2024', actual: 0, forecast: 0, target: 0, probability: 0 }; // Q2 2024
   const forecastGrowth = previousQuarter?.actual > 0 ? 
     ((currentQuarter?.forecast - previousQuarter.actual) / previousQuarter.actual) * 100 : 0;
 
@@ -184,15 +218,21 @@ export default function RevenueForecast() {
           <div className="text-center p-3 bg-success/10 rounded-lg">
             <Target className="h-6 w-6 text-success mx-auto mb-1" />
             <p className="text-lg font-bold text-success">
-              {((forecastData.reduce((sum, q) => sum + q.forecast, 0) / 
-                 forecastData.reduce((sum, q) => sum + q.target, 0)) * 100).toFixed(0)}%
+              {forecastData.length > 0 && forecastData.reduce((sum, q) => sum + q.target, 0) > 0 ? 
+                ((forecastData.reduce((sum, q) => sum + q.forecast, 0) / 
+                  forecastData.reduce((sum, q) => sum + q.target, 0)) * 100).toFixed(0) : 
+                '0'
+              }%
             </p>
             <p className="text-xs text-success/80">{t('forecastAccuracy')}</p>
           </div>
           <div className="text-center p-3 bg-blue-50 rounded-lg">
             <TrendingUp className="h-6 w-6 text-blue-600 mx-auto mb-1" />
             <p className="text-lg font-bold text-blue-900">
-              {((forecastData[3].forecast - forecastData[0].actual) / forecastData[0].actual * 100).toFixed(0)}%
+              {forecastData.length >= 4 && forecastData[0].actual > 0 ? 
+                ((forecastData[3].forecast - forecastData[0].actual) / forecastData[0].actual * 100).toFixed(0) : 
+                '0'
+              }%
             </p>
             <p className="text-xs text-blue-700">{t('yearlyGrowth')}</p>
           </div>
