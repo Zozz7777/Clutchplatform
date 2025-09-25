@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Clutch Partners</string>
+    <string name="default_notification_channel_id">clutch_partners_channel</string>
+    
+    <!-- Navigation -->
+    <string name="nav_orders">Orders</string>
+    <string name="nav_payments">Payments</string>
+    <string name="nav_settings">Settings</string>
+    <string name="nav_dashboard">Dashboard</string>
+    
+    <!-- Auth -->
+    <string name="sign_in">Sign In</string>
+    <string name="sign_up">Sign Up</string>
+    <string name="email">Email</string>
+    <string name="password">Password</string>
+    <string name="forgot_password">Forgot Password?</string>
+    <string name="partner_id">Partner ID</string>
+    <string name="business_name">Business Name</string>
+    <string name="owner_name">Owner Name</string>
+    <string name="phone_number">Phone Number</string>
+    <string name="confirm_password">Confirm Password</string>
+    <string name="request_to_join">Request to Join</string>
+    
+    <!-- Partner Types -->
+    <string name="repair_center">Repair Center</string>
+    <string name="auto_parts_shop">Auto Parts Shop</string>
+    <string name="accessories_shop">Accessories Shop</string>
+    <string name="importer_manufacturer">Importer / Manufacturer</string>
+    <string name="service_center">Service Center</string>
+    
+    <!-- Orders -->
+    <string name="orders">Orders</string>
+    <string name="appointments">Appointments</string>
+    <string name="pending">Pending</string>
+    <string name="confirmed">Confirmed</string>
+    <string name="in_progress">In Progress</string>
+    <string name="completed">Completed</string>
+    <string name="cancelled">Cancelled</string>
+    <string name="rejected">Rejected</string>
+    
+    <!-- Payments -->
+    <string name="payments">Payments</string>
+    <string name="weekly_income">Weekly Income</string>
+    <string name="total_earnings">Total Earnings</string>
+    <string name="pending_payout">Pending Payout</string>
+    <string name="payment_history">Payment History</string>
+    
+    <!-- Settings -->
+    <string name="settings">Settings</string>
+    <string name="profile">Profile</string>
+    <string name="notifications">Notifications</string>
+    <string name="language">Language</string>
+    <string name="theme">Theme</string>
+    <string name="logout">Logout</string>
+    
+    <!-- Common -->
+    <string name="loading">Loading...</string>
+    <string name="error">Error</string>
+    <string name="retry">Retry</string>
+    <string name="cancel">Cancel</string>
+    <string name="save">Save</string>
+    <string name="edit">Edit</string>
+    <string name="delete">Delete</string>
+    <string name="confirm">Confirm</string>
+    <string name="back">Back</string>
+    <string name="next">Next</string>
+    <string name="done">Done</string>
+    <string name="skip">Skip</string>
+    <string name="get_started">Get Started</string>
+    
+    <!-- Language -->
+    <string name="select_language">Select Language</string>
+    <string name="arabic">العربية</string>
+    <string name="english">English</string>
+    
+    <!-- Theme -->
+    <string name="light_theme">Light</string>
+    <string name="dark_theme">Dark</string>
+    <string name="auto_theme">Auto</string>
+    
+    <!-- Permissions -->
+    <string name="access_denied">Access Denied</string>
+    <string name="insufficient_permissions">Insufficient Permissions</string>
+    <string name="permission_required">Permission Required</string>
+    
+    <!-- Missing strings -->
+    <string name="already_have_account">Already have an account?</string>
+    <string name="amount">Amount</string>
+    <string name="business_address">Business Address</string>
+    <string name="continue_text">Continue</string>
+    <string name="customer">Customer</string>
+    <string name="dont_have_account">Don\'t have an account?</string>
+    <string name="download_report">Download Report</string>
+    <string name="email_notifications">Email Notifications</string>
+    <string name="email_or_phone">Email or Phone</string>
+    <string name="logout_confirm">Are you sure you want to logout?</string>
+    <string name="nav_home">Home</string>
+    <string name="new_order">New Order</string>
+    <string name="next_payout">Next Payout</string>
+    <string name="no_orders">No Orders</string>
+    <string name="no_orders_desc">You don\'t have any orders yet</string>
+    <string name="no_payments">No Payments</string>
+    <string name="no_payments_desc">You don\'t have any payments yet</string>
+    <string name="ok">OK</string>
+    <string name="onboarding_desc_1">Manage your store operations efficiently</string>
+    <string name="onboarding_desc_2">Track orders and appointments in real-time</string>
+    <string name="onboarding_desc_3">Monitor your revenue and earnings</string>
+    <string name="onboarding_title_1">Store Management</string>
+    <string name="onboarding_title_2">Orders &amp; Appointments</string>
+    <string name="onboarding_title_3">Revenue Tracking</string>
+    <string name="order_status_completed">Completed</string>
+    <string name="order_status_paid">Paid</string>
+    <string name="order_status_pending">Pending</string>
+    <string name="order_status_rejected">Rejected</string>
+    <string name="orders_title">Orders</string>
+    <string name="payments_title">Payments</string>
+    <string name="previous">Previous</string>
+    <string name="push_notifications">Push Notifications</string>
+    <string name="refresh">Refresh</string>
+    <string name="reject">Reject</string>
+    <string name="save_changes">Save Changes</string>
+    <string name="settings_title">Settings</string>
+    <string name="sms_notifications">SMS Notifications</string>
+    <string name="success">Success</string>
+    <string name="view_details">View Details</string>
+    <string name="working_hours">Working Hours</string>
+</resources>

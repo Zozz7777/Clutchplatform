@@ -316,7 +316,7 @@ export function MaintenanceForecast({ className = '' }: MaintenanceForecastProps
 
         {/* Insights */}
         <div className="p-3 bg-primary/10 rounded-[0.625rem]-lg">
-          <h5 className="text-sm font-medium text-blue-900 mb-2">💡 Maintenance Insights</h5>
+          <h5 className="text-sm font-medium text-primary mb-2">💡 Maintenance Insights</h5>
           <ul className="text-xs text-primary space-y-1">
             <li>• {filteredForecasts.length} maintenance events predicted in next {selectedPeriod}</li>
             <li>• {highPriorityForecasts.length} high-priority maintenance items</li>

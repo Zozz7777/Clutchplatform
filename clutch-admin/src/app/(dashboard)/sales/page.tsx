@@ -177,8 +177,22 @@ export default function SalesDepartmentPage() {
 
       // Load department KPIs
       const kpisResponse = await productionApi.getSalesPerformanceTeam('monthly');
-      if (kpisResponse.success) {
-        setDepartmentKPIs(kpisResponse.kpis || departmentKPIs);
+      if (kpisResponse.success && Array.isArray(kpisResponse.kpis)) {
+        // Transform array data into expected object structure
+        const teamData = kpisResponse.kpis;
+        const transformedKPIs = {
+          totalLeads: teamData.reduce((sum, team) => sum + (team.leads || 0), 0),
+          partnersLeads: teamData.find(t => t.team === 'Partners')?.leads || 0,
+          b2bLeads: teamData.find(t => t.team === 'B2B')?.leads || 0,
+          totalContracts: teamData.reduce((sum, team) => sum + (team.deals || 0), 0),
+          pendingLegal: 0, // This would need to come from contracts API
+          livePartners: teamData.find(t => t.team === 'Partners')?.members || 0,
+          activeEnterprise: teamData.find(t => t.team === 'Enterprise')?.members || 0,
+          monthlyRevenue: teamData.reduce((sum, team) => sum + (team.revenue || 0), 0),
+          conversionRate: teamData.reduce((sum, team) => sum + (team.conversionRate || 0), 0) / teamData.length,
+          avgCycleTime: 0 // This would need to come from a different API
+        };
+        setDepartmentKPIs(transformedKPIs);
       }
 
       toast.success(t('sales.dataLoadedSuccessfully'));
