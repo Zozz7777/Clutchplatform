@@ -209,14 +209,14 @@ export default function BlackSwanSimulator({ className }: BlackSwanSimulatorProp
 
   const getCategoryColor = (category: string) => {
     switch (category) {
-      case 'natural_disaster': return 'bg-primary/10 text-blue-800';
+      case 'natural_disaster': return 'bg-primary/10 text-primary';
       case 'cyber_attack': return 'bg-destructive/10 text-destructive';
       case 'economic_crisis': return 'bg-warning/10 text-warning';
-      case 'pandemic': return 'bg-primary/10 text-purple-800';
+      case 'pandemic': return 'bg-primary/10 text-primary';
       case 'infrastructure_failure': return 'bg-warning/10 text-warning';
-      case 'regulatory_change': return 'bg-indigo-100 text-indigo-800';
-      case 'market_crash': return 'bg-pink-100 text-pink-800';
-      case 'supply_chain_disruption': return 'bg-teal-100 text-teal-800';
+      case 'regulatory_change': return 'bg-primary/10 text-primary';
+      case 'market_crash': return 'bg-warning/10 text-warning';
+      case 'supply_chain_disruption': return 'bg-success/10 text-success';
       default: return 'bg-muted text-gray-800';
     }
   };

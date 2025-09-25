@@ -131,11 +131,11 @@ export default function TeamPerformance() {
         {/* Team Overview */}
         <div className="grid grid-cols-2 gap-4 mb-6">
           <div className="text-center p-4 bg-blue-50 rounded-lg">
-            <Target className="h-8 w-8 text-blue-600 mx-auto mb-2" />
-            <p className="text-2xl font-bold text-blue-900">
+            <Target className="h-8 w-8 text-primary mx-auto mb-2" />
+            <p className="text-2xl font-bold text-primary">
               {teamQuotaAchievement.toFixed(0)}%
             </p>
-            <p className="text-sm text-blue-700">{t('quotaAchievement')}</p>
+            <p className="text-sm text-primary">{t('quotaAchievement')}</p>
           </div>
           <div className="text-center p-4 bg-success/10 rounded-lg">
             <TrendingUp className="h-8 w-8 text-success mx-auto mb-2" />
@@ -149,7 +149,7 @@ export default function TeamPerformance() {
         {/* Individual Performance */}
         <div className="space-y-4">
           <h4 className="font-semibold text-foreground">{t('individualPerformance')}</h4>
-          {teamMembers.map((member) => {
+          {mockTeamMembers.map((member) => {
             const quotaAchievement = member.quota > 0 ? (member.revenue / member.quota) * 100 : 0;
             
             return (
@@ -223,17 +223,17 @@ export default function TeamPerformance() {
                   {t('topPerformer')}
                 </p>
                 <p className="text-xs text-success/80">
-                  {teamMembers.find(m => m.performance === 'excellent')?.name} - {t('exceedingQuota')}
+                  {mockTeamMembers.find(m => m.performance === 'excellent')?.name} - {t('exceedingQuota')}
                 </p>
               </div>
             </div>
             <div className="flex items-start gap-2 p-3 bg-blue-50 rounded-lg">
               <div className="w-2 h-2 bg-blue-500 rounded-full mt-2"></div>
               <div>
-                <p className="text-sm font-medium text-blue-900">
+                <p className="text-sm font-medium text-primary">
                   {t('teamAverage')}
                 </p>
-                <p className="text-xs text-blue-700">
+                <p className="text-xs text-primary">
                   {t('teamAverageDescription')}
                 </p>
               </div>

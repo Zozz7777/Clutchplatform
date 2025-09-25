@@ -185,10 +185,10 @@ export default function DependencyAwareForecasts({ className }: DependencyAwareF
   const getTypeColor = (type: string) => {
     switch (type) {
       case 'revenue': return 'bg-success/10 text-success';
-      case 'users': return 'bg-primary/10 text-blue-800';
+      case 'users': return 'bg-primary/10 text-primary';
       case 'performance': return 'bg-warning/10 text-warning';
       case 'cost': return 'bg-destructive/10 text-destructive';
-      case 'capacity': return 'bg-primary/10 text-purple-800';
+      case 'capacity': return 'bg-primary/10 text-primary';
       case 'risk': return 'bg-warning/10 text-warning';
       default: return 'bg-muted text-gray-800';
     }

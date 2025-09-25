@@ -256,7 +256,7 @@ export default function SalesPage() {
                 <p className="text-sm font-medium text-muted-foreground">{t('totalDeals')}</p>
                 <p className="text-2xl font-bold text-foreground">{stats.totalDeals}</p>
               </div>
-              <TrendingUp className="h-8 w-8 text-purple-600" />
+              <TrendingUp className="h-8 w-8 text-primary" />
             </div>
           </CardContent>
         </Card>

@@ -214,7 +214,7 @@ export default function ChaosTestingIntegration({ className }: ChaosTestingInteg
   const getStatusColor = (status: string) => {
     switch (status) {
       case 'draft': return 'bg-muted text-gray-800';
-      case 'scheduled': return 'bg-primary/10 text-blue-800';
+      case 'scheduled': return 'bg-primary/10 text-primary';
       case 'running': return 'bg-warning/10 text-warning';
       case 'completed': return 'bg-success/10 text-success';
       case 'failed': return 'bg-destructive/10 text-destructive';
@@ -258,7 +258,7 @@ export default function ChaosTestingIntegration({ className }: ChaosTestingInteg
 
   const getEnvironmentColor = (environment: string) => {
     switch (environment) {
-      case 'development': return 'bg-primary/10 text-blue-800';
+      case 'development': return 'bg-primary/10 text-primary';
       case 'staging': return 'bg-warning/10 text-warning';
       case 'production': return 'bg-success/10 text-success';
       default: return 'bg-muted text-gray-800';

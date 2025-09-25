@@ -288,7 +288,7 @@ export default function CashBurnTracker({ className }: CashBurnTrackerProps) {
   const getScenarioColor = (scenario: string) => {
     switch (scenario) {
       case 'optimistic': return 'bg-success/10 text-success';
-      case 'realistic': return 'bg-primary/10 text-blue-800';
+      case 'realistic': return 'bg-primary/10 text-primary';
       case 'pessimistic': return 'bg-destructive/10 text-destructive';
       default: return 'bg-muted text-gray-800';
     }

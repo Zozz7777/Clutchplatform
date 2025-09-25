@@ -447,9 +447,9 @@ export default function PredictiveKPIAlerts({ className }: PredictiveKPIAlertsPr
 
   const getStatusColor = (status: string) => {
     switch (status) {
-      case 'active': return 'bg-destructive/10 text-red-800';
-      case 'acknowledged': return 'bg-warning/10 text-yellow-800';
-      case 'resolved': return 'bg-success/10 text-green-800';
+      case 'active': return 'bg-destructive/10 text-destructive';
+      case 'acknowledged': return 'bg-warning/10 text-warning';
+      case 'resolved': return 'bg-success/10 text-success';
       case 'false_positive': return 'bg-muted text-gray-800';
       default: return 'bg-muted text-gray-800';
     }
@@ -488,9 +488,9 @@ export default function PredictiveKPIAlerts({ className }: PredictiveKPIAlertsPr
 
   const getImpactColor = (impact: string) => {
     switch (impact) {
-      case 'high': return 'bg-destructive/10 text-red-800';
-      case 'medium': return 'bg-warning/10 text-yellow-800';
-      case 'low': return 'bg-success/10 text-green-800';
+      case 'high': return 'bg-destructive/10 text-destructive';
+      case 'medium': return 'bg-warning/10 text-warning';
+      case 'low': return 'bg-success/10 text-success';
       default: return 'bg-muted text-gray-800';
     }
   };
@@ -537,7 +537,7 @@ export default function PredictiveKPIAlerts({ className }: PredictiveKPIAlertsPr
                 variant="outline"
                 size="sm"
                 onClick={() => setIsMonitoring(!isMonitoring)}
-                className={isMonitoring ? 'bg-success/10 text-green-800' : ''}
+                className={isMonitoring ? 'bg-success/10 text-success' : ''}
               >
                 {isMonitoring ? <Play className="h-4 w-4 mr-2" /> : <Pause className="h-4 w-4 mr-2" />}
                 {isMonitoring ? 'Monitoring' : 'Paused'}

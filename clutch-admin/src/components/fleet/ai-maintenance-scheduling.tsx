@@ -220,7 +220,7 @@ export default function AIMaintenanceScheduling() {
 
   const getStatusColor = (status: string) => {
     switch (status) {
-      case 'scheduled': return 'bg-primary/10 text-blue-800';
+      case 'scheduled': return 'bg-primary/10 text-primary';
       case 'in_progress': return 'bg-warning/10 text-warning';
       case 'completed': return 'bg-success/10 text-success';
       case 'cancelled': return 'bg-muted text-gray-800';

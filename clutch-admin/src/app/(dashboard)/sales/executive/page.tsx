@@ -460,7 +460,7 @@ export default function ExecutiveDashboard() {
                 <div className="space-y-4">
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-2">
-                      <Store className="h-4 w-4 text-blue-600" />
+                      <Store className="h-4 w-4 text-primary" />
                       <span className="text-sm font-medium">{t('sales.partnersRevenue')}</span>
                     </div>
                     <div className="text-right">
@@ -701,11 +701,11 @@ export default function ExecutiveDashboard() {
               <CardContent>
                 <div className="space-y-4">
                   <div className="p-3 bg-blue-50 border border-blue-200 rounded-lg">
-                    <p className="font-medium text-blue-800">{t('sales.expandToNewCities')}</p>
-                    <p className="text-sm text-blue-600">{t('sales.expandToNewCitiesDescription')}</p>
+                    <p className="font-medium text-primary">{t('sales.expandToNewCities')}</p>
+                    <p className="text-sm text-primary">{t('sales.expandToNewCitiesDescription')}</p>
                     <div className="mt-2">
                       <Progress value={60} className="h-2" />
-                      <p className="text-xs text-blue-600 mt-1">60% {t('sales.complete')}</p>
+                      <p className="text-xs text-primary mt-1">60% {t('sales.complete')}</p>
                     </div>
                   </div>
                   
@@ -719,11 +719,11 @@ export default function ExecutiveDashboard() {
                   </div>
                   
                   <div className="p-3 bg-purple-50 border border-purple-200 rounded-lg">
-                    <p className="font-medium text-purple-800">{t('sales.digitalTransformation')}</p>
-                    <p className="text-sm text-purple-600">{t('sales.digitalTransformationDescription')}</p>
+                    <p className="font-medium text-primary">{t('sales.digitalTransformation')}</p>
+                    <p className="text-sm text-primary">{t('sales.digitalTransformationDescription')}</p>
                     <div className="mt-2">
                       <Progress value={25} className="h-2" />
-                      <p className="text-xs text-purple-600 mt-1">25% {t('sales.complete')}</p>
+                      <p className="text-xs text-primary mt-1">25% {t('sales.complete')}</p>
                     </div>
                   </div>
                 </div>

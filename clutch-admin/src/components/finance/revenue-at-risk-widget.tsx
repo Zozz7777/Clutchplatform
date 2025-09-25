@@ -400,7 +400,7 @@ export default function RevenueAtRiskWidget({ className }: RevenueAtRiskWidgetPr
     switch (status) {
       case 'active': return 'bg-destructive/10 text-destructive';
       case 'monitoring': return 'bg-warning/10 text-warning';
-      case 'mitigated': return 'bg-primary/10 text-blue-800';
+      case 'mitigated': return 'bg-primary/10 text-primary';
       case 'resolved': return 'bg-success/10 text-success';
       default: return 'bg-muted text-gray-800';
     }

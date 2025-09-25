@@ -301,7 +301,7 @@ export function RecommendationUplift({ className = '' }: RecommendationUpliftPro
         {/* Insights */}
         <div className="p-3 bg-primary/10 rounded-[0.625rem]-lg">
           <h5 className="text-sm font-medium text-blue-900 mb-2">💡 Recommendation Insights</h5>
-          <ul className="text-xs text-blue-800 space-y-1">
+          <ul className="text-xs text-primary space-y-1">
             <li>• {upliftData.recommendationsSent} recommendations sent</li>
             <li>• {upliftData.accepted} recommendations accepted ({acceptanceRate.toFixed(1)}% rate)</li>
             <li>• Revenue impact: ${upliftData.revenueImpact.toLocaleString()}</li>

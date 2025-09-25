@@ -296,7 +296,7 @@ export default function ZeroTrustAuditCard() {
                 <p className="text-sm font-medium text-muted-foreground">Overall Score</p>
                 <p className="text-2xl font-bold">{metrics.overallScore}%</p>
               </div>
-              <Shield className="h-8 w-8 text-blue-500" />
+              <Shield className="h-8 w-8 text-primary" />
             </div>
             <Progress value={metrics.overallScore} className="mt-2" />
           </CardContent>

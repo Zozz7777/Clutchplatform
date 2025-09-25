@@ -225,10 +225,10 @@ export default function DynamicPricingSimulation({ className }: DynamicPricingSi
   const getStatusColor = (status: string) => {
     switch (status) {
       case 'draft': return 'bg-muted text-gray-800';
-      case 'testing': return 'bg-primary/10 text-blue-800';
+      case 'testing': return 'bg-primary/10 text-primary';
       case 'active': return 'bg-success/10 text-success';
       case 'paused': return 'bg-warning/10 text-warning';
-      case 'completed': return 'bg-primary/10 text-purple-800';
+      case 'completed': return 'bg-primary/10 text-primary';
       default: return 'bg-muted text-gray-800';
     }
   };
@@ -256,7 +256,7 @@ export default function DynamicPricingSimulation({ className }: DynamicPricingSi
 
   const getTestStatusColor = (status: string) => {
     switch (status) {
-      case 'running': return 'bg-primary/10 text-blue-800';
+      case 'running': return 'bg-primary/10 text-primary';
       case 'completed': return 'bg-success/10 text-success';
       case 'failed': return 'bg-destructive/10 text-destructive';
       case 'paused': return 'bg-warning/10 text-warning';

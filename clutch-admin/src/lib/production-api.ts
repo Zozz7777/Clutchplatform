@@ -939,7 +939,7 @@ export class ProductionApiService {
       }
       
       const data = await response.json();
-      return { success: true, metrics: data.metrics || [] };
+      return { success: true, kpis: data.metrics || data.kpis || [] };
     } catch (error) {
       logger.error("Failed to fetch team performance:", error);
       return { success: false, message: "Failed to load team performance" };
@@ -1131,7 +1131,7 @@ export class ProductionApiService {
       }
       
       const data = await response.json();
-      return { success: true, kpis: data.kpis || {} };
+      return { success: true, kpis: data.metrics || data.kpis || {} };
     } catch (error) {
       logger.error("Failed to fetch sales performance team:", error);
       return { success: false, message: "Failed to load sales performance team" };

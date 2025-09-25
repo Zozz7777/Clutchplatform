@@ -533,8 +533,8 @@ export default function BusinessValueAttribution({ className }: BusinessValueAtt
   const getBusinessAreaColor = (area: string) => {
     switch (area) {
       case 'revenue': return 'bg-success/10 text-success';
-      case 'cost_reduction': return 'bg-primary/10 text-blue-800';
-      case 'customer_experience': return 'bg-primary/10 text-purple-800';
+      case 'cost_reduction': return 'bg-primary/10 text-primary';
+      case 'customer_experience': return 'bg-primary/10 text-primary';
       case 'operational_efficiency': return 'bg-warning/10 text-warning';
       case 'risk_mitigation': return 'bg-destructive/10 text-destructive';
       case 'compliance': return 'bg-warning/10 text-warning';
@@ -545,9 +545,9 @@ export default function BusinessValueAttribution({ className }: BusinessValueAtt
   const getImpactTypeColor = (type: string) => {
     switch (type) {
       case 'direct': return 'bg-success/10 text-success';
-      case 'indirect': return 'bg-primary/10 text-blue-800';
+      case 'indirect': return 'bg-primary/10 text-primary';
       case 'cascading': return 'bg-warning/10 text-warning';
-      case 'compound': return 'bg-primary/10 text-purple-800';
+      case 'compound': return 'bg-primary/10 text-primary';
       default: return 'bg-muted text-gray-800';
     }
   };

@@ -499,14 +499,14 @@ export default function PortfolioRiskDashboard({ className }: PortfolioRiskDashb
 
   const getCategoryColor = (category: string) => {
     switch (category) {
-      case 'infrastructure': return 'bg-primary/10 text-blue-800';
+      case 'infrastructure': return 'bg-primary/10 text-primary';
       case 'security': return 'bg-destructive/10 text-destructive';
       case 'compliance': return 'bg-warning/10 text-warning';
       case 'financial': return 'bg-success/10 text-success';
       case 'operational': return 'bg-warning/10 text-warning';
-      case 'technical': return 'bg-primary/10 text-purple-800';
-      case 'market': return 'bg-pink-100 text-pink-800';
-      case 'regulatory': return 'bg-indigo-100 text-indigo-800';
+      case 'technical': return 'bg-primary/10 text-primary';
+      case 'market': return 'bg-warning/10 text-warning';
+      case 'regulatory': return 'bg-primary/10 text-primary';
       default: return 'bg-muted text-gray-800';
     }
   };
@@ -541,7 +541,7 @@ export default function PortfolioRiskDashboard({ className }: PortfolioRiskDashb
   const getMitigationStatusColor = (status: string) => {
     switch (status) {
       case 'completed': return 'bg-success/10 text-success';
-      case 'in_progress': return 'bg-primary/10 text-blue-800';
+      case 'in_progress': return 'bg-primary/10 text-primary';
       case 'planned': return 'bg-warning/10 text-warning';
       case 'failed': return 'bg-destructive/10 text-destructive';
       default: return 'bg-muted text-gray-800';

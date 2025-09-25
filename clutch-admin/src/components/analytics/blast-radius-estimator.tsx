@@ -368,7 +368,7 @@ export default function BlastRadiusEstimator({ className }: BlastRadiusEstimator
       case 'outage': return 'bg-destructive/10 text-destructive';
       case 'degradation': return 'bg-warning/10 text-warning';
       case 'latency': return 'bg-warning/10 text-warning';
-      case 'error_rate': return 'bg-primary/10 text-purple-800';
+      case 'error_rate': return 'bg-primary/10 text-primary';
       case 'data_loss': return 'bg-destructive/10 text-destructive';
       case 'security_breach': return 'bg-destructive/10 text-destructive';
       default: return 'bg-muted text-gray-800';

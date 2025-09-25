@@ -173,7 +173,7 @@ export default function APIDocsPage() {
       case "DELETE":
         return "bg-destructive/10 text-destructive";
       case "PATCH":
-        return "bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-200";
+        return "bg-primary/10 text-primary";
       default:
         return "bg-muted text-foreground";
     }

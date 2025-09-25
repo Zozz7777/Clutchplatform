@@ -263,7 +263,7 @@ export function SecurityAlerts({ className = '' }: SecurityAlertsProps) {
         {/* Insights */}
         <div className="p-3 bg-primary/10 rounded-[0.625rem]-lg">
           <h5 className="text-sm font-medium text-blue-900 mb-2">💡 Security Alert Insights</h5>
-          <ul className="text-xs text-blue-800 space-y-1">
+          <ul className="text-xs text-primary space-y-1">
             <li>• Total alerts: {alertData.totalAlerts}</li>
             <li>• Active alerts: {alertData.activeAlerts}</li>
             <li>• Critical alerts: {alertData.criticalAlerts}</li>

@@ -315,8 +315,8 @@ export function CustomerLifetimeValue({ className = '' }: CustomerLifetimeValueP
 
         {/* Insights */}
         <div className="p-3 bg-primary/10 rounded-[0.625rem]-lg">
-          <h5 className="text-sm font-medium text-blue-900 mb-2">💡 CLV Insights</h5>
-          <ul className="text-xs text-blue-800 space-y-1">
+          <h5 className="text-sm font-medium text-primary mb-2">💡 CLV Insights</h5>
+          <ul className="text-xs text-primary space-y-1">
             <li>• Average CLV: ${averageCLV.toLocaleString()}</li>
             <li>• Total CLV: ${totalCLV.toLocaleString()}</li>
             <li>• Total revenue: ${totalRevenue.toLocaleString()}</li>

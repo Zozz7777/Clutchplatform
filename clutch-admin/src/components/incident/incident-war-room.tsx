@@ -247,7 +247,7 @@ export default function IncidentWarRoom({ className }: IncidentWarRoomProps) {
       case 'investigating': return 'bg-warning/10 text-warning';
       case 'mitigating': return 'bg-warning/10 text-warning';
       case 'resolved': return 'bg-success/10 text-success';
-      case 'post-mortem': return 'bg-primary/10 text-blue-800';
+      case 'post-mortem': return 'bg-primary/10 text-primary';
       default: return 'bg-muted text-gray-800';
     }
   };
@@ -255,7 +255,7 @@ export default function IncidentWarRoom({ className }: IncidentWarRoomProps) {
   const getActionStatusColor = (status: string) => {
     switch (status) {
       case 'completed': return 'bg-success/10 text-success';
-      case 'in_progress': return 'bg-primary/10 text-blue-800';
+      case 'in_progress': return 'bg-primary/10 text-primary';
       case 'pending': return 'bg-warning/10 text-warning';
       case 'failed': return 'bg-destructive/10 text-destructive';
       default: return 'bg-muted text-gray-800';
@@ -275,9 +275,9 @@ export default function IncidentWarRoom({ className }: IncidentWarRoomProps) {
 
   const getCommunicationTypeColor = (type: string) => {
     switch (type) {
-      case 'internal': return 'bg-primary/10 text-blue-800';
+      case 'internal': return 'bg-primary/10 text-primary';
       case 'customer': return 'bg-success/10 text-success';
-      case 'stakeholder': return 'bg-primary/10 text-purple-800';
+      case 'stakeholder': return 'bg-primary/10 text-primary';
       default: return 'bg-muted text-gray-800';
     }
   };

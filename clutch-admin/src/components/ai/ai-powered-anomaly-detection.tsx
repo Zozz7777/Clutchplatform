@@ -247,11 +247,11 @@ export default function AIPoweredAnomalyDetection({ className }: AIPoweredAnomal
 
   const getTypeColor = (type: string) => {
     switch (type) {
-      case 'performance': return 'bg-primary/10 text-blue-800';
+      case 'performance': return 'bg-primary/10 text-primary';
       case 'security': return 'bg-destructive/10 text-destructive';
       case 'business': return 'bg-success/10 text-success';
       case 'infrastructure': return 'bg-warning/10 text-warning';
-      case 'user_behavior': return 'bg-primary/10 text-purple-800';
+      case 'user_behavior': return 'bg-primary/10 text-primary';
       case 'financial': return 'bg-warning/10 text-warning';
       default: return 'bg-muted text-gray-800';
     }

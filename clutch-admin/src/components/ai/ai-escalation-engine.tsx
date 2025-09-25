@@ -415,41 +415,41 @@ export default function AIEscalationEngine({ className }: AIEscalationEngineProp
 
   const getStatusColor = (status: string) => {
     switch (status) {
-      case 'healthy': return 'bg-success/10 text-green-800';
-      case 'warning': return 'bg-warning/10 text-yellow-800';
-      case 'critical': return 'bg-warning/10 text-orange-800';
-      case 'breach': return 'bg-destructive/10 text-red-800';
-      default: return 'bg-muted text-gray-800';
+      case 'healthy': return 'bg-success/10 text-success';
+      case 'warning': return 'bg-warning/10 text-warning';
+      case 'critical': return 'bg-warning/10 text-warning';
+      case 'breach': return 'bg-destructive/10 text-destructive';
+      default: return 'bg-muted text-muted-foreground';
     }
   };
 
   const getSeverityColor = (severity: string) => {
     switch (severity) {
-      case 'low': return 'bg-success/10 text-green-800';
-      case 'medium': return 'bg-warning/10 text-yellow-800';
-      case 'high': return 'bg-warning/10 text-orange-800';
-      case 'critical': return 'bg-destructive/10 text-red-800';
-      default: return 'bg-muted text-gray-800';
+      case 'low': return 'bg-success/10 text-success';
+      case 'medium': return 'bg-warning/10 text-warning';
+      case 'high': return 'bg-warning/10 text-warning';
+      case 'critical': return 'bg-destructive/10 text-destructive';
+      default: return 'bg-muted text-muted-foreground';
     }
   };
 
   const getPriorityColor = (priority: string) => {
     switch (priority) {
-      case 'low': return 'bg-muted text-gray-800';
-      case 'medium': return 'bg-primary/10 text-blue-800';
-      case 'high': return 'bg-warning/10 text-orange-800';
-      case 'critical': return 'bg-destructive/10 text-red-800';
-      default: return 'bg-muted text-gray-800';
+      case 'low': return 'bg-muted text-muted-foreground';
+      case 'medium': return 'bg-primary/10 text-primary';
+      case 'high': return 'bg-warning/10 text-warning';
+      case 'critical': return 'bg-destructive/10 text-destructive';
+      default: return 'bg-muted text-muted-foreground';
     }
   };
 
   const getEventStatusColor = (status: string) => {
     switch (status) {
-      case 'pending': return 'bg-warning/10 text-yellow-800';
-      case 'in_progress': return 'bg-primary/10 text-blue-800';
-      case 'resolved': return 'bg-success/10 text-green-800';
-      case 'escalated': return 'bg-destructive/10 text-red-800';
-      default: return 'bg-muted text-gray-800';
+      case 'pending': return 'bg-warning/10 text-warning';
+      case 'in_progress': return 'bg-primary/10 text-primary';
+      case 'resolved': return 'bg-success/10 text-success';
+      case 'escalated': return 'bg-destructive/10 text-destructive';
+      default: return 'bg-muted text-muted-foreground';
     }
   };
 
@@ -515,7 +515,7 @@ export default function AIEscalationEngine({ className }: AIEscalationEngineProp
                 variant="outline"
                 size="sm"
                 onClick={() => setIsMonitoring(!isMonitoring)}
-                className={isMonitoring ? 'bg-success/10 text-green-800' : ''}
+                className={isMonitoring ? 'bg-success/10 text-success' : ''}
               >
                 {isMonitoring ? <Eye className="h-4 w-4 mr-2" /> : <EyeOff className="h-4 w-4 mr-2" />}
                 {isMonitoring ? 'Monitoring' : 'Paused'}
@@ -786,7 +786,7 @@ export default function AIEscalationEngine({ className }: AIEscalationEngineProp
                           <div className="flex items-center justify-between mb-2">
                             <span className="font-medium">{rule.name}</span>
                             <div className="flex items-center gap-2">
-                              <Badge className={rule.isActive ? 'bg-success/10 text-green-800' : 'bg-muted text-gray-800'}>
+                              <Badge className={rule.isActive ? 'bg-success/10 text-success' : 'bg-muted text-muted-foreground'}>
                                 {rule.isActive ? 'Active' : 'Inactive'}
                               </Badge>
                               <span className="text-sm font-medium">Level {rule.escalationLevel}</span>
@@ -832,7 +832,7 @@ export default function AIEscalationEngine({ className }: AIEscalationEngineProp
                               <div key={action.id} className="flex items-center gap-2 text-sm">
                                 {getActionIcon(action.type)}
                                 <span>{action.description}</span>
-                                <Badge className={action.status === 'completed' ? 'bg-success/10 text-green-800' : 'bg-warning/10 text-yellow-800'}>
+                                <Badge className={action.status === 'completed' ? 'bg-success/10 text-success' : 'bg-warning/10 text-warning'}>
                                   {action.status}
                                 </Badge>
                                 {action.automated && (

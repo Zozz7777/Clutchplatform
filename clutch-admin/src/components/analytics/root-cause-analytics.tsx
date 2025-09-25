@@ -560,10 +560,10 @@ export default function RootCauseAnalytics({ className }: RootCauseAnalyticsProp
 
   const getStatusColor = (status: string) => {
     switch (status) {
-      case 'analyzing': return 'bg-primary/10 text-blue-800';
-      case 'identified': return 'bg-warning/10 text-yellow-800';
-      case 'resolved': return 'bg-success/10 text-green-800';
-      case 'monitoring': return 'bg-primary/10 text-purple-800';
+      case 'analyzing': return 'bg-primary/10 text-primary';
+      case 'identified': return 'bg-warning/10 text-warning';
+      case 'resolved': return 'bg-success/10 text-success';
+      case 'monitoring': return 'bg-primary/10 text-primary';
       default: return 'bg-muted text-gray-800';
     }
   };
@@ -600,10 +600,10 @@ export default function RootCauseAnalytics({ className }: RootCauseAnalyticsProp
 
   const getPriorityColor = (priority: string) => {
     switch (priority) {
-      case 'critical': return 'bg-destructive/10 text-red-800';
-      case 'high': return 'bg-warning/10 text-orange-800';
-      case 'medium': return 'bg-warning/10 text-yellow-800';
-      case 'low': return 'bg-success/10 text-green-800';
+      case 'critical': return 'bg-destructive/10 text-destructive';
+      case 'high': return 'bg-warning/10 text-warning';
+      case 'medium': return 'bg-warning/10 text-warning';
+      case 'low': return 'bg-success/10 text-success';
       default: return 'bg-muted text-gray-800';
     }
   };
@@ -646,7 +646,7 @@ export default function RootCauseAnalytics({ className }: RootCauseAnalyticsProp
                 variant="outline"
                 size="sm"
                 onClick={() => setIsAnalyzing(!isAnalyzing)}
-                className={isAnalyzing ? 'bg-success/10 text-green-800' : ''}
+                className={isAnalyzing ? 'bg-success/10 text-success' : ''}
               >
                 {isAnalyzing ? <Play className="h-4 w-4 mr-2" /> : <Pause className="h-4 w-4 mr-2" />}
                 {isAnalyzing ? 'Analyzing' : 'Paused'}

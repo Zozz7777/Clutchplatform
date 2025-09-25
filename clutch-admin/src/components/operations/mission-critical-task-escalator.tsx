@@ -617,9 +617,9 @@ export default function MissionCriticalTaskEscalator({ className }: MissionCriti
       case 'revenue_blocking': return 'bg-destructive/10 text-destructive';
       case 'security_critical': return 'bg-warning/10 text-warning';
       case 'compliance_urgent': return 'bg-warning/10 text-warning';
-      case 'customer_impact': return 'bg-primary/10 text-blue-800';
-      case 'system_failure': return 'bg-primary/10 text-purple-800';
-      case 'data_loss': return 'bg-pink-100 text-pink-800';
+      case 'customer_impact': return 'bg-primary/10 text-primary';
+      case 'system_failure': return 'bg-primary/10 text-primary';
+      case 'data_loss': return 'bg-warning/10 text-warning';
       default: return 'bg-muted text-gray-800';
     }
   };
@@ -638,7 +638,7 @@ export default function MissionCriticalTaskEscalator({ className }: MissionCriti
   const getStatusColor = (status: string) => {
     switch (status) {
       case 'pending': return 'bg-warning/10 text-warning';
-      case 'in_progress': return 'bg-primary/10 text-blue-800';
+      case 'in_progress': return 'bg-primary/10 text-primary';
       case 'escalated': return 'bg-destructive/10 text-destructive';
       case 'resolved': return 'bg-success/10 text-success';
       case 'cancelled': return 'bg-muted text-gray-800';

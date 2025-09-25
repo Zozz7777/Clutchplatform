@@ -485,7 +485,7 @@ export default function ModelGovernancePanel({ className }: ModelGovernancePanel
 
   const getStatusColor = (status: string) => {
     switch (status) {
-      case 'development': return 'bg-primary/10 text-blue-800';
+      case 'development': return 'bg-primary/10 text-primary';
       case 'testing': return 'bg-warning/10 text-warning';
       case 'production': return 'bg-success/10 text-success';
       case 'deprecated': return 'bg-warning/10 text-warning';
@@ -528,7 +528,7 @@ export default function ModelGovernancePanel({ className }: ModelGovernancePanel
       case 'approved': return 'bg-success/10 text-success';
       case 'pending': return 'bg-warning/10 text-warning';
       case 'rejected': return 'bg-destructive/10 text-destructive';
-      case 'under_review': return 'bg-primary/10 text-blue-800';
+      case 'under_review': return 'bg-primary/10 text-primary';
       default: return 'bg-muted text-gray-800';
     }
   };

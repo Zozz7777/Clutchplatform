@@ -333,8 +333,8 @@ export function ChurnAdjustedForecast({ className = '' }: ChurnAdjustedForecastP
 
         {/* Insights */}
         <div className="p-3 bg-primary/10 rounded-[0.625rem]-lg">
-          <h5 className="text-sm font-medium text-blue-900 mb-2">💡 Churn-Adjusted Forecast Insights</h5>
-          <ul className="text-xs text-blue-800 space-y-1">
+          <h5 className="text-sm font-medium text-primary mb-2">💡 Churn-Adjusted Forecast Insights</h5>
+          <ul className="text-xs text-primary space-y-1">
             <li>• Total adjusted revenue: ${forecastData.totalAdjustedRevenue.toLocaleString()}</li>
             <li>• Churn impact: ${(forecastData.totalBaseRevenue - forecastData.totalAdjustedRevenue).toLocaleString()}</li>
             <li>• Average churn rate: {forecastData.averageChurnRate.toFixed(1)}%</li>

@@ -450,10 +450,10 @@ export default function SalesRepDashboard() {
 
             {leads.filter(lead => lead.contract.status === 'pending_legal').length > 0 && (
               <div className="p-3 bg-blue-50 border border-blue-200 rounded-lg">
-                <p className="font-medium text-blue-800">
+                <p className="font-medium text-primary">
                   {leads.filter(lead => lead.contract.status === 'pending_legal').length} {t('sales.contractsPendingLegal')}
                 </p>
-                <p className="text-sm text-blue-600">{t('sales.contractsPendingLegalDescription')}</p>
+                <p className="text-sm text-primary">{t('sales.contractsPendingLegalDescription')}</p>
               </div>
             )}
           </CardContent>

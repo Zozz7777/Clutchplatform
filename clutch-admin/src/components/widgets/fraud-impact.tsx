@@ -286,7 +286,7 @@ export function FraudImpact({ className = '' }: FraudImpactProps) {
         {/* Insights */}
         <div className="p-3 bg-primary/10 rounded-[0.625rem]-lg">
           <h5 className="text-sm font-medium text-blue-900 mb-2">💡 Fraud Impact Insights</h5>
-          <ul className="text-xs text-blue-800 space-y-1">
+          <ul className="text-xs text-primary space-y-1">
             <li>• Total amount saved: ${fraudData.amountSaved.toLocaleString()}</li>
             <li>• {fraudData.casesDetected} fraud cases detected and blocked</li>
             <li>• Detection accuracy: {fraudData.accuracy.toFixed(1)}%</li>

@@ -25,9 +25,8 @@ object LanguageManager {
     }
     
     fun isRTL(context: Context): Boolean {
-        val locale = getDeviceLocale(context)
-        // Check if the locale is RTL by checking the language code
-        return locale.language in listOf("ar", "he", "fa", "ur", "ps", "sd", "ku", "dv")
+        val selectedLanguage = getSelectedLanguage(context)
+        return selectedLanguage == "ar"
     }
     
     fun getLayoutDirection(context: Context): LayoutDirection {
@@ -53,5 +52,22 @@ object LanguageManager {
     
     fun isEnglish(context: Context): Boolean {
         return getSupportedLanguage(context) == "en"
+    }
+    
+    fun toggleLanguage(context: Context) {
+        val currentLanguage = getSelectedLanguage(context)
+        val newLanguage = if (currentLanguage == "ar") "en" else "ar"
+        
+        // Save the language preference to SharedPreferences
+        val prefs = context.getSharedPreferences("app_prefs", Context.MODE_PRIVATE)
+        prefs.edit().putString("selected_language", newLanguage).apply()
+        
+        // Restart the activity to apply the new language
+        // This will be handled by the calling activity
+    }
+    
+    fun getSelectedLanguage(context: Context): String {
+        val prefs = context.getSharedPreferences("app_prefs", Context.MODE_PRIVATE)
+        return prefs.getString("selected_language", getSupportedLanguage(context)) ?: getSupportedLanguage(context)
     }
 }

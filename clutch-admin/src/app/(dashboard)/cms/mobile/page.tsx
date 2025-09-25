@@ -26,8 +26,8 @@ export default function MobileCMSPage() {
   const [appSettings, setAppSettings] = useState({
     appName: 'Clutch',
     version: '1.2.0',
-    primaryColor: '#3B82F6',
-    secondaryColor: '#10B981',
+    primaryColor: 'oklch(0.5770 0.2450 27.3250)', // design.json primary
+    secondaryColor: 'oklch(0.72 0.2 145)', // design.json success
     logo: '',
     splashScreen: '',
     welcomeMessage: 'Welcome to Clutch - Your Fleet Management Solution'

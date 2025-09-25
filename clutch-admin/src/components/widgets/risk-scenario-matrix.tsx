@@ -123,7 +123,7 @@ export function RiskScenarioMatrix({ className = '' }: RiskScenarioMatrixProps) 
   const getScenarioBadge = (type: string) => {
     switch (type) {
       case 'optimistic': return 'bg-success/10 text-success';
-      case 'realistic': return 'bg-primary/10 text-blue-800';
+      case 'realistic': return 'bg-primary/10 text-primary';
       case 'pessimistic': return 'bg-destructive/10 text-destructive';
       default: return 'bg-muted text-gray-800';
     }
@@ -340,8 +340,8 @@ export function RiskScenarioMatrix({ className = '' }: RiskScenarioMatrixProps) 
 
         {/* Insights */}
         <div className="p-3 bg-primary/10 rounded-[0.625rem]-lg">
-          <h5 className="text-sm font-medium text-blue-900 mb-2">💡 Risk Scenario Insights</h5>
-          <ul className="text-xs text-blue-800 space-y-1">
+          <h5 className="text-sm font-medium text-primary mb-2">💡 Risk Scenario Insights</h5>
+          <ul className="text-xs text-primary space-y-1">
             <li>• Risk-adjusted revenue: ${scenarioData.riskAdjustedRevenue.toLocaleString()}</li>
             <li>• Overall risk score: {scenarioData.riskScore.toFixed(0)}%</li>
             <li>• {scenarioData.scenarios.length} scenarios analyzed</li>

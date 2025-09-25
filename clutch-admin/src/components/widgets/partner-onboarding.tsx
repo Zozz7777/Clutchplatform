@@ -253,7 +253,7 @@ export default function PartnerOnboarding() {
   const getStatusColor = (status: string) => {
     switch (status) {
       case 'pending': return 'bg-muted text-foreground';
-      case 'in_progress': return 'bg-blue-100 text-blue-800';
+      case 'in_progress': return 'bg-blue-100 text-primary';
       case 'onboarded': return 'bg-success/10 text-success';
       case 'rejected': return 'bg-destructive/10 text-destructive';
       default: return 'bg-muted text-foreground';
@@ -541,7 +541,7 @@ export default function PartnerOnboarding() {
                         {step.completed ? (
                           <CheckCircle className="h-5 w-5 text-success" />
                         ) : step.inProgress ? (
-                          <Clock className="h-5 w-5 text-blue-600" />
+                          <Clock className="h-5 w-5 text-primary" />
                         ) : (
                           <AlertTriangle className="h-5 w-5 text-muted-foreground" />
                         )}

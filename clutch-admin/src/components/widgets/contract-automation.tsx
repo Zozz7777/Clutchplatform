@@ -204,7 +204,7 @@ export default function ContractAutomation() {
   const getStatusColor = (status: string) => {
     switch (status) {
       case 'draft': return 'bg-muted text-foreground';
-      case 'generated': return 'bg-blue-100 text-blue-800';
+      case 'generated': return 'bg-blue-100 text-primary';
       case 'sent': return 'bg-warning/10 text-warning';
       case 'signed': return 'bg-primary/10 text-primary';
       case 'pending_legal': return 'bg-info/10 text-info';
@@ -442,11 +442,11 @@ export default function ContractAutomation() {
                   <div className="space-y-4">
                     <div className="flex items-center gap-3 p-3 bg-blue-50 border border-blue-200 rounded-lg">
                       <div className="h-8 w-8 rounded-full bg-blue-100 flex items-center justify-center">
-                        <span className="text-sm font-bold text-blue-800">1</span>
+                        <span className="text-sm font-bold text-primary">1</span>
                       </div>
                       <div>
-                        <p className="font-medium text-blue-800">{t('sales.selectTemplate')}</p>
-                        <p className="text-sm text-blue-600">{t('sales.selectTemplateDescription')}</p>
+                        <p className="font-medium text-primary">{t('sales.selectTemplate')}</p>
+                        <p className="text-sm text-primary">{t('sales.selectTemplateDescription')}</p>
                       </div>
                     </div>
                     
@@ -462,11 +462,11 @@ export default function ContractAutomation() {
                     
                     <div className="flex items-center gap-3 p-3 bg-purple-50 border border-purple-200 rounded-lg">
                       <div className="h-8 w-8 rounded-full bg-purple-100 flex items-center justify-center">
-                        <span className="text-sm font-bold text-purple-800">3</span>
+                        <span className="text-sm font-bold text-primary">3</span>
                       </div>
                       <div>
-                        <p className="font-medium text-purple-800">{t('sales.sendToPartner')}</p>
-                        <p className="text-sm text-purple-600">{t('sales.sendToPartnerDescription')}</p>
+                        <p className="font-medium text-primary">{t('sales.sendToPartner')}</p>
+                        <p className="text-sm text-primary">{t('sales.sendToPartnerDescription')}</p>
                       </div>
                     </div>
                     
@@ -494,11 +494,11 @@ export default function ContractAutomation() {
                   <div className="space-y-4">
                     <div className="flex items-center gap-3 p-3 bg-blue-50 border border-blue-200 rounded-lg">
                       <div className="h-8 w-8 rounded-full bg-blue-100 flex items-center justify-center">
-                        <span className="text-sm font-bold text-blue-800">1</span>
+                        <span className="text-sm font-bold text-primary">1</span>
                       </div>
                       <div>
-                        <p className="font-medium text-blue-800">{t('sales.createProposal')}</p>
-                        <p className="text-sm text-blue-600">{t('sales.createProposalDescription')}</p>
+                        <p className="font-medium text-primary">{t('sales.createProposal')}</p>
+                        <p className="text-sm text-primary">{t('sales.createProposalDescription')}</p>
                       </div>
                     </div>
                     
@@ -514,11 +514,11 @@ export default function ContractAutomation() {
                     
                     <div className="flex items-center gap-3 p-3 bg-purple-50 border border-purple-200 rounded-lg">
                       <div className="h-8 w-8 rounded-full bg-purple-100 flex items-center justify-center">
-                        <span className="text-sm font-bold text-purple-800">3</span>
+                        <span className="text-sm font-bold text-primary">3</span>
                       </div>
                       <div>
-                        <p className="font-medium text-purple-800">{t('sales.generateContract')}</p>
-                        <p className="text-sm text-purple-600">{t('sales.generateContractDescription')}</p>
+                        <p className="font-medium text-primary">{t('sales.generateContract')}</p>
+                        <p className="text-sm text-primary">{t('sales.generateContractDescription')}</p>
                       </div>
                     </div>
                     
