@@ -656,7 +656,7 @@ export default function ExecutiveDashboard() {
                         </p>
                       </div>
                     </div>
-                  ))}
+                  )) : null}
                 </div>
               </CardContent>
             </Card>
