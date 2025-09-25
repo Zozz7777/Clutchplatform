@@ -208,23 +208,8 @@ function requirePermission(action) {
  * Get user's accessible data based on role
  */
 function getDataAccessFilter(userRole, userId) {
-  // Map frontend roles to backend roles
-  const roleMapping = {
-    'sales_representative': 'sales_rep',
-    'sales_manager': 'sales_manager',
-    'admin': 'admin',
-    'super_admin': 'admin',
-    'head_administrator': 'admin',
-    'executive': 'admin',
-    'platform_admin': 'admin',
-    'legal_team': 'legal',
-    'hr_manager': 'hr',
-    'hr': 'hr'
-  };
-  
-  const mappedRole = roleMapping[userRole] || userRole;
-  
-  switch (mappedRole) {
+  // userRole is already mapped by the middleware, so use it directly
+  switch (userRole) {
     case 'sysadmin':
     case 'admin':
       return {}; // Access to all data

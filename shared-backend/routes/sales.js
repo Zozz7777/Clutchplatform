@@ -107,10 +107,18 @@ router.get('/leads', authorize(['sales_rep', 'sales_manager', 'admin']), async (
     });
   } catch (error) {
     console.error('Error fetching leads:', error);
+    console.error('Error details:', {
+      message: error.message,
+      stack: error.stack,
+      filter: filter,
+      userRole: req.salesUser?.role,
+      userId: req.salesUser?.id
+    });
     res.status(500).json({
       success: false,
       error: 'FETCH_LEADS_FAILED',
-      message: 'Failed to fetch leads'
+      message: 'Failed to fetch leads',
+      details: error.message
     });
   }
 });
