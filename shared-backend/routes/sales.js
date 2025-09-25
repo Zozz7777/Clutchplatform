@@ -94,7 +94,7 @@ router.get('/leads', authorize(['sales_rep', 'sales_manager', 'admin']), async (
     if (type) filter.type = type;
     if (assignedTo) filter.assignedTo = assignedTo;
     
-    const leads = await Lead.find(filter).skip(parseInt(skip)).limit(parseInt(limit));
+    const leads = await Lead.find(filter, { skip: parseInt(skip), limit: parseInt(limit) });
     
     res.json({
       success: true,
@@ -659,7 +659,7 @@ router.get('/communications', authorize(['sales_rep', 'sales_manager', 'admin'])
     if (targetId) filter.targetId = targetId;
     if (type) filter.type = type;
     
-    const communications = await Communication.find(filter).skip(parseInt(skip)).limit(parseInt(limit));
+    const communications = await Communication.find(filter, { skip: parseInt(skip), limit: parseInt(limit) });
     
     res.json({
       success: true,
@@ -708,7 +708,7 @@ router.get('/activities', authorize(['sales_rep', 'sales_manager', 'admin']), as
     if (userId) filter.userId = userId;
     if (date) filter.date = new Date(date);
     
-    const activities = await SalesActivity.find(filter).limit(parseInt(limit));
+    const activities = await SalesActivity.find(filter, { limit: parseInt(limit) });
     
     res.json({
       success: true,

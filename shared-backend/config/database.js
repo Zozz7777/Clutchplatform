@@ -144,6 +144,10 @@ const initializeDatabase = async () => {
       // OBD & Diagnostic Collections
       'obd_error_codes', 'obd_categories', 'vehicle_diagnostics',
       
+      // Sales & CRM Collections
+      'leads', 'deals', 'contracts', 'sales_partners', 'communications', 
+      'approvals', 'sales_activities', 'performance_metrics',
+      
       // Legacy Collections (for backward compatibility)
       'vehicles', 'bookings', 'payments', 'clients', 'mechanics', 'employees',
       'support_tickets', 'maintenance', 'cars', 'products', 'communities',
@@ -238,7 +242,18 @@ const createDatabaseIndexes = async () => {
       
       // Device tokens collection - Critical for push notifications
       { collection: 'device_tokens', index: { userId: 1, platform: 1 }, options: { background: true } },
-      { collection: 'device_tokens', index: { token: 1 }, options: { unique: true, background: true } }
+      { collection: 'device_tokens', index: { token: 1 }, options: { unique: true, background: true } },
+      
+      // Sales collections - Critical for CRM operations
+      { collection: 'leads', index: { assignedTo: 1, status: 1 }, options: { background: true } },
+      { collection: 'leads', index: { createdAt: -1 }, options: { background: true } },
+      { collection: 'deals', index: { assignedTo: 1, status: 1 }, options: { background: true } },
+      { collection: 'deals', index: { createdAt: -1 }, options: { background: true } },
+      { collection: 'contracts', index: { leadId: 1, status: 1 }, options: { background: true } },
+      { collection: 'communications', index: { targetId: 1, type: 1 }, options: { background: true } },
+      { collection: 'communications', index: { createdAt: -1 }, options: { background: true } },
+      { collection: 'sales_activities', index: { userId: 1, date: -1 }, options: { background: true } },
+      { collection: 'performance_metrics', index: { team: 1, period: 1 }, options: { background: true } }
     ];
 
     for (const { collection: collectionName, index, options } of indexes) {
