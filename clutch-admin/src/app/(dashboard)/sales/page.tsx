@@ -85,6 +85,8 @@ import {
 import { Progress } from '@/components/ui/progress';
 import { productionApi } from '@/lib/production-api';
 import { toast } from 'sonner';
+import CreateLeadDialog from '@/components/dialogs/create-lead-dialog';
+import ContractGenerator from '@/components/contract-generator';
 
 // Import sales widgets
 import SalesPipeline from '@/components/widgets/sales-pipeline';
@@ -144,6 +146,7 @@ export default function SalesDepartmentPage() {
   const [selectedTeam, setSelectedTeam] = useState<'all' | 'partners' | 'b2b'>('all');
   const [selectedStatus, setSelectedStatus] = useState<string>('all');
   const [searchTerm, setSearchTerm] = useState('');
+  const [showCreateLead, setShowCreateLead] = useState(false);
 
   // Department KPIs
   const [departmentKPIs, setDepartmentKPIs] = useState({
@@ -218,10 +221,10 @@ export default function SalesDepartmentPage() {
 
   const getPriorityColor = (priority: string) => {
     switch (priority) {
-      case 'urgent': return 'bg-red-100 text-red-800';
-      case 'high': return 'bg-orange-100 text-orange-800';
-      case 'medium': return 'bg-yellow-100 text-yellow-800';
-      case 'low': return 'bg-green-100 text-green-800';
+      case 'urgent': return 'bg-destructive/10 text-destructive';
+      case 'high': return 'bg-warning/10 text-warning';
+      case 'medium': return 'bg-info/10 text-info';
+      case 'low': return 'bg-success/10 text-success';
       default: return 'bg-muted text-foreground';
     }
   };
@@ -265,7 +268,7 @@ export default function SalesDepartmentPage() {
             <Download className="mr-2 h-4 w-4" />
             {t('sales.exportReport')}
           </Button>
-          <Button className="shadow-2xs">
+          <Button className="shadow-2xs" onClick={() => setShowCreateLead(true)}>
             <Plus className="mr-2 h-4 w-4" />
             {t('sales.newLead')}
           </Button>
@@ -689,10 +692,7 @@ export default function SalesDepartmentPage() {
               <p className="text-muted-foreground">{t('sales.contractsDescription')}</p>
             </div>
             <div className="flex items-center space-x-2">
-              <Button variant="outline">
-                <FileText className="mr-2 h-4 w-4" />
-                {t('sales.newContract')}
-              </Button>
+              <ContractGenerator />
             </div>
           </div>
 
@@ -733,6 +733,15 @@ export default function SalesDepartmentPage() {
           </div>
         </TabsContent>
       </Tabs>
+
+      {/* Create Lead Dialog */}
+      <CreateLeadDialog
+        open={showCreateLead}
+        onOpenChange={setShowCreateLead}
+        onLeadCreated={(newLead) => {
+          setLeads(prev => [newLead, ...prev]);
+        }}
+      />
     </div>
   );
 }

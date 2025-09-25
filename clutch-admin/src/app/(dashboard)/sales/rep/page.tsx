@@ -95,6 +95,7 @@ import { Progress } from '@/components/ui/progress';
 import { Checkbox } from '@/components/ui/checkbox';
 import { productionApi } from '@/lib/production-api';
 import { toast } from 'sonner';
+import CreateLeadDialog from '@/components/dialogs/create-lead-dialog';
 
 interface ClutchLead {
   id: string;
@@ -160,6 +161,7 @@ export default function SalesRepDashboard() {
   const [tasks, setTasks] = useState<Task[]>([]);
   const [selectedTeam, setSelectedTeam] = useState<'partners' | 'b2b'>('partners');
   const [searchTerm, setSearchTerm] = useState('');
+  const [showCreateLead, setShowCreateLead] = useState(false);
 
   // Rep's personal KPIs
   const [repKPIs, setRepKPIs] = useState({
@@ -242,10 +244,10 @@ export default function SalesRepDashboard() {
 
   const getPriorityColor = (priority: string) => {
     switch (priority) {
-      case 'urgent': return 'bg-red-100 text-red-800';
-      case 'high': return 'bg-orange-100 text-orange-800';
-      case 'medium': return 'bg-yellow-100 text-yellow-800';
-      case 'low': return 'bg-green-100 text-green-800';
+      case 'urgent': return 'bg-destructive/10 text-destructive';
+      case 'high': return 'bg-info/10 text-info';
+      case 'medium': return 'bg-warning/10 text-warning';
+      case 'low': return 'bg-success/10 text-success';
       default: return 'bg-muted text-foreground';
     }
   };
@@ -296,7 +298,7 @@ export default function SalesRepDashboard() {
             <Navigation className="mr-2 h-4 w-4" />
             {t('sales.planRoute')}
           </Button>
-          <Button className="shadow-2xs">
+          <Button className="shadow-2xs" onClick={() => setShowCreateLead(true)}>
             <Plus className="mr-2 h-4 w-4" />
             {t('sales.newLead')}
           </Button>
@@ -429,20 +431,20 @@ export default function SalesRepDashboard() {
           </CardHeader>
           <CardContent className="space-y-3">
             {overdueTasks.length > 0 && (
-              <div className="p-3 bg-red-50 border border-red-200 rounded-lg">
-                <p className="font-medium text-red-800">
+              <div className="p-3 bg-destructive/5 border border-destructive/20 rounded-lg">
+                <p className="font-medium text-destructive">
                   {overdueTasks.length} {t('sales.overdueTasks')}
                 </p>
-                <p className="text-sm text-red-600">{t('sales.overdueTasksDescription')}</p>
+                <p className="text-sm text-destructive/80">{t('sales.overdueTasksDescription')}</p>
               </div>
             )}
             
             {leads.filter(lead => lead.priority === 'urgent').length > 0 && (
-              <div className="p-3 bg-orange-50 border border-orange-200 rounded-lg">
-                <p className="font-medium text-orange-800">
+              <div className="p-3 bg-warning/5 border border-warning/20 rounded-lg">
+                <p className="font-medium text-warning">
                   {leads.filter(lead => lead.priority === 'urgent').length} {t('sales.urgentLeads')}
                 </p>
-                <p className="text-sm text-orange-600">{t('sales.urgentLeadsDescription')}</p>
+                <p className="text-sm text-warning/80">{t('sales.urgentLeadsDescription')}</p>
               </div>
             )}
 
@@ -487,7 +489,7 @@ export default function SalesRepDashboard() {
                 className="max-w-sm"
               />
             </div>
-            <Button>
+            <Button onClick={() => setShowCreateLead(true)}>
               <Plus className="mr-2 h-4 w-4" />
               {t('sales.newLead')}
             </Button>
@@ -901,6 +903,15 @@ export default function SalesRepDashboard() {
           </Card>
         </TabsContent>
       </Tabs>
+
+      {/* Create Lead Dialog */}
+      <CreateLeadDialog
+        open={showCreateLead}
+        onOpenChange={setShowCreateLead}
+        onLeadCreated={(newLead) => {
+          setLeads(prev => [newLead, ...prev]);
+        }}
+      />
     </div>
   );
 }

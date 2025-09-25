@@ -67,6 +67,7 @@ import RevenueForecast from '@/components/widgets/revenue-forecast';
 import TeamPerformance from '@/components/widgets/team-performance';
 import ContractStatus from '@/components/widgets/contract-status';
 import CommunicationHistory from '@/components/widgets/communication-history';
+import CreateLeadDialog from '@/components/dialogs/create-lead-dialog';
 
 interface Lead {
   id: string;
@@ -215,7 +216,7 @@ export default function SalesPage() {
             <Download className="h-4 w-4 mr-2" />
             {t('export')}
           </Button>
-          <Button size="sm">
+          <Button size="sm" onClick={() => setShowCreateLead(true)}>
             <Plus className="h-4 w-4 mr-2" />
             {t('newLead')}
           </Button>
@@ -243,7 +244,7 @@ export default function SalesPage() {
                 <p className="text-sm font-medium text-muted-foreground">{t('qualifiedLeads')}</p>
                 <p className="text-2xl font-bold text-foreground">{stats.qualifiedLeads}</p>
               </div>
-              <CheckCircle className="h-8 w-8 text-green-600" />
+              <CheckCircle className="h-8 w-8 text-success" />
             </div>
           </CardContent>
         </Card>
@@ -267,7 +268,7 @@ export default function SalesPage() {
                 <p className="text-sm font-medium text-muted-foreground">{t('totalValue')}</p>
                 <p className="text-2xl font-bold text-foreground">{stats.totalValue.toLocaleString()} EGP</p>
               </div>
-              <FileText className="h-8 w-8 text-orange-600" />
+              <FileText className="h-8 w-8 text-info" />
             </div>
           </CardContent>
         </Card>
@@ -411,7 +412,7 @@ export default function SalesPage() {
                               <Mail className="h-4 w-4 mr-2" />
                               {t('email')}
                             </DropdownMenuItem>
-                            <DropdownMenuItem className="text-red-600">
+                            <DropdownMenuItem className="text-destructive">
                               <Trash2 className="h-4 w-4 mr-2" />
                               {t('delete')}
                             </DropdownMenuItem>
@@ -614,6 +615,15 @@ export default function SalesPage() {
           </Card>
         </TabsContent>
       </Tabs>
+
+      {/* Create Lead Dialog */}
+      <CreateLeadDialog
+        open={showCreateLead}
+        onOpenChange={setShowCreateLead}
+        onLeadCreated={(newLead) => {
+          setLeads(prev => [newLead, ...prev]);
+        }}
+      />
     </div>
   );
 }
