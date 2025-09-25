@@ -52,7 +52,7 @@ struct SignInView: View {
                     if !errorMessage.isEmpty {
                         Text(errorMessage)
                             .font(.caption)
-                            .foregroundColor(.red)
+                            .foregroundColor(.designDestructive)
                             .multilineTextAlignment(.center)
                     }
                     
@@ -69,7 +69,7 @@ struct SignInView: View {
                     }
                     .frame(maxWidth: .infinity)
                     .padding()
-                    .background(Color.primary)
+                    .background(Color.designPrimary)
                     .cornerRadius(12)
                     .disabled(isLoading || !isFormValid)
                 }

@@ -16,7 +16,6 @@ import { RecruitmentTab } from "@/components/recruitment-tab";
 import { apiService } from "@/lib/api";
 import { API_BASE_URL } from "@/lib/constants";
 import { toast } from "sonner";
-import { useTranslations } from 'next-intl';
 import { handleError } from "@/lib/error-handler";
 import { 
   UserCog, 

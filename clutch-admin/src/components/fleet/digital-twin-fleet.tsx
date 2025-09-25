@@ -448,7 +448,7 @@ export default function DigitalTwinFleet({ className }: DigitalTwinFleetProps) {
                 variant="outline"
                 size="sm"
                 onClick={() => setIsMonitoring(!isMonitoring)}
-                className={isMonitoring ? 'bg-success/10 text-green-800' : ''}
+                className={isMonitoring ? 'bg-success/10 text-success' : ''}
               >
                 {isMonitoring ? <Eye className="h-4 w-4 mr-2" /> : <EyeOff className="h-4 w-4 mr-2" />}
                 {isMonitoring ? 'Monitoring' : 'Paused'}

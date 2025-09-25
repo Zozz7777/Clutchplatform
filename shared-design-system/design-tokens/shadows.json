@@ -1,0 +1,32 @@
+{
+  "shadows": {
+    "xs": {
+      "boxShadow": "0 1px 2px 0 rgb(0 0 0 / 0.05)",
+      "elevation": 1
+    },
+    "sm": {
+      "boxShadow": "0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1)",
+      "elevation": 2
+    },
+    "md": {
+      "boxShadow": "0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1)",
+      "elevation": 4
+    },
+    "lg": {
+      "boxShadow": "0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1)",
+      "elevation": 8
+    },
+    "xl": {
+      "boxShadow": "0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1)",
+      "elevation": 16
+    },
+    "xl2": {
+      "boxShadow": "0 25px 50px -12px rgb(0 0 0 / 0.25)",
+      "elevation": 24
+    },
+    "inner": {
+      "boxShadow": "inset 0 2px 4px 0 rgb(0 0 0 / 0.05)",
+      "elevation": 0
+    }
+  }
+}

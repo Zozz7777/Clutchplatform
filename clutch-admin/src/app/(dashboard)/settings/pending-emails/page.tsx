@@ -34,10 +34,10 @@ import {
   Copy,
   Send,
 } from "lucide-react";
-// Translation system removed - using hardcoded strings
 import { toast } from "sonner";
 import { handleError, handleDataLoadError } from "@/lib/error-handler";
 import { useAuth } from "@/contexts/auth-context";
+import { useLanguage } from "@/contexts/language-context";
 
 interface PendingEmail {
   _id: string;
@@ -61,8 +61,8 @@ interface PendingEmail {
 }
 
 export default function PendingEmailsPage() {
-  // Translation system removed - using hardcoded strings
   const { user, hasPermission } = useAuth();
+  const { t } = useLanguage();
   const [pendingEmails, setPendingEmails] = useState<PendingEmail[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState("");
@@ -88,11 +88,11 @@ export default function PendingEmailsPage() {
           setPendingEmails(data.data?.pendingEmails || []);
         } else {
           handleDataLoadError(new Error('Failed to load pending emails'), 'pending_emails');
-          toast.error('Failed to load pending emails');
+          toast.error(t('pendingEmails.failedToLoadPendingEmails'));
         }
       } catch (error) {
         handleDataLoadError(error, 'pending_emails');
-        toast.error('Failed to load pending emails');
+        toast.error(t('pendingEmails.failedToLoadPendingEmails'));
       } finally {
         setLoading(false);
       }
@@ -130,31 +130,31 @@ export default function PendingEmailsPage() {
       });
 
       if (response.ok) {
-        toast.success('Email marked as sent');
+        toast.success(t('pendingEmails.emailMarkedAsSent'));
         // Reload emails
         window.location.reload();
       } else {
-        toast.error('Failed to mark email as sent');
+        toast.error(t('pendingEmails.failedToMarkEmail'));
       }
     } catch (error) {
       handleError(error, { component: 'PendingEmailsPage', action: 'mark_email_sent' });
-      toast.error('Failed to mark email as sent');
+      toast.error(t('pendingEmails.failedToMarkEmail'));
     }
   };
 
   const handleCopyInvitationLink = (link: string) => {
     navigator.clipboard.writeText(link);
-    toast.success('Invitation link copied to clipboard');
+    toast.success(t('pendingEmails.invitationLinkCopied'));
   };
 
   const getStatusBadge = (status: string) => {
     switch (status) {
       case 'pending':
-        return <Badge variant="outline" className="text-warning"><Clock className="w-3 h-3 mr-1" />Pending</Badge>;
+        return <Badge variant="outline" className="text-warning"><Clock className="w-3 h-3 mr-1" />{t('pendingEmails.pending')}</Badge>;
       case 'sent':
-        return <Badge variant="outline" className="text-success"><CheckCircle className="w-3 h-3 mr-1" />Sent</Badge>;
+        return <Badge variant="outline" className="text-success"><CheckCircle className="w-3 h-3 mr-1" />{t('pendingEmails.sent')}</Badge>;
       case 'failed':
-        return <Badge variant="outline" className="text-destructive"><XCircle className="w-3 h-3 mr-1" />Failed</Badge>;
+        return <Badge variant="outline" className="text-destructive"><XCircle className="w-3 h-3 mr-1" />{t('pendingEmails.failed')}</Badge>;
       default:
         return <Badge variant="outline">{status}</Badge>;
     }
@@ -167,8 +167,8 @@ export default function PendingEmailsPage() {
           <CardContent className="p-6">
             <div className="text-center">
               <XCircle className="w-12 h-12 text-destructive mx-auto mb-4" />
-              <h3 className="text-lg font-semibold mb-2">Access Denied</h3>
-              <p className="text-muted-foreground">You don't have permission to view pending emails.</p>
+              <h3 className="text-lg font-semibold mb-2">{t('pendingEmails.accessDenied')}</h3>
+              <p className="text-muted-foreground">{t('pendingEmails.noPermissionMessage')}</p>
             </div>
           </CardContent>
         </Card>
@@ -180,9 +180,9 @@ export default function PendingEmailsPage() {
     <div className="container mx-auto p-6 space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold">Pending Emails</h1>
+          <h1 className="text-3xl font-bold">{t('pendingEmails.title')}</h1>
           <p className="text-muted-foreground">
-            Manage employee invitation emails that couldn't be sent automatically
+            {t('pendingEmails.description')}
           </p>
         </div>
       </div>
@@ -193,9 +193,9 @@ export default function PendingEmailsPage() {
           <div className="flex items-center space-x-2">
             <Mail className="w-5 h-5 text-warning" />
             <div>
-              <h4 className="font-semibold text-warning">Email Service Status</h4>
+              <h4 className="font-semibold text-warning">{t('pendingEmails.emailServiceStatus')}</h4>
               <p className="text-sm text-warning/80">
-                Email service is running in mock mode. Configure EMAIL_USER and EMAIL_PASSWORD in your backend .env file to enable real email sending.
+                {t('pendingEmails.emailServiceMockMode')}
               </p>
             </div>
           </div>
@@ -209,7 +209,7 @@ export default function PendingEmailsPage() {
             <div className="relative flex-1">
               <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground w-4 h-4" />
               <Input
-                placeholder="Search emails..."
+                placeholder={t('pendingEmails.searchPlaceholder')}
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
                 className="pl-10"
@@ -220,10 +220,10 @@ export default function PendingEmailsPage() {
               onChange={(e) => setStatusFilter(e.target.value)}
               className="px-3 py-2 border rounded-md"
             >
-              <option value="all">All Status</option>
-              <option value="pending">Pending</option>
-              <option value="sent">Sent</option>
-              <option value="failed">Failed</option>
+              <option value="all">{t('pendingEmails.allStatus')}</option>
+              <option value="pending">{t('pendingEmails.pending')}</option>
+              <option value="sent">{t('pendingEmails.sent')}</option>
+              <option value="failed">{t('pendingEmails.failed')}</option>
             </select>
           </div>
         </CardContent>
@@ -232,37 +232,37 @@ export default function PendingEmailsPage() {
       {/* Pending Emails Table */}
       <Card>
         <CardHeader>
-          <CardTitle>Pending Emails ({filteredEmails.length})</CardTitle>
+          <CardTitle>{t('pendingEmails.pendingEmailsCount', { count: filteredEmails.length })}</CardTitle>
           <CardDescription>
-            Employee invitation emails that need to be sent manually
+            {t('pendingEmails.pendingEmailsDescription')}
           </CardDescription>
         </CardHeader>
         <CardContent>
           {loading ? (
             <div className="text-center py-8">
               <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto"></div>
-              <p className="mt-2 text-muted-foreground">Loading pending emails...</p>
+              <p className="mt-2 text-muted-foreground">{t('pendingEmails.loadingPendingEmails')}</p>
             </div>
           ) : filteredEmails.length === 0 ? (
             <div className="text-center py-8">
               <Mail className="w-12 h-12 text-muted-foreground mx-auto mb-4" />
-              <h3 className="text-lg font-semibold mb-2">No Pending Emails</h3>
+              <h3 className="text-lg font-semibold mb-2">{t('pendingEmails.noPendingEmails')}</h3>
               <p className="text-muted-foreground">
                 {searchTerm || statusFilter !== "all" 
-                  ? "No emails match your current filters." 
-                  : "All emails have been processed successfully."}
+                  ? t('pendingEmails.noEmailsMatchFilters')
+                  : t('pendingEmails.allEmailsProcessed')}
               </p>
             </div>
           ) : (
             <Table>
               <TableHeader>
                 <TableRow>
-                  <TableHead>Employee</TableHead>
-                  <TableHead>Email</TableHead>
-                  <TableHead>Subject</TableHead>
-                  <TableHead>Status</TableHead>
-                  <TableHead>Created</TableHead>
-                  <TableHead>Actions</TableHead>
+                  <TableHead>{t('pendingEmails.employee')}</TableHead>
+                  <TableHead>{t('pendingEmails.email')}</TableHead>
+                  <TableHead>{t('pendingEmails.subject')}</TableHead>
+                  <TableHead>{t('pendingEmails.status')}</TableHead>
+                  <TableHead>{t('pendingEmails.created')}</TableHead>
+                  <TableHead>{t('pendingEmails.actions')}</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
@@ -298,7 +298,7 @@ export default function PendingEmailsPage() {
                           onClick={() => handleViewEmail(email)}
                         >
                           <Eye className="w-3 h-3 mr-1" />
-                          View
+                          {t('pendingEmails.view')}
                         </Button>
                         {email.status === 'pending' && (
                           <Button
@@ -307,7 +307,7 @@ export default function PendingEmailsPage() {
                             onClick={() => handleMarkAsSent(email._id)}
                           >
                             <CheckCircle className="w-3 h-3 mr-1" />
-                            Mark Sent
+                            {t('pendingEmails.markSent')}
                           </Button>
                         )}
                       </div>
@@ -324,9 +324,9 @@ export default function PendingEmailsPage() {
       <Dialog open={showEmailDialog} onOpenChange={setShowEmailDialog}>
         <DialogContent className="max-w-4xl max-h-[80vh] overflow-y-auto">
           <DialogHeader>
-            <DialogTitle>Email Details</DialogTitle>
+            <DialogTitle>{t('pendingEmails.emailDetails')}</DialogTitle>
             <DialogDescription>
-              Employee invitation email that needs to be sent manually
+              {t('pendingEmails.emailDetailsDescription')}
             </DialogDescription>
           </DialogHeader>
           
@@ -334,26 +334,26 @@ export default function PendingEmailsPage() {
             <div className="space-y-4">
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <label className="text-sm font-medium">To:</label>
+                  <label className="text-sm font-medium">{t('pendingEmails.to')}</label>
                   <p className="text-sm text-muted-foreground">{selectedEmail.to}</p>
                 </div>
                 <div>
-                  <label className="text-sm font-medium">Subject:</label>
+                  <label className="text-sm font-medium">{t('pendingEmails.subject')}</label>
                   <p className="text-sm text-muted-foreground">{selectedEmail.subject}</p>
                 </div>
               </div>
               
               <div>
-                <label className="text-sm font-medium">Employee Details:</label>
+                <label className="text-sm font-medium">{t('pendingEmails.employeeDetails')}</label>
                 <div className="mt-1 p-3 bg-muted rounded-md">
-                  <p><strong>Name:</strong> {selectedEmail.employeeData.name}</p>
-                  <p><strong>Role:</strong> {selectedEmail.employeeData.role}</p>
-                  <p><strong>Department:</strong> {selectedEmail.employeeData.department}</p>
+                  <p><strong>{t('pendingEmails.name')}</strong> {selectedEmail.employeeData.name}</p>
+                  <p><strong>{t('pendingEmails.role')}</strong> {selectedEmail.employeeData.role}</p>
+                  <p><strong>{t('pendingEmails.department')}</strong> {selectedEmail.employeeData.department}</p>
                 </div>
               </div>
               
               <div>
-                <label className="text-sm font-medium">Invitation Link:</label>
+                <label className="text-sm font-medium">{t('pendingEmails.invitationLink')}</label>
                 <div className="mt-1 flex items-center space-x-2">
                   <Input
                     value={selectedEmail.invitationLink}
@@ -366,7 +366,7 @@ export default function PendingEmailsPage() {
                     onClick={() => handleCopyInvitationLink(selectedEmail.invitationLink)}
                   >
                     <Copy className="w-3 h-3 mr-1" />
-                    Copy
+                    {t('pendingEmails.copy')}
                   </Button>
                   <Button
                     variant="outline"
@@ -374,13 +374,13 @@ export default function PendingEmailsPage() {
                     onClick={() => window.open(selectedEmail.invitationLink, '_blank')}
                   >
                     <ExternalLink className="w-3 h-3 mr-1" />
-                    Open
+                    {t('pendingEmails.open')}
                   </Button>
                 </div>
               </div>
               
               <div>
-                <label className="text-sm font-medium">Email Content:</label>
+                <label className="text-sm font-medium">{t('pendingEmails.emailContent')}</label>
                 <div className="mt-1 p-3 bg-muted rounded-md max-h-60 overflow-y-auto">
                   <div dangerouslySetInnerHTML={{ __html: selectedEmail.html }} />
                 </div>
@@ -390,7 +390,7 @@ export default function PendingEmailsPage() {
           
           <DialogFooter>
             <Button variant="outline" onClick={() => setShowEmailDialog(false)}>
-              Close
+              {t('pendingEmails.close')}
             </Button>
             {selectedEmail?.status === 'pending' && (
               <Button onClick={() => {
@@ -398,7 +398,7 @@ export default function PendingEmailsPage() {
                 setShowEmailDialog(false);
               }}>
                 <Send className="w-3 h-3 mr-1" />
-                Mark as Sent
+                {t('pendingEmails.markAsSent')}
               </Button>
             )}
           </DialogFooter>

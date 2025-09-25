@@ -13,7 +13,7 @@ struct SplashView: View {
             VStack(spacing: 16) {
                 Image(systemName: "wrench.and.screwdriver.fill")
                     .font(.system(size: 80))
-                    .foregroundColor(.primary)
+                    .foregroundColor(.designPrimary)
                     .scaleEffect(isAnimating ? 1.0 : 0.8)
                     .animation(.easeInOut(duration: 1.0), value: isAnimating)
                 
@@ -29,7 +29,7 @@ struct SplashView: View {
             // Loading indicator
             VStack(spacing: 16) {
                 ProgressView()
-                    .progressViewStyle(CircularProgressViewStyle(tint: .primary))
+                    .progressViewStyle(CircularProgressViewStyle(tint: .designPrimary))
                     .scaleEffect(1.2)
                 
                 Text("Loading...")

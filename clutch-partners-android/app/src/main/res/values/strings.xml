@@ -83,4 +83,46 @@
     <string name="access_denied">Access Denied</string>
     <string name="insufficient_permissions">Insufficient Permissions</string>
     <string name="permission_required">Permission Required</string>
+    
+    <!-- Missing strings -->
+    <string name="already_have_account">Already have an account?</string>
+    <string name="amount">Amount</string>
+    <string name="business_address">Business Address</string>
+    <string name="continue_text">Continue</string>
+    <string name="customer">Customer</string>
+    <string name="dont_have_account">Don\'t have an account?</string>
+    <string name="download_report">Download Report</string>
+    <string name="email_notifications">Email Notifications</string>
+    <string name="email_or_phone">Email or Phone</string>
+    <string name="logout_confirm">Are you sure you want to logout?</string>
+    <string name="nav_home">Home</string>
+    <string name="new_order">New Order</string>
+    <string name="next_payout">Next Payout</string>
+    <string name="no_orders">No Orders</string>
+    <string name="no_orders_desc">You don\'t have any orders yet</string>
+    <string name="no_payments">No Payments</string>
+    <string name="no_payments_desc">You don\'t have any payments yet</string>
+    <string name="ok">OK</string>
+    <string name="onboarding_desc_1">Manage your store operations efficiently</string>
+    <string name="onboarding_desc_2">Track orders and appointments in real-time</string>
+    <string name="onboarding_desc_3">Monitor your revenue and earnings</string>
+    <string name="onboarding_title_1">Store Management</string>
+    <string name="onboarding_title_2">Orders &amp; Appointments</string>
+    <string name="onboarding_title_3">Revenue Tracking</string>
+    <string name="order_status_completed">Completed</string>
+    <string name="order_status_paid">Paid</string>
+    <string name="order_status_pending">Pending</string>
+    <string name="order_status_rejected">Rejected</string>
+    <string name="orders_title">Orders</string>
+    <string name="payments_title">Payments</string>
+    <string name="previous">Previous</string>
+    <string name="push_notifications">Push Notifications</string>
+    <string name="refresh">Refresh</string>
+    <string name="reject">Reject</string>
+    <string name="save_changes">Save Changes</string>
+    <string name="settings_title">Settings</string>
+    <string name="sms_notifications">SMS Notifications</string>
+    <string name="success">Success</string>
+    <string name="view_details">View Details</string>
+    <string name="working_hours">Working Hours</string>
 </resources>

@@ -309,7 +309,7 @@ export default function ZeroTrustAuditCard() {
                 <p className="text-sm font-medium text-muted-foreground">Active Policies</p>
                 <p className="text-2xl font-bold">{metrics.activePolicies}</p>
               </div>
-              <Lock className="h-8 w-8 text-green-500" />
+              <Lock className="h-8 w-8 text-success" />
             </div>
             <p className="text-xs text-muted-foreground mt-1">
               {metrics.totalPolicies} total policies
@@ -324,7 +324,7 @@ export default function ZeroTrustAuditCard() {
                 <p className="text-sm font-medium text-muted-foreground">Anomalies Detected</p>
                 <p className="text-2xl font-bold">{metrics.totalAnomalies}</p>
               </div>
-              <AlertTriangle className="h-8 w-8 text-orange-500" />
+              <AlertTriangle className="h-8 w-8 text-warning" />
             </div>
             <p className="text-xs text-muted-foreground mt-1">
               {metrics.criticalAnomalies} critical
@@ -339,7 +339,7 @@ export default function ZeroTrustAuditCard() {
                 <p className="text-sm font-medium text-muted-foreground">Compliance</p>
                 <p className="text-2xl font-bold">{metrics.policyCompliance}%</p>
               </div>
-              <CheckCircle className="h-8 w-8 text-green-500" />
+              <CheckCircle className="h-8 w-8 text-success" />
             </div>
             <Progress value={metrics.policyCompliance} className="mt-2" />
           </CardContent>

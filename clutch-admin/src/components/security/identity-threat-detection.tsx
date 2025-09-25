@@ -305,11 +305,11 @@ export default function IdentityThreatDetection({ className }: IdentityThreatDet
 
   const getStatusColor = (status: string) => {
     switch (status) {
-      case 'detected': return 'bg-destructive/10 text-red-800';
-      case 'investigating': return 'bg-warning/10 text-yellow-800';
-      case 'confirmed': return 'bg-warning/10 text-orange-800';
+      case 'detected': return 'bg-destructive/10 text-destructive';
+      case 'investigating': return 'bg-warning/10 text-warning';
+      case 'confirmed': return 'bg-warning/10 text-warning';
       case 'false_positive': return 'bg-muted text-gray-800';
-      case 'resolved': return 'bg-success/10 text-green-800';
+      case 'resolved': return 'bg-success/10 text-success';
       default: return 'bg-muted text-gray-800';
     }
   };
@@ -328,10 +328,10 @@ export default function IdentityThreatDetection({ className }: IdentityThreatDet
 
   const getRiskLevelColor = (level: string) => {
     switch (level) {
-      case 'critical': return 'bg-destructive/10 text-red-800';
-      case 'high': return 'bg-warning/10 text-orange-800';
-      case 'medium': return 'bg-warning/10 text-yellow-800';
-      case 'low': return 'bg-success/10 text-green-800';
+      case 'critical': return 'bg-destructive/10 text-destructive';
+      case 'high': return 'bg-warning/10 text-warning';
+      case 'medium': return 'bg-warning/10 text-warning';
+      case 'low': return 'bg-success/10 text-success';
       default: return 'bg-muted text-gray-800';
     }
   };
@@ -393,7 +393,7 @@ export default function IdentityThreatDetection({ className }: IdentityThreatDet
                 variant="outline"
                 size="sm"
                 onClick={() => setIsMonitoring(!isMonitoring)}
-                className={isMonitoring ? 'bg-success/10 text-green-800' : ''}
+                className={isMonitoring ? 'bg-success/10 text-success' : ''}
               >
                 {isMonitoring ? <Eye className="h-4 w-4 mr-2" /> : <EyeOff className="h-4 w-4 mr-2" />}
                 {isMonitoring ? 'Monitoring' : 'Paused'}

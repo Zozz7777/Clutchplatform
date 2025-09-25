@@ -226,8 +226,8 @@ export default function DynamicPricingSimulation({ className }: DynamicPricingSi
     switch (status) {
       case 'draft': return 'bg-muted text-gray-800';
       case 'testing': return 'bg-primary/10 text-blue-800';
-      case 'active': return 'bg-success/10 text-green-800';
-      case 'paused': return 'bg-warning/10 text-yellow-800';
+      case 'active': return 'bg-success/10 text-success';
+      case 'paused': return 'bg-warning/10 text-warning';
       case 'completed': return 'bg-primary/10 text-purple-800';
       default: return 'bg-muted text-gray-800';
     }
@@ -235,10 +235,10 @@ export default function DynamicPricingSimulation({ className }: DynamicPricingSi
 
   const getRiskColor = (risk: string) => {
     switch (risk) {
-      case 'low': return 'bg-success/10 text-green-800';
-      case 'medium': return 'bg-warning/10 text-yellow-800';
-      case 'high': return 'bg-warning/10 text-orange-800';
-      case 'critical': return 'bg-destructive/10 text-red-800';
+      case 'low': return 'bg-success/10 text-success';
+      case 'medium': return 'bg-warning/10 text-warning';
+      case 'high': return 'bg-warning/10 text-warning';
+      case 'critical': return 'bg-destructive/10 text-destructive';
       default: return 'bg-muted text-gray-800';
     }
   };
@@ -257,9 +257,9 @@ export default function DynamicPricingSimulation({ className }: DynamicPricingSi
   const getTestStatusColor = (status: string) => {
     switch (status) {
       case 'running': return 'bg-primary/10 text-blue-800';
-      case 'completed': return 'bg-success/10 text-green-800';
-      case 'failed': return 'bg-destructive/10 text-red-800';
-      case 'paused': return 'bg-warning/10 text-yellow-800';
+      case 'completed': return 'bg-success/10 text-success';
+      case 'failed': return 'bg-destructive/10 text-destructive';
+      case 'paused': return 'bg-warning/10 text-warning';
       default: return 'bg-muted text-gray-800';
     }
   };
@@ -311,7 +311,7 @@ export default function DynamicPricingSimulation({ className }: DynamicPricingSi
                 variant="outline"
                 size="sm"
                 onClick={() => setIsSimulating(!isSimulating)}
-                className={isSimulating ? 'bg-success/10 text-green-800' : ''}
+                className={isSimulating ? 'bg-success/10 text-success' : ''}
               >
                 {isSimulating ? <Play className="h-4 w-4 mr-2" /> : <Pause className="h-4 w-4 mr-2" />}
                 {isSimulating ? 'Simulating' : 'Paused'}

@@ -243,10 +243,10 @@ export default function IncidentWarRoom({ className }: IncidentWarRoomProps) {
 
   const getStatusColor = (status: string) => {
     switch (status) {
-      case 'detected': return 'bg-destructive/10 text-red-800';
-      case 'investigating': return 'bg-warning/10 text-yellow-800';
-      case 'mitigating': return 'bg-warning/10 text-orange-800';
-      case 'resolved': return 'bg-success/10 text-green-800';
+      case 'detected': return 'bg-destructive/10 text-destructive';
+      case 'investigating': return 'bg-warning/10 text-warning';
+      case 'mitigating': return 'bg-warning/10 text-warning';
+      case 'resolved': return 'bg-success/10 text-success';
       case 'post-mortem': return 'bg-primary/10 text-blue-800';
       default: return 'bg-muted text-gray-800';
     }
@@ -254,10 +254,10 @@ export default function IncidentWarRoom({ className }: IncidentWarRoomProps) {
 
   const getActionStatusColor = (status: string) => {
     switch (status) {
-      case 'completed': return 'bg-success/10 text-green-800';
+      case 'completed': return 'bg-success/10 text-success';
       case 'in_progress': return 'bg-primary/10 text-blue-800';
-      case 'pending': return 'bg-warning/10 text-yellow-800';
-      case 'failed': return 'bg-destructive/10 text-red-800';
+      case 'pending': return 'bg-warning/10 text-warning';
+      case 'failed': return 'bg-destructive/10 text-destructive';
       default: return 'bg-muted text-gray-800';
     }
   };
@@ -276,7 +276,7 @@ export default function IncidentWarRoom({ className }: IncidentWarRoomProps) {
   const getCommunicationTypeColor = (type: string) => {
     switch (type) {
       case 'internal': return 'bg-primary/10 text-blue-800';
-      case 'customer': return 'bg-success/10 text-green-800';
+      case 'customer': return 'bg-success/10 text-success';
       case 'stakeholder': return 'bg-primary/10 text-purple-800';
       default: return 'bg-muted text-gray-800';
     }
@@ -339,7 +339,7 @@ export default function IncidentWarRoom({ className }: IncidentWarRoomProps) {
                 variant="outline"
                 size="sm"
                 onClick={() => setIsWarRoomActive(!isWarRoomActive)}
-                className={isWarRoomActive ? 'bg-destructive/10 text-red-800' : ''}
+                className={isWarRoomActive ? 'bg-destructive/10 text-destructive' : ''}
               >
                 {isWarRoomActive ? <Pause className="h-4 w-4 mr-2" /> : <Play className="h-4 w-4 mr-2" />}
                 {isWarRoomActive ? 'War Room Active' : 'Activate War Room'}

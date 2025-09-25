@@ -40,7 +40,7 @@ struct OnboardingView: View {
                 HStack(spacing: 8) {
                     ForEach(0..<pages.count, id: \.self) { index in
                         Circle()
-                            .fill(index == currentPage ? Color.primary : Color.gray.opacity(0.3))
+                            .fill(index == currentPage ? Color.designPrimary : Color.designMutedForeground.opacity(0.3))
                             .frame(width: 8, height: 8)
                             .animation(.easeInOut, value: currentPage)
                     }
@@ -55,7 +55,7 @@ struct OnboardingView: View {
                                 currentPage -= 1
                             }
                         }
-                        .foregroundColor(.primary)
+                        .foregroundColor(.designPrimary)
                     }
                     
                     Spacer()
@@ -69,7 +69,7 @@ struct OnboardingView: View {
                         .foregroundColor(.white)
                         .padding(.horizontal, 24)
                         .padding(.vertical, 12)
-                        .background(Color.primary)
+                        .background(Color.designPrimary)
                         .cornerRadius(8)
                     } else {
                         Button("Get Started") {
@@ -78,7 +78,7 @@ struct OnboardingView: View {
                         .foregroundColor(.white)
                         .padding(.horizontal, 24)
                         .padding(.vertical, 12)
-                        .background(Color.primary)
+                        .background(Color.designPrimary)
                         .cornerRadius(8)
                     }
                 }
@@ -111,7 +111,7 @@ struct OnboardingPageView: View {
             // Icon
             Image(systemName: page.iconName)
                 .font(.system(size: 80))
-                .foregroundColor(.primary)
+                .foregroundColor(.designPrimary)
             
             // Content
             VStack(spacing: 16) {

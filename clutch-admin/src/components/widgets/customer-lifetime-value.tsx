@@ -6,7 +6,7 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Progress } from '@/components/ui/progress';
 import { productionApi } from '@/lib/production-api';
-// Translation system removed - using hardcoded strings
+import { useLanguage } from '@/contexts/language-context';
 import { 
   DollarSign, 
   Users, 
@@ -37,7 +37,7 @@ interface CLVData {
 }
 
 export function CustomerLifetimeValue({ className = '' }: CustomerLifetimeValueProps) {
-  // Translation system removed - using hardcoded strings
+  const { t } = useLanguage();
   const [clvData, setClvData] = React.useState<CLVData[]>([]);
   const [isLoading, setIsLoading] = React.useState(true);
 

@@ -198,11 +198,11 @@ export default function BlackSwanSimulator({ className }: BlackSwanSimulatorProp
 
   const getSeverityColor = (severity: string) => {
     switch (severity) {
-      case 'low': return 'bg-success/10 text-green-800';
-      case 'medium': return 'bg-warning/10 text-yellow-800';
-      case 'high': return 'bg-warning/10 text-orange-800';
-      case 'extreme': return 'bg-destructive/10 text-red-800';
-      case 'catastrophic': return 'bg-destructive/10 text-red-800';
+      case 'low': return 'bg-success/10 text-success';
+      case 'medium': return 'bg-warning/10 text-warning';
+      case 'high': return 'bg-warning/10 text-warning';
+      case 'extreme': return 'bg-destructive/10 text-destructive';
+      case 'catastrophic': return 'bg-destructive/10 text-destructive';
       default: return 'bg-muted text-gray-800';
     }
   };
@@ -210,10 +210,10 @@ export default function BlackSwanSimulator({ className }: BlackSwanSimulatorProp
   const getCategoryColor = (category: string) => {
     switch (category) {
       case 'natural_disaster': return 'bg-primary/10 text-blue-800';
-      case 'cyber_attack': return 'bg-destructive/10 text-red-800';
-      case 'economic_crisis': return 'bg-warning/10 text-yellow-800';
+      case 'cyber_attack': return 'bg-destructive/10 text-destructive';
+      case 'economic_crisis': return 'bg-warning/10 text-warning';
       case 'pandemic': return 'bg-primary/10 text-purple-800';
-      case 'infrastructure_failure': return 'bg-warning/10 text-orange-800';
+      case 'infrastructure_failure': return 'bg-warning/10 text-warning';
       case 'regulatory_change': return 'bg-indigo-100 text-indigo-800';
       case 'market_crash': return 'bg-pink-100 text-pink-800';
       case 'supply_chain_disruption': return 'bg-teal-100 text-teal-800';
@@ -278,7 +278,7 @@ export default function BlackSwanSimulator({ className }: BlackSwanSimulatorProp
                 variant="outline"
                 size="sm"
                 onClick={() => setIsMonitoring(!isMonitoring)}
-                className={isMonitoring ? 'bg-success/10 text-green-800' : ''}
+                className={isMonitoring ? 'bg-success/10 text-success' : ''}
               >
                 {isMonitoring ? <Eye className="h-4 w-4 mr-2" /> : <EyeOff className="h-4 w-4 mr-2" />}
                 {isMonitoring ? 'Monitoring' : 'Paused'}

@@ -134,13 +134,13 @@ particlesJS('particles-js', {
             }
         },
         color: {
-            value: "#ff001a"
+            value: "oklch(0.75 0.1 220)"
         },
         shape: {
             type: "circle",
             stroke: {
                 width: 0,
-                color: "#000000"
+                color: "oklch(0.1450 0 0)"
             },
             polygon: {
                 nb_sides: 5
@@ -169,7 +169,7 @@ particlesJS('particles-js', {
         line_linked: {
             enable: true,
             distance: 150,
-            color: "#ff001a",
+            color: "oklch(0.75 0.1 220)",
             opacity: 0.1,
             width: 1
         },
@@ -339,7 +339,7 @@ function showNotification(message, type = 'info') {
         top: 20px;
         right: 20px;
         background: ${type === 'success' ? 'rgba(0, 255, 0, 0.1)' : 'rgba(255, 0, 26, 0.1)'};
-        border: 1px solid ${type === 'success' ? '#00ff00' : '#ff001a'};
+        border: 1px solid ${type === 'success' ? 'oklch(0.72 0.2 145)' : 'oklch(0.75 0.1 220)'};
         border-radius: 12px;
         padding: 1rem 1.5rem;
         color: white;
@@ -523,7 +523,7 @@ mobileStyles.textContent = `
         .mobile-menu-toggle span {
             width: 25px;
             height: 3px;
-            background: #ff001a;
+            background: oklch(0.75 0.1 220);
             margin: 3px 0;
             transition: 0.3s;
         }
@@ -660,12 +660,12 @@ document.addEventListener('DOMContentLoaded', function() {
     // Add enhanced navigation link hover effects
     document.querySelectorAll('.nav-link').forEach(link => {
         link.addEventListener('mouseenter', function() {
-            this.style.color = '#ff001a';
+            this.style.color = 'oklch(0.75 0.1 220)';
             this.style.transform = 'translateY(-2px)';
         });
         
         link.addEventListener('mouseleave', function() {
-            this.style.color = '#ffffff';
+            this.style.color = 'oklch(0.9850 0 0)';
             this.style.transform = 'translateY(0)';
         });
     });
@@ -684,7 +684,7 @@ document.addEventListener('DOMContentLoaded', function() {
     // Add enhanced card hover effects
     document.querySelectorAll('.service-card, .info-item').forEach(card => {
         card.addEventListener('mouseenter', function() {
-            this.style.borderColor = '#ff001a';
+            this.style.borderColor = 'oklch(0.75 0.1 220)';
             this.style.boxShadow = '0 20px 40px rgba(255, 0, 26, 0.3)';
         });
         
@@ -710,10 +710,10 @@ window.addEventListener('scroll', () => {
     if (navbar) {
         if (scrolled > 100) {
             navbar.style.background = 'rgba(10, 10, 10, 0.98)';
-            navbar.style.borderBottom = '2px solid #ff001a';
+            navbar.style.borderBottom = '2px solid oklch(0.75 0.1 220)';
         } else {
             navbar.style.background = 'rgba(10, 10, 10, 0.95)';
-            navbar.style.borderBottom = '2px solid #ff001a';
+            navbar.style.borderBottom = '2px solid oklch(0.75 0.1 220)';
         }
     }
 });
@@ -771,7 +771,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // Add focus indicators
     document.querySelectorAll('a, button, input, textarea').forEach(element => {
         element.addEventListener('focus', function() {
-            this.style.outline = '2px solid #ff001a';
+            this.style.outline = '2px solid oklch(0.75 0.1 220)';
             this.style.outlineOffset = '2px';
         });
         

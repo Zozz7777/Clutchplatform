@@ -243,7 +243,7 @@ export default function LiveOpsMap({ className }: LiveOpsMapProps) {
               >
                 <div className="relative">
                   <div className={`w-4 h-4 rounded-full border-2 border-white ${getCategoryColor(hotspot.category)}`} />
-                  <div className="absolute -top-8 left-1/2 transform -translate-x-1/2 bg-green-600 text-white text-xs px-1 py-0.5 rounded-[0.625rem] whitespace-nowrap">
+                  <div className="absolute -top-8 left-1/2 transform -translate-x-1/2 bg-success text-white text-xs px-1 py-0.5 rounded-[0.625rem] whitespace-nowrap">
                     ${(hotspot.revenue / 1000).toFixed(1)}k
                   </div>
                 </div>

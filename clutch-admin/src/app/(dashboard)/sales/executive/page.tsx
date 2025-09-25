@@ -693,19 +693,19 @@ export default function ExecutiveDashboard() {
                   <div className="p-3 bg-warning/5 border border-warning/20 rounded-lg">
                     <p className="font-medium text-warning">{t('sales.marketCompetition')}</p>
                     <p className="text-sm text-warning/80">{t('sales.marketCompetitionDescription')}</p>
-                    <Badge className="bg-yellow-100 text-warning mt-2">Medium Risk</Badge>
+                    <Badge className="bg-warning/10 text-warning mt-2">Medium Risk</Badge>
                   </div>
                   
                   <div className="p-3 bg-destructive/5 border border-destructive/20 rounded-lg">
                     <p className="font-medium text-destructive">{t('sales.economicFactors')}</p>
                     <p className="text-sm text-destructive/80">{t('sales.economicFactorsDescription')}</p>
-                    <Badge className="bg-red-100 text-destructive mt-2">High Risk</Badge>
+                    <Badge className="bg-destructive/10 text-destructive mt-2">High Risk</Badge>
                   </div>
                   
                   <div className="p-3 bg-success/5 border border-success/20 rounded-lg">
                     <p className="font-medium text-success">{t('sales.technologyAdoption')}</p>
                     <p className="text-sm text-success">{t('sales.technologyAdoptionDescription')}</p>
-                    <Badge className="bg-green-100 text-success mt-2">Low Risk</Badge>
+                    <Badge className="bg-success/10 text-success mt-2">Low Risk</Badge>
                   </div>
                 </div>
               </CardContent>

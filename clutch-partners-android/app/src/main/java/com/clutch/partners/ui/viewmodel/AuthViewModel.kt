@@ -2,139 +2,91 @@ package com.clutch.partners.ui.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.clutch.partners.data.model.PartnerUser
-import com.clutch.partners.data.model.PartnerType
-import com.clutch.partners.data.repository.PartnersRepository
-import com.clutch.partners.data.local.PreferencesManager
+import com.clutch.partners.data.api.AuthResponse
+import com.clutch.partners.data.repository.AuthRepository
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
-data class AuthState(
-    val isLoading: Boolean = false,
-    val isAuthenticated: Boolean = false,
-    val user: PartnerUser? = null,
-    val error: String? = null
-)
-
-class AuthViewModel(
-    private val repository: PartnersRepository,
-    private val preferencesManager: PreferencesManager
+@HiltViewModel
+class AuthViewModel @Inject constructor(
+    private val authRepository: AuthRepository
 ) : ViewModel() {
-
-    private val _authState = MutableStateFlow(AuthState())
+    
+    private val _authState = MutableStateFlow<AuthState>(AuthState.Idle)
     val authState: StateFlow<AuthState> = _authState.asStateFlow()
-
-    init {
-        checkAuthStatus()
-    }
-
-    private fun checkAuthStatus() {
+    
+    fun signIn(email: String, password: String) {
         viewModelScope.launch {
-            val token = preferencesManager.getAuthToken()
-            if (token != null) {
-                try {
-                    val user = repository.getCurrentUser()
-                    _authState.value = AuthState(
-                        isAuthenticated = true,
-                        user = user
-                    )
-                } catch (e: Exception) {
-                    preferencesManager.clearAuthToken()
-                    _authState.value = AuthState(isAuthenticated = false)
+            _authState.value = AuthState.Loading
+            authRepository.signIn(email, password).fold(
+                onSuccess = { authResponse ->
+                    if (authResponse.success) {
+                        _authState.value = AuthState.Success(authResponse)
+                    } else {
+                        _authState.value = AuthState.Error(authResponse.message)
+                    }
+                },
+                onFailure = { exception ->
+                    _authState.value = AuthState.Error(exception.message ?: "Sign in failed")
                 }
-            }
+            )
         }
     }
-
-    fun signIn(emailOrPhone: String, password: String) {
+    
+    fun signUp(partnerId: String, email: String, password: String) {
         viewModelScope.launch {
-            _authState.value = _authState.value.copy(isLoading = true, error = null)
-            try {
-                val result = repository.signIn(emailOrPhone, password)
-                preferencesManager.saveAuthToken(result.token)
-                _authState.value = AuthState(
-                    isLoading = false,
-                    isAuthenticated = true,
-                    user = result.user
-                )
-            } catch (e: Exception) {
-                _authState.value = _authState.value.copy(
-                    isLoading = false,
-                    error = e.message ?: "Sign in failed"
-                )
-            }
+            _authState.value = AuthState.Loading
+            authRepository.signUp(partnerId, email, password).fold(
+                onSuccess = { authResponse ->
+                    if (authResponse.success) {
+                        _authState.value = AuthState.Success(authResponse)
+                    } else {
+                        _authState.value = AuthState.Error(authResponse.message)
+                    }
+                },
+                onFailure = { exception ->
+                    _authState.value = AuthState.Error(exception.message ?: "Sign up failed")
+                }
+            )
         }
     }
-
-    fun signUp(
-        partnerId: String,
-        email: String,
-        phone: String,
-        password: String,
-        businessName: String,
-        ownerName: String,
-        partnerType: PartnerType
-    ) {
-        viewModelScope.launch {
-            _authState.value = _authState.value.copy(isLoading = true, error = null)
-            try {
-                val result = repository.signUp(
-                    partnerId, email, phone, password,
-                    businessName, ownerName, partnerType
-                )
-                preferencesManager.saveAuthToken(result.token)
-                _authState.value = AuthState(
-                    isLoading = false,
-                    isAuthenticated = true,
-                    user = result.user
-                )
-            } catch (e: Exception) {
-                _authState.value = _authState.value.copy(
-                    isLoading = false,
-                    error = e.message ?: "Sign up failed"
-                )
-            }
-        }
-    }
-
+    
     fun requestToJoin(
         businessName: String,
+        address: String,
         ownerName: String,
-        email: String,
-        phone: String,
-        partnerType: PartnerType,
-        businessAddress: String
+        phoneNumber: String,
+        partnerType: String
     ) {
         viewModelScope.launch {
-            _authState.value = _authState.value.copy(isLoading = true, error = null)
-            try {
-                repository.requestToJoin(
-                    businessName, ownerName, email, phone,
-                    partnerType, businessAddress
-                )
-                _authState.value = _authState.value.copy(
-                    isLoading = false,
-                    error = null
-                )
-            } catch (e: Exception) {
-                _authState.value = _authState.value.copy(
-                    isLoading = false,
-                    error = e.message ?: "Request to join failed"
-                )
-            }
+            _authState.value = AuthState.Loading
+            authRepository.requestToJoin(businessName, address, ownerName, phoneNumber, partnerType).fold(
+                onSuccess = { authResponse ->
+                    if (authResponse.success) {
+                        _authState.value = AuthState.Success(authResponse)
+                    } else {
+                        _authState.value = AuthState.Error(authResponse.message)
+                    }
+                },
+                onFailure = { exception ->
+                    _authState.value = AuthState.Error(exception.message ?: "Request to join failed")
+                }
+            )
         }
     }
-
-    fun signOut() {
-        viewModelScope.launch {
-            preferencesManager.clearAuthToken()
-            _authState.value = AuthState(isAuthenticated = false)
-        }
+    
+    fun clearAuthState() {
+        _authState.value = AuthState.Idle
     }
+}
 
-    fun clearError() {
-        _authState.value = _authState.value.copy(error = null)
-    }
+sealed class AuthState {
+    object Idle : AuthState()
+    object Loading : AuthState()
+    data class Success(val authResponse: AuthResponse) : AuthState()
+    data class Error(val message: String) : AuthState()
 }

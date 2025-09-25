@@ -1,0 +1,138 @@
+{
+  "name": "clutch-partners-windows",
+  "version": "1.0.0",
+  "description": "Clutch Partners Windows System - Production-ready Electron desktop POS + Inventory Management app",
+  "main": "main/main.js",
+  "homepage": "./",
+  "scripts": {
+    "dev": "webpack serve --mode development",
+    "build": "webpack --mode production && webpack --config webpack.main.config.js --mode production",
+    "start": "electron .",
+    "pack": "npm run build && electron-builder --dir",
+    "dist": "npm run build && electron-builder",
+    "dist:win": "npm run build && electron-builder --win",
+    "postinstall": "electron-builder install-app-deps",
+    "lint": "eslint src/ --ext .ts,.tsx",
+    "lint:fix": "eslint src/ --ext .ts,.tsx --fix",
+    "test": "jest",
+    "test:watch": "jest --watch",
+    "test:coverage": "jest --coverage",
+    "qa": "npm run build && npm run lint && npm run test"
+  },
+  "keywords": [
+    "electron",
+    "pos",
+    "inventory",
+    "partners",
+    "clutch",
+    "windows"
+  ],
+  "author": "Clutch Platform",
+  "license": "MIT",
+  "devDependencies": {
+    "@heroicons/react": "^2.2.0",
+    "@types/react": "^18.2.0",
+    "@types/react-dom": "^18.2.0",
+    "@typescript-eslint/eslint-plugin": "^6.21.0",
+    "@typescript-eslint/parser": "^6.21.0",
+    "autoprefixer": "^10.4.0",
+    "concurrently": "^8.2.2",
+    "css-loader": "^6.11.0",
+    "electron": "^27.0.0",
+    "electron-builder": "^24.0.0",
+    "eslint": "^8.0.0",
+    "eslint-plugin-react": "^7.37.5",
+    "eslint-plugin-react-hooks": "^4.6.2",
+    "html-webpack-plugin": "^5.6.4",
+    "postcss": "^8.4.0",
+    "postcss-loader": "^7.3.4",
+    "react-router-dom": "^7.9.1",
+    "style-loader": "^3.3.4",
+    "tailwindcss": "^3.3.0",
+    "ts-loader": "^9.5.4",
+    "typescript": "^5.0.0",
+    "webpack": "^5.101.3",
+    "webpack-cli": "^5.1.4",
+    "webpack-dev-server": "^4.15.2",
+    "@testing-library/jest-dom": "^6.1.0",
+    "@testing-library/react": "^14.0.0",
+    "@testing-library/user-event": "^14.5.0",
+    "@types/jest": "^29.5.0",
+    "jest": "^29.7.0",
+    "jest-environment-jsdom": "^29.7.0",
+    "ts-jest": "^29.1.0"
+  },
+  "dependencies": {
+    "@tailwindcss/forms": "^0.5.0",
+    "@tailwindcss/typography": "^0.5.0",
+    "better-sqlite3": "^9.2.2",
+    "exceljs": "^4.4.0",
+    "i18next": "^23.0.0",
+    "node-barcode": "^0.1.4",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "react-i18next": "^13.0.0",
+    "socket.io-client": "^4.7.0",
+    "winston": "^3.11.0"
+  },
+  "build": {
+    "appId": "com.clutch.partners.windows",
+    "productName": "Clutch Partners System",
+    "directories": {
+      "output": "dist-electron",
+      "buildResources": "assets"
+    },
+    "files": [
+      "dist/**/*",
+      "main/**/*",
+      "assets/**/*",
+      "node_modules/**/*",
+      "package.json"
+    ],
+    "extraResources": [
+      {
+        "from": "assets",
+        "to": "assets",
+        "filter": [
+          "**/*"
+        ]
+      }
+    ],
+    "win": {
+      "target": [
+        {
+          "target": "portable",
+          "arch": [
+            "x64"
+          ]
+        }
+      ],
+      "icon": "assets/icons/app-icon.ico",
+      "requestedExecutionLevel": "asInvoker",
+      "artifactName": "${productName}-${version}-${arch}.${ext}",
+      "sign": false
+    },
+    "nsis": {
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true,
+      "allowElevation": true,
+      "createDesktopShortcut": true,
+      "createStartMenuShortcut": true,
+      "shortcutName": "Clutch Partners System",
+      "installerIcon": "assets/icons/app-icon.ico",
+      "uninstallerIcon": "assets/icons/app-icon.ico",
+      "installerHeaderIcon": "assets/icons/app-icon.ico",
+      "deleteAppDataOnUninstall": false,
+      "runAfterFinish": true,
+      "menuCategory": "Business",
+      "include": "installer.nsh"
+    },
+    "portable": {
+      "artifactName": "Clutch-Partners-System-${version}-Portable.exe"
+    },
+    "publish": {
+      "provider": "generic",
+      "url": "https://releases.clutch.com/partners-windows/"
+    }
+  }
+}

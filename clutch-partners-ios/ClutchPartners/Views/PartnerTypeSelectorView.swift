@@ -51,7 +51,7 @@ struct PartnerTypeSelectorView: View {
                     }
                     .frame(maxWidth: .infinity)
                     .padding()
-                    .background(selectedPartnerType != nil ? Color.primary : Color.gray)
+                    .background(selectedPartnerType != nil ? Color.designPrimary : Color.designMutedForeground)
                     .cornerRadius(12)
                     .padding(.horizontal, 32)
                     .disabled(selectedPartnerType == nil)
@@ -79,12 +79,12 @@ struct PartnerTypeCard: View {
                 // Icon
                 Image(systemName: partnerType.iconName)
                     .font(.system(size: 32))
-                    .foregroundColor(isSelected ? .white : .primary)
+                    .foregroundColor(isSelected ? .white : .designPrimary)
                 
                 // Title
                 Text(partnerType.displayName)
                     .font(.headline)
-                    .foregroundColor(isSelected ? .white : .primary)
+                    .foregroundColor(isSelected ? .white : .designPrimary)
                     .multilineTextAlignment(.center)
                 
                 // Description
@@ -98,12 +98,12 @@ struct PartnerTypeCard: View {
             .padding()
             .background(
                 RoundedRectangle(cornerRadius: 12)
-                    .fill(isSelected ? Color.primary : Color(.systemBackground))
+                    .fill(isSelected ? Color.designPrimary : Color(.systemBackground))
                     .shadow(color: .black.opacity(0.1), radius: 4, x: 0, y: 2)
             )
             .overlay(
                 RoundedRectangle(cornerRadius: 12)
-                    .stroke(isSelected ? Color.primary : Color.gray.opacity(0.3), lineWidth: isSelected ? 2 : 1)
+                    .stroke(isSelected ? Color.designPrimary : Color.designMutedForeground.opacity(0.3), lineWidth: isSelected ? 2 : 1)
             )
         }
         .buttonStyle(PlainButtonStyle())

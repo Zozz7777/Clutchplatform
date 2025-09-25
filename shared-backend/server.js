@@ -47,6 +47,7 @@ const {
 
 // Import WebSocket server
 const webSocketServer = require('./services/websocket-server');
+const PartnerWebSocketService = require('./services/partner-websocket');
 
 // Import unified database connection
 const { connectToDatabase } = require('./config/database-unified');
@@ -135,6 +136,10 @@ const careersRoutes = require('./routes/careers');
 // Import partners routes
 const partnersRoutes = require('./routes/partners');
 const partnerNotificationsRoutes = require('./routes/partner-notifications');
+const partnerAuthRoutes = require('./routes/partner-auth');
+const partnerInventoryRoutes = require('./routes/partner-inventory');
+const partnerSyncRoutes = require('./routes/partner-sync');
+const partnerLoginRoutes = require('./routes/partner-login');
 
 // All route imports cleaned up - only existing routes imported above
 
@@ -235,7 +240,9 @@ app.use(`${apiPrefix}/performance`, performanceRoutes);
 app.use(`${apiPrefix}/dashboard`, dashboardRoutes);
 app.use(`${apiPrefix}/notifications`, notificationsRoutes);
 app.use(`${apiPrefix}/employees`, employeesRoutes);
+console.log('🔍 Employee routes registered at:', `${apiPrefix}/employees`);
 app.use(`${apiPrefix}/employee-invitations`, employeeInvitationsRoutes);
+console.log('🔍 Employee invitations routes registered at:', `${apiPrefix}/employee-invitations`);
 app.use(`${apiPrefix}/export`, exportRoutes);
 
 // Mount new missing route files with correct v1 prefix
@@ -311,6 +318,10 @@ app.use('/api/v1/testing', testingRoutes);
 // Partners routes
 app.use('/api/v1/partners', partnersRoutes);
 app.use('/api/v1/partners/notifications', partnerNotificationsRoutes);
+app.use('/api/v1/partners', partnerAuthRoutes);
+app.use('/api/v1/partners', partnerInventoryRoutes);
+app.use('/api/v1/partners', partnerSyncRoutes);
+app.use('/api/v1/auth', partnerLoginRoutes);
 
 // Note: Authentication is handled by individual routes using authenticateToken middleware
 // No global authentication middleware needed as each route handles its own auth
@@ -614,6 +625,9 @@ async function startServer() {
       
       // Initialize WebSocket server
       webSocketServer.initialize(server);
+      
+      // Initialize Partner WebSocket service
+      const partnerWebSocketService = new PartnerWebSocketService(server);
       
       // Run endpoint testing in production to generate logs
       if (process.env.NODE_ENV === 'production') {

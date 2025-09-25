@@ -142,9 +142,9 @@ export default function OperationalSLADashboard({ className }: OperationalSLADas
 
   const getStatusColor = (status: string) => {
     switch (status) {
-      case 'meeting': return 'bg-success/10 text-green-800';
-      case 'at_risk': return 'bg-warning/10 text-yellow-800';
-      case 'breach': return 'bg-destructive/10 text-red-800';
+      case 'meeting': return 'bg-success/10 text-success';
+      case 'at_risk': return 'bg-warning/10 text-warning';
+      case 'breach': return 'bg-destructive/10 text-destructive';
       case 'unknown': return 'bg-muted text-gray-800';
       default: return 'bg-muted text-gray-800';
     }
@@ -240,7 +240,7 @@ export default function OperationalSLADashboard({ className }: OperationalSLADas
                 variant="outline"
                 size="sm"
                 onClick={() => setIsMonitoring(!isMonitoring)}
-                className={isMonitoring ? 'bg-success/10 text-green-800' : ''}
+                className={isMonitoring ? 'bg-success/10 text-success' : ''}
               >
                 {isMonitoring ? <Eye className="h-4 w-4 mr-2" /> : <EyeOff className="h-4 w-4 mr-2" />}
                 {isMonitoring ? 'Monitoring' : 'Paused'}

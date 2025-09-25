@@ -50,10 +50,10 @@ import {
   Smartphone,
   Monitor,
 } from "lucide-react";
-// Translation system removed - using hardcoded strings
 import { productionApi } from "@/lib/production-api";
 import { toast } from "sonner";
 import { useAuth } from "@/contexts/auth-context";
+import { useLanguage } from "@/contexts/language-context";
 import { handleError, handleWarning, handleDataLoadError } from "@/lib/error-handler";
 
 interface AuditLog {
@@ -109,8 +109,8 @@ interface UserActivity {
 }
 
 export default function AuditTrailPage() {
-  // Translation system removed - using hardcoded strings
   const { user, hasPermission } = useAuth();
+  const { t } = useLanguage();
   const [auditLogs, setAuditLogs] = useState<AuditLog[]>([]);
   const [securityEvents, setSecurityEvents] = useState<SecurityEvent[]>([]);
   const [userActivities, setUserActivities] = useState<UserActivity[]>([]);

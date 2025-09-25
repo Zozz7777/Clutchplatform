@@ -41,7 +41,7 @@ struct DashboardView: View {
                     .tag(3)
             }
         }
-        .accentColor(.primary)
+        .accentColor(.designPrimary)
     }
 }
 
@@ -62,15 +62,14 @@ struct OrdersView: View {
                     VStack(spacing: 16) {
                         Image(systemName: "tray")
                             .font(.system(size: 60))
-                            .foregroundColor(.gray)
+                            .foregroundColor(.designMutedForeground)
                         
                         Text("No Orders Yet")
-                            .font(.title2)
-                            .fontWeight(.semibold)
+                            .font(.designHeadlineLarge)
                         
                         Text("You'll see customer orders and appointments here once they start coming in.")
-                            .font(.body)
-                            .foregroundColor(.secondary)
+                            .font(.designBodyMedium)
+                            .foregroundColor(.designMutedForeground)
                             .multilineTextAlignment(.center)
                             .padding(.horizontal, 32)
                     }
@@ -117,26 +116,26 @@ struct OrderRowView: View {
         VStack(alignment: .leading, spacing: 8) {
             HStack {
                 Text(order.serviceName)
-                    .font(.headline)
+                    .font(.designHeadlineMedium)
                 
                 Spacer()
                 
                 Text(order.status.rawValue)
-                    .font(.caption)
+                    .font(.designLabelSmall)
                     .padding(.horizontal, 8)
                     .padding(.vertical, 4)
                     .background(statusColor.opacity(0.2))
                     .foregroundColor(statusColor)
-                    .cornerRadius(8)
+                    .cornerRadius(DesignTokens.BorderRadius.sm)
             }
             
             Text("Customer: \(order.customerName)")
-                .font(.subheadline)
-                .foregroundColor(.secondary)
+                .font(.designBodyMedium)
+                .foregroundColor(.designMutedForeground)
             
             Text("Date: \(order.createdAt, formatter: dateFormatter)")
-                .font(.caption)
-                .foregroundColor(.secondary)
+                .font(.designLabelSmall)
+                .foregroundColor(.designMutedForeground)
         }
         .padding(.vertical, 4)
     }
@@ -144,11 +143,11 @@ struct OrderRowView: View {
     private var statusColor: Color {
         switch order.status {
         case .pending:
-            return .orange
+            return .designWarning
         case .paid:
-            return .green
+            return .designSuccess
         case .rejected:
-            return .red
+            return .designDestructive
         }
     }
     
@@ -174,47 +173,45 @@ struct PaymentsView: View {
                     // Weekly income card
                     VStack(alignment: .leading, spacing: 16) {
                         Text("This Week's Income")
-                            .font(.headline)
+                            .font(.designHeadlineMedium)
                         
                         Text("EGP \(weeklyIncome, specifier: "%.2f")")
-                            .font(.title)
-                            .fontWeight(.bold)
-                            .foregroundColor(.primary)
+                            .font(.designDisplayMedium)
+                            .foregroundColor(.designForeground)
                     }
                     .frame(maxWidth: .infinity, alignment: .leading)
                     .padding()
-                    .background(Color(.systemGray6))
-                    .cornerRadius(12)
+                    .background(Color.designMuted)
+                    .cornerRadius(DesignTokens.BorderRadius.lg)
                     
                     // Payout countdown card
                     VStack(alignment: .leading, spacing: 16) {
                         Text("Next Payout")
-                            .font(.headline)
+                            .font(.designHeadlineMedium)
                         
                         Text(payoutCountdown)
-                            .font(.title2)
-                            .fontWeight(.semibold)
-                            .foregroundColor(.primary)
+                            .font(.designHeadlineLarge)
+                            .foregroundColor(.designForeground)
                     }
                     .frame(maxWidth: .infinity, alignment: .leading)
                     .padding()
-                    .background(Color(.systemGray6))
-                    .cornerRadius(12)
+                    .background(Color.designMuted)
+                    .cornerRadius(DesignTokens.BorderRadius.lg)
                     
                     // Payment history
                     VStack(alignment: .leading, spacing: 16) {
                         Text("Payment History")
-                            .font(.headline)
+                            .font(.designHeadlineMedium)
                         
                         if paymentHistory.isEmpty {
                             VStack(spacing: 16) {
                                 Image(systemName: "creditcard")
                                     .font(.system(size: 40))
-                                    .foregroundColor(.gray)
+                                    .foregroundColor(.designMutedForeground)
                                 
                                 Text("No payments yet")
-                                    .font(.subheadline)
-                                    .foregroundColor(.secondary)
+                                    .font(.designBodyMedium)
+                                    .foregroundColor(.designMutedForeground)
                             }
                             .frame(maxWidth: .infinity)
                             .padding(.vertical, 32)
@@ -254,36 +251,36 @@ struct PaymentRowView: View {
         HStack {
             VStack(alignment: .leading, spacing: 4) {
                 Text("EGP \(payment.amount, specifier: "%.2f")")
-                    .font(.headline)
+                    .font(.designHeadlineMedium)
                 
                 Text(payment.createdAt, formatter: dateFormatter)
-                    .font(.caption)
-                    .foregroundColor(.secondary)
+                    .font(.designLabelSmall)
+                    .foregroundColor(.designMutedForeground)
             }
             
             Spacer()
             
             Text(payment.status.rawValue)
-                .font(.caption)
+                .font(.designLabelSmall)
                 .padding(.horizontal, 8)
                 .padding(.vertical, 4)
                 .background(statusColor.opacity(0.2))
                 .foregroundColor(statusColor)
-                .cornerRadius(8)
+                .cornerRadius(DesignTokens.BorderRadius.sm)
         }
         .padding()
-        .background(Color(.systemGray6))
-        .cornerRadius(8)
+        .background(Color.designMuted)
+        .cornerRadius(DesignTokens.BorderRadius.sm)
     }
     
     private var statusColor: Color {
         switch payment.status {
         case .pending:
-            return .orange
+            return .designWarning
         case .completed:
-            return .green
+            return .designSuccess
         case .failed:
-            return .red
+            return .designDestructive
         }
     }
     
@@ -336,7 +333,7 @@ struct StoreSettingsView: View {
                     Button("Logout") {
                         showLogoutAlert = true
                     }
-                    .foregroundColor(.red)
+                    .foregroundColor(.designDestructive)
                 }
             }
             .navigationTitle("Store Settings")
@@ -387,17 +384,16 @@ struct BusinessDashboardView: View {
                     // Revenue card
                     VStack(alignment: .leading, spacing: 16) {
                         Text("Total Revenue")
-                            .font(.headline)
+                            .font(.designHeadlineMedium)
                         
                         Text("EGP \(revenue, specifier: "%.2f")")
-                            .font(.title)
-                            .fontWeight(.bold)
-                            .foregroundColor(.primary)
+                            .font(.designDisplayMedium)
+                            .foregroundColor(.designForeground)
                     }
                     .frame(maxWidth: .infinity, alignment: .leading)
                     .padding()
-                    .background(Color(.systemGray6))
-                    .cornerRadius(12)
+                    .background(Color.designMuted)
+                    .cornerRadius(DesignTokens.BorderRadius.lg)
                     
                     // Stats grid
                     LazyVGrid(columns: [
@@ -411,20 +407,20 @@ struct BusinessDashboardView: View {
                     // Charts placeholder
                     VStack(alignment: .leading, spacing: 16) {
                         Text("Performance Charts")
-                            .font(.headline)
+                            .font(.designHeadlineMedium)
                         
-                        RoundedRectangle(cornerRadius: 12)
-                            .fill(Color(.systemGray6))
+                        RoundedRectangle(cornerRadius: DesignTokens.BorderRadius.lg)
+                            .fill(Color.designMuted)
                             .frame(height: 200)
                             .overlay(
                                 VStack {
                                     Image(systemName: "chart.bar.fill")
                                         .font(.system(size: 40))
-                                        .foregroundColor(.gray)
+                                        .foregroundColor(.designMutedForeground)
                                     
                                     Text("Charts coming soon")
-                                        .font(.subheadline)
-                                        .foregroundColor(.secondary)
+                                        .font(.designBodyMedium)
+                                        .foregroundColor(.designMutedForeground)
                                 }
                             )
                     }
@@ -460,20 +456,19 @@ struct StatCard: View {
         VStack(spacing: 8) {
             Image(systemName: icon)
                 .font(.system(size: 24))
-                .foregroundColor(.primary)
+                .foregroundColor(.designPrimary)
             
             Text(value)
-                .font(.title2)
-                .fontWeight(.bold)
+                .font(.designHeadlineLarge)
             
             Text(title)
-                .font(.caption)
-                .foregroundColor(.secondary)
+                .font(.designLabelSmall)
+                .foregroundColor(.designMutedForeground)
         }
         .frame(maxWidth: .infinity)
         .padding()
-        .background(Color(.systemGray6))
-        .cornerRadius(12)
+        .background(Color.designMuted)
+        .cornerRadius(DesignTokens.BorderRadius.lg)
     }
 }
 

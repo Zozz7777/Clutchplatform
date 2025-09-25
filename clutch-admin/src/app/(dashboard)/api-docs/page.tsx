@@ -23,11 +23,11 @@ import {
   Shield,
   Activity,
 } from "lucide-react";
-// Translation system removed - using hardcoded strings
 import { productionApi } from "@/lib/production-api";
 import { handleError, handleWarning, handleDataLoadError } from "@/lib/error-handler";
 import { toast } from "sonner";
 import { useAuth } from "@/contexts/auth-context";
+import { useLanguage } from "@/contexts/language-context";
 
 interface APIEndpoint {
   _id: string;
@@ -57,8 +57,8 @@ interface APIEndpoint {
 }
 
 export default function APIDocsPage() {
-  // Translation system removed - using hardcoded strings
   const { user, isLoading: authLoading } = useAuth();
+  const { t } = useLanguage();
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedCategory, setSelectedCategory] = useState<string>("all");
   const [selectedEndpoint, setSelectedEndpoint] = useState<APIEndpoint | null>(null);

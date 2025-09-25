@@ -14,7 +14,7 @@ struct AuthView: View {
                 VStack(spacing: 16) {
                     Image(systemName: "wrench.and.screwdriver.fill")
                         .font(.system(size: 60))
-                        .foregroundColor(.primary)
+                        .foregroundColor(.designPrimary)
                     
                     Text("Welcome to Clutch Partners")
                         .font(.title)
@@ -39,7 +39,7 @@ struct AuthView: View {
                         }
                         .frame(maxWidth: .infinity)
                         .padding()
-                        .background(Color.primary)
+                        .background(Color.designPrimary)
                         .foregroundColor(.white)
                         .cornerRadius(12)
                     }
@@ -54,7 +54,7 @@ struct AuthView: View {
                         .frame(maxWidth: .infinity)
                         .padding()
                         .background(Color(.systemGray6))
-                        .foregroundColor(.primary)
+                        .foregroundColor(.designPrimary)
                         .cornerRadius(12)
                     }
                     
@@ -68,7 +68,7 @@ struct AuthView: View {
                         .frame(maxWidth: .infinity)
                         .padding()
                         .background(Color(.systemGray6))
-                        .foregroundColor(.primary)
+                        .foregroundColor(.designPrimary)
                         .cornerRadius(12)
                     }
                 }

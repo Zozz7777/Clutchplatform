@@ -57,7 +57,7 @@ struct RequestToJoinView: View {
                         VStack(alignment: .leading, spacing: 16) {
                             Text("Business Information")
                                 .font(.headline)
-                                .foregroundColor(.primary)
+                                .foregroundColor(.designPrimary)
                             
                             VStack(alignment: .leading, spacing: 8) {
                                 Text("Business Name")
@@ -121,7 +121,7 @@ struct RequestToJoinView: View {
                         VStack(alignment: .leading, spacing: 16) {
                             Text("Contact Information")
                                 .font(.headline)
-                                .foregroundColor(.primary)
+                                .foregroundColor(.designPrimary)
                             
                             VStack(alignment: .leading, spacing: 8) {
                                 Text("Email")
@@ -168,7 +168,7 @@ struct RequestToJoinView: View {
                         VStack(alignment: .leading, spacing: 16) {
                             Text("Business Address")
                                 .font(.headline)
-                                .foregroundColor(.primary)
+                                .foregroundColor(.designPrimary)
                             
                             VStack(alignment: .leading, spacing: 8) {
                                 Text("Street Address")
@@ -225,7 +225,7 @@ struct RequestToJoinView: View {
                         VStack(alignment: .leading, spacing: 16) {
                             Text("Partnership Preferences")
                                 .font(.headline)
-                                .foregroundColor(.primary)
+                                .foregroundColor(.designPrimary)
                             
                             VStack(alignment: .leading, spacing: 8) {
                                 Text("Preferred Partner Type")
@@ -282,7 +282,7 @@ struct RequestToJoinView: View {
                         VStack(alignment: .leading, spacing: 16) {
                             Text("Legal & Financial Information")
                                 .font(.headline)
-                                .foregroundColor(.primary)
+                                .foregroundColor(.designPrimary)
                             
                             VStack(alignment: .leading, spacing: 8) {
                                 Text("Business License Number")
@@ -317,7 +317,7 @@ struct RequestToJoinView: View {
                         VStack(alignment: .leading, spacing: 16) {
                             Text("Additional Information")
                                 .font(.headline)
-                                .foregroundColor(.primary)
+                                .foregroundColor(.designPrimary)
                             
                             VStack(alignment: .leading, spacing: 8) {
                                 Text("References")
@@ -344,7 +344,7 @@ struct RequestToJoinView: View {
                         if !errorMessage.isEmpty {
                             Text(errorMessage)
                                 .font(.caption)
-                                .foregroundColor(.red)
+                                .foregroundColor(.designDestructive)
                                 .multilineTextAlignment(.center)
                         }
                         
@@ -361,7 +361,7 @@ struct RequestToJoinView: View {
                         }
                         .frame(maxWidth: .infinity)
                         .padding()
-                        .background(Color.primary)
+                        .background(Color.designPrimary)
                         .cornerRadius(12)
                         .disabled(isLoading || !isFormValid)
                     }

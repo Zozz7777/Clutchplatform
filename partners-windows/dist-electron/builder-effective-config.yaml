@@ -1,0 +1,46 @@
+directories:
+  output: dist-electron
+  buildResources: assets
+appId: com.clutch.partners.windows
+productName: Clutch Partners System
+files:
+  - filter:
+      - dist/**/*
+      - main/**/*
+      - assets/**/*
+      - node_modules/**/*
+      - package.json
+extraResources:
+  - from: assets
+    to: assets
+    filter:
+      - '**/*'
+win:
+  target:
+    - target: portable
+      arch:
+        - x64
+  icon: assets/icons/app-icon.ico
+  requestedExecutionLevel: asInvoker
+  artifactName: ${productName}-${version}-${arch}.${ext}
+  sign: false
+nsis:
+  oneClick: false
+  allowToChangeInstallationDirectory: true
+  allowElevation: true
+  createDesktopShortcut: true
+  createStartMenuShortcut: true
+  shortcutName: Clutch Partners System
+  installerIcon: assets/icons/app-icon.ico
+  uninstallerIcon: assets/icons/app-icon.ico
+  installerHeaderIcon: assets/icons/app-icon.ico
+  deleteAppDataOnUninstall: false
+  runAfterFinish: true
+  menuCategory: Business
+  include: installer.nsh
+portable:
+  artifactName: Clutch-Partners-System-${version}-Portable.exe
+publish:
+  provider: generic
+  url: https://releases.clutch.com/partners-windows/
+electronVersion: 27.3.11
