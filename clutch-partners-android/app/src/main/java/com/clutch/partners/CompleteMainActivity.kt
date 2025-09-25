@@ -110,21 +110,20 @@ fun SplashScreen(onNavigate: () -> Unit) {
             .background(Color.Black),
         contentAlignment = Alignment.Center
     ) {
-        Column(
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.Center
+        // Logo inside the rotor circle - both centered
+        Box(
+            modifier = Modifier.size(380.dp),
+            contentAlignment = Alignment.Center
         ) {
-            // White Clutch Logo in center - 2x size
+            // Animated Rotor - centered and 1.5x size
+            AnimatedRotor()
+            
+            // White Clutch Logo inside the rotor circle
             Image(
                 painter = painterResource(id = R.drawable.clutch_logo_white),
                 contentDescription = "Clutch Partners Logo",
-                modifier = Modifier.size(160.dp)
+                modifier = Modifier.size(120.dp)
             )
-            
-            Spacer(modifier = Modifier.height(40.dp))
-            
-            // Animated Rotor - centered and 1.5x size
-            AnimatedRotor()
         }
     }
     
@@ -151,7 +150,7 @@ fun AnimatedRotor() {
         painter = painterResource(id = R.drawable.rotor_partner),
         contentDescription = "Loading Rotor",
         modifier = Modifier
-            .size(300.dp) // 1.5x size (200 * 1.5 = 300)
+            .size(380.dp) // Even bigger rotor size
             .graphicsLayer {
                 rotationZ = rotation
             }
@@ -169,7 +168,7 @@ fun OnboardingScreen(onNavigate: () -> Unit) {
         OnboardingPage(
             imageRes = R.drawable.business_plan,
             title = if (isRTL) "إدارة متجرك من هاتفك" else "Manage your store from your phone",
-            description = if (isRTL) "شركاء كلاتش" else "Clutch Partners"
+            description = if (isRTL) "إدارة المخزون وتتبع المبيعات وتحديث معلومات عملك في مكان واحد" else "Easily manage your inventory, track sales, and update your business information all in one place"
         ),
         OnboardingPage(
             imageRes = R.drawable.online_world,
@@ -233,30 +232,7 @@ fun OnboardingScreen(onNavigate: () -> Unit) {
                     .shadow(
                         elevation = 8.dp,
                         shape = RoundedCornerShape(20.dp)
-                    )
-                    .pointerInput(Unit) {
-                        detectDragGestures(
-                            onDragEnd = { },
-                            onDrag = { _, dragAmount ->
-                                // Handle RTL/LTR swipe directions properly
-                                if (isRTL) {
-                                    // RTL: swipe right (positive x) to go to next page, swipe left (negative x) to go to previous page
-                                    if (dragAmount.x > 100 && currentPage < pages.size - 1) {
-                                        currentPage++
-                                    } else if (dragAmount.x < -100 && currentPage > 0) {
-                                        currentPage--
-                                    }
-                                } else {
-                                    // LTR: swipe left (negative x) to go to next page, swipe right (positive x) to go to previous page
-                                    if (dragAmount.x < -100 && currentPage < pages.size - 1) {
-                                        currentPage++
-                                    } else if (dragAmount.x > 100 && currentPage > 0) {
-                                        currentPage--
-                                    }
-                                }
-                            }
-                        )
-                    },
+                    ),
                 shape = RoundedCornerShape(20.dp),
                 colors = CardDefaults.cardColors(containerColor = Color.White)
             ) {

@@ -304,6 +304,9 @@ const applyOptimizedMiddleware = (app) => {
     console.log(`CORS: ${req.method} ${req.url} from origin: ${req.get('Origin')}`);
     next();
   });
+  
+  // Handle preflight requests
+  app.options('*', optimizedCORS);
   app.use(optimizedCORS);
   
   // Body parsing with limits
