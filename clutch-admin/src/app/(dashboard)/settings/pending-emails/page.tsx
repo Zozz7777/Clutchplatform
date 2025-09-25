@@ -150,11 +150,11 @@ export default function PendingEmailsPage() {
   const getStatusBadge = (status: string) => {
     switch (status) {
       case 'pending':
-        return <Badge variant="outline" className="text-yellow-600"><Clock className="w-3 h-3 mr-1" />Pending</Badge>;
+        return <Badge variant="outline" className="text-warning"><Clock className="w-3 h-3 mr-1" />Pending</Badge>;
       case 'sent':
-        return <Badge variant="outline" className="text-green-600"><CheckCircle className="w-3 h-3 mr-1" />Sent</Badge>;
+        return <Badge variant="outline" className="text-success"><CheckCircle className="w-3 h-3 mr-1" />Sent</Badge>;
       case 'failed':
-        return <Badge variant="outline" className="text-red-600"><XCircle className="w-3 h-3 mr-1" />Failed</Badge>;
+        return <Badge variant="outline" className="text-destructive"><XCircle className="w-3 h-3 mr-1" />Failed</Badge>;
       default:
         return <Badge variant="outline">{status}</Badge>;
     }
@@ -166,7 +166,7 @@ export default function PendingEmailsPage() {
         <Card>
           <CardContent className="p-6">
             <div className="text-center">
-              <XCircle className="w-12 h-12 text-red-500 mx-auto mb-4" />
+              <XCircle className="w-12 h-12 text-destructive mx-auto mb-4" />
               <h3 className="text-lg font-semibold mb-2">Access Denied</h3>
               <p className="text-muted-foreground">You don't have permission to view pending emails.</p>
             </div>
@@ -188,13 +188,13 @@ export default function PendingEmailsPage() {
       </div>
 
       {/* Email Service Status Alert */}
-      <Card className="border-yellow-200 bg-yellow-50">
+      <Card className="border-warning/20 bg-warning/5">
         <CardContent className="p-4">
           <div className="flex items-center space-x-2">
-            <Mail className="w-5 h-5 text-yellow-600" />
+            <Mail className="w-5 h-5 text-warning" />
             <div>
-              <h4 className="font-semibold text-yellow-800">Email Service Status</h4>
-              <p className="text-sm text-yellow-700">
+              <h4 className="font-semibold text-warning">Email Service Status</h4>
+              <p className="text-sm text-warning/80">
                 Email service is running in mock mode. Configure EMAIL_USER and EMAIL_PASSWORD in your backend .env file to enable real email sending.
               </p>
             </div>

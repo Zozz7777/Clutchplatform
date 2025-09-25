@@ -99,9 +99,9 @@ export function ProjectROI({ className = '' }: ProjectROIProps) {
   };
 
   const getROIBadge = (roi: number) => {
-    if (roi >= 150) return 'bg-success/10 text-green-800';
-    if (roi >= 100) return 'bg-warning/10 text-yellow-800';
-    return 'bg-destructive/10 text-red-800';
+    if (roi >= 150) return 'bg-success/10 text-success';
+    if (roi >= 100) return 'bg-warning/10 text-warning';
+    return 'bg-destructive/10 text-destructive';
   };
 
   const getROILevel = (roi: number) => {
@@ -121,7 +121,7 @@ export function ProjectROI({ className = '' }: ProjectROIProps) {
 
   const getStatusBadge = (status: string) => {
     switch (status) {
-      case 'completed': return 'bg-success/10 text-green-800';
+      case 'completed': return 'bg-success/10 text-success';
       case 'in-progress': return 'bg-primary/10 text-blue-800';
       case 'planned': return 'bg-muted text-gray-800';
       default: return 'bg-muted text-gray-800';

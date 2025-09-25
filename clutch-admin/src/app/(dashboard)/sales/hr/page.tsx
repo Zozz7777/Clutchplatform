@@ -129,10 +129,10 @@ export default function HRPerformanceView() {
   };
 
   const getPerformanceColor = (performance: number) => {
-    if (performance >= 90) return 'bg-green-100 text-green-800';
-    if (performance >= 70) return 'bg-blue-100 text-blue-800';
-    if (performance >= 50) return 'bg-yellow-100 text-yellow-800';
-    return 'bg-red-100 text-red-800';
+    if (performance >= 90) return 'bg-success/10 text-success';
+    if (performance >= 70) return 'bg-primary/10 text-primary';
+    if (performance >= 50) return 'bg-warning/10 text-warning';
+    return 'bg-destructive/10 text-destructive';
   };
 
   const getPerformanceLabel = (performance: number) => {
@@ -143,9 +143,9 @@ export default function HRPerformanceView() {
   };
 
   const getRankingIcon = (ranking: number) => {
-    if (ranking === 1) return <Award className="h-4 w-4 text-yellow-500" />;
+    if (ranking === 1) return <Award className="h-4 w-4 text-warning" />;
     if (ranking === 2) return <Award className="h-4 w-4 text-muted-foreground" />;
-    if (ranking === 3) return <Award className="h-4 w-4 text-orange-500" />;
+    if (ranking === 3) return <Award className="h-4 w-4 text-info" />;
     return <Star className="h-4 w-4 text-muted-foreground" />;
   };
 
@@ -340,7 +340,7 @@ export default function HRPerformanceView() {
                       </TableCell>
                       <TableCell>
                         <div className="flex items-center gap-2">
-                          <Star className="h-4 w-4 text-yellow-500" />
+                          <Star className="h-4 w-4 text-warning" />
                           <span className="text-sm font-medium">{rep.satisfaction.score}/10</span>
                         </div>
                       </TableCell>
@@ -450,9 +450,9 @@ export default function HRPerformanceView() {
               </CardHeader>
               <CardContent>
                 <div className="space-y-4">
-                  <div className="p-3 bg-green-50 border border-green-200 rounded-lg">
-                    <p className="font-medium text-green-800">{t('sales.salesFundamentals')}</p>
-                    <p className="text-sm text-green-600">
+                  <div className="p-3 bg-success/5 border border-success/20 rounded-lg">
+                    <p className="font-medium text-success">{t('sales.salesFundamentals')}</p>
+                    <p className="text-sm text-success/80">
                       {salesReps.filter(rep => rep.training.certifications.includes('sales_fundamentals')).length} {t('sales.certified')}
                     </p>
                   </div>
@@ -491,9 +491,9 @@ export default function HRPerformanceView() {
                   {salesReps
                     .filter(rep => rep.performance.targetAchievement < 70)
                     .map((rep) => (
-                    <div key={rep.id} className="p-3 bg-red-50 border border-red-200 rounded-lg">
-                      <p className="font-medium text-red-800">{rep.name}</p>
-                      <p className="text-sm text-red-600">
+                    <div key={rep.id} className="p-3 bg-destructive/5 border border-destructive/20 rounded-lg">
+                      <p className="font-medium text-destructive">{rep.name}</p>
+                      <p className="text-sm text-destructive/80">
                         {t('sales.performanceBelowTarget')}: {rep.performance.targetAchievement}%
                       </p>
                     </div>
@@ -502,9 +502,9 @@ export default function HRPerformanceView() {
                   {salesReps
                     .filter(rep => rep.satisfaction.score < 6)
                     .map((rep) => (
-                    <div key={rep.id} className="p-3 bg-yellow-50 border border-yellow-200 rounded-lg">
-                      <p className="font-medium text-yellow-800">{rep.name}</p>
-                      <p className="text-sm text-yellow-600">
+                    <div key={rep.id} className="p-3 bg-warning/5 border border-warning/20 rounded-lg">
+                      <p className="font-medium text-warning">{rep.name}</p>
+                      <p className="text-sm text-warning/80">
                         {t('sales.lowSatisfaction')}: {rep.satisfaction.score}/10
                       </p>
                     </div>
@@ -529,9 +529,9 @@ export default function HRPerformanceView() {
                     </p>
                   </div>
                   
-                  <div className="p-3 bg-green-50 border border-green-200 rounded-lg">
-                    <p className="font-medium text-green-800">{t('sales.recognitionProgram')}</p>
-                    <p className="text-sm text-green-600">
+                  <div className="p-3 bg-success/5 border border-success/20 rounded-lg">
+                    <p className="font-medium text-success">{t('sales.recognitionProgram')}</p>
+                    <p className="text-sm text-success/80">
                       {t('sales.recognitionProgramDescription')}
                     </p>
                   </div>

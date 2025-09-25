@@ -160,22 +160,22 @@ export function RoleDistribution({ className = '' }: RoleDistributionProps) {
           
           // Level 4: Functional Specialists
           hr: { 
-            color: 'text-green-600', 
+            color: 'text-success', 
             icon: User, 
             description: 'Human resources specialist' 
           },
           finance: { 
-            color: 'text-green-600', 
+            color: 'text-success', 
             icon: User, 
             description: 'Financial operations specialist' 
           },
           customer_support: { 
-            color: 'text-green-600', 
+            color: 'text-success', 
             icon: User, 
             description: 'Customer support specialist' 
           },
           developer: { 
-            color: 'text-green-600', 
+            color: 'text-success', 
             icon: User, 
             description: 'Development and technical specialist' 
           },

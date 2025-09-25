@@ -107,9 +107,9 @@ export function ChurnAttribution({ className = '' }: ChurnAttributionProps) {
 
   const getImpactBadge = (impact: string) => {
     switch (impact) {
-      case 'high': return 'bg-destructive/10 text-red-800';
-      case 'medium': return 'bg-warning/10 text-yellow-800';
-      case 'low': return 'bg-success/10 text-green-800';
+      case 'high': return 'bg-destructive/10 text-destructive';
+      case 'medium': return 'bg-warning/10 text-warning';
+      case 'low': return 'bg-success/10 text-success';
       default: return 'bg-muted text-gray-800';
     }
   };

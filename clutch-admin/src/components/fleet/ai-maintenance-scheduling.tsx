@@ -221,10 +221,10 @@ export default function AIMaintenanceScheduling() {
   const getStatusColor = (status: string) => {
     switch (status) {
       case 'scheduled': return 'bg-primary/10 text-blue-800';
-      case 'in_progress': return 'bg-warning/10 text-yellow-800';
-      case 'completed': return 'bg-success/10 text-green-800';
+      case 'in_progress': return 'bg-warning/10 text-warning';
+      case 'completed': return 'bg-success/10 text-success';
       case 'cancelled': return 'bg-muted text-gray-800';
-      case 'overdue': return 'bg-destructive/10 text-red-800';
+      case 'overdue': return 'bg-destructive/10 text-destructive';
       default: return 'bg-muted text-gray-800';
     }
   };

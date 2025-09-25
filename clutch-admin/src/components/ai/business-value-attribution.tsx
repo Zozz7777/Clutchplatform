@@ -532,21 +532,21 @@ export default function BusinessValueAttribution({ className }: BusinessValueAtt
 
   const getBusinessAreaColor = (area: string) => {
     switch (area) {
-      case 'revenue': return 'bg-success/10 text-green-800';
+      case 'revenue': return 'bg-success/10 text-success';
       case 'cost_reduction': return 'bg-primary/10 text-blue-800';
       case 'customer_experience': return 'bg-primary/10 text-purple-800';
-      case 'operational_efficiency': return 'bg-warning/10 text-orange-800';
-      case 'risk_mitigation': return 'bg-destructive/10 text-red-800';
-      case 'compliance': return 'bg-warning/10 text-yellow-800';
+      case 'operational_efficiency': return 'bg-warning/10 text-warning';
+      case 'risk_mitigation': return 'bg-destructive/10 text-destructive';
+      case 'compliance': return 'bg-warning/10 text-warning';
       default: return 'bg-muted text-gray-800';
     }
   };
 
   const getImpactTypeColor = (type: string) => {
     switch (type) {
-      case 'direct': return 'bg-success/10 text-green-800';
+      case 'direct': return 'bg-success/10 text-success';
       case 'indirect': return 'bg-primary/10 text-blue-800';
-      case 'cascading': return 'bg-warning/10 text-orange-800';
+      case 'cascading': return 'bg-warning/10 text-warning';
       case 'compound': return 'bg-primary/10 text-purple-800';
       default: return 'bg-muted text-gray-800';
     }
@@ -610,7 +610,7 @@ export default function BusinessValueAttribution({ className }: BusinessValueAtt
                 variant="outline"
                 size="sm"
                 onClick={() => setIsTracking(!isTracking)}
-                className={isTracking ? 'bg-success/10 text-green-800' : ''}
+                className={isTracking ? 'bg-success/10 text-success' : ''}
               >
                 {isTracking ? <Eye className="h-4 w-4 mr-2" /> : <EyeOff className="h-4 w-4 mr-2" />}
                 {isTracking ? 'Tracking' : 'Paused'}

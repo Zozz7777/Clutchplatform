@@ -158,9 +158,9 @@ export function CSATNPSTrends({ className = '' }: CSATNPSTrendsProps) {
   };
 
   const getCSATBadge = (csat: number) => {
-    if (csat >= 4.5) return 'bg-success/10 text-green-800';
-    if (csat >= 4.0) return 'bg-warning/10 text-yellow-800';
-    return 'bg-destructive/10 text-red-800';
+    if (csat >= 4.5) return 'bg-success/10 text-success';
+    if (csat >= 4.0) return 'bg-warning/10 text-warning';
+    return 'bg-destructive/10 text-destructive';
   };
 
   const getCSATLevel = (csat: number) => {
@@ -176,9 +176,9 @@ export function CSATNPSTrends({ className = '' }: CSATNPSTrendsProps) {
   };
 
   const getNPSBadge = (nps: number) => {
-    if (nps >= 50) return 'bg-success/10 text-green-800';
-    if (nps >= 30) return 'bg-warning/10 text-yellow-800';
-    return 'bg-destructive/10 text-red-800';
+    if (nps >= 50) return 'bg-success/10 text-success';
+    if (nps >= 30) return 'bg-warning/10 text-warning';
+    return 'bg-destructive/10 text-destructive';
   };
 
   const getNPSLevel = (nps: number) => {

@@ -500,10 +500,10 @@ export default function PortfolioRiskDashboard({ className }: PortfolioRiskDashb
   const getCategoryColor = (category: string) => {
     switch (category) {
       case 'infrastructure': return 'bg-primary/10 text-blue-800';
-      case 'security': return 'bg-destructive/10 text-red-800';
-      case 'compliance': return 'bg-warning/10 text-yellow-800';
-      case 'financial': return 'bg-success/10 text-green-800';
-      case 'operational': return 'bg-warning/10 text-orange-800';
+      case 'security': return 'bg-destructive/10 text-destructive';
+      case 'compliance': return 'bg-warning/10 text-warning';
+      case 'financial': return 'bg-success/10 text-success';
+      case 'operational': return 'bg-warning/10 text-warning';
       case 'technical': return 'bg-primary/10 text-purple-800';
       case 'market': return 'bg-pink-100 text-pink-800';
       case 'regulatory': return 'bg-indigo-100 text-indigo-800';
@@ -513,11 +513,11 @@ export default function PortfolioRiskDashboard({ className }: PortfolioRiskDashb
 
   const getRiskLevelColor = (riskLevel: string) => {
     switch (riskLevel) {
-      case 'low': return 'bg-success/10 text-green-800';
-      case 'medium': return 'bg-warning/10 text-yellow-800';
-      case 'high': return 'bg-warning/10 text-orange-800';
-      case 'critical': return 'bg-destructive/10 text-red-800';
-      case 'extreme': return 'bg-destructive/10 text-red-800';
+      case 'low': return 'bg-success/10 text-success';
+      case 'medium': return 'bg-warning/10 text-warning';
+      case 'high': return 'bg-warning/10 text-warning';
+      case 'critical': return 'bg-destructive/10 text-destructive';
+      case 'extreme': return 'bg-destructive/10 text-destructive';
       default: return 'bg-muted text-gray-800';
     }
   };
@@ -540,10 +540,10 @@ export default function PortfolioRiskDashboard({ className }: PortfolioRiskDashb
 
   const getMitigationStatusColor = (status: string) => {
     switch (status) {
-      case 'completed': return 'bg-success/10 text-green-800';
+      case 'completed': return 'bg-success/10 text-success';
       case 'in_progress': return 'bg-primary/10 text-blue-800';
-      case 'planned': return 'bg-warning/10 text-yellow-800';
-      case 'failed': return 'bg-destructive/10 text-red-800';
+      case 'planned': return 'bg-warning/10 text-warning';
+      case 'failed': return 'bg-destructive/10 text-destructive';
       default: return 'bg-muted text-gray-800';
     }
   };
@@ -580,7 +580,7 @@ export default function PortfolioRiskDashboard({ className }: PortfolioRiskDashb
                 variant="outline"
                 size="sm"
                 onClick={() => setIsMonitoring(!isMonitoring)}
-                className={isMonitoring ? 'bg-success/10 text-green-800' : ''}
+                className={isMonitoring ? 'bg-success/10 text-success' : ''}
               >
                 {isMonitoring ? <Eye className="h-4 w-4 mr-2" /> : <EyeOff className="h-4 w-4 mr-2" />}
                 {isMonitoring ? 'Monitoring' : 'Paused'}

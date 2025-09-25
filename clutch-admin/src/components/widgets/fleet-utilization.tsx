@@ -60,9 +60,9 @@ export function FleetUtilization({ className = '' }: FleetUtilizationProps) {
   };
 
   const getUtilizationBadge = (rate: number) => {
-    if (rate >= 80) return 'bg-success/10 text-green-800';
-    if (rate >= 60) return 'bg-warning/10 text-yellow-800';
-    return 'bg-destructive/10 text-red-800';
+    if (rate >= 80) return 'bg-success/10 text-success';
+    if (rate >= 60) return 'bg-warning/10 text-warning';
+    return 'bg-destructive/10 text-destructive';
   };
 
   const getUtilizationLevel = (rate: number) => {
@@ -83,9 +83,9 @@ export function FleetUtilization({ className = '' }: FleetUtilizationProps) {
 
   const getStatusBadge = (status: string) => {
     switch (status) {
-      case 'active': return 'bg-success/10 text-green-800';
-      case 'idle': return 'bg-warning/10 text-yellow-800';
-      case 'maintenance': return 'bg-destructive/10 text-red-800';
+      case 'active': return 'bg-success/10 text-success';
+      case 'idle': return 'bg-warning/10 text-warning';
+      case 'maintenance': return 'bg-destructive/10 text-destructive';
       default: return 'bg-muted text-gray-800';
     }
   };

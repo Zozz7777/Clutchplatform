@@ -152,9 +152,9 @@ export function ClientGrowthContribution({ className = '' }: ClientGrowthContrib
   };
 
   const getGrowthBadge = (rate: number) => {
-    if (rate >= 15) return 'bg-success/10 text-green-800';
-    if (rate >= 10) return 'bg-warning/10 text-yellow-800';
-    return 'bg-destructive/10 text-red-800';
+    if (rate >= 15) return 'bg-success/10 text-success';
+    if (rate >= 10) return 'bg-warning/10 text-warning';
+    return 'bg-destructive/10 text-destructive';
   };
 
   const getGrowthLevel = (rate: number) => {
@@ -170,9 +170,9 @@ export function ClientGrowthContribution({ className = '' }: ClientGrowthContrib
   };
 
   const getConfidenceBadge = (confidence: number) => {
-    if (confidence >= 85) return 'bg-success/10 text-green-800';
-    if (confidence >= 75) return 'bg-warning/10 text-yellow-800';
-    return 'bg-destructive/10 text-red-800';
+    if (confidence >= 85) return 'bg-success/10 text-success';
+    if (confidence >= 75) return 'bg-warning/10 text-warning';
+    return 'bg-destructive/10 text-destructive';
   };
 
   const getTrendIcon = (trend: string) => {
@@ -274,7 +274,7 @@ export function ClientGrowthContribution({ className = '' }: ClientGrowthContrib
             <span className="text-2xl font-bold text-success">
               ${growthData.totalProjectedRevenue.toLocaleString()}
             </span>
-            <Badge className="bg-success/10 text-green-800">
+            <Badge className="bg-success/10 text-success">
               Projected
             </Badge>
           </div>

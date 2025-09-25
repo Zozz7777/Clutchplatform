@@ -133,10 +133,10 @@ export function IncidentCost({ className = '' }: IncidentCostProps) {
 
   const getSeverityBadge = (severity: string) => {
     switch (severity) {
-      case 'critical': return 'bg-destructive/10 text-red-800';
-      case 'high': return 'bg-warning/10 text-orange-800';
-      case 'medium': return 'bg-warning/10 text-yellow-800';
-      case 'low': return 'bg-success/10 text-green-800';
+      case 'critical': return 'bg-destructive/10 text-destructive';
+      case 'high': return 'bg-warning/10 text-warning';
+      case 'medium': return 'bg-warning/10 text-warning';
+      case 'low': return 'bg-success/10 text-success';
       default: return 'bg-muted text-gray-800';
     }
   };
@@ -152,8 +152,8 @@ export function IncidentCost({ className = '' }: IncidentCostProps) {
 
   const getStatusBadge = (status: string) => {
     switch (status) {
-      case 'resolved': return 'bg-success/10 text-green-800';
-      case 'investigating': return 'bg-warning/10 text-yellow-800';
+      case 'resolved': return 'bg-success/10 text-success';
+      case 'investigating': return 'bg-warning/10 text-warning';
       case 'mitigated': return 'bg-primary/10 text-blue-800';
       default: return 'bg-muted text-gray-800';
     }
@@ -246,7 +246,7 @@ export function IncidentCost({ className = '' }: IncidentCostProps) {
             <span className="text-2xl font-bold text-destructive">
               ${incidentData.averageCost.toLocaleString()}
             </span>
-            <Badge className="bg-destructive/10 text-red-800">
+            <Badge className="bg-destructive/10 text-destructive">
               {t('common.average')}
             </Badge>
           </div>

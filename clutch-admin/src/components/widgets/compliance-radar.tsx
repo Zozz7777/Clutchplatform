@@ -48,7 +48,7 @@ export function ComplianceRadar({ className = '' }: ComplianceRadarProps) {
             typeof data.overallStatus === 'string';
             
           if (hasValidStructure) {
-            console.log('✅ ComplianceRadar: Valid data structure confirmed');
+            // ComplianceRadar: Valid data structure confirmed
             setCompliance(data);
             setHasError(false);
           } else {

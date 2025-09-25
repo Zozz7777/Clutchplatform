@@ -486,9 +486,9 @@ export default function ModelGovernancePanel({ className }: ModelGovernancePanel
   const getStatusColor = (status: string) => {
     switch (status) {
       case 'development': return 'bg-primary/10 text-blue-800';
-      case 'testing': return 'bg-warning/10 text-yellow-800';
-      case 'production': return 'bg-success/10 text-green-800';
-      case 'deprecated': return 'bg-warning/10 text-orange-800';
+      case 'testing': return 'bg-warning/10 text-warning';
+      case 'production': return 'bg-success/10 text-success';
+      case 'deprecated': return 'bg-warning/10 text-warning';
       case 'retired': return 'bg-muted text-gray-800';
       default: return 'bg-muted text-gray-800';
     }
@@ -515,19 +515,19 @@ export default function ModelGovernancePanel({ className }: ModelGovernancePanel
 
   const getRiskColor = (risk: string) => {
     switch (risk) {
-      case 'low': return 'bg-success/10 text-green-800';
-      case 'medium': return 'bg-warning/10 text-yellow-800';
-      case 'high': return 'bg-warning/10 text-orange-800';
-      case 'critical': return 'bg-destructive/10 text-red-800';
+      case 'low': return 'bg-success/10 text-success';
+      case 'medium': return 'bg-warning/10 text-warning';
+      case 'high': return 'bg-warning/10 text-warning';
+      case 'critical': return 'bg-destructive/10 text-destructive';
       default: return 'bg-muted text-gray-800';
     }
   };
 
   const getApprovalStatusColor = (status: string) => {
     switch (status) {
-      case 'approved': return 'bg-success/10 text-green-800';
-      case 'pending': return 'bg-warning/10 text-yellow-800';
-      case 'rejected': return 'bg-destructive/10 text-red-800';
+      case 'approved': return 'bg-success/10 text-success';
+      case 'pending': return 'bg-warning/10 text-warning';
+      case 'rejected': return 'bg-destructive/10 text-destructive';
       case 'under_review': return 'bg-primary/10 text-blue-800';
       default: return 'bg-muted text-gray-800';
     }
@@ -535,19 +535,19 @@ export default function ModelGovernancePanel({ className }: ModelGovernancePanel
 
   const getAlertSeverityColor = (severity: string) => {
     switch (severity) {
-      case 'low': return 'bg-success/10 text-green-800';
-      case 'medium': return 'bg-warning/10 text-yellow-800';
-      case 'high': return 'bg-warning/10 text-orange-800';
-      case 'critical': return 'bg-destructive/10 text-red-800';
+      case 'low': return 'bg-success/10 text-success';
+      case 'medium': return 'bg-warning/10 text-warning';
+      case 'high': return 'bg-warning/10 text-warning';
+      case 'critical': return 'bg-destructive/10 text-destructive';
       default: return 'bg-muted text-gray-800';
     }
   };
 
   const getAlertStatusColor = (status: string) => {
     switch (status) {
-      case 'active': return 'bg-destructive/10 text-red-800';
-      case 'investigating': return 'bg-warning/10 text-yellow-800';
-      case 'resolved': return 'bg-success/10 text-green-800';
+      case 'active': return 'bg-destructive/10 text-destructive';
+      case 'investigating': return 'bg-warning/10 text-warning';
+      case 'resolved': return 'bg-success/10 text-success';
       case 'false_positive': return 'bg-muted text-gray-800';
       default: return 'bg-muted text-gray-800';
     }
@@ -596,7 +596,7 @@ export default function ModelGovernancePanel({ className }: ModelGovernancePanel
                 variant="outline"
                 size="sm"
                 onClick={() => setIsMonitoring(!isMonitoring)}
-                className={isMonitoring ? 'bg-success/10 text-green-800' : ''}
+                className={isMonitoring ? 'bg-success/10 text-success' : ''}
               >
                 {isMonitoring ? <Eye className="h-4 w-4 mr-2" /> : <EyeOff className="h-4 w-4 mr-2" />}
                 {isMonitoring ? 'Monitoring' : 'Paused'}
@@ -969,31 +969,31 @@ export default function ModelGovernancePanel({ className }: ModelGovernancePanel
                     <div className="space-y-2 text-sm">
                       <div className="flex justify-between">
                         <span>GDPR:</span>
-                        <Badge className={selectedModel.compliance.gdpr ? 'bg-success/10 text-green-800' : 'bg-destructive/10 text-red-800'}>
+                        <Badge className={selectedModel.compliance.gdpr ? 'bg-success/10 text-success' : 'bg-destructive/10 text-destructive'}>
                           {selectedModel.compliance.gdpr ? 'Compliant' : 'Non-compliant'}
                         </Badge>
                       </div>
                       <div className="flex justify-between">
                         <span>CCPA:</span>
-                        <Badge className={selectedModel.compliance.ccpa ? 'bg-success/10 text-green-800' : 'bg-destructive/10 text-red-800'}>
+                        <Badge className={selectedModel.compliance.ccpa ? 'bg-success/10 text-success' : 'bg-destructive/10 text-destructive'}>
                           {selectedModel.compliance.ccpa ? 'Compliant' : 'Non-compliant'}
                         </Badge>
                       </div>
                       <div className="flex justify-between">
                         <span>SOX:</span>
-                        <Badge className={selectedModel.compliance.sox ? 'bg-success/10 text-green-800' : 'bg-destructive/10 text-red-800'}>
+                        <Badge className={selectedModel.compliance.sox ? 'bg-success/10 text-success' : 'bg-destructive/10 text-destructive'}>
                           {selectedModel.compliance.sox ? 'Compliant' : 'Non-compliant'}
                         </Badge>
                       </div>
                       <div className="flex justify-between">
                         <span>HIPAA:</span>
-                        <Badge className={selectedModel.compliance.hipaa ? 'bg-success/10 text-green-800' : 'bg-destructive/10 text-red-800'}>
+                        <Badge className={selectedModel.compliance.hipaa ? 'bg-success/10 text-success' : 'bg-destructive/10 text-destructive'}>
                           {selectedModel.compliance.hipaa ? 'Compliant' : 'Non-compliant'}
                         </Badge>
                       </div>
                       <div className="flex justify-between">
                         <span>ISO 27001:</span>
-                        <Badge className={selectedModel.compliance.iso27001 ? 'bg-success/10 text-green-800' : 'bg-destructive/10 text-red-800'}>
+                        <Badge className={selectedModel.compliance.iso27001 ? 'bg-success/10 text-success' : 'bg-destructive/10 text-destructive'}>
                           {selectedModel.compliance.iso27001 ? 'Compliant' : 'Non-compliant'}
                         </Badge>
                       </div>
@@ -1031,13 +1031,13 @@ export default function ModelGovernancePanel({ className }: ModelGovernancePanel
                       )}
                       <div className="flex justify-between">
                         <span>Monitoring:</span>
-                        <Badge className={selectedModel.governance.monitoring ? 'bg-success/10 text-green-800' : 'bg-destructive/10 text-red-800'}>
+                        <Badge className={selectedModel.governance.monitoring ? 'bg-success/10 text-success' : 'bg-destructive/10 text-destructive'}>
                           {selectedModel.governance.monitoring ? 'Enabled' : 'Disabled'}
                         </Badge>
                       </div>
                       <div className="flex justify-between">
                         <span>Alerts:</span>
-                        <Badge className={selectedModel.governance.alerts ? 'bg-success/10 text-green-800' : 'bg-destructive/10 text-red-800'}>
+                        <Badge className={selectedModel.governance.alerts ? 'bg-success/10 text-success' : 'bg-destructive/10 text-destructive'}>
                           {selectedModel.governance.alerts ? 'Enabled' : 'Disabled'}
                         </Badge>
                       </div>

@@ -64,9 +64,9 @@ export function RecommendationUplift({ className = '' }: RecommendationUpliftPro
   };
 
   const getAcceptanceBadge = (rate: number) => {
-    if (rate >= 70) return 'bg-success/10 text-green-800';
-    if (rate >= 50) return 'bg-warning/10 text-yellow-800';
-    return 'bg-destructive/10 text-red-800';
+    if (rate >= 70) return 'bg-success/10 text-success';
+    if (rate >= 50) return 'bg-warning/10 text-warning';
+    return 'bg-destructive/10 text-destructive';
   };
 
   const getAcceptanceLevel = (rate: number) => {
@@ -83,9 +83,9 @@ export function RecommendationUplift({ className = '' }: RecommendationUpliftPro
   };
 
   const getEngagementBadge = (improvement: number) => {
-    if (improvement >= 30) return 'bg-success/10 text-green-800';
-    if (improvement >= 20) return 'bg-warning/10 text-yellow-800';
-    return 'bg-destructive/10 text-red-800';
+    if (improvement >= 30) return 'bg-success/10 text-success';
+    if (improvement >= 20) return 'bg-warning/10 text-warning';
+    return 'bg-destructive/10 text-destructive';
   };
 
   const getEngagementLevel = (improvement: number) => {

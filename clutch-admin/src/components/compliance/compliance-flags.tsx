@@ -145,9 +145,9 @@ export default function ComplianceFlags({ className }: ComplianceFlagsProps) {
 
   const getStatusColor = (status: string) => {
     switch (status) {
-      case 'open': return 'bg-destructive/10 text-red-800';
-      case 'investigating': return 'bg-warning/10 text-yellow-800';
-      case 'resolved': return 'bg-success/10 text-green-800';
+      case 'open': return 'bg-destructive/10 text-destructive';
+      case 'investigating': return 'bg-warning/10 text-warning';
+      case 'resolved': return 'bg-success/10 text-success';
       case 'false_positive': return 'bg-muted text-gray-800';
       default: return 'bg-muted text-gray-800';
     }
@@ -167,9 +167,9 @@ export default function ComplianceFlags({ className }: ComplianceFlagsProps) {
 
   const getFrameworkStatusColor = (status: string) => {
     switch (status) {
-      case 'compliant': return 'bg-success/10 text-green-800';
-      case 'partial': return 'bg-warning/10 text-yellow-800';
-      case 'non_compliant': return 'bg-destructive/10 text-red-800';
+      case 'compliant': return 'bg-success/10 text-success';
+      case 'partial': return 'bg-warning/10 text-warning';
+      case 'non_compliant': return 'bg-destructive/10 text-destructive';
       case 'not_assessed': return 'bg-muted text-gray-800';
       default: return 'bg-muted text-gray-800';
     }
@@ -177,10 +177,10 @@ export default function ComplianceFlags({ className }: ComplianceFlagsProps) {
 
   const getSensitivityColor = (sensitivity: string) => {
     switch (sensitivity) {
-      case 'public': return 'bg-success/10 text-green-800';
-      case 'internal': return 'bg-primary/10 text-blue-800';
-      case 'confidential': return 'bg-warning/10 text-yellow-800';
-      case 'restricted': return 'bg-destructive/10 text-red-800';
+      case 'public': return 'bg-success/10 text-success';
+      case 'internal': return 'bg-primary/10 text-primary';
+      case 'confidential': return 'bg-warning/10 text-warning';
+      case 'restricted': return 'bg-destructive/10 text-destructive';
       default: return 'bg-muted text-gray-800';
     }
   };

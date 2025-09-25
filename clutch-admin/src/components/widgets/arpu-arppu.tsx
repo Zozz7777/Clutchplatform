@@ -110,9 +110,9 @@ export function ARPUARPPU({ className = '' }: ARPUARPPUProps) {
   };
 
   const getARPUBadge = (arpu: number) => {
-    if (arpu >= 100) return 'bg-success/10 text-green-800';
-    if (arpu >= 50) return 'bg-warning/10 text-yellow-800';
-    return 'bg-destructive/10 text-red-800';
+    if (arpu >= 100) return 'bg-success/10 text-success';
+    if (arpu >= 50) return 'bg-warning/10 text-warning';
+    return 'bg-destructive/10 text-destructive';
   };
 
   const getARPULevel = (arpu: number) => {

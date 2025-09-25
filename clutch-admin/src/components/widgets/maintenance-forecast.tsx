@@ -69,9 +69,9 @@ export function MaintenanceForecast({ className = '' }: MaintenanceForecastProps
   };
 
   const getConfidenceBadge = (confidence: number) => {
-    if (confidence >= 80) return 'bg-success/10 text-green-800';
-    if (confidence >= 60) return 'bg-warning/10 text-yellow-800';
-    return 'bg-destructive/10 text-red-800';
+    if (confidence >= 80) return 'bg-success/10 text-success';
+    if (confidence >= 60) return 'bg-warning/10 text-warning';
+    return 'bg-destructive/10 text-destructive';
   };
 
   const getConfidenceLevel = (confidence: number) => {
@@ -95,9 +95,9 @@ export function MaintenanceForecast({ className = '' }: MaintenanceForecastProps
     const now = new Date();
     const daysUntil = Math.ceil((date.getTime() - now.getTime()) / (1000 * 60 * 60 * 24));
     
-    if (daysUntil <= 7) return 'bg-destructive/10 text-red-800';
-    if (daysUntil <= 14) return 'bg-warning/10 text-yellow-800';
-    return 'bg-success/10 text-green-800';
+    if (daysUntil <= 7) return 'bg-destructive/10 text-destructive';
+    if (daysUntil <= 14) return 'bg-warning/10 text-warning';
+    return 'bg-success/10 text-success';
   };
 
   const getUrgencyLevel = (dateString: string) => {
@@ -221,7 +221,7 @@ export function MaintenanceForecast({ className = '' }: MaintenanceForecastProps
                   <div className="flex items-center space-x-3">
                     <AlertTriangle className="h-4 w-4 text-destructive" />
                     <div>
-                      <p className="text-sm font-medium text-red-900">{forecast.vehicleName}</p>
+                      <p className="text-sm font-medium text-destructive">{forecast.vehicleName}</p>
                       <p className="text-xs text-destructive">{forecast.reason}</p>
                     </div>
                   </div>

@@ -143,9 +143,9 @@ export function CashFlowProjection({ className = '' }: CashFlowProjectionProps) 
   };
 
   const getBalanceBadge = (balance: number) => {
-    if (balance >= 100000) return 'bg-success/10 text-green-800';
-    if (balance >= 50000) return 'bg-warning/10 text-yellow-800';
-    return 'bg-destructive/10 text-red-800';
+    if (balance >= 100000) return 'bg-success/10 text-success';
+    if (balance >= 50000) return 'bg-warning/10 text-warning';
+    return 'bg-destructive/10 text-destructive';
   };
 
   const getBalanceLevel = (balance: number) => {

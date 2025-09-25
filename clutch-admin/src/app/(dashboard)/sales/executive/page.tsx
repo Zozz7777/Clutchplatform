@@ -194,10 +194,10 @@ export default function ExecutiveDashboard() {
 
   const getPerformanceColor = (performance: string) => {
     switch (performance) {
-      case 'excellent': return 'bg-green-100 text-green-800';
-      case 'good': return 'bg-blue-100 text-blue-800';
-      case 'average': return 'bg-yellow-100 text-yellow-800';
-      case 'needs_improvement': return 'bg-red-100 text-red-800';
+      case 'excellent': return 'bg-success/10 text-success';
+      case 'good': return 'bg-primary/10 text-primary';
+      case 'average': return 'bg-warning/10 text-warning';
+      case 'needs_improvement': return 'bg-destructive/10 text-destructive';
       default: return 'bg-muted text-foreground';
     }
   };
@@ -423,7 +423,7 @@ export default function ExecutiveDashboard() {
                   
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-2">
-                      <Building2 className="h-4 w-4 text-green-600" />
+                      <Building2 className="h-4 w-4 text-success" />
                       <span className="text-sm font-medium">{t('sales.enterpriseRevenue')}</span>
                     </div>
                     <div className="text-right">
@@ -660,12 +660,12 @@ export default function ExecutiveDashboard() {
                     </div>
                   </div>
                   
-                  <div className="p-3 bg-green-50 border border-green-200 rounded-lg">
-                    <p className="font-medium text-green-800">{t('sales.enterpriseExpansion')}</p>
-                    <p className="text-sm text-green-600">{t('sales.enterpriseExpansionDescription')}</p>
+                  <div className="p-3 bg-success/5 border border-success/20 rounded-lg">
+                    <p className="font-medium text-success">{t('sales.enterpriseExpansion')}</p>
+                    <p className="text-sm text-success">{t('sales.enterpriseExpansionDescription')}</p>
                     <div className="mt-2">
                       <Progress value={40} className="h-2" />
-                      <p className="text-xs text-green-600 mt-1">40% {t('sales.complete')}</p>
+                      <p className="text-xs text-success mt-1">40% {t('sales.complete')}</p>
                     </div>
                   </div>
                   
@@ -690,22 +690,22 @@ export default function ExecutiveDashboard() {
               </CardHeader>
               <CardContent>
                 <div className="space-y-4">
-                  <div className="p-3 bg-yellow-50 border border-yellow-200 rounded-lg">
-                    <p className="font-medium text-yellow-800">{t('sales.marketCompetition')}</p>
-                    <p className="text-sm text-yellow-600">{t('sales.marketCompetitionDescription')}</p>
-                    <Badge className="bg-yellow-100 text-yellow-800 mt-2">Medium Risk</Badge>
+                  <div className="p-3 bg-warning/5 border border-warning/20 rounded-lg">
+                    <p className="font-medium text-warning">{t('sales.marketCompetition')}</p>
+                    <p className="text-sm text-warning/80">{t('sales.marketCompetitionDescription')}</p>
+                    <Badge className="bg-yellow-100 text-warning mt-2">Medium Risk</Badge>
                   </div>
                   
-                  <div className="p-3 bg-red-50 border border-red-200 rounded-lg">
-                    <p className="font-medium text-red-800">{t('sales.economicFactors')}</p>
-                    <p className="text-sm text-red-600">{t('sales.economicFactorsDescription')}</p>
-                    <Badge className="bg-red-100 text-red-800 mt-2">High Risk</Badge>
+                  <div className="p-3 bg-destructive/5 border border-destructive/20 rounded-lg">
+                    <p className="font-medium text-destructive">{t('sales.economicFactors')}</p>
+                    <p className="text-sm text-destructive/80">{t('sales.economicFactorsDescription')}</p>
+                    <Badge className="bg-red-100 text-destructive mt-2">High Risk</Badge>
                   </div>
                   
-                  <div className="p-3 bg-green-50 border border-green-200 rounded-lg">
-                    <p className="font-medium text-green-800">{t('sales.technologyAdoption')}</p>
-                    <p className="text-sm text-green-600">{t('sales.technologyAdoptionDescription')}</p>
-                    <Badge className="bg-green-100 text-green-800 mt-2">Low Risk</Badge>
+                  <div className="p-3 bg-success/5 border border-success/20 rounded-lg">
+                    <p className="font-medium text-success">{t('sales.technologyAdoption')}</p>
+                    <p className="text-sm text-success">{t('sales.technologyAdoptionDescription')}</p>
+                    <Badge className="bg-green-100 text-success mt-2">Low Risk</Badge>
                   </div>
                 </div>
               </CardContent>

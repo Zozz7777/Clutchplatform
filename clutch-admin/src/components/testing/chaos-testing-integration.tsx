@@ -215,9 +215,9 @@ export default function ChaosTestingIntegration({ className }: ChaosTestingInteg
     switch (status) {
       case 'draft': return 'bg-muted text-gray-800';
       case 'scheduled': return 'bg-primary/10 text-blue-800';
-      case 'running': return 'bg-warning/10 text-orange-800';
-      case 'completed': return 'bg-success/10 text-green-800';
-      case 'failed': return 'bg-destructive/10 text-red-800';
+      case 'running': return 'bg-warning/10 text-warning';
+      case 'completed': return 'bg-success/10 text-success';
+      case 'failed': return 'bg-destructive/10 text-destructive';
       case 'cancelled': return 'bg-muted text-gray-800';
       default: return 'bg-muted text-gray-800';
     }
@@ -225,10 +225,10 @@ export default function ChaosTestingIntegration({ className }: ChaosTestingInteg
 
   const getSeverityColor = (severity: string) => {
     switch (severity) {
-      case 'low': return 'bg-success/10 text-green-800';
-      case 'medium': return 'bg-warning/10 text-yellow-800';
-      case 'high': return 'bg-warning/10 text-orange-800';
-      case 'critical': return 'bg-destructive/10 text-red-800';
+      case 'low': return 'bg-success/10 text-success';
+      case 'medium': return 'bg-warning/10 text-warning';
+      case 'high': return 'bg-warning/10 text-warning';
+      case 'critical': return 'bg-destructive/10 text-destructive';
       default: return 'bg-muted text-gray-800';
     }
   };
@@ -259,8 +259,8 @@ export default function ChaosTestingIntegration({ className }: ChaosTestingInteg
   const getEnvironmentColor = (environment: string) => {
     switch (environment) {
       case 'development': return 'bg-primary/10 text-blue-800';
-      case 'staging': return 'bg-warning/10 text-yellow-800';
-      case 'production': return 'bg-success/10 text-green-800';
+      case 'staging': return 'bg-warning/10 text-warning';
+      case 'production': return 'bg-success/10 text-success';
       default: return 'bg-muted text-gray-800';
     }
   };
@@ -296,7 +296,7 @@ export default function ChaosTestingIntegration({ className }: ChaosTestingInteg
                 variant="outline"
                 size="sm"
                 onClick={() => setIsMonitoring(!isMonitoring)}
-                className={isMonitoring ? 'bg-success/10 text-green-800' : ''}
+                className={isMonitoring ? 'bg-success/10 text-success' : ''}
               >
                 {isMonitoring ? <Eye className="h-4 w-4 mr-2" /> : <EyeOff className="h-4 w-4 mr-2" />}
                 {isMonitoring ? 'Monitoring' : 'Paused'}
@@ -556,7 +556,7 @@ export default function ChaosTestingIntegration({ className }: ChaosTestingInteg
                     <div className="space-y-2 text-sm">
                       <div className="flex justify-between">
                         <span>Success:</span>
-                        <Badge className={selectedExperiment.results.success ? 'bg-success/10 text-green-800' : 'bg-destructive/10 text-red-800'}>
+                        <Badge className={selectedExperiment.results.success ? 'bg-success/10 text-success' : 'bg-destructive/10 text-destructive'}>
                           {selectedExperiment.results.success ? 'Success' : 'Failed'}
                         </Badge>
                       </div>
@@ -606,7 +606,7 @@ export default function ChaosTestingIntegration({ className }: ChaosTestingInteg
                       </div>
                       <div className="flex justify-between">
                         <span>Automated:</span>
-                        <Badge className={selectedExperiment.results.recovery.automated ? 'bg-success/10 text-green-800' : 'bg-warning/10 text-yellow-800'}>
+                        <Badge className={selectedExperiment.results.recovery.automated ? 'bg-success/10 text-success' : 'bg-warning/10 text-warning'}>
                           {selectedExperiment.results.recovery.automated ? 'Yes' : 'No'}
                         </Badge>
                       </div>
@@ -633,7 +633,7 @@ export default function ChaosTestingIntegration({ className }: ChaosTestingInteg
                     <div className="space-y-2 text-sm">
                       <div className="flex justify-between">
                         <span>Auto Stop:</span>
-                        <Badge className={selectedExperiment.safety.autoStop ? 'bg-success/10 text-green-800' : 'bg-destructive/10 text-red-800'}>
+                        <Badge className={selectedExperiment.safety.autoStop ? 'bg-success/10 text-success' : 'bg-destructive/10 text-destructive'}>
                           {selectedExperiment.safety.autoStop ? 'Enabled' : 'Disabled'}
                         </Badge>
                       </div>
@@ -643,7 +643,7 @@ export default function ChaosTestingIntegration({ className }: ChaosTestingInteg
                       </div>
                       <div className="flex justify-between">
                         <span>Monitoring:</span>
-                        <Badge className={selectedExperiment.safety.monitoring ? 'bg-success/10 text-green-800' : 'bg-destructive/10 text-red-800'}>
+                        <Badge className={selectedExperiment.safety.monitoring ? 'bg-success/10 text-success' : 'bg-destructive/10 text-destructive'}>
                           {selectedExperiment.safety.monitoring ? 'Enabled' : 'Disabled'}
                         </Badge>
                       </div>

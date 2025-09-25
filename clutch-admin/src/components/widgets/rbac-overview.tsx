@@ -135,9 +135,9 @@ export function RBACOverview({ className = '' }: RBACOverviewProps) {
 
   const getStatusBadge = (status: string) => {
     switch (status) {
-      case 'active': return 'bg-success/10 text-green-800';
-      case 'inactive': return 'bg-warning/10 text-yellow-800';
-      case 'suspended': return 'bg-destructive/10 text-red-800';
+      case 'active': return 'bg-success/10 text-success';
+      case 'inactive': return 'bg-warning/10 text-warning';
+      case 'suspended': return 'bg-destructive/10 text-destructive';
       default: return 'bg-muted text-gray-800';
     }
   };
@@ -153,9 +153,9 @@ export function RBACOverview({ className = '' }: RBACOverviewProps) {
 
   const getRiskBadge = (risk: string) => {
     switch (risk) {
-      case 'low': return 'bg-success/10 text-green-800';
-      case 'medium': return 'bg-warning/10 text-yellow-800';
-      case 'high': return 'bg-destructive/10 text-red-800';
+      case 'low': return 'bg-success/10 text-success';
+      case 'medium': return 'bg-warning/10 text-warning';
+      case 'high': return 'bg-destructive/10 text-destructive';
       default: return 'bg-muted text-gray-800';
     }
   };
@@ -309,7 +309,7 @@ export function RBACOverview({ className = '' }: RBACOverviewProps) {
               <div className="flex items-center space-x-2">
                 <AlertTriangle className="h-4 w-4 text-destructive" />
                 <div>
-                  <p className="text-sm font-medium text-red-900">High-risk users detected</p>
+                  <p className="text-sm font-medium text-destructive">High-risk users detected</p>
                   <p className="text-xs text-destructive">{rbacData.riskUsers} users with elevated permissions</p>
                 </div>
               </div>
@@ -318,7 +318,7 @@ export function RBACOverview({ className = '' }: RBACOverviewProps) {
               <div className="flex items-center space-x-2">
                 <AlertTriangle className="h-4 w-4 text-warning" />
                 <div>
-                  <p className="text-sm font-medium text-yellow-900">Access anomalies</p>
+                  <p className="text-sm font-medium text-warning">Access anomalies</p>
                   <p className="text-xs text-warning">{rbacData.anomalies} unusual access patterns detected</p>
                 </div>
               </div>

@@ -102,9 +102,9 @@ export function FeatureUsage({ className = '' }: FeatureUsageProps) {
   };
 
   const getUsageBadge = (usage: number) => {
-    if (usage >= 80) return 'bg-success/10 text-green-800';
-    if (usage >= 60) return 'bg-warning/10 text-yellow-800';
-    return 'bg-destructive/10 text-red-800';
+    if (usage >= 80) return 'bg-success/10 text-success';
+    if (usage >= 60) return 'bg-warning/10 text-warning';
+    return 'bg-destructive/10 text-destructive';
   };
 
   const getUsageLevel = (usage: number) => {
@@ -136,9 +136,9 @@ export function FeatureUsage({ className = '' }: FeatureUsageProps) {
   };
 
   const getSatisfactionBadge = (satisfaction: number) => {
-    if (satisfaction >= 4.0) return 'bg-success/10 text-green-800';
-    if (satisfaction >= 3.5) return 'bg-warning/10 text-yellow-800';
-    return 'bg-destructive/10 text-red-800';
+    if (satisfaction >= 4.0) return 'bg-success/10 text-success';
+    if (satisfaction >= 3.5) return 'bg-warning/10 text-warning';
+    return 'bg-destructive/10 text-destructive';
   };
 
   const getCategories = () => {

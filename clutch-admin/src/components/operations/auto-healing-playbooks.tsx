@@ -376,20 +376,20 @@ export default function AutoHealingPlaybooks({ className }: AutoHealingPlaybooks
 
   const getStatusColor = (status: string) => {
     switch (status) {
-      case 'active': return 'bg-success/10 text-green-800';
+      case 'active': return 'bg-success/10 text-success';
       case 'inactive': return 'bg-muted text-gray-800';
-      case 'testing': return 'bg-warning/10 text-yellow-800';
-      case 'failed': return 'bg-destructive/10 text-red-800';
+      case 'testing': return 'bg-warning/10 text-warning';
+      case 'failed': return 'bg-destructive/10 text-destructive';
       default: return 'bg-muted text-gray-800';
     }
   };
 
   const getSeverityColor = (severity: string) => {
     switch (severity) {
-      case 'low': return 'bg-success/10 text-green-800';
-      case 'medium': return 'bg-warning/10 text-yellow-800';
-      case 'high': return 'bg-warning/10 text-orange-800';
-      case 'critical': return 'bg-destructive/10 text-red-800';
+      case 'low': return 'bg-success/10 text-success';
+      case 'medium': return 'bg-warning/10 text-warning';
+      case 'high': return 'bg-warning/10 text-warning';
+      case 'critical': return 'bg-destructive/10 text-destructive';
       default: return 'bg-muted text-gray-800';
     }
   };
@@ -446,7 +446,7 @@ export default function AutoHealingPlaybooks({ className }: AutoHealingPlaybooks
                 variant="outline"
                 size="sm"
                 onClick={() => setIsMonitoring(!isMonitoring)}
-                className={isMonitoring ? 'bg-success/10 text-green-800' : ''}
+                className={isMonitoring ? 'bg-success/10 text-success' : ''}
               >
                 {isMonitoring ? <Eye className="h-4 w-4 mr-2" /> : <EyeOff className="h-4 w-4 mr-2" />}
                 {isMonitoring ? 'Monitoring' : 'Paused'}
@@ -759,13 +759,13 @@ export default function AutoHealingPlaybooks({ className }: AutoHealingPlaybooks
                       </div>
                       <div className="flex justify-between">
                         <span>Rollback Enabled:</span>
-                        <Badge className={selectedPlaybook.safety.rollbackEnabled ? 'bg-success/10 text-green-800' : 'bg-destructive/10 text-red-800'}>
+                        <Badge className={selectedPlaybook.safety.rollbackEnabled ? 'bg-success/10 text-success' : 'bg-destructive/10 text-destructive'}>
                           {selectedPlaybook.safety.rollbackEnabled ? 'Yes' : 'No'}
                         </Badge>
                       </div>
                       <div className="flex justify-between">
                         <span>Approval Required:</span>
-                        <Badge className={selectedPlaybook.safety.approvalRequired ? 'bg-warning/10 text-yellow-800' : 'bg-success/10 text-green-800'}>
+                        <Badge className={selectedPlaybook.safety.approvalRequired ? 'bg-warning/10 text-warning' : 'bg-success/10 text-success'}>
                           {selectedPlaybook.safety.approvalRequired ? 'Yes' : 'No'}
                         </Badge>
                       </div>

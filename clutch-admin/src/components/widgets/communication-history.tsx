@@ -68,18 +68,18 @@ export default function CommunicationHistory() {
   const getTypeColor = (type: string) => {
     switch (type) {
       case 'call': return 'bg-blue-100 text-blue-800';
-      case 'visit': return 'bg-green-100 text-green-800';
-      case 'email': return 'bg-purple-100 text-purple-800';
-      case 'whatsapp': return 'bg-green-100 text-green-800';
+      case 'visit': return 'bg-success/10 text-success';
+      case 'email': return 'bg-info/10 text-info';
+      case 'whatsapp': return 'bg-success/10 text-success';
       default: return 'bg-muted text-foreground';
     }
   };
 
   const getOutcomeColor = (outcome: string) => {
     switch (outcome) {
-      case 'successful': return 'bg-green-100 text-green-800';
-      case 'left-msg': return 'bg-yellow-100 text-yellow-800';
-      case 'no-answer': return 'bg-red-100 text-red-800';
+      case 'successful': return 'bg-success/10 text-success';
+      case 'left-msg': return 'bg-warning/10 text-warning';
+      case 'no-answer': return 'bg-destructive/10 text-destructive';
       default: return 'bg-muted text-foreground';
     }
   };
@@ -133,8 +133,8 @@ export default function CommunicationHistory() {
         </CardHeader>
         <CardContent>
           <div className="text-center py-8">
-            <AlertTriangle className="h-12 w-12 text-red-500 mx-auto mb-4" />
-            <p className="text-red-600 mb-4">{error}</p>
+            <AlertTriangle className="h-12 w-12 text-destructive mx-auto mb-4" />
+            <p className="text-destructive mb-4">{error}</p>
             <Button onClick={fetchCommunications} variant="outline">
               Retry
             </Button>
@@ -160,12 +160,12 @@ export default function CommunicationHistory() {
             <p className="text-2xl font-bold text-blue-900">{totalCommunications}</p>
             <p className="text-sm text-blue-700">Total Communications</p>
           </div>
-          <div className="text-center p-4 bg-green-50 rounded-lg">
-            <Phone className="h-8 w-8 text-green-600 mx-auto mb-2" />
-            <p className="text-2xl font-bold text-green-900">
+          <div className="text-center p-4 bg-success/10 rounded-lg">
+            <Phone className="h-8 w-8 text-success mx-auto mb-2" />
+            <p className="text-2xl font-bold text-success">
               {successfulRate.toFixed(0)}%
             </p>
-            <p className="text-sm text-green-700">Success Rate</p>
+            <p className="text-sm text-success/80">Success Rate</p>
           </div>
         </div>
 

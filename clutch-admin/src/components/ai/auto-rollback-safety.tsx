@@ -572,21 +572,21 @@ export default function AutoRollbackSafety({ className }: AutoRollbackSafetyProp
 
   const getStatusColor = (status: string) => {
     switch (status) {
-      case 'deployed': return 'bg-success/10 text-green-800';
-      case 'rolling_back': return 'bg-warning/10 text-orange-800';
-      case 'rolled_back': return 'bg-destructive/10 text-red-800';
-      case 'failed': return 'bg-destructive/10 text-red-800';
-      case 'monitoring': return 'bg-primary/10 text-blue-800';
-      default: return 'bg-muted text-gray-800';
+      case 'deployed': return 'bg-success/10 text-success';
+      case 'rolling_back': return 'bg-warning/10 text-warning';
+      case 'rolled_back': return 'bg-destructive/10 text-destructive';
+      case 'failed': return 'bg-destructive/10 text-destructive';
+      case 'monitoring': return 'bg-primary/10 text-primary';
+      default: return 'bg-muted text-muted-foreground';
     }
   };
 
   const getEnvironmentColor = (environment: string) => {
     switch (environment) {
-      case 'development': return 'bg-primary/10 text-blue-800';
-      case 'staging': return 'bg-warning/10 text-yellow-800';
-      case 'production': return 'bg-success/10 text-green-800';
-      default: return 'bg-muted text-gray-800';
+      case 'development': return 'bg-primary/10 text-primary';
+      case 'staging': return 'bg-warning/10 text-warning';
+      case 'production': return 'bg-success/10 text-success';
+      default: return 'bg-muted text-muted-foreground';
     }
   };
 
@@ -601,11 +601,11 @@ export default function AutoRollbackSafety({ className }: AutoRollbackSafetyProp
 
   const getSeverityColor = (severity: string) => {
     switch (severity) {
-      case 'low': return 'bg-success/10 text-green-800';
-      case 'medium': return 'bg-warning/10 text-yellow-800';
-      case 'high': return 'bg-warning/10 text-orange-800';
-      case 'critical': return 'bg-destructive/10 text-red-800';
-      default: return 'bg-muted text-gray-800';
+      case 'low': return 'bg-success/10 text-success';
+      case 'medium': return 'bg-warning/10 text-warning';
+      case 'high': return 'bg-warning/10 text-warning';
+      case 'critical': return 'bg-destructive/10 text-destructive';
+      default: return 'bg-muted text-muted-foreground';
     }
   };
 
@@ -620,10 +620,10 @@ export default function AutoRollbackSafety({ className }: AutoRollbackSafetyProp
 
   const getRollbackStatusColor = (status: string) => {
     switch (status) {
-      case 'successful': return 'bg-success/10 text-green-800';
-      case 'failed': return 'bg-destructive/10 text-red-800';
-      case 'partial': return 'bg-warning/10 text-yellow-800';
-      default: return 'bg-muted text-gray-800';
+      case 'successful': return 'bg-success/10 text-success';
+      case 'failed': return 'bg-destructive/10 text-destructive';
+      case 'partial': return 'bg-warning/10 text-warning';
+      default: return 'bg-muted text-muted-foreground';
     }
   };
 
@@ -659,7 +659,7 @@ export default function AutoRollbackSafety({ className }: AutoRollbackSafetyProp
                 variant="outline"
                 size="sm"
                 onClick={() => setIsSafetyEnabled(!isSafetyEnabled)}
-                className={isSafetyEnabled ? 'bg-success/10 text-green-800' : 'bg-destructive/10 text-red-800'}
+                className={isSafetyEnabled ? 'bg-success/10 text-success' : 'bg-destructive/10 text-destructive'}
               >
                 {isSafetyEnabled ? <ToggleRight className="h-4 w-4 mr-2" /> : <ToggleLeft className="h-4 w-4 mr-2" />}
                 {isSafetyEnabled ? 'Safety Enabled' : 'Safety Disabled'}
@@ -700,7 +700,7 @@ export default function AutoRollbackSafety({ className }: AutoRollbackSafetyProp
           <div className={`p-4 border rounded-[0.625rem] ${isSafetyEnabled ? 'bg-success/10 border-green-200' : 'bg-destructive/10 border-red-200'}`}>
             <div className="flex items-center justify-between">
               <div>
-                <h4 className={`font-medium ${isSafetyEnabled ? 'text-green-800' : 'text-red-800'}`}>
+                <h4 className={`font-medium ${isSafetyEnabled ? 'text-success' : 'text-destructive'}`}>
                   Auto-Rollback Safety {isSafetyEnabled ? 'Enabled' : 'Disabled'}
                 </h4>
                 <p className={`text-sm ${isSafetyEnabled ? 'text-success' : 'text-destructive'}`}>
@@ -711,7 +711,7 @@ export default function AutoRollbackSafety({ className }: AutoRollbackSafetyProp
                 </p>
               </div>
               <div className="text-right">
-                <div className={`text-sm font-medium ${isSafetyEnabled ? 'text-green-800' : 'text-red-800'}`}>
+                <div className={`text-sm font-medium ${isSafetyEnabled ? 'text-success' : 'text-destructive'}`}>
                   {safetyRules.filter(rule => rule.isActive).length} Active Rules
                 </div>
                 <div className={`text-sm ${isSafetyEnabled ? 'text-success' : 'text-destructive'}`}>
@@ -735,10 +735,10 @@ export default function AutoRollbackSafety({ className }: AutoRollbackSafetyProp
                       </Badge>
                     </div>
                     <div className="flex items-center gap-2">
-                      <Badge className={rule.isActive ? 'bg-success/10 text-green-800' : 'bg-muted text-gray-800'}>
+                      <Badge className={rule.isActive ? 'bg-success/10 text-success' : 'bg-muted text-muted-foreground'}>
                         {rule.isActive ? 'Active' : 'Inactive'}
                       </Badge>
-                      <Badge className={rule.autoRollback ? 'bg-primary/10 text-blue-800' : 'bg-warning/10 text-yellow-800'}>
+                      <Badge className={rule.autoRollback ? 'bg-primary/10 text-primary' : 'bg-warning/10 text-warning'}>
                         {rule.autoRollback ? 'Auto-Rollback' : 'Alert Only'}
                       </Badge>
                     </div>
@@ -900,13 +900,13 @@ export default function AutoRollbackSafety({ className }: AutoRollbackSafetyProp
                       <div className="space-y-2">
                         <div className="flex justify-between">
                           <span>Accuracy:</span>
-                          <Badge className={selectedDeployment.safetyChecks.accuracy ? 'bg-success/10 text-green-800' : 'bg-destructive/10 text-red-800'}>
+                          <Badge className={selectedDeployment.safetyChecks.accuracy ? 'bg-success/10 text-success' : 'bg-destructive/10 text-destructive'}>
                             {selectedDeployment.safetyChecks.accuracy ? 'Pass' : 'Fail'}
                           </Badge>
                         </div>
                         <div className="flex justify-between">
                           <span>Performance:</span>
-                          <Badge className={selectedDeployment.safetyChecks.performance ? 'bg-success/10 text-green-800' : 'bg-destructive/10 text-red-800'}>
+                          <Badge className={selectedDeployment.safetyChecks.performance ? 'bg-success/10 text-success' : 'bg-destructive/10 text-destructive'}>
                             {selectedDeployment.safetyChecks.performance ? 'Pass' : 'Fail'}
                           </Badge>
                         </div>
@@ -914,13 +914,13 @@ export default function AutoRollbackSafety({ className }: AutoRollbackSafetyProp
                       <div className="space-y-2">
                         <div className="flex justify-between">
                           <span>Bias:</span>
-                          <Badge className={selectedDeployment.safetyChecks.bias ? 'bg-success/10 text-green-800' : 'bg-destructive/10 text-red-800'}>
+                          <Badge className={selectedDeployment.safetyChecks.bias ? 'bg-success/10 text-success' : 'bg-destructive/10 text-destructive'}>
                             {selectedDeployment.safetyChecks.bias ? 'Pass' : 'Fail'}
                           </Badge>
                         </div>
                         <div className="flex justify-between">
                           <span>Compliance:</span>
-                          <Badge className={selectedDeployment.safetyChecks.compliance ? 'bg-success/10 text-green-800' : 'bg-destructive/10 text-red-800'}>
+                          <Badge className={selectedDeployment.safetyChecks.compliance ? 'bg-success/10 text-success' : 'bg-destructive/10 text-destructive'}>
                             {selectedDeployment.safetyChecks.compliance ? 'Pass' : 'Fail'}
                           </Badge>
                         </div>
@@ -928,7 +928,7 @@ export default function AutoRollbackSafety({ className }: AutoRollbackSafetyProp
                       <div className="space-y-2">
                         <div className="flex justify-between">
                           <span>Data Quality:</span>
-                          <Badge className={selectedDeployment.safetyChecks.dataQuality ? 'bg-success/10 text-green-800' : 'bg-destructive/10 text-red-800'}>
+                          <Badge className={selectedDeployment.safetyChecks.dataQuality ? 'bg-success/10 text-success' : 'bg-destructive/10 text-destructive'}>
                             {selectedDeployment.safetyChecks.dataQuality ? 'Pass' : 'Fail'}
                           </Badge>
                         </div>

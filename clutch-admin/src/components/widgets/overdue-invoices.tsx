@@ -97,10 +97,10 @@ export function OverdueInvoices({ className = '' }: OverdueInvoicesProps) {
 
   const getRiskBadge = (risk: string) => {
     switch (risk) {
-      case 'low': return 'bg-success/10 text-green-800';
-      case 'medium': return 'bg-warning/10 text-yellow-800';
-      case 'high': return 'bg-warning/10 text-orange-800';
-      case 'critical': return 'bg-destructive/10 text-red-800';
+      case 'low': return 'bg-success/10 text-success';
+      case 'medium': return 'bg-warning/10 text-warning';
+      case 'high': return 'bg-warning/10 text-warning';
+      case 'critical': return 'bg-destructive/10 text-destructive';
       default: return 'bg-muted text-gray-800';
     }
   };
@@ -116,9 +116,9 @@ export function OverdueInvoices({ className = '' }: OverdueInvoicesProps) {
 
   const getStatusBadge = (status: string) => {
     switch (status) {
-      case 'overdue': return 'bg-destructive/10 text-red-800';
-      case 'partial': return 'bg-warning/10 text-yellow-800';
-      case 'disputed': return 'bg-warning/10 text-orange-800';
+      case 'overdue': return 'bg-destructive/10 text-destructive';
+      case 'partial': return 'bg-warning/10 text-warning';
+      case 'disputed': return 'bg-warning/10 text-warning';
       default: return 'bg-muted text-gray-800';
     }
   };
@@ -280,7 +280,7 @@ export function OverdueInvoices({ className = '' }: OverdueInvoicesProps) {
             <span className="text-2xl font-bold text-warning">
               {overdueData.averageDaysOverdue.toFixed(0)}
             </span>
-            <Badge className="bg-warning/10 text-orange-800">
+            <Badge className="bg-warning/10 text-warning">
               Days
             </Badge>
           </div>

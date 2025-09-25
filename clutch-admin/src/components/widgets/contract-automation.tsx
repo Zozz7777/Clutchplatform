@@ -205,11 +205,11 @@ export default function ContractAutomation() {
     switch (status) {
       case 'draft': return 'bg-muted text-foreground';
       case 'generated': return 'bg-blue-100 text-blue-800';
-      case 'sent': return 'bg-yellow-100 text-yellow-800';
-      case 'signed': return 'bg-purple-100 text-purple-800';
-      case 'pending_legal': return 'bg-orange-100 text-orange-800';
-      case 'approved': return 'bg-green-100 text-green-800';
-      case 'rejected': return 'bg-red-100 text-red-800';
+      case 'sent': return 'bg-warning/10 text-warning';
+      case 'signed': return 'bg-primary/10 text-primary';
+      case 'pending_legal': return 'bg-info/10 text-info';
+      case 'approved': return 'bg-success/10 text-success';
+      case 'rejected': return 'bg-destructive/10 text-destructive';
       default: return 'bg-muted text-foreground';
     }
   };
@@ -450,13 +450,13 @@ export default function ContractAutomation() {
                       </div>
                     </div>
                     
-                    <div className="flex items-center gap-3 p-3 bg-yellow-50 border border-yellow-200 rounded-lg">
-                      <div className="h-8 w-8 rounded-full bg-yellow-100 flex items-center justify-center">
-                        <span className="text-sm font-bold text-yellow-800">2</span>
+                    <div className="flex items-center gap-3 p-3 bg-warning/5 border border-warning/20 rounded-lg">
+                      <div className="h-8 w-8 rounded-full bg-warning/10 flex items-center justify-center">
+                        <span className="text-sm font-bold text-warning">2</span>
                       </div>
                       <div>
-                        <p className="font-medium text-yellow-800">{t('sales.generateContract')}</p>
-                        <p className="text-sm text-yellow-600">{t('sales.generateContractDescription')}</p>
+                        <p className="font-medium text-warning">{t('sales.generateContract')}</p>
+                        <p className="text-sm text-warning/80">{t('sales.generateContractDescription')}</p>
                       </div>
                     </div>
                     
@@ -470,13 +470,13 @@ export default function ContractAutomation() {
                       </div>
                     </div>
                     
-                    <div className="flex items-center gap-3 p-3 bg-green-50 border border-green-200 rounded-lg">
-                      <div className="h-8 w-8 rounded-full bg-green-100 flex items-center justify-center">
-                        <span className="text-sm font-bold text-green-800">4</span>
+                    <div className="flex items-center gap-3 p-3 bg-success/5 border border-success/20 rounded-lg">
+                      <div className="h-8 w-8 rounded-full bg-success/10 flex items-center justify-center">
+                        <span className="text-sm font-bold text-success">4</span>
                       </div>
                       <div>
-                        <p className="font-medium text-green-800">{t('sales.uploadSigned')}</p>
-                        <p className="text-sm text-green-600">{t('sales.uploadSignedDescription')}</p>
+                        <p className="font-medium text-success">{t('sales.uploadSigned')}</p>
+                        <p className="text-sm text-success/80">{t('sales.uploadSignedDescription')}</p>
                       </div>
                     </div>
                   </div>
@@ -502,13 +502,13 @@ export default function ContractAutomation() {
                       </div>
                     </div>
                     
-                    <div className="flex items-center gap-3 p-3 bg-yellow-50 border border-yellow-200 rounded-lg">
-                      <div className="h-8 w-8 rounded-full bg-yellow-100 flex items-center justify-center">
-                        <span className="text-sm font-bold text-yellow-800">2</span>
+                    <div className="flex items-center gap-3 p-3 bg-warning/5 border border-warning/20 rounded-lg">
+                      <div className="h-8 w-8 rounded-full bg-warning/10 flex items-center justify-center">
+                        <span className="text-sm font-bold text-warning">2</span>
                       </div>
                       <div>
-                        <p className="font-medium text-yellow-800">{t('sales.negotiateTerms')}</p>
-                        <p className="text-sm text-yellow-600">{t('sales.negotiateTermsDescription')}</p>
+                        <p className="font-medium text-warning">{t('sales.negotiateTerms')}</p>
+                        <p className="text-sm text-warning/80">{t('sales.negotiateTermsDescription')}</p>
                       </div>
                     </div>
                     
@@ -522,13 +522,13 @@ export default function ContractAutomation() {
                       </div>
                     </div>
                     
-                    <div className="flex items-center gap-3 p-3 bg-green-50 border border-green-200 rounded-lg">
-                      <div className="h-8 w-8 rounded-full bg-green-100 flex items-center justify-center">
-                        <span className="text-sm font-bold text-green-800">4</span>
+                    <div className="flex items-center gap-3 p-3 bg-success/5 border border-success/20 rounded-lg">
+                      <div className="h-8 w-8 rounded-full bg-success/10 flex items-center justify-center">
+                        <span className="text-sm font-bold text-success">4</span>
                       </div>
                       <div>
-                        <p className="font-medium text-green-800">{t('sales.legalReview')}</p>
-                        <p className="text-sm text-green-600">{t('sales.legalReviewDescription')}</p>
+                        <p className="font-medium text-success">{t('sales.legalReview')}</p>
+                        <p className="text-sm text-success/80">{t('sales.legalReviewDescription')}</p>
                       </div>
                     </div>
                   </div>

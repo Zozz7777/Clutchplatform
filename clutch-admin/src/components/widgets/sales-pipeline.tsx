@@ -76,8 +76,8 @@ export default function SalesPipeline() {
         </CardHeader>
         <CardContent>
           <div className="text-center py-8">
-            <AlertTriangle className="h-12 w-12 text-red-500 mx-auto mb-4" />
-            <p className="text-red-600 mb-4">{error}</p>
+            <AlertTriangle className="h-12 w-12 text-destructive mx-auto mb-4" />
+            <p className="text-destructive mb-4">{error}</p>
             <button 
               onClick={fetchPipelineData}
               className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"

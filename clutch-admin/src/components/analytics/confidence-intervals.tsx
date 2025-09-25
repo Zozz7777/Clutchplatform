@@ -237,12 +237,12 @@ export default function ConfidenceIntervals({ className }: ConfidenceIntervalsPr
 
   const getTypeColor = (type: string) => {
     switch (type) {
-      case 'revenue': return 'bg-success/10 text-green-800';
+      case 'revenue': return 'bg-success/10 text-success';
       case 'users': return 'bg-primary/10 text-blue-800';
-      case 'performance': return 'bg-warning/10 text-orange-800';
-      case 'cost': return 'bg-destructive/10 text-red-800';
+      case 'performance': return 'bg-warning/10 text-warning';
+      case 'cost': return 'bg-destructive/10 text-destructive';
       case 'capacity': return 'bg-primary/10 text-purple-800';
-      case 'risk': return 'bg-warning/10 text-yellow-800';
+      case 'risk': return 'bg-warning/10 text-warning';
       case 'conversion': return 'bg-indigo-100 text-indigo-800';
       case 'retention': return 'bg-pink-100 text-pink-800';
       default: return 'bg-muted text-gray-800';
@@ -310,7 +310,7 @@ export default function ConfidenceIntervals({ className }: ConfidenceIntervalsPr
                 variant="outline"
                 size="sm"
                 onClick={() => setIsMonitoring(!isMonitoring)}
-                className={isMonitoring ? 'bg-success/10 text-green-800' : ''}
+                className={isMonitoring ? 'bg-success/10 text-success' : ''}
               >
                 {isMonitoring ? <Eye className="h-4 w-4 mr-2" /> : <EyeOff className="h-4 w-4 mr-2" />}
                 {isMonitoring ? 'Monitoring' : 'Paused'}

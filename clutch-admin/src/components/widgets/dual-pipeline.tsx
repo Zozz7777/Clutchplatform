@@ -75,20 +75,20 @@ interface PipelineData {
 
 const PARTNERS_STAGES = [
   { id: 'prospect', name: 'prospect', color: 'bg-blue-100 text-blue-800' },
-  { id: 'contacted', name: 'contacted', color: 'bg-yellow-100 text-yellow-800' },
-  { id: 'qualified', name: 'qualified', color: 'bg-purple-100 text-purple-800' },
-  { id: 'proposal', name: 'proposal', color: 'bg-orange-100 text-orange-800' },
-  { id: 'negotiation', name: 'negotiation', color: 'bg-red-100 text-red-800' },
-  { id: 'signed', name: 'signed', color: 'bg-green-100 text-green-800' }
+  { id: 'contacted', name: 'contacted', color: 'bg-warning/10 text-warning' },
+  { id: 'qualified', name: 'qualified', color: 'bg-primary/10 text-primary' },
+  { id: 'proposal', name: 'proposal', color: 'bg-info/10 text-info' },
+  { id: 'negotiation', name: 'negotiation', color: 'bg-destructive/10 text-destructive' },
+  { id: 'signed', name: 'signed', color: 'bg-success/10 text-success' }
 ];
 
 const B2B_STAGES = [
   { id: 'prospect', name: 'prospect', color: 'bg-blue-100 text-blue-800' },
   { id: 'discovery', name: 'discovery', color: 'bg-indigo-100 text-indigo-800' },
   { id: 'proposal', name: 'proposal', color: 'bg-purple-100 text-purple-800' },
-  { id: 'negotiation', name: 'negotiation', color: 'bg-orange-100 text-orange-800' },
-  { id: 'contract', name: 'contract', color: 'bg-red-100 text-red-800' },
-  { id: 'closed_won', name: 'closed_won', color: 'bg-green-100 text-green-800' }
+  { id: 'negotiation', name: 'negotiation', color: 'bg-info/10 text-info' },
+  { id: 'contract', name: 'contract', color: 'bg-destructive/10 text-destructive' },
+  { id: 'closed_won', name: 'closed_won', color: 'bg-success/10 text-success' }
 ];
 
 export default function DualPipeline() {
@@ -221,10 +221,10 @@ export default function DualPipeline() {
 
   const getPriorityColor = (priority: string) => {
     switch (priority) {
-      case 'urgent': return 'bg-red-100 text-red-800';
-      case 'high': return 'bg-orange-100 text-orange-800';
-      case 'medium': return 'bg-yellow-100 text-yellow-800';
-      case 'low': return 'bg-green-100 text-green-800';
+      case 'urgent': return 'bg-destructive/10 text-destructive';
+      case 'high': return 'bg-info/10 text-info';
+      case 'medium': return 'bg-warning/10 text-warning';
+      case 'low': return 'bg-success/10 text-success';
       default: return 'bg-muted text-foreground';
     }
   };

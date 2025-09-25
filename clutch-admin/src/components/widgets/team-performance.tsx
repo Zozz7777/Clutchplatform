@@ -23,8 +23,32 @@ interface TeamMember {
 export default function TeamPerformance() {
   const { t } = useLanguage();
 
-  // Mock data - in production, this would come from API
-  const teamMembers: TeamMember[] = [
+  // TODO: Replace with real API call
+  const [teamMembers, setTeamMembers] = React.useState<TeamMember[]>([]);
+  const [isLoading, setIsLoading] = React.useState(true);
+
+  React.useEffect(() => {
+    // TODO: Implement real API call
+    // fetchTeamPerformance().then(setTeamMembers).finally(() => setIsLoading(false));
+    setIsLoading(false);
+  }, []);
+
+  if (isLoading) {
+    return (
+      <Card>
+        <CardHeader>
+          <CardTitle>{t('dashboard.teamPerformance')}</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <div className="flex items-center justify-center h-32">
+            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+          </div>
+        </CardContent>
+      </Card>
+    );
+  }
+
+  const mockTeamMembers: TeamMember[] = [
     {
       id: '1',
       name: 'Ahmed Hassan',
@@ -73,10 +97,10 @@ export default function TeamPerformance() {
 
   const getPerformanceColor = (performance: string) => {
     switch (performance) {
-      case 'excellent': return 'text-green-600 bg-green-100';
-      case 'good': return 'text-blue-600 bg-blue-100';
-      case 'average': return 'text-yellow-600 bg-yellow-100';
-      case 'needs_improvement': return 'text-red-600 bg-red-100';
+      case 'excellent': return 'text-success bg-success/10';
+      case 'good': return 'text-primary bg-primary/10';
+      case 'average': return 'text-warning bg-warning/10';
+      case 'needs_improvement': return 'text-destructive bg-destructive/10';
       default: return 'text-muted-foreground bg-muted';
     }
   };
@@ -91,8 +115,8 @@ export default function TeamPerformance() {
     }
   };
 
-  const totalRevenue = teamMembers.reduce((sum, member) => sum + member.revenue, 0);
-  const totalQuota = teamMembers.reduce((sum, member) => sum + member.quota, 0);
+  const totalRevenue = mockTeamMembers.reduce((sum, member) => sum + member.revenue, 0);
+  const totalQuota = mockTeamMembers.reduce((sum, member) => sum + member.quota, 0);
   const teamQuotaAchievement = totalQuota > 0 ? (totalRevenue / totalQuota) * 100 : 0;
 
   return (
@@ -113,12 +137,12 @@ export default function TeamPerformance() {
             </p>
             <p className="text-sm text-blue-700">{t('quotaAchievement')}</p>
           </div>
-          <div className="text-center p-4 bg-green-50 rounded-lg">
-            <TrendingUp className="h-8 w-8 text-green-600 mx-auto mb-2" />
-            <p className="text-2xl font-bold text-green-900">
+          <div className="text-center p-4 bg-success/10 rounded-lg">
+            <TrendingUp className="h-8 w-8 text-success mx-auto mb-2" />
+            <p className="text-2xl font-bold text-success">
               {(totalRevenue / 1000000).toFixed(1)}M
             </p>
-            <p className="text-sm text-green-700">EGP {t('totalRevenue')}</p>
+            <p className="text-sm text-success/80">EGP {t('totalRevenue')}</p>
           </div>
         </div>
 
@@ -192,13 +216,13 @@ export default function TeamPerformance() {
         <div className="space-y-3 pt-4 border-t">
           <h4 className="font-semibold text-foreground">{t('teamInsights')}</h4>
           <div className="space-y-2">
-            <div className="flex items-start gap-2 p-3 bg-green-50 rounded-lg">
-              <div className="w-2 h-2 bg-green-500 rounded-full mt-2"></div>
+            <div className="flex items-start gap-2 p-3 bg-success/10 rounded-lg">
+              <div className="w-2 h-2 bg-success rounded-full mt-2"></div>
               <div>
-                <p className="text-sm font-medium text-green-900">
+                <p className="text-sm font-medium text-success">
                   {t('topPerformer')}
                 </p>
-                <p className="text-xs text-green-700">
+                <p className="text-xs text-success/80">
                   {teamMembers.find(m => m.performance === 'excellent')?.name} - {t('exceedingQuota')}
                 </p>
               </div>
@@ -214,13 +238,13 @@ export default function TeamPerformance() {
                 </p>
               </div>
             </div>
-            <div className="flex items-start gap-2 p-3 bg-yellow-50 rounded-lg">
-              <div className="w-2 h-2 bg-yellow-500 rounded-full mt-2"></div>
+            <div className="flex items-start gap-2 p-3 bg-warning/10 rounded-lg">
+              <div className="w-2 h-2 bg-warning rounded-full mt-2"></div>
               <div>
-                <p className="text-sm font-medium text-yellow-900">
+                <p className="text-sm font-medium text-warning">
                   {t('improvementArea')}
                 </p>
-                <p className="text-xs text-yellow-700">
+                <p className="text-xs text-warning/80">
                   {t('improvementAreaDescription')}
                 </p>
               </div>

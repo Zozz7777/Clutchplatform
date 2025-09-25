@@ -9,26 +9,26 @@ module.exports = {
     extend: {
       colors: {
         // Design system colors using OKLCH for exact color matching
-        background: "var(--background)",
-        foreground: "var(--foreground)",
+        background: "oklch(1 0 0)",
+        foreground: "oklch(0.1450 0 0)",
         card: {
-          DEFAULT: "var(--card)",
-          foreground: "var(--card-foreground)",
+          DEFAULT: "oklch(1 0 0)",
+          foreground: "oklch(0.1450 0 0)",
         },
         primary: {
-          DEFAULT: "var(--primary)",
-          foreground: "var(--primary-foreground)",
+          DEFAULT: "oklch(0.5770 0.2450 27.3250)",
+          foreground: "oklch(0.9850 0 0)",
         },
         secondary: {
-          DEFAULT: "var(--secondary)",
+          DEFAULT: "oklch(0.5770 0.2450 27.3250)",
         },
         muted: {
-          DEFAULT: "var(--muted)",
-          foreground: "var(--muted-foreground)",
+          DEFAULT: "oklch(0.9700 0 0)",
+          foreground: "oklch(0.5560 0 0)",
         },
         destructive: {
-          DEFAULT: "var(--destructive)",
-          foreground: "var(--destructive-foreground)",
+          DEFAULT: "oklch(0.5770 0.2450 27.3250)",
+          foreground: "oklch(0.9850 0 0)",
         },
         success: {
           DEFAULT: "var(--success)",
@@ -46,11 +46,10 @@ module.exports = {
           DEFAULT: "var(--info)",
           foreground: "var(--info-foreground)",
         },
-        border: "var(--border)",
-        input: "var(--input)",
+        border: "oklch(0.9220 0 0)",
+        input: "oklch(0.9220 0 0)",
         ring: {
-          DEFAULT: "var(--ring)",
-          ring: "var(--ring-ring)",
+          DEFAULT: "oklch(0.5770 0.2450 27.3250)",
         },
         sidebar: {
           DEFAULT: "var(--sidebar)",

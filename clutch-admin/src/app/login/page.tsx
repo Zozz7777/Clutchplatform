@@ -186,8 +186,8 @@ class LoginErrorBoundary extends React.Component<
           <Card className="w-full max-w-md shadow-sm border border-border rounded-[0.625rem] bg-card">
             <CardHeader className="text-center space-y-6 pb-8">
               <div className="flex justify-center">
-                <div className="flex items-center justify-center w-20 h-20 bg-red-100 rounded-[0.625rem]">
-                  <svg className="w-10 h-10 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <div className="flex items-center justify-center w-20 h-20 bg-destructive/10 rounded-[0.625rem]">
+                  <svg className="w-10 h-10 text-destructive" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.732-.833-2.5 0L4.268 19.5c-.77.833.192 2.5 1.732 2.5z" />
                   </svg>
                 </div>

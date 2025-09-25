@@ -234,7 +234,7 @@ export default function FraudEscalationWorkflow({ className }: FraudEscalationWo
       case 'escalated': return 'bg-destructive/100';
       case 'resolved': return 'bg-success/100';
       case 'false_positive': return 'bg-muted/100';
-      case 'failed': return 'bg-destructive/10 text-red-800';
+      case 'failed': return 'bg-destructive/10 text-destructive';
       default: return 'bg-muted text-gray-800';
     }
   };

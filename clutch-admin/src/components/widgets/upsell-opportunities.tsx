@@ -95,9 +95,9 @@ export function UpsellOpportunities({ className = '' }: UpsellOpportunitiesProps
   };
 
   const getConfidenceBadge = (confidence: number) => {
-    if (confidence >= 80) return 'bg-success/10 text-green-800';
-    if (confidence >= 60) return 'bg-warning/10 text-yellow-800';
-    return 'bg-destructive/10 text-red-800';
+    if (confidence >= 80) return 'bg-success/10 text-success';
+    if (confidence >= 60) return 'bg-warning/10 text-warning';
+    return 'bg-destructive/10 text-destructive';
   };
 
   const getConfidenceLevel = (confidence: number) => {
@@ -113,9 +113,9 @@ export function UpsellOpportunities({ className = '' }: UpsellOpportunitiesProps
   };
 
   const getOpportunityBadge = (score: number) => {
-    if (score >= 90) return 'bg-success/10 text-green-800';
-    if (score >= 70) return 'bg-warning/10 text-yellow-800';
-    return 'bg-destructive/10 text-red-800';
+    if (score >= 90) return 'bg-success/10 text-success';
+    if (score >= 70) return 'bg-warning/10 text-warning';
+    return 'bg-destructive/10 text-destructive';
   };
 
   const getOpportunityLevel = (score: number) => {
@@ -310,7 +310,7 @@ export function UpsellOpportunities({ className = '' }: UpsellOpportunitiesProps
             <span className="text-lg font-bold text-success">
               {upsellData.highConfidenceCount}
             </span>
-            <Badge className="bg-success/10 text-green-800">
+            <Badge className="bg-success/10 text-success">
               High Confidence
             </Badge>
           </div>

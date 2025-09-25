@@ -92,13 +92,13 @@ export default function AIRecommendationFeed() {
   const getPriorityColor = (priority: string) => {
     switch (priority) {
       case 'critical':
-        return 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200';
+        return 'bg-destructive/10 text-destructive';
       case 'high':
-        return 'bg-orange-100 text-orange-800 dark:bg-orange-900 dark:text-orange-200';
+        return 'bg-info/10 text-info';
       case 'medium':
-        return 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200';
+        return 'bg-warning/10 text-warning';
       case 'low':
-        return 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200';
+        return 'bg-success/10 text-success';
       default:
         return 'bg-muted text-foreground';
     }
@@ -107,11 +107,11 @@ export default function AIRecommendationFeed() {
   const getEffortColor = (effort: string) => {
     switch (effort) {
       case 'low':
-        return 'text-green-600 dark:text-green-400';
+        return 'text-success';
       case 'medium':
-        return 'text-yellow-600 dark:text-yellow-400';
+        return 'text-warning';
       case 'high':
-        return 'text-red-600 dark:text-red-400';
+        return 'text-destructive';
       default:
         return 'text-muted-foreground';
     }
@@ -120,13 +120,13 @@ export default function AIRecommendationFeed() {
   const getStatusIcon = (status: string) => {
     switch (status) {
       case 'completed':
-        return <CheckCircle className="h-4 w-4 text-green-600" />;
+        return <CheckCircle className="h-4 w-4 text-success" />;
       case 'in_progress':
         return <Activity className="h-4 w-4 text-blue-600" />;
       case 'dismissed':
         return <X className="h-4 w-4 text-muted-foreground" />;
       default:
-        return <Clock className="h-4 w-4 text-yellow-600" />;
+        return <Clock className="h-4 w-4 text-warning" />;
     }
   };
 
@@ -365,7 +365,7 @@ export default function AIRecommendationFeed() {
                     <div className="text-sm font-medium text-muted-foreground">
                       Improvement
                     </div>
-                    <div className="text-2xl font-bold text-green-600">
+                    <div className="text-2xl font-bold text-success">
                       +{recommendation.impact.improvement}%
                     </div>
                     <div className="text-sm text-muted-foreground">

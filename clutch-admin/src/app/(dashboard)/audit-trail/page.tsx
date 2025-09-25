@@ -220,11 +220,11 @@ export default function AuditTrailPage() {
   const getStatusIcon = (status: string) => {
     switch (status) {
       case "success":
-        return <CheckCircle className="h-4 w-4 text-green-600" />;
+        return <CheckCircle className="h-4 w-4 text-success" />;
       case "failure":
-        return <XCircle className="h-4 w-4 text-red-600" />;
+        return <XCircle className="h-4 w-4 text-destructive" />;
       case "pending":
-        return <Clock className="h-4 w-4 text-yellow-600" />;
+        return <Clock className="h-4 w-4 text-warning" />;
       default:
         return <Activity className="h-4 w-4 text-muted-foreground" />;
     }
@@ -295,7 +295,7 @@ Export
             <AlertTriangle className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold text-red-600">{criticalEvents}</div>
+            <div className="text-2xl font-bold text-destructive">{criticalEvents}</div>
             <p className="text-xs text-muted-foreground">
               Require attention
             </p>
@@ -308,7 +308,7 @@ Export
             <XCircle className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold text-orange-600">{failedActions}</div>
+            <div className="text-2xl font-bold text-info">{failedActions}</div>
             <p className="text-xs text-muted-foreground">
               Failed operations
             </p>
@@ -321,7 +321,7 @@ Export
             <User className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold text-green-600">{activeUsers}</div>
+            <div className="text-2xl font-bold text-success">{activeUsers}</div>
             <p className="text-xs text-muted-foreground">
               Currently active
             </p>

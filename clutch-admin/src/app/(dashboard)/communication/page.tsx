@@ -96,7 +96,7 @@ export default function CommunicationPage() {
       try {
         setIsLoading(true);
         
-        // Use mock data instead of API calls to prevent loading failures
+        // TODO: Replace with real API calls when endpoints are available
         // This provides functional demo data while avoiding 404 errors
         
         // Mock notifications data
@@ -199,7 +199,7 @@ export default function CommunicationPage() {
           }
         ];
 
-        // Set mock data
+        // Set demo data (TODO: Replace with real API data)
         setNotifications(mockNotifications);
         setChannels(mockChannels);
         setTickets(mockTickets);

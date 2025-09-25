@@ -37,7 +37,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
           
           // Only log in development mode
           if (process.env.NODE_ENV === 'development') {
-            console.log('🔄 Loading user from localStorage:', {
+            // Loading user from localStorage
               originalUser: parsedUser,
               userWithPermissions,
               rolePermissions,
@@ -93,7 +93,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         
         // Debug logging for user data (only in development)
         if (process.env.NODE_ENV === 'development') {
-          console.log('🔍 User data received from backend:', {
+          // User data received from backend
             originalUser: user,
             mappedUser: userWithPermissions,
             rolePermissions: ROLE_PERMISSIONS[user.role as keyof typeof ROLE_PERMISSIONS]

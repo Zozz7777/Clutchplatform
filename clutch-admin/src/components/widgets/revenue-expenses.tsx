@@ -82,9 +82,9 @@ export function RevenueExpenses({ className = '' }: RevenueExpensesProps) {
   };
 
   const getMarginBadge = (margin: number) => {
-    if (margin >= 20) return 'bg-success/10 text-green-800';
-    if (margin >= 10) return 'bg-warning/10 text-yellow-800';
-    return 'bg-destructive/10 text-red-800';
+    if (margin >= 20) return 'bg-success/10 text-success';
+    if (margin >= 10) return 'bg-warning/10 text-warning';
+    return 'bg-destructive/10 text-destructive';
   };
 
   const getMarginLevel = (margin: number) => {

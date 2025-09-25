@@ -71,8 +71,8 @@ export function FraudImpact({ className = '' }: FraudImpactProps) {
 
   const getTrendBadge = (trend: string) => {
     switch (trend) {
-      case 'improving': return 'bg-success/10 text-green-800';
-      case 'declining': return 'bg-destructive/10 text-red-800';
+      case 'improving': return 'bg-success/10 text-success';
+      case 'declining': return 'bg-destructive/10 text-destructive';
       default: return 'bg-muted text-gray-800';
     }
   };
@@ -84,9 +84,9 @@ export function FraudImpact({ className = '' }: FraudImpactProps) {
   };
 
   const getAccuracyBadge = (accuracy: number) => {
-    if (accuracy >= 90) return 'bg-success/10 text-green-800';
-    if (accuracy >= 80) return 'bg-warning/10 text-yellow-800';
-    return 'bg-destructive/10 text-red-800';
+    if (accuracy >= 90) return 'bg-success/10 text-success';
+    if (accuracy >= 80) return 'bg-warning/10 text-warning';
+    return 'bg-destructive/10 text-destructive';
   };
 
   const getAccuracyLevel = (accuracy: number) => {

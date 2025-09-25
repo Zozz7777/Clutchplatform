@@ -86,10 +86,10 @@ export function SecurityAlerts({ className = '' }: SecurityAlertsProps) {
 
   const getSeverityBadge = (severity: string) => {
     switch (severity) {
-      case 'critical': return 'bg-destructive/10 text-red-800';
-      case 'high': return 'bg-warning/10 text-orange-800';
-      case 'medium': return 'bg-warning/10 text-yellow-800';
-      case 'low': return 'bg-success/10 text-green-800';
+      case 'critical': return 'bg-destructive/10 text-destructive';
+      case 'high': return 'bg-warning/10 text-warning';
+      case 'medium': return 'bg-warning/10 text-warning';
+      case 'low': return 'bg-success/10 text-success';
       default: return 'bg-muted text-gray-800';
     }
   };
@@ -105,9 +105,9 @@ export function SecurityAlerts({ className = '' }: SecurityAlertsProps) {
 
   const getStatusBadge = (status: string) => {
     switch (status) {
-      case 'active': return 'bg-destructive/10 text-red-800';
-      case 'investigating': return 'bg-warning/10 text-yellow-800';
-      case 'resolved': return 'bg-success/10 text-green-800';
+      case 'active': return 'bg-destructive/10 text-destructive';
+      case 'investigating': return 'bg-warning/10 text-warning';
+      case 'resolved': return 'bg-success/10 text-success';
       default: return 'bg-muted text-gray-800';
     }
   };
@@ -188,7 +188,7 @@ export function SecurityAlerts({ className = '' }: SecurityAlertsProps) {
           <div className="flex items-center justify-center space-x-2 mb-2">
             <AlertTriangle className="h-5 w-5 text-destructive" />
             <span className="text-lg font-bold text-destructive">{alertData.criticalAlerts}</span>
-            <Badge className="bg-destructive/10 text-red-800">
+            <Badge className="bg-destructive/10 text-destructive">
               Critical
             </Badge>
           </div>

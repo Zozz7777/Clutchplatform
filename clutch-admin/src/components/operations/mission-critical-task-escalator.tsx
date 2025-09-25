@@ -614,9 +614,9 @@ export default function MissionCriticalTaskEscalator({ className }: MissionCriti
 
   const getTypeColor = (type: string) => {
     switch (type) {
-      case 'revenue_blocking': return 'bg-destructive/10 text-red-800';
-      case 'security_critical': return 'bg-warning/10 text-orange-800';
-      case 'compliance_urgent': return 'bg-warning/10 text-yellow-800';
+      case 'revenue_blocking': return 'bg-destructive/10 text-destructive';
+      case 'security_critical': return 'bg-warning/10 text-warning';
+      case 'compliance_urgent': return 'bg-warning/10 text-warning';
       case 'customer_impact': return 'bg-primary/10 text-blue-800';
       case 'system_failure': return 'bg-primary/10 text-purple-800';
       case 'data_loss': return 'bg-pink-100 text-pink-800';
@@ -626,21 +626,21 @@ export default function MissionCriticalTaskEscalator({ className }: MissionCriti
 
   const getPriorityColor = (priority: string) => {
     switch (priority) {
-      case 'low': return 'bg-success/10 text-green-800';
-      case 'medium': return 'bg-warning/10 text-yellow-800';
-      case 'high': return 'bg-warning/10 text-orange-800';
-      case 'critical': return 'bg-destructive/10 text-red-800';
-      case 'emergency': return 'bg-destructive/10 text-red-800';
+      case 'low': return 'bg-success/10 text-success';
+      case 'medium': return 'bg-warning/10 text-warning';
+      case 'high': return 'bg-warning/10 text-warning';
+      case 'critical': return 'bg-destructive/10 text-destructive';
+      case 'emergency': return 'bg-destructive/10 text-destructive';
       default: return 'bg-muted text-gray-800';
     }
   };
 
   const getStatusColor = (status: string) => {
     switch (status) {
-      case 'pending': return 'bg-warning/10 text-yellow-800';
+      case 'pending': return 'bg-warning/10 text-warning';
       case 'in_progress': return 'bg-primary/10 text-blue-800';
-      case 'escalated': return 'bg-destructive/10 text-red-800';
-      case 'resolved': return 'bg-success/10 text-green-800';
+      case 'escalated': return 'bg-destructive/10 text-destructive';
+      case 'resolved': return 'bg-success/10 text-success';
       case 'cancelled': return 'bg-muted text-gray-800';
       default: return 'bg-muted text-gray-800';
     }
@@ -688,7 +688,7 @@ export default function MissionCriticalTaskEscalator({ className }: MissionCriti
                 variant="outline"
                 size="sm"
                 onClick={() => setIsMonitoring(!isMonitoring)}
-                className={isMonitoring ? 'bg-success/10 text-green-800' : ''}
+                className={isMonitoring ? 'bg-success/10 text-success' : ''}
               >
                 {isMonitoring ? <Eye className="h-4 w-4 mr-2" /> : <EyeOff className="h-4 w-4 mr-2" />}
                 {isMonitoring ? 'Monitoring' : 'Paused'}
@@ -957,7 +957,7 @@ export default function MissionCriticalTaskEscalator({ className }: MissionCriti
                                 {dependency.status.replace('_', ' ')}
                               </Badge>
                               {dependency.blocker && (
-                                <Badge className="bg-destructive/10 text-red-800">
+                                <Badge className="bg-destructive/10 text-destructive">
                                   Blocker
                                 </Badge>
                               )}

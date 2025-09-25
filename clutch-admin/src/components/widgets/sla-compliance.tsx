@@ -122,9 +122,9 @@ export function SLACompliance({ className = '' }: SLAComplianceProps) {
   };
 
   const getComplianceBadge = (compliance: number) => {
-    if (compliance >= 95) return 'bg-success/10 text-green-800';
-    if (compliance >= 80) return 'bg-warning/10 text-yellow-800';
-    return 'bg-destructive/10 text-red-800';
+    if (compliance >= 95) return 'bg-success/10 text-success';
+    if (compliance >= 80) return 'bg-warning/10 text-warning';
+    return 'bg-destructive/10 text-destructive';
   };
 
   const getComplianceLevel = (compliance: number) => {
@@ -144,9 +144,9 @@ export function SLACompliance({ className = '' }: SLAComplianceProps) {
 
   const getStatusBadge = (status: string) => {
     switch (status) {
-      case 'compliant': return 'bg-success/10 text-green-800';
-      case 'warning': return 'bg-warning/10 text-yellow-800';
-      case 'breach': return 'bg-destructive/10 text-red-800';
+      case 'compliant': return 'bg-success/10 text-success';
+      case 'warning': return 'bg-warning/10 text-warning';
+      case 'breach': return 'bg-destructive/10 text-destructive';
       default: return 'bg-muted text-gray-800';
     }
   };

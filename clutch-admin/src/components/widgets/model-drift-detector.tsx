@@ -133,9 +133,9 @@ export function ModelDriftDetector({ className = '' }: ModelDriftDetectorProps) 
 
   const getStatusBadge = (status: string) => {
     switch (status) {
-      case 'stable': return 'bg-success/10 text-green-800';
-      case 'warning': return 'bg-warning/10 text-yellow-800';
-      case 'critical': return 'bg-destructive/10 text-red-800';
+      case 'stable': return 'bg-success/10 text-success';
+      case 'warning': return 'bg-warning/10 text-warning';
+      case 'critical': return 'bg-destructive/10 text-destructive';
       default: return 'bg-muted text-gray-800';
     }
   };
@@ -156,9 +156,9 @@ export function ModelDriftDetector({ className = '' }: ModelDriftDetectorProps) 
   };
 
   const getDriftBadge = (drift: number, threshold: number) => {
-    if (drift <= threshold) return 'bg-success/10 text-green-800';
-    if (drift <= threshold * 1.5) return 'bg-warning/10 text-yellow-800';
-    return 'bg-destructive/10 text-red-800';
+    if (drift <= threshold) return 'bg-success/10 text-success';
+    if (drift <= threshold * 1.5) return 'bg-warning/10 text-warning';
+    return 'bg-destructive/10 text-destructive';
   };
 
   const getDriftLevel = (drift: number, threshold: number) => {

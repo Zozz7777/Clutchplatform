@@ -122,9 +122,9 @@ export function RiskScenarioMatrix({ className = '' }: RiskScenarioMatrixProps) 
 
   const getScenarioBadge = (type: string) => {
     switch (type) {
-      case 'optimistic': return 'bg-success/10 text-green-800';
+      case 'optimistic': return 'bg-success/10 text-success';
       case 'realistic': return 'bg-primary/10 text-blue-800';
-      case 'pessimistic': return 'bg-destructive/10 text-red-800';
+      case 'pessimistic': return 'bg-destructive/10 text-destructive';
       default: return 'bg-muted text-gray-800';
     }
   };
@@ -136,9 +136,9 @@ export function RiskScenarioMatrix({ className = '' }: RiskScenarioMatrixProps) 
   };
 
   const getRiskBadge = (risk: number) => {
-    if (risk <= 30) return 'bg-success/10 text-green-800';
-    if (risk <= 50) return 'bg-warning/10 text-yellow-800';
-    return 'bg-destructive/10 text-red-800';
+    if (risk <= 30) return 'bg-success/10 text-success';
+    if (risk <= 50) return 'bg-warning/10 text-warning';
+    return 'bg-destructive/10 text-destructive';
   };
 
   const getRiskLevel = (risk: number) => {

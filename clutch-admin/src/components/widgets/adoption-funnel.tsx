@@ -110,9 +110,9 @@ export function AdoptionFunnel({ className = '' }: AdoptionFunnelProps) {
   };
 
   const getConversionBadge = (rate: number) => {
-    if (rate >= 80) return 'bg-success/10 text-green-800';
-    if (rate >= 60) return 'bg-warning/10 text-yellow-800';
-    return 'bg-destructive/10 text-red-800';
+    if (rate >= 80) return 'bg-success/10 text-success';
+    if (rate >= 60) return 'bg-warning/10 text-warning';
+    return 'bg-destructive/10 text-destructive';
   };
 
   const getConversionLevel = (rate: number) => {

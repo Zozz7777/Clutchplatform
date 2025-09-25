@@ -188,9 +188,9 @@ export default function LegalContractsView() {
 
   const getStatusColor = (status: string) => {
     switch (status) {
-      case 'pending_legal': return 'bg-yellow-100 text-yellow-800';
-      case 'approved': return 'bg-green-100 text-green-800';
-      case 'rejected': return 'bg-red-100 text-red-800';
+      case 'pending_legal': return 'bg-warning/10 text-warning';
+      case 'approved': return 'bg-success/10 text-success';
+      case 'rejected': return 'bg-destructive/10 text-destructive';
       case 'draft': return 'bg-muted text-foreground';
       case 'sent': return 'bg-blue-100 text-blue-800';
       case 'signed': return 'bg-purple-100 text-purple-800';
@@ -200,19 +200,19 @@ export default function LegalContractsView() {
 
   const getRiskColor = (risk: string) => {
     switch (risk) {
-      case 'high': return 'bg-red-100 text-red-800';
-      case 'medium': return 'bg-yellow-100 text-yellow-800';
-      case 'low': return 'bg-green-100 text-green-800';
+      case 'high': return 'bg-destructive/10 text-destructive';
+      case 'medium': return 'bg-warning/10 text-warning';
+      case 'low': return 'bg-success/10 text-success';
       default: return 'bg-muted text-foreground';
     }
   };
 
   const getPriorityColor = (priority: string) => {
     switch (priority) {
-      case 'urgent': return 'bg-red-100 text-red-800';
-      case 'high': return 'bg-orange-100 text-orange-800';
-      case 'medium': return 'bg-yellow-100 text-yellow-800';
-      case 'low': return 'bg-green-100 text-green-800';
+      case 'urgent': return 'bg-destructive/10 text-destructive';
+      case 'high': return 'bg-info/10 text-info';
+      case 'medium': return 'bg-warning/10 text-warning';
+      case 'low': return 'bg-success/10 text-success';
       default: return 'bg-muted text-foreground';
     }
   };
@@ -694,7 +694,7 @@ export default function LegalContractsView() {
               <div className="flex items-center space-x-4">
                 <Button
                   onClick={() => handleReviewContract(selectedContract.id, 'approve')}
-                  className="bg-green-600 hover:bg-green-700"
+                  className="bg-success hover:bg-success/90"
                   disabled={!reviewNotes}
                 >
                   <CheckCircle className="mr-2 h-4 w-4" />

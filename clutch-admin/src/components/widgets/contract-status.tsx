@@ -52,10 +52,10 @@ export default function ContractStatus() {
     switch (status) {
       case 'draft': return 'bg-muted text-foreground';
       case 'printed': return 'bg-blue-100 text-blue-800';
-      case 'signed_uploaded': return 'bg-yellow-100 text-yellow-800';
-      case 'pending_legal': return 'bg-orange-100 text-orange-800';
-      case 'approved': return 'bg-green-100 text-green-800';
-      case 'rejected': return 'bg-red-100 text-red-800';
+      case 'signed_uploaded': return 'bg-warning/10 text-warning';
+      case 'pending_legal': return 'bg-info/10 text-info';
+      case 'approved': return 'bg-success/10 text-success';
+      case 'rejected': return 'bg-destructive/10 text-destructive';
       default: return 'bg-muted text-foreground';
     }
   };
@@ -113,8 +113,8 @@ export default function ContractStatus() {
         </CardHeader>
         <CardContent>
           <div className="text-center py-8">
-            <AlertTriangle className="h-12 w-12 text-red-500 mx-auto mb-4" />
-            <p className="text-red-600 mb-4">{error}</p>
+            <AlertTriangle className="h-12 w-12 text-destructive mx-auto mb-4" />
+            <p className="text-destructive mb-4">{error}</p>
             <Button onClick={fetchContracts} variant="outline">
               {t('retry')}
             </Button>
@@ -135,15 +135,15 @@ export default function ContractStatus() {
       <CardContent className="space-y-6">
         {/* Status Overview */}
         <div className="grid grid-cols-2 gap-4 mb-6">
-          <div className="text-center p-4 bg-orange-50 rounded-lg">
-            <Clock className="h-8 w-8 text-orange-600 mx-auto mb-2" />
-            <p className="text-2xl font-bold text-orange-900">{pendingLegal}</p>
-            <p className="text-sm text-orange-700">{t('pendingLegal')}</p>
+          <div className="text-center p-4 bg-info/10 rounded-lg">
+            <Clock className="h-8 w-8 text-info mx-auto mb-2" />
+            <p className="text-2xl font-bold text-info">{pendingLegal}</p>
+            <p className="text-sm text-info/80">{t('pendingLegal')}</p>
           </div>
-          <div className="text-center p-4 bg-green-50 rounded-lg">
-            <CheckCircle className="h-8 w-8 text-green-600 mx-auto mb-2" />
-            <p className="text-2xl font-bold text-green-900">{approved}</p>
-            <p className="text-sm text-green-700">{t('approved')}</p>
+          <div className="text-center p-4 bg-success/10 rounded-lg">
+            <CheckCircle className="h-8 w-8 text-success mx-auto mb-2" />
+            <p className="text-2xl font-bold text-success">{approved}</p>
+            <p className="text-sm text-success/80">{t('approved')}</p>
           </div>
         </div>
 

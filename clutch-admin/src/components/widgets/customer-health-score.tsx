@@ -136,9 +136,9 @@ export function CustomerHealthScore({ className = '' }: CustomerHealthScoreProps
   };
 
   const getHealthBadge = (score: number) => {
-    if (score >= 80) return 'bg-success/10 text-green-800';
-    if (score >= 60) return 'bg-warning/10 text-yellow-800';
-    return 'bg-destructive/10 text-red-800';
+    if (score >= 80) return 'bg-success/10 text-success';
+    if (score >= 60) return 'bg-warning/10 text-warning';
+    return 'bg-destructive/10 text-destructive';
   };
 
   const getHealthLevel = (score: number) => {
@@ -158,9 +158,9 @@ export function CustomerHealthScore({ className = '' }: CustomerHealthScoreProps
 
   const getRiskBadge = (risk: string) => {
     switch (risk) {
-      case 'low': return 'bg-success/10 text-green-800';
-      case 'medium': return 'bg-warning/10 text-yellow-800';
-      case 'high': return 'bg-destructive/10 text-red-800';
+      case 'low': return 'bg-success/10 text-success';
+      case 'medium': return 'bg-warning/10 text-warning';
+      case 'high': return 'bg-destructive/10 text-destructive';
       default: return 'bg-muted text-gray-800';
     }
   };
@@ -354,7 +354,7 @@ export function CustomerHealthScore({ className = '' }: CustomerHealthScoreProps
                     <div className="flex items-center space-x-3">
                       <AlertTriangle className="h-4 w-4 text-destructive" />
                       <div>
-                        <p className="text-sm font-medium text-red-900">{customer.customerName}</p>
+                        <p className="text-sm font-medium text-destructive">{customer.customerName}</p>
                         <p className="text-xs text-destructive">Last activity: {formatDate(customer.lastActivity)}</p>
                       </div>
                     </div>
@@ -364,7 +364,7 @@ export function CustomerHealthScore({ className = '' }: CustomerHealthScoreProps
                         <p className="text-sm font-semibold text-destructive">
                           {customer.healthScore}
                         </p>
-                        <Badge className="bg-destructive/10 text-red-800">
+                        <Badge className="bg-destructive/10 text-destructive">
                           {t('customerHealth.atRisk')}
                         </Badge>
                       </div>

@@ -123,9 +123,9 @@ export function ChurnAdjustedForecast({ className = '' }: ChurnAdjustedForecastP
   };
 
   const getChurnBadge = (rate: number) => {
-    if (rate <= 5) return 'bg-success/10 text-green-800';
-    if (rate <= 7) return 'bg-warning/10 text-yellow-800';
-    return 'bg-destructive/10 text-red-800';
+    if (rate <= 5) return 'bg-success/10 text-success';
+    if (rate <= 7) return 'bg-warning/10 text-warning';
+    return 'bg-destructive/10 text-destructive';
   };
 
   const getChurnLevel = (rate: number) => {
@@ -141,9 +141,9 @@ export function ChurnAdjustedForecast({ className = '' }: ChurnAdjustedForecastP
   };
 
   const getConfidenceBadge = (confidence: number) => {
-    if (confidence >= 80) return 'bg-success/10 text-green-800';
-    if (confidence >= 70) return 'bg-warning/10 text-yellow-800';
-    return 'bg-destructive/10 text-red-800';
+    if (confidence >= 80) return 'bg-success/10 text-success';
+    if (confidence >= 70) return 'bg-warning/10 text-warning';
+    return 'bg-destructive/10 text-destructive';
   };
 
   const getTrendIcon = (trend: string) => {
@@ -234,7 +234,7 @@ export function ChurnAdjustedForecast({ className = '' }: ChurnAdjustedForecastP
             <span className="text-2xl font-bold text-destructive">
               ${(forecastData.totalBaseRevenue - forecastData.totalAdjustedRevenue).toLocaleString()}
             </span>
-            <Badge className="bg-destructive/10 text-red-800">
+            <Badge className="bg-destructive/10 text-destructive">
               Churn Impact
             </Badge>
           </div>

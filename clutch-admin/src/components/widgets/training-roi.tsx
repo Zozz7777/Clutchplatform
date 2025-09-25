@@ -109,9 +109,9 @@ export function TrainingROI({ className = '' }: TrainingROIProps) {
   };
 
   const getROIBadge = (roi: number) => {
-    if (roi >= 200) return 'bg-success/10 text-green-800';
-    if (roi >= 100) return 'bg-warning/10 text-yellow-800';
-    return 'bg-destructive/10 text-red-800';
+    if (roi >= 200) return 'bg-success/10 text-success';
+    if (roi >= 100) return 'bg-warning/10 text-warning';
+    return 'bg-destructive/10 text-destructive';
   };
 
   const getROILevel = (roi: number) => {
@@ -128,9 +128,9 @@ export function TrainingROI({ className = '' }: TrainingROIProps) {
   };
 
   const getAccuracyBadge = (accuracy: number) => {
-    if (accuracy >= 20) return 'bg-success/10 text-green-800';
-    if (accuracy >= 10) return 'bg-warning/10 text-yellow-800';
-    return 'bg-destructive/10 text-red-800';
+    if (accuracy >= 20) return 'bg-success/10 text-success';
+    if (accuracy >= 10) return 'bg-warning/10 text-warning';
+    return 'bg-destructive/10 text-destructive';
   };
 
   const getAccuracyLevel = (accuracy: number) => {

@@ -97,7 +97,7 @@ export function Sidebar({ isCollapsed, onToggle }: SidebarProps) {
     
     // Debug logging for permission checks (only in development)
     if (process.env.NODE_ENV === 'development' && !result) {
-      console.log('🚫 Navigation item filtered out due to missing permissions:', {
+      // Navigation item filtered out due to missing permissions
         permissions,
         userRole: user?.role,
         userPermissions: user?.permissions?.length || 0

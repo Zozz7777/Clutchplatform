@@ -151,9 +151,9 @@ export function DowntimeImpact({ className = '' }: DowntimeImpactProps) {
   };
 
   const getImpactBadge = (impact: number, threshold: number) => {
-    if (impact <= threshold * 0.5) return 'bg-success/10 text-green-800';
-    if (impact <= threshold) return 'bg-warning/10 text-yellow-800';
-    return 'bg-destructive/10 text-red-800';
+    if (impact <= threshold * 0.5) return 'bg-success/10 text-success';
+    if (impact <= threshold) return 'bg-warning/10 text-warning';
+    return 'bg-destructive/10 text-destructive';
   };
 
   const getImpactLevel = (impact: number, threshold: number) => {
@@ -174,9 +174,9 @@ export function DowntimeImpact({ className = '' }: DowntimeImpactProps) {
 
   const getReasonBadge = (reason: string) => {
     switch (reason) {
-      case 'Maintenance': return 'bg-warning/10 text-orange-800';
-      case 'Breakdown': return 'bg-destructive/10 text-red-800';
-      case 'Driver Issues': return 'bg-warning/10 text-yellow-800';
+      case 'Maintenance': return 'bg-warning/10 text-warning';
+      case 'Breakdown': return 'bg-destructive/10 text-destructive';
+      case 'Driver Issues': return 'bg-warning/10 text-warning';
       case 'Weather': return 'bg-primary/10 text-blue-800';
       default: return 'bg-muted text-gray-800';
     }

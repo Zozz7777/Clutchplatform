@@ -17,16 +17,32 @@ interface ConversionMetric {
 export default function LeadConversion() {
   const { t } = useLanguage();
 
-  // Mock data - in production, this would come from API
-  const conversionMetrics: ConversionMetric[] = [
-    { stage: 'new', count: 45, conversionRate: 100, avgDays: 0 },
-    { stage: 'contacted', count: 38, conversionRate: 84.4, avgDays: 2.3 },
-    { stage: 'qualified', count: 22, conversionRate: 48.9, avgDays: 7.1 },
-    { stage: 'converted', count: 12, conversionRate: 26.7, avgDays: 14.5 },
-    { stage: 'lost', count: 6, conversionRate: 13.3, avgDays: 21.2 }
-  ];
+  // TODO: Replace with real API call
+  const [conversionMetrics, setConversionMetrics] = React.useState<ConversionMetric[]>([]);
+  const [isLoading, setIsLoading] = React.useState(true);
 
-  const totalLeads = conversionMetrics[0].count;
+  React.useEffect(() => {
+    // TODO: Implement real API call
+    // fetchLeadConversionMetrics().then(setConversionMetrics).finally(() => setIsLoading(false));
+    setIsLoading(false);
+  }, []);
+
+  if (isLoading) {
+    return (
+      <Card>
+        <CardHeader>
+          <CardTitle>{t('dashboard.leadConversion')}</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <div className="flex items-center justify-center h-32">
+            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+          </div>
+        </CardContent>
+      </Card>
+    );
+  }
+
+  const totalLeads = conversionMetrics[0]?.count || 0;
   const convertedLeads = conversionMetrics.find(m => m.stage === 'converted')?.count || 0;
   const overallConversionRate = totalLeads > 0 ? (convertedLeads / totalLeads) * 100 : 0;
 
@@ -42,10 +58,10 @@ export default function LeadConversion() {
         {/* Overall Conversion Rate */}
         <div className="text-center p-6 bg-gradient-to-r from-blue-50 to-green-50 rounded-lg">
           <div className="flex items-center justify-center gap-2 mb-2">
-            <TrendingUp className="h-6 w-6 text-green-600" />
+            <TrendingUp className="h-6 w-6 text-success" />
             <span className="text-sm font-medium text-muted-foreground">{t('overallConversionRate')}</span>
           </div>
-          <p className="text-4xl font-bold text-green-600 mb-1">
+          <p className="text-4xl font-bold text-success mb-1">
             {overallConversionRate.toFixed(1)}%
           </p>
           <p className="text-sm text-muted-foreground">
@@ -68,10 +84,10 @@ export default function LeadConversion() {
                   <div className="flex items-center gap-3">
                     <div className={`w-8 h-8 rounded-full flex items-center justify-center text-white text-sm font-bold ${
                       metric.stage === 'new' ? 'bg-blue-500' :
-                      metric.stage === 'contacted' ? 'bg-yellow-500' :
-                      metric.stage === 'qualified' ? 'bg-orange-500' :
-                      metric.stage === 'converted' ? 'bg-green-500' :
-                      'bg-red-500'
+                      metric.stage === 'contacted' ? 'bg-warning' :
+                      metric.stage === 'qualified' ? 'bg-info' :
+                      metric.stage === 'converted' ? 'bg-success' :
+                      'bg-destructive'
                     }`}>
                       {metric.count}
                     </div>
@@ -118,13 +134,13 @@ export default function LeadConversion() {
                 </p>
               </div>
             </div>
-            <div className="flex items-start gap-2 p-3 bg-green-50 rounded-lg">
-              <div className="w-2 h-2 bg-green-500 rounded-full mt-2"></div>
+            <div className="flex items-start gap-2 p-3 bg-success/10 rounded-lg">
+              <div className="w-2 h-2 bg-success rounded-full mt-2"></div>
               <div>
-                <p className="text-sm font-medium text-green-900">
+                <p className="text-sm font-medium text-success">
                   {t('avgConversionTime')}
                 </p>
-                <p className="text-xs text-green-700">
+                <p className="text-xs text-success/80">
                   {t('avgConversionTimeDescription')}
                 </p>
               </div>

@@ -66,9 +66,9 @@ export function OnboardingCompletion({ className = '' }: OnboardingCompletionPro
   };
 
   const getCompletionBadge = (rate: number) => {
-    if (rate >= 80) return 'bg-success/10 text-green-800';
-    if (rate >= 60) return 'bg-warning/10 text-yellow-800';
-    return 'bg-destructive/10 text-red-800';
+    if (rate >= 80) return 'bg-success/10 text-success';
+    if (rate >= 60) return 'bg-warning/10 text-warning';
+    return 'bg-destructive/10 text-destructive';
   };
 
   const getCompletionLevel = (rate: number) => {
@@ -265,13 +265,13 @@ export function OnboardingCompletion({ className = '' }: OnboardingCompletionPro
                   <div className="flex items-center space-x-3">
                     <AlertTriangle className="h-4 w-4 text-destructive" />
                     <div>
-                      <p className="text-sm font-medium text-red-900">{step?.step || 'Unknown Step'}</p>
+                      <p className="text-sm font-medium text-destructive">{step?.step || 'Unknown Step'}</p>
                       <p className="text-xs text-destructive">{t('widgets.needsAttention')}</p>
                     </div>
                   </div>
                   <div className="text-right">
                     <p className="text-sm font-semibold text-destructive">{(step?.completionRate || 0).toFixed(1)}%</p>
-                    <Badge className="bg-destructive/10 text-red-800">{t('widgets.low')}</Badge>
+                    <Badge className="bg-destructive/10 text-destructive">{t('widgets.low')}</Badge>
                   </div>
                 </div>
               ))}
@@ -292,13 +292,13 @@ export function OnboardingCompletion({ className = '' }: OnboardingCompletionPro
                   <div className="flex items-center space-x-3">
                     <CheckCircle className="h-4 w-4 text-success" />
                     <div>
-                      <p className="text-sm font-medium text-green-900">{step?.step || 'Unknown Step'}</p>
+                      <p className="text-sm font-medium text-success">{step?.step || 'Unknown Step'}</p>
                       <p className="text-xs text-success">{t('widgets.performingWell')}</p>
                     </div>
                   </div>
                   <div className="text-right">
                     <p className="text-sm font-semibold text-success">{(step?.completionRate || 0).toFixed(1)}%</p>
-                    <Badge className="bg-success/10 text-green-800">{t('widgets.high')}</Badge>
+                    <Badge className="bg-success/10 text-success">{t('widgets.high')}</Badge>
                   </div>
                 </div>
               ))}

@@ -99,9 +99,9 @@ export function IntegrationHealth({ className = '' }: IntegrationHealthProps) {
 
   const getStatusBadge = (status: string) => {
     switch (status) {
-      case 'healthy': return 'bg-success/10 text-green-800';
-      case 'degraded': return 'bg-warning/10 text-yellow-800';
-      case 'down': return 'bg-destructive/10 text-red-800';
+      case 'healthy': return 'bg-success/10 text-success';
+      case 'degraded': return 'bg-warning/10 text-warning';
+      case 'down': return 'bg-destructive/10 text-destructive';
       default: return 'bg-muted text-gray-800';
     }
   };

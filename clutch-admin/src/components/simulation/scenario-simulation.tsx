@@ -255,9 +255,9 @@ export default function ScenarioSimulation({ className }: ScenarioSimulationProp
 
   const getImpactColor = (impact: string) => {
     switch (impact) {
-      case 'high': return 'bg-destructive/10 text-red-800';
-      case 'medium': return 'bg-warning/10 text-yellow-800';
-      case 'low': return 'bg-success/10 text-green-800';
+      case 'high': return 'bg-destructive/10 text-destructive';
+      case 'medium': return 'bg-warning/10 text-warning';
+      case 'low': return 'bg-success/10 text-success';
       default: return 'bg-muted text-gray-800';
     }
   };
@@ -408,7 +408,7 @@ export default function ScenarioSimulation({ className }: ScenarioSimulationProp
               <Button
                 onClick={runSimulation}
                 disabled={isRunning}
-                className="bg-green-600 hover:bg-green-700"
+                className="bg-success hover:bg-success/90"
               >
                 {isRunning ? <Pause className="h-4 w-4 mr-2" /> : <Play className="h-4 w-4 mr-2" />}
                 {isRunning ? 'Running...' : 'Run Simulation'}
@@ -431,7 +431,7 @@ export default function ScenarioSimulation({ className }: ScenarioSimulationProp
             </div>
             <div className="flex items-center gap-2">
               <Badge className={
-                currentScenario.status === 'completed' ? 'bg-success/10 text-green-800' :
+                currentScenario.status === 'completed' ? 'bg-success/10 text-success' :
                 currentScenario.status === 'running' ? 'bg-primary/10 text-blue-800' :
                 currentScenario.status === 'saved' ? 'bg-primary/10 text-purple-800' :
                 'bg-muted text-gray-800'

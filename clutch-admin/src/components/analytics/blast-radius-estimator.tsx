@@ -355,31 +355,31 @@ export default function BlastRadiusEstimator({ className }: BlastRadiusEstimator
 
   const getSeverityColor = (severity: string) => {
     switch (severity) {
-      case 'low': return 'bg-success/10 text-green-800';
-      case 'medium': return 'bg-warning/10 text-yellow-800';
-      case 'high': return 'bg-warning/10 text-orange-800';
-      case 'critical': return 'bg-destructive/10 text-red-800';
+      case 'low': return 'bg-success/10 text-success';
+      case 'medium': return 'bg-warning/10 text-warning';
+      case 'high': return 'bg-warning/10 text-warning';
+      case 'critical': return 'bg-destructive/10 text-destructive';
       default: return 'bg-muted text-gray-800';
     }
   };
 
   const getFailureTypeColor = (type: string) => {
     switch (type) {
-      case 'outage': return 'bg-destructive/10 text-red-800';
-      case 'degradation': return 'bg-warning/10 text-orange-800';
-      case 'latency': return 'bg-warning/10 text-yellow-800';
+      case 'outage': return 'bg-destructive/10 text-destructive';
+      case 'degradation': return 'bg-warning/10 text-warning';
+      case 'latency': return 'bg-warning/10 text-warning';
       case 'error_rate': return 'bg-primary/10 text-purple-800';
-      case 'data_loss': return 'bg-destructive/10 text-red-800';
-      case 'security_breach': return 'bg-destructive/10 text-red-800';
+      case 'data_loss': return 'bg-destructive/10 text-destructive';
+      case 'security_breach': return 'bg-destructive/10 text-destructive';
       default: return 'bg-muted text-gray-800';
     }
   };
 
   const getDependencyTypeColor = (type: string) => {
     switch (type) {
-      case 'critical': return 'bg-destructive/10 text-red-800';
-      case 'important': return 'bg-warning/10 text-yellow-800';
-      case 'optional': return 'bg-success/10 text-green-800';
+      case 'critical': return 'bg-destructive/10 text-destructive';
+      case 'important': return 'bg-warning/10 text-warning';
+      case 'optional': return 'bg-success/10 text-success';
       default: return 'bg-muted text-gray-800';
     }
   };
@@ -426,7 +426,7 @@ export default function BlastRadiusEstimator({ className }: BlastRadiusEstimator
                 variant="outline"
                 size="sm"
                 onClick={() => setIsMonitoring(!isMonitoring)}
-                className={isMonitoring ? 'bg-success/10 text-green-800' : ''}
+                className={isMonitoring ? 'bg-success/10 text-success' : ''}
               >
                 {isMonitoring ? <Eye className="h-4 w-4 mr-2" /> : <EyeOff className="h-4 w-4 mr-2" />}
                 {isMonitoring ? 'Monitoring' : 'Paused'}

@@ -142,9 +142,9 @@ export function FuelCostMetrics({ className = '' }: FuelCostMetricsProps) {
   };
 
   const getCostBadge = (cost: number, threshold: number) => {
-    if (cost <= threshold * 0.8) return 'bg-success/10 text-green-800';
-    if (cost <= threshold) return 'bg-warning/10 text-yellow-800';
-    return 'bg-destructive/10 text-red-800';
+    if (cost <= threshold * 0.8) return 'bg-success/10 text-success';
+    if (cost <= threshold) return 'bg-warning/10 text-warning';
+    return 'bg-destructive/10 text-destructive';
   };
 
   const getCostLevel = (cost: number, threshold: number) => {

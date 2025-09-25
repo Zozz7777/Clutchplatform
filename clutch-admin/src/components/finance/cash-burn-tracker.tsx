@@ -287,9 +287,9 @@ export default function CashBurnTracker({ className }: CashBurnTrackerProps) {
 
   const getScenarioColor = (scenario: string) => {
     switch (scenario) {
-      case 'optimistic': return 'bg-success/10 text-green-800';
+      case 'optimistic': return 'bg-success/10 text-success';
       case 'realistic': return 'bg-primary/10 text-blue-800';
-      case 'pessimistic': return 'bg-destructive/10 text-red-800';
+      case 'pessimistic': return 'bg-destructive/10 text-destructive';
       default: return 'bg-muted text-gray-800';
     }
   };
@@ -325,7 +325,7 @@ export default function CashBurnTracker({ className }: CashBurnTrackerProps) {
                 variant="outline"
                 size="sm"
                 onClick={() => setIsMonitoring(!isMonitoring)}
-                className={isMonitoring ? 'bg-success/10 text-green-800' : ''}
+                className={isMonitoring ? 'bg-success/10 text-success' : ''}
               >
                 {isMonitoring ? <Eye className="h-4 w-4 mr-2" /> : <EyeOff className="h-4 w-4 mr-2" />}
                 {isMonitoring ? 'Monitoring' : 'Paused'}

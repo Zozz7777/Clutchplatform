@@ -254,8 +254,8 @@ export default function PartnerOnboarding() {
     switch (status) {
       case 'pending': return 'bg-muted text-foreground';
       case 'in_progress': return 'bg-blue-100 text-blue-800';
-      case 'onboarded': return 'bg-green-100 text-green-800';
-      case 'rejected': return 'bg-red-100 text-red-800';
+      case 'onboarded': return 'bg-success/10 text-success';
+      case 'rejected': return 'bg-destructive/10 text-destructive';
       default: return 'bg-muted text-foreground';
     }
   };
@@ -472,11 +472,11 @@ export default function PartnerOnboarding() {
                           return (
                             <div key={step.id} className="flex items-center gap-2">
                               {isCompleted ? (
-                                <CheckCircle className="h-4 w-4 text-green-600" />
+                                <CheckCircle className="h-4 w-4 text-success" />
                               ) : (
                                 <Clock className="h-4 w-4 text-muted-foreground" />
                               )}
-                              <span className={`text-sm ${isCompleted ? 'text-green-600' : 'text-muted-foreground'}`}>
+                              <span className={`text-sm ${isCompleted ? 'text-success' : 'text-muted-foreground'}`}>
                                 {t(`sales.${step.name}`)}
                               </span>
                             </div>
@@ -539,7 +539,7 @@ export default function PartnerOnboarding() {
                       </div>
                       <div className="flex items-center gap-2">
                         {step.completed ? (
-                          <CheckCircle className="h-5 w-5 text-green-600" />
+                          <CheckCircle className="h-5 w-5 text-success" />
                         ) : step.inProgress ? (
                           <Clock className="h-5 w-5 text-blue-600" />
                         ) : (

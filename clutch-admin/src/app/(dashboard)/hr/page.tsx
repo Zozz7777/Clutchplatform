@@ -16,6 +16,7 @@ import { RecruitmentTab } from "@/components/recruitment-tab";
 import { apiService } from "@/lib/api";
 import { API_BASE_URL } from "@/lib/constants";
 import { toast } from "sonner";
+import { useTranslations } from 'next-intl';
 import { handleError } from "@/lib/error-handler";
 import { 
   UserCog, 
@@ -133,42 +134,43 @@ interface HRStats {
 }
 
 // Role and permission options
+  const t = useTranslations('roles');
   const ROLE_OPTIONS = [
     // Level 1: Executive Leadership (Level 10-9)
-    { value: "super_admin", label: "Super Administrator", level: 10 },
-    { value: "head_administrator", label: "Head Administrator", level: 9 },
-    { value: "executive", label: "Executive", level: 9 },
-    { value: "platform_admin", label: "Platform Administrator", level: 9 },
-    { value: "admin", label: "Administrator", level: 9 },
+    { value: "super_admin", label: t('super_admin'), level: 10 },
+    { value: "head_administrator", label: t('head_administrator'), level: 9 },
+    { value: "executive", label: t('executive'), level: 9 },
+    { value: "platform_admin", label: t('platform_admin'), level: 9 },
+    { value: "admin", label: t('admin'), level: 9 },
     
     // Level 2: Department Heads (Level 8)
-    { value: "hr_manager", label: "HR Manager", level: 8 },
-    { value: "finance_officer", label: "Finance Officer", level: 8 },
-    { value: "operations_manager", label: "Operations Manager", level: 8 },
-    { value: "marketing_manager", label: "Marketing Manager", level: 8 },
-    { value: "legal_team", label: "Legal Team", level: 8 },
-    { value: "security_manager", label: "Security Manager", level: 8 },
+    { value: "hr_manager", label: t('hr_manager'), level: 8 },
+    { value: "finance_officer", label: t('finance_officer'), level: 8 },
+    { value: "operations_manager", label: t('operations_manager'), level: 8 },
+    { value: "marketing_manager", label: t('marketing_manager'), level: 8 },
+    { value: "legal_team", label: t('legal_team'), level: 8 },
+    { value: "security_manager", label: t('security_manager'), level: 8 },
     
     // Level 3: Specialized Managers (Level 7)
-    { value: "business_analyst", label: "Business Analyst", level: 7 },
-    { value: "project_manager", label: "Project Manager", level: 7 },
-    { value: "asset_manager", label: "Asset Manager", level: 7 },
-    { value: "crm_manager", label: "CRM Manager", level: 7 },
-    { value: "system_admin", label: "System Administrator", level: 7 },
+    { value: "business_analyst", label: t('business_analyst'), level: 7 },
+    { value: "project_manager", label: t('project_manager'), level: 7 },
+    { value: "asset_manager", label: t('asset_manager'), level: 7 },
+    { value: "crm_manager", label: t('crm_manager'), level: 7 },
+    { value: "system_admin", label: t('system_admin'), level: 7 },
     
     // Level 4: Functional Specialists (Level 6)
-    { value: "hr", label: "HR Employee", level: 6 },
-    { value: "finance", label: "Finance Employee", level: 6 },
-    { value: "customer_support", label: "Customer Support", level: 6 },
-    { value: "developer", label: "Developer", level: 6 },
+    { value: "hr", label: t('hr'), level: 6 },
+    { value: "finance", label: t('finance'), level: 6 },
+    { value: "customer_support", label: t('customer_support'), level: 6 },
+    { value: "developer", label: t('developer'), level: 6 },
     
     // Level 5: Operational Staff (Level 5)
-    { value: "employee", label: "Employee", level: 5 },
-    { value: "support_agent", label: "Support Agent", level: 5 },
+    { value: "employee", label: t('employee'), level: 5 },
+    { value: "support_agent", label: t('support_agent'), level: 5 },
     
     // Level 6: External Users (Level 4)
-    { value: "enterprise_client", label: "Enterprise Client", level: 4 },
-    { value: "service_provider", label: "Service Provider", level: 4 },
+    { value: "enterprise_client", label: t('enterprise_client'), level: 4 },
+    { value: "service_provider", label: t('service_provider'), level: 4 },
   ];
 
 const PERMISSION_OPTIONS = [
