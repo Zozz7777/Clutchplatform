@@ -361,8 +361,8 @@ export function ModelDriftDetector({ className = '' }: ModelDriftDetectorProps) 
 
         {/* Insights */}
         <div className="p-3 bg-primary/10 rounded-[0.625rem]-lg">
-          <h5 className="text-sm font-medium text-blue-900 mb-2">💡 Drift Detection Insights</h5>
-          <ul className="text-xs text-blue-800 space-y-1">
+          <h5 className="text-sm font-medium text-primary mb-2">💡 Drift Detection Insights</h5>
+          <ul className="text-xs text-primary space-y-1">
             <li>• {driftData.length} models monitored for drift</li>
             <li>• {criticalModels} models require immediate attention</li>
             <li>• {warningModels} models showing warning signs</li>

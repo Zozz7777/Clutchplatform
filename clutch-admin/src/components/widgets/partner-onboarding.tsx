@@ -6,6 +6,10 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Label } from '@/components/ui/label';
+import { Input } from '@/components/ui/input';
+import { Textarea } from '@/components/ui/textarea';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { 
   Store, 
   Wrench, 
@@ -182,6 +186,7 @@ export default function PartnerOnboarding() {
   const [isOnboarding, setIsOnboarding] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
   const [statusFilter, setStatusFilter] = useState('all');
+  const [showCreatePartner, setShowCreatePartner] = useState(false);
 
   useEffect(() => {
     loadPartnerData();
@@ -313,7 +318,7 @@ export default function PartnerOnboarding() {
             <Users className="h-5 w-5" />
             {t('sales.partnerOnboarding')}
           </CardTitle>
-          <Button className="shadow-2xs">
+          <Button className="shadow-2xs" onClick={() => setShowCreatePartner(true)}>
             <Plus className="mr-2 h-4 w-4" />
             {t('sales.newPartner')}
           </Button>
@@ -556,7 +561,7 @@ export default function PartnerOnboarding() {
 
         {/* Partner Details Dialog */}
         <Dialog open={!!selectedPartner} onOpenChange={() => setSelectedPartner(null)}>
-          <DialogContent className="max-w-2xl">
+          <DialogContent className="max-w-2xl w-[95vw] max-h-[90vh] overflow-y-auto">
             <DialogHeader>
               <DialogTitle>{t('sales.partnerDetails')}</DialogTitle>
             </DialogHeader>
@@ -615,6 +620,90 @@ export default function PartnerOnboarding() {
                 </div>
               </div>
             )}
+          </DialogContent>
+        </Dialog>
+
+        {/* Create Partner Dialog */}
+        <Dialog open={showCreatePartner} onOpenChange={setShowCreatePartner}>
+          <DialogContent className="max-w-2xl w-[95vw] max-h-[90vh] overflow-y-auto">
+            <DialogHeader>
+              <DialogTitle>{t('sales.newPartner')}</DialogTitle>
+              <DialogDescription>
+                Add a new partner to the onboarding pipeline.
+              </DialogDescription>
+            </DialogHeader>
+            <div className="space-y-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div className="space-y-2">
+                  <Label htmlFor="companyName">Company Name *</Label>
+                  <Input
+                    id="companyName"
+                    placeholder="Enter company name"
+                    required
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="contactName">Contact Name *</Label>
+                  <Input
+                    id="contactName"
+                    placeholder="Enter contact name"
+                    required
+                  />
+                </div>
+              </div>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div className="space-y-2">
+                  <Label htmlFor="email">Email *</Label>
+                  <Input
+                    id="email"
+                    type="email"
+                    placeholder="Enter email address"
+                    required
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="phone">Phone</Label>
+                  <Input
+                    id="phone"
+                    placeholder="Enter phone number"
+                  />
+                </div>
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="businessType">Business Type</Label>
+                <Select>
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select business type" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="shop">Shop</SelectItem>
+                    <SelectItem value="repair_center">Repair Center</SelectItem>
+                    <SelectItem value="parts_importer">Parts Importer</SelectItem>
+                    <SelectItem value="manufacturer">Manufacturer</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="notes">Notes</Label>
+                <Textarea
+                  id="notes"
+                  placeholder="Enter any additional notes"
+                  rows={3}
+                />
+              </div>
+            </div>
+            <DialogFooter>
+              <Button
+                type="button"
+                variant="outline"
+                onClick={() => setShowCreatePartner(false)}
+              >
+                Cancel
+              </Button>
+              <Button type="submit">
+                Create Partner
+              </Button>
+            </DialogFooter>
           </DialogContent>
         </Dialog>
       </CardContent>

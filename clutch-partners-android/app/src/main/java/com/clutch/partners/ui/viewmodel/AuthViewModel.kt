@@ -19,10 +19,10 @@ class AuthViewModel @Inject constructor(
     private val _authState = MutableStateFlow<AuthState>(AuthState.Idle)
     val authState: StateFlow<AuthState> = _authState.asStateFlow()
     
-    fun signIn(email: String, password: String) {
+    fun signIn(emailOrPhone: String, password: String) {
         viewModelScope.launch {
             _authState.value = AuthState.Loading
-            authRepository.signIn(email, password).fold(
+            authRepository.signIn(emailOrPhone, password).fold(
                 onSuccess = { authResponse ->
                     if (authResponse.success) {
                         _authState.value = AuthState.Success(authResponse)
@@ -37,10 +37,19 @@ class AuthViewModel @Inject constructor(
         }
     }
     
-    fun signUp(partnerId: String, email: String, password: String) {
+    fun signUp(
+        partnerId: String, 
+        email: String, 
+        phone: String,
+        password: String,
+        businessName: String,
+        ownerName: String,
+        partnerType: String,
+        businessAddress: com.clutch.partners.data.api.BusinessAddress
+    ) {
         viewModelScope.launch {
             _authState.value = AuthState.Loading
-            authRepository.signUp(partnerId, email, password).fold(
+            authRepository.signUp(partnerId, email, phone, password, businessName, ownerName, partnerType, businessAddress).fold(
                 onSuccess = { authResponse ->
                     if (authResponse.success) {
                         _authState.value = AuthState.Success(authResponse)
@@ -57,14 +66,15 @@ class AuthViewModel @Inject constructor(
     
     fun requestToJoin(
         businessName: String,
-        address: String,
         ownerName: String,
-        phoneNumber: String,
+        phone: String,
+        email: String,
+        address: String,
         partnerType: String
     ) {
         viewModelScope.launch {
             _authState.value = AuthState.Loading
-            authRepository.requestToJoin(businessName, address, ownerName, phoneNumber, partnerType).fold(
+            authRepository.requestToJoin(businessName, ownerName, phone, email, address, partnerType).fold(
                 onSuccess = { authResponse ->
                     if (authResponse.success) {
                         _authState.value = AuthState.Success(authResponse)

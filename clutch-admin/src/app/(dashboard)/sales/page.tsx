@@ -399,7 +399,7 @@ export default function SalesDepartmentPage() {
               <p className="text-muted-foreground">{t('sales.partnersDescription')}</p>
             </div>
             <div className="flex items-center space-x-2">
-              <Button variant="outline">
+              <Button variant="outline" onClick={() => setShowCreateLead(true)}>
                 <Store className="mr-2 h-4 w-4" />
                 {t('sales.newPartner')}
               </Button>

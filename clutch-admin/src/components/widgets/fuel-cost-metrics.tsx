@@ -355,8 +355,8 @@ export function FuelCostMetrics({ className = '' }: FuelCostMetricsProps) {
 
         {/* Insights */}
         <div className="p-3 bg-primary/10 rounded-[0.625rem]-lg">
-          <h5 className="text-sm font-medium text-blue-900 mb-2">💡 Cost Insights</h5>
-          <ul className="text-xs text-blue-800 space-y-1">
+          <h5 className="text-sm font-medium text-primary mb-2">💡 Cost Insights</h5>
+          <ul className="text-xs text-primary space-y-1">
             <li>• Total monthly fleet cost: {(costMetrics.totalCost || 0).toLocaleString()} EGP</li>
             <li>• Cost per vehicle: {(costMetrics.costPerVehicle || 0).toFixed(0)} EGP (target: {targetCostPerVehicle} EGP)</li>
             <li>• Cost per mile: {(costMetrics.costPerMile || 0).toFixed(2)} EGP (target: {targetCostPerMile} EGP)</li>

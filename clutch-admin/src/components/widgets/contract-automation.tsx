@@ -540,7 +540,7 @@ export default function ContractAutomation() {
 
         {/* Contract Details Dialog */}
         <Dialog open={!!selectedContract} onOpenChange={() => setSelectedContract(null)}>
-          <DialogContent className="max-w-2xl">
+          <DialogContent className="max-w-2xl w-[95vw] max-h-[90vh] overflow-y-auto">
             <DialogHeader>
               <DialogTitle>{t('sales.contractDetails')}</DialogTitle>
             </DialogHeader>

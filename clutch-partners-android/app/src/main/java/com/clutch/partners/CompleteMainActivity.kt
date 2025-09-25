@@ -1,5 +1,6 @@
 package com.clutch.partners
 
+import android.content.Context
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -54,11 +55,16 @@ import kotlinx.coroutines.delay
 @OptIn(ExperimentalMaterial3Api::class)
 @AndroidEntryPoint
 class CompleteMainActivity : ComponentActivity() {
+    
+    private fun clearUserSession(context: Context) {
+        val prefs = context.getSharedPreferences("app_prefs", Context.MODE_PRIVATE)
+        prefs.edit().remove("auth_token").remove("user_data").apply()
+    }
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         
         val context = this@CompleteMainActivity
-        val isDarkTheme = ThemeManager.isSystemDarkTheme(context)
+        val isDarkTheme = ThemeManager.isDarkTheme(context)
         val layoutDirection = LanguageManager.getLayoutDirection(context)
         
         setContent {
@@ -915,7 +921,23 @@ fun SignUpForm(onAuthenticated: () -> Unit) {
             Button(
                 onClick = { 
                     if (partnerId.isNotEmpty() && emailOrPhone.isNotEmpty() && password.isNotEmpty()) {
-                        authViewModel.signUp(partnerId, emailOrPhone, password)
+                        // For now, create a basic BusinessAddress - in real app, this would be a form
+                        val businessAddress = com.clutch.partners.data.api.BusinessAddress(
+                            street = "Main Street",
+                            city = "Cairo",
+                            state = "Cairo",
+                            zipCode = "12345"
+                        )
+                        authViewModel.signUp(
+                            partnerId, 
+                            emailOrPhone, 
+                            emailOrPhone, // Using emailOrPhone as phone for now
+                            password,
+                            "Business Name", // These would come from additional form fields
+                            "Owner Name",
+                            "repair_center",
+                            businessAddress
+                        )
                     }
                 },
                 modifier = Modifier
@@ -968,6 +990,8 @@ fun RequestToJoinForm(onAuthenticated: () -> Unit) {
     val context = LocalContext.current
     val isRTL = LanguageManager.isRTL(context)
     val layoutDirection = if (isRTL) LayoutDirection.Rtl else LayoutDirection.Ltr
+    val authViewModel: AuthViewModel = viewModel()
+    val authState by authViewModel.authState.collectAsState()
     
     CompositionLocalProvider(LocalLayoutDirection provides layoutDirection) {
         Column(
@@ -1069,20 +1093,60 @@ fun RequestToJoinForm(onAuthenticated: () -> Unit) {
             
             Spacer(modifier = Modifier.height(32.dp))
             
+            // Handle auth state
+            LaunchedEffect(authState) {
+                when (authState) {
+                    is AuthState.Success -> {
+                        onAuthenticated()
+                    }
+                    is AuthState.Error -> {
+                        // Show error message
+                    }
+                    else -> {}
+                }
+            }
+            
             Button(
-                onClick = onAuthenticated,
+                onClick = { 
+                    if (businessName.isNotEmpty() && ownerName.isNotEmpty() && emailOrPhone.isNotEmpty() && businessAddress.isNotEmpty() && partnerType.isNotEmpty()) {
+                        authViewModel.requestToJoin(businessName, ownerName, emailOrPhone, emailOrPhone, businessAddress, partnerType)
+                    }
+                },
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(56.dp),
                 colors = ButtonDefaults.buttonColors(containerColor = LightPrimary),
-                shape = RoundedCornerShape(12.dp)
+                shape = RoundedCornerShape(12.dp),
+                enabled = authState !is AuthState.Loading
             ) {
-                Text(
-                    text = if (isRTL) "إرسال الطلب" else "Submit Request",
-                    fontSize = 18.sp,
-                    fontWeight = FontWeight.Bold,
-                    color = Color.White
-                )
+                if (authState is AuthState.Loading) {
+                    CircularProgressIndicator(
+                        color = Color.White,
+                        modifier = Modifier.size(20.dp)
+                    )
+                } else {
+                    Text(
+                        text = if (isRTL) "إرسال الطلب" else "Submit Request",
+                        fontSize = 18.sp,
+                        fontWeight = FontWeight.Bold,
+                        color = Color.White
+                    )
+                }
+            }
+            
+            // Show error message if any
+            val currentAuthState = authState
+            when (currentAuthState) {
+                is AuthState.Error -> {
+                    Spacer(modifier = Modifier.height(16.dp))
+                    Text(
+                        text = currentAuthState.message,
+                        color = Color.Red,
+                        fontSize = 14.sp,
+                        textAlign = TextAlign.Center
+                    )
+                }
+                else -> {}
             }
         }
     }
@@ -1313,9 +1377,15 @@ fun OrdersTab() {
                     .padding(horizontal = 16.dp),
                 verticalArrangement = Arrangement.spacedBy(12.dp)
             ) {
-                items(orders) { order ->
-                    EnhancedOrderCard(order = order)
-                }
+                            items(orders) { order ->
+                                EnhancedOrderCard(
+                                    order = order,
+                                    onClick = { 
+                                        // Navigate to order details
+                                        // In a real app, this would open OrderDetailScreen
+                                    }
+                                )
+                            }
             }
         }
     }
@@ -1661,7 +1731,37 @@ fun SettingsTab() {
         ) {
             items(settingsOptions) { option ->
                 Card(
-                    onClick = { /* Handle settings option click */ },
+                    onClick = { 
+                        when (option.title) {
+                            if (isRTL) "معلومات المتجر" else "Store Information" -> {
+                                // Navigate to store information screen
+                            }
+                            if (isRTL) "الإشعارات" else "Notifications" -> {
+                                // Navigate to notification settings
+                            }
+                            if (isRTL) "اللغة" else "Language" -> {
+                                // Toggle language
+                                LanguageManager.toggleLanguage(context)
+                                (context as? ComponentActivity)?.recreate()
+                            }
+                            if (isRTL) "المظهر" else "Theme" -> {
+                                // Toggle theme
+                                ThemeManager.toggleTheme(context)
+                                (context as? ComponentActivity)?.recreate()
+                            }
+                            if (isRTL) "المساعدة" else "Help" -> {
+                                // Navigate to help screen
+                            }
+                            if (isRTL) "تسجيل الخروج" else "Logout" -> {
+                                // Handle logout - clear session and navigate to auth
+                                // Clear user session - in real app would use proper session management
+                                val prefs = context.getSharedPreferences("app_prefs", Context.MODE_PRIVATE)
+                                prefs.edit().remove("auth_token").remove("user_data").apply()
+                                // Navigate back to auth screen
+                                // In a real app, this would use proper navigation
+                            }
+                        }
+                    },
                     modifier = Modifier
                         .fillMaxWidth()
                         .shadow(
@@ -1830,8 +1930,9 @@ fun StatCard(
 }
 
 // Enhanced Components
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun EnhancedOrderCard(order: MockOrder) {
+fun EnhancedOrderCard(order: MockOrder, onClick: () -> Unit = {}) {
     val context = LocalContext.current
     val isRTL = LanguageManager.isRTL(context)
     val layoutDirection = if (isRTL) LayoutDirection.Rtl else LayoutDirection.Ltr
@@ -1852,6 +1953,7 @@ fun EnhancedOrderCard(order: MockOrder) {
     
     CompositionLocalProvider(LocalLayoutDirection provides layoutDirection) {
         Card(
+            onClick = onClick,
             modifier = Modifier
                 .fillMaxWidth()
                 .shadow(
