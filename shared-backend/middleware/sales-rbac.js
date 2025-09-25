@@ -23,12 +23,28 @@ function authorize(requiredRoles) {
       // Convert single role to array for consistent handling
       const roles = Array.isArray(requiredRoles) ? requiredRoles : [requiredRoles];
       
+      // Map frontend roles to backend roles
+      const roleMapping = {
+        'sales_representative': 'sales_rep',
+        'sales_manager': 'sales_manager',
+        'admin': 'admin',
+        'super_admin': 'admin',
+        'head_administrator': 'admin',
+        'executive': 'admin',
+        'platform_admin': 'admin',
+        'legal_team': 'legal',
+        'hr_manager': 'hr',
+        'hr': 'hr'
+      };
+      
+      const mappedRole = roleMapping[userRole] || userRole;
+      
       // Check if user role is in required roles
-      if (!roles.includes(userRole)) {
+      if (!roles.includes(mappedRole)) {
         return res.status(403).json({
           success: false,
           error: 'FORBIDDEN',
-          message: `Access denied. Required roles: ${roles.join(', ')}. Your role: ${userRole}`
+          message: `Access denied. Required roles: ${roles.join(', ')}. Your role: ${userRole} (mapped to: ${mappedRole})`
         });
       }
 
@@ -40,7 +56,7 @@ function authorize(requiredRoles) {
         // Contract approval requires legal role
         if (path.includes('/contracts/:id/status') && method === 'PATCH') {
           const legalRoles = ['legal', 'admin', 'sysadmin'];
-          if (!legalRoles.includes(userRole)) {
+          if (!legalRoles.includes(mappedRole)) {
             return res.status(403).json({
               success: false,
               error: 'FORBIDDEN',
@@ -52,7 +68,7 @@ function authorize(requiredRoles) {
         // Manager approval step
         if (path.includes('/approvals') && method === 'PATCH') {
           const managerRoles = ['sales_manager', 'b2b_director', 'admin', 'sysadmin'];
-          if (!managerRoles.includes(userRole)) {
+          if (!managerRoles.includes(mappedRole)) {
             return res.status(403).json({
               success: false,
               error: 'FORBIDDEN',
@@ -64,7 +80,7 @@ function authorize(requiredRoles) {
         // HR reports access
         if (path.includes('/performance/hr')) {
           const hrRoles = ['hr', 'admin', 'sysadmin'];
-          if (!hrRoles.includes(userRole)) {
+          if (!hrRoles.includes(mappedRole)) {
             return res.status(403).json({
               success: false,
               error: 'FORBIDDEN',
@@ -77,7 +93,7 @@ function authorize(requiredRoles) {
       // Add user info to request for use in route handlers
       req.salesUser = {
         id: req.user.id,
-        role: userRole,
+        role: mappedRole,
         email: req.user.email,
         name: req.user.name
       };
@@ -98,6 +114,22 @@ function authorize(requiredRoles) {
  * Check if user can perform specific sales action
  */
 function canPerformAction(userRole, action) {
+  // Map frontend roles to backend roles
+  const roleMapping = {
+    'sales_representative': 'sales_rep',
+    'sales_manager': 'sales_manager',
+    'admin': 'admin',
+    'super_admin': 'admin',
+    'head_administrator': 'admin',
+    'executive': 'admin',
+    'platform_admin': 'admin',
+    'legal_team': 'legal',
+    'hr_manager': 'hr',
+    'hr': 'hr'
+  };
+  
+  const mappedRole = roleMapping[userRole] || userRole;
+  
   const permissions = {
     'sysadmin': ['*'], // All permissions
     'admin': ['*'], // All permissions
@@ -141,7 +173,7 @@ function canPerformAction(userRole, action) {
     ]
   };
 
-  const userPermissions = permissions[userRole] || [];
+  const userPermissions = permissions[mappedRole] || [];
   return userPermissions.includes('*') || userPermissions.includes(action);
 }
 
@@ -176,7 +208,23 @@ function requirePermission(action) {
  * Get user's accessible data based on role
  */
 function getDataAccessFilter(userRole, userId) {
-  switch (userRole) {
+  // Map frontend roles to backend roles
+  const roleMapping = {
+    'sales_representative': 'sales_rep',
+    'sales_manager': 'sales_manager',
+    'admin': 'admin',
+    'super_admin': 'admin',
+    'head_administrator': 'admin',
+    'executive': 'admin',
+    'platform_admin': 'admin',
+    'legal_team': 'legal',
+    'hr_manager': 'hr',
+    'hr': 'hr'
+  };
+  
+  const mappedRole = roleMapping[userRole] || userRole;
+  
+  switch (mappedRole) {
     case 'sysadmin':
     case 'admin':
       return {}; // Access to all data

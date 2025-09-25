@@ -398,10 +398,10 @@ export default function RevenueAtRiskWidget({ className }: RevenueAtRiskWidgetPr
 
   const getStatusColor = (status: string) => {
     switch (status) {
-      case 'active': return 'bg-destructive/10 text-red-800';
-      case 'monitoring': return 'bg-warning/10 text-yellow-800';
+      case 'active': return 'bg-destructive/10 text-destructive';
+      case 'monitoring': return 'bg-warning/10 text-warning';
       case 'mitigated': return 'bg-primary/10 text-blue-800';
-      case 'resolved': return 'bg-success/10 text-green-800';
+      case 'resolved': return 'bg-success/10 text-success';
       default: return 'bg-muted text-gray-800';
     }
   };
@@ -429,10 +429,10 @@ export default function RevenueAtRiskWidget({ className }: RevenueAtRiskWidgetPr
 
   const getTimeHorizonColor = (horizon: string) => {
     switch (horizon) {
-      case 'immediate': return 'bg-destructive/10 text-red-800';
-      case 'short_term': return 'bg-warning/10 text-orange-800';
-      case 'medium_term': return 'bg-warning/10 text-yellow-800';
-      case 'long_term': return 'bg-success/10 text-green-800';
+      case 'immediate': return 'bg-destructive/10 text-destructive';
+      case 'short_term': return 'bg-warning/10 text-warning';
+      case 'medium_term': return 'bg-warning/10 text-warning';
+      case 'long_term': return 'bg-success/10 text-success';
       default: return 'bg-muted text-gray-800';
     }
   };
@@ -475,7 +475,7 @@ export default function RevenueAtRiskWidget({ className }: RevenueAtRiskWidgetPr
                 variant="outline"
                 size="sm"
                 onClick={() => setIsMonitoring(!isMonitoring)}
-                className={isMonitoring ? 'bg-success/10 text-green-800' : ''}
+                className={isMonitoring ? 'bg-success/10 text-success' : ''}
               >
                 {isMonitoring ? <Eye className="h-4 w-4 mr-2" /> : <EyeOff className="h-4 w-4 mr-2" />}
                 {isMonitoring ? 'Monitoring' : 'Paused'}
@@ -522,7 +522,7 @@ export default function RevenueAtRiskWidget({ className }: RevenueAtRiskWidgetPr
                     <span className="font-medium">{projection.period}</span>
                     <div className="flex items-center gap-2">
                       <span className="text-sm font-medium">{projection.confidence}% confidence</span>
-                      <Badge className="bg-destructive/10 text-red-800">
+                      <Badge className="bg-destructive/10 text-destructive">
                         {formatCurrency(projection.atRisk)} at risk
                       </Badge>
                     </div>

@@ -484,20 +484,20 @@ export default function CustomerHealthWarRoom({ className }: CustomerHealthWarRo
 
   const getSeverityColor = (severity: string) => {
     switch (severity) {
-      case 'critical': return 'bg-destructive/10 text-red-800';
-      case 'high': return 'bg-warning/10 text-orange-800';
-      case 'medium': return 'bg-warning/10 text-yellow-800';
-      case 'low': return 'bg-success/10 text-green-800';
+      case 'critical': return 'bg-destructive/10 text-destructive';
+      case 'high': return 'bg-warning/10 text-warning';
+      case 'medium': return 'bg-warning/10 text-warning';
+      case 'low': return 'bg-success/10 text-success';
       default: return 'bg-muted text-gray-800';
     }
   };
 
   const getStatusColor = (status: string) => {
     switch (status) {
-      case 'active': return 'bg-destructive/10 text-red-800';
-      case 'escalated': return 'bg-warning/10 text-orange-800';
-      case 'resolved': return 'bg-success/10 text-green-800';
-      case 'monitoring': return 'bg-primary/10 text-blue-800';
+      case 'active': return 'bg-destructive/10 text-destructive';
+      case 'escalated': return 'bg-warning/10 text-warning';
+      case 'resolved': return 'bg-success/10 text-success';
+      case 'monitoring': return 'bg-primary/10 text-primary';
       default: return 'bg-muted text-gray-800';
     }
   };
@@ -516,9 +516,9 @@ export default function CustomerHealthWarRoom({ className }: CustomerHealthWarRo
 
   const getActionStatusColor = (status: string) => {
     switch (status) {
-      case 'pending': return 'bg-warning/10 text-yellow-800';
-      case 'in_progress': return 'bg-primary/10 text-blue-800';
-      case 'completed': return 'bg-success/10 text-green-800';
+      case 'pending': return 'bg-warning/10 text-warning';
+      case 'in_progress': return 'bg-primary/10 text-primary';
+      case 'completed': return 'bg-success/10 text-success';
       case 'cancelled': return 'bg-muted text-gray-800';
       default: return 'bg-muted text-gray-800';
     }
@@ -527,9 +527,9 @@ export default function CustomerHealthWarRoom({ className }: CustomerHealthWarRo
   const getPriorityColor = (priority: string) => {
     switch (priority) {
       case 'low': return 'bg-muted text-gray-800';
-      case 'medium': return 'bg-primary/10 text-blue-800';
-      case 'high': return 'bg-warning/10 text-orange-800';
-      case 'critical': return 'bg-destructive/10 text-red-800';
+      case 'medium': return 'bg-primary/10 text-primary';
+      case 'high': return 'bg-warning/10 text-warning';
+      case 'critical': return 'bg-destructive/10 text-destructive';
       default: return 'bg-muted text-gray-800';
     }
   };
@@ -545,8 +545,8 @@ export default function CustomerHealthWarRoom({ className }: CustomerHealthWarRo
 
   const getParticipantStatusColor = (status: string) => {
     switch (status) {
-      case 'active': return 'bg-success/10 text-green-800';
-      case 'away': return 'bg-warning/10 text-yellow-800';
+      case 'active': return 'bg-success/10 text-success';
+      case 'away': return 'bg-warning/10 text-warning';
       case 'offline': return 'bg-muted text-gray-800';
       default: return 'bg-muted text-gray-800';
     }
@@ -585,7 +585,7 @@ export default function CustomerHealthWarRoom({ className }: CustomerHealthWarRo
                 variant="outline"
                 size="sm"
                 onClick={() => setIsWarRoomActive(!isWarRoomActive)}
-                className={isWarRoomActive ? 'bg-destructive/10 text-red-800' : ''}
+                className={isWarRoomActive ? 'bg-destructive/10 text-destructive' : ''}
               >
                 {isWarRoomActive ? <Users className="h-4 w-4 mr-2" /> : <UserX className="h-4 w-4 mr-2" />}
                 {isWarRoomActive ? 'War Room Active' : 'Start War Room'}
@@ -627,13 +627,13 @@ export default function CustomerHealthWarRoom({ className }: CustomerHealthWarRo
             <div className="p-4 bg-destructive/10 border border-red-200 rounded-[0.625rem]">
               <div className="flex items-center justify-between">
                 <div>
-                  <h4 className="font-medium text-red-800">War Room Active</h4>
+                  <h4 className="font-medium text-destructive">War Room Active</h4>
                   <p className="text-sm text-destructive">
                     Emergency response team is actively managing customer crises
                   </p>
                 </div>
                 <div className="text-right">
-                  <div className="text-sm font-medium text-red-800">
+                  <div className="text-sm font-medium text-destructive">
                     {warRoomSessions.filter(session => !session.endTime).length} Active Sessions
                   </div>
                   <div className="text-sm text-destructive">
@@ -855,7 +855,7 @@ export default function CustomerHealthWarRoom({ className }: CustomerHealthWarRo
                           <div className="flex items-center justify-between mb-2">
                             <div className="flex items-center gap-2">
                               <span className="font-medium">{comm.type} with {comm.participant}</span>
-                              <Badge className={comm.direction === 'inbound' ? 'bg-primary/10 text-blue-800' : 'bg-success/10 text-green-800'}>
+                              <Badge className={comm.direction === 'inbound' ? 'bg-primary/10 text-primary' : 'bg-success/10 text-success'}>
                                 {comm.direction}
                               </Badge>
                             </div>
@@ -905,7 +905,7 @@ export default function CustomerHealthWarRoom({ className }: CustomerHealthWarRo
                               <div key={decision.id} className="text-sm">
                                 <div className="flex items-center justify-between">
                                   <span>{decision.description}</span>
-                                  <Badge className={decision.status === 'approved' ? 'bg-success/10 text-green-800' : 'bg-warning/10 text-yellow-800'}>
+                                  <Badge className={decision.status === 'approved' ? 'bg-success/10 text-success' : 'bg-warning/10 text-warning'}>
                                     {decision.status}
                                   </Badge>
                                 </div>
