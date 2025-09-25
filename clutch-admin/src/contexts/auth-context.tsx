@@ -37,7 +37,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
           
           // Only log in development mode
           if (process.env.NODE_ENV === 'development') {
-            // Loading user from localStorage
+            console.log({
+              // Loading user from localStorage
               originalUser: parsedUser,
               userWithPermissions,
               rolePermissions,
