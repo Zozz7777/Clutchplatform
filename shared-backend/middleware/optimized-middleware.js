@@ -69,11 +69,20 @@ const optimizedCORS = cors({
         'https://www.yourclutch.com',
         'https://clutch-main-nk7x.onrender.com', // Add the actual frontend URL
         'https://clutch-platform-frontend.onrender.com', // Alternative frontend URL
+        'http://localhost:3000', // Development frontend
+        'http://localhost:3001', // Alternative development port
         process.env.ADMIN_URL,
         process.env.BACKEND_URL,
         process.env.FRONTEND_URL
       ].filter(Boolean)
-    : true,
+    : [
+        'http://localhost:3000',
+        'http://localhost:3001',
+        'https://admin.yourclutch.com',
+        'https://yourclutch.com',
+        'https://www.yourclutch.com',
+        'https://clutch-main-nk7x.onrender.com'
+      ],
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With', 'Accept', 'Origin', 'X-CSRF-Token'],
@@ -290,7 +299,11 @@ const applyOptimizedMiddleware = (app) => {
   // Compression
   app.use(optimizedCompression);
   
-  // CORS
+  // CORS with error handling
+  app.use((req, res, next) => {
+    console.log(`CORS: ${req.method} ${req.url} from origin: ${req.get('Origin')}`);
+    next();
+  });
   app.use(optimizedCORS);
   
   // Body parsing with limits
