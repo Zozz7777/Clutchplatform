@@ -575,7 +575,7 @@ export default function ScenarioSimulation({ className }: ScenarioSimulationProp
                 <div
                   key={scenario.id}
                   className={`p-3 border rounded-[0.625rem] cursor-pointer transition-colors ${
-                    currentScenario?.id === scenario.id ? 'border-blue-500 bg-primary/10' : 'hover:bg-muted/50'
+                    currentScenario?.id === scenario.id ? 'border-primary bg-primary/10' : 'hover:bg-muted/50'
                   }`}
                   onClick={() => setCurrentScenario(scenario)}
                 >

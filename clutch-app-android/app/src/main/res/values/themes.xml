@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <!-- Base application theme. -->
+    <style name="Base.Theme.ClutchApp" parent="Theme.Material3.DayNight">
+        <!-- Customize your light theme here. -->
+        <item name="colorPrimary">@color/clutch_red</item>
+        <item name="colorOnPrimary">@android:color/white</item>
+        <item name="colorPrimaryContainer">@color/clutch_red_light</item>
+        <item name="colorOnPrimaryContainer">@android:color/white</item>
+        <item name="colorSecondary">@color/clutch_red</item>
+        <item name="colorOnSecondary">@android:color/white</item>
+        <item name="colorSecondaryContainer">@color/clutch_red_light</item>
+        <item name="colorOnSecondaryContainer">@android:color/white</item>
+        <item name="colorTertiary">@color/clutch_red</item>
+        <item name="colorOnTertiary">@android:color/white</item>
+        <item name="colorTertiaryContainer">@color/clutch_red_light</item>
+        <item name="colorOnTertiaryContainer">@android:color/white</item>
+        <item name="colorError">@color/clutch_red</item>
+        <item name="colorOnError">@android:color/white</item>
+        <item name="colorErrorContainer">@color/clutch_red_light</item>
+        <item name="colorOnErrorContainer">@android:color/white</item>
+        <item name="colorSurface">@android:color/white</item>
+        <item name="colorOnSurface">@android:color/black</item>
+        <item name="colorSurfaceVariant">@color/clutch_gray_light</item>
+        <item name="colorOnSurfaceVariant">@android:color/black</item>
+        <item name="colorOutline">@color/clutch_gray</item>
+        <item name="colorOutlineVariant">@color/clutch_gray_light</item>
+        <item name="colorSurfaceInverse">@android:color/black</item>
+        <item name="colorOnSurfaceInverse">@android:color/white</item>
+        <item name="colorPrimaryInverse">@color/clutch_red_light</item>
+    </style>
+
+    <style name="Theme.ClutchApp" parent="Base.Theme.ClutchApp" />
+</resources>

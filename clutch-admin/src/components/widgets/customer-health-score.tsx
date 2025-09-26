@@ -350,7 +350,7 @@ export function CustomerHealthScore({ className = '' }: CustomerHealthScoreProps
                 const TrendIcon = getTrendIcon(customer.trend);
                 
                 return (
-                  <div key={customer.customerId} className="flex items-center justify-between p-3 bg-destructive/10 rounded-[0.625rem]-lg border border-red-200">
+                  <div key={customer.customerId} className="flex items-center justify-between p-3 bg-destructive/10 rounded-[0.625rem]-lg border border-destructive/20">
                     <div className="flex items-center space-x-3">
                       <AlertTriangle className="h-4 w-4 text-destructive" />
                       <div>

@@ -261,7 +261,7 @@ export function OnboardingCompletion({ className = '' }: OnboardingCompletionPro
             </h4>
             <div className="space-y-2">
               {bottleneckSteps.map((step, index) => (
-                <div key={step?.step || index} className="flex items-center justify-between p-3 bg-destructive/10 rounded-[0.625rem]-lg border border-red-200">
+                <div key={step?.step || index} className="flex items-center justify-between p-3 bg-destructive/10 rounded-[0.625rem]-lg border border-destructive/20">
                   <div className="flex items-center space-x-3">
                     <AlertTriangle className="h-4 w-4 text-destructive" />
                     <div>
@@ -288,7 +288,7 @@ export function OnboardingCompletion({ className = '' }: OnboardingCompletionPro
             </h4>
             <div className="space-y-2">
               {topPerformingSteps.map((step, index) => (
-                <div key={step?.step || index} className="flex items-center justify-between p-3 bg-success/10 rounded-[0.625rem]-lg border border-green-200">
+                <div key={step?.step || index} className="flex items-center justify-between p-3 bg-success/10 rounded-[0.625rem]-lg border border-success/20">
                   <div className="flex items-center space-x-3">
                     <CheckCircle className="h-4 w-4 text-success" />
                     <div>
