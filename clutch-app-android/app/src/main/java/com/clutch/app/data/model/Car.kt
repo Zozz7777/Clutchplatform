@@ -1,64 +1,61 @@
 package com.clutch.app.data.model
 
-import android.os.Parcelable
-import kotlinx.parcelize.Parcelize
+import com.google.gson.annotations.SerializedName
 
-@Parcelize
 data class Car(
-    val id: String,
-    val userId: String,
-    val make: String,
-    val model: String,
-    val year: Int,
-    val color: String,
-    val licensePlate: String,
-    val vin: String? = null,
-    val mileage: Int,
-    val fuelType: String,
-    val transmission: String,
-    val engineSize: String,
-    val isDefault: Boolean = false,
-    val createdAt: String,
-    val updatedAt: String,
-    val healthScore: CarHealthScore? = null,
-    val maintenanceHistory: List<MaintenanceRecord> = emptyList()
-) : Parcelable
+    @SerializedName("_id") val id: String,
+    @SerializedName("userId") val userId: String,
+    @SerializedName("year") val year: Int,
+    @SerializedName("brand") val brand: String,
+    @SerializedName("model") val model: String,
+    @SerializedName("trim") val trim: String,
+    @SerializedName("color") val color: String,
+    @SerializedName("currentMileage") val currentMileage: Int,
+    @SerializedName("vin") val vin: String?,
+    @SerializedName("licensePlate") val licensePlate: String?,
+    @SerializedName("isDefault") val isDefault: Boolean = false,
+    @SerializedName("createdAt") val createdAt: String,
+    @SerializedName("updatedAt") val updatedAt: String
+)
 
-@Parcelize
-data class CarHealthScore(
-    val overall: Int, // 0-100
-    val battery: Int,
-    val tires: Int,
-    val engine: Int,
-    val fluids: Int,
-    val brakes: Int,
-    val lastUpdated: String,
-    val recommendations: List<HealthRecommendation> = emptyList()
-) : Parcelable
+data class CarHealth(
+    @SerializedName("carId") val carId: String,
+    @SerializedName("overallScore") val overallScore: Int, // 0-100
+    @SerializedName("battery") val battery: HealthMetric,
+    @SerializedName("engine") val engine: HealthMetric,
+    @SerializedName("tires") val tires: HealthMetric,
+    @SerializedName("fluids") val fluids: HealthMetric,
+    @SerializedName("brakes") val brakes: HealthMetric,
+    @SerializedName("lastUpdated") val lastUpdated: String
+)
 
-@Parcelize
-data class HealthRecommendation(
-    val id: String,
-    val category: String,
-    val title: String,
-    val description: String,
-    val priority: String, // low, medium, high, critical
-    val estimatedCost: Double? = null,
-    val estimatedTime: String? = null
-) : Parcelable
+data class HealthMetric(
+    @SerializedName("score") val score: Int, // 0-100
+    @SerializedName("status") val status: String, // "Good", "Warning", "Critical"
+    @SerializedName("message") val message: String,
+    @SerializedName("lastChecked") val lastChecked: String
+)
 
-@Parcelize
 data class MaintenanceRecord(
-    val id: String,
-    val carId: String,
-    val serviceType: String,
-    val description: String,
-    val date: String,
-    val mileage: Int,
-    val cost: Double,
-    val partnerId: String? = null,
-    val partnerName: String? = null,
-    val invoiceUrl: String? = null,
-    val nextServiceDate: String? = null,
-    val nextServiceMileage: Int? = null
-) : Parcelable
+    @SerializedName("_id") val id: String,
+    @SerializedName("carId") val carId: String,
+    @SerializedName("userId") val userId: String,
+    @SerializedName("date") val date: String,
+    @SerializedName("mileage") val mileage: Int,
+    @SerializedName("type") val type: String, // "Oil Change", "Brake Service", etc.
+    @SerializedName("description") val description: String,
+    @SerializedName("cost") val cost: Double?,
+    @SerializedName("serviceProvider") val serviceProvider: String?,
+    @SerializedName("receipt") val receipt: String?,
+    @SerializedName("createdAt") val createdAt: String
+)
+
+data class MaintenanceReminder(
+    @SerializedName("_id") val id: String,
+    @SerializedName("carId") val carId: String,
+    @SerializedName("type") val type: String,
+    @SerializedName("dueDate") val dueDate: String,
+    @SerializedName("dueMileage") val dueMileage: Int?,
+    @SerializedName("isOverdue") val isOverdue: Boolean,
+    @SerializedName("priority") val priority: String // "Low", "Medium", "High", "Critical"
+)

@@ -3,8 +3,6 @@ package com.clutch.app.ui.screens.parts
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.LazyRow
-import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
@@ -14,264 +12,157 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.clutch.app.ui.components.ClutchLogoSmall
+import com.clutch.app.ui.theme.ClutchAppTheme
 import com.clutch.app.ui.theme.ClutchRed
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun OrderPartsScreen(
-    onNavigateBack: () -> Unit
-) {
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(Color(0xFFF5F5F5))
-    ) {
-        // Header
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(16.dp),
-            horizontalArrangement = Arrangement.SpaceBetween,
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            IconButton(onClick = onNavigateBack) {
-                Icon(
-                    imageVector = Icons.Default.ArrowBack,
-                    contentDescription = "Back",
-                    tint = ClutchRed
+fun OrderPartsScreen() {
+    Scaffold(
+        topBar = {
+            TopAppBar(
+                title = {
+                    Text(
+                        text = "Order Parts",
+                        fontSize = 20.sp,
+                        fontWeight = FontWeight.Bold,
+                        color = Color.White
+                    )
+                },
+                colors = TopAppBarDefaults.topAppBarColors(
+                    containerColor = ClutchRed
                 )
-            }
-            
-            Text(
-                text = "Shop Car Parts",
-                fontSize = 18.sp,
-                fontWeight = FontWeight.Bold,
-                color = ClutchRed
-            )
-            
-            ClutchLogoSmall(
-                size = 32.dp,
-                color = ClutchRed
             )
         }
-        
-        LazyColumn(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(horizontal = 16.dp),
-            verticalArrangement = Arrangement.spacedBy(16.dp)
-        ) {
-            item {
-                // Search Bar
-                OutlinedTextField(
-                    value = "",
-                    onValueChange = { },
-                    placeholder = { Text("Search For Parts") },
-                    modifier = Modifier.fillMaxWidth(),
-                    leadingIcon = {
-                        Icon(
-                            imageVector = Icons.Default.Search,
-                            contentDescription = "Search",
-                            tint = Color.Gray
-                        )
-                    },
-                    colors = OutlinedTextFieldDefaults.colors(
-                        focusedBorderColor = ClutchRed,
-                        unfocusedBorderColor = Color.Gray
-                    ),
-                    shape = RoundedCornerShape(8.dp)
-                )
-            }
-            
-            item {
-                // Categories
-                Text(
-                    text = "Categories",
-                    fontSize = 18.sp,
-                    fontWeight = FontWeight.Bold,
-                    color = Color.Black
-                )
-                
-                LazyRow(
-                    horizontalArrangement = Arrangement.spacedBy(12.dp)
-                ) {
-                    items(4) { index ->
-                        CategoryCard(
-                            title = when (index) {
-                                0 -> "Spare Parts"
-                                1 -> "Fluids"
-                                2 -> "Lighting"
-                                3 -> "Batteries"
-                                else -> "Other"
-                            },
-                            onClick = { /* Navigate to category */ }
-                        )
-                    }
-                }
-            }
-            
-            item {
-                // Best Selling Products
-                Text(
-                    text = "Best Selling Products For Your Car",
-                    fontSize = 18.sp,
-                    fontWeight = FontWeight.Bold,
-                    color = Color.Black
-                )
-                
-                LazyColumn(
-                    verticalArrangement = Arrangement.spacedBy(8.dp)
-                ) {
-                    items(10) { index ->
-                        ProductCard(
-                            name = when (index) {
-                                0 -> "Engine Oil - Castrol Magnatec"
-                                1 -> "Air Filter - Bosch"
-                                2 -> "Spark Plugs - NGK"
-                                3 -> "Brake Pads - Brembo"
-                                4 -> "Battery - Varta"
-                                5 -> "Headlight Bulb - Philips"
-                                6 -> "Oil Filter - Mann"
-                                7 -> "Timing Belt - Gates"
-                                8 -> "Water Pump - Aisin"
-                                else -> "Thermostat - Wahler"
-                            },
-                            price = "$${(20 + index * 5)}.00",
-                            rating = 4.0f + (index % 3) * 0.5f,
-                            reviewCount = 50 + index * 10
-                        )
-                    }
-                }
-            }
-            
-            item {
-                Spacer(modifier = Modifier.height(100.dp))
-            }
-        }
-    }
-}
-
-@Composable
-private fun CategoryCard(
-    title: String,
-    onClick: () -> Unit
-) {
-    Card(
-        onClick = onClick,
-        modifier = Modifier.size(120.dp),
-        colors = CardDefaults.cardColors(containerColor = Color.White),
-        shape = RoundedCornerShape(12.dp)
-    ) {
+    ) { paddingValues ->
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(12.dp),
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.Center
+                .padding(paddingValues)
+                .background(Color(0xFFF0F2F5))
+                .padding(16.dp)
         ) {
-            Icon(
-                imageVector = when (title) {
-                    "Spare Parts" -> Icons.Default.Settings
-                    "Fluids" -> Icons.Default.WaterDrop
-                    "Lighting" -> Icons.Default.Lightbulb
-                    "Batteries" -> Icons.Default.BatteryFull
-                    else -> Icons.Default.Build
-                },
-                contentDescription = title,
-                tint = ClutchRed,
-                modifier = Modifier.size(32.dp)
+            // Search Bar
+            OutlinedTextField(
+                value = "", // TODO: Add search state
+                onValueChange = { /* TODO */ },
+                placeholder = { Text("Search for parts...") },
+                leadingIcon = { Icon(Icons.Default.Search, contentDescription = "Search") },
+                modifier = Modifier.fillMaxWidth(),
+                colors = OutlinedTextFieldDefaults.colors(
+                    focusedBorderColor = ClutchRed,
+                    unfocusedBorderColor = Color.Gray
+                )
             )
-            
-            Spacer(modifier = Modifier.height(8.dp))
-            
+
+            Spacer(modifier = Modifier.height(16.dp))
+
+            // Parts Categories
             Text(
-                text = title,
-                fontSize = 12.sp,
-                fontWeight = FontWeight.Medium,
-                color = Color.Black,
-                textAlign = androidx.compose.ui.text.style.TextAlign.Center
+                text = "Parts Categories",
+                fontSize = 18.sp,
+                fontWeight = FontWeight.SemiBold,
+                modifier = Modifier.padding(bottom = 16.dp)
             )
+
+            LazyColumn(
+                verticalArrangement = Arrangement.spacedBy(12.dp)
+            ) {
+                item {
+                    PartCategoryCard(
+                        name = "Engine Parts",
+                        description = "Oil filters, spark plugs, belts",
+                        icon = Icons.Default.Settings
+                    )
+                }
+                item {
+                    PartCategoryCard(
+                        name = "Brake Parts",
+                        description = "Brake pads, rotors, calipers",
+                        icon = Icons.Default.CarRepair
+                    )
+                }
+                item {
+                    PartCategoryCard(
+                        name = "Tire & Wheel",
+                        description = "Tires, rims, wheel covers",
+                        icon = Icons.Default.TireRepair
+                    )
+                }
+                item {
+                    PartCategoryCard(
+                        name = "Electrical",
+                        description = "Batteries, alternators, starters",
+                        icon = Icons.Default.ElectricalServices
+                    )
+                }
+                item {
+                    PartCategoryCard(
+                        name = "Body Parts",
+                        description = "Bumpers, mirrors, lights",
+                        icon = Icons.Default.CarRental
+                    )
+                }
+            }
         }
     }
 }
 
 @Composable
-private fun ProductCard(
+fun PartCategoryCard(
     name: String,
-    price: String,
-    rating: Float,
-    reviewCount: Int
+    description: String,
+    icon: androidx.compose.ui.graphics.vector.ImageVector
 ) {
     Card(
         modifier = Modifier.fillMaxWidth(),
+        shape = RoundedCornerShape(12.dp),
         colors = CardDefaults.cardColors(containerColor = Color.White),
-        shape = RoundedCornerShape(8.dp)
+        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
     ) {
         Row(
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(16.dp),
-            horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically
         ) {
-            Column(
-                modifier = Modifier.weight(1f)
-            ) {
+            Icon(
+                imageVector = icon,
+                contentDescription = name,
+                tint = ClutchRed,
+                modifier = Modifier.size(32.dp)
+            )
+            Spacer(modifier = Modifier.width(16.dp))
+            Column {
                 Text(
                     text = name,
-                    fontSize = 16.sp,
-                    fontWeight = FontWeight.Medium,
+                    fontSize = 18.sp,
+                    fontWeight = FontWeight.SemiBold,
                     color = Color.Black
                 )
-                
-                Spacer(modifier = Modifier.height(4.dp))
-                
-                Row(
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    repeat(5) { index ->
-                        Icon(
-                            imageVector = if (index < rating.toInt()) Icons.Default.Star else Icons.Default.StarBorder,
-                            contentDescription = "Star",
-                            tint = Color.Yellow,
-                            modifier = Modifier.size(14.dp)
-                        )
-                    }
-                    Spacer(modifier = Modifier.width(4.dp))
-                    Text(
-                        text = "($reviewCount)",
-                        fontSize = 12.sp,
-                        color = Color.Gray
-                    )
-                }
-            }
-            
-            Column(
-                horizontalAlignment = Alignment.End
-            ) {
                 Text(
-                    text = price,
-                    fontSize = 18.sp,
-                    fontWeight = FontWeight.Bold,
-                    color = ClutchRed
+                    text = description,
+                    fontSize = 14.sp,
+                    color = Color.Gray
                 )
-                
-                Spacer(modifier = Modifier.height(4.dp))
-                
-                Button(
-                    onClick = { /* Add to cart */ },
-                    colors = ButtonDefaults.buttonColors(containerColor = ClutchRed),
-                    shape = RoundedCornerShape(20.dp)
-                ) {
-                    Text(
-                        text = "Add",
-                        color = Color.White,
-                        fontSize = 12.sp
-                    )
-                }
             }
+            Spacer(modifier = Modifier.weight(1f))
+            Icon(
+                imageVector = Icons.Default.KeyboardArrowRight,
+                contentDescription = "View",
+                tint = Color.Gray
+            )
         }
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+fun OrderPartsScreenPreview() {
+    ClutchAppTheme {
+        OrderPartsScreen()
     }
 }

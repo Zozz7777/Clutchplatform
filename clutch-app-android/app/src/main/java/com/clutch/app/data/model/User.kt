@@ -1,46 +1,76 @@
 package com.clutch.app.data.model
 
-import android.os.Parcelable
-import kotlinx.parcelize.Parcelize
+import com.google.gson.annotations.SerializedName
 
-@Parcelize
 data class User(
-    val id: String,
-    val name: String,
-    val email: String,
-    val phone: String? = null,
-    val profilePicture: String? = null,
-    val language: String = "en",
-    val theme: String = "light",
-    val isEmailVerified: Boolean = false,
-    val isPhoneVerified: Boolean = false,
-    val createdAt: String,
-    val updatedAt: String,
-    val preferences: UserPreferences? = null
-) : Parcelable
+    @SerializedName("_id") val id: String,
+    @SerializedName("email") val email: String,
+    @SerializedName("phone") val phone: String?,
+    @SerializedName("firstName") val firstName: String,
+    @SerializedName("lastName") val lastName: String,
+    @SerializedName("dateOfBirth") val dateOfBirth: String?,
+    @SerializedName("gender") val gender: String?,
+    @SerializedName("profileImage") val profileImage: String?,
+    @SerializedName("isEmailVerified") val isEmailVerified: Boolean,
+    @SerializedName("isPhoneVerified") val isPhoneVerified: Boolean,
+    @SerializedName("preferences") val preferences: UserPreferences,
+    @SerializedName("createdAt") val createdAt: String,
+    @SerializedName("updatedAt") val updatedAt: String
+)
 
-@Parcelize
 data class UserPreferences(
-    val notifications: NotificationPreferences,
-    val privacy: PrivacyPreferences,
-    val language: String = "en",
-    val theme: String = "light"
-) : Parcelable
+    @SerializedName("language") val language: String = "en",
+    @SerializedName("theme") val theme: String = "light",
+    @SerializedName("notifications") val notifications: NotificationPreferences,
+    @SerializedName("receiveOffers") val receiveOffers: Boolean = true,
+    @SerializedName("subscribeNewsletter") val subscribeNewsletter: Boolean = true
+)
 
-@Parcelize
 data class NotificationPreferences(
-    val pushNotifications: Boolean = true,
-    val emailNotifications: Boolean = true,
-    val smsNotifications: Boolean = false,
-    val maintenanceReminders: Boolean = true,
-    val orderUpdates: Boolean = true,
-    val communityUpdates: Boolean = true,
-    val loyaltyUpdates: Boolean = true
-) : Parcelable
+    @SerializedName("push") val push: Boolean = true,
+    @SerializedName("email") val email: Boolean = true,
+    @SerializedName("sms") val sms: Boolean = false
+)
 
-@Parcelize
-data class PrivacyPreferences(
-    val shareLocation: Boolean = false,
-    val shareData: Boolean = true,
-    val analytics: Boolean = true
-) : Parcelable
+data class LoginRequest(
+    @SerializedName("emailOrPhone") val emailOrPhone: String,
+    @SerializedName("password") val password: String,
+    @SerializedName("rememberMe") val rememberMe: Boolean = false
+)
+
+data class RegisterRequest(
+    @SerializedName("email") val email: String,
+    @SerializedName("phone") val phone: String,
+    @SerializedName("firstName") val firstName: String,
+    @SerializedName("lastName") val lastName: String,
+    @SerializedName("password") val password: String,
+    @SerializedName("confirmPassword") val confirmPassword: String,
+    @SerializedName("agreeToTerms") val agreeToTerms: Boolean
+)
+
+data class ForgotPasswordRequest(
+    @SerializedName("emailOrPhone") val emailOrPhone: String
+)
+
+data class OtpRequest(
+    @SerializedName("emailOrPhone") val emailOrPhone: String,
+    @SerializedName("otp") val otp: String
+)
+
+data class AuthResponse(
+    @SerializedName("success") val success: Boolean,
+    @SerializedName("message") val message: String,
+    @SerializedName("data") val data: AuthData
+)
+
+data class AuthData(
+    @SerializedName("user") val user: User,
+    @SerializedName("token") val token: String,
+    @SerializedName("refreshToken") val refreshToken: String
+)
+
+data class ApiResponse(
+    @SerializedName("success") val success: Boolean,
+    @SerializedName("message") val message: String,
+    @SerializedName("data") val data: Any? = null
+)

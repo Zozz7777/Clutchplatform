@@ -5,306 +5,192 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.clutch.app.ui.components.ClutchLogoSmall
+import com.clutch.app.ui.theme.ClutchAppTheme
 import com.clutch.app.ui.theme.ClutchRed
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun CarHealthScreen(
-    onNavigateBack: () -> Unit
-) {
-    var carHealthScore by remember { mutableStateOf(80) }
-    
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(Color(0xFFF5F5F5))
-    ) {
-        // Header
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(16.dp),
-            horizontalArrangement = Arrangement.SpaceBetween,
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            IconButton(onClick = onNavigateBack) {
-                Icon(
-                    imageVector = Icons.Default.ArrowBack,
-                    contentDescription = "Back",
-                    tint = ClutchRed
+fun CarHealthScreen() {
+    Scaffold(
+        topBar = {
+            TopAppBar(
+                title = {
+                    Text(
+                        text = "Car Health",
+                        fontSize = 20.sp,
+                        fontWeight = FontWeight.Bold,
+                        color = Color.White
+                    )
+                },
+                colors = TopAppBarDefaults.topAppBarColors(
+                    containerColor = ClutchRed
                 )
-            }
-            
-            Text(
-                text = "Car Health",
-                fontSize = 18.sp,
-                fontWeight = FontWeight.Bold,
-                color = ClutchRed
-            )
-            
-            ClutchLogoSmall(
-                size = 32.dp,
-                color = ClutchRed
             )
         }
-        
-        LazyColumn(
+    ) { paddingValues ->
+        Column(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(horizontal = 16.dp)
+                .padding(paddingValues)
+                .background(Color(0xFFF0F2F5))
+                .padding(16.dp)
         ) {
-            item {
-                // Health Score Card
-                Card(
-                    modifier = Modifier.fillMaxWidth(),
-                    colors = CardDefaults.cardColors(containerColor = Color.White),
-                    shape = RoundedCornerShape(12.dp)
+            // Overall Health Score Card
+            Card(
+                modifier = Modifier.fillMaxWidth(),
+                shape = RoundedCornerShape(16.dp),
+                colors = CardDefaults.cardColors(containerColor = Color.White),
+                elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
+            ) {
+                Column(
+                    modifier = Modifier.padding(24.dp),
+                    horizontalAlignment = Alignment.CenterHorizontally
                 ) {
-                    Column(
-                        modifier = Modifier.padding(20.dp),
-                        horizontalAlignment = Alignment.CenterHorizontally
-                    ) {
-                        Text(
-                            text = "Overall Health Score",
-                            fontSize = 18.sp,
-                            fontWeight = FontWeight.Bold,
-                            color = Color.Black
-                        )
-                        
-                        Spacer(modifier = Modifier.height(20.dp))
-                        
-                        // Circular Progress
-                        Box(
-                            modifier = Modifier.size(150.dp),
-                            contentAlignment = Alignment.Center
-                        ) {
-                            CircularProgressIndicator(
-                                progress = carHealthScore / 100f,
-                                modifier = Modifier.size(150.dp),
-                                color = ClutchRed,
-                                strokeWidth = 12.dp,
-                                trackColor = Color.LightGray
-                            )
-                            
-                            Column(
-                                horizontalAlignment = Alignment.CenterHorizontally
-                            ) {
-                                Text(
-                                    text = "$carHealthScore%",
-                                    fontSize = 32.sp,
-                                    fontWeight = FontWeight.Bold,
-                                    color = Color.Black
-                                )
-                                Text(
-                                    text = "Good Condition",
-                                    fontSize = 14.sp,
-                                    color = Color.Gray
-                                )
-                            }
-                        }
-                    }
+                    Text(
+                        text = "Overall Health Score",
+                        fontSize = 18.sp,
+                        fontWeight = FontWeight.SemiBold,
+                        color = Color.Black
+                    )
+                    Spacer(modifier = Modifier.height(16.dp))
+                    Text(
+                        text = "85%",
+                        fontSize = 48.sp,
+                        fontWeight = FontWeight.Bold,
+                        color = ClutchRed
+                    )
+                    Spacer(modifier = Modifier.height(8.dp))
+                    Text(
+                        text = "Good Condition",
+                        fontSize = 16.sp,
+                        color = Color.Gray
+                    )
                 }
             }
-            
-            item {
-                Spacer(modifier = Modifier.height(20.dp))
-            }
-            
-            item {
-                // Health Components
-                Text(
-                    text = "Health Components",
-                    fontSize = 18.sp,
-                    fontWeight = FontWeight.Bold,
-                    color = Color.Black
-                )
-                
-                Spacer(modifier = Modifier.height(12.dp))
-                
-                HealthComponentItem(
-                    componentName = "Engine",
-                    score = 85,
-                    status = "Good"
-                )
-                
-                HealthComponentItem(
-                    componentName = "Battery",
-                    score = 70,
-                    status = "Fair"
-                )
-                
-                HealthComponentItem(
-                    componentName = "Tires",
-                    score = 90,
-                    status = "Excellent"
-                )
-                
-                HealthComponentItem(
-                    componentName = "Brakes",
-                    score = 75,
-                    status = "Good"
-                )
-                
-                HealthComponentItem(
-                    componentName = "Fluids",
-                    score = 80,
-                    status = "Good"
-                )
-            }
-            
-            item {
-                Spacer(modifier = Modifier.height(20.dp))
-            }
-            
-            item {
-                // Recommendations
-                Card(
-                    modifier = Modifier.fillMaxWidth(),
-                    colors = CardDefaults.cardColors(containerColor = Color.White),
-                    shape = RoundedCornerShape(12.dp)
-                ) {
-                    Column(
-                        modifier = Modifier.padding(20.dp)
-                    ) {
-                        Text(
-                            text = "Recommendations",
-                            fontSize = 18.sp,
-                            fontWeight = FontWeight.Bold,
-                            color = Color.Black
-                        )
-                        
-                        Spacer(modifier = Modifier.height(12.dp))
-                        
-                        RecommendationItem(
-                            title = "Battery Check",
-                            description = "Your battery is showing signs of wear. Consider checking it soon.",
-                            priority = "Medium"
-                        )
-                        
-                        RecommendationItem(
-                            title = "Brake Inspection",
-                            description = "Schedule a brake inspection in the next 2 weeks.",
-                            priority = "Low"
-                        )
-                    }
+
+            Spacer(modifier = Modifier.height(24.dp))
+
+            Text(
+                text = "Component Status",
+                fontSize = 18.sp,
+                fontWeight = FontWeight.SemiBold,
+                modifier = Modifier.padding(bottom = 16.dp)
+            )
+
+            LazyColumn(
+                verticalArrangement = Arrangement.spacedBy(12.dp)
+            ) {
+                item {
+                    HealthComponentCard(
+                        name = "Engine",
+                        status = "Good",
+                        score = 90,
+                        icon = Icons.Default.Settings
+                    )
                 }
-            }
-            
-            item {
-                Spacer(modifier = Modifier.height(100.dp))
+                item {
+                    HealthComponentCard(
+                        name = "Battery",
+                        status = "Good",
+                        score = 85,
+                        icon = Icons.Default.BatteryFull
+                    )
+                }
+                item {
+                    HealthComponentCard(
+                        name = "Tires",
+                        status = "Fair",
+                        score = 75,
+                        icon = Icons.Default.TireRepair
+                    )
+                }
+                item {
+                    HealthComponentCard(
+                        name = "Brakes",
+                        status = "Good",
+                        score = 88,
+                        icon = Icons.Default.CarRepair
+                    )
+                }
+                item {
+                    HealthComponentCard(
+                        name = "Fluids",
+                        status = "Good",
+                        score = 82,
+                        icon = Icons.Default.WaterDrop
+                    )
+                }
             }
         }
     }
 }
 
 @Composable
-private fun HealthComponentItem(
-    componentName: String,
+fun HealthComponentCard(
+    name: String,
+    status: String,
     score: Int,
-    status: String
+    icon: androidx.compose.ui.graphics.vector.ImageVector
 ) {
     Card(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(vertical = 4.dp),
+        modifier = Modifier.fillMaxWidth(),
+        shape = RoundedCornerShape(12.dp),
         colors = CardDefaults.cardColors(containerColor = Color.White),
-        shape = RoundedCornerShape(8.dp)
+        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
     ) {
         Row(
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(16.dp),
-            horizontalArrangement = Arrangement.SpaceBetween,
-            verticalAlignment = Alignment.CenterVertically
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.SpaceBetween
         ) {
-            Column {
-                Text(
-                    text = componentName,
-                    fontSize = 16.sp,
-                    fontWeight = FontWeight.Medium,
-                    color = Color.Black
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                Icon(
+                    imageVector = icon,
+                    contentDescription = name,
+                    tint = ClutchRed,
+                    modifier = Modifier.size(32.dp)
                 )
-                Text(
-                    text = status,
-                    fontSize = 14.sp,
-                    color = Color.Gray
-                )
+                Spacer(modifier = Modifier.width(16.dp))
+                Column {
+                    Text(
+                        text = name,
+                        fontSize = 18.sp,
+                        fontWeight = FontWeight.SemiBold,
+                        color = Color.Black
+                    )
+                    Text(
+                        text = status,
+                        fontSize = 14.sp,
+                        color = Color.Gray
+                    )
+                }
             }
-            
-            Row(
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                LinearProgressIndicator(
-                    progress = score / 100f,
-                    modifier = Modifier
-                        .width(100.dp)
-                        .height(8.dp),
-                    color = when {
-                        score >= 80 -> Color.Green
-                        score >= 60 -> Color.Yellow
-                        else -> Color.Red
-                    },
-                    trackColor = Color.LightGray
-                )
-                
-                Spacer(modifier = Modifier.width(8.dp))
-                
-                Text(
-                    text = "$score%",
-                    fontSize = 14.sp,
-                    fontWeight = FontWeight.Bold,
-                    color = Color.Black
-                )
-            }
+            Text(
+                text = "$score%",
+                fontSize = 20.sp,
+                fontWeight = FontWeight.Bold,
+                color = ClutchRed
+            )
         }
     }
 }
 
+@Preview(showBackground = true)
 @Composable
-private fun RecommendationItem(
-    title: String,
-    description: String,
-    priority: String
-) {
-    Card(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(vertical = 4.dp),
-        colors = CardDefaults.cardColors(
-            containerColor = when (priority) {
-                "High" -> Color.Red.copy(alpha = 0.1f)
-                "Medium" -> Color.Yellow.copy(alpha = 0.1f)
-                else -> Color.Green.copy(alpha = 0.1f)
-            }
-        ),
-        shape = RoundedCornerShape(8.dp)
-    ) {
-        Column(
-            modifier = Modifier.padding(16.dp)
-        ) {
-            Text(
-                text = title,
-                fontSize = 16.sp,
-                fontWeight = FontWeight.Bold,
-                color = Color.Black
-            )
-            
-            Spacer(modifier = Modifier.height(4.dp))
-            
-            Text(
-                text = description,
-                fontSize = 14.sp,
-                color = Color.Gray
-            )
-        }
+fun CarHealthScreenPreview() {
+    ClutchAppTheme {
+        CarHealthScreen()
     }
 }

@@ -3,8 +3,6 @@ package com.clutch.app.ui.screens.service
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.LazyRow
-import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
@@ -14,290 +12,160 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.clutch.app.ui.components.ClutchLogoSmall
+import com.clutch.app.ui.theme.ClutchAppTheme
 import com.clutch.app.ui.theme.ClutchRed
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun BookServiceScreen(
-    onNavigateBack: () -> Unit
+fun BookServiceScreen() {
+    Scaffold(
+        topBar = {
+            TopAppBar(
+                title = {
+                    Text(
+                        text = "Book Service",
+                        fontSize = 20.sp,
+                        fontWeight = FontWeight.Bold,
+                        color = Color.White
+                    )
+                },
+                colors = TopAppBarDefaults.topAppBarColors(
+                    containerColor = ClutchRed
+                )
+            )
+        }
+    ) { paddingValues ->
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(paddingValues)
+                .background(Color(0xFFF0F2F5))
+                .padding(16.dp)
+        ) {
+            // Service Categories
+            Text(
+                text = "Service Categories",
+                fontSize = 18.sp,
+                fontWeight = FontWeight.SemiBold,
+                modifier = Modifier.padding(bottom = 16.dp)
+            )
+
+            LazyColumn(
+                verticalArrangement = Arrangement.spacedBy(12.dp)
+            ) {
+                item {
+                    ServiceCategoryCard(
+                        name = "Oil Change",
+                        description = "Regular oil change service",
+                        price = "50 AED",
+                        icon = Icons.Default.OilBarrel
+                    )
+                }
+                item {
+                    ServiceCategoryCard(
+                        name = "Brake Service",
+                        description = "Brake inspection and repair",
+                        price = "150 AED",
+                        icon = Icons.Default.CarRepair
+                    )
+                }
+                item {
+                    ServiceCategoryCard(
+                        name = "Tire Service",
+                        description = "Tire rotation and alignment",
+                        price = "80 AED",
+                        icon = Icons.Default.TireRepair
+                    )
+                }
+                item {
+                    ServiceCategoryCard(
+                        name = "Engine Check",
+                        description = "Complete engine inspection",
+                        price = "120 AED",
+                        icon = Icons.Default.Settings
+                    )
+                }
+                item {
+                    ServiceCategoryCard(
+                        name = "AC Service",
+                        description = "Air conditioning maintenance",
+                        price = "100 AED",
+                        icon = Icons.Default.Air
+                    )
+                }
+            }
+        }
+    }
+}
+
+@Composable
+fun ServiceCategoryCard(
+    name: String,
+    description: String,
+    price: String,
+    icon: androidx.compose.ui.graphics.vector.ImageVector
 ) {
-    var selectedDate by remember { mutableStateOf("Today") }
-    var selectedTime by remember { mutableStateOf("") }
-    
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(Color(0xFFF5F5F5))
+    Card(
+        modifier = Modifier.fillMaxWidth(),
+        shape = RoundedCornerShape(12.dp),
+        colors = CardDefaults.cardColors(containerColor = Color.White),
+        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
     ) {
-        // Header
         Row(
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(16.dp),
-            horizontalArrangement = Arrangement.SpaceBetween,
-            verticalAlignment = Alignment.CenterVertically
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.SpaceBetween
         ) {
-            IconButton(onClick = onNavigateBack) {
+            Row(verticalAlignment = Alignment.CenterVertically) {
                 Icon(
-                    imageVector = Icons.Default.ArrowBack,
-                    contentDescription = "Back",
-                    tint = ClutchRed
+                    imageVector = icon,
+                    contentDescription = name,
+                    tint = ClutchRed,
+                    modifier = Modifier.size(32.dp)
                 )
-            }
-            
-            Text(
-                text = "Book Service",
-                fontSize = 18.sp,
-                fontWeight = FontWeight.Bold,
-                color = ClutchRed
-            )
-            
-            ClutchLogoSmall(
-                size = 32.dp,
-                color = ClutchRed
-            )
-        }
-        
-        LazyColumn(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(horizontal = 16.dp),
-            verticalArrangement = Arrangement.spacedBy(16.dp)
-        ) {
-            item {
-                // Service Center Card
-                ServiceCenterCard(
-                    name = "El Mikaneeky - ElNozha",
-                    location = "Service Center Nasr City - Cairo",
-                    rating = 4.0f,
-                    reviewCount = 520,
-                    services = listOf("Mechanical", "Electricity", "Suspensions", "Car Denting", "Paints", "Brakes", "Lubricants"),
-                    availability = "Available Today: From 9:00 AM To 10:00 PM"
-                )
-            }
-            
-            item {
-                // Date Selection
-                Text(
-                    text = "Select Date",
-                    fontSize = 18.sp,
-                    fontWeight = FontWeight.Bold,
-                    color = Color.Black
-                )
-                
-                LazyRow(
-                    horizontalArrangement = Arrangement.spacedBy(8.dp)
-                ) {
-                    items(7) { index ->
-                        DateChip(
-                            date = when (index) {
-                                0 -> "Today"
-                                1 -> "Tomorrow"
-                                2 -> "Fri 22/03"
-                                3 -> "Sat 23/03"
-                                4 -> "Sun 24/03"
-                                5 -> "Mon 25/03"
-                                else -> "Tue 26/03"
-                            },
-                            isSelected = selectedDate == when (index) {
-                                0 -> "Today"
-                                1 -> "Tomorrow"
-                                2 -> "Fri 22/03"
-                                3 -> "Sat 23/03"
-                                4 -> "Sun 24/03"
-                                5 -> "Mon 25/03"
-                                else -> "Tue 26/03"
-                            },
-                            onClick = { selectedDate = when (index) {
-                                0 -> "Today"
-                                1 -> "Tomorrow"
-                                2 -> "Fri 22/03"
-                                3 -> "Sat 23/03"
-                                4 -> "Sun 24/03"
-                                5 -> "Mon 25/03"
-                                else -> "Tue 26/03"
-                            } }
-                        )
-                    }
-                }
-            }
-            
-            item {
-                // Time Slots
-                Text(
-                    text = "Available Time Slots",
-                    fontSize = 18.sp,
-                    fontWeight = FontWeight.Bold,
-                    color = Color.Black
-                )
-                
-                LazyRow(
-                    horizontalArrangement = Arrangement.spacedBy(8.dp)
-                ) {
-                    items(8) { index ->
-                        TimeSlotChip(
-                            time = "09:00 AM",
-                            isSelected = selectedTime == "09:00 AM",
-                            onClick = { selectedTime = "09:00 AM" }
-                        )
-                    }
-                }
-            }
-            
-            item {
-                // Book Button
-                Button(
-                    onClick = { /* Book service */ },
-                    modifier = Modifier.fillMaxWidth(),
-                    colors = ButtonDefaults.buttonColors(containerColor = ClutchRed),
-                    shape = RoundedCornerShape(8.dp),
-                    enabled = selectedTime.isNotEmpty()
-                ) {
-                    Text(
-                        text = "Book Now",
-                        color = Color.White,
-                        fontWeight = FontWeight.Bold,
-                        modifier = Modifier.padding(vertical = 8.dp)
-                    )
-                }
-            }
-            
-            item {
-                Spacer(modifier = Modifier.height(100.dp))
-            }
-        }
-    }
-}
-
-@Composable
-private fun ServiceCenterCard(
-    name: String,
-    location: String,
-    rating: Float,
-    reviewCount: Int,
-    services: List<String>,
-    availability: String
-) {
-    Card(
-        modifier = Modifier.fillMaxWidth(),
-        colors = CardDefaults.cardColors(containerColor = Color.White),
-        shape = RoundedCornerShape(12.dp)
-    ) {
-        Column(
-            modifier = Modifier.padding(16.dp)
-        ) {
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.CenterVertically
-            ) {
+                Spacer(modifier = Modifier.width(16.dp))
                 Column {
                     Text(
                         text = name,
                         fontSize = 18.sp,
-                        fontWeight = FontWeight.Bold,
+                        fontWeight = FontWeight.SemiBold,
                         color = Color.Black
                     )
                     Text(
-                        text = location,
+                        text = description,
                         fontSize = 14.sp,
-                        color = ClutchRed
+                        color = Color.Gray
                     )
                 }
-                
-                Column(
-                    horizontalAlignment = Alignment.End
+            }
+            Column(horizontalAlignment = Alignment.End) {
+                Text(
+                    text = price,
+                    fontSize = 16.sp,
+                    fontWeight = FontWeight.Bold,
+                    color = ClutchRed
+                )
+                Button(
+                    onClick = { /* TODO: Book service */ },
+                    colors = ButtonDefaults.buttonColors(containerColor = ClutchRed),
+                    shape = RoundedCornerShape(8.dp)
                 ) {
-                    Row(
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-                        repeat(5) { index ->
-                            Icon(
-                                imageVector = if (index < rating.toInt()) Icons.Default.Star else Icons.Default.StarBorder,
-                                contentDescription = "Star",
-                                tint = Color.Yellow,
-                                modifier = Modifier.size(16.dp)
-                            )
-                        }
-                        Text(
-                            text = "($reviewCount)",
-                            fontSize = 12.sp,
-                            color = Color.Gray
-                        )
-                    }
+                    Text("Book", color = Color.White, fontSize = 12.sp)
                 }
             }
-            
-            Spacer(modifier = Modifier.height(12.dp))
-            
-            Text(
-                text = "Provided Services",
-                fontSize = 14.sp,
-                fontWeight = FontWeight.Bold,
-                color = ClutchRed
-            )
-            
-            Spacer(modifier = Modifier.height(4.dp))
-            
-            Text(
-                text = services.joinToString(" • "),
-                fontSize = 12.sp,
-                color = Color.Black
-            )
-            
-            Spacer(modifier = Modifier.height(8.dp))
-            
-            Text(
-                text = availability,
-                fontSize = 12.sp,
-                color = Color.Black
-            )
         }
     }
 }
 
+@Preview(showBackground = true)
 @Composable
-private fun DateChip(
-    date: String,
-    isSelected: Boolean,
-    onClick: () -> Unit
-) {
-    Card(
-        onClick = onClick,
-        colors = CardDefaults.cardColors(
-            containerColor = if (isSelected) ClutchRed else Color.White
-        ),
-        shape = RoundedCornerShape(8.dp)
-    ) {
-        Text(
-            text = date,
-            modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp),
-            color = if (isSelected) Color.White else Color.Black,
-            fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Normal
-        )
-    }
-}
-
-@Composable
-private fun TimeSlotChip(
-    time: String,
-    isSelected: Boolean,
-    onClick: () -> Unit
-) {
-    Card(
-        onClick = onClick,
-        colors = CardDefaults.cardColors(
-            containerColor = if (isSelected) ClutchRed else Color.White
-        ),
-        shape = RoundedCornerShape(8.dp)
-    ) {
-        Text(
-            text = time,
-            modifier = Modifier.padding(horizontal = 12.dp, vertical = 6.dp),
-            color = if (isSelected) Color.White else Color.Black,
-            fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Normal
-        )
+fun BookServiceScreenPreview() {
+    ClutchAppTheme {
+        BookServiceScreen()
     }
 }

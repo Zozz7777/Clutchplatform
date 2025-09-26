@@ -1,117 +1,42 @@
 package com.clutch.app.data.model
 
-import android.os.Parcelable
-import kotlinx.parcelize.Parcelize
+import com.google.gson.annotations.SerializedName
 
-@Parcelize
-data class LoyaltyAccount(
-    val userId: String,
-    val pointsBalance: Int,
-    val totalEarned: Int,
-    val totalRedeemed: Int,
-    val tier: String, // bronze, silver, gold, platinum
-    val tierProgress: Float,
-    val nextTier: NextTier?,
-    val badges: List<LoyaltyBadge>,
-    val recentHistory: List<LoyaltyHistoryEntry>,
-    val expiringPoints: List<LoyaltyHistoryEntry>,
-    val stats: LoyaltyStats,
-    val preferences: LoyaltyPreferences
-) : Parcelable
+data class LoyaltyPoints(
+    @SerializedName("userId") val userId: String,
+    @SerializedName("pointsBalance") val pointsBalance: Int,
+    @SerializedName("totalEarned") val totalEarned: Int,
+    @SerializedName("totalRedeemed") val totalRedeemed: Int,
+    @SerializedName("history") val history: List<LoyaltyHistoryItem>,
+    @SerializedName("badges") val badges: List<Badge>
+)
 
-@Parcelize
-data class NextTier(
-    val tier: String,
-    val required: Int
-) : Parcelable
+data class LoyaltyHistoryItem(
+    @SerializedName("_id") val id: String,
+    @SerializedName("actionType") val actionType: String, // "earn", "redeem"
+    @SerializedName("points") val points: Int,
+    @SerializedName("description") val description: String,
+    @SerializedName("referenceId") val referenceId: String?,
+    @SerializedName("date") val date: String
+)
 
-@Parcelize
-data class LoyaltyBadge(
-    val name: String,
-    val description: String,
-    val icon: String,
-    val category: String, // achievement, milestone, special, seasonal
-    val unlockedAt: String
-) : Parcelable
+data class Badge(
+    @SerializedName("_id") val id: String,
+    @SerializedName("name") val name: String,
+    @SerializedName("description") val description: String,
+    @SerializedName("icon") val icon: String,
+    @SerializedName("unlockedAt") val unlockedAt: String,
+    @SerializedName("isUnlocked") val isUnlocked: Boolean
+)
 
-@Parcelize
-data class LoyaltyHistoryEntry(
-    val actionType: String, // earn, redeem, bonus, penalty, expire
-    val points: Int,
-    val description: String,
-    val referenceId: String? = null,
-    val referenceType: String? = null,
-    val date: String,
-    val expiresAt: String? = null
-) : Parcelable
+data class EarnPointsRequest(
+    @SerializedName("actionType") val actionType: String,
+    @SerializedName("points") val points: Int,
+    @SerializedName("description") val description: String,
+    @SerializedName("referenceId") val referenceId: String?
+)
 
-@Parcelize
-data class LoyaltyStats(
-    val totalOrders: Int,
-    val totalReviews: Int,
-    val totalTips: Int,
-    val totalReferrals: Int,
-    val streakDays: Int,
-    val lastActivityDate: String
-) : Parcelable
-
-@Parcelize
-data class LoyaltyPreferences(
-    val notifications: LoyaltyNotificationPreferences,
-    val autoRedeem: AutoRedeemPreferences
-) : Parcelable
-
-@Parcelize
-data class LoyaltyNotificationPreferences(
-    val pointsEarned: Boolean = true,
-    val badgeUnlocked: Boolean = true,
-    val tierUpgrade: Boolean = true,
-    val pointsExpiring: Boolean = true
-) : Parcelable
-
-@Parcelize
-data class AutoRedeemPreferences(
-    val enabled: Boolean = false,
-    val threshold: Int = 1000,
-    val rewardType: String = "discount" // discount, cashback, gift
-) : Parcelable
-
-@Parcelize
-data class LoyaltyReward(
-    val id: String,
-    val name: String,
-    val description: String,
-    val pointsRequired: Int,
-    val category: String,
-    val tier: String,
-    val type: String, // discount, shipping, cashback, service
-    val value: Int,
-    val maxUses: Int,
-    val expiresIn: Int // days
-) : Parcelable
-
-@Parcelize
-data class LoyaltyLeaderboard(
-    val leaderboard: List<LoyaltyLeaderboardUser>,
-    val tierDistribution: List<TierDistribution>,
-    val period: String
-) : Parcelable
-
-@Parcelize
-data class LoyaltyLeaderboardUser(
-    val userId: String,
-    val name: String,
-    val profilePicture: String? = null,
-    val pointsBalance: Int,
-    val totalEarned: Int,
-    val tier: String,
-    val totalOrders: Int,
-    val totalReviews: Int,
-    val totalTips: Int
-) : Parcelable
-
-@Parcelize
-data class TierDistribution(
-    val tier: String,
-    val count: Int
-) : Parcelable
+data class RedeemPointsRequest(
+    @SerializedName("rewardId") val rewardId: String,
+    @SerializedName("points") val points: Int
+)

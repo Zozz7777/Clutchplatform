@@ -2,64 +2,72 @@ package com.clutch.app.data.repository
 
 import com.clutch.app.data.api.ClutchApiService
 import com.clutch.app.data.model.*
-import com.clutch.app.data.local.ClutchLocalDataSource
-import com.clutch.app.utils.SessionManager
 import javax.inject.Inject
 import javax.inject.Singleton
 
 @Singleton
 class ClutchRepository @Inject constructor(
-    private val apiService: ClutchApiService,
-    private val localDataSource: ClutchLocalDataSource,
-    private val sessionManager: SessionManager
+    private val apiService: ClutchApiService
 ) {
     
     // Authentication
-    suspend fun login(email: String, password: String): Result<AuthData> {
+    suspend fun login(emailOrPhone: String, password: String, rememberMe: Boolean = false): Result<AuthResponse> {
         return try {
-            val response = apiService.login(LoginRequest(email, password))
-            if (response.isSuccessful && response.body()?.success == true) {
-                val authData = response.body()!!.data
-                sessionManager.saveAuthToken(authData.accessToken)
-                sessionManager.saveRefreshToken(authData.refreshToken)
-                sessionManager.saveUser(authData.user)
-                localDataSource.saveUser(authData.user)
-                Result.success(authData)
+            val response = apiService.login(LoginRequest(emailOrPhone, password, rememberMe))
+            if (response.isSuccessful) {
+                Result.success(response.body()!!)
             } else {
-                Result.failure(Exception(response.message()))
+                Result.failure(Exception("Login failed: ${response.message()}"))
             }
         } catch (e: Exception) {
             Result.failure(e)
         }
     }
     
-    suspend fun register(name: String, email: String, password: String, phone: String? = null): Result<AuthData> {
+    suspend fun register(
+        email: String,
+        phone: String,
+        firstName: String,
+        lastName: String,
+        password: String,
+        confirmPassword: String,
+        agreeToTerms: Boolean
+    ): Result<AuthResponse> {
         return try {
-            val response = apiService.register(RegisterRequest(name, email, password, phone))
-            if (response.isSuccessful && response.body()?.success == true) {
-                val authData = response.body()!!.data
-                sessionManager.saveAuthToken(authData.accessToken)
-                sessionManager.saveRefreshToken(authData.refreshToken)
-                sessionManager.saveUser(authData.user)
-                localDataSource.saveUser(authData.user)
-                Result.success(authData)
+            val response = apiService.register(
+                RegisterRequest(email, phone, firstName, lastName, password, confirmPassword, agreeToTerms)
+            )
+            if (response.isSuccessful) {
+                Result.success(response.body()!!)
             } else {
-                Result.failure(Exception(response.message()))
+                Result.failure(Exception("Registration failed: ${response.message()}"))
             }
         } catch (e: Exception) {
             Result.failure(e)
         }
     }
     
-    suspend fun logout(): Result<Unit> {
+    suspend fun forgotPassword(emailOrPhone: String): Result<ApiResponse> {
         return try {
-            val token = sessionManager.getAuthToken()
-            if (token != null) {
-                apiService.logout("Bearer $token")
+            val response = apiService.forgotPassword(ForgotPasswordRequest(emailOrPhone))
+            if (response.isSuccessful) {
+                Result.success(response.body()!!)
+            } else {
+                Result.failure(Exception("Forgot password failed: ${response.message()}"))
             }
-            sessionManager.clearSession()
-            localDataSource.clearUserData()
-            Result.success(Unit)
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
+    }
+    
+    suspend fun verifyOtp(emailOrPhone: String, otp: String): Result<ApiResponse> {
+        return try {
+            val response = apiService.verifyOtp(OtpRequest(emailOrPhone, otp))
+            if (response.isSuccessful) {
+                Result.success(response.body()!!)
+            } else {
+                Result.failure(Exception("OTP verification failed: ${response.message()}"))
+            }
         } catch (e: Exception) {
             Result.failure(e)
         }
@@ -68,19 +76,11 @@ class ClutchRepository @Inject constructor(
     // User Profile
     suspend fun getUserProfile(): Result<User> {
         return try {
-            val token = sessionManager.getAuthToken()
-            if (token == null) {
-                return Result.failure(Exception("No auth token"))
-            }
-            
-            val response = apiService.getUserProfile("Bearer $token")
-            if (response.isSuccessful && response.body() != null) {
-                val user = response.body()!!
-                sessionManager.saveUser(user)
-                localDataSource.saveUser(user)
-                Result.success(user)
+            val response = apiService.getUserProfile()
+            if (response.isSuccessful) {
+                Result.success(response.body()!!)
             } else {
-                Result.failure(Exception(response.message()))
+                Result.failure(Exception("Failed to get user profile: ${response.message()}"))
             }
         } catch (e: Exception) {
             Result.failure(e)
@@ -89,19 +89,11 @@ class ClutchRepository @Inject constructor(
     
     suspend fun updateUserProfile(user: User): Result<User> {
         return try {
-            val token = sessionManager.getAuthToken()
-            if (token == null) {
-                return Result.failure(Exception("No auth token"))
-            }
-            
-            val response = apiService.updateUserProfile("Bearer $token", user)
-            if (response.isSuccessful && response.body() != null) {
-                val updatedUser = response.body()!!
-                sessionManager.saveUser(updatedUser)
-                localDataSource.saveUser(updatedUser)
-                Result.success(updatedUser)
+            val response = apiService.updateUserProfile(user)
+            if (response.isSuccessful) {
+                Result.success(response.body()!!)
             } else {
-                Result.failure(Exception(response.message()))
+                Result.failure(Exception("Failed to update user profile: ${response.message()}"))
             }
         } catch (e: Exception) {
             Result.failure(e)
@@ -111,18 +103,11 @@ class ClutchRepository @Inject constructor(
     // Cars
     suspend fun getUserCars(): Result<List<Car>> {
         return try {
-            val token = sessionManager.getAuthToken()
-            if (token == null) {
-                return Result.failure(Exception("No auth token"))
-            }
-            
-            val response = apiService.getUserCars("Bearer $token")
-            if (response.isSuccessful && response.body() != null) {
-                val cars = response.body()!!
-                localDataSource.saveCars(cars)
-                Result.success(cars)
+            val response = apiService.getUserCars()
+            if (response.isSuccessful) {
+                Result.success(response.body()!!)
             } else {
-                Result.failure(Exception(response.message()))
+                Result.failure(Exception("Failed to get user cars: ${response.message()}"))
             }
         } catch (e: Exception) {
             Result.failure(e)
@@ -131,36 +116,105 @@ class ClutchRepository @Inject constructor(
     
     suspend fun addCar(car: Car): Result<Car> {
         return try {
-            val token = sessionManager.getAuthToken()
-            if (token == null) {
-                return Result.failure(Exception("No auth token"))
-            }
-            
-            val response = apiService.addCar("Bearer $token", car)
-            if (response.isSuccessful && response.body() != null) {
-                val newCar = response.body()!!
-                localDataSource.addCar(newCar)
-                Result.success(newCar)
+            val response = apiService.addCar(car)
+            if (response.isSuccessful) {
+                Result.success(response.body()!!)
             } else {
-                Result.failure(Exception(response.message()))
+                Result.failure(Exception("Failed to add car: ${response.message()}"))
             }
         } catch (e: Exception) {
             Result.failure(e)
         }
     }
     
-    suspend fun getCarHealth(carId: String): Result<CarHealthScore> {
+    suspend fun getCarHealth(carId: String): Result<CarHealth> {
         return try {
-            val token = sessionManager.getAuthToken()
-            if (token == null) {
-                return Result.failure(Exception("No auth token"))
-            }
-            
-            val response = apiService.getCarHealth("Bearer $token", carId)
-            if (response.isSuccessful && response.body() != null) {
+            val response = apiService.getCarHealth(carId)
+            if (response.isSuccessful) {
                 Result.success(response.body()!!)
             } else {
-                Result.failure(Exception(response.message()))
+                Result.failure(Exception("Failed to get car health: ${response.message()}"))
+            }
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
+    }
+    
+    // Maintenance
+    suspend fun getMaintenanceHistory(carId: String? = null): Result<List<MaintenanceRecord>> {
+        return try {
+            val response = apiService.getMaintenanceHistory(carId)
+            if (response.isSuccessful) {
+                Result.success(response.body()!!)
+            } else {
+                Result.failure(Exception("Failed to get maintenance history: ${response.message()}"))
+            }
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
+    }
+    
+    suspend fun getMaintenanceReminders(): Result<List<MaintenanceReminder>> {
+        return try {
+            val response = apiService.getMaintenanceReminders()
+            if (response.isSuccessful) {
+                Result.success(response.body()!!)
+            } else {
+                Result.failure(Exception("Failed to get maintenance reminders: ${response.message()}"))
+            }
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
+    }
+    
+    // Services
+    suspend fun getServicePartners(location: String? = null): Result<List<ServicePartner>> {
+        return try {
+            val response = apiService.getServicePartners(location)
+            if (response.isSuccessful) {
+                Result.success(response.body()!!)
+            } else {
+                Result.failure(Exception("Failed to get service partners: ${response.message()}"))
+            }
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
+    }
+    
+    suspend fun bookService(bookingRequest: ServiceBookingRequest): Result<ServiceBooking> {
+        return try {
+            val response = apiService.bookService(bookingRequest)
+            if (response.isSuccessful) {
+                Result.success(response.body()!!)
+            } else {
+                Result.failure(Exception("Failed to book service: ${response.message()}"))
+            }
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
+    }
+    
+    // Parts
+    suspend fun getPartCategories(): Result<List<PartCategory>> {
+        return try {
+            val response = apiService.getPartCategories()
+            if (response.isSuccessful) {
+                Result.success(response.body()!!)
+            } else {
+                Result.failure(Exception("Failed to get part categories: ${response.message()}"))
+            }
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
+    }
+    
+    suspend fun getParts(category: String? = null, search: String? = null): Result<List<CarPart>> {
+        return try {
+            val response = apiService.getParts(category, search)
+            if (response.isSuccessful) {
+                Result.success(response.body()!!)
+            } else {
+                Result.failure(Exception("Failed to get parts: ${response.message()}"))
             }
         } catch (e: Exception) {
             Result.failure(e)
@@ -168,84 +222,26 @@ class ClutchRepository @Inject constructor(
     }
     
     // Community
-    suspend fun getCommunityTips(
-        page: Int = 1,
-        limit: Int = 20,
-        type: String? = null,
-        category: String? = null,
-        sortBy: String = "createdAt",
-        sortOrder: String = "desc",
-        language: String = "en",
-        search: String? = null
-    ): Result<CommunityTipsData> {
+    suspend fun getCommunityTips(): Result<List<CommunityTip>> {
         return try {
-            val token = sessionManager.getAuthToken()
-            if (token == null) {
-                return Result.failure(Exception("No auth token"))
-            }
-            
-            val response = apiService.getCommunityTips(
-                "Bearer $token",
-                page, limit, type, category, sortBy, sortOrder, language, search
-            )
-            if (response.isSuccessful && response.body()?.success == true) {
-                Result.success(response.body()!!.data)
+            val response = apiService.getCommunityTips()
+            if (response.isSuccessful) {
+                Result.success(response.body()!!)
             } else {
-                Result.failure(Exception(response.message()))
+                Result.failure(Exception("Failed to get community tips: ${response.message()}"))
             }
         } catch (e: Exception) {
             Result.failure(e)
         }
     }
     
-    suspend fun createCommunityTip(tip: CreateCommunityTipRequest): Result<CommunityTip> {
+    suspend fun createTip(tip: CommunityTip): Result<CommunityTip> {
         return try {
-            val token = sessionManager.getAuthToken()
-            if (token == null) {
-                return Result.failure(Exception("No auth token"))
-            }
-            
-            val response = apiService.createCommunityTip("Bearer $token", tip)
-            if (response.isSuccessful && response.body()?.success == true) {
-                Result.success(response.body()!!.data)
+            val response = apiService.createTip(tip)
+            if (response.isSuccessful) {
+                Result.success(response.body()!!)
             } else {
-                Result.failure(Exception(response.message()))
-            }
-        } catch (e: Exception) {
-            Result.failure(e)
-        }
-    }
-    
-    suspend fun voteOnTip(tipId: String, voteType: String): Result<VoteData> {
-        return try {
-            val token = sessionManager.getAuthToken()
-            if (token == null) {
-                return Result.failure(Exception("No auth token"))
-            }
-            
-            val response = apiService.voteOnTip("Bearer $token", tipId, VoteRequest(voteType))
-            if (response.isSuccessful && response.body()?.success == true) {
-                Result.success(response.body()!!.data)
-            } else {
-                Result.failure(Exception(response.message()))
-            }
-        } catch (e: Exception) {
-            Result.failure(e)
-        }
-    }
-    
-    suspend fun getCommunityLeaderboard(period: String = "all", limit: Int = 50): Result<CommunityLeaderboard> {
-        return try {
-            val token = sessionManager.getAuthToken()
-            if (token == null) {
-                return Result.failure(Exception("No auth token"))
-            }
-            
-            val response = apiService.getCommunityLeaderboard("Bearer $token", period, limit)
-            if (response.isSuccessful && response.body()?.success == true) {
-                Result.success(response.body()!!.data)
-            } else {
-                Result.failure(Exception(response.message()))
+                Result.failure(Exception("Failed to create tip: ${response.message()}"))
             }
         } catch (e: Exception) {
             Result.failure(e)
@@ -253,80 +249,29 @@ class ClutchRepository @Inject constructor(
     }
     
     // Loyalty
-    suspend fun getLoyaltyPoints(): Result<LoyaltyAccount> {
+    suspend fun getUserPoints(): Result<LoyaltyPoints> {
         return try {
-            val token = sessionManager.getAuthToken()
-            if (token == null) {
-                return Result.failure(Exception("No auth token"))
-            }
-            
-            val response = apiService.getLoyaltyPoints("Bearer $token")
-            if (response.isSuccessful && response.body()?.success == true) {
-                Result.success(response.body()!!.data)
+            val response = apiService.getUserPoints()
+            if (response.isSuccessful) {
+                Result.success(response.body()!!)
             } else {
-                Result.failure(Exception(response.message()))
+                Result.failure(Exception("Failed to get user points: ${response.message()}"))
             }
         } catch (e: Exception) {
             Result.failure(e)
         }
     }
     
-    suspend fun redeemPoints(points: Int, description: String, referenceType: String? = null): Result<RedeemPointsData> {
+    suspend fun getUserBadges(): Result<List<Badge>> {
         return try {
-            val token = sessionManager.getAuthToken()
-            if (token == null) {
-                return Result.failure(Exception("No auth token"))
-            }
-            
-            val response = apiService.redeemPoints("Bearer $token", RedeemPointsRequest(points, description, referenceType))
-            if (response.isSuccessful && response.body()?.success == true) {
-                Result.success(response.body()!!.data)
+            val response = apiService.getUserBadges()
+            if (response.isSuccessful) {
+                Result.success(response.body()!!)
             } else {
-                Result.failure(Exception(response.message()))
+                Result.failure(Exception("Failed to get user badges: ${response.message()}"))
             }
         } catch (e: Exception) {
             Result.failure(e)
         }
     }
-    
-    suspend fun getLoyaltyBadges(): Result<LoyaltyBadgesData> {
-        return try {
-            val token = sessionManager.getAuthToken()
-            if (token == null) {
-                return Result.failure(Exception("No auth token"))
-            }
-            
-            val response = apiService.getLoyaltyBadges("Bearer $token")
-            if (response.isSuccessful && response.body()?.success == true) {
-                Result.success(response.body()!!.data)
-            } else {
-                Result.failure(Exception(response.message()))
-            }
-        } catch (e: Exception) {
-            Result.failure(e)
-        }
-    }
-    
-    suspend fun getLoyaltyRewards(tier: String? = null, category: String? = null): Result<LoyaltyRewardsData> {
-        return try {
-            val token = sessionManager.getAuthToken()
-            if (token == null) {
-                return Result.failure(Exception("No auth token"))
-            }
-            
-            val response = apiService.getLoyaltyRewards("Bearer $token", tier, category)
-            if (response.isSuccessful && response.body()?.success == true) {
-                Result.success(response.body()!!.data)
-            } else {
-                Result.failure(Exception(response.message()))
-            }
-        } catch (e: Exception) {
-            Result.failure(e)
-        }
-    }
-    
-    // Local data access
-    fun getCurrentUser(): User? = sessionManager.getCurrentUser()
-    fun getCachedCars(): List<Car> = localDataSource.getCars()
-    fun isLoggedIn(): Boolean = sessionManager.isLoggedIn()
 }

@@ -2,13 +2,13 @@ package com.clutch.app.ui.screens.auth
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
-import androidx.compose.material.icons.filled.Visibility
-import androidx.compose.material.icons.filled.VisibilityOff
+import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -19,172 +19,210 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.clutch.app.R
-import com.clutch.app.ui.components.ClutchLogoSmall
+import com.clutch.app.ui.theme.ClutchAppTheme
 import com.clutch.app.ui.theme.ClutchRed
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.hilt.navigation.compose.hiltViewModel
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SignupScreen(
-    onNavigateBack: () -> Unit,
-    onNavigateToLogin: () -> Unit,
-    onSignupSuccess: () -> Unit
-) {
-    var name by remember { mutableStateOf("") }
-    var mobileNumber by remember { mutableStateOf("") }
-    var password by remember { mutableStateOf("") }
-    var confirmPassword by remember { mutableStateOf("") }
-    var agreeToTerms by remember { mutableStateOf(false) }
-    var passwordVisible by remember { mutableStateOf(false) }
-    var confirmPasswordVisible by remember { mutableStateOf(false) }
-    var isLoading by remember { mutableStateOf(false) }
+    onNavigateBack: () -> Unit = {},
+    onNavigateToLogin: () -> Unit = {},
+    onSignupSuccess: () -> Unit = {},
+    viewModel: SignupViewModel = hiltViewModel()
+  ) {
+      var name by remember { mutableStateOf("") }
+      var email by remember { mutableStateOf("") }
+      var mobileNumber by remember { mutableStateOf("") }
+      var password by remember { mutableStateOf("") }
+      var confirmPassword by remember { mutableStateOf("") }
+      var passwordVisible by remember { mutableStateOf(false) }
+      var confirmPasswordVisible by remember { mutableStateOf(false) }
+      var agreeToTerms by remember { mutableStateOf(false) }
+    
+    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+    
+    // Handle signup success
+    LaunchedEffect(uiState.signupSuccess) {
+        if (uiState.signupSuccess) {
+            onSignupSuccess()
+        }
+    }
 
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(Color.White)
-    ) {
-        // Header
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(16.dp),
-            horizontalArrangement = Arrangement.SpaceBetween,
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            IconButton(onClick = onNavigateBack) {
-                Icon(
-                    imageVector = Icons.Default.ArrowBack,
-                    contentDescription = "Back",
-                    tint = ClutchRed
+    Scaffold(
+        topBar = {
+            TopAppBar(
+                title = {
+                    Text(
+                        text = "Create an account",
+                        color = ClutchRed,
+                        fontWeight = FontWeight.Bold
+                    )
+                },
+                navigationIcon = {
+                    IconButton(onClick = onNavigateBack) {
+                        Icon(Icons.Default.ArrowBack, contentDescription = "Back", tint = ClutchRed)
+                    }
+                },
+                actions = {
+                    Image(
+                        painter = painterResource(id = R.drawable.clutch_logo_red),
+                        contentDescription = "Clutch Logo",
+                        modifier = Modifier.size(40.dp)
+                    )
+                },
+                colors = TopAppBarDefaults.topAppBarColors(
+                    containerColor = Color.White
                 )
-            }
-            
-            Text(
-                text = "Create an account",
-                fontSize = 18.sp,
-                fontWeight = FontWeight.Bold,
-                color = ClutchRed
-            )
-            
-            ClutchLogoSmall(
-                size = 32.dp,
-                color = ClutchRed
             )
         }
-        
-        Spacer(modifier = Modifier.height(32.dp))
-        
-        // Main Logo
-        Box(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 32.dp),
-            contentAlignment = Alignment.Center
-        ) {
-            Image(
-                painter = painterResource(id = R.drawable.clutch_logo_red),
-                contentDescription = "Clutch Logo",
-                modifier = Modifier.size(120.dp)
-            )
-        }
-        
-        Spacer(modifier = Modifier.height(32.dp))
-        
-        // Signup Form
+    ) { paddingValues ->
         Column(
             modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 24.dp)
+                .fillMaxSize()
+                .padding(paddingValues)
+                .background(Color.White)
+                .padding(horizontal = 24.dp),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.Top
         ) {
-            // Name Field
-            OutlinedTextField(
-                value = name,
-                onValueChange = { name = it },
-                label = { Text("Name") },
-                modifier = Modifier.fillMaxWidth(),
-                colors = OutlinedTextFieldDefaults.colors(
-                    focusedBorderColor = ClutchRed,
-                    unfocusedBorderColor = Color.Gray,
-                    focusedLabelColor = ClutchRed,
-                    unfocusedLabelColor = Color.Gray
-                )
-            )
-            
-            Spacer(modifier = Modifier.height(16.dp))
-            
-            // Mobile Number Field
+            Spacer(modifier = Modifier.height(32.dp))
+
+              // Name Input
+              OutlinedTextField(
+                  value = name,
+                  onValueChange = { name = it },
+                  label = { Text("Name") },
+                  keyboardOptions = KeyboardOptions(
+                      keyboardType = KeyboardType.Text,
+                      imeAction = ImeAction.Next
+                  ),
+                  modifier = Modifier.fillMaxWidth(),
+                  colors = OutlinedTextFieldDefaults.colors(
+                      focusedBorderColor = ClutchRed,
+                      unfocusedBorderColor = Color.Gray,
+                      focusedLabelColor = ClutchRed,
+                      unfocusedLabelColor = Color.Gray,
+                      focusedTextColor = Color.Black,
+                      unfocusedTextColor = Color.Black
+                  )
+              )
+
+              Spacer(modifier = Modifier.height(16.dp))
+
+              // Email Input
+              OutlinedTextField(
+                  value = email,
+                  onValueChange = { email = it },
+                  label = { Text("Email") },
+                  keyboardOptions = KeyboardOptions(
+                      keyboardType = KeyboardType.Email,
+                      imeAction = ImeAction.Next
+                  ),
+                  modifier = Modifier.fillMaxWidth(),
+                  colors = OutlinedTextFieldDefaults.colors(
+                      focusedBorderColor = ClutchRed,
+                      unfocusedBorderColor = Color.Gray,
+                      focusedLabelColor = ClutchRed,
+                      unfocusedLabelColor = Color.Gray,
+                      focusedTextColor = Color.Black,
+                      unfocusedTextColor = Color.Black
+                  )
+              )
+
+              Spacer(modifier = Modifier.height(16.dp))
+
+            // Mobile Number Input
             OutlinedTextField(
                 value = mobileNumber,
                 onValueChange = { mobileNumber = it },
                 label = { Text("Mobile Number") },
+                keyboardOptions = KeyboardOptions(
+                    keyboardType = KeyboardType.Phone,
+                    imeAction = ImeAction.Next
+                ),
                 modifier = Modifier.fillMaxWidth(),
                 colors = OutlinedTextFieldDefaults.colors(
                     focusedBorderColor = ClutchRed,
                     unfocusedBorderColor = Color.Gray,
                     focusedLabelColor = ClutchRed,
-                    unfocusedLabelColor = Color.Gray
-                ),
-                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Phone)
+                    unfocusedLabelColor = Color.Gray,
+                    focusedTextColor = Color.Black,
+                    unfocusedTextColor = Color.Black
+                )
             )
-            
+
             Spacer(modifier = Modifier.height(16.dp))
-            
-            // Password Field
+
+            // Password Input
             OutlinedTextField(
                 value = password,
                 onValueChange = { password = it },
                 label = { Text("Password") },
+                visualTransformation = if (passwordVisible) VisualTransformation.None else PasswordVisualTransformation(),
+                keyboardOptions = KeyboardOptions(
+                    keyboardType = KeyboardType.Password,
+                    imeAction = ImeAction.Next
+                ),
+                trailingIcon = {
+                    val image = if (passwordVisible)
+                        Icons.Filled.Visibility
+                    else Icons.Filled.VisibilityOff
+
+                    IconButton(onClick = { passwordVisible = !passwordVisible }) {
+                        Icon(imageVector = image, contentDescription = "Toggle password visibility")
+                    }
+                },
                 modifier = Modifier.fillMaxWidth(),
                 colors = OutlinedTextFieldDefaults.colors(
                     focusedBorderColor = ClutchRed,
                     unfocusedBorderColor = Color.Gray,
                     focusedLabelColor = ClutchRed,
-                    unfocusedLabelColor = Color.Gray
-                ),
-                visualTransformation = if (passwordVisible) VisualTransformation.None else PasswordVisualTransformation(),
-                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
-                trailingIcon = {
-                    IconButton(onClick = { passwordVisible = !passwordVisible }) {
-                        Icon(
-                            imageVector = if (passwordVisible) Icons.Default.Visibility else Icons.Default.VisibilityOff,
-                            contentDescription = if (passwordVisible) "Hide password" else "Show password",
-                            tint = Color.Gray
-                        )
-                    }
-                }
+                    unfocusedLabelColor = Color.Gray,
+                    focusedTextColor = Color.Black,
+                    unfocusedTextColor = Color.Black
+                )
             )
-            
+
             Spacer(modifier = Modifier.height(16.dp))
-            
-            // Confirm Password Field
+
+            // Confirm Password Input
             OutlinedTextField(
                 value = confirmPassword,
                 onValueChange = { confirmPassword = it },
                 label = { Text("Confirm Password") },
+                visualTransformation = if (confirmPasswordVisible) VisualTransformation.None else PasswordVisualTransformation(),
+                keyboardOptions = KeyboardOptions(
+                    keyboardType = KeyboardType.Password,
+                    imeAction = ImeAction.Next
+                ),
+                trailingIcon = {
+                    val image = if (confirmPasswordVisible)
+                        Icons.Filled.Visibility
+                    else Icons.Filled.VisibilityOff
+
+                    IconButton(onClick = { confirmPasswordVisible = !confirmPasswordVisible }) {
+                        Icon(imageVector = image, contentDescription = "Toggle confirm password visibility")
+                    }
+                },
                 modifier = Modifier.fillMaxWidth(),
                 colors = OutlinedTextFieldDefaults.colors(
                     focusedBorderColor = ClutchRed,
                     unfocusedBorderColor = Color.Gray,
                     focusedLabelColor = ClutchRed,
-                    unfocusedLabelColor = Color.Gray
-                ),
-                visualTransformation = if (confirmPasswordVisible) VisualTransformation.None else PasswordVisualTransformation(),
-                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
-                trailingIcon = {
-                    IconButton(onClick = { confirmPasswordVisible = !confirmPasswordVisible }) {
-                        Icon(
-                            imageVector = if (confirmPasswordVisible) Icons.Default.Visibility else Icons.Default.VisibilityOff,
-                            contentDescription = if (confirmPasswordVisible) "Hide password" else "Show password",
-                            tint = Color.Gray
-                        )
-                    }
-                }
+                    unfocusedLabelColor = Color.Gray,
+                    focusedTextColor = Color.Black,
+                    unfocusedTextColor = Color.Black
+                )
             )
-            
+
             Spacer(modifier = Modifier.height(16.dp))
-            
+
             // Terms Agreement
             Row(
                 modifier = Modifier.fillMaxWidth(),
@@ -193,10 +231,7 @@ fun SignupScreen(
                 Checkbox(
                     checked = agreeToTerms,
                     onCheckedChange = { agreeToTerms = it },
-                    colors = CheckboxDefaults.colors(
-                        checkedColor = ClutchRed,
-                        uncheckedColor = Color.Gray
-                    )
+                    colors = CheckboxDefaults.colors(checkedColor = ClutchRed)
                 )
                 Text(
                     text = "I Agree to Terms of Service and Privacy Policy",
@@ -204,53 +239,113 @@ fun SignupScreen(
                     fontSize = 14.sp
                 )
             }
-            
+
             Spacer(modifier = Modifier.height(32.dp))
-            
-            // Sign Up Button
-            Button(
-                onClick = {
-                    isLoading = true
-                    // Handle signup logic here
-                    onSignupSuccess()
-                },
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(48.dp),
-                colors = ButtonDefaults.buttonColors(
-                    containerColor = ClutchRed
-                ),
-                shape = RoundedCornerShape(8.dp),
-                enabled = !isLoading && agreeToTerms
-            ) {
-                if (isLoading) {
-                    CircularProgressIndicator(
-                        color = Color.White,
-                        modifier = Modifier.size(20.dp)
-                    )
-                } else {
-                    Text(
-                        text = "SIGN UP",
-                        color = Color.White,
-                        fontSize = 16.sp,
-                        fontWeight = FontWeight.Bold
-                    )
-                }
-            }
-            
-            Spacer(modifier = Modifier.height(16.dp))
-            
-            // Already have account
-            TextButton(
-                onClick = onNavigateToLogin,
-                modifier = Modifier.fillMaxWidth()
-            ) {
+
+            // Error Message
+            if (uiState.errorMessage.isNotEmpty()) {
                 Text(
-                    text = "Already have an account?",
+                    text = uiState.errorMessage,
                     color = ClutchRed,
-                    fontSize = 14.sp
+                    fontSize = 14.sp,
+                    modifier = Modifier.padding(bottom = 16.dp)
                 )
             }
+
+              // Sign Up Button
+              Button(
+                  onClick = {
+                      viewModel.signup(name, email, mobileNumber, password, confirmPassword, agreeToTerms)
+                  },
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(50.dp),
+                colors = ButtonDefaults.buttonColors(containerColor = ClutchRed),
+                shape = RoundedCornerShape(12.dp),
+                enabled = !uiState.isLoading
+            ) {
+                if (uiState.isLoading) {
+                    CircularProgressIndicator(
+                        color = Color.White,
+                        modifier = Modifier.size(24.dp)
+                    )
+                } else {
+                    Text("SIGN UP", color = Color.White, fontSize = 18.sp, fontWeight = FontWeight.Bold)
+                }
+            }
+
+            Spacer(modifier = Modifier.height(16.dp))
+
+            // Social Signup
+            Column(
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.spacedBy(16.dp)
+            ) {
+                Text(
+                    text = "Or sign up with",
+                    color = Color.Gray,
+                    fontSize = 14.sp
+                )
+
+                Row(
+                    horizontalArrangement = Arrangement.spacedBy(16.dp)
+                ) {
+                    // Google Signup
+                    OutlinedButton(
+                        onClick = { /* TODO: Implement Google signup */ },
+                        modifier = Modifier
+                            .weight(1f)
+                            .height(48.dp),
+                        shape = RoundedCornerShape(12.dp),
+                        colors = ButtonDefaults.outlinedButtonColors(
+                            contentColor = Color.Black
+                        )
+                    ) {
+                        Image(
+                            painter = painterResource(id = R.drawable.ic_google_logo),
+                            contentDescription = "Google",
+                            modifier = Modifier.size(20.dp)
+                        )
+                        Spacer(modifier = Modifier.width(8.dp))
+                        Text("Google", fontSize = 14.sp)
+                    }
+
+                    // Facebook Signup
+                    OutlinedButton(
+                        onClick = { /* TODO: Implement Facebook signup */ },
+                        modifier = Modifier
+                            .weight(1f)
+                            .height(48.dp),
+                        shape = RoundedCornerShape(12.dp),
+                        colors = ButtonDefaults.outlinedButtonColors(
+                            contentColor = Color.Black
+                        )
+                    ) {
+                        Image(
+                            painter = painterResource(id = R.drawable.ic_facebook_logo),
+                            contentDescription = "Facebook",
+                            modifier = Modifier.size(20.dp)
+                        )
+                        Spacer(modifier = Modifier.width(8.dp))
+                        Text("Facebook", fontSize = 14.sp)
+                    }
+                }
+            }
+
+            Spacer(modifier = Modifier.height(16.dp))
+
+            // Already have account
+            TextButton(onClick = onNavigateToLogin) {
+                Text("Already have an account?", color = ClutchRed)
+            }
         }
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+fun SignupScreenPreview() {
+    ClutchAppTheme {
+        SignupScreen()
     }
 }

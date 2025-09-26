@@ -2,331 +2,129 @@ package com.clutch.app.utils
 
 import android.content.Context
 import android.content.res.Configuration
+import android.content.res.Resources
 import android.os.Build
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.setValue
-import androidx.compose.runtime.staticCompositionLocalOf
 import java.util.*
 
-class LanguageManager(private val context: Context) {
-    private val prefs = context.getSharedPreferences("clutch_prefs", Context.MODE_PRIVATE)
-    
-    var currentLanguage by mutableStateOf(getStoredLanguage())
-        private set
-    
-    fun setLanguage(language: String) {
-        currentLanguage = language
-        prefs.edit().putString("language", language).apply()
-        updateLocale(language)
-    }
-    
-    fun getStoredLanguage(): String {
-        return prefs.getString("language", "en") ?: "en"
-    }
-    
-    fun localizedString(key: String): String {
-        return when (currentLanguage) {
-            "ar" -> getArabicString(key)
-            else -> getEnglishString(key)
-        }
-    }
-    
-    private fun updateLocale(language: String) {
+object LanguageManager {
+    private const val PREF_LANGUAGE = "pref_language"
+    private const val ENGLISH = "en"
+    private const val ARABIC = "ar"
+
+    fun setLanguage(context: Context, language: String) {
         val locale = Locale(language)
         Locale.setDefault(locale)
         
         val config = Configuration(context.resources.configuration)
-        config.setLocale(locale)
-        
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-            context.createConfigurationContext(config)
+            config.setLocale(locale)
         } else {
             @Suppress("DEPRECATION")
-            context.resources.updateConfiguration(config, context.resources.displayMetrics)
+            config.locale = locale
         }
+        
+        context.resources.updateConfiguration(config, context.resources.displayMetrics)
+        
+        // Save preference
+        val prefs = context.getSharedPreferences("clutch_prefs", Context.MODE_PRIVATE)
+        prefs.edit().putString(PREF_LANGUAGE, language).apply()
     }
-    
-    private fun getEnglishString(key: String): String {
-        return when (key) {
-            // Common
-            "app_name" -> "Clutch"
-            "app_tagline" -> "Your Car's Best Friend"
-            "loading" -> "Loading..."
-            "error" -> "Error"
-            "success" -> "Success"
-            "cancel" -> "Cancel"
-            "save" -> "Save"
-            "delete" -> "Delete"
-            "edit" -> "Edit"
-            "done" -> "Done"
-            "next" -> "Next"
-            "previous" -> "Previous"
-            "skip" -> "Skip"
-            "get_started" -> "Get Started"
-            
-            // Authentication
-            "login" -> "Login"
-            "register" -> "Register"
-            "logout" -> "Logout"
-            "email" -> "Email"
-            "password" -> "Password"
-            "confirm_password" -> "Confirm Password"
-            "name" -> "Name"
-            "phone" -> "Phone"
-            "forgot_password" -> "Forgot Password?"
-            "sign_in_with_google" -> "Sign in with Google"
-            "sign_in_with_apple" -> "Sign in with Apple"
-            "sign_in_with_facebook" -> "Sign in with Facebook"
-            "already_have_account" -> "Already have an account?"
-            "dont_have_account" -> "Don't have an account?"
-            
-            // Dashboard
-            "dashboard" -> "Dashboard"
-            "good_morning" -> "Good morning!"
-            "good_afternoon" -> "Good afternoon!"
-            "good_evening" -> "Good evening!"
-            "car_health_score" -> "Car Health Score"
-            "view_details" -> "View Details"
-            "overall" -> "Overall"
-            "battery" -> "Battery"
-            "tires" -> "Tires"
-            "engine" -> "Engine"
-            "fluids" -> "Fluids"
-            "brakes" -> "Brakes"
-            "quick_actions" -> "Quick Actions"
-            "book_service" -> "Book Service"
-            "order_parts" -> "Order Parts"
-            "maintenance" -> "Maintenance"
-            "emergency" -> "Emergency"
-            "loyalty_points" -> "Loyalty Points"
-            "view_rewards" -> "View Rewards"
-            "active_orders" -> "Active Orders"
-            "community_highlights" -> "Community Highlights"
-            "view_all" -> "View All"
-            
-            // Car Health
-            "car_health" -> "Car Health"
-            "health_recommendations" -> "Health Recommendations"
-            "priority" -> "Priority"
-            "low" -> "Low"
-            "medium" -> "Medium"
-            "high" -> "High"
-            "critical" -> "Critical"
-            "estimated_cost" -> "Estimated Cost"
-            "estimated_time" -> "Estimated Time"
-            
-            // Community
-            "community" -> "Community"
-            "tips" -> "Tips"
-            "reviews" -> "Reviews"
-            "create_tip" -> "Create Tip"
-            "create_review" -> "Create Review"
-            "title" -> "Title"
-            "content" -> "Content"
-            "category" -> "Category"
-            "tags" -> "Tags"
-            "rating" -> "Rating"
-            "vote" -> "Vote"
-            "comment" -> "Comment"
-            "share" -> "Share"
-            "leaderboard" -> "Leaderboard"
-            "top_contributors" -> "Top Contributors"
-            "top_tip_creators" -> "Top Tip Creators"
-            "top_reviewers" -> "Top Reviewers"
-            
-            // Loyalty
-            "loyalty" -> "Loyalty"
-            "points" -> "Points"
-            "tier" -> "Tier"
-            "bronze" -> "Bronze"
-            "silver" -> "Silver"
-            "gold" -> "Gold"
-            "platinum" -> "Platinum"
-            "badges" -> "Badges"
-            "rewards" -> "Rewards"
-            "redeem" -> "Redeem"
-            "earned" -> "Earned"
-            "redeemed" -> "Redeemed"
-            "expiring_soon" -> "Expiring Soon"
-            "first_order" -> "First Order"
-            "loyal_owner" -> "Loyal Owner"
-            "power_user" -> "Power User"
-            "community_starter" -> "Community Starter"
-            "review_master" -> "Review Master"
-            
-            // Profile
-            "profile" -> "Profile"
-            "settings" -> "Settings"
-            "my_cars" -> "My Cars"
-            "add_car" -> "Add Car"
-            "edit_profile" -> "Edit Profile"
-            "notifications" -> "Notifications"
-            "privacy" -> "Privacy"
-            "language" -> "Language"
-            "theme" -> "Theme"
-            "light_theme" -> "Light Theme"
-            "dark_theme" -> "Dark Theme"
-            "system_theme" -> "System Theme"
-            "english" -> "English"
-            "arabic" -> "العربية"
-            
-            // Onboarding
-            "check_car_health" -> "Check Car Health Instantly"
-            "check_car_health_desc" -> "Get real-time insights about your car's condition with our advanced diagnostics"
-            "book_services_parts" -> "Book Services & Buy Parts Easily"
-            "book_services_parts_desc" -> "Find trusted mechanics and order genuine parts with just a few taps"
-            "earn_rewards" -> "Earn Rewards While Driving"
-            "earn_rewards_desc" -> "Get points for every service, review, and tip you share with the community"
-            
-            else -> key
-        }
+
+    fun getCurrentLanguage(context: Context): String {
+        val prefs = context.getSharedPreferences("clutch_prefs", Context.MODE_PRIVATE)
+        return prefs.getString(PREF_LANGUAGE, ENGLISH) ?: ENGLISH
     }
-    
-    private fun getArabicString(key: String): String {
-        return when (key) {
-            // Common
-            "app_name" -> "كلتش"
-            "app_tagline" -> "أفضل صديق لسيارتك"
-            "loading" -> "جاري التحميل..."
-            "error" -> "خطأ"
-            "success" -> "نجح"
-            "cancel" -> "إلغاء"
-            "save" -> "حفظ"
-            "delete" -> "حذف"
-            "edit" -> "تعديل"
-            "done" -> "تم"
-            "next" -> "التالي"
-            "previous" -> "السابق"
-            "skip" -> "تخطي"
-            "get_started" -> "ابدأ الآن"
-            
-            // Authentication
-            "login" -> "تسجيل الدخول"
-            "register" -> "إنشاء حساب"
-            "logout" -> "تسجيل الخروج"
-            "email" -> "البريد الإلكتروني"
-            "password" -> "كلمة المرور"
-            "confirm_password" -> "تأكيد كلمة المرور"
-            "name" -> "الاسم"
-            "phone" -> "الهاتف"
-            "forgot_password" -> "نسيت كلمة المرور؟"
-            "sign_in_with_google" -> "تسجيل الدخول بجوجل"
-            "sign_in_with_apple" -> "تسجيل الدخول بآبل"
-            "sign_in_with_facebook" -> "تسجيل الدخول بفيسبوك"
-            "already_have_account" -> "لديك حساب بالفعل؟"
-            "dont_have_account" -> "ليس لديك حساب؟"
-            
-            // Dashboard
-            "dashboard" -> "لوحة التحكم"
-            "good_morning" -> "صباح الخير!"
-            "good_afternoon" -> "مساء الخير!"
-            "good_evening" -> "مساء الخير!"
-            "car_health_score" -> "درجة صحة السيارة"
-            "view_details" -> "عرض التفاصيل"
-            "overall" -> "الإجمالي"
-            "battery" -> "البطارية"
-            "tires" -> "الإطارات"
-            "engine" -> "المحرك"
-            "fluids" -> "السوائل"
-            "brakes" -> "الفرامل"
-            "quick_actions" -> "الإجراءات السريعة"
-            "book_service" -> "حجز خدمة"
-            "order_parts" -> "طلب قطع غيار"
-            "maintenance" -> "الصيانة"
-            "emergency" -> "الطوارئ"
-            "loyalty_points" -> "نقاط الولاء"
-            "view_rewards" -> "عرض المكافآت"
-            "active_orders" -> "الطلبات النشطة"
-            "community_highlights" -> "أبرز المجتمع"
-            "view_all" -> "عرض الكل"
-            
-            // Car Health
-            "car_health" -> "صحة السيارة"
-            "health_recommendations" -> "توصيات الصحة"
-            "priority" -> "الأولوية"
-            "low" -> "منخفضة"
-            "medium" -> "متوسطة"
-            "high" -> "عالية"
-            "critical" -> "حرجة"
-            "estimated_cost" -> "التكلفة المقدرة"
-            "estimated_time" -> "الوقت المقدر"
-            
-            // Community
-            "community" -> "المجتمع"
-            "tips" -> "النصائح"
-            "reviews" -> "التقييمات"
-            "create_tip" -> "إنشاء نصيحة"
-            "create_review" -> "إنشاء تقييم"
-            "title" -> "العنوان"
-            "content" -> "المحتوى"
-            "category" -> "الفئة"
-            "tags" -> "العلامات"
-            "rating" -> "التقييم"
-            "vote" -> "التصويت"
-            "comment" -> "تعليق"
-            "share" -> "مشاركة"
-            "leaderboard" -> "لوحة المتصدرين"
-            "top_contributors" -> "أفضل المساهمين"
-            "top_tip_creators" -> "أفضل منشئي النصائح"
-            "top_reviewers" -> "أفضل المقيّمين"
-            
-            // Loyalty
-            "loyalty" -> "الولاء"
-            "points" -> "النقاط"
-            "tier" -> "المستوى"
-            "bronze" -> "برونزي"
-            "silver" -> "فضي"
-            "gold" -> "ذهبي"
-            "platinum" -> "بلاتيني"
-            "badges" -> "الشارات"
-            "rewards" -> "المكافآت"
-            "redeem" -> "استرداد"
-            "earned" -> "مكتسب"
-            "redeemed" -> "مسترد"
-            "expiring_soon" -> "ينتهي قريباً"
-            "first_order" -> "الطلب الأول"
-            "loyal_owner" -> "مالك مخلص"
-            "power_user" -> "مستخدم قوي"
-            "community_starter" -> "مبادر المجتمع"
-            "review_master" -> "سيد التقييم"
-            
-            // Profile
-            "profile" -> "الملف الشخصي"
-            "settings" -> "الإعدادات"
-            "my_cars" -> "سياراتي"
-            "add_car" -> "إضافة سيارة"
-            "edit_profile" -> "تعديل الملف الشخصي"
-            "notifications" -> "الإشعارات"
-            "privacy" -> "الخصوصية"
-            "language" -> "اللغة"
-            "theme" -> "المظهر"
-            "light_theme" -> "المظهر الفاتح"
-            "dark_theme" -> "المظهر الداكن"
-            "system_theme" -> "مظهر النظام"
-            "english" -> "English"
-            "arabic" -> "العربية"
-            
-            // Onboarding
-            "check_car_health" -> "تحقق من صحة السيارة فوراً"
-            "check_car_health_desc" -> "احصل على رؤى فورية حول حالة سيارتك مع تشخيصاتنا المتقدمة"
-            "book_services_parts" -> "احجز الخدمات واشتر القطع بسهولة"
-            "book_services_parts_desc" -> "اعثر على ميكانيكيين موثوقين واطلب قطع غيار أصلية بضغطة واحدة"
-            "earn_rewards" -> "اكسب مكافآت أثناء القيادة"
-            "earn_rewards_desc" -> "احصل على نقاط لكل خدمة وتقييم ونصيحة تشاركها مع المجتمع"
-            
-            else -> key
-        }
+
+    fun isRTL(context: Context): Boolean {
+        return getCurrentLanguage(context) == ARABIC
     }
 }
 
-// Composition Local for Language Manager
-val LocalLanguageManager = staticCompositionLocalOf<LanguageManager> {
-    error("No LanguageManager provided")
-}
-
-@Composable
-fun rememberLanguageManager(context: Context): LanguageManager {
-    return remember { LanguageManager(context) }
+// Translation strings
+object Strings {
+    // App
+    const val APP_NAME = "Clutch"
+    const val APP_SLOGAN = "Your Car's Best Friend"
+    
+    // Splash
+    const val LOADING = "Loading..."
+    
+    // Onboarding
+    const val ONBOARDING_TITLE_1 = "Check Car Health Instantly"
+    const val ONBOARDING_DESC_1 = "Get real-time insights about your car's condition with our advanced OBD integration"
+    const val ONBOARDING_TITLE_2 = "Book Services & Buy Parts Easily"
+    const val ONBOARDING_DESC_2 = "Find trusted mechanics and order genuine parts with just a few taps"
+    const val ONBOARDING_TITLE_3 = "Earn Rewards While Driving"
+    const val ONBOARDING_DESC_3 = "Earn loyalty points and unlock badges for every service and purchase"
+    const val GET_STARTED = "Get Started"
+    const val SKIP = "Skip"
+    
+    // Auth
+    const val WELCOME_BACK = "Welcome Back"
+    const val SIGN_IN_TO_CONTINUE = "Sign in to continue"
+    const val EMAIL = "Email"
+    const val PASSWORD = "Password"
+    const val FORGOT_PASSWORD = "Forgot Password?"
+    const val SIGN_IN = "Sign In"
+    const val DONT_HAVE_ACCOUNT = "Don't have an account?"
+    const val SIGN_UP = "Sign Up"
+    const val OR_CONTINUE_WITH = "Or continue with"
+    const val GOOGLE = "Google"
+    const val FACEBOOK = "Facebook"
+    const val APPLE = "Apple"
+    
+    // Dashboard
+    const val WELCOME = "Welcome"
+    const val CAR_HEALTH = "Car Health"
+    const val HEALTH_SCORE = "Health Score"
+    const val BATTERY = "Battery"
+    const val TIRES = "Tires"
+    const val ENGINE = "Engine"
+    const val FLUIDS = "Fluids"
+    const val BRAKES = "Brakes"
+    const val QUICK_ACTIONS = "Quick Actions"
+    const val BOOK_SERVICE = "Book Service"
+    const val ORDER_PARTS = "Order Parts"
+    const val COMMUNITY = "Community"
+    const val LOYALTY = "Loyalty"
+    const val MAINTENANCE_REMINDERS = "Maintenance Reminders"
+    const val ACTIVE_ORDERS = "Active Orders"
+    const val LOYALTY_POINTS = "Loyalty Points"
+    
+    // Navigation
+    const val HOME = "Home"
+    const val PARTS = "Parts"
+    const val MAINTENANCE = "Maintenance"
+    const val ACCOUNT = "Account"
+    
+    // Common
+    const val VIEW_DETAILS = "View Details"
+    const val COMING_SOON = "Coming Soon"
+    const val LOADING_DATA = "Loading data..."
+    const val ERROR_OCCURRED = "An error occurred"
+    const val RETRY = "Retry"
+    const val CANCEL = "Cancel"
+    const val CONFIRM = "Confirm"
+    const val SAVE = "Save"
+    const val EDIT = "Edit"
+    const val DELETE = "Delete"
+    const val SHARE = "Share"
+    const val SEARCH = "Search"
+    const val FILTER = "Filter"
+    const val SORT = "Sort"
+    const val REFRESH = "Refresh"
+    const val NOTIFICATIONS = "Notifications"
+    const val SETTINGS = "Settings"
+    const val PROFILE = "Profile"
+    const val LOGOUT = "Logout"
+    
+    // Theme
+    const val LIGHT_THEME = "Light Theme"
+    const val DARK_THEME = "Dark Theme"
+    const val AUTO_THEME = "Auto Theme"
+    
+    // Language
+    const val LANGUAGE = "Language"
+    const val ENGLISH_LANG = "English"
+    const val ARABIC_LANG = "العربية"
 }

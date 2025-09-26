@@ -20,16 +20,19 @@ private val DarkColorScheme = darkColorScheme(
     onPrimary = DarkPrimaryForeground,
     secondary = DarkSecondary,
     onSecondary = DarkForeground,
-    tertiary = DarkInfo,
+    tertiary = DarkPrimary,
+    onTertiary = DarkPrimaryForeground,
     background = DarkBackground,
     onBackground = DarkForeground,
     surface = DarkCard,
     onSurface = DarkCardForeground,
+    surfaceVariant = DarkMuted,
+    onSurfaceVariant = DarkForeground,
     error = DarkDestructive,
     onError = DarkForeground,
     outline = DarkBorder,
     outlineVariant = DarkInput,
-    scrim = DarkMuted
+    scrim = DarkBackground
 )
 
 private val LightColorScheme = lightColorScheme(
@@ -37,16 +40,19 @@ private val LightColorScheme = lightColorScheme(
     onPrimary = LightPrimaryForeground,
     secondary = LightSecondary,
     onSecondary = LightForeground,
-    tertiary = LightInfo,
+    tertiary = LightPrimary,
+    onTertiary = LightPrimaryForeground,
     background = LightBackground,
     onBackground = LightForeground,
     surface = LightCard,
     onSurface = LightCardForeground,
+    surfaceVariant = LightMuted,
+    onSurfaceVariant = LightMutedForeground,
     error = LightDestructive,
     onError = LightForeground,
     outline = LightBorder,
     outlineVariant = LightInput,
-    scrim = LightMuted
+    scrim = LightBackground
 )
 
 @Composable
@@ -67,11 +73,11 @@ fun ClutchAppTheme(
     }
     val view = LocalView.current
     if (!view.isInEditMode) {
-        SideEffect {
-            val window = (view.context as Activity).window
-            window.statusBarColor = colorScheme.primary.toArgb()
-            WindowCompat.getInsetsController(window, view).isAppearanceLightStatusBars = darkTheme
-        }
+      SideEffect {
+          val window = (view.context as Activity).window
+          window.statusBarColor = ClutchRed.toArgb() // Use our red color
+          WindowCompat.getInsetsController(window, view).isAppearanceLightStatusBars = false // White text on red background
+      }
     }
 
     MaterialTheme(

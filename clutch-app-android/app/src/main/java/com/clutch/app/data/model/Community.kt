@@ -1,91 +1,57 @@
 package com.clutch.app.data.model
 
-import android.os.Parcelable
-import kotlinx.parcelize.Parcelize
+import com.google.gson.annotations.SerializedName
 
-@Parcelize
 data class CommunityTip(
-    val id: String,
-    val userId: String,
-    val userName: String? = null,
-    val userProfilePicture: String? = null,
-    val type: String, // "tip" or "review"
-    val title: String,
-    val content: String,
-    val category: String,
-    val images: List<CommunityImage> = emptyList(),
-    val votes: CommunityVotes,
-    val rating: Int? = null,
-    val partnerId: String? = null,
-    val partnerName: String? = null,
-    val serviceId: String? = null,
-    val tags: List<String> = emptyList(),
-    val isApproved: Boolean = true,
-    val isFeatured: Boolean = false,
-    val viewCount: Int = 0,
-    val shareCount: Int = 0,
-    val comments: List<CommunityComment> = emptyList(),
-    val language: String = "en",
-    val createdAt: String,
-    val updatedAt: String
-) : Parcelable
+    @SerializedName("_id") val id: String,
+    @SerializedName("userId") val userId: String,
+    @SerializedName("type") val type: String = "tip",
+    @SerializedName("content") val content: String,
+    @SerializedName("images") val images: List<String> = emptyList(),
+    @SerializedName("votes") val votes: VoteCount,
+    @SerializedName("createdAt") val createdAt: String,
+    @SerializedName("updatedAt") val updatedAt: String,
+    @SerializedName("user") val user: CommunityUser? = null
+)
 
-@Parcelize
-data class CommunityImage(
-    val url: String,
-    val alt: String = ""
-) : Parcelable
+data class Review(
+    @SerializedName("_id") val id: String,
+    @SerializedName("userId") val userId: String,
+    @SerializedName("partnerId") val partnerId: String,
+    @SerializedName("serviceId") val serviceId: String?,
+    @SerializedName("type") val type: String = "review",
+    @SerializedName("content") val content: String,
+    @SerializedName("rating") val rating: Int, // 1-5
+    @SerializedName("images") val images: List<String> = emptyList(),
+    @SerializedName("votes") val votes: VoteCount,
+    @SerializedName("createdAt") val createdAt: String,
+    @SerializedName("updatedAt") val updatedAt: String,
+    @SerializedName("user") val user: CommunityUser? = null
+)
 
-@Parcelize
-data class CommunityVotes(
-    val up: Int = 0,
-    val down: Int = 0,
-    val userVote: String? = null // "up", "down", or null
-) : Parcelable
+data class Vote(
+    @SerializedName("itemId") val itemId: String,
+    @SerializedName("itemType") val itemType: String, // "tip" or "review"
+    @SerializedName("voteType") val voteType: String // "up" or "down"
+)
 
-@Parcelize
-data class CommunityComment(
-    val id: String,
-    val userId: String,
-    val userName: String? = null,
-    val userProfilePicture: String? = null,
-    val content: String,
-    val createdAt: String,
-    val isEdited: Boolean = false,
-    val editedAt: String? = null
-) : Parcelable
+data class VoteCount(
+    @SerializedName("up") val up: Int = 0,
+    @SerializedName("down") val down: Int = 0
+)
 
-@Parcelize
-data class CommunityLeaderboard(
-    val topContributors: List<LeaderboardUser>,
-    val topTipCreators: List<LeaderboardUser>,
-    val topReviewers: List<LeaderboardUser>,
-    val period: String
-) : Parcelable
+data class LeaderboardEntry(
+    @SerializedName("userId") val userId: String,
+    @SerializedName("user") val user: CommunityUser,
+    @SerializedName("totalPoints") val totalPoints: Int,
+    @SerializedName("tipsCount") val tipsCount: Int,
+    @SerializedName("reviewsCount") val reviewsCount: Int,
+    @SerializedName("rank") val rank: Int
+)
 
-@Parcelize
-data class LeaderboardUser(
-    val userId: String,
-    val name: String,
-    val profilePicture: String? = null,
-    val points: Int? = null,
-    val tipCount: Int? = null,
-    val reviewCount: Int? = null,
-    val totalVotes: Int? = null,
-    val avgRating: Double? = null
-) : Parcelable
-
-@Parcelize
-data class CommunityStats(
-    val totalTips: Int,
-    val totalReviews: Int,
-    val totalVotes: Int,
-    val categoryStats: List<CategoryStat>,
-    val recentActivity: List<CommunityTip>
-) : Parcelable
-
-@Parcelize
-data class CategoryStat(
-    val category: String,
-    val count: Int
-) : Parcelable
+data class CommunityUser(
+    @SerializedName("_id") val id: String,
+    @SerializedName("firstName") val firstName: String,
+    @SerializedName("lastName") val lastName: String,
+    @SerializedName("profileImage") val profileImage: String?
+)
