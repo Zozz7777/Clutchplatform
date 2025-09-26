@@ -39,8 +39,8 @@ router.post('/login', async (req, res) => {
     
     logger.info('📧 Login credentials:', { emailOrPhone, email, hasPassword: !!password });
     
-    if (!email || !password) {
-      logger.warn('❌ Missing credentials:', { email: !!email, password: !!password });
+    if (!emailOrPhone || !password) {
+      logger.warn('❌ Missing credentials:', { emailOrPhone: !!emailOrPhone, password: !!password });
       return res.status(400).json({
         success: false,
         error: 'MISSING_CREDENTIALS',
