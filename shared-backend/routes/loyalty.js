@@ -267,7 +267,7 @@ router.get('/leaderboard', async (req, res) => {
       error: error.message
     });
   }
-);
+});
 
 // PUT /api/v1/loyalty/preferences - Update user preferences
 router.put('/preferences',
