@@ -721,7 +721,7 @@ export default function ModelGovernancePanel({ className }: ModelGovernancePanel
                 <div
                   key={model.id}
                   className={`p-3 border rounded-[0.625rem] cursor-pointer transition-colors ${
-                    selectedModel?.id === model.id ? 'border-blue-500 bg-primary/10' : 'hover:bg-muted/50'
+                    selectedModel?.id === model.id ? 'border-primary bg-primary/10' : 'hover:bg-muted/50'
                   }`}
                   onClick={() => setSelectedModel(model)}
                 >

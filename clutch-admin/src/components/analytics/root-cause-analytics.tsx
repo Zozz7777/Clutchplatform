@@ -760,7 +760,7 @@ export default function RootCauseAnalytics({ className }: RootCauseAnalyticsProp
                 <div
                   key={analysis.id}
                   className={`p-3 border rounded-[0.625rem] cursor-pointer transition-colors ${
-                    selectedAnalysis?.id === analysis.id ? 'border-blue-500 bg-primary/10' : 'hover:bg-muted/50'
+                    selectedAnalysis?.id === analysis.id ? 'border-primary bg-primary/10' : 'hover:bg-muted/50'
                   }`}
                   onClick={() => setSelectedAnalysis(analysis)}
                 >

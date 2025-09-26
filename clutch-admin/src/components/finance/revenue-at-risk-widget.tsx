@@ -581,7 +581,7 @@ export default function RevenueAtRiskWidget({ className }: RevenueAtRiskWidgetPr
                 <div
                   key={risk.id}
                   className={`p-3 border rounded-[0.625rem] cursor-pointer transition-colors ${
-                    selectedRisk?.id === risk.id ? 'border-blue-500 bg-primary/10' : 'hover:bg-muted/50'
+                    selectedRisk?.id === risk.id ? 'border-primary bg-primary/10' : 'hover:bg-muted/50'
                   }`}
                   onClick={() => setSelectedRisk(risk)}
                 >

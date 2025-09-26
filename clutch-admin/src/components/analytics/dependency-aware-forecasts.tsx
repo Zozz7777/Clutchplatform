@@ -347,7 +347,7 @@ export default function DependencyAwareForecasts({ className }: DependencyAwareF
                 <div
                   key={forecast.id}
                   className={`p-3 border rounded-[0.625rem] cursor-pointer transition-colors ${
-                    selectedForecast?.id === forecast.id ? 'border-blue-500 bg-primary/10' : 'hover:bg-muted/50'
+                    selectedForecast?.id === forecast.id ? 'border-primary bg-primary/10' : 'hover:bg-muted/50'
                   }`}
                   onClick={() => setSelectedForecast(forecast)}
                 >

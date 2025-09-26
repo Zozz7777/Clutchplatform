@@ -217,7 +217,7 @@ export function MaintenanceForecast({ className = '' }: MaintenanceForecastProps
             </h4>
             <div className="space-y-2">
               {highPriorityForecasts.slice(0, 3).map((forecast) => (
-                <div key={forecast.vehicleId} className="flex items-center justify-between p-3 bg-destructive/10 rounded-[0.625rem]-lg border border-red-200">
+                <div key={forecast.vehicleId} className="flex items-center justify-between p-3 bg-destructive/10 rounded-[0.625rem]-lg border border-destructive/20">
                   <div className="flex items-center space-x-3">
                     <AlertTriangle className="h-4 w-4 text-destructive" />
                     <div>

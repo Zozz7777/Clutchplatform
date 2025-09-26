@@ -375,9 +375,9 @@ export default function IncidentWarRoom({ className }: IncidentWarRoomProps) {
           {/* Active Incident Focus */}
           {activeIncident && (
             <div className={`p-4 border-2 rounded-[0.625rem] ${
-              activeIncident.severity === 'critical' ? 'border-red-200 bg-destructive/10' :
-              activeIncident.severity === 'high' ? 'border-orange-200 bg-warning/10' :
-              'border-yellow-200 bg-warning/10'
+              activeIncident.severity === 'critical' ? 'border-destructive/20 bg-destructive/10' :
+              activeIncident.severity === 'high' ? 'border-warning/20 bg-warning/10' :
+              'border-warning/20 bg-warning/10'
             }`}>
               <div className="flex items-start justify-between mb-4">
                 <div>
@@ -538,7 +538,7 @@ export default function IncidentWarRoom({ className }: IncidentWarRoomProps) {
                 <div
                   key={incident.id}
                   className={`p-3 border rounded-[0.625rem] cursor-pointer transition-colors ${
-                    activeIncident?.id === incident.id ? 'border-blue-500 bg-primary/10' : 'hover:bg-muted/50'
+                    activeIncident?.id === incident.id ? 'border-primary bg-primary/10' : 'hover:bg-muted/50'
                   }`}
                   onClick={() => setActiveIncident(incident)}
                 >

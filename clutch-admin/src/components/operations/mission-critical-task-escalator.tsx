@@ -792,7 +792,7 @@ export default function MissionCriticalTaskEscalator({ className }: MissionCriti
                 <div
                   key={task.id}
                   className={`p-3 border rounded-[0.625rem] cursor-pointer transition-colors ${
-                    selectedTask?.id === task.id ? 'border-blue-500 bg-primary/10' : 'hover:bg-muted/50'
+                    selectedTask?.id === task.id ? 'border-primary bg-primary/10' : 'hover:bg-muted/50'
                   }`}
                   onClick={() => setSelectedTask(task)}
                 >
@@ -911,7 +911,7 @@ export default function MissionCriticalTaskEscalator({ className }: MissionCriti
                     <div className="space-y-2">
                       {selectedTask.escalation.escalationPath.map((level, index) => (
                         <div key={index} className={`p-3 border rounded-[0.625rem] ${
-                          level.level === selectedTask.escalation.level ? 'border-blue-500 bg-primary/10' : ''
+                          level.level === selectedTask.escalation.level ? 'border-primary bg-primary/10' : ''
                         }`}>
                           <div className="flex items-center justify-between mb-2">
                             <span className="font-medium">Level {level.level}: {level.owner}</span>

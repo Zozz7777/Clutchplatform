@@ -389,7 +389,7 @@ export default function ChaosTestingIntegration({ className }: ChaosTestingInteg
                 <div
                   key={experiment.id}
                   className={`p-3 border rounded-[0.625rem] cursor-pointer transition-colors ${
-                    selectedExperiment?.id === experiment.id ? 'border-blue-500 bg-primary/10' : 'hover:bg-muted/50'
+                    selectedExperiment?.id === experiment.id ? 'border-primary bg-primary/10' : 'hover:bg-muted/50'
                   }`}
                   onClick={() => setSelectedExperiment(experiment)}
                 >

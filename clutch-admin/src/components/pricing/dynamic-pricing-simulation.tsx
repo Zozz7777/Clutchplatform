@@ -407,7 +407,7 @@ export default function DynamicPricingSimulation({ className }: DynamicPricingSi
                 <div
                   key={scenario.id}
                   className={`p-3 border rounded-[0.625rem] cursor-pointer transition-colors ${
-                    selectedScenario?.id === scenario.id ? 'border-blue-500 bg-primary/10' : 'hover:bg-muted/50'
+                    selectedScenario?.id === scenario.id ? 'border-primary bg-primary/10' : 'hover:bg-muted/50'
                   }`}
                   onClick={() => setSelectedScenario(scenario)}
                 >

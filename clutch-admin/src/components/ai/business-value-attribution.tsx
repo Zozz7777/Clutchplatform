@@ -703,7 +703,7 @@ export default function BusinessValueAttribution({ className }: BusinessValueAtt
                 <div
                   key={impact.id}
                   className={`p-3 border rounded-[0.625rem] cursor-pointer transition-colors ${
-                    selectedImpact?.id === impact.id ? 'border-blue-500 bg-primary/10' : 'hover:bg-muted/50'
+                    selectedImpact?.id === impact.id ? 'border-primary bg-primary/10' : 'hover:bg-muted/50'
                   }`}
                   onClick={() => setSelectedImpact(impact)}
                 >
