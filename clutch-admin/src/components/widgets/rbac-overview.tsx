@@ -305,7 +305,7 @@ export function RBACOverview({ className = '' }: RBACOverviewProps) {
             <span>Security Alerts</span>
           </h4>
           <div className="space-y-2">
-            <div className="p-3 bg-destructive/10 rounded-[0.625rem]-lg border border-red-200">
+            <div className="p-3 bg-destructive/10 rounded-[0.625rem]-lg border border-destructive/20">
               <div className="flex items-center space-x-2">
                 <AlertTriangle className="h-4 w-4 text-destructive" />
                 <div>
@@ -314,7 +314,7 @@ export function RBACOverview({ className = '' }: RBACOverviewProps) {
                 </div>
               </div>
             </div>
-            <div className="p-3 bg-warning/10 rounded-[0.625rem]-lg border border-yellow-200">
+            <div className="p-3 bg-warning/10 rounded-[0.625rem]-lg border border-warning/20">
               <div className="flex items-center space-x-2">
                 <AlertTriangle className="h-4 w-4 text-warning" />
                 <div>
