@@ -28,10 +28,19 @@ router.options('*', (req, res) => {
 // POST /api/v1/auth/login - User login
 router.post('/login', async (req, res) => {
   try {
+    logger.info('🔐 Login attempt:', { 
+      body: req.body, 
+      headers: req.headers,
+      userAgent: req.get('User-Agent')
+    });
+    
     const { emailOrPhone, password } = req.body;
     const email = emailOrPhone; // Use emailOrPhone as the email field
     
+    logger.info('📧 Login credentials:', { emailOrPhone, email, hasPassword: !!password });
+    
     if (!email || !password) {
+      logger.warn('❌ Missing credentials:', { email: !!email, password: !!password });
       return res.status(400).json({
         success: false,
         error: 'MISSING_CREDENTIALS',
@@ -159,7 +168,7 @@ router.post('/login', async (req, res) => {
       { expiresIn: '7d' }
     );
     
-    res.json({
+    const response = {
       success: true,
       data: {
         user: user,
@@ -169,10 +178,23 @@ router.post('/login', async (req, res) => {
       },
       message: 'Login successful',
       timestamp: new Date().toISOString()
+    };
+    
+    logger.info('✅ Login successful:', { 
+      userId: user._id, 
+      email: user.email,
+      tokenLength: token.length,
+      responseSize: JSON.stringify(response).length
     });
     
+    res.json(response);
+    
   } catch (error) {
-    logger.error('❌ Login error:', error);
+    logger.error('❌ Login error:', { 
+      error: error.message, 
+      stack: error.stack,
+      body: req.body 
+    });
     res.status(500).json({
       success: false,
       error: 'LOGIN_FAILED',
