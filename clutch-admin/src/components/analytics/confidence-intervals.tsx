@@ -403,7 +403,7 @@ export default function ConfidenceIntervals({ className }: ConfidenceIntervalsPr
                 <div
                   key={interval.id}
                   className={`p-3 border rounded-[0.625rem] cursor-pointer transition-colors ${
-                    selectedInterval?.id === interval.id ? 'border-blue-500 bg-primary/10' : 'hover:bg-muted/50'
+                    selectedInterval?.id === interval.id ? 'border-primary bg-primary/10' : 'hover:bg-muted/50'
                   }`}
                   onClick={() => setSelectedInterval(interval)}
                 >
