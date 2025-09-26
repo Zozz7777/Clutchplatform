@@ -68,7 +68,28 @@ class SignupViewModel @Inject constructor(
                     sessionManager.saveAuthTokens(authData.data.token, authData.data.refreshToken)
                     sessionManager.saveUser(authData.data.user)
                 } else {
-                    throw registerResult.exceptionOrNull() ?: Exception("Registration failed")
+                    val error = registerResult.exceptionOrNull()
+                    val errorMessage = error?.message ?: "Registration failed"
+                    
+                    // Check if user already exists - if so, try to log them in
+                    if (errorMessage.contains("already exists", ignoreCase = true) || 
+                        errorMessage.contains("user exists", ignoreCase = true)) {
+                        // User already exists, try to log them in
+                        try {
+                            val loginResult = repository.login(email, password)
+                            if (loginResult.isSuccess) {
+                                val authData = loginResult.getOrNull()!!
+                                sessionManager.saveAuthTokens(authData.data.token, authData.data.refreshToken)
+                                sessionManager.saveUser(authData.data.user)
+                            } else {
+                                throw Exception("User exists but login failed. Please try logging in instead.")
+                            }
+                        } catch (loginError: Exception) {
+                            throw Exception("User already exists. Please try logging in instead.")
+                        }
+                    } else {
+                        throw error ?: Exception("Registration failed")
+                    }
                 }
                 
                 _uiState.value = _uiState.value.copy(
