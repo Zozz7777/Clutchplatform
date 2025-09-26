@@ -479,7 +479,7 @@ export default function IdentityThreatDetection({ className }: IdentityThreatDet
                 <div
                   key={event.id}
                   className={`p-3 border rounded-[0.625rem] cursor-pointer transition-colors ${
-                    selectedEvent?.id === event.id ? 'border-blue-500 bg-primary/10' : 'hover:bg-muted/50'
+                    selectedEvent?.id === event.id ? 'border-primary bg-primary/10' : 'hover:bg-muted/50'
                   }`}
                   onClick={() => setSelectedEvent(event)}
                 >

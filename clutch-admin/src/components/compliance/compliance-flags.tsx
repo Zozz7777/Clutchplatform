@@ -327,7 +327,7 @@ export default function ComplianceFlags({ className }: ComplianceFlagsProps) {
                 <div
                   key={flag.id}
                   className={`p-3 border rounded-[0.625rem] cursor-pointer transition-colors ${
-                    selectedFlag?.id === flag.id ? 'border-blue-500 bg-primary/10' : 'hover:bg-muted/50'
+                    selectedFlag?.id === flag.id ? 'border-primary bg-primary/10' : 'hover:bg-muted/50'
                   }`}
                   onClick={() => setSelectedFlag(flag)}
                 >

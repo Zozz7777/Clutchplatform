@@ -240,7 +240,7 @@ function SetupPasswordContent() {
                   onChange={(e) => setPassword(e.target.value)}
                   placeholder="Create a strong password"
                   disabled={isLoading}
-                  className={`pr-12 ${errors.password ? "border-red-500" : ""}`}
+                  className={`pr-12 ${errors.password ? "border-destructive" : ""}`}
                 />
                 <Button
                   type="button"
@@ -291,7 +291,7 @@ function SetupPasswordContent() {
                   onChange={(e) => setConfirmPassword(e.target.value)}
                   placeholder="Confirm your password"
                   disabled={isLoading}
-                  className={`pr-12 ${errors.confirmPassword ? "border-red-500" : ""}`}
+                  className={`pr-12 ${errors.confirmPassword ? "border-destructive" : ""}`}
                 />
                 <Button
                   type="button"

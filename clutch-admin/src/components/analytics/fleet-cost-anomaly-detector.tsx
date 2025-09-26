@@ -569,7 +569,7 @@ export default function FleetCostAnomalyDetector({ className }: FleetCostAnomaly
                 <div
                   key={anomaly.id}
                   className={`p-3 border rounded-[0.625rem] cursor-pointer transition-colors ${
-                    selectedAnomaly?.id === anomaly.id ? 'border-blue-500 bg-primary/10' : 'hover:bg-muted/50'
+                    selectedAnomaly?.id === anomaly.id ? 'border-primary bg-primary/10' : 'hover:bg-muted/50'
                   }`}
                   onClick={() => setSelectedAnomaly(anomaly)}
                 >

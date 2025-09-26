@@ -522,7 +522,7 @@ export default function DigitalTwinFleet({ className }: DigitalTwinFleetProps) {
                 <div
                   key={vehicle.id}
                   className={`p-3 border rounded-[0.625rem] cursor-pointer transition-colors ${
-                    selectedVehicle?.id === vehicle.id ? 'border-blue-500 bg-primary/10' : 'hover:bg-muted/50'
+                    selectedVehicle?.id === vehicle.id ? 'border-primary bg-primary/10' : 'hover:bg-muted/50'
                   }`}
                   onClick={() => setSelectedVehicle(vehicle)}
                 >

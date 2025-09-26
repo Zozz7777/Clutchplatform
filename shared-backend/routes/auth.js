@@ -28,48 +28,143 @@ router.options('*', (req, res) => {
 // POST /api/v1/auth/login - User login
 router.post('/login', async (req, res) => {
   try {
-    const { email, password } = req.body;
+    const { emailOrPhone, password } = req.body;
+    const email = emailOrPhone; // Use emailOrPhone as the email field
     
     if (!email || !password) {
       return res.status(400).json({
         success: false,
         error: 'MISSING_CREDENTIALS',
-        message: 'Email and password are required',
+        message: 'Email/phone and password are required',
         timestamp: new Date().toISOString()
       });
     }
     
-    // Check if this is the CEO user
-    const isCEO = email === 'ziad@yourclutch.com';
+    // Handle both email and phone number login
+    let loginIdentifier = email;
+    let isPhoneNumber = false;
     
-    // Create user object with appropriate role and permissions
-    const mockUser = {
-      id: isCEO ? 'ceo-001' : 'user-123',
-      email: email,
-      name: isCEO ? 'Ziad - CEO' : 'Test User',
-      role: isCEO ? 'head_administrator' : 'user',
-      permissions: isCEO ? ['all'] : ['read', 'write'],
-      isActive: true,
-      lastLogin: new Date().toISOString()
-    };
+    // Check if it's a phone number (contains only digits, +, -, spaces, or @clutch.app)
+    if (email.includes('@clutch.app')) {
+      // Extract phone number from clutch.app email format
+      loginIdentifier = email.replace('@clutch.app', '');
+      isPhoneNumber = true;
+    } else if (/^[\d\+\-\s]+$/.test(email)) {
+      // It's a phone number
+      loginIdentifier = email;
+      isPhoneNumber = true;
+    }
+    
+    // Check if this is the CEO user
+    const isCEO = email === 'ziad@yourclutch.com' || loginIdentifier === 'ziad@yourclutch.com';
+    
+    let user;
+    
+    if (isCEO) {
+      // CEO user - use mock data
+      user = {
+        _id: 'ceo-001',
+        email: email,
+        phone: isPhoneNumber ? loginIdentifier : null,
+        firstName: 'Ziad',
+        lastName: 'CEO',
+        dateOfBirth: null,
+        gender: null,
+        profileImage: null,
+        isEmailVerified: true,
+        isPhoneVerified: true,
+        preferences: {
+          language: 'en',
+          theme: 'light',
+          notifications: { push: true, email: true, sms: false },
+          receiveOffers: true,
+          subscribeNewsletter: true
+        },
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString()
+      };
+    } else {
+      // Real user - query database
+      try {
+        const db = require('../config/database');
+        const usersCollection = db.collection('users');
+        
+        // Find user by email
+        const existingUser = await usersCollection.findOne({ email: email });
+        
+        if (!existingUser) {
+          return res.status(401).json({
+            success: false,
+            error: 'USER_NOT_FOUND',
+            message: 'User not found. Please check your email or register first.',
+            timestamp: new Date().toISOString()
+          });
+        }
+        
+        // Create user object from database data
+        user = {
+          _id: existingUser.userId || existingUser._id.toString(),
+          email: existingUser.email,
+          phone: existingUser.phoneNumber,
+          firstName: existingUser.firstName || existingUser.name?.split(' ')[0] || 'User',
+          lastName: existingUser.lastName || existingUser.name?.split(' ').slice(1).join(' ') || '',
+          dateOfBirth: existingUser.dateOfBirth || null,
+          gender: existingUser.gender || null,
+          profileImage: existingUser.profileImage || null,
+          isEmailVerified: existingUser.isEmailVerified || false,
+          isPhoneVerified: existingUser.isPhoneVerified || false,
+          preferences: existingUser.preferences || {
+            language: 'en',
+            theme: 'light',
+            notifications: { push: true, email: true, sms: false },
+            receiveOffers: true,
+            subscribeNewsletter: true
+          },
+          createdAt: existingUser.createdAt || new Date().toISOString(),
+          updatedAt: existingUser.updatedAt || new Date().toISOString()
+        };
+      } catch (dbError) {
+        logger.error('❌ Database error during login:', dbError);
+        return res.status(500).json({
+          success: false,
+          error: 'DATABASE_ERROR',
+          message: 'Database error during login',
+          timestamp: new Date().toISOString()
+        });
+      }
+    }
     
     // Generate JWT token
     const token = jwt.sign(
       { 
-        userId: mockUser.id, 
-        email: mockUser.email, 
-        role: mockUser.role,
-        permissions: mockUser.permissions
+        userId: user._id, 
+        email: user.email, 
+        role: 'user',
+        permissions: ['read', 'write']
       },
       process.env.JWT_SECRET || 'test-secret',
       { expiresIn: '24h' }
     );
     
+    // Generate refresh token
+    const refreshToken = jwt.sign(
+      { 
+        userId: user._id, 
+        email: user.email, 
+        role: 'user',
+        permissions: ['read', 'write'],
+        type: 'refresh'
+      },
+      process.env.JWT_SECRET || 'test-secret',
+      { expiresIn: '7d' }
+    );
+    
     res.json({
       success: true,
       data: {
-        user: mockUser,
+        user: user,
         token: token,
+        refreshToken: refreshToken,
         expiresIn: '24h'
       },
       message: 'Login successful',
@@ -1466,11 +1561,24 @@ router.post('/register', async (req, res) => {
       { expiresIn: '24h' }
     );
     
+    // Generate refresh token
+    const refreshToken = jwt.sign(
+      { 
+        userId: newUser.id, 
+        email: newUser.email, 
+        role: newUser.role,
+        type: 'refresh'
+      },
+      process.env.JWT_SECRET || 'test-secret',
+      { expiresIn: '7d' }
+    );
+    
     res.status(201).json({
       success: true,
       data: {
         user: newUser,
         token: token,
+        refreshToken: refreshToken,
         expiresIn: '24h'
       },
       message: 'Registration successful',

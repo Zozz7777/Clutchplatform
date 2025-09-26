@@ -539,7 +539,7 @@ export default function AutoHealingPlaybooks({ className }: AutoHealingPlaybooks
                 <div
                   key={playbook.id}
                   className={`p-3 border rounded-[0.625rem] cursor-pointer transition-colors ${
-                    selectedPlaybook?.id === playbook.id ? 'border-blue-500 bg-primary/10' : 'hover:bg-muted/50'
+                    selectedPlaybook?.id === playbook.id ? 'border-primary bg-primary/10' : 'hover:bg-muted/50'
                   }`}
                   onClick={() => setSelectedPlaybook(playbook)}
                 >

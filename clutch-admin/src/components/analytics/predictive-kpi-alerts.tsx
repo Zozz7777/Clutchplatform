@@ -598,7 +598,7 @@ export default function PredictiveKPIAlerts({ className }: PredictiveKPIAlertsPr
                 <div
                   key={kpi.id}
                   className={`p-3 border rounded-[0.625rem] cursor-pointer transition-colors ${
-                    selectedKPI?.id === kpi.id ? 'border-blue-500 bg-primary/10' : 'hover:bg-muted/50'
+                    selectedKPI?.id === kpi.id ? 'border-primary bg-primary/10' : 'hover:bg-muted/50'
                   }`}
                   onClick={() => setSelectedKPI(kpi)}
                 >

@@ -261,7 +261,7 @@ export function EmployeeInvitationForm({ onSuccess, onCancel }: EmployeeInvitati
                   onChange={(e) => setFormData(prev => ({ ...prev, name: e.target.value }))}
                   placeholder="John Doe"
                   disabled={isLoading}
-                  className={errors.name ? "border-red-500" : ""}
+                  className={errors.name ? "border-destructive" : ""}
                 />
                 {errors.name && (
                   <p className="text-sm text-destructive">{errors.name}</p>
@@ -279,7 +279,7 @@ export function EmployeeInvitationForm({ onSuccess, onCancel }: EmployeeInvitati
                     onChange={(e) => setFormData(prev => ({ ...prev, email: e.target.value }))}
                     placeholder="john.doe@company.com"
                     disabled={isLoading}
-                    className={`pl-10 ${errors.email ? "border-red-500" : ""}`}
+                    className={`pl-10 ${errors.email ? "border-destructive" : ""}`}
                   />
                 </div>
                 {errors.email && (
@@ -301,7 +301,7 @@ export function EmployeeInvitationForm({ onSuccess, onCancel }: EmployeeInvitati
                   onValueChange={handleRoleChange}
                   disabled={isLoading}
                 >
-                  <SelectTrigger className={errors.role ? "border-red-500" : ""}>
+                  <SelectTrigger className={errors.role ? "border-destructive" : ""}>
                     <SelectValue placeholder={t('employeeInvitation.selectRole')} />
                   </SelectTrigger>
                   <SelectContent>
@@ -336,7 +336,7 @@ export function EmployeeInvitationForm({ onSuccess, onCancel }: EmployeeInvitati
                   onValueChange={(value) => setFormData(prev => ({ ...prev, department: value }))}
                   disabled={isLoading}
                 >
-                  <SelectTrigger className={errors.department ? "border-red-500" : ""}>
+                  <SelectTrigger className={errors.department ? "border-destructive" : ""}>
                     <SelectValue placeholder={t('employeeInvitation.selectDepartment')} />
                   </SelectTrigger>
                   <SelectContent>
@@ -363,7 +363,7 @@ export function EmployeeInvitationForm({ onSuccess, onCancel }: EmployeeInvitati
                   onChange={(e) => setFormData(prev => ({ ...prev, position: e.target.value }))}
                   placeholder="Software Engineer"
                   disabled={isLoading}
-                  className={errors.position ? "border-red-500" : ""}
+                  className={errors.position ? "border-destructive" : ""}
                 />
                 {errors.position && (
                   <p className="text-sm text-destructive">{errors.position}</p>

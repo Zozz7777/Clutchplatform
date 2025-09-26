@@ -624,7 +624,7 @@ export default function CustomerHealthWarRoom({ className }: CustomerHealthWarRo
 
           {/* War Room Status */}
           {isWarRoomActive && (
-            <div className="p-4 bg-destructive/10 border border-red-200 rounded-[0.625rem]">
+            <div className="p-4 bg-destructive/10 border border-destructive/20 rounded-[0.625rem]">
               <div className="flex items-center justify-between">
                 <div>
                   <h4 className="font-medium text-destructive">War Room Active</h4>
@@ -679,7 +679,7 @@ export default function CustomerHealthWarRoom({ className }: CustomerHealthWarRo
                 <div
                   key={crisis.id}
                   className={`p-3 border rounded-[0.625rem] cursor-pointer transition-colors ${
-                    selectedCrisis?.id === crisis.id ? 'border-blue-500 bg-primary/10' : 'hover:bg-muted/50'
+                    selectedCrisis?.id === crisis.id ? 'border-primary bg-primary/10' : 'hover:bg-muted/50'
                   }`}
                   onClick={() => setSelectedCrisis(crisis)}
                 >

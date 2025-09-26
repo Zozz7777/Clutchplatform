@@ -38,6 +38,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
+import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -709,6 +710,7 @@ fun AuthScreen(
 fun SignInForm(onAuthenticated: () -> Unit) {
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
+    var passwordVisible by remember { mutableStateOf(false) }
     val context = LocalContext.current
     val isRTL = LanguageManager.isRTL(context)
     val layoutDirection = if (isRTL) LayoutDirection.Rtl else LayoutDirection.Ltr
@@ -747,7 +749,7 @@ fun SignInForm(onAuthenticated: () -> Unit) {
                 onValueChange = { password = it },
                 label = { Text(if (isRTL) "كلمة المرور" else "Password") },
                 modifier = Modifier.fillMaxWidth(),
-                visualTransformation = PasswordVisualTransformation(),
+                visualTransformation = if (passwordVisible) VisualTransformation.None else PasswordVisualTransformation(),
                 keyboardOptions = KeyboardOptions(
                     keyboardType = KeyboardType.Password,
                     imeAction = ImeAction.Done
@@ -761,6 +763,21 @@ fun SignInForm(onAuthenticated: () -> Unit) {
                     unfocusedBorderColor = LightBorder,
                     cursorColor = LightPrimary
                 ),
+                trailingIcon = {
+                    IconButton(
+                        onClick = { passwordVisible = !passwordVisible }
+                    ) {
+                        Icon(
+                            imageVector = if (passwordVisible) Icons.Filled.Visibility else Icons.Filled.VisibilityOff,
+                            contentDescription = if (passwordVisible) {
+                                if (isRTL) "إخفاء كلمة المرور" else "Hide password"
+                            } else {
+                                if (isRTL) "إظهار كلمة المرور" else "Show password"
+                            },
+                            tint = LightPrimary
+                        )
+                    }
+                },
             )
             
             Spacer(modifier = Modifier.height(32.dp))
@@ -830,6 +847,7 @@ fun SignUpForm(onAuthenticated: () -> Unit) {
     var email by remember { mutableStateOf("") }
     var phone by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
+    var passwordVisible by remember { mutableStateOf(false) }
     var businessName by remember { mutableStateOf("") }
     var ownerName by remember { mutableStateOf("") }
     var street by remember { mutableStateOf("") }
@@ -896,7 +914,7 @@ fun SignUpForm(onAuthenticated: () -> Unit) {
                 onValueChange = { password = it },
                 label = { Text(if (isRTL) "كلمة المرور" else "Password") },
                 modifier = Modifier.fillMaxWidth(),
-                visualTransformation = PasswordVisualTransformation(),
+                visualTransformation = if (passwordVisible) VisualTransformation.None else PasswordVisualTransformation(),
                 keyboardOptions = KeyboardOptions(
                     keyboardType = KeyboardType.Password,
                     imeAction = ImeAction.Done
@@ -910,6 +928,21 @@ fun SignUpForm(onAuthenticated: () -> Unit) {
                     unfocusedBorderColor = LightBorder,
                     cursorColor = LightPrimary
                 ),
+                trailingIcon = {
+                    IconButton(
+                        onClick = { passwordVisible = !passwordVisible }
+                    ) {
+                        Icon(
+                            imageVector = if (passwordVisible) Icons.Filled.Visibility else Icons.Filled.VisibilityOff,
+                            contentDescription = if (passwordVisible) {
+                                if (isRTL) "إخفاء كلمة المرور" else "Hide password"
+                            } else {
+                                if (isRTL) "إظهار كلمة المرور" else "Show password"
+                            },
+                            tint = LightPrimary
+                        )
+                    }
+                },
             )
             
             Spacer(modifier = Modifier.height(32.dp))

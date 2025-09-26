@@ -697,7 +697,7 @@ export default function AutoRollbackSafety({ className }: AutoRollbackSafetyProp
           </div>
 
           {/* Safety Status */}
-          <div className={`p-4 border rounded-[0.625rem] ${isSafetyEnabled ? 'bg-success/10 border-green-200' : 'bg-destructive/10 border-red-200'}`}>
+          <div className={`p-4 border rounded-[0.625rem] ${isSafetyEnabled ? 'bg-success/10 border-success/20' : 'bg-destructive/10 border-destructive/20'}`}>
             <div className="flex items-center justify-between">
               <div>
                 <h4 className={`font-medium ${isSafetyEnabled ? 'text-success' : 'text-destructive'}`}>
@@ -788,7 +788,7 @@ export default function AutoRollbackSafety({ className }: AutoRollbackSafetyProp
                 <div
                   key={deployment.id}
                   className={`p-3 border rounded-[0.625rem] cursor-pointer transition-colors ${
-                    selectedDeployment?.id === deployment.id ? 'border-blue-500 bg-primary/10' : 'hover:bg-muted/50'
+                    selectedDeployment?.id === deployment.id ? 'border-primary bg-primary/10' : 'hover:bg-muted/50'
                   }`}
                   onClick={() => setSelectedDeployment(deployment)}
                 >
