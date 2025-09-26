@@ -21,7 +21,7 @@ class Lead {
     };
     this.source = data.source;
     this.status = data.status || 'new'; // 'new','contacted','qualified','converted','lost'
-    this.assignedTo = data.assignedTo ? new ObjectId(data.assignedTo) : null; // References employees collection
+    this.assignedTo = data.assignedTo && ObjectId.isValid(data.assignedTo) ? new ObjectId(data.assignedTo) : null; // References employees collection
     this.notes = data.notes || [];
     this.createdAt = data.createdAt || new Date();
     this.updatedAt = data.updatedAt || new Date();
@@ -31,7 +31,7 @@ class Lead {
   static async findById(id) {
     try {
       const collection = await getCollection('leads');
-      const lead = await collection.findOne({ _id: new ObjectId(id) });
+      const lead = await collection.findOne({ _id: ObjectId.isValid(id) ? new ObjectId(id) : id });
       return lead ? new Lead(lead) : null;
     } catch (error) {
       console.error('Error finding lead by ID:', error);
@@ -116,7 +116,7 @@ class Lead {
   async addNote(employeeId, text) {
     try {
       const note = {
-        employeeId: new ObjectId(employeeId), // References employees collection
+        employeeId: ObjectId.isValid(employeeId) ? new ObjectId(employeeId) : employeeId, // References employees collection
         text,
         createdAt: new Date()
       };
