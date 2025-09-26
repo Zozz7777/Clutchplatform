@@ -133,27 +133,27 @@ export function RoleDistribution({ className = '' }: RoleDistributionProps) {
           
           // Level 3: Specialized Managers
           business_analyst: { 
-            color: 'text-blue-600', 
+            color: 'text-primary', 
             icon: User, 
             description: 'Business analysis and insights' 
           },
           project_manager: { 
-            color: 'text-blue-600', 
+            color: 'text-primary', 
             icon: User, 
             description: 'Project management and coordination' 
           },
           asset_manager: { 
-            color: 'text-blue-600', 
+            color: 'text-primary', 
             icon: User, 
             description: 'Asset and fleet management' 
           },
           crm_manager: { 
-            color: 'text-blue-600', 
+            color: 'text-primary', 
             icon: User, 
             description: 'Customer relationship management' 
           },
           system_admin: { 
-            color: 'text-blue-600', 
+            color: 'text-primary', 
             icon: User, 
             description: 'System administration and maintenance' 
           },
@@ -430,8 +430,8 @@ export function RoleDistribution({ className = '' }: RoleDistributionProps) {
 
         {/* Insights */}
         <div className="p-3 bg-primary/10 rounded-[0.625rem]-lg">
-          <h5 className="text-sm font-medium text-blue-900 mb-2">💡 {t('widgets.roleInsights')}</h5>
-          <ul className="text-xs text-blue-800 space-y-1">
+          <h5 className="text-sm font-medium text-primary mb-2">💡 {t('widgets.roleInsights')}</h5>
+          <ul className="text-xs text-primary space-y-1">
             <li>• {t('widgets.totalUsersInSystem', { count: totalUsers })}</li>
             <li>• {t('widgets.differentRolesInSystem', { count: roleData.length })}</li>
             <li>• {t('widgets.largestRolePercentage', { role: largestRole?.role || 'N/A', percentage: (largestRole?.percentage || 0).toFixed(1) })}</li>

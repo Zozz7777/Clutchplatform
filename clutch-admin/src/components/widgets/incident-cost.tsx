@@ -154,7 +154,7 @@ export function IncidentCost({ className = '' }: IncidentCostProps) {
     switch (status) {
       case 'resolved': return 'bg-success/10 text-success';
       case 'investigating': return 'bg-warning/10 text-warning';
-      case 'mitigated': return 'bg-primary/10 text-blue-800';
+      case 'mitigated': return 'bg-primary/10 text-primary';
       default: return 'bg-muted text-gray-800';
     }
   };
@@ -366,8 +366,8 @@ export function IncidentCost({ className = '' }: IncidentCostProps) {
 
         {/* Insights */}
         <div className="p-3 bg-primary/10 rounded-[0.625rem]-lg">
-          <h5 className="text-sm font-medium text-blue-900 mb-2">💡 Incident Cost Insights</h5>
-          <ul className="text-xs text-blue-800 space-y-1">
+          <h5 className="text-sm font-medium text-primary mb-2">💡 Incident Cost Insights</h5>
+          <ul className="text-xs text-primary space-y-1">
             <li>• Total Incident Cost: ${incidentData.totalCost.toLocaleString()}</li>
             <li>• {t('incidentCost.averageCostPerIncident')}: ${incidentData.averageCost.toLocaleString()}</li>
             <li>• {t('incidentCost.totalDowntime')}: {formatDuration(incidentData.totalDowntime)}</li>

@@ -49,6 +49,8 @@ import com.clutch.partners.utils.LanguageManager
 import com.clutch.partners.utils.ThemeManager
 import com.clutch.partners.ui.viewmodel.AuthViewModel
 import com.clutch.partners.ui.viewmodel.AuthState
+import com.clutch.partners.ui.viewmodel.OrdersViewModel
+import com.clutch.partners.ui.viewmodel.OrdersState
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.delay
 
@@ -82,7 +84,7 @@ fun CompleteClutchPartnersApp() {
     var currentScreen by remember { mutableStateOf("splash") }
     var selectedPartnerType by remember { mutableStateOf("") }
     var selectedAuthMode by remember { mutableStateOf("") }
-    val authViewModel: AuthViewModel = viewModel()
+    // val authViewModel: AuthViewModel = viewModel() // Removed unused variable
     
     when (currentScreen) {
         "splash" -> SplashScreen(onNavigate = { currentScreen = "onboarding" })
@@ -94,10 +96,9 @@ fun CompleteClutchPartnersApp() {
             }
         )
         "auth_selector" -> AuthSelectorScreen(
-            partnerType = selectedPartnerType,
             onNavigate = { authMode -> 
                 selectedAuthMode = authMode
-                currentScreen = "auth" 
+                currentScreen = "auth"
             },
             onBack = { currentScreen = "partner_selector" }
         )
@@ -221,11 +222,11 @@ fun OnboardingScreen(onNavigate: () -> Unit) {
                 }
                 
                 // Logo at center
-                Image(
-                    painter = painterResource(id = R.drawable.clutch_logo_black),
-                    contentDescription = "Clutch Partners Logo",
-                    modifier = Modifier.size(80.dp)
-                )
+            Image(
+                painter = painterResource(id = R.drawable.clutch_logo_black),
+                contentDescription = "Clutch Partners Logo",
+                modifier = Modifier.size(80.dp)
+            )
                 
                 // Empty space for balance
                 Spacer(modifier = Modifier.size(48.dp))
@@ -506,7 +507,6 @@ fun PartnerTypeCard(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AuthSelectorScreen(
-    partnerType: String,
     onNavigate: (String) -> Unit,
     onBack: () -> Unit
 ) {
@@ -795,14 +795,14 @@ fun SignInForm(onAuthenticated: () -> Unit) {
                         modifier = Modifier.size(20.dp)
                     )
                 } else {
-                    Text(
-                        text = if (isRTL) "تسجيل الدخول" else "Sign In",
-                        fontSize = 18.sp,
-                        fontWeight = FontWeight.Bold,
-                        color = Color.White
-                    )
-                }
+                Text(
+                    text = if (isRTL) "تسجيل الدخول" else "Sign In",
+                    fontSize = 18.sp,
+                    fontWeight = FontWeight.Bold,
+                    color = Color.White
+                )
             }
+        }
             
             // Show error message if any
             val currentAuthState = authState
@@ -825,8 +825,15 @@ fun SignInForm(onAuthenticated: () -> Unit) {
 @Composable
 fun SignUpForm(onAuthenticated: () -> Unit) {
     var partnerId by remember { mutableStateOf("") }
-    var emailOrPhone by remember { mutableStateOf("") }
+    var email by remember { mutableStateOf("") }
+    var phone by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
+    var businessName by remember { mutableStateOf("") }
+    var ownerName by remember { mutableStateOf("") }
+    var street by remember { mutableStateOf("") }
+    var city by remember { mutableStateOf("") }
+    var state by remember { mutableStateOf("") }
+    var zipCode by remember { mutableStateOf("") }
     val context = LocalContext.current
     val isRTL = LanguageManager.isRTL(context)
     val layoutDirection = if (isRTL) LayoutDirection.Rtl else LayoutDirection.Ltr
@@ -861,9 +868,9 @@ fun SignUpForm(onAuthenticated: () -> Unit) {
             Spacer(modifier = Modifier.height(16.dp))
             
             OutlinedTextField(
-                value = emailOrPhone,
-                onValueChange = { emailOrPhone = it },
-                label = { Text(if (isRTL) "البريد الإلكتروني أو رقم الهاتف" else "Email or Phone") },
+                value = email,
+                onValueChange = { email = it },
+                label = { Text(if (isRTL) "البريد الإلكتروني" else "Email") },
                 modifier = Modifier.fillMaxWidth(),
                 keyboardOptions = KeyboardOptions(
                     keyboardType = KeyboardType.Email,
@@ -920,22 +927,24 @@ fun SignUpForm(onAuthenticated: () -> Unit) {
             
             Button(
                 onClick = { 
-                    if (partnerId.isNotEmpty() && emailOrPhone.isNotEmpty() && password.isNotEmpty()) {
-                        // For now, create a basic BusinessAddress - in real app, this would be a form
+                    if (partnerId.isNotEmpty() && email.isNotEmpty() && phone.isNotEmpty() && 
+                        password.isNotEmpty() && businessName.isNotEmpty() && ownerName.isNotEmpty() &&
+                        street.isNotEmpty() && city.isNotEmpty() && state.isNotEmpty() && zipCode.isNotEmpty()) {
+                        // Create BusinessAddress from form data
                         val businessAddress = com.clutch.partners.data.api.BusinessAddress(
-                            street = "Main Street",
-                            city = "Cairo",
-                            state = "Cairo",
-                            zipCode = "12345"
+                            street = street,
+                            city = city,
+                            state = state,
+                            zipCode = zipCode
                         )
                         authViewModel.signUp(
                             partnerId, 
-                            emailOrPhone, 
-                            emailOrPhone, // Using emailOrPhone as phone for now
+                            email, 
+                            phone,
                             password,
-                            "Business Name", // These would come from additional form fields
-                            "Owner Name",
-                            "repair_center",
+                            businessName,
+                            ownerName,
+                            "repair_center", // Default partner type
                             businessAddress
                         )
                     }
@@ -953,14 +962,14 @@ fun SignUpForm(onAuthenticated: () -> Unit) {
                         modifier = Modifier.size(20.dp)
                     )
                 } else {
-                    Text(
-                        text = if (isRTL) "إنشاء حساب" else "Sign Up",
-                        fontSize = 18.sp,
-                        fontWeight = FontWeight.Bold,
-                        color = Color.White
-                    )
-                }
+                Text(
+                    text = if (isRTL) "إنشاء حساب" else "Sign Up",
+                    fontSize = 18.sp,
+                    fontWeight = FontWeight.Bold,
+                    color = Color.White
+                )
             }
+        }
             
             // Show error message if any
             val currentAuthState = authState
@@ -1125,14 +1134,14 @@ fun RequestToJoinForm(onAuthenticated: () -> Unit) {
                         modifier = Modifier.size(20.dp)
                     )
                 } else {
-                    Text(
-                        text = if (isRTL) "إرسال الطلب" else "Submit Request",
-                        fontSize = 18.sp,
-                        fontWeight = FontWeight.Bold,
-                        color = Color.White
-                    )
-                }
+                Text(
+                    text = if (isRTL) "إرسال الطلب" else "Submit Request",
+                    fontSize = 18.sp,
+                    fontWeight = FontWeight.Bold,
+                    color = Color.White
+                )
             }
+        }
             
             // Show error message if any
             val currentAuthState = authState
@@ -1165,18 +1174,21 @@ fun DashboardScreen() {
             topBar = {
                 TopAppBar(
                     title = {
-                        Text(
+                Text(
                             text = if (isRTL) "مرحباً، أحمد" else "Welcome, Ahmed",
                             fontSize = 20.sp,
-                            fontWeight = FontWeight.Bold,
-                            color = Color.White
-                        )
+                    fontWeight = FontWeight.Bold,
+                    color = Color.White
+                )
                     },
                     colors = TopAppBarDefaults.topAppBarColors(
                         containerColor = LightPrimary
                     ),
                     actions = {
-                        IconButton(onClick = { /* Notification */ }) {
+                        IconButton(onClick = { 
+                            // TODO: Implement notification screen navigation
+                            // For now, show notification count or recent notifications
+                        }) {
                             Icon(
                                 imageVector = Icons.Default.Notifications,
                                 contentDescription = if (isRTL) "الإشعارات" else "Notifications",
@@ -1200,11 +1212,11 @@ fun DashboardScreen() {
                     .background(LightBackground)
                     .padding(paddingValues)
             ) {
-                when (selectedTab) {
-                    0 -> OrdersTab()
-                    1 -> PaymentsTab()
-                    2 -> BusinessDashboardTab()
-                    3 -> SettingsTab()
+            when (selectedTab) {
+                0 -> OrdersTab()
+                1 -> PaymentsTab()
+                2 -> BusinessDashboardTab()
+                3 -> SettingsTab()
                 }
             }
         }
@@ -1274,14 +1286,36 @@ fun OrdersTab() {
     val context = LocalContext.current
     val isRTL = LanguageManager.isRTL(context)
     val layoutDirection = if (isRTL) LayoutDirection.Rtl else LayoutDirection.Ltr
+    val ordersViewModel: OrdersViewModel = viewModel()
+    val ordersState by ordersViewModel.ordersState.collectAsState()
     
-    val orders = listOf(
+    // Load orders when component is first created
+    LaunchedEffect(Unit) {
+        ordersViewModel.loadOrders()
+    }
+    
+    // Convert API orders to MockOrder for display (temporary until UI is updated)
+    val currentOrdersState = ordersState
+    val orders = when (currentOrdersState) {
+        is OrdersState.Success -> currentOrdersState.orders.map { order ->
+            MockOrder(
+                id = order.id,
+                service = order.service,
+                customer = order.customer.name,
+                date = order.createdAt,
+                status = order.status,
+                price = order.price,
+                time = order.time
+            )
+        }
+        else -> listOf(
         MockOrder("1", "Oil Change", "Ahmed Ali", "2024-01-15", "Pending", "EGP 150", "10:30 AM"),
         MockOrder("2", "Brake Repair", "Sara Mohamed", "2024-01-14", "Paid", "EGP 450", "2:15 PM"),
         MockOrder("3", "Tire Replacement", "Omar Hassan", "2024-01-13", "Rejected", "EGP 800", "9:45 AM"),
         MockOrder("4", "Engine Check", "Fatma Ibrahim", "2024-01-12", "Paid", "EGP 200", "11:20 AM"),
         MockOrder("5", "AC Repair", "Mohamed Ali", "2024-01-11", "Pending", "EGP 300", "3:30 PM")
-    )
+        )
+    }
     
     val filters = listOf(
         if (isRTL) "الكل" else "All",
@@ -1371,13 +1405,13 @@ fun OrdersTab() {
             Spacer(modifier = Modifier.height(16.dp))
             
             // Orders list
-            LazyColumn(
-                modifier = Modifier
-                    .fillMaxSize()
+        LazyColumn(
+            modifier = Modifier
+                .fillMaxSize()
                     .padding(horizontal = 16.dp),
-                verticalArrangement = Arrangement.spacedBy(12.dp)
-            ) {
-                            items(orders) { order ->
+            verticalArrangement = Arrangement.spacedBy(12.dp)
+        ) {
+            items(orders) { order ->
                                 EnhancedOrderCard(
                                     order = order,
                                     onClick = { 
@@ -1420,8 +1454,8 @@ fun PaymentsTab() {
                 Column(
                     modifier = Modifier.padding(24.dp),
                     horizontalAlignment = Alignment.CenterHorizontally
-                ) {
-                    Text(
+        ) {
+            Text(
                         text = if (isRTL) "إيراد هذا الأسبوع" else "This Week's Income",
                         fontSize = 16.sp,
                         color = Color.White.copy(alpha = 0.9f)
@@ -1432,18 +1466,18 @@ fun PaymentsTab() {
                     Text(
                         text = "EGP 8,450",
                         fontSize = 32.sp,
-                        fontWeight = FontWeight.Bold,
+                fontWeight = FontWeight.Bold,
                         color = Color.White
-                    )
-                    
-                    Spacer(modifier = Modifier.height(16.dp))
-                    
+            )
+            
+            Spacer(modifier = Modifier.height(16.dp))
+            
                     Row(
                         modifier = Modifier.fillMaxWidth(),
                         horizontalArrangement = Arrangement.SpaceBetween
                     ) {
                         Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                            Text(
+            Text(
                                 text = if (isRTL) "الطلبات" else "Orders",
                                 fontSize = 12.sp,
                                 color = Color.White.copy(alpha = 0.8f)
@@ -1503,7 +1537,7 @@ fun PaymentsTab() {
                     Column(modifier = Modifier.weight(1f)) {
                         Text(
                             text = if (isRTL) "الدفعة القادمة" else "Next Payout",
-                            fontSize = 16.sp,
+                fontSize = 16.sp,
                             fontWeight = FontWeight.Bold,
                             color = LightForeground
                         )
@@ -1566,7 +1600,7 @@ fun BusinessDashboardTab() {
             Card(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(16.dp)
+                .padding(16.dp)
                     .shadow(
                         elevation = 6.dp,
                         shape = RoundedCornerShape(20.dp)
@@ -1579,8 +1613,8 @@ fun BusinessDashboardTab() {
                 Column(
                     modifier = Modifier.padding(24.dp),
                     horizontalAlignment = Alignment.CenterHorizontally
-                ) {
-                    Text(
+        ) {
+            Text(
                         text = if (isRTL) "إجمالي الإيرادات" else "Total Revenue",
                         fontSize = 16.sp,
                         color = Color.White.copy(alpha = 0.9f)
@@ -1617,7 +1651,7 @@ fun BusinessDashboardTab() {
                 item {
                     EnhancedStatCard(
                         title = if (isRTL) "طلبات كلتش" else "Clutch Orders",
-                        value = "156",
+                    value = "156",
                         subtitle = if (isRTL) "هذا الشهر" else "This month",
                         icon = Icons.Default.ShoppingCart,
                         color = LightPrimary
@@ -1646,8 +1680,8 @@ fun BusinessDashboardTab() {
                 
                 item {
                     EnhancedStatCard(
-                        title = if (isRTL) "التقييم" else "Rating",
-                        value = "4.8",
+                    title = if (isRTL) "التقييم" else "Rating",
+                    value = "4.8",
                         subtitle = if (isRTL) "من 5 نجوم" else "out of 5",
                         icon = Icons.Default.Star,
                         color = Color(0xFFFFC107)

@@ -67,7 +67,7 @@ export default function CommunicationHistory() {
 
   const getTypeColor = (type: string) => {
     switch (type) {
-      case 'call': return 'bg-blue-100 text-blue-800';
+      case 'call': return 'bg-blue-100 text-primary';
       case 'visit': return 'bg-success/10 text-success';
       case 'email': return 'bg-info/10 text-info';
       case 'whatsapp': return 'bg-success/10 text-success';
@@ -156,9 +156,9 @@ export default function CommunicationHistory() {
         {/* Communication Stats */}
         <div className="grid grid-cols-2 gap-4 mb-6">
           <div className="text-center p-4 bg-blue-50 rounded-lg">
-            <MessageSquare className="h-8 w-8 text-blue-600 mx-auto mb-2" />
-            <p className="text-2xl font-bold text-blue-900">{totalCommunications}</p>
-            <p className="text-sm text-blue-700">Total Communications</p>
+            <MessageSquare className="h-8 w-8 text-primary mx-auto mb-2" />
+            <p className="text-2xl font-bold text-primary">{totalCommunications}</p>
+            <p className="text-sm text-primary">Total Communications</p>
           </div>
           <div className="text-center p-4 bg-success/10 rounded-lg">
             <Phone className="h-8 w-8 text-success mx-auto mb-2" />

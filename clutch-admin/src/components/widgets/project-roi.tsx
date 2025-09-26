@@ -122,7 +122,7 @@ export function ProjectROI({ className = '' }: ProjectROIProps) {
   const getStatusBadge = (status: string) => {
     switch (status) {
       case 'completed': return 'bg-success/10 text-success';
-      case 'in-progress': return 'bg-primary/10 text-blue-800';
+      case 'in-progress': return 'bg-primary/10 text-primary';
       case 'planned': return 'bg-muted text-gray-800';
       default: return 'bg-muted text-gray-800';
     }
@@ -304,8 +304,8 @@ export function ProjectROI({ className = '' }: ProjectROIProps) {
 
         {/* Insights */}
         <div className="p-3 bg-primary/10 rounded-[0.625rem]-lg">
-          <h5 className="text-sm font-medium text-blue-900 mb-2">💡 Project ROI Insights</h5>
-          <ul className="text-xs text-blue-800 space-y-1">
+          <h5 className="text-sm font-medium text-primary mb-2">💡 Project ROI Insights</h5>
+          <ul className="text-xs text-primary space-y-1">
             <li>• Total Investment: ${roiData.totalInvestment.toLocaleString()}</li>
             <li>• {t('projectRoi.totalValue')}: ${roiData.totalValue.toLocaleString()}</li>
             <li>• {t('projectRoi.averageRoi')}: {roiData.averageROI.toFixed(0)}%</li>

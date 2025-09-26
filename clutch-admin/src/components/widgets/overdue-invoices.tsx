@@ -304,8 +304,8 @@ export function OverdueInvoices({ className = '' }: OverdueInvoicesProps) {
 
         {/* Insights */}
         <div className="p-3 bg-primary/10 rounded-[0.625rem]-lg">
-          <h5 className="text-sm font-medium text-blue-900 mb-2">💡 Overdue Invoice Insights</h5>
-          <ul className="text-xs text-blue-800 space-y-1">
+          <h5 className="text-sm font-medium text-primary mb-2">💡 Overdue Invoice Insights</h5>
+          <ul className="text-xs text-primary space-y-1">
             <li>• Total overdue amount: ${overdueData.totalOverdue.toLocaleString()}</li>
             <li>• {overdueData.count} overdue invoices</li>
             <li>• Average days overdue: {overdueData.averageDaysOverdue.toFixed(0)} days</li>

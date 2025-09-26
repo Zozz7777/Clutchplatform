@@ -28,6 +28,12 @@ val LightSuccess = Color(0xFF27AE60)
 val LightWarning = Color(0xFFF39C12)
 val LightInfo = Color(0xFF3498DB)
 
+// Status colors for orders
+val LightPending = Color(0xFFF39C12)  // Orange
+val LightPaid = Color(0xFF27AE60)     // Green
+val LightRejected = Color(0xFFE74C3C) // Red
+val LightAmber = Color(0xFFF1C40F)    // Amber
+
 // Dark Theme Colors - Partners Design.json specification
 val DarkBackground = Color(0xFF0F0D0F)
 val SplashBackground = Color(0xFF0F0D0F)
@@ -54,3 +60,9 @@ val DarkSidebarPrimary = Color(0xFFF5F5F5)
 val DarkSuccess = Color(0xFF27AE60)
 val DarkWarning = Color(0xFFF39C12)
 val DarkInfo = Color(0xFF3498DB)
+
+// Dark theme Status colors for orders
+val DarkPending = Color(0xFFF39C12)  // Orange
+val DarkPaid = Color(0xFF27AE60)     // Green
+val DarkRejected = Color(0xFFE74C3C) // Red
+val DarkAmber = Color(0xFFF1C40F)    // Amber

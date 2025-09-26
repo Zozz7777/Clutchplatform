@@ -110,14 +110,14 @@ export default function RevenueForecast() {
         <div className="p-4 bg-gradient-to-r from-blue-50 to-purple-50 rounded-lg">
           <div className="flex items-center justify-between mb-3">
             <h4 className="font-semibold text-foreground">{currentQuarter.period}</h4>
-            <Badge variant="outline" className="text-blue-600">
+            <Badge variant="outline" className="text-primary">
               {currentQuarter.probability}% {t('probability')}
             </Badge>
           </div>
           <div className="grid grid-cols-2 gap-4">
             <div>
               <p className="text-sm text-muted-foreground">{t('forecast')}</p>
-              <p className="text-2xl font-bold text-blue-600">
+              <p className="text-2xl font-bold text-primary">
                 {(currentQuarter.forecast / 1000000).toFixed(1)}M EGP
               </p>
             </div>
@@ -227,14 +227,14 @@ export default function RevenueForecast() {
             <p className="text-xs text-success/80">{t('forecastAccuracy')}</p>
           </div>
           <div className="text-center p-3 bg-blue-50 rounded-lg">
-            <TrendingUp className="h-6 w-6 text-blue-600 mx-auto mb-1" />
-            <p className="text-lg font-bold text-blue-900">
+            <TrendingUp className="h-6 w-6 text-primary mx-auto mb-1" />
+            <p className="text-lg font-bold text-primary">
               {forecastData.length >= 4 && forecastData[0].actual > 0 ? 
                 ((forecastData[3].forecast - forecastData[0].actual) / forecastData[0].actual * 100).toFixed(0) : 
                 '0'
               }%
             </p>
-            <p className="text-xs text-blue-700">{t('yearlyGrowth')}</p>
+            <p className="text-xs text-primary">{t('yearlyGrowth')}</p>
           </div>
         </div>
       </CardContent>

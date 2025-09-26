@@ -1,6 +1,7 @@
 const express = require('express');
 const { body, validationResult } = require('express-validator');
 const PartnerUser = require('../models/PartnerUser');
+const Notification = require('../models/notification');
 const { authenticateToken: auth } = require('../middleware/auth');
 const logger = require('../config/logger');
 
@@ -353,21 +354,471 @@ router.post('/multi', [
       );
     }
 
-    const successCount = Object.values(results).filter(r => r && r.success).length;
-    const totalRequested = types.length;
+    const successCount = Object.values(results).filter(result => result && result.success).length;
 
     res.json({
       success: successCount > 0,
-      message: `Sent ${successCount} out of ${totalRequested} notifications`,
-      data: {
-        results,
-        successCount,
-        totalRequested
-      }
+      message: `Notifications sent via ${successCount} channel(s)`,
+      data: results
     });
 
   } catch (error) {
     logger.error('Send multi notification error:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Server error'
+    });
+  }
+});
+
+// @route   POST /notifications/order-status
+// @desc    Send order status notification
+// @access  Private
+router.post('/order-status', [
+  body('partnerId').notEmpty().withMessage('Partner ID is required'),
+  body('orderId').notEmpty().withMessage('Order ID is required'),
+  body('status').notEmpty().withMessage('Status is required'),
+  body('customerName').notEmpty().withMessage('Customer name is required')
+], async (req, res) => {
+  try {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(400).json({
+        success: false,
+        message: 'Validation errors',
+        errors: errors.array()
+      });
+    }
+
+    const { partnerId, orderId, status, customerName, estimatedTime } = req.body;
+
+    // Find partner
+    const partner = await PartnerUser.findByPartnerId(partnerId);
+    if (!partner) {
+      return res.status(404).json({
+        success: false,
+        message: 'Partner not found'
+      });
+    }
+
+    const statusMessages = {
+      'acknowledged': `Order #${orderId} has been acknowledged by ${partner.businessName}`,
+      'preparing': `Order #${orderId} is being prepared by ${partner.businessName}`,
+      'ready': `Order #${orderId} is ready for pickup from ${partner.businessName}`,
+      'picked_up': `Order #${orderId} has been picked up from ${partner.businessName}`,
+      'delivered': `Order #${orderId} has been delivered by ${partner.businessName}`,
+      'cancelled': `Order #${orderId} has been cancelled`
+    };
+
+    const title = 'Order Status Update';
+    const body = statusMessages[status] || `Order #${orderId} status updated to ${status}`;
+    
+    if (estimatedTime && status === 'acknowledged') {
+      body += `. Estimated completion time: ${estimatedTime}`;
+    }
+
+    const notificationData = {
+      type: 'order_status_update',
+      orderId,
+      status,
+      partnerId,
+      customerName,
+      estimatedTime
+    };
+
+    // Send notifications
+    const results = {
+      push: null,
+      email: null,
+      sms: null
+    };
+
+    // Send push notification
+    if (partner.notificationPreferences.push) {
+      const deviceTokens = partner.deviceTokens.map(dt => dt.token);
+      if (deviceTokens.length > 0) {
+        results.push = await sendPushNotification(deviceTokens, title, body, notificationData);
+      }
+    }
+
+    // Send email notification
+    if (partner.notificationPreferences.email) {
+      results.email = await sendEmailNotification(
+        partner.email,
+        title,
+        'order_status_update',
+        notificationData
+      );
+    }
+
+    // Send SMS notification for critical status updates
+    if (partner.notificationPreferences.sms && ['ready', 'cancelled'].includes(status)) {
+      results.sms = await sendSMSNotification(partner.phone, body);
+    }
+
+    res.json({
+      success: true,
+      message: 'Order status notification sent',
+      data: results
+    });
+
+  } catch (error) {
+    logger.error('Send order status notification error:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Server error'
+    });
+  }
+});
+
+// @route   POST /notifications/payment-status
+// @desc    Send payment status notification
+// @access  Private
+router.post('/payment-status', [
+  body('partnerId').notEmpty().withMessage('Partner ID is required'),
+  body('orderId').notEmpty().withMessage('Order ID is required'),
+  body('paymentStatus').notEmpty().withMessage('Payment status is required'),
+  body('amount').isNumeric().withMessage('Amount is required')
+], async (req, res) => {
+  try {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(400).json({
+        success: false,
+        message: 'Validation errors',
+        errors: errors.array()
+      });
+    }
+
+    const { partnerId, orderId, paymentStatus, amount, paymentMethod } = req.body;
+
+    // Find partner
+    const partner = await PartnerUser.findByPartnerId(partnerId);
+    if (!partner) {
+      return res.status(404).json({
+        success: false,
+        message: 'Partner not found'
+      });
+    }
+
+    const statusMessages = {
+      'paid': `Payment of ${amount} EGP received for order #${orderId}`,
+      'rejected': `Payment of ${amount} EGP was rejected for order #${orderId}`,
+      'failed': `Payment of ${amount} EGP failed for order #${orderId}`,
+      'refunded': `Payment of ${amount} EGP has been refunded for order #${orderId}`
+    };
+
+    const title = 'Payment Status Update';
+    const body = statusMessages[paymentStatus] || `Payment status updated for order #${orderId}`;
+    
+    if (paymentMethod) {
+      body += ` (${paymentMethod})`;
+    }
+
+    const notificationData = {
+      type: 'payment_status_update',
+      orderId,
+      paymentStatus,
+      amount,
+      paymentMethod,
+      partnerId
+    };
+
+    // Send notifications
+    const results = {
+      push: null,
+      email: null,
+      sms: null
+    };
+
+    // Send push notification
+    if (partner.notificationPreferences.push) {
+      const deviceTokens = partner.deviceTokens.map(dt => dt.token);
+      if (deviceTokens.length > 0) {
+        results.push = await sendPushNotification(deviceTokens, title, body, notificationData);
+      }
+    }
+
+    // Send email notification
+    if (partner.notificationPreferences.email) {
+      results.email = await sendEmailNotification(
+        partner.email,
+        title,
+        'payment_status_update',
+        notificationData
+      );
+    }
+
+    // Send SMS notification for payment rejections
+    if (partner.notificationPreferences.sms && paymentStatus === 'rejected') {
+      results.sms = await sendSMSNotification(partner.phone, body);
+    }
+
+    res.json({
+      success: true,
+      message: 'Payment status notification sent',
+      data: results
+    });
+
+  } catch (error) {
+    logger.error('Send payment status notification error:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Server error'
+    });
+  }
+});
+
+// @route   POST /notifications/new-order
+// @desc    Send new order notification
+// @access  Private
+router.post('/new-order', [
+  body('partnerId').notEmpty().withMessage('Partner ID is required'),
+  body('orderId').notEmpty().withMessage('Order ID is required'),
+  body('customerName').notEmpty().withMessage('Customer name is required'),
+  body('serviceName').notEmpty().withMessage('Service name is required'),
+  body('total').isNumeric().withMessage('Total amount is required')
+], async (req, res) => {
+  try {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(400).json({
+        success: false,
+        message: 'Validation errors',
+        errors: errors.array()
+      });
+    }
+
+    const { partnerId, orderId, customerName, serviceName, total, priority } = req.body;
+
+    // Find partner
+    const partner = await PartnerUser.findByPartnerId(partnerId);
+    if (!partner) {
+      return res.status(404).json({
+        success: false,
+        message: 'Partner not found'
+      });
+    }
+
+    const title = priority === 'high' ? '🚨 URGENT: New Order' : 'New Order Received';
+    const body = `New order #${orderId} from ${customerName} for ${serviceName} - ${total} EGP`;
+
+    const notificationData = {
+      type: 'new_order',
+      orderId,
+      customerName,
+      serviceName,
+      total,
+      priority,
+      partnerId
+    };
+
+    // Send notifications
+    const results = {
+      push: null,
+      email: null,
+      sms: null
+    };
+
+    // Send push notification
+    if (partner.notificationPreferences.push) {
+      const deviceTokens = partner.deviceTokens.map(dt => dt.token);
+      if (deviceTokens.length > 0) {
+        results.push = await sendPushNotification(deviceTokens, title, body, notificationData);
+      }
+    }
+
+    // Send email notification
+    if (partner.notificationPreferences.email) {
+      results.email = await sendEmailNotification(
+        partner.email,
+        title,
+        'new_order',
+        notificationData
+      );
+    }
+
+    // Send SMS notification for urgent orders
+    if (partner.notificationPreferences.sms && priority === 'high') {
+      results.sms = await sendSMSNotification(partner.phone, body);
+    }
+
+    res.json({
+      success: true,
+      message: 'New order notification sent',
+      data: results
+    });
+
+  } catch (error) {
+    logger.error('Send new order notification error:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Server error'
+    });
+  }
+});
+
+// @route   POST /notifications/payout
+// @desc    Send payout notification
+// @access  Private
+router.post('/payout', [
+  body('partnerId').notEmpty().withMessage('Partner ID is required'),
+  body('amount').isNumeric().withMessage('Amount is required'),
+  body('period').notEmpty().withMessage('Period is required')
+], async (req, res) => {
+  try {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(400).json({
+        success: false,
+        message: 'Validation errors',
+        errors: errors.array()
+      });
+    }
+
+    const { partnerId, amount, period, transactionId } = req.body;
+
+    // Find partner
+    const partner = await PartnerUser.findByPartnerId(partnerId);
+    if (!partner) {
+      return res.status(404).json({
+        success: false,
+        message: 'Partner not found'
+      });
+    }
+
+    const title = 'Payout Processed';
+    const body = `Your weekly payout of ${amount} EGP for ${period} has been processed${transactionId ? ` (Transaction ID: ${transactionId})` : ''}`;
+
+    const notificationData = {
+      type: 'payout_processed',
+      amount,
+      period,
+      transactionId,
+      partnerId
+    };
+
+    // Send notifications
+    const results = {
+      push: null,
+      email: null,
+      sms: null
+    };
+
+    // Send push notification
+    if (partner.notificationPreferences.push) {
+      const deviceTokens = partner.deviceTokens.map(dt => dt.token);
+      if (deviceTokens.length > 0) {
+        results.push = await sendPushNotification(deviceTokens, title, body, notificationData);
+      }
+    }
+
+    // Send email notification
+    if (partner.notificationPreferences.email) {
+      results.email = await sendEmailNotification(
+        partner.email,
+        title,
+        'payout_processed',
+        notificationData
+      );
+    }
+
+    // Send SMS notification
+    if (partner.notificationPreferences.sms) {
+      results.sms = await sendSMSNotification(partner.phone, body);
+    }
+
+    res.json({
+      success: true,
+      message: 'Payout notification sent',
+      data: results
+    });
+
+  } catch (error) {
+    logger.error('Send payout notification error:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Server error'
+    });
+  }
+});
+
+// @route   GET /notifications/history/:partnerId
+// @desc    Get notification history for partner
+// @access  Private
+router.get('/history/:partnerId', async (req, res) => {
+  try {
+    const { partnerId } = req.params;
+    const { page = 1, limit = 20, type } = req.query;
+
+    // Build query
+    const query = { partnerId };
+    if (type) {
+      query.type = type;
+    }
+
+    // Get notification history
+    const notifications = await Notification.find(query)
+      .sort({ createdAt: -1 })
+      .limit(limit * 1)
+      .skip((page - 1) * limit)
+      .lean();
+
+    const total = await Notification.countDocuments(query);
+
+    res.json({
+      success: true,
+      data: {
+        notifications,
+        pagination: {
+          page: parseInt(page),
+          limit: parseInt(limit),
+          total,
+          pages: Math.ceil(total / limit)
+        }
+      }
+    });
+
+  } catch (error) {
+    logger.error('Get notification history error:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Server error'
+    });
+  }
+});
+
+// @route   PUT /notifications/:id/read
+// @desc    Mark notification as read
+// @access  Private
+router.put('/:id/read', async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    const notification = await Notification.findByIdAndUpdate(
+      id,
+      { 
+        status: 'read',
+        readAt: new Date()
+      },
+      { new: true }
+    );
+
+    if (!notification) {
+      return res.status(404).json({
+        success: false,
+        message: 'Notification not found'
+      });
+    }
+
+    res.json({
+      success: true,
+      message: 'Notification marked as read',
+      data: notification
+    });
+
+  } catch (error) {
+    logger.error('Mark notification as read error:', error);
     res.status(500).json({
       success: false,
       message: 'Server error'

@@ -74,7 +74,7 @@ interface PipelineData {
 }
 
 const PARTNERS_STAGES = [
-  { id: 'prospect', name: 'prospect', color: 'bg-blue-100 text-blue-800' },
+  { id: 'prospect', name: 'prospect', color: 'bg-primary/10 text-primary' },
   { id: 'contacted', name: 'contacted', color: 'bg-warning/10 text-warning' },
   { id: 'qualified', name: 'qualified', color: 'bg-primary/10 text-primary' },
   { id: 'proposal', name: 'proposal', color: 'bg-info/10 text-info' },
@@ -83,7 +83,7 @@ const PARTNERS_STAGES = [
 ];
 
 const B2B_STAGES = [
-  { id: 'prospect', name: 'prospect', color: 'bg-blue-100 text-blue-800' },
+  { id: 'prospect', name: 'prospect', color: 'bg-primary/10 text-primary' },
   { id: 'discovery', name: 'discovery', color: 'bg-indigo-100 text-indigo-800' },
   { id: 'proposal', name: 'proposal', color: 'bg-purple-100 text-purple-800' },
   { id: 'negotiation', name: 'negotiation', color: 'bg-info/10 text-info' },

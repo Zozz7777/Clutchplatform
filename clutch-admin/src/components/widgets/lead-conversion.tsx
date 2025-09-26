@@ -137,10 +137,10 @@ export default function LeadConversion() {
             <div className="flex items-start gap-2 p-3 bg-blue-50 rounded-lg">
               <div className="w-2 h-2 bg-blue-500 rounded-full mt-2"></div>
               <div>
-                <p className="text-sm font-medium text-blue-900">
+                <p className="text-sm font-medium text-primary">
                   {t('highestDropOff')}
                 </p>
-                <p className="text-xs text-blue-700">
+                <p className="text-xs text-primary">
                   {t('highestDropOffDescription')}
                 </p>
               </div>

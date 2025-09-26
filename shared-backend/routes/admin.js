@@ -2062,6 +2062,456 @@ router.get('/partners/:id', authenticateToken, checkRole(['head_administrator'])
       contactPhone: '+1-555-0123',
       address: '123 Auto Parts St, Detroit, MI',
       commission: 15.0,
+      totalOrders: 450,
+      totalRevenue: 125000,
+      joinedAt: new Date().toISOString(),
+      businessDetails: {
+        licenseNumber: 'LIC-12345',
+        taxId: 'TAX-67890',
+        insuranceExpiry: '2024-12-31',
+        certifications: ['ISO 9001', 'Automotive Excellence']
+      },
+      performance: {
+        rating: 4.8,
+        responseTime: '2.5 hours',
+        completionRate: 96.5,
+        customerSatisfaction: 4.7
+      },
+      recentActivity: [
+        {
+          type: 'order_completed',
+          description: 'Completed order #12345',
+          timestamp: new Date(Date.now() - 3600000).toISOString()
+        },
+        {
+          type: 'payment_received',
+          description: 'Received payment of $1,250',
+          timestamp: new Date(Date.now() - 7200000).toISOString()
+        }
+      ]
+    };
+
+    res.json({
+      success: true,
+      data: partner,
+      message: 'Partner details retrieved successfully',
+      timestamp: new Date().toISOString()
+    });
+
+  } catch (error) {
+    logger.error('❌ Get partner details error:', error);
+    res.status(500).json({
+      success: false,
+      error: 'GET_PARTNER_DETAILS_FAILED',
+      message: 'Failed to get partner details',
+      timestamp: new Date().toISOString()
+    });
+  }
+});
+
+// POST /api/v1/admin/partners - Create new partner
+router.post('/partners', authenticateToken, checkRole(['head_administrator']), async (req, res) => {
+  try {
+    const partnerData = req.body;
+    
+    // Generate partner ID
+    const partnerId = `PART_${Date.now().toString(36)}_${Math.random().toString(36).substr(2, 5)}`.toUpperCase();
+    
+    const newPartner = {
+      id: partnerId,
+      ...partnerData,
+      status: 'pending',
+      totalOrders: 0,
+      totalRevenue: 0,
+      joinedAt: new Date().toISOString(),
+      createdBy: req.user.userId || req.user.id
+    };
+
+    res.status(201).json({
+      success: true,
+      data: newPartner,
+      message: 'Partner created successfully',
+      timestamp: new Date().toISOString()
+    });
+
+  } catch (error) {
+    logger.error('❌ Create partner error:', error);
+    res.status(500).json({
+      success: false,
+      error: 'CREATE_PARTNER_FAILED',
+      message: 'Failed to create partner',
+      timestamp: new Date().toISOString()
+    });
+  }
+});
+
+// PUT /api/v1/admin/partners/:id - Update partner
+router.put('/partners/:id', authenticateToken, checkRole(['head_administrator']), async (req, res) => {
+  try {
+    const { id } = req.params;
+    const updateData = req.body;
+    
+    const updatedPartner = {
+      id: id,
+      ...updateData,
+      updatedAt: new Date().toISOString(),
+      updatedBy: req.user.userId || req.user.id
+    };
+
+    res.json({
+      success: true,
+      data: updatedPartner,
+      message: 'Partner updated successfully',
+      timestamp: new Date().toISOString()
+    });
+
+  } catch (error) {
+    logger.error('❌ Update partner error:', error);
+    res.status(500).json({
+      success: false,
+      error: 'UPDATE_PARTNER_FAILED',
+      message: 'Failed to update partner',
+      timestamp: new Date().toISOString()
+    });
+  }
+});
+
+// DELETE /api/v1/admin/partners/:id - Delete partner
+router.delete('/partners/:id', authenticateToken, checkRole(['head_administrator']), async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    res.json({
+      success: true,
+      message: 'Partner deleted successfully',
+      timestamp: new Date().toISOString()
+    });
+
+  } catch (error) {
+    logger.error('❌ Delete partner error:', error);
+    res.status(500).json({
+      success: false,
+      error: 'DELETE_PARTNER_FAILED',
+      message: 'Failed to delete partner',
+      timestamp: new Date().toISOString()
+    });
+  }
+});
+
+// POST /api/v1/admin/partners/:id/approve - Approve partner
+router.post('/partners/:id/approve', authenticateToken, checkRole(['head_administrator']), async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { notes } = req.body;
+
+    res.json({
+      success: true,
+      message: 'Partner approved successfully',
+      data: {
+        partnerId: id,
+        status: 'active',
+        approvedAt: new Date().toISOString(),
+        approvedBy: req.user.userId || req.user.id,
+        notes: notes
+      },
+      timestamp: new Date().toISOString()
+    });
+
+  } catch (error) {
+    logger.error('❌ Approve partner error:', error);
+    res.status(500).json({
+      success: false,
+      error: 'APPROVE_PARTNER_FAILED',
+      message: 'Failed to approve partner',
+      timestamp: new Date().toISOString()
+    });
+  }
+});
+
+// POST /api/v1/admin/partners/:id/reject - Reject partner
+router.post('/partners/:id/reject', authenticateToken, checkRole(['head_administrator']), async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { reason, notes } = req.body;
+
+    res.json({
+      success: true,
+      message: 'Partner rejected successfully',
+      data: {
+        partnerId: id,
+        status: 'rejected',
+        rejectedAt: new Date().toISOString(),
+        rejectedBy: req.user.userId || req.user.id,
+        reason: reason,
+        notes: notes
+      },
+      timestamp: new Date().toISOString()
+    });
+
+  } catch (error) {
+    logger.error('❌ Reject partner error:', error);
+    res.status(500).json({
+      success: false,
+      error: 'REJECT_PARTNER_FAILED',
+      message: 'Failed to reject partner',
+      timestamp: new Date().toISOString()
+    });
+  }
+});
+
+// GET /api/v1/admin/partners/:id/contracts - Get partner contracts
+router.get('/partners/:id/contracts', authenticateToken, checkRole(['head_administrator']), async (req, res) => {
+  try {
+    const { id } = req.params;
+    
+    const contracts = [
+      {
+        id: 'CONTRACT-001',
+        type: 'service_agreement',
+        status: 'active',
+        startDate: '2024-01-01',
+        endDate: '2024-12-31',
+        value: 50000,
+        commission: 15.0,
+        createdAt: '2024-01-01T00:00:00.000Z',
+        signedAt: '2024-01-01T00:00:00.000Z'
+      }
+    ];
+
+    res.json({
+      success: true,
+      data: contracts,
+      message: 'Partner contracts retrieved successfully',
+      timestamp: new Date().toISOString()
+    });
+
+  } catch (error) {
+    logger.error('❌ Get partner contracts error:', error);
+    res.status(500).json({
+      success: false,
+      error: 'GET_PARTNER_CONTRACTS_FAILED',
+      message: 'Failed to get partner contracts',
+      timestamp: new Date().toISOString()
+    });
+  }
+});
+
+// POST /api/v1/admin/partners/:id/contracts - Create partner contract
+router.post('/partners/:id/contracts', authenticateToken, checkRole(['head_administrator']), async (req, res) => {
+  try {
+    const { id } = req.params;
+    const contractData = req.body;
+    
+    const newContract = {
+      id: `CONTRACT-${Date.now()}`,
+      partnerId: id,
+      ...contractData,
+      status: 'draft',
+      createdAt: new Date().toISOString(),
+      createdBy: req.user.userId || req.user.id
+    };
+
+    res.status(201).json({
+      success: true,
+      data: newContract,
+      message: 'Contract created successfully',
+      timestamp: new Date().toISOString()
+    });
+
+  } catch (error) {
+    logger.error('❌ Create partner contract error:', error);
+    res.status(500).json({
+      success: false,
+      error: 'CREATE_PARTNER_CONTRACT_FAILED',
+      message: 'Failed to create partner contract',
+      timestamp: new Date().toISOString()
+    });
+  }
+});
+
+// GET /api/v1/admin/partners/:id/performance - Get partner performance
+router.get('/partners/:id/performance', authenticateToken, checkRole(['head_administrator']), async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { period = '30d' } = req.query;
+    
+    const performance = {
+      partnerId: id,
+      period: period,
+      metrics: {
+        totalOrders: 450,
+        completedOrders: 435,
+        completionRate: 96.7,
+        averageResponseTime: '2.5 hours',
+        customerRating: 4.8,
+        totalRevenue: 125000,
+        commissionEarned: 18750,
+        onTimeDelivery: 94.2
+      },
+      trends: {
+        orders: [
+          { date: '2024-01-01', count: 15 },
+          { date: '2024-01-02', count: 18 },
+          { date: '2024-01-03', count: 12 }
+        ],
+        revenue: [
+          { date: '2024-01-01', amount: 2500 },
+          { date: '2024-01-02', amount: 3200 },
+          { date: '2024-01-03', amount: 1800 }
+        ]
+      },
+      generatedAt: new Date().toISOString()
+    };
+
+    res.json({
+      success: true,
+      data: performance,
+      message: 'Partner performance retrieved successfully',
+      timestamp: new Date().toISOString()
+    });
+
+  } catch (error) {
+    logger.error('❌ Get partner performance error:', error);
+    res.status(500).json({
+      success: false,
+      error: 'GET_PARTNER_PERFORMANCE_FAILED',
+      message: 'Failed to get partner performance',
+      timestamp: new Date().toISOString()
+    });
+  }
+});
+
+// GET /api/v1/admin/partners/requests - Get partner requests
+router.get('/partners/requests', authenticateToken, checkRole(['head_administrator']), async (req, res) => {
+  try {
+    const { status, page = 1, limit = 20 } = req.query;
+    
+    const requests = [
+      {
+        id: 'REQ-001',
+        businessName: 'Quick Fix Auto',
+        ownerName: 'Ahmed Hassan',
+        email: 'ahmed@quickfixauto.com',
+        phone: '+20-123-456-7890',
+        partnerType: 'repair_center',
+        status: 'pending',
+        submittedAt: new Date(Date.now() - 86400000).toISOString(),
+        priority: 'medium'
+      },
+      {
+        id: 'REQ-002',
+        businessName: 'Premium Parts Store',
+        ownerName: 'Fatma Ali',
+        email: 'fatma@premiumparts.com',
+        phone: '+20-987-654-3210',
+        partnerType: 'auto_parts_shop',
+        status: 'under_review',
+        submittedAt: new Date(Date.now() - 172800000).toISOString(),
+        priority: 'high'
+      }
+    ];
+
+    res.json({
+      success: true,
+      data: {
+        requests,
+        pagination: {
+          page: parseInt(page),
+          limit: parseInt(limit),
+          total: requests.length,
+          pages: Math.ceil(requests.length / limit)
+        }
+      },
+      message: 'Partner requests retrieved successfully',
+      timestamp: new Date().toISOString()
+    });
+
+  } catch (error) {
+    logger.error('❌ Get partner requests error:', error);
+    res.status(500).json({
+      success: false,
+      error: 'GET_PARTNER_REQUESTS_FAILED',
+      message: 'Failed to get partner requests',
+      timestamp: new Date().toISOString()
+    });
+  }
+});
+
+// POST /api/v1/admin/partners/requests/:id/approve - Approve partner request
+router.post('/partners/requests/:id/approve', authenticateToken, checkRole(['head_administrator']), async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { partnerId, notes } = req.body;
+
+    res.json({
+      success: true,
+      message: 'Partner request approved successfully',
+      data: {
+        requestId: id,
+        partnerId: partnerId,
+        status: 'approved',
+        approvedAt: new Date().toISOString(),
+        approvedBy: req.user.userId || req.user.id,
+        notes: notes
+      },
+      timestamp: new Date().toISOString()
+    });
+
+  } catch (error) {
+    logger.error('❌ Approve partner request error:', error);
+    res.status(500).json({
+      success: false,
+      error: 'APPROVE_PARTNER_REQUEST_FAILED',
+      message: 'Failed to approve partner request',
+      timestamp: new Date().toISOString()
+    });
+  }
+});
+
+// POST /api/v1/admin/partners/requests/:id/reject - Reject partner request
+router.post('/partners/requests/:id/reject', authenticateToken, checkRole(['head_administrator']), async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { reason, notes } = req.body;
+
+    res.json({
+      success: true,
+      message: 'Partner request rejected successfully',
+      data: {
+        requestId: id,
+        status: 'rejected',
+        rejectedAt: new Date().toISOString(),
+        rejectedBy: req.user.userId || req.user.id,
+        reason: reason,
+        notes: notes
+      },
+      timestamp: new Date().toISOString()
+    });
+
+  } catch (error) {
+    logger.error('❌ Reject partner request error:', error);
+    res.status(500).json({
+      success: false,
+      error: 'REJECT_PARTNER_REQUEST_FAILED',
+      message: 'Failed to reject partner request',
+      timestamp: new Date().toISOString()
+    });
+  }
+});
+
+router.get('/partners/:id', authenticateToken, checkRole(['head_administrator']), async (req, res) => {
+  try {
+    const { id } = req.params;
+    
+    const partner = {
+      id: id,
+      name: 'AutoParts Plus',
+      type: 'supplier',
+      status: 'active',
+      contactEmail: 'contact@autopartsplus.com',
+      contactPhone: '+1-555-0123',
+      address: '123 Auto Parts St, Detroit, MI',
+      commission: 15.0,
       contract: {
         startDate: new Date().toISOString(),
         endDate: new Date(Date.now() + 365 * 24 * 60 * 60 * 1000).toISOString(),

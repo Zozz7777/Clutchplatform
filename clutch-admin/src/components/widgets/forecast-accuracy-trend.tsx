@@ -379,7 +379,7 @@ export function ForecastAccuracyTrend({ className = '' }: ForecastAccuracyTrendP
         {/* Insights */}
         <div className="p-3 bg-primary/10 rounded-[0.625rem]-lg">
           <h5 className="text-sm font-medium text-primary mb-2">💡 Forecast Accuracy Insights</h5>
-          <ul className="text-xs text-blue-800 space-y-1">
+          <ul className="text-xs text-primary space-y-1">
             <li>• Average accuracy: {accuracyData.averageAccuracy.toFixed(1)}%</li>
             <li>• Best accuracy: {accuracyData.bestAccuracy.toFixed(1)}%</li>
             <li>• Worst accuracy: {accuracyData.worstAccuracy.toFixed(1)}%</li>

@@ -133,6 +133,13 @@ const supportRoutes = require('./routes/support');
 const analyticsExtendedRoutes = require('./routes/analytics-extended');
 const careersRoutes = require('./routes/careers');
 
+// Import enhanced routes
+const dashboardEnhancedRoutes = require('./routes/dashboard-enhanced');
+const businessIntelligenceEnhancedRoutes = require('./routes/business-intelligence-enhanced');
+const fleetEnhancedRoutes = require('./routes/fleet-enhanced');
+const financeEnhancedRoutes = require('./routes/finance-enhanced');
+const systemHealthEnhancedRoutes = require('./routes/system-health-enhanced');
+
 // Import partners routes
 const partnersRoutes = require('./routes/partners');
 const partnerNotificationsRoutes = require('./routes/partner-notifications');
@@ -315,13 +322,25 @@ app.use('/api/v1/ops', opsRoutes);
 app.use('/api/v1/careers', careersRoutes);
 app.use('/api/v1/testing', testingRoutes);
 
+// Enhanced routes
+app.use('/api/v1/dashboard', dashboardEnhancedRoutes);
+app.use('/api/v1/business-intelligence', businessIntelligenceEnhancedRoutes);
+app.use('/api/v1/fleet', fleetEnhancedRoutes);
+app.use('/api/v1/finance', financeEnhancedRoutes);
+app.use('/api/v1/system-health', systemHealthEnhancedRoutes);
+
 // Partners routes
 app.use('/api/v1/partners', partnersRoutes);
 app.use('/api/v1/partners/notifications', partnerNotificationsRoutes);
 app.use('/api/v1/partners', partnerAuthRoutes);
 app.use('/api/v1/partners', partnerInventoryRoutes);
 app.use('/api/v1/partners', partnerSyncRoutes);
+app.use('/api/v1/partners', require('./routes/partner-mobile'));
 app.use('/api/v1/auth', partnerLoginRoutes);
+
+// Community and Loyalty routes
+app.use('/api/v1/community', require('./routes/community'));
+app.use('/api/v1/loyalty', require('./routes/loyalty'));
 
 // Note: Authentication is handled by individual routes using authenticateToken middleware
 // No global authentication middleware needed as each route handles its own auth

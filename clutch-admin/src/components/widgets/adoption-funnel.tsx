@@ -276,8 +276,8 @@ export function AdoptionFunnel({ className = '' }: AdoptionFunnelProps) {
 
         {/* Insights */}
         <div className="p-3 bg-primary/10 rounded-[0.625rem]-lg">
-          <h5 className="text-sm font-medium text-blue-900 mb-2">💡 Funnel Insights</h5>
-          <ul className="text-xs text-blue-800 space-y-1">
+          <h5 className="text-sm font-medium text-primary mb-2">💡 Funnel Insights</h5>
+          <ul className="text-xs text-primary space-y-1">
             <li>• Overall conversion rate: {overallConversionRate.toFixed(1)}%</li>
             <li>• {funnelData.length > 0 ? funnelData[0].count.toLocaleString() : 0} total signups</li>
             <li>• {funnelData.length > 0 ? funnelData[funnelData.length - 1].count.toLocaleString() : 0} converted users</li>

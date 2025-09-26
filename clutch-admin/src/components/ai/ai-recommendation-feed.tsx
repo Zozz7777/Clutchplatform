@@ -122,7 +122,7 @@ export default function AIRecommendationFeed() {
       case 'completed':
         return <CheckCircle className="h-4 w-4 text-success" />;
       case 'in_progress':
-        return <Activity className="h-4 w-4 text-blue-600" />;
+        return <Activity className="h-4 w-4 text-primary" />;
       case 'dismissed':
         return <X className="h-4 w-4 text-muted-foreground" />;
       default:

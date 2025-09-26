@@ -25,6 +25,9 @@ interface PartnersApiService {
         @Query("status") status: String? = null
     ): Response<OrdersResponse>
     
+    @GET("partners/orders")
+    suspend fun getOrders(): Response<OrdersResponse>
+    
     @PATCH("partners/orders/{orderId}/status")
     suspend fun updateOrderStatus(
         @Header("Authorization") token: String,
@@ -32,11 +35,16 @@ interface PartnersApiService {
         @Body request: OrderStatusUpdateRequest
     ): Response<OrdersResponse>
     
+    suspend fun updateOrderStatus(orderId: String, status: String, notes: String? = null): Response<OrdersResponse>
+    
     // Payments endpoints
     @GET("partners/payments/weekly")
     suspend fun getWeeklyIncome(
         @Header("Authorization") token: String
     ): Response<WeeklyIncomeResponse>
+    
+    @GET("partners/payments/weekly")
+    suspend fun getWeeklyIncome(): Response<WeeklyIncomeResponse>
     
     @GET("partners/payments/history")
     suspend fun getPaymentHistory(
@@ -44,6 +52,9 @@ interface PartnersApiService {
         @Query("page") page: Int = 1,
         @Query("limit") limit: Int = 20
     ): Response<PaymentHistoryResponse>
+    
+    @GET("partners/payments/history")
+    suspend fun getPaymentHistory(): Response<PaymentHistoryResponse>
     
     // Settings endpoints
     @GET("partners/settings")
@@ -63,15 +74,24 @@ interface PartnersApiService {
         @Header("Authorization") token: String
     ): Response<DashboardResponse>
     
+    @GET("partners/dashboard/revenue")
+    suspend fun getRevenueAnalytics(@Query("period") period: String = "30d"): Response<DashboardResponse>
+    
     @GET("partners/dashboard/inventory")
     suspend fun getInventoryData(
         @Header("Authorization") token: String
     ): Response<DashboardResponse>
     
+    @GET("partners/dashboard/inventory")
+    suspend fun getInventoryAnalytics(): Response<DashboardResponse>
+    
     @GET("partners/dashboard/orders")
     suspend fun getOrderStats(
         @Header("Authorization") token: String
     ): Response<DashboardResponse>
+    
+    @GET("partners/dashboard/orders")
+    suspend fun getOrderStats(): Response<DashboardResponse>
     
     // Notifications endpoints
     @POST("notifications/push")

@@ -177,7 +177,7 @@ export function DowntimeImpact({ className = '' }: DowntimeImpactProps) {
       case 'Maintenance': return 'bg-warning/10 text-warning';
       case 'Breakdown': return 'bg-destructive/10 text-destructive';
       case 'Driver Issues': return 'bg-warning/10 text-warning';
-      case 'Weather': return 'bg-primary/10 text-blue-800';
+      case 'Weather': return 'bg-primary/10 text-primary';
       default: return 'bg-muted text-gray-800';
     }
   };
@@ -366,8 +366,8 @@ Export Report
 
         {/* Insights */}
         <div className="p-3 bg-primary/10 rounded-lg">
-          <h5 className="text-sm font-medium text-blue-900 mb-2">💡 Downtime Insights</h5>
-          <ul className="text-xs text-blue-800 space-y-1">
+          <h5 className="text-sm font-medium text-primary mb-2">💡 Downtime Insights</h5>
+          <ul className="text-xs text-primary space-y-1">
             <li>• Total Downtime Hours: {downtimeMetrics.totalDowntimeHours} hours</li>
             <li>• Revenue-Impacting Downtime: {downtimeMetrics.lostRevenueHours} hours</li>
             <li>• Total Revenue Impact: ${(downtimeMetrics.revenueImpact || 0).toLocaleString()}</li>

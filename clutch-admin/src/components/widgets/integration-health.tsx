@@ -297,8 +297,8 @@ export function IntegrationHealth({ className = '' }: IntegrationHealthProps) {
 
         {/* Insights */}
         <div className="p-3 bg-primary/10 rounded-[0.625rem]-lg">
-          <h5 className="text-sm font-medium text-blue-900 mb-2">💡 Integration Health Insights</h5>
-          <ul className="text-xs text-blue-800 space-y-1">
+          <h5 className="text-sm font-medium text-primary mb-2">💡 Integration Health Insights</h5>
+          <ul className="text-xs text-primary space-y-1">
             <li>• Total integrations: {integrationData.totalIntegrations}</li>
             <li>• Healthy integrations: {integrationData.healthyIntegrations}</li>
             <li>• Average uptime: {integrationData.averageUptime.toFixed(1)}%</li>

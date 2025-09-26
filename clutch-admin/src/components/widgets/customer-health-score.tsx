@@ -396,8 +396,8 @@ export function CustomerHealthScore({ className = '' }: CustomerHealthScoreProps
 
         {/* Insights */}
         <div className="p-3 bg-primary/10 rounded-[0.625rem]-lg">
-          <h5 className="text-sm font-medium text-blue-900 mb-2">💡 {t('customerHealth.healthScoreInsights')}</h5>
-          <ul className="text-xs text-blue-800 space-y-1">
+          <h5 className="text-sm font-medium text-primary mb-2">💡 {t('customerHealth.healthScoreInsights')}</h5>
+          <ul className="text-xs text-primary space-y-1">
             <li>• {t('customerHealth.averageHealthScore')}: {healthData.averageScore.toFixed(0)}</li>
             <li>• {healthData.distribution.low || 0} {t('customerHealth.customersAtLowRisk')}</li>
             <li>• {healthData.distribution.medium || 0} {t('customerHealth.customersAtMediumRisk')}</li>

@@ -5,6 +5,8 @@ const { body, validationResult } = require('express-validator');
 const PartnerUser = require('../models/PartnerUser');
 const PartnerOrder = require('../models/PartnerOrder');
 const PartnerPayment = require('../models/PartnerPayment');
+const PartnerProduct = require('../models/PartnerProduct');
+const PartnerDevice = require('../models/PartnerDevice');
 const { authenticateToken: auth } = require('../middleware/auth');
 const logger = require('../config/logger');
 
@@ -61,6 +63,13 @@ const sendNotification = async (partner, type, data) => {
     logger.error('Error sending notification:', error);
     return false;
   }
+};
+
+// Helper function to generate partner ID
+const generatePartnerId = () => {
+  const timestamp = Date.now().toString(36);
+  const random = Math.random().toString(36).substr(2, 5);
+  return `PART_${timestamp}_${random}`.toUpperCase();
 };
 
 // @route   POST /partners/auth/signin
@@ -908,6 +917,798 @@ router.get('/dashboard/orders', auth, async (req, res) => {
 
   } catch (error) {
     logger.error('Get order analytics error:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Server error'
+    });
+  }
+});
+
+// ============================================================================
+// WINDOWS POS SYSTEM ENDPOINTS
+// ============================================================================
+
+// @route   POST /partners/validate-id
+// @desc    Validate partner ID for Windows POS system
+// @access  Public
+router.post('/validate-id', [
+  body('partnerId').notEmpty().withMessage('Partner ID is required')
+], async (req, res) => {
+  try {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(400).json({
+        success: false,
+        message: 'Validation errors',
+        errors: errors.array()
+      });
+    }
+
+    const { partnerId } = req.body;
+
+    // Find partner by ID
+    const partner = await PartnerUser.findOne({ partnerId });
+    if (!partner) {
+      return res.status(404).json({
+        success: false,
+        message: 'Partner ID not found'
+      });
+    }
+
+    // Check if partner is active
+    if (partner.status !== 'active') {
+      return res.status(403).json({
+        success: false,
+        message: 'Partner account is not active',
+        status: partner.status
+      });
+    }
+
+    res.json({
+      success: true,
+      data: {
+        partnerId: partner.partnerId,
+        businessName: partner.businessName,
+        partnerType: partner.partnerType,
+        status: partner.status,
+        isVerified: partner.isVerified,
+        businessAddress: partner.businessAddress,
+        workingHours: partner.workingHours
+      }
+    });
+
+  } catch (error) {
+    logger.error('Validate partner ID error:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Server error'
+    });
+  }
+});
+
+// @route   POST /partners/:partnerId/register-device
+// @desc    Register device for partner sync
+// @access  Private
+router.post('/:partnerId/register-device', auth, [
+  body('deviceId').notEmpty().withMessage('Device ID is required'),
+  body('deviceName').notEmpty().withMessage('Device name is required'),
+  body('deviceType').isIn(['windows_desktop', 'android_tablet', 'ios_tablet', 'pos_terminal', 'kiosk']).withMessage('Valid device type is required'),
+  body('platform').isIn(['windows', 'android', 'ios', 'linux']).withMessage('Valid platform is required'),
+  body('version').notEmpty().withMessage('Version is required')
+], async (req, res) => {
+  try {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(400).json({
+        success: false,
+        message: 'Validation errors',
+        errors: errors.array()
+      });
+    }
+
+    const { partnerId } = req.params;
+    const { deviceId, deviceName, deviceType, platform, version } = req.body;
+
+    // Verify partner exists and user has access
+    const partner = await PartnerUser.findOne({ partnerId });
+    if (!partner) {
+      return res.status(404).json({
+        success: false,
+        message: 'Partner not found'
+      });
+    }
+
+    // Check if device already registered
+    const existingDevice = await PartnerDevice.findOne({ 
+      partnerId, 
+      deviceId 
+    });
+
+    if (existingDevice) {
+      // Update existing device
+      existingDevice.deviceName = deviceName;
+      existingDevice.deviceType = deviceType;
+      existingDevice.platform = platform;
+      existingDevice.version = version;
+      existingDevice.lastSeen = new Date();
+      existingDevice.isActive = true;
+      await existingDevice.save();
+
+      res.json({
+        success: true,
+        message: 'Device updated successfully',
+        data: {
+          deviceToken: existingDevice.deviceToken,
+          deviceId: existingDevice.deviceId
+        }
+      });
+    } else {
+      // Register new device
+      const deviceToken = jwt.sign(
+        { partnerId, deviceId, type: 'device' },
+        process.env.JWT_SECRET || 'clutch_secret_key',
+        { expiresIn: '365d' }
+      );
+
+      const device = new PartnerDevice({
+        partnerId,
+        deviceId,
+        deviceName,
+        deviceType,
+        platform,
+        version,
+        deviceToken,
+        isActive: true,
+        registeredAt: new Date(),
+        lastSeen: new Date()
+      });
+
+      await device.save();
+
+      res.json({
+        success: true,
+        message: 'Device registered successfully',
+        data: {
+          deviceToken,
+          deviceId: device.deviceId
+        }
+      });
+    }
+
+  } catch (error) {
+    logger.error('Register device error:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Server error'
+    });
+  }
+});
+
+// @route   GET /partners/:id/orders
+// @desc    Get partner orders for Windows POS
+// @access  Private
+router.get('/:id/orders', auth, async (req, res) => {
+  try {
+    const { id: partnerId } = req.params;
+    const { status, page = 1, limit = 20 } = req.query;
+
+    // Build query
+    const query = { partnerId };
+    if (status) {
+      query.status = status;
+    }
+
+    // Get orders with pagination
+    const orders = await PartnerOrder.find(query)
+      .sort({ createdAt: -1 })
+      .limit(limit * 1)
+      .skip((page - 1) * limit)
+      .populate('customerId', 'name phone email')
+      .lean();
+
+    const total = await PartnerOrder.countDocuments(query);
+
+    res.json({
+      success: true,
+      data: {
+        orders,
+        pagination: {
+          page: parseInt(page),
+          limit: parseInt(limit),
+          total,
+          pages: Math.ceil(total / limit)
+        }
+      }
+    });
+
+  } catch (error) {
+    logger.error('Get partner orders error:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Server error'
+    });
+  }
+});
+
+// @route   POST /orders/:orderId/acknowledge
+// @desc    Acknowledge/accept order
+// @access  Private
+router.post('/orders/:orderId/acknowledge', auth, async (req, res) => {
+  try {
+    const { orderId } = req.params;
+    const { estimatedTime, notes } = req.body;
+
+    const order = await PartnerOrder.findById(orderId);
+    if (!order) {
+      return res.status(404).json({
+        success: false,
+        message: 'Order not found'
+      });
+    }
+
+    if (order.status !== 'pending') {
+      return res.status(400).json({
+        success: false,
+        message: 'Order cannot be acknowledged in current status'
+      });
+    }
+
+    // Update order status
+    order.status = 'acknowledged';
+    order.acknowledgedAt = new Date();
+    order.estimatedTime = estimatedTime;
+    order.notes = notes || order.notes;
+
+    await order.save();
+
+    // Send notification to customer
+    await sendNotification(order, 'order_acknowledged', {
+      orderId: order.orderId,
+      estimatedTime,
+      partnerName: order.partnerName
+    });
+
+    res.json({
+      success: true,
+      message: 'Order acknowledged successfully',
+      data: order
+    });
+
+  } catch (error) {
+    logger.error('Acknowledge order error:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Server error'
+    });
+  }
+});
+
+// @route   POST /orders/:orderId/status
+// @desc    Update order status
+// @access  Private
+router.post('/orders/:orderId/status', auth, [
+  body('status').isIn(['acknowledged', 'preparing', 'ready', 'picked_up', 'delivered', 'cancelled']).withMessage('Valid status is required')
+], async (req, res) => {
+  try {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(400).json({
+        success: false,
+        message: 'Validation errors',
+        errors: errors.array()
+      });
+    }
+
+    const { orderId } = req.params;
+    const { status, notes } = req.body;
+
+    const order = await PartnerOrder.findById(orderId);
+    if (!order) {
+      return res.status(404).json({
+        success: false,
+        message: 'Order not found'
+      });
+    }
+
+    // Update order status
+    order.status = status;
+    order.notes = notes || order.notes;
+    
+    // Set timestamps based on status
+    switch (status) {
+      case 'preparing':
+        order.preparingAt = new Date();
+        break;
+      case 'ready':
+        order.readyAt = new Date();
+        break;
+      case 'picked_up':
+        order.pickedUpAt = new Date();
+        break;
+      case 'delivered':
+        order.deliveredAt = new Date();
+        break;
+    }
+
+    await order.save();
+
+    // Send notification to customer
+    await sendNotification(order, 'order_status_update', {
+      orderId: order.orderId,
+      status,
+      partnerName: order.partnerName
+    });
+
+    res.json({
+      success: true,
+      message: 'Order status updated successfully',
+      data: order
+    });
+
+  } catch (error) {
+    logger.error('Update order status error:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Server error'
+    });
+  }
+});
+
+// @route   POST /payments
+// @desc    Record payment for order
+// @access  Private
+router.post('/payments', auth, [
+  body('orderId').notEmpty().withMessage('Order ID is required'),
+  body('amount').isNumeric().withMessage('Amount is required'),
+  body('paymentMethod').isIn(['cash', 'card', 'bank_transfer', 'digital_wallet']).withMessage('Valid payment method is required'),
+  body('paymentStatus').isIn(['pending', 'paid', 'failed', 'refunded']).withMessage('Valid payment status is required')
+], async (req, res) => {
+  try {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(400).json({
+        success: false,
+        message: 'Validation errors',
+        errors: errors.array()
+      });
+    }
+
+    const { orderId, amount, paymentMethod, paymentStatus, transactionId, notes } = req.body;
+
+    // Find order
+    const order = await PartnerOrder.findById(orderId);
+    if (!order) {
+      return res.status(404).json({
+        success: false,
+        message: 'Order not found'
+      });
+    }
+
+    // Create payment record
+    const payment = new PartnerPayment({
+      orderId: order._id,
+      partnerId: order.partnerId,
+      customerId: order.customerId,
+      amount: parseFloat(amount),
+      paymentMethod,
+      paymentStatus,
+      transactionId,
+      notes,
+      processedAt: new Date()
+    });
+
+    await payment.save();
+
+    // Update order payment status
+    order.paymentStatus = paymentStatus;
+    if (paymentStatus === 'paid') {
+      order.status = 'paid';
+      order.paidAt = new Date();
+    } else if (paymentStatus === 'failed') {
+      order.status = 'payment_failed';
+    }
+
+    await order.save();
+
+    // Send notification
+    await sendNotification(order, 'payment_update', {
+      orderId: order.orderId,
+      paymentStatus,
+      amount,
+      paymentMethod
+    });
+
+    res.json({
+      success: true,
+      message: 'Payment recorded successfully',
+      data: payment
+    });
+
+  } catch (error) {
+    logger.error('Record payment error:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Server error'
+    });
+  }
+});
+
+// @route   GET /partners/:id/catalog
+// @desc    Get partner catalog/products
+// @access  Private
+router.get('/:id/catalog', auth, async (req, res) => {
+  try {
+    const { id: partnerId } = req.params;
+    const { category, page = 1, limit = 20 } = req.query;
+
+    // Build query
+    const query = { partnerId, isActive: true };
+    if (category) {
+      query.category = category;
+    }
+
+    // Get products with pagination
+    const products = await PartnerProduct.find(query)
+      .sort({ createdAt: -1 })
+      .limit(limit * 1)
+      .skip((page - 1) * limit)
+      .lean();
+
+    const total = await PartnerProduct.countDocuments(query);
+
+    res.json({
+      success: true,
+      data: {
+        products,
+        pagination: {
+          page: parseInt(page),
+          limit: parseInt(limit),
+          total,
+          pages: Math.ceil(total / limit)
+        }
+      }
+    });
+
+  } catch (error) {
+    logger.error('Get partner catalog error:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Server error'
+    });
+  }
+});
+
+// @route   POST /partners/:id/catalog
+// @desc    Publish/update product in catalog
+// @access  Private
+router.post('/:id/catalog', auth, [
+  body('name').notEmpty().withMessage('Product name is required'),
+  body('price').isNumeric().withMessage('Price is required'),
+  body('category').notEmpty().withMessage('Category is required'),
+  body('sku').notEmpty().withMessage('SKU is required')
+], async (req, res) => {
+  try {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(400).json({
+        success: false,
+        message: 'Validation errors',
+        errors: errors.array()
+      });
+    }
+
+    const { id: partnerId } = req.params;
+    const productData = {
+      ...req.body,
+      partnerId,
+      isActive: true,
+      publishedAt: new Date()
+    };
+
+    // Check if product with SKU already exists
+    const existingProduct = await PartnerProduct.findOne({ 
+      partnerId, 
+      sku: productData.sku 
+    });
+
+    if (existingProduct) {
+      // Update existing product
+      Object.assign(existingProduct, productData);
+      await existingProduct.save();
+      
+      res.json({
+        success: true,
+        message: 'Product updated successfully',
+        data: existingProduct
+      });
+    } else {
+      // Create new product
+      const product = new PartnerProduct(productData);
+      await product.save();
+      
+      res.json({
+        success: true,
+        message: 'Product published successfully',
+        data: product
+      });
+    }
+
+  } catch (error) {
+    logger.error('Publish product error:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Server error'
+    });
+  }
+});
+
+// @route   POST /partners/:id/inventory/import
+// @desc    Bulk import inventory
+// @access  Private
+router.post('/:id/inventory/import', auth, [
+  body('products').isArray().withMessage('Products array is required')
+], async (req, res) => {
+  try {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(400).json({
+        success: false,
+        message: 'Validation errors',
+        errors: errors.array()
+      });
+    }
+
+    const { id: partnerId } = req.params;
+    const { products } = req.body;
+
+    const results = {
+      imported: 0,
+      updated: 0,
+      errors: []
+    };
+
+    for (const productData of products) {
+      try {
+        const existingProduct = await PartnerProduct.findOne({ 
+          partnerId, 
+          sku: productData.sku 
+        });
+
+        if (existingProduct) {
+          Object.assign(existingProduct, {
+            ...productData,
+            partnerId,
+            updatedAt: new Date()
+          });
+          await existingProduct.save();
+          results.updated++;
+        } else {
+          const product = new PartnerProduct({
+            ...productData,
+            partnerId,
+            isActive: true,
+            publishedAt: new Date()
+          });
+          await product.save();
+          results.imported++;
+        }
+      } catch (error) {
+        results.errors.push({
+          sku: productData.sku,
+          error: error.message
+        });
+      }
+    }
+
+    res.json({
+      success: true,
+      message: 'Inventory import completed',
+      data: results
+    });
+
+  } catch (error) {
+    logger.error('Import inventory error:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Server error'
+    });
+  }
+});
+
+// @route   GET /partners/:id/sync
+// @desc    Get sync data for partner
+// @access  Private
+router.get('/:id/sync', auth, async (req, res) => {
+  try {
+    const { id: partnerId } = req.params;
+    const { lastSync } = req.query;
+
+    const lastSyncDate = lastSync ? new Date(lastSync) : new Date(Date.now() - 24 * 60 * 60 * 1000);
+
+    // Get updated data since last sync
+    const orders = await PartnerOrder.find({
+      partnerId,
+      updatedAt: { $gte: lastSyncDate }
+    }).lean();
+
+    const products = await PartnerProduct.find({
+      partnerId,
+      updatedAt: { $gte: lastSyncDate }
+    }).lean();
+
+    const payments = await PartnerPayment.find({
+      partnerId,
+      updatedAt: { $gte: lastSyncDate }
+    }).lean();
+
+    res.json({
+      success: true,
+      data: {
+        orders,
+        products,
+        payments,
+        syncTimestamp: new Date().toISOString()
+      }
+    });
+
+  } catch (error) {
+    logger.error('Get sync data error:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Server error'
+    });
+  }
+});
+
+// @route   POST /partners/:id/sync
+// @desc    Push local changes to server
+// @access  Private
+router.post('/:id/sync', auth, [
+  body('changes').isArray().withMessage('Changes array is required')
+], async (req, res) => {
+  try {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(400).json({
+        success: false,
+        message: 'Validation errors',
+        errors: errors.array()
+      });
+    }
+
+    const { id: partnerId } = req.params;
+    const { changes } = req.body;
+
+    const results = {
+      processed: 0,
+      conflicts: 0,
+      errors: []
+    };
+
+    for (const change of changes) {
+      try {
+        const { type, data, localTimestamp } = change;
+
+        switch (type) {
+          case 'order_update':
+            const order = await PartnerOrder.findById(data._id);
+            if (order && new Date(order.updatedAt) > new Date(localTimestamp)) {
+              results.conflicts++;
+              results.errors.push({
+                type: 'conflict',
+                id: data._id,
+                message: 'Server version is newer'
+              });
+            } else {
+              await PartnerOrder.findByIdAndUpdate(data._id, data);
+              results.processed++;
+            }
+            break;
+
+          case 'product_update':
+            const product = await PartnerProduct.findById(data._id);
+            if (product && new Date(product.updatedAt) > new Date(localTimestamp)) {
+              results.conflicts++;
+              results.errors.push({
+                type: 'conflict',
+                id: data._id,
+                message: 'Server version is newer'
+              });
+            } else {
+              await PartnerProduct.findByIdAndUpdate(data._id, data);
+              results.processed++;
+            }
+            break;
+
+          default:
+            results.errors.push({
+              type: 'unknown',
+              message: `Unknown change type: ${type}`
+            });
+        }
+      } catch (error) {
+        results.errors.push({
+          type: 'error',
+          message: error.message
+        });
+      }
+    }
+
+    res.json({
+      success: true,
+      message: 'Sync completed',
+      data: results
+    });
+
+  } catch (error) {
+    logger.error('Sync changes error:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Server error'
+    });
+  }
+});
+
+// @route   GET /partners/:id/reports/daily
+// @desc    Get daily Z-report
+// @access  Private
+router.get('/:id/reports/daily', auth, async (req, res) => {
+  try {
+    const { id: partnerId } = req.params;
+    const { date } = req.query;
+
+    const reportDate = date ? new Date(date) : new Date();
+    const startOfDay = new Date(reportDate.setHours(0, 0, 0, 0));
+    const endOfDay = new Date(reportDate.setHours(23, 59, 59, 999));
+
+    // Get daily orders
+    const orders = await PartnerOrder.find({
+      partnerId,
+      createdAt: { $gte: startOfDay, $lte: endOfDay }
+    }).lean();
+
+    // Get daily payments
+    const payments = await PartnerPayment.find({
+      partnerId,
+      processedAt: { $gte: startOfDay, $lte: endOfDay }
+    }).lean();
+
+    // Calculate totals
+    const totalOrders = orders.length;
+    const totalRevenue = payments
+      .filter(p => p.paymentStatus === 'paid')
+      .reduce((sum, p) => sum + p.amount, 0);
+    
+    const paymentMethods = payments.reduce((acc, payment) => {
+      if (payment.paymentStatus === 'paid') {
+        acc[payment.paymentMethod] = (acc[payment.paymentMethod] || 0) + payment.amount;
+      }
+      return acc;
+    }, {});
+
+    const zReport = {
+      date: reportDate.toISOString().split('T')[0],
+      totalOrders,
+      totalRevenue,
+      paymentMethods,
+      orders: orders.map(order => ({
+        orderId: order.orderId,
+        customerName: order.customerName,
+        total: order.total,
+        status: order.status,
+        paymentStatus: order.paymentStatus,
+        createdAt: order.createdAt
+      })),
+      generatedAt: new Date().toISOString()
+    };
+
+    res.json({
+      success: true,
+      data: zReport
+    });
+
+  } catch (error) {
+    logger.error('Get daily report error:', error);
     res.status(500).json({
       success: false,
       message: 'Server error'

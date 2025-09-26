@@ -204,7 +204,8 @@ export class ProductionApiService {
 
   async getMaintenanceForecast(): Promise<Record<string, unknown>[]> {
     try {
-      return await realApi.getMaintenanceForecast();
+      const result = await realApi.getMaintenanceForecast();
+      return Array.isArray(result) ? result : [result];
     } catch (error) {
       logger.error("Failed to fetch maintenance forecast:", error);
       throw new Error("Failed to load maintenance forecast");
@@ -260,7 +261,8 @@ export class ProductionApiService {
   // Settings
   async getSettings(category: string): Promise<Record<string, unknown>[]> {
     try {
-      return await realApi.getSettings(category);
+      const result = await realApi.getSettings(category);
+      return Array.isArray(result) ? result : [result];
     } catch (error) {
       logger.error("Failed to fetch settings:", error);
       throw new Error("Failed to load settings");
@@ -316,7 +318,8 @@ export class ProductionApiService {
 
   async testIntegration(integrationId: string): Promise<boolean> {
     try {
-      return await realApi.testIntegration(integrationId);
+      const result = await realApi.testIntegration(integrationId);
+      return Boolean(result);
     } catch (error) {
       logger.error("Failed to test integration:", error);
       throw new Error("Failed to test integration");
@@ -410,7 +413,8 @@ export class ProductionApiService {
   // SEO
   async getSEOData(): Promise<Record<string, unknown>[]> {
     try {
-      return await realApi.getSEOData();
+      const result = await realApi.getSEOData();
+      return Array.isArray(result) ? result : [result];
     } catch (error) {
       logger.error("Failed to fetch SEO data:", error);
       throw new Error("Failed to load SEO data");
@@ -466,7 +470,8 @@ export class ProductionApiService {
 
   async markNotificationAsRead(notificationId: string): Promise<boolean> {
     try {
-      return await realApi.markNotificationAsRead(notificationId);
+      const result = await realApi.markNotificationAsRead(notificationId);
+      return Boolean(result);
     } catch (error) {
       logger.error("Failed to mark notification as read:", error);
       throw new Error("Failed to mark notification as read");
@@ -1076,20 +1081,11 @@ export class ProductionApiService {
     }
   }
 
-  async getSystemHealth(): Promise<Record<string, unknown>[]> {
-    try {
-      const data = await realApi.getSystemHealth();
-      return (data || []) as unknown as Record<string, unknown>[];
-    } catch (error) {
-      logger.error("Failed to fetch system health:", error);
-      throw new Error("Failed to load system health");
-    }
-  }
 
   async getPerformanceMetrics(): Promise<Record<string, unknown> | null> {
     try {
       const data = await realApi.getPerformanceMetrics();
-      return data || null;
+      return Array.isArray(data) ? data[0] || null : data || null;
     } catch (error) {
       logger.error("Failed to fetch performance metrics:", error);
       throw new Error("Failed to load performance metrics");

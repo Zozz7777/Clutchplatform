@@ -414,8 +414,8 @@ export function CSATNPSTrends({ className = '' }: CSATNPSTrendsProps) {
 
         {/* Insights */}
         <div className="p-3 bg-primary/10 rounded-[0.625rem]-lg">
-          <h5 className="text-sm font-medium text-blue-900 mb-2">💡 Satisfaction Insights</h5>
-          <ul className="text-xs text-blue-800 space-y-1">
+          <h5 className="text-sm font-medium text-primary mb-2">💡 Satisfaction Insights</h5>
+          <ul className="text-xs text-primary space-y-1">
             <li>• Current CSAT: {satisfactionData.currentCSAT.toFixed(1)}/5.0</li>
             <li>• Current NPS: {satisfactionData.currentNPS}</li>
             <li>• Average CSAT: {satisfactionData.averageCSAT.toFixed(1)}/5.0</li>

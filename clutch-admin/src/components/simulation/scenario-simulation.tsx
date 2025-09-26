@@ -432,7 +432,7 @@ export default function ScenarioSimulation({ className }: ScenarioSimulationProp
             <div className="flex items-center gap-2">
               <Badge className={
                 currentScenario.status === 'completed' ? 'bg-success/10 text-success' :
-                currentScenario.status === 'running' ? 'bg-primary/10 text-blue-800' :
+                currentScenario.status === 'running' ? 'bg-primary/10 text-primary' :
                 currentScenario.status === 'saved' ? 'bg-primary/10 text-purple-800' :
                 'bg-muted text-gray-800'
               }>

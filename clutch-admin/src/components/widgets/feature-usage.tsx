@@ -362,8 +362,8 @@ export function FeatureUsage({ className = '' }: FeatureUsageProps) {
 
         {/* Insights */}
         <div className="p-3 bg-primary/10 rounded-[0.625rem]-lg">
-          <h5 className="text-sm font-medium text-blue-900 mb-2">💡 Feature Usage Insights</h5>
-          <ul className="text-xs text-blue-800 space-y-1">
+          <h5 className="text-sm font-medium text-primary mb-2">💡 Feature Usage Insights</h5>
+          <ul className="text-xs text-primary space-y-1">
             <li>• {stickyFeatures.length} features with high usage (80%+)</li>
             <li>• {ignoredFeatures.length} features need attention (&lt;40% usage)</li>
             <li>• Top feature: {topFeatures[0]?.feature} ({topFeatures[0]?.usage}% usage)</li>

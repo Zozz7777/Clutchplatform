@@ -1,6 +1,7 @@
 import { productionApi } from './production-api';
 import { realApi } from './real-api';
 import { errorHandler } from './error-handler';
+import { RealApiService } from './real-api';
 
 export interface BusinessMetrics {
   revenue: {
@@ -107,7 +108,8 @@ class BusinessIntelligenceService {
   public async getUnifiedOpsPulse(): Promise<OperationalPulse> {
     try {
       // Try to get real operational pulse data from API first
-      const realPulse = await realApi.getOperationalPulse().catch(() => null);
+      const realApiService = new RealApiService();
+      const realPulse = await realApiService.getOperationalPulse().catch(() => null);
       if (realPulse && typeof realPulse === 'object') {
         return realPulse as OperationalPulse;
       }
@@ -181,7 +183,8 @@ class BusinessIntelligenceService {
   public async getChurnRisk(): Promise<ChurnRisk[]> {
     try {
       // Try to get real churn risk data from API first
-      const realChurnRisk = await realApi.getChurnRisk().catch(() => null);
+      const realApiService = new RealApiService();
+      const realChurnRisk = await realApiService.getChurnRisk().catch(() => null);
       if (realChurnRisk && Array.isArray(realChurnRisk)) {
         return realChurnRisk as ChurnRisk[];
       }
@@ -254,7 +257,8 @@ class BusinessIntelligenceService {
   }> {
     try {
       // Try to get real revenue vs cost margin data from API first
-      const realMarginData = await realApi.getRevenueVsCostMargin().catch(() => null);
+      const realApiService = new RealApiService();
+      const realMarginData = await realApiService.getRevenueCostMargin().catch(() => null);
       if (realMarginData && typeof realMarginData === 'object') {
         return realMarginData as {
           revenue: number;
@@ -531,7 +535,12 @@ class BusinessIntelligenceService {
       };
       
       if (engagementData && (engagementData as any).segments) {
-        return engagementData;
+        return engagementData as unknown as {
+          segments: Array<{
+            segment: string;
+            features: Record<string, number>;
+          }>;
+        };
       }
       
       // Fallback to empty data if API fails
