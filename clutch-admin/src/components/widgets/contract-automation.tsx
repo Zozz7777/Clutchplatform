@@ -204,7 +204,7 @@ export default function ContractAutomation() {
   const getStatusColor = (status: string) => {
     switch (status) {
       case 'draft': return 'bg-muted text-foreground';
-      case 'generated': return 'bg-blue-100 text-primary';
+      case 'generated': return 'bg-primary/10 text-primary';
       case 'sent': return 'bg-warning/10 text-warning';
       case 'signed': return 'bg-primary/10 text-primary';
       case 'pending_legal': return 'bg-info/10 text-info';
@@ -440,8 +440,8 @@ export default function ContractAutomation() {
                 </CardHeader>
                 <CardContent>
                   <div className="space-y-4">
-                    <div className="flex items-center gap-3 p-3 bg-blue-50 border border-blue-200 rounded-lg">
-                      <div className="h-8 w-8 rounded-full bg-blue-100 flex items-center justify-center">
+                    <div className="flex items-center gap-3 p-3 bg-primary/10 border border-primary/20 rounded-lg">
+                      <div className="h-8 w-8 rounded-full bg-primary/10 flex items-center justify-center">
                         <span className="text-sm font-bold text-primary">1</span>
                       </div>
                       <div>
@@ -460,8 +460,8 @@ export default function ContractAutomation() {
                       </div>
                     </div>
                     
-                    <div className="flex items-center gap-3 p-3 bg-purple-50 border border-purple-200 rounded-lg">
-                      <div className="h-8 w-8 rounded-full bg-purple-100 flex items-center justify-center">
+                    <div className="flex items-center gap-3 p-3 bg-primary/10 border border-primary/20 rounded-lg">
+                      <div className="h-8 w-8 rounded-full bg-primary/10 flex items-center justify-center">
                         <span className="text-sm font-bold text-primary">3</span>
                       </div>
                       <div>
@@ -492,8 +492,8 @@ export default function ContractAutomation() {
                 </CardHeader>
                 <CardContent>
                   <div className="space-y-4">
-                    <div className="flex items-center gap-3 p-3 bg-blue-50 border border-blue-200 rounded-lg">
-                      <div className="h-8 w-8 rounded-full bg-blue-100 flex items-center justify-center">
+                    <div className="flex items-center gap-3 p-3 bg-primary/10 border border-primary/20 rounded-lg">
+                      <div className="h-8 w-8 rounded-full bg-primary/10 flex items-center justify-center">
                         <span className="text-sm font-bold text-primary">1</span>
                       </div>
                       <div>
@@ -512,8 +512,8 @@ export default function ContractAutomation() {
                       </div>
                     </div>
                     
-                    <div className="flex items-center gap-3 p-3 bg-purple-50 border border-purple-200 rounded-lg">
-                      <div className="h-8 w-8 rounded-full bg-purple-100 flex items-center justify-center">
+                    <div className="flex items-center gap-3 p-3 bg-primary/10 border border-primary/20 rounded-lg">
+                      <div className="h-8 w-8 rounded-full bg-primary/10 flex items-center justify-center">
                         <span className="text-sm font-bold text-primary">3</span>
                       </div>
                       <div>

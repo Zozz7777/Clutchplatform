@@ -258,7 +258,7 @@ export default function PartnerOnboarding() {
   const getStatusColor = (status: string) => {
     switch (status) {
       case 'pending': return 'bg-muted text-foreground';
-      case 'in_progress': return 'bg-blue-100 text-primary';
+      case 'in_progress': return 'bg-primary/10 text-primary';
       case 'onboarded': return 'bg-success/10 text-success';
       case 'rejected': return 'bg-destructive/10 text-destructive';
       default: return 'bg-muted text-foreground';

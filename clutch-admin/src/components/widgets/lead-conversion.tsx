@@ -94,7 +94,7 @@ export default function LeadConversion() {
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-3">
                     <div className={`w-8 h-8 rounded-full flex items-center justify-center text-white text-sm font-bold ${
-                      metric.stage === 'new' ? 'bg-blue-500' :
+                      metric.stage === 'new' ? 'bg-primary' :
                       metric.stage === 'contacted' ? 'bg-warning' :
                       metric.stage === 'qualified' ? 'bg-info' :
                       metric.stage === 'converted' ? 'bg-success' :
@@ -134,8 +134,8 @@ export default function LeadConversion() {
         <div className="space-y-3">
           <h4 className="font-semibold text-foreground">{t('keyInsights')}</h4>
           <div className="space-y-2">
-            <div className="flex items-start gap-2 p-3 bg-blue-50 rounded-lg">
-              <div className="w-2 h-2 bg-blue-500 rounded-full mt-2"></div>
+            <div className="flex items-start gap-2 p-3 bg-primary/10 rounded-lg">
+              <div className="w-2 h-2 bg-primary rounded-full mt-2"></div>
               <div>
                 <p className="text-sm font-medium text-primary">
                   {t('highestDropOff')}

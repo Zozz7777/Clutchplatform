@@ -130,7 +130,7 @@ export default function TeamPerformance() {
       <CardContent className="space-y-6">
         {/* Team Overview */}
         <div className="grid grid-cols-2 gap-4 mb-6">
-          <div className="text-center p-4 bg-blue-50 rounded-lg">
+          <div className="text-center p-4 bg-primary/10 rounded-lg">
             <Target className="h-8 w-8 text-primary mx-auto mb-2" />
             <p className="text-2xl font-bold text-primary">
               {teamQuotaAchievement.toFixed(0)}%
@@ -227,8 +227,8 @@ export default function TeamPerformance() {
                 </p>
               </div>
             </div>
-            <div className="flex items-start gap-2 p-3 bg-blue-50 rounded-lg">
-              <div className="w-2 h-2 bg-blue-500 rounded-full mt-2"></div>
+            <div className="flex items-start gap-2 p-3 bg-primary/10 rounded-lg">
+              <div className="w-2 h-2 bg-primary/100 rounded-full mt-2"></div>
               <div>
                 <p className="text-sm font-medium text-primary">
                   {t('teamAverage')}

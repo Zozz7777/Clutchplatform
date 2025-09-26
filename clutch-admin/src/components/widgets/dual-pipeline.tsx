@@ -84,8 +84,8 @@ const PARTNERS_STAGES = [
 
 const B2B_STAGES = [
   { id: 'prospect', name: 'prospect', color: 'bg-primary/10 text-primary' },
-  { id: 'discovery', name: 'discovery', color: 'bg-indigo-100 text-indigo-800' },
-  { id: 'proposal', name: 'proposal', color: 'bg-purple-100 text-purple-800' },
+  { id: 'discovery', name: 'discovery', color: 'bg-primary/10 text-primary' },
+  { id: 'proposal', name: 'proposal', color: 'bg-primary/10 text-primary' },
   { id: 'negotiation', name: 'negotiation', color: 'bg-info/10 text-info' },
   { id: 'contract', name: 'contract', color: 'bg-destructive/10 text-destructive' },
   { id: 'closed_won', name: 'closed_won', color: 'bg-success/10 text-success' }

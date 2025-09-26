@@ -243,7 +243,7 @@ export default function ConfidenceIntervals({ className }: ConfidenceIntervalsPr
       case 'cost': return 'bg-destructive/10 text-destructive';
       case 'capacity': return 'bg-primary/10 text-primary';
       case 'risk': return 'bg-warning/10 text-warning';
-      case 'conversion': return 'bg-indigo-100 text-primary';
+      case 'conversion': return 'bg-primary/10 text-primary';
       case 'retention': return 'bg-warning/10 text-warning';
       default: return 'bg-muted text-gray-800';
     }

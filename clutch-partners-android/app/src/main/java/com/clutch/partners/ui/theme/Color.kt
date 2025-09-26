@@ -5,6 +5,7 @@ import androidx.compose.ui.graphics.Color
 // Light Theme Colors - Partners Design.json specification
 val LightBackground = Color(0xFFF5F5F5)
 val LightForeground = Color(0xFF242424)
+val LightOnBackground = Color(0xFF242424)
 val LightCard = Color(0xFFFFFFFF)
 val LightCardForeground = Color(0xFF0F0D0F)
 val LightPrimary = Color(0xFF242424)

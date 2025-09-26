@@ -457,14 +457,14 @@ export default function HRPerformanceView() {
                     </p>
                   </div>
                   
-                  <div className="p-3 bg-blue-50 border border-blue-200 rounded-lg">
+                  <div className="p-3 bg-primary/10 border border-primary/20 rounded-lg">
                     <p className="font-medium text-primary">{t('sales.crmTraining')}</p>
                     <p className="text-sm text-primary">
                       {salesReps.filter(rep => rep.training.certifications.includes('crm_training')).length} {t('sales.certified')}
                     </p>
                   </div>
                   
-                  <div className="p-3 bg-purple-50 border border-purple-200 rounded-lg">
+                  <div className="p-3 bg-primary/10 border border-primary/20 rounded-lg">
                     <p className="font-medium text-primary">{t('sales.negotiationSkills')}</p>
                     <p className="text-sm text-primary">
                       {salesReps.filter(rep => rep.training.certifications.includes('negotiation')).length} {t('sales.certified')}
@@ -522,7 +522,7 @@ export default function HRPerformanceView() {
               </CardHeader>
               <CardContent>
                 <div className="space-y-4">
-                  <div className="p-3 bg-blue-50 border border-blue-200 rounded-lg">
+                  <div className="p-3 bg-primary/10 border border-primary/20 rounded-lg">
                     <p className="font-medium text-primary">{t('sales.trainingRecommendation')}</p>
                     <p className="text-sm text-primary">
                       {t('sales.trainingRecommendationDescription')}
@@ -536,7 +536,7 @@ export default function HRPerformanceView() {
                     </p>
                   </div>
                   
-                  <div className="p-3 bg-purple-50 border border-purple-200 rounded-lg">
+                  <div className="p-3 bg-primary/10 border border-primary/20 rounded-lg">
                     <p className="font-medium text-primary">{t('sales.territoryOptimization')}</p>
                     <p className="text-sm text-primary">
                       {t('sales.territoryOptimizationDescription')}

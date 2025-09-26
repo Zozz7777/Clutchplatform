@@ -433,7 +433,7 @@ export default function ScenarioSimulation({ className }: ScenarioSimulationProp
               <Badge className={
                 currentScenario.status === 'completed' ? 'bg-success/10 text-success' :
                 currentScenario.status === 'running' ? 'bg-primary/10 text-primary' :
-                currentScenario.status === 'saved' ? 'bg-primary/10 text-purple-800' :
+                currentScenario.status === 'saved' ? 'bg-primary/10 text-primary' :
                 'bg-muted text-gray-800'
               }>
                 {currentScenario.status.toUpperCase()}
@@ -450,7 +450,7 @@ export default function ScenarioSimulation({ className }: ScenarioSimulationProp
               </div>
               <div className="w-full bg-muted rounded-full h-2">
                 <div 
-                  className="bg-blue-600 h-2 rounded-full transition-all duration-300"
+                  className="bg-primary h-2 rounded-full transition-all duration-300"
                   style={{ width: `${simulationProgress}%` }}
                 />
               </div>

@@ -12,7 +12,9 @@ import {
   CogIcon,
   ArrowRightOnRectangleIcon,
   BellIcon,
-  WifiIcon
+  WifiIcon,
+  ClockIcon,
+  ArrowUturnLeftIcon
 } from '@heroicons/react/24/outline';
 
 interface LayoutProps {
@@ -31,6 +33,8 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
     { name: t('pos.title'), href: '/pos', icon: ShoppingCartIcon },
     { name: t('orders.title'), href: '/orders', icon: ClipboardDocumentListIcon },
     { name: t('inventory.title'), href: '/inventory', icon: CubeIcon },
+    { name: 'إدارة الورديات', href: '/shift-management', icon: ClockIcon },
+    { name: 'الاستردادات', href: '/refunds-returns', icon: ArrowUturnLeftIcon },
     { name: t('reports.title'), href: '/reports', icon: ChartBarIcon },
     { name: t('common.settings'), href: '/settings', icon: CogIcon },
   ];

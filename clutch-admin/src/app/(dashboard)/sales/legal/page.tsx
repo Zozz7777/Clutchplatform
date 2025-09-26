@@ -192,8 +192,8 @@ export default function LegalContractsView() {
       case 'approved': return 'bg-success/10 text-success';
       case 'rejected': return 'bg-destructive/10 text-destructive';
       case 'draft': return 'bg-muted text-foreground';
-      case 'sent': return 'bg-blue-100 text-primary';
-      case 'signed': return 'bg-purple-100 text-purple-800';
+      case 'sent': return 'bg-primary/10 text-primary';
+      case 'signed': return 'bg-primary/10 text-primary';
       default: return 'bg-muted text-foreground';
     }
   };

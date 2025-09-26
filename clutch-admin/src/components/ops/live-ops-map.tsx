@@ -262,7 +262,7 @@ export default function LiveOpsMap({ className }: LiveOpsMapProps) {
               >
                 <div className="relative">
                   <div className={`w-2 h-2 rounded-full border border-white ${getStatusColor(user.status)}`} />
-                  <div className="absolute -top-6 left-1/2 transform -translate-x-1/2 bg-blue-600 text-white text-xs px-1 py-0.5 rounded-[0.625rem] whitespace-nowrap">
+                  <div className="absolute -top-6 left-1/2 transform -translate-x-1/2 bg-primary text-white text-xs px-1 py-0.5 rounded-[0.625rem] whitespace-nowrap">
                     {user.name.split(' ')[0]}
                   </div>
                 </div>

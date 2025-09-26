@@ -123,7 +123,7 @@ export default function RevenueForecast() {
             </div>
             <div>
               <p className="text-sm text-muted-foreground">{t('target')}</p>
-              <p className="text-2xl font-bold text-purple-600">
+              <p className="text-2xl font-bold text-primary">
                 {(currentQuarter.target / 1000000).toFixed(1)}M EGP
               </p>
             </div>
@@ -226,7 +226,7 @@ export default function RevenueForecast() {
             </p>
             <p className="text-xs text-success/80">{t('forecastAccuracy')}</p>
           </div>
-          <div className="text-center p-3 bg-blue-50 rounded-lg">
+          <div className="text-center p-3 bg-primary/10 rounded-lg">
             <TrendingUp className="h-6 w-6 text-primary mx-auto mb-1" />
             <p className="text-lg font-bold text-primary">
               {forecastData.length >= 4 && forecastData[0].actual > 0 ? 

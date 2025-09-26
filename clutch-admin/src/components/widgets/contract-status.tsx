@@ -51,7 +51,7 @@ export default function ContractStatus() {
   const getStatusColor = (status: string) => {
     switch (status) {
       case 'draft': return 'bg-muted text-foreground';
-      case 'printed': return 'bg-blue-100 text-blue-800';
+      case 'printed': return 'bg-primary/10 text-primary';
       case 'signed_uploaded': return 'bg-warning/10 text-warning';
       case 'pending_legal': return 'bg-info/10 text-info';
       case 'approved': return 'bg-success/10 text-success';

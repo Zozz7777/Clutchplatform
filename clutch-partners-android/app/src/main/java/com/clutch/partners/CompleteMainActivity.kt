@@ -16,8 +16,10 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
+import androidx.compose.material.icons.outlined.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.runtime.collectAsState
@@ -1216,7 +1218,9 @@ fun DashboardScreen() {
                 0 -> OrdersTab()
                 1 -> PaymentsTab()
                 2 -> BusinessDashboardTab()
-                3 -> SettingsTab()
+                3 -> KYCTab()
+                4 -> SupportTab()
+                5 -> SettingsTab()
                 }
             }
         }
@@ -1244,6 +1248,16 @@ fun BottomNavigationBar(
             title = if (isRTL) "لوحة التحكم" else "Dashboard",
             icon = Icons.Default.Dashboard,
             selectedIcon = Icons.Default.Dashboard
+        ),
+        BottomNavItem(
+            title = if (isRTL) "التحقق" else "KYC",
+            icon = Icons.Outlined.VerifiedUser,
+            selectedIcon = Icons.Outlined.VerifiedUser
+        ),
+        BottomNavItem(
+            title = if (isRTL) "الدعم" else "Support",
+            icon = Icons.Outlined.Support,
+            selectedIcon = Icons.Outlined.Support
         ),
         BottomNavItem(
             title = if (isRTL) "الإعدادات" else "Settings",
@@ -1712,6 +1726,420 @@ fun BusinessDashboardTab() {
                     ActivityCard(activity = activity)
                 }
             }
+        }
+    }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun KYCTab() {
+    var kycStatus by remember { mutableStateOf("pending") }
+    var documents by remember { mutableStateOf<List<Document>>(emptyList()) }
+    var isLoading by remember { mutableStateOf(false) }
+
+    LaunchedEffect(Unit) {
+        isLoading = true
+        // Mock KYC data - in real app, this would fetch from API
+        documents = listOf(
+            Document("VAT Certificate", "pending", "2024-01-15"),
+            Document("Trade License", "approved", "2024-01-14"),
+            Document("Owner ID", "pending", "2024-01-15")
+        )
+        kycStatus = "pending"
+        isLoading = false
+    }
+
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(LightBackground)
+            .padding(16.dp)
+    ) {
+        // Header
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Text(
+                text = "التحقق من الهوية",
+                style = MaterialTheme.typography.headlineSmall,
+                color = LightOnBackground
+            )
+        }
+
+        Spacer(modifier = Modifier.height(16.dp))
+
+        // KYC Status Card
+        Card(
+            modifier = Modifier.fillMaxWidth(),
+            colors = CardDefaults.cardColors(containerColor = Color.White),
+            elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
+        ) {
+            Column(
+                modifier = Modifier.padding(16.dp)
+            ) {
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Text(
+                        text = "حالة التحقق",
+                        style = MaterialTheme.typography.titleMedium,
+                        color = LightOnBackground
+                    )
+                    Box(
+                        modifier = Modifier
+                            .background(
+                                when (kycStatus) {
+                                    "approved" -> LightSuccess
+                                    "rejected" -> LightRejected
+                                    else -> LightAmber
+                                },
+                                RoundedCornerShape(12.dp)
+                            )
+                            .padding(horizontal = 12.dp, vertical = 6.dp)
+                    ) {
+                        Text(
+                            text = when (kycStatus) {
+                                "approved" -> "موافق عليه"
+                                "rejected" -> "مرفوض"
+                                else -> "في الانتظار"
+                            },
+                            style = MaterialTheme.typography.bodySmall,
+                            color = Color.White
+                        )
+                    }
+                }
+                
+                Spacer(modifier = Modifier.height(8.dp))
+                
+                Text(
+                    text = when (kycStatus) {
+                        "approved" -> "تم التحقق من جميع المستندات بنجاح"
+                        "rejected" -> "يرجى مراجعة المستندات المرفوضة وإعادة رفعها"
+                        else -> "جاري مراجعة المستندات من قبل فريق الدعم"
+                    },
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = LightOnBackground
+                )
+            }
+        }
+
+        Spacer(modifier = Modifier.height(16.dp))
+
+        // Documents List
+        Text(
+            text = "المستندات المطلوبة",
+            style = MaterialTheme.typography.titleMedium,
+            color = LightOnBackground
+        )
+
+        Spacer(modifier = Modifier.height(8.dp))
+
+        if (isLoading) {
+            Box(
+                modifier = Modifier.fillMaxWidth(),
+                contentAlignment = Alignment.Center
+            ) {
+                CircularProgressIndicator(color = LightPrimary)
+            }
+        } else {
+            LazyColumn(
+                verticalArrangement = Arrangement.spacedBy(8.dp)
+            ) {
+                items(documents) { document ->
+                    DocumentCard(document = document)
+                }
+            }
+        }
+
+        Spacer(modifier = Modifier.height(16.dp))
+
+        // Upload Button
+        Button(
+            onClick = { /* TODO: Implement document upload */ },
+            modifier = Modifier.fillMaxWidth(),
+            colors = ButtonDefaults.buttonColors(containerColor = LightPrimary)
+        ) {
+            Icon(
+                imageVector = Icons.Default.Upload,
+                contentDescription = "رفع مستند",
+                modifier = Modifier.size(20.dp)
+            )
+            Spacer(modifier = Modifier.width(8.dp))
+            Text("رفع مستند جديد")
+        }
+    }
+}
+
+@Composable
+fun DocumentCard(document: Document) {
+    Card(
+        modifier = Modifier.fillMaxWidth(),
+        colors = CardDefaults.cardColors(containerColor = Color.White),
+        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
+    ) {
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(16.dp),
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Column {
+                Text(
+                    text = document.name,
+                    style = MaterialTheme.typography.titleSmall,
+                    color = LightOnBackground
+                )
+                Text(
+                    text = "تاريخ الرفع: ${document.uploadDate}",
+                    style = MaterialTheme.typography.bodySmall,
+                    color = LightOnBackground.copy(alpha = 0.7f)
+                )
+            }
+            
+            Box(
+                modifier = Modifier
+                    .background(
+                        when (document.status) {
+                            "approved" -> LightSuccess
+                            "rejected" -> LightRejected
+                            else -> LightAmber
+                        },
+                        RoundedCornerShape(8.dp)
+                    )
+                    .padding(horizontal = 8.dp, vertical = 4.dp)
+            ) {
+                Text(
+                    text = when (document.status) {
+                        "approved" -> "موافق عليه"
+                        "rejected" -> "مرفوض"
+                        else -> "في الانتظار"
+                    },
+                    style = MaterialTheme.typography.bodySmall,
+                    color = Color.White
+                )
+            }
+        }
+    }
+}
+
+@Composable
+fun SupportTab() {
+    var supportTickets by remember { mutableStateOf<List<SupportTicket>>(emptyList()) }
+    var isLoading by remember { mutableStateOf(false) }
+
+    LaunchedEffect(Unit) {
+        isLoading = true
+        // Mock support tickets - in real app, this would fetch from API
+        supportTickets = listOf(
+            SupportTicket("TKT001", "مشكلة في تسجيل الدخول", "open", "2024-01-15"),
+            SupportTicket("TKT002", "استفسار حول الدفع", "resolved", "2024-01-14"),
+            SupportTicket("TKT003", "طلب ميزة جديدة", "in_progress", "2024-01-13")
+        )
+        isLoading = false
+    }
+
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(LightBackground)
+            .padding(16.dp)
+    ) {
+        // Header
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Text(
+                text = "الدعم الفني",
+                style = MaterialTheme.typography.headlineSmall,
+                color = LightOnBackground
+            )
+            
+            Button(
+                onClick = { /* TODO: Implement new ticket */ },
+                colors = ButtonDefaults.buttonColors(containerColor = LightPrimary)
+            ) {
+                Icon(
+                    imageVector = Icons.Default.Add,
+                    contentDescription = "تذكرة جديدة",
+                    modifier = Modifier.size(20.dp)
+                )
+                Spacer(modifier = Modifier.width(8.dp))
+                Text("تذكرة جديدة")
+            }
+        }
+
+        Spacer(modifier = Modifier.height(16.dp))
+
+        // Quick Actions
+        Card(
+            modifier = Modifier.fillMaxWidth(),
+            colors = CardDefaults.cardColors(containerColor = Color.White),
+            elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
+        ) {
+            Column(
+                modifier = Modifier.padding(16.dp)
+            ) {
+                Text(
+                    text = "الإجراءات السريعة",
+                    style = MaterialTheme.typography.titleMedium,
+                    color = LightOnBackground
+                )
+                
+                Spacer(modifier = Modifier.height(12.dp))
+                
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceEvenly
+                ) {
+                    QuickActionButton(
+                        icon = Icons.Default.Phone,
+                        label = "اتصال",
+                        onClick = { /* TODO: Implement call */ }
+                    )
+                    QuickActionButton(
+                        icon = Icons.Default.Email,
+                        label = "بريد إلكتروني",
+                        onClick = { /* TODO: Implement email */ }
+                    )
+                    QuickActionButton(
+                        icon = Icons.Default.Chat,
+                        label = "محادثة",
+                        onClick = { /* TODO: Implement chat */ }
+                    )
+                }
+            }
+        }
+
+        Spacer(modifier = Modifier.height(16.dp))
+
+        // Support Tickets
+        Text(
+            text = "تذاكر الدعم",
+            style = MaterialTheme.typography.titleMedium,
+            color = LightOnBackground
+        )
+
+        Spacer(modifier = Modifier.height(8.dp))
+
+        if (isLoading) {
+            Box(
+                modifier = Modifier.fillMaxWidth(),
+                contentAlignment = Alignment.Center
+            ) {
+                CircularProgressIndicator(color = LightPrimary)
+            }
+        } else {
+            LazyColumn(
+                verticalArrangement = Arrangement.spacedBy(8.dp)
+            ) {
+                items(supportTickets) { ticket ->
+                    SupportTicketCard(ticket = ticket)
+                }
+            }
+        }
+    }
+}
+
+@Composable
+fun QuickActionButton(
+    icon: ImageVector,
+    label: String,
+    onClick: () -> Unit
+) {
+    Column(
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        IconButton(
+            onClick = onClick,
+            modifier = Modifier
+                .size(48.dp)
+                .background(LightPrimary, CircleShape)
+        ) {
+            Icon(
+                imageVector = icon,
+                contentDescription = label,
+                tint = Color.White,
+                modifier = Modifier.size(24.dp)
+            )
+        }
+        Spacer(modifier = Modifier.height(4.dp))
+        Text(
+            text = label,
+            style = MaterialTheme.typography.bodySmall,
+            color = LightOnBackground
+        )
+    }
+}
+
+@Composable
+fun SupportTicketCard(ticket: SupportTicket) {
+    Card(
+        modifier = Modifier.fillMaxWidth(),
+        colors = CardDefaults.cardColors(containerColor = Color.White),
+        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
+    ) {
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(16.dp)
+        ) {
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Text(
+                    text = ticket.subject,
+                    style = MaterialTheme.typography.titleSmall,
+                    color = LightOnBackground
+                )
+                
+                Box(
+                    modifier = Modifier
+                        .background(
+                            when (ticket.status) {
+                                "open" -> LightAmber
+                                "in_progress" -> LightPrimary
+                                "resolved" -> LightSuccess
+                                else -> LightRejected
+                            },
+                            RoundedCornerShape(8.dp)
+                        )
+                        .padding(horizontal = 8.dp, vertical = 4.dp)
+                ) {
+                    Text(
+                        text = when (ticket.status) {
+                            "open" -> "مفتوح"
+                            "in_progress" -> "قيد المعالجة"
+                            "resolved" -> "محلول"
+                            else -> "مغلق"
+                        },
+                        style = MaterialTheme.typography.bodySmall,
+                        color = Color.White
+                    )
+                }
+            }
+            
+            Spacer(modifier = Modifier.height(4.dp))
+            
+            Text(
+                text = "رقم التذكرة: ${ticket.id}",
+                style = MaterialTheme.typography.bodySmall,
+                color = LightOnBackground.copy(alpha = 0.7f)
+            )
+            
+            Text(
+                text = "تاريخ الإنشاء: ${ticket.createdDate}",
+                style = MaterialTheme.typography.bodySmall,
+                color = LightOnBackground.copy(alpha = 0.7f)
+            )
         }
     }
 }
@@ -2360,6 +2788,19 @@ data class PaymentHistory(
     val period: String,
     val date: String,
     val amount: String
+)
+
+data class Document(
+    val name: String,
+    val status: String,
+    val uploadDate: String
+)
+
+data class SupportTicket(
+    val id: String,
+    val subject: String,
+    val status: String,
+    val createdDate: String
 )
 
 data class RecentActivity(

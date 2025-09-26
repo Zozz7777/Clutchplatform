@@ -14,6 +14,8 @@ import OrdersPage from './pages/OrdersPage';
 import InventoryPage from './pages/InventoryPage';
 import ReportsPage from './pages/ReportsPage';
 import SettingsPage from './pages/SettingsPage';
+import ShiftManagementPage from './pages/ShiftManagementPage';
+import RefundsReturnsPage from './pages/RefundsReturnsPage';
 
 // Components
 import Layout from './components/Layout';
@@ -52,6 +54,8 @@ function AppRoutes() {
         <Route path="/inventory" element={<InventoryPage />} />
         <Route path="/reports" element={<ReportsPage />} />
         <Route path="/settings" element={<SettingsPage />} />
+        <Route path="/shift-management" element={<ShiftManagementPage />} />
+        <Route path="/refunds-returns" element={<RefundsReturnsPage />} />
         <Route path="*" element={<Navigate to="/dashboard" replace />} />
       </Routes>
     </Layout>
