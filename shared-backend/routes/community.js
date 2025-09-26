@@ -438,7 +438,7 @@ router.get('/leaderboard', async (req, res) => {
       error: error.message
     });
   }
-);
+});
 
 // GET /api/v1/community/stats - Get community statistics
 router.get('/stats', async (req, res) => {
