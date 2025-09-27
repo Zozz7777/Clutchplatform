@@ -40,7 +40,7 @@ const addAlert = (type, message, severity = 'warning', metadata = {}) => {
     .filter(alert => new Date(alert.timestamp).getTime() > oneHourAgo)
     .slice(-50);
   
-  console.log(`🚨 ${severity.toUpperCase()} ALERT [${type}]: ${message}`);
+  logger.warn(`🚨 ${severity.toUpperCase()} ALERT [${type}]: ${message}`);
   
   // Send to external monitoring if configured
   if (process.env.ALERT_WEBHOOK_URL) {
@@ -63,7 +63,7 @@ const sendWebhookAlert = async (alert) => {
       }]
     });
   } catch (error) {
-    console.error('Failed to send webhook alert:', error.message);
+    logger.error('Failed to send webhook alert:', error.message);
   }
 };
 
@@ -90,7 +90,7 @@ const checkSystemHealth = () => {
     });
   } else {
     // Log healthy memory status
-    console.log(`✅ Memory healthy - Render Compatible: ${renderMemoryPercent.toFixed(1)}%, Heap: ${heapUsagePercent.toFixed(1)}%`);
+    logger.debug(`✅ Memory healthy - Render Compatible: ${renderMemoryPercent.toFixed(1)}%, Heap: ${heapUsagePercent.toFixed(1)}%`);
   }
   
   // CPU checks - Proper calculation with time tracking

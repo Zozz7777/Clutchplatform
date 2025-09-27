@@ -181,7 +181,7 @@ const asyncHandler = (fn) => (req, res, next) => {
  * Optimized error handling middleware
  */
 const optimizedErrorHandler = (err, req, res, next) => {
-  console.error('❌ Error:', err);
+  logger.error('❌ Error:', err);
   
   // Don't leak error details in production
   const isDevelopment = process.env.NODE_ENV === 'development';
@@ -301,7 +301,7 @@ const applyOptimizedMiddleware = (app) => {
   
   // CORS with error handling
   app.use((req, res, next) => {
-    console.log(`CORS: ${req.method} ${req.url} from origin: ${req.get('Origin')}`);
+    logger.debug(`CORS: ${req.method} ${req.url} from origin: ${req.get('Origin')}`);
     next();
   });
   

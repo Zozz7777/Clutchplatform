@@ -136,7 +136,8 @@ struct CarsView: View {
                     self.carHealth = health
                 }
             } catch {
-                print("Failed to load car health: \(error)")
+                // Handle error silently or show user-friendly message
+                errorMessage = "Failed to load car health data"
             }
         }
     }

@@ -173,7 +173,10 @@ class AuthManager: ObservableObject {
                 UserDefaults.standard.set(userData, forKey: "user_data")
             }
         } catch {
-            print("Failed to refresh user profile: \(error)")
+            // Handle error silently or show user-friendly message
+            DispatchQueue.main.async {
+                self.errorMessage = "Failed to refresh user profile"
+            }
         }
     }
 }

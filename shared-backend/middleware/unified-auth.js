@@ -68,7 +68,7 @@ const authenticateToken = async (req, res, next) => {
         
         return next();
       } catch (error) {
-        console.error('Session token validation error:', error);
+        logger.error('Session token validation error:', error);
         return res.status(401).json({ 
           success: false,
           error: 'SESSION_VALIDATION_FAILED',
@@ -93,7 +93,7 @@ const authenticateToken = async (req, res, next) => {
       
       next();
     } catch (error) {
-      console.log('❌ JWT token validation failed:', {
+      logger.warn('❌ JWT token validation failed:', {
         error: error.message,
         tokenLength: token?.length || 0,
         tokenStart: token?.substring(0, 20) + '...'
@@ -107,7 +107,7 @@ const authenticateToken = async (req, res, next) => {
     }
     
   } catch (error) {
-    console.error('Authentication error:', error);
+    logger.error('Authentication error:', error);
     return res.status(500).json({ 
       success: false,
       error: 'AUTHENTICATION_FAILED',
@@ -134,9 +134,9 @@ const checkRole = (roles) => {
         });
       }
 
-      console.log('🔍 RBAC checkRole - User:', req.user.userId || req.user.id);
-      console.log('🔍 RBAC checkRole - Current role:', req.user.role);
-      console.log('🔍 RBAC checkRole - Required roles:', roles);
+      logger.debug('🔍 RBAC checkRole - User:', req.user.userId || req.user.id);
+      logger.debug('🔍 RBAC checkRole - Current role:', req.user.role);
+      logger.debug('🔍 RBAC checkRole - Required roles:', roles);
 
       // Handle fallback users (CEO, admin) who don't exist in Employee database
       if (req.user.userId === 'fallback_ziad_ceo' || req.user.userId === 'admin-001') {
@@ -150,10 +150,10 @@ const checkRole = (roles) => {
         ).flat();
         
         if (mappedAllowedRoles.includes(userRole) || allowedRoles.includes(req.user.role)) {
-          console.log('✅ Fallback user role check passed');
+          logger.debug('✅ Fallback user role check passed');
           return next();
         } else {
-          console.log('❌ Fallback user role check failed');
+          logger.warn('❌ Fallback user role check failed');
           return res.status(403).json({ 
             success: false,
             error: 'INSUFFICIENT_ROLE_PERMISSIONS',
@@ -181,7 +181,7 @@ const checkRole = (roles) => {
         const employee = await employeesCollection.findOne(query);
         
         if (!employee) {
-          console.log('❌ Employee not found in database');
+          logger.warn('❌ Employee not found in database');
           return res.status(401).json({ 
             success: false,
             error: 'EMPLOYEE_NOT_FOUND',
@@ -191,7 +191,7 @@ const checkRole = (roles) => {
         }
 
         if (!employee.isActive) {
-          console.log('❌ Employee account is deactivated');
+          logger.warn('❌ Employee account is deactivated');
           return res.status(403).json({ 
             success: false,
             error: 'ACCOUNT_DEACTIVATED',
@@ -220,10 +220,10 @@ const checkRole = (roles) => {
         }).flat();
         
         if (mappedAllowedRoles.includes(userRole) || allowedRoles.includes(employee.role)) {
-          console.log('✅ Database user role check passed');
+          logger.debug('✅ Database user role check passed');
           return next();
         } else {
-          console.log('❌ Database user role check failed');
+          logger.warn('❌ Database user role check failed');
           return res.status(403).json({ 
             success: false,
             error: 'INSUFFICIENT_ROLE_PERMISSIONS',
@@ -234,7 +234,7 @@ const checkRole = (roles) => {
           });
         }
       } catch (dbError) {
-        console.error('Database error during role check:', dbError);
+        logger.error('Database error during role check:', dbError);
         // Fallback to JWT role check if database fails
         const allowedRoles = Array.isArray(roles) ? roles : [roles];
         
@@ -256,10 +256,10 @@ const checkRole = (roles) => {
         }).flat();
         
         if (mappedAllowedRoles.includes(userRole) || allowedRoles.includes(req.user.role)) {
-          console.log('✅ Fallback JWT role check passed');
+          logger.debug('✅ Fallback JWT role check passed');
           return next();
         } else {
-          console.log('❌ Fallback JWT role check failed');
+          logger.warn('❌ Fallback JWT role check failed');
           return res.status(403).json({ 
             success: false,
             error: 'INSUFFICIENT_ROLE_PERMISSIONS',
@@ -272,7 +272,7 @@ const checkRole = (roles) => {
       }
       
     } catch (error) {
-      console.error('Role check error:', error);
+      logger.error('Role check error:', error);
       return res.status(500).json({ 
         success: false,
         error: 'ROLE_VALIDATION_FAILED',
@@ -302,7 +302,7 @@ const checkPermission = (permission) => {
 
       // Handle fallback users (CEO, admin) and executive users - they have all permissions
       if (req.user.userId === 'fallback_ziad_ceo' || req.user.userId === 'admin-001' || req.user.role === 'executive') {
-        console.log('✅ Fallback/executive user permission check passed (all permissions)');
+        logger.debug('✅ Fallback/executive user permission check passed (all permissions)');
         return next();
       }
 

@@ -336,11 +336,11 @@ class PerformanceOptimizer {
     const heapUsagePercent = v8Heap.heapUsagePercentage;
     
     // Log both Render-compatible and heap usage for clarity
-    console.log(`🧹 Memory Status - Render Compatible: ${renderMemoryPercent}%, Node.js Heap: ${heapUsagePercent}%`);
+    logger.info(`🧹 Memory Status - Render Compatible: ${renderMemoryPercent}%, Node.js Heap: ${heapUsagePercent}%`);
     
     // Only optimize if Render-compatible memory is actually high
     if (renderMemoryPercent > 80) {
-      console.log(`🧹 High RENDER memory usage: ${renderMemoryPercent}% - monitoring...`);
+      logger.warn(`🧹 High RENDER memory usage: ${renderMemoryPercent}% - monitoring...`);
       
       // Level 1: Clear cache at 80% memory
       if (renderMemoryPercent > 80) {
@@ -351,13 +351,13 @@ class PerformanceOptimizer {
           size: 0,
           maxSize: 1000
         };
-        console.log('🧹 Cache cleared due to high memory usage');
+        logger.info('🧹 Cache cleared due to high memory usage');
       }
       
       // Level 2: Force garbage collection at 85% memory
       if (global.gc && renderMemoryPercent > 85) {
         global.gc();
-        console.log('🧹 Forced garbage collection');
+        logger.info('🧹 Forced garbage collection');
       }
       
       // Level 3: Emergency cleanup at 90% memory
@@ -371,21 +371,21 @@ class PerformanceOptimizer {
       }
     } else if (heapUsagePercent > 90) {
       // Only optimize heap if it's extremely high (90%+) and memory is fine
-      console.log(`🧹 High Node.js heap usage: ${heapUsagePercent}% - optimizing heap only`);
+      logger.warn(`🧹 High Node.js heap usage: ${heapUsagePercent}% - optimizing heap only`);
       
       if (global.gc) {
         global.gc();
-        console.log('🧹 Forced garbage collection for heap optimization');
+        logger.info('🧹 Forced garbage collection for heap optimization');
       }
     } else {
       // Memory is healthy
-      console.log(`✅ Memory healthy - Render Compatible: ${renderMemoryPercent}%, Heap: ${heapUsagePercent}%`);
+      logger.debug(`✅ Memory healthy - Render Compatible: ${renderMemoryPercent}%, Heap: ${heapUsagePercent}%`);
     }
   }
 
   // Emergency memory cleanup procedures
   emergencyMemoryCleanup() {
-    console.log('🚨 EMERGENCY: Performing emergency memory cleanup');
+    logger.error('🚨 EMERGENCY: Performing emergency memory cleanup');
     
     try {
       // Clear all caches
@@ -411,15 +411,15 @@ class PerformanceOptimizer {
         maxSize: 500 // Reduce max cache size
       };
       
-      console.log('✅ Emergency memory cleanup completed');
+      logger.info('✅ Emergency memory cleanup completed');
     } catch (error) {
-      console.error('❌ Emergency memory cleanup failed:', error);
+      logger.error('❌ Emergency memory cleanup failed:', error);
     }
   }
 
   // Critical memory cleanup procedures
   criticalMemoryCleanup() {
-    console.log('🚨 CRITICAL: Performing critical memory cleanup');
+    logger.error('🚨 CRITICAL: Performing critical memory cleanup');
     
     try {
       // Emergency cleanup first
@@ -439,9 +439,9 @@ class PerformanceOptimizer {
       this.setupOptimizationRules();
       this.cacheStats.maxSize = 100; // Drastically reduce cache size
       
-      console.log('✅ Critical memory cleanup completed');
+      logger.info('✅ Critical memory cleanup completed');
     } catch (error) {
-      console.error('❌ Critical memory cleanup failed:', error);
+      logger.error('❌ Critical memory cleanup failed:', error);
     }
   }
 
@@ -471,12 +471,12 @@ class PerformanceOptimizer {
         
         // Optimize connection pool if needed
         if (connections.current > connections.available * 2) {
-          console.log('ðŸ”§ Optimizing database connections');
+          logger.info('🔧 Optimizing database connections');
           // In a real implementation, you would adjust connection pool settings
         }
       }
     } catch (error) {
-      console.error('Error optimizing database connections:', error);
+      logger.error('Error optimizing database connections:', error);
     }
   }
 

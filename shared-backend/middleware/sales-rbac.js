@@ -100,7 +100,7 @@ function authorize(requiredRoles) {
 
       next();
     } catch (error) {
-      console.error('Sales RBAC middleware error:', error);
+      logger.error('Sales RBAC middleware error:', error);
       return res.status(500).json({
         success: false,
         error: 'INTERNAL_ERROR',

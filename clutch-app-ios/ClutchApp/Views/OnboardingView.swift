@@ -140,6 +140,6 @@ struct OnboardingPage {
 
 #Preview {
     OnboardingView {
-        print("Onboarding completed")
+        // Onboarding completed - user will be navigated to main app
     }
 }
