@@ -795,7 +795,7 @@ router.post('/register', authRateLimit, async (req, res) => {
   try {
     console.log('🔐 Registration attempt:', { email: req.body.email, hasName: !!req.body.name, hasFirstName: !!req.body.firstName });
     
-    const { email, password, name, firstName, lastName, phoneNumber } = req.body;
+    const { email, password, name, firstName, lastName, phone, phoneNumber, confirmPassword, agreeToTerms } = req.body;
     
     // Handle both name formats (name or firstName/lastName)
     const fullName = name || (firstName && lastName ? `${firstName} ${lastName}` : null);
@@ -808,6 +808,28 @@ router.post('/register', authRateLimit, async (req, res) => {
         success: false,
         error: 'MISSING_REQUIRED_FIELDS',
         message: 'Email, password, and name (or firstName/lastName) are required',
+        timestamp: new Date().toISOString()
+      });
+    }
+
+    // Validate password confirmation
+    if (confirmPassword && password !== confirmPassword) {
+      console.log('❌ Password mismatch');
+      return res.status(400).json({
+        success: false,
+        error: 'PASSWORD_MISMATCH',
+        message: 'Password and confirm password do not match',
+        timestamp: new Date().toISOString()
+      });
+    }
+
+    // Validate terms agreement
+    if (agreeToTerms !== undefined && !agreeToTerms) {
+      console.log('❌ Terms not agreed');
+      return res.status(400).json({
+        success: false,
+        error: 'TERMS_NOT_AGREED',
+        message: 'You must agree to the terms and conditions',
         timestamp: new Date().toISOString()
       });
     }
@@ -867,7 +889,7 @@ router.post('/register', authRateLimit, async (req, res) => {
       email: email.toLowerCase(),
       password: hashedPassword,
       name: fullName,
-      phoneNumber: phoneNumber || `temp_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`, // Generate unique phoneNumber if not provided
+      phoneNumber: phone || phoneNumber || `temp_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`, // Generate unique phoneNumber if not provided
       userId: `user_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`, // Generate unique userId
       role: 'user',
       permissions: ['read', 'write'],
@@ -904,20 +926,49 @@ router.post('/register', authRateLimit, async (req, res) => {
     );
     console.log('✅ JWT token generated');
     
+    // Generate refresh token
+    const refreshToken = jwt.sign(
+      {
+        userId: result.insertedId,
+        email: newUser.email,
+        role: newUser.role,
+        permissions: newUser.permissions,
+        type: 'refresh'
+      },
+      process.env.JWT_SECRET,
+      { expiresIn: '7d' }
+    );
+    
     console.log('✅ Registration completed successfully');
     res.status(201).json({
       success: true,
       data: {
-        token,
         user: {
-          id: result.insertedId,
+          _id: result.insertedId.toString(),
           email: newUser.email,
-          name: newUser.name,
-          role: newUser.role,
-          permissions: newUser.permissions
-        }
+          phone: newUser.phoneNumber,
+          firstName: firstName || newUser.name.split(' ')[0] || 'User',
+          lastName: lastName || newUser.name.split(' ').slice(1).join(' ') || '',
+          dateOfBirth: null,
+          gender: null,
+          profileImage: null,
+          isEmailVerified: false,
+          isPhoneVerified: false,
+          preferences: {
+            language: 'en',
+            theme: 'light',
+            notifications: { push: true, email: true, sms: false },
+            receiveOffers: true,
+            subscribeNewsletter: true
+          },
+          createdAt: new Date().toISOString(),
+          updatedAt: new Date().toISOString()
+        },
+        token: token,
+        refreshToken: refreshToken,
+        expiresIn: '24h'
       },
-      message: 'User registered successfully',
+      message: 'Registration successful',
       timestamp: new Date().toISOString()
     });
     
