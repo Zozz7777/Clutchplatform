@@ -4,6 +4,7 @@ const { authenticateToken } = require('../middleware/unified-auth');
 // const { validateBooking } = require('../middleware/validation'); // Not implemented yet
 const { getCollection } = require('../config/database');
 const { ObjectId } = require('mongodb');
+const logger = require('../utils/logger');
 
 // Get all bookings
 router.get('/', authenticateToken, async (req, res) => {

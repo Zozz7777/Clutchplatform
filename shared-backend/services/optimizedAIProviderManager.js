@@ -5,6 +5,7 @@
  */
 
 const winston = require('winston');
+const logger = require('../utils/logger');
 
 class OptimizedAIProviderManager {
   constructor() {

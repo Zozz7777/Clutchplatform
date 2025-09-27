@@ -6,6 +6,7 @@
 
 const Redis = require('ioredis');
 const winston = require('winston');
+const logger = require('../utils/logger');
 
 class OptimizedRedisCache {
   constructor() {

@@ -1,4 +1,5 @@
 ﻿const { getCollection } = require('../config/database');
+const logger = require('../utils/logger');
 
 // ==================== PERFORMANCE OPTIMIZATION MIDDLEWARE ====================
 // Performance metrics and monitoring system
