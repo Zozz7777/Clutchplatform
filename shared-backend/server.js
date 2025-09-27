@@ -17,7 +17,7 @@ const logger = require('./utils/logger');
 const securityHeaders = require('./middleware/securityHeaders');
 const { cacheMiddleware } = require('./middleware/cache');
 const { validateInput } = require('./middleware/validation');
-const { performanceMonitor, getPerformanceMetrics } = require('./middleware/performanceMonitor');
+const { performanceMonitor } = require('./middleware/performanceMonitor');
 const { addAlert, getAlerts } = require('./middleware/alerting');
 const { responseMiddleware } = require('./utils/response-format');
 
@@ -130,8 +130,6 @@ const apiDocsRoutes = require('./routes/api-docs');
 const pendingEmailsRoutes = require('./routes/pending-emails');
 const notificationServiceRoutes = require('./routes/notification-service');
 const mobileAppsRoutes = require('./routes/mobile-apps');
-const operationsRoutes = require('./routes/operations');
-const securityRoutes = require('./routes/security');
 const debugRoutes = require('./routes/debug');
 
 // Import newly created routes
