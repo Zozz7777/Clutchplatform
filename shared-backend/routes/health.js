@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const { authenticateToken } = require('../middleware/auth');
 const webSocketServer = require('../services/websocket-server');
+const logger = require('../utils/logger');
 
 // Import database utilities with error handling
 let getCollection, connectDB;

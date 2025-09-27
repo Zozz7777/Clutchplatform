@@ -3,6 +3,7 @@ const router = express.Router();
 const { authenticateToken, checkRole, checkPermission } = require('../middleware/unified-auth');
 const { getCollection } = require('../config/optimized-database');
 const rateLimit = require('express-rate-limit');
+const logger = require('../utils/logger');
 
 // Rate limiting
 const financeLimiter = rateLimit({
