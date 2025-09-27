@@ -603,31 +603,53 @@ async function initializeRedis() {
   try {
     // Check if Redis is configured
     if (!process.env.REDIS_URL && !process.env.REDIS_HOST) {
+      console.log('⚠️ Redis not configured, skipping Redis initialization');
       redisInitialized = false;
       return;
     }
 
+    console.log('🔄 Initializing Redis cache...');
     redisInitialized = await redisCache.initialize();
     if (redisInitialized) {
+      console.log('✅ Redis cache initialized successfully');
     } else {
+      console.log('⚠️ Redis cache initialization failed, continuing without Redis');
     }
   } catch (error) {
+    console.error('❌ Redis initialization error:', error.message);
     logger.error('Redis initialization error:', error);
     redisInitialized = false;
   }
 }
 async function startServer() {
   try {
+    console.log('🚀 Starting Clutch Backend Server...');
     
     // Initialize and validate environment
+    console.log('🔧 Initializing environment configuration...');
     const envConfig = initializeEnvironment();
+    console.log('✅ Environment configuration validated successfully');
 
-
-    // Connect to database
-    await connectOptimizedDatabase();
+    // Connect to database with timeout
+    console.log('📊 Connecting to database...');
+    try {
+      const dbConnectionPromise = connectOptimizedDatabase();
+      const timeoutPromise = new Promise((_, reject) => 
+        setTimeout(() => reject(new Error('Database connection timeout after 30 seconds')), 30000)
+      );
+      
+      await Promise.race([dbConnectionPromise, timeoutPromise]);
+      console.log('✅ Database connection established');
+    } catch (dbError) {
+      console.error('❌ Database connection failed:', dbError.message);
+      console.log('⚠️ Continuing without database connection - some features may be limited');
+      // Don't exit, continue with limited functionality
+    }
     
     // Initialize Redis cache
+    console.log('📦 Initializing Redis cache...');
     await initializeRedis();
+    console.log('✅ Redis cache initialized');
 
     // Start HTTP server
     const PORT = process.env.PORT || 5000;
@@ -676,6 +698,12 @@ async function startServer() {
     // Enhanced graceful shutdown (handled by graceful restart manager)
 
   } catch (error) {
+    console.error('❌ Failed to start server:', error);
+    console.error('❌ Error details:', {
+      message: error.message,
+      stack: error.stack,
+      name: error.name
+    });
     logger.error('Failed to start server:', error);
     process.exit(1);
   }

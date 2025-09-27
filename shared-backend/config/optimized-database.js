@@ -207,29 +207,35 @@ const connectToDatabase = async () => {
 
     // Connect native MongoDB client for optimized operations
     if (!client) {
-      client = new MongoClient(process.env.MONGODB_URI, DB_CONFIG);
+      try {
+        console.log('🔄 Connecting to MongoDB with native client...');
+        client = new MongoClient(process.env.MONGODB_URI, DB_CONFIG);
 
-      // Connection event handlers
-      client.on('connected', () => {
-        console.log('✅ MongoDB optimized client connected successfully');
-      });
+        // Connection event handlers
+        client.on('connected', () => {
+          console.log('✅ MongoDB optimized client connected successfully');
+        });
 
-      client.on('disconnected', () => {
-        console.log('⚠️ MongoDB optimized client disconnected');
-      });
+        client.on('disconnected', () => {
+          console.log('⚠️ MongoDB optimized client disconnected');
+        });
 
-      client.on('error', (error) => {
-        logger.error('MongoDB optimized client connection error:', error);
-      });
+        client.on('error', (error) => {
+          logger.error('MongoDB optimized client connection error:', error);
+        });
 
-      await client.connect();
-      db = client.db(process.env.MONGODB_DB || 'clutch');
-      
-      // Initialize optimized database
-      await initializeOptimizedDatabase();
-      
-      console.log('✅ Optimized MongoDB connected successfully');
-      console.log(`📊 Collections optimized: ${OPTIMIZED_COLLECTIONS.length} active, ${REMOVED_COLLECTIONS.length} removed`);
+        await client.connect();
+        db = client.db(process.env.MONGODB_DB || 'clutch');
+        
+        // Initialize optimized database
+        await initializeOptimizedDatabase();
+        
+        console.log('✅ Optimized MongoDB connected successfully');
+        console.log(`📊 Collections optimized: ${OPTIMIZED_COLLECTIONS.length} active, ${REMOVED_COLLECTIONS.length} removed`);
+      } catch (nativeError) {
+        console.error('❌ Native MongoDB client connection failed:', nativeError.message);
+        throw nativeError;
+      }
     }
     return db;
   } catch (error) {
