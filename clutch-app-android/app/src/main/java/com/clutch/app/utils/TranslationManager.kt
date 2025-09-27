@@ -5,6 +5,7 @@ import android.content.res.Configuration
 import android.content.res.Resources
 import android.os.Build
 import java.util.*
+import com.clutch.app.R
 
 object TranslationManager {
     private var currentLanguage = "en"
@@ -63,4 +64,25 @@ object TranslationManager {
     }
     
     fun isRTL(): Boolean = currentLanguage == "ar"
+    
+    fun getString(context: Context, stringRes: Int): String {
+        val resources = context.resources
+        val config = Configuration(resources.configuration)
+        
+        val locale = Locale(currentLanguage)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            config.setLocale(locale)
+        } else {
+            @Suppress("DEPRECATION")
+            config.locale = locale
+        }
+        
+        val localizedContext = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N_MR1) {
+            context.createConfigurationContext(config)
+        } else {
+            context
+        }
+        
+        return localizedContext.getString(stringRes)
+    }
 }

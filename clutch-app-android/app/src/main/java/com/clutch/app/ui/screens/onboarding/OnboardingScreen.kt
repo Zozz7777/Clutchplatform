@@ -45,12 +45,12 @@ fun OnboardingScreen(
     val coroutineScope = rememberCoroutineScope()
     
     // Get the current strings based on the current language
-    val saveMoneyTitle = stringResource(R.string.save_money)
-    val saveMoneyDesc = stringResource(R.string.onboarding_save_money_desc)
-    val extendLifeTitle = stringResource(R.string.extend_car_life)
-    val extendLifeDesc = stringResource(R.string.onboarding_extend_life_desc)
-    val peaceOfMindTitle = stringResource(R.string.peace_of_mind)
-    val peaceOfMindDesc = stringResource(R.string.onboarding_peace_mind_desc)
+    val saveMoneyTitle = TranslationManager.getString(context, R.string.save_money)
+    val saveMoneyDesc = TranslationManager.getString(context, R.string.onboarding_save_money_desc)
+    val extendLifeTitle = TranslationManager.getString(context, R.string.extend_car_life)
+    val extendLifeDesc = TranslationManager.getString(context, R.string.onboarding_extend_life_desc)
+    val peaceOfMindTitle = TranslationManager.getString(context, R.string.peace_of_mind)
+    val peaceOfMindDesc = TranslationManager.getString(context, R.string.onboarding_peace_mind_desc)
     
     val pages = listOf(
         OnboardingPage(
@@ -227,7 +227,7 @@ fun OnboardingScreen(
                 if (pagerState.currentPage == 0) {
                     TextButton(onClick = onSkip) {
                         Text(
-                            text = stringResource(R.string.skip),
+                            text = TranslationManager.getString(context, R.string.skip),
                             color = ClutchRed,
                             fontSize = 16.sp
                         )
@@ -254,7 +254,7 @@ fun OnboardingScreen(
                     shape = RoundedCornerShape(12.dp)
                 ) {
                     Text(
-                        text = if (pagerState.currentPage < pages.size - 1) stringResource(R.string.next) else stringResource(R.string.get_started),
+                        text = if (pagerState.currentPage < pages.size - 1) TranslationManager.getString(context, R.string.next) else TranslationManager.getString(context, R.string.get_started),
                         fontSize = 16.sp,
                         fontWeight = FontWeight.SemiBold,
                         color = Color.White
