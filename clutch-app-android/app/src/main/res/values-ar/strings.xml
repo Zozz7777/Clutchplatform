@@ -29,6 +29,16 @@
     <string name="signup_with_google">إنشاء حساب بجوجل</string>
     <string name="signup_with_facebook">إنشاء حساب بفيسبوك</string>
     <string name="or_signup_with">أو سجل مع</string>
+    <string name="welcome_back">مرحباً بعودتك</string>
+    <string name="or_continue_with">أو تابع مع</string>
+    <string name="sign_up">إنشاء حساب</string>
+    <string name="already_have_account_question">هل لديك حساب بالفعل؟</string>
+    <string name="forgot_password_title">نسيت كلمة المرور</string>
+    <string name="forgot_password_description">أدخل بريدك الإلكتروني أو رقم هاتفك لتلقي رمز إعادة التعيين</string>
+    <string name="reset_code_sent">تم إرسال رمز إعادة التعيين!</string>
+    <string name="reset_code_description">لقد أرسلنا رمز إعادة التعيين إلى %s. يرجى التحقق من بريدك الإلكتروني أو الرسائل النصية وإدخال الرمز أدناه.</string>
+    <string name="google">جوجل</string>
+    <string name="facebook">فيسبوك</string>
     
     <!-- Dashboard -->
     <string name="your_car">سيارتك</string>
@@ -37,7 +47,6 @@
     <string name="shop_parts">تسوق قطع الغيار</string>
     <string name="parts_expiring">قطع غيار تنتهي قريباً</string>
     <string name="view_all">عرض الكل</string>
-    <string name="welcome_back">مرحباً بعودتك</string>
     <string name="car_health_score">درجة صحة السيارة</string>
     <string name="maintenance_reminders">تذكيرات الصيانة</string>
     <string name="quick_book">حجز سريع</string>

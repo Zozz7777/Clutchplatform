@@ -25,6 +25,8 @@ import androidx.compose.ui.res.stringResource
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.clutch.app.ui.components.ErrorDialog
+import androidx.compose.ui.platform.LocalContext
+import com.clutch.app.utils.TranslationManager
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -34,6 +36,7 @@ fun ForgotPasswordScreen(
     onResetPassword: () -> Unit = {},
     viewModel: ForgotPasswordViewModel = hiltViewModel()
 ) {
+    val context = LocalContext.current
     var emailOrPhone by remember { mutableStateOf("") }
     var resetCode by remember { mutableStateOf("") }
     var newPassword by remember { mutableStateOf("") }
@@ -60,7 +63,7 @@ fun ForgotPasswordScreen(
             TopAppBar(
                 title = {
                     Text(
-                        text = "Forgot Password",
+                        text = TranslationManager.getString(context, R.string.forgot_password_title),
                         color = ClutchRed,
                         fontWeight = FontWeight.Bold
                     )
@@ -97,7 +100,7 @@ fun ForgotPasswordScreen(
             if (!uiState.isEmailSent) {
                 // Reset Password Form
                 Text(
-                    text = "Enter your email or phone number to receive a reset code",
+                    text = TranslationManager.getString(context, R.string.forgot_password_description),
                     color = Color.Black,
                     fontSize = 16.sp,
                     modifier = Modifier.padding(bottom = 32.dp)
@@ -156,7 +159,7 @@ fun ForgotPasswordScreen(
                     Spacer(modifier = Modifier.height(24.dp))
 
                     Text(
-                        text = "Reset code sent!",
+                        text = TranslationManager.getString(context, R.string.reset_code_sent),
                         color = Color.Black,
                         fontSize = 24.sp,
                         fontWeight = FontWeight.Bold
@@ -165,7 +168,7 @@ fun ForgotPasswordScreen(
                     Spacer(modifier = Modifier.height(16.dp))
 
                     Text(
-                        text = "We've sent a reset code to ${uiState.emailOrPhone}. Please check your email or SMS and enter the code below.",
+                        text = TranslationManager.getString(context, R.string.reset_code_description).format(uiState.emailOrPhone),
                         color = Color.Gray,
                         fontSize = 16.sp,
                         modifier = Modifier.padding(horizontal = 16.dp)

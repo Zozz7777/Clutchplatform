@@ -95,7 +95,7 @@ fun LoginScreen(
                 )
                 Spacer(modifier = Modifier.height(16.dp))
                 Text(
-                    text = "Welcome Back",
+                    text = TranslationManager.getString(context, R.string.welcome_back),
                     fontSize = 28.sp,
                     fontWeight = FontWeight.Bold,
                     color = Color.Black
@@ -241,7 +241,7 @@ fun LoginScreen(
                 verticalArrangement = Arrangement.spacedBy(16.dp)
             ) {
                 Text(
-                    text = "Or continue with",
+                    text = TranslationManager.getString(context, R.string.or_continue_with),
                     color = Color.Gray,
                     fontSize = 14.sp
                 )

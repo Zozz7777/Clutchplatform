@@ -111,7 +111,7 @@ fun SignupScreen(
               OutlinedTextField(
                   value = name,
                   onValueChange = { name = it },
-                  label = { Text("Name") },
+                  label = { Text(TranslationManager.getString(context, R.string.name)) },
                   keyboardOptions = KeyboardOptions(
                       keyboardType = KeyboardType.Text,
                       imeAction = ImeAction.Next
@@ -137,7 +137,7 @@ fun SignupScreen(
               OutlinedTextField(
                   value = email,
                   onValueChange = { email = it },
-                  label = { Text("Email") },
+                  label = { Text(TranslationManager.getString(context, R.string.email)) },
                   keyboardOptions = KeyboardOptions(
                       keyboardType = KeyboardType.Email,
                       imeAction = ImeAction.Next
@@ -163,7 +163,7 @@ fun SignupScreen(
             OutlinedTextField(
                 value = mobileNumber,
                 onValueChange = { mobileNumber = it },
-                label = { Text("Mobile Number") },
+                label = { Text(TranslationManager.getString(context, R.string.mobile_number)) },
                 keyboardOptions = KeyboardOptions(
                     keyboardType = KeyboardType.Phone,
                     imeAction = ImeAction.Next
@@ -189,7 +189,7 @@ fun SignupScreen(
             OutlinedTextField(
                 value = password,
                 onValueChange = { password = it },
-                label = { Text("Password") },
+                label = { Text(TranslationManager.getString(context, R.string.password)) },
                 visualTransformation = if (passwordVisible) VisualTransformation.None else PasswordVisualTransformation(),
                 keyboardOptions = KeyboardOptions(
                     keyboardType = KeyboardType.Password,
@@ -225,7 +225,7 @@ fun SignupScreen(
             OutlinedTextField(
                 value = confirmPassword,
                 onValueChange = { confirmPassword = it },
-                label = { Text("Confirm Password") },
+                label = { Text(TranslationManager.getString(context, R.string.confirm_password)) },
                 visualTransformation = if (confirmPasswordVisible) VisualTransformation.None else PasswordVisualTransformation(),
                 keyboardOptions = KeyboardOptions(
                     keyboardType = KeyboardType.Password,
@@ -299,7 +299,7 @@ fun SignupScreen(
                         modifier = Modifier.size(24.dp)
                     )
                 } else {
-                    Text("SIGN UP", color = Color.White, fontSize = 18.sp, fontWeight = FontWeight.Bold)
+                    Text(TranslationManager.getString(context, R.string.sign_up), color = Color.White, fontSize = 18.sp, fontWeight = FontWeight.Bold)
                 }
             }
 
@@ -338,7 +338,7 @@ fun SignupScreen(
                             modifier = Modifier.size(20.dp)
                         )
                         Spacer(modifier = Modifier.width(8.dp))
-                        Text("Google", fontSize = 14.sp)
+                        Text(TranslationManager.getString(context, R.string.google), fontSize = 14.sp)
                     }
 
                     // Facebook Signup
@@ -360,7 +360,7 @@ fun SignupScreen(
                             modifier = Modifier.size(20.dp)
                         )
                         Spacer(modifier = Modifier.width(8.dp))
-                        Text("Facebook", fontSize = 14.sp)
+                        Text(TranslationManager.getString(context, R.string.facebook), fontSize = 14.sp)
                     }
                 }
             }
@@ -369,7 +369,7 @@ fun SignupScreen(
 
             // Already have account
             TextButton(onClick = onNavigateToLogin) {
-                Text("Already have an account?", color = ClutchRed)
+                Text(TranslationManager.getString(context, R.string.already_have_account_question), color = ClutchRed)
             }
         }
     }

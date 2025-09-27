@@ -29,6 +29,16 @@
     <string name="signup_with_google">Sign up with Google</string>
     <string name="signup_with_facebook">Sign up with Facebook</string>
     <string name="or_signup_with">Or sign up with</string>
+    <string name="welcome_back">Welcome Back</string>
+    <string name="or_continue_with">Or continue with</string>
+    <string name="sign_up">SIGN UP</string>
+    <string name="already_have_account_question">Already have an account?</string>
+    <string name="forgot_password_title">Forgot Password</string>
+    <string name="forgot_password_description">Enter your email or phone number to receive a reset code</string>
+    <string name="reset_code_sent">Reset code sent!</string>
+    <string name="reset_code_description">We\'ve sent a reset code to %s. Please check your email or SMS and enter the code below.</string>
+    <string name="google">Google</string>
+    <string name="facebook">Facebook</string>
     
     <!-- Dashboard -->
     <string name="your_car">Your Car</string>
@@ -37,7 +47,6 @@
     <string name="shop_parts">Shop Car Parts</string>
     <string name="parts_expiring">Parts Expiring Soon</string>
     <string name="view_all">View All</string>
-    <string name="welcome_back">Welcome Back</string>
     <string name="car_health_score">Car Health Score</string>
     <string name="maintenance_reminders">Maintenance Reminders</string>
     <string name="quick_book">Quick Book</string>
