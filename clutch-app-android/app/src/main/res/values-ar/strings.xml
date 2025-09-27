@@ -91,8 +91,10 @@
     <string name="onboarding_extend_life_desc">ابق على اطلاع بالصيانة واستبدل القطع في الوقت المناسب للحفاظ على سيارتك تعمل بسلاسة لسنوات قادمة.</string>
     <string name="onboarding_peace_mind_desc">من الميكانيكيين الموثوقين إلى المدفوعات الشفافة، كلتش يضمن أن كل رحلة تكون أكثر أماناً وذكاءً وخالية من التوتر.</string>
     
-    <!-- Community -->
-    <string name="community">المجتمع</string>
+        <!-- Community -->
+        <string name="community">المجتمع</string>
+        <string name="book_service">حجز الخدمة</string>
+        <string name="order_parts">طلب قطع الغيار</string>
     <string name="tips">نصائح</string>
     <string name="reviews">التقييمات</string>
     <string name="leaderboard">لوحة المتصدرين</string>
@@ -141,9 +143,7 @@
     <string name="clutch_logo">شعار كلتش</string>
     <string name="car">سيارة</string>
     <string name="dropdown">قائمة منسدلة</string>
-    <string name="edit">تعديل</string>
     <string name="close">إغلاق</string>
-    <string name="search">بحث</string>
     <string name="select">اختيار</string>
     <string name="brand_logo">شعار الماركة</string>
     <string name="change_brand">تغيير الماركة</string>

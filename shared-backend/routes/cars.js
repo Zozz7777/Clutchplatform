@@ -5,7 +5,7 @@ const CarBrand = require('../models/CarBrand');
 const CarModel = require('../models/CarModel');
 const CarTrim = require('../models/CarTrim');
 const MaintenanceService = require('../models/MaintenanceService');
-const { authenticateToken } = require('../middleware/auth');
+const { authenticateToken } = require('../middleware/unified-auth');
 
 // Get all car brands
 router.get('/brands', async (req, res) => {
@@ -94,7 +94,7 @@ router.get('/trims/:brandName/:modelName', async (req, res) => {
 router.get('/user-cars', authenticateToken, async (req, res) => {
   try {
     const cars = await Car.find({ 
-      userId: req.user.id, 
+      userId: req.user.userId || req.user.id, 
       isActive: true 
     }).sort({ createdAt: -1 });
     
@@ -147,7 +147,7 @@ router.post('/register', authenticateToken, async (req, res) => {
 
     // Create new car
     const car = new Car({
-      userId: req.user.id,
+      userId: req.user.userId || req.user.id,
       year: parseInt(year),
       brand: brand.trim(),
       model: model.trim(),
@@ -195,7 +195,7 @@ router.put('/:carId/maintenance', authenticateToken, async (req, res) => {
     // Find the car
     const car = await Car.findOne({ 
       _id: carId, 
-      userId: req.user.id, 
+      userId: req.user.userId || req.user.id, 
       isActive: true 
     });
 

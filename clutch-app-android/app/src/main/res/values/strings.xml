@@ -91,8 +91,10 @@
     <string name="onboarding_extend_life_desc">Stay on top of maintenance and replace parts at the right time to keep your car running smoothly for years to come.</string>
     <string name="onboarding_peace_mind_desc">From trusted mechanics to transparent payments, Clutch ensures every ride is safer, smarter, and stress-free.</string>
     
-    <!-- Community -->
-    <string name="community">Community</string>
+        <!-- Community -->
+        <string name="community">Community</string>
+        <string name="book_service">Book Service</string>
+        <string name="order_parts">Order Parts</string>
     <string name="tips">Tips</string>
     <string name="reviews">Reviews</string>
     <string name="leaderboard">Leaderboard</string>
@@ -141,9 +143,7 @@
     <string name="clutch_logo">Clutch Logo</string>
     <string name="car">Car</string>
     <string name="dropdown">Dropdown</string>
-    <string name="edit">Edit</string>
     <string name="close">Close</string>
-    <string name="search">Search</string>
     <string name="select">Select</string>
     <string name="brand_logo">Brand Logo</string>
     <string name="change_brand">Change Brand</string>
