@@ -4,17 +4,26 @@ import Foundation
 struct ClutchUser: Codable, Identifiable {
     let id: String
     let email: String
-    let phone: String
-    let firstName: String
-    let lastName: String
+    let phone: String?
+    let firstName: String?
+    let lastName: String?
+    let name: String?
     let profileImage: String?
-    let isEmailVerified: Bool
-    let isPhoneVerified: Bool
-    let createdAt: String
-    let updatedAt: String
+    let isEmailVerified: Bool?
+    let isPhoneVerified: Bool?
+    let createdAt: String?
+    let updatedAt: String?
+    let role: String?
+    let isActive: Bool?
     
     var fullName: String {
-        return "\(firstName) \(lastName)"
+        if let name = name, !name.isEmpty {
+            return name
+        }
+        if let firstName = firstName, let lastName = lastName {
+            return "\(firstName) \(lastName)"
+        }
+        return email
     }
     
     var displayName: String {
@@ -504,6 +513,57 @@ struct PaymentResponse: Codable {
         default:
             return "gray"
         }
+    }
+}
+
+// MARK: - API Request Models
+struct LoginRequest: Codable {
+    let emailOrPhone: String
+    let password: String
+    let rememberMe: Bool
+    
+    init(emailOrPhone: String, password: String, rememberMe: Bool = false) {
+        self.emailOrPhone = emailOrPhone
+        self.password = password
+        self.rememberMe = rememberMe
+    }
+}
+
+struct RegisterRequest: Codable {
+    let email: String
+    let phone: String
+    let firstName: String
+    let lastName: String
+    let password: String
+    let confirmPassword: String
+    let agreeToTerms: Bool
+    
+    init(email: String, phone: String, firstName: String, lastName: String, password: String, confirmPassword: String, agreeToTerms: Bool) {
+        self.email = email
+        self.phone = phone
+        self.firstName = firstName
+        self.lastName = lastName
+        self.password = password
+        self.confirmPassword = confirmPassword
+        self.agreeToTerms = agreeToTerms
+    }
+}
+
+struct ForgotPasswordRequest: Codable {
+    let emailOrPhone: String
+    
+    init(emailOrPhone: String) {
+        self.emailOrPhone = emailOrPhone
+    }
+}
+
+struct OtpRequest: Codable {
+    let emailOrPhone: String
+    let otp: String
+    
+    init(emailOrPhone: String, otp: String) {
+        self.emailOrPhone = emailOrPhone
+        self.otp = otp
     }
 }
 

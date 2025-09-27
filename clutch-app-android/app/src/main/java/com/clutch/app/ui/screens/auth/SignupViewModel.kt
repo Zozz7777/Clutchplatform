@@ -53,7 +53,7 @@ class SignupViewModel @Inject constructor(
                 val lastName = name.split(" ").drop(1).joinToString(" ")
                 
                 val registerResult = repository.register(
-                    email = email, // Use actual email
+                    email = email,
                     phone = mobileNumber,
                     firstName = firstName,
                     lastName = lastName,
@@ -107,6 +107,46 @@ class SignupViewModel @Inject constructor(
 
     fun clearError() {
         _uiState.value = _uiState.value.copy(errorMessage = "")
+    }
+    
+    fun signupWithGoogle() {
+        _uiState.value = _uiState.value.copy(isLoading = true, errorMessage = "")
+        
+        viewModelScope.launch {
+            try {
+                // TODO: Implement Google Sign-Up
+                // For now, show a placeholder message
+                _uiState.value = _uiState.value.copy(
+                    isLoading = false,
+                    errorMessage = "Google Sign-Up not yet implemented"
+                )
+            } catch (e: Exception) {
+                _uiState.value = _uiState.value.copy(
+                    isLoading = false,
+                    errorMessage = "Google Sign-Up failed: ${e.message}"
+                )
+            }
+        }
+    }
+    
+    fun signupWithFacebook() {
+        _uiState.value = _uiState.value.copy(isLoading = true, errorMessage = "")
+        
+        viewModelScope.launch {
+            try {
+                // TODO: Implement Facebook Sign-Up
+                // For now, show a placeholder message
+                _uiState.value = _uiState.value.copy(
+                    isLoading = false,
+                    errorMessage = "Facebook Sign-Up not yet implemented"
+                )
+            } catch (e: Exception) {
+                _uiState.value = _uiState.value.copy(
+                    isLoading = false,
+                    errorMessage = "Facebook Sign-Up failed: ${e.message}"
+                )
+            }
+        }
     }
 }
 

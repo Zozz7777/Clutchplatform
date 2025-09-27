@@ -292,7 +292,9 @@ fun SignupScreen(
                 ) {
                     // Google Signup
                     OutlinedButton(
-                        onClick = { /* TODO: Implement Google signup */ },
+                        onClick = { 
+                            viewModel.signupWithGoogle()
+                        },
                         modifier = Modifier
                             .weight(1f)
                             .height(48.dp),
@@ -312,7 +314,9 @@ fun SignupScreen(
 
                     // Facebook Signup
                     OutlinedButton(
-                        onClick = { /* TODO: Implement Facebook signup */ },
+                        onClick = { 
+                            viewModel.signupWithFacebook()
+                        },
                         modifier = Modifier
                             .weight(1f)
                             .height(48.dp),

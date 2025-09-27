@@ -67,6 +67,46 @@ class LoginViewModel @Inject constructor(
     fun clearError() {
         _uiState.value = _uiState.value.copy(errorMessage = "")
     }
+    
+    fun loginWithGoogle() {
+        _uiState.value = _uiState.value.copy(isLoading = true, errorMessage = "")
+        
+        viewModelScope.launch {
+            try {
+                // TODO: Implement Google Sign-In
+                // For now, show a placeholder message
+                _uiState.value = _uiState.value.copy(
+                    isLoading = false,
+                    errorMessage = "Google Sign-In not yet implemented"
+                )
+            } catch (e: Exception) {
+                _uiState.value = _uiState.value.copy(
+                    isLoading = false,
+                    errorMessage = "Google Sign-In failed: ${e.message}"
+                )
+            }
+        }
+    }
+    
+    fun loginWithFacebook() {
+        _uiState.value = _uiState.value.copy(isLoading = true, errorMessage = "")
+        
+        viewModelScope.launch {
+            try {
+                // TODO: Implement Facebook Login
+                // For now, show a placeholder message
+                _uiState.value = _uiState.value.copy(
+                    isLoading = false,
+                    errorMessage = "Facebook Login not yet implemented"
+                )
+            } catch (e: Exception) {
+                _uiState.value = _uiState.value.copy(
+                    isLoading = false,
+                    errorMessage = "Facebook Login failed: ${e.message}"
+                )
+            }
+        }
+    }
 }
 
 data class LoginUiState(
