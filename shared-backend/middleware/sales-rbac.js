@@ -1,4 +1,5 @@
 const { SalesEmployee } = require('../models/SalesEmployee');
+const logger = require('../utils/logger');
 
 /**
  * Sales RBAC Middleware

@@ -10,6 +10,7 @@ const rateLimit = require('express-rate-limit');
 const helmet = require('helmet');
 const cors = require('cors');
 const { performanceMiddleware, errorTrackingMiddleware } = require('./unified-performance-monitor');
+const logger = require('../utils/logger');
 
 // Memory monitoring
 let memoryStats = {
