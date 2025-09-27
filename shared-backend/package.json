@@ -75,7 +75,10 @@
     "start:optimized": "node --max-old-space-size=1024 server.js",
     "deploy:optimized": "node scripts/deploy-optimized-backend.js",
     "cache:stats": "node -e \"require('./config/optimized-redis').redisCache.getStats()\"",
-    "memory:stats": "node -e \"require('./middleware/optimized-middleware').getMemoryStats()\""
+    "memory:stats": "node -e \"require('./middleware/optimized-middleware').getMemoryStats()\"",
+    "seed:cars": "node scripts/seeding/scripts/seed-all-egypt-cars.js",
+    "seed:cars:basic": "node scripts/seeding/scripts/seed-egypt-cars.js",
+    "seed:cars:clear": "node -e \"require('./scripts/seeding/scripts/seed-all-egypt-cars').clearExistingData(); require('mongoose').connection.close();\""
   },
   "keywords": [
     "clutch",

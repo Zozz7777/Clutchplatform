@@ -124,90 +124,114 @@ fun AddCarScreen(
             )
 
             // Brand Selection Button
-            OutlinedTextField(
-                value = selectedBrand,
-                onValueChange = { },
-                label = { Text(TranslationManager.getString(context, R.string.brand_name)) },
-                readOnly = true,
-                trailingIcon = {
-                    Icon(
-                        imageVector = Icons.Default.KeyboardArrowDown,
-                        contentDescription = "Select Brand",
-                        tint = ClutchGrayDark
-                    )
-                },
+            Box(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .clickable { onNavigateToBrandSelection() },
-                colors = OutlinedTextFieldDefaults.colors(
-                    focusedBorderColor = ClutchRed,
-                    focusedLabelColor = ClutchRed,
-                    unfocusedBorderColor = ClutchGrayDark,
-                    unfocusedLabelColor = ClutchGrayDark,
-                    focusedTextColor = ClutchGrayDark,
-                    unfocusedTextColor = ClutchGrayDark
+                    .clickable { onNavigateToBrandSelection() }
+            ) {
+                OutlinedTextField(
+                    value = selectedBrand,
+                    onValueChange = { },
+                    label = { Text(TranslationManager.getString(context, R.string.brand_name)) },
+                    readOnly = true,
+                    enabled = false,
+                    trailingIcon = {
+                        Icon(
+                            imageVector = Icons.Default.KeyboardArrowDown,
+                            contentDescription = "Select Brand",
+                            tint = ClutchGrayDark
+                        )
+                    },
+                    modifier = Modifier.fillMaxWidth(),
+                    colors = OutlinedTextFieldDefaults.colors(
+                        focusedBorderColor = ClutchRed,
+                        focusedLabelColor = ClutchRed,
+                        unfocusedBorderColor = ClutchGrayDark,
+                        unfocusedLabelColor = ClutchGrayDark,
+                        focusedTextColor = ClutchGrayDark,
+                        unfocusedTextColor = ClutchGrayDark,
+                        disabledBorderColor = ClutchGrayDark,
+                        disabledLabelColor = ClutchGrayDark,
+                        disabledTextColor = ClutchGrayDark
+                    )
                 )
-            )
+            }
 
             // Model Selection Button
-            OutlinedTextField(
-                value = selectedModel,
-                onValueChange = { },
-                label = { Text(TranslationManager.getString(context, R.string.all_models)) },
-                readOnly = true,
-                trailingIcon = {
-                    Icon(
-                        imageVector = Icons.Default.KeyboardArrowDown,
-                        contentDescription = "Select Model",
-                        tint = if (selectedBrand.isNotEmpty()) ClutchGrayDark else ClutchGrayDark.copy(alpha = 0.5f)
-                    )
-                },
+            Box(
                 modifier = Modifier
                     .fillMaxWidth()
                     .clickable { 
                         if (selectedBrand.isNotEmpty()) {
                             onNavigateToModelSelection(selectedBrand)
                         }
+                    }
+            ) {
+                OutlinedTextField(
+                    value = selectedModel,
+                    onValueChange = { },
+                    label = { Text(TranslationManager.getString(context, R.string.all_models)) },
+                    readOnly = true,
+                    enabled = false,
+                    trailingIcon = {
+                        Icon(
+                            imageVector = Icons.Default.KeyboardArrowDown,
+                            contentDescription = "Select Model",
+                            tint = if (selectedBrand.isNotEmpty()) ClutchGrayDark else ClutchGrayDark.copy(alpha = 0.5f)
+                        )
                     },
-                colors = OutlinedTextFieldDefaults.colors(
-                    focusedBorderColor = ClutchRed,
-                    focusedLabelColor = ClutchRed,
-                    unfocusedBorderColor = if (selectedBrand.isNotEmpty()) ClutchGrayDark else ClutchGrayDark.copy(alpha = 0.5f),
-                    unfocusedLabelColor = if (selectedBrand.isNotEmpty()) ClutchGrayDark else ClutchGrayDark.copy(alpha = 0.5f),
-                    focusedTextColor = ClutchGrayDark,
-                    unfocusedTextColor = if (selectedBrand.isNotEmpty()) ClutchGrayDark else ClutchGrayDark.copy(alpha = 0.6f)
+                    modifier = Modifier.fillMaxWidth(),
+                    colors = OutlinedTextFieldDefaults.colors(
+                        focusedBorderColor = ClutchRed,
+                        focusedLabelColor = ClutchRed,
+                        unfocusedBorderColor = if (selectedBrand.isNotEmpty()) ClutchGrayDark else ClutchGrayDark.copy(alpha = 0.5f),
+                        unfocusedLabelColor = if (selectedBrand.isNotEmpty()) ClutchGrayDark else ClutchGrayDark.copy(alpha = 0.5f),
+                        focusedTextColor = ClutchGrayDark,
+                        unfocusedTextColor = if (selectedBrand.isNotEmpty()) ClutchGrayDark else ClutchGrayDark.copy(alpha = 0.6f),
+                        disabledBorderColor = if (selectedBrand.isNotEmpty()) ClutchGrayDark else ClutchGrayDark.copy(alpha = 0.5f),
+                        disabledLabelColor = if (selectedBrand.isNotEmpty()) ClutchGrayDark else ClutchGrayDark.copy(alpha = 0.5f),
+                        disabledTextColor = if (selectedBrand.isNotEmpty()) ClutchGrayDark else ClutchGrayDark.copy(alpha = 0.6f)
+                    )
                 )
-            )
+            }
 
             // Trim Selection Button
-            OutlinedTextField(
-                value = selectedTrim,
-                onValueChange = { },
-                label = { Text(TranslationManager.getString(context, R.string.trim)) },
-                readOnly = true,
-                trailingIcon = {
-                    Icon(
-                        imageVector = Icons.Default.KeyboardArrowDown,
-                        contentDescription = "Select Trim",
-                        tint = if (selectedModel.isNotEmpty()) ClutchGrayDark else ClutchGrayDark.copy(alpha = 0.5f)
-                    )
-                },
+            Box(
                 modifier = Modifier
                     .fillMaxWidth()
                     .clickable { 
                         if (selectedModel.isNotEmpty()) {
                             onNavigateToTrimSelection(selectedBrand, selectedModel)
                         }
+                    }
+            ) {
+                OutlinedTextField(
+                    value = selectedTrim,
+                    onValueChange = { },
+                    label = { Text(TranslationManager.getString(context, R.string.trim)) },
+                    readOnly = true,
+                    enabled = false,
+                    trailingIcon = {
+                        Icon(
+                            imageVector = Icons.Default.KeyboardArrowDown,
+                            contentDescription = "Select Trim",
+                            tint = if (selectedModel.isNotEmpty()) ClutchGrayDark else ClutchGrayDark.copy(alpha = 0.5f)
+                        )
                     },
-                colors = OutlinedTextFieldDefaults.colors(
-                    focusedBorderColor = ClutchRed,
-                    focusedLabelColor = ClutchRed,
-                    unfocusedBorderColor = if (selectedModel.isNotEmpty()) ClutchGrayDark else ClutchGrayDark.copy(alpha = 0.5f),
-                    unfocusedLabelColor = if (selectedModel.isNotEmpty()) ClutchGrayDark else ClutchGrayDark.copy(alpha = 0.5f),
-                    focusedTextColor = ClutchGrayDark,
-                    unfocusedTextColor = if (selectedModel.isNotEmpty()) ClutchGrayDark else ClutchGrayDark.copy(alpha = 0.6f)
+                    modifier = Modifier.fillMaxWidth(),
+                    colors = OutlinedTextFieldDefaults.colors(
+                        focusedBorderColor = ClutchRed,
+                        focusedLabelColor = ClutchRed,
+                        unfocusedBorderColor = if (selectedModel.isNotEmpty()) ClutchGrayDark else ClutchGrayDark.copy(alpha = 0.5f),
+                        unfocusedLabelColor = if (selectedModel.isNotEmpty()) ClutchGrayDark else ClutchGrayDark.copy(alpha = 0.5f),
+                        focusedTextColor = ClutchGrayDark,
+                        unfocusedTextColor = if (selectedModel.isNotEmpty()) ClutchGrayDark else ClutchGrayDark.copy(alpha = 0.6f),
+                        disabledBorderColor = if (selectedModel.isNotEmpty()) ClutchGrayDark else ClutchGrayDark.copy(alpha = 0.5f),
+                        disabledLabelColor = if (selectedModel.isNotEmpty()) ClutchGrayDark else ClutchGrayDark.copy(alpha = 0.5f),
+                        disabledTextColor = if (selectedModel.isNotEmpty()) ClutchGrayDark else ClutchGrayDark.copy(alpha = 0.6f)
+                    )
                 )
-            )
+            }
 
             // Kilometers Input
             OutlinedTextField(
