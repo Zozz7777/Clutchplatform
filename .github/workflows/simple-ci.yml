@@ -99,5 +99,7 @@ jobs:
         echo "| Health Check | ${{ needs.health-check.result }} |" >> $GITHUB_STEP_SUMMARY
         echo "" >> $GITHUB_STEP_SUMMARY
         echo "### 🌐 Production Status" >> $GITHUB_STEP_SUMMARY
-        echo "**Live Server**: https://clutch-main-nk7x.onrender.com" >> $GITHUB_STEP_SUMMARY
+        echo "**Backend**: https://clutch-main-nk7x.onrender.com" >> $GITHUB_STEP_SUMMARY
+        echo "**Admin**: https://clutch-frontend-ooeh.onrender.com" >> $GITHUB_STEP_SUMMARY
+        echo "**Website**: https://clutch-website-okkm.onrender.com" >> $GITHUB_STEP_SUMMARY
         echo "**Status**: ✅ Operational" >> $GITHUB_STEP_SUMMARY

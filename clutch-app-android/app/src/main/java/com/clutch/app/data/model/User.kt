@@ -32,22 +32,6 @@ data class NotificationPreferences(
     @SerializedName("sms") val sms: Boolean = false
 )
 
-data class LoginRequest(
-    @SerializedName("emailOrPhone") val emailOrPhone: String,
-    @SerializedName("password") val password: String,
-    @SerializedName("rememberMe") val rememberMe: Boolean = false
-)
-
-data class RegisterRequest(
-    @SerializedName("email") val email: String,
-    @SerializedName("phone") val phone: String,
-    @SerializedName("firstName") val firstName: String,
-    @SerializedName("lastName") val lastName: String,
-    @SerializedName("password") val password: String,
-    @SerializedName("confirmPassword") val confirmPassword: String,
-    @SerializedName("agreeToTerms") val agreeToTerms: Boolean
-)
-
 data class ForgotPasswordRequest(
     @SerializedName("emailOrPhone") val emailOrPhone: String
 )
@@ -55,22 +39,4 @@ data class ForgotPasswordRequest(
 data class OtpRequest(
     @SerializedName("emailOrPhone") val emailOrPhone: String,
     @SerializedName("otp") val otp: String
-)
-
-data class AuthResponse(
-    @SerializedName("success") val success: Boolean,
-    @SerializedName("message") val message: String,
-    @SerializedName("data") val data: AuthData
-)
-
-data class AuthData(
-    @SerializedName("user") val user: User,
-    @SerializedName("token") val token: String,
-    @SerializedName("refreshToken") val refreshToken: String
-)
-
-data class ApiResponse(
-    @SerializedName("success") val success: Boolean,
-    @SerializedName("message") val message: String,
-    @SerializedName("data") val data: Any? = null
 )

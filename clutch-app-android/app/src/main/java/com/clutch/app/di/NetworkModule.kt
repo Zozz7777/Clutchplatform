@@ -18,7 +18,7 @@ import javax.inject.Singleton
 @InstallIn(SingletonComponent::class)
 object NetworkModule {
     
-    private const val BASE_URL = BuildConfig.BASE_URL
+    private const val BASE_URL = "https://clutch-main-nk7x.onrender.com/"
     
     @Provides
     @Singleton
@@ -53,7 +53,7 @@ object NetworkModule {
     @Singleton
     fun provideRetrofit(okHttpClient: OkHttpClient): Retrofit {
         return Retrofit.Builder()
-            .baseUrl(BASE_URL)
+            .baseUrl(BASE_URL as String)
             .client(okHttpClient)
             .addConverterFactory(GsonConverterFactory.create())
             .build()

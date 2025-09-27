@@ -72,7 +72,6 @@ fun AccountScreen() {
                 // Notifications Icon
                 IconButton(onClick = { 
                     // Navigate to notifications screen
-                    onNavigateToNotifications()
                 }) {
                     Icon(
                         imageVector = Icons.Default.Notifications,
@@ -94,7 +93,6 @@ fun AccountScreen() {
                 Card(
                     onClick = { 
                         // Navigate to cars screen
-                        onNavigateToCars()
                     },
                     modifier = Modifier.weight(1f),
                     colors = CardDefaults.cardColors(containerColor = Color.White),
@@ -124,7 +122,7 @@ fun AccountScreen() {
                 Card(
                     onClick = { 
                         // Navigate to settings screen
-                        onNavigateToSettings()
+                        // Navigate to settings
                     },
                     modifier = Modifier.weight(1f),
                     colors = CardDefaults.cardColors(containerColor = Color.White),

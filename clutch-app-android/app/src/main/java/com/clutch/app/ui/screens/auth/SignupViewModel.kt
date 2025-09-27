@@ -114,34 +114,12 @@ class SignupViewModel @Inject constructor(
 
         viewModelScope.launch {
             try {
-                // Implement Google Sign-Up using Firebase Auth
-                // Note: This requires proper Google Sign-In setup and configuration
-                // For now, simulate successful signup
-                val mockGoogleUser = AuthResponse(
-                    success = true,
-                    data = AuthData(
-                        user = User(
-                            id = "google_user_${System.currentTimeMillis()}",
-                            email = "user@gmail.com",
-                            firstName = "Google",
-                            lastName = "User",
-                            phone = null,
-                            profileImage = null,
-                            isEmailVerified = true,
-                            isPhoneVerified = false,
-                            createdAt = System.currentTimeMillis().toString(),
-                            updatedAt = System.currentTimeMillis().toString()
-                        ),
-                        token = "google_token_${System.currentTimeMillis()}",
-                        refreshToken = "google_refresh_${System.currentTimeMillis()}"
-                    ),
-                    message = "Google Sign-Up successful",
-                    timestamp = System.currentTimeMillis().toString()
+                // TODO: Implement Google Sign-Up
+                _uiState.value = _uiState.value.copy(
+                    isLoading = false,
+                    errorMessage = "Google Sign-Up not implemented yet"
                 )
-                
-                // Save session data
-                sessionManager.saveAuthTokens(mockGoogleUser.data.token, mockGoogleUser.data.refreshToken)
-                sessionManager.saveUser(mockGoogleUser.data.user)
+                return
                 
                 _uiState.value = _uiState.value.copy(
                     isLoading = false,

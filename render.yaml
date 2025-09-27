@@ -1,0 +1,96 @@
+# Clutch Platform - Unified Render Configuration
+# This is the single source of truth for all Render deployments
+
+services:
+  # Main Backend API Service
+  - type: web
+    name: clutch-backend
+    env: node
+    plan: starter
+    rootDir: shared-backend
+    buildCommand: npm install --legacy-peer-deps
+    startCommand: npm start
+    healthCheckPath: /health
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: 5000
+      - key: RENDER
+        value: true
+      - key: AUTO_SETUP_ENABLED
+        value: true
+      - key: AI_MONITORING_ENABLED
+        value: true
+      - key: AI_AUTO_FIX_ENABLED
+        value: true
+      - key: HELMET_ENABLED
+        value: true
+      - key: RATE_LIMITING_ENABLED
+        value: true
+      - key: LOG_LEVEL
+        value: info
+      - key: COMPRESSION_ENABLED
+        value: true
+      - key: HEALTH_CHECK_ENABLED
+        value: true
+      - key: METRICS_ENABLED
+        value: true
+    autoDeploy: true
+    branch: main
+
+  # Clutch Admin Dashboard
+  - type: web
+    name: clutch-admin
+    env: node
+    plan: starter
+    rootDir: clutch-admin
+    buildCommand: npm ci && npm run build
+    startCommand: npm start
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: 3001
+      - key: NEXT_PUBLIC_API_URL
+        value: https://clutch-main-nk7x.onrender.com
+    autoDeploy: true
+    branch: main
+
+  # Clutch Website (Next.js)
+  - type: web
+    name: clutch-website
+    env: node
+    plan: starter
+    rootDir: website/clutch-website-nextjs
+    buildCommand: npm ci && npm run build
+    startCommand: npm start
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: 3000
+      - key: NEXT_PUBLIC_API_URL
+        value: https://clutch-main-nk7x.onrender.com
+    autoDeploy: true
+    branch: main
+
+databases:
+  # Redis Cache
+  - name: clutch-redis
+    plan: starter
+    type: redis
+    maxmemoryPolicy: allkeys-lru
+
+# Global Environment Variables
+envVars:
+  - key: NODE_ENV
+    value: production
+  - key: LOG_LEVEL
+    value: info
+  - key: CORS_ORIGIN
+    value: https://clutch-main-nk7x.onrender.com
+  - key: RATE_LIMIT_WINDOW_MS
+    value: 900000
+  - key: RATE_LIMIT_MAX_REQUESTS
+    value: 100

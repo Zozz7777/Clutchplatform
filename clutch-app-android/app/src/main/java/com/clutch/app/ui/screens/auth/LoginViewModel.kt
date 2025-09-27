@@ -73,47 +73,10 @@ class LoginViewModel @Inject constructor(
 
         viewModelScope.launch {
             try {
-                // Implement Google Sign-In using Firebase Auth
-                val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-                    .requestIdToken("YOUR_WEB_CLIENT_ID") // Replace with actual web client ID
-                    .requestEmail()
-                    .build()
-
-                val googleSignInClient = GoogleSignIn.getClient(context, gso)
-                val signInIntent = googleSignInClient.signInIntent
-                
-                // Start Google Sign-In activity
-                // Note: This requires proper activity context and result handling
-                // For now, simulate successful login
-                val mockGoogleUser = AuthResponse(
-                    success = true,
-                    data = AuthData(
-                        user = User(
-                            id = "google_user_${System.currentTimeMillis()}",
-                            email = "user@gmail.com",
-                            firstName = "Google",
-                            lastName = "User",
-                            phone = null,
-                            profileImage = null,
-                            isEmailVerified = true,
-                            isPhoneVerified = false,
-                            createdAt = System.currentTimeMillis().toString(),
-                            updatedAt = System.currentTimeMillis().toString()
-                        ),
-                        token = "google_token_${System.currentTimeMillis()}",
-                        refreshToken = "google_refresh_${System.currentTimeMillis()}"
-                    ),
-                    message = "Google Sign-In successful",
-                    timestamp = System.currentTimeMillis().toString()
-                )
-                
-                // Save session data
-                sessionManager.saveAuthTokens(mockGoogleUser.data.token, mockGoogleUser.data.refreshToken)
-                sessionManager.saveUser(mockGoogleUser.data.user)
-                
+                // TODO: Implement Google Sign-In
                 _uiState.value = _uiState.value.copy(
                     isLoading = false,
-                    loginSuccess = true
+                    errorMessage = "Google Sign-In not implemented yet"
                 )
             } catch (e: Exception) {
                 _uiState.value = _uiState.value.copy(

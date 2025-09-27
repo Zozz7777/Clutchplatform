@@ -232,12 +232,16 @@ jobs:
       run: |
         echo "🚀 Deploying to production environment..."
         echo "✅ Production deployment completed"
-        echo "🌐 Production URL: https://clutch-main-nk7x.onrender.com"
+        echo "🌐 Backend URL: https://clutch-main-nk7x.onrender.com"
+        echo "🌐 Admin URL: https://clutch-frontend-ooeh.onrender.com"
+        echo "🌐 Website URL: https://clutch-website-okkm.onrender.com"
         
-    - name: Run production health check
+    - name: Run production health checks
       run: |
-        echo "🏥 Running production health check..."
-        curl -f https://clutch-main-nk7x.onrender.com/health || echo "⚠️ Production health check failed"
+        echo "🏥 Running production health checks..."
+        curl -f https://clutch-main-nk7x.onrender.com/health || echo "⚠️ Backend health check failed"
+        curl -f https://clutch-frontend-ooeh.onrender.com/ || echo "⚠️ Admin health check failed"
+        curl -f https://clutch-website-okkm.onrender.com/ || echo "⚠️ Website health check failed"
       continue-on-error: true
         
     - name: Notify deployment
@@ -283,7 +287,9 @@ jobs:
         
         echo "" >> $GITHUB_STEP_SUMMARY
         echo "### 🌐 Production Status" >> $GITHUB_STEP_SUMMARY
-        echo "**Live Server**: https://clutch-main-nk7x.onrender.com" >> $GITHUB_STEP_SUMMARY
+        echo "**Backend**: https://clutch-main-nk7x.onrender.com" >> $GITHUB_STEP_SUMMARY
+        echo "**Admin**: https://clutch-frontend-ooeh.onrender.com" >> $GITHUB_STEP_SUMMARY
+        echo "**Website**: https://clutch-website-okkm.onrender.com" >> $GITHUB_STEP_SUMMARY
         echo "**Status**: ✅ Operational" >> $GITHUB_STEP_SUMMARY
         
     - name: Set final status
