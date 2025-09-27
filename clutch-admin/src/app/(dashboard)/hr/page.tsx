@@ -9,7 +9,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Checkbox } from "@/components/ui/checkbox";
 import { useAuth } from "@/contexts/auth-context";
 import { useLanguage } from "@/contexts/language-context";
-import { useTranslations } from 'next-intl';
+// import { useTranslations } from 'next-intl'; // Removed to prevent SSR issues
 import { formatDate, formatRelativeTime } from "@/lib/utils";
 import { EmployeeInvitationForm } from "@/components/employee-invitation-form";
 import { JobPostingOverlay } from "@/components/job-posting-overlay";
@@ -184,7 +184,8 @@ const PERMISSION_OPTIONS = [
 ];
 
 export default function HRPage() {
-  const { t } = useLanguage();
+  // const { t } = useLanguage(); // Removed to prevent SSR issues
+  const t = (key: string) => key; // Fallback function
   const [employees, setEmployees] = useState<Employee[]>([]);
   const [applications, setApplications] = useState<JobApplication[]>([]);
   const [stats, setStats] = useState<HRStats | null>(null);
@@ -742,11 +743,11 @@ export default function HRPage() {
 
   const handleDeleteInvitation = async (invitationId: string) => {
     // Show confirmation dialog
-    if (window.confirm(t('hr.deleteInvitationConfirm'))) {
+    if (window.confirm('Are you sure you want to delete this invitation?')) {
       try {
         const response = await apiService.cancelInvitation(invitationId);
         if (response.success) {
-          toast.success(t('hr.invitationDeleted'));
+          toast.success('Invitation deleted successfully');
           // Reload invitations
           const invitationsResponse = await apiService.getEmployeeInvitations();
           if (invitationsResponse.success) {
@@ -974,7 +975,7 @@ export default function HRPage() {
         <div>
           <h1 className="text-3xl font-medium tracking-tight">HR Management</h1>
           <p className="text-muted-foreground font-sans">
-            {t('hr.description')}
+            Manage your team members, track employee performance, and handle HR operations efficiently.
           </p>
         </div>
         <div className="flex space-x-2">
@@ -996,7 +997,7 @@ export default function HRPage() {
       <div className="grid gap-4 md:grid-cols-4">
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">{t('hr.totalEmployees')}</CardTitle>
+            <CardTitle className="text-sm font-medium">Total Employees</CardTitle>
             <Users className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
@@ -1004,7 +1005,7 @@ export default function HRPage() {
               {stats ? stats.totalEmployees : Array.isArray(employees) ? employees.length : 0}
             </div>
             <p className="text-xs text-muted-foreground">
-              {stats ? stats.activeEmployees : Array.isArray(employees) ? employees.filter(e => e.status === "active").length : 0} {t('hr.active')}
+              {stats ? stats.activeEmployees : Array.isArray(employees) ? employees.filter(e => e.status === "active").length : 0} Active
             </p>
           </CardContent>
         </Card>
