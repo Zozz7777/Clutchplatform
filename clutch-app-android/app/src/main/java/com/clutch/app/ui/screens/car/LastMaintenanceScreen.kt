@@ -32,12 +32,16 @@ import java.util.*
 fun LastMaintenanceScreen(
     onNavigateBack: () -> Unit,
     onNavigateToServiceSelection: () -> Unit,
-    onMaintenanceCompleted: () -> Unit
+    onMaintenanceCompleted: () -> Unit,
+    initialDate: String? = null,
+    initialServices: List<String> = emptyList(),
+    initialKilometers: String = "",
+    onDataChange: (String?, List<String>, String) -> Unit = { _, _, _ -> }
 ) {
     val context = LocalContext.current
     var selectedDate by remember { mutableStateOf<Date?>(null) }
-    var selectedServices by remember { mutableStateOf<List<String>>(emptyList()) }
-    var kilometers by remember { mutableStateOf("") }
+    var selectedServices by remember { mutableStateOf(initialServices) }
+    var kilometers by remember { mutableStateOf(initialKilometers) }
     var showDatePicker by remember { mutableStateOf(false) }
     
     val dateFormatter = SimpleDateFormat("MMM dd, yyyy", Locale.getDefault())
@@ -140,7 +144,10 @@ fun LastMaintenanceScreen(
             // Kilometers Input
             OutlinedTextField(
                 value = kilometers,
-                onValueChange = { kilometers = it },
+                onValueChange = { 
+                    kilometers = it
+                    onDataChange(selectedDate?.let { dateFormatter.format(it) }, selectedServices, kilometers)
+                },
                 label = { Text(TranslationManager.getString(context, R.string.kilometers)) },
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
                 modifier = Modifier.fillMaxWidth(),
@@ -189,18 +196,19 @@ fun LastMaintenanceScreen(
         
         DatePickerDialog(
             onDismissRequest = { showDatePicker = false },
-            confirmButton = {
-                TextButton(
-                    onClick = {
-                        datePickerState.selectedDateMillis?.let {
-                            selectedDate = Date(it)
+                confirmButton = {
+                    TextButton(
+                        onClick = {
+                            datePickerState.selectedDateMillis?.let {
+                                selectedDate = Date(it)
+                                onDataChange(selectedDate?.let { dateFormatter.format(it) }, selectedServices, kilometers)
+                            }
+                            showDatePicker = false
                         }
-                        showDatePicker = false
+                    ) {
+                        Text(TranslationManager.getString(context, R.string.ok))
                     }
-                ) {
-                    Text(TranslationManager.getString(context, R.string.ok))
-                }
-            },
+                },
             dismissButton = {
                 TextButton(onClick = { showDatePicker = false }) {
                     Text(TranslationManager.getString(context, R.string.cancel))

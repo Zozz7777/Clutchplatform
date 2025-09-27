@@ -30,16 +30,24 @@ fun AddCarScreen(
     onNavigateToBrandSelection: () -> Unit,
     onNavigateToModelSelection: (String) -> Unit,
     onNavigateToTrimSelection: (String, String) -> Unit,
-    onNavigateToLastMaintenance: () -> Unit
+    onNavigateToLastMaintenance: () -> Unit,
+    initialYear: String = "",
+    initialBrand: String = "",
+    initialModel: String = "",
+    initialTrim: String = "",
+    initialKilometers: String = "",
+    initialColor: String = "",
+    initialLicensePlate: String = "",
+    onDataChange: (String, String, String, String, String, String, String) -> Unit = { _, _, _, _, _, _, _ -> }
 ) {
     val context = LocalContext.current
-    var year by remember { mutableStateOf("") }
-    var selectedBrand by remember { mutableStateOf("") }
-    var selectedModel by remember { mutableStateOf("") }
-    var selectedTrim by remember { mutableStateOf("") }
-    var kilometers by remember { mutableStateOf("") }
-    var color by remember { mutableStateOf("") }
-    var licensePlate by remember { mutableStateOf("") }
+    var year by remember { mutableStateOf(initialYear) }
+    var selectedBrand by remember { mutableStateOf(initialBrand) }
+    var selectedModel by remember { mutableStateOf(initialModel) }
+    var selectedTrim by remember { mutableStateOf(initialTrim) }
+    var kilometers by remember { mutableStateOf(initialKilometers) }
+    var color by remember { mutableStateOf(initialColor) }
+    var licensePlate by remember { mutableStateOf(initialLicensePlate) }
     
     val isFormValid = year.isNotEmpty() && selectedBrand.isNotEmpty() && 
                      selectedModel.isNotEmpty() && selectedTrim.isNotEmpty() && 
@@ -90,7 +98,10 @@ fun AddCarScreen(
             // Year Input
             OutlinedTextField(
                 value = year,
-                onValueChange = { year = it },
+                onValueChange = { 
+                    year = it
+                    onDataChange(year, selectedBrand, selectedModel, selectedTrim, kilometers, color, licensePlate)
+                },
                 label = { Text(TranslationManager.getString(context, R.string.year)) },
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
                 modifier = Modifier.fillMaxWidth(),
@@ -195,7 +206,10 @@ fun AddCarScreen(
             // Kilometers Input
             OutlinedTextField(
                 value = kilometers,
-                onValueChange = { kilometers = it },
+                onValueChange = { 
+                    kilometers = it
+                    onDataChange(year, selectedBrand, selectedModel, selectedTrim, kilometers, color, licensePlate)
+                },
                 label = { Text(TranslationManager.getString(context, R.string.kilometers)) },
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
                 modifier = Modifier.fillMaxWidth(),
@@ -212,7 +226,10 @@ fun AddCarScreen(
             // Color Input
             OutlinedTextField(
                 value = color,
-                onValueChange = { color = it },
+                onValueChange = { 
+                    color = it
+                    onDataChange(year, selectedBrand, selectedModel, selectedTrim, kilometers, color, licensePlate)
+                },
                 label = { Text(TranslationManager.getString(context, R.string.color)) },
                 modifier = Modifier.fillMaxWidth(),
                 colors = OutlinedTextFieldDefaults.colors(
@@ -228,7 +245,10 @@ fun AddCarScreen(
             // License Plate Input
             OutlinedTextField(
                 value = licensePlate,
-                onValueChange = { licensePlate = it.uppercase() },
+                onValueChange = { 
+                    licensePlate = it.uppercase()
+                    onDataChange(year, selectedBrand, selectedModel, selectedTrim, kilometers, color, licensePlate)
+                },
                 label = { Text(TranslationManager.getString(context, R.string.license_plate)) },
                 modifier = Modifier.fillMaxWidth(),
                 colors = OutlinedTextFieldDefaults.colors(

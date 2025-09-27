@@ -114,6 +114,22 @@ fun CarRegistrationFlowScreen(
                             licensePlate = licensePlate
                         )
                     }
+                },
+                initialYear = year,
+                initialBrand = selectedBrand,
+                initialModel = selectedModel,
+                initialTrim = selectedTrim,
+                initialKilometers = kilometers,
+                initialColor = color,
+                initialLicensePlate = licensePlate,
+                onDataChange = { newYear, newBrand, newModel, newTrim, newKilometers, newColor, newLicensePlate ->
+                    year = newYear
+                    selectedBrand = newBrand
+                    selectedModel = newModel
+                    selectedTrim = newTrim
+                    kilometers = newKilometers
+                    color = newColor
+                    licensePlate = newLicensePlate
                 }
             )
         }
@@ -174,6 +190,14 @@ fun CarRegistrationFlowScreen(
                             kilometers = maintenanceKilometers.toInt()
                         )
                     }
+                },
+                initialDate = selectedDate,
+                initialServices = selectedServices,
+                initialKilometers = maintenanceKilometers,
+                onDataChange = { newDate, newServices, newKilometers ->
+                    selectedDate = newDate
+                    selectedServices = newServices
+                    maintenanceKilometers = newKilometers
                 }
             )
         }
