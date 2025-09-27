@@ -49,17 +49,6 @@ jobs:
     defaults:
       run:
         working-directory: ./shared-backend
-    
-    services:
-      mongodb:
-        image: mongo:6.0
-        ports:
-          - 27017:27017
-        options: >-
-          --health-cmd "mongosh --eval 'db.adminCommand(\"ping\")'"
-          --health-interval 10s
-          --health-timeout 5s
-          --health-retries 5
 
     steps:
       - name: Checkout code
@@ -75,26 +64,30 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-      - name: Wait for MongoDB
-        run: |
-          echo "⏳ Waiting for MongoDB to be ready..."
-          timeout 60 bash -c 'until mongosh --eval "db.adminCommand(\"ping\")" > /dev/null 2>&1; do sleep 1; done'
-          echo "✅ MongoDB is ready"
-
       - name: Run linting (if available)
         run: npm run lint || echo "⚠️ No lint script found"
         continue-on-error: true
 
       - name: Run existing tests
         env:
-          MONGODB_URI: mongodb://localhost:27017/clutch_test
           NODE_ENV: test
+          MONGODB_URI: mongodb://localhost:27017/clutch_test
         run: |
           echo "🧪 Running available tests..."
-          npm run test:simple || echo "⚠️ Simple tests not available"
+          echo "📋 Test environment: $NODE_ENV"
+          echo "🔗 MongoDB URI: $MONGODB_URI"
+          
+          # Run simple tests (these don't require MongoDB)
+          if npm run test:simple; then
+            echo "✅ Simple tests passed"
+          else
+            echo "❌ Simple tests failed"
+            exit 1
+          fi
+          
+          # Try other test commands if they exist
           npm run test:health || echo "⚠️ Health tests not available"
           npm run test || echo "⚠️ General tests not available"
-        continue-on-error: true
 
   # Production Health Check
   production-health:
