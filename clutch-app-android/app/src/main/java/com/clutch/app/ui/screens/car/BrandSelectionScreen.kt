@@ -17,50 +17,33 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.clutch.app.data.model.CarBrand
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.hilt.navigation.compose.hiltViewModel
+import coil.compose.AsyncImage
+import coil.request.ImageRequest
 import com.clutch.app.R
 import com.clutch.app.ui.theme.ClutchRed
 import com.clutch.app.utils.TranslationManager
+import com.clutch.app.ui.viewmodel.BrandSelectionViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun BrandSelectionScreen(
     onNavigateBack: () -> Unit,
-    onBrandSelected: (String) -> Unit
+    onBrandSelected: (String) -> Unit,
+    viewModel: BrandSelectionViewModel = hiltViewModel()
 ) {
     val context = LocalContext.current
-    var searchQuery by remember { mutableStateOf("") }
+    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     var selectedBrand by remember { mutableStateOf("") }
     
-    // Mock data for brands - in real app, this would come from API
-    val brands = remember {
-        listOf(
-            "ASTON MARTIN",
-            "AUDI",
-            "BMW",
-            "MERCEDES-BENZ",
-            "TOYOTA",
-            "HONDA",
-            "FORD",
-            "CHEVROLET",
-            "NISSAN",
-            "HYUNDAI",
-            "KIA",
-            "VOLKSWAGEN",
-            "PORSCHE",
-            "FERRARI",
-            "LAMBORGHINI",
-            "MASERATI",
-            "JAGUAR",
-            "LAND ROVER",
-            "LEXUS",
-            "INFINITI"
-        )
-    }
-    
-    val filteredBrands = brands.filter { 
-        it.contains(searchQuery.uppercase(), ignoreCase = true) 
+    // Update search when query changes
+    LaunchedEffect(uiState.searchQuery) {
+        viewModel.searchBrands(uiState.searchQuery)
     }
 
     Scaffold(
@@ -97,8 +80,8 @@ fun BrandSelectionScreen(
 
             // Search Bar
             OutlinedTextField(
-                value = searchQuery,
-                onValueChange = { searchQuery = it },
+                value = uiState.searchQuery,
+                onValueChange = { viewModel.searchBrands(it) },
                 placeholder = { 
                     Text(
                         text = TranslationManager.getString(context, R.string.find_your_car),
@@ -125,18 +108,54 @@ fun BrandSelectionScreen(
             Spacer(modifier = Modifier.height(16.dp))
 
             // Brands List
-            LazyColumn(
-                verticalArrangement = Arrangement.spacedBy(8.dp)
-            ) {
-                items(filteredBrands) { brand ->
-                    BrandItem(
-                        brand = brand,
-                        isSelected = selectedBrand == brand,
-                        onClick = { 
-                            selectedBrand = brand
-                            onBrandSelected(brand)
+            when {
+                uiState.isLoading -> {
+                    Box(
+                        modifier = Modifier.fillMaxWidth(),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        CircularProgressIndicator(color = ClutchRed)
+                    }
+                }
+                uiState.errorMessage != null -> {
+                    Box(
+                        modifier = Modifier.fillMaxWidth(),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Text(
+                            text = uiState.errorMessage ?: "Unknown error",
+                            color = Color.Red,
+                            textAlign = TextAlign.Center
+                        )
+                    }
+                }
+                uiState.filteredBrands.isEmpty() -> {
+                    Box(
+                        modifier = Modifier.fillMaxWidth(),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Text(
+                            text = "No brands found",
+                            color = Color.Gray,
+                            textAlign = TextAlign.Center
+                        )
+                    }
+                }
+                else -> {
+                    LazyColumn(
+                        verticalArrangement = Arrangement.spacedBy(8.dp)
+                    ) {
+                        items(uiState.filteredBrands) { brand ->
+                            BrandItem(
+                                brand = brand,
+                                isSelected = selectedBrand == brand.name,
+                                onClick = { 
+                                    selectedBrand = brand.name
+                                    onBrandSelected(brand.name)
+                                }
+                            )
                         }
-                    )
+                    }
                 }
             }
         }
@@ -145,10 +164,11 @@ fun BrandSelectionScreen(
 
 @Composable
 fun BrandItem(
-    brand: String,
+    brand: CarBrand,
     isSelected: Boolean,
     onClick: () -> Unit
 ) {
+    val context = LocalContext.current
     val backgroundColor = if (isSelected) ClutchRed else Color(0xFFF5F5F5)
     val textColor = if (isSelected) Color.White else Color.Black
     val iconColor = if (isSelected) Color.White else Color.LightGray
@@ -171,26 +191,41 @@ fun BrandItem(
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.spacedBy(12.dp)
             ) {
-                Icon(
-                    imageVector = Icons.Default.KeyboardArrowDown,
-                    contentDescription = "Select",
-                    tint = iconColor
-                )
+                // Brand Logo
+                if (!brand.logo.isNullOrEmpty()) {
+                    AsyncImage(
+                        model = ImageRequest.Builder(context)
+                            .data(brand.logo)
+                            .crossfade(true)
+                            .build(),
+                        contentDescription = "${brand.name} Logo",
+                        modifier = Modifier.size(32.dp),
+                        error = painterResource(id = R.drawable.ic_car_placeholder),
+                        placeholder = painterResource(id = R.drawable.ic_car_placeholder)
+                    )
+                } else {
+                    Icon(
+                        imageVector = Icons.Default.DirectionsCar,
+                        contentDescription = "Brand Logo",
+                        tint = iconColor,
+                        modifier = Modifier.size(32.dp)
+                    )
+                }
                 
                 Text(
-                    text = brand,
+                    text = brand.name,
                     color = textColor,
                     fontSize = 16.sp,
                     fontWeight = FontWeight.Medium
                 )
             }
             
-            // Brand logo placeholder - in real app, this would be the actual brand logo
+            // Selection indicator
             Icon(
-                imageVector = Icons.Default.DirectionsCar,
-                contentDescription = "Brand Logo",
+                imageVector = if (isSelected) Icons.Default.Check else Icons.Default.KeyboardArrowRight,
+                contentDescription = if (isSelected) "Selected" else "Select",
                 tint = iconColor,
-                modifier = Modifier.size(24.dp)
+                modifier = Modifier.size(20.dp)
             )
         }
     }

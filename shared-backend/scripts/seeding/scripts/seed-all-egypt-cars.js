@@ -1,9 +1,9 @@
 const mongoose = require('mongoose');
 const egyptCarData = require('../data/egypt-car-data');
 const extendedEgyptCarData = require('../data/egypt-car-data-extended');
-const CarBrand = require('../../models/CarBrand');
-const CarModel = require('../../models/CarModel');
-const CarTrim = require('../../models/CarTrim');
+const CarBrand = require('../../../models/CarBrand');
+const CarModel = require('../../../models/CarModel');
+const CarTrim = require('../../../models/CarTrim');
 
 // Database connection
 const connectDB = async () => {
