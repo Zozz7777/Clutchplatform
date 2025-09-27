@@ -20,6 +20,7 @@ import com.clutch.app.ui.screens.parts.MyPartsScreen
 import com.clutch.app.ui.screens.maintenance.MaintenanceScreen
 import com.clutch.app.ui.screens.account.AccountScreen
 import com.clutch.app.ui.screens.car.CarHealthScreen
+import com.clutch.app.ui.screens.car.CarRegistrationFlowScreen
 import com.clutch.app.ui.screens.service.BookServiceScreen
 import com.clutch.app.ui.screens.parts.OrderPartsScreen
 import com.clutch.app.ui.screens.community.CommunityScreen
@@ -80,20 +81,23 @@ fun ClutchApp(
               onSkip = { currentScreen = "login" }
           )
           "login" -> LoginScreen(
-              onLoginSuccess = { currentScreen = "dashboard" },
+              onLoginSuccess = { currentScreen = "car_registration_flow" },
               onNavigateToSignup = { currentScreen = "signup" },
               onNavigateToForgotPassword = { currentScreen = "forgot_password" }
           )
           "signup" -> SignupScreen(
               onNavigateBack = { currentScreen = "login" },
               onNavigateToLogin = { currentScreen = "login" },
-              onSignupSuccess = { currentScreen = "dashboard" }
+              onSignupSuccess = { currentScreen = "car_registration_flow" }
           )
           "forgot_password" -> ForgotPasswordScreen(
               onNavigateBack = { currentScreen = "login" },
               onNavigateToLogin = { currentScreen = "login" },
               onResetPassword = { currentScreen = "login" }
           )
+        "car_registration_flow" -> CarRegistrationFlowScreen(
+            onFlowCompleted = { currentScreen = "dashboard" }
+        )
         "dashboard" -> {
             Scaffold(
                 bottomBar = {

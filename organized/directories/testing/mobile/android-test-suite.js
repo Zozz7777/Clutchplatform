@@ -137,7 +137,7 @@ class AndroidTestSuite {
   async testClientApp() {
     console.log('📱 Testing Clutch Client App...');
     
-    const appPath = path.join(__dirname, '../../mobile-apps/clutch-app/android/app/build/outputs/apk/debug/app-debug.apk');
+    const appPath = path.join(__dirname, '../../../clutch-app-android/app/build/outputs/apk/debug/app-debug.apk');
     
     try {
       // Install app
@@ -166,7 +166,7 @@ class AndroidTestSuite {
   async testPartnersApp() {
     console.log('🤝 Testing Clutch Partners App...');
     
-    const appPath = path.join(__dirname, '../../mobile-apps/clutchpartners/android/app/build/outputs/apk/debug/app-debug.apk');
+    const appPath = path.join(__dirname, '../../../clutch-partners-android/app/build/outputs/apk/debug/app-debug.apk');
     
     try {
       // Install app
@@ -226,8 +226,8 @@ class AndroidTestSuite {
     try {
       const testCommand = `./gradlew test --tests "*Test"`;
       const testPath = packageName === 'com.clutch.app' 
-        ? path.join(__dirname, '../../mobile-apps/clutch-app/android')
-        : path.join(__dirname, '../../mobile-apps/clutchpartners/android');
+        ? path.join(__dirname, '../../../clutch-app-android')
+        : path.join(__dirname, '../../../clutch-partners-android');
       
       execSync(testCommand, { 
         cwd: testPath, 
@@ -253,8 +253,8 @@ class AndroidTestSuite {
       // Run Espresso tests
       const testCommand = `./gradlew connectedAndroidTest`;
       const testPath = packageName === 'com.clutch.app' 
-        ? path.join(__dirname, '../../mobile-apps/clutch-app/android')
-        : path.join(__dirname, '../../mobile-apps/clutchpartners/android');
+        ? path.join(__dirname, '../../../clutch-app-android')
+        : path.join(__dirname, '../../../clutch-partners-android');
       
       execSync(testCommand, { 
         cwd: testPath, 

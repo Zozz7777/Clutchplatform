@@ -829,7 +829,7 @@ dependencies {
 
 ### **Clutch App Structure**
 ```
-mobile-apps/clutch-app/
+clutch-app-android/
 ├── android/
 │   ├── app/
 │   │   ├── build.gradle
@@ -899,7 +899,7 @@ mobile-apps/clutch-app/
 
 ### **Clutch Partners App Structure**
 ```
-mobile-apps/clutchpartners/
+clutch-partners-android/
 ├── android/
 │   ├── app/
 │   │   └── build.gradle

@@ -106,8 +106,8 @@ if (!logosExist) {
 
 // Update mobile app icons
 const apps = [
-  path.join(__dirname, '../mobile-apps/clutch-app'),
-  path.join(__dirname, '../mobile-apps/clutchpartners')
+  path.join(__dirname, '../../clutch-app-android'),
+  path.join(__dirname, '../../clutch-partners-android')
 ];
 
 apps.forEach(appPath => {
