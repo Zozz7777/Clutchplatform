@@ -1505,37 +1505,82 @@ router.post('/set-recovery-options', authenticateToken, async (req, res) => {
 // POST /api/v1/auth/register - User registration
 router.post('/register', async (req, res) => {
   try {
-    const { email, password, name, firstName, lastName, phone } = req.body;
+    logger.info('🔐 Registration attempt:', {
+      body: req.body,
+      headers: req.headers,
+      userAgent: req.get('User-Agent')
+    });
+
+    const { email, password, firstName, lastName, phone, confirmPassword, agreeToTerms } = req.body;
     
-    // Handle both name formats (name or firstName/lastName)
-    const fullName = name || (firstName && lastName ? `${firstName} ${lastName}` : null);
-    
-    if (!email || !password || !fullName) {
+    // Validate required fields
+    if (!email || !password || !firstName || !lastName) {
+      logger.warn('❌ Missing required fields:', { 
+        email: !!email, 
+        password: !!password, 
+        firstName: !!firstName, 
+        lastName: !!lastName 
+      });
       return res.status(400).json({
         success: false,
         error: 'MISSING_REQUIRED_FIELDS',
-        message: 'Email, password, and name (or firstName/lastName) are required',
+        message: 'Email, password, firstName, and lastName are required',
+        timestamp: new Date().toISOString()
+      });
+    }
+
+    // Validate password confirmation
+    if (password !== confirmPassword) {
+      logger.warn('❌ Password mismatch');
+      return res.status(400).json({
+        success: false,
+        error: 'PASSWORD_MISMATCH',
+        message: 'Password and confirm password do not match',
+        timestamp: new Date().toISOString()
+      });
+    }
+
+    // Validate terms agreement
+    if (!agreeToTerms) {
+      logger.warn('❌ Terms not agreed');
+      return res.status(400).json({
+        success: false,
+        error: 'TERMS_NOT_AGREED',
+        message: 'You must agree to the terms and conditions',
         timestamp: new Date().toISOString()
       });
     }
     
-    // Simplified registration for testing
+    // Create user object matching Android expectations
     const newUser = {
-      id: `user-${Date.now()}`,
+      _id: `user_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
       email: email,
-      name: fullName,
       phone: phone || null,
-      role: 'user',
-      isActive: true,
-      createdAt: new Date().toISOString()
+      firstName: firstName,
+      lastName: lastName,
+      dateOfBirth: null,
+      gender: null,
+      profileImage: null,
+      isEmailVerified: false,
+      isPhoneVerified: false,
+      preferences: {
+        language: 'en',
+        theme: 'light',
+        notifications: { push: true, email: true, sms: false },
+        receiveOffers: true,
+        subscribeNewsletter: true
+      },
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString()
     };
     
     // Generate JWT token
     const token = jwt.sign(
       { 
-        userId: newUser.id, 
+        userId: newUser._id, 
         email: newUser.email, 
-        role: newUser.role 
+        role: 'user',
+        permissions: ['read', 'write']
       },
       process.env.JWT_SECRET || 'test-secret',
       { expiresIn: '24h' }
@@ -1544,16 +1589,17 @@ router.post('/register', async (req, res) => {
     // Generate refresh token
     const refreshToken = jwt.sign(
       { 
-        userId: newUser.id, 
+        userId: newUser._id, 
         email: newUser.email, 
-        role: newUser.role,
+        role: 'user',
+        permissions: ['read', 'write'],
         type: 'refresh'
       },
       process.env.JWT_SECRET || 'test-secret',
       { expiresIn: '7d' }
     );
     
-    res.status(201).json({
+    const response = {
       success: true,
       data: {
         user: newUser,
@@ -1563,10 +1609,23 @@ router.post('/register', async (req, res) => {
       },
       message: 'Registration successful',
       timestamp: new Date().toISOString()
+    };
+
+    logger.info('✅ Registration successful:', {
+      userId: newUser._id,
+      email: newUser.email,
+      tokenLength: token.length,
+      responseSize: JSON.stringify(response).length
     });
     
+    res.status(201).json(response);
+    
   } catch (error) {
-    logger.error('❌ Registration error:', error);
+    logger.error('❌ Registration error:', {
+      error: error.message,
+      stack: error.stack,
+      body: req.body
+    });
     res.status(500).json({
       success: false,
       error: 'REGISTRATION_FAILED',
