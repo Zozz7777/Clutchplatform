@@ -37,6 +37,13 @@
     <string name="forgot_password_description">أدخل بريدك الإلكتروني أو رقم هاتفك لتلقي رمز إعادة التعيين</string>
     <string name="reset_code_sent">تم إرسال رمز إعادة التعيين!</string>
     <string name="reset_code_description">لقد أرسلنا رمز إعادة التعيين إلى %s. يرجى التحقق من بريدك الإلكتروني أو الرسائل النصية وإدخال الرمز أدناه.</string>
+    <string name="email_or_phone_number">البريد الإلكتروني أو رقم الهاتف</string>
+    <string name="send_reset_code">إرسال رمز إعادة التعيين</string>
+    <string name="enter_reset_code">أدخل رمز إعادة التعيين</string>
+    <string name="new_password">كلمة المرور الجديدة</string>
+    <string name="reset_password">إعادة تعيين كلمة المرور</string>
+    <string name="didnt_receive_code">لم تستلم الرمز؟ إعادة الإرسال</string>
+    <string name="back_to_login">العودة لتسجيل الدخول</string>
     <string name="google">جوجل</string>
     <string name="facebook">فيسبوك</string>
     

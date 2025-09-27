@@ -37,6 +37,13 @@
     <string name="forgot_password_description">Enter your email or phone number to receive a reset code</string>
     <string name="reset_code_sent">Reset code sent!</string>
     <string name="reset_code_description">We\'ve sent a reset code to %s. Please check your email or SMS and enter the code below.</string>
+    <string name="email_or_phone_number">Email or Phone Number</string>
+    <string name="send_reset_code">SEND RESET CODE</string>
+    <string name="enter_reset_code">Enter Reset Code</string>
+    <string name="new_password">New Password</string>
+    <string name="reset_password">RESET PASSWORD</string>
+    <string name="didnt_receive_code">Didn\'t receive the code? Resend</string>
+    <string name="back_to_login">Back to Login</string>
     <string name="google">Google</string>
     <string name="facebook">Facebook</string>
     

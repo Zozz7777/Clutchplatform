@@ -26,6 +26,9 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.clutch.app.ui.components.ErrorDialog
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalLayoutDirection
+import androidx.compose.ui.unit.LayoutDirection
+import androidx.compose.runtime.CompositionLocalProvider
 import com.clutch.app.utils.TranslationManager
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -37,6 +40,9 @@ fun ForgotPasswordScreen(
     viewModel: ForgotPasswordViewModel = hiltViewModel()
 ) {
     val context = LocalContext.current
+    val currentLanguage = TranslationManager.getCurrentLanguage()
+    val layoutDirection = if (currentLanguage == "ar") LayoutDirection.Rtl else LayoutDirection.Ltr
+    
     var emailOrPhone by remember { mutableStateOf("") }
     var resetCode by remember { mutableStateOf("") }
     var newPassword by remember { mutableStateOf("") }
@@ -58,34 +64,35 @@ fun ForgotPasswordScreen(
         }
     }
 
-    Scaffold(
-        topBar = {
-            TopAppBar(
-                title = {
-                    Text(
-                        text = TranslationManager.getString(context, R.string.forgot_password_title),
-                        color = ClutchRed,
-                        fontWeight = FontWeight.Bold
+    CompositionLocalProvider(LocalLayoutDirection provides layoutDirection) {
+        Scaffold(
+            topBar = {
+                TopAppBar(
+                    title = {
+                        Text(
+                            text = TranslationManager.getString(context, R.string.forgot_password_title),
+                            color = ClutchRed,
+                            fontWeight = FontWeight.Bold
+                        )
+                    },
+                    navigationIcon = {
+                        IconButton(onClick = onNavigateBack) {
+                            Icon(Icons.Default.ArrowBack, contentDescription = "Back", tint = ClutchRed)
+                        }
+                    },
+                    actions = {
+                        Image(
+                            painter = painterResource(id = R.drawable.clutch_logo_red),
+                            contentDescription = "Clutch Logo",
+                            modifier = Modifier.size(40.dp)
+                        )
+                    },
+                    colors = TopAppBarDefaults.topAppBarColors(
+                        containerColor = Color.White
                     )
-                },
-                navigationIcon = {
-                    IconButton(onClick = onNavigateBack) {
-                        Icon(Icons.Default.ArrowBack, contentDescription = "Back", tint = ClutchRed)
-                    }
-                },
-                actions = {
-                    Image(
-                        painter = painterResource(id = R.drawable.clutch_logo_red),
-                        contentDescription = "Clutch Logo",
-                        modifier = Modifier.size(40.dp)
-                    )
-                },
-                colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = Color.White
                 )
-            )
-        }
-    ) { paddingValues ->
+            }
+        ) { paddingValues ->
         Column(
             modifier = Modifier
                 .fillMaxSize()
@@ -110,14 +117,14 @@ fun ForgotPasswordScreen(
                 OutlinedTextField(
                     value = emailOrPhone,
                     onValueChange = { emailOrPhone = it },
-                    label = { Text("Email or Phone Number") },
+                    label = { Text(TranslationManager.getString(context, R.string.email_or_phone_number)) },
                     keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
                     modifier = Modifier.fillMaxWidth(),
                     colors = OutlinedTextFieldDefaults.colors(
                         focusedBorderColor = ClutchRed,
-                        unfocusedBorderColor = Color.Gray,
+                        unfocusedBorderColor = Color.LightGray,
                         focusedLabelColor = ClutchRed,
-                        unfocusedLabelColor = Color.Gray,
+                        unfocusedLabelColor = Color.LightGray,
                         focusedTextColor = Color.Black,
                         unfocusedTextColor = Color.Black
                     )
@@ -141,7 +148,7 @@ fun ForgotPasswordScreen(
                             modifier = Modifier.size(24.dp)
                         )
                     } else {
-                        Text("SEND RESET CODE", color = Color.White, fontSize = 18.sp, fontWeight = FontWeight.Bold)
+                        Text(TranslationManager.getString(context, R.string.send_reset_code), color = Color.White, fontSize = 18.sp, fontWeight = FontWeight.Bold)
                     }
                 }
             } else {
@@ -180,7 +187,7 @@ fun ForgotPasswordScreen(
                     OutlinedTextField(
                         value = resetCode,
                         onValueChange = { resetCode = it },
-                        label = { Text("Enter Reset Code") },
+                        label = { Text(TranslationManager.getString(context, R.string.enter_reset_code)) },
                         keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
                         modifier = Modifier.fillMaxWidth(),
                         colors = OutlinedTextFieldDefaults.colors(
@@ -199,7 +206,7 @@ fun ForgotPasswordScreen(
                     OutlinedTextField(
                         value = newPassword,
                         onValueChange = { newPassword = it },
-                        label = { Text("New Password") },
+                        label = { Text(TranslationManager.getString(context, R.string.new_password)) },
                         keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
                         modifier = Modifier.fillMaxWidth(),
                         colors = OutlinedTextFieldDefaults.colors(
@@ -230,7 +237,7 @@ fun ForgotPasswordScreen(
                                 modifier = Modifier.size(24.dp)
                             )
                         } else {
-                            Text("RESET PASSWORD", color = Color.White, fontSize = 18.sp, fontWeight = FontWeight.Bold)
+                            Text(TranslationManager.getString(context, R.string.reset_password), color = Color.White, fontSize = 18.sp, fontWeight = FontWeight.Bold)
                         }
                     }
 
@@ -238,7 +245,7 @@ fun ForgotPasswordScreen(
 
                     // Resend Code
                     TextButton(onClick = { /* TODO: Resend code */ }) {
-                        Text("Didn't receive the code? Resend", color = ClutchRed)
+                        Text(TranslationManager.getString(context, R.string.didnt_receive_code), color = ClutchRed)
                     }
                 }
             }
@@ -247,10 +254,11 @@ fun ForgotPasswordScreen(
 
             // Back to Login
             TextButton(onClick = onNavigateToLogin) {
-                Text("Back to Login", color = ClutchRed)
+                Text(TranslationManager.getString(context, R.string.back_to_login), color = ClutchRed)
             }
 
             Spacer(modifier = Modifier.height(16.dp))
+        }
         }
     }
     
