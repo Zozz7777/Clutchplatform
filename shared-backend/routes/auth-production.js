@@ -483,69 +483,97 @@ router.post('/forgot-password', authRateLimit, async (req, res) => {
       });
     }
     
-    // Generate reset token
-    const resetToken = jwt.sign(
-      { userId: user._id, type: 'password_reset' },
-      process.env.JWT_SECRET,
-      { expiresIn: '1h' }
-    );
+    // Generate reset code (6-digit OTP)
+    const resetCode = Math.floor(100000 + Math.random() * 900000).toString();
     
-    // Store reset token in database
+    // Store reset code in database
     await usersCollection.updateOne(
       { _id: user._id },
       { 
         $set: { 
-          resetToken: resetToken,
-          resetTokenExpires: new Date(Date.now() + 60 * 60 * 1000), // 1 hour
+          resetCode: resetCode,
+          resetCodeExpires: new Date(Date.now() + 15 * 60 * 1000), // 15 minutes
           updatedAt: new Date()
         }
       }
     );
     
-    // Send password reset email
+    // Send password reset email with code
     try {
       const { sendEmail } = require('../services/emailService');
       
-      const resetUrl = `${process.env.FRONTEND_URL || 'https://admin.yourclutch.com'}/reset-password?token=${resetToken}`;
-      
       const emailContent = `
-        <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
-          <div style="background-color: #FF6B35; color: white; padding: 20px; text-align: center;">
-            <h1>Clutch Password Reset</h1>
+        <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;">
+          <div style="background-color: #FF6B35; color: white; padding: 20px; text-align: center; border-radius: 8px 8px 0 0;">
+            <h1 style="margin: 0; font-size: 24px;">Clutch Password Reset</h1>
           </div>
-          <div style="padding: 20px;">
-            <h2>Hello ${user.name || user.firstName || 'User'}!</h2>
-            <p>We received a request to reset your password for your Clutch account.</p>
-            <p>Click the button below to reset your password:</p>
-            <div style="text-align: center; margin: 30px 0;">
-              <a href="${resetUrl}" style="background-color: #FF6B35; color: white; padding: 12px 24px; text-decoration: none; border-radius: 5px; display: inline-block;">Reset Password</a>
+          <div style="background-color: #f8f9fa; padding: 30px; border-radius: 0 0 8px 8px;">
+            <h2 style="color: #333; margin-top: 0;">Hello ${user.name || user.firstName || 'User'}!</h2>
+            <p style="color: #666; font-size: 16px; line-height: 1.5;">
+              We received a request to reset your password for your Clutch account. 
+              Use the verification code below to reset your password:
+            </p>
+            <div style="background-color: white; padding: 30px; border-radius: 8px; margin: 30px 0; text-align: center; border: 2px solid #FF6B35;">
+              <h3 style="color: #333; margin-top: 0; font-size: 18px;">Your Reset Code</h3>
+              <div style="font-size: 36px; font-weight: bold; color: #FF6B35; letter-spacing: 8px; margin: 20px 0;">
+                ${resetCode}
+              </div>
+              <p style="color: #666; font-size: 14px; margin: 0;">
+                Enter this code in the Clutch app to reset your password
+              </p>
             </div>
-            <p>Or copy and paste this link into your browser:</p>
-            <p style="word-break: break-all; color: #666;">${resetUrl}</p>
-            <hr>
-            <p><strong>Important:</strong></p>
-            <ul>
-              <li>This link will expire in 1 hour</li>
-              <li>If you didn't request this password reset, please ignore this email</li>
-              <li>For security reasons, this link can only be used once</li>
-            </ul>
-            <p>If you have any questions, please contact our support team.</p>
-            <p>Best regards,<br>The Clutch Team</p>
+            <div style="background-color: #fff3cd; padding: 15px; border-radius: 6px; margin: 20px 0; border-left: 4px solid #ffc107;">
+              <p style="color: #856404; font-size: 14px; margin: 0;">
+                <strong>⏰ Important:</strong> This code will expire in 15 minutes for security reasons.
+              </p>
+            </div>
+            <hr style="border: none; border-top: 1px solid #eee; margin: 30px 0;">
+            <p style="color: #999; font-size: 12px; line-height: 1.4;">
+              <strong>Security Notice:</strong> If you didn't request a password reset, please ignore this email. 
+              Your password will remain unchanged. For your security, never share this code with anyone.
+            </p>
+            <p style="color: #999; font-size: 12px; margin-top: 20px;">
+              Need help? Contact our support team at <a href="mailto:support@yourclutch.com" style="color: #FF6B35;">support@yourclutch.com</a><br>
+              Best regards,<br>The Clutch Team
+            </p>
           </div>
         </div>
       `;
       
+      const emailText = `
+        Clutch Password Reset
+        
+        Hello ${user.name || user.firstName || 'User'}!
+        
+        We received a request to reset your password for your Clutch account.
+        Use the verification code below to reset your password:
+        
+        Your Reset Code: ${resetCode}
+        
+        Enter this code in the Clutch app to reset your password.
+        
+        Important: This code will expire in 15 minutes for security reasons.
+        
+        If you didn't request a password reset, please ignore this email.
+        Your password will remain unchanged.
+        
+        Need help? Contact our support team at support@yourclutch.com
+        
+        Best regards,
+        The Clutch Team
+      `;
+      
       const emailResult = await sendEmail({
         to: lookupEmail,
-        subject: 'Reset Your Clutch Password',
+        subject: 'Your Clutch Password Reset Code',
         html: emailContent,
-        text: `Hello ${user.name || user.firstName || 'User'}! Please click the following link to reset your password: ${resetUrl}. This link expires in 1 hour.`
+        text: emailText
       });
       
       if (emailResult.success) {
-        console.log('📧 Password reset email sent successfully to:', lookupEmail);
+        console.log('📧 Password reset code sent successfully to:', lookupEmail);
       } else {
-        console.error('❌ Failed to send password reset email:', emailResult.error);
+        console.error('❌ Failed to send password reset code:', emailResult.error);
       }
       
     } catch (emailError) {
@@ -557,7 +585,7 @@ router.post('/forgot-password', authRateLimit, async (req, res) => {
     
     res.json({
       success: true,
-      message: 'If the email/phone exists, a reset code has been sent',
+      message: 'If the email/phone exists, a reset code has been sent to your email',
       timestamp: new Date().toISOString()
     });
     
@@ -567,6 +595,94 @@ router.post('/forgot-password', authRateLimit, async (req, res) => {
       success: false,
       error: 'FORGOT_PASSWORD_FAILED',
       message: 'Failed to process password reset request',
+      timestamp: new Date().toISOString()
+    });
+  }
+});
+
+// POST /api/v1/auth/reset-password - Reset password with code
+router.post('/reset-password', authRateLimit, async (req, res) => {
+  try {
+    const { emailOrPhone, resetCode, newPassword } = req.body;
+    
+    if (!emailOrPhone || !resetCode || !newPassword) {
+      return res.status(400).json({
+        success: false,
+        error: 'MISSING_REQUIRED_FIELDS',
+        message: 'Email/phone, reset code, and new password are required',
+        timestamp: new Date().toISOString()
+      });
+    }
+    
+    // Detect if input is email or phone number
+    const isEmail = emailOrPhone.includes('@');
+    const isPhone = /^[0-9+\-\s()]+$/.test(emailOrPhone.replace(/\s/g, ''));
+    
+    let lookupEmail = emailOrPhone.toLowerCase();
+    if (isPhone && !isEmail) {
+      lookupEmail = `${emailOrPhone.replace(/\D/g, '')}@clutch.app`;
+    }
+    
+    // Find user and verify reset code
+    const usersCollection = await getCollection('users');
+    const user = await usersCollection.findOne({ 
+      email: lookupEmail,
+      resetCode: resetCode,
+      resetCodeExpires: { $gt: new Date() } // Code must not be expired
+    });
+    
+    if (!user) {
+      return res.status(400).json({
+        success: false,
+        error: 'INVALID_OR_EXPIRED_CODE',
+        message: 'Invalid or expired reset code',
+        timestamp: new Date().toISOString()
+      });
+    }
+    
+    // Validate new password
+    if (newPassword.length < 6) {
+      return res.status(400).json({
+        success: false,
+        error: 'WEAK_PASSWORD',
+        message: 'Password must be at least 6 characters long',
+        timestamp: new Date().toISOString()
+      });
+    }
+    
+    // Hash new password
+    const bcrypt = require('bcryptjs');
+    const hashedPassword = await bcrypt.hash(newPassword, 12);
+    
+    // Update user password and clear reset code
+    await usersCollection.updateOne(
+      { _id: user._id },
+      { 
+        $set: { 
+          password: hashedPassword,
+          updatedAt: new Date()
+        },
+        $unset: {
+          resetCode: 1,
+          resetCodeExpires: 1
+        }
+      }
+    );
+    
+    console.log('✅ Password reset successfully for:', lookupEmail);
+    
+    res.json({
+      success: true,
+      message: 'Password reset successfully',
+      timestamp: new Date().toISOString()
+    });
+    
+  } catch (error) {
+    console.error('❌ Reset password error:', error);
+    res.status(500).json({
+      success: false,
+      error: 'RESET_PASSWORD_FAILED',
+      message: 'Failed to reset password',
       timestamp: new Date().toISOString()
     });
   }
