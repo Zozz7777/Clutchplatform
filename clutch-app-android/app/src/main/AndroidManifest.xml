@@ -29,6 +29,11 @@
             </intent-filter>
         </activity>
 
+        <!-- Enable autofill for the app -->
+        <meta-data
+            android:name="android.app.autofill"
+            android:value="true" />
+
     </application>
 
 </manifest>

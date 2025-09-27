@@ -7,9 +7,6 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.ui.text.input.ImeAction
-import androidx.compose.ui.autofill.AutofillType
-import androidx.compose.ui.platform.LocalAutofill
-import androidx.compose.ui.platform.LocalAutofillTree
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
@@ -53,8 +50,6 @@ fun LoginScreen(
     viewModel: LoginViewModel = hiltViewModel()
 ) {
     val context = LocalContext.current
-    val autofill = LocalAutofill.current
-    val autofillTree = LocalAutofillTree.current
     
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
@@ -142,12 +137,7 @@ fun LoginScreen(
                             keyboardType = KeyboardType.Email,
                             imeAction = ImeAction.Next
                         ),
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .autofill(
-                                autofillTypes = listOf(AutofillType.EmailAddress),
-                                onFill = { email = it }
-                            ),
+                        modifier = Modifier.fillMaxWidth(),
                         colors = OutlinedTextFieldDefaults.colors(
                             focusedBorderColor = ClutchRed,
                             unfocusedBorderColor = Color.LightGray,

@@ -40,6 +40,7 @@ fun SignupScreen(
     viewModel: SignupViewModel = hiltViewModel()
   ) {
       val context = LocalContext.current
+      
       var name by remember { mutableStateOf("") }
       var email by remember { mutableStateOf("") }
       var mobileNumber by remember { mutableStateOf("") }
