@@ -5,6 +5,7 @@
  */
 
 const { MongoClient } = require('mongodb');
+const mongoose = require('mongoose');
 require('dotenv').config();
 const logger = require('../utils/logger');
 
@@ -177,6 +178,27 @@ const REMOVED_COLLECTIONS = [
 // Enhanced connection management
 const connectToDatabase = async () => {
   try {
+    // Connect mongoose first for model compatibility
+    if (mongoose.connection.readyState === 0) {
+      const mongooseOptions = {
+        useNewUrlParser: true,
+        useUnifiedTopology: true,
+        maxPoolSize: parseInt(process.env.DB_MAX_POOL_SIZE) || 50,
+        minPoolSize: parseInt(process.env.DB_MIN_POOL_SIZE) || 5,
+        connectTimeoutMS: parseInt(process.env.DB_CONNECT_TIMEOUT_MS) || 30000,
+        socketTimeoutMS: parseInt(process.env.DB_SOCKET_TIMEOUT_MS) || 45000,
+        serverSelectionTimeoutMS: parseInt(process.env.DB_CONNECT_TIMEOUT_MS) || 30000,
+        bufferMaxEntries: 0,
+        bufferCommands: false,
+        retryWrites: true,
+        retryReads: true
+      };
+
+      await mongoose.connect(process.env.MONGODB_URI, mongooseOptions);
+      console.log('✅ Mongoose connected successfully');
+    }
+
+    // Connect native MongoDB client for optimized operations
     if (!client) {
       client = new MongoClient(process.env.MONGODB_URI, DB_CONFIG);
 
@@ -254,6 +276,11 @@ const createOptimizedIndexes = async () => {
       { collection: 'vehicles', index: { userId: 1 }, options: { background: true } },
       { collection: 'vehicles', index: { licensePlate: 1 }, options: { background: true } },
       { collection: 'vehicles', index: { brand: 1, model: 1 }, options: { background: true } },
+      
+      // Cars collection (for backward compatibility)
+      { collection: 'cars', index: { userId: 1, isActive: 1 }, options: { background: true } },
+      { collection: 'cars', index: { licensePlate: 1 }, options: { background: true } },
+      { collection: 'cars', index: { createdAt: -1 }, options: { background: true } },
       
       // Products collection (consolidated)
       { collection: 'products', index: { category: 1, subcategory: 1 }, options: { background: true } },
@@ -410,6 +437,13 @@ const checkDatabaseHealth = async () => {
 // Graceful shutdown
 const closeDatabaseConnection = async () => {
   try {
+    // Close mongoose connection
+    if (mongoose.connection.readyState !== 0) {
+      await mongoose.connection.close();
+      console.log('✅ Mongoose connection closed gracefully');
+    }
+    
+    // Close native MongoDB client
     if (client) {
       await client.close();
       console.log('✅ Optimized MongoDB client connection closed gracefully');
