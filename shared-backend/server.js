@@ -137,7 +137,6 @@ const supportRoutes = require('./routes/support');
 const careersRoutes = require('./routes/careers');
 
 // Import enhanced routes
-const dashboardEnhancedRoutes = require('./routes/dashboard-enhanced');
 const businessIntelligenceEnhancedRoutes = require('./routes/business-intelligence-enhanced');
 const fleetEnhancedRoutes = require('./routes/fleet-enhanced');
 const financeEnhancedRoutes = require('./routes/finance-enhanced');
@@ -292,7 +291,6 @@ app.use(`${apiPrefix}/support`, supportRoutes);
 app.use('/auth', authRoutes);
 app.use('/admin', adminRoutes);
 app.use('/api/notifications', notificationsRoutes);
-app.use('/api/dashboard', dashboardRoutes);
 app.use('/api/export', exportRoutes);
 app.use('/api/settings', settingsRoutes);
 app.use('/api/integrations', integrationsRoutes);
@@ -304,7 +302,6 @@ app.use('/api/rbac', rbacRoutes);
 // app.use('/api/v1/fleet', fleetRoutes); // Removed duplicate - already mounted with apiPrefix
 // app.use('/api/v1/crm', crmRoutes); // Removed duplicate - already mounted with apiPrefix
 app.use('/api/v1/notifications', notificationsRoutes);
-app.use('/api/v1/dashboard', dashboardRoutes);
 app.use('/api/v1/users', usersRoutes);
 app.use('/api/v1/export', exportRoutes);
 app.use('/api/v1/settings', settingsRoutes);
@@ -343,7 +340,6 @@ app.use('/api/v1/careers', careersRoutes);
 app.use('/api/v1/testing', testingRoutes);
 
 // Enhanced routes
-app.use('/api/v1/dashboard', dashboardEnhancedRoutes);
 app.use('/api/v1/business-intelligence', businessIntelligenceEnhancedRoutes);
 app.use('/api/v1/fleet', fleetEnhancedRoutes);
 app.use('/api/v1/finance', financeEnhancedRoutes);

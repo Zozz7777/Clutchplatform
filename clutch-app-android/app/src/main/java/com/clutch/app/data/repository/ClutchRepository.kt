@@ -132,12 +132,131 @@ class ClutchRepository @Inject constructor(
         }
     }
     
+    // Car Brands, Models, Trims
+    suspend fun getCarBrands(search: String? = null): Result<List<CarBrand>> {
+        return try {
+            val response = apiService.getCarBrands(search)
+            if (response.isSuccessful) {
+                val apiResponse = response.body()!!
+                if (apiResponse.success) {
+                    val brands = apiResponse.data as List<Map<String, Any>>
+                    val carBrands = brands.map { brandMap ->
+                        CarBrand(
+                            id = brandMap["_id"] as String,
+                            name = brandMap["name"] as String,
+                            logo = brandMap["logo"] as? String,
+                            isActive = brandMap["isActive"] as? Boolean ?: true
+                        )
+                    }
+                    Result.success(carBrands)
+                } else {
+                    Result.failure(Exception(apiResponse.message))
+                }
+            } else {
+                Result.failure(Exception("Failed to get car brands: ${response.message()}"))
+            }
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
+    }
+    
+    suspend fun getCarModels(brandName: String, search: String? = null): Result<List<CarModel>> {
+        return try {
+            val response = apiService.getCarModels(brandName, search)
+            if (response.isSuccessful) {
+                val apiResponse = response.body()!!
+                if (apiResponse.success) {
+                    val models = apiResponse.data as List<Map<String, Any>>
+                    val carModels = models.map { modelMap ->
+                        CarModel(
+                            id = modelMap["_id"] as String,
+                            brandId = modelMap["brandId"] as String,
+                            brandName = modelMap["brandName"] as String,
+                            name = modelMap["name"] as String,
+                            yearStart = modelMap["yearStart"] as? Int,
+                            yearEnd = modelMap["yearEnd"] as? Int,
+                            isActive = modelMap["isActive"] as? Boolean ?: true
+                        )
+                    }
+                    Result.success(carModels)
+                } else {
+                    Result.failure(Exception(apiResponse.message))
+                }
+            } else {
+                Result.failure(Exception("Failed to get car models: ${response.message()}"))
+            }
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
+    }
+    
+    suspend fun getCarTrims(brandName: String, modelName: String, search: String? = null): Result<List<CarTrim>> {
+        return try {
+            val response = apiService.getCarTrims(brandName, modelName, search)
+            if (response.isSuccessful) {
+                val apiResponse = response.body()!!
+                if (apiResponse.success) {
+                    val trims = apiResponse.data as List<Map<String, Any>>
+                    val carTrims = trims.map { trimMap ->
+                        CarTrim(
+                            id = trimMap["_id"] as String,
+                            modelId = trimMap["modelId"] as String,
+                            brandName = trimMap["brandName"] as String,
+                            modelName = trimMap["modelName"] as String,
+                            name = trimMap["name"] as String,
+                            isActive = trimMap["isActive"] as? Boolean ?: true
+                        )
+                    }
+                    Result.success(carTrims)
+                } else {
+                    Result.failure(Exception(apiResponse.message))
+                }
+            } else {
+                Result.failure(Exception("Failed to get car trims: ${response.message()}"))
+            }
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
+    }
+    
     // Cars
     suspend fun getUserCars(): Result<List<Car>> {
         return try {
             val response = apiService.getUserCars()
             if (response.isSuccessful) {
-                Result.success(response.body()!!)
+                val apiResponse = response.body()!!
+                if (apiResponse.success) {
+                    val cars = apiResponse.data as List<Map<String, Any>>
+                    val carList = cars.map { carMap ->
+                        Car(
+                            id = carMap["_id"] as String,
+                            userId = carMap["userId"] as String,
+                            year = (carMap["year"] as Number).toInt(),
+                            brand = carMap["brand"] as String,
+                            model = carMap["model"] as String,
+                            trim = carMap["trim"] as String,
+                            kilometers = (carMap["kilometers"] as Number).toInt(),
+                            color = carMap["color"] as String,
+                            licensePlate = carMap["licensePlate"] as String,
+                            currentMileage = (carMap["currentMileage"] as Number).toInt(),
+                            lastMaintenanceDate = carMap["lastMaintenanceDate"] as? String,
+                            lastMaintenanceKilometers = (carMap["lastMaintenanceKilometers"] as? Number)?.toInt() ?: 0,
+                            lastMaintenanceServices = (carMap["lastMaintenanceServices"] as? List<Map<String, Any>>)?.map { serviceMap ->
+                                MaintenanceServiceItem(
+                                    serviceGroup = serviceMap["serviceGroup"] as String,
+                                    serviceName = serviceMap["serviceName"] as String,
+                                    date = serviceMap["date"] as String
+                                )
+                            } ?: emptyList(),
+                            isActive = carMap["isActive"] as? Boolean ?: true,
+                            createdAt = carMap["createdAt"] as String,
+                            updatedAt = carMap["updatedAt"] as String
+                        )
+                    }
+                    Result.success(carList)
+                } else {
+                    Result.failure(Exception(apiResponse.message))
+                }
             } else {
                 Result.failure(Exception("Failed to get user cars: ${response.message()}"))
             }
@@ -146,13 +265,117 @@ class ClutchRepository @Inject constructor(
         }
     }
     
-    suspend fun addCar(car: Car): Result<Car> {
+    suspend fun registerCar(carRegistrationRequest: CarRegistrationRequest): Result<Car> {
         return try {
-            val response = apiService.addCar(car)
+            val response = apiService.registerCar(carRegistrationRequest)
             if (response.isSuccessful) {
-                Result.success(response.body()!!)
+                val apiResponse = response.body()!!
+                if (apiResponse.success) {
+                    val carMap = apiResponse.data as Map<String, Any>
+                    val car = Car(
+                        id = carMap["_id"] as String,
+                        userId = carMap["userId"] as String,
+                        year = (carMap["year"] as Number).toInt(),
+                        brand = carMap["brand"] as String,
+                        model = carMap["model"] as String,
+                        trim = carMap["trim"] as String,
+                        kilometers = (carMap["kilometers"] as Number).toInt(),
+                        color = carMap["color"] as String,
+                        licensePlate = carMap["licensePlate"] as String,
+                        currentMileage = (carMap["currentMileage"] as Number).toInt(),
+                        lastMaintenanceDate = carMap["lastMaintenanceDate"] as? String,
+                        lastMaintenanceKilometers = (carMap["lastMaintenanceKilometers"] as? Number)?.toInt() ?: 0,
+                        lastMaintenanceServices = (carMap["lastMaintenanceServices"] as? List<Map<String, Any>>)?.map { serviceMap ->
+                            MaintenanceServiceItem(
+                                serviceGroup = serviceMap["serviceGroup"] as String,
+                                serviceName = serviceMap["serviceName"] as String,
+                                date = serviceMap["date"] as String
+                            )
+                        } ?: emptyList(),
+                        isActive = carMap["isActive"] as? Boolean ?: true,
+                        createdAt = carMap["createdAt"] as String,
+                        updatedAt = carMap["updatedAt"] as String
+                    )
+                    Result.success(car)
+                } else {
+                    Result.failure(Exception(apiResponse.message))
+                }
             } else {
-                Result.failure(Exception("Failed to add car: ${response.message()}"))
+                Result.failure(Exception("Failed to register car: ${response.message()}"))
+            }
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
+    }
+    
+    suspend fun updateCarMaintenance(carId: String, maintenanceRequest: MaintenanceRequest): Result<Car> {
+        return try {
+            val response = apiService.updateCarMaintenance(carId, maintenanceRequest)
+            if (response.isSuccessful) {
+                val apiResponse = response.body()!!
+                if (apiResponse.success) {
+                    val carMap = apiResponse.data as Map<String, Any>
+                    val car = Car(
+                        id = carMap["_id"] as String,
+                        userId = carMap["userId"] as String,
+                        year = (carMap["year"] as Number).toInt(),
+                        brand = carMap["brand"] as String,
+                        model = carMap["model"] as String,
+                        trim = carMap["trim"] as String,
+                        kilometers = (carMap["kilometers"] as Number).toInt(),
+                        color = carMap["color"] as String,
+                        licensePlate = carMap["licensePlate"] as String,
+                        currentMileage = (carMap["currentMileage"] as Number).toInt(),
+                        lastMaintenanceDate = carMap["lastMaintenanceDate"] as? String,
+                        lastMaintenanceKilometers = (carMap["lastMaintenanceKilometers"] as? Number)?.toInt() ?: 0,
+                        lastMaintenanceServices = (carMap["lastMaintenanceServices"] as? List<Map<String, Any>>)?.map { serviceMap ->
+                            MaintenanceServiceItem(
+                                serviceGroup = serviceMap["serviceGroup"] as String,
+                                serviceName = serviceMap["serviceName"] as String,
+                                date = serviceMap["date"] as String
+                            )
+                        } ?: emptyList(),
+                        isActive = carMap["isActive"] as? Boolean ?: true,
+                        createdAt = carMap["createdAt"] as String,
+                        updatedAt = carMap["updatedAt"] as String
+                    )
+                    Result.success(car)
+                } else {
+                    Result.failure(Exception(apiResponse.message))
+                }
+            } else {
+                Result.failure(Exception("Failed to update car maintenance: ${response.message()}"))
+            }
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
+    }
+    
+    suspend fun getMaintenanceServices(search: String? = null): Result<Map<String, List<MaintenanceService>>> {
+        return try {
+            val response = apiService.getMaintenanceServices(search)
+            if (response.isSuccessful) {
+                val apiResponse = response.body()!!
+                if (apiResponse.success) {
+                    val servicesMap = apiResponse.data as Map<String, List<Map<String, Any>>>
+                    val groupedServices = servicesMap.mapValues { (_, services) ->
+                        services.map { serviceMap ->
+                            MaintenanceService(
+                                id = serviceMap["_id"] as String,
+                                serviceGroup = serviceMap["serviceGroup"] as String,
+                                serviceName = serviceMap["serviceName"] as String,
+                                description = serviceMap["description"] as? String,
+                                icon = serviceMap["icon"] as? String,
+                                isActive = serviceMap["isActive"] as? Boolean ?: true
+                            )
+                        }
+                    }
+                    Result.success(groupedServices)
+                } else {
+                    Result.failure(Exception(apiResponse.message))
+                }
+            } else {
+                Result.failure(Exception("Failed to get maintenance services: ${response.message()}"))
             }
         } catch (e: Exception) {
             Result.failure(e)

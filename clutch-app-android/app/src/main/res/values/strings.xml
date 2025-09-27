@@ -40,8 +40,31 @@
     <string name="google">Google</string>
     <string name="facebook">Facebook</string>
     
-    <!-- Dashboard -->
+    <!-- Car Registration -->
+    <string name="add_your_car">Add Your Car</string>
+    <string name="year">Year</string>
+    <string name="brand_name">Brand Name</string>
+    <string name="all_models">All Models</string>
+    <string name="trim">Trim</string>
+    <string name="kilometers">Kilometers</string>
+    <string name="color">Color</string>
+    <string name="license_plate">License Plate</string>
+    <string name="go">GO</string>
     <string name="your_car">Your Car</string>
+    <string name="find_your_car">Find your car</string>
+    <string name="model">Model</string>
+    <string name="trims">Trims</string>
+    <string name="last_maintenance">Last Maintenance</string>
+    <string name="date">Date</string>
+    <string name="what_did_you_do">What Did You Do</string>
+    <string name="what_did_you_do_maintenance">What Did Your Do On Your Last Maintenance?</string>
+    <string name="search">Search</string>
+    <string name="other_things_type_here">OTHER THINGS? TYPE HERE</string>
+    <string name="confirm">CONFIRM</string>
+    <string name="ok">OK</string>
+    <string name="cancel">Cancel</string>
+    
+    <!-- Dashboard -->
     <string name="car_health">Car Health</string>
     <string name="find_mechanics">Find Mechanics</string>
     <string name="shop_parts">Shop Car Parts</string>
@@ -77,8 +100,6 @@
     <string name="loading">Loading...</string>
     <string name="error">Error</string>
     <string name="retry">Retry</string>
-    <string name="cancel">Cancel</string>
-    <string name="ok">OK</string>
     <string name="save">Save</string>
     <string name="edit">Edit</string>
     <string name="delete">Delete</string>

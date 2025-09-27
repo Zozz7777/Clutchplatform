@@ -311,21 +311,26 @@ router.post('/login', loginRateLimit, async (req, res) => {
       return res.status(400).json({
         success: false,
         error: 'MISSING_CREDENTIALS',
-        message: 'Email and password are required',
+        message: 'Email/phone and password are required',
         timestamp: new Date().toISOString()
       });
     }
     
-    console.log('🔐 Login attempt for:', email);
+    // Detect if input is email or phone number
+    const isEmail = email.includes('@');
+    const isPhone = /^[0-9+\-\s()]+$/.test(email.replace(/\s/g, ''));
     
-           // Fallback authentication for CEO/admin
-           const fallbackUsers = [
-             {
-               _id: 'fallback_ziad_ceo',
-               email: 'ziad@yourclutch.com',
-               password: '4955698*Z*z',
-               name: 'Ziad - CEO',
-               role: 'head_administrator',
+    console.log('🔐 Login attempt for:', email, '| Type:', isEmail ? 'email' : (isPhone ? 'phone' : 'unknown'));
+    
+    // Convert phone number to email format for database lookup if it's a phone
+    let lookupEmail = email.toLowerCase();
+    if (isPhone && !isEmail) {
+      // If it's a phone number, convert to the format used during registration
+      lookupEmail = `${email.replace(/\D/g, '')}@clutch.app`;
+      console.log('📱 Phone number detected, converting to email format:', lookupEmail);
+    }
+    
+    // No fallback users for production app - all authentication through database
                permissions: [
                  'all',
                  'head_administrator',
@@ -520,7 +525,7 @@ router.post('/login', loginRateLimit, async (req, res) => {
            ];
     
     // Check fallback users first
-    const fallbackUser = fallbackUsers.find(u => u.email.toLowerCase() === email.toLowerCase());
+    const fallbackUser = fallbackUsers.find(u => u.email.toLowerCase() === lookupEmail);
     if (fallbackUser && fallbackUser.password === password) {
       console.log('✅ Fallback authentication successful for:', email);
       
@@ -604,7 +609,7 @@ router.post('/login', loginRateLimit, async (req, res) => {
         // If not found in employees, check users collection
         const usersCollection = await getCollection('users');
         user = await usersCollection.findOne({ 
-          email: email.toLowerCase()
+          email: lookupEmail
         });
       }
       

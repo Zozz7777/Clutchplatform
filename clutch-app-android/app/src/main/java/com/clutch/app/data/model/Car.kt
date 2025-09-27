@@ -9,13 +9,22 @@ data class Car(
     @SerializedName("brand") val brand: String,
     @SerializedName("model") val model: String,
     @SerializedName("trim") val trim: String,
+    @SerializedName("kilometers") val kilometers: Int,
     @SerializedName("color") val color: String,
+    @SerializedName("licensePlate") val licensePlate: String,
     @SerializedName("currentMileage") val currentMileage: Int,
-    @SerializedName("vin") val vin: String?,
-    @SerializedName("licensePlate") val licensePlate: String?,
-    @SerializedName("isDefault") val isDefault: Boolean = false,
+    @SerializedName("lastMaintenanceDate") val lastMaintenanceDate: String? = null,
+    @SerializedName("lastMaintenanceKilometers") val lastMaintenanceKilometers: Int = 0,
+    @SerializedName("lastMaintenanceServices") val lastMaintenanceServices: List<MaintenanceServiceItem> = emptyList(),
+    @SerializedName("isActive") val isActive: Boolean = true,
     @SerializedName("createdAt") val createdAt: String,
     @SerializedName("updatedAt") val updatedAt: String
+)
+
+data class MaintenanceServiceItem(
+    @SerializedName("serviceGroup") val serviceGroup: String,
+    @SerializedName("serviceName") val serviceName: String,
+    @SerializedName("date") val date: String
 )
 
 data class CarHealth(

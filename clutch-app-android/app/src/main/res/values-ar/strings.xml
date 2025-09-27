@@ -40,8 +40,31 @@
     <string name="google">جوجل</string>
     <string name="facebook">فيسبوك</string>
     
-    <!-- Dashboard -->
+    <!-- Car Registration -->
+    <string name="add_your_car">أضف سيارتك</string>
+    <string name="year">السنة</string>
+    <string name="brand_name">اسم الماركة</string>
+    <string name="all_models">جميع الموديلات</string>
+    <string name="trim">الطراز</string>
+    <string name="kilometers">الكيلومترات</string>
+    <string name="color">اللون</string>
+    <string name="license_plate">رقم اللوحة</string>
+    <string name="go">ابدأ</string>
     <string name="your_car">سيارتك</string>
+    <string name="find_your_car">ابحث عن سيارتك</string>
+    <string name="model">الموديل</string>
+    <string name="trims">الطرازات</string>
+    <string name="last_maintenance">آخر صيانة</string>
+    <string name="date">التاريخ</string>
+    <string name="what_did_you_do">ماذا فعلت</string>
+    <string name="what_did_you_do_maintenance">ماذا فعلت في آخر صيانة لك؟</string>
+    <string name="search">بحث</string>
+    <string name="other_things_type_here">أشياء أخرى؟ اكتب هنا</string>
+    <string name="confirm">تأكيد</string>
+    <string name="ok">موافق</string>
+    <string name="cancel">إلغاء</string>
+    
+    <!-- Dashboard -->
     <string name="car_health">صحة السيارة</string>
     <string name="find_mechanics">البحث عن ميكانيكي</string>
     <string name="shop_parts">تسوق قطع الغيار</string>
@@ -77,8 +100,6 @@
     <string name="loading">جاري التحميل...</string>
     <string name="error">خطأ</string>
     <string name="retry">إعادة المحاولة</string>
-    <string name="cancel">إلغاء</string>
-    <string name="ok">موافق</string>
     <string name="save">حفظ</string>
     <string name="edit">تعديل</string>
     <string name="delete">حذف</string>

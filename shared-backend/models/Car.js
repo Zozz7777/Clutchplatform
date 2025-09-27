@@ -1,79 +1,75 @@
-const { getDb } = require('../config/database');
+const mongoose = require('mongoose');
 
-class Car {
-  constructor() {
-    this.collectionName = 'cars';
+const carSchema = new mongoose.Schema({
+  userId: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'User',
+    required: true
+  },
+  year: {
+    type: Number,
+    required: true,
+    min: 1900,
+    max: new Date().getFullYear() + 1
+  },
+  brand: {
+    type: String,
+    required: true,
+    trim: true
+  },
+  model: {
+    type: String,
+    required: true,
+    trim: true
+  },
+  trim: {
+    type: String,
+    required: true,
+    trim: true
+  },
+  kilometers: {
+    type: Number,
+    required: true,
+    min: 0
+  },
+  color: {
+    type: String,
+    required: true,
+    trim: true
+  },
+  licensePlate: {
+    type: String,
+    required: true,
+    trim: true,
+    unique: true
+  },
+  currentMileage: {
+    type: Number,
+    default: 0
+  },
+  lastMaintenanceDate: {
+    type: Date,
+    default: null
+  },
+  lastMaintenanceKilometers: {
+    type: Number,
+    default: 0
+  },
+  lastMaintenanceServices: [{
+    serviceGroup: String,
+    serviceName: String,
+    date: Date
+  }],
+  isActive: {
+    type: Boolean,
+    default: true
   }
+}, {
+  timestamps: true
+});
 
-  async getCollection() {
-    const db = await getDb();
-    return db.collection(this.collectionName);
-  }
+// Index for efficient queries
+carSchema.index({ userId: 1, isActive: 1 });
+carSchema.index({ licensePlate: 1 });
 
-  async create(carData) {
-    try {
-      const collection = await this.getCollection();
-      const result = await collection.insertOne({
-        ...carData,
-        createdAt: new Date(),
-        updatedAt: new Date()
-      });
-      return result;
-    } catch (error) {
-      console.error('Error creating car:', error);
-      throw error;
-    }
-  }
-
-  async findById(id) {
-    try {
-      const collection = await this.getCollection();
-      return await collection.findOne({ _id: id });
-    } catch (error) {
-      console.error('Error finding car by ID:', error);
-      throw error;
-    }
-  }
-
-  async update(id, updateData) {
-    try {
-      const collection = await this.getCollection();
-      const result = await collection.updateOne(
-        { _id: id },
-        { 
-          $set: {
-            ...updateData,
-            updatedAt: new Date()
-          }
-        }
-      );
-      return result;
-    } catch (error) {
-      console.error('Error updating car:', error);
-      throw error;
-    }
-  }
-
-  async delete(id) {
-    try {
-      const collection = await this.getCollection();
-      const result = await collection.deleteOne({ _id: id });
-      return result;
-    } catch (error) {
-      console.error('Error deleting car:', error);
-      throw error;
-    }
-  }
-
-  async findAll(query = {}) {
-    try {
-      const collection = await this.getCollection();
-      return await collection.find(query).toArray();
-    } catch (error) {
-      console.error('Error finding cars:', error);
-      throw error;
-    }
-  }
-}
-
-module.exports = new Car();
+module.exports = mongoose.model('Car', carSchema);

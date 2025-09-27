@@ -9,6 +9,9 @@ data class ApiResponse(
     @SerializedName("message")
     val message: String,
     
+    @SerializedName("data")
+    val data: Any? = null,
+    
     @SerializedName("timestamp")
-    val timestamp: String
+    val timestamp: String? = null
 )
