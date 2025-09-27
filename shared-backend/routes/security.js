@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const { authenticateToken, authorizeRoles } = require('../middleware/unified-auth');
+const { authenticateToken, checkRole } = require('../middleware/unified-auth');
 const logger = require('../utils/logger');
 
 // Database connection for real data
@@ -185,7 +185,7 @@ const complianceStatus = {
  * @desc Get security threat events
  * @access Private (Admin only)
  */
-router.get('/threat-events', authenticateToken, authorizeRoles(['admin', 'super_admin']), async (req, res) => {
+router.get('/threat-events', authenticateToken, checkRole(['admin', 'super_admin']), async (req, res) => {
   try {
     const { severity, status, timeRange } = req.query;
     
@@ -222,7 +222,7 @@ router.get('/threat-events', authenticateToken, authorizeRoles(['admin', 'super_
  * @desc Get security threat patterns
  * @access Private (Admin only)
  */
-router.get('/threat-patterns', authenticateToken, authorizeRoles(['admin', 'super_admin']), async (req, res) => {
+router.get('/threat-patterns', authenticateToken, checkRole(['admin', 'super_admin']), async (req, res) => {
   try {
     res.json({
       success: true,
@@ -246,7 +246,7 @@ router.get('/threat-patterns', authenticateToken, authorizeRoles(['admin', 'supe
  * @desc Get security alerts
  * @access Private (Admin only)
  */
-router.get('/alerts', authenticateToken, authorizeRoles(['admin', 'super_admin']), async (req, res) => {
+router.get('/alerts', authenticateToken, checkRole(['admin', 'super_admin']), async (req, res) => {
   try {
     const { severity, status } = req.query;
     
@@ -282,7 +282,7 @@ router.get('/alerts', authenticateToken, authorizeRoles(['admin', 'super_admin']
  * @desc Get security metrics
  * @access Private (Admin only)
  */
-router.get('/metrics', authenticateToken, authorizeRoles(['admin', 'super_admin']), async (req, res) => {
+router.get('/metrics', authenticateToken, checkRole(['admin', 'super_admin']), async (req, res) => {
   try {
     const { category, timeRange } = req.query;
     
@@ -314,7 +314,7 @@ router.get('/metrics', authenticateToken, authorizeRoles(['admin', 'super_admin'
  * @desc Get security audit logs
  * @access Private (Admin only)
  */
-router.get('/audit-logs', authenticateToken, authorizeRoles(['admin', 'super_admin']), async (req, res) => {
+router.get('/audit-logs', authenticateToken, checkRole(['admin', 'super_admin']), async (req, res) => {
   try {
     const { userId, action, success, timeRange } = req.query;
     
@@ -354,7 +354,7 @@ router.get('/audit-logs', authenticateToken, authorizeRoles(['admin', 'super_adm
  * @desc Get compliance status
  * @access Private (Admin only)
  */
-router.get('/compliance', authenticateToken, authorizeRoles(['admin', 'super_admin']), async (req, res) => {
+router.get('/compliance', authenticateToken, checkRole(['admin', 'super_admin']), async (req, res) => {
   try {
     res.json({
       success: true,
@@ -378,7 +378,7 @@ router.get('/compliance', authenticateToken, authorizeRoles(['admin', 'super_adm
  * @desc Resolve a security alert
  * @access Private (Admin only)
  */
-router.post('/alerts/:id/resolve', authenticateToken, authorizeRoles(['admin', 'super_admin']), async (req, res) => {
+router.post('/alerts/:id/resolve', authenticateToken, checkRole(['admin', 'super_admin']), async (req, res) => {
   try {
     const { id } = req.params;
     const { resolution } = req.body;
@@ -421,7 +421,7 @@ router.post('/alerts/:id/resolve', authenticateToken, authorizeRoles(['admin', '
  * @desc Block an IP address
  * @access Private (Admin only)
  */
-router.post('/block-ip', authenticateToken, authorizeRoles(['admin', 'super_admin']), async (req, res) => {
+router.post('/block-ip', authenticateToken, checkRole(['admin', 'super_admin']), async (req, res) => {
   try {
     const { ipAddress, reason, duration } = req.body;
     

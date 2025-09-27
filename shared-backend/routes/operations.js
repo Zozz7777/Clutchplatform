@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const { authenticateToken, authorizeRoles } = require('../middleware/unified-auth');
+const { authenticateToken, checkRole } = require('../middleware/unified-auth');
 const logger = require('../utils/logger');
 
 // Database connection for real data
@@ -249,7 +249,7 @@ const vehicleHealth = [
  * @desc Get API performance metrics
  * @access Private (Admin only)
  */
-router.get('/api-performance', authenticateToken, authorizeRoles(['admin', 'super_admin']), async (req, res) => {
+router.get('/api-performance', authenticateToken, checkRole(['admin', 'super_admin']), async (req, res) => {
   try {
     const { timeRange } = req.query;
     
@@ -288,7 +288,7 @@ router.get('/api-performance', authenticateToken, authorizeRoles(['admin', 'supe
  * @desc Get API performance alerts
  * @access Private (Admin only)
  */
-router.get('/api-performance/alerts', authenticateToken, authorizeRoles(['admin', 'super_admin']), async (req, res) => {
+router.get('/api-performance/alerts', authenticateToken, checkRole(['admin', 'super_admin']), async (req, res) => {
   try {
     res.json({
       success: true,
@@ -312,7 +312,7 @@ router.get('/api-performance/alerts', authenticateToken, authorizeRoles(['admin'
  * @desc Get system performance metrics
  * @access Private (Admin only)
  */
-router.get('/performance', authenticateToken, authorizeRoles(['admin', 'super_admin']), async (req, res) => {
+router.get('/performance', authenticateToken, checkRole(['admin', 'super_admin']), async (req, res) => {
   try {
     const { timeRange } = req.query;
     
@@ -338,7 +338,7 @@ router.get('/performance', authenticateToken, authorizeRoles(['admin', 'super_ad
  * @desc Get system performance alerts
  * @access Private (Admin only)
  */
-router.get('/performance/alerts', authenticateToken, authorizeRoles(['admin', 'super_admin']), async (req, res) => {
+router.get('/performance/alerts', authenticateToken, checkRole(['admin', 'super_admin']), async (req, res) => {
   try {
     res.json({
       success: true,
@@ -362,7 +362,7 @@ router.get('/performance/alerts', authenticateToken, authorizeRoles(['admin', 's
  * @desc Get system health status
  * @access Private (Admin only)
  */
-router.get('/system-health', authenticateToken, authorizeRoles(['admin', 'super_admin']), async (req, res) => {
+router.get('/system-health', authenticateToken, checkRole(['admin', 'super_admin']), async (req, res) => {
   try {
     res.json({
       success: true,
@@ -386,7 +386,7 @@ router.get('/system-health', authenticateToken, authorizeRoles(['admin', 'super_
  * @desc Get overall system status
  * @access Private (Admin only)
  */
-router.get('/system-health/status', authenticateToken, authorizeRoles(['admin', 'super_admin']), async (req, res) => {
+router.get('/system-health/status', authenticateToken, checkRole(['admin', 'super_admin']), async (req, res) => {
   try {
     res.json({
       success: true,
@@ -410,7 +410,7 @@ router.get('/system-health/status', authenticateToken, authorizeRoles(['admin', 
  * @desc Get OBD2 diagnostic data
  * @access Private (Admin only)
  */
-router.get('/obd2', authenticateToken, authorizeRoles(['admin', 'super_admin']), async (req, res) => {
+router.get('/obd2', authenticateToken, checkRole(['admin', 'super_admin']), async (req, res) => {
   try {
     const { severity } = req.query;
     
@@ -441,7 +441,7 @@ router.get('/obd2', authenticateToken, authorizeRoles(['admin', 'super_admin']),
  * @desc Get vehicle health data
  * @access Private (Admin only)
  */
-router.get('/obd2/vehicle-health', authenticateToken, authorizeRoles(['admin', 'super_admin']), async (req, res) => {
+router.get('/obd2/vehicle-health', authenticateToken, checkRole(['admin', 'super_admin']), async (req, res) => {
   try {
     res.json({
       success: true,

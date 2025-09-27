@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const { authenticateToken, authorizeRoles } = require('../../middleware/unified-auth');
+const { authenticateToken, checkRole } = require('../../middleware/unified-auth');
 const logger = require('../../utils/logger');
 
 // Database connection for real data
@@ -79,7 +79,7 @@ async function getReturnRequests() {
  * @desc Get refund requests
  * @access Private (Partners only)
  */
-router.get('/', authenticateToken, authorizeRoles(['partner', 'admin', 'super_admin']), async (req, res) => {
+router.get('/', authenticateToken, checkRole(['partner', 'admin', 'super_admin']), async (req, res) => {
   try {
     const { status, timeRange } = req.query;
     
@@ -122,7 +122,7 @@ router.get('/', authenticateToken, authorizeRoles(['partner', 'admin', 'super_ad
  * @desc Get return requests
  * @access Private (Partners only)
  */
-router.get('/returns', authenticateToken, authorizeRoles(['partner', 'admin', 'super_admin']), async (req, res) => {
+router.get('/returns', authenticateToken, checkRole(['partner', 'admin', 'super_admin']), async (req, res) => {
   try {
     const { status, timeRange } = req.query;
     
@@ -165,7 +165,7 @@ router.get('/returns', authenticateToken, authorizeRoles(['partner', 'admin', 's
  * @desc Process a refund request
  * @access Private (Partners only)
  */
-router.post('/:id/process', authenticateToken, authorizeRoles(['partner', 'admin', 'super_admin']), async (req, res) => {
+router.post('/:id/process', authenticateToken, checkRole(['partner', 'admin', 'super_admin']), async (req, res) => {
   try {
     const { id } = req.params;
     const { action, notes } = req.body; // action: 'approve' or 'reject'
@@ -225,7 +225,7 @@ router.post('/:id/process', authenticateToken, authorizeRoles(['partner', 'admin
  * @desc Get refund and return statistics
  * @access Private (Partners only)
  */
-router.get('/stats', authenticateToken, authorizeRoles(['partner', 'admin', 'super_admin']), async (req, res) => {
+router.get('/stats', authenticateToken, checkRole(['partner', 'admin', 'super_admin']), async (req, res) => {
   try {
     const db = await connectToDatabase();
     const refundsCollection = db.collection('refund_requests');
