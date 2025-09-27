@@ -2,6 +2,7 @@ package com.clutch.app.data.repository
 
 import com.clutch.app.data.api.ClutchApiService
 import com.clutch.app.data.model.*
+import com.google.gson.Gson
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -22,8 +23,20 @@ class ClutchRepository @Inject constructor(
                     Result.failure(Exception("Login failed: Empty response body"))
                 }
             } else {
-                val errorBody = response.errorBody()?.string() ?: "Unknown error"
-                Result.failure(Exception("Login failed: ${response.code()} - $errorBody"))
+                val errorBody = response.errorBody()?.string()
+                val errorMessage = if (errorBody != null) {
+                    try {
+                        // Try to parse JSON error response
+                        val gson = Gson()
+                        val errorResponse = gson.fromJson(errorBody, Map::class.java)
+                        errorResponse["message"] as? String ?: "Login failed"
+                    } catch (e: Exception) {
+                        "Login failed: ${response.message()}"
+                    }
+                } else {
+                    "Login failed: ${response.message()}"
+                }
+                Result.failure(Exception(errorMessage))
             }
         } catch (e: Exception) {
             Result.failure(Exception("Network error: ${e.message}"))
@@ -46,7 +59,20 @@ class ClutchRepository @Inject constructor(
             if (response.isSuccessful) {
                 Result.success(response.body()!!)
             } else {
-                Result.failure(Exception("Registration failed: ${response.message()}"))
+                val errorBody = response.errorBody()?.string()
+                val errorMessage = if (errorBody != null) {
+                    try {
+                        // Try to parse JSON error response
+                        val gson = com.google.gson.Gson()
+                        val errorResponse = gson.fromJson(errorBody, Map::class.java)
+                        errorResponse["message"] as? String ?: "Registration failed"
+                    } catch (e: Exception) {
+                        "Registration failed: ${response.message()}"
+                    }
+                } else {
+                    "Registration failed: ${response.message()}"
+                }
+                Result.failure(Exception(errorMessage))
             }
         } catch (e: Exception) {
             Result.failure(e)

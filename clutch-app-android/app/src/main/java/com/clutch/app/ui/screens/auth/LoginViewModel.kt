@@ -92,38 +92,10 @@ class LoginViewModel @Inject constructor(
 
         viewModelScope.launch {
             try {
-                // Implement Facebook Login using Facebook SDK
-                // Note: This requires proper Facebook SDK setup and configuration
-                // For now, simulate successful login
-                val mockFacebookUser = AuthResponse(
-                    success = true,
-                    data = AuthData(
-                        user = User(
-                            id = "facebook_user_${System.currentTimeMillis()}",
-                            email = "user@facebook.com",
-                            firstName = "Facebook",
-                            lastName = "User",
-                            phone = null,
-                            profileImage = null,
-                            isEmailVerified = true,
-                            isPhoneVerified = false,
-                            createdAt = System.currentTimeMillis().toString(),
-                            updatedAt = System.currentTimeMillis().toString()
-                        ),
-                        token = "facebook_token_${System.currentTimeMillis()}",
-                        refreshToken = "facebook_refresh_${System.currentTimeMillis()}"
-                    ),
-                    message = "Facebook Login successful",
-                    timestamp = System.currentTimeMillis().toString()
-                )
-                
-                // Save session data
-                sessionManager.saveAuthTokens(mockFacebookUser.data.token, mockFacebookUser.data.refreshToken)
-                sessionManager.saveUser(mockFacebookUser.data.user)
-                
+                // TODO: Implement Facebook Login
                 _uiState.value = _uiState.value.copy(
                     isLoading = false,
-                    loginSuccess = true
+                    errorMessage = "Facebook Login not implemented yet"
                 )
             } catch (e: Exception) {
                 _uiState.value = _uiState.value.copy(

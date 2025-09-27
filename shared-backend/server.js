@@ -55,7 +55,7 @@ const { initializeEnvironment } = require('./config/environment');
 
 // Import routes
 // Import only existing routes
-const authRoutes = require('./routes/consolidated-auth');
+const authRoutes = require('./routes/auth-production');
 const healthRoutes = require('./routes/health');
 const healthEnhancedRoutes = require('./routes/health-enhanced');
 const adminRoutes = require('./routes/admin');

@@ -13,10 +13,21 @@
     <string name="login">Log in</string>
     <string name="signup">Sign up</string>
     <string name="email">Email</string>
+    <string name="email_phone">Email / Phone Number</string>
     <string name="password">Password</string>
+    <string name="confirm_password">Confirm Password</string>
+    <string name="name">Name</string>
+    <string name="mobile_number">Mobile Number</string>
     <string name="forgot_password">Forgot Password?</string>
     <string name="create_account">Create an account</string>
     <string name="already_have_account">Already have an account?</string>
+    <string name="sign_in_to_continue">Sign in to continue</string>
+    <string name="create_your_account">Create your account</string>
+    <string name="agree_to_terms">I Agree to Terms of Service and Privacy Policy</string>
+    <string name="login_with_google">Login with Google</string>
+    <string name="login_with_facebook">Login with Facebook</string>
+    <string name="signup_with_google">Sign up with Google</string>
+    <string name="signup_with_facebook">Sign up with Facebook</string>
     
     <!-- Dashboard -->
     <string name="your_car">Your Car</string>
@@ -25,6 +36,20 @@
     <string name="shop_parts">Shop Car Parts</string>
     <string name="parts_expiring">Parts Expiring Soon</string>
     <string name="view_all">View All</string>
+    <string name="welcome_back">Welcome Back</string>
+    <string name="car_health_score">Car Health Score</string>
+    <string name="maintenance_reminders">Maintenance Reminders</string>
+    <string name="quick_book">Quick Book</string>
+    <string name="loyalty_points">Loyalty Points</string>
+    <string name="active_orders">Active Orders</string>
+    
+    <!-- Onboarding -->
+    <string name="save_money">Save Money</string>
+    <string name="extend_car_life">Extend the life of your car</string>
+    <string name="peace_of_mind">Peace of mind</string>
+    <string name="onboarding_save_money_desc">Track your car\'s health, avoid costly breakdowns, and get the best prices on parts and services—only with Clutch.</string>
+    <string name="onboarding_extend_life_desc">Stay on top of maintenance and replace parts at the right time to keep your car running smoothly for years to come.</string>
+    <string name="onboarding_peace_mind_desc">From trusted mechanics to transparent payments, Clutch ensures every ride is safer, smarter, and stress-free.</string>
     
     <!-- Community -->
     <string name="community">Community</string>
@@ -52,4 +77,18 @@
     <string name="previous">Previous</string>
     <string name="skip">Skip</string>
     <string name="get_started">Get Started</string>
+    <string name="done">Done</string>
+    <string name="try_again">Try Again</string>
+    <string name="go_to_login">Go to Login</string>
+    
+    <!-- Error Messages -->
+    <string name="login_failed">Login Failed</string>
+    <string name="signup_failed">Signup Failed</string>
+    <string name="email_already_registered">Email Already Registered</string>
+    <string name="invalid_credentials">Invalid credentials</string>
+    <string name="network_error">Network error</string>
+    <string name="google_login_not_implemented">Google Login not implemented yet</string>
+    <string name="facebook_login_not_implemented">Facebook Login not implemented yet</string>
+    <string name="google_signup_not_implemented">Google Sign-Up not implemented yet</string>
+    <string name="facebook_signup_not_implemented">Facebook Sign-Up not implemented yet</string>
 </resources>

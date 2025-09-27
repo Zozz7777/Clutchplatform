@@ -3,6 +3,9 @@ package com.clutch.app.ui.screens.onboarding
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.pager.HorizontalPager
+import androidx.compose.foundation.pager.rememberPagerState
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
@@ -11,55 +14,69 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.buildAnnotatedString
+import androidx.compose.ui.text.withStyle
+import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import kotlinx.coroutines.launch
 import com.clutch.app.R
 import com.clutch.app.ui.theme.*
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
+import com.clutch.app.utils.TranslationManager
 
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun OnboardingScreen(
     onGetStarted: () -> Unit,
     onSkip: () -> Unit
 ) {
-    var currentPage by remember { mutableStateOf(0) }
-    var currentLanguage by remember { mutableStateOf("en") }
+    val context = LocalContext.current
+    var currentLanguage by remember { mutableStateOf(TranslationManager.getCurrentLanguage()) }
+    val layoutDirection = if (currentLanguage == "ar") LayoutDirection.Rtl else LayoutDirection.Ltr
     
-      val pages = if (currentLanguage == "ar") {
-          listOf(
+    val pagerState = rememberPagerState(pageCount = { 3 })
+    val coroutineScope = rememberCoroutineScope()
+    
+        val pages = if (currentLanguage == "ar") {
+            listOf(
+                OnboardingPage(
+                    title = stringResource(R.string.save_money),
+                    description = stringResource(R.string.onboarding_save_money_desc),
+                    illustrationRes = R.drawable.onboarding_save_money
+                ),
+                OnboardingPage(
+                    title = stringResource(R.string.extend_car_life),
+                    description = stringResource(R.string.onboarding_extend_life_desc),
+                    illustrationRes = R.drawable.onboarding_extend_life
+                ),
+                OnboardingPage(
+                    title = stringResource(R.string.peace_of_mind),
+                    description = stringResource(R.string.onboarding_peace_mind_desc),
+                    illustrationRes = R.drawable.onboarding_peace_of_mind
+                )
+            )
+        } else {
+            listOf(
               OnboardingPage(
-                  title = "وفر المال",
-                  description = "تتبع صحة سيارتك، تجنب الأعطال المكلفة، واحصل على أفضل الأسعار لقطع الغيار والخدمات—فقط مع كلتش.",
+                  title = stringResource(R.string.save_money),
+                  description = stringResource(R.string.onboarding_save_money_desc),
                   illustrationRes = R.drawable.onboarding_save_money
               ),
               OnboardingPage(
-                  title = "مدد عمر سيارتك",
-                  description = "ابق على اطلاع بالصيانة واستبدل القطع في الوقت المناسب للحفاظ على سيارتك تعمل بسلاسة لسنوات قادمة.",
+                  title = stringResource(R.string.extend_car_life),
+                  description = stringResource(R.string.onboarding_extend_life_desc),
                   illustrationRes = R.drawable.onboarding_extend_life
               ),
               OnboardingPage(
-                  title = "راحة البال",
-                  description = "من الميكانيكيين الموثوقين إلى المدفوعات الشفافة، كلتش يضمن أن كل رحلة تكون أكثر أماناً وذكاءً وخالية من التوتر.",
-                  illustrationRes = R.drawable.onboarding_peace_of_mind
-              )
-          )
-      } else {
-          listOf(
-              OnboardingPage(
-                  title = "Save Money",
-                  description = "Track your car's health, avoid costly breakdowns, and get the best prices on parts and services—only with Clutch.",
-                  illustrationRes = R.drawable.onboarding_save_money
-              ),
-              OnboardingPage(
-                  title = "Extend the life of your car",
-                  description = "Stay on top of maintenance and replace parts at the right time to keep your car running smoothly for years to come.",
-                  illustrationRes = R.drawable.onboarding_extend_life
-              ),
-              OnboardingPage(
-                  title = "Peace of mind",
-                  description = "From trusted mechanics to transparent payments, Clutch ensures every ride is safer, smarter, and stress-free.",
+                  title = stringResource(R.string.peace_of_mind),
+                  description = stringResource(R.string.onboarding_peace_mind_desc),
                   illustrationRes = R.drawable.onboarding_peace_of_mind
               )
           )
@@ -92,7 +109,8 @@ fun OnboardingScreen(
                 // Language Switch
                 IconButton(
                     onClick = { 
-                        currentLanguage = if (currentLanguage == "en") "ar" else "en"
+                        TranslationManager.toggleLanguage(context)
+                        currentLanguage = TranslationManager.getCurrentLanguage()
                     }
                 ) {
                     Icon(
@@ -104,67 +122,107 @@ fun OnboardingScreen(
                 }
             }
 
-            // Page content
+            // Page content with HorizontalPager
             Box(
                 modifier = Modifier.weight(1f),
                 contentAlignment = Alignment.Center
             ) {
-                Column(
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                    verticalArrangement = Arrangement.Center
-                ) {
-                    // Illustration
-                    Image(
-                        painter = painterResource(id = pages[currentPage].illustrationRes),
-                        contentDescription = "Onboarding Illustration",
-                        modifier = Modifier
-                            .size(300.dp)
-                            .padding(16.dp)
-                    )
+                CompositionLocalProvider(LocalLayoutDirection provides layoutDirection) {
+                    HorizontalPager(
+                        state = pagerState,
+                        modifier = Modifier.fillMaxSize()
+                    ) { page ->
+                        Column(
+                            horizontalAlignment = Alignment.CenterHorizontally,
+                            verticalArrangement = Arrangement.Center,
+                            modifier = Modifier.fillMaxSize()
+                        ) {
+                            // Illustration
+                            Image(
+                                painter = painterResource(id = pages[page].illustrationRes),
+                                contentDescription = "Onboarding Illustration",
+                                modifier = Modifier
+                                    .size(300.dp)
+                                    .padding(16.dp)
+                            )
 
-                    Spacer(modifier = Modifier.height(32.dp))
+                            Spacer(modifier = Modifier.height(32.dp))
 
-                    // Title
-                    Text(
-                        text = pages[currentPage].title,
-                        fontSize = 24.sp,
-                        fontWeight = FontWeight.Bold,
-                        color = Color.Black,
-                        textAlign = TextAlign.Center,
-                        modifier = Modifier.padding(horizontal = 32.dp)
-                    )
+                            // Title
+                            Text(
+                                text = pages[page].title,
+                                fontSize = 24.sp,
+                                fontWeight = FontWeight.Bold,
+                                color = Color.DarkGray,
+                                textAlign = TextAlign.Center,
+                                modifier = Modifier.padding(horizontal = 32.dp)
+                            )
 
-                    Spacer(modifier = Modifier.height(16.dp))
+                            Spacer(modifier = Modifier.height(16.dp))
 
-                    // Description
-                    Text(
-                        text = pages[currentPage].description,
-                        fontSize = 14.sp,
-                        color = Color.Black, // All text in black, not mixed colors
-                        textAlign = TextAlign.Center,
-                        lineHeight = 20.sp,
-                        modifier = Modifier.padding(horizontal = 32.dp)
-                    )
+                            // Description
+                            Text(
+                                text = buildAnnotatedString {
+                                    val fullText = pages[page].description
+                                    val redParts = when (page) {
+                                        0 -> listOf("only with Clutch")
+                                        1 -> listOf("keep your car running smoothly for years to come")
+                                        2 -> listOf("safer, smarter, and stress-free")
+                                        else -> emptyList()
+                                    }
+                                    
+                                    // Set default color to dark grey for all text
+                                    withStyle(style = SpanStyle(color = Color.DarkGray)) {
+                                        var currentIndex = 0
+                                        for (redPart in redParts) {
+                                            val startIndex = fullText.indexOf(redPart, currentIndex)
+                                            if (startIndex != -1) {
+                                                // Add normal text before red part
+                                                if (startIndex > currentIndex) {
+                                                    append(fullText.substring(currentIndex, startIndex))
+                                                }
+                                                // Add red part
+                                                withStyle(style = SpanStyle(color = ClutchRed, fontWeight = FontWeight.Bold)) {
+                                                    append(redPart)
+                                                }
+                                                currentIndex = startIndex + redPart.length
+                                            }
+                                        }
+                                        // Add remaining text
+                                        if (currentIndex < fullText.length) {
+                                            append(fullText.substring(currentIndex))
+                                        }
+                                    }
+                                },
+                                fontSize = 14.sp,
+                                textAlign = TextAlign.Center,
+                                lineHeight = 20.sp,
+                                modifier = Modifier.padding(horizontal = 32.dp)
+                            )
+                        }
+                    }
                 }
             }
 
             // Page indicators
-            Row(
-                horizontalArrangement = Arrangement.Center,
-                verticalAlignment = Alignment.CenterVertically,
-                modifier = Modifier.padding(bottom = 32.dp)
-            ) {
-                pages.forEachIndexed { index, _ ->
-                    Box(
-                        modifier = Modifier
-                            .size(if (index == currentPage) 12.dp else 8.dp)
-                            .background(
-                                color = if (index == currentPage) ClutchRed else Color.Gray.copy(alpha = 0.3f),
-                                shape = RoundedCornerShape(50)
-                            )
-                    )
-                    if (index < pages.size - 1) {
-                        Spacer(modifier = Modifier.width(8.dp))
+            CompositionLocalProvider(LocalLayoutDirection provides layoutDirection) {
+                Row(
+                    horizontalArrangement = Arrangement.Center,
+                    verticalAlignment = Alignment.CenterVertically,
+                    modifier = Modifier.padding(bottom = 32.dp)
+                ) {
+                    pages.forEachIndexed { index, _ ->
+                        Box(
+                            modifier = Modifier
+                                .size(if (index == pagerState.currentPage) 12.dp else 8.dp)
+                                .background(
+                                    color = if (index == pagerState.currentPage) ClutchRed else Color.Gray.copy(alpha = 0.3f),
+                                    shape = RoundedCornerShape(50)
+                                )
+                        )
+                        if (index < pages.size - 1) {
+                            Spacer(modifier = Modifier.width(8.dp))
+                        }
                     }
                 }
             }
@@ -178,10 +236,10 @@ fun OnboardingScreen(
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 // Skip button (only show on first page)
-                if (currentPage == 0) {
+                if (pagerState.currentPage == 0) {
                     TextButton(onClick = onSkip) {
                         Text(
-                            text = "Skip",
+                            text = stringResource(R.string.skip),
                             color = ClutchRed,
                             fontSize = 16.sp
                         )
@@ -193,8 +251,10 @@ fun OnboardingScreen(
                 // Next/Get Started button
                 Button(
                     onClick = {
-                        if (currentPage < pages.size - 1) {
-                            currentPage++
+                        if (pagerState.currentPage < pages.size - 1) {
+                            coroutineScope.launch {
+                                pagerState.animateScrollToPage(pagerState.currentPage + 1)
+                            }
                         } else {
                             onGetStarted()
                         }
@@ -206,7 +266,7 @@ fun OnboardingScreen(
                     shape = RoundedCornerShape(12.dp)
                 ) {
                     Text(
-                        text = if (currentPage < pages.size - 1) "Next" else "Get Started",
+                        text = if (pagerState.currentPage < pages.size - 1) stringResource(R.string.next) else stringResource(R.string.get_started),
                         fontSize = 16.sp,
                         fontWeight = FontWeight.SemiBold,
                         color = Color.White

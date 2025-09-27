@@ -26,6 +26,7 @@ import com.clutch.app.ui.screens.community.CommunityScreen
 import com.clutch.app.ui.screens.loyalty.LoyaltyScreen
 import com.clutch.app.ui.theme.ClutchAppTheme
 import com.clutch.app.utils.SessionManager
+import com.clutch.app.utils.TranslationManager
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 
@@ -37,6 +38,9 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
+        
+        // Initialize language based on device settings
+        TranslationManager.initializeLanguage(this)
         
         setContent {
             ClutchAppTheme {

@@ -23,7 +23,8 @@ fun ErrorDialog(
     title: String = "Error",
     message: String,
     onDismiss: () -> Unit,
-    onRetry: (() -> Unit)? = null
+    onRetry: (() -> Unit)? = null,
+    retryButtonText: String = "Retry"
 ) {
     Dialog(
         onDismissRequest = onDismiss,
@@ -97,7 +98,7 @@ fun ErrorDialog(
                             shape = RoundedCornerShape(8.dp),
                             colors = ButtonDefaults.buttonColors(containerColor = ClutchRed)
                         ) {
-                            Text("Retry", fontSize = 14.sp, color = Color.White)
+                            Text(retryButtonText, fontSize = 14.sp, color = Color.White)
                         }
                     } else {
                         Button(

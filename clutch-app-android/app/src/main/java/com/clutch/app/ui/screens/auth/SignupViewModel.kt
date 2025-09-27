@@ -71,22 +71,10 @@ class SignupViewModel @Inject constructor(
                     val error = registerResult.exceptionOrNull()
                     val errorMessage = error?.message ?: "Registration failed"
                     
-                    // Check if user already exists - if so, try to log them in
+                    // Check if user already exists - show specific error message
                     if (errorMessage.contains("already exists", ignoreCase = true) || 
                         errorMessage.contains("user exists", ignoreCase = true)) {
-                        // User already exists, try to log them in
-                        try {
-                            val loginResult = repository.login(email, password)
-                            if (loginResult.isSuccess) {
-                                val authData = loginResult.getOrNull()!!
-                                sessionManager.saveAuthTokens(authData.data.token, authData.data.refreshToken)
-                                sessionManager.saveUser(authData.data.user)
-                            } else {
-                                throw Exception("User exists but login failed. Please try logging in instead.")
-                            }
-                        } catch (loginError: Exception) {
-                            throw Exception("User already exists. Please try logging in instead.")
-                        }
+                        throw Exception("This email is already registered. Please try logging in instead.")
                     } else {
                         throw error ?: Exception("Registration failed")
                     }
@@ -119,12 +107,6 @@ class SignupViewModel @Inject constructor(
                     isLoading = false,
                     errorMessage = "Google Sign-Up not implemented yet"
                 )
-                return
-                
-                _uiState.value = _uiState.value.copy(
-                    isLoading = false,
-                    signupSuccess = true
-                )
             } catch (e: Exception) {
                 _uiState.value = _uiState.value.copy(
                     isLoading = false,
@@ -139,38 +121,10 @@ class SignupViewModel @Inject constructor(
 
         viewModelScope.launch {
             try {
-                // Implement Facebook Sign-Up using Facebook SDK
-                // Note: This requires proper Facebook SDK setup and configuration
-                // For now, simulate successful signup
-                val mockFacebookUser = AuthResponse(
-                    success = true,
-                    data = AuthData(
-                        user = User(
-                            id = "facebook_user_${System.currentTimeMillis()}",
-                            email = "user@facebook.com",
-                            firstName = "Facebook",
-                            lastName = "User",
-                            phone = null,
-                            profileImage = null,
-                            isEmailVerified = true,
-                            isPhoneVerified = false,
-                            createdAt = System.currentTimeMillis().toString(),
-                            updatedAt = System.currentTimeMillis().toString()
-                        ),
-                        token = "facebook_token_${System.currentTimeMillis()}",
-                        refreshToken = "facebook_refresh_${System.currentTimeMillis()}"
-                    ),
-                    message = "Facebook Sign-Up successful",
-                    timestamp = System.currentTimeMillis().toString()
-                )
-                
-                // Save session data
-                sessionManager.saveAuthTokens(mockFacebookUser.data.token, mockFacebookUser.data.refreshToken)
-                sessionManager.saveUser(mockFacebookUser.data.user)
-                
+                // TODO: Implement Facebook Sign-Up
                 _uiState.value = _uiState.value.copy(
                     isLoading = false,
-                    signupSuccess = true
+                    errorMessage = "Facebook Sign-Up not implemented yet"
                 )
             } catch (e: Exception) {
                 _uiState.value = _uiState.value.copy(

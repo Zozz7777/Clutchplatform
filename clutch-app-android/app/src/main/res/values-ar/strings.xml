@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">كلتش</string>
+    <string name="app_tagline">أفضل صديق لسيارتك</string>
+    
+    <!-- Navigation -->
+    <string name="nav_home">الرئيسية</string>
+    <string name="nav_parts">قطع الغيار</string>
+    <string name="nav_maintenance">الصيانة</string>
+    <string name="nav_account">الحساب</string>
+    
+    <!-- Auth -->
+    <string name="login">تسجيل الدخول</string>
+    <string name="signup">إنشاء حساب</string>
+    <string name="email">البريد الإلكتروني</string>
+    <string name="email_phone">البريد الإلكتروني / رقم الهاتف</string>
+    <string name="password">كلمة المرور</string>
+    <string name="confirm_password">تأكيد كلمة المرور</string>
+    <string name="name">الاسم</string>
+    <string name="mobile_number">رقم الهاتف المحمول</string>
+    <string name="forgot_password">نسيت كلمة المرور؟</string>
+    <string name="create_account">إنشاء حساب</string>
+    <string name="already_have_account">هل لديك حساب بالفعل؟</string>
+    <string name="sign_in_to_continue">سجل الدخول للمتابعة</string>
+    <string name="create_your_account">أنشئ حسابك</string>
+    <string name="agree_to_terms">أوافق على شروط الخدمة وسياسة الخصوصية</string>
+    <string name="login_with_google">تسجيل الدخول بجوجل</string>
+    <string name="login_with_facebook">تسجيل الدخول بفيسبوك</string>
+    <string name="signup_with_google">إنشاء حساب بجوجل</string>
+    <string name="signup_with_facebook">إنشاء حساب بفيسبوك</string>
+    
+    <!-- Dashboard -->
+    <string name="your_car">سيارتك</string>
+    <string name="car_health">صحة السيارة</string>
+    <string name="find_mechanics">البحث عن ميكانيكي</string>
+    <string name="shop_parts">تسوق قطع الغيار</string>
+    <string name="parts_expiring">قطع غيار تنتهي قريباً</string>
+    <string name="view_all">عرض الكل</string>
+    <string name="welcome_back">مرحباً بعودتك</string>
+    <string name="car_health_score">درجة صحة السيارة</string>
+    <string name="maintenance_reminders">تذكيرات الصيانة</string>
+    <string name="quick_book">حجز سريع</string>
+    <string name="loyalty_points">نقاط الولاء</string>
+    <string name="active_orders">الطلبات النشطة</string>
+    
+    <!-- Onboarding -->
+    <string name="save_money">وفر المال</string>
+    <string name="extend_car_life">مدد عمر سيارتك</string>
+    <string name="peace_of_mind">راحة البال</string>
+    <string name="onboarding_save_money_desc">تتبع صحة سيارتك، تجنب الأعطال المكلفة، واحصل على أفضل الأسعار لقطع الغيار والخدمات—فقط مع كلتش.</string>
+    <string name="onboarding_extend_life_desc">ابق على اطلاع بالصيانة واستبدل القطع في الوقت المناسب للحفاظ على سيارتك تعمل بسلاسة لسنوات قادمة.</string>
+    <string name="onboarding_peace_mind_desc">من الميكانيكيين الموثوقين إلى المدفوعات الشفافة، كلتش يضمن أن كل رحلة تكون أكثر أماناً وذكاءً وخالية من التوتر.</string>
+    
+    <!-- Community -->
+    <string name="community">المجتمع</string>
+    <string name="tips">نصائح</string>
+    <string name="reviews">التقييمات</string>
+    <string name="leaderboard">لوحة المتصدرين</string>
+    
+    <!-- Loyalty -->
+    <string name="loyalty">الولاء</string>
+    <string name="points">النقاط</string>
+    <string name="badges">الشارات</string>
+    <string name="rewards">المكافآت</string>
+    
+    <!-- Common -->
+    <string name="loading">جاري التحميل...</string>
+    <string name="error">خطأ</string>
+    <string name="retry">إعادة المحاولة</string>
+    <string name="cancel">إلغاء</string>
+    <string name="ok">موافق</string>
+    <string name="save">حفظ</string>
+    <string name="edit">تعديل</string>
+    <string name="delete">حذف</string>
+    <string name="back">رجوع</string>
+    <string name="next">التالي</string>
+    <string name="previous">السابق</string>
+    <string name="skip">تخطي</string>
+    <string name="get_started">ابدأ الآن</string>
+    <string name="done">تم</string>
+    <string name="try_again">حاول مرة أخرى</string>
+    <string name="go_to_login">اذهب لتسجيل الدخول</string>
+    
+    <!-- Error Messages -->
+    <string name="login_failed">فشل تسجيل الدخول</string>
+    <string name="signup_failed">فشل إنشاء الحساب</string>
+    <string name="email_already_registered">البريد الإلكتروني مسجل بالفعل</string>
+    <string name="invalid_credentials">بيانات الدخول غير صحيحة</string>
+    <string name="network_error">خطأ في الشبكة</string>
+    <string name="google_login_not_implemented">تسجيل الدخول بجوجل غير متاح حالياً</string>
+    <string name="facebook_login_not_implemented">تسجيل الدخول بفيسبوك غير متاح حالياً</string>
+    <string name="google_signup_not_implemented">إنشاء حساب بجوجل غير متاح حالياً</string>
+    <string name="facebook_signup_not_implemented">إنشاء حساب بفيسبوك غير متاح حالياً</string>
+</resources>

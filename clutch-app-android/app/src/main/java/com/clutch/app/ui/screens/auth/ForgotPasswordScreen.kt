@@ -21,16 +21,39 @@ import androidx.compose.ui.unit.sp
 import com.clutch.app.R
 import com.clutch.app.ui.theme.ClutchAppTheme
 import com.clutch.app.ui.theme.ClutchRed
+import androidx.compose.ui.res.stringResource
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.clutch.app.ui.components.ErrorDialog
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ForgotPasswordScreen(
     onNavigateBack: () -> Unit = {},
     onNavigateToLogin: () -> Unit = {},
-    onResetPassword: () -> Unit = {}
+    onResetPassword: () -> Unit = {},
+    viewModel: ForgotPasswordViewModel = hiltViewModel()
 ) {
     var emailOrPhone by remember { mutableStateOf("") }
-    var isEmailSent by remember { mutableStateOf(false) }
+    var resetCode by remember { mutableStateOf("") }
+    var newPassword by remember { mutableStateOf("") }
+    var showErrorDialog by remember { mutableStateOf(false) }
+    
+    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+    
+    // Handle password reset success
+    LaunchedEffect(uiState.isPasswordReset) {
+        if (uiState.isPasswordReset) {
+            onResetPassword()
+        }
+    }
+    
+    // Handle error dialog
+    LaunchedEffect(uiState.errorMessage) {
+        if (uiState.errorMessage.isNotEmpty()) {
+            showErrorDialog = true
+        }
+    }
 
     Scaffold(
         topBar = {
@@ -71,7 +94,7 @@ fun ForgotPasswordScreen(
         ) {
             Spacer(modifier = Modifier.height(32.dp))
 
-            if (!isEmailSent) {
+            if (!uiState.isEmailSent) {
                 // Reset Password Form
                 Text(
                     text = "Enter your email or phone number to receive a reset code",
@@ -101,14 +124,22 @@ fun ForgotPasswordScreen(
 
                 // Send Reset Code Button
                 Button(
-                    onClick = { isEmailSent = true },
+                    onClick = { viewModel.sendResetCode(emailOrPhone) },
                     modifier = Modifier
                         .fillMaxWidth()
                         .height(50.dp),
                     colors = ButtonDefaults.buttonColors(containerColor = ClutchRed),
-                    shape = RoundedCornerShape(12.dp)
+                    shape = RoundedCornerShape(12.dp),
+                    enabled = !uiState.isLoading
                 ) {
-                    Text("SEND RESET CODE", color = Color.White, fontSize = 18.sp, fontWeight = FontWeight.Bold)
+                    if (uiState.isLoading) {
+                        CircularProgressIndicator(
+                            color = Color.White,
+                            modifier = Modifier.size(24.dp)
+                        )
+                    } else {
+                        Text("SEND RESET CODE", color = Color.White, fontSize = 18.sp, fontWeight = FontWeight.Bold)
+                    }
                 }
             } else {
                 // Email Sent Confirmation
@@ -134,7 +165,7 @@ fun ForgotPasswordScreen(
                     Spacer(modifier = Modifier.height(16.dp))
 
                     Text(
-                        text = "We've sent a reset code to $emailOrPhone. Please check your email or SMS and enter the code below.",
+                        text = "We've sent a reset code to ${uiState.emailOrPhone}. Please check your email or SMS and enter the code below.",
                         color = Color.Gray,
                         fontSize = 16.sp,
                         modifier = Modifier.padding(horizontal = 16.dp)
@@ -144,16 +175,18 @@ fun ForgotPasswordScreen(
 
                     // Reset Code Input
                     OutlinedTextField(
-                        value = "", // TODO: Add state for reset code
-                        onValueChange = { /* TODO */ },
+                        value = resetCode,
+                        onValueChange = { resetCode = it },
                         label = { Text("Enter Reset Code") },
                         keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
                         modifier = Modifier.fillMaxWidth(),
                         colors = OutlinedTextFieldDefaults.colors(
                             focusedBorderColor = ClutchRed,
-                            unfocusedBorderColor = Color.Gray,
+                            unfocusedBorderColor = Color.LightGray,
                             focusedLabelColor = ClutchRed,
-                            unfocusedLabelColor = Color.Gray
+                            unfocusedLabelColor = Color.LightGray,
+                            focusedTextColor = Color.Black,
+                            unfocusedTextColor = Color.LightGray
                         )
                     )
 
@@ -161,16 +194,18 @@ fun ForgotPasswordScreen(
 
                     // New Password Input
                     OutlinedTextField(
-                        value = "", // TODO: Add state for new password
-                        onValueChange = { /* TODO */ },
+                        value = newPassword,
+                        onValueChange = { newPassword = it },
                         label = { Text("New Password") },
                         keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
                         modifier = Modifier.fillMaxWidth(),
                         colors = OutlinedTextFieldDefaults.colors(
                             focusedBorderColor = ClutchRed,
-                            unfocusedBorderColor = Color.Gray,
+                            unfocusedBorderColor = Color.LightGray,
                             focusedLabelColor = ClutchRed,
-                            unfocusedLabelColor = Color.Gray
+                            unfocusedLabelColor = Color.LightGray,
+                            focusedTextColor = Color.Black,
+                            unfocusedTextColor = Color.LightGray
                         )
                     )
 
@@ -178,14 +213,22 @@ fun ForgotPasswordScreen(
 
                     // Reset Password Button
                     Button(
-                        onClick = onResetPassword,
+                        onClick = { viewModel.resetPassword(uiState.emailOrPhone, resetCode, newPassword) },
                         modifier = Modifier
                             .fillMaxWidth()
                             .height(50.dp),
                         colors = ButtonDefaults.buttonColors(containerColor = ClutchRed),
-                        shape = RoundedCornerShape(12.dp)
+                        shape = RoundedCornerShape(12.dp),
+                        enabled = !uiState.isLoading
                     ) {
-                        Text("RESET PASSWORD", color = Color.White, fontSize = 18.sp, fontWeight = FontWeight.Bold)
+                        if (uiState.isLoading) {
+                            CircularProgressIndicator(
+                                color = Color.White,
+                                modifier = Modifier.size(24.dp)
+                            )
+                        } else {
+                            Text("RESET PASSWORD", color = Color.White, fontSize = 18.sp, fontWeight = FontWeight.Bold)
+                        }
                     }
 
                     Spacer(modifier = Modifier.height(16.dp))
@@ -206,6 +249,22 @@ fun ForgotPasswordScreen(
 
             Spacer(modifier = Modifier.height(16.dp))
         }
+    }
+    
+    // Error Dialog
+    if (showErrorDialog && uiState.errorMessage.isNotEmpty()) {
+        ErrorDialog(
+            title = "Error",
+            message = uiState.errorMessage,
+            onDismiss = { 
+                showErrorDialog = false
+                viewModel.clearError()
+            },
+            onRetry = {
+                showErrorDialog = false
+                viewModel.clearError()
+            }
+        )
     }
 }
 

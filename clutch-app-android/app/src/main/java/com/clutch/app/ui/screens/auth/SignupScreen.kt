@@ -82,7 +82,9 @@ fun SignupScreen(
                     Image(
                         painter = painterResource(id = R.drawable.clutch_logo_red),
                         contentDescription = "Clutch Logo",
-                        modifier = Modifier.size(40.dp)
+                        modifier = Modifier
+                            .size(40.dp)
+                            .padding(end = 8.dp)
                     )
                 },
                 colors = TopAppBarDefaults.topAppBarColors(
@@ -114,11 +116,15 @@ fun SignupScreen(
                   modifier = Modifier.fillMaxWidth(),
                   colors = OutlinedTextFieldDefaults.colors(
                       focusedBorderColor = ClutchRed,
-                      unfocusedBorderColor = Color.Gray,
+                      unfocusedBorderColor = Color.LightGray,
                       focusedLabelColor = ClutchRed,
-                      unfocusedLabelColor = Color.Gray,
+                      unfocusedLabelColor = Color.LightGray,
                       focusedTextColor = Color.Black,
-                      unfocusedTextColor = Color.Black
+                      unfocusedTextColor = Color.LightGray,
+                      focusedLeadingIconColor = ClutchRed,
+                      unfocusedLeadingIconColor = Color.LightGray,
+                      focusedTrailingIconColor = ClutchRed,
+                      unfocusedTrailingIconColor = Color.LightGray
                   )
               )
 
@@ -136,11 +142,15 @@ fun SignupScreen(
                   modifier = Modifier.fillMaxWidth(),
                   colors = OutlinedTextFieldDefaults.colors(
                       focusedBorderColor = ClutchRed,
-                      unfocusedBorderColor = Color.Gray,
+                      unfocusedBorderColor = Color.LightGray,
                       focusedLabelColor = ClutchRed,
-                      unfocusedLabelColor = Color.Gray,
+                      unfocusedLabelColor = Color.LightGray,
                       focusedTextColor = Color.Black,
-                      unfocusedTextColor = Color.Black
+                      unfocusedTextColor = Color.LightGray,
+                      focusedLeadingIconColor = ClutchRed,
+                      unfocusedLeadingIconColor = Color.LightGray,
+                      focusedTrailingIconColor = ClutchRed,
+                      unfocusedTrailingIconColor = Color.LightGray
                   )
               )
 
@@ -158,11 +168,15 @@ fun SignupScreen(
                 modifier = Modifier.fillMaxWidth(),
                 colors = OutlinedTextFieldDefaults.colors(
                     focusedBorderColor = ClutchRed,
-                    unfocusedBorderColor = Color.Gray,
+                    unfocusedBorderColor = Color.LightGray,
                     focusedLabelColor = ClutchRed,
-                    unfocusedLabelColor = Color.Gray,
+                    unfocusedLabelColor = Color.LightGray,
                     focusedTextColor = Color.Black,
-                    unfocusedTextColor = Color.Black
+                    unfocusedTextColor = Color.LightGray,
+                    focusedLeadingIconColor = ClutchRed,
+                    unfocusedLeadingIconColor = Color.LightGray,
+                    focusedTrailingIconColor = ClutchRed,
+                    unfocusedTrailingIconColor = Color.LightGray
                 )
             )
 
@@ -190,11 +204,15 @@ fun SignupScreen(
                 modifier = Modifier.fillMaxWidth(),
                 colors = OutlinedTextFieldDefaults.colors(
                     focusedBorderColor = ClutchRed,
-                    unfocusedBorderColor = Color.Gray,
+                    unfocusedBorderColor = Color.LightGray,
                     focusedLabelColor = ClutchRed,
-                    unfocusedLabelColor = Color.Gray,
+                    unfocusedLabelColor = Color.LightGray,
                     focusedTextColor = Color.Black,
-                    unfocusedTextColor = Color.Black
+                    unfocusedTextColor = Color.LightGray,
+                    focusedLeadingIconColor = ClutchRed,
+                    unfocusedLeadingIconColor = Color.LightGray,
+                    focusedTrailingIconColor = ClutchRed,
+                    unfocusedTrailingIconColor = Color.LightGray
                 )
             )
 
@@ -208,7 +226,7 @@ fun SignupScreen(
                 visualTransformation = if (confirmPasswordVisible) VisualTransformation.None else PasswordVisualTransformation(),
                 keyboardOptions = KeyboardOptions(
                     keyboardType = KeyboardType.Password,
-                    imeAction = ImeAction.Next
+                    imeAction = ImeAction.Done
                 ),
                 trailingIcon = {
                     val image = if (confirmPasswordVisible)
@@ -222,11 +240,15 @@ fun SignupScreen(
                 modifier = Modifier.fillMaxWidth(),
                 colors = OutlinedTextFieldDefaults.colors(
                     focusedBorderColor = ClutchRed,
-                    unfocusedBorderColor = Color.Gray,
+                    unfocusedBorderColor = Color.LightGray,
                     focusedLabelColor = ClutchRed,
-                    unfocusedLabelColor = Color.Gray,
+                    unfocusedLabelColor = Color.LightGray,
                     focusedTextColor = Color.Black,
-                    unfocusedTextColor = Color.Black
+                    unfocusedTextColor = Color.LightGray,
+                    focusedLeadingIconColor = ClutchRed,
+                    unfocusedLeadingIconColor = Color.LightGray,
+                    focusedTrailingIconColor = ClutchRed,
+                    unfocusedTrailingIconColor = Color.LightGray
                 )
             )
 
@@ -240,7 +262,11 @@ fun SignupScreen(
                 Checkbox(
                     checked = agreeToTerms,
                     onCheckedChange = { agreeToTerms = it },
-                    colors = CheckboxDefaults.colors(checkedColor = ClutchRed)
+                    colors = CheckboxDefaults.colors(
+                        checkedColor = ClutchRed,
+                        uncheckedColor = Color.LightGray,
+                        checkmarkColor = Color.White
+                    )
                 )
                 Text(
                     text = "I Agree to Terms of Service and Privacy Policy",
@@ -347,16 +373,27 @@ fun SignupScreen(
     
     // Error Dialog
     if (showErrorDialog && uiState.errorMessage.isNotEmpty()) {
+        val isUserExistsError = uiState.errorMessage.contains("already registered", ignoreCase = true)
+        
         ErrorDialog(
-            title = "Signup Failed",
+            title = if (isUserExistsError) "Email Already Registered" else "Signup Failed",
             message = uiState.errorMessage,
             onDismiss = { 
                 showErrorDialog = false
                 viewModel.clearError()
             },
-            onRetry = {
-                viewModel.signup(name, email, mobileNumber, password, confirmPassword, agreeToTerms)
-            }
+            onRetry = if (isUserExistsError) {
+                {
+                    showErrorDialog = false
+                    viewModel.clearError()
+                    onNavigateToLogin()
+                }
+            } else {
+                {
+                    viewModel.signup(name, email, mobileNumber, password, confirmPassword, agreeToTerms)
+                }
+            },
+            retryButtonText = if (isUserExistsError) "Go to Login" else "Try Again"
         )
     }
 }

@@ -26,6 +26,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.clutch.app.R
 import com.clutch.app.ui.theme.*
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import com.clutch.app.ui.components.ErrorDialog
 import com.clutch.app.data.repository.ClutchRepository
 import com.clutch.app.data.model.LoginRequest
@@ -97,7 +99,7 @@ fun LoginScreen(
                     color = Color.Black
                 )
                 Text(
-                    text = "Sign in to continue",
+                    text = stringResource(R.string.sign_in_to_continue),
                     fontSize = 16.sp,
                     color = Color.Gray,
                     textAlign = TextAlign.Center
@@ -121,7 +123,7 @@ fun LoginScreen(
                     OutlinedTextField(
                         value = email,
                         onValueChange = { email = it },
-                        label = { Text("Email") },
+                        label = { Text(stringResource(R.string.email_phone)) },
                         leadingIcon = {
                             Icon(
                                 imageVector = Icons.Default.Email,
@@ -135,9 +137,15 @@ fun LoginScreen(
                         modifier = Modifier.fillMaxWidth(),
                         colors = OutlinedTextFieldDefaults.colors(
                             focusedBorderColor = ClutchRed,
+                            unfocusedBorderColor = Color.LightGray,
                             focusedLabelColor = ClutchRed,
+                            unfocusedLabelColor = Color.LightGray,
                             focusedTextColor = Color.Black,
-                            unfocusedTextColor = Color.Black
+                            unfocusedTextColor = Color.LightGray,
+                            focusedLeadingIconColor = ClutchRed,
+                            unfocusedLeadingIconColor = Color.LightGray,
+                            focusedTrailingIconColor = ClutchRed,
+                            unfocusedTrailingIconColor = Color.LightGray
                         )
                     )
 
@@ -145,7 +153,7 @@ fun LoginScreen(
                     OutlinedTextField(
                         value = password,
                         onValueChange = { password = it },
-                        label = { Text("Password") },
+                        label = { Text(stringResource(R.string.password)) },
                         leadingIcon = {
                             Icon(
                                 imageVector = Icons.Default.Lock,
@@ -168,16 +176,22 @@ fun LoginScreen(
                         modifier = Modifier.fillMaxWidth(),
                         colors = OutlinedTextFieldDefaults.colors(
                             focusedBorderColor = ClutchRed,
+                            unfocusedBorderColor = Color.LightGray,
                             focusedLabelColor = ClutchRed,
+                            unfocusedLabelColor = Color.LightGray,
                             focusedTextColor = Color.Black,
-                            unfocusedTextColor = Color.Black
+                            unfocusedTextColor = Color.LightGray,
+                            focusedLeadingIconColor = ClutchRed,
+                            unfocusedLeadingIconColor = Color.LightGray,
+                            focusedTrailingIconColor = ClutchRed,
+                            unfocusedTrailingIconColor = Color.LightGray
                         )
                     )
 
 
                     // Forgot Password
                     Text(
-                        text = "Forgot Password?",
+                        text = stringResource(R.string.forgot_password),
                         color = ClutchRed,
                         fontSize = 14.sp,
                         fontWeight = FontWeight.Medium,
@@ -207,7 +221,7 @@ fun LoginScreen(
                             )
                         } else {
                             Text(
-                                text = "Sign In",
+                                text = stringResource(R.string.login),
                                 fontSize = 16.sp,
                                 fontWeight = FontWeight.SemiBold,
                                 color = Color.White
@@ -253,7 +267,7 @@ fun LoginScreen(
                             modifier = Modifier.size(20.dp)
                         )
                         Spacer(modifier = Modifier.width(8.dp))
-                        Text("Google", fontSize = 14.sp)
+                        Text(stringResource(R.string.login_with_google), fontSize = 14.sp)
                     }
 
                     // Facebook Login
@@ -276,7 +290,7 @@ fun LoginScreen(
                             modifier = Modifier.size(20.dp)
                         )
                         Spacer(modifier = Modifier.width(8.dp))
-                        Text("Facebook", fontSize = 14.sp)
+                        Text(stringResource(R.string.login_with_facebook), fontSize = 14.sp)
                     }
                 }
             }
@@ -289,12 +303,12 @@ fun LoginScreen(
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Text(
-                    text = "Don't have an account? ",
+                    text = stringResource(R.string.already_have_account),
                     color = Color.Gray,
                     fontSize = 14.sp
                 )
                 Text(
-                    text = "Sign Up",
+                    text = stringResource(R.string.signup),
                     color = ClutchRed,
                     fontSize = 14.sp,
                     fontWeight = FontWeight.SemiBold,
@@ -307,7 +321,7 @@ fun LoginScreen(
     // Error Dialog
     if (showErrorDialog && uiState.errorMessage.isNotEmpty()) {
         ErrorDialog(
-            title = "Login Failed",
+            title = stringResource(R.string.login_failed),
             message = uiState.errorMessage,
             onDismiss = { 
                 showErrorDialog = false
