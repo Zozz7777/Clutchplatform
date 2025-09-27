@@ -1,4 +1,5 @@
 const express = require('express');
+const mongoose = require('mongoose');
 const router = express.Router();
 const Car = require('../models/Car');
 const CarBrand = require('../models/CarBrand');
@@ -6,6 +7,7 @@ const CarModel = require('../models/CarModel');
 const CarTrim = require('../models/CarTrim');
 const MaintenanceService = require('../models/MaintenanceService');
 const { authenticateToken } = require('../middleware/unified-auth');
+const { waitForMongooseConnection } = require('../config/optimized-database');
 
 // Get all car brands
 router.get('/brands', async (req, res) => {
@@ -93,20 +95,64 @@ router.get('/trims/:brandName/:modelName', async (req, res) => {
 // Get user's cars
 router.get('/user-cars', authenticateToken, async (req, res) => {
   try {
-    const cars = await Car.find({ 
-      userId: req.user.userId || req.user.id, 
+    // Wait for mongoose connection to be ready
+    try {
+      await waitForMongooseConnection(5000); // Wait up to 5 seconds
+    } catch (connectionError) {
+      console.error('Mongoose connection not ready:', connectionError.message);
+      return res.status(503).json({
+        success: false,
+        message: 'Database connection not available',
+        error: 'SERVICE_UNAVAILABLE'
+      });
+    }
+
+    const userId = req.user.userId || req.user.id;
+    if (!userId) {
+      return res.status(400).json({
+        success: false,
+        message: 'User ID not found in request',
+        error: 'INVALID_USER'
+      });
+    }
+
+    // Add timeout to the query
+    const query = Car.find({ 
+      userId: userId, 
       isActive: true 
-    }).sort({ createdAt: -1 });
+    }).sort({ createdAt: -1 }).maxTimeMS(5000); // 5 second timeout
+    
+    const cars = await query.exec();
     
     res.json({
       success: true,
-      data: cars
+      data: cars,
+      count: cars.length
     });
   } catch (error) {
     console.error('Error fetching user cars:', error);
+    
+    // Handle specific MongoDB errors
+    if (error.name === 'MongooseError' && error.message.includes('buffering timed out')) {
+      return res.status(503).json({
+        success: false,
+        message: 'Database operation timed out. Please try again.',
+        error: 'DATABASE_TIMEOUT'
+      });
+    }
+    
+    if (error.name === 'CastError') {
+      return res.status(400).json({
+        success: false,
+        message: 'Invalid user ID format',
+        error: 'INVALID_USER_ID'
+      });
+    }
+    
     res.status(500).json({
       success: false,
-      message: 'Failed to fetch user cars'
+      message: 'Failed to fetch user cars',
+      error: 'INTERNAL_ERROR'
     });
   }
 });

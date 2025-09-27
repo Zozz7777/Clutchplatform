@@ -190,7 +190,7 @@ const connectToDatabase = async () => {
           socketTimeoutMS: parseInt(process.env.DB_SOCKET_TIMEOUT_MS) || 45000,
           serverSelectionTimeoutMS: parseInt(process.env.DB_CONNECT_TIMEOUT_MS) || 30000,
           bufferMaxEntries: 0,
-          bufferCommands: false,
+          bufferCommands: true, // Enable buffering to prevent connection errors
           retryWrites: true,
           retryReads: true
         };
@@ -466,6 +466,20 @@ const closeDatabaseConnection = async () => {
   }
 };
 
+// Wait for mongoose connection to be ready
+const waitForMongooseConnection = async (timeoutMs = 10000) => {
+  const startTime = Date.now();
+  
+  while (mongoose.connection.readyState !== 1) {
+    if (Date.now() - startTime > timeoutMs) {
+      throw new Error(`Mongoose connection timeout after ${timeoutMs}ms`);
+    }
+    await new Promise(resolve => setTimeout(resolve, 100));
+  }
+  
+  return true;
+};
+
 // Export optimized database utilities
 module.exports = {
   connectToDatabase,
@@ -473,6 +487,7 @@ module.exports = {
   checkDatabaseHealth,
   closeDatabaseConnection,
   createIndexSafely,
+  waitForMongooseConnection,
   OPTIMIZED_COLLECTIONS,
   REMOVED_COLLECTIONS,
   db: () => db,
