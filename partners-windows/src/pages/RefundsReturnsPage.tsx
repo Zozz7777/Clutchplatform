@@ -67,8 +67,18 @@ const RefundsReturnsPage: React.FC = () => {
   const loadRefundRequests = async () => {
     try {
       setIsLoading(true);
-      // Mock implementation - in real app, this would query the database
-      const mockRequests: RefundRequest[] = [
+      // Load refund requests from API
+      try {
+        const response = await fetch('/api/v1/partners/refunds', {
+          headers: {
+            'Authorization': `Bearer ${auth.token}`,
+            'Content-Type': 'application/json'
+          }
+        });
+        
+        if (response.ok) {
+          const data = await response.json();
+          const refundRequests: RefundRequest[] = data.data || [];
         {
           id: 'refund_001',
           orderId: 'ORD_001',

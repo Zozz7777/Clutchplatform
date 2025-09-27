@@ -1,45 +1,36 @@
-"use client";
+'use client';
 
 import React, { useState, useEffect } from 'react';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Progress } from '@/components/ui/progress';
+import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Alert, AlertDescription } from '@/components/ui/alert';
 import { 
   Shield, 
   AlertTriangle, 
-  User, 
+  Eye, 
   MapPin, 
   Clock, 
+  User, 
   Activity,
-  Eye,
-  EyeOff,
-  Lock,
-  Unlock,
-  Flag,
-  CheckCircle,
-  XCircle,
-  RefreshCw,
-  Filter,
-  Download,
   Bell,
   BellOff,
-  TrendingUp,
-  TrendingDown,
-  Target,
-  Zap
+  Play,
+  Pause,
+  Filter,
+  Download,
+  RefreshCw
 } from 'lucide-react';
-import { formatCurrency, formatNumber } from '@/lib/utils';
 
 interface ThreatEvent {
   id: string;
   userId: string;
   userName: string;
   userEmail: string;
-  threatType: 'suspicious_login' | 'unusual_location' | 'privilege_escalation' | 'data_exfiltration' | 'brute_force' | 'anomalous_behavior';
-  severity: 'critical' | 'high' | 'medium' | 'low';
-  confidence: number; // 0-100
+  threatType: string;
+  severity: 'low' | 'medium' | 'high' | 'critical';
+  confidence: number;
   description: string;
   location: {
     ip: string;
@@ -48,16 +39,16 @@ interface ThreatEvent {
     coordinates: { lat: number; lng: number };
   };
   timestamp: string;
-  status: 'detected' | 'investigating' | 'confirmed' | 'false_positive' | 'resolved';
-  riskScore: number; // 0-100
+  status: 'investigating' | 'contained' | 'resolved' | 'false_positive';
+  riskScore: number;
   indicators: string[];
-  actions: {
+  actions: Array<{
     id: string;
-    type: 'block' | 'monitor' | 'alert' | 'investigate';
+    type: string;
     description: string;
-    status: 'pending' | 'completed' | 'failed';
+    status: 'pending' | 'in_progress' | 'completed' | 'failed';
     timestamp: string;
-  }[];
+  }>;
   metadata: {
     deviceInfo: string;
     userAgent: string;
@@ -71,523 +62,474 @@ interface ThreatPattern {
   id: string;
   name: string;
   description: string;
-  pattern: string;
+  severity: 'low' | 'medium' | 'high' | 'critical';
+  confidence: number;
   frequency: number;
-  riskLevel: 'low' | 'medium' | 'high' | 'critical';
-  affectedUsers: number;
   lastDetected: string;
-  trend: 'increasing' | 'decreasing' | 'stable';
+  indicators: string[];
+  affectedUsers: string[];
+  mitigationActions: string[];
+  riskScore: number;
 }
 
-interface IdentityThreatDetectionProps {
-  className?: string;
-}
-
-export default function IdentityThreatDetection({ className }: IdentityThreatDetectionProps) {
+export default function IdentityThreatDetection() {
   const [threatEvents, setThreatEvents] = useState<ThreatEvent[]>([]);
   const [threatPatterns, setThreatPatterns] = useState<ThreatPattern[]>([]);
   const [selectedEvent, setSelectedEvent] = useState<ThreatEvent | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
   const [isMonitoring, setIsMonitoring] = useState(true);
   const [notificationsEnabled, setNotificationsEnabled] = useState(true);
   const [filterSeverity, setFilterSeverity] = useState<string>('all');
 
   useEffect(() => {
-    const loadThreatData = () => {
-      const mockThreatEvents: ThreatEvent[] = [
-        {
-          id: 'THREAT-001',
-          userId: 'user-123',
-          userName: 'John Smith',
-          userEmail: 'john.smith@company.com',
-          threatType: 'suspicious_login',
-          severity: 'critical',
-          confidence: 95,
-          description: 'Login attempt from new location with unusual timing pattern',
-          location: {
-            ip: '192.168.1.100',
-            country: 'Russia',
-            city: 'Moscow',
-            coordinates: { lat: 55.7558, lng: 37.6176 }
-          },
-          timestamp: new Date(Date.now() - 15 * 60 * 1000).toISOString(),
-          status: 'investigating',
-          riskScore: 87,
-          indicators: ['New location', 'Unusual time', 'VPN detected', 'Multiple failed attempts'],
-          actions: [
-            {
-              id: 'act-001',
-              type: 'block',
-              description: 'Temporarily block account access',
-              status: 'completed',
-              timestamp: new Date(Date.now() - 10 * 60 * 1000).toISOString()
-            },
-            {
-              id: 'act-002',
-              type: 'alert',
-              description: 'Notify security team',
-              status: 'completed',
-              timestamp: new Date(Date.now() - 8 * 60 * 1000).toISOString()
-            }
-          ],
-          metadata: {
-            deviceInfo: 'Unknown device',
-            userAgent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64)',
-            sessionDuration: 0,
-            previousLogins: 0,
-            accountAge: 30
-          }
-        },
-        {
-          id: 'THREAT-002',
-          userId: 'user-456',
-          userName: 'Sarah Johnson',
-          userEmail: 'sarah.johnson@company.com',
-          threatType: 'privilege_escalation',
-          severity: 'high',
-          confidence: 82,
-          description: 'Attempted to access admin functions without proper authorization',
-          location: {
-            ip: '10.0.0.50',
-            country: 'United States',
-            city: 'New York',
-            coordinates: { lat: 40.7128, lng: -74.0060 }
-          },
-          timestamp: new Date(Date.now() - 45 * 60 * 1000).toISOString(),
-          status: 'confirmed',
-          riskScore: 75,
-          indicators: ['Unauthorized access attempt', 'Role escalation', 'Suspicious API calls'],
-          actions: [
-            {
-              id: 'act-003',
-              type: 'monitor',
-              description: 'Enhanced monitoring for this user',
-              status: 'completed',
-              timestamp: new Date(Date.now() - 40 * 60 * 1000).toISOString()
-            }
-          ],
-          metadata: {
-            deviceInfo: 'MacBook Pro',
-            userAgent: 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7)',
-            sessionDuration: 120,
-            previousLogins: 45,
-            accountAge: 180
-          }
-        },
-        {
-          id: 'THREAT-003',
-          userId: 'user-789',
-          userName: 'Mike Chen',
-          userEmail: 'mike.chen@company.com',
-          threatType: 'unusual_location',
-          severity: 'medium',
-          confidence: 68,
-          description: 'Login from location significantly different from usual patterns',
-          location: {
-            ip: '203.0.113.42',
-            country: 'China',
-            city: 'Beijing',
-            coordinates: { lat: 39.9042, lng: 116.4074 }
-          },
-          timestamp: new Date(Date.now() - 2 * 60 * 60 * 1000).toISOString(),
-          status: 'detected',
-          riskScore: 45,
-          indicators: ['Geographic anomaly', 'Time zone difference', 'New IP range'],
-          actions: [
-            {
-              id: 'act-004',
-              type: 'investigate',
-              description: 'Verify user identity',
-              status: 'pending',
-              timestamp: new Date(Date.now() - 1 * 60 * 60 * 1000).toISOString()
-            }
-          ],
-          metadata: {
-            deviceInfo: 'iPhone 13',
-            userAgent: 'Mozilla/5.0 (iPhone; CPU iPhone OS 15_0)',
-            sessionDuration: 30,
-            previousLogins: 12,
-            accountAge: 90
+    const loadThreatData = async () => {
+      try {
+        setIsLoading(true);
+        
+        // Load threat events
+        const eventsResponse = await fetch('/api/v1/security/threat-events');
+        if (eventsResponse.ok) {
+          const eventsData = await eventsResponse.json();
+          setThreatEvents(eventsData.data || []);
+          if (eventsData.data && eventsData.data.length > 0) {
+            setSelectedEvent(eventsData.data[0]);
           }
         }
-      ];
-
-      const mockThreatPatterns: ThreatPattern[] = [
-        {
-          id: 'pattern-001',
-          name: 'Brute Force Attacks',
-          description: 'Multiple failed login attempts from same IP',
-          pattern: 'Failed login attempts > 5 within 10 minutes',
-          frequency: 23,
-          riskLevel: 'high',
-          affectedUsers: 8,
-          lastDetected: new Date(Date.now() - 30 * 60 * 1000).toISOString(),
-          trend: 'increasing'
-        },
-        {
-          id: 'pattern-002',
-          name: 'Geographic Anomalies',
-          description: 'Logins from unusual geographic locations',
-          pattern: 'Login from country not in user history',
-          frequency: 15,
-          riskLevel: 'medium',
-          affectedUsers: 12,
-          lastDetected: new Date(Date.now() - 2 * 60 * 60 * 1000).toISOString(),
-          trend: 'stable'
-        },
-        {
-          id: 'pattern-003',
-          name: 'Privilege Escalation',
-          description: 'Attempts to access unauthorized resources',
-          pattern: 'API calls to admin endpoints without proper role',
-          frequency: 7,
-          riskLevel: 'critical',
-          affectedUsers: 3,
-          lastDetected: new Date(Date.now() - 45 * 60 * 1000).toISOString(),
-          trend: 'decreasing'
+        
+        // Load threat patterns
+        const patternsResponse = await fetch('/api/v1/security/threat-patterns');
+        if (patternsResponse.ok) {
+          const patternsData = await patternsResponse.json();
+          setThreatPatterns(patternsData.data || []);
         }
-      ];
-
-      setThreatEvents(mockThreatEvents);
-      setThreatPatterns(mockThreatPatterns);
-      setSelectedEvent(mockThreatEvents[0]);
+      } catch (error) {
+        console.error('Failed to load threat data:', error);
+        setThreatEvents([]);
+        setThreatPatterns([]);
+      } finally {
+        setIsLoading(false);
+      }
     };
 
     loadThreatData();
-
-    // Simulate real-time updates
-    const interval = setInterval(() => {
-      // Add new threat events occasionally
-      if (Math.random() > 0.8) {
-        const newThreat: ThreatEvent = {
-          id: `THREAT-${Date.now()}`,
-          userId: `user-${Math.floor(Math.random() * 1000)}`,
-          userName: 'Unknown User',
-          userEmail: 'unknown@example.com',
-          threatType: 'suspicious_login',
-          severity: 'medium',
-          confidence: Math.floor(Math.random() * 40) + 60,
-          description: 'New suspicious activity detected',
-          location: {
-            ip: `192.168.${Math.floor(Math.random() * 255)}.${Math.floor(Math.random() * 255)}`,
-            country: 'Unknown',
-            city: 'Unknown',
-            coordinates: { lat: 0, lng: 0 }
-          },
-          timestamp: new Date().toISOString(),
-          status: 'detected',
-          riskScore: Math.floor(Math.random() * 50) + 30,
-          indicators: ['New pattern detected'],
-          actions: [],
-          metadata: {
-            deviceInfo: 'Unknown',
-            userAgent: 'Unknown',
-            sessionDuration: 0,
-            previousLogins: 0,
-            accountAge: 0
-          }
-        };
-        setThreatEvents(prev => [newThreat, ...prev.slice(0, 9)]);
-      }
-    }, 30000);
-
-    return () => clearInterval(interval);
   }, []);
 
   const getSeverityColor = (severity: string) => {
     switch (severity) {
-      case 'critical': return 'bg-destructive/100';
-      case 'high': return 'bg-warning/100';
-      case 'medium': return 'bg-warning/100';
-      case 'low': return 'bg-success/100';
-      default: return 'bg-muted/500';
+      case 'critical': return 'bg-red-100 text-red-800 border-red-200';
+      case 'high': return 'bg-orange-100 text-orange-800 border-orange-200';
+      case 'medium': return 'bg-yellow-100 text-yellow-800 border-yellow-200';
+      case 'low': return 'bg-green-100 text-green-800 border-green-200';
+      default: return 'bg-gray-100 text-gray-800 border-gray-200';
     }
   };
 
   const getStatusColor = (status: string) => {
     switch (status) {
-      case 'detected': return 'bg-destructive/10 text-destructive';
-      case 'investigating': return 'bg-warning/10 text-warning';
-      case 'confirmed': return 'bg-warning/10 text-warning';
-      case 'false_positive': return 'bg-muted text-gray-800';
-      case 'resolved': return 'bg-success/10 text-success';
-      default: return 'bg-muted text-gray-800';
+      case 'investigating': return 'bg-blue-100 text-blue-800';
+      case 'contained': return 'bg-yellow-100 text-yellow-800';
+      case 'resolved': return 'bg-green-100 text-green-800';
+      case 'false_positive': return 'bg-gray-100 text-gray-800';
+      default: return 'bg-gray-100 text-gray-800';
     }
   };
 
-  const getThreatTypeIcon = (type: string) => {
-    switch (type) {
-      case 'suspicious_login': return <User className="h-4 w-4" />;
-      case 'unusual_location': return <MapPin className="h-4 w-4" />;
-      case 'privilege_escalation': return <Shield className="h-4 w-4" />;
-      case 'data_exfiltration': return <Download className="h-4 w-4" />;
-      case 'brute_force': return <Zap className="h-4 w-4" />;
-      case 'anomalous_behavior': return <Activity className="h-4 w-4" />;
-      default: return <AlertTriangle className="h-4 w-4" />;
+  const handleTakeAction = async (eventId: string, actionType: string) => {
+    try {
+      const response = await fetch(`/api/v1/security/threat-events/${eventId}/actions`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ actionType })
+      });
+      
+      if (response.ok) {
+        // Refresh threat events
+        const eventsResponse = await fetch('/api/v1/security/threat-events');
+        if (eventsResponse.ok) {
+          const eventsData = await eventsResponse.json();
+          setThreatEvents(eventsData.data || []);
+        }
+      }
+    } catch (error) {
+      console.error('Failed to take action:', error);
     }
   };
 
-  const getRiskLevelColor = (level: string) => {
-    switch (level) {
-      case 'critical': return 'bg-destructive/10 text-destructive';
-      case 'high': return 'bg-warning/10 text-warning';
-      case 'medium': return 'bg-warning/10 text-warning';
-      case 'low': return 'bg-success/10 text-success';
-      default: return 'bg-muted text-gray-800';
-    }
-  };
+  const filteredEvents = threatEvents.filter(event => 
+    filterSeverity === 'all' || event.severity === filterSeverity
+  );
 
-  const getTrendIcon = (trend: string) => {
-    switch (trend) {
-      case 'increasing': return <TrendingUp className="h-4 w-4 text-destructive" />;
-      case 'decreasing': return <TrendingDown className="h-4 w-4 text-success" />;
-      case 'stable': return <Activity className="h-4 w-4 text-primary" />;
-      default: return <Activity className="h-4 w-4 text-muted-foreground" />;
-    }
-  };
-
-  const handleActionUpdate = (eventId: string, actionId: string, newStatus: string) => {
-    setThreatEvents(prev => prev.map(event =>
-      event.id === eventId
-        ? {
-            ...event,
-            actions: event.actions.map(action =>
-              action.id === actionId ? { ...action, status: newStatus as string } : action
-            )
-          }
-        : event
-    ));
-  };
-
-  const handleStatusUpdate = (eventId: string, newStatus: string) => {
-    setThreatEvents(prev => prev.map(event =>
-      event.id === eventId ? { ...event, status: newStatus as string } : event
-    ));
-  };
-
-  const filteredEvents = filterSeverity === 'all' 
-    ? threatEvents 
-    : threatEvents.filter(event => event.severity === filterSeverity);
-
-  const criticalThreats = threatEvents.filter(event => event.severity === 'critical').length;
-  const activeThreats = threatEvents.filter(event => event.status !== 'resolved' && event.status !== 'false_positive').length;
-  const avgRiskScore = threatEvents.length > 0 
-    ? Math.round(threatEvents.reduce((sum, event) => sum + event.riskScore, 0) / threatEvents.length)
-    : 0;
+  if (isLoading) {
+    return (
+      <div className="flex items-center justify-center h-64">
+        <RefreshCw className="h-8 w-8 animate-spin" />
+        <span className="ml-2">Loading threat data...</span>
+      </div>
+    );
+  }
 
   return (
-    <div className={className}>
-      <Card>
-        <CardHeader>
-          <div className="flex items-center justify-between">
-            <div>
-              <CardTitle className="flex items-center gap-2">
-                <Shield className="h-5 w-5" />
-                Identity Threat Detection
-              </CardTitle>
-              <CardDescription>
-                AI-powered detection of suspicious user activities and security threats
-              </CardDescription>
+    <div className="space-y-6">
+      {/* Header */}
+      <div className="flex items-center justify-between">
+        <div>
+          <h1 className="text-3xl font-bold text-gray-900">Identity Threat Detection</h1>
+          <p className="text-gray-600 mt-1">Monitor and respond to identity-based security threats</p>
+        </div>
+        <div className="flex items-center space-x-4">
+          <Button
+            variant={isMonitoring ? "default" : "outline"}
+            onClick={() => setIsMonitoring(!isMonitoring)}
+            className="flex items-center space-x-2"
+          >
+            {isMonitoring ? <Pause className="h-4 w-4" /> : <Play className="h-4 w-4" />}
+            <span>{isMonitoring ? 'Pause' : 'Resume'} Monitoring</span>
+          </Button>
+          <Button
+            variant={notificationsEnabled ? "default" : "outline"}
+            onClick={() => setNotificationsEnabled(!notificationsEnabled)}
+            className="flex items-center space-x-2"
+          >
+            {notificationsEnabled ? <Bell className="h-4 w-4" /> : <BellOff className="h-4 w-4" />}
+            <span>Notifications</span>
+          </Button>
+        </div>
+      </div>
+
+      {/* Stats Cards */}
+      <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+        <Card>
+          <CardContent className="p-4">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-sm font-medium text-gray-600">Active Threats</p>
+                <p className="text-2xl font-bold text-red-600">
+                  {threatEvents.filter(e => e.status === 'investigating').length}
+                </p>
+              </div>
+              <AlertTriangle className="h-8 w-8 text-red-500" />
             </div>
-            <div className="flex items-center gap-2">
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={() => setIsMonitoring(!isMonitoring)}
-                className={isMonitoring ? 'bg-success/10 text-success' : ''}
+          </CardContent>
+        </Card>
+        
+        <Card>
+          <CardContent className="p-4">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-sm font-medium text-gray-600">Critical Events</p>
+                <p className="text-2xl font-bold text-red-600">
+                  {threatEvents.filter(e => e.severity === 'critical').length}
+                </p>
+              </div>
+              <Shield className="h-8 w-8 text-red-500" />
+            </div>
+          </CardContent>
+        </Card>
+        
+        <Card>
+          <CardContent className="p-4">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-sm font-medium text-gray-600">Resolved Today</p>
+                <p className="text-2xl font-bold text-green-600">
+                  {threatEvents.filter(e => e.status === 'resolved').length}
+                </p>
+              </div>
+              <Activity className="h-8 w-8 text-green-500" />
+            </div>
+          </CardContent>
+        </Card>
+        
+        <Card>
+          <CardContent className="p-4">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-sm font-medium text-gray-600">Threat Patterns</p>
+                <p className="text-2xl font-bold text-blue-600">{threatPatterns.length}</p>
+              </div>
+              <Eye className="h-8 w-8 text-blue-500" />
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+
+      {/* Main Content */}
+      <Tabs defaultValue="events" className="space-y-4">
+        <TabsList>
+          <TabsTrigger value="events">Threat Events</TabsTrigger>
+          <TabsTrigger value="patterns">Threat Patterns</TabsTrigger>
+        </TabsList>
+
+        <TabsContent value="events" className="space-y-4">
+          {/* Filters */}
+          <div className="flex items-center space-x-4">
+            <div className="flex items-center space-x-2">
+              <Filter className="h-4 w-4" />
+              <select
+                value={filterSeverity}
+                onChange={(e) => setFilterSeverity(e.target.value)}
+                className="border rounded px-3 py-1"
               >
-                {isMonitoring ? <Eye className="h-4 w-4 mr-2" /> : <EyeOff className="h-4 w-4 mr-2" />}
-                {isMonitoring ? 'Monitoring' : 'Paused'}
-              </Button>
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={() => setNotificationsEnabled(!notificationsEnabled)}
-              >
-                {notificationsEnabled ? <Bell className="h-4 w-4" /> : <BellOff className="h-4 w-4" />}
-              </Button>
+                <option value="all">All Severities</option>
+                <option value="critical">Critical</option>
+                <option value="high">High</option>
+                <option value="medium">Medium</option>
+                <option value="low">Low</option>
+              </select>
             </div>
-          </div>
-        </CardHeader>
-
-        <CardContent className="space-y-6">
-          {/* Threat Summary */}
-          <div className="grid grid-cols-3 gap-4">
-            <div className="text-center p-3 bg-destructive/10 rounded-[0.625rem]">
-              <div className="text-2xl font-bold text-destructive">{criticalThreats}</div>
-              <div className="text-sm text-muted-foreground">Critical Threats</div>
-            </div>
-            <div className="text-center p-3 bg-warning/10 rounded-[0.625rem]">
-              <div className="text-2xl font-bold text-warning">{activeThreats}</div>
-              <div className="text-sm text-muted-foreground">Active Threats</div>
-            </div>
-            <div className="text-center p-3 bg-primary/10 rounded-[0.625rem]">
-              <div className="text-2xl font-bold text-primary">{avgRiskScore}</div>
-              <div className="text-sm text-muted-foreground">Avg Risk Score</div>
-            </div>
+            <Button variant="outline" size="sm">
+              <Download className="h-4 w-4 mr-2" />
+              Export
+            </Button>
           </div>
 
-          {/* Threat Patterns */}
-          <div>
-            <h4 className="font-medium mb-3">Threat Patterns</h4>
-            <div className="grid gap-3">
-              {threatPatterns.map((pattern) => (
-                <div key={pattern.id} className="p-3 border rounded-[0.625rem]">
-                  <div className="flex items-center justify-between mb-2">
-                    <div className="flex items-center gap-2">
-                      <Target className="h-4 w-4" />
-                      <span className="font-medium">{pattern.name}</span>
-                    </div>
-                    <div className="flex items-center gap-2">
-                      {getTrendIcon(pattern.trend)}
-                      <Badge className={getRiskLevelColor(pattern.riskLevel)}>
-                        {pattern.riskLevel}
-                      </Badge>
-                    </div>
-                  </div>
-                  <p className="text-sm text-muted-foreground mb-2">{pattern.description}</p>
-                  <div className="flex items-center justify-between text-sm">
-                    <span>Frequency: {pattern.frequency} events</span>
-                    <span>Affected Users: {pattern.affectedUsers}</span>
-                    <span>Last: {new Date(pattern.lastDetected).toLocaleTimeString()}</span>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-
-          {/* Threat Events */}
-          <div>
-            <div className="flex items-center justify-between mb-3">
-              <h4 className="font-medium">Threat Events</h4>
-              <div className="flex items-center gap-2">
-                <span className="text-sm">Filter:</span>
-                {['all', 'critical', 'high', 'medium', 'low'].map((severity) => (
-                  <Button
-                    key={severity}
-                    variant={filterSeverity === severity ? 'default' : 'outline'}
-                    size="sm"
-                    onClick={() => setFilterSeverity(severity)}
+          {/* Events List */}
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            <div className="space-y-4">
+              {filteredEvents.length === 0 ? (
+                <Card>
+                  <CardContent className="p-6 text-center">
+                    <Shield className="h-12 w-12 text-gray-400 mx-auto mb-4" />
+                    <h3 className="text-lg font-medium text-gray-900 mb-2">No Threat Events</h3>
+                    <p className="text-gray-600">No security threats detected at this time.</p>
+                  </CardContent>
+                </Card>
+              ) : (
+                filteredEvents.map((event) => (
+                  <Card 
+                    key={event.id} 
+                    className={`cursor-pointer transition-colors ${
+                      selectedEvent?.id === event.id ? 'ring-2 ring-blue-500' : 'hover:bg-gray-50'
+                    }`}
+                    onClick={() => setSelectedEvent(event)}
                   >
-                    {severity.charAt(0).toUpperCase() + severity.slice(1)}
-                  </Button>
-                ))}
-              </div>
+                    <CardContent className="p-4">
+                      <div className="flex items-start justify-between mb-3">
+                        <div className="flex items-center space-x-2">
+                          <Badge className={getSeverityColor(event.severity)}>
+                            {event.severity.toUpperCase()}
+                          </Badge>
+                          <Badge className={getStatusColor(event.status)}>
+                            {event.status.replace('_', ' ').toUpperCase()}
+                          </Badge>
+                        </div>
+                        <span className="text-sm text-gray-500">
+                          {new Date(event.timestamp).toLocaleString()}
+                        </span>
+                      </div>
+                      
+                      <h3 className="font-medium text-gray-900 mb-2">{event.userName}</h3>
+                      <p className="text-sm text-gray-600 mb-3">{event.description}</p>
+                      
+                      <div className="flex items-center justify-between text-sm text-gray-500">
+                        <div className="flex items-center space-x-4">
+                          <span className="flex items-center">
+                            <MapPin className="h-4 w-4 mr-1" />
+                            {event.location.city}, {event.location.country}
+                          </span>
+                          <span className="flex items-center">
+                            <User className="h-4 w-4 mr-1" />
+                            {event.userEmail}
+                          </span>
+                        </div>
+                        <span className="font-medium">Risk: {event.riskScore}%</span>
+                      </div>
+                    </CardContent>
+                  </Card>
+                ))
+              )}
             </div>
 
-            <div className="space-y-3">
-              {filteredEvents.map((event) => (
-                <div
-                  key={event.id}
-                  className={`p-3 border rounded-[0.625rem] cursor-pointer transition-colors ${
-                    selectedEvent?.id === event.id ? 'border-primary bg-primary/10' : 'hover:bg-muted/50'
-                  }`}
-                  onClick={() => setSelectedEvent(event)}
-                >
-                  <div className="flex items-center justify-between mb-2">
-                    <div className="flex items-center gap-3">
-                      {getThreatTypeIcon(event.threatType)}
-                      <div>
-                        <div className="font-medium">{event.userName}</div>
-                        <div className="text-sm text-muted-foreground">{event.description}</div>
-                      </div>
-                    </div>
-                    <div className="flex items-center gap-2">
-                      <Badge className={getSeverityColor(event.severity)}>
-                        {event.severity}
+            {/* Event Details */}
+            <div>
+              {selectedEvent ? (
+                <Card>
+                  <CardHeader>
+                    <CardTitle className="flex items-center justify-between">
+                      <span>Threat Details</span>
+                      <Badge className={getSeverityColor(selectedEvent.severity)}>
+                        {selectedEvent.severity.toUpperCase()}
                       </Badge>
-                      <Badge className={getStatusColor(event.status)}>
-                        {event.status.replace('_', ' ')}
-                      </Badge>
-                      <div className="text-sm font-medium">
-                        Risk: {event.riskScore}%
-                      </div>
-                    </div>
-                  </div>
-                  <div className="flex items-center justify-between text-sm text-muted-foreground">
-                    <span>{event.location.city}, {event.location.country}</span>
-                    <span>{new Date(event.timestamp).toLocaleString()}</span>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-
-          {/* Selected Event Details */}
-          {selectedEvent && (
-            <div className="border-t pt-4">
-              <h4 className="font-medium mb-3">Threat Details</h4>
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <h5 className="font-medium mb-2">Event Information</h5>
-                  <div className="space-y-2 text-sm">
-                    <div><span className="font-medium">User:</span> {selectedEvent.userName}</div>
-                    <div><span className="font-medium">Email:</span> {selectedEvent.userEmail}</div>
-                    <div><span className="font-medium">Type:</span> {selectedEvent.threatType.replace('_', ' ')}</div>
-                    <div><span className="font-medium">Confidence:</span> {selectedEvent.confidence}%</div>
-                    <div><span className="font-medium">Risk Score:</span> {selectedEvent.riskScore}%</div>
-                  </div>
-                </div>
-                <div>
-                  <h5 className="font-medium mb-2">Location Details</h5>
-                  <div className="space-y-2 text-sm">
-                    <div><span className="font-medium">IP:</span> {selectedEvent.location.ip}</div>
-                    <div><span className="font-medium">Location:</span> {selectedEvent.location.city}, {selectedEvent.location.country}</div>
-                    <div><span className="font-medium">Device:</span> {selectedEvent.metadata.deviceInfo}</div>
-                    <div><span className="font-medium">Session:</span> {selectedEvent.metadata.sessionDuration} minutes</div>
-                  </div>
-                </div>
-              </div>
-
-              <div className="mt-4">
-                <h5 className="font-medium mb-2">Indicators</h5>
-                <div className="flex flex-wrap gap-1">
-                  {selectedEvent.indicators.map((indicator, index) => (
-                    <Badge key={index} variant="outline" className="text-xs">
-                      {indicator}
-                    </Badge>
-                  ))}
-                </div>
-              </div>
-
-              <div className="mt-4">
-                <h5 className="font-medium mb-2">Actions</h5>
-                <div className="space-y-2">
-                  {selectedEvent.actions.map((action) => (
-                    <div key={action.id} className="flex items-center justify-between p-2 border rounded-[0.625rem]">
-                      <div>
-                        <div className="font-medium text-sm">{action.description}</div>
-                        <div className="text-xs text-muted-foreground">
-                          {new Date(action.timestamp).toLocaleString()}
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent className="space-y-4">
+                    <div>
+                      <h4 className="font-medium text-gray-900 mb-2">Event Information</h4>
+                      <div className="space-y-2 text-sm">
+                        <div className="flex justify-between">
+                          <span className="text-gray-600">User:</span>
+                          <span className="font-medium">{selectedEvent.userName}</span>
+                        </div>
+                        <div className="flex justify-between">
+                          <span className="text-gray-600">Email:</span>
+                          <span className="font-medium">{selectedEvent.userEmail}</span>
+                        </div>
+                        <div className="flex justify-between">
+                          <span className="text-gray-600">Threat Type:</span>
+                          <span className="font-medium">{selectedEvent.threatType}</span>
+                        </div>
+                        <div className="flex justify-between">
+                          <span className="text-gray-600">Confidence:</span>
+                          <span className="font-medium">{selectedEvent.confidence}%</span>
+                        </div>
+                        <div className="flex justify-between">
+                          <span className="text-gray-600">Risk Score:</span>
+                          <span className="font-medium">{selectedEvent.riskScore}%</span>
                         </div>
                       </div>
-                      <Badge className={getStatusColor(action.status)}>
-                        {action.status}
-                      </Badge>
                     </div>
-                  ))}
-                </div>
-              </div>
 
-              <div className="mt-4 flex items-center gap-2">
-                <Button size="sm" variant="outline">
-                  <Lock className="h-4 w-4 mr-2" />
-                  Block User
-                </Button>
-                <Button size="sm" variant="outline">
-                  <Flag className="h-4 w-4 mr-2" />
-                  Mark as False Positive
-                </Button>
-                <Button size="sm" variant="outline">
-                  <CheckCircle className="h-4 w-4 mr-2" />
-                  Resolve
-                </Button>
-              </div>
+                    <div>
+                      <h4 className="font-medium text-gray-900 mb-2">Location</h4>
+                      <div className="space-y-1 text-sm">
+                        <div className="flex justify-between">
+                          <span className="text-gray-600">IP Address:</span>
+                          <span className="font-medium">{selectedEvent.location.ip}</span>
+                        </div>
+                        <div className="flex justify-between">
+                          <span className="text-gray-600">Location:</span>
+                          <span className="font-medium">
+                            {selectedEvent.location.city}, {selectedEvent.location.country}
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div>
+                      <h4 className="font-medium text-gray-900 mb-2">Indicators</h4>
+                      <div className="flex flex-wrap gap-2">
+                        {selectedEvent.indicators.map((indicator, index) => (
+                          <Badge key={index} variant="outline" className="text-xs">
+                            {indicator}
+                          </Badge>
+                        ))}
+                      </div>
+                    </div>
+
+                    <div>
+                      <h4 className="font-medium text-gray-900 mb-2">Actions</h4>
+                      <div className="space-y-2">
+                        {selectedEvent.actions.map((action) => (
+                          <div key={action.id} className="flex items-center justify-between p-2 bg-gray-50 rounded">
+                            <div>
+                              <p className="text-sm font-medium">{action.description}</p>
+                              <p className="text-xs text-gray-500">
+                                {new Date(action.timestamp).toLocaleString()}
+                              </p>
+                            </div>
+                            <Badge className={getStatusColor(action.status)}>
+                              {action.status.replace('_', ' ')}
+                            </Badge>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+
+                    <div className="flex space-x-2 pt-4">
+                      <Button 
+                        size="sm" 
+                        onClick={() => handleTakeAction(selectedEvent.id, 'block')}
+                        className="bg-red-600 hover:bg-red-700"
+                      >
+                        Block User
+                      </Button>
+                      <Button 
+                        size="sm" 
+                        variant="outline"
+                        onClick={() => handleTakeAction(selectedEvent.id, 'investigate')}
+                      >
+                        Investigate
+                      </Button>
+                      <Button 
+                        size="sm" 
+                        variant="outline"
+                        onClick={() => handleTakeAction(selectedEvent.id, 'resolve')}
+                      >
+                        Mark Resolved
+                      </Button>
+                    </div>
+                  </CardContent>
+                </Card>
+              ) : (
+                <Card>
+                  <CardContent className="p-6 text-center">
+                    <Eye className="h-12 w-12 text-gray-400 mx-auto mb-4" />
+                    <h3 className="text-lg font-medium text-gray-900 mb-2">Select a Threat Event</h3>
+                    <p className="text-gray-600">Choose a threat event from the list to view details.</p>
+                  </CardContent>
+                </Card>
+              )}
             </div>
-          )}
-        </CardContent>
-      </Card>
+          </div>
+        </TabsContent>
+
+        <TabsContent value="patterns" className="space-y-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            {threatPatterns.length === 0 ? (
+              <Card className="col-span-full">
+                <CardContent className="p-6 text-center">
+                  <Activity className="h-12 w-12 text-gray-400 mx-auto mb-4" />
+                  <h3 className="text-lg font-medium text-gray-900 mb-2">No Threat Patterns</h3>
+                  <p className="text-gray-600">No threat patterns detected at this time.</p>
+                </CardContent>
+              </Card>
+            ) : (
+              threatPatterns.map((pattern) => (
+                <Card key={pattern.id}>
+                  <CardHeader>
+                    <CardTitle className="flex items-center justify-between">
+                      <span className="text-sm">{pattern.name}</span>
+                      <Badge className={getSeverityColor(pattern.severity)}>
+                        {pattern.severity.toUpperCase()}
+                      </Badge>
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent className="space-y-3">
+                    <p className="text-sm text-gray-600">{pattern.description}</p>
+                    
+                    <div className="space-y-2 text-xs">
+                      <div className="flex justify-between">
+                        <span className="text-gray-500">Confidence:</span>
+                        <span className="font-medium">{pattern.confidence}%</span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span className="text-gray-500">Frequency:</span>
+                        <span className="font-medium">{pattern.frequency}</span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span className="text-gray-500">Risk Score:</span>
+                        <span className="font-medium">{pattern.riskScore}%</span>
+                      </div>
+                    </div>
+
+                    <div>
+                      <p className="text-xs text-gray-500 mb-1">Indicators:</p>
+                      <div className="flex flex-wrap gap-1">
+                        {pattern.indicators.slice(0, 3).map((indicator, index) => (
+                          <Badge key={index} variant="outline" className="text-xs">
+                            {indicator}
+                          </Badge>
+                        ))}
+                        {pattern.indicators.length > 3 && (
+                          <Badge variant="outline" className="text-xs">
+                            +{pattern.indicators.length - 3} more
+                          </Badge>
+                        )}
+                      </div>
+                    </div>
+
+                    <div className="pt-2">
+                      <p className="text-xs text-gray-500">
+                        Last detected: {new Date(pattern.lastDetected).toLocaleDateString()}
+                      </p>
+                    </div>
+                  </CardContent>
+                </Card>
+              ))
+            )}
+          </div>
+        </TabsContent>
+      </Tabs>
     </div>
   );
 }
-
-

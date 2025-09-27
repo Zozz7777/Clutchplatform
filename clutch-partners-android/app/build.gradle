@@ -22,7 +22,7 @@ android {
             useSupportLibrary true
         }
 
-        buildConfigField "String", "BASE_URL", "\"https://clutch-main-nk7x.onrender.com/api/v1\""
+        buildConfigField "String", "BASE_URL", "\"${project.findProperty("API_BASE_URL") ?: "https://api.clutch.com/v1"}\""
         buildConfigField "String", "APP_NAME", "\"Clutch Partners\""
     }
 

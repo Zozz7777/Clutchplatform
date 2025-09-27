@@ -36,7 +36,7 @@ export interface RevenueData {
 
 export class RevenueSyncService {
   private database: DatabaseManager;
-  private apiUrl: string = 'https://clutch-main-nk7x.onrender.com';
+  private apiUrl: string = process.env.REACT_APP_API_BASE_URL || 'https://api.clutch.com/v1';
   private syncInterval: NodeJS.Timeout | null = null;
   private isOnline: boolean = false;
 

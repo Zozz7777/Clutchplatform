@@ -31,7 +31,7 @@ const createTestPartner = async () => {
     // Check if test partner already exists
     const existingPartner = await PartnerUser.findOne({ 
       $or: [
-        { email: 'test@clutch.com' },
+        { email: process.env.TEST_PARTNER_EMAIL || 'test@clutch.com' },
         { phone: '+201234567890' }
       ]
     });
@@ -55,7 +55,7 @@ const createTestPartner = async () => {
     // Create test partner
     const testPartner = new PartnerUser({
       partnerId: partnerId,
-      email: 'test@clutch.com',
+      email: process.env.TEST_PARTNER_EMAIL || 'test@clutch.com',
       phone: '+201234567890',
       password: hashedPassword,
       businessName: 'Test Auto Shop',

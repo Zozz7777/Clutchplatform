@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+    <key>CFBundleDisplayName</key>
+    <string>Clutch</string>
+    <key>CFBundleIdentifier</key>
+    <string>com.clutch.app</string>
+    <key>CFBundleName</key>
+    <string>Clutch</string>
+    <key>CFBundleShortVersionString</key>
+    <string>1.0.0</string>
+    <key>CFBundleVersion</key>
+    <string>1</string>
+    <key>LSRequiresIPhoneOS</key>
+    <true/>
+    <key>UILaunchStoryboardName</key>
+    <string>LaunchScreen</string>
+    <key>UIMainStoryboardFile</key>
+    <string>Main</string>
+    <key>UIRequiredDeviceCapabilities</key>
+    <array>
+        <string>armv7</string>
+    </array>
+    <key>UISupportedInterfaceOrientations</key>
+    <array>
+        <string>UIInterfaceOrientationPortrait</string>
+        <string>UIInterfaceOrientationLandscapeLeft</string>
+        <string>UIInterfaceOrientationLandscapeRight</string>
+    </array>
+    <key>UISupportedInterfaceOrientations~ipad</key>
+    <array>
+        <string>UIInterfaceOrientationPortrait</string>
+        <string>UIInterfaceOrientationPortraitUpsideDown</string>
+        <string>UIInterfaceOrientationLandscapeLeft</string>
+        <string>UIInterfaceOrientationLandscapeRight</string>
+    </array>
+    <key>NSAppTransportSecurity</key>
+    <dict>
+        <key>NSAllowsArbitraryLoads</key>
+        <false/>
+        <key>NSExceptionDomains</key>
+        <dict>
+            <key>api.clutch.com</key>
+            <dict>
+                <key>NSExceptionAllowsInsecureHTTPLoads</key>
+                <false/>
+                <key>NSExceptionMinimumTLSVersion</key>
+                <string>TLSv1.2</string>
+                <key>NSIncludesSubdomains</key>
+                <true/>
+            </dict>
+        </dict>
+    </dict>
+    <key>NSLocationWhenInUseUsageDescription</key>
+    <string>Clutch needs location access to find nearby service centers and auto parts shops.</string>
+    <key>NSCameraUsageDescription</key>
+    <string>Clutch needs camera access to scan QR codes and take photos of your car.</string>
+    <key>NSPhotoLibraryUsageDescription</key>
+    <string>Clutch needs photo library access to save and share car photos.</string>
+    <key>NSMicrophoneUsageDescription</key>
+    <string>Clutch needs microphone access for voice notes and customer support.</string>
+    <key>NSContactsUsageDescription</key>
+    <string>Clutch needs contacts access to share service recommendations with friends.</string>
+    <key>NSUserNotificationsUsageDescription</key>
+    <string>Clutch sends notifications for maintenance reminders and service updates.</string>
+    <key>NSFaceIDUsageDescription</key>
+    <string>Clutch uses Face ID for secure authentication.</string>
+    <key>NSTouchIDUsageDescription</key>
+    <string>Clutch uses Touch ID for secure authentication.</string>
+</dict>
+</plist>

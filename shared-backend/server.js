@@ -21,6 +21,10 @@ const { performanceMonitor, getPerformanceMetrics } = require('./middleware/perf
 const { addAlert, getAlerts } = require('./middleware/alerting');
 const { responseMiddleware } = require('./utils/response-format');
 
+// Import production optimizations
+const { productionOptimizations, errorOptimization } = require('./middleware/production-optimizations');
+const { productionLogging, errorLogger, systemHealthLogger } = require('./middleware/production-logging');
+
 // Import performance monitoring
 const {
   requestPerformanceMiddleware,
@@ -57,16 +61,23 @@ const { initializeEnvironment } = require('./config/environment');
 // Import only existing routes
 const authRoutes = require('./routes/consolidated-auth');
 const healthRoutes = require('./routes/health');
+const healthEnhancedRoutes = require('./routes/health-enhanced');
 const adminRoutes = require('./routes/admin');
 const analyticsRoutes = require('./routes/consolidated-analytics');
 const usersRoutes = require('./routes/users');
 const otherRoutes = require('./routes/other');
 const errorsRoutes = require('./routes/errors');
+const clutchAppRoutes = require('./routes/clutch-app');
+const onboardingRoutes = require('./routes/onboarding');
+const rolesRoutes = require('./routes/roles');
+const carsRoutes = require('./routes/cars');
 const knowledgeBaseRoutes = require('./routes/knowledge-base');
+const operationsRoutes = require('./routes/operations');
+const securityRoutes = require('./routes/security');
+const partnersRefundsRoutes = require('./routes/partners/refunds');
 const incidentsRoutes = require('./routes/incidents');
 const alertsRoutes = require('./routes/alerts');
 const logsRoutes = require('./routes/logs');
-// const autoPartsRoutes = require('./routes/auto-parts'); // Removed - file deleted
 const realtimeRoutes = require('./routes/realtime');
 const shopsRoutes = require('./routes/shops');
 const bookingsRoutes = require('./routes/bookings');
@@ -93,7 +104,6 @@ const testingRoutes = require('./routes/testing');
 const complianceRoutes = require('./routes/compliance');
 const customersRoutes = require('./routes/customers');
 const adminCeoRoutes = require('./routes/admin-ceo');
-const authFallbackRoutes = require('./routes/auth-fallback');
 const emergencyAuthRoutes = require('./routes/emergency-auth');
 const fleetRoutes = require('./routes/fleet');
 const paymentsRoutes = require('./routes/payments');
@@ -130,7 +140,6 @@ const debugRoutes = require('./routes/debug');
 
 // Import newly created routes
 const supportRoutes = require('./routes/support');
-const analyticsExtendedRoutes = require('./routes/analytics-extended');
 const careersRoutes = require('./routes/careers');
 
 // Import enhanced routes
@@ -167,6 +176,12 @@ app.set('trust proxy', 1);
 
 // Apply optimized middleware stack
 applyOptimizedMiddleware(app);
+
+// Add production optimizations
+app.use(productionOptimizations);
+
+// Add production logging
+app.use(productionLogging);
 
 // Add standardized response format middleware
 app.use(responseMiddleware);
@@ -206,6 +221,7 @@ const apiPrefix = `/api/${process.env.API_VERSION || 'v1'}`;
 // Mount only existing routes
 app.use(`${apiPrefix}/auth`, authRoutes);
 app.use('/health', healthRoutes);
+app.use('/health', healthEnhancedRoutes);
 app.use(`${apiPrefix}/admin`, adminRoutes);
 app.use(`${apiPrefix}/analytics`, analyticsRoutes);
 app.use(`${apiPrefix}/users`, usersRoutes);
@@ -243,8 +259,7 @@ app.use(`${apiPrefix}/compliance`, complianceRoutes);
 app.use(`${apiPrefix}/customers`, customersRoutes);
 app.use(`${apiPrefix}/admin-ceo`, adminCeoRoutes);
 
-// Fallback authentication routes
-app.use(`${apiPrefix}/auth-fallback`, authFallbackRoutes);
+// Fallback authentication routes removed - using consolidated auth
 
 // Emergency authentication routes
 app.use(`${apiPrefix}/emergency-auth`, emergencyAuthRoutes);
@@ -275,7 +290,6 @@ app.use(`${apiPrefix}/rbac`, rbacRoutes);
 
 // Mount newly created routes
 app.use(`${apiPrefix}/support`, supportRoutes);
-app.use(`${apiPrefix}/analytics`, analyticsExtendedRoutes);
 
 // Fallback routes (without v1 prefix for frontend compatibility)
 app.use('/auth', authRoutes);
@@ -359,6 +373,13 @@ app.use('/api/v1/auth', partnerLoginRoutes);
 // Community and Loyalty routes
 app.use('/api/v1/community', require('./routes/community'));
 app.use('/api/v1/loyalty', require('./routes/loyalty'));
+app.use('/api/v1', clutchAppRoutes);
+app.use('/api/v1/admin/onboarding', onboardingRoutes);
+app.use('/api/v1/admin/roles', rolesRoutes);
+app.use('/api/v1', carsRoutes);
+app.use('/api/v1/operations', operationsRoutes);
+app.use('/api/v1/security', securityRoutes);
+app.use('/api/v1/partners/refunds', partnersRefundsRoutes);
 
 // Note: Authentication is handled by individual routes using authenticateToken middleware
 // No global authentication middleware needed as each route handles its own auth
@@ -412,50 +433,9 @@ app.options('*', (req, res) => {
   res.status(200).end();
 });
 
-// Enhanced error handling middleware
-app.use((err, req, res, next) => {
-  logger.error('Global error handler:', err);
-  
-  // Track error for performance monitoring
-  trackError(err, { 
-    endpoint: req.path, 
-    method: req.method,
-    userAgent: req.get('User-Agent'),
-    ip: req.ip
-  });
-  
-  // Don't leak error details in production
-  const isDevelopment = process.env.NODE_ENV === 'development';
-  
-  // Handle different types of errors
-  let statusCode = err.status || 500;
-  let errorMessage = 'Internal server error';
-  
-  if (err.name === 'ValidationError') {
-    statusCode = 400;
-    errorMessage = 'Validation error';
-  } else if (err.name === 'CastError') {
-    statusCode = 400;
-    errorMessage = 'Invalid ID format';
-  } else if (err.name === 'MongoError' && err.code === 11000) {
-    statusCode = 409;
-    errorMessage = 'Duplicate entry';
-  } else if (err.name === 'JsonWebTokenError') {
-    statusCode = 401;
-    errorMessage = 'Invalid token';
-  } else if (err.name === 'TokenExpiredError') {
-    statusCode = 401;
-    errorMessage = 'Token expired';
-  }
-  
-  res.status(statusCode).json({
-    success: false,
-    error: err.name || 'INTERNAL_SERVER_ERROR',
-    message: isDevelopment ? err.message : errorMessage,
-    timestamp: new Date().toISOString(),
-    ...(isDevelopment && { stack: err.stack })
-  });
-});
+// Enhanced error handling middleware with production logging
+app.use(errorLogger);
+app.use(errorOptimization);
 
 // Logo route (for frontend compatibility)
 app.get('/Logored.png', (req, res) => {
@@ -665,6 +645,9 @@ async function startServer() {
       
       // Initialize Partner WebSocket service
       const partnerWebSocketService = new PartnerWebSocketService(server);
+      
+      // Start system health logging
+      systemHealthLogger();
       
       // Run endpoint testing in production to generate logs
       if (process.env.NODE_ENV === 'production') {

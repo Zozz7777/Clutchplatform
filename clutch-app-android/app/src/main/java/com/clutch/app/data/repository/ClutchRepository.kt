@@ -15,12 +15,18 @@ class ClutchRepository @Inject constructor(
         return try {
             val response = apiService.login(LoginRequest(emailOrPhone, password, rememberMe))
             if (response.isSuccessful) {
-                Result.success(response.body()!!)
+                val body = response.body()
+                if (body != null) {
+                    Result.success(body)
+                } else {
+                    Result.failure(Exception("Login failed: Empty response body"))
+                }
             } else {
-                Result.failure(Exception("Login failed: ${response.message()}"))
+                val errorBody = response.errorBody()?.string() ?: "Unknown error"
+                Result.failure(Exception("Login failed: ${response.code()} - $errorBody"))
             }
         } catch (e: Exception) {
-            Result.failure(e)
+            Result.failure(Exception("Network error: ${e.message}"))
         }
     }
     

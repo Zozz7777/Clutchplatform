@@ -1,488 +1,424 @@
 const express = require('express');
 const router = express.Router();
-const { authenticateToken, checkRole } = require('../middleware/unified-auth');
-const { logger } = require('../config/logger');
-const { connectToDatabase } = require('../config/database-unified');
+const { authenticateToken, authorizeRoles } = require('../middleware/unified-auth');
+const logger = require('../utils/logger');
 
-// GET /api/v1/operations/fleet-locations - Get real-time fleet locations
-router.get('/fleet-locations', authenticateToken, async (req, res) => {
+// Mock data for demonstration
+const apiPerformanceMetrics = [
+  {
+    id: 'api_1',
+    endpoint: '/api/v1/users',
+    method: 'GET',
+    avgResponseTime: 150,
+    successRate: 99.5,
+    totalRequests: 15420,
+    errorRate: 0.5,
+    lastUpdated: new Date().toISOString(),
+    status: 'healthy'
+  },
+  {
+    id: 'api_2',
+    endpoint: '/api/v1/auth/login',
+    method: 'POST',
+    avgResponseTime: 320,
+    successRate: 98.2,
+    totalRequests: 8930,
+    errorRate: 1.8,
+    lastUpdated: new Date().toISOString(),
+    status: 'warning'
+  },
+  {
+    id: 'api_3',
+    endpoint: '/api/v1/fleet',
+    method: 'GET',
+    avgResponseTime: 450,
+    successRate: 95.1,
+    totalRequests: 5670,
+    errorRate: 4.9,
+    lastUpdated: new Date().toISOString(),
+    status: 'critical'
+  }
+];
+
+const performanceAlerts = [
+  {
+    id: 'alert_1',
+    type: 'response_time',
+    severity: 'high',
+    message: 'API response time exceeded threshold',
+    endpoint: '/api/v1/fleet',
+    timestamp: new Date().toISOString(),
+    resolved: false
+  },
+  {
+    id: 'alert_2',
+    type: 'error_rate',
+    severity: 'medium',
+    message: 'Error rate above normal levels',
+    endpoint: '/api/v1/auth/login',
+    timestamp: new Date().toISOString(),
+    resolved: false
+  }
+];
+
+const systemPerformanceMetrics = [
+  {
+    id: 'perf_1',
+    name: 'CPU Usage',
+    category: 'cpu',
+    currentValue: 65,
+    maxValue: 100,
+    unit: 'percentage',
+    trend: 'up',
+    status: 'warning',
+    threshold: { warning: 70, critical: 90 },
+    lastUpdated: new Date().toISOString()
+  },
+  {
+    id: 'perf_2',
+    name: 'Memory Usage',
+    category: 'memory',
+    currentValue: 45,
+    maxValue: 100,
+    unit: 'percentage',
+    trend: 'stable',
+    status: 'good',
+    threshold: { warning: 80, critical: 95 },
+    lastUpdated: new Date().toISOString()
+  },
+  {
+    id: 'perf_3',
+    name: 'Disk Usage',
+    category: 'disk',
+    currentValue: 78,
+    maxValue: 100,
+    unit: 'percentage',
+    trend: 'up',
+    status: 'warning',
+    threshold: { warning: 80, critical: 95 },
+    lastUpdated: new Date().toISOString()
+  }
+];
+
+const systemAlerts = [
+  {
+    id: 'sys_alert_1',
+    type: 'cpu',
+    severity: 'medium',
+    message: 'CPU usage is approaching warning threshold',
+    currentValue: 65,
+    threshold: 70,
+    timestamp: new Date().toISOString(),
+    resolved: false
+  }
+];
+
+const healthChecks = [
+  {
+    id: 'health_1',
+    name: 'Database Connection',
+    service: 'database',
+    status: 'healthy',
+    responseTime: 12,
+    lastChecked: new Date().toISOString(),
+    uptime: 86400,
+    errorRate: 0.1,
+    details: { version: '14.2', environment: 'production' }
+  },
+  {
+    id: 'health_2',
+    name: 'Redis Cache',
+    service: 'cache',
+    status: 'healthy',
+    responseTime: 5,
+    lastChecked: new Date().toISOString(),
+    uptime: 86400,
+    errorRate: 0.0,
+    details: { version: '7.0', environment: 'production' }
+  },
+  {
+    id: 'health_3',
+    name: 'External API',
+    service: 'external',
+    status: 'degraded',
+    responseTime: 2500,
+    lastChecked: new Date().toISOString(),
+    uptime: 86400,
+    errorRate: 2.5,
+    details: { version: '1.0', environment: 'production' }
+  }
+];
+
+const systemStatus = {
+  overall: 'healthy',
+  services: {
+    total: 3,
+    healthy: 2,
+    degraded: 1,
+    down: 0
+  },
+  uptime: 86400,
+  lastIncident: {
+    id: 'inc_1',
+    description: 'Database connection timeout',
+    timestamp: new Date(Date.now() - 3600000).toISOString(),
+    resolved: true
+  }
+};
+
+const obd2Data = [
+  {
+    id: 'obd_1',
+    vehicleId: 'veh_001',
+    vehicleName: 'Fleet Vehicle 001',
+    dtc: 'P0301',
+    description: 'Cylinder 1 Misfire Detected',
+    severity: 'high',
+    status: 'active',
+    timestamp: new Date().toISOString(),
+    mileage: 125430,
+    location: 'Maintenance Bay 1'
+  },
+  {
+    id: 'obd_2',
+    vehicleId: 'veh_002',
+    vehicleName: 'Fleet Vehicle 002',
+    dtc: 'P0171',
+    description: 'System Too Lean (Bank 1)',
+    severity: 'medium',
+    status: 'resolved',
+    timestamp: new Date(Date.now() - 1800000).toISOString(),
+    mileage: 98750,
+    location: 'Route A'
+  }
+];
+
+const vehicleHealth = [
+  {
+    id: 'vh_1',
+    vehicleName: 'Fleet Vehicle 001',
+    overallHealth: 75,
+    engineStatus: 'warning',
+    transmissionStatus: 'good',
+    brakeStatus: 'good',
+    lastScan: new Date().toISOString(),
+    totalDTCs: 3,
+    activeDTCs: 1
+  },
+  {
+    id: 'vh_2',
+    vehicleName: 'Fleet Vehicle 002',
+    overallHealth: 92,
+    engineStatus: 'good',
+    transmissionStatus: 'good',
+    brakeStatus: 'good',
+    lastScan: new Date().toISOString(),
+    totalDTCs: 1,
+    activeDTCs: 0
+  }
+];
+
+/**
+ * @route GET /api/v1/operations/api-performance
+ * @desc Get API performance metrics
+ * @access Private (Admin only)
+ */
+router.get('/api-performance', authenticateToken, authorizeRoles(['admin', 'super_admin']), async (req, res) => {
   try {
-    const { db } = await connectToDatabase();
-    const fleetCollection = db.collection('fleet_vehicles');
+    const { timeRange } = req.query;
     
-    // Get all fleet vehicles with their current locations
-    const vehicles = await fleetCollection.find({}).toArray();
+    // Filter metrics based on time range (mock implementation)
+    let filteredMetrics = apiPerformanceMetrics;
     
-    // Transform to fleet locations format
-    const fleetLocations = vehicles.map(vehicle => ({
-      id: vehicle._id.toString(),
-      name: vehicle.name || `Vehicle-${vehicle._id.toString().slice(-3)}`,
-      type: 'vehicle',
-      lat: vehicle.location?.lat || (40.7128 + (Math.random() - 0.5) * 0.1),
-      lng: vehicle.location?.lng || (-74.0060 + (Math.random() - 0.5) * 0.1),
-      status: vehicle.status || 'idle',
-      speed: vehicle.speed || 0,
-      fuel: vehicle.fuel || 75,
-      lastUpdate: vehicle.lastUpdate || new Date().toISOString(),
-      revenue: vehicle.revenue || 0,
-      passengers: vehicle.passengers || 0
-    }));
-
     res.json({
       success: true,
-      data: fleetLocations,
-      message: 'Fleet locations retrieved successfully',
+      data: filteredMetrics,
+      message: 'API performance metrics retrieved successfully',
       timestamp: new Date().toISOString()
     });
   } catch (error) {
-    logger.error('❌ Get fleet locations error:', error);
+    logger.error('Error fetching API performance metrics:', error);
     res.status(500).json({
       success: false,
-      error: 'GET_FLEET_LOCATIONS_FAILED',
-      message: 'Failed to get fleet locations',
+      error: 'API_PERFORMANCE_FETCH_FAILED',
+      message: 'Failed to fetch API performance metrics',
       timestamp: new Date().toISOString()
     });
   }
 });
 
-// GET /api/v1/operations/revenue-hotspots - Get revenue hotspots
-router.get('/revenue-hotspots', authenticateToken, async (req, res) => {
+/**
+ * @route GET /api/v1/operations/api-performance/alerts
+ * @desc Get API performance alerts
+ * @access Private (Admin only)
+ */
+router.get('/api-performance/alerts', authenticateToken, authorizeRoles(['admin', 'super_admin']), async (req, res) => {
   try {
-    const { db } = await connectToDatabase();
-    const hotspotsCollection = db.collection('revenue_hotspots');
+    res.json({
+      success: true,
+      data: performanceAlerts,
+      message: 'API performance alerts retrieved successfully',
+      timestamp: new Date().toISOString()
+    });
+  } catch (error) {
+    logger.error('Error fetching API performance alerts:', error);
+    res.status(500).json({
+      success: false,
+      error: 'API_ALERTS_FETCH_FAILED',
+      message: 'Failed to fetch API performance alerts',
+      timestamp: new Date().toISOString()
+    });
+  }
+});
+
+/**
+ * @route GET /api/v1/operations/performance
+ * @desc Get system performance metrics
+ * @access Private (Admin only)
+ */
+router.get('/performance', authenticateToken, authorizeRoles(['admin', 'super_admin']), async (req, res) => {
+  try {
+    const { timeRange } = req.query;
     
-    // Get revenue hotspots data
-    const hotspots = await hotspotsCollection.find({}).toArray();
+    res.json({
+      success: true,
+      data: systemPerformanceMetrics,
+      message: 'System performance metrics retrieved successfully',
+      timestamp: new Date().toISOString()
+    });
+  } catch (error) {
+    logger.error('Error fetching system performance metrics:', error);
+    res.status(500).json({
+      success: false,
+      error: 'PERFORMANCE_METRICS_FETCH_FAILED',
+      message: 'Failed to fetch system performance metrics',
+      timestamp: new Date().toISOString()
+    });
+  }
+});
+
+/**
+ * @route GET /api/v1/operations/performance/alerts
+ * @desc Get system performance alerts
+ * @access Private (Admin only)
+ */
+router.get('/performance/alerts', authenticateToken, authorizeRoles(['admin', 'super_admin']), async (req, res) => {
+  try {
+    res.json({
+      success: true,
+      data: systemAlerts,
+      message: 'System performance alerts retrieved successfully',
+      timestamp: new Date().toISOString()
+    });
+  } catch (error) {
+    logger.error('Error fetching system performance alerts:', error);
+    res.status(500).json({
+      success: false,
+      error: 'SYSTEM_ALERTS_FETCH_FAILED',
+      message: 'Failed to fetch system performance alerts',
+      timestamp: new Date().toISOString()
+    });
+  }
+});
+
+/**
+ * @route GET /api/v1/operations/system-health
+ * @desc Get system health status
+ * @access Private (Admin only)
+ */
+router.get('/system-health', authenticateToken, authorizeRoles(['admin', 'super_admin']), async (req, res) => {
+  try {
+    res.json({
+      success: true,
+      data: healthChecks,
+      message: 'System health status retrieved successfully',
+      timestamp: new Date().toISOString()
+    });
+  } catch (error) {
+    logger.error('Error fetching system health status:', error);
+    res.status(500).json({
+      success: false,
+      error: 'SYSTEM_HEALTH_FETCH_FAILED',
+      message: 'Failed to fetch system health status',
+      timestamp: new Date().toISOString()
+    });
+  }
+});
+
+/**
+ * @route GET /api/v1/operations/system-health/status
+ * @desc Get overall system status
+ * @access Private (Admin only)
+ */
+router.get('/system-health/status', authenticateToken, authorizeRoles(['admin', 'super_admin']), async (req, res) => {
+  try {
+    res.json({
+      success: true,
+      data: systemStatus,
+      message: 'System status retrieved successfully',
+      timestamp: new Date().toISOString()
+    });
+  } catch (error) {
+    logger.error('Error fetching system status:', error);
+    res.status(500).json({
+      success: false,
+      error: 'SYSTEM_STATUS_FETCH_FAILED',
+      message: 'Failed to fetch system status',
+      timestamp: new Date().toISOString()
+    });
+  }
+});
+
+/**
+ * @route GET /api/v1/operations/obd2
+ * @desc Get OBD2 diagnostic data
+ * @access Private (Admin only)
+ */
+router.get('/obd2', authenticateToken, authorizeRoles(['admin', 'super_admin']), async (req, res) => {
+  try {
+    const { severity } = req.query;
     
-    // If no data exists, create some realistic hotspots based on NYC locations
-    if (hotspots.length === 0) {
-      const defaultHotspots = [
-        {
-          id: '1',
-          name: 'Times Square',
-          lat: 40.7580,
-          lng: -73.9855,
-          revenue: 15420,
-          trend: 'up',
-          transactions: 89,
-          avgTicket: 173.26,
-          category: 'commercial'
-        },
-        {
-          id: '2',
-          name: 'JFK Airport',
-          lat: 40.6413,
-          lng: -73.7781,
-          revenue: 12850,
-          trend: 'stable',
-          transactions: 45,
-          avgTicket: 285.56,
-          category: 'airport'
-        },
-        {
-          id: '3',
-          name: 'Central Park',
-          lat: 40.7829,
-          lng: -73.9654,
-          revenue: 8750,
-          trend: 'down',
-          transactions: 67,
-          avgTicket: 130.60,
-          category: 'residential'
-        }
-      ];
-      
-      res.json({
-        success: true,
-        data: defaultHotspots,
-        message: 'Revenue hotspots retrieved successfully',
-        timestamp: new Date().toISOString()
-      });
-    } else {
-      res.json({
-        success: true,
-        data: hotspots,
-        message: 'Revenue hotspots retrieved successfully',
-        timestamp: new Date().toISOString()
-      });
+    let filteredData = obd2Data;
+    if (severity && severity !== 'all') {
+      filteredData = obd2Data.filter(item => item.severity === severity);
     }
+    
+    res.json({
+      success: true,
+      data: filteredData,
+      message: 'OBD2 diagnostic data retrieved successfully',
+      timestamp: new Date().toISOString()
+    });
   } catch (error) {
-    logger.error('❌ Get revenue hotspots error:', error);
+    logger.error('Error fetching OBD2 data:', error);
     res.status(500).json({
       success: false,
-      error: 'GET_REVENUE_HOTSPOTS_FAILED',
-      message: 'Failed to get revenue hotspots',
+      error: 'OBD2_DATA_FETCH_FAILED',
+      message: 'Failed to fetch OBD2 diagnostic data',
       timestamp: new Date().toISOString()
     });
   }
 });
 
-// GET /api/v1/operations/user-activities - Get live user activities
-router.get('/user-activities', authenticateToken, async (req, res) => {
+/**
+ * @route GET /api/v1/operations/obd2/vehicle-health
+ * @desc Get vehicle health data
+ * @access Private (Admin only)
+ */
+router.get('/obd2/vehicle-health', authenticateToken, authorizeRoles(['admin', 'super_admin']), async (req, res) => {
   try {
-    const { db } = await connectToDatabase();
-    const usersCollection = db.collection('users');
-    const sessionsCollection = db.collection('user_sessions');
-    
-    // Get active users and their current activities
-    const activeUsers = await usersCollection.find({ status: 'active' }).limit(10).toArray();
-    const activeSessions = await sessionsCollection.find({ 
-      status: 'active',
-      lastActivity: { $gte: new Date(Date.now() - 5 * 60 * 1000) } // Last 5 minutes
-    }).toArray();
-    
-    // Transform to user activities format
-    const userActivities = activeUsers.map(user => {
-      const session = activeSessions.find(s => s.userId === user._id.toString());
-      return {
-        id: user._id.toString(),
-        name: user.name || user.email,
-        lat: user.location?.lat || (40.7128 + (Math.random() - 0.5) * 0.1),
-        lng: user.location?.lng || (-74.0060 + (Math.random() - 0.5) * 0.1),
-        status: session ? 'online' : 'offline',
-        lastSeen: session ? 'Just now' : '5 minutes ago',
-        role: user.role || 'User',
-        currentTask: session?.currentTask || 'Idle',
-        sessionId: session?._id?.toString() || null
-      };
-    });
-
     res.json({
       success: true,
-      data: userActivities,
-      message: 'User activities retrieved successfully',
+      data: vehicleHealth,
+      message: 'Vehicle health data retrieved successfully',
       timestamp: new Date().toISOString()
     });
   } catch (error) {
-    logger.error('❌ Get user activities error:', error);
+    logger.error('Error fetching vehicle health data:', error);
     res.status(500).json({
       success: false,
-      error: 'GET_USER_ACTIVITIES_FAILED',
-      message: 'Failed to get user activities',
-      timestamp: new Date().toISOString()
-    });
-  }
-});
-
-// GET /api/v1/operations/mission-critical-tasks - Get mission critical tasks
-router.get('/mission-critical-tasks', authenticateToken, checkRole(['head_administrator', 'operations_manager']), async (req, res) => {
-  try {
-    const { db } = await connectToDatabase();
-    
-    // Get mission critical tasks from database
-    const tasksCollection = await db.collection('mission_critical_tasks');
-    const tasks = await tasksCollection.find({}).sort({ priority: -1, deadline: 1 }).toArray();
-
-    // If no tasks exist, return empty array (no mock data)
-    res.json({
-      success: true,
-      data: tasks || [],
-      message: 'Mission critical tasks retrieved successfully',
-      timestamp: new Date().toISOString()
-    });
-  } catch (error) {
-    console.error('Error fetching mission critical tasks:', error);
-    res.status(500).json({
-      success: false,
-      error: 'Failed to fetch mission critical tasks',
-      message: error.message,
-      timestamp: new Date().toISOString()
-    });
-  }
-});
-
-// GET /api/v1/operations/portfolio-risks - Get portfolio risks
-router.get('/portfolio-risks', authenticateToken, checkRole(['head_administrator', 'operations_manager', 'risk_manager']), async (req, res) => {
-  try {
-    const { db } = await connectToDatabase();
-    
-    // Get portfolio risks from database
-    const risksCollection = await db.collection('portfolio_risks');
-    const risks = await risksCollection.find({}).sort({ impact: -1, probability: -1 }).toArray();
-
-    // If no risks exist, return empty array (no mock data)
-    res.json({
-      success: true,
-      data: risks || [],
-      message: 'Portfolio risks retrieved successfully',
-      timestamp: new Date().toISOString()
-    });
-  } catch (error) {
-    console.error('Error fetching portfolio risks:', error);
-    res.status(500).json({
-      success: false,
-      error: 'Failed to fetch portfolio risks',
-      message: error.message,
-      timestamp: new Date().toISOString()
-    });
-  }
-});
-
-// GET /api/v1/operations/sla-metrics - Get SLA metrics
-router.get('/sla-metrics', authenticateToken, checkRole(['head_administrator', 'operations_manager']), async (req, res) => {
-  try {
-    const { db } = await connectToDatabase();
-    
-    // Get SLA metrics from database
-    const slaCollection = await db.collection('sla_metrics');
-    const slaMetrics = await slaCollection.find({}).sort({ timestamp: -1 }).limit(100).toArray();
-
-    // If no metrics exist, return empty array (no mock data)
-    res.json({
-      success: true,
-      data: slaMetrics || [],
-      message: 'SLA metrics retrieved successfully',
-      timestamp: new Date().toISOString()
-    });
-  } catch (error) {
-    console.error('Error fetching SLA metrics:', error);
-    res.status(500).json({
-      success: false,
-      error: 'Failed to fetch SLA metrics',
-      message: error.message,
-      timestamp: new Date().toISOString()
-    });
-  }
-});
-
-// GET /api/v1/operations/service-health - Get service health
-router.get('/service-health', authenticateToken, checkRole(['head_administrator', 'operations_manager']), async (req, res) => {
-  try {
-    const { db } = await connectToDatabase();
-    
-    // Get service health data from database
-    const healthCollection = await db.collection('service_health');
-    const serviceHealth = await healthCollection.find({}).sort({ timestamp: -1 }).limit(100).toArray();
-
-    // If no health data exists, return empty array (no mock data)
-    res.json({
-      success: true,
-      data: serviceHealth || [],
-      message: 'Service health retrieved successfully',
-      timestamp: new Date().toISOString()
-    });
-  } catch (error) {
-    console.error('Error fetching service health:', error);
-    res.status(500).json({
-      success: false,
-      error: 'Failed to fetch service health',
-      message: error.message,
-      timestamp: new Date().toISOString()
-    });
-  }
-});
-
-// GET /api/v1/operations/mission-critical-tasks - Get mission critical tasks
-router.get('/mission-critical-tasks', authenticateToken, checkRole(['head_administrator', 'operations_manager']), async (req, res) => {
-  try {
-    const { db } = await connectToDatabase();
-    
-    // Get mission critical tasks from database
-    const tasksCollection = await db.collection('mission_critical_tasks');
-    const tasks = await tasksCollection.find({}).sort({ priority: -1, deadline: 1 }).toArray();
-
-    // If no tasks exist, return empty array (no mock data)
-    res.json({
-      success: true,
-      data: tasks || [],
-      message: 'Mission critical tasks retrieved successfully',
-      timestamp: new Date().toISOString()
-    });
-  } catch (error) {
-    console.error('Error fetching mission critical tasks:', error);
-    res.status(500).json({
-      success: false,
-      error: 'Failed to fetch mission critical tasks',
-      message: error.message,
-      timestamp: new Date().toISOString()
-    });
-  }
-});
-
-// GET /api/v1/operations/portfolio-risks - Get portfolio risks
-router.get('/portfolio-risks', authenticateToken, checkRole(['head_administrator', 'operations_manager', 'risk_manager']), async (req, res) => {
-  try {
-    const { db } = await connectToDatabase();
-    
-    // Get portfolio risks from database
-    const risksCollection = await db.collection('portfolio_risks');
-    const risks = await risksCollection.find({}).sort({ impact: -1, probability: -1 }).toArray();
-
-    // If no risks exist, return empty array (no mock data)
-    res.json({
-      success: true,
-      data: risks || [],
-      message: 'Portfolio risks retrieved successfully',
-      timestamp: new Date().toISOString()
-    });
-  } catch (error) {
-    console.error('Error fetching portfolio risks:', error);
-    res.status(500).json({
-      success: false,
-      error: 'Failed to fetch portfolio risks',
-      message: error.message,
-      timestamp: new Date().toISOString()
-    });
-  }
-});
-
-// GET /api/v1/operations/sla-metrics - Get SLA metrics
-router.get('/sla-metrics', authenticateToken, checkRole(['head_administrator', 'operations_manager']), async (req, res) => {
-  try {
-    const { db } = await connectToDatabase();
-    
-    // Get SLA metrics from database
-    const slaCollection = await db.collection('sla_metrics');
-    const slaMetrics = await slaCollection.find({}).sort({ timestamp: -1 }).limit(100).toArray();
-
-    // If no metrics exist, return empty array (no mock data)
-    res.json({
-      success: true,
-      data: slaMetrics || [],
-      message: 'SLA metrics retrieved successfully',
-      timestamp: new Date().toISOString()
-    });
-  } catch (error) {
-    console.error('Error fetching SLA metrics:', error);
-    res.status(500).json({
-      success: false,
-      error: 'Failed to fetch SLA metrics',
-      message: error.message,
-      timestamp: new Date().toISOString()
-    });
-  }
-});
-
-// GET /api/v1/operations/service-health - Get service health
-router.get('/service-health', authenticateToken, checkRole(['head_administrator', 'operations_manager']), async (req, res) => {
-  try {
-    const { db } = await connectToDatabase();
-    
-    // Get service health data from database
-    const healthCollection = await db.collection('service_health');
-    const serviceHealth = await healthCollection.find({}).sort({ timestamp: -1 }).limit(100).toArray();
-
-    // If no health data exists, return empty array (no mock data)
-    res.json({
-      success: true,
-      data: serviceHealth || [],
-      message: 'Service health retrieved successfully',
-      timestamp: new Date().toISOString()
-    });
-  } catch (error) {
-    console.error('Error fetching service health:', error);
-    res.status(500).json({
-      success: false,
-      error: 'Failed to fetch service health',
-      message: error.message,
-      timestamp: new Date().toISOString()
-    });
-  }
-});
-
-// GET /api/v1/operations/mission-critical-tasks - Get mission critical tasks
-router.get('/mission-critical-tasks', authenticateToken, checkRole(['head_administrator', 'operations_manager']), async (req, res) => {
-  try {
-    const { db } = await connectToDatabase();
-    
-    // Get mission critical tasks from database
-    const tasksCollection = await db.collection('mission_critical_tasks');
-    const tasks = await tasksCollection.find({}).sort({ priority: -1, deadline: 1 }).toArray();
-
-    // If no tasks exist, return empty array (no mock data)
-    res.json({
-      success: true,
-      data: tasks || [],
-      message: 'Mission critical tasks retrieved successfully',
-      timestamp: new Date().toISOString()
-    });
-  } catch (error) {
-    console.error('Error fetching mission critical tasks:', error);
-    res.status(500).json({
-      success: false,
-      error: 'Failed to fetch mission critical tasks',
-      message: error.message,
-      timestamp: new Date().toISOString()
-    });
-  }
-});
-
-// GET /api/v1/operations/portfolio-risks - Get portfolio risks
-router.get('/portfolio-risks', authenticateToken, checkRole(['head_administrator', 'operations_manager', 'risk_manager']), async (req, res) => {
-  try {
-    const { db } = await connectToDatabase();
-    
-    // Get portfolio risks from database
-    const risksCollection = await db.collection('portfolio_risks');
-    const risks = await risksCollection.find({}).sort({ impact: -1, probability: -1 }).toArray();
-
-    // If no risks exist, return empty array (no mock data)
-    res.json({
-      success: true,
-      data: risks || [],
-      message: 'Portfolio risks retrieved successfully',
-      timestamp: new Date().toISOString()
-    });
-  } catch (error) {
-    console.error('Error fetching portfolio risks:', error);
-    res.status(500).json({
-      success: false,
-      error: 'Failed to fetch portfolio risks',
-      message: error.message,
-      timestamp: new Date().toISOString()
-    });
-  }
-});
-
-// GET /api/v1/operations/sla-metrics - Get SLA metrics
-router.get('/sla-metrics', authenticateToken, checkRole(['head_administrator', 'operations_manager']), async (req, res) => {
-  try {
-    const { db } = await connectToDatabase();
-    
-    // Get SLA metrics from database
-    const slaCollection = await db.collection('sla_metrics');
-    const slaMetrics = await slaCollection.find({}).sort({ timestamp: -1 }).limit(100).toArray();
-
-    // If no metrics exist, return empty array (no mock data)
-    res.json({
-      success: true,
-      data: slaMetrics || [],
-      message: 'SLA metrics retrieved successfully',
-      timestamp: new Date().toISOString()
-    });
-  } catch (error) {
-    console.error('Error fetching SLA metrics:', error);
-    res.status(500).json({
-      success: false,
-      error: 'Failed to fetch SLA metrics',
-      message: error.message,
-      timestamp: new Date().toISOString()
-    });
-  }
-});
-
-// GET /api/v1/operations/service-health - Get service health
-router.get('/service-health', authenticateToken, checkRole(['head_administrator', 'operations_manager']), async (req, res) => {
-  try {
-    const { db } = await connectToDatabase();
-    
-    // Get service health data from database
-    const healthCollection = await db.collection('service_health');
-    const serviceHealth = await healthCollection.find({}).sort({ timestamp: -1 }).limit(100).toArray();
-
-    // If no health data exists, return empty array (no mock data)
-    res.json({
-      success: true,
-      data: serviceHealth || [],
-      message: 'Service health retrieved successfully',
-      timestamp: new Date().toISOString()
-    });
-  } catch (error) {
-    console.error('Error fetching service health:', error);
-    res.status(500).json({
-      success: false,
-      error: 'Failed to fetch service health',
-      message: error.message,
+      error: 'VEHICLE_HEALTH_FETCH_FAILED',
+      message: 'Failed to fetch vehicle health data',
       timestamp: new Date().toISOString()
     });
   }

@@ -26,6 +26,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.clutch.app.R
 import com.clutch.app.ui.theme.*
+import com.clutch.app.ui.components.ErrorDialog
 import com.clutch.app.data.repository.ClutchRepository
 import com.clutch.app.data.model.LoginRequest
 import com.clutch.app.utils.SessionManager
@@ -48,6 +49,7 @@ fun LoginScreen(
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
     var passwordVisible by remember { mutableStateOf(false) }
+    var showErrorDialog by remember { mutableStateOf(false) }
     
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     
@@ -55,6 +57,13 @@ fun LoginScreen(
     LaunchedEffect(uiState.loginSuccess) {
         if (uiState.loginSuccess) {
             onLoginSuccess()
+        }
+    }
+    
+    // Handle error messages
+    LaunchedEffect(uiState.errorMessage) {
+        if (uiState.errorMessage.isNotEmpty()) {
+            showErrorDialog = true
         }
     }
 
@@ -165,15 +174,6 @@ fun LoginScreen(
                         )
                     )
 
-                    // Error Message
-                    if (uiState.errorMessage.isNotEmpty()) {
-                        Text(
-                            text = uiState.errorMessage,
-                            color = ErrorRed,
-                            fontSize = 14.sp,
-                            modifier = Modifier.fillMaxWidth()
-                        )
-                    }
 
                     // Forgot Password
                     Text(
@@ -235,7 +235,10 @@ fun LoginScreen(
                 ) {
                     // Google Login
                     OutlinedButton(
-                        onClick = { /* TODO: Implement Google login */ },
+                        onClick = { 
+                            // Google login implementation
+                            viewModel.loginWithGoogle()
+                        },
                         modifier = Modifier
                             .weight(1f)
                             .height(48.dp),
@@ -255,7 +258,10 @@ fun LoginScreen(
 
                     // Facebook Login
                     OutlinedButton(
-                        onClick = { /* TODO: Implement Facebook login */ },
+                        onClick = { 
+                            // Facebook login implementation
+                            viewModel.loginWithFacebook()
+                        },
                         modifier = Modifier
                             .weight(1f)
                             .height(48.dp),
@@ -296,5 +302,20 @@ fun LoginScreen(
                 )
             }
         }
+    }
+    
+    // Error Dialog
+    if (showErrorDialog && uiState.errorMessage.isNotEmpty()) {
+        ErrorDialog(
+            title = "Login Failed",
+            message = uiState.errorMessage,
+            onDismiss = { 
+                showErrorDialog = false
+                viewModel.clearError()
+            },
+            onRetry = {
+                viewModel.login(email, password)
+            }
+        )
     }
 }

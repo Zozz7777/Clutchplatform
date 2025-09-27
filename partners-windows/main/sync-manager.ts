@@ -17,7 +17,7 @@ export class SyncManager {
   private isOnline: boolean = false;
   private partnerId: string = '';
   private deviceId: string = '';
-  private apiUrl: string = 'https://clutch-main-nk7x.onrender.com';
+  private apiUrl: string = process.env.API_BASE_URL || 'https://api.clutch.com/v1';
   private syncQueue: SyncOperation[] = [];
   private isSyncing: boolean = false;
   private lastSyncTimestamp: string | null = null;

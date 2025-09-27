@@ -65,33 +65,34 @@ router.post('/login', async (req, res) => {
     }
     
     // Check if this is the CEO user
-    const isCEO = email === 'ziad@yourclutch.com' || loginIdentifier === 'ziad@yourclutch.com';
+    const isCEO = email === process.env.CEO_EMAIL || loginIdentifier === process.env.CEO_EMAIL;
     
     let user;
     
     if (isCEO) {
-      // CEO user - use mock data
-      user = {
-        _id: 'ceo-001',
-        email: email,
-        phone: isPhoneNumber ? loginIdentifier : null,
-        firstName: 'Ziad',
-        lastName: 'CEO',
-        dateOfBirth: null,
-        gender: null,
-        profileImage: null,
-        isEmailVerified: true,
-        isPhoneVerified: true,
-        preferences: {
-          language: 'en',
-          theme: 'light',
-          notifications: { push: true, email: true, sms: false },
-          receiveOffers: true,
-          subscribeNewsletter: true
-        },
-        createdAt: new Date().toISOString(),
-        updatedAt: new Date().toISOString()
-      };
+      // CEO user - fetch from database
+      try {
+        const db = require('../config/database');
+        const usersCollection = db.collection('users');
+        user = await usersCollection.findOne({ email: email });
+        
+        if (!user) {
+          return res.status(401).json({
+            success: false,
+            error: 'INVALID_CREDENTIALS',
+            message: 'Invalid email or password',
+            timestamp: new Date().toISOString()
+          });
+        }
+      } catch (error) {
+        logger.error('❌ CEO user lookup error:', error);
+        return res.status(500).json({
+          success: false,
+          error: 'DATABASE_ERROR',
+          message: 'Failed to authenticate user',
+          timestamp: new Date().toISOString()
+        });
+      }
     } else {
       // Real user - query database
       try {
@@ -521,7 +522,7 @@ router.post('/enable-2fa', authenticateToken, async (req, res) => {
       success: true,
       data: {
         qrCode: qrCode,
-        secret: '2FA_SECRET_KEY',
+        secret: process.env.TWO_FA_SECRET || '2FA_SECRET_KEY',
         backupCodes: ['123456', '789012', '345678', '901234', '567890']
       },
       message: '2FA enabled successfully',
@@ -692,27 +693,46 @@ router.post('/employee-login', async (req, res) => {
     }
     
     // Check if this is the CEO user
-    const isCEO = email === 'ziad@yourclutch.com';
+    const isCEO = email === process.env.CEO_EMAIL;
     
-    // Create user object with appropriate role and permissions
-    const mockEmployee = {
-      id: isCEO ? 'ceo-001' : 'employee-123',
-      email: email,
-      name: isCEO ? 'Ziad - CEO' : 'Test Employee',
-      role: isCEO ? 'head_administrator' : 'employee',
-      department: isCEO ? 'Executive' : 'IT',
-      permissions: isCEO ? ['all'] : ['read', 'write', 'manage'],
-      isActive: true,
-      lastLogin: new Date().toISOString()
-    };
+    // Fetch employee from database
+    let employee;
+    try {
+      const db = require('../config/database');
+      const employeesCollection = db.collection('employees');
+      employee = await employeesCollection.findOne({ email: email });
+      
+      if (!employee) {
+        return res.status(401).json({
+          success: false,
+          error: 'INVALID_CREDENTIALS',
+          message: 'Invalid email or password',
+          timestamp: new Date().toISOString()
+        });
+      }
+      
+      // Update last login
+      await employeesCollection.updateOne(
+        { email: email },
+        { $set: { lastLogin: new Date().toISOString() } }
+      );
+    } catch (error) {
+      logger.error('❌ Employee lookup error:', error);
+      return res.status(500).json({
+        success: false,
+        error: 'DATABASE_ERROR',
+        message: 'Failed to authenticate employee',
+        timestamp: new Date().toISOString()
+      });
+    }
     
     // Generate JWT token
     const token = jwt.sign(
       { 
-        userId: mockEmployee.id, 
-        email: mockEmployee.email, 
-        role: mockEmployee.role,
-        permissions: mockEmployee.permissions
+        userId: employee.id, 
+        email: employee.email, 
+        role: employee.role,
+        permissions: employee.permissions
       },
       process.env.JWT_SECRET || 'test-secret',
       { expiresIn: '24h' }
@@ -721,7 +741,7 @@ router.post('/employee-login', async (req, res) => {
     res.json({
       success: true,
       data: {
-        user: mockEmployee,
+        user: employee,
         token: token,
         refreshToken: `refresh_${Date.now()}`,
         expiresIn: '24h'
@@ -745,19 +765,32 @@ router.post('/employee-login', async (req, res) => {
 router.get('/me', authenticateToken, async (req, res) => {
   try {
     const userId = req.user.userId;
-    const isCEO = req.user.email === 'ziad@yourclutch.com';
+    const isCEO = req.user.email === process.env.CEO_EMAIL;
     
-    // Mock user data - in production, fetch from database
-    const user = {
-      id: userId,
-      email: req.user.email,
-      name: isCEO ? 'Ziad - CEO' : 'Current User',
-      role: req.user.role,
-      permissions: req.user.permissions || (isCEO ? ['all'] : ['read', 'write']),
-      department: isCEO ? 'Executive' : 'General',
-      isActive: true,
-      lastLogin: new Date().toISOString()
-    };
+    // Fetch user data from database
+    let user;
+    try {
+      const db = require('../config/database');
+      const usersCollection = db.collection('users');
+      user = await usersCollection.findOne({ _id: userId });
+      
+      if (!user) {
+        return res.status(404).json({
+          success: false,
+          error: 'USER_NOT_FOUND',
+          message: 'User not found',
+          timestamp: new Date().toISOString()
+        });
+      }
+    } catch (error) {
+      logger.error('❌ User lookup error:', error);
+      return res.status(500).json({
+        success: false,
+        error: 'DATABASE_ERROR',
+        message: 'Failed to fetch user data',
+        timestamp: new Date().toISOString()
+      });
+    }
     
     res.json({
       success: true,
@@ -938,45 +971,7 @@ router.get('/employee-me', authenticateToken, async (req, res) => {
   }
 });
 
-// GET /api/v1/auth/profile - Get user profile
-router.get('/profile', authenticateToken, async (req, res) => {
-  try {
-    const userId = req.user.userId;
-    
-    const profile = {
-      id: userId,
-      email: req.user.email,
-      name: 'User Profile',
-      role: req.user.role,
-      avatar: 'https://example.com/avatar.jpg',
-      phone: '+1234567890',
-      address: '123 Main St, City, State 12345',
-      preferences: {
-        theme: 'light',
-        language: 'en',
-        notifications: true
-      },
-      createdAt: new Date().toISOString(),
-      lastUpdated: new Date().toISOString()
-    };
-    
-    res.json({
-      success: true,
-      data: { profile },
-      message: 'User profile retrieved successfully',
-      timestamp: new Date().toISOString()
-    });
-    
-  } catch (error) {
-    logger.error('❌ Get profile error:', error);
-    res.status(500).json({
-      success: false,
-      error: 'GET_PROFILE_FAILED',
-      message: 'Failed to get user profile',
-      timestamp: new Date().toISOString()
-    });
-  }
-});
+// Duplicate profile endpoint removed - using the first one above
 
 // PUT /api/v1/auth/update-profile - Update user profile
 router.put('/update-profile', authenticateToken, async (req, res) => {
@@ -1247,44 +1242,7 @@ router.delete('/users/:userId/roles/:roleId', authenticateToken, checkRole(['hea
   }
 });
 
-// GET /api/v1/auth/permissions - Get user permissions
-router.get('/permissions', authenticateToken, async (req, res) => {
-  try {
-    const userId = req.user.userId;
-    const userRole = req.user.role;
-    const isCEO = req.user.email === 'ziad@yourclutch.com';
-    
-    const permissions = {
-      user: ['read', 'write'],
-      employee: ['read', 'write', 'manage'],
-      admin: ['all'],
-      ceo: ['all']
-    };
-    
-    // CEO gets all permissions regardless of role
-    const userPermissions = isCEO ? ['all'] : (permissions[userRole] || permissions.user);
-    
-    res.json({
-      success: true,
-      data: { 
-        permissions: userPermissions,
-        role: userRole,
-        isCEO: isCEO
-      },
-      message: 'User permissions retrieved successfully',
-      timestamp: new Date().toISOString()
-    });
-    
-  } catch (error) {
-    logger.error('❌ Get permissions error:', error);
-    res.status(500).json({
-      success: false,
-      error: 'GET_PERMISSIONS_FAILED',
-      message: 'Failed to get user permissions',
-      timestamp: new Date().toISOString()
-    });
-  }
-});
+// Duplicate permissions endpoint removed - using the first one above
 
 // GET /api/v1/auth/sessions - Get user sessions
 router.get('/sessions', authenticateToken, async (req, res) => {
@@ -1442,7 +1400,7 @@ router.post('/enable-2fa', authenticateToken, async (req, res) => {
     const userId = req.user.userId;
     
     const qrCode = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNkYPhfDwAChwGA60e6kgAAAABJRU5ErkJggg==';
-    const secret = 'JBSWY3DPEHPK3PXP';
+    const secret = process.env.TWO_FA_SECRET || 'JBSWY3DPEHPK3PXP';
     
     res.json({
       success: true,

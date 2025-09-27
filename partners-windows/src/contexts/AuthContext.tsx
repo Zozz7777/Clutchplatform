@@ -74,7 +74,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
         
         if (token.length > 0 && partnerId.length > 0 && deviceId.length > 0) {
           // Verify token is still valid
-          const response = await fetch('https://clutch-main-nk7x.onrender.com/api/v1/partners/auth/refresh-token', {
+          const response = await fetch(`${process.env.REACT_APP_API_BASE_URL || 'https://api.clutch.com/v1'}/partners/auth/refresh-token`, {
             method: 'POST',
             headers: {
               'Authorization': `Bearer ${token[0].value}`,
@@ -114,7 +114,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
     try {
       setIsLoading(true);
       
-      const response = await fetch('https://clutch-main-nk7x.onrender.com/api/v1/partners/validate-id', {
+      const response = await fetch(`${process.env.REACT_APP_API_BASE_URL || 'https://api.clutch.com/v1'}/partners/validate-id`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
@@ -140,7 +140,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
     try {
       setIsLoading(true);
       
-      const response = await fetch(`https://clutch-main-nk7x.onrender.com/api/v1/partners/${form.partnerId}/register-device`, {
+      const response = await fetch(`${process.env.REACT_APP_API_BASE_URL || 'https://api.clutch.com/v1'}/partners/${form.partnerId}/register-device`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
@@ -176,7 +176,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
     try {
       setIsLoading(true);
       
-      const response = await fetch('https://clutch-main-nk7x.onrender.com/api/v1/partners/auth/partner-login', {
+      const response = await fetch(`${process.env.REACT_APP_API_BASE_URL || 'https://api.clutch.com/v1'}/partners/auth/partner-login`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'

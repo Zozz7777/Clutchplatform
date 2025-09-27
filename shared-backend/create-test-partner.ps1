@@ -4,9 +4,9 @@ Start-Sleep -Seconds 5
 # Create test partner data
 $body = @{
     partnerId = "CLT123456TEST"
-    email = "test@clutch.com"
-    phone = "+201234567890"
-    password = "test123"
+    email = $env:TEST_PARTNER_EMAIL
+    phone = $env:TEST_PARTNER_PHONE
+    password = $env:TEST_PARTNER_PASSWORD
     businessName = "Test Auto Shop"
     ownerName = "Ahmed Test"
     partnerType = "repair_center"

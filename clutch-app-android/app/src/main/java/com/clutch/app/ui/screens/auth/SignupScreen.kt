@@ -25,6 +25,7 @@ import androidx.compose.ui.unit.sp
 import com.clutch.app.R
 import com.clutch.app.ui.theme.ClutchAppTheme
 import com.clutch.app.ui.theme.ClutchRed
+import com.clutch.app.ui.components.ErrorDialog
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.hilt.navigation.compose.hiltViewModel
 
@@ -44,6 +45,7 @@ fun SignupScreen(
       var passwordVisible by remember { mutableStateOf(false) }
       var confirmPasswordVisible by remember { mutableStateOf(false) }
       var agreeToTerms by remember { mutableStateOf(false) }
+      var showErrorDialog by remember { mutableStateOf(false) }
     
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     
@@ -51,6 +53,13 @@ fun SignupScreen(
     LaunchedEffect(uiState.signupSuccess) {
         if (uiState.signupSuccess) {
             onSignupSuccess()
+        }
+    }
+    
+    // Handle error messages
+    LaunchedEffect(uiState.errorMessage) {
+        if (uiState.errorMessage.isNotEmpty()) {
+            showErrorDialog = true
         }
     }
 
@@ -242,15 +251,6 @@ fun SignupScreen(
 
             Spacer(modifier = Modifier.height(32.dp))
 
-            // Error Message
-            if (uiState.errorMessage.isNotEmpty()) {
-                Text(
-                    text = uiState.errorMessage,
-                    color = ClutchRed,
-                    fontSize = 14.sp,
-                    modifier = Modifier.padding(bottom = 16.dp)
-                )
-            }
 
               // Sign Up Button
               Button(
@@ -339,6 +339,21 @@ fun SignupScreen(
                 Text("Already have an account?", color = ClutchRed)
             }
         }
+    }
+    
+    // Error Dialog
+    if (showErrorDialog && uiState.errorMessage.isNotEmpty()) {
+        ErrorDialog(
+            title = "Signup Failed",
+            message = uiState.errorMessage,
+            onDismiss = { 
+                showErrorDialog = false
+                viewModel.clearError()
+            },
+            onRetry = {
+                viewModel.signup(name, email, mobileNumber, password, confirmPassword, agreeToTerms)
+            }
+        )
     }
 }
 

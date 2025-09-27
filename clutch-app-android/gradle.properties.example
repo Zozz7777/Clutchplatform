@@ -1,0 +1,17 @@
+# Clutch Android App Configuration
+# Copy this file to gradle.properties and fill in the actual values
+
+# API Configuration
+API_BASE_URL=https://api.clutch.com/v1
+
+# Build Configuration
+android.useAndroidX=true
+android.enableJetifier=true
+
+# Debug Configuration
+DEBUG_API_URL=https://dev-api.clutch.com/v1
+RELEASE_API_URL=https://api.clutch.com/v1
+
+# Security Configuration
+# Never commit actual API keys to version control
+# Use environment variables or secure storage instead
