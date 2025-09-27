@@ -59,17 +59,6 @@ jobs:
     timeout-minutes: 15
     needs: code-quality
     
-    services:
-      mongodb:
-        image: mongo:${{ env.MONGODB_VERSION }}
-        ports:
-          - 27017:27017
-        options: >-
-          --health-cmd "mongosh --eval 'db.adminCommand(\"ping\")'"
-          --health-interval 10s
-          --health-timeout 5s
-          --health-retries 5
-    
     steps:
     - name: Checkout code
       uses: actions/checkout@v4
@@ -84,24 +73,28 @@ jobs:
     - name: Install dependencies
       working-directory: shared-backend
       run: npm ci
-      
-    - name: Wait for MongoDB
-      run: |
-        echo "⏳ Waiting for MongoDB to be ready..."
-        timeout 60 bash -c 'until mongosh --eval "db.adminCommand(\"ping\")" > /dev/null 2>&1; do sleep 1; done'
-        echo "✅ MongoDB is ready"
         
     - name: Run existing tests
       working-directory: shared-backend
       env:
-        MONGODB_URI: mongodb://localhost:27017/clutch_test
         NODE_ENV: test
+        MONGODB_URI: mongodb://localhost:27017/clutch_test
       run: |
         echo "🧪 Running available tests..."
-        npm run test:simple || echo "⚠️ Simple tests not available"
+        echo "📋 Test environment: $NODE_ENV"
+        echo "🔗 MongoDB URI: $MONGODB_URI"
+        
+        # Run simple tests (these don't require MongoDB)
+        if npm run test:simple; then
+          echo "✅ Simple tests passed"
+        else
+          echo "❌ Simple tests failed"
+          exit 1
+        fi
+        
+        # Try other test commands if they exist
         npm run test:health || echo "⚠️ Health tests not available"
         npm run test || echo "⚠️ General tests not available"
-      continue-on-error: true
 
   # Frontend Testing (Only if package.json exists)
   frontend-tests:
