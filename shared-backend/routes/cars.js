@@ -1,13 +1,8 @@
 const express = require('express');
-const mongoose = require('mongoose');
+const { ObjectId } = require('mongodb');
 const router = express.Router();
-const Car = require('../models/Car');
-const CarBrand = require('../models/CarBrand');
-const CarModel = require('../models/CarModel');
-const CarTrim = require('../models/CarTrim');
-const MaintenanceService = require('../models/MaintenanceService');
 const { authenticateToken } = require('../middleware/unified-auth');
-const { waitForMongooseConnection } = require('../config/optimized-database');
+const { getCollection } = require('../config/optimized-database');
 
 // Get all car brands
 router.get('/brands', async (req, res) => {
@@ -19,7 +14,9 @@ router.get('/brands', async (req, res) => {
       query.name = { $regex: search, $options: 'i' };
     }
     
-    const brands = await CarBrand.find(query).sort({ name: 1 });
+    const brandsCollection = await getCollection('car_brands');
+    const brands = await brandsCollection.find(query).sort({ name: 1 }).toArray();
+    
     res.json({
       success: true,
       data: brands
@@ -48,7 +45,8 @@ router.get('/models/:brandName', async (req, res) => {
       query.name = { $regex: search, $options: 'i' };
     }
     
-    const models = await CarModel.find(query).sort({ name: 1 });
+    const modelsCollection = await getCollection('car_models');
+    const models = await modelsCollection.find(query).sort({ name: 1 }).toArray();
     res.json({
       success: true,
       data: models
@@ -78,7 +76,8 @@ router.get('/trims/:brandName/:modelName', async (req, res) => {
       query.name = { $regex: search, $options: 'i' };
     }
     
-    const trims = await CarTrim.find(query).sort({ name: 1 });
+    const trimsCollection = await getCollection('car_trims');
+    const trims = await trimsCollection.find(query).sort({ name: 1 }).toArray();
     res.json({
       success: true,
       data: trims
@@ -95,18 +94,6 @@ router.get('/trims/:brandName/:modelName', async (req, res) => {
 // Get user's cars
 router.get('/user-cars', authenticateToken, async (req, res) => {
   try {
-    // Wait for mongoose connection to be ready
-    try {
-      await waitForMongooseConnection(5000); // Wait up to 5 seconds
-    } catch (connectionError) {
-      console.error('Mongoose connection not ready:', connectionError.message);
-      return res.status(503).json({
-        success: false,
-        message: 'Database connection not available',
-        error: 'SERVICE_UNAVAILABLE'
-      });
-    }
-
     const userId = req.user.userId || req.user.id;
     if (!userId) {
       return res.status(400).json({
@@ -116,13 +103,17 @@ router.get('/user-cars', authenticateToken, async (req, res) => {
       });
     }
 
-    // Add timeout to the query
-    const query = Car.find({ 
+    // Use native MongoDB client
+    const carsCollection = await getCollection('cars');
+    
+    // Query with native MongoDB
+    const cars = await carsCollection.find({ 
       userId: userId, 
       isActive: true 
-    }).sort({ createdAt: -1 }).maxTimeMS(5000); // 5 second timeout
-    
-    const cars = await query.exec();
+    })
+    .sort({ createdAt: -1 })
+    .maxTimeMS(5000) // 5 second timeout
+    .toArray();
     
     res.json({
       success: true,
@@ -133,7 +124,7 @@ router.get('/user-cars', authenticateToken, async (req, res) => {
     console.error('Error fetching user cars:', error);
     
     // Handle specific MongoDB errors
-    if (error.name === 'MongooseError' && error.message.includes('buffering timed out')) {
+    if (error.name === 'MongoServerError' && error.message.includes('timeout')) {
       return res.status(503).json({
         success: false,
         message: 'Database operation timed out. Please try again.',
@@ -141,11 +132,11 @@ router.get('/user-cars', authenticateToken, async (req, res) => {
       });
     }
     
-    if (error.name === 'CastError') {
-      return res.status(400).json({
+    if (error.name === 'MongoError' && error.message.includes('connection')) {
+      return res.status(503).json({
         success: false,
-        message: 'Invalid user ID format',
-        error: 'INVALID_USER_ID'
+        message: 'Database connection not available',
+        error: 'SERVICE_UNAVAILABLE'
       });
     }
     
@@ -178,8 +169,11 @@ router.post('/register', authenticateToken, async (req, res) => {
       });
     }
 
+    // Use native MongoDB client
+    const carsCollection = await getCollection('cars');
+    
     // Check if license plate already exists
-    const existingCar = await Car.findOne({ 
+    const existingCar = await carsCollection.findOne({ 
       licensePlate: licensePlate.toUpperCase(),
       isActive: true 
     });
@@ -191,8 +185,8 @@ router.post('/register', authenticateToken, async (req, res) => {
       });
     }
 
-    // Create new car
-    const car = new Car({
+    // Create new car document
+    const car = {
       userId: req.user.userId || req.user.id,
       year: parseInt(year),
       brand: brand.trim(),
@@ -201,10 +195,14 @@ router.post('/register', authenticateToken, async (req, res) => {
       kilometers: parseInt(kilometers),
       color: color.trim(),
       licensePlate: licensePlate.toUpperCase().trim(),
-      currentMileage: parseInt(kilometers)
-    });
+      currentMileage: parseInt(kilometers),
+      isActive: true,
+      createdAt: new Date(),
+      updatedAt: new Date()
+    };
 
-    await car.save();
+    const result = await carsCollection.insertOne(car);
+    car._id = result.insertedId;
 
     res.status(201).json({
       success: true,
@@ -238,9 +236,10 @@ router.put('/:carId/maintenance', authenticateToken, async (req, res) => {
       });
     }
 
-    // Find the car
-    const car = await Car.findOne({ 
-      _id: carId, 
+    // Find the car using native MongoDB
+    const carsCollection = await getCollection('cars');
+    const car = await carsCollection.findOne({ 
+      _id: new ObjectId(carId), 
       userId: req.user.userId || req.user.id, 
       isActive: true 
     });
@@ -291,10 +290,11 @@ router.get('/maintenance-services', async (req, res) => {
       ];
     }
     
-    const services = await MaintenanceService.find(query).sort({ 
+    const servicesCollection = await getCollection('maintenance_services');
+    const services = await servicesCollection.find(query).sort({ 
       serviceGroup: 1, 
       serviceName: 1 
-    });
+    }).toArray();
     
     // Group services by service group
     const groupedServices = services.reduce((acc, service) => {
