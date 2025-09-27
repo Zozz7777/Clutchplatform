@@ -5,7 +5,7 @@ const CarBrand = require('../models/CarBrand');
 const CarModel = require('../models/CarModel');
 const CarTrim = require('../models/CarTrim');
 const MaintenanceService = require('../models/MaintenanceService');
-const auth = require('../middleware/auth');
+const { authenticateToken } = require('../middleware/auth');
 
 // Get all car brands
 router.get('/brands', async (req, res) => {
@@ -91,7 +91,7 @@ router.get('/trims/:brandName/:modelName', async (req, res) => {
 });
 
 // Get user's cars
-router.get('/user-cars', auth, async (req, res) => {
+router.get('/user-cars', authenticateToken, async (req, res) => {
   try {
     const cars = await Car.find({ 
       userId: req.user.id, 
@@ -112,7 +112,7 @@ router.get('/user-cars', auth, async (req, res) => {
 });
 
 // Register a new car
-router.post('/register', auth, async (req, res) => {
+router.post('/register', authenticateToken, async (req, res) => {
   try {
     const {
       year,
@@ -175,7 +175,7 @@ router.post('/register', auth, async (req, res) => {
 });
 
 // Update car maintenance
-router.put('/:carId/maintenance', auth, async (req, res) => {
+router.put('/:carId/maintenance', authenticateToken, async (req, res) => {
   try {
     const { carId } = req.params;
     const {
