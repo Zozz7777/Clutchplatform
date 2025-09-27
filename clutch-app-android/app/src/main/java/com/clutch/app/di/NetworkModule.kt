@@ -18,7 +18,7 @@ import javax.inject.Singleton
 @InstallIn(SingletonComponent::class)
 object NetworkModule {
     
-    private const val BASE_URL = "https://clutch-main-nk7x.onrender.com/"
+    private const val BASE_URL = "https://clutch-main-nk7x.onrender.com/api/v1/"
     
     @Provides
     @Singleton
