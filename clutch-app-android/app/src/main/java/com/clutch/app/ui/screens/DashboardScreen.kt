@@ -25,6 +25,12 @@ import com.clutch.app.R
 import com.clutch.app.ui.theme.*
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.style.TextDirection
+import androidx.compose.ui.unit.LayoutDirection
+import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.ui.platform.LocalLayoutDirection
+import com.clutch.app.utils.TranslationManager
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -36,10 +42,16 @@ fun DashboardScreen(
     onNavigateToLoyalty: () -> Unit = {},
     viewModel: DashboardViewModel = hiltViewModel()
 ) {
+    val context = LocalContext.current
+    val currentLanguage = TranslationManager.getCurrentLanguage()
+    val layoutDirection = if (currentLanguage == "ar") LayoutDirection.Rtl else LayoutDirection.Ltr
+    
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     
     val selectedCar = uiState.selectedCar
     val carHealth = uiState.carHealth
+    
+    CompositionLocalProvider(LocalLayoutDirection provides layoutDirection) {
 
     LazyColumn(
         modifier = Modifier
@@ -58,7 +70,7 @@ fun DashboardScreen(
                 // Clutch Logo
                 Image(
                     painter = painterResource(id = R.drawable.clutch_logo_red),
-                    contentDescription = "Clutch Logo",
+                    contentDescription = TranslationManager.getString(context, R.string.clutch_logo),
                     modifier = Modifier.size(40.dp)
                 )
                 
@@ -67,7 +79,7 @@ fun DashboardScreen(
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
                     Text(
-                        text = "Your Car",
+                        text = TranslationManager.getString(context, R.string.your_car),
                         fontSize = 14.sp,
                         color = Color.Gray
                     )
@@ -76,20 +88,20 @@ fun DashboardScreen(
                     ) {
                         Icon(
                             imageVector = Icons.Default.DirectionsCar,
-                            contentDescription = "Car",
+                            contentDescription = TranslationManager.getString(context, R.string.car),
                             tint = ClutchRed,
                             modifier = Modifier.size(20.dp)
                         )
                         Spacer(modifier = Modifier.width(4.dp))
                         Text(
-                            text = selectedCar?.let { "${it.brand} ${it.model} ${it.year}" } ?: "No Car Selected",
+                            text = selectedCar?.let { "${it.brand} ${it.model} ${it.year}" } ?: TranslationManager.getString(context, R.string.no_car_selected),
                             fontSize = 18.sp,
                             fontWeight = FontWeight.Bold,
                             color = ClutchRed
                         )
                         Icon(
                             imageVector = Icons.Default.KeyboardArrowDown,
-                            contentDescription = "Dropdown",
+                            contentDescription = TranslationManager.getString(context, R.string.dropdown),
                             tint = ClutchRed,
                             modifier = Modifier.size(16.dp)
                         )
@@ -119,7 +131,7 @@ fun DashboardScreen(
                         Spacer(modifier = Modifier.width(8.dp))
                         Icon(
                             imageVector = Icons.Default.Edit,
-                            contentDescription = "Edit",
+                            contentDescription = TranslationManager.getString(context, R.string.edit),
                             tint = Color.Gray,
                             modifier = Modifier.size(16.dp)
                         )
@@ -135,35 +147,35 @@ fun DashboardScreen(
             ) {
                 item {
                     QuickActionCard(
-                        title = "Book Service",
+                        title = TranslationManager.getString(context, R.string.book_service),
                         icon = Icons.Default.CalendarToday,
                         onClick = onNavigateToBookService
                     )
                 }
                 item {
                     QuickActionCard(
-                        title = "Order Parts",
+                        title = TranslationManager.getString(context, R.string.order_parts),
                         icon = Icons.Default.ShoppingCart,
                         onClick = onNavigateToOrderParts
                     )
                 }
                 item {
                     QuickActionCard(
-                        title = "Car Health",
+                        title = TranslationManager.getString(context, R.string.car_health),
                         icon = Icons.Default.MonitorHeart,
                         onClick = onNavigateToCarHealth
                     )
                 }
                 item {
                     QuickActionCard(
-                        title = "Community",
+                        title = TranslationManager.getString(context, R.string.community),
                         icon = Icons.Default.People,
                         onClick = onNavigateToCommunity
                     )
                 }
                 item {
                     QuickActionCard(
-                        title = "Loyalty",
+                        title = TranslationManager.getString(context, R.string.loyalty),
                         icon = Icons.Default.EmojiEvents,
                         onClick = onNavigateToLoyalty
                     )
@@ -223,7 +235,7 @@ fun DashboardScreen(
                                 color = Color.Black
                             )
                             Text(
-                                text = "Your Car Health",
+                                text = TranslationManager.getString(context, R.string.your_car_health),
                                 fontSize = 12.sp,
                                 color = Color.Gray
                             )
@@ -244,7 +256,7 @@ fun DashboardScreen(
                     modifier = Modifier.padding(16.dp)
                 ) {
                     Text(
-                        text = "Parts Expiring Soon",
+                        text = TranslationManager.getString(context, R.string.parts_expiring_soon),
                         fontSize = 18.sp,
                         fontWeight = FontWeight.Bold,
                         color = Color.Black,
@@ -253,25 +265,25 @@ fun DashboardScreen(
                     
                     // For now, show placeholder parts data until we implement maintenance reminders API
                     PartItem(
-                        partName = "Engine Oil",
-                        status = "Expired 850 Km Ago",
+                        partName = TranslationManager.getString(context, R.string.engine_oil),
+                        status = "Expired 850 Km Ago", // TODO: Use formatted string
                         isExpired = true
                     )
                     PartItem(
-                        partName = "Spark Plugs",
-                        status = "9,150 Km ~ Remaining"
+                        partName = TranslationManager.getString(context, R.string.spark_plugs),
+                        status = "9,150 Km ~ Remaining" // TODO: Use formatted string
                     )
                     PartItem(
-                        partName = "Air Filter",
-                        status = "4,150 Km ~ Remaining"
+                        partName = TranslationManager.getString(context, R.string.air_filter),
+                        status = "4,150 Km ~ Remaining" // TODO: Use formatted string
                     )
                     PartItem(
-                        partName = "Brakes",
-                        status = "29,150 Km ~ Remaining"
+                        partName = TranslationManager.getString(context, R.string.brakes),
+                        status = "29,150 Km ~ Remaining" // TODO: Use formatted string
                     )
                     
                     Text(
-                        text = "View All",
+                        text = TranslationManager.getString(context, R.string.view_all),
                         fontSize = 14.sp,
                         fontWeight = FontWeight.Bold,
                         color = Color.Black,
@@ -284,6 +296,7 @@ fun DashboardScreen(
         item {
             Spacer(modifier = Modifier.height(100.dp)) // Space for bottom navigation
         }
+    }
     }
 }
 

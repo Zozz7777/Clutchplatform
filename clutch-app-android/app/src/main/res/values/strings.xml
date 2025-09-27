@@ -129,4 +129,36 @@
     <string name="facebook_login_not_implemented">Facebook Login not implemented yet</string>
     <string name="google_signup_not_implemented">Google Sign-Up not implemented yet</string>
     <string name="facebook_signup_not_implemented">Facebook Sign-Up not implemented yet</string>
+    
+    <!-- Additional strings for hardcoded text fixes -->
+    <string name="no_car_selected">No Car Selected</string>
+    <string name="your_car_health">Your Car Health</string>
+    <string name="parts_expiring_soon">Parts Expiring Soon</string>
+    <string name="engine_oil">Engine Oil</string>
+    <string name="spark_plugs">Spark Plugs</string>
+    <string name="air_filter">Air Filter</string>
+    <string name="brakes">Brakes</string>
+    <string name="clutch_logo">Clutch Logo</string>
+    <string name="car">Car</string>
+    <string name="dropdown">Dropdown</string>
+    <string name="edit">Edit</string>
+    <string name="close">Close</string>
+    <string name="search">Search</string>
+    <string name="select">Select</string>
+    <string name="brand_logo">Brand Logo</string>
+    <string name="change_brand">Change Brand</string>
+    <string name="change_car">Change Car</string>
+    <string name="expand">Expand</string>
+    <string name="collapse">Collapse</string>
+    <string name="service_group">Service Group</string>
+    <string name="votes">Votes</string>
+    <string name="add_tip">Add Tip</string>
+    <string name="view">View</string>
+    <string name="notifications">Notifications</string>
+    <string name="profile">Profile</string>
+    <string name="select_date">Select Date</string>
+    <string name="select_services">Select Services</string>
+    <string name="select_brand">Select Brand</string>
+    <string name="select_model">Select Model</string>
+    <string name="select_trim">Select Trim</string>
 </resources>

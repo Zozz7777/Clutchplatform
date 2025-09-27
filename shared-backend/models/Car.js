@@ -70,6 +70,6 @@ const carSchema = new mongoose.Schema({
 
 // Index for efficient queries
 carSchema.index({ userId: 1, isActive: 1 });
-carSchema.index({ licensePlate: 1 });
+// Note: licensePlate index is automatically created by unique: true in schema
 
 module.exports = mongoose.model('Car', carSchema);

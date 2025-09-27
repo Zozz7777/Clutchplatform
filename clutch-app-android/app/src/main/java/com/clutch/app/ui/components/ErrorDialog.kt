@@ -17,6 +17,12 @@ import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
 import com.clutch.app.ui.theme.ClutchRed
 import com.clutch.app.ui.theme.ErrorRed
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.unit.LayoutDirection
+import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.ui.platform.LocalLayoutDirection
+import com.clutch.app.utils.TranslationManager
+import com.clutch.app.R
 
 @Composable
 fun ErrorDialog(
@@ -26,6 +32,10 @@ fun ErrorDialog(
     onRetry: (() -> Unit)? = null,
     retryButtonText: String = "Retry"
 ) {
+    val context = LocalContext.current
+    val currentLanguage = TranslationManager.getCurrentLanguage()
+    val layoutDirection = if (currentLanguage == "ar") LayoutDirection.Rtl else LayoutDirection.Ltr
+    
     Dialog(
         onDismissRequest = onDismiss,
         properties = DialogProperties(
@@ -33,6 +43,7 @@ fun ErrorDialog(
             dismissOnClickOutside = true
         )
     ) {
+        CompositionLocalProvider(LocalLayoutDirection provides layoutDirection) {
         Card(
             modifier = Modifier
                 .fillMaxWidth()
@@ -49,7 +60,7 @@ fun ErrorDialog(
                 // Error Icon
                 Icon(
                     imageVector = Icons.Default.Error,
-                    contentDescription = "Error",
+                    contentDescription = TranslationManager.getString(context, R.string.error),
                     modifier = Modifier.size(48.dp),
                     tint = ErrorRed
                 )
@@ -86,7 +97,7 @@ fun ErrorDialog(
                                 contentColor = Color.Gray
                             )
                         ) {
-                            Text("Cancel", fontSize = 14.sp)
+                            Text(TranslationManager.getString(context, R.string.cancel), fontSize = 14.sp)
                         }
                         
                         Button(
@@ -107,11 +118,12 @@ fun ErrorDialog(
                             shape = RoundedCornerShape(8.dp),
                             colors = ButtonDefaults.buttonColors(containerColor = ClutchRed)
                         ) {
-                            Text("OK", fontSize = 14.sp, color = Color.White)
+                            Text(TranslationManager.getString(context, R.string.ok), fontSize = 14.sp, color = Color.White)
                         }
                     }
                 }
             }
+        }
         }
     }
 }

@@ -176,9 +176,7 @@ const partnerUserSchema = new mongoose.Schema({
 });
 
 // Indexes
-partnerUserSchema.index({ email: 1 });
-partnerUserSchema.index({ phone: 1 });
-partnerUserSchema.index({ partnerId: 1 });
+// Note: email, phone, and partnerId indexes are automatically created by unique: true in schema
 partnerUserSchema.index({ status: 1 });
 partnerUserSchema.index({ partnerType: 1 });
 partnerUserSchema.index({ 'businessAddress.city': 1 });

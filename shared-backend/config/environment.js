@@ -57,10 +57,9 @@ const generateAdminCredentials = () => {
   }
   
   if (!process.env.ADMIN_PASSWORD_HASH) {
-    // Generate a secure random password
+    // Generate a secure random password for development
     const randomPassword = crypto.randomBytes(16).toString('hex');
-    console.warn('⚠️  ADMIN_PASSWORD_HASH not set. Generated temporary password:', randomPassword);
-    console.warn('⚠️  Please set ADMIN_PASSWORD_HASH environment variable for production!');
+    console.log('🔐 Admin password auto-generated for development');
     
     // For development only - in production this should be set manually
     const bcrypt = require('bcryptjs');

@@ -141,10 +141,11 @@ const checkSystemHealth = () => {
     addAlert('cpu', `High CPU usage: ${cpuPercent.toFixed(1)}%`, 'warning', { usage: cpuPercent });
   }
   
-  // Uptime checks
+  // Uptime checks - only alert once per restart
   const uptime = process.uptime();
-  if (uptime < 60) {
-    addAlert('system', 'System recently restarted', 'warning', { uptime });
+  if (uptime < 30 && !global.restartAlertShown) {
+    global.restartAlertShown = true;
+    addAlert('system', 'System recently restarted', 'info', { uptime });
   }
   
   // Disk space checks (if available)

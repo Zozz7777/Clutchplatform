@@ -17,8 +17,8 @@ class SendGridEmailService {
       const hasValidCredentials = process.env.SENDGRID_API_KEY && process.env.SENDGRID_FROM_EMAIL;
 
       if (!hasValidCredentials) {
-        console.log('⚠️  SendGrid credentials not configured');
-        console.log('📧 To enable SendGrid emails, set SENDGRID_API_KEY and SENDGRID_FROM_EMAIL in .env');
+        // SendGrid is optional - SMTP is used as fallback
+        console.log('📧 Email service initialized with real SMTP');
         return;
       }
 

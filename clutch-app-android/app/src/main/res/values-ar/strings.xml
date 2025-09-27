@@ -129,4 +129,36 @@
     <string name="facebook_login_not_implemented">تسجيل الدخول بفيسبوك غير متاح حالياً</string>
     <string name="google_signup_not_implemented">إنشاء حساب بجوجل غير متاح حالياً</string>
     <string name="facebook_signup_not_implemented">إنشاء حساب بفيسبوك غير متاح حالياً</string>
+    
+    <!-- Additional strings for hardcoded text fixes -->
+    <string name="no_car_selected">لم يتم اختيار سيارة</string>
+    <string name="your_car_health">صحة سيارتك</string>
+    <string name="parts_expiring_soon">قطع الغيار المنتهية قريباً</string>
+    <string name="engine_oil">زيت المحرك</string>
+    <string name="spark_plugs">شمعات الإشعال</string>
+    <string name="air_filter">فلتر الهواء</string>
+    <string name="brakes">الفرامل</string>
+    <string name="clutch_logo">شعار كلتش</string>
+    <string name="car">سيارة</string>
+    <string name="dropdown">قائمة منسدلة</string>
+    <string name="edit">تعديل</string>
+    <string name="close">إغلاق</string>
+    <string name="search">بحث</string>
+    <string name="select">اختيار</string>
+    <string name="brand_logo">شعار الماركة</string>
+    <string name="change_brand">تغيير الماركة</string>
+    <string name="change_car">تغيير السيارة</string>
+    <string name="expand">توسيع</string>
+    <string name="collapse">طي</string>
+    <string name="service_group">مجموعة الخدمة</string>
+    <string name="votes">الأصوات</string>
+    <string name="add_tip">إضافة نصيحة</string>
+    <string name="view">عرض</string>
+    <string name="notifications">الإشعارات</string>
+    <string name="profile">الملف الشخصي</string>
+    <string name="select_date">اختيار التاريخ</string>
+    <string name="select_services">اختيار الخدمات</string>
+    <string name="select_brand">اختيار الماركة</string>
+    <string name="select_model">اختيار الموديل</string>
+    <string name="select_trim">اختيار الطراز</string>
 </resources>
