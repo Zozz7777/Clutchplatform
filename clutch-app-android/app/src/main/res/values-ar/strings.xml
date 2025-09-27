@@ -28,6 +28,7 @@
     <string name="login_with_facebook">تسجيل الدخول بفيسبوك</string>
     <string name="signup_with_google">إنشاء حساب بجوجل</string>
     <string name="signup_with_facebook">إنشاء حساب بفيسبوك</string>
+    <string name="or_signup_with">أو سجل مع</string>
     
     <!-- Dashboard -->
     <string name="your_car">سيارتك</string>

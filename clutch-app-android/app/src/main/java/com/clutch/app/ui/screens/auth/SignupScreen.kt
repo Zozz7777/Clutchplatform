@@ -28,6 +28,8 @@ import com.clutch.app.ui.theme.ClutchRed
 import com.clutch.app.ui.components.ErrorDialog
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.compose.ui.platform.LocalContext
+import com.clutch.app.utils.TranslationManager
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -37,6 +39,7 @@ fun SignupScreen(
     onSignupSuccess: () -> Unit = {},
     viewModel: SignupViewModel = hiltViewModel()
   ) {
+      val context = LocalContext.current
       var name by remember { mutableStateOf("") }
       var email by remember { mutableStateOf("") }
       var mobileNumber by remember { mutableStateOf("") }
@@ -68,7 +71,7 @@ fun SignupScreen(
             TopAppBar(
                 title = {
                     Text(
-                        text = "Create an account",
+                        text = TranslationManager.getString(context, R.string.create_your_account),
                         color = ClutchRed,
                         fontWeight = FontWeight.Bold
                     )
@@ -269,7 +272,7 @@ fun SignupScreen(
                     )
                 )
                 Text(
-                    text = "I Agree to Terms of Service and Privacy Policy",
+                    text = TranslationManager.getString(context, R.string.agree_to_terms),
                     color = Color.Black,
                     fontSize = 14.sp
                 )
@@ -308,7 +311,7 @@ fun SignupScreen(
                 verticalArrangement = Arrangement.spacedBy(16.dp)
             ) {
                 Text(
-                    text = "Or sign up with",
+                    text = TranslationManager.getString(context, R.string.or_signup_with),
                     color = Color.Gray,
                     fontSize = 14.sp
                 )

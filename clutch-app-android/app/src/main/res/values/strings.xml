@@ -28,6 +28,7 @@
     <string name="login_with_facebook">Login with Facebook</string>
     <string name="signup_with_google">Sign up with Google</string>
     <string name="signup_with_facebook">Sign up with Facebook</string>
+    <string name="or_signup_with">Or sign up with</string>
     
     <!-- Dashboard -->
     <string name="your_car">Your Car</string>

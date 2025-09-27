@@ -28,6 +28,7 @@ import com.clutch.app.R
 import com.clutch.app.ui.theme.*
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
+import com.clutch.app.utils.TranslationManager
 import com.clutch.app.ui.components.ErrorDialog
 import com.clutch.app.data.repository.ClutchRepository
 import com.clutch.app.data.model.LoginRequest
@@ -48,6 +49,7 @@ fun LoginScreen(
     onNavigateToForgotPassword: () -> Unit,
     viewModel: LoginViewModel = hiltViewModel()
 ) {
+    val context = LocalContext.current
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
     var passwordVisible by remember { mutableStateOf(false) }
@@ -99,7 +101,7 @@ fun LoginScreen(
                     color = Color.Black
                 )
                 Text(
-                    text = stringResource(R.string.sign_in_to_continue),
+                    text = TranslationManager.getString(context, R.string.sign_in_to_continue),
                     fontSize = 16.sp,
                     color = Color.Gray,
                     textAlign = TextAlign.Center
@@ -123,7 +125,7 @@ fun LoginScreen(
                     OutlinedTextField(
                         value = email,
                         onValueChange = { email = it },
-                        label = { Text(stringResource(R.string.email_phone)) },
+                        label = { Text(TranslationManager.getString(context, R.string.email_phone)) },
                         leadingIcon = {
                             Icon(
                                 imageVector = Icons.Default.Email,
@@ -153,7 +155,7 @@ fun LoginScreen(
                     OutlinedTextField(
                         value = password,
                         onValueChange = { password = it },
-                        label = { Text(stringResource(R.string.password)) },
+                        label = { Text(TranslationManager.getString(context, R.string.password)) },
                         leadingIcon = {
                             Icon(
                                 imageVector = Icons.Default.Lock,
@@ -191,7 +193,7 @@ fun LoginScreen(
 
                     // Forgot Password
                     Text(
-                        text = stringResource(R.string.forgot_password),
+                        text = TranslationManager.getString(context, R.string.forgot_password),
                         color = ClutchRed,
                         fontSize = 14.sp,
                         fontWeight = FontWeight.Medium,
@@ -221,7 +223,7 @@ fun LoginScreen(
                             )
                         } else {
                             Text(
-                                text = stringResource(R.string.login),
+                                text = TranslationManager.getString(context, R.string.login),
                                 fontSize = 16.sp,
                                 fontWeight = FontWeight.SemiBold,
                                 color = Color.White
@@ -267,7 +269,7 @@ fun LoginScreen(
                             modifier = Modifier.size(20.dp)
                         )
                         Spacer(modifier = Modifier.width(8.dp))
-                        Text(stringResource(R.string.login_with_google), fontSize = 14.sp)
+                        Text(TranslationManager.getString(context, R.string.login_with_google), fontSize = 14.sp)
                     }
 
                     // Facebook Login
@@ -290,7 +292,7 @@ fun LoginScreen(
                             modifier = Modifier.size(20.dp)
                         )
                         Spacer(modifier = Modifier.width(8.dp))
-                        Text(stringResource(R.string.login_with_facebook), fontSize = 14.sp)
+                        Text(TranslationManager.getString(context, R.string.login_with_facebook), fontSize = 14.sp)
                     }
                 }
             }
@@ -303,12 +305,12 @@ fun LoginScreen(
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Text(
-                    text = stringResource(R.string.already_have_account),
+                    text = TranslationManager.getString(context, R.string.already_have_account),
                     color = Color.Gray,
                     fontSize = 14.sp
                 )
                 Text(
-                    text = stringResource(R.string.signup),
+                    text = TranslationManager.getString(context, R.string.signup),
                     color = ClutchRed,
                     fontSize = 14.sp,
                     fontWeight = FontWeight.SemiBold,
@@ -321,7 +323,7 @@ fun LoginScreen(
     // Error Dialog
     if (showErrorDialog && uiState.errorMessage.isNotEmpty()) {
         ErrorDialog(
-            title = stringResource(R.string.login_failed),
+            title = TranslationManager.getString(context, R.string.login_failed),
             message = uiState.errorMessage,
             onDismiss = { 
                 showErrorDialog = false
