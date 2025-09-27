@@ -24,6 +24,7 @@ import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.platform.LocalLayoutDirection
 import com.clutch.app.R
 import com.clutch.app.ui.theme.ClutchRed
+import com.clutch.app.ui.theme.ClutchGrayDark
 import com.clutch.app.utils.TranslationManager
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -115,10 +116,10 @@ fun AddCarScreen(
                 colors = OutlinedTextFieldDefaults.colors(
                     focusedBorderColor = ClutchRed,
                     focusedLabelColor = ClutchRed,
-                    unfocusedBorderColor = Color.LightGray,
-                    unfocusedLabelColor = Color.LightGray,
-                    focusedTextColor = Color.Black,
-                    unfocusedTextColor = Color.Black
+                    unfocusedBorderColor = ClutchGrayDark,
+                    unfocusedLabelColor = ClutchGrayDark,
+                    focusedTextColor = ClutchGrayDark,
+                    unfocusedTextColor = ClutchGrayDark
                 )
             )
 
@@ -132,7 +133,7 @@ fun AddCarScreen(
                     Icon(
                         imageVector = Icons.Default.KeyboardArrowDown,
                         contentDescription = "Select Brand",
-                        tint = Color.LightGray
+                        tint = ClutchGrayDark
                     )
                 },
                 modifier = Modifier
@@ -141,10 +142,10 @@ fun AddCarScreen(
                 colors = OutlinedTextFieldDefaults.colors(
                     focusedBorderColor = ClutchRed,
                     focusedLabelColor = ClutchRed,
-                    unfocusedBorderColor = Color.LightGray,
-                    unfocusedLabelColor = Color.LightGray,
-                    focusedTextColor = Color.Black,
-                    unfocusedTextColor = Color.Black
+                    unfocusedBorderColor = ClutchGrayDark,
+                    unfocusedLabelColor = ClutchGrayDark,
+                    focusedTextColor = ClutchGrayDark,
+                    unfocusedTextColor = ClutchGrayDark
                 )
             )
 
@@ -158,7 +159,7 @@ fun AddCarScreen(
                     Icon(
                         imageVector = Icons.Default.KeyboardArrowDown,
                         contentDescription = "Select Model",
-                        tint = if (selectedBrand.isNotEmpty()) Color.LightGray else Color.LightGray.copy(alpha = 0.5f)
+                        tint = if (selectedBrand.isNotEmpty()) ClutchGrayDark else ClutchGrayDark.copy(alpha = 0.5f)
                     )
                 },
                 modifier = Modifier
@@ -171,10 +172,10 @@ fun AddCarScreen(
                 colors = OutlinedTextFieldDefaults.colors(
                     focusedBorderColor = ClutchRed,
                     focusedLabelColor = ClutchRed,
-                    unfocusedBorderColor = if (selectedBrand.isNotEmpty()) Color.LightGray else Color.LightGray.copy(alpha = 0.5f),
-                    unfocusedLabelColor = if (selectedBrand.isNotEmpty()) Color.LightGray else Color.LightGray.copy(alpha = 0.5f),
-                    focusedTextColor = Color.Black,
-                    unfocusedTextColor = if (selectedBrand.isNotEmpty()) Color.Black else Color.Black.copy(alpha = 0.6f)
+                    unfocusedBorderColor = if (selectedBrand.isNotEmpty()) ClutchGrayDark else ClutchGrayDark.copy(alpha = 0.5f),
+                    unfocusedLabelColor = if (selectedBrand.isNotEmpty()) ClutchGrayDark else ClutchGrayDark.copy(alpha = 0.5f),
+                    focusedTextColor = ClutchGrayDark,
+                    unfocusedTextColor = if (selectedBrand.isNotEmpty()) ClutchGrayDark else ClutchGrayDark.copy(alpha = 0.6f)
                 )
             )
 
@@ -188,7 +189,7 @@ fun AddCarScreen(
                     Icon(
                         imageVector = Icons.Default.KeyboardArrowDown,
                         contentDescription = "Select Trim",
-                        tint = if (selectedModel.isNotEmpty()) Color.LightGray else Color.LightGray.copy(alpha = 0.5f)
+                        tint = if (selectedModel.isNotEmpty()) ClutchGrayDark else ClutchGrayDark.copy(alpha = 0.5f)
                     )
                 },
                 modifier = Modifier
@@ -201,10 +202,10 @@ fun AddCarScreen(
                 colors = OutlinedTextFieldDefaults.colors(
                     focusedBorderColor = ClutchRed,
                     focusedLabelColor = ClutchRed,
-                    unfocusedBorderColor = if (selectedModel.isNotEmpty()) Color.LightGray else Color.LightGray.copy(alpha = 0.5f),
-                    unfocusedLabelColor = if (selectedModel.isNotEmpty()) Color.LightGray else Color.LightGray.copy(alpha = 0.5f),
-                    focusedTextColor = Color.Black,
-                    unfocusedTextColor = if (selectedModel.isNotEmpty()) Color.Black else Color.Black.copy(alpha = 0.6f)
+                    unfocusedBorderColor = if (selectedModel.isNotEmpty()) ClutchGrayDark else ClutchGrayDark.copy(alpha = 0.5f),
+                    unfocusedLabelColor = if (selectedModel.isNotEmpty()) ClutchGrayDark else ClutchGrayDark.copy(alpha = 0.5f),
+                    focusedTextColor = ClutchGrayDark,
+                    unfocusedTextColor = if (selectedModel.isNotEmpty()) ClutchGrayDark else ClutchGrayDark.copy(alpha = 0.6f)
                 )
             )
 
@@ -221,10 +222,10 @@ fun AddCarScreen(
                 colors = OutlinedTextFieldDefaults.colors(
                     focusedBorderColor = ClutchRed,
                     focusedLabelColor = ClutchRed,
-                    unfocusedBorderColor = Color.LightGray,
-                    unfocusedLabelColor = Color.LightGray,
-                    focusedTextColor = Color.Black,
-                    unfocusedTextColor = Color.Black
+                    unfocusedBorderColor = ClutchGrayDark,
+                    unfocusedLabelColor = ClutchGrayDark,
+                    focusedTextColor = ClutchGrayDark,
+                    unfocusedTextColor = ClutchGrayDark
                 )
             )
 
@@ -240,10 +241,10 @@ fun AddCarScreen(
                 colors = OutlinedTextFieldDefaults.colors(
                     focusedBorderColor = ClutchRed,
                     focusedLabelColor = ClutchRed,
-                    unfocusedBorderColor = Color.LightGray,
-                    unfocusedLabelColor = Color.LightGray,
-                    focusedTextColor = Color.Black,
-                    unfocusedTextColor = Color.Black
+                    unfocusedBorderColor = ClutchGrayDark,
+                    unfocusedLabelColor = ClutchGrayDark,
+                    focusedTextColor = ClutchGrayDark,
+                    unfocusedTextColor = ClutchGrayDark
                 )
             )
 
@@ -259,10 +260,10 @@ fun AddCarScreen(
                 colors = OutlinedTextFieldDefaults.colors(
                     focusedBorderColor = ClutchRed,
                     focusedLabelColor = ClutchRed,
-                    unfocusedBorderColor = Color.LightGray,
-                    unfocusedLabelColor = Color.LightGray,
-                    focusedTextColor = Color.Black,
-                    unfocusedTextColor = Color.Black
+                    unfocusedBorderColor = ClutchGrayDark,
+                    unfocusedLabelColor = ClutchGrayDark,
+                    focusedTextColor = ClutchGrayDark,
+                    unfocusedTextColor = ClutchGrayDark
                 )
             )
 
