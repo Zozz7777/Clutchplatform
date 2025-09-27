@@ -3,10 +3,13 @@ const logger = require('../utils/logger');
 
 // Email configuration
 const createTransporter = () => {
-  return nodemailer.createTransporter({
+  const port = parseInt(process.env.SMTP_PORT || '587');
+  const isSecure = port === 465 || process.env.SMTP_SECURE === 'true';
+  
+  return nodemailer.createTransport({
     host: process.env.SMTP_HOST || 'smtp.gmail.com',
-    port: process.env.SMTP_PORT || 587,
-    secure: process.env.SMTP_SECURE === 'true',
+    port: port,
+    secure: isSecure, // true for 465, false for other ports
     auth: {
       user: process.env.SMTP_USER || 'help@yourclutch.com',
       pass: process.env.SMTP_PASS || process.env.SMTP_PASSWORD
@@ -20,12 +23,24 @@ const createTransporter = () => {
 // Send email function
 const sendEmail = async (emailOptions) => {
   try {
+    console.log('📧 Attempting to send email:', {
+      to: emailOptions.to,
+      subject: emailOptions.subject,
+      host: process.env.SMTP_HOST,
+      port: process.env.SMTP_PORT,
+      user: process.env.SMTP_USER
+    });
+
     const transporter = createTransporter();
+    
+    // Verify connection configuration
+    await transporter.verify();
+    console.log('✅ SMTP connection verified successfully');
     
     const mailOptions = {
       from: {
-        name: 'Clutch Careers',
-        address: process.env.SMTP_FROM || 'help@yourclutch.com'
+        name: 'Clutch Platform',
+        address: process.env.SMTP_FROM || process.env.SMTP_USER || 'help@yourclutch.com'
       },
       to: emailOptions.to,
       subject: emailOptions.subject,
@@ -34,8 +49,20 @@ const sendEmail = async (emailOptions) => {
       attachments: emailOptions.attachments || []
     };
 
+    console.log('📤 Sending email with options:', {
+      from: mailOptions.from,
+      to: mailOptions.to,
+      subject: mailOptions.subject
+    });
+
     const result = await transporter.sendMail(mailOptions);
     
+    console.log('✅ Email sent successfully:', {
+      messageId: result.messageId,
+      to: emailOptions.to,
+      subject: emailOptions.subject
+    });
+
     logger.info('Email sent successfully', {
       messageId: result.messageId,
       to: emailOptions.to,
@@ -48,6 +75,15 @@ const sendEmail = async (emailOptions) => {
       response: result.response
     };
   } catch (error) {
+    console.error('❌ Failed to send email:', {
+      error: error.message,
+      stack: error.stack,
+      to: emailOptions.to,
+      subject: emailOptions.subject,
+      host: process.env.SMTP_HOST,
+      port: process.env.SMTP_PORT
+    });
+
     logger.error('Failed to send email', {
       error: error.message,
       to: emailOptions.to,
