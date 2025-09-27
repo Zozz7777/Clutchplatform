@@ -27,30 +27,30 @@ interface ClutchApiService {
     suspend fun updateUserProfile(@Body user: User): Response<User>
     
     // Car Brands, Models, Trims
-    @GET("cars/brands")
+    @GET("brands")
     suspend fun getCarBrands(@Query("search") search: String? = null): Response<ApiResponse>
     
-    @GET("cars/models/{brandName}")
+    @GET("models/{brandName}")
     suspend fun getCarModels(@Path("brandName") brandName: String, @Query("search") search: String? = null): Response<ApiResponse>
     
-    @GET("cars/trims/{brandName}/{modelName}")
+    @GET("trims/{brandName}/{modelName}")
     suspend fun getCarTrims(@Path("brandName") brandName: String, @Path("modelName") modelName: String, @Query("search") search: String? = null): Response<ApiResponse>
     
     // Cars
-    @GET("cars/user-cars")
+    @GET("user-cars")
     suspend fun getUserCars(): Response<ApiResponse>
     
-    @POST("cars/register")
+    @POST("register")
     suspend fun registerCar(@Body carRegistrationRequest: CarRegistrationRequest): Response<ApiResponse>
     
-    @PUT("cars/{carId}/maintenance")
+    @PUT("{carId}/maintenance")
     suspend fun updateCarMaintenance(@Path("carId") carId: String, @Body maintenanceRequest: MaintenanceRequest): Response<ApiResponse>
     
-    @GET("cars/{carId}/health")
+    @GET("{carId}/health")
     suspend fun getCarHealth(@Path("carId") carId: String): Response<CarHealth>
     
     // Maintenance Services
-    @GET("cars/maintenance-services")
+    @GET("maintenance-services")
     suspend fun getMaintenanceServices(@Query("search") search: String? = null): Response<ApiResponse>
     
     // Maintenance
