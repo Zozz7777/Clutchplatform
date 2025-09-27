@@ -14,7 +14,7 @@ router.get('/brands', async (req, res) => {
       query.name = { $regex: search, $options: 'i' };
     }
     
-    const brandsCollection = await getCollection('car_brands');
+    const brandsCollection = await getCollection('carbrands');
     const brands = await brandsCollection.find(query).sort({ name: 1 }).toArray();
     
     res.json({
@@ -45,7 +45,7 @@ router.get('/models/:brandName', async (req, res) => {
       query.name = { $regex: search, $options: 'i' };
     }
     
-    const modelsCollection = await getCollection('car_models');
+    const modelsCollection = await getCollection('carmodels');
     const models = await modelsCollection.find(query).sort({ name: 1 }).toArray();
     res.json({
       success: true,
@@ -76,7 +76,7 @@ router.get('/trims/:brandName/:modelName', async (req, res) => {
       query.name = { $regex: search, $options: 'i' };
     }
     
-    const trimsCollection = await getCollection('car_trims');
+    const trimsCollection = await getCollection('cartrims');
     const trims = await trimsCollection.find(query).sort({ name: 1 }).toArray();
     res.json({
       success: true,
