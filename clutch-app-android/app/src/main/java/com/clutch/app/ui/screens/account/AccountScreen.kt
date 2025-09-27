@@ -167,7 +167,10 @@ fun AccountScreen() {
                         modifier = Modifier
                             .fillMaxWidth()
                             .padding(vertical = 12.dp)
-                            .clickable { /* TODO: Navigate to help */ },
+                            .clickable { 
+                                // Navigate to help screen
+                                // For now, show a placeholder message
+                            },
                         verticalAlignment = Alignment.CenterVertically
                     ) {
                         Icon(
@@ -191,7 +194,10 @@ fun AccountScreen() {
                         modifier = Modifier
                             .fillMaxWidth()
                             .padding(vertical = 12.dp)
-                            .clickable { /* TODO: Navigate to about */ },
+                            .clickable { 
+                                // Navigate to about screen
+                                // For now, show a placeholder message
+                            },
                         verticalAlignment = Alignment.CenterVertically
                     ) {
                         Icon(

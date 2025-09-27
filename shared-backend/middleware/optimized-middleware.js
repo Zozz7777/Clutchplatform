@@ -9,6 +9,7 @@ const compression = require('compression');
 const rateLimit = require('express-rate-limit');
 const helmet = require('helmet');
 const cors = require('cors');
+const { performanceMiddleware, errorTrackingMiddleware } = require('./unified-performance-monitor');
 
 // Memory monitoring
 let memoryStats = {
@@ -324,6 +325,9 @@ const applyOptimizedMiddleware = (app) => {
   
   // Memory cleanup
   app.use(memoryCleanup);
+  
+  // Unified performance monitoring
+  app.use(performanceMiddleware);
   
   // Make asyncHandler available globally
   app.use((req, res, next) => {

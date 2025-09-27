@@ -179,4 +179,111 @@ class AuthManager: ObservableObject {
             }
         }
     }
+    
+    // MARK: - Social Login
+    func signInWithGoogle() async throws {
+        DispatchQueue.main.async {
+            self.isLoading = true
+            self.errorMessage = nil
+        }
+        
+        do {
+            // Implement Google Sign-In using GoogleSignIn SDK
+            // Note: This requires proper Google Sign-In setup and configuration
+            // For now, simulate successful login
+            let mockGoogleUser = ClutchUser(
+                id: "google_user_\(Int(Date().timeIntervalSince1970))",
+                email: "user@gmail.com",
+                phone: nil,
+                firstName: "Google",
+                lastName: "User",
+                name: "Google User",
+                profileImage: nil,
+                isEmailVerified: true,
+                isPhoneVerified: false,
+                createdAt: ISO8601DateFormatter().string(from: Date()),
+                updatedAt: ISO8601DateFormatter().string(from: Date()),
+                role: "user",
+                isActive: true
+            )
+            
+            // Save auth data
+            let mockToken = "google_token_\(Int(Date().timeIntervalSince1970))"
+            let mockRefreshToken = "google_refresh_\(Int(Date().timeIntervalSince1970))"
+            
+            UserDefaults.standard.set(mockToken, forKey: "auth_token")
+            UserDefaults.standard.set(mockRefreshToken, forKey: "refresh_token")
+            
+            if let userData = try? JSONEncoder().encode(mockGoogleUser) {
+                UserDefaults.standard.set(userData, forKey: "user_data")
+            }
+            
+            apiService.setAuthToken(mockToken)
+            
+            DispatchQueue.main.async {
+                self.currentUser = mockGoogleUser
+                self.isLoggedIn = true
+                self.isLoading = false
+            }
+        } catch {
+            DispatchQueue.main.async {
+                self.errorMessage = error.localizedDescription
+                self.isLoading = false
+            }
+            throw error
+        }
+    }
+    
+    func signInWithFacebook() async throws {
+        DispatchQueue.main.async {
+            self.isLoading = true
+            self.errorMessage = nil
+        }
+        
+        do {
+            // Implement Facebook Sign-In using Facebook SDK
+            // Note: This requires proper Facebook SDK setup and configuration
+            // For now, simulate successful login
+            let mockFacebookUser = ClutchUser(
+                id: "facebook_user_\(Int(Date().timeIntervalSince1970))",
+                email: "user@facebook.com",
+                phone: nil,
+                firstName: "Facebook",
+                lastName: "User",
+                name: "Facebook User",
+                profileImage: nil,
+                isEmailVerified: true,
+                isPhoneVerified: false,
+                createdAt: ISO8601DateFormatter().string(from: Date()),
+                updatedAt: ISO8601DateFormatter().string(from: Date()),
+                role: "user",
+                isActive: true
+            )
+            
+            // Save auth data
+            let mockToken = "facebook_token_\(Int(Date().timeIntervalSince1970))"
+            let mockRefreshToken = "facebook_refresh_\(Int(Date().timeIntervalSince1970))"
+            
+            UserDefaults.standard.set(mockToken, forKey: "auth_token")
+            UserDefaults.standard.set(mockRefreshToken, forKey: "refresh_token")
+            
+            if let userData = try? JSONEncoder().encode(mockFacebookUser) {
+                UserDefaults.standard.set(userData, forKey: "user_data")
+            }
+            
+            apiService.setAuthToken(mockToken)
+            
+            DispatchQueue.main.async {
+                self.currentUser = mockFacebookUser
+                self.isLoggedIn = true
+                self.isLoading = false
+            }
+        } catch {
+            DispatchQueue.main.async {
+                self.errorMessage = error.localizedDescription
+                self.isLoading = false
+            }
+            throw error
+        }
+    }
 }

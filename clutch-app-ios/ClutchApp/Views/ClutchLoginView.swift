@@ -113,6 +113,45 @@ struct ClutchLoginView: View {
                             }
                         }
                         
+                        // Social Login Buttons
+                        VStack(spacing: 12) {
+                            Text("Or continue with")
+                                .font(.caption)
+                                .foregroundColor(.secondary)
+                            
+                            HStack(spacing: 16) {
+                                Button(action: handleGoogleLogin) {
+                                    HStack {
+                                        Image(systemName: "globe")
+                                        Text("Google")
+                                    }
+                                    .frame(maxWidth: .infinity)
+                                    .padding()
+                                    .background(Color.white)
+                                    .foregroundColor(.black)
+                                    .overlay(
+                                        RoundedRectangle(cornerRadius: 10)
+                                            .stroke(Color.gray.opacity(0.3), lineWidth: 1)
+                                    )
+                                    .cornerRadius(10)
+                                }
+                                .disabled(authManager.isLoading)
+                                
+                                Button(action: handleFacebookLogin) {
+                                    HStack {
+                                        Image(systemName: "person.2")
+                                        Text("Facebook")
+                                    }
+                                    .frame(maxWidth: .infinity)
+                                    .padding()
+                                    .background(Color.blue)
+                                    .foregroundColor(.white)
+                                    .cornerRadius(10)
+                                }
+                                .disabled(authManager.isLoading)
+                            }
+                        }
+                        
                         // Toggle Sign Up/Sign In
                         Button(action: {
                             isSignUpMode.toggle()
@@ -173,6 +212,26 @@ struct ClutchLoginView: View {
                     password: password,
                     confirmPassword: confirmPassword
                 )
+            } catch {
+                // Error is handled by AuthManager
+            }
+        }
+    }
+    
+    private func handleGoogleLogin() {
+        Task {
+            do {
+                try await authManager.signInWithGoogle()
+            } catch {
+                // Error is handled by AuthManager
+            }
+        }
+    }
+    
+    private func handleFacebookLogin() {
+        Task {
+            do {
+                try await authManager.signInWithFacebook()
             } catch {
                 // Error is handled by AuthManager
             }

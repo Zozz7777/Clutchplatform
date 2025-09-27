@@ -3,42 +3,68 @@ const router = express.Router();
 const { authenticateToken, authorizeRoles } = require('../middleware/unified-auth');
 const logger = require('../utils/logger');
 
-// Mock data for demonstration
-const apiPerformanceMetrics = [
-  {
-    id: 'api_1',
-    endpoint: '/api/v1/users',
-    method: 'GET',
-    avgResponseTime: 150,
-    successRate: 99.5,
-    totalRequests: 15420,
-    errorRate: 0.5,
-    lastUpdated: new Date().toISOString(),
-    status: 'healthy'
-  },
-  {
-    id: 'api_2',
-    endpoint: '/api/v1/auth/login',
-    method: 'POST',
-    avgResponseTime: 320,
-    successRate: 98.2,
-    totalRequests: 8930,
-    errorRate: 1.8,
-    lastUpdated: new Date().toISOString(),
-    status: 'warning'
-  },
-  {
-    id: 'api_3',
-    endpoint: '/api/v1/fleet',
-    method: 'GET',
-    avgResponseTime: 450,
-    successRate: 95.1,
-    totalRequests: 5670,
-    errorRate: 4.9,
-    lastUpdated: new Date().toISOString(),
-    status: 'critical'
+// Database connection for real data
+const { connectToDatabase } = require('../config/database-unified');
+
+// Helper function to get API performance metrics from database
+async function getApiPerformanceMetrics() {
+  try {
+    const db = await connectToDatabase();
+    const metricsCollection = db.collection('api_metrics');
+    
+    // Get metrics from last 24 hours
+    const oneDayAgo = new Date(Date.now() - 24 * 60 * 60 * 1000);
+    const metrics = await metricsCollection.find({
+      timestamp: { $gte: oneDayAgo }
+    }).toArray();
+    
+    // Aggregate metrics by endpoint
+    const aggregatedMetrics = {};
+    metrics.forEach(metric => {
+      const key = `${metric.endpoint}_${metric.method}`;
+      if (!aggregatedMetrics[key]) {
+        aggregatedMetrics[key] = {
+          id: key,
+          endpoint: metric.endpoint,
+          method: metric.method,
+          totalRequests: 0,
+          totalResponseTime: 0,
+          errors: 0,
+          lastUpdated: metric.timestamp
+        };
+      }
+      aggregatedMetrics[key].totalRequests += 1;
+      aggregatedMetrics[key].totalResponseTime += metric.responseTime;
+      if (metric.status >= 400) {
+        aggregatedMetrics[key].errors += 1;
+      }
+    });
+    
+    // Calculate averages and status
+    return Object.values(aggregatedMetrics).map(metric => {
+      const avgResponseTime = metric.totalRequests > 0 ? 
+        Math.round(metric.totalResponseTime / metric.totalRequests) : 0;
+      const errorRate = metric.totalRequests > 0 ? 
+        (metric.errors / metric.totalRequests) * 100 : 0;
+      const successRate = 100 - errorRate;
+      
+      let status = 'healthy';
+      if (avgResponseTime > 1000 || errorRate > 5) status = 'critical';
+      else if (avgResponseTime > 500 || errorRate > 2) status = 'warning';
+      
+      return {
+        ...metric,
+        avgResponseTime,
+        successRate: Math.round(successRate * 10) / 10,
+        errorRate: Math.round(errorRate * 10) / 10,
+        status
+      };
+    });
+  } catch (error) {
+    logger.error('Error fetching API performance metrics:', error);
+    return [];
   }
-];
+}
 
 const performanceAlerts = [
   {
@@ -227,8 +253,18 @@ router.get('/api-performance', authenticateToken, authorizeRoles(['admin', 'supe
   try {
     const { timeRange } = req.query;
     
-    // Filter metrics based on time range (mock implementation)
-    let filteredMetrics = apiPerformanceMetrics;
+    // Get real metrics from database
+    const metrics = await getApiPerformanceMetrics();
+    
+    // Filter metrics based on time range if needed
+    let filteredMetrics = metrics;
+    if (timeRange) {
+      const timeRangeMs = timeRange === '1h' ? 60 * 60 * 1000 : 
+                         timeRange === '24h' ? 24 * 60 * 60 * 1000 : 
+                         timeRange === '7d' ? 7 * 24 * 60 * 60 * 1000 : 24 * 60 * 60 * 1000;
+      const cutoffTime = new Date(Date.now() - timeRangeMs);
+      filteredMetrics = metrics.filter(metric => new Date(metric.lastUpdated) >= cutoffTime);
+    }
     
     res.json({
       success: true,

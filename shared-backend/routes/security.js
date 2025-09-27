@@ -3,37 +3,40 @@ const router = express.Router();
 const { authenticateToken, authorizeRoles } = require('../middleware/unified-auth');
 const logger = require('../utils/logger');
 
-// Mock data for demonstration
-const threatEvents = [
-  {
-    id: 'threat_1',
-    type: 'brute_force',
-    severity: 'high',
-    source: '192.168.1.100',
-    target: 'admin@clutch.com',
-    timestamp: new Date().toISOString(),
-    status: 'active',
-    attempts: 15,
-    blocked: true,
-    description: 'Multiple failed login attempts detected',
-    location: 'New York, US',
-    userAgent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36'
-  },
-  {
-    id: 'threat_2',
-    type: 'suspicious_activity',
-    severity: 'medium',
-    source: '10.0.0.50',
-    target: 'api/v1/users',
-    timestamp: new Date(Date.now() - 1800000).toISOString(),
-    status: 'investigating',
-    attempts: 3,
-    blocked: false,
-    description: 'Unusual API access pattern detected',
-    location: 'London, UK',
-    userAgent: 'curl/7.68.0'
+// Database connection for real data
+const { connectToDatabase } = require('../config/database-unified');
+
+// Helper function to get threat events from database
+async function getThreatEvents() {
+  try {
+    const db = await connectToDatabase();
+    const threatsCollection = db.collection('security_threats');
+    
+    // Get threats from last 7 days
+    const sevenDaysAgo = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000);
+    const threats = await threatsCollection.find({
+      timestamp: { $gte: sevenDaysAgo }
+    }).sort({ timestamp: -1 }).limit(100).toArray();
+    
+    return threats.map(threat => ({
+      id: threat._id.toString(),
+      type: threat.type || 'unknown',
+      severity: threat.severity || 'low',
+      source: threat.source || 'unknown',
+      target: threat.target || 'unknown',
+      timestamp: threat.timestamp,
+      status: threat.status || 'active',
+      attempts: threat.attempts || 1,
+      blocked: threat.blocked || false,
+      description: threat.description || 'Security threat detected',
+      location: threat.location || 'Unknown',
+      userAgent: threat.userAgent || 'Unknown'
+    }));
+  } catch (error) {
+    logger.error('Error fetching threat events:', error);
+    return [];
   }
-];
+}
 
 const threatPatterns = [
   {
@@ -186,7 +189,8 @@ router.get('/threat-events', authenticateToken, authorizeRoles(['admin', 'super_
   try {
     const { severity, status, timeRange } = req.query;
     
-    let filteredEvents = threatEvents;
+    // Get real threat events from database
+    let filteredEvents = await getThreatEvents();
     
     if (severity && severity !== 'all') {
       filteredEvents = filteredEvents.filter(event => event.severity === severity);

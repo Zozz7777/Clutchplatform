@@ -3,157 +3,106 @@ const router = express.Router();
 const { authenticateToken, authorizeRoles } = require('../../middleware/unified-auth');
 const logger = require('../../utils/logger');
 
-// Mock data for demonstration
-const refundRequests = [
-  {
-    id: 'refund_1',
-    orderId: 'order_123',
-    customerId: 'customer_456',
-    customerName: 'John Doe',
-    customerEmail: 'john.doe@example.com',
-    amount: 150.00,
-    currency: 'USD',
-    reason: 'Product defect',
-    status: 'pending',
-    requestedAt: new Date().toISOString(),
-    processedAt: null,
-    processedBy: null,
-    notes: 'Customer reported product arrived damaged',
-    items: [
-      {
-        id: 'item_1',
-        name: 'Brake Pads Set',
-        quantity: 1,
-        price: 150.00
-      }
-    ]
-  },
-  {
-    id: 'refund_2',
-    orderId: 'order_124',
-    customerId: 'customer_789',
-    customerName: 'Jane Smith',
-    customerEmail: 'jane.smith@example.com',
-    amount: 75.50,
-    currency: 'USD',
-    reason: 'Wrong item shipped',
-    status: 'approved',
-    requestedAt: new Date(Date.now() - 86400000).toISOString(),
-    processedAt: new Date(Date.now() - 43200000).toISOString(),
-    processedBy: 'admin_001',
-    notes: 'Customer received wrong part number',
-    items: [
-      {
-        id: 'item_2',
-        name: 'Oil Filter',
-        quantity: 2,
-        price: 37.75
-      }
-    ]
-  },
-  {
-    id: 'refund_3',
-    orderId: 'order_125',
-    customerId: 'customer_321',
-    customerName: 'Bob Johnson',
-    customerEmail: 'bob.johnson@example.com',
-    amount: 200.00,
-    currency: 'USD',
-    reason: 'Customer changed mind',
-    status: 'rejected',
-    requestedAt: new Date(Date.now() - 172800000).toISOString(),
-    processedAt: new Date(Date.now() - 129600000).toISOString(),
-    processedBy: 'admin_002',
-    notes: 'Item was used and cannot be returned',
-    items: [
-      {
-        id: 'item_3',
-        name: 'Air Filter',
-        quantity: 1,
-        price: 200.00
-      }
-    ]
-  }
-];
+// Database connection for real data
+const { connectToDatabase } = require('../../config/database-unified');
 
-const returnRequests = [
-  {
-    id: 'return_1',
-    orderId: 'order_126',
-    customerId: 'customer_654',
-    customerName: 'Alice Brown',
-    customerEmail: 'alice.brown@example.com',
-    amount: 89.99,
-    currency: 'USD',
-    reason: 'Size not suitable',
-    status: 'pending',
-    requestedAt: new Date().toISOString(),
-    processedAt: null,
-    processedBy: null,
-    notes: 'Customer needs different size',
-    items: [
-      {
-        id: 'item_4',
-        name: 'Tire Set',
-        quantity: 4,
-        price: 22.50
-      }
-    ],
-    returnMethod: 'pickup',
-    trackingNumber: null
+// Helper function to get refund requests from database
+async function getRefundRequests() {
+  try {
+    const db = await connectToDatabase();
+    const refundsCollection = db.collection('refund_requests');
+    
+    // Get refunds from last 30 days
+    const thirtyDaysAgo = new Date(Date.now() - 30 * 24 * 60 * 60 * 1000);
+    const refunds = await refundsCollection.find({
+      requestedAt: { $gte: thirtyDaysAgo }
+    }).sort({ requestedAt: -1 }).limit(100).toArray();
+    
+    return refunds.map(refund => ({
+      id: refund._id.toString(),
+      orderId: refund.orderId || 'unknown',
+      customerId: refund.customerId || 'unknown',
+      customerName: refund.customerName || 'Unknown Customer',
+      customerEmail: refund.customerEmail || 'unknown@example.com',
+      amount: refund.amount || 0,
+      currency: refund.currency || 'USD',
+      reason: refund.reason || 'Not specified',
+      status: refund.status || 'pending',
+      requestedAt: refund.requestedAt,
+      processedAt: refund.processedAt || null,
+      processedBy: refund.processedBy || null,
+      notes: refund.notes || '',
+      items: refund.items || []
+    }));
+  } catch (error) {
+    logger.error('Error fetching refund requests:', error);
+    return [];
   }
-];
+}
+
+// Helper function to get return requests from database
+async function getReturnRequests() {
+  try {
+    const db = await connectToDatabase();
+    const returnsCollection = db.collection('return_requests');
+    
+    // Get returns from last 30 days
+    const thirtyDaysAgo = new Date(Date.now() - 30 * 24 * 60 * 60 * 1000);
+    const returns = await returnsCollection.find({
+      requestedAt: { $gte: thirtyDaysAgo }
+    }).sort({ requestedAt: -1 }).limit(100).toArray();
+    
+    return returns.map(returnReq => ({
+      id: returnReq._id.toString(),
+      orderId: returnReq.orderId || 'unknown',
+      customerId: returnReq.customerId || 'unknown',
+      customerName: returnReq.customerName || 'Unknown Customer',
+      customerEmail: returnReq.customerEmail || 'unknown@example.com',
+      amount: returnReq.amount || 0,
+      currency: returnReq.currency || 'USD',
+      reason: returnReq.reason || 'Not specified',
+      status: returnReq.status || 'pending',
+      requestedAt: returnReq.requestedAt,
+      processedAt: returnReq.processedAt || null,
+      processedBy: returnReq.processedBy || null,
+      notes: returnReq.notes || '',
+      items: returnReq.items || []
+    }));
+  } catch (error) {
+    logger.error('Error fetching return requests:', error);
+    return [];
+  }
+}
 
 /**
  * @route GET /api/v1/partners/refunds
- * @desc Get refund requests for partners
+ * @desc Get refund requests
  * @access Private (Partners only)
  */
 router.get('/', authenticateToken, authorizeRoles(['partner', 'admin', 'super_admin']), async (req, res) => {
   try {
-    const { status, customerId, orderId, timeRange } = req.query;
+    const { status, timeRange } = req.query;
     
-    let filteredRefunds = refundRequests;
+    // Get real refund requests from database
+    let refunds = await getRefundRequests();
     
+    // Filter by status if provided
     if (status && status !== 'all') {
-      filteredRefunds = filteredRefunds.filter(refund => refund.status === status);
+      refunds = refunds.filter(refund => refund.status === status);
     }
     
-    if (customerId) {
-      filteredRefunds = filteredRefunds.filter(refund => refund.customerId === customerId);
-    }
-    
-    if (orderId) {
-      filteredRefunds = filteredRefunds.filter(refund => refund.orderId === orderId);
-    }
-    
-    // Filter by time range (mock implementation)
+    // Filter by time range if provided
     if (timeRange) {
-      const now = new Date();
-      let startDate;
-      
-      switch (timeRange) {
-        case '24h':
-          startDate = new Date(now.getTime() - 24 * 60 * 60 * 1000);
-          break;
-        case '7d':
-          startDate = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
-          break;
-        case '30d':
-          startDate = new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000);
-          break;
-        default:
-          startDate = new Date(0);
-      }
-      
-      filteredRefunds = filteredRefunds.filter(refund => 
-        new Date(refund.requestedAt) >= startDate
-      );
+      const timeRangeMs = timeRange === '7d' ? 7 * 24 * 60 * 60 * 1000 : 
+                         timeRange === '30d' ? 30 * 24 * 60 * 60 * 1000 : 
+                         timeRange === '90d' ? 90 * 24 * 60 * 60 * 1000 : 30 * 24 * 60 * 60 * 1000;
+      const cutoffTime = new Date(Date.now() - timeRangeMs);
+      refunds = refunds.filter(refund => new Date(refund.requestedAt) >= cutoffTime);
     }
     
     res.json({
       success: true,
-      data: filteredRefunds,
+      data: refunds,
       message: 'Refund requests retrieved successfully',
       timestamp: new Date().toISOString()
     });
@@ -161,7 +110,7 @@ router.get('/', authenticateToken, authorizeRoles(['partner', 'admin', 'super_ad
     logger.error('Error fetching refund requests:', error);
     res.status(500).json({
       success: false,
-      error: 'REFUNDS_FETCH_FAILED',
+      error: 'REFUND_REQUESTS_FETCH_FAILED',
       message: 'Failed to fetch refund requests',
       timestamp: new Date().toISOString()
     });
@@ -169,123 +118,34 @@ router.get('/', authenticateToken, authorizeRoles(['partner', 'admin', 'super_ad
 });
 
 /**
- * @route GET /api/v1/partners/refunds/:id
- * @desc Get specific refund request
- * @access Private (Partners only)
- */
-router.get('/:id', authenticateToken, authorizeRoles(['partner', 'admin', 'super_admin']), async (req, res) => {
-  try {
-    const { id } = req.params;
-    
-    const refund = refundRequests.find(r => r.id === id);
-    if (!refund) {
-      return res.status(404).json({
-        success: false,
-        error: 'REFUND_NOT_FOUND',
-        message: 'Refund request not found',
-        timestamp: new Date().toISOString()
-      });
-    }
-    
-    res.json({
-      success: true,
-      data: refund,
-      message: 'Refund request retrieved successfully',
-      timestamp: new Date().toISOString()
-    });
-  } catch (error) {
-    logger.error('Error fetching refund request:', error);
-    res.status(500).json({
-      success: false,
-      error: 'REFUND_FETCH_FAILED',
-      message: 'Failed to fetch refund request',
-      timestamp: new Date().toISOString()
-    });
-  }
-});
-
-/**
- * @route PUT /api/v1/partners/refunds/:id/status
- * @desc Update refund request status
- * @access Private (Partners only)
- */
-router.put('/:id/status', authenticateToken, authorizeRoles(['partner', 'admin', 'super_admin']), async (req, res) => {
-  try {
-    const { id } = req.params;
-    const { status, notes } = req.body;
-    
-    if (!status || !['pending', 'approved', 'rejected', 'processing', 'completed'].includes(status)) {
-      return res.status(400).json({
-        success: false,
-        error: 'INVALID_STATUS',
-        message: 'Valid status is required',
-        timestamp: new Date().toISOString()
-      });
-    }
-    
-    const refundIndex = refundRequests.findIndex(r => r.id === id);
-    if (refundIndex === -1) {
-      return res.status(404).json({
-        success: false,
-        error: 'REFUND_NOT_FOUND',
-        message: 'Refund request not found',
-        timestamp: new Date().toISOString()
-      });
-    }
-    
-    refundRequests[refundIndex].status = status;
-    refundRequests[refundIndex].processedAt = new Date().toISOString();
-    refundRequests[refundIndex].processedBy = req.user.userId;
-    
-    if (notes) {
-      refundRequests[refundIndex].notes = notes;
-    }
-    
-    logger.info(`Refund request ${id} status updated to ${status} by user ${req.user.userId}`);
-    
-    res.json({
-      success: true,
-      data: refundRequests[refundIndex],
-      message: 'Refund request status updated successfully',
-      timestamp: new Date().toISOString()
-    });
-  } catch (error) {
-    logger.error('Error updating refund status:', error);
-    res.status(500).json({
-      success: false,
-      error: 'REFUND_STATUS_UPDATE_FAILED',
-      message: 'Failed to update refund request status',
-      timestamp: new Date().toISOString()
-    });
-  }
-});
-
-/**
  * @route GET /api/v1/partners/refunds/returns
- * @desc Get return requests for partners
+ * @desc Get return requests
  * @access Private (Partners only)
  */
 router.get('/returns', authenticateToken, authorizeRoles(['partner', 'admin', 'super_admin']), async (req, res) => {
   try {
-    const { status, customerId, orderId } = req.query;
+    const { status, timeRange } = req.query;
     
-    let filteredReturns = returnRequests;
+    // Get real return requests from database
+    let returns = await getReturnRequests();
     
+    // Filter by status if provided
     if (status && status !== 'all') {
-      filteredReturns = filteredReturns.filter(returnReq => returnReq.status === status);
+      returns = returns.filter(returnReq => returnReq.status === status);
     }
     
-    if (customerId) {
-      filteredReturns = filteredReturns.filter(returnReq => returnReq.customerId === customerId);
-    }
-    
-    if (orderId) {
-      filteredReturns = filteredReturns.filter(returnReq => returnReq.orderId === orderId);
+    // Filter by time range if provided
+    if (timeRange) {
+      const timeRangeMs = timeRange === '7d' ? 7 * 24 * 60 * 60 * 1000 : 
+                         timeRange === '30d' ? 30 * 24 * 60 * 60 * 1000 : 
+                         timeRange === '90d' ? 90 * 24 * 60 * 60 * 1000 : 30 * 24 * 60 * 60 * 1000;
+      const cutoffTime = new Date(Date.now() - timeRangeMs);
+      returns = returns.filter(returnReq => new Date(returnReq.requestedAt) >= cutoffTime);
     }
     
     res.json({
       success: true,
-      data: filteredReturns,
+      data: returns,
       message: 'Return requests retrieved successfully',
       timestamp: new Date().toISOString()
     });
@@ -293,7 +153,7 @@ router.get('/returns', authenticateToken, authorizeRoles(['partner', 'admin', 's
     logger.error('Error fetching return requests:', error);
     res.status(500).json({
       success: false,
-      error: 'RETURNS_FETCH_FAILED',
+      error: 'RETURN_REQUESTS_FETCH_FAILED',
       message: 'Failed to fetch return requests',
       timestamp: new Date().toISOString()
     });
@@ -301,116 +161,132 @@ router.get('/returns', authenticateToken, authorizeRoles(['partner', 'admin', 's
 });
 
 /**
- * @route PUT /api/v1/partners/refunds/returns/:id/status
- * @desc Update return request status
+ * @route POST /api/v1/partners/refunds/:id/process
+ * @desc Process a refund request
  * @access Private (Partners only)
  */
-router.put('/returns/:id/status', authenticateToken, authorizeRoles(['partner', 'admin', 'super_admin']), async (req, res) => {
+router.post('/:id/process', authenticateToken, authorizeRoles(['partner', 'admin', 'super_admin']), async (req, res) => {
   try {
     const { id } = req.params;
-    const { status, trackingNumber, notes } = req.body;
+    const { action, notes } = req.body; // action: 'approve' or 'reject'
     
-    if (!status || !['pending', 'approved', 'rejected', 'processing', 'completed'].includes(status)) {
+    if (!action || !['approve', 'reject'].includes(action)) {
       return res.status(400).json({
         success: false,
-        error: 'INVALID_STATUS',
-        message: 'Valid status is required',
+        error: 'INVALID_ACTION',
+        message: 'Action must be either "approve" or "reject"',
         timestamp: new Date().toISOString()
       });
     }
     
-    const returnIndex = returnRequests.findIndex(r => r.id === id);
-    if (returnIndex === -1) {
+    const db = await connectToDatabase();
+    const refundsCollection = db.collection('refund_requests');
+    
+    // Update refund request
+    const result = await refundsCollection.updateOne(
+      { _id: id },
+      {
+        $set: {
+          status: action === 'approve' ? 'approved' : 'rejected',
+          processedAt: new Date().toISOString(),
+          processedBy: req.user.userId || req.user.id,
+          notes: notes || ''
+        }
+      }
+    );
+    
+    if (result.matchedCount === 0) {
       return res.status(404).json({
         success: false,
-        error: 'RETURN_NOT_FOUND',
-        message: 'Return request not found',
+        error: 'REFUND_NOT_FOUND',
+        message: 'Refund request not found',
         timestamp: new Date().toISOString()
       });
     }
-    
-    returnRequests[returnIndex].status = status;
-    returnRequests[returnIndex].processedAt = new Date().toISOString();
-    returnRequests[returnIndex].processedBy = req.user.userId;
-    
-    if (trackingNumber) {
-      returnRequests[returnIndex].trackingNumber = trackingNumber;
-    }
-    
-    if (notes) {
-      returnRequests[returnIndex].notes = notes;
-    }
-    
-    logger.info(`Return request ${id} status updated to ${status} by user ${req.user.userId}`);
     
     res.json({
       success: true,
-      data: returnRequests[returnIndex],
-      message: 'Return request status updated successfully',
+      message: `Refund request ${action}d successfully`,
       timestamp: new Date().toISOString()
     });
   } catch (error) {
-    logger.error('Error updating return status:', error);
+    logger.error('Error processing refund request:', error);
     res.status(500).json({
       success: false,
-      error: 'RETURN_STATUS_UPDATE_FAILED',
-      message: 'Failed to update return request status',
+      error: 'REFUND_PROCESSING_FAILED',
+      message: 'Failed to process refund request',
       timestamp: new Date().toISOString()
     });
   }
 });
 
 /**
- * @route GET /api/v1/partners/refunds/analytics
- * @desc Get refund analytics for partners
+ * @route GET /api/v1/partners/refunds/stats
+ * @desc Get refund and return statistics
  * @access Private (Partners only)
  */
-router.get('/analytics', authenticateToken, authorizeRoles(['partner', 'admin', 'super_admin']), async (req, res) => {
+router.get('/stats', authenticateToken, authorizeRoles(['partner', 'admin', 'super_admin']), async (req, res) => {
   try {
-    const { timeRange } = req.query;
+    const db = await connectToDatabase();
+    const refundsCollection = db.collection('refund_requests');
+    const returnsCollection = db.collection('return_requests');
     
-    // Calculate analytics based on refund data
-    const totalRefunds = refundRequests.length;
-    const pendingRefunds = refundRequests.filter(r => r.status === 'pending').length;
-    const approvedRefunds = refundRequests.filter(r => r.status === 'approved').length;
-    const rejectedRefunds = refundRequests.filter(r => r.status === 'rejected').length;
+    // Get statistics for last 30 days
+    const thirtyDaysAgo = new Date(Date.now() - 30 * 24 * 60 * 60 * 1000);
     
-    const totalRefundAmount = refundRequests
-      .filter(r => r.status === 'approved')
-      .reduce((sum, r) => sum + r.amount, 0);
+    const refundStats = await refundsCollection.aggregate([
+      { $match: { requestedAt: { $gte: thirtyDaysAgo } } },
+      {
+        $group: {
+          _id: '$status',
+          count: { $sum: 1 },
+          totalAmount: { $sum: '$amount' }
+        }
+      }
+    ]).toArray();
     
-    const averageRefundAmount = approvedRefunds > 0 ? totalRefundAmount / approvedRefunds : 0;
+    const returnStats = await returnsCollection.aggregate([
+      { $match: { requestedAt: { $gte: thirtyDaysAgo } } },
+      {
+        $group: {
+          _id: '$status',
+          count: { $sum: 1 },
+          totalAmount: { $sum: '$amount' }
+        }
+      }
+    ]).toArray();
     
-    const refundReasons = refundRequests.reduce((acc, refund) => {
-      acc[refund.reason] = (acc[refund.reason] || 0) + 1;
-      return acc;
-    }, {});
-    
-    const analytics = {
-      summary: {
-        totalRefunds,
-        pendingRefunds,
-        approvedRefunds,
-        rejectedRefunds,
-        totalRefundAmount,
-        averageRefundAmount
+    const stats = {
+      refunds: {
+        total: refundStats.reduce((sum, stat) => sum + stat.count, 0),
+        totalAmount: refundStats.reduce((sum, stat) => sum + stat.totalAmount, 0),
+        byStatus: refundStats.reduce((acc, stat) => {
+          acc[stat._id] = { count: stat.count, amount: stat.totalAmount };
+          return acc;
+        }, {})
       },
-      refundReasons,
-      timeRange: timeRange || 'all'
+      returns: {
+        total: returnStats.reduce((sum, stat) => sum + stat.count, 0),
+        totalAmount: returnStats.reduce((sum, stat) => sum + stat.totalAmount, 0),
+        byStatus: returnStats.reduce((acc, stat) => {
+          acc[stat._id] = { count: stat.count, amount: stat.totalAmount };
+          return acc;
+        }, {})
+      }
     };
     
     res.json({
       success: true,
-      data: analytics,
-      message: 'Refund analytics retrieved successfully',
+      data: stats,
+      message: 'Refund and return statistics retrieved successfully',
       timestamp: new Date().toISOString()
     });
   } catch (error) {
-    logger.error('Error fetching refund analytics:', error);
+    logger.error('Error fetching refund statistics:', error);
     res.status(500).json({
       success: false,
-      error: 'REFUND_ANALYTICS_FETCH_FAILED',
-      message: 'Failed to fetch refund analytics',
+      error: 'REFUND_STATS_FETCH_FAILED',
+      message: 'Failed to fetch refund statistics',
       timestamp: new Date().toISOString()
     });
   }

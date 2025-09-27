@@ -25,17 +25,13 @@ const { responseMiddleware } = require('./utils/response-format');
 const { productionOptimizations, errorOptimization } = require('./middleware/production-optimizations');
 const { productionLogging, errorLogger, systemHealthLogger } = require('./middleware/production-logging');
 
-// Import performance monitoring
+// Import unified performance monitoring
 const {
-  requestPerformanceMiddleware,
-  databaseQueryMiddleware,
-  trackError
-} = require('./middleware/performance-monitor');
-const {
-  optimizationMiddleware,
-  setCache,
-  getCache
-} = require('./middleware/performance-optimizer');
+  performanceMiddleware,
+  errorTrackingMiddleware,
+  getPerformanceMetrics,
+  getHealthStatus
+} = require('./middleware/unified-performance-monitor');
 
 // Import graceful restart handling
 const {
@@ -182,6 +178,9 @@ app.use(productionOptimizations);
 
 // Add production logging
 app.use(productionLogging);
+
+// Add error tracking middleware
+app.use(errorTrackingMiddleware);
 
 // Add standardized response format middleware
 app.use(responseMiddleware);
