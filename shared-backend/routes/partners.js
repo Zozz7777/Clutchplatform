@@ -232,6 +232,103 @@ router.post('/auth/signup', validatePartnerSignup, async (req, res) => {
       type: 'email'
     });
 
+    // Send welcome email to partner
+    try {
+      const { sendEmail } = require('../services/emailService');
+      
+      const partnerWelcomeEmailHtml = `
+        <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;">
+          <div style="background-color: #FF6B35; color: white; padding: 20px; text-align: center; border-radius: 8px 8px 0 0;">
+            <h1 style="margin: 0; font-size: 24px;">Welcome to Clutch Partners!</h1>
+          </div>
+          <div style="background-color: #f8f9fa; padding: 30px; border-radius: 0 0 8px 8px;">
+            <h2 style="color: #333; margin-top: 0;">Hello ${partner.ownerName || 'Partner'}!</h2>
+            <p style="color: #666; font-size: 16px; line-height: 1.5;">
+              Welcome to the Clutch Partners program! We're excited to have <strong>${partner.businessName}</strong> 
+              join our network of trusted automotive service providers.
+            </p>
+            <div style="background-color: white; padding: 20px; border-radius: 6px; margin: 20px 0; border-left: 4px solid #FF6B35;">
+              <h3 style="color: #333; margin-top: 0;">Your Partner Details</h3>
+              <ul style="color: #666; line-height: 1.6; list-style: none; padding: 0;">
+                <li style="margin: 8px 0;"><strong>Partner ID:</strong> ${partner.partnerId}</li>
+                <li style="margin: 8px 0;"><strong>Business Name:</strong> ${partner.businessName}</li>
+                <li style="margin: 8px 0;"><strong>Partner Type:</strong> ${partner.partnerType}</li>
+                <li style="margin: 8px 0;"><strong>Status:</strong> ${partner.status}</li>
+              </ul>
+            </div>
+            <div style="background-color: #e8f4fd; padding: 20px; border-radius: 6px; margin: 20px 0; border-left: 4px solid #2196F3;">
+              <h3 style="color: #333; margin-top: 0;">Next Steps</h3>
+              <ol style="color: #666; line-height: 1.6;">
+                <li>Verify your account using the verification code sent to your email</li>
+                <li>Complete your business profile and upload required documents</li>
+                <li>Set up your service offerings and pricing</li>
+                <li>Download the Clutch Partner app to manage your business</li>
+                <li>Start receiving customer bookings and grow your business!</li>
+              </ol>
+            </div>
+            <div style="text-align: center; margin: 30px 0;">
+              <a href="${process.env.PARTNER_PORTAL_URL || 'https://partners.yourclutch.com'}/dashboard" 
+                 style="background-color: #FF6B35; color: white; padding: 12px 30px; text-decoration: none; border-radius: 6px; font-weight: bold; display: inline-block;">
+                Access Partner Portal
+              </a>
+            </div>
+            <hr style="border: none; border-top: 1px solid #eee; margin: 30px 0;">
+            <p style="color: #999; font-size: 12px; line-height: 1.4;">
+              <strong>Need Support?</strong> Our partner success team is here to help you get started. 
+              Contact us at <a href="mailto:partners@yourclutch.com" style="color: #FF6B35;">partners@yourclutch.com</a> or call our partner hotline.
+            </p>
+            <p style="color: #999; font-size: 12px; margin-top: 20px;">
+              Best regards,<br>
+              The Clutch Partners Team
+            </p>
+          </div>
+        </div>
+      `;
+      
+      const partnerWelcomeEmailText = `
+        Welcome to Clutch Partners!
+        
+        Hello ${partner.ownerName || 'Partner'}!
+        
+        Welcome to the Clutch Partners program! We're excited to have ${partner.businessName} 
+        join our network of trusted automotive service providers.
+        
+        Your Partner Details:
+        - Partner ID: ${partner.partnerId}
+        - Business Name: ${partner.businessName}
+        - Partner Type: ${partner.partnerType}
+        - Status: ${partner.status}
+        
+        Next Steps:
+        1. Verify your account using the verification code sent to your email
+        2. Complete your business profile and upload required documents
+        3. Set up your service offerings and pricing
+        4. Download the Clutch Partner app to manage your business
+        5. Start receiving customer bookings and grow your business!
+        
+        Access Partner Portal: ${process.env.PARTNER_PORTAL_URL || 'https://partners.yourclutch.com'}/dashboard
+        
+        Need Support? Our partner success team is here to help you get started. 
+        Contact us at partners@yourclutch.com or call our partner hotline.
+        
+        Best regards,
+        The Clutch Partners Team
+      `;
+      
+      await sendEmail({
+        to: partner.email,
+        subject: 'Welcome to Clutch Partners - Your Business is Ready to Grow!',
+        html: partnerWelcomeEmailHtml,
+        text: partnerWelcomeEmailText
+      });
+      
+      console.log('📧 Partner welcome email sent successfully to:', partner.email);
+      
+    } catch (emailError) {
+      console.error('❌ Failed to send partner welcome email:', emailError);
+      // Don't fail signup if email fails, just log it
+    }
+
     // Remove password from response
     const partnerResponse = partner.toObject();
     delete partnerResponse.password;

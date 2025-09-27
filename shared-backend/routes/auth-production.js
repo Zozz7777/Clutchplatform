@@ -290,6 +290,86 @@ router.post('/register', authRateLimit, async (req, res) => {
     const result = await usersCollection.insertOne(newUser);
     console.log('✅ User created successfully:', { userId: result.insertedId });
     
+    // Send welcome email
+    try {
+      const { sendEmail } = require('../services/emailService');
+      
+      const welcomeEmailHtml = `
+        <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;">
+          <div style="background-color: #FF6B35; color: white; padding: 20px; text-align: center; border-radius: 8px 8px 0 0;">
+            <h1 style="margin: 0; font-size: 24px;">Welcome to Clutch!</h1>
+          </div>
+          <div style="background-color: #f8f9fa; padding: 30px; border-radius: 0 0 8px 8px;">
+            <h2 style="color: #333; margin-top: 0;">Hello ${newUser.firstName || 'there'}!</h2>
+            <p style="color: #666; font-size: 16px; line-height: 1.5;">
+              Welcome to Clutch! We're excited to have you join our automotive services platform. 
+              Your account has been successfully created and you can now start exploring all the features we have to offer.
+            </p>
+            <div style="background-color: white; padding: 20px; border-radius: 6px; margin: 20px 0; border-left: 4px solid #FF6B35;">
+              <h3 style="color: #333; margin-top: 0;">What's Next?</h3>
+              <ul style="color: #666; line-height: 1.6;">
+                <li>Complete your profile to get personalized recommendations</li>
+                <li>Browse our automotive services and book appointments</li>
+                <li>Connect with trusted service providers in your area</li>
+                <li>Track your service history and manage your vehicles</li>
+              </ul>
+            </div>
+            <div style="text-align: center; margin: 30px 0;">
+              <a href="${process.env.FRONTEND_URL || 'https://yourclutch.com'}/dashboard" 
+                 style="background-color: #FF6B35; color: white; padding: 12px 30px; text-decoration: none; border-radius: 6px; font-weight: bold; display: inline-block;">
+                Get Started
+              </a>
+            </div>
+            <hr style="border: none; border-top: 1px solid #eee; margin: 30px 0;">
+            <p style="color: #999; font-size: 12px; line-height: 1.4;">
+              <strong>Need Help?</strong> Our support team is here to assist you. 
+              You can reach us at <a href="mailto:support@yourclutch.com" style="color: #FF6B35;">support@yourclutch.com</a> or visit our help center.
+            </p>
+            <p style="color: #999; font-size: 12px; margin-top: 20px;">
+              Best regards,<br>
+              The Clutch Team
+            </p>
+          </div>
+        </div>
+      `;
+      
+      const welcomeEmailText = `
+        Welcome to Clutch!
+        
+        Hello ${newUser.firstName || 'there'}!
+        
+        Welcome to Clutch! We're excited to have you join our automotive services platform. 
+        Your account has been successfully created and you can now start exploring all the features we have to offer.
+        
+        What's Next?
+        - Complete your profile to get personalized recommendations
+        - Browse our automotive services and book appointments
+        - Connect with trusted service providers in your area
+        - Track your service history and manage your vehicles
+        
+        Get started: ${process.env.FRONTEND_URL || 'https://yourclutch.com'}/dashboard
+        
+        Need Help? Our support team is here to assist you. 
+        You can reach us at support@yourclutch.com or visit our help center.
+        
+        Best regards,
+        The Clutch Team
+      `;
+      
+      await sendEmail({
+        to: newUser.email,
+        subject: 'Welcome to Clutch - Your Account is Ready!',
+        html: welcomeEmailHtml,
+        text: welcomeEmailText
+      });
+      
+      console.log('📧 Welcome email sent successfully to:', newUser.email);
+      
+    } catch (emailError) {
+      console.error('❌ Failed to send welcome email:', emailError);
+      // Don't fail registration if email fails, just log it
+    }
+    
     // Generate JWT token
     console.log('🔑 Generating JWT token...');
     const token = jwt.sign(
@@ -403,8 +483,76 @@ router.post('/forgot-password', authRateLimit, async (req, res) => {
       });
     }
     
-    // TODO: Implement actual email/SMS sending
-    // For now, just return success
+    // Generate reset token
+    const resetToken = jwt.sign(
+      { userId: user._id, type: 'password_reset' },
+      process.env.JWT_SECRET,
+      { expiresIn: '1h' }
+    );
+    
+    // Store reset token in database
+    await usersCollection.updateOne(
+      { _id: user._id },
+      { 
+        $set: { 
+          resetToken: resetToken,
+          resetTokenExpires: new Date(Date.now() + 60 * 60 * 1000), // 1 hour
+          updatedAt: new Date()
+        }
+      }
+    );
+    
+    // Send password reset email
+    try {
+      const { sendEmail } = require('../services/emailService');
+      
+      const resetUrl = `${process.env.FRONTEND_URL || 'https://admin.yourclutch.com'}/reset-password?token=${resetToken}`;
+      
+      const emailContent = `
+        <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+          <div style="background-color: #FF6B35; color: white; padding: 20px; text-align: center;">
+            <h1>Clutch Password Reset</h1>
+          </div>
+          <div style="padding: 20px;">
+            <h2>Hello ${user.name || user.firstName || 'User'}!</h2>
+            <p>We received a request to reset your password for your Clutch account.</p>
+            <p>Click the button below to reset your password:</p>
+            <div style="text-align: center; margin: 30px 0;">
+              <a href="${resetUrl}" style="background-color: #FF6B35; color: white; padding: 12px 24px; text-decoration: none; border-radius: 5px; display: inline-block;">Reset Password</a>
+            </div>
+            <p>Or copy and paste this link into your browser:</p>
+            <p style="word-break: break-all; color: #666;">${resetUrl}</p>
+            <hr>
+            <p><strong>Important:</strong></p>
+            <ul>
+              <li>This link will expire in 1 hour</li>
+              <li>If you didn't request this password reset, please ignore this email</li>
+              <li>For security reasons, this link can only be used once</li>
+            </ul>
+            <p>If you have any questions, please contact our support team.</p>
+            <p>Best regards,<br>The Clutch Team</p>
+          </div>
+        </div>
+      `;
+      
+      const emailResult = await sendEmail({
+        to: lookupEmail,
+        subject: 'Reset Your Clutch Password',
+        html: emailContent,
+        text: `Hello ${user.name || user.firstName || 'User'}! Please click the following link to reset your password: ${resetUrl}. This link expires in 1 hour.`
+      });
+      
+      if (emailResult.success) {
+        console.log('📧 Password reset email sent successfully to:', lookupEmail);
+      } else {
+        console.error('❌ Failed to send password reset email:', emailResult.error);
+      }
+      
+    } catch (emailError) {
+      console.error('❌ Email sending error:', emailError);
+      // Don't fail the request if email fails, just log it
+    }
+    
     console.log('📧 Password reset requested for:', lookupEmail);
     
     res.json({
