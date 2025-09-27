@@ -44,43 +44,31 @@ fun OnboardingScreen(
     val pagerState = rememberPagerState(pageCount = { 3 })
     val coroutineScope = rememberCoroutineScope()
     
-        val pages = if (currentLanguage == "ar") {
-            listOf(
-                OnboardingPage(
-                    title = stringResource(R.string.save_money),
-                    description = stringResource(R.string.onboarding_save_money_desc),
-                    illustrationRes = R.drawable.onboarding_save_money
-                ),
-                OnboardingPage(
-                    title = stringResource(R.string.extend_car_life),
-                    description = stringResource(R.string.onboarding_extend_life_desc),
-                    illustrationRes = R.drawable.onboarding_extend_life
-                ),
-                OnboardingPage(
-                    title = stringResource(R.string.peace_of_mind),
-                    description = stringResource(R.string.onboarding_peace_mind_desc),
-                    illustrationRes = R.drawable.onboarding_peace_of_mind
-                )
-            )
-        } else {
-            listOf(
-              OnboardingPage(
-                  title = stringResource(R.string.save_money),
-                  description = stringResource(R.string.onboarding_save_money_desc),
-                  illustrationRes = R.drawable.onboarding_save_money
-              ),
-              OnboardingPage(
-                  title = stringResource(R.string.extend_car_life),
-                  description = stringResource(R.string.onboarding_extend_life_desc),
-                  illustrationRes = R.drawable.onboarding_extend_life
-              ),
-              OnboardingPage(
-                  title = stringResource(R.string.peace_of_mind),
-                  description = stringResource(R.string.onboarding_peace_mind_desc),
-                  illustrationRes = R.drawable.onboarding_peace_of_mind
-              )
-          )
-      }
+    // Get the current strings based on the current language
+    val saveMoneyTitle = stringResource(R.string.save_money)
+    val saveMoneyDesc = stringResource(R.string.onboarding_save_money_desc)
+    val extendLifeTitle = stringResource(R.string.extend_car_life)
+    val extendLifeDesc = stringResource(R.string.onboarding_extend_life_desc)
+    val peaceOfMindTitle = stringResource(R.string.peace_of_mind)
+    val peaceOfMindDesc = stringResource(R.string.onboarding_peace_mind_desc)
+    
+    val pages = listOf(
+        OnboardingPage(
+            title = saveMoneyTitle,
+            description = saveMoneyDesc,
+            illustrationRes = R.drawable.onboarding_save_money
+        ),
+        OnboardingPage(
+            title = extendLifeTitle,
+            description = extendLifeDesc,
+            illustrationRes = R.drawable.onboarding_extend_life
+        ),
+        OnboardingPage(
+            title = peaceOfMindTitle,
+            description = peaceOfMindDesc,
+            illustrationRes = R.drawable.onboarding_peace_of_mind
+        )
+    )
 
     Box(
         modifier = Modifier
@@ -165,9 +153,9 @@ fun OnboardingScreen(
                                 text = buildAnnotatedString {
                                     val fullText = pages[page].description
                                     val redParts = when (page) {
-                                        0 -> listOf("only with Clutch")
-                                        1 -> listOf("keep your car running smoothly for years to come")
-                                        2 -> listOf("safer, smarter, and stress-free")
+                                        0 -> if (currentLanguage == "ar") listOf("فقط مع كلتش") else listOf("only with Clutch")
+                                        1 -> if (currentLanguage == "ar") listOf("للسنوات قادمة") else listOf("keep your car running smoothly for years to come")
+                                        2 -> if (currentLanguage == "ar") listOf("أكثر أماناً وذكاءً وخالية من التوتر") else listOf("safer, smarter, and stress-free")
                                         else -> emptyList()
                                     }
                                     
