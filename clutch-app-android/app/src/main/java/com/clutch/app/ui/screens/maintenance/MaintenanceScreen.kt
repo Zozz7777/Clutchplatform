@@ -16,16 +16,26 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.unit.LayoutDirection
+import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.ui.platform.LocalLayoutDirection
 import com.clutch.app.R
 import com.clutch.app.ui.theme.*
+import com.clutch.app.utils.TranslationManager
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MaintenanceScreen() {
+    val context = LocalContext.current
+    val currentLanguage = TranslationManager.getCurrentLanguage()
+    val layoutDirection = if (currentLanguage == "ar") LayoutDirection.Rtl else LayoutDirection.Ltr
+    
     var selectedCar by remember { mutableStateOf("DS 7 crossback 2020") }
     var currentMileage by remember { mutableStateOf("20,850 KM") }
 
-    LazyColumn(
+    CompositionLocalProvider(LocalLayoutDirection provides layoutDirection) {
+        LazyColumn(
         modifier = Modifier
             .fillMaxSize()
             .background(Color(0xFFF5F5F5)),
@@ -42,7 +52,7 @@ fun MaintenanceScreen() {
                 // Clutch Logo
                 Image(
                     painter = painterResource(id = R.drawable.clutch_logo_red),
-                    contentDescription = "Clutch Logo",
+                    contentDescription = TranslationManager.getString(context, R.string.clutch_logo),
                     modifier = Modifier.size(40.dp)
                 )
                 
@@ -51,7 +61,7 @@ fun MaintenanceScreen() {
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
                     Text(
-                        text = "Your Car",
+                        text = TranslationManager.getString(context, R.string.your_car),
                         fontSize = 14.sp,
                         color = Color.Gray
                     )
@@ -60,7 +70,7 @@ fun MaintenanceScreen() {
                     ) {
                         Icon(
                             imageVector = Icons.Default.DirectionsCar,
-                            contentDescription = "Car",
+                            contentDescription = TranslationManager.getString(context, R.string.car),
                             tint = ClutchRed,
                             modifier = Modifier.size(20.dp)
                         )
@@ -73,7 +83,7 @@ fun MaintenanceScreen() {
                         )
                         Icon(
                             imageVector = Icons.Default.KeyboardArrowDown,
-                            contentDescription = "Dropdown",
+                            contentDescription = TranslationManager.getString(context, R.string.dropdown),
                             tint = ClutchRed,
                             modifier = Modifier.size(16.dp)
                         )
@@ -103,7 +113,7 @@ fun MaintenanceScreen() {
                         Spacer(modifier = Modifier.width(8.dp))
                         Icon(
                             imageVector = Icons.Default.Edit,
-                            contentDescription = "Edit",
+                            contentDescription = TranslationManager.getString(context, R.string.edit),
                             tint = Color.Gray,
                             modifier = Modifier.size(16.dp)
                         )
@@ -123,7 +133,7 @@ fun MaintenanceScreen() {
                     modifier = Modifier.padding(16.dp)
                 ) {
                     Text(
-                        text = "Last Maintenance",
+                        text = TranslationManager.getString(context, R.string.last_maintenance),
                         fontSize = 18.sp,
                         fontWeight = FontWeight.Bold,
                         color = ClutchRed,
@@ -134,9 +144,9 @@ fun MaintenanceScreen() {
                     OutlinedTextField(
                         value = "",
                         onValueChange = { },
-                        label = { Text("Date") },
+                        label = { Text(TranslationManager.getString(context, R.string.date)) },
                         trailingIcon = {
-                            Icon(Icons.Default.DateRange, contentDescription = "Date")
+                            Icon(Icons.Default.DateRange, contentDescription = TranslationManager.getString(context, R.string.date))
                         },
                         modifier = Modifier.fillMaxWidth(),
                         colors = OutlinedTextFieldDefaults.colors(
@@ -153,9 +163,9 @@ fun MaintenanceScreen() {
                     OutlinedTextField(
                         value = "",
                         onValueChange = { },
-                        label = { Text("What Did You Do") },
+                        label = { Text(TranslationManager.getString(context, R.string.what_did_you_do)) },
                         trailingIcon = {
-                            Icon(Icons.Default.KeyboardArrowDown, contentDescription = "Dropdown")
+                            Icon(Icons.Default.KeyboardArrowDown, contentDescription = TranslationManager.getString(context, R.string.dropdown))
                         },
                         modifier = Modifier.fillMaxWidth(),
                         colors = OutlinedTextFieldDefaults.colors(
@@ -172,7 +182,7 @@ fun MaintenanceScreen() {
                     OutlinedTextField(
                         value = "",
                         onValueChange = { },
-                        label = { Text("Kilometers") },
+                        label = { Text(TranslationManager.getString(context, R.string.kilometers)) },
                         modifier = Modifier.fillMaxWidth(),
                         colors = OutlinedTextFieldDefaults.colors(
                             focusedBorderColor = ClutchRed,
@@ -194,7 +204,7 @@ fun MaintenanceScreen() {
                         shape = RoundedCornerShape(12.dp)
                     ) {
                         Text(
-                            text = "CONFIRM",
+                            text = TranslationManager.getString(context, R.string.confirm),
                             fontSize = 16.sp,
                             fontWeight = FontWeight.Bold,
                             color = Color.White
@@ -206,6 +216,7 @@ fun MaintenanceScreen() {
         
         item {
             Spacer(modifier = Modifier.height(100.dp)) // Space for bottom navigation
+        }
         }
     }
 }

@@ -15,23 +15,33 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.ui.platform.LocalLayoutDirection
 import com.clutch.app.R
 import com.clutch.app.ui.theme.*
+import com.clutch.app.utils.TranslationManager
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AccountScreen() {
-    LazyColumn(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(Color(0xFFF5F5F5)),
-        contentPadding = PaddingValues(16.dp),
-        verticalArrangement = Arrangement.spacedBy(16.dp)
-    ) {
+    val context = LocalContext.current
+    val currentLanguage = TranslationManager.getCurrentLanguage()
+    val layoutDirection = if (currentLanguage == "ar") LayoutDirection.Rtl else LayoutDirection.Ltr
+
+    CompositionLocalProvider(LocalLayoutDirection provides layoutDirection) {
+        LazyColumn(
+            modifier = Modifier
+                .fillMaxSize()
+                .background(Color(0xFFF5F5F5)),
+            contentPadding = PaddingValues(16.dp),
+            verticalArrangement = Arrangement.spacedBy(16.dp)
+        ) {
         item {
             // Header with profile info
             Row(
@@ -53,7 +63,7 @@ fun AccountScreen() {
                     ) {
                         Icon(
                             imageVector = Icons.Default.Person,
-                            contentDescription = "Profile",
+                            contentDescription = TranslationManager.getString(context, R.string.profile),
                             tint = Color.Gray,
                             modifier = Modifier.size(30.dp)
                         )
@@ -75,7 +85,7 @@ fun AccountScreen() {
                 }) {
                     Icon(
                         imageVector = Icons.Default.Notifications,
-                        contentDescription = "Notifications",
+                        contentDescription = TranslationManager.getString(context, R.string.notifications),
                         tint = ClutchRed,
                         modifier = Modifier.size(24.dp)
                     )
@@ -104,13 +114,13 @@ fun AccountScreen() {
                     ) {
                         Icon(
                             imageVector = Icons.Default.DirectionsCar,
-                            contentDescription = "Your Cars",
+                            contentDescription = TranslationManager.getString(context, R.string.your_cars),
                             tint = ClutchRed,
                             modifier = Modifier.size(32.dp)
                         )
                         Spacer(modifier = Modifier.height(8.dp))
                         Text(
-                            text = "Your cars",
+                            text = TranslationManager.getString(context, R.string.your_cars),
                             fontSize = 14.sp,
                             fontWeight = FontWeight.SemiBold,
                             color = ClutchRed
@@ -134,13 +144,13 @@ fun AccountScreen() {
                     ) {
                         Icon(
                             imageVector = Icons.Default.Settings,
-                            contentDescription = "Settings",
+                            contentDescription = TranslationManager.getString(context, R.string.settings),
                             tint = ClutchRed,
                             modifier = Modifier.size(32.dp)
                         )
                         Spacer(modifier = Modifier.height(8.dp))
                         Text(
-                            text = "Settings",
+                            text = TranslationManager.getString(context, R.string.settings),
                             fontSize = 14.sp,
                             fontWeight = FontWeight.SemiBold,
                             color = ClutchRed
@@ -173,13 +183,13 @@ fun AccountScreen() {
                     ) {
                         Icon(
                             imageVector = Icons.Default.HeadsetMic,
-                            contentDescription = "Get Help",
+                            contentDescription = TranslationManager.getString(context, R.string.get_help),
                             tint = Color.Black,
                             modifier = Modifier.size(24.dp)
                         )
                         Spacer(modifier = Modifier.width(16.dp))
                         Text(
-                            text = "Get help",
+                            text = TranslationManager.getString(context, R.string.get_help),
                             fontSize = 16.sp,
                             color = Color.Black
                         )
@@ -200,13 +210,13 @@ fun AccountScreen() {
                     ) {
                         Icon(
                             imageVector = Icons.Default.Info,
-                            contentDescription = "About",
+                            contentDescription = TranslationManager.getString(context, R.string.about),
                             tint = Color.Black,
                             modifier = Modifier.size(24.dp)
                         )
                         Spacer(modifier = Modifier.width(16.dp))
                         Text(
-                            text = "About",
+                            text = TranslationManager.getString(context, R.string.about),
                             fontSize = 16.sp,
                             color = Color.Black
                         )
@@ -217,6 +227,7 @@ fun AccountScreen() {
         
         item {
             Spacer(modifier = Modifier.height(100.dp)) // Space for bottom navigation
+        }
         }
     }
 }

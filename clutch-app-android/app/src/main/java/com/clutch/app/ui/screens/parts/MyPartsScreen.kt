@@ -19,16 +19,26 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.unit.LayoutDirection
+import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.ui.platform.LocalLayoutDirection
 import com.clutch.app.R
 import com.clutch.app.ui.theme.*
+import com.clutch.app.utils.TranslationManager
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MyPartsScreen() {
+    val context = LocalContext.current
+    val currentLanguage = TranslationManager.getCurrentLanguage()
+    val layoutDirection = if (currentLanguage == "ar") LayoutDirection.Rtl else LayoutDirection.Ltr
+    
     var selectedCar by remember { mutableStateOf("DS 7 crossback 2020") }
     var currentMileage by remember { mutableStateOf("20,850 KM") }
 
-    LazyColumn(
+    CompositionLocalProvider(LocalLayoutDirection provides layoutDirection) {
+        LazyColumn(
         modifier = Modifier
             .fillMaxSize()
             .background(Color(0xFFF5F5F5)),
@@ -45,7 +55,7 @@ fun MyPartsScreen() {
                 // Clutch Logo
                 Image(
                     painter = painterResource(id = R.drawable.clutch_logo_red),
-                    contentDescription = "Clutch Logo",
+                    contentDescription = TranslationManager.getString(context, R.string.clutch_logo),
                     modifier = Modifier.size(40.dp)
                 )
                 
@@ -54,7 +64,7 @@ fun MyPartsScreen() {
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
                     Text(
-                        text = "Your Car",
+                        text = TranslationManager.getString(context, R.string.your_car),
                         fontSize = 14.sp,
                         color = Color.Gray
                     )
@@ -63,7 +73,7 @@ fun MyPartsScreen() {
                     ) {
                         Icon(
                             imageVector = Icons.Default.DirectionsCar,
-                            contentDescription = "Car",
+                            contentDescription = TranslationManager.getString(context, R.string.car),
                             tint = ClutchRed,
                             modifier = Modifier.size(20.dp)
                         )
@@ -76,7 +86,7 @@ fun MyPartsScreen() {
                         )
                         Icon(
                             imageVector = Icons.Default.KeyboardArrowDown,
-                            contentDescription = "Dropdown",
+                            contentDescription = TranslationManager.getString(context, R.string.dropdown),
                             tint = ClutchRed,
                             modifier = Modifier.size(16.dp)
                         )
@@ -106,7 +116,7 @@ fun MyPartsScreen() {
                         Spacer(modifier = Modifier.width(8.dp))
                         Icon(
                             imageVector = Icons.Default.Edit,
-                            contentDescription = "Edit",
+                            contentDescription = TranslationManager.getString(context, R.string.edit),
                             tint = Color.Gray,
                             modifier = Modifier.size(16.dp)
                         )
@@ -126,7 +136,7 @@ fun MyPartsScreen() {
                     modifier = Modifier.padding(16.dp)
                 ) {
                     Text(
-                        text = "Parts Expiring Soon",
+                        text = TranslationManager.getString(context, R.string.parts_expiring_soon),
                         fontSize = 18.sp,
                         fontWeight = FontWeight.Bold,
                         color = Color.Black,
@@ -134,25 +144,25 @@ fun MyPartsScreen() {
                     )
                     
                     PartItem(
-                        partName = "Engine Oil",
+                        partName = TranslationManager.getString(context, R.string.engine_oil),
                         status = "Expired 850 Km Ago",
                         isExpired = true
                     )
                     PartItem(
-                        partName = "Spark Plugs",
+                        partName = TranslationManager.getString(context, R.string.spark_plugs),
                         status = "9,150 Km ~ Remaining"
                     )
                     PartItem(
-                        partName = "Air Filter",
+                        partName = TranslationManager.getString(context, R.string.air_filter),
                         status = "4,150 Km ~ Remaining"
                     )
                     PartItem(
-                        partName = "Brakes",
+                        partName = TranslationManager.getString(context, R.string.brakes),
                         status = "29,150 Km ~ Remaining"
                     )
                     
                     Text(
-                        text = "View All",
+                        text = TranslationManager.getString(context, R.string.view_all),
                         fontSize = 14.sp,
                         fontWeight = FontWeight.Bold,
                         color = Color.Black,
@@ -165,7 +175,7 @@ fun MyPartsScreen() {
         item {
             // Parts List
             Text(
-                text = "Parts",
+                text = TranslationManager.getString(context, R.string.parts),
                 fontSize = 18.sp,
                 fontWeight = FontWeight.Bold,
                 color = Color.Black,
@@ -186,6 +196,7 @@ fun MyPartsScreen() {
         
         item {
             Spacer(modifier = Modifier.height(100.dp)) // Space for bottom navigation
+        }
         }
     }
 }

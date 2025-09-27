@@ -155,10 +155,32 @@
     <string name="add_tip">Add Tip</string>
     <string name="view">View</string>
     <string name="notifications">Notifications</string>
-    <string name="profile">Profile</string>
-    <string name="select_date">Select Date</string>
-    <string name="select_services">Select Services</string>
-    <string name="select_brand">Select Brand</string>
-    <string name="select_model">Select Model</string>
-    <string name="select_trim">Select Trim</string>
-</resources>
+        <string name="select_date">Select Date</string>
+        <string name="select_services">Select Services</string>
+        <string name="select_brand">Select Brand</string>
+        <string name="select_model">Select Model</string>
+        <string name="select_trim">Select Trim</string>
+        
+        <!-- Account Screen -->
+        <string name="profile">Profile</string>
+        <string name="your_cars">Your Cars</string>
+        <string name="settings">Settings</string>
+        <string name="get_help">Get Help</string>
+        <string name="about">About</string>
+        
+        <!-- Additional strings for screens -->
+        <string name="parts">Parts</string>
+        <string name="search_for_parts">Search for parts...</string>
+        <string name="parts_categories">Parts Categories</string>
+        <string name="engine_parts">Engine Parts</string>
+        <string name="engine_parts_desc">Oil filters, spark plugs, belts</string>
+        <string name="brake_parts">Brake Parts</string>
+        <string name="brake_parts_desc">Brake pads, rotors, calipers</string>
+        <string name="tire_wheel">Tire &amp; Wheel</string>
+        <string name="tire_wheel_desc">Tires, rims, wheel covers</string>
+        <string name="electrical">Electrical</string>
+        <string name="electrical_desc">Batteries, alternators, starters</string>
+        <string name="body_parts">Body Parts</string>
+        <string name="body_parts_desc">Bumpers, mirrors, lights</string>
+        
+    </resources>

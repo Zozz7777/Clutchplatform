@@ -155,10 +155,32 @@
     <string name="add_tip">إضافة نصيحة</string>
     <string name="view">عرض</string>
     <string name="notifications">الإشعارات</string>
-    <string name="profile">الملف الشخصي</string>
-    <string name="select_date">اختيار التاريخ</string>
-    <string name="select_services">اختيار الخدمات</string>
-    <string name="select_brand">اختيار الماركة</string>
-    <string name="select_model">اختيار الموديل</string>
-    <string name="select_trim">اختيار الطراز</string>
-</resources>
+        <string name="select_date">اختيار التاريخ</string>
+        <string name="select_services">اختيار الخدمات</string>
+        <string name="select_brand">اختيار الماركة</string>
+        <string name="select_model">اختيار الموديل</string>
+        <string name="select_trim">اختيار الطراز</string>
+        
+        <!-- Account Screen -->
+        <string name="profile">الملف الشخصي</string>
+        <string name="your_cars">سياراتك</string>
+        <string name="settings">الإعدادات</string>
+        <string name="get_help">الحصول على المساعدة</string>
+        <string name="about">حول</string>
+        
+        <!-- Additional strings for screens -->
+        <string name="parts">قطع الغيار</string>
+        <string name="search_for_parts">البحث عن قطع الغيار...</string>
+        <string name="parts_categories">فئات قطع الغيار</string>
+        <string name="engine_parts">قطع المحرك</string>
+        <string name="engine_parts_desc">فلاتر الزيت، شمعات الإشعال، الأحزمة</string>
+        <string name="brake_parts">قطع الفرامل</string>
+        <string name="brake_parts_desc">بطانة الفرامل، الأقراص، الكاليبر</string>
+        <string name="tire_wheel">الإطارات والعجلات</string>
+        <string name="tire_wheel_desc">الإطارات، الجنوط، أغطية العجلات</string>
+        <string name="electrical">الكهرباء</string>
+        <string name="electrical_desc">البطاريات، المولدات، المحركات</string>
+        <string name="body_parts">قطع الهيكل</string>
+        <string name="body_parts_desc">المصدات، المرايا، الأضواء</string>
+        
+    </resources>

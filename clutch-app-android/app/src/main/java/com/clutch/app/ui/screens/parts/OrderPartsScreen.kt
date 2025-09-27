@@ -15,18 +15,29 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.unit.LayoutDirection
+import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.ui.platform.LocalLayoutDirection
+import com.clutch.app.R
 import com.clutch.app.ui.theme.ClutchAppTheme
 import com.clutch.app.ui.theme.ClutchRed
+import com.clutch.app.utils.TranslationManager
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun OrderPartsScreen() {
-    Scaffold(
+    val context = LocalContext.current
+    val currentLanguage = TranslationManager.getCurrentLanguage()
+    val layoutDirection = if (currentLanguage == "ar") LayoutDirection.Rtl else LayoutDirection.Ltr
+    
+    CompositionLocalProvider(LocalLayoutDirection provides layoutDirection) {
+        Scaffold(
         topBar = {
             TopAppBar(
                 title = {
                     Text(
-                        text = "Order Parts",
+                        text = TranslationManager.getString(context, R.string.order_parts),
                         fontSize = 20.sp,
                         fontWeight = FontWeight.Bold,
                         color = Color.White
@@ -49,8 +60,8 @@ fun OrderPartsScreen() {
             OutlinedTextField(
                 value = "", // TODO: Add search state
                 onValueChange = { /* TODO */ },
-                placeholder = { Text("Search for parts...") },
-                leadingIcon = { Icon(Icons.Default.Search, contentDescription = "Search") },
+                placeholder = { Text(TranslationManager.getString(context, R.string.search_for_parts)) },
+                leadingIcon = { Icon(Icons.Default.Search, contentDescription = TranslationManager.getString(context, R.string.search)) },
                 modifier = Modifier.fillMaxWidth(),
                 colors = OutlinedTextFieldDefaults.colors(
                     focusedBorderColor = ClutchRed,
@@ -62,7 +73,7 @@ fun OrderPartsScreen() {
 
             // Parts Categories
             Text(
-                text = "Parts Categories",
+                text = TranslationManager.getString(context, R.string.parts_categories),
                 fontSize = 18.sp,
                 fontWeight = FontWeight.SemiBold,
                 modifier = Modifier.padding(bottom = 16.dp)
@@ -73,40 +84,41 @@ fun OrderPartsScreen() {
             ) {
                 item {
                     PartCategoryCard(
-                        name = "Engine Parts",
-                        description = "Oil filters, spark plugs, belts",
+                        name = TranslationManager.getString(context, R.string.engine_parts),
+                        description = TranslationManager.getString(context, R.string.engine_parts_desc),
                         icon = Icons.Default.Settings
                     )
                 }
                 item {
                     PartCategoryCard(
-                        name = "Brake Parts",
-                        description = "Brake pads, rotors, calipers",
+                        name = TranslationManager.getString(context, R.string.brake_parts),
+                        description = TranslationManager.getString(context, R.string.brake_parts_desc),
                         icon = Icons.Default.CarRepair
                     )
                 }
                 item {
                     PartCategoryCard(
-                        name = "Tire & Wheel",
-                        description = "Tires, rims, wheel covers",
+                        name = TranslationManager.getString(context, R.string.tire_wheel),
+                        description = TranslationManager.getString(context, R.string.tire_wheel_desc),
                         icon = Icons.Default.TireRepair
                     )
                 }
                 item {
                     PartCategoryCard(
-                        name = "Electrical",
-                        description = "Batteries, alternators, starters",
+                        name = TranslationManager.getString(context, R.string.electrical),
+                        description = TranslationManager.getString(context, R.string.electrical_desc),
                         icon = Icons.Default.ElectricalServices
                     )
                 }
                 item {
                     PartCategoryCard(
-                        name = "Body Parts",
-                        description = "Bumpers, mirrors, lights",
+                        name = TranslationManager.getString(context, R.string.body_parts),
+                        description = TranslationManager.getString(context, R.string.body_parts_desc),
                         icon = Icons.Default.CarRental
                     )
                 }
             }
+        }
         }
     }
 }
@@ -117,6 +129,7 @@ fun PartCategoryCard(
     description: String,
     icon: androidx.compose.ui.graphics.vector.ImageVector
 ) {
+    val context = LocalContext.current
     Card(
         modifier = Modifier.fillMaxWidth(),
         shape = RoundedCornerShape(12.dp),
@@ -152,7 +165,7 @@ fun PartCategoryCard(
             Spacer(modifier = Modifier.weight(1f))
             Icon(
                 imageVector = Icons.Default.KeyboardArrowRight,
-                contentDescription = "View",
+                contentDescription = TranslationManager.getString(context, R.string.view),
                 tint = Color.Gray
             )
         }
