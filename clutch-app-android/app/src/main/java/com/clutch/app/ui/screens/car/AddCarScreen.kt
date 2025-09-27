@@ -19,6 +19,9 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.unit.LayoutDirection
+import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.ui.platform.LocalLayoutDirection
 import com.clutch.app.R
 import com.clutch.app.ui.theme.ClutchRed
 import com.clutch.app.utils.TranslationManager
@@ -41,6 +44,9 @@ fun AddCarScreen(
     onDataChange: (String, String, String, String, String, String, String) -> Unit = { _, _, _, _, _, _, _ -> }
 ) {
     val context = LocalContext.current
+    val currentLanguage = TranslationManager.getCurrentLanguage()
+    val layoutDirection = if (currentLanguage == "ar") LayoutDirection.Rtl else LayoutDirection.Ltr
+    
     var year by remember { mutableStateOf(initialYear) }
     var selectedBrand by remember { mutableStateOf(initialBrand) }
     var selectedModel by remember { mutableStateOf(initialModel) }
@@ -85,14 +91,15 @@ fun AddCarScreen(
             )
         }
     ) { paddingValues ->
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .background(Color(0xFFF5F5F5))
-                .padding(paddingValues)
-                .padding(horizontal = 24.dp),
-            verticalArrangement = Arrangement.spacedBy(16.dp)
-        ) {
+        CompositionLocalProvider(LocalLayoutDirection provides layoutDirection) {
+            Column(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .background(Color(0xFFF5F5F5))
+                    .padding(paddingValues)
+                    .padding(horizontal = 24.dp),
+                verticalArrangement = Arrangement.spacedBy(16.dp)
+            ) {
             Spacer(modifier = Modifier.height(32.dp))
 
             // Year Input
@@ -147,12 +154,11 @@ fun AddCarScreen(
                 onValueChange = { },
                 label = { Text(TranslationManager.getString(context, R.string.all_models)) },
                 readOnly = true,
-                enabled = selectedBrand.isNotEmpty(),
                 trailingIcon = {
                     Icon(
                         imageVector = Icons.Default.KeyboardArrowDown,
                         contentDescription = "Select Model",
-                        tint = Color.LightGray
+                        tint = if (selectedBrand.isNotEmpty()) Color.LightGray else Color.LightGray.copy(alpha = 0.5f)
                     )
                 },
                 modifier = Modifier
@@ -165,10 +171,10 @@ fun AddCarScreen(
                 colors = OutlinedTextFieldDefaults.colors(
                     focusedBorderColor = ClutchRed,
                     focusedLabelColor = ClutchRed,
-                    unfocusedBorderColor = Color.LightGray,
-                    unfocusedLabelColor = Color.LightGray,
+                    unfocusedBorderColor = if (selectedBrand.isNotEmpty()) Color.LightGray else Color.LightGray.copy(alpha = 0.5f),
+                    unfocusedLabelColor = if (selectedBrand.isNotEmpty()) Color.LightGray else Color.LightGray.copy(alpha = 0.5f),
                     focusedTextColor = Color.Black,
-                    unfocusedTextColor = Color.Black
+                    unfocusedTextColor = if (selectedBrand.isNotEmpty()) Color.Black else Color.Black.copy(alpha = 0.6f)
                 )
             )
 
@@ -178,12 +184,11 @@ fun AddCarScreen(
                 onValueChange = { },
                 label = { Text(TranslationManager.getString(context, R.string.trim)) },
                 readOnly = true,
-                enabled = selectedModel.isNotEmpty(),
                 trailingIcon = {
                     Icon(
                         imageVector = Icons.Default.KeyboardArrowDown,
                         contentDescription = "Select Trim",
-                        tint = Color.LightGray
+                        tint = if (selectedModel.isNotEmpty()) Color.LightGray else Color.LightGray.copy(alpha = 0.5f)
                     )
                 },
                 modifier = Modifier
@@ -196,10 +201,10 @@ fun AddCarScreen(
                 colors = OutlinedTextFieldDefaults.colors(
                     focusedBorderColor = ClutchRed,
                     focusedLabelColor = ClutchRed,
-                    unfocusedBorderColor = Color.LightGray,
-                    unfocusedLabelColor = Color.LightGray,
+                    unfocusedBorderColor = if (selectedModel.isNotEmpty()) Color.LightGray else Color.LightGray.copy(alpha = 0.5f),
+                    unfocusedLabelColor = if (selectedModel.isNotEmpty()) Color.LightGray else Color.LightGray.copy(alpha = 0.5f),
                     focusedTextColor = Color.Black,
-                    unfocusedTextColor = Color.Black
+                    unfocusedTextColor = if (selectedModel.isNotEmpty()) Color.Black else Color.Black.copy(alpha = 0.6f)
                 )
             )
 
@@ -265,14 +270,17 @@ fun AddCarScreen(
 
             // GO Button
             Button(
-                onClick = { onNavigateToLastMaintenance() },
-                enabled = isFormValid,
+                onClick = { 
+                    if (isFormValid) {
+                        onNavigateToLastMaintenance()
+                    }
+                },
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(56.dp),
                 colors = ButtonDefaults.buttonColors(
                     containerColor = ClutchRed,
-                    disabledContainerColor = Color.LightGray
+                    disabledContainerColor = ClutchRed.copy(alpha = 0.6f)
                 ),
                 shape = RoundedCornerShape(12.dp)
             ) {
@@ -285,6 +293,7 @@ fun AddCarScreen(
             }
 
             Spacer(modifier = Modifier.height(32.dp))
+            }
         }
     }
 }

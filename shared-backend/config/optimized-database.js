@@ -180,22 +180,29 @@ const connectToDatabase = async () => {
   try {
     // Connect mongoose first for model compatibility
     if (mongoose.connection.readyState === 0) {
-      const mongooseOptions = {
-        useNewUrlParser: true,
-        useUnifiedTopology: true,
-        maxPoolSize: parseInt(process.env.DB_MAX_POOL_SIZE) || 50,
-        minPoolSize: parseInt(process.env.DB_MIN_POOL_SIZE) || 5,
-        connectTimeoutMS: parseInt(process.env.DB_CONNECT_TIMEOUT_MS) || 30000,
-        socketTimeoutMS: parseInt(process.env.DB_SOCKET_TIMEOUT_MS) || 45000,
-        serverSelectionTimeoutMS: parseInt(process.env.DB_CONNECT_TIMEOUT_MS) || 30000,
-        bufferMaxEntries: 0,
-        bufferCommands: false,
-        retryWrites: true,
-        retryReads: true
-      };
+      try {
+        const mongooseOptions = {
+          useNewUrlParser: true,
+          useUnifiedTopology: true,
+          maxPoolSize: parseInt(process.env.DB_MAX_POOL_SIZE) || 50,
+          minPoolSize: parseInt(process.env.DB_MIN_POOL_SIZE) || 5,
+          connectTimeoutMS: parseInt(process.env.DB_CONNECT_TIMEOUT_MS) || 30000,
+          socketTimeoutMS: parseInt(process.env.DB_SOCKET_TIMEOUT_MS) || 45000,
+          serverSelectionTimeoutMS: parseInt(process.env.DB_CONNECT_TIMEOUT_MS) || 30000,
+          bufferMaxEntries: 0,
+          bufferCommands: false,
+          retryWrites: true,
+          retryReads: true
+        };
 
-      await mongoose.connect(process.env.MONGODB_URI, mongooseOptions);
-      console.log('✅ Mongoose connected successfully');
+        console.log('🔄 Connecting to MongoDB with Mongoose...');
+        await mongoose.connect(process.env.MONGODB_URI, mongooseOptions);
+        console.log('✅ Mongoose connected successfully');
+      } catch (mongooseError) {
+        console.error('❌ Mongoose connection failed:', mongooseError.message);
+        // Don't throw here, continue with native client
+        console.log('⚠️ Continuing with native MongoDB client only');
+      }
     }
 
     // Connect native MongoDB client for optimized operations
